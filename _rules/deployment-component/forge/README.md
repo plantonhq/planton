@@ -2,7 +2,7 @@
 
 ## Overview
 
-**Forge** is the rule system for bootstrapping **complete, production-ready deployment components** in OpenMCF. It orchestrates 21 atomic rules that create everything from proto definitions to IaC modules to comprehensive documentation.
+**Forge** is the rule system for bootstrapping **complete, production-ready deployment components** in OpenMCF. It orchestrates 20 atomic rules that create everything from proto definitions to IaC modules to comprehensive documentation.
 
 **Key principle:** Forge creates components that match **95-100% of the ideal state** defined in `architecture/deployment-component.md`.
 
@@ -112,9 +112,11 @@ Forge will interview you to gather:
 - Credential requirements
 - Best practices and gotchas
 
-## The 21-Rule Workflow
+## The 20-Rule Workflow
 
-Forge orchestrates 21 rules in 7 phases:
+Forge orchestrates 20 rules in 8 phases. (Rules `011-pulumi-e2e` and
+`014-terraform-e2e` were removed; e2e is handled separately via component e2e
+profiles, not the forge pipeline.)
 
 ### Phase 1: Proto API Definitions
 1. `001-spec-proto` - Generate spec.proto
@@ -138,18 +140,19 @@ Forge orchestrates 21 rules in 7 phases:
 ### Phase 5: Pulumi Implementation
 12. `009-pulumi-module` - Generate module
 13. `010-pulumi-entrypoint` - Generate entrypoint
-14. `011-pulumi-e2e` - Run E2E test
-15. `012-pulumi-docs` - Generate docs
-16. `021-pulumi-overview` - Generate architecture overview
+14. `012-pulumi-docs` - Generate docs
+15. `021-pulumi-overview` - Generate architecture overview
 
 ### Phase 6: Terraform Implementation
-17. `013-terraform-module` - Generate module
-18. `014-terraform-e2e` - Run E2E test
-19. `015-terraform-docs` - Generate docs
+16. `013-terraform-module` - Generate module
+17. `015-terraform-docs` - Generate docs
 
-### Phase 7: Final Validation
-20. `018-build-validation` - Compile all Go code
-21. `019-test-validation` - Run all tests
+### Phase 7: Presets
+18. `022-presets` - Generate initial presets (2-3 common configuration templates)
+
+### Phase 8: Final Validation
+19. `018-build-validation` - Compile all Go code
+20. `019-test-validation` - Run all tests
 
 ## Progress Tracking
 
@@ -159,39 +162,40 @@ Forge provides real-time progress updates:
 🔨 Forge: Creating MongodbAtlas
 
 Phase 1: Proto API Definitions
-[1/21] ✅ Generated spec.proto
-[2/21] ✅ Added buf.validate rules
-[3/21] ✅ Generated and ran spec tests
-[4/21] ✅ Generated stack_outputs.proto
-[5/21] ✅ Generated api.proto
-[6/21] ✅ Generated stack_input.proto
+[1/20] ✅ Generated spec.proto
+[2/20] ✅ Added buf.validate rules
+[3/20] ✅ Generated and ran spec tests
+[4/20] ✅ Generated stack_outputs.proto
+[5/20] ✅ Generated api.proto
+[6/20] ✅ Generated stack_input.proto
 
 Phase 2: Registration
-[7/21] ✅ Registered MongodbAtlas = 51 in cloud_resource_kind.proto
-[8/21] ✅ Generated proto stubs (make protos)
+[7/20] ✅ Registered MongodbAtlas = 51 in cloud_resource_kind.proto
+[8/20] ✅ Generated proto stubs (make protos)
 
 Phase 3: Documentation
-[9/21] ✅ Generated v1/README.md and examples.md
-[10/21] ✅ Generated v1/docs/README.md (research document)
+[9/20] ✅ Generated v1/README.md and examples.md
+[10/20] ✅ Generated v1/docs/README.md (research document)
 
 Phase 4: Test Infrastructure
-[11/21] ✅ Generated iac/hack/manifest.yaml
+[11/20] ✅ Generated iac/hack/manifest.yaml
 
 Phase 5: Pulumi Implementation
-[12/21] ✅ Generated Pulumi module
-[13/21] ✅ Generated Pulumi entrypoint
-[14/21] ✅ Passed Pulumi E2E test
-[15/21] ✅ Generated Pulumi docs
-[16/21] ✅ Generated Pulumi overview
+[12/20] ✅ Generated Pulumi module
+[13/20] ✅ Generated Pulumi entrypoint
+[14/20] ✅ Generated Pulumi docs
+[15/20] ✅ Generated Pulumi overview
 
 Phase 6: Terraform Implementation
-[17/21] ✅ Generated Terraform module
-[18/21] ✅ Passed Terraform E2E test
-[19/21] ✅ Generated Terraform docs
+[16/20] ✅ Generated Terraform module
+[17/20] ✅ Generated Terraform docs
 
-Phase 7: Final Validation
-[20/21] ✅ Build validation passed (go build ./apis/.../v1/...)
-[21/21] ✅ Component tests passed (go test -v ./apis/.../v1/)
+Phase 7: Presets
+[18/20] ✅ Generated initial presets
+
+Phase 8: Final Validation
+[19/20] ✅ Build validation passed (go build ./apis/.../v1/...)
+[20/20] ✅ Component tests passed (go test -v ./apis/.../v1/)
 
 🎉 Component creation complete!
 
