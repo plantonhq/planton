@@ -1,0 +1,14 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesTcpRoute
+metadata:
+  name: test-tcp-route
+spec:
+  namespace:
+    value: test-namespace
+  parentRefs:
+    - name: test-gateway
+      sectionName: tcp
+  rules:
+    - backendRefs:
+        - name: tcp-backend
+          port: 5432
