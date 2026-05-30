@@ -4,8 +4,7 @@ metadata:
   name: kuberneteshttproute
 spec:
   tier: 4
-  status: deferred
-  deferred_reason: "Requires the Gateway API CRDs (KubernetesGatewayApiCrds prerequisite) and a programmed Gateway (KubernetesGateway, plus a controller-backed GatewayClass) on the test substrate before an HTTPRoute can be applied and attach to a parent. The current E2E harness runs each component on a bare kind cluster and does not yet provision registered prerequisites, so this is deferred until prerequisite provisioning is supported. Both Pulumi and Terraform modules build and validate clean."
+  status: green
   validated_provisioners:
     - pulumi
     - terraform

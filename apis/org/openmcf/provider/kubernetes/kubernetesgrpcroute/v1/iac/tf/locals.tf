@@ -32,16 +32,23 @@ locals {
       r.name != null ? { name = r.name } : {},
       r.matches != null ? { matches = [
         for m in r.matches : merge(
-          m.method != null ? { method = merge(
-            m.method.type != null ? { type = m.method.type } : {},
-            m.method.service != null ? { service = m.method.service } : {},
-            m.method.method != null ? { method = m.method.method } : {},
-          ) } : {},
+          # The GRPCMethodMatch object's attributes are emitted in full (null when
+          # unset) rather than pruned: the terraform kubernetes_manifest provider
+          # requires every attribute of a typed object to be present, so a partial
+          # object (e.g. only `service`) is rejected with "required attribute
+          # method". Nulls are dropped before the API call, so upstream defaults
+          # (type=Exact) and the service-or-method CEL still apply.
+          m.method != null ? { method = {
+            type    = m.method.type
+            service = m.method.service
+            method  = m.method.method
+          } } : {},
           m.headers != null ? { headers = [
-            for h in m.headers : merge(
-              { name = h.name, value = h.value },
-              h.type != null ? { type = h.type } : {},
-            )
+            for h in m.headers : {
+              name  = h.name
+              value = h.value
+              type  = h.type
+            }
           ] } : {},
         )
       ] } : {},

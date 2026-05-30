@@ -82,6 +82,32 @@ var crdInstallKinds = map[string][]string{
 	},
 }
 
+// gatewayApiCustomResource describes how to verify a Gateway API custom resource
+// created by one of the Gateway API deployment components. These components do
+// not run pods; verification confirms the CR itself exists after apply and is
+// gone after destroy. The CRDs are installed by the KubernetesGatewayApiCrds
+// registry prerequisite before the component applies.
+type gatewayApiCustomResource struct {
+	// resource is the fully-qualified kubectl resource (plural.group), which is
+	// stable across the served apiVersion (e.g. tcproutes are served at v1alpha2).
+	resource string
+	// clusterScoped is true for cluster-scoped kinds (GatewayClass), which must
+	// be queried without a namespace.
+	clusterScoped bool
+}
+
+// gatewayApiKinds maps manifest kind values (lowercased) to their Gateway API
+// custom-resource verification descriptor.
+var gatewayApiKinds = map[string]gatewayApiCustomResource{
+	"kubernetesgatewayclass":   {resource: "gatewayclasses.gateway.networking.k8s.io", clusterScoped: true},
+	"kubernetesgateway":        {resource: "gateways.gateway.networking.k8s.io"},
+	"kuberneteshttproute":      {resource: "httproutes.gateway.networking.k8s.io"},
+	"kubernetesgrpcroute":      {resource: "grpcroutes.gateway.networking.k8s.io"},
+	"kubernetestcproute":       {resource: "tcproutes.gateway.networking.k8s.io"},
+	"kubernetestlsroute":       {resource: "tlsroutes.gateway.networking.k8s.io"},
+	"kubernetesreferencegrant": {resource: "referencegrants.gateway.networking.k8s.io"},
+}
+
 // GetVerifierFromManifest creates the appropriate verifier by parsing the manifest.
 func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 	info, err := ParseManifestInfo(manifestPath)
@@ -170,6 +196,17 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 			return &CRDInstallVerifier{
 				ComponentName: info.Name,
 				CRDNames:      crdNames,
+			}, nil
+		}
+		if gw, ok := gatewayApiKinds[component]; ok {
+			namespace := info.Namespace
+			if gw.clusterScoped {
+				namespace = ""
+			}
+			return &ResourceExistenceVerifier{
+				Namespace: namespace,
+				Kind:      gw.resource,
+				Name:      info.Name,
 			}, nil
 		}
 		if operatorKinds[component] {

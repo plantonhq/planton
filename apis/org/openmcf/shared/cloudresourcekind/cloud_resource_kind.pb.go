@@ -1279,8 +1279,10 @@ type CloudResourceKindMeta struct {
 	// where container resources visually enclose their child resources.
 	ContainerKind bool `protobuf:"varint,6,opt,name=container_kind,json=containerKind,proto3" json:"container_kind,omitempty"`
 	// components that must be deployed before this component can function.
-	// order matters: index 0 is deployed first. the E2E framework deploys
-	// these as fixtures and tears them down in reverse order. this is also
+	// order matters: index 0 is deployed first. the E2E framework installs these
+	// (resolved transitively) before the component under test and tears them down
+	// in reverse order; a component may pin a prerequisite's exact config via an
+	// e2e/fixtures/ override, which wins over the registry entry. this is also
 	// used by the platform for dependency ordering in infra charts.
 	// example: KubernetesPostgres needs KubernetesZalandoPostgresOperator
 	// because it creates acid.zalan.do/v1 postgresql CRDs.

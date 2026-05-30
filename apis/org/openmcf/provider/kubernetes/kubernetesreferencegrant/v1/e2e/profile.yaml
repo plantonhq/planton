@@ -4,8 +4,7 @@ metadata:
   name: kubernetesreferencegrant
 spec:
   tier: 4
-  status: deferred
-  deferred_reason: "Requires the Gateway API CRDs (KubernetesGatewayApiCrds prerequisite) on the test substrate before a ReferenceGrant can be applied. Unlike the route kinds, a ReferenceGrant has no runtime dependency on a Gateway or route existing -- it only needs the CRDs installed -- but the current E2E harness runs each component on a bare kind cluster and does not yet provision registered prerequisites, so this is deferred until prerequisite provisioning is supported. Both Pulumi and Terraform modules build and validate clean."
+  status: green
   validated_provisioners:
     - pulumi
     - terraform

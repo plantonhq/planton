@@ -15,14 +15,14 @@ import (
 type Phase string
 
 const (
-	PhaseFixturesUp Phase = "FIXTURES-UP"
-	PhaseValidate   Phase = "VALIDATE"
-	PhaseDeploy     Phase = "DEPLOY"
-	PhaseVerifyOut  Phase = "VERIFY-OUT"
-	PhaseVerifyRes  Phase = "VERIFY-RES"
-	PhaseDestroy    Phase = "DESTROY"
-	PhaseVerifyCln  Phase = "VERIFY-CLN"
-	PhaseFixturesDn Phase = "FIXTURES-DN"
+	PhaseDepsUp    Phase = "DEPENDENCIES-UP"
+	PhaseValidate  Phase = "VALIDATE"
+	PhaseDeploy    Phase = "DEPLOY"
+	PhaseVerifyOut Phase = "VERIFY-OUT"
+	PhaseVerifyRes Phase = "VERIFY-RES"
+	PhaseDestroy   Phase = "DESTROY"
+	PhaseVerifyCln Phase = "VERIFY-CLN"
+	PhaseDepsDn    Phase = "DEPENDENCIES-DOWN"
 )
 
 // PhaseResult captures the outcome of a single lifecycle phase.
@@ -43,8 +43,9 @@ type TestResult struct {
 }
 
 // RunComponentTest executes the E2E lifecycle for a single component.
-// If the component has fixtures (prerequisites), they are deployed first
-// and torn down last, wrapping the standard 6-phase lifecycle.
+// If the component has dependencies (registry prerequisites and/or fixture
+// overrides), they are deployed first and torn down last, wrapping the standard
+// 6-phase lifecycle.
 func RunComponentTest(ctx context.Context, tc *provider.ComponentTestContext, harness provider.Harness) *TestResult {
 	start := time.Now()
 	result := &TestResult{
@@ -55,24 +56,24 @@ func RunComponentTest(ctx context.Context, tc *provider.ComponentTestContext, ha
 
 	verifyCtx := context.WithValue(ctx, provider.ManifestPathKey{}, tc.ManifestPath)
 
-	// Phase 0: deploy fixtures if the component has a fixtures/ directory
-	var fixtureStates []FixtureState
+	// Phase 0: deploy dependencies (registry prerequisites + fixture overrides)
+	var dependencyStates []DependencyState
 	if tc.RepoRoot != "" {
-		fixtureStart := time.Now()
+		depStart := time.Now()
 		var err error
-		fixtureStates, err = DeployFixtures(ctx, tc.RepoRoot, tc.Provider, tc.Component, tc.BackendURL, tc.RunID, harness)
+		dependencyStates, err = DeployDependencies(ctx, tc.RepoRoot, tc.Provider, tc.Component, tc.BackendURL, tc.RunID, harness)
 		pr := PhaseResult{
-			Phase:    PhaseFixturesUp,
-			Duration: time.Since(fixtureStart),
+			Phase:    PhaseDepsUp,
+			Duration: time.Since(depStart),
 			Passed:   err == nil,
 			Error:    err,
 		}
-		if len(fixtureStates) > 0 || err != nil {
+		if len(dependencyStates) > 0 || err != nil {
 			result.Phases = append(result.Phases, pr)
 		}
 		if err != nil {
 			result.Passed = false
-			TeardownFixtures(fixtureStates)
+			TeardownDependencies(dependencyStates)
 			result.Duration = time.Since(start)
 			return result
 		}
@@ -114,13 +115,13 @@ func RunComponentTest(ctx context.Context, tc *provider.ComponentTestContext, ha
 		}
 	}
 
-	// Phase 7: teardown fixtures in reverse order
-	if len(fixtureStates) > 0 {
-		fixtureStart := time.Now()
-		TeardownFixtures(fixtureStates)
+	// Phase 7: teardown dependencies in reverse order
+	if len(dependencyStates) > 0 {
+		depStart := time.Now()
+		TeardownDependencies(dependencyStates)
 		result.Phases = append(result.Phases, PhaseResult{
-			Phase:    PhaseFixturesDn,
-			Duration: time.Since(fixtureStart),
+			Phase:    PhaseDepsDn,
+			Duration: time.Since(depStart),
 			Passed:   true,
 		})
 	}
