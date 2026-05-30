@@ -221,3 +221,54 @@ compose in InfraCharts without dropping to raw YAML.
 - [Gateway API: TLS configuration](https://gateway-api.sigs.k8s.io/guides/tls/)
 - [Gateway API v1.5.1 specification](https://github.com/kubernetes-sigs/gateway-api/tree/v1.5.1)
 - [Pulumi Kubernetes Provider](https://www.pulumi.com/registry/packages/kubernetes/)
+
+## Composing in Infra Charts
+
+`KubernetesGateway` is the mid-tier hub of the ingress DAG: it depends on a
+GatewayClass and (for TLS) a certificate Secret, and routes attach to it. Two
+mechanisms wire it to its neighbors (see project decision DD-009):
+
+1. **Data dependencies use `valueFrom`.** `namespace` (-> `KubernetesNamespace`)
+   and `gateway_class_name`
+   (-> `KubernetesGatewayClass.status.outputs.gateway_class_name`) are
+   `StringValueOrRef` fields, so the platform builds those DAG edges
+   automatically.
+2. **Topology dependencies use `metadata.relationships`.**
+   `listeners[].tls.certificate_refs` is a **plain** reference (an array of
+   multi-field upstream objects), not a foreign key -- a plain Secret name creates
+   no automatic DAG edge. Express the Gateway -> Certificate dependency explicitly
+   so the certificate is provisioned first:
+
+```yaml
+metadata:
+  name: "{{ values.env }}-gateway"
+  relationships:
+    - kind: KubernetesCertificate
+      name: "{{ values.domain }}-cert"
+      type: uses
+spec:
+  namespace:
+    valueFrom:
+      kind: KubernetesNamespace
+      name: "{{ values.env }}-ns"
+      fieldPath: spec.name
+  gateway_class_name:
+    valueFrom:
+      kind: KubernetesGatewayClass
+      name: "{{ values.env }}-gateway-class"
+      fieldPath: status.outputs.gateway_class_name
+  listeners:
+    - name: https
+      port: 443
+      protocol: HTTPS
+      tls:
+        mode: Terminate
+        certificate_refs:
+          # literal Secret name, typically KubernetesCertificate.status.outputs.secret_name
+          - name: "{{ values.domain }}-cert"
+```
+
+Full ingress stack:
+`CertManager -> ClusterIssuer -> Certificate -> (Secret) -> Gateway -> HTTPRoute / GRPCRoute`.
+Data edges use `valueFrom`; the plain `certificate_refs` edge uses
+`metadata.relationships`.

@@ -254,3 +254,52 @@ routing is a first-class OpenMCF experience rather than raw YAML.
 - [GEP-2257: Gateway API Duration format](https://gateway-api.sigs.k8s.io/geps/gep-2257/)
 - [Gateway API conformance](https://gateway-api.sigs.k8s.io/concepts/conformance/)
 - Upstream source: `kubernetes-sigs/gateway-api` `apis/v1/httproute_types.go` (v1.5.1)
+
+## Composing in Infra Charts
+
+`KubernetesHttpRoute` is a leaf in the ingress DAG: it attaches to a `Gateway`
+and forwards to backend Services. Two mechanisms wire it to its neighbors (see
+project decision DD-009):
+
+1. **Data dependencies use `valueFrom`.** `namespace` is a `StringValueOrRef`, so
+   it can reference a `KubernetesNamespace` output and the platform builds that DAG
+   edge automatically.
+2. **Topology dependencies use `metadata.relationships`.** `parentRefs` and
+   `backendRefs` are **plain** upstream references (arrays of multi-field objects),
+   not foreign keys -- a plain name creates no automatic DAG edge. Express those
+   edges explicitly:
+
+```yaml
+metadata:
+  name: "{{ values.env }}-web-route"
+  relationships:
+    - kind: KubernetesGateway
+      name: "{{ values.env }}-gateway"
+      type: depends_on
+    - kind: KubernetesService          # when the backend is OpenMCF-managed
+      name: "{{ values.service_name }}"
+      type: uses
+spec:
+  namespace:
+    valueFrom:
+      kind: KubernetesNamespace
+      name: "{{ values.env }}-ns"
+      fieldPath: spec.name
+  parentRefs:
+    - name: "{{ values.env }}-gateway"   # literal Gateway name
+  hostnames:
+    - "app.{{ values.domain }}"
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: "{{ values.service_name }}"
+          port: 8080
+```
+
+Full ingress stack:
+`CertManager -> ClusterIssuer -> Certificate -> (Secret) -> Gateway -> HTTPRoute / GRPCRoute`.
+Data edges use `valueFrom`; the plain `parentRefs` / `backendRefs` edges use
+`metadata.relationships`.

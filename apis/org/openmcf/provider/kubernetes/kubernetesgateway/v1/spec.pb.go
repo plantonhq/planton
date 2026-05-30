@@ -288,6 +288,24 @@ type KubernetesGatewayListenerTlsConfig struct {
 	// References to Kubernetes Secrets holding the TLS certificate/key used to
 	// terminate the listener. A single reference to a kubernetes.io/tls Secret
 	// has Core support; multiple references are implementation-specific.
+	//
+	// INFRA-CHART COMPOSABILITY (DD-009): certificate_refs is a PLAIN reference, not
+	// an OpenMCF foreign key (StringValueOrRef). It is an array of multi-field
+	// upstream objects, so wrapping its scalars would break 100% upstream fidelity
+	// (DD-001) and distort the typed CRD shape (dont-do #6). The referenced Secret
+	// is typically created by a KubernetesCertificate (cert-manager). Because a
+	// plain name creates NO automatic DAG edge, an infra-chart author MUST express
+	// the Gateway -> Certificate dependency via metadata.relationships, e.g.:
+	//
+	//	metadata:
+	//	  relationships:
+	//	    - kind: KubernetesCertificate
+	//	      name: "{{ values.domain }}-cert"
+	//	      type: uses
+	//
+	// The plain `name` here is then the literal Secret name
+	// (KubernetesCertificate.status.outputs.secret_name). See the component's
+	// "Composing in Infra Charts" docs for the full pattern.
 	CertificateRefs []*kubernetes.KubernetesGatewayApiSecretObjectReference `protobuf:"bytes,2,rep,name=certificate_refs,json=certificateRefs,proto3" json:"certificate_refs,omitempty"`
 	// Implementation-specific TLS options (for example minimum TLS version or
 	// cipher suites). Keys should be domain-prefixed to avoid ambiguity.

@@ -205,3 +205,31 @@ OpenMCF Gateway API networking layer.
 - [Gateway API Official Documentation](https://gateway-api.sigs.k8s.io/)
 - [Gateway API GitHub Repository](https://github.com/kubernetes-sigs/gateway-api)
 - [Gateway API Implementations](https://gateway-api.sigs.k8s.io/implementations/)
+
+## Composing in Infra Charts
+
+`KubernetesGatewayClass` is a cluster-scoped, Layer-0 foundation in the ingress
+DAG: it has no cross-resource inputs of its own, and downstream
+`KubernetesGateway` resources reference it. Two mechanisms wire the family
+together (see project decision DD-009):
+
+1. **Data dependencies use `valueFrom`.** A `KubernetesGateway` references this
+   class through its `gateway_class_name` `StringValueOrRef`, pointing at this
+   component's `status.outputs.gateway_class_name`. The platform builds that DAG
+   edge automatically, deploying the GatewayClass before the Gateway.
+2. **Topology dependencies use `metadata.relationships`.** A GatewayClass is
+   served by a controller running on the cluster; you can record that with a
+   `runs_on` relationship if your chart models the controller as a resource.
+
+```yaml
+# Downstream Gateway wiring (consumer side):
+spec:
+  gateway_class_name:
+    valueFrom:
+      kind: KubernetesGatewayClass
+      name: "{{ values.env }}-gateway-class"
+      fieldPath: status.outputs.gateway_class_name
+```
+
+Full ingress stack: `GatewayClass -> Gateway -> HTTPRoute / GRPCRoute`, with
+certificates supplied by the cert-manager family.

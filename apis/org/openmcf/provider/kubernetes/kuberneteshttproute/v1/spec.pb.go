@@ -50,9 +50,22 @@ type KubernetesHttpRouteSpec struct {
 	Namespace *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=namespace,proto3" json:"namespace,omitempty"`
 	// References to the parent resources (usually Gateways) this route attaches
 	// to. Each parent must allow attachment from HTTPRoutes of this namespace.
-	// parent_refs are plain references (not OpenMCF foreign keys): they are arrays
-	// of multi-field objects, so InfraChart DAG ordering -- not a StringValueOrRef
-	// wrapper -- sequences the Gateway before the routes that target it.
+	//
+	// INFRA-CHART COMPOSABILITY (DD-009): parent_refs is a PLAIN reference, not an
+	// OpenMCF foreign key (StringValueOrRef). It is an array of multi-field upstream
+	// objects, so wrapping its scalars would break 100% upstream fidelity (DD-001)
+	// and distort the typed CRD shape (dont-do #6). Because a plain string creates
+	// NO automatic DAG edge, an infra-chart author MUST express the route -> Gateway
+	// dependency via metadata.relationships, e.g.:
+	//
+	//	metadata:
+	//	  relationships:
+	//	    - kind: KubernetesGateway
+	//	      name: "{{ values.env }}-gateway"
+	//	      type: depends_on
+	//
+	// The plain `name` here is then the literal Gateway name. See the component's
+	// "Composing in Infra Charts" docs for the full pattern.
 	//
 	// Flattened from the upstream CommonRouteSpec; the experimental
 	// useDefaultGateways field is excluded (standard channel only).
@@ -68,6 +81,13 @@ type KubernetesHttpRouteSpec struct {
 	// Routing rules: each rule matches requests, optionally applies filters, and
 	// forwards to one or more backends. At least one rule is required. Upstream
 	// allows up to 16 rules (and up to 64 matches per rule).
+	//
+	// Note: upstream also carries an aggregate "total matches across all rules
+	// must be < 128" XValidation expressed as a 16-way unrolled CEL sum. It is
+	// intentionally not translated here: it is a controller-enforced aggregate
+	// limit, the per-field rules<=16 / matches<=64 bounds are enforced, and the
+	// unrolled expression is unmaintainable. (KubernetesGrpcRoute makes the same
+	// choice; do not "fix" this by adding the unrolled rule.)
 	Rules         []*KubernetesHttpRouteRule `protobuf:"bytes,5,rep,name=rules,proto3" json:"rules,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -1183,6 +1203,22 @@ func (x *KubernetesHttpRouteCorsFilter) GetMaxAge() int32 {
 // shape) rather than nesting the shared BackendRef message.
 //
 // Upstream: HTTPBackendRef in apis/v1/httproute_types.go
+//
+// INFRA-CHART COMPOSABILITY (DD-009): backend_refs is a PLAIN reference, not an
+// OpenMCF foreign key (StringValueOrRef). It is an array of multi-field upstream
+// objects, so wrapping its scalars would break 100% fidelity (DD-001) and distort
+// the typed CRD shape (dont-do #6). Because a plain string creates NO automatic
+// DAG edge, an infra-chart author MUST express the route -> backend dependency via
+// metadata.relationships when the backend is an OpenMCF-managed resource, e.g.:
+//
+//	metadata:
+//	  relationships:
+//	    - kind: KubernetesService   # or the backend's actual kind
+//	      name: "{{ values.service_name }}"
+//	      type: uses
+//
+// The plain `name` here is then the literal Kubernetes Service name. See the
+// component's "Composing in Infra Charts" docs for the full pattern.
 type KubernetesHttpRouteBackendRef struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Group of the referent. Empty string infers the core API group.
