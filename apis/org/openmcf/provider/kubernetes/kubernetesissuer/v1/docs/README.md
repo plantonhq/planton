@@ -75,3 +75,32 @@ Self-signed certificates are not trusted by browsers or external clients. They a
 ### Namespace Co-location
 
 The CA Secret, Issuer, and Certificate resources must all reside in the same namespace. cert-manager enforces this constraint -- an Issuer cannot reference a Secret in a different namespace.
+
+## Composing in Infra Charts
+
+`KubernetesIssuer` is a namespaced issuer, typically used for the CA-bootstrap
+workflow (see project decision DD-009):
+
+1. **Data dependencies use `valueFrom`.** `namespace` (-> `KubernetesNamespace`)
+   and `ca_secret_name`
+   (-> `KubernetesCertificate.status.outputs.secret_name`) are `StringValueOrRef`
+   fields, so the platform builds those DAG edges automatically -- the CA
+   Certificate is provisioned before this Issuer that signs from it.
+2. **Downstream wiring.** A `KubernetesCertificate` references this issuer through
+   its `issuerRef` `StringValueOrRef` (`status.outputs.issuer_name`).
+
+```yaml
+spec:
+  namespace:
+    valueFrom:
+      kind: KubernetesNamespace
+      name: "{{ values.env }}-ns"
+      fieldPath: spec.name
+  ca_secret_name:
+    valueFrom:
+      kind: KubernetesCertificate
+      name: "{{ values.env }}-ca-cert"
+      fieldPath: status.outputs.secret_name
+```
+
+Bootstrap chain: `SelfSigned Issuer -> CA Certificate -> CA Issuer (this) -> leaf Certificates`.

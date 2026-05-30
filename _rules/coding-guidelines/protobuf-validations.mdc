@@ -93,3 +93,17 @@ The `DEFAULT_REQUIRES_OPTIONAL` linter (`buf/lint/optional-linter`) fails builds
 - IaC modules must use getter methods: `spec.GetFieldName()`
 - Tests must use pointers: `runnerGroup := "prod"; spec.RunnerGroup = &runnerGroup`
 - **No defensive coding needed** - framework applies defaults before IaC modules run
+
+## Removing Fields and Enum Values (no `reserved`)
+
+OpenMCF is pre-1.0 with no external wire-compatibility obligations, so do **not** use protobuf `reserved`. Removals are clean.
+
+### Message fields
+- Delete the field and **renumber the remaining fields so they stay sequential** (`1..N`, no gaps). Do not leave a hole or add `reserved`.
+- This is safe because manifests are keyed by field *name* (JSON/YAML) and IaC Go references fields by struct name -- only proto-binary wire data depends on numbers, and none is persisted.
+
+### `CloudResourceKind` enum values
+- Remove the entry; do **not** add `reserved`. The freed number stays available for a future kind in the same provider block.
+- **Never renumber an existing kind** -- its number is its permanent identity (see forge rule `016-cloud-resource-kind`). This also rules out "flattening" the enum to be globally sequential.
+- The enum is **block-allocated per provider** (200s AWS, 800s Kubernetes, 2500s OpenStack, 2800s Scaleway, ...), and some blocks carry a sub-convention (e.g. OpenStack uses `2507-2524` for primary kinds and `2525+` for companion kinds at `primary+20`). Preserve the block grouping and any documented sub-convention; let removed slots be refilled naturally by the next kind.
+- A one-line comment marking a freed slot (e.g. `// 2523, 2524: free primary slots (Magnum kinds removed 2026-03)`) is a helpful breadcrumb -- use that, never `reserved`.

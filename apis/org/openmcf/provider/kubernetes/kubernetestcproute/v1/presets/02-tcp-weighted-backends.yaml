@@ -1,0 +1,18 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesTcpRoute
+metadata:
+  name: my-tcp-route
+spec:
+  namespace:
+    value: app-ns
+  parentRefs:
+    - name: <gateway-name>
+      sectionName: tcp
+  rules:
+    - backendRefs:
+        - name: <stable-service>
+          port: <service-port>
+          weight: 90
+        - name: <canary-service>
+          port: <service-port>
+          weight: 10

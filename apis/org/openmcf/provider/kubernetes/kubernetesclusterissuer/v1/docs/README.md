@@ -114,3 +114,30 @@ Let's Encrypt enforces rate limits (50 certificates per registered domain per we
 ## Conclusion
 
 KubernetesClusterIssuer provides a clean, single-responsibility abstraction for managing cert-manager ClusterIssuers. By decoupling from the cert-manager installation, it enables independent lifecycle management, better multi-team workflows, and reduced blast radius -- while preserving the domain-named issuer convention that all OpenMCF ingress components rely on.
+
+## Composing in Infra Charts
+
+`KubernetesClusterIssuer` sits between cert-manager and the certificates it issues
+(see project decision DD-009):
+
+1. **Data dependencies use `valueFrom`.** `cert_manager_namespace` is a
+   `StringValueOrRef` (`default_kind = KubernetesCertManager`,
+   `default_kind_field_path = status.outputs.namespace`), so referencing the
+   cert-manager installation builds the DAG edge automatically -- the issuer
+   deploys after cert-manager is ready.
+2. **Downstream wiring.** A `KubernetesCertificate` references this issuer through
+   its `issuerRef` `StringValueOrRef`
+   (`status.outputs.cluster_issuer_name`), so the certificate deploys after the
+   issuer.
+
+```yaml
+spec:
+  cert_manager_namespace:
+    valueFrom:
+      kind: KubernetesCertManager
+      name: "{{ values.env }}-cert-manager"
+      fieldPath: status.outputs.namespace
+```
+
+Full ingress stack:
+`CertManager -> ClusterIssuer -> Certificate -> (Secret) -> Gateway -> HTTPRoute / GRPCRoute`.

@@ -28,10 +28,11 @@ type KubernetesGatewayApiCrdsSpec_InstallChannel_GatewayApiInstallChannel int32
 
 const (
 	KubernetesGatewayApiCrdsSpec_InstallChannel_gateway_api_install_channel_unspecified KubernetesGatewayApiCrdsSpec_InstallChannel_GatewayApiInstallChannel = 0
-	// Standard channel: Gateway, GatewayClass, HTTPRoute, ReferenceGrant
+	// Standard channel: GatewayClass, Gateway, HTTPRoute, GRPCRoute, TLSRoute,
+	// ReferenceGrant (GRPCRoute and TLSRoute graduated to standard as of v1.5.1).
 	KubernetesGatewayApiCrdsSpec_InstallChannel_standard KubernetesGatewayApiCrdsSpec_InstallChannel_GatewayApiInstallChannel = 1
-	// Experimental channel: Includes all standard resources plus
-	// TCPRoute, UDPRoute, TLSRoute, GRPCRoute (experimental versions)
+	// Experimental channel: includes all standard resources plus TCPRoute and
+	// UDPRoute.
 	KubernetesGatewayApiCrdsSpec_InstallChannel_experimental KubernetesGatewayApiCrdsSpec_InstallChannel_GatewayApiInstallChannel = 2
 )
 

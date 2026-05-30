@@ -29,12 +29,13 @@ type KubernetesGatewayApiCrdsStackOutputs struct {
 	InstalledVersion string `protobuf:"bytes,1,opt,name=installed_version,json=installedVersion,proto3" json:"installed_version,omitempty"`
 	// Installation channel that was used (standard or experimental).
 	InstalledChannel string `protobuf:"bytes,2,opt,name=installed_channel,json=installedChannel,proto3" json:"installed_channel,omitempty"`
-	// List of CRD names that were installed.
-	// Standard channel: gatewayclasses, gateways, httproutes, referencegrants
-	// Experimental channel: adds tcproutes, udproutes, tlsroutes, grpcroutes
-	InstalledCrds []string `protobuf:"bytes,3,rep,name=installed_crds,json=installedCrds,proto3" json:"installed_crds,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	// Full URL of the Gateway API CRD bundle that was applied. This is the exact
+	// artifact installed -- it encodes both the version and the channel in a single
+	// value (e.g. ".../releases/download/v1.5.1/experimental-install.yaml"), so it
+	// is the authoritative record of what landed on the cluster.
+	InstalledManifestUrl string `protobuf:"bytes,3,opt,name=installed_manifest_url,json=installedManifestUrl,proto3" json:"installed_manifest_url,omitempty"`
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
 }
 
 func (x *KubernetesGatewayApiCrdsStackOutputs) Reset() {
@@ -81,22 +82,22 @@ func (x *KubernetesGatewayApiCrdsStackOutputs) GetInstalledChannel() string {
 	return ""
 }
 
-func (x *KubernetesGatewayApiCrdsStackOutputs) GetInstalledCrds() []string {
+func (x *KubernetesGatewayApiCrdsStackOutputs) GetInstalledManifestUrl() string {
 	if x != nil {
-		return x.InstalledCrds
+		return x.InstalledManifestUrl
 	}
-	return nil
+	return ""
 }
 
 var File_org_openmcf_provider_kubernetes_kubernetesgatewayapicrds_v1_stack_outputs_proto protoreflect.FileDescriptor
 
 const file_org_openmcf_provider_kubernetes_kubernetesgatewayapicrds_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Oorg/openmcf/provider/kubernetes/kubernetesgatewayapicrds/v1/stack_outputs.proto\x12;org.openmcf.provider.kubernetes.kubernetesgatewayapicrds.v1\"\xa7\x01\n" +
+	"Oorg/openmcf/provider/kubernetes/kubernetesgatewayapicrds/v1/stack_outputs.proto\x12;org.openmcf.provider.kubernetes.kubernetesgatewayapicrds.v1\"\xb6\x01\n" +
 	"$KubernetesGatewayApiCrdsStackOutputs\x12+\n" +
 	"\x11installed_version\x18\x01 \x01(\tR\x10installedVersion\x12+\n" +
-	"\x11installed_channel\x18\x02 \x01(\tR\x10installedChannel\x12%\n" +
-	"\x0einstalled_crds\x18\x03 \x03(\tR\rinstalledCrdsB\xe1\x03\n" +
+	"\x11installed_channel\x18\x02 \x01(\tR\x10installedChannel\x124\n" +
+	"\x16installed_manifest_url\x18\x03 \x01(\tR\x14installedManifestUrlB\xe1\x03\n" +
 	"?com.org.openmcf.provider.kubernetes.kubernetesgatewayapicrds.v1B\x11StackOutputsProtoP\x01Zxgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesgatewayapicrds/v1;kubernetesgatewayapicrdsv1\xa2\x02\x05OOPKK\xaa\x02;Org.Openmcf.Provider.Kubernetes.Kubernetesgatewayapicrds.V1\xca\x02;Org\\Openmcf\\Provider\\Kubernetes\\Kubernetesgatewayapicrds\\V1\xe2\x02GOrg\\Openmcf\\Provider\\Kubernetes\\Kubernetesgatewayapicrds\\V1\\GPBMetadata\xea\x02@Org::Openmcf::Provider::Kubernetes::Kubernetesgatewayapicrds::V1b\x06proto3"
 
 var (

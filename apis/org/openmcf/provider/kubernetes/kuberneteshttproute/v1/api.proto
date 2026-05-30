@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package org.openmcf.provider.kubernetes.kuberneteshttproute.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/kubernetes/kuberneteshttproute/v1/spec.proto";
+import "org/openmcf/provider/kubernetes/kuberneteshttproute/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// KubernetesHttpRoute is a Kubernetes Gateway API HTTPRoute: a namespaced set of
+// HTTP routing rules that attach to a Gateway and forward matching requests to
+// backend Services.
+message KubernetesHttpRoute {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'KubernetesHttpRoute'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  KubernetesHttpRouteSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  KubernetesHttpRouteStatus status = 5;
+}
+
+// KubernetesHttpRouteStatus holds the deployment status and outputs.
+message KubernetesHttpRouteStatus {
+  // stack-outputs
+  KubernetesHttpRouteStackOutputs outputs = 1;
+}

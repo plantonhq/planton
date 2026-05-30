@@ -1,0 +1,7 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesGatewayClass
+metadata:
+  name: my-envoy-gateway-class
+spec:
+  controllerName: gateway.envoyproxy.io/gatewayclass-controller
+  description: "Envoy Gateway controller"

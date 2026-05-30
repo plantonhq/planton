@@ -11,8 +11,9 @@ message KubernetesGatewayApiCrdsStackOutputs {
   // Installation channel that was used (standard or experimental).
   string installed_channel = 2;
 
-  // List of CRD names that were installed.
-  // Standard channel: gatewayclasses, gateways, httproutes, referencegrants
-  // Experimental channel: adds tcproutes, udproutes, tlsroutes, grpcroutes
-  repeated string installed_crds = 3;
+  // Full URL of the Gateway API CRD bundle that was applied. This is the exact
+  // artifact installed -- it encodes both the version and the channel in a single
+  // value (e.g. ".../releases/download/v1.5.1/experimental-install.yaml"), so it
+  // is the authoritative record of what landed on the cluster.
+  string installed_manifest_url = 3;
 }

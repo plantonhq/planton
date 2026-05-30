@@ -1,0 +1,23 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesGateway
+metadata:
+  name: my-https-gateway
+spec:
+  namespace:
+    value: istio-ingress
+  gatewayClassName:
+    value: istio
+  listeners:
+    - name: https
+      hostname: <app-hostname>
+      port: 443
+      protocol: HTTPS
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: <tls-secret-name>
+      allowedRoutes:
+        namespaces:
+          from: Same
+        kinds:
+          - kind: HTTPRoute

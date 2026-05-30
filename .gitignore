@@ -14,8 +14,13 @@ apis/generated/
 site/!.yarn/cache
 #.pnp.*
 
+# Terraform init/plan/apply artifacts (generated locally, never committed)
+**/.terraform/
 .terraform.lock.hcl
+*.tfstate
+*.tfstate.*
 terraform.tfplan
+*.tfplan
 bazel-openmcf-clone
 bazel-bin
 bazel-out

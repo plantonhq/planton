@@ -61,12 +61,6 @@ func NewGRPCRoute(ctx *pulumi.Context,
 
 	args.ApiVersion = pulumi.StringPtr("gateway.networking.k8s.io/v1")
 	args.Kind = pulumi.StringPtr("GRPCRoute")
-	aliases := pulumi.Aliases([]pulumi.Alias{
-		{
-			Type: pulumi.String("kubernetes:gateway.networking.k8s.io/v1alpha2:GRPCRoute"),
-		},
-	})
-	opts = append(opts, aliases)
 	opts = utilities.PkgResourceDefaultOpts(opts)
 	var resource GRPCRoute
 	err := ctx.RegisterResource("kubernetes:gateway.networking.k8s.io/v1:GRPCRoute", name, args, &resource, opts...)

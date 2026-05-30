@@ -26,10 +26,12 @@ var kubernetesTier1Components = []string{
 	"kubernetesmanifest",
 }
 
-// Kubernetes Tier 3 components: operator-dependent, need fixtures deployed first.
-// The fixture system (DD-007) automatically deploys prerequisite operators
-// by reading CloudResourceKindMeta.prerequisites from proto options and
-// deploying the numbered YAML files in each component's e2e/fixtures/ directory.
+// Kubernetes Tier 3 components: operator-dependent. Each declares its operator
+// as a registry prerequisite (CloudResourceKindMeta.prerequisites) AND ships an
+// explicit e2e/fixtures/ override that pins the operator's exact config; the
+// override wins, so the fixture is what actually deploys here. Either way the
+// harness installs the operator before the test and tears it down after
+// (see e2e/framework/runner/dependencies.go -- ResolveDependencies).
 var kubernetesTier3Components = []string{
 	"kubernetespostgres",
 	"kuberneteskafka",
@@ -57,6 +59,16 @@ var kubernetesTier4Components = []string{
 	"kubernetestekton",
 	"kubernetestektonoperator",
 	"kubernetesistio",
+	// Gateway API deployment components (854-860). Each declares
+	// KubernetesGatewayApiCrds as a registry prerequisite, which the harness
+	// installs (experimental v1.5.1) before applying the route/gateway scenario.
+	"kubernetesgatewayclass",
+	"kubernetesgateway",
+	"kuberneteshttproute",
+	"kubernetesgrpcroute",
+	"kubernetestcproute",
+	"kubernetestlsroute",
+	"kubernetesreferencegrant",
 }
 
 // Kubernetes Tier 2 components: Helm-based, self-contained chart installs.
@@ -178,6 +190,29 @@ func TestKubernetesGhaRunnerScaleSetController_Terraform(t *testing.T) { runAllS
 func TestKubernetesRookCephOperator_Terraform(t *testing.T)           { runAllScenariosForComponent(t, "kubernetesrookcephoperator", "terraform") }
 func TestKubernetesExternalSecrets_Terraform(t *testing.T)            { runAllScenariosForComponent(t, "kubernetesexternalsecrets", "terraform") }
 func TestKubernetesTekton_Terraform(t *testing.T)                     { runAllScenariosForComponent(t, "kubernetestekton", "terraform") }
+
+// ─── Gateway API Pulumi (854-860) ───────────────────────────────────────────
+// Each kind declares KubernetesGatewayApiCrds as a registry prerequisite, which
+// the harness installs before the scenario applies. Verification asserts the CR
+// exists (controller-free: applies succeed once the CRDs are present).
+
+func TestKubernetesGatewayClass_Pulumi(t *testing.T)    { runAllScenariosForComponent(t, "kubernetesgatewayclass", "pulumi") }
+func TestKubernetesGateway_Pulumi(t *testing.T)         { runAllScenariosForComponent(t, "kubernetesgateway", "pulumi") }
+func TestKubernetesHttpRoute_Pulumi(t *testing.T)       { runAllScenariosForComponent(t, "kuberneteshttproute", "pulumi") }
+func TestKubernetesGrpcRoute_Pulumi(t *testing.T)       { runAllScenariosForComponent(t, "kubernetesgrpcroute", "pulumi") }
+func TestKubernetesTcpRoute_Pulumi(t *testing.T)        { runAllScenariosForComponent(t, "kubernetestcproute", "pulumi") }
+func TestKubernetesTlsRoute_Pulumi(t *testing.T)        { runAllScenariosForComponent(t, "kubernetestlsroute", "pulumi") }
+func TestKubernetesReferenceGrant_Pulumi(t *testing.T)  { runAllScenariosForComponent(t, "kubernetesreferencegrant", "pulumi") }
+
+// ─── Gateway API Terraform (854-860) ────────────────────────────────────────
+
+func TestKubernetesGatewayClass_Terraform(t *testing.T)    { runAllScenariosForComponent(t, "kubernetesgatewayclass", "terraform") }
+func TestKubernetesGateway_Terraform(t *testing.T)         { runAllScenariosForComponent(t, "kubernetesgateway", "terraform") }
+func TestKubernetesHttpRoute_Terraform(t *testing.T)       { runAllScenariosForComponent(t, "kuberneteshttproute", "terraform") }
+func TestKubernetesGrpcRoute_Terraform(t *testing.T)       { runAllScenariosForComponent(t, "kubernetesgrpcroute", "terraform") }
+func TestKubernetesTcpRoute_Terraform(t *testing.T)        { runAllScenariosForComponent(t, "kubernetestcproute", "terraform") }
+func TestKubernetesTlsRoute_Terraform(t *testing.T)        { runAllScenariosForComponent(t, "kubernetestlsroute", "terraform") }
+func TestKubernetesReferenceGrant_Terraform(t *testing.T)  { runAllScenariosForComponent(t, "kubernetesreferencegrant", "terraform") }
 
 // runAllScenariosForComponent discovers and runs all E2E scenarios for a component
 // using the specified IaC engine ("pulumi" or "terraform").

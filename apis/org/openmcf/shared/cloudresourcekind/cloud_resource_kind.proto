@@ -37,8 +37,10 @@ message CloudResourceKindMeta {
   //where container resources visually enclose their child resources.
   bool container_kind = 6;
   //components that must be deployed before this component can function.
-  //order matters: index 0 is deployed first. the E2E framework deploys
-  //these as fixtures and tears them down in reverse order. this is also
+  //order matters: index 0 is deployed first. the E2E framework installs these
+  //(resolved transitively) before the component under test and tears them down
+  //in reverse order; a component may pin a prerequisite's exact config via an
+  //e2e/fixtures/ override, which wins over the registry entry. this is also
   //used by the platform for dependency ordering in infra charts.
   //example: KubernetesPostgres needs KubernetesZalandoPostgresOperator
   //because it creates acid.zalan.do/v1 postgresql CRDs.
@@ -1132,6 +1134,48 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "k8scrt"
   }];
+  KubernetesGatewayClass = 854 [(kind_meta) = {
+    provider: kubernetes
+    version: v1
+    id_prefix: "k8sgwc"
+    prerequisites: [KubernetesGatewayApiCrds]
+  }];
+  KubernetesGateway = 855 [(kind_meta) = {
+    provider: kubernetes
+    version: v1
+    id_prefix: "k8sgw"
+    prerequisites: [KubernetesGatewayApiCrds]
+  }];
+  KubernetesHttpRoute = 856 [(kind_meta) = {
+    provider: kubernetes
+    version: v1
+    id_prefix: "k8shrt"
+    prerequisites: [KubernetesGatewayApiCrds]
+  }];
+  KubernetesGrpcRoute = 857 [(kind_meta) = {
+    provider: kubernetes
+    version: v1
+    id_prefix: "k8sgrt"
+    prerequisites: [KubernetesGatewayApiCrds]
+  }];
+  KubernetesTcpRoute = 858 [(kind_meta) = {
+    provider: kubernetes
+    version: v1
+    id_prefix: "k8strt"
+    prerequisites: [KubernetesGatewayApiCrds]
+  }];
+  KubernetesTlsRoute = 859 [(kind_meta) = {
+    provider: kubernetes
+    version: v1
+    id_prefix: "k8stlsrt"
+    prerequisites: [KubernetesGatewayApiCrds]
+  }];
+  KubernetesReferenceGrant = 860 [(kind_meta) = {
+    provider: kubernetes
+    version: v1
+    id_prefix: "k8srefgrt"
+    prerequisites: [KubernetesGatewayApiCrds]
+  }];
 
   // 1200–1499: DigitalOcean resources
   DigitalOceanAppPlatformService = 1200 [(kind_meta) = {
@@ -1497,8 +1541,8 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "osdr"
   }];
-  reserved 2523, 2524;
-  reserved "OpenStackContainerClusterTemplate", "OpenStackContainerCluster";
+  // 2523, 2524: free primary slots (OpenStack Magnum kinds removed 2026-03); a
+  // future primary OpenStack kind may take them. Companion kinds live at 2525+.
 
   // 2800–2999: Scaleway resources
 

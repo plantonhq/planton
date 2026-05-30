@@ -124,3 +124,30 @@ Monitor cert-manager health via:
 ## Conclusion
 
 KubernetesCertManager provides a clean, single-responsibility abstraction for installing cert-manager. By delegating ClusterIssuer management to the KubernetesClusterIssuer component, it enables independent lifecycle management and cleaner multi-team workflows.
+
+## Composing in Infra Charts
+
+`KubernetesCertManager` is a Layer-0 foundation in the certificate DAG: it installs
+the cert-manager controller on the cluster, and the issuer/certificate resources
+depend on it. Two mechanisms wire the family together (see the Gateway-API project
+decision DD-009, which the cert-manager family also follows):
+
+1. **Data dependencies use `valueFrom`.** Downstream `KubernetesClusterIssuer`
+   references this installation through its `cert_manager_namespace`
+   `StringValueOrRef`, pointing at `status.outputs.namespace`. The platform builds
+   that DAG edge automatically, deploying cert-manager before any issuer.
+2. **Topology dependencies use `metadata.relationships`.** cert-manager runs on the
+   cluster; record that with a `runs_on` relationship when your chart models the
+   cluster as a resource.
+
+```yaml
+metadata:
+  name: "{{ values.env }}-cert-manager"
+  relationships:
+    - kind: KubernetesGatewayApiCrds   # or the cluster kind your chart uses
+      name: "{{ values.env }}-cluster-addons"
+      type: runs_on
+```
+
+Full ingress stack:
+`CertManager -> ClusterIssuer -> Certificate -> (Secret) -> Gateway -> HTTPRoute / GRPCRoute`.

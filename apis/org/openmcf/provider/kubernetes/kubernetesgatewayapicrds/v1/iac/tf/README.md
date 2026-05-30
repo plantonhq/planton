@@ -100,8 +100,7 @@ module "gateway_api_crds" {
 |------|-------------|
 | installed_version | Gateway API version that was installed |
 | installed_channel | Installation channel (standard/experimental) |
-| installed_crds | List of CRD names that were installed |
-| manifest_url | URL of the CRD manifest that was applied |
+| installed_manifest_url | Full URL of the CRD bundle that was applied |
 
 ## Installed CRDs
 
@@ -110,6 +109,8 @@ module "gateway_api_crds" {
 - `gatewayclasses.gateway.networking.k8s.io`
 - `gateways.gateway.networking.k8s.io`
 - `httproutes.gateway.networking.k8s.io`
+- `grpcroutes.gateway.networking.k8s.io`
+- `tlsroutes.gateway.networking.k8s.io`
 - `referencegrants.gateway.networking.k8s.io`
 
 ### Experimental Channel (includes standard)
@@ -117,8 +118,6 @@ module "gateway_api_crds" {
 - All standard CRDs, plus:
 - `tcproutes.gateway.networking.k8s.io`
 - `udproutes.gateway.networking.k8s.io`
-- `tlsroutes.gateway.networking.k8s.io`
-- `grpcroutes.gateway.networking.k8s.io`
 
 ## Troubleshooting
 

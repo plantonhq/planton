@@ -1,0 +1,5 @@
+#name should be updated based on the choice of 'project' name in pulumi backend
+name: planton
+runtime:
+  name: go
+description: Pulumi module that provisions a Kubernetes Gateway API TCPRoute from a KubernetesTcpRoute manifest.

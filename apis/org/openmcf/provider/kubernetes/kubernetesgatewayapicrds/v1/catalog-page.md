@@ -127,7 +127,7 @@ After deployment, the following outputs are available in `status.outputs`:
 |--------|------|-------------|
 | `installedVersion` | `string` | Gateway API version that was installed (e.g., `v1.2.1`, `v1.3.0`) |
 | `installedChannel` | `string` | Installation channel that was used (`standard` or `experimental`) |
-| `installedCrds` | `list(string)` | Fully qualified names of the CRDs that were installed (e.g., `gatewayclasses.gateway.networking.k8s.io`) |
+| `installedManifestUrl` | `string` | Full URL of the Gateway API CRD bundle that was applied (encodes version + channel, e.g., `.../releases/download/v1.5.1/experimental-install.yaml`) |
 
 ## Related Components
 

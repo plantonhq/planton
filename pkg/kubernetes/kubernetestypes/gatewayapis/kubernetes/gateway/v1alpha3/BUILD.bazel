@@ -1,0 +1,20 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "v1alpha3",
+    srcs = [
+        "init.go",
+        "pulumiTypes.go",
+        "tlsroute.go",
+        "tlsrouteList.go",
+        "tlsroutePatch.go",
+    ],
+    importpath = "github.com/plantonhq/openmcf/pkg/kubernetes/kubernetestypes/gatewayapis/kubernetes/gateway/v1alpha3",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_blang_semver//:semver",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/meta/v1:meta",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/utilities",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)

@@ -21,18 +21,18 @@ func (m *module) Version() semver.Version {
 
 func (m *module) Construct(ctx *pulumi.Context, name, typ, urn string) (r pulumi.Resource, err error) {
 	switch typ {
-	case "kubernetes:gateway.networking.k8s.io/v1alpha2:GRPCRoute":
-		r = &GRPCRoute{}
-	case "kubernetes:gateway.networking.k8s.io/v1alpha2:GRPCRouteList":
-		r = &GRPCRouteList{}
-	case "kubernetes:gateway.networking.k8s.io/v1alpha2:GRPCRoutePatch":
-		r = &GRPCRoutePatch{}
-	case "kubernetes:gateway.networking.k8s.io/v1alpha2:ReferenceGrant":
-		r = &ReferenceGrant{}
-	case "kubernetes:gateway.networking.k8s.io/v1alpha2:ReferenceGrantList":
-		r = &ReferenceGrantList{}
-	case "kubernetes:gateway.networking.k8s.io/v1alpha2:ReferenceGrantPatch":
-		r = &ReferenceGrantPatch{}
+	case "kubernetes:gateway.networking.k8s.io/v1alpha2:TCPRoute":
+		r = &TCPRoute{}
+	case "kubernetes:gateway.networking.k8s.io/v1alpha2:TCPRouteList":
+		r = &TCPRouteList{}
+	case "kubernetes:gateway.networking.k8s.io/v1alpha2:TCPRoutePatch":
+		r = &TCPRoutePatch{}
+	case "kubernetes:gateway.networking.k8s.io/v1alpha2:TLSRoute":
+		r = &TLSRoute{}
+	case "kubernetes:gateway.networking.k8s.io/v1alpha2:TLSRouteList":
+		r = &TLSRouteList{}
+	case "kubernetes:gateway.networking.k8s.io/v1alpha2:TLSRoutePatch":
+		r = &TLSRoutePatch{}
 	default:
 		return nil, fmt.Errorf("unknown resource type: %s", typ)
 	}

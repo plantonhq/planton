@@ -750,8 +750,10 @@ func (o GatewayClassSpecPtrOutput) ParametersRef() GatewayClassSpecParametersRef
 // or an implementation-specific custom resource. The resource can be
 // cluster-scoped or namespace-scoped.
 //
-// If the referent cannot be found, the GatewayClass's "InvalidParameters"
-// status condition will be true.
+// If the referent cannot be found, refers to an unsupported kind, or when
+// the data within that resource is malformed, the GatewayClass SHOULD be
+// rejected with the "Accepted" status condition set to "False" and an
+// "InvalidParameters" reason.
 //
 // A Gateway for this GatewayClass may provide its own `parametersRef`. When both are specified,
 // the merging behavior is implementation specific.
@@ -790,8 +792,10 @@ type GatewayClassSpecParametersRefInput interface {
 // or an implementation-specific custom resource. The resource can be
 // cluster-scoped or namespace-scoped.
 //
-// If the referent cannot be found, the GatewayClass's "InvalidParameters"
-// status condition will be true.
+// If the referent cannot be found, refers to an unsupported kind, or when
+// the data within that resource is malformed, the GatewayClass SHOULD be
+// rejected with the "Accepted" status condition set to "False" and an
+// "InvalidParameters" reason.
 //
 // A Gateway for this GatewayClass may provide its own `parametersRef`. When both are specified,
 // the merging behavior is implementation specific.
@@ -872,8 +876,10 @@ func (i *gatewayClassSpecParametersRefPtrType) ToGatewayClassSpecParametersRefPt
 // or an implementation-specific custom resource. The resource can be
 // cluster-scoped or namespace-scoped.
 //
-// If the referent cannot be found, the GatewayClass's "InvalidParameters"
-// status condition will be true.
+// If the referent cannot be found, refers to an unsupported kind, or when
+// the data within that resource is malformed, the GatewayClass SHOULD be
+// rejected with the "Accepted" status condition set to "False" and an
+// "InvalidParameters" reason.
 //
 // A Gateway for this GatewayClass may provide its own `parametersRef`. When both are specified,
 // the merging behavior is implementation specific.
@@ -1000,8 +1006,10 @@ func (o GatewayClassSpecParametersRefPtrOutput) Namespace() pulumi.StringPtrOutp
 // or an implementation-specific custom resource. The resource can be
 // cluster-scoped or namespace-scoped.
 //
-// If the referent cannot be found, the GatewayClass's "InvalidParameters"
-// status condition will be true.
+// If the referent cannot be found, refers to an unsupported kind, or when
+// the data within that resource is malformed, the GatewayClass SHOULD be
+// rejected with the "Accepted" status condition set to "False" and an
+// "InvalidParameters" reason.
 //
 // A Gateway for this GatewayClass may provide its own `parametersRef`. When both are specified,
 // the merging behavior is implementation specific.
@@ -1040,8 +1048,10 @@ type GatewayClassSpecParametersRefPatchInput interface {
 // or an implementation-specific custom resource. The resource can be
 // cluster-scoped or namespace-scoped.
 //
-// If the referent cannot be found, the GatewayClass's "InvalidParameters"
-// status condition will be true.
+// If the referent cannot be found, refers to an unsupported kind, or when
+// the data within that resource is malformed, the GatewayClass SHOULD be
+// rejected with the "Accepted" status condition set to "False" and an
+// "InvalidParameters" reason.
 //
 // A Gateway for this GatewayClass may provide its own `parametersRef`. When both are specified,
 // the merging behavior is implementation specific.
@@ -1122,8 +1132,10 @@ func (i *gatewayClassSpecParametersRefPatchPtrType) ToGatewayClassSpecParameters
 // or an implementation-specific custom resource. The resource can be
 // cluster-scoped or namespace-scoped.
 //
-// If the referent cannot be found, the GatewayClass's "InvalidParameters"
-// status condition will be true.
+// If the referent cannot be found, refers to an unsupported kind, or when
+// the data within that resource is malformed, the GatewayClass SHOULD be
+// rejected with the "Accepted" status condition set to "False" and an
+// "InvalidParameters" reason.
 //
 // A Gateway for this GatewayClass may provide its own `parametersRef`. When both are specified,
 // the merging behavior is implementation specific.
@@ -1455,6 +1467,9 @@ type GatewayClassStatus struct {
 	// Controllers should prefer to publish conditions using values
 	// of GatewayClassConditionType for the type of each Condition.
 	Conditions []GatewayClassStatusConditions `pulumi:"conditions"`
+	// SupportedFeatures is the set of features the GatewayClass support.
+	// It MUST be sorted in ascending alphabetical order by the Name key.
+	SupportedFeatures []GatewayClassStatusSupportedFeatures `pulumi:"supportedFeatures"`
 }
 
 // GatewayClassStatusInput is an input type that accepts GatewayClassStatusArgs and GatewayClassStatusOutput values.
@@ -1479,6 +1494,9 @@ type GatewayClassStatusArgs struct {
 	// Controllers should prefer to publish conditions using values
 	// of GatewayClassConditionType for the type of each Condition.
 	Conditions GatewayClassStatusConditionsArrayInput `pulumi:"conditions"`
+	// SupportedFeatures is the set of features the GatewayClass support.
+	// It MUST be sorted in ascending alphabetical order by the Name key.
+	SupportedFeatures GatewayClassStatusSupportedFeaturesArrayInput `pulumi:"supportedFeatures"`
 }
 
 func (GatewayClassStatusArgs) ElementType() reflect.Type {
@@ -1571,6 +1589,12 @@ func (o GatewayClassStatusOutput) Conditions() GatewayClassStatusConditionsArray
 	return o.ApplyT(func(v GatewayClassStatus) []GatewayClassStatusConditions { return v.Conditions }).(GatewayClassStatusConditionsArrayOutput)
 }
 
+// SupportedFeatures is the set of features the GatewayClass support.
+// It MUST be sorted in ascending alphabetical order by the Name key.
+func (o GatewayClassStatusOutput) SupportedFeatures() GatewayClassStatusSupportedFeaturesArrayOutput {
+	return o.ApplyT(func(v GatewayClassStatus) []GatewayClassStatusSupportedFeatures { return v.SupportedFeatures }).(GatewayClassStatusSupportedFeaturesArrayOutput)
+}
+
 type GatewayClassStatusPtrOutput struct{ *pulumi.OutputState }
 
 func (GatewayClassStatusPtrOutput) ElementType() reflect.Type {
@@ -1609,22 +1633,18 @@ func (o GatewayClassStatusPtrOutput) Conditions() GatewayClassStatusConditionsAr
 	}).(GatewayClassStatusConditionsArrayOutput)
 }
 
+// SupportedFeatures is the set of features the GatewayClass support.
+// It MUST be sorted in ascending alphabetical order by the Name key.
+func (o GatewayClassStatusPtrOutput) SupportedFeatures() GatewayClassStatusSupportedFeaturesArrayOutput {
+	return o.ApplyT(func(v *GatewayClassStatus) []GatewayClassStatusSupportedFeatures {
+		if v == nil {
+			return nil
+		}
+		return v.SupportedFeatures
+	}).(GatewayClassStatusSupportedFeaturesArrayOutput)
+}
+
 // Condition contains details for one aspect of the current state of this API Resource.
-// ---
-// This struct is intended for direct use as an array at the field path .status.conditions.  For example,
-//
-//	type FooStatus struct{
-//	    // Represents the observations of a foo's current state.
-//	    // Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
-//	    // +patchMergeKey=type
-//	    // +patchStrategy=merge
-//	    // +listType=map
-//	    // +listMapKey=type
-//	    Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"`
-//
-//
-//	    // other fields
-//	}
 type GatewayClassStatusConditions struct {
 	// lastTransitionTime is the last time the condition transitioned from one status to another.
 	// This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
@@ -1645,10 +1665,6 @@ type GatewayClassStatusConditions struct {
 	// status of the condition, one of True, False, Unknown.
 	Status *string `pulumi:"status"`
 	// type of condition in CamelCase or in foo.example.com/CamelCase.
-	// ---
-	// Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be
-	// useful (see .node.status.conditions), the ability to deconflict is important.
-	// The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
 	Type *string `pulumi:"type"`
 }
 
@@ -1664,21 +1680,6 @@ type GatewayClassStatusConditionsInput interface {
 }
 
 // Condition contains details for one aspect of the current state of this API Resource.
-// ---
-// This struct is intended for direct use as an array at the field path .status.conditions.  For example,
-//
-//	type FooStatus struct{
-//	    // Represents the observations of a foo's current state.
-//	    // Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
-//	    // +patchMergeKey=type
-//	    // +patchStrategy=merge
-//	    // +listType=map
-//	    // +listMapKey=type
-//	    Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"`
-//
-//
-//	    // other fields
-//	}
 type GatewayClassStatusConditionsArgs struct {
 	// lastTransitionTime is the last time the condition transitioned from one status to another.
 	// This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
@@ -1699,10 +1700,6 @@ type GatewayClassStatusConditionsArgs struct {
 	// status of the condition, one of True, False, Unknown.
 	Status pulumi.StringPtrInput `pulumi:"status"`
 	// type of condition in CamelCase or in foo.example.com/CamelCase.
-	// ---
-	// Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be
-	// useful (see .node.status.conditions), the ability to deconflict is important.
-	// The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
 	Type pulumi.StringPtrInput `pulumi:"type"`
 }
 
@@ -1744,21 +1741,6 @@ func (i GatewayClassStatusConditionsArray) ToGatewayClassStatusConditionsArrayOu
 }
 
 // Condition contains details for one aspect of the current state of this API Resource.
-// ---
-// This struct is intended for direct use as an array at the field path .status.conditions.  For example,
-//
-//	type FooStatus struct{
-//	    // Represents the observations of a foo's current state.
-//	    // Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
-//	    // +patchMergeKey=type
-//	    // +patchStrategy=merge
-//	    // +listType=map
-//	    // +listMapKey=type
-//	    Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"`
-//
-//
-//	    // other fields
-//	}
 type GatewayClassStatusConditionsOutput struct{ *pulumi.OutputState }
 
 func (GatewayClassStatusConditionsOutput) ElementType() reflect.Type {
@@ -1807,10 +1789,6 @@ func (o GatewayClassStatusConditionsOutput) Status() pulumi.StringPtrOutput {
 }
 
 // type of condition in CamelCase or in foo.example.com/CamelCase.
-// ---
-// Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be
-// useful (see .node.status.conditions), the ability to deconflict is important.
-// The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
 func (o GatewayClassStatusConditionsOutput) Type() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v GatewayClassStatusConditions) *string { return v.Type }).(pulumi.StringPtrOutput)
 }
@@ -1836,21 +1814,6 @@ func (o GatewayClassStatusConditionsArrayOutput) Index(i pulumi.IntInput) Gatewa
 }
 
 // Condition contains details for one aspect of the current state of this API Resource.
-// ---
-// This struct is intended for direct use as an array at the field path .status.conditions.  For example,
-//
-//	type FooStatus struct{
-//	    // Represents the observations of a foo's current state.
-//	    // Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
-//	    // +patchMergeKey=type
-//	    // +patchStrategy=merge
-//	    // +listType=map
-//	    // +listMapKey=type
-//	    Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"`
-//
-//
-//	    // other fields
-//	}
 type GatewayClassStatusConditionsPatch struct {
 	// lastTransitionTime is the last time the condition transitioned from one status to another.
 	// This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
@@ -1871,10 +1834,6 @@ type GatewayClassStatusConditionsPatch struct {
 	// status of the condition, one of True, False, Unknown.
 	Status *string `pulumi:"status"`
 	// type of condition in CamelCase or in foo.example.com/CamelCase.
-	// ---
-	// Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be
-	// useful (see .node.status.conditions), the ability to deconflict is important.
-	// The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
 	Type *string `pulumi:"type"`
 }
 
@@ -1890,21 +1849,6 @@ type GatewayClassStatusConditionsPatchInput interface {
 }
 
 // Condition contains details for one aspect of the current state of this API Resource.
-// ---
-// This struct is intended for direct use as an array at the field path .status.conditions.  For example,
-//
-//	type FooStatus struct{
-//	    // Represents the observations of a foo's current state.
-//	    // Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
-//	    // +patchMergeKey=type
-//	    // +patchStrategy=merge
-//	    // +listType=map
-//	    // +listMapKey=type
-//	    Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"`
-//
-//
-//	    // other fields
-//	}
 type GatewayClassStatusConditionsPatchArgs struct {
 	// lastTransitionTime is the last time the condition transitioned from one status to another.
 	// This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
@@ -1925,10 +1869,6 @@ type GatewayClassStatusConditionsPatchArgs struct {
 	// status of the condition, one of True, False, Unknown.
 	Status pulumi.StringPtrInput `pulumi:"status"`
 	// type of condition in CamelCase or in foo.example.com/CamelCase.
-	// ---
-	// Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be
-	// useful (see .node.status.conditions), the ability to deconflict is important.
-	// The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
 	Type pulumi.StringPtrInput `pulumi:"type"`
 }
 
@@ -1970,21 +1910,6 @@ func (i GatewayClassStatusConditionsPatchArray) ToGatewayClassStatusConditionsPa
 }
 
 // Condition contains details for one aspect of the current state of this API Resource.
-// ---
-// This struct is intended for direct use as an array at the field path .status.conditions.  For example,
-//
-//	type FooStatus struct{
-//	    // Represents the observations of a foo's current state.
-//	    // Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
-//	    // +patchMergeKey=type
-//	    // +patchStrategy=merge
-//	    // +listType=map
-//	    // +listMapKey=type
-//	    Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"`
-//
-//
-//	    // other fields
-//	}
 type GatewayClassStatusConditionsPatchOutput struct{ *pulumi.OutputState }
 
 func (GatewayClassStatusConditionsPatchOutput) ElementType() reflect.Type {
@@ -2033,10 +1958,6 @@ func (o GatewayClassStatusConditionsPatchOutput) Status() pulumi.StringPtrOutput
 }
 
 // type of condition in CamelCase or in foo.example.com/CamelCase.
-// ---
-// Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be
-// useful (see .node.status.conditions), the ability to deconflict is important.
-// The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
 func (o GatewayClassStatusConditionsPatchOutput) Type() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v GatewayClassStatusConditionsPatch) *string { return v.Type }).(pulumi.StringPtrOutput)
 }
@@ -2072,6 +1993,9 @@ type GatewayClassStatusPatch struct {
 	// Controllers should prefer to publish conditions using values
 	// of GatewayClassConditionType for the type of each Condition.
 	Conditions []GatewayClassStatusConditionsPatch `pulumi:"conditions"`
+	// SupportedFeatures is the set of features the GatewayClass support.
+	// It MUST be sorted in ascending alphabetical order by the Name key.
+	SupportedFeatures []GatewayClassStatusSupportedFeaturesPatch `pulumi:"supportedFeatures"`
 }
 
 // GatewayClassStatusPatchInput is an input type that accepts GatewayClassStatusPatchArgs and GatewayClassStatusPatchOutput values.
@@ -2096,6 +2020,9 @@ type GatewayClassStatusPatchArgs struct {
 	// Controllers should prefer to publish conditions using values
 	// of GatewayClassConditionType for the type of each Condition.
 	Conditions GatewayClassStatusConditionsPatchArrayInput `pulumi:"conditions"`
+	// SupportedFeatures is the set of features the GatewayClass support.
+	// It MUST be sorted in ascending alphabetical order by the Name key.
+	SupportedFeatures GatewayClassStatusSupportedFeaturesPatchArrayInput `pulumi:"supportedFeatures"`
 }
 
 func (GatewayClassStatusPatchArgs) ElementType() reflect.Type {
@@ -2188,6 +2115,12 @@ func (o GatewayClassStatusPatchOutput) Conditions() GatewayClassStatusConditions
 	return o.ApplyT(func(v GatewayClassStatusPatch) []GatewayClassStatusConditionsPatch { return v.Conditions }).(GatewayClassStatusConditionsPatchArrayOutput)
 }
 
+// SupportedFeatures is the set of features the GatewayClass support.
+// It MUST be sorted in ascending alphabetical order by the Name key.
+func (o GatewayClassStatusPatchOutput) SupportedFeatures() GatewayClassStatusSupportedFeaturesPatchArrayOutput {
+	return o.ApplyT(func(v GatewayClassStatusPatch) []GatewayClassStatusSupportedFeaturesPatch { return v.SupportedFeatures }).(GatewayClassStatusSupportedFeaturesPatchArrayOutput)
+}
+
 type GatewayClassStatusPatchPtrOutput struct{ *pulumi.OutputState }
 
 func (GatewayClassStatusPatchPtrOutput) ElementType() reflect.Type {
@@ -2224,6 +2157,217 @@ func (o GatewayClassStatusPatchPtrOutput) Conditions() GatewayClassStatusConditi
 		}
 		return v.Conditions
 	}).(GatewayClassStatusConditionsPatchArrayOutput)
+}
+
+// SupportedFeatures is the set of features the GatewayClass support.
+// It MUST be sorted in ascending alphabetical order by the Name key.
+func (o GatewayClassStatusPatchPtrOutput) SupportedFeatures() GatewayClassStatusSupportedFeaturesPatchArrayOutput {
+	return o.ApplyT(func(v *GatewayClassStatusPatch) []GatewayClassStatusSupportedFeaturesPatch {
+		if v == nil {
+			return nil
+		}
+		return v.SupportedFeatures
+	}).(GatewayClassStatusSupportedFeaturesPatchArrayOutput)
+}
+
+type GatewayClassStatusSupportedFeatures struct {
+	// FeatureName is used to describe distinct features that are covered by
+	// conformance tests.
+	Name *string `pulumi:"name"`
+}
+
+// GatewayClassStatusSupportedFeaturesInput is an input type that accepts GatewayClassStatusSupportedFeaturesArgs and GatewayClassStatusSupportedFeaturesOutput values.
+// You can construct a concrete instance of `GatewayClassStatusSupportedFeaturesInput` via:
+//
+//	GatewayClassStatusSupportedFeaturesArgs{...}
+type GatewayClassStatusSupportedFeaturesInput interface {
+	pulumi.Input
+
+	ToGatewayClassStatusSupportedFeaturesOutput() GatewayClassStatusSupportedFeaturesOutput
+	ToGatewayClassStatusSupportedFeaturesOutputWithContext(context.Context) GatewayClassStatusSupportedFeaturesOutput
+}
+
+type GatewayClassStatusSupportedFeaturesArgs struct {
+	// FeatureName is used to describe distinct features that are covered by
+	// conformance tests.
+	Name pulumi.StringPtrInput `pulumi:"name"`
+}
+
+func (GatewayClassStatusSupportedFeaturesArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewayClassStatusSupportedFeatures)(nil)).Elem()
+}
+
+func (i GatewayClassStatusSupportedFeaturesArgs) ToGatewayClassStatusSupportedFeaturesOutput() GatewayClassStatusSupportedFeaturesOutput {
+	return i.ToGatewayClassStatusSupportedFeaturesOutputWithContext(context.Background())
+}
+
+func (i GatewayClassStatusSupportedFeaturesArgs) ToGatewayClassStatusSupportedFeaturesOutputWithContext(ctx context.Context) GatewayClassStatusSupportedFeaturesOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewayClassStatusSupportedFeaturesOutput)
+}
+
+// GatewayClassStatusSupportedFeaturesArrayInput is an input type that accepts GatewayClassStatusSupportedFeaturesArray and GatewayClassStatusSupportedFeaturesArrayOutput values.
+// You can construct a concrete instance of `GatewayClassStatusSupportedFeaturesArrayInput` via:
+//
+//	GatewayClassStatusSupportedFeaturesArray{ GatewayClassStatusSupportedFeaturesArgs{...} }
+type GatewayClassStatusSupportedFeaturesArrayInput interface {
+	pulumi.Input
+
+	ToGatewayClassStatusSupportedFeaturesArrayOutput() GatewayClassStatusSupportedFeaturesArrayOutput
+	ToGatewayClassStatusSupportedFeaturesArrayOutputWithContext(context.Context) GatewayClassStatusSupportedFeaturesArrayOutput
+}
+
+type GatewayClassStatusSupportedFeaturesArray []GatewayClassStatusSupportedFeaturesInput
+
+func (GatewayClassStatusSupportedFeaturesArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]GatewayClassStatusSupportedFeatures)(nil)).Elem()
+}
+
+func (i GatewayClassStatusSupportedFeaturesArray) ToGatewayClassStatusSupportedFeaturesArrayOutput() GatewayClassStatusSupportedFeaturesArrayOutput {
+	return i.ToGatewayClassStatusSupportedFeaturesArrayOutputWithContext(context.Background())
+}
+
+func (i GatewayClassStatusSupportedFeaturesArray) ToGatewayClassStatusSupportedFeaturesArrayOutputWithContext(ctx context.Context) GatewayClassStatusSupportedFeaturesArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewayClassStatusSupportedFeaturesArrayOutput)
+}
+
+type GatewayClassStatusSupportedFeaturesOutput struct{ *pulumi.OutputState }
+
+func (GatewayClassStatusSupportedFeaturesOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewayClassStatusSupportedFeatures)(nil)).Elem()
+}
+
+func (o GatewayClassStatusSupportedFeaturesOutput) ToGatewayClassStatusSupportedFeaturesOutput() GatewayClassStatusSupportedFeaturesOutput {
+	return o
+}
+
+func (o GatewayClassStatusSupportedFeaturesOutput) ToGatewayClassStatusSupportedFeaturesOutputWithContext(ctx context.Context) GatewayClassStatusSupportedFeaturesOutput {
+	return o
+}
+
+// FeatureName is used to describe distinct features that are covered by
+// conformance tests.
+func (o GatewayClassStatusSupportedFeaturesOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewayClassStatusSupportedFeatures) *string { return v.Name }).(pulumi.StringPtrOutput)
+}
+
+type GatewayClassStatusSupportedFeaturesArrayOutput struct{ *pulumi.OutputState }
+
+func (GatewayClassStatusSupportedFeaturesArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]GatewayClassStatusSupportedFeatures)(nil)).Elem()
+}
+
+func (o GatewayClassStatusSupportedFeaturesArrayOutput) ToGatewayClassStatusSupportedFeaturesArrayOutput() GatewayClassStatusSupportedFeaturesArrayOutput {
+	return o
+}
+
+func (o GatewayClassStatusSupportedFeaturesArrayOutput) ToGatewayClassStatusSupportedFeaturesArrayOutputWithContext(ctx context.Context) GatewayClassStatusSupportedFeaturesArrayOutput {
+	return o
+}
+
+func (o GatewayClassStatusSupportedFeaturesArrayOutput) Index(i pulumi.IntInput) GatewayClassStatusSupportedFeaturesOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) GatewayClassStatusSupportedFeatures {
+		return vs[0].([]GatewayClassStatusSupportedFeatures)[vs[1].(int)]
+	}).(GatewayClassStatusSupportedFeaturesOutput)
+}
+
+type GatewayClassStatusSupportedFeaturesPatch struct {
+	// FeatureName is used to describe distinct features that are covered by
+	// conformance tests.
+	Name *string `pulumi:"name"`
+}
+
+// GatewayClassStatusSupportedFeaturesPatchInput is an input type that accepts GatewayClassStatusSupportedFeaturesPatchArgs and GatewayClassStatusSupportedFeaturesPatchOutput values.
+// You can construct a concrete instance of `GatewayClassStatusSupportedFeaturesPatchInput` via:
+//
+//	GatewayClassStatusSupportedFeaturesPatchArgs{...}
+type GatewayClassStatusSupportedFeaturesPatchInput interface {
+	pulumi.Input
+
+	ToGatewayClassStatusSupportedFeaturesPatchOutput() GatewayClassStatusSupportedFeaturesPatchOutput
+	ToGatewayClassStatusSupportedFeaturesPatchOutputWithContext(context.Context) GatewayClassStatusSupportedFeaturesPatchOutput
+}
+
+type GatewayClassStatusSupportedFeaturesPatchArgs struct {
+	// FeatureName is used to describe distinct features that are covered by
+	// conformance tests.
+	Name pulumi.StringPtrInput `pulumi:"name"`
+}
+
+func (GatewayClassStatusSupportedFeaturesPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewayClassStatusSupportedFeaturesPatch)(nil)).Elem()
+}
+
+func (i GatewayClassStatusSupportedFeaturesPatchArgs) ToGatewayClassStatusSupportedFeaturesPatchOutput() GatewayClassStatusSupportedFeaturesPatchOutput {
+	return i.ToGatewayClassStatusSupportedFeaturesPatchOutputWithContext(context.Background())
+}
+
+func (i GatewayClassStatusSupportedFeaturesPatchArgs) ToGatewayClassStatusSupportedFeaturesPatchOutputWithContext(ctx context.Context) GatewayClassStatusSupportedFeaturesPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewayClassStatusSupportedFeaturesPatchOutput)
+}
+
+// GatewayClassStatusSupportedFeaturesPatchArrayInput is an input type that accepts GatewayClassStatusSupportedFeaturesPatchArray and GatewayClassStatusSupportedFeaturesPatchArrayOutput values.
+// You can construct a concrete instance of `GatewayClassStatusSupportedFeaturesPatchArrayInput` via:
+//
+//	GatewayClassStatusSupportedFeaturesPatchArray{ GatewayClassStatusSupportedFeaturesPatchArgs{...} }
+type GatewayClassStatusSupportedFeaturesPatchArrayInput interface {
+	pulumi.Input
+
+	ToGatewayClassStatusSupportedFeaturesPatchArrayOutput() GatewayClassStatusSupportedFeaturesPatchArrayOutput
+	ToGatewayClassStatusSupportedFeaturesPatchArrayOutputWithContext(context.Context) GatewayClassStatusSupportedFeaturesPatchArrayOutput
+}
+
+type GatewayClassStatusSupportedFeaturesPatchArray []GatewayClassStatusSupportedFeaturesPatchInput
+
+func (GatewayClassStatusSupportedFeaturesPatchArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]GatewayClassStatusSupportedFeaturesPatch)(nil)).Elem()
+}
+
+func (i GatewayClassStatusSupportedFeaturesPatchArray) ToGatewayClassStatusSupportedFeaturesPatchArrayOutput() GatewayClassStatusSupportedFeaturesPatchArrayOutput {
+	return i.ToGatewayClassStatusSupportedFeaturesPatchArrayOutputWithContext(context.Background())
+}
+
+func (i GatewayClassStatusSupportedFeaturesPatchArray) ToGatewayClassStatusSupportedFeaturesPatchArrayOutputWithContext(ctx context.Context) GatewayClassStatusSupportedFeaturesPatchArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewayClassStatusSupportedFeaturesPatchArrayOutput)
+}
+
+type GatewayClassStatusSupportedFeaturesPatchOutput struct{ *pulumi.OutputState }
+
+func (GatewayClassStatusSupportedFeaturesPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewayClassStatusSupportedFeaturesPatch)(nil)).Elem()
+}
+
+func (o GatewayClassStatusSupportedFeaturesPatchOutput) ToGatewayClassStatusSupportedFeaturesPatchOutput() GatewayClassStatusSupportedFeaturesPatchOutput {
+	return o
+}
+
+func (o GatewayClassStatusSupportedFeaturesPatchOutput) ToGatewayClassStatusSupportedFeaturesPatchOutputWithContext(ctx context.Context) GatewayClassStatusSupportedFeaturesPatchOutput {
+	return o
+}
+
+// FeatureName is used to describe distinct features that are covered by
+// conformance tests.
+func (o GatewayClassStatusSupportedFeaturesPatchOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewayClassStatusSupportedFeaturesPatch) *string { return v.Name }).(pulumi.StringPtrOutput)
+}
+
+type GatewayClassStatusSupportedFeaturesPatchArrayOutput struct{ *pulumi.OutputState }
+
+func (GatewayClassStatusSupportedFeaturesPatchArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]GatewayClassStatusSupportedFeaturesPatch)(nil)).Elem()
+}
+
+func (o GatewayClassStatusSupportedFeaturesPatchArrayOutput) ToGatewayClassStatusSupportedFeaturesPatchArrayOutput() GatewayClassStatusSupportedFeaturesPatchArrayOutput {
+	return o
+}
+
+func (o GatewayClassStatusSupportedFeaturesPatchArrayOutput) ToGatewayClassStatusSupportedFeaturesPatchArrayOutputWithContext(ctx context.Context) GatewayClassStatusSupportedFeaturesPatchArrayOutput {
+	return o
+}
+
+func (o GatewayClassStatusSupportedFeaturesPatchArrayOutput) Index(i pulumi.IntInput) GatewayClassStatusSupportedFeaturesPatchOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) GatewayClassStatusSupportedFeaturesPatch {
+		return vs[0].([]GatewayClassStatusSupportedFeaturesPatch)[vs[1].(int)]
+	}).(GatewayClassStatusSupportedFeaturesPatchOutput)
 }
 
 // GatewayList is a list of Gateway
@@ -2401,7 +2545,7 @@ type GatewaySpec struct {
 	// Addresses requested for this Gateway. This is optional and behavior can
 	// depend on the implementation. If a value is set in the spec and the
 	// requested address is invalid or unavailable, the implementation MUST
-	// indicate this in the associated entry in GatewayStatus.Addresses.
+	// indicate this in an associated entry in GatewayStatus.Conditions.
 	//
 	// The Addresses field represents a request for the address(es) on the
 	// "outside of the Gateway", that traffic bound for this Gateway will use.
@@ -2418,13 +2562,17 @@ type GatewaySpec struct {
 	// GatewayStatus.Addresses.
 	//
 	// Support: Extended
-	Addresses []GatewaySpecAddresses `pulumi:"addresses"`
+	Addresses        []GatewaySpecAddresses       `pulumi:"addresses"`
+	AllowedListeners *GatewaySpecAllowedListeners `pulumi:"allowedListeners"`
 	// GatewayClassName used for this Gateway. This is the name of a
 	// GatewayClass resource.
-	GatewayClassName *string `pulumi:"gatewayClassName"`
+	GatewayClassName *string                    `pulumi:"gatewayClassName"`
+	Infrastructure   *GatewaySpecInfrastructure `pulumi:"infrastructure"`
 	// Listeners associated with this Gateway. Listeners define
 	// logical endpoints that are bound on this Gateway's addresses.
 	// At least one Listener MUST be specified.
+	//
+	// ## Distinct Listeners
 	//
 	// Each Listener in a set of Listeners (for example, in a single Gateway)
 	// MUST be _distinct_, in that a traffic flow MUST be able to be assigned to
@@ -2437,55 +2585,76 @@ type GatewaySpec struct {
 	// combination of Port, Protocol, and, if supported by the protocol, Hostname.
 	//
 	// Some combinations of port, protocol, and TLS settings are considered
-	// Core support and MUST be supported by implementations based on their
-	// targeted conformance profile:
+	// Core support and MUST be supported by implementations based on the objects
+	// they support:
 	//
-	// HTTP Profile
+	// HTTPRoute
 	//
 	// 1. HTTPRoute, Port: 80, Protocol: HTTP
 	// 2. HTTPRoute, Port: 443, Protocol: HTTPS, TLS Mode: Terminate, TLS keypair provided
 	//
-	// TLS Profile
+	// TLSRoute
 	//
 	// 1. TLSRoute, Port: 443, Protocol: TLS, TLS Mode: Passthrough
 	//
 	// "Distinct" Listeners have the following property:
 	//
-	// The implementation can match inbound requests to a single distinct
-	// Listener. When multiple Listeners share values for fields (for
+	// **The implementation can match inbound requests to a single distinct
+	// Listener**.
+	//
+	// When multiple Listeners share values for fields (for
 	// example, two Listeners with the same Port value), the implementation
 	// can match requests to only one of the Listeners using other
 	// Listener fields.
 	//
-	// For example, the following Listener scenarios are distinct:
+	// When multiple listeners have the same value for the Protocol field, then
+	// each of the Listeners with matching Protocol values MUST have different
+	// values for other fields.
 	//
-	// 1. Multiple Listeners with the same Port that all use the "HTTP"
-	//    Protocol that all have unique Hostname values.
-	// 2. Multiple Listeners with the same Port that use either the "HTTPS" or
-	//    "TLS" Protocol that all have unique Hostname values.
-	// 3. A mixture of "TCP" and "UDP" Protocol Listeners, where no Listener
-	//    with the same Protocol has the same Port value.
+	// The set of fields that MUST be different for a Listener differs per protocol.
+	// The following rules define the rules for what fields MUST be considered for
+	// Listeners to be distinct with each protocol currently defined in the
+	// Gateway API spec.
 	//
-	// Some fields in the Listener struct have possible values that affect
-	// whether the Listener is distinct. Hostname is particularly relevant
-	// for HTTP or HTTPS protocols.
+	// The set of listeners that all share a protocol value MUST have _different_
+	// values for _at least one_ of these fields to be distinct:
 	//
-	// When using the Hostname value to select between same-Port, same-Protocol
-	// Listeners, the Hostname value must be different on each Listener for the
-	// Listener to be distinct.
+	// * **HTTP, HTTPS, TLS**: Port, Hostname
+	// * **TCP, UDP**: Port
 	//
-	// When the Listeners are distinct based on Hostname, inbound request
+	// One **very** important rule to call out involves what happens when an
+	// implementation:
+	//
+	// * Supports TCP protocol Listeners, as well as HTTP, HTTPS, or TLS protocol
+	//   Listeners, and
+	// * sees HTTP, HTTPS, or TLS protocols with the same `port` as one with TCP
+	//   Protocol.
+	//
+	// In this case all the Listeners that share a port with the
+	// TCP Listener are not distinct and so MUST NOT be accepted.
+	//
+	// If an implementation does not support TCP Protocol Listeners, then the
+	// previous rule does not apply, and the TCP Listeners SHOULD NOT be
+	// accepted.
+	//
+	// Note that the `tls` field is not used for determining if a listener is distinct, because
+	// Listeners that _only_ differ on TLS config will still conflict in all cases.
+	//
+	// ### Listeners that are distinct only by Hostname
+	//
+	// When the Listeners are distinct based only on Hostname, inbound request
 	// hostnames MUST match from the most specific to least specific Hostname
 	// values to choose the correct Listener and its associated set of Routes.
 	//
-	// Exact matches must be processed before wildcard matches, and wildcard
-	// matches must be processed before fallback (empty Hostname value)
+	// Exact matches MUST be processed before wildcard matches, and wildcard
+	// matches MUST be processed before fallback (empty Hostname value)
 	// matches. For example, `"foo.example.com"` takes precedence over
 	// `"*.example.com"`, and `"*.example.com"` takes precedence over `""`.
 	//
 	// Additionally, if there are multiple wildcard entries, more specific
 	// wildcard entries must be processed before less specific wildcard entries.
 	// For example, `"*.foo.example.com"` takes precedence over `"*.example.com"`.
+	//
 	// The precise definition here is that the higher the number of dots in the
 	// hostname to the right of the wildcard character, the higher the precedence.
 	//
@@ -2493,18 +2662,26 @@ type GatewaySpec struct {
 	// the left, however, so `"*.example.com"` will match both
 	// `"foo.bar.example.com"` _and_ `"bar.example.com"`.
 	//
+	// ## Handling indistinct Listeners
+	//
 	// If a set of Listeners contains Listeners that are not distinct, then those
-	// Listeners are Conflicted, and the implementation MUST set the "Conflicted"
+	// Listeners are _Conflicted_, and the implementation MUST set the "Conflicted"
 	// condition in the Listener Status to "True".
+	//
+	// The words "indistinct" and "conflicted" are considered equivalent for the
+	// purpose of this documentation.
 	//
 	// Implementations MAY choose to accept a Gateway with some Conflicted
 	// Listeners only if they only accept the partial Listener set that contains
-	// no Conflicted Listeners. To put this another way, implementations may
-	// accept a partial Listener set only if they throw out *all* the conflicting
-	// Listeners. No picking one of the conflicting listeners as the winner.
-	// This also means that the Gateway must have at least one non-conflicting
-	// Listener in this case, otherwise it violates the requirement that at
-	// least one Listener must be present.
+	// no Conflicted Listeners.
+	//
+	// Specifically, an implementation MAY accept a partial Listener set subject to
+	// the following rules:
+	//
+	// * The implementation MUST NOT pick one conflicting Listener as the winner.
+	//   ALL indistinct Listeners must not be accepted for processing.
+	// * At least one distinct Listener MUST be present, or else the Gateway effectively
+	//   contains _no_ Listeners, and must be rejected from processing as a whole.
 	//
 	// The implementation MUST set a "ListenersNotValid" condition on the
 	// Gateway Status when the Gateway contains Conflicted Listeners whether or
@@ -2513,7 +2690,25 @@ type GatewaySpec struct {
 	// Accepted. Additionally, the Listener status for those listeners SHOULD
 	// indicate which Listeners are conflicted and not Accepted.
 	//
-	// A Gateway's Listeners are considered "compatible" if:
+	// ## General Listener behavior
+	//
+	// Note that, for all distinct Listeners, requests SHOULD match at most one Listener.
+	// For example, if Listeners are defined for "foo.example.com" and "*.example.com", a
+	// request to "foo.example.com" SHOULD only be routed using routes attached
+	// to the "foo.example.com" Listener (and not the "*.example.com" Listener).
+	//
+	// This concept is known as "Listener Isolation", and it is an Extended feature
+	// of Gateway API. Implementations that do not support Listener Isolation MUST
+	// clearly document this, and MUST NOT claim support for the
+	// `GatewayHTTPListenerIsolation` feature.
+	//
+	// Implementations that _do_ support Listener Isolation SHOULD claim support
+	// for the Extended `GatewayHTTPListenerIsolation` feature and pass the associated
+	// conformance tests.
+	//
+	// ## Compatible Listeners
+	//
+	// A Gateway's Listeners are considered _compatible_ if:
 	//
 	// 1. They are distinct.
 	// 2. The implementation can serve them in compliance with the Addresses
@@ -2528,18 +2723,14 @@ type GatewaySpec struct {
 	// on the same address, or cannot mix HTTPS and generic TLS listens on the same port
 	// would not consider those cases compatible, even though they are distinct.
 	//
-	// Note that requests SHOULD match at most one Listener. For example, if
-	// Listeners are defined for "foo.example.com" and "*.example.com", a
-	// request to "foo.example.com" SHOULD only be routed using routes attached
-	// to the "foo.example.com" Listener (and not the "*.example.com" Listener).
-	// This concept is known as "Listener Isolation". Implementations that do
-	// not support Listener Isolation MUST clearly document this.
-	//
 	// Implementations MAY merge separate Gateways onto a single set of
 	// Addresses if all Listeners across all Gateways are compatible.
 	//
+	// In a future release the MinItems=1 requirement MAY be dropped.
+	//
 	// Support: Core
 	Listeners []GatewaySpecListeners `pulumi:"listeners"`
+	Tls       *GatewaySpecTls        `pulumi:"tls"`
 }
 
 // GatewaySpecInput is an input type that accepts GatewaySpecArgs and GatewaySpecOutput values.
@@ -2558,7 +2749,7 @@ type GatewaySpecArgs struct {
 	// Addresses requested for this Gateway. This is optional and behavior can
 	// depend on the implementation. If a value is set in the spec and the
 	// requested address is invalid or unavailable, the implementation MUST
-	// indicate this in the associated entry in GatewayStatus.Addresses.
+	// indicate this in an associated entry in GatewayStatus.Conditions.
 	//
 	// The Addresses field represents a request for the address(es) on the
 	// "outside of the Gateway", that traffic bound for this Gateway will use.
@@ -2575,13 +2766,17 @@ type GatewaySpecArgs struct {
 	// GatewayStatus.Addresses.
 	//
 	// Support: Extended
-	Addresses GatewaySpecAddressesArrayInput `pulumi:"addresses"`
+	Addresses        GatewaySpecAddressesArrayInput      `pulumi:"addresses"`
+	AllowedListeners GatewaySpecAllowedListenersPtrInput `pulumi:"allowedListeners"`
 	// GatewayClassName used for this Gateway. This is the name of a
 	// GatewayClass resource.
-	GatewayClassName pulumi.StringPtrInput `pulumi:"gatewayClassName"`
+	GatewayClassName pulumi.StringPtrInput             `pulumi:"gatewayClassName"`
+	Infrastructure   GatewaySpecInfrastructurePtrInput `pulumi:"infrastructure"`
 	// Listeners associated with this Gateway. Listeners define
 	// logical endpoints that are bound on this Gateway's addresses.
 	// At least one Listener MUST be specified.
+	//
+	// ## Distinct Listeners
 	//
 	// Each Listener in a set of Listeners (for example, in a single Gateway)
 	// MUST be _distinct_, in that a traffic flow MUST be able to be assigned to
@@ -2594,55 +2789,76 @@ type GatewaySpecArgs struct {
 	// combination of Port, Protocol, and, if supported by the protocol, Hostname.
 	//
 	// Some combinations of port, protocol, and TLS settings are considered
-	// Core support and MUST be supported by implementations based on their
-	// targeted conformance profile:
+	// Core support and MUST be supported by implementations based on the objects
+	// they support:
 	//
-	// HTTP Profile
+	// HTTPRoute
 	//
 	// 1. HTTPRoute, Port: 80, Protocol: HTTP
 	// 2. HTTPRoute, Port: 443, Protocol: HTTPS, TLS Mode: Terminate, TLS keypair provided
 	//
-	// TLS Profile
+	// TLSRoute
 	//
 	// 1. TLSRoute, Port: 443, Protocol: TLS, TLS Mode: Passthrough
 	//
 	// "Distinct" Listeners have the following property:
 	//
-	// The implementation can match inbound requests to a single distinct
-	// Listener. When multiple Listeners share values for fields (for
+	// **The implementation can match inbound requests to a single distinct
+	// Listener**.
+	//
+	// When multiple Listeners share values for fields (for
 	// example, two Listeners with the same Port value), the implementation
 	// can match requests to only one of the Listeners using other
 	// Listener fields.
 	//
-	// For example, the following Listener scenarios are distinct:
+	// When multiple listeners have the same value for the Protocol field, then
+	// each of the Listeners with matching Protocol values MUST have different
+	// values for other fields.
 	//
-	// 1. Multiple Listeners with the same Port that all use the "HTTP"
-	//    Protocol that all have unique Hostname values.
-	// 2. Multiple Listeners with the same Port that use either the "HTTPS" or
-	//    "TLS" Protocol that all have unique Hostname values.
-	// 3. A mixture of "TCP" and "UDP" Protocol Listeners, where no Listener
-	//    with the same Protocol has the same Port value.
+	// The set of fields that MUST be different for a Listener differs per protocol.
+	// The following rules define the rules for what fields MUST be considered for
+	// Listeners to be distinct with each protocol currently defined in the
+	// Gateway API spec.
 	//
-	// Some fields in the Listener struct have possible values that affect
-	// whether the Listener is distinct. Hostname is particularly relevant
-	// for HTTP or HTTPS protocols.
+	// The set of listeners that all share a protocol value MUST have _different_
+	// values for _at least one_ of these fields to be distinct:
 	//
-	// When using the Hostname value to select between same-Port, same-Protocol
-	// Listeners, the Hostname value must be different on each Listener for the
-	// Listener to be distinct.
+	// * **HTTP, HTTPS, TLS**: Port, Hostname
+	// * **TCP, UDP**: Port
 	//
-	// When the Listeners are distinct based on Hostname, inbound request
+	// One **very** important rule to call out involves what happens when an
+	// implementation:
+	//
+	// * Supports TCP protocol Listeners, as well as HTTP, HTTPS, or TLS protocol
+	//   Listeners, and
+	// * sees HTTP, HTTPS, or TLS protocols with the same `port` as one with TCP
+	//   Protocol.
+	//
+	// In this case all the Listeners that share a port with the
+	// TCP Listener are not distinct and so MUST NOT be accepted.
+	//
+	// If an implementation does not support TCP Protocol Listeners, then the
+	// previous rule does not apply, and the TCP Listeners SHOULD NOT be
+	// accepted.
+	//
+	// Note that the `tls` field is not used for determining if a listener is distinct, because
+	// Listeners that _only_ differ on TLS config will still conflict in all cases.
+	//
+	// ### Listeners that are distinct only by Hostname
+	//
+	// When the Listeners are distinct based only on Hostname, inbound request
 	// hostnames MUST match from the most specific to least specific Hostname
 	// values to choose the correct Listener and its associated set of Routes.
 	//
-	// Exact matches must be processed before wildcard matches, and wildcard
-	// matches must be processed before fallback (empty Hostname value)
+	// Exact matches MUST be processed before wildcard matches, and wildcard
+	// matches MUST be processed before fallback (empty Hostname value)
 	// matches. For example, `"foo.example.com"` takes precedence over
 	// `"*.example.com"`, and `"*.example.com"` takes precedence over `""`.
 	//
 	// Additionally, if there are multiple wildcard entries, more specific
 	// wildcard entries must be processed before less specific wildcard entries.
 	// For example, `"*.foo.example.com"` takes precedence over `"*.example.com"`.
+	//
 	// The precise definition here is that the higher the number of dots in the
 	// hostname to the right of the wildcard character, the higher the precedence.
 	//
@@ -2650,18 +2866,26 @@ type GatewaySpecArgs struct {
 	// the left, however, so `"*.example.com"` will match both
 	// `"foo.bar.example.com"` _and_ `"bar.example.com"`.
 	//
+	// ## Handling indistinct Listeners
+	//
 	// If a set of Listeners contains Listeners that are not distinct, then those
-	// Listeners are Conflicted, and the implementation MUST set the "Conflicted"
+	// Listeners are _Conflicted_, and the implementation MUST set the "Conflicted"
 	// condition in the Listener Status to "True".
+	//
+	// The words "indistinct" and "conflicted" are considered equivalent for the
+	// purpose of this documentation.
 	//
 	// Implementations MAY choose to accept a Gateway with some Conflicted
 	// Listeners only if they only accept the partial Listener set that contains
-	// no Conflicted Listeners. To put this another way, implementations may
-	// accept a partial Listener set only if they throw out *all* the conflicting
-	// Listeners. No picking one of the conflicting listeners as the winner.
-	// This also means that the Gateway must have at least one non-conflicting
-	// Listener in this case, otherwise it violates the requirement that at
-	// least one Listener must be present.
+	// no Conflicted Listeners.
+	//
+	// Specifically, an implementation MAY accept a partial Listener set subject to
+	// the following rules:
+	//
+	// * The implementation MUST NOT pick one conflicting Listener as the winner.
+	//   ALL indistinct Listeners must not be accepted for processing.
+	// * At least one distinct Listener MUST be present, or else the Gateway effectively
+	//   contains _no_ Listeners, and must be rejected from processing as a whole.
 	//
 	// The implementation MUST set a "ListenersNotValid" condition on the
 	// Gateway Status when the Gateway contains Conflicted Listeners whether or
@@ -2670,7 +2894,25 @@ type GatewaySpecArgs struct {
 	// Accepted. Additionally, the Listener status for those listeners SHOULD
 	// indicate which Listeners are conflicted and not Accepted.
 	//
-	// A Gateway's Listeners are considered "compatible" if:
+	// ## General Listener behavior
+	//
+	// Note that, for all distinct Listeners, requests SHOULD match at most one Listener.
+	// For example, if Listeners are defined for "foo.example.com" and "*.example.com", a
+	// request to "foo.example.com" SHOULD only be routed using routes attached
+	// to the "foo.example.com" Listener (and not the "*.example.com" Listener).
+	//
+	// This concept is known as "Listener Isolation", and it is an Extended feature
+	// of Gateway API. Implementations that do not support Listener Isolation MUST
+	// clearly document this, and MUST NOT claim support for the
+	// `GatewayHTTPListenerIsolation` feature.
+	//
+	// Implementations that _do_ support Listener Isolation SHOULD claim support
+	// for the Extended `GatewayHTTPListenerIsolation` feature and pass the associated
+	// conformance tests.
+	//
+	// ## Compatible Listeners
+	//
+	// A Gateway's Listeners are considered _compatible_ if:
 	//
 	// 1. They are distinct.
 	// 2. The implementation can serve them in compliance with the Addresses
@@ -2685,18 +2927,14 @@ type GatewaySpecArgs struct {
 	// on the same address, or cannot mix HTTPS and generic TLS listens on the same port
 	// would not consider those cases compatible, even though they are distinct.
 	//
-	// Note that requests SHOULD match at most one Listener. For example, if
-	// Listeners are defined for "foo.example.com" and "*.example.com", a
-	// request to "foo.example.com" SHOULD only be routed using routes attached
-	// to the "foo.example.com" Listener (and not the "*.example.com" Listener).
-	// This concept is known as "Listener Isolation". Implementations that do
-	// not support Listener Isolation MUST clearly document this.
-	//
 	// Implementations MAY merge separate Gateways onto a single set of
 	// Addresses if all Listeners across all Gateways are compatible.
 	//
+	// In a future release the MinItems=1 requirement MAY be dropped.
+	//
 	// Support: Core
 	Listeners GatewaySpecListenersArrayInput `pulumi:"listeners"`
+	Tls       GatewaySpecTlsPtrInput         `pulumi:"tls"`
 }
 
 func (GatewaySpecArgs) ElementType() reflect.Type {
@@ -2780,7 +3018,7 @@ func (o GatewaySpecOutput) ToGatewaySpecPtrOutputWithContext(ctx context.Context
 // Addresses requested for this Gateway. This is optional and behavior can
 // depend on the implementation. If a value is set in the spec and the
 // requested address is invalid or unavailable, the implementation MUST
-// indicate this in the associated entry in GatewayStatus.Addresses.
+// indicate this in an associated entry in GatewayStatus.Conditions.
 //
 // The Addresses field represents a request for the address(es) on the
 // "outside of the Gateway", that traffic bound for this Gateway will use.
@@ -2801,15 +3039,25 @@ func (o GatewaySpecOutput) Addresses() GatewaySpecAddressesArrayOutput {
 	return o.ApplyT(func(v GatewaySpec) []GatewaySpecAddresses { return v.Addresses }).(GatewaySpecAddressesArrayOutput)
 }
 
+func (o GatewaySpecOutput) AllowedListeners() GatewaySpecAllowedListenersPtrOutput {
+	return o.ApplyT(func(v GatewaySpec) *GatewaySpecAllowedListeners { return v.AllowedListeners }).(GatewaySpecAllowedListenersPtrOutput)
+}
+
 // GatewayClassName used for this Gateway. This is the name of a
 // GatewayClass resource.
 func (o GatewaySpecOutput) GatewayClassName() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v GatewaySpec) *string { return v.GatewayClassName }).(pulumi.StringPtrOutput)
 }
 
+func (o GatewaySpecOutput) Infrastructure() GatewaySpecInfrastructurePtrOutput {
+	return o.ApplyT(func(v GatewaySpec) *GatewaySpecInfrastructure { return v.Infrastructure }).(GatewaySpecInfrastructurePtrOutput)
+}
+
 // Listeners associated with this Gateway. Listeners define
 // logical endpoints that are bound on this Gateway's addresses.
 // At least one Listener MUST be specified.
+//
+// ## Distinct Listeners
 //
 // Each Listener in a set of Listeners (for example, in a single Gateway)
 // MUST be _distinct_, in that a traffic flow MUST be able to be assigned to
@@ -2822,55 +3070,76 @@ func (o GatewaySpecOutput) GatewayClassName() pulumi.StringPtrOutput {
 // combination of Port, Protocol, and, if supported by the protocol, Hostname.
 //
 // Some combinations of port, protocol, and TLS settings are considered
-// Core support and MUST be supported by implementations based on their
-// targeted conformance profile:
+// Core support and MUST be supported by implementations based on the objects
+// they support:
 //
-// # HTTP Profile
+// # HTTPRoute
 //
 // 1. HTTPRoute, Port: 80, Protocol: HTTP
 // 2. HTTPRoute, Port: 443, Protocol: HTTPS, TLS Mode: Terminate, TLS keypair provided
 //
-// # TLS Profile
+// # TLSRoute
 //
 // 1. TLSRoute, Port: 443, Protocol: TLS, TLS Mode: Passthrough
 //
 // "Distinct" Listeners have the following property:
 //
-// The implementation can match inbound requests to a single distinct
-// Listener. When multiple Listeners share values for fields (for
+// **The implementation can match inbound requests to a single distinct
+// Listener**.
+//
+// When multiple Listeners share values for fields (for
 // example, two Listeners with the same Port value), the implementation
 // can match requests to only one of the Listeners using other
 // Listener fields.
 //
-// For example, the following Listener scenarios are distinct:
+// When multiple listeners have the same value for the Protocol field, then
+// each of the Listeners with matching Protocol values MUST have different
+// values for other fields.
 //
-//  1. Multiple Listeners with the same Port that all use the "HTTP"
-//     Protocol that all have unique Hostname values.
-//  2. Multiple Listeners with the same Port that use either the "HTTPS" or
-//     "TLS" Protocol that all have unique Hostname values.
-//  3. A mixture of "TCP" and "UDP" Protocol Listeners, where no Listener
-//     with the same Protocol has the same Port value.
+// The set of fields that MUST be different for a Listener differs per protocol.
+// The following rules define the rules for what fields MUST be considered for
+// Listeners to be distinct with each protocol currently defined in the
+// Gateway API spec.
 //
-// Some fields in the Listener struct have possible values that affect
-// whether the Listener is distinct. Hostname is particularly relevant
-// for HTTP or HTTPS protocols.
+// The set of listeners that all share a protocol value MUST have _different_
+// values for _at least one_ of these fields to be distinct:
 //
-// When using the Hostname value to select between same-Port, same-Protocol
-// Listeners, the Hostname value must be different on each Listener for the
-// Listener to be distinct.
+// * **HTTP, HTTPS, TLS**: Port, Hostname
+// * **TCP, UDP**: Port
 //
-// When the Listeners are distinct based on Hostname, inbound request
+// One **very** important rule to call out involves what happens when an
+// implementation:
+//
+//   - Supports TCP protocol Listeners, as well as HTTP, HTTPS, or TLS protocol
+//     Listeners, and
+//   - sees HTTP, HTTPS, or TLS protocols with the same `port` as one with TCP
+//     Protocol.
+//
+// In this case all the Listeners that share a port with the
+// TCP Listener are not distinct and so MUST NOT be accepted.
+//
+// If an implementation does not support TCP Protocol Listeners, then the
+// previous rule does not apply, and the TCP Listeners SHOULD NOT be
+// accepted.
+//
+// Note that the `tls` field is not used for determining if a listener is distinct, because
+// Listeners that _only_ differ on TLS config will still conflict in all cases.
+//
+// ### Listeners that are distinct only by Hostname
+//
+// When the Listeners are distinct based only on Hostname, inbound request
 // hostnames MUST match from the most specific to least specific Hostname
 // values to choose the correct Listener and its associated set of Routes.
 //
-// Exact matches must be processed before wildcard matches, and wildcard
-// matches must be processed before fallback (empty Hostname value)
+// Exact matches MUST be processed before wildcard matches, and wildcard
+// matches MUST be processed before fallback (empty Hostname value)
 // matches. For example, `"foo.example.com"` takes precedence over
 // `"*.example.com"`, and `"*.example.com"` takes precedence over `""`.
 //
 // Additionally, if there are multiple wildcard entries, more specific
 // wildcard entries must be processed before less specific wildcard entries.
 // For example, `"*.foo.example.com"` takes precedence over `"*.example.com"`.
+//
 // The precise definition here is that the higher the number of dots in the
 // hostname to the right of the wildcard character, the higher the precedence.
 //
@@ -2878,18 +3147,26 @@ func (o GatewaySpecOutput) GatewayClassName() pulumi.StringPtrOutput {
 // the left, however, so `"*.example.com"` will match both
 // `"foo.bar.example.com"` _and_ `"bar.example.com"`.
 //
+// ## Handling indistinct Listeners
+//
 // If a set of Listeners contains Listeners that are not distinct, then those
-// Listeners are Conflicted, and the implementation MUST set the "Conflicted"
+// Listeners are _Conflicted_, and the implementation MUST set the "Conflicted"
 // condition in the Listener Status to "True".
+//
+// The words "indistinct" and "conflicted" are considered equivalent for the
+// purpose of this documentation.
 //
 // Implementations MAY choose to accept a Gateway with some Conflicted
 // Listeners only if they only accept the partial Listener set that contains
-// no Conflicted Listeners. To put this another way, implementations may
-// accept a partial Listener set only if they throw out *all* the conflicting
-// Listeners. No picking one of the conflicting listeners as the winner.
-// This also means that the Gateway must have at least one non-conflicting
-// Listener in this case, otherwise it violates the requirement that at
-// least one Listener must be present.
+// no Conflicted Listeners.
+//
+// Specifically, an implementation MAY accept a partial Listener set subject to
+// the following rules:
+//
+//   - The implementation MUST NOT pick one conflicting Listener as the winner.
+//     ALL indistinct Listeners must not be accepted for processing.
+//   - At least one distinct Listener MUST be present, or else the Gateway effectively
+//     contains _no_ Listeners, and must be rejected from processing as a whole.
 //
 // The implementation MUST set a "ListenersNotValid" condition on the
 // Gateway Status when the Gateway contains Conflicted Listeners whether or
@@ -2898,7 +3175,25 @@ func (o GatewaySpecOutput) GatewayClassName() pulumi.StringPtrOutput {
 // Accepted. Additionally, the Listener status for those listeners SHOULD
 // indicate which Listeners are conflicted and not Accepted.
 //
-// A Gateway's Listeners are considered "compatible" if:
+// ## General Listener behavior
+//
+// Note that, for all distinct Listeners, requests SHOULD match at most one Listener.
+// For example, if Listeners are defined for "foo.example.com" and "*.example.com", a
+// request to "foo.example.com" SHOULD only be routed using routes attached
+// to the "foo.example.com" Listener (and not the "*.example.com" Listener).
+//
+// This concept is known as "Listener Isolation", and it is an Extended feature
+// of Gateway API. Implementations that do not support Listener Isolation MUST
+// clearly document this, and MUST NOT claim support for the
+// `GatewayHTTPListenerIsolation` feature.
+//
+// Implementations that _do_ support Listener Isolation SHOULD claim support
+// for the Extended `GatewayHTTPListenerIsolation` feature and pass the associated
+// conformance tests.
+//
+// ## Compatible Listeners
+//
+// A Gateway's Listeners are considered _compatible_ if:
 //
 //  1. They are distinct.
 //  2. The implementation can serve them in compliance with the Addresses
@@ -2913,19 +3208,18 @@ func (o GatewaySpecOutput) GatewayClassName() pulumi.StringPtrOutput {
 // on the same address, or cannot mix HTTPS and generic TLS listens on the same port
 // would not consider those cases compatible, even though they are distinct.
 //
-// Note that requests SHOULD match at most one Listener. For example, if
-// Listeners are defined for "foo.example.com" and "*.example.com", a
-// request to "foo.example.com" SHOULD only be routed using routes attached
-// to the "foo.example.com" Listener (and not the "*.example.com" Listener).
-// This concept is known as "Listener Isolation". Implementations that do
-// not support Listener Isolation MUST clearly document this.
-//
 // Implementations MAY merge separate Gateways onto a single set of
 // Addresses if all Listeners across all Gateways are compatible.
+//
+// In a future release the MinItems=1 requirement MAY be dropped.
 //
 // Support: Core
 func (o GatewaySpecOutput) Listeners() GatewaySpecListenersArrayOutput {
 	return o.ApplyT(func(v GatewaySpec) []GatewaySpecListeners { return v.Listeners }).(GatewaySpecListenersArrayOutput)
+}
+
+func (o GatewaySpecOutput) Tls() GatewaySpecTlsPtrOutput {
+	return o.ApplyT(func(v GatewaySpec) *GatewaySpecTls { return v.Tls }).(GatewaySpecTlsPtrOutput)
 }
 
 type GatewaySpecPtrOutput struct{ *pulumi.OutputState }
@@ -2955,7 +3249,7 @@ func (o GatewaySpecPtrOutput) Elem() GatewaySpecOutput {
 // Addresses requested for this Gateway. This is optional and behavior can
 // depend on the implementation. If a value is set in the spec and the
 // requested address is invalid or unavailable, the implementation MUST
-// indicate this in the associated entry in GatewayStatus.Addresses.
+// indicate this in an associated entry in GatewayStatus.Conditions.
 //
 // The Addresses field represents a request for the address(es) on the
 // "outside of the Gateway", that traffic bound for this Gateway will use.
@@ -2981,6 +3275,15 @@ func (o GatewaySpecPtrOutput) Addresses() GatewaySpecAddressesArrayOutput {
 	}).(GatewaySpecAddressesArrayOutput)
 }
 
+func (o GatewaySpecPtrOutput) AllowedListeners() GatewaySpecAllowedListenersPtrOutput {
+	return o.ApplyT(func(v *GatewaySpec) *GatewaySpecAllowedListeners {
+		if v == nil {
+			return nil
+		}
+		return v.AllowedListeners
+	}).(GatewaySpecAllowedListenersPtrOutput)
+}
+
 // GatewayClassName used for this Gateway. This is the name of a
 // GatewayClass resource.
 func (o GatewaySpecPtrOutput) GatewayClassName() pulumi.StringPtrOutput {
@@ -2992,9 +3295,20 @@ func (o GatewaySpecPtrOutput) GatewayClassName() pulumi.StringPtrOutput {
 	}).(pulumi.StringPtrOutput)
 }
 
+func (o GatewaySpecPtrOutput) Infrastructure() GatewaySpecInfrastructurePtrOutput {
+	return o.ApplyT(func(v *GatewaySpec) *GatewaySpecInfrastructure {
+		if v == nil {
+			return nil
+		}
+		return v.Infrastructure
+	}).(GatewaySpecInfrastructurePtrOutput)
+}
+
 // Listeners associated with this Gateway. Listeners define
 // logical endpoints that are bound on this Gateway's addresses.
 // At least one Listener MUST be specified.
+//
+// ## Distinct Listeners
 //
 // Each Listener in a set of Listeners (for example, in a single Gateway)
 // MUST be _distinct_, in that a traffic flow MUST be able to be assigned to
@@ -3007,55 +3321,76 @@ func (o GatewaySpecPtrOutput) GatewayClassName() pulumi.StringPtrOutput {
 // combination of Port, Protocol, and, if supported by the protocol, Hostname.
 //
 // Some combinations of port, protocol, and TLS settings are considered
-// Core support and MUST be supported by implementations based on their
-// targeted conformance profile:
+// Core support and MUST be supported by implementations based on the objects
+// they support:
 //
-// # HTTP Profile
+// # HTTPRoute
 //
 // 1. HTTPRoute, Port: 80, Protocol: HTTP
 // 2. HTTPRoute, Port: 443, Protocol: HTTPS, TLS Mode: Terminate, TLS keypair provided
 //
-// # TLS Profile
+// # TLSRoute
 //
 // 1. TLSRoute, Port: 443, Protocol: TLS, TLS Mode: Passthrough
 //
 // "Distinct" Listeners have the following property:
 //
-// The implementation can match inbound requests to a single distinct
-// Listener. When multiple Listeners share values for fields (for
+// **The implementation can match inbound requests to a single distinct
+// Listener**.
+//
+// When multiple Listeners share values for fields (for
 // example, two Listeners with the same Port value), the implementation
 // can match requests to only one of the Listeners using other
 // Listener fields.
 //
-// For example, the following Listener scenarios are distinct:
+// When multiple listeners have the same value for the Protocol field, then
+// each of the Listeners with matching Protocol values MUST have different
+// values for other fields.
 //
-//  1. Multiple Listeners with the same Port that all use the "HTTP"
-//     Protocol that all have unique Hostname values.
-//  2. Multiple Listeners with the same Port that use either the "HTTPS" or
-//     "TLS" Protocol that all have unique Hostname values.
-//  3. A mixture of "TCP" and "UDP" Protocol Listeners, where no Listener
-//     with the same Protocol has the same Port value.
+// The set of fields that MUST be different for a Listener differs per protocol.
+// The following rules define the rules for what fields MUST be considered for
+// Listeners to be distinct with each protocol currently defined in the
+// Gateway API spec.
 //
-// Some fields in the Listener struct have possible values that affect
-// whether the Listener is distinct. Hostname is particularly relevant
-// for HTTP or HTTPS protocols.
+// The set of listeners that all share a protocol value MUST have _different_
+// values for _at least one_ of these fields to be distinct:
 //
-// When using the Hostname value to select between same-Port, same-Protocol
-// Listeners, the Hostname value must be different on each Listener for the
-// Listener to be distinct.
+// * **HTTP, HTTPS, TLS**: Port, Hostname
+// * **TCP, UDP**: Port
 //
-// When the Listeners are distinct based on Hostname, inbound request
+// One **very** important rule to call out involves what happens when an
+// implementation:
+//
+//   - Supports TCP protocol Listeners, as well as HTTP, HTTPS, or TLS protocol
+//     Listeners, and
+//   - sees HTTP, HTTPS, or TLS protocols with the same `port` as one with TCP
+//     Protocol.
+//
+// In this case all the Listeners that share a port with the
+// TCP Listener are not distinct and so MUST NOT be accepted.
+//
+// If an implementation does not support TCP Protocol Listeners, then the
+// previous rule does not apply, and the TCP Listeners SHOULD NOT be
+// accepted.
+//
+// Note that the `tls` field is not used for determining if a listener is distinct, because
+// Listeners that _only_ differ on TLS config will still conflict in all cases.
+//
+// ### Listeners that are distinct only by Hostname
+//
+// When the Listeners are distinct based only on Hostname, inbound request
 // hostnames MUST match from the most specific to least specific Hostname
 // values to choose the correct Listener and its associated set of Routes.
 //
-// Exact matches must be processed before wildcard matches, and wildcard
-// matches must be processed before fallback (empty Hostname value)
+// Exact matches MUST be processed before wildcard matches, and wildcard
+// matches MUST be processed before fallback (empty Hostname value)
 // matches. For example, `"foo.example.com"` takes precedence over
 // `"*.example.com"`, and `"*.example.com"` takes precedence over `""`.
 //
 // Additionally, if there are multiple wildcard entries, more specific
 // wildcard entries must be processed before less specific wildcard entries.
 // For example, `"*.foo.example.com"` takes precedence over `"*.example.com"`.
+//
 // The precise definition here is that the higher the number of dots in the
 // hostname to the right of the wildcard character, the higher the precedence.
 //
@@ -3063,18 +3398,26 @@ func (o GatewaySpecPtrOutput) GatewayClassName() pulumi.StringPtrOutput {
 // the left, however, so `"*.example.com"` will match both
 // `"foo.bar.example.com"` _and_ `"bar.example.com"`.
 //
+// ## Handling indistinct Listeners
+//
 // If a set of Listeners contains Listeners that are not distinct, then those
-// Listeners are Conflicted, and the implementation MUST set the "Conflicted"
+// Listeners are _Conflicted_, and the implementation MUST set the "Conflicted"
 // condition in the Listener Status to "True".
+//
+// The words "indistinct" and "conflicted" are considered equivalent for the
+// purpose of this documentation.
 //
 // Implementations MAY choose to accept a Gateway with some Conflicted
 // Listeners only if they only accept the partial Listener set that contains
-// no Conflicted Listeners. To put this another way, implementations may
-// accept a partial Listener set only if they throw out *all* the conflicting
-// Listeners. No picking one of the conflicting listeners as the winner.
-// This also means that the Gateway must have at least one non-conflicting
-// Listener in this case, otherwise it violates the requirement that at
-// least one Listener must be present.
+// no Conflicted Listeners.
+//
+// Specifically, an implementation MAY accept a partial Listener set subject to
+// the following rules:
+//
+//   - The implementation MUST NOT pick one conflicting Listener as the winner.
+//     ALL indistinct Listeners must not be accepted for processing.
+//   - At least one distinct Listener MUST be present, or else the Gateway effectively
+//     contains _no_ Listeners, and must be rejected from processing as a whole.
 //
 // The implementation MUST set a "ListenersNotValid" condition on the
 // Gateway Status when the Gateway contains Conflicted Listeners whether or
@@ -3083,7 +3426,25 @@ func (o GatewaySpecPtrOutput) GatewayClassName() pulumi.StringPtrOutput {
 // Accepted. Additionally, the Listener status for those listeners SHOULD
 // indicate which Listeners are conflicted and not Accepted.
 //
-// A Gateway's Listeners are considered "compatible" if:
+// ## General Listener behavior
+//
+// Note that, for all distinct Listeners, requests SHOULD match at most one Listener.
+// For example, if Listeners are defined for "foo.example.com" and "*.example.com", a
+// request to "foo.example.com" SHOULD only be routed using routes attached
+// to the "foo.example.com" Listener (and not the "*.example.com" Listener).
+//
+// This concept is known as "Listener Isolation", and it is an Extended feature
+// of Gateway API. Implementations that do not support Listener Isolation MUST
+// clearly document this, and MUST NOT claim support for the
+// `GatewayHTTPListenerIsolation` feature.
+//
+// Implementations that _do_ support Listener Isolation SHOULD claim support
+// for the Extended `GatewayHTTPListenerIsolation` feature and pass the associated
+// conformance tests.
+//
+// ## Compatible Listeners
+//
+// A Gateway's Listeners are considered _compatible_ if:
 //
 //  1. They are distinct.
 //  2. The implementation can serve them in compliance with the Addresses
@@ -3098,15 +3459,10 @@ func (o GatewaySpecPtrOutput) GatewayClassName() pulumi.StringPtrOutput {
 // on the same address, or cannot mix HTTPS and generic TLS listens on the same port
 // would not consider those cases compatible, even though they are distinct.
 //
-// Note that requests SHOULD match at most one Listener. For example, if
-// Listeners are defined for "foo.example.com" and "*.example.com", a
-// request to "foo.example.com" SHOULD only be routed using routes attached
-// to the "foo.example.com" Listener (and not the "*.example.com" Listener).
-// This concept is known as "Listener Isolation". Implementations that do
-// not support Listener Isolation MUST clearly document this.
-//
 // Implementations MAY merge separate Gateways onto a single set of
 // Addresses if all Listeners across all Gateways are compatible.
+//
+// In a future release the MinItems=1 requirement MAY be dropped.
 //
 // Support: Core
 func (o GatewaySpecPtrOutput) Listeners() GatewaySpecListenersArrayOutput {
@@ -3118,12 +3474,24 @@ func (o GatewaySpecPtrOutput) Listeners() GatewaySpecListenersArrayOutput {
 	}).(GatewaySpecListenersArrayOutput)
 }
 
-// GatewayAddress describes an address that can be bound to a Gateway.
+func (o GatewaySpecPtrOutput) Tls() GatewaySpecTlsPtrOutput {
+	return o.ApplyT(func(v *GatewaySpec) *GatewaySpecTls {
+		if v == nil {
+			return nil
+		}
+		return v.Tls
+	}).(GatewaySpecTlsPtrOutput)
+}
+
+// GatewaySpecAddress describes an address that can be bound to a Gateway.
 type GatewaySpecAddresses struct {
 	// Type of the address.
 	Type *string `pulumi:"type"`
-	// Value of the address. The validity of the values will depend
-	// on the type and support by the controller.
+	// When a value is unspecified, an implementation SHOULD automatically
+	// assign an address matching the requested type if possible.
+	//
+	// If an implementation does not support an empty value, they MUST set the
+	// "Programmed" condition in status to False with a reason of "AddressNotAssigned".
 	//
 	// Examples: `1.2.3.4`, `128::1`, `my-ip-address`.
 	Value *string `pulumi:"value"`
@@ -3140,12 +3508,15 @@ type GatewaySpecAddressesInput interface {
 	ToGatewaySpecAddressesOutputWithContext(context.Context) GatewaySpecAddressesOutput
 }
 
-// GatewayAddress describes an address that can be bound to a Gateway.
+// GatewaySpecAddress describes an address that can be bound to a Gateway.
 type GatewaySpecAddressesArgs struct {
 	// Type of the address.
 	Type pulumi.StringPtrInput `pulumi:"type"`
-	// Value of the address. The validity of the values will depend
-	// on the type and support by the controller.
+	// When a value is unspecified, an implementation SHOULD automatically
+	// assign an address matching the requested type if possible.
+	//
+	// If an implementation does not support an empty value, they MUST set the
+	// "Programmed" condition in status to False with a reason of "AddressNotAssigned".
 	//
 	// Examples: `1.2.3.4`, `128::1`, `my-ip-address`.
 	Value pulumi.StringPtrInput `pulumi:"value"`
@@ -3188,7 +3559,7 @@ func (i GatewaySpecAddressesArray) ToGatewaySpecAddressesArrayOutputWithContext(
 	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecAddressesArrayOutput)
 }
 
-// GatewayAddress describes an address that can be bound to a Gateway.
+// GatewaySpecAddress describes an address that can be bound to a Gateway.
 type GatewaySpecAddressesOutput struct{ *pulumi.OutputState }
 
 func (GatewaySpecAddressesOutput) ElementType() reflect.Type {
@@ -3208,8 +3579,11 @@ func (o GatewaySpecAddressesOutput) Type() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v GatewaySpecAddresses) *string { return v.Type }).(pulumi.StringPtrOutput)
 }
 
-// Value of the address. The validity of the values will depend
-// on the type and support by the controller.
+// When a value is unspecified, an implementation SHOULD automatically
+// assign an address matching the requested type if possible.
+//
+// If an implementation does not support an empty value, they MUST set the
+// "Programmed" condition in status to False with a reason of "AddressNotAssigned".
 //
 // Examples: `1.2.3.4`, `128::1`, `my-ip-address`.
 func (o GatewaySpecAddressesOutput) Value() pulumi.StringPtrOutput {
@@ -3236,12 +3610,15 @@ func (o GatewaySpecAddressesArrayOutput) Index(i pulumi.IntInput) GatewaySpecAdd
 	}).(GatewaySpecAddressesOutput)
 }
 
-// GatewayAddress describes an address that can be bound to a Gateway.
+// GatewaySpecAddress describes an address that can be bound to a Gateway.
 type GatewaySpecAddressesPatch struct {
 	// Type of the address.
 	Type *string `pulumi:"type"`
-	// Value of the address. The validity of the values will depend
-	// on the type and support by the controller.
+	// When a value is unspecified, an implementation SHOULD automatically
+	// assign an address matching the requested type if possible.
+	//
+	// If an implementation does not support an empty value, they MUST set the
+	// "Programmed" condition in status to False with a reason of "AddressNotAssigned".
 	//
 	// Examples: `1.2.3.4`, `128::1`, `my-ip-address`.
 	Value *string `pulumi:"value"`
@@ -3258,12 +3635,15 @@ type GatewaySpecAddressesPatchInput interface {
 	ToGatewaySpecAddressesPatchOutputWithContext(context.Context) GatewaySpecAddressesPatchOutput
 }
 
-// GatewayAddress describes an address that can be bound to a Gateway.
+// GatewaySpecAddress describes an address that can be bound to a Gateway.
 type GatewaySpecAddressesPatchArgs struct {
 	// Type of the address.
 	Type pulumi.StringPtrInput `pulumi:"type"`
-	// Value of the address. The validity of the values will depend
-	// on the type and support by the controller.
+	// When a value is unspecified, an implementation SHOULD automatically
+	// assign an address matching the requested type if possible.
+	//
+	// If an implementation does not support an empty value, they MUST set the
+	// "Programmed" condition in status to False with a reason of "AddressNotAssigned".
 	//
 	// Examples: `1.2.3.4`, `128::1`, `my-ip-address`.
 	Value pulumi.StringPtrInput `pulumi:"value"`
@@ -3306,7 +3686,7 @@ func (i GatewaySpecAddressesPatchArray) ToGatewaySpecAddressesPatchArrayOutputWi
 	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecAddressesPatchArrayOutput)
 }
 
-// GatewayAddress describes an address that can be bound to a Gateway.
+// GatewaySpecAddress describes an address that can be bound to a Gateway.
 type GatewaySpecAddressesPatchOutput struct{ *pulumi.OutputState }
 
 func (GatewaySpecAddressesPatchOutput) ElementType() reflect.Type {
@@ -3326,8 +3706,11 @@ func (o GatewaySpecAddressesPatchOutput) Type() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v GatewaySpecAddressesPatch) *string { return v.Type }).(pulumi.StringPtrOutput)
 }
 
-// Value of the address. The validity of the values will depend
-// on the type and support by the controller.
+// When a value is unspecified, an implementation SHOULD automatically
+// assign an address matching the requested type if possible.
+//
+// If an implementation does not support an empty value, they MUST set the
+// "Programmed" condition in status to False with a reason of "AddressNotAssigned".
 //
 // Examples: `1.2.3.4`, `128::1`, `my-ip-address`.
 func (o GatewaySpecAddressesPatchOutput) Value() pulumi.StringPtrOutput {
@@ -3354,6 +3737,2230 @@ func (o GatewaySpecAddressesPatchArrayOutput) Index(i pulumi.IntInput) GatewaySp
 	}).(GatewaySpecAddressesPatchOutput)
 }
 
+// AllowedListeners defines which ListenerSets can be attached to this Gateway.
+// The default value is to allow no ListenerSets.
+type GatewaySpecAllowedListeners struct {
+	Namespaces *GatewaySpecAllowedListenersNamespaces `pulumi:"namespaces"`
+}
+
+// GatewaySpecAllowedListenersInput is an input type that accepts GatewaySpecAllowedListenersArgs and GatewaySpecAllowedListenersOutput values.
+// You can construct a concrete instance of `GatewaySpecAllowedListenersInput` via:
+//
+//	GatewaySpecAllowedListenersArgs{...}
+type GatewaySpecAllowedListenersInput interface {
+	pulumi.Input
+
+	ToGatewaySpecAllowedListenersOutput() GatewaySpecAllowedListenersOutput
+	ToGatewaySpecAllowedListenersOutputWithContext(context.Context) GatewaySpecAllowedListenersOutput
+}
+
+// AllowedListeners defines which ListenerSets can be attached to this Gateway.
+// The default value is to allow no ListenerSets.
+type GatewaySpecAllowedListenersArgs struct {
+	Namespaces GatewaySpecAllowedListenersNamespacesPtrInput `pulumi:"namespaces"`
+}
+
+func (GatewaySpecAllowedListenersArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecAllowedListeners)(nil)).Elem()
+}
+
+func (i GatewaySpecAllowedListenersArgs) ToGatewaySpecAllowedListenersOutput() GatewaySpecAllowedListenersOutput {
+	return i.ToGatewaySpecAllowedListenersOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecAllowedListenersArgs) ToGatewaySpecAllowedListenersOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecAllowedListenersOutput)
+}
+
+func (i GatewaySpecAllowedListenersArgs) ToGatewaySpecAllowedListenersPtrOutput() GatewaySpecAllowedListenersPtrOutput {
+	return i.ToGatewaySpecAllowedListenersPtrOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecAllowedListenersArgs) ToGatewaySpecAllowedListenersPtrOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecAllowedListenersOutput).ToGatewaySpecAllowedListenersPtrOutputWithContext(ctx)
+}
+
+// GatewaySpecAllowedListenersPtrInput is an input type that accepts GatewaySpecAllowedListenersArgs, GatewaySpecAllowedListenersPtr and GatewaySpecAllowedListenersPtrOutput values.
+// You can construct a concrete instance of `GatewaySpecAllowedListenersPtrInput` via:
+//
+//	        GatewaySpecAllowedListenersArgs{...}
+//
+//	or:
+//
+//	        nil
+type GatewaySpecAllowedListenersPtrInput interface {
+	pulumi.Input
+
+	ToGatewaySpecAllowedListenersPtrOutput() GatewaySpecAllowedListenersPtrOutput
+	ToGatewaySpecAllowedListenersPtrOutputWithContext(context.Context) GatewaySpecAllowedListenersPtrOutput
+}
+
+type gatewaySpecAllowedListenersPtrType GatewaySpecAllowedListenersArgs
+
+func GatewaySpecAllowedListenersPtr(v *GatewaySpecAllowedListenersArgs) GatewaySpecAllowedListenersPtrInput {
+	return (*gatewaySpecAllowedListenersPtrType)(v)
+}
+
+func (*gatewaySpecAllowedListenersPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecAllowedListeners)(nil)).Elem()
+}
+
+func (i *gatewaySpecAllowedListenersPtrType) ToGatewaySpecAllowedListenersPtrOutput() GatewaySpecAllowedListenersPtrOutput {
+	return i.ToGatewaySpecAllowedListenersPtrOutputWithContext(context.Background())
+}
+
+func (i *gatewaySpecAllowedListenersPtrType) ToGatewaySpecAllowedListenersPtrOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecAllowedListenersPtrOutput)
+}
+
+// AllowedListeners defines which ListenerSets can be attached to this Gateway.
+// The default value is to allow no ListenerSets.
+type GatewaySpecAllowedListenersOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecAllowedListenersOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecAllowedListeners)(nil)).Elem()
+}
+
+func (o GatewaySpecAllowedListenersOutput) ToGatewaySpecAllowedListenersOutput() GatewaySpecAllowedListenersOutput {
+	return o
+}
+
+func (o GatewaySpecAllowedListenersOutput) ToGatewaySpecAllowedListenersOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersOutput {
+	return o
+}
+
+func (o GatewaySpecAllowedListenersOutput) ToGatewaySpecAllowedListenersPtrOutput() GatewaySpecAllowedListenersPtrOutput {
+	return o.ToGatewaySpecAllowedListenersPtrOutputWithContext(context.Background())
+}
+
+func (o GatewaySpecAllowedListenersOutput) ToGatewaySpecAllowedListenersPtrOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v GatewaySpecAllowedListeners) *GatewaySpecAllowedListeners {
+		return &v
+	}).(GatewaySpecAllowedListenersPtrOutput)
+}
+
+func (o GatewaySpecAllowedListenersOutput) Namespaces() GatewaySpecAllowedListenersNamespacesPtrOutput {
+	return o.ApplyT(func(v GatewaySpecAllowedListeners) *GatewaySpecAllowedListenersNamespaces { return v.Namespaces }).(GatewaySpecAllowedListenersNamespacesPtrOutput)
+}
+
+type GatewaySpecAllowedListenersPtrOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecAllowedListenersPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecAllowedListeners)(nil)).Elem()
+}
+
+func (o GatewaySpecAllowedListenersPtrOutput) ToGatewaySpecAllowedListenersPtrOutput() GatewaySpecAllowedListenersPtrOutput {
+	return o
+}
+
+func (o GatewaySpecAllowedListenersPtrOutput) ToGatewaySpecAllowedListenersPtrOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersPtrOutput {
+	return o
+}
+
+func (o GatewaySpecAllowedListenersPtrOutput) Elem() GatewaySpecAllowedListenersOutput {
+	return o.ApplyT(func(v *GatewaySpecAllowedListeners) GatewaySpecAllowedListeners {
+		if v != nil {
+			return *v
+		}
+		var ret GatewaySpecAllowedListeners
+		return ret
+	}).(GatewaySpecAllowedListenersOutput)
+}
+
+func (o GatewaySpecAllowedListenersPtrOutput) Namespaces() GatewaySpecAllowedListenersNamespacesPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecAllowedListeners) *GatewaySpecAllowedListenersNamespaces {
+		if v == nil {
+			return nil
+		}
+		return v.Namespaces
+	}).(GatewaySpecAllowedListenersNamespacesPtrOutput)
+}
+
+// Namespaces defines which namespaces ListenerSets can be attached to this Gateway.
+// The default value is to allow no ListenerSets.
+type GatewaySpecAllowedListenersNamespaces struct {
+	// From indicates where ListenerSets can attach to this Gateway. Possible
+	// values are:
+	//
+	// * Same: Only ListenerSets in the same namespace may be attached to this Gateway.
+	// * Selector: ListenerSets in namespaces selected by the selector may be attached to this Gateway.
+	// * All: ListenerSets in all namespaces may be attached to this Gateway.
+	// * None: Only listeners defined in the Gateway's spec are allowed
+	//
+	// The default value None
+	From     *string                                        `pulumi:"from"`
+	Selector *GatewaySpecAllowedListenersNamespacesSelector `pulumi:"selector"`
+}
+
+// GatewaySpecAllowedListenersNamespacesInput is an input type that accepts GatewaySpecAllowedListenersNamespacesArgs and GatewaySpecAllowedListenersNamespacesOutput values.
+// You can construct a concrete instance of `GatewaySpecAllowedListenersNamespacesInput` via:
+//
+//	GatewaySpecAllowedListenersNamespacesArgs{...}
+type GatewaySpecAllowedListenersNamespacesInput interface {
+	pulumi.Input
+
+	ToGatewaySpecAllowedListenersNamespacesOutput() GatewaySpecAllowedListenersNamespacesOutput
+	ToGatewaySpecAllowedListenersNamespacesOutputWithContext(context.Context) GatewaySpecAllowedListenersNamespacesOutput
+}
+
+// Namespaces defines which namespaces ListenerSets can be attached to this Gateway.
+// The default value is to allow no ListenerSets.
+type GatewaySpecAllowedListenersNamespacesArgs struct {
+	// From indicates where ListenerSets can attach to this Gateway. Possible
+	// values are:
+	//
+	// * Same: Only ListenerSets in the same namespace may be attached to this Gateway.
+	// * Selector: ListenerSets in namespaces selected by the selector may be attached to this Gateway.
+	// * All: ListenerSets in all namespaces may be attached to this Gateway.
+	// * None: Only listeners defined in the Gateway's spec are allowed
+	//
+	// The default value None
+	From     pulumi.StringPtrInput                                 `pulumi:"from"`
+	Selector GatewaySpecAllowedListenersNamespacesSelectorPtrInput `pulumi:"selector"`
+}
+
+func (GatewaySpecAllowedListenersNamespacesArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecAllowedListenersNamespaces)(nil)).Elem()
+}
+
+func (i GatewaySpecAllowedListenersNamespacesArgs) ToGatewaySpecAllowedListenersNamespacesOutput() GatewaySpecAllowedListenersNamespacesOutput {
+	return i.ToGatewaySpecAllowedListenersNamespacesOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecAllowedListenersNamespacesArgs) ToGatewaySpecAllowedListenersNamespacesOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecAllowedListenersNamespacesOutput)
+}
+
+func (i GatewaySpecAllowedListenersNamespacesArgs) ToGatewaySpecAllowedListenersNamespacesPtrOutput() GatewaySpecAllowedListenersNamespacesPtrOutput {
+	return i.ToGatewaySpecAllowedListenersNamespacesPtrOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecAllowedListenersNamespacesArgs) ToGatewaySpecAllowedListenersNamespacesPtrOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecAllowedListenersNamespacesOutput).ToGatewaySpecAllowedListenersNamespacesPtrOutputWithContext(ctx)
+}
+
+// GatewaySpecAllowedListenersNamespacesPtrInput is an input type that accepts GatewaySpecAllowedListenersNamespacesArgs, GatewaySpecAllowedListenersNamespacesPtr and GatewaySpecAllowedListenersNamespacesPtrOutput values.
+// You can construct a concrete instance of `GatewaySpecAllowedListenersNamespacesPtrInput` via:
+//
+//	        GatewaySpecAllowedListenersNamespacesArgs{...}
+//
+//	or:
+//
+//	        nil
+type GatewaySpecAllowedListenersNamespacesPtrInput interface {
+	pulumi.Input
+
+	ToGatewaySpecAllowedListenersNamespacesPtrOutput() GatewaySpecAllowedListenersNamespacesPtrOutput
+	ToGatewaySpecAllowedListenersNamespacesPtrOutputWithContext(context.Context) GatewaySpecAllowedListenersNamespacesPtrOutput
+}
+
+type gatewaySpecAllowedListenersNamespacesPtrType GatewaySpecAllowedListenersNamespacesArgs
+
+func GatewaySpecAllowedListenersNamespacesPtr(v *GatewaySpecAllowedListenersNamespacesArgs) GatewaySpecAllowedListenersNamespacesPtrInput {
+	return (*gatewaySpecAllowedListenersNamespacesPtrType)(v)
+}
+
+func (*gatewaySpecAllowedListenersNamespacesPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecAllowedListenersNamespaces)(nil)).Elem()
+}
+
+func (i *gatewaySpecAllowedListenersNamespacesPtrType) ToGatewaySpecAllowedListenersNamespacesPtrOutput() GatewaySpecAllowedListenersNamespacesPtrOutput {
+	return i.ToGatewaySpecAllowedListenersNamespacesPtrOutputWithContext(context.Background())
+}
+
+func (i *gatewaySpecAllowedListenersNamespacesPtrType) ToGatewaySpecAllowedListenersNamespacesPtrOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecAllowedListenersNamespacesPtrOutput)
+}
+
+// Namespaces defines which namespaces ListenerSets can be attached to this Gateway.
+// The default value is to allow no ListenerSets.
+type GatewaySpecAllowedListenersNamespacesOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecAllowedListenersNamespacesOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecAllowedListenersNamespaces)(nil)).Elem()
+}
+
+func (o GatewaySpecAllowedListenersNamespacesOutput) ToGatewaySpecAllowedListenersNamespacesOutput() GatewaySpecAllowedListenersNamespacesOutput {
+	return o
+}
+
+func (o GatewaySpecAllowedListenersNamespacesOutput) ToGatewaySpecAllowedListenersNamespacesOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesOutput {
+	return o
+}
+
+func (o GatewaySpecAllowedListenersNamespacesOutput) ToGatewaySpecAllowedListenersNamespacesPtrOutput() GatewaySpecAllowedListenersNamespacesPtrOutput {
+	return o.ToGatewaySpecAllowedListenersNamespacesPtrOutputWithContext(context.Background())
+}
+
+func (o GatewaySpecAllowedListenersNamespacesOutput) ToGatewaySpecAllowedListenersNamespacesPtrOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v GatewaySpecAllowedListenersNamespaces) *GatewaySpecAllowedListenersNamespaces {
+		return &v
+	}).(GatewaySpecAllowedListenersNamespacesPtrOutput)
+}
+
+// From indicates where ListenerSets can attach to this Gateway. Possible
+// values are:
+//
+// * Same: Only ListenerSets in the same namespace may be attached to this Gateway.
+// * Selector: ListenerSets in namespaces selected by the selector may be attached to this Gateway.
+// * All: ListenerSets in all namespaces may be attached to this Gateway.
+// * None: Only listeners defined in the Gateway's spec are allowed
+//
+// The default value None
+func (o GatewaySpecAllowedListenersNamespacesOutput) From() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecAllowedListenersNamespaces) *string { return v.From }).(pulumi.StringPtrOutput)
+}
+
+func (o GatewaySpecAllowedListenersNamespacesOutput) Selector() GatewaySpecAllowedListenersNamespacesSelectorPtrOutput {
+	return o.ApplyT(func(v GatewaySpecAllowedListenersNamespaces) *GatewaySpecAllowedListenersNamespacesSelector {
+		return v.Selector
+	}).(GatewaySpecAllowedListenersNamespacesSelectorPtrOutput)
+}
+
+type GatewaySpecAllowedListenersNamespacesPtrOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecAllowedListenersNamespacesPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecAllowedListenersNamespaces)(nil)).Elem()
+}
+
+func (o GatewaySpecAllowedListenersNamespacesPtrOutput) ToGatewaySpecAllowedListenersNamespacesPtrOutput() GatewaySpecAllowedListenersNamespacesPtrOutput {
+	return o
+}
+
+func (o GatewaySpecAllowedListenersNamespacesPtrOutput) ToGatewaySpecAllowedListenersNamespacesPtrOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesPtrOutput {
+	return o
+}
+
+func (o GatewaySpecAllowedListenersNamespacesPtrOutput) Elem() GatewaySpecAllowedListenersNamespacesOutput {
+	return o.ApplyT(func(v *GatewaySpecAllowedListenersNamespaces) GatewaySpecAllowedListenersNamespaces {
+		if v != nil {
+			return *v
+		}
+		var ret GatewaySpecAllowedListenersNamespaces
+		return ret
+	}).(GatewaySpecAllowedListenersNamespacesOutput)
+}
+
+// From indicates where ListenerSets can attach to this Gateway. Possible
+// values are:
+//
+// * Same: Only ListenerSets in the same namespace may be attached to this Gateway.
+// * Selector: ListenerSets in namespaces selected by the selector may be attached to this Gateway.
+// * All: ListenerSets in all namespaces may be attached to this Gateway.
+// * None: Only listeners defined in the Gateway's spec are allowed
+//
+// The default value None
+func (o GatewaySpecAllowedListenersNamespacesPtrOutput) From() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecAllowedListenersNamespaces) *string {
+		if v == nil {
+			return nil
+		}
+		return v.From
+	}).(pulumi.StringPtrOutput)
+}
+
+func (o GatewaySpecAllowedListenersNamespacesPtrOutput) Selector() GatewaySpecAllowedListenersNamespacesSelectorPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecAllowedListenersNamespaces) *GatewaySpecAllowedListenersNamespacesSelector {
+		if v == nil {
+			return nil
+		}
+		return v.Selector
+	}).(GatewaySpecAllowedListenersNamespacesSelectorPtrOutput)
+}
+
+// Namespaces defines which namespaces ListenerSets can be attached to this Gateway.
+// The default value is to allow no ListenerSets.
+type GatewaySpecAllowedListenersNamespacesPatch struct {
+	// From indicates where ListenerSets can attach to this Gateway. Possible
+	// values are:
+	//
+	// * Same: Only ListenerSets in the same namespace may be attached to this Gateway.
+	// * Selector: ListenerSets in namespaces selected by the selector may be attached to this Gateway.
+	// * All: ListenerSets in all namespaces may be attached to this Gateway.
+	// * None: Only listeners defined in the Gateway's spec are allowed
+	//
+	// The default value None
+	From     *string                                             `pulumi:"from"`
+	Selector *GatewaySpecAllowedListenersNamespacesSelectorPatch `pulumi:"selector"`
+}
+
+// GatewaySpecAllowedListenersNamespacesPatchInput is an input type that accepts GatewaySpecAllowedListenersNamespacesPatchArgs and GatewaySpecAllowedListenersNamespacesPatchOutput values.
+// You can construct a concrete instance of `GatewaySpecAllowedListenersNamespacesPatchInput` via:
+//
+//	GatewaySpecAllowedListenersNamespacesPatchArgs{...}
+type GatewaySpecAllowedListenersNamespacesPatchInput interface {
+	pulumi.Input
+
+	ToGatewaySpecAllowedListenersNamespacesPatchOutput() GatewaySpecAllowedListenersNamespacesPatchOutput
+	ToGatewaySpecAllowedListenersNamespacesPatchOutputWithContext(context.Context) GatewaySpecAllowedListenersNamespacesPatchOutput
+}
+
+// Namespaces defines which namespaces ListenerSets can be attached to this Gateway.
+// The default value is to allow no ListenerSets.
+type GatewaySpecAllowedListenersNamespacesPatchArgs struct {
+	// From indicates where ListenerSets can attach to this Gateway. Possible
+	// values are:
+	//
+	// * Same: Only ListenerSets in the same namespace may be attached to this Gateway.
+	// * Selector: ListenerSets in namespaces selected by the selector may be attached to this Gateway.
+	// * All: ListenerSets in all namespaces may be attached to this Gateway.
+	// * None: Only listeners defined in the Gateway's spec are allowed
+	//
+	// The default value None
+	From     pulumi.StringPtrInput                                      `pulumi:"from"`
+	Selector GatewaySpecAllowedListenersNamespacesSelectorPatchPtrInput `pulumi:"selector"`
+}
+
+func (GatewaySpecAllowedListenersNamespacesPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecAllowedListenersNamespacesPatch)(nil)).Elem()
+}
+
+func (i GatewaySpecAllowedListenersNamespacesPatchArgs) ToGatewaySpecAllowedListenersNamespacesPatchOutput() GatewaySpecAllowedListenersNamespacesPatchOutput {
+	return i.ToGatewaySpecAllowedListenersNamespacesPatchOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecAllowedListenersNamespacesPatchArgs) ToGatewaySpecAllowedListenersNamespacesPatchOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecAllowedListenersNamespacesPatchOutput)
+}
+
+func (i GatewaySpecAllowedListenersNamespacesPatchArgs) ToGatewaySpecAllowedListenersNamespacesPatchPtrOutput() GatewaySpecAllowedListenersNamespacesPatchPtrOutput {
+	return i.ToGatewaySpecAllowedListenersNamespacesPatchPtrOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecAllowedListenersNamespacesPatchArgs) ToGatewaySpecAllowedListenersNamespacesPatchPtrOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecAllowedListenersNamespacesPatchOutput).ToGatewaySpecAllowedListenersNamespacesPatchPtrOutputWithContext(ctx)
+}
+
+// GatewaySpecAllowedListenersNamespacesPatchPtrInput is an input type that accepts GatewaySpecAllowedListenersNamespacesPatchArgs, GatewaySpecAllowedListenersNamespacesPatchPtr and GatewaySpecAllowedListenersNamespacesPatchPtrOutput values.
+// You can construct a concrete instance of `GatewaySpecAllowedListenersNamespacesPatchPtrInput` via:
+//
+//	        GatewaySpecAllowedListenersNamespacesPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type GatewaySpecAllowedListenersNamespacesPatchPtrInput interface {
+	pulumi.Input
+
+	ToGatewaySpecAllowedListenersNamespacesPatchPtrOutput() GatewaySpecAllowedListenersNamespacesPatchPtrOutput
+	ToGatewaySpecAllowedListenersNamespacesPatchPtrOutputWithContext(context.Context) GatewaySpecAllowedListenersNamespacesPatchPtrOutput
+}
+
+type gatewaySpecAllowedListenersNamespacesPatchPtrType GatewaySpecAllowedListenersNamespacesPatchArgs
+
+func GatewaySpecAllowedListenersNamespacesPatchPtr(v *GatewaySpecAllowedListenersNamespacesPatchArgs) GatewaySpecAllowedListenersNamespacesPatchPtrInput {
+	return (*gatewaySpecAllowedListenersNamespacesPatchPtrType)(v)
+}
+
+func (*gatewaySpecAllowedListenersNamespacesPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecAllowedListenersNamespacesPatch)(nil)).Elem()
+}
+
+func (i *gatewaySpecAllowedListenersNamespacesPatchPtrType) ToGatewaySpecAllowedListenersNamespacesPatchPtrOutput() GatewaySpecAllowedListenersNamespacesPatchPtrOutput {
+	return i.ToGatewaySpecAllowedListenersNamespacesPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *gatewaySpecAllowedListenersNamespacesPatchPtrType) ToGatewaySpecAllowedListenersNamespacesPatchPtrOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecAllowedListenersNamespacesPatchPtrOutput)
+}
+
+// Namespaces defines which namespaces ListenerSets can be attached to this Gateway.
+// The default value is to allow no ListenerSets.
+type GatewaySpecAllowedListenersNamespacesPatchOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecAllowedListenersNamespacesPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecAllowedListenersNamespacesPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecAllowedListenersNamespacesPatchOutput) ToGatewaySpecAllowedListenersNamespacesPatchOutput() GatewaySpecAllowedListenersNamespacesPatchOutput {
+	return o
+}
+
+func (o GatewaySpecAllowedListenersNamespacesPatchOutput) ToGatewaySpecAllowedListenersNamespacesPatchOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesPatchOutput {
+	return o
+}
+
+func (o GatewaySpecAllowedListenersNamespacesPatchOutput) ToGatewaySpecAllowedListenersNamespacesPatchPtrOutput() GatewaySpecAllowedListenersNamespacesPatchPtrOutput {
+	return o.ToGatewaySpecAllowedListenersNamespacesPatchPtrOutputWithContext(context.Background())
+}
+
+func (o GatewaySpecAllowedListenersNamespacesPatchOutput) ToGatewaySpecAllowedListenersNamespacesPatchPtrOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v GatewaySpecAllowedListenersNamespacesPatch) *GatewaySpecAllowedListenersNamespacesPatch {
+		return &v
+	}).(GatewaySpecAllowedListenersNamespacesPatchPtrOutput)
+}
+
+// From indicates where ListenerSets can attach to this Gateway. Possible
+// values are:
+//
+// * Same: Only ListenerSets in the same namespace may be attached to this Gateway.
+// * Selector: ListenerSets in namespaces selected by the selector may be attached to this Gateway.
+// * All: ListenerSets in all namespaces may be attached to this Gateway.
+// * None: Only listeners defined in the Gateway's spec are allowed
+//
+// The default value None
+func (o GatewaySpecAllowedListenersNamespacesPatchOutput) From() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecAllowedListenersNamespacesPatch) *string { return v.From }).(pulumi.StringPtrOutput)
+}
+
+func (o GatewaySpecAllowedListenersNamespacesPatchOutput) Selector() GatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutput {
+	return o.ApplyT(func(v GatewaySpecAllowedListenersNamespacesPatch) *GatewaySpecAllowedListenersNamespacesSelectorPatch {
+		return v.Selector
+	}).(GatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutput)
+}
+
+type GatewaySpecAllowedListenersNamespacesPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecAllowedListenersNamespacesPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecAllowedListenersNamespacesPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecAllowedListenersNamespacesPatchPtrOutput) ToGatewaySpecAllowedListenersNamespacesPatchPtrOutput() GatewaySpecAllowedListenersNamespacesPatchPtrOutput {
+	return o
+}
+
+func (o GatewaySpecAllowedListenersNamespacesPatchPtrOutput) ToGatewaySpecAllowedListenersNamespacesPatchPtrOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesPatchPtrOutput {
+	return o
+}
+
+func (o GatewaySpecAllowedListenersNamespacesPatchPtrOutput) Elem() GatewaySpecAllowedListenersNamespacesPatchOutput {
+	return o.ApplyT(func(v *GatewaySpecAllowedListenersNamespacesPatch) GatewaySpecAllowedListenersNamespacesPatch {
+		if v != nil {
+			return *v
+		}
+		var ret GatewaySpecAllowedListenersNamespacesPatch
+		return ret
+	}).(GatewaySpecAllowedListenersNamespacesPatchOutput)
+}
+
+// From indicates where ListenerSets can attach to this Gateway. Possible
+// values are:
+//
+// * Same: Only ListenerSets in the same namespace may be attached to this Gateway.
+// * Selector: ListenerSets in namespaces selected by the selector may be attached to this Gateway.
+// * All: ListenerSets in all namespaces may be attached to this Gateway.
+// * None: Only listeners defined in the Gateway's spec are allowed
+//
+// The default value None
+func (o GatewaySpecAllowedListenersNamespacesPatchPtrOutput) From() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecAllowedListenersNamespacesPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.From
+	}).(pulumi.StringPtrOutput)
+}
+
+func (o GatewaySpecAllowedListenersNamespacesPatchPtrOutput) Selector() GatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecAllowedListenersNamespacesPatch) *GatewaySpecAllowedListenersNamespacesSelectorPatch {
+		if v == nil {
+			return nil
+		}
+		return v.Selector
+	}).(GatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutput)
+}
+
+// Selector must be specified when From is set to "Selector". In that case,
+// only ListenerSets in Namespaces matching this Selector will be selected by this
+// Gateway. This field is ignored for other values of "From".
+type GatewaySpecAllowedListenersNamespacesSelector struct {
+	// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+	MatchExpressions []GatewaySpecAllowedListenersNamespacesSelectorMatchExpressions `pulumi:"matchExpressions"`
+	// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+	// map is equivalent to an element of matchExpressions, whose key field is "key", the
+	// operator is "In", and the values array contains only "value". The requirements are ANDed.
+	MatchLabels map[string]string `pulumi:"matchLabels"`
+}
+
+// GatewaySpecAllowedListenersNamespacesSelectorInput is an input type that accepts GatewaySpecAllowedListenersNamespacesSelectorArgs and GatewaySpecAllowedListenersNamespacesSelectorOutput values.
+// You can construct a concrete instance of `GatewaySpecAllowedListenersNamespacesSelectorInput` via:
+//
+//	GatewaySpecAllowedListenersNamespacesSelectorArgs{...}
+type GatewaySpecAllowedListenersNamespacesSelectorInput interface {
+	pulumi.Input
+
+	ToGatewaySpecAllowedListenersNamespacesSelectorOutput() GatewaySpecAllowedListenersNamespacesSelectorOutput
+	ToGatewaySpecAllowedListenersNamespacesSelectorOutputWithContext(context.Context) GatewaySpecAllowedListenersNamespacesSelectorOutput
+}
+
+// Selector must be specified when From is set to "Selector". In that case,
+// only ListenerSets in Namespaces matching this Selector will be selected by this
+// Gateway. This field is ignored for other values of "From".
+type GatewaySpecAllowedListenersNamespacesSelectorArgs struct {
+	// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+	MatchExpressions GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArrayInput `pulumi:"matchExpressions"`
+	// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+	// map is equivalent to an element of matchExpressions, whose key field is "key", the
+	// operator is "In", and the values array contains only "value". The requirements are ANDed.
+	MatchLabels pulumi.StringMapInput `pulumi:"matchLabels"`
+}
+
+func (GatewaySpecAllowedListenersNamespacesSelectorArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecAllowedListenersNamespacesSelector)(nil)).Elem()
+}
+
+func (i GatewaySpecAllowedListenersNamespacesSelectorArgs) ToGatewaySpecAllowedListenersNamespacesSelectorOutput() GatewaySpecAllowedListenersNamespacesSelectorOutput {
+	return i.ToGatewaySpecAllowedListenersNamespacesSelectorOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecAllowedListenersNamespacesSelectorArgs) ToGatewaySpecAllowedListenersNamespacesSelectorOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesSelectorOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecAllowedListenersNamespacesSelectorOutput)
+}
+
+func (i GatewaySpecAllowedListenersNamespacesSelectorArgs) ToGatewaySpecAllowedListenersNamespacesSelectorPtrOutput() GatewaySpecAllowedListenersNamespacesSelectorPtrOutput {
+	return i.ToGatewaySpecAllowedListenersNamespacesSelectorPtrOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecAllowedListenersNamespacesSelectorArgs) ToGatewaySpecAllowedListenersNamespacesSelectorPtrOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesSelectorPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecAllowedListenersNamespacesSelectorOutput).ToGatewaySpecAllowedListenersNamespacesSelectorPtrOutputWithContext(ctx)
+}
+
+// GatewaySpecAllowedListenersNamespacesSelectorPtrInput is an input type that accepts GatewaySpecAllowedListenersNamespacesSelectorArgs, GatewaySpecAllowedListenersNamespacesSelectorPtr and GatewaySpecAllowedListenersNamespacesSelectorPtrOutput values.
+// You can construct a concrete instance of `GatewaySpecAllowedListenersNamespacesSelectorPtrInput` via:
+//
+//	        GatewaySpecAllowedListenersNamespacesSelectorArgs{...}
+//
+//	or:
+//
+//	        nil
+type GatewaySpecAllowedListenersNamespacesSelectorPtrInput interface {
+	pulumi.Input
+
+	ToGatewaySpecAllowedListenersNamespacesSelectorPtrOutput() GatewaySpecAllowedListenersNamespacesSelectorPtrOutput
+	ToGatewaySpecAllowedListenersNamespacesSelectorPtrOutputWithContext(context.Context) GatewaySpecAllowedListenersNamespacesSelectorPtrOutput
+}
+
+type gatewaySpecAllowedListenersNamespacesSelectorPtrType GatewaySpecAllowedListenersNamespacesSelectorArgs
+
+func GatewaySpecAllowedListenersNamespacesSelectorPtr(v *GatewaySpecAllowedListenersNamespacesSelectorArgs) GatewaySpecAllowedListenersNamespacesSelectorPtrInput {
+	return (*gatewaySpecAllowedListenersNamespacesSelectorPtrType)(v)
+}
+
+func (*gatewaySpecAllowedListenersNamespacesSelectorPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecAllowedListenersNamespacesSelector)(nil)).Elem()
+}
+
+func (i *gatewaySpecAllowedListenersNamespacesSelectorPtrType) ToGatewaySpecAllowedListenersNamespacesSelectorPtrOutput() GatewaySpecAllowedListenersNamespacesSelectorPtrOutput {
+	return i.ToGatewaySpecAllowedListenersNamespacesSelectorPtrOutputWithContext(context.Background())
+}
+
+func (i *gatewaySpecAllowedListenersNamespacesSelectorPtrType) ToGatewaySpecAllowedListenersNamespacesSelectorPtrOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesSelectorPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecAllowedListenersNamespacesSelectorPtrOutput)
+}
+
+// Selector must be specified when From is set to "Selector". In that case,
+// only ListenerSets in Namespaces matching this Selector will be selected by this
+// Gateway. This field is ignored for other values of "From".
+type GatewaySpecAllowedListenersNamespacesSelectorOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecAllowedListenersNamespacesSelectorOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecAllowedListenersNamespacesSelector)(nil)).Elem()
+}
+
+func (o GatewaySpecAllowedListenersNamespacesSelectorOutput) ToGatewaySpecAllowedListenersNamespacesSelectorOutput() GatewaySpecAllowedListenersNamespacesSelectorOutput {
+	return o
+}
+
+func (o GatewaySpecAllowedListenersNamespacesSelectorOutput) ToGatewaySpecAllowedListenersNamespacesSelectorOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesSelectorOutput {
+	return o
+}
+
+func (o GatewaySpecAllowedListenersNamespacesSelectorOutput) ToGatewaySpecAllowedListenersNamespacesSelectorPtrOutput() GatewaySpecAllowedListenersNamespacesSelectorPtrOutput {
+	return o.ToGatewaySpecAllowedListenersNamespacesSelectorPtrOutputWithContext(context.Background())
+}
+
+func (o GatewaySpecAllowedListenersNamespacesSelectorOutput) ToGatewaySpecAllowedListenersNamespacesSelectorPtrOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesSelectorPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v GatewaySpecAllowedListenersNamespacesSelector) *GatewaySpecAllowedListenersNamespacesSelector {
+		return &v
+	}).(GatewaySpecAllowedListenersNamespacesSelectorPtrOutput)
+}
+
+// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+func (o GatewaySpecAllowedListenersNamespacesSelectorOutput) MatchExpressions() GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArrayOutput {
+	return o.ApplyT(func(v GatewaySpecAllowedListenersNamespacesSelector) []GatewaySpecAllowedListenersNamespacesSelectorMatchExpressions {
+		return v.MatchExpressions
+	}).(GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArrayOutput)
+}
+
+// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+// map is equivalent to an element of matchExpressions, whose key field is "key", the
+// operator is "In", and the values array contains only "value". The requirements are ANDed.
+func (o GatewaySpecAllowedListenersNamespacesSelectorOutput) MatchLabels() pulumi.StringMapOutput {
+	return o.ApplyT(func(v GatewaySpecAllowedListenersNamespacesSelector) map[string]string { return v.MatchLabels }).(pulumi.StringMapOutput)
+}
+
+type GatewaySpecAllowedListenersNamespacesSelectorPtrOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecAllowedListenersNamespacesSelectorPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecAllowedListenersNamespacesSelector)(nil)).Elem()
+}
+
+func (o GatewaySpecAllowedListenersNamespacesSelectorPtrOutput) ToGatewaySpecAllowedListenersNamespacesSelectorPtrOutput() GatewaySpecAllowedListenersNamespacesSelectorPtrOutput {
+	return o
+}
+
+func (o GatewaySpecAllowedListenersNamespacesSelectorPtrOutput) ToGatewaySpecAllowedListenersNamespacesSelectorPtrOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesSelectorPtrOutput {
+	return o
+}
+
+func (o GatewaySpecAllowedListenersNamespacesSelectorPtrOutput) Elem() GatewaySpecAllowedListenersNamespacesSelectorOutput {
+	return o.ApplyT(func(v *GatewaySpecAllowedListenersNamespacesSelector) GatewaySpecAllowedListenersNamespacesSelector {
+		if v != nil {
+			return *v
+		}
+		var ret GatewaySpecAllowedListenersNamespacesSelector
+		return ret
+	}).(GatewaySpecAllowedListenersNamespacesSelectorOutput)
+}
+
+// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+func (o GatewaySpecAllowedListenersNamespacesSelectorPtrOutput) MatchExpressions() GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArrayOutput {
+	return o.ApplyT(func(v *GatewaySpecAllowedListenersNamespacesSelector) []GatewaySpecAllowedListenersNamespacesSelectorMatchExpressions {
+		if v == nil {
+			return nil
+		}
+		return v.MatchExpressions
+	}).(GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArrayOutput)
+}
+
+// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+// map is equivalent to an element of matchExpressions, whose key field is "key", the
+// operator is "In", and the values array contains only "value". The requirements are ANDed.
+func (o GatewaySpecAllowedListenersNamespacesSelectorPtrOutput) MatchLabels() pulumi.StringMapOutput {
+	return o.ApplyT(func(v *GatewaySpecAllowedListenersNamespacesSelector) map[string]string {
+		if v == nil {
+			return nil
+		}
+		return v.MatchLabels
+	}).(pulumi.StringMapOutput)
+}
+
+// A label selector requirement is a selector that contains values, a key, and an operator that
+// relates the key and values.
+type GatewaySpecAllowedListenersNamespacesSelectorMatchExpressions struct {
+	// key is the label key that the selector applies to.
+	Key *string `pulumi:"key"`
+	// operator represents a key's relationship to a set of values.
+	// Valid operators are In, NotIn, Exists and DoesNotExist.
+	Operator *string `pulumi:"operator"`
+	// values is an array of string values. If the operator is In or NotIn,
+	// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+	// the values array must be empty. This array is replaced during a strategic
+	// merge patch.
+	Values []string `pulumi:"values"`
+}
+
+// GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsInput is an input type that accepts GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArgs and GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsOutput values.
+// You can construct a concrete instance of `GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsInput` via:
+//
+//	GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArgs{...}
+type GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsInput interface {
+	pulumi.Input
+
+	ToGatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsOutput() GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsOutput
+	ToGatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsOutputWithContext(context.Context) GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsOutput
+}
+
+// A label selector requirement is a selector that contains values, a key, and an operator that
+// relates the key and values.
+type GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArgs struct {
+	// key is the label key that the selector applies to.
+	Key pulumi.StringPtrInput `pulumi:"key"`
+	// operator represents a key's relationship to a set of values.
+	// Valid operators are In, NotIn, Exists and DoesNotExist.
+	Operator pulumi.StringPtrInput `pulumi:"operator"`
+	// values is an array of string values. If the operator is In or NotIn,
+	// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+	// the values array must be empty. This array is replaced during a strategic
+	// merge patch.
+	Values pulumi.StringArrayInput `pulumi:"values"`
+}
+
+func (GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecAllowedListenersNamespacesSelectorMatchExpressions)(nil)).Elem()
+}
+
+func (i GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArgs) ToGatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsOutput() GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsOutput {
+	return i.ToGatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArgs) ToGatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsOutput)
+}
+
+// GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArrayInput is an input type that accepts GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArray and GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArrayOutput values.
+// You can construct a concrete instance of `GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArrayInput` via:
+//
+//	GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArray{ GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArgs{...} }
+type GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArrayInput interface {
+	pulumi.Input
+
+	ToGatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArrayOutput() GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArrayOutput
+	ToGatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArrayOutputWithContext(context.Context) GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArrayOutput
+}
+
+type GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArray []GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsInput
+
+func (GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]GatewaySpecAllowedListenersNamespacesSelectorMatchExpressions)(nil)).Elem()
+}
+
+func (i GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArray) ToGatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArrayOutput() GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArrayOutput {
+	return i.ToGatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArrayOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArray) ToGatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArrayOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArrayOutput)
+}
+
+// A label selector requirement is a selector that contains values, a key, and an operator that
+// relates the key and values.
+type GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecAllowedListenersNamespacesSelectorMatchExpressions)(nil)).Elem()
+}
+
+func (o GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsOutput) ToGatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsOutput() GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsOutput {
+	return o
+}
+
+func (o GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsOutput) ToGatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsOutput {
+	return o
+}
+
+// key is the label key that the selector applies to.
+func (o GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsOutput) Key() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecAllowedListenersNamespacesSelectorMatchExpressions) *string { return v.Key }).(pulumi.StringPtrOutput)
+}
+
+// operator represents a key's relationship to a set of values.
+// Valid operators are In, NotIn, Exists and DoesNotExist.
+func (o GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsOutput) Operator() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecAllowedListenersNamespacesSelectorMatchExpressions) *string { return v.Operator }).(pulumi.StringPtrOutput)
+}
+
+// values is an array of string values. If the operator is In or NotIn,
+// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+// the values array must be empty. This array is replaced during a strategic
+// merge patch.
+func (o GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsOutput) Values() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v GatewaySpecAllowedListenersNamespacesSelectorMatchExpressions) []string { return v.Values }).(pulumi.StringArrayOutput)
+}
+
+type GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArrayOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]GatewaySpecAllowedListenersNamespacesSelectorMatchExpressions)(nil)).Elem()
+}
+
+func (o GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArrayOutput) ToGatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArrayOutput() GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArrayOutput {
+	return o
+}
+
+func (o GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArrayOutput) ToGatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArrayOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArrayOutput {
+	return o
+}
+
+func (o GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArrayOutput) Index(i pulumi.IntInput) GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) GatewaySpecAllowedListenersNamespacesSelectorMatchExpressions {
+		return vs[0].([]GatewaySpecAllowedListenersNamespacesSelectorMatchExpressions)[vs[1].(int)]
+	}).(GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsOutput)
+}
+
+// A label selector requirement is a selector that contains values, a key, and an operator that
+// relates the key and values.
+type GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatch struct {
+	// key is the label key that the selector applies to.
+	Key *string `pulumi:"key"`
+	// operator represents a key's relationship to a set of values.
+	// Valid operators are In, NotIn, Exists and DoesNotExist.
+	Operator *string `pulumi:"operator"`
+	// values is an array of string values. If the operator is In or NotIn,
+	// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+	// the values array must be empty. This array is replaced during a strategic
+	// merge patch.
+	Values []string `pulumi:"values"`
+}
+
+// GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchInput is an input type that accepts GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArgs and GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchOutput values.
+// You can construct a concrete instance of `GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchInput` via:
+//
+//	GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArgs{...}
+type GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchInput interface {
+	pulumi.Input
+
+	ToGatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchOutput() GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchOutput
+	ToGatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchOutputWithContext(context.Context) GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchOutput
+}
+
+// A label selector requirement is a selector that contains values, a key, and an operator that
+// relates the key and values.
+type GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArgs struct {
+	// key is the label key that the selector applies to.
+	Key pulumi.StringPtrInput `pulumi:"key"`
+	// operator represents a key's relationship to a set of values.
+	// Valid operators are In, NotIn, Exists and DoesNotExist.
+	Operator pulumi.StringPtrInput `pulumi:"operator"`
+	// values is an array of string values. If the operator is In or NotIn,
+	// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+	// the values array must be empty. This array is replaced during a strategic
+	// merge patch.
+	Values pulumi.StringArrayInput `pulumi:"values"`
+}
+
+func (GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatch)(nil)).Elem()
+}
+
+func (i GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArgs) ToGatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchOutput() GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchOutput {
+	return i.ToGatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArgs) ToGatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchOutput)
+}
+
+// GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArrayInput is an input type that accepts GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArray and GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArrayOutput values.
+// You can construct a concrete instance of `GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArrayInput` via:
+//
+//	GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArray{ GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArgs{...} }
+type GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArrayInput interface {
+	pulumi.Input
+
+	ToGatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArrayOutput() GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArrayOutput
+	ToGatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArrayOutputWithContext(context.Context) GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArrayOutput
+}
+
+type GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArray []GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchInput
+
+func (GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatch)(nil)).Elem()
+}
+
+func (i GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArray) ToGatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArrayOutput() GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArrayOutput {
+	return i.ToGatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArrayOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArray) ToGatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArrayOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArrayOutput)
+}
+
+// A label selector requirement is a selector that contains values, a key, and an operator that
+// relates the key and values.
+type GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchOutput) ToGatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchOutput() GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchOutput {
+	return o
+}
+
+func (o GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchOutput) ToGatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchOutput {
+	return o
+}
+
+// key is the label key that the selector applies to.
+func (o GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchOutput) Key() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatch) *string { return v.Key }).(pulumi.StringPtrOutput)
+}
+
+// operator represents a key's relationship to a set of values.
+// Valid operators are In, NotIn, Exists and DoesNotExist.
+func (o GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchOutput) Operator() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatch) *string { return v.Operator }).(pulumi.StringPtrOutput)
+}
+
+// values is an array of string values. If the operator is In or NotIn,
+// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+// the values array must be empty. This array is replaced during a strategic
+// merge patch.
+func (o GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchOutput) Values() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatch) []string { return v.Values }).(pulumi.StringArrayOutput)
+}
+
+type GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArrayOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArrayOutput) ToGatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArrayOutput() GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArrayOutput {
+	return o
+}
+
+func (o GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArrayOutput) ToGatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArrayOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArrayOutput {
+	return o
+}
+
+func (o GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArrayOutput) Index(i pulumi.IntInput) GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatch {
+		return vs[0].([]GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatch)[vs[1].(int)]
+	}).(GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchOutput)
+}
+
+// Selector must be specified when From is set to "Selector". In that case,
+// only ListenerSets in Namespaces matching this Selector will be selected by this
+// Gateway. This field is ignored for other values of "From".
+type GatewaySpecAllowedListenersNamespacesSelectorPatch struct {
+	// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+	MatchExpressions []GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatch `pulumi:"matchExpressions"`
+	// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+	// map is equivalent to an element of matchExpressions, whose key field is "key", the
+	// operator is "In", and the values array contains only "value". The requirements are ANDed.
+	MatchLabels map[string]string `pulumi:"matchLabels"`
+}
+
+// GatewaySpecAllowedListenersNamespacesSelectorPatchInput is an input type that accepts GatewaySpecAllowedListenersNamespacesSelectorPatchArgs and GatewaySpecAllowedListenersNamespacesSelectorPatchOutput values.
+// You can construct a concrete instance of `GatewaySpecAllowedListenersNamespacesSelectorPatchInput` via:
+//
+//	GatewaySpecAllowedListenersNamespacesSelectorPatchArgs{...}
+type GatewaySpecAllowedListenersNamespacesSelectorPatchInput interface {
+	pulumi.Input
+
+	ToGatewaySpecAllowedListenersNamespacesSelectorPatchOutput() GatewaySpecAllowedListenersNamespacesSelectorPatchOutput
+	ToGatewaySpecAllowedListenersNamespacesSelectorPatchOutputWithContext(context.Context) GatewaySpecAllowedListenersNamespacesSelectorPatchOutput
+}
+
+// Selector must be specified when From is set to "Selector". In that case,
+// only ListenerSets in Namespaces matching this Selector will be selected by this
+// Gateway. This field is ignored for other values of "From".
+type GatewaySpecAllowedListenersNamespacesSelectorPatchArgs struct {
+	// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+	MatchExpressions GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArrayInput `pulumi:"matchExpressions"`
+	// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+	// map is equivalent to an element of matchExpressions, whose key field is "key", the
+	// operator is "In", and the values array contains only "value". The requirements are ANDed.
+	MatchLabels pulumi.StringMapInput `pulumi:"matchLabels"`
+}
+
+func (GatewaySpecAllowedListenersNamespacesSelectorPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecAllowedListenersNamespacesSelectorPatch)(nil)).Elem()
+}
+
+func (i GatewaySpecAllowedListenersNamespacesSelectorPatchArgs) ToGatewaySpecAllowedListenersNamespacesSelectorPatchOutput() GatewaySpecAllowedListenersNamespacesSelectorPatchOutput {
+	return i.ToGatewaySpecAllowedListenersNamespacesSelectorPatchOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecAllowedListenersNamespacesSelectorPatchArgs) ToGatewaySpecAllowedListenersNamespacesSelectorPatchOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesSelectorPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecAllowedListenersNamespacesSelectorPatchOutput)
+}
+
+func (i GatewaySpecAllowedListenersNamespacesSelectorPatchArgs) ToGatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutput() GatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutput {
+	return i.ToGatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecAllowedListenersNamespacesSelectorPatchArgs) ToGatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecAllowedListenersNamespacesSelectorPatchOutput).ToGatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutputWithContext(ctx)
+}
+
+// GatewaySpecAllowedListenersNamespacesSelectorPatchPtrInput is an input type that accepts GatewaySpecAllowedListenersNamespacesSelectorPatchArgs, GatewaySpecAllowedListenersNamespacesSelectorPatchPtr and GatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutput values.
+// You can construct a concrete instance of `GatewaySpecAllowedListenersNamespacesSelectorPatchPtrInput` via:
+//
+//	        GatewaySpecAllowedListenersNamespacesSelectorPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type GatewaySpecAllowedListenersNamespacesSelectorPatchPtrInput interface {
+	pulumi.Input
+
+	ToGatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutput() GatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutput
+	ToGatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutputWithContext(context.Context) GatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutput
+}
+
+type gatewaySpecAllowedListenersNamespacesSelectorPatchPtrType GatewaySpecAllowedListenersNamespacesSelectorPatchArgs
+
+func GatewaySpecAllowedListenersNamespacesSelectorPatchPtr(v *GatewaySpecAllowedListenersNamespacesSelectorPatchArgs) GatewaySpecAllowedListenersNamespacesSelectorPatchPtrInput {
+	return (*gatewaySpecAllowedListenersNamespacesSelectorPatchPtrType)(v)
+}
+
+func (*gatewaySpecAllowedListenersNamespacesSelectorPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecAllowedListenersNamespacesSelectorPatch)(nil)).Elem()
+}
+
+func (i *gatewaySpecAllowedListenersNamespacesSelectorPatchPtrType) ToGatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutput() GatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutput {
+	return i.ToGatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *gatewaySpecAllowedListenersNamespacesSelectorPatchPtrType) ToGatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutput)
+}
+
+// Selector must be specified when From is set to "Selector". In that case,
+// only ListenerSets in Namespaces matching this Selector will be selected by this
+// Gateway. This field is ignored for other values of "From".
+type GatewaySpecAllowedListenersNamespacesSelectorPatchOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecAllowedListenersNamespacesSelectorPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecAllowedListenersNamespacesSelectorPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecAllowedListenersNamespacesSelectorPatchOutput) ToGatewaySpecAllowedListenersNamespacesSelectorPatchOutput() GatewaySpecAllowedListenersNamespacesSelectorPatchOutput {
+	return o
+}
+
+func (o GatewaySpecAllowedListenersNamespacesSelectorPatchOutput) ToGatewaySpecAllowedListenersNamespacesSelectorPatchOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesSelectorPatchOutput {
+	return o
+}
+
+func (o GatewaySpecAllowedListenersNamespacesSelectorPatchOutput) ToGatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutput() GatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutput {
+	return o.ToGatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutputWithContext(context.Background())
+}
+
+func (o GatewaySpecAllowedListenersNamespacesSelectorPatchOutput) ToGatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v GatewaySpecAllowedListenersNamespacesSelectorPatch) *GatewaySpecAllowedListenersNamespacesSelectorPatch {
+		return &v
+	}).(GatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutput)
+}
+
+// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+func (o GatewaySpecAllowedListenersNamespacesSelectorPatchOutput) MatchExpressions() GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArrayOutput {
+	return o.ApplyT(func(v GatewaySpecAllowedListenersNamespacesSelectorPatch) []GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatch {
+		return v.MatchExpressions
+	}).(GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArrayOutput)
+}
+
+// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+// map is equivalent to an element of matchExpressions, whose key field is "key", the
+// operator is "In", and the values array contains only "value". The requirements are ANDed.
+func (o GatewaySpecAllowedListenersNamespacesSelectorPatchOutput) MatchLabels() pulumi.StringMapOutput {
+	return o.ApplyT(func(v GatewaySpecAllowedListenersNamespacesSelectorPatch) map[string]string { return v.MatchLabels }).(pulumi.StringMapOutput)
+}
+
+type GatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecAllowedListenersNamespacesSelectorPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutput) ToGatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutput() GatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutput {
+	return o
+}
+
+func (o GatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutput) ToGatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutput {
+	return o
+}
+
+func (o GatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutput) Elem() GatewaySpecAllowedListenersNamespacesSelectorPatchOutput {
+	return o.ApplyT(func(v *GatewaySpecAllowedListenersNamespacesSelectorPatch) GatewaySpecAllowedListenersNamespacesSelectorPatch {
+		if v != nil {
+			return *v
+		}
+		var ret GatewaySpecAllowedListenersNamespacesSelectorPatch
+		return ret
+	}).(GatewaySpecAllowedListenersNamespacesSelectorPatchOutput)
+}
+
+// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+func (o GatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutput) MatchExpressions() GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArrayOutput {
+	return o.ApplyT(func(v *GatewaySpecAllowedListenersNamespacesSelectorPatch) []GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatch {
+		if v == nil {
+			return nil
+		}
+		return v.MatchExpressions
+	}).(GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArrayOutput)
+}
+
+// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+// map is equivalent to an element of matchExpressions, whose key field is "key", the
+// operator is "In", and the values array contains only "value". The requirements are ANDed.
+func (o GatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutput) MatchLabels() pulumi.StringMapOutput {
+	return o.ApplyT(func(v *GatewaySpecAllowedListenersNamespacesSelectorPatch) map[string]string {
+		if v == nil {
+			return nil
+		}
+		return v.MatchLabels
+	}).(pulumi.StringMapOutput)
+}
+
+// AllowedListeners defines which ListenerSets can be attached to this Gateway.
+// The default value is to allow no ListenerSets.
+type GatewaySpecAllowedListenersPatch struct {
+	Namespaces *GatewaySpecAllowedListenersNamespacesPatch `pulumi:"namespaces"`
+}
+
+// GatewaySpecAllowedListenersPatchInput is an input type that accepts GatewaySpecAllowedListenersPatchArgs and GatewaySpecAllowedListenersPatchOutput values.
+// You can construct a concrete instance of `GatewaySpecAllowedListenersPatchInput` via:
+//
+//	GatewaySpecAllowedListenersPatchArgs{...}
+type GatewaySpecAllowedListenersPatchInput interface {
+	pulumi.Input
+
+	ToGatewaySpecAllowedListenersPatchOutput() GatewaySpecAllowedListenersPatchOutput
+	ToGatewaySpecAllowedListenersPatchOutputWithContext(context.Context) GatewaySpecAllowedListenersPatchOutput
+}
+
+// AllowedListeners defines which ListenerSets can be attached to this Gateway.
+// The default value is to allow no ListenerSets.
+type GatewaySpecAllowedListenersPatchArgs struct {
+	Namespaces GatewaySpecAllowedListenersNamespacesPatchPtrInput `pulumi:"namespaces"`
+}
+
+func (GatewaySpecAllowedListenersPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecAllowedListenersPatch)(nil)).Elem()
+}
+
+func (i GatewaySpecAllowedListenersPatchArgs) ToGatewaySpecAllowedListenersPatchOutput() GatewaySpecAllowedListenersPatchOutput {
+	return i.ToGatewaySpecAllowedListenersPatchOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecAllowedListenersPatchArgs) ToGatewaySpecAllowedListenersPatchOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecAllowedListenersPatchOutput)
+}
+
+func (i GatewaySpecAllowedListenersPatchArgs) ToGatewaySpecAllowedListenersPatchPtrOutput() GatewaySpecAllowedListenersPatchPtrOutput {
+	return i.ToGatewaySpecAllowedListenersPatchPtrOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecAllowedListenersPatchArgs) ToGatewaySpecAllowedListenersPatchPtrOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecAllowedListenersPatchOutput).ToGatewaySpecAllowedListenersPatchPtrOutputWithContext(ctx)
+}
+
+// GatewaySpecAllowedListenersPatchPtrInput is an input type that accepts GatewaySpecAllowedListenersPatchArgs, GatewaySpecAllowedListenersPatchPtr and GatewaySpecAllowedListenersPatchPtrOutput values.
+// You can construct a concrete instance of `GatewaySpecAllowedListenersPatchPtrInput` via:
+//
+//	        GatewaySpecAllowedListenersPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type GatewaySpecAllowedListenersPatchPtrInput interface {
+	pulumi.Input
+
+	ToGatewaySpecAllowedListenersPatchPtrOutput() GatewaySpecAllowedListenersPatchPtrOutput
+	ToGatewaySpecAllowedListenersPatchPtrOutputWithContext(context.Context) GatewaySpecAllowedListenersPatchPtrOutput
+}
+
+type gatewaySpecAllowedListenersPatchPtrType GatewaySpecAllowedListenersPatchArgs
+
+func GatewaySpecAllowedListenersPatchPtr(v *GatewaySpecAllowedListenersPatchArgs) GatewaySpecAllowedListenersPatchPtrInput {
+	return (*gatewaySpecAllowedListenersPatchPtrType)(v)
+}
+
+func (*gatewaySpecAllowedListenersPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecAllowedListenersPatch)(nil)).Elem()
+}
+
+func (i *gatewaySpecAllowedListenersPatchPtrType) ToGatewaySpecAllowedListenersPatchPtrOutput() GatewaySpecAllowedListenersPatchPtrOutput {
+	return i.ToGatewaySpecAllowedListenersPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *gatewaySpecAllowedListenersPatchPtrType) ToGatewaySpecAllowedListenersPatchPtrOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecAllowedListenersPatchPtrOutput)
+}
+
+// AllowedListeners defines which ListenerSets can be attached to this Gateway.
+// The default value is to allow no ListenerSets.
+type GatewaySpecAllowedListenersPatchOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecAllowedListenersPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecAllowedListenersPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecAllowedListenersPatchOutput) ToGatewaySpecAllowedListenersPatchOutput() GatewaySpecAllowedListenersPatchOutput {
+	return o
+}
+
+func (o GatewaySpecAllowedListenersPatchOutput) ToGatewaySpecAllowedListenersPatchOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersPatchOutput {
+	return o
+}
+
+func (o GatewaySpecAllowedListenersPatchOutput) ToGatewaySpecAllowedListenersPatchPtrOutput() GatewaySpecAllowedListenersPatchPtrOutput {
+	return o.ToGatewaySpecAllowedListenersPatchPtrOutputWithContext(context.Background())
+}
+
+func (o GatewaySpecAllowedListenersPatchOutput) ToGatewaySpecAllowedListenersPatchPtrOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v GatewaySpecAllowedListenersPatch) *GatewaySpecAllowedListenersPatch {
+		return &v
+	}).(GatewaySpecAllowedListenersPatchPtrOutput)
+}
+
+func (o GatewaySpecAllowedListenersPatchOutput) Namespaces() GatewaySpecAllowedListenersNamespacesPatchPtrOutput {
+	return o.ApplyT(func(v GatewaySpecAllowedListenersPatch) *GatewaySpecAllowedListenersNamespacesPatch {
+		return v.Namespaces
+	}).(GatewaySpecAllowedListenersNamespacesPatchPtrOutput)
+}
+
+type GatewaySpecAllowedListenersPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecAllowedListenersPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecAllowedListenersPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecAllowedListenersPatchPtrOutput) ToGatewaySpecAllowedListenersPatchPtrOutput() GatewaySpecAllowedListenersPatchPtrOutput {
+	return o
+}
+
+func (o GatewaySpecAllowedListenersPatchPtrOutput) ToGatewaySpecAllowedListenersPatchPtrOutputWithContext(ctx context.Context) GatewaySpecAllowedListenersPatchPtrOutput {
+	return o
+}
+
+func (o GatewaySpecAllowedListenersPatchPtrOutput) Elem() GatewaySpecAllowedListenersPatchOutput {
+	return o.ApplyT(func(v *GatewaySpecAllowedListenersPatch) GatewaySpecAllowedListenersPatch {
+		if v != nil {
+			return *v
+		}
+		var ret GatewaySpecAllowedListenersPatch
+		return ret
+	}).(GatewaySpecAllowedListenersPatchOutput)
+}
+
+func (o GatewaySpecAllowedListenersPatchPtrOutput) Namespaces() GatewaySpecAllowedListenersNamespacesPatchPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecAllowedListenersPatch) *GatewaySpecAllowedListenersNamespacesPatch {
+		if v == nil {
+			return nil
+		}
+		return v.Namespaces
+	}).(GatewaySpecAllowedListenersNamespacesPatchPtrOutput)
+}
+
+// Infrastructure defines infrastructure level attributes about this Gateway instance.
+//
+// Support: Extended
+type GatewaySpecInfrastructure struct {
+	// Annotations that SHOULD be applied to any resources created in response to this Gateway.
+	//
+	// For implementations creating other Kubernetes objects, this should be the `metadata.annotations` field on resources.
+	// For other implementations, this refers to any relevant (implementation specific) "annotations" concepts.
+	//
+	// An implementation may chose to add additional implementation-specific annotations as they see fit.
+	//
+	// Support: Extended
+	Annotations map[string]string `pulumi:"annotations"`
+	// Labels that SHOULD be applied to any resources created in response to this Gateway.
+	//
+	// For implementations creating other Kubernetes objects, this should be the `metadata.labels` field on resources.
+	// For other implementations, this refers to any relevant (implementation specific) "labels" concepts.
+	//
+	// An implementation may chose to add additional implementation-specific labels as they see fit.
+	//
+	// If an implementation maps these labels to Pods, or any other resource that would need to be recreated when labels
+	// change, it SHOULD clearly warn about this behavior in documentation.
+	//
+	// Support: Extended
+	Labels        map[string]string                       `pulumi:"labels"`
+	ParametersRef *GatewaySpecInfrastructureParametersRef `pulumi:"parametersRef"`
+}
+
+// GatewaySpecInfrastructureInput is an input type that accepts GatewaySpecInfrastructureArgs and GatewaySpecInfrastructureOutput values.
+// You can construct a concrete instance of `GatewaySpecInfrastructureInput` via:
+//
+//	GatewaySpecInfrastructureArgs{...}
+type GatewaySpecInfrastructureInput interface {
+	pulumi.Input
+
+	ToGatewaySpecInfrastructureOutput() GatewaySpecInfrastructureOutput
+	ToGatewaySpecInfrastructureOutputWithContext(context.Context) GatewaySpecInfrastructureOutput
+}
+
+// Infrastructure defines infrastructure level attributes about this Gateway instance.
+//
+// Support: Extended
+type GatewaySpecInfrastructureArgs struct {
+	// Annotations that SHOULD be applied to any resources created in response to this Gateway.
+	//
+	// For implementations creating other Kubernetes objects, this should be the `metadata.annotations` field on resources.
+	// For other implementations, this refers to any relevant (implementation specific) "annotations" concepts.
+	//
+	// An implementation may chose to add additional implementation-specific annotations as they see fit.
+	//
+	// Support: Extended
+	Annotations pulumi.StringMapInput `pulumi:"annotations"`
+	// Labels that SHOULD be applied to any resources created in response to this Gateway.
+	//
+	// For implementations creating other Kubernetes objects, this should be the `metadata.labels` field on resources.
+	// For other implementations, this refers to any relevant (implementation specific) "labels" concepts.
+	//
+	// An implementation may chose to add additional implementation-specific labels as they see fit.
+	//
+	// If an implementation maps these labels to Pods, or any other resource that would need to be recreated when labels
+	// change, it SHOULD clearly warn about this behavior in documentation.
+	//
+	// Support: Extended
+	Labels        pulumi.StringMapInput                          `pulumi:"labels"`
+	ParametersRef GatewaySpecInfrastructureParametersRefPtrInput `pulumi:"parametersRef"`
+}
+
+func (GatewaySpecInfrastructureArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecInfrastructure)(nil)).Elem()
+}
+
+func (i GatewaySpecInfrastructureArgs) ToGatewaySpecInfrastructureOutput() GatewaySpecInfrastructureOutput {
+	return i.ToGatewaySpecInfrastructureOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecInfrastructureArgs) ToGatewaySpecInfrastructureOutputWithContext(ctx context.Context) GatewaySpecInfrastructureOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecInfrastructureOutput)
+}
+
+func (i GatewaySpecInfrastructureArgs) ToGatewaySpecInfrastructurePtrOutput() GatewaySpecInfrastructurePtrOutput {
+	return i.ToGatewaySpecInfrastructurePtrOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecInfrastructureArgs) ToGatewaySpecInfrastructurePtrOutputWithContext(ctx context.Context) GatewaySpecInfrastructurePtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecInfrastructureOutput).ToGatewaySpecInfrastructurePtrOutputWithContext(ctx)
+}
+
+// GatewaySpecInfrastructurePtrInput is an input type that accepts GatewaySpecInfrastructureArgs, GatewaySpecInfrastructurePtr and GatewaySpecInfrastructurePtrOutput values.
+// You can construct a concrete instance of `GatewaySpecInfrastructurePtrInput` via:
+//
+//	        GatewaySpecInfrastructureArgs{...}
+//
+//	or:
+//
+//	        nil
+type GatewaySpecInfrastructurePtrInput interface {
+	pulumi.Input
+
+	ToGatewaySpecInfrastructurePtrOutput() GatewaySpecInfrastructurePtrOutput
+	ToGatewaySpecInfrastructurePtrOutputWithContext(context.Context) GatewaySpecInfrastructurePtrOutput
+}
+
+type gatewaySpecInfrastructurePtrType GatewaySpecInfrastructureArgs
+
+func GatewaySpecInfrastructurePtr(v *GatewaySpecInfrastructureArgs) GatewaySpecInfrastructurePtrInput {
+	return (*gatewaySpecInfrastructurePtrType)(v)
+}
+
+func (*gatewaySpecInfrastructurePtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecInfrastructure)(nil)).Elem()
+}
+
+func (i *gatewaySpecInfrastructurePtrType) ToGatewaySpecInfrastructurePtrOutput() GatewaySpecInfrastructurePtrOutput {
+	return i.ToGatewaySpecInfrastructurePtrOutputWithContext(context.Background())
+}
+
+func (i *gatewaySpecInfrastructurePtrType) ToGatewaySpecInfrastructurePtrOutputWithContext(ctx context.Context) GatewaySpecInfrastructurePtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecInfrastructurePtrOutput)
+}
+
+// Infrastructure defines infrastructure level attributes about this Gateway instance.
+//
+// Support: Extended
+type GatewaySpecInfrastructureOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecInfrastructureOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecInfrastructure)(nil)).Elem()
+}
+
+func (o GatewaySpecInfrastructureOutput) ToGatewaySpecInfrastructureOutput() GatewaySpecInfrastructureOutput {
+	return o
+}
+
+func (o GatewaySpecInfrastructureOutput) ToGatewaySpecInfrastructureOutputWithContext(ctx context.Context) GatewaySpecInfrastructureOutput {
+	return o
+}
+
+func (o GatewaySpecInfrastructureOutput) ToGatewaySpecInfrastructurePtrOutput() GatewaySpecInfrastructurePtrOutput {
+	return o.ToGatewaySpecInfrastructurePtrOutputWithContext(context.Background())
+}
+
+func (o GatewaySpecInfrastructureOutput) ToGatewaySpecInfrastructurePtrOutputWithContext(ctx context.Context) GatewaySpecInfrastructurePtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v GatewaySpecInfrastructure) *GatewaySpecInfrastructure {
+		return &v
+	}).(GatewaySpecInfrastructurePtrOutput)
+}
+
+// Annotations that SHOULD be applied to any resources created in response to this Gateway.
+//
+// For implementations creating other Kubernetes objects, this should be the `metadata.annotations` field on resources.
+// For other implementations, this refers to any relevant (implementation specific) "annotations" concepts.
+//
+// An implementation may chose to add additional implementation-specific annotations as they see fit.
+//
+// Support: Extended
+func (o GatewaySpecInfrastructureOutput) Annotations() pulumi.StringMapOutput {
+	return o.ApplyT(func(v GatewaySpecInfrastructure) map[string]string { return v.Annotations }).(pulumi.StringMapOutput)
+}
+
+// Labels that SHOULD be applied to any resources created in response to this Gateway.
+//
+// For implementations creating other Kubernetes objects, this should be the `metadata.labels` field on resources.
+// For other implementations, this refers to any relevant (implementation specific) "labels" concepts.
+//
+// An implementation may chose to add additional implementation-specific labels as they see fit.
+//
+// If an implementation maps these labels to Pods, or any other resource that would need to be recreated when labels
+// change, it SHOULD clearly warn about this behavior in documentation.
+//
+// Support: Extended
+func (o GatewaySpecInfrastructureOutput) Labels() pulumi.StringMapOutput {
+	return o.ApplyT(func(v GatewaySpecInfrastructure) map[string]string { return v.Labels }).(pulumi.StringMapOutput)
+}
+
+func (o GatewaySpecInfrastructureOutput) ParametersRef() GatewaySpecInfrastructureParametersRefPtrOutput {
+	return o.ApplyT(func(v GatewaySpecInfrastructure) *GatewaySpecInfrastructureParametersRef { return v.ParametersRef }).(GatewaySpecInfrastructureParametersRefPtrOutput)
+}
+
+type GatewaySpecInfrastructurePtrOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecInfrastructurePtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecInfrastructure)(nil)).Elem()
+}
+
+func (o GatewaySpecInfrastructurePtrOutput) ToGatewaySpecInfrastructurePtrOutput() GatewaySpecInfrastructurePtrOutput {
+	return o
+}
+
+func (o GatewaySpecInfrastructurePtrOutput) ToGatewaySpecInfrastructurePtrOutputWithContext(ctx context.Context) GatewaySpecInfrastructurePtrOutput {
+	return o
+}
+
+func (o GatewaySpecInfrastructurePtrOutput) Elem() GatewaySpecInfrastructureOutput {
+	return o.ApplyT(func(v *GatewaySpecInfrastructure) GatewaySpecInfrastructure {
+		if v != nil {
+			return *v
+		}
+		var ret GatewaySpecInfrastructure
+		return ret
+	}).(GatewaySpecInfrastructureOutput)
+}
+
+// Annotations that SHOULD be applied to any resources created in response to this Gateway.
+//
+// For implementations creating other Kubernetes objects, this should be the `metadata.annotations` field on resources.
+// For other implementations, this refers to any relevant (implementation specific) "annotations" concepts.
+//
+// An implementation may chose to add additional implementation-specific annotations as they see fit.
+//
+// Support: Extended
+func (o GatewaySpecInfrastructurePtrOutput) Annotations() pulumi.StringMapOutput {
+	return o.ApplyT(func(v *GatewaySpecInfrastructure) map[string]string {
+		if v == nil {
+			return nil
+		}
+		return v.Annotations
+	}).(pulumi.StringMapOutput)
+}
+
+// Labels that SHOULD be applied to any resources created in response to this Gateway.
+//
+// For implementations creating other Kubernetes objects, this should be the `metadata.labels` field on resources.
+// For other implementations, this refers to any relevant (implementation specific) "labels" concepts.
+//
+// An implementation may chose to add additional implementation-specific labels as they see fit.
+//
+// If an implementation maps these labels to Pods, or any other resource that would need to be recreated when labels
+// change, it SHOULD clearly warn about this behavior in documentation.
+//
+// Support: Extended
+func (o GatewaySpecInfrastructurePtrOutput) Labels() pulumi.StringMapOutput {
+	return o.ApplyT(func(v *GatewaySpecInfrastructure) map[string]string {
+		if v == nil {
+			return nil
+		}
+		return v.Labels
+	}).(pulumi.StringMapOutput)
+}
+
+func (o GatewaySpecInfrastructurePtrOutput) ParametersRef() GatewaySpecInfrastructureParametersRefPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecInfrastructure) *GatewaySpecInfrastructureParametersRef {
+		if v == nil {
+			return nil
+		}
+		return v.ParametersRef
+	}).(GatewaySpecInfrastructureParametersRefPtrOutput)
+}
+
+// ParametersRef is a reference to a resource that contains the configuration
+// parameters corresponding to the Gateway. This is optional if the
+// controller does not require any additional configuration.
+//
+// # This follows the same semantics as GatewayClass's `parametersRef`, but on a per-Gateway basis
+//
+// The Gateway's GatewayClass may provide its own `parametersRef`. When both are specified,
+// the merging behavior is implementation specific.
+// It is generally recommended that GatewayClass provides defaults that can be overridden by a Gateway.
+//
+// If the referent cannot be found, refers to an unsupported kind, or when
+// the data within that resource is malformed, the Gateway SHOULD be
+// rejected with the "Accepted" status condition set to "False" and an
+// "InvalidParameters" reason.
+//
+// Support: Implementation-specific
+type GatewaySpecInfrastructureParametersRef struct {
+	// Group is the group of the referent.
+	Group *string `pulumi:"group"`
+	// Kind is kind of the referent.
+	Kind *string `pulumi:"kind"`
+	// Name is the name of the referent.
+	Name *string `pulumi:"name"`
+}
+
+// GatewaySpecInfrastructureParametersRefInput is an input type that accepts GatewaySpecInfrastructureParametersRefArgs and GatewaySpecInfrastructureParametersRefOutput values.
+// You can construct a concrete instance of `GatewaySpecInfrastructureParametersRefInput` via:
+//
+//	GatewaySpecInfrastructureParametersRefArgs{...}
+type GatewaySpecInfrastructureParametersRefInput interface {
+	pulumi.Input
+
+	ToGatewaySpecInfrastructureParametersRefOutput() GatewaySpecInfrastructureParametersRefOutput
+	ToGatewaySpecInfrastructureParametersRefOutputWithContext(context.Context) GatewaySpecInfrastructureParametersRefOutput
+}
+
+// ParametersRef is a reference to a resource that contains the configuration
+// parameters corresponding to the Gateway. This is optional if the
+// controller does not require any additional configuration.
+//
+// # This follows the same semantics as GatewayClass's `parametersRef`, but on a per-Gateway basis
+//
+// The Gateway's GatewayClass may provide its own `parametersRef`. When both are specified,
+// the merging behavior is implementation specific.
+// It is generally recommended that GatewayClass provides defaults that can be overridden by a Gateway.
+//
+// If the referent cannot be found, refers to an unsupported kind, or when
+// the data within that resource is malformed, the Gateway SHOULD be
+// rejected with the "Accepted" status condition set to "False" and an
+// "InvalidParameters" reason.
+//
+// Support: Implementation-specific
+type GatewaySpecInfrastructureParametersRefArgs struct {
+	// Group is the group of the referent.
+	Group pulumi.StringPtrInput `pulumi:"group"`
+	// Kind is kind of the referent.
+	Kind pulumi.StringPtrInput `pulumi:"kind"`
+	// Name is the name of the referent.
+	Name pulumi.StringPtrInput `pulumi:"name"`
+}
+
+func (GatewaySpecInfrastructureParametersRefArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecInfrastructureParametersRef)(nil)).Elem()
+}
+
+func (i GatewaySpecInfrastructureParametersRefArgs) ToGatewaySpecInfrastructureParametersRefOutput() GatewaySpecInfrastructureParametersRefOutput {
+	return i.ToGatewaySpecInfrastructureParametersRefOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecInfrastructureParametersRefArgs) ToGatewaySpecInfrastructureParametersRefOutputWithContext(ctx context.Context) GatewaySpecInfrastructureParametersRefOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecInfrastructureParametersRefOutput)
+}
+
+func (i GatewaySpecInfrastructureParametersRefArgs) ToGatewaySpecInfrastructureParametersRefPtrOutput() GatewaySpecInfrastructureParametersRefPtrOutput {
+	return i.ToGatewaySpecInfrastructureParametersRefPtrOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecInfrastructureParametersRefArgs) ToGatewaySpecInfrastructureParametersRefPtrOutputWithContext(ctx context.Context) GatewaySpecInfrastructureParametersRefPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecInfrastructureParametersRefOutput).ToGatewaySpecInfrastructureParametersRefPtrOutputWithContext(ctx)
+}
+
+// GatewaySpecInfrastructureParametersRefPtrInput is an input type that accepts GatewaySpecInfrastructureParametersRefArgs, GatewaySpecInfrastructureParametersRefPtr and GatewaySpecInfrastructureParametersRefPtrOutput values.
+// You can construct a concrete instance of `GatewaySpecInfrastructureParametersRefPtrInput` via:
+//
+//	        GatewaySpecInfrastructureParametersRefArgs{...}
+//
+//	or:
+//
+//	        nil
+type GatewaySpecInfrastructureParametersRefPtrInput interface {
+	pulumi.Input
+
+	ToGatewaySpecInfrastructureParametersRefPtrOutput() GatewaySpecInfrastructureParametersRefPtrOutput
+	ToGatewaySpecInfrastructureParametersRefPtrOutputWithContext(context.Context) GatewaySpecInfrastructureParametersRefPtrOutput
+}
+
+type gatewaySpecInfrastructureParametersRefPtrType GatewaySpecInfrastructureParametersRefArgs
+
+func GatewaySpecInfrastructureParametersRefPtr(v *GatewaySpecInfrastructureParametersRefArgs) GatewaySpecInfrastructureParametersRefPtrInput {
+	return (*gatewaySpecInfrastructureParametersRefPtrType)(v)
+}
+
+func (*gatewaySpecInfrastructureParametersRefPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecInfrastructureParametersRef)(nil)).Elem()
+}
+
+func (i *gatewaySpecInfrastructureParametersRefPtrType) ToGatewaySpecInfrastructureParametersRefPtrOutput() GatewaySpecInfrastructureParametersRefPtrOutput {
+	return i.ToGatewaySpecInfrastructureParametersRefPtrOutputWithContext(context.Background())
+}
+
+func (i *gatewaySpecInfrastructureParametersRefPtrType) ToGatewaySpecInfrastructureParametersRefPtrOutputWithContext(ctx context.Context) GatewaySpecInfrastructureParametersRefPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecInfrastructureParametersRefPtrOutput)
+}
+
+// ParametersRef is a reference to a resource that contains the configuration
+// parameters corresponding to the Gateway. This is optional if the
+// controller does not require any additional configuration.
+//
+// # This follows the same semantics as GatewayClass's `parametersRef`, but on a per-Gateway basis
+//
+// The Gateway's GatewayClass may provide its own `parametersRef`. When both are specified,
+// the merging behavior is implementation specific.
+// It is generally recommended that GatewayClass provides defaults that can be overridden by a Gateway.
+//
+// If the referent cannot be found, refers to an unsupported kind, or when
+// the data within that resource is malformed, the Gateway SHOULD be
+// rejected with the "Accepted" status condition set to "False" and an
+// "InvalidParameters" reason.
+//
+// Support: Implementation-specific
+type GatewaySpecInfrastructureParametersRefOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecInfrastructureParametersRefOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecInfrastructureParametersRef)(nil)).Elem()
+}
+
+func (o GatewaySpecInfrastructureParametersRefOutput) ToGatewaySpecInfrastructureParametersRefOutput() GatewaySpecInfrastructureParametersRefOutput {
+	return o
+}
+
+func (o GatewaySpecInfrastructureParametersRefOutput) ToGatewaySpecInfrastructureParametersRefOutputWithContext(ctx context.Context) GatewaySpecInfrastructureParametersRefOutput {
+	return o
+}
+
+func (o GatewaySpecInfrastructureParametersRefOutput) ToGatewaySpecInfrastructureParametersRefPtrOutput() GatewaySpecInfrastructureParametersRefPtrOutput {
+	return o.ToGatewaySpecInfrastructureParametersRefPtrOutputWithContext(context.Background())
+}
+
+func (o GatewaySpecInfrastructureParametersRefOutput) ToGatewaySpecInfrastructureParametersRefPtrOutputWithContext(ctx context.Context) GatewaySpecInfrastructureParametersRefPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v GatewaySpecInfrastructureParametersRef) *GatewaySpecInfrastructureParametersRef {
+		return &v
+	}).(GatewaySpecInfrastructureParametersRefPtrOutput)
+}
+
+// Group is the group of the referent.
+func (o GatewaySpecInfrastructureParametersRefOutput) Group() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecInfrastructureParametersRef) *string { return v.Group }).(pulumi.StringPtrOutput)
+}
+
+// Kind is kind of the referent.
+func (o GatewaySpecInfrastructureParametersRefOutput) Kind() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecInfrastructureParametersRef) *string { return v.Kind }).(pulumi.StringPtrOutput)
+}
+
+// Name is the name of the referent.
+func (o GatewaySpecInfrastructureParametersRefOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecInfrastructureParametersRef) *string { return v.Name }).(pulumi.StringPtrOutput)
+}
+
+type GatewaySpecInfrastructureParametersRefPtrOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecInfrastructureParametersRefPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecInfrastructureParametersRef)(nil)).Elem()
+}
+
+func (o GatewaySpecInfrastructureParametersRefPtrOutput) ToGatewaySpecInfrastructureParametersRefPtrOutput() GatewaySpecInfrastructureParametersRefPtrOutput {
+	return o
+}
+
+func (o GatewaySpecInfrastructureParametersRefPtrOutput) ToGatewaySpecInfrastructureParametersRefPtrOutputWithContext(ctx context.Context) GatewaySpecInfrastructureParametersRefPtrOutput {
+	return o
+}
+
+func (o GatewaySpecInfrastructureParametersRefPtrOutput) Elem() GatewaySpecInfrastructureParametersRefOutput {
+	return o.ApplyT(func(v *GatewaySpecInfrastructureParametersRef) GatewaySpecInfrastructureParametersRef {
+		if v != nil {
+			return *v
+		}
+		var ret GatewaySpecInfrastructureParametersRef
+		return ret
+	}).(GatewaySpecInfrastructureParametersRefOutput)
+}
+
+// Group is the group of the referent.
+func (o GatewaySpecInfrastructureParametersRefPtrOutput) Group() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecInfrastructureParametersRef) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Group
+	}).(pulumi.StringPtrOutput)
+}
+
+// Kind is kind of the referent.
+func (o GatewaySpecInfrastructureParametersRefPtrOutput) Kind() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecInfrastructureParametersRef) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Kind
+	}).(pulumi.StringPtrOutput)
+}
+
+// Name is the name of the referent.
+func (o GatewaySpecInfrastructureParametersRefPtrOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecInfrastructureParametersRef) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Name
+	}).(pulumi.StringPtrOutput)
+}
+
+// ParametersRef is a reference to a resource that contains the configuration
+// parameters corresponding to the Gateway. This is optional if the
+// controller does not require any additional configuration.
+//
+// # This follows the same semantics as GatewayClass's `parametersRef`, but on a per-Gateway basis
+//
+// The Gateway's GatewayClass may provide its own `parametersRef`. When both are specified,
+// the merging behavior is implementation specific.
+// It is generally recommended that GatewayClass provides defaults that can be overridden by a Gateway.
+//
+// If the referent cannot be found, refers to an unsupported kind, or when
+// the data within that resource is malformed, the Gateway SHOULD be
+// rejected with the "Accepted" status condition set to "False" and an
+// "InvalidParameters" reason.
+//
+// Support: Implementation-specific
+type GatewaySpecInfrastructureParametersRefPatch struct {
+	// Group is the group of the referent.
+	Group *string `pulumi:"group"`
+	// Kind is kind of the referent.
+	Kind *string `pulumi:"kind"`
+	// Name is the name of the referent.
+	Name *string `pulumi:"name"`
+}
+
+// GatewaySpecInfrastructureParametersRefPatchInput is an input type that accepts GatewaySpecInfrastructureParametersRefPatchArgs and GatewaySpecInfrastructureParametersRefPatchOutput values.
+// You can construct a concrete instance of `GatewaySpecInfrastructureParametersRefPatchInput` via:
+//
+//	GatewaySpecInfrastructureParametersRefPatchArgs{...}
+type GatewaySpecInfrastructureParametersRefPatchInput interface {
+	pulumi.Input
+
+	ToGatewaySpecInfrastructureParametersRefPatchOutput() GatewaySpecInfrastructureParametersRefPatchOutput
+	ToGatewaySpecInfrastructureParametersRefPatchOutputWithContext(context.Context) GatewaySpecInfrastructureParametersRefPatchOutput
+}
+
+// ParametersRef is a reference to a resource that contains the configuration
+// parameters corresponding to the Gateway. This is optional if the
+// controller does not require any additional configuration.
+//
+// # This follows the same semantics as GatewayClass's `parametersRef`, but on a per-Gateway basis
+//
+// The Gateway's GatewayClass may provide its own `parametersRef`. When both are specified,
+// the merging behavior is implementation specific.
+// It is generally recommended that GatewayClass provides defaults that can be overridden by a Gateway.
+//
+// If the referent cannot be found, refers to an unsupported kind, or when
+// the data within that resource is malformed, the Gateway SHOULD be
+// rejected with the "Accepted" status condition set to "False" and an
+// "InvalidParameters" reason.
+//
+// Support: Implementation-specific
+type GatewaySpecInfrastructureParametersRefPatchArgs struct {
+	// Group is the group of the referent.
+	Group pulumi.StringPtrInput `pulumi:"group"`
+	// Kind is kind of the referent.
+	Kind pulumi.StringPtrInput `pulumi:"kind"`
+	// Name is the name of the referent.
+	Name pulumi.StringPtrInput `pulumi:"name"`
+}
+
+func (GatewaySpecInfrastructureParametersRefPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecInfrastructureParametersRefPatch)(nil)).Elem()
+}
+
+func (i GatewaySpecInfrastructureParametersRefPatchArgs) ToGatewaySpecInfrastructureParametersRefPatchOutput() GatewaySpecInfrastructureParametersRefPatchOutput {
+	return i.ToGatewaySpecInfrastructureParametersRefPatchOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecInfrastructureParametersRefPatchArgs) ToGatewaySpecInfrastructureParametersRefPatchOutputWithContext(ctx context.Context) GatewaySpecInfrastructureParametersRefPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecInfrastructureParametersRefPatchOutput)
+}
+
+func (i GatewaySpecInfrastructureParametersRefPatchArgs) ToGatewaySpecInfrastructureParametersRefPatchPtrOutput() GatewaySpecInfrastructureParametersRefPatchPtrOutput {
+	return i.ToGatewaySpecInfrastructureParametersRefPatchPtrOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecInfrastructureParametersRefPatchArgs) ToGatewaySpecInfrastructureParametersRefPatchPtrOutputWithContext(ctx context.Context) GatewaySpecInfrastructureParametersRefPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecInfrastructureParametersRefPatchOutput).ToGatewaySpecInfrastructureParametersRefPatchPtrOutputWithContext(ctx)
+}
+
+// GatewaySpecInfrastructureParametersRefPatchPtrInput is an input type that accepts GatewaySpecInfrastructureParametersRefPatchArgs, GatewaySpecInfrastructureParametersRefPatchPtr and GatewaySpecInfrastructureParametersRefPatchPtrOutput values.
+// You can construct a concrete instance of `GatewaySpecInfrastructureParametersRefPatchPtrInput` via:
+//
+//	        GatewaySpecInfrastructureParametersRefPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type GatewaySpecInfrastructureParametersRefPatchPtrInput interface {
+	pulumi.Input
+
+	ToGatewaySpecInfrastructureParametersRefPatchPtrOutput() GatewaySpecInfrastructureParametersRefPatchPtrOutput
+	ToGatewaySpecInfrastructureParametersRefPatchPtrOutputWithContext(context.Context) GatewaySpecInfrastructureParametersRefPatchPtrOutput
+}
+
+type gatewaySpecInfrastructureParametersRefPatchPtrType GatewaySpecInfrastructureParametersRefPatchArgs
+
+func GatewaySpecInfrastructureParametersRefPatchPtr(v *GatewaySpecInfrastructureParametersRefPatchArgs) GatewaySpecInfrastructureParametersRefPatchPtrInput {
+	return (*gatewaySpecInfrastructureParametersRefPatchPtrType)(v)
+}
+
+func (*gatewaySpecInfrastructureParametersRefPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecInfrastructureParametersRefPatch)(nil)).Elem()
+}
+
+func (i *gatewaySpecInfrastructureParametersRefPatchPtrType) ToGatewaySpecInfrastructureParametersRefPatchPtrOutput() GatewaySpecInfrastructureParametersRefPatchPtrOutput {
+	return i.ToGatewaySpecInfrastructureParametersRefPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *gatewaySpecInfrastructureParametersRefPatchPtrType) ToGatewaySpecInfrastructureParametersRefPatchPtrOutputWithContext(ctx context.Context) GatewaySpecInfrastructureParametersRefPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecInfrastructureParametersRefPatchPtrOutput)
+}
+
+// ParametersRef is a reference to a resource that contains the configuration
+// parameters corresponding to the Gateway. This is optional if the
+// controller does not require any additional configuration.
+//
+// # This follows the same semantics as GatewayClass's `parametersRef`, but on a per-Gateway basis
+//
+// The Gateway's GatewayClass may provide its own `parametersRef`. When both are specified,
+// the merging behavior is implementation specific.
+// It is generally recommended that GatewayClass provides defaults that can be overridden by a Gateway.
+//
+// If the referent cannot be found, refers to an unsupported kind, or when
+// the data within that resource is malformed, the Gateway SHOULD be
+// rejected with the "Accepted" status condition set to "False" and an
+// "InvalidParameters" reason.
+//
+// Support: Implementation-specific
+type GatewaySpecInfrastructureParametersRefPatchOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecInfrastructureParametersRefPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecInfrastructureParametersRefPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecInfrastructureParametersRefPatchOutput) ToGatewaySpecInfrastructureParametersRefPatchOutput() GatewaySpecInfrastructureParametersRefPatchOutput {
+	return o
+}
+
+func (o GatewaySpecInfrastructureParametersRefPatchOutput) ToGatewaySpecInfrastructureParametersRefPatchOutputWithContext(ctx context.Context) GatewaySpecInfrastructureParametersRefPatchOutput {
+	return o
+}
+
+func (o GatewaySpecInfrastructureParametersRefPatchOutput) ToGatewaySpecInfrastructureParametersRefPatchPtrOutput() GatewaySpecInfrastructureParametersRefPatchPtrOutput {
+	return o.ToGatewaySpecInfrastructureParametersRefPatchPtrOutputWithContext(context.Background())
+}
+
+func (o GatewaySpecInfrastructureParametersRefPatchOutput) ToGatewaySpecInfrastructureParametersRefPatchPtrOutputWithContext(ctx context.Context) GatewaySpecInfrastructureParametersRefPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v GatewaySpecInfrastructureParametersRefPatch) *GatewaySpecInfrastructureParametersRefPatch {
+		return &v
+	}).(GatewaySpecInfrastructureParametersRefPatchPtrOutput)
+}
+
+// Group is the group of the referent.
+func (o GatewaySpecInfrastructureParametersRefPatchOutput) Group() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecInfrastructureParametersRefPatch) *string { return v.Group }).(pulumi.StringPtrOutput)
+}
+
+// Kind is kind of the referent.
+func (o GatewaySpecInfrastructureParametersRefPatchOutput) Kind() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecInfrastructureParametersRefPatch) *string { return v.Kind }).(pulumi.StringPtrOutput)
+}
+
+// Name is the name of the referent.
+func (o GatewaySpecInfrastructureParametersRefPatchOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecInfrastructureParametersRefPatch) *string { return v.Name }).(pulumi.StringPtrOutput)
+}
+
+type GatewaySpecInfrastructureParametersRefPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecInfrastructureParametersRefPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecInfrastructureParametersRefPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecInfrastructureParametersRefPatchPtrOutput) ToGatewaySpecInfrastructureParametersRefPatchPtrOutput() GatewaySpecInfrastructureParametersRefPatchPtrOutput {
+	return o
+}
+
+func (o GatewaySpecInfrastructureParametersRefPatchPtrOutput) ToGatewaySpecInfrastructureParametersRefPatchPtrOutputWithContext(ctx context.Context) GatewaySpecInfrastructureParametersRefPatchPtrOutput {
+	return o
+}
+
+func (o GatewaySpecInfrastructureParametersRefPatchPtrOutput) Elem() GatewaySpecInfrastructureParametersRefPatchOutput {
+	return o.ApplyT(func(v *GatewaySpecInfrastructureParametersRefPatch) GatewaySpecInfrastructureParametersRefPatch {
+		if v != nil {
+			return *v
+		}
+		var ret GatewaySpecInfrastructureParametersRefPatch
+		return ret
+	}).(GatewaySpecInfrastructureParametersRefPatchOutput)
+}
+
+// Group is the group of the referent.
+func (o GatewaySpecInfrastructureParametersRefPatchPtrOutput) Group() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecInfrastructureParametersRefPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Group
+	}).(pulumi.StringPtrOutput)
+}
+
+// Kind is kind of the referent.
+func (o GatewaySpecInfrastructureParametersRefPatchPtrOutput) Kind() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecInfrastructureParametersRefPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Kind
+	}).(pulumi.StringPtrOutput)
+}
+
+// Name is the name of the referent.
+func (o GatewaySpecInfrastructureParametersRefPatchPtrOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecInfrastructureParametersRefPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Name
+	}).(pulumi.StringPtrOutput)
+}
+
+// Infrastructure defines infrastructure level attributes about this Gateway instance.
+//
+// Support: Extended
+type GatewaySpecInfrastructurePatch struct {
+	// Annotations that SHOULD be applied to any resources created in response to this Gateway.
+	//
+	// For implementations creating other Kubernetes objects, this should be the `metadata.annotations` field on resources.
+	// For other implementations, this refers to any relevant (implementation specific) "annotations" concepts.
+	//
+	// An implementation may chose to add additional implementation-specific annotations as they see fit.
+	//
+	// Support: Extended
+	Annotations map[string]string `pulumi:"annotations"`
+	// Labels that SHOULD be applied to any resources created in response to this Gateway.
+	//
+	// For implementations creating other Kubernetes objects, this should be the `metadata.labels` field on resources.
+	// For other implementations, this refers to any relevant (implementation specific) "labels" concepts.
+	//
+	// An implementation may chose to add additional implementation-specific labels as they see fit.
+	//
+	// If an implementation maps these labels to Pods, or any other resource that would need to be recreated when labels
+	// change, it SHOULD clearly warn about this behavior in documentation.
+	//
+	// Support: Extended
+	Labels        map[string]string                            `pulumi:"labels"`
+	ParametersRef *GatewaySpecInfrastructureParametersRefPatch `pulumi:"parametersRef"`
+}
+
+// GatewaySpecInfrastructurePatchInput is an input type that accepts GatewaySpecInfrastructurePatchArgs and GatewaySpecInfrastructurePatchOutput values.
+// You can construct a concrete instance of `GatewaySpecInfrastructurePatchInput` via:
+//
+//	GatewaySpecInfrastructurePatchArgs{...}
+type GatewaySpecInfrastructurePatchInput interface {
+	pulumi.Input
+
+	ToGatewaySpecInfrastructurePatchOutput() GatewaySpecInfrastructurePatchOutput
+	ToGatewaySpecInfrastructurePatchOutputWithContext(context.Context) GatewaySpecInfrastructurePatchOutput
+}
+
+// Infrastructure defines infrastructure level attributes about this Gateway instance.
+//
+// Support: Extended
+type GatewaySpecInfrastructurePatchArgs struct {
+	// Annotations that SHOULD be applied to any resources created in response to this Gateway.
+	//
+	// For implementations creating other Kubernetes objects, this should be the `metadata.annotations` field on resources.
+	// For other implementations, this refers to any relevant (implementation specific) "annotations" concepts.
+	//
+	// An implementation may chose to add additional implementation-specific annotations as they see fit.
+	//
+	// Support: Extended
+	Annotations pulumi.StringMapInput `pulumi:"annotations"`
+	// Labels that SHOULD be applied to any resources created in response to this Gateway.
+	//
+	// For implementations creating other Kubernetes objects, this should be the `metadata.labels` field on resources.
+	// For other implementations, this refers to any relevant (implementation specific) "labels" concepts.
+	//
+	// An implementation may chose to add additional implementation-specific labels as they see fit.
+	//
+	// If an implementation maps these labels to Pods, or any other resource that would need to be recreated when labels
+	// change, it SHOULD clearly warn about this behavior in documentation.
+	//
+	// Support: Extended
+	Labels        pulumi.StringMapInput                               `pulumi:"labels"`
+	ParametersRef GatewaySpecInfrastructureParametersRefPatchPtrInput `pulumi:"parametersRef"`
+}
+
+func (GatewaySpecInfrastructurePatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecInfrastructurePatch)(nil)).Elem()
+}
+
+func (i GatewaySpecInfrastructurePatchArgs) ToGatewaySpecInfrastructurePatchOutput() GatewaySpecInfrastructurePatchOutput {
+	return i.ToGatewaySpecInfrastructurePatchOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecInfrastructurePatchArgs) ToGatewaySpecInfrastructurePatchOutputWithContext(ctx context.Context) GatewaySpecInfrastructurePatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecInfrastructurePatchOutput)
+}
+
+func (i GatewaySpecInfrastructurePatchArgs) ToGatewaySpecInfrastructurePatchPtrOutput() GatewaySpecInfrastructurePatchPtrOutput {
+	return i.ToGatewaySpecInfrastructurePatchPtrOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecInfrastructurePatchArgs) ToGatewaySpecInfrastructurePatchPtrOutputWithContext(ctx context.Context) GatewaySpecInfrastructurePatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecInfrastructurePatchOutput).ToGatewaySpecInfrastructurePatchPtrOutputWithContext(ctx)
+}
+
+// GatewaySpecInfrastructurePatchPtrInput is an input type that accepts GatewaySpecInfrastructurePatchArgs, GatewaySpecInfrastructurePatchPtr and GatewaySpecInfrastructurePatchPtrOutput values.
+// You can construct a concrete instance of `GatewaySpecInfrastructurePatchPtrInput` via:
+//
+//	        GatewaySpecInfrastructurePatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type GatewaySpecInfrastructurePatchPtrInput interface {
+	pulumi.Input
+
+	ToGatewaySpecInfrastructurePatchPtrOutput() GatewaySpecInfrastructurePatchPtrOutput
+	ToGatewaySpecInfrastructurePatchPtrOutputWithContext(context.Context) GatewaySpecInfrastructurePatchPtrOutput
+}
+
+type gatewaySpecInfrastructurePatchPtrType GatewaySpecInfrastructurePatchArgs
+
+func GatewaySpecInfrastructurePatchPtr(v *GatewaySpecInfrastructurePatchArgs) GatewaySpecInfrastructurePatchPtrInput {
+	return (*gatewaySpecInfrastructurePatchPtrType)(v)
+}
+
+func (*gatewaySpecInfrastructurePatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecInfrastructurePatch)(nil)).Elem()
+}
+
+func (i *gatewaySpecInfrastructurePatchPtrType) ToGatewaySpecInfrastructurePatchPtrOutput() GatewaySpecInfrastructurePatchPtrOutput {
+	return i.ToGatewaySpecInfrastructurePatchPtrOutputWithContext(context.Background())
+}
+
+func (i *gatewaySpecInfrastructurePatchPtrType) ToGatewaySpecInfrastructurePatchPtrOutputWithContext(ctx context.Context) GatewaySpecInfrastructurePatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecInfrastructurePatchPtrOutput)
+}
+
+// Infrastructure defines infrastructure level attributes about this Gateway instance.
+//
+// Support: Extended
+type GatewaySpecInfrastructurePatchOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecInfrastructurePatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecInfrastructurePatch)(nil)).Elem()
+}
+
+func (o GatewaySpecInfrastructurePatchOutput) ToGatewaySpecInfrastructurePatchOutput() GatewaySpecInfrastructurePatchOutput {
+	return o
+}
+
+func (o GatewaySpecInfrastructurePatchOutput) ToGatewaySpecInfrastructurePatchOutputWithContext(ctx context.Context) GatewaySpecInfrastructurePatchOutput {
+	return o
+}
+
+func (o GatewaySpecInfrastructurePatchOutput) ToGatewaySpecInfrastructurePatchPtrOutput() GatewaySpecInfrastructurePatchPtrOutput {
+	return o.ToGatewaySpecInfrastructurePatchPtrOutputWithContext(context.Background())
+}
+
+func (o GatewaySpecInfrastructurePatchOutput) ToGatewaySpecInfrastructurePatchPtrOutputWithContext(ctx context.Context) GatewaySpecInfrastructurePatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v GatewaySpecInfrastructurePatch) *GatewaySpecInfrastructurePatch {
+		return &v
+	}).(GatewaySpecInfrastructurePatchPtrOutput)
+}
+
+// Annotations that SHOULD be applied to any resources created in response to this Gateway.
+//
+// For implementations creating other Kubernetes objects, this should be the `metadata.annotations` field on resources.
+// For other implementations, this refers to any relevant (implementation specific) "annotations" concepts.
+//
+// An implementation may chose to add additional implementation-specific annotations as they see fit.
+//
+// Support: Extended
+func (o GatewaySpecInfrastructurePatchOutput) Annotations() pulumi.StringMapOutput {
+	return o.ApplyT(func(v GatewaySpecInfrastructurePatch) map[string]string { return v.Annotations }).(pulumi.StringMapOutput)
+}
+
+// Labels that SHOULD be applied to any resources created in response to this Gateway.
+//
+// For implementations creating other Kubernetes objects, this should be the `metadata.labels` field on resources.
+// For other implementations, this refers to any relevant (implementation specific) "labels" concepts.
+//
+// An implementation may chose to add additional implementation-specific labels as they see fit.
+//
+// If an implementation maps these labels to Pods, or any other resource that would need to be recreated when labels
+// change, it SHOULD clearly warn about this behavior in documentation.
+//
+// Support: Extended
+func (o GatewaySpecInfrastructurePatchOutput) Labels() pulumi.StringMapOutput {
+	return o.ApplyT(func(v GatewaySpecInfrastructurePatch) map[string]string { return v.Labels }).(pulumi.StringMapOutput)
+}
+
+func (o GatewaySpecInfrastructurePatchOutput) ParametersRef() GatewaySpecInfrastructureParametersRefPatchPtrOutput {
+	return o.ApplyT(func(v GatewaySpecInfrastructurePatch) *GatewaySpecInfrastructureParametersRefPatch {
+		return v.ParametersRef
+	}).(GatewaySpecInfrastructureParametersRefPatchPtrOutput)
+}
+
+type GatewaySpecInfrastructurePatchPtrOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecInfrastructurePatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecInfrastructurePatch)(nil)).Elem()
+}
+
+func (o GatewaySpecInfrastructurePatchPtrOutput) ToGatewaySpecInfrastructurePatchPtrOutput() GatewaySpecInfrastructurePatchPtrOutput {
+	return o
+}
+
+func (o GatewaySpecInfrastructurePatchPtrOutput) ToGatewaySpecInfrastructurePatchPtrOutputWithContext(ctx context.Context) GatewaySpecInfrastructurePatchPtrOutput {
+	return o
+}
+
+func (o GatewaySpecInfrastructurePatchPtrOutput) Elem() GatewaySpecInfrastructurePatchOutput {
+	return o.ApplyT(func(v *GatewaySpecInfrastructurePatch) GatewaySpecInfrastructurePatch {
+		if v != nil {
+			return *v
+		}
+		var ret GatewaySpecInfrastructurePatch
+		return ret
+	}).(GatewaySpecInfrastructurePatchOutput)
+}
+
+// Annotations that SHOULD be applied to any resources created in response to this Gateway.
+//
+// For implementations creating other Kubernetes objects, this should be the `metadata.annotations` field on resources.
+// For other implementations, this refers to any relevant (implementation specific) "annotations" concepts.
+//
+// An implementation may chose to add additional implementation-specific annotations as they see fit.
+//
+// Support: Extended
+func (o GatewaySpecInfrastructurePatchPtrOutput) Annotations() pulumi.StringMapOutput {
+	return o.ApplyT(func(v *GatewaySpecInfrastructurePatch) map[string]string {
+		if v == nil {
+			return nil
+		}
+		return v.Annotations
+	}).(pulumi.StringMapOutput)
+}
+
+// Labels that SHOULD be applied to any resources created in response to this Gateway.
+//
+// For implementations creating other Kubernetes objects, this should be the `metadata.labels` field on resources.
+// For other implementations, this refers to any relevant (implementation specific) "labels" concepts.
+//
+// An implementation may chose to add additional implementation-specific labels as they see fit.
+//
+// If an implementation maps these labels to Pods, or any other resource that would need to be recreated when labels
+// change, it SHOULD clearly warn about this behavior in documentation.
+//
+// Support: Extended
+func (o GatewaySpecInfrastructurePatchPtrOutput) Labels() pulumi.StringMapOutput {
+	return o.ApplyT(func(v *GatewaySpecInfrastructurePatch) map[string]string {
+		if v == nil {
+			return nil
+		}
+		return v.Labels
+	}).(pulumi.StringMapOutput)
+}
+
+func (o GatewaySpecInfrastructurePatchPtrOutput) ParametersRef() GatewaySpecInfrastructureParametersRefPatchPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecInfrastructurePatch) *GatewaySpecInfrastructureParametersRefPatch {
+		if v == nil {
+			return nil
+		}
+		return v.ParametersRef
+	}).(GatewaySpecInfrastructureParametersRefPatchPtrOutput)
+}
+
 // Listener embodies the concept of a logical endpoint where a Gateway accepts
 // network connections.
 type GatewaySpecListeners struct {
@@ -3368,10 +5975,31 @@ type GatewaySpecListeners struct {
 	//
 	// * TLS: The Listener Hostname MUST match the SNI.
 	// * HTTP: The Listener Hostname MUST match the Host header of the request.
-	// * HTTPS: The Listener Hostname SHOULD match at both the TLS and HTTP
-	//   protocol layers as described above. If an implementation does not
-	//   ensure that both the SNI and Host header match the Listener hostname,
-	//   it MUST clearly document that.
+	// * HTTPS: The Listener Hostname SHOULD match both the SNI and Host header.
+	//   Note that this does not require the SNI and Host header to be the same.
+	//   The semantics of this are described in more detail below.
+	//
+	// To ensure security, Section 11.1 of RFC-6066 emphasizes that server
+	// implementations that rely on SNI hostname matching MUST also verify
+	// hostnames within the application protocol.
+	//
+	// Section 9.1.2 of RFC-7540 provides a mechanism for servers to reject the
+	// reuse of a connection by responding with the HTTP 421 Misdirected Request
+	// status code. This indicates that the origin server has rejected the
+	// request because it appears to have been misdirected.
+	//
+	// To detect misdirected requests, Gateways SHOULD match the authority of
+	// the requests with all the SNI hostname(s) configured across all the
+	// Gateway Listeners on the same port and protocol:
+	//
+	// * If another Listener has an exact match or more specific wildcard entry,
+	//   the Gateway SHOULD return a 421.
+	// * If the current Listener (selected by SNI matching during ClientHello)
+	//   does not match the Host:
+	//     * If another Listener does match the Host, the Gateway SHOULD return a
+	//       421.
+	//     * If no other Listener matches the Host, the Gateway MUST return a
+	//       404.
 	//
 	// For HTTPRoute and TLSRoute resources, there is an interaction with the
 	// `spec.hostnames` array. When both listener and route specify hostnames,
@@ -3427,10 +6055,31 @@ type GatewaySpecListenersArgs struct {
 	//
 	// * TLS: The Listener Hostname MUST match the SNI.
 	// * HTTP: The Listener Hostname MUST match the Host header of the request.
-	// * HTTPS: The Listener Hostname SHOULD match at both the TLS and HTTP
-	//   protocol layers as described above. If an implementation does not
-	//   ensure that both the SNI and Host header match the Listener hostname,
-	//   it MUST clearly document that.
+	// * HTTPS: The Listener Hostname SHOULD match both the SNI and Host header.
+	//   Note that this does not require the SNI and Host header to be the same.
+	//   The semantics of this are described in more detail below.
+	//
+	// To ensure security, Section 11.1 of RFC-6066 emphasizes that server
+	// implementations that rely on SNI hostname matching MUST also verify
+	// hostnames within the application protocol.
+	//
+	// Section 9.1.2 of RFC-7540 provides a mechanism for servers to reject the
+	// reuse of a connection by responding with the HTTP 421 Misdirected Request
+	// status code. This indicates that the origin server has rejected the
+	// request because it appears to have been misdirected.
+	//
+	// To detect misdirected requests, Gateways SHOULD match the authority of
+	// the requests with all the SNI hostname(s) configured across all the
+	// Gateway Listeners on the same port and protocol:
+	//
+	// * If another Listener has an exact match or more specific wildcard entry,
+	//   the Gateway SHOULD return a 421.
+	// * If the current Listener (selected by SNI matching during ClientHello)
+	//   does not match the Host:
+	//     * If another Listener does match the Host, the Gateway SHOULD return a
+	//       421.
+	//     * If no other Listener matches the Host, the Gateway MUST return a
+	//       404.
 	//
 	// For HTTPRoute and TLSRoute resources, there is an interaction with the
 	// `spec.hostnames` array. When both listener and route specify hostnames,
@@ -3528,10 +6177,31 @@ func (o GatewaySpecListenersOutput) AllowedRoutes() GatewaySpecListenersAllowedR
 //
 //   - TLS: The Listener Hostname MUST match the SNI.
 //   - HTTP: The Listener Hostname MUST match the Host header of the request.
-//   - HTTPS: The Listener Hostname SHOULD match at both the TLS and HTTP
-//     protocol layers as described above. If an implementation does not
-//     ensure that both the SNI and Host header match the Listener hostname,
-//     it MUST clearly document that.
+//   - HTTPS: The Listener Hostname SHOULD match both the SNI and Host header.
+//     Note that this does not require the SNI and Host header to be the same.
+//     The semantics of this are described in more detail below.
+//
+// To ensure security, Section 11.1 of RFC-6066 emphasizes that server
+// implementations that rely on SNI hostname matching MUST also verify
+// hostnames within the application protocol.
+//
+// Section 9.1.2 of RFC-7540 provides a mechanism for servers to reject the
+// reuse of a connection by responding with the HTTP 421 Misdirected Request
+// status code. This indicates that the origin server has rejected the
+// request because it appears to have been misdirected.
+//
+// To detect misdirected requests, Gateways SHOULD match the authority of
+// the requests with all the SNI hostname(s) configured across all the
+// Gateway Listeners on the same port and protocol:
+//
+//   - If another Listener has an exact match or more specific wildcard entry,
+//     the Gateway SHOULD return a 421.
+//   - If the current Listener (selected by SNI matching during ClientHello)
+//     does not match the Host:
+//   - If another Listener does match the Host, the Gateway SHOULD return a
+//     421.
+//   - If no other Listener matches the Host, the Gateway MUST return a
+//     404.
 //
 // For HTTPRoute and TLSRoute resources, there is an interaction with the
 // `spec.hostnames` array. When both listener and route specify hostnames,
@@ -5391,10 +8061,31 @@ type GatewaySpecListenersPatch struct {
 	//
 	// * TLS: The Listener Hostname MUST match the SNI.
 	// * HTTP: The Listener Hostname MUST match the Host header of the request.
-	// * HTTPS: The Listener Hostname SHOULD match at both the TLS and HTTP
-	//   protocol layers as described above. If an implementation does not
-	//   ensure that both the SNI and Host header match the Listener hostname,
-	//   it MUST clearly document that.
+	// * HTTPS: The Listener Hostname SHOULD match both the SNI and Host header.
+	//   Note that this does not require the SNI and Host header to be the same.
+	//   The semantics of this are described in more detail below.
+	//
+	// To ensure security, Section 11.1 of RFC-6066 emphasizes that server
+	// implementations that rely on SNI hostname matching MUST also verify
+	// hostnames within the application protocol.
+	//
+	// Section 9.1.2 of RFC-7540 provides a mechanism for servers to reject the
+	// reuse of a connection by responding with the HTTP 421 Misdirected Request
+	// status code. This indicates that the origin server has rejected the
+	// request because it appears to have been misdirected.
+	//
+	// To detect misdirected requests, Gateways SHOULD match the authority of
+	// the requests with all the SNI hostname(s) configured across all the
+	// Gateway Listeners on the same port and protocol:
+	//
+	// * If another Listener has an exact match or more specific wildcard entry,
+	//   the Gateway SHOULD return a 421.
+	// * If the current Listener (selected by SNI matching during ClientHello)
+	//   does not match the Host:
+	//     * If another Listener does match the Host, the Gateway SHOULD return a
+	//       421.
+	//     * If no other Listener matches the Host, the Gateway MUST return a
+	//       404.
 	//
 	// For HTTPRoute and TLSRoute resources, there is an interaction with the
 	// `spec.hostnames` array. When both listener and route specify hostnames,
@@ -5450,10 +8141,31 @@ type GatewaySpecListenersPatchArgs struct {
 	//
 	// * TLS: The Listener Hostname MUST match the SNI.
 	// * HTTP: The Listener Hostname MUST match the Host header of the request.
-	// * HTTPS: The Listener Hostname SHOULD match at both the TLS and HTTP
-	//   protocol layers as described above. If an implementation does not
-	//   ensure that both the SNI and Host header match the Listener hostname,
-	//   it MUST clearly document that.
+	// * HTTPS: The Listener Hostname SHOULD match both the SNI and Host header.
+	//   Note that this does not require the SNI and Host header to be the same.
+	//   The semantics of this are described in more detail below.
+	//
+	// To ensure security, Section 11.1 of RFC-6066 emphasizes that server
+	// implementations that rely on SNI hostname matching MUST also verify
+	// hostnames within the application protocol.
+	//
+	// Section 9.1.2 of RFC-7540 provides a mechanism for servers to reject the
+	// reuse of a connection by responding with the HTTP 421 Misdirected Request
+	// status code. This indicates that the origin server has rejected the
+	// request because it appears to have been misdirected.
+	//
+	// To detect misdirected requests, Gateways SHOULD match the authority of
+	// the requests with all the SNI hostname(s) configured across all the
+	// Gateway Listeners on the same port and protocol:
+	//
+	// * If another Listener has an exact match or more specific wildcard entry,
+	//   the Gateway SHOULD return a 421.
+	// * If the current Listener (selected by SNI matching during ClientHello)
+	//   does not match the Host:
+	//     * If another Listener does match the Host, the Gateway SHOULD return a
+	//       421.
+	//     * If no other Listener matches the Host, the Gateway MUST return a
+	//       404.
 	//
 	// For HTTPRoute and TLSRoute resources, there is an interaction with the
 	// `spec.hostnames` array. When both listener and route specify hostnames,
@@ -5551,10 +8263,31 @@ func (o GatewaySpecListenersPatchOutput) AllowedRoutes() GatewaySpecListenersAll
 //
 //   - TLS: The Listener Hostname MUST match the SNI.
 //   - HTTP: The Listener Hostname MUST match the Host header of the request.
-//   - HTTPS: The Listener Hostname SHOULD match at both the TLS and HTTP
-//     protocol layers as described above. If an implementation does not
-//     ensure that both the SNI and Host header match the Listener hostname,
-//     it MUST clearly document that.
+//   - HTTPS: The Listener Hostname SHOULD match both the SNI and Host header.
+//     Note that this does not require the SNI and Host header to be the same.
+//     The semantics of this are described in more detail below.
+//
+// To ensure security, Section 11.1 of RFC-6066 emphasizes that server
+// implementations that rely on SNI hostname matching MUST also verify
+// hostnames within the application protocol.
+//
+// Section 9.1.2 of RFC-7540 provides a mechanism for servers to reject the
+// reuse of a connection by responding with the HTTP 421 Misdirected Request
+// status code. This indicates that the origin server has rejected the
+// request because it appears to have been misdirected.
+//
+// To detect misdirected requests, Gateways SHOULD match the authority of
+// the requests with all the SNI hostname(s) configured across all the
+// Gateway Listeners on the same port and protocol:
+//
+//   - If another Listener has an exact match or more specific wildcard entry,
+//     the Gateway SHOULD return a 421.
+//   - If the current Listener (selected by SNI matching during ClientHello)
+//     does not match the Host:
+//   - If another Listener does match the Host, the Gateway SHOULD return a
+//     421.
+//   - If no other Listener matches the Host, the Gateway MUST return a
+//     404.
 //
 // For HTTPRoute and TLSRoute resources, there is an interaction with the
 // `spec.hostnames` array. When both listener and route specify hostnames,
@@ -5622,7 +8355,7 @@ func (o GatewaySpecListenersPatchArrayOutput) Index(i pulumi.IntInput) GatewaySp
 // the Protocol field is "HTTPS" or "TLS". It is invalid to set this field
 // if the Protocol field is "HTTP", "TCP", or "UDP".
 //
-// The association of SNIs to Certificate defined in GatewayTLSConfig is
+// The association of SNIs to Certificate defined in ListenerTLSConfig is
 // defined based on the Hostname field for this listener.
 //
 // The GatewayClass MUST use the longest matching SNI out of all
@@ -5697,7 +8430,7 @@ type GatewaySpecListenersTlsInput interface {
 // the Protocol field is "HTTPS" or "TLS". It is invalid to set this field
 // if the Protocol field is "HTTP", "TCP", or "UDP".
 //
-// The association of SNIs to Certificate defined in GatewayTLSConfig is
+// The association of SNIs to Certificate defined in ListenerTLSConfig is
 // defined based on the Hostname field for this listener.
 //
 // The GatewayClass MUST use the longest matching SNI out of all
@@ -5814,7 +8547,7 @@ func (i *gatewaySpecListenersTlsPtrType) ToGatewaySpecListenersTlsPtrOutputWithC
 // the Protocol field is "HTTPS" or "TLS". It is invalid to set this field
 // if the Protocol field is "HTTP", "TCP", or "UDP".
 //
-// The association of SNIs to Certificate defined in GatewayTLSConfig is
+// The association of SNIs to Certificate defined in ListenerTLSConfig is
 // defined based on the Hostname field for this listener.
 //
 // The GatewayClass MUST use the longest matching SNI out of all
@@ -6362,7 +9095,7 @@ func (o GatewaySpecListenersTlsCertificateRefsPatchArrayOutput) Index(i pulumi.I
 // the Protocol field is "HTTPS" or "TLS". It is invalid to set this field
 // if the Protocol field is "HTTP", "TCP", or "UDP".
 //
-// The association of SNIs to Certificate defined in GatewayTLSConfig is
+// The association of SNIs to Certificate defined in ListenerTLSConfig is
 // defined based on the Hostname field for this listener.
 //
 // The GatewayClass MUST use the longest matching SNI out of all
@@ -6437,7 +9170,7 @@ type GatewaySpecListenersTlsPatchInput interface {
 // the Protocol field is "HTTPS" or "TLS". It is invalid to set this field
 // if the Protocol field is "HTTP", "TCP", or "UDP".
 //
-// The association of SNIs to Certificate defined in GatewayTLSConfig is
+// The association of SNIs to Certificate defined in ListenerTLSConfig is
 // defined based on the Hostname field for this listener.
 //
 // The GatewayClass MUST use the longest matching SNI out of all
@@ -6554,7 +9287,7 @@ func (i *gatewaySpecListenersTlsPatchPtrType) ToGatewaySpecListenersTlsPatchPtrO
 // the Protocol field is "HTTPS" or "TLS". It is invalid to set this field
 // if the Protocol field is "HTTP", "TCP", or "UDP".
 //
-// The association of SNIs to Certificate defined in GatewayTLSConfig is
+// The association of SNIs to Certificate defined in ListenerTLSConfig is
 // defined based on the Hostname field for this listener.
 //
 // The GatewayClass MUST use the longest matching SNI out of all
@@ -6749,7 +9482,7 @@ type GatewaySpecPatch struct {
 	// Addresses requested for this Gateway. This is optional and behavior can
 	// depend on the implementation. If a value is set in the spec and the
 	// requested address is invalid or unavailable, the implementation MUST
-	// indicate this in the associated entry in GatewayStatus.Addresses.
+	// indicate this in an associated entry in GatewayStatus.Conditions.
 	//
 	// The Addresses field represents a request for the address(es) on the
 	// "outside of the Gateway", that traffic bound for this Gateway will use.
@@ -6766,13 +9499,17 @@ type GatewaySpecPatch struct {
 	// GatewayStatus.Addresses.
 	//
 	// Support: Extended
-	Addresses []GatewaySpecAddressesPatch `pulumi:"addresses"`
+	Addresses        []GatewaySpecAddressesPatch       `pulumi:"addresses"`
+	AllowedListeners *GatewaySpecAllowedListenersPatch `pulumi:"allowedListeners"`
 	// GatewayClassName used for this Gateway. This is the name of a
 	// GatewayClass resource.
-	GatewayClassName *string `pulumi:"gatewayClassName"`
+	GatewayClassName *string                         `pulumi:"gatewayClassName"`
+	Infrastructure   *GatewaySpecInfrastructurePatch `pulumi:"infrastructure"`
 	// Listeners associated with this Gateway. Listeners define
 	// logical endpoints that are bound on this Gateway's addresses.
 	// At least one Listener MUST be specified.
+	//
+	// ## Distinct Listeners
 	//
 	// Each Listener in a set of Listeners (for example, in a single Gateway)
 	// MUST be _distinct_, in that a traffic flow MUST be able to be assigned to
@@ -6785,55 +9522,76 @@ type GatewaySpecPatch struct {
 	// combination of Port, Protocol, and, if supported by the protocol, Hostname.
 	//
 	// Some combinations of port, protocol, and TLS settings are considered
-	// Core support and MUST be supported by implementations based on their
-	// targeted conformance profile:
+	// Core support and MUST be supported by implementations based on the objects
+	// they support:
 	//
-	// HTTP Profile
+	// HTTPRoute
 	//
 	// 1. HTTPRoute, Port: 80, Protocol: HTTP
 	// 2. HTTPRoute, Port: 443, Protocol: HTTPS, TLS Mode: Terminate, TLS keypair provided
 	//
-	// TLS Profile
+	// TLSRoute
 	//
 	// 1. TLSRoute, Port: 443, Protocol: TLS, TLS Mode: Passthrough
 	//
 	// "Distinct" Listeners have the following property:
 	//
-	// The implementation can match inbound requests to a single distinct
-	// Listener. When multiple Listeners share values for fields (for
+	// **The implementation can match inbound requests to a single distinct
+	// Listener**.
+	//
+	// When multiple Listeners share values for fields (for
 	// example, two Listeners with the same Port value), the implementation
 	// can match requests to only one of the Listeners using other
 	// Listener fields.
 	//
-	// For example, the following Listener scenarios are distinct:
+	// When multiple listeners have the same value for the Protocol field, then
+	// each of the Listeners with matching Protocol values MUST have different
+	// values for other fields.
 	//
-	// 1. Multiple Listeners with the same Port that all use the "HTTP"
-	//    Protocol that all have unique Hostname values.
-	// 2. Multiple Listeners with the same Port that use either the "HTTPS" or
-	//    "TLS" Protocol that all have unique Hostname values.
-	// 3. A mixture of "TCP" and "UDP" Protocol Listeners, where no Listener
-	//    with the same Protocol has the same Port value.
+	// The set of fields that MUST be different for a Listener differs per protocol.
+	// The following rules define the rules for what fields MUST be considered for
+	// Listeners to be distinct with each protocol currently defined in the
+	// Gateway API spec.
 	//
-	// Some fields in the Listener struct have possible values that affect
-	// whether the Listener is distinct. Hostname is particularly relevant
-	// for HTTP or HTTPS protocols.
+	// The set of listeners that all share a protocol value MUST have _different_
+	// values for _at least one_ of these fields to be distinct:
 	//
-	// When using the Hostname value to select between same-Port, same-Protocol
-	// Listeners, the Hostname value must be different on each Listener for the
-	// Listener to be distinct.
+	// * **HTTP, HTTPS, TLS**: Port, Hostname
+	// * **TCP, UDP**: Port
 	//
-	// When the Listeners are distinct based on Hostname, inbound request
+	// One **very** important rule to call out involves what happens when an
+	// implementation:
+	//
+	// * Supports TCP protocol Listeners, as well as HTTP, HTTPS, or TLS protocol
+	//   Listeners, and
+	// * sees HTTP, HTTPS, or TLS protocols with the same `port` as one with TCP
+	//   Protocol.
+	//
+	// In this case all the Listeners that share a port with the
+	// TCP Listener are not distinct and so MUST NOT be accepted.
+	//
+	// If an implementation does not support TCP Protocol Listeners, then the
+	// previous rule does not apply, and the TCP Listeners SHOULD NOT be
+	// accepted.
+	//
+	// Note that the `tls` field is not used for determining if a listener is distinct, because
+	// Listeners that _only_ differ on TLS config will still conflict in all cases.
+	//
+	// ### Listeners that are distinct only by Hostname
+	//
+	// When the Listeners are distinct based only on Hostname, inbound request
 	// hostnames MUST match from the most specific to least specific Hostname
 	// values to choose the correct Listener and its associated set of Routes.
 	//
-	// Exact matches must be processed before wildcard matches, and wildcard
-	// matches must be processed before fallback (empty Hostname value)
+	// Exact matches MUST be processed before wildcard matches, and wildcard
+	// matches MUST be processed before fallback (empty Hostname value)
 	// matches. For example, `"foo.example.com"` takes precedence over
 	// `"*.example.com"`, and `"*.example.com"` takes precedence over `""`.
 	//
 	// Additionally, if there are multiple wildcard entries, more specific
 	// wildcard entries must be processed before less specific wildcard entries.
 	// For example, `"*.foo.example.com"` takes precedence over `"*.example.com"`.
+	//
 	// The precise definition here is that the higher the number of dots in the
 	// hostname to the right of the wildcard character, the higher the precedence.
 	//
@@ -6841,18 +9599,26 @@ type GatewaySpecPatch struct {
 	// the left, however, so `"*.example.com"` will match both
 	// `"foo.bar.example.com"` _and_ `"bar.example.com"`.
 	//
+	// ## Handling indistinct Listeners
+	//
 	// If a set of Listeners contains Listeners that are not distinct, then those
-	// Listeners are Conflicted, and the implementation MUST set the "Conflicted"
+	// Listeners are _Conflicted_, and the implementation MUST set the "Conflicted"
 	// condition in the Listener Status to "True".
+	//
+	// The words "indistinct" and "conflicted" are considered equivalent for the
+	// purpose of this documentation.
 	//
 	// Implementations MAY choose to accept a Gateway with some Conflicted
 	// Listeners only if they only accept the partial Listener set that contains
-	// no Conflicted Listeners. To put this another way, implementations may
-	// accept a partial Listener set only if they throw out *all* the conflicting
-	// Listeners. No picking one of the conflicting listeners as the winner.
-	// This also means that the Gateway must have at least one non-conflicting
-	// Listener in this case, otherwise it violates the requirement that at
-	// least one Listener must be present.
+	// no Conflicted Listeners.
+	//
+	// Specifically, an implementation MAY accept a partial Listener set subject to
+	// the following rules:
+	//
+	// * The implementation MUST NOT pick one conflicting Listener as the winner.
+	//   ALL indistinct Listeners must not be accepted for processing.
+	// * At least one distinct Listener MUST be present, or else the Gateway effectively
+	//   contains _no_ Listeners, and must be rejected from processing as a whole.
 	//
 	// The implementation MUST set a "ListenersNotValid" condition on the
 	// Gateway Status when the Gateway contains Conflicted Listeners whether or
@@ -6861,7 +9627,25 @@ type GatewaySpecPatch struct {
 	// Accepted. Additionally, the Listener status for those listeners SHOULD
 	// indicate which Listeners are conflicted and not Accepted.
 	//
-	// A Gateway's Listeners are considered "compatible" if:
+	// ## General Listener behavior
+	//
+	// Note that, for all distinct Listeners, requests SHOULD match at most one Listener.
+	// For example, if Listeners are defined for "foo.example.com" and "*.example.com", a
+	// request to "foo.example.com" SHOULD only be routed using routes attached
+	// to the "foo.example.com" Listener (and not the "*.example.com" Listener).
+	//
+	// This concept is known as "Listener Isolation", and it is an Extended feature
+	// of Gateway API. Implementations that do not support Listener Isolation MUST
+	// clearly document this, and MUST NOT claim support for the
+	// `GatewayHTTPListenerIsolation` feature.
+	//
+	// Implementations that _do_ support Listener Isolation SHOULD claim support
+	// for the Extended `GatewayHTTPListenerIsolation` feature and pass the associated
+	// conformance tests.
+	//
+	// ## Compatible Listeners
+	//
+	// A Gateway's Listeners are considered _compatible_ if:
 	//
 	// 1. They are distinct.
 	// 2. The implementation can serve them in compliance with the Addresses
@@ -6876,18 +9660,14 @@ type GatewaySpecPatch struct {
 	// on the same address, or cannot mix HTTPS and generic TLS listens on the same port
 	// would not consider those cases compatible, even though they are distinct.
 	//
-	// Note that requests SHOULD match at most one Listener. For example, if
-	// Listeners are defined for "foo.example.com" and "*.example.com", a
-	// request to "foo.example.com" SHOULD only be routed using routes attached
-	// to the "foo.example.com" Listener (and not the "*.example.com" Listener).
-	// This concept is known as "Listener Isolation". Implementations that do
-	// not support Listener Isolation MUST clearly document this.
-	//
 	// Implementations MAY merge separate Gateways onto a single set of
 	// Addresses if all Listeners across all Gateways are compatible.
 	//
+	// In a future release the MinItems=1 requirement MAY be dropped.
+	//
 	// Support: Core
 	Listeners []GatewaySpecListenersPatch `pulumi:"listeners"`
+	Tls       *GatewaySpecTlsPatch        `pulumi:"tls"`
 }
 
 // GatewaySpecPatchInput is an input type that accepts GatewaySpecPatchArgs and GatewaySpecPatchOutput values.
@@ -6906,7 +9686,7 @@ type GatewaySpecPatchArgs struct {
 	// Addresses requested for this Gateway. This is optional and behavior can
 	// depend on the implementation. If a value is set in the spec and the
 	// requested address is invalid or unavailable, the implementation MUST
-	// indicate this in the associated entry in GatewayStatus.Addresses.
+	// indicate this in an associated entry in GatewayStatus.Conditions.
 	//
 	// The Addresses field represents a request for the address(es) on the
 	// "outside of the Gateway", that traffic bound for this Gateway will use.
@@ -6923,13 +9703,17 @@ type GatewaySpecPatchArgs struct {
 	// GatewayStatus.Addresses.
 	//
 	// Support: Extended
-	Addresses GatewaySpecAddressesPatchArrayInput `pulumi:"addresses"`
+	Addresses        GatewaySpecAddressesPatchArrayInput      `pulumi:"addresses"`
+	AllowedListeners GatewaySpecAllowedListenersPatchPtrInput `pulumi:"allowedListeners"`
 	// GatewayClassName used for this Gateway. This is the name of a
 	// GatewayClass resource.
-	GatewayClassName pulumi.StringPtrInput `pulumi:"gatewayClassName"`
+	GatewayClassName pulumi.StringPtrInput                  `pulumi:"gatewayClassName"`
+	Infrastructure   GatewaySpecInfrastructurePatchPtrInput `pulumi:"infrastructure"`
 	// Listeners associated with this Gateway. Listeners define
 	// logical endpoints that are bound on this Gateway's addresses.
 	// At least one Listener MUST be specified.
+	//
+	// ## Distinct Listeners
 	//
 	// Each Listener in a set of Listeners (for example, in a single Gateway)
 	// MUST be _distinct_, in that a traffic flow MUST be able to be assigned to
@@ -6942,55 +9726,76 @@ type GatewaySpecPatchArgs struct {
 	// combination of Port, Protocol, and, if supported by the protocol, Hostname.
 	//
 	// Some combinations of port, protocol, and TLS settings are considered
-	// Core support and MUST be supported by implementations based on their
-	// targeted conformance profile:
+	// Core support and MUST be supported by implementations based on the objects
+	// they support:
 	//
-	// HTTP Profile
+	// HTTPRoute
 	//
 	// 1. HTTPRoute, Port: 80, Protocol: HTTP
 	// 2. HTTPRoute, Port: 443, Protocol: HTTPS, TLS Mode: Terminate, TLS keypair provided
 	//
-	// TLS Profile
+	// TLSRoute
 	//
 	// 1. TLSRoute, Port: 443, Protocol: TLS, TLS Mode: Passthrough
 	//
 	// "Distinct" Listeners have the following property:
 	//
-	// The implementation can match inbound requests to a single distinct
-	// Listener. When multiple Listeners share values for fields (for
+	// **The implementation can match inbound requests to a single distinct
+	// Listener**.
+	//
+	// When multiple Listeners share values for fields (for
 	// example, two Listeners with the same Port value), the implementation
 	// can match requests to only one of the Listeners using other
 	// Listener fields.
 	//
-	// For example, the following Listener scenarios are distinct:
+	// When multiple listeners have the same value for the Protocol field, then
+	// each of the Listeners with matching Protocol values MUST have different
+	// values for other fields.
 	//
-	// 1. Multiple Listeners with the same Port that all use the "HTTP"
-	//    Protocol that all have unique Hostname values.
-	// 2. Multiple Listeners with the same Port that use either the "HTTPS" or
-	//    "TLS" Protocol that all have unique Hostname values.
-	// 3. A mixture of "TCP" and "UDP" Protocol Listeners, where no Listener
-	//    with the same Protocol has the same Port value.
+	// The set of fields that MUST be different for a Listener differs per protocol.
+	// The following rules define the rules for what fields MUST be considered for
+	// Listeners to be distinct with each protocol currently defined in the
+	// Gateway API spec.
 	//
-	// Some fields in the Listener struct have possible values that affect
-	// whether the Listener is distinct. Hostname is particularly relevant
-	// for HTTP or HTTPS protocols.
+	// The set of listeners that all share a protocol value MUST have _different_
+	// values for _at least one_ of these fields to be distinct:
 	//
-	// When using the Hostname value to select between same-Port, same-Protocol
-	// Listeners, the Hostname value must be different on each Listener for the
-	// Listener to be distinct.
+	// * **HTTP, HTTPS, TLS**: Port, Hostname
+	// * **TCP, UDP**: Port
 	//
-	// When the Listeners are distinct based on Hostname, inbound request
+	// One **very** important rule to call out involves what happens when an
+	// implementation:
+	//
+	// * Supports TCP protocol Listeners, as well as HTTP, HTTPS, or TLS protocol
+	//   Listeners, and
+	// * sees HTTP, HTTPS, or TLS protocols with the same `port` as one with TCP
+	//   Protocol.
+	//
+	// In this case all the Listeners that share a port with the
+	// TCP Listener are not distinct and so MUST NOT be accepted.
+	//
+	// If an implementation does not support TCP Protocol Listeners, then the
+	// previous rule does not apply, and the TCP Listeners SHOULD NOT be
+	// accepted.
+	//
+	// Note that the `tls` field is not used for determining if a listener is distinct, because
+	// Listeners that _only_ differ on TLS config will still conflict in all cases.
+	//
+	// ### Listeners that are distinct only by Hostname
+	//
+	// When the Listeners are distinct based only on Hostname, inbound request
 	// hostnames MUST match from the most specific to least specific Hostname
 	// values to choose the correct Listener and its associated set of Routes.
 	//
-	// Exact matches must be processed before wildcard matches, and wildcard
-	// matches must be processed before fallback (empty Hostname value)
+	// Exact matches MUST be processed before wildcard matches, and wildcard
+	// matches MUST be processed before fallback (empty Hostname value)
 	// matches. For example, `"foo.example.com"` takes precedence over
 	// `"*.example.com"`, and `"*.example.com"` takes precedence over `""`.
 	//
 	// Additionally, if there are multiple wildcard entries, more specific
 	// wildcard entries must be processed before less specific wildcard entries.
 	// For example, `"*.foo.example.com"` takes precedence over `"*.example.com"`.
+	//
 	// The precise definition here is that the higher the number of dots in the
 	// hostname to the right of the wildcard character, the higher the precedence.
 	//
@@ -6998,18 +9803,26 @@ type GatewaySpecPatchArgs struct {
 	// the left, however, so `"*.example.com"` will match both
 	// `"foo.bar.example.com"` _and_ `"bar.example.com"`.
 	//
+	// ## Handling indistinct Listeners
+	//
 	// If a set of Listeners contains Listeners that are not distinct, then those
-	// Listeners are Conflicted, and the implementation MUST set the "Conflicted"
+	// Listeners are _Conflicted_, and the implementation MUST set the "Conflicted"
 	// condition in the Listener Status to "True".
+	//
+	// The words "indistinct" and "conflicted" are considered equivalent for the
+	// purpose of this documentation.
 	//
 	// Implementations MAY choose to accept a Gateway with some Conflicted
 	// Listeners only if they only accept the partial Listener set that contains
-	// no Conflicted Listeners. To put this another way, implementations may
-	// accept a partial Listener set only if they throw out *all* the conflicting
-	// Listeners. No picking one of the conflicting listeners as the winner.
-	// This also means that the Gateway must have at least one non-conflicting
-	// Listener in this case, otherwise it violates the requirement that at
-	// least one Listener must be present.
+	// no Conflicted Listeners.
+	//
+	// Specifically, an implementation MAY accept a partial Listener set subject to
+	// the following rules:
+	//
+	// * The implementation MUST NOT pick one conflicting Listener as the winner.
+	//   ALL indistinct Listeners must not be accepted for processing.
+	// * At least one distinct Listener MUST be present, or else the Gateway effectively
+	//   contains _no_ Listeners, and must be rejected from processing as a whole.
 	//
 	// The implementation MUST set a "ListenersNotValid" condition on the
 	// Gateway Status when the Gateway contains Conflicted Listeners whether or
@@ -7018,7 +9831,25 @@ type GatewaySpecPatchArgs struct {
 	// Accepted. Additionally, the Listener status for those listeners SHOULD
 	// indicate which Listeners are conflicted and not Accepted.
 	//
-	// A Gateway's Listeners are considered "compatible" if:
+	// ## General Listener behavior
+	//
+	// Note that, for all distinct Listeners, requests SHOULD match at most one Listener.
+	// For example, if Listeners are defined for "foo.example.com" and "*.example.com", a
+	// request to "foo.example.com" SHOULD only be routed using routes attached
+	// to the "foo.example.com" Listener (and not the "*.example.com" Listener).
+	//
+	// This concept is known as "Listener Isolation", and it is an Extended feature
+	// of Gateway API. Implementations that do not support Listener Isolation MUST
+	// clearly document this, and MUST NOT claim support for the
+	// `GatewayHTTPListenerIsolation` feature.
+	//
+	// Implementations that _do_ support Listener Isolation SHOULD claim support
+	// for the Extended `GatewayHTTPListenerIsolation` feature and pass the associated
+	// conformance tests.
+	//
+	// ## Compatible Listeners
+	//
+	// A Gateway's Listeners are considered _compatible_ if:
 	//
 	// 1. They are distinct.
 	// 2. The implementation can serve them in compliance with the Addresses
@@ -7033,18 +9864,14 @@ type GatewaySpecPatchArgs struct {
 	// on the same address, or cannot mix HTTPS and generic TLS listens on the same port
 	// would not consider those cases compatible, even though they are distinct.
 	//
-	// Note that requests SHOULD match at most one Listener. For example, if
-	// Listeners are defined for "foo.example.com" and "*.example.com", a
-	// request to "foo.example.com" SHOULD only be routed using routes attached
-	// to the "foo.example.com" Listener (and not the "*.example.com" Listener).
-	// This concept is known as "Listener Isolation". Implementations that do
-	// not support Listener Isolation MUST clearly document this.
-	//
 	// Implementations MAY merge separate Gateways onto a single set of
 	// Addresses if all Listeners across all Gateways are compatible.
 	//
+	// In a future release the MinItems=1 requirement MAY be dropped.
+	//
 	// Support: Core
 	Listeners GatewaySpecListenersPatchArrayInput `pulumi:"listeners"`
+	Tls       GatewaySpecTlsPatchPtrInput         `pulumi:"tls"`
 }
 
 func (GatewaySpecPatchArgs) ElementType() reflect.Type {
@@ -7128,7 +9955,7 @@ func (o GatewaySpecPatchOutput) ToGatewaySpecPatchPtrOutputWithContext(ctx conte
 // Addresses requested for this Gateway. This is optional and behavior can
 // depend on the implementation. If a value is set in the spec and the
 // requested address is invalid or unavailable, the implementation MUST
-// indicate this in the associated entry in GatewayStatus.Addresses.
+// indicate this in an associated entry in GatewayStatus.Conditions.
 //
 // The Addresses field represents a request for the address(es) on the
 // "outside of the Gateway", that traffic bound for this Gateway will use.
@@ -7149,15 +9976,25 @@ func (o GatewaySpecPatchOutput) Addresses() GatewaySpecAddressesPatchArrayOutput
 	return o.ApplyT(func(v GatewaySpecPatch) []GatewaySpecAddressesPatch { return v.Addresses }).(GatewaySpecAddressesPatchArrayOutput)
 }
 
+func (o GatewaySpecPatchOutput) AllowedListeners() GatewaySpecAllowedListenersPatchPtrOutput {
+	return o.ApplyT(func(v GatewaySpecPatch) *GatewaySpecAllowedListenersPatch { return v.AllowedListeners }).(GatewaySpecAllowedListenersPatchPtrOutput)
+}
+
 // GatewayClassName used for this Gateway. This is the name of a
 // GatewayClass resource.
 func (o GatewaySpecPatchOutput) GatewayClassName() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v GatewaySpecPatch) *string { return v.GatewayClassName }).(pulumi.StringPtrOutput)
 }
 
+func (o GatewaySpecPatchOutput) Infrastructure() GatewaySpecInfrastructurePatchPtrOutput {
+	return o.ApplyT(func(v GatewaySpecPatch) *GatewaySpecInfrastructurePatch { return v.Infrastructure }).(GatewaySpecInfrastructurePatchPtrOutput)
+}
+
 // Listeners associated with this Gateway. Listeners define
 // logical endpoints that are bound on this Gateway's addresses.
 // At least one Listener MUST be specified.
+//
+// ## Distinct Listeners
 //
 // Each Listener in a set of Listeners (for example, in a single Gateway)
 // MUST be _distinct_, in that a traffic flow MUST be able to be assigned to
@@ -7170,55 +10007,76 @@ func (o GatewaySpecPatchOutput) GatewayClassName() pulumi.StringPtrOutput {
 // combination of Port, Protocol, and, if supported by the protocol, Hostname.
 //
 // Some combinations of port, protocol, and TLS settings are considered
-// Core support and MUST be supported by implementations based on their
-// targeted conformance profile:
+// Core support and MUST be supported by implementations based on the objects
+// they support:
 //
-// # HTTP Profile
+// # HTTPRoute
 //
 // 1. HTTPRoute, Port: 80, Protocol: HTTP
 // 2. HTTPRoute, Port: 443, Protocol: HTTPS, TLS Mode: Terminate, TLS keypair provided
 //
-// # TLS Profile
+// # TLSRoute
 //
 // 1. TLSRoute, Port: 443, Protocol: TLS, TLS Mode: Passthrough
 //
 // "Distinct" Listeners have the following property:
 //
-// The implementation can match inbound requests to a single distinct
-// Listener. When multiple Listeners share values for fields (for
+// **The implementation can match inbound requests to a single distinct
+// Listener**.
+//
+// When multiple Listeners share values for fields (for
 // example, two Listeners with the same Port value), the implementation
 // can match requests to only one of the Listeners using other
 // Listener fields.
 //
-// For example, the following Listener scenarios are distinct:
+// When multiple listeners have the same value for the Protocol field, then
+// each of the Listeners with matching Protocol values MUST have different
+// values for other fields.
 //
-//  1. Multiple Listeners with the same Port that all use the "HTTP"
-//     Protocol that all have unique Hostname values.
-//  2. Multiple Listeners with the same Port that use either the "HTTPS" or
-//     "TLS" Protocol that all have unique Hostname values.
-//  3. A mixture of "TCP" and "UDP" Protocol Listeners, where no Listener
-//     with the same Protocol has the same Port value.
+// The set of fields that MUST be different for a Listener differs per protocol.
+// The following rules define the rules for what fields MUST be considered for
+// Listeners to be distinct with each protocol currently defined in the
+// Gateway API spec.
 //
-// Some fields in the Listener struct have possible values that affect
-// whether the Listener is distinct. Hostname is particularly relevant
-// for HTTP or HTTPS protocols.
+// The set of listeners that all share a protocol value MUST have _different_
+// values for _at least one_ of these fields to be distinct:
 //
-// When using the Hostname value to select between same-Port, same-Protocol
-// Listeners, the Hostname value must be different on each Listener for the
-// Listener to be distinct.
+// * **HTTP, HTTPS, TLS**: Port, Hostname
+// * **TCP, UDP**: Port
 //
-// When the Listeners are distinct based on Hostname, inbound request
+// One **very** important rule to call out involves what happens when an
+// implementation:
+//
+//   - Supports TCP protocol Listeners, as well as HTTP, HTTPS, or TLS protocol
+//     Listeners, and
+//   - sees HTTP, HTTPS, or TLS protocols with the same `port` as one with TCP
+//     Protocol.
+//
+// In this case all the Listeners that share a port with the
+// TCP Listener are not distinct and so MUST NOT be accepted.
+//
+// If an implementation does not support TCP Protocol Listeners, then the
+// previous rule does not apply, and the TCP Listeners SHOULD NOT be
+// accepted.
+//
+// Note that the `tls` field is not used for determining if a listener is distinct, because
+// Listeners that _only_ differ on TLS config will still conflict in all cases.
+//
+// ### Listeners that are distinct only by Hostname
+//
+// When the Listeners are distinct based only on Hostname, inbound request
 // hostnames MUST match from the most specific to least specific Hostname
 // values to choose the correct Listener and its associated set of Routes.
 //
-// Exact matches must be processed before wildcard matches, and wildcard
-// matches must be processed before fallback (empty Hostname value)
+// Exact matches MUST be processed before wildcard matches, and wildcard
+// matches MUST be processed before fallback (empty Hostname value)
 // matches. For example, `"foo.example.com"` takes precedence over
 // `"*.example.com"`, and `"*.example.com"` takes precedence over `""`.
 //
 // Additionally, if there are multiple wildcard entries, more specific
 // wildcard entries must be processed before less specific wildcard entries.
 // For example, `"*.foo.example.com"` takes precedence over `"*.example.com"`.
+//
 // The precise definition here is that the higher the number of dots in the
 // hostname to the right of the wildcard character, the higher the precedence.
 //
@@ -7226,18 +10084,26 @@ func (o GatewaySpecPatchOutput) GatewayClassName() pulumi.StringPtrOutput {
 // the left, however, so `"*.example.com"` will match both
 // `"foo.bar.example.com"` _and_ `"bar.example.com"`.
 //
+// ## Handling indistinct Listeners
+//
 // If a set of Listeners contains Listeners that are not distinct, then those
-// Listeners are Conflicted, and the implementation MUST set the "Conflicted"
+// Listeners are _Conflicted_, and the implementation MUST set the "Conflicted"
 // condition in the Listener Status to "True".
+//
+// The words "indistinct" and "conflicted" are considered equivalent for the
+// purpose of this documentation.
 //
 // Implementations MAY choose to accept a Gateway with some Conflicted
 // Listeners only if they only accept the partial Listener set that contains
-// no Conflicted Listeners. To put this another way, implementations may
-// accept a partial Listener set only if they throw out *all* the conflicting
-// Listeners. No picking one of the conflicting listeners as the winner.
-// This also means that the Gateway must have at least one non-conflicting
-// Listener in this case, otherwise it violates the requirement that at
-// least one Listener must be present.
+// no Conflicted Listeners.
+//
+// Specifically, an implementation MAY accept a partial Listener set subject to
+// the following rules:
+//
+//   - The implementation MUST NOT pick one conflicting Listener as the winner.
+//     ALL indistinct Listeners must not be accepted for processing.
+//   - At least one distinct Listener MUST be present, or else the Gateway effectively
+//     contains _no_ Listeners, and must be rejected from processing as a whole.
 //
 // The implementation MUST set a "ListenersNotValid" condition on the
 // Gateway Status when the Gateway contains Conflicted Listeners whether or
@@ -7246,7 +10112,25 @@ func (o GatewaySpecPatchOutput) GatewayClassName() pulumi.StringPtrOutput {
 // Accepted. Additionally, the Listener status for those listeners SHOULD
 // indicate which Listeners are conflicted and not Accepted.
 //
-// A Gateway's Listeners are considered "compatible" if:
+// ## General Listener behavior
+//
+// Note that, for all distinct Listeners, requests SHOULD match at most one Listener.
+// For example, if Listeners are defined for "foo.example.com" and "*.example.com", a
+// request to "foo.example.com" SHOULD only be routed using routes attached
+// to the "foo.example.com" Listener (and not the "*.example.com" Listener).
+//
+// This concept is known as "Listener Isolation", and it is an Extended feature
+// of Gateway API. Implementations that do not support Listener Isolation MUST
+// clearly document this, and MUST NOT claim support for the
+// `GatewayHTTPListenerIsolation` feature.
+//
+// Implementations that _do_ support Listener Isolation SHOULD claim support
+// for the Extended `GatewayHTTPListenerIsolation` feature and pass the associated
+// conformance tests.
+//
+// ## Compatible Listeners
+//
+// A Gateway's Listeners are considered _compatible_ if:
 //
 //  1. They are distinct.
 //  2. The implementation can serve them in compliance with the Addresses
@@ -7261,19 +10145,18 @@ func (o GatewaySpecPatchOutput) GatewayClassName() pulumi.StringPtrOutput {
 // on the same address, or cannot mix HTTPS and generic TLS listens on the same port
 // would not consider those cases compatible, even though they are distinct.
 //
-// Note that requests SHOULD match at most one Listener. For example, if
-// Listeners are defined for "foo.example.com" and "*.example.com", a
-// request to "foo.example.com" SHOULD only be routed using routes attached
-// to the "foo.example.com" Listener (and not the "*.example.com" Listener).
-// This concept is known as "Listener Isolation". Implementations that do
-// not support Listener Isolation MUST clearly document this.
-//
 // Implementations MAY merge separate Gateways onto a single set of
 // Addresses if all Listeners across all Gateways are compatible.
+//
+// In a future release the MinItems=1 requirement MAY be dropped.
 //
 // Support: Core
 func (o GatewaySpecPatchOutput) Listeners() GatewaySpecListenersPatchArrayOutput {
 	return o.ApplyT(func(v GatewaySpecPatch) []GatewaySpecListenersPatch { return v.Listeners }).(GatewaySpecListenersPatchArrayOutput)
+}
+
+func (o GatewaySpecPatchOutput) Tls() GatewaySpecTlsPatchPtrOutput {
+	return o.ApplyT(func(v GatewaySpecPatch) *GatewaySpecTlsPatch { return v.Tls }).(GatewaySpecTlsPatchPtrOutput)
 }
 
 type GatewaySpecPatchPtrOutput struct{ *pulumi.OutputState }
@@ -7303,7 +10186,7 @@ func (o GatewaySpecPatchPtrOutput) Elem() GatewaySpecPatchOutput {
 // Addresses requested for this Gateway. This is optional and behavior can
 // depend on the implementation. If a value is set in the spec and the
 // requested address is invalid or unavailable, the implementation MUST
-// indicate this in the associated entry in GatewayStatus.Addresses.
+// indicate this in an associated entry in GatewayStatus.Conditions.
 //
 // The Addresses field represents a request for the address(es) on the
 // "outside of the Gateway", that traffic bound for this Gateway will use.
@@ -7329,6 +10212,15 @@ func (o GatewaySpecPatchPtrOutput) Addresses() GatewaySpecAddressesPatchArrayOut
 	}).(GatewaySpecAddressesPatchArrayOutput)
 }
 
+func (o GatewaySpecPatchPtrOutput) AllowedListeners() GatewaySpecAllowedListenersPatchPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecPatch) *GatewaySpecAllowedListenersPatch {
+		if v == nil {
+			return nil
+		}
+		return v.AllowedListeners
+	}).(GatewaySpecAllowedListenersPatchPtrOutput)
+}
+
 // GatewayClassName used for this Gateway. This is the name of a
 // GatewayClass resource.
 func (o GatewaySpecPatchPtrOutput) GatewayClassName() pulumi.StringPtrOutput {
@@ -7340,9 +10232,20 @@ func (o GatewaySpecPatchPtrOutput) GatewayClassName() pulumi.StringPtrOutput {
 	}).(pulumi.StringPtrOutput)
 }
 
+func (o GatewaySpecPatchPtrOutput) Infrastructure() GatewaySpecInfrastructurePatchPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecPatch) *GatewaySpecInfrastructurePatch {
+		if v == nil {
+			return nil
+		}
+		return v.Infrastructure
+	}).(GatewaySpecInfrastructurePatchPtrOutput)
+}
+
 // Listeners associated with this Gateway. Listeners define
 // logical endpoints that are bound on this Gateway's addresses.
 // At least one Listener MUST be specified.
+//
+// ## Distinct Listeners
 //
 // Each Listener in a set of Listeners (for example, in a single Gateway)
 // MUST be _distinct_, in that a traffic flow MUST be able to be assigned to
@@ -7355,55 +10258,76 @@ func (o GatewaySpecPatchPtrOutput) GatewayClassName() pulumi.StringPtrOutput {
 // combination of Port, Protocol, and, if supported by the protocol, Hostname.
 //
 // Some combinations of port, protocol, and TLS settings are considered
-// Core support and MUST be supported by implementations based on their
-// targeted conformance profile:
+// Core support and MUST be supported by implementations based on the objects
+// they support:
 //
-// # HTTP Profile
+// # HTTPRoute
 //
 // 1. HTTPRoute, Port: 80, Protocol: HTTP
 // 2. HTTPRoute, Port: 443, Protocol: HTTPS, TLS Mode: Terminate, TLS keypair provided
 //
-// # TLS Profile
+// # TLSRoute
 //
 // 1. TLSRoute, Port: 443, Protocol: TLS, TLS Mode: Passthrough
 //
 // "Distinct" Listeners have the following property:
 //
-// The implementation can match inbound requests to a single distinct
-// Listener. When multiple Listeners share values for fields (for
+// **The implementation can match inbound requests to a single distinct
+// Listener**.
+//
+// When multiple Listeners share values for fields (for
 // example, two Listeners with the same Port value), the implementation
 // can match requests to only one of the Listeners using other
 // Listener fields.
 //
-// For example, the following Listener scenarios are distinct:
+// When multiple listeners have the same value for the Protocol field, then
+// each of the Listeners with matching Protocol values MUST have different
+// values for other fields.
 //
-//  1. Multiple Listeners with the same Port that all use the "HTTP"
-//     Protocol that all have unique Hostname values.
-//  2. Multiple Listeners with the same Port that use either the "HTTPS" or
-//     "TLS" Protocol that all have unique Hostname values.
-//  3. A mixture of "TCP" and "UDP" Protocol Listeners, where no Listener
-//     with the same Protocol has the same Port value.
+// The set of fields that MUST be different for a Listener differs per protocol.
+// The following rules define the rules for what fields MUST be considered for
+// Listeners to be distinct with each protocol currently defined in the
+// Gateway API spec.
 //
-// Some fields in the Listener struct have possible values that affect
-// whether the Listener is distinct. Hostname is particularly relevant
-// for HTTP or HTTPS protocols.
+// The set of listeners that all share a protocol value MUST have _different_
+// values for _at least one_ of these fields to be distinct:
 //
-// When using the Hostname value to select between same-Port, same-Protocol
-// Listeners, the Hostname value must be different on each Listener for the
-// Listener to be distinct.
+// * **HTTP, HTTPS, TLS**: Port, Hostname
+// * **TCP, UDP**: Port
 //
-// When the Listeners are distinct based on Hostname, inbound request
+// One **very** important rule to call out involves what happens when an
+// implementation:
+//
+//   - Supports TCP protocol Listeners, as well as HTTP, HTTPS, or TLS protocol
+//     Listeners, and
+//   - sees HTTP, HTTPS, or TLS protocols with the same `port` as one with TCP
+//     Protocol.
+//
+// In this case all the Listeners that share a port with the
+// TCP Listener are not distinct and so MUST NOT be accepted.
+//
+// If an implementation does not support TCP Protocol Listeners, then the
+// previous rule does not apply, and the TCP Listeners SHOULD NOT be
+// accepted.
+//
+// Note that the `tls` field is not used for determining if a listener is distinct, because
+// Listeners that _only_ differ on TLS config will still conflict in all cases.
+//
+// ### Listeners that are distinct only by Hostname
+//
+// When the Listeners are distinct based only on Hostname, inbound request
 // hostnames MUST match from the most specific to least specific Hostname
 // values to choose the correct Listener and its associated set of Routes.
 //
-// Exact matches must be processed before wildcard matches, and wildcard
-// matches must be processed before fallback (empty Hostname value)
+// Exact matches MUST be processed before wildcard matches, and wildcard
+// matches MUST be processed before fallback (empty Hostname value)
 // matches. For example, `"foo.example.com"` takes precedence over
 // `"*.example.com"`, and `"*.example.com"` takes precedence over `""`.
 //
 // Additionally, if there are multiple wildcard entries, more specific
 // wildcard entries must be processed before less specific wildcard entries.
 // For example, `"*.foo.example.com"` takes precedence over `"*.example.com"`.
+//
 // The precise definition here is that the higher the number of dots in the
 // hostname to the right of the wildcard character, the higher the precedence.
 //
@@ -7411,18 +10335,26 @@ func (o GatewaySpecPatchPtrOutput) GatewayClassName() pulumi.StringPtrOutput {
 // the left, however, so `"*.example.com"` will match both
 // `"foo.bar.example.com"` _and_ `"bar.example.com"`.
 //
+// ## Handling indistinct Listeners
+//
 // If a set of Listeners contains Listeners that are not distinct, then those
-// Listeners are Conflicted, and the implementation MUST set the "Conflicted"
+// Listeners are _Conflicted_, and the implementation MUST set the "Conflicted"
 // condition in the Listener Status to "True".
+//
+// The words "indistinct" and "conflicted" are considered equivalent for the
+// purpose of this documentation.
 //
 // Implementations MAY choose to accept a Gateway with some Conflicted
 // Listeners only if they only accept the partial Listener set that contains
-// no Conflicted Listeners. To put this another way, implementations may
-// accept a partial Listener set only if they throw out *all* the conflicting
-// Listeners. No picking one of the conflicting listeners as the winner.
-// This also means that the Gateway must have at least one non-conflicting
-// Listener in this case, otherwise it violates the requirement that at
-// least one Listener must be present.
+// no Conflicted Listeners.
+//
+// Specifically, an implementation MAY accept a partial Listener set subject to
+// the following rules:
+//
+//   - The implementation MUST NOT pick one conflicting Listener as the winner.
+//     ALL indistinct Listeners must not be accepted for processing.
+//   - At least one distinct Listener MUST be present, or else the Gateway effectively
+//     contains _no_ Listeners, and must be rejected from processing as a whole.
 //
 // The implementation MUST set a "ListenersNotValid" condition on the
 // Gateway Status when the Gateway contains Conflicted Listeners whether or
@@ -7431,7 +10363,25 @@ func (o GatewaySpecPatchPtrOutput) GatewayClassName() pulumi.StringPtrOutput {
 // Accepted. Additionally, the Listener status for those listeners SHOULD
 // indicate which Listeners are conflicted and not Accepted.
 //
-// A Gateway's Listeners are considered "compatible" if:
+// ## General Listener behavior
+//
+// Note that, for all distinct Listeners, requests SHOULD match at most one Listener.
+// For example, if Listeners are defined for "foo.example.com" and "*.example.com", a
+// request to "foo.example.com" SHOULD only be routed using routes attached
+// to the "foo.example.com" Listener (and not the "*.example.com" Listener).
+//
+// This concept is known as "Listener Isolation", and it is an Extended feature
+// of Gateway API. Implementations that do not support Listener Isolation MUST
+// clearly document this, and MUST NOT claim support for the
+// `GatewayHTTPListenerIsolation` feature.
+//
+// Implementations that _do_ support Listener Isolation SHOULD claim support
+// for the Extended `GatewayHTTPListenerIsolation` feature and pass the associated
+// conformance tests.
+//
+// ## Compatible Listeners
+//
+// A Gateway's Listeners are considered _compatible_ if:
 //
 //  1. They are distinct.
 //  2. The implementation can serve them in compliance with the Addresses
@@ -7446,15 +10396,10 @@ func (o GatewaySpecPatchPtrOutput) GatewayClassName() pulumi.StringPtrOutput {
 // on the same address, or cannot mix HTTPS and generic TLS listens on the same port
 // would not consider those cases compatible, even though they are distinct.
 //
-// Note that requests SHOULD match at most one Listener. For example, if
-// Listeners are defined for "foo.example.com" and "*.example.com", a
-// request to "foo.example.com" SHOULD only be routed using routes attached
-// to the "foo.example.com" Listener (and not the "*.example.com" Listener).
-// This concept is known as "Listener Isolation". Implementations that do
-// not support Listener Isolation MUST clearly document this.
-//
 // Implementations MAY merge separate Gateways onto a single set of
 // Addresses if all Listeners across all Gateways are compatible.
+//
+// In a future release the MinItems=1 requirement MAY be dropped.
 //
 // Support: Core
 func (o GatewaySpecPatchPtrOutput) Listeners() GatewaySpecListenersPatchArrayOutput {
@@ -7464,6 +10409,4773 @@ func (o GatewaySpecPatchPtrOutput) Listeners() GatewaySpecListenersPatchArrayOut
 		}
 		return v.Listeners
 	}).(GatewaySpecListenersPatchArrayOutput)
+}
+
+func (o GatewaySpecPatchPtrOutput) Tls() GatewaySpecTlsPatchPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecPatch) *GatewaySpecTlsPatch {
+		if v == nil {
+			return nil
+		}
+		return v.Tls
+	}).(GatewaySpecTlsPatchPtrOutput)
+}
+
+// TLS specifies frontend and backend tls configuration for entire gateway.
+//
+// Support: Extended
+type GatewaySpecTls struct {
+	Backend  *GatewaySpecTlsBackend  `pulumi:"backend"`
+	Frontend *GatewaySpecTlsFrontend `pulumi:"frontend"`
+}
+
+// GatewaySpecTlsInput is an input type that accepts GatewaySpecTlsArgs and GatewaySpecTlsOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsInput` via:
+//
+//	GatewaySpecTlsArgs{...}
+type GatewaySpecTlsInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsOutput() GatewaySpecTlsOutput
+	ToGatewaySpecTlsOutputWithContext(context.Context) GatewaySpecTlsOutput
+}
+
+// TLS specifies frontend and backend tls configuration for entire gateway.
+//
+// Support: Extended
+type GatewaySpecTlsArgs struct {
+	Backend  GatewaySpecTlsBackendPtrInput  `pulumi:"backend"`
+	Frontend GatewaySpecTlsFrontendPtrInput `pulumi:"frontend"`
+}
+
+func (GatewaySpecTlsArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTls)(nil)).Elem()
+}
+
+func (i GatewaySpecTlsArgs) ToGatewaySpecTlsOutput() GatewaySpecTlsOutput {
+	return i.ToGatewaySpecTlsOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsArgs) ToGatewaySpecTlsOutputWithContext(ctx context.Context) GatewaySpecTlsOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsOutput)
+}
+
+func (i GatewaySpecTlsArgs) ToGatewaySpecTlsPtrOutput() GatewaySpecTlsPtrOutput {
+	return i.ToGatewaySpecTlsPtrOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsArgs) ToGatewaySpecTlsPtrOutputWithContext(ctx context.Context) GatewaySpecTlsPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsOutput).ToGatewaySpecTlsPtrOutputWithContext(ctx)
+}
+
+// GatewaySpecTlsPtrInput is an input type that accepts GatewaySpecTlsArgs, GatewaySpecTlsPtr and GatewaySpecTlsPtrOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsPtrInput` via:
+//
+//	        GatewaySpecTlsArgs{...}
+//
+//	or:
+//
+//	        nil
+type GatewaySpecTlsPtrInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsPtrOutput() GatewaySpecTlsPtrOutput
+	ToGatewaySpecTlsPtrOutputWithContext(context.Context) GatewaySpecTlsPtrOutput
+}
+
+type gatewaySpecTlsPtrType GatewaySpecTlsArgs
+
+func GatewaySpecTlsPtr(v *GatewaySpecTlsArgs) GatewaySpecTlsPtrInput {
+	return (*gatewaySpecTlsPtrType)(v)
+}
+
+func (*gatewaySpecTlsPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTls)(nil)).Elem()
+}
+
+func (i *gatewaySpecTlsPtrType) ToGatewaySpecTlsPtrOutput() GatewaySpecTlsPtrOutput {
+	return i.ToGatewaySpecTlsPtrOutputWithContext(context.Background())
+}
+
+func (i *gatewaySpecTlsPtrType) ToGatewaySpecTlsPtrOutputWithContext(ctx context.Context) GatewaySpecTlsPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsPtrOutput)
+}
+
+// TLS specifies frontend and backend tls configuration for entire gateway.
+//
+// Support: Extended
+type GatewaySpecTlsOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTls)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsOutput) ToGatewaySpecTlsOutput() GatewaySpecTlsOutput {
+	return o
+}
+
+func (o GatewaySpecTlsOutput) ToGatewaySpecTlsOutputWithContext(ctx context.Context) GatewaySpecTlsOutput {
+	return o
+}
+
+func (o GatewaySpecTlsOutput) ToGatewaySpecTlsPtrOutput() GatewaySpecTlsPtrOutput {
+	return o.ToGatewaySpecTlsPtrOutputWithContext(context.Background())
+}
+
+func (o GatewaySpecTlsOutput) ToGatewaySpecTlsPtrOutputWithContext(ctx context.Context) GatewaySpecTlsPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v GatewaySpecTls) *GatewaySpecTls {
+		return &v
+	}).(GatewaySpecTlsPtrOutput)
+}
+
+func (o GatewaySpecTlsOutput) Backend() GatewaySpecTlsBackendPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTls) *GatewaySpecTlsBackend { return v.Backend }).(GatewaySpecTlsBackendPtrOutput)
+}
+
+func (o GatewaySpecTlsOutput) Frontend() GatewaySpecTlsFrontendPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTls) *GatewaySpecTlsFrontend { return v.Frontend }).(GatewaySpecTlsFrontendPtrOutput)
+}
+
+type GatewaySpecTlsPtrOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTls)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsPtrOutput) ToGatewaySpecTlsPtrOutput() GatewaySpecTlsPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsPtrOutput) ToGatewaySpecTlsPtrOutputWithContext(ctx context.Context) GatewaySpecTlsPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsPtrOutput) Elem() GatewaySpecTlsOutput {
+	return o.ApplyT(func(v *GatewaySpecTls) GatewaySpecTls {
+		if v != nil {
+			return *v
+		}
+		var ret GatewaySpecTls
+		return ret
+	}).(GatewaySpecTlsOutput)
+}
+
+func (o GatewaySpecTlsPtrOutput) Backend() GatewaySpecTlsBackendPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecTls) *GatewaySpecTlsBackend {
+		if v == nil {
+			return nil
+		}
+		return v.Backend
+	}).(GatewaySpecTlsBackendPtrOutput)
+}
+
+func (o GatewaySpecTlsPtrOutput) Frontend() GatewaySpecTlsFrontendPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecTls) *GatewaySpecTlsFrontend {
+		if v == nil {
+			return nil
+		}
+		return v.Frontend
+	}).(GatewaySpecTlsFrontendPtrOutput)
+}
+
+// Backend describes TLS configuration for gateway when connecting
+// to backends.
+//
+// Note that this contains only details for the Gateway as a TLS client,
+// and does _not_ imply behavior about how to choose which backend should
+// get a TLS connection. That is determined by the presence of a BackendTLSPolicy.
+//
+// Support: Core
+type GatewaySpecTlsBackend struct {
+	ClientCertificateRef *GatewaySpecTlsBackendClientCertificateRef `pulumi:"clientCertificateRef"`
+}
+
+// GatewaySpecTlsBackendInput is an input type that accepts GatewaySpecTlsBackendArgs and GatewaySpecTlsBackendOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsBackendInput` via:
+//
+//	GatewaySpecTlsBackendArgs{...}
+type GatewaySpecTlsBackendInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsBackendOutput() GatewaySpecTlsBackendOutput
+	ToGatewaySpecTlsBackendOutputWithContext(context.Context) GatewaySpecTlsBackendOutput
+}
+
+// Backend describes TLS configuration for gateway when connecting
+// to backends.
+//
+// Note that this contains only details for the Gateway as a TLS client,
+// and does _not_ imply behavior about how to choose which backend should
+// get a TLS connection. That is determined by the presence of a BackendTLSPolicy.
+//
+// Support: Core
+type GatewaySpecTlsBackendArgs struct {
+	ClientCertificateRef GatewaySpecTlsBackendClientCertificateRefPtrInput `pulumi:"clientCertificateRef"`
+}
+
+func (GatewaySpecTlsBackendArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsBackend)(nil)).Elem()
+}
+
+func (i GatewaySpecTlsBackendArgs) ToGatewaySpecTlsBackendOutput() GatewaySpecTlsBackendOutput {
+	return i.ToGatewaySpecTlsBackendOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsBackendArgs) ToGatewaySpecTlsBackendOutputWithContext(ctx context.Context) GatewaySpecTlsBackendOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsBackendOutput)
+}
+
+func (i GatewaySpecTlsBackendArgs) ToGatewaySpecTlsBackendPtrOutput() GatewaySpecTlsBackendPtrOutput {
+	return i.ToGatewaySpecTlsBackendPtrOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsBackendArgs) ToGatewaySpecTlsBackendPtrOutputWithContext(ctx context.Context) GatewaySpecTlsBackendPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsBackendOutput).ToGatewaySpecTlsBackendPtrOutputWithContext(ctx)
+}
+
+// GatewaySpecTlsBackendPtrInput is an input type that accepts GatewaySpecTlsBackendArgs, GatewaySpecTlsBackendPtr and GatewaySpecTlsBackendPtrOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsBackendPtrInput` via:
+//
+//	        GatewaySpecTlsBackendArgs{...}
+//
+//	or:
+//
+//	        nil
+type GatewaySpecTlsBackendPtrInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsBackendPtrOutput() GatewaySpecTlsBackendPtrOutput
+	ToGatewaySpecTlsBackendPtrOutputWithContext(context.Context) GatewaySpecTlsBackendPtrOutput
+}
+
+type gatewaySpecTlsBackendPtrType GatewaySpecTlsBackendArgs
+
+func GatewaySpecTlsBackendPtr(v *GatewaySpecTlsBackendArgs) GatewaySpecTlsBackendPtrInput {
+	return (*gatewaySpecTlsBackendPtrType)(v)
+}
+
+func (*gatewaySpecTlsBackendPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTlsBackend)(nil)).Elem()
+}
+
+func (i *gatewaySpecTlsBackendPtrType) ToGatewaySpecTlsBackendPtrOutput() GatewaySpecTlsBackendPtrOutput {
+	return i.ToGatewaySpecTlsBackendPtrOutputWithContext(context.Background())
+}
+
+func (i *gatewaySpecTlsBackendPtrType) ToGatewaySpecTlsBackendPtrOutputWithContext(ctx context.Context) GatewaySpecTlsBackendPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsBackendPtrOutput)
+}
+
+// Backend describes TLS configuration for gateway when connecting
+// to backends.
+//
+// Note that this contains only details for the Gateway as a TLS client,
+// and does _not_ imply behavior about how to choose which backend should
+// get a TLS connection. That is determined by the presence of a BackendTLSPolicy.
+//
+// Support: Core
+type GatewaySpecTlsBackendOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsBackendOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsBackend)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsBackendOutput) ToGatewaySpecTlsBackendOutput() GatewaySpecTlsBackendOutput {
+	return o
+}
+
+func (o GatewaySpecTlsBackendOutput) ToGatewaySpecTlsBackendOutputWithContext(ctx context.Context) GatewaySpecTlsBackendOutput {
+	return o
+}
+
+func (o GatewaySpecTlsBackendOutput) ToGatewaySpecTlsBackendPtrOutput() GatewaySpecTlsBackendPtrOutput {
+	return o.ToGatewaySpecTlsBackendPtrOutputWithContext(context.Background())
+}
+
+func (o GatewaySpecTlsBackendOutput) ToGatewaySpecTlsBackendPtrOutputWithContext(ctx context.Context) GatewaySpecTlsBackendPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v GatewaySpecTlsBackend) *GatewaySpecTlsBackend {
+		return &v
+	}).(GatewaySpecTlsBackendPtrOutput)
+}
+
+func (o GatewaySpecTlsBackendOutput) ClientCertificateRef() GatewaySpecTlsBackendClientCertificateRefPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsBackend) *GatewaySpecTlsBackendClientCertificateRef {
+		return v.ClientCertificateRef
+	}).(GatewaySpecTlsBackendClientCertificateRefPtrOutput)
+}
+
+type GatewaySpecTlsBackendPtrOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsBackendPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTlsBackend)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsBackendPtrOutput) ToGatewaySpecTlsBackendPtrOutput() GatewaySpecTlsBackendPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsBackendPtrOutput) ToGatewaySpecTlsBackendPtrOutputWithContext(ctx context.Context) GatewaySpecTlsBackendPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsBackendPtrOutput) Elem() GatewaySpecTlsBackendOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsBackend) GatewaySpecTlsBackend {
+		if v != nil {
+			return *v
+		}
+		var ret GatewaySpecTlsBackend
+		return ret
+	}).(GatewaySpecTlsBackendOutput)
+}
+
+func (o GatewaySpecTlsBackendPtrOutput) ClientCertificateRef() GatewaySpecTlsBackendClientCertificateRefPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsBackend) *GatewaySpecTlsBackendClientCertificateRef {
+		if v == nil {
+			return nil
+		}
+		return v.ClientCertificateRef
+	}).(GatewaySpecTlsBackendClientCertificateRefPtrOutput)
+}
+
+// ClientCertificateRef references an object that contains a client certificate
+// and its associated private key. It can reference standard Kubernetes resources,
+// i.e., Secret, or implementation-specific custom resources.
+//
+// A ClientCertificateRef is considered invalid if:
+//
+// * It refers to a resource that cannot be resolved (e.g., the referenced resource
+// does not exist) or is misconfigured (e.g., a Secret does not contain the keys
+// named `tls.crt` and `tls.key`). In this case, the `ResolvedRefs` condition
+// on the Gateway MUST be set to False with the Reason `InvalidClientCertificateRef`
+// and the Message of the Condition MUST indicate why the reference is invalid.
+//
+// * It refers to a resource in another namespace UNLESS there is a ReferenceGrant
+// in the target namespace that allows the certificate to be attached.
+// If a ReferenceGrant does not allow this reference, the `ResolvedRefs` condition
+// on the Gateway MUST be set to False with the Reason `RefNotPermitted`.
+//
+// Implementations MAY choose to perform further validation of the certificate
+// content (e.g., checking expiry or enforcing specific formats). In such cases,
+// an implementation-specific Reason and Message MUST be set.
+//
+// Support: Core - Reference to a Kubernetes TLS Secret (with the type `kubernetes.io/tls`).
+// Support: Implementation-specific - Other resource kinds or Secrets with a
+// different type (e.g., `Opaque`).
+type GatewaySpecTlsBackendClientCertificateRef struct {
+	// Group is the group of the referent. For example, "gateway.networking.k8s.io".
+	// When unspecified or empty string, core API group is inferred.
+	Group *string `pulumi:"group"`
+	// Kind is kind of the referent. For example "Secret".
+	Kind *string `pulumi:"kind"`
+	// Name is the name of the referent.
+	Name *string `pulumi:"name"`
+	// Namespace is the namespace of the referenced object. When unspecified, the local
+	// namespace is inferred.
+	//
+	// Note that when a namespace different than the local namespace is specified,
+	// a ReferenceGrant object is required in the referent namespace to allow that
+	// namespace's owner to accept the reference. See the ReferenceGrant
+	// documentation for details.
+	//
+	// Support: Core
+	Namespace *string `pulumi:"namespace"`
+}
+
+// GatewaySpecTlsBackendClientCertificateRefInput is an input type that accepts GatewaySpecTlsBackendClientCertificateRefArgs and GatewaySpecTlsBackendClientCertificateRefOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsBackendClientCertificateRefInput` via:
+//
+//	GatewaySpecTlsBackendClientCertificateRefArgs{...}
+type GatewaySpecTlsBackendClientCertificateRefInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsBackendClientCertificateRefOutput() GatewaySpecTlsBackendClientCertificateRefOutput
+	ToGatewaySpecTlsBackendClientCertificateRefOutputWithContext(context.Context) GatewaySpecTlsBackendClientCertificateRefOutput
+}
+
+// ClientCertificateRef references an object that contains a client certificate
+// and its associated private key. It can reference standard Kubernetes resources,
+// i.e., Secret, or implementation-specific custom resources.
+//
+// A ClientCertificateRef is considered invalid if:
+//
+// * It refers to a resource that cannot be resolved (e.g., the referenced resource
+// does not exist) or is misconfigured (e.g., a Secret does not contain the keys
+// named `tls.crt` and `tls.key`). In this case, the `ResolvedRefs` condition
+// on the Gateway MUST be set to False with the Reason `InvalidClientCertificateRef`
+// and the Message of the Condition MUST indicate why the reference is invalid.
+//
+// * It refers to a resource in another namespace UNLESS there is a ReferenceGrant
+// in the target namespace that allows the certificate to be attached.
+// If a ReferenceGrant does not allow this reference, the `ResolvedRefs` condition
+// on the Gateway MUST be set to False with the Reason `RefNotPermitted`.
+//
+// Implementations MAY choose to perform further validation of the certificate
+// content (e.g., checking expiry or enforcing specific formats). In such cases,
+// an implementation-specific Reason and Message MUST be set.
+//
+// Support: Core - Reference to a Kubernetes TLS Secret (with the type `kubernetes.io/tls`).
+// Support: Implementation-specific - Other resource kinds or Secrets with a
+// different type (e.g., `Opaque`).
+type GatewaySpecTlsBackendClientCertificateRefArgs struct {
+	// Group is the group of the referent. For example, "gateway.networking.k8s.io".
+	// When unspecified or empty string, core API group is inferred.
+	Group pulumi.StringPtrInput `pulumi:"group"`
+	// Kind is kind of the referent. For example "Secret".
+	Kind pulumi.StringPtrInput `pulumi:"kind"`
+	// Name is the name of the referent.
+	Name pulumi.StringPtrInput `pulumi:"name"`
+	// Namespace is the namespace of the referenced object. When unspecified, the local
+	// namespace is inferred.
+	//
+	// Note that when a namespace different than the local namespace is specified,
+	// a ReferenceGrant object is required in the referent namespace to allow that
+	// namespace's owner to accept the reference. See the ReferenceGrant
+	// documentation for details.
+	//
+	// Support: Core
+	Namespace pulumi.StringPtrInput `pulumi:"namespace"`
+}
+
+func (GatewaySpecTlsBackendClientCertificateRefArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsBackendClientCertificateRef)(nil)).Elem()
+}
+
+func (i GatewaySpecTlsBackendClientCertificateRefArgs) ToGatewaySpecTlsBackendClientCertificateRefOutput() GatewaySpecTlsBackendClientCertificateRefOutput {
+	return i.ToGatewaySpecTlsBackendClientCertificateRefOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsBackendClientCertificateRefArgs) ToGatewaySpecTlsBackendClientCertificateRefOutputWithContext(ctx context.Context) GatewaySpecTlsBackendClientCertificateRefOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsBackendClientCertificateRefOutput)
+}
+
+func (i GatewaySpecTlsBackendClientCertificateRefArgs) ToGatewaySpecTlsBackendClientCertificateRefPtrOutput() GatewaySpecTlsBackendClientCertificateRefPtrOutput {
+	return i.ToGatewaySpecTlsBackendClientCertificateRefPtrOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsBackendClientCertificateRefArgs) ToGatewaySpecTlsBackendClientCertificateRefPtrOutputWithContext(ctx context.Context) GatewaySpecTlsBackendClientCertificateRefPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsBackendClientCertificateRefOutput).ToGatewaySpecTlsBackendClientCertificateRefPtrOutputWithContext(ctx)
+}
+
+// GatewaySpecTlsBackendClientCertificateRefPtrInput is an input type that accepts GatewaySpecTlsBackendClientCertificateRefArgs, GatewaySpecTlsBackendClientCertificateRefPtr and GatewaySpecTlsBackendClientCertificateRefPtrOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsBackendClientCertificateRefPtrInput` via:
+//
+//	        GatewaySpecTlsBackendClientCertificateRefArgs{...}
+//
+//	or:
+//
+//	        nil
+type GatewaySpecTlsBackendClientCertificateRefPtrInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsBackendClientCertificateRefPtrOutput() GatewaySpecTlsBackendClientCertificateRefPtrOutput
+	ToGatewaySpecTlsBackendClientCertificateRefPtrOutputWithContext(context.Context) GatewaySpecTlsBackendClientCertificateRefPtrOutput
+}
+
+type gatewaySpecTlsBackendClientCertificateRefPtrType GatewaySpecTlsBackendClientCertificateRefArgs
+
+func GatewaySpecTlsBackendClientCertificateRefPtr(v *GatewaySpecTlsBackendClientCertificateRefArgs) GatewaySpecTlsBackendClientCertificateRefPtrInput {
+	return (*gatewaySpecTlsBackendClientCertificateRefPtrType)(v)
+}
+
+func (*gatewaySpecTlsBackendClientCertificateRefPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTlsBackendClientCertificateRef)(nil)).Elem()
+}
+
+func (i *gatewaySpecTlsBackendClientCertificateRefPtrType) ToGatewaySpecTlsBackendClientCertificateRefPtrOutput() GatewaySpecTlsBackendClientCertificateRefPtrOutput {
+	return i.ToGatewaySpecTlsBackendClientCertificateRefPtrOutputWithContext(context.Background())
+}
+
+func (i *gatewaySpecTlsBackendClientCertificateRefPtrType) ToGatewaySpecTlsBackendClientCertificateRefPtrOutputWithContext(ctx context.Context) GatewaySpecTlsBackendClientCertificateRefPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsBackendClientCertificateRefPtrOutput)
+}
+
+// ClientCertificateRef references an object that contains a client certificate
+// and its associated private key. It can reference standard Kubernetes resources,
+// i.e., Secret, or implementation-specific custom resources.
+//
+// A ClientCertificateRef is considered invalid if:
+//
+// * It refers to a resource that cannot be resolved (e.g., the referenced resource
+// does not exist) or is misconfigured (e.g., a Secret does not contain the keys
+// named `tls.crt` and `tls.key`). In this case, the `ResolvedRefs` condition
+// on the Gateway MUST be set to False with the Reason `InvalidClientCertificateRef`
+// and the Message of the Condition MUST indicate why the reference is invalid.
+//
+// * It refers to a resource in another namespace UNLESS there is a ReferenceGrant
+// in the target namespace that allows the certificate to be attached.
+// If a ReferenceGrant does not allow this reference, the `ResolvedRefs` condition
+// on the Gateway MUST be set to False with the Reason `RefNotPermitted`.
+//
+// Implementations MAY choose to perform further validation of the certificate
+// content (e.g., checking expiry or enforcing specific formats). In such cases,
+// an implementation-specific Reason and Message MUST be set.
+//
+// Support: Core - Reference to a Kubernetes TLS Secret (with the type `kubernetes.io/tls`).
+// Support: Implementation-specific - Other resource kinds or Secrets with a
+// different type (e.g., `Opaque`).
+type GatewaySpecTlsBackendClientCertificateRefOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsBackendClientCertificateRefOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsBackendClientCertificateRef)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsBackendClientCertificateRefOutput) ToGatewaySpecTlsBackendClientCertificateRefOutput() GatewaySpecTlsBackendClientCertificateRefOutput {
+	return o
+}
+
+func (o GatewaySpecTlsBackendClientCertificateRefOutput) ToGatewaySpecTlsBackendClientCertificateRefOutputWithContext(ctx context.Context) GatewaySpecTlsBackendClientCertificateRefOutput {
+	return o
+}
+
+func (o GatewaySpecTlsBackendClientCertificateRefOutput) ToGatewaySpecTlsBackendClientCertificateRefPtrOutput() GatewaySpecTlsBackendClientCertificateRefPtrOutput {
+	return o.ToGatewaySpecTlsBackendClientCertificateRefPtrOutputWithContext(context.Background())
+}
+
+func (o GatewaySpecTlsBackendClientCertificateRefOutput) ToGatewaySpecTlsBackendClientCertificateRefPtrOutputWithContext(ctx context.Context) GatewaySpecTlsBackendClientCertificateRefPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v GatewaySpecTlsBackendClientCertificateRef) *GatewaySpecTlsBackendClientCertificateRef {
+		return &v
+	}).(GatewaySpecTlsBackendClientCertificateRefPtrOutput)
+}
+
+// Group is the group of the referent. For example, "gateway.networking.k8s.io".
+// When unspecified or empty string, core API group is inferred.
+func (o GatewaySpecTlsBackendClientCertificateRefOutput) Group() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsBackendClientCertificateRef) *string { return v.Group }).(pulumi.StringPtrOutput)
+}
+
+// Kind is kind of the referent. For example "Secret".
+func (o GatewaySpecTlsBackendClientCertificateRefOutput) Kind() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsBackendClientCertificateRef) *string { return v.Kind }).(pulumi.StringPtrOutput)
+}
+
+// Name is the name of the referent.
+func (o GatewaySpecTlsBackendClientCertificateRefOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsBackendClientCertificateRef) *string { return v.Name }).(pulumi.StringPtrOutput)
+}
+
+// Namespace is the namespace of the referenced object. When unspecified, the local
+// namespace is inferred.
+//
+// Note that when a namespace different than the local namespace is specified,
+// a ReferenceGrant object is required in the referent namespace to allow that
+// namespace's owner to accept the reference. See the ReferenceGrant
+// documentation for details.
+//
+// Support: Core
+func (o GatewaySpecTlsBackendClientCertificateRefOutput) Namespace() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsBackendClientCertificateRef) *string { return v.Namespace }).(pulumi.StringPtrOutput)
+}
+
+type GatewaySpecTlsBackendClientCertificateRefPtrOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsBackendClientCertificateRefPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTlsBackendClientCertificateRef)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsBackendClientCertificateRefPtrOutput) ToGatewaySpecTlsBackendClientCertificateRefPtrOutput() GatewaySpecTlsBackendClientCertificateRefPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsBackendClientCertificateRefPtrOutput) ToGatewaySpecTlsBackendClientCertificateRefPtrOutputWithContext(ctx context.Context) GatewaySpecTlsBackendClientCertificateRefPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsBackendClientCertificateRefPtrOutput) Elem() GatewaySpecTlsBackendClientCertificateRefOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsBackendClientCertificateRef) GatewaySpecTlsBackendClientCertificateRef {
+		if v != nil {
+			return *v
+		}
+		var ret GatewaySpecTlsBackendClientCertificateRef
+		return ret
+	}).(GatewaySpecTlsBackendClientCertificateRefOutput)
+}
+
+// Group is the group of the referent. For example, "gateway.networking.k8s.io".
+// When unspecified or empty string, core API group is inferred.
+func (o GatewaySpecTlsBackendClientCertificateRefPtrOutput) Group() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsBackendClientCertificateRef) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Group
+	}).(pulumi.StringPtrOutput)
+}
+
+// Kind is kind of the referent. For example "Secret".
+func (o GatewaySpecTlsBackendClientCertificateRefPtrOutput) Kind() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsBackendClientCertificateRef) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Kind
+	}).(pulumi.StringPtrOutput)
+}
+
+// Name is the name of the referent.
+func (o GatewaySpecTlsBackendClientCertificateRefPtrOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsBackendClientCertificateRef) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Name
+	}).(pulumi.StringPtrOutput)
+}
+
+// Namespace is the namespace of the referenced object. When unspecified, the local
+// namespace is inferred.
+//
+// Note that when a namespace different than the local namespace is specified,
+// a ReferenceGrant object is required in the referent namespace to allow that
+// namespace's owner to accept the reference. See the ReferenceGrant
+// documentation for details.
+//
+// Support: Core
+func (o GatewaySpecTlsBackendClientCertificateRefPtrOutput) Namespace() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsBackendClientCertificateRef) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Namespace
+	}).(pulumi.StringPtrOutput)
+}
+
+// ClientCertificateRef references an object that contains a client certificate
+// and its associated private key. It can reference standard Kubernetes resources,
+// i.e., Secret, or implementation-specific custom resources.
+//
+// A ClientCertificateRef is considered invalid if:
+//
+// * It refers to a resource that cannot be resolved (e.g., the referenced resource
+// does not exist) or is misconfigured (e.g., a Secret does not contain the keys
+// named `tls.crt` and `tls.key`). In this case, the `ResolvedRefs` condition
+// on the Gateway MUST be set to False with the Reason `InvalidClientCertificateRef`
+// and the Message of the Condition MUST indicate why the reference is invalid.
+//
+// * It refers to a resource in another namespace UNLESS there is a ReferenceGrant
+// in the target namespace that allows the certificate to be attached.
+// If a ReferenceGrant does not allow this reference, the `ResolvedRefs` condition
+// on the Gateway MUST be set to False with the Reason `RefNotPermitted`.
+//
+// Implementations MAY choose to perform further validation of the certificate
+// content (e.g., checking expiry or enforcing specific formats). In such cases,
+// an implementation-specific Reason and Message MUST be set.
+//
+// Support: Core - Reference to a Kubernetes TLS Secret (with the type `kubernetes.io/tls`).
+// Support: Implementation-specific - Other resource kinds or Secrets with a
+// different type (e.g., `Opaque`).
+type GatewaySpecTlsBackendClientCertificateRefPatch struct {
+	// Group is the group of the referent. For example, "gateway.networking.k8s.io".
+	// When unspecified or empty string, core API group is inferred.
+	Group *string `pulumi:"group"`
+	// Kind is kind of the referent. For example "Secret".
+	Kind *string `pulumi:"kind"`
+	// Name is the name of the referent.
+	Name *string `pulumi:"name"`
+	// Namespace is the namespace of the referenced object. When unspecified, the local
+	// namespace is inferred.
+	//
+	// Note that when a namespace different than the local namespace is specified,
+	// a ReferenceGrant object is required in the referent namespace to allow that
+	// namespace's owner to accept the reference. See the ReferenceGrant
+	// documentation for details.
+	//
+	// Support: Core
+	Namespace *string `pulumi:"namespace"`
+}
+
+// GatewaySpecTlsBackendClientCertificateRefPatchInput is an input type that accepts GatewaySpecTlsBackendClientCertificateRefPatchArgs and GatewaySpecTlsBackendClientCertificateRefPatchOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsBackendClientCertificateRefPatchInput` via:
+//
+//	GatewaySpecTlsBackendClientCertificateRefPatchArgs{...}
+type GatewaySpecTlsBackendClientCertificateRefPatchInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsBackendClientCertificateRefPatchOutput() GatewaySpecTlsBackendClientCertificateRefPatchOutput
+	ToGatewaySpecTlsBackendClientCertificateRefPatchOutputWithContext(context.Context) GatewaySpecTlsBackendClientCertificateRefPatchOutput
+}
+
+// ClientCertificateRef references an object that contains a client certificate
+// and its associated private key. It can reference standard Kubernetes resources,
+// i.e., Secret, or implementation-specific custom resources.
+//
+// A ClientCertificateRef is considered invalid if:
+//
+// * It refers to a resource that cannot be resolved (e.g., the referenced resource
+// does not exist) or is misconfigured (e.g., a Secret does not contain the keys
+// named `tls.crt` and `tls.key`). In this case, the `ResolvedRefs` condition
+// on the Gateway MUST be set to False with the Reason `InvalidClientCertificateRef`
+// and the Message of the Condition MUST indicate why the reference is invalid.
+//
+// * It refers to a resource in another namespace UNLESS there is a ReferenceGrant
+// in the target namespace that allows the certificate to be attached.
+// If a ReferenceGrant does not allow this reference, the `ResolvedRefs` condition
+// on the Gateway MUST be set to False with the Reason `RefNotPermitted`.
+//
+// Implementations MAY choose to perform further validation of the certificate
+// content (e.g., checking expiry or enforcing specific formats). In such cases,
+// an implementation-specific Reason and Message MUST be set.
+//
+// Support: Core - Reference to a Kubernetes TLS Secret (with the type `kubernetes.io/tls`).
+// Support: Implementation-specific - Other resource kinds or Secrets with a
+// different type (e.g., `Opaque`).
+type GatewaySpecTlsBackendClientCertificateRefPatchArgs struct {
+	// Group is the group of the referent. For example, "gateway.networking.k8s.io".
+	// When unspecified or empty string, core API group is inferred.
+	Group pulumi.StringPtrInput `pulumi:"group"`
+	// Kind is kind of the referent. For example "Secret".
+	Kind pulumi.StringPtrInput `pulumi:"kind"`
+	// Name is the name of the referent.
+	Name pulumi.StringPtrInput `pulumi:"name"`
+	// Namespace is the namespace of the referenced object. When unspecified, the local
+	// namespace is inferred.
+	//
+	// Note that when a namespace different than the local namespace is specified,
+	// a ReferenceGrant object is required in the referent namespace to allow that
+	// namespace's owner to accept the reference. See the ReferenceGrant
+	// documentation for details.
+	//
+	// Support: Core
+	Namespace pulumi.StringPtrInput `pulumi:"namespace"`
+}
+
+func (GatewaySpecTlsBackendClientCertificateRefPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsBackendClientCertificateRefPatch)(nil)).Elem()
+}
+
+func (i GatewaySpecTlsBackendClientCertificateRefPatchArgs) ToGatewaySpecTlsBackendClientCertificateRefPatchOutput() GatewaySpecTlsBackendClientCertificateRefPatchOutput {
+	return i.ToGatewaySpecTlsBackendClientCertificateRefPatchOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsBackendClientCertificateRefPatchArgs) ToGatewaySpecTlsBackendClientCertificateRefPatchOutputWithContext(ctx context.Context) GatewaySpecTlsBackendClientCertificateRefPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsBackendClientCertificateRefPatchOutput)
+}
+
+func (i GatewaySpecTlsBackendClientCertificateRefPatchArgs) ToGatewaySpecTlsBackendClientCertificateRefPatchPtrOutput() GatewaySpecTlsBackendClientCertificateRefPatchPtrOutput {
+	return i.ToGatewaySpecTlsBackendClientCertificateRefPatchPtrOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsBackendClientCertificateRefPatchArgs) ToGatewaySpecTlsBackendClientCertificateRefPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsBackendClientCertificateRefPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsBackendClientCertificateRefPatchOutput).ToGatewaySpecTlsBackendClientCertificateRefPatchPtrOutputWithContext(ctx)
+}
+
+// GatewaySpecTlsBackendClientCertificateRefPatchPtrInput is an input type that accepts GatewaySpecTlsBackendClientCertificateRefPatchArgs, GatewaySpecTlsBackendClientCertificateRefPatchPtr and GatewaySpecTlsBackendClientCertificateRefPatchPtrOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsBackendClientCertificateRefPatchPtrInput` via:
+//
+//	        GatewaySpecTlsBackendClientCertificateRefPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type GatewaySpecTlsBackendClientCertificateRefPatchPtrInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsBackendClientCertificateRefPatchPtrOutput() GatewaySpecTlsBackendClientCertificateRefPatchPtrOutput
+	ToGatewaySpecTlsBackendClientCertificateRefPatchPtrOutputWithContext(context.Context) GatewaySpecTlsBackendClientCertificateRefPatchPtrOutput
+}
+
+type gatewaySpecTlsBackendClientCertificateRefPatchPtrType GatewaySpecTlsBackendClientCertificateRefPatchArgs
+
+func GatewaySpecTlsBackendClientCertificateRefPatchPtr(v *GatewaySpecTlsBackendClientCertificateRefPatchArgs) GatewaySpecTlsBackendClientCertificateRefPatchPtrInput {
+	return (*gatewaySpecTlsBackendClientCertificateRefPatchPtrType)(v)
+}
+
+func (*gatewaySpecTlsBackendClientCertificateRefPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTlsBackendClientCertificateRefPatch)(nil)).Elem()
+}
+
+func (i *gatewaySpecTlsBackendClientCertificateRefPatchPtrType) ToGatewaySpecTlsBackendClientCertificateRefPatchPtrOutput() GatewaySpecTlsBackendClientCertificateRefPatchPtrOutput {
+	return i.ToGatewaySpecTlsBackendClientCertificateRefPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *gatewaySpecTlsBackendClientCertificateRefPatchPtrType) ToGatewaySpecTlsBackendClientCertificateRefPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsBackendClientCertificateRefPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsBackendClientCertificateRefPatchPtrOutput)
+}
+
+// ClientCertificateRef references an object that contains a client certificate
+// and its associated private key. It can reference standard Kubernetes resources,
+// i.e., Secret, or implementation-specific custom resources.
+//
+// A ClientCertificateRef is considered invalid if:
+//
+// * It refers to a resource that cannot be resolved (e.g., the referenced resource
+// does not exist) or is misconfigured (e.g., a Secret does not contain the keys
+// named `tls.crt` and `tls.key`). In this case, the `ResolvedRefs` condition
+// on the Gateway MUST be set to False with the Reason `InvalidClientCertificateRef`
+// and the Message of the Condition MUST indicate why the reference is invalid.
+//
+// * It refers to a resource in another namespace UNLESS there is a ReferenceGrant
+// in the target namespace that allows the certificate to be attached.
+// If a ReferenceGrant does not allow this reference, the `ResolvedRefs` condition
+// on the Gateway MUST be set to False with the Reason `RefNotPermitted`.
+//
+// Implementations MAY choose to perform further validation of the certificate
+// content (e.g., checking expiry or enforcing specific formats). In such cases,
+// an implementation-specific Reason and Message MUST be set.
+//
+// Support: Core - Reference to a Kubernetes TLS Secret (with the type `kubernetes.io/tls`).
+// Support: Implementation-specific - Other resource kinds or Secrets with a
+// different type (e.g., `Opaque`).
+type GatewaySpecTlsBackendClientCertificateRefPatchOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsBackendClientCertificateRefPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsBackendClientCertificateRefPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsBackendClientCertificateRefPatchOutput) ToGatewaySpecTlsBackendClientCertificateRefPatchOutput() GatewaySpecTlsBackendClientCertificateRefPatchOutput {
+	return o
+}
+
+func (o GatewaySpecTlsBackendClientCertificateRefPatchOutput) ToGatewaySpecTlsBackendClientCertificateRefPatchOutputWithContext(ctx context.Context) GatewaySpecTlsBackendClientCertificateRefPatchOutput {
+	return o
+}
+
+func (o GatewaySpecTlsBackendClientCertificateRefPatchOutput) ToGatewaySpecTlsBackendClientCertificateRefPatchPtrOutput() GatewaySpecTlsBackendClientCertificateRefPatchPtrOutput {
+	return o.ToGatewaySpecTlsBackendClientCertificateRefPatchPtrOutputWithContext(context.Background())
+}
+
+func (o GatewaySpecTlsBackendClientCertificateRefPatchOutput) ToGatewaySpecTlsBackendClientCertificateRefPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsBackendClientCertificateRefPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v GatewaySpecTlsBackendClientCertificateRefPatch) *GatewaySpecTlsBackendClientCertificateRefPatch {
+		return &v
+	}).(GatewaySpecTlsBackendClientCertificateRefPatchPtrOutput)
+}
+
+// Group is the group of the referent. For example, "gateway.networking.k8s.io".
+// When unspecified or empty string, core API group is inferred.
+func (o GatewaySpecTlsBackendClientCertificateRefPatchOutput) Group() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsBackendClientCertificateRefPatch) *string { return v.Group }).(pulumi.StringPtrOutput)
+}
+
+// Kind is kind of the referent. For example "Secret".
+func (o GatewaySpecTlsBackendClientCertificateRefPatchOutput) Kind() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsBackendClientCertificateRefPatch) *string { return v.Kind }).(pulumi.StringPtrOutput)
+}
+
+// Name is the name of the referent.
+func (o GatewaySpecTlsBackendClientCertificateRefPatchOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsBackendClientCertificateRefPatch) *string { return v.Name }).(pulumi.StringPtrOutput)
+}
+
+// Namespace is the namespace of the referenced object. When unspecified, the local
+// namespace is inferred.
+//
+// Note that when a namespace different than the local namespace is specified,
+// a ReferenceGrant object is required in the referent namespace to allow that
+// namespace's owner to accept the reference. See the ReferenceGrant
+// documentation for details.
+//
+// Support: Core
+func (o GatewaySpecTlsBackendClientCertificateRefPatchOutput) Namespace() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsBackendClientCertificateRefPatch) *string { return v.Namespace }).(pulumi.StringPtrOutput)
+}
+
+type GatewaySpecTlsBackendClientCertificateRefPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsBackendClientCertificateRefPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTlsBackendClientCertificateRefPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsBackendClientCertificateRefPatchPtrOutput) ToGatewaySpecTlsBackendClientCertificateRefPatchPtrOutput() GatewaySpecTlsBackendClientCertificateRefPatchPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsBackendClientCertificateRefPatchPtrOutput) ToGatewaySpecTlsBackendClientCertificateRefPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsBackendClientCertificateRefPatchPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsBackendClientCertificateRefPatchPtrOutput) Elem() GatewaySpecTlsBackendClientCertificateRefPatchOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsBackendClientCertificateRefPatch) GatewaySpecTlsBackendClientCertificateRefPatch {
+		if v != nil {
+			return *v
+		}
+		var ret GatewaySpecTlsBackendClientCertificateRefPatch
+		return ret
+	}).(GatewaySpecTlsBackendClientCertificateRefPatchOutput)
+}
+
+// Group is the group of the referent. For example, "gateway.networking.k8s.io".
+// When unspecified or empty string, core API group is inferred.
+func (o GatewaySpecTlsBackendClientCertificateRefPatchPtrOutput) Group() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsBackendClientCertificateRefPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Group
+	}).(pulumi.StringPtrOutput)
+}
+
+// Kind is kind of the referent. For example "Secret".
+func (o GatewaySpecTlsBackendClientCertificateRefPatchPtrOutput) Kind() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsBackendClientCertificateRefPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Kind
+	}).(pulumi.StringPtrOutput)
+}
+
+// Name is the name of the referent.
+func (o GatewaySpecTlsBackendClientCertificateRefPatchPtrOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsBackendClientCertificateRefPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Name
+	}).(pulumi.StringPtrOutput)
+}
+
+// Namespace is the namespace of the referenced object. When unspecified, the local
+// namespace is inferred.
+//
+// Note that when a namespace different than the local namespace is specified,
+// a ReferenceGrant object is required in the referent namespace to allow that
+// namespace's owner to accept the reference. See the ReferenceGrant
+// documentation for details.
+//
+// Support: Core
+func (o GatewaySpecTlsBackendClientCertificateRefPatchPtrOutput) Namespace() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsBackendClientCertificateRefPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Namespace
+	}).(pulumi.StringPtrOutput)
+}
+
+// Backend describes TLS configuration for gateway when connecting
+// to backends.
+//
+// Note that this contains only details for the Gateway as a TLS client,
+// and does _not_ imply behavior about how to choose which backend should
+// get a TLS connection. That is determined by the presence of a BackendTLSPolicy.
+//
+// Support: Core
+type GatewaySpecTlsBackendPatch struct {
+	ClientCertificateRef *GatewaySpecTlsBackendClientCertificateRefPatch `pulumi:"clientCertificateRef"`
+}
+
+// GatewaySpecTlsBackendPatchInput is an input type that accepts GatewaySpecTlsBackendPatchArgs and GatewaySpecTlsBackendPatchOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsBackendPatchInput` via:
+//
+//	GatewaySpecTlsBackendPatchArgs{...}
+type GatewaySpecTlsBackendPatchInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsBackendPatchOutput() GatewaySpecTlsBackendPatchOutput
+	ToGatewaySpecTlsBackendPatchOutputWithContext(context.Context) GatewaySpecTlsBackendPatchOutput
+}
+
+// Backend describes TLS configuration for gateway when connecting
+// to backends.
+//
+// Note that this contains only details for the Gateway as a TLS client,
+// and does _not_ imply behavior about how to choose which backend should
+// get a TLS connection. That is determined by the presence of a BackendTLSPolicy.
+//
+// Support: Core
+type GatewaySpecTlsBackendPatchArgs struct {
+	ClientCertificateRef GatewaySpecTlsBackendClientCertificateRefPatchPtrInput `pulumi:"clientCertificateRef"`
+}
+
+func (GatewaySpecTlsBackendPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsBackendPatch)(nil)).Elem()
+}
+
+func (i GatewaySpecTlsBackendPatchArgs) ToGatewaySpecTlsBackendPatchOutput() GatewaySpecTlsBackendPatchOutput {
+	return i.ToGatewaySpecTlsBackendPatchOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsBackendPatchArgs) ToGatewaySpecTlsBackendPatchOutputWithContext(ctx context.Context) GatewaySpecTlsBackendPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsBackendPatchOutput)
+}
+
+func (i GatewaySpecTlsBackendPatchArgs) ToGatewaySpecTlsBackendPatchPtrOutput() GatewaySpecTlsBackendPatchPtrOutput {
+	return i.ToGatewaySpecTlsBackendPatchPtrOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsBackendPatchArgs) ToGatewaySpecTlsBackendPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsBackendPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsBackendPatchOutput).ToGatewaySpecTlsBackendPatchPtrOutputWithContext(ctx)
+}
+
+// GatewaySpecTlsBackendPatchPtrInput is an input type that accepts GatewaySpecTlsBackendPatchArgs, GatewaySpecTlsBackendPatchPtr and GatewaySpecTlsBackendPatchPtrOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsBackendPatchPtrInput` via:
+//
+//	        GatewaySpecTlsBackendPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type GatewaySpecTlsBackendPatchPtrInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsBackendPatchPtrOutput() GatewaySpecTlsBackendPatchPtrOutput
+	ToGatewaySpecTlsBackendPatchPtrOutputWithContext(context.Context) GatewaySpecTlsBackendPatchPtrOutput
+}
+
+type gatewaySpecTlsBackendPatchPtrType GatewaySpecTlsBackendPatchArgs
+
+func GatewaySpecTlsBackendPatchPtr(v *GatewaySpecTlsBackendPatchArgs) GatewaySpecTlsBackendPatchPtrInput {
+	return (*gatewaySpecTlsBackendPatchPtrType)(v)
+}
+
+func (*gatewaySpecTlsBackendPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTlsBackendPatch)(nil)).Elem()
+}
+
+func (i *gatewaySpecTlsBackendPatchPtrType) ToGatewaySpecTlsBackendPatchPtrOutput() GatewaySpecTlsBackendPatchPtrOutput {
+	return i.ToGatewaySpecTlsBackendPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *gatewaySpecTlsBackendPatchPtrType) ToGatewaySpecTlsBackendPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsBackendPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsBackendPatchPtrOutput)
+}
+
+// Backend describes TLS configuration for gateway when connecting
+// to backends.
+//
+// Note that this contains only details for the Gateway as a TLS client,
+// and does _not_ imply behavior about how to choose which backend should
+// get a TLS connection. That is determined by the presence of a BackendTLSPolicy.
+//
+// Support: Core
+type GatewaySpecTlsBackendPatchOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsBackendPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsBackendPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsBackendPatchOutput) ToGatewaySpecTlsBackendPatchOutput() GatewaySpecTlsBackendPatchOutput {
+	return o
+}
+
+func (o GatewaySpecTlsBackendPatchOutput) ToGatewaySpecTlsBackendPatchOutputWithContext(ctx context.Context) GatewaySpecTlsBackendPatchOutput {
+	return o
+}
+
+func (o GatewaySpecTlsBackendPatchOutput) ToGatewaySpecTlsBackendPatchPtrOutput() GatewaySpecTlsBackendPatchPtrOutput {
+	return o.ToGatewaySpecTlsBackendPatchPtrOutputWithContext(context.Background())
+}
+
+func (o GatewaySpecTlsBackendPatchOutput) ToGatewaySpecTlsBackendPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsBackendPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v GatewaySpecTlsBackendPatch) *GatewaySpecTlsBackendPatch {
+		return &v
+	}).(GatewaySpecTlsBackendPatchPtrOutput)
+}
+
+func (o GatewaySpecTlsBackendPatchOutput) ClientCertificateRef() GatewaySpecTlsBackendClientCertificateRefPatchPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsBackendPatch) *GatewaySpecTlsBackendClientCertificateRefPatch {
+		return v.ClientCertificateRef
+	}).(GatewaySpecTlsBackendClientCertificateRefPatchPtrOutput)
+}
+
+type GatewaySpecTlsBackendPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsBackendPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTlsBackendPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsBackendPatchPtrOutput) ToGatewaySpecTlsBackendPatchPtrOutput() GatewaySpecTlsBackendPatchPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsBackendPatchPtrOutput) ToGatewaySpecTlsBackendPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsBackendPatchPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsBackendPatchPtrOutput) Elem() GatewaySpecTlsBackendPatchOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsBackendPatch) GatewaySpecTlsBackendPatch {
+		if v != nil {
+			return *v
+		}
+		var ret GatewaySpecTlsBackendPatch
+		return ret
+	}).(GatewaySpecTlsBackendPatchOutput)
+}
+
+func (o GatewaySpecTlsBackendPatchPtrOutput) ClientCertificateRef() GatewaySpecTlsBackendClientCertificateRefPatchPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsBackendPatch) *GatewaySpecTlsBackendClientCertificateRefPatch {
+		if v == nil {
+			return nil
+		}
+		return v.ClientCertificateRef
+	}).(GatewaySpecTlsBackendClientCertificateRefPatchPtrOutput)
+}
+
+// Frontend describes TLS config when client connects to Gateway.
+// Support: Core
+type GatewaySpecTlsFrontend struct {
+	Default *GatewaySpecTlsFrontendDefault `pulumi:"default"`
+	// PerPort specifies tls configuration assigned per port.
+	// Per port configuration is optional. Once set this configuration overrides
+	// the default configuration for all Listeners handling HTTPS traffic
+	// that match this port.
+	// Each override port requires a unique TLS configuration.
+	//
+	// support: Core
+	PerPort []GatewaySpecTlsFrontendPerPort `pulumi:"perPort"`
+}
+
+// GatewaySpecTlsFrontendInput is an input type that accepts GatewaySpecTlsFrontendArgs and GatewaySpecTlsFrontendOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendInput` via:
+//
+//	GatewaySpecTlsFrontendArgs{...}
+type GatewaySpecTlsFrontendInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendOutput() GatewaySpecTlsFrontendOutput
+	ToGatewaySpecTlsFrontendOutputWithContext(context.Context) GatewaySpecTlsFrontendOutput
+}
+
+// Frontend describes TLS config when client connects to Gateway.
+// Support: Core
+type GatewaySpecTlsFrontendArgs struct {
+	Default GatewaySpecTlsFrontendDefaultPtrInput `pulumi:"default"`
+	// PerPort specifies tls configuration assigned per port.
+	// Per port configuration is optional. Once set this configuration overrides
+	// the default configuration for all Listeners handling HTTPS traffic
+	// that match this port.
+	// Each override port requires a unique TLS configuration.
+	//
+	// support: Core
+	PerPort GatewaySpecTlsFrontendPerPortArrayInput `pulumi:"perPort"`
+}
+
+func (GatewaySpecTlsFrontendArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontend)(nil)).Elem()
+}
+
+func (i GatewaySpecTlsFrontendArgs) ToGatewaySpecTlsFrontendOutput() GatewaySpecTlsFrontendOutput {
+	return i.ToGatewaySpecTlsFrontendOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendArgs) ToGatewaySpecTlsFrontendOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendOutput)
+}
+
+func (i GatewaySpecTlsFrontendArgs) ToGatewaySpecTlsFrontendPtrOutput() GatewaySpecTlsFrontendPtrOutput {
+	return i.ToGatewaySpecTlsFrontendPtrOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendArgs) ToGatewaySpecTlsFrontendPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendOutput).ToGatewaySpecTlsFrontendPtrOutputWithContext(ctx)
+}
+
+// GatewaySpecTlsFrontendPtrInput is an input type that accepts GatewaySpecTlsFrontendArgs, GatewaySpecTlsFrontendPtr and GatewaySpecTlsFrontendPtrOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendPtrInput` via:
+//
+//	        GatewaySpecTlsFrontendArgs{...}
+//
+//	or:
+//
+//	        nil
+type GatewaySpecTlsFrontendPtrInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendPtrOutput() GatewaySpecTlsFrontendPtrOutput
+	ToGatewaySpecTlsFrontendPtrOutputWithContext(context.Context) GatewaySpecTlsFrontendPtrOutput
+}
+
+type gatewaySpecTlsFrontendPtrType GatewaySpecTlsFrontendArgs
+
+func GatewaySpecTlsFrontendPtr(v *GatewaySpecTlsFrontendArgs) GatewaySpecTlsFrontendPtrInput {
+	return (*gatewaySpecTlsFrontendPtrType)(v)
+}
+
+func (*gatewaySpecTlsFrontendPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTlsFrontend)(nil)).Elem()
+}
+
+func (i *gatewaySpecTlsFrontendPtrType) ToGatewaySpecTlsFrontendPtrOutput() GatewaySpecTlsFrontendPtrOutput {
+	return i.ToGatewaySpecTlsFrontendPtrOutputWithContext(context.Background())
+}
+
+func (i *gatewaySpecTlsFrontendPtrType) ToGatewaySpecTlsFrontendPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendPtrOutput)
+}
+
+// Frontend describes TLS config when client connects to Gateway.
+// Support: Core
+type GatewaySpecTlsFrontendOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontend)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendOutput) ToGatewaySpecTlsFrontendOutput() GatewaySpecTlsFrontendOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendOutput) ToGatewaySpecTlsFrontendOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendOutput) ToGatewaySpecTlsFrontendPtrOutput() GatewaySpecTlsFrontendPtrOutput {
+	return o.ToGatewaySpecTlsFrontendPtrOutputWithContext(context.Background())
+}
+
+func (o GatewaySpecTlsFrontendOutput) ToGatewaySpecTlsFrontendPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v GatewaySpecTlsFrontend) *GatewaySpecTlsFrontend {
+		return &v
+	}).(GatewaySpecTlsFrontendPtrOutput)
+}
+
+func (o GatewaySpecTlsFrontendOutput) Default() GatewaySpecTlsFrontendDefaultPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontend) *GatewaySpecTlsFrontendDefault { return v.Default }).(GatewaySpecTlsFrontendDefaultPtrOutput)
+}
+
+// PerPort specifies tls configuration assigned per port.
+// Per port configuration is optional. Once set this configuration overrides
+// the default configuration for all Listeners handling HTTPS traffic
+// that match this port.
+// Each override port requires a unique TLS configuration.
+//
+// support: Core
+func (o GatewaySpecTlsFrontendOutput) PerPort() GatewaySpecTlsFrontendPerPortArrayOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontend) []GatewaySpecTlsFrontendPerPort { return v.PerPort }).(GatewaySpecTlsFrontendPerPortArrayOutput)
+}
+
+type GatewaySpecTlsFrontendPtrOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTlsFrontend)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendPtrOutput) ToGatewaySpecTlsFrontendPtrOutput() GatewaySpecTlsFrontendPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPtrOutput) ToGatewaySpecTlsFrontendPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPtrOutput) Elem() GatewaySpecTlsFrontendOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsFrontend) GatewaySpecTlsFrontend {
+		if v != nil {
+			return *v
+		}
+		var ret GatewaySpecTlsFrontend
+		return ret
+	}).(GatewaySpecTlsFrontendOutput)
+}
+
+func (o GatewaySpecTlsFrontendPtrOutput) Default() GatewaySpecTlsFrontendDefaultPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsFrontend) *GatewaySpecTlsFrontendDefault {
+		if v == nil {
+			return nil
+		}
+		return v.Default
+	}).(GatewaySpecTlsFrontendDefaultPtrOutput)
+}
+
+// PerPort specifies tls configuration assigned per port.
+// Per port configuration is optional. Once set this configuration overrides
+// the default configuration for all Listeners handling HTTPS traffic
+// that match this port.
+// Each override port requires a unique TLS configuration.
+//
+// support: Core
+func (o GatewaySpecTlsFrontendPtrOutput) PerPort() GatewaySpecTlsFrontendPerPortArrayOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsFrontend) []GatewaySpecTlsFrontendPerPort {
+		if v == nil {
+			return nil
+		}
+		return v.PerPort
+	}).(GatewaySpecTlsFrontendPerPortArrayOutput)
+}
+
+// Default specifies the default client certificate validation configuration
+// for all Listeners handling HTTPS traffic, unless a per-port configuration
+// is defined.
+//
+// support: Core
+type GatewaySpecTlsFrontendDefault struct {
+	Validation *GatewaySpecTlsFrontendDefaultValidation `pulumi:"validation"`
+}
+
+// GatewaySpecTlsFrontendDefaultInput is an input type that accepts GatewaySpecTlsFrontendDefaultArgs and GatewaySpecTlsFrontendDefaultOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendDefaultInput` via:
+//
+//	GatewaySpecTlsFrontendDefaultArgs{...}
+type GatewaySpecTlsFrontendDefaultInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendDefaultOutput() GatewaySpecTlsFrontendDefaultOutput
+	ToGatewaySpecTlsFrontendDefaultOutputWithContext(context.Context) GatewaySpecTlsFrontendDefaultOutput
+}
+
+// Default specifies the default client certificate validation configuration
+// for all Listeners handling HTTPS traffic, unless a per-port configuration
+// is defined.
+//
+// support: Core
+type GatewaySpecTlsFrontendDefaultArgs struct {
+	Validation GatewaySpecTlsFrontendDefaultValidationPtrInput `pulumi:"validation"`
+}
+
+func (GatewaySpecTlsFrontendDefaultArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontendDefault)(nil)).Elem()
+}
+
+func (i GatewaySpecTlsFrontendDefaultArgs) ToGatewaySpecTlsFrontendDefaultOutput() GatewaySpecTlsFrontendDefaultOutput {
+	return i.ToGatewaySpecTlsFrontendDefaultOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendDefaultArgs) ToGatewaySpecTlsFrontendDefaultOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendDefaultOutput)
+}
+
+func (i GatewaySpecTlsFrontendDefaultArgs) ToGatewaySpecTlsFrontendDefaultPtrOutput() GatewaySpecTlsFrontendDefaultPtrOutput {
+	return i.ToGatewaySpecTlsFrontendDefaultPtrOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendDefaultArgs) ToGatewaySpecTlsFrontendDefaultPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendDefaultOutput).ToGatewaySpecTlsFrontendDefaultPtrOutputWithContext(ctx)
+}
+
+// GatewaySpecTlsFrontendDefaultPtrInput is an input type that accepts GatewaySpecTlsFrontendDefaultArgs, GatewaySpecTlsFrontendDefaultPtr and GatewaySpecTlsFrontendDefaultPtrOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendDefaultPtrInput` via:
+//
+//	        GatewaySpecTlsFrontendDefaultArgs{...}
+//
+//	or:
+//
+//	        nil
+type GatewaySpecTlsFrontendDefaultPtrInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendDefaultPtrOutput() GatewaySpecTlsFrontendDefaultPtrOutput
+	ToGatewaySpecTlsFrontendDefaultPtrOutputWithContext(context.Context) GatewaySpecTlsFrontendDefaultPtrOutput
+}
+
+type gatewaySpecTlsFrontendDefaultPtrType GatewaySpecTlsFrontendDefaultArgs
+
+func GatewaySpecTlsFrontendDefaultPtr(v *GatewaySpecTlsFrontendDefaultArgs) GatewaySpecTlsFrontendDefaultPtrInput {
+	return (*gatewaySpecTlsFrontendDefaultPtrType)(v)
+}
+
+func (*gatewaySpecTlsFrontendDefaultPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTlsFrontendDefault)(nil)).Elem()
+}
+
+func (i *gatewaySpecTlsFrontendDefaultPtrType) ToGatewaySpecTlsFrontendDefaultPtrOutput() GatewaySpecTlsFrontendDefaultPtrOutput {
+	return i.ToGatewaySpecTlsFrontendDefaultPtrOutputWithContext(context.Background())
+}
+
+func (i *gatewaySpecTlsFrontendDefaultPtrType) ToGatewaySpecTlsFrontendDefaultPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendDefaultPtrOutput)
+}
+
+// Default specifies the default client certificate validation configuration
+// for all Listeners handling HTTPS traffic, unless a per-port configuration
+// is defined.
+//
+// support: Core
+type GatewaySpecTlsFrontendDefaultOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendDefaultOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontendDefault)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendDefaultOutput) ToGatewaySpecTlsFrontendDefaultOutput() GatewaySpecTlsFrontendDefaultOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendDefaultOutput) ToGatewaySpecTlsFrontendDefaultOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendDefaultOutput) ToGatewaySpecTlsFrontendDefaultPtrOutput() GatewaySpecTlsFrontendDefaultPtrOutput {
+	return o.ToGatewaySpecTlsFrontendDefaultPtrOutputWithContext(context.Background())
+}
+
+func (o GatewaySpecTlsFrontendDefaultOutput) ToGatewaySpecTlsFrontendDefaultPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v GatewaySpecTlsFrontendDefault) *GatewaySpecTlsFrontendDefault {
+		return &v
+	}).(GatewaySpecTlsFrontendDefaultPtrOutput)
+}
+
+func (o GatewaySpecTlsFrontendDefaultOutput) Validation() GatewaySpecTlsFrontendDefaultValidationPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendDefault) *GatewaySpecTlsFrontendDefaultValidation { return v.Validation }).(GatewaySpecTlsFrontendDefaultValidationPtrOutput)
+}
+
+type GatewaySpecTlsFrontendDefaultPtrOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendDefaultPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTlsFrontendDefault)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendDefaultPtrOutput) ToGatewaySpecTlsFrontendDefaultPtrOutput() GatewaySpecTlsFrontendDefaultPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendDefaultPtrOutput) ToGatewaySpecTlsFrontendDefaultPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendDefaultPtrOutput) Elem() GatewaySpecTlsFrontendDefaultOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsFrontendDefault) GatewaySpecTlsFrontendDefault {
+		if v != nil {
+			return *v
+		}
+		var ret GatewaySpecTlsFrontendDefault
+		return ret
+	}).(GatewaySpecTlsFrontendDefaultOutput)
+}
+
+func (o GatewaySpecTlsFrontendDefaultPtrOutput) Validation() GatewaySpecTlsFrontendDefaultValidationPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsFrontendDefault) *GatewaySpecTlsFrontendDefaultValidation {
+		if v == nil {
+			return nil
+		}
+		return v.Validation
+	}).(GatewaySpecTlsFrontendDefaultValidationPtrOutput)
+}
+
+// Default specifies the default client certificate validation configuration
+// for all Listeners handling HTTPS traffic, unless a per-port configuration
+// is defined.
+//
+// support: Core
+type GatewaySpecTlsFrontendDefaultPatch struct {
+	Validation *GatewaySpecTlsFrontendDefaultValidationPatch `pulumi:"validation"`
+}
+
+// GatewaySpecTlsFrontendDefaultPatchInput is an input type that accepts GatewaySpecTlsFrontendDefaultPatchArgs and GatewaySpecTlsFrontendDefaultPatchOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendDefaultPatchInput` via:
+//
+//	GatewaySpecTlsFrontendDefaultPatchArgs{...}
+type GatewaySpecTlsFrontendDefaultPatchInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendDefaultPatchOutput() GatewaySpecTlsFrontendDefaultPatchOutput
+	ToGatewaySpecTlsFrontendDefaultPatchOutputWithContext(context.Context) GatewaySpecTlsFrontendDefaultPatchOutput
+}
+
+// Default specifies the default client certificate validation configuration
+// for all Listeners handling HTTPS traffic, unless a per-port configuration
+// is defined.
+//
+// support: Core
+type GatewaySpecTlsFrontendDefaultPatchArgs struct {
+	Validation GatewaySpecTlsFrontendDefaultValidationPatchPtrInput `pulumi:"validation"`
+}
+
+func (GatewaySpecTlsFrontendDefaultPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontendDefaultPatch)(nil)).Elem()
+}
+
+func (i GatewaySpecTlsFrontendDefaultPatchArgs) ToGatewaySpecTlsFrontendDefaultPatchOutput() GatewaySpecTlsFrontendDefaultPatchOutput {
+	return i.ToGatewaySpecTlsFrontendDefaultPatchOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendDefaultPatchArgs) ToGatewaySpecTlsFrontendDefaultPatchOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendDefaultPatchOutput)
+}
+
+func (i GatewaySpecTlsFrontendDefaultPatchArgs) ToGatewaySpecTlsFrontendDefaultPatchPtrOutput() GatewaySpecTlsFrontendDefaultPatchPtrOutput {
+	return i.ToGatewaySpecTlsFrontendDefaultPatchPtrOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendDefaultPatchArgs) ToGatewaySpecTlsFrontendDefaultPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendDefaultPatchOutput).ToGatewaySpecTlsFrontendDefaultPatchPtrOutputWithContext(ctx)
+}
+
+// GatewaySpecTlsFrontendDefaultPatchPtrInput is an input type that accepts GatewaySpecTlsFrontendDefaultPatchArgs, GatewaySpecTlsFrontendDefaultPatchPtr and GatewaySpecTlsFrontendDefaultPatchPtrOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendDefaultPatchPtrInput` via:
+//
+//	        GatewaySpecTlsFrontendDefaultPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type GatewaySpecTlsFrontendDefaultPatchPtrInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendDefaultPatchPtrOutput() GatewaySpecTlsFrontendDefaultPatchPtrOutput
+	ToGatewaySpecTlsFrontendDefaultPatchPtrOutputWithContext(context.Context) GatewaySpecTlsFrontendDefaultPatchPtrOutput
+}
+
+type gatewaySpecTlsFrontendDefaultPatchPtrType GatewaySpecTlsFrontendDefaultPatchArgs
+
+func GatewaySpecTlsFrontendDefaultPatchPtr(v *GatewaySpecTlsFrontendDefaultPatchArgs) GatewaySpecTlsFrontendDefaultPatchPtrInput {
+	return (*gatewaySpecTlsFrontendDefaultPatchPtrType)(v)
+}
+
+func (*gatewaySpecTlsFrontendDefaultPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTlsFrontendDefaultPatch)(nil)).Elem()
+}
+
+func (i *gatewaySpecTlsFrontendDefaultPatchPtrType) ToGatewaySpecTlsFrontendDefaultPatchPtrOutput() GatewaySpecTlsFrontendDefaultPatchPtrOutput {
+	return i.ToGatewaySpecTlsFrontendDefaultPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *gatewaySpecTlsFrontendDefaultPatchPtrType) ToGatewaySpecTlsFrontendDefaultPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendDefaultPatchPtrOutput)
+}
+
+// Default specifies the default client certificate validation configuration
+// for all Listeners handling HTTPS traffic, unless a per-port configuration
+// is defined.
+//
+// support: Core
+type GatewaySpecTlsFrontendDefaultPatchOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendDefaultPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontendDefaultPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendDefaultPatchOutput) ToGatewaySpecTlsFrontendDefaultPatchOutput() GatewaySpecTlsFrontendDefaultPatchOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendDefaultPatchOutput) ToGatewaySpecTlsFrontendDefaultPatchOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultPatchOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendDefaultPatchOutput) ToGatewaySpecTlsFrontendDefaultPatchPtrOutput() GatewaySpecTlsFrontendDefaultPatchPtrOutput {
+	return o.ToGatewaySpecTlsFrontendDefaultPatchPtrOutputWithContext(context.Background())
+}
+
+func (o GatewaySpecTlsFrontendDefaultPatchOutput) ToGatewaySpecTlsFrontendDefaultPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v GatewaySpecTlsFrontendDefaultPatch) *GatewaySpecTlsFrontendDefaultPatch {
+		return &v
+	}).(GatewaySpecTlsFrontendDefaultPatchPtrOutput)
+}
+
+func (o GatewaySpecTlsFrontendDefaultPatchOutput) Validation() GatewaySpecTlsFrontendDefaultValidationPatchPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendDefaultPatch) *GatewaySpecTlsFrontendDefaultValidationPatch {
+		return v.Validation
+	}).(GatewaySpecTlsFrontendDefaultValidationPatchPtrOutput)
+}
+
+type GatewaySpecTlsFrontendDefaultPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendDefaultPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTlsFrontendDefaultPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendDefaultPatchPtrOutput) ToGatewaySpecTlsFrontendDefaultPatchPtrOutput() GatewaySpecTlsFrontendDefaultPatchPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendDefaultPatchPtrOutput) ToGatewaySpecTlsFrontendDefaultPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultPatchPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendDefaultPatchPtrOutput) Elem() GatewaySpecTlsFrontendDefaultPatchOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsFrontendDefaultPatch) GatewaySpecTlsFrontendDefaultPatch {
+		if v != nil {
+			return *v
+		}
+		var ret GatewaySpecTlsFrontendDefaultPatch
+		return ret
+	}).(GatewaySpecTlsFrontendDefaultPatchOutput)
+}
+
+func (o GatewaySpecTlsFrontendDefaultPatchPtrOutput) Validation() GatewaySpecTlsFrontendDefaultValidationPatchPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsFrontendDefaultPatch) *GatewaySpecTlsFrontendDefaultValidationPatch {
+		if v == nil {
+			return nil
+		}
+		return v.Validation
+	}).(GatewaySpecTlsFrontendDefaultValidationPatchPtrOutput)
+}
+
+// Validation holds configuration information for validating the frontend (client).
+// Setting this field will result in mutual authentication when connecting to the gateway.
+// In browsers this may result in a dialog appearing
+// that requests a user to specify the client certificate.
+// The maximum depth of a certificate chain accepted in verification is Implementation specific.
+//
+// Support: Core
+type GatewaySpecTlsFrontendDefaultValidation struct {
+	// CACertificateRefs contains one or more references to Kubernetes
+	// objects that contain a PEM-encoded TLS CA certificate bundle, which
+	// is used as a trust anchor to validate the certificates presented by
+	// the client.
+	//
+	// A CACertificateRef is invalid if:
+	//
+	// * It refers to a resource that cannot be resolved (e.g., the
+	// referenced resource does not exist) or is misconfigured (e.g., a
+	// ConfigMap does not contain a key named `ca.crt`). In this case, the
+	// Reason on all matching HTTPS listeners must be set to `InvalidCACertificateRef`
+	// and the Message of the Condition must indicate which reference is invalid and why.
+	//
+	// * It refers to an unknown or unsupported kind of resource. In this
+	// case, the Reason on all matching HTTPS listeners must be set to
+	// `InvalidCACertificateKind` and the Message of the Condition must explain
+	// which kind of resource is unknown or unsupported.
+	//
+	// * It refers to a resource in another namespace UNLESS there is a
+	// ReferenceGrant in the target namespace that allows the CA
+	// certificate to be attached. If a ReferenceGrant does not allow this
+	// reference, the `ResolvedRefs` on all matching HTTPS listeners condition
+	// MUST be set with the Reason `RefNotPermitted`.
+	//
+	// Implementations MAY choose to perform further validation of the
+	// certificate content (e.g., checking expiry or enforcing specific formats).
+	// In such cases, an implementation-specific Reason and Message MUST be set.
+	//
+	// In all cases, the implementation MUST ensure that the `ResolvedRefs`
+	// condition is set to `status: False` on all targeted listeners (i.e.,
+	// listeners serving HTTPS on a matching port). The condition MUST
+	// include a Reason and Message that indicate the cause of the error. If
+	// ALL CACertificateRefs are invalid, the implementation MUST also ensure
+	// the `Accepted` condition on the listener is set to `status: False`, with
+	// the Reason `NoValidCACertificate`.
+	// Implementations MAY choose to support attaching multiple CA certificates
+	// to a listener, but this behavior is implementation-specific.
+	//
+	// Support: Core - A single reference to a Kubernetes ConfigMap, with the
+	// CA certificate in a key named `ca.crt`.
+	//
+	// Support: Implementation-specific - More than one reference, other kinds
+	// of resources, or a single reference that includes multiple certificates.
+	CaCertificateRefs []GatewaySpecTlsFrontendDefaultValidationCaCertificateRefs `pulumi:"caCertificateRefs"`
+	// FrontendValidationMode defines the mode for validating the client certificate.
+	// There are two possible modes:
+	//
+	// - AllowValidOnly: In this mode, the gateway will accept connections only if
+	// the client presents a valid certificate. This certificate must successfully
+	// pass validation against the CA certificates specified in `CACertificateRefs`.
+	// - AllowInsecureFallback: In this mode, the gateway will accept connections
+	// even if the client certificate is not presented or fails verification.
+	//
+	//   This approach delegates client authorization to the backend and introduce
+	// a significant security risk. It should be used in testing environments or
+	// on a temporary basis in non-testing environments.
+	//
+	// Defaults to AllowValidOnly.
+	//
+	// Support: Core
+	Mode *string `pulumi:"mode"`
+}
+
+// GatewaySpecTlsFrontendDefaultValidationInput is an input type that accepts GatewaySpecTlsFrontendDefaultValidationArgs and GatewaySpecTlsFrontendDefaultValidationOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendDefaultValidationInput` via:
+//
+//	GatewaySpecTlsFrontendDefaultValidationArgs{...}
+type GatewaySpecTlsFrontendDefaultValidationInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendDefaultValidationOutput() GatewaySpecTlsFrontendDefaultValidationOutput
+	ToGatewaySpecTlsFrontendDefaultValidationOutputWithContext(context.Context) GatewaySpecTlsFrontendDefaultValidationOutput
+}
+
+// Validation holds configuration information for validating the frontend (client).
+// Setting this field will result in mutual authentication when connecting to the gateway.
+// In browsers this may result in a dialog appearing
+// that requests a user to specify the client certificate.
+// The maximum depth of a certificate chain accepted in verification is Implementation specific.
+//
+// Support: Core
+type GatewaySpecTlsFrontendDefaultValidationArgs struct {
+	// CACertificateRefs contains one or more references to Kubernetes
+	// objects that contain a PEM-encoded TLS CA certificate bundle, which
+	// is used as a trust anchor to validate the certificates presented by
+	// the client.
+	//
+	// A CACertificateRef is invalid if:
+	//
+	// * It refers to a resource that cannot be resolved (e.g., the
+	// referenced resource does not exist) or is misconfigured (e.g., a
+	// ConfigMap does not contain a key named `ca.crt`). In this case, the
+	// Reason on all matching HTTPS listeners must be set to `InvalidCACertificateRef`
+	// and the Message of the Condition must indicate which reference is invalid and why.
+	//
+	// * It refers to an unknown or unsupported kind of resource. In this
+	// case, the Reason on all matching HTTPS listeners must be set to
+	// `InvalidCACertificateKind` and the Message of the Condition must explain
+	// which kind of resource is unknown or unsupported.
+	//
+	// * It refers to a resource in another namespace UNLESS there is a
+	// ReferenceGrant in the target namespace that allows the CA
+	// certificate to be attached. If a ReferenceGrant does not allow this
+	// reference, the `ResolvedRefs` on all matching HTTPS listeners condition
+	// MUST be set with the Reason `RefNotPermitted`.
+	//
+	// Implementations MAY choose to perform further validation of the
+	// certificate content (e.g., checking expiry or enforcing specific formats).
+	// In such cases, an implementation-specific Reason and Message MUST be set.
+	//
+	// In all cases, the implementation MUST ensure that the `ResolvedRefs`
+	// condition is set to `status: False` on all targeted listeners (i.e.,
+	// listeners serving HTTPS on a matching port). The condition MUST
+	// include a Reason and Message that indicate the cause of the error. If
+	// ALL CACertificateRefs are invalid, the implementation MUST also ensure
+	// the `Accepted` condition on the listener is set to `status: False`, with
+	// the Reason `NoValidCACertificate`.
+	// Implementations MAY choose to support attaching multiple CA certificates
+	// to a listener, but this behavior is implementation-specific.
+	//
+	// Support: Core - A single reference to a Kubernetes ConfigMap, with the
+	// CA certificate in a key named `ca.crt`.
+	//
+	// Support: Implementation-specific - More than one reference, other kinds
+	// of resources, or a single reference that includes multiple certificates.
+	CaCertificateRefs GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArrayInput `pulumi:"caCertificateRefs"`
+	// FrontendValidationMode defines the mode for validating the client certificate.
+	// There are two possible modes:
+	//
+	// - AllowValidOnly: In this mode, the gateway will accept connections only if
+	// the client presents a valid certificate. This certificate must successfully
+	// pass validation against the CA certificates specified in `CACertificateRefs`.
+	// - AllowInsecureFallback: In this mode, the gateway will accept connections
+	// even if the client certificate is not presented or fails verification.
+	//
+	//   This approach delegates client authorization to the backend and introduce
+	// a significant security risk. It should be used in testing environments or
+	// on a temporary basis in non-testing environments.
+	//
+	// Defaults to AllowValidOnly.
+	//
+	// Support: Core
+	Mode pulumi.StringPtrInput `pulumi:"mode"`
+}
+
+func (GatewaySpecTlsFrontendDefaultValidationArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontendDefaultValidation)(nil)).Elem()
+}
+
+func (i GatewaySpecTlsFrontendDefaultValidationArgs) ToGatewaySpecTlsFrontendDefaultValidationOutput() GatewaySpecTlsFrontendDefaultValidationOutput {
+	return i.ToGatewaySpecTlsFrontendDefaultValidationOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendDefaultValidationArgs) ToGatewaySpecTlsFrontendDefaultValidationOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultValidationOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendDefaultValidationOutput)
+}
+
+func (i GatewaySpecTlsFrontendDefaultValidationArgs) ToGatewaySpecTlsFrontendDefaultValidationPtrOutput() GatewaySpecTlsFrontendDefaultValidationPtrOutput {
+	return i.ToGatewaySpecTlsFrontendDefaultValidationPtrOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendDefaultValidationArgs) ToGatewaySpecTlsFrontendDefaultValidationPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultValidationPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendDefaultValidationOutput).ToGatewaySpecTlsFrontendDefaultValidationPtrOutputWithContext(ctx)
+}
+
+// GatewaySpecTlsFrontendDefaultValidationPtrInput is an input type that accepts GatewaySpecTlsFrontendDefaultValidationArgs, GatewaySpecTlsFrontendDefaultValidationPtr and GatewaySpecTlsFrontendDefaultValidationPtrOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendDefaultValidationPtrInput` via:
+//
+//	        GatewaySpecTlsFrontendDefaultValidationArgs{...}
+//
+//	or:
+//
+//	        nil
+type GatewaySpecTlsFrontendDefaultValidationPtrInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendDefaultValidationPtrOutput() GatewaySpecTlsFrontendDefaultValidationPtrOutput
+	ToGatewaySpecTlsFrontendDefaultValidationPtrOutputWithContext(context.Context) GatewaySpecTlsFrontendDefaultValidationPtrOutput
+}
+
+type gatewaySpecTlsFrontendDefaultValidationPtrType GatewaySpecTlsFrontendDefaultValidationArgs
+
+func GatewaySpecTlsFrontendDefaultValidationPtr(v *GatewaySpecTlsFrontendDefaultValidationArgs) GatewaySpecTlsFrontendDefaultValidationPtrInput {
+	return (*gatewaySpecTlsFrontendDefaultValidationPtrType)(v)
+}
+
+func (*gatewaySpecTlsFrontendDefaultValidationPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTlsFrontendDefaultValidation)(nil)).Elem()
+}
+
+func (i *gatewaySpecTlsFrontendDefaultValidationPtrType) ToGatewaySpecTlsFrontendDefaultValidationPtrOutput() GatewaySpecTlsFrontendDefaultValidationPtrOutput {
+	return i.ToGatewaySpecTlsFrontendDefaultValidationPtrOutputWithContext(context.Background())
+}
+
+func (i *gatewaySpecTlsFrontendDefaultValidationPtrType) ToGatewaySpecTlsFrontendDefaultValidationPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultValidationPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendDefaultValidationPtrOutput)
+}
+
+// Validation holds configuration information for validating the frontend (client).
+// Setting this field will result in mutual authentication when connecting to the gateway.
+// In browsers this may result in a dialog appearing
+// that requests a user to specify the client certificate.
+// The maximum depth of a certificate chain accepted in verification is Implementation specific.
+//
+// Support: Core
+type GatewaySpecTlsFrontendDefaultValidationOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendDefaultValidationOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontendDefaultValidation)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendDefaultValidationOutput) ToGatewaySpecTlsFrontendDefaultValidationOutput() GatewaySpecTlsFrontendDefaultValidationOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendDefaultValidationOutput) ToGatewaySpecTlsFrontendDefaultValidationOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultValidationOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendDefaultValidationOutput) ToGatewaySpecTlsFrontendDefaultValidationPtrOutput() GatewaySpecTlsFrontendDefaultValidationPtrOutput {
+	return o.ToGatewaySpecTlsFrontendDefaultValidationPtrOutputWithContext(context.Background())
+}
+
+func (o GatewaySpecTlsFrontendDefaultValidationOutput) ToGatewaySpecTlsFrontendDefaultValidationPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultValidationPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v GatewaySpecTlsFrontendDefaultValidation) *GatewaySpecTlsFrontendDefaultValidation {
+		return &v
+	}).(GatewaySpecTlsFrontendDefaultValidationPtrOutput)
+}
+
+// CACertificateRefs contains one or more references to Kubernetes
+// objects that contain a PEM-encoded TLS CA certificate bundle, which
+// is used as a trust anchor to validate the certificates presented by
+// the client.
+//
+// A CACertificateRef is invalid if:
+//
+// * It refers to a resource that cannot be resolved (e.g., the
+// referenced resource does not exist) or is misconfigured (e.g., a
+// ConfigMap does not contain a key named `ca.crt`). In this case, the
+// Reason on all matching HTTPS listeners must be set to `InvalidCACertificateRef`
+// and the Message of the Condition must indicate which reference is invalid and why.
+//
+// * It refers to an unknown or unsupported kind of resource. In this
+// case, the Reason on all matching HTTPS listeners must be set to
+// `InvalidCACertificateKind` and the Message of the Condition must explain
+// which kind of resource is unknown or unsupported.
+//
+// * It refers to a resource in another namespace UNLESS there is a
+// ReferenceGrant in the target namespace that allows the CA
+// certificate to be attached. If a ReferenceGrant does not allow this
+// reference, the `ResolvedRefs` on all matching HTTPS listeners condition
+// MUST be set with the Reason `RefNotPermitted`.
+//
+// Implementations MAY choose to perform further validation of the
+// certificate content (e.g., checking expiry or enforcing specific formats).
+// In such cases, an implementation-specific Reason and Message MUST be set.
+//
+// In all cases, the implementation MUST ensure that the `ResolvedRefs`
+// condition is set to `status: False` on all targeted listeners (i.e.,
+// listeners serving HTTPS on a matching port). The condition MUST
+// include a Reason and Message that indicate the cause of the error. If
+// ALL CACertificateRefs are invalid, the implementation MUST also ensure
+// the `Accepted` condition on the listener is set to `status: False`, with
+// the Reason `NoValidCACertificate`.
+// Implementations MAY choose to support attaching multiple CA certificates
+// to a listener, but this behavior is implementation-specific.
+//
+// Support: Core - A single reference to a Kubernetes ConfigMap, with the
+// CA certificate in a key named `ca.crt`.
+//
+// Support: Implementation-specific - More than one reference, other kinds
+// of resources, or a single reference that includes multiple certificates.
+func (o GatewaySpecTlsFrontendDefaultValidationOutput) CaCertificateRefs() GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArrayOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendDefaultValidation) []GatewaySpecTlsFrontendDefaultValidationCaCertificateRefs {
+		return v.CaCertificateRefs
+	}).(GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArrayOutput)
+}
+
+// FrontendValidationMode defines the mode for validating the client certificate.
+// There are two possible modes:
+//
+// - AllowValidOnly: In this mode, the gateway will accept connections only if
+// the client presents a valid certificate. This certificate must successfully
+// pass validation against the CA certificates specified in `CACertificateRefs`.
+// - AllowInsecureFallback: In this mode, the gateway will accept connections
+// even if the client certificate is not presented or fails verification.
+//
+//	This approach delegates client authorization to the backend and introduce
+//
+// a significant security risk. It should be used in testing environments or
+// on a temporary basis in non-testing environments.
+//
+// Defaults to AllowValidOnly.
+//
+// Support: Core
+func (o GatewaySpecTlsFrontendDefaultValidationOutput) Mode() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendDefaultValidation) *string { return v.Mode }).(pulumi.StringPtrOutput)
+}
+
+type GatewaySpecTlsFrontendDefaultValidationPtrOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendDefaultValidationPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTlsFrontendDefaultValidation)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendDefaultValidationPtrOutput) ToGatewaySpecTlsFrontendDefaultValidationPtrOutput() GatewaySpecTlsFrontendDefaultValidationPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendDefaultValidationPtrOutput) ToGatewaySpecTlsFrontendDefaultValidationPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultValidationPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendDefaultValidationPtrOutput) Elem() GatewaySpecTlsFrontendDefaultValidationOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsFrontendDefaultValidation) GatewaySpecTlsFrontendDefaultValidation {
+		if v != nil {
+			return *v
+		}
+		var ret GatewaySpecTlsFrontendDefaultValidation
+		return ret
+	}).(GatewaySpecTlsFrontendDefaultValidationOutput)
+}
+
+// CACertificateRefs contains one or more references to Kubernetes
+// objects that contain a PEM-encoded TLS CA certificate bundle, which
+// is used as a trust anchor to validate the certificates presented by
+// the client.
+//
+// A CACertificateRef is invalid if:
+//
+// * It refers to a resource that cannot be resolved (e.g., the
+// referenced resource does not exist) or is misconfigured (e.g., a
+// ConfigMap does not contain a key named `ca.crt`). In this case, the
+// Reason on all matching HTTPS listeners must be set to `InvalidCACertificateRef`
+// and the Message of the Condition must indicate which reference is invalid and why.
+//
+// * It refers to an unknown or unsupported kind of resource. In this
+// case, the Reason on all matching HTTPS listeners must be set to
+// `InvalidCACertificateKind` and the Message of the Condition must explain
+// which kind of resource is unknown or unsupported.
+//
+// * It refers to a resource in another namespace UNLESS there is a
+// ReferenceGrant in the target namespace that allows the CA
+// certificate to be attached. If a ReferenceGrant does not allow this
+// reference, the `ResolvedRefs` on all matching HTTPS listeners condition
+// MUST be set with the Reason `RefNotPermitted`.
+//
+// Implementations MAY choose to perform further validation of the
+// certificate content (e.g., checking expiry or enforcing specific formats).
+// In such cases, an implementation-specific Reason and Message MUST be set.
+//
+// In all cases, the implementation MUST ensure that the `ResolvedRefs`
+// condition is set to `status: False` on all targeted listeners (i.e.,
+// listeners serving HTTPS on a matching port). The condition MUST
+// include a Reason and Message that indicate the cause of the error. If
+// ALL CACertificateRefs are invalid, the implementation MUST also ensure
+// the `Accepted` condition on the listener is set to `status: False`, with
+// the Reason `NoValidCACertificate`.
+// Implementations MAY choose to support attaching multiple CA certificates
+// to a listener, but this behavior is implementation-specific.
+//
+// Support: Core - A single reference to a Kubernetes ConfigMap, with the
+// CA certificate in a key named `ca.crt`.
+//
+// Support: Implementation-specific - More than one reference, other kinds
+// of resources, or a single reference that includes multiple certificates.
+func (o GatewaySpecTlsFrontendDefaultValidationPtrOutput) CaCertificateRefs() GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArrayOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsFrontendDefaultValidation) []GatewaySpecTlsFrontendDefaultValidationCaCertificateRefs {
+		if v == nil {
+			return nil
+		}
+		return v.CaCertificateRefs
+	}).(GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArrayOutput)
+}
+
+// FrontendValidationMode defines the mode for validating the client certificate.
+// There are two possible modes:
+//
+// - AllowValidOnly: In this mode, the gateway will accept connections only if
+// the client presents a valid certificate. This certificate must successfully
+// pass validation against the CA certificates specified in `CACertificateRefs`.
+// - AllowInsecureFallback: In this mode, the gateway will accept connections
+// even if the client certificate is not presented or fails verification.
+//
+//	This approach delegates client authorization to the backend and introduce
+//
+// a significant security risk. It should be used in testing environments or
+// on a temporary basis in non-testing environments.
+//
+// Defaults to AllowValidOnly.
+//
+// Support: Core
+func (o GatewaySpecTlsFrontendDefaultValidationPtrOutput) Mode() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsFrontendDefaultValidation) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Mode
+	}).(pulumi.StringPtrOutput)
+}
+
+// ObjectReference identifies an API object including its namespace.
+//
+// The API object must be valid in the cluster; the Group and Kind must
+// be registered in the cluster for this reference to be valid.
+//
+// References to objects with invalid Group and Kind are not valid, and must
+// be rejected by the implementation, with appropriate Conditions set
+// on the containing object.
+type GatewaySpecTlsFrontendDefaultValidationCaCertificateRefs struct {
+	// Group is the group of the referent. For example, "gateway.networking.k8s.io".
+	// When set to the empty string, core API group is inferred.
+	Group *string `pulumi:"group"`
+	// Kind is kind of the referent. For example "ConfigMap" or "Service".
+	Kind *string `pulumi:"kind"`
+	// Name is the name of the referent.
+	Name *string `pulumi:"name"`
+	// Namespace is the namespace of the referenced object. When unspecified, the local
+	// namespace is inferred.
+	//
+	// Note that when a namespace different than the local namespace is specified,
+	// a ReferenceGrant object is required in the referent namespace to allow that
+	// namespace's owner to accept the reference. See the ReferenceGrant
+	// documentation for details.
+	//
+	// Support: Core
+	Namespace *string `pulumi:"namespace"`
+}
+
+// GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsInput is an input type that accepts GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArgs and GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsInput` via:
+//
+//	GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArgs{...}
+type GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendDefaultValidationCaCertificateRefsOutput() GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsOutput
+	ToGatewaySpecTlsFrontendDefaultValidationCaCertificateRefsOutputWithContext(context.Context) GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsOutput
+}
+
+// ObjectReference identifies an API object including its namespace.
+//
+// The API object must be valid in the cluster; the Group and Kind must
+// be registered in the cluster for this reference to be valid.
+//
+// References to objects with invalid Group and Kind are not valid, and must
+// be rejected by the implementation, with appropriate Conditions set
+// on the containing object.
+type GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArgs struct {
+	// Group is the group of the referent. For example, "gateway.networking.k8s.io".
+	// When set to the empty string, core API group is inferred.
+	Group pulumi.StringPtrInput `pulumi:"group"`
+	// Kind is kind of the referent. For example "ConfigMap" or "Service".
+	Kind pulumi.StringPtrInput `pulumi:"kind"`
+	// Name is the name of the referent.
+	Name pulumi.StringPtrInput `pulumi:"name"`
+	// Namespace is the namespace of the referenced object. When unspecified, the local
+	// namespace is inferred.
+	//
+	// Note that when a namespace different than the local namespace is specified,
+	// a ReferenceGrant object is required in the referent namespace to allow that
+	// namespace's owner to accept the reference. See the ReferenceGrant
+	// documentation for details.
+	//
+	// Support: Core
+	Namespace pulumi.StringPtrInput `pulumi:"namespace"`
+}
+
+func (GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontendDefaultValidationCaCertificateRefs)(nil)).Elem()
+}
+
+func (i GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArgs) ToGatewaySpecTlsFrontendDefaultValidationCaCertificateRefsOutput() GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsOutput {
+	return i.ToGatewaySpecTlsFrontendDefaultValidationCaCertificateRefsOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArgs) ToGatewaySpecTlsFrontendDefaultValidationCaCertificateRefsOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsOutput)
+}
+
+// GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArrayInput is an input type that accepts GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArray and GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArrayOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArrayInput` via:
+//
+//	GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArray{ GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArgs{...} }
+type GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArrayInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArrayOutput() GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArrayOutput
+	ToGatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArrayOutputWithContext(context.Context) GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArrayOutput
+}
+
+type GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArray []GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsInput
+
+func (GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]GatewaySpecTlsFrontendDefaultValidationCaCertificateRefs)(nil)).Elem()
+}
+
+func (i GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArray) ToGatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArrayOutput() GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArrayOutput {
+	return i.ToGatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArrayOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArray) ToGatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArrayOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArrayOutput)
+}
+
+// ObjectReference identifies an API object including its namespace.
+//
+// The API object must be valid in the cluster; the Group and Kind must
+// be registered in the cluster for this reference to be valid.
+//
+// References to objects with invalid Group and Kind are not valid, and must
+// be rejected by the implementation, with appropriate Conditions set
+// on the containing object.
+type GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontendDefaultValidationCaCertificateRefs)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsOutput) ToGatewaySpecTlsFrontendDefaultValidationCaCertificateRefsOutput() GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsOutput) ToGatewaySpecTlsFrontendDefaultValidationCaCertificateRefsOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsOutput {
+	return o
+}
+
+// Group is the group of the referent. For example, "gateway.networking.k8s.io".
+// When set to the empty string, core API group is inferred.
+func (o GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsOutput) Group() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendDefaultValidationCaCertificateRefs) *string { return v.Group }).(pulumi.StringPtrOutput)
+}
+
+// Kind is kind of the referent. For example "ConfigMap" or "Service".
+func (o GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsOutput) Kind() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendDefaultValidationCaCertificateRefs) *string { return v.Kind }).(pulumi.StringPtrOutput)
+}
+
+// Name is the name of the referent.
+func (o GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendDefaultValidationCaCertificateRefs) *string { return v.Name }).(pulumi.StringPtrOutput)
+}
+
+// Namespace is the namespace of the referenced object. When unspecified, the local
+// namespace is inferred.
+//
+// Note that when a namespace different than the local namespace is specified,
+// a ReferenceGrant object is required in the referent namespace to allow that
+// namespace's owner to accept the reference. See the ReferenceGrant
+// documentation for details.
+//
+// Support: Core
+func (o GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsOutput) Namespace() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendDefaultValidationCaCertificateRefs) *string { return v.Namespace }).(pulumi.StringPtrOutput)
+}
+
+type GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArrayOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]GatewaySpecTlsFrontendDefaultValidationCaCertificateRefs)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArrayOutput) ToGatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArrayOutput() GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArrayOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArrayOutput) ToGatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArrayOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArrayOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArrayOutput) Index(i pulumi.IntInput) GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) GatewaySpecTlsFrontendDefaultValidationCaCertificateRefs {
+		return vs[0].([]GatewaySpecTlsFrontendDefaultValidationCaCertificateRefs)[vs[1].(int)]
+	}).(GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsOutput)
+}
+
+// ObjectReference identifies an API object including its namespace.
+//
+// The API object must be valid in the cluster; the Group and Kind must
+// be registered in the cluster for this reference to be valid.
+//
+// References to objects with invalid Group and Kind are not valid, and must
+// be rejected by the implementation, with appropriate Conditions set
+// on the containing object.
+type GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatch struct {
+	// Group is the group of the referent. For example, "gateway.networking.k8s.io".
+	// When set to the empty string, core API group is inferred.
+	Group *string `pulumi:"group"`
+	// Kind is kind of the referent. For example "ConfigMap" or "Service".
+	Kind *string `pulumi:"kind"`
+	// Name is the name of the referent.
+	Name *string `pulumi:"name"`
+	// Namespace is the namespace of the referenced object. When unspecified, the local
+	// namespace is inferred.
+	//
+	// Note that when a namespace different than the local namespace is specified,
+	// a ReferenceGrant object is required in the referent namespace to allow that
+	// namespace's owner to accept the reference. See the ReferenceGrant
+	// documentation for details.
+	//
+	// Support: Core
+	Namespace *string `pulumi:"namespace"`
+}
+
+// GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchInput is an input type that accepts GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArgs and GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchInput` via:
+//
+//	GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArgs{...}
+type GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchOutput() GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchOutput
+	ToGatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchOutputWithContext(context.Context) GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchOutput
+}
+
+// ObjectReference identifies an API object including its namespace.
+//
+// The API object must be valid in the cluster; the Group and Kind must
+// be registered in the cluster for this reference to be valid.
+//
+// References to objects with invalid Group and Kind are not valid, and must
+// be rejected by the implementation, with appropriate Conditions set
+// on the containing object.
+type GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArgs struct {
+	// Group is the group of the referent. For example, "gateway.networking.k8s.io".
+	// When set to the empty string, core API group is inferred.
+	Group pulumi.StringPtrInput `pulumi:"group"`
+	// Kind is kind of the referent. For example "ConfigMap" or "Service".
+	Kind pulumi.StringPtrInput `pulumi:"kind"`
+	// Name is the name of the referent.
+	Name pulumi.StringPtrInput `pulumi:"name"`
+	// Namespace is the namespace of the referenced object. When unspecified, the local
+	// namespace is inferred.
+	//
+	// Note that when a namespace different than the local namespace is specified,
+	// a ReferenceGrant object is required in the referent namespace to allow that
+	// namespace's owner to accept the reference. See the ReferenceGrant
+	// documentation for details.
+	//
+	// Support: Core
+	Namespace pulumi.StringPtrInput `pulumi:"namespace"`
+}
+
+func (GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatch)(nil)).Elem()
+}
+
+func (i GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArgs) ToGatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchOutput() GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchOutput {
+	return i.ToGatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArgs) ToGatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchOutput)
+}
+
+// GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArrayInput is an input type that accepts GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArray and GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArrayOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArrayInput` via:
+//
+//	GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArray{ GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArgs{...} }
+type GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArrayInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArrayOutput() GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArrayOutput
+	ToGatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArrayOutputWithContext(context.Context) GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArrayOutput
+}
+
+type GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArray []GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchInput
+
+func (GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatch)(nil)).Elem()
+}
+
+func (i GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArray) ToGatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArrayOutput() GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArrayOutput {
+	return i.ToGatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArrayOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArray) ToGatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArrayOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArrayOutput)
+}
+
+// ObjectReference identifies an API object including its namespace.
+//
+// The API object must be valid in the cluster; the Group and Kind must
+// be registered in the cluster for this reference to be valid.
+//
+// References to objects with invalid Group and Kind are not valid, and must
+// be rejected by the implementation, with appropriate Conditions set
+// on the containing object.
+type GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchOutput) ToGatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchOutput() GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchOutput) ToGatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchOutput {
+	return o
+}
+
+// Group is the group of the referent. For example, "gateway.networking.k8s.io".
+// When set to the empty string, core API group is inferred.
+func (o GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchOutput) Group() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatch) *string { return v.Group }).(pulumi.StringPtrOutput)
+}
+
+// Kind is kind of the referent. For example "ConfigMap" or "Service".
+func (o GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchOutput) Kind() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatch) *string { return v.Kind }).(pulumi.StringPtrOutput)
+}
+
+// Name is the name of the referent.
+func (o GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatch) *string { return v.Name }).(pulumi.StringPtrOutput)
+}
+
+// Namespace is the namespace of the referenced object. When unspecified, the local
+// namespace is inferred.
+//
+// Note that when a namespace different than the local namespace is specified,
+// a ReferenceGrant object is required in the referent namespace to allow that
+// namespace's owner to accept the reference. See the ReferenceGrant
+// documentation for details.
+//
+// Support: Core
+func (o GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchOutput) Namespace() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatch) *string { return v.Namespace }).(pulumi.StringPtrOutput)
+}
+
+type GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArrayOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArrayOutput) ToGatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArrayOutput() GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArrayOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArrayOutput) ToGatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArrayOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArrayOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArrayOutput) Index(i pulumi.IntInput) GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatch {
+		return vs[0].([]GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatch)[vs[1].(int)]
+	}).(GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchOutput)
+}
+
+// Validation holds configuration information for validating the frontend (client).
+// Setting this field will result in mutual authentication when connecting to the gateway.
+// In browsers this may result in a dialog appearing
+// that requests a user to specify the client certificate.
+// The maximum depth of a certificate chain accepted in verification is Implementation specific.
+//
+// Support: Core
+type GatewaySpecTlsFrontendDefaultValidationPatch struct {
+	// CACertificateRefs contains one or more references to Kubernetes
+	// objects that contain a PEM-encoded TLS CA certificate bundle, which
+	// is used as a trust anchor to validate the certificates presented by
+	// the client.
+	//
+	// A CACertificateRef is invalid if:
+	//
+	// * It refers to a resource that cannot be resolved (e.g., the
+	// referenced resource does not exist) or is misconfigured (e.g., a
+	// ConfigMap does not contain a key named `ca.crt`). In this case, the
+	// Reason on all matching HTTPS listeners must be set to `InvalidCACertificateRef`
+	// and the Message of the Condition must indicate which reference is invalid and why.
+	//
+	// * It refers to an unknown or unsupported kind of resource. In this
+	// case, the Reason on all matching HTTPS listeners must be set to
+	// `InvalidCACertificateKind` and the Message of the Condition must explain
+	// which kind of resource is unknown or unsupported.
+	//
+	// * It refers to a resource in another namespace UNLESS there is a
+	// ReferenceGrant in the target namespace that allows the CA
+	// certificate to be attached. If a ReferenceGrant does not allow this
+	// reference, the `ResolvedRefs` on all matching HTTPS listeners condition
+	// MUST be set with the Reason `RefNotPermitted`.
+	//
+	// Implementations MAY choose to perform further validation of the
+	// certificate content (e.g., checking expiry or enforcing specific formats).
+	// In such cases, an implementation-specific Reason and Message MUST be set.
+	//
+	// In all cases, the implementation MUST ensure that the `ResolvedRefs`
+	// condition is set to `status: False` on all targeted listeners (i.e.,
+	// listeners serving HTTPS on a matching port). The condition MUST
+	// include a Reason and Message that indicate the cause of the error. If
+	// ALL CACertificateRefs are invalid, the implementation MUST also ensure
+	// the `Accepted` condition on the listener is set to `status: False`, with
+	// the Reason `NoValidCACertificate`.
+	// Implementations MAY choose to support attaching multiple CA certificates
+	// to a listener, but this behavior is implementation-specific.
+	//
+	// Support: Core - A single reference to a Kubernetes ConfigMap, with the
+	// CA certificate in a key named `ca.crt`.
+	//
+	// Support: Implementation-specific - More than one reference, other kinds
+	// of resources, or a single reference that includes multiple certificates.
+	CaCertificateRefs []GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatch `pulumi:"caCertificateRefs"`
+	// FrontendValidationMode defines the mode for validating the client certificate.
+	// There are two possible modes:
+	//
+	// - AllowValidOnly: In this mode, the gateway will accept connections only if
+	// the client presents a valid certificate. This certificate must successfully
+	// pass validation against the CA certificates specified in `CACertificateRefs`.
+	// - AllowInsecureFallback: In this mode, the gateway will accept connections
+	// even if the client certificate is not presented or fails verification.
+	//
+	//   This approach delegates client authorization to the backend and introduce
+	// a significant security risk. It should be used in testing environments or
+	// on a temporary basis in non-testing environments.
+	//
+	// Defaults to AllowValidOnly.
+	//
+	// Support: Core
+	Mode *string `pulumi:"mode"`
+}
+
+// GatewaySpecTlsFrontendDefaultValidationPatchInput is an input type that accepts GatewaySpecTlsFrontendDefaultValidationPatchArgs and GatewaySpecTlsFrontendDefaultValidationPatchOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendDefaultValidationPatchInput` via:
+//
+//	GatewaySpecTlsFrontendDefaultValidationPatchArgs{...}
+type GatewaySpecTlsFrontendDefaultValidationPatchInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendDefaultValidationPatchOutput() GatewaySpecTlsFrontendDefaultValidationPatchOutput
+	ToGatewaySpecTlsFrontendDefaultValidationPatchOutputWithContext(context.Context) GatewaySpecTlsFrontendDefaultValidationPatchOutput
+}
+
+// Validation holds configuration information for validating the frontend (client).
+// Setting this field will result in mutual authentication when connecting to the gateway.
+// In browsers this may result in a dialog appearing
+// that requests a user to specify the client certificate.
+// The maximum depth of a certificate chain accepted in verification is Implementation specific.
+//
+// Support: Core
+type GatewaySpecTlsFrontendDefaultValidationPatchArgs struct {
+	// CACertificateRefs contains one or more references to Kubernetes
+	// objects that contain a PEM-encoded TLS CA certificate bundle, which
+	// is used as a trust anchor to validate the certificates presented by
+	// the client.
+	//
+	// A CACertificateRef is invalid if:
+	//
+	// * It refers to a resource that cannot be resolved (e.g., the
+	// referenced resource does not exist) or is misconfigured (e.g., a
+	// ConfigMap does not contain a key named `ca.crt`). In this case, the
+	// Reason on all matching HTTPS listeners must be set to `InvalidCACertificateRef`
+	// and the Message of the Condition must indicate which reference is invalid and why.
+	//
+	// * It refers to an unknown or unsupported kind of resource. In this
+	// case, the Reason on all matching HTTPS listeners must be set to
+	// `InvalidCACertificateKind` and the Message of the Condition must explain
+	// which kind of resource is unknown or unsupported.
+	//
+	// * It refers to a resource in another namespace UNLESS there is a
+	// ReferenceGrant in the target namespace that allows the CA
+	// certificate to be attached. If a ReferenceGrant does not allow this
+	// reference, the `ResolvedRefs` on all matching HTTPS listeners condition
+	// MUST be set with the Reason `RefNotPermitted`.
+	//
+	// Implementations MAY choose to perform further validation of the
+	// certificate content (e.g., checking expiry or enforcing specific formats).
+	// In such cases, an implementation-specific Reason and Message MUST be set.
+	//
+	// In all cases, the implementation MUST ensure that the `ResolvedRefs`
+	// condition is set to `status: False` on all targeted listeners (i.e.,
+	// listeners serving HTTPS on a matching port). The condition MUST
+	// include a Reason and Message that indicate the cause of the error. If
+	// ALL CACertificateRefs are invalid, the implementation MUST also ensure
+	// the `Accepted` condition on the listener is set to `status: False`, with
+	// the Reason `NoValidCACertificate`.
+	// Implementations MAY choose to support attaching multiple CA certificates
+	// to a listener, but this behavior is implementation-specific.
+	//
+	// Support: Core - A single reference to a Kubernetes ConfigMap, with the
+	// CA certificate in a key named `ca.crt`.
+	//
+	// Support: Implementation-specific - More than one reference, other kinds
+	// of resources, or a single reference that includes multiple certificates.
+	CaCertificateRefs GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArrayInput `pulumi:"caCertificateRefs"`
+	// FrontendValidationMode defines the mode for validating the client certificate.
+	// There are two possible modes:
+	//
+	// - AllowValidOnly: In this mode, the gateway will accept connections only if
+	// the client presents a valid certificate. This certificate must successfully
+	// pass validation against the CA certificates specified in `CACertificateRefs`.
+	// - AllowInsecureFallback: In this mode, the gateway will accept connections
+	// even if the client certificate is not presented or fails verification.
+	//
+	//   This approach delegates client authorization to the backend and introduce
+	// a significant security risk. It should be used in testing environments or
+	// on a temporary basis in non-testing environments.
+	//
+	// Defaults to AllowValidOnly.
+	//
+	// Support: Core
+	Mode pulumi.StringPtrInput `pulumi:"mode"`
+}
+
+func (GatewaySpecTlsFrontendDefaultValidationPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontendDefaultValidationPatch)(nil)).Elem()
+}
+
+func (i GatewaySpecTlsFrontendDefaultValidationPatchArgs) ToGatewaySpecTlsFrontendDefaultValidationPatchOutput() GatewaySpecTlsFrontendDefaultValidationPatchOutput {
+	return i.ToGatewaySpecTlsFrontendDefaultValidationPatchOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendDefaultValidationPatchArgs) ToGatewaySpecTlsFrontendDefaultValidationPatchOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultValidationPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendDefaultValidationPatchOutput)
+}
+
+func (i GatewaySpecTlsFrontendDefaultValidationPatchArgs) ToGatewaySpecTlsFrontendDefaultValidationPatchPtrOutput() GatewaySpecTlsFrontendDefaultValidationPatchPtrOutput {
+	return i.ToGatewaySpecTlsFrontendDefaultValidationPatchPtrOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendDefaultValidationPatchArgs) ToGatewaySpecTlsFrontendDefaultValidationPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultValidationPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendDefaultValidationPatchOutput).ToGatewaySpecTlsFrontendDefaultValidationPatchPtrOutputWithContext(ctx)
+}
+
+// GatewaySpecTlsFrontendDefaultValidationPatchPtrInput is an input type that accepts GatewaySpecTlsFrontendDefaultValidationPatchArgs, GatewaySpecTlsFrontendDefaultValidationPatchPtr and GatewaySpecTlsFrontendDefaultValidationPatchPtrOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendDefaultValidationPatchPtrInput` via:
+//
+//	        GatewaySpecTlsFrontendDefaultValidationPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type GatewaySpecTlsFrontendDefaultValidationPatchPtrInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendDefaultValidationPatchPtrOutput() GatewaySpecTlsFrontendDefaultValidationPatchPtrOutput
+	ToGatewaySpecTlsFrontendDefaultValidationPatchPtrOutputWithContext(context.Context) GatewaySpecTlsFrontendDefaultValidationPatchPtrOutput
+}
+
+type gatewaySpecTlsFrontendDefaultValidationPatchPtrType GatewaySpecTlsFrontendDefaultValidationPatchArgs
+
+func GatewaySpecTlsFrontendDefaultValidationPatchPtr(v *GatewaySpecTlsFrontendDefaultValidationPatchArgs) GatewaySpecTlsFrontendDefaultValidationPatchPtrInput {
+	return (*gatewaySpecTlsFrontendDefaultValidationPatchPtrType)(v)
+}
+
+func (*gatewaySpecTlsFrontendDefaultValidationPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTlsFrontendDefaultValidationPatch)(nil)).Elem()
+}
+
+func (i *gatewaySpecTlsFrontendDefaultValidationPatchPtrType) ToGatewaySpecTlsFrontendDefaultValidationPatchPtrOutput() GatewaySpecTlsFrontendDefaultValidationPatchPtrOutput {
+	return i.ToGatewaySpecTlsFrontendDefaultValidationPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *gatewaySpecTlsFrontendDefaultValidationPatchPtrType) ToGatewaySpecTlsFrontendDefaultValidationPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultValidationPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendDefaultValidationPatchPtrOutput)
+}
+
+// Validation holds configuration information for validating the frontend (client).
+// Setting this field will result in mutual authentication when connecting to the gateway.
+// In browsers this may result in a dialog appearing
+// that requests a user to specify the client certificate.
+// The maximum depth of a certificate chain accepted in verification is Implementation specific.
+//
+// Support: Core
+type GatewaySpecTlsFrontendDefaultValidationPatchOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendDefaultValidationPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontendDefaultValidationPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendDefaultValidationPatchOutput) ToGatewaySpecTlsFrontendDefaultValidationPatchOutput() GatewaySpecTlsFrontendDefaultValidationPatchOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendDefaultValidationPatchOutput) ToGatewaySpecTlsFrontendDefaultValidationPatchOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultValidationPatchOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendDefaultValidationPatchOutput) ToGatewaySpecTlsFrontendDefaultValidationPatchPtrOutput() GatewaySpecTlsFrontendDefaultValidationPatchPtrOutput {
+	return o.ToGatewaySpecTlsFrontendDefaultValidationPatchPtrOutputWithContext(context.Background())
+}
+
+func (o GatewaySpecTlsFrontendDefaultValidationPatchOutput) ToGatewaySpecTlsFrontendDefaultValidationPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultValidationPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v GatewaySpecTlsFrontendDefaultValidationPatch) *GatewaySpecTlsFrontendDefaultValidationPatch {
+		return &v
+	}).(GatewaySpecTlsFrontendDefaultValidationPatchPtrOutput)
+}
+
+// CACertificateRefs contains one or more references to Kubernetes
+// objects that contain a PEM-encoded TLS CA certificate bundle, which
+// is used as a trust anchor to validate the certificates presented by
+// the client.
+//
+// A CACertificateRef is invalid if:
+//
+// * It refers to a resource that cannot be resolved (e.g., the
+// referenced resource does not exist) or is misconfigured (e.g., a
+// ConfigMap does not contain a key named `ca.crt`). In this case, the
+// Reason on all matching HTTPS listeners must be set to `InvalidCACertificateRef`
+// and the Message of the Condition must indicate which reference is invalid and why.
+//
+// * It refers to an unknown or unsupported kind of resource. In this
+// case, the Reason on all matching HTTPS listeners must be set to
+// `InvalidCACertificateKind` and the Message of the Condition must explain
+// which kind of resource is unknown or unsupported.
+//
+// * It refers to a resource in another namespace UNLESS there is a
+// ReferenceGrant in the target namespace that allows the CA
+// certificate to be attached. If a ReferenceGrant does not allow this
+// reference, the `ResolvedRefs` on all matching HTTPS listeners condition
+// MUST be set with the Reason `RefNotPermitted`.
+//
+// Implementations MAY choose to perform further validation of the
+// certificate content (e.g., checking expiry or enforcing specific formats).
+// In such cases, an implementation-specific Reason and Message MUST be set.
+//
+// In all cases, the implementation MUST ensure that the `ResolvedRefs`
+// condition is set to `status: False` on all targeted listeners (i.e.,
+// listeners serving HTTPS on a matching port). The condition MUST
+// include a Reason and Message that indicate the cause of the error. If
+// ALL CACertificateRefs are invalid, the implementation MUST also ensure
+// the `Accepted` condition on the listener is set to `status: False`, with
+// the Reason `NoValidCACertificate`.
+// Implementations MAY choose to support attaching multiple CA certificates
+// to a listener, but this behavior is implementation-specific.
+//
+// Support: Core - A single reference to a Kubernetes ConfigMap, with the
+// CA certificate in a key named `ca.crt`.
+//
+// Support: Implementation-specific - More than one reference, other kinds
+// of resources, or a single reference that includes multiple certificates.
+func (o GatewaySpecTlsFrontendDefaultValidationPatchOutput) CaCertificateRefs() GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArrayOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendDefaultValidationPatch) []GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatch {
+		return v.CaCertificateRefs
+	}).(GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArrayOutput)
+}
+
+// FrontendValidationMode defines the mode for validating the client certificate.
+// There are two possible modes:
+//
+// - AllowValidOnly: In this mode, the gateway will accept connections only if
+// the client presents a valid certificate. This certificate must successfully
+// pass validation against the CA certificates specified in `CACertificateRefs`.
+// - AllowInsecureFallback: In this mode, the gateway will accept connections
+// even if the client certificate is not presented or fails verification.
+//
+//	This approach delegates client authorization to the backend and introduce
+//
+// a significant security risk. It should be used in testing environments or
+// on a temporary basis in non-testing environments.
+//
+// Defaults to AllowValidOnly.
+//
+// Support: Core
+func (o GatewaySpecTlsFrontendDefaultValidationPatchOutput) Mode() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendDefaultValidationPatch) *string { return v.Mode }).(pulumi.StringPtrOutput)
+}
+
+type GatewaySpecTlsFrontendDefaultValidationPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendDefaultValidationPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTlsFrontendDefaultValidationPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendDefaultValidationPatchPtrOutput) ToGatewaySpecTlsFrontendDefaultValidationPatchPtrOutput() GatewaySpecTlsFrontendDefaultValidationPatchPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendDefaultValidationPatchPtrOutput) ToGatewaySpecTlsFrontendDefaultValidationPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendDefaultValidationPatchPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendDefaultValidationPatchPtrOutput) Elem() GatewaySpecTlsFrontendDefaultValidationPatchOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsFrontendDefaultValidationPatch) GatewaySpecTlsFrontendDefaultValidationPatch {
+		if v != nil {
+			return *v
+		}
+		var ret GatewaySpecTlsFrontendDefaultValidationPatch
+		return ret
+	}).(GatewaySpecTlsFrontendDefaultValidationPatchOutput)
+}
+
+// CACertificateRefs contains one or more references to Kubernetes
+// objects that contain a PEM-encoded TLS CA certificate bundle, which
+// is used as a trust anchor to validate the certificates presented by
+// the client.
+//
+// A CACertificateRef is invalid if:
+//
+// * It refers to a resource that cannot be resolved (e.g., the
+// referenced resource does not exist) or is misconfigured (e.g., a
+// ConfigMap does not contain a key named `ca.crt`). In this case, the
+// Reason on all matching HTTPS listeners must be set to `InvalidCACertificateRef`
+// and the Message of the Condition must indicate which reference is invalid and why.
+//
+// * It refers to an unknown or unsupported kind of resource. In this
+// case, the Reason on all matching HTTPS listeners must be set to
+// `InvalidCACertificateKind` and the Message of the Condition must explain
+// which kind of resource is unknown or unsupported.
+//
+// * It refers to a resource in another namespace UNLESS there is a
+// ReferenceGrant in the target namespace that allows the CA
+// certificate to be attached. If a ReferenceGrant does not allow this
+// reference, the `ResolvedRefs` on all matching HTTPS listeners condition
+// MUST be set with the Reason `RefNotPermitted`.
+//
+// Implementations MAY choose to perform further validation of the
+// certificate content (e.g., checking expiry or enforcing specific formats).
+// In such cases, an implementation-specific Reason and Message MUST be set.
+//
+// In all cases, the implementation MUST ensure that the `ResolvedRefs`
+// condition is set to `status: False` on all targeted listeners (i.e.,
+// listeners serving HTTPS on a matching port). The condition MUST
+// include a Reason and Message that indicate the cause of the error. If
+// ALL CACertificateRefs are invalid, the implementation MUST also ensure
+// the `Accepted` condition on the listener is set to `status: False`, with
+// the Reason `NoValidCACertificate`.
+// Implementations MAY choose to support attaching multiple CA certificates
+// to a listener, but this behavior is implementation-specific.
+//
+// Support: Core - A single reference to a Kubernetes ConfigMap, with the
+// CA certificate in a key named `ca.crt`.
+//
+// Support: Implementation-specific - More than one reference, other kinds
+// of resources, or a single reference that includes multiple certificates.
+func (o GatewaySpecTlsFrontendDefaultValidationPatchPtrOutput) CaCertificateRefs() GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArrayOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsFrontendDefaultValidationPatch) []GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatch {
+		if v == nil {
+			return nil
+		}
+		return v.CaCertificateRefs
+	}).(GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArrayOutput)
+}
+
+// FrontendValidationMode defines the mode for validating the client certificate.
+// There are two possible modes:
+//
+// - AllowValidOnly: In this mode, the gateway will accept connections only if
+// the client presents a valid certificate. This certificate must successfully
+// pass validation against the CA certificates specified in `CACertificateRefs`.
+// - AllowInsecureFallback: In this mode, the gateway will accept connections
+// even if the client certificate is not presented or fails verification.
+//
+//	This approach delegates client authorization to the backend and introduce
+//
+// a significant security risk. It should be used in testing environments or
+// on a temporary basis in non-testing environments.
+//
+// Defaults to AllowValidOnly.
+//
+// Support: Core
+func (o GatewaySpecTlsFrontendDefaultValidationPatchPtrOutput) Mode() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsFrontendDefaultValidationPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Mode
+	}).(pulumi.StringPtrOutput)
+}
+
+// Frontend describes TLS config when client connects to Gateway.
+// Support: Core
+type GatewaySpecTlsFrontendPatch struct {
+	Default *GatewaySpecTlsFrontendDefaultPatch `pulumi:"default"`
+	// PerPort specifies tls configuration assigned per port.
+	// Per port configuration is optional. Once set this configuration overrides
+	// the default configuration for all Listeners handling HTTPS traffic
+	// that match this port.
+	// Each override port requires a unique TLS configuration.
+	//
+	// support: Core
+	PerPort []GatewaySpecTlsFrontendPerPortPatch `pulumi:"perPort"`
+}
+
+// GatewaySpecTlsFrontendPatchInput is an input type that accepts GatewaySpecTlsFrontendPatchArgs and GatewaySpecTlsFrontendPatchOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendPatchInput` via:
+//
+//	GatewaySpecTlsFrontendPatchArgs{...}
+type GatewaySpecTlsFrontendPatchInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendPatchOutput() GatewaySpecTlsFrontendPatchOutput
+	ToGatewaySpecTlsFrontendPatchOutputWithContext(context.Context) GatewaySpecTlsFrontendPatchOutput
+}
+
+// Frontend describes TLS config when client connects to Gateway.
+// Support: Core
+type GatewaySpecTlsFrontendPatchArgs struct {
+	Default GatewaySpecTlsFrontendDefaultPatchPtrInput `pulumi:"default"`
+	// PerPort specifies tls configuration assigned per port.
+	// Per port configuration is optional. Once set this configuration overrides
+	// the default configuration for all Listeners handling HTTPS traffic
+	// that match this port.
+	// Each override port requires a unique TLS configuration.
+	//
+	// support: Core
+	PerPort GatewaySpecTlsFrontendPerPortPatchArrayInput `pulumi:"perPort"`
+}
+
+func (GatewaySpecTlsFrontendPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontendPatch)(nil)).Elem()
+}
+
+func (i GatewaySpecTlsFrontendPatchArgs) ToGatewaySpecTlsFrontendPatchOutput() GatewaySpecTlsFrontendPatchOutput {
+	return i.ToGatewaySpecTlsFrontendPatchOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendPatchArgs) ToGatewaySpecTlsFrontendPatchOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendPatchOutput)
+}
+
+func (i GatewaySpecTlsFrontendPatchArgs) ToGatewaySpecTlsFrontendPatchPtrOutput() GatewaySpecTlsFrontendPatchPtrOutput {
+	return i.ToGatewaySpecTlsFrontendPatchPtrOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendPatchArgs) ToGatewaySpecTlsFrontendPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendPatchOutput).ToGatewaySpecTlsFrontendPatchPtrOutputWithContext(ctx)
+}
+
+// GatewaySpecTlsFrontendPatchPtrInput is an input type that accepts GatewaySpecTlsFrontendPatchArgs, GatewaySpecTlsFrontendPatchPtr and GatewaySpecTlsFrontendPatchPtrOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendPatchPtrInput` via:
+//
+//	        GatewaySpecTlsFrontendPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type GatewaySpecTlsFrontendPatchPtrInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendPatchPtrOutput() GatewaySpecTlsFrontendPatchPtrOutput
+	ToGatewaySpecTlsFrontendPatchPtrOutputWithContext(context.Context) GatewaySpecTlsFrontendPatchPtrOutput
+}
+
+type gatewaySpecTlsFrontendPatchPtrType GatewaySpecTlsFrontendPatchArgs
+
+func GatewaySpecTlsFrontendPatchPtr(v *GatewaySpecTlsFrontendPatchArgs) GatewaySpecTlsFrontendPatchPtrInput {
+	return (*gatewaySpecTlsFrontendPatchPtrType)(v)
+}
+
+func (*gatewaySpecTlsFrontendPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTlsFrontendPatch)(nil)).Elem()
+}
+
+func (i *gatewaySpecTlsFrontendPatchPtrType) ToGatewaySpecTlsFrontendPatchPtrOutput() GatewaySpecTlsFrontendPatchPtrOutput {
+	return i.ToGatewaySpecTlsFrontendPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *gatewaySpecTlsFrontendPatchPtrType) ToGatewaySpecTlsFrontendPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendPatchPtrOutput)
+}
+
+// Frontend describes TLS config when client connects to Gateway.
+// Support: Core
+type GatewaySpecTlsFrontendPatchOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontendPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendPatchOutput) ToGatewaySpecTlsFrontendPatchOutput() GatewaySpecTlsFrontendPatchOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPatchOutput) ToGatewaySpecTlsFrontendPatchOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPatchOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPatchOutput) ToGatewaySpecTlsFrontendPatchPtrOutput() GatewaySpecTlsFrontendPatchPtrOutput {
+	return o.ToGatewaySpecTlsFrontendPatchPtrOutputWithContext(context.Background())
+}
+
+func (o GatewaySpecTlsFrontendPatchOutput) ToGatewaySpecTlsFrontendPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v GatewaySpecTlsFrontendPatch) *GatewaySpecTlsFrontendPatch {
+		return &v
+	}).(GatewaySpecTlsFrontendPatchPtrOutput)
+}
+
+func (o GatewaySpecTlsFrontendPatchOutput) Default() GatewaySpecTlsFrontendDefaultPatchPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendPatch) *GatewaySpecTlsFrontendDefaultPatch { return v.Default }).(GatewaySpecTlsFrontendDefaultPatchPtrOutput)
+}
+
+// PerPort specifies tls configuration assigned per port.
+// Per port configuration is optional. Once set this configuration overrides
+// the default configuration for all Listeners handling HTTPS traffic
+// that match this port.
+// Each override port requires a unique TLS configuration.
+//
+// support: Core
+func (o GatewaySpecTlsFrontendPatchOutput) PerPort() GatewaySpecTlsFrontendPerPortPatchArrayOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendPatch) []GatewaySpecTlsFrontendPerPortPatch { return v.PerPort }).(GatewaySpecTlsFrontendPerPortPatchArrayOutput)
+}
+
+type GatewaySpecTlsFrontendPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTlsFrontendPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendPatchPtrOutput) ToGatewaySpecTlsFrontendPatchPtrOutput() GatewaySpecTlsFrontendPatchPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPatchPtrOutput) ToGatewaySpecTlsFrontendPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPatchPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPatchPtrOutput) Elem() GatewaySpecTlsFrontendPatchOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsFrontendPatch) GatewaySpecTlsFrontendPatch {
+		if v != nil {
+			return *v
+		}
+		var ret GatewaySpecTlsFrontendPatch
+		return ret
+	}).(GatewaySpecTlsFrontendPatchOutput)
+}
+
+func (o GatewaySpecTlsFrontendPatchPtrOutput) Default() GatewaySpecTlsFrontendDefaultPatchPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsFrontendPatch) *GatewaySpecTlsFrontendDefaultPatch {
+		if v == nil {
+			return nil
+		}
+		return v.Default
+	}).(GatewaySpecTlsFrontendDefaultPatchPtrOutput)
+}
+
+// PerPort specifies tls configuration assigned per port.
+// Per port configuration is optional. Once set this configuration overrides
+// the default configuration for all Listeners handling HTTPS traffic
+// that match this port.
+// Each override port requires a unique TLS configuration.
+//
+// support: Core
+func (o GatewaySpecTlsFrontendPatchPtrOutput) PerPort() GatewaySpecTlsFrontendPerPortPatchArrayOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsFrontendPatch) []GatewaySpecTlsFrontendPerPortPatch {
+		if v == nil {
+			return nil
+		}
+		return v.PerPort
+	}).(GatewaySpecTlsFrontendPerPortPatchArrayOutput)
+}
+
+type GatewaySpecTlsFrontendPerPort struct {
+	// The Port indicates the Port Number to which the TLS configuration will be
+	// applied. This configuration will be applied to all Listeners handling HTTPS
+	// traffic that match this port.
+	//
+	// Support: Core
+	Port *int                              `pulumi:"port"`
+	Tls  *GatewaySpecTlsFrontendPerPortTls `pulumi:"tls"`
+}
+
+// GatewaySpecTlsFrontendPerPortInput is an input type that accepts GatewaySpecTlsFrontendPerPortArgs and GatewaySpecTlsFrontendPerPortOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendPerPortInput` via:
+//
+//	GatewaySpecTlsFrontendPerPortArgs{...}
+type GatewaySpecTlsFrontendPerPortInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendPerPortOutput() GatewaySpecTlsFrontendPerPortOutput
+	ToGatewaySpecTlsFrontendPerPortOutputWithContext(context.Context) GatewaySpecTlsFrontendPerPortOutput
+}
+
+type GatewaySpecTlsFrontendPerPortArgs struct {
+	// The Port indicates the Port Number to which the TLS configuration will be
+	// applied. This configuration will be applied to all Listeners handling HTTPS
+	// traffic that match this port.
+	//
+	// Support: Core
+	Port pulumi.IntPtrInput                       `pulumi:"port"`
+	Tls  GatewaySpecTlsFrontendPerPortTlsPtrInput `pulumi:"tls"`
+}
+
+func (GatewaySpecTlsFrontendPerPortArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontendPerPort)(nil)).Elem()
+}
+
+func (i GatewaySpecTlsFrontendPerPortArgs) ToGatewaySpecTlsFrontendPerPortOutput() GatewaySpecTlsFrontendPerPortOutput {
+	return i.ToGatewaySpecTlsFrontendPerPortOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendPerPortArgs) ToGatewaySpecTlsFrontendPerPortOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendPerPortOutput)
+}
+
+// GatewaySpecTlsFrontendPerPortArrayInput is an input type that accepts GatewaySpecTlsFrontendPerPortArray and GatewaySpecTlsFrontendPerPortArrayOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendPerPortArrayInput` via:
+//
+//	GatewaySpecTlsFrontendPerPortArray{ GatewaySpecTlsFrontendPerPortArgs{...} }
+type GatewaySpecTlsFrontendPerPortArrayInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendPerPortArrayOutput() GatewaySpecTlsFrontendPerPortArrayOutput
+	ToGatewaySpecTlsFrontendPerPortArrayOutputWithContext(context.Context) GatewaySpecTlsFrontendPerPortArrayOutput
+}
+
+type GatewaySpecTlsFrontendPerPortArray []GatewaySpecTlsFrontendPerPortInput
+
+func (GatewaySpecTlsFrontendPerPortArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]GatewaySpecTlsFrontendPerPort)(nil)).Elem()
+}
+
+func (i GatewaySpecTlsFrontendPerPortArray) ToGatewaySpecTlsFrontendPerPortArrayOutput() GatewaySpecTlsFrontendPerPortArrayOutput {
+	return i.ToGatewaySpecTlsFrontendPerPortArrayOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendPerPortArray) ToGatewaySpecTlsFrontendPerPortArrayOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendPerPortArrayOutput)
+}
+
+type GatewaySpecTlsFrontendPerPortOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendPerPortOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontendPerPort)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendPerPortOutput) ToGatewaySpecTlsFrontendPerPortOutput() GatewaySpecTlsFrontendPerPortOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPerPortOutput) ToGatewaySpecTlsFrontendPerPortOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortOutput {
+	return o
+}
+
+// The Port indicates the Port Number to which the TLS configuration will be
+// applied. This configuration will be applied to all Listeners handling HTTPS
+// traffic that match this port.
+//
+// Support: Core
+func (o GatewaySpecTlsFrontendPerPortOutput) Port() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendPerPort) *int { return v.Port }).(pulumi.IntPtrOutput)
+}
+
+func (o GatewaySpecTlsFrontendPerPortOutput) Tls() GatewaySpecTlsFrontendPerPortTlsPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendPerPort) *GatewaySpecTlsFrontendPerPortTls { return v.Tls }).(GatewaySpecTlsFrontendPerPortTlsPtrOutput)
+}
+
+type GatewaySpecTlsFrontendPerPortArrayOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendPerPortArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]GatewaySpecTlsFrontendPerPort)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendPerPortArrayOutput) ToGatewaySpecTlsFrontendPerPortArrayOutput() GatewaySpecTlsFrontendPerPortArrayOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPerPortArrayOutput) ToGatewaySpecTlsFrontendPerPortArrayOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortArrayOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPerPortArrayOutput) Index(i pulumi.IntInput) GatewaySpecTlsFrontendPerPortOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) GatewaySpecTlsFrontendPerPort {
+		return vs[0].([]GatewaySpecTlsFrontendPerPort)[vs[1].(int)]
+	}).(GatewaySpecTlsFrontendPerPortOutput)
+}
+
+type GatewaySpecTlsFrontendPerPortPatch struct {
+	// The Port indicates the Port Number to which the TLS configuration will be
+	// applied. This configuration will be applied to all Listeners handling HTTPS
+	// traffic that match this port.
+	//
+	// Support: Core
+	Port *int                                   `pulumi:"port"`
+	Tls  *GatewaySpecTlsFrontendPerPortTlsPatch `pulumi:"tls"`
+}
+
+// GatewaySpecTlsFrontendPerPortPatchInput is an input type that accepts GatewaySpecTlsFrontendPerPortPatchArgs and GatewaySpecTlsFrontendPerPortPatchOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendPerPortPatchInput` via:
+//
+//	GatewaySpecTlsFrontendPerPortPatchArgs{...}
+type GatewaySpecTlsFrontendPerPortPatchInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendPerPortPatchOutput() GatewaySpecTlsFrontendPerPortPatchOutput
+	ToGatewaySpecTlsFrontendPerPortPatchOutputWithContext(context.Context) GatewaySpecTlsFrontendPerPortPatchOutput
+}
+
+type GatewaySpecTlsFrontendPerPortPatchArgs struct {
+	// The Port indicates the Port Number to which the TLS configuration will be
+	// applied. This configuration will be applied to all Listeners handling HTTPS
+	// traffic that match this port.
+	//
+	// Support: Core
+	Port pulumi.IntPtrInput                            `pulumi:"port"`
+	Tls  GatewaySpecTlsFrontendPerPortTlsPatchPtrInput `pulumi:"tls"`
+}
+
+func (GatewaySpecTlsFrontendPerPortPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontendPerPortPatch)(nil)).Elem()
+}
+
+func (i GatewaySpecTlsFrontendPerPortPatchArgs) ToGatewaySpecTlsFrontendPerPortPatchOutput() GatewaySpecTlsFrontendPerPortPatchOutput {
+	return i.ToGatewaySpecTlsFrontendPerPortPatchOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendPerPortPatchArgs) ToGatewaySpecTlsFrontendPerPortPatchOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendPerPortPatchOutput)
+}
+
+// GatewaySpecTlsFrontendPerPortPatchArrayInput is an input type that accepts GatewaySpecTlsFrontendPerPortPatchArray and GatewaySpecTlsFrontendPerPortPatchArrayOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendPerPortPatchArrayInput` via:
+//
+//	GatewaySpecTlsFrontendPerPortPatchArray{ GatewaySpecTlsFrontendPerPortPatchArgs{...} }
+type GatewaySpecTlsFrontendPerPortPatchArrayInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendPerPortPatchArrayOutput() GatewaySpecTlsFrontendPerPortPatchArrayOutput
+	ToGatewaySpecTlsFrontendPerPortPatchArrayOutputWithContext(context.Context) GatewaySpecTlsFrontendPerPortPatchArrayOutput
+}
+
+type GatewaySpecTlsFrontendPerPortPatchArray []GatewaySpecTlsFrontendPerPortPatchInput
+
+func (GatewaySpecTlsFrontendPerPortPatchArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]GatewaySpecTlsFrontendPerPortPatch)(nil)).Elem()
+}
+
+func (i GatewaySpecTlsFrontendPerPortPatchArray) ToGatewaySpecTlsFrontendPerPortPatchArrayOutput() GatewaySpecTlsFrontendPerPortPatchArrayOutput {
+	return i.ToGatewaySpecTlsFrontendPerPortPatchArrayOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendPerPortPatchArray) ToGatewaySpecTlsFrontendPerPortPatchArrayOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortPatchArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendPerPortPatchArrayOutput)
+}
+
+type GatewaySpecTlsFrontendPerPortPatchOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendPerPortPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontendPerPortPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendPerPortPatchOutput) ToGatewaySpecTlsFrontendPerPortPatchOutput() GatewaySpecTlsFrontendPerPortPatchOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPerPortPatchOutput) ToGatewaySpecTlsFrontendPerPortPatchOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortPatchOutput {
+	return o
+}
+
+// The Port indicates the Port Number to which the TLS configuration will be
+// applied. This configuration will be applied to all Listeners handling HTTPS
+// traffic that match this port.
+//
+// Support: Core
+func (o GatewaySpecTlsFrontendPerPortPatchOutput) Port() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendPerPortPatch) *int { return v.Port }).(pulumi.IntPtrOutput)
+}
+
+func (o GatewaySpecTlsFrontendPerPortPatchOutput) Tls() GatewaySpecTlsFrontendPerPortTlsPatchPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendPerPortPatch) *GatewaySpecTlsFrontendPerPortTlsPatch { return v.Tls }).(GatewaySpecTlsFrontendPerPortTlsPatchPtrOutput)
+}
+
+type GatewaySpecTlsFrontendPerPortPatchArrayOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendPerPortPatchArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]GatewaySpecTlsFrontendPerPortPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendPerPortPatchArrayOutput) ToGatewaySpecTlsFrontendPerPortPatchArrayOutput() GatewaySpecTlsFrontendPerPortPatchArrayOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPerPortPatchArrayOutput) ToGatewaySpecTlsFrontendPerPortPatchArrayOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortPatchArrayOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPerPortPatchArrayOutput) Index(i pulumi.IntInput) GatewaySpecTlsFrontendPerPortPatchOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) GatewaySpecTlsFrontendPerPortPatch {
+		return vs[0].([]GatewaySpecTlsFrontendPerPortPatch)[vs[1].(int)]
+	}).(GatewaySpecTlsFrontendPerPortPatchOutput)
+}
+
+// TLS store the configuration that will be applied to all Listeners handling
+// HTTPS traffic and matching given port.
+//
+// Support: Core
+type GatewaySpecTlsFrontendPerPortTls struct {
+	Validation *GatewaySpecTlsFrontendPerPortTlsValidation `pulumi:"validation"`
+}
+
+// GatewaySpecTlsFrontendPerPortTlsInput is an input type that accepts GatewaySpecTlsFrontendPerPortTlsArgs and GatewaySpecTlsFrontendPerPortTlsOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendPerPortTlsInput` via:
+//
+//	GatewaySpecTlsFrontendPerPortTlsArgs{...}
+type GatewaySpecTlsFrontendPerPortTlsInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendPerPortTlsOutput() GatewaySpecTlsFrontendPerPortTlsOutput
+	ToGatewaySpecTlsFrontendPerPortTlsOutputWithContext(context.Context) GatewaySpecTlsFrontendPerPortTlsOutput
+}
+
+// TLS store the configuration that will be applied to all Listeners handling
+// HTTPS traffic and matching given port.
+//
+// Support: Core
+type GatewaySpecTlsFrontendPerPortTlsArgs struct {
+	Validation GatewaySpecTlsFrontendPerPortTlsValidationPtrInput `pulumi:"validation"`
+}
+
+func (GatewaySpecTlsFrontendPerPortTlsArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontendPerPortTls)(nil)).Elem()
+}
+
+func (i GatewaySpecTlsFrontendPerPortTlsArgs) ToGatewaySpecTlsFrontendPerPortTlsOutput() GatewaySpecTlsFrontendPerPortTlsOutput {
+	return i.ToGatewaySpecTlsFrontendPerPortTlsOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendPerPortTlsArgs) ToGatewaySpecTlsFrontendPerPortTlsOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendPerPortTlsOutput)
+}
+
+func (i GatewaySpecTlsFrontendPerPortTlsArgs) ToGatewaySpecTlsFrontendPerPortTlsPtrOutput() GatewaySpecTlsFrontendPerPortTlsPtrOutput {
+	return i.ToGatewaySpecTlsFrontendPerPortTlsPtrOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendPerPortTlsArgs) ToGatewaySpecTlsFrontendPerPortTlsPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendPerPortTlsOutput).ToGatewaySpecTlsFrontendPerPortTlsPtrOutputWithContext(ctx)
+}
+
+// GatewaySpecTlsFrontendPerPortTlsPtrInput is an input type that accepts GatewaySpecTlsFrontendPerPortTlsArgs, GatewaySpecTlsFrontendPerPortTlsPtr and GatewaySpecTlsFrontendPerPortTlsPtrOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendPerPortTlsPtrInput` via:
+//
+//	        GatewaySpecTlsFrontendPerPortTlsArgs{...}
+//
+//	or:
+//
+//	        nil
+type GatewaySpecTlsFrontendPerPortTlsPtrInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendPerPortTlsPtrOutput() GatewaySpecTlsFrontendPerPortTlsPtrOutput
+	ToGatewaySpecTlsFrontendPerPortTlsPtrOutputWithContext(context.Context) GatewaySpecTlsFrontendPerPortTlsPtrOutput
+}
+
+type gatewaySpecTlsFrontendPerPortTlsPtrType GatewaySpecTlsFrontendPerPortTlsArgs
+
+func GatewaySpecTlsFrontendPerPortTlsPtr(v *GatewaySpecTlsFrontendPerPortTlsArgs) GatewaySpecTlsFrontendPerPortTlsPtrInput {
+	return (*gatewaySpecTlsFrontendPerPortTlsPtrType)(v)
+}
+
+func (*gatewaySpecTlsFrontendPerPortTlsPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTlsFrontendPerPortTls)(nil)).Elem()
+}
+
+func (i *gatewaySpecTlsFrontendPerPortTlsPtrType) ToGatewaySpecTlsFrontendPerPortTlsPtrOutput() GatewaySpecTlsFrontendPerPortTlsPtrOutput {
+	return i.ToGatewaySpecTlsFrontendPerPortTlsPtrOutputWithContext(context.Background())
+}
+
+func (i *gatewaySpecTlsFrontendPerPortTlsPtrType) ToGatewaySpecTlsFrontendPerPortTlsPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendPerPortTlsPtrOutput)
+}
+
+// TLS store the configuration that will be applied to all Listeners handling
+// HTTPS traffic and matching given port.
+//
+// Support: Core
+type GatewaySpecTlsFrontendPerPortTlsOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendPerPortTlsOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontendPerPortTls)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsOutput) ToGatewaySpecTlsFrontendPerPortTlsOutput() GatewaySpecTlsFrontendPerPortTlsOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsOutput) ToGatewaySpecTlsFrontendPerPortTlsOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsOutput) ToGatewaySpecTlsFrontendPerPortTlsPtrOutput() GatewaySpecTlsFrontendPerPortTlsPtrOutput {
+	return o.ToGatewaySpecTlsFrontendPerPortTlsPtrOutputWithContext(context.Background())
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsOutput) ToGatewaySpecTlsFrontendPerPortTlsPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v GatewaySpecTlsFrontendPerPortTls) *GatewaySpecTlsFrontendPerPortTls {
+		return &v
+	}).(GatewaySpecTlsFrontendPerPortTlsPtrOutput)
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsOutput) Validation() GatewaySpecTlsFrontendPerPortTlsValidationPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendPerPortTls) *GatewaySpecTlsFrontendPerPortTlsValidation {
+		return v.Validation
+	}).(GatewaySpecTlsFrontendPerPortTlsValidationPtrOutput)
+}
+
+type GatewaySpecTlsFrontendPerPortTlsPtrOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendPerPortTlsPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTlsFrontendPerPortTls)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsPtrOutput) ToGatewaySpecTlsFrontendPerPortTlsPtrOutput() GatewaySpecTlsFrontendPerPortTlsPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsPtrOutput) ToGatewaySpecTlsFrontendPerPortTlsPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsPtrOutput) Elem() GatewaySpecTlsFrontendPerPortTlsOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsFrontendPerPortTls) GatewaySpecTlsFrontendPerPortTls {
+		if v != nil {
+			return *v
+		}
+		var ret GatewaySpecTlsFrontendPerPortTls
+		return ret
+	}).(GatewaySpecTlsFrontendPerPortTlsOutput)
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsPtrOutput) Validation() GatewaySpecTlsFrontendPerPortTlsValidationPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsFrontendPerPortTls) *GatewaySpecTlsFrontendPerPortTlsValidation {
+		if v == nil {
+			return nil
+		}
+		return v.Validation
+	}).(GatewaySpecTlsFrontendPerPortTlsValidationPtrOutput)
+}
+
+// TLS store the configuration that will be applied to all Listeners handling
+// HTTPS traffic and matching given port.
+//
+// Support: Core
+type GatewaySpecTlsFrontendPerPortTlsPatch struct {
+	Validation *GatewaySpecTlsFrontendPerPortTlsValidationPatch `pulumi:"validation"`
+}
+
+// GatewaySpecTlsFrontendPerPortTlsPatchInput is an input type that accepts GatewaySpecTlsFrontendPerPortTlsPatchArgs and GatewaySpecTlsFrontendPerPortTlsPatchOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendPerPortTlsPatchInput` via:
+//
+//	GatewaySpecTlsFrontendPerPortTlsPatchArgs{...}
+type GatewaySpecTlsFrontendPerPortTlsPatchInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendPerPortTlsPatchOutput() GatewaySpecTlsFrontendPerPortTlsPatchOutput
+	ToGatewaySpecTlsFrontendPerPortTlsPatchOutputWithContext(context.Context) GatewaySpecTlsFrontendPerPortTlsPatchOutput
+}
+
+// TLS store the configuration that will be applied to all Listeners handling
+// HTTPS traffic and matching given port.
+//
+// Support: Core
+type GatewaySpecTlsFrontendPerPortTlsPatchArgs struct {
+	Validation GatewaySpecTlsFrontendPerPortTlsValidationPatchPtrInput `pulumi:"validation"`
+}
+
+func (GatewaySpecTlsFrontendPerPortTlsPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontendPerPortTlsPatch)(nil)).Elem()
+}
+
+func (i GatewaySpecTlsFrontendPerPortTlsPatchArgs) ToGatewaySpecTlsFrontendPerPortTlsPatchOutput() GatewaySpecTlsFrontendPerPortTlsPatchOutput {
+	return i.ToGatewaySpecTlsFrontendPerPortTlsPatchOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendPerPortTlsPatchArgs) ToGatewaySpecTlsFrontendPerPortTlsPatchOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendPerPortTlsPatchOutput)
+}
+
+func (i GatewaySpecTlsFrontendPerPortTlsPatchArgs) ToGatewaySpecTlsFrontendPerPortTlsPatchPtrOutput() GatewaySpecTlsFrontendPerPortTlsPatchPtrOutput {
+	return i.ToGatewaySpecTlsFrontendPerPortTlsPatchPtrOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendPerPortTlsPatchArgs) ToGatewaySpecTlsFrontendPerPortTlsPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendPerPortTlsPatchOutput).ToGatewaySpecTlsFrontendPerPortTlsPatchPtrOutputWithContext(ctx)
+}
+
+// GatewaySpecTlsFrontendPerPortTlsPatchPtrInput is an input type that accepts GatewaySpecTlsFrontendPerPortTlsPatchArgs, GatewaySpecTlsFrontendPerPortTlsPatchPtr and GatewaySpecTlsFrontendPerPortTlsPatchPtrOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendPerPortTlsPatchPtrInput` via:
+//
+//	        GatewaySpecTlsFrontendPerPortTlsPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type GatewaySpecTlsFrontendPerPortTlsPatchPtrInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendPerPortTlsPatchPtrOutput() GatewaySpecTlsFrontendPerPortTlsPatchPtrOutput
+	ToGatewaySpecTlsFrontendPerPortTlsPatchPtrOutputWithContext(context.Context) GatewaySpecTlsFrontendPerPortTlsPatchPtrOutput
+}
+
+type gatewaySpecTlsFrontendPerPortTlsPatchPtrType GatewaySpecTlsFrontendPerPortTlsPatchArgs
+
+func GatewaySpecTlsFrontendPerPortTlsPatchPtr(v *GatewaySpecTlsFrontendPerPortTlsPatchArgs) GatewaySpecTlsFrontendPerPortTlsPatchPtrInput {
+	return (*gatewaySpecTlsFrontendPerPortTlsPatchPtrType)(v)
+}
+
+func (*gatewaySpecTlsFrontendPerPortTlsPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTlsFrontendPerPortTlsPatch)(nil)).Elem()
+}
+
+func (i *gatewaySpecTlsFrontendPerPortTlsPatchPtrType) ToGatewaySpecTlsFrontendPerPortTlsPatchPtrOutput() GatewaySpecTlsFrontendPerPortTlsPatchPtrOutput {
+	return i.ToGatewaySpecTlsFrontendPerPortTlsPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *gatewaySpecTlsFrontendPerPortTlsPatchPtrType) ToGatewaySpecTlsFrontendPerPortTlsPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendPerPortTlsPatchPtrOutput)
+}
+
+// TLS store the configuration that will be applied to all Listeners handling
+// HTTPS traffic and matching given port.
+//
+// Support: Core
+type GatewaySpecTlsFrontendPerPortTlsPatchOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendPerPortTlsPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontendPerPortTlsPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsPatchOutput) ToGatewaySpecTlsFrontendPerPortTlsPatchOutput() GatewaySpecTlsFrontendPerPortTlsPatchOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsPatchOutput) ToGatewaySpecTlsFrontendPerPortTlsPatchOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsPatchOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsPatchOutput) ToGatewaySpecTlsFrontendPerPortTlsPatchPtrOutput() GatewaySpecTlsFrontendPerPortTlsPatchPtrOutput {
+	return o.ToGatewaySpecTlsFrontendPerPortTlsPatchPtrOutputWithContext(context.Background())
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsPatchOutput) ToGatewaySpecTlsFrontendPerPortTlsPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v GatewaySpecTlsFrontendPerPortTlsPatch) *GatewaySpecTlsFrontendPerPortTlsPatch {
+		return &v
+	}).(GatewaySpecTlsFrontendPerPortTlsPatchPtrOutput)
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsPatchOutput) Validation() GatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendPerPortTlsPatch) *GatewaySpecTlsFrontendPerPortTlsValidationPatch {
+		return v.Validation
+	}).(GatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutput)
+}
+
+type GatewaySpecTlsFrontendPerPortTlsPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendPerPortTlsPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTlsFrontendPerPortTlsPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsPatchPtrOutput) ToGatewaySpecTlsFrontendPerPortTlsPatchPtrOutput() GatewaySpecTlsFrontendPerPortTlsPatchPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsPatchPtrOutput) ToGatewaySpecTlsFrontendPerPortTlsPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsPatchPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsPatchPtrOutput) Elem() GatewaySpecTlsFrontendPerPortTlsPatchOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsFrontendPerPortTlsPatch) GatewaySpecTlsFrontendPerPortTlsPatch {
+		if v != nil {
+			return *v
+		}
+		var ret GatewaySpecTlsFrontendPerPortTlsPatch
+		return ret
+	}).(GatewaySpecTlsFrontendPerPortTlsPatchOutput)
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsPatchPtrOutput) Validation() GatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsFrontendPerPortTlsPatch) *GatewaySpecTlsFrontendPerPortTlsValidationPatch {
+		if v == nil {
+			return nil
+		}
+		return v.Validation
+	}).(GatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutput)
+}
+
+// Validation holds configuration information for validating the frontend (client).
+// Setting this field will result in mutual authentication when connecting to the gateway.
+// In browsers this may result in a dialog appearing
+// that requests a user to specify the client certificate.
+// The maximum depth of a certificate chain accepted in verification is Implementation specific.
+//
+// Support: Core
+type GatewaySpecTlsFrontendPerPortTlsValidation struct {
+	// CACertificateRefs contains one or more references to Kubernetes
+	// objects that contain a PEM-encoded TLS CA certificate bundle, which
+	// is used as a trust anchor to validate the certificates presented by
+	// the client.
+	//
+	// A CACertificateRef is invalid if:
+	//
+	// * It refers to a resource that cannot be resolved (e.g., the
+	// referenced resource does not exist) or is misconfigured (e.g., a
+	// ConfigMap does not contain a key named `ca.crt`). In this case, the
+	// Reason on all matching HTTPS listeners must be set to `InvalidCACertificateRef`
+	// and the Message of the Condition must indicate which reference is invalid and why.
+	//
+	// * It refers to an unknown or unsupported kind of resource. In this
+	// case, the Reason on all matching HTTPS listeners must be set to
+	// `InvalidCACertificateKind` and the Message of the Condition must explain
+	// which kind of resource is unknown or unsupported.
+	//
+	// * It refers to a resource in another namespace UNLESS there is a
+	// ReferenceGrant in the target namespace that allows the CA
+	// certificate to be attached. If a ReferenceGrant does not allow this
+	// reference, the `ResolvedRefs` on all matching HTTPS listeners condition
+	// MUST be set with the Reason `RefNotPermitted`.
+	//
+	// Implementations MAY choose to perform further validation of the
+	// certificate content (e.g., checking expiry or enforcing specific formats).
+	// In such cases, an implementation-specific Reason and Message MUST be set.
+	//
+	// In all cases, the implementation MUST ensure that the `ResolvedRefs`
+	// condition is set to `status: False` on all targeted listeners (i.e.,
+	// listeners serving HTTPS on a matching port). The condition MUST
+	// include a Reason and Message that indicate the cause of the error. If
+	// ALL CACertificateRefs are invalid, the implementation MUST also ensure
+	// the `Accepted` condition on the listener is set to `status: False`, with
+	// the Reason `NoValidCACertificate`.
+	// Implementations MAY choose to support attaching multiple CA certificates
+	// to a listener, but this behavior is implementation-specific.
+	//
+	// Support: Core - A single reference to a Kubernetes ConfigMap, with the
+	// CA certificate in a key named `ca.crt`.
+	//
+	// Support: Implementation-specific - More than one reference, other kinds
+	// of resources, or a single reference that includes multiple certificates.
+	CaCertificateRefs []GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefs `pulumi:"caCertificateRefs"`
+	// FrontendValidationMode defines the mode for validating the client certificate.
+	// There are two possible modes:
+	//
+	// - AllowValidOnly: In this mode, the gateway will accept connections only if
+	// the client presents a valid certificate. This certificate must successfully
+	// pass validation against the CA certificates specified in `CACertificateRefs`.
+	// - AllowInsecureFallback: In this mode, the gateway will accept connections
+	// even if the client certificate is not presented or fails verification.
+	//
+	//   This approach delegates client authorization to the backend and introduce
+	// a significant security risk. It should be used in testing environments or
+	// on a temporary basis in non-testing environments.
+	//
+	// Defaults to AllowValidOnly.
+	//
+	// Support: Core
+	Mode *string `pulumi:"mode"`
+}
+
+// GatewaySpecTlsFrontendPerPortTlsValidationInput is an input type that accepts GatewaySpecTlsFrontendPerPortTlsValidationArgs and GatewaySpecTlsFrontendPerPortTlsValidationOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendPerPortTlsValidationInput` via:
+//
+//	GatewaySpecTlsFrontendPerPortTlsValidationArgs{...}
+type GatewaySpecTlsFrontendPerPortTlsValidationInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendPerPortTlsValidationOutput() GatewaySpecTlsFrontendPerPortTlsValidationOutput
+	ToGatewaySpecTlsFrontendPerPortTlsValidationOutputWithContext(context.Context) GatewaySpecTlsFrontendPerPortTlsValidationOutput
+}
+
+// Validation holds configuration information for validating the frontend (client).
+// Setting this field will result in mutual authentication when connecting to the gateway.
+// In browsers this may result in a dialog appearing
+// that requests a user to specify the client certificate.
+// The maximum depth of a certificate chain accepted in verification is Implementation specific.
+//
+// Support: Core
+type GatewaySpecTlsFrontendPerPortTlsValidationArgs struct {
+	// CACertificateRefs contains one or more references to Kubernetes
+	// objects that contain a PEM-encoded TLS CA certificate bundle, which
+	// is used as a trust anchor to validate the certificates presented by
+	// the client.
+	//
+	// A CACertificateRef is invalid if:
+	//
+	// * It refers to a resource that cannot be resolved (e.g., the
+	// referenced resource does not exist) or is misconfigured (e.g., a
+	// ConfigMap does not contain a key named `ca.crt`). In this case, the
+	// Reason on all matching HTTPS listeners must be set to `InvalidCACertificateRef`
+	// and the Message of the Condition must indicate which reference is invalid and why.
+	//
+	// * It refers to an unknown or unsupported kind of resource. In this
+	// case, the Reason on all matching HTTPS listeners must be set to
+	// `InvalidCACertificateKind` and the Message of the Condition must explain
+	// which kind of resource is unknown or unsupported.
+	//
+	// * It refers to a resource in another namespace UNLESS there is a
+	// ReferenceGrant in the target namespace that allows the CA
+	// certificate to be attached. If a ReferenceGrant does not allow this
+	// reference, the `ResolvedRefs` on all matching HTTPS listeners condition
+	// MUST be set with the Reason `RefNotPermitted`.
+	//
+	// Implementations MAY choose to perform further validation of the
+	// certificate content (e.g., checking expiry or enforcing specific formats).
+	// In such cases, an implementation-specific Reason and Message MUST be set.
+	//
+	// In all cases, the implementation MUST ensure that the `ResolvedRefs`
+	// condition is set to `status: False` on all targeted listeners (i.e.,
+	// listeners serving HTTPS on a matching port). The condition MUST
+	// include a Reason and Message that indicate the cause of the error. If
+	// ALL CACertificateRefs are invalid, the implementation MUST also ensure
+	// the `Accepted` condition on the listener is set to `status: False`, with
+	// the Reason `NoValidCACertificate`.
+	// Implementations MAY choose to support attaching multiple CA certificates
+	// to a listener, but this behavior is implementation-specific.
+	//
+	// Support: Core - A single reference to a Kubernetes ConfigMap, with the
+	// CA certificate in a key named `ca.crt`.
+	//
+	// Support: Implementation-specific - More than one reference, other kinds
+	// of resources, or a single reference that includes multiple certificates.
+	CaCertificateRefs GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArrayInput `pulumi:"caCertificateRefs"`
+	// FrontendValidationMode defines the mode for validating the client certificate.
+	// There are two possible modes:
+	//
+	// - AllowValidOnly: In this mode, the gateway will accept connections only if
+	// the client presents a valid certificate. This certificate must successfully
+	// pass validation against the CA certificates specified in `CACertificateRefs`.
+	// - AllowInsecureFallback: In this mode, the gateway will accept connections
+	// even if the client certificate is not presented or fails verification.
+	//
+	//   This approach delegates client authorization to the backend and introduce
+	// a significant security risk. It should be used in testing environments or
+	// on a temporary basis in non-testing environments.
+	//
+	// Defaults to AllowValidOnly.
+	//
+	// Support: Core
+	Mode pulumi.StringPtrInput `pulumi:"mode"`
+}
+
+func (GatewaySpecTlsFrontendPerPortTlsValidationArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontendPerPortTlsValidation)(nil)).Elem()
+}
+
+func (i GatewaySpecTlsFrontendPerPortTlsValidationArgs) ToGatewaySpecTlsFrontendPerPortTlsValidationOutput() GatewaySpecTlsFrontendPerPortTlsValidationOutput {
+	return i.ToGatewaySpecTlsFrontendPerPortTlsValidationOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendPerPortTlsValidationArgs) ToGatewaySpecTlsFrontendPerPortTlsValidationOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsValidationOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendPerPortTlsValidationOutput)
+}
+
+func (i GatewaySpecTlsFrontendPerPortTlsValidationArgs) ToGatewaySpecTlsFrontendPerPortTlsValidationPtrOutput() GatewaySpecTlsFrontendPerPortTlsValidationPtrOutput {
+	return i.ToGatewaySpecTlsFrontendPerPortTlsValidationPtrOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendPerPortTlsValidationArgs) ToGatewaySpecTlsFrontendPerPortTlsValidationPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsValidationPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendPerPortTlsValidationOutput).ToGatewaySpecTlsFrontendPerPortTlsValidationPtrOutputWithContext(ctx)
+}
+
+// GatewaySpecTlsFrontendPerPortTlsValidationPtrInput is an input type that accepts GatewaySpecTlsFrontendPerPortTlsValidationArgs, GatewaySpecTlsFrontendPerPortTlsValidationPtr and GatewaySpecTlsFrontendPerPortTlsValidationPtrOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendPerPortTlsValidationPtrInput` via:
+//
+//	        GatewaySpecTlsFrontendPerPortTlsValidationArgs{...}
+//
+//	or:
+//
+//	        nil
+type GatewaySpecTlsFrontendPerPortTlsValidationPtrInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendPerPortTlsValidationPtrOutput() GatewaySpecTlsFrontendPerPortTlsValidationPtrOutput
+	ToGatewaySpecTlsFrontendPerPortTlsValidationPtrOutputWithContext(context.Context) GatewaySpecTlsFrontendPerPortTlsValidationPtrOutput
+}
+
+type gatewaySpecTlsFrontendPerPortTlsValidationPtrType GatewaySpecTlsFrontendPerPortTlsValidationArgs
+
+func GatewaySpecTlsFrontendPerPortTlsValidationPtr(v *GatewaySpecTlsFrontendPerPortTlsValidationArgs) GatewaySpecTlsFrontendPerPortTlsValidationPtrInput {
+	return (*gatewaySpecTlsFrontendPerPortTlsValidationPtrType)(v)
+}
+
+func (*gatewaySpecTlsFrontendPerPortTlsValidationPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTlsFrontendPerPortTlsValidation)(nil)).Elem()
+}
+
+func (i *gatewaySpecTlsFrontendPerPortTlsValidationPtrType) ToGatewaySpecTlsFrontendPerPortTlsValidationPtrOutput() GatewaySpecTlsFrontendPerPortTlsValidationPtrOutput {
+	return i.ToGatewaySpecTlsFrontendPerPortTlsValidationPtrOutputWithContext(context.Background())
+}
+
+func (i *gatewaySpecTlsFrontendPerPortTlsValidationPtrType) ToGatewaySpecTlsFrontendPerPortTlsValidationPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsValidationPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendPerPortTlsValidationPtrOutput)
+}
+
+// Validation holds configuration information for validating the frontend (client).
+// Setting this field will result in mutual authentication when connecting to the gateway.
+// In browsers this may result in a dialog appearing
+// that requests a user to specify the client certificate.
+// The maximum depth of a certificate chain accepted in verification is Implementation specific.
+//
+// Support: Core
+type GatewaySpecTlsFrontendPerPortTlsValidationOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendPerPortTlsValidationOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontendPerPortTlsValidation)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsValidationOutput) ToGatewaySpecTlsFrontendPerPortTlsValidationOutput() GatewaySpecTlsFrontendPerPortTlsValidationOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsValidationOutput) ToGatewaySpecTlsFrontendPerPortTlsValidationOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsValidationOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsValidationOutput) ToGatewaySpecTlsFrontendPerPortTlsValidationPtrOutput() GatewaySpecTlsFrontendPerPortTlsValidationPtrOutput {
+	return o.ToGatewaySpecTlsFrontendPerPortTlsValidationPtrOutputWithContext(context.Background())
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsValidationOutput) ToGatewaySpecTlsFrontendPerPortTlsValidationPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsValidationPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v GatewaySpecTlsFrontendPerPortTlsValidation) *GatewaySpecTlsFrontendPerPortTlsValidation {
+		return &v
+	}).(GatewaySpecTlsFrontendPerPortTlsValidationPtrOutput)
+}
+
+// CACertificateRefs contains one or more references to Kubernetes
+// objects that contain a PEM-encoded TLS CA certificate bundle, which
+// is used as a trust anchor to validate the certificates presented by
+// the client.
+//
+// A CACertificateRef is invalid if:
+//
+// * It refers to a resource that cannot be resolved (e.g., the
+// referenced resource does not exist) or is misconfigured (e.g., a
+// ConfigMap does not contain a key named `ca.crt`). In this case, the
+// Reason on all matching HTTPS listeners must be set to `InvalidCACertificateRef`
+// and the Message of the Condition must indicate which reference is invalid and why.
+//
+// * It refers to an unknown or unsupported kind of resource. In this
+// case, the Reason on all matching HTTPS listeners must be set to
+// `InvalidCACertificateKind` and the Message of the Condition must explain
+// which kind of resource is unknown or unsupported.
+//
+// * It refers to a resource in another namespace UNLESS there is a
+// ReferenceGrant in the target namespace that allows the CA
+// certificate to be attached. If a ReferenceGrant does not allow this
+// reference, the `ResolvedRefs` on all matching HTTPS listeners condition
+// MUST be set with the Reason `RefNotPermitted`.
+//
+// Implementations MAY choose to perform further validation of the
+// certificate content (e.g., checking expiry or enforcing specific formats).
+// In such cases, an implementation-specific Reason and Message MUST be set.
+//
+// In all cases, the implementation MUST ensure that the `ResolvedRefs`
+// condition is set to `status: False` on all targeted listeners (i.e.,
+// listeners serving HTTPS on a matching port). The condition MUST
+// include a Reason and Message that indicate the cause of the error. If
+// ALL CACertificateRefs are invalid, the implementation MUST also ensure
+// the `Accepted` condition on the listener is set to `status: False`, with
+// the Reason `NoValidCACertificate`.
+// Implementations MAY choose to support attaching multiple CA certificates
+// to a listener, but this behavior is implementation-specific.
+//
+// Support: Core - A single reference to a Kubernetes ConfigMap, with the
+// CA certificate in a key named `ca.crt`.
+//
+// Support: Implementation-specific - More than one reference, other kinds
+// of resources, or a single reference that includes multiple certificates.
+func (o GatewaySpecTlsFrontendPerPortTlsValidationOutput) CaCertificateRefs() GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArrayOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendPerPortTlsValidation) []GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefs {
+		return v.CaCertificateRefs
+	}).(GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArrayOutput)
+}
+
+// FrontendValidationMode defines the mode for validating the client certificate.
+// There are two possible modes:
+//
+// - AllowValidOnly: In this mode, the gateway will accept connections only if
+// the client presents a valid certificate. This certificate must successfully
+// pass validation against the CA certificates specified in `CACertificateRefs`.
+// - AllowInsecureFallback: In this mode, the gateway will accept connections
+// even if the client certificate is not presented or fails verification.
+//
+//	This approach delegates client authorization to the backend and introduce
+//
+// a significant security risk. It should be used in testing environments or
+// on a temporary basis in non-testing environments.
+//
+// Defaults to AllowValidOnly.
+//
+// Support: Core
+func (o GatewaySpecTlsFrontendPerPortTlsValidationOutput) Mode() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendPerPortTlsValidation) *string { return v.Mode }).(pulumi.StringPtrOutput)
+}
+
+type GatewaySpecTlsFrontendPerPortTlsValidationPtrOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendPerPortTlsValidationPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTlsFrontendPerPortTlsValidation)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsValidationPtrOutput) ToGatewaySpecTlsFrontendPerPortTlsValidationPtrOutput() GatewaySpecTlsFrontendPerPortTlsValidationPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsValidationPtrOutput) ToGatewaySpecTlsFrontendPerPortTlsValidationPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsValidationPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsValidationPtrOutput) Elem() GatewaySpecTlsFrontendPerPortTlsValidationOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsFrontendPerPortTlsValidation) GatewaySpecTlsFrontendPerPortTlsValidation {
+		if v != nil {
+			return *v
+		}
+		var ret GatewaySpecTlsFrontendPerPortTlsValidation
+		return ret
+	}).(GatewaySpecTlsFrontendPerPortTlsValidationOutput)
+}
+
+// CACertificateRefs contains one or more references to Kubernetes
+// objects that contain a PEM-encoded TLS CA certificate bundle, which
+// is used as a trust anchor to validate the certificates presented by
+// the client.
+//
+// A CACertificateRef is invalid if:
+//
+// * It refers to a resource that cannot be resolved (e.g., the
+// referenced resource does not exist) or is misconfigured (e.g., a
+// ConfigMap does not contain a key named `ca.crt`). In this case, the
+// Reason on all matching HTTPS listeners must be set to `InvalidCACertificateRef`
+// and the Message of the Condition must indicate which reference is invalid and why.
+//
+// * It refers to an unknown or unsupported kind of resource. In this
+// case, the Reason on all matching HTTPS listeners must be set to
+// `InvalidCACertificateKind` and the Message of the Condition must explain
+// which kind of resource is unknown or unsupported.
+//
+// * It refers to a resource in another namespace UNLESS there is a
+// ReferenceGrant in the target namespace that allows the CA
+// certificate to be attached. If a ReferenceGrant does not allow this
+// reference, the `ResolvedRefs` on all matching HTTPS listeners condition
+// MUST be set with the Reason `RefNotPermitted`.
+//
+// Implementations MAY choose to perform further validation of the
+// certificate content (e.g., checking expiry or enforcing specific formats).
+// In such cases, an implementation-specific Reason and Message MUST be set.
+//
+// In all cases, the implementation MUST ensure that the `ResolvedRefs`
+// condition is set to `status: False` on all targeted listeners (i.e.,
+// listeners serving HTTPS on a matching port). The condition MUST
+// include a Reason and Message that indicate the cause of the error. If
+// ALL CACertificateRefs are invalid, the implementation MUST also ensure
+// the `Accepted` condition on the listener is set to `status: False`, with
+// the Reason `NoValidCACertificate`.
+// Implementations MAY choose to support attaching multiple CA certificates
+// to a listener, but this behavior is implementation-specific.
+//
+// Support: Core - A single reference to a Kubernetes ConfigMap, with the
+// CA certificate in a key named `ca.crt`.
+//
+// Support: Implementation-specific - More than one reference, other kinds
+// of resources, or a single reference that includes multiple certificates.
+func (o GatewaySpecTlsFrontendPerPortTlsValidationPtrOutput) CaCertificateRefs() GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArrayOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsFrontendPerPortTlsValidation) []GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefs {
+		if v == nil {
+			return nil
+		}
+		return v.CaCertificateRefs
+	}).(GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArrayOutput)
+}
+
+// FrontendValidationMode defines the mode for validating the client certificate.
+// There are two possible modes:
+//
+// - AllowValidOnly: In this mode, the gateway will accept connections only if
+// the client presents a valid certificate. This certificate must successfully
+// pass validation against the CA certificates specified in `CACertificateRefs`.
+// - AllowInsecureFallback: In this mode, the gateway will accept connections
+// even if the client certificate is not presented or fails verification.
+//
+//	This approach delegates client authorization to the backend and introduce
+//
+// a significant security risk. It should be used in testing environments or
+// on a temporary basis in non-testing environments.
+//
+// Defaults to AllowValidOnly.
+//
+// Support: Core
+func (o GatewaySpecTlsFrontendPerPortTlsValidationPtrOutput) Mode() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsFrontendPerPortTlsValidation) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Mode
+	}).(pulumi.StringPtrOutput)
+}
+
+// ObjectReference identifies an API object including its namespace.
+//
+// The API object must be valid in the cluster; the Group and Kind must
+// be registered in the cluster for this reference to be valid.
+//
+// References to objects with invalid Group and Kind are not valid, and must
+// be rejected by the implementation, with appropriate Conditions set
+// on the containing object.
+type GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefs struct {
+	// Group is the group of the referent. For example, "gateway.networking.k8s.io".
+	// When set to the empty string, core API group is inferred.
+	Group *string `pulumi:"group"`
+	// Kind is kind of the referent. For example "ConfigMap" or "Service".
+	Kind *string `pulumi:"kind"`
+	// Name is the name of the referent.
+	Name *string `pulumi:"name"`
+	// Namespace is the namespace of the referenced object. When unspecified, the local
+	// namespace is inferred.
+	//
+	// Note that when a namespace different than the local namespace is specified,
+	// a ReferenceGrant object is required in the referent namespace to allow that
+	// namespace's owner to accept the reference. See the ReferenceGrant
+	// documentation for details.
+	//
+	// Support: Core
+	Namespace *string `pulumi:"namespace"`
+}
+
+// GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsInput is an input type that accepts GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArgs and GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsInput` via:
+//
+//	GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArgs{...}
+type GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsOutput() GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsOutput
+	ToGatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsOutputWithContext(context.Context) GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsOutput
+}
+
+// ObjectReference identifies an API object including its namespace.
+//
+// The API object must be valid in the cluster; the Group and Kind must
+// be registered in the cluster for this reference to be valid.
+//
+// References to objects with invalid Group and Kind are not valid, and must
+// be rejected by the implementation, with appropriate Conditions set
+// on the containing object.
+type GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArgs struct {
+	// Group is the group of the referent. For example, "gateway.networking.k8s.io".
+	// When set to the empty string, core API group is inferred.
+	Group pulumi.StringPtrInput `pulumi:"group"`
+	// Kind is kind of the referent. For example "ConfigMap" or "Service".
+	Kind pulumi.StringPtrInput `pulumi:"kind"`
+	// Name is the name of the referent.
+	Name pulumi.StringPtrInput `pulumi:"name"`
+	// Namespace is the namespace of the referenced object. When unspecified, the local
+	// namespace is inferred.
+	//
+	// Note that when a namespace different than the local namespace is specified,
+	// a ReferenceGrant object is required in the referent namespace to allow that
+	// namespace's owner to accept the reference. See the ReferenceGrant
+	// documentation for details.
+	//
+	// Support: Core
+	Namespace pulumi.StringPtrInput `pulumi:"namespace"`
+}
+
+func (GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefs)(nil)).Elem()
+}
+
+func (i GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArgs) ToGatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsOutput() GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsOutput {
+	return i.ToGatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArgs) ToGatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsOutput)
+}
+
+// GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArrayInput is an input type that accepts GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArray and GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArrayOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArrayInput` via:
+//
+//	GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArray{ GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArgs{...} }
+type GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArrayInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArrayOutput() GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArrayOutput
+	ToGatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArrayOutputWithContext(context.Context) GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArrayOutput
+}
+
+type GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArray []GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsInput
+
+func (GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefs)(nil)).Elem()
+}
+
+func (i GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArray) ToGatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArrayOutput() GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArrayOutput {
+	return i.ToGatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArrayOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArray) ToGatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArrayOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArrayOutput)
+}
+
+// ObjectReference identifies an API object including its namespace.
+//
+// The API object must be valid in the cluster; the Group and Kind must
+// be registered in the cluster for this reference to be valid.
+//
+// References to objects with invalid Group and Kind are not valid, and must
+// be rejected by the implementation, with appropriate Conditions set
+// on the containing object.
+type GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefs)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsOutput) ToGatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsOutput() GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsOutput) ToGatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsOutput {
+	return o
+}
+
+// Group is the group of the referent. For example, "gateway.networking.k8s.io".
+// When set to the empty string, core API group is inferred.
+func (o GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsOutput) Group() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefs) *string { return v.Group }).(pulumi.StringPtrOutput)
+}
+
+// Kind is kind of the referent. For example "ConfigMap" or "Service".
+func (o GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsOutput) Kind() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefs) *string { return v.Kind }).(pulumi.StringPtrOutput)
+}
+
+// Name is the name of the referent.
+func (o GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefs) *string { return v.Name }).(pulumi.StringPtrOutput)
+}
+
+// Namespace is the namespace of the referenced object. When unspecified, the local
+// namespace is inferred.
+//
+// Note that when a namespace different than the local namespace is specified,
+// a ReferenceGrant object is required in the referent namespace to allow that
+// namespace's owner to accept the reference. See the ReferenceGrant
+// documentation for details.
+//
+// Support: Core
+func (o GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsOutput) Namespace() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefs) *string { return v.Namespace }).(pulumi.StringPtrOutput)
+}
+
+type GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArrayOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefs)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArrayOutput) ToGatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArrayOutput() GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArrayOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArrayOutput) ToGatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArrayOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArrayOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArrayOutput) Index(i pulumi.IntInput) GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefs {
+		return vs[0].([]GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefs)[vs[1].(int)]
+	}).(GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsOutput)
+}
+
+// ObjectReference identifies an API object including its namespace.
+//
+// The API object must be valid in the cluster; the Group and Kind must
+// be registered in the cluster for this reference to be valid.
+//
+// References to objects with invalid Group and Kind are not valid, and must
+// be rejected by the implementation, with appropriate Conditions set
+// on the containing object.
+type GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatch struct {
+	// Group is the group of the referent. For example, "gateway.networking.k8s.io".
+	// When set to the empty string, core API group is inferred.
+	Group *string `pulumi:"group"`
+	// Kind is kind of the referent. For example "ConfigMap" or "Service".
+	Kind *string `pulumi:"kind"`
+	// Name is the name of the referent.
+	Name *string `pulumi:"name"`
+	// Namespace is the namespace of the referenced object. When unspecified, the local
+	// namespace is inferred.
+	//
+	// Note that when a namespace different than the local namespace is specified,
+	// a ReferenceGrant object is required in the referent namespace to allow that
+	// namespace's owner to accept the reference. See the ReferenceGrant
+	// documentation for details.
+	//
+	// Support: Core
+	Namespace *string `pulumi:"namespace"`
+}
+
+// GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchInput is an input type that accepts GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArgs and GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchInput` via:
+//
+//	GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArgs{...}
+type GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchOutput() GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchOutput
+	ToGatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchOutputWithContext(context.Context) GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchOutput
+}
+
+// ObjectReference identifies an API object including its namespace.
+//
+// The API object must be valid in the cluster; the Group and Kind must
+// be registered in the cluster for this reference to be valid.
+//
+// References to objects with invalid Group and Kind are not valid, and must
+// be rejected by the implementation, with appropriate Conditions set
+// on the containing object.
+type GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArgs struct {
+	// Group is the group of the referent. For example, "gateway.networking.k8s.io".
+	// When set to the empty string, core API group is inferred.
+	Group pulumi.StringPtrInput `pulumi:"group"`
+	// Kind is kind of the referent. For example "ConfigMap" or "Service".
+	Kind pulumi.StringPtrInput `pulumi:"kind"`
+	// Name is the name of the referent.
+	Name pulumi.StringPtrInput `pulumi:"name"`
+	// Namespace is the namespace of the referenced object. When unspecified, the local
+	// namespace is inferred.
+	//
+	// Note that when a namespace different than the local namespace is specified,
+	// a ReferenceGrant object is required in the referent namespace to allow that
+	// namespace's owner to accept the reference. See the ReferenceGrant
+	// documentation for details.
+	//
+	// Support: Core
+	Namespace pulumi.StringPtrInput `pulumi:"namespace"`
+}
+
+func (GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatch)(nil)).Elem()
+}
+
+func (i GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArgs) ToGatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchOutput() GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchOutput {
+	return i.ToGatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArgs) ToGatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchOutput)
+}
+
+// GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArrayInput is an input type that accepts GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArray and GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArrayOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArrayInput` via:
+//
+//	GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArray{ GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArgs{...} }
+type GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArrayInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArrayOutput() GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArrayOutput
+	ToGatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArrayOutputWithContext(context.Context) GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArrayOutput
+}
+
+type GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArray []GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchInput
+
+func (GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatch)(nil)).Elem()
+}
+
+func (i GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArray) ToGatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArrayOutput() GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArrayOutput {
+	return i.ToGatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArrayOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArray) ToGatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArrayOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArrayOutput)
+}
+
+// ObjectReference identifies an API object including its namespace.
+//
+// The API object must be valid in the cluster; the Group and Kind must
+// be registered in the cluster for this reference to be valid.
+//
+// References to objects with invalid Group and Kind are not valid, and must
+// be rejected by the implementation, with appropriate Conditions set
+// on the containing object.
+type GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchOutput) ToGatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchOutput() GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchOutput) ToGatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchOutput {
+	return o
+}
+
+// Group is the group of the referent. For example, "gateway.networking.k8s.io".
+// When set to the empty string, core API group is inferred.
+func (o GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchOutput) Group() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatch) *string { return v.Group }).(pulumi.StringPtrOutput)
+}
+
+// Kind is kind of the referent. For example "ConfigMap" or "Service".
+func (o GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchOutput) Kind() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatch) *string { return v.Kind }).(pulumi.StringPtrOutput)
+}
+
+// Name is the name of the referent.
+func (o GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatch) *string { return v.Name }).(pulumi.StringPtrOutput)
+}
+
+// Namespace is the namespace of the referenced object. When unspecified, the local
+// namespace is inferred.
+//
+// Note that when a namespace different than the local namespace is specified,
+// a ReferenceGrant object is required in the referent namespace to allow that
+// namespace's owner to accept the reference. See the ReferenceGrant
+// documentation for details.
+//
+// Support: Core
+func (o GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchOutput) Namespace() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatch) *string { return v.Namespace }).(pulumi.StringPtrOutput)
+}
+
+type GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArrayOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArrayOutput) ToGatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArrayOutput() GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArrayOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArrayOutput) ToGatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArrayOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArrayOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArrayOutput) Index(i pulumi.IntInput) GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatch {
+		return vs[0].([]GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatch)[vs[1].(int)]
+	}).(GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchOutput)
+}
+
+// Validation holds configuration information for validating the frontend (client).
+// Setting this field will result in mutual authentication when connecting to the gateway.
+// In browsers this may result in a dialog appearing
+// that requests a user to specify the client certificate.
+// The maximum depth of a certificate chain accepted in verification is Implementation specific.
+//
+// Support: Core
+type GatewaySpecTlsFrontendPerPortTlsValidationPatch struct {
+	// CACertificateRefs contains one or more references to Kubernetes
+	// objects that contain a PEM-encoded TLS CA certificate bundle, which
+	// is used as a trust anchor to validate the certificates presented by
+	// the client.
+	//
+	// A CACertificateRef is invalid if:
+	//
+	// * It refers to a resource that cannot be resolved (e.g., the
+	// referenced resource does not exist) or is misconfigured (e.g., a
+	// ConfigMap does not contain a key named `ca.crt`). In this case, the
+	// Reason on all matching HTTPS listeners must be set to `InvalidCACertificateRef`
+	// and the Message of the Condition must indicate which reference is invalid and why.
+	//
+	// * It refers to an unknown or unsupported kind of resource. In this
+	// case, the Reason on all matching HTTPS listeners must be set to
+	// `InvalidCACertificateKind` and the Message of the Condition must explain
+	// which kind of resource is unknown or unsupported.
+	//
+	// * It refers to a resource in another namespace UNLESS there is a
+	// ReferenceGrant in the target namespace that allows the CA
+	// certificate to be attached. If a ReferenceGrant does not allow this
+	// reference, the `ResolvedRefs` on all matching HTTPS listeners condition
+	// MUST be set with the Reason `RefNotPermitted`.
+	//
+	// Implementations MAY choose to perform further validation of the
+	// certificate content (e.g., checking expiry or enforcing specific formats).
+	// In such cases, an implementation-specific Reason and Message MUST be set.
+	//
+	// In all cases, the implementation MUST ensure that the `ResolvedRefs`
+	// condition is set to `status: False` on all targeted listeners (i.e.,
+	// listeners serving HTTPS on a matching port). The condition MUST
+	// include a Reason and Message that indicate the cause of the error. If
+	// ALL CACertificateRefs are invalid, the implementation MUST also ensure
+	// the `Accepted` condition on the listener is set to `status: False`, with
+	// the Reason `NoValidCACertificate`.
+	// Implementations MAY choose to support attaching multiple CA certificates
+	// to a listener, but this behavior is implementation-specific.
+	//
+	// Support: Core - A single reference to a Kubernetes ConfigMap, with the
+	// CA certificate in a key named `ca.crt`.
+	//
+	// Support: Implementation-specific - More than one reference, other kinds
+	// of resources, or a single reference that includes multiple certificates.
+	CaCertificateRefs []GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatch `pulumi:"caCertificateRefs"`
+	// FrontendValidationMode defines the mode for validating the client certificate.
+	// There are two possible modes:
+	//
+	// - AllowValidOnly: In this mode, the gateway will accept connections only if
+	// the client presents a valid certificate. This certificate must successfully
+	// pass validation against the CA certificates specified in `CACertificateRefs`.
+	// - AllowInsecureFallback: In this mode, the gateway will accept connections
+	// even if the client certificate is not presented or fails verification.
+	//
+	//   This approach delegates client authorization to the backend and introduce
+	// a significant security risk. It should be used in testing environments or
+	// on a temporary basis in non-testing environments.
+	//
+	// Defaults to AllowValidOnly.
+	//
+	// Support: Core
+	Mode *string `pulumi:"mode"`
+}
+
+// GatewaySpecTlsFrontendPerPortTlsValidationPatchInput is an input type that accepts GatewaySpecTlsFrontendPerPortTlsValidationPatchArgs and GatewaySpecTlsFrontendPerPortTlsValidationPatchOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendPerPortTlsValidationPatchInput` via:
+//
+//	GatewaySpecTlsFrontendPerPortTlsValidationPatchArgs{...}
+type GatewaySpecTlsFrontendPerPortTlsValidationPatchInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendPerPortTlsValidationPatchOutput() GatewaySpecTlsFrontendPerPortTlsValidationPatchOutput
+	ToGatewaySpecTlsFrontendPerPortTlsValidationPatchOutputWithContext(context.Context) GatewaySpecTlsFrontendPerPortTlsValidationPatchOutput
+}
+
+// Validation holds configuration information for validating the frontend (client).
+// Setting this field will result in mutual authentication when connecting to the gateway.
+// In browsers this may result in a dialog appearing
+// that requests a user to specify the client certificate.
+// The maximum depth of a certificate chain accepted in verification is Implementation specific.
+//
+// Support: Core
+type GatewaySpecTlsFrontendPerPortTlsValidationPatchArgs struct {
+	// CACertificateRefs contains one or more references to Kubernetes
+	// objects that contain a PEM-encoded TLS CA certificate bundle, which
+	// is used as a trust anchor to validate the certificates presented by
+	// the client.
+	//
+	// A CACertificateRef is invalid if:
+	//
+	// * It refers to a resource that cannot be resolved (e.g., the
+	// referenced resource does not exist) or is misconfigured (e.g., a
+	// ConfigMap does not contain a key named `ca.crt`). In this case, the
+	// Reason on all matching HTTPS listeners must be set to `InvalidCACertificateRef`
+	// and the Message of the Condition must indicate which reference is invalid and why.
+	//
+	// * It refers to an unknown or unsupported kind of resource. In this
+	// case, the Reason on all matching HTTPS listeners must be set to
+	// `InvalidCACertificateKind` and the Message of the Condition must explain
+	// which kind of resource is unknown or unsupported.
+	//
+	// * It refers to a resource in another namespace UNLESS there is a
+	// ReferenceGrant in the target namespace that allows the CA
+	// certificate to be attached. If a ReferenceGrant does not allow this
+	// reference, the `ResolvedRefs` on all matching HTTPS listeners condition
+	// MUST be set with the Reason `RefNotPermitted`.
+	//
+	// Implementations MAY choose to perform further validation of the
+	// certificate content (e.g., checking expiry or enforcing specific formats).
+	// In such cases, an implementation-specific Reason and Message MUST be set.
+	//
+	// In all cases, the implementation MUST ensure that the `ResolvedRefs`
+	// condition is set to `status: False` on all targeted listeners (i.e.,
+	// listeners serving HTTPS on a matching port). The condition MUST
+	// include a Reason and Message that indicate the cause of the error. If
+	// ALL CACertificateRefs are invalid, the implementation MUST also ensure
+	// the `Accepted` condition on the listener is set to `status: False`, with
+	// the Reason `NoValidCACertificate`.
+	// Implementations MAY choose to support attaching multiple CA certificates
+	// to a listener, but this behavior is implementation-specific.
+	//
+	// Support: Core - A single reference to a Kubernetes ConfigMap, with the
+	// CA certificate in a key named `ca.crt`.
+	//
+	// Support: Implementation-specific - More than one reference, other kinds
+	// of resources, or a single reference that includes multiple certificates.
+	CaCertificateRefs GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArrayInput `pulumi:"caCertificateRefs"`
+	// FrontendValidationMode defines the mode for validating the client certificate.
+	// There are two possible modes:
+	//
+	// - AllowValidOnly: In this mode, the gateway will accept connections only if
+	// the client presents a valid certificate. This certificate must successfully
+	// pass validation against the CA certificates specified in `CACertificateRefs`.
+	// - AllowInsecureFallback: In this mode, the gateway will accept connections
+	// even if the client certificate is not presented or fails verification.
+	//
+	//   This approach delegates client authorization to the backend and introduce
+	// a significant security risk. It should be used in testing environments or
+	// on a temporary basis in non-testing environments.
+	//
+	// Defaults to AllowValidOnly.
+	//
+	// Support: Core
+	Mode pulumi.StringPtrInput `pulumi:"mode"`
+}
+
+func (GatewaySpecTlsFrontendPerPortTlsValidationPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontendPerPortTlsValidationPatch)(nil)).Elem()
+}
+
+func (i GatewaySpecTlsFrontendPerPortTlsValidationPatchArgs) ToGatewaySpecTlsFrontendPerPortTlsValidationPatchOutput() GatewaySpecTlsFrontendPerPortTlsValidationPatchOutput {
+	return i.ToGatewaySpecTlsFrontendPerPortTlsValidationPatchOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendPerPortTlsValidationPatchArgs) ToGatewaySpecTlsFrontendPerPortTlsValidationPatchOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsValidationPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendPerPortTlsValidationPatchOutput)
+}
+
+func (i GatewaySpecTlsFrontendPerPortTlsValidationPatchArgs) ToGatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutput() GatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutput {
+	return i.ToGatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsFrontendPerPortTlsValidationPatchArgs) ToGatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendPerPortTlsValidationPatchOutput).ToGatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutputWithContext(ctx)
+}
+
+// GatewaySpecTlsFrontendPerPortTlsValidationPatchPtrInput is an input type that accepts GatewaySpecTlsFrontendPerPortTlsValidationPatchArgs, GatewaySpecTlsFrontendPerPortTlsValidationPatchPtr and GatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsFrontendPerPortTlsValidationPatchPtrInput` via:
+//
+//	        GatewaySpecTlsFrontendPerPortTlsValidationPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type GatewaySpecTlsFrontendPerPortTlsValidationPatchPtrInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutput() GatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutput
+	ToGatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutputWithContext(context.Context) GatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutput
+}
+
+type gatewaySpecTlsFrontendPerPortTlsValidationPatchPtrType GatewaySpecTlsFrontendPerPortTlsValidationPatchArgs
+
+func GatewaySpecTlsFrontendPerPortTlsValidationPatchPtr(v *GatewaySpecTlsFrontendPerPortTlsValidationPatchArgs) GatewaySpecTlsFrontendPerPortTlsValidationPatchPtrInput {
+	return (*gatewaySpecTlsFrontendPerPortTlsValidationPatchPtrType)(v)
+}
+
+func (*gatewaySpecTlsFrontendPerPortTlsValidationPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTlsFrontendPerPortTlsValidationPatch)(nil)).Elem()
+}
+
+func (i *gatewaySpecTlsFrontendPerPortTlsValidationPatchPtrType) ToGatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutput() GatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutput {
+	return i.ToGatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *gatewaySpecTlsFrontendPerPortTlsValidationPatchPtrType) ToGatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutput)
+}
+
+// Validation holds configuration information for validating the frontend (client).
+// Setting this field will result in mutual authentication when connecting to the gateway.
+// In browsers this may result in a dialog appearing
+// that requests a user to specify the client certificate.
+// The maximum depth of a certificate chain accepted in verification is Implementation specific.
+//
+// Support: Core
+type GatewaySpecTlsFrontendPerPortTlsValidationPatchOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendPerPortTlsValidationPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsFrontendPerPortTlsValidationPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsValidationPatchOutput) ToGatewaySpecTlsFrontendPerPortTlsValidationPatchOutput() GatewaySpecTlsFrontendPerPortTlsValidationPatchOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsValidationPatchOutput) ToGatewaySpecTlsFrontendPerPortTlsValidationPatchOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsValidationPatchOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsValidationPatchOutput) ToGatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutput() GatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutput {
+	return o.ToGatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutputWithContext(context.Background())
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsValidationPatchOutput) ToGatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v GatewaySpecTlsFrontendPerPortTlsValidationPatch) *GatewaySpecTlsFrontendPerPortTlsValidationPatch {
+		return &v
+	}).(GatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutput)
+}
+
+// CACertificateRefs contains one or more references to Kubernetes
+// objects that contain a PEM-encoded TLS CA certificate bundle, which
+// is used as a trust anchor to validate the certificates presented by
+// the client.
+//
+// A CACertificateRef is invalid if:
+//
+// * It refers to a resource that cannot be resolved (e.g., the
+// referenced resource does not exist) or is misconfigured (e.g., a
+// ConfigMap does not contain a key named `ca.crt`). In this case, the
+// Reason on all matching HTTPS listeners must be set to `InvalidCACertificateRef`
+// and the Message of the Condition must indicate which reference is invalid and why.
+//
+// * It refers to an unknown or unsupported kind of resource. In this
+// case, the Reason on all matching HTTPS listeners must be set to
+// `InvalidCACertificateKind` and the Message of the Condition must explain
+// which kind of resource is unknown or unsupported.
+//
+// * It refers to a resource in another namespace UNLESS there is a
+// ReferenceGrant in the target namespace that allows the CA
+// certificate to be attached. If a ReferenceGrant does not allow this
+// reference, the `ResolvedRefs` on all matching HTTPS listeners condition
+// MUST be set with the Reason `RefNotPermitted`.
+//
+// Implementations MAY choose to perform further validation of the
+// certificate content (e.g., checking expiry or enforcing specific formats).
+// In such cases, an implementation-specific Reason and Message MUST be set.
+//
+// In all cases, the implementation MUST ensure that the `ResolvedRefs`
+// condition is set to `status: False` on all targeted listeners (i.e.,
+// listeners serving HTTPS on a matching port). The condition MUST
+// include a Reason and Message that indicate the cause of the error. If
+// ALL CACertificateRefs are invalid, the implementation MUST also ensure
+// the `Accepted` condition on the listener is set to `status: False`, with
+// the Reason `NoValidCACertificate`.
+// Implementations MAY choose to support attaching multiple CA certificates
+// to a listener, but this behavior is implementation-specific.
+//
+// Support: Core - A single reference to a Kubernetes ConfigMap, with the
+// CA certificate in a key named `ca.crt`.
+//
+// Support: Implementation-specific - More than one reference, other kinds
+// of resources, or a single reference that includes multiple certificates.
+func (o GatewaySpecTlsFrontendPerPortTlsValidationPatchOutput) CaCertificateRefs() GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArrayOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendPerPortTlsValidationPatch) []GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatch {
+		return v.CaCertificateRefs
+	}).(GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArrayOutput)
+}
+
+// FrontendValidationMode defines the mode for validating the client certificate.
+// There are two possible modes:
+//
+// - AllowValidOnly: In this mode, the gateway will accept connections only if
+// the client presents a valid certificate. This certificate must successfully
+// pass validation against the CA certificates specified in `CACertificateRefs`.
+// - AllowInsecureFallback: In this mode, the gateway will accept connections
+// even if the client certificate is not presented or fails verification.
+//
+//	This approach delegates client authorization to the backend and introduce
+//
+// a significant security risk. It should be used in testing environments or
+// on a temporary basis in non-testing environments.
+//
+// Defaults to AllowValidOnly.
+//
+// Support: Core
+func (o GatewaySpecTlsFrontendPerPortTlsValidationPatchOutput) Mode() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsFrontendPerPortTlsValidationPatch) *string { return v.Mode }).(pulumi.StringPtrOutput)
+}
+
+type GatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTlsFrontendPerPortTlsValidationPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutput) ToGatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutput() GatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutput) ToGatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutput) Elem() GatewaySpecTlsFrontendPerPortTlsValidationPatchOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsFrontendPerPortTlsValidationPatch) GatewaySpecTlsFrontendPerPortTlsValidationPatch {
+		if v != nil {
+			return *v
+		}
+		var ret GatewaySpecTlsFrontendPerPortTlsValidationPatch
+		return ret
+	}).(GatewaySpecTlsFrontendPerPortTlsValidationPatchOutput)
+}
+
+// CACertificateRefs contains one or more references to Kubernetes
+// objects that contain a PEM-encoded TLS CA certificate bundle, which
+// is used as a trust anchor to validate the certificates presented by
+// the client.
+//
+// A CACertificateRef is invalid if:
+//
+// * It refers to a resource that cannot be resolved (e.g., the
+// referenced resource does not exist) or is misconfigured (e.g., a
+// ConfigMap does not contain a key named `ca.crt`). In this case, the
+// Reason on all matching HTTPS listeners must be set to `InvalidCACertificateRef`
+// and the Message of the Condition must indicate which reference is invalid and why.
+//
+// * It refers to an unknown or unsupported kind of resource. In this
+// case, the Reason on all matching HTTPS listeners must be set to
+// `InvalidCACertificateKind` and the Message of the Condition must explain
+// which kind of resource is unknown or unsupported.
+//
+// * It refers to a resource in another namespace UNLESS there is a
+// ReferenceGrant in the target namespace that allows the CA
+// certificate to be attached. If a ReferenceGrant does not allow this
+// reference, the `ResolvedRefs` on all matching HTTPS listeners condition
+// MUST be set with the Reason `RefNotPermitted`.
+//
+// Implementations MAY choose to perform further validation of the
+// certificate content (e.g., checking expiry or enforcing specific formats).
+// In such cases, an implementation-specific Reason and Message MUST be set.
+//
+// In all cases, the implementation MUST ensure that the `ResolvedRefs`
+// condition is set to `status: False` on all targeted listeners (i.e.,
+// listeners serving HTTPS on a matching port). The condition MUST
+// include a Reason and Message that indicate the cause of the error. If
+// ALL CACertificateRefs are invalid, the implementation MUST also ensure
+// the `Accepted` condition on the listener is set to `status: False`, with
+// the Reason `NoValidCACertificate`.
+// Implementations MAY choose to support attaching multiple CA certificates
+// to a listener, but this behavior is implementation-specific.
+//
+// Support: Core - A single reference to a Kubernetes ConfigMap, with the
+// CA certificate in a key named `ca.crt`.
+//
+// Support: Implementation-specific - More than one reference, other kinds
+// of resources, or a single reference that includes multiple certificates.
+func (o GatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutput) CaCertificateRefs() GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArrayOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsFrontendPerPortTlsValidationPatch) []GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatch {
+		if v == nil {
+			return nil
+		}
+		return v.CaCertificateRefs
+	}).(GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArrayOutput)
+}
+
+// FrontendValidationMode defines the mode for validating the client certificate.
+// There are two possible modes:
+//
+// - AllowValidOnly: In this mode, the gateway will accept connections only if
+// the client presents a valid certificate. This certificate must successfully
+// pass validation against the CA certificates specified in `CACertificateRefs`.
+// - AllowInsecureFallback: In this mode, the gateway will accept connections
+// even if the client certificate is not presented or fails verification.
+//
+//	This approach delegates client authorization to the backend and introduce
+//
+// a significant security risk. It should be used in testing environments or
+// on a temporary basis in non-testing environments.
+//
+// Defaults to AllowValidOnly.
+//
+// Support: Core
+func (o GatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutput) Mode() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsFrontendPerPortTlsValidationPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Mode
+	}).(pulumi.StringPtrOutput)
+}
+
+// TLS specifies frontend and backend tls configuration for entire gateway.
+//
+// Support: Extended
+type GatewaySpecTlsPatch struct {
+	Backend  *GatewaySpecTlsBackendPatch  `pulumi:"backend"`
+	Frontend *GatewaySpecTlsFrontendPatch `pulumi:"frontend"`
+}
+
+// GatewaySpecTlsPatchInput is an input type that accepts GatewaySpecTlsPatchArgs and GatewaySpecTlsPatchOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsPatchInput` via:
+//
+//	GatewaySpecTlsPatchArgs{...}
+type GatewaySpecTlsPatchInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsPatchOutput() GatewaySpecTlsPatchOutput
+	ToGatewaySpecTlsPatchOutputWithContext(context.Context) GatewaySpecTlsPatchOutput
+}
+
+// TLS specifies frontend and backend tls configuration for entire gateway.
+//
+// Support: Extended
+type GatewaySpecTlsPatchArgs struct {
+	Backend  GatewaySpecTlsBackendPatchPtrInput  `pulumi:"backend"`
+	Frontend GatewaySpecTlsFrontendPatchPtrInput `pulumi:"frontend"`
+}
+
+func (GatewaySpecTlsPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsPatch)(nil)).Elem()
+}
+
+func (i GatewaySpecTlsPatchArgs) ToGatewaySpecTlsPatchOutput() GatewaySpecTlsPatchOutput {
+	return i.ToGatewaySpecTlsPatchOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsPatchArgs) ToGatewaySpecTlsPatchOutputWithContext(ctx context.Context) GatewaySpecTlsPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsPatchOutput)
+}
+
+func (i GatewaySpecTlsPatchArgs) ToGatewaySpecTlsPatchPtrOutput() GatewaySpecTlsPatchPtrOutput {
+	return i.ToGatewaySpecTlsPatchPtrOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecTlsPatchArgs) ToGatewaySpecTlsPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsPatchOutput).ToGatewaySpecTlsPatchPtrOutputWithContext(ctx)
+}
+
+// GatewaySpecTlsPatchPtrInput is an input type that accepts GatewaySpecTlsPatchArgs, GatewaySpecTlsPatchPtr and GatewaySpecTlsPatchPtrOutput values.
+// You can construct a concrete instance of `GatewaySpecTlsPatchPtrInput` via:
+//
+//	        GatewaySpecTlsPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type GatewaySpecTlsPatchPtrInput interface {
+	pulumi.Input
+
+	ToGatewaySpecTlsPatchPtrOutput() GatewaySpecTlsPatchPtrOutput
+	ToGatewaySpecTlsPatchPtrOutputWithContext(context.Context) GatewaySpecTlsPatchPtrOutput
+}
+
+type gatewaySpecTlsPatchPtrType GatewaySpecTlsPatchArgs
+
+func GatewaySpecTlsPatchPtr(v *GatewaySpecTlsPatchArgs) GatewaySpecTlsPatchPtrInput {
+	return (*gatewaySpecTlsPatchPtrType)(v)
+}
+
+func (*gatewaySpecTlsPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTlsPatch)(nil)).Elem()
+}
+
+func (i *gatewaySpecTlsPatchPtrType) ToGatewaySpecTlsPatchPtrOutput() GatewaySpecTlsPatchPtrOutput {
+	return i.ToGatewaySpecTlsPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *gatewaySpecTlsPatchPtrType) ToGatewaySpecTlsPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecTlsPatchPtrOutput)
+}
+
+// TLS specifies frontend and backend tls configuration for entire gateway.
+//
+// Support: Extended
+type GatewaySpecTlsPatchOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecTlsPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsPatchOutput) ToGatewaySpecTlsPatchOutput() GatewaySpecTlsPatchOutput {
+	return o
+}
+
+func (o GatewaySpecTlsPatchOutput) ToGatewaySpecTlsPatchOutputWithContext(ctx context.Context) GatewaySpecTlsPatchOutput {
+	return o
+}
+
+func (o GatewaySpecTlsPatchOutput) ToGatewaySpecTlsPatchPtrOutput() GatewaySpecTlsPatchPtrOutput {
+	return o.ToGatewaySpecTlsPatchPtrOutputWithContext(context.Background())
+}
+
+func (o GatewaySpecTlsPatchOutput) ToGatewaySpecTlsPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v GatewaySpecTlsPatch) *GatewaySpecTlsPatch {
+		return &v
+	}).(GatewaySpecTlsPatchPtrOutput)
+}
+
+func (o GatewaySpecTlsPatchOutput) Backend() GatewaySpecTlsBackendPatchPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsPatch) *GatewaySpecTlsBackendPatch { return v.Backend }).(GatewaySpecTlsBackendPatchPtrOutput)
+}
+
+func (o GatewaySpecTlsPatchOutput) Frontend() GatewaySpecTlsFrontendPatchPtrOutput {
+	return o.ApplyT(func(v GatewaySpecTlsPatch) *GatewaySpecTlsFrontendPatch { return v.Frontend }).(GatewaySpecTlsFrontendPatchPtrOutput)
+}
+
+type GatewaySpecTlsPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecTlsPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**GatewaySpecTlsPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecTlsPatchPtrOutput) ToGatewaySpecTlsPatchPtrOutput() GatewaySpecTlsPatchPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsPatchPtrOutput) ToGatewaySpecTlsPatchPtrOutputWithContext(ctx context.Context) GatewaySpecTlsPatchPtrOutput {
+	return o
+}
+
+func (o GatewaySpecTlsPatchPtrOutput) Elem() GatewaySpecTlsPatchOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsPatch) GatewaySpecTlsPatch {
+		if v != nil {
+			return *v
+		}
+		var ret GatewaySpecTlsPatch
+		return ret
+	}).(GatewaySpecTlsPatchOutput)
+}
+
+func (o GatewaySpecTlsPatchPtrOutput) Backend() GatewaySpecTlsBackendPatchPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsPatch) *GatewaySpecTlsBackendPatch {
+		if v == nil {
+			return nil
+		}
+		return v.Backend
+	}).(GatewaySpecTlsBackendPatchPtrOutput)
+}
+
+func (o GatewaySpecTlsPatchPtrOutput) Frontend() GatewaySpecTlsFrontendPatchPtrOutput {
+	return o.ApplyT(func(v *GatewaySpecTlsPatch) *GatewaySpecTlsFrontendPatch {
+		if v == nil {
+			return nil
+		}
+		return v.Frontend
+	}).(GatewaySpecTlsFrontendPatchPtrOutput)
 }
 
 // Status defines the current state of Gateway.
@@ -7478,6 +15190,17 @@ type GatewayStatus struct {
 	//   * a combination of specified and dynamic addresses are assigned
 	//   * a specified address was unusable (e.g. already in use)
 	Addresses []GatewayStatusAddresses `pulumi:"addresses"`
+	// AttachedListenerSets represents the total number of ListenerSets that have been
+	// successfully attached to this Gateway.
+	//
+	// A ListenerSet is successfully attached to a Gateway when all the following conditions are met:
+	// - The ListenerSet is selected by the Gateway's AllowedListeners field
+	// - The ListenerSet has a valid ParentRef selecting the Gateway
+	// - The ListenerSet's status has the condition "Accepted: true"
+	//
+	// Uses for this field include troubleshooting AttachedListenerSets attachment and
+	// measuring blast radius/impact of changes to a Gateway.
+	AttachedListenerSets *int `pulumi:"attachedListenerSets"`
 	// Conditions describe the current conditions of the Gateway.
 	//
 	// Implementations should prefer to express Gateway conditions
@@ -7518,6 +15241,17 @@ type GatewayStatusArgs struct {
 	//   * a combination of specified and dynamic addresses are assigned
 	//   * a specified address was unusable (e.g. already in use)
 	Addresses GatewayStatusAddressesArrayInput `pulumi:"addresses"`
+	// AttachedListenerSets represents the total number of ListenerSets that have been
+	// successfully attached to this Gateway.
+	//
+	// A ListenerSet is successfully attached to a Gateway when all the following conditions are met:
+	// - The ListenerSet is selected by the Gateway's AllowedListeners field
+	// - The ListenerSet has a valid ParentRef selecting the Gateway
+	// - The ListenerSet's status has the condition "Accepted: true"
+	//
+	// Uses for this field include troubleshooting AttachedListenerSets attachment and
+	// measuring blast radius/impact of changes to a Gateway.
+	AttachedListenerSets pulumi.IntPtrInput `pulumi:"attachedListenerSets"`
 	// Conditions describe the current conditions of the Gateway.
 	//
 	// Implementations should prefer to express Gateway conditions
@@ -7626,6 +15360,20 @@ func (o GatewayStatusOutput) Addresses() GatewayStatusAddressesArrayOutput {
 	return o.ApplyT(func(v GatewayStatus) []GatewayStatusAddresses { return v.Addresses }).(GatewayStatusAddressesArrayOutput)
 }
 
+// AttachedListenerSets represents the total number of ListenerSets that have been
+// successfully attached to this Gateway.
+//
+// A ListenerSet is successfully attached to a Gateway when all the following conditions are met:
+// - The ListenerSet is selected by the Gateway's AllowedListeners field
+// - The ListenerSet has a valid ParentRef selecting the Gateway
+// - The ListenerSet's status has the condition "Accepted: true"
+//
+// Uses for this field include troubleshooting AttachedListenerSets attachment and
+// measuring blast radius/impact of changes to a Gateway.
+func (o GatewayStatusOutput) AttachedListenerSets() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v GatewayStatus) *int { return v.AttachedListenerSets }).(pulumi.IntPtrOutput)
+}
+
 // Conditions describe the current conditions of the Gateway.
 //
 // Implementations should prefer to express Gateway conditions
@@ -7687,6 +15435,25 @@ func (o GatewayStatusPtrOutput) Addresses() GatewayStatusAddressesArrayOutput {
 		}
 		return v.Addresses
 	}).(GatewayStatusAddressesArrayOutput)
+}
+
+// AttachedListenerSets represents the total number of ListenerSets that have been
+// successfully attached to this Gateway.
+//
+// A ListenerSet is successfully attached to a Gateway when all the following conditions are met:
+// - The ListenerSet is selected by the Gateway's AllowedListeners field
+// - The ListenerSet has a valid ParentRef selecting the Gateway
+// - The ListenerSet's status has the condition "Accepted: true"
+//
+// Uses for this field include troubleshooting AttachedListenerSets attachment and
+// measuring blast radius/impact of changes to a Gateway.
+func (o GatewayStatusPtrOutput) AttachedListenerSets() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *GatewayStatus) *int {
+		if v == nil {
+			return nil
+		}
+		return v.AttachedListenerSets
+	}).(pulumi.IntPtrOutput)
 }
 
 // Conditions describe the current conditions of the Gateway.
@@ -7957,21 +15724,6 @@ func (o GatewayStatusAddressesPatchArrayOutput) Index(i pulumi.IntInput) Gateway
 }
 
 // Condition contains details for one aspect of the current state of this API Resource.
-// ---
-// This struct is intended for direct use as an array at the field path .status.conditions.  For example,
-//
-//	type FooStatus struct{
-//	    // Represents the observations of a foo's current state.
-//	    // Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
-//	    // +patchMergeKey=type
-//	    // +patchStrategy=merge
-//	    // +listType=map
-//	    // +listMapKey=type
-//	    Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"`
-//
-//
-//	    // other fields
-//	}
 type GatewayStatusConditions struct {
 	// lastTransitionTime is the last time the condition transitioned from one status to another.
 	// This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
@@ -7992,10 +15744,6 @@ type GatewayStatusConditions struct {
 	// status of the condition, one of True, False, Unknown.
 	Status *string `pulumi:"status"`
 	// type of condition in CamelCase or in foo.example.com/CamelCase.
-	// ---
-	// Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be
-	// useful (see .node.status.conditions), the ability to deconflict is important.
-	// The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
 	Type *string `pulumi:"type"`
 }
 
@@ -8011,21 +15759,6 @@ type GatewayStatusConditionsInput interface {
 }
 
 // Condition contains details for one aspect of the current state of this API Resource.
-// ---
-// This struct is intended for direct use as an array at the field path .status.conditions.  For example,
-//
-//	type FooStatus struct{
-//	    // Represents the observations of a foo's current state.
-//	    // Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
-//	    // +patchMergeKey=type
-//	    // +patchStrategy=merge
-//	    // +listType=map
-//	    // +listMapKey=type
-//	    Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"`
-//
-//
-//	    // other fields
-//	}
 type GatewayStatusConditionsArgs struct {
 	// lastTransitionTime is the last time the condition transitioned from one status to another.
 	// This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
@@ -8046,10 +15779,6 @@ type GatewayStatusConditionsArgs struct {
 	// status of the condition, one of True, False, Unknown.
 	Status pulumi.StringPtrInput `pulumi:"status"`
 	// type of condition in CamelCase or in foo.example.com/CamelCase.
-	// ---
-	// Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be
-	// useful (see .node.status.conditions), the ability to deconflict is important.
-	// The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
 	Type pulumi.StringPtrInput `pulumi:"type"`
 }
 
@@ -8091,21 +15820,6 @@ func (i GatewayStatusConditionsArray) ToGatewayStatusConditionsArrayOutputWithCo
 }
 
 // Condition contains details for one aspect of the current state of this API Resource.
-// ---
-// This struct is intended for direct use as an array at the field path .status.conditions.  For example,
-//
-//	type FooStatus struct{
-//	    // Represents the observations of a foo's current state.
-//	    // Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
-//	    // +patchMergeKey=type
-//	    // +patchStrategy=merge
-//	    // +listType=map
-//	    // +listMapKey=type
-//	    Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"`
-//
-//
-//	    // other fields
-//	}
 type GatewayStatusConditionsOutput struct{ *pulumi.OutputState }
 
 func (GatewayStatusConditionsOutput) ElementType() reflect.Type {
@@ -8154,10 +15868,6 @@ func (o GatewayStatusConditionsOutput) Status() pulumi.StringPtrOutput {
 }
 
 // type of condition in CamelCase or in foo.example.com/CamelCase.
-// ---
-// Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be
-// useful (see .node.status.conditions), the ability to deconflict is important.
-// The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
 func (o GatewayStatusConditionsOutput) Type() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v GatewayStatusConditions) *string { return v.Type }).(pulumi.StringPtrOutput)
 }
@@ -8183,21 +15893,6 @@ func (o GatewayStatusConditionsArrayOutput) Index(i pulumi.IntInput) GatewayStat
 }
 
 // Condition contains details for one aspect of the current state of this API Resource.
-// ---
-// This struct is intended for direct use as an array at the field path .status.conditions.  For example,
-//
-//	type FooStatus struct{
-//	    // Represents the observations of a foo's current state.
-//	    // Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
-//	    // +patchMergeKey=type
-//	    // +patchStrategy=merge
-//	    // +listType=map
-//	    // +listMapKey=type
-//	    Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"`
-//
-//
-//	    // other fields
-//	}
 type GatewayStatusConditionsPatch struct {
 	// lastTransitionTime is the last time the condition transitioned from one status to another.
 	// This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
@@ -8218,10 +15913,6 @@ type GatewayStatusConditionsPatch struct {
 	// status of the condition, one of True, False, Unknown.
 	Status *string `pulumi:"status"`
 	// type of condition in CamelCase or in foo.example.com/CamelCase.
-	// ---
-	// Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be
-	// useful (see .node.status.conditions), the ability to deconflict is important.
-	// The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
 	Type *string `pulumi:"type"`
 }
 
@@ -8237,21 +15928,6 @@ type GatewayStatusConditionsPatchInput interface {
 }
 
 // Condition contains details for one aspect of the current state of this API Resource.
-// ---
-// This struct is intended for direct use as an array at the field path .status.conditions.  For example,
-//
-//	type FooStatus struct{
-//	    // Represents the observations of a foo's current state.
-//	    // Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
-//	    // +patchMergeKey=type
-//	    // +patchStrategy=merge
-//	    // +listType=map
-//	    // +listMapKey=type
-//	    Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"`
-//
-//
-//	    // other fields
-//	}
 type GatewayStatusConditionsPatchArgs struct {
 	// lastTransitionTime is the last time the condition transitioned from one status to another.
 	// This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
@@ -8272,10 +15948,6 @@ type GatewayStatusConditionsPatchArgs struct {
 	// status of the condition, one of True, False, Unknown.
 	Status pulumi.StringPtrInput `pulumi:"status"`
 	// type of condition in CamelCase or in foo.example.com/CamelCase.
-	// ---
-	// Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be
-	// useful (see .node.status.conditions), the ability to deconflict is important.
-	// The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
 	Type pulumi.StringPtrInput `pulumi:"type"`
 }
 
@@ -8317,21 +15989,6 @@ func (i GatewayStatusConditionsPatchArray) ToGatewayStatusConditionsPatchArrayOu
 }
 
 // Condition contains details for one aspect of the current state of this API Resource.
-// ---
-// This struct is intended for direct use as an array at the field path .status.conditions.  For example,
-//
-//	type FooStatus struct{
-//	    // Represents the observations of a foo's current state.
-//	    // Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
-//	    // +patchMergeKey=type
-//	    // +patchStrategy=merge
-//	    // +listType=map
-//	    // +listMapKey=type
-//	    Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"`
-//
-//
-//	    // other fields
-//	}
 type GatewayStatusConditionsPatchOutput struct{ *pulumi.OutputState }
 
 func (GatewayStatusConditionsPatchOutput) ElementType() reflect.Type {
@@ -8380,10 +16037,6 @@ func (o GatewayStatusConditionsPatchOutput) Status() pulumi.StringPtrOutput {
 }
 
 // type of condition in CamelCase or in foo.example.com/CamelCase.
-// ---
-// Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be
-// useful (see .node.status.conditions), the ability to deconflict is important.
-// The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
 func (o GatewayStatusConditionsPatchOutput) Type() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v GatewayStatusConditionsPatch) *string { return v.Type }).(pulumi.StringPtrOutput)
 }
@@ -8422,8 +16075,11 @@ type GatewayStatusListeners struct {
 	// attachment semantics can be found in the documentation on the various
 	// Route kinds ParentRefs fields). Listener or Route status does not impact
 	// successful attachment, i.e. the AttachedRoutes field count MUST be set
-	// for Listeners with condition Accepted: false and MUST count successfully
-	// attached Routes that may themselves have Accepted: false conditions.
+	// for Listeners, even if the Accepted condition of an individual Listener is set
+	// to "False". The AttachedRoutes number represents the number of Routes with
+	// the Accepted condition set to "True" that have been attached to this Listener.
+	// Routes with any other value for the Accepted condition MUST NOT be included
+	// in this count.
 	//
 	// Uses for this field include troubleshooting Route attachment and
 	// measuring blast radius/impact of changes to a Listener.
@@ -8433,7 +16089,7 @@ type GatewayStatusListeners struct {
 	// Name is the name of the Listener that this status corresponds to.
 	Name *string `pulumi:"name"`
 	// SupportedKinds is the list indicating the Kinds supported by this
-	// listener. This MUST represent the kinds an implementation supports for
+	// listener. This MUST represent the kinds supported by an implementation for
 	// that Listener configuration.
 	//
 	// If kinds are specified in Spec that are not supported, they MUST NOT
@@ -8469,8 +16125,11 @@ type GatewayStatusListenersArgs struct {
 	// attachment semantics can be found in the documentation on the various
 	// Route kinds ParentRefs fields). Listener or Route status does not impact
 	// successful attachment, i.e. the AttachedRoutes field count MUST be set
-	// for Listeners with condition Accepted: false and MUST count successfully
-	// attached Routes that may themselves have Accepted: false conditions.
+	// for Listeners, even if the Accepted condition of an individual Listener is set
+	// to "False". The AttachedRoutes number represents the number of Routes with
+	// the Accepted condition set to "True" that have been attached to this Listener.
+	// Routes with any other value for the Accepted condition MUST NOT be included
+	// in this count.
 	//
 	// Uses for this field include troubleshooting Route attachment and
 	// measuring blast radius/impact of changes to a Listener.
@@ -8480,7 +16139,7 @@ type GatewayStatusListenersArgs struct {
 	// Name is the name of the Listener that this status corresponds to.
 	Name pulumi.StringPtrInput `pulumi:"name"`
 	// SupportedKinds is the list indicating the Kinds supported by this
-	// listener. This MUST represent the kinds an implementation supports for
+	// listener. This MUST represent the kinds supported by an implementation for
 	// that Listener configuration.
 	//
 	// If kinds are specified in Spec that are not supported, they MUST NOT
@@ -8555,8 +16214,11 @@ func (o GatewayStatusListenersOutput) ToGatewayStatusListenersOutputWithContext(
 // attachment semantics can be found in the documentation on the various
 // Route kinds ParentRefs fields). Listener or Route status does not impact
 // successful attachment, i.e. the AttachedRoutes field count MUST be set
-// for Listeners with condition Accepted: false and MUST count successfully
-// attached Routes that may themselves have Accepted: false conditions.
+// for Listeners, even if the Accepted condition of an individual Listener is set
+// to "False". The AttachedRoutes number represents the number of Routes with
+// the Accepted condition set to "True" that have been attached to this Listener.
+// Routes with any other value for the Accepted condition MUST NOT be included
+// in this count.
 //
 // Uses for this field include troubleshooting Route attachment and
 // measuring blast radius/impact of changes to a Listener.
@@ -8575,7 +16237,7 @@ func (o GatewayStatusListenersOutput) Name() pulumi.StringPtrOutput {
 }
 
 // SupportedKinds is the list indicating the Kinds supported by this
-// listener. This MUST represent the kinds an implementation supports for
+// listener. This MUST represent the kinds supported by an implementation for
 // that Listener configuration.
 //
 // If kinds are specified in Spec that are not supported, they MUST NOT
@@ -8608,21 +16270,6 @@ func (o GatewayStatusListenersArrayOutput) Index(i pulumi.IntInput) GatewayStatu
 }
 
 // Condition contains details for one aspect of the current state of this API Resource.
-// ---
-// This struct is intended for direct use as an array at the field path .status.conditions.  For example,
-//
-//	type FooStatus struct{
-//	    // Represents the observations of a foo's current state.
-//	    // Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
-//	    // +patchMergeKey=type
-//	    // +patchStrategy=merge
-//	    // +listType=map
-//	    // +listMapKey=type
-//	    Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"`
-//
-//
-//	    // other fields
-//	}
 type GatewayStatusListenersConditions struct {
 	// lastTransitionTime is the last time the condition transitioned from one status to another.
 	// This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
@@ -8643,10 +16290,6 @@ type GatewayStatusListenersConditions struct {
 	// status of the condition, one of True, False, Unknown.
 	Status *string `pulumi:"status"`
 	// type of condition in CamelCase or in foo.example.com/CamelCase.
-	// ---
-	// Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be
-	// useful (see .node.status.conditions), the ability to deconflict is important.
-	// The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
 	Type *string `pulumi:"type"`
 }
 
@@ -8662,21 +16305,6 @@ type GatewayStatusListenersConditionsInput interface {
 }
 
 // Condition contains details for one aspect of the current state of this API Resource.
-// ---
-// This struct is intended for direct use as an array at the field path .status.conditions.  For example,
-//
-//	type FooStatus struct{
-//	    // Represents the observations of a foo's current state.
-//	    // Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
-//	    // +patchMergeKey=type
-//	    // +patchStrategy=merge
-//	    // +listType=map
-//	    // +listMapKey=type
-//	    Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"`
-//
-//
-//	    // other fields
-//	}
 type GatewayStatusListenersConditionsArgs struct {
 	// lastTransitionTime is the last time the condition transitioned from one status to another.
 	// This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
@@ -8697,10 +16325,6 @@ type GatewayStatusListenersConditionsArgs struct {
 	// status of the condition, one of True, False, Unknown.
 	Status pulumi.StringPtrInput `pulumi:"status"`
 	// type of condition in CamelCase or in foo.example.com/CamelCase.
-	// ---
-	// Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be
-	// useful (see .node.status.conditions), the ability to deconflict is important.
-	// The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
 	Type pulumi.StringPtrInput `pulumi:"type"`
 }
 
@@ -8742,21 +16366,6 @@ func (i GatewayStatusListenersConditionsArray) ToGatewayStatusListenersCondition
 }
 
 // Condition contains details for one aspect of the current state of this API Resource.
-// ---
-// This struct is intended for direct use as an array at the field path .status.conditions.  For example,
-//
-//	type FooStatus struct{
-//	    // Represents the observations of a foo's current state.
-//	    // Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
-//	    // +patchMergeKey=type
-//	    // +patchStrategy=merge
-//	    // +listType=map
-//	    // +listMapKey=type
-//	    Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"`
-//
-//
-//	    // other fields
-//	}
 type GatewayStatusListenersConditionsOutput struct{ *pulumi.OutputState }
 
 func (GatewayStatusListenersConditionsOutput) ElementType() reflect.Type {
@@ -8805,10 +16414,6 @@ func (o GatewayStatusListenersConditionsOutput) Status() pulumi.StringPtrOutput 
 }
 
 // type of condition in CamelCase or in foo.example.com/CamelCase.
-// ---
-// Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be
-// useful (see .node.status.conditions), the ability to deconflict is important.
-// The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
 func (o GatewayStatusListenersConditionsOutput) Type() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v GatewayStatusListenersConditions) *string { return v.Type }).(pulumi.StringPtrOutput)
 }
@@ -8834,21 +16439,6 @@ func (o GatewayStatusListenersConditionsArrayOutput) Index(i pulumi.IntInput) Ga
 }
 
 // Condition contains details for one aspect of the current state of this API Resource.
-// ---
-// This struct is intended for direct use as an array at the field path .status.conditions.  For example,
-//
-//	type FooStatus struct{
-//	    // Represents the observations of a foo's current state.
-//	    // Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
-//	    // +patchMergeKey=type
-//	    // +patchStrategy=merge
-//	    // +listType=map
-//	    // +listMapKey=type
-//	    Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"`
-//
-//
-//	    // other fields
-//	}
 type GatewayStatusListenersConditionsPatch struct {
 	// lastTransitionTime is the last time the condition transitioned from one status to another.
 	// This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
@@ -8869,10 +16459,6 @@ type GatewayStatusListenersConditionsPatch struct {
 	// status of the condition, one of True, False, Unknown.
 	Status *string `pulumi:"status"`
 	// type of condition in CamelCase or in foo.example.com/CamelCase.
-	// ---
-	// Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be
-	// useful (see .node.status.conditions), the ability to deconflict is important.
-	// The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
 	Type *string `pulumi:"type"`
 }
 
@@ -8888,21 +16474,6 @@ type GatewayStatusListenersConditionsPatchInput interface {
 }
 
 // Condition contains details for one aspect of the current state of this API Resource.
-// ---
-// This struct is intended for direct use as an array at the field path .status.conditions.  For example,
-//
-//	type FooStatus struct{
-//	    // Represents the observations of a foo's current state.
-//	    // Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
-//	    // +patchMergeKey=type
-//	    // +patchStrategy=merge
-//	    // +listType=map
-//	    // +listMapKey=type
-//	    Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"`
-//
-//
-//	    // other fields
-//	}
 type GatewayStatusListenersConditionsPatchArgs struct {
 	// lastTransitionTime is the last time the condition transitioned from one status to another.
 	// This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
@@ -8923,10 +16494,6 @@ type GatewayStatusListenersConditionsPatchArgs struct {
 	// status of the condition, one of True, False, Unknown.
 	Status pulumi.StringPtrInput `pulumi:"status"`
 	// type of condition in CamelCase or in foo.example.com/CamelCase.
-	// ---
-	// Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be
-	// useful (see .node.status.conditions), the ability to deconflict is important.
-	// The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
 	Type pulumi.StringPtrInput `pulumi:"type"`
 }
 
@@ -8968,21 +16535,6 @@ func (i GatewayStatusListenersConditionsPatchArray) ToGatewayStatusListenersCond
 }
 
 // Condition contains details for one aspect of the current state of this API Resource.
-// ---
-// This struct is intended for direct use as an array at the field path .status.conditions.  For example,
-//
-//	type FooStatus struct{
-//	    // Represents the observations of a foo's current state.
-//	    // Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
-//	    // +patchMergeKey=type
-//	    // +patchStrategy=merge
-//	    // +listType=map
-//	    // +listMapKey=type
-//	    Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"`
-//
-//
-//	    // other fields
-//	}
 type GatewayStatusListenersConditionsPatchOutput struct{ *pulumi.OutputState }
 
 func (GatewayStatusListenersConditionsPatchOutput) ElementType() reflect.Type {
@@ -9031,10 +16583,6 @@ func (o GatewayStatusListenersConditionsPatchOutput) Status() pulumi.StringPtrOu
 }
 
 // type of condition in CamelCase or in foo.example.com/CamelCase.
-// ---
-// Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be
-// useful (see .node.status.conditions), the ability to deconflict is important.
-// The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
 func (o GatewayStatusListenersConditionsPatchOutput) Type() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v GatewayStatusListenersConditionsPatch) *string { return v.Type }).(pulumi.StringPtrOutput)
 }
@@ -9073,8 +16621,11 @@ type GatewayStatusListenersPatch struct {
 	// attachment semantics can be found in the documentation on the various
 	// Route kinds ParentRefs fields). Listener or Route status does not impact
 	// successful attachment, i.e. the AttachedRoutes field count MUST be set
-	// for Listeners with condition Accepted: false and MUST count successfully
-	// attached Routes that may themselves have Accepted: false conditions.
+	// for Listeners, even if the Accepted condition of an individual Listener is set
+	// to "False". The AttachedRoutes number represents the number of Routes with
+	// the Accepted condition set to "True" that have been attached to this Listener.
+	// Routes with any other value for the Accepted condition MUST NOT be included
+	// in this count.
 	//
 	// Uses for this field include troubleshooting Route attachment and
 	// measuring blast radius/impact of changes to a Listener.
@@ -9084,7 +16635,7 @@ type GatewayStatusListenersPatch struct {
 	// Name is the name of the Listener that this status corresponds to.
 	Name *string `pulumi:"name"`
 	// SupportedKinds is the list indicating the Kinds supported by this
-	// listener. This MUST represent the kinds an implementation supports for
+	// listener. This MUST represent the kinds supported by an implementation for
 	// that Listener configuration.
 	//
 	// If kinds are specified in Spec that are not supported, they MUST NOT
@@ -9120,8 +16671,11 @@ type GatewayStatusListenersPatchArgs struct {
 	// attachment semantics can be found in the documentation on the various
 	// Route kinds ParentRefs fields). Listener or Route status does not impact
 	// successful attachment, i.e. the AttachedRoutes field count MUST be set
-	// for Listeners with condition Accepted: false and MUST count successfully
-	// attached Routes that may themselves have Accepted: false conditions.
+	// for Listeners, even if the Accepted condition of an individual Listener is set
+	// to "False". The AttachedRoutes number represents the number of Routes with
+	// the Accepted condition set to "True" that have been attached to this Listener.
+	// Routes with any other value for the Accepted condition MUST NOT be included
+	// in this count.
 	//
 	// Uses for this field include troubleshooting Route attachment and
 	// measuring blast radius/impact of changes to a Listener.
@@ -9131,7 +16685,7 @@ type GatewayStatusListenersPatchArgs struct {
 	// Name is the name of the Listener that this status corresponds to.
 	Name pulumi.StringPtrInput `pulumi:"name"`
 	// SupportedKinds is the list indicating the Kinds supported by this
-	// listener. This MUST represent the kinds an implementation supports for
+	// listener. This MUST represent the kinds supported by an implementation for
 	// that Listener configuration.
 	//
 	// If kinds are specified in Spec that are not supported, they MUST NOT
@@ -9206,8 +16760,11 @@ func (o GatewayStatusListenersPatchOutput) ToGatewayStatusListenersPatchOutputWi
 // attachment semantics can be found in the documentation on the various
 // Route kinds ParentRefs fields). Listener or Route status does not impact
 // successful attachment, i.e. the AttachedRoutes field count MUST be set
-// for Listeners with condition Accepted: false and MUST count successfully
-// attached Routes that may themselves have Accepted: false conditions.
+// for Listeners, even if the Accepted condition of an individual Listener is set
+// to "False". The AttachedRoutes number represents the number of Routes with
+// the Accepted condition set to "True" that have been attached to this Listener.
+// Routes with any other value for the Accepted condition MUST NOT be included
+// in this count.
 //
 // Uses for this field include troubleshooting Route attachment and
 // measuring blast radius/impact of changes to a Listener.
@@ -9226,7 +16783,7 @@ func (o GatewayStatusListenersPatchOutput) Name() pulumi.StringPtrOutput {
 }
 
 // SupportedKinds is the list indicating the Kinds supported by this
-// listener. This MUST represent the kinds an implementation supports for
+// listener. This MUST represent the kinds supported by an implementation for
 // that Listener configuration.
 //
 // If kinds are specified in Spec that are not supported, they MUST NOT
@@ -9490,6 +17047,17 @@ type GatewayStatusPatch struct {
 	//   * a combination of specified and dynamic addresses are assigned
 	//   * a specified address was unusable (e.g. already in use)
 	Addresses []GatewayStatusAddressesPatch `pulumi:"addresses"`
+	// AttachedListenerSets represents the total number of ListenerSets that have been
+	// successfully attached to this Gateway.
+	//
+	// A ListenerSet is successfully attached to a Gateway when all the following conditions are met:
+	// - The ListenerSet is selected by the Gateway's AllowedListeners field
+	// - The ListenerSet has a valid ParentRef selecting the Gateway
+	// - The ListenerSet's status has the condition "Accepted: true"
+	//
+	// Uses for this field include troubleshooting AttachedListenerSets attachment and
+	// measuring blast radius/impact of changes to a Gateway.
+	AttachedListenerSets *int `pulumi:"attachedListenerSets"`
 	// Conditions describe the current conditions of the Gateway.
 	//
 	// Implementations should prefer to express Gateway conditions
@@ -9530,6 +17098,17 @@ type GatewayStatusPatchArgs struct {
 	//   * a combination of specified and dynamic addresses are assigned
 	//   * a specified address was unusable (e.g. already in use)
 	Addresses GatewayStatusAddressesPatchArrayInput `pulumi:"addresses"`
+	// AttachedListenerSets represents the total number of ListenerSets that have been
+	// successfully attached to this Gateway.
+	//
+	// A ListenerSet is successfully attached to a Gateway when all the following conditions are met:
+	// - The ListenerSet is selected by the Gateway's AllowedListeners field
+	// - The ListenerSet has a valid ParentRef selecting the Gateway
+	// - The ListenerSet's status has the condition "Accepted: true"
+	//
+	// Uses for this field include troubleshooting AttachedListenerSets attachment and
+	// measuring blast radius/impact of changes to a Gateway.
+	AttachedListenerSets pulumi.IntPtrInput `pulumi:"attachedListenerSets"`
 	// Conditions describe the current conditions of the Gateway.
 	//
 	// Implementations should prefer to express Gateway conditions
@@ -9638,6 +17217,20 @@ func (o GatewayStatusPatchOutput) Addresses() GatewayStatusAddressesPatchArrayOu
 	return o.ApplyT(func(v GatewayStatusPatch) []GatewayStatusAddressesPatch { return v.Addresses }).(GatewayStatusAddressesPatchArrayOutput)
 }
 
+// AttachedListenerSets represents the total number of ListenerSets that have been
+// successfully attached to this Gateway.
+//
+// A ListenerSet is successfully attached to a Gateway when all the following conditions are met:
+// - The ListenerSet is selected by the Gateway's AllowedListeners field
+// - The ListenerSet has a valid ParentRef selecting the Gateway
+// - The ListenerSet's status has the condition "Accepted: true"
+//
+// Uses for this field include troubleshooting AttachedListenerSets attachment and
+// measuring blast radius/impact of changes to a Gateway.
+func (o GatewayStatusPatchOutput) AttachedListenerSets() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v GatewayStatusPatch) *int { return v.AttachedListenerSets }).(pulumi.IntPtrOutput)
+}
+
 // Conditions describe the current conditions of the Gateway.
 //
 // Implementations should prefer to express Gateway conditions
@@ -9699,6 +17292,25 @@ func (o GatewayStatusPatchPtrOutput) Addresses() GatewayStatusAddressesPatchArra
 		}
 		return v.Addresses
 	}).(GatewayStatusAddressesPatchArrayOutput)
+}
+
+// AttachedListenerSets represents the total number of ListenerSets that have been
+// successfully attached to this Gateway.
+//
+// A ListenerSet is successfully attached to a Gateway when all the following conditions are met:
+// - The ListenerSet is selected by the Gateway's AllowedListeners field
+// - The ListenerSet has a valid ParentRef selecting the Gateway
+// - The ListenerSet's status has the condition "Accepted: true"
+//
+// Uses for this field include troubleshooting AttachedListenerSets attachment and
+// measuring blast radius/impact of changes to a Gateway.
+func (o GatewayStatusPatchPtrOutput) AttachedListenerSets() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *GatewayStatusPatch) *int {
+		if v == nil {
+			return nil
+		}
+		return v.AttachedListenerSets
+	}).(pulumi.IntPtrOutput)
 }
 
 // Conditions describe the current conditions of the Gateway.
@@ -12008,6 +19620,11 @@ type HTTPRouteSpecRules struct {
 	// invalid, 50 percent of traffic must receive a 500. Implementations may
 	// choose how that 50 percent is determined.
 	//
+	// When a HTTPBackendRef refers to a Service that has no ready endpoints,
+	// implementations SHOULD return a 503 for requests to that backend instead.
+	// If an implementation chooses to do this, all of the above rules for 500 responses
+	// MUST also apply for responses that return a 503.
+	//
 	// Support: Core for Kubernetes Service
 	//
 	// Support: Extended for Kubernetes ServiceImport
@@ -12023,7 +19640,7 @@ type HTTPRouteSpecRules struct {
 	// they are specified.
 	//
 	// Implementations MAY choose to implement this ordering strictly, rejecting
-	// any combination or order of filters that can not be supported. If implementations
+	// any combination or order of filters that cannot be supported. If implementations
 	// choose a strict interpretation of filter ordering, they MUST clearly document
 	// that behavior.
 	//
@@ -12045,7 +19662,7 @@ type HTTPRouteSpecRules struct {
 	//
 	// All filters are expected to be compatible with each other except for the
 	// URLRewrite and RequestRedirect filters, which may not be combined. If an
-	// implementation can not support other combinations of filters, they must clearly
+	// implementation cannot support other combinations of filters, they must clearly
 	// document that limitation. In cases where incompatible or unsupported
 	// filters are specified and cause the `Accepted` condition to be set to status
 	// `False`, implementations may use the `IncompatibleFilters` reason to specify
@@ -12099,6 +19716,11 @@ type HTTPRouteSpecRules struct {
 	// When no rules matching a request have been successfully attached to the
 	// parent a request is coming from, a HTTP 404 status code MUST be returned.
 	Matches []HTTPRouteSpecRulesMatches `pulumi:"matches"`
+	// Name is the name of the route rule. This name MUST be unique within a Route if it is set.
+	//
+	// Support: Extended
+	Name     *string                     `pulumi:"name"`
+	Timeouts *HTTPRouteSpecRulesTimeouts `pulumi:"timeouts"`
 }
 
 // HTTPRouteSpecRulesInput is an input type that accepts HTTPRouteSpecRulesArgs and HTTPRouteSpecRulesOutput values.
@@ -12139,6 +19761,11 @@ type HTTPRouteSpecRulesArgs struct {
 	// invalid, 50 percent of traffic must receive a 500. Implementations may
 	// choose how that 50 percent is determined.
 	//
+	// When a HTTPBackendRef refers to a Service that has no ready endpoints,
+	// implementations SHOULD return a 503 for requests to that backend instead.
+	// If an implementation chooses to do this, all of the above rules for 500 responses
+	// MUST also apply for responses that return a 503.
+	//
 	// Support: Core for Kubernetes Service
 	//
 	// Support: Extended for Kubernetes ServiceImport
@@ -12154,7 +19781,7 @@ type HTTPRouteSpecRulesArgs struct {
 	// they are specified.
 	//
 	// Implementations MAY choose to implement this ordering strictly, rejecting
-	// any combination or order of filters that can not be supported. If implementations
+	// any combination or order of filters that cannot be supported. If implementations
 	// choose a strict interpretation of filter ordering, they MUST clearly document
 	// that behavior.
 	//
@@ -12176,7 +19803,7 @@ type HTTPRouteSpecRulesArgs struct {
 	//
 	// All filters are expected to be compatible with each other except for the
 	// URLRewrite and RequestRedirect filters, which may not be combined. If an
-	// implementation can not support other combinations of filters, they must clearly
+	// implementation cannot support other combinations of filters, they must clearly
 	// document that limitation. In cases where incompatible or unsupported
 	// filters are specified and cause the `Accepted` condition to be set to status
 	// `False`, implementations may use the `IncompatibleFilters` reason to specify
@@ -12230,6 +19857,11 @@ type HTTPRouteSpecRulesArgs struct {
 	// When no rules matching a request have been successfully attached to the
 	// parent a request is coming from, a HTTP 404 status code MUST be returned.
 	Matches HTTPRouteSpecRulesMatchesArrayInput `pulumi:"matches"`
+	// Name is the name of the route rule. This name MUST be unique within a Route if it is set.
+	//
+	// Support: Extended
+	Name     pulumi.StringPtrInput              `pulumi:"name"`
+	Timeouts HTTPRouteSpecRulesTimeoutsPtrInput `pulumi:"timeouts"`
 }
 
 func (HTTPRouteSpecRulesArgs) ElementType() reflect.Type {
@@ -12309,6 +19941,11 @@ func (o HTTPRouteSpecRulesOutput) ToHTTPRouteSpecRulesOutputWithContext(ctx cont
 // invalid, 50 percent of traffic must receive a 500. Implementations may
 // choose how that 50 percent is determined.
 //
+// When a HTTPBackendRef refers to a Service that has no ready endpoints,
+// implementations SHOULD return a 503 for requests to that backend instead.
+// If an implementation chooses to do this, all of the above rules for 500 responses
+// MUST also apply for responses that return a 503.
+//
 // Support: Core for Kubernetes Service
 //
 // Support: Extended for Kubernetes ServiceImport
@@ -12327,7 +19964,7 @@ func (o HTTPRouteSpecRulesOutput) BackendRefs() HTTPRouteSpecRulesBackendRefsArr
 // they are specified.
 //
 // Implementations MAY choose to implement this ordering strictly, rejecting
-// any combination or order of filters that can not be supported. If implementations
+// any combination or order of filters that cannot be supported. If implementations
 // choose a strict interpretation of filter ordering, they MUST clearly document
 // that behavior.
 //
@@ -12349,7 +19986,7 @@ func (o HTTPRouteSpecRulesOutput) BackendRefs() HTTPRouteSpecRulesBackendRefsArr
 //
 // All filters are expected to be compatible with each other except for the
 // URLRewrite and RequestRedirect filters, which may not be combined. If an
-// implementation can not support other combinations of filters, they must clearly
+// implementation cannot support other combinations of filters, they must clearly
 // document that limitation. In cases where incompatible or unsupported
 // filters are specified and cause the `Accepted` condition to be set to status
 // `False`, implementations may use the `IncompatibleFilters` reason to specify
@@ -12409,6 +20046,17 @@ func (o HTTPRouteSpecRulesOutput) Matches() HTTPRouteSpecRulesMatchesArrayOutput
 	return o.ApplyT(func(v HTTPRouteSpecRules) []HTTPRouteSpecRulesMatches { return v.Matches }).(HTTPRouteSpecRulesMatchesArrayOutput)
 }
 
+// Name is the name of the route rule. This name MUST be unique within a Route if it is set.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRules) *string { return v.Name }).(pulumi.StringPtrOutput)
+}
+
+func (o HTTPRouteSpecRulesOutput) Timeouts() HTTPRouteSpecRulesTimeoutsPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRules) *HTTPRouteSpecRulesTimeouts { return v.Timeouts }).(HTTPRouteSpecRulesTimeoutsPtrOutput)
+}
+
 type HTTPRouteSpecRulesArrayOutput struct{ *pulumi.OutputState }
 
 func (HTTPRouteSpecRulesArrayOutput) ElementType() reflect.Type {
@@ -12435,24 +20083,6 @@ func (o HTTPRouteSpecRulesArrayOutput) Index(i pulumi.IntInput) HTTPRouteSpecRul
 // ReferenceGrant object is required in the referent namespace to allow that
 // namespace's owner to accept the reference. See the ReferenceGrant
 // documentation for details.
-//
-// <gateway:experimental:description>
-//
-// When the BackendRef points to a Kubernetes Service, implementations SHOULD
-// honor the appProtocol field if it is set for the target Service Port.
-//
-// Implementations supporting appProtocol SHOULD recognize the Kubernetes
-// Standard Application Protocols defined in KEP-3726.
-//
-// If a Service appProtocol isn't specified, an implementation MAY infer the
-// backend protocol through its own means. Implementations MAY infer the
-// protocol from the Route type referring to the backend Service.
-//
-// If a Route is not able to send traffic to the backend using the specified
-// protocol then the backend is considered invalid. Implementations MUST set the
-// "ResolvedRefs" condition to "False" with the "UnsupportedProtocol" reason.
-//
-// </gateway:experimental:description>
 type HTTPRouteSpecRulesBackendRefs struct {
 	// Filters defined at this level should be executed if and only if the
 	// request is being forwarded to the backend defined here.
@@ -12529,24 +20159,6 @@ type HTTPRouteSpecRulesBackendRefsInput interface {
 // ReferenceGrant object is required in the referent namespace to allow that
 // namespace's owner to accept the reference. See the ReferenceGrant
 // documentation for details.
-//
-// <gateway:experimental:description>
-//
-// When the BackendRef points to a Kubernetes Service, implementations SHOULD
-// honor the appProtocol field if it is set for the target Service Port.
-//
-// Implementations supporting appProtocol SHOULD recognize the Kubernetes
-// Standard Application Protocols defined in KEP-3726.
-//
-// If a Service appProtocol isn't specified, an implementation MAY infer the
-// backend protocol through its own means. Implementations MAY infer the
-// protocol from the Route type referring to the backend Service.
-//
-// If a Route is not able to send traffic to the backend using the specified
-// protocol then the backend is considered invalid. Implementations MUST set the
-// "ResolvedRefs" condition to "False" with the "UnsupportedProtocol" reason.
-//
-// </gateway:experimental:description>
 type HTTPRouteSpecRulesBackendRefsArgs struct {
 	// Filters defined at this level should be executed if and only if the
 	// request is being forwarded to the backend defined here.
@@ -12649,24 +20261,6 @@ func (i HTTPRouteSpecRulesBackendRefsArray) ToHTTPRouteSpecRulesBackendRefsArray
 // ReferenceGrant object is required in the referent namespace to allow that
 // namespace's owner to accept the reference. See the ReferenceGrant
 // documentation for details.
-//
-// <gateway:experimental:description>
-//
-// When the BackendRef points to a Kubernetes Service, implementations SHOULD
-// honor the appProtocol field if it is set for the target Service Port.
-//
-// Implementations supporting appProtocol SHOULD recognize the Kubernetes
-// Standard Application Protocols defined in KEP-3726.
-//
-// If a Service appProtocol isn't specified, an implementation MAY infer the
-// backend protocol through its own means. Implementations MAY infer the
-// protocol from the Route type referring to the backend Service.
-//
-// If a Route is not able to send traffic to the backend using the specified
-// protocol then the backend is considered invalid. Implementations MUST set the
-// "ResolvedRefs" condition to "False" with the "UnsupportedProtocol" reason.
-//
-// </gateway:experimental:description>
 type HTTPRouteSpecRulesBackendRefsOutput struct{ *pulumi.OutputState }
 
 func (HTTPRouteSpecRulesBackendRefsOutput) ElementType() reflect.Type {
@@ -12785,6 +20379,7 @@ func (o HTTPRouteSpecRulesBackendRefsArrayOutput) Index(i pulumi.IntInput) HTTPR
 // authentication strategies, rate-limiting, and traffic shaping. API
 // guarantee/conformance is defined based on the type of the filter.
 type HTTPRouteSpecRulesBackendRefsFilters struct {
+	Cors                   *HTTPRouteSpecRulesBackendRefsFiltersCors                   `pulumi:"cors"`
 	ExtensionRef           *HTTPRouteSpecRulesBackendRefsFiltersExtensionRef           `pulumi:"extensionRef"`
 	RequestHeaderModifier  *HTTPRouteSpecRulesBackendRefsFiltersRequestHeaderModifier  `pulumi:"requestHeaderModifier"`
 	RequestMirror          *HTTPRouteSpecRulesBackendRefsFiltersRequestMirror          `pulumi:"requestMirror"`
@@ -12844,6 +20439,7 @@ type HTTPRouteSpecRulesBackendRefsFiltersInput interface {
 // authentication strategies, rate-limiting, and traffic shaping. API
 // guarantee/conformance is defined based on the type of the filter.
 type HTTPRouteSpecRulesBackendRefsFiltersArgs struct {
+	Cors                   HTTPRouteSpecRulesBackendRefsFiltersCorsPtrInput                   `pulumi:"cors"`
 	ExtensionRef           HTTPRouteSpecRulesBackendRefsFiltersExtensionRefPtrInput           `pulumi:"extensionRef"`
 	RequestHeaderModifier  HTTPRouteSpecRulesBackendRefsFiltersRequestHeaderModifierPtrInput  `pulumi:"requestHeaderModifier"`
 	RequestMirror          HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPtrInput          `pulumi:"requestMirror"`
@@ -12942,6 +20538,10 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersOutput) ToHTTPRouteSpecRulesBackendR
 	return o
 }
 
+func (o HTTPRouteSpecRulesBackendRefsFiltersOutput) Cors() HTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesBackendRefsFilters) *HTTPRouteSpecRulesBackendRefsFiltersCors { return v.Cors }).(HTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput)
+}
+
 func (o HTTPRouteSpecRulesBackendRefsFiltersOutput) ExtensionRef() HTTPRouteSpecRulesBackendRefsFiltersExtensionRefPtrOutput {
 	return o.ApplyT(func(v HTTPRouteSpecRulesBackendRefsFilters) *HTTPRouteSpecRulesBackendRefsFiltersExtensionRef {
 		return v.ExtensionRef
@@ -13032,6 +20632,2054 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersArrayOutput) Index(i pulumi.IntInput
 	return pulumi.All(o, i).ApplyT(func(vs []interface{}) HTTPRouteSpecRulesBackendRefsFilters {
 		return vs[0].([]HTTPRouteSpecRulesBackendRefsFilters)[vs[1].(int)]
 	}).(HTTPRouteSpecRulesBackendRefsFiltersOutput)
+}
+
+// CORS defines a schema for a filter that responds to the
+// cross-origin request based on HTTP response header.
+//
+// Support: Extended
+type HTTPRouteSpecRulesBackendRefsFiltersCors struct {
+	// AllowCredentials indicates whether the actual cross-origin request allows
+	// to include credentials.
+	//
+	// When set to true, the gateway will include the `Access-Control-Allow-Credentials`
+	// response header with value true (case-sensitive).
+	//
+	// When set to false or omitted the gateway will omit the header
+	// `Access-Control-Allow-Credentials` entirely (this is the standard CORS
+	// behavior).
+	//
+	// Support: Extended
+	AllowCredentials *bool `pulumi:"allowCredentials"`
+	// AllowHeaders indicates which HTTP request headers are supported for
+	// accessing the requested resource.
+	//
+	// Header names are not case-sensitive.
+	//
+	// Multiple header names in the value of the `Access-Control-Allow-Headers`
+	// response header are separated by a comma (",").
+	//
+	// When the `AllowHeaders` field is configured with one or more headers, the
+	// gateway must return the `Access-Control-Allow-Headers` response header
+	// which value is present in the `AllowHeaders` field.
+	//
+	// If any header name in the `Access-Control-Request-Headers` request header
+	// is not included in the list of header names specified by the response
+	// header `Access-Control-Allow-Headers`, it will present an error on the
+	// client side.
+	//
+	// If any header name in the `Access-Control-Allow-Headers` response header
+	// does not recognize by the client, it will also occur an error on the
+	// client side.
+	//
+	// A wildcard indicates that the requests with all HTTP headers are allowed.
+	// If config contains the wildcard "*" in allowHeaders and the request is
+	// not credentialed, the `Access-Control-Allow-Headers` response header
+	// can either use the `*` wildcard or the value of
+	// Access-Control-Request-Headers from the request.
+	//
+	// When the request is credentialed, the gateway must not specify the `*`
+	// wildcard in the `Access-Control-Allow-Headers` response header. When
+	// also the `AllowCredentials` field is true and `AllowHeaders` field
+	// is specified with the `*` wildcard, the gateway must specify one or more
+	// HTTP headers in the value of the `Access-Control-Allow-Headers` response
+	// header. The value of the header `Access-Control-Allow-Headers` is same as
+	// the `Access-Control-Request-Headers` header provided by the client. If
+	// the header `Access-Control-Request-Headers` is not included in the
+	// request, the gateway will omit the `Access-Control-Allow-Headers`
+	// response header, instead of specifying the `*` wildcard.
+	//
+	// Support: Extended
+	AllowHeaders []string `pulumi:"allowHeaders"`
+	// AllowMethods indicates which HTTP methods are supported for accessing the
+	// requested resource.
+	//
+	// Valid values are any method defined by RFC9110, along with the special
+	// value `*`, which represents all HTTP methods are allowed.
+	//
+	// Method names are case-sensitive, so these values are also case-sensitive.
+	// (See https://www.rfc-editor.org/rfc/rfc2616#section-5.1.1)
+	//
+	// Multiple method names in the value of the `Access-Control-Allow-Methods`
+	// response header are separated by a comma (",").
+	//
+	// A CORS-safelisted method is a method that is `GET`, `HEAD`, or `POST`.
+	// (See https://fetch.spec.whatwg.org/#cors-safelisted-method) The
+	// CORS-safelisted methods are always allowed, regardless of whether they
+	// are specified in the `AllowMethods` field.
+	//
+	// When the `AllowMethods` field is configured with one or more methods, the
+	// gateway must return the `Access-Control-Allow-Methods` response header
+	// which value is present in the `AllowMethods` field.
+	//
+	// If the HTTP method of the `Access-Control-Request-Method` request header
+	// is not included in the list of methods specified by the response header
+	// `Access-Control-Allow-Methods`, it will present an error on the client
+	// side.
+	//
+	// If config contains the wildcard "*" in allowMethods and the request is
+	// not credentialed, the `Access-Control-Allow-Methods` response header
+	// can either use the `*` wildcard or the value of
+	// Access-Control-Request-Method from the request.
+	//
+	// When the request is credentialed, the gateway must not specify the `*`
+	// wildcard in the `Access-Control-Allow-Methods` response header. When
+	// also the `AllowCredentials` field is true and `AllowMethods` field
+	// specified with the `*` wildcard, the gateway must specify one HTTP method
+	// in the value of the Access-Control-Allow-Methods response header. The
+	// value of the header `Access-Control-Allow-Methods` is same as the
+	// `Access-Control-Request-Method` header provided by the client. If the
+	// header `Access-Control-Request-Method` is not included in the request,
+	// the gateway will omit the `Access-Control-Allow-Methods` response header,
+	// instead of specifying the `*` wildcard.
+	//
+	// Support: Extended
+	AllowMethods []string `pulumi:"allowMethods"`
+	// AllowOrigins indicates whether the response can be shared with requested
+	// resource from the given `Origin`.
+	//
+	// The `Origin` consists of a scheme and a host, with an optional port, and
+	// takes the form `<scheme>://<host>(:<port>)`.
+	//
+	// Valid values for scheme are: `http` and `https`.
+	//
+	// Valid values for port are any integer between 1 and 65535 (the list of
+	// available TCP/UDP ports). Note that, if not included, port `80` is
+	// assumed for `http` scheme origins, and port `443` is assumed for `https`
+	// origins. This may affect origin matching.
+	//
+	// The host part of the origin may contain the wildcard character `*`. These
+	// wildcard characters behave as follows:
+	//
+	// * `*` is a greedy match to the _left_, including any number of
+	//   DNS labels to the left of its position. This also means that
+	//   `*` will include any number of period `.` characters to the
+	//   left of its position.
+	// * A wildcard by itself matches all hosts.
+	//
+	// An origin value that includes _only_ the `*` character indicates requests
+	// from all `Origin`s are allowed.
+	//
+	// When the `AllowOrigins` field is configured with multiple origins, it
+	// means the server supports clients from multiple origins. If the request
+	// `Origin` matches the configured allowed origins, the gateway must return
+	// the given `Origin` and sets value of the header
+	// `Access-Control-Allow-Origin` same as the `Origin` header provided by the
+	// client.
+	//
+	// The status code of a successful response to a "preflight" request is
+	// always an OK status (i.e., 204 or 200).
+	//
+	// If the request `Origin` does not match the configured allowed origins,
+	// the gateway returns 204/200 response but doesn't set the relevant
+	// cross-origin response headers. Alternatively, the gateway responds with
+	// 403 status to the "preflight" request is denied, coupled with omitting
+	// the CORS headers. The cross-origin request fails on the client side.
+	// Therefore, the client doesn't attempt the actual cross-origin request.
+	//
+	// Conversely, if the request `Origin` matches one of the configured
+	// allowed origins, the gateway sets the response header
+	// `Access-Control-Allow-Origin` to the same value as the `Origin`
+	// header provided by the client.
+	//
+	// When config has the wildcard ("*") in allowOrigins, and the request
+	// is not credentialed (e.g., it is a preflight request), the
+	// `Access-Control-Allow-Origin` response header either contains the
+	// wildcard as well or the Origin from the request.
+	//
+	// When the request is credentialed, the gateway must not specify the `*`
+	// wildcard in the `Access-Control-Allow-Origin` response header. When
+	// also the `AllowCredentials` field is true and `AllowOrigins` field
+	// specified with the `*` wildcard, the gateway must return a single origin
+	// in the value of the `Access-Control-Allow-Origin` response header,
+	// instead of specifying the `*` wildcard. The value of the header
+	// `Access-Control-Allow-Origin` is same as the `Origin` header provided by
+	// the client.
+	//
+	// Support: Extended
+	AllowOrigins []string `pulumi:"allowOrigins"`
+	// ExposeHeaders indicates which HTTP response headers can be exposed
+	// to client-side scripts in response to a cross-origin request.
+	//
+	// A CORS-safelisted response header is an HTTP header in a CORS response
+	// that it is considered safe to expose to the client scripts.
+	// The CORS-safelisted response headers include the following headers:
+	// `Cache-Control`
+	// `Content-Language`
+	// `Content-Length`
+	// `Content-Type`
+	// `Expires`
+	// `Last-Modified`
+	// `Pragma`
+	// (See https://fetch.spec.whatwg.org/#cors-safelisted-response-header-name)
+	// The CORS-safelisted response headers are exposed to client by default.
+	//
+	// When an HTTP header name is specified using the `ExposeHeaders` field,
+	// this additional header will be exposed as part of the response to the
+	// client.
+	//
+	// Header names are not case-sensitive.
+	//
+	// Multiple header names in the value of the `Access-Control-Expose-Headers`
+	// response header are separated by a comma (",").
+	//
+	// A wildcard indicates that the responses with all HTTP headers are exposed
+	// to clients. The `Access-Control-Expose-Headers` response header can only
+	// use `*` wildcard as value when the request is not credentialed.
+	//
+	// When the `exposeHeaders` config field contains the "*" wildcard and
+	// the request is credentialed, the gateway cannot use the `*` wildcard in
+	// the `Access-Control-Expose-Headers` response header.
+	//
+	// Support: Extended
+	ExposeHeaders []string `pulumi:"exposeHeaders"`
+	// MaxAge indicates the duration (in seconds) for the client to cache the
+	// results of a "preflight" request.
+	//
+	// The information provided by the `Access-Control-Allow-Methods` and
+	// `Access-Control-Allow-Headers` response headers can be cached by the
+	// client until the time specified by `Access-Control-Max-Age` elapses.
+	//
+	// The default value of `Access-Control-Max-Age` response header is 5
+	// (seconds).
+	//
+	// When the `MaxAge` field is unspecified, the gateway sets the response
+	// header "Access-Control-Max-Age: 5" by default.
+	MaxAge *int `pulumi:"maxAge"`
+}
+
+// HTTPRouteSpecRulesBackendRefsFiltersCorsInput is an input type that accepts HTTPRouteSpecRulesBackendRefsFiltersCorsArgs and HTTPRouteSpecRulesBackendRefsFiltersCorsOutput values.
+// You can construct a concrete instance of `HTTPRouteSpecRulesBackendRefsFiltersCorsInput` via:
+//
+//	HTTPRouteSpecRulesBackendRefsFiltersCorsArgs{...}
+type HTTPRouteSpecRulesBackendRefsFiltersCorsInput interface {
+	pulumi.Input
+
+	ToHTTPRouteSpecRulesBackendRefsFiltersCorsOutput() HTTPRouteSpecRulesBackendRefsFiltersCorsOutput
+	ToHTTPRouteSpecRulesBackendRefsFiltersCorsOutputWithContext(context.Context) HTTPRouteSpecRulesBackendRefsFiltersCorsOutput
+}
+
+// CORS defines a schema for a filter that responds to the
+// cross-origin request based on HTTP response header.
+//
+// Support: Extended
+type HTTPRouteSpecRulesBackendRefsFiltersCorsArgs struct {
+	// AllowCredentials indicates whether the actual cross-origin request allows
+	// to include credentials.
+	//
+	// When set to true, the gateway will include the `Access-Control-Allow-Credentials`
+	// response header with value true (case-sensitive).
+	//
+	// When set to false or omitted the gateway will omit the header
+	// `Access-Control-Allow-Credentials` entirely (this is the standard CORS
+	// behavior).
+	//
+	// Support: Extended
+	AllowCredentials pulumi.BoolPtrInput `pulumi:"allowCredentials"`
+	// AllowHeaders indicates which HTTP request headers are supported for
+	// accessing the requested resource.
+	//
+	// Header names are not case-sensitive.
+	//
+	// Multiple header names in the value of the `Access-Control-Allow-Headers`
+	// response header are separated by a comma (",").
+	//
+	// When the `AllowHeaders` field is configured with one or more headers, the
+	// gateway must return the `Access-Control-Allow-Headers` response header
+	// which value is present in the `AllowHeaders` field.
+	//
+	// If any header name in the `Access-Control-Request-Headers` request header
+	// is not included in the list of header names specified by the response
+	// header `Access-Control-Allow-Headers`, it will present an error on the
+	// client side.
+	//
+	// If any header name in the `Access-Control-Allow-Headers` response header
+	// does not recognize by the client, it will also occur an error on the
+	// client side.
+	//
+	// A wildcard indicates that the requests with all HTTP headers are allowed.
+	// If config contains the wildcard "*" in allowHeaders and the request is
+	// not credentialed, the `Access-Control-Allow-Headers` response header
+	// can either use the `*` wildcard or the value of
+	// Access-Control-Request-Headers from the request.
+	//
+	// When the request is credentialed, the gateway must not specify the `*`
+	// wildcard in the `Access-Control-Allow-Headers` response header. When
+	// also the `AllowCredentials` field is true and `AllowHeaders` field
+	// is specified with the `*` wildcard, the gateway must specify one or more
+	// HTTP headers in the value of the `Access-Control-Allow-Headers` response
+	// header. The value of the header `Access-Control-Allow-Headers` is same as
+	// the `Access-Control-Request-Headers` header provided by the client. If
+	// the header `Access-Control-Request-Headers` is not included in the
+	// request, the gateway will omit the `Access-Control-Allow-Headers`
+	// response header, instead of specifying the `*` wildcard.
+	//
+	// Support: Extended
+	AllowHeaders pulumi.StringArrayInput `pulumi:"allowHeaders"`
+	// AllowMethods indicates which HTTP methods are supported for accessing the
+	// requested resource.
+	//
+	// Valid values are any method defined by RFC9110, along with the special
+	// value `*`, which represents all HTTP methods are allowed.
+	//
+	// Method names are case-sensitive, so these values are also case-sensitive.
+	// (See https://www.rfc-editor.org/rfc/rfc2616#section-5.1.1)
+	//
+	// Multiple method names in the value of the `Access-Control-Allow-Methods`
+	// response header are separated by a comma (",").
+	//
+	// A CORS-safelisted method is a method that is `GET`, `HEAD`, or `POST`.
+	// (See https://fetch.spec.whatwg.org/#cors-safelisted-method) The
+	// CORS-safelisted methods are always allowed, regardless of whether they
+	// are specified in the `AllowMethods` field.
+	//
+	// When the `AllowMethods` field is configured with one or more methods, the
+	// gateway must return the `Access-Control-Allow-Methods` response header
+	// which value is present in the `AllowMethods` field.
+	//
+	// If the HTTP method of the `Access-Control-Request-Method` request header
+	// is not included in the list of methods specified by the response header
+	// `Access-Control-Allow-Methods`, it will present an error on the client
+	// side.
+	//
+	// If config contains the wildcard "*" in allowMethods and the request is
+	// not credentialed, the `Access-Control-Allow-Methods` response header
+	// can either use the `*` wildcard or the value of
+	// Access-Control-Request-Method from the request.
+	//
+	// When the request is credentialed, the gateway must not specify the `*`
+	// wildcard in the `Access-Control-Allow-Methods` response header. When
+	// also the `AllowCredentials` field is true and `AllowMethods` field
+	// specified with the `*` wildcard, the gateway must specify one HTTP method
+	// in the value of the Access-Control-Allow-Methods response header. The
+	// value of the header `Access-Control-Allow-Methods` is same as the
+	// `Access-Control-Request-Method` header provided by the client. If the
+	// header `Access-Control-Request-Method` is not included in the request,
+	// the gateway will omit the `Access-Control-Allow-Methods` response header,
+	// instead of specifying the `*` wildcard.
+	//
+	// Support: Extended
+	AllowMethods pulumi.StringArrayInput `pulumi:"allowMethods"`
+	// AllowOrigins indicates whether the response can be shared with requested
+	// resource from the given `Origin`.
+	//
+	// The `Origin` consists of a scheme and a host, with an optional port, and
+	// takes the form `<scheme>://<host>(:<port>)`.
+	//
+	// Valid values for scheme are: `http` and `https`.
+	//
+	// Valid values for port are any integer between 1 and 65535 (the list of
+	// available TCP/UDP ports). Note that, if not included, port `80` is
+	// assumed for `http` scheme origins, and port `443` is assumed for `https`
+	// origins. This may affect origin matching.
+	//
+	// The host part of the origin may contain the wildcard character `*`. These
+	// wildcard characters behave as follows:
+	//
+	// * `*` is a greedy match to the _left_, including any number of
+	//   DNS labels to the left of its position. This also means that
+	//   `*` will include any number of period `.` characters to the
+	//   left of its position.
+	// * A wildcard by itself matches all hosts.
+	//
+	// An origin value that includes _only_ the `*` character indicates requests
+	// from all `Origin`s are allowed.
+	//
+	// When the `AllowOrigins` field is configured with multiple origins, it
+	// means the server supports clients from multiple origins. If the request
+	// `Origin` matches the configured allowed origins, the gateway must return
+	// the given `Origin` and sets value of the header
+	// `Access-Control-Allow-Origin` same as the `Origin` header provided by the
+	// client.
+	//
+	// The status code of a successful response to a "preflight" request is
+	// always an OK status (i.e., 204 or 200).
+	//
+	// If the request `Origin` does not match the configured allowed origins,
+	// the gateway returns 204/200 response but doesn't set the relevant
+	// cross-origin response headers. Alternatively, the gateway responds with
+	// 403 status to the "preflight" request is denied, coupled with omitting
+	// the CORS headers. The cross-origin request fails on the client side.
+	// Therefore, the client doesn't attempt the actual cross-origin request.
+	//
+	// Conversely, if the request `Origin` matches one of the configured
+	// allowed origins, the gateway sets the response header
+	// `Access-Control-Allow-Origin` to the same value as the `Origin`
+	// header provided by the client.
+	//
+	// When config has the wildcard ("*") in allowOrigins, and the request
+	// is not credentialed (e.g., it is a preflight request), the
+	// `Access-Control-Allow-Origin` response header either contains the
+	// wildcard as well or the Origin from the request.
+	//
+	// When the request is credentialed, the gateway must not specify the `*`
+	// wildcard in the `Access-Control-Allow-Origin` response header. When
+	// also the `AllowCredentials` field is true and `AllowOrigins` field
+	// specified with the `*` wildcard, the gateway must return a single origin
+	// in the value of the `Access-Control-Allow-Origin` response header,
+	// instead of specifying the `*` wildcard. The value of the header
+	// `Access-Control-Allow-Origin` is same as the `Origin` header provided by
+	// the client.
+	//
+	// Support: Extended
+	AllowOrigins pulumi.StringArrayInput `pulumi:"allowOrigins"`
+	// ExposeHeaders indicates which HTTP response headers can be exposed
+	// to client-side scripts in response to a cross-origin request.
+	//
+	// A CORS-safelisted response header is an HTTP header in a CORS response
+	// that it is considered safe to expose to the client scripts.
+	// The CORS-safelisted response headers include the following headers:
+	// `Cache-Control`
+	// `Content-Language`
+	// `Content-Length`
+	// `Content-Type`
+	// `Expires`
+	// `Last-Modified`
+	// `Pragma`
+	// (See https://fetch.spec.whatwg.org/#cors-safelisted-response-header-name)
+	// The CORS-safelisted response headers are exposed to client by default.
+	//
+	// When an HTTP header name is specified using the `ExposeHeaders` field,
+	// this additional header will be exposed as part of the response to the
+	// client.
+	//
+	// Header names are not case-sensitive.
+	//
+	// Multiple header names in the value of the `Access-Control-Expose-Headers`
+	// response header are separated by a comma (",").
+	//
+	// A wildcard indicates that the responses with all HTTP headers are exposed
+	// to clients. The `Access-Control-Expose-Headers` response header can only
+	// use `*` wildcard as value when the request is not credentialed.
+	//
+	// When the `exposeHeaders` config field contains the "*" wildcard and
+	// the request is credentialed, the gateway cannot use the `*` wildcard in
+	// the `Access-Control-Expose-Headers` response header.
+	//
+	// Support: Extended
+	ExposeHeaders pulumi.StringArrayInput `pulumi:"exposeHeaders"`
+	// MaxAge indicates the duration (in seconds) for the client to cache the
+	// results of a "preflight" request.
+	//
+	// The information provided by the `Access-Control-Allow-Methods` and
+	// `Access-Control-Allow-Headers` response headers can be cached by the
+	// client until the time specified by `Access-Control-Max-Age` elapses.
+	//
+	// The default value of `Access-Control-Max-Age` response header is 5
+	// (seconds).
+	//
+	// When the `MaxAge` field is unspecified, the gateway sets the response
+	// header "Access-Control-Max-Age: 5" by default.
+	MaxAge pulumi.IntPtrInput `pulumi:"maxAge"`
+}
+
+func (HTTPRouteSpecRulesBackendRefsFiltersCorsArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*HTTPRouteSpecRulesBackendRefsFiltersCors)(nil)).Elem()
+}
+
+func (i HTTPRouteSpecRulesBackendRefsFiltersCorsArgs) ToHTTPRouteSpecRulesBackendRefsFiltersCorsOutput() HTTPRouteSpecRulesBackendRefsFiltersCorsOutput {
+	return i.ToHTTPRouteSpecRulesBackendRefsFiltersCorsOutputWithContext(context.Background())
+}
+
+func (i HTTPRouteSpecRulesBackendRefsFiltersCorsArgs) ToHTTPRouteSpecRulesBackendRefsFiltersCorsOutputWithContext(ctx context.Context) HTTPRouteSpecRulesBackendRefsFiltersCorsOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(HTTPRouteSpecRulesBackendRefsFiltersCorsOutput)
+}
+
+func (i HTTPRouteSpecRulesBackendRefsFiltersCorsArgs) ToHTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput() HTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput {
+	return i.ToHTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutputWithContext(context.Background())
+}
+
+func (i HTTPRouteSpecRulesBackendRefsFiltersCorsArgs) ToHTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(HTTPRouteSpecRulesBackendRefsFiltersCorsOutput).ToHTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutputWithContext(ctx)
+}
+
+// HTTPRouteSpecRulesBackendRefsFiltersCorsPtrInput is an input type that accepts HTTPRouteSpecRulesBackendRefsFiltersCorsArgs, HTTPRouteSpecRulesBackendRefsFiltersCorsPtr and HTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput values.
+// You can construct a concrete instance of `HTTPRouteSpecRulesBackendRefsFiltersCorsPtrInput` via:
+//
+//	        HTTPRouteSpecRulesBackendRefsFiltersCorsArgs{...}
+//
+//	or:
+//
+//	        nil
+type HTTPRouteSpecRulesBackendRefsFiltersCorsPtrInput interface {
+	pulumi.Input
+
+	ToHTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput() HTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput
+	ToHTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutputWithContext(context.Context) HTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput
+}
+
+type httprouteSpecRulesBackendRefsFiltersCorsPtrType HTTPRouteSpecRulesBackendRefsFiltersCorsArgs
+
+func HTTPRouteSpecRulesBackendRefsFiltersCorsPtr(v *HTTPRouteSpecRulesBackendRefsFiltersCorsArgs) HTTPRouteSpecRulesBackendRefsFiltersCorsPtrInput {
+	return (*httprouteSpecRulesBackendRefsFiltersCorsPtrType)(v)
+}
+
+func (*httprouteSpecRulesBackendRefsFiltersCorsPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**HTTPRouteSpecRulesBackendRefsFiltersCors)(nil)).Elem()
+}
+
+func (i *httprouteSpecRulesBackendRefsFiltersCorsPtrType) ToHTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput() HTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput {
+	return i.ToHTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutputWithContext(context.Background())
+}
+
+func (i *httprouteSpecRulesBackendRefsFiltersCorsPtrType) ToHTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(HTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput)
+}
+
+// CORS defines a schema for a filter that responds to the
+// cross-origin request based on HTTP response header.
+//
+// Support: Extended
+type HTTPRouteSpecRulesBackendRefsFiltersCorsOutput struct{ *pulumi.OutputState }
+
+func (HTTPRouteSpecRulesBackendRefsFiltersCorsOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*HTTPRouteSpecRulesBackendRefsFiltersCors)(nil)).Elem()
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsOutput) ToHTTPRouteSpecRulesBackendRefsFiltersCorsOutput() HTTPRouteSpecRulesBackendRefsFiltersCorsOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsOutput) ToHTTPRouteSpecRulesBackendRefsFiltersCorsOutputWithContext(ctx context.Context) HTTPRouteSpecRulesBackendRefsFiltersCorsOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsOutput) ToHTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput() HTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput {
+	return o.ToHTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutputWithContext(context.Background())
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsOutput) ToHTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v HTTPRouteSpecRulesBackendRefsFiltersCors) *HTTPRouteSpecRulesBackendRefsFiltersCors {
+		return &v
+	}).(HTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput)
+}
+
+// AllowCredentials indicates whether the actual cross-origin request allows
+// to include credentials.
+//
+// When set to true, the gateway will include the `Access-Control-Allow-Credentials`
+// response header with value true (case-sensitive).
+//
+// When set to false or omitted the gateway will omit the header
+// `Access-Control-Allow-Credentials` entirely (this is the standard CORS
+// behavior).
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsOutput) AllowCredentials() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesBackendRefsFiltersCors) *bool { return v.AllowCredentials }).(pulumi.BoolPtrOutput)
+}
+
+// AllowHeaders indicates which HTTP request headers are supported for
+// accessing the requested resource.
+//
+// Header names are not case-sensitive.
+//
+// Multiple header names in the value of the `Access-Control-Allow-Headers`
+// response header are separated by a comma (",").
+//
+// When the `AllowHeaders` field is configured with one or more headers, the
+// gateway must return the `Access-Control-Allow-Headers` response header
+// which value is present in the `AllowHeaders` field.
+//
+// If any header name in the `Access-Control-Request-Headers` request header
+// is not included in the list of header names specified by the response
+// header `Access-Control-Allow-Headers`, it will present an error on the
+// client side.
+//
+// If any header name in the `Access-Control-Allow-Headers` response header
+// does not recognize by the client, it will also occur an error on the
+// client side.
+//
+// A wildcard indicates that the requests with all HTTP headers are allowed.
+// If config contains the wildcard "*" in allowHeaders and the request is
+// not credentialed, the `Access-Control-Allow-Headers` response header
+// can either use the `*` wildcard or the value of
+// Access-Control-Request-Headers from the request.
+//
+// When the request is credentialed, the gateway must not specify the `*`
+// wildcard in the `Access-Control-Allow-Headers` response header. When
+// also the `AllowCredentials` field is true and `AllowHeaders` field
+// is specified with the `*` wildcard, the gateway must specify one or more
+// HTTP headers in the value of the `Access-Control-Allow-Headers` response
+// header. The value of the header `Access-Control-Allow-Headers` is same as
+// the `Access-Control-Request-Headers` header provided by the client. If
+// the header `Access-Control-Request-Headers` is not included in the
+// request, the gateway will omit the `Access-Control-Allow-Headers`
+// response header, instead of specifying the `*` wildcard.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsOutput) AllowHeaders() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesBackendRefsFiltersCors) []string { return v.AllowHeaders }).(pulumi.StringArrayOutput)
+}
+
+// AllowMethods indicates which HTTP methods are supported for accessing the
+// requested resource.
+//
+// Valid values are any method defined by RFC9110, along with the special
+// value `*`, which represents all HTTP methods are allowed.
+//
+// Method names are case-sensitive, so these values are also case-sensitive.
+// (See https://www.rfc-editor.org/rfc/rfc2616#section-5.1.1)
+//
+// Multiple method names in the value of the `Access-Control-Allow-Methods`
+// response header are separated by a comma (",").
+//
+// A CORS-safelisted method is a method that is `GET`, `HEAD`, or `POST`.
+// (See https://fetch.spec.whatwg.org/#cors-safelisted-method) The
+// CORS-safelisted methods are always allowed, regardless of whether they
+// are specified in the `AllowMethods` field.
+//
+// When the `AllowMethods` field is configured with one or more methods, the
+// gateway must return the `Access-Control-Allow-Methods` response header
+// which value is present in the `AllowMethods` field.
+//
+// If the HTTP method of the `Access-Control-Request-Method` request header
+// is not included in the list of methods specified by the response header
+// `Access-Control-Allow-Methods`, it will present an error on the client
+// side.
+//
+// If config contains the wildcard "*" in allowMethods and the request is
+// not credentialed, the `Access-Control-Allow-Methods` response header
+// can either use the `*` wildcard or the value of
+// Access-Control-Request-Method from the request.
+//
+// When the request is credentialed, the gateway must not specify the `*`
+// wildcard in the `Access-Control-Allow-Methods` response header. When
+// also the `AllowCredentials` field is true and `AllowMethods` field
+// specified with the `*` wildcard, the gateway must specify one HTTP method
+// in the value of the Access-Control-Allow-Methods response header. The
+// value of the header `Access-Control-Allow-Methods` is same as the
+// `Access-Control-Request-Method` header provided by the client. If the
+// header `Access-Control-Request-Method` is not included in the request,
+// the gateway will omit the `Access-Control-Allow-Methods` response header,
+// instead of specifying the `*` wildcard.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsOutput) AllowMethods() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesBackendRefsFiltersCors) []string { return v.AllowMethods }).(pulumi.StringArrayOutput)
+}
+
+// AllowOrigins indicates whether the response can be shared with requested
+// resource from the given `Origin`.
+//
+// The `Origin` consists of a scheme and a host, with an optional port, and
+// takes the form `<scheme>://<host>(:<port>)`.
+//
+// Valid values for scheme are: `http` and `https`.
+//
+// Valid values for port are any integer between 1 and 65535 (the list of
+// available TCP/UDP ports). Note that, if not included, port `80` is
+// assumed for `http` scheme origins, and port `443` is assumed for `https`
+// origins. This may affect origin matching.
+//
+// The host part of the origin may contain the wildcard character `*`. These
+// wildcard characters behave as follows:
+//
+//   - `*` is a greedy match to the _left_, including any number of
+//     DNS labels to the left of its position. This also means that
+//     `*` will include any number of period `.` characters to the
+//     left of its position.
+//   - A wildcard by itself matches all hosts.
+//
+// An origin value that includes _only_ the `*` character indicates requests
+// from all `Origin`s are allowed.
+//
+// When the `AllowOrigins` field is configured with multiple origins, it
+// means the server supports clients from multiple origins. If the request
+// `Origin` matches the configured allowed origins, the gateway must return
+// the given `Origin` and sets value of the header
+// `Access-Control-Allow-Origin` same as the `Origin` header provided by the
+// client.
+//
+// The status code of a successful response to a "preflight" request is
+// always an OK status (i.e., 204 or 200).
+//
+// If the request `Origin` does not match the configured allowed origins,
+// the gateway returns 204/200 response but doesn't set the relevant
+// cross-origin response headers. Alternatively, the gateway responds with
+// 403 status to the "preflight" request is denied, coupled with omitting
+// the CORS headers. The cross-origin request fails on the client side.
+// Therefore, the client doesn't attempt the actual cross-origin request.
+//
+// Conversely, if the request `Origin` matches one of the configured
+// allowed origins, the gateway sets the response header
+// `Access-Control-Allow-Origin` to the same value as the `Origin`
+// header provided by the client.
+//
+// When config has the wildcard ("*") in allowOrigins, and the request
+// is not credentialed (e.g., it is a preflight request), the
+// `Access-Control-Allow-Origin` response header either contains the
+// wildcard as well or the Origin from the request.
+//
+// When the request is credentialed, the gateway must not specify the `*`
+// wildcard in the `Access-Control-Allow-Origin` response header. When
+// also the `AllowCredentials` field is true and `AllowOrigins` field
+// specified with the `*` wildcard, the gateway must return a single origin
+// in the value of the `Access-Control-Allow-Origin` response header,
+// instead of specifying the `*` wildcard. The value of the header
+// `Access-Control-Allow-Origin` is same as the `Origin` header provided by
+// the client.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsOutput) AllowOrigins() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesBackendRefsFiltersCors) []string { return v.AllowOrigins }).(pulumi.StringArrayOutput)
+}
+
+// ExposeHeaders indicates which HTTP response headers can be exposed
+// to client-side scripts in response to a cross-origin request.
+//
+// A CORS-safelisted response header is an HTTP header in a CORS response
+// that it is considered safe to expose to the client scripts.
+// The CORS-safelisted response headers include the following headers:
+// `Cache-Control`
+// `Content-Language`
+// `Content-Length`
+// `Content-Type`
+// `Expires`
+// `Last-Modified`
+// `Pragma`
+// (See https://fetch.spec.whatwg.org/#cors-safelisted-response-header-name)
+// The CORS-safelisted response headers are exposed to client by default.
+//
+// When an HTTP header name is specified using the `ExposeHeaders` field,
+// this additional header will be exposed as part of the response to the
+// client.
+//
+// Header names are not case-sensitive.
+//
+// Multiple header names in the value of the `Access-Control-Expose-Headers`
+// response header are separated by a comma (",").
+//
+// A wildcard indicates that the responses with all HTTP headers are exposed
+// to clients. The `Access-Control-Expose-Headers` response header can only
+// use `*` wildcard as value when the request is not credentialed.
+//
+// When the `exposeHeaders` config field contains the "*" wildcard and
+// the request is credentialed, the gateway cannot use the `*` wildcard in
+// the `Access-Control-Expose-Headers` response header.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsOutput) ExposeHeaders() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesBackendRefsFiltersCors) []string { return v.ExposeHeaders }).(pulumi.StringArrayOutput)
+}
+
+// MaxAge indicates the duration (in seconds) for the client to cache the
+// results of a "preflight" request.
+//
+// The information provided by the `Access-Control-Allow-Methods` and
+// `Access-Control-Allow-Headers` response headers can be cached by the
+// client until the time specified by `Access-Control-Max-Age` elapses.
+//
+// The default value of `Access-Control-Max-Age` response header is 5
+// (seconds).
+//
+// When the `MaxAge` field is unspecified, the gateway sets the response
+// header "Access-Control-Max-Age: 5" by default.
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsOutput) MaxAge() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesBackendRefsFiltersCors) *int { return v.MaxAge }).(pulumi.IntPtrOutput)
+}
+
+type HTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput struct{ *pulumi.OutputState }
+
+func (HTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**HTTPRouteSpecRulesBackendRefsFiltersCors)(nil)).Elem()
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput) ToHTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput() HTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput) ToHTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput) Elem() HTTPRouteSpecRulesBackendRefsFiltersCorsOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesBackendRefsFiltersCors) HTTPRouteSpecRulesBackendRefsFiltersCors {
+		if v != nil {
+			return *v
+		}
+		var ret HTTPRouteSpecRulesBackendRefsFiltersCors
+		return ret
+	}).(HTTPRouteSpecRulesBackendRefsFiltersCorsOutput)
+}
+
+// AllowCredentials indicates whether the actual cross-origin request allows
+// to include credentials.
+//
+// When set to true, the gateway will include the `Access-Control-Allow-Credentials`
+// response header with value true (case-sensitive).
+//
+// When set to false or omitted the gateway will omit the header
+// `Access-Control-Allow-Credentials` entirely (this is the standard CORS
+// behavior).
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput) AllowCredentials() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesBackendRefsFiltersCors) *bool {
+		if v == nil {
+			return nil
+		}
+		return v.AllowCredentials
+	}).(pulumi.BoolPtrOutput)
+}
+
+// AllowHeaders indicates which HTTP request headers are supported for
+// accessing the requested resource.
+//
+// Header names are not case-sensitive.
+//
+// Multiple header names in the value of the `Access-Control-Allow-Headers`
+// response header are separated by a comma (",").
+//
+// When the `AllowHeaders` field is configured with one or more headers, the
+// gateway must return the `Access-Control-Allow-Headers` response header
+// which value is present in the `AllowHeaders` field.
+//
+// If any header name in the `Access-Control-Request-Headers` request header
+// is not included in the list of header names specified by the response
+// header `Access-Control-Allow-Headers`, it will present an error on the
+// client side.
+//
+// If any header name in the `Access-Control-Allow-Headers` response header
+// does not recognize by the client, it will also occur an error on the
+// client side.
+//
+// A wildcard indicates that the requests with all HTTP headers are allowed.
+// If config contains the wildcard "*" in allowHeaders and the request is
+// not credentialed, the `Access-Control-Allow-Headers` response header
+// can either use the `*` wildcard or the value of
+// Access-Control-Request-Headers from the request.
+//
+// When the request is credentialed, the gateway must not specify the `*`
+// wildcard in the `Access-Control-Allow-Headers` response header. When
+// also the `AllowCredentials` field is true and `AllowHeaders` field
+// is specified with the `*` wildcard, the gateway must specify one or more
+// HTTP headers in the value of the `Access-Control-Allow-Headers` response
+// header. The value of the header `Access-Control-Allow-Headers` is same as
+// the `Access-Control-Request-Headers` header provided by the client. If
+// the header `Access-Control-Request-Headers` is not included in the
+// request, the gateway will omit the `Access-Control-Allow-Headers`
+// response header, instead of specifying the `*` wildcard.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput) AllowHeaders() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesBackendRefsFiltersCors) []string {
+		if v == nil {
+			return nil
+		}
+		return v.AllowHeaders
+	}).(pulumi.StringArrayOutput)
+}
+
+// AllowMethods indicates which HTTP methods are supported for accessing the
+// requested resource.
+//
+// Valid values are any method defined by RFC9110, along with the special
+// value `*`, which represents all HTTP methods are allowed.
+//
+// Method names are case-sensitive, so these values are also case-sensitive.
+// (See https://www.rfc-editor.org/rfc/rfc2616#section-5.1.1)
+//
+// Multiple method names in the value of the `Access-Control-Allow-Methods`
+// response header are separated by a comma (",").
+//
+// A CORS-safelisted method is a method that is `GET`, `HEAD`, or `POST`.
+// (See https://fetch.spec.whatwg.org/#cors-safelisted-method) The
+// CORS-safelisted methods are always allowed, regardless of whether they
+// are specified in the `AllowMethods` field.
+//
+// When the `AllowMethods` field is configured with one or more methods, the
+// gateway must return the `Access-Control-Allow-Methods` response header
+// which value is present in the `AllowMethods` field.
+//
+// If the HTTP method of the `Access-Control-Request-Method` request header
+// is not included in the list of methods specified by the response header
+// `Access-Control-Allow-Methods`, it will present an error on the client
+// side.
+//
+// If config contains the wildcard "*" in allowMethods and the request is
+// not credentialed, the `Access-Control-Allow-Methods` response header
+// can either use the `*` wildcard or the value of
+// Access-Control-Request-Method from the request.
+//
+// When the request is credentialed, the gateway must not specify the `*`
+// wildcard in the `Access-Control-Allow-Methods` response header. When
+// also the `AllowCredentials` field is true and `AllowMethods` field
+// specified with the `*` wildcard, the gateway must specify one HTTP method
+// in the value of the Access-Control-Allow-Methods response header. The
+// value of the header `Access-Control-Allow-Methods` is same as the
+// `Access-Control-Request-Method` header provided by the client. If the
+// header `Access-Control-Request-Method` is not included in the request,
+// the gateway will omit the `Access-Control-Allow-Methods` response header,
+// instead of specifying the `*` wildcard.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput) AllowMethods() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesBackendRefsFiltersCors) []string {
+		if v == nil {
+			return nil
+		}
+		return v.AllowMethods
+	}).(pulumi.StringArrayOutput)
+}
+
+// AllowOrigins indicates whether the response can be shared with requested
+// resource from the given `Origin`.
+//
+// The `Origin` consists of a scheme and a host, with an optional port, and
+// takes the form `<scheme>://<host>(:<port>)`.
+//
+// Valid values for scheme are: `http` and `https`.
+//
+// Valid values for port are any integer between 1 and 65535 (the list of
+// available TCP/UDP ports). Note that, if not included, port `80` is
+// assumed for `http` scheme origins, and port `443` is assumed for `https`
+// origins. This may affect origin matching.
+//
+// The host part of the origin may contain the wildcard character `*`. These
+// wildcard characters behave as follows:
+//
+//   - `*` is a greedy match to the _left_, including any number of
+//     DNS labels to the left of its position. This also means that
+//     `*` will include any number of period `.` characters to the
+//     left of its position.
+//   - A wildcard by itself matches all hosts.
+//
+// An origin value that includes _only_ the `*` character indicates requests
+// from all `Origin`s are allowed.
+//
+// When the `AllowOrigins` field is configured with multiple origins, it
+// means the server supports clients from multiple origins. If the request
+// `Origin` matches the configured allowed origins, the gateway must return
+// the given `Origin` and sets value of the header
+// `Access-Control-Allow-Origin` same as the `Origin` header provided by the
+// client.
+//
+// The status code of a successful response to a "preflight" request is
+// always an OK status (i.e., 204 or 200).
+//
+// If the request `Origin` does not match the configured allowed origins,
+// the gateway returns 204/200 response but doesn't set the relevant
+// cross-origin response headers. Alternatively, the gateway responds with
+// 403 status to the "preflight" request is denied, coupled with omitting
+// the CORS headers. The cross-origin request fails on the client side.
+// Therefore, the client doesn't attempt the actual cross-origin request.
+//
+// Conversely, if the request `Origin` matches one of the configured
+// allowed origins, the gateway sets the response header
+// `Access-Control-Allow-Origin` to the same value as the `Origin`
+// header provided by the client.
+//
+// When config has the wildcard ("*") in allowOrigins, and the request
+// is not credentialed (e.g., it is a preflight request), the
+// `Access-Control-Allow-Origin` response header either contains the
+// wildcard as well or the Origin from the request.
+//
+// When the request is credentialed, the gateway must not specify the `*`
+// wildcard in the `Access-Control-Allow-Origin` response header. When
+// also the `AllowCredentials` field is true and `AllowOrigins` field
+// specified with the `*` wildcard, the gateway must return a single origin
+// in the value of the `Access-Control-Allow-Origin` response header,
+// instead of specifying the `*` wildcard. The value of the header
+// `Access-Control-Allow-Origin` is same as the `Origin` header provided by
+// the client.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput) AllowOrigins() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesBackendRefsFiltersCors) []string {
+		if v == nil {
+			return nil
+		}
+		return v.AllowOrigins
+	}).(pulumi.StringArrayOutput)
+}
+
+// ExposeHeaders indicates which HTTP response headers can be exposed
+// to client-side scripts in response to a cross-origin request.
+//
+// A CORS-safelisted response header is an HTTP header in a CORS response
+// that it is considered safe to expose to the client scripts.
+// The CORS-safelisted response headers include the following headers:
+// `Cache-Control`
+// `Content-Language`
+// `Content-Length`
+// `Content-Type`
+// `Expires`
+// `Last-Modified`
+// `Pragma`
+// (See https://fetch.spec.whatwg.org/#cors-safelisted-response-header-name)
+// The CORS-safelisted response headers are exposed to client by default.
+//
+// When an HTTP header name is specified using the `ExposeHeaders` field,
+// this additional header will be exposed as part of the response to the
+// client.
+//
+// Header names are not case-sensitive.
+//
+// Multiple header names in the value of the `Access-Control-Expose-Headers`
+// response header are separated by a comma (",").
+//
+// A wildcard indicates that the responses with all HTTP headers are exposed
+// to clients. The `Access-Control-Expose-Headers` response header can only
+// use `*` wildcard as value when the request is not credentialed.
+//
+// When the `exposeHeaders` config field contains the "*" wildcard and
+// the request is credentialed, the gateway cannot use the `*` wildcard in
+// the `Access-Control-Expose-Headers` response header.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput) ExposeHeaders() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesBackendRefsFiltersCors) []string {
+		if v == nil {
+			return nil
+		}
+		return v.ExposeHeaders
+	}).(pulumi.StringArrayOutput)
+}
+
+// MaxAge indicates the duration (in seconds) for the client to cache the
+// results of a "preflight" request.
+//
+// The information provided by the `Access-Control-Allow-Methods` and
+// `Access-Control-Allow-Headers` response headers can be cached by the
+// client until the time specified by `Access-Control-Max-Age` elapses.
+//
+// The default value of `Access-Control-Max-Age` response header is 5
+// (seconds).
+//
+// When the `MaxAge` field is unspecified, the gateway sets the response
+// header "Access-Control-Max-Age: 5" by default.
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput) MaxAge() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesBackendRefsFiltersCors) *int {
+		if v == nil {
+			return nil
+		}
+		return v.MaxAge
+	}).(pulumi.IntPtrOutput)
+}
+
+// CORS defines a schema for a filter that responds to the
+// cross-origin request based on HTTP response header.
+//
+// Support: Extended
+type HTTPRouteSpecRulesBackendRefsFiltersCorsPatch struct {
+	// AllowCredentials indicates whether the actual cross-origin request allows
+	// to include credentials.
+	//
+	// When set to true, the gateway will include the `Access-Control-Allow-Credentials`
+	// response header with value true (case-sensitive).
+	//
+	// When set to false or omitted the gateway will omit the header
+	// `Access-Control-Allow-Credentials` entirely (this is the standard CORS
+	// behavior).
+	//
+	// Support: Extended
+	AllowCredentials *bool `pulumi:"allowCredentials"`
+	// AllowHeaders indicates which HTTP request headers are supported for
+	// accessing the requested resource.
+	//
+	// Header names are not case-sensitive.
+	//
+	// Multiple header names in the value of the `Access-Control-Allow-Headers`
+	// response header are separated by a comma (",").
+	//
+	// When the `AllowHeaders` field is configured with one or more headers, the
+	// gateway must return the `Access-Control-Allow-Headers` response header
+	// which value is present in the `AllowHeaders` field.
+	//
+	// If any header name in the `Access-Control-Request-Headers` request header
+	// is not included in the list of header names specified by the response
+	// header `Access-Control-Allow-Headers`, it will present an error on the
+	// client side.
+	//
+	// If any header name in the `Access-Control-Allow-Headers` response header
+	// does not recognize by the client, it will also occur an error on the
+	// client side.
+	//
+	// A wildcard indicates that the requests with all HTTP headers are allowed.
+	// If config contains the wildcard "*" in allowHeaders and the request is
+	// not credentialed, the `Access-Control-Allow-Headers` response header
+	// can either use the `*` wildcard or the value of
+	// Access-Control-Request-Headers from the request.
+	//
+	// When the request is credentialed, the gateway must not specify the `*`
+	// wildcard in the `Access-Control-Allow-Headers` response header. When
+	// also the `AllowCredentials` field is true and `AllowHeaders` field
+	// is specified with the `*` wildcard, the gateway must specify one or more
+	// HTTP headers in the value of the `Access-Control-Allow-Headers` response
+	// header. The value of the header `Access-Control-Allow-Headers` is same as
+	// the `Access-Control-Request-Headers` header provided by the client. If
+	// the header `Access-Control-Request-Headers` is not included in the
+	// request, the gateway will omit the `Access-Control-Allow-Headers`
+	// response header, instead of specifying the `*` wildcard.
+	//
+	// Support: Extended
+	AllowHeaders []string `pulumi:"allowHeaders"`
+	// AllowMethods indicates which HTTP methods are supported for accessing the
+	// requested resource.
+	//
+	// Valid values are any method defined by RFC9110, along with the special
+	// value `*`, which represents all HTTP methods are allowed.
+	//
+	// Method names are case-sensitive, so these values are also case-sensitive.
+	// (See https://www.rfc-editor.org/rfc/rfc2616#section-5.1.1)
+	//
+	// Multiple method names in the value of the `Access-Control-Allow-Methods`
+	// response header are separated by a comma (",").
+	//
+	// A CORS-safelisted method is a method that is `GET`, `HEAD`, or `POST`.
+	// (See https://fetch.spec.whatwg.org/#cors-safelisted-method) The
+	// CORS-safelisted methods are always allowed, regardless of whether they
+	// are specified in the `AllowMethods` field.
+	//
+	// When the `AllowMethods` field is configured with one or more methods, the
+	// gateway must return the `Access-Control-Allow-Methods` response header
+	// which value is present in the `AllowMethods` field.
+	//
+	// If the HTTP method of the `Access-Control-Request-Method` request header
+	// is not included in the list of methods specified by the response header
+	// `Access-Control-Allow-Methods`, it will present an error on the client
+	// side.
+	//
+	// If config contains the wildcard "*" in allowMethods and the request is
+	// not credentialed, the `Access-Control-Allow-Methods` response header
+	// can either use the `*` wildcard or the value of
+	// Access-Control-Request-Method from the request.
+	//
+	// When the request is credentialed, the gateway must not specify the `*`
+	// wildcard in the `Access-Control-Allow-Methods` response header. When
+	// also the `AllowCredentials` field is true and `AllowMethods` field
+	// specified with the `*` wildcard, the gateway must specify one HTTP method
+	// in the value of the Access-Control-Allow-Methods response header. The
+	// value of the header `Access-Control-Allow-Methods` is same as the
+	// `Access-Control-Request-Method` header provided by the client. If the
+	// header `Access-Control-Request-Method` is not included in the request,
+	// the gateway will omit the `Access-Control-Allow-Methods` response header,
+	// instead of specifying the `*` wildcard.
+	//
+	// Support: Extended
+	AllowMethods []string `pulumi:"allowMethods"`
+	// AllowOrigins indicates whether the response can be shared with requested
+	// resource from the given `Origin`.
+	//
+	// The `Origin` consists of a scheme and a host, with an optional port, and
+	// takes the form `<scheme>://<host>(:<port>)`.
+	//
+	// Valid values for scheme are: `http` and `https`.
+	//
+	// Valid values for port are any integer between 1 and 65535 (the list of
+	// available TCP/UDP ports). Note that, if not included, port `80` is
+	// assumed for `http` scheme origins, and port `443` is assumed for `https`
+	// origins. This may affect origin matching.
+	//
+	// The host part of the origin may contain the wildcard character `*`. These
+	// wildcard characters behave as follows:
+	//
+	// * `*` is a greedy match to the _left_, including any number of
+	//   DNS labels to the left of its position. This also means that
+	//   `*` will include any number of period `.` characters to the
+	//   left of its position.
+	// * A wildcard by itself matches all hosts.
+	//
+	// An origin value that includes _only_ the `*` character indicates requests
+	// from all `Origin`s are allowed.
+	//
+	// When the `AllowOrigins` field is configured with multiple origins, it
+	// means the server supports clients from multiple origins. If the request
+	// `Origin` matches the configured allowed origins, the gateway must return
+	// the given `Origin` and sets value of the header
+	// `Access-Control-Allow-Origin` same as the `Origin` header provided by the
+	// client.
+	//
+	// The status code of a successful response to a "preflight" request is
+	// always an OK status (i.e., 204 or 200).
+	//
+	// If the request `Origin` does not match the configured allowed origins,
+	// the gateway returns 204/200 response but doesn't set the relevant
+	// cross-origin response headers. Alternatively, the gateway responds with
+	// 403 status to the "preflight" request is denied, coupled with omitting
+	// the CORS headers. The cross-origin request fails on the client side.
+	// Therefore, the client doesn't attempt the actual cross-origin request.
+	//
+	// Conversely, if the request `Origin` matches one of the configured
+	// allowed origins, the gateway sets the response header
+	// `Access-Control-Allow-Origin` to the same value as the `Origin`
+	// header provided by the client.
+	//
+	// When config has the wildcard ("*") in allowOrigins, and the request
+	// is not credentialed (e.g., it is a preflight request), the
+	// `Access-Control-Allow-Origin` response header either contains the
+	// wildcard as well or the Origin from the request.
+	//
+	// When the request is credentialed, the gateway must not specify the `*`
+	// wildcard in the `Access-Control-Allow-Origin` response header. When
+	// also the `AllowCredentials` field is true and `AllowOrigins` field
+	// specified with the `*` wildcard, the gateway must return a single origin
+	// in the value of the `Access-Control-Allow-Origin` response header,
+	// instead of specifying the `*` wildcard. The value of the header
+	// `Access-Control-Allow-Origin` is same as the `Origin` header provided by
+	// the client.
+	//
+	// Support: Extended
+	AllowOrigins []string `pulumi:"allowOrigins"`
+	// ExposeHeaders indicates which HTTP response headers can be exposed
+	// to client-side scripts in response to a cross-origin request.
+	//
+	// A CORS-safelisted response header is an HTTP header in a CORS response
+	// that it is considered safe to expose to the client scripts.
+	// The CORS-safelisted response headers include the following headers:
+	// `Cache-Control`
+	// `Content-Language`
+	// `Content-Length`
+	// `Content-Type`
+	// `Expires`
+	// `Last-Modified`
+	// `Pragma`
+	// (See https://fetch.spec.whatwg.org/#cors-safelisted-response-header-name)
+	// The CORS-safelisted response headers are exposed to client by default.
+	//
+	// When an HTTP header name is specified using the `ExposeHeaders` field,
+	// this additional header will be exposed as part of the response to the
+	// client.
+	//
+	// Header names are not case-sensitive.
+	//
+	// Multiple header names in the value of the `Access-Control-Expose-Headers`
+	// response header are separated by a comma (",").
+	//
+	// A wildcard indicates that the responses with all HTTP headers are exposed
+	// to clients. The `Access-Control-Expose-Headers` response header can only
+	// use `*` wildcard as value when the request is not credentialed.
+	//
+	// When the `exposeHeaders` config field contains the "*" wildcard and
+	// the request is credentialed, the gateway cannot use the `*` wildcard in
+	// the `Access-Control-Expose-Headers` response header.
+	//
+	// Support: Extended
+	ExposeHeaders []string `pulumi:"exposeHeaders"`
+	// MaxAge indicates the duration (in seconds) for the client to cache the
+	// results of a "preflight" request.
+	//
+	// The information provided by the `Access-Control-Allow-Methods` and
+	// `Access-Control-Allow-Headers` response headers can be cached by the
+	// client until the time specified by `Access-Control-Max-Age` elapses.
+	//
+	// The default value of `Access-Control-Max-Age` response header is 5
+	// (seconds).
+	//
+	// When the `MaxAge` field is unspecified, the gateway sets the response
+	// header "Access-Control-Max-Age: 5" by default.
+	MaxAge *int `pulumi:"maxAge"`
+}
+
+// HTTPRouteSpecRulesBackendRefsFiltersCorsPatchInput is an input type that accepts HTTPRouteSpecRulesBackendRefsFiltersCorsPatchArgs and HTTPRouteSpecRulesBackendRefsFiltersCorsPatchOutput values.
+// You can construct a concrete instance of `HTTPRouteSpecRulesBackendRefsFiltersCorsPatchInput` via:
+//
+//	HTTPRouteSpecRulesBackendRefsFiltersCorsPatchArgs{...}
+type HTTPRouteSpecRulesBackendRefsFiltersCorsPatchInput interface {
+	pulumi.Input
+
+	ToHTTPRouteSpecRulesBackendRefsFiltersCorsPatchOutput() HTTPRouteSpecRulesBackendRefsFiltersCorsPatchOutput
+	ToHTTPRouteSpecRulesBackendRefsFiltersCorsPatchOutputWithContext(context.Context) HTTPRouteSpecRulesBackendRefsFiltersCorsPatchOutput
+}
+
+// CORS defines a schema for a filter that responds to the
+// cross-origin request based on HTTP response header.
+//
+// Support: Extended
+type HTTPRouteSpecRulesBackendRefsFiltersCorsPatchArgs struct {
+	// AllowCredentials indicates whether the actual cross-origin request allows
+	// to include credentials.
+	//
+	// When set to true, the gateway will include the `Access-Control-Allow-Credentials`
+	// response header with value true (case-sensitive).
+	//
+	// When set to false or omitted the gateway will omit the header
+	// `Access-Control-Allow-Credentials` entirely (this is the standard CORS
+	// behavior).
+	//
+	// Support: Extended
+	AllowCredentials pulumi.BoolPtrInput `pulumi:"allowCredentials"`
+	// AllowHeaders indicates which HTTP request headers are supported for
+	// accessing the requested resource.
+	//
+	// Header names are not case-sensitive.
+	//
+	// Multiple header names in the value of the `Access-Control-Allow-Headers`
+	// response header are separated by a comma (",").
+	//
+	// When the `AllowHeaders` field is configured with one or more headers, the
+	// gateway must return the `Access-Control-Allow-Headers` response header
+	// which value is present in the `AllowHeaders` field.
+	//
+	// If any header name in the `Access-Control-Request-Headers` request header
+	// is not included in the list of header names specified by the response
+	// header `Access-Control-Allow-Headers`, it will present an error on the
+	// client side.
+	//
+	// If any header name in the `Access-Control-Allow-Headers` response header
+	// does not recognize by the client, it will also occur an error on the
+	// client side.
+	//
+	// A wildcard indicates that the requests with all HTTP headers are allowed.
+	// If config contains the wildcard "*" in allowHeaders and the request is
+	// not credentialed, the `Access-Control-Allow-Headers` response header
+	// can either use the `*` wildcard or the value of
+	// Access-Control-Request-Headers from the request.
+	//
+	// When the request is credentialed, the gateway must not specify the `*`
+	// wildcard in the `Access-Control-Allow-Headers` response header. When
+	// also the `AllowCredentials` field is true and `AllowHeaders` field
+	// is specified with the `*` wildcard, the gateway must specify one or more
+	// HTTP headers in the value of the `Access-Control-Allow-Headers` response
+	// header. The value of the header `Access-Control-Allow-Headers` is same as
+	// the `Access-Control-Request-Headers` header provided by the client. If
+	// the header `Access-Control-Request-Headers` is not included in the
+	// request, the gateway will omit the `Access-Control-Allow-Headers`
+	// response header, instead of specifying the `*` wildcard.
+	//
+	// Support: Extended
+	AllowHeaders pulumi.StringArrayInput `pulumi:"allowHeaders"`
+	// AllowMethods indicates which HTTP methods are supported for accessing the
+	// requested resource.
+	//
+	// Valid values are any method defined by RFC9110, along with the special
+	// value `*`, which represents all HTTP methods are allowed.
+	//
+	// Method names are case-sensitive, so these values are also case-sensitive.
+	// (See https://www.rfc-editor.org/rfc/rfc2616#section-5.1.1)
+	//
+	// Multiple method names in the value of the `Access-Control-Allow-Methods`
+	// response header are separated by a comma (",").
+	//
+	// A CORS-safelisted method is a method that is `GET`, `HEAD`, or `POST`.
+	// (See https://fetch.spec.whatwg.org/#cors-safelisted-method) The
+	// CORS-safelisted methods are always allowed, regardless of whether they
+	// are specified in the `AllowMethods` field.
+	//
+	// When the `AllowMethods` field is configured with one or more methods, the
+	// gateway must return the `Access-Control-Allow-Methods` response header
+	// which value is present in the `AllowMethods` field.
+	//
+	// If the HTTP method of the `Access-Control-Request-Method` request header
+	// is not included in the list of methods specified by the response header
+	// `Access-Control-Allow-Methods`, it will present an error on the client
+	// side.
+	//
+	// If config contains the wildcard "*" in allowMethods and the request is
+	// not credentialed, the `Access-Control-Allow-Methods` response header
+	// can either use the `*` wildcard or the value of
+	// Access-Control-Request-Method from the request.
+	//
+	// When the request is credentialed, the gateway must not specify the `*`
+	// wildcard in the `Access-Control-Allow-Methods` response header. When
+	// also the `AllowCredentials` field is true and `AllowMethods` field
+	// specified with the `*` wildcard, the gateway must specify one HTTP method
+	// in the value of the Access-Control-Allow-Methods response header. The
+	// value of the header `Access-Control-Allow-Methods` is same as the
+	// `Access-Control-Request-Method` header provided by the client. If the
+	// header `Access-Control-Request-Method` is not included in the request,
+	// the gateway will omit the `Access-Control-Allow-Methods` response header,
+	// instead of specifying the `*` wildcard.
+	//
+	// Support: Extended
+	AllowMethods pulumi.StringArrayInput `pulumi:"allowMethods"`
+	// AllowOrigins indicates whether the response can be shared with requested
+	// resource from the given `Origin`.
+	//
+	// The `Origin` consists of a scheme and a host, with an optional port, and
+	// takes the form `<scheme>://<host>(:<port>)`.
+	//
+	// Valid values for scheme are: `http` and `https`.
+	//
+	// Valid values for port are any integer between 1 and 65535 (the list of
+	// available TCP/UDP ports). Note that, if not included, port `80` is
+	// assumed for `http` scheme origins, and port `443` is assumed for `https`
+	// origins. This may affect origin matching.
+	//
+	// The host part of the origin may contain the wildcard character `*`. These
+	// wildcard characters behave as follows:
+	//
+	// * `*` is a greedy match to the _left_, including any number of
+	//   DNS labels to the left of its position. This also means that
+	//   `*` will include any number of period `.` characters to the
+	//   left of its position.
+	// * A wildcard by itself matches all hosts.
+	//
+	// An origin value that includes _only_ the `*` character indicates requests
+	// from all `Origin`s are allowed.
+	//
+	// When the `AllowOrigins` field is configured with multiple origins, it
+	// means the server supports clients from multiple origins. If the request
+	// `Origin` matches the configured allowed origins, the gateway must return
+	// the given `Origin` and sets value of the header
+	// `Access-Control-Allow-Origin` same as the `Origin` header provided by the
+	// client.
+	//
+	// The status code of a successful response to a "preflight" request is
+	// always an OK status (i.e., 204 or 200).
+	//
+	// If the request `Origin` does not match the configured allowed origins,
+	// the gateway returns 204/200 response but doesn't set the relevant
+	// cross-origin response headers. Alternatively, the gateway responds with
+	// 403 status to the "preflight" request is denied, coupled with omitting
+	// the CORS headers. The cross-origin request fails on the client side.
+	// Therefore, the client doesn't attempt the actual cross-origin request.
+	//
+	// Conversely, if the request `Origin` matches one of the configured
+	// allowed origins, the gateway sets the response header
+	// `Access-Control-Allow-Origin` to the same value as the `Origin`
+	// header provided by the client.
+	//
+	// When config has the wildcard ("*") in allowOrigins, and the request
+	// is not credentialed (e.g., it is a preflight request), the
+	// `Access-Control-Allow-Origin` response header either contains the
+	// wildcard as well or the Origin from the request.
+	//
+	// When the request is credentialed, the gateway must not specify the `*`
+	// wildcard in the `Access-Control-Allow-Origin` response header. When
+	// also the `AllowCredentials` field is true and `AllowOrigins` field
+	// specified with the `*` wildcard, the gateway must return a single origin
+	// in the value of the `Access-Control-Allow-Origin` response header,
+	// instead of specifying the `*` wildcard. The value of the header
+	// `Access-Control-Allow-Origin` is same as the `Origin` header provided by
+	// the client.
+	//
+	// Support: Extended
+	AllowOrigins pulumi.StringArrayInput `pulumi:"allowOrigins"`
+	// ExposeHeaders indicates which HTTP response headers can be exposed
+	// to client-side scripts in response to a cross-origin request.
+	//
+	// A CORS-safelisted response header is an HTTP header in a CORS response
+	// that it is considered safe to expose to the client scripts.
+	// The CORS-safelisted response headers include the following headers:
+	// `Cache-Control`
+	// `Content-Language`
+	// `Content-Length`
+	// `Content-Type`
+	// `Expires`
+	// `Last-Modified`
+	// `Pragma`
+	// (See https://fetch.spec.whatwg.org/#cors-safelisted-response-header-name)
+	// The CORS-safelisted response headers are exposed to client by default.
+	//
+	// When an HTTP header name is specified using the `ExposeHeaders` field,
+	// this additional header will be exposed as part of the response to the
+	// client.
+	//
+	// Header names are not case-sensitive.
+	//
+	// Multiple header names in the value of the `Access-Control-Expose-Headers`
+	// response header are separated by a comma (",").
+	//
+	// A wildcard indicates that the responses with all HTTP headers are exposed
+	// to clients. The `Access-Control-Expose-Headers` response header can only
+	// use `*` wildcard as value when the request is not credentialed.
+	//
+	// When the `exposeHeaders` config field contains the "*" wildcard and
+	// the request is credentialed, the gateway cannot use the `*` wildcard in
+	// the `Access-Control-Expose-Headers` response header.
+	//
+	// Support: Extended
+	ExposeHeaders pulumi.StringArrayInput `pulumi:"exposeHeaders"`
+	// MaxAge indicates the duration (in seconds) for the client to cache the
+	// results of a "preflight" request.
+	//
+	// The information provided by the `Access-Control-Allow-Methods` and
+	// `Access-Control-Allow-Headers` response headers can be cached by the
+	// client until the time specified by `Access-Control-Max-Age` elapses.
+	//
+	// The default value of `Access-Control-Max-Age` response header is 5
+	// (seconds).
+	//
+	// When the `MaxAge` field is unspecified, the gateway sets the response
+	// header "Access-Control-Max-Age: 5" by default.
+	MaxAge pulumi.IntPtrInput `pulumi:"maxAge"`
+}
+
+func (HTTPRouteSpecRulesBackendRefsFiltersCorsPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*HTTPRouteSpecRulesBackendRefsFiltersCorsPatch)(nil)).Elem()
+}
+
+func (i HTTPRouteSpecRulesBackendRefsFiltersCorsPatchArgs) ToHTTPRouteSpecRulesBackendRefsFiltersCorsPatchOutput() HTTPRouteSpecRulesBackendRefsFiltersCorsPatchOutput {
+	return i.ToHTTPRouteSpecRulesBackendRefsFiltersCorsPatchOutputWithContext(context.Background())
+}
+
+func (i HTTPRouteSpecRulesBackendRefsFiltersCorsPatchArgs) ToHTTPRouteSpecRulesBackendRefsFiltersCorsPatchOutputWithContext(ctx context.Context) HTTPRouteSpecRulesBackendRefsFiltersCorsPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(HTTPRouteSpecRulesBackendRefsFiltersCorsPatchOutput)
+}
+
+func (i HTTPRouteSpecRulesBackendRefsFiltersCorsPatchArgs) ToHTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput() HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput {
+	return i.ToHTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutputWithContext(context.Background())
+}
+
+func (i HTTPRouteSpecRulesBackendRefsFiltersCorsPatchArgs) ToHTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(HTTPRouteSpecRulesBackendRefsFiltersCorsPatchOutput).ToHTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutputWithContext(ctx)
+}
+
+// HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrInput is an input type that accepts HTTPRouteSpecRulesBackendRefsFiltersCorsPatchArgs, HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtr and HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput values.
+// You can construct a concrete instance of `HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrInput` via:
+//
+//	        HTTPRouteSpecRulesBackendRefsFiltersCorsPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrInput interface {
+	pulumi.Input
+
+	ToHTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput() HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput
+	ToHTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutputWithContext(context.Context) HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput
+}
+
+type httprouteSpecRulesBackendRefsFiltersCorsPatchPtrType HTTPRouteSpecRulesBackendRefsFiltersCorsPatchArgs
+
+func HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtr(v *HTTPRouteSpecRulesBackendRefsFiltersCorsPatchArgs) HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrInput {
+	return (*httprouteSpecRulesBackendRefsFiltersCorsPatchPtrType)(v)
+}
+
+func (*httprouteSpecRulesBackendRefsFiltersCorsPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**HTTPRouteSpecRulesBackendRefsFiltersCorsPatch)(nil)).Elem()
+}
+
+func (i *httprouteSpecRulesBackendRefsFiltersCorsPatchPtrType) ToHTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput() HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput {
+	return i.ToHTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *httprouteSpecRulesBackendRefsFiltersCorsPatchPtrType) ToHTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput)
+}
+
+// CORS defines a schema for a filter that responds to the
+// cross-origin request based on HTTP response header.
+//
+// Support: Extended
+type HTTPRouteSpecRulesBackendRefsFiltersCorsPatchOutput struct{ *pulumi.OutputState }
+
+func (HTTPRouteSpecRulesBackendRefsFiltersCorsPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*HTTPRouteSpecRulesBackendRefsFiltersCorsPatch)(nil)).Elem()
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsPatchOutput) ToHTTPRouteSpecRulesBackendRefsFiltersCorsPatchOutput() HTTPRouteSpecRulesBackendRefsFiltersCorsPatchOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsPatchOutput) ToHTTPRouteSpecRulesBackendRefsFiltersCorsPatchOutputWithContext(ctx context.Context) HTTPRouteSpecRulesBackendRefsFiltersCorsPatchOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsPatchOutput) ToHTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput() HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput {
+	return o.ToHTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutputWithContext(context.Background())
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsPatchOutput) ToHTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v HTTPRouteSpecRulesBackendRefsFiltersCorsPatch) *HTTPRouteSpecRulesBackendRefsFiltersCorsPatch {
+		return &v
+	}).(HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput)
+}
+
+// AllowCredentials indicates whether the actual cross-origin request allows
+// to include credentials.
+//
+// When set to true, the gateway will include the `Access-Control-Allow-Credentials`
+// response header with value true (case-sensitive).
+//
+// When set to false or omitted the gateway will omit the header
+// `Access-Control-Allow-Credentials` entirely (this is the standard CORS
+// behavior).
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsPatchOutput) AllowCredentials() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesBackendRefsFiltersCorsPatch) *bool { return v.AllowCredentials }).(pulumi.BoolPtrOutput)
+}
+
+// AllowHeaders indicates which HTTP request headers are supported for
+// accessing the requested resource.
+//
+// Header names are not case-sensitive.
+//
+// Multiple header names in the value of the `Access-Control-Allow-Headers`
+// response header are separated by a comma (",").
+//
+// When the `AllowHeaders` field is configured with one or more headers, the
+// gateway must return the `Access-Control-Allow-Headers` response header
+// which value is present in the `AllowHeaders` field.
+//
+// If any header name in the `Access-Control-Request-Headers` request header
+// is not included in the list of header names specified by the response
+// header `Access-Control-Allow-Headers`, it will present an error on the
+// client side.
+//
+// If any header name in the `Access-Control-Allow-Headers` response header
+// does not recognize by the client, it will also occur an error on the
+// client side.
+//
+// A wildcard indicates that the requests with all HTTP headers are allowed.
+// If config contains the wildcard "*" in allowHeaders and the request is
+// not credentialed, the `Access-Control-Allow-Headers` response header
+// can either use the `*` wildcard or the value of
+// Access-Control-Request-Headers from the request.
+//
+// When the request is credentialed, the gateway must not specify the `*`
+// wildcard in the `Access-Control-Allow-Headers` response header. When
+// also the `AllowCredentials` field is true and `AllowHeaders` field
+// is specified with the `*` wildcard, the gateway must specify one or more
+// HTTP headers in the value of the `Access-Control-Allow-Headers` response
+// header. The value of the header `Access-Control-Allow-Headers` is same as
+// the `Access-Control-Request-Headers` header provided by the client. If
+// the header `Access-Control-Request-Headers` is not included in the
+// request, the gateway will omit the `Access-Control-Allow-Headers`
+// response header, instead of specifying the `*` wildcard.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsPatchOutput) AllowHeaders() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesBackendRefsFiltersCorsPatch) []string { return v.AllowHeaders }).(pulumi.StringArrayOutput)
+}
+
+// AllowMethods indicates which HTTP methods are supported for accessing the
+// requested resource.
+//
+// Valid values are any method defined by RFC9110, along with the special
+// value `*`, which represents all HTTP methods are allowed.
+//
+// Method names are case-sensitive, so these values are also case-sensitive.
+// (See https://www.rfc-editor.org/rfc/rfc2616#section-5.1.1)
+//
+// Multiple method names in the value of the `Access-Control-Allow-Methods`
+// response header are separated by a comma (",").
+//
+// A CORS-safelisted method is a method that is `GET`, `HEAD`, or `POST`.
+// (See https://fetch.spec.whatwg.org/#cors-safelisted-method) The
+// CORS-safelisted methods are always allowed, regardless of whether they
+// are specified in the `AllowMethods` field.
+//
+// When the `AllowMethods` field is configured with one or more methods, the
+// gateway must return the `Access-Control-Allow-Methods` response header
+// which value is present in the `AllowMethods` field.
+//
+// If the HTTP method of the `Access-Control-Request-Method` request header
+// is not included in the list of methods specified by the response header
+// `Access-Control-Allow-Methods`, it will present an error on the client
+// side.
+//
+// If config contains the wildcard "*" in allowMethods and the request is
+// not credentialed, the `Access-Control-Allow-Methods` response header
+// can either use the `*` wildcard or the value of
+// Access-Control-Request-Method from the request.
+//
+// When the request is credentialed, the gateway must not specify the `*`
+// wildcard in the `Access-Control-Allow-Methods` response header. When
+// also the `AllowCredentials` field is true and `AllowMethods` field
+// specified with the `*` wildcard, the gateway must specify one HTTP method
+// in the value of the Access-Control-Allow-Methods response header. The
+// value of the header `Access-Control-Allow-Methods` is same as the
+// `Access-Control-Request-Method` header provided by the client. If the
+// header `Access-Control-Request-Method` is not included in the request,
+// the gateway will omit the `Access-Control-Allow-Methods` response header,
+// instead of specifying the `*` wildcard.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsPatchOutput) AllowMethods() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesBackendRefsFiltersCorsPatch) []string { return v.AllowMethods }).(pulumi.StringArrayOutput)
+}
+
+// AllowOrigins indicates whether the response can be shared with requested
+// resource from the given `Origin`.
+//
+// The `Origin` consists of a scheme and a host, with an optional port, and
+// takes the form `<scheme>://<host>(:<port>)`.
+//
+// Valid values for scheme are: `http` and `https`.
+//
+// Valid values for port are any integer between 1 and 65535 (the list of
+// available TCP/UDP ports). Note that, if not included, port `80` is
+// assumed for `http` scheme origins, and port `443` is assumed for `https`
+// origins. This may affect origin matching.
+//
+// The host part of the origin may contain the wildcard character `*`. These
+// wildcard characters behave as follows:
+//
+//   - `*` is a greedy match to the _left_, including any number of
+//     DNS labels to the left of its position. This also means that
+//     `*` will include any number of period `.` characters to the
+//     left of its position.
+//   - A wildcard by itself matches all hosts.
+//
+// An origin value that includes _only_ the `*` character indicates requests
+// from all `Origin`s are allowed.
+//
+// When the `AllowOrigins` field is configured with multiple origins, it
+// means the server supports clients from multiple origins. If the request
+// `Origin` matches the configured allowed origins, the gateway must return
+// the given `Origin` and sets value of the header
+// `Access-Control-Allow-Origin` same as the `Origin` header provided by the
+// client.
+//
+// The status code of a successful response to a "preflight" request is
+// always an OK status (i.e., 204 or 200).
+//
+// If the request `Origin` does not match the configured allowed origins,
+// the gateway returns 204/200 response but doesn't set the relevant
+// cross-origin response headers. Alternatively, the gateway responds with
+// 403 status to the "preflight" request is denied, coupled with omitting
+// the CORS headers. The cross-origin request fails on the client side.
+// Therefore, the client doesn't attempt the actual cross-origin request.
+//
+// Conversely, if the request `Origin` matches one of the configured
+// allowed origins, the gateway sets the response header
+// `Access-Control-Allow-Origin` to the same value as the `Origin`
+// header provided by the client.
+//
+// When config has the wildcard ("*") in allowOrigins, and the request
+// is not credentialed (e.g., it is a preflight request), the
+// `Access-Control-Allow-Origin` response header either contains the
+// wildcard as well or the Origin from the request.
+//
+// When the request is credentialed, the gateway must not specify the `*`
+// wildcard in the `Access-Control-Allow-Origin` response header. When
+// also the `AllowCredentials` field is true and `AllowOrigins` field
+// specified with the `*` wildcard, the gateway must return a single origin
+// in the value of the `Access-Control-Allow-Origin` response header,
+// instead of specifying the `*` wildcard. The value of the header
+// `Access-Control-Allow-Origin` is same as the `Origin` header provided by
+// the client.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsPatchOutput) AllowOrigins() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesBackendRefsFiltersCorsPatch) []string { return v.AllowOrigins }).(pulumi.StringArrayOutput)
+}
+
+// ExposeHeaders indicates which HTTP response headers can be exposed
+// to client-side scripts in response to a cross-origin request.
+//
+// A CORS-safelisted response header is an HTTP header in a CORS response
+// that it is considered safe to expose to the client scripts.
+// The CORS-safelisted response headers include the following headers:
+// `Cache-Control`
+// `Content-Language`
+// `Content-Length`
+// `Content-Type`
+// `Expires`
+// `Last-Modified`
+// `Pragma`
+// (See https://fetch.spec.whatwg.org/#cors-safelisted-response-header-name)
+// The CORS-safelisted response headers are exposed to client by default.
+//
+// When an HTTP header name is specified using the `ExposeHeaders` field,
+// this additional header will be exposed as part of the response to the
+// client.
+//
+// Header names are not case-sensitive.
+//
+// Multiple header names in the value of the `Access-Control-Expose-Headers`
+// response header are separated by a comma (",").
+//
+// A wildcard indicates that the responses with all HTTP headers are exposed
+// to clients. The `Access-Control-Expose-Headers` response header can only
+// use `*` wildcard as value when the request is not credentialed.
+//
+// When the `exposeHeaders` config field contains the "*" wildcard and
+// the request is credentialed, the gateway cannot use the `*` wildcard in
+// the `Access-Control-Expose-Headers` response header.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsPatchOutput) ExposeHeaders() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesBackendRefsFiltersCorsPatch) []string { return v.ExposeHeaders }).(pulumi.StringArrayOutput)
+}
+
+// MaxAge indicates the duration (in seconds) for the client to cache the
+// results of a "preflight" request.
+//
+// The information provided by the `Access-Control-Allow-Methods` and
+// `Access-Control-Allow-Headers` response headers can be cached by the
+// client until the time specified by `Access-Control-Max-Age` elapses.
+//
+// The default value of `Access-Control-Max-Age` response header is 5
+// (seconds).
+//
+// When the `MaxAge` field is unspecified, the gateway sets the response
+// header "Access-Control-Max-Age: 5" by default.
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsPatchOutput) MaxAge() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesBackendRefsFiltersCorsPatch) *int { return v.MaxAge }).(pulumi.IntPtrOutput)
+}
+
+type HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**HTTPRouteSpecRulesBackendRefsFiltersCorsPatch)(nil)).Elem()
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput) ToHTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput() HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput) ToHTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput) Elem() HTTPRouteSpecRulesBackendRefsFiltersCorsPatchOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesBackendRefsFiltersCorsPatch) HTTPRouteSpecRulesBackendRefsFiltersCorsPatch {
+		if v != nil {
+			return *v
+		}
+		var ret HTTPRouteSpecRulesBackendRefsFiltersCorsPatch
+		return ret
+	}).(HTTPRouteSpecRulesBackendRefsFiltersCorsPatchOutput)
+}
+
+// AllowCredentials indicates whether the actual cross-origin request allows
+// to include credentials.
+//
+// When set to true, the gateway will include the `Access-Control-Allow-Credentials`
+// response header with value true (case-sensitive).
+//
+// When set to false or omitted the gateway will omit the header
+// `Access-Control-Allow-Credentials` entirely (this is the standard CORS
+// behavior).
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput) AllowCredentials() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesBackendRefsFiltersCorsPatch) *bool {
+		if v == nil {
+			return nil
+		}
+		return v.AllowCredentials
+	}).(pulumi.BoolPtrOutput)
+}
+
+// AllowHeaders indicates which HTTP request headers are supported for
+// accessing the requested resource.
+//
+// Header names are not case-sensitive.
+//
+// Multiple header names in the value of the `Access-Control-Allow-Headers`
+// response header are separated by a comma (",").
+//
+// When the `AllowHeaders` field is configured with one or more headers, the
+// gateway must return the `Access-Control-Allow-Headers` response header
+// which value is present in the `AllowHeaders` field.
+//
+// If any header name in the `Access-Control-Request-Headers` request header
+// is not included in the list of header names specified by the response
+// header `Access-Control-Allow-Headers`, it will present an error on the
+// client side.
+//
+// If any header name in the `Access-Control-Allow-Headers` response header
+// does not recognize by the client, it will also occur an error on the
+// client side.
+//
+// A wildcard indicates that the requests with all HTTP headers are allowed.
+// If config contains the wildcard "*" in allowHeaders and the request is
+// not credentialed, the `Access-Control-Allow-Headers` response header
+// can either use the `*` wildcard or the value of
+// Access-Control-Request-Headers from the request.
+//
+// When the request is credentialed, the gateway must not specify the `*`
+// wildcard in the `Access-Control-Allow-Headers` response header. When
+// also the `AllowCredentials` field is true and `AllowHeaders` field
+// is specified with the `*` wildcard, the gateway must specify one or more
+// HTTP headers in the value of the `Access-Control-Allow-Headers` response
+// header. The value of the header `Access-Control-Allow-Headers` is same as
+// the `Access-Control-Request-Headers` header provided by the client. If
+// the header `Access-Control-Request-Headers` is not included in the
+// request, the gateway will omit the `Access-Control-Allow-Headers`
+// response header, instead of specifying the `*` wildcard.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput) AllowHeaders() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesBackendRefsFiltersCorsPatch) []string {
+		if v == nil {
+			return nil
+		}
+		return v.AllowHeaders
+	}).(pulumi.StringArrayOutput)
+}
+
+// AllowMethods indicates which HTTP methods are supported for accessing the
+// requested resource.
+//
+// Valid values are any method defined by RFC9110, along with the special
+// value `*`, which represents all HTTP methods are allowed.
+//
+// Method names are case-sensitive, so these values are also case-sensitive.
+// (See https://www.rfc-editor.org/rfc/rfc2616#section-5.1.1)
+//
+// Multiple method names in the value of the `Access-Control-Allow-Methods`
+// response header are separated by a comma (",").
+//
+// A CORS-safelisted method is a method that is `GET`, `HEAD`, or `POST`.
+// (See https://fetch.spec.whatwg.org/#cors-safelisted-method) The
+// CORS-safelisted methods are always allowed, regardless of whether they
+// are specified in the `AllowMethods` field.
+//
+// When the `AllowMethods` field is configured with one or more methods, the
+// gateway must return the `Access-Control-Allow-Methods` response header
+// which value is present in the `AllowMethods` field.
+//
+// If the HTTP method of the `Access-Control-Request-Method` request header
+// is not included in the list of methods specified by the response header
+// `Access-Control-Allow-Methods`, it will present an error on the client
+// side.
+//
+// If config contains the wildcard "*" in allowMethods and the request is
+// not credentialed, the `Access-Control-Allow-Methods` response header
+// can either use the `*` wildcard or the value of
+// Access-Control-Request-Method from the request.
+//
+// When the request is credentialed, the gateway must not specify the `*`
+// wildcard in the `Access-Control-Allow-Methods` response header. When
+// also the `AllowCredentials` field is true and `AllowMethods` field
+// specified with the `*` wildcard, the gateway must specify one HTTP method
+// in the value of the Access-Control-Allow-Methods response header. The
+// value of the header `Access-Control-Allow-Methods` is same as the
+// `Access-Control-Request-Method` header provided by the client. If the
+// header `Access-Control-Request-Method` is not included in the request,
+// the gateway will omit the `Access-Control-Allow-Methods` response header,
+// instead of specifying the `*` wildcard.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput) AllowMethods() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesBackendRefsFiltersCorsPatch) []string {
+		if v == nil {
+			return nil
+		}
+		return v.AllowMethods
+	}).(pulumi.StringArrayOutput)
+}
+
+// AllowOrigins indicates whether the response can be shared with requested
+// resource from the given `Origin`.
+//
+// The `Origin` consists of a scheme and a host, with an optional port, and
+// takes the form `<scheme>://<host>(:<port>)`.
+//
+// Valid values for scheme are: `http` and `https`.
+//
+// Valid values for port are any integer between 1 and 65535 (the list of
+// available TCP/UDP ports). Note that, if not included, port `80` is
+// assumed for `http` scheme origins, and port `443` is assumed for `https`
+// origins. This may affect origin matching.
+//
+// The host part of the origin may contain the wildcard character `*`. These
+// wildcard characters behave as follows:
+//
+//   - `*` is a greedy match to the _left_, including any number of
+//     DNS labels to the left of its position. This also means that
+//     `*` will include any number of period `.` characters to the
+//     left of its position.
+//   - A wildcard by itself matches all hosts.
+//
+// An origin value that includes _only_ the `*` character indicates requests
+// from all `Origin`s are allowed.
+//
+// When the `AllowOrigins` field is configured with multiple origins, it
+// means the server supports clients from multiple origins. If the request
+// `Origin` matches the configured allowed origins, the gateway must return
+// the given `Origin` and sets value of the header
+// `Access-Control-Allow-Origin` same as the `Origin` header provided by the
+// client.
+//
+// The status code of a successful response to a "preflight" request is
+// always an OK status (i.e., 204 or 200).
+//
+// If the request `Origin` does not match the configured allowed origins,
+// the gateway returns 204/200 response but doesn't set the relevant
+// cross-origin response headers. Alternatively, the gateway responds with
+// 403 status to the "preflight" request is denied, coupled with omitting
+// the CORS headers. The cross-origin request fails on the client side.
+// Therefore, the client doesn't attempt the actual cross-origin request.
+//
+// Conversely, if the request `Origin` matches one of the configured
+// allowed origins, the gateway sets the response header
+// `Access-Control-Allow-Origin` to the same value as the `Origin`
+// header provided by the client.
+//
+// When config has the wildcard ("*") in allowOrigins, and the request
+// is not credentialed (e.g., it is a preflight request), the
+// `Access-Control-Allow-Origin` response header either contains the
+// wildcard as well or the Origin from the request.
+//
+// When the request is credentialed, the gateway must not specify the `*`
+// wildcard in the `Access-Control-Allow-Origin` response header. When
+// also the `AllowCredentials` field is true and `AllowOrigins` field
+// specified with the `*` wildcard, the gateway must return a single origin
+// in the value of the `Access-Control-Allow-Origin` response header,
+// instead of specifying the `*` wildcard. The value of the header
+// `Access-Control-Allow-Origin` is same as the `Origin` header provided by
+// the client.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput) AllowOrigins() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesBackendRefsFiltersCorsPatch) []string {
+		if v == nil {
+			return nil
+		}
+		return v.AllowOrigins
+	}).(pulumi.StringArrayOutput)
+}
+
+// ExposeHeaders indicates which HTTP response headers can be exposed
+// to client-side scripts in response to a cross-origin request.
+//
+// A CORS-safelisted response header is an HTTP header in a CORS response
+// that it is considered safe to expose to the client scripts.
+// The CORS-safelisted response headers include the following headers:
+// `Cache-Control`
+// `Content-Language`
+// `Content-Length`
+// `Content-Type`
+// `Expires`
+// `Last-Modified`
+// `Pragma`
+// (See https://fetch.spec.whatwg.org/#cors-safelisted-response-header-name)
+// The CORS-safelisted response headers are exposed to client by default.
+//
+// When an HTTP header name is specified using the `ExposeHeaders` field,
+// this additional header will be exposed as part of the response to the
+// client.
+//
+// Header names are not case-sensitive.
+//
+// Multiple header names in the value of the `Access-Control-Expose-Headers`
+// response header are separated by a comma (",").
+//
+// A wildcard indicates that the responses with all HTTP headers are exposed
+// to clients. The `Access-Control-Expose-Headers` response header can only
+// use `*` wildcard as value when the request is not credentialed.
+//
+// When the `exposeHeaders` config field contains the "*" wildcard and
+// the request is credentialed, the gateway cannot use the `*` wildcard in
+// the `Access-Control-Expose-Headers` response header.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput) ExposeHeaders() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesBackendRefsFiltersCorsPatch) []string {
+		if v == nil {
+			return nil
+		}
+		return v.ExposeHeaders
+	}).(pulumi.StringArrayOutput)
+}
+
+// MaxAge indicates the duration (in seconds) for the client to cache the
+// results of a "preflight" request.
+//
+// The information provided by the `Access-Control-Allow-Methods` and
+// `Access-Control-Allow-Headers` response headers can be cached by the
+// client until the time specified by `Access-Control-Max-Age` elapses.
+//
+// The default value of `Access-Control-Max-Age` response header is 5
+// (seconds).
+//
+// When the `MaxAge` field is unspecified, the gateway sets the response
+// header "Access-Control-Max-Age: 5" by default.
+func (o HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput) MaxAge() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesBackendRefsFiltersCorsPatch) *int {
+		if v == nil {
+			return nil
+		}
+		return v.MaxAge
+	}).(pulumi.IntPtrOutput)
 }
 
 // ExtensionRef is an optional, implementation-specific extension to the
@@ -13447,6 +23095,7 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersExtensionRefPatchPtrOutput) Name() p
 // authentication strategies, rate-limiting, and traffic shaping. API
 // guarantee/conformance is defined based on the type of the filter.
 type HTTPRouteSpecRulesBackendRefsFiltersPatch struct {
+	Cors                   *HTTPRouteSpecRulesBackendRefsFiltersCorsPatch                   `pulumi:"cors"`
 	ExtensionRef           *HTTPRouteSpecRulesBackendRefsFiltersExtensionRefPatch           `pulumi:"extensionRef"`
 	RequestHeaderModifier  *HTTPRouteSpecRulesBackendRefsFiltersRequestHeaderModifierPatch  `pulumi:"requestHeaderModifier"`
 	RequestMirror          *HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPatch          `pulumi:"requestMirror"`
@@ -13506,6 +23155,7 @@ type HTTPRouteSpecRulesBackendRefsFiltersPatchInput interface {
 // authentication strategies, rate-limiting, and traffic shaping. API
 // guarantee/conformance is defined based on the type of the filter.
 type HTTPRouteSpecRulesBackendRefsFiltersPatchArgs struct {
+	Cors                   HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrInput                   `pulumi:"cors"`
 	ExtensionRef           HTTPRouteSpecRulesBackendRefsFiltersExtensionRefPatchPtrInput           `pulumi:"extensionRef"`
 	RequestHeaderModifier  HTTPRouteSpecRulesBackendRefsFiltersRequestHeaderModifierPatchPtrInput  `pulumi:"requestHeaderModifier"`
 	RequestMirror          HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPatchPtrInput          `pulumi:"requestMirror"`
@@ -13602,6 +23252,12 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersPatchOutput) ToHTTPRouteSpecRulesBac
 
 func (o HTTPRouteSpecRulesBackendRefsFiltersPatchOutput) ToHTTPRouteSpecRulesBackendRefsFiltersPatchOutputWithContext(ctx context.Context) HTTPRouteSpecRulesBackendRefsFiltersPatchOutput {
 	return o
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersPatchOutput) Cors() HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesBackendRefsFiltersPatch) *HTTPRouteSpecRulesBackendRefsFiltersCorsPatch {
+		return v.Cors
+	}).(HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput)
 }
 
 func (o HTTPRouteSpecRulesBackendRefsFiltersPatchOutput) ExtensionRef() HTTPRouteSpecRulesBackendRefsFiltersExtensionRefPatchPtrOutput {
@@ -14088,7 +23744,7 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersRequestHeaderModifierPtrOutput) Set(
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesBackendRefsFiltersRequestHeaderModifierAdd struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -14114,7 +23770,7 @@ type HTTPRouteSpecRulesBackendRefsFiltersRequestHeaderModifierAddInput interface
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesBackendRefsFiltersRequestHeaderModifierAddArgs struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -14179,7 +23835,7 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersRequestHeaderModifierAddOutput) ToHT
 }
 
 // Name is the name of the HTTP Header to be matched. Name matching MUST be
-// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 //
 // If multiple entries specify equivalent header names, the first entry with
 // an equivalent name MUST be considered for a match. Subsequent entries
@@ -14218,7 +23874,7 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersRequestHeaderModifierAddArrayOutput)
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesBackendRefsFiltersRequestHeaderModifierAddPatch struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -14244,7 +23900,7 @@ type HTTPRouteSpecRulesBackendRefsFiltersRequestHeaderModifierAddPatchInput inte
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesBackendRefsFiltersRequestHeaderModifierAddPatchArgs struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -14309,7 +23965,7 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersRequestHeaderModifierAddPatchOutput)
 }
 
 // Name is the name of the HTTP Header to be matched. Name matching MUST be
-// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 //
 // If multiple entries specify equivalent header names, the first entry with
 // an equivalent name MUST be considered for a match. Subsequent entries
@@ -14737,7 +24393,7 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersRequestHeaderModifierPatchPtrOutput)
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesBackendRefsFiltersRequestHeaderModifierSet struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -14763,7 +24419,7 @@ type HTTPRouteSpecRulesBackendRefsFiltersRequestHeaderModifierSetInput interface
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesBackendRefsFiltersRequestHeaderModifierSetArgs struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -14828,7 +24484,7 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersRequestHeaderModifierSetOutput) ToHT
 }
 
 // Name is the name of the HTTP Header to be matched. Name matching MUST be
-// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 //
 // If multiple entries specify equivalent header names, the first entry with
 // an equivalent name MUST be considered for a match. Subsequent entries
@@ -14867,7 +24523,7 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersRequestHeaderModifierSetArrayOutput)
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesBackendRefsFiltersRequestHeaderModifierSetPatch struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -14893,7 +24549,7 @@ type HTTPRouteSpecRulesBackendRefsFiltersRequestHeaderModifierSetPatchInput inte
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesBackendRefsFiltersRequestHeaderModifierSetPatchArgs struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -14958,7 +24614,7 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersRequestHeaderModifierSetPatchOutput)
 }
 
 // Name is the name of the HTTP Header to be matched. Name matching MUST be
-// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 //
 // If multiple entries specify equivalent header names, the first entry with
 // an equivalent name MUST be considered for a match. Subsequent entries
@@ -15005,6 +24661,14 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersRequestHeaderModifierSetPatchArrayOu
 // Support: Extended
 type HTTPRouteSpecRulesBackendRefsFiltersRequestMirror struct {
 	BackendRef *HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorBackendRef `pulumi:"backendRef"`
+	Fraction   *HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFraction   `pulumi:"fraction"`
+	// Percent represents the percentage of requests that should be
+	// mirrored to BackendRef. Its minimum value is 0 (indicating 0% of
+	// requests) and its maximum value is 100 (indicating 100% of requests).
+	//
+	// Only one of Fraction or Percent may be specified. If neither field
+	// is specified, 100% of requests will be mirrored.
+	Percent *int `pulumi:"percent"`
 }
 
 // HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorInput is an input type that accepts HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorArgs and HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorOutput values.
@@ -15029,6 +24693,14 @@ type HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorInput interface {
 // Support: Extended
 type HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorArgs struct {
 	BackendRef HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorBackendRefPtrInput `pulumi:"backendRef"`
+	Fraction   HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrInput   `pulumi:"fraction"`
+	// Percent represents the percentage of requests that should be
+	// mirrored to BackendRef. Its minimum value is 0 (indicating 0% of
+	// requests) and its maximum value is 100 (indicating 100% of requests).
+	//
+	// Only one of Fraction or Percent may be specified. If neither field
+	// is specified, 100% of requests will be mirrored.
+	Percent pulumi.IntPtrInput `pulumi:"percent"`
 }
 
 func (HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorArgs) ElementType() reflect.Type {
@@ -15123,6 +24795,22 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorOutput) BackendRef() HT
 	}).(HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorBackendRefPtrOutput)
 }
 
+func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorOutput) Fraction() HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesBackendRefsFiltersRequestMirror) *HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFraction {
+		return v.Fraction
+	}).(HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutput)
+}
+
+// Percent represents the percentage of requests that should be
+// mirrored to BackendRef. Its minimum value is 0 (indicating 0% of
+// requests) and its maximum value is 100 (indicating 100% of requests).
+//
+// Only one of Fraction or Percent may be specified. If neither field
+// is specified, 100% of requests will be mirrored.
+func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorOutput) Percent() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesBackendRefsFiltersRequestMirror) *int { return v.Percent }).(pulumi.IntPtrOutput)
+}
+
 type HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPtrOutput struct{ *pulumi.OutputState }
 
 func (HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPtrOutput) ElementType() reflect.Type {
@@ -15154,6 +24842,30 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPtrOutput) BackendRef()
 		}
 		return v.BackendRef
 	}).(HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorBackendRefPtrOutput)
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPtrOutput) Fraction() HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesBackendRefsFiltersRequestMirror) *HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFraction {
+		if v == nil {
+			return nil
+		}
+		return v.Fraction
+	}).(HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutput)
+}
+
+// Percent represents the percentage of requests that should be
+// mirrored to BackendRef. Its minimum value is 0 (indicating 0% of
+// requests) and its maximum value is 100 (indicating 100% of requests).
+//
+// Only one of Fraction or Percent may be specified. If neither field
+// is specified, 100% of requests will be mirrored.
+func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPtrOutput) Percent() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesBackendRefsFiltersRequestMirror) *int {
+		if v == nil {
+			return nil
+		}
+		return v.Percent
+	}).(pulumi.IntPtrOutput)
 }
 
 // BackendRef references a resource where mirrored requests are sent.
@@ -15928,6 +25640,332 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorBackendRefPatchPtrOutpu
 	}).(pulumi.IntPtrOutput)
 }
 
+// Fraction represents the fraction of requests that should be
+// mirrored to BackendRef.
+//
+// Only one of Fraction or Percent may be specified. If neither field
+// is specified, 100% of requests will be mirrored.
+type HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFraction struct {
+	Denominator *int `pulumi:"denominator"`
+	Numerator   *int `pulumi:"numerator"`
+}
+
+// HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionInput is an input type that accepts HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionArgs and HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionOutput values.
+// You can construct a concrete instance of `HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionInput` via:
+//
+//	HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionArgs{...}
+type HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionInput interface {
+	pulumi.Input
+
+	ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionOutput() HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionOutput
+	ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionOutputWithContext(context.Context) HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionOutput
+}
+
+// Fraction represents the fraction of requests that should be
+// mirrored to BackendRef.
+//
+// Only one of Fraction or Percent may be specified. If neither field
+// is specified, 100% of requests will be mirrored.
+type HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionArgs struct {
+	Denominator pulumi.IntPtrInput `pulumi:"denominator"`
+	Numerator   pulumi.IntPtrInput `pulumi:"numerator"`
+}
+
+func (HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFraction)(nil)).Elem()
+}
+
+func (i HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionArgs) ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionOutput() HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionOutput {
+	return i.ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionOutputWithContext(context.Background())
+}
+
+func (i HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionArgs) ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionOutputWithContext(ctx context.Context) HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionOutput)
+}
+
+func (i HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionArgs) ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutput() HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutput {
+	return i.ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutputWithContext(context.Background())
+}
+
+func (i HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionArgs) ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionOutput).ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutputWithContext(ctx)
+}
+
+// HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrInput is an input type that accepts HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionArgs, HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtr and HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutput values.
+// You can construct a concrete instance of `HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrInput` via:
+//
+//	        HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionArgs{...}
+//
+//	or:
+//
+//	        nil
+type HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrInput interface {
+	pulumi.Input
+
+	ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutput() HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutput
+	ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutputWithContext(context.Context) HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutput
+}
+
+type httprouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrType HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionArgs
+
+func HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtr(v *HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionArgs) HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrInput {
+	return (*httprouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrType)(v)
+}
+
+func (*httprouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFraction)(nil)).Elem()
+}
+
+func (i *httprouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrType) ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutput() HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutput {
+	return i.ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutputWithContext(context.Background())
+}
+
+func (i *httprouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrType) ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutput)
+}
+
+// Fraction represents the fraction of requests that should be
+// mirrored to BackendRef.
+//
+// Only one of Fraction or Percent may be specified. If neither field
+// is specified, 100% of requests will be mirrored.
+type HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionOutput struct{ *pulumi.OutputState }
+
+func (HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFraction)(nil)).Elem()
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionOutput) ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionOutput() HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionOutput) ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionOutputWithContext(ctx context.Context) HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionOutput) ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutput() HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutput {
+	return o.ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutputWithContext(context.Background())
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionOutput) ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFraction) *HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFraction {
+		return &v
+	}).(HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutput)
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionOutput) Denominator() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFraction) *int { return v.Denominator }).(pulumi.IntPtrOutput)
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionOutput) Numerator() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFraction) *int { return v.Numerator }).(pulumi.IntPtrOutput)
+}
+
+type HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutput struct{ *pulumi.OutputState }
+
+func (HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFraction)(nil)).Elem()
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutput) ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutput() HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutput) ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutput) Elem() HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFraction) HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFraction {
+		if v != nil {
+			return *v
+		}
+		var ret HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFraction
+		return ret
+	}).(HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionOutput)
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutput) Denominator() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFraction) *int {
+		if v == nil {
+			return nil
+		}
+		return v.Denominator
+	}).(pulumi.IntPtrOutput)
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutput) Numerator() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFraction) *int {
+		if v == nil {
+			return nil
+		}
+		return v.Numerator
+	}).(pulumi.IntPtrOutput)
+}
+
+// Fraction represents the fraction of requests that should be
+// mirrored to BackendRef.
+//
+// Only one of Fraction or Percent may be specified. If neither field
+// is specified, 100% of requests will be mirrored.
+type HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatch struct {
+	Denominator *int `pulumi:"denominator"`
+	Numerator   *int `pulumi:"numerator"`
+}
+
+// HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchInput is an input type that accepts HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchArgs and HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchOutput values.
+// You can construct a concrete instance of `HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchInput` via:
+//
+//	HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchArgs{...}
+type HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchInput interface {
+	pulumi.Input
+
+	ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchOutput() HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchOutput
+	ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchOutputWithContext(context.Context) HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchOutput
+}
+
+// Fraction represents the fraction of requests that should be
+// mirrored to BackendRef.
+//
+// Only one of Fraction or Percent may be specified. If neither field
+// is specified, 100% of requests will be mirrored.
+type HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchArgs struct {
+	Denominator pulumi.IntPtrInput `pulumi:"denominator"`
+	Numerator   pulumi.IntPtrInput `pulumi:"numerator"`
+}
+
+func (HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatch)(nil)).Elem()
+}
+
+func (i HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchArgs) ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchOutput() HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchOutput {
+	return i.ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchOutputWithContext(context.Background())
+}
+
+func (i HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchArgs) ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchOutputWithContext(ctx context.Context) HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchOutput)
+}
+
+func (i HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchArgs) ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutput() HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutput {
+	return i.ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutputWithContext(context.Background())
+}
+
+func (i HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchArgs) ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchOutput).ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutputWithContext(ctx)
+}
+
+// HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrInput is an input type that accepts HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchArgs, HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtr and HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutput values.
+// You can construct a concrete instance of `HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrInput` via:
+//
+//	        HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrInput interface {
+	pulumi.Input
+
+	ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutput() HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutput
+	ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutputWithContext(context.Context) HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutput
+}
+
+type httprouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrType HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchArgs
+
+func HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtr(v *HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchArgs) HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrInput {
+	return (*httprouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrType)(v)
+}
+
+func (*httprouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatch)(nil)).Elem()
+}
+
+func (i *httprouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrType) ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutput() HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutput {
+	return i.ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *httprouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrType) ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutput)
+}
+
+// Fraction represents the fraction of requests that should be
+// mirrored to BackendRef.
+//
+// Only one of Fraction or Percent may be specified. If neither field
+// is specified, 100% of requests will be mirrored.
+type HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchOutput struct{ *pulumi.OutputState }
+
+func (HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatch)(nil)).Elem()
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchOutput) ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchOutput() HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchOutput) ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchOutputWithContext(ctx context.Context) HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchOutput) ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutput() HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutput {
+	return o.ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutputWithContext(context.Background())
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchOutput) ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatch) *HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatch {
+		return &v
+	}).(HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutput)
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchOutput) Denominator() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatch) *int { return v.Denominator }).(pulumi.IntPtrOutput)
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchOutput) Numerator() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatch) *int { return v.Numerator }).(pulumi.IntPtrOutput)
+}
+
+type HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatch)(nil)).Elem()
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutput) ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutput() HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutput) ToHTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutput) Elem() HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatch) HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatch {
+		if v != nil {
+			return *v
+		}
+		var ret HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatch
+		return ret
+	}).(HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchOutput)
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutput) Denominator() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatch) *int {
+		if v == nil {
+			return nil
+		}
+		return v.Denominator
+	}).(pulumi.IntPtrOutput)
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutput) Numerator() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatch) *int {
+		if v == nil {
+			return nil
+		}
+		return v.Numerator
+	}).(pulumi.IntPtrOutput)
+}
+
 // RequestMirror defines a schema for a filter that mirrors requests.
 // Requests are sent to the specified destination, but responses from
 // that destination are ignored.
@@ -15939,6 +25977,14 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorBackendRefPatchPtrOutpu
 // Support: Extended
 type HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPatch struct {
 	BackendRef *HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorBackendRefPatch `pulumi:"backendRef"`
+	Fraction   *HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatch   `pulumi:"fraction"`
+	// Percent represents the percentage of requests that should be
+	// mirrored to BackendRef. Its minimum value is 0 (indicating 0% of
+	// requests) and its maximum value is 100 (indicating 100% of requests).
+	//
+	// Only one of Fraction or Percent may be specified. If neither field
+	// is specified, 100% of requests will be mirrored.
+	Percent *int `pulumi:"percent"`
 }
 
 // HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPatchInput is an input type that accepts HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPatchArgs and HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPatchOutput values.
@@ -15963,6 +26009,14 @@ type HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPatchInput interface {
 // Support: Extended
 type HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPatchArgs struct {
 	BackendRef HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorBackendRefPatchPtrInput `pulumi:"backendRef"`
+	Fraction   HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrInput   `pulumi:"fraction"`
+	// Percent represents the percentage of requests that should be
+	// mirrored to BackendRef. Its minimum value is 0 (indicating 0% of
+	// requests) and its maximum value is 100 (indicating 100% of requests).
+	//
+	// Only one of Fraction or Percent may be specified. If neither field
+	// is specified, 100% of requests will be mirrored.
+	Percent pulumi.IntPtrInput `pulumi:"percent"`
 }
 
 func (HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPatchArgs) ElementType() reflect.Type {
@@ -16057,6 +26111,22 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPatchOutput) BackendRef
 	}).(HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorBackendRefPatchPtrOutput)
 }
 
+func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPatchOutput) Fraction() HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPatch) *HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatch {
+		return v.Fraction
+	}).(HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutput)
+}
+
+// Percent represents the percentage of requests that should be
+// mirrored to BackendRef. Its minimum value is 0 (indicating 0% of
+// requests) and its maximum value is 100 (indicating 100% of requests).
+//
+// Only one of Fraction or Percent may be specified. If neither field
+// is specified, 100% of requests will be mirrored.
+func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPatchOutput) Percent() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPatch) *int { return v.Percent }).(pulumi.IntPtrOutput)
+}
+
 type HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPatchPtrOutput struct{ *pulumi.OutputState }
 
 func (HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPatchPtrOutput) ElementType() reflect.Type {
@@ -16088,6 +26158,30 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPatchPtrOutput) Backend
 		}
 		return v.BackendRef
 	}).(HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorBackendRefPatchPtrOutput)
+}
+
+func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPatchPtrOutput) Fraction() HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPatch) *HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatch {
+		if v == nil {
+			return nil
+		}
+		return v.Fraction
+	}).(HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutput)
+}
+
+// Percent represents the percentage of requests that should be
+// mirrored to BackendRef. Its minimum value is 0 (indicating 0% of
+// requests) and its maximum value is 100 (indicating 100% of requests).
+//
+// Only one of Fraction or Percent may be specified. If neither field
+// is specified, 100% of requests will be mirrored.
+func (o HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPatchPtrOutput) Percent() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPatch) *int {
+		if v == nil {
+			return nil
+		}
+		return v.Percent
+	}).(pulumi.IntPtrOutput)
 }
 
 // RequestRedirect defines a schema for a filter that responds to the
@@ -16937,18 +27031,6 @@ type HTTPRouteSpecRulesBackendRefsFiltersRequestRedirectPath struct {
 	// the implementation setting the Accepted Condition for the Route to `status: False`.
 	//
 	// Request Path | Prefix Match | Replace Prefix | Modified Path
-	// -------------|--------------|----------------|----------
-	// /foo/bar     | /foo         | /xyz           | /xyz/bar
-	// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-	// /foo         | /foo         | /xyz           | /xyz
-	// /foo/        | /foo         | /xyz           | /xyz/
-	// /foo/bar     | /foo         | <empty string> | /bar
-	// /foo/        | /foo         | <empty string> | /
-	// /foo         | /foo         | <empty string> | /
-	// /foo/        | /foo         | /              | /
-	// /foo         | /foo         | /              | /
 	ReplacePrefixMatch *string `pulumi:"replacePrefixMatch"`
 	// Type defines the type of path modifier. Additional types may be
 	// added in a future release of the API.
@@ -16998,18 +27080,6 @@ type HTTPRouteSpecRulesBackendRefsFiltersRequestRedirectPathArgs struct {
 	// the implementation setting the Accepted Condition for the Route to `status: False`.
 	//
 	// Request Path | Prefix Match | Replace Prefix | Modified Path
-	// -------------|--------------|----------------|----------
-	// /foo/bar     | /foo         | /xyz           | /xyz/bar
-	// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-	// /foo         | /foo         | /xyz           | /xyz
-	// /foo/        | /foo         | /xyz           | /xyz/
-	// /foo/bar     | /foo         | <empty string> | /bar
-	// /foo/        | /foo         | <empty string> | /
-	// /foo         | /foo         | <empty string> | /
-	// /foo/        | /foo         | /              | /
-	// /foo         | /foo         | /              | /
 	ReplacePrefixMatch pulumi.StringPtrInput `pulumi:"replacePrefixMatch"`
 	// Type defines the type of path modifier. Additional types may be
 	// added in a future release of the API.
@@ -17127,18 +27197,6 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersRequestRedirectPathOutput) ReplaceFu
 // the implementation setting the Accepted Condition for the Route to `status: False`.
 //
 // Request Path | Prefix Match | Replace Prefix | Modified Path
-// -------------|--------------|----------------|----------
-// /foo/bar     | /foo         | /xyz           | /xyz/bar
-// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-// /foo         | /foo         | /xyz           | /xyz
-// /foo/        | /foo         | /xyz           | /xyz/
-// /foo/bar     | /foo         | <empty string> | /bar
-// /foo/        | /foo         | <empty string> | /
-// /foo         | /foo         | <empty string> | /
-// /foo/        | /foo         | /              | /
-// /foo         | /foo         | /              | /
 func (o HTTPRouteSpecRulesBackendRefsFiltersRequestRedirectPathOutput) ReplacePrefixMatch() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v HTTPRouteSpecRulesBackendRefsFiltersRequestRedirectPath) *string { return v.ReplacePrefixMatch }).(pulumi.StringPtrOutput)
 }
@@ -17207,18 +27265,6 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersRequestRedirectPathPtrOutput) Replac
 // the implementation setting the Accepted Condition for the Route to `status: False`.
 //
 // Request Path | Prefix Match | Replace Prefix | Modified Path
-// -------------|--------------|----------------|----------
-// /foo/bar     | /foo         | /xyz           | /xyz/bar
-// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-// /foo         | /foo         | /xyz           | /xyz
-// /foo/        | /foo         | /xyz           | /xyz/
-// /foo/bar     | /foo         | <empty string> | /bar
-// /foo/        | /foo         | <empty string> | /
-// /foo         | /foo         | <empty string> | /
-// /foo/        | /foo         | /              | /
-// /foo         | /foo         | /              | /
 func (o HTTPRouteSpecRulesBackendRefsFiltersRequestRedirectPathPtrOutput) ReplacePrefixMatch() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *HTTPRouteSpecRulesBackendRefsFiltersRequestRedirectPath) *string {
 		if v == nil {
@@ -17271,18 +27317,6 @@ type HTTPRouteSpecRulesBackendRefsFiltersRequestRedirectPathPatch struct {
 	// the implementation setting the Accepted Condition for the Route to `status: False`.
 	//
 	// Request Path | Prefix Match | Replace Prefix | Modified Path
-	// -------------|--------------|----------------|----------
-	// /foo/bar     | /foo         | /xyz           | /xyz/bar
-	// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-	// /foo         | /foo         | /xyz           | /xyz
-	// /foo/        | /foo         | /xyz           | /xyz/
-	// /foo/bar     | /foo         | <empty string> | /bar
-	// /foo/        | /foo         | <empty string> | /
-	// /foo         | /foo         | <empty string> | /
-	// /foo/        | /foo         | /              | /
-	// /foo         | /foo         | /              | /
 	ReplacePrefixMatch *string `pulumi:"replacePrefixMatch"`
 	// Type defines the type of path modifier. Additional types may be
 	// added in a future release of the API.
@@ -17332,18 +27366,6 @@ type HTTPRouteSpecRulesBackendRefsFiltersRequestRedirectPathPatchArgs struct {
 	// the implementation setting the Accepted Condition for the Route to `status: False`.
 	//
 	// Request Path | Prefix Match | Replace Prefix | Modified Path
-	// -------------|--------------|----------------|----------
-	// /foo/bar     | /foo         | /xyz           | /xyz/bar
-	// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-	// /foo         | /foo         | /xyz           | /xyz
-	// /foo/        | /foo         | /xyz           | /xyz/
-	// /foo/bar     | /foo         | <empty string> | /bar
-	// /foo/        | /foo         | <empty string> | /
-	// /foo         | /foo         | <empty string> | /
-	// /foo/        | /foo         | /              | /
-	// /foo         | /foo         | /              | /
 	ReplacePrefixMatch pulumi.StringPtrInput `pulumi:"replacePrefixMatch"`
 	// Type defines the type of path modifier. Additional types may be
 	// added in a future release of the API.
@@ -17461,18 +27483,6 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersRequestRedirectPathPatchOutput) Repl
 // the implementation setting the Accepted Condition for the Route to `status: False`.
 //
 // Request Path | Prefix Match | Replace Prefix | Modified Path
-// -------------|--------------|----------------|----------
-// /foo/bar     | /foo         | /xyz           | /xyz/bar
-// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-// /foo         | /foo         | /xyz           | /xyz
-// /foo/        | /foo         | /xyz           | /xyz/
-// /foo/bar     | /foo         | <empty string> | /bar
-// /foo/        | /foo         | <empty string> | /
-// /foo         | /foo         | <empty string> | /
-// /foo/        | /foo         | /              | /
-// /foo         | /foo         | /              | /
 func (o HTTPRouteSpecRulesBackendRefsFiltersRequestRedirectPathPatchOutput) ReplacePrefixMatch() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v HTTPRouteSpecRulesBackendRefsFiltersRequestRedirectPathPatch) *string {
 		return v.ReplacePrefixMatch
@@ -17543,18 +27553,6 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersRequestRedirectPathPatchPtrOutput) R
 // the implementation setting the Accepted Condition for the Route to `status: False`.
 //
 // Request Path | Prefix Match | Replace Prefix | Modified Path
-// -------------|--------------|----------------|----------
-// /foo/bar     | /foo         | /xyz           | /xyz/bar
-// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-// /foo         | /foo         | /xyz           | /xyz
-// /foo/        | /foo         | /xyz           | /xyz/
-// /foo/bar     | /foo         | <empty string> | /bar
-// /foo/        | /foo         | <empty string> | /
-// /foo         | /foo         | <empty string> | /
-// /foo/        | /foo         | /              | /
-// /foo         | /foo         | /              | /
 func (o HTTPRouteSpecRulesBackendRefsFiltersRequestRedirectPathPatchPtrOutput) ReplacePrefixMatch() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *HTTPRouteSpecRulesBackendRefsFiltersRequestRedirectPathPatch) *string {
 		if v == nil {
@@ -17974,7 +27972,7 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersResponseHeaderModifierPtrOutput) Set
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesBackendRefsFiltersResponseHeaderModifierAdd struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -18000,7 +27998,7 @@ type HTTPRouteSpecRulesBackendRefsFiltersResponseHeaderModifierAddInput interfac
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesBackendRefsFiltersResponseHeaderModifierAddArgs struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -18065,7 +28063,7 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersResponseHeaderModifierAddOutput) ToH
 }
 
 // Name is the name of the HTTP Header to be matched. Name matching MUST be
-// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 //
 // If multiple entries specify equivalent header names, the first entry with
 // an equivalent name MUST be considered for a match. Subsequent entries
@@ -18104,7 +28102,7 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersResponseHeaderModifierAddArrayOutput
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesBackendRefsFiltersResponseHeaderModifierAddPatch struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -18130,7 +28128,7 @@ type HTTPRouteSpecRulesBackendRefsFiltersResponseHeaderModifierAddPatchInput int
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesBackendRefsFiltersResponseHeaderModifierAddPatchArgs struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -18195,7 +28193,7 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersResponseHeaderModifierAddPatchOutput
 }
 
 // Name is the name of the HTTP Header to be matched. Name matching MUST be
-// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 //
 // If multiple entries specify equivalent header names, the first entry with
 // an equivalent name MUST be considered for a match. Subsequent entries
@@ -18623,7 +28621,7 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersResponseHeaderModifierPatchPtrOutput
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesBackendRefsFiltersResponseHeaderModifierSet struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -18649,7 +28647,7 @@ type HTTPRouteSpecRulesBackendRefsFiltersResponseHeaderModifierSetInput interfac
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesBackendRefsFiltersResponseHeaderModifierSetArgs struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -18714,7 +28712,7 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersResponseHeaderModifierSetOutput) ToH
 }
 
 // Name is the name of the HTTP Header to be matched. Name matching MUST be
-// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 //
 // If multiple entries specify equivalent header names, the first entry with
 // an equivalent name MUST be considered for a match. Subsequent entries
@@ -18753,7 +28751,7 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersResponseHeaderModifierSetArrayOutput
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesBackendRefsFiltersResponseHeaderModifierSetPatch struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -18779,7 +28777,7 @@ type HTTPRouteSpecRulesBackendRefsFiltersResponseHeaderModifierSetPatchInput int
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesBackendRefsFiltersResponseHeaderModifierSetPatchArgs struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -18844,7 +28842,7 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersResponseHeaderModifierSetPatchOutput
 }
 
 // Name is the name of the HTTP Header to be matched. Name matching MUST be
-// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 //
 // If multiple entries specify equivalent header names, the first entry with
 // an equivalent name MUST be considered for a match. Subsequent entries
@@ -19253,18 +29251,6 @@ type HTTPRouteSpecRulesBackendRefsFiltersUrlRewritePath struct {
 	// the implementation setting the Accepted Condition for the Route to `status: False`.
 	//
 	// Request Path | Prefix Match | Replace Prefix | Modified Path
-	// -------------|--------------|----------------|----------
-	// /foo/bar     | /foo         | /xyz           | /xyz/bar
-	// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-	// /foo         | /foo         | /xyz           | /xyz
-	// /foo/        | /foo         | /xyz           | /xyz/
-	// /foo/bar     | /foo         | <empty string> | /bar
-	// /foo/        | /foo         | <empty string> | /
-	// /foo         | /foo         | <empty string> | /
-	// /foo/        | /foo         | /              | /
-	// /foo         | /foo         | /              | /
 	ReplacePrefixMatch *string `pulumi:"replacePrefixMatch"`
 	// Type defines the type of path modifier. Additional types may be
 	// added in a future release of the API.
@@ -19312,18 +29298,6 @@ type HTTPRouteSpecRulesBackendRefsFiltersUrlRewritePathArgs struct {
 	// the implementation setting the Accepted Condition for the Route to `status: False`.
 	//
 	// Request Path | Prefix Match | Replace Prefix | Modified Path
-	// -------------|--------------|----------------|----------
-	// /foo/bar     | /foo         | /xyz           | /xyz/bar
-	// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-	// /foo         | /foo         | /xyz           | /xyz
-	// /foo/        | /foo         | /xyz           | /xyz/
-	// /foo/bar     | /foo         | <empty string> | /bar
-	// /foo/        | /foo         | <empty string> | /
-	// /foo         | /foo         | <empty string> | /
-	// /foo/        | /foo         | /              | /
-	// /foo         | /foo         | /              | /
 	ReplacePrefixMatch pulumi.StringPtrInput `pulumi:"replacePrefixMatch"`
 	// Type defines the type of path modifier. Additional types may be
 	// added in a future release of the API.
@@ -19439,18 +29413,6 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersUrlRewritePathOutput) ReplaceFullPat
 // the implementation setting the Accepted Condition for the Route to `status: False`.
 //
 // Request Path | Prefix Match | Replace Prefix | Modified Path
-// -------------|--------------|----------------|----------
-// /foo/bar     | /foo         | /xyz           | /xyz/bar
-// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-// /foo         | /foo         | /xyz           | /xyz
-// /foo/        | /foo         | /xyz           | /xyz/
-// /foo/bar     | /foo         | <empty string> | /bar
-// /foo/        | /foo         | <empty string> | /
-// /foo         | /foo         | <empty string> | /
-// /foo/        | /foo         | /              | /
-// /foo         | /foo         | /              | /
 func (o HTTPRouteSpecRulesBackendRefsFiltersUrlRewritePathOutput) ReplacePrefixMatch() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v HTTPRouteSpecRulesBackendRefsFiltersUrlRewritePath) *string { return v.ReplacePrefixMatch }).(pulumi.StringPtrOutput)
 }
@@ -19519,18 +29481,6 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersUrlRewritePathPtrOutput) ReplaceFull
 // the implementation setting the Accepted Condition for the Route to `status: False`.
 //
 // Request Path | Prefix Match | Replace Prefix | Modified Path
-// -------------|--------------|----------------|----------
-// /foo/bar     | /foo         | /xyz           | /xyz/bar
-// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-// /foo         | /foo         | /xyz           | /xyz
-// /foo/        | /foo         | /xyz           | /xyz/
-// /foo/bar     | /foo         | <empty string> | /bar
-// /foo/        | /foo         | <empty string> | /
-// /foo         | /foo         | <empty string> | /
-// /foo/        | /foo         | /              | /
-// /foo         | /foo         | /              | /
 func (o HTTPRouteSpecRulesBackendRefsFiltersUrlRewritePathPtrOutput) ReplacePrefixMatch() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *HTTPRouteSpecRulesBackendRefsFiltersUrlRewritePath) *string {
 		if v == nil {
@@ -19581,18 +29531,6 @@ type HTTPRouteSpecRulesBackendRefsFiltersUrlRewritePathPatch struct {
 	// the implementation setting the Accepted Condition for the Route to `status: False`.
 	//
 	// Request Path | Prefix Match | Replace Prefix | Modified Path
-	// -------------|--------------|----------------|----------
-	// /foo/bar     | /foo         | /xyz           | /xyz/bar
-	// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-	// /foo         | /foo         | /xyz           | /xyz
-	// /foo/        | /foo         | /xyz           | /xyz/
-	// /foo/bar     | /foo         | <empty string> | /bar
-	// /foo/        | /foo         | <empty string> | /
-	// /foo         | /foo         | <empty string> | /
-	// /foo/        | /foo         | /              | /
-	// /foo         | /foo         | /              | /
 	ReplacePrefixMatch *string `pulumi:"replacePrefixMatch"`
 	// Type defines the type of path modifier. Additional types may be
 	// added in a future release of the API.
@@ -19640,18 +29578,6 @@ type HTTPRouteSpecRulesBackendRefsFiltersUrlRewritePathPatchArgs struct {
 	// the implementation setting the Accepted Condition for the Route to `status: False`.
 	//
 	// Request Path | Prefix Match | Replace Prefix | Modified Path
-	// -------------|--------------|----------------|----------
-	// /foo/bar     | /foo         | /xyz           | /xyz/bar
-	// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-	// /foo         | /foo         | /xyz           | /xyz
-	// /foo/        | /foo         | /xyz           | /xyz/
-	// /foo/bar     | /foo         | <empty string> | /bar
-	// /foo/        | /foo         | <empty string> | /
-	// /foo         | /foo         | <empty string> | /
-	// /foo/        | /foo         | /              | /
-	// /foo         | /foo         | /              | /
 	ReplacePrefixMatch pulumi.StringPtrInput `pulumi:"replacePrefixMatch"`
 	// Type defines the type of path modifier. Additional types may be
 	// added in a future release of the API.
@@ -19767,18 +29693,6 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersUrlRewritePathPatchOutput) ReplaceFu
 // the implementation setting the Accepted Condition for the Route to `status: False`.
 //
 // Request Path | Prefix Match | Replace Prefix | Modified Path
-// -------------|--------------|----------------|----------
-// /foo/bar     | /foo         | /xyz           | /xyz/bar
-// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-// /foo         | /foo         | /xyz           | /xyz
-// /foo/        | /foo         | /xyz           | /xyz/
-// /foo/bar     | /foo         | <empty string> | /bar
-// /foo/        | /foo         | <empty string> | /
-// /foo         | /foo         | <empty string> | /
-// /foo/        | /foo         | /              | /
-// /foo         | /foo         | /              | /
 func (o HTTPRouteSpecRulesBackendRefsFiltersUrlRewritePathPatchOutput) ReplacePrefixMatch() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v HTTPRouteSpecRulesBackendRefsFiltersUrlRewritePathPatch) *string { return v.ReplacePrefixMatch }).(pulumi.StringPtrOutput)
 }
@@ -19847,18 +29761,6 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersUrlRewritePathPatchPtrOutput) Replac
 // the implementation setting the Accepted Condition for the Route to `status: False`.
 //
 // Request Path | Prefix Match | Replace Prefix | Modified Path
-// -------------|--------------|----------------|----------
-// /foo/bar     | /foo         | /xyz           | /xyz/bar
-// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-// /foo         | /foo         | /xyz           | /xyz
-// /foo/        | /foo         | /xyz           | /xyz/
-// /foo/bar     | /foo         | <empty string> | /bar
-// /foo/        | /foo         | <empty string> | /
-// /foo         | /foo         | <empty string> | /
-// /foo/        | /foo         | /              | /
-// /foo         | /foo         | /              | /
 func (o HTTPRouteSpecRulesBackendRefsFiltersUrlRewritePathPatchPtrOutput) ReplacePrefixMatch() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *HTTPRouteSpecRulesBackendRefsFiltersUrlRewritePathPatch) *string {
 		if v == nil {
@@ -19892,24 +29794,6 @@ func (o HTTPRouteSpecRulesBackendRefsFiltersUrlRewritePathPatchPtrOutput) Type()
 // ReferenceGrant object is required in the referent namespace to allow that
 // namespace's owner to accept the reference. See the ReferenceGrant
 // documentation for details.
-//
-// <gateway:experimental:description>
-//
-// When the BackendRef points to a Kubernetes Service, implementations SHOULD
-// honor the appProtocol field if it is set for the target Service Port.
-//
-// Implementations supporting appProtocol SHOULD recognize the Kubernetes
-// Standard Application Protocols defined in KEP-3726.
-//
-// If a Service appProtocol isn't specified, an implementation MAY infer the
-// backend protocol through its own means. Implementations MAY infer the
-// protocol from the Route type referring to the backend Service.
-//
-// If a Route is not able to send traffic to the backend using the specified
-// protocol then the backend is considered invalid. Implementations MUST set the
-// "ResolvedRefs" condition to "False" with the "UnsupportedProtocol" reason.
-//
-// </gateway:experimental:description>
 type HTTPRouteSpecRulesBackendRefsPatch struct {
 	// Filters defined at this level should be executed if and only if the
 	// request is being forwarded to the backend defined here.
@@ -19986,24 +29870,6 @@ type HTTPRouteSpecRulesBackendRefsPatchInput interface {
 // ReferenceGrant object is required in the referent namespace to allow that
 // namespace's owner to accept the reference. See the ReferenceGrant
 // documentation for details.
-//
-// <gateway:experimental:description>
-//
-// When the BackendRef points to a Kubernetes Service, implementations SHOULD
-// honor the appProtocol field if it is set for the target Service Port.
-//
-// Implementations supporting appProtocol SHOULD recognize the Kubernetes
-// Standard Application Protocols defined in KEP-3726.
-//
-// If a Service appProtocol isn't specified, an implementation MAY infer the
-// backend protocol through its own means. Implementations MAY infer the
-// protocol from the Route type referring to the backend Service.
-//
-// If a Route is not able to send traffic to the backend using the specified
-// protocol then the backend is considered invalid. Implementations MUST set the
-// "ResolvedRefs" condition to "False" with the "UnsupportedProtocol" reason.
-//
-// </gateway:experimental:description>
 type HTTPRouteSpecRulesBackendRefsPatchArgs struct {
 	// Filters defined at this level should be executed if and only if the
 	// request is being forwarded to the backend defined here.
@@ -20106,24 +29972,6 @@ func (i HTTPRouteSpecRulesBackendRefsPatchArray) ToHTTPRouteSpecRulesBackendRefs
 // ReferenceGrant object is required in the referent namespace to allow that
 // namespace's owner to accept the reference. See the ReferenceGrant
 // documentation for details.
-//
-// <gateway:experimental:description>
-//
-// When the BackendRef points to a Kubernetes Service, implementations SHOULD
-// honor the appProtocol field if it is set for the target Service Port.
-//
-// Implementations supporting appProtocol SHOULD recognize the Kubernetes
-// Standard Application Protocols defined in KEP-3726.
-//
-// If a Service appProtocol isn't specified, an implementation MAY infer the
-// backend protocol through its own means. Implementations MAY infer the
-// protocol from the Route type referring to the backend Service.
-//
-// If a Route is not able to send traffic to the backend using the specified
-// protocol then the backend is considered invalid. Implementations MUST set the
-// "ResolvedRefs" condition to "False" with the "UnsupportedProtocol" reason.
-//
-// </gateway:experimental:description>
 type HTTPRouteSpecRulesBackendRefsPatchOutput struct{ *pulumi.OutputState }
 
 func (HTTPRouteSpecRulesBackendRefsPatchOutput) ElementType() reflect.Type {
@@ -20244,6 +30092,7 @@ func (o HTTPRouteSpecRulesBackendRefsPatchArrayOutput) Index(i pulumi.IntInput) 
 // authentication strategies, rate-limiting, and traffic shaping. API
 // guarantee/conformance is defined based on the type of the filter.
 type HTTPRouteSpecRulesFilters struct {
+	Cors                   *HTTPRouteSpecRulesFiltersCors                   `pulumi:"cors"`
 	ExtensionRef           *HTTPRouteSpecRulesFiltersExtensionRef           `pulumi:"extensionRef"`
 	RequestHeaderModifier  *HTTPRouteSpecRulesFiltersRequestHeaderModifier  `pulumi:"requestHeaderModifier"`
 	RequestMirror          *HTTPRouteSpecRulesFiltersRequestMirror          `pulumi:"requestMirror"`
@@ -20303,6 +30152,7 @@ type HTTPRouteSpecRulesFiltersInput interface {
 // authentication strategies, rate-limiting, and traffic shaping. API
 // guarantee/conformance is defined based on the type of the filter.
 type HTTPRouteSpecRulesFiltersArgs struct {
+	Cors                   HTTPRouteSpecRulesFiltersCorsPtrInput                   `pulumi:"cors"`
 	ExtensionRef           HTTPRouteSpecRulesFiltersExtensionRefPtrInput           `pulumi:"extensionRef"`
 	RequestHeaderModifier  HTTPRouteSpecRulesFiltersRequestHeaderModifierPtrInput  `pulumi:"requestHeaderModifier"`
 	RequestMirror          HTTPRouteSpecRulesFiltersRequestMirrorPtrInput          `pulumi:"requestMirror"`
@@ -20401,6 +30251,10 @@ func (o HTTPRouteSpecRulesFiltersOutput) ToHTTPRouteSpecRulesFiltersOutputWithCo
 	return o
 }
 
+func (o HTTPRouteSpecRulesFiltersOutput) Cors() HTTPRouteSpecRulesFiltersCorsPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesFilters) *HTTPRouteSpecRulesFiltersCors { return v.Cors }).(HTTPRouteSpecRulesFiltersCorsPtrOutput)
+}
+
 func (o HTTPRouteSpecRulesFiltersOutput) ExtensionRef() HTTPRouteSpecRulesFiltersExtensionRefPtrOutput {
 	return o.ApplyT(func(v HTTPRouteSpecRulesFilters) *HTTPRouteSpecRulesFiltersExtensionRef { return v.ExtensionRef }).(HTTPRouteSpecRulesFiltersExtensionRefPtrOutput)
 }
@@ -20483,6 +30337,2054 @@ func (o HTTPRouteSpecRulesFiltersArrayOutput) Index(i pulumi.IntInput) HTTPRoute
 	return pulumi.All(o, i).ApplyT(func(vs []interface{}) HTTPRouteSpecRulesFilters {
 		return vs[0].([]HTTPRouteSpecRulesFilters)[vs[1].(int)]
 	}).(HTTPRouteSpecRulesFiltersOutput)
+}
+
+// CORS defines a schema for a filter that responds to the
+// cross-origin request based on HTTP response header.
+//
+// Support: Extended
+type HTTPRouteSpecRulesFiltersCors struct {
+	// AllowCredentials indicates whether the actual cross-origin request allows
+	// to include credentials.
+	//
+	// When set to true, the gateway will include the `Access-Control-Allow-Credentials`
+	// response header with value true (case-sensitive).
+	//
+	// When set to false or omitted the gateway will omit the header
+	// `Access-Control-Allow-Credentials` entirely (this is the standard CORS
+	// behavior).
+	//
+	// Support: Extended
+	AllowCredentials *bool `pulumi:"allowCredentials"`
+	// AllowHeaders indicates which HTTP request headers are supported for
+	// accessing the requested resource.
+	//
+	// Header names are not case-sensitive.
+	//
+	// Multiple header names in the value of the `Access-Control-Allow-Headers`
+	// response header are separated by a comma (",").
+	//
+	// When the `AllowHeaders` field is configured with one or more headers, the
+	// gateway must return the `Access-Control-Allow-Headers` response header
+	// which value is present in the `AllowHeaders` field.
+	//
+	// If any header name in the `Access-Control-Request-Headers` request header
+	// is not included in the list of header names specified by the response
+	// header `Access-Control-Allow-Headers`, it will present an error on the
+	// client side.
+	//
+	// If any header name in the `Access-Control-Allow-Headers` response header
+	// does not recognize by the client, it will also occur an error on the
+	// client side.
+	//
+	// A wildcard indicates that the requests with all HTTP headers are allowed.
+	// If config contains the wildcard "*" in allowHeaders and the request is
+	// not credentialed, the `Access-Control-Allow-Headers` response header
+	// can either use the `*` wildcard or the value of
+	// Access-Control-Request-Headers from the request.
+	//
+	// When the request is credentialed, the gateway must not specify the `*`
+	// wildcard in the `Access-Control-Allow-Headers` response header. When
+	// also the `AllowCredentials` field is true and `AllowHeaders` field
+	// is specified with the `*` wildcard, the gateway must specify one or more
+	// HTTP headers in the value of the `Access-Control-Allow-Headers` response
+	// header. The value of the header `Access-Control-Allow-Headers` is same as
+	// the `Access-Control-Request-Headers` header provided by the client. If
+	// the header `Access-Control-Request-Headers` is not included in the
+	// request, the gateway will omit the `Access-Control-Allow-Headers`
+	// response header, instead of specifying the `*` wildcard.
+	//
+	// Support: Extended
+	AllowHeaders []string `pulumi:"allowHeaders"`
+	// AllowMethods indicates which HTTP methods are supported for accessing the
+	// requested resource.
+	//
+	// Valid values are any method defined by RFC9110, along with the special
+	// value `*`, which represents all HTTP methods are allowed.
+	//
+	// Method names are case-sensitive, so these values are also case-sensitive.
+	// (See https://www.rfc-editor.org/rfc/rfc2616#section-5.1.1)
+	//
+	// Multiple method names in the value of the `Access-Control-Allow-Methods`
+	// response header are separated by a comma (",").
+	//
+	// A CORS-safelisted method is a method that is `GET`, `HEAD`, or `POST`.
+	// (See https://fetch.spec.whatwg.org/#cors-safelisted-method) The
+	// CORS-safelisted methods are always allowed, regardless of whether they
+	// are specified in the `AllowMethods` field.
+	//
+	// When the `AllowMethods` field is configured with one or more methods, the
+	// gateway must return the `Access-Control-Allow-Methods` response header
+	// which value is present in the `AllowMethods` field.
+	//
+	// If the HTTP method of the `Access-Control-Request-Method` request header
+	// is not included in the list of methods specified by the response header
+	// `Access-Control-Allow-Methods`, it will present an error on the client
+	// side.
+	//
+	// If config contains the wildcard "*" in allowMethods and the request is
+	// not credentialed, the `Access-Control-Allow-Methods` response header
+	// can either use the `*` wildcard or the value of
+	// Access-Control-Request-Method from the request.
+	//
+	// When the request is credentialed, the gateway must not specify the `*`
+	// wildcard in the `Access-Control-Allow-Methods` response header. When
+	// also the `AllowCredentials` field is true and `AllowMethods` field
+	// specified with the `*` wildcard, the gateway must specify one HTTP method
+	// in the value of the Access-Control-Allow-Methods response header. The
+	// value of the header `Access-Control-Allow-Methods` is same as the
+	// `Access-Control-Request-Method` header provided by the client. If the
+	// header `Access-Control-Request-Method` is not included in the request,
+	// the gateway will omit the `Access-Control-Allow-Methods` response header,
+	// instead of specifying the `*` wildcard.
+	//
+	// Support: Extended
+	AllowMethods []string `pulumi:"allowMethods"`
+	// AllowOrigins indicates whether the response can be shared with requested
+	// resource from the given `Origin`.
+	//
+	// The `Origin` consists of a scheme and a host, with an optional port, and
+	// takes the form `<scheme>://<host>(:<port>)`.
+	//
+	// Valid values for scheme are: `http` and `https`.
+	//
+	// Valid values for port are any integer between 1 and 65535 (the list of
+	// available TCP/UDP ports). Note that, if not included, port `80` is
+	// assumed for `http` scheme origins, and port `443` is assumed for `https`
+	// origins. This may affect origin matching.
+	//
+	// The host part of the origin may contain the wildcard character `*`. These
+	// wildcard characters behave as follows:
+	//
+	// * `*` is a greedy match to the _left_, including any number of
+	//   DNS labels to the left of its position. This also means that
+	//   `*` will include any number of period `.` characters to the
+	//   left of its position.
+	// * A wildcard by itself matches all hosts.
+	//
+	// An origin value that includes _only_ the `*` character indicates requests
+	// from all `Origin`s are allowed.
+	//
+	// When the `AllowOrigins` field is configured with multiple origins, it
+	// means the server supports clients from multiple origins. If the request
+	// `Origin` matches the configured allowed origins, the gateway must return
+	// the given `Origin` and sets value of the header
+	// `Access-Control-Allow-Origin` same as the `Origin` header provided by the
+	// client.
+	//
+	// The status code of a successful response to a "preflight" request is
+	// always an OK status (i.e., 204 or 200).
+	//
+	// If the request `Origin` does not match the configured allowed origins,
+	// the gateway returns 204/200 response but doesn't set the relevant
+	// cross-origin response headers. Alternatively, the gateway responds with
+	// 403 status to the "preflight" request is denied, coupled with omitting
+	// the CORS headers. The cross-origin request fails on the client side.
+	// Therefore, the client doesn't attempt the actual cross-origin request.
+	//
+	// Conversely, if the request `Origin` matches one of the configured
+	// allowed origins, the gateway sets the response header
+	// `Access-Control-Allow-Origin` to the same value as the `Origin`
+	// header provided by the client.
+	//
+	// When config has the wildcard ("*") in allowOrigins, and the request
+	// is not credentialed (e.g., it is a preflight request), the
+	// `Access-Control-Allow-Origin` response header either contains the
+	// wildcard as well or the Origin from the request.
+	//
+	// When the request is credentialed, the gateway must not specify the `*`
+	// wildcard in the `Access-Control-Allow-Origin` response header. When
+	// also the `AllowCredentials` field is true and `AllowOrigins` field
+	// specified with the `*` wildcard, the gateway must return a single origin
+	// in the value of the `Access-Control-Allow-Origin` response header,
+	// instead of specifying the `*` wildcard. The value of the header
+	// `Access-Control-Allow-Origin` is same as the `Origin` header provided by
+	// the client.
+	//
+	// Support: Extended
+	AllowOrigins []string `pulumi:"allowOrigins"`
+	// ExposeHeaders indicates which HTTP response headers can be exposed
+	// to client-side scripts in response to a cross-origin request.
+	//
+	// A CORS-safelisted response header is an HTTP header in a CORS response
+	// that it is considered safe to expose to the client scripts.
+	// The CORS-safelisted response headers include the following headers:
+	// `Cache-Control`
+	// `Content-Language`
+	// `Content-Length`
+	// `Content-Type`
+	// `Expires`
+	// `Last-Modified`
+	// `Pragma`
+	// (See https://fetch.spec.whatwg.org/#cors-safelisted-response-header-name)
+	// The CORS-safelisted response headers are exposed to client by default.
+	//
+	// When an HTTP header name is specified using the `ExposeHeaders` field,
+	// this additional header will be exposed as part of the response to the
+	// client.
+	//
+	// Header names are not case-sensitive.
+	//
+	// Multiple header names in the value of the `Access-Control-Expose-Headers`
+	// response header are separated by a comma (",").
+	//
+	// A wildcard indicates that the responses with all HTTP headers are exposed
+	// to clients. The `Access-Control-Expose-Headers` response header can only
+	// use `*` wildcard as value when the request is not credentialed.
+	//
+	// When the `exposeHeaders` config field contains the "*" wildcard and
+	// the request is credentialed, the gateway cannot use the `*` wildcard in
+	// the `Access-Control-Expose-Headers` response header.
+	//
+	// Support: Extended
+	ExposeHeaders []string `pulumi:"exposeHeaders"`
+	// MaxAge indicates the duration (in seconds) for the client to cache the
+	// results of a "preflight" request.
+	//
+	// The information provided by the `Access-Control-Allow-Methods` and
+	// `Access-Control-Allow-Headers` response headers can be cached by the
+	// client until the time specified by `Access-Control-Max-Age` elapses.
+	//
+	// The default value of `Access-Control-Max-Age` response header is 5
+	// (seconds).
+	//
+	// When the `MaxAge` field is unspecified, the gateway sets the response
+	// header "Access-Control-Max-Age: 5" by default.
+	MaxAge *int `pulumi:"maxAge"`
+}
+
+// HTTPRouteSpecRulesFiltersCorsInput is an input type that accepts HTTPRouteSpecRulesFiltersCorsArgs and HTTPRouteSpecRulesFiltersCorsOutput values.
+// You can construct a concrete instance of `HTTPRouteSpecRulesFiltersCorsInput` via:
+//
+//	HTTPRouteSpecRulesFiltersCorsArgs{...}
+type HTTPRouteSpecRulesFiltersCorsInput interface {
+	pulumi.Input
+
+	ToHTTPRouteSpecRulesFiltersCorsOutput() HTTPRouteSpecRulesFiltersCorsOutput
+	ToHTTPRouteSpecRulesFiltersCorsOutputWithContext(context.Context) HTTPRouteSpecRulesFiltersCorsOutput
+}
+
+// CORS defines a schema for a filter that responds to the
+// cross-origin request based on HTTP response header.
+//
+// Support: Extended
+type HTTPRouteSpecRulesFiltersCorsArgs struct {
+	// AllowCredentials indicates whether the actual cross-origin request allows
+	// to include credentials.
+	//
+	// When set to true, the gateway will include the `Access-Control-Allow-Credentials`
+	// response header with value true (case-sensitive).
+	//
+	// When set to false or omitted the gateway will omit the header
+	// `Access-Control-Allow-Credentials` entirely (this is the standard CORS
+	// behavior).
+	//
+	// Support: Extended
+	AllowCredentials pulumi.BoolPtrInput `pulumi:"allowCredentials"`
+	// AllowHeaders indicates which HTTP request headers are supported for
+	// accessing the requested resource.
+	//
+	// Header names are not case-sensitive.
+	//
+	// Multiple header names in the value of the `Access-Control-Allow-Headers`
+	// response header are separated by a comma (",").
+	//
+	// When the `AllowHeaders` field is configured with one or more headers, the
+	// gateway must return the `Access-Control-Allow-Headers` response header
+	// which value is present in the `AllowHeaders` field.
+	//
+	// If any header name in the `Access-Control-Request-Headers` request header
+	// is not included in the list of header names specified by the response
+	// header `Access-Control-Allow-Headers`, it will present an error on the
+	// client side.
+	//
+	// If any header name in the `Access-Control-Allow-Headers` response header
+	// does not recognize by the client, it will also occur an error on the
+	// client side.
+	//
+	// A wildcard indicates that the requests with all HTTP headers are allowed.
+	// If config contains the wildcard "*" in allowHeaders and the request is
+	// not credentialed, the `Access-Control-Allow-Headers` response header
+	// can either use the `*` wildcard or the value of
+	// Access-Control-Request-Headers from the request.
+	//
+	// When the request is credentialed, the gateway must not specify the `*`
+	// wildcard in the `Access-Control-Allow-Headers` response header. When
+	// also the `AllowCredentials` field is true and `AllowHeaders` field
+	// is specified with the `*` wildcard, the gateway must specify one or more
+	// HTTP headers in the value of the `Access-Control-Allow-Headers` response
+	// header. The value of the header `Access-Control-Allow-Headers` is same as
+	// the `Access-Control-Request-Headers` header provided by the client. If
+	// the header `Access-Control-Request-Headers` is not included in the
+	// request, the gateway will omit the `Access-Control-Allow-Headers`
+	// response header, instead of specifying the `*` wildcard.
+	//
+	// Support: Extended
+	AllowHeaders pulumi.StringArrayInput `pulumi:"allowHeaders"`
+	// AllowMethods indicates which HTTP methods are supported for accessing the
+	// requested resource.
+	//
+	// Valid values are any method defined by RFC9110, along with the special
+	// value `*`, which represents all HTTP methods are allowed.
+	//
+	// Method names are case-sensitive, so these values are also case-sensitive.
+	// (See https://www.rfc-editor.org/rfc/rfc2616#section-5.1.1)
+	//
+	// Multiple method names in the value of the `Access-Control-Allow-Methods`
+	// response header are separated by a comma (",").
+	//
+	// A CORS-safelisted method is a method that is `GET`, `HEAD`, or `POST`.
+	// (See https://fetch.spec.whatwg.org/#cors-safelisted-method) The
+	// CORS-safelisted methods are always allowed, regardless of whether they
+	// are specified in the `AllowMethods` field.
+	//
+	// When the `AllowMethods` field is configured with one or more methods, the
+	// gateway must return the `Access-Control-Allow-Methods` response header
+	// which value is present in the `AllowMethods` field.
+	//
+	// If the HTTP method of the `Access-Control-Request-Method` request header
+	// is not included in the list of methods specified by the response header
+	// `Access-Control-Allow-Methods`, it will present an error on the client
+	// side.
+	//
+	// If config contains the wildcard "*" in allowMethods and the request is
+	// not credentialed, the `Access-Control-Allow-Methods` response header
+	// can either use the `*` wildcard or the value of
+	// Access-Control-Request-Method from the request.
+	//
+	// When the request is credentialed, the gateway must not specify the `*`
+	// wildcard in the `Access-Control-Allow-Methods` response header. When
+	// also the `AllowCredentials` field is true and `AllowMethods` field
+	// specified with the `*` wildcard, the gateway must specify one HTTP method
+	// in the value of the Access-Control-Allow-Methods response header. The
+	// value of the header `Access-Control-Allow-Methods` is same as the
+	// `Access-Control-Request-Method` header provided by the client. If the
+	// header `Access-Control-Request-Method` is not included in the request,
+	// the gateway will omit the `Access-Control-Allow-Methods` response header,
+	// instead of specifying the `*` wildcard.
+	//
+	// Support: Extended
+	AllowMethods pulumi.StringArrayInput `pulumi:"allowMethods"`
+	// AllowOrigins indicates whether the response can be shared with requested
+	// resource from the given `Origin`.
+	//
+	// The `Origin` consists of a scheme and a host, with an optional port, and
+	// takes the form `<scheme>://<host>(:<port>)`.
+	//
+	// Valid values for scheme are: `http` and `https`.
+	//
+	// Valid values for port are any integer between 1 and 65535 (the list of
+	// available TCP/UDP ports). Note that, if not included, port `80` is
+	// assumed for `http` scheme origins, and port `443` is assumed for `https`
+	// origins. This may affect origin matching.
+	//
+	// The host part of the origin may contain the wildcard character `*`. These
+	// wildcard characters behave as follows:
+	//
+	// * `*` is a greedy match to the _left_, including any number of
+	//   DNS labels to the left of its position. This also means that
+	//   `*` will include any number of period `.` characters to the
+	//   left of its position.
+	// * A wildcard by itself matches all hosts.
+	//
+	// An origin value that includes _only_ the `*` character indicates requests
+	// from all `Origin`s are allowed.
+	//
+	// When the `AllowOrigins` field is configured with multiple origins, it
+	// means the server supports clients from multiple origins. If the request
+	// `Origin` matches the configured allowed origins, the gateway must return
+	// the given `Origin` and sets value of the header
+	// `Access-Control-Allow-Origin` same as the `Origin` header provided by the
+	// client.
+	//
+	// The status code of a successful response to a "preflight" request is
+	// always an OK status (i.e., 204 or 200).
+	//
+	// If the request `Origin` does not match the configured allowed origins,
+	// the gateway returns 204/200 response but doesn't set the relevant
+	// cross-origin response headers. Alternatively, the gateway responds with
+	// 403 status to the "preflight" request is denied, coupled with omitting
+	// the CORS headers. The cross-origin request fails on the client side.
+	// Therefore, the client doesn't attempt the actual cross-origin request.
+	//
+	// Conversely, if the request `Origin` matches one of the configured
+	// allowed origins, the gateway sets the response header
+	// `Access-Control-Allow-Origin` to the same value as the `Origin`
+	// header provided by the client.
+	//
+	// When config has the wildcard ("*") in allowOrigins, and the request
+	// is not credentialed (e.g., it is a preflight request), the
+	// `Access-Control-Allow-Origin` response header either contains the
+	// wildcard as well or the Origin from the request.
+	//
+	// When the request is credentialed, the gateway must not specify the `*`
+	// wildcard in the `Access-Control-Allow-Origin` response header. When
+	// also the `AllowCredentials` field is true and `AllowOrigins` field
+	// specified with the `*` wildcard, the gateway must return a single origin
+	// in the value of the `Access-Control-Allow-Origin` response header,
+	// instead of specifying the `*` wildcard. The value of the header
+	// `Access-Control-Allow-Origin` is same as the `Origin` header provided by
+	// the client.
+	//
+	// Support: Extended
+	AllowOrigins pulumi.StringArrayInput `pulumi:"allowOrigins"`
+	// ExposeHeaders indicates which HTTP response headers can be exposed
+	// to client-side scripts in response to a cross-origin request.
+	//
+	// A CORS-safelisted response header is an HTTP header in a CORS response
+	// that it is considered safe to expose to the client scripts.
+	// The CORS-safelisted response headers include the following headers:
+	// `Cache-Control`
+	// `Content-Language`
+	// `Content-Length`
+	// `Content-Type`
+	// `Expires`
+	// `Last-Modified`
+	// `Pragma`
+	// (See https://fetch.spec.whatwg.org/#cors-safelisted-response-header-name)
+	// The CORS-safelisted response headers are exposed to client by default.
+	//
+	// When an HTTP header name is specified using the `ExposeHeaders` field,
+	// this additional header will be exposed as part of the response to the
+	// client.
+	//
+	// Header names are not case-sensitive.
+	//
+	// Multiple header names in the value of the `Access-Control-Expose-Headers`
+	// response header are separated by a comma (",").
+	//
+	// A wildcard indicates that the responses with all HTTP headers are exposed
+	// to clients. The `Access-Control-Expose-Headers` response header can only
+	// use `*` wildcard as value when the request is not credentialed.
+	//
+	// When the `exposeHeaders` config field contains the "*" wildcard and
+	// the request is credentialed, the gateway cannot use the `*` wildcard in
+	// the `Access-Control-Expose-Headers` response header.
+	//
+	// Support: Extended
+	ExposeHeaders pulumi.StringArrayInput `pulumi:"exposeHeaders"`
+	// MaxAge indicates the duration (in seconds) for the client to cache the
+	// results of a "preflight" request.
+	//
+	// The information provided by the `Access-Control-Allow-Methods` and
+	// `Access-Control-Allow-Headers` response headers can be cached by the
+	// client until the time specified by `Access-Control-Max-Age` elapses.
+	//
+	// The default value of `Access-Control-Max-Age` response header is 5
+	// (seconds).
+	//
+	// When the `MaxAge` field is unspecified, the gateway sets the response
+	// header "Access-Control-Max-Age: 5" by default.
+	MaxAge pulumi.IntPtrInput `pulumi:"maxAge"`
+}
+
+func (HTTPRouteSpecRulesFiltersCorsArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*HTTPRouteSpecRulesFiltersCors)(nil)).Elem()
+}
+
+func (i HTTPRouteSpecRulesFiltersCorsArgs) ToHTTPRouteSpecRulesFiltersCorsOutput() HTTPRouteSpecRulesFiltersCorsOutput {
+	return i.ToHTTPRouteSpecRulesFiltersCorsOutputWithContext(context.Background())
+}
+
+func (i HTTPRouteSpecRulesFiltersCorsArgs) ToHTTPRouteSpecRulesFiltersCorsOutputWithContext(ctx context.Context) HTTPRouteSpecRulesFiltersCorsOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(HTTPRouteSpecRulesFiltersCorsOutput)
+}
+
+func (i HTTPRouteSpecRulesFiltersCorsArgs) ToHTTPRouteSpecRulesFiltersCorsPtrOutput() HTTPRouteSpecRulesFiltersCorsPtrOutput {
+	return i.ToHTTPRouteSpecRulesFiltersCorsPtrOutputWithContext(context.Background())
+}
+
+func (i HTTPRouteSpecRulesFiltersCorsArgs) ToHTTPRouteSpecRulesFiltersCorsPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesFiltersCorsPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(HTTPRouteSpecRulesFiltersCorsOutput).ToHTTPRouteSpecRulesFiltersCorsPtrOutputWithContext(ctx)
+}
+
+// HTTPRouteSpecRulesFiltersCorsPtrInput is an input type that accepts HTTPRouteSpecRulesFiltersCorsArgs, HTTPRouteSpecRulesFiltersCorsPtr and HTTPRouteSpecRulesFiltersCorsPtrOutput values.
+// You can construct a concrete instance of `HTTPRouteSpecRulesFiltersCorsPtrInput` via:
+//
+//	        HTTPRouteSpecRulesFiltersCorsArgs{...}
+//
+//	or:
+//
+//	        nil
+type HTTPRouteSpecRulesFiltersCorsPtrInput interface {
+	pulumi.Input
+
+	ToHTTPRouteSpecRulesFiltersCorsPtrOutput() HTTPRouteSpecRulesFiltersCorsPtrOutput
+	ToHTTPRouteSpecRulesFiltersCorsPtrOutputWithContext(context.Context) HTTPRouteSpecRulesFiltersCorsPtrOutput
+}
+
+type httprouteSpecRulesFiltersCorsPtrType HTTPRouteSpecRulesFiltersCorsArgs
+
+func HTTPRouteSpecRulesFiltersCorsPtr(v *HTTPRouteSpecRulesFiltersCorsArgs) HTTPRouteSpecRulesFiltersCorsPtrInput {
+	return (*httprouteSpecRulesFiltersCorsPtrType)(v)
+}
+
+func (*httprouteSpecRulesFiltersCorsPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**HTTPRouteSpecRulesFiltersCors)(nil)).Elem()
+}
+
+func (i *httprouteSpecRulesFiltersCorsPtrType) ToHTTPRouteSpecRulesFiltersCorsPtrOutput() HTTPRouteSpecRulesFiltersCorsPtrOutput {
+	return i.ToHTTPRouteSpecRulesFiltersCorsPtrOutputWithContext(context.Background())
+}
+
+func (i *httprouteSpecRulesFiltersCorsPtrType) ToHTTPRouteSpecRulesFiltersCorsPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesFiltersCorsPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(HTTPRouteSpecRulesFiltersCorsPtrOutput)
+}
+
+// CORS defines a schema for a filter that responds to the
+// cross-origin request based on HTTP response header.
+//
+// Support: Extended
+type HTTPRouteSpecRulesFiltersCorsOutput struct{ *pulumi.OutputState }
+
+func (HTTPRouteSpecRulesFiltersCorsOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*HTTPRouteSpecRulesFiltersCors)(nil)).Elem()
+}
+
+func (o HTTPRouteSpecRulesFiltersCorsOutput) ToHTTPRouteSpecRulesFiltersCorsOutput() HTTPRouteSpecRulesFiltersCorsOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesFiltersCorsOutput) ToHTTPRouteSpecRulesFiltersCorsOutputWithContext(ctx context.Context) HTTPRouteSpecRulesFiltersCorsOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesFiltersCorsOutput) ToHTTPRouteSpecRulesFiltersCorsPtrOutput() HTTPRouteSpecRulesFiltersCorsPtrOutput {
+	return o.ToHTTPRouteSpecRulesFiltersCorsPtrOutputWithContext(context.Background())
+}
+
+func (o HTTPRouteSpecRulesFiltersCorsOutput) ToHTTPRouteSpecRulesFiltersCorsPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesFiltersCorsPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v HTTPRouteSpecRulesFiltersCors) *HTTPRouteSpecRulesFiltersCors {
+		return &v
+	}).(HTTPRouteSpecRulesFiltersCorsPtrOutput)
+}
+
+// AllowCredentials indicates whether the actual cross-origin request allows
+// to include credentials.
+//
+// When set to true, the gateway will include the `Access-Control-Allow-Credentials`
+// response header with value true (case-sensitive).
+//
+// When set to false or omitted the gateway will omit the header
+// `Access-Control-Allow-Credentials` entirely (this is the standard CORS
+// behavior).
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesFiltersCorsOutput) AllowCredentials() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesFiltersCors) *bool { return v.AllowCredentials }).(pulumi.BoolPtrOutput)
+}
+
+// AllowHeaders indicates which HTTP request headers are supported for
+// accessing the requested resource.
+//
+// Header names are not case-sensitive.
+//
+// Multiple header names in the value of the `Access-Control-Allow-Headers`
+// response header are separated by a comma (",").
+//
+// When the `AllowHeaders` field is configured with one or more headers, the
+// gateway must return the `Access-Control-Allow-Headers` response header
+// which value is present in the `AllowHeaders` field.
+//
+// If any header name in the `Access-Control-Request-Headers` request header
+// is not included in the list of header names specified by the response
+// header `Access-Control-Allow-Headers`, it will present an error on the
+// client side.
+//
+// If any header name in the `Access-Control-Allow-Headers` response header
+// does not recognize by the client, it will also occur an error on the
+// client side.
+//
+// A wildcard indicates that the requests with all HTTP headers are allowed.
+// If config contains the wildcard "*" in allowHeaders and the request is
+// not credentialed, the `Access-Control-Allow-Headers` response header
+// can either use the `*` wildcard or the value of
+// Access-Control-Request-Headers from the request.
+//
+// When the request is credentialed, the gateway must not specify the `*`
+// wildcard in the `Access-Control-Allow-Headers` response header. When
+// also the `AllowCredentials` field is true and `AllowHeaders` field
+// is specified with the `*` wildcard, the gateway must specify one or more
+// HTTP headers in the value of the `Access-Control-Allow-Headers` response
+// header. The value of the header `Access-Control-Allow-Headers` is same as
+// the `Access-Control-Request-Headers` header provided by the client. If
+// the header `Access-Control-Request-Headers` is not included in the
+// request, the gateway will omit the `Access-Control-Allow-Headers`
+// response header, instead of specifying the `*` wildcard.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesFiltersCorsOutput) AllowHeaders() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesFiltersCors) []string { return v.AllowHeaders }).(pulumi.StringArrayOutput)
+}
+
+// AllowMethods indicates which HTTP methods are supported for accessing the
+// requested resource.
+//
+// Valid values are any method defined by RFC9110, along with the special
+// value `*`, which represents all HTTP methods are allowed.
+//
+// Method names are case-sensitive, so these values are also case-sensitive.
+// (See https://www.rfc-editor.org/rfc/rfc2616#section-5.1.1)
+//
+// Multiple method names in the value of the `Access-Control-Allow-Methods`
+// response header are separated by a comma (",").
+//
+// A CORS-safelisted method is a method that is `GET`, `HEAD`, or `POST`.
+// (See https://fetch.spec.whatwg.org/#cors-safelisted-method) The
+// CORS-safelisted methods are always allowed, regardless of whether they
+// are specified in the `AllowMethods` field.
+//
+// When the `AllowMethods` field is configured with one or more methods, the
+// gateway must return the `Access-Control-Allow-Methods` response header
+// which value is present in the `AllowMethods` field.
+//
+// If the HTTP method of the `Access-Control-Request-Method` request header
+// is not included in the list of methods specified by the response header
+// `Access-Control-Allow-Methods`, it will present an error on the client
+// side.
+//
+// If config contains the wildcard "*" in allowMethods and the request is
+// not credentialed, the `Access-Control-Allow-Methods` response header
+// can either use the `*` wildcard or the value of
+// Access-Control-Request-Method from the request.
+//
+// When the request is credentialed, the gateway must not specify the `*`
+// wildcard in the `Access-Control-Allow-Methods` response header. When
+// also the `AllowCredentials` field is true and `AllowMethods` field
+// specified with the `*` wildcard, the gateway must specify one HTTP method
+// in the value of the Access-Control-Allow-Methods response header. The
+// value of the header `Access-Control-Allow-Methods` is same as the
+// `Access-Control-Request-Method` header provided by the client. If the
+// header `Access-Control-Request-Method` is not included in the request,
+// the gateway will omit the `Access-Control-Allow-Methods` response header,
+// instead of specifying the `*` wildcard.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesFiltersCorsOutput) AllowMethods() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesFiltersCors) []string { return v.AllowMethods }).(pulumi.StringArrayOutput)
+}
+
+// AllowOrigins indicates whether the response can be shared with requested
+// resource from the given `Origin`.
+//
+// The `Origin` consists of a scheme and a host, with an optional port, and
+// takes the form `<scheme>://<host>(:<port>)`.
+//
+// Valid values for scheme are: `http` and `https`.
+//
+// Valid values for port are any integer between 1 and 65535 (the list of
+// available TCP/UDP ports). Note that, if not included, port `80` is
+// assumed for `http` scheme origins, and port `443` is assumed for `https`
+// origins. This may affect origin matching.
+//
+// The host part of the origin may contain the wildcard character `*`. These
+// wildcard characters behave as follows:
+//
+//   - `*` is a greedy match to the _left_, including any number of
+//     DNS labels to the left of its position. This also means that
+//     `*` will include any number of period `.` characters to the
+//     left of its position.
+//   - A wildcard by itself matches all hosts.
+//
+// An origin value that includes _only_ the `*` character indicates requests
+// from all `Origin`s are allowed.
+//
+// When the `AllowOrigins` field is configured with multiple origins, it
+// means the server supports clients from multiple origins. If the request
+// `Origin` matches the configured allowed origins, the gateway must return
+// the given `Origin` and sets value of the header
+// `Access-Control-Allow-Origin` same as the `Origin` header provided by the
+// client.
+//
+// The status code of a successful response to a "preflight" request is
+// always an OK status (i.e., 204 or 200).
+//
+// If the request `Origin` does not match the configured allowed origins,
+// the gateway returns 204/200 response but doesn't set the relevant
+// cross-origin response headers. Alternatively, the gateway responds with
+// 403 status to the "preflight" request is denied, coupled with omitting
+// the CORS headers. The cross-origin request fails on the client side.
+// Therefore, the client doesn't attempt the actual cross-origin request.
+//
+// Conversely, if the request `Origin` matches one of the configured
+// allowed origins, the gateway sets the response header
+// `Access-Control-Allow-Origin` to the same value as the `Origin`
+// header provided by the client.
+//
+// When config has the wildcard ("*") in allowOrigins, and the request
+// is not credentialed (e.g., it is a preflight request), the
+// `Access-Control-Allow-Origin` response header either contains the
+// wildcard as well or the Origin from the request.
+//
+// When the request is credentialed, the gateway must not specify the `*`
+// wildcard in the `Access-Control-Allow-Origin` response header. When
+// also the `AllowCredentials` field is true and `AllowOrigins` field
+// specified with the `*` wildcard, the gateway must return a single origin
+// in the value of the `Access-Control-Allow-Origin` response header,
+// instead of specifying the `*` wildcard. The value of the header
+// `Access-Control-Allow-Origin` is same as the `Origin` header provided by
+// the client.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesFiltersCorsOutput) AllowOrigins() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesFiltersCors) []string { return v.AllowOrigins }).(pulumi.StringArrayOutput)
+}
+
+// ExposeHeaders indicates which HTTP response headers can be exposed
+// to client-side scripts in response to a cross-origin request.
+//
+// A CORS-safelisted response header is an HTTP header in a CORS response
+// that it is considered safe to expose to the client scripts.
+// The CORS-safelisted response headers include the following headers:
+// `Cache-Control`
+// `Content-Language`
+// `Content-Length`
+// `Content-Type`
+// `Expires`
+// `Last-Modified`
+// `Pragma`
+// (See https://fetch.spec.whatwg.org/#cors-safelisted-response-header-name)
+// The CORS-safelisted response headers are exposed to client by default.
+//
+// When an HTTP header name is specified using the `ExposeHeaders` field,
+// this additional header will be exposed as part of the response to the
+// client.
+//
+// Header names are not case-sensitive.
+//
+// Multiple header names in the value of the `Access-Control-Expose-Headers`
+// response header are separated by a comma (",").
+//
+// A wildcard indicates that the responses with all HTTP headers are exposed
+// to clients. The `Access-Control-Expose-Headers` response header can only
+// use `*` wildcard as value when the request is not credentialed.
+//
+// When the `exposeHeaders` config field contains the "*" wildcard and
+// the request is credentialed, the gateway cannot use the `*` wildcard in
+// the `Access-Control-Expose-Headers` response header.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesFiltersCorsOutput) ExposeHeaders() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesFiltersCors) []string { return v.ExposeHeaders }).(pulumi.StringArrayOutput)
+}
+
+// MaxAge indicates the duration (in seconds) for the client to cache the
+// results of a "preflight" request.
+//
+// The information provided by the `Access-Control-Allow-Methods` and
+// `Access-Control-Allow-Headers` response headers can be cached by the
+// client until the time specified by `Access-Control-Max-Age` elapses.
+//
+// The default value of `Access-Control-Max-Age` response header is 5
+// (seconds).
+//
+// When the `MaxAge` field is unspecified, the gateway sets the response
+// header "Access-Control-Max-Age: 5" by default.
+func (o HTTPRouteSpecRulesFiltersCorsOutput) MaxAge() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesFiltersCors) *int { return v.MaxAge }).(pulumi.IntPtrOutput)
+}
+
+type HTTPRouteSpecRulesFiltersCorsPtrOutput struct{ *pulumi.OutputState }
+
+func (HTTPRouteSpecRulesFiltersCorsPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**HTTPRouteSpecRulesFiltersCors)(nil)).Elem()
+}
+
+func (o HTTPRouteSpecRulesFiltersCorsPtrOutput) ToHTTPRouteSpecRulesFiltersCorsPtrOutput() HTTPRouteSpecRulesFiltersCorsPtrOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesFiltersCorsPtrOutput) ToHTTPRouteSpecRulesFiltersCorsPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesFiltersCorsPtrOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesFiltersCorsPtrOutput) Elem() HTTPRouteSpecRulesFiltersCorsOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesFiltersCors) HTTPRouteSpecRulesFiltersCors {
+		if v != nil {
+			return *v
+		}
+		var ret HTTPRouteSpecRulesFiltersCors
+		return ret
+	}).(HTTPRouteSpecRulesFiltersCorsOutput)
+}
+
+// AllowCredentials indicates whether the actual cross-origin request allows
+// to include credentials.
+//
+// When set to true, the gateway will include the `Access-Control-Allow-Credentials`
+// response header with value true (case-sensitive).
+//
+// When set to false or omitted the gateway will omit the header
+// `Access-Control-Allow-Credentials` entirely (this is the standard CORS
+// behavior).
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesFiltersCorsPtrOutput) AllowCredentials() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesFiltersCors) *bool {
+		if v == nil {
+			return nil
+		}
+		return v.AllowCredentials
+	}).(pulumi.BoolPtrOutput)
+}
+
+// AllowHeaders indicates which HTTP request headers are supported for
+// accessing the requested resource.
+//
+// Header names are not case-sensitive.
+//
+// Multiple header names in the value of the `Access-Control-Allow-Headers`
+// response header are separated by a comma (",").
+//
+// When the `AllowHeaders` field is configured with one or more headers, the
+// gateway must return the `Access-Control-Allow-Headers` response header
+// which value is present in the `AllowHeaders` field.
+//
+// If any header name in the `Access-Control-Request-Headers` request header
+// is not included in the list of header names specified by the response
+// header `Access-Control-Allow-Headers`, it will present an error on the
+// client side.
+//
+// If any header name in the `Access-Control-Allow-Headers` response header
+// does not recognize by the client, it will also occur an error on the
+// client side.
+//
+// A wildcard indicates that the requests with all HTTP headers are allowed.
+// If config contains the wildcard "*" in allowHeaders and the request is
+// not credentialed, the `Access-Control-Allow-Headers` response header
+// can either use the `*` wildcard or the value of
+// Access-Control-Request-Headers from the request.
+//
+// When the request is credentialed, the gateway must not specify the `*`
+// wildcard in the `Access-Control-Allow-Headers` response header. When
+// also the `AllowCredentials` field is true and `AllowHeaders` field
+// is specified with the `*` wildcard, the gateway must specify one or more
+// HTTP headers in the value of the `Access-Control-Allow-Headers` response
+// header. The value of the header `Access-Control-Allow-Headers` is same as
+// the `Access-Control-Request-Headers` header provided by the client. If
+// the header `Access-Control-Request-Headers` is not included in the
+// request, the gateway will omit the `Access-Control-Allow-Headers`
+// response header, instead of specifying the `*` wildcard.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesFiltersCorsPtrOutput) AllowHeaders() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesFiltersCors) []string {
+		if v == nil {
+			return nil
+		}
+		return v.AllowHeaders
+	}).(pulumi.StringArrayOutput)
+}
+
+// AllowMethods indicates which HTTP methods are supported for accessing the
+// requested resource.
+//
+// Valid values are any method defined by RFC9110, along with the special
+// value `*`, which represents all HTTP methods are allowed.
+//
+// Method names are case-sensitive, so these values are also case-sensitive.
+// (See https://www.rfc-editor.org/rfc/rfc2616#section-5.1.1)
+//
+// Multiple method names in the value of the `Access-Control-Allow-Methods`
+// response header are separated by a comma (",").
+//
+// A CORS-safelisted method is a method that is `GET`, `HEAD`, or `POST`.
+// (See https://fetch.spec.whatwg.org/#cors-safelisted-method) The
+// CORS-safelisted methods are always allowed, regardless of whether they
+// are specified in the `AllowMethods` field.
+//
+// When the `AllowMethods` field is configured with one or more methods, the
+// gateway must return the `Access-Control-Allow-Methods` response header
+// which value is present in the `AllowMethods` field.
+//
+// If the HTTP method of the `Access-Control-Request-Method` request header
+// is not included in the list of methods specified by the response header
+// `Access-Control-Allow-Methods`, it will present an error on the client
+// side.
+//
+// If config contains the wildcard "*" in allowMethods and the request is
+// not credentialed, the `Access-Control-Allow-Methods` response header
+// can either use the `*` wildcard or the value of
+// Access-Control-Request-Method from the request.
+//
+// When the request is credentialed, the gateway must not specify the `*`
+// wildcard in the `Access-Control-Allow-Methods` response header. When
+// also the `AllowCredentials` field is true and `AllowMethods` field
+// specified with the `*` wildcard, the gateway must specify one HTTP method
+// in the value of the Access-Control-Allow-Methods response header. The
+// value of the header `Access-Control-Allow-Methods` is same as the
+// `Access-Control-Request-Method` header provided by the client. If the
+// header `Access-Control-Request-Method` is not included in the request,
+// the gateway will omit the `Access-Control-Allow-Methods` response header,
+// instead of specifying the `*` wildcard.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesFiltersCorsPtrOutput) AllowMethods() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesFiltersCors) []string {
+		if v == nil {
+			return nil
+		}
+		return v.AllowMethods
+	}).(pulumi.StringArrayOutput)
+}
+
+// AllowOrigins indicates whether the response can be shared with requested
+// resource from the given `Origin`.
+//
+// The `Origin` consists of a scheme and a host, with an optional port, and
+// takes the form `<scheme>://<host>(:<port>)`.
+//
+// Valid values for scheme are: `http` and `https`.
+//
+// Valid values for port are any integer between 1 and 65535 (the list of
+// available TCP/UDP ports). Note that, if not included, port `80` is
+// assumed for `http` scheme origins, and port `443` is assumed for `https`
+// origins. This may affect origin matching.
+//
+// The host part of the origin may contain the wildcard character `*`. These
+// wildcard characters behave as follows:
+//
+//   - `*` is a greedy match to the _left_, including any number of
+//     DNS labels to the left of its position. This also means that
+//     `*` will include any number of period `.` characters to the
+//     left of its position.
+//   - A wildcard by itself matches all hosts.
+//
+// An origin value that includes _only_ the `*` character indicates requests
+// from all `Origin`s are allowed.
+//
+// When the `AllowOrigins` field is configured with multiple origins, it
+// means the server supports clients from multiple origins. If the request
+// `Origin` matches the configured allowed origins, the gateway must return
+// the given `Origin` and sets value of the header
+// `Access-Control-Allow-Origin` same as the `Origin` header provided by the
+// client.
+//
+// The status code of a successful response to a "preflight" request is
+// always an OK status (i.e., 204 or 200).
+//
+// If the request `Origin` does not match the configured allowed origins,
+// the gateway returns 204/200 response but doesn't set the relevant
+// cross-origin response headers. Alternatively, the gateway responds with
+// 403 status to the "preflight" request is denied, coupled with omitting
+// the CORS headers. The cross-origin request fails on the client side.
+// Therefore, the client doesn't attempt the actual cross-origin request.
+//
+// Conversely, if the request `Origin` matches one of the configured
+// allowed origins, the gateway sets the response header
+// `Access-Control-Allow-Origin` to the same value as the `Origin`
+// header provided by the client.
+//
+// When config has the wildcard ("*") in allowOrigins, and the request
+// is not credentialed (e.g., it is a preflight request), the
+// `Access-Control-Allow-Origin` response header either contains the
+// wildcard as well or the Origin from the request.
+//
+// When the request is credentialed, the gateway must not specify the `*`
+// wildcard in the `Access-Control-Allow-Origin` response header. When
+// also the `AllowCredentials` field is true and `AllowOrigins` field
+// specified with the `*` wildcard, the gateway must return a single origin
+// in the value of the `Access-Control-Allow-Origin` response header,
+// instead of specifying the `*` wildcard. The value of the header
+// `Access-Control-Allow-Origin` is same as the `Origin` header provided by
+// the client.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesFiltersCorsPtrOutput) AllowOrigins() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesFiltersCors) []string {
+		if v == nil {
+			return nil
+		}
+		return v.AllowOrigins
+	}).(pulumi.StringArrayOutput)
+}
+
+// ExposeHeaders indicates which HTTP response headers can be exposed
+// to client-side scripts in response to a cross-origin request.
+//
+// A CORS-safelisted response header is an HTTP header in a CORS response
+// that it is considered safe to expose to the client scripts.
+// The CORS-safelisted response headers include the following headers:
+// `Cache-Control`
+// `Content-Language`
+// `Content-Length`
+// `Content-Type`
+// `Expires`
+// `Last-Modified`
+// `Pragma`
+// (See https://fetch.spec.whatwg.org/#cors-safelisted-response-header-name)
+// The CORS-safelisted response headers are exposed to client by default.
+//
+// When an HTTP header name is specified using the `ExposeHeaders` field,
+// this additional header will be exposed as part of the response to the
+// client.
+//
+// Header names are not case-sensitive.
+//
+// Multiple header names in the value of the `Access-Control-Expose-Headers`
+// response header are separated by a comma (",").
+//
+// A wildcard indicates that the responses with all HTTP headers are exposed
+// to clients. The `Access-Control-Expose-Headers` response header can only
+// use `*` wildcard as value when the request is not credentialed.
+//
+// When the `exposeHeaders` config field contains the "*" wildcard and
+// the request is credentialed, the gateway cannot use the `*` wildcard in
+// the `Access-Control-Expose-Headers` response header.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesFiltersCorsPtrOutput) ExposeHeaders() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesFiltersCors) []string {
+		if v == nil {
+			return nil
+		}
+		return v.ExposeHeaders
+	}).(pulumi.StringArrayOutput)
+}
+
+// MaxAge indicates the duration (in seconds) for the client to cache the
+// results of a "preflight" request.
+//
+// The information provided by the `Access-Control-Allow-Methods` and
+// `Access-Control-Allow-Headers` response headers can be cached by the
+// client until the time specified by `Access-Control-Max-Age` elapses.
+//
+// The default value of `Access-Control-Max-Age` response header is 5
+// (seconds).
+//
+// When the `MaxAge` field is unspecified, the gateway sets the response
+// header "Access-Control-Max-Age: 5" by default.
+func (o HTTPRouteSpecRulesFiltersCorsPtrOutput) MaxAge() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesFiltersCors) *int {
+		if v == nil {
+			return nil
+		}
+		return v.MaxAge
+	}).(pulumi.IntPtrOutput)
+}
+
+// CORS defines a schema for a filter that responds to the
+// cross-origin request based on HTTP response header.
+//
+// Support: Extended
+type HTTPRouteSpecRulesFiltersCorsPatch struct {
+	// AllowCredentials indicates whether the actual cross-origin request allows
+	// to include credentials.
+	//
+	// When set to true, the gateway will include the `Access-Control-Allow-Credentials`
+	// response header with value true (case-sensitive).
+	//
+	// When set to false or omitted the gateway will omit the header
+	// `Access-Control-Allow-Credentials` entirely (this is the standard CORS
+	// behavior).
+	//
+	// Support: Extended
+	AllowCredentials *bool `pulumi:"allowCredentials"`
+	// AllowHeaders indicates which HTTP request headers are supported for
+	// accessing the requested resource.
+	//
+	// Header names are not case-sensitive.
+	//
+	// Multiple header names in the value of the `Access-Control-Allow-Headers`
+	// response header are separated by a comma (",").
+	//
+	// When the `AllowHeaders` field is configured with one or more headers, the
+	// gateway must return the `Access-Control-Allow-Headers` response header
+	// which value is present in the `AllowHeaders` field.
+	//
+	// If any header name in the `Access-Control-Request-Headers` request header
+	// is not included in the list of header names specified by the response
+	// header `Access-Control-Allow-Headers`, it will present an error on the
+	// client side.
+	//
+	// If any header name in the `Access-Control-Allow-Headers` response header
+	// does not recognize by the client, it will also occur an error on the
+	// client side.
+	//
+	// A wildcard indicates that the requests with all HTTP headers are allowed.
+	// If config contains the wildcard "*" in allowHeaders and the request is
+	// not credentialed, the `Access-Control-Allow-Headers` response header
+	// can either use the `*` wildcard or the value of
+	// Access-Control-Request-Headers from the request.
+	//
+	// When the request is credentialed, the gateway must not specify the `*`
+	// wildcard in the `Access-Control-Allow-Headers` response header. When
+	// also the `AllowCredentials` field is true and `AllowHeaders` field
+	// is specified with the `*` wildcard, the gateway must specify one or more
+	// HTTP headers in the value of the `Access-Control-Allow-Headers` response
+	// header. The value of the header `Access-Control-Allow-Headers` is same as
+	// the `Access-Control-Request-Headers` header provided by the client. If
+	// the header `Access-Control-Request-Headers` is not included in the
+	// request, the gateway will omit the `Access-Control-Allow-Headers`
+	// response header, instead of specifying the `*` wildcard.
+	//
+	// Support: Extended
+	AllowHeaders []string `pulumi:"allowHeaders"`
+	// AllowMethods indicates which HTTP methods are supported for accessing the
+	// requested resource.
+	//
+	// Valid values are any method defined by RFC9110, along with the special
+	// value `*`, which represents all HTTP methods are allowed.
+	//
+	// Method names are case-sensitive, so these values are also case-sensitive.
+	// (See https://www.rfc-editor.org/rfc/rfc2616#section-5.1.1)
+	//
+	// Multiple method names in the value of the `Access-Control-Allow-Methods`
+	// response header are separated by a comma (",").
+	//
+	// A CORS-safelisted method is a method that is `GET`, `HEAD`, or `POST`.
+	// (See https://fetch.spec.whatwg.org/#cors-safelisted-method) The
+	// CORS-safelisted methods are always allowed, regardless of whether they
+	// are specified in the `AllowMethods` field.
+	//
+	// When the `AllowMethods` field is configured with one or more methods, the
+	// gateway must return the `Access-Control-Allow-Methods` response header
+	// which value is present in the `AllowMethods` field.
+	//
+	// If the HTTP method of the `Access-Control-Request-Method` request header
+	// is not included in the list of methods specified by the response header
+	// `Access-Control-Allow-Methods`, it will present an error on the client
+	// side.
+	//
+	// If config contains the wildcard "*" in allowMethods and the request is
+	// not credentialed, the `Access-Control-Allow-Methods` response header
+	// can either use the `*` wildcard or the value of
+	// Access-Control-Request-Method from the request.
+	//
+	// When the request is credentialed, the gateway must not specify the `*`
+	// wildcard in the `Access-Control-Allow-Methods` response header. When
+	// also the `AllowCredentials` field is true and `AllowMethods` field
+	// specified with the `*` wildcard, the gateway must specify one HTTP method
+	// in the value of the Access-Control-Allow-Methods response header. The
+	// value of the header `Access-Control-Allow-Methods` is same as the
+	// `Access-Control-Request-Method` header provided by the client. If the
+	// header `Access-Control-Request-Method` is not included in the request,
+	// the gateway will omit the `Access-Control-Allow-Methods` response header,
+	// instead of specifying the `*` wildcard.
+	//
+	// Support: Extended
+	AllowMethods []string `pulumi:"allowMethods"`
+	// AllowOrigins indicates whether the response can be shared with requested
+	// resource from the given `Origin`.
+	//
+	// The `Origin` consists of a scheme and a host, with an optional port, and
+	// takes the form `<scheme>://<host>(:<port>)`.
+	//
+	// Valid values for scheme are: `http` and `https`.
+	//
+	// Valid values for port are any integer between 1 and 65535 (the list of
+	// available TCP/UDP ports). Note that, if not included, port `80` is
+	// assumed for `http` scheme origins, and port `443` is assumed for `https`
+	// origins. This may affect origin matching.
+	//
+	// The host part of the origin may contain the wildcard character `*`. These
+	// wildcard characters behave as follows:
+	//
+	// * `*` is a greedy match to the _left_, including any number of
+	//   DNS labels to the left of its position. This also means that
+	//   `*` will include any number of period `.` characters to the
+	//   left of its position.
+	// * A wildcard by itself matches all hosts.
+	//
+	// An origin value that includes _only_ the `*` character indicates requests
+	// from all `Origin`s are allowed.
+	//
+	// When the `AllowOrigins` field is configured with multiple origins, it
+	// means the server supports clients from multiple origins. If the request
+	// `Origin` matches the configured allowed origins, the gateway must return
+	// the given `Origin` and sets value of the header
+	// `Access-Control-Allow-Origin` same as the `Origin` header provided by the
+	// client.
+	//
+	// The status code of a successful response to a "preflight" request is
+	// always an OK status (i.e., 204 or 200).
+	//
+	// If the request `Origin` does not match the configured allowed origins,
+	// the gateway returns 204/200 response but doesn't set the relevant
+	// cross-origin response headers. Alternatively, the gateway responds with
+	// 403 status to the "preflight" request is denied, coupled with omitting
+	// the CORS headers. The cross-origin request fails on the client side.
+	// Therefore, the client doesn't attempt the actual cross-origin request.
+	//
+	// Conversely, if the request `Origin` matches one of the configured
+	// allowed origins, the gateway sets the response header
+	// `Access-Control-Allow-Origin` to the same value as the `Origin`
+	// header provided by the client.
+	//
+	// When config has the wildcard ("*") in allowOrigins, and the request
+	// is not credentialed (e.g., it is a preflight request), the
+	// `Access-Control-Allow-Origin` response header either contains the
+	// wildcard as well or the Origin from the request.
+	//
+	// When the request is credentialed, the gateway must not specify the `*`
+	// wildcard in the `Access-Control-Allow-Origin` response header. When
+	// also the `AllowCredentials` field is true and `AllowOrigins` field
+	// specified with the `*` wildcard, the gateway must return a single origin
+	// in the value of the `Access-Control-Allow-Origin` response header,
+	// instead of specifying the `*` wildcard. The value of the header
+	// `Access-Control-Allow-Origin` is same as the `Origin` header provided by
+	// the client.
+	//
+	// Support: Extended
+	AllowOrigins []string `pulumi:"allowOrigins"`
+	// ExposeHeaders indicates which HTTP response headers can be exposed
+	// to client-side scripts in response to a cross-origin request.
+	//
+	// A CORS-safelisted response header is an HTTP header in a CORS response
+	// that it is considered safe to expose to the client scripts.
+	// The CORS-safelisted response headers include the following headers:
+	// `Cache-Control`
+	// `Content-Language`
+	// `Content-Length`
+	// `Content-Type`
+	// `Expires`
+	// `Last-Modified`
+	// `Pragma`
+	// (See https://fetch.spec.whatwg.org/#cors-safelisted-response-header-name)
+	// The CORS-safelisted response headers are exposed to client by default.
+	//
+	// When an HTTP header name is specified using the `ExposeHeaders` field,
+	// this additional header will be exposed as part of the response to the
+	// client.
+	//
+	// Header names are not case-sensitive.
+	//
+	// Multiple header names in the value of the `Access-Control-Expose-Headers`
+	// response header are separated by a comma (",").
+	//
+	// A wildcard indicates that the responses with all HTTP headers are exposed
+	// to clients. The `Access-Control-Expose-Headers` response header can only
+	// use `*` wildcard as value when the request is not credentialed.
+	//
+	// When the `exposeHeaders` config field contains the "*" wildcard and
+	// the request is credentialed, the gateway cannot use the `*` wildcard in
+	// the `Access-Control-Expose-Headers` response header.
+	//
+	// Support: Extended
+	ExposeHeaders []string `pulumi:"exposeHeaders"`
+	// MaxAge indicates the duration (in seconds) for the client to cache the
+	// results of a "preflight" request.
+	//
+	// The information provided by the `Access-Control-Allow-Methods` and
+	// `Access-Control-Allow-Headers` response headers can be cached by the
+	// client until the time specified by `Access-Control-Max-Age` elapses.
+	//
+	// The default value of `Access-Control-Max-Age` response header is 5
+	// (seconds).
+	//
+	// When the `MaxAge` field is unspecified, the gateway sets the response
+	// header "Access-Control-Max-Age: 5" by default.
+	MaxAge *int `pulumi:"maxAge"`
+}
+
+// HTTPRouteSpecRulesFiltersCorsPatchInput is an input type that accepts HTTPRouteSpecRulesFiltersCorsPatchArgs and HTTPRouteSpecRulesFiltersCorsPatchOutput values.
+// You can construct a concrete instance of `HTTPRouteSpecRulesFiltersCorsPatchInput` via:
+//
+//	HTTPRouteSpecRulesFiltersCorsPatchArgs{...}
+type HTTPRouteSpecRulesFiltersCorsPatchInput interface {
+	pulumi.Input
+
+	ToHTTPRouteSpecRulesFiltersCorsPatchOutput() HTTPRouteSpecRulesFiltersCorsPatchOutput
+	ToHTTPRouteSpecRulesFiltersCorsPatchOutputWithContext(context.Context) HTTPRouteSpecRulesFiltersCorsPatchOutput
+}
+
+// CORS defines a schema for a filter that responds to the
+// cross-origin request based on HTTP response header.
+//
+// Support: Extended
+type HTTPRouteSpecRulesFiltersCorsPatchArgs struct {
+	// AllowCredentials indicates whether the actual cross-origin request allows
+	// to include credentials.
+	//
+	// When set to true, the gateway will include the `Access-Control-Allow-Credentials`
+	// response header with value true (case-sensitive).
+	//
+	// When set to false or omitted the gateway will omit the header
+	// `Access-Control-Allow-Credentials` entirely (this is the standard CORS
+	// behavior).
+	//
+	// Support: Extended
+	AllowCredentials pulumi.BoolPtrInput `pulumi:"allowCredentials"`
+	// AllowHeaders indicates which HTTP request headers are supported for
+	// accessing the requested resource.
+	//
+	// Header names are not case-sensitive.
+	//
+	// Multiple header names in the value of the `Access-Control-Allow-Headers`
+	// response header are separated by a comma (",").
+	//
+	// When the `AllowHeaders` field is configured with one or more headers, the
+	// gateway must return the `Access-Control-Allow-Headers` response header
+	// which value is present in the `AllowHeaders` field.
+	//
+	// If any header name in the `Access-Control-Request-Headers` request header
+	// is not included in the list of header names specified by the response
+	// header `Access-Control-Allow-Headers`, it will present an error on the
+	// client side.
+	//
+	// If any header name in the `Access-Control-Allow-Headers` response header
+	// does not recognize by the client, it will also occur an error on the
+	// client side.
+	//
+	// A wildcard indicates that the requests with all HTTP headers are allowed.
+	// If config contains the wildcard "*" in allowHeaders and the request is
+	// not credentialed, the `Access-Control-Allow-Headers` response header
+	// can either use the `*` wildcard or the value of
+	// Access-Control-Request-Headers from the request.
+	//
+	// When the request is credentialed, the gateway must not specify the `*`
+	// wildcard in the `Access-Control-Allow-Headers` response header. When
+	// also the `AllowCredentials` field is true and `AllowHeaders` field
+	// is specified with the `*` wildcard, the gateway must specify one or more
+	// HTTP headers in the value of the `Access-Control-Allow-Headers` response
+	// header. The value of the header `Access-Control-Allow-Headers` is same as
+	// the `Access-Control-Request-Headers` header provided by the client. If
+	// the header `Access-Control-Request-Headers` is not included in the
+	// request, the gateway will omit the `Access-Control-Allow-Headers`
+	// response header, instead of specifying the `*` wildcard.
+	//
+	// Support: Extended
+	AllowHeaders pulumi.StringArrayInput `pulumi:"allowHeaders"`
+	// AllowMethods indicates which HTTP methods are supported for accessing the
+	// requested resource.
+	//
+	// Valid values are any method defined by RFC9110, along with the special
+	// value `*`, which represents all HTTP methods are allowed.
+	//
+	// Method names are case-sensitive, so these values are also case-sensitive.
+	// (See https://www.rfc-editor.org/rfc/rfc2616#section-5.1.1)
+	//
+	// Multiple method names in the value of the `Access-Control-Allow-Methods`
+	// response header are separated by a comma (",").
+	//
+	// A CORS-safelisted method is a method that is `GET`, `HEAD`, or `POST`.
+	// (See https://fetch.spec.whatwg.org/#cors-safelisted-method) The
+	// CORS-safelisted methods are always allowed, regardless of whether they
+	// are specified in the `AllowMethods` field.
+	//
+	// When the `AllowMethods` field is configured with one or more methods, the
+	// gateway must return the `Access-Control-Allow-Methods` response header
+	// which value is present in the `AllowMethods` field.
+	//
+	// If the HTTP method of the `Access-Control-Request-Method` request header
+	// is not included in the list of methods specified by the response header
+	// `Access-Control-Allow-Methods`, it will present an error on the client
+	// side.
+	//
+	// If config contains the wildcard "*" in allowMethods and the request is
+	// not credentialed, the `Access-Control-Allow-Methods` response header
+	// can either use the `*` wildcard or the value of
+	// Access-Control-Request-Method from the request.
+	//
+	// When the request is credentialed, the gateway must not specify the `*`
+	// wildcard in the `Access-Control-Allow-Methods` response header. When
+	// also the `AllowCredentials` field is true and `AllowMethods` field
+	// specified with the `*` wildcard, the gateway must specify one HTTP method
+	// in the value of the Access-Control-Allow-Methods response header. The
+	// value of the header `Access-Control-Allow-Methods` is same as the
+	// `Access-Control-Request-Method` header provided by the client. If the
+	// header `Access-Control-Request-Method` is not included in the request,
+	// the gateway will omit the `Access-Control-Allow-Methods` response header,
+	// instead of specifying the `*` wildcard.
+	//
+	// Support: Extended
+	AllowMethods pulumi.StringArrayInput `pulumi:"allowMethods"`
+	// AllowOrigins indicates whether the response can be shared with requested
+	// resource from the given `Origin`.
+	//
+	// The `Origin` consists of a scheme and a host, with an optional port, and
+	// takes the form `<scheme>://<host>(:<port>)`.
+	//
+	// Valid values for scheme are: `http` and `https`.
+	//
+	// Valid values for port are any integer between 1 and 65535 (the list of
+	// available TCP/UDP ports). Note that, if not included, port `80` is
+	// assumed for `http` scheme origins, and port `443` is assumed for `https`
+	// origins. This may affect origin matching.
+	//
+	// The host part of the origin may contain the wildcard character `*`. These
+	// wildcard characters behave as follows:
+	//
+	// * `*` is a greedy match to the _left_, including any number of
+	//   DNS labels to the left of its position. This also means that
+	//   `*` will include any number of period `.` characters to the
+	//   left of its position.
+	// * A wildcard by itself matches all hosts.
+	//
+	// An origin value that includes _only_ the `*` character indicates requests
+	// from all `Origin`s are allowed.
+	//
+	// When the `AllowOrigins` field is configured with multiple origins, it
+	// means the server supports clients from multiple origins. If the request
+	// `Origin` matches the configured allowed origins, the gateway must return
+	// the given `Origin` and sets value of the header
+	// `Access-Control-Allow-Origin` same as the `Origin` header provided by the
+	// client.
+	//
+	// The status code of a successful response to a "preflight" request is
+	// always an OK status (i.e., 204 or 200).
+	//
+	// If the request `Origin` does not match the configured allowed origins,
+	// the gateway returns 204/200 response but doesn't set the relevant
+	// cross-origin response headers. Alternatively, the gateway responds with
+	// 403 status to the "preflight" request is denied, coupled with omitting
+	// the CORS headers. The cross-origin request fails on the client side.
+	// Therefore, the client doesn't attempt the actual cross-origin request.
+	//
+	// Conversely, if the request `Origin` matches one of the configured
+	// allowed origins, the gateway sets the response header
+	// `Access-Control-Allow-Origin` to the same value as the `Origin`
+	// header provided by the client.
+	//
+	// When config has the wildcard ("*") in allowOrigins, and the request
+	// is not credentialed (e.g., it is a preflight request), the
+	// `Access-Control-Allow-Origin` response header either contains the
+	// wildcard as well or the Origin from the request.
+	//
+	// When the request is credentialed, the gateway must not specify the `*`
+	// wildcard in the `Access-Control-Allow-Origin` response header. When
+	// also the `AllowCredentials` field is true and `AllowOrigins` field
+	// specified with the `*` wildcard, the gateway must return a single origin
+	// in the value of the `Access-Control-Allow-Origin` response header,
+	// instead of specifying the `*` wildcard. The value of the header
+	// `Access-Control-Allow-Origin` is same as the `Origin` header provided by
+	// the client.
+	//
+	// Support: Extended
+	AllowOrigins pulumi.StringArrayInput `pulumi:"allowOrigins"`
+	// ExposeHeaders indicates which HTTP response headers can be exposed
+	// to client-side scripts in response to a cross-origin request.
+	//
+	// A CORS-safelisted response header is an HTTP header in a CORS response
+	// that it is considered safe to expose to the client scripts.
+	// The CORS-safelisted response headers include the following headers:
+	// `Cache-Control`
+	// `Content-Language`
+	// `Content-Length`
+	// `Content-Type`
+	// `Expires`
+	// `Last-Modified`
+	// `Pragma`
+	// (See https://fetch.spec.whatwg.org/#cors-safelisted-response-header-name)
+	// The CORS-safelisted response headers are exposed to client by default.
+	//
+	// When an HTTP header name is specified using the `ExposeHeaders` field,
+	// this additional header will be exposed as part of the response to the
+	// client.
+	//
+	// Header names are not case-sensitive.
+	//
+	// Multiple header names in the value of the `Access-Control-Expose-Headers`
+	// response header are separated by a comma (",").
+	//
+	// A wildcard indicates that the responses with all HTTP headers are exposed
+	// to clients. The `Access-Control-Expose-Headers` response header can only
+	// use `*` wildcard as value when the request is not credentialed.
+	//
+	// When the `exposeHeaders` config field contains the "*" wildcard and
+	// the request is credentialed, the gateway cannot use the `*` wildcard in
+	// the `Access-Control-Expose-Headers` response header.
+	//
+	// Support: Extended
+	ExposeHeaders pulumi.StringArrayInput `pulumi:"exposeHeaders"`
+	// MaxAge indicates the duration (in seconds) for the client to cache the
+	// results of a "preflight" request.
+	//
+	// The information provided by the `Access-Control-Allow-Methods` and
+	// `Access-Control-Allow-Headers` response headers can be cached by the
+	// client until the time specified by `Access-Control-Max-Age` elapses.
+	//
+	// The default value of `Access-Control-Max-Age` response header is 5
+	// (seconds).
+	//
+	// When the `MaxAge` field is unspecified, the gateway sets the response
+	// header "Access-Control-Max-Age: 5" by default.
+	MaxAge pulumi.IntPtrInput `pulumi:"maxAge"`
+}
+
+func (HTTPRouteSpecRulesFiltersCorsPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*HTTPRouteSpecRulesFiltersCorsPatch)(nil)).Elem()
+}
+
+func (i HTTPRouteSpecRulesFiltersCorsPatchArgs) ToHTTPRouteSpecRulesFiltersCorsPatchOutput() HTTPRouteSpecRulesFiltersCorsPatchOutput {
+	return i.ToHTTPRouteSpecRulesFiltersCorsPatchOutputWithContext(context.Background())
+}
+
+func (i HTTPRouteSpecRulesFiltersCorsPatchArgs) ToHTTPRouteSpecRulesFiltersCorsPatchOutputWithContext(ctx context.Context) HTTPRouteSpecRulesFiltersCorsPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(HTTPRouteSpecRulesFiltersCorsPatchOutput)
+}
+
+func (i HTTPRouteSpecRulesFiltersCorsPatchArgs) ToHTTPRouteSpecRulesFiltersCorsPatchPtrOutput() HTTPRouteSpecRulesFiltersCorsPatchPtrOutput {
+	return i.ToHTTPRouteSpecRulesFiltersCorsPatchPtrOutputWithContext(context.Background())
+}
+
+func (i HTTPRouteSpecRulesFiltersCorsPatchArgs) ToHTTPRouteSpecRulesFiltersCorsPatchPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesFiltersCorsPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(HTTPRouteSpecRulesFiltersCorsPatchOutput).ToHTTPRouteSpecRulesFiltersCorsPatchPtrOutputWithContext(ctx)
+}
+
+// HTTPRouteSpecRulesFiltersCorsPatchPtrInput is an input type that accepts HTTPRouteSpecRulesFiltersCorsPatchArgs, HTTPRouteSpecRulesFiltersCorsPatchPtr and HTTPRouteSpecRulesFiltersCorsPatchPtrOutput values.
+// You can construct a concrete instance of `HTTPRouteSpecRulesFiltersCorsPatchPtrInput` via:
+//
+//	        HTTPRouteSpecRulesFiltersCorsPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type HTTPRouteSpecRulesFiltersCorsPatchPtrInput interface {
+	pulumi.Input
+
+	ToHTTPRouteSpecRulesFiltersCorsPatchPtrOutput() HTTPRouteSpecRulesFiltersCorsPatchPtrOutput
+	ToHTTPRouteSpecRulesFiltersCorsPatchPtrOutputWithContext(context.Context) HTTPRouteSpecRulesFiltersCorsPatchPtrOutput
+}
+
+type httprouteSpecRulesFiltersCorsPatchPtrType HTTPRouteSpecRulesFiltersCorsPatchArgs
+
+func HTTPRouteSpecRulesFiltersCorsPatchPtr(v *HTTPRouteSpecRulesFiltersCorsPatchArgs) HTTPRouteSpecRulesFiltersCorsPatchPtrInput {
+	return (*httprouteSpecRulesFiltersCorsPatchPtrType)(v)
+}
+
+func (*httprouteSpecRulesFiltersCorsPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**HTTPRouteSpecRulesFiltersCorsPatch)(nil)).Elem()
+}
+
+func (i *httprouteSpecRulesFiltersCorsPatchPtrType) ToHTTPRouteSpecRulesFiltersCorsPatchPtrOutput() HTTPRouteSpecRulesFiltersCorsPatchPtrOutput {
+	return i.ToHTTPRouteSpecRulesFiltersCorsPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *httprouteSpecRulesFiltersCorsPatchPtrType) ToHTTPRouteSpecRulesFiltersCorsPatchPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesFiltersCorsPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(HTTPRouteSpecRulesFiltersCorsPatchPtrOutput)
+}
+
+// CORS defines a schema for a filter that responds to the
+// cross-origin request based on HTTP response header.
+//
+// Support: Extended
+type HTTPRouteSpecRulesFiltersCorsPatchOutput struct{ *pulumi.OutputState }
+
+func (HTTPRouteSpecRulesFiltersCorsPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*HTTPRouteSpecRulesFiltersCorsPatch)(nil)).Elem()
+}
+
+func (o HTTPRouteSpecRulesFiltersCorsPatchOutput) ToHTTPRouteSpecRulesFiltersCorsPatchOutput() HTTPRouteSpecRulesFiltersCorsPatchOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesFiltersCorsPatchOutput) ToHTTPRouteSpecRulesFiltersCorsPatchOutputWithContext(ctx context.Context) HTTPRouteSpecRulesFiltersCorsPatchOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesFiltersCorsPatchOutput) ToHTTPRouteSpecRulesFiltersCorsPatchPtrOutput() HTTPRouteSpecRulesFiltersCorsPatchPtrOutput {
+	return o.ToHTTPRouteSpecRulesFiltersCorsPatchPtrOutputWithContext(context.Background())
+}
+
+func (o HTTPRouteSpecRulesFiltersCorsPatchOutput) ToHTTPRouteSpecRulesFiltersCorsPatchPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesFiltersCorsPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v HTTPRouteSpecRulesFiltersCorsPatch) *HTTPRouteSpecRulesFiltersCorsPatch {
+		return &v
+	}).(HTTPRouteSpecRulesFiltersCorsPatchPtrOutput)
+}
+
+// AllowCredentials indicates whether the actual cross-origin request allows
+// to include credentials.
+//
+// When set to true, the gateway will include the `Access-Control-Allow-Credentials`
+// response header with value true (case-sensitive).
+//
+// When set to false or omitted the gateway will omit the header
+// `Access-Control-Allow-Credentials` entirely (this is the standard CORS
+// behavior).
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesFiltersCorsPatchOutput) AllowCredentials() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesFiltersCorsPatch) *bool { return v.AllowCredentials }).(pulumi.BoolPtrOutput)
+}
+
+// AllowHeaders indicates which HTTP request headers are supported for
+// accessing the requested resource.
+//
+// Header names are not case-sensitive.
+//
+// Multiple header names in the value of the `Access-Control-Allow-Headers`
+// response header are separated by a comma (",").
+//
+// When the `AllowHeaders` field is configured with one or more headers, the
+// gateway must return the `Access-Control-Allow-Headers` response header
+// which value is present in the `AllowHeaders` field.
+//
+// If any header name in the `Access-Control-Request-Headers` request header
+// is not included in the list of header names specified by the response
+// header `Access-Control-Allow-Headers`, it will present an error on the
+// client side.
+//
+// If any header name in the `Access-Control-Allow-Headers` response header
+// does not recognize by the client, it will also occur an error on the
+// client side.
+//
+// A wildcard indicates that the requests with all HTTP headers are allowed.
+// If config contains the wildcard "*" in allowHeaders and the request is
+// not credentialed, the `Access-Control-Allow-Headers` response header
+// can either use the `*` wildcard or the value of
+// Access-Control-Request-Headers from the request.
+//
+// When the request is credentialed, the gateway must not specify the `*`
+// wildcard in the `Access-Control-Allow-Headers` response header. When
+// also the `AllowCredentials` field is true and `AllowHeaders` field
+// is specified with the `*` wildcard, the gateway must specify one or more
+// HTTP headers in the value of the `Access-Control-Allow-Headers` response
+// header. The value of the header `Access-Control-Allow-Headers` is same as
+// the `Access-Control-Request-Headers` header provided by the client. If
+// the header `Access-Control-Request-Headers` is not included in the
+// request, the gateway will omit the `Access-Control-Allow-Headers`
+// response header, instead of specifying the `*` wildcard.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesFiltersCorsPatchOutput) AllowHeaders() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesFiltersCorsPatch) []string { return v.AllowHeaders }).(pulumi.StringArrayOutput)
+}
+
+// AllowMethods indicates which HTTP methods are supported for accessing the
+// requested resource.
+//
+// Valid values are any method defined by RFC9110, along with the special
+// value `*`, which represents all HTTP methods are allowed.
+//
+// Method names are case-sensitive, so these values are also case-sensitive.
+// (See https://www.rfc-editor.org/rfc/rfc2616#section-5.1.1)
+//
+// Multiple method names in the value of the `Access-Control-Allow-Methods`
+// response header are separated by a comma (",").
+//
+// A CORS-safelisted method is a method that is `GET`, `HEAD`, or `POST`.
+// (See https://fetch.spec.whatwg.org/#cors-safelisted-method) The
+// CORS-safelisted methods are always allowed, regardless of whether they
+// are specified in the `AllowMethods` field.
+//
+// When the `AllowMethods` field is configured with one or more methods, the
+// gateway must return the `Access-Control-Allow-Methods` response header
+// which value is present in the `AllowMethods` field.
+//
+// If the HTTP method of the `Access-Control-Request-Method` request header
+// is not included in the list of methods specified by the response header
+// `Access-Control-Allow-Methods`, it will present an error on the client
+// side.
+//
+// If config contains the wildcard "*" in allowMethods and the request is
+// not credentialed, the `Access-Control-Allow-Methods` response header
+// can either use the `*` wildcard or the value of
+// Access-Control-Request-Method from the request.
+//
+// When the request is credentialed, the gateway must not specify the `*`
+// wildcard in the `Access-Control-Allow-Methods` response header. When
+// also the `AllowCredentials` field is true and `AllowMethods` field
+// specified with the `*` wildcard, the gateway must specify one HTTP method
+// in the value of the Access-Control-Allow-Methods response header. The
+// value of the header `Access-Control-Allow-Methods` is same as the
+// `Access-Control-Request-Method` header provided by the client. If the
+// header `Access-Control-Request-Method` is not included in the request,
+// the gateway will omit the `Access-Control-Allow-Methods` response header,
+// instead of specifying the `*` wildcard.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesFiltersCorsPatchOutput) AllowMethods() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesFiltersCorsPatch) []string { return v.AllowMethods }).(pulumi.StringArrayOutput)
+}
+
+// AllowOrigins indicates whether the response can be shared with requested
+// resource from the given `Origin`.
+//
+// The `Origin` consists of a scheme and a host, with an optional port, and
+// takes the form `<scheme>://<host>(:<port>)`.
+//
+// Valid values for scheme are: `http` and `https`.
+//
+// Valid values for port are any integer between 1 and 65535 (the list of
+// available TCP/UDP ports). Note that, if not included, port `80` is
+// assumed for `http` scheme origins, and port `443` is assumed for `https`
+// origins. This may affect origin matching.
+//
+// The host part of the origin may contain the wildcard character `*`. These
+// wildcard characters behave as follows:
+//
+//   - `*` is a greedy match to the _left_, including any number of
+//     DNS labels to the left of its position. This also means that
+//     `*` will include any number of period `.` characters to the
+//     left of its position.
+//   - A wildcard by itself matches all hosts.
+//
+// An origin value that includes _only_ the `*` character indicates requests
+// from all `Origin`s are allowed.
+//
+// When the `AllowOrigins` field is configured with multiple origins, it
+// means the server supports clients from multiple origins. If the request
+// `Origin` matches the configured allowed origins, the gateway must return
+// the given `Origin` and sets value of the header
+// `Access-Control-Allow-Origin` same as the `Origin` header provided by the
+// client.
+//
+// The status code of a successful response to a "preflight" request is
+// always an OK status (i.e., 204 or 200).
+//
+// If the request `Origin` does not match the configured allowed origins,
+// the gateway returns 204/200 response but doesn't set the relevant
+// cross-origin response headers. Alternatively, the gateway responds with
+// 403 status to the "preflight" request is denied, coupled with omitting
+// the CORS headers. The cross-origin request fails on the client side.
+// Therefore, the client doesn't attempt the actual cross-origin request.
+//
+// Conversely, if the request `Origin` matches one of the configured
+// allowed origins, the gateway sets the response header
+// `Access-Control-Allow-Origin` to the same value as the `Origin`
+// header provided by the client.
+//
+// When config has the wildcard ("*") in allowOrigins, and the request
+// is not credentialed (e.g., it is a preflight request), the
+// `Access-Control-Allow-Origin` response header either contains the
+// wildcard as well or the Origin from the request.
+//
+// When the request is credentialed, the gateway must not specify the `*`
+// wildcard in the `Access-Control-Allow-Origin` response header. When
+// also the `AllowCredentials` field is true and `AllowOrigins` field
+// specified with the `*` wildcard, the gateway must return a single origin
+// in the value of the `Access-Control-Allow-Origin` response header,
+// instead of specifying the `*` wildcard. The value of the header
+// `Access-Control-Allow-Origin` is same as the `Origin` header provided by
+// the client.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesFiltersCorsPatchOutput) AllowOrigins() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesFiltersCorsPatch) []string { return v.AllowOrigins }).(pulumi.StringArrayOutput)
+}
+
+// ExposeHeaders indicates which HTTP response headers can be exposed
+// to client-side scripts in response to a cross-origin request.
+//
+// A CORS-safelisted response header is an HTTP header in a CORS response
+// that it is considered safe to expose to the client scripts.
+// The CORS-safelisted response headers include the following headers:
+// `Cache-Control`
+// `Content-Language`
+// `Content-Length`
+// `Content-Type`
+// `Expires`
+// `Last-Modified`
+// `Pragma`
+// (See https://fetch.spec.whatwg.org/#cors-safelisted-response-header-name)
+// The CORS-safelisted response headers are exposed to client by default.
+//
+// When an HTTP header name is specified using the `ExposeHeaders` field,
+// this additional header will be exposed as part of the response to the
+// client.
+//
+// Header names are not case-sensitive.
+//
+// Multiple header names in the value of the `Access-Control-Expose-Headers`
+// response header are separated by a comma (",").
+//
+// A wildcard indicates that the responses with all HTTP headers are exposed
+// to clients. The `Access-Control-Expose-Headers` response header can only
+// use `*` wildcard as value when the request is not credentialed.
+//
+// When the `exposeHeaders` config field contains the "*" wildcard and
+// the request is credentialed, the gateway cannot use the `*` wildcard in
+// the `Access-Control-Expose-Headers` response header.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesFiltersCorsPatchOutput) ExposeHeaders() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesFiltersCorsPatch) []string { return v.ExposeHeaders }).(pulumi.StringArrayOutput)
+}
+
+// MaxAge indicates the duration (in seconds) for the client to cache the
+// results of a "preflight" request.
+//
+// The information provided by the `Access-Control-Allow-Methods` and
+// `Access-Control-Allow-Headers` response headers can be cached by the
+// client until the time specified by `Access-Control-Max-Age` elapses.
+//
+// The default value of `Access-Control-Max-Age` response header is 5
+// (seconds).
+//
+// When the `MaxAge` field is unspecified, the gateway sets the response
+// header "Access-Control-Max-Age: 5" by default.
+func (o HTTPRouteSpecRulesFiltersCorsPatchOutput) MaxAge() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesFiltersCorsPatch) *int { return v.MaxAge }).(pulumi.IntPtrOutput)
+}
+
+type HTTPRouteSpecRulesFiltersCorsPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (HTTPRouteSpecRulesFiltersCorsPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**HTTPRouteSpecRulesFiltersCorsPatch)(nil)).Elem()
+}
+
+func (o HTTPRouteSpecRulesFiltersCorsPatchPtrOutput) ToHTTPRouteSpecRulesFiltersCorsPatchPtrOutput() HTTPRouteSpecRulesFiltersCorsPatchPtrOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesFiltersCorsPatchPtrOutput) ToHTTPRouteSpecRulesFiltersCorsPatchPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesFiltersCorsPatchPtrOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesFiltersCorsPatchPtrOutput) Elem() HTTPRouteSpecRulesFiltersCorsPatchOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesFiltersCorsPatch) HTTPRouteSpecRulesFiltersCorsPatch {
+		if v != nil {
+			return *v
+		}
+		var ret HTTPRouteSpecRulesFiltersCorsPatch
+		return ret
+	}).(HTTPRouteSpecRulesFiltersCorsPatchOutput)
+}
+
+// AllowCredentials indicates whether the actual cross-origin request allows
+// to include credentials.
+//
+// When set to true, the gateway will include the `Access-Control-Allow-Credentials`
+// response header with value true (case-sensitive).
+//
+// When set to false or omitted the gateway will omit the header
+// `Access-Control-Allow-Credentials` entirely (this is the standard CORS
+// behavior).
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesFiltersCorsPatchPtrOutput) AllowCredentials() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesFiltersCorsPatch) *bool {
+		if v == nil {
+			return nil
+		}
+		return v.AllowCredentials
+	}).(pulumi.BoolPtrOutput)
+}
+
+// AllowHeaders indicates which HTTP request headers are supported for
+// accessing the requested resource.
+//
+// Header names are not case-sensitive.
+//
+// Multiple header names in the value of the `Access-Control-Allow-Headers`
+// response header are separated by a comma (",").
+//
+// When the `AllowHeaders` field is configured with one or more headers, the
+// gateway must return the `Access-Control-Allow-Headers` response header
+// which value is present in the `AllowHeaders` field.
+//
+// If any header name in the `Access-Control-Request-Headers` request header
+// is not included in the list of header names specified by the response
+// header `Access-Control-Allow-Headers`, it will present an error on the
+// client side.
+//
+// If any header name in the `Access-Control-Allow-Headers` response header
+// does not recognize by the client, it will also occur an error on the
+// client side.
+//
+// A wildcard indicates that the requests with all HTTP headers are allowed.
+// If config contains the wildcard "*" in allowHeaders and the request is
+// not credentialed, the `Access-Control-Allow-Headers` response header
+// can either use the `*` wildcard or the value of
+// Access-Control-Request-Headers from the request.
+//
+// When the request is credentialed, the gateway must not specify the `*`
+// wildcard in the `Access-Control-Allow-Headers` response header. When
+// also the `AllowCredentials` field is true and `AllowHeaders` field
+// is specified with the `*` wildcard, the gateway must specify one or more
+// HTTP headers in the value of the `Access-Control-Allow-Headers` response
+// header. The value of the header `Access-Control-Allow-Headers` is same as
+// the `Access-Control-Request-Headers` header provided by the client. If
+// the header `Access-Control-Request-Headers` is not included in the
+// request, the gateway will omit the `Access-Control-Allow-Headers`
+// response header, instead of specifying the `*` wildcard.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesFiltersCorsPatchPtrOutput) AllowHeaders() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesFiltersCorsPatch) []string {
+		if v == nil {
+			return nil
+		}
+		return v.AllowHeaders
+	}).(pulumi.StringArrayOutput)
+}
+
+// AllowMethods indicates which HTTP methods are supported for accessing the
+// requested resource.
+//
+// Valid values are any method defined by RFC9110, along with the special
+// value `*`, which represents all HTTP methods are allowed.
+//
+// Method names are case-sensitive, so these values are also case-sensitive.
+// (See https://www.rfc-editor.org/rfc/rfc2616#section-5.1.1)
+//
+// Multiple method names in the value of the `Access-Control-Allow-Methods`
+// response header are separated by a comma (",").
+//
+// A CORS-safelisted method is a method that is `GET`, `HEAD`, or `POST`.
+// (See https://fetch.spec.whatwg.org/#cors-safelisted-method) The
+// CORS-safelisted methods are always allowed, regardless of whether they
+// are specified in the `AllowMethods` field.
+//
+// When the `AllowMethods` field is configured with one or more methods, the
+// gateway must return the `Access-Control-Allow-Methods` response header
+// which value is present in the `AllowMethods` field.
+//
+// If the HTTP method of the `Access-Control-Request-Method` request header
+// is not included in the list of methods specified by the response header
+// `Access-Control-Allow-Methods`, it will present an error on the client
+// side.
+//
+// If config contains the wildcard "*" in allowMethods and the request is
+// not credentialed, the `Access-Control-Allow-Methods` response header
+// can either use the `*` wildcard or the value of
+// Access-Control-Request-Method from the request.
+//
+// When the request is credentialed, the gateway must not specify the `*`
+// wildcard in the `Access-Control-Allow-Methods` response header. When
+// also the `AllowCredentials` field is true and `AllowMethods` field
+// specified with the `*` wildcard, the gateway must specify one HTTP method
+// in the value of the Access-Control-Allow-Methods response header. The
+// value of the header `Access-Control-Allow-Methods` is same as the
+// `Access-Control-Request-Method` header provided by the client. If the
+// header `Access-Control-Request-Method` is not included in the request,
+// the gateway will omit the `Access-Control-Allow-Methods` response header,
+// instead of specifying the `*` wildcard.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesFiltersCorsPatchPtrOutput) AllowMethods() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesFiltersCorsPatch) []string {
+		if v == nil {
+			return nil
+		}
+		return v.AllowMethods
+	}).(pulumi.StringArrayOutput)
+}
+
+// AllowOrigins indicates whether the response can be shared with requested
+// resource from the given `Origin`.
+//
+// The `Origin` consists of a scheme and a host, with an optional port, and
+// takes the form `<scheme>://<host>(:<port>)`.
+//
+// Valid values for scheme are: `http` and `https`.
+//
+// Valid values for port are any integer between 1 and 65535 (the list of
+// available TCP/UDP ports). Note that, if not included, port `80` is
+// assumed for `http` scheme origins, and port `443` is assumed for `https`
+// origins. This may affect origin matching.
+//
+// The host part of the origin may contain the wildcard character `*`. These
+// wildcard characters behave as follows:
+//
+//   - `*` is a greedy match to the _left_, including any number of
+//     DNS labels to the left of its position. This also means that
+//     `*` will include any number of period `.` characters to the
+//     left of its position.
+//   - A wildcard by itself matches all hosts.
+//
+// An origin value that includes _only_ the `*` character indicates requests
+// from all `Origin`s are allowed.
+//
+// When the `AllowOrigins` field is configured with multiple origins, it
+// means the server supports clients from multiple origins. If the request
+// `Origin` matches the configured allowed origins, the gateway must return
+// the given `Origin` and sets value of the header
+// `Access-Control-Allow-Origin` same as the `Origin` header provided by the
+// client.
+//
+// The status code of a successful response to a "preflight" request is
+// always an OK status (i.e., 204 or 200).
+//
+// If the request `Origin` does not match the configured allowed origins,
+// the gateway returns 204/200 response but doesn't set the relevant
+// cross-origin response headers. Alternatively, the gateway responds with
+// 403 status to the "preflight" request is denied, coupled with omitting
+// the CORS headers. The cross-origin request fails on the client side.
+// Therefore, the client doesn't attempt the actual cross-origin request.
+//
+// Conversely, if the request `Origin` matches one of the configured
+// allowed origins, the gateway sets the response header
+// `Access-Control-Allow-Origin` to the same value as the `Origin`
+// header provided by the client.
+//
+// When config has the wildcard ("*") in allowOrigins, and the request
+// is not credentialed (e.g., it is a preflight request), the
+// `Access-Control-Allow-Origin` response header either contains the
+// wildcard as well or the Origin from the request.
+//
+// When the request is credentialed, the gateway must not specify the `*`
+// wildcard in the `Access-Control-Allow-Origin` response header. When
+// also the `AllowCredentials` field is true and `AllowOrigins` field
+// specified with the `*` wildcard, the gateway must return a single origin
+// in the value of the `Access-Control-Allow-Origin` response header,
+// instead of specifying the `*` wildcard. The value of the header
+// `Access-Control-Allow-Origin` is same as the `Origin` header provided by
+// the client.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesFiltersCorsPatchPtrOutput) AllowOrigins() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesFiltersCorsPatch) []string {
+		if v == nil {
+			return nil
+		}
+		return v.AllowOrigins
+	}).(pulumi.StringArrayOutput)
+}
+
+// ExposeHeaders indicates which HTTP response headers can be exposed
+// to client-side scripts in response to a cross-origin request.
+//
+// A CORS-safelisted response header is an HTTP header in a CORS response
+// that it is considered safe to expose to the client scripts.
+// The CORS-safelisted response headers include the following headers:
+// `Cache-Control`
+// `Content-Language`
+// `Content-Length`
+// `Content-Type`
+// `Expires`
+// `Last-Modified`
+// `Pragma`
+// (See https://fetch.spec.whatwg.org/#cors-safelisted-response-header-name)
+// The CORS-safelisted response headers are exposed to client by default.
+//
+// When an HTTP header name is specified using the `ExposeHeaders` field,
+// this additional header will be exposed as part of the response to the
+// client.
+//
+// Header names are not case-sensitive.
+//
+// Multiple header names in the value of the `Access-Control-Expose-Headers`
+// response header are separated by a comma (",").
+//
+// A wildcard indicates that the responses with all HTTP headers are exposed
+// to clients. The `Access-Control-Expose-Headers` response header can only
+// use `*` wildcard as value when the request is not credentialed.
+//
+// When the `exposeHeaders` config field contains the "*" wildcard and
+// the request is credentialed, the gateway cannot use the `*` wildcard in
+// the `Access-Control-Expose-Headers` response header.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesFiltersCorsPatchPtrOutput) ExposeHeaders() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesFiltersCorsPatch) []string {
+		if v == nil {
+			return nil
+		}
+		return v.ExposeHeaders
+	}).(pulumi.StringArrayOutput)
+}
+
+// MaxAge indicates the duration (in seconds) for the client to cache the
+// results of a "preflight" request.
+//
+// The information provided by the `Access-Control-Allow-Methods` and
+// `Access-Control-Allow-Headers` response headers can be cached by the
+// client until the time specified by `Access-Control-Max-Age` elapses.
+//
+// The default value of `Access-Control-Max-Age` response header is 5
+// (seconds).
+//
+// When the `MaxAge` field is unspecified, the gateway sets the response
+// header "Access-Control-Max-Age: 5" by default.
+func (o HTTPRouteSpecRulesFiltersCorsPatchPtrOutput) MaxAge() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesFiltersCorsPatch) *int {
+		if v == nil {
+			return nil
+		}
+		return v.MaxAge
+	}).(pulumi.IntPtrOutput)
 }
 
 // ExtensionRef is an optional, implementation-specific extension to the
@@ -20898,6 +32800,7 @@ func (o HTTPRouteSpecRulesFiltersExtensionRefPatchPtrOutput) Name() pulumi.Strin
 // authentication strategies, rate-limiting, and traffic shaping. API
 // guarantee/conformance is defined based on the type of the filter.
 type HTTPRouteSpecRulesFiltersPatch struct {
+	Cors                   *HTTPRouteSpecRulesFiltersCorsPatch                   `pulumi:"cors"`
 	ExtensionRef           *HTTPRouteSpecRulesFiltersExtensionRefPatch           `pulumi:"extensionRef"`
 	RequestHeaderModifier  *HTTPRouteSpecRulesFiltersRequestHeaderModifierPatch  `pulumi:"requestHeaderModifier"`
 	RequestMirror          *HTTPRouteSpecRulesFiltersRequestMirrorPatch          `pulumi:"requestMirror"`
@@ -20957,6 +32860,7 @@ type HTTPRouteSpecRulesFiltersPatchInput interface {
 // authentication strategies, rate-limiting, and traffic shaping. API
 // guarantee/conformance is defined based on the type of the filter.
 type HTTPRouteSpecRulesFiltersPatchArgs struct {
+	Cors                   HTTPRouteSpecRulesFiltersCorsPatchPtrInput                   `pulumi:"cors"`
 	ExtensionRef           HTTPRouteSpecRulesFiltersExtensionRefPatchPtrInput           `pulumi:"extensionRef"`
 	RequestHeaderModifier  HTTPRouteSpecRulesFiltersRequestHeaderModifierPatchPtrInput  `pulumi:"requestHeaderModifier"`
 	RequestMirror          HTTPRouteSpecRulesFiltersRequestMirrorPatchPtrInput          `pulumi:"requestMirror"`
@@ -21053,6 +32957,10 @@ func (o HTTPRouteSpecRulesFiltersPatchOutput) ToHTTPRouteSpecRulesFiltersPatchOu
 
 func (o HTTPRouteSpecRulesFiltersPatchOutput) ToHTTPRouteSpecRulesFiltersPatchOutputWithContext(ctx context.Context) HTTPRouteSpecRulesFiltersPatchOutput {
 	return o
+}
+
+func (o HTTPRouteSpecRulesFiltersPatchOutput) Cors() HTTPRouteSpecRulesFiltersCorsPatchPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesFiltersPatch) *HTTPRouteSpecRulesFiltersCorsPatch { return v.Cors }).(HTTPRouteSpecRulesFiltersCorsPatchPtrOutput)
 }
 
 func (o HTTPRouteSpecRulesFiltersPatchOutput) ExtensionRef() HTTPRouteSpecRulesFiltersExtensionRefPatchPtrOutput {
@@ -21537,7 +33445,7 @@ func (o HTTPRouteSpecRulesFiltersRequestHeaderModifierPtrOutput) Set() HTTPRoute
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesFiltersRequestHeaderModifierAdd struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -21563,7 +33471,7 @@ type HTTPRouteSpecRulesFiltersRequestHeaderModifierAddInput interface {
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesFiltersRequestHeaderModifierAddArgs struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -21628,7 +33536,7 @@ func (o HTTPRouteSpecRulesFiltersRequestHeaderModifierAddOutput) ToHTTPRouteSpec
 }
 
 // Name is the name of the HTTP Header to be matched. Name matching MUST be
-// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 //
 // If multiple entries specify equivalent header names, the first entry with
 // an equivalent name MUST be considered for a match. Subsequent entries
@@ -21667,7 +33575,7 @@ func (o HTTPRouteSpecRulesFiltersRequestHeaderModifierAddArrayOutput) Index(i pu
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesFiltersRequestHeaderModifierAddPatch struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -21693,7 +33601,7 @@ type HTTPRouteSpecRulesFiltersRequestHeaderModifierAddPatchInput interface {
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesFiltersRequestHeaderModifierAddPatchArgs struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -21758,7 +33666,7 @@ func (o HTTPRouteSpecRulesFiltersRequestHeaderModifierAddPatchOutput) ToHTTPRout
 }
 
 // Name is the name of the HTTP Header to be matched. Name matching MUST be
-// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 //
 // If multiple entries specify equivalent header names, the first entry with
 // an equivalent name MUST be considered for a match. Subsequent entries
@@ -22186,7 +34094,7 @@ func (o HTTPRouteSpecRulesFiltersRequestHeaderModifierPatchPtrOutput) Set() HTTP
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesFiltersRequestHeaderModifierSet struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -22212,7 +34120,7 @@ type HTTPRouteSpecRulesFiltersRequestHeaderModifierSetInput interface {
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesFiltersRequestHeaderModifierSetArgs struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -22277,7 +34185,7 @@ func (o HTTPRouteSpecRulesFiltersRequestHeaderModifierSetOutput) ToHTTPRouteSpec
 }
 
 // Name is the name of the HTTP Header to be matched. Name matching MUST be
-// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 //
 // If multiple entries specify equivalent header names, the first entry with
 // an equivalent name MUST be considered for a match. Subsequent entries
@@ -22316,7 +34224,7 @@ func (o HTTPRouteSpecRulesFiltersRequestHeaderModifierSetArrayOutput) Index(i pu
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesFiltersRequestHeaderModifierSetPatch struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -22342,7 +34250,7 @@ type HTTPRouteSpecRulesFiltersRequestHeaderModifierSetPatchInput interface {
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesFiltersRequestHeaderModifierSetPatchArgs struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -22407,7 +34315,7 @@ func (o HTTPRouteSpecRulesFiltersRequestHeaderModifierSetPatchOutput) ToHTTPRout
 }
 
 // Name is the name of the HTTP Header to be matched. Name matching MUST be
-// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 //
 // If multiple entries specify equivalent header names, the first entry with
 // an equivalent name MUST be considered for a match. Subsequent entries
@@ -22454,6 +34362,14 @@ func (o HTTPRouteSpecRulesFiltersRequestHeaderModifierSetPatchArrayOutput) Index
 // Support: Extended
 type HTTPRouteSpecRulesFiltersRequestMirror struct {
 	BackendRef *HTTPRouteSpecRulesFiltersRequestMirrorBackendRef `pulumi:"backendRef"`
+	Fraction   *HTTPRouteSpecRulesFiltersRequestMirrorFraction   `pulumi:"fraction"`
+	// Percent represents the percentage of requests that should be
+	// mirrored to BackendRef. Its minimum value is 0 (indicating 0% of
+	// requests) and its maximum value is 100 (indicating 100% of requests).
+	//
+	// Only one of Fraction or Percent may be specified. If neither field
+	// is specified, 100% of requests will be mirrored.
+	Percent *int `pulumi:"percent"`
 }
 
 // HTTPRouteSpecRulesFiltersRequestMirrorInput is an input type that accepts HTTPRouteSpecRulesFiltersRequestMirrorArgs and HTTPRouteSpecRulesFiltersRequestMirrorOutput values.
@@ -22478,6 +34394,14 @@ type HTTPRouteSpecRulesFiltersRequestMirrorInput interface {
 // Support: Extended
 type HTTPRouteSpecRulesFiltersRequestMirrorArgs struct {
 	BackendRef HTTPRouteSpecRulesFiltersRequestMirrorBackendRefPtrInput `pulumi:"backendRef"`
+	Fraction   HTTPRouteSpecRulesFiltersRequestMirrorFractionPtrInput   `pulumi:"fraction"`
+	// Percent represents the percentage of requests that should be
+	// mirrored to BackendRef. Its minimum value is 0 (indicating 0% of
+	// requests) and its maximum value is 100 (indicating 100% of requests).
+	//
+	// Only one of Fraction or Percent may be specified. If neither field
+	// is specified, 100% of requests will be mirrored.
+	Percent pulumi.IntPtrInput `pulumi:"percent"`
 }
 
 func (HTTPRouteSpecRulesFiltersRequestMirrorArgs) ElementType() reflect.Type {
@@ -22572,6 +34496,22 @@ func (o HTTPRouteSpecRulesFiltersRequestMirrorOutput) BackendRef() HTTPRouteSpec
 	}).(HTTPRouteSpecRulesFiltersRequestMirrorBackendRefPtrOutput)
 }
 
+func (o HTTPRouteSpecRulesFiltersRequestMirrorOutput) Fraction() HTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesFiltersRequestMirror) *HTTPRouteSpecRulesFiltersRequestMirrorFraction {
+		return v.Fraction
+	}).(HTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutput)
+}
+
+// Percent represents the percentage of requests that should be
+// mirrored to BackendRef. Its minimum value is 0 (indicating 0% of
+// requests) and its maximum value is 100 (indicating 100% of requests).
+//
+// Only one of Fraction or Percent may be specified. If neither field
+// is specified, 100% of requests will be mirrored.
+func (o HTTPRouteSpecRulesFiltersRequestMirrorOutput) Percent() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesFiltersRequestMirror) *int { return v.Percent }).(pulumi.IntPtrOutput)
+}
+
 type HTTPRouteSpecRulesFiltersRequestMirrorPtrOutput struct{ *pulumi.OutputState }
 
 func (HTTPRouteSpecRulesFiltersRequestMirrorPtrOutput) ElementType() reflect.Type {
@@ -22603,6 +34543,30 @@ func (o HTTPRouteSpecRulesFiltersRequestMirrorPtrOutput) BackendRef() HTTPRouteS
 		}
 		return v.BackendRef
 	}).(HTTPRouteSpecRulesFiltersRequestMirrorBackendRefPtrOutput)
+}
+
+func (o HTTPRouteSpecRulesFiltersRequestMirrorPtrOutput) Fraction() HTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesFiltersRequestMirror) *HTTPRouteSpecRulesFiltersRequestMirrorFraction {
+		if v == nil {
+			return nil
+		}
+		return v.Fraction
+	}).(HTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutput)
+}
+
+// Percent represents the percentage of requests that should be
+// mirrored to BackendRef. Its minimum value is 0 (indicating 0% of
+// requests) and its maximum value is 100 (indicating 100% of requests).
+//
+// Only one of Fraction or Percent may be specified. If neither field
+// is specified, 100% of requests will be mirrored.
+func (o HTTPRouteSpecRulesFiltersRequestMirrorPtrOutput) Percent() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesFiltersRequestMirror) *int {
+		if v == nil {
+			return nil
+		}
+		return v.Percent
+	}).(pulumi.IntPtrOutput)
 }
 
 // BackendRef references a resource where mirrored requests are sent.
@@ -23377,6 +35341,332 @@ func (o HTTPRouteSpecRulesFiltersRequestMirrorBackendRefPatchPtrOutput) Port() p
 	}).(pulumi.IntPtrOutput)
 }
 
+// Fraction represents the fraction of requests that should be
+// mirrored to BackendRef.
+//
+// Only one of Fraction or Percent may be specified. If neither field
+// is specified, 100% of requests will be mirrored.
+type HTTPRouteSpecRulesFiltersRequestMirrorFraction struct {
+	Denominator *int `pulumi:"denominator"`
+	Numerator   *int `pulumi:"numerator"`
+}
+
+// HTTPRouteSpecRulesFiltersRequestMirrorFractionInput is an input type that accepts HTTPRouteSpecRulesFiltersRequestMirrorFractionArgs and HTTPRouteSpecRulesFiltersRequestMirrorFractionOutput values.
+// You can construct a concrete instance of `HTTPRouteSpecRulesFiltersRequestMirrorFractionInput` via:
+//
+//	HTTPRouteSpecRulesFiltersRequestMirrorFractionArgs{...}
+type HTTPRouteSpecRulesFiltersRequestMirrorFractionInput interface {
+	pulumi.Input
+
+	ToHTTPRouteSpecRulesFiltersRequestMirrorFractionOutput() HTTPRouteSpecRulesFiltersRequestMirrorFractionOutput
+	ToHTTPRouteSpecRulesFiltersRequestMirrorFractionOutputWithContext(context.Context) HTTPRouteSpecRulesFiltersRequestMirrorFractionOutput
+}
+
+// Fraction represents the fraction of requests that should be
+// mirrored to BackendRef.
+//
+// Only one of Fraction or Percent may be specified. If neither field
+// is specified, 100% of requests will be mirrored.
+type HTTPRouteSpecRulesFiltersRequestMirrorFractionArgs struct {
+	Denominator pulumi.IntPtrInput `pulumi:"denominator"`
+	Numerator   pulumi.IntPtrInput `pulumi:"numerator"`
+}
+
+func (HTTPRouteSpecRulesFiltersRequestMirrorFractionArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*HTTPRouteSpecRulesFiltersRequestMirrorFraction)(nil)).Elem()
+}
+
+func (i HTTPRouteSpecRulesFiltersRequestMirrorFractionArgs) ToHTTPRouteSpecRulesFiltersRequestMirrorFractionOutput() HTTPRouteSpecRulesFiltersRequestMirrorFractionOutput {
+	return i.ToHTTPRouteSpecRulesFiltersRequestMirrorFractionOutputWithContext(context.Background())
+}
+
+func (i HTTPRouteSpecRulesFiltersRequestMirrorFractionArgs) ToHTTPRouteSpecRulesFiltersRequestMirrorFractionOutputWithContext(ctx context.Context) HTTPRouteSpecRulesFiltersRequestMirrorFractionOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(HTTPRouteSpecRulesFiltersRequestMirrorFractionOutput)
+}
+
+func (i HTTPRouteSpecRulesFiltersRequestMirrorFractionArgs) ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutput() HTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutput {
+	return i.ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutputWithContext(context.Background())
+}
+
+func (i HTTPRouteSpecRulesFiltersRequestMirrorFractionArgs) ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(HTTPRouteSpecRulesFiltersRequestMirrorFractionOutput).ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutputWithContext(ctx)
+}
+
+// HTTPRouteSpecRulesFiltersRequestMirrorFractionPtrInput is an input type that accepts HTTPRouteSpecRulesFiltersRequestMirrorFractionArgs, HTTPRouteSpecRulesFiltersRequestMirrorFractionPtr and HTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutput values.
+// You can construct a concrete instance of `HTTPRouteSpecRulesFiltersRequestMirrorFractionPtrInput` via:
+//
+//	        HTTPRouteSpecRulesFiltersRequestMirrorFractionArgs{...}
+//
+//	or:
+//
+//	        nil
+type HTTPRouteSpecRulesFiltersRequestMirrorFractionPtrInput interface {
+	pulumi.Input
+
+	ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutput() HTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutput
+	ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutputWithContext(context.Context) HTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutput
+}
+
+type httprouteSpecRulesFiltersRequestMirrorFractionPtrType HTTPRouteSpecRulesFiltersRequestMirrorFractionArgs
+
+func HTTPRouteSpecRulesFiltersRequestMirrorFractionPtr(v *HTTPRouteSpecRulesFiltersRequestMirrorFractionArgs) HTTPRouteSpecRulesFiltersRequestMirrorFractionPtrInput {
+	return (*httprouteSpecRulesFiltersRequestMirrorFractionPtrType)(v)
+}
+
+func (*httprouteSpecRulesFiltersRequestMirrorFractionPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**HTTPRouteSpecRulesFiltersRequestMirrorFraction)(nil)).Elem()
+}
+
+func (i *httprouteSpecRulesFiltersRequestMirrorFractionPtrType) ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutput() HTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutput {
+	return i.ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutputWithContext(context.Background())
+}
+
+func (i *httprouteSpecRulesFiltersRequestMirrorFractionPtrType) ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(HTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutput)
+}
+
+// Fraction represents the fraction of requests that should be
+// mirrored to BackendRef.
+//
+// Only one of Fraction or Percent may be specified. If neither field
+// is specified, 100% of requests will be mirrored.
+type HTTPRouteSpecRulesFiltersRequestMirrorFractionOutput struct{ *pulumi.OutputState }
+
+func (HTTPRouteSpecRulesFiltersRequestMirrorFractionOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*HTTPRouteSpecRulesFiltersRequestMirrorFraction)(nil)).Elem()
+}
+
+func (o HTTPRouteSpecRulesFiltersRequestMirrorFractionOutput) ToHTTPRouteSpecRulesFiltersRequestMirrorFractionOutput() HTTPRouteSpecRulesFiltersRequestMirrorFractionOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesFiltersRequestMirrorFractionOutput) ToHTTPRouteSpecRulesFiltersRequestMirrorFractionOutputWithContext(ctx context.Context) HTTPRouteSpecRulesFiltersRequestMirrorFractionOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesFiltersRequestMirrorFractionOutput) ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutput() HTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutput {
+	return o.ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutputWithContext(context.Background())
+}
+
+func (o HTTPRouteSpecRulesFiltersRequestMirrorFractionOutput) ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v HTTPRouteSpecRulesFiltersRequestMirrorFraction) *HTTPRouteSpecRulesFiltersRequestMirrorFraction {
+		return &v
+	}).(HTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutput)
+}
+
+func (o HTTPRouteSpecRulesFiltersRequestMirrorFractionOutput) Denominator() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesFiltersRequestMirrorFraction) *int { return v.Denominator }).(pulumi.IntPtrOutput)
+}
+
+func (o HTTPRouteSpecRulesFiltersRequestMirrorFractionOutput) Numerator() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesFiltersRequestMirrorFraction) *int { return v.Numerator }).(pulumi.IntPtrOutput)
+}
+
+type HTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutput struct{ *pulumi.OutputState }
+
+func (HTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**HTTPRouteSpecRulesFiltersRequestMirrorFraction)(nil)).Elem()
+}
+
+func (o HTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutput) ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutput() HTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutput) ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutput) Elem() HTTPRouteSpecRulesFiltersRequestMirrorFractionOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesFiltersRequestMirrorFraction) HTTPRouteSpecRulesFiltersRequestMirrorFraction {
+		if v != nil {
+			return *v
+		}
+		var ret HTTPRouteSpecRulesFiltersRequestMirrorFraction
+		return ret
+	}).(HTTPRouteSpecRulesFiltersRequestMirrorFractionOutput)
+}
+
+func (o HTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutput) Denominator() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesFiltersRequestMirrorFraction) *int {
+		if v == nil {
+			return nil
+		}
+		return v.Denominator
+	}).(pulumi.IntPtrOutput)
+}
+
+func (o HTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutput) Numerator() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesFiltersRequestMirrorFraction) *int {
+		if v == nil {
+			return nil
+		}
+		return v.Numerator
+	}).(pulumi.IntPtrOutput)
+}
+
+// Fraction represents the fraction of requests that should be
+// mirrored to BackendRef.
+//
+// Only one of Fraction or Percent may be specified. If neither field
+// is specified, 100% of requests will be mirrored.
+type HTTPRouteSpecRulesFiltersRequestMirrorFractionPatch struct {
+	Denominator *int `pulumi:"denominator"`
+	Numerator   *int `pulumi:"numerator"`
+}
+
+// HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchInput is an input type that accepts HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchArgs and HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchOutput values.
+// You can construct a concrete instance of `HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchInput` via:
+//
+//	HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchArgs{...}
+type HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchInput interface {
+	pulumi.Input
+
+	ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPatchOutput() HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchOutput
+	ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPatchOutputWithContext(context.Context) HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchOutput
+}
+
+// Fraction represents the fraction of requests that should be
+// mirrored to BackendRef.
+//
+// Only one of Fraction or Percent may be specified. If neither field
+// is specified, 100% of requests will be mirrored.
+type HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchArgs struct {
+	Denominator pulumi.IntPtrInput `pulumi:"denominator"`
+	Numerator   pulumi.IntPtrInput `pulumi:"numerator"`
+}
+
+func (HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*HTTPRouteSpecRulesFiltersRequestMirrorFractionPatch)(nil)).Elem()
+}
+
+func (i HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchArgs) ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPatchOutput() HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchOutput {
+	return i.ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPatchOutputWithContext(context.Background())
+}
+
+func (i HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchArgs) ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPatchOutputWithContext(ctx context.Context) HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchOutput)
+}
+
+func (i HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchArgs) ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutput() HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutput {
+	return i.ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutputWithContext(context.Background())
+}
+
+func (i HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchArgs) ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchOutput).ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutputWithContext(ctx)
+}
+
+// HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrInput is an input type that accepts HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchArgs, HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtr and HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutput values.
+// You can construct a concrete instance of `HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrInput` via:
+//
+//	        HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrInput interface {
+	pulumi.Input
+
+	ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutput() HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutput
+	ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutputWithContext(context.Context) HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutput
+}
+
+type httprouteSpecRulesFiltersRequestMirrorFractionPatchPtrType HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchArgs
+
+func HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtr(v *HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchArgs) HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrInput {
+	return (*httprouteSpecRulesFiltersRequestMirrorFractionPatchPtrType)(v)
+}
+
+func (*httprouteSpecRulesFiltersRequestMirrorFractionPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**HTTPRouteSpecRulesFiltersRequestMirrorFractionPatch)(nil)).Elem()
+}
+
+func (i *httprouteSpecRulesFiltersRequestMirrorFractionPatchPtrType) ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutput() HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutput {
+	return i.ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *httprouteSpecRulesFiltersRequestMirrorFractionPatchPtrType) ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutput)
+}
+
+// Fraction represents the fraction of requests that should be
+// mirrored to BackendRef.
+//
+// Only one of Fraction or Percent may be specified. If neither field
+// is specified, 100% of requests will be mirrored.
+type HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchOutput struct{ *pulumi.OutputState }
+
+func (HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*HTTPRouteSpecRulesFiltersRequestMirrorFractionPatch)(nil)).Elem()
+}
+
+func (o HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchOutput) ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPatchOutput() HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchOutput) ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPatchOutputWithContext(ctx context.Context) HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchOutput) ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutput() HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutput {
+	return o.ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutputWithContext(context.Background())
+}
+
+func (o HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchOutput) ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v HTTPRouteSpecRulesFiltersRequestMirrorFractionPatch) *HTTPRouteSpecRulesFiltersRequestMirrorFractionPatch {
+		return &v
+	}).(HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutput)
+}
+
+func (o HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchOutput) Denominator() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesFiltersRequestMirrorFractionPatch) *int { return v.Denominator }).(pulumi.IntPtrOutput)
+}
+
+func (o HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchOutput) Numerator() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesFiltersRequestMirrorFractionPatch) *int { return v.Numerator }).(pulumi.IntPtrOutput)
+}
+
+type HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**HTTPRouteSpecRulesFiltersRequestMirrorFractionPatch)(nil)).Elem()
+}
+
+func (o HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutput) ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutput() HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutput) ToHTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutput) Elem() HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesFiltersRequestMirrorFractionPatch) HTTPRouteSpecRulesFiltersRequestMirrorFractionPatch {
+		if v != nil {
+			return *v
+		}
+		var ret HTTPRouteSpecRulesFiltersRequestMirrorFractionPatch
+		return ret
+	}).(HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchOutput)
+}
+
+func (o HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutput) Denominator() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesFiltersRequestMirrorFractionPatch) *int {
+		if v == nil {
+			return nil
+		}
+		return v.Denominator
+	}).(pulumi.IntPtrOutput)
+}
+
+func (o HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutput) Numerator() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesFiltersRequestMirrorFractionPatch) *int {
+		if v == nil {
+			return nil
+		}
+		return v.Numerator
+	}).(pulumi.IntPtrOutput)
+}
+
 // RequestMirror defines a schema for a filter that mirrors requests.
 // Requests are sent to the specified destination, but responses from
 // that destination are ignored.
@@ -23388,6 +35678,14 @@ func (o HTTPRouteSpecRulesFiltersRequestMirrorBackendRefPatchPtrOutput) Port() p
 // Support: Extended
 type HTTPRouteSpecRulesFiltersRequestMirrorPatch struct {
 	BackendRef *HTTPRouteSpecRulesFiltersRequestMirrorBackendRefPatch `pulumi:"backendRef"`
+	Fraction   *HTTPRouteSpecRulesFiltersRequestMirrorFractionPatch   `pulumi:"fraction"`
+	// Percent represents the percentage of requests that should be
+	// mirrored to BackendRef. Its minimum value is 0 (indicating 0% of
+	// requests) and its maximum value is 100 (indicating 100% of requests).
+	//
+	// Only one of Fraction or Percent may be specified. If neither field
+	// is specified, 100% of requests will be mirrored.
+	Percent *int `pulumi:"percent"`
 }
 
 // HTTPRouteSpecRulesFiltersRequestMirrorPatchInput is an input type that accepts HTTPRouteSpecRulesFiltersRequestMirrorPatchArgs and HTTPRouteSpecRulesFiltersRequestMirrorPatchOutput values.
@@ -23412,6 +35710,14 @@ type HTTPRouteSpecRulesFiltersRequestMirrorPatchInput interface {
 // Support: Extended
 type HTTPRouteSpecRulesFiltersRequestMirrorPatchArgs struct {
 	BackendRef HTTPRouteSpecRulesFiltersRequestMirrorBackendRefPatchPtrInput `pulumi:"backendRef"`
+	Fraction   HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrInput   `pulumi:"fraction"`
+	// Percent represents the percentage of requests that should be
+	// mirrored to BackendRef. Its minimum value is 0 (indicating 0% of
+	// requests) and its maximum value is 100 (indicating 100% of requests).
+	//
+	// Only one of Fraction or Percent may be specified. If neither field
+	// is specified, 100% of requests will be mirrored.
+	Percent pulumi.IntPtrInput `pulumi:"percent"`
 }
 
 func (HTTPRouteSpecRulesFiltersRequestMirrorPatchArgs) ElementType() reflect.Type {
@@ -23506,6 +35812,22 @@ func (o HTTPRouteSpecRulesFiltersRequestMirrorPatchOutput) BackendRef() HTTPRout
 	}).(HTTPRouteSpecRulesFiltersRequestMirrorBackendRefPatchPtrOutput)
 }
 
+func (o HTTPRouteSpecRulesFiltersRequestMirrorPatchOutput) Fraction() HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesFiltersRequestMirrorPatch) *HTTPRouteSpecRulesFiltersRequestMirrorFractionPatch {
+		return v.Fraction
+	}).(HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutput)
+}
+
+// Percent represents the percentage of requests that should be
+// mirrored to BackendRef. Its minimum value is 0 (indicating 0% of
+// requests) and its maximum value is 100 (indicating 100% of requests).
+//
+// Only one of Fraction or Percent may be specified. If neither field
+// is specified, 100% of requests will be mirrored.
+func (o HTTPRouteSpecRulesFiltersRequestMirrorPatchOutput) Percent() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesFiltersRequestMirrorPatch) *int { return v.Percent }).(pulumi.IntPtrOutput)
+}
+
 type HTTPRouteSpecRulesFiltersRequestMirrorPatchPtrOutput struct{ *pulumi.OutputState }
 
 func (HTTPRouteSpecRulesFiltersRequestMirrorPatchPtrOutput) ElementType() reflect.Type {
@@ -23537,6 +35859,30 @@ func (o HTTPRouteSpecRulesFiltersRequestMirrorPatchPtrOutput) BackendRef() HTTPR
 		}
 		return v.BackendRef
 	}).(HTTPRouteSpecRulesFiltersRequestMirrorBackendRefPatchPtrOutput)
+}
+
+func (o HTTPRouteSpecRulesFiltersRequestMirrorPatchPtrOutput) Fraction() HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesFiltersRequestMirrorPatch) *HTTPRouteSpecRulesFiltersRequestMirrorFractionPatch {
+		if v == nil {
+			return nil
+		}
+		return v.Fraction
+	}).(HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutput)
+}
+
+// Percent represents the percentage of requests that should be
+// mirrored to BackendRef. Its minimum value is 0 (indicating 0% of
+// requests) and its maximum value is 100 (indicating 100% of requests).
+//
+// Only one of Fraction or Percent may be specified. If neither field
+// is specified, 100% of requests will be mirrored.
+func (o HTTPRouteSpecRulesFiltersRequestMirrorPatchPtrOutput) Percent() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesFiltersRequestMirrorPatch) *int {
+		if v == nil {
+			return nil
+		}
+		return v.Percent
+	}).(pulumi.IntPtrOutput)
 }
 
 // RequestRedirect defines a schema for a filter that responds to the
@@ -24386,18 +36732,6 @@ type HTTPRouteSpecRulesFiltersRequestRedirectPath struct {
 	// the implementation setting the Accepted Condition for the Route to `status: False`.
 	//
 	// Request Path | Prefix Match | Replace Prefix | Modified Path
-	// -------------|--------------|----------------|----------
-	// /foo/bar     | /foo         | /xyz           | /xyz/bar
-	// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-	// /foo         | /foo         | /xyz           | /xyz
-	// /foo/        | /foo         | /xyz           | /xyz/
-	// /foo/bar     | /foo         | <empty string> | /bar
-	// /foo/        | /foo         | <empty string> | /
-	// /foo         | /foo         | <empty string> | /
-	// /foo/        | /foo         | /              | /
-	// /foo         | /foo         | /              | /
 	ReplacePrefixMatch *string `pulumi:"replacePrefixMatch"`
 	// Type defines the type of path modifier. Additional types may be
 	// added in a future release of the API.
@@ -24447,18 +36781,6 @@ type HTTPRouteSpecRulesFiltersRequestRedirectPathArgs struct {
 	// the implementation setting the Accepted Condition for the Route to `status: False`.
 	//
 	// Request Path | Prefix Match | Replace Prefix | Modified Path
-	// -------------|--------------|----------------|----------
-	// /foo/bar     | /foo         | /xyz           | /xyz/bar
-	// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-	// /foo         | /foo         | /xyz           | /xyz
-	// /foo/        | /foo         | /xyz           | /xyz/
-	// /foo/bar     | /foo         | <empty string> | /bar
-	// /foo/        | /foo         | <empty string> | /
-	// /foo         | /foo         | <empty string> | /
-	// /foo/        | /foo         | /              | /
-	// /foo         | /foo         | /              | /
 	ReplacePrefixMatch pulumi.StringPtrInput `pulumi:"replacePrefixMatch"`
 	// Type defines the type of path modifier. Additional types may be
 	// added in a future release of the API.
@@ -24576,18 +36898,6 @@ func (o HTTPRouteSpecRulesFiltersRequestRedirectPathOutput) ReplaceFullPath() pu
 // the implementation setting the Accepted Condition for the Route to `status: False`.
 //
 // Request Path | Prefix Match | Replace Prefix | Modified Path
-// -------------|--------------|----------------|----------
-// /foo/bar     | /foo         | /xyz           | /xyz/bar
-// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-// /foo         | /foo         | /xyz           | /xyz
-// /foo/        | /foo         | /xyz           | /xyz/
-// /foo/bar     | /foo         | <empty string> | /bar
-// /foo/        | /foo         | <empty string> | /
-// /foo         | /foo         | <empty string> | /
-// /foo/        | /foo         | /              | /
-// /foo         | /foo         | /              | /
 func (o HTTPRouteSpecRulesFiltersRequestRedirectPathOutput) ReplacePrefixMatch() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v HTTPRouteSpecRulesFiltersRequestRedirectPath) *string { return v.ReplacePrefixMatch }).(pulumi.StringPtrOutput)
 }
@@ -24656,18 +36966,6 @@ func (o HTTPRouteSpecRulesFiltersRequestRedirectPathPtrOutput) ReplaceFullPath()
 // the implementation setting the Accepted Condition for the Route to `status: False`.
 //
 // Request Path | Prefix Match | Replace Prefix | Modified Path
-// -------------|--------------|----------------|----------
-// /foo/bar     | /foo         | /xyz           | /xyz/bar
-// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-// /foo         | /foo         | /xyz           | /xyz
-// /foo/        | /foo         | /xyz           | /xyz/
-// /foo/bar     | /foo         | <empty string> | /bar
-// /foo/        | /foo         | <empty string> | /
-// /foo         | /foo         | <empty string> | /
-// /foo/        | /foo         | /              | /
-// /foo         | /foo         | /              | /
 func (o HTTPRouteSpecRulesFiltersRequestRedirectPathPtrOutput) ReplacePrefixMatch() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *HTTPRouteSpecRulesFiltersRequestRedirectPath) *string {
 		if v == nil {
@@ -24720,18 +37018,6 @@ type HTTPRouteSpecRulesFiltersRequestRedirectPathPatch struct {
 	// the implementation setting the Accepted Condition for the Route to `status: False`.
 	//
 	// Request Path | Prefix Match | Replace Prefix | Modified Path
-	// -------------|--------------|----------------|----------
-	// /foo/bar     | /foo         | /xyz           | /xyz/bar
-	// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-	// /foo         | /foo         | /xyz           | /xyz
-	// /foo/        | /foo         | /xyz           | /xyz/
-	// /foo/bar     | /foo         | <empty string> | /bar
-	// /foo/        | /foo         | <empty string> | /
-	// /foo         | /foo         | <empty string> | /
-	// /foo/        | /foo         | /              | /
-	// /foo         | /foo         | /              | /
 	ReplacePrefixMatch *string `pulumi:"replacePrefixMatch"`
 	// Type defines the type of path modifier. Additional types may be
 	// added in a future release of the API.
@@ -24781,18 +37067,6 @@ type HTTPRouteSpecRulesFiltersRequestRedirectPathPatchArgs struct {
 	// the implementation setting the Accepted Condition for the Route to `status: False`.
 	//
 	// Request Path | Prefix Match | Replace Prefix | Modified Path
-	// -------------|--------------|----------------|----------
-	// /foo/bar     | /foo         | /xyz           | /xyz/bar
-	// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-	// /foo         | /foo         | /xyz           | /xyz
-	// /foo/        | /foo         | /xyz           | /xyz/
-	// /foo/bar     | /foo         | <empty string> | /bar
-	// /foo/        | /foo         | <empty string> | /
-	// /foo         | /foo         | <empty string> | /
-	// /foo/        | /foo         | /              | /
-	// /foo         | /foo         | /              | /
 	ReplacePrefixMatch pulumi.StringPtrInput `pulumi:"replacePrefixMatch"`
 	// Type defines the type of path modifier. Additional types may be
 	// added in a future release of the API.
@@ -24910,18 +37184,6 @@ func (o HTTPRouteSpecRulesFiltersRequestRedirectPathPatchOutput) ReplaceFullPath
 // the implementation setting the Accepted Condition for the Route to `status: False`.
 //
 // Request Path | Prefix Match | Replace Prefix | Modified Path
-// -------------|--------------|----------------|----------
-// /foo/bar     | /foo         | /xyz           | /xyz/bar
-// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-// /foo         | /foo         | /xyz           | /xyz
-// /foo/        | /foo         | /xyz           | /xyz/
-// /foo/bar     | /foo         | <empty string> | /bar
-// /foo/        | /foo         | <empty string> | /
-// /foo         | /foo         | <empty string> | /
-// /foo/        | /foo         | /              | /
-// /foo         | /foo         | /              | /
 func (o HTTPRouteSpecRulesFiltersRequestRedirectPathPatchOutput) ReplacePrefixMatch() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v HTTPRouteSpecRulesFiltersRequestRedirectPathPatch) *string { return v.ReplacePrefixMatch }).(pulumi.StringPtrOutput)
 }
@@ -24990,18 +37252,6 @@ func (o HTTPRouteSpecRulesFiltersRequestRedirectPathPatchPtrOutput) ReplaceFullP
 // the implementation setting the Accepted Condition for the Route to `status: False`.
 //
 // Request Path | Prefix Match | Replace Prefix | Modified Path
-// -------------|--------------|----------------|----------
-// /foo/bar     | /foo         | /xyz           | /xyz/bar
-// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-// /foo         | /foo         | /xyz           | /xyz
-// /foo/        | /foo         | /xyz           | /xyz/
-// /foo/bar     | /foo         | <empty string> | /bar
-// /foo/        | /foo         | <empty string> | /
-// /foo         | /foo         | <empty string> | /
-// /foo/        | /foo         | /              | /
-// /foo         | /foo         | /              | /
 func (o HTTPRouteSpecRulesFiltersRequestRedirectPathPatchPtrOutput) ReplacePrefixMatch() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *HTTPRouteSpecRulesFiltersRequestRedirectPathPatch) *string {
 		if v == nil {
@@ -25421,7 +37671,7 @@ func (o HTTPRouteSpecRulesFiltersResponseHeaderModifierPtrOutput) Set() HTTPRout
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesFiltersResponseHeaderModifierAdd struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -25447,7 +37697,7 @@ type HTTPRouteSpecRulesFiltersResponseHeaderModifierAddInput interface {
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesFiltersResponseHeaderModifierAddArgs struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -25512,7 +37762,7 @@ func (o HTTPRouteSpecRulesFiltersResponseHeaderModifierAddOutput) ToHTTPRouteSpe
 }
 
 // Name is the name of the HTTP Header to be matched. Name matching MUST be
-// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 //
 // If multiple entries specify equivalent header names, the first entry with
 // an equivalent name MUST be considered for a match. Subsequent entries
@@ -25551,7 +37801,7 @@ func (o HTTPRouteSpecRulesFiltersResponseHeaderModifierAddArrayOutput) Index(i p
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesFiltersResponseHeaderModifierAddPatch struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -25577,7 +37827,7 @@ type HTTPRouteSpecRulesFiltersResponseHeaderModifierAddPatchInput interface {
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesFiltersResponseHeaderModifierAddPatchArgs struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -25642,7 +37892,7 @@ func (o HTTPRouteSpecRulesFiltersResponseHeaderModifierAddPatchOutput) ToHTTPRou
 }
 
 // Name is the name of the HTTP Header to be matched. Name matching MUST be
-// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 //
 // If multiple entries specify equivalent header names, the first entry with
 // an equivalent name MUST be considered for a match. Subsequent entries
@@ -26070,7 +38320,7 @@ func (o HTTPRouteSpecRulesFiltersResponseHeaderModifierPatchPtrOutput) Set() HTT
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesFiltersResponseHeaderModifierSet struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -26096,7 +38346,7 @@ type HTTPRouteSpecRulesFiltersResponseHeaderModifierSetInput interface {
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesFiltersResponseHeaderModifierSetArgs struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -26161,7 +38411,7 @@ func (o HTTPRouteSpecRulesFiltersResponseHeaderModifierSetOutput) ToHTTPRouteSpe
 }
 
 // Name is the name of the HTTP Header to be matched. Name matching MUST be
-// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 //
 // If multiple entries specify equivalent header names, the first entry with
 // an equivalent name MUST be considered for a match. Subsequent entries
@@ -26200,7 +38450,7 @@ func (o HTTPRouteSpecRulesFiltersResponseHeaderModifierSetArrayOutput) Index(i p
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesFiltersResponseHeaderModifierSetPatch struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -26226,7 +38476,7 @@ type HTTPRouteSpecRulesFiltersResponseHeaderModifierSetPatchInput interface {
 // HTTPHeader represents an HTTP Header name and value as defined by RFC 7230.
 type HTTPRouteSpecRulesFiltersResponseHeaderModifierSetPatchArgs struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, the first entry with
 	// an equivalent name MUST be considered for a match. Subsequent entries
@@ -26291,7 +38541,7 @@ func (o HTTPRouteSpecRulesFiltersResponseHeaderModifierSetPatchOutput) ToHTTPRou
 }
 
 // Name is the name of the HTTP Header to be matched. Name matching MUST be
-// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 //
 // If multiple entries specify equivalent header names, the first entry with
 // an equivalent name MUST be considered for a match. Subsequent entries
@@ -26698,18 +38948,6 @@ type HTTPRouteSpecRulesFiltersUrlRewritePath struct {
 	// the implementation setting the Accepted Condition for the Route to `status: False`.
 	//
 	// Request Path | Prefix Match | Replace Prefix | Modified Path
-	// -------------|--------------|----------------|----------
-	// /foo/bar     | /foo         | /xyz           | /xyz/bar
-	// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-	// /foo         | /foo         | /xyz           | /xyz
-	// /foo/        | /foo         | /xyz           | /xyz/
-	// /foo/bar     | /foo         | <empty string> | /bar
-	// /foo/        | /foo         | <empty string> | /
-	// /foo         | /foo         | <empty string> | /
-	// /foo/        | /foo         | /              | /
-	// /foo         | /foo         | /              | /
 	ReplacePrefixMatch *string `pulumi:"replacePrefixMatch"`
 	// Type defines the type of path modifier. Additional types may be
 	// added in a future release of the API.
@@ -26757,18 +38995,6 @@ type HTTPRouteSpecRulesFiltersUrlRewritePathArgs struct {
 	// the implementation setting the Accepted Condition for the Route to `status: False`.
 	//
 	// Request Path | Prefix Match | Replace Prefix | Modified Path
-	// -------------|--------------|----------------|----------
-	// /foo/bar     | /foo         | /xyz           | /xyz/bar
-	// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-	// /foo         | /foo         | /xyz           | /xyz
-	// /foo/        | /foo         | /xyz           | /xyz/
-	// /foo/bar     | /foo         | <empty string> | /bar
-	// /foo/        | /foo         | <empty string> | /
-	// /foo         | /foo         | <empty string> | /
-	// /foo/        | /foo         | /              | /
-	// /foo         | /foo         | /              | /
 	ReplacePrefixMatch pulumi.StringPtrInput `pulumi:"replacePrefixMatch"`
 	// Type defines the type of path modifier. Additional types may be
 	// added in a future release of the API.
@@ -26884,18 +39110,6 @@ func (o HTTPRouteSpecRulesFiltersUrlRewritePathOutput) ReplaceFullPath() pulumi.
 // the implementation setting the Accepted Condition for the Route to `status: False`.
 //
 // Request Path | Prefix Match | Replace Prefix | Modified Path
-// -------------|--------------|----------------|----------
-// /foo/bar     | /foo         | /xyz           | /xyz/bar
-// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-// /foo         | /foo         | /xyz           | /xyz
-// /foo/        | /foo         | /xyz           | /xyz/
-// /foo/bar     | /foo         | <empty string> | /bar
-// /foo/        | /foo         | <empty string> | /
-// /foo         | /foo         | <empty string> | /
-// /foo/        | /foo         | /              | /
-// /foo         | /foo         | /              | /
 func (o HTTPRouteSpecRulesFiltersUrlRewritePathOutput) ReplacePrefixMatch() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v HTTPRouteSpecRulesFiltersUrlRewritePath) *string { return v.ReplacePrefixMatch }).(pulumi.StringPtrOutput)
 }
@@ -26964,18 +39178,6 @@ func (o HTTPRouteSpecRulesFiltersUrlRewritePathPtrOutput) ReplaceFullPath() pulu
 // the implementation setting the Accepted Condition for the Route to `status: False`.
 //
 // Request Path | Prefix Match | Replace Prefix | Modified Path
-// -------------|--------------|----------------|----------
-// /foo/bar     | /foo         | /xyz           | /xyz/bar
-// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-// /foo         | /foo         | /xyz           | /xyz
-// /foo/        | /foo         | /xyz           | /xyz/
-// /foo/bar     | /foo         | <empty string> | /bar
-// /foo/        | /foo         | <empty string> | /
-// /foo         | /foo         | <empty string> | /
-// /foo/        | /foo         | /              | /
-// /foo         | /foo         | /              | /
 func (o HTTPRouteSpecRulesFiltersUrlRewritePathPtrOutput) ReplacePrefixMatch() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *HTTPRouteSpecRulesFiltersUrlRewritePath) *string {
 		if v == nil {
@@ -27026,18 +39228,6 @@ type HTTPRouteSpecRulesFiltersUrlRewritePathPatch struct {
 	// the implementation setting the Accepted Condition for the Route to `status: False`.
 	//
 	// Request Path | Prefix Match | Replace Prefix | Modified Path
-	// -------------|--------------|----------------|----------
-	// /foo/bar     | /foo         | /xyz           | /xyz/bar
-	// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-	// /foo         | /foo         | /xyz           | /xyz
-	// /foo/        | /foo         | /xyz           | /xyz/
-	// /foo/bar     | /foo         | <empty string> | /bar
-	// /foo/        | /foo         | <empty string> | /
-	// /foo         | /foo         | <empty string> | /
-	// /foo/        | /foo         | /              | /
-	// /foo         | /foo         | /              | /
 	ReplacePrefixMatch *string `pulumi:"replacePrefixMatch"`
 	// Type defines the type of path modifier. Additional types may be
 	// added in a future release of the API.
@@ -27085,18 +39275,6 @@ type HTTPRouteSpecRulesFiltersUrlRewritePathPatchArgs struct {
 	// the implementation setting the Accepted Condition for the Route to `status: False`.
 	//
 	// Request Path | Prefix Match | Replace Prefix | Modified Path
-	// -------------|--------------|----------------|----------
-	// /foo/bar     | /foo         | /xyz           | /xyz/bar
-	// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-	// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-	// /foo         | /foo         | /xyz           | /xyz
-	// /foo/        | /foo         | /xyz           | /xyz/
-	// /foo/bar     | /foo         | <empty string> | /bar
-	// /foo/        | /foo         | <empty string> | /
-	// /foo         | /foo         | <empty string> | /
-	// /foo/        | /foo         | /              | /
-	// /foo         | /foo         | /              | /
 	ReplacePrefixMatch pulumi.StringPtrInput `pulumi:"replacePrefixMatch"`
 	// Type defines the type of path modifier. Additional types may be
 	// added in a future release of the API.
@@ -27212,18 +39390,6 @@ func (o HTTPRouteSpecRulesFiltersUrlRewritePathPatchOutput) ReplaceFullPath() pu
 // the implementation setting the Accepted Condition for the Route to `status: False`.
 //
 // Request Path | Prefix Match | Replace Prefix | Modified Path
-// -------------|--------------|----------------|----------
-// /foo/bar     | /foo         | /xyz           | /xyz/bar
-// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-// /foo         | /foo         | /xyz           | /xyz
-// /foo/        | /foo         | /xyz           | /xyz/
-// /foo/bar     | /foo         | <empty string> | /bar
-// /foo/        | /foo         | <empty string> | /
-// /foo         | /foo         | <empty string> | /
-// /foo/        | /foo         | /              | /
-// /foo         | /foo         | /              | /
 func (o HTTPRouteSpecRulesFiltersUrlRewritePathPatchOutput) ReplacePrefixMatch() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v HTTPRouteSpecRulesFiltersUrlRewritePathPatch) *string { return v.ReplacePrefixMatch }).(pulumi.StringPtrOutput)
 }
@@ -27292,18 +39458,6 @@ func (o HTTPRouteSpecRulesFiltersUrlRewritePathPatchPtrOutput) ReplaceFullPath()
 // the implementation setting the Accepted Condition for the Route to `status: False`.
 //
 // Request Path | Prefix Match | Replace Prefix | Modified Path
-// -------------|--------------|----------------|----------
-// /foo/bar     | /foo         | /xyz           | /xyz/bar
-// /foo/bar     | /foo         | /xyz/          | /xyz/bar
-// /foo/bar     | /foo/        | /xyz           | /xyz/bar
-// /foo/bar     | /foo/        | /xyz/          | /xyz/bar
-// /foo         | /foo         | /xyz           | /xyz
-// /foo/        | /foo         | /xyz           | /xyz/
-// /foo/bar     | /foo         | <empty string> | /bar
-// /foo/        | /foo         | <empty string> | /
-// /foo         | /foo         | <empty string> | /
-// /foo/        | /foo         | /              | /
-// /foo         | /foo         | /              | /
 func (o HTTPRouteSpecRulesFiltersUrlRewritePathPatchPtrOutput) ReplacePrefixMatch() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *HTTPRouteSpecRulesFiltersUrlRewritePathPatch) *string {
 		if v == nil {
@@ -27504,7 +39658,7 @@ func (o HTTPRouteSpecRulesMatchesArrayOutput) Index(i pulumi.IntInput) HTTPRoute
 // headers.
 type HTTPRouteSpecRulesMatchesHeaders struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, only the first
 	// entry with an equivalent name MUST be considered for a match. Subsequent
@@ -27548,7 +39702,7 @@ type HTTPRouteSpecRulesMatchesHeadersInput interface {
 // headers.
 type HTTPRouteSpecRulesMatchesHeadersArgs struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, only the first
 	// entry with an equivalent name MUST be considered for a match. Subsequent
@@ -27631,7 +39785,7 @@ func (o HTTPRouteSpecRulesMatchesHeadersOutput) ToHTTPRouteSpecRulesMatchesHeade
 }
 
 // Name is the name of the HTTP Header to be matched. Name matching MUST be
-// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 //
 // If multiple entries specify equivalent header names, only the first
 // entry with an equivalent name MUST be considered for a match. Subsequent
@@ -27691,7 +39845,7 @@ func (o HTTPRouteSpecRulesMatchesHeadersArrayOutput) Index(i pulumi.IntInput) HT
 // headers.
 type HTTPRouteSpecRulesMatchesHeadersPatch struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, only the first
 	// entry with an equivalent name MUST be considered for a match. Subsequent
@@ -27735,7 +39889,7 @@ type HTTPRouteSpecRulesMatchesHeadersPatchInput interface {
 // headers.
 type HTTPRouteSpecRulesMatchesHeadersPatchArgs struct {
 	// Name is the name of the HTTP Header to be matched. Name matching MUST be
-	// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+	// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 	//
 	// If multiple entries specify equivalent header names, only the first
 	// entry with an equivalent name MUST be considered for a match. Subsequent
@@ -27818,7 +39972,7 @@ func (o HTTPRouteSpecRulesMatchesHeadersPatchOutput) ToHTTPRouteSpecRulesMatches
 }
 
 // Name is the name of the HTTP Header to be matched. Name matching MUST be
-// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
 //
 // If multiple entries specify equivalent header names, only the first
 // entry with an equivalent name MUST be considered for a match. Subsequent
@@ -28820,6 +40974,11 @@ type HTTPRouteSpecRulesPatch struct {
 	// invalid, 50 percent of traffic must receive a 500. Implementations may
 	// choose how that 50 percent is determined.
 	//
+	// When a HTTPBackendRef refers to a Service that has no ready endpoints,
+	// implementations SHOULD return a 503 for requests to that backend instead.
+	// If an implementation chooses to do this, all of the above rules for 500 responses
+	// MUST also apply for responses that return a 503.
+	//
 	// Support: Core for Kubernetes Service
 	//
 	// Support: Extended for Kubernetes ServiceImport
@@ -28835,7 +40994,7 @@ type HTTPRouteSpecRulesPatch struct {
 	// they are specified.
 	//
 	// Implementations MAY choose to implement this ordering strictly, rejecting
-	// any combination or order of filters that can not be supported. If implementations
+	// any combination or order of filters that cannot be supported. If implementations
 	// choose a strict interpretation of filter ordering, they MUST clearly document
 	// that behavior.
 	//
@@ -28857,7 +41016,7 @@ type HTTPRouteSpecRulesPatch struct {
 	//
 	// All filters are expected to be compatible with each other except for the
 	// URLRewrite and RequestRedirect filters, which may not be combined. If an
-	// implementation can not support other combinations of filters, they must clearly
+	// implementation cannot support other combinations of filters, they must clearly
 	// document that limitation. In cases where incompatible or unsupported
 	// filters are specified and cause the `Accepted` condition to be set to status
 	// `False`, implementations may use the `IncompatibleFilters` reason to specify
@@ -28911,6 +41070,11 @@ type HTTPRouteSpecRulesPatch struct {
 	// When no rules matching a request have been successfully attached to the
 	// parent a request is coming from, a HTTP 404 status code MUST be returned.
 	Matches []HTTPRouteSpecRulesMatchesPatch `pulumi:"matches"`
+	// Name is the name of the route rule. This name MUST be unique within a Route if it is set.
+	//
+	// Support: Extended
+	Name     *string                          `pulumi:"name"`
+	Timeouts *HTTPRouteSpecRulesTimeoutsPatch `pulumi:"timeouts"`
 }
 
 // HTTPRouteSpecRulesPatchInput is an input type that accepts HTTPRouteSpecRulesPatchArgs and HTTPRouteSpecRulesPatchOutput values.
@@ -28951,6 +41115,11 @@ type HTTPRouteSpecRulesPatchArgs struct {
 	// invalid, 50 percent of traffic must receive a 500. Implementations may
 	// choose how that 50 percent is determined.
 	//
+	// When a HTTPBackendRef refers to a Service that has no ready endpoints,
+	// implementations SHOULD return a 503 for requests to that backend instead.
+	// If an implementation chooses to do this, all of the above rules for 500 responses
+	// MUST also apply for responses that return a 503.
+	//
 	// Support: Core for Kubernetes Service
 	//
 	// Support: Extended for Kubernetes ServiceImport
@@ -28966,7 +41135,7 @@ type HTTPRouteSpecRulesPatchArgs struct {
 	// they are specified.
 	//
 	// Implementations MAY choose to implement this ordering strictly, rejecting
-	// any combination or order of filters that can not be supported. If implementations
+	// any combination or order of filters that cannot be supported. If implementations
 	// choose a strict interpretation of filter ordering, they MUST clearly document
 	// that behavior.
 	//
@@ -28988,7 +41157,7 @@ type HTTPRouteSpecRulesPatchArgs struct {
 	//
 	// All filters are expected to be compatible with each other except for the
 	// URLRewrite and RequestRedirect filters, which may not be combined. If an
-	// implementation can not support other combinations of filters, they must clearly
+	// implementation cannot support other combinations of filters, they must clearly
 	// document that limitation. In cases where incompatible or unsupported
 	// filters are specified and cause the `Accepted` condition to be set to status
 	// `False`, implementations may use the `IncompatibleFilters` reason to specify
@@ -29042,6 +41211,11 @@ type HTTPRouteSpecRulesPatchArgs struct {
 	// When no rules matching a request have been successfully attached to the
 	// parent a request is coming from, a HTTP 404 status code MUST be returned.
 	Matches HTTPRouteSpecRulesMatchesPatchArrayInput `pulumi:"matches"`
+	// Name is the name of the route rule. This name MUST be unique within a Route if it is set.
+	//
+	// Support: Extended
+	Name     pulumi.StringPtrInput                   `pulumi:"name"`
+	Timeouts HTTPRouteSpecRulesTimeoutsPatchPtrInput `pulumi:"timeouts"`
 }
 
 func (HTTPRouteSpecRulesPatchArgs) ElementType() reflect.Type {
@@ -29121,6 +41295,11 @@ func (o HTTPRouteSpecRulesPatchOutput) ToHTTPRouteSpecRulesPatchOutputWithContex
 // invalid, 50 percent of traffic must receive a 500. Implementations may
 // choose how that 50 percent is determined.
 //
+// When a HTTPBackendRef refers to a Service that has no ready endpoints,
+// implementations SHOULD return a 503 for requests to that backend instead.
+// If an implementation chooses to do this, all of the above rules for 500 responses
+// MUST also apply for responses that return a 503.
+//
 // Support: Core for Kubernetes Service
 //
 // Support: Extended for Kubernetes ServiceImport
@@ -29139,7 +41318,7 @@ func (o HTTPRouteSpecRulesPatchOutput) BackendRefs() HTTPRouteSpecRulesBackendRe
 // they are specified.
 //
 // Implementations MAY choose to implement this ordering strictly, rejecting
-// any combination or order of filters that can not be supported. If implementations
+// any combination or order of filters that cannot be supported. If implementations
 // choose a strict interpretation of filter ordering, they MUST clearly document
 // that behavior.
 //
@@ -29161,7 +41340,7 @@ func (o HTTPRouteSpecRulesPatchOutput) BackendRefs() HTTPRouteSpecRulesBackendRe
 //
 // All filters are expected to be compatible with each other except for the
 // URLRewrite and RequestRedirect filters, which may not be combined. If an
-// implementation can not support other combinations of filters, they must clearly
+// implementation cannot support other combinations of filters, they must clearly
 // document that limitation. In cases where incompatible or unsupported
 // filters are specified and cause the `Accepted` condition to be set to status
 // `False`, implementations may use the `IncompatibleFilters` reason to specify
@@ -29221,6 +41400,17 @@ func (o HTTPRouteSpecRulesPatchOutput) Matches() HTTPRouteSpecRulesMatchesPatchA
 	return o.ApplyT(func(v HTTPRouteSpecRulesPatch) []HTTPRouteSpecRulesMatchesPatch { return v.Matches }).(HTTPRouteSpecRulesMatchesPatchArrayOutput)
 }
 
+// Name is the name of the route rule. This name MUST be unique within a Route if it is set.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesPatchOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesPatch) *string { return v.Name }).(pulumi.StringPtrOutput)
+}
+
+func (o HTTPRouteSpecRulesPatchOutput) Timeouts() HTTPRouteSpecRulesTimeoutsPatchPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesPatch) *HTTPRouteSpecRulesTimeoutsPatch { return v.Timeouts }).(HTTPRouteSpecRulesTimeoutsPatchPtrOutput)
+}
+
 type HTTPRouteSpecRulesPatchArrayOutput struct{ *pulumi.OutputState }
 
 func (HTTPRouteSpecRulesPatchArrayOutput) ElementType() reflect.Type {
@@ -29239,6 +41429,648 @@ func (o HTTPRouteSpecRulesPatchArrayOutput) Index(i pulumi.IntInput) HTTPRouteSp
 	return pulumi.All(o, i).ApplyT(func(vs []interface{}) HTTPRouteSpecRulesPatch {
 		return vs[0].([]HTTPRouteSpecRulesPatch)[vs[1].(int)]
 	}).(HTTPRouteSpecRulesPatchOutput)
+}
+
+// Timeouts defines the timeouts that can be configured for an HTTP request.
+//
+// Support: Extended
+type HTTPRouteSpecRulesTimeouts struct {
+	// BackendRequest specifies a timeout for an individual request from the gateway
+	// to a backend. This covers the time from when the request first starts being
+	// sent from the gateway to when the full response has been received from the backend.
+	//
+	// Setting a timeout to the zero duration (e.g. "0s") SHOULD disable the timeout
+	// completely. Implementations that cannot completely disable the timeout MUST
+	// instead interpret the zero duration as the longest possible value to which
+	// the timeout can be set.
+	//
+	// An entire client HTTP transaction with a gateway, covered by the Request timeout,
+	// may result in more than one call from the gateway to the destination backend,
+	// for example, if automatic retries are supported.
+	//
+	// The value of BackendRequest must be a Gateway API Duration string as defined by
+	// GEP-2257.  When this field is unspecified, its behavior is implementation-specific;
+	// when specified, the value of BackendRequest must be no more than the value of the
+	// Request timeout (since the Request timeout encompasses the BackendRequest timeout).
+	//
+	// Support: Extended
+	BackendRequest *string `pulumi:"backendRequest"`
+	// Request specifies the maximum duration for a gateway to respond to an HTTP request.
+	// If the gateway has not been able to respond before this deadline is met, the gateway
+	// MUST return a timeout error.
+	//
+	// For example, setting the `rules.timeouts.request` field to the value `10s` in an
+	// `HTTPRoute` will cause a timeout if a client request is taking longer than 10 seconds
+	// to complete.
+	//
+	// Setting a timeout to the zero duration (e.g. "0s") SHOULD disable the timeout
+	// completely. Implementations that cannot completely disable the timeout MUST
+	// instead interpret the zero duration as the longest possible value to which
+	// the timeout can be set.
+	//
+	// This timeout is intended to cover as close to the whole request-response transaction
+	// as possible although an implementation MAY choose to start the timeout after the entire
+	// request stream has been received instead of immediately after the transaction is
+	// initiated by the client.
+	//
+	// The value of Request is a Gateway API Duration string as defined by GEP-2257. When this
+	// field is unspecified, request timeout behavior is implementation-specific.
+	//
+	// Support: Extended
+	Request *string `pulumi:"request"`
+}
+
+// HTTPRouteSpecRulesTimeoutsInput is an input type that accepts HTTPRouteSpecRulesTimeoutsArgs and HTTPRouteSpecRulesTimeoutsOutput values.
+// You can construct a concrete instance of `HTTPRouteSpecRulesTimeoutsInput` via:
+//
+//	HTTPRouteSpecRulesTimeoutsArgs{...}
+type HTTPRouteSpecRulesTimeoutsInput interface {
+	pulumi.Input
+
+	ToHTTPRouteSpecRulesTimeoutsOutput() HTTPRouteSpecRulesTimeoutsOutput
+	ToHTTPRouteSpecRulesTimeoutsOutputWithContext(context.Context) HTTPRouteSpecRulesTimeoutsOutput
+}
+
+// Timeouts defines the timeouts that can be configured for an HTTP request.
+//
+// Support: Extended
+type HTTPRouteSpecRulesTimeoutsArgs struct {
+	// BackendRequest specifies a timeout for an individual request from the gateway
+	// to a backend. This covers the time from when the request first starts being
+	// sent from the gateway to when the full response has been received from the backend.
+	//
+	// Setting a timeout to the zero duration (e.g. "0s") SHOULD disable the timeout
+	// completely. Implementations that cannot completely disable the timeout MUST
+	// instead interpret the zero duration as the longest possible value to which
+	// the timeout can be set.
+	//
+	// An entire client HTTP transaction with a gateway, covered by the Request timeout,
+	// may result in more than one call from the gateway to the destination backend,
+	// for example, if automatic retries are supported.
+	//
+	// The value of BackendRequest must be a Gateway API Duration string as defined by
+	// GEP-2257.  When this field is unspecified, its behavior is implementation-specific;
+	// when specified, the value of BackendRequest must be no more than the value of the
+	// Request timeout (since the Request timeout encompasses the BackendRequest timeout).
+	//
+	// Support: Extended
+	BackendRequest pulumi.StringPtrInput `pulumi:"backendRequest"`
+	// Request specifies the maximum duration for a gateway to respond to an HTTP request.
+	// If the gateway has not been able to respond before this deadline is met, the gateway
+	// MUST return a timeout error.
+	//
+	// For example, setting the `rules.timeouts.request` field to the value `10s` in an
+	// `HTTPRoute` will cause a timeout if a client request is taking longer than 10 seconds
+	// to complete.
+	//
+	// Setting a timeout to the zero duration (e.g. "0s") SHOULD disable the timeout
+	// completely. Implementations that cannot completely disable the timeout MUST
+	// instead interpret the zero duration as the longest possible value to which
+	// the timeout can be set.
+	//
+	// This timeout is intended to cover as close to the whole request-response transaction
+	// as possible although an implementation MAY choose to start the timeout after the entire
+	// request stream has been received instead of immediately after the transaction is
+	// initiated by the client.
+	//
+	// The value of Request is a Gateway API Duration string as defined by GEP-2257. When this
+	// field is unspecified, request timeout behavior is implementation-specific.
+	//
+	// Support: Extended
+	Request pulumi.StringPtrInput `pulumi:"request"`
+}
+
+func (HTTPRouteSpecRulesTimeoutsArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*HTTPRouteSpecRulesTimeouts)(nil)).Elem()
+}
+
+func (i HTTPRouteSpecRulesTimeoutsArgs) ToHTTPRouteSpecRulesTimeoutsOutput() HTTPRouteSpecRulesTimeoutsOutput {
+	return i.ToHTTPRouteSpecRulesTimeoutsOutputWithContext(context.Background())
+}
+
+func (i HTTPRouteSpecRulesTimeoutsArgs) ToHTTPRouteSpecRulesTimeoutsOutputWithContext(ctx context.Context) HTTPRouteSpecRulesTimeoutsOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(HTTPRouteSpecRulesTimeoutsOutput)
+}
+
+func (i HTTPRouteSpecRulesTimeoutsArgs) ToHTTPRouteSpecRulesTimeoutsPtrOutput() HTTPRouteSpecRulesTimeoutsPtrOutput {
+	return i.ToHTTPRouteSpecRulesTimeoutsPtrOutputWithContext(context.Background())
+}
+
+func (i HTTPRouteSpecRulesTimeoutsArgs) ToHTTPRouteSpecRulesTimeoutsPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesTimeoutsPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(HTTPRouteSpecRulesTimeoutsOutput).ToHTTPRouteSpecRulesTimeoutsPtrOutputWithContext(ctx)
+}
+
+// HTTPRouteSpecRulesTimeoutsPtrInput is an input type that accepts HTTPRouteSpecRulesTimeoutsArgs, HTTPRouteSpecRulesTimeoutsPtr and HTTPRouteSpecRulesTimeoutsPtrOutput values.
+// You can construct a concrete instance of `HTTPRouteSpecRulesTimeoutsPtrInput` via:
+//
+//	        HTTPRouteSpecRulesTimeoutsArgs{...}
+//
+//	or:
+//
+//	        nil
+type HTTPRouteSpecRulesTimeoutsPtrInput interface {
+	pulumi.Input
+
+	ToHTTPRouteSpecRulesTimeoutsPtrOutput() HTTPRouteSpecRulesTimeoutsPtrOutput
+	ToHTTPRouteSpecRulesTimeoutsPtrOutputWithContext(context.Context) HTTPRouteSpecRulesTimeoutsPtrOutput
+}
+
+type httprouteSpecRulesTimeoutsPtrType HTTPRouteSpecRulesTimeoutsArgs
+
+func HTTPRouteSpecRulesTimeoutsPtr(v *HTTPRouteSpecRulesTimeoutsArgs) HTTPRouteSpecRulesTimeoutsPtrInput {
+	return (*httprouteSpecRulesTimeoutsPtrType)(v)
+}
+
+func (*httprouteSpecRulesTimeoutsPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**HTTPRouteSpecRulesTimeouts)(nil)).Elem()
+}
+
+func (i *httprouteSpecRulesTimeoutsPtrType) ToHTTPRouteSpecRulesTimeoutsPtrOutput() HTTPRouteSpecRulesTimeoutsPtrOutput {
+	return i.ToHTTPRouteSpecRulesTimeoutsPtrOutputWithContext(context.Background())
+}
+
+func (i *httprouteSpecRulesTimeoutsPtrType) ToHTTPRouteSpecRulesTimeoutsPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesTimeoutsPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(HTTPRouteSpecRulesTimeoutsPtrOutput)
+}
+
+// Timeouts defines the timeouts that can be configured for an HTTP request.
+//
+// Support: Extended
+type HTTPRouteSpecRulesTimeoutsOutput struct{ *pulumi.OutputState }
+
+func (HTTPRouteSpecRulesTimeoutsOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*HTTPRouteSpecRulesTimeouts)(nil)).Elem()
+}
+
+func (o HTTPRouteSpecRulesTimeoutsOutput) ToHTTPRouteSpecRulesTimeoutsOutput() HTTPRouteSpecRulesTimeoutsOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesTimeoutsOutput) ToHTTPRouteSpecRulesTimeoutsOutputWithContext(ctx context.Context) HTTPRouteSpecRulesTimeoutsOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesTimeoutsOutput) ToHTTPRouteSpecRulesTimeoutsPtrOutput() HTTPRouteSpecRulesTimeoutsPtrOutput {
+	return o.ToHTTPRouteSpecRulesTimeoutsPtrOutputWithContext(context.Background())
+}
+
+func (o HTTPRouteSpecRulesTimeoutsOutput) ToHTTPRouteSpecRulesTimeoutsPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesTimeoutsPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v HTTPRouteSpecRulesTimeouts) *HTTPRouteSpecRulesTimeouts {
+		return &v
+	}).(HTTPRouteSpecRulesTimeoutsPtrOutput)
+}
+
+// BackendRequest specifies a timeout for an individual request from the gateway
+// to a backend. This covers the time from when the request first starts being
+// sent from the gateway to when the full response has been received from the backend.
+//
+// Setting a timeout to the zero duration (e.g. "0s") SHOULD disable the timeout
+// completely. Implementations that cannot completely disable the timeout MUST
+// instead interpret the zero duration as the longest possible value to which
+// the timeout can be set.
+//
+// An entire client HTTP transaction with a gateway, covered by the Request timeout,
+// may result in more than one call from the gateway to the destination backend,
+// for example, if automatic retries are supported.
+//
+// The value of BackendRequest must be a Gateway API Duration string as defined by
+// GEP-2257.  When this field is unspecified, its behavior is implementation-specific;
+// when specified, the value of BackendRequest must be no more than the value of the
+// Request timeout (since the Request timeout encompasses the BackendRequest timeout).
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesTimeoutsOutput) BackendRequest() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesTimeouts) *string { return v.BackendRequest }).(pulumi.StringPtrOutput)
+}
+
+// Request specifies the maximum duration for a gateway to respond to an HTTP request.
+// If the gateway has not been able to respond before this deadline is met, the gateway
+// MUST return a timeout error.
+//
+// For example, setting the `rules.timeouts.request` field to the value `10s` in an
+// `HTTPRoute` will cause a timeout if a client request is taking longer than 10 seconds
+// to complete.
+//
+// Setting a timeout to the zero duration (e.g. "0s") SHOULD disable the timeout
+// completely. Implementations that cannot completely disable the timeout MUST
+// instead interpret the zero duration as the longest possible value to which
+// the timeout can be set.
+//
+// This timeout is intended to cover as close to the whole request-response transaction
+// as possible although an implementation MAY choose to start the timeout after the entire
+// request stream has been received instead of immediately after the transaction is
+// initiated by the client.
+//
+// The value of Request is a Gateway API Duration string as defined by GEP-2257. When this
+// field is unspecified, request timeout behavior is implementation-specific.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesTimeoutsOutput) Request() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesTimeouts) *string { return v.Request }).(pulumi.StringPtrOutput)
+}
+
+type HTTPRouteSpecRulesTimeoutsPtrOutput struct{ *pulumi.OutputState }
+
+func (HTTPRouteSpecRulesTimeoutsPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**HTTPRouteSpecRulesTimeouts)(nil)).Elem()
+}
+
+func (o HTTPRouteSpecRulesTimeoutsPtrOutput) ToHTTPRouteSpecRulesTimeoutsPtrOutput() HTTPRouteSpecRulesTimeoutsPtrOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesTimeoutsPtrOutput) ToHTTPRouteSpecRulesTimeoutsPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesTimeoutsPtrOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesTimeoutsPtrOutput) Elem() HTTPRouteSpecRulesTimeoutsOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesTimeouts) HTTPRouteSpecRulesTimeouts {
+		if v != nil {
+			return *v
+		}
+		var ret HTTPRouteSpecRulesTimeouts
+		return ret
+	}).(HTTPRouteSpecRulesTimeoutsOutput)
+}
+
+// BackendRequest specifies a timeout for an individual request from the gateway
+// to a backend. This covers the time from when the request first starts being
+// sent from the gateway to when the full response has been received from the backend.
+//
+// Setting a timeout to the zero duration (e.g. "0s") SHOULD disable the timeout
+// completely. Implementations that cannot completely disable the timeout MUST
+// instead interpret the zero duration as the longest possible value to which
+// the timeout can be set.
+//
+// An entire client HTTP transaction with a gateway, covered by the Request timeout,
+// may result in more than one call from the gateway to the destination backend,
+// for example, if automatic retries are supported.
+//
+// The value of BackendRequest must be a Gateway API Duration string as defined by
+// GEP-2257.  When this field is unspecified, its behavior is implementation-specific;
+// when specified, the value of BackendRequest must be no more than the value of the
+// Request timeout (since the Request timeout encompasses the BackendRequest timeout).
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesTimeoutsPtrOutput) BackendRequest() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesTimeouts) *string {
+		if v == nil {
+			return nil
+		}
+		return v.BackendRequest
+	}).(pulumi.StringPtrOutput)
+}
+
+// Request specifies the maximum duration for a gateway to respond to an HTTP request.
+// If the gateway has not been able to respond before this deadline is met, the gateway
+// MUST return a timeout error.
+//
+// For example, setting the `rules.timeouts.request` field to the value `10s` in an
+// `HTTPRoute` will cause a timeout if a client request is taking longer than 10 seconds
+// to complete.
+//
+// Setting a timeout to the zero duration (e.g. "0s") SHOULD disable the timeout
+// completely. Implementations that cannot completely disable the timeout MUST
+// instead interpret the zero duration as the longest possible value to which
+// the timeout can be set.
+//
+// This timeout is intended to cover as close to the whole request-response transaction
+// as possible although an implementation MAY choose to start the timeout after the entire
+// request stream has been received instead of immediately after the transaction is
+// initiated by the client.
+//
+// The value of Request is a Gateway API Duration string as defined by GEP-2257. When this
+// field is unspecified, request timeout behavior is implementation-specific.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesTimeoutsPtrOutput) Request() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesTimeouts) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Request
+	}).(pulumi.StringPtrOutput)
+}
+
+// Timeouts defines the timeouts that can be configured for an HTTP request.
+//
+// Support: Extended
+type HTTPRouteSpecRulesTimeoutsPatch struct {
+	// BackendRequest specifies a timeout for an individual request from the gateway
+	// to a backend. This covers the time from when the request first starts being
+	// sent from the gateway to when the full response has been received from the backend.
+	//
+	// Setting a timeout to the zero duration (e.g. "0s") SHOULD disable the timeout
+	// completely. Implementations that cannot completely disable the timeout MUST
+	// instead interpret the zero duration as the longest possible value to which
+	// the timeout can be set.
+	//
+	// An entire client HTTP transaction with a gateway, covered by the Request timeout,
+	// may result in more than one call from the gateway to the destination backend,
+	// for example, if automatic retries are supported.
+	//
+	// The value of BackendRequest must be a Gateway API Duration string as defined by
+	// GEP-2257.  When this field is unspecified, its behavior is implementation-specific;
+	// when specified, the value of BackendRequest must be no more than the value of the
+	// Request timeout (since the Request timeout encompasses the BackendRequest timeout).
+	//
+	// Support: Extended
+	BackendRequest *string `pulumi:"backendRequest"`
+	// Request specifies the maximum duration for a gateway to respond to an HTTP request.
+	// If the gateway has not been able to respond before this deadline is met, the gateway
+	// MUST return a timeout error.
+	//
+	// For example, setting the `rules.timeouts.request` field to the value `10s` in an
+	// `HTTPRoute` will cause a timeout if a client request is taking longer than 10 seconds
+	// to complete.
+	//
+	// Setting a timeout to the zero duration (e.g. "0s") SHOULD disable the timeout
+	// completely. Implementations that cannot completely disable the timeout MUST
+	// instead interpret the zero duration as the longest possible value to which
+	// the timeout can be set.
+	//
+	// This timeout is intended to cover as close to the whole request-response transaction
+	// as possible although an implementation MAY choose to start the timeout after the entire
+	// request stream has been received instead of immediately after the transaction is
+	// initiated by the client.
+	//
+	// The value of Request is a Gateway API Duration string as defined by GEP-2257. When this
+	// field is unspecified, request timeout behavior is implementation-specific.
+	//
+	// Support: Extended
+	Request *string `pulumi:"request"`
+}
+
+// HTTPRouteSpecRulesTimeoutsPatchInput is an input type that accepts HTTPRouteSpecRulesTimeoutsPatchArgs and HTTPRouteSpecRulesTimeoutsPatchOutput values.
+// You can construct a concrete instance of `HTTPRouteSpecRulesTimeoutsPatchInput` via:
+//
+//	HTTPRouteSpecRulesTimeoutsPatchArgs{...}
+type HTTPRouteSpecRulesTimeoutsPatchInput interface {
+	pulumi.Input
+
+	ToHTTPRouteSpecRulesTimeoutsPatchOutput() HTTPRouteSpecRulesTimeoutsPatchOutput
+	ToHTTPRouteSpecRulesTimeoutsPatchOutputWithContext(context.Context) HTTPRouteSpecRulesTimeoutsPatchOutput
+}
+
+// Timeouts defines the timeouts that can be configured for an HTTP request.
+//
+// Support: Extended
+type HTTPRouteSpecRulesTimeoutsPatchArgs struct {
+	// BackendRequest specifies a timeout for an individual request from the gateway
+	// to a backend. This covers the time from when the request first starts being
+	// sent from the gateway to when the full response has been received from the backend.
+	//
+	// Setting a timeout to the zero duration (e.g. "0s") SHOULD disable the timeout
+	// completely. Implementations that cannot completely disable the timeout MUST
+	// instead interpret the zero duration as the longest possible value to which
+	// the timeout can be set.
+	//
+	// An entire client HTTP transaction with a gateway, covered by the Request timeout,
+	// may result in more than one call from the gateway to the destination backend,
+	// for example, if automatic retries are supported.
+	//
+	// The value of BackendRequest must be a Gateway API Duration string as defined by
+	// GEP-2257.  When this field is unspecified, its behavior is implementation-specific;
+	// when specified, the value of BackendRequest must be no more than the value of the
+	// Request timeout (since the Request timeout encompasses the BackendRequest timeout).
+	//
+	// Support: Extended
+	BackendRequest pulumi.StringPtrInput `pulumi:"backendRequest"`
+	// Request specifies the maximum duration for a gateway to respond to an HTTP request.
+	// If the gateway has not been able to respond before this deadline is met, the gateway
+	// MUST return a timeout error.
+	//
+	// For example, setting the `rules.timeouts.request` field to the value `10s` in an
+	// `HTTPRoute` will cause a timeout if a client request is taking longer than 10 seconds
+	// to complete.
+	//
+	// Setting a timeout to the zero duration (e.g. "0s") SHOULD disable the timeout
+	// completely. Implementations that cannot completely disable the timeout MUST
+	// instead interpret the zero duration as the longest possible value to which
+	// the timeout can be set.
+	//
+	// This timeout is intended to cover as close to the whole request-response transaction
+	// as possible although an implementation MAY choose to start the timeout after the entire
+	// request stream has been received instead of immediately after the transaction is
+	// initiated by the client.
+	//
+	// The value of Request is a Gateway API Duration string as defined by GEP-2257. When this
+	// field is unspecified, request timeout behavior is implementation-specific.
+	//
+	// Support: Extended
+	Request pulumi.StringPtrInput `pulumi:"request"`
+}
+
+func (HTTPRouteSpecRulesTimeoutsPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*HTTPRouteSpecRulesTimeoutsPatch)(nil)).Elem()
+}
+
+func (i HTTPRouteSpecRulesTimeoutsPatchArgs) ToHTTPRouteSpecRulesTimeoutsPatchOutput() HTTPRouteSpecRulesTimeoutsPatchOutput {
+	return i.ToHTTPRouteSpecRulesTimeoutsPatchOutputWithContext(context.Background())
+}
+
+func (i HTTPRouteSpecRulesTimeoutsPatchArgs) ToHTTPRouteSpecRulesTimeoutsPatchOutputWithContext(ctx context.Context) HTTPRouteSpecRulesTimeoutsPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(HTTPRouteSpecRulesTimeoutsPatchOutput)
+}
+
+func (i HTTPRouteSpecRulesTimeoutsPatchArgs) ToHTTPRouteSpecRulesTimeoutsPatchPtrOutput() HTTPRouteSpecRulesTimeoutsPatchPtrOutput {
+	return i.ToHTTPRouteSpecRulesTimeoutsPatchPtrOutputWithContext(context.Background())
+}
+
+func (i HTTPRouteSpecRulesTimeoutsPatchArgs) ToHTTPRouteSpecRulesTimeoutsPatchPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesTimeoutsPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(HTTPRouteSpecRulesTimeoutsPatchOutput).ToHTTPRouteSpecRulesTimeoutsPatchPtrOutputWithContext(ctx)
+}
+
+// HTTPRouteSpecRulesTimeoutsPatchPtrInput is an input type that accepts HTTPRouteSpecRulesTimeoutsPatchArgs, HTTPRouteSpecRulesTimeoutsPatchPtr and HTTPRouteSpecRulesTimeoutsPatchPtrOutput values.
+// You can construct a concrete instance of `HTTPRouteSpecRulesTimeoutsPatchPtrInput` via:
+//
+//	        HTTPRouteSpecRulesTimeoutsPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type HTTPRouteSpecRulesTimeoutsPatchPtrInput interface {
+	pulumi.Input
+
+	ToHTTPRouteSpecRulesTimeoutsPatchPtrOutput() HTTPRouteSpecRulesTimeoutsPatchPtrOutput
+	ToHTTPRouteSpecRulesTimeoutsPatchPtrOutputWithContext(context.Context) HTTPRouteSpecRulesTimeoutsPatchPtrOutput
+}
+
+type httprouteSpecRulesTimeoutsPatchPtrType HTTPRouteSpecRulesTimeoutsPatchArgs
+
+func HTTPRouteSpecRulesTimeoutsPatchPtr(v *HTTPRouteSpecRulesTimeoutsPatchArgs) HTTPRouteSpecRulesTimeoutsPatchPtrInput {
+	return (*httprouteSpecRulesTimeoutsPatchPtrType)(v)
+}
+
+func (*httprouteSpecRulesTimeoutsPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**HTTPRouteSpecRulesTimeoutsPatch)(nil)).Elem()
+}
+
+func (i *httprouteSpecRulesTimeoutsPatchPtrType) ToHTTPRouteSpecRulesTimeoutsPatchPtrOutput() HTTPRouteSpecRulesTimeoutsPatchPtrOutput {
+	return i.ToHTTPRouteSpecRulesTimeoutsPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *httprouteSpecRulesTimeoutsPatchPtrType) ToHTTPRouteSpecRulesTimeoutsPatchPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesTimeoutsPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(HTTPRouteSpecRulesTimeoutsPatchPtrOutput)
+}
+
+// Timeouts defines the timeouts that can be configured for an HTTP request.
+//
+// Support: Extended
+type HTTPRouteSpecRulesTimeoutsPatchOutput struct{ *pulumi.OutputState }
+
+func (HTTPRouteSpecRulesTimeoutsPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*HTTPRouteSpecRulesTimeoutsPatch)(nil)).Elem()
+}
+
+func (o HTTPRouteSpecRulesTimeoutsPatchOutput) ToHTTPRouteSpecRulesTimeoutsPatchOutput() HTTPRouteSpecRulesTimeoutsPatchOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesTimeoutsPatchOutput) ToHTTPRouteSpecRulesTimeoutsPatchOutputWithContext(ctx context.Context) HTTPRouteSpecRulesTimeoutsPatchOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesTimeoutsPatchOutput) ToHTTPRouteSpecRulesTimeoutsPatchPtrOutput() HTTPRouteSpecRulesTimeoutsPatchPtrOutput {
+	return o.ToHTTPRouteSpecRulesTimeoutsPatchPtrOutputWithContext(context.Background())
+}
+
+func (o HTTPRouteSpecRulesTimeoutsPatchOutput) ToHTTPRouteSpecRulesTimeoutsPatchPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesTimeoutsPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v HTTPRouteSpecRulesTimeoutsPatch) *HTTPRouteSpecRulesTimeoutsPatch {
+		return &v
+	}).(HTTPRouteSpecRulesTimeoutsPatchPtrOutput)
+}
+
+// BackendRequest specifies a timeout for an individual request from the gateway
+// to a backend. This covers the time from when the request first starts being
+// sent from the gateway to when the full response has been received from the backend.
+//
+// Setting a timeout to the zero duration (e.g. "0s") SHOULD disable the timeout
+// completely. Implementations that cannot completely disable the timeout MUST
+// instead interpret the zero duration as the longest possible value to which
+// the timeout can be set.
+//
+// An entire client HTTP transaction with a gateway, covered by the Request timeout,
+// may result in more than one call from the gateway to the destination backend,
+// for example, if automatic retries are supported.
+//
+// The value of BackendRequest must be a Gateway API Duration string as defined by
+// GEP-2257.  When this field is unspecified, its behavior is implementation-specific;
+// when specified, the value of BackendRequest must be no more than the value of the
+// Request timeout (since the Request timeout encompasses the BackendRequest timeout).
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesTimeoutsPatchOutput) BackendRequest() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesTimeoutsPatch) *string { return v.BackendRequest }).(pulumi.StringPtrOutput)
+}
+
+// Request specifies the maximum duration for a gateway to respond to an HTTP request.
+// If the gateway has not been able to respond before this deadline is met, the gateway
+// MUST return a timeout error.
+//
+// For example, setting the `rules.timeouts.request` field to the value `10s` in an
+// `HTTPRoute` will cause a timeout if a client request is taking longer than 10 seconds
+// to complete.
+//
+// Setting a timeout to the zero duration (e.g. "0s") SHOULD disable the timeout
+// completely. Implementations that cannot completely disable the timeout MUST
+// instead interpret the zero duration as the longest possible value to which
+// the timeout can be set.
+//
+// This timeout is intended to cover as close to the whole request-response transaction
+// as possible although an implementation MAY choose to start the timeout after the entire
+// request stream has been received instead of immediately after the transaction is
+// initiated by the client.
+//
+// The value of Request is a Gateway API Duration string as defined by GEP-2257. When this
+// field is unspecified, request timeout behavior is implementation-specific.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesTimeoutsPatchOutput) Request() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v HTTPRouteSpecRulesTimeoutsPatch) *string { return v.Request }).(pulumi.StringPtrOutput)
+}
+
+type HTTPRouteSpecRulesTimeoutsPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (HTTPRouteSpecRulesTimeoutsPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**HTTPRouteSpecRulesTimeoutsPatch)(nil)).Elem()
+}
+
+func (o HTTPRouteSpecRulesTimeoutsPatchPtrOutput) ToHTTPRouteSpecRulesTimeoutsPatchPtrOutput() HTTPRouteSpecRulesTimeoutsPatchPtrOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesTimeoutsPatchPtrOutput) ToHTTPRouteSpecRulesTimeoutsPatchPtrOutputWithContext(ctx context.Context) HTTPRouteSpecRulesTimeoutsPatchPtrOutput {
+	return o
+}
+
+func (o HTTPRouteSpecRulesTimeoutsPatchPtrOutput) Elem() HTTPRouteSpecRulesTimeoutsPatchOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesTimeoutsPatch) HTTPRouteSpecRulesTimeoutsPatch {
+		if v != nil {
+			return *v
+		}
+		var ret HTTPRouteSpecRulesTimeoutsPatch
+		return ret
+	}).(HTTPRouteSpecRulesTimeoutsPatchOutput)
+}
+
+// BackendRequest specifies a timeout for an individual request from the gateway
+// to a backend. This covers the time from when the request first starts being
+// sent from the gateway to when the full response has been received from the backend.
+//
+// Setting a timeout to the zero duration (e.g. "0s") SHOULD disable the timeout
+// completely. Implementations that cannot completely disable the timeout MUST
+// instead interpret the zero duration as the longest possible value to which
+// the timeout can be set.
+//
+// An entire client HTTP transaction with a gateway, covered by the Request timeout,
+// may result in more than one call from the gateway to the destination backend,
+// for example, if automatic retries are supported.
+//
+// The value of BackendRequest must be a Gateway API Duration string as defined by
+// GEP-2257.  When this field is unspecified, its behavior is implementation-specific;
+// when specified, the value of BackendRequest must be no more than the value of the
+// Request timeout (since the Request timeout encompasses the BackendRequest timeout).
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesTimeoutsPatchPtrOutput) BackendRequest() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesTimeoutsPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.BackendRequest
+	}).(pulumi.StringPtrOutput)
+}
+
+// Request specifies the maximum duration for a gateway to respond to an HTTP request.
+// If the gateway has not been able to respond before this deadline is met, the gateway
+// MUST return a timeout error.
+//
+// For example, setting the `rules.timeouts.request` field to the value `10s` in an
+// `HTTPRoute` will cause a timeout if a client request is taking longer than 10 seconds
+// to complete.
+//
+// Setting a timeout to the zero duration (e.g. "0s") SHOULD disable the timeout
+// completely. Implementations that cannot completely disable the timeout MUST
+// instead interpret the zero duration as the longest possible value to which
+// the timeout can be set.
+//
+// This timeout is intended to cover as close to the whole request-response transaction
+// as possible although an implementation MAY choose to start the timeout after the entire
+// request stream has been received instead of immediately after the transaction is
+// initiated by the client.
+//
+// The value of Request is a Gateway API Duration string as defined by GEP-2257. When this
+// field is unspecified, request timeout behavior is implementation-specific.
+//
+// Support: Extended
+func (o HTTPRouteSpecRulesTimeoutsPatchPtrOutput) Request() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *HTTPRouteSpecRulesTimeoutsPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Request
+	}).(pulumi.StringPtrOutput)
 }
 
 // Status defines the current state of HTTPRoute.
@@ -29452,9 +42284,9 @@ type HTTPRouteStatusParents struct {
 	// There are a number of cases where the "Accepted" condition may not be set
 	// due to lack of controller visibility, that includes when:
 	//
-	// * The Route refers to a non-existent parent.
+	// * The Route refers to a nonexistent parent.
 	// * The Route is of a type that the controller does not support.
-	// * The Route is in a namespace the controller does not have access to.
+	// * The Route is in a namespace to which the controller does not have access.
 	Conditions []HTTPRouteStatusParentsConditions `pulumi:"conditions"`
 	// ControllerName is a domain/path string that indicates the name of the
 	// controller that wrote this status. This corresponds with the
@@ -29503,9 +42335,9 @@ type HTTPRouteStatusParentsArgs struct {
 	// There are a number of cases where the "Accepted" condition may not be set
 	// due to lack of controller visibility, that includes when:
 	//
-	// * The Route refers to a non-existent parent.
+	// * The Route refers to a nonexistent parent.
 	// * The Route is of a type that the controller does not support.
-	// * The Route is in a namespace the controller does not have access to.
+	// * The Route is in a namespace to which the controller does not have access.
 	Conditions HTTPRouteStatusParentsConditionsArrayInput `pulumi:"conditions"`
 	// ControllerName is a domain/path string that indicates the name of the
 	// controller that wrote this status. This corresponds with the
@@ -29593,9 +42425,9 @@ func (o HTTPRouteStatusParentsOutput) ToHTTPRouteStatusParentsOutputWithContext(
 // There are a number of cases where the "Accepted" condition may not be set
 // due to lack of controller visibility, that includes when:
 //
-// * The Route refers to a non-existent parent.
+// * The Route refers to a nonexistent parent.
 // * The Route is of a type that the controller does not support.
-// * The Route is in a namespace the controller does not have access to.
+// * The Route is in a namespace to which the controller does not have access.
 func (o HTTPRouteStatusParentsOutput) Conditions() HTTPRouteStatusParentsConditionsArrayOutput {
 	return o.ApplyT(func(v HTTPRouteStatusParents) []HTTPRouteStatusParentsConditions { return v.Conditions }).(HTTPRouteStatusParentsConditionsArrayOutput)
 }
@@ -29642,21 +42474,6 @@ func (o HTTPRouteStatusParentsArrayOutput) Index(i pulumi.IntInput) HTTPRouteSta
 }
 
 // Condition contains details for one aspect of the current state of this API Resource.
-// ---
-// This struct is intended for direct use as an array at the field path .status.conditions.  For example,
-//
-//	type FooStatus struct{
-//	    // Represents the observations of a foo's current state.
-//	    // Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
-//	    // +patchMergeKey=type
-//	    // +patchStrategy=merge
-//	    // +listType=map
-//	    // +listMapKey=type
-//	    Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"`
-//
-//
-//	    // other fields
-//	}
 type HTTPRouteStatusParentsConditions struct {
 	// lastTransitionTime is the last time the condition transitioned from one status to another.
 	// This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
@@ -29677,10 +42494,6 @@ type HTTPRouteStatusParentsConditions struct {
 	// status of the condition, one of True, False, Unknown.
 	Status *string `pulumi:"status"`
 	// type of condition in CamelCase or in foo.example.com/CamelCase.
-	// ---
-	// Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be
-	// useful (see .node.status.conditions), the ability to deconflict is important.
-	// The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
 	Type *string `pulumi:"type"`
 }
 
@@ -29696,21 +42509,6 @@ type HTTPRouteStatusParentsConditionsInput interface {
 }
 
 // Condition contains details for one aspect of the current state of this API Resource.
-// ---
-// This struct is intended for direct use as an array at the field path .status.conditions.  For example,
-//
-//	type FooStatus struct{
-//	    // Represents the observations of a foo's current state.
-//	    // Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
-//	    // +patchMergeKey=type
-//	    // +patchStrategy=merge
-//	    // +listType=map
-//	    // +listMapKey=type
-//	    Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"`
-//
-//
-//	    // other fields
-//	}
 type HTTPRouteStatusParentsConditionsArgs struct {
 	// lastTransitionTime is the last time the condition transitioned from one status to another.
 	// This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
@@ -29731,10 +42529,6 @@ type HTTPRouteStatusParentsConditionsArgs struct {
 	// status of the condition, one of True, False, Unknown.
 	Status pulumi.StringPtrInput `pulumi:"status"`
 	// type of condition in CamelCase or in foo.example.com/CamelCase.
-	// ---
-	// Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be
-	// useful (see .node.status.conditions), the ability to deconflict is important.
-	// The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
 	Type pulumi.StringPtrInput `pulumi:"type"`
 }
 
@@ -29776,21 +42570,6 @@ func (i HTTPRouteStatusParentsConditionsArray) ToHTTPRouteStatusParentsCondition
 }
 
 // Condition contains details for one aspect of the current state of this API Resource.
-// ---
-// This struct is intended for direct use as an array at the field path .status.conditions.  For example,
-//
-//	type FooStatus struct{
-//	    // Represents the observations of a foo's current state.
-//	    // Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
-//	    // +patchMergeKey=type
-//	    // +patchStrategy=merge
-//	    // +listType=map
-//	    // +listMapKey=type
-//	    Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"`
-//
-//
-//	    // other fields
-//	}
 type HTTPRouteStatusParentsConditionsOutput struct{ *pulumi.OutputState }
 
 func (HTTPRouteStatusParentsConditionsOutput) ElementType() reflect.Type {
@@ -29839,10 +42618,6 @@ func (o HTTPRouteStatusParentsConditionsOutput) Status() pulumi.StringPtrOutput 
 }
 
 // type of condition in CamelCase or in foo.example.com/CamelCase.
-// ---
-// Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be
-// useful (see .node.status.conditions), the ability to deconflict is important.
-// The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
 func (o HTTPRouteStatusParentsConditionsOutput) Type() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v HTTPRouteStatusParentsConditions) *string { return v.Type }).(pulumi.StringPtrOutput)
 }
@@ -29868,21 +42643,6 @@ func (o HTTPRouteStatusParentsConditionsArrayOutput) Index(i pulumi.IntInput) HT
 }
 
 // Condition contains details for one aspect of the current state of this API Resource.
-// ---
-// This struct is intended for direct use as an array at the field path .status.conditions.  For example,
-//
-//	type FooStatus struct{
-//	    // Represents the observations of a foo's current state.
-//	    // Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
-//	    // +patchMergeKey=type
-//	    // +patchStrategy=merge
-//	    // +listType=map
-//	    // +listMapKey=type
-//	    Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"`
-//
-//
-//	    // other fields
-//	}
 type HTTPRouteStatusParentsConditionsPatch struct {
 	// lastTransitionTime is the last time the condition transitioned from one status to another.
 	// This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
@@ -29903,10 +42663,6 @@ type HTTPRouteStatusParentsConditionsPatch struct {
 	// status of the condition, one of True, False, Unknown.
 	Status *string `pulumi:"status"`
 	// type of condition in CamelCase or in foo.example.com/CamelCase.
-	// ---
-	// Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be
-	// useful (see .node.status.conditions), the ability to deconflict is important.
-	// The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
 	Type *string `pulumi:"type"`
 }
 
@@ -29922,21 +42678,6 @@ type HTTPRouteStatusParentsConditionsPatchInput interface {
 }
 
 // Condition contains details for one aspect of the current state of this API Resource.
-// ---
-// This struct is intended for direct use as an array at the field path .status.conditions.  For example,
-//
-//	type FooStatus struct{
-//	    // Represents the observations of a foo's current state.
-//	    // Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
-//	    // +patchMergeKey=type
-//	    // +patchStrategy=merge
-//	    // +listType=map
-//	    // +listMapKey=type
-//	    Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"`
-//
-//
-//	    // other fields
-//	}
 type HTTPRouteStatusParentsConditionsPatchArgs struct {
 	// lastTransitionTime is the last time the condition transitioned from one status to another.
 	// This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
@@ -29957,10 +42698,6 @@ type HTTPRouteStatusParentsConditionsPatchArgs struct {
 	// status of the condition, one of True, False, Unknown.
 	Status pulumi.StringPtrInput `pulumi:"status"`
 	// type of condition in CamelCase or in foo.example.com/CamelCase.
-	// ---
-	// Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be
-	// useful (see .node.status.conditions), the ability to deconflict is important.
-	// The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
 	Type pulumi.StringPtrInput `pulumi:"type"`
 }
 
@@ -30002,21 +42739,6 @@ func (i HTTPRouteStatusParentsConditionsPatchArray) ToHTTPRouteStatusParentsCond
 }
 
 // Condition contains details for one aspect of the current state of this API Resource.
-// ---
-// This struct is intended for direct use as an array at the field path .status.conditions.  For example,
-//
-//	type FooStatus struct{
-//	    // Represents the observations of a foo's current state.
-//	    // Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
-//	    // +patchMergeKey=type
-//	    // +patchStrategy=merge
-//	    // +listType=map
-//	    // +listMapKey=type
-//	    Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"`
-//
-//
-//	    // other fields
-//	}
 type HTTPRouteStatusParentsConditionsPatchOutput struct{ *pulumi.OutputState }
 
 func (HTTPRouteStatusParentsConditionsPatchOutput) ElementType() reflect.Type {
@@ -30065,10 +42787,6 @@ func (o HTTPRouteStatusParentsConditionsPatchOutput) Status() pulumi.StringPtrOu
 }
 
 // type of condition in CamelCase or in foo.example.com/CamelCase.
-// ---
-// Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be
-// useful (see .node.status.conditions), the ability to deconflict is important.
-// The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
 func (o HTTPRouteStatusParentsConditionsPatchOutput) Type() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v HTTPRouteStatusParentsConditionsPatch) *string { return v.Type }).(pulumi.StringPtrOutput)
 }
@@ -31140,9 +43858,9 @@ type HTTPRouteStatusParentsPatch struct {
 	// There are a number of cases where the "Accepted" condition may not be set
 	// due to lack of controller visibility, that includes when:
 	//
-	// * The Route refers to a non-existent parent.
+	// * The Route refers to a nonexistent parent.
 	// * The Route is of a type that the controller does not support.
-	// * The Route is in a namespace the controller does not have access to.
+	// * The Route is in a namespace to which the controller does not have access.
 	Conditions []HTTPRouteStatusParentsConditionsPatch `pulumi:"conditions"`
 	// ControllerName is a domain/path string that indicates the name of the
 	// controller that wrote this status. This corresponds with the
@@ -31191,9 +43909,9 @@ type HTTPRouteStatusParentsPatchArgs struct {
 	// There are a number of cases where the "Accepted" condition may not be set
 	// due to lack of controller visibility, that includes when:
 	//
-	// * The Route refers to a non-existent parent.
+	// * The Route refers to a nonexistent parent.
 	// * The Route is of a type that the controller does not support.
-	// * The Route is in a namespace the controller does not have access to.
+	// * The Route is in a namespace to which the controller does not have access.
 	Conditions HTTPRouteStatusParentsConditionsPatchArrayInput `pulumi:"conditions"`
 	// ControllerName is a domain/path string that indicates the name of the
 	// controller that wrote this status. This corresponds with the
@@ -31281,9 +43999,9 @@ func (o HTTPRouteStatusParentsPatchOutput) ToHTTPRouteStatusParentsPatchOutputWi
 // There are a number of cases where the "Accepted" condition may not be set
 // due to lack of controller visibility, that includes when:
 //
-// * The Route refers to a non-existent parent.
+// * The Route refers to a nonexistent parent.
 // * The Route is of a type that the controller does not support.
-// * The Route is in a namespace the controller does not have access to.
+// * The Route is in a namespace to which the controller does not have access.
 func (o HTTPRouteStatusParentsPatchOutput) Conditions() HTTPRouteStatusParentsConditionsPatchArrayOutput {
 	return o.ApplyT(func(v HTTPRouteStatusParentsPatch) []HTTPRouteStatusParentsConditionsPatch { return v.Conditions }).(HTTPRouteStatusParentsConditionsPatchArrayOutput)
 }
@@ -32969,6 +45687,10 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*GatewayClassStatusConditionsPatchArrayInput)(nil)).Elem(), GatewayClassStatusConditionsPatchArray{})
 	pulumi.RegisterInputType(reflect.TypeOf((*GatewayClassStatusPatchInput)(nil)).Elem(), GatewayClassStatusPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*GatewayClassStatusPatchPtrInput)(nil)).Elem(), GatewayClassStatusPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewayClassStatusSupportedFeaturesInput)(nil)).Elem(), GatewayClassStatusSupportedFeaturesArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewayClassStatusSupportedFeaturesArrayInput)(nil)).Elem(), GatewayClassStatusSupportedFeaturesArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewayClassStatusSupportedFeaturesPatchInput)(nil)).Elem(), GatewayClassStatusSupportedFeaturesPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewayClassStatusSupportedFeaturesPatchArrayInput)(nil)).Elem(), GatewayClassStatusSupportedFeaturesPatchArray{})
 	pulumi.RegisterInputType(reflect.TypeOf((*GatewayListTypeInput)(nil)).Elem(), GatewayListTypeArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*GatewayPatchTypeInput)(nil)).Elem(), GatewayPatchTypeArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecInput)(nil)).Elem(), GatewaySpecArgs{})
@@ -32977,6 +45699,30 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecAddressesArrayInput)(nil)).Elem(), GatewaySpecAddressesArray{})
 	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecAddressesPatchInput)(nil)).Elem(), GatewaySpecAddressesPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecAddressesPatchArrayInput)(nil)).Elem(), GatewaySpecAddressesPatchArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecAllowedListenersInput)(nil)).Elem(), GatewaySpecAllowedListenersArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecAllowedListenersPtrInput)(nil)).Elem(), GatewaySpecAllowedListenersArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecAllowedListenersNamespacesInput)(nil)).Elem(), GatewaySpecAllowedListenersNamespacesArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecAllowedListenersNamespacesPtrInput)(nil)).Elem(), GatewaySpecAllowedListenersNamespacesArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecAllowedListenersNamespacesPatchInput)(nil)).Elem(), GatewaySpecAllowedListenersNamespacesPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecAllowedListenersNamespacesPatchPtrInput)(nil)).Elem(), GatewaySpecAllowedListenersNamespacesPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecAllowedListenersNamespacesSelectorInput)(nil)).Elem(), GatewaySpecAllowedListenersNamespacesSelectorArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecAllowedListenersNamespacesSelectorPtrInput)(nil)).Elem(), GatewaySpecAllowedListenersNamespacesSelectorArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsInput)(nil)).Elem(), GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArrayInput)(nil)).Elem(), GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchInput)(nil)).Elem(), GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArrayInput)(nil)).Elem(), GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecAllowedListenersNamespacesSelectorPatchInput)(nil)).Elem(), GatewaySpecAllowedListenersNamespacesSelectorPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecAllowedListenersNamespacesSelectorPatchPtrInput)(nil)).Elem(), GatewaySpecAllowedListenersNamespacesSelectorPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecAllowedListenersPatchInput)(nil)).Elem(), GatewaySpecAllowedListenersPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecAllowedListenersPatchPtrInput)(nil)).Elem(), GatewaySpecAllowedListenersPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecInfrastructureInput)(nil)).Elem(), GatewaySpecInfrastructureArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecInfrastructurePtrInput)(nil)).Elem(), GatewaySpecInfrastructureArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecInfrastructureParametersRefInput)(nil)).Elem(), GatewaySpecInfrastructureParametersRefArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecInfrastructureParametersRefPtrInput)(nil)).Elem(), GatewaySpecInfrastructureParametersRefArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecInfrastructureParametersRefPatchInput)(nil)).Elem(), GatewaySpecInfrastructureParametersRefPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecInfrastructureParametersRefPatchPtrInput)(nil)).Elem(), GatewaySpecInfrastructureParametersRefPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecInfrastructurePatchInput)(nil)).Elem(), GatewaySpecInfrastructurePatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecInfrastructurePatchPtrInput)(nil)).Elem(), GatewaySpecInfrastructurePatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecListenersInput)(nil)).Elem(), GatewaySpecListenersArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecListenersArrayInput)(nil)).Elem(), GatewaySpecListenersArray{})
 	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecListenersAllowedRoutesInput)(nil)).Elem(), GatewaySpecListenersAllowedRoutesArgs{})
@@ -33011,6 +45757,50 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecListenersTlsPatchPtrInput)(nil)).Elem(), GatewaySpecListenersTlsPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecPatchInput)(nil)).Elem(), GatewaySpecPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecPatchPtrInput)(nil)).Elem(), GatewaySpecPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsInput)(nil)).Elem(), GatewaySpecTlsArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsPtrInput)(nil)).Elem(), GatewaySpecTlsArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsBackendInput)(nil)).Elem(), GatewaySpecTlsBackendArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsBackendPtrInput)(nil)).Elem(), GatewaySpecTlsBackendArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsBackendClientCertificateRefInput)(nil)).Elem(), GatewaySpecTlsBackendClientCertificateRefArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsBackendClientCertificateRefPtrInput)(nil)).Elem(), GatewaySpecTlsBackendClientCertificateRefArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsBackendClientCertificateRefPatchInput)(nil)).Elem(), GatewaySpecTlsBackendClientCertificateRefPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsBackendClientCertificateRefPatchPtrInput)(nil)).Elem(), GatewaySpecTlsBackendClientCertificateRefPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsBackendPatchInput)(nil)).Elem(), GatewaySpecTlsBackendPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsBackendPatchPtrInput)(nil)).Elem(), GatewaySpecTlsBackendPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendInput)(nil)).Elem(), GatewaySpecTlsFrontendArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendPtrInput)(nil)).Elem(), GatewaySpecTlsFrontendArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendDefaultInput)(nil)).Elem(), GatewaySpecTlsFrontendDefaultArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendDefaultPtrInput)(nil)).Elem(), GatewaySpecTlsFrontendDefaultArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendDefaultPatchInput)(nil)).Elem(), GatewaySpecTlsFrontendDefaultPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendDefaultPatchPtrInput)(nil)).Elem(), GatewaySpecTlsFrontendDefaultPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendDefaultValidationInput)(nil)).Elem(), GatewaySpecTlsFrontendDefaultValidationArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendDefaultValidationPtrInput)(nil)).Elem(), GatewaySpecTlsFrontendDefaultValidationArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsInput)(nil)).Elem(), GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArrayInput)(nil)).Elem(), GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchInput)(nil)).Elem(), GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArrayInput)(nil)).Elem(), GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendDefaultValidationPatchInput)(nil)).Elem(), GatewaySpecTlsFrontendDefaultValidationPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendDefaultValidationPatchPtrInput)(nil)).Elem(), GatewaySpecTlsFrontendDefaultValidationPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendPatchInput)(nil)).Elem(), GatewaySpecTlsFrontendPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendPatchPtrInput)(nil)).Elem(), GatewaySpecTlsFrontendPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendPerPortInput)(nil)).Elem(), GatewaySpecTlsFrontendPerPortArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendPerPortArrayInput)(nil)).Elem(), GatewaySpecTlsFrontendPerPortArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendPerPortPatchInput)(nil)).Elem(), GatewaySpecTlsFrontendPerPortPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendPerPortPatchArrayInput)(nil)).Elem(), GatewaySpecTlsFrontendPerPortPatchArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendPerPortTlsInput)(nil)).Elem(), GatewaySpecTlsFrontendPerPortTlsArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendPerPortTlsPtrInput)(nil)).Elem(), GatewaySpecTlsFrontendPerPortTlsArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendPerPortTlsPatchInput)(nil)).Elem(), GatewaySpecTlsFrontendPerPortTlsPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendPerPortTlsPatchPtrInput)(nil)).Elem(), GatewaySpecTlsFrontendPerPortTlsPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendPerPortTlsValidationInput)(nil)).Elem(), GatewaySpecTlsFrontendPerPortTlsValidationArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendPerPortTlsValidationPtrInput)(nil)).Elem(), GatewaySpecTlsFrontendPerPortTlsValidationArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsInput)(nil)).Elem(), GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArrayInput)(nil)).Elem(), GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchInput)(nil)).Elem(), GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArrayInput)(nil)).Elem(), GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendPerPortTlsValidationPatchInput)(nil)).Elem(), GatewaySpecTlsFrontendPerPortTlsValidationPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsFrontendPerPortTlsValidationPatchPtrInput)(nil)).Elem(), GatewaySpecTlsFrontendPerPortTlsValidationPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsPatchInput)(nil)).Elem(), GatewaySpecTlsPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecTlsPatchPtrInput)(nil)).Elem(), GatewaySpecTlsPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*GatewayStatusInput)(nil)).Elem(), GatewayStatusArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*GatewayStatusPtrInput)(nil)).Elem(), GatewayStatusArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*GatewayStatusAddressesInput)(nil)).Elem(), GatewayStatusAddressesArgs{})
@@ -33053,6 +45843,10 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesBackendRefsArrayInput)(nil)).Elem(), HTTPRouteSpecRulesBackendRefsArray{})
 	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesBackendRefsFiltersInput)(nil)).Elem(), HTTPRouteSpecRulesBackendRefsFiltersArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesBackendRefsFiltersArrayInput)(nil)).Elem(), HTTPRouteSpecRulesBackendRefsFiltersArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesBackendRefsFiltersCorsInput)(nil)).Elem(), HTTPRouteSpecRulesBackendRefsFiltersCorsArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesBackendRefsFiltersCorsPtrInput)(nil)).Elem(), HTTPRouteSpecRulesBackendRefsFiltersCorsArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesBackendRefsFiltersCorsPatchInput)(nil)).Elem(), HTTPRouteSpecRulesBackendRefsFiltersCorsPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrInput)(nil)).Elem(), HTTPRouteSpecRulesBackendRefsFiltersCorsPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesBackendRefsFiltersExtensionRefInput)(nil)).Elem(), HTTPRouteSpecRulesBackendRefsFiltersExtensionRefArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesBackendRefsFiltersExtensionRefPtrInput)(nil)).Elem(), HTTPRouteSpecRulesBackendRefsFiltersExtensionRefArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesBackendRefsFiltersExtensionRefPatchInput)(nil)).Elem(), HTTPRouteSpecRulesBackendRefsFiltersExtensionRefPatchArgs{})
@@ -33077,6 +45871,10 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorBackendRefPtrInput)(nil)).Elem(), HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorBackendRefArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorBackendRefPatchInput)(nil)).Elem(), HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorBackendRefPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorBackendRefPatchPtrInput)(nil)).Elem(), HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorBackendRefPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionInput)(nil)).Elem(), HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrInput)(nil)).Elem(), HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchInput)(nil)).Elem(), HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrInput)(nil)).Elem(), HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPatchInput)(nil)).Elem(), HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPatchPtrInput)(nil)).Elem(), HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesBackendRefsFiltersRequestRedirectInput)(nil)).Elem(), HTTPRouteSpecRulesBackendRefsFiltersRequestRedirectArgs{})
@@ -33111,6 +45909,10 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesBackendRefsPatchArrayInput)(nil)).Elem(), HTTPRouteSpecRulesBackendRefsPatchArray{})
 	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesFiltersInput)(nil)).Elem(), HTTPRouteSpecRulesFiltersArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesFiltersArrayInput)(nil)).Elem(), HTTPRouteSpecRulesFiltersArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesFiltersCorsInput)(nil)).Elem(), HTTPRouteSpecRulesFiltersCorsArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesFiltersCorsPtrInput)(nil)).Elem(), HTTPRouteSpecRulesFiltersCorsArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesFiltersCorsPatchInput)(nil)).Elem(), HTTPRouteSpecRulesFiltersCorsPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesFiltersCorsPatchPtrInput)(nil)).Elem(), HTTPRouteSpecRulesFiltersCorsPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesFiltersExtensionRefInput)(nil)).Elem(), HTTPRouteSpecRulesFiltersExtensionRefArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesFiltersExtensionRefPtrInput)(nil)).Elem(), HTTPRouteSpecRulesFiltersExtensionRefArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesFiltersExtensionRefPatchInput)(nil)).Elem(), HTTPRouteSpecRulesFiltersExtensionRefPatchArgs{})
@@ -33135,6 +45937,10 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesFiltersRequestMirrorBackendRefPtrInput)(nil)).Elem(), HTTPRouteSpecRulesFiltersRequestMirrorBackendRefArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesFiltersRequestMirrorBackendRefPatchInput)(nil)).Elem(), HTTPRouteSpecRulesFiltersRequestMirrorBackendRefPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesFiltersRequestMirrorBackendRefPatchPtrInput)(nil)).Elem(), HTTPRouteSpecRulesFiltersRequestMirrorBackendRefPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesFiltersRequestMirrorFractionInput)(nil)).Elem(), HTTPRouteSpecRulesFiltersRequestMirrorFractionArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesFiltersRequestMirrorFractionPtrInput)(nil)).Elem(), HTTPRouteSpecRulesFiltersRequestMirrorFractionArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchInput)(nil)).Elem(), HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrInput)(nil)).Elem(), HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesFiltersRequestMirrorPatchInput)(nil)).Elem(), HTTPRouteSpecRulesFiltersRequestMirrorPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesFiltersRequestMirrorPatchPtrInput)(nil)).Elem(), HTTPRouteSpecRulesFiltersRequestMirrorPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesFiltersRequestRedirectInput)(nil)).Elem(), HTTPRouteSpecRulesFiltersRequestRedirectArgs{})
@@ -33183,6 +45989,10 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesMatchesQueryParamsPatchArrayInput)(nil)).Elem(), HTTPRouteSpecRulesMatchesQueryParamsPatchArray{})
 	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesPatchInput)(nil)).Elem(), HTTPRouteSpecRulesPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesPatchArrayInput)(nil)).Elem(), HTTPRouteSpecRulesPatchArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesTimeoutsInput)(nil)).Elem(), HTTPRouteSpecRulesTimeoutsArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesTimeoutsPtrInput)(nil)).Elem(), HTTPRouteSpecRulesTimeoutsArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesTimeoutsPatchInput)(nil)).Elem(), HTTPRouteSpecRulesTimeoutsPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteSpecRulesTimeoutsPatchPtrInput)(nil)).Elem(), HTTPRouteSpecRulesTimeoutsPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteStatusInput)(nil)).Elem(), HTTPRouteStatusArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteStatusPtrInput)(nil)).Elem(), HTTPRouteStatusArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*HTTPRouteStatusParentsInput)(nil)).Elem(), HTTPRouteStatusParentsArgs{})
@@ -33237,6 +46047,10 @@ func init() {
 	pulumi.RegisterOutputType(GatewayClassStatusConditionsPatchArrayOutput{})
 	pulumi.RegisterOutputType(GatewayClassStatusPatchOutput{})
 	pulumi.RegisterOutputType(GatewayClassStatusPatchPtrOutput{})
+	pulumi.RegisterOutputType(GatewayClassStatusSupportedFeaturesOutput{})
+	pulumi.RegisterOutputType(GatewayClassStatusSupportedFeaturesArrayOutput{})
+	pulumi.RegisterOutputType(GatewayClassStatusSupportedFeaturesPatchOutput{})
+	pulumi.RegisterOutputType(GatewayClassStatusSupportedFeaturesPatchArrayOutput{})
 	pulumi.RegisterOutputType(GatewayListTypeOutput{})
 	pulumi.RegisterOutputType(GatewayPatchTypeOutput{})
 	pulumi.RegisterOutputType(GatewaySpecOutput{})
@@ -33245,6 +46059,30 @@ func init() {
 	pulumi.RegisterOutputType(GatewaySpecAddressesArrayOutput{})
 	pulumi.RegisterOutputType(GatewaySpecAddressesPatchOutput{})
 	pulumi.RegisterOutputType(GatewaySpecAddressesPatchArrayOutput{})
+	pulumi.RegisterOutputType(GatewaySpecAllowedListenersOutput{})
+	pulumi.RegisterOutputType(GatewaySpecAllowedListenersPtrOutput{})
+	pulumi.RegisterOutputType(GatewaySpecAllowedListenersNamespacesOutput{})
+	pulumi.RegisterOutputType(GatewaySpecAllowedListenersNamespacesPtrOutput{})
+	pulumi.RegisterOutputType(GatewaySpecAllowedListenersNamespacesPatchOutput{})
+	pulumi.RegisterOutputType(GatewaySpecAllowedListenersNamespacesPatchPtrOutput{})
+	pulumi.RegisterOutputType(GatewaySpecAllowedListenersNamespacesSelectorOutput{})
+	pulumi.RegisterOutputType(GatewaySpecAllowedListenersNamespacesSelectorPtrOutput{})
+	pulumi.RegisterOutputType(GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsOutput{})
+	pulumi.RegisterOutputType(GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsArrayOutput{})
+	pulumi.RegisterOutputType(GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchOutput{})
+	pulumi.RegisterOutputType(GatewaySpecAllowedListenersNamespacesSelectorMatchExpressionsPatchArrayOutput{})
+	pulumi.RegisterOutputType(GatewaySpecAllowedListenersNamespacesSelectorPatchOutput{})
+	pulumi.RegisterOutputType(GatewaySpecAllowedListenersNamespacesSelectorPatchPtrOutput{})
+	pulumi.RegisterOutputType(GatewaySpecAllowedListenersPatchOutput{})
+	pulumi.RegisterOutputType(GatewaySpecAllowedListenersPatchPtrOutput{})
+	pulumi.RegisterOutputType(GatewaySpecInfrastructureOutput{})
+	pulumi.RegisterOutputType(GatewaySpecInfrastructurePtrOutput{})
+	pulumi.RegisterOutputType(GatewaySpecInfrastructureParametersRefOutput{})
+	pulumi.RegisterOutputType(GatewaySpecInfrastructureParametersRefPtrOutput{})
+	pulumi.RegisterOutputType(GatewaySpecInfrastructureParametersRefPatchOutput{})
+	pulumi.RegisterOutputType(GatewaySpecInfrastructureParametersRefPatchPtrOutput{})
+	pulumi.RegisterOutputType(GatewaySpecInfrastructurePatchOutput{})
+	pulumi.RegisterOutputType(GatewaySpecInfrastructurePatchPtrOutput{})
 	pulumi.RegisterOutputType(GatewaySpecListenersOutput{})
 	pulumi.RegisterOutputType(GatewaySpecListenersArrayOutput{})
 	pulumi.RegisterOutputType(GatewaySpecListenersAllowedRoutesOutput{})
@@ -33279,6 +46117,50 @@ func init() {
 	pulumi.RegisterOutputType(GatewaySpecListenersTlsPatchPtrOutput{})
 	pulumi.RegisterOutputType(GatewaySpecPatchOutput{})
 	pulumi.RegisterOutputType(GatewaySpecPatchPtrOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsPtrOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsBackendOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsBackendPtrOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsBackendClientCertificateRefOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsBackendClientCertificateRefPtrOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsBackendClientCertificateRefPatchOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsBackendClientCertificateRefPatchPtrOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsBackendPatchOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsBackendPatchPtrOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendPtrOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendDefaultOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendDefaultPtrOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendDefaultPatchOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendDefaultPatchPtrOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendDefaultValidationOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendDefaultValidationPtrOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsArrayOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendDefaultValidationCaCertificateRefsPatchArrayOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendDefaultValidationPatchOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendDefaultValidationPatchPtrOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendPatchOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendPatchPtrOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendPerPortOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendPerPortArrayOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendPerPortPatchOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendPerPortPatchArrayOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendPerPortTlsOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendPerPortTlsPtrOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendPerPortTlsPatchOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendPerPortTlsPatchPtrOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendPerPortTlsValidationOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendPerPortTlsValidationPtrOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsArrayOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendPerPortTlsValidationCaCertificateRefsPatchArrayOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendPerPortTlsValidationPatchOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsFrontendPerPortTlsValidationPatchPtrOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsPatchOutput{})
+	pulumi.RegisterOutputType(GatewaySpecTlsPatchPtrOutput{})
 	pulumi.RegisterOutputType(GatewayStatusOutput{})
 	pulumi.RegisterOutputType(GatewayStatusPtrOutput{})
 	pulumi.RegisterOutputType(GatewayStatusAddressesOutput{})
@@ -33321,6 +46203,10 @@ func init() {
 	pulumi.RegisterOutputType(HTTPRouteSpecRulesBackendRefsArrayOutput{})
 	pulumi.RegisterOutputType(HTTPRouteSpecRulesBackendRefsFiltersOutput{})
 	pulumi.RegisterOutputType(HTTPRouteSpecRulesBackendRefsFiltersArrayOutput{})
+	pulumi.RegisterOutputType(HTTPRouteSpecRulesBackendRefsFiltersCorsOutput{})
+	pulumi.RegisterOutputType(HTTPRouteSpecRulesBackendRefsFiltersCorsPtrOutput{})
+	pulumi.RegisterOutputType(HTTPRouteSpecRulesBackendRefsFiltersCorsPatchOutput{})
+	pulumi.RegisterOutputType(HTTPRouteSpecRulesBackendRefsFiltersCorsPatchPtrOutput{})
 	pulumi.RegisterOutputType(HTTPRouteSpecRulesBackendRefsFiltersExtensionRefOutput{})
 	pulumi.RegisterOutputType(HTTPRouteSpecRulesBackendRefsFiltersExtensionRefPtrOutput{})
 	pulumi.RegisterOutputType(HTTPRouteSpecRulesBackendRefsFiltersExtensionRefPatchOutput{})
@@ -33345,6 +46231,10 @@ func init() {
 	pulumi.RegisterOutputType(HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorBackendRefPtrOutput{})
 	pulumi.RegisterOutputType(HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorBackendRefPatchOutput{})
 	pulumi.RegisterOutputType(HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorBackendRefPatchPtrOutput{})
+	pulumi.RegisterOutputType(HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionOutput{})
+	pulumi.RegisterOutputType(HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPtrOutput{})
+	pulumi.RegisterOutputType(HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchOutput{})
+	pulumi.RegisterOutputType(HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorFractionPatchPtrOutput{})
 	pulumi.RegisterOutputType(HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPatchOutput{})
 	pulumi.RegisterOutputType(HTTPRouteSpecRulesBackendRefsFiltersRequestMirrorPatchPtrOutput{})
 	pulumi.RegisterOutputType(HTTPRouteSpecRulesBackendRefsFiltersRequestRedirectOutput{})
@@ -33379,6 +46269,10 @@ func init() {
 	pulumi.RegisterOutputType(HTTPRouteSpecRulesBackendRefsPatchArrayOutput{})
 	pulumi.RegisterOutputType(HTTPRouteSpecRulesFiltersOutput{})
 	pulumi.RegisterOutputType(HTTPRouteSpecRulesFiltersArrayOutput{})
+	pulumi.RegisterOutputType(HTTPRouteSpecRulesFiltersCorsOutput{})
+	pulumi.RegisterOutputType(HTTPRouteSpecRulesFiltersCorsPtrOutput{})
+	pulumi.RegisterOutputType(HTTPRouteSpecRulesFiltersCorsPatchOutput{})
+	pulumi.RegisterOutputType(HTTPRouteSpecRulesFiltersCorsPatchPtrOutput{})
 	pulumi.RegisterOutputType(HTTPRouteSpecRulesFiltersExtensionRefOutput{})
 	pulumi.RegisterOutputType(HTTPRouteSpecRulesFiltersExtensionRefPtrOutput{})
 	pulumi.RegisterOutputType(HTTPRouteSpecRulesFiltersExtensionRefPatchOutput{})
@@ -33403,6 +46297,10 @@ func init() {
 	pulumi.RegisterOutputType(HTTPRouteSpecRulesFiltersRequestMirrorBackendRefPtrOutput{})
 	pulumi.RegisterOutputType(HTTPRouteSpecRulesFiltersRequestMirrorBackendRefPatchOutput{})
 	pulumi.RegisterOutputType(HTTPRouteSpecRulesFiltersRequestMirrorBackendRefPatchPtrOutput{})
+	pulumi.RegisterOutputType(HTTPRouteSpecRulesFiltersRequestMirrorFractionOutput{})
+	pulumi.RegisterOutputType(HTTPRouteSpecRulesFiltersRequestMirrorFractionPtrOutput{})
+	pulumi.RegisterOutputType(HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchOutput{})
+	pulumi.RegisterOutputType(HTTPRouteSpecRulesFiltersRequestMirrorFractionPatchPtrOutput{})
 	pulumi.RegisterOutputType(HTTPRouteSpecRulesFiltersRequestMirrorPatchOutput{})
 	pulumi.RegisterOutputType(HTTPRouteSpecRulesFiltersRequestMirrorPatchPtrOutput{})
 	pulumi.RegisterOutputType(HTTPRouteSpecRulesFiltersRequestRedirectOutput{})
@@ -33451,6 +46349,10 @@ func init() {
 	pulumi.RegisterOutputType(HTTPRouteSpecRulesMatchesQueryParamsPatchArrayOutput{})
 	pulumi.RegisterOutputType(HTTPRouteSpecRulesPatchOutput{})
 	pulumi.RegisterOutputType(HTTPRouteSpecRulesPatchArrayOutput{})
+	pulumi.RegisterOutputType(HTTPRouteSpecRulesTimeoutsOutput{})
+	pulumi.RegisterOutputType(HTTPRouteSpecRulesTimeoutsPtrOutput{})
+	pulumi.RegisterOutputType(HTTPRouteSpecRulesTimeoutsPatchOutput{})
+	pulumi.RegisterOutputType(HTTPRouteSpecRulesTimeoutsPatchPtrOutput{})
 	pulumi.RegisterOutputType(HTTPRouteStatusOutput{})
 	pulumi.RegisterOutputType(HTTPRouteStatusPtrOutput{})
 	pulumi.RegisterOutputType(HTTPRouteStatusParentsOutput{})
