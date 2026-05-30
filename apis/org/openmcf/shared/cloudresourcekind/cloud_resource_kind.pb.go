@@ -1402,7 +1402,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\rprerequisites\x18\a \x03(\x0e27.org.openmcf.shared.cloudresourcekind.CloudResourceKindR\rprerequisites*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xda\x7f\n" +
+	"\x02v1\x10\x01*\x8c\x7f\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12,\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1834,7 +1834,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x17HetznerCloudCertificate\x10\xca\x1b\x1a\x0f\xa2\xf7\x04\v\b\x1b\x10\x01\"\x05hccrt\x12-\n" +
 	"\x18HetznerCloudLoadBalancer\x10\xcb\x1b\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\x1b\x10\x01\"\x04hclb\x12)\n" +
-	"\x13HetznerCloudDnsZone\x10\xd4\x1b\x1a\x0f\xa2\xf7\x04\v\b\x1b\x10\x01\"\x05hcdns\"\x06\b\xdb\x13\x10\xdb\x13\"\x06\b\xdc\x13\x10\xdc\x13*!OpenStackContainerClusterTemplate*\x19OpenStackContainerCluster:|\n" +
+	"\x13HetznerCloudDnsZone\x10\xd4\x1b\x1a\x0f\xa2\xf7\x04\v\b\x1b\x10\x01\"\x05hcdns:|\n" +
 	"\tkind_meta\x12!.google.protobuf.EnumValueOptions\x18\xf4N \x01(\v2;.org.openmcf.shared.cloudresourcekind.CloudResourceKindMetaR\bkindMetaB\xbe\x02\n" +
 	"(com.org.openmcf.shared.cloudresourcekindB\x16CloudResourceKindProtoP\x01ZFgithub.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind\xa2\x02\x04OOSC\xaa\x02$Org.Openmcf.Shared.Cloudresourcekind\xca\x02$Org\\Openmcf\\Shared\\Cloudresourcekind\xe2\x020Org\\Openmcf\\Shared\\Cloudresourcekind\\GPBMetadata\xea\x02'Org::Openmcf::Shared::Cloudresourcekindb\x06proto3"
 

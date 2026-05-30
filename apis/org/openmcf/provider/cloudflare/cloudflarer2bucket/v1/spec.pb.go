@@ -98,7 +98,7 @@ type CloudflareR2BucketSpec struct {
 	// expose bucket via public URL (Cloudflare-managed r2.dev domain; default: false)
 	PublicAccess bool `protobuf:"varint,4,opt,name=public_access,json=publicAccess,proto3" json:"public_access,omitempty"`
 	// custom domain configuration for the bucket
-	CustomDomain  *CloudflareR2BucketCustomDomainConfig `protobuf:"bytes,6,opt,name=custom_domain,json=customDomain,proto3" json:"custom_domain,omitempty"`
+	CustomDomain  *CloudflareR2BucketCustomDomainConfig `protobuf:"bytes,5,opt,name=custom_domain,json=customDomain,proto3" json:"custom_domain,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -241,7 +241,7 @@ var File_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto protor
 
 const file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"@org/openmcf/provider/cloudflare/cloudflarer2bucket/v1/spec.proto\x125org.openmcf.provider.cloudflare.cloudflarer2bucket.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xda\x03\n" +
+	"@org/openmcf/provider/cloudflare/cloudflarer2bucket/v1/spec.proto\x125org.openmcf.provider.cloudflare.cloudflarer2bucket.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xc0\x03\n" +
 	"\x16CloudflareR2BucketSpec\x12N\n" +
 	"\vbucket_name\x18\x01 \x01(\tB-\xbaH*\xc8\x01\x01r%\x10\x03\x18?2\x1f^[a-z0-9]([-a-z0-9]*[a-z0-9])?$R\n" +
 	"bucketName\x12=\n" +
@@ -249,7 +249,7 @@ const file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawD
 	"account_id\x18\x02 \x01(\tB\x1e\xbaH\x1b\xc8\x01\x01r\x162\x11^[0-9a-fA-F]{32}$\x98\x01 R\taccountId\x12o\n" +
 	"\blocation\x18\x03 \x01(\x0e2K.org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2LocationB\x06\xbaH\x03\xc8\x01\x01R\blocation\x12#\n" +
 	"\rpublic_access\x18\x04 \x01(\bR\fpublicAccess\x12\x80\x01\n" +
-	"\rcustom_domain\x18\x06 \x01(\v2[.org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketCustomDomainConfigR\fcustomDomainJ\x04\b\x05\x10\x06R\x12versioning_enabled\"\xc7\x03\n" +
+	"\rcustom_domain\x18\x05 \x01(\v2[.org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketCustomDomainConfigR\fcustomDomain\"\xc7\x03\n" +
 	"$CloudflareR2BucketCustomDomainConfig\x12\x18\n" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x12l\n" +
 	"\azone_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\x88\x0e\x92\xd4a\x16status.outputs.zone_idR\x06zoneId\x12 \n" +

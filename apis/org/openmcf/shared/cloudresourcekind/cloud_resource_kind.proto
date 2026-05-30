@@ -1541,8 +1541,8 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "osdr"
   }];
-  reserved 2523, 2524;
-  reserved "OpenStackContainerClusterTemplate", "OpenStackContainerCluster";
+  // 2523, 2524: free primary slots (OpenStack Magnum kinds removed 2026-03); a
+  // future primary OpenStack kind may take them. Companion kinds live at 2525+.
 
   // 2800–2999: Scaleway resources
 

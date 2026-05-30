@@ -215,7 +215,7 @@ var _ = ginkgo.Describe("KubernetesGrpcRoute Validation Tests", func() {
 		ginkgo.It("filter type/config mismatch should fail", func() {
 			input.Spec.Rules[0].Filters = []*KubernetesGrpcRouteFilter{
 				{
-					Type:         "RequestMirror",
+					Type: "RequestMirror",
 					RequestHeaderModifier: &KubernetesGrpcRouteHeaderFilter{
 						Set: []*KubernetesGrpcRouteHeader{{Name: "x", Value: "y"}},
 					},
