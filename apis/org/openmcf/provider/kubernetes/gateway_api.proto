@@ -54,25 +54,6 @@ message KubernetesGatewayApiParentReference {
   }];
 }
 
-// KubernetesGatewayApiCommonRouteSpec defines the common attributes that all
-// Route types include within their spec. Embedded inline (flattened) into each
-// route's spec.proto.
-//
-// Upstream: CommonRouteSpec in apis/v1/shared_types.go
-message KubernetesGatewayApiCommonRouteSpec {
-  // References to the parent resources (usually Gateways) that a Route wants
-  // to be attached to. The referenced parent must allow attachment from Routes
-  // of this kind and namespace.
-  repeated KubernetesGatewayApiParentReference parent_refs = 1 [(buf.validate.field).repeated.max_items = 32];
-
-  // Experimental: indicates the default Gateway scope for this Route.
-  // When unset or "None", the Route will not attach to any default Gateway.
-  // When "All", the Route attaches to any default Gateway supporting the scope.
-  //
-  // May change in future Gateway API versions.
-  optional string use_default_gateways = 2;
-}
-
 // KubernetesGatewayApiBackendObjectReference defines a reference to a backend
 // Kubernetes object (usually a Service).
 //

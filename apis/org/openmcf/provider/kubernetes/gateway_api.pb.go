@@ -126,71 +126,6 @@ func (x *KubernetesGatewayApiParentReference) GetPort() int32 {
 	return 0
 }
 
-// KubernetesGatewayApiCommonRouteSpec defines the common attributes that all
-// Route types include within their spec. Embedded inline (flattened) into each
-// route's spec.proto.
-//
-// Upstream: CommonRouteSpec in apis/v1/shared_types.go
-type KubernetesGatewayApiCommonRouteSpec struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// References to the parent resources (usually Gateways) that a Route wants
-	// to be attached to. The referenced parent must allow attachment from Routes
-	// of this kind and namespace.
-	ParentRefs []*KubernetesGatewayApiParentReference `protobuf:"bytes,1,rep,name=parent_refs,json=parentRefs,proto3" json:"parent_refs,omitempty"`
-	// Experimental: indicates the default Gateway scope for this Route.
-	// When unset or "None", the Route will not attach to any default Gateway.
-	// When "All", the Route attaches to any default Gateway supporting the scope.
-	//
-	// May change in future Gateway API versions.
-	UseDefaultGateways *string `protobuf:"bytes,2,opt,name=use_default_gateways,json=useDefaultGateways,proto3,oneof" json:"use_default_gateways,omitempty"`
-	unknownFields      protoimpl.UnknownFields
-	sizeCache          protoimpl.SizeCache
-}
-
-func (x *KubernetesGatewayApiCommonRouteSpec) Reset() {
-	*x = KubernetesGatewayApiCommonRouteSpec{}
-	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *KubernetesGatewayApiCommonRouteSpec) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*KubernetesGatewayApiCommonRouteSpec) ProtoMessage() {}
-
-func (x *KubernetesGatewayApiCommonRouteSpec) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use KubernetesGatewayApiCommonRouteSpec.ProtoReflect.Descriptor instead.
-func (*KubernetesGatewayApiCommonRouteSpec) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_gateway_api_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *KubernetesGatewayApiCommonRouteSpec) GetParentRefs() []*KubernetesGatewayApiParentReference {
-	if x != nil {
-		return x.ParentRefs
-	}
-	return nil
-}
-
-func (x *KubernetesGatewayApiCommonRouteSpec) GetUseDefaultGateways() string {
-	if x != nil && x.UseDefaultGateways != nil {
-		return *x.UseDefaultGateways
-	}
-	return ""
-}
-
 // KubernetesGatewayApiBackendObjectReference defines a reference to a backend
 // Kubernetes object (usually a Service).
 //
@@ -220,7 +155,7 @@ type KubernetesGatewayApiBackendObjectReference struct {
 
 func (x *KubernetesGatewayApiBackendObjectReference) Reset() {
 	*x = KubernetesGatewayApiBackendObjectReference{}
-	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[2]
+	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -232,7 +167,7 @@ func (x *KubernetesGatewayApiBackendObjectReference) String() string {
 func (*KubernetesGatewayApiBackendObjectReference) ProtoMessage() {}
 
 func (x *KubernetesGatewayApiBackendObjectReference) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[2]
+	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -245,7 +180,7 @@ func (x *KubernetesGatewayApiBackendObjectReference) ProtoReflect() protoreflect
 
 // Deprecated: Use KubernetesGatewayApiBackendObjectReference.ProtoReflect.Descriptor instead.
 func (*KubernetesGatewayApiBackendObjectReference) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_gateway_api_proto_rawDescGZIP(), []int{2}
+	return file_org_openmcf_provider_kubernetes_gateway_api_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *KubernetesGatewayApiBackendObjectReference) GetGroup() string {
@@ -315,7 +250,7 @@ type KubernetesGatewayApiBackendRef struct {
 
 func (x *KubernetesGatewayApiBackendRef) Reset() {
 	*x = KubernetesGatewayApiBackendRef{}
-	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[3]
+	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -327,7 +262,7 @@ func (x *KubernetesGatewayApiBackendRef) String() string {
 func (*KubernetesGatewayApiBackendRef) ProtoMessage() {}
 
 func (x *KubernetesGatewayApiBackendRef) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[3]
+	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -340,7 +275,7 @@ func (x *KubernetesGatewayApiBackendRef) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesGatewayApiBackendRef.ProtoReflect.Descriptor instead.
 func (*KubernetesGatewayApiBackendRef) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_gateway_api_proto_rawDescGZIP(), []int{3}
+	return file_org_openmcf_provider_kubernetes_gateway_api_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *KubernetesGatewayApiBackendRef) GetGroup() string {
@@ -404,7 +339,7 @@ type KubernetesGatewayApiLocalObjectReference struct {
 
 func (x *KubernetesGatewayApiLocalObjectReference) Reset() {
 	*x = KubernetesGatewayApiLocalObjectReference{}
-	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[4]
+	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -416,7 +351,7 @@ func (x *KubernetesGatewayApiLocalObjectReference) String() string {
 func (*KubernetesGatewayApiLocalObjectReference) ProtoMessage() {}
 
 func (x *KubernetesGatewayApiLocalObjectReference) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[4]
+	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -429,7 +364,7 @@ func (x *KubernetesGatewayApiLocalObjectReference) ProtoReflect() protoreflect.M
 
 // Deprecated: Use KubernetesGatewayApiLocalObjectReference.ProtoReflect.Descriptor instead.
 func (*KubernetesGatewayApiLocalObjectReference) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_gateway_api_proto_rawDescGZIP(), []int{4}
+	return file_org_openmcf_provider_kubernetes_gateway_api_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *KubernetesGatewayApiLocalObjectReference) GetGroup() string {
@@ -478,7 +413,7 @@ type KubernetesGatewayApiSecretObjectReference struct {
 
 func (x *KubernetesGatewayApiSecretObjectReference) Reset() {
 	*x = KubernetesGatewayApiSecretObjectReference{}
-	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[5]
+	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -490,7 +425,7 @@ func (x *KubernetesGatewayApiSecretObjectReference) String() string {
 func (*KubernetesGatewayApiSecretObjectReference) ProtoMessage() {}
 
 func (x *KubernetesGatewayApiSecretObjectReference) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[5]
+	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -503,7 +438,7 @@ func (x *KubernetesGatewayApiSecretObjectReference) ProtoReflect() protoreflect.
 
 // Deprecated: Use KubernetesGatewayApiSecretObjectReference.ProtoReflect.Descriptor instead.
 func (*KubernetesGatewayApiSecretObjectReference) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_gateway_api_proto_rawDescGZIP(), []int{5}
+	return file_org_openmcf_provider_kubernetes_gateway_api_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *KubernetesGatewayApiSecretObjectReference) GetGroup() string {
@@ -555,7 +490,7 @@ type KubernetesGatewayApiObjectReference struct {
 
 func (x *KubernetesGatewayApiObjectReference) Reset() {
 	*x = KubernetesGatewayApiObjectReference{}
-	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[6]
+	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -567,7 +502,7 @@ func (x *KubernetesGatewayApiObjectReference) String() string {
 func (*KubernetesGatewayApiObjectReference) ProtoMessage() {}
 
 func (x *KubernetesGatewayApiObjectReference) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[6]
+	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -580,7 +515,7 @@ func (x *KubernetesGatewayApiObjectReference) ProtoReflect() protoreflect.Messag
 
 // Deprecated: Use KubernetesGatewayApiObjectReference.ProtoReflect.Descriptor instead.
 func (*KubernetesGatewayApiObjectReference) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_gateway_api_proto_rawDescGZIP(), []int{6}
+	return file_org_openmcf_provider_kubernetes_gateway_api_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *KubernetesGatewayApiObjectReference) GetGroup() string {
@@ -632,7 +567,7 @@ type KubernetesGatewayApiParametersReference struct {
 
 func (x *KubernetesGatewayApiParametersReference) Reset() {
 	*x = KubernetesGatewayApiParametersReference{}
-	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[7]
+	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -644,7 +579,7 @@ func (x *KubernetesGatewayApiParametersReference) String() string {
 func (*KubernetesGatewayApiParametersReference) ProtoMessage() {}
 
 func (x *KubernetesGatewayApiParametersReference) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[7]
+	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -657,7 +592,7 @@ func (x *KubernetesGatewayApiParametersReference) ProtoReflect() protoreflect.Me
 
 // Deprecated: Use KubernetesGatewayApiParametersReference.ProtoReflect.Descriptor instead.
 func (*KubernetesGatewayApiParametersReference) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_gateway_api_proto_rawDescGZIP(), []int{7}
+	return file_org_openmcf_provider_kubernetes_gateway_api_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *KubernetesGatewayApiParametersReference) GetGroup() string {
@@ -718,7 +653,7 @@ type KubernetesGatewayApiSessionPersistence struct {
 
 func (x *KubernetesGatewayApiSessionPersistence) Reset() {
 	*x = KubernetesGatewayApiSessionPersistence{}
-	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[8]
+	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -730,7 +665,7 @@ func (x *KubernetesGatewayApiSessionPersistence) String() string {
 func (*KubernetesGatewayApiSessionPersistence) ProtoMessage() {}
 
 func (x *KubernetesGatewayApiSessionPersistence) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[8]
+	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -743,7 +678,7 @@ func (x *KubernetesGatewayApiSessionPersistence) ProtoReflect() protoreflect.Mes
 
 // Deprecated: Use KubernetesGatewayApiSessionPersistence.ProtoReflect.Descriptor instead.
 func (*KubernetesGatewayApiSessionPersistence) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_gateway_api_proto_rawDescGZIP(), []int{8}
+	return file_org_openmcf_provider_kubernetes_gateway_api_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *KubernetesGatewayApiSessionPersistence) GetSessionName() string {
@@ -803,7 +738,7 @@ type KubernetesGatewayApiCookieConfig struct {
 
 func (x *KubernetesGatewayApiCookieConfig) Reset() {
 	*x = KubernetesGatewayApiCookieConfig{}
-	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[9]
+	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -815,7 +750,7 @@ func (x *KubernetesGatewayApiCookieConfig) String() string {
 func (*KubernetesGatewayApiCookieConfig) ProtoMessage() {}
 
 func (x *KubernetesGatewayApiCookieConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[9]
+	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -828,7 +763,7 @@ func (x *KubernetesGatewayApiCookieConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesGatewayApiCookieConfig.ProtoReflect.Descriptor instead.
 func (*KubernetesGatewayApiCookieConfig) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_gateway_api_proto_rawDescGZIP(), []int{9}
+	return file_org_openmcf_provider_kubernetes_gateway_api_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *KubernetesGatewayApiCookieConfig) GetLifetimeType() string {
@@ -856,7 +791,7 @@ type KubernetesGatewayApiFraction struct {
 
 func (x *KubernetesGatewayApiFraction) Reset() {
 	*x = KubernetesGatewayApiFraction{}
-	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[10]
+	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -868,7 +803,7 @@ func (x *KubernetesGatewayApiFraction) String() string {
 func (*KubernetesGatewayApiFraction) ProtoMessage() {}
 
 func (x *KubernetesGatewayApiFraction) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[10]
+	mi := &file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -881,7 +816,7 @@ func (x *KubernetesGatewayApiFraction) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesGatewayApiFraction.ProtoReflect.Descriptor instead.
 func (*KubernetesGatewayApiFraction) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_gateway_api_proto_rawDescGZIP(), []int{10}
+	return file_org_openmcf_provider_kubernetes_gateway_api_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *KubernetesGatewayApiFraction) GetNumerator() int32 {
@@ -915,12 +850,7 @@ const file_org_openmcf_provider_kubernetes_gateway_api_proto_rawDesc = "" +
 	"\n" +
 	"_namespaceB\x0f\n" +
 	"\r_section_nameB\a\n" +
-	"\x05_port\"\xe6\x01\n" +
-	"#KubernetesGatewayApiCommonRouteSpec\x12o\n" +
-	"\vparent_refs\x18\x01 \x03(\v2D.org.openmcf.provider.kubernetes.KubernetesGatewayApiParentReferenceB\b\xbaH\x05\x92\x01\x02\x10 R\n" +
-	"parentRefs\x125\n" +
-	"\x14use_default_gateways\x18\x02 \x01(\tH\x00R\x12useDefaultGateways\x88\x01\x01B\x17\n" +
-	"\x15_use_default_gateways\"\xf9\x03\n" +
+	"\x05_port\"\xf9\x03\n" +
 	"*KubernetesGatewayApiBackendObjectReference\x12\x19\n" +
 	"\x05group\x18\x01 \x01(\tH\x00R\x05group\x88\x01\x01\x12\x17\n" +
 	"\x04kind\x18\x02 \x01(\tH\x01R\x04kind\x88\x01\x01\x12\x1a\n" +
@@ -1008,28 +938,26 @@ func file_org_openmcf_provider_kubernetes_gateway_api_proto_rawDescGZIP() []byte
 	return file_org_openmcf_provider_kubernetes_gateway_api_proto_rawDescData
 }
 
-var file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
+var file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_org_openmcf_provider_kubernetes_gateway_api_proto_goTypes = []any{
 	(*KubernetesGatewayApiParentReference)(nil),        // 0: org.openmcf.provider.kubernetes.KubernetesGatewayApiParentReference
-	(*KubernetesGatewayApiCommonRouteSpec)(nil),        // 1: org.openmcf.provider.kubernetes.KubernetesGatewayApiCommonRouteSpec
-	(*KubernetesGatewayApiBackendObjectReference)(nil), // 2: org.openmcf.provider.kubernetes.KubernetesGatewayApiBackendObjectReference
-	(*KubernetesGatewayApiBackendRef)(nil),             // 3: org.openmcf.provider.kubernetes.KubernetesGatewayApiBackendRef
-	(*KubernetesGatewayApiLocalObjectReference)(nil),   // 4: org.openmcf.provider.kubernetes.KubernetesGatewayApiLocalObjectReference
-	(*KubernetesGatewayApiSecretObjectReference)(nil),  // 5: org.openmcf.provider.kubernetes.KubernetesGatewayApiSecretObjectReference
-	(*KubernetesGatewayApiObjectReference)(nil),        // 6: org.openmcf.provider.kubernetes.KubernetesGatewayApiObjectReference
-	(*KubernetesGatewayApiParametersReference)(nil),    // 7: org.openmcf.provider.kubernetes.KubernetesGatewayApiParametersReference
-	(*KubernetesGatewayApiSessionPersistence)(nil),     // 8: org.openmcf.provider.kubernetes.KubernetesGatewayApiSessionPersistence
-	(*KubernetesGatewayApiCookieConfig)(nil),           // 9: org.openmcf.provider.kubernetes.KubernetesGatewayApiCookieConfig
-	(*KubernetesGatewayApiFraction)(nil),               // 10: org.openmcf.provider.kubernetes.KubernetesGatewayApiFraction
+	(*KubernetesGatewayApiBackendObjectReference)(nil), // 1: org.openmcf.provider.kubernetes.KubernetesGatewayApiBackendObjectReference
+	(*KubernetesGatewayApiBackendRef)(nil),             // 2: org.openmcf.provider.kubernetes.KubernetesGatewayApiBackendRef
+	(*KubernetesGatewayApiLocalObjectReference)(nil),   // 3: org.openmcf.provider.kubernetes.KubernetesGatewayApiLocalObjectReference
+	(*KubernetesGatewayApiSecretObjectReference)(nil),  // 4: org.openmcf.provider.kubernetes.KubernetesGatewayApiSecretObjectReference
+	(*KubernetesGatewayApiObjectReference)(nil),        // 5: org.openmcf.provider.kubernetes.KubernetesGatewayApiObjectReference
+	(*KubernetesGatewayApiParametersReference)(nil),    // 6: org.openmcf.provider.kubernetes.KubernetesGatewayApiParametersReference
+	(*KubernetesGatewayApiSessionPersistence)(nil),     // 7: org.openmcf.provider.kubernetes.KubernetesGatewayApiSessionPersistence
+	(*KubernetesGatewayApiCookieConfig)(nil),           // 8: org.openmcf.provider.kubernetes.KubernetesGatewayApiCookieConfig
+	(*KubernetesGatewayApiFraction)(nil),               // 9: org.openmcf.provider.kubernetes.KubernetesGatewayApiFraction
 }
 var file_org_openmcf_provider_kubernetes_gateway_api_proto_depIdxs = []int32{
-	0, // 0: org.openmcf.provider.kubernetes.KubernetesGatewayApiCommonRouteSpec.parent_refs:type_name -> org.openmcf.provider.kubernetes.KubernetesGatewayApiParentReference
-	9, // 1: org.openmcf.provider.kubernetes.KubernetesGatewayApiSessionPersistence.cookie_config:type_name -> org.openmcf.provider.kubernetes.KubernetesGatewayApiCookieConfig
-	2, // [2:2] is the sub-list for method output_type
-	2, // [2:2] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	8, // 0: org.openmcf.provider.kubernetes.KubernetesGatewayApiSessionPersistence.cookie_config:type_name -> org.openmcf.provider.kubernetes.KubernetesGatewayApiCookieConfig
+	1, // [1:1] is the sub-list for method output_type
+	1, // [1:1] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_kubernetes_gateway_api_proto_init() }
@@ -1040,20 +968,19 @@ func file_org_openmcf_provider_kubernetes_gateway_api_proto_init() {
 	file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[0].OneofWrappers = []any{}
 	file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[1].OneofWrappers = []any{}
 	file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[2].OneofWrappers = []any{}
-	file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[3].OneofWrappers = []any{}
+	file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[4].OneofWrappers = []any{}
 	file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[5].OneofWrappers = []any{}
 	file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[6].OneofWrappers = []any{}
 	file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[7].OneofWrappers = []any{}
 	file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[8].OneofWrappers = []any{}
 	file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[9].OneofWrappers = []any{}
-	file_org_openmcf_provider_kubernetes_gateway_api_proto_msgTypes[10].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_org_openmcf_provider_kubernetes_gateway_api_proto_rawDesc), len(file_org_openmcf_provider_kubernetes_gateway_api_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   11,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
