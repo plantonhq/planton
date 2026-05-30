@@ -94,20 +94,45 @@ message KubernetesGatewayApiBackendObjectReference {
 // KubernetesGatewayApiBackendRef defines how a Route should forward a request
 // to a Kubernetes resource. Flattens BackendObjectReference fields plus weight.
 //
-// Upstream: BackendRef in apis/v1/shared_types.go (embeds BackendObjectReference)
+// Upstream: BackendRef in apis/v1/shared_types.go (embeds BackendObjectReference).
+// This is the canonical shared backend reference reused directly by the
+// filter-less route kinds (KubernetesTcpRoute, KubernetesTlsRoute). The
+// filter-carrying routes (HttpRoute, GrpcRoute) instead flatten their own
+// per-route backend ref because each backend additionally carries filters.
+//
+// Field validations mirror the upstream kubebuilder markers on
+// BackendObjectReference (group/kind/name patterns + bounds), so consumers of
+// this shared type inherit full upstream fidelity. namespace is intentionally
+// left unconstrained, matching the sibling shared reference types in this file
+// (KubernetesGatewayApiParentReference, KubernetesGatewayApiBackendObjectReference).
 message KubernetesGatewayApiBackendRef {
   // Group of the referent. Empty string infers the core API group.
   //
-  // Upstream default: "" (core API group)
-  optional string group = 1;
+  // Upstream default: "" (core API group).
+  // Group pattern: empty or an RFC 1123 subdomain (max 253).
+  optional string group = 1 [(buf.validate.field).string = {
+    max_len: 253
+    pattern: "^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+  }];
 
   // Kind of the referent.
   //
-  // Upstream default: "Service"
-  optional string kind = 2;
+  // Upstream default: "Service".
+  // Kind pattern: 1-63 chars, ^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$
+  optional string kind = 2 [(buf.validate.field).string = {
+    min_len: 1
+    max_len: 63
+    pattern: "^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$"
+  }];
 
-  // Name of the referent.
-  string name = 3 [(buf.validate.field).required = true];
+  // Name of the referent (for example a Kubernetes Service name).
+  string name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1
+      max_len: 253
+    }
+  ];
 
   // Namespace of the backend. When unspecified, the local namespace is inferred.
   // Cross-namespace references require a ReferenceGrant.

@@ -221,18 +221,30 @@ func (x *KubernetesGatewayApiBackendObjectReference) GetPort() int32 {
 // KubernetesGatewayApiBackendRef defines how a Route should forward a request
 // to a Kubernetes resource. Flattens BackendObjectReference fields plus weight.
 //
-// Upstream: BackendRef in apis/v1/shared_types.go (embeds BackendObjectReference)
+// Upstream: BackendRef in apis/v1/shared_types.go (embeds BackendObjectReference).
+// This is the canonical shared backend reference reused directly by the
+// filter-less route kinds (KubernetesTcpRoute, KubernetesTlsRoute). The
+// filter-carrying routes (HttpRoute, GrpcRoute) instead flatten their own
+// per-route backend ref because each backend additionally carries filters.
+//
+// Field validations mirror the upstream kubebuilder markers on
+// BackendObjectReference (group/kind/name patterns + bounds), so consumers of
+// this shared type inherit full upstream fidelity. namespace is intentionally
+// left unconstrained, matching the sibling shared reference types in this file
+// (KubernetesGatewayApiParentReference, KubernetesGatewayApiBackendObjectReference).
 type KubernetesGatewayApiBackendRef struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Group of the referent. Empty string infers the core API group.
 	//
-	// Upstream default: "" (core API group)
+	// Upstream default: "" (core API group).
+	// Group pattern: empty or an RFC 1123 subdomain (max 253).
 	Group *string `protobuf:"bytes,1,opt,name=group,proto3,oneof" json:"group,omitempty"`
 	// Kind of the referent.
 	//
-	// Upstream default: "Service"
+	// Upstream default: "Service".
+	// Kind pattern: 1-63 chars, ^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$
 	Kind *string `protobuf:"bytes,2,opt,name=kind,proto3,oneof" json:"kind,omitempty"`
-	// Name of the referent.
+	// Name of the referent (for example a Kubernetes Service name).
 	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
 	// Namespace of the backend. When unspecified, the local namespace is inferred.
 	// Cross-namespace references require a ReferenceGrant.
@@ -862,11 +874,12 @@ const file_org_openmcf_provider_kubernetes_gateway_api_proto_rawDesc = "" +
 	"\x05_kindB\f\n" +
 	"\n" +
 	"_namespaceB\a\n" +
-	"\x05_port\"\x98\x02\n" +
-	"\x1eKubernetesGatewayApiBackendRef\x12\x19\n" +
-	"\x05group\x18\x01 \x01(\tH\x00R\x05group\x88\x01\x01\x12\x17\n" +
-	"\x04kind\x18\x02 \x01(\tH\x01R\x04kind\x88\x01\x01\x12\x1a\n" +
-	"\x04name\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12!\n" +
+	"\x05_port\"\xa1\x03\n" +
+	"\x1eKubernetesGatewayApiBackendRef\x12i\n" +
+	"\x05group\x18\x01 \x01(\tBN\xbaHKrI\x18\xfd\x012D^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$H\x00R\x05group\x88\x01\x01\x12I\n" +
+	"\x04kind\x18\x02 \x01(\tB0\xbaH-r+\x10\x01\x18?2%^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$H\x01R\x04kind\x88\x01\x01\x12!\n" +
+	"\x04name\x18\x03 \x01(\tB\r\xbaH\n" +
+	"\xc8\x01\x01r\x05\x10\x01\x18\xfd\x01R\x04name\x12!\n" +
 	"\tnamespace\x18\x04 \x01(\tH\x02R\tnamespace\x88\x01\x01\x12$\n" +
 	"\x04port\x18\x05 \x01(\x05B\v\xbaH\b\x1a\x06\x18\xff\xff\x03(\x01H\x03R\x04port\x88\x01\x01\x12(\n" +
 	"\x06weight\x18\x06 \x01(\x05B\v\xbaH\b\x1a\x06\x18\xc0\x84=(\x00H\x04R\x06weight\x88\x01\x01B\b\n" +
