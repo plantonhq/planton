@@ -33,11 +33,13 @@ type KubernetesGatewayApiParentReference struct {
 	// Set to "" (empty string) for the core API group.
 	//
 	// Upstream default: "gateway.networking.k8s.io"
+	// Group pattern: empty or an RFC 1123 subdomain (max 253).
 	Group *string `protobuf:"bytes,1,opt,name=group,proto3,oneof" json:"group,omitempty"`
 	// Kind of the referent.
 	// Core parent kinds: Gateway (Gateway conformance), Service (Mesh conformance).
 	//
 	// Upstream default: "Gateway"
+	// Kind pattern: 1-63 chars, ^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$
 	Kind *string `protobuf:"bytes,2,opt,name=kind,proto3,oneof" json:"kind,omitempty"`
 	// Namespace of the referent. When unspecified, refers to the local
 	// namespace of the Route. Cross-namespace references require a
@@ -47,6 +49,9 @@ type KubernetesGatewayApiParentReference struct {
 	Name string `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
 	// Name of a section within the target resource (e.g., a Gateway Listener
 	// name). When unspecified, references the entire resource.
+	//
+	// SectionName pattern: 1-253 chars, RFC 1123 subdomain
+	// ^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$
 	SectionName *string `protobuf:"bytes,5,opt,name=section_name,json=sectionName,proto3,oneof" json:"section_name,omitempty"`
 	// Network port this Route targets on the parent resource.
 	Port          *int32 `protobuf:"varint,6,opt,name=port,proto3,oneof" json:"port,omitempty"`
@@ -137,10 +142,12 @@ type KubernetesGatewayApiBackendObjectReference struct {
 	// Group of the referent. Empty string infers the core API group.
 	//
 	// Upstream default: "" (core API group)
+	// Group pattern: empty or an RFC 1123 subdomain (max 253).
 	Group *string `protobuf:"bytes,1,opt,name=group,proto3,oneof" json:"group,omitempty"`
 	// Kind of the referent.
 	//
 	// Upstream default: "Service"
+	// Kind pattern: 1-63 chars, ^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$
 	Kind *string `protobuf:"bytes,2,opt,name=kind,proto3,oneof" json:"kind,omitempty"`
 	// Name of the referent.
 	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
@@ -228,10 +235,10 @@ func (x *KubernetesGatewayApiBackendObjectReference) GetPort() int32 {
 // per-route backend ref because each backend additionally carries filters.
 //
 // Field validations mirror the upstream kubebuilder markers on
-// BackendObjectReference (group/kind/name patterns + bounds), so consumers of
-// this shared type inherit full upstream fidelity. namespace is intentionally
-// left unconstrained, matching the sibling shared reference types in this file
-// (KubernetesGatewayApiParentReference, KubernetesGatewayApiBackendObjectReference).
+// BackendObjectReference (group/kind/name patterns + bounds). As of T08 every
+// shared reference type in this file carries these same group/kind/name rules,
+// so the family is uniform. namespace is intentionally left unconstrained across
+// all of them — a deliberate family-wide convention, not a per-type gap.
 type KubernetesGatewayApiBackendRef struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Group of the referent. Empty string infers the core API group.
@@ -340,8 +347,13 @@ type KubernetesGatewayApiLocalObjectReference struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Group of the referent (e.g., "gateway.networking.k8s.io").
 	// Empty string infers the core API group.
+	//
+	// Group pattern: empty or an RFC 1123 subdomain (max 253).
 	Group string `protobuf:"bytes,1,opt,name=group,proto3" json:"group,omitempty"`
 	// Kind of the referent (e.g., "HTTPRoute" or "Service").
+	//
+	// Upstream models Kind as a required value type.
+	// Kind pattern: 1-63 chars, ^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Name of the referent.
 	Name          string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
@@ -409,10 +421,12 @@ type KubernetesGatewayApiSecretObjectReference struct {
 	// Group of the referent. Empty string infers the core API group.
 	//
 	// Upstream default: "" (core API group)
+	// Group pattern: empty or an RFC 1123 subdomain (max 253).
 	Group *string `protobuf:"bytes,1,opt,name=group,proto3,oneof" json:"group,omitempty"`
 	// Kind of the referent.
 	//
 	// Upstream default: "Secret"
+	// Kind pattern: 1-63 chars, ^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$
 	Kind *string `protobuf:"bytes,2,opt,name=kind,proto3,oneof" json:"kind,omitempty"`
 	// Name of the referent.
 	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
@@ -487,9 +501,14 @@ func (x *KubernetesGatewayApiSecretObjectReference) GetNamespace() string {
 // Upstream: ObjectReference in apis/v1/object_reference_types.go
 type KubernetesGatewayApiObjectReference struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Group of the referent.
+	// Group of the referent. Empty string infers the core API group.
+	//
+	// Group pattern: empty or an RFC 1123 subdomain (max 253).
 	Group string `protobuf:"bytes,1,opt,name=group,proto3" json:"group,omitempty"`
 	// Kind of the referent (e.g., "ConfigMap" or "Service").
+	//
+	// Upstream models Kind as a required value type.
+	// Kind pattern: 1-63 chars, ^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Name of the referent.
 	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
@@ -564,9 +583,14 @@ func (x *KubernetesGatewayApiObjectReference) GetNamespace() string {
 // Upstream: ParametersReference in apis/v1/gatewayclass_types.go
 type KubernetesGatewayApiParametersReference struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Group of the referent.
+	// Group of the referent. Empty string infers the core API group.
+	//
+	// Group pattern: empty or an RFC 1123 subdomain (max 253).
 	Group string `protobuf:"bytes,1,opt,name=group,proto3" json:"group,omitempty"`
 	// Kind of the referent.
+	//
+	// Upstream models Kind as a required value type.
+	// Kind pattern: 1-63 chars, ^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Name of the referent.
 	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
@@ -849,24 +873,26 @@ var File_org_openmcf_provider_kubernetes_gateway_api_proto protoreflect.FileDesc
 
 const file_org_openmcf_provider_kubernetes_gateway_api_proto_rawDesc = "" +
 	"\n" +
-	"1org/openmcf/provider/kubernetes/gateway_api.proto\x12\x1forg.openmcf.provider.kubernetes\x1a\x1bbuf/validate/validate.proto\"\xa1\x02\n" +
-	"#KubernetesGatewayApiParentReference\x12\x19\n" +
-	"\x05group\x18\x01 \x01(\tH\x00R\x05group\x88\x01\x01\x12\x17\n" +
-	"\x04kind\x18\x02 \x01(\tH\x01R\x04kind\x88\x01\x01\x12!\n" +
-	"\tnamespace\x18\x03 \x01(\tH\x02R\tnamespace\x88\x01\x01\x12\x1a\n" +
-	"\x04name\x18\x04 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12&\n" +
-	"\fsection_name\x18\x05 \x01(\tH\x03R\vsectionName\x88\x01\x01\x12$\n" +
+	"1org/openmcf/provider/kubernetes/gateway_api.proto\x12\x1forg.openmcf.provider.kubernetes\x1a\x1bbuf/validate/validate.proto\"\xf9\x03\n" +
+	"#KubernetesGatewayApiParentReference\x12i\n" +
+	"\x05group\x18\x01 \x01(\tBN\xbaHKrI\x18\xfd\x012D^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$H\x00R\x05group\x88\x01\x01\x12I\n" +
+	"\x04kind\x18\x02 \x01(\tB0\xbaH-r+\x10\x01\x18?2%^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$H\x01R\x04kind\x88\x01\x01\x12!\n" +
+	"\tnamespace\x18\x03 \x01(\tH\x02R\tnamespace\x88\x01\x01\x12!\n" +
+	"\x04name\x18\x04 \x01(\tB\r\xbaH\n" +
+	"\xc8\x01\x01r\x05\x10\x01\x18\xfd\x01R\x04name\x12u\n" +
+	"\fsection_name\x18\x05 \x01(\tBM\xbaHJrH\x10\x01\x18\xfd\x012A^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$H\x03R\vsectionName\x88\x01\x01\x12$\n" +
 	"\x04port\x18\x06 \x01(\x05B\v\xbaH\b\x1a\x06\x18\xff\xff\x03(\x01H\x04R\x04port\x88\x01\x01B\b\n" +
 	"\x06_groupB\a\n" +
 	"\x05_kindB\f\n" +
 	"\n" +
 	"_namespaceB\x0f\n" +
 	"\r_section_nameB\a\n" +
-	"\x05_port\"\xf9\x03\n" +
-	"*KubernetesGatewayApiBackendObjectReference\x12\x19\n" +
-	"\x05group\x18\x01 \x01(\tH\x00R\x05group\x88\x01\x01\x12\x17\n" +
-	"\x04kind\x18\x02 \x01(\tH\x01R\x04kind\x88\x01\x01\x12\x1a\n" +
-	"\x04name\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12!\n" +
+	"\x05_port\"\x82\x05\n" +
+	"*KubernetesGatewayApiBackendObjectReference\x12i\n" +
+	"\x05group\x18\x01 \x01(\tBN\xbaHKrI\x18\xfd\x012D^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$H\x00R\x05group\x88\x01\x01\x12I\n" +
+	"\x04kind\x18\x02 \x01(\tB0\xbaH-r+\x10\x01\x18?2%^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$H\x01R\x04kind\x88\x01\x01\x12!\n" +
+	"\x04name\x18\x03 \x01(\tB\r\xbaH\n" +
+	"\xc8\x01\x01r\x05\x10\x01\x18\xfd\x01R\x04name\x12!\n" +
 	"\tnamespace\x18\x04 \x01(\tH\x02R\tnamespace\x88\x01\x01\x12$\n" +
 	"\x04port\x18\x05 \x01(\x05B\v\xbaH\b\x1a\x06\x18\xff\xff\x03(\x01H\x03R\x04port\x88\x01\x01:\x87\x02\xbaH\x83\x02\x1a\x80\x02\n" +
 	",backend_object_ref.port_required_for_service\x12aport must be specified when referencing a core API Service (group is empty and kind is 'Service')\x1am(!has(this.group) || this.group == '') && (!has(this.kind) || this.kind == 'Service') ? has(this.port) : trueB\b\n" +
@@ -888,30 +914,33 @@ const file_org_openmcf_provider_kubernetes_gateway_api_proto_rawDesc = "" +
 	"\n" +
 	"_namespaceB\a\n" +
 	"\x05_portB\t\n" +
-	"\a_weight\"p\n" +
-	"(KubernetesGatewayApiLocalObjectReference\x12\x14\n" +
-	"\x05group\x18\x01 \x01(\tR\x05group\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind\x12\x1a\n" +
-	"\x04name\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\"\xbf\x01\n" +
-	")KubernetesGatewayApiSecretObjectReference\x12\x19\n" +
-	"\x05group\x18\x01 \x01(\tH\x00R\x05group\x88\x01\x01\x12\x17\n" +
-	"\x04kind\x18\x02 \x01(\tH\x01R\x04kind\x88\x01\x01\x12\x1a\n" +
-	"\x04name\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12!\n" +
+	"\a_weight\"\xfc\x01\n" +
+	"(KubernetesGatewayApiLocalObjectReference\x12d\n" +
+	"\x05group\x18\x01 \x01(\tBN\xbaHKrI\x18\xfd\x012D^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$R\x05group\x12G\n" +
+	"\x04kind\x18\x02 \x01(\tB3\xbaH0\xc8\x01\x01r+\x10\x01\x18?2%^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$R\x04kind\x12!\n" +
+	"\x04name\x18\x03 \x01(\tB\r\xbaH\n" +
+	"\xc8\x01\x01r\x05\x10\x01\x18\xfd\x01R\x04name\"\xc8\x02\n" +
+	")KubernetesGatewayApiSecretObjectReference\x12i\n" +
+	"\x05group\x18\x01 \x01(\tBN\xbaHKrI\x18\xfd\x012D^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$H\x00R\x05group\x88\x01\x01\x12I\n" +
+	"\x04kind\x18\x02 \x01(\tB0\xbaH-r+\x10\x01\x18?2%^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$H\x01R\x04kind\x88\x01\x01\x12!\n" +
+	"\x04name\x18\x03 \x01(\tB\r\xbaH\n" +
+	"\xc8\x01\x01r\x05\x10\x01\x18\xfd\x01R\x04name\x12!\n" +
 	"\tnamespace\x18\x04 \x01(\tH\x02R\tnamespace\x88\x01\x01B\b\n" +
 	"\x06_groupB\a\n" +
 	"\x05_kindB\f\n" +
 	"\n" +
-	"_namespace\"\x9c\x01\n" +
-	"#KubernetesGatewayApiObjectReference\x12\x14\n" +
-	"\x05group\x18\x01 \x01(\tR\x05group\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind\x12\x1a\n" +
-	"\x04name\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12!\n" +
+	"_namespace\"\xa8\x02\n" +
+	"#KubernetesGatewayApiObjectReference\x12d\n" +
+	"\x05group\x18\x01 \x01(\tBN\xbaHKrI\x18\xfd\x012D^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$R\x05group\x12G\n" +
+	"\x04kind\x18\x02 \x01(\tB3\xbaH0\xc8\x01\x01r+\x10\x01\x18?2%^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$R\x04kind\x12!\n" +
+	"\x04name\x18\x03 \x01(\tB\r\xbaH\n" +
+	"\xc8\x01\x01r\x05\x10\x01\x18\xfd\x01R\x04name\x12!\n" +
 	"\tnamespace\x18\x04 \x01(\tH\x00R\tnamespace\x88\x01\x01B\f\n" +
 	"\n" +
-	"_namespace\"\xa7\x01\n" +
-	"'KubernetesGatewayApiParametersReference\x12\x14\n" +
-	"\x05group\x18\x01 \x01(\tR\x05group\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind\x12!\n" +
+	"_namespace\"\xac\x02\n" +
+	"'KubernetesGatewayApiParametersReference\x12d\n" +
+	"\x05group\x18\x01 \x01(\tBN\xbaHKrI\x18\xfd\x012D^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$R\x05group\x12G\n" +
+	"\x04kind\x18\x02 \x01(\tB3\xbaH0\xc8\x01\x01r+\x10\x01\x18?2%^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$R\x04kind\x12!\n" +
 	"\x04name\x18\x03 \x01(\tB\r\xbaH\n" +
 	"\xc8\x01\x01r\x05\x10\x01\x18\xfd\x01R\x04name\x12!\n" +
 	"\tnamespace\x18\x04 \x01(\tH\x00R\tnamespace\x88\x01\x01B\f\n" +

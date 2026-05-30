@@ -169,5 +169,12 @@ var _ = ginkgo.Describe("KubernetesTlsRoute Validation Tests", func() {
 			input.Spec.Rules[0].Name = stringPtr("Bad_Name")
 			gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 		})
+
+		ginkgo.It("a parent ref with a malformed kind should fail", func() {
+			input.Spec.ParentRefs = []*kubernetes.KubernetesGatewayApiParentReference{
+				{Name: "my-gateway", Kind: stringPtr("bad/kind")},
+			}
+			gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
+		})
 	})
 })

@@ -1,6 +1,7 @@
 package kuberneteshttproutev1
 
 import (
+	"strings"
 	"testing"
 
 	"buf.build/go/protovalidate"
@@ -226,6 +227,26 @@ var _ = ginkgo.Describe("KubernetesHttpRoute Validation Tests", func() {
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
+		ginkgo.It("a fully-specified parent ref (group/kind/section_name/port) should be valid", func() {
+			input.Spec.ParentRefs = []*kubernetes.KubernetesGatewayApiParentReference{
+				{
+					Group:       stringPtr("gateway.networking.k8s.io"),
+					Kind:        stringPtr("Gateway"),
+					Name:        "my-gateway",
+					SectionName: stringPtr("https"),
+					Port:        int32Ptr(443),
+				},
+			}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("a parent ref with the core API group (empty string) should be valid", func() {
+			input.Spec.ParentRefs = []*kubernetes.KubernetesGatewayApiParentReference{
+				{Group: stringPtr(""), Kind: stringPtr("Service"), Name: "my-svc"},
+			}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
 		ginkgo.It("timeouts with backend_request <= request should be valid", func() {
 			input.Spec.Rules[0].Timeouts = &KubernetesHttpRouteTimeouts{
 				Request:        stringPtr("10s"),
@@ -274,8 +295,88 @@ var _ = ginkgo.Describe("KubernetesHttpRoute Validation Tests", func() {
 			gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 		})
 
+		ginkgo.It("a parent ref with a malformed group should return an error", func() {
+			input.Spec.ParentRefs = []*kubernetes.KubernetesGatewayApiParentReference{
+				{Name: "my-gateway", Group: stringPtr("Invalid_Group")},
+			}
+			gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
+		})
+
+		ginkgo.It("a parent ref with a malformed kind should return an error", func() {
+			input.Spec.ParentRefs = []*kubernetes.KubernetesGatewayApiParentReference{
+				{Name: "my-gateway", Kind: stringPtr("1BadKind")},
+			}
+			gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
+		})
+
+		ginkgo.It("a parent ref name longer than 253 chars should return an error", func() {
+			input.Spec.ParentRefs = []*kubernetes.KubernetesGatewayApiParentReference{
+				{Name: strings.Repeat("a", 254)},
+			}
+			gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
+		})
+
+		ginkgo.It("a parent ref with a malformed section_name should return an error", func() {
+			input.Spec.ParentRefs = []*kubernetes.KubernetesGatewayApiParentReference{
+				{Name: "my-gateway", SectionName: stringPtr("Bad_Section")},
+			}
+			gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
+		})
+
 		ginkgo.It("backend ref without a name should return an error", func() {
 			input.Spec.Rules[0].BackendRefs = []*KubernetesHttpRouteBackendRef{{Port: int32Ptr(80)}}
+			gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
+		})
+
+		ginkgo.It("a mirror filter backend ref with a malformed group should return an error", func() {
+			input.Spec.Rules[0].Filters = []*KubernetesHttpRouteFilter{
+				{
+					Type: "RequestMirror",
+					RequestMirror: &KubernetesHttpRouteRequestMirrorFilter{
+						BackendRef: &kubernetes.KubernetesGatewayApiBackendObjectReference{
+							Name: "mirror-svc", Port: int32Ptr(80), Group: stringPtr("Bad_Group"),
+						},
+					},
+				},
+			}
+			gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
+		})
+
+		ginkgo.It("a mirror filter backend ref with a malformed kind should return an error", func() {
+			input.Spec.Rules[0].Filters = []*KubernetesHttpRouteFilter{
+				{
+					Type: "RequestMirror",
+					RequestMirror: &KubernetesHttpRouteRequestMirrorFilter{
+						BackendRef: &kubernetes.KubernetesGatewayApiBackendObjectReference{
+							Name: "mirror-svc", Port: int32Ptr(80), Kind: stringPtr("bad/kind"),
+						},
+					},
+				},
+			}
+			gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
+		})
+
+		ginkgo.It("an extension ref without a kind should return an error", func() {
+			input.Spec.Rules[0].Filters = []*KubernetesHttpRouteFilter{
+				{
+					Type: "ExtensionRef",
+					ExtensionRef: &kubernetes.KubernetesGatewayApiLocalObjectReference{
+						Group: "networking.example.io", Name: "rate-limit",
+					},
+				},
+			}
+			gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
+		})
+
+		ginkgo.It("an extension ref with a malformed group should return an error", func() {
+			input.Spec.Rules[0].Filters = []*KubernetesHttpRouteFilter{
+				{
+					Type: "ExtensionRef",
+					ExtensionRef: &kubernetes.KubernetesGatewayApiLocalObjectReference{
+						Group: "Bad_Group", Kind: "MyFilter", Name: "rate-limit",
+					},
+				},
+			}
 			gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 		})
 

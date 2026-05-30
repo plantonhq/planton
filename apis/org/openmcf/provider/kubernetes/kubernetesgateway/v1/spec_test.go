@@ -393,6 +393,74 @@ var _ = ginkgo.Describe("KubernetesGateway Validation Tests", func() {
 			})
 		})
 
+		ginkgo.Context("with a certificate ref whose group is malformed", func() {
+			ginkgo.It("should return a validation error", func() {
+				input.Spec.Listeners = []*KubernetesGatewayListener{
+					{
+						Name:     "https",
+						Port:     443,
+						Protocol: "HTTPS",
+						Tls: &KubernetesGatewayListenerTlsConfig{
+							Mode:            stringPtr("Terminate"),
+							CertificateRefs: []*kubernetes.KubernetesGatewayApiSecretObjectReference{{Name: "app-tls", Group: stringPtr("Bad_Group")}},
+						},
+					},
+				}
+				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
+			})
+		})
+
+		ginkgo.Context("with a certificate ref whose kind is malformed", func() {
+			ginkgo.It("should return a validation error", func() {
+				input.Spec.Listeners = []*KubernetesGatewayListener{
+					{
+						Name:     "https",
+						Port:     443,
+						Protocol: "HTTPS",
+						Tls: &KubernetesGatewayListenerTlsConfig{
+							Mode:            stringPtr("Terminate"),
+							CertificateRefs: []*kubernetes.KubernetesGatewayApiSecretObjectReference{{Name: "app-tls", Kind: stringPtr("bad/kind")}},
+						},
+					},
+				}
+				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
+			})
+		})
+
+		ginkgo.Context("with a CA certificate ref whose kind is missing (now required)", func() {
+			ginkgo.It("should return a validation error", func() {
+				input.Spec.Tls = &KubernetesGatewayTlsConfig{
+					Frontend: &KubernetesGatewayFrontendTlsConfig{
+						Default: &KubernetesGatewayFrontendTlsValidationConfig{
+							Validation: &KubernetesGatewayFrontendTlsValidation{
+								CaCertificateRefs: []*kubernetes.KubernetesGatewayApiObjectReference{
+									{Group: "", Name: "client-ca"},
+								},
+							},
+						},
+					},
+				}
+				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
+			})
+		})
+
+		ginkgo.Context("with a CA certificate ref whose group is malformed", func() {
+			ginkgo.It("should return a validation error", func() {
+				input.Spec.Tls = &KubernetesGatewayTlsConfig{
+					Frontend: &KubernetesGatewayFrontendTlsConfig{
+						Default: &KubernetesGatewayFrontendTlsValidationConfig{
+							Validation: &KubernetesGatewayFrontendTlsValidation{
+								CaCertificateRefs: []*kubernetes.KubernetesGatewayApiObjectReference{
+									{Group: "Bad_Group", Kind: "ConfigMap", Name: "client-ca"},
+								},
+							},
+						},
+					},
+				}
+				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
+			})
+		})
+
 		ginkgo.Context("missing spec", func() {
 			ginkgo.It("should return a validation error", func() {
 				input.Spec = nil

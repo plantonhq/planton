@@ -152,6 +152,41 @@ var _ = ginkgo.Describe("KubernetesGatewayClass Validation Tests", func() {
 			})
 		})
 
+		ginkgo.Context("parameters_ref missing the required kind", func() {
+			ginkgo.It("should return a validation error", func() {
+				input.Spec.ParametersRef = &kubernetes.KubernetesGatewayApiParametersReference{
+					Group: "gateway.envoyproxy.io",
+					Name:  "custom-proxy-config",
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).ToNot(gomega.BeNil())
+			})
+		})
+
+		ginkgo.Context("parameters_ref with a malformed group", func() {
+			ginkgo.It("should return a validation error", func() {
+				input.Spec.ParametersRef = &kubernetes.KubernetesGatewayApiParametersReference{
+					Group: "Bad_Group",
+					Kind:  "ConfigMap",
+					Name:  "istio-gateway-config",
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).ToNot(gomega.BeNil())
+			})
+		})
+
+		ginkgo.Context("parameters_ref with a malformed kind", func() {
+			ginkgo.It("should return a validation error", func() {
+				input.Spec.ParametersRef = &kubernetes.KubernetesGatewayApiParametersReference{
+					Group: "",
+					Kind:  "bad/kind",
+					Name:  "istio-gateway-config",
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).ToNot(gomega.BeNil())
+			})
+		})
+
 		ginkgo.Context("missing spec", func() {
 			ginkgo.It("should return a validation error", func() {
 				input.Spec = nil

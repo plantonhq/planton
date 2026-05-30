@@ -16,6 +16,15 @@ import "buf/validate/validate.proto";
 //
 // Types used only by excluded resources (ParentGatewayReference for ListenerSet)
 // are also excluded.
+//
+// Note on reference field validation: every object-reference message below
+// repeats the same group/kind/name (and, where present, section_name)
+// buf.validate rules. This duplication is intentional — it mirrors upstream's
+// per-field type aliases (Group, Kind, ObjectName, SectionName), each carrying
+// its own kubebuilder markers. buf.validate predefined-rules are deliberately
+// NOT used to DRY this up: there is no precedent for them anywhere in this repo,
+// and a shared wrapper message would distort the flat upstream shape (dont-do
+// #6/#7). Keep each message self-contained and faithful to its upstream type.
 
 // KubernetesGatewayApiParentReference identifies an API object (usually a
 // Gateway) that can be considered a parent of a route resource.
@@ -27,13 +36,22 @@ message KubernetesGatewayApiParentReference {
   // Set to "" (empty string) for the core API group.
   //
   // Upstream default: "gateway.networking.k8s.io"
-  optional string group = 1;
+  // Group pattern: empty or an RFC 1123 subdomain (max 253).
+  optional string group = 1 [(buf.validate.field).string = {
+    max_len: 253
+    pattern: "^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+  }];
 
   // Kind of the referent.
   // Core parent kinds: Gateway (Gateway conformance), Service (Mesh conformance).
   //
   // Upstream default: "Gateway"
-  optional string kind = 2;
+  // Kind pattern: 1-63 chars, ^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$
+  optional string kind = 2 [(buf.validate.field).string = {
+    min_len: 1
+    max_len: 63
+    pattern: "^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$"
+  }];
 
   // Namespace of the referent. When unspecified, refers to the local
   // namespace of the Route. Cross-namespace references require a
@@ -41,11 +59,24 @@ message KubernetesGatewayApiParentReference {
   optional string namespace = 3;
 
   // Name of the referent.
-  string name = 4 [(buf.validate.field).required = true];
+  string name = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1
+      max_len: 253
+    }
+  ];
 
   // Name of a section within the target resource (e.g., a Gateway Listener
   // name). When unspecified, references the entire resource.
-  optional string section_name = 5;
+  //
+  // SectionName pattern: 1-253 chars, RFC 1123 subdomain
+  // ^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$
+  optional string section_name = 5 [(buf.validate.field).string = {
+    min_len: 1
+    max_len: 253
+    pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+  }];
 
   // Network port this Route targets on the parent resource.
   optional int32 port = 6 [(buf.validate.field).int32 = {
@@ -70,15 +101,30 @@ message KubernetesGatewayApiBackendObjectReference {
   // Group of the referent. Empty string infers the core API group.
   //
   // Upstream default: "" (core API group)
-  optional string group = 1;
+  // Group pattern: empty or an RFC 1123 subdomain (max 253).
+  optional string group = 1 [(buf.validate.field).string = {
+    max_len: 253
+    pattern: "^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+  }];
 
   // Kind of the referent.
   //
   // Upstream default: "Service"
-  optional string kind = 2;
+  // Kind pattern: 1-63 chars, ^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$
+  optional string kind = 2 [(buf.validate.field).string = {
+    min_len: 1
+    max_len: 63
+    pattern: "^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$"
+  }];
 
   // Name of the referent.
-  string name = 3 [(buf.validate.field).required = true];
+  string name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1
+      max_len: 253
+    }
+  ];
 
   // Namespace of the backend. When unspecified, the local namespace is inferred.
   // Cross-namespace references require a ReferenceGrant.
@@ -101,10 +147,10 @@ message KubernetesGatewayApiBackendObjectReference {
 // per-route backend ref because each backend additionally carries filters.
 //
 // Field validations mirror the upstream kubebuilder markers on
-// BackendObjectReference (group/kind/name patterns + bounds), so consumers of
-// this shared type inherit full upstream fidelity. namespace is intentionally
-// left unconstrained, matching the sibling shared reference types in this file
-// (KubernetesGatewayApiParentReference, KubernetesGatewayApiBackendObjectReference).
+// BackendObjectReference (group/kind/name patterns + bounds). As of T08 every
+// shared reference type in this file carries these same group/kind/name rules,
+// so the family is uniform. namespace is intentionally left unconstrained across
+// all of them — a deliberate family-wide convention, not a per-type gap.
 message KubernetesGatewayApiBackendRef {
   // Group of the referent. Empty string infers the core API group.
   //
@@ -161,13 +207,34 @@ message KubernetesGatewayApiBackendRef {
 message KubernetesGatewayApiLocalObjectReference {
   // Group of the referent (e.g., "gateway.networking.k8s.io").
   // Empty string infers the core API group.
-  string group = 1;
+  //
+  // Group pattern: empty or an RFC 1123 subdomain (max 253).
+  string group = 1 [(buf.validate.field).string = {
+    max_len: 253
+    pattern: "^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+  }];
 
   // Kind of the referent (e.g., "HTTPRoute" or "Service").
-  string kind = 2;
+  //
+  // Upstream models Kind as a required value type.
+  // Kind pattern: 1-63 chars, ^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$
+  string kind = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1
+      max_len: 63
+      pattern: "^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$"
+    }
+  ];
 
   // Name of the referent.
-  string name = 3 [(buf.validate.field).required = true];
+  string name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1
+      max_len: 253
+    }
+  ];
 }
 
 // KubernetesGatewayApiSecretObjectReference identifies a Secret-like API
@@ -178,15 +245,30 @@ message KubernetesGatewayApiSecretObjectReference {
   // Group of the referent. Empty string infers the core API group.
   //
   // Upstream default: "" (core API group)
-  optional string group = 1;
+  // Group pattern: empty or an RFC 1123 subdomain (max 253).
+  optional string group = 1 [(buf.validate.field).string = {
+    max_len: 253
+    pattern: "^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+  }];
 
   // Kind of the referent.
   //
   // Upstream default: "Secret"
-  optional string kind = 2;
+  // Kind pattern: 1-63 chars, ^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$
+  optional string kind = 2 [(buf.validate.field).string = {
+    min_len: 1
+    max_len: 63
+    pattern: "^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$"
+  }];
 
   // Name of the referent.
-  string name = 3 [(buf.validate.field).required = true];
+  string name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1
+      max_len: 253
+    }
+  ];
 
   // Namespace of the referenced object. When unspecified, the local namespace
   // is inferred. Cross-namespace references require a ReferenceGrant.
@@ -198,14 +280,35 @@ message KubernetesGatewayApiSecretObjectReference {
 //
 // Upstream: ObjectReference in apis/v1/object_reference_types.go
 message KubernetesGatewayApiObjectReference {
-  // Group of the referent.
-  string group = 1;
+  // Group of the referent. Empty string infers the core API group.
+  //
+  // Group pattern: empty or an RFC 1123 subdomain (max 253).
+  string group = 1 [(buf.validate.field).string = {
+    max_len: 253
+    pattern: "^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+  }];
 
   // Kind of the referent (e.g., "ConfigMap" or "Service").
-  string kind = 2;
+  //
+  // Upstream models Kind as a required value type.
+  // Kind pattern: 1-63 chars, ^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$
+  string kind = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1
+      max_len: 63
+      pattern: "^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$"
+    }
+  ];
 
   // Name of the referent.
-  string name = 3 [(buf.validate.field).required = true];
+  string name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1
+      max_len: 253
+    }
+  ];
 
   // Namespace of the referenced object. When unspecified, the local namespace
   // is inferred. Cross-namespace references require a ReferenceGrant.
@@ -217,11 +320,26 @@ message KubernetesGatewayApiObjectReference {
 //
 // Upstream: ParametersReference in apis/v1/gatewayclass_types.go
 message KubernetesGatewayApiParametersReference {
-  // Group of the referent.
-  string group = 1;
+  // Group of the referent. Empty string infers the core API group.
+  //
+  // Group pattern: empty or an RFC 1123 subdomain (max 253).
+  string group = 1 [(buf.validate.field).string = {
+    max_len: 253
+    pattern: "^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+  }];
 
   // Kind of the referent.
-  string kind = 2;
+  //
+  // Upstream models Kind as a required value type.
+  // Kind pattern: 1-63 chars, ^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$
+  string kind = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1
+      max_len: 63
+      pattern: "^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$"
+    }
+  ];
 
   // Name of the referent.
   string name = 3 [
