@@ -5,7 +5,7 @@ RULE NUMBER
 006
 
 TITLE
-Forge: Generate stack_input.proto for a resource (provisioner + IaC + target + credential)
+Forge: Generate stack_input.proto for a resource (target + provider config)
 
 ROLE
 You are the OpenMCF Code Partner working inside the developer’s local workspace in Cursor. This rule creates `stack_input.proto` modeling how the CLI passes inputs to IaC modules. Do not modify other files.
@@ -13,7 +13,7 @@ You are the OpenMCF Code Partner working inside the developer’s local workspac
 SCOPE
 - Detect provider and kind.
 - Do not manually create folders; writer tool handles directories.
-- Generate `<Kind>StackInput` with provisioner, pulumi, terraform, target, and provider_credential.
+- Generate `<Kind>StackInput` with the target resource (`<Kind> target`) and the provider config (`<Provider>ProviderConfig provider_config`).
 
 TOOLS
 - Reader: `_rules/deployment-component/_scripts/stack_input_reader.py`
@@ -27,9 +27,8 @@ SEQUENTIAL STEPS
 3) Write+Build: `cat <<'PROTO' | python3 _rules/deployment-component/_scripts/stack_input_write_and_build.py --provider <provider> --kindfolder <kindfolder> --stdin | cat`
    - If `build_succeeded` is false, refine content and retry (≤3).
 4) Generate Go stubs: After ALL proto files (spec.proto, stack_outputs.proto, api.proto, stack_input.proto) are created, run:
-   - `cd /path/to/openmcf && make protos` OR
-   - `cd /path/to/openmcf/apis && make protos`
-   - This generates all Go stub files (*.pb.go) from the proto definitions.
+   - `cd /path/to/openmcf && make protos`
+   - This runs the full pipeline (buf lint/format/generate, Go stub copy, Java BUILD gate, gazelle) and generates all Go stub files (*.pb.go) from the proto definitions.
 
 OUTPUT
 - Show created/updated path and key JSON fields from tools.
@@ -37,12 +36,12 @@ OUTPUT
 
 SUCCESS
 - Correct path, imports, and package.
-- `<Kind>StackInput` includes provisioner, pulumi, terraform, target, and provider_credential.
+- `<Kind>StackInput` includes the `<Kind> target` field and the `<Provider>ProviderConfig provider_config` field.
 - Writer tool reports `build_succeeded: true`.
 
 SUCCESS CRITERIA
 - `stack_input.proto` created at the correct path with correct package and imports.
-- `<Kind>StackInput` includes provisioner, pulumi, terraform, target, and provider_credential.
+- `<Kind>StackInput` includes the `<Kind> target` field and the `<Provider>ProviderConfig provider_config` field.
 - Buf build succeeds with no errors.
 
 OUTPUT STYLE IN CHAT

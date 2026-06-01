@@ -64,7 +64,7 @@ The module accepts configuration via the `KubernetesGatewayApiCrdsStackInput` pr
 |--------|-------------|
 | `installed_version` | The Gateway API version that was installed |
 | `installed_channel` | The channel (standard/experimental) |
-| `installed_crds` | List of CRD names that were installed |
+| `installed_manifest_url` | Full URL of the CRD bundle that was applied |
 
 ## Testing
 

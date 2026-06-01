@@ -194,3 +194,38 @@ CA certificates should use `rotationPolicy: never`. Rotating a CA's private key 
 ## Conclusion
 
 KubernetesCertificate provides a clean, single-resource abstraction for cert-manager Certificate lifecycle management. Its primary value is enabling the CA bootstrap workflow (SelfSigned → CA cert → CA Issuer → leaf certs) while also serving as a standalone resource for certificates that exist independently of ingress or application components.
+
+## Composing in Infra Charts
+
+`KubernetesCertificate` is the bridge between the cert-manager family and the
+Gateway family: it issues a TLS Secret that a `KubernetesGateway` listener
+terminates with (see project decision DD-009):
+
+1. **Data dependencies use `valueFrom`.** `namespace` (-> `KubernetesNamespace`)
+   and `issuerRef` (-> `KubernetesClusterIssuer.status.outputs.cluster_issuer_name`
+   or `KubernetesIssuer.status.outputs.issuer_name`) are `StringValueOrRef` fields,
+   so the platform builds those DAG edges automatically -- the issuer deploys
+   before this certificate.
+2. **Downstream wiring (cross-family).** This component's
+   `status.outputs.secret_name` is the Secret a `KubernetesGateway` references in
+   `listeners[].tls.certificate_refs`. Because `certificate_refs` is a plain
+   reference (not a foreign key), the Gateway expresses that dependency via
+   `metadata.relationships` (`type: uses`) pointing at this Certificate.
+
+```yaml
+spec:
+  namespace:
+    valueFrom:
+      kind: KubernetesNamespace
+      name: "{{ values.env }}-ns"
+      fieldPath: spec.name
+  issuerRef:
+    name:
+      valueFrom:
+        kind: KubernetesClusterIssuer
+        name: "{{ values.env }}-issuer"
+        fieldPath: status.outputs.cluster_issuer_name
+```
+
+Full ingress stack:
+`CertManager -> ClusterIssuer -> Certificate (this) -> (Secret) -> Gateway -> HTTPRoute / GRPCRoute`.

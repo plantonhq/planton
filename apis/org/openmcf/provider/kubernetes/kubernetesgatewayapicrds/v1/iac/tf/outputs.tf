@@ -16,12 +16,7 @@ output "installed_channel" {
   value       = local.channel_name
 }
 
-output "installed_crds" {
-  description = "List of CRD names that were installed"
-  value       = local.installed_crds
-}
-
-output "manifest_url" {
-  description = "URL of the CRD manifest that was applied"
+output "installed_manifest_url" {
+  description = "Full URL of the Gateway API CRD bundle that was applied"
   value       = local.manifest_url
 }

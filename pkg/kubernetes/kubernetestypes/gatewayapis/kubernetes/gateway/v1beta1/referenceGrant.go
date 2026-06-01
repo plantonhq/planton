@@ -51,7 +51,7 @@ func NewReferenceGrant(ctx *pulumi.Context,
 	args.Kind = pulumi.StringPtr("ReferenceGrant")
 	aliases := pulumi.Aliases([]pulumi.Alias{
 		{
-			Type: pulumi.String("kubernetes:gateway.networking.k8s.io/v1alpha2:ReferenceGrant"),
+			Type: pulumi.String("kubernetes:gateway.networking.k8s.io/v1:ReferenceGrant"),
 		},
 	})
 	opts = append(opts, aliases)

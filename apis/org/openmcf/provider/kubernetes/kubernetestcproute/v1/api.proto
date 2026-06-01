@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package org.openmcf.provider.kubernetes.kubernetestcproute.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/kubernetes/kubernetestcproute/v1/spec.proto";
+import "org/openmcf/provider/kubernetes/kubernetestcproute/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// KubernetesTcpRoute is a Kubernetes Gateway API TCPRoute: a namespaced set of
+// rules that attach to a Gateway and forward raw TCP connections to backend
+// Services.
+message KubernetesTcpRoute {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'KubernetesTcpRoute'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  KubernetesTcpRouteSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  KubernetesTcpRouteStatus status = 5;
+}
+
+// KubernetesTcpRouteStatus holds the deployment status and outputs.
+message KubernetesTcpRouteStatus {
+  // stack-outputs
+  KubernetesTcpRouteStackOutputs outputs = 1;
+}

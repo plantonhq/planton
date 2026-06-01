@@ -3,7 +3,7 @@ load("@rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "runner",
     srcs = [
-        "fixtures.go",
+        "dependencies.go",
         "outputs_verifier.go",
         "pulumi.go",
         "runner.go",
@@ -33,7 +33,10 @@ go_library(
 
 go_test(
     name = "runner_test",
-    srcs = ["outputs_verifier_test.go"],
+    srcs = [
+        "dependencies_test.go",
+        "outputs_verifier_test.go",
+    ],
     embed = [":runner"],
     deps = [
         "//apis/org/openmcf/provider/auth0/auth0resourceserver/v1:auth0resourceserver",

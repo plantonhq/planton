@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package org.openmcf.provider.kubernetes.kubernetestcproute.v1;
+
+import "org/openmcf/provider/kubernetes/kubernetestcproute/v1/api.proto";
+import "org/openmcf/provider/kubernetes/provider.proto";
+
+// Input for the KubernetesTcpRoute IaC stack. The platform resolves all
+// StringValueOrRef references (namespace) to literal strings before passing this
+// to the IaC engine.
+message KubernetesTcpRouteStackInput {
+  // Target cloud-resource.
+  KubernetesTcpRoute target = 1;
+  // Kubernetes provider configuration (cluster credentials).
+  org.openmcf.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+}

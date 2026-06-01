@@ -1,0 +1,134 @@
+syntax = "proto3";
+
+package org.openmcf.provider.kubernetes.kubernetestcproute.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/kubernetes/gateway_api.proto";
+import "org/openmcf/provider/kubernetes/target_cluster.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// KubernetesTcpRouteSpec defines a Kubernetes Gateway API TCPRoute: a namespaced
+// set of rules that forward raw TCP connections arriving on a Gateway listener
+// to backend Services. A TCPRoute has no matching logic at all -- a connection on
+// the listener's port is forwarded to the rule's backends. The route attaches to
+// a Gateway listener of protocol TCP through parent_refs.
+//
+// 100% fidelity with the upstream Gateway API v1.5.1 TCPRouteSpec
+// (kubernetes-sigs/gateway-api apis/v1alpha2/tcproute_types.go).
+//
+// CHANNEL NOTE: TCPRoute is an EXPERIMENTAL-channel resource. Unlike HttpRoute,
+// GrpcRoute, and TlsRoute (which are standard channel), TCPRoute exists only in
+// the Gateway API experimental channel and is served as
+// gateway.networking.k8s.io/v1alpha2. It is therefore deployable only on clusters
+// where the experimental CRDs are installed -- install KubernetesGatewayApiCrds
+// with install_channel: experimental. See the component's docs/README.md.
+//
+// Because the whole resource is experimental, the experimental CommonRouteSpec
+// field use_default_gateways IS reachable on this deployment target (it is absent
+// from the standard-channel routes' targets, which is the only reason HttpRoute /
+// GrpcRoute excluded it). It is included here for 100% fidelity (DD-001).
+//
+// TCPRoute is a layer-4 route: it has no hostnames, no matches, and no filters.
+// Each rule simply forwards to one or more backends, so it reuses the shared
+// KubernetesGatewayApiBackendRef directly rather than defining its own per-route
+// backend ref.
+message KubernetesTcpRouteSpec {
+  // Target Kubernetes cluster where this TCPRoute is created. The Gateway API
+  // CRDs (KubernetesGatewayApiCrds, EXPERIMENTAL channel) and a Gateway the route
+  // attaches to must already be present on the cluster.
+  org.openmcf.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  // Namespace in which the TCPRoute is created. Backends in other namespaces,
+  // and Gateways in other namespaces, are subject to the usual same-namespace /
+  // ReferenceGrant rules.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // References to the parent resources (usually Gateways) this route attaches
+  // to. Each parent must have a TCP listener that allows attachment from
+  // TCPRoutes of this namespace.
+  //
+  // INFRA-CHART COMPOSABILITY (DD-009): parent_refs is a PLAIN reference, not an
+  // OpenMCF foreign key (StringValueOrRef). It is an array of multi-field upstream
+  // objects, so wrapping its scalars in StringValueOrRef would break 100% upstream
+  // fidelity (DD-001) and distort the typed CRD shape (dont-do #6). Because a plain
+  // string creates NO automatic DAG edge, an infra-chart author MUST express the
+  // route -> Gateway dependency via metadata.relationships, e.g.:
+  //   metadata:
+  //     relationships:
+  //       - kind: KubernetesGateway
+  //         name: "{{ values.env }}-gateway"
+  //         type: depends_on
+  // The plain `name` here is then the literal Gateway name. See the component's
+  // "Composing in Infra Charts" docs for the full pattern.
+  //
+  // Flattened from the upstream CommonRouteSpec.
+  repeated org.openmcf.provider.kubernetes.KubernetesGatewayApiParentReference parent_refs = 3 [(buf.validate.field).repeated.max_items = 32];
+
+  // Default Gateway scope this route should attach to, in addition to (or instead
+  // of) explicit parent_refs. "None" (or unset) attaches to no default Gateway;
+  // "All" attaches to any default Gateway supporting the scope.
+  //
+  // Upstream default: behaves as "None". Closed enum.
+  //
+  // This is the experimental CommonRouteSpec.useDefaultGateways field. It is
+  // modeled here (unlike on the standard-channel HttpRoute / GrpcRoute, where it
+  // is absent from the deployment target) because TCPRoute is itself an
+  // experimental-channel resource whose typed target exposes it -- so including it
+  // is 100% fidelity (DD-001), not divergence. Think carefully before using it:
+  // the set of default Gateways can change without notice to the route author.
+  optional string use_default_gateways = 4 [(buf.validate.field).cel = {
+    id: "tcp_route.use_default_gateways_enum"
+    message: "use_default_gateways must be either 'All' or 'None'"
+    expression: "this == '' || this in ['All', 'None']"
+  }];
+
+  // Routing rules. Each rule forwards matching connections to one or more
+  // backends. At least one rule is required; upstream allows up to 16.
+  repeated KubernetesTcpRouteRule rules = 5 [(buf.validate.field).repeated = {
+    min_items: 1
+    max_items: 16
+  }];
+}
+
+// KubernetesTcpRouteRule forwards TCP connections to one or more backends
+// (backend_refs). There are no matches or filters for TCP routes.
+//
+// Upstream: TCPRouteRule in apis/v1alpha2/tcproute_types.go.
+message KubernetesTcpRouteRule {
+  // Name of the route rule; must be unique within the route if set. Upstream
+  // support level: Extended.
+  //
+  // Upstream SectionName constraints: 1-253 chars, lowercase RFC 1123 subdomain.
+  // Pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$
+  optional string name = 1 [(buf.validate.field).string = {
+    min_len: 1
+    max_len: 253
+    pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+  }];
+
+  // Backends matching connections are forwarded to. When multiple backends are
+  // given, traffic is split by weight. At least one backend is required.
+  // Upstream support level: Core for Kubernetes Service.
+  //
+  // INFRA-CHART COMPOSABILITY (DD-009): backend_refs is a PLAIN reference, not an
+  // OpenMCF foreign key (StringValueOrRef). It is an array of multi-field upstream
+  // objects, so wrapping its scalars would break 100% fidelity (DD-001) and distort
+  // the typed CRD shape (dont-do #6). Because a plain string creates NO automatic
+  // DAG edge, an infra-chart author MUST express the route -> backend dependency via
+  // metadata.relationships when the backend is an OpenMCF-managed resource, e.g.:
+  //   metadata:
+  //     relationships:
+  //       - kind: KubernetesService   # or the backend's actual kind
+  //         name: "{{ values.service_name }}"
+  //         type: uses
+  // The plain `name` here is then the literal Kubernetes Service name. See the
+  // component's "Composing in Infra Charts" docs for the full pattern.
+  repeated org.openmcf.provider.kubernetes.KubernetesGatewayApiBackendRef backend_refs = 2 [(buf.validate.field).repeated = {
+    min_items: 1
+    max_items: 16
+  }];
+}

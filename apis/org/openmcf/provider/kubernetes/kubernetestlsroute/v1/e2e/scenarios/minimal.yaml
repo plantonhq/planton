@@ -1,0 +1,16 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesTlsRoute
+metadata:
+  name: e2e-tls-route
+spec:
+  namespace:
+    value: default
+  parent_refs:
+    - name: e2e-gateway
+      section_name: tls
+  hostnames:
+    - secure.example.com
+  rules:
+    - backend_refs:
+        - name: secure-backend
+          port: 8443

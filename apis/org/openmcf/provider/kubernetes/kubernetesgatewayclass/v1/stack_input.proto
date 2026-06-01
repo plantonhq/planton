@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.kubernetes.kubernetesgatewayclass.v1;
+
+import "org/openmcf/provider/kubernetes/kubernetesgatewayclass/v1/api.proto";
+import "org/openmcf/provider/kubernetes/provider.proto";
+
+// Input for the KubernetesGatewayClass IaC stack.
+message KubernetesGatewayClassStackInput {
+  // Target cloud-resource.
+  KubernetesGatewayClass target = 1;
+  // Kubernetes provider configuration (cluster credentials).
+  org.openmcf.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+}

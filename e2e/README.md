@@ -19,6 +19,10 @@ executing the full lifecycle against real providers:
 If any phase fails, the framework still attempts DESTROY to avoid leaking
 resources.
 
+When a component has dependencies (see "Component Dependencies" below), the
+framework wraps this lifecycle with a **DEPENDENCIES-UP** phase before VALIDATE
+and a **DEPENDENCIES-DOWN** phase after VERIFY-CLN (teardown in reverse order).
+
 ## Directory Layout
 
 ### Component E2E Structure
@@ -34,8 +38,8 @@ apis/org/openmcf/provider/{provider}/{component}/v1/
       minimal.yaml
       with-probes.yaml
       with-hpa.yaml
-    fixtures/              <-- prerequisite deployments (Tier 3 only)
-      01-operator.yaml
+    prerequisite.yaml      <-- optional: this kind's install profile, used when it
+                               is itself a prerequisite of another component
   iac/
     hack/manifest.yaml     <-- the canonical example manifest
     pulumi/                <-- Pulumi module
@@ -57,6 +61,26 @@ apis/org/openmcf/provider/{provider}/aa_e2e/
 
 For Kubernetes, the harness creates a `kind` cluster and uses `kubectl` for
 verification.
+
+## Component Dependencies
+
+Some components need other resources installed before they can be applied -- an
+operator that owns their CRD, or the CRDs themselves. The harness deploys these
+dependencies (via Pulumi) before the component under test and tears them down in
+reverse order afterward, resolved by `ResolveDependencies`
+([dependencies.go](framework/runner/dependencies.go)) from the proto registry:
+
+Each kind declares its prerequisites in the proto registry
+(`CloudResourceKindMeta.prerequisites` in `cloud_resource_kind.proto`). The
+harness resolves them transitively and installs each one using, in order of
+preference, the dependency's `v1/e2e/prerequisite.yaml` (its published install
+profile) or its `v1/e2e/scenarios/minimal.yaml`. Declaring `prerequisites: [X]`
+is all that is needed -- no per-component wiring.
+*Example:* every Gateway API kind declares `KubernetesGatewayApiCrds`, so the
+harness installs the Gateway API CRDs (experimental channel, version-pinned)
+before applying a GatewayClass / Gateway / route / ReferenceGrant. The Tier 3
+operator-dependent components (Postgres, Kafka, ...) likewise declare their
+operator kind, which installs from the operator's `scenarios/minimal.yaml`.
 
 ## E2E Profiles
 
@@ -216,9 +240,14 @@ scenario is as simple as dropping a YAML file into the component's
 1. Create the IaC modules (`iac/pulumi/`, `iac/tf/`)
 2. Create `v1/e2e/profile.yaml` with the component's E2E profile
 3. Create at least `v1/e2e/scenarios/minimal.yaml` with a minimal test manifest
-4. Add a `Test{ComponentName}_{Provisioner}` function in the appropriate test
-   file (e.g., `kubernetes_test.go`)
-5. The CI workflow picks up the new component automatically from the profile
+4. If the component needs other resources installed first, declare them as
+   `prerequisites` on the kind in `cloud_resource_kind.proto` (the harness
+   installs them automatically -- see "Component Dependencies").
+5. Add a `Test{ComponentName}_{Provisioner}` function in the appropriate test
+   file (e.g., `kubernetes_test.go`), and -- if the component name does not
+   PascalCase trivially -- a `toPascalCase` entry in
+   `pkg/e2e/profile/discover.go` so the CI matrix regex matches it
+6. The CI workflow picks up the new component automatically from the profile
 
 ## Adding a New Provider
 

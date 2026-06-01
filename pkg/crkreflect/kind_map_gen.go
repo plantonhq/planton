@@ -251,13 +251,17 @@ import (
 	kuberneteselasticsearchv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kuberneteselasticsearch/v1"
 	kubernetesexternaldnsv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesexternaldns/v1"
 	kubernetesexternalsecretsv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesexternalsecrets/v1"
+	kubernetesgatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesgateway/v1"
 	kubernetesgatewayapicrdsv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesgatewayapicrds/v1"
+	kubernetesgatewayclassv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesgatewayclass/v1"
 	kubernetesgharunnerscalesetv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesgharunnerscaleset/v1"
 	kubernetesgharunnerscalesetcontrollerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesgharunnerscalesetcontroller/v1"
 	kubernetesgitlabv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesgitlab/v1"
 	kubernetesgrafanav1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesgrafana/v1"
+	kubernetesgrpcroutev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesgrpcroute/v1"
 	kubernetesharborv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesharbor/v1"
 	kuberneteshelmreleasev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kuberneteshelmrelease/v1"
+	kuberneteshttproutev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kuberneteshttproute/v1"
 	kubernetesingressnginxv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesingressnginx/v1"
 	kubernetesissuerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesissuer/v1"
 	kubernetesistiov1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesistio/v1"
@@ -279,6 +283,7 @@ import (
 	kubernetespostgresv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetespostgres/v1"
 	kubernetesprometheusv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesprometheus/v1"
 	kubernetesredisv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesredis/v1"
+	kubernetesreferencegrantv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesreferencegrant/v1"
 	kubernetesrookcephclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesrookcephcluster/v1"
 	kubernetesrookcephoperatorv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesrookcephoperator/v1"
 	kubernetessecretv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetessecret/v1"
@@ -288,9 +293,11 @@ import (
 	kubernetessolroperatorv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetessolroperator/v1"
 	kubernetesstatefulsetv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesstatefulset/v1"
 	kubernetesstrimzikafkaoperatorv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesstrimzikafkaoperator/v1"
+	kubernetestcproutev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetestcproute/v1"
 	kubernetestektonv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetestekton/v1"
 	kubernetestektonoperatorv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetestektonoperator/v1"
 	kubernetestemporalv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetestemporal/v1"
+	kubernetestlsroutev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetestlsroute/v1"
 	kuberneteszalandopostgresoperatorv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kuberneteszalandopostgresoperator/v1"
 	ocialarmv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocialarm/v1"
 	ociapigatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ociapigateway/v1"
@@ -669,13 +676,17 @@ var ProviderKubernetesMap = map[cloudresourcekind.CloudResourceKind]proto.Messag
 	cloudresourcekind.CloudResourceKind_KubernetesElasticsearch:               &kuberneteselasticsearchv1.KubernetesElasticsearch{},
 	cloudresourcekind.CloudResourceKind_KubernetesExternalDns:                 &kubernetesexternaldnsv1.KubernetesExternalDns{},
 	cloudresourcekind.CloudResourceKind_KubernetesExternalSecrets:             &kubernetesexternalsecretsv1.KubernetesExternalSecrets{},
+	cloudresourcekind.CloudResourceKind_KubernetesGateway:                     &kubernetesgatewayv1.KubernetesGateway{},
 	cloudresourcekind.CloudResourceKind_KubernetesGatewayApiCrds:              &kubernetesgatewayapicrdsv1.KubernetesGatewayApiCrds{},
+	cloudresourcekind.CloudResourceKind_KubernetesGatewayClass:                &kubernetesgatewayclassv1.KubernetesGatewayClass{},
 	cloudresourcekind.CloudResourceKind_KubernetesGhaRunnerScaleSet:           &kubernetesgharunnerscalesetv1.KubernetesGhaRunnerScaleSet{},
 	cloudresourcekind.CloudResourceKind_KubernetesGhaRunnerScaleSetController: &kubernetesgharunnerscalesetcontrollerv1.KubernetesGhaRunnerScaleSetController{},
 	cloudresourcekind.CloudResourceKind_KubernetesGitlab:                      &kubernetesgitlabv1.KubernetesGitlab{},
 	cloudresourcekind.CloudResourceKind_KubernetesGrafana:                     &kubernetesgrafanav1.KubernetesGrafana{},
+	cloudresourcekind.CloudResourceKind_KubernetesGrpcRoute:                   &kubernetesgrpcroutev1.KubernetesGrpcRoute{},
 	cloudresourcekind.CloudResourceKind_KubernetesHarbor:                      &kubernetesharborv1.KubernetesHarbor{},
 	cloudresourcekind.CloudResourceKind_KubernetesHelmRelease:                 &kuberneteshelmreleasev1.KubernetesHelmRelease{},
+	cloudresourcekind.CloudResourceKind_KubernetesHttpRoute:                   &kuberneteshttproutev1.KubernetesHttpRoute{},
 	cloudresourcekind.CloudResourceKind_KubernetesIngressNginx:                &kubernetesingressnginxv1.KubernetesIngressNginx{},
 	cloudresourcekind.CloudResourceKind_KubernetesIssuer:                      &kubernetesissuerv1.KubernetesIssuer{},
 	cloudresourcekind.CloudResourceKind_KubernetesIstio:                       &kubernetesistiov1.KubernetesIstio{},
@@ -697,6 +708,7 @@ var ProviderKubernetesMap = map[cloudresourcekind.CloudResourceKind]proto.Messag
 	cloudresourcekind.CloudResourceKind_KubernetesPostgres:                    &kubernetespostgresv1.KubernetesPostgres{},
 	cloudresourcekind.CloudResourceKind_KubernetesPrometheus:                  &kubernetesprometheusv1.KubernetesPrometheus{},
 	cloudresourcekind.CloudResourceKind_KubernetesRedis:                       &kubernetesredisv1.KubernetesRedis{},
+	cloudresourcekind.CloudResourceKind_KubernetesReferenceGrant:              &kubernetesreferencegrantv1.KubernetesReferenceGrant{},
 	cloudresourcekind.CloudResourceKind_KubernetesRookCephCluster:             &kubernetesrookcephclusterv1.KubernetesRookCephCluster{},
 	cloudresourcekind.CloudResourceKind_KubernetesRookCephOperator:            &kubernetesrookcephoperatorv1.KubernetesRookCephOperator{},
 	cloudresourcekind.CloudResourceKind_KubernetesSecret:                      &kubernetessecretv1.KubernetesSecret{},
@@ -706,9 +718,11 @@ var ProviderKubernetesMap = map[cloudresourcekind.CloudResourceKind]proto.Messag
 	cloudresourcekind.CloudResourceKind_KubernetesSolrOperator:                &kubernetessolroperatorv1.KubernetesSolrOperator{},
 	cloudresourcekind.CloudResourceKind_KubernetesStatefulSet:                 &kubernetesstatefulsetv1.KubernetesStatefulSet{},
 	cloudresourcekind.CloudResourceKind_KubernetesStrimziKafkaOperator:        &kubernetesstrimzikafkaoperatorv1.KubernetesStrimziKafkaOperator{},
+	cloudresourcekind.CloudResourceKind_KubernetesTcpRoute:                    &kubernetestcproutev1.KubernetesTcpRoute{},
 	cloudresourcekind.CloudResourceKind_KubernetesTekton:                      &kubernetestektonv1.KubernetesTekton{},
 	cloudresourcekind.CloudResourceKind_KubernetesTektonOperator:              &kubernetestektonoperatorv1.KubernetesTektonOperator{},
 	cloudresourcekind.CloudResourceKind_KubernetesTemporal:                    &kubernetestemporalv1.KubernetesTemporal{},
+	cloudresourcekind.CloudResourceKind_KubernetesTlsRoute:                    &kubernetestlsroutev1.KubernetesTlsRoute{},
 	cloudresourcekind.CloudResourceKind_KubernetesZalandoPostgresOperator:     &kuberneteszalandopostgresoperatorv1.KubernetesZalandoPostgresOperator{},
 }
 

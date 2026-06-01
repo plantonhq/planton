@@ -30,23 +30,4 @@ locals {
     "gateway-api/version"          = local.version
     "gateway-api/channel"          = local.channel_name
   }
-
-  # Standard CRDs (always installed)
-  standard_crds = [
-    "gatewayclasses.gateway.networking.k8s.io",
-    "gateways.gateway.networking.k8s.io",
-    "httproutes.gateway.networking.k8s.io",
-    "referencegrants.gateway.networking.k8s.io",
-  ]
-
-  # Experimental CRDs (only with experimental channel)
-  experimental_crds = [
-    "tcproutes.gateway.networking.k8s.io",
-    "udproutes.gateway.networking.k8s.io",
-    "tlsroutes.gateway.networking.k8s.io",
-    "grpcroutes.gateway.networking.k8s.io",
-  ]
-
-  # All installed CRDs based on channel
-  installed_crds = local.is_experimental ? concat(local.standard_crds, local.experimental_crds) : local.standard_crds
 }
