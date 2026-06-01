@@ -54,7 +54,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Verify Pulumi entrypoints
-        run: ./hack/guards/ensure_pulumi_entrypoints.sh
+        run: bash ./hack/guards/ensure_pulumi_entrypoints.sh
 
   # ============================================================================
   # Build all components for each provider × platform combination
