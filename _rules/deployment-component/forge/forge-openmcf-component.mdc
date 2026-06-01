@@ -52,7 +52,7 @@ The following 20 rules execute in order. Each rule is atomic and can be run indi
      handles defaults centrally. This eliminates defensive default logic in IaC modules.
 2. **002-spec-validate** - Add buf.validate rules and CEL validations
    - Also verifies that all identified defaults carry the formal `optional` + default field option.
-   - **Every CEL `message` must be a user-facing, empathetic string** -- see `.cursor/info/spec_validate.md` "Validation Message Philosophy". These messages are rendered directly in UIs and CLIs. Write them like a knowledgeable colleague, not a compiler.
+   - **Every CEL `message` must be a user-facing, empathetic string** -- see rule `002-spec-validate` ("VALIDATION MESSAGE QUALITY"). These messages are rendered directly in UIs and CLIs. Write them like a knowledgeable colleague, not a compiler.
 3. **003-spec-tests** - Generate spec_test.go with validation tests
 4. **004-stack-outputs** - Generate stack_outputs.proto (deployment outputs)
 5. **005-api** - Generate api.proto (KRM wiring: metadata/spec/status)
@@ -89,11 +89,15 @@ The following 20 rules execute in order. Each rule is atomic and can be run indi
 18. **022-presets** - Generate initial presets (2-3 common configuration templates)
     - Reads `spec.proto` to identify field combinations that produce distinct deployment patterns
     - Creates ranked YAML manifests + companion markdown in `v1/presets/`
-    - Follows conventions from `.cursor/info/presets.md`
+    - Follows conventions from `architecture/presets.md`
 
 ### Phase 8: Final Validation (Rules 018-019)
 
-19. **018-build-validation** - Run `go build ./apis/.../v1/...` (verify component Go code compiles)
+19. **018-build-validation** - Verify component Go code compiles AND the Pulumi entrypoint
+    builds as the release builds it. Runs BOTH `go build ./apis/.../v1/...` (recursive, catches
+    module/proto errors) and `go build -o /dev/null ./apis/.../v1/iac/pulumi` (non-recursive,
+    the release contract -- requires a `package main` at the entrypoint root). Also asserts the
+    entrypoint lives at `iac/pulumi/` root with no `main/` or `entrypoint/` subdir.
 20. **019-test-validation** - Run `go test -v ./apis/.../v1/` (verify component tests pass)
     - Validates spec_test.go tests all buf.validate rules
     - Ensures validation rules are syntactically and semantically correct
@@ -151,7 +155,7 @@ If score is lower, the audit report will identify gaps and suggest fixes.
 After forge completes, the component should have:
 
 ✅ All 4 proto files with validations
-✅ **Every CEL message is user-facing quality** (clear, actionable, empathetic -- see `.cursor/info/spec_validate.md`)
+✅ **Every CEL message is user-facing quality** (clear, actionable, empathetic -- see rule `002-spec-validate`, "VALIDATION MESSAGE QUALITY")
 ✅ Generated .pb.go stubs
 ✅ spec_test.go with validation tests
 ✅ **Component tests execute and pass** (validates buf.validate rules)
@@ -159,10 +163,11 @@ After forge completes, the component should have:
 ✅ Complete user-facing documentation (README.md)
 ✅ Comprehensive research documentation (docs/README.md)
 ✅ Pulumi module that compiles and works
+✅ **Pulumi entrypoint at canonical root** (`iac/pulumi/main.go` is `package main`; no `main/` or `entrypoint/` subdir)
 ✅ Terraform module that validates and works
 ✅ Supporting files (manifests, debug scripts, module overviews)
 ✅ Initial presets generated (2-3 common configuration templates)
-✅ Build validation passed (`go build ./apis/.../v1/...`)
+✅ Build validation passed -- BOTH `go build ./apis/.../v1/...` AND the release-equivalent `go build -o /dev/null ./apis/.../v1/iac/pulumi`
 ✅ Component test validation passed (`go test -v ./apis/.../v1/`)
 
 **Result:** A production-ready deployment component matching 95-100% of ideal state with all tests passing!

@@ -1,0 +1,39 @@
+# =============================================================================
+# IaC Entrypoint Guard
+# =============================================================================
+# Fails the PR if any Pulumi deployment component is missing a `package main`
+# entrypoint at its `iac/pulumi/` root, or places the entrypoint in a `main/` or
+# `entrypoint/` subdirectory.
+#
+# This enforces the exact contract the release pipeline uses
+# (`go build ./<...>/v1/iac/pulumi`), catching missing/misplaced entrypoints at PR
+# time instead of at release time. See hack/guards/ensure_pulumi_entrypoints.sh.
+# =============================================================================
+
+name: lint.iac-entrypoints
+
+on:
+  pull_request:
+    paths:
+      - 'apis/**'
+      - 'hack/guards/ensure_pulumi_entrypoints.sh'
+      - '.github/workflows/lint.iac-entrypoints.yaml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'apis/**'
+
+permissions:
+  contents: read
+
+jobs:
+  pulumi-entrypoints:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify Pulumi entrypoints
+        run: ./hack/guards/ensure_pulumi_entrypoints.sh

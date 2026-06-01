@@ -31,10 +31,10 @@ All proto files must exist before running this rule.
 SEQUENTIAL STEPS
 1) Verify Prerequisites:
    - Check that the following proto files exist for the resource:
-     * `apis/project/planton/provider/<provider>/<kindfolder>/v1/api.proto`
-     * `apis/project/planton/provider/<provider>/<kindfolder>/v1/spec.proto`
-     * `apis/project/planton/provider/<provider>/<kindfolder>/v1/stack_input.proto`
-     * `apis/project/planton/provider/<provider>/<kindfolder>/v1/stack_outputs.proto`
+     * `apis/org/openmcf/provider/<provider>/<kindfolder>/v1/api.proto`
+     * `apis/org/openmcf/provider/<provider>/<kindfolder>/v1/spec.proto`
+     * `apis/org/openmcf/provider/<provider>/<kindfolder>/v1/stack_input.proto`
+     * `apis/org/openmcf/provider/<provider>/<kindfolder>/v1/stack_outputs.proto`
    - Confirm you are in the project root directory
 
 2) Execute Command:
@@ -119,10 +119,10 @@ Show results clearly:
 ✅ Success: Exit code 0
 
 📁 Generated files:
-   - apis/project/planton/provider/gcp/gcpcertmanagercert/v1/api.pb.go
-   - apis/project/planton/provider/gcp/gcpcertmanagercert/v1/spec.pb.go
-   - apis/project/planton/provider/gcp/gcpcertmanagercert/v1/stack_input.pb.go
-   - apis/project/planton/provider/gcp/gcpcertmanagercert/v1/stack_outputs.pb.go
+   - apis/org/openmcf/provider/gcp/gcpcertmanagercert/v1/api.pb.go
+   - apis/org/openmcf/provider/gcp/gcpcertmanagercert/v1/spec.pb.go
+   - apis/org/openmcf/provider/gcp/gcpcertmanagercert/v1/stack_input.pb.go
+   - apis/org/openmcf/provider/gcp/gcpcertmanagercert/v1/stack_outputs.pb.go
 
 ✅ Proto stub generation complete
 ```

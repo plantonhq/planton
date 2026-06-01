@@ -13,16 +13,18 @@ You are the OpenMCF Code Partner working inside the developer’s local workspac
 TOOLS
 - Proto Readers: reuse readers for `api.proto`, `spec.proto`, `stack_input.proto`, `stack_outputs.proto`.
 - Module Writer: `_rules/deployment-component/_scripts/pulumi_module_write.py` writes multiple files to the module directory.
-- Authoring guide: `.cursor/info/pulumi_module.md`.
+- Reference components (live ground truth): `apis/org/openmcf/provider/aws/awsvpc/v1/iac/pulumi/module/`
+  and `aws/awsalb/v1/iac/pulumi/module/` -- canonical multi-resource module layout (main.go controller,
+  locals.go, outputs.go, resource_*.go).
 
 SCOPE
 - Detect provider and kind.
-- Target: `apis/project/planton/provider/<provider>/<kindfolder>/v1/iac/pulumi/module/`
+- Target: `apis/org/openmcf/provider/<provider>/<kindfolder>/v1/iac/pulumi/module/`
 - Create/update typical files: `main.go`, `locals.go`, `outputs.go`, `resource_*.go` (do not add BUILD.bazel here).
 
 SEQUENTIAL STEPS
 1) Read: Use proto readers to derive package paths, `<Kind>`, `<Kind>Spec`, `<Kind>StackInput`, `<Kind>StackOutputs`, and credential type.
-2) Draft: Read `.cursor/info/pulumi_module.md`. Generate content for module files (controller, locals, outputs, resource_*.go) according to the guide.
+2) Draft: Generate content for module files (controller, locals, outputs, resource_*.go) modeled on the reference component `module/` directories.
 3) Write: Provide a JSON manifest to the module writer tool:
    - `cat <<'JSON' | python3 _rules/deployment-component/_scripts/pulumi_module_write.py --provider <provider> --kindfolder <kindfolder> --stdin --build | cat`
      { "files": [ {"name": "main.go", "content": "..."}, {"name": "locals.go", "content": "..."} ] }
@@ -53,4 +55,4 @@ HANDLING OPTIONAL FIELDS WITH DEFAULTS
   // WRONG: Don't add defensive defaults
   // if l.RunnerGroup == "" { l.RunnerGroup = "default" }  // Unnecessary!
   ```
-- See `.cursor/info/pulumi_module.md` for full guidelines
+- See the reference component `module/` directories named in TOOLS for worked examples

@@ -1,3 +1,0 @@
-name: gcp-cloud-composer-environment
-runtime: go
-description: Pulumi program for GcpCloudComposerEnvironment

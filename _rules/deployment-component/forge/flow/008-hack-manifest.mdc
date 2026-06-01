@@ -13,15 +13,16 @@ You are the OpenMCF Code Partner working inside the developer’s local workspac
 TOOLS
 - Proto Readers: reuse `_rules/deployment-component/_scripts/spec_proto_reader.py` and `_rules/deployment-component/_scripts/api_reader.py`.
 - Writer: `_rules/deployment-component/_scripts/hack_manifest_write.py` writes the manifest deterministically.
-- Authoring guide: `.cursor/info/hack_manifest.md`.
+- Reference components (live ground truth): `apis/org/openmcf/provider/aws/awsvpc/v1/iac/hack/manifest.yaml`
+  and `aws/awsalb/v1/iac/hack/manifest.yaml` -- canonical minimal test manifests.
 
 SCOPE
-- Target: `apis/project/planton/provider/<provider>/<kindfolder>/v1/iac/hack/manifest.yaml`
+- Target: `apis/org/openmcf/provider/<provider>/<kindfolder>/v1/iac/hack/manifest.yaml`
 - Create/update a minimal YAML manifest with safe defaults.
 
 SEQUENTIAL STEPS
 1) Read: Use proto readers to obtain `<Kind>`, `api_version`, and essential fields from `<Kind>Spec`.
-2) Draft: Read `.cursor/info/hack_manifest.md`. Generate minimal manifest YAML.
+2) Draft: Generate minimal manifest YAML modeled on the reference component `manifest.yaml` files.
 3) Write: `cat <<'YAML' | python3 _rules/deployment-component/_scripts/hack_manifest_write.py --provider <provider> --kindfolder <kindfolder> --stdin | cat`
    - If edits are needed, refine and re-run (≤3).
 

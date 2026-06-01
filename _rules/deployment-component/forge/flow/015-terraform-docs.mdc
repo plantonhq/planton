@@ -12,10 +12,11 @@ You are the OpenMCF Code Partner working inside the developer's local workspace 
 
 TOOLS
 - Docs Writer: `_rules/deployment-component/_scripts/terraform_docs_write.py`
-- Guide: `.cursor/info/terraform_docs.md`
+- Reference components (live ground truth): `apis/org/openmcf/provider/aws/awsvpc/v1/iac/tf/README.md`
+  and `aws/awsalb/v1/iac/tf/README.md` -- canonical Terraform package docs.
 
 SEQUENTIAL STEPS
-1) Draft: Read `.cursor/info/terraform_docs.md`. Prepare content for README.md.
+1) Draft: Modeled on the reference component `iac/tf/README.md` files, prepare content for README.md.
 2) Write deterministically:
    - `python3 _rules/deployment-component/_scripts/terraform_docs_write.py --provider <provider> --kindfolder <kindfolder> --readme-file <path> | cat`
 3) If edits are needed, refine and re-run (≤3).

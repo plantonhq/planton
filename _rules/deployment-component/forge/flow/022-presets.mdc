@@ -14,7 +14,8 @@ SCOPE
 - Target directory: `apis/org/openmcf/provider/<provider>/<kindfolder>/v1/presets/`
 - Creates both `.yaml` and `.md` files for each preset
 - Does not modify any existing files
-- Follows conventions from `.cursor/info/presets.md`
+- Follows conventions from `architecture/presets.md` and the reference component presets at
+  `apis/org/openmcf/provider/aws/awsalb/v1/presets/` (e.g., `01-internet-facing-https.yaml` + `.md`)
 
 PREREQUISITES
 - `api.proto` exists (provides `apiVersion` and `kind` constants)
@@ -26,7 +27,7 @@ SEQUENTIAL STEPS
 1) **Read Component Context**
    - Read `api.proto`: extract exact `apiVersion` and `kind` constant values from `buf.validate` constraints
    - Read `spec.proto`: catalog all fields, their types, validations, and default annotations (`recommended_default`, `default`)
-   - Read `.cursor/info/presets.md`: load the preset authoring conventions
+   - Read `architecture/presets.md` and the reference component presets named in SCOPE: load the preset authoring conventions
 
 2) **Identify Preset Patterns**
    
@@ -73,7 +74,7 @@ OUTPUT
 SUCCESS
 - At least 1 preset created (rank 01 at minimum)
 - All YAML files have companion MD files
-- All presets follow conventions from `.cursor/info/presets.md`
+- All presets follow conventions from `architecture/presets.md`
 - `apiVersion` and `kind` match `api.proto` constants
 - All `StringValueOrRef` fields use `value:` wrapper
 

@@ -12,11 +12,21 @@ You are the OpenMCF Code Partner working inside the developer’s local workspac
 
 TOOLS
 - Entrypoint Writer: `_rules/deployment-component/_scripts/pulumi_entrypoint_write.py`
-- Authoring guide: `.cursor/info/pulumi_entrypoint.md`
+- Reference component (live ground truth): `apis/org/openmcf/provider/aws/awsvpc/v1/iac/pulumi/`
+  -- copy the shape of its root `main.go` (`package main` -> load `<Kind>StackInput` -> call
+  `module.Resources`), `Pulumi.yaml` (`name: <kindfolder>-pulumi-project`, `runtime: name: go`),
+  and `Makefile`.
+
+CRITICAL -- ENTRYPOINT LOCATION (DO NOT REGRESS)
+The entrypoint files MUST be written at the `iac/pulumi/` ROOT, never in a `main/` or
+`entrypoint/` subdirectory. The release pipeline builds the entrypoint non-recursively
+(`go build ./<...>/v1/iac/pulumi`), which requires `package main` at the root and fails with
+`no Go files in .../iac/pulumi` otherwise. The writer tool enforces this (it rejects subdir
+names); do not work around it.
 
 SEQUENTIAL STEPS
 1) Read: Confirm proto context from earlier steps (provider, kind) if needed.
-2) Draft: Read `.cursor/info/pulumi_entrypoint.md`. Prepare a files JSON with `main.go`, `Pulumi.yaml`, `Makefile` content.
+2) Draft: Modeled on the reference component's `iac/pulumi/` root files, prepare a files JSON with `main.go`, `Pulumi.yaml`, `Makefile` content.
 3) Write (+optional build):
    - `cat <<'JSON' | python3 _rules/deployment-component/_scripts/pulumi_entrypoint_write.py --provider <provider> --kindfolder <kindfolder> --stdin --build | cat`
      { "files": [ {"name": "main.go", "content": "..."}, {"name": "Pulumi.yaml", "content": "..."}, {"name": "Makefile", "content": "..."} ] }
@@ -28,8 +38,10 @@ OUTPUT
 - If `--build` used, show build results and iterate if needed (≤3).
 
 SUCCESS CRITERIA
-- Entrypoint and project files created outside `module/`.
-- If `--build` used, `go build` succeeds for the subtree.
+- `main.go` (`package main`), `Pulumi.yaml`, and `Makefile` created at the `iac/pulumi/` ROOT
+  (NOT in a `main/` or `entrypoint/` subdir; NOT inside `module/`).
+- If `--build` used, the non-recursive `go build` of the entrypoint directory succeeds (the
+  writer runs `go build -o /dev/null ./<...>/v1/iac/pulumi`, matching the release contract).
 
 OUTPUT STYLE IN CHAT
 - Show concise tree of created/updated files.

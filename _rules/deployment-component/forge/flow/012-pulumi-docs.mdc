@@ -12,10 +12,11 @@ You are the OpenMCF Code Partner working inside the developer's local workspace 
 
 TOOLS
 - Docs Writer: `_rules/deployment-component/_scripts/pulumi_docs_write.py`
-- Guide: `.cursor/info/pulumi_docs.md`
+- Reference components (live ground truth): `apis/org/openmcf/provider/aws/awsvpc/v1/iac/pulumi/README.md`
+  and `.../iac/pulumi/debug.sh` (and `aws/awsalb/v1/iac/pulumi/`) -- canonical Pulumi package docs and debug helper.
 
 SEQUENTIAL STEPS
-1) Draft: Read `.cursor/info/pulumi_docs.md`. Prepare content for README.md and debug.sh.
+1) Draft: Modeled on the reference component `iac/pulumi/README.md` and `debug.sh`, prepare content for README.md and debug.sh.
 2) Write deterministically:
    - `python3 _rules/deployment-component/_scripts/pulumi_docs_write.py --provider <provider> --kindfolder <kindfolder> --readme-file <path> --debug-file <path> | cat`
 3) If edits are needed, refine and re-run (≤3).

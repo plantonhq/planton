@@ -1,6 +1,0 @@
-name: aws-elastic-file-system
-runtime:
-  name: go
-  options:
-    binary: main
-description: AWS Elastic File System Pulumi module

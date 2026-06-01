@@ -41,9 +41,26 @@ env:
 
 jobs:
   # ============================================================================
+  # Pre-flight: reject missing/misplaced Pulumi entrypoints before the long matrix
+  # ============================================================================
+  # The matrix build below runs `go build ./<...>/v1/iac/pulumi` per component, which
+  # requires a `package main` at the entrypoint root. Catch a broken entrypoint ONCE here
+  # (seconds) instead of failing dozens of expensive matrix legs after long compiles.
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify Pulumi entrypoints
+        run: ./hack/guards/ensure_pulumi_entrypoints.sh
+
+  # ============================================================================
   # Build all components for each provider × platform combination
   # ============================================================================
   build:
+    needs: preflight
     runs-on: ubuntu-latest
     timeout-minutes: 60
     strategy:

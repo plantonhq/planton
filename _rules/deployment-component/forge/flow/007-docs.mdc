@@ -13,15 +13,16 @@ You are the OpenMCF Code Partner working inside the developer's local workspace 
 TOOLS
 - Proto Readers: reuse `_rules/deployment-component/_scripts/*_reader.py` for `api.proto`, `spec.proto`, `stack_input.proto`, `stack_outputs.proto` as needed.
 - Docs Writer: `_rules/deployment-component/_scripts/docs_write.py` writes `README.md` deterministically.
-- Authoring guide: `.cursor/info/docs.md`.
+- Reference components (live ground truth): `apis/org/openmcf/provider/aws/awsvpc/v1/README.md`
+  and `aws/awsalb/v1/README.md` -- canonical user-facing README structure and tone.
 
 SCOPE
-- Target: `apis/project/planton/provider/<provider>/<kindfolder>/v1/`
+- Target: `apis/org/openmcf/provider/<provider>/<kindfolder>/v1/`
 - Create/update `README.md`.
 
 SEQUENTIAL STEPS
 1) Read: Use proto readers to fetch contents of `api.proto`, `spec.proto`, `stack_input.proto`, `stack_outputs.proto`.
-2) Draft: Read `.cursor/info/docs.md`. Generate README content using proto details and guide.
+2) Draft: Generate README content using proto details, modeled on the reference component `README.md` files.
 3) Write: `python3 _rules/deployment-component/_scripts/docs_write.py --provider <provider> --kindfolder <kindfolder> --readme-file <path>`
    - If edits are needed, refine content and re-run (≤3).
 

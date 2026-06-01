@@ -112,7 +112,7 @@ Use fix when you need to:
 1. **Fix Proto Schema** (if proto change needed)
    - Update spec.proto with the fix
    - Add/modify buf.validate rules
-   - **Validation message quality**: Every CEL `message` must be a clear, actionable sentence a non-expert can act on. See `.cursor/info/spec_validate.md` "Validation Message Philosophy". No terse messages, no raw regex in user-facing text.
+   - **Validation message quality**: Every CEL `message` must be a clear, actionable sentence a non-expert can act on. See rule `002-spec-validate` ("VALIDATION MESSAGE QUALITY"). No terse messages, no raw regex in user-facing text.
    - **Must execute**: `make protos` from project root to regenerate Go stubs
    - **Must execute**: `go test ./apis/org/openmcf/provider/<provider>/<component>/v1/` to validate spec tests
 

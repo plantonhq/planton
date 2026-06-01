@@ -13,7 +13,7 @@ You are the OpenMCF Code Partner working inside the developer’s local workspac
 This rule separates deterministic steps (Python tools) from LLM drafting.
 
 SCOPE
-- Target: `apis/project/planton/provider/<provider>/<kindfolder>/v1/spec.proto`
+- Target: `apis/org/openmcf/provider/<provider>/<kindfolder>/v1/spec.proto`
 - Only add validations and brief comments. No field/message renames/additions/deletions.
 - Do not manually create folders; writer tool handles directories.
 - Do not edit other files.
@@ -21,11 +21,17 @@ SCOPE
 TOOLS
 - Reader: `_rules/deployment-component/_scripts/spec_proto_reader.py`
 - Writer+Build: `_rules/deployment-component/_scripts/spec_proto_write_and_build.py`
-- Validation guide: `.cursor/info/spec_validate.md`
+- Validation standard: the "VALIDATION MESSAGE QUALITY" section in this rule (below) is the
+  authoritative standard. This rule is the canonical home for the Validation Message Philosophy.
+- Reference components (live ground truth): study the validated `spec.proto` of
+  `apis/org/openmcf/provider/aws/awsvpc/v1/spec.proto` and `aws/awsalb/v1/spec.proto` for
+  buf.validate field options, message-level CEL, and message wording.
 
 SEQUENTIAL STEPS
 1) Read: `python3 _rules/deployment-component/_scripts/spec_proto_reader.py --provider <provider> --kindfolder <kindfolder>`
-2) Draft: Read `.cursor/info/spec_validate.md`, then add validations to the `spec.proto` content (import buf/validate, field options, message-level CEL). Do not change schema.
+2) Draft: Following the VALIDATION MESSAGE QUALITY section below and the reference component
+   `spec.proto` files, add validations to the `spec.proto` content (import buf/validate, field
+   options, message-level CEL). Do not change schema.
 3) Write+Build: `cat <<'PROTO' | python3 _rules/deployment-component/_scripts/spec_proto_write_and_build.py --provider <provider> --kindfolder <kindfolder> --stdin | cat`
    - If `build_succeeded` is false, refine validations and retry (≤3).
 
@@ -33,7 +39,9 @@ VALIDATION MESSAGE QUALITY (NON-NEGOTIABLE)
 
 Every CEL `message` string you write will be read by a human configuring this component. You are not a compiler emitting errors -- you are a knowledgeable colleague reviewing their configuration and guiding them to success.
 
-Before writing any message, read the "Validation Message Philosophy" section in `.cursor/info/spec_validate.md`. This is mandatory, not optional.
+This is the Validation Message Philosophy. It is mandatory, not optional. The checklist below
+is the full standard -- there is no separate guide to read; treat these rules as authoritative
+and confirm your wording against the reference component `spec.proto` files named in TOOLS.
 
 Quick checklist for every `message:` string:
 - Is it a complete sentence a non-expert can act on? (not "required" or "invalid")
@@ -59,7 +67,7 @@ DEFAULT FIELD OPTIONS (SEPARATE FROM VALIDATION)
 - Fields with defaults MUST be marked as `optional`
 - Example combining both: `optional string tag = 1 [(org.openmcf.shared.options.default) = "2.331.0", (buf.validate.field).string.min_len = 1];`
 - The `DEFAULT_REQUIRES_OPTIONAL` linter enforces this pattern at build time
-- See `.cursor/info/spec_validate.md` for full guidelines
+- See the reference component `spec.proto` files named in TOOLS for worked examples
 
 VERIFY DEFAULTS DURING VALIDATION PASS
 - When adding validations, also verify that all fields identified in rule 001 as having

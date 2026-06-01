@@ -86,7 +86,7 @@ Use update when you need to:
 - Added/modified validations
 - Renamed fields
 
-**Validation message quality:** When adding or modifying CEL validations, every `message` string must meet the quality standards in `.cursor/info/spec_validate.md` (see "Validation Message Philosophy"). These messages are rendered directly in user-facing UIs and CLIs. Write them like a knowledgeable colleague helping someone configure this component for the first time.
+**Validation message quality:** When adding or modifying CEL validations, every `message` string must meet the quality standards in rule `002-spec-validate` ("VALIDATION MESSAGE QUALITY"). These messages are rendered directly in user-facing UIs and CLIs. Write them like a knowledgeable colleague helping someone configure this component for the first time.
 
 #### Scenario 3: Refresh Documentation
 
@@ -518,7 +518,6 @@ Next step: Run @audit-openmcf-component MongodbAtlas to verify
 - **Update README:** `_rules/deployment-component/update/README.md`
 - **Audit Rule:** `_rules/deployment-component/audit/audit-openmcf-component.mdc`
 - **Preset Convention:** `architecture/presets.md`
-- **Preset AI Reference:** `.cursor/info/presets.md`
 - **Preset Rules:** `_rules/deployment-component/presets/` (create, audit, validate)
 
 ## Tips

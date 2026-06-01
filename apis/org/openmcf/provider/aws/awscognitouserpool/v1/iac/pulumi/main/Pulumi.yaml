@@ -1,6 +1,0 @@
-name: aws-cognito-user-pool
-runtime:
-  name: go
-  options:
-    binary: main
-description: AWS Cognito User Pool Pulumi module

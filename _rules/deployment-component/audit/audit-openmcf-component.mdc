@@ -101,7 +101,7 @@ For each category, check files and record results. Use the following structure t
 - [ ] No messages shorter than 5 words or containing raw regex as the primary text
 - [ ] Messages use the field's semantic purpose (e.g., "Image repository") not proto path names (e.g., "this.repo")
 
-**Reference:** See `.cursor/info/spec_validate.md` "Validation Message Philosophy" for the full quality standard.
+**Reference:** See rule `002-spec-validate` ("VALIDATION MESSAGE QUALITY") for the full quality standard.
 
 **Unit Tests - File Presence (2.77%):**
 - [ ] `spec_test.go` exists and is non-empty (>500 bytes)
@@ -129,11 +129,20 @@ For each category, check files and record results. Use the following structure t
 - [ ] `iac/pulumi/module/outputs.go` exists
 
 **Entrypoint Files (6.66%):**
-- [ ] `iac/pulumi/main.go` exists
+- [ ] `iac/pulumi/main.go` exists AT THE ROOT and declares `package main`
+- [ ] NO `iac/pulumi/main/` subdir and NO `iac/pulumi/entrypoint/` subdir exist
+      (a misplaced entrypoint in a subdir is a FAIL even if `main.go` exists there -- the
+      release build is non-recursive and only consumes the root `iac/pulumi/` package)
 - [ ] `iac/pulumi/Pulumi.yaml` exists
 - [ ] `iac/pulumi/Makefile` exists
+- [ ] Release-equivalent build passes:
+      `go build -o /dev/null ./apis/org/openmcf/provider/<provider>/<component>/v1/iac/pulumi`
+      (this is the EXACT command the release pipeline runs; presence checks alone are not
+      sufficient -- a component can have files yet still fail this build)
 
-**Scoring:** Each sub-category scored independently
+**Scoring:** Each sub-category scored independently. Entrypoint structure (root `package main`,
+no subdir) and the release-equivalent build are CRITICAL: a component that fails either cannot
+be released and must be reported as a critical gap regardless of other scores.
 
 #### Category 5: IaC Modules - Terraform (Critical - 4.44%)
 
@@ -200,7 +209,7 @@ For each category, check files and record results. Use the following structure t
 
 #### Category 10: Presets (Important - 5.00%)
 
-**Reference:** See `architecture/presets.md` for full convention and `.cursor/info/presets.md` for authoring guide.
+**Reference:** See `architecture/presets.md` for the full convention and authoring guide.
 
 **Directory and File Checks (2.50%):**
 - [ ] `presets/` directory exists under `v1/`
@@ -555,9 +564,11 @@ go test -v
 
 ✅ **Passed:**
 
-- `iac/pulumi/main.go` exists
+- `iac/pulumi/main.go` exists at root and declares `package main`
+- No `main/` or `entrypoint/` subdir under `iac/pulumi/`
 - `iac/pulumi/Pulumi.yaml` exists
 - `iac/pulumi/Makefile` exists
+- Release-equivalent build passes: `go build -o /dev/null ./apis/.../v1/iac/pulumi`
 
 ❌ **Failed:**
 

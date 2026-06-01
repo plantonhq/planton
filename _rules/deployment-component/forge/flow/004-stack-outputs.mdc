@@ -18,11 +18,12 @@ SCOPE
 TOOLS
 - Reader: `_rules/deployment-component/_scripts/stack_outputs_reader.py`
 - Writer+Build: `_rules/deployment-component/_scripts/stack_outputs_write_and_build.py`
-- Authoring guide: `.cursor/info/stack_outputs.md`
+- Reference components (live ground truth): `apis/org/openmcf/provider/aws/awsvpc/v1/stack_outputs.proto`
+  and `aws/awsalb/v1/stack_outputs.proto` -- canonical examples of observable, non-secret outputs.
 
 SEQUENTIAL STEPS
 1) Read: `python3 _rules/deployment-component/_scripts/stack_outputs_reader.py --provider <provider> --kindfolder <kindfolder>`
-2) Draft: Read `.cursor/info/stack_outputs.md`, then author `stack_outputs.proto` content accordingly.
+2) Draft: Following the reference component `stack_outputs.proto` files (and the skeleton below), author `stack_outputs.proto` content accordingly.
 3) Write+Build: `cat <<'PROTO' | python3 _rules/deployment-component/_scripts/stack_outputs_write_and_build.py --provider <provider> --kindfolder <kindfolder> --stdin | cat`
    - If `build_succeeded` is false, refine content and retry (≤6).
 

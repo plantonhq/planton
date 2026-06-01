@@ -45,7 +45,7 @@ If `--name` or `--rank` are omitted, determine them based on analysis of the com
    - `iac/hack/manifest.yaml` -- See the minimal test manifest for structural reference
 
 3. **Read convention**:
-   - `.cursor/info/presets.md` -- Preset authoring guide
+   - `architecture/presets.md` -- Preset authoring guide and convention reference
 
 4. **Check existing presets**:
    - Read `v1/presets/` directory (if it exists)

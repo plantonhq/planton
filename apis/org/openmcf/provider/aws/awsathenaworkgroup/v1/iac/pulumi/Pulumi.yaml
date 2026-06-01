@@ -1,0 +1,5 @@
+name: awsathenaworkgroup-pulumi-project
+runtime:
+  name: go
+# options:
+#   binary: ./debug.sh

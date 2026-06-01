@@ -20,11 +20,12 @@ SCOPE
 TOOLS
 - Reader: `_rules/deployment-component/_scripts/spec_proto_reader.py`
 - Writer+Build: `_rules/deployment-component/_scripts/spec_proto_write_and_build.py`
-- Authoring guide: `.cursor/info/spec_proto.md`
+- Reference components (live ground truth): `apis/org/openmcf/provider/aws/awsvpc/v1/spec.proto`
+  and `aws/awsalb/v1/spec.proto` -- canonical examples of schema shape, enums, and default options.
 
 SEQUENTIAL STEPS
 1) Read: `python3 _rules/deployment-component/_scripts/spec_proto_reader.py --provider <provider> --kindfolder <kindfolder>`
-2) Draft: Read `.cursor/info/spec_proto.md`, then create or minimally update `spec.proto` content accordingly.
+2) Draft: Following the reference component `spec.proto` files and the NOTES below, create or minimally update `spec.proto` content accordingly.
 3) Write+Build: `cat <<'PROTO' | python3 _rules/deployment-component/_scripts/spec_proto_write_and_build.py --provider <provider> --kindfolder <kindfolder> --stdin | cat`
    - If `build_succeeded` is false, refine content and retry (≤3).
 
@@ -40,7 +41,7 @@ SUCCESS
 NOTES
 - Later rules will add validations, status/outputs, tests, and IaC. This rule purposefully keeps `spec.proto` minimal and unvalidated for quick iteration.
 - Deterministic read/write responsibilities are fully delegated to the Python tools defined above to ensure repeatable file system effects.
-- When creating enums, follow the guidelines in `.cursor/info/spec_proto.md`:
+- When creating enums, follow these guidelines (and the reference component `spec.proto` files):
   - Nest enums inside messages where they're used
   - Use lowercase values without prefixes (except unspecified)
   - UNSPECIFIED values: `{enum_name_in_snake_case}_unspecified` (e.g., `built_in_profile_unspecified`)
@@ -52,7 +53,7 @@ DEFAULT FIELD OPTIONS
 - Import: `import "org/openmcf/shared/options/options.proto";`
 - Example: `optional string namespace = 1 [(org.openmcf.shared.options.default) = "external-dns"];`
 - The `DEFAULT_REQUIRES_OPTIONAL` linter enforces this pattern at build time
-- See `.cursor/info/spec_proto.md` for full guidelines
+- See the reference component `spec.proto` files named in TOOLS for worked examples
 
 PROACTIVE DEFAULT IDENTIFICATION (MANDATORY STEP)
 - During spec authoring, you MUST review EVERY field and ask: "Does this field have a well-known sensible default from the provider's documentation?"

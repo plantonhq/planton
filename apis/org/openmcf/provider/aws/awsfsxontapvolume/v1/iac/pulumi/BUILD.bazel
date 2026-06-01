@@ -1,13 +1,13 @@
 load("@rules_go//go:def.bzl", "go_binary", "go_library")
 
 go_library(
-    name = "main_lib",
+    name = "pulumi_lib",
     srcs = ["main.go"],
-    importpath = "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awscognitouserpool/v1/iac/pulumi/main",
+    importpath = "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsfsxontapvolume/v1/iac/pulumi",
     visibility = ["//visibility:private"],
     deps = [
-        "//apis/org/openmcf/provider/aws/awscognitouserpool/v1:awscognitouserpool",
-        "//apis/org/openmcf/provider/aws/awscognitouserpool/v1/iac/pulumi/module",
+        "//apis/org/openmcf/provider/aws/awsfsxontapvolume/v1:awsfsxontapvolume",
+        "//apis/org/openmcf/provider/aws/awsfsxontapvolume/v1/iac/pulumi/module",
         "//pkg/iac/pulumi/pulumimodule/stackinput",
         "@com_github_pkg_errors//:errors",
         "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
@@ -15,7 +15,7 @@ go_library(
 )
 
 go_binary(
-    name = "main",
-    embed = [":main_lib"],
+    name = "pulumi",
+    embed = [":pulumi_lib"],
     visibility = ["//visibility:public"],
 )

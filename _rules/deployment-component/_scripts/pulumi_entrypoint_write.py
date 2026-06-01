@@ -40,8 +40,8 @@ def find_repo_root(start_dir: str) -> str:
 def base_paths(repo_root: str, provider: str, kind_folder: str) -> Tuple[str, str]:
     rel = os.path.join(
         "apis",
-        "project",
-        "planton",
+        "org",
+        "openmcf",
         "provider",
         provider,
         kind_folder,
@@ -88,8 +88,13 @@ def write_files(base_abs: str, base_rel: str, files: List[Dict[str, str]]) -> Tu
 
 
 def run_go_build(repo_root: str, base_rel: str) -> Tuple[int, str, str]:
+    # Build the entrypoint directory NON-RECURSIVELY, exactly as the release pipeline does
+    # (release.pulumi-modules.yaml runs `go build -o <bin> ./<...>/v1/iac/pulumi`). A recursive
+    # `./<base_rel>/...` build would compile the module/ library and PASS even when the root
+    # `package main` entrypoint is missing or misplaced -- masking the very failure this writer
+    # must catch. `-o /dev/null` discards the binary while still requiring a buildable root main.
     try:
-        p = subprocess.run(["go", "build", "./" + base_rel + "/..."], cwd=repo_root, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=False)
+        p = subprocess.run(["go", "build", "-o", os.devnull, "./" + base_rel], cwd=repo_root, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=False)
         return p.returncode, p.stdout, p.stderr
     except Exception as exc:
         return 127, "", str(exc)

@@ -14,12 +14,13 @@ TOOLS
 - Proto Readers: reuse readers for `api.proto`, `spec.proto`, `stack_input.proto`, `stack_outputs.proto`.
 - Variables Generator: `_rules/deployment-component/_scripts/terraform_module_write.py` (run with `--make-local --generate-variables`)
 - Module Writer: `_rules/deployment-component/_scripts/terraform_module_write.py`
-- Guide: `.cursor/info/terraform_module.md`
+- Reference components (live ground truth): `apis/org/openmcf/provider/aws/awsvpc/v1/iac/tf/`
+  and `aws/awsalb/v1/iac/tf/` -- canonical `variables.tf`/`provider.tf`/`locals.tf`/`main.tf`/`outputs.tf` layout.
 
 SEQUENTIAL STEPS
 1) Read: Use proto readers to derive `<Kind>`, spec, outputs, and provider context.
 2) Generate variables and read it: `echo '{"files":[]}' | python3 _rules/deployment-component/_scripts/terraform_module_write.py --provider <provider> --kindfolder <kindfolder> --kind <Kind> --stdin --make-local --generate-variables | cat`. Then open the generated `variables.tf` in the module path.
-3) Draft: Consult `.cursor/info/terraform_module.md`. Prepare a files JSON manifest for non-generated files.
+3) Draft: Consult the reference component `iac/tf/` directories. Prepare a files JSON manifest for non-generated files.
 4) Write and validate:
    - `cat <<'JSON' | python3 _rules/deployment-component/_scripts/terraform_module_write.py --provider <provider> --kindfolder <kindfolder> --kind <Kind> --stdin --validate | cat`
      { "files": [ {"name": "provider.tf", "content": "..."}, {"name": "locals.tf", "content": "..."}, {"name": "outputs.tf", "content": "..."} ] }
@@ -55,4 +56,4 @@ HANDLING OPTIONAL FIELDS WITH DEFAULTS
   # WRONG: Unnecessary defensive default - OpenMCF already handled this
   content_type = coalesce(each.value.content_type, "application/octet-stream")
   ```
-- See `.cursor/info/terraform_module.md` for full guidelines
+- See the reference component `iac/tf/` directories named in TOOLS for worked examples

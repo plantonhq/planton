@@ -13,10 +13,29 @@ You are the OpenMCF Code Partner working inside the developer's local workspace 
 SCOPE
 - Run `go build` scoped to the component's directory tree
 - Compile the component's proto stubs, Pulumi module, and Pulumi entrypoint
+- Verify the Pulumi entrypoint compiles AS THE RELEASE BUILDS IT (non-recursive, root `main` package)
 - Catch compilation errors early
 - Validate imports and dependencies
 - Do not modify code files
 - Do NOT run `make build` (that compiles the entire monorepo and is unnecessary)
+
+WHY TWO BUILD COMMANDS (READ THIS -- DO NOT REGRESS)
+The recursive `go build ./apis/.../v1/...` command is NOT sufficient on its own. The `...`
+wildcard compiles whatever packages happen to exist under the tree, so a component whose
+entrypoint is MISSING (only `module/` present) or MISPLACED (entrypoint in a `main/` or
+`entrypoint/` subdir) still passes -- the wildcard simply builds the `module/` library and
+reports success. The release pipeline does NOT use the wildcard. It builds the entrypoint
+directory directly and non-recursively:
+
+```
+go build -o <bin> ./apis/org/openmcf/provider/<provider>/<component>/v1/iac/pulumi
+```
+
+That form REQUIRES a `package main` file at the `iac/pulumi/` root and fails with
+`no Go files in .../iac/pulumi` when the entrypoint is missing or misplaced. To guarantee
+forge's gate matches the release contract, this rule runs BOTH commands and asserts the
+entrypoint structure explicitly. A component that passes only the wildcard build but fails
+the non-recursive entrypoint build is BROKEN and must not be marked validated.
 
 PREREQUISITES
 This rule should be run after:
@@ -27,22 +46,28 @@ This rule should be run after:
 All Go source files and generated proto stubs must exist.
 
 SEQUENTIAL STEPS
-1) Verify Prerequisites:
+1) Verify Prerequisites and Entrypoint Structure:
    - Confirm proto stubs are generated (.pb.go files exist)
    - Check that Pulumi module files exist:
      * `iac/pulumi/module/main.go`
      * `iac/pulumi/module/locals.go`
      * `iac/pulumi/module/outputs.go`
      * Resource implementation files (e.g., `network.go`)
-   - Check that Pulumi entrypoint exists:
-     * `iac/pulumi/main.go`
+   - ASSERT the Pulumi entrypoint is at the canonical root location:
+     * `iac/pulumi/main.go` exists AND its first non-comment line is `package main`
+     * There is NO `iac/pulumi/main/` subdir and NO `iac/pulumi/entrypoint/` subdir
+       (these are divergent layouts the release build cannot consume -- if present, the
+       entrypoint files must be moved up to `iac/pulumi/` and the subdir deleted)
    - Confirm you are in the project root directory
 
-2) Execute Command:
-   - Run: `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...`
-   - The `...` wildcard recursively compiles all Go packages under the component:
-     proto stubs, Pulumi module, and Pulumi entrypoint
-   - Should complete in a few seconds (single component, not entire monorepo)
+2) Execute Build Commands (BOTH are required):
+   a) Recursive component build (catches module/proto/stub compile errors):
+      - Run: `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...`
+   b) Release-equivalent entrypoint build (catches a missing/misplaced root `main`):
+      - Run: `go build -o /dev/null ./apis/org/openmcf/provider/<provider>/<component>/v1/iac/pulumi`
+      - This is the EXACT contract the release pipeline uses. It is non-recursive and
+        requires a `package main` at the entrypoint root. Do not substitute the `...` form.
+   - Each should complete in a few seconds (single component, not entire monorepo)
 
 3) Parse Output:
    - Check exit code (0 = success, non-zero = failure)
@@ -64,7 +89,11 @@ SEQUENTIAL STEPS
    - Indicate which files have errors
 
 SUCCESS CRITERIA
+- The Pulumi entrypoint is at the canonical root: `iac/pulumi/main.go` is `package main`,
+  with no `iac/pulumi/main/` or `iac/pulumi/entrypoint/` subdir
 - `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...` exits with code 0
+- `go build -o /dev/null ./apis/org/openmcf/provider/<provider>/<component>/v1/iac/pulumi`
+  (the release-equivalent, non-recursive entrypoint build) exits with code 0
 - No compilation errors
 - All Go files in the component compile successfully
 - Dependencies are resolved
@@ -113,6 +142,16 @@ COMMON ERRORS AND FIXES
    ```
    Fix: Run `make protos` first (rule 017)
 
+8. **No Go files in entrypoint dir (missing/misplaced entrypoint):**
+   ```
+   Error: no Go files in .../v1/iac/pulumi
+   ```
+   This means the recursive `...` build passed but the release-equivalent entrypoint
+   build failed. The `package main` entrypoint is absent from `iac/pulumi/` root (it may be
+   missing entirely, or misplaced in a `main/` or `entrypoint/` subdir).
+   Fix: Run rule 010 to create `iac/pulumi/main.go` at the root. If a `main/` or
+   `entrypoint/` subdir exists, move its files up to `iac/pulumi/` and delete the subdir.
+
 OUTPUT FORMAT
 Show results clearly:
 
@@ -120,16 +159,18 @@ Show results clearly:
 ✅ Prerequisites verified
    - Proto stubs exist (.pb.go files)
    - Pulumi module files exist
-   - Pulumi entrypoint exists
+   - Pulumi entrypoint at root: iac/pulumi/main.go (package main), no main//entrypoint/ subdir
 
 🔨 Running: go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...
+🔨 Running: go build -o /dev/null ./apis/org/openmcf/provider/<provider>/<component>/v1/iac/pulumi
 
-⏱️  Duration: 3s
+⏱️  Duration: 4s
 
-✅ Success: Exit code 0
+✅ Success: Exit code 0 (both builds)
 
 📦 Build complete
    - Component packages compiled successfully
+   - Entrypoint compiles as the release builds it (non-recursive root main)
    - No errors or warnings
 
 ✅ Build validation passed
@@ -150,8 +191,10 @@ Compilation failed with X errors:
 
 Next steps:
 1. Fix the errors listed above
-2. Re-run: go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...
-3. Proceed to next rule only after build succeeds
+2. Re-run BOTH builds:
+   - go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...
+   - go build -o /dev/null ./apis/org/openmcf/provider/<provider>/<component>/v1/iac/pulumi
+3. Proceed to next rule only after BOTH builds succeed
 ```
 
 DEBUGGING TIPS
