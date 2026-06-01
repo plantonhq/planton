@@ -23,6 +23,8 @@ on:
       - main
     paths:
       - 'apis/**'
+      - 'hack/guards/ensure_pulumi_entrypoints.sh'
+      - '.github/workflows/lint.iac-entrypoints.yaml'
 
 permissions:
   contents: read
