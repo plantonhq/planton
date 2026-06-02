@@ -62,6 +62,46 @@ message KubernetesIstioApiWorkloadSelector {
   ];
 }
 
+// KubernetesIstioApiNetworkingWorkloadSelector selects the workloads (pods/VMs) that a
+// networking resource (ServiceEntry, Sidecar, Gateway, EnvoyFilter, DestinationRule)
+// applies to, by label. Faithful to istio.io/api
+// `istio.networking.v1alpha3.WorkloadSelector` — DISTINCT from the policy selector
+// `KubernetesIstioApiWorkloadSelector` above: the networking selector's field is named
+// `labels` (JSON `labels`), whereas the security/policy selector uses `match_labels`
+// (JSON `matchLabels`). They are different upstream messages in different proto packages
+// (networking/v1alpha3 vs type/v1beta1) and must not be conflated. When multiple labels
+// are given, all must match; the search is scoped to the resource's namespace.
+//
+// First consumer: ServiceEntry (T04). EnvoyFilter (T05) and DestinationRule (T06) also use
+// this same upstream selector and may reuse this type — but each MUST first confirm its
+// own CRD's selector constraints match those encoded below before reusing it (this file is
+// grown just-in-time per consumer).
+//
+// DD-009 composability: the selected workloads are not a typed cross-resource reference;
+// they are matched by label at runtime by istiod. No automatic DAG edge is created.
+message KubernetesIstioApiNetworkingWorkloadSelector {
+  // One or more labels indicating the set of pods/VMs the resource applies to.
+  // Faithful to istio.io/api `istio.networking.v1alpha3.WorkloadSelector.labels`,
+  // whose ServiceEntry CRD constraints are: max 256 entries; each value <= 63 chars;
+  // and wildcards ('*') are not permitted in values. NOTE: unlike the policy selector
+  // (`match_labels` above), the ServiceEntry CRD does NOT enforce non-empty keys or
+  // no-wildcard keys, so those two rules are deliberately omitted here — adding them would
+  // reject configurations the CRD accepts (DD-001: match the upstream validated outcome).
+  map<string, string> labels = 1 [
+    (buf.validate.field).map = {
+      max_pairs: 256
+      values: {
+        string: {max_len: 63}
+      }
+    },
+    (buf.validate.field).cel = {
+      id: "istio_networking_workload_selector.labels_no_wildcard_values"
+      message: "wildcard ('*') is not allowed in label selector values"
+      expression: "this.all(k, !this[k].contains('*'))"
+    }
+  ];
+}
+
 // KubernetesIstioApiPortSelector selects a policy's applicability to a specific port.
 // Faithful to istio.io/api `istio.type.v1beta1.PortSelector`.
 message KubernetesIstioApiPortSelector {

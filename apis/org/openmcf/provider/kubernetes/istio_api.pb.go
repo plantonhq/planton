@@ -79,6 +79,74 @@ func (x *KubernetesIstioApiWorkloadSelector) GetMatchLabels() map[string]string 
 	return nil
 }
 
+// KubernetesIstioApiNetworkingWorkloadSelector selects the workloads (pods/VMs) that a
+// networking resource (ServiceEntry, Sidecar, Gateway, EnvoyFilter, DestinationRule)
+// applies to, by label. Faithful to istio.io/api
+// `istio.networking.v1alpha3.WorkloadSelector` — DISTINCT from the policy selector
+// `KubernetesIstioApiWorkloadSelector` above: the networking selector's field is named
+// `labels` (JSON `labels`), whereas the security/policy selector uses `match_labels`
+// (JSON `matchLabels`). They are different upstream messages in different proto packages
+// (networking/v1alpha3 vs type/v1beta1) and must not be conflated. When multiple labels
+// are given, all must match; the search is scoped to the resource's namespace.
+//
+// First consumer: ServiceEntry (T04). EnvoyFilter (T05) and DestinationRule (T06) also use
+// this same upstream selector and may reuse this type — but each MUST first confirm its
+// own CRD's selector constraints match those encoded below before reusing it (this file is
+// grown just-in-time per consumer).
+//
+// DD-009 composability: the selected workloads are not a typed cross-resource reference;
+// they are matched by label at runtime by istiod. No automatic DAG edge is created.
+type KubernetesIstioApiNetworkingWorkloadSelector struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// One or more labels indicating the set of pods/VMs the resource applies to.
+	// Faithful to istio.io/api `istio.networking.v1alpha3.WorkloadSelector.labels`,
+	// whose ServiceEntry CRD constraints are: max 256 entries; each value <= 63 chars;
+	// and wildcards ('*') are not permitted in values. NOTE: unlike the policy selector
+	// (`match_labels` above), the ServiceEntry CRD does NOT enforce non-empty keys or
+	// no-wildcard keys, so those two rules are deliberately omitted here — adding them would
+	// reject configurations the CRD accepts (DD-001: match the upstream validated outcome).
+	Labels        map[string]string `protobuf:"bytes,1,rep,name=labels,proto3" json:"labels,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *KubernetesIstioApiNetworkingWorkloadSelector) Reset() {
+	*x = KubernetesIstioApiNetworkingWorkloadSelector{}
+	mi := &file_org_openmcf_provider_kubernetes_istio_api_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesIstioApiNetworkingWorkloadSelector) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesIstioApiNetworkingWorkloadSelector) ProtoMessage() {}
+
+func (x *KubernetesIstioApiNetworkingWorkloadSelector) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_kubernetes_istio_api_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesIstioApiNetworkingWorkloadSelector.ProtoReflect.Descriptor instead.
+func (*KubernetesIstioApiNetworkingWorkloadSelector) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_kubernetes_istio_api_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *KubernetesIstioApiNetworkingWorkloadSelector) GetLabels() map[string]string {
+	if x != nil {
+		return x.Labels
+	}
+	return nil
+}
+
 // KubernetesIstioApiPortSelector selects a policy's applicability to a specific port.
 // Faithful to istio.io/api `istio.type.v1beta1.PortSelector`.
 type KubernetesIstioApiPortSelector struct {
@@ -91,7 +159,7 @@ type KubernetesIstioApiPortSelector struct {
 
 func (x *KubernetesIstioApiPortSelector) Reset() {
 	*x = KubernetesIstioApiPortSelector{}
-	mi := &file_org_openmcf_provider_kubernetes_istio_api_proto_msgTypes[1]
+	mi := &file_org_openmcf_provider_kubernetes_istio_api_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -103,7 +171,7 @@ func (x *KubernetesIstioApiPortSelector) String() string {
 func (*KubernetesIstioApiPortSelector) ProtoMessage() {}
 
 func (x *KubernetesIstioApiPortSelector) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_istio_api_proto_msgTypes[1]
+	mi := &file_org_openmcf_provider_kubernetes_istio_api_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -116,7 +184,7 @@ func (x *KubernetesIstioApiPortSelector) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesIstioApiPortSelector.ProtoReflect.Descriptor instead.
 func (*KubernetesIstioApiPortSelector) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_istio_api_proto_rawDescGZIP(), []int{1}
+	return file_org_openmcf_provider_kubernetes_istio_api_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *KubernetesIstioApiPortSelector) GetNumber() uint32 {
@@ -148,7 +216,7 @@ type KubernetesIstioApiStringMatch struct {
 
 func (x *KubernetesIstioApiStringMatch) Reset() {
 	*x = KubernetesIstioApiStringMatch{}
-	mi := &file_org_openmcf_provider_kubernetes_istio_api_proto_msgTypes[2]
+	mi := &file_org_openmcf_provider_kubernetes_istio_api_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -160,7 +228,7 @@ func (x *KubernetesIstioApiStringMatch) String() string {
 func (*KubernetesIstioApiStringMatch) ProtoMessage() {}
 
 func (x *KubernetesIstioApiStringMatch) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_istio_api_proto_msgTypes[2]
+	mi := &file_org_openmcf_provider_kubernetes_istio_api_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -173,7 +241,7 @@ func (x *KubernetesIstioApiStringMatch) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesIstioApiStringMatch.ProtoReflect.Descriptor instead.
 func (*KubernetesIstioApiStringMatch) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_istio_api_proto_rawDescGZIP(), []int{2}
+	return file_org_openmcf_provider_kubernetes_istio_api_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *KubernetesIstioApiStringMatch) GetMatchType() string {
@@ -228,7 +296,7 @@ type KubernetesIstioApiPolicyTargetReference struct {
 
 func (x *KubernetesIstioApiPolicyTargetReference) Reset() {
 	*x = KubernetesIstioApiPolicyTargetReference{}
-	mi := &file_org_openmcf_provider_kubernetes_istio_api_proto_msgTypes[3]
+	mi := &file_org_openmcf_provider_kubernetes_istio_api_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -240,7 +308,7 @@ func (x *KubernetesIstioApiPolicyTargetReference) String() string {
 func (*KubernetesIstioApiPolicyTargetReference) ProtoMessage() {}
 
 func (x *KubernetesIstioApiPolicyTargetReference) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_istio_api_proto_msgTypes[3]
+	mi := &file_org_openmcf_provider_kubernetes_istio_api_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -253,7 +321,7 @@ func (x *KubernetesIstioApiPolicyTargetReference) ProtoReflect() protoreflect.Me
 
 // Deprecated: Use KubernetesIstioApiPolicyTargetReference.ProtoReflect.Descriptor instead.
 func (*KubernetesIstioApiPolicyTargetReference) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_istio_api_proto_rawDescGZIP(), []int{3}
+	return file_org_openmcf_provider_kubernetes_istio_api_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *KubernetesIstioApiPolicyTargetReference) GetGroup() string {
@@ -296,6 +364,12 @@ const file_org_openmcf_provider_kubernetes_istio_api_proto_rawDesc = "" +
 	"7istio_workload_selector.match_labels_no_wildcard_values\x126wildcard ('*') is not allowed in label selector values\x1a#this.all(k, !this[k].contains('*'))\x9a\x01\t\x10\x80 *\x04r\x02\x18?R\vmatchLabels\x1a>\n" +
 	"\x10MatchLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\x8f\x03\n" +
+	",KubernetesIstioApiNetworkingWorkloadSelector\x12\xa3\x02\n" +
+	"\x06labels\x18\x01 \x03(\v2Y.org.openmcf.provider.kubernetes.KubernetesIstioApiNetworkingWorkloadSelector.LabelsEntryB\xaf\x01\xbaH\xab\x01\xba\x01\x9b\x01\n" +
+	"<istio_networking_workload_selector.labels_no_wildcard_values\x126wildcard ('*') is not allowed in label selector values\x1a#this.all(k, !this[k].contains('*'))\x9a\x01\t\x10\x80\x02*\x04r\x02\x18?R\x06labels\x1a9\n" +
+	"\vLabelsEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"E\n" +
 	"\x1eKubernetesIstioApiPortSelector\x12#\n" +
 	"\x06number\x18\x01 \x01(\rB\v\xbaH\b*\x06\x18\xff\xff\x03(\x01R\x06number\"z\n" +
@@ -324,21 +398,24 @@ func file_org_openmcf_provider_kubernetes_istio_api_proto_rawDescGZIP() []byte {
 	return file_org_openmcf_provider_kubernetes_istio_api_proto_rawDescData
 }
 
-var file_org_openmcf_provider_kubernetes_istio_api_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_org_openmcf_provider_kubernetes_istio_api_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_org_openmcf_provider_kubernetes_istio_api_proto_goTypes = []any{
-	(*KubernetesIstioApiWorkloadSelector)(nil),      // 0: org.openmcf.provider.kubernetes.KubernetesIstioApiWorkloadSelector
-	(*KubernetesIstioApiPortSelector)(nil),          // 1: org.openmcf.provider.kubernetes.KubernetesIstioApiPortSelector
-	(*KubernetesIstioApiStringMatch)(nil),           // 2: org.openmcf.provider.kubernetes.KubernetesIstioApiStringMatch
-	(*KubernetesIstioApiPolicyTargetReference)(nil), // 3: org.openmcf.provider.kubernetes.KubernetesIstioApiPolicyTargetReference
-	nil, // 4: org.openmcf.provider.kubernetes.KubernetesIstioApiWorkloadSelector.MatchLabelsEntry
+	(*KubernetesIstioApiWorkloadSelector)(nil),           // 0: org.openmcf.provider.kubernetes.KubernetesIstioApiWorkloadSelector
+	(*KubernetesIstioApiNetworkingWorkloadSelector)(nil), // 1: org.openmcf.provider.kubernetes.KubernetesIstioApiNetworkingWorkloadSelector
+	(*KubernetesIstioApiPortSelector)(nil),               // 2: org.openmcf.provider.kubernetes.KubernetesIstioApiPortSelector
+	(*KubernetesIstioApiStringMatch)(nil),                // 3: org.openmcf.provider.kubernetes.KubernetesIstioApiStringMatch
+	(*KubernetesIstioApiPolicyTargetReference)(nil),      // 4: org.openmcf.provider.kubernetes.KubernetesIstioApiPolicyTargetReference
+	nil, // 5: org.openmcf.provider.kubernetes.KubernetesIstioApiWorkloadSelector.MatchLabelsEntry
+	nil, // 6: org.openmcf.provider.kubernetes.KubernetesIstioApiNetworkingWorkloadSelector.LabelsEntry
 }
 var file_org_openmcf_provider_kubernetes_istio_api_proto_depIdxs = []int32{
-	4, // 0: org.openmcf.provider.kubernetes.KubernetesIstioApiWorkloadSelector.match_labels:type_name -> org.openmcf.provider.kubernetes.KubernetesIstioApiWorkloadSelector.MatchLabelsEntry
-	1, // [1:1] is the sub-list for method output_type
-	1, // [1:1] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	5, // 0: org.openmcf.provider.kubernetes.KubernetesIstioApiWorkloadSelector.match_labels:type_name -> org.openmcf.provider.kubernetes.KubernetesIstioApiWorkloadSelector.MatchLabelsEntry
+	6, // 1: org.openmcf.provider.kubernetes.KubernetesIstioApiNetworkingWorkloadSelector.labels:type_name -> org.openmcf.provider.kubernetes.KubernetesIstioApiNetworkingWorkloadSelector.LabelsEntry
+	2, // [2:2] is the sub-list for method output_type
+	2, // [2:2] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_kubernetes_istio_api_proto_init() }
@@ -352,7 +429,7 @@ func file_org_openmcf_provider_kubernetes_istio_api_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_org_openmcf_provider_kubernetes_istio_api_proto_rawDesc), len(file_org_openmcf_provider_kubernetes_istio_api_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -1,0 +1,27 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesServiceEntry
+metadata:
+  name: test-service-entry
+spec:
+  namespace:
+    value: test-namespace
+  hosts:
+    - api.external-example.com
+  addresses:
+    - 198.51.100.10
+  location: MESH_EXTERNAL
+  resolution: STATIC
+  ports:
+    - number: 443
+      name: https
+      protocol: TLS
+      target_port: 8443
+  endpoints:
+    - address: 198.51.100.10
+      ports:
+        https: 8443
+      locality: us-west2/us-west2-a
+  export_to:
+    - "."
+  subject_alt_names:
+    - api.external-example.com

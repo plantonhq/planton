@@ -129,6 +129,7 @@ var gatewayApiKinds = map[string]gatewayApiCustomResource{
 var istioApiKinds = map[string]string{
 	"kubernetespeerauthentication":    "peerauthentications.security.istio.io",
 	"kubernetesrequestauthentication": "requestauthentications.security.istio.io",
+	"kubernetesserviceentry":          "serviceentries.networking.istio.io",
 }
 
 // GetVerifierFromManifest creates the appropriate verifier by parsing the manifest.

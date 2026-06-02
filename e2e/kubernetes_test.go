@@ -78,6 +78,7 @@ var kubernetesTier4Components = []string{
 	// Verification asserts the typed Istio CR exists.
 	"kubernetespeerauthentication",
 	"kubernetesrequestauthentication",
+	"kubernetesserviceentry",
 }
 
 // Kubernetes Tier 2 components: Helm-based, self-contained chart installs.
@@ -234,11 +235,15 @@ func TestKubernetesPeerAuthentication_Pulumi(t *testing.T) { runAllScenariosForC
 
 func TestKubernetesRequestAuthentication_Pulumi(t *testing.T) { runAllScenariosForComponent(t, "kubernetesrequestauthentication", "pulumi") }
 
+func TestKubernetesServiceEntry_Pulumi(t *testing.T) { runAllScenariosForComponent(t, "kubernetesserviceentry", "pulumi") }
+
 // ─── Istio API Terraform (861-867) ──────────────────────────────────────────
 
 func TestKubernetesPeerAuthentication_Terraform(t *testing.T) { runAllScenariosForComponent(t, "kubernetespeerauthentication", "terraform") }
 
 func TestKubernetesRequestAuthentication_Terraform(t *testing.T) { runAllScenariosForComponent(t, "kubernetesrequestauthentication", "terraform") }
+
+func TestKubernetesServiceEntry_Terraform(t *testing.T) { runAllScenariosForComponent(t, "kubernetesserviceentry", "terraform") }
 
 // runAllScenariosForComponent discovers and runs all E2E scenarios for a component
 // using the specified IaC engine ("pulumi" or "terraform").

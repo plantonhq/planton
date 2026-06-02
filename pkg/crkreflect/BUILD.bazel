@@ -307,6 +307,7 @@ go_library(
         "//apis/org/openmcf/provider/kubernetes/kubernetesrookcephoperator/v1:kubernetesrookcephoperator",
         "//apis/org/openmcf/provider/kubernetes/kubernetessecret/v1:kubernetessecret",
         "//apis/org/openmcf/provider/kubernetes/kubernetesservice/v1:kubernetesservice",
+        "//apis/org/openmcf/provider/kubernetes/kubernetesserviceentry/v1:kubernetesserviceentry",
         "//apis/org/openmcf/provider/kubernetes/kubernetessignoz/v1:kubernetessignoz",
         "//apis/org/openmcf/provider/kubernetes/kubernetessolr/v1:kubernetessolr",
         "//apis/org/openmcf/provider/kubernetes/kubernetessolroperator/v1:kubernetessolroperator",
