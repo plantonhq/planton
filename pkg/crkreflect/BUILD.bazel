@@ -294,6 +294,7 @@ go_library(
         "//apis/org/openmcf/provider/kubernetes/kubernetesneo4j/v1:kubernetesneo4j",
         "//apis/org/openmcf/provider/kubernetes/kubernetesopenbao/v1:kubernetesopenbao",
         "//apis/org/openmcf/provider/kubernetes/kubernetesopenfga/v1:kubernetesopenfga",
+        "//apis/org/openmcf/provider/kubernetes/kubernetespeerauthentication/v1:kubernetespeerauthentication",
         "//apis/org/openmcf/provider/kubernetes/kubernetesperconamongooperator/v1:kubernetesperconamongooperator",
         "//apis/org/openmcf/provider/kubernetes/kubernetesperconamysqloperator/v1:kubernetesperconamysqloperator",
         "//apis/org/openmcf/provider/kubernetes/kubernetesperconapostgresoperator/v1:kubernetesperconapostgresoperator",

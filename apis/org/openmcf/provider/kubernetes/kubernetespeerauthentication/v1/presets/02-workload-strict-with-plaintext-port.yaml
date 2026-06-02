@@ -1,0 +1,15 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesPeerAuthentication
+metadata:
+  name: <workload>-mtls
+spec:
+  namespace:
+    value: <namespace>
+  selector:
+    match_labels:
+      app: <workload>
+  mtls:
+    mode: STRICT
+  port_level_mtls:
+    "<plaintext-port>":
+      mode: DISABLE

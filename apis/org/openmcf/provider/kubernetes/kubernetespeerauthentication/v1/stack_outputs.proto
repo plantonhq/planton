@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package org.openmcf.provider.kubernetes.kubernetespeerauthentication.v1;
+
+// KubernetesPeerAuthenticationStackOutputs captures observable outputs after the
+// PeerAuthentication is created on the target cluster. PeerAuthentication has no
+// controller-reconciled status subresource that is useful to surface here (istiod
+// enforces the policy in the data plane), so only the resource identity is
+// exported.
+message KubernetesPeerAuthenticationStackOutputs {
+  // Name of the created PeerAuthentication (equals metadata.name).
+  string peer_authentication_name = 1;
+
+  // Namespace the PeerAuthentication was created in (the resolved spec.namespace).
+  string namespace = 2;
+}

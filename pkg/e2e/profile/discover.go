@@ -265,6 +265,8 @@ func toPascalCase(name string) string {
 		{"kubernetestcproute", "KubernetesTcpRoute"},
 		{"kubernetestlsroute", "KubernetesTlsRoute"},
 		{"kubernetesreferencegrant", "KubernetesReferenceGrant"},
+		{"kubernetesistiobasecrds", "KubernetesIstioBaseCrds"},
+		{"kubernetespeerauthentication", "KubernetesPeerAuthentication"},
 		{"kubernetesgharunnerscalesetcontroller", "KubernetesGhaRunnerScaleSetController"},
 		{"kubernetesrookcephoperator", "KubernetesRookCephOperator"},
 		{"kubernetesexternalsecrets", "KubernetesExternalSecrets"},

@@ -59,6 +59,9 @@ var kubernetesTier4Components = []string{
 	"kubernetestekton",
 	"kubernetestektonoperator",
 	"kubernetesistio",
+	// Istio base CRDs installer (868). The CRDs-only prerequisite for the typed
+	// Istio API components; analog of kubernetesgatewayapicrds.
+	"kubernetesistiobasecrds",
 	// Gateway API deployment components (854-860). Each declares
 	// KubernetesGatewayApiCrds as a registry prerequisite, which the harness
 	// installs (experimental v1.5.1) before applying the route/gateway scenario.
@@ -69,6 +72,11 @@ var kubernetesTier4Components = []string{
 	"kubernetestcproute",
 	"kubernetestlsroute",
 	"kubernetesreferencegrant",
+	// Istio API deployment components (861-867). Each declares
+	// KubernetesIstioBaseCrds as a registry prerequisite, which the harness
+	// installs (istio/base CRDs, no istiod) before applying the scenario.
+	// Verification asserts the typed Istio CR exists.
+	"kubernetespeerauthentication",
 }
 
 // Kubernetes Tier 2 components: Helm-based, self-contained chart installs.
@@ -178,6 +186,7 @@ func TestKubernetesIngressNginx_Pulumi(t *testing.T)               { runAllScena
 func TestKubernetesTekton_Pulumi(t *testing.T)                     { runAllScenariosForComponent(t, "kubernetestekton", "pulumi") }
 func TestKubernetesTektonOperator_Pulumi(t *testing.T)             { runAllScenariosForComponent(t, "kubernetestektonoperator", "pulumi") }
 func TestKubernetesIstio_Pulumi(t *testing.T)                      { runAllScenariosForComponent(t, "kubernetesistio", "pulumi") }
+func TestKubernetesIstioBaseCrds_Pulumi(t *testing.T)             { runAllScenariosForComponent(t, "kubernetesistiobasecrds", "pulumi") }
 
 // ─── Tier 4 Terraform (operators, addons) ───────────────────────────────────
 
@@ -190,6 +199,7 @@ func TestKubernetesGhaRunnerScaleSetController_Terraform(t *testing.T) { runAllS
 func TestKubernetesRookCephOperator_Terraform(t *testing.T)           { runAllScenariosForComponent(t, "kubernetesrookcephoperator", "terraform") }
 func TestKubernetesExternalSecrets_Terraform(t *testing.T)            { runAllScenariosForComponent(t, "kubernetesexternalsecrets", "terraform") }
 func TestKubernetesTekton_Terraform(t *testing.T)                     { runAllScenariosForComponent(t, "kubernetestekton", "terraform") }
+func TestKubernetesIstioBaseCrds_Terraform(t *testing.T)             { runAllScenariosForComponent(t, "kubernetesistiobasecrds", "terraform") }
 
 // ─── Gateway API Pulumi (854-860) ───────────────────────────────────────────
 // Each kind declares KubernetesGatewayApiCrds as a registry prerequisite, which
@@ -213,6 +223,17 @@ func TestKubernetesGrpcRoute_Terraform(t *testing.T)       { runAllScenariosForC
 func TestKubernetesTcpRoute_Terraform(t *testing.T)        { runAllScenariosForComponent(t, "kubernetestcproute", "terraform") }
 func TestKubernetesTlsRoute_Terraform(t *testing.T)        { runAllScenariosForComponent(t, "kubernetestlsroute", "terraform") }
 func TestKubernetesReferenceGrant_Terraform(t *testing.T)  { runAllScenariosForComponent(t, "kubernetesreferencegrant", "terraform") }
+
+// ─── Istio API Pulumi (861-867) ─────────────────────────────────────────────
+// Each kind declares KubernetesIstioBaseCrds as a registry prerequisite, which
+// the harness installs (istio/base CRDs, no istiod) before the scenario applies.
+// Verification asserts the typed Istio CR exists.
+
+func TestKubernetesPeerAuthentication_Pulumi(t *testing.T) { runAllScenariosForComponent(t, "kubernetespeerauthentication", "pulumi") }
+
+// ─── Istio API Terraform (861-867) ──────────────────────────────────────────
+
+func TestKubernetesPeerAuthentication_Terraform(t *testing.T) { runAllScenariosForComponent(t, "kubernetespeerauthentication", "terraform") }
 
 // runAllScenariosForComponent discovers and runs all E2E scenarios for a component
 // using the specified IaC engine ("pulumi" or "terraform").

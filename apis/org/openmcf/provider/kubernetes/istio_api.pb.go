@@ -31,8 +31,12 @@ const (
 type KubernetesIstioApiWorkloadSelector struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// One or more labels indicating the set of pods/VMs the policy applies to.
-	// Upstream constraints: max 4096 entries; each value <= 63 chars; wildcards ('*')
-	// are not permitted in keys or values (enforced just-in-time by the first consumer).
+	// Faithful to istio.io/api `istio.type.v1beta1.WorkloadSelector.match_labels`,
+	// whose upstream CRD constraints are: max 4096 entries; each value <= 63 chars;
+	// label keys must be non-empty; and wildcards ('*') are not permitted in keys or
+	// values. The size/length bounds are expressed via the standard `map` rule; the
+	// non-empty-key and no-wildcard constraints map to upstream's CEL XValidation
+	// rules and are expressed here as field-level CEL.
 	MatchLabels   map[string]string `protobuf:"bytes,1,rep,name=match_labels,json=matchLabels,proto3" json:"match_labels,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -190,9 +194,12 @@ var File_org_openmcf_provider_kubernetes_istio_api_proto protoreflect.FileDescri
 
 const file_org_openmcf_provider_kubernetes_istio_api_proto_rawDesc = "" +
 	"\n" +
-	"/org/openmcf/provider/kubernetes/istio_api.proto\x12\x1forg.openmcf.provider.kubernetes\x1a\x1bbuf/validate/validate.proto\"\xef\x01\n" +
-	"\"KubernetesIstioApiWorkloadSelector\x12\x88\x01\n" +
-	"\fmatch_labels\x18\x01 \x03(\v2T.org.openmcf.provider.kubernetes.KubernetesIstioApiWorkloadSelector.MatchLabelsEntryB\x0f\xbaH\f\x9a\x01\t\x10\x80 *\x04r\x02\x18?R\vmatchLabels\x1a>\n" +
+	"/org/openmcf/provider/kubernetes/istio_api.proto\x12\x1forg.openmcf.provider.kubernetes\x1a\x1bbuf/validate/validate.proto\"\x96\x05\n" +
+	"\"KubernetesIstioApiWorkloadSelector\x12\xaf\x04\n" +
+	"\fmatch_labels\x18\x01 \x03(\v2T.org.openmcf.provider.kubernetes.KubernetesIstioApiWorkloadSelector.MatchLabelsEntryB\xb5\x03\xbaH\xb1\x03\xba\x01x\n" +
+	"3istio_workload_selector.match_labels_keys_non_empty\x12%label selector keys must not be empty\x1a\x1athis.all(k, k.size() != 0)\xba\x01\x8c\x01\n" +
+	"5istio_workload_selector.match_labels_no_wildcard_keys\x124wildcard ('*') is not allowed in label selector keys\x1a\x1dthis.all(k, !k.contains('*'))\xba\x01\x96\x01\n" +
+	"7istio_workload_selector.match_labels_no_wildcard_values\x126wildcard ('*') is not allowed in label selector values\x1a#this.all(k, !this[k].contains('*'))\x9a\x01\t\x10\x80 *\x04r\x02\x18?R\vmatchLabels\x1a>\n" +
 	"\x10MatchLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"E\n" +

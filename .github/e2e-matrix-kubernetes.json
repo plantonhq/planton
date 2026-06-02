@@ -52,17 +52,17 @@
       "name": "Tier 4 Pulumi",
       "tier": 4,
       "engine": "pulumi",
-      "timeout": 240,
-      "run_regex": "Test(KubernetesAltinityOperator|KubernetesElasticOperator|KubernetesExternalSecrets|KubernetesGateway|KubernetesGatewayApiCrds|KubernetesGatewayClass|KubernetesGhaRunnerScaleSetController|KubernetesGrpcRoute|KubernetesHttpRoute|KubernetesReferenceGrant|KubernetesRookCephOperator|KubernetesStrimziKafkaOperator|KubernetesTcpRoute|KubernetesTlsRoute|KubernetesZalandoPostgresOperator)_Pulumi",
-      "component_count": 15
+      "timeout": 270,
+      "run_regex": "Test(KubernetesAltinityOperator|KubernetesElasticOperator|KubernetesExternalSecrets|KubernetesGateway|KubernetesGatewayApiCrds|KubernetesGatewayClass|KubernetesGhaRunnerScaleSetController|KubernetesGrpcRoute|KubernetesHttpRoute|KubernetesIstioBaseCrds|KubernetesPeerAuthentication|KubernetesReferenceGrant|KubernetesRookCephOperator|KubernetesStrimziKafkaOperator|KubernetesTcpRoute|KubernetesTlsRoute|KubernetesZalandoPostgresOperator)_Pulumi",
+      "component_count": 17
     },
     {
       "name": "Tier 4 Terraform",
       "tier": 4,
       "engine": "terraform",
-      "timeout": 240,
-      "run_regex": "Test(KubernetesAltinityOperator|KubernetesElasticOperator|KubernetesExternalSecrets|KubernetesGateway|KubernetesGatewayApiCrds|KubernetesGatewayClass|KubernetesGhaRunnerScaleSetController|KubernetesGrpcRoute|KubernetesHttpRoute|KubernetesReferenceGrant|KubernetesRookCephOperator|KubernetesStrimziKafkaOperator|KubernetesTcpRoute|KubernetesTlsRoute|KubernetesZalandoPostgresOperator)_Terraform",
-      "component_count": 15
+      "timeout": 270,
+      "run_regex": "Test(KubernetesAltinityOperator|KubernetesElasticOperator|KubernetesExternalSecrets|KubernetesGateway|KubernetesGatewayApiCrds|KubernetesGatewayClass|KubernetesGhaRunnerScaleSetController|KubernetesGrpcRoute|KubernetesHttpRoute|KubernetesIstioBaseCrds|KubernetesPeerAuthentication|KubernetesReferenceGrant|KubernetesRookCephOperator|KubernetesStrimziKafkaOperator|KubernetesTcpRoute|KubernetesTlsRoute|KubernetesZalandoPostgresOperator)_Terraform",
+      "component_count": 17
     }
   ]
 }

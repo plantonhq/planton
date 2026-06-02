@@ -119,6 +119,17 @@ var gatewayApiKinds = map[string]gatewayApiCustomResource{
 	"kubernetesreferencegrant": {resource: "referencegrants.gateway.networking.k8s.io"},
 }
 
+// istioApiKinds maps manifest kind values (lowercased) to the fully-qualified
+// kubectl resource (plural.group) for the typed Istio API deployment components
+// (861-867). Like the Gateway API kinds, these components do not run pods;
+// verification confirms the CR itself exists after apply and is gone after
+// destroy. The Istio CRDs are installed by the KubernetesIstioBaseCrds registry
+// prerequisite before the component applies. All seven Istio kinds are
+// namespaced, so no clusterScoped flag is needed.
+var istioApiKinds = map[string]string{
+	"kubernetespeerauthentication": "peerauthentications.security.istio.io",
+}
+
 // GetVerifierFromManifest creates the appropriate verifier by parsing the manifest.
 func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 	info, err := ParseManifestInfo(manifestPath)
@@ -217,6 +228,13 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 			return &ResourceExistenceVerifier{
 				Namespace: namespace,
 				Kind:      gw.resource,
+				Name:      info.Name,
+			}, nil
+		}
+		if resource, ok := istioApiKinds[component]; ok {
+			return &ResourceExistenceVerifier{
+				Namespace: info.Namespace,
+				Kind:      resource,
 				Name:      info.Name,
 			}, nil
 		}

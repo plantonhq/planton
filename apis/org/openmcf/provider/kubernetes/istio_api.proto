@@ -31,14 +31,35 @@ import "buf/validate/validate.proto";
 // they are matched by label at runtime by istiod. No automatic DAG edge is created.
 message KubernetesIstioApiWorkloadSelector {
   // One or more labels indicating the set of pods/VMs the policy applies to.
-  // Upstream constraints: max 4096 entries; each value <= 63 chars; wildcards ('*')
-  // are not permitted in keys or values (enforced just-in-time by the first consumer).
-  map<string, string> match_labels = 1 [(buf.validate.field).map = {
-    max_pairs: 4096
-    values: {
-      string: {max_len: 63}
+  // Faithful to istio.io/api `istio.type.v1beta1.WorkloadSelector.match_labels`,
+  // whose upstream CRD constraints are: max 4096 entries; each value <= 63 chars;
+  // label keys must be non-empty; and wildcards ('*') are not permitted in keys or
+  // values. The size/length bounds are expressed via the standard `map` rule; the
+  // non-empty-key and no-wildcard constraints map to upstream's CEL XValidation
+  // rules and are expressed here as field-level CEL.
+  map<string, string> match_labels = 1 [
+    (buf.validate.field).map = {
+      max_pairs: 4096
+      values: {
+        string: {max_len: 63}
+      }
+    },
+    (buf.validate.field).cel = {
+      id: "istio_workload_selector.match_labels_keys_non_empty"
+      message: "label selector keys must not be empty"
+      expression: "this.all(k, k.size() != 0)"
+    },
+    (buf.validate.field).cel = {
+      id: "istio_workload_selector.match_labels_no_wildcard_keys"
+      message: "wildcard ('*') is not allowed in label selector keys"
+      expression: "this.all(k, !k.contains('*'))"
+    },
+    (buf.validate.field).cel = {
+      id: "istio_workload_selector.match_labels_no_wildcard_values"
+      message: "wildcard ('*') is not allowed in label selector values"
+      expression: "this.all(k, !this[k].contains('*'))"
     }
-  }];
+  ];
 }
 
 // KubernetesIstioApiPortSelector selects a policy's applicability to a specific port.
