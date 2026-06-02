@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package org.openmcf.provider.kubernetes.kubernetesistiobasecrds.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/kubernetes/kubernetesistiobasecrds/v1/spec.proto";
+import "org/openmcf/provider/kubernetes/kubernetesistiobasecrds/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// KubernetesIstioBaseCrds installs the Istio CRDs (istio/base) on a target Kubernetes
+// cluster, without istiod or any controller. It is the lightweight prerequisite for the
+// typed Istio API components.
+message KubernetesIstioBaseCrds {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'KubernetesIstioBaseCrds'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  KubernetesIstioBaseCrdsSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  KubernetesIstioBaseCrdsStatus status = 5;
+}
+
+// KubernetesIstioBaseCrdsStatus represents the status of the Istio CRDs installation.
+message KubernetesIstioBaseCrdsStatus {
+  // stack-outputs
+  KubernetesIstioBaseCrdsStackOutputs outputs = 1;
+}

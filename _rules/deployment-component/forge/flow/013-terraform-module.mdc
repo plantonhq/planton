@@ -19,6 +19,24 @@ TOOLS
 
 SEQUENTIAL STEPS
 1) Read: Use proto readers to derive `<Kind>`, spec, outputs, and provider context.
+
+   FAST PATH -- Kubernetes-CRD-projection kinds: If the kind's spec is a direct
+   1:1 projection of a single Kubernetes custom resource (Istio, Gateway API,
+   etc.) AND the kind is annotated with `kubernetes_manifest_projection` in
+   `CloudResourceKindMeta` (cloud_resource_kind.proto), the ENTIRE module is
+   deterministic -- do NOT hand-author it. Generate it in one shot:
+   `echo '{"files":[]}' | python3 _rules/deployment-component/_scripts/terraform_module_write.py --provider <provider> --kindfolder <kindfolder> --kind <Kind> --stdin --make-local --generate-module --validate | cat`.
+   This emits variables.tf (spec/metadata typed `any`), a thin locals.tf, a
+   kubernetes_manifest main.tf (GVK from the annotation), provider.tf, and
+   outputs.tf. The proto->tfvars converter emits the camelCase, null-pruned spec
+   at runtime, so there is no snake->camel / null-prune / oneOf logic to write.
+   Then STOP -- skip steps 2-4 below.
+
+   Do NOT use this path for kinds whose OpenMCF spec ABSTRACTS over the CRD
+   (e.g. cert-manager's issuer_ref oneof -> issuerRef.kind/name, or any CRD with
+   a required field whose valid value is the empty string, which protojson omits
+   -- e.g. ReferenceGrant's to[].group). Those keep the hand-written path below.
+
 2) Generate variables and read it: `echo '{"files":[]}' | python3 _rules/deployment-component/_scripts/terraform_module_write.py --provider <provider> --kindfolder <kindfolder> --kind <Kind> --stdin --make-local --generate-variables | cat`. Then open the generated `variables.tf` in the module path.
 3) Draft: Consult the reference component `iac/tf/` directories. Prepare a files JSON manifest for non-generated files.
 4) Write and validate:

@@ -17,7 +17,9 @@ resource "aws_iam_role_policy" "inline" {
   for_each = local.inline_policies_map
   name     = each.key
   role     = aws_iam_role.this.id
-  policy   = each.value
+  # each.value is a free-form JSON object (google.protobuf.Struct); aws_iam_role_policy
+  # wants policy as a JSON string.
+  policy = jsonencode(each.value)
 }
 
 

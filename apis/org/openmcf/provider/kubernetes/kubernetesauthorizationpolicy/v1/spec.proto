@@ -1,0 +1,287 @@
+syntax = "proto3";
+
+package org.openmcf.provider.kubernetes.kubernetesauthorizationpolicy.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/kubernetes/istio_api.proto";
+import "org/openmcf/provider/kubernetes/target_cluster.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// KubernetesAuthorizationPolicySpec defines an Istio AuthorizationPolicy: a
+// namespaced policy that enforces access control on the workloads it selects.
+// The policy `action` (ALLOW, DENY, AUDIT, or CUSTOM) is applied to requests that
+// match its `rules`; CUSTOM delegates the decision to a named external authorizer.
+//
+// 100% fidelity with the upstream istio.io/api AuthorizationPolicy
+// (security/v1beta1/authorization_policy.proto, served as security.istio.io/v1),
+// pinned to the 1.26 line (tag 1.26.8). Upstream spec fields are flattened directly
+// after the OpenMCF namespaced envelope (target_cluster, namespace); there is no
+// nested `authorization_policy` sub-message.
+//
+// Scope semantics (upstream): if neither `selector` nor `target_refs` is set the
+// policy matches all workloads in its namespace (or, in the mesh root namespace,
+// the whole mesh). At most one of `selector` and `target_refs` may be set
+// (enforced below). An empty `rules` list means the match never occurs, which is a
+// deny-by-default when the action is ALLOW.
+message KubernetesAuthorizationPolicySpec {
+  // Message-level rules mirror the upstream CRD XValidation. The upstream rule
+  // `oneof(self.selector, self.targetRef, self.targetRefs)` uses a Kubernetes
+  // apiserver-CEL helper (`oneof()`) that is NOT available under protovalidate/
+  // cel-go, so it is re-expressed with portable primitives that preserve the
+  // validated outcome. (The upstream `targetRef` arm is the hidden, singular
+  // `$hide_from_docs` field, which this spec does not surface; see `target_refs`.)
+  option (buf.validate.message).cel = {
+    id: "authorization_policy.selector_xor_target_refs"
+    message: "at most one of selector or target_refs may be set"
+    expression: "!(has(this.selector) && size(this.target_refs) > 0)"
+  };
+
+  // Target Kubernetes cluster where this AuthorizationPolicy is created. The Istio
+  // CRDs (KubernetesIstioBaseCrds) must already be present on the cluster; the
+  // policy is only enforced where istiod (the Istio control plane) is running.
+  org.openmcf.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  // Namespace in which the AuthorizationPolicy is created. The policy's scope is
+  // this namespace (or mesh-wide if this is the Istio root namespace and no
+  // selector or target_refs is set).
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // Selects the workloads (by pod/VM label) this policy applies to. When omitted
+  // (and target_refs is also omitted), the policy applies to every workload in its
+  // namespace (or, in the root namespace, the whole mesh). At most one of
+  // `selector` and `target_refs` may be set (enforced above).
+  //
+  // INFRA-CHART COMPOSABILITY: selector is a PLAIN label match, not an
+  // OpenMCF foreign key (StringValueOrRef). It is matched at runtime by istiod
+  // against pod labels and creates NO automatic DAG edge to any workload resource.
+  // To order this policy after the workload it protects in an infra chart, an
+  // author MUST express the dependency via metadata.relationships, e.g.:
+  //   metadata:
+  //     relationships:
+  //       - kind: KubernetesDeployment
+  //         name: "{{ values.app }}"
+  //         type: depends_on
+  // See the component's "Composing in Infra Charts" docs for the full pattern.
+  org.openmcf.provider.kubernetes.KubernetesIstioApiWorkloadSelector selector = 3;
+
+  // Attaches the policy to specific resources (Gateway, Service, ServiceEntry)
+  // instead of selecting workloads by label. At most one of `selector` and
+  // `target_refs` may be set (enforced above). Waypoint proxies require this field
+  // (label `selector` policies are ignored by waypoints). Upstream allows up to 16.
+  //
+  // INFRA-CHART COMPOSABILITY: a target reference is a PLAIN cross-resource
+  // reference, not an OpenMCF foreign key. istiod resolves it at runtime, creating
+  // NO automatic DAG edge. Order this policy after the referenced resource via
+  // metadata.relationships (`uses` -> KubernetesGateway / KubernetesService /
+  // KubernetesServiceEntry). See the component's "Composing in Infra Charts" docs.
+  repeated org.openmcf.provider.kubernetes.KubernetesIstioApiPolicyTargetReference target_refs = 4 [(buf.validate.field).repeated.max_items = 16];
+
+  // The list of rules evaluated against each request. A request matches the policy
+  // when at least one rule matches it. When empty, the match never occurs: with the
+  // ALLOW action this denies all requests to the selected workloads; with DENY it
+  // is a no-op. Upstream allows up to 512.
+  repeated KubernetesAuthorizationPolicyRule rules = 5 [(buf.validate.field).repeated.max_items = 512];
+
+  // The action to take on a matched request. When omitted, the upstream default
+  // ALLOW is applied. One of:
+  //   ALLOW  — allow the request only if it matches a rule (the default).
+  //   DENY   — deny the request if it matches any rule.
+  //   AUDIT  — mark the request for auditing; does not affect allow/deny.
+  //   CUSTOM — delegate the decision to the external authorizer named in `provider`
+  //            (evaluated before ALLOW/DENY); requires `provider` to be set.
+  // ALLOW/DENY/AUDIT/CUSTOM // external standard exception -- Istio AuthorizationPolicy.Action enum
+  //
+  // Modeled as a closed string set (not a proto enum). Left unset to inherit
+  // the upstream default (ALLOW); no OpenMCF default is imposed.
+  optional string action = 6 [(buf.validate.field).string = {
+    in: [
+      "ALLOW",
+      "DENY",
+      "AUDIT",
+      "CUSTOM"
+    ]
+  }];
+
+  // The external authorizer to delegate to, used only with the CUSTOM action. Names
+  // an extension provider declared in the mesh's MeshConfig. istiod enforces the
+  // "CUSTOM-only" coupling at runtime (it is not a CRD-level validation), so this
+  // spec carries `provider` independently of `action` to remain faithful to the
+  // CRD's accepted surface.
+  KubernetesAuthorizationPolicyExtensionProvider provider = 7;
+}
+
+// KubernetesAuthorizationPolicyRule matches requests from a set of sources (`from`)
+// performing a set of operations (`to`) subject to a set of conditions (`when`). A
+// request matches the rule when at least one `from`, at least one `to`, and ALL
+// `when` conditions match. An empty rule matches every request. Faithful to the
+// upstream istio.io/api AuthorizationPolicy.Rule message.
+message KubernetesAuthorizationPolicyRule {
+  // Sources of the request. If empty, any source matches. Upstream allows up to 512.
+  repeated KubernetesAuthorizationPolicyRuleFrom from = 1 [(buf.validate.field).repeated.max_items = 512];
+
+  // Operations of the request. If empty, any operation matches.
+  repeated KubernetesAuthorizationPolicyRuleTo to = 2;
+
+  // Additional conditions of the request. If empty, any condition matches.
+  repeated KubernetesAuthorizationPolicyCondition when = 3;
+}
+
+// KubernetesAuthorizationPolicyRuleFrom wraps a single request source. The wrapper
+// (rather than a bare Source) preserves the upstream CRD JSON shape
+// `from: [{ source: {...} }]`. Faithful to the upstream Rule.From message.
+message KubernetesAuthorizationPolicyRuleFrom {
+  // The source of a request.
+  KubernetesAuthorizationPolicySource source = 1;
+}
+
+// KubernetesAuthorizationPolicyRuleTo wraps a single request operation. The wrapper
+// (rather than a bare Operation) preserves the upstream CRD JSON shape
+// `to: [{ operation: {...} }]`. Faithful to the upstream Rule.To message.
+message KubernetesAuthorizationPolicyRuleTo {
+  // The operation of a request.
+  KubernetesAuthorizationPolicyOperation operation = 1;
+}
+
+// KubernetesAuthorizationPolicySource specifies the source identities of a request.
+// Fields within a single source are ANDed together. Each string supports Istio's
+// Exact / Prefix (`abc*`) / Suffix (`*abc`) / Presence (`*`) match. Faithful to the
+// upstream istio.io/api AuthorizationPolicy.Source message. Fields are renumbered
+// sequentially from 1 (the OpenMCF proto is its own wire contract and does not
+// preserve upstream's field-number gaps).
+message KubernetesAuthorizationPolicySource {
+  // serviceAccounts/notServiceAccounts cannot be combined with principals or
+  // namespaces (positive or negative). Mirrors the upstream Source XValidation; the
+  // upstream rule uses `has()` on these (repeated) lists, which cel-go does not
+  // permit on repeated fields, so each presence test is re-expressed as `size()>0`.
+  option (buf.validate.message).cel = {
+    id: "authorization_policy_source.service_accounts_exclusive"
+    message: "service_accounts/not_service_accounts cannot be set together with principals, not_principals, namespaces, or not_namespaces"
+    expression: "(size(this.service_accounts) > 0 || size(this.not_service_accounts) > 0) ? (size(this.principals) == 0 && size(this.not_principals) == 0 && size(this.namespaces) == 0 && size(this.not_namespaces) == 0) : true"
+  };
+
+  // Peer identities (from the peer certificate), e.g.
+  // `cluster.local/ns/default/sa/productpage`. Requires mTLS. If empty, any
+  // principal matches.
+  repeated string principals = 1;
+
+  // Negative match of peer identities.
+  repeated string not_principals = 2;
+
+  // Request identities (from the validated JWT), in the form `<ISS>/<SUB>`, e.g.
+  // `example.com/sub-1`. Requires request authentication. If empty, any request
+  // principal matches.
+  repeated string request_principals = 3;
+
+  // Negative match of request identities.
+  repeated string not_request_principals = 4;
+
+  // Namespaces (from the peer certificate). Requires mTLS. If empty, any namespace
+  // matches.
+  repeated string namespaces = 5;
+
+  // Negative match of namespaces.
+  repeated string not_namespaces = 6;
+
+  // Kubernetes service accounts (from the peer certificate), in the form
+  // `<namespace>/<serviceaccount>` (or `<serviceaccount>` for the policy's own
+  // namespace). Requires mTLS. No wildcards. Cannot be combined with `principals`
+  // or `namespaces` (enforced above). Upstream allows up to 16, each up to 320
+  // characters.
+  repeated string service_accounts = 7 [(buf.validate.field).repeated = {
+    max_items: 16
+    items: {
+      string: {max_len: 320}
+    }
+  }];
+
+  // Negative match of Kubernetes service accounts. Same format and bounds as
+  // `service_accounts`.
+  repeated string not_service_accounts = 8 [(buf.validate.field).repeated = {
+    max_items: 16
+    items: {
+      string: {max_len: 320}
+    }
+  }];
+
+  // IP blocks from the source address of the IP packet. Single IP (`203.0.113.4`)
+  // or CIDR (`203.0.113.0/24`). If empty, any IP matches.
+  repeated string ip_blocks = 9;
+
+  // Negative match of IP blocks.
+  repeated string not_ip_blocks = 10;
+
+  // IP blocks from the `X-Forwarded-For` header or proxy protocol (requires
+  // `numTrustedProxies` configured on the gateway topology). Single IP or CIDR. If
+  // empty, any IP matches.
+  repeated string remote_ip_blocks = 11;
+
+  // Negative match of remote IP blocks.
+  repeated string not_remote_ip_blocks = 12;
+}
+
+// KubernetesAuthorizationPolicyOperation specifies the operations of a request.
+// Fields within a single operation are ANDed together. Each string supports Istio's
+// Exact / Prefix / Suffix / Presence match. Faithful to the upstream istio.io/api
+// AuthorizationPolicy.Operation message.
+message KubernetesAuthorizationPolicyOperation {
+  // Hosts (the HTTP Host/Authority header), case-insensitive. HTTP only. If empty,
+  // any host matches.
+  repeated string hosts = 1;
+
+  // Negative match of hosts.
+  repeated string not_hosts = 2;
+
+  // Ports of the connection (as strings, e.g. `"8080"`). If empty, any port
+  // matches.
+  repeated string ports = 3;
+
+  // Negative match of ports.
+  repeated string not_ports = 4;
+
+  // HTTP methods (for gRPC this is always `POST`). HTTP only. If empty, any method
+  // matches.
+  repeated string methods = 5;
+
+  // Negative match of methods.
+  repeated string not_methods = 6;
+
+  // HTTP request paths (for gRPC, `/package.service/method`). Supports the Envoy URI
+  // template operators `{*}` and `{**}`. HTTP only. If empty, any path matches.
+  repeated string paths = 7;
+
+  // Negative match of paths.
+  repeated string not_paths = 8;
+}
+
+// KubernetesAuthorizationPolicyCondition specifies an additional required attribute
+// of a request, matched by key against a list of allowed (or negated) values.
+// Faithful to the upstream istio.io/api AuthorizationPolicy.Condition message.
+message KubernetesAuthorizationPolicyCondition {
+  // The Istio attribute name, e.g. `request.auth.claims[iss]` or `source.ip`.
+  // Required. See the Istio "supported conditions" reference for the full list.
+  string key = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {min_len: 1}
+  ];
+
+  // Allowed values for the attribute. Upstream requires at least one of `values` or
+  // `not_values` to be set; that coupling is not part of the CRD's declared
+  // validation, so it is not enforced here (match the validated surface).
+  repeated string values = 2;
+
+  // Negated values for the attribute.
+  repeated string not_values = 3;
+}
+
+// KubernetesAuthorizationPolicyExtensionProvider names the external authorizer used
+// with the CUSTOM action. The named provider must be declared in the mesh's
+// MeshConfig. Faithful to the upstream AuthorizationPolicy.ExtensionProvider message.
+message KubernetesAuthorizationPolicyExtensionProvider {
+  // The name of a MeshConfig extension provider. At most one provider per workload
+  // is supported by istiod.
+  string name = 1 [(buf.validate.field).string = {min_len: 1}];
+}

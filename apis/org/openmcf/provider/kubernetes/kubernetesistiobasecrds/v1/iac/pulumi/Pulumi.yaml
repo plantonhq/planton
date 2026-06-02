@@ -1,0 +1,3 @@
+name: kubernetes-istio-base-crds
+runtime: go
+description: Pulumi module for KubernetesIstioBaseCrds - installs the Istio base CRDs on Kubernetes clusters

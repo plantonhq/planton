@@ -26,6 +26,7 @@ Outputs JSON:
   - created_dirs: list
   - make_local: {exit_code, stdout, stderr} (if run)
   - generate_variables: {exit_code, stdout, stderr, output_file} (if run)
+  - generate_module: {exit_code, stdout, stderr, output_dir} (if run; full thin module for projection kinds)
   - tf_init: {exit_code, stdout, stderr} (if run)
   - tf_validate: {exit_code, stdout, stderr} (if run)
   - validate_succeeded: bool
@@ -122,6 +123,9 @@ def main() -> int:
     group.add_argument("--manifest-file", help="Path to manifest JSON file")
     parser.add_argument("--make-local", action="store_true", help="Run 'make local' before generating variables.tf")
     parser.add_argument("--generate-variables", action="store_true", help="Generate variables.tf via OpenMCF CLI")
+    parser.add_argument("--generate-module", action="store_true",
+                        help="Generate the ENTIRE thin module via OpenMCF CLI (kubernetes_manifest-projection kinds only). "
+                             "Emits variables.tf/locals.tf/main.tf/provider.tf/outputs.tf; no hand-authored files needed.")
     parser.add_argument("--validate", action="store_true", help="Run terraform init/validate after writing")
     args = parser.parse_args()
 
@@ -190,6 +194,21 @@ def main() -> int:
         ]
         result["generate_variables"] = run(gen_cmd, cwd=repo_root, env=env)
         result["generate_variables"]["output_file"] = out_file
+
+    # Optionally generate the entire thin module (kubernetes_manifest projection kinds).
+    # This emits all five .tf files deterministically; the kind must carry a
+    # kubernetes_manifest_projection in CloudResourceKindMeta or the CLI errors out.
+    if args.generate_module:
+        gen_cmd = [
+            "openmcf",
+            "tofu",
+            "generate-module",
+            kind_name,
+            "--output-dir",
+            base_abs,
+        ]
+        result["generate_module"] = run(gen_cmd, cwd=repo_root, env=env)
+        result["generate_module"]["output_dir"] = base_abs
 
     # Optionally validate the module
     if args.validate:

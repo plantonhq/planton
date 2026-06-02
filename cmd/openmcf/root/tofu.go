@@ -33,6 +33,7 @@ func init() {
 	Tofu.AddCommand(
 		tofu.Apply,
 		tofu.Destroy,
+		tofu.GenerateModule,
 		tofu.GenerateVariables,
 		tofu.Init,
 		tofu.LoadTfVars,

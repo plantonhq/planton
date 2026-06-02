@@ -1,0 +1,15 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesPeerAuthentication
+metadata:
+  name: test-peer-authentication
+spec:
+  namespace:
+    value: test-namespace
+  selector:
+    match_labels:
+      app: finance
+  mtls:
+    mode: STRICT
+  port_level_mtls:
+    "8080":
+      mode: DISABLE

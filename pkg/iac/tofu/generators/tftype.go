@@ -11,7 +11,10 @@ type TFType interface {
 	Format(indent int) string
 }
 
-// TFPrimitive represents a Terraform primitive type: string, number, or bool.
+// TFPrimitive represents a Terraform type rendered as a bare keyword: the
+// primitives string, number, and bool, plus `any` for free-form JSON
+// well-known types (google.protobuf.Struct/Value/ListValue) passed through
+// verbatim.
 type TFPrimitive string
 
 func (p TFPrimitive) Format(_ int) string {

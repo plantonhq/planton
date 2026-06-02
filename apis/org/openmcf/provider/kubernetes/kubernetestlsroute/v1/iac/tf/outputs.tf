@@ -1,9 +1,9 @@
 output "route_name" {
-  description = "Name of the created TLSRoute (equals metadata.name)"
-  value       = local.route_name
+  description = "Name of the created TLSRoute (equals metadata.name)."
+  value       = var.metadata.name
 }
 
 output "namespace" {
-  description = "Namespace the TLSRoute was created in"
-  value       = local.namespace
+  description = "Namespace of the created TLSRoute."
+  value       = var.spec.namespace
 }

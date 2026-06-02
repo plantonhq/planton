@@ -1,0 +1,23 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesEnvoyFilter
+metadata:
+  name: outbound-cluster-tuning
+spec:
+  namespace:
+    value: <namespace>
+  workload_selector:
+    labels:
+      app: <app-label>
+  config_patches:
+    - apply_to: CLUSTER
+      match:
+        context: SIDECAR_OUTBOUND
+        cluster:
+          service: <target-service-fqdn>
+      patch:
+        operation: MERGE
+        value:
+          connect_timeout: 5s
+          upstream_connection_options:
+            tcp_keepalive:
+              keepalive_time: 300

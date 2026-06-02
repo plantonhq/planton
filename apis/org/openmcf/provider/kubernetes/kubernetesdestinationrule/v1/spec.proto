@@ -1,0 +1,643 @@
+syntax = "proto3";
+
+package org.openmcf.provider.kubernetes.kubernetesdestinationrule.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/kubernetes/istio_api.proto";
+import "org/openmcf/provider/kubernetes/target_cluster.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// KubernetesDestinationRuleSpec defines an Istio DestinationRule: a namespaced resource
+// that configures what happens to traffic AFTER routing has selected a destination
+// service — load balancing, connection-pool sizing, circuit breaking / outlier detection,
+// and the TLS settings the sidecar uses when originating connections upstream. It can also
+// carve a service into named `subsets` (e.g. versions) that route rules target.
+//
+// 100% fidelity with the upstream istio.io/api DestinationRule
+// (networking/v1alpha3/destination_rule.proto, served as networking.istio.io/v1), pinned
+// to the 1.26 line (tag 1.26.8). Upstream spec fields are flattened directly after the
+// OpenMCF namespaced envelope (target_cluster, namespace); there is no nested
+// `destination_rule` sub-message.
+//
+// Istio `oneof` modeling: DestinationRule's unions
+// (LoadBalancerSettings.lb_policy, ConsistentHashLB.hash_key/hash_algorithm) have NO native
+// discriminator field upstream and their members are distinctly-named CRD keys, so they are
+// modeled as optional sibling fields plus an "at most one" message-level CEL — NOT a
+// discriminator + value (that form is reserved for same-type collapsible unions such as the
+// shared KubernetesIstioApiStringMatch). This keeps the CR JSON 1:1 with upstream and avoids
+// inventing a required input the CRD does not have. The same idiom is used by ServiceEntry
+// (workload_selector vs endpoints) and EnvoyFilter (workload_selector vs target_refs), and
+// it matches DestinationRule's own upstream XValidation `oneof(warmupDurationSecs, warmup)`.
+message KubernetesDestinationRuleSpec {
+  // Target Kubernetes cluster where this DestinationRule is created. The Istio CRDs
+  // (KubernetesIstioBaseCrds) must already be present on the cluster; the policy is only
+  // honored where istiod (the Istio control plane) is running.
+  org.openmcf.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  // Namespace in which the DestinationRule is created. For short host names, istiod
+  // interprets the host relative to THIS namespace, not the target service's namespace —
+  // prefer fully-qualified hosts to avoid ambiguity. `export_to` controls cross-namespace
+  // visibility.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // The name of a service from the service registry that this rule applies to. Looked up
+  // from the platform's registry (Kubernetes services, etc.) and from hosts declared by
+  // ServiceEntries; rules for unknown services are ignored. Applies to both HTTP and TCP.
+  // Required. Prefer a fully-qualified name (e.g. `reviews.prod.svc.cluster.local`) over a
+  // short name, which istiod resolves relative to this rule's namespace.
+  //
+  // INFRA-CHART COMPOSABILITY: host is a PLAIN string reference resolved by istiod
+  // against the service registry at runtime, NOT an OpenMCF foreign key (StringValueOrRef).
+  // It creates NO automatic DAG edge to the target KubernetesService / KubernetesServiceEntry.
+  // To order this DestinationRule after the service it configures in an infra chart, an
+  // author MUST express the dependency via metadata.relationships, e.g.:
+  //   metadata:
+  //     relationships:
+  //       - kind: KubernetesService
+  //         name: "{{ values.service }}"
+  //         type: depends_on
+  // See the component's "Composing in Infra Charts" docs for the full pattern.
+  string host = 3 [(buf.validate.field).required = true];
+
+  // Traffic policies (load balancing, connection pool sizes, outlier detection, TLS) applied
+  // to traffic destined for the host, across all ports unless overridden per port.
+  KubernetesDestinationRuleTrafficPolicy traffic_policy = 4;
+
+  // One or more named subsets representing individual versions of the service. Traffic
+  // policies can be overridden per subset. A subset's policy only takes effect once a route
+  // rule explicitly sends traffic to the subset.
+  repeated KubernetesDestinationRuleSubset subsets = 5;
+
+  // The namespaces to which this destination rule is exported (made visible for resolution).
+  // If empty, the rule is exported to all namespaces. `.` exports to the declaring namespace
+  // only; `*` exports to all namespaces.
+  repeated string export_to = 6;
+
+  // Selects the specific pods/VMs this DestinationRule applies to, by label, within the same
+  // namespace (selectors do not cross namespace boundaries). If omitted, the rule falls back
+  // to its default (host-wide) behavior. Commonly used so that only certain sidecars get
+  // egress TLS settings for an external service. Reuses the shared istio.type.v1beta1
+  // WorkloadSelector (JSON key `matchLabels`) — the SAME selector PeerAuthentication and
+  // AuthorizationPolicy use, NOT the networking `labels` selector (confirmed against
+  // destination_rule.proto, which declares `istio.type.v1beta1.WorkloadSelector`).
+  //
+  // INFRA-CHART COMPOSABILITY: workload_selector is a PLAIN label match, not an
+  // OpenMCF foreign key (StringValueOrRef). It is matched at runtime by istiod against pod
+  // labels and creates NO automatic DAG edge to any workload resource. To order this
+  // DestinationRule after the workloads it configures in an infra chart, an author MUST
+  // express the dependency via metadata.relationships, e.g.:
+  //   metadata:
+  //     relationships:
+  //       - kind: KubernetesDeployment
+  //         name: "{{ values.app }}"
+  //         type: depends_on
+  // See the component's "Composing in Infra Charts" docs for the full pattern.
+  org.openmcf.provider.kubernetes.KubernetesIstioApiWorkloadSelector workload_selector = 7;
+}
+
+// KubernetesDestinationRuleTrafficPolicy groups the traffic settings applied to a
+// destination. The same shape is reused at the DestinationRule level, per subset, and per
+// port (PortTrafficPolicy adds a `port` selector). Faithful to upstream TrafficPolicy.
+message KubernetesDestinationRuleTrafficPolicy {
+  // Settings controlling the load balancer algorithm.
+  KubernetesDestinationRuleLoadBalancerSettings load_balancer = 1;
+
+  // Settings controlling the volume of connections to an upstream service.
+  KubernetesDestinationRuleConnectionPoolSettings connection_pool = 2;
+
+  // Settings controlling eviction of unhealthy hosts from the load balancing pool.
+  KubernetesDestinationRuleOutlierDetection outlier_detection = 3;
+
+  // TLS settings for connections the sidecar originates to the upstream service.
+  KubernetesDestinationRuleClientTlsSettings tls = 4;
+
+  // Traffic policies specific to individual ports. Port-level settings fully override the
+  // destination-level settings for that port (no field-level inheritance). Upstream allows
+  // up to 4096.
+  repeated KubernetesDestinationRulePortTrafficPolicy port_level_settings = 5 [(buf.validate.field).repeated.max_items = 4096];
+
+  // Settings for tunneling TCP/TLS traffic over another transport. Applies to TCP or TLS
+  // routes only (not HTTP).
+  KubernetesDestinationRuleTunnelSettings tunnel = 6;
+
+  // Upstream PROXY protocol settings.
+  KubernetesDestinationRuleProxyProtocol proxy_protocol = 7;
+}
+
+// KubernetesDestinationRulePortTrafficPolicy applies traffic settings to one specific port
+// of the destination service. Faithful to upstream TrafficPolicy.PortTrafficPolicy.
+message KubernetesDestinationRulePortTrafficPolicy {
+  // The destination service port these settings apply to. Reuses the shared
+  // istio.type.v1beta1 PortSelector (a single `number`).
+  org.openmcf.provider.kubernetes.KubernetesIstioApiPortSelector port = 1;
+
+  // Settings controlling the load balancer algorithm for this port.
+  KubernetesDestinationRuleLoadBalancerSettings load_balancer = 2;
+
+  // Settings controlling the volume of connections to this port.
+  KubernetesDestinationRuleConnectionPoolSettings connection_pool = 3;
+
+  // Settings controlling eviction of unhealthy hosts for this port.
+  KubernetesDestinationRuleOutlierDetection outlier_detection = 4;
+
+  // TLS settings for connections the sidecar originates to this port.
+  KubernetesDestinationRuleClientTlsSettings tls = 5;
+}
+
+// KubernetesDestinationRuleLoadBalancerSettings selects the load balancing algorithm.
+// Faithful to upstream LoadBalancerSettings. The upstream `lb_policy` oneof
+// {simple, consistent_hash} is flattened to two optional fields constrained to at most one
+// (see the spec comment). `warmup` and `warmup_duration_secs` are also
+// mutually exclusive (mirrors the upstream `oneof(warmupDurationSecs, warmup)` XValidation).
+message KubernetesDestinationRuleLoadBalancerSettings {
+  // simple and consistent_hash are the two arms of the upstream lb_policy oneof: at most one
+  // may be set. Neither is also valid (locality_lb_setting / warmup can be configured alone).
+  option (buf.validate.message).cel = {
+    id: "destination_rule_load_balancer.lb_policy_at_most_one"
+    message: "at most one of simple or consistent_hash may be set"
+    expression: "(has(this.simple) ? 1 : 0) + (has(this.consistent_hash) ? 1 : 0) <= 1"
+  };
+  // warmup supersedes the deprecated warmup_duration_secs; at most one may be set. Mirrors
+  // the upstream XValidation `oneof(self.warmupDurationSecs, self.warmup)`.
+  option (buf.validate.message).cel = {
+    id: "destination_rule_load_balancer.warmup_at_most_one"
+    message: "at most one of warmup or warmup_duration_secs may be set"
+    expression: "(has(this.warmup) ? 1 : 0) + (has(this.warmup_duration_secs) ? 1 : 0) <= 1"
+  };
+
+  // Standard load balancing algorithm requiring no tuning. One of:
+  //   LEAST_CONN   — deprecated; use LEAST_REQUEST instead.
+  //   RANDOM       — selects a random healthy host.
+  //   PASSTHROUGH  — forwards to the original requested IP without load balancing.
+  //   ROUND_ROBIN  — basic round robin; prefer LEAST_REQUEST in most cases.
+  //   LEAST_REQUEST — favors hosts with the fewest outstanding requests (recommended).
+  // Mutually exclusive with consistent_hash. // external standard exception -- matches Istio SimpleLB
+  optional string simple = 1 [(buf.validate.field).string = {
+    in: [
+      "LEAST_CONN",
+      "RANDOM",
+      "PASSTHROUGH",
+      "ROUND_ROBIN",
+      "LEAST_REQUEST"
+    ]
+  }];
+
+  // Consistent-hash (soft session affinity) load balancing based on a request property.
+  // Mutually exclusive with simple.
+  KubernetesDestinationRuleConsistentHashLb consistent_hash = 2;
+
+  // Locality-weighted load balancing settings; overrides mesh-wide locality settings in
+  // their entirety (no merging).
+  KubernetesDestinationRuleLocalityLbSetting locality_lb_setting = 3;
+
+  // Deprecated: use `warmup` instead. Duration over which a newly added endpoint is ramped
+  // up. Modeled as a duration string.
+  optional string warmup_duration_secs = 4 [(buf.validate.field).cel = {
+    id: "destination_rule_load_balancer.warmup_duration_secs_format"
+    message: "warmup_duration_secs must be a valid, non-negative duration (e.g. \"30s\")"
+    expression: "this == '' || duration(this) >= duration('0s')"
+  }];
+
+  // Warmup configuration: newly created endpoints receive progressively increasing traffic
+  // over the configured window. Only effective for ROUND_ROBIN and LEAST_REQUEST.
+  KubernetesDestinationRuleWarmupConfiguration warmup = 5;
+}
+
+// KubernetesDestinationRuleConsistentHashLb configures consistent-hash load balancing.
+// Faithful to upstream LoadBalancerSettings.ConsistentHashLB. The two upstream oneofs
+// (hash_key and hash_algorithm) are flattened to optional sibling fields, each constrained
+// to at most one.
+message KubernetesDestinationRuleConsistentHashLb {
+  // The hash key is exactly one of the four options below; at most one may be set.
+  option (buf.validate.message).cel = {
+    id: "destination_rule_consistent_hash.hash_key_at_most_one"
+    message: "at most one of http_header_name, http_cookie, use_source_ip, or http_query_parameter_name may be set"
+    expression: "(has(this.http_header_name) ? 1 : 0) + (has(this.http_cookie) ? 1 : 0) + (has(this.use_source_ip) ? 1 : 0) + (has(this.http_query_parameter_name) ? 1 : 0) <= 1"
+  };
+  // The hash algorithm is at most one of ring_hash or maglev (defaults to ring hash).
+  option (buf.validate.message).cel = {
+    id: "destination_rule_consistent_hash.hash_algorithm_at_most_one"
+    message: "at most one of ring_hash or maglev may be set"
+    expression: "(has(this.ring_hash) ? 1 : 0) + (has(this.maglev) ? 1 : 0) <= 1"
+  };
+
+  // Hash based on a specific HTTP header.
+  optional string http_header_name = 1;
+
+  // Hash based on an HTTP cookie (generated if absent).
+  KubernetesDestinationRuleHttpCookie http_cookie = 2;
+
+  // Hash based on the source IP address. Applicable to both TCP and HTTP connections.
+  optional bool use_source_ip = 3;
+
+  // Hash based on a specific HTTP query parameter.
+  optional string http_query_parameter_name = 4;
+
+  // The ring/modulo (ring hash) algorithm. Mutually exclusive with maglev.
+  KubernetesDestinationRuleRingHash ring_hash = 5;
+
+  // The Maglev algorithm. Mutually exclusive with ring_hash.
+  KubernetesDestinationRuleMagLev maglev = 6;
+
+  // Deprecated: use `ring_hash.minimum_ring_size` instead. Minimum number of virtual nodes
+  // in the hash ring.
+  optional uint64 minimum_ring_size = 7;
+}
+
+// KubernetesDestinationRuleHttpCookie describes the cookie used as the consistent-hash key.
+// Faithful to upstream ConsistentHashLB.HTTPCookie.
+message KubernetesDestinationRuleHttpCookie {
+  // Name of the cookie. Required.
+  string name = 1 [(buf.validate.field).required = true];
+
+  // Path to set on the generated cookie.
+  optional string path = 2;
+
+  // Lifetime of the cookie. If present and zero, the generated cookie is a session cookie.
+  // Modeled as a duration string; upstream applies no minimum (duration-validation:
+  // none), so only valid, non-negative durations are enforced.
+  optional string ttl = 3 [(buf.validate.field).cel = {
+    id: "destination_rule_http_cookie.ttl_format"
+    message: "ttl must be a valid, non-negative duration (e.g. \"0s\", \"1h\")"
+    expression: "this == '' || duration(this) >= duration('0s')"
+  }];
+}
+
+// KubernetesDestinationRuleRingHash configures the ring-hash algorithm.
+// Faithful to upstream ConsistentHashLB.RingHash.
+message KubernetesDestinationRuleRingHash {
+  // Minimum number of virtual nodes for the hash ring (default 1024). Larger rings give more
+  // granular distribution.
+  optional uint64 minimum_ring_size = 1;
+}
+
+// KubernetesDestinationRuleMagLev configures the Maglev algorithm.
+// Faithful to upstream ConsistentHashLB.MagLev.
+message KubernetesDestinationRuleMagLev {
+  // Table size for Maglev hashing (default 65537). Should be a prime number less than
+  // 5000011; a larger table reduces disruption when backends change.
+  optional uint64 table_size = 1;
+}
+
+// KubernetesDestinationRuleWarmupConfiguration configures endpoint traffic ramp-up.
+// Faithful to upstream WarmupConfiguration.
+message KubernetesDestinationRuleWarmupConfiguration {
+  // Duration of warmup mode. Required. Modeled as a duration string.
+  string duration = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "destination_rule_warmup.duration_format"
+      message: "duration must be a valid, non-negative duration (e.g. \"30s\")"
+      expression: "duration(this) >= duration('0s')"
+    }
+  ];
+
+  // Minimum percentage of origin weight at the start of warmup. If unspecified, defaults to
+  // 10. Upstream bounds: 0–100.
+  optional double minimum_percent = 2 [(buf.validate.field).double = {
+    gte: 0
+    lte: 100
+  }];
+
+  // Controls the speed of traffic increase over the warmup window. Defaults to 1.0 (linear);
+  // higher values ramp up non-linearly. Upstream minimum: 1.
+  optional double aggression = 3 [(buf.validate.field).double = {gte: 1}];
+}
+
+// KubernetesDestinationRuleConnectionPoolSettings configures connection-pool limits applied
+// to each individual upstream host. Faithful to upstream ConnectionPoolSettings.
+message KubernetesDestinationRuleConnectionPoolSettings {
+  // Settings common to both HTTP and TCP upstream connections.
+  KubernetesDestinationRuleTcpSettings tcp = 1;
+
+  // HTTP-specific connection pool settings (HTTP1.1/HTTP2/gRPC).
+  KubernetesDestinationRuleHttpSettings http = 2;
+}
+
+// KubernetesDestinationRuleTcpSettings holds TCP connection-pool settings.
+// Faithful to upstream ConnectionPoolSettings.TCPSettings.
+message KubernetesDestinationRuleTcpSettings {
+  // Maximum number of HTTP1/TCP connections to a destination host. Default 2^32-1.
+  optional int32 max_connections = 1;
+
+  // TCP connection timeout (format: 1h/1m/1s/1ms; must be >=1ms; default 10s). Modeled as a
+  // duration string.
+  optional string connect_timeout = 2 [(buf.validate.field).cel = {
+    id: "destination_rule_tcp.connect_timeout_min"
+    message: "connect_timeout must be a valid duration of at least 1ms (e.g. \"30ms\")"
+    expression: "this == '' || duration(this) >= duration('1ms')"
+  }];
+
+  // TCP keepalive settings (enables SO_KEEPALIVE on the socket).
+  KubernetesDestinationRuleTcpKeepalive tcp_keepalive = 3;
+
+  // Maximum duration of a connection, measured from when it was established. If unset, no
+  // maximum. Must be >=1ms. Modeled as a duration string.
+  optional string max_connection_duration = 4 [(buf.validate.field).cel = {
+    id: "destination_rule_tcp.max_connection_duration_min"
+    message: "max_connection_duration must be a valid duration of at least 1ms (e.g. \"10s\")"
+    expression: "this == '' || duration(this) >= duration('1ms')"
+  }];
+
+  // Idle timeout for TCP connections (no bytes sent/received on either side). Default 1h;
+  // 0s disables. Modeled as a duration string; upstream applies no minimum.
+  optional string idle_timeout = 5 [(buf.validate.field).cel = {
+    id: "destination_rule_tcp.idle_timeout_format"
+    message: "idle_timeout must be a valid, non-negative duration (e.g. \"0s\", \"1h\")"
+    expression: "this == '' || duration(this) >= duration('0s')"
+  }];
+}
+
+// KubernetesDestinationRuleTcpKeepalive holds TCP keepalive probe settings.
+// Faithful to upstream ConnectionPoolSettings.TCPSettings.TcpKeepalive.
+message KubernetesDestinationRuleTcpKeepalive {
+  // Maximum number of keepalive probes to send before deciding the connection is dead.
+  // Default: OS level (Linux 9).
+  optional uint32 probes = 1;
+
+  // Idle time before keepalive probes start. Default: OS level (Linux 7200s). Modeled as a
+  // duration string.
+  optional string time = 2 [(buf.validate.field).cel = {
+    id: "destination_rule_tcp_keepalive.time_format"
+    message: "time must be a valid, non-negative duration (e.g. \"7200s\")"
+    expression: "this == '' || duration(this) >= duration('0s')"
+  }];
+
+  // Interval between keepalive probes. Default: OS level (Linux 75s). Modeled as a duration
+  // string.
+  optional string interval = 3 [(buf.validate.field).cel = {
+    id: "destination_rule_tcp_keepalive.interval_format"
+    message: "interval must be a valid, non-negative duration (e.g. \"75s\")"
+    expression: "this == '' || duration(this) >= duration('0s')"
+  }];
+}
+
+// KubernetesDestinationRuleHttpSettings holds HTTP connection-pool settings.
+// Faithful to upstream ConnectionPoolSettings.HTTPSettings.
+message KubernetesDestinationRuleHttpSettings {
+  // Maximum requests queued while waiting for a ready connection. Default 2^32-1. Applies to
+  // both HTTP/1.1 and HTTP2.
+  optional int32 http1_max_pending_requests = 1;
+
+  // Maximum active requests to a destination. Default 2^32-1. Applies to both HTTP/1.1 and
+  // HTTP2.
+  optional int32 http2_max_requests = 2;
+
+  // Maximum requests per backend connection. 1 disables keep-alive. Default 0 ("unlimited",
+  // up to 2^29).
+  optional int32 max_requests_per_connection = 3;
+
+  // Maximum retries outstanding to all hosts in a cluster at a time. Default 2^32-1.
+  optional int32 max_retries = 4;
+
+  // Idle timeout for upstream pool connections (no active requests). Default 1h. Modeled as
+  // a duration string.
+  optional string idle_timeout = 5 [(buf.validate.field).cel = {
+    id: "destination_rule_http.idle_timeout_format"
+    message: "idle_timeout must be a valid, non-negative duration (e.g. \"1h\")"
+    expression: "this == '' || duration(this) >= duration('0s')"
+  }];
+
+  // Policy for upgrading HTTP1.1 connections to HTTP2 for this destination. One of:
+  //   DEFAULT        — use the global default.
+  //   DO_NOT_UPGRADE — never upgrade (overrides the default).
+  //   UPGRADE        — always upgrade (overrides the default).
+  // external standard exception -- matches Istio HTTPSettings.H2UpgradePolicy
+  optional string h2_upgrade_policy = 6 [(buf.validate.field).string = {
+    in: [
+      "DEFAULT",
+      "DO_NOT_UPGRADE",
+      "UPGRADE"
+    ]
+  }];
+
+  // If true, the client protocol is preserved when connecting to the backend. When true,
+  // h2_upgrade_policy is ineffective.
+  optional bool use_client_protocol = 7;
+
+  // Maximum concurrent streams allowed for a peer on one HTTP/2 connection. Default 2^31-1.
+  optional int32 max_concurrent_streams = 8;
+}
+
+// KubernetesDestinationRuleOutlierDetection configures circuit breaking by ejecting
+// unhealthy hosts from the load-balancing pool. Faithful to upstream OutlierDetection.
+// The deprecated, hidden `consecutive_errors` field ($hide_from_docs) is intentionally
+// omitted (superseded by consecutive_gateway_errors / consecutive_5xx_errors).
+message KubernetesDestinationRuleOutlierDetection {
+  // If true, locally-originated failures (connect failures, timeouts) are counted via
+  // consecutive_local_origin_failures rather than upstream response codes. Default false.
+  optional bool split_external_local_origin_errors = 1;
+
+  // Number of consecutive locally-originated failures before ejection. Default 5. Only takes
+  // effect when split_external_local_origin_errors is true.
+  optional uint32 consecutive_local_origin_failures = 2;
+
+  // Number of consecutive gateway errors (502/503/504, or TCP connect failures) before
+  // ejection. Disabled by default / when 0. Counted within consecutive_5xx_errors.
+  optional uint32 consecutive_gateway_errors = 3;
+
+  // Number of consecutive 5xx errors before ejection. Defaults to 5; disable by setting 0.
+  optional uint32 consecutive_5xx_errors = 4;
+
+  // Time interval between ejection sweep analyses (format 1h/1m/1s/1ms; must be >=1ms;
+  // default 10s). Modeled as a duration string.
+  optional string interval = 5 [(buf.validate.field).cel = {
+    id: "destination_rule_outlier_detection.interval_min"
+    message: "interval must be a valid duration of at least 1ms (e.g. \"5m\")"
+    expression: "this == '' || duration(this) >= duration('1ms')"
+  }];
+
+  // Minimum ejection duration; a host stays ejected for this value times the number of times
+  // it has been ejected (must be >=1ms; default 30s). Modeled as a duration string.
+  optional string base_ejection_time = 6 [(buf.validate.field).cel = {
+    id: "destination_rule_outlier_detection.base_ejection_time_min"
+    message: "base_ejection_time must be a valid duration of at least 1ms (e.g. \"15m\")"
+    expression: "this == '' || duration(this) >= duration('1ms')"
+  }];
+
+  // Maximum percentage of hosts in the pool that can be ejected. Default 10%.
+  optional int32 max_ejection_percent = 7;
+
+  // Outlier detection stays enabled only while at least this percentage of hosts is healthy;
+  // below it, all hosts (healthy and unhealthy) are load balanced. Default 0% (disabled).
+  optional int32 min_health_percent = 8;
+}
+
+// KubernetesDestinationRuleClientTlsSettings configures the TLS the sidecar uses when
+// ORIGINATING connections to the upstream service. Faithful to upstream ClientTLSSettings.
+message KubernetesDestinationRuleClientTlsSettings {
+  // TLS mode for connections to the upstream. One of:
+  //   DISABLE      — no TLS.
+  //   SIMPLE       — originate TLS (one-way).
+  //   MUTUAL       — mutual TLS presenting client certs (client_certificate + private_key,
+  //                  or credential_name, required).
+  //   ISTIO_MUTUAL — mutual TLS using Istio-generated certs; all other fields should be empty.
+  // external standard exception -- matches Istio ClientTLSSettings.TLSmode
+  optional string mode = 1 [(buf.validate.field).string = {
+    in: [
+      "DISABLE",
+      "SIMPLE",
+      "MUTUAL",
+      "ISTIO_MUTUAL"
+    ]
+  }];
+
+  // Path to the client-side TLS certificate file. Required for MUTUAL; empty for ISTIO_MUTUAL.
+  optional string client_certificate = 2;
+
+  // Path to the client's private key file. Required for MUTUAL; empty for ISTIO_MUTUAL.
+  optional string private_key = 3;
+
+  // Path to the CA certificate file used to verify the server certificate. Empty for
+  // ISTIO_MUTUAL; if omitted, the OS CA certificates are used.
+  optional string ca_certificates = 4;
+
+  // Name of the Kubernetes secret (in the proxy's namespace) holding the client TLS certs
+  // (and CA). Only one of (client_certificate + private_key + ca_certificates) OR
+  // credential_name may be specified. At sidecars this is honored only when a
+  // workload_selector is set; otherwise it applies at gateways only.
+  //
+  // INFRA-CHART COMPOSABILITY: credential_name is a PLAIN reference to a Secret /
+  // certificate by name, resolved by istiod/Envoy at runtime — NOT an OpenMCF foreign key
+  // (StringValueOrRef). It creates NO automatic DAG edge. To order this DestinationRule after
+  // the secret it consumes in an infra chart, an author MUST express the dependency via
+  // metadata.relationships (`uses` -> KubernetesCertificate / KubernetesSecret), e.g.:
+  //   metadata:
+  //     relationships:
+  //       - kind: KubernetesSecret
+  //         name: "{{ values.client_credential }}"
+  //         type: uses
+  // Kept plain (not StringValueOrRef) for fidelity and consistency with the sibling Gateway
+  // family's `certificate_refs`. See the "Composing in Infra Charts" docs.
+  optional string credential_name = 5;
+
+  // Alternate names to verify against the server certificate's subject alt names. Overrides
+  // the ServiceEntry's subjectAltNames. If unset, validation is based on the downstream
+  // host/authority header.
+  repeated string subject_alt_names = 6;
+
+  // SNI string presented to the server during the TLS handshake. If unset, derived from the
+  // downstream host/authority header for SIMPLE and MUTUAL modes.
+  optional string sni = 7;
+
+  // If true, the proxy skips verifying the CA signature and SAN of the server certificate.
+  // Default false.
+  optional bool insecure_skip_verify = 8;
+
+  // Path to the certificate revocation list (CRL) file used to verify the server cert. If
+  // credential_name is set, the CRL must be supplied inside the credential, not here.
+  optional string ca_crl = 9;
+}
+
+// KubernetesDestinationRuleTunnelSettings configures tunneling TCP/TLS traffic over another
+// transport. Faithful to upstream TrafficPolicy.TunnelSettings.
+message KubernetesDestinationRuleTunnelSettings {
+  // Protocol used to tunnel the downstream connection. CONNECT (HTTP CONNECT, the default
+  // when unset) or POST (HTTP POST). The upstream proto documents this supported set; the
+  // CRD leaves the field free-form, so this closed set is a deliberate, documented tightening.
+  // external standard exception -- matches Istio TunnelSettings documented protocols
+  optional string protocol = 1 [(buf.validate.field).string = {
+    in: [
+      "CONNECT",
+      "POST"
+    ]
+  }];
+
+  // Host the downstream connection is tunneled to (FQDN or IP address). Required.
+  string target_host = 2 [(buf.validate.field).required = true];
+
+  // Port the downstream connection is tunneled to (1-65535). Required.
+  uint32 target_port = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).uint32 = {
+      gte: 1
+      lte: 65535
+    }
+  ];
+}
+
+// KubernetesDestinationRuleProxyProtocol configures the upstream PROXY protocol.
+// Faithful to upstream TrafficPolicy.ProxyProtocol.
+message KubernetesDestinationRuleProxyProtocol {
+  // PROXY protocol version to use. V1 (human-readable, the default) or V2 (binary).
+  // external standard exception -- matches Istio ProxyProtocol.VERSION
+  optional string version = 1 [(buf.validate.field).string = {
+    in: [
+      "V1",
+      "V2"
+    ]
+  }];
+}
+
+// KubernetesDestinationRuleLocalityLbSetting configures locality-weighted load balancing.
+// Faithful to upstream LocalityLoadBalancerSetting. At most one of distribute, failover, or
+// failover_priority may be set (mirrors the upstream "only one of ..." constraint).
+message KubernetesDestinationRuleLocalityLbSetting {
+  // distribute, failover, and failover_priority are mutually exclusive: at most one may be
+  // set. (Repeated fields use size() because cel-go does not allow has() on repeated fields.)
+  option (buf.validate.message).cel = {
+    id: "destination_rule_locality.distribution_at_most_one"
+    message: "at most one of distribute, failover, or failover_priority may be set"
+    expression: "(size(this.distribute) > 0 ? 1 : 0) + (size(this.failover) > 0 ? 1 : 0) + (size(this.failover_priority) > 0 ? 1 : 0) <= 1"
+  };
+
+  // Explicit per-zone traffic distribution weights. Weights for a given `from` should sum to
+  // 100; any locality not listed receives no traffic.
+  repeated KubernetesDestinationRuleLocalityDistribute distribute = 1;
+
+  // Region-level failover policy. Zone/sub-zone failover is automatic; specify this only to
+  // constrain cross-region failover. Should be used with outlier detection.
+  repeated KubernetesDestinationRuleLocalityFailover failover = 2;
+
+  // Ordered list of labels used to sort endpoints into priority tiers for failover. Entries
+  // may be bare keys (`key`) or key=value pairs; special topology labels are supported. Used
+  // with outlier detection.
+  repeated string failover_priority = 3;
+
+  // Enable (or disable) locality load balancing for this DestinationRule, overriding mesh-wide
+  // settings entirely.
+  optional bool enabled = 4;
+}
+
+// KubernetesDestinationRuleLocalityDistribute maps an originating locality to upstream
+// locality weights. Faithful to upstream LocalityLoadBalancerSetting.Distribute.
+message KubernetesDestinationRuleLocalityDistribute {
+  // Originating locality, '/' separated (e.g. `region/zone/sub_zone`). Terminal wildcards are
+  // allowed on any segment (e.g. `us-west/*`).
+  optional string from = 1;
+
+  // Map of upstream localities to traffic-distribution weights. The weights should sum to 100.
+  map<string, uint32> to = 2;
+}
+
+// KubernetesDestinationRuleLocalityFailover maps an originating region to a failover region.
+// Faithful to upstream LocalityLoadBalancerSetting.Failover.
+message KubernetesDestinationRuleLocalityFailover {
+  // Originating region.
+  optional string from = 1;
+
+  // Destination region traffic fails over to when endpoints in the `from` region become
+  // unhealthy.
+  optional string to = 2;
+}
+
+// KubernetesDestinationRuleSubset defines a named subset (e.g. a service version) selected by
+// labels, with optional per-subset traffic policy overrides. Faithful to upstream Subset.
+message KubernetesDestinationRuleSubset {
+  // Name of the subset; used together with the service name for traffic splitting in route
+  // rules. Required.
+  string name = 1 [(buf.validate.field).required = true];
+
+  // Labels filtering the service's endpoints that belong to this subset. May be empty when
+  // the host represents multiple SNI hosts (e.g. an egress gateway), where the subset is
+  // identified by its TLS settings instead.
+  map<string, string> labels = 2;
+
+  // Traffic policy applied to this subset. Subsets inherit the DestinationRule-level policy;
+  // settings here override the corresponding DestinationRule-level settings.
+  KubernetesDestinationRuleTrafficPolicy traffic_policy = 3;
+}

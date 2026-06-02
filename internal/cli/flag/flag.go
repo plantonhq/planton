@@ -26,6 +26,7 @@ const (
 	ModuleDir       Flag = "module-dir"
 	ModuleVersion   Flag = "module-version"
 	NoCleanup       Flag = "no-cleanup"
+	OutputDir       Flag = "output-dir"
 	OutputFile      Flag = "output-file"
 	Overlay         Flag = "overlay"
 	OpenMCFGitRepo  Flag = "openmcf-git-repo"

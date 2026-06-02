@@ -7,7 +7,9 @@ locals {
   description = try(var.spec.description, null)
   path        = try(var.spec.path, "/")
 
-  trust_policy_json = try(var.spec.trust_policy, null)
+  # trust_policy is a free-form JSON object (google.protobuf.Struct); aws_iam_role
+  # wants assume_role_policy as a JSON string, so encode the object here.
+  trust_policy_json = try(jsonencode(var.spec.trust_policy), null)
 
   managed_policy_arns = try(var.spec.managed_policy_arns, [])
 

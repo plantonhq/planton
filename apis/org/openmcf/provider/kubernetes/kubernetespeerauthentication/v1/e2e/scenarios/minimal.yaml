@@ -1,0 +1,9 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesPeerAuthentication
+metadata:
+  name: e2e-peer-authentication
+spec:
+  namespace:
+    value: default
+  mtls:
+    mode: STRICT

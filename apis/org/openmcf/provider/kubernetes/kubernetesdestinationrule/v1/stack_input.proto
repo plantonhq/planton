@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package org.openmcf.provider.kubernetes.kubernetesdestinationrule.v1;
+
+import "org/openmcf/provider/kubernetes/kubernetesdestinationrule/v1/api.proto";
+import "org/openmcf/provider/kubernetes/provider.proto";
+
+// KubernetesDestinationRuleStackInput provides the inputs for creating the DestinationRule on
+// a Kubernetes cluster.
+message KubernetesDestinationRuleStackInput {
+  // target cloud-resource
+  KubernetesDestinationRule target = 1;
+  // provider-config
+  org.openmcf.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+}

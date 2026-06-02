@@ -4,11 +4,11 @@ resource "kubernetes_manifest" "tls_route" {
     kind       = "TLSRoute"
 
     metadata = {
-      name      = local.route_name
-      namespace = local.namespace
+      name      = var.metadata.name
+      namespace = var.spec.namespace
       labels    = local.labels
     }
 
-    spec = local.tls_route_spec
+    spec = local.manifest_spec
   }
 }

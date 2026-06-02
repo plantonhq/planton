@@ -9,9 +9,11 @@ var vars = struct {
 	IstiodChart      string
 	GatewayChart     string
 
-	// default chart versions
+	// DefaultStableVersion is the fallback Istio version used only when spec.version
+	// is unset (spec.version is normally defaulted at manifest-load time). Keep this
+	// in sync with the Istio version this OpenMCF release targets (the crd2pulumi SDK
+	// pin in pkg/kubernetes/kubernetestypes/Makefile and KubernetesIstioBaseCrds).
 	DefaultStableVersion string
-	DefaultLatestVersion string
 }{
 	// namespaces
 	SystemNamespace:  "istio-system",
@@ -23,7 +25,6 @@ var vars = struct {
 	IstiodChart:  "istiod",
 	GatewayChart: "gateway",
 
-	// version pins – update when you move channels forward
-	DefaultStableVersion: "1.22.3",
-	DefaultLatestVersion: "1.23.0",
+	// version pin – bump together with the SDK/CRD pin when the release target moves
+	DefaultStableVersion: "1.26.8",
 }

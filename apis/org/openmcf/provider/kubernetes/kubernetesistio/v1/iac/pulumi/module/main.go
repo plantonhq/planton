@@ -25,8 +25,12 @@ func Resources(ctx *pulumi.Context, in *kubernetesistiov1.KubernetesIstioStackIn
 	spec := in.Target.Spec
 
 	// ---- pick chart version ----
-	// (No release_channel field yet – stick to default stable.)
-	chartVersion := vars.DefaultStableVersion
+	// Driven by spec.version (defaulted to vars.DefaultStableVersion at manifest-load
+	// time via protodefaults); fall back to the module default if somehow unset.
+	chartVersion := spec.GetVersion()
+	if chartVersion == "" {
+		chartVersion = vars.DefaultStableVersion
+	}
 
 	// ---- conditionally create namespaces ----
 	sysNSName, gwNSName, namespaceDeps, err := namespaces(ctx, in, locals, kubernetesProviderConfig)

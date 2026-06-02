@@ -1369,11 +1369,15 @@ type AuthorizationPolicySpecRulesFromSource struct {
 	// Optional.
 	NotRequestPrincipals []string `pulumi:"notRequestPrincipals"`
 	// Optional.
+	NotServiceAccounts []string `pulumi:"notServiceAccounts"`
+	// Optional.
 	Principals []string `pulumi:"principals"`
 	// Optional.
 	RemoteIpBlocks []string `pulumi:"remoteIpBlocks"`
 	// Optional.
 	RequestPrincipals []string `pulumi:"requestPrincipals"`
+	// Optional.
+	ServiceAccounts []string `pulumi:"serviceAccounts"`
 }
 
 // AuthorizationPolicySpecRulesFromSourceInput is an input type that accepts AuthorizationPolicySpecRulesFromSourceArgs and AuthorizationPolicySpecRulesFromSourceOutput values.
@@ -1404,11 +1408,15 @@ type AuthorizationPolicySpecRulesFromSourceArgs struct {
 	// Optional.
 	NotRequestPrincipals pulumi.StringArrayInput `pulumi:"notRequestPrincipals"`
 	// Optional.
+	NotServiceAccounts pulumi.StringArrayInput `pulumi:"notServiceAccounts"`
+	// Optional.
 	Principals pulumi.StringArrayInput `pulumi:"principals"`
 	// Optional.
 	RemoteIpBlocks pulumi.StringArrayInput `pulumi:"remoteIpBlocks"`
 	// Optional.
 	RequestPrincipals pulumi.StringArrayInput `pulumi:"requestPrincipals"`
+	// Optional.
+	ServiceAccounts pulumi.StringArrayInput `pulumi:"serviceAccounts"`
 }
 
 func (AuthorizationPolicySpecRulesFromSourceArgs) ElementType() reflect.Type {
@@ -1525,6 +1533,11 @@ func (o AuthorizationPolicySpecRulesFromSourceOutput) NotRequestPrincipals() pul
 }
 
 // Optional.
+func (o AuthorizationPolicySpecRulesFromSourceOutput) NotServiceAccounts() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v AuthorizationPolicySpecRulesFromSource) []string { return v.NotServiceAccounts }).(pulumi.StringArrayOutput)
+}
+
+// Optional.
 func (o AuthorizationPolicySpecRulesFromSourceOutput) Principals() pulumi.StringArrayOutput {
 	return o.ApplyT(func(v AuthorizationPolicySpecRulesFromSource) []string { return v.Principals }).(pulumi.StringArrayOutput)
 }
@@ -1537,6 +1550,11 @@ func (o AuthorizationPolicySpecRulesFromSourceOutput) RemoteIpBlocks() pulumi.St
 // Optional.
 func (o AuthorizationPolicySpecRulesFromSourceOutput) RequestPrincipals() pulumi.StringArrayOutput {
 	return o.ApplyT(func(v AuthorizationPolicySpecRulesFromSource) []string { return v.RequestPrincipals }).(pulumi.StringArrayOutput)
+}
+
+// Optional.
+func (o AuthorizationPolicySpecRulesFromSourceOutput) ServiceAccounts() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v AuthorizationPolicySpecRulesFromSource) []string { return v.ServiceAccounts }).(pulumi.StringArrayOutput)
 }
 
 type AuthorizationPolicySpecRulesFromSourcePtrOutput struct{ *pulumi.OutputState }
@@ -1634,6 +1652,16 @@ func (o AuthorizationPolicySpecRulesFromSourcePtrOutput) NotRequestPrincipals() 
 }
 
 // Optional.
+func (o AuthorizationPolicySpecRulesFromSourcePtrOutput) NotServiceAccounts() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *AuthorizationPolicySpecRulesFromSource) []string {
+		if v == nil {
+			return nil
+		}
+		return v.NotServiceAccounts
+	}).(pulumi.StringArrayOutput)
+}
+
+// Optional.
 func (o AuthorizationPolicySpecRulesFromSourcePtrOutput) Principals() pulumi.StringArrayOutput {
 	return o.ApplyT(func(v *AuthorizationPolicySpecRulesFromSource) []string {
 		if v == nil {
@@ -1663,6 +1691,16 @@ func (o AuthorizationPolicySpecRulesFromSourcePtrOutput) RequestPrincipals() pul
 	}).(pulumi.StringArrayOutput)
 }
 
+// Optional.
+func (o AuthorizationPolicySpecRulesFromSourcePtrOutput) ServiceAccounts() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *AuthorizationPolicySpecRulesFromSource) []string {
+		if v == nil {
+			return nil
+		}
+		return v.ServiceAccounts
+	}).(pulumi.StringArrayOutput)
+}
+
 // Source specifies the source of a request.
 type AuthorizationPolicySpecRulesFromSourcePatch struct {
 	// Optional.
@@ -1680,11 +1718,15 @@ type AuthorizationPolicySpecRulesFromSourcePatch struct {
 	// Optional.
 	NotRequestPrincipals []string `pulumi:"notRequestPrincipals"`
 	// Optional.
+	NotServiceAccounts []string `pulumi:"notServiceAccounts"`
+	// Optional.
 	Principals []string `pulumi:"principals"`
 	// Optional.
 	RemoteIpBlocks []string `pulumi:"remoteIpBlocks"`
 	// Optional.
 	RequestPrincipals []string `pulumi:"requestPrincipals"`
+	// Optional.
+	ServiceAccounts []string `pulumi:"serviceAccounts"`
 }
 
 // AuthorizationPolicySpecRulesFromSourcePatchInput is an input type that accepts AuthorizationPolicySpecRulesFromSourcePatchArgs and AuthorizationPolicySpecRulesFromSourcePatchOutput values.
@@ -1715,11 +1757,15 @@ type AuthorizationPolicySpecRulesFromSourcePatchArgs struct {
 	// Optional.
 	NotRequestPrincipals pulumi.StringArrayInput `pulumi:"notRequestPrincipals"`
 	// Optional.
+	NotServiceAccounts pulumi.StringArrayInput `pulumi:"notServiceAccounts"`
+	// Optional.
 	Principals pulumi.StringArrayInput `pulumi:"principals"`
 	// Optional.
 	RemoteIpBlocks pulumi.StringArrayInput `pulumi:"remoteIpBlocks"`
 	// Optional.
 	RequestPrincipals pulumi.StringArrayInput `pulumi:"requestPrincipals"`
+	// Optional.
+	ServiceAccounts pulumi.StringArrayInput `pulumi:"serviceAccounts"`
 }
 
 func (AuthorizationPolicySpecRulesFromSourcePatchArgs) ElementType() reflect.Type {
@@ -1836,6 +1882,11 @@ func (o AuthorizationPolicySpecRulesFromSourcePatchOutput) NotRequestPrincipals(
 }
 
 // Optional.
+func (o AuthorizationPolicySpecRulesFromSourcePatchOutput) NotServiceAccounts() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v AuthorizationPolicySpecRulesFromSourcePatch) []string { return v.NotServiceAccounts }).(pulumi.StringArrayOutput)
+}
+
+// Optional.
 func (o AuthorizationPolicySpecRulesFromSourcePatchOutput) Principals() pulumi.StringArrayOutput {
 	return o.ApplyT(func(v AuthorizationPolicySpecRulesFromSourcePatch) []string { return v.Principals }).(pulumi.StringArrayOutput)
 }
@@ -1848,6 +1899,11 @@ func (o AuthorizationPolicySpecRulesFromSourcePatchOutput) RemoteIpBlocks() pulu
 // Optional.
 func (o AuthorizationPolicySpecRulesFromSourcePatchOutput) RequestPrincipals() pulumi.StringArrayOutput {
 	return o.ApplyT(func(v AuthorizationPolicySpecRulesFromSourcePatch) []string { return v.RequestPrincipals }).(pulumi.StringArrayOutput)
+}
+
+// Optional.
+func (o AuthorizationPolicySpecRulesFromSourcePatchOutput) ServiceAccounts() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v AuthorizationPolicySpecRulesFromSourcePatch) []string { return v.ServiceAccounts }).(pulumi.StringArrayOutput)
 }
 
 type AuthorizationPolicySpecRulesFromSourcePatchPtrOutput struct{ *pulumi.OutputState }
@@ -1945,6 +2001,16 @@ func (o AuthorizationPolicySpecRulesFromSourcePatchPtrOutput) NotRequestPrincipa
 }
 
 // Optional.
+func (o AuthorizationPolicySpecRulesFromSourcePatchPtrOutput) NotServiceAccounts() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *AuthorizationPolicySpecRulesFromSourcePatch) []string {
+		if v == nil {
+			return nil
+		}
+		return v.NotServiceAccounts
+	}).(pulumi.StringArrayOutput)
+}
+
+// Optional.
 func (o AuthorizationPolicySpecRulesFromSourcePatchPtrOutput) Principals() pulumi.StringArrayOutput {
 	return o.ApplyT(func(v *AuthorizationPolicySpecRulesFromSourcePatch) []string {
 		if v == nil {
@@ -1971,6 +2037,16 @@ func (o AuthorizationPolicySpecRulesFromSourcePatchPtrOutput) RequestPrincipals(
 			return nil
 		}
 		return v.RequestPrincipals
+	}).(pulumi.StringArrayOutput)
+}
+
+// Optional.
+func (o AuthorizationPolicySpecRulesFromSourcePatchPtrOutput) ServiceAccounts() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *AuthorizationPolicySpecRulesFromSourcePatch) []string {
+		if v == nil {
+			return nil
+		}
+		return v.ServiceAccounts
 	}).(pulumi.StringArrayOutput)
 }
 

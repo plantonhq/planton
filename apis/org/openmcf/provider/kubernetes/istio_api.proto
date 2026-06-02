@@ -1,0 +1,194 @@
+syntax = "proto3";
+
+package org.openmcf.provider.kubernetes;
+
+import "buf/validate/validate.proto";
+
+// Shared Istio API types used across multiple OpenMCF Istio components
+// (DestinationRule, ServiceEntry, PeerAuthentication, RequestAuthentication,
+// AuthorizationPolicy, Telemetry, EnvoyFilter). Translated from istio.io/api 1.26
+// (pinned at tag 1.26.8). Mirrors the sibling `gateway_api.proto` convention:
+// package org.openmcf.provider.kubernetes, messages prefixed `KubernetesIstioApi*`
+// (kept out of the `KubernetesIstio` mesh-install kind's own message namespace).
+//
+// Status types are intentionally excluded — OpenMCF captures deployment outputs via
+// each component's stack_outputs.proto, not CRD status subresources.
+//
+// Modeling conventions:
+//   - Istio `oneof`s are never carried as proto `oneof` (that changes the JSON shape).
+//     Same-type collapsible unions become a discriminator field + a single `value`;
+//     distinctly-named unions become optional sibling fields + an "at most one" CEL.
+//   - Closed-set "enum-like" values are `string` + a closed `in [...]` rule, not proto
+//     enums. Istio constants are UPPERCASE (external-standard exception).
+//
+// This file is seeded minimally and grown just-in-time as each component consumes a
+// shared type.
+
+// KubernetesIstioApiWorkloadSelector selects the workloads (pods/VMs) a policy applies to,
+// by label. Faithful to istio.io/api `istio.type.v1beta1.WorkloadSelector`. When multiple
+// labels are given, all must match. Label search is scoped to the resource's namespace.
+//
+// Infra-chart composability: the selected workloads are not a typed cross-resource
+// reference; they are matched by label at runtime by istiod. No automatic DAG edge is
+// created.
+message KubernetesIstioApiWorkloadSelector {
+  // One or more labels indicating the set of pods/VMs the policy applies to.
+  // Faithful to istio.io/api `istio.type.v1beta1.WorkloadSelector.match_labels`,
+  // whose upstream CRD constraints are: max 4096 entries; each value <= 63 chars;
+  // label keys must be non-empty; and wildcards ('*') are not permitted in keys or
+  // values. The size/length bounds are expressed via the standard `map` rule; the
+  // non-empty-key and no-wildcard constraints map to upstream's CEL XValidation
+  // rules and are expressed here as field-level CEL.
+  map<string, string> match_labels = 1 [
+    (buf.validate.field).map = {
+      max_pairs: 4096
+      values: {
+        string: {max_len: 63}
+      }
+    },
+    (buf.validate.field).cel = {
+      id: "istio_workload_selector.match_labels_keys_non_empty"
+      message: "label selector keys must not be empty"
+      expression: "this.all(k, k.size() != 0)"
+    },
+    (buf.validate.field).cel = {
+      id: "istio_workload_selector.match_labels_no_wildcard_keys"
+      message: "wildcard ('*') is not allowed in label selector keys"
+      expression: "this.all(k, !k.contains('*'))"
+    },
+    (buf.validate.field).cel = {
+      id: "istio_workload_selector.match_labels_no_wildcard_values"
+      message: "wildcard ('*') is not allowed in label selector values"
+      expression: "this.all(k, !this[k].contains('*'))"
+    }
+  ];
+}
+
+// KubernetesIstioApiNetworkingWorkloadSelector selects the workloads (pods/VMs) that a
+// networking resource (ServiceEntry, Sidecar, Gateway, EnvoyFilter, DestinationRule)
+// applies to, by label. Faithful to istio.io/api
+// `istio.networking.v1alpha3.WorkloadSelector` — DISTINCT from the policy selector
+// `KubernetesIstioApiWorkloadSelector` above: the networking selector's field is named
+// `labels` (JSON `labels`), whereas the security/policy selector uses `match_labels`
+// (JSON `matchLabels`). They are different upstream messages in different proto packages
+// (networking/v1alpha3 vs type/v1beta1) and must not be conflated. When multiple labels
+// are given, all must match; the search is scoped to the resource's namespace.
+//
+// Consumers: ServiceEntry and EnvoyFilter — both use the networking/v1alpha3
+// WorkloadSelector (field `labels`). NOTE: DestinationRule does NOT use this selector —
+// its upstream `workload_selector` is the type/v1beta1 WorkloadSelector (field
+// `match_labels`), so it reuses `KubernetesIstioApiWorkloadSelector` above, not this one.
+// Each consumer must confirm its own CRD's selector field/constraints before reusing a
+// shared type.
+//
+// Infra-chart composability: the selected workloads are not a typed cross-resource
+// reference; they are matched by label at runtime by istiod. No automatic DAG edge is
+// created.
+message KubernetesIstioApiNetworkingWorkloadSelector {
+  // One or more labels indicating the set of pods/VMs the resource applies to.
+  // Faithful to istio.io/api `istio.networking.v1alpha3.WorkloadSelector.labels`,
+  // whose ServiceEntry CRD constraints are: max 256 entries; each value <= 63 chars;
+  // and wildcards ('*') are not permitted in values. NOTE: unlike the policy selector
+  // (`match_labels` above), the ServiceEntry CRD does NOT enforce non-empty keys or
+  // no-wildcard keys, so those two rules are deliberately omitted here — adding them would
+  // reject configurations the CRD accepts (match the upstream validated outcome).
+  map<string, string> labels = 1 [
+    (buf.validate.field).map = {
+      max_pairs: 256
+      values: {
+        string: {max_len: 63}
+      }
+    },
+    (buf.validate.field).cel = {
+      id: "istio_networking_workload_selector.labels_no_wildcard_values"
+      message: "wildcard ('*') is not allowed in label selector values"
+      expression: "this.all(k, !this[k].contains('*'))"
+    }
+  ];
+}
+
+// KubernetesIstioApiPortSelector selects a policy's applicability to a specific port.
+// Faithful to istio.io/api `istio.type.v1beta1.PortSelector`.
+message KubernetesIstioApiPortSelector {
+  // Port number (1-65535).
+  uint32 number = 1 [(buf.validate.field).uint32 = {
+    gte: 1
+    lte: 65535
+  }];
+}
+
+// KubernetesIstioApiStringMatch matches a string by one of three strategies.
+// Istio models this as a `oneof { exact, prefix, regex }` (all same-type), so OpenMCF
+// collapses it to a `match_type` discriminator + a single `value`. `match_type` is a
+// closed string set, not a proto enum.
+message KubernetesIstioApiStringMatch {
+  // Match strategy applied to `value`. One of:
+  //   EXACT  — value must equal the input exactly.
+  //   PREFIX — value must be a prefix of the input.
+  //   REGEX  — value is an RE2 regular expression (https://github.com/google/re2/wiki/Syntax).
+  // EXACT/PREFIX/REGEX // external standard exception -- matches the Istio StringMatch oneof fields
+  string match_type = 1 [(buf.validate.field).string = {
+    in: [
+      "EXACT",
+      "PREFIX",
+      "REGEX"
+    ]
+  }];
+
+  // The value to match against, interpreted according to `match_type`.
+  string value = 2 [(buf.validate.field).string = {min_len: 1}];
+}
+
+// KubernetesIstioApiPolicyTargetReference attaches a policy to a specific resource
+// (rather than selecting workloads by label). Faithful to istio.io/api
+// `istio.type.v1beta1.PolicyTargetReference`. Consumers: RequestAuthentication,
+// AuthorizationPolicy, and Telemetry.
+//
+// Infra-chart composability: a target reference is a PLAIN cross-resource reference, not
+// an OpenMCF foreign key (StringValueOrRef). istiod resolves `group`/`kind`/`name`
+// against the cluster at runtime, so it creates NO automatic DAG edge. In an infra
+// chart, order the policy after the resource it targets via metadata.relationships,
+// e.g. (`uses` -> KubernetesGateway / KubernetesService / KubernetesServiceEntry):
+//   metadata:
+//     relationships:
+//       - kind: KubernetesGateway
+//         name: "{{ values.gateway }}"
+//         type: depends_on
+// See the consuming component's "Composing in Infra Charts" docs.
+message KubernetesIstioApiPolicyTargetReference {
+  // Group of the target resource. Empty for the core API group (Services). Faithful
+  // to the upstream pattern (empty, or a DNS-1123 subdomain).
+  string group = 1 [(buf.validate.field).string = {
+    max_len: 253
+    pattern: "^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+  }];
+
+  // Kind of the target resource (e.g. Gateway, Service, ServiceEntry). Required.
+  string kind = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1
+      max_len: 63
+      pattern: "^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$"
+    }
+  ];
+
+  // Name of the target resource. Required.
+  string name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1
+      max_len: 253
+    }
+  ];
+
+  // Namespace of the target resource. Cross-namespace attachment is not supported
+  // upstream in the 1.26 line, so this must be empty (the target is resolved in the
+  // policy's own namespace). Mirrors the upstream XValidation rule
+  // "cross namespace referencing is not currently supported".
+  string namespace = 4 [(buf.validate.field).cel = {
+    id: "istio_policy_target_reference.no_cross_namespace"
+    message: "cross-namespace target references are not supported; leave namespace empty"
+    expression: "this.size() == 0"
+  }];
+}

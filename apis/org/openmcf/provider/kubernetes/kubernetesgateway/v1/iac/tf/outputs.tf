@@ -1,14 +1,14 @@
 output "gateway_name" {
-  description = "Name of the created Gateway (equals metadata.name); the target of Route parentRefs"
-  value       = local.gateway_name
+  description = "Name of the created Gateway (equals metadata.name)."
+  value       = var.metadata.name
 }
 
 output "namespace" {
-  description = "Namespace the Gateway was created in"
-  value       = local.namespace
+  description = "Namespace of the created Gateway."
+  value       = var.spec.namespace
 }
 
 output "gateway_class_name" {
-  description = "Name of the GatewayClass this Gateway belongs to"
-  value       = local.gateway_class_name
+  description = "Gateway class name of the created Gateway."
+  value       = var.spec.gatewayClassName
 }

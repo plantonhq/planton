@@ -80,6 +80,17 @@ var crdInstallKinds = map[string][]string{
 		"httproutes.gateway.networking.k8s.io",
 		"referencegrants.gateway.networking.k8s.io",
 	},
+	// KubernetesIstioBaseCrds installs the istio/base CRD bundle (no istiod). Verify the
+	// CRDs backing the seven typed Istio components are present.
+	"kubernetesistiobasecrds": {
+		"destinationrules.networking.istio.io",
+		"serviceentries.networking.istio.io",
+		"envoyfilters.networking.istio.io",
+		"peerauthentications.security.istio.io",
+		"requestauthentications.security.istio.io",
+		"authorizationpolicies.security.istio.io",
+		"telemetries.telemetry.istio.io",
+	},
 }
 
 // gatewayApiCustomResource describes how to verify a Gateway API custom resource
@@ -106,6 +117,23 @@ var gatewayApiKinds = map[string]gatewayApiCustomResource{
 	"kubernetestcproute":       {resource: "tcproutes.gateway.networking.k8s.io"},
 	"kubernetestlsroute":       {resource: "tlsroutes.gateway.networking.k8s.io"},
 	"kubernetesreferencegrant": {resource: "referencegrants.gateway.networking.k8s.io"},
+}
+
+// istioApiKinds maps manifest kind values (lowercased) to the fully-qualified
+// kubectl resource (plural.group) for the typed Istio API deployment components
+// (861-867). Like the Gateway API kinds, these components do not run pods;
+// verification confirms the CR itself exists after apply and is gone after
+// destroy. The Istio CRDs are installed by the KubernetesIstioBaseCrds registry
+// prerequisite before the component applies. All seven Istio kinds are
+// namespaced, so no clusterScoped flag is needed.
+var istioApiKinds = map[string]string{
+	"kubernetespeerauthentication":    "peerauthentications.security.istio.io",
+	"kubernetesrequestauthentication": "requestauthentications.security.istio.io",
+	"kubernetesauthorizationpolicy":   "authorizationpolicies.security.istio.io",
+	"kubernetesserviceentry":          "serviceentries.networking.istio.io",
+	"kubernetesdestinationrule":       "destinationrules.networking.istio.io",
+	"kubernetesenvoyfilter":           "envoyfilters.networking.istio.io",
+	"kubernetestelemetry":             "telemetries.telemetry.istio.io",
 }
 
 // GetVerifierFromManifest creates the appropriate verifier by parsing the manifest.
@@ -206,6 +234,13 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 			return &ResourceExistenceVerifier{
 				Namespace: namespace,
 				Kind:      gw.resource,
+				Name:      info.Name,
+			}, nil
+		}
+		if resource, ok := istioApiKinds[component]; ok {
+			return &ResourceExistenceVerifier{
+				Namespace: info.Namespace,
+				Kind:      resource,
 				Name:      info.Name,
 			}, nil
 		}

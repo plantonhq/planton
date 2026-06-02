@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package org.openmcf.provider.kubernetes.kubernetesauthorizationpolicy.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/kubernetes/kubernetesauthorizationpolicy/v1/spec.proto";
+import "org/openmcf/provider/kubernetes/kubernetesauthorizationpolicy/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// KubernetesAuthorizationPolicy is an Istio AuthorizationPolicy: a namespaced policy
+// that enforces access control (ALLOW / DENY / AUDIT / CUSTOM) on the workloads it
+// selects.
+message KubernetesAuthorizationPolicy {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.openmcf.org/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'KubernetesAuthorizationPolicy'];
+
+  // metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  KubernetesAuthorizationPolicySpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  KubernetesAuthorizationPolicyStatus status = 5;
+}
+
+// KubernetesAuthorizationPolicyStatus holds the deployment status and outputs.
+message KubernetesAuthorizationPolicyStatus {
+  // stack-outputs
+  KubernetesAuthorizationPolicyStackOutputs outputs = 1;
+}

@@ -63,18 +63,24 @@ message KubernetesReferenceGrantSpec {
 // Upstream: ReferenceGrantFrom in apis/v1/referencegrant_types.go.
 message KubernetesReferenceGrantFrom {
   // Group of the referent. The empty string ("") infers the Kubernetes core API
-  // group. Upstream marks this field required (the key must be present) but its
-  // Group type explicitly allows the empty value, so it is NOT a buf.validate
-  // `required` field here -- requiring it would wrongly reject the legitimate
-  // core-group "" value. Pattern: empty or an RFC 1123 subdomain (max 253).
+  // group. Upstream requires the KEY to be present, but its Group type explicitly
+  // allows the empty value -- so this is a proto3 `optional` string with a presence
+  // `required` rule: it must be SET (and is therefore emitted to the CRD, which
+  // rejects a missing key) but may be empty. The `optional` is what lets
+  // ReferenceGrant be a faithful kubernetes_manifest projection: protojson omits
+  // unset proto3 scalars, so a non-optional empty-string group would be dropped
+  // and rejected by the API server. Pattern: empty or an RFC 1123 subdomain (253).
   //
   // INFRA-CHART COMPOSABILITY (DD-009): group is a trust assertion about a KIND of
   // resource, not a pointer to a specific OpenMCF resource instance -- do NOT add a
   // metadata.relationships hint for it.
-  string group = 1 [(buf.validate.field).string = {
-    max_len: 253
-    pattern: "^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
-  }];
+  optional string group = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      max_len: 253
+      pattern: "^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+    }
+  ];
 
   // Kind of the referent. Required. Core-supported source kinds: Gateway (when
   // permitting a SecretObjectReference) and GRPCRoute / HTTPRoute / TCPRoute /
@@ -123,16 +129,20 @@ message KubernetesReferenceGrantFrom {
 // Upstream: ReferenceGrantTo in apis/v1/referencegrant_types.go.
 message KubernetesReferenceGrantTo {
   // Group of the referent. The empty string ("") infers the Kubernetes core API
-  // group (e.g. for the Secret and Service kinds). Modeled like from.group: not
-  // buf.validate `required` so the legitimate core-group "" value is accepted.
+  // group (e.g. for the Secret and Service kinds). Modeled like from.group: a
+  // proto3 `optional` string with a presence `required` rule -- the key must be
+  // SET (so protojson emits it and the CRD accepts the resource) but may be empty.
   // Pattern: empty or an RFC 1123 subdomain (max 253).
   //
   // INFRA-CHART COMPOSABILITY (DD-009): a trust assertion about a KIND, not an
   // instance pointer -- no metadata.relationships hint applies.
-  string group = 1 [(buf.validate.field).string = {
-    max_len: 253
-    pattern: "^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
-  }];
+  optional string group = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      max_len: 253
+      pattern: "^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+    }
+  ];
 
   // Kind of the referent. Required. Core-supported target kinds: Secret (when
   // permitting a SecretObjectReference) and Service (when permitting a

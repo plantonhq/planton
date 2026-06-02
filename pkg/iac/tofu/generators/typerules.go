@@ -6,9 +6,11 @@ import "fmt"
 // generating Terraform artifacts. Rules are registered once and consulted by
 // both the tfvars and variables.tf generators.
 type TypeRule struct {
-	// FlattenTo is the Terraform primitive type this message should collapse
-	// to. When set, the generators emit a primitive instead of recursing into
-	// the message's fields. Valid values: "string", "number", "bool".
+	// FlattenTo is the Terraform type this message should collapse to. When
+	// set, the generators emit that type instead of recursing into the
+	// message's fields, and the tfvars generator calls ExtractValue to produce
+	// the value. Valid values: "string", "number", "bool", and "any" (for
+	// free-form JSON well-known types passed through verbatim).
 	// Empty string means "do not flatten, recurse normally."
 	FlattenTo string
 
@@ -53,19 +55,25 @@ func DefaultRules() map[string]TypeRule {
 			Skip: true,
 		},
 
-		// google.protobuf well-known JSON types: map to string to avoid deep
-		// recursion into proto wrapper structures.
+		// google.protobuf well-known JSON types represent free-form JSON. They
+		// flatten to Terraform `any` and pass through verbatim as the nested
+		// JSON value (object/array/scalar) that protojson produced -- NOT
+		// recursing into the proto wrapper structure (whose `fields`/`values`
+		// internals are not the user-facing shape). A TF module that targets a
+		// JSON-string argument calls jsonencode() on the value; a module that
+		// wants the structured object (e.g. a kubernetes_manifest free-form
+		// field) passes it through directly.
 		"google.protobuf.Struct": {
-			FlattenTo:    "string",
-			ExtractValue: extractJSONString,
+			FlattenTo:    "any",
+			ExtractValue: extractJSONValue,
 		},
 		"google.protobuf.Value": {
-			FlattenTo:    "string",
-			ExtractValue: extractJSONString,
+			FlattenTo:    "any",
+			ExtractValue: extractJSONValue,
 		},
 		"google.protobuf.ListValue": {
-			FlattenTo:    "string",
-			ExtractValue: extractJSONString,
+			FlattenTo:    "any",
+			ExtractValue: extractJSONValue,
 		},
 	}
 }
@@ -96,12 +104,12 @@ func extractStringValueOrRef(jsonVal interface{}) (interface{}, error) {
 	return "", nil
 }
 
-// extractJSONString converts a google.protobuf.Struct/Value/ListValue JSON
-// representation to its string form. These are opaque JSON blobs that TF
-// modules treat as strings.
-func extractJSONString(jsonVal interface{}) (interface{}, error) {
-	if jsonVal == nil {
-		return "", nil
-	}
-	return fmt.Sprintf("%v", jsonVal), nil
+// extractJSONValue passes a google.protobuf.Struct/Value/ListValue through
+// verbatim: protojson already rendered it as the natural JSON value (a nested
+// object, array, or scalar), and the HCL writer emits those nested shapes
+// directly. Returning the value unchanged preserves the free-form content
+// faithfully (including user-defined keys, which must not be snake_cased), so
+// the resulting tfvars carries a real object rather than a stringified blob.
+func extractJSONValue(jsonVal interface{}) (interface{}, error) {
+	return jsonVal, nil
 }

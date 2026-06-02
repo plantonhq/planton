@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package org.openmcf.provider.kubernetes.kubernetesauthorizationpolicy.v1;
+
+import "org/openmcf/provider/kubernetes/kubernetesauthorizationpolicy/v1/api.proto";
+import "org/openmcf/provider/kubernetes/provider.proto";
+
+// KubernetesAuthorizationPolicyStackInput provides the inputs for creating the
+// AuthorizationPolicy on a Kubernetes cluster.
+message KubernetesAuthorizationPolicyStackInput {
+  // target cloud-resource
+  KubernetesAuthorizationPolicy target = 1;
+  // provider-config
+  org.openmcf.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+}

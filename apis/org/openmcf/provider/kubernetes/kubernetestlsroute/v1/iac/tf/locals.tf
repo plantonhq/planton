@@ -1,58 +1,14 @@
 locals {
-  route_name = var.metadata.name
-  namespace  = var.spec.namespace
-
   labels = {
-    "app.kubernetes.io/name"       = "tlsroute"
+    "app.kubernetes.io/name"       = "tls-route"
     "app.kubernetes.io/instance"   = var.metadata.name
     "app.kubernetes.io/managed-by" = "openmcf"
-    "app.kubernetes.io/component"  = "tlsroute"
+    "app.kubernetes.io/component"  = "tls-route"
   }
 
-  # Parent references (Gateways the route attaches to), proto snake_case mapped
-  # to Gateway API camelCase, with unset optional fields pruned. parent_refs is a
-  # plain reference (DD-009); infra-chart authors wire the route -> Gateway edge
-  # via metadata.relationships.
-  parent_refs = var.spec.parent_refs != null ? [
-    for p in var.spec.parent_refs : merge(
-      { name = p.name },
-      p.group != null ? { group = p.group } : {},
-      p.kind != null ? { kind = p.kind } : {},
-      p.namespace != null ? { namespace = p.namespace } : {},
-      p.section_name != null ? { sectionName = p.section_name } : {},
-      p.port != null ? { port = p.port } : {},
-    )
-  ] : null
-
-  # Routing rules. A TLS route rule has only an optional name and the backend
-  # refs (no matches, no filters); backend refs are null-pruned. backend_refs is
-  # a plain reference (DD-009); infra-chart authors wire the route -> backend
-  # edge via metadata.relationships.
-  rules = [
-    for r in var.spec.rules : merge(
-      r.name != null ? { name = r.name } : {},
-      {
-        backendRefs = [
-          for b in r.backend_refs : merge(
-            { name = b.name },
-            b.group != null ? { group = b.group } : {},
-            b.kind != null ? { kind = b.kind } : {},
-            b.namespace != null ? { namespace = b.namespace } : {},
-            b.port != null ? { port = b.port } : {},
-            b.weight != null ? { weight = b.weight } : {},
-          )
-        ]
-      },
-    )
-  ]
-
-  # Final TLSRoute spec manifest (camelCase). hostnames and rules are always
-  # present (required); parentRefs is pruned when unset.
-  tls_route_spec = merge(
-    {
-      hostnames = var.spec.hostnames
-      rules     = local.rules
-    },
-    local.parent_refs != null ? { parentRefs = local.parent_refs } : {},
-  )
+  # The CR spec is var.spec minus the OpenMCF "namespace" foreign key, which maps to
+  # metadata.namespace rather than into the CR spec. target_cluster is already
+  # dropped by the converter, which also emits camelCase, null-pruned keys, so no
+  # other transformation is needed.
+  manifest_spec = { for k, v in var.spec : k => v if k != "namespace" }
 }
