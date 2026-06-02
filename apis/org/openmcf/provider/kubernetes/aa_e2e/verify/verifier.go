@@ -80,6 +80,17 @@ var crdInstallKinds = map[string][]string{
 		"httproutes.gateway.networking.k8s.io",
 		"referencegrants.gateway.networking.k8s.io",
 	},
+	// KubernetesIstioBaseCrds installs the istio/base CRD bundle (no istiod). Verify the
+	// CRDs backing the seven typed Istio components are present.
+	"kubernetesistiobasecrds": {
+		"destinationrules.networking.istio.io",
+		"serviceentries.networking.istio.io",
+		"envoyfilters.networking.istio.io",
+		"peerauthentications.security.istio.io",
+		"requestauthentications.security.istio.io",
+		"authorizationpolicies.security.istio.io",
+		"telemetries.telemetry.istio.io",
+	},
 }
 
 // gatewayApiCustomResource describes how to verify a Gateway API custom resource

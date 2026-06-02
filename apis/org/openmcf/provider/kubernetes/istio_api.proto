@@ -1,0 +1,74 @@
+syntax = "proto3";
+
+package org.openmcf.provider.kubernetes;
+
+import "buf/validate/validate.proto";
+
+// Shared Istio API types used across multiple OpenMCF Istio components
+// (DestinationRule, ServiceEntry, PeerAuthentication, RequestAuthentication,
+// AuthorizationPolicy, Telemetry, EnvoyFilter). Translated from istio.io/api 1.26
+// (pinned at tag 1.26.8). Mirrors the sibling `gateway_api.proto` convention:
+// package org.openmcf.provider.kubernetes, messages prefixed `KubernetesIstioApi*`
+// (kept out of the `KubernetesIstio` mesh-install kind's own message namespace).
+//
+// Status types are intentionally excluded — OpenMCF captures deployment outputs via
+// each component's stack_outputs.proto, not CRD status subresources.
+//
+// Conventions (per project design decisions):
+//   - DD-004: Istio `oneof`s are flattened to a discriminator field + sibling fields,
+//     never carried as proto `oneof` (changes JSON shape, drops the discriminator).
+//   - DD-008: closed-set "enum-like" values are `string` + a closed `in [...]` rule,
+//     not proto enums. Istio constants are UPPERCASE (external-standard exception).
+//
+// This file is seeded minimally and grown just-in-time as each component consumes a
+// shared type (first consumer: PeerAuthentication, T02).
+
+// KubernetesIstioApiWorkloadSelector selects the workloads (pods/VMs) a policy applies to,
+// by label. Faithful to istio.io/api `istio.type.v1beta1.WorkloadSelector`. When multiple
+// labels are given, all must match. Label search is scoped to the resource's namespace.
+//
+// DD-009 composability: the selected workloads are not a typed cross-resource reference;
+// they are matched by label at runtime by istiod. No automatic DAG edge is created.
+message KubernetesIstioApiWorkloadSelector {
+  // One or more labels indicating the set of pods/VMs the policy applies to.
+  // Upstream constraints: max 4096 entries; each value <= 63 chars; wildcards ('*')
+  // are not permitted in keys or values (enforced just-in-time by the first consumer).
+  map<string, string> match_labels = 1 [(buf.validate.field).map = {
+    max_pairs: 4096
+    values: {
+      string: {max_len: 63}
+    }
+  }];
+}
+
+// KubernetesIstioApiPortSelector selects a policy's applicability to a specific port.
+// Faithful to istio.io/api `istio.type.v1beta1.PortSelector`.
+message KubernetesIstioApiPortSelector {
+  // Port number (1-65535).
+  uint32 number = 1 [(buf.validate.field).uint32 = {
+    gte: 1
+    lte: 65535
+  }];
+}
+
+// KubernetesIstioApiStringMatch matches a string by one of three strategies.
+// DD-004: Istio models this as a `oneof { exact, prefix, regex }`; OpenMCF flattens it to a
+// `match_type` discriminator + a single `value`. DD-008: `match_type` is a closed string set,
+// not a proto enum.
+message KubernetesIstioApiStringMatch {
+  // Match strategy applied to `value`. One of:
+  //   EXACT  — value must equal the input exactly.
+  //   PREFIX — value must be a prefix of the input.
+  //   REGEX  — value is an RE2 regular expression (https://github.com/google/re2/wiki/Syntax).
+  // EXACT/PREFIX/REGEX // external standard exception -- matches the Istio StringMatch oneof fields
+  string match_type = 1 [(buf.validate.field).string = {
+    in: [
+      "EXACT",
+      "PREFIX",
+      "REGEX"
+    ]
+  }];
+
+  // The value to match against, interpreted according to `match_type`.
+  string value = 2 [(buf.validate.field).string = {min_len: 1}];
+}

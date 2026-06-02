@@ -7,6 +7,7 @@ import "org/openmcf/provider/kubernetes/kubernetes.proto";
 import "org/openmcf/provider/kubernetes/options.proto";
 import "org/openmcf/provider/kubernetes/target_cluster.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
 
 // **KubernetesIstioSpec** defines the configuration for deploying Istio service mesh on a Kubernetes cluster.
 // This message specifies the parameters needed to create and manage an Istio deployment within a Kubernetes environment.
@@ -27,6 +28,23 @@ message KubernetesIstioSpec {
 
   // The container specifications for the Istio control plane (istiod) deployment.
   KubernetesIstioSpecContainer container = 4 [(buf.validate.field).required = true];
+
+  // Istio version to deploy (full patch, e.g. "1.26.8"). Drives the chart version
+  // of the istio/base, istiod, and ingress-gateway Helm releases installed for the mesh.
+  //
+  // Defaults to "1.26.8" -- the Istio version this OpenMCF release targets and the
+  // version its typed Istio API components (KubernetesDestinationRule,
+  // KubernetesPeerAuthentication, etc.) are generated against.
+  //
+  // IMPORTANT (upgrades): Istio only supports sequential, single-minor upgrades
+  // (e.g. 1.24 -> 1.25 -> 1.26); skipping minors is unsupported. An existing mesh on
+  // an older minor MUST pin its currently-running version here (e.g. version: "1.22.3")
+  // before redeploying, otherwise it would attempt an unsupported multi-minor in-place
+  // jump to the default. Must be a full patch version (X.Y.Z), not a bare minor.
+  optional string version = 5 [
+    (org.openmcf.shared.options.default) = "1.26.8",
+    (buf.validate.field).string = {pattern: "^[0-9]+\\.[0-9]+\\.[0-9]+$"}
+  ];
 }
 
 // **KubernetesIstioSpecContainer** specifies the container configuration for the Istio control plane (istiod).

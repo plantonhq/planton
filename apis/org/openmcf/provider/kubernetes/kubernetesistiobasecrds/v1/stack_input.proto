@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package org.openmcf.provider.kubernetes.kubernetesistiobasecrds.v1;
+
+import "org/openmcf/provider/kubernetes/kubernetesistiobasecrds/v1/api.proto";
+import "org/openmcf/provider/kubernetes/provider.proto";
+
+// KubernetesIstioBaseCrdsStackInput provides the inputs for installing the Istio CRDs
+// on a Kubernetes cluster.
+message KubernetesIstioBaseCrdsStackInput {
+  // target cloud-resource
+  KubernetesIstioBaseCrds target = 1;
+  // provider-config
+  org.openmcf.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+}

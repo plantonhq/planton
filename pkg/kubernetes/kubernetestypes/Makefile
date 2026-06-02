@@ -5,8 +5,8 @@ go_build_dir=pkg
 gateway_apis=v1.5.1
 
 #https://github.com/istio/istio/tree/master/manifests/charts/base/crds
-#https://github.com/istio/istio/tree/release-1.22
-istio_release=release-1.22
+#https://github.com/istio/istio/tree/release-1.26
+istio_release=release-1.26
 
 #https://github.com/cert-manager/cert-manager/tree/master/deploy/crds
 #https://github.com/cert-manager/cert-manager/tree/release-1.15
@@ -71,7 +71,7 @@ gen-gateway-apis:
 
 .PHONY: gen-istio
 gen-istio:
-	crd2pulumi --force --goPath=istio https://raw.githubusercontent.com/istio/istio/${istio_release}/manifests/charts/base/crds/crd-all.gen.yaml
+	crd2pulumi --force --goPath=istio https://raw.githubusercontent.com/istio/istio/${istio_release}/manifests/charts/base/files/crd-all.gen.yaml
 
 .PHONY: gen-cert-manager
 gen-cert-manager:

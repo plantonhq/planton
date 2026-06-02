@@ -10,6 +10,7 @@ import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	kubernetes "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes"
 	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
+	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -36,7 +37,20 @@ type KubernetesIstioSpec struct {
 	// flag to indicate if the namespace should be created
 	CreateNamespace bool `protobuf:"varint,3,opt,name=create_namespace,json=createNamespace,proto3" json:"create_namespace,omitempty"`
 	// The container specifications for the Istio control plane (istiod) deployment.
-	Container     *KubernetesIstioSpecContainer `protobuf:"bytes,4,opt,name=container,proto3" json:"container,omitempty"`
+	Container *KubernetesIstioSpecContainer `protobuf:"bytes,4,opt,name=container,proto3" json:"container,omitempty"`
+	// Istio version to deploy (full patch, e.g. "1.26.8"). Drives the chart version
+	// of the istio/base, istiod, and ingress-gateway Helm releases installed for the mesh.
+	//
+	// Defaults to "1.26.8" -- the Istio version this OpenMCF release targets and the
+	// version its typed Istio API components (KubernetesDestinationRule,
+	// KubernetesPeerAuthentication, etc.) are generated against.
+	//
+	// IMPORTANT (upgrades): Istio only supports sequential, single-minor upgrades
+	// (e.g. 1.24 -> 1.25 -> 1.26); skipping minors is unsupported. An existing mesh on
+	// an older minor MUST pin its currently-running version here (e.g. version: "1.22.3")
+	// before redeploying, otherwise it would attempt an unsupported multi-minor in-place
+	// jump to the default. Must be a full patch version (X.Y.Z), not a bare minor.
+	Version       *string `protobuf:"bytes,5,opt,name=version,proto3,oneof" json:"version,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -99,6 +113,13 @@ func (x *KubernetesIstioSpec) GetContainer() *KubernetesIstioSpecContainer {
 	return nil
 }
 
+func (x *KubernetesIstioSpec) GetVersion() string {
+	if x != nil && x.Version != nil {
+		return *x.Version
+	}
+	return ""
+}
+
 // **KubernetesIstioSpecContainer** specifies the container configuration for the Istio control plane (istiod).
 // It includes resource allocations for CPU and memory to ensure the service mesh control plane runs efficiently.
 type KubernetesIstioSpecContainer struct {
@@ -150,12 +171,15 @@ var File_org_openmcf_provider_kubernetes_kubernetesistio_v1_spec_proto protorefl
 
 const file_org_openmcf_provider_kubernetes_kubernetesistio_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"=org/openmcf/provider/kubernetes/kubernetesistio/v1/spec.proto\x122org.openmcf.provider.kubernetes.kubernetesistio.v1\x1a\x1bbuf/validate/validate.proto\x1a0org/openmcf/provider/kubernetes/kubernetes.proto\x1a-org/openmcf/provider/kubernetes/options.proto\x1a4org/openmcf/provider/kubernetes/target_cluster.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x87\x03\n" +
+	"=org/openmcf/provider/kubernetes/kubernetesistio/v1/spec.proto\x122org.openmcf.provider.kubernetes.kubernetesistio.v1\x1a\x1bbuf/validate/validate.proto\x1a0org/openmcf/provider/kubernetes/kubernetes.proto\x1a-org/openmcf/provider/kubernetes/options.proto\x1a4org/openmcf/provider/kubernetes/target_cluster.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xdd\x03\n" +
 	"\x13KubernetesIstioSpec\x12a\n" +
 	"\x0etarget_cluster\x18\x01 \x01(\v2:.org.openmcf.provider.kubernetes.KubernetesClusterSelectorR\rtargetCluster\x12j\n" +
 	"\tnamespace\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xc4\x06\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
 	"\x10create_namespace\x18\x03 \x01(\bR\x0fcreateNamespace\x12v\n" +
-	"\tcontainer\x18\x04 \x01(\v2P.org.openmcf.provider.kubernetes.kubernetesistio.v1.KubernetesIstioSpecContainerB\x06\xbaH\x03\xc8\x01\x01R\tcontainer\"\x94\x01\n" +
+	"\tcontainer\x18\x04 \x01(\v2P.org.openmcf.provider.kubernetes.kubernetesistio.v1.KubernetesIstioSpecContainerB\x06\xbaH\x03\xc8\x01\x01R\tcontainer\x12H\n" +
+	"\aversion\x18\x05 \x01(\tB)\xbaH\x1cr\x1a2\x18^[0-9]+\\.[0-9]+\\.[0-9]+$\x8a\xa6\x1d\x061.26.8H\x00R\aversion\x88\x01\x01B\n" +
+	"\n" +
+	"\b_version\"\x94\x01\n" +
 	"\x1cKubernetesIstioSpecContainer\x12t\n" +
 	"\tresources\x18\x01 \x01(\v23.org.openmcf.provider.kubernetes.ContainerResourcesB!\xba\xfb\xa4\x02\x1c\n" +
 	"\f\n" +
@@ -200,6 +224,7 @@ func file_org_openmcf_provider_kubernetes_kubernetesistio_v1_spec_proto_init() {
 	if File_org_openmcf_provider_kubernetes_kubernetesistio_v1_spec_proto != nil {
 		return
 	}
+	file_org_openmcf_provider_kubernetes_kubernetesistio_v1_spec_proto_msgTypes[0].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

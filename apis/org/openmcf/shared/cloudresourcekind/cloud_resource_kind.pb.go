@@ -296,6 +296,17 @@ const (
 	CloudResourceKind_KubernetesTcpRoute                    CloudResourceKind = 858
 	CloudResourceKind_KubernetesTlsRoute                    CloudResourceKind = 859
 	CloudResourceKind_KubernetesReferenceGrant              CloudResourceKind = 860
+	// Istio API components (mesh traffic policy, security, telemetry). The seven typed
+	// resources below require the Istio CRDs on the cluster, provided by the lightweight
+	// CRDs-only KubernetesIstioBaseCrds (868) — NOT the full mesh KubernetesIstio (825).
+	CloudResourceKind_KubernetesDestinationRule       CloudResourceKind = 861
+	CloudResourceKind_KubernetesServiceEntry          CloudResourceKind = 862
+	CloudResourceKind_KubernetesPeerAuthentication    CloudResourceKind = 863
+	CloudResourceKind_KubernetesRequestAuthentication CloudResourceKind = 864
+	CloudResourceKind_KubernetesAuthorizationPolicy   CloudResourceKind = 865
+	CloudResourceKind_KubernetesTelemetry             CloudResourceKind = 866
+	CloudResourceKind_KubernetesEnvoyFilter           CloudResourceKind = 867
+	CloudResourceKind_KubernetesIstioBaseCrds         CloudResourceKind = 868
 	// 1200–1499: DigitalOcean resources
 	CloudResourceKind_DigitalOceanAppPlatformService CloudResourceKind = 1200
 	CloudResourceKind_DigitalOceanBucket             CloudResourceKind = 1201
@@ -684,6 +695,14 @@ var (
 		858:  "KubernetesTcpRoute",
 		859:  "KubernetesTlsRoute",
 		860:  "KubernetesReferenceGrant",
+		861:  "KubernetesDestinationRule",
+		862:  "KubernetesServiceEntry",
+		863:  "KubernetesPeerAuthentication",
+		864:  "KubernetesRequestAuthentication",
+		865:  "KubernetesAuthorizationPolicy",
+		866:  "KubernetesTelemetry",
+		867:  "KubernetesEnvoyFilter",
+		868:  "KubernetesIstioBaseCrds",
 		1200: "DigitalOceanAppPlatformService",
 		1201: "DigitalOceanBucket",
 		1202: "DigitalOceanContainerRegistry",
@@ -1061,6 +1080,14 @@ var (
 		"KubernetesTcpRoute":                    858,
 		"KubernetesTlsRoute":                    859,
 		"KubernetesReferenceGrant":              860,
+		"KubernetesDestinationRule":             861,
+		"KubernetesServiceEntry":                862,
+		"KubernetesPeerAuthentication":          863,
+		"KubernetesRequestAuthentication":       864,
+		"KubernetesAuthorizationPolicy":         865,
+		"KubernetesTelemetry":                   866,
+		"KubernetesEnvoyFilter":                 867,
+		"KubernetesIstioBaseCrds":               868,
 		"DigitalOceanAppPlatformService":        1200,
 		"DigitalOceanBucket":                    1201,
 		"DigitalOceanContainerRegistry":         1202,
@@ -1402,7 +1429,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\rprerequisites\x18\a \x03(\x0e27.org.openmcf.shared.cloudresourcekind.CloudResourceKindR\rprerequisites*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\x8c\x7f\n" +
+	"\x02v1\x10\x01*\xb7\x82\x01\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12,\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1634,7 +1661,16 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x13KubernetesGrpcRoute\x10\xd9\x06\x1a\x14\xa2\xf7\x04\x10\b\x13\x10\x01\"\x06k8sgrt:\x02\xc5\x06\x12-\n" +
 	"\x12KubernetesTcpRoute\x10\xda\x06\x1a\x14\xa2\xf7\x04\x10\b\x13\x10\x01\"\x06k8strt:\x02\xc5\x06\x12/\n" +
 	"\x12KubernetesTlsRoute\x10\xdb\x06\x1a\x16\xa2\xf7\x04\x12\b\x13\x10\x01\"\bk8stlsrt:\x02\xc5\x06\x126\n" +
-	"\x18KubernetesReferenceGrant\x10\xdc\x06\x1a\x17\xa2\xf7\x04\x13\b\x13\x10\x01\"\tk8srefgrt:\x02\xc5\x06\x124\n" +
+	"\x18KubernetesReferenceGrant\x10\xdc\x06\x1a\x17\xa2\xf7\x04\x13\b\x13\x10\x01\"\tk8srefgrt:\x02\xc5\x06\x123\n" +
+	"\x19KubernetesDestinationRule\x10\xdd\x06\x1a\x13\xa2\xf7\x04\x0f\b\x13\x10\x01\"\x05k8sdr:\x02\xe4\x06\x120\n" +
+	"\x16KubernetesServiceEntry\x10\xde\x06\x1a\x13\xa2\xf7\x04\x0f\b\x13\x10\x01\"\x05k8sse:\x02\xe4\x06\x126\n" +
+	"\x1cKubernetesPeerAuthentication\x10\xdf\x06\x1a\x13\xa2\xf7\x04\x0f\b\x13\x10\x01\"\x05k8spa:\x02\xe4\x06\x129\n" +
+	"\x1fKubernetesRequestAuthentication\x10\xe0\x06\x1a\x13\xa2\xf7\x04\x0f\b\x13\x10\x01\"\x05k8sra:\x02\xe4\x06\x12:\n" +
+	"\x1dKubernetesAuthorizationPolicy\x10\xe1\x06\x1a\x16\xa2\xf7\x04\x12\b\x13\x10\x01\"\bk8sauthz:\x02\xe4\x06\x12.\n" +
+	"\x13KubernetesTelemetry\x10\xe2\x06\x1a\x14\xa2\xf7\x04\x10\b\x13\x10\x01\"\x06k8stel:\x02\xe4\x06\x12/\n" +
+	"\x15KubernetesEnvoyFilter\x10\xe3\x06\x1a\x13\xa2\xf7\x04\x0f\b\x13\x10\x01\"\x05k8sef:\x02\xe4\x06\x122\n" +
+	"\x17KubernetesIstioBaseCrds\x10\xe4\x06\x1a\x14\xa2\xf7\x04\x10\b\x13\x10\x01\"\n" +
+	"k8sistcrds\x124\n" +
 	"\x1eDigitalOceanAppPlatformService\x10\xb0\t\x1a\x0f\xa2\xf7\x04\v\b\x11\x10\x01\"\x05doapp\x12(\n" +
 	"\x12DigitalOceanBucket\x10\xb1\t\x1a\x0f\xa2\xf7\x04\v\b\x11\x10\x01\"\x05dobkt\x122\n" +
 	"\x1dDigitalOceanContainerRegistry\x10\xb2\t\x1a\x0e\xa2\xf7\x04\n" +

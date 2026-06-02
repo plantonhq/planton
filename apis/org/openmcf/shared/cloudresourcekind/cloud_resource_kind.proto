@@ -1177,6 +1177,57 @@ enum CloudResourceKind {
     prerequisites: [KubernetesGatewayApiCrds]
   }];
 
+  // Istio API components (mesh traffic policy, security, telemetry). The seven typed
+  // resources below require the Istio CRDs on the cluster, provided by the lightweight
+  // CRDs-only KubernetesIstioBaseCrds (868) — NOT the full mesh KubernetesIstio (825).
+  KubernetesDestinationRule = 861 [(kind_meta) = {
+    provider: kubernetes
+    version: v1
+    id_prefix: "k8sdr"
+    prerequisites: [KubernetesIstioBaseCrds]
+  }];
+  KubernetesServiceEntry = 862 [(kind_meta) = {
+    provider: kubernetes
+    version: v1
+    id_prefix: "k8sse"
+    prerequisites: [KubernetesIstioBaseCrds]
+  }];
+  KubernetesPeerAuthentication = 863 [(kind_meta) = {
+    provider: kubernetes
+    version: v1
+    id_prefix: "k8spa"
+    prerequisites: [KubernetesIstioBaseCrds]
+  }];
+  KubernetesRequestAuthentication = 864 [(kind_meta) = {
+    provider: kubernetes
+    version: v1
+    id_prefix: "k8sra"
+    prerequisites: [KubernetesIstioBaseCrds]
+  }];
+  KubernetesAuthorizationPolicy = 865 [(kind_meta) = {
+    provider: kubernetes
+    version: v1
+    id_prefix: "k8sauthz"
+    prerequisites: [KubernetesIstioBaseCrds]
+  }];
+  KubernetesTelemetry = 866 [(kind_meta) = {
+    provider: kubernetes
+    version: v1
+    id_prefix: "k8stel"
+    prerequisites: [KubernetesIstioBaseCrds]
+  }];
+  KubernetesEnvoyFilter = 867 [(kind_meta) = {
+    provider: kubernetes
+    version: v1
+    id_prefix: "k8sef"
+    prerequisites: [KubernetesIstioBaseCrds]
+  }];
+  KubernetesIstioBaseCrds = 868 [(kind_meta) = {
+    provider: kubernetes
+    version: v1
+    id_prefix: "k8sistcrds"
+  }];
+
   // 1200–1499: DigitalOcean resources
   DigitalOceanAppPlatformService = 1200 [(kind_meta) = {
     provider: digital_ocean

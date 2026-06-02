@@ -112,26 +112,26 @@ resource "helm_release" "istiod" {
   wait_for_jobs    = true
   timeout          = 180
 
-  # Configure pilot (istiod) resources from spec
-  set {
-    name  = "pilot.resources.requests.cpu"
-    value = var.spec.container.resources.requests.cpu
-  }
-
-  set {
-    name  = "pilot.resources.requests.memory"
-    value = var.spec.container.resources.requests.memory
-  }
-
-  set {
-    name  = "pilot.resources.limits.cpu"
-    value = var.spec.container.resources.limits.cpu
-  }
-
-  set {
-    name  = "pilot.resources.limits.memory"
-    value = var.spec.container.resources.limits.memory
-  }
+  # Configure pilot (istiod) resources from spec.
+  # helm provider v3 expects `set` as a list-of-objects attribute (not nested blocks).
+  set = [
+    {
+      name  = "pilot.resources.requests.cpu"
+      value = var.spec.container.resources.requests.cpu
+    },
+    {
+      name  = "pilot.resources.requests.memory"
+      value = var.spec.container.resources.requests.memory
+    },
+    {
+      name  = "pilot.resources.limits.cpu"
+      value = var.spec.container.resources.limits.cpu
+    },
+    {
+      name  = "pilot.resources.limits.memory"
+      value = var.spec.container.resources.limits.memory
+    },
+  ]
 
   depends_on = [helm_release.istio_base]
 }
@@ -161,11 +161,14 @@ resource "helm_release" "istio_gateway" {
   wait_for_jobs    = true
   timeout          = 180
 
-  # Configure gateway service type
-  set {
-    name  = "service.type"
-    value = "ClusterIP"
-  }
+  # Configure gateway service type.
+  # helm provider v3 expects `set` as a list-of-objects attribute (not nested blocks).
+  set = [
+    {
+      name  = "service.type"
+      value = "ClusterIP"
+    },
+  ]
 
   depends_on = [helm_release.istiod]
 }

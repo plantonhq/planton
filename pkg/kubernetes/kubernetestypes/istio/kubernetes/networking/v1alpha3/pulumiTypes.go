@@ -2872,8 +2872,9 @@ type DestinationRuleSpecSubsetsTrafficPolicyLoadBalancer struct {
 	ConsistentHash    *DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerConsistentHash    `pulumi:"consistentHash"`
 	LocalityLbSetting *DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSetting `pulumi:"localityLbSetting"`
 	// Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
-	Simple *string `pulumi:"simple"`
-	// Represents the warmup duration of Service.
+	Simple *string                                                    `pulumi:"simple"`
+	Warmup *DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmup `pulumi:"warmup"`
+	// Deprecated: use `warmup` instead.
 	WarmupDurationSecs *string `pulumi:"warmupDurationSecs"`
 }
 
@@ -2893,8 +2894,9 @@ type DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerArgs struct {
 	ConsistentHash    DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerConsistentHashPtrInput    `pulumi:"consistentHash"`
 	LocalityLbSetting DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingPtrInput `pulumi:"localityLbSetting"`
 	// Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
-	Simple pulumi.StringPtrInput `pulumi:"simple"`
-	// Represents the warmup duration of Service.
+	Simple pulumi.StringPtrInput                                             `pulumi:"simple"`
+	Warmup DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrInput `pulumi:"warmup"`
+	// Deprecated: use `warmup` instead.
 	WarmupDurationSecs pulumi.StringPtrInput `pulumi:"warmupDurationSecs"`
 }
 
@@ -2993,7 +2995,13 @@ func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerOutput) Simple() pulu
 	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyLoadBalancer) *string { return v.Simple }).(pulumi.StringPtrOutput)
 }
 
-// Represents the warmup duration of Service.
+func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerOutput) Warmup() DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyLoadBalancer) *DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmup {
+		return v.Warmup
+	}).(DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutput)
+}
+
+// Deprecated: use `warmup` instead.
 func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerOutput) WarmupDurationSecs() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyLoadBalancer) *string { return v.WarmupDurationSecs }).(pulumi.StringPtrOutput)
 }
@@ -3050,7 +3058,16 @@ func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerPtrOutput) Simple() p
 	}).(pulumi.StringPtrOutput)
 }
 
-// Represents the warmup duration of Service.
+func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerPtrOutput) Warmup() DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyLoadBalancer) *DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmup {
+		if v == nil {
+			return nil
+		}
+		return v.Warmup
+	}).(DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutput)
+}
+
+// Deprecated: use `warmup` instead.
 func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerPtrOutput) WarmupDurationSecs() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyLoadBalancer) *string {
 		if v == nil {
@@ -4503,7 +4520,7 @@ func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerConsistentHashRingHas
 type DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSetting struct {
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Distribute []DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingDistribute `pulumi:"distribute"`
-	// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+	// Enable locality load balancing.
 	Enabled *bool `pulumi:"enabled"`
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Failover []DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingFailover `pulumi:"failover"`
@@ -4525,7 +4542,7 @@ type DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingInput i
 type DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingArgs struct {
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Distribute DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingDistributeArrayInput `pulumi:"distribute"`
-	// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+	// Enable locality load balancing.
 	Enabled pulumi.BoolPtrInput `pulumi:"enabled"`
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Failover DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingFailoverArrayInput `pulumi:"failover"`
@@ -4617,7 +4634,7 @@ func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingOutp
 	}).(DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingDistributeArrayOutput)
 }
 
-// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+// Enable locality load balancing.
 func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingOutput) Enabled() pulumi.BoolPtrOutput {
 	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSetting) *bool { return v.Enabled }).(pulumi.BoolPtrOutput)
 }
@@ -4670,7 +4687,7 @@ func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingPtrO
 	}).(DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingDistributeArrayOutput)
 }
 
-// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+// Enable locality load balancing.
 func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingPtrOutput) Enabled() pulumi.BoolPtrOutput {
 	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSetting) *bool {
 		if v == nil {
@@ -5143,7 +5160,7 @@ func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingFail
 type DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingPatch struct {
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Distribute []DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingDistributePatch `pulumi:"distribute"`
-	// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+	// Enable locality load balancing.
 	Enabled *bool `pulumi:"enabled"`
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Failover []DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingFailoverPatch `pulumi:"failover"`
@@ -5165,7 +5182,7 @@ type DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingPatchIn
 type DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingPatchArgs struct {
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Distribute DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingDistributePatchArrayInput `pulumi:"distribute"`
-	// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+	// Enable locality load balancing.
 	Enabled pulumi.BoolPtrInput `pulumi:"enabled"`
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Failover DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingFailoverPatchArrayInput `pulumi:"failover"`
@@ -5257,7 +5274,7 @@ func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingPatc
 	}).(DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingDistributePatchArrayOutput)
 }
 
-// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+// Enable locality load balancing.
 func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingPatchOutput) Enabled() pulumi.BoolPtrOutput {
 	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingPatch) *bool {
 		return v.Enabled
@@ -5312,7 +5329,7 @@ func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingPatc
 	}).(DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingDistributePatchArrayOutput)
 }
 
-// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+// Enable locality load balancing.
 func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingPatchPtrOutput) Enabled() pulumi.BoolPtrOutput {
 	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingPatch) *bool {
 		if v == nil {
@@ -5347,8 +5364,9 @@ type DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerPatch struct {
 	ConsistentHash    *DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerConsistentHashPatch    `pulumi:"consistentHash"`
 	LocalityLbSetting *DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingPatch `pulumi:"localityLbSetting"`
 	// Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
-	Simple *string `pulumi:"simple"`
-	// Represents the warmup duration of Service.
+	Simple *string                                                         `pulumi:"simple"`
+	Warmup *DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatch `pulumi:"warmup"`
+	// Deprecated: use `warmup` instead.
 	WarmupDurationSecs *string `pulumi:"warmupDurationSecs"`
 }
 
@@ -5368,8 +5386,9 @@ type DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerPatchArgs struct {
 	ConsistentHash    DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerConsistentHashPatchPtrInput    `pulumi:"consistentHash"`
 	LocalityLbSetting DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingPatchPtrInput `pulumi:"localityLbSetting"`
 	// Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
-	Simple pulumi.StringPtrInput `pulumi:"simple"`
-	// Represents the warmup duration of Service.
+	Simple pulumi.StringPtrInput                                                  `pulumi:"simple"`
+	Warmup DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrInput `pulumi:"warmup"`
+	// Deprecated: use `warmup` instead.
 	WarmupDurationSecs pulumi.StringPtrInput `pulumi:"warmupDurationSecs"`
 }
 
@@ -5468,7 +5487,13 @@ func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerPatchOutput) Simple()
 	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerPatch) *string { return v.Simple }).(pulumi.StringPtrOutput)
 }
 
-// Represents the warmup duration of Service.
+func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerPatchOutput) Warmup() DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerPatch) *DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatch {
+		return v.Warmup
+	}).(DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutput)
+}
+
+// Deprecated: use `warmup` instead.
 func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerPatchOutput) WarmupDurationSecs() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerPatch) *string { return v.WarmupDurationSecs }).(pulumi.StringPtrOutput)
 }
@@ -5525,7 +5550,16 @@ func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerPatchPtrOutput) Simpl
 	}).(pulumi.StringPtrOutput)
 }
 
-// Represents the warmup duration of Service.
+func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerPatchPtrOutput) Warmup() DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerPatch) *DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatch {
+		if v == nil {
+			return nil
+		}
+		return v.Warmup
+	}).(DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutput)
+}
+
+// Deprecated: use `warmup` instead.
 func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerPatchPtrOutput) WarmupDurationSecs() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerPatch) *string {
 		if v == nil {
@@ -5533,6 +5567,348 @@ func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerPatchPtrOutput) Warmu
 		}
 		return v.WarmupDurationSecs
 	}).(pulumi.StringPtrOutput)
+}
+
+// Represents the warmup configuration of Service.
+type DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmup struct {
+	// This parameter controls the speed of traffic increase over the warmup duration.
+	Aggression     *float64 `pulumi:"aggression"`
+	Duration       *string  `pulumi:"duration"`
+	MinimumPercent *float64 `pulumi:"minimumPercent"`
+}
+
+// DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupInput is an input type that accepts DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupArgs and DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupOutput values.
+// You can construct a concrete instance of `DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupInput` via:
+//
+//	DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupArgs{...}
+type DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupInput interface {
+	pulumi.Input
+
+	ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupOutput() DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupOutput
+	ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupOutputWithContext(context.Context) DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupOutput
+}
+
+// Represents the warmup configuration of Service.
+type DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupArgs struct {
+	// This parameter controls the speed of traffic increase over the warmup duration.
+	Aggression     pulumi.Float64PtrInput `pulumi:"aggression"`
+	Duration       pulumi.StringPtrInput  `pulumi:"duration"`
+	MinimumPercent pulumi.Float64PtrInput `pulumi:"minimumPercent"`
+}
+
+func (DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmup)(nil)).Elem()
+}
+
+func (i DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupArgs) ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupOutput() DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupOutput {
+	return i.ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupOutputWithContext(context.Background())
+}
+
+func (i DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupArgs) ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupOutputWithContext(ctx context.Context) DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupOutput)
+}
+
+func (i DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupArgs) ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutput() DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutput {
+	return i.ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutputWithContext(context.Background())
+}
+
+func (i DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupArgs) ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutputWithContext(ctx context.Context) DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupOutput).ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutputWithContext(ctx)
+}
+
+// DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrInput is an input type that accepts DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupArgs, DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtr and DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutput values.
+// You can construct a concrete instance of `DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrInput` via:
+//
+//	        DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupArgs{...}
+//
+//	or:
+//
+//	        nil
+type DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrInput interface {
+	pulumi.Input
+
+	ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutput() DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutput
+	ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutputWithContext(context.Context) DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutput
+}
+
+type destinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrType DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupArgs
+
+func DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtr(v *DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupArgs) DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrInput {
+	return (*destinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrType)(v)
+}
+
+func (*destinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmup)(nil)).Elem()
+}
+
+func (i *destinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrType) ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutput() DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutput {
+	return i.ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutputWithContext(context.Background())
+}
+
+func (i *destinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrType) ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutputWithContext(ctx context.Context) DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutput)
+}
+
+// Represents the warmup configuration of Service.
+type DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupOutput struct{ *pulumi.OutputState }
+
+func (DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmup)(nil)).Elem()
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupOutput) ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupOutput() DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupOutput {
+	return o
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupOutput) ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupOutputWithContext(ctx context.Context) DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupOutput {
+	return o
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupOutput) ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutput() DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutput {
+	return o.ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutputWithContext(context.Background())
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupOutput) ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutputWithContext(ctx context.Context) DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmup) *DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmup {
+		return &v
+	}).(DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutput)
+}
+
+// This parameter controls the speed of traffic increase over the warmup duration.
+func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupOutput) Aggression() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmup) *float64 { return v.Aggression }).(pulumi.Float64PtrOutput)
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupOutput) Duration() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmup) *string { return v.Duration }).(pulumi.StringPtrOutput)
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupOutput) MinimumPercent() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmup) *float64 { return v.MinimumPercent }).(pulumi.Float64PtrOutput)
+}
+
+type DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutput struct{ *pulumi.OutputState }
+
+func (DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmup)(nil)).Elem()
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutput) ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutput() DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutput {
+	return o
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutput) ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutputWithContext(ctx context.Context) DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutput {
+	return o
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutput) Elem() DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmup) DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmup {
+		if v != nil {
+			return *v
+		}
+		var ret DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmup
+		return ret
+	}).(DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupOutput)
+}
+
+// This parameter controls the speed of traffic increase over the warmup duration.
+func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutput) Aggression() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmup) *float64 {
+		if v == nil {
+			return nil
+		}
+		return v.Aggression
+	}).(pulumi.Float64PtrOutput)
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutput) Duration() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmup) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Duration
+	}).(pulumi.StringPtrOutput)
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutput) MinimumPercent() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmup) *float64 {
+		if v == nil {
+			return nil
+		}
+		return v.MinimumPercent
+	}).(pulumi.Float64PtrOutput)
+}
+
+// Represents the warmup configuration of Service.
+type DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatch struct {
+	// This parameter controls the speed of traffic increase over the warmup duration.
+	Aggression     *float64 `pulumi:"aggression"`
+	Duration       *string  `pulumi:"duration"`
+	MinimumPercent *float64 `pulumi:"minimumPercent"`
+}
+
+// DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchInput is an input type that accepts DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchArgs and DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchOutput values.
+// You can construct a concrete instance of `DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchInput` via:
+//
+//	DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchArgs{...}
+type DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchInput interface {
+	pulumi.Input
+
+	ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchOutput() DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchOutput
+	ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchOutputWithContext(context.Context) DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchOutput
+}
+
+// Represents the warmup configuration of Service.
+type DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchArgs struct {
+	// This parameter controls the speed of traffic increase over the warmup duration.
+	Aggression     pulumi.Float64PtrInput `pulumi:"aggression"`
+	Duration       pulumi.StringPtrInput  `pulumi:"duration"`
+	MinimumPercent pulumi.Float64PtrInput `pulumi:"minimumPercent"`
+}
+
+func (DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatch)(nil)).Elem()
+}
+
+func (i DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchArgs) ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchOutput() DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchOutput {
+	return i.ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchOutputWithContext(context.Background())
+}
+
+func (i DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchArgs) ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchOutputWithContext(ctx context.Context) DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchOutput)
+}
+
+func (i DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchArgs) ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutput() DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutput {
+	return i.ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutputWithContext(context.Background())
+}
+
+func (i DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchArgs) ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutputWithContext(ctx context.Context) DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchOutput).ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutputWithContext(ctx)
+}
+
+// DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrInput is an input type that accepts DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchArgs, DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtr and DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutput values.
+// You can construct a concrete instance of `DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrInput` via:
+//
+//	        DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrInput interface {
+	pulumi.Input
+
+	ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutput() DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutput
+	ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutputWithContext(context.Context) DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutput
+}
+
+type destinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrType DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchArgs
+
+func DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtr(v *DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchArgs) DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrInput {
+	return (*destinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrType)(v)
+}
+
+func (*destinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatch)(nil)).Elem()
+}
+
+func (i *destinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrType) ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutput() DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutput {
+	return i.ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *destinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrType) ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutputWithContext(ctx context.Context) DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutput)
+}
+
+// Represents the warmup configuration of Service.
+type DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchOutput struct{ *pulumi.OutputState }
+
+func (DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatch)(nil)).Elem()
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchOutput) ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchOutput() DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchOutput {
+	return o
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchOutput) ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchOutputWithContext(ctx context.Context) DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchOutput {
+	return o
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchOutput) ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutput() DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutput {
+	return o.ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutputWithContext(context.Background())
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchOutput) ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutputWithContext(ctx context.Context) DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatch) *DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatch {
+		return &v
+	}).(DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutput)
+}
+
+// This parameter controls the speed of traffic increase over the warmup duration.
+func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchOutput) Aggression() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatch) *float64 { return v.Aggression }).(pulumi.Float64PtrOutput)
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchOutput) Duration() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatch) *string { return v.Duration }).(pulumi.StringPtrOutput)
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchOutput) MinimumPercent() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatch) *float64 {
+		return v.MinimumPercent
+	}).(pulumi.Float64PtrOutput)
+}
+
+type DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatch)(nil)).Elem()
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutput) ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutput() DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutput {
+	return o
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutput) ToDestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutputWithContext(ctx context.Context) DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutput {
+	return o
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutput) Elem() DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatch) DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatch {
+		if v != nil {
+			return *v
+		}
+		var ret DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatch
+		return ret
+	}).(DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchOutput)
+}
+
+// This parameter controls the speed of traffic increase over the warmup duration.
+func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutput) Aggression() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatch) *float64 {
+		if v == nil {
+			return nil
+		}
+		return v.Aggression
+	}).(pulumi.Float64PtrOutput)
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutput) Duration() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Duration
+	}).(pulumi.StringPtrOutput)
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutput) MinimumPercent() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatch) *float64 {
+		if v == nil {
+			return nil
+		}
+		return v.MinimumPercent
+	}).(pulumi.Float64PtrOutput)
 }
 
 type DestinationRuleSpecSubsetsTrafficPolicyOutlierDetection struct {
@@ -5549,7 +5925,7 @@ type DestinationRuleSpecSubsetsTrafficPolicyOutlierDetection struct {
 	Interval *string `pulumi:"interval"`
 	// Maximum % of hosts in the load balancing pool for the upstream service that can be ejected.
 	MaxEjectionPercent *int `pulumi:"maxEjectionPercent"`
-	// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+	// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 	MinHealthPercent *int `pulumi:"minHealthPercent"`
 	// Determines whether to distinguish local origin failures from external errors.
 	SplitExternalLocalOriginErrors *bool `pulumi:"splitExternalLocalOriginErrors"`
@@ -5580,7 +5956,7 @@ type DestinationRuleSpecSubsetsTrafficPolicyOutlierDetectionArgs struct {
 	Interval pulumi.StringPtrInput `pulumi:"interval"`
 	// Maximum % of hosts in the load balancing pool for the upstream service that can be ejected.
 	MaxEjectionPercent pulumi.IntPtrInput `pulumi:"maxEjectionPercent"`
-	// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+	// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 	MinHealthPercent pulumi.IntPtrInput `pulumi:"minHealthPercent"`
 	// Determines whether to distinguish local origin failures from external errors.
 	SplitExternalLocalOriginErrors pulumi.BoolPtrInput `pulumi:"splitExternalLocalOriginErrors"`
@@ -5701,7 +6077,7 @@ func (o DestinationRuleSpecSubsetsTrafficPolicyOutlierDetectionOutput) MaxEjecti
 	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyOutlierDetection) *int { return v.MaxEjectionPercent }).(pulumi.IntPtrOutput)
 }
 
-// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 func (o DestinationRuleSpecSubsetsTrafficPolicyOutlierDetectionOutput) MinHealthPercent() pulumi.IntPtrOutput {
 	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyOutlierDetection) *int { return v.MinHealthPercent }).(pulumi.IntPtrOutput)
 }
@@ -5806,7 +6182,7 @@ func (o DestinationRuleSpecSubsetsTrafficPolicyOutlierDetectionPtrOutput) MaxEje
 	}).(pulumi.IntPtrOutput)
 }
 
-// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 func (o DestinationRuleSpecSubsetsTrafficPolicyOutlierDetectionPtrOutput) MinHealthPercent() pulumi.IntPtrOutput {
 	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyOutlierDetection) *int {
 		if v == nil {
@@ -5840,7 +6216,7 @@ type DestinationRuleSpecSubsetsTrafficPolicyOutlierDetectionPatch struct {
 	Interval *string `pulumi:"interval"`
 	// Maximum % of hosts in the load balancing pool for the upstream service that can be ejected.
 	MaxEjectionPercent *int `pulumi:"maxEjectionPercent"`
-	// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+	// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 	MinHealthPercent *int `pulumi:"minHealthPercent"`
 	// Determines whether to distinguish local origin failures from external errors.
 	SplitExternalLocalOriginErrors *bool `pulumi:"splitExternalLocalOriginErrors"`
@@ -5871,7 +6247,7 @@ type DestinationRuleSpecSubsetsTrafficPolicyOutlierDetectionPatchArgs struct {
 	Interval pulumi.StringPtrInput `pulumi:"interval"`
 	// Maximum % of hosts in the load balancing pool for the upstream service that can be ejected.
 	MaxEjectionPercent pulumi.IntPtrInput `pulumi:"maxEjectionPercent"`
-	// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+	// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 	MinHealthPercent pulumi.IntPtrInput `pulumi:"minHealthPercent"`
 	// Determines whether to distinguish local origin failures from external errors.
 	SplitExternalLocalOriginErrors pulumi.BoolPtrInput `pulumi:"splitExternalLocalOriginErrors"`
@@ -5996,7 +6372,7 @@ func (o DestinationRuleSpecSubsetsTrafficPolicyOutlierDetectionPatchOutput) MaxE
 	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyOutlierDetectionPatch) *int { return v.MaxEjectionPercent }).(pulumi.IntPtrOutput)
 }
 
-// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 func (o DestinationRuleSpecSubsetsTrafficPolicyOutlierDetectionPatchOutput) MinHealthPercent() pulumi.IntPtrOutput {
 	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyOutlierDetectionPatch) *int { return v.MinHealthPercent }).(pulumi.IntPtrOutput)
 }
@@ -6101,7 +6477,7 @@ func (o DestinationRuleSpecSubsetsTrafficPolicyOutlierDetectionPatchPtrOutput) M
 	}).(pulumi.IntPtrOutput)
 }
 
-// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 func (o DestinationRuleSpecSubsetsTrafficPolicyOutlierDetectionPatchPtrOutput) MinHealthPercent() pulumi.IntPtrOutput {
 	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyOutlierDetectionPatch) *int {
 		if v == nil {
@@ -8208,8 +8584,9 @@ type DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancer struct
 	ConsistentHash    *DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerConsistentHash    `pulumi:"consistentHash"`
 	LocalityLbSetting *DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSetting `pulumi:"localityLbSetting"`
 	// Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
-	Simple *string `pulumi:"simple"`
-	// Represents the warmup duration of Service.
+	Simple *string                                                                     `pulumi:"simple"`
+	Warmup *DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmup `pulumi:"warmup"`
+	// Deprecated: use `warmup` instead.
 	WarmupDurationSecs *string `pulumi:"warmupDurationSecs"`
 }
 
@@ -8229,8 +8606,9 @@ type DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerArgs st
 	ConsistentHash    DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerConsistentHashPtrInput    `pulumi:"consistentHash"`
 	LocalityLbSetting DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingPtrInput `pulumi:"localityLbSetting"`
 	// Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
-	Simple pulumi.StringPtrInput `pulumi:"simple"`
-	// Represents the warmup duration of Service.
+	Simple pulumi.StringPtrInput                                                              `pulumi:"simple"`
+	Warmup DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrInput `pulumi:"warmup"`
+	// Deprecated: use `warmup` instead.
 	WarmupDurationSecs pulumi.StringPtrInput `pulumi:"warmupDurationSecs"`
 }
 
@@ -8329,7 +8707,13 @@ func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerOutp
 	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancer) *string { return v.Simple }).(pulumi.StringPtrOutput)
 }
 
-// Represents the warmup duration of Service.
+func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerOutput) Warmup() DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancer) *DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmup {
+		return v.Warmup
+	}).(DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput)
+}
+
+// Deprecated: use `warmup` instead.
 func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerOutput) WarmupDurationSecs() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancer) *string {
 		return v.WarmupDurationSecs
@@ -8388,7 +8772,16 @@ func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerPtrO
 	}).(pulumi.StringPtrOutput)
 }
 
-// Represents the warmup duration of Service.
+func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerPtrOutput) Warmup() DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancer) *DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmup {
+		if v == nil {
+			return nil
+		}
+		return v.Warmup
+	}).(DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput)
+}
+
+// Deprecated: use `warmup` instead.
 func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerPtrOutput) WarmupDurationSecs() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancer) *string {
 		if v == nil {
@@ -9843,7 +10236,7 @@ func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerCons
 type DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSetting struct {
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Distribute []DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingDistribute `pulumi:"distribute"`
-	// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+	// Enable locality load balancing.
 	Enabled *bool `pulumi:"enabled"`
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Failover []DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingFailover `pulumi:"failover"`
@@ -9865,7 +10258,7 @@ type DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalit
 type DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingArgs struct {
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Distribute DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingDistributeArrayInput `pulumi:"distribute"`
-	// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+	// Enable locality load balancing.
 	Enabled pulumi.BoolPtrInput `pulumi:"enabled"`
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Failover DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingFailoverArrayInput `pulumi:"failover"`
@@ -9957,7 +10350,7 @@ func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLoca
 	}).(DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingDistributeArrayOutput)
 }
 
-// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+// Enable locality load balancing.
 func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingOutput) Enabled() pulumi.BoolPtrOutput {
 	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSetting) *bool {
 		return v.Enabled
@@ -10012,7 +10405,7 @@ func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLoca
 	}).(DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingDistributeArrayOutput)
 }
 
-// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+// Enable locality load balancing.
 func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingPtrOutput) Enabled() pulumi.BoolPtrOutput {
 	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSetting) *bool {
 		if v == nil {
@@ -10485,7 +10878,7 @@ func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLoca
 type DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingPatch struct {
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Distribute []DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingDistributePatch `pulumi:"distribute"`
-	// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+	// Enable locality load balancing.
 	Enabled *bool `pulumi:"enabled"`
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Failover []DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingFailoverPatch `pulumi:"failover"`
@@ -10507,7 +10900,7 @@ type DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalit
 type DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingPatchArgs struct {
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Distribute DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingDistributePatchArrayInput `pulumi:"distribute"`
-	// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+	// Enable locality load balancing.
 	Enabled pulumi.BoolPtrInput `pulumi:"enabled"`
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Failover DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingFailoverPatchArrayInput `pulumi:"failover"`
@@ -10599,7 +10992,7 @@ func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLoca
 	}).(DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingDistributePatchArrayOutput)
 }
 
-// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+// Enable locality load balancing.
 func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingPatchOutput) Enabled() pulumi.BoolPtrOutput {
 	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingPatch) *bool {
 		return v.Enabled
@@ -10654,7 +11047,7 @@ func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLoca
 	}).(DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingDistributePatchArrayOutput)
 }
 
-// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+// Enable locality load balancing.
 func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingPatchPtrOutput) Enabled() pulumi.BoolPtrOutput {
 	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingPatch) *bool {
 		if v == nil {
@@ -10689,8 +11082,9 @@ type DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerPatch s
 	ConsistentHash    *DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerConsistentHashPatch    `pulumi:"consistentHash"`
 	LocalityLbSetting *DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingPatch `pulumi:"localityLbSetting"`
 	// Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
-	Simple *string `pulumi:"simple"`
-	// Represents the warmup duration of Service.
+	Simple *string                                                                          `pulumi:"simple"`
+	Warmup *DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch `pulumi:"warmup"`
+	// Deprecated: use `warmup` instead.
 	WarmupDurationSecs *string `pulumi:"warmupDurationSecs"`
 }
 
@@ -10710,8 +11104,9 @@ type DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerPatchAr
 	ConsistentHash    DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerConsistentHashPatchPtrInput    `pulumi:"consistentHash"`
 	LocalityLbSetting DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingPatchPtrInput `pulumi:"localityLbSetting"`
 	// Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
-	Simple pulumi.StringPtrInput `pulumi:"simple"`
-	// Represents the warmup duration of Service.
+	Simple pulumi.StringPtrInput                                                                   `pulumi:"simple"`
+	Warmup DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrInput `pulumi:"warmup"`
+	// Deprecated: use `warmup` instead.
 	WarmupDurationSecs pulumi.StringPtrInput `pulumi:"warmupDurationSecs"`
 }
 
@@ -10812,7 +11207,13 @@ func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerPatc
 	}).(pulumi.StringPtrOutput)
 }
 
-// Represents the warmup duration of Service.
+func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerPatchOutput) Warmup() DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerPatch) *DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch {
+		return v.Warmup
+	}).(DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput)
+}
+
+// Deprecated: use `warmup` instead.
 func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerPatchOutput) WarmupDurationSecs() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerPatch) *string {
 		return v.WarmupDurationSecs
@@ -10871,7 +11272,16 @@ func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerPatc
 	}).(pulumi.StringPtrOutput)
 }
 
-// Represents the warmup duration of Service.
+func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerPatchPtrOutput) Warmup() DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerPatch) *DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch {
+		if v == nil {
+			return nil
+		}
+		return v.Warmup
+	}).(DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput)
+}
+
+// Deprecated: use `warmup` instead.
 func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerPatchPtrOutput) WarmupDurationSecs() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerPatch) *string {
 		if v == nil {
@@ -10879,6 +11289,358 @@ func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerPatc
 		}
 		return v.WarmupDurationSecs
 	}).(pulumi.StringPtrOutput)
+}
+
+// Represents the warmup configuration of Service.
+type DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmup struct {
+	// This parameter controls the speed of traffic increase over the warmup duration.
+	Aggression     *float64 `pulumi:"aggression"`
+	Duration       *string  `pulumi:"duration"`
+	MinimumPercent *float64 `pulumi:"minimumPercent"`
+}
+
+// DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupInput is an input type that accepts DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupArgs and DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput values.
+// You can construct a concrete instance of `DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupInput` via:
+//
+//	DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupArgs{...}
+type DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupInput interface {
+	pulumi.Input
+
+	ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput() DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput
+	ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutputWithContext(context.Context) DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput
+}
+
+// Represents the warmup configuration of Service.
+type DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupArgs struct {
+	// This parameter controls the speed of traffic increase over the warmup duration.
+	Aggression     pulumi.Float64PtrInput `pulumi:"aggression"`
+	Duration       pulumi.StringPtrInput  `pulumi:"duration"`
+	MinimumPercent pulumi.Float64PtrInput `pulumi:"minimumPercent"`
+}
+
+func (DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmup)(nil)).Elem()
+}
+
+func (i DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupArgs) ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput() DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput {
+	return i.ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutputWithContext(context.Background())
+}
+
+func (i DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupArgs) ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutputWithContext(ctx context.Context) DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput)
+}
+
+func (i DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupArgs) ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput() DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput {
+	return i.ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutputWithContext(context.Background())
+}
+
+func (i DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupArgs) ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutputWithContext(ctx context.Context) DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput).ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutputWithContext(ctx)
+}
+
+// DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrInput is an input type that accepts DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupArgs, DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtr and DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput values.
+// You can construct a concrete instance of `DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrInput` via:
+//
+//	        DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupArgs{...}
+//
+//	or:
+//
+//	        nil
+type DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrInput interface {
+	pulumi.Input
+
+	ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput() DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput
+	ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutputWithContext(context.Context) DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput
+}
+
+type destinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrType DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupArgs
+
+func DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtr(v *DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupArgs) DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrInput {
+	return (*destinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrType)(v)
+}
+
+func (*destinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmup)(nil)).Elem()
+}
+
+func (i *destinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrType) ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput() DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput {
+	return i.ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutputWithContext(context.Background())
+}
+
+func (i *destinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrType) ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutputWithContext(ctx context.Context) DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput)
+}
+
+// Represents the warmup configuration of Service.
+type DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput struct{ *pulumi.OutputState }
+
+func (DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmup)(nil)).Elem()
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput) ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput() DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput {
+	return o
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput) ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutputWithContext(ctx context.Context) DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput {
+	return o
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput) ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput() DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput {
+	return o.ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutputWithContext(context.Background())
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput) ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutputWithContext(ctx context.Context) DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmup) *DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmup {
+		return &v
+	}).(DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput)
+}
+
+// This parameter controls the speed of traffic increase over the warmup duration.
+func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput) Aggression() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmup) *float64 {
+		return v.Aggression
+	}).(pulumi.Float64PtrOutput)
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput) Duration() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmup) *string {
+		return v.Duration
+	}).(pulumi.StringPtrOutput)
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput) MinimumPercent() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmup) *float64 {
+		return v.MinimumPercent
+	}).(pulumi.Float64PtrOutput)
+}
+
+type DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput struct{ *pulumi.OutputState }
+
+func (DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmup)(nil)).Elem()
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput) ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput() DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput {
+	return o
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput) ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutputWithContext(ctx context.Context) DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput {
+	return o
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput) Elem() DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmup) DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmup {
+		if v != nil {
+			return *v
+		}
+		var ret DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmup
+		return ret
+	}).(DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput)
+}
+
+// This parameter controls the speed of traffic increase over the warmup duration.
+func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput) Aggression() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmup) *float64 {
+		if v == nil {
+			return nil
+		}
+		return v.Aggression
+	}).(pulumi.Float64PtrOutput)
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput) Duration() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmup) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Duration
+	}).(pulumi.StringPtrOutput)
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput) MinimumPercent() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmup) *float64 {
+		if v == nil {
+			return nil
+		}
+		return v.MinimumPercent
+	}).(pulumi.Float64PtrOutput)
+}
+
+// Represents the warmup configuration of Service.
+type DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch struct {
+	// This parameter controls the speed of traffic increase over the warmup duration.
+	Aggression     *float64 `pulumi:"aggression"`
+	Duration       *string  `pulumi:"duration"`
+	MinimumPercent *float64 `pulumi:"minimumPercent"`
+}
+
+// DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchInput is an input type that accepts DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchArgs and DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput values.
+// You can construct a concrete instance of `DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchInput` via:
+//
+//	DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchArgs{...}
+type DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchInput interface {
+	pulumi.Input
+
+	ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput() DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput
+	ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutputWithContext(context.Context) DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput
+}
+
+// Represents the warmup configuration of Service.
+type DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchArgs struct {
+	// This parameter controls the speed of traffic increase over the warmup duration.
+	Aggression     pulumi.Float64PtrInput `pulumi:"aggression"`
+	Duration       pulumi.StringPtrInput  `pulumi:"duration"`
+	MinimumPercent pulumi.Float64PtrInput `pulumi:"minimumPercent"`
+}
+
+func (DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch)(nil)).Elem()
+}
+
+func (i DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchArgs) ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput() DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput {
+	return i.ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutputWithContext(context.Background())
+}
+
+func (i DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchArgs) ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutputWithContext(ctx context.Context) DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput)
+}
+
+func (i DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchArgs) ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput() DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput {
+	return i.ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutputWithContext(context.Background())
+}
+
+func (i DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchArgs) ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutputWithContext(ctx context.Context) DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput).ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutputWithContext(ctx)
+}
+
+// DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrInput is an input type that accepts DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchArgs, DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtr and DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput values.
+// You can construct a concrete instance of `DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrInput` via:
+//
+//	        DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrInput interface {
+	pulumi.Input
+
+	ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput() DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput
+	ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutputWithContext(context.Context) DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput
+}
+
+type destinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrType DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchArgs
+
+func DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtr(v *DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchArgs) DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrInput {
+	return (*destinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrType)(v)
+}
+
+func (*destinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch)(nil)).Elem()
+}
+
+func (i *destinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrType) ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput() DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput {
+	return i.ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *destinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrType) ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutputWithContext(ctx context.Context) DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput)
+}
+
+// Represents the warmup configuration of Service.
+type DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput struct{ *pulumi.OutputState }
+
+func (DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch)(nil)).Elem()
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput) ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput() DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput {
+	return o
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput) ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutputWithContext(ctx context.Context) DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput {
+	return o
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput) ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput() DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput {
+	return o.ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutputWithContext(context.Background())
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput) ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutputWithContext(ctx context.Context) DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch) *DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch {
+		return &v
+	}).(DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput)
+}
+
+// This parameter controls the speed of traffic increase over the warmup duration.
+func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput) Aggression() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch) *float64 {
+		return v.Aggression
+	}).(pulumi.Float64PtrOutput)
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput) Duration() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch) *string {
+		return v.Duration
+	}).(pulumi.StringPtrOutput)
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput) MinimumPercent() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch) *float64 {
+		return v.MinimumPercent
+	}).(pulumi.Float64PtrOutput)
+}
+
+type DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch)(nil)).Elem()
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput) ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput() DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput {
+	return o
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput) ToDestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutputWithContext(ctx context.Context) DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput {
+	return o
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput) Elem() DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch) DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch {
+		if v != nil {
+			return *v
+		}
+		var ret DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch
+		return ret
+	}).(DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput)
+}
+
+// This parameter controls the speed of traffic increase over the warmup duration.
+func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput) Aggression() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch) *float64 {
+		if v == nil {
+			return nil
+		}
+		return v.Aggression
+	}).(pulumi.Float64PtrOutput)
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput) Duration() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Duration
+	}).(pulumi.StringPtrOutput)
+}
+
+func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput) MinimumPercent() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch) *float64 {
+		if v == nil {
+			return nil
+		}
+		return v.MinimumPercent
+	}).(pulumi.Float64PtrOutput)
 }
 
 type DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsOutlierDetection struct {
@@ -10895,7 +11657,7 @@ type DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsOutlierDetection st
 	Interval *string `pulumi:"interval"`
 	// Maximum % of hosts in the load balancing pool for the upstream service that can be ejected.
 	MaxEjectionPercent *int `pulumi:"maxEjectionPercent"`
-	// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+	// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 	MinHealthPercent *int `pulumi:"minHealthPercent"`
 	// Determines whether to distinguish local origin failures from external errors.
 	SplitExternalLocalOriginErrors *bool `pulumi:"splitExternalLocalOriginErrors"`
@@ -10926,7 +11688,7 @@ type DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsOutlierDetectionArg
 	Interval pulumi.StringPtrInput `pulumi:"interval"`
 	// Maximum % of hosts in the load balancing pool for the upstream service that can be ejected.
 	MaxEjectionPercent pulumi.IntPtrInput `pulumi:"maxEjectionPercent"`
-	// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+	// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 	MinHealthPercent pulumi.IntPtrInput `pulumi:"minHealthPercent"`
 	// Determines whether to distinguish local origin failures from external errors.
 	SplitExternalLocalOriginErrors pulumi.BoolPtrInput `pulumi:"splitExternalLocalOriginErrors"`
@@ -11057,7 +11819,7 @@ func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsOutlierDetection
 	}).(pulumi.IntPtrOutput)
 }
 
-// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsOutlierDetectionOutput) MinHealthPercent() pulumi.IntPtrOutput {
 	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsOutlierDetection) *int {
 		return v.MinHealthPercent
@@ -11164,7 +11926,7 @@ func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsOutlierDetection
 	}).(pulumi.IntPtrOutput)
 }
 
-// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsOutlierDetectionPtrOutput) MinHealthPercent() pulumi.IntPtrOutput {
 	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsOutlierDetection) *int {
 		if v == nil {
@@ -11198,7 +11960,7 @@ type DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsOutlierDetectionPat
 	Interval *string `pulumi:"interval"`
 	// Maximum % of hosts in the load balancing pool for the upstream service that can be ejected.
 	MaxEjectionPercent *int `pulumi:"maxEjectionPercent"`
-	// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+	// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 	MinHealthPercent *int `pulumi:"minHealthPercent"`
 	// Determines whether to distinguish local origin failures from external errors.
 	SplitExternalLocalOriginErrors *bool `pulumi:"splitExternalLocalOriginErrors"`
@@ -11229,7 +11991,7 @@ type DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsOutlierDetectionPat
 	Interval pulumi.StringPtrInput `pulumi:"interval"`
 	// Maximum % of hosts in the load balancing pool for the upstream service that can be ejected.
 	MaxEjectionPercent pulumi.IntPtrInput `pulumi:"maxEjectionPercent"`
-	// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+	// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 	MinHealthPercent pulumi.IntPtrInput `pulumi:"minHealthPercent"`
 	// Determines whether to distinguish local origin failures from external errors.
 	SplitExternalLocalOriginErrors pulumi.BoolPtrInput `pulumi:"splitExternalLocalOriginErrors"`
@@ -11360,7 +12122,7 @@ func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsOutlierDetection
 	}).(pulumi.IntPtrOutput)
 }
 
-// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsOutlierDetectionPatchOutput) MinHealthPercent() pulumi.IntPtrOutput {
 	return o.ApplyT(func(v DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsOutlierDetectionPatch) *int {
 		return v.MinHealthPercent
@@ -11467,7 +12229,7 @@ func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsOutlierDetection
 	}).(pulumi.IntPtrOutput)
 }
 
-// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 func (o DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsOutlierDetectionPatchPtrOutput) MinHealthPercent() pulumi.IntPtrOutput {
 	return o.ApplyT(func(v *DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsOutlierDetectionPatch) *int {
 		if v == nil {
@@ -15648,8 +16410,9 @@ type DestinationRuleSpecTrafficPolicyLoadBalancer struct {
 	ConsistentHash    *DestinationRuleSpecTrafficPolicyLoadBalancerConsistentHash    `pulumi:"consistentHash"`
 	LocalityLbSetting *DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSetting `pulumi:"localityLbSetting"`
 	// Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
-	Simple *string `pulumi:"simple"`
-	// Represents the warmup duration of Service.
+	Simple *string                                             `pulumi:"simple"`
+	Warmup *DestinationRuleSpecTrafficPolicyLoadBalancerWarmup `pulumi:"warmup"`
+	// Deprecated: use `warmup` instead.
 	WarmupDurationSecs *string `pulumi:"warmupDurationSecs"`
 }
 
@@ -15669,8 +16432,9 @@ type DestinationRuleSpecTrafficPolicyLoadBalancerArgs struct {
 	ConsistentHash    DestinationRuleSpecTrafficPolicyLoadBalancerConsistentHashPtrInput    `pulumi:"consistentHash"`
 	LocalityLbSetting DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingPtrInput `pulumi:"localityLbSetting"`
 	// Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
-	Simple pulumi.StringPtrInput `pulumi:"simple"`
-	// Represents the warmup duration of Service.
+	Simple pulumi.StringPtrInput                                      `pulumi:"simple"`
+	Warmup DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrInput `pulumi:"warmup"`
+	// Deprecated: use `warmup` instead.
 	WarmupDurationSecs pulumi.StringPtrInput `pulumi:"warmupDurationSecs"`
 }
 
@@ -15769,7 +16533,13 @@ func (o DestinationRuleSpecTrafficPolicyLoadBalancerOutput) Simple() pulumi.Stri
 	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyLoadBalancer) *string { return v.Simple }).(pulumi.StringPtrOutput)
 }
 
-// Represents the warmup duration of Service.
+func (o DestinationRuleSpecTrafficPolicyLoadBalancerOutput) Warmup() DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyLoadBalancer) *DestinationRuleSpecTrafficPolicyLoadBalancerWarmup {
+		return v.Warmup
+	}).(DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutput)
+}
+
+// Deprecated: use `warmup` instead.
 func (o DestinationRuleSpecTrafficPolicyLoadBalancerOutput) WarmupDurationSecs() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyLoadBalancer) *string { return v.WarmupDurationSecs }).(pulumi.StringPtrOutput)
 }
@@ -15826,7 +16596,16 @@ func (o DestinationRuleSpecTrafficPolicyLoadBalancerPtrOutput) Simple() pulumi.S
 	}).(pulumi.StringPtrOutput)
 }
 
-// Represents the warmup duration of Service.
+func (o DestinationRuleSpecTrafficPolicyLoadBalancerPtrOutput) Warmup() DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyLoadBalancer) *DestinationRuleSpecTrafficPolicyLoadBalancerWarmup {
+		if v == nil {
+			return nil
+		}
+		return v.Warmup
+	}).(DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutput)
+}
+
+// Deprecated: use `warmup` instead.
 func (o DestinationRuleSpecTrafficPolicyLoadBalancerPtrOutput) WarmupDurationSecs() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyLoadBalancer) *string {
 		if v == nil {
@@ -17261,7 +18040,7 @@ func (o DestinationRuleSpecTrafficPolicyLoadBalancerConsistentHashRingHashPatchP
 type DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSetting struct {
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Distribute []DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingDistribute `pulumi:"distribute"`
-	// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+	// Enable locality load balancing.
 	Enabled *bool `pulumi:"enabled"`
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Failover []DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingFailover `pulumi:"failover"`
@@ -17283,7 +18062,7 @@ type DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingInput interfac
 type DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingArgs struct {
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Distribute DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingDistributeArrayInput `pulumi:"distribute"`
-	// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+	// Enable locality load balancing.
 	Enabled pulumi.BoolPtrInput `pulumi:"enabled"`
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Failover DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingFailoverArrayInput `pulumi:"failover"`
@@ -17375,7 +18154,7 @@ func (o DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingOutput) Dis
 	}).(DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingDistributeArrayOutput)
 }
 
-// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+// Enable locality load balancing.
 func (o DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingOutput) Enabled() pulumi.BoolPtrOutput {
 	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSetting) *bool { return v.Enabled }).(pulumi.BoolPtrOutput)
 }
@@ -17428,7 +18207,7 @@ func (o DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingPtrOutput) 
 	}).(DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingDistributeArrayOutput)
 }
 
-// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+// Enable locality load balancing.
 func (o DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingPtrOutput) Enabled() pulumi.BoolPtrOutput {
 	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSetting) *bool {
 		if v == nil {
@@ -17895,7 +18674,7 @@ func (o DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingFailoverPat
 type DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingPatch struct {
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Distribute []DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingDistributePatch `pulumi:"distribute"`
-	// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+	// Enable locality load balancing.
 	Enabled *bool `pulumi:"enabled"`
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Failover []DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingFailoverPatch `pulumi:"failover"`
@@ -17917,7 +18696,7 @@ type DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingPatchInput int
 type DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingPatchArgs struct {
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Distribute DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingDistributePatchArrayInput `pulumi:"distribute"`
-	// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+	// Enable locality load balancing.
 	Enabled pulumi.BoolPtrInput `pulumi:"enabled"`
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Failover DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingFailoverPatchArrayInput `pulumi:"failover"`
@@ -18009,7 +18788,7 @@ func (o DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingPatchOutput
 	}).(DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingDistributePatchArrayOutput)
 }
 
-// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+// Enable locality load balancing.
 func (o DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingPatchOutput) Enabled() pulumi.BoolPtrOutput {
 	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingPatch) *bool { return v.Enabled }).(pulumi.BoolPtrOutput)
 }
@@ -18062,7 +18841,7 @@ func (o DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingPatchPtrOut
 	}).(DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingDistributePatchArrayOutput)
 }
 
-// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+// Enable locality load balancing.
 func (o DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingPatchPtrOutput) Enabled() pulumi.BoolPtrOutput {
 	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingPatch) *bool {
 		if v == nil {
@@ -18097,8 +18876,9 @@ type DestinationRuleSpecTrafficPolicyLoadBalancerPatch struct {
 	ConsistentHash    *DestinationRuleSpecTrafficPolicyLoadBalancerConsistentHashPatch    `pulumi:"consistentHash"`
 	LocalityLbSetting *DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingPatch `pulumi:"localityLbSetting"`
 	// Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
-	Simple *string `pulumi:"simple"`
-	// Represents the warmup duration of Service.
+	Simple *string                                                  `pulumi:"simple"`
+	Warmup *DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatch `pulumi:"warmup"`
+	// Deprecated: use `warmup` instead.
 	WarmupDurationSecs *string `pulumi:"warmupDurationSecs"`
 }
 
@@ -18118,8 +18898,9 @@ type DestinationRuleSpecTrafficPolicyLoadBalancerPatchArgs struct {
 	ConsistentHash    DestinationRuleSpecTrafficPolicyLoadBalancerConsistentHashPatchPtrInput    `pulumi:"consistentHash"`
 	LocalityLbSetting DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingPatchPtrInput `pulumi:"localityLbSetting"`
 	// Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
-	Simple pulumi.StringPtrInput `pulumi:"simple"`
-	// Represents the warmup duration of Service.
+	Simple pulumi.StringPtrInput                                           `pulumi:"simple"`
+	Warmup DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrInput `pulumi:"warmup"`
+	// Deprecated: use `warmup` instead.
 	WarmupDurationSecs pulumi.StringPtrInput `pulumi:"warmupDurationSecs"`
 }
 
@@ -18218,7 +18999,13 @@ func (o DestinationRuleSpecTrafficPolicyLoadBalancerPatchOutput) Simple() pulumi
 	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyLoadBalancerPatch) *string { return v.Simple }).(pulumi.StringPtrOutput)
 }
 
-// Represents the warmup duration of Service.
+func (o DestinationRuleSpecTrafficPolicyLoadBalancerPatchOutput) Warmup() DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyLoadBalancerPatch) *DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatch {
+		return v.Warmup
+	}).(DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutput)
+}
+
+// Deprecated: use `warmup` instead.
 func (o DestinationRuleSpecTrafficPolicyLoadBalancerPatchOutput) WarmupDurationSecs() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyLoadBalancerPatch) *string { return v.WarmupDurationSecs }).(pulumi.StringPtrOutput)
 }
@@ -18275,7 +19062,16 @@ func (o DestinationRuleSpecTrafficPolicyLoadBalancerPatchPtrOutput) Simple() pul
 	}).(pulumi.StringPtrOutput)
 }
 
-// Represents the warmup duration of Service.
+func (o DestinationRuleSpecTrafficPolicyLoadBalancerPatchPtrOutput) Warmup() DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyLoadBalancerPatch) *DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatch {
+		if v == nil {
+			return nil
+		}
+		return v.Warmup
+	}).(DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutput)
+}
+
+// Deprecated: use `warmup` instead.
 func (o DestinationRuleSpecTrafficPolicyLoadBalancerPatchPtrOutput) WarmupDurationSecs() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyLoadBalancerPatch) *string {
 		if v == nil {
@@ -18283,6 +19079,346 @@ func (o DestinationRuleSpecTrafficPolicyLoadBalancerPatchPtrOutput) WarmupDurati
 		}
 		return v.WarmupDurationSecs
 	}).(pulumi.StringPtrOutput)
+}
+
+// Represents the warmup configuration of Service.
+type DestinationRuleSpecTrafficPolicyLoadBalancerWarmup struct {
+	// This parameter controls the speed of traffic increase over the warmup duration.
+	Aggression     *float64 `pulumi:"aggression"`
+	Duration       *string  `pulumi:"duration"`
+	MinimumPercent *float64 `pulumi:"minimumPercent"`
+}
+
+// DestinationRuleSpecTrafficPolicyLoadBalancerWarmupInput is an input type that accepts DestinationRuleSpecTrafficPolicyLoadBalancerWarmupArgs and DestinationRuleSpecTrafficPolicyLoadBalancerWarmupOutput values.
+// You can construct a concrete instance of `DestinationRuleSpecTrafficPolicyLoadBalancerWarmupInput` via:
+//
+//	DestinationRuleSpecTrafficPolicyLoadBalancerWarmupArgs{...}
+type DestinationRuleSpecTrafficPolicyLoadBalancerWarmupInput interface {
+	pulumi.Input
+
+	ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupOutput() DestinationRuleSpecTrafficPolicyLoadBalancerWarmupOutput
+	ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupOutputWithContext(context.Context) DestinationRuleSpecTrafficPolicyLoadBalancerWarmupOutput
+}
+
+// Represents the warmup configuration of Service.
+type DestinationRuleSpecTrafficPolicyLoadBalancerWarmupArgs struct {
+	// This parameter controls the speed of traffic increase over the warmup duration.
+	Aggression     pulumi.Float64PtrInput `pulumi:"aggression"`
+	Duration       pulumi.StringPtrInput  `pulumi:"duration"`
+	MinimumPercent pulumi.Float64PtrInput `pulumi:"minimumPercent"`
+}
+
+func (DestinationRuleSpecTrafficPolicyLoadBalancerWarmupArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*DestinationRuleSpecTrafficPolicyLoadBalancerWarmup)(nil)).Elem()
+}
+
+func (i DestinationRuleSpecTrafficPolicyLoadBalancerWarmupArgs) ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupOutput() DestinationRuleSpecTrafficPolicyLoadBalancerWarmupOutput {
+	return i.ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupOutputWithContext(context.Background())
+}
+
+func (i DestinationRuleSpecTrafficPolicyLoadBalancerWarmupArgs) ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupOutputWithContext(ctx context.Context) DestinationRuleSpecTrafficPolicyLoadBalancerWarmupOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(DestinationRuleSpecTrafficPolicyLoadBalancerWarmupOutput)
+}
+
+func (i DestinationRuleSpecTrafficPolicyLoadBalancerWarmupArgs) ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutput() DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutput {
+	return i.ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutputWithContext(context.Background())
+}
+
+func (i DestinationRuleSpecTrafficPolicyLoadBalancerWarmupArgs) ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutputWithContext(ctx context.Context) DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(DestinationRuleSpecTrafficPolicyLoadBalancerWarmupOutput).ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutputWithContext(ctx)
+}
+
+// DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrInput is an input type that accepts DestinationRuleSpecTrafficPolicyLoadBalancerWarmupArgs, DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtr and DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutput values.
+// You can construct a concrete instance of `DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrInput` via:
+//
+//	        DestinationRuleSpecTrafficPolicyLoadBalancerWarmupArgs{...}
+//
+//	or:
+//
+//	        nil
+type DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrInput interface {
+	pulumi.Input
+
+	ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutput() DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutput
+	ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutputWithContext(context.Context) DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutput
+}
+
+type destinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrType DestinationRuleSpecTrafficPolicyLoadBalancerWarmupArgs
+
+func DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtr(v *DestinationRuleSpecTrafficPolicyLoadBalancerWarmupArgs) DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrInput {
+	return (*destinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrType)(v)
+}
+
+func (*destinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**DestinationRuleSpecTrafficPolicyLoadBalancerWarmup)(nil)).Elem()
+}
+
+func (i *destinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrType) ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutput() DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutput {
+	return i.ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutputWithContext(context.Background())
+}
+
+func (i *destinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrType) ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutputWithContext(ctx context.Context) DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutput)
+}
+
+// Represents the warmup configuration of Service.
+type DestinationRuleSpecTrafficPolicyLoadBalancerWarmupOutput struct{ *pulumi.OutputState }
+
+func (DestinationRuleSpecTrafficPolicyLoadBalancerWarmupOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*DestinationRuleSpecTrafficPolicyLoadBalancerWarmup)(nil)).Elem()
+}
+
+func (o DestinationRuleSpecTrafficPolicyLoadBalancerWarmupOutput) ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupOutput() DestinationRuleSpecTrafficPolicyLoadBalancerWarmupOutput {
+	return o
+}
+
+func (o DestinationRuleSpecTrafficPolicyLoadBalancerWarmupOutput) ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupOutputWithContext(ctx context.Context) DestinationRuleSpecTrafficPolicyLoadBalancerWarmupOutput {
+	return o
+}
+
+func (o DestinationRuleSpecTrafficPolicyLoadBalancerWarmupOutput) ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutput() DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutput {
+	return o.ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutputWithContext(context.Background())
+}
+
+func (o DestinationRuleSpecTrafficPolicyLoadBalancerWarmupOutput) ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutputWithContext(ctx context.Context) DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v DestinationRuleSpecTrafficPolicyLoadBalancerWarmup) *DestinationRuleSpecTrafficPolicyLoadBalancerWarmup {
+		return &v
+	}).(DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutput)
+}
+
+// This parameter controls the speed of traffic increase over the warmup duration.
+func (o DestinationRuleSpecTrafficPolicyLoadBalancerWarmupOutput) Aggression() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyLoadBalancerWarmup) *float64 { return v.Aggression }).(pulumi.Float64PtrOutput)
+}
+
+func (o DestinationRuleSpecTrafficPolicyLoadBalancerWarmupOutput) Duration() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyLoadBalancerWarmup) *string { return v.Duration }).(pulumi.StringPtrOutput)
+}
+
+func (o DestinationRuleSpecTrafficPolicyLoadBalancerWarmupOutput) MinimumPercent() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyLoadBalancerWarmup) *float64 { return v.MinimumPercent }).(pulumi.Float64PtrOutput)
+}
+
+type DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutput struct{ *pulumi.OutputState }
+
+func (DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**DestinationRuleSpecTrafficPolicyLoadBalancerWarmup)(nil)).Elem()
+}
+
+func (o DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutput) ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutput() DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutput {
+	return o
+}
+
+func (o DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutput) ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutputWithContext(ctx context.Context) DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutput {
+	return o
+}
+
+func (o DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutput) Elem() DestinationRuleSpecTrafficPolicyLoadBalancerWarmupOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyLoadBalancerWarmup) DestinationRuleSpecTrafficPolicyLoadBalancerWarmup {
+		if v != nil {
+			return *v
+		}
+		var ret DestinationRuleSpecTrafficPolicyLoadBalancerWarmup
+		return ret
+	}).(DestinationRuleSpecTrafficPolicyLoadBalancerWarmupOutput)
+}
+
+// This parameter controls the speed of traffic increase over the warmup duration.
+func (o DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutput) Aggression() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyLoadBalancerWarmup) *float64 {
+		if v == nil {
+			return nil
+		}
+		return v.Aggression
+	}).(pulumi.Float64PtrOutput)
+}
+
+func (o DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutput) Duration() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyLoadBalancerWarmup) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Duration
+	}).(pulumi.StringPtrOutput)
+}
+
+func (o DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutput) MinimumPercent() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyLoadBalancerWarmup) *float64 {
+		if v == nil {
+			return nil
+		}
+		return v.MinimumPercent
+	}).(pulumi.Float64PtrOutput)
+}
+
+// Represents the warmup configuration of Service.
+type DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatch struct {
+	// This parameter controls the speed of traffic increase over the warmup duration.
+	Aggression     *float64 `pulumi:"aggression"`
+	Duration       *string  `pulumi:"duration"`
+	MinimumPercent *float64 `pulumi:"minimumPercent"`
+}
+
+// DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchInput is an input type that accepts DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchArgs and DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchOutput values.
+// You can construct a concrete instance of `DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchInput` via:
+//
+//	DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchArgs{...}
+type DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchInput interface {
+	pulumi.Input
+
+	ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchOutput() DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchOutput
+	ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchOutputWithContext(context.Context) DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchOutput
+}
+
+// Represents the warmup configuration of Service.
+type DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchArgs struct {
+	// This parameter controls the speed of traffic increase over the warmup duration.
+	Aggression     pulumi.Float64PtrInput `pulumi:"aggression"`
+	Duration       pulumi.StringPtrInput  `pulumi:"duration"`
+	MinimumPercent pulumi.Float64PtrInput `pulumi:"minimumPercent"`
+}
+
+func (DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatch)(nil)).Elem()
+}
+
+func (i DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchArgs) ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchOutput() DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchOutput {
+	return i.ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchOutputWithContext(context.Background())
+}
+
+func (i DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchArgs) ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchOutputWithContext(ctx context.Context) DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchOutput)
+}
+
+func (i DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchArgs) ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutput() DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutput {
+	return i.ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutputWithContext(context.Background())
+}
+
+func (i DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchArgs) ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutputWithContext(ctx context.Context) DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchOutput).ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutputWithContext(ctx)
+}
+
+// DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrInput is an input type that accepts DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchArgs, DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtr and DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutput values.
+// You can construct a concrete instance of `DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrInput` via:
+//
+//	        DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrInput interface {
+	pulumi.Input
+
+	ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutput() DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutput
+	ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutputWithContext(context.Context) DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutput
+}
+
+type destinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrType DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchArgs
+
+func DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtr(v *DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchArgs) DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrInput {
+	return (*destinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrType)(v)
+}
+
+func (*destinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatch)(nil)).Elem()
+}
+
+func (i *destinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrType) ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutput() DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutput {
+	return i.ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *destinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrType) ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutputWithContext(ctx context.Context) DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutput)
+}
+
+// Represents the warmup configuration of Service.
+type DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchOutput struct{ *pulumi.OutputState }
+
+func (DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatch)(nil)).Elem()
+}
+
+func (o DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchOutput) ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchOutput() DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchOutput {
+	return o
+}
+
+func (o DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchOutput) ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchOutputWithContext(ctx context.Context) DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchOutput {
+	return o
+}
+
+func (o DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchOutput) ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutput() DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutput {
+	return o.ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutputWithContext(context.Background())
+}
+
+func (o DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchOutput) ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutputWithContext(ctx context.Context) DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatch) *DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatch {
+		return &v
+	}).(DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutput)
+}
+
+// This parameter controls the speed of traffic increase over the warmup duration.
+func (o DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchOutput) Aggression() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatch) *float64 { return v.Aggression }).(pulumi.Float64PtrOutput)
+}
+
+func (o DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchOutput) Duration() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatch) *string { return v.Duration }).(pulumi.StringPtrOutput)
+}
+
+func (o DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchOutput) MinimumPercent() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatch) *float64 { return v.MinimumPercent }).(pulumi.Float64PtrOutput)
+}
+
+type DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatch)(nil)).Elem()
+}
+
+func (o DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutput) ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutput() DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutput {
+	return o
+}
+
+func (o DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutput) ToDestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutputWithContext(ctx context.Context) DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutput {
+	return o
+}
+
+func (o DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutput) Elem() DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatch) DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatch {
+		if v != nil {
+			return *v
+		}
+		var ret DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatch
+		return ret
+	}).(DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchOutput)
+}
+
+// This parameter controls the speed of traffic increase over the warmup duration.
+func (o DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutput) Aggression() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatch) *float64 {
+		if v == nil {
+			return nil
+		}
+		return v.Aggression
+	}).(pulumi.Float64PtrOutput)
+}
+
+func (o DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutput) Duration() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Duration
+	}).(pulumi.StringPtrOutput)
+}
+
+func (o DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutput) MinimumPercent() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatch) *float64 {
+		if v == nil {
+			return nil
+		}
+		return v.MinimumPercent
+	}).(pulumi.Float64PtrOutput)
 }
 
 type DestinationRuleSpecTrafficPolicyOutlierDetection struct {
@@ -18299,7 +19435,7 @@ type DestinationRuleSpecTrafficPolicyOutlierDetection struct {
 	Interval *string `pulumi:"interval"`
 	// Maximum % of hosts in the load balancing pool for the upstream service that can be ejected.
 	MaxEjectionPercent *int `pulumi:"maxEjectionPercent"`
-	// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+	// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 	MinHealthPercent *int `pulumi:"minHealthPercent"`
 	// Determines whether to distinguish local origin failures from external errors.
 	SplitExternalLocalOriginErrors *bool `pulumi:"splitExternalLocalOriginErrors"`
@@ -18330,7 +19466,7 @@ type DestinationRuleSpecTrafficPolicyOutlierDetectionArgs struct {
 	Interval pulumi.StringPtrInput `pulumi:"interval"`
 	// Maximum % of hosts in the load balancing pool for the upstream service that can be ejected.
 	MaxEjectionPercent pulumi.IntPtrInput `pulumi:"maxEjectionPercent"`
-	// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+	// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 	MinHealthPercent pulumi.IntPtrInput `pulumi:"minHealthPercent"`
 	// Determines whether to distinguish local origin failures from external errors.
 	SplitExternalLocalOriginErrors pulumi.BoolPtrInput `pulumi:"splitExternalLocalOriginErrors"`
@@ -18447,7 +19583,7 @@ func (o DestinationRuleSpecTrafficPolicyOutlierDetectionOutput) MaxEjectionPerce
 	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyOutlierDetection) *int { return v.MaxEjectionPercent }).(pulumi.IntPtrOutput)
 }
 
-// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 func (o DestinationRuleSpecTrafficPolicyOutlierDetectionOutput) MinHealthPercent() pulumi.IntPtrOutput {
 	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyOutlierDetection) *int { return v.MinHealthPercent }).(pulumi.IntPtrOutput)
 }
@@ -18552,7 +19688,7 @@ func (o DestinationRuleSpecTrafficPolicyOutlierDetectionPtrOutput) MaxEjectionPe
 	}).(pulumi.IntPtrOutput)
 }
 
-// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 func (o DestinationRuleSpecTrafficPolicyOutlierDetectionPtrOutput) MinHealthPercent() pulumi.IntPtrOutput {
 	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyOutlierDetection) *int {
 		if v == nil {
@@ -18586,7 +19722,7 @@ type DestinationRuleSpecTrafficPolicyOutlierDetectionPatch struct {
 	Interval *string `pulumi:"interval"`
 	// Maximum % of hosts in the load balancing pool for the upstream service that can be ejected.
 	MaxEjectionPercent *int `pulumi:"maxEjectionPercent"`
-	// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+	// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 	MinHealthPercent *int `pulumi:"minHealthPercent"`
 	// Determines whether to distinguish local origin failures from external errors.
 	SplitExternalLocalOriginErrors *bool `pulumi:"splitExternalLocalOriginErrors"`
@@ -18617,7 +19753,7 @@ type DestinationRuleSpecTrafficPolicyOutlierDetectionPatchArgs struct {
 	Interval pulumi.StringPtrInput `pulumi:"interval"`
 	// Maximum % of hosts in the load balancing pool for the upstream service that can be ejected.
 	MaxEjectionPercent pulumi.IntPtrInput `pulumi:"maxEjectionPercent"`
-	// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+	// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 	MinHealthPercent pulumi.IntPtrInput `pulumi:"minHealthPercent"`
 	// Determines whether to distinguish local origin failures from external errors.
 	SplitExternalLocalOriginErrors pulumi.BoolPtrInput `pulumi:"splitExternalLocalOriginErrors"`
@@ -18736,7 +19872,7 @@ func (o DestinationRuleSpecTrafficPolicyOutlierDetectionPatchOutput) MaxEjection
 	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyOutlierDetectionPatch) *int { return v.MaxEjectionPercent }).(pulumi.IntPtrOutput)
 }
 
-// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 func (o DestinationRuleSpecTrafficPolicyOutlierDetectionPatchOutput) MinHealthPercent() pulumi.IntPtrOutput {
 	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyOutlierDetectionPatch) *int { return v.MinHealthPercent }).(pulumi.IntPtrOutput)
 }
@@ -18841,7 +19977,7 @@ func (o DestinationRuleSpecTrafficPolicyOutlierDetectionPatchPtrOutput) MaxEject
 	}).(pulumi.IntPtrOutput)
 }
 
-// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 func (o DestinationRuleSpecTrafficPolicyOutlierDetectionPatchPtrOutput) MinHealthPercent() pulumi.IntPtrOutput {
 	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyOutlierDetectionPatch) *int {
 		if v == nil {
@@ -20944,8 +22080,9 @@ type DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancer struct {
 	ConsistentHash    *DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerConsistentHash    `pulumi:"consistentHash"`
 	LocalityLbSetting *DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSetting `pulumi:"localityLbSetting"`
 	// Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
-	Simple *string `pulumi:"simple"`
-	// Represents the warmup duration of Service.
+	Simple *string                                                              `pulumi:"simple"`
+	Warmup *DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmup `pulumi:"warmup"`
+	// Deprecated: use `warmup` instead.
 	WarmupDurationSecs *string `pulumi:"warmupDurationSecs"`
 }
 
@@ -20965,8 +22102,9 @@ type DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerArgs struct {
 	ConsistentHash    DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerConsistentHashPtrInput    `pulumi:"consistentHash"`
 	LocalityLbSetting DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingPtrInput `pulumi:"localityLbSetting"`
 	// Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
-	Simple pulumi.StringPtrInput `pulumi:"simple"`
-	// Represents the warmup duration of Service.
+	Simple pulumi.StringPtrInput                                                       `pulumi:"simple"`
+	Warmup DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrInput `pulumi:"warmup"`
+	// Deprecated: use `warmup` instead.
 	WarmupDurationSecs pulumi.StringPtrInput `pulumi:"warmupDurationSecs"`
 }
 
@@ -21065,7 +22203,13 @@ func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerOutput) Sim
 	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancer) *string { return v.Simple }).(pulumi.StringPtrOutput)
 }
 
-// Represents the warmup duration of Service.
+func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerOutput) Warmup() DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancer) *DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmup {
+		return v.Warmup
+	}).(DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput)
+}
+
+// Deprecated: use `warmup` instead.
 func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerOutput) WarmupDurationSecs() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancer) *string {
 		return v.WarmupDurationSecs
@@ -21124,7 +22268,16 @@ func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerPtrOutput) 
 	}).(pulumi.StringPtrOutput)
 }
 
-// Represents the warmup duration of Service.
+func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerPtrOutput) Warmup() DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancer) *DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmup {
+		if v == nil {
+			return nil
+		}
+		return v.Warmup
+	}).(DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput)
+}
+
+// Deprecated: use `warmup` instead.
 func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerPtrOutput) WarmupDurationSecs() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancer) *string {
 		if v == nil {
@@ -22579,7 +23732,7 @@ func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerConsistentH
 type DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSetting struct {
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Distribute []DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingDistribute `pulumi:"distribute"`
-	// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+	// Enable locality load balancing.
 	Enabled *bool `pulumi:"enabled"`
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Failover []DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingFailover `pulumi:"failover"`
@@ -22601,7 +23754,7 @@ type DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSett
 type DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingArgs struct {
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Distribute DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingDistributeArrayInput `pulumi:"distribute"`
-	// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+	// Enable locality load balancing.
 	Enabled pulumi.BoolPtrInput `pulumi:"enabled"`
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Failover DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingFailoverArrayInput `pulumi:"failover"`
@@ -22693,7 +23846,7 @@ func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbS
 	}).(DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingDistributeArrayOutput)
 }
 
-// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+// Enable locality load balancing.
 func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingOutput) Enabled() pulumi.BoolPtrOutput {
 	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSetting) *bool {
 		return v.Enabled
@@ -22748,7 +23901,7 @@ func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbS
 	}).(DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingDistributeArrayOutput)
 }
 
-// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+// Enable locality load balancing.
 func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingPtrOutput) Enabled() pulumi.BoolPtrOutput {
 	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSetting) *bool {
 		if v == nil {
@@ -23221,7 +24374,7 @@ func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbS
 type DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingPatch struct {
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Distribute []DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingDistributePatch `pulumi:"distribute"`
-	// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+	// Enable locality load balancing.
 	Enabled *bool `pulumi:"enabled"`
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Failover []DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingFailoverPatch `pulumi:"failover"`
@@ -23243,7 +24396,7 @@ type DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSett
 type DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingPatchArgs struct {
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Distribute DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingDistributePatchArrayInput `pulumi:"distribute"`
-	// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+	// Enable locality load balancing.
 	Enabled pulumi.BoolPtrInput `pulumi:"enabled"`
 	// Optional: only one of distribute, failover or failoverPriority can be set.
 	Failover DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingFailoverPatchArrayInput `pulumi:"failover"`
@@ -23335,7 +24488,7 @@ func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbS
 	}).(DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingDistributePatchArrayOutput)
 }
 
-// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+// Enable locality load balancing.
 func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingPatchOutput) Enabled() pulumi.BoolPtrOutput {
 	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingPatch) *bool {
 		return v.Enabled
@@ -23390,7 +24543,7 @@ func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbS
 	}).(DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingDistributePatchArrayOutput)
 }
 
-// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
+// Enable locality load balancing.
 func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingPatchPtrOutput) Enabled() pulumi.BoolPtrOutput {
 	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingPatch) *bool {
 		if v == nil {
@@ -23425,8 +24578,9 @@ type DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerPatch struct {
 	ConsistentHash    *DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerConsistentHashPatch    `pulumi:"consistentHash"`
 	LocalityLbSetting *DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingPatch `pulumi:"localityLbSetting"`
 	// Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
-	Simple *string `pulumi:"simple"`
-	// Represents the warmup duration of Service.
+	Simple *string                                                                   `pulumi:"simple"`
+	Warmup *DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch `pulumi:"warmup"`
+	// Deprecated: use `warmup` instead.
 	WarmupDurationSecs *string `pulumi:"warmupDurationSecs"`
 }
 
@@ -23446,8 +24600,9 @@ type DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerPatchArgs stru
 	ConsistentHash    DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerConsistentHashPatchPtrInput    `pulumi:"consistentHash"`
 	LocalityLbSetting DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingPatchPtrInput `pulumi:"localityLbSetting"`
 	// Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
-	Simple pulumi.StringPtrInput `pulumi:"simple"`
-	// Represents the warmup duration of Service.
+	Simple pulumi.StringPtrInput                                                            `pulumi:"simple"`
+	Warmup DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrInput `pulumi:"warmup"`
+	// Deprecated: use `warmup` instead.
 	WarmupDurationSecs pulumi.StringPtrInput `pulumi:"warmupDurationSecs"`
 }
 
@@ -23546,7 +24701,13 @@ func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerPatchOutput
 	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerPatch) *string { return v.Simple }).(pulumi.StringPtrOutput)
 }
 
-// Represents the warmup duration of Service.
+func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerPatchOutput) Warmup() DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerPatch) *DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch {
+		return v.Warmup
+	}).(DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput)
+}
+
+// Deprecated: use `warmup` instead.
 func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerPatchOutput) WarmupDurationSecs() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerPatch) *string {
 		return v.WarmupDurationSecs
@@ -23605,7 +24766,16 @@ func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerPatchPtrOut
 	}).(pulumi.StringPtrOutput)
 }
 
-// Represents the warmup duration of Service.
+func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerPatchPtrOutput) Warmup() DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerPatch) *DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch {
+		if v == nil {
+			return nil
+		}
+		return v.Warmup
+	}).(DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput)
+}
+
+// Deprecated: use `warmup` instead.
 func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerPatchPtrOutput) WarmupDurationSecs() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerPatch) *string {
 		if v == nil {
@@ -23613,6 +24783,356 @@ func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerPatchPtrOut
 		}
 		return v.WarmupDurationSecs
 	}).(pulumi.StringPtrOutput)
+}
+
+// Represents the warmup configuration of Service.
+type DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmup struct {
+	// This parameter controls the speed of traffic increase over the warmup duration.
+	Aggression     *float64 `pulumi:"aggression"`
+	Duration       *string  `pulumi:"duration"`
+	MinimumPercent *float64 `pulumi:"minimumPercent"`
+}
+
+// DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupInput is an input type that accepts DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupArgs and DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput values.
+// You can construct a concrete instance of `DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupInput` via:
+//
+//	DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupArgs{...}
+type DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupInput interface {
+	pulumi.Input
+
+	ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput() DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput
+	ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutputWithContext(context.Context) DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput
+}
+
+// Represents the warmup configuration of Service.
+type DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupArgs struct {
+	// This parameter controls the speed of traffic increase over the warmup duration.
+	Aggression     pulumi.Float64PtrInput `pulumi:"aggression"`
+	Duration       pulumi.StringPtrInput  `pulumi:"duration"`
+	MinimumPercent pulumi.Float64PtrInput `pulumi:"minimumPercent"`
+}
+
+func (DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmup)(nil)).Elem()
+}
+
+func (i DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupArgs) ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput() DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput {
+	return i.ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutputWithContext(context.Background())
+}
+
+func (i DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupArgs) ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutputWithContext(ctx context.Context) DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput)
+}
+
+func (i DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupArgs) ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput() DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput {
+	return i.ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutputWithContext(context.Background())
+}
+
+func (i DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupArgs) ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutputWithContext(ctx context.Context) DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput).ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutputWithContext(ctx)
+}
+
+// DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrInput is an input type that accepts DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupArgs, DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtr and DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput values.
+// You can construct a concrete instance of `DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrInput` via:
+//
+//	        DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupArgs{...}
+//
+//	or:
+//
+//	        nil
+type DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrInput interface {
+	pulumi.Input
+
+	ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput() DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput
+	ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutputWithContext(context.Context) DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput
+}
+
+type destinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrType DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupArgs
+
+func DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtr(v *DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupArgs) DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrInput {
+	return (*destinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrType)(v)
+}
+
+func (*destinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmup)(nil)).Elem()
+}
+
+func (i *destinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrType) ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput() DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput {
+	return i.ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutputWithContext(context.Background())
+}
+
+func (i *destinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrType) ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutputWithContext(ctx context.Context) DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput)
+}
+
+// Represents the warmup configuration of Service.
+type DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput struct{ *pulumi.OutputState }
+
+func (DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmup)(nil)).Elem()
+}
+
+func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput) ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput() DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput {
+	return o
+}
+
+func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput) ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutputWithContext(ctx context.Context) DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput {
+	return o
+}
+
+func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput) ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput() DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput {
+	return o.ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutputWithContext(context.Background())
+}
+
+func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput) ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutputWithContext(ctx context.Context) DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmup) *DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmup {
+		return &v
+	}).(DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput)
+}
+
+// This parameter controls the speed of traffic increase over the warmup duration.
+func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput) Aggression() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmup) *float64 {
+		return v.Aggression
+	}).(pulumi.Float64PtrOutput)
+}
+
+func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput) Duration() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmup) *string { return v.Duration }).(pulumi.StringPtrOutput)
+}
+
+func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput) MinimumPercent() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmup) *float64 {
+		return v.MinimumPercent
+	}).(pulumi.Float64PtrOutput)
+}
+
+type DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput struct{ *pulumi.OutputState }
+
+func (DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmup)(nil)).Elem()
+}
+
+func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput) ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput() DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput {
+	return o
+}
+
+func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput) ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutputWithContext(ctx context.Context) DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput {
+	return o
+}
+
+func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput) Elem() DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmup) DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmup {
+		if v != nil {
+			return *v
+		}
+		var ret DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmup
+		return ret
+	}).(DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput)
+}
+
+// This parameter controls the speed of traffic increase over the warmup duration.
+func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput) Aggression() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmup) *float64 {
+		if v == nil {
+			return nil
+		}
+		return v.Aggression
+	}).(pulumi.Float64PtrOutput)
+}
+
+func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput) Duration() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmup) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Duration
+	}).(pulumi.StringPtrOutput)
+}
+
+func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput) MinimumPercent() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmup) *float64 {
+		if v == nil {
+			return nil
+		}
+		return v.MinimumPercent
+	}).(pulumi.Float64PtrOutput)
+}
+
+// Represents the warmup configuration of Service.
+type DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch struct {
+	// This parameter controls the speed of traffic increase over the warmup duration.
+	Aggression     *float64 `pulumi:"aggression"`
+	Duration       *string  `pulumi:"duration"`
+	MinimumPercent *float64 `pulumi:"minimumPercent"`
+}
+
+// DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchInput is an input type that accepts DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchArgs and DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput values.
+// You can construct a concrete instance of `DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchInput` via:
+//
+//	DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchArgs{...}
+type DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchInput interface {
+	pulumi.Input
+
+	ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput() DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput
+	ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutputWithContext(context.Context) DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput
+}
+
+// Represents the warmup configuration of Service.
+type DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchArgs struct {
+	// This parameter controls the speed of traffic increase over the warmup duration.
+	Aggression     pulumi.Float64PtrInput `pulumi:"aggression"`
+	Duration       pulumi.StringPtrInput  `pulumi:"duration"`
+	MinimumPercent pulumi.Float64PtrInput `pulumi:"minimumPercent"`
+}
+
+func (DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch)(nil)).Elem()
+}
+
+func (i DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchArgs) ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput() DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput {
+	return i.ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutputWithContext(context.Background())
+}
+
+func (i DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchArgs) ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutputWithContext(ctx context.Context) DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput)
+}
+
+func (i DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchArgs) ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput() DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput {
+	return i.ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutputWithContext(context.Background())
+}
+
+func (i DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchArgs) ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutputWithContext(ctx context.Context) DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput).ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutputWithContext(ctx)
+}
+
+// DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrInput is an input type that accepts DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchArgs, DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtr and DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput values.
+// You can construct a concrete instance of `DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrInput` via:
+//
+//	        DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrInput interface {
+	pulumi.Input
+
+	ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput() DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput
+	ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutputWithContext(context.Context) DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput
+}
+
+type destinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrType DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchArgs
+
+func DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtr(v *DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchArgs) DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrInput {
+	return (*destinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrType)(v)
+}
+
+func (*destinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch)(nil)).Elem()
+}
+
+func (i *destinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrType) ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput() DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput {
+	return i.ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *destinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrType) ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutputWithContext(ctx context.Context) DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput)
+}
+
+// Represents the warmup configuration of Service.
+type DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput struct{ *pulumi.OutputState }
+
+func (DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch)(nil)).Elem()
+}
+
+func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput) ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput() DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput {
+	return o
+}
+
+func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput) ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutputWithContext(ctx context.Context) DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput {
+	return o
+}
+
+func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput) ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput() DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput {
+	return o.ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutputWithContext(context.Background())
+}
+
+func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput) ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutputWithContext(ctx context.Context) DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch) *DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch {
+		return &v
+	}).(DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput)
+}
+
+// This parameter controls the speed of traffic increase over the warmup duration.
+func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput) Aggression() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch) *float64 {
+		return v.Aggression
+	}).(pulumi.Float64PtrOutput)
+}
+
+func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput) Duration() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch) *string {
+		return v.Duration
+	}).(pulumi.StringPtrOutput)
+}
+
+func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput) MinimumPercent() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch) *float64 {
+		return v.MinimumPercent
+	}).(pulumi.Float64PtrOutput)
+}
+
+type DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch)(nil)).Elem()
+}
+
+func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput) ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput() DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput {
+	return o
+}
+
+func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput) ToDestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutputWithContext(ctx context.Context) DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput {
+	return o
+}
+
+func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput) Elem() DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch) DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch {
+		if v != nil {
+			return *v
+		}
+		var ret DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch
+		return ret
+	}).(DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput)
+}
+
+// This parameter controls the speed of traffic increase over the warmup duration.
+func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput) Aggression() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch) *float64 {
+		if v == nil {
+			return nil
+		}
+		return v.Aggression
+	}).(pulumi.Float64PtrOutput)
+}
+
+func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput) Duration() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Duration
+	}).(pulumi.StringPtrOutput)
+}
+
+func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput) MinimumPercent() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatch) *float64 {
+		if v == nil {
+			return nil
+		}
+		return v.MinimumPercent
+	}).(pulumi.Float64PtrOutput)
 }
 
 type DestinationRuleSpecTrafficPolicyPortLevelSettingsOutlierDetection struct {
@@ -23629,7 +25149,7 @@ type DestinationRuleSpecTrafficPolicyPortLevelSettingsOutlierDetection struct {
 	Interval *string `pulumi:"interval"`
 	// Maximum % of hosts in the load balancing pool for the upstream service that can be ejected.
 	MaxEjectionPercent *int `pulumi:"maxEjectionPercent"`
-	// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+	// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 	MinHealthPercent *int `pulumi:"minHealthPercent"`
 	// Determines whether to distinguish local origin failures from external errors.
 	SplitExternalLocalOriginErrors *bool `pulumi:"splitExternalLocalOriginErrors"`
@@ -23660,7 +25180,7 @@ type DestinationRuleSpecTrafficPolicyPortLevelSettingsOutlierDetectionArgs struc
 	Interval pulumi.StringPtrInput `pulumi:"interval"`
 	// Maximum % of hosts in the load balancing pool for the upstream service that can be ejected.
 	MaxEjectionPercent pulumi.IntPtrInput `pulumi:"maxEjectionPercent"`
-	// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+	// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 	MinHealthPercent pulumi.IntPtrInput `pulumi:"minHealthPercent"`
 	// Determines whether to distinguish local origin failures from external errors.
 	SplitExternalLocalOriginErrors pulumi.BoolPtrInput `pulumi:"splitExternalLocalOriginErrors"`
@@ -23789,7 +25309,7 @@ func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsOutlierDetectionOutput)
 	}).(pulumi.IntPtrOutput)
 }
 
-// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsOutlierDetectionOutput) MinHealthPercent() pulumi.IntPtrOutput {
 	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyPortLevelSettingsOutlierDetection) *int {
 		return v.MinHealthPercent
@@ -23896,7 +25416,7 @@ func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsOutlierDetectionPtrOutp
 	}).(pulumi.IntPtrOutput)
 }
 
-// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsOutlierDetectionPtrOutput) MinHealthPercent() pulumi.IntPtrOutput {
 	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyPortLevelSettingsOutlierDetection) *int {
 		if v == nil {
@@ -23930,7 +25450,7 @@ type DestinationRuleSpecTrafficPolicyPortLevelSettingsOutlierDetectionPatch stru
 	Interval *string `pulumi:"interval"`
 	// Maximum % of hosts in the load balancing pool for the upstream service that can be ejected.
 	MaxEjectionPercent *int `pulumi:"maxEjectionPercent"`
-	// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+	// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 	MinHealthPercent *int `pulumi:"minHealthPercent"`
 	// Determines whether to distinguish local origin failures from external errors.
 	SplitExternalLocalOriginErrors *bool `pulumi:"splitExternalLocalOriginErrors"`
@@ -23961,7 +25481,7 @@ type DestinationRuleSpecTrafficPolicyPortLevelSettingsOutlierDetectionPatchArgs 
 	Interval pulumi.StringPtrInput `pulumi:"interval"`
 	// Maximum % of hosts in the load balancing pool for the upstream service that can be ejected.
 	MaxEjectionPercent pulumi.IntPtrInput `pulumi:"maxEjectionPercent"`
-	// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+	// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 	MinHealthPercent pulumi.IntPtrInput `pulumi:"minHealthPercent"`
 	// Determines whether to distinguish local origin failures from external errors.
 	SplitExternalLocalOriginErrors pulumi.BoolPtrInput `pulumi:"splitExternalLocalOriginErrors"`
@@ -24092,7 +25612,7 @@ func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsOutlierDetectionPatchOu
 	}).(pulumi.IntPtrOutput)
 }
 
-// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsOutlierDetectionPatchOutput) MinHealthPercent() pulumi.IntPtrOutput {
 	return o.ApplyT(func(v DestinationRuleSpecTrafficPolicyPortLevelSettingsOutlierDetectionPatch) *int {
 		return v.MinHealthPercent
@@ -24199,7 +25719,7 @@ func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsOutlierDetectionPatchPt
 	}).(pulumi.IntPtrOutput)
 }
 
-// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
+// Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode.
 func (o DestinationRuleSpecTrafficPolicyPortLevelSettingsOutlierDetectionPatchPtrOutput) MinHealthPercent() pulumi.IntPtrOutput {
 	return o.ApplyT(func(v *DestinationRuleSpecTrafficPolicyPortLevelSettingsOutlierDetectionPatch) *int {
 		if v == nil {
@@ -29535,7 +31055,7 @@ func (o EnvoyFilterSpecConfigPatchesMatchPatchOutput) RouteConfiguration() Envoy
 
 // Match on properties associated with a proxy.
 type EnvoyFilterSpecConfigPatchesMatchProxy struct {
-	// Match on the node metadata supplied by a proxy when connecting to Istio Pilot.
+	// Match on the node metadata supplied by a proxy when connecting to istiod.
 	Metadata map[string]string `pulumi:"metadata"`
 	// A regular expression in golang regex format (RE2) that can be used to select proxies using a specific version of istio proxy.
 	ProxyVersion *string `pulumi:"proxyVersion"`
@@ -29554,7 +31074,7 @@ type EnvoyFilterSpecConfigPatchesMatchProxyInput interface {
 
 // Match on properties associated with a proxy.
 type EnvoyFilterSpecConfigPatchesMatchProxyArgs struct {
-	// Match on the node metadata supplied by a proxy when connecting to Istio Pilot.
+	// Match on the node metadata supplied by a proxy when connecting to istiod.
 	Metadata pulumi.StringMapInput `pulumi:"metadata"`
 	// A regular expression in golang regex format (RE2) that can be used to select proxies using a specific version of istio proxy.
 	ProxyVersion pulumi.StringPtrInput `pulumi:"proxyVersion"`
@@ -29638,7 +31158,7 @@ func (o EnvoyFilterSpecConfigPatchesMatchProxyOutput) ToEnvoyFilterSpecConfigPat
 	}).(EnvoyFilterSpecConfigPatchesMatchProxyPtrOutput)
 }
 
-// Match on the node metadata supplied by a proxy when connecting to Istio Pilot.
+// Match on the node metadata supplied by a proxy when connecting to istiod.
 func (o EnvoyFilterSpecConfigPatchesMatchProxyOutput) Metadata() pulumi.StringMapOutput {
 	return o.ApplyT(func(v EnvoyFilterSpecConfigPatchesMatchProxy) map[string]string { return v.Metadata }).(pulumi.StringMapOutput)
 }
@@ -29672,7 +31192,7 @@ func (o EnvoyFilterSpecConfigPatchesMatchProxyPtrOutput) Elem() EnvoyFilterSpecC
 	}).(EnvoyFilterSpecConfigPatchesMatchProxyOutput)
 }
 
-// Match on the node metadata supplied by a proxy when connecting to Istio Pilot.
+// Match on the node metadata supplied by a proxy when connecting to istiod.
 func (o EnvoyFilterSpecConfigPatchesMatchProxyPtrOutput) Metadata() pulumi.StringMapOutput {
 	return o.ApplyT(func(v *EnvoyFilterSpecConfigPatchesMatchProxy) map[string]string {
 		if v == nil {
@@ -29694,7 +31214,7 @@ func (o EnvoyFilterSpecConfigPatchesMatchProxyPtrOutput) ProxyVersion() pulumi.S
 
 // Match on properties associated with a proxy.
 type EnvoyFilterSpecConfigPatchesMatchProxyPatch struct {
-	// Match on the node metadata supplied by a proxy when connecting to Istio Pilot.
+	// Match on the node metadata supplied by a proxy when connecting to istiod.
 	Metadata map[string]string `pulumi:"metadata"`
 	// A regular expression in golang regex format (RE2) that can be used to select proxies using a specific version of istio proxy.
 	ProxyVersion *string `pulumi:"proxyVersion"`
@@ -29713,7 +31233,7 @@ type EnvoyFilterSpecConfigPatchesMatchProxyPatchInput interface {
 
 // Match on properties associated with a proxy.
 type EnvoyFilterSpecConfigPatchesMatchProxyPatchArgs struct {
-	// Match on the node metadata supplied by a proxy when connecting to Istio Pilot.
+	// Match on the node metadata supplied by a proxy when connecting to istiod.
 	Metadata pulumi.StringMapInput `pulumi:"metadata"`
 	// A regular expression in golang regex format (RE2) that can be used to select proxies using a specific version of istio proxy.
 	ProxyVersion pulumi.StringPtrInput `pulumi:"proxyVersion"`
@@ -29797,7 +31317,7 @@ func (o EnvoyFilterSpecConfigPatchesMatchProxyPatchOutput) ToEnvoyFilterSpecConf
 	}).(EnvoyFilterSpecConfigPatchesMatchProxyPatchPtrOutput)
 }
 
-// Match on the node metadata supplied by a proxy when connecting to Istio Pilot.
+// Match on the node metadata supplied by a proxy when connecting to istiod.
 func (o EnvoyFilterSpecConfigPatchesMatchProxyPatchOutput) Metadata() pulumi.StringMapOutput {
 	return o.ApplyT(func(v EnvoyFilterSpecConfigPatchesMatchProxyPatch) map[string]string { return v.Metadata }).(pulumi.StringMapOutput)
 }
@@ -29831,7 +31351,7 @@ func (o EnvoyFilterSpecConfigPatchesMatchProxyPatchPtrOutput) Elem() EnvoyFilter
 	}).(EnvoyFilterSpecConfigPatchesMatchProxyPatchOutput)
 }
 
-// Match on the node metadata supplied by a proxy when connecting to Istio Pilot.
+// Match on the node metadata supplied by a proxy when connecting to istiod.
 func (o EnvoyFilterSpecConfigPatchesMatchProxyPatchPtrOutput) Metadata() pulumi.StringMapOutput {
 	return o.ApplyT(func(v *EnvoyFilterSpecConfigPatchesMatchProxyPatch) map[string]string {
 		if v == nil {
@@ -30281,6 +31801,8 @@ func (o EnvoyFilterSpecConfigPatchesMatchRouteConfigurationPatchPtrOutput) Vhost
 
 // Match a specific virtual host in a route configuration and apply the patch to the virtual host.
 type EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhost struct {
+	// Match a domain name in a virtual host.
+	DomainName *string `pulumi:"domainName"`
 	// The VirtualHosts objects generated by Istio are named as host:port, where the host typically corresponds to the VirtualService's host field or the hostname of a service in the registry.
 	Name  *string                                                        `pulumi:"name"`
 	Route *EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhostRoute `pulumi:"route"`
@@ -30299,6 +31821,8 @@ type EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhostInput interface {
 
 // Match a specific virtual host in a route configuration and apply the patch to the virtual host.
 type EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhostArgs struct {
+	// Match a domain name in a virtual host.
+	DomainName pulumi.StringPtrInput `pulumi:"domainName"`
 	// The VirtualHosts objects generated by Istio are named as host:port, where the host typically corresponds to the VirtualService's host field or the hostname of a service in the registry.
 	Name  pulumi.StringPtrInput                                                 `pulumi:"name"`
 	Route EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhostRoutePtrInput `pulumi:"route"`
@@ -30382,6 +31906,11 @@ func (o EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhostOutput) ToEnvoyF
 	}).(EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhostPtrOutput)
 }
 
+// Match a domain name in a virtual host.
+func (o EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhostOutput) DomainName() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhost) *string { return v.DomainName }).(pulumi.StringPtrOutput)
+}
+
 // The VirtualHosts objects generated by Istio are named as host:port, where the host typically corresponds to the VirtualService's host field or the hostname of a service in the registry.
 func (o EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhostOutput) Name() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhost) *string { return v.Name }).(pulumi.StringPtrOutput)
@@ -30417,6 +31946,16 @@ func (o EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhostPtrOutput) Elem(
 	}).(EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhostOutput)
 }
 
+// Match a domain name in a virtual host.
+func (o EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhostPtrOutput) DomainName() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhost) *string {
+		if v == nil {
+			return nil
+		}
+		return v.DomainName
+	}).(pulumi.StringPtrOutput)
+}
+
 // The VirtualHosts objects generated by Istio are named as host:port, where the host typically corresponds to the VirtualService's host field or the hostname of a service in the registry.
 func (o EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhostPtrOutput) Name() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhost) *string {
@@ -30438,6 +31977,8 @@ func (o EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhostPtrOutput) Route
 
 // Match a specific virtual host in a route configuration and apply the patch to the virtual host.
 type EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhostPatch struct {
+	// Match a domain name in a virtual host.
+	DomainName *string `pulumi:"domainName"`
 	// The VirtualHosts objects generated by Istio are named as host:port, where the host typically corresponds to the VirtualService's host field or the hostname of a service in the registry.
 	Name  *string                                                             `pulumi:"name"`
 	Route *EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhostRoutePatch `pulumi:"route"`
@@ -30456,6 +31997,8 @@ type EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhostPatchInput interfac
 
 // Match a specific virtual host in a route configuration and apply the patch to the virtual host.
 type EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhostPatchArgs struct {
+	// Match a domain name in a virtual host.
+	DomainName pulumi.StringPtrInput `pulumi:"domainName"`
 	// The VirtualHosts objects generated by Istio are named as host:port, where the host typically corresponds to the VirtualService's host field or the hostname of a service in the registry.
 	Name  pulumi.StringPtrInput                                                      `pulumi:"name"`
 	Route EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhostRoutePatchPtrInput `pulumi:"route"`
@@ -30539,6 +32082,11 @@ func (o EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhostPatchOutput) ToE
 	}).(EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhostPatchPtrOutput)
 }
 
+// Match a domain name in a virtual host.
+func (o EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhostPatchOutput) DomainName() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhostPatch) *string { return v.DomainName }).(pulumi.StringPtrOutput)
+}
+
 // The VirtualHosts objects generated by Istio are named as host:port, where the host typically corresponds to the VirtualService's host field or the hostname of a service in the registry.
 func (o EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhostPatchOutput) Name() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhostPatch) *string { return v.Name }).(pulumi.StringPtrOutput)
@@ -30572,6 +32120,16 @@ func (o EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhostPatchPtrOutput) 
 		var ret EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhostPatch
 		return ret
 	}).(EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhostPatchOutput)
+}
+
+// Match a domain name in a virtual host.
+func (o EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhostPatchPtrOutput) DomainName() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *EnvoyFilterSpecConfigPatchesMatchRouteConfigurationVhostPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.DomainName
+	}).(pulumi.StringPtrOutput)
 }
 
 // The VirtualHosts objects generated by Istio are named as host:port, where the host typically corresponds to the VirtualService's host field or the hostname of a service in the registry.
@@ -33243,6 +34801,8 @@ type GatewaySpecServersTls struct {
 	CipherSuites []string `pulumi:"cipherSuites"`
 	// For gateways running on Kubernetes, the name of the secret that holds the TLS certs including the CA certificates.
 	CredentialName *string `pulumi:"credentialName"`
+	// Same as CredentialName but for multiple certificates.
+	CredentialNames []string `pulumi:"credentialNames"`
 	// If set to true, the load balancer will send a 301 redirect for all http connections, asking the clients to use HTTPS.
 	HttpsRedirect *bool `pulumi:"httpsRedirect"`
 	// Optional: Maximum TLS protocol version.
@@ -33263,6 +34823,8 @@ type GatewaySpecServersTls struct {
 	ServerCertificate *string `pulumi:"serverCertificate"`
 	// A list of alternate names to verify the subject identity in the certificate presented by the client.
 	SubjectAltNames []string `pulumi:"subjectAltNames"`
+	// Only one of `server_certificate`, `private_key`, `ca_certificates` or `credential_name` or `credential_names` or `tls_certificates` should be specified.
+	TlsCertificates []GatewaySpecServersTlsTlsCertificates `pulumi:"tlsCertificates"`
 	// An optional list of hex-encoded SHA-256 hashes of the authorized client certificates.
 	VerifyCertificateHash []string `pulumi:"verifyCertificateHash"`
 	// An optional list of base64-encoded SHA-256 hashes of the SPKIs of authorized client certificates.
@@ -33290,6 +34852,8 @@ type GatewaySpecServersTlsArgs struct {
 	CipherSuites pulumi.StringArrayInput `pulumi:"cipherSuites"`
 	// For gateways running on Kubernetes, the name of the secret that holds the TLS certs including the CA certificates.
 	CredentialName pulumi.StringPtrInput `pulumi:"credentialName"`
+	// Same as CredentialName but for multiple certificates.
+	CredentialNames pulumi.StringArrayInput `pulumi:"credentialNames"`
 	// If set to true, the load balancer will send a 301 redirect for all http connections, asking the clients to use HTTPS.
 	HttpsRedirect pulumi.BoolPtrInput `pulumi:"httpsRedirect"`
 	// Optional: Maximum TLS protocol version.
@@ -33310,6 +34874,8 @@ type GatewaySpecServersTlsArgs struct {
 	ServerCertificate pulumi.StringPtrInput `pulumi:"serverCertificate"`
 	// A list of alternate names to verify the subject identity in the certificate presented by the client.
 	SubjectAltNames pulumi.StringArrayInput `pulumi:"subjectAltNames"`
+	// Only one of `server_certificate`, `private_key`, `ca_certificates` or `credential_name` or `credential_names` or `tls_certificates` should be specified.
+	TlsCertificates GatewaySpecServersTlsTlsCertificatesArrayInput `pulumi:"tlsCertificates"`
 	// An optional list of hex-encoded SHA-256 hashes of the authorized client certificates.
 	VerifyCertificateHash pulumi.StringArrayInput `pulumi:"verifyCertificateHash"`
 	// An optional list of base64-encoded SHA-256 hashes of the SPKIs of authorized client certificates.
@@ -33414,6 +34980,11 @@ func (o GatewaySpecServersTlsOutput) CredentialName() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v GatewaySpecServersTls) *string { return v.CredentialName }).(pulumi.StringPtrOutput)
 }
 
+// Same as CredentialName but for multiple certificates.
+func (o GatewaySpecServersTlsOutput) CredentialNames() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v GatewaySpecServersTls) []string { return v.CredentialNames }).(pulumi.StringArrayOutput)
+}
+
 // If set to true, the load balancer will send a 301 redirect for all http connections, asking the clients to use HTTPS.
 func (o GatewaySpecServersTlsOutput) HttpsRedirect() pulumi.BoolPtrOutput {
 	return o.ApplyT(func(v GatewaySpecServersTls) *bool { return v.HttpsRedirect }).(pulumi.BoolPtrOutput)
@@ -33453,6 +35024,11 @@ func (o GatewaySpecServersTlsOutput) ServerCertificate() pulumi.StringPtrOutput 
 // A list of alternate names to verify the subject identity in the certificate presented by the client.
 func (o GatewaySpecServersTlsOutput) SubjectAltNames() pulumi.StringArrayOutput {
 	return o.ApplyT(func(v GatewaySpecServersTls) []string { return v.SubjectAltNames }).(pulumi.StringArrayOutput)
+}
+
+// Only one of `server_certificate`, `private_key`, `ca_certificates` or `credential_name` or `credential_names` or `tls_certificates` should be specified.
+func (o GatewaySpecServersTlsOutput) TlsCertificates() GatewaySpecServersTlsTlsCertificatesArrayOutput {
+	return o.ApplyT(func(v GatewaySpecServersTls) []GatewaySpecServersTlsTlsCertificates { return v.TlsCertificates }).(GatewaySpecServersTlsTlsCertificatesArrayOutput)
 }
 
 // An optional list of hex-encoded SHA-256 hashes of the authorized client certificates.
@@ -33527,6 +35103,16 @@ func (o GatewaySpecServersTlsPtrOutput) CredentialName() pulumi.StringPtrOutput 
 		}
 		return v.CredentialName
 	}).(pulumi.StringPtrOutput)
+}
+
+// Same as CredentialName but for multiple certificates.
+func (o GatewaySpecServersTlsPtrOutput) CredentialNames() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *GatewaySpecServersTls) []string {
+		if v == nil {
+			return nil
+		}
+		return v.CredentialNames
+	}).(pulumi.StringArrayOutput)
 }
 
 // If set to true, the load balancer will send a 301 redirect for all http connections, asking the clients to use HTTPS.
@@ -33605,6 +35191,16 @@ func (o GatewaySpecServersTlsPtrOutput) SubjectAltNames() pulumi.StringArrayOutp
 	}).(pulumi.StringArrayOutput)
 }
 
+// Only one of `server_certificate`, `private_key`, `ca_certificates` or `credential_name` or `credential_names` or `tls_certificates` should be specified.
+func (o GatewaySpecServersTlsPtrOutput) TlsCertificates() GatewaySpecServersTlsTlsCertificatesArrayOutput {
+	return o.ApplyT(func(v *GatewaySpecServersTls) []GatewaySpecServersTlsTlsCertificates {
+		if v == nil {
+			return nil
+		}
+		return v.TlsCertificates
+	}).(GatewaySpecServersTlsTlsCertificatesArrayOutput)
+}
+
 // An optional list of hex-encoded SHA-256 hashes of the authorized client certificates.
 func (o GatewaySpecServersTlsPtrOutput) VerifyCertificateHash() pulumi.StringArrayOutput {
 	return o.ApplyT(func(v *GatewaySpecServersTls) []string {
@@ -33635,6 +35231,8 @@ type GatewaySpecServersTlsPatch struct {
 	CipherSuites []string `pulumi:"cipherSuites"`
 	// For gateways running on Kubernetes, the name of the secret that holds the TLS certs including the CA certificates.
 	CredentialName *string `pulumi:"credentialName"`
+	// Same as CredentialName but for multiple certificates.
+	CredentialNames []string `pulumi:"credentialNames"`
 	// If set to true, the load balancer will send a 301 redirect for all http connections, asking the clients to use HTTPS.
 	HttpsRedirect *bool `pulumi:"httpsRedirect"`
 	// Optional: Maximum TLS protocol version.
@@ -33655,6 +35253,8 @@ type GatewaySpecServersTlsPatch struct {
 	ServerCertificate *string `pulumi:"serverCertificate"`
 	// A list of alternate names to verify the subject identity in the certificate presented by the client.
 	SubjectAltNames []string `pulumi:"subjectAltNames"`
+	// Only one of `server_certificate`, `private_key`, `ca_certificates` or `credential_name` or `credential_names` or `tls_certificates` should be specified.
+	TlsCertificates []GatewaySpecServersTlsTlsCertificatesPatch `pulumi:"tlsCertificates"`
 	// An optional list of hex-encoded SHA-256 hashes of the authorized client certificates.
 	VerifyCertificateHash []string `pulumi:"verifyCertificateHash"`
 	// An optional list of base64-encoded SHA-256 hashes of the SPKIs of authorized client certificates.
@@ -33682,6 +35282,8 @@ type GatewaySpecServersTlsPatchArgs struct {
 	CipherSuites pulumi.StringArrayInput `pulumi:"cipherSuites"`
 	// For gateways running on Kubernetes, the name of the secret that holds the TLS certs including the CA certificates.
 	CredentialName pulumi.StringPtrInput `pulumi:"credentialName"`
+	// Same as CredentialName but for multiple certificates.
+	CredentialNames pulumi.StringArrayInput `pulumi:"credentialNames"`
 	// If set to true, the load balancer will send a 301 redirect for all http connections, asking the clients to use HTTPS.
 	HttpsRedirect pulumi.BoolPtrInput `pulumi:"httpsRedirect"`
 	// Optional: Maximum TLS protocol version.
@@ -33702,6 +35304,8 @@ type GatewaySpecServersTlsPatchArgs struct {
 	ServerCertificate pulumi.StringPtrInput `pulumi:"serverCertificate"`
 	// A list of alternate names to verify the subject identity in the certificate presented by the client.
 	SubjectAltNames pulumi.StringArrayInput `pulumi:"subjectAltNames"`
+	// Only one of `server_certificate`, `private_key`, `ca_certificates` or `credential_name` or `credential_names` or `tls_certificates` should be specified.
+	TlsCertificates GatewaySpecServersTlsTlsCertificatesPatchArrayInput `pulumi:"tlsCertificates"`
 	// An optional list of hex-encoded SHA-256 hashes of the authorized client certificates.
 	VerifyCertificateHash pulumi.StringArrayInput `pulumi:"verifyCertificateHash"`
 	// An optional list of base64-encoded SHA-256 hashes of the SPKIs of authorized client certificates.
@@ -33806,6 +35410,11 @@ func (o GatewaySpecServersTlsPatchOutput) CredentialName() pulumi.StringPtrOutpu
 	return o.ApplyT(func(v GatewaySpecServersTlsPatch) *string { return v.CredentialName }).(pulumi.StringPtrOutput)
 }
 
+// Same as CredentialName but for multiple certificates.
+func (o GatewaySpecServersTlsPatchOutput) CredentialNames() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v GatewaySpecServersTlsPatch) []string { return v.CredentialNames }).(pulumi.StringArrayOutput)
+}
+
 // If set to true, the load balancer will send a 301 redirect for all http connections, asking the clients to use HTTPS.
 func (o GatewaySpecServersTlsPatchOutput) HttpsRedirect() pulumi.BoolPtrOutput {
 	return o.ApplyT(func(v GatewaySpecServersTlsPatch) *bool { return v.HttpsRedirect }).(pulumi.BoolPtrOutput)
@@ -33845,6 +35454,13 @@ func (o GatewaySpecServersTlsPatchOutput) ServerCertificate() pulumi.StringPtrOu
 // A list of alternate names to verify the subject identity in the certificate presented by the client.
 func (o GatewaySpecServersTlsPatchOutput) SubjectAltNames() pulumi.StringArrayOutput {
 	return o.ApplyT(func(v GatewaySpecServersTlsPatch) []string { return v.SubjectAltNames }).(pulumi.StringArrayOutput)
+}
+
+// Only one of `server_certificate`, `private_key`, `ca_certificates` or `credential_name` or `credential_names` or `tls_certificates` should be specified.
+func (o GatewaySpecServersTlsPatchOutput) TlsCertificates() GatewaySpecServersTlsTlsCertificatesPatchArrayOutput {
+	return o.ApplyT(func(v GatewaySpecServersTlsPatch) []GatewaySpecServersTlsTlsCertificatesPatch {
+		return v.TlsCertificates
+	}).(GatewaySpecServersTlsTlsCertificatesPatchArrayOutput)
 }
 
 // An optional list of hex-encoded SHA-256 hashes of the authorized client certificates.
@@ -33919,6 +35535,16 @@ func (o GatewaySpecServersTlsPatchPtrOutput) CredentialName() pulumi.StringPtrOu
 		}
 		return v.CredentialName
 	}).(pulumi.StringPtrOutput)
+}
+
+// Same as CredentialName but for multiple certificates.
+func (o GatewaySpecServersTlsPatchPtrOutput) CredentialNames() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *GatewaySpecServersTlsPatch) []string {
+		if v == nil {
+			return nil
+		}
+		return v.CredentialNames
+	}).(pulumi.StringArrayOutput)
 }
 
 // If set to true, the load balancer will send a 301 redirect for all http connections, asking the clients to use HTTPS.
@@ -33997,6 +35623,16 @@ func (o GatewaySpecServersTlsPatchPtrOutput) SubjectAltNames() pulumi.StringArra
 	}).(pulumi.StringArrayOutput)
 }
 
+// Only one of `server_certificate`, `private_key`, `ca_certificates` or `credential_name` or `credential_names` or `tls_certificates` should be specified.
+func (o GatewaySpecServersTlsPatchPtrOutput) TlsCertificates() GatewaySpecServersTlsTlsCertificatesPatchArrayOutput {
+	return o.ApplyT(func(v *GatewaySpecServersTlsPatch) []GatewaySpecServersTlsTlsCertificatesPatch {
+		if v == nil {
+			return nil
+		}
+		return v.TlsCertificates
+	}).(GatewaySpecServersTlsTlsCertificatesPatchArrayOutput)
+}
+
 // An optional list of hex-encoded SHA-256 hashes of the authorized client certificates.
 func (o GatewaySpecServersTlsPatchPtrOutput) VerifyCertificateHash() pulumi.StringArrayOutput {
 	return o.ApplyT(func(v *GatewaySpecServersTlsPatch) []string {
@@ -34015,6 +35651,236 @@ func (o GatewaySpecServersTlsPatchPtrOutput) VerifyCertificateSpki() pulumi.Stri
 		}
 		return v.VerifyCertificateSpki
 	}).(pulumi.StringArrayOutput)
+}
+
+type GatewaySpecServersTlsTlsCertificates struct {
+	// REQUIRED if mode is `MUTUAL` or `OPTIONAL_MUTUAL`.
+	CaCertificates *string `pulumi:"caCertificates"`
+	// REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+	PrivateKey *string `pulumi:"privateKey"`
+	// REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+	ServerCertificate *string `pulumi:"serverCertificate"`
+}
+
+// GatewaySpecServersTlsTlsCertificatesInput is an input type that accepts GatewaySpecServersTlsTlsCertificatesArgs and GatewaySpecServersTlsTlsCertificatesOutput values.
+// You can construct a concrete instance of `GatewaySpecServersTlsTlsCertificatesInput` via:
+//
+//	GatewaySpecServersTlsTlsCertificatesArgs{...}
+type GatewaySpecServersTlsTlsCertificatesInput interface {
+	pulumi.Input
+
+	ToGatewaySpecServersTlsTlsCertificatesOutput() GatewaySpecServersTlsTlsCertificatesOutput
+	ToGatewaySpecServersTlsTlsCertificatesOutputWithContext(context.Context) GatewaySpecServersTlsTlsCertificatesOutput
+}
+
+type GatewaySpecServersTlsTlsCertificatesArgs struct {
+	// REQUIRED if mode is `MUTUAL` or `OPTIONAL_MUTUAL`.
+	CaCertificates pulumi.StringPtrInput `pulumi:"caCertificates"`
+	// REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+	PrivateKey pulumi.StringPtrInput `pulumi:"privateKey"`
+	// REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+	ServerCertificate pulumi.StringPtrInput `pulumi:"serverCertificate"`
+}
+
+func (GatewaySpecServersTlsTlsCertificatesArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecServersTlsTlsCertificates)(nil)).Elem()
+}
+
+func (i GatewaySpecServersTlsTlsCertificatesArgs) ToGatewaySpecServersTlsTlsCertificatesOutput() GatewaySpecServersTlsTlsCertificatesOutput {
+	return i.ToGatewaySpecServersTlsTlsCertificatesOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecServersTlsTlsCertificatesArgs) ToGatewaySpecServersTlsTlsCertificatesOutputWithContext(ctx context.Context) GatewaySpecServersTlsTlsCertificatesOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecServersTlsTlsCertificatesOutput)
+}
+
+// GatewaySpecServersTlsTlsCertificatesArrayInput is an input type that accepts GatewaySpecServersTlsTlsCertificatesArray and GatewaySpecServersTlsTlsCertificatesArrayOutput values.
+// You can construct a concrete instance of `GatewaySpecServersTlsTlsCertificatesArrayInput` via:
+//
+//	GatewaySpecServersTlsTlsCertificatesArray{ GatewaySpecServersTlsTlsCertificatesArgs{...} }
+type GatewaySpecServersTlsTlsCertificatesArrayInput interface {
+	pulumi.Input
+
+	ToGatewaySpecServersTlsTlsCertificatesArrayOutput() GatewaySpecServersTlsTlsCertificatesArrayOutput
+	ToGatewaySpecServersTlsTlsCertificatesArrayOutputWithContext(context.Context) GatewaySpecServersTlsTlsCertificatesArrayOutput
+}
+
+type GatewaySpecServersTlsTlsCertificatesArray []GatewaySpecServersTlsTlsCertificatesInput
+
+func (GatewaySpecServersTlsTlsCertificatesArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]GatewaySpecServersTlsTlsCertificates)(nil)).Elem()
+}
+
+func (i GatewaySpecServersTlsTlsCertificatesArray) ToGatewaySpecServersTlsTlsCertificatesArrayOutput() GatewaySpecServersTlsTlsCertificatesArrayOutput {
+	return i.ToGatewaySpecServersTlsTlsCertificatesArrayOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecServersTlsTlsCertificatesArray) ToGatewaySpecServersTlsTlsCertificatesArrayOutputWithContext(ctx context.Context) GatewaySpecServersTlsTlsCertificatesArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecServersTlsTlsCertificatesArrayOutput)
+}
+
+type GatewaySpecServersTlsTlsCertificatesOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecServersTlsTlsCertificatesOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecServersTlsTlsCertificates)(nil)).Elem()
+}
+
+func (o GatewaySpecServersTlsTlsCertificatesOutput) ToGatewaySpecServersTlsTlsCertificatesOutput() GatewaySpecServersTlsTlsCertificatesOutput {
+	return o
+}
+
+func (o GatewaySpecServersTlsTlsCertificatesOutput) ToGatewaySpecServersTlsTlsCertificatesOutputWithContext(ctx context.Context) GatewaySpecServersTlsTlsCertificatesOutput {
+	return o
+}
+
+// REQUIRED if mode is `MUTUAL` or `OPTIONAL_MUTUAL`.
+func (o GatewaySpecServersTlsTlsCertificatesOutput) CaCertificates() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecServersTlsTlsCertificates) *string { return v.CaCertificates }).(pulumi.StringPtrOutput)
+}
+
+// REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+func (o GatewaySpecServersTlsTlsCertificatesOutput) PrivateKey() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecServersTlsTlsCertificates) *string { return v.PrivateKey }).(pulumi.StringPtrOutput)
+}
+
+// REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+func (o GatewaySpecServersTlsTlsCertificatesOutput) ServerCertificate() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecServersTlsTlsCertificates) *string { return v.ServerCertificate }).(pulumi.StringPtrOutput)
+}
+
+type GatewaySpecServersTlsTlsCertificatesArrayOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecServersTlsTlsCertificatesArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]GatewaySpecServersTlsTlsCertificates)(nil)).Elem()
+}
+
+func (o GatewaySpecServersTlsTlsCertificatesArrayOutput) ToGatewaySpecServersTlsTlsCertificatesArrayOutput() GatewaySpecServersTlsTlsCertificatesArrayOutput {
+	return o
+}
+
+func (o GatewaySpecServersTlsTlsCertificatesArrayOutput) ToGatewaySpecServersTlsTlsCertificatesArrayOutputWithContext(ctx context.Context) GatewaySpecServersTlsTlsCertificatesArrayOutput {
+	return o
+}
+
+func (o GatewaySpecServersTlsTlsCertificatesArrayOutput) Index(i pulumi.IntInput) GatewaySpecServersTlsTlsCertificatesOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) GatewaySpecServersTlsTlsCertificates {
+		return vs[0].([]GatewaySpecServersTlsTlsCertificates)[vs[1].(int)]
+	}).(GatewaySpecServersTlsTlsCertificatesOutput)
+}
+
+type GatewaySpecServersTlsTlsCertificatesPatch struct {
+	// REQUIRED if mode is `MUTUAL` or `OPTIONAL_MUTUAL`.
+	CaCertificates *string `pulumi:"caCertificates"`
+	// REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+	PrivateKey *string `pulumi:"privateKey"`
+	// REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+	ServerCertificate *string `pulumi:"serverCertificate"`
+}
+
+// GatewaySpecServersTlsTlsCertificatesPatchInput is an input type that accepts GatewaySpecServersTlsTlsCertificatesPatchArgs and GatewaySpecServersTlsTlsCertificatesPatchOutput values.
+// You can construct a concrete instance of `GatewaySpecServersTlsTlsCertificatesPatchInput` via:
+//
+//	GatewaySpecServersTlsTlsCertificatesPatchArgs{...}
+type GatewaySpecServersTlsTlsCertificatesPatchInput interface {
+	pulumi.Input
+
+	ToGatewaySpecServersTlsTlsCertificatesPatchOutput() GatewaySpecServersTlsTlsCertificatesPatchOutput
+	ToGatewaySpecServersTlsTlsCertificatesPatchOutputWithContext(context.Context) GatewaySpecServersTlsTlsCertificatesPatchOutput
+}
+
+type GatewaySpecServersTlsTlsCertificatesPatchArgs struct {
+	// REQUIRED if mode is `MUTUAL` or `OPTIONAL_MUTUAL`.
+	CaCertificates pulumi.StringPtrInput `pulumi:"caCertificates"`
+	// REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+	PrivateKey pulumi.StringPtrInput `pulumi:"privateKey"`
+	// REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+	ServerCertificate pulumi.StringPtrInput `pulumi:"serverCertificate"`
+}
+
+func (GatewaySpecServersTlsTlsCertificatesPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecServersTlsTlsCertificatesPatch)(nil)).Elem()
+}
+
+func (i GatewaySpecServersTlsTlsCertificatesPatchArgs) ToGatewaySpecServersTlsTlsCertificatesPatchOutput() GatewaySpecServersTlsTlsCertificatesPatchOutput {
+	return i.ToGatewaySpecServersTlsTlsCertificatesPatchOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecServersTlsTlsCertificatesPatchArgs) ToGatewaySpecServersTlsTlsCertificatesPatchOutputWithContext(ctx context.Context) GatewaySpecServersTlsTlsCertificatesPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecServersTlsTlsCertificatesPatchOutput)
+}
+
+// GatewaySpecServersTlsTlsCertificatesPatchArrayInput is an input type that accepts GatewaySpecServersTlsTlsCertificatesPatchArray and GatewaySpecServersTlsTlsCertificatesPatchArrayOutput values.
+// You can construct a concrete instance of `GatewaySpecServersTlsTlsCertificatesPatchArrayInput` via:
+//
+//	GatewaySpecServersTlsTlsCertificatesPatchArray{ GatewaySpecServersTlsTlsCertificatesPatchArgs{...} }
+type GatewaySpecServersTlsTlsCertificatesPatchArrayInput interface {
+	pulumi.Input
+
+	ToGatewaySpecServersTlsTlsCertificatesPatchArrayOutput() GatewaySpecServersTlsTlsCertificatesPatchArrayOutput
+	ToGatewaySpecServersTlsTlsCertificatesPatchArrayOutputWithContext(context.Context) GatewaySpecServersTlsTlsCertificatesPatchArrayOutput
+}
+
+type GatewaySpecServersTlsTlsCertificatesPatchArray []GatewaySpecServersTlsTlsCertificatesPatchInput
+
+func (GatewaySpecServersTlsTlsCertificatesPatchArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]GatewaySpecServersTlsTlsCertificatesPatch)(nil)).Elem()
+}
+
+func (i GatewaySpecServersTlsTlsCertificatesPatchArray) ToGatewaySpecServersTlsTlsCertificatesPatchArrayOutput() GatewaySpecServersTlsTlsCertificatesPatchArrayOutput {
+	return i.ToGatewaySpecServersTlsTlsCertificatesPatchArrayOutputWithContext(context.Background())
+}
+
+func (i GatewaySpecServersTlsTlsCertificatesPatchArray) ToGatewaySpecServersTlsTlsCertificatesPatchArrayOutputWithContext(ctx context.Context) GatewaySpecServersTlsTlsCertificatesPatchArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(GatewaySpecServersTlsTlsCertificatesPatchArrayOutput)
+}
+
+type GatewaySpecServersTlsTlsCertificatesPatchOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecServersTlsTlsCertificatesPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*GatewaySpecServersTlsTlsCertificatesPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecServersTlsTlsCertificatesPatchOutput) ToGatewaySpecServersTlsTlsCertificatesPatchOutput() GatewaySpecServersTlsTlsCertificatesPatchOutput {
+	return o
+}
+
+func (o GatewaySpecServersTlsTlsCertificatesPatchOutput) ToGatewaySpecServersTlsTlsCertificatesPatchOutputWithContext(ctx context.Context) GatewaySpecServersTlsTlsCertificatesPatchOutput {
+	return o
+}
+
+// REQUIRED if mode is `MUTUAL` or `OPTIONAL_MUTUAL`.
+func (o GatewaySpecServersTlsTlsCertificatesPatchOutput) CaCertificates() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecServersTlsTlsCertificatesPatch) *string { return v.CaCertificates }).(pulumi.StringPtrOutput)
+}
+
+// REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+func (o GatewaySpecServersTlsTlsCertificatesPatchOutput) PrivateKey() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecServersTlsTlsCertificatesPatch) *string { return v.PrivateKey }).(pulumi.StringPtrOutput)
+}
+
+// REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+func (o GatewaySpecServersTlsTlsCertificatesPatchOutput) ServerCertificate() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v GatewaySpecServersTlsTlsCertificatesPatch) *string { return v.ServerCertificate }).(pulumi.StringPtrOutput)
+}
+
+type GatewaySpecServersTlsTlsCertificatesPatchArrayOutput struct{ *pulumi.OutputState }
+
+func (GatewaySpecServersTlsTlsCertificatesPatchArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]GatewaySpecServersTlsTlsCertificatesPatch)(nil)).Elem()
+}
+
+func (o GatewaySpecServersTlsTlsCertificatesPatchArrayOutput) ToGatewaySpecServersTlsTlsCertificatesPatchArrayOutput() GatewaySpecServersTlsTlsCertificatesPatchArrayOutput {
+	return o
+}
+
+func (o GatewaySpecServersTlsTlsCertificatesPatchArrayOutput) ToGatewaySpecServersTlsTlsCertificatesPatchArrayOutputWithContext(ctx context.Context) GatewaySpecServersTlsTlsCertificatesPatchArrayOutput {
+	return o
+}
+
+func (o GatewaySpecServersTlsTlsCertificatesPatchArrayOutput) Index(i pulumi.IntInput) GatewaySpecServersTlsTlsCertificatesPatchOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) GatewaySpecServersTlsTlsCertificatesPatch {
+		return vs[0].([]GatewaySpecServersTlsTlsCertificatesPatch)[vs[1].(int)]
+	}).(GatewaySpecServersTlsTlsCertificatesPatchOutput)
 }
 
 type ServiceEntryType struct {
@@ -40855,6 +42721,8 @@ type SidecarSpecIngressTls struct {
 	CipherSuites []string `pulumi:"cipherSuites"`
 	// For gateways running on Kubernetes, the name of the secret that holds the TLS certs including the CA certificates.
 	CredentialName *string `pulumi:"credentialName"`
+	// Same as CredentialName but for multiple certificates.
+	CredentialNames []string `pulumi:"credentialNames"`
 	// If set to true, the load balancer will send a 301 redirect for all http connections, asking the clients to use HTTPS.
 	HttpsRedirect *bool `pulumi:"httpsRedirect"`
 	// Optional: Maximum TLS protocol version.
@@ -40875,6 +42743,8 @@ type SidecarSpecIngressTls struct {
 	ServerCertificate *string `pulumi:"serverCertificate"`
 	// A list of alternate names to verify the subject identity in the certificate presented by the client.
 	SubjectAltNames []string `pulumi:"subjectAltNames"`
+	// Only one of `server_certificate`, `private_key`, `ca_certificates` or `credential_name` or `credential_names` or `tls_certificates` should be specified.
+	TlsCertificates []SidecarSpecIngressTlsTlsCertificates `pulumi:"tlsCertificates"`
 	// An optional list of hex-encoded SHA-256 hashes of the authorized client certificates.
 	VerifyCertificateHash []string `pulumi:"verifyCertificateHash"`
 	// An optional list of base64-encoded SHA-256 hashes of the SPKIs of authorized client certificates.
@@ -40902,6 +42772,8 @@ type SidecarSpecIngressTlsArgs struct {
 	CipherSuites pulumi.StringArrayInput `pulumi:"cipherSuites"`
 	// For gateways running on Kubernetes, the name of the secret that holds the TLS certs including the CA certificates.
 	CredentialName pulumi.StringPtrInput `pulumi:"credentialName"`
+	// Same as CredentialName but for multiple certificates.
+	CredentialNames pulumi.StringArrayInput `pulumi:"credentialNames"`
 	// If set to true, the load balancer will send a 301 redirect for all http connections, asking the clients to use HTTPS.
 	HttpsRedirect pulumi.BoolPtrInput `pulumi:"httpsRedirect"`
 	// Optional: Maximum TLS protocol version.
@@ -40922,6 +42794,8 @@ type SidecarSpecIngressTlsArgs struct {
 	ServerCertificate pulumi.StringPtrInput `pulumi:"serverCertificate"`
 	// A list of alternate names to verify the subject identity in the certificate presented by the client.
 	SubjectAltNames pulumi.StringArrayInput `pulumi:"subjectAltNames"`
+	// Only one of `server_certificate`, `private_key`, `ca_certificates` or `credential_name` or `credential_names` or `tls_certificates` should be specified.
+	TlsCertificates SidecarSpecIngressTlsTlsCertificatesArrayInput `pulumi:"tlsCertificates"`
 	// An optional list of hex-encoded SHA-256 hashes of the authorized client certificates.
 	VerifyCertificateHash pulumi.StringArrayInput `pulumi:"verifyCertificateHash"`
 	// An optional list of base64-encoded SHA-256 hashes of the SPKIs of authorized client certificates.
@@ -41026,6 +42900,11 @@ func (o SidecarSpecIngressTlsOutput) CredentialName() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v SidecarSpecIngressTls) *string { return v.CredentialName }).(pulumi.StringPtrOutput)
 }
 
+// Same as CredentialName but for multiple certificates.
+func (o SidecarSpecIngressTlsOutput) CredentialNames() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v SidecarSpecIngressTls) []string { return v.CredentialNames }).(pulumi.StringArrayOutput)
+}
+
 // If set to true, the load balancer will send a 301 redirect for all http connections, asking the clients to use HTTPS.
 func (o SidecarSpecIngressTlsOutput) HttpsRedirect() pulumi.BoolPtrOutput {
 	return o.ApplyT(func(v SidecarSpecIngressTls) *bool { return v.HttpsRedirect }).(pulumi.BoolPtrOutput)
@@ -41065,6 +42944,11 @@ func (o SidecarSpecIngressTlsOutput) ServerCertificate() pulumi.StringPtrOutput 
 // A list of alternate names to verify the subject identity in the certificate presented by the client.
 func (o SidecarSpecIngressTlsOutput) SubjectAltNames() pulumi.StringArrayOutput {
 	return o.ApplyT(func(v SidecarSpecIngressTls) []string { return v.SubjectAltNames }).(pulumi.StringArrayOutput)
+}
+
+// Only one of `server_certificate`, `private_key`, `ca_certificates` or `credential_name` or `credential_names` or `tls_certificates` should be specified.
+func (o SidecarSpecIngressTlsOutput) TlsCertificates() SidecarSpecIngressTlsTlsCertificatesArrayOutput {
+	return o.ApplyT(func(v SidecarSpecIngressTls) []SidecarSpecIngressTlsTlsCertificates { return v.TlsCertificates }).(SidecarSpecIngressTlsTlsCertificatesArrayOutput)
 }
 
 // An optional list of hex-encoded SHA-256 hashes of the authorized client certificates.
@@ -41139,6 +43023,16 @@ func (o SidecarSpecIngressTlsPtrOutput) CredentialName() pulumi.StringPtrOutput 
 		}
 		return v.CredentialName
 	}).(pulumi.StringPtrOutput)
+}
+
+// Same as CredentialName but for multiple certificates.
+func (o SidecarSpecIngressTlsPtrOutput) CredentialNames() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *SidecarSpecIngressTls) []string {
+		if v == nil {
+			return nil
+		}
+		return v.CredentialNames
+	}).(pulumi.StringArrayOutput)
 }
 
 // If set to true, the load balancer will send a 301 redirect for all http connections, asking the clients to use HTTPS.
@@ -41217,6 +43111,16 @@ func (o SidecarSpecIngressTlsPtrOutput) SubjectAltNames() pulumi.StringArrayOutp
 	}).(pulumi.StringArrayOutput)
 }
 
+// Only one of `server_certificate`, `private_key`, `ca_certificates` or `credential_name` or `credential_names` or `tls_certificates` should be specified.
+func (o SidecarSpecIngressTlsPtrOutput) TlsCertificates() SidecarSpecIngressTlsTlsCertificatesArrayOutput {
+	return o.ApplyT(func(v *SidecarSpecIngressTls) []SidecarSpecIngressTlsTlsCertificates {
+		if v == nil {
+			return nil
+		}
+		return v.TlsCertificates
+	}).(SidecarSpecIngressTlsTlsCertificatesArrayOutput)
+}
+
 // An optional list of hex-encoded SHA-256 hashes of the authorized client certificates.
 func (o SidecarSpecIngressTlsPtrOutput) VerifyCertificateHash() pulumi.StringArrayOutput {
 	return o.ApplyT(func(v *SidecarSpecIngressTls) []string {
@@ -41247,6 +43151,8 @@ type SidecarSpecIngressTlsPatch struct {
 	CipherSuites []string `pulumi:"cipherSuites"`
 	// For gateways running on Kubernetes, the name of the secret that holds the TLS certs including the CA certificates.
 	CredentialName *string `pulumi:"credentialName"`
+	// Same as CredentialName but for multiple certificates.
+	CredentialNames []string `pulumi:"credentialNames"`
 	// If set to true, the load balancer will send a 301 redirect for all http connections, asking the clients to use HTTPS.
 	HttpsRedirect *bool `pulumi:"httpsRedirect"`
 	// Optional: Maximum TLS protocol version.
@@ -41267,6 +43173,8 @@ type SidecarSpecIngressTlsPatch struct {
 	ServerCertificate *string `pulumi:"serverCertificate"`
 	// A list of alternate names to verify the subject identity in the certificate presented by the client.
 	SubjectAltNames []string `pulumi:"subjectAltNames"`
+	// Only one of `server_certificate`, `private_key`, `ca_certificates` or `credential_name` or `credential_names` or `tls_certificates` should be specified.
+	TlsCertificates []SidecarSpecIngressTlsTlsCertificatesPatch `pulumi:"tlsCertificates"`
 	// An optional list of hex-encoded SHA-256 hashes of the authorized client certificates.
 	VerifyCertificateHash []string `pulumi:"verifyCertificateHash"`
 	// An optional list of base64-encoded SHA-256 hashes of the SPKIs of authorized client certificates.
@@ -41294,6 +43202,8 @@ type SidecarSpecIngressTlsPatchArgs struct {
 	CipherSuites pulumi.StringArrayInput `pulumi:"cipherSuites"`
 	// For gateways running on Kubernetes, the name of the secret that holds the TLS certs including the CA certificates.
 	CredentialName pulumi.StringPtrInput `pulumi:"credentialName"`
+	// Same as CredentialName but for multiple certificates.
+	CredentialNames pulumi.StringArrayInput `pulumi:"credentialNames"`
 	// If set to true, the load balancer will send a 301 redirect for all http connections, asking the clients to use HTTPS.
 	HttpsRedirect pulumi.BoolPtrInput `pulumi:"httpsRedirect"`
 	// Optional: Maximum TLS protocol version.
@@ -41314,6 +43224,8 @@ type SidecarSpecIngressTlsPatchArgs struct {
 	ServerCertificate pulumi.StringPtrInput `pulumi:"serverCertificate"`
 	// A list of alternate names to verify the subject identity in the certificate presented by the client.
 	SubjectAltNames pulumi.StringArrayInput `pulumi:"subjectAltNames"`
+	// Only one of `server_certificate`, `private_key`, `ca_certificates` or `credential_name` or `credential_names` or `tls_certificates` should be specified.
+	TlsCertificates SidecarSpecIngressTlsTlsCertificatesPatchArrayInput `pulumi:"tlsCertificates"`
 	// An optional list of hex-encoded SHA-256 hashes of the authorized client certificates.
 	VerifyCertificateHash pulumi.StringArrayInput `pulumi:"verifyCertificateHash"`
 	// An optional list of base64-encoded SHA-256 hashes of the SPKIs of authorized client certificates.
@@ -41418,6 +43330,11 @@ func (o SidecarSpecIngressTlsPatchOutput) CredentialName() pulumi.StringPtrOutpu
 	return o.ApplyT(func(v SidecarSpecIngressTlsPatch) *string { return v.CredentialName }).(pulumi.StringPtrOutput)
 }
 
+// Same as CredentialName but for multiple certificates.
+func (o SidecarSpecIngressTlsPatchOutput) CredentialNames() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v SidecarSpecIngressTlsPatch) []string { return v.CredentialNames }).(pulumi.StringArrayOutput)
+}
+
 // If set to true, the load balancer will send a 301 redirect for all http connections, asking the clients to use HTTPS.
 func (o SidecarSpecIngressTlsPatchOutput) HttpsRedirect() pulumi.BoolPtrOutput {
 	return o.ApplyT(func(v SidecarSpecIngressTlsPatch) *bool { return v.HttpsRedirect }).(pulumi.BoolPtrOutput)
@@ -41457,6 +43374,13 @@ func (o SidecarSpecIngressTlsPatchOutput) ServerCertificate() pulumi.StringPtrOu
 // A list of alternate names to verify the subject identity in the certificate presented by the client.
 func (o SidecarSpecIngressTlsPatchOutput) SubjectAltNames() pulumi.StringArrayOutput {
 	return o.ApplyT(func(v SidecarSpecIngressTlsPatch) []string { return v.SubjectAltNames }).(pulumi.StringArrayOutput)
+}
+
+// Only one of `server_certificate`, `private_key`, `ca_certificates` or `credential_name` or `credential_names` or `tls_certificates` should be specified.
+func (o SidecarSpecIngressTlsPatchOutput) TlsCertificates() SidecarSpecIngressTlsTlsCertificatesPatchArrayOutput {
+	return o.ApplyT(func(v SidecarSpecIngressTlsPatch) []SidecarSpecIngressTlsTlsCertificatesPatch {
+		return v.TlsCertificates
+	}).(SidecarSpecIngressTlsTlsCertificatesPatchArrayOutput)
 }
 
 // An optional list of hex-encoded SHA-256 hashes of the authorized client certificates.
@@ -41531,6 +43455,16 @@ func (o SidecarSpecIngressTlsPatchPtrOutput) CredentialName() pulumi.StringPtrOu
 		}
 		return v.CredentialName
 	}).(pulumi.StringPtrOutput)
+}
+
+// Same as CredentialName but for multiple certificates.
+func (o SidecarSpecIngressTlsPatchPtrOutput) CredentialNames() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *SidecarSpecIngressTlsPatch) []string {
+		if v == nil {
+			return nil
+		}
+		return v.CredentialNames
+	}).(pulumi.StringArrayOutput)
 }
 
 // If set to true, the load balancer will send a 301 redirect for all http connections, asking the clients to use HTTPS.
@@ -41609,6 +43543,16 @@ func (o SidecarSpecIngressTlsPatchPtrOutput) SubjectAltNames() pulumi.StringArra
 	}).(pulumi.StringArrayOutput)
 }
 
+// Only one of `server_certificate`, `private_key`, `ca_certificates` or `credential_name` or `credential_names` or `tls_certificates` should be specified.
+func (o SidecarSpecIngressTlsPatchPtrOutput) TlsCertificates() SidecarSpecIngressTlsTlsCertificatesPatchArrayOutput {
+	return o.ApplyT(func(v *SidecarSpecIngressTlsPatch) []SidecarSpecIngressTlsTlsCertificatesPatch {
+		if v == nil {
+			return nil
+		}
+		return v.TlsCertificates
+	}).(SidecarSpecIngressTlsTlsCertificatesPatchArrayOutput)
+}
+
 // An optional list of hex-encoded SHA-256 hashes of the authorized client certificates.
 func (o SidecarSpecIngressTlsPatchPtrOutput) VerifyCertificateHash() pulumi.StringArrayOutput {
 	return o.ApplyT(func(v *SidecarSpecIngressTlsPatch) []string {
@@ -41629,7 +43573,237 @@ func (o SidecarSpecIngressTlsPatchPtrOutput) VerifyCertificateSpki() pulumi.Stri
 	}).(pulumi.StringArrayOutput)
 }
 
-// Configuration for the outbound traffic policy.
+type SidecarSpecIngressTlsTlsCertificates struct {
+	// REQUIRED if mode is `MUTUAL` or `OPTIONAL_MUTUAL`.
+	CaCertificates *string `pulumi:"caCertificates"`
+	// REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+	PrivateKey *string `pulumi:"privateKey"`
+	// REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+	ServerCertificate *string `pulumi:"serverCertificate"`
+}
+
+// SidecarSpecIngressTlsTlsCertificatesInput is an input type that accepts SidecarSpecIngressTlsTlsCertificatesArgs and SidecarSpecIngressTlsTlsCertificatesOutput values.
+// You can construct a concrete instance of `SidecarSpecIngressTlsTlsCertificatesInput` via:
+//
+//	SidecarSpecIngressTlsTlsCertificatesArgs{...}
+type SidecarSpecIngressTlsTlsCertificatesInput interface {
+	pulumi.Input
+
+	ToSidecarSpecIngressTlsTlsCertificatesOutput() SidecarSpecIngressTlsTlsCertificatesOutput
+	ToSidecarSpecIngressTlsTlsCertificatesOutputWithContext(context.Context) SidecarSpecIngressTlsTlsCertificatesOutput
+}
+
+type SidecarSpecIngressTlsTlsCertificatesArgs struct {
+	// REQUIRED if mode is `MUTUAL` or `OPTIONAL_MUTUAL`.
+	CaCertificates pulumi.StringPtrInput `pulumi:"caCertificates"`
+	// REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+	PrivateKey pulumi.StringPtrInput `pulumi:"privateKey"`
+	// REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+	ServerCertificate pulumi.StringPtrInput `pulumi:"serverCertificate"`
+}
+
+func (SidecarSpecIngressTlsTlsCertificatesArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*SidecarSpecIngressTlsTlsCertificates)(nil)).Elem()
+}
+
+func (i SidecarSpecIngressTlsTlsCertificatesArgs) ToSidecarSpecIngressTlsTlsCertificatesOutput() SidecarSpecIngressTlsTlsCertificatesOutput {
+	return i.ToSidecarSpecIngressTlsTlsCertificatesOutputWithContext(context.Background())
+}
+
+func (i SidecarSpecIngressTlsTlsCertificatesArgs) ToSidecarSpecIngressTlsTlsCertificatesOutputWithContext(ctx context.Context) SidecarSpecIngressTlsTlsCertificatesOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(SidecarSpecIngressTlsTlsCertificatesOutput)
+}
+
+// SidecarSpecIngressTlsTlsCertificatesArrayInput is an input type that accepts SidecarSpecIngressTlsTlsCertificatesArray and SidecarSpecIngressTlsTlsCertificatesArrayOutput values.
+// You can construct a concrete instance of `SidecarSpecIngressTlsTlsCertificatesArrayInput` via:
+//
+//	SidecarSpecIngressTlsTlsCertificatesArray{ SidecarSpecIngressTlsTlsCertificatesArgs{...} }
+type SidecarSpecIngressTlsTlsCertificatesArrayInput interface {
+	pulumi.Input
+
+	ToSidecarSpecIngressTlsTlsCertificatesArrayOutput() SidecarSpecIngressTlsTlsCertificatesArrayOutput
+	ToSidecarSpecIngressTlsTlsCertificatesArrayOutputWithContext(context.Context) SidecarSpecIngressTlsTlsCertificatesArrayOutput
+}
+
+type SidecarSpecIngressTlsTlsCertificatesArray []SidecarSpecIngressTlsTlsCertificatesInput
+
+func (SidecarSpecIngressTlsTlsCertificatesArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]SidecarSpecIngressTlsTlsCertificates)(nil)).Elem()
+}
+
+func (i SidecarSpecIngressTlsTlsCertificatesArray) ToSidecarSpecIngressTlsTlsCertificatesArrayOutput() SidecarSpecIngressTlsTlsCertificatesArrayOutput {
+	return i.ToSidecarSpecIngressTlsTlsCertificatesArrayOutputWithContext(context.Background())
+}
+
+func (i SidecarSpecIngressTlsTlsCertificatesArray) ToSidecarSpecIngressTlsTlsCertificatesArrayOutputWithContext(ctx context.Context) SidecarSpecIngressTlsTlsCertificatesArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(SidecarSpecIngressTlsTlsCertificatesArrayOutput)
+}
+
+type SidecarSpecIngressTlsTlsCertificatesOutput struct{ *pulumi.OutputState }
+
+func (SidecarSpecIngressTlsTlsCertificatesOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*SidecarSpecIngressTlsTlsCertificates)(nil)).Elem()
+}
+
+func (o SidecarSpecIngressTlsTlsCertificatesOutput) ToSidecarSpecIngressTlsTlsCertificatesOutput() SidecarSpecIngressTlsTlsCertificatesOutput {
+	return o
+}
+
+func (o SidecarSpecIngressTlsTlsCertificatesOutput) ToSidecarSpecIngressTlsTlsCertificatesOutputWithContext(ctx context.Context) SidecarSpecIngressTlsTlsCertificatesOutput {
+	return o
+}
+
+// REQUIRED if mode is `MUTUAL` or `OPTIONAL_MUTUAL`.
+func (o SidecarSpecIngressTlsTlsCertificatesOutput) CaCertificates() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v SidecarSpecIngressTlsTlsCertificates) *string { return v.CaCertificates }).(pulumi.StringPtrOutput)
+}
+
+// REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+func (o SidecarSpecIngressTlsTlsCertificatesOutput) PrivateKey() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v SidecarSpecIngressTlsTlsCertificates) *string { return v.PrivateKey }).(pulumi.StringPtrOutput)
+}
+
+// REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+func (o SidecarSpecIngressTlsTlsCertificatesOutput) ServerCertificate() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v SidecarSpecIngressTlsTlsCertificates) *string { return v.ServerCertificate }).(pulumi.StringPtrOutput)
+}
+
+type SidecarSpecIngressTlsTlsCertificatesArrayOutput struct{ *pulumi.OutputState }
+
+func (SidecarSpecIngressTlsTlsCertificatesArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]SidecarSpecIngressTlsTlsCertificates)(nil)).Elem()
+}
+
+func (o SidecarSpecIngressTlsTlsCertificatesArrayOutput) ToSidecarSpecIngressTlsTlsCertificatesArrayOutput() SidecarSpecIngressTlsTlsCertificatesArrayOutput {
+	return o
+}
+
+func (o SidecarSpecIngressTlsTlsCertificatesArrayOutput) ToSidecarSpecIngressTlsTlsCertificatesArrayOutputWithContext(ctx context.Context) SidecarSpecIngressTlsTlsCertificatesArrayOutput {
+	return o
+}
+
+func (o SidecarSpecIngressTlsTlsCertificatesArrayOutput) Index(i pulumi.IntInput) SidecarSpecIngressTlsTlsCertificatesOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) SidecarSpecIngressTlsTlsCertificates {
+		return vs[0].([]SidecarSpecIngressTlsTlsCertificates)[vs[1].(int)]
+	}).(SidecarSpecIngressTlsTlsCertificatesOutput)
+}
+
+type SidecarSpecIngressTlsTlsCertificatesPatch struct {
+	// REQUIRED if mode is `MUTUAL` or `OPTIONAL_MUTUAL`.
+	CaCertificates *string `pulumi:"caCertificates"`
+	// REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+	PrivateKey *string `pulumi:"privateKey"`
+	// REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+	ServerCertificate *string `pulumi:"serverCertificate"`
+}
+
+// SidecarSpecIngressTlsTlsCertificatesPatchInput is an input type that accepts SidecarSpecIngressTlsTlsCertificatesPatchArgs and SidecarSpecIngressTlsTlsCertificatesPatchOutput values.
+// You can construct a concrete instance of `SidecarSpecIngressTlsTlsCertificatesPatchInput` via:
+//
+//	SidecarSpecIngressTlsTlsCertificatesPatchArgs{...}
+type SidecarSpecIngressTlsTlsCertificatesPatchInput interface {
+	pulumi.Input
+
+	ToSidecarSpecIngressTlsTlsCertificatesPatchOutput() SidecarSpecIngressTlsTlsCertificatesPatchOutput
+	ToSidecarSpecIngressTlsTlsCertificatesPatchOutputWithContext(context.Context) SidecarSpecIngressTlsTlsCertificatesPatchOutput
+}
+
+type SidecarSpecIngressTlsTlsCertificatesPatchArgs struct {
+	// REQUIRED if mode is `MUTUAL` or `OPTIONAL_MUTUAL`.
+	CaCertificates pulumi.StringPtrInput `pulumi:"caCertificates"`
+	// REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+	PrivateKey pulumi.StringPtrInput `pulumi:"privateKey"`
+	// REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+	ServerCertificate pulumi.StringPtrInput `pulumi:"serverCertificate"`
+}
+
+func (SidecarSpecIngressTlsTlsCertificatesPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*SidecarSpecIngressTlsTlsCertificatesPatch)(nil)).Elem()
+}
+
+func (i SidecarSpecIngressTlsTlsCertificatesPatchArgs) ToSidecarSpecIngressTlsTlsCertificatesPatchOutput() SidecarSpecIngressTlsTlsCertificatesPatchOutput {
+	return i.ToSidecarSpecIngressTlsTlsCertificatesPatchOutputWithContext(context.Background())
+}
+
+func (i SidecarSpecIngressTlsTlsCertificatesPatchArgs) ToSidecarSpecIngressTlsTlsCertificatesPatchOutputWithContext(ctx context.Context) SidecarSpecIngressTlsTlsCertificatesPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(SidecarSpecIngressTlsTlsCertificatesPatchOutput)
+}
+
+// SidecarSpecIngressTlsTlsCertificatesPatchArrayInput is an input type that accepts SidecarSpecIngressTlsTlsCertificatesPatchArray and SidecarSpecIngressTlsTlsCertificatesPatchArrayOutput values.
+// You can construct a concrete instance of `SidecarSpecIngressTlsTlsCertificatesPatchArrayInput` via:
+//
+//	SidecarSpecIngressTlsTlsCertificatesPatchArray{ SidecarSpecIngressTlsTlsCertificatesPatchArgs{...} }
+type SidecarSpecIngressTlsTlsCertificatesPatchArrayInput interface {
+	pulumi.Input
+
+	ToSidecarSpecIngressTlsTlsCertificatesPatchArrayOutput() SidecarSpecIngressTlsTlsCertificatesPatchArrayOutput
+	ToSidecarSpecIngressTlsTlsCertificatesPatchArrayOutputWithContext(context.Context) SidecarSpecIngressTlsTlsCertificatesPatchArrayOutput
+}
+
+type SidecarSpecIngressTlsTlsCertificatesPatchArray []SidecarSpecIngressTlsTlsCertificatesPatchInput
+
+func (SidecarSpecIngressTlsTlsCertificatesPatchArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]SidecarSpecIngressTlsTlsCertificatesPatch)(nil)).Elem()
+}
+
+func (i SidecarSpecIngressTlsTlsCertificatesPatchArray) ToSidecarSpecIngressTlsTlsCertificatesPatchArrayOutput() SidecarSpecIngressTlsTlsCertificatesPatchArrayOutput {
+	return i.ToSidecarSpecIngressTlsTlsCertificatesPatchArrayOutputWithContext(context.Background())
+}
+
+func (i SidecarSpecIngressTlsTlsCertificatesPatchArray) ToSidecarSpecIngressTlsTlsCertificatesPatchArrayOutputWithContext(ctx context.Context) SidecarSpecIngressTlsTlsCertificatesPatchArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(SidecarSpecIngressTlsTlsCertificatesPatchArrayOutput)
+}
+
+type SidecarSpecIngressTlsTlsCertificatesPatchOutput struct{ *pulumi.OutputState }
+
+func (SidecarSpecIngressTlsTlsCertificatesPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*SidecarSpecIngressTlsTlsCertificatesPatch)(nil)).Elem()
+}
+
+func (o SidecarSpecIngressTlsTlsCertificatesPatchOutput) ToSidecarSpecIngressTlsTlsCertificatesPatchOutput() SidecarSpecIngressTlsTlsCertificatesPatchOutput {
+	return o
+}
+
+func (o SidecarSpecIngressTlsTlsCertificatesPatchOutput) ToSidecarSpecIngressTlsTlsCertificatesPatchOutputWithContext(ctx context.Context) SidecarSpecIngressTlsTlsCertificatesPatchOutput {
+	return o
+}
+
+// REQUIRED if mode is `MUTUAL` or `OPTIONAL_MUTUAL`.
+func (o SidecarSpecIngressTlsTlsCertificatesPatchOutput) CaCertificates() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v SidecarSpecIngressTlsTlsCertificatesPatch) *string { return v.CaCertificates }).(pulumi.StringPtrOutput)
+}
+
+// REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+func (o SidecarSpecIngressTlsTlsCertificatesPatchOutput) PrivateKey() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v SidecarSpecIngressTlsTlsCertificatesPatch) *string { return v.PrivateKey }).(pulumi.StringPtrOutput)
+}
+
+// REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+func (o SidecarSpecIngressTlsTlsCertificatesPatchOutput) ServerCertificate() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v SidecarSpecIngressTlsTlsCertificatesPatch) *string { return v.ServerCertificate }).(pulumi.StringPtrOutput)
+}
+
+type SidecarSpecIngressTlsTlsCertificatesPatchArrayOutput struct{ *pulumi.OutputState }
+
+func (SidecarSpecIngressTlsTlsCertificatesPatchArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]SidecarSpecIngressTlsTlsCertificatesPatch)(nil)).Elem()
+}
+
+func (o SidecarSpecIngressTlsTlsCertificatesPatchArrayOutput) ToSidecarSpecIngressTlsTlsCertificatesPatchArrayOutput() SidecarSpecIngressTlsTlsCertificatesPatchArrayOutput {
+	return o
+}
+
+func (o SidecarSpecIngressTlsTlsCertificatesPatchArrayOutput) ToSidecarSpecIngressTlsTlsCertificatesPatchArrayOutputWithContext(ctx context.Context) SidecarSpecIngressTlsTlsCertificatesPatchArrayOutput {
+	return o
+}
+
+func (o SidecarSpecIngressTlsTlsCertificatesPatchArrayOutput) Index(i pulumi.IntInput) SidecarSpecIngressTlsTlsCertificatesPatchOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) SidecarSpecIngressTlsTlsCertificatesPatch {
+		return vs[0].([]SidecarSpecIngressTlsTlsCertificatesPatch)[vs[1].(int)]
+	}).(SidecarSpecIngressTlsTlsCertificatesPatchOutput)
+}
+
+// Set the default behavior of the sidecar for handling outbound traffic from the application.
 type SidecarSpecOutboundTrafficPolicy struct {
 	EgressProxy *SidecarSpecOutboundTrafficPolicyEgressProxy `pulumi:"egressProxy"`
 	// Valid Options: REGISTRY_ONLY, ALLOW_ANY
@@ -41647,7 +43821,7 @@ type SidecarSpecOutboundTrafficPolicyInput interface {
 	ToSidecarSpecOutboundTrafficPolicyOutputWithContext(context.Context) SidecarSpecOutboundTrafficPolicyOutput
 }
 
-// Configuration for the outbound traffic policy.
+// Set the default behavior of the sidecar for handling outbound traffic from the application.
 type SidecarSpecOutboundTrafficPolicyArgs struct {
 	EgressProxy SidecarSpecOutboundTrafficPolicyEgressProxyPtrInput `pulumi:"egressProxy"`
 	// Valid Options: REGISTRY_ONLY, ALLOW_ANY
@@ -41707,7 +43881,7 @@ func (i *sidecarSpecOutboundTrafficPolicyPtrType) ToSidecarSpecOutboundTrafficPo
 	return pulumi.ToOutputWithContext(ctx, i).(SidecarSpecOutboundTrafficPolicyPtrOutput)
 }
 
-// Configuration for the outbound traffic policy.
+// Set the default behavior of the sidecar for handling outbound traffic from the application.
 type SidecarSpecOutboundTrafficPolicyOutput struct{ *pulumi.OutputState }
 
 func (SidecarSpecOutboundTrafficPolicyOutput) ElementType() reflect.Type {
@@ -42404,7 +44578,7 @@ func (o SidecarSpecOutboundTrafficPolicyEgressProxyPortPatchPtrOutput) Number() 
 	}).(pulumi.IntPtrOutput)
 }
 
-// Configuration for the outbound traffic policy.
+// Set the default behavior of the sidecar for handling outbound traffic from the application.
 type SidecarSpecOutboundTrafficPolicyPatch struct {
 	EgressProxy *SidecarSpecOutboundTrafficPolicyEgressProxyPatch `pulumi:"egressProxy"`
 	// Valid Options: REGISTRY_ONLY, ALLOW_ANY
@@ -42422,7 +44596,7 @@ type SidecarSpecOutboundTrafficPolicyPatchInput interface {
 	ToSidecarSpecOutboundTrafficPolicyPatchOutputWithContext(context.Context) SidecarSpecOutboundTrafficPolicyPatchOutput
 }
 
-// Configuration for the outbound traffic policy.
+// Set the default behavior of the sidecar for handling outbound traffic from the application.
 type SidecarSpecOutboundTrafficPolicyPatchArgs struct {
 	EgressProxy SidecarSpecOutboundTrafficPolicyEgressProxyPatchPtrInput `pulumi:"egressProxy"`
 	// Valid Options: REGISTRY_ONLY, ALLOW_ANY
@@ -42482,7 +44656,7 @@ func (i *sidecarSpecOutboundTrafficPolicyPatchPtrType) ToSidecarSpecOutboundTraf
 	return pulumi.ToOutputWithContext(ctx, i).(SidecarSpecOutboundTrafficPolicyPatchPtrOutput)
 }
 
-// Configuration for the outbound traffic policy.
+// Set the default behavior of the sidecar for handling outbound traffic from the application.
 type SidecarSpecOutboundTrafficPolicyPatchOutput struct{ *pulumi.OutputState }
 
 func (SidecarSpecOutboundTrafficPolicyPatchOutput) ElementType() reflect.Type {
@@ -43791,6 +45965,10 @@ type VirtualServiceSpecHttpCorsPolicy struct {
 	ExposeHeaders []string `pulumi:"exposeHeaders"`
 	// Specifies how long the results of a preflight request can be cached.
 	MaxAge *string `pulumi:"maxAge"`
+	// Indicates whether preflight requests not matching the configured allowed origin shouldn't be forwarded to the upstream.
+	//
+	// Valid Options: FORWARD, IGNORE
+	UnmatchedPreflights *string `pulumi:"unmatchedPreflights"`
 }
 
 // VirtualServiceSpecHttpCorsPolicyInput is an input type that accepts VirtualServiceSpecHttpCorsPolicyArgs and VirtualServiceSpecHttpCorsPolicyOutput values.
@@ -43819,6 +45997,10 @@ type VirtualServiceSpecHttpCorsPolicyArgs struct {
 	ExposeHeaders pulumi.StringArrayInput `pulumi:"exposeHeaders"`
 	// Specifies how long the results of a preflight request can be cached.
 	MaxAge pulumi.StringPtrInput `pulumi:"maxAge"`
+	// Indicates whether preflight requests not matching the configured allowed origin shouldn't be forwarded to the upstream.
+	//
+	// Valid Options: FORWARD, IGNORE
+	UnmatchedPreflights pulumi.StringPtrInput `pulumi:"unmatchedPreflights"`
 }
 
 func (VirtualServiceSpecHttpCorsPolicyArgs) ElementType() reflect.Type {
@@ -43935,6 +46117,13 @@ func (o VirtualServiceSpecHttpCorsPolicyOutput) MaxAge() pulumi.StringPtrOutput 
 	return o.ApplyT(func(v VirtualServiceSpecHttpCorsPolicy) *string { return v.MaxAge }).(pulumi.StringPtrOutput)
 }
 
+// Indicates whether preflight requests not matching the configured allowed origin shouldn't be forwarded to the upstream.
+//
+// Valid Options: FORWARD, IGNORE
+func (o VirtualServiceSpecHttpCorsPolicyOutput) UnmatchedPreflights() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v VirtualServiceSpecHttpCorsPolicy) *string { return v.UnmatchedPreflights }).(pulumi.StringPtrOutput)
+}
+
 type VirtualServiceSpecHttpCorsPolicyPtrOutput struct{ *pulumi.OutputState }
 
 func (VirtualServiceSpecHttpCorsPolicyPtrOutput) ElementType() reflect.Type {
@@ -44028,10 +46217,22 @@ func (o VirtualServiceSpecHttpCorsPolicyPtrOutput) MaxAge() pulumi.StringPtrOutp
 	}).(pulumi.StringPtrOutput)
 }
 
+// Indicates whether preflight requests not matching the configured allowed origin shouldn't be forwarded to the upstream.
+//
+// Valid Options: FORWARD, IGNORE
+func (o VirtualServiceSpecHttpCorsPolicyPtrOutput) UnmatchedPreflights() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *VirtualServiceSpecHttpCorsPolicy) *string {
+		if v == nil {
+			return nil
+		}
+		return v.UnmatchedPreflights
+	}).(pulumi.StringPtrOutput)
+}
+
 type VirtualServiceSpecHttpCorsPolicyAllowOrigins struct {
 	Exact  *string `pulumi:"exact"`
 	Prefix *string `pulumi:"prefix"`
-	// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+	// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 	Regex *string `pulumi:"regex"`
 }
 
@@ -44049,7 +46250,7 @@ type VirtualServiceSpecHttpCorsPolicyAllowOriginsInput interface {
 type VirtualServiceSpecHttpCorsPolicyAllowOriginsArgs struct {
 	Exact  pulumi.StringPtrInput `pulumi:"exact"`
 	Prefix pulumi.StringPtrInput `pulumi:"prefix"`
-	// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+	// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 	Regex pulumi.StringPtrInput `pulumi:"regex"`
 }
 
@@ -44112,7 +46313,7 @@ func (o VirtualServiceSpecHttpCorsPolicyAllowOriginsOutput) Prefix() pulumi.Stri
 	return o.ApplyT(func(v VirtualServiceSpecHttpCorsPolicyAllowOrigins) *string { return v.Prefix }).(pulumi.StringPtrOutput)
 }
 
-// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 func (o VirtualServiceSpecHttpCorsPolicyAllowOriginsOutput) Regex() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v VirtualServiceSpecHttpCorsPolicyAllowOrigins) *string { return v.Regex }).(pulumi.StringPtrOutput)
 }
@@ -44140,7 +46341,7 @@ func (o VirtualServiceSpecHttpCorsPolicyAllowOriginsArrayOutput) Index(i pulumi.
 type VirtualServiceSpecHttpCorsPolicyAllowOriginsPatch struct {
 	Exact  *string `pulumi:"exact"`
 	Prefix *string `pulumi:"prefix"`
-	// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+	// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 	Regex *string `pulumi:"regex"`
 }
 
@@ -44158,7 +46359,7 @@ type VirtualServiceSpecHttpCorsPolicyAllowOriginsPatchInput interface {
 type VirtualServiceSpecHttpCorsPolicyAllowOriginsPatchArgs struct {
 	Exact  pulumi.StringPtrInput `pulumi:"exact"`
 	Prefix pulumi.StringPtrInput `pulumi:"prefix"`
-	// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+	// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 	Regex pulumi.StringPtrInput `pulumi:"regex"`
 }
 
@@ -44221,7 +46422,7 @@ func (o VirtualServiceSpecHttpCorsPolicyAllowOriginsPatchOutput) Prefix() pulumi
 	return o.ApplyT(func(v VirtualServiceSpecHttpCorsPolicyAllowOriginsPatch) *string { return v.Prefix }).(pulumi.StringPtrOutput)
 }
 
-// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 func (o VirtualServiceSpecHttpCorsPolicyAllowOriginsPatchOutput) Regex() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v VirtualServiceSpecHttpCorsPolicyAllowOriginsPatch) *string { return v.Regex }).(pulumi.StringPtrOutput)
 }
@@ -44261,6 +46462,10 @@ type VirtualServiceSpecHttpCorsPolicyPatch struct {
 	ExposeHeaders []string `pulumi:"exposeHeaders"`
 	// Specifies how long the results of a preflight request can be cached.
 	MaxAge *string `pulumi:"maxAge"`
+	// Indicates whether preflight requests not matching the configured allowed origin shouldn't be forwarded to the upstream.
+	//
+	// Valid Options: FORWARD, IGNORE
+	UnmatchedPreflights *string `pulumi:"unmatchedPreflights"`
 }
 
 // VirtualServiceSpecHttpCorsPolicyPatchInput is an input type that accepts VirtualServiceSpecHttpCorsPolicyPatchArgs and VirtualServiceSpecHttpCorsPolicyPatchOutput values.
@@ -44289,6 +46494,10 @@ type VirtualServiceSpecHttpCorsPolicyPatchArgs struct {
 	ExposeHeaders pulumi.StringArrayInput `pulumi:"exposeHeaders"`
 	// Specifies how long the results of a preflight request can be cached.
 	MaxAge pulumi.StringPtrInput `pulumi:"maxAge"`
+	// Indicates whether preflight requests not matching the configured allowed origin shouldn't be forwarded to the upstream.
+	//
+	// Valid Options: FORWARD, IGNORE
+	UnmatchedPreflights pulumi.StringPtrInput `pulumi:"unmatchedPreflights"`
 }
 
 func (VirtualServiceSpecHttpCorsPolicyPatchArgs) ElementType() reflect.Type {
@@ -44405,6 +46614,13 @@ func (o VirtualServiceSpecHttpCorsPolicyPatchOutput) MaxAge() pulumi.StringPtrOu
 	return o.ApplyT(func(v VirtualServiceSpecHttpCorsPolicyPatch) *string { return v.MaxAge }).(pulumi.StringPtrOutput)
 }
 
+// Indicates whether preflight requests not matching the configured allowed origin shouldn't be forwarded to the upstream.
+//
+// Valid Options: FORWARD, IGNORE
+func (o VirtualServiceSpecHttpCorsPolicyPatchOutput) UnmatchedPreflights() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v VirtualServiceSpecHttpCorsPolicyPatch) *string { return v.UnmatchedPreflights }).(pulumi.StringPtrOutput)
+}
+
 type VirtualServiceSpecHttpCorsPolicyPatchPtrOutput struct{ *pulumi.OutputState }
 
 func (VirtualServiceSpecHttpCorsPolicyPatchPtrOutput) ElementType() reflect.Type {
@@ -44495,6 +46711,18 @@ func (o VirtualServiceSpecHttpCorsPolicyPatchPtrOutput) MaxAge() pulumi.StringPt
 			return nil
 		}
 		return v.MaxAge
+	}).(pulumi.StringPtrOutput)
+}
+
+// Indicates whether preflight requests not matching the configured allowed origin shouldn't be forwarded to the upstream.
+//
+// Valid Options: FORWARD, IGNORE
+func (o VirtualServiceSpecHttpCorsPolicyPatchPtrOutput) UnmatchedPreflights() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *VirtualServiceSpecHttpCorsPolicyPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.UnmatchedPreflights
 	}).(pulumi.StringPtrOutput)
 }
 
@@ -48202,11 +50430,11 @@ func (o VirtualServiceSpecHttpMatchArrayOutput) Index(i pulumi.IntInput) Virtual
 	}).(VirtualServiceSpecHttpMatchOutput)
 }
 
-// HTTP Authority values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// HTTP Authority values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 type VirtualServiceSpecHttpMatchAuthority struct {
 	Exact  *string `pulumi:"exact"`
 	Prefix *string `pulumi:"prefix"`
-	// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+	// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 	Regex *string `pulumi:"regex"`
 }
 
@@ -48221,11 +50449,11 @@ type VirtualServiceSpecHttpMatchAuthorityInput interface {
 	ToVirtualServiceSpecHttpMatchAuthorityOutputWithContext(context.Context) VirtualServiceSpecHttpMatchAuthorityOutput
 }
 
-// HTTP Authority values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// HTTP Authority values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 type VirtualServiceSpecHttpMatchAuthorityArgs struct {
 	Exact  pulumi.StringPtrInput `pulumi:"exact"`
 	Prefix pulumi.StringPtrInput `pulumi:"prefix"`
-	// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+	// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 	Regex pulumi.StringPtrInput `pulumi:"regex"`
 }
 
@@ -48282,7 +50510,7 @@ func (i *virtualServiceSpecHttpMatchAuthorityPtrType) ToVirtualServiceSpecHttpMa
 	return pulumi.ToOutputWithContext(ctx, i).(VirtualServiceSpecHttpMatchAuthorityPtrOutput)
 }
 
-// HTTP Authority values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// HTTP Authority values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 type VirtualServiceSpecHttpMatchAuthorityOutput struct{ *pulumi.OutputState }
 
 func (VirtualServiceSpecHttpMatchAuthorityOutput) ElementType() reflect.Type {
@@ -48315,7 +50543,7 @@ func (o VirtualServiceSpecHttpMatchAuthorityOutput) Prefix() pulumi.StringPtrOut
 	return o.ApplyT(func(v VirtualServiceSpecHttpMatchAuthority) *string { return v.Prefix }).(pulumi.StringPtrOutput)
 }
 
-// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 func (o VirtualServiceSpecHttpMatchAuthorityOutput) Regex() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v VirtualServiceSpecHttpMatchAuthority) *string { return v.Regex }).(pulumi.StringPtrOutput)
 }
@@ -48362,7 +50590,7 @@ func (o VirtualServiceSpecHttpMatchAuthorityPtrOutput) Prefix() pulumi.StringPtr
 	}).(pulumi.StringPtrOutput)
 }
 
-// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 func (o VirtualServiceSpecHttpMatchAuthorityPtrOutput) Regex() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *VirtualServiceSpecHttpMatchAuthority) *string {
 		if v == nil {
@@ -48372,11 +50600,11 @@ func (o VirtualServiceSpecHttpMatchAuthorityPtrOutput) Regex() pulumi.StringPtrO
 	}).(pulumi.StringPtrOutput)
 }
 
-// HTTP Authority values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// HTTP Authority values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 type VirtualServiceSpecHttpMatchAuthorityPatch struct {
 	Exact  *string `pulumi:"exact"`
 	Prefix *string `pulumi:"prefix"`
-	// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+	// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 	Regex *string `pulumi:"regex"`
 }
 
@@ -48391,11 +50619,11 @@ type VirtualServiceSpecHttpMatchAuthorityPatchInput interface {
 	ToVirtualServiceSpecHttpMatchAuthorityPatchOutputWithContext(context.Context) VirtualServiceSpecHttpMatchAuthorityPatchOutput
 }
 
-// HTTP Authority values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// HTTP Authority values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 type VirtualServiceSpecHttpMatchAuthorityPatchArgs struct {
 	Exact  pulumi.StringPtrInput `pulumi:"exact"`
 	Prefix pulumi.StringPtrInput `pulumi:"prefix"`
-	// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+	// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 	Regex pulumi.StringPtrInput `pulumi:"regex"`
 }
 
@@ -48452,7 +50680,7 @@ func (i *virtualServiceSpecHttpMatchAuthorityPatchPtrType) ToVirtualServiceSpecH
 	return pulumi.ToOutputWithContext(ctx, i).(VirtualServiceSpecHttpMatchAuthorityPatchPtrOutput)
 }
 
-// HTTP Authority values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// HTTP Authority values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 type VirtualServiceSpecHttpMatchAuthorityPatchOutput struct{ *pulumi.OutputState }
 
 func (VirtualServiceSpecHttpMatchAuthorityPatchOutput) ElementType() reflect.Type {
@@ -48485,7 +50713,7 @@ func (o VirtualServiceSpecHttpMatchAuthorityPatchOutput) Prefix() pulumi.StringP
 	return o.ApplyT(func(v VirtualServiceSpecHttpMatchAuthorityPatch) *string { return v.Prefix }).(pulumi.StringPtrOutput)
 }
 
-// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 func (o VirtualServiceSpecHttpMatchAuthorityPatchOutput) Regex() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v VirtualServiceSpecHttpMatchAuthorityPatch) *string { return v.Regex }).(pulumi.StringPtrOutput)
 }
@@ -48532,7 +50760,7 @@ func (o VirtualServiceSpecHttpMatchAuthorityPatchPtrOutput) Prefix() pulumi.Stri
 	}).(pulumi.StringPtrOutput)
 }
 
-// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 func (o VirtualServiceSpecHttpMatchAuthorityPatchPtrOutput) Regex() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *VirtualServiceSpecHttpMatchAuthorityPatch) *string {
 		if v == nil {
@@ -48542,11 +50770,11 @@ func (o VirtualServiceSpecHttpMatchAuthorityPatchPtrOutput) Regex() pulumi.Strin
 	}).(pulumi.StringPtrOutput)
 }
 
-// HTTP Method values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// HTTP Method values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 type VirtualServiceSpecHttpMatchMethod struct {
 	Exact  *string `pulumi:"exact"`
 	Prefix *string `pulumi:"prefix"`
-	// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+	// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 	Regex *string `pulumi:"regex"`
 }
 
@@ -48561,11 +50789,11 @@ type VirtualServiceSpecHttpMatchMethodInput interface {
 	ToVirtualServiceSpecHttpMatchMethodOutputWithContext(context.Context) VirtualServiceSpecHttpMatchMethodOutput
 }
 
-// HTTP Method values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// HTTP Method values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 type VirtualServiceSpecHttpMatchMethodArgs struct {
 	Exact  pulumi.StringPtrInput `pulumi:"exact"`
 	Prefix pulumi.StringPtrInput `pulumi:"prefix"`
-	// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+	// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 	Regex pulumi.StringPtrInput `pulumi:"regex"`
 }
 
@@ -48622,7 +50850,7 @@ func (i *virtualServiceSpecHttpMatchMethodPtrType) ToVirtualServiceSpecHttpMatch
 	return pulumi.ToOutputWithContext(ctx, i).(VirtualServiceSpecHttpMatchMethodPtrOutput)
 }
 
-// HTTP Method values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// HTTP Method values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 type VirtualServiceSpecHttpMatchMethodOutput struct{ *pulumi.OutputState }
 
 func (VirtualServiceSpecHttpMatchMethodOutput) ElementType() reflect.Type {
@@ -48655,7 +50883,7 @@ func (o VirtualServiceSpecHttpMatchMethodOutput) Prefix() pulumi.StringPtrOutput
 	return o.ApplyT(func(v VirtualServiceSpecHttpMatchMethod) *string { return v.Prefix }).(pulumi.StringPtrOutput)
 }
 
-// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 func (o VirtualServiceSpecHttpMatchMethodOutput) Regex() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v VirtualServiceSpecHttpMatchMethod) *string { return v.Regex }).(pulumi.StringPtrOutput)
 }
@@ -48702,7 +50930,7 @@ func (o VirtualServiceSpecHttpMatchMethodPtrOutput) Prefix() pulumi.StringPtrOut
 	}).(pulumi.StringPtrOutput)
 }
 
-// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 func (o VirtualServiceSpecHttpMatchMethodPtrOutput) Regex() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *VirtualServiceSpecHttpMatchMethod) *string {
 		if v == nil {
@@ -48712,11 +50940,11 @@ func (o VirtualServiceSpecHttpMatchMethodPtrOutput) Regex() pulumi.StringPtrOutp
 	}).(pulumi.StringPtrOutput)
 }
 
-// HTTP Method values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// HTTP Method values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 type VirtualServiceSpecHttpMatchMethodPatch struct {
 	Exact  *string `pulumi:"exact"`
 	Prefix *string `pulumi:"prefix"`
-	// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+	// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 	Regex *string `pulumi:"regex"`
 }
 
@@ -48731,11 +50959,11 @@ type VirtualServiceSpecHttpMatchMethodPatchInput interface {
 	ToVirtualServiceSpecHttpMatchMethodPatchOutputWithContext(context.Context) VirtualServiceSpecHttpMatchMethodPatchOutput
 }
 
-// HTTP Method values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// HTTP Method values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 type VirtualServiceSpecHttpMatchMethodPatchArgs struct {
 	Exact  pulumi.StringPtrInput `pulumi:"exact"`
 	Prefix pulumi.StringPtrInput `pulumi:"prefix"`
-	// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+	// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 	Regex pulumi.StringPtrInput `pulumi:"regex"`
 }
 
@@ -48792,7 +51020,7 @@ func (i *virtualServiceSpecHttpMatchMethodPatchPtrType) ToVirtualServiceSpecHttp
 	return pulumi.ToOutputWithContext(ctx, i).(VirtualServiceSpecHttpMatchMethodPatchPtrOutput)
 }
 
-// HTTP Method values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// HTTP Method values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 type VirtualServiceSpecHttpMatchMethodPatchOutput struct{ *pulumi.OutputState }
 
 func (VirtualServiceSpecHttpMatchMethodPatchOutput) ElementType() reflect.Type {
@@ -48825,7 +51053,7 @@ func (o VirtualServiceSpecHttpMatchMethodPatchOutput) Prefix() pulumi.StringPtrO
 	return o.ApplyT(func(v VirtualServiceSpecHttpMatchMethodPatch) *string { return v.Prefix }).(pulumi.StringPtrOutput)
 }
 
-// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 func (o VirtualServiceSpecHttpMatchMethodPatchOutput) Regex() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v VirtualServiceSpecHttpMatchMethodPatch) *string { return v.Regex }).(pulumi.StringPtrOutput)
 }
@@ -48872,7 +51100,7 @@ func (o VirtualServiceSpecHttpMatchMethodPatchPtrOutput) Prefix() pulumi.StringP
 	}).(pulumi.StringPtrOutput)
 }
 
-// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 func (o VirtualServiceSpecHttpMatchMethodPatchPtrOutput) Regex() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *VirtualServiceSpecHttpMatchMethodPatch) *string {
 		if v == nil {
@@ -49086,11 +51314,11 @@ func (o VirtualServiceSpecHttpMatchPatchArrayOutput) Index(i pulumi.IntInput) Vi
 	}).(VirtualServiceSpecHttpMatchPatchOutput)
 }
 
-// URI Scheme values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// URI Scheme values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 type VirtualServiceSpecHttpMatchScheme struct {
 	Exact  *string `pulumi:"exact"`
 	Prefix *string `pulumi:"prefix"`
-	// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+	// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 	Regex *string `pulumi:"regex"`
 }
 
@@ -49105,11 +51333,11 @@ type VirtualServiceSpecHttpMatchSchemeInput interface {
 	ToVirtualServiceSpecHttpMatchSchemeOutputWithContext(context.Context) VirtualServiceSpecHttpMatchSchemeOutput
 }
 
-// URI Scheme values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// URI Scheme values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 type VirtualServiceSpecHttpMatchSchemeArgs struct {
 	Exact  pulumi.StringPtrInput `pulumi:"exact"`
 	Prefix pulumi.StringPtrInput `pulumi:"prefix"`
-	// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+	// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 	Regex pulumi.StringPtrInput `pulumi:"regex"`
 }
 
@@ -49166,7 +51394,7 @@ func (i *virtualServiceSpecHttpMatchSchemePtrType) ToVirtualServiceSpecHttpMatch
 	return pulumi.ToOutputWithContext(ctx, i).(VirtualServiceSpecHttpMatchSchemePtrOutput)
 }
 
-// URI Scheme values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// URI Scheme values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 type VirtualServiceSpecHttpMatchSchemeOutput struct{ *pulumi.OutputState }
 
 func (VirtualServiceSpecHttpMatchSchemeOutput) ElementType() reflect.Type {
@@ -49199,7 +51427,7 @@ func (o VirtualServiceSpecHttpMatchSchemeOutput) Prefix() pulumi.StringPtrOutput
 	return o.ApplyT(func(v VirtualServiceSpecHttpMatchScheme) *string { return v.Prefix }).(pulumi.StringPtrOutput)
 }
 
-// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 func (o VirtualServiceSpecHttpMatchSchemeOutput) Regex() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v VirtualServiceSpecHttpMatchScheme) *string { return v.Regex }).(pulumi.StringPtrOutput)
 }
@@ -49246,7 +51474,7 @@ func (o VirtualServiceSpecHttpMatchSchemePtrOutput) Prefix() pulumi.StringPtrOut
 	}).(pulumi.StringPtrOutput)
 }
 
-// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 func (o VirtualServiceSpecHttpMatchSchemePtrOutput) Regex() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *VirtualServiceSpecHttpMatchScheme) *string {
 		if v == nil {
@@ -49256,11 +51484,11 @@ func (o VirtualServiceSpecHttpMatchSchemePtrOutput) Regex() pulumi.StringPtrOutp
 	}).(pulumi.StringPtrOutput)
 }
 
-// URI Scheme values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// URI Scheme values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 type VirtualServiceSpecHttpMatchSchemePatch struct {
 	Exact  *string `pulumi:"exact"`
 	Prefix *string `pulumi:"prefix"`
-	// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+	// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 	Regex *string `pulumi:"regex"`
 }
 
@@ -49275,11 +51503,11 @@ type VirtualServiceSpecHttpMatchSchemePatchInput interface {
 	ToVirtualServiceSpecHttpMatchSchemePatchOutputWithContext(context.Context) VirtualServiceSpecHttpMatchSchemePatchOutput
 }
 
-// URI Scheme values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// URI Scheme values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 type VirtualServiceSpecHttpMatchSchemePatchArgs struct {
 	Exact  pulumi.StringPtrInput `pulumi:"exact"`
 	Prefix pulumi.StringPtrInput `pulumi:"prefix"`
-	// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+	// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 	Regex pulumi.StringPtrInput `pulumi:"regex"`
 }
 
@@ -49336,7 +51564,7 @@ func (i *virtualServiceSpecHttpMatchSchemePatchPtrType) ToVirtualServiceSpecHttp
 	return pulumi.ToOutputWithContext(ctx, i).(VirtualServiceSpecHttpMatchSchemePatchPtrOutput)
 }
 
-// URI Scheme values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// URI Scheme values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 type VirtualServiceSpecHttpMatchSchemePatchOutput struct{ *pulumi.OutputState }
 
 func (VirtualServiceSpecHttpMatchSchemePatchOutput) ElementType() reflect.Type {
@@ -49369,7 +51597,7 @@ func (o VirtualServiceSpecHttpMatchSchemePatchOutput) Prefix() pulumi.StringPtrO
 	return o.ApplyT(func(v VirtualServiceSpecHttpMatchSchemePatch) *string { return v.Prefix }).(pulumi.StringPtrOutput)
 }
 
-// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 func (o VirtualServiceSpecHttpMatchSchemePatchOutput) Regex() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v VirtualServiceSpecHttpMatchSchemePatch) *string { return v.Regex }).(pulumi.StringPtrOutput)
 }
@@ -49416,7 +51644,7 @@ func (o VirtualServiceSpecHttpMatchSchemePatchPtrOutput) Prefix() pulumi.StringP
 	}).(pulumi.StringPtrOutput)
 }
 
-// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 func (o VirtualServiceSpecHttpMatchSchemePatchPtrOutput) Regex() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *VirtualServiceSpecHttpMatchSchemePatch) *string {
 		if v == nil {
@@ -49426,11 +51654,11 @@ func (o VirtualServiceSpecHttpMatchSchemePatchPtrOutput) Regex() pulumi.StringPt
 	}).(pulumi.StringPtrOutput)
 }
 
-// URI to match values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// URI to match values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 type VirtualServiceSpecHttpMatchUri struct {
 	Exact  *string `pulumi:"exact"`
 	Prefix *string `pulumi:"prefix"`
-	// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+	// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 	Regex *string `pulumi:"regex"`
 }
 
@@ -49445,11 +51673,11 @@ type VirtualServiceSpecHttpMatchUriInput interface {
 	ToVirtualServiceSpecHttpMatchUriOutputWithContext(context.Context) VirtualServiceSpecHttpMatchUriOutput
 }
 
-// URI to match values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// URI to match values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 type VirtualServiceSpecHttpMatchUriArgs struct {
 	Exact  pulumi.StringPtrInput `pulumi:"exact"`
 	Prefix pulumi.StringPtrInput `pulumi:"prefix"`
-	// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+	// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 	Regex pulumi.StringPtrInput `pulumi:"regex"`
 }
 
@@ -49506,7 +51734,7 @@ func (i *virtualServiceSpecHttpMatchUriPtrType) ToVirtualServiceSpecHttpMatchUri
 	return pulumi.ToOutputWithContext(ctx, i).(VirtualServiceSpecHttpMatchUriPtrOutput)
 }
 
-// URI to match values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// URI to match values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 type VirtualServiceSpecHttpMatchUriOutput struct{ *pulumi.OutputState }
 
 func (VirtualServiceSpecHttpMatchUriOutput) ElementType() reflect.Type {
@@ -49539,7 +51767,7 @@ func (o VirtualServiceSpecHttpMatchUriOutput) Prefix() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v VirtualServiceSpecHttpMatchUri) *string { return v.Prefix }).(pulumi.StringPtrOutput)
 }
 
-// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 func (o VirtualServiceSpecHttpMatchUriOutput) Regex() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v VirtualServiceSpecHttpMatchUri) *string { return v.Regex }).(pulumi.StringPtrOutput)
 }
@@ -49586,7 +51814,7 @@ func (o VirtualServiceSpecHttpMatchUriPtrOutput) Prefix() pulumi.StringPtrOutput
 	}).(pulumi.StringPtrOutput)
 }
 
-// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 func (o VirtualServiceSpecHttpMatchUriPtrOutput) Regex() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *VirtualServiceSpecHttpMatchUri) *string {
 		if v == nil {
@@ -49596,11 +51824,11 @@ func (o VirtualServiceSpecHttpMatchUriPtrOutput) Regex() pulumi.StringPtrOutput 
 	}).(pulumi.StringPtrOutput)
 }
 
-// URI to match values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// URI to match values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 type VirtualServiceSpecHttpMatchUriPatch struct {
 	Exact  *string `pulumi:"exact"`
 	Prefix *string `pulumi:"prefix"`
-	// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+	// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 	Regex *string `pulumi:"regex"`
 }
 
@@ -49615,11 +51843,11 @@ type VirtualServiceSpecHttpMatchUriPatchInput interface {
 	ToVirtualServiceSpecHttpMatchUriPatchOutputWithContext(context.Context) VirtualServiceSpecHttpMatchUriPatchOutput
 }
 
-// URI to match values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// URI to match values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 type VirtualServiceSpecHttpMatchUriPatchArgs struct {
 	Exact  pulumi.StringPtrInput `pulumi:"exact"`
 	Prefix pulumi.StringPtrInput `pulumi:"prefix"`
-	// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+	// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 	Regex pulumi.StringPtrInput `pulumi:"regex"`
 }
 
@@ -49676,7 +51904,7 @@ func (i *virtualServiceSpecHttpMatchUriPatchPtrType) ToVirtualServiceSpecHttpMat
 	return pulumi.ToOutputWithContext(ctx, i).(VirtualServiceSpecHttpMatchUriPatchPtrOutput)
 }
 
-// URI to match values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// URI to match values are case-sensitive and formatted as follows: - `exact: "value"` for exact string match - `prefix: "value"` for prefix-based match - `regex: "value"` for [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 type VirtualServiceSpecHttpMatchUriPatchOutput struct{ *pulumi.OutputState }
 
 func (VirtualServiceSpecHttpMatchUriPatchOutput) ElementType() reflect.Type {
@@ -49709,7 +51937,7 @@ func (o VirtualServiceSpecHttpMatchUriPatchOutput) Prefix() pulumi.StringPtrOutp
 	return o.ApplyT(func(v VirtualServiceSpecHttpMatchUriPatch) *string { return v.Prefix }).(pulumi.StringPtrOutput)
 }
 
-// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 func (o VirtualServiceSpecHttpMatchUriPatchOutput) Regex() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v VirtualServiceSpecHttpMatchUriPatch) *string { return v.Regex }).(pulumi.StringPtrOutput)
 }
@@ -49756,7 +51984,7 @@ func (o VirtualServiceSpecHttpMatchUriPatchPtrOutput) Prefix() pulumi.StringPtrO
 	}).(pulumi.StringPtrOutput)
 }
 
-// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 func (o VirtualServiceSpecHttpMatchUriPatchPtrOutput) Regex() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *VirtualServiceSpecHttpMatchUriPatch) *string {
 		if v == nil {
@@ -52457,8 +54685,12 @@ func (o VirtualServiceSpecHttpRedirectPatchPtrOutput) Uri() pulumi.StringPtrOutp
 type VirtualServiceSpecHttpRetries struct {
 	// Number of retries to be allowed for a given request.
 	Attempts *int `pulumi:"attempts"`
+	// Specifies the minimum duration between retry attempts.
+	Backoff *string `pulumi:"backoff"`
 	// Timeout per attempt for a given request, including the initial call and any retries.
 	PerTryTimeout *string `pulumi:"perTryTimeout"`
+	// Flag to specify whether the retries should ignore previously tried hosts during retry.
+	RetryIgnorePreviousHosts *bool `pulumi:"retryIgnorePreviousHosts"`
 	// Specifies the conditions under which retry takes place.
 	RetryOn *string `pulumi:"retryOn"`
 	// Flag to specify whether the retries should retry to other localities.
@@ -52480,8 +54712,12 @@ type VirtualServiceSpecHttpRetriesInput interface {
 type VirtualServiceSpecHttpRetriesArgs struct {
 	// Number of retries to be allowed for a given request.
 	Attempts pulumi.IntPtrInput `pulumi:"attempts"`
+	// Specifies the minimum duration between retry attempts.
+	Backoff pulumi.StringPtrInput `pulumi:"backoff"`
 	// Timeout per attempt for a given request, including the initial call and any retries.
 	PerTryTimeout pulumi.StringPtrInput `pulumi:"perTryTimeout"`
+	// Flag to specify whether the retries should ignore previously tried hosts during retry.
+	RetryIgnorePreviousHosts pulumi.BoolPtrInput `pulumi:"retryIgnorePreviousHosts"`
 	// Specifies the conditions under which retry takes place.
 	RetryOn pulumi.StringPtrInput `pulumi:"retryOn"`
 	// Flag to specify whether the retries should retry to other localities.
@@ -52571,9 +54807,19 @@ func (o VirtualServiceSpecHttpRetriesOutput) Attempts() pulumi.IntPtrOutput {
 	return o.ApplyT(func(v VirtualServiceSpecHttpRetries) *int { return v.Attempts }).(pulumi.IntPtrOutput)
 }
 
+// Specifies the minimum duration between retry attempts.
+func (o VirtualServiceSpecHttpRetriesOutput) Backoff() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v VirtualServiceSpecHttpRetries) *string { return v.Backoff }).(pulumi.StringPtrOutput)
+}
+
 // Timeout per attempt for a given request, including the initial call and any retries.
 func (o VirtualServiceSpecHttpRetriesOutput) PerTryTimeout() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v VirtualServiceSpecHttpRetries) *string { return v.PerTryTimeout }).(pulumi.StringPtrOutput)
+}
+
+// Flag to specify whether the retries should ignore previously tried hosts during retry.
+func (o VirtualServiceSpecHttpRetriesOutput) RetryIgnorePreviousHosts() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v VirtualServiceSpecHttpRetries) *bool { return v.RetryIgnorePreviousHosts }).(pulumi.BoolPtrOutput)
 }
 
 // Specifies the conditions under which retry takes place.
@@ -52620,6 +54866,16 @@ func (o VirtualServiceSpecHttpRetriesPtrOutput) Attempts() pulumi.IntPtrOutput {
 	}).(pulumi.IntPtrOutput)
 }
 
+// Specifies the minimum duration between retry attempts.
+func (o VirtualServiceSpecHttpRetriesPtrOutput) Backoff() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *VirtualServiceSpecHttpRetries) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Backoff
+	}).(pulumi.StringPtrOutput)
+}
+
 // Timeout per attempt for a given request, including the initial call and any retries.
 func (o VirtualServiceSpecHttpRetriesPtrOutput) PerTryTimeout() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *VirtualServiceSpecHttpRetries) *string {
@@ -52628,6 +54884,16 @@ func (o VirtualServiceSpecHttpRetriesPtrOutput) PerTryTimeout() pulumi.StringPtr
 		}
 		return v.PerTryTimeout
 	}).(pulumi.StringPtrOutput)
+}
+
+// Flag to specify whether the retries should ignore previously tried hosts during retry.
+func (o VirtualServiceSpecHttpRetriesPtrOutput) RetryIgnorePreviousHosts() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v *VirtualServiceSpecHttpRetries) *bool {
+		if v == nil {
+			return nil
+		}
+		return v.RetryIgnorePreviousHosts
+	}).(pulumi.BoolPtrOutput)
 }
 
 // Specifies the conditions under which retry takes place.
@@ -52654,8 +54920,12 @@ func (o VirtualServiceSpecHttpRetriesPtrOutput) RetryRemoteLocalities() pulumi.B
 type VirtualServiceSpecHttpRetriesPatch struct {
 	// Number of retries to be allowed for a given request.
 	Attempts *int `pulumi:"attempts"`
+	// Specifies the minimum duration between retry attempts.
+	Backoff *string `pulumi:"backoff"`
 	// Timeout per attempt for a given request, including the initial call and any retries.
 	PerTryTimeout *string `pulumi:"perTryTimeout"`
+	// Flag to specify whether the retries should ignore previously tried hosts during retry.
+	RetryIgnorePreviousHosts *bool `pulumi:"retryIgnorePreviousHosts"`
 	// Specifies the conditions under which retry takes place.
 	RetryOn *string `pulumi:"retryOn"`
 	// Flag to specify whether the retries should retry to other localities.
@@ -52677,8 +54947,12 @@ type VirtualServiceSpecHttpRetriesPatchInput interface {
 type VirtualServiceSpecHttpRetriesPatchArgs struct {
 	// Number of retries to be allowed for a given request.
 	Attempts pulumi.IntPtrInput `pulumi:"attempts"`
+	// Specifies the minimum duration between retry attempts.
+	Backoff pulumi.StringPtrInput `pulumi:"backoff"`
 	// Timeout per attempt for a given request, including the initial call and any retries.
 	PerTryTimeout pulumi.StringPtrInput `pulumi:"perTryTimeout"`
+	// Flag to specify whether the retries should ignore previously tried hosts during retry.
+	RetryIgnorePreviousHosts pulumi.BoolPtrInput `pulumi:"retryIgnorePreviousHosts"`
 	// Specifies the conditions under which retry takes place.
 	RetryOn pulumi.StringPtrInput `pulumi:"retryOn"`
 	// Flag to specify whether the retries should retry to other localities.
@@ -52768,9 +55042,19 @@ func (o VirtualServiceSpecHttpRetriesPatchOutput) Attempts() pulumi.IntPtrOutput
 	return o.ApplyT(func(v VirtualServiceSpecHttpRetriesPatch) *int { return v.Attempts }).(pulumi.IntPtrOutput)
 }
 
+// Specifies the minimum duration between retry attempts.
+func (o VirtualServiceSpecHttpRetriesPatchOutput) Backoff() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v VirtualServiceSpecHttpRetriesPatch) *string { return v.Backoff }).(pulumi.StringPtrOutput)
+}
+
 // Timeout per attempt for a given request, including the initial call and any retries.
 func (o VirtualServiceSpecHttpRetriesPatchOutput) PerTryTimeout() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v VirtualServiceSpecHttpRetriesPatch) *string { return v.PerTryTimeout }).(pulumi.StringPtrOutput)
+}
+
+// Flag to specify whether the retries should ignore previously tried hosts during retry.
+func (o VirtualServiceSpecHttpRetriesPatchOutput) RetryIgnorePreviousHosts() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v VirtualServiceSpecHttpRetriesPatch) *bool { return v.RetryIgnorePreviousHosts }).(pulumi.BoolPtrOutput)
 }
 
 // Specifies the conditions under which retry takes place.
@@ -52817,6 +55101,16 @@ func (o VirtualServiceSpecHttpRetriesPatchPtrOutput) Attempts() pulumi.IntPtrOut
 	}).(pulumi.IntPtrOutput)
 }
 
+// Specifies the minimum duration between retry attempts.
+func (o VirtualServiceSpecHttpRetriesPatchPtrOutput) Backoff() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *VirtualServiceSpecHttpRetriesPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Backoff
+	}).(pulumi.StringPtrOutput)
+}
+
 // Timeout per attempt for a given request, including the initial call and any retries.
 func (o VirtualServiceSpecHttpRetriesPatchPtrOutput) PerTryTimeout() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *VirtualServiceSpecHttpRetriesPatch) *string {
@@ -52825,6 +55119,16 @@ func (o VirtualServiceSpecHttpRetriesPatchPtrOutput) PerTryTimeout() pulumi.Stri
 		}
 		return v.PerTryTimeout
 	}).(pulumi.StringPtrOutput)
+}
+
+// Flag to specify whether the retries should ignore previously tried hosts during retry.
+func (o VirtualServiceSpecHttpRetriesPatchPtrOutput) RetryIgnorePreviousHosts() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v *VirtualServiceSpecHttpRetriesPatch) *bool {
+		if v == nil {
+			return nil
+		}
+		return v.RetryIgnorePreviousHosts
+	}).(pulumi.BoolPtrOutput)
 }
 
 // Specifies the conditions under which retry takes place.
@@ -53201,7 +55505,7 @@ func (o VirtualServiceSpecHttpRewritePatchPtrOutput) UriRegexRewrite() VirtualSe
 
 // rewrite the path portion of the URI with the specified regex.
 type VirtualServiceSpecHttpRewriteUriRegexRewrite struct {
-	// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+	// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 	Match *string `pulumi:"match"`
 	// The string that should replace into matching portions of original URI.
 	Rewrite *string `pulumi:"rewrite"`
@@ -53220,7 +55524,7 @@ type VirtualServiceSpecHttpRewriteUriRegexRewriteInput interface {
 
 // rewrite the path portion of the URI with the specified regex.
 type VirtualServiceSpecHttpRewriteUriRegexRewriteArgs struct {
-	// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+	// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 	Match pulumi.StringPtrInput `pulumi:"match"`
 	// The string that should replace into matching portions of original URI.
 	Rewrite pulumi.StringPtrInput `pulumi:"rewrite"`
@@ -53304,7 +55608,7 @@ func (o VirtualServiceSpecHttpRewriteUriRegexRewriteOutput) ToVirtualServiceSpec
 	}).(VirtualServiceSpecHttpRewriteUriRegexRewritePtrOutput)
 }
 
-// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 func (o VirtualServiceSpecHttpRewriteUriRegexRewriteOutput) Match() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v VirtualServiceSpecHttpRewriteUriRegexRewrite) *string { return v.Match }).(pulumi.StringPtrOutput)
 }
@@ -53338,7 +55642,7 @@ func (o VirtualServiceSpecHttpRewriteUriRegexRewritePtrOutput) Elem() VirtualSer
 	}).(VirtualServiceSpecHttpRewriteUriRegexRewriteOutput)
 }
 
-// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 func (o VirtualServiceSpecHttpRewriteUriRegexRewritePtrOutput) Match() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *VirtualServiceSpecHttpRewriteUriRegexRewrite) *string {
 		if v == nil {
@@ -53360,7 +55664,7 @@ func (o VirtualServiceSpecHttpRewriteUriRegexRewritePtrOutput) Rewrite() pulumi.
 
 // rewrite the path portion of the URI with the specified regex.
 type VirtualServiceSpecHttpRewriteUriRegexRewritePatch struct {
-	// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+	// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 	Match *string `pulumi:"match"`
 	// The string that should replace into matching portions of original URI.
 	Rewrite *string `pulumi:"rewrite"`
@@ -53379,7 +55683,7 @@ type VirtualServiceSpecHttpRewriteUriRegexRewritePatchInput interface {
 
 // rewrite the path portion of the URI with the specified regex.
 type VirtualServiceSpecHttpRewriteUriRegexRewritePatchArgs struct {
-	// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+	// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 	Match pulumi.StringPtrInput `pulumi:"match"`
 	// The string that should replace into matching portions of original URI.
 	Rewrite pulumi.StringPtrInput `pulumi:"rewrite"`
@@ -53463,7 +55767,7 @@ func (o VirtualServiceSpecHttpRewriteUriRegexRewritePatchOutput) ToVirtualServic
 	}).(VirtualServiceSpecHttpRewriteUriRegexRewritePatchPtrOutput)
 }
 
-// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 func (o VirtualServiceSpecHttpRewriteUriRegexRewritePatchOutput) Match() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v VirtualServiceSpecHttpRewriteUriRegexRewritePatch) *string { return v.Match }).(pulumi.StringPtrOutput)
 }
@@ -53497,7 +55801,7 @@ func (o VirtualServiceSpecHttpRewriteUriRegexRewritePatchPtrOutput) Elem() Virtu
 	}).(VirtualServiceSpecHttpRewriteUriRegexRewritePatchOutput)
 }
 
-// RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+// [RE2 style regex-based match](https://github.com/google/re2/wiki/Syntax).
 func (o VirtualServiceSpecHttpRewriteUriRegexRewritePatchPtrOutput) Match() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *VirtualServiceSpecHttpRewriteUriRegexRewritePatch) *string {
 		if v == nil {
@@ -59931,6 +62235,7 @@ type WorkloadGroupSpecProbe struct {
 	Exec *WorkloadGroupSpecProbeExec `pulumi:"exec"`
 	// Minimum consecutive failures for the probe to be considered failed after having succeeded.
 	FailureThreshold *int                           `pulumi:"failureThreshold"`
+	Grpc             *WorkloadGroupSpecProbeGrpc    `pulumi:"grpc"`
 	HttpGet          *WorkloadGroupSpecProbeHttpGet `pulumi:"httpGet"`
 	// Number of seconds after the container has started before readiness probes are initiated.
 	InitialDelaySeconds *int `pulumi:"initialDelaySeconds"`
@@ -59959,6 +62264,7 @@ type WorkloadGroupSpecProbeArgs struct {
 	Exec WorkloadGroupSpecProbeExecPtrInput `pulumi:"exec"`
 	// Minimum consecutive failures for the probe to be considered failed after having succeeded.
 	FailureThreshold pulumi.IntPtrInput                    `pulumi:"failureThreshold"`
+	Grpc             WorkloadGroupSpecProbeGrpcPtrInput    `pulumi:"grpc"`
 	HttpGet          WorkloadGroupSpecProbeHttpGetPtrInput `pulumi:"httpGet"`
 	// Number of seconds after the container has started before readiness probes are initiated.
 	InitialDelaySeconds pulumi.IntPtrInput `pulumi:"initialDelaySeconds"`
@@ -60058,6 +62364,10 @@ func (o WorkloadGroupSpecProbeOutput) FailureThreshold() pulumi.IntPtrOutput {
 	return o.ApplyT(func(v WorkloadGroupSpecProbe) *int { return v.FailureThreshold }).(pulumi.IntPtrOutput)
 }
 
+func (o WorkloadGroupSpecProbeOutput) Grpc() WorkloadGroupSpecProbeGrpcPtrOutput {
+	return o.ApplyT(func(v WorkloadGroupSpecProbe) *WorkloadGroupSpecProbeGrpc { return v.Grpc }).(WorkloadGroupSpecProbeGrpcPtrOutput)
+}
+
 func (o WorkloadGroupSpecProbeOutput) HttpGet() WorkloadGroupSpecProbeHttpGetPtrOutput {
 	return o.ApplyT(func(v WorkloadGroupSpecProbe) *WorkloadGroupSpecProbeHttpGet { return v.HttpGet }).(WorkloadGroupSpecProbeHttpGetPtrOutput)
 }
@@ -60127,6 +62437,15 @@ func (o WorkloadGroupSpecProbePtrOutput) FailureThreshold() pulumi.IntPtrOutput 
 		}
 		return v.FailureThreshold
 	}).(pulumi.IntPtrOutput)
+}
+
+func (o WorkloadGroupSpecProbePtrOutput) Grpc() WorkloadGroupSpecProbeGrpcPtrOutput {
+	return o.ApplyT(func(v *WorkloadGroupSpecProbe) *WorkloadGroupSpecProbeGrpc {
+		if v == nil {
+			return nil
+		}
+		return v.Grpc
+	}).(WorkloadGroupSpecProbeGrpcPtrOutput)
 }
 
 func (o WorkloadGroupSpecProbePtrOutput) HttpGet() WorkloadGroupSpecProbeHttpGetPtrOutput {
@@ -60465,6 +62784,316 @@ func (o WorkloadGroupSpecProbeExecPatchPtrOutput) Command() pulumi.StringArrayOu
 		}
 		return v.Command
 	}).(pulumi.StringArrayOutput)
+}
+
+// GRPC call is made and response/error is used to determine health.
+type WorkloadGroupSpecProbeGrpc struct {
+	// Port on which the endpoint lives.
+	Port    *int    `pulumi:"port"`
+	Service *string `pulumi:"service"`
+}
+
+// WorkloadGroupSpecProbeGrpcInput is an input type that accepts WorkloadGroupSpecProbeGrpcArgs and WorkloadGroupSpecProbeGrpcOutput values.
+// You can construct a concrete instance of `WorkloadGroupSpecProbeGrpcInput` via:
+//
+//	WorkloadGroupSpecProbeGrpcArgs{...}
+type WorkloadGroupSpecProbeGrpcInput interface {
+	pulumi.Input
+
+	ToWorkloadGroupSpecProbeGrpcOutput() WorkloadGroupSpecProbeGrpcOutput
+	ToWorkloadGroupSpecProbeGrpcOutputWithContext(context.Context) WorkloadGroupSpecProbeGrpcOutput
+}
+
+// GRPC call is made and response/error is used to determine health.
+type WorkloadGroupSpecProbeGrpcArgs struct {
+	// Port on which the endpoint lives.
+	Port    pulumi.IntPtrInput    `pulumi:"port"`
+	Service pulumi.StringPtrInput `pulumi:"service"`
+}
+
+func (WorkloadGroupSpecProbeGrpcArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*WorkloadGroupSpecProbeGrpc)(nil)).Elem()
+}
+
+func (i WorkloadGroupSpecProbeGrpcArgs) ToWorkloadGroupSpecProbeGrpcOutput() WorkloadGroupSpecProbeGrpcOutput {
+	return i.ToWorkloadGroupSpecProbeGrpcOutputWithContext(context.Background())
+}
+
+func (i WorkloadGroupSpecProbeGrpcArgs) ToWorkloadGroupSpecProbeGrpcOutputWithContext(ctx context.Context) WorkloadGroupSpecProbeGrpcOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(WorkloadGroupSpecProbeGrpcOutput)
+}
+
+func (i WorkloadGroupSpecProbeGrpcArgs) ToWorkloadGroupSpecProbeGrpcPtrOutput() WorkloadGroupSpecProbeGrpcPtrOutput {
+	return i.ToWorkloadGroupSpecProbeGrpcPtrOutputWithContext(context.Background())
+}
+
+func (i WorkloadGroupSpecProbeGrpcArgs) ToWorkloadGroupSpecProbeGrpcPtrOutputWithContext(ctx context.Context) WorkloadGroupSpecProbeGrpcPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(WorkloadGroupSpecProbeGrpcOutput).ToWorkloadGroupSpecProbeGrpcPtrOutputWithContext(ctx)
+}
+
+// WorkloadGroupSpecProbeGrpcPtrInput is an input type that accepts WorkloadGroupSpecProbeGrpcArgs, WorkloadGroupSpecProbeGrpcPtr and WorkloadGroupSpecProbeGrpcPtrOutput values.
+// You can construct a concrete instance of `WorkloadGroupSpecProbeGrpcPtrInput` via:
+//
+//	        WorkloadGroupSpecProbeGrpcArgs{...}
+//
+//	or:
+//
+//	        nil
+type WorkloadGroupSpecProbeGrpcPtrInput interface {
+	pulumi.Input
+
+	ToWorkloadGroupSpecProbeGrpcPtrOutput() WorkloadGroupSpecProbeGrpcPtrOutput
+	ToWorkloadGroupSpecProbeGrpcPtrOutputWithContext(context.Context) WorkloadGroupSpecProbeGrpcPtrOutput
+}
+
+type workloadGroupSpecProbeGrpcPtrType WorkloadGroupSpecProbeGrpcArgs
+
+func WorkloadGroupSpecProbeGrpcPtr(v *WorkloadGroupSpecProbeGrpcArgs) WorkloadGroupSpecProbeGrpcPtrInput {
+	return (*workloadGroupSpecProbeGrpcPtrType)(v)
+}
+
+func (*workloadGroupSpecProbeGrpcPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**WorkloadGroupSpecProbeGrpc)(nil)).Elem()
+}
+
+func (i *workloadGroupSpecProbeGrpcPtrType) ToWorkloadGroupSpecProbeGrpcPtrOutput() WorkloadGroupSpecProbeGrpcPtrOutput {
+	return i.ToWorkloadGroupSpecProbeGrpcPtrOutputWithContext(context.Background())
+}
+
+func (i *workloadGroupSpecProbeGrpcPtrType) ToWorkloadGroupSpecProbeGrpcPtrOutputWithContext(ctx context.Context) WorkloadGroupSpecProbeGrpcPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(WorkloadGroupSpecProbeGrpcPtrOutput)
+}
+
+// GRPC call is made and response/error is used to determine health.
+type WorkloadGroupSpecProbeGrpcOutput struct{ *pulumi.OutputState }
+
+func (WorkloadGroupSpecProbeGrpcOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*WorkloadGroupSpecProbeGrpc)(nil)).Elem()
+}
+
+func (o WorkloadGroupSpecProbeGrpcOutput) ToWorkloadGroupSpecProbeGrpcOutput() WorkloadGroupSpecProbeGrpcOutput {
+	return o
+}
+
+func (o WorkloadGroupSpecProbeGrpcOutput) ToWorkloadGroupSpecProbeGrpcOutputWithContext(ctx context.Context) WorkloadGroupSpecProbeGrpcOutput {
+	return o
+}
+
+func (o WorkloadGroupSpecProbeGrpcOutput) ToWorkloadGroupSpecProbeGrpcPtrOutput() WorkloadGroupSpecProbeGrpcPtrOutput {
+	return o.ToWorkloadGroupSpecProbeGrpcPtrOutputWithContext(context.Background())
+}
+
+func (o WorkloadGroupSpecProbeGrpcOutput) ToWorkloadGroupSpecProbeGrpcPtrOutputWithContext(ctx context.Context) WorkloadGroupSpecProbeGrpcPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v WorkloadGroupSpecProbeGrpc) *WorkloadGroupSpecProbeGrpc {
+		return &v
+	}).(WorkloadGroupSpecProbeGrpcPtrOutput)
+}
+
+// Port on which the endpoint lives.
+func (o WorkloadGroupSpecProbeGrpcOutput) Port() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v WorkloadGroupSpecProbeGrpc) *int { return v.Port }).(pulumi.IntPtrOutput)
+}
+
+func (o WorkloadGroupSpecProbeGrpcOutput) Service() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v WorkloadGroupSpecProbeGrpc) *string { return v.Service }).(pulumi.StringPtrOutput)
+}
+
+type WorkloadGroupSpecProbeGrpcPtrOutput struct{ *pulumi.OutputState }
+
+func (WorkloadGroupSpecProbeGrpcPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**WorkloadGroupSpecProbeGrpc)(nil)).Elem()
+}
+
+func (o WorkloadGroupSpecProbeGrpcPtrOutput) ToWorkloadGroupSpecProbeGrpcPtrOutput() WorkloadGroupSpecProbeGrpcPtrOutput {
+	return o
+}
+
+func (o WorkloadGroupSpecProbeGrpcPtrOutput) ToWorkloadGroupSpecProbeGrpcPtrOutputWithContext(ctx context.Context) WorkloadGroupSpecProbeGrpcPtrOutput {
+	return o
+}
+
+func (o WorkloadGroupSpecProbeGrpcPtrOutput) Elem() WorkloadGroupSpecProbeGrpcOutput {
+	return o.ApplyT(func(v *WorkloadGroupSpecProbeGrpc) WorkloadGroupSpecProbeGrpc {
+		if v != nil {
+			return *v
+		}
+		var ret WorkloadGroupSpecProbeGrpc
+		return ret
+	}).(WorkloadGroupSpecProbeGrpcOutput)
+}
+
+// Port on which the endpoint lives.
+func (o WorkloadGroupSpecProbeGrpcPtrOutput) Port() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *WorkloadGroupSpecProbeGrpc) *int {
+		if v == nil {
+			return nil
+		}
+		return v.Port
+	}).(pulumi.IntPtrOutput)
+}
+
+func (o WorkloadGroupSpecProbeGrpcPtrOutput) Service() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *WorkloadGroupSpecProbeGrpc) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Service
+	}).(pulumi.StringPtrOutput)
+}
+
+// GRPC call is made and response/error is used to determine health.
+type WorkloadGroupSpecProbeGrpcPatch struct {
+	// Port on which the endpoint lives.
+	Port    *int    `pulumi:"port"`
+	Service *string `pulumi:"service"`
+}
+
+// WorkloadGroupSpecProbeGrpcPatchInput is an input type that accepts WorkloadGroupSpecProbeGrpcPatchArgs and WorkloadGroupSpecProbeGrpcPatchOutput values.
+// You can construct a concrete instance of `WorkloadGroupSpecProbeGrpcPatchInput` via:
+//
+//	WorkloadGroupSpecProbeGrpcPatchArgs{...}
+type WorkloadGroupSpecProbeGrpcPatchInput interface {
+	pulumi.Input
+
+	ToWorkloadGroupSpecProbeGrpcPatchOutput() WorkloadGroupSpecProbeGrpcPatchOutput
+	ToWorkloadGroupSpecProbeGrpcPatchOutputWithContext(context.Context) WorkloadGroupSpecProbeGrpcPatchOutput
+}
+
+// GRPC call is made and response/error is used to determine health.
+type WorkloadGroupSpecProbeGrpcPatchArgs struct {
+	// Port on which the endpoint lives.
+	Port    pulumi.IntPtrInput    `pulumi:"port"`
+	Service pulumi.StringPtrInput `pulumi:"service"`
+}
+
+func (WorkloadGroupSpecProbeGrpcPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*WorkloadGroupSpecProbeGrpcPatch)(nil)).Elem()
+}
+
+func (i WorkloadGroupSpecProbeGrpcPatchArgs) ToWorkloadGroupSpecProbeGrpcPatchOutput() WorkloadGroupSpecProbeGrpcPatchOutput {
+	return i.ToWorkloadGroupSpecProbeGrpcPatchOutputWithContext(context.Background())
+}
+
+func (i WorkloadGroupSpecProbeGrpcPatchArgs) ToWorkloadGroupSpecProbeGrpcPatchOutputWithContext(ctx context.Context) WorkloadGroupSpecProbeGrpcPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(WorkloadGroupSpecProbeGrpcPatchOutput)
+}
+
+func (i WorkloadGroupSpecProbeGrpcPatchArgs) ToWorkloadGroupSpecProbeGrpcPatchPtrOutput() WorkloadGroupSpecProbeGrpcPatchPtrOutput {
+	return i.ToWorkloadGroupSpecProbeGrpcPatchPtrOutputWithContext(context.Background())
+}
+
+func (i WorkloadGroupSpecProbeGrpcPatchArgs) ToWorkloadGroupSpecProbeGrpcPatchPtrOutputWithContext(ctx context.Context) WorkloadGroupSpecProbeGrpcPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(WorkloadGroupSpecProbeGrpcPatchOutput).ToWorkloadGroupSpecProbeGrpcPatchPtrOutputWithContext(ctx)
+}
+
+// WorkloadGroupSpecProbeGrpcPatchPtrInput is an input type that accepts WorkloadGroupSpecProbeGrpcPatchArgs, WorkloadGroupSpecProbeGrpcPatchPtr and WorkloadGroupSpecProbeGrpcPatchPtrOutput values.
+// You can construct a concrete instance of `WorkloadGroupSpecProbeGrpcPatchPtrInput` via:
+//
+//	        WorkloadGroupSpecProbeGrpcPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type WorkloadGroupSpecProbeGrpcPatchPtrInput interface {
+	pulumi.Input
+
+	ToWorkloadGroupSpecProbeGrpcPatchPtrOutput() WorkloadGroupSpecProbeGrpcPatchPtrOutput
+	ToWorkloadGroupSpecProbeGrpcPatchPtrOutputWithContext(context.Context) WorkloadGroupSpecProbeGrpcPatchPtrOutput
+}
+
+type workloadGroupSpecProbeGrpcPatchPtrType WorkloadGroupSpecProbeGrpcPatchArgs
+
+func WorkloadGroupSpecProbeGrpcPatchPtr(v *WorkloadGroupSpecProbeGrpcPatchArgs) WorkloadGroupSpecProbeGrpcPatchPtrInput {
+	return (*workloadGroupSpecProbeGrpcPatchPtrType)(v)
+}
+
+func (*workloadGroupSpecProbeGrpcPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**WorkloadGroupSpecProbeGrpcPatch)(nil)).Elem()
+}
+
+func (i *workloadGroupSpecProbeGrpcPatchPtrType) ToWorkloadGroupSpecProbeGrpcPatchPtrOutput() WorkloadGroupSpecProbeGrpcPatchPtrOutput {
+	return i.ToWorkloadGroupSpecProbeGrpcPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *workloadGroupSpecProbeGrpcPatchPtrType) ToWorkloadGroupSpecProbeGrpcPatchPtrOutputWithContext(ctx context.Context) WorkloadGroupSpecProbeGrpcPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(WorkloadGroupSpecProbeGrpcPatchPtrOutput)
+}
+
+// GRPC call is made and response/error is used to determine health.
+type WorkloadGroupSpecProbeGrpcPatchOutput struct{ *pulumi.OutputState }
+
+func (WorkloadGroupSpecProbeGrpcPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*WorkloadGroupSpecProbeGrpcPatch)(nil)).Elem()
+}
+
+func (o WorkloadGroupSpecProbeGrpcPatchOutput) ToWorkloadGroupSpecProbeGrpcPatchOutput() WorkloadGroupSpecProbeGrpcPatchOutput {
+	return o
+}
+
+func (o WorkloadGroupSpecProbeGrpcPatchOutput) ToWorkloadGroupSpecProbeGrpcPatchOutputWithContext(ctx context.Context) WorkloadGroupSpecProbeGrpcPatchOutput {
+	return o
+}
+
+func (o WorkloadGroupSpecProbeGrpcPatchOutput) ToWorkloadGroupSpecProbeGrpcPatchPtrOutput() WorkloadGroupSpecProbeGrpcPatchPtrOutput {
+	return o.ToWorkloadGroupSpecProbeGrpcPatchPtrOutputWithContext(context.Background())
+}
+
+func (o WorkloadGroupSpecProbeGrpcPatchOutput) ToWorkloadGroupSpecProbeGrpcPatchPtrOutputWithContext(ctx context.Context) WorkloadGroupSpecProbeGrpcPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v WorkloadGroupSpecProbeGrpcPatch) *WorkloadGroupSpecProbeGrpcPatch {
+		return &v
+	}).(WorkloadGroupSpecProbeGrpcPatchPtrOutput)
+}
+
+// Port on which the endpoint lives.
+func (o WorkloadGroupSpecProbeGrpcPatchOutput) Port() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v WorkloadGroupSpecProbeGrpcPatch) *int { return v.Port }).(pulumi.IntPtrOutput)
+}
+
+func (o WorkloadGroupSpecProbeGrpcPatchOutput) Service() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v WorkloadGroupSpecProbeGrpcPatch) *string { return v.Service }).(pulumi.StringPtrOutput)
+}
+
+type WorkloadGroupSpecProbeGrpcPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (WorkloadGroupSpecProbeGrpcPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**WorkloadGroupSpecProbeGrpcPatch)(nil)).Elem()
+}
+
+func (o WorkloadGroupSpecProbeGrpcPatchPtrOutput) ToWorkloadGroupSpecProbeGrpcPatchPtrOutput() WorkloadGroupSpecProbeGrpcPatchPtrOutput {
+	return o
+}
+
+func (o WorkloadGroupSpecProbeGrpcPatchPtrOutput) ToWorkloadGroupSpecProbeGrpcPatchPtrOutputWithContext(ctx context.Context) WorkloadGroupSpecProbeGrpcPatchPtrOutput {
+	return o
+}
+
+func (o WorkloadGroupSpecProbeGrpcPatchPtrOutput) Elem() WorkloadGroupSpecProbeGrpcPatchOutput {
+	return o.ApplyT(func(v *WorkloadGroupSpecProbeGrpcPatch) WorkloadGroupSpecProbeGrpcPatch {
+		if v != nil {
+			return *v
+		}
+		var ret WorkloadGroupSpecProbeGrpcPatch
+		return ret
+	}).(WorkloadGroupSpecProbeGrpcPatchOutput)
+}
+
+// Port on which the endpoint lives.
+func (o WorkloadGroupSpecProbeGrpcPatchPtrOutput) Port() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *WorkloadGroupSpecProbeGrpcPatch) *int {
+		if v == nil {
+			return nil
+		}
+		return v.Port
+	}).(pulumi.IntPtrOutput)
+}
+
+func (o WorkloadGroupSpecProbeGrpcPatchPtrOutput) Service() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *WorkloadGroupSpecProbeGrpcPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Service
+	}).(pulumi.StringPtrOutput)
 }
 
 // `httpGet` is performed to a given endpoint and the status/able to connect determines health.
@@ -61098,6 +63727,7 @@ type WorkloadGroupSpecProbePatch struct {
 	Exec *WorkloadGroupSpecProbeExecPatch `pulumi:"exec"`
 	// Minimum consecutive failures for the probe to be considered failed after having succeeded.
 	FailureThreshold *int                                `pulumi:"failureThreshold"`
+	Grpc             *WorkloadGroupSpecProbeGrpcPatch    `pulumi:"grpc"`
 	HttpGet          *WorkloadGroupSpecProbeHttpGetPatch `pulumi:"httpGet"`
 	// Number of seconds after the container has started before readiness probes are initiated.
 	InitialDelaySeconds *int `pulumi:"initialDelaySeconds"`
@@ -61126,6 +63756,7 @@ type WorkloadGroupSpecProbePatchArgs struct {
 	Exec WorkloadGroupSpecProbeExecPatchPtrInput `pulumi:"exec"`
 	// Minimum consecutive failures for the probe to be considered failed after having succeeded.
 	FailureThreshold pulumi.IntPtrInput                         `pulumi:"failureThreshold"`
+	Grpc             WorkloadGroupSpecProbeGrpcPatchPtrInput    `pulumi:"grpc"`
 	HttpGet          WorkloadGroupSpecProbeHttpGetPatchPtrInput `pulumi:"httpGet"`
 	// Number of seconds after the container has started before readiness probes are initiated.
 	InitialDelaySeconds pulumi.IntPtrInput `pulumi:"initialDelaySeconds"`
@@ -61225,6 +63856,10 @@ func (o WorkloadGroupSpecProbePatchOutput) FailureThreshold() pulumi.IntPtrOutpu
 	return o.ApplyT(func(v WorkloadGroupSpecProbePatch) *int { return v.FailureThreshold }).(pulumi.IntPtrOutput)
 }
 
+func (o WorkloadGroupSpecProbePatchOutput) Grpc() WorkloadGroupSpecProbeGrpcPatchPtrOutput {
+	return o.ApplyT(func(v WorkloadGroupSpecProbePatch) *WorkloadGroupSpecProbeGrpcPatch { return v.Grpc }).(WorkloadGroupSpecProbeGrpcPatchPtrOutput)
+}
+
 func (o WorkloadGroupSpecProbePatchOutput) HttpGet() WorkloadGroupSpecProbeHttpGetPatchPtrOutput {
 	return o.ApplyT(func(v WorkloadGroupSpecProbePatch) *WorkloadGroupSpecProbeHttpGetPatch { return v.HttpGet }).(WorkloadGroupSpecProbeHttpGetPatchPtrOutput)
 }
@@ -61294,6 +63929,15 @@ func (o WorkloadGroupSpecProbePatchPtrOutput) FailureThreshold() pulumi.IntPtrOu
 		}
 		return v.FailureThreshold
 	}).(pulumi.IntPtrOutput)
+}
+
+func (o WorkloadGroupSpecProbePatchPtrOutput) Grpc() WorkloadGroupSpecProbeGrpcPatchPtrOutput {
+	return o.ApplyT(func(v *WorkloadGroupSpecProbePatch) *WorkloadGroupSpecProbeGrpcPatch {
+		if v == nil {
+			return nil
+		}
+		return v.Grpc
+	}).(WorkloadGroupSpecProbeGrpcPatchPtrOutput)
 }
 
 func (o WorkloadGroupSpecProbePatchPtrOutput) HttpGet() WorkloadGroupSpecProbeHttpGetPatchPtrOutput {
@@ -62227,6 +64871,10 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingPatchPtrInput)(nil)).Elem(), DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerPatchInput)(nil)).Elem(), DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerPatchPtrInput)(nil)).Elem(), DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupInput)(nil)).Elem(), DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrInput)(nil)).Elem(), DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchInput)(nil)).Elem(), DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrInput)(nil)).Elem(), DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecSubsetsTrafficPolicyOutlierDetectionInput)(nil)).Elem(), DestinationRuleSpecSubsetsTrafficPolicyOutlierDetectionArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecSubsetsTrafficPolicyOutlierDetectionPtrInput)(nil)).Elem(), DestinationRuleSpecSubsetsTrafficPolicyOutlierDetectionArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecSubsetsTrafficPolicyOutlierDetectionPatchInput)(nil)).Elem(), DestinationRuleSpecSubsetsTrafficPolicyOutlierDetectionPatchArgs{})
@@ -62283,6 +64931,10 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingPatchPtrInput)(nil)).Elem(), DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerPatchInput)(nil)).Elem(), DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerPatchPtrInput)(nil)).Elem(), DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupInput)(nil)).Elem(), DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrInput)(nil)).Elem(), DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchInput)(nil)).Elem(), DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrInput)(nil)).Elem(), DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsOutlierDetectionInput)(nil)).Elem(), DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsOutlierDetectionArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsOutlierDetectionPtrInput)(nil)).Elem(), DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsOutlierDetectionArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsOutlierDetectionPatchInput)(nil)).Elem(), DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsOutlierDetectionPatchArgs{})
@@ -62359,6 +65011,10 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingPatchPtrInput)(nil)).Elem(), DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecTrafficPolicyLoadBalancerPatchInput)(nil)).Elem(), DestinationRuleSpecTrafficPolicyLoadBalancerPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecTrafficPolicyLoadBalancerPatchPtrInput)(nil)).Elem(), DestinationRuleSpecTrafficPolicyLoadBalancerPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecTrafficPolicyLoadBalancerWarmupInput)(nil)).Elem(), DestinationRuleSpecTrafficPolicyLoadBalancerWarmupArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrInput)(nil)).Elem(), DestinationRuleSpecTrafficPolicyLoadBalancerWarmupArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchInput)(nil)).Elem(), DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrInput)(nil)).Elem(), DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecTrafficPolicyOutlierDetectionInput)(nil)).Elem(), DestinationRuleSpecTrafficPolicyOutlierDetectionArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecTrafficPolicyOutlierDetectionPtrInput)(nil)).Elem(), DestinationRuleSpecTrafficPolicyOutlierDetectionArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecTrafficPolicyOutlierDetectionPatchInput)(nil)).Elem(), DestinationRuleSpecTrafficPolicyOutlierDetectionPatchArgs{})
@@ -62415,6 +65071,10 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingPatchPtrInput)(nil)).Elem(), DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerPatchInput)(nil)).Elem(), DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerPatchPtrInput)(nil)).Elem(), DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupInput)(nil)).Elem(), DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrInput)(nil)).Elem(), DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchInput)(nil)).Elem(), DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrInput)(nil)).Elem(), DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecTrafficPolicyPortLevelSettingsOutlierDetectionInput)(nil)).Elem(), DestinationRuleSpecTrafficPolicyPortLevelSettingsOutlierDetectionArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecTrafficPolicyPortLevelSettingsOutlierDetectionPtrInput)(nil)).Elem(), DestinationRuleSpecTrafficPolicyPortLevelSettingsOutlierDetectionArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*DestinationRuleSpecTrafficPolicyPortLevelSettingsOutlierDetectionPatchInput)(nil)).Elem(), DestinationRuleSpecTrafficPolicyPortLevelSettingsOutlierDetectionPatchArgs{})
@@ -62526,6 +65186,10 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecServersTlsPtrInput)(nil)).Elem(), GatewaySpecServersTlsArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecServersTlsPatchInput)(nil)).Elem(), GatewaySpecServersTlsPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecServersTlsPatchPtrInput)(nil)).Elem(), GatewaySpecServersTlsPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecServersTlsTlsCertificatesInput)(nil)).Elem(), GatewaySpecServersTlsTlsCertificatesArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecServersTlsTlsCertificatesArrayInput)(nil)).Elem(), GatewaySpecServersTlsTlsCertificatesArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecServersTlsTlsCertificatesPatchInput)(nil)).Elem(), GatewaySpecServersTlsTlsCertificatesPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*GatewaySpecServersTlsTlsCertificatesPatchArrayInput)(nil)).Elem(), GatewaySpecServersTlsTlsCertificatesPatchArray{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ServiceEntryTypeInput)(nil)).Elem(), ServiceEntryTypeArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ServiceEntryTypeArrayInput)(nil)).Elem(), ServiceEntryTypeArray{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ServiceEntryListTypeInput)(nil)).Elem(), ServiceEntryListTypeArgs{})
@@ -62604,6 +65268,10 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*SidecarSpecIngressTlsPtrInput)(nil)).Elem(), SidecarSpecIngressTlsArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*SidecarSpecIngressTlsPatchInput)(nil)).Elem(), SidecarSpecIngressTlsPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*SidecarSpecIngressTlsPatchPtrInput)(nil)).Elem(), SidecarSpecIngressTlsPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*SidecarSpecIngressTlsTlsCertificatesInput)(nil)).Elem(), SidecarSpecIngressTlsTlsCertificatesArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*SidecarSpecIngressTlsTlsCertificatesArrayInput)(nil)).Elem(), SidecarSpecIngressTlsTlsCertificatesArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*SidecarSpecIngressTlsTlsCertificatesPatchInput)(nil)).Elem(), SidecarSpecIngressTlsTlsCertificatesPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*SidecarSpecIngressTlsTlsCertificatesPatchArrayInput)(nil)).Elem(), SidecarSpecIngressTlsTlsCertificatesPatchArray{})
 	pulumi.RegisterInputType(reflect.TypeOf((*SidecarSpecOutboundTrafficPolicyInput)(nil)).Elem(), SidecarSpecOutboundTrafficPolicyArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*SidecarSpecOutboundTrafficPolicyPtrInput)(nil)).Elem(), SidecarSpecOutboundTrafficPolicyArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*SidecarSpecOutboundTrafficPolicyEgressProxyInput)(nil)).Elem(), SidecarSpecOutboundTrafficPolicyEgressProxyArgs{})
@@ -62840,6 +65508,10 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*WorkloadGroupSpecProbeExecPtrInput)(nil)).Elem(), WorkloadGroupSpecProbeExecArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*WorkloadGroupSpecProbeExecPatchInput)(nil)).Elem(), WorkloadGroupSpecProbeExecPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*WorkloadGroupSpecProbeExecPatchPtrInput)(nil)).Elem(), WorkloadGroupSpecProbeExecPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*WorkloadGroupSpecProbeGrpcInput)(nil)).Elem(), WorkloadGroupSpecProbeGrpcArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*WorkloadGroupSpecProbeGrpcPtrInput)(nil)).Elem(), WorkloadGroupSpecProbeGrpcArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*WorkloadGroupSpecProbeGrpcPatchInput)(nil)).Elem(), WorkloadGroupSpecProbeGrpcPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*WorkloadGroupSpecProbeGrpcPatchPtrInput)(nil)).Elem(), WorkloadGroupSpecProbeGrpcPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*WorkloadGroupSpecProbeHttpGetInput)(nil)).Elem(), WorkloadGroupSpecProbeHttpGetArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*WorkloadGroupSpecProbeHttpGetPtrInput)(nil)).Elem(), WorkloadGroupSpecProbeHttpGetArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*WorkloadGroupSpecProbeHttpGetHttpHeadersInput)(nil)).Elem(), WorkloadGroupSpecProbeHttpGetHttpHeadersArgs{})
@@ -62920,6 +65592,10 @@ func init() {
 	pulumi.RegisterOutputType(DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerLocalityLbSettingPatchPtrOutput{})
 	pulumi.RegisterOutputType(DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerPatchOutput{})
 	pulumi.RegisterOutputType(DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerPatchPtrOutput{})
+	pulumi.RegisterOutputType(DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupOutput{})
+	pulumi.RegisterOutputType(DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPtrOutput{})
+	pulumi.RegisterOutputType(DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchOutput{})
+	pulumi.RegisterOutputType(DestinationRuleSpecSubsetsTrafficPolicyLoadBalancerWarmupPatchPtrOutput{})
 	pulumi.RegisterOutputType(DestinationRuleSpecSubsetsTrafficPolicyOutlierDetectionOutput{})
 	pulumi.RegisterOutputType(DestinationRuleSpecSubsetsTrafficPolicyOutlierDetectionPtrOutput{})
 	pulumi.RegisterOutputType(DestinationRuleSpecSubsetsTrafficPolicyOutlierDetectionPatchOutput{})
@@ -62976,6 +65652,10 @@ func init() {
 	pulumi.RegisterOutputType(DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingPatchPtrOutput{})
 	pulumi.RegisterOutputType(DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerPatchOutput{})
 	pulumi.RegisterOutputType(DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerPatchPtrOutput{})
+	pulumi.RegisterOutputType(DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput{})
+	pulumi.RegisterOutputType(DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput{})
+	pulumi.RegisterOutputType(DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput{})
+	pulumi.RegisterOutputType(DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput{})
 	pulumi.RegisterOutputType(DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsOutlierDetectionOutput{})
 	pulumi.RegisterOutputType(DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsOutlierDetectionPtrOutput{})
 	pulumi.RegisterOutputType(DestinationRuleSpecSubsetsTrafficPolicyPortLevelSettingsOutlierDetectionPatchOutput{})
@@ -63052,6 +65732,10 @@ func init() {
 	pulumi.RegisterOutputType(DestinationRuleSpecTrafficPolicyLoadBalancerLocalityLbSettingPatchPtrOutput{})
 	pulumi.RegisterOutputType(DestinationRuleSpecTrafficPolicyLoadBalancerPatchOutput{})
 	pulumi.RegisterOutputType(DestinationRuleSpecTrafficPolicyLoadBalancerPatchPtrOutput{})
+	pulumi.RegisterOutputType(DestinationRuleSpecTrafficPolicyLoadBalancerWarmupOutput{})
+	pulumi.RegisterOutputType(DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPtrOutput{})
+	pulumi.RegisterOutputType(DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchOutput{})
+	pulumi.RegisterOutputType(DestinationRuleSpecTrafficPolicyLoadBalancerWarmupPatchPtrOutput{})
 	pulumi.RegisterOutputType(DestinationRuleSpecTrafficPolicyOutlierDetectionOutput{})
 	pulumi.RegisterOutputType(DestinationRuleSpecTrafficPolicyOutlierDetectionPtrOutput{})
 	pulumi.RegisterOutputType(DestinationRuleSpecTrafficPolicyOutlierDetectionPatchOutput{})
@@ -63108,6 +65792,10 @@ func init() {
 	pulumi.RegisterOutputType(DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingPatchPtrOutput{})
 	pulumi.RegisterOutputType(DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerPatchOutput{})
 	pulumi.RegisterOutputType(DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerPatchPtrOutput{})
+	pulumi.RegisterOutputType(DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupOutput{})
+	pulumi.RegisterOutputType(DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPtrOutput{})
+	pulumi.RegisterOutputType(DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchOutput{})
+	pulumi.RegisterOutputType(DestinationRuleSpecTrafficPolicyPortLevelSettingsLoadBalancerWarmupPatchPtrOutput{})
 	pulumi.RegisterOutputType(DestinationRuleSpecTrafficPolicyPortLevelSettingsOutlierDetectionOutput{})
 	pulumi.RegisterOutputType(DestinationRuleSpecTrafficPolicyPortLevelSettingsOutlierDetectionPtrOutput{})
 	pulumi.RegisterOutputType(DestinationRuleSpecTrafficPolicyPortLevelSettingsOutlierDetectionPatchOutput{})
@@ -63219,6 +65907,10 @@ func init() {
 	pulumi.RegisterOutputType(GatewaySpecServersTlsPtrOutput{})
 	pulumi.RegisterOutputType(GatewaySpecServersTlsPatchOutput{})
 	pulumi.RegisterOutputType(GatewaySpecServersTlsPatchPtrOutput{})
+	pulumi.RegisterOutputType(GatewaySpecServersTlsTlsCertificatesOutput{})
+	pulumi.RegisterOutputType(GatewaySpecServersTlsTlsCertificatesArrayOutput{})
+	pulumi.RegisterOutputType(GatewaySpecServersTlsTlsCertificatesPatchOutput{})
+	pulumi.RegisterOutputType(GatewaySpecServersTlsTlsCertificatesPatchArrayOutput{})
 	pulumi.RegisterOutputType(ServiceEntryTypeOutput{})
 	pulumi.RegisterOutputType(ServiceEntryTypeArrayOutput{})
 	pulumi.RegisterOutputType(ServiceEntryListTypeOutput{})
@@ -63297,6 +65989,10 @@ func init() {
 	pulumi.RegisterOutputType(SidecarSpecIngressTlsPtrOutput{})
 	pulumi.RegisterOutputType(SidecarSpecIngressTlsPatchOutput{})
 	pulumi.RegisterOutputType(SidecarSpecIngressTlsPatchPtrOutput{})
+	pulumi.RegisterOutputType(SidecarSpecIngressTlsTlsCertificatesOutput{})
+	pulumi.RegisterOutputType(SidecarSpecIngressTlsTlsCertificatesArrayOutput{})
+	pulumi.RegisterOutputType(SidecarSpecIngressTlsTlsCertificatesPatchOutput{})
+	pulumi.RegisterOutputType(SidecarSpecIngressTlsTlsCertificatesPatchArrayOutput{})
 	pulumi.RegisterOutputType(SidecarSpecOutboundTrafficPolicyOutput{})
 	pulumi.RegisterOutputType(SidecarSpecOutboundTrafficPolicyPtrOutput{})
 	pulumi.RegisterOutputType(SidecarSpecOutboundTrafficPolicyEgressProxyOutput{})
@@ -63533,6 +66229,10 @@ func init() {
 	pulumi.RegisterOutputType(WorkloadGroupSpecProbeExecPtrOutput{})
 	pulumi.RegisterOutputType(WorkloadGroupSpecProbeExecPatchOutput{})
 	pulumi.RegisterOutputType(WorkloadGroupSpecProbeExecPatchPtrOutput{})
+	pulumi.RegisterOutputType(WorkloadGroupSpecProbeGrpcOutput{})
+	pulumi.RegisterOutputType(WorkloadGroupSpecProbeGrpcPtrOutput{})
+	pulumi.RegisterOutputType(WorkloadGroupSpecProbeGrpcPatchOutput{})
+	pulumi.RegisterOutputType(WorkloadGroupSpecProbeGrpcPatchPtrOutput{})
 	pulumi.RegisterOutputType(WorkloadGroupSpecProbeHttpGetOutput{})
 	pulumi.RegisterOutputType(WorkloadGroupSpecProbeHttpGetPtrOutput{})
 	pulumi.RegisterOutputType(WorkloadGroupSpecProbeHttpGetHttpHeadersOutput{})

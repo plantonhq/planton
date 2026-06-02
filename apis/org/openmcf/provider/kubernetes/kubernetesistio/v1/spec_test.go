@@ -104,9 +104,47 @@ var _ = ginkgo.Describe("KubernetesIstioSpec validations", func() {
 				gomega.Expect(err).To(gomega.BeNil())
 			})
 		})
+
+		ginkgo.Context("spec with version field", func() {
+			ginkgo.It("should accept an omitted version (default applies at manifest load)", func() {
+				spec.Version = nil
+				err := protovalidate.Validate(spec)
+				gomega.Expect(err).To(gomega.BeNil())
+			})
+
+			ginkgo.It("should accept an explicit full-patch version (release target)", func() {
+				v := "1.26.8"
+				spec.Version = &v
+				err := protovalidate.Validate(spec)
+				gomega.Expect(err).To(gomega.BeNil())
+			})
+
+			ginkgo.It("should accept pinning an older version (sequential-upgrade safety)", func() {
+				v := "1.22.3"
+				spec.Version = &v
+				err := protovalidate.Validate(spec)
+				gomega.Expect(err).To(gomega.BeNil())
+			})
+		})
 	})
 
 	ginkgo.Describe("When invalid input is passed", func() {
+		ginkgo.Context("spec with malformed version", func() {
+			ginkgo.It("should reject a bare minor version (full patch required)", func() {
+				v := "1.26"
+				spec.Version = &v
+				err := protovalidate.Validate(spec)
+				gomega.Expect(err).NotTo(gomega.BeNil())
+			})
+
+			ginkgo.It("should reject a non-semver version string", func() {
+				v := "latest"
+				spec.Version = &v
+				err := protovalidate.Validate(spec)
+				gomega.Expect(err).NotTo(gomega.BeNil())
+			})
+		})
+
 		ginkgo.Context("spec with missing required container field", func() {
 			ginkgo.It("should return a validation error", func() {
 				spec.Container = nil

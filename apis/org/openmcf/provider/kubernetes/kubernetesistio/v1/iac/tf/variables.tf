@@ -21,6 +21,12 @@ variable "spec" {
     # Flag to indicate if the namespace should be created
     create_namespace = bool
 
+    # Istio version to deploy (full patch, e.g. "1.26.8"). Drives the Helm chart
+    # version. If null, falls back to the module default. Istio supports only
+    # sequential single-minor upgrades; pin an existing mesh's current version here
+    # before redeploying to avoid an unsupported multi-minor jump.
+    version = optional(string)
+
     # The container specifications for the Istio control plane deployment.
     container = object({
 

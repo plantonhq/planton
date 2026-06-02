@@ -36,10 +36,11 @@ locals {
   base_chart_name       = "base"
   istiod_chart_name     = "istiod"
   gateway_chart_name    = "gateway"
-  default_chart_version = "1.22.3"
+  default_chart_version = "1.26.8"
 
-  # Use specified chart version or default (currently no version field in spec, using default)
-  chart_version = local.default_chart_version
+  # Istio version: driven by spec.version, falling back to the module default.
+  # Keep default_chart_version in sync with the SDK/CRD pin for this OpenMCF release.
+  chart_version = try(var.spec.version, null) != null ? var.spec.version : local.default_chart_version
 
   # Computed Helm release names to avoid conflicts when multiple instances share a namespace
   # Format: {metadata.name}-{chart}
