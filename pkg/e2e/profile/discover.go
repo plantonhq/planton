@@ -270,6 +270,7 @@ func toPascalCase(name string) string {
 		{"kubernetesrequestauthentication", "KubernetesRequestAuthentication"},
 		{"kubernetesauthorizationpolicy", "KubernetesAuthorizationPolicy"},
 		{"kubernetesserviceentry", "KubernetesServiceEntry"},
+		{"kubernetesdestinationrule", "KubernetesDestinationRule"},
 		{"kubernetesenvoyfilter", "KubernetesEnvoyFilter"},
 		{"kubernetesgharunnerscalesetcontroller", "KubernetesGhaRunnerScaleSetController"},
 		{"kubernetesrookcephoperator", "KubernetesRookCephOperator"},

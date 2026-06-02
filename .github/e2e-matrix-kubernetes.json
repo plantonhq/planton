@@ -52,17 +52,17 @@
       "name": "Tier 4 Pulumi",
       "tier": 4,
       "engine": "pulumi",
-      "timeout": 330,
-      "run_regex": "Test(KubernetesAltinityOperator|KubernetesAuthorizationPolicy|KubernetesElasticOperator|KubernetesEnvoyFilter|KubernetesExternalSecrets|KubernetesGateway|KubernetesGatewayApiCrds|KubernetesGatewayClass|KubernetesGhaRunnerScaleSetController|KubernetesGrpcRoute|KubernetesHttpRoute|KubernetesIstioBaseCrds|KubernetesPeerAuthentication|KubernetesReferenceGrant|KubernetesRequestAuthentication|KubernetesRookCephOperator|KubernetesServiceEntry|KubernetesStrimziKafkaOperator|KubernetesTcpRoute|KubernetesTlsRoute|KubernetesZalandoPostgresOperator)_Pulumi",
-      "component_count": 21
+      "timeout": 345,
+      "run_regex": "Test(KubernetesAltinityOperator|KubernetesAuthorizationPolicy|KubernetesDestinationRule|KubernetesElasticOperator|KubernetesEnvoyFilter|KubernetesExternalSecrets|KubernetesGateway|KubernetesGatewayApiCrds|KubernetesGatewayClass|KubernetesGhaRunnerScaleSetController|KubernetesGrpcRoute|KubernetesHttpRoute|KubernetesIstioBaseCrds|KubernetesPeerAuthentication|KubernetesReferenceGrant|KubernetesRequestAuthentication|KubernetesRookCephOperator|KubernetesServiceEntry|KubernetesStrimziKafkaOperator|KubernetesTcpRoute|KubernetesTlsRoute|KubernetesZalandoPostgresOperator)_Pulumi",
+      "component_count": 22
     },
     {
       "name": "Tier 4 Terraform",
       "tier": 4,
       "engine": "terraform",
-      "timeout": 330,
-      "run_regex": "Test(KubernetesAltinityOperator|KubernetesAuthorizationPolicy|KubernetesElasticOperator|KubernetesEnvoyFilter|KubernetesExternalSecrets|KubernetesGateway|KubernetesGatewayApiCrds|KubernetesGatewayClass|KubernetesGhaRunnerScaleSetController|KubernetesGrpcRoute|KubernetesHttpRoute|KubernetesIstioBaseCrds|KubernetesPeerAuthentication|KubernetesReferenceGrant|KubernetesRequestAuthentication|KubernetesRookCephOperator|KubernetesServiceEntry|KubernetesStrimziKafkaOperator|KubernetesTcpRoute|KubernetesTlsRoute|KubernetesZalandoPostgresOperator)_Terraform",
-      "component_count": 21
+      "timeout": 345,
+      "run_regex": "Test(KubernetesAltinityOperator|KubernetesAuthorizationPolicy|KubernetesDestinationRule|KubernetesElasticOperator|KubernetesEnvoyFilter|KubernetesExternalSecrets|KubernetesGateway|KubernetesGatewayApiCrds|KubernetesGatewayClass|KubernetesGhaRunnerScaleSetController|KubernetesGrpcRoute|KubernetesHttpRoute|KubernetesIstioBaseCrds|KubernetesPeerAuthentication|KubernetesReferenceGrant|KubernetesRequestAuthentication|KubernetesRookCephOperator|KubernetesServiceEntry|KubernetesStrimziKafkaOperator|KubernetesTcpRoute|KubernetesTlsRoute|KubernetesZalandoPostgresOperator)_Terraform",
+      "component_count": 22
     }
   ]
 }

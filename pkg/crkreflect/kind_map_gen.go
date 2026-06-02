@@ -248,6 +248,7 @@ import (
 	kubernetescronjobv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetescronjob/v1"
 	kubernetesdaemonsetv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesdaemonset/v1"
 	kubernetesdeploymentv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesdeployment/v1"
+	kubernetesdestinationrulev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesdestinationrule/v1"
 	kuberneteselasticoperatorv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kuberneteselasticoperator/v1"
 	kuberneteselasticsearchv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kuberneteselasticsearch/v1"
 	kubernetesenvoyfilterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesenvoyfilter/v1"
@@ -679,6 +680,7 @@ var ProviderKubernetesMap = map[cloudresourcekind.CloudResourceKind]proto.Messag
 	cloudresourcekind.CloudResourceKind_KubernetesCronJob:                     &kubernetescronjobv1.KubernetesCronJob{},
 	cloudresourcekind.CloudResourceKind_KubernetesDaemonSet:                   &kubernetesdaemonsetv1.KubernetesDaemonSet{},
 	cloudresourcekind.CloudResourceKind_KubernetesDeployment:                  &kubernetesdeploymentv1.KubernetesDeployment{},
+	cloudresourcekind.CloudResourceKind_KubernetesDestinationRule:             &kubernetesdestinationrulev1.KubernetesDestinationRule{},
 	cloudresourcekind.CloudResourceKind_KubernetesElasticOperator:             &kuberneteselasticoperatorv1.KubernetesElasticOperator{},
 	cloudresourcekind.CloudResourceKind_KubernetesElasticsearch:               &kuberneteselasticsearchv1.KubernetesElasticsearch{},
 	cloudresourcekind.CloudResourceKind_KubernetesEnvoyFilter:                 &kubernetesenvoyfilterv1.KubernetesEnvoyFilter{},

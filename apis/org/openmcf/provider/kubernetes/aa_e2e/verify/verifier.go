@@ -131,6 +131,7 @@ var istioApiKinds = map[string]string{
 	"kubernetesrequestauthentication": "requestauthentications.security.istio.io",
 	"kubernetesauthorizationpolicy":   "authorizationpolicies.security.istio.io",
 	"kubernetesserviceentry":          "serviceentries.networking.istio.io",
+	"kubernetesdestinationrule":       "destinationrules.networking.istio.io",
 	"kubernetesenvoyfilter":           "envoyfilters.networking.istio.io",
 }
 

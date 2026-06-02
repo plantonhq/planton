@@ -80,6 +80,7 @@ var kubernetesTier4Components = []string{
 	"kubernetesrequestauthentication",
 	"kubernetesauthorizationpolicy",
 	"kubernetesserviceentry",
+	"kubernetesdestinationrule",
 	"kubernetesenvoyfilter",
 }
 
@@ -241,6 +242,8 @@ func TestKubernetesAuthorizationPolicy_Pulumi(t *testing.T) { runAllScenariosFor
 
 func TestKubernetesServiceEntry_Pulumi(t *testing.T) { runAllScenariosForComponent(t, "kubernetesserviceentry", "pulumi") }
 
+func TestKubernetesDestinationRule_Pulumi(t *testing.T) { runAllScenariosForComponent(t, "kubernetesdestinationrule", "pulumi") }
+
 func TestKubernetesEnvoyFilter_Pulumi(t *testing.T) { runAllScenariosForComponent(t, "kubernetesenvoyfilter", "pulumi") }
 
 // ─── Istio API Terraform (861-867) ──────────────────────────────────────────
@@ -252,6 +255,8 @@ func TestKubernetesRequestAuthentication_Terraform(t *testing.T) { runAllScenari
 func TestKubernetesAuthorizationPolicy_Terraform(t *testing.T) { runAllScenariosForComponent(t, "kubernetesauthorizationpolicy", "terraform") }
 
 func TestKubernetesServiceEntry_Terraform(t *testing.T) { runAllScenariosForComponent(t, "kubernetesserviceentry", "terraform") }
+
+func TestKubernetesDestinationRule_Terraform(t *testing.T) { runAllScenariosForComponent(t, "kubernetesdestinationrule", "terraform") }
 
 func TestKubernetesEnvoyFilter_Terraform(t *testing.T) { runAllScenariosForComponent(t, "kubernetesenvoyfilter", "terraform") }
 
