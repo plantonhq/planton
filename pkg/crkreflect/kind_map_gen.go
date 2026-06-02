@@ -240,6 +240,7 @@ import (
 	hetznercloudvolumev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/hetznercloud/hetznercloudvolume/v1"
 	kubernetesaltinityoperatorv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesaltinityoperator/v1"
 	kubernetesargocdv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesargocd/v1"
+	kubernetesauthorizationpolicyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesauthorizationpolicy/v1"
 	kubernetescertificatev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetescertificate/v1"
 	kubernetescertmanagerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetescertmanager/v1"
 	kubernetesclickhousev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesclickhouse/v1"
@@ -670,6 +671,7 @@ var ProviderHetznerCloudMap = map[cloudresourcekind.CloudResourceKind]proto.Mess
 var ProviderKubernetesMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_KubernetesAltinityOperator:            &kubernetesaltinityoperatorv1.KubernetesAltinityOperator{},
 	cloudresourcekind.CloudResourceKind_KubernetesArgocd:                      &kubernetesargocdv1.KubernetesArgocd{},
+	cloudresourcekind.CloudResourceKind_KubernetesAuthorizationPolicy:         &kubernetesauthorizationpolicyv1.KubernetesAuthorizationPolicy{},
 	cloudresourcekind.CloudResourceKind_KubernetesCertManager:                 &kubernetescertmanagerv1.KubernetesCertManager{},
 	cloudresourcekind.CloudResourceKind_KubernetesCertificate:                 &kubernetescertificatev1.KubernetesCertificate{},
 	cloudresourcekind.CloudResourceKind_KubernetesClickHouse:                  &kubernetesclickhousev1.KubernetesClickHouse{},

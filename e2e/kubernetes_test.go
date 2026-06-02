@@ -78,6 +78,7 @@ var kubernetesTier4Components = []string{
 	// Verification asserts the typed Istio CR exists.
 	"kubernetespeerauthentication",
 	"kubernetesrequestauthentication",
+	"kubernetesauthorizationpolicy",
 	"kubernetesserviceentry",
 	"kubernetesenvoyfilter",
 }
@@ -236,6 +237,8 @@ func TestKubernetesPeerAuthentication_Pulumi(t *testing.T) { runAllScenariosForC
 
 func TestKubernetesRequestAuthentication_Pulumi(t *testing.T) { runAllScenariosForComponent(t, "kubernetesrequestauthentication", "pulumi") }
 
+func TestKubernetesAuthorizationPolicy_Pulumi(t *testing.T) { runAllScenariosForComponent(t, "kubernetesauthorizationpolicy", "pulumi") }
+
 func TestKubernetesServiceEntry_Pulumi(t *testing.T) { runAllScenariosForComponent(t, "kubernetesserviceentry", "pulumi") }
 
 func TestKubernetesEnvoyFilter_Pulumi(t *testing.T) { runAllScenariosForComponent(t, "kubernetesenvoyfilter", "pulumi") }
@@ -245,6 +248,8 @@ func TestKubernetesEnvoyFilter_Pulumi(t *testing.T) { runAllScenariosForComponen
 func TestKubernetesPeerAuthentication_Terraform(t *testing.T) { runAllScenariosForComponent(t, "kubernetespeerauthentication", "terraform") }
 
 func TestKubernetesRequestAuthentication_Terraform(t *testing.T) { runAllScenariosForComponent(t, "kubernetesrequestauthentication", "terraform") }
+
+func TestKubernetesAuthorizationPolicy_Terraform(t *testing.T) { runAllScenariosForComponent(t, "kubernetesauthorizationpolicy", "terraform") }
 
 func TestKubernetesServiceEntry_Terraform(t *testing.T) { runAllScenariosForComponent(t, "kubernetesserviceentry", "terraform") }
 

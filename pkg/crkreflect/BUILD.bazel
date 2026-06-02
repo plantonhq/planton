@@ -256,6 +256,7 @@ go_library(
         "//apis/org/openmcf/provider/hetznercloud/hetznercloudvolume/v1:hetznercloudvolume",
         "//apis/org/openmcf/provider/kubernetes/kubernetesaltinityoperator/v1:kubernetesaltinityoperator",
         "//apis/org/openmcf/provider/kubernetes/kubernetesargocd/v1:kubernetesargocd",
+        "//apis/org/openmcf/provider/kubernetes/kubernetesauthorizationpolicy/v1:kubernetesauthorizationpolicy",
         "//apis/org/openmcf/provider/kubernetes/kubernetescertificate/v1:kubernetescertificate",
         "//apis/org/openmcf/provider/kubernetes/kubernetescertmanager/v1:kubernetescertmanager",
         "//apis/org/openmcf/provider/kubernetes/kubernetesclickhouse/v1:kubernetesclickhouse",
