@@ -79,6 +79,7 @@ var kubernetesTier4Components = []string{
 	"kubernetespeerauthentication",
 	"kubernetesrequestauthentication",
 	"kubernetesserviceentry",
+	"kubernetesenvoyfilter",
 }
 
 // Kubernetes Tier 2 components: Helm-based, self-contained chart installs.
@@ -237,6 +238,8 @@ func TestKubernetesRequestAuthentication_Pulumi(t *testing.T) { runAllScenariosF
 
 func TestKubernetesServiceEntry_Pulumi(t *testing.T) { runAllScenariosForComponent(t, "kubernetesserviceentry", "pulumi") }
 
+func TestKubernetesEnvoyFilter_Pulumi(t *testing.T) { runAllScenariosForComponent(t, "kubernetesenvoyfilter", "pulumi") }
+
 // ─── Istio API Terraform (861-867) ──────────────────────────────────────────
 
 func TestKubernetesPeerAuthentication_Terraform(t *testing.T) { runAllScenariosForComponent(t, "kubernetespeerauthentication", "terraform") }
@@ -244,6 +247,8 @@ func TestKubernetesPeerAuthentication_Terraform(t *testing.T) { runAllScenariosF
 func TestKubernetesRequestAuthentication_Terraform(t *testing.T) { runAllScenariosForComponent(t, "kubernetesrequestauthentication", "terraform") }
 
 func TestKubernetesServiceEntry_Terraform(t *testing.T) { runAllScenariosForComponent(t, "kubernetesserviceentry", "terraform") }
+
+func TestKubernetesEnvoyFilter_Terraform(t *testing.T) { runAllScenariosForComponent(t, "kubernetesenvoyfilter", "terraform") }
 
 // runAllScenariosForComponent discovers and runs all E2E scenarios for a component
 // using the specified IaC engine ("pulumi" or "terraform").

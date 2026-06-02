@@ -249,6 +249,7 @@ import (
 	kubernetesdeploymentv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesdeployment/v1"
 	kuberneteselasticoperatorv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kuberneteselasticoperator/v1"
 	kuberneteselasticsearchv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kuberneteselasticsearch/v1"
+	kubernetesenvoyfilterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesenvoyfilter/v1"
 	kubernetesexternaldnsv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesexternaldns/v1"
 	kubernetesexternalsecretsv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesexternalsecrets/v1"
 	kubernetesgatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesgateway/v1"
@@ -678,6 +679,7 @@ var ProviderKubernetesMap = map[cloudresourcekind.CloudResourceKind]proto.Messag
 	cloudresourcekind.CloudResourceKind_KubernetesDeployment:                  &kubernetesdeploymentv1.KubernetesDeployment{},
 	cloudresourcekind.CloudResourceKind_KubernetesElasticOperator:             &kuberneteselasticoperatorv1.KubernetesElasticOperator{},
 	cloudresourcekind.CloudResourceKind_KubernetesElasticsearch:               &kuberneteselasticsearchv1.KubernetesElasticsearch{},
+	cloudresourcekind.CloudResourceKind_KubernetesEnvoyFilter:                 &kubernetesenvoyfilterv1.KubernetesEnvoyFilter{},
 	cloudresourcekind.CloudResourceKind_KubernetesExternalDns:                 &kubernetesexternaldnsv1.KubernetesExternalDns{},
 	cloudresourcekind.CloudResourceKind_KubernetesExternalSecrets:             &kubernetesexternalsecretsv1.KubernetesExternalSecrets{},
 	cloudresourcekind.CloudResourceKind_KubernetesGateway:                     &kubernetesgatewayv1.KubernetesGateway{},

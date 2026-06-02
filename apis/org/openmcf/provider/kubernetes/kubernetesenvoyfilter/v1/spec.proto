@@ -1,0 +1,403 @@
+syntax = "proto3";
+
+package org.openmcf.provider.kubernetes.kubernetesenvoyfilter.v1;
+
+import "buf/validate/validate.proto";
+import "google/protobuf/struct.proto";
+import "org/openmcf/provider/kubernetes/istio_api.proto";
+import "org/openmcf/provider/kubernetes/target_cluster.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// KubernetesEnvoyFilterSpec defines an Istio EnvoyFilter: a namespaced, expert-only
+// escape hatch that customizes the Envoy proxy configuration istiod generates for
+// selected workloads. It applies a list of ordered patches (add/merge/remove/insert/
+// replace) to low-level Envoy xDS objects (listeners, filter chains, network/HTTP
+// filters, route configurations, virtual hosts, routes, and clusters).
+//
+// 100% fidelity with the upstream istio.io/api EnvoyFilter
+// (networking/v1alpha3/envoy_filter.proto, served as networking.istio.io/v1alpha3 — this
+// is the only typed Istio API component still on v1alpha3; it has NOT graduated to v1),
+// pinned to the 1.26 line (tag 1.26.8). Upstream spec fields are flattened directly after
+// the OpenMCF namespaced envelope (target_cluster, namespace); there is no nested
+// `envoy_filter` sub-message (DD-002).
+//
+// EXPERT-ONLY ESCAPE HATCH: EnvoyFilter patches Envoy's internal xDS API directly. The
+// patch payload (`config_patches[].patch.value`) is free-form JSON (google.protobuf.Struct)
+// that istiod merges into generated config with no schema validation — a malformed patch
+// can break a workload's traffic. Prefer first-class typed Istio APIs where they exist; use
+// EnvoyFilter only for capabilities not yet modeled by a higher-level API.
+//
+// Attachment model (upstream): `workload_selector` (select pods/VMs by label) and
+// `target_refs` (attach to a Gateway/GatewayClass/Service/ServiceEntry) are mutually
+// exclusive — at most one may be set (enforced below). Both omitted is valid: the filter
+// then applies to all workloads in the resource's namespace (or, in the mesh root namespace,
+// to all applicable workloads mesh-wide).
+message KubernetesEnvoyFilterSpec {
+  // workload_selector vs target_refs exclusivity mirrors the upstream CRD's lone XValidation
+  // rule `oneof(self.workloadSelector, self.targetRefs)`. The apiserver-CEL `oneof()` helper
+  // is not available under protovalidate/cel-go, so it is re-expressed with a portable
+  // `has()`/`size()` guard that preserves the validated outcome (both unset is valid).
+  option (buf.validate.message).cel = {
+    id: "envoy_filter.workload_selector_xor_target_refs"
+    message: "at most one of workload_selector or target_refs may be set"
+    expression: "!(has(this.workload_selector) && size(this.target_refs) > 0)"
+  };
+
+  // Target Kubernetes cluster where this EnvoyFilter is created. The Istio CRDs
+  // (KubernetesIstioBaseCrds) must already be present on the cluster; the patches are only
+  // honored where istiod (the Istio control plane) is running.
+  org.openmcf.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  // Namespace in which the EnvoyFilter is created. An EnvoyFilter in a workload namespace
+  // affects only workloads in that namespace; one in the Istio mesh root namespace (e.g.
+  // istio-system) affects all applicable workloads mesh-wide.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // Selects the pods/VMs on which these patches are applied, by label. If omitted, the
+  // patches apply to all workload instances in the same namespace (or, in the mesh root
+  // namespace, to all applicable workloads mesh-wide). Mutually exclusive with `target_refs`
+  // (enforced above). Reuses the shared networking/v1alpha3 WorkloadSelector — the
+  // EnvoyFilter CRD applies the SAME selector constraints as ServiceEntry (max 256 labels,
+  // each value <= 63 chars, no wildcard values), so the shared type is faithful here.
+  //
+  // INFRA-CHART COMPOSABILITY (DD-009): workload_selector is a PLAIN label match, not an
+  // OpenMCF foreign key (StringValueOrRef). It is matched at runtime by istiod against pod
+  // labels and creates NO automatic DAG edge to any workload resource. To order this
+  // EnvoyFilter after the workloads it patches in an infra chart, an author MUST express the
+  // dependency via metadata.relationships, e.g.:
+  //   metadata:
+  //     relationships:
+  //       - kind: KubernetesDeployment
+  //         name: "{{ values.app }}"
+  //         type: depends_on
+  // See the component's "Composing in Infra Charts" docs for the full pattern.
+  org.openmcf.provider.kubernetes.KubernetesIstioApiNetworkingWorkloadSelector workload_selector = 3;
+
+  // One or more patches with match conditions, applied in list order within a context.
+  // An EnvoyFilter with no patches is valid upstream (a no-op), so this list is not
+  // required.
+  repeated KubernetesEnvoyFilterConfigPatch config_patches = 4;
+
+  // Defines the order in which patch sets are applied within a context. Patch sets in the
+  // mesh root namespace are applied before those in the workload namespace; within a patch
+  // set, patches apply in `config_patches` list order. The default is 0; negative values are
+  // processed before the default, positive values after. Sort key (ascending): priority,
+  // creation time, fully-qualified resource name. Unset leaves the upstream default (0).
+  optional int32 priority = 5;
+
+  // Attaches these patches to specific resources instead of selecting workloads by label.
+  // Upstream supports: `kind: Gateway`/`GatewayClass` (group gateway.networking.k8s.io),
+  // `kind: Service` (core group, waypoints only), and `kind: ServiceEntry` (group
+  // networking.istio.io). Mutually exclusive with `workload_selector` (enforced above).
+  // Upstream allows at most 16. Waypoint proxies REQUIRE target_refs; selector-based
+  // policies are ignored for waypoints.
+  //
+  // INFRA-CHART COMPOSABILITY (DD-009): each target_ref is a PLAIN cross-resource reference,
+  // not an OpenMCF foreign key. istiod resolves group/kind/name at runtime, so no automatic
+  // DAG edge is created. Order this EnvoyFilter after the resource it targets via
+  // metadata.relationships (`uses` -> KubernetesGateway / KubernetesService /
+  // KubernetesServiceEntry). See the component's "Composing in Infra Charts" docs.
+  repeated org.openmcf.provider.kubernetes.KubernetesIstioApiPolicyTargetReference target_refs = 6 [(buf.validate.field).repeated.max_items = 16];
+}
+
+// KubernetesEnvoyFilterConfigPatch is a single change to be made to the generated Envoy
+// configuration for a matched object. Faithful to the upstream EnvoyConfigObjectPatch.
+message KubernetesEnvoyFilterConfigPatch {
+  // Where in the Envoy configuration the patch should be applied. The match is expected to
+  // select the appropriate object based on this value (e.g. HTTP_FILTER expects a listener
+  // match with a network-filter selection on the HTTP connection manager and a sub-filter
+  // selection; CLUSTER expects a cluster match, not a listener match). Unset leaves it
+  // unspecified upstream. external standard exception — matches the Istio EnvoyFilter.ApplyTo
+  // enum (BOOTSTRAP is accepted for fidelity but is DEPRECATED upstream).
+  optional string apply_to = 1 [(buf.validate.field).string = {
+    in: [
+      "LISTENER",
+      "FILTER_CHAIN",
+      "NETWORK_FILTER",
+      "HTTP_FILTER",
+      "ROUTE_CONFIGURATION",
+      "VIRTUAL_HOST",
+      "HTTP_ROUTE",
+      "CLUSTER",
+      "EXTENSION_CONFIG",
+      "BOOTSTRAP",
+      "LISTENER_FILTER"
+    ]
+  }];
+
+  // Match conditions that must be met before the patch is applied. If omitted, the patch
+  // applies broadly (subject to apply_to and context defaults).
+  KubernetesEnvoyFilterEnvoyConfigObjectMatch match = 2;
+
+  // The patch to apply, along with the operation.
+  KubernetesEnvoyFilterPatch patch = 3;
+}
+
+// KubernetesEnvoyFilterEnvoyConfigObjectMatch is one or more conditions to be met before a
+// patch is applied. Faithful to the upstream EnvoyConfigObjectMatch.
+//
+// The upstream `oneof object_types { listener | route_configuration | cluster }` is flattened
+// per DD-004 into three sibling message fields. Because flattening loses the proto `oneof`'s
+// implicit at-most-one guarantee (and the generated CRD does not re-encode it as an
+// XValidation), the rule is restored here as a message-level CEL — this preserves upstream
+// semantics, it is not extra validation.
+message KubernetesEnvoyFilterEnvoyConfigObjectMatch {
+  option (buf.validate.message).cel = {
+    id: "envoy_filter_match.object_types_at_most_one"
+    message: "at most one of listener, route_configuration, or cluster may be set"
+    expression: "!(has(this.listener) && has(this.route_configuration)) && !(has(this.listener) && has(this.cluster)) && !(has(this.route_configuration) && has(this.cluster))"
+  };
+
+  // The config-generation context to match on: istiod generates Envoy config in the context
+  // of a gateway, inbound sidecar traffic, or outbound sidecar traffic. Unset matches ANY
+  // (all listeners/routes/clusters in both sidecars and gateways) upstream. external standard
+  // exception — matches the Istio EnvoyFilter.PatchContext enum.
+  optional string context = 1 [(buf.validate.field).string = {
+    in: [
+      "ANY",
+      "SIDECAR_INBOUND",
+      "SIDECAR_OUTBOUND",
+      "GATEWAY"
+    ]
+  }];
+
+  // Match on properties of the proxy itself (istio proxy version and/or node metadata).
+  KubernetesEnvoyFilterProxyMatch proxy = 2;
+
+  // Match on Envoy listener attributes.
+  KubernetesEnvoyFilterListenerMatch listener = 3;
+
+  // Match on Envoy HTTP route configuration attributes.
+  KubernetesEnvoyFilterRouteConfigurationMatch route_configuration = 4;
+
+  // Match on Envoy cluster attributes.
+  KubernetesEnvoyFilterClusterMatch cluster = 5;
+}
+
+// KubernetesEnvoyFilterProxyMatch matches one or more properties of the proxy. Faithful to
+// the upstream EnvoyFilter.ProxyMatch.
+message KubernetesEnvoyFilterProxyMatch {
+  // A golang (RE2) regular expression selecting proxies by Istio proxy version. The version
+  // is read from the proxy's `ISTIO_VERSION` node metadata.
+  optional string proxy_version = 1;
+
+  // Match on node metadata supplied by the proxy when connecting to istiod. Only string
+  // key-value pairs are processed; all specified keys must be present and match exactly.
+  map<string, string> metadata = 2;
+}
+
+// KubernetesEnvoyFilterClusterMatch matches conditions on a CDS cluster. Faithful to the
+// upstream EnvoyFilter.ClusterMatch. Leave all fields except `name` empty to match a single
+// cluster by its exact internally-generated name.
+message KubernetesEnvoyFilterClusterMatch {
+  // The service port for which this cluster was generated. If omitted, applies to clusters
+  // for any port. For an inbound cluster, this is the service target port.
+  optional uint32 port_number = 1 [(buf.validate.field).uint32 = {
+    gte: 1
+    lte: 65535
+  }];
+
+  // The fully-qualified service name for this cluster. If omitted, applies to clusters for
+  // any service. For service-entry services, this equals the service entry's host. Ignored
+  // for inbound clusters.
+  optional string service = 2;
+
+  // The subset associated with the service. If omitted, applies to any subset of a service.
+  optional string subset = 3;
+
+  // The exact name of the cluster to match (e.g. the internally-generated `Passthrough`
+  // cluster). To match by name only, leave all other fields empty.
+  optional string name = 4;
+}
+
+// KubernetesEnvoyFilterRouteConfigurationMatch matches conditions on an RDS route
+// configuration object or a virtual host within it. Faithful to the upstream
+// EnvoyFilter.RouteConfigurationMatch.
+message KubernetesEnvoyFilterRouteConfigurationMatch {
+  // The service port (or, for GATEWAY context, the gateway server port) for which this route
+  // configuration was generated. If omitted, applies to route configurations for all ports.
+  optional uint32 port_number = 1 [(buf.validate.field).uint32 = {
+    gte: 1
+    lte: 65535
+  }];
+
+  // Applicable only to GATEWAY context: the gateway server port name for which this route
+  // configuration was generated.
+  optional string port_name = 2;
+
+  // Applicable only to GATEWAY context: the Istio Gateway config's `namespace/name` for which
+  // this route configuration was generated. Use together with port_number/port_name to select
+  // the Envoy route configuration for a specific HTTPS server in a gateway.
+  optional string gateway = 3;
+
+  // Match a specific virtual host inside the route configuration and apply the patch to it.
+  KubernetesEnvoyFilterVirtualHostMatch vhost = 4;
+
+  // The route configuration name to match (e.g. the internally-generated `http_proxy` route
+  // configuration for all sidecars).
+  optional string name = 5;
+}
+
+// KubernetesEnvoyFilterVirtualHostMatch matches a specific virtual host inside a route
+// configuration. Faithful to the upstream RouteConfigurationMatch.VirtualHostMatch.
+message KubernetesEnvoyFilterVirtualHostMatch {
+  // The virtual host name. Istio names virtual hosts as `host:port`, where host typically
+  // corresponds to a VirtualService host or a registry service hostname.
+  optional string name = 1;
+
+  // Match a domain name served by the virtual host. If this domain is in the virtual host's
+  // domain list, the patch is applied.
+  optional string domain_name = 2;
+
+  // Match a specific route within the virtual host.
+  KubernetesEnvoyFilterRouteMatch route = 3;
+}
+
+// KubernetesEnvoyFilterRouteMatch matches a specific route inside a virtual host. Faithful to
+// the upstream RouteConfigurationMatch.RouteMatch.
+message KubernetesEnvoyFilterRouteMatch {
+  // The route name. Default routes are named `default`; routes generated from a VirtualService
+  // carry the name used in the VirtualService's HTTP routes.
+  optional string name = 1;
+
+  // Match a route with a specific action type. Unset matches ANY action upstream. external
+  // standard exception — matches the Istio RouteMatch.Action enum.
+  optional string action = 2 [(buf.validate.field).string = {
+    in: [
+      "ANY",
+      "ROUTE",
+      "REDIRECT",
+      "DIRECT_RESPONSE"
+    ]
+  }];
+}
+
+// KubernetesEnvoyFilterListenerMatch matches conditions on a listener, across all filter
+// chains or on a specific filter chain. Faithful to the upstream EnvoyFilter.ListenerMatch.
+//
+// NOTE: the upstream `port_name` field is intentionally omitted — it is marked
+// "Not implemented" / `$hide_from_docs` upstream and surfaces no real behavior (DD-001:
+// document the omission rather than expose a non-functional field).
+message KubernetesEnvoyFilterListenerMatch {
+  // The service/gateway port traffic is sent to/received on. If unset, matches all listeners.
+  // Only service ports (not pod ports) should be used to match inbound listeners.
+  optional uint32 port_number = 1 [(buf.validate.field).uint32 = {
+    gte: 1
+    lte: 65535
+  }];
+
+  // Match a specific filter chain in the listener. If set, the patch is applied only to that
+  // filter chain (and a specific filter within it, if specified), not to other filter chains.
+  KubernetesEnvoyFilterFilterChainMatch filter_chain = 2;
+
+  // Match a specific listener filter. If set, the patch is applied to that listener filter.
+  optional string listener_filter = 3;
+
+  // Match a specific listener by name. istiod-generated listeners are typically named IP:Port.
+  optional string name = 4;
+}
+
+// KubernetesEnvoyFilterFilterChainMatch selects a specific filter chain inside a listener.
+// Faithful to the upstream ListenerMatch.FilterChainMatch.
+message KubernetesEnvoyFilterFilterChainMatch {
+  // The name assigned to the filter chain.
+  optional string name = 1;
+
+  // The SNI value used by the filter chain's match condition. Evaluates to false if the
+  // filter chain has no SNI match.
+  optional string sni = 2;
+
+  // Applies only to SIDECAR_INBOUND. A transport protocol to match against a new connection
+  // (detected by the tls_inspector listener filter). Accepted values: `raw_buffer` (default,
+  // no protocol detected) and `tls`.
+  optional string transport_protocol = 3;
+
+  // Applies only to sidecars. A comma-separated set of application protocols to match against
+  // a new connection (detected by listener filters such as http_inspector). Accepted values
+  // include: h2, http/1.1, http/1.0.
+  optional string application_protocols = 4;
+
+  // The specific filter within the chain to apply the patch to. Set name to
+  // `envoy.filters.network.http_connection_manager` to add/patch the HTTP connection manager.
+  KubernetesEnvoyFilterFilterMatch filter = 5;
+
+  // The destination_port used by the filter chain's match condition. Evaluates to false if
+  // the filter chain has no destination_port match.
+  optional uint32 destination_port = 6 [(buf.validate.field).uint32 = {
+    gte: 1
+    lte: 65535
+  }];
+}
+
+// KubernetesEnvoyFilterFilterMatch matches a specific filter within a filter chain. Faithful
+// to the upstream ListenerMatch.FilterMatch.
+message KubernetesEnvoyFilterFilterMatch {
+  // The filter name to match on. For standard Envoy filters, use the canonical filter name.
+  optional string name = 1;
+
+  // The next-level filter within this filter to match (typically an HTTP filter inside the
+  // HTTP connection manager network filter).
+  KubernetesEnvoyFilterSubFilterMatch sub_filter = 2;
+}
+
+// KubernetesEnvoyFilterSubFilterMatch matches a specific filter within another filter (e.g.
+// an HTTP filter inside the HTTP connection manager). Faithful to the upstream
+// ListenerMatch.SubFilterMatch.
+message KubernetesEnvoyFilterSubFilterMatch {
+  // The filter name to match on.
+  optional string name = 1;
+}
+
+// KubernetesEnvoyFilterPatch specifies how the selected Envoy object should be modified.
+// Faithful to the upstream EnvoyFilter.Patch.
+message KubernetesEnvoyFilterPatch {
+  // How the patch is applied to the selected configuration. external standard exception —
+  // matches the Istio EnvoyFilter.Patch.Operation enum.
+  //   MERGE         — proto-merge the value into the generated config.
+  //   ADD           — add to an existing list (listeners/clusters/vhosts/filters); ignored for
+  //                   ROUTE_CONFIGURATION and HTTP_ROUTE.
+  //   REMOVE        — remove the selected object (no value required); ignored for
+  //                   ROUTE_CONFIGURATION and HTTP_ROUTE.
+  //   INSERT_BEFORE — insert before the selected filter/route.
+  //   INSERT_AFTER  — insert after the selected filter/route.
+  //   INSERT_FIRST  — insert at the front of the list.
+  //   REPLACE       — replace a named filter's contents; valid only for HTTP_FILTER and
+  //                   NETWORK_FILTER.
+  optional string operation = 1 [(buf.validate.field).string = {
+    in: [
+      "MERGE",
+      "ADD",
+      "REMOVE",
+      "INSERT_BEFORE",
+      "INSERT_AFTER",
+      "INSERT_FIRST",
+      "REPLACE"
+    ]
+  }];
+
+  // The free-form JSON config of the object being patched, merged using proto-merge semantics
+  // with the existing Envoy config. This is the irreducible expert-only escape hatch: it is an
+  // arbitrary google.protobuf.Struct (the upstream CRD marks `patch.value` as
+  // preserveUnknownFields), so istiod applies no schema validation here. A malformed value can
+  // break the patched workload's traffic. Not required (REMOVE needs no value).
+  google.protobuf.Struct value = 2;
+
+  // The filter insertion point relative to istiod's implicitly-inserted filters, used with the
+  // ADD operation. Preferred over INSERT_* operations, which rely on potentially-unstable
+  // filter names. Unset lets the control plane decide. external standard exception — matches
+  // the Istio EnvoyFilter.Patch.FilterClass enum.
+  //   AUTHN — insert after Istio authentication filters.
+  //   AUTHZ — insert after Istio authorization filters.
+  //   STATS — insert before Istio stats filters.
+  optional string filter_class = 3 [(buf.validate.field).string = {
+    in: [
+      "AUTHN",
+      "AUTHZ",
+      "STATS"
+    ]
+  }];
+}

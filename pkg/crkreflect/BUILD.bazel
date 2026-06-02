@@ -265,6 +265,7 @@ go_library(
         "//apis/org/openmcf/provider/kubernetes/kubernetesdeployment/v1:kubernetesdeployment",
         "//apis/org/openmcf/provider/kubernetes/kuberneteselasticoperator/v1:kuberneteselasticoperator",
         "//apis/org/openmcf/provider/kubernetes/kuberneteselasticsearch/v1:kuberneteselasticsearch",
+        "//apis/org/openmcf/provider/kubernetes/kubernetesenvoyfilter/v1:kubernetesenvoyfilter",
         "//apis/org/openmcf/provider/kubernetes/kubernetesexternaldns/v1:kubernetesexternaldns",
         "//apis/org/openmcf/provider/kubernetes/kubernetesexternalsecrets/v1:kubernetesexternalsecrets",
         "//apis/org/openmcf/provider/kubernetes/kubernetesgateway/v1:kubernetesgateway",

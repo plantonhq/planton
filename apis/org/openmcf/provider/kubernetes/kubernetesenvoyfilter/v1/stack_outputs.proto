@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package org.openmcf.provider.kubernetes.kubernetesenvoyfilter.v1;
+
+// KubernetesEnvoyFilterStackOutputs captures observable outputs after the EnvoyFilter is
+// created on the target cluster. An EnvoyFilter is a config-patch resource consumed by istiod
+// (it has no controller-reconciled status subresource useful to surface here), so only the
+// resource identity is exported — enough for a future "what does this patch?" view to
+// cross-reference the policy against the workloads it selects.
+message KubernetesEnvoyFilterStackOutputs {
+  // Name of the created EnvoyFilter (equals metadata.name).
+  string envoy_filter_name = 1;
+
+  // Namespace the EnvoyFilter was created in (the resolved spec.namespace).
+  string namespace = 2;
+}
