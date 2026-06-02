@@ -4,11 +4,11 @@ resource "kubernetes_manifest" "telemetry" {
     kind       = "Telemetry"
 
     metadata = {
-      name      = local.telemetry_name
-      namespace = local.namespace
+      name      = var.metadata.name
+      namespace = var.spec.namespace
       labels    = local.labels
     }
 
-    spec = local.telemetry_spec
+    spec = local.manifest_spec
   }
 }

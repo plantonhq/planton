@@ -4,11 +4,11 @@ resource "kubernetes_manifest" "destination_rule" {
     kind       = "DestinationRule"
 
     metadata = {
-      name      = local.destination_rule_name
-      namespace = local.namespace
+      name      = var.metadata.name
+      namespace = var.spec.namespace
       labels    = local.labels
     }
 
-    spec = local.destination_rule_spec
+    spec = local.manifest_spec
   }
 }

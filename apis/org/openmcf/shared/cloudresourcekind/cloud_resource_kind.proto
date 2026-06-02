@@ -20,22 +20,28 @@ enum CloudResourceKindVersion {
 message CloudResourceKindMeta {
   //cloud-resource provider
   CloudResourceProvider provider = 1;
+
   //cloud-resource kind version
   CloudResourceKindVersion version = 2;
+
   //name of the kind. this might be different from the enum value.
   // ex: AwsVpcV2 enum will still have "kind: AwsVpc" but groupVersion will have "aws.openmcf.org/v2".
   //this is only set in options when the name is different from enum value.
   string name = 3;
+
   //cloud-resource id-prefix
   string id_prefix = 4;
+
   //flag indicating whether the cloud-resource kind can be used to launch a service.
   bool is_service_kind = 5;
+
   //flag indicating whether the cloud-resource kind is a container kind.
   //container kinds are resources that logically contain other resources
   //(e.g., a Kubernetes namespace contains deployments, a VPC contains subnets).
   //used by the organization graph to render hierarchical architecture diagrams
   //where container resources visually enclose their child resources.
   bool container_kind = 6;
+
   //components that must be deployed before this component can function.
   //order matters: index 0 is deployed first. the E2E framework installs these
   //(resolved transitively) before the component under test and tears them down
@@ -45,6 +51,26 @@ message CloudResourceKindMeta {
   //example: KubernetesPostgres needs KubernetesZalandoPostgresOperator
   //because it creates acid.zalan.do/v1 postgresql CRDs.
   repeated CloudResourceKind prerequisites = 7;
+
+  //set ONLY for kinds whose spec is a direct projection of a single Kubernetes
+  //custom resource -- i.e. the Terraform module is a thin `kubernetes_manifest`
+  //passthrough rather than hand-written provider logic. its presence flips the
+  //proto->tfvars converter to emit the manifest-shaped (camelCase, pruned) spec
+  //and drives deterministic thin-module generation (see `openmcf tofu
+  //generate-module`). absent for provider-abstraction kinds (aws/gcp/etc.),
+  //which keep idiomatic snake_case typed variables. the api_version/kind here
+  //are the UPSTREAM CRD's group-version-kind, distinct from the OpenMCF
+  //groupVersion returned by crkreflect.GroupVersion.
+  KubernetesManifestProjection kubernetes_manifest_projection = 8;
+}
+
+//identifies the upstream Kubernetes custom resource that a CloudResourceKind
+//projects onto. carried on CloudResourceKindMeta for projection kinds only.
+message KubernetesManifestProjection {
+  //upstream CRD groupVersion, e.g. "networking.istio.io/v1".
+  string api_version = 1;
+  //upstream CRD kind, e.g. "DestinationRule".
+  string kind = 2;
 }
 
 enum CloudResourceKind {
@@ -1139,42 +1165,70 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "k8sgwc"
     prerequisites: [KubernetesGatewayApiCrds]
+    kubernetes_manifest_projection: {
+      api_version: "gateway.networking.k8s.io/v1"
+      kind: "GatewayClass"
+    }
   }];
   KubernetesGateway = 855 [(kind_meta) = {
     provider: kubernetes
     version: v1
     id_prefix: "k8sgw"
     prerequisites: [KubernetesGatewayApiCrds]
+    kubernetes_manifest_projection: {
+      api_version: "gateway.networking.k8s.io/v1"
+      kind: "Gateway"
+    }
   }];
   KubernetesHttpRoute = 856 [(kind_meta) = {
     provider: kubernetes
     version: v1
     id_prefix: "k8shrt"
     prerequisites: [KubernetesGatewayApiCrds]
+    kubernetes_manifest_projection: {
+      api_version: "gateway.networking.k8s.io/v1"
+      kind: "HTTPRoute"
+    }
   }];
   KubernetesGrpcRoute = 857 [(kind_meta) = {
     provider: kubernetes
     version: v1
     id_prefix: "k8sgrt"
     prerequisites: [KubernetesGatewayApiCrds]
+    kubernetes_manifest_projection: {
+      api_version: "gateway.networking.k8s.io/v1"
+      kind: "GRPCRoute"
+    }
   }];
   KubernetesTcpRoute = 858 [(kind_meta) = {
     provider: kubernetes
     version: v1
     id_prefix: "k8strt"
     prerequisites: [KubernetesGatewayApiCrds]
+    kubernetes_manifest_projection: {
+      api_version: "gateway.networking.k8s.io/v1alpha2"
+      kind: "TCPRoute"
+    }
   }];
   KubernetesTlsRoute = 859 [(kind_meta) = {
     provider: kubernetes
     version: v1
     id_prefix: "k8stlsrt"
     prerequisites: [KubernetesGatewayApiCrds]
+    kubernetes_manifest_projection: {
+      api_version: "gateway.networking.k8s.io/v1"
+      kind: "TLSRoute"
+    }
   }];
   KubernetesReferenceGrant = 860 [(kind_meta) = {
     provider: kubernetes
     version: v1
     id_prefix: "k8srefgrt"
     prerequisites: [KubernetesGatewayApiCrds]
+    kubernetes_manifest_projection: {
+      api_version: "gateway.networking.k8s.io/v1"
+      kind: "ReferenceGrant"
+    }
   }];
 
   // Istio API components (mesh traffic policy, security, telemetry). The seven typed
@@ -1185,42 +1239,70 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "k8sdr"
     prerequisites: [KubernetesIstioBaseCrds]
+    kubernetes_manifest_projection: {
+      api_version: "networking.istio.io/v1"
+      kind: "DestinationRule"
+    }
   }];
   KubernetesServiceEntry = 862 [(kind_meta) = {
     provider: kubernetes
     version: v1
     id_prefix: "k8sse"
     prerequisites: [KubernetesIstioBaseCrds]
+    kubernetes_manifest_projection: {
+      api_version: "networking.istio.io/v1"
+      kind: "ServiceEntry"
+    }
   }];
   KubernetesPeerAuthentication = 863 [(kind_meta) = {
     provider: kubernetes
     version: v1
     id_prefix: "k8spa"
     prerequisites: [KubernetesIstioBaseCrds]
+    kubernetes_manifest_projection: {
+      api_version: "security.istio.io/v1"
+      kind: "PeerAuthentication"
+    }
   }];
   KubernetesRequestAuthentication = 864 [(kind_meta) = {
     provider: kubernetes
     version: v1
     id_prefix: "k8sra"
     prerequisites: [KubernetesIstioBaseCrds]
+    kubernetes_manifest_projection: {
+      api_version: "security.istio.io/v1"
+      kind: "RequestAuthentication"
+    }
   }];
   KubernetesAuthorizationPolicy = 865 [(kind_meta) = {
     provider: kubernetes
     version: v1
     id_prefix: "k8sauthz"
     prerequisites: [KubernetesIstioBaseCrds]
+    kubernetes_manifest_projection: {
+      api_version: "security.istio.io/v1"
+      kind: "AuthorizationPolicy"
+    }
   }];
   KubernetesTelemetry = 866 [(kind_meta) = {
     provider: kubernetes
     version: v1
     id_prefix: "k8stel"
     prerequisites: [KubernetesIstioBaseCrds]
+    kubernetes_manifest_projection: {
+      api_version: "telemetry.istio.io/v1"
+      kind: "Telemetry"
+    }
   }];
   KubernetesEnvoyFilter = 867 [(kind_meta) = {
     provider: kubernetes
     version: v1
     id_prefix: "k8sef"
     prerequisites: [KubernetesIstioBaseCrds]
+    kubernetes_manifest_projection: {
+      api_version: "networking.istio.io/v1alpha3"
+      kind: "EnvoyFilter"
+    }
   }];
   KubernetesIstioBaseCrds = 868 [(kind_meta) = {
     provider: kubernetes

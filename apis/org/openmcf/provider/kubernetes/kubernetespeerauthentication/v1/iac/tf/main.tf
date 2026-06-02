@@ -4,11 +4,11 @@ resource "kubernetes_manifest" "peer_authentication" {
     kind       = "PeerAuthentication"
 
     metadata = {
-      name      = local.peer_authentication_name
-      namespace = local.namespace
+      name      = var.metadata.name
+      namespace = var.spec.namespace
       labels    = local.labels
     }
 
-    spec = local.peer_authentication_spec
+    spec = local.manifest_spec
   }
 }

@@ -43,14 +43,14 @@ var _ = ginkgo.Describe("KubernetesReferenceGrant Validation Tests", func() {
 				Namespace: literal("app-ns"),
 				From: []*KubernetesReferenceGrantFrom{
 					{
-						Group:     "gateway.networking.k8s.io",
+						Group:     stringPtr("gateway.networking.k8s.io"),
 						Kind:      "HTTPRoute",
 						Namespace: "frontend-ns",
 					},
 				},
 				To: []*KubernetesReferenceGrantTo{
 					{
-						Group: "",
+						Group: stringPtr(""),
 						Kind:  "Service",
 					},
 				},
@@ -64,7 +64,7 @@ var _ = ginkgo.Describe("KubernetesReferenceGrant Validation Tests", func() {
 		})
 
 		ginkgo.It("from entry with empty (core) group should be valid", func() {
-			input.Spec.From[0].Group = ""
+			input.Spec.From[0].Group = stringPtr("")
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
@@ -75,12 +75,12 @@ var _ = ginkgo.Describe("KubernetesReferenceGrant Validation Tests", func() {
 
 		ginkgo.It("multiple from and to entries should be valid", func() {
 			input.Spec.From = []*KubernetesReferenceGrantFrom{
-				{Group: "gateway.networking.k8s.io", Kind: "HTTPRoute", Namespace: "frontend-ns"},
-				{Group: "gateway.networking.k8s.io", Kind: "Gateway", Namespace: "infra-ns"},
+				{Group: stringPtr("gateway.networking.k8s.io"), Kind: "HTTPRoute", Namespace: "frontend-ns"},
+				{Group: stringPtr("gateway.networking.k8s.io"), Kind: "Gateway", Namespace: "infra-ns"},
 			}
 			input.Spec.To = []*KubernetesReferenceGrantTo{
-				{Group: "", Kind: "Service"},
-				{Group: "", Kind: "Secret", Name: stringPtr("tls-cert")},
+				{Group: stringPtr(""), Kind: "Service"},
+				{Group: stringPtr(""), Kind: "Secret", Name: stringPtr("tls-cert")},
 			}
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
@@ -128,7 +128,17 @@ var _ = ginkgo.Describe("KubernetesReferenceGrant Validation Tests", func() {
 		})
 
 		ginkgo.It("to entry with an invalid group pattern should fail", func() {
-			input.Spec.To[0].Group = "Invalid_Group"
+			input.Spec.To[0].Group = stringPtr("Invalid_Group")
+			gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
+		})
+
+		ginkgo.It("to entry without a group should fail (presence required: the CRD needs the key, even if empty)", func() {
+			input.Spec.To[0].Group = nil
+			gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
+		})
+
+		ginkgo.It("from entry without a group should fail (presence required)", func() {
+			input.Spec.From[0].Group = nil
 			gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 		})
 
@@ -145,7 +155,7 @@ var _ = ginkgo.Describe("KubernetesReferenceGrant Validation Tests", func() {
 			entries := make([]*KubernetesReferenceGrantFrom, 0, 17)
 			for i := 0; i < 17; i++ {
 				entries = append(entries, &KubernetesReferenceGrantFrom{
-					Group:     "gateway.networking.k8s.io",
+					Group:     stringPtr("gateway.networking.k8s.io"),
 					Kind:      "HTTPRoute",
 					Namespace: "frontend-ns",
 				})

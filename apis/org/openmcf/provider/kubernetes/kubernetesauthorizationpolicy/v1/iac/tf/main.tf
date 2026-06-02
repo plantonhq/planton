@@ -4,11 +4,11 @@ resource "kubernetes_manifest" "authorization_policy" {
     kind       = "AuthorizationPolicy"
 
     metadata = {
-      name      = local.authorization_policy_name
-      namespace = local.namespace
+      name      = var.metadata.name
+      namespace = var.spec.namespace
       labels    = local.labels
     }
 
-    spec = local.authorization_policy_spec
+    spec = local.manifest_spec
   }
 }

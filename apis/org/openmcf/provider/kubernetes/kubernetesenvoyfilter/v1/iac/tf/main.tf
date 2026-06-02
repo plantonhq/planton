@@ -4,11 +4,11 @@ resource "kubernetes_manifest" "envoy_filter" {
     kind       = "EnvoyFilter"
 
     metadata = {
-      name      = local.envoy_filter_name
-      namespace = local.namespace
+      name      = var.metadata.name
+      namespace = var.spec.namespace
       labels    = local.labels
     }
 
-    spec = local.envoy_filter_spec
+    spec = local.manifest_spec
   }
 }

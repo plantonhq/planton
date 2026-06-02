@@ -18,12 +18,28 @@
 //  2. tfvars generation (flatten.go, hclwrite.go, tfvars.go) -- converts a
 //     proto message to HCL-formatted terraform.tfvars. The pipeline is:
 //     protojson -> JSON map -> Flatten (applies type rules using proto
-//     descriptors) -> WriteMapToHCL -> string.
+//     descriptors) -> WriteMapToHCL -> string. Two emission modes exist,
+//     selected per kind by RenderTFVars:
+//       - snake_case (ProtoToTFVars): keys renamed to proto snake_case to match
+//         the generated snake_case variables.tf that provider-abstraction
+//         modules consume.
+//       - camelCase (ProtoToManifestTFVars): keys kept as the CRD's camelCase
+//         JSON, for kinds whose CloudResourceKindMeta carries a
+//         kubernetes_manifest_projection -- their `spec` is fed verbatim to a
+//         kubernetes_manifest passthrough module (see manifestmodule.go).
 //
 //  3. variables.tf generation (tftype.go, variablestf.go) -- walks a proto
 //     message descriptor to produce Terraform variable blocks. Consults the
 //     same type rules to flatten wrapper types to primitives and skip
 //     orchestrator-only fields.
+//
+//  4. thin manifest-module generation (manifestmodule.go) -- for projection
+//     kinds, emits the entire iac/tf/ module (any-typed spec passthrough), so
+//     no hand-written snake->camel/prune/oneOf locals.tf is needed.
+//
+// Note: despite the generic-sounding name, this package is openmcf-domain-aware
+// (it hardcodes openmcf type rules and reads kind metadata via crkreflect); it
+// is not a standalone proto->HCL library.
 //
 // # Extensibility
 //

@@ -5,6 +5,7 @@ go_library(
     srcs = [
         "apply.go",
         "destroy.go",
+        "generate_module.go",
         "generate_variables.go",
         "init.go",
         "load_tfvars.go",

@@ -130,15 +130,18 @@ func (x *KubernetesReferenceGrantSpec) GetTo() []*KubernetesReferenceGrantTo {
 type KubernetesReferenceGrantFrom struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Group of the referent. The empty string ("") infers the Kubernetes core API
-	// group. Upstream marks this field required (the key must be present) but its
-	// Group type explicitly allows the empty value, so it is NOT a buf.validate
-	// `required` field here -- requiring it would wrongly reject the legitimate
-	// core-group "" value. Pattern: empty or an RFC 1123 subdomain (max 253).
+	// group. Upstream requires the KEY to be present, but its Group type explicitly
+	// allows the empty value -- so this is a proto3 `optional` string with a presence
+	// `required` rule: it must be SET (and is therefore emitted to the CRD, which
+	// rejects a missing key) but may be empty. The `optional` is what lets
+	// ReferenceGrant be a faithful kubernetes_manifest projection: protojson omits
+	// unset proto3 scalars, so a non-optional empty-string group would be dropped
+	// and rejected by the API server. Pattern: empty or an RFC 1123 subdomain (253).
 	//
 	// INFRA-CHART COMPOSABILITY (DD-009): group is a trust assertion about a KIND of
 	// resource, not a pointer to a specific OpenMCF resource instance -- do NOT add a
 	// metadata.relationships hint for it.
-	Group string `protobuf:"bytes,1,opt,name=group,proto3" json:"group,omitempty"`
+	Group *string `protobuf:"bytes,1,opt,name=group,proto3,oneof" json:"group,omitempty"`
 	// Kind of the referent. Required. Core-supported source kinds: Gateway (when
 	// permitting a SecretObjectReference) and GRPCRoute / HTTPRoute / TCPRoute /
 	// TLSRoute / UDPRoute (when permitting a BackendObjectReference). Pattern: 1-63
@@ -199,8 +202,8 @@ func (*KubernetesReferenceGrantFrom) Descriptor() ([]byte, []int) {
 }
 
 func (x *KubernetesReferenceGrantFrom) GetGroup() string {
-	if x != nil {
-		return x.Group
+	if x != nil && x.Group != nil {
+		return *x.Group
 	}
 	return ""
 }
@@ -226,13 +229,14 @@ func (x *KubernetesReferenceGrantFrom) GetNamespace() string {
 type KubernetesReferenceGrantTo struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Group of the referent. The empty string ("") infers the Kubernetes core API
-	// group (e.g. for the Secret and Service kinds). Modeled like from.group: not
-	// buf.validate `required` so the legitimate core-group "" value is accepted.
+	// group (e.g. for the Secret and Service kinds). Modeled like from.group: a
+	// proto3 `optional` string with a presence `required` rule -- the key must be
+	// SET (so protojson emits it and the CRD accepts the resource) but may be empty.
 	// Pattern: empty or an RFC 1123 subdomain (max 253).
 	//
 	// INFRA-CHART COMPOSABILITY (DD-009): a trust assertion about a KIND, not an
 	// instance pointer -- no metadata.relationships hint applies.
-	Group string `protobuf:"bytes,1,opt,name=group,proto3" json:"group,omitempty"`
+	Group *string `protobuf:"bytes,1,opt,name=group,proto3,oneof" json:"group,omitempty"`
 	// Kind of the referent. Required. Core-supported target kinds: Secret (when
 	// permitting a SecretObjectReference) and Service (when permitting a
 	// BackendObjectReference). Pattern: 1-63 chars.
@@ -285,8 +289,8 @@ func (*KubernetesReferenceGrantTo) Descriptor() ([]byte, []int) {
 }
 
 func (x *KubernetesReferenceGrantTo) GetGroup() string {
-	if x != nil {
-		return x.Group
+	if x != nil && x.Group != nil {
+		return *x.Group
 	}
 	return ""
 }
@@ -316,16 +320,18 @@ const file_org_openmcf_provider_kubernetes_kubernetesreferencegrant_v1_spec_prot
 	"\x04from\x18\x03 \x03(\v2Y.org.openmcf.provider.kubernetes.kubernetesreferencegrant.v1.KubernetesReferenceGrantFromB\n" +
 	"\xbaH\a\x92\x01\x04\b\x01\x10\x10R\x04from\x12s\n" +
 	"\x02to\x18\x04 \x03(\v2W.org.openmcf.provider.kubernetes.kubernetesreferencegrant.v1.KubernetesReferenceGrantToB\n" +
-	"\xbaH\a\x92\x01\x04\b\x01\x10\x10R\x02to\"\x9a\x02\n" +
-	"\x1cKubernetesReferenceGrantFrom\x12d\n" +
-	"\x05group\x18\x01 \x01(\tBN\xbaHKrI\x18\xfd\x012D^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$R\x05group\x12G\n" +
+	"\xbaH\a\x92\x01\x04\b\x01\x10\x10R\x02to\"\xac\x02\n" +
+	"\x1cKubernetesReferenceGrantFrom\x12l\n" +
+	"\x05group\x18\x01 \x01(\tBQ\xbaHN\xc8\x01\x01rI\x18\xfd\x012D^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$H\x00R\x05group\x88\x01\x01\x12G\n" +
 	"\x04kind\x18\x02 \x01(\tB3\xbaH0\xc8\x01\x01r+\x10\x01\x18?2%^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$R\x04kind\x12K\n" +
-	"\tnamespace\x18\x03 \x01(\tB-\xbaH*\xc8\x01\x01r%\x10\x01\x18?2\x1f^[a-z0-9]([-a-z0-9]*[a-z0-9])?$R\tnamespace\"\xf9\x01\n" +
-	"\x1aKubernetesReferenceGrantTo\x12d\n" +
-	"\x05group\x18\x01 \x01(\tBN\xbaHKrI\x18\xfd\x012D^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$R\x05group\x12G\n" +
+	"\tnamespace\x18\x03 \x01(\tB-\xbaH*\xc8\x01\x01r%\x10\x01\x18?2\x1f^[a-z0-9]([-a-z0-9]*[a-z0-9])?$R\tnamespaceB\b\n" +
+	"\x06_group\"\x8b\x02\n" +
+	"\x1aKubernetesReferenceGrantTo\x12l\n" +
+	"\x05group\x18\x01 \x01(\tBQ\xbaHN\xc8\x01\x01rI\x18\xfd\x012D^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$H\x00R\x05group\x88\x01\x01\x12G\n" +
 	"\x04kind\x18\x02 \x01(\tB3\xbaH0\xc8\x01\x01r+\x10\x01\x18?2%^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$R\x04kind\x12#\n" +
 	"\x04name\x18\x03 \x01(\tB\n" +
-	"\xbaH\ar\x05\x10\x01\x18\xfd\x01H\x00R\x04name\x88\x01\x01B\a\n" +
+	"\xbaH\ar\x05\x10\x01\x18\xfd\x01H\x01R\x04name\x88\x01\x01B\b\n" +
+	"\x06_groupB\a\n" +
 	"\x05_nameB\xd9\x03\n" +
 	"?com.org.openmcf.provider.kubernetes.kubernetesreferencegrant.v1B\tSpecProtoP\x01Zxgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesreferencegrant/v1;kubernetesreferencegrantv1\xa2\x02\x05OOPKK\xaa\x02;Org.Openmcf.Provider.Kubernetes.Kubernetesreferencegrant.V1\xca\x02;Org\\Openmcf\\Provider\\Kubernetes\\Kubernetesreferencegrant\\V1\xe2\x02GOrg\\Openmcf\\Provider\\Kubernetes\\Kubernetesreferencegrant\\V1\\GPBMetadata\xea\x02@Org::Openmcf::Provider::Kubernetes::Kubernetesreferencegrant::V1b\x06proto3"
 
@@ -366,6 +372,7 @@ func file_org_openmcf_provider_kubernetes_kubernetesreferencegrant_v1_spec_proto
 	if File_org_openmcf_provider_kubernetes_kubernetesreferencegrant_v1_spec_proto != nil {
 		return
 	}
+	file_org_openmcf_provider_kubernetes_kubernetesreferencegrant_v1_spec_proto_msgTypes[1].OneofWrappers = []any{}
 	file_org_openmcf_provider_kubernetes_kubernetesreferencegrant_v1_spec_proto_msgTypes[2].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{

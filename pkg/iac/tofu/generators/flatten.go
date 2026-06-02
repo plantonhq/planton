@@ -6,6 +6,20 @@ import (
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
+// flattenOpts tunes how Flatten emits keys.
+//
+// preserveJSONNames keeps the protojson camelCase keys instead of renaming proto
+// fields to snake_case. The snake_case path matches the snake_case variables.tf
+// that provider-abstraction modules consume; the camelCase path is used for the
+// manifest-projection tfvars, whose `spec` subtree is fed verbatim to a
+// kubernetes_manifest resource (whose JSON keys are the CRD's camelCase keys).
+// Either way, type rules act on message *type*, not key case, so flattening
+// (StringValueOrRef -> string) and skipping (KubernetesClusterSelector) behave
+// identically under both.
+type flattenOpts struct {
+	preserveJSONNames bool
+}
+
 // Flatten walks a JSON map (produced by protojson.Marshal + json.Unmarshal)
 // alongside a proto message descriptor, applying type rules to transform the
 // map in-place. Wrapper types are flattened to primitives, skipped fields are
@@ -26,6 +40,10 @@ import (
 // and not skipped), the function recurses into it with the corresponding nested
 // message descriptor.
 func Flatten(data map[string]interface{}, md protoreflect.MessageDescriptor, rules map[string]TypeRule) {
+	flattenWithOpts(data, md, rules, flattenOpts{})
+}
+
+func flattenWithOpts(data map[string]interface{}, md protoreflect.MessageDescriptor, rules map[string]TypeRule, opts flattenOpts) {
 	fields := md.Fields()
 
 	for i := 0; i < fields.Len(); i++ {
@@ -37,35 +55,39 @@ func Flatten(data map[string]interface{}, md protoreflect.MessageDescriptor, rul
 			continue
 		}
 
-		// Rename proto field key from JSON camelCase to snake_case.
-		// The proto field name is already snake_case by convention.
-		snakeKey := string(fd.Name())
-		if snakeKey != jsonKey {
-			delete(data, jsonKey)
-			data[snakeKey] = val
+		// Choose the emitted key. Default: rename JSON camelCase -> snake_case
+		// (the proto field name is already snake_case by convention). Manifest
+		// projection: keep the camelCase JSON key, which is the CRD's own key.
+		activeKey := jsonKey
+		if !opts.preserveJSONNames {
+			snakeKey := string(fd.Name())
+			if snakeKey != jsonKey {
+				delete(data, jsonKey)
+				data[snakeKey] = val
+			}
+			activeKey = snakeKey
 		}
-		activeKey := snakeKey
 
 		if fd.Kind() != protoreflect.MessageKind {
 			continue
 		}
 
 		if fd.IsMap() {
-			flattenMapField(data, activeKey, fd, val, rules)
+			flattenMapField(data, activeKey, fd, val, rules, opts)
 			continue
 		}
 
 		if fd.IsList() {
-			flattenListField(data, activeKey, fd, val, rules)
+			flattenListField(data, activeKey, fd, val, rules, opts)
 			continue
 		}
 
-		flattenSingularField(data, activeKey, fd, val, rules)
+		flattenSingularField(data, activeKey, fd, val, rules, opts)
 	}
 }
 
 // flattenSingularField handles a non-repeated, non-map message field.
-func flattenSingularField(data map[string]interface{}, jsonKey string, fd protoreflect.FieldDescriptor, val interface{}, rules map[string]TypeRule) {
+func flattenSingularField(data map[string]interface{}, jsonKey string, fd protoreflect.FieldDescriptor, val interface{}, rules map[string]TypeRule, opts flattenOpts) {
 	msgName := string(fd.Message().FullName())
 	rule, hasRule := rules[msgName]
 
@@ -89,14 +111,14 @@ func flattenSingularField(data map[string]interface{}, jsonKey string, fd protor
 
 	// No rule -- recurse into the nested map if possible.
 	if nested, ok := val.(map[string]interface{}); ok {
-		Flatten(nested, fd.Message(), rules)
+		flattenWithOpts(nested, fd.Message(), rules, opts)
 	}
 }
 
 // flattenMapField handles a proto map<K, V> field. In JSON, proto maps are
 // objects: {"key1": value1, "key2": value2}. When the map's value type has a
 // flatten rule, each value in the map is flattened individually.
-func flattenMapField(data map[string]interface{}, jsonKey string, fd protoreflect.FieldDescriptor, val interface{}, rules map[string]TypeRule) {
+func flattenMapField(data map[string]interface{}, jsonKey string, fd protoreflect.FieldDescriptor, val interface{}, rules map[string]TypeRule, opts flattenOpts) {
 	mapObj, ok := val.(map[string]interface{})
 	if !ok {
 		return
@@ -130,14 +152,14 @@ func flattenMapField(data map[string]interface{}, jsonKey string, fd protoreflec
 	// No flatten rule on the value type -- recurse into each value.
 	for _, v := range mapObj {
 		if nested, ok := v.(map[string]interface{}); ok {
-			Flatten(nested, valueDesc.Message(), rules)
+			flattenWithOpts(nested, valueDesc.Message(), rules, opts)
 		}
 	}
 }
 
 // flattenListField handles a repeated message field. In JSON, these are arrays.
 // When the element type has a flatten rule, each element is flattened.
-func flattenListField(data map[string]interface{}, jsonKey string, fd protoreflect.FieldDescriptor, val interface{}, rules map[string]TypeRule) {
+func flattenListField(data map[string]interface{}, jsonKey string, fd protoreflect.FieldDescriptor, val interface{}, rules map[string]TypeRule, opts flattenOpts) {
 	arr, ok := val.([]interface{})
 	if !ok {
 		return
@@ -166,7 +188,7 @@ func flattenListField(data map[string]interface{}, jsonKey string, fd protorefle
 	// No flatten rule -- recurse into each element.
 	for _, elem := range arr {
 		if nested, ok := elem.(map[string]interface{}); ok {
-			Flatten(nested, fd.Message(), rules)
+			flattenWithOpts(nested, fd.Message(), rules, opts)
 		}
 	}
 }

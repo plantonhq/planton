@@ -1314,8 +1314,18 @@ type CloudResourceKindMeta struct {
 	// example: KubernetesPostgres needs KubernetesZalandoPostgresOperator
 	// because it creates acid.zalan.do/v1 postgresql CRDs.
 	Prerequisites []CloudResourceKind `protobuf:"varint,7,rep,packed,name=prerequisites,proto3,enum=org.openmcf.shared.cloudresourcekind.CloudResourceKind" json:"prerequisites,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	// set ONLY for kinds whose spec is a direct projection of a single Kubernetes
+	// custom resource -- i.e. the Terraform module is a thin `kubernetes_manifest`
+	// passthrough rather than hand-written provider logic. its presence flips the
+	// proto->tfvars converter to emit the manifest-shaped (camelCase, pruned) spec
+	// and drives deterministic thin-module generation (see `openmcf tofu
+	// generate-module`). absent for provider-abstraction kinds (aws/gcp/etc.),
+	// which keep idiomatic snake_case typed variables. the api_version/kind here
+	// are the UPSTREAM CRD's group-version-kind, distinct from the OpenMCF
+	// groupVersion returned by crkreflect.GroupVersion.
+	KubernetesManifestProjection *KubernetesManifestProjection `protobuf:"bytes,8,opt,name=kubernetes_manifest_projection,json=kubernetesManifestProjection,proto3" json:"kubernetes_manifest_projection,omitempty"`
+	unknownFields                protoimpl.UnknownFields
+	sizeCache                    protoimpl.SizeCache
 }
 
 func (x *CloudResourceKindMeta) Reset() {
@@ -1397,6 +1407,69 @@ func (x *CloudResourceKindMeta) GetPrerequisites() []CloudResourceKind {
 	return nil
 }
 
+func (x *CloudResourceKindMeta) GetKubernetesManifestProjection() *KubernetesManifestProjection {
+	if x != nil {
+		return x.KubernetesManifestProjection
+	}
+	return nil
+}
+
+// identifies the upstream Kubernetes custom resource that a CloudResourceKind
+// projects onto. carried on CloudResourceKindMeta for projection kinds only.
+type KubernetesManifestProjection struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// upstream CRD groupVersion, e.g. "networking.istio.io/v1".
+	ApiVersion string `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
+	// upstream CRD kind, e.g. "DestinationRule".
+	Kind          string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *KubernetesManifestProjection) Reset() {
+	*x = KubernetesManifestProjection{}
+	mi := &file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesManifestProjection) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesManifestProjection) ProtoMessage() {}
+
+func (x *KubernetesManifestProjection) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesManifestProjection.ProtoReflect.Descriptor instead.
+func (*KubernetesManifestProjection) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *KubernetesManifestProjection) GetApiVersion() string {
+	if x != nil {
+		return x.ApiVersion
+	}
+	return ""
+}
+
+func (x *KubernetesManifestProjection) GetKind() string {
+	if x != nil {
+		return x.Kind
+	}
+	return ""
+}
+
 var file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_extTypes = []protoimpl.ExtensionInfo{
 	{
 		ExtendedType:  (*descriptorpb.EnumValueOptions)(nil),
@@ -1418,7 +1491,7 @@ var File_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto protoref
 
 const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\n" +
-	">org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto\x12$org.openmcf.shared.cloudresourcekind\x1a google/protobuf/descriptor.proto\x1aBorg/openmcf/shared/cloudresourcekind/cloud_resource_provider.proto\"\xa9\x03\n" +
+	">org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto\x12$org.openmcf.shared.cloudresourcekind\x1a google/protobuf/descriptor.proto\x1aBorg/openmcf/shared/cloudresourcekind/cloud_resource_provider.proto\"\xb4\x04\n" +
 	"\x15CloudResourceKindMeta\x12W\n" +
 	"\bprovider\x18\x01 \x01(\x0e2;.org.openmcf.shared.cloudresourcekind.CloudResourceProviderR\bprovider\x12X\n" +
 	"\aversion\x18\x02 \x01(\x0e2>.org.openmcf.shared.cloudresourcekind.CloudResourceKindVersionR\aversion\x12\x12\n" +
@@ -1426,10 +1499,15 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\tid_prefix\x18\x04 \x01(\tR\bidPrefix\x12&\n" +
 	"\x0fis_service_kind\x18\x05 \x01(\bR\risServiceKind\x12%\n" +
 	"\x0econtainer_kind\x18\x06 \x01(\bR\rcontainerKind\x12]\n" +
-	"\rprerequisites\x18\a \x03(\x0e27.org.openmcf.shared.cloudresourcekind.CloudResourceKindR\rprerequisites*O\n" +
+	"\rprerequisites\x18\a \x03(\x0e27.org.openmcf.shared.cloudresourcekind.CloudResourceKindR\rprerequisites\x12\x88\x01\n" +
+	"\x1ekubernetes_manifest_projection\x18\b \x01(\v2B.org.openmcf.shared.cloudresourcekind.KubernetesManifestProjectionR\x1ckubernetesManifestProjection\"S\n" +
+	"\x1cKubernetesManifestProjection\x12\x1f\n" +
+	"\vapi_version\x18\x01 \x01(\tR\n" +
+	"apiVersion\x12\x12\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xb7\x82\x01\n" +
+	"\x02v1\x10\x01*\x9a\x87\x01\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12,\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1654,21 +1732,35 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x10KubernetesSecret\x10\xd2\x06\x1a\x10\xa2\xf7\x04\f\b\x13\x10\x01\"\x06k8ssec\x12-\n" +
 	"\x17KubernetesClusterIssuer\x10\xd3\x06\x1a\x0f\xa2\xf7\x04\v\b\x13\x10\x01\"\x05k8sci\x12'\n" +
 	"\x10KubernetesIssuer\x10\xd4\x06\x1a\x10\xa2\xf7\x04\f\b\x13\x10\x01\"\x06k8siss\x12,\n" +
-	"\x15KubernetesCertificate\x10\xd5\x06\x1a\x10\xa2\xf7\x04\f\b\x13\x10\x01\"\x06k8scrt\x121\n" +
-	"\x16KubernetesGatewayClass\x10\xd6\x06\x1a\x14\xa2\xf7\x04\x10\b\x13\x10\x01\"\x06k8sgwc:\x02\xc5\x06\x12+\n" +
-	"\x11KubernetesGateway\x10\xd7\x06\x1a\x13\xa2\xf7\x04\x0f\b\x13\x10\x01\"\x05k8sgw:\x02\xc5\x06\x12.\n" +
-	"\x13KubernetesHttpRoute\x10\xd8\x06\x1a\x14\xa2\xf7\x04\x10\b\x13\x10\x01\"\x06k8shrt:\x02\xc5\x06\x12.\n" +
-	"\x13KubernetesGrpcRoute\x10\xd9\x06\x1a\x14\xa2\xf7\x04\x10\b\x13\x10\x01\"\x06k8sgrt:\x02\xc5\x06\x12-\n" +
-	"\x12KubernetesTcpRoute\x10\xda\x06\x1a\x14\xa2\xf7\x04\x10\b\x13\x10\x01\"\x06k8strt:\x02\xc5\x06\x12/\n" +
-	"\x12KubernetesTlsRoute\x10\xdb\x06\x1a\x16\xa2\xf7\x04\x12\b\x13\x10\x01\"\bk8stlsrt:\x02\xc5\x06\x126\n" +
-	"\x18KubernetesReferenceGrant\x10\xdc\x06\x1a\x17\xa2\xf7\x04\x13\b\x13\x10\x01\"\tk8srefgrt:\x02\xc5\x06\x123\n" +
-	"\x19KubernetesDestinationRule\x10\xdd\x06\x1a\x13\xa2\xf7\x04\x0f\b\x13\x10\x01\"\x05k8sdr:\x02\xe4\x06\x120\n" +
-	"\x16KubernetesServiceEntry\x10\xde\x06\x1a\x13\xa2\xf7\x04\x0f\b\x13\x10\x01\"\x05k8sse:\x02\xe4\x06\x126\n" +
-	"\x1cKubernetesPeerAuthentication\x10\xdf\x06\x1a\x13\xa2\xf7\x04\x0f\b\x13\x10\x01\"\x05k8spa:\x02\xe4\x06\x129\n" +
-	"\x1fKubernetesRequestAuthentication\x10\xe0\x06\x1a\x13\xa2\xf7\x04\x0f\b\x13\x10\x01\"\x05k8sra:\x02\xe4\x06\x12:\n" +
-	"\x1dKubernetesAuthorizationPolicy\x10\xe1\x06\x1a\x16\xa2\xf7\x04\x12\b\x13\x10\x01\"\bk8sauthz:\x02\xe4\x06\x12.\n" +
-	"\x13KubernetesTelemetry\x10\xe2\x06\x1a\x14\xa2\xf7\x04\x10\b\x13\x10\x01\"\x06k8stel:\x02\xe4\x06\x12/\n" +
-	"\x15KubernetesEnvoyFilter\x10\xe3\x06\x1a\x13\xa2\xf7\x04\x0f\b\x13\x10\x01\"\x05k8sef:\x02\xe4\x06\x122\n" +
+	"\x15KubernetesCertificate\x10\xd5\x06\x1a\x10\xa2\xf7\x04\f\b\x13\x10\x01\"\x06k8scrt\x12_\n" +
+	"\x16KubernetesGatewayClass\x10\xd6\x06\x1aB\xa2\xf7\x04>\b\x13\x10\x01\"\x06k8sgwc:\x02\xc5\x06B,\n" +
+	"\x1cgateway.networking.k8s.io/v1\x12\fGatewayClass\x12T\n" +
+	"\x11KubernetesGateway\x10\xd7\x06\x1a<\xa2\xf7\x048\b\x13\x10\x01\"\x05k8sgw:\x02\xc5\x06B'\n" +
+	"\x1cgateway.networking.k8s.io/v1\x12\aGateway\x12Y\n" +
+	"\x13KubernetesHttpRoute\x10\xd8\x06\x1a?\xa2\xf7\x04;\b\x13\x10\x01\"\x06k8shrt:\x02\xc5\x06B)\n" +
+	"\x1cgateway.networking.k8s.io/v1\x12\tHTTPRoute\x12Y\n" +
+	"\x13KubernetesGrpcRoute\x10\xd9\x06\x1a?\xa2\xf7\x04;\b\x13\x10\x01\"\x06k8sgrt:\x02\xc5\x06B)\n" +
+	"\x1cgateway.networking.k8s.io/v1\x12\tGRPCRoute\x12]\n" +
+	"\x12KubernetesTcpRoute\x10\xda\x06\x1aD\xa2\xf7\x04@\b\x13\x10\x01\"\x06k8strt:\x02\xc5\x06B.\n" +
+	"\"gateway.networking.k8s.io/v1alpha2\x12\bTCPRoute\x12Y\n" +
+	"\x12KubernetesTlsRoute\x10\xdb\x06\x1a@\xa2\xf7\x04<\b\x13\x10\x01\"\bk8stlsrt:\x02\xc5\x06B(\n" +
+	"\x1cgateway.networking.k8s.io/v1\x12\bTLSRoute\x12f\n" +
+	"\x18KubernetesReferenceGrant\x10\xdc\x06\x1aG\xa2\xf7\x04C\b\x13\x10\x01\"\tk8srefgrt:\x02\xc5\x06B.\n" +
+	"\x1cgateway.networking.k8s.io/v1\x12\x0eReferenceGrant\x12^\n" +
+	"\x19KubernetesDestinationRule\x10\xdd\x06\x1a>\xa2\xf7\x04:\b\x13\x10\x01\"\x05k8sdr:\x02\xe4\x06B)\n" +
+	"\x16networking.istio.io/v1\x12\x0fDestinationRule\x12X\n" +
+	"\x16KubernetesServiceEntry\x10\xde\x06\x1a;\xa2\xf7\x047\b\x13\x10\x01\"\x05k8sse:\x02\xe4\x06B&\n" +
+	"\x16networking.istio.io/v1\x12\fServiceEntry\x12b\n" +
+	"\x1cKubernetesPeerAuthentication\x10\xdf\x06\x1a?\xa2\xf7\x04;\b\x13\x10\x01\"\x05k8spa:\x02\xe4\x06B*\n" +
+	"\x14security.istio.io/v1\x12\x12PeerAuthentication\x12h\n" +
+	"\x1fKubernetesRequestAuthentication\x10\xe0\x06\x1aB\xa2\xf7\x04>\b\x13\x10\x01\"\x05k8sra:\x02\xe4\x06B-\n" +
+	"\x14security.istio.io/v1\x12\x15RequestAuthentication\x12g\n" +
+	"\x1dKubernetesAuthorizationPolicy\x10\xe1\x06\x1aC\xa2\xf7\x04?\b\x13\x10\x01\"\bk8sauthz:\x02\xe4\x06B+\n" +
+	"\x14security.istio.io/v1\x12\x13AuthorizationPolicy\x12R\n" +
+	"\x13KubernetesTelemetry\x10\xe2\x06\x1a8\xa2\xf7\x044\b\x13\x10\x01\"\x06k8stel:\x02\xe4\x06B\"\n" +
+	"\x15telemetry.istio.io/v1\x12\tTelemetry\x12\\\n" +
+	"\x15KubernetesEnvoyFilter\x10\xe3\x06\x1a@\xa2\xf7\x04<\b\x13\x10\x01\"\x05k8sef:\x02\xe4\x06B+\n" +
+	"\x1cnetworking.istio.io/v1alpha3\x12\vEnvoyFilter\x122\n" +
 	"\x17KubernetesIstioBaseCrds\x10\xe4\x06\x1a\x14\xa2\xf7\x04\x10\b\x13\x10\x01\"\n" +
 	"k8sistcrds\x124\n" +
 	"\x1eDigitalOceanAppPlatformService\x10\xb0\t\x1a\x0f\xa2\xf7\x04\v\b\x11\x10\x01\"\x05doapp\x12(\n" +
@@ -1887,25 +1979,27 @@ func file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc
 }
 
 var file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_goTypes = []any{
 	(CloudResourceKindVersion)(0),         // 0: org.openmcf.shared.cloudresourcekind.CloudResourceKindVersion
 	(CloudResourceKind)(0),                // 1: org.openmcf.shared.cloudresourcekind.CloudResourceKind
 	(*CloudResourceKindMeta)(nil),         // 2: org.openmcf.shared.cloudresourcekind.CloudResourceKindMeta
-	(CloudResourceProvider)(0),            // 3: org.openmcf.shared.cloudresourcekind.CloudResourceProvider
-	(*descriptorpb.EnumValueOptions)(nil), // 4: google.protobuf.EnumValueOptions
+	(*KubernetesManifestProjection)(nil),  // 3: org.openmcf.shared.cloudresourcekind.KubernetesManifestProjection
+	(CloudResourceProvider)(0),            // 4: org.openmcf.shared.cloudresourcekind.CloudResourceProvider
+	(*descriptorpb.EnumValueOptions)(nil), // 5: google.protobuf.EnumValueOptions
 }
 var file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_depIdxs = []int32{
-	3, // 0: org.openmcf.shared.cloudresourcekind.CloudResourceKindMeta.provider:type_name -> org.openmcf.shared.cloudresourcekind.CloudResourceProvider
+	4, // 0: org.openmcf.shared.cloudresourcekind.CloudResourceKindMeta.provider:type_name -> org.openmcf.shared.cloudresourcekind.CloudResourceProvider
 	0, // 1: org.openmcf.shared.cloudresourcekind.CloudResourceKindMeta.version:type_name -> org.openmcf.shared.cloudresourcekind.CloudResourceKindVersion
 	1, // 2: org.openmcf.shared.cloudresourcekind.CloudResourceKindMeta.prerequisites:type_name -> org.openmcf.shared.cloudresourcekind.CloudResourceKind
-	4, // 3: org.openmcf.shared.cloudresourcekind.kind_meta:extendee -> google.protobuf.EnumValueOptions
-	2, // 4: org.openmcf.shared.cloudresourcekind.kind_meta:type_name -> org.openmcf.shared.cloudresourcekind.CloudResourceKindMeta
-	5, // [5:5] is the sub-list for method output_type
-	5, // [5:5] is the sub-list for method input_type
-	4, // [4:5] is the sub-list for extension type_name
-	3, // [3:4] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	3, // 3: org.openmcf.shared.cloudresourcekind.CloudResourceKindMeta.kubernetes_manifest_projection:type_name -> org.openmcf.shared.cloudresourcekind.KubernetesManifestProjection
+	5, // 4: org.openmcf.shared.cloudresourcekind.kind_meta:extendee -> google.protobuf.EnumValueOptions
+	2, // 5: org.openmcf.shared.cloudresourcekind.kind_meta:type_name -> org.openmcf.shared.cloudresourcekind.CloudResourceKindMeta
+	6, // [6:6] is the sub-list for method output_type
+	6, // [6:6] is the sub-list for method input_type
+	5, // [5:6] is the sub-list for extension type_name
+	4, // [4:5] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_init() }
@@ -1920,7 +2014,7 @@ func file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_init() 
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc), len(file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc)),
 			NumEnums:      2,
-			NumMessages:   1,
+			NumMessages:   2,
 			NumExtensions: 1,
 			NumServices:   0,
 		},

@@ -4,11 +4,11 @@ resource "kubernetes_manifest" "service_entry" {
     kind       = "ServiceEntry"
 
     metadata = {
-      name      = local.service_entry_name
-      namespace = local.namespace
+      name      = var.metadata.name
+      namespace = var.spec.namespace
       labels    = local.labels
     }
 
-    spec = local.service_entry_spec
+    spec = local.manifest_spec
   }
 }
