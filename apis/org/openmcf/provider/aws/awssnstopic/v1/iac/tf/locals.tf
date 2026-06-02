@@ -13,8 +13,9 @@ locals {
   # Encryption
   kms_master_key_id = try(var.spec.kms_key_id.value, null)
 
-  # Access policy — expect the struct to arrive as a JSON string from the stack input layer.
-  policy = try(var.spec.policy, null)
+  # Access policy is a free-form JSON object (google.protobuf.Struct); aws_sns_topic wants
+  # policy as a JSON string, so encode the object here.
+  policy = try(jsonencode(var.spec.policy), null)
 
   # Delivery policy
   delivery_policy = try(var.spec.delivery_policy, null) != "" ? try(var.spec.delivery_policy, null) : null

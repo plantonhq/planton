@@ -141,7 +141,7 @@ func mapValueToTFType(valDesc protoreflect.FieldDescriptor, rules map[string]Typ
 			}
 		}
 		if isWellKnownJSONType(fullName) {
-			return TFPrimitive("string"), nil
+			return TFPrimitive("any"), nil
 		}
 		return msgDescToTFObject(valDesc.Message(), valDesc, rules, apiDocsJSON)
 	default:
@@ -181,7 +181,7 @@ func scalarOrMsgToTFType(fd protoreflect.FieldDescriptor, parentMD protoreflect.
 		}
 
 		if isWellKnownJSONType(fullName) {
-			return TFPrimitive("string"), nil
+			return TFPrimitive("any"), nil
 		}
 
 		return msgDescToTFObject(fd.Message(), fd, rules, apiDocsJSON)
@@ -277,7 +277,8 @@ func findFieldDesc(apiDocsJSON *gendoc.Template, msgFullName, fieldName string) 
 }
 
 // isWellKnownJSONType returns true for protobuf well-known types representing
-// JSON, which should be mapped to string in Terraform.
+// free-form JSON, which are mapped to the Terraform `any` type (the nested
+// JSON value is passed through verbatim).
 func isWellKnownJSONType(fullName string) bool {
 	switch fullName {
 	case "google.protobuf.Struct", "google.protobuf.Value", "google.protobuf.ListValue":
