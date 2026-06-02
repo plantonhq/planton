@@ -33,7 +33,7 @@ const (
 // (security/v1beta1/authorization_policy.proto, served as security.istio.io/v1),
 // pinned to the 1.26 line (tag 1.26.8). Upstream spec fields are flattened directly
 // after the OpenMCF namespaced envelope (target_cluster, namespace); there is no
-// nested `authorization_policy` sub-message (DD-002).
+// nested `authorization_policy` sub-message.
 //
 // Scope semantics (upstream): if neither `selector` nor `target_refs` is set the
 // policy matches all workloads in its namespace (or, in the mesh root namespace,
@@ -55,7 +55,7 @@ type KubernetesAuthorizationPolicySpec struct {
 	// namespace (or, in the root namespace, the whole mesh). At most one of
 	// `selector` and `target_refs` may be set (enforced above).
 	//
-	// INFRA-CHART COMPOSABILITY (DD-009): selector is a PLAIN label match, not an
+	// INFRA-CHART COMPOSABILITY: selector is a PLAIN label match, not an
 	// OpenMCF foreign key (StringValueOrRef). It is matched at runtime by istiod
 	// against pod labels and creates NO automatic DAG edge to any workload resource.
 	// To order this policy after the workload it protects in an infra chart, an
@@ -74,7 +74,7 @@ type KubernetesAuthorizationPolicySpec struct {
 	// `target_refs` may be set (enforced above). Waypoint proxies require this field
 	// (label `selector` policies are ignored by waypoints). Upstream allows up to 16.
 	//
-	// INFRA-CHART COMPOSABILITY (DD-009): a target reference is a PLAIN cross-resource
+	// INFRA-CHART COMPOSABILITY: a target reference is a PLAIN cross-resource
 	// reference, not an OpenMCF foreign key. istiod resolves it at runtime, creating
 	// NO automatic DAG edge. Order this policy after the referenced resource via
 	// metadata.relationships (`uses` -> KubernetesGateway / KubernetesService /
@@ -96,7 +96,7 @@ type KubernetesAuthorizationPolicySpec struct {
 	//
 	// ALLOW/DENY/AUDIT/CUSTOM // external standard exception -- Istio AuthorizationPolicy.Action enum
 	//
-	// DD-008: modeled as a closed string set (not a proto enum). Left unset to inherit
+	// Modeled as a closed string set (not a proto enum). Left unset to inherit
 	// the upstream default (ALLOW); no OpenMCF default is imposed.
 	Action *string `protobuf:"bytes,6,opt,name=action,proto3,oneof" json:"action,omitempty"`
 	// The external authorizer to delegate to, used only with the CUSTOM action. Names
@@ -641,7 +641,7 @@ type KubernetesAuthorizationPolicyCondition struct {
 	Key string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
 	// Allowed values for the attribute. Upstream requires at least one of `values` or
 	// `not_values` to be set; that coupling is not part of the CRD's declared
-	// validation, so it is not enforced here (DD-001: match the validated surface).
+	// validation, so it is not enforced here (match the validated surface).
 	Values []string `protobuf:"bytes,2,rep,name=values,proto3" json:"values,omitempty"`
 	// Negated values for the attribute.
 	NotValues     []string `protobuf:"bytes,3,rep,name=not_values,json=notValues,proto3" json:"not_values,omitempty"`

@@ -1,11 +1,9 @@
 # KubernetesEnvoyFilter -- Design & Research
 
 This document captures the deployment landscape, the modeling rationale, and the fidelity
-decisions behind the `KubernetesEnvoyFilter` OpenMCF component (kind 867). It is the sixth
-typed Istio API component and the fourth forged (after PeerAuthentication 863,
-RequestAuthentication 864, and ServiceEntry 862). It is the deepest of the family by nesting
-(twelve component-local match/patch messages) and the only one still served at
-`networking/v1alpha3`.
+decisions behind the `KubernetesEnvoyFilter` OpenMCF component (kind 867). It is the deepest
+Istio component by nesting (twelve component-local match/patch messages) and the only one
+still served at `networking/v1alpha3`.
 
 ## 1. What EnvoyFilter is
 
@@ -24,8 +22,8 @@ graduating common uses (CORS, ext_authz, rate limiting) onto first-class typed A
 ## 2. Source of truth and version
 
 Translated proto-to-proto from the upstream `istio.io/api` clone pinned to tag **1.26.8**
-(`networking/v1alpha3/envoy_filter.proto`). Per DD-001 the local clone is authoritative; no
-specs are pulled from the internet. The crd2pulumi typed SDK and the CRDs installed by
+(`networking/v1alpha3/envoy_filter.proto`). The local clone is authoritative; no specs are
+pulled from the internet. The crd2pulumi typed SDK and the CRDs installed by
 `KubernetesIstioBaseCrds` are likewise generated from Istio `release-1.26`, so the proto, the
 typed Pulumi resource (package `networking/v1alpha3`), and the cluster CRD all agree.
 
@@ -37,7 +35,7 @@ identical for every OpenMCF kind. The **Istio CRD** is served at `networking.ist
 ## 3. OpenMCF spec shape (fidelity decisions)
 
 The OpenMCF spec flattens the upstream `EnvoyFilter` fields directly after the namespaced
-envelope (`target_cluster`, `namespace`), per DD-002 -- no nested `envoy_filter` sub-message.
+envelope (`target_cluster`, `namespace`) -- no nested `envoy_filter` sub-message.
 Fields are numbered sequentially from 1 (the OpenMCF proto is its own wire contract; it does not
 preserve upstream field-number gaps such as the upstream `targetRefs = 6` / `config_patches = 4`
 ordering).
@@ -48,9 +46,9 @@ ordering).
 | `targetRefs` (`type.v1beta1.PolicyTargetReference`) | `target_refs` (`KubernetesIstioApiPolicyTargetReference`) | Shared type -- same upstream message RequestAuthentication uses; max 16. |
 | `configPatches` (`EnvoyConfigObjectPatch`) | `config_patches` (`KubernetesEnvoyFilterConfigPatch`) | 12 nested component-local messages; see below. |
 | `priority` (`int32`) | `priority` (`optional int32`) | Unset => upstream default 0. |
-| `EnvoyConfigObjectMatch.object_types` (proto `oneof`) | three sibling fields + at-most-one CEL | DD-004 flatten; see below. |
-| `Patch.value` (`google.protobuf.Struct`) | `value` (`google.protobuf.Struct`) | Free-form, kept as Struct (DD-002 D2.3). |
-| `ApplyTo`/`PatchContext`/`Operation`/`FilterClass`/`Action` enums | closed-set `optional string` | DD-008. |
+| `EnvoyConfigObjectMatch.object_types` (proto `oneof`) | three sibling fields + at-most-one CEL | Flattened; see below. |
+| `Patch.value` (`google.protobuf.Struct`) | `value` (`google.protobuf.Struct`) | Free-form, kept as Struct. |
+| `ApplyTo`/`PatchContext`/`Operation`/`FilterClass`/`Action` enums | closed-set `optional string` | UPPERCASE string + `in`, not proto enums. |
 
 ### The two shared selectors reused (not redefined)
 
@@ -64,19 +62,19 @@ EnvoyFilter reuses both shared Istio types rather than redefining them:
   `type/v1beta1.PolicyTargetReference` RequestAuthentication uses (group/kind/name + the
   no-cross-namespace CEL). EnvoyFilter additionally caps the list at 16.
 
-### The `object_types` oneof (DD-004, modeled without a discriminator)
+### The `object_types` oneof (modeled without a discriminator)
 
 `EnvoyConfigObjectMatch` carries a proto `oneof object_types { listener | route_configuration |
-cluster }`. Per DD-004 the oneof is flattened to sibling message fields. It is modeled as three
-**optional sibling fields with no `match_type` discriminator** -- the same shape the crd2pulumi
-SDK uses, and the same choice T03/T04 made for structural attachment forks (selector vs
-target_refs, workload_selector vs endpoints); discriminators are reserved for value-type unions
-(e.g. `KubernetesIstioApiStringMatch`'s EXACT/PREFIX/REGEX). Because flattening loses the proto
-oneof's implicit at-most-one guarantee -- and the generated CRD does **not** re-encode it as an
+cluster }`. The oneof is flattened to sibling message fields. It is modeled as three **optional
+sibling fields with no `match_type` discriminator** -- the same shape the crd2pulumi SDK uses,
+and the same choice made for structural attachment forks (selector vs target_refs,
+workload_selector vs endpoints); discriminators are reserved for same-type value unions (e.g.
+`KubernetesIstioApiStringMatch`'s EXACT/PREFIX/REGEX). Because flattening loses the proto oneof's
+implicit at-most-one guarantee -- and the generated CRD does **not** re-encode it as an
 XValidation -- the rule is restored as a message-level CEL. This preserves upstream semantics; it
 is not extra validation.
 
-### Enum case / external standard (DD-008)
+### Enum case / external standard
 
 `apply_to`, `match.context`, `route.action`, `patch.operation`, and `patch.filter_class` are
 closed-set `optional string` fields validated by the protovalidate `string.in` rule with the
@@ -84,14 +82,13 @@ UPPERCASE upstream constants -- not proto enums. The zero-value sentinels (`INVA
 `FilterClass.UNSPECIFIED`) are excluded from the sets: unset already means "unspecified",
 selecting an explicit `INVALID` is never valid. `apply_to` keeps `BOOTSTRAP` for fidelity (the
 CRD still accepts it) with an inline note that it is deprecated upstream. Leaving any enum unset
-omits it from the CR, so istiod's own default applies (pitfall #5).
+omits it from the CR, so istiod's own default applies.
 
 ### Deliberate omission
 
 `ListenerMatch.port_name` is **not** surfaced: upstream marks it "Not implemented" /
 `$hide_from_docs`, so it carries no behavior. Omitting a non-functional field (rather than
-exposing a dead knob) follows the T03 `$hide_from_docs` precedent and keeps 100% of the
-*documented* surface (DD-001).
+exposing a dead knob) keeps 100% of the *documented* surface.
 
 ### CEL portability
 
@@ -101,8 +98,7 @@ that `buf`/`protovalidate`/`cel-go` do not provide. It is re-expressed with a po
 guard. The object_types rule is added to restore the flattened proto oneof (above). No
 istiod-runtime cross-field rules (e.g. `ROUTE_CONFIGURATION` allows only `MERGE`,
 `HTTP_FILTER`/`NETWORK_FILTER` for `REPLACE`) are encoded -- those are istiod webhook semantics,
-not CRD `XValidation`, and the fidelity contract is the CRD's validated surface (the T03
-finding).
+not CRD `XValidation`, and the fidelity contract is the CRD's validated surface.
 
 | Upstream intent | OpenMCF CEL | Origin |
 |-----------------|-------------|--------|
@@ -123,7 +119,7 @@ finding).
 | cluster `port_number` / listener `destination_port` 1-65535 | Upstream port semantics. |
 | `workload_selector.labels` value no-wildcard | Networking WorkloadSelector CRD (shared type). |
 
-## 4. Composability (DD-009)
+## 4. Composability
 
 - **`namespace`** is the one true foreign key: `StringValueOrRef` -> `KubernetesNamespace`
   (`spec.name`). Literal or `valueFrom`; creates a real DAG edge.
@@ -140,10 +136,10 @@ finding).
 
 Both engines are feature-equal and emit the same `networking.istio.io/v1alpha3` `EnvoyFilter`:
 
-- **Pulumi** uses the typed crd2pulumi resource `istionetworkingv1alpha3.NewEnvoyFilter`
-  (DD-005). The `Spec` field is a `PtrInput` satisfied by the `EnvoyFilterSpecArgs` **value**
-  (the `*Ptr()` wrapper marshals to the wrong element type and panics at apply -- the
-  PeerAuthentication forge caught this live). Per-nested-message builder helpers attach every
+- **Pulumi** uses the typed crd2pulumi resource `istionetworkingv1alpha3.NewEnvoyFilter`.
+  The `Spec` field is a `PtrInput` satisfied by the `EnvoyFilterSpecArgs` **value**
+  (the `*Ptr()` wrapper marshals to the wrong element type and panics at apply).
+  Per-nested-message builder helpers attach every
   block only when present; proto `uint32` ports are cast to the SDK's `int`. The free-form
   `patch.value` Struct is converted to a `pulumi.Map` by a small recursive `structToPulumiMap`
   helper (`map`->`pulumi.Map`, slice->`pulumi.Array`, scalars->typed inputs) -- the SDK types

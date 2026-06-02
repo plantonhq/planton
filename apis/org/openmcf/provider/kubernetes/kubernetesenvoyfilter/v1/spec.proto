@@ -19,7 +19,7 @@ import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 // is the only typed Istio API component still on v1alpha3; it has NOT graduated to v1),
 // pinned to the 1.26 line (tag 1.26.8). Upstream spec fields are flattened directly after
 // the OpenMCF namespaced envelope (target_cluster, namespace); there is no nested
-// `envoy_filter` sub-message (DD-002).
+// `envoy_filter` sub-message.
 //
 // EXPERT-ONLY ESCAPE HATCH: EnvoyFilter patches Envoy's internal xDS API directly. The
 // patch payload (`config_patches[].patch.value`) is free-form JSON (google.protobuf.Struct)
@@ -64,7 +64,7 @@ message KubernetesEnvoyFilterSpec {
   // EnvoyFilter CRD applies the SAME selector constraints as ServiceEntry (max 256 labels,
   // each value <= 63 chars, no wildcard values), so the shared type is faithful here.
   //
-  // INFRA-CHART COMPOSABILITY (DD-009): workload_selector is a PLAIN label match, not an
+  // INFRA-CHART COMPOSABILITY: workload_selector is a PLAIN label match, not an
   // OpenMCF foreign key (StringValueOrRef). It is matched at runtime by istiod against pod
   // labels and creates NO automatic DAG edge to any workload resource. To order this
   // EnvoyFilter after the workloads it patches in an infra chart, an author MUST express the
@@ -96,7 +96,7 @@ message KubernetesEnvoyFilterSpec {
   // Upstream allows at most 16. Waypoint proxies REQUIRE target_refs; selector-based
   // policies are ignored for waypoints.
   //
-  // INFRA-CHART COMPOSABILITY (DD-009): each target_ref is a PLAIN cross-resource reference,
+  // INFRA-CHART COMPOSABILITY: each target_ref is a PLAIN cross-resource reference,
   // not an OpenMCF foreign key. istiod resolves group/kind/name at runtime, so no automatic
   // DAG edge is created. Order this EnvoyFilter after the resource it targets via
   // metadata.relationships (`uses` -> KubernetesGateway / KubernetesService /
@@ -141,7 +141,7 @@ message KubernetesEnvoyFilterConfigPatch {
 // patch is applied. Faithful to the upstream EnvoyConfigObjectMatch.
 //
 // The upstream `oneof object_types { listener | route_configuration | cluster }` is flattened
-// per DD-004 into three sibling message fields. Because flattening loses the proto `oneof`'s
+// into three sibling message fields. Because flattening loses the proto `oneof`'s
 // implicit at-most-one guarantee (and the generated CRD does not re-encode it as an
 // XValidation), the rule is restored here as a message-level CEL — this preserves upstream
 // semantics, it is not extra validation.
@@ -280,8 +280,8 @@ message KubernetesEnvoyFilterRouteMatch {
 // chains or on a specific filter chain. Faithful to the upstream EnvoyFilter.ListenerMatch.
 //
 // NOTE: the upstream `port_name` field is intentionally omitted — it is marked
-// "Not implemented" / `$hide_from_docs` upstream and surfaces no real behavior (DD-001:
-// document the omission rather than expose a non-functional field).
+// "Not implemented" / `$hide_from_docs` upstream and surfaces no real behavior — the
+// omission is documented rather than exposing a non-functional field.
 message KubernetesEnvoyFilterListenerMatch {
   // The service/gateway port traffic is sent to/received on. If unset, matches all listeners.
   // Only service ports (not pod ports) should be used to match inbound listeners.

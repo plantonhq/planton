@@ -177,7 +177,7 @@ spec:
 via `valueFrom`. Neither `selector.match_labels` nor `target_refs` is a foreign key --
 istiod resolves them at runtime, so they create no automatic DAG edge to the workload or
 resource they target. To order this policy relative to those resources in an infra
-chart, declare the dependency on `metadata.relationships` (DD-009):
+chart, declare the dependency on `metadata.relationships`:
 
 ```yaml
 metadata:

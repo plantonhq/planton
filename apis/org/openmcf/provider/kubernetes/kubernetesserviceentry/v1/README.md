@@ -161,7 +161,7 @@ output via `valueFrom`. Neither `workload_selector.labels` nor the `hosts` /
 `addresses` values are foreign keys -- istiod resolves them at runtime, so they
 create no automatic DAG edge to any workload or service. To order this ServiceEntry
 relative to the workloads it fronts (MESH_INTERNAL) in an infra chart, declare the
-dependency on `metadata.relationships` (DD-009):
+dependency on `metadata.relationships`:
 
 ```yaml
 metadata:

@@ -34,7 +34,7 @@ const (
 // (networking/v1alpha3/service_entry.proto, served as networking.istio.io/v1), pinned to
 // the 1.26 line (tag 1.26.8). Upstream spec fields are flattened directly after the
 // OpenMCF namespaced envelope (target_cluster, namespace); there is no nested
-// `service_entry` sub-message (DD-002).
+// `service_entry` sub-message.
 //
 // Attachment model (upstream): `endpoints` (static addresses) and `workload_selector`
 // (select in-mesh pods/VMs by label) are mutually exclusive — at most one may be set
@@ -86,7 +86,7 @@ type KubernetesServiceEntrySpec struct {
 	// static `endpoints`. Mutually exclusive with `endpoints` (enforced above). Only
 	// meaningful with MESH_INTERNAL location.
 	//
-	// INFRA-CHART COMPOSABILITY (DD-009): workload_selector is a PLAIN label match, not an
+	// INFRA-CHART COMPOSABILITY: workload_selector is a PLAIN label match, not an
 	// OpenMCF foreign key (StringValueOrRef). It is matched at runtime by istiod against pod
 	// labels and creates NO automatic DAG edge to any workload resource. To order this
 	// ServiceEntry after the workloads it fronts in an infra chart, an author MUST express

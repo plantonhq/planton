@@ -2,10 +2,8 @@
 
 This document captures the deployment landscape, the modeling rationale, and the
 fidelity decisions behind the `KubernetesRequestAuthentication` OpenMCF component
-(kind 864). It is the second typed Istio API component (after
-`KubernetesPeerAuthentication`, 863) and the first in the family to model repeated
-nested rule lists, JWT semantics, and the `selector` / `target_refs` attachment
-fork -- patterns its siblings (AuthorizationPolicy, ServiceEntry, ...) reuse.
+(kind 864). It models repeated nested rule lists, JWT semantics, and the
+`selector` / `target_refs` attachment fork.
 
 ## 1. What RequestAuthentication is
 
@@ -22,22 +20,21 @@ authentication, pair it with an AuthorizationPolicy that requires `requestPrinci
 ## 2. Source of truth and version
 
 Translated proto-to-proto from the upstream `istio.io/api` clone pinned to tag
-**1.26.8** (`security/v1beta1/request_authentication.proto`). Per DD-001, the local
-clone is authoritative; no specs are pulled from the internet. The crd2pulumi typed
+**1.26.8** (`security/v1beta1/request_authentication.proto`). The local clone is
+authoritative; no specs are pulled from the internet. The crd2pulumi typed
 SDK and the CRDs installed by `KubernetesIstioBaseCrds` are likewise generated from
 Istio `release-1.26`, so the proto, the typed Pulumi resource, and the cluster CRD
 all agree on the schema.
 
-This component introduces, relative to PeerAuthentication: a repeated `jwt_rules`
-list with nested repeated `from_headers` / `output_claim_to_headers`, the
-`selector` / `target_refs` attachment fork, and the family's first
+This component uses a repeated `jwt_rules` list with nested repeated `from_headers`
+/ `output_claim_to_headers`, the `selector` / `target_refs` attachment fork, and a
 `google.protobuf.Duration` field (`timeout`).
 
 ## 3. OpenMCF spec shape (fidelity decisions)
 
 The OpenMCF spec flattens the upstream `RequestAuthentication` fields directly after
-the namespaced envelope (`target_cluster`, `namespace`), per DD-002. There is no
-nested `request_authentication` sub-message. Fields are renumbered sequentially from
+the namespaced envelope (`target_cluster`, `namespace`). There is no nested
+`request_authentication` sub-message. Fields are renumbered sequentially from
 1 -- the OpenMCF proto is its own wire contract and does not preserve upstream's
 field-number gaps (e.g. upstream `jwks` is field 10, `timeout` 13).
 
@@ -45,29 +42,28 @@ field-number gaps (e.g. upstream `jwks` is field 10, `timeout` 13).
 |----------|---------|-------|
 | `selector` (`type.v1beta1.WorkloadSelector`) | `selector` (`KubernetesIstioApiWorkloadSelector`) | Shared type in `istio_api.proto`. |
 | `targetRefs` (`type.v1beta1.PolicyTargetReference`) | `target_refs` (`KubernetesIstioApiPolicyTargetReference`) | New shared type in `istio_api.proto` (this component is its first consumer; AuthorizationPolicy reuses it). |
-| `targetRef` (singular, `$hide_from_docs`) | omitted | Upstream hides it; only the public `targetRefs` list is modeled (DD-001). |
+| `targetRef` (singular, `$hide_from_docs`) | omitted | Upstream hides it; only the public `targetRefs` list is modeled. |
 | `jwtRules` (`JWTRule`) | `jwt_rules` (`KubernetesRequestAuthenticationJwtRule`) | Repeated; nested messages below. |
 | `JWTHeader` | `KubernetesRequestAuthenticationJwtHeader` | `name`, `prefix`. |
 | `ClaimToHeader` | `KubernetesRequestAuthenticationClaimToHeader` | `header`, `claim`. |
-| `JWTRule.timeout` (`google.protobuf.Duration`) | `timeout` (`string`) | DD-002: durations are strings. |
+| `JWTRule.timeout` (`google.protobuf.Duration`) | `timeout` (`string`) | Durations are modeled as strings. |
 
 ### selector vs target_refs (attachment fork)
 
 Upstream permits **at most one** of `selector`, `targetRef`, `targetRefs`; all
 omitted means "match every workload in the namespace", which is valid. So this is an
-"at most one" rule, not the "exactly one" biconditional the gateway HTTPRoute filter
-union uses. Modeled as a message-level CEL
+"at most one" rule, not an "exactly one" biconditional. Modeled as a message-level CEL
 (`!(has(this.selector) && size(this.target_refs) > 0)`) over the two public fields.
 The hidden singular `targetRef` is not modeled.
 
-### Durations are strings (DD-002)
+### Durations are strings
 
-`JWTRule.timeout` is a `google.protobuf.Duration` upstream. Per DD-002 it is modeled
-as an `optional string` validated by the upstream CEL
-`duration(this) >= duration('1ms')` (cel-go's `duration()` is available under
-protovalidate). The Gateway API duration *regex* was deliberately NOT used: it would
-reject valid `google.protobuf.Duration` strings such as `1.5s` or `2h45m`. Upstream's
-5s default is not set in OpenMCF (pitfall #5) -- it flows through from istiod.
+`JWTRule.timeout` is a `google.protobuf.Duration` upstream. It is modeled as an
+`optional string` validated by the upstream CEL `duration(this) >= duration('1ms')`
+(cel-go's `duration()` is available under protovalidate). A duration *regex* was
+deliberately NOT used: it would reject valid `google.protobuf.Duration` strings such
+as `1.5s` or `2h45m`. Upstream's 5s default is not baked into OpenMCF -- it flows
+through from istiod.
 
 ### CEL portability
 
@@ -101,7 +97,7 @@ and the "cross-namespace not supported" CEL (`namespace` must be empty in 1.26).
 | `target_refs` max 16; `KubernetesIstioApiPolicyTargetReference` group/kind/name patterns + no-cross-namespace | Upstream PolicyTargetReference + kubebuilder MaxItems. |
 | selector `match_labels` non-empty keys / no-wildcard keys / no-wildcard values | Shared `istio_api.proto` WorkloadSelector. |
 
-## 4. Composability (DD-009)
+## 4. Composability
 
 - **`namespace`** is the one true foreign key: `StringValueOrRef` ->
   `KubernetesNamespace` (`spec.name`). Literal or `valueFrom`; creates a real DAG
@@ -121,10 +117,10 @@ Both engines are feature-equal and emit the same `security.istio.io/v1`
 `RequestAuthentication`:
 
 - **Pulumi** uses the typed crd2pulumi resource
-  `istiosecurityv1.NewRequestAuthentication` (DD-005). The `Spec` field is a
+  `istiosecurityv1.NewRequestAuthentication`. The `Spec` field is a
   `PtrInput` satisfied by the `RequestAuthenticationSpecArgs` **value** (the
-  `*Ptr()` wrapper marshals to the wrong element type and panics at apply -- a bug
-  the PeerAuthentication forge caught live). `jwt_rules`, nested `from_headers` /
+  `*Ptr()` wrapper marshals to the wrong element type and panics at apply).
+  `jwt_rules`, nested `from_headers` /
   `output_claim_to_headers`, `selector`, and `target_refs` are only attached when
   present; optional scalar fields use the proto3 `optional` pointer to distinguish
   unset from empty.

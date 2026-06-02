@@ -2,10 +2,9 @@
 
 This document captures the deployment landscape, the modeling rationale, and the
 fidelity decisions behind the `KubernetesAuthorizationPolicy` OpenMCF component
-(kind 865). It is the fifth typed Istio API component and completes the mesh security
-triad alongside `KubernetesPeerAuthentication` (863) and
-`KubernetesRequestAuthentication` (864). It reuses the shared selector / target-ref
-types those siblings introduced and adds the family's richest rule model (sources,
+(kind 865). It completes the mesh security triad alongside
+`KubernetesPeerAuthentication` (863) and `KubernetesRequestAuthentication` (864). It
+reuses the shared selector / target-ref types and adds a rich rule model (sources,
 operations, conditions) plus a closed-set `action` enum.
 
 ## 1. What AuthorizationPolicy is
@@ -34,15 +33,15 @@ a RequestAuthentication that validates tokens plus an AuthorizationPolicy that r
 ## 2. Source of truth and version
 
 Translated proto-to-proto from the upstream `istio.io/api` clone pinned to tag
-**1.26.8** (`security/v1beta1/authorization_policy.proto`). Per DD-001, the local clone
-is authoritative; no specs are pulled from the internet. The crd2pulumi typed SDK and
+**1.26.8** (`security/v1beta1/authorization_policy.proto`). The local clone is
+authoritative; no specs are pulled from the internet. The crd2pulumi typed SDK and
 the CRDs installed by `KubernetesIstioBaseCrds` are likewise on Istio `release-1.26`, so
 the proto, the typed Pulumi resource, and the cluster CRD all agree on the schema.
 
 ## 3. OpenMCF spec shape (fidelity decisions)
 
 The OpenMCF spec flattens the upstream `AuthorizationPolicy` fields directly after the
-namespaced envelope (`target_cluster`, `namespace`), per DD-002. There is no nested
+namespaced envelope (`target_cluster`, `namespace`). There is no nested
 `authorization_policy` sub-message. Fields are renumbered sequentially from 1 -- the
 OpenMCF proto is its own wire contract and does not preserve upstream's field-number
 gaps (e.g. upstream `Source.service_accounts` is field 11).
@@ -51,14 +50,14 @@ gaps (e.g. upstream `Source.service_accounts` is field 11).
 |----------|---------|-------|
 | `selector` (`type.v1beta1.WorkloadSelector`) | `selector` (`KubernetesIstioApiWorkloadSelector`) | Shared type in `istio_api.proto` (field `match_labels`). |
 | `targetRefs` (`type.v1beta1.PolicyTargetReference`) | `target_refs` (`KubernetesIstioApiPolicyTargetReference`) | Shared type (introduced by RequestAuthentication, reused here). Max 16. |
-| `targetRef` (singular, `$hide_from_docs`) | omitted | Upstream hides it; only the public `targetRefs` list is modeled (DD-001). |
+| `targetRef` (singular, `$hide_from_docs`) | omitted | Upstream hides it; only the public `targetRefs` list is modeled. |
 | `rules` (`Rule`) | `rules` (`KubernetesAuthorizationPolicyRule`) | Repeated, max 512; nested messages below. |
 | `Rule.From` | `KubernetesAuthorizationPolicyRuleFrom` | Wrapper `{ source }` (preserves CRD JSON `from: [{source}]`). Max 512. |
 | `Rule.To` | `KubernetesAuthorizationPolicyRuleTo` | Wrapper `{ operation }`. |
 | `Source` | `KubernetesAuthorizationPolicySource` | 12 identity/IP match lists + exclusivity CEL. |
 | `Operation` | `KubernetesAuthorizationPolicyOperation` | 8 host/port/method/path match lists. |
 | `Condition` | `KubernetesAuthorizationPolicyCondition` | `key` (required), `values`, `not_values`. |
-| `action` (`Action` enum) | `action` (`string`) | DD-008 closed set: ALLOW/DENY/AUDIT/CUSTOM. |
+| `action` (`Action` enum) | `action` (`string`) | Closed set: ALLOW/DENY/AUDIT/CUSTOM. |
 | `action_detail` oneof -> `provider` (`ExtensionProvider`) | `provider` (`KubernetesAuthorizationPolicyExtensionProvider`) | Single-member oneof modeled as a plain optional message (no discriminator). |
 
 ### selector vs target_refs (attachment fork)
@@ -77,21 +76,20 @@ shape (and match the crd2pulumi typed SDK exactly), OpenMCF keeps the wrapper me
 `KubernetesAuthorizationPolicyRuleFrom{source}` and `...RuleTo{operation}` rather than
 flattening to a bare repeated Source/Operation.
 
-### action as a closed string set (DD-008)
+### action as a closed string set
 
-`Action` is an upstream proto enum (ALLOW/DENY/AUDIT/CUSTOM). Per DD-008 it is modeled
-as an `optional string` with a `string.in` rule (UPPERCASE -- external standard
-exception), the same form ServiceEntry uses for `location`/`resolution`. It is left
-optional: unset inherits the upstream default ALLOW (pitfall #5 -- no OpenMCF default).
+`Action` is an upstream proto enum (ALLOW/DENY/AUDIT/CUSTOM). It is modeled as an
+`optional string` with a `string.in` rule (UPPERCASE -- external standard exception),
+the same form ServiceEntry uses for `location`/`resolution`. It is left optional: unset
+inherits the upstream default ALLOW (no OpenMCF default).
 
 ### provider as a single-member oneof
 
-Upstream's `action_detail` oneof has exactly one member, `provider`. A discriminator
-(DD-004) is unnecessary for a degenerate one-member union (discriminators are reserved
-for value-type unions like StringMatch -- the EnvoyFilter `object_types` precedent), so
-`provider` is a plain optional message. The "provider only with CUSTOM" coupling is an
-istiod runtime check, not a CRD `XValidation`, so it is documented rather than enforced
-(matching the validated surface; the EnvoyFilter T05 finding).
+Upstream's `action_detail` oneof has exactly one member, `provider`. A discriminator is
+unnecessary for a degenerate one-member union (discriminators are reserved for same-type
+value unions like StringMatch), so `provider` is a plain optional message. The "provider
+only with CUSTOM" coupling is an istiod runtime check, not a CRD `XValidation`, so it is
+documented rather than enforced (matching the validated surface).
 
 ### CEL portability
 
@@ -110,7 +108,7 @@ rule is re-expressed with portable CEL primitives that preserve the validated ou
 |------|--------|
 | `authorization_policy.selector_xor_target_refs` (message-level) | Upstream selector/targetRefs XValidation. |
 | `authorization_policy_source.service_accounts_exclusive` (message-level) | Upstream Source serviceAccounts XValidation. |
-| `action in [ALLOW, DENY, AUDIT, CUSTOM]` | Upstream Action enum (DD-008). |
+| `action in [ALLOW, DENY, AUDIT, CUSTOM]` | Upstream Action enum. |
 | `target_refs` max 16; `KubernetesIstioApiPolicyTargetReference` group/kind/name patterns + no-cross-namespace | Upstream PolicyTargetReference + kubebuilder MaxItems. |
 | `rules` max 512; `Rule.from` max 512 | Upstream kubebuilder MaxItems. |
 | `Source.service_accounts` / `not_service_accounts` max 16, item max 320 chars | Upstream kubebuilder MaxItems + list-value MaxLength. |
@@ -119,10 +117,10 @@ rule is re-expressed with portable CEL primitives that preserve the validated ou
 | selector `match_labels` non-empty keys / no-wildcard keys / no-wildcard values | Shared `istio_api.proto` WorkloadSelector. |
 
 The upstream doc note "a Condition must set at least one of `values`/`not_values`" is
-not a declared CRD `XValidation`, so it is intentionally not enforced (DD-001: match the
+not a declared CRD `XValidation`, so it is intentionally not enforced (match the
 validated surface; enforcing it would reject configs the CRD accepts).
 
-## 4. Composability (DD-009)
+## 4. Composability
 
 - **`namespace`** is the one true foreign key: `StringValueOrRef` ->
   `KubernetesNamespace` (`spec.name`). Literal or `valueFrom`; creates a real DAG edge.
@@ -140,10 +138,10 @@ validated surface; enforcing it would reject configs the CRD accepts).
 Both engines are feature-equal and emit the same `security.istio.io/v1`
 `AuthorizationPolicy`:
 
-- **Pulumi** uses the typed crd2pulumi resource `istiosecurityv1.NewAuthorizationPolicy`
-  (DD-005). The `Spec` field is a `PtrInput` satisfied by the
+- **Pulumi** uses the typed crd2pulumi resource `istiosecurityv1.NewAuthorizationPolicy`.
+  The `Spec` field is a `PtrInput` satisfied by the
   `AuthorizationPolicySpecArgs` **value** (the `*Ptr()` wrapper marshals to the wrong
-  element type and panics at apply -- a bug the PeerAuthentication forge caught live).
+  element type and panics at apply).
   `selector`, `target_refs`, `rules` (with the `from.source` / `to.operation` / `when`
   builders), `action`, and `provider` are only attached when present; `action` uses the
   proto3 `optional` pointer to distinguish unset from empty.

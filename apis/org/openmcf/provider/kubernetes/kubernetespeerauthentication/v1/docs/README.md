@@ -1,9 +1,8 @@
 # KubernetesPeerAuthentication -- Design & Research
 
 This document captures the deployment landscape, the modeling rationale, and the
-fidelity decisions behind the `KubernetesPeerAuthentication` OpenMCF component. It
-is the first typed Istio API component in the family (kind 863), so several
-decisions here set the pattern its six siblings follow.
+fidelity decisions behind the `KubernetesPeerAuthentication` OpenMCF component
+(kind 863).
 
 ## 1. What PeerAuthentication is
 
@@ -40,30 +39,29 @@ it because there is no single workload whose ports to address).
 ## 2. Source of truth and version
 
 Translated proto-to-proto from the upstream `istio.io/api` clone pinned to tag
-**1.26.8** (`security/v1beta1/peer_authentication.proto`). Per DD-001, the local
-clone is authoritative; no specs are pulled from the internet. The crd2pulumi
+**1.26.8** (`security/v1beta1/peer_authentication.proto`). The local clone is
+authoritative; no specs are pulled from the internet. The crd2pulumi
 typed SDK and the CRDs installed by `KubernetesIstioBaseCrds` are likewise
 generated from Istio `release-1.26`, so the proto, the typed Pulumi resource, and
 the cluster CRD all agree on the schema.
 
 The schema is small and stable: `selector`, `mtls.mode`, `port_level_mtls`. It has
-**no oneofs and no `google.protobuf.Duration`**, which is exactly why it was
-chosen as the first forge -- it exercises the full pipeline (shared selector type,
-DD-008 string enums, message-level CEL, typed Pulumi + null-pruned Terraform,
-live E2E behind the CRDs prerequisite) without the DD-004 discriminator machinery
-the heavier siblings need.
+**no oneofs and no `google.protobuf.Duration`** -- it exercises the full pipeline
+(shared selector type, closed-set string enums, message-level CEL, typed Pulumi +
+null-pruned Terraform, live E2E behind the CRDs prerequisite) without any union
+discriminator machinery.
 
 ## 3. OpenMCF spec shape (fidelity decisions)
 
 The OpenMCF spec flattens the upstream `PeerAuthentication` fields directly after
-the namespaced envelope (`target_cluster`, `namespace`), per DD-002. There is no
-nested `peer_authentication` sub-message.
+the namespaced envelope (`target_cluster`, `namespace`). There is no nested
+`peer_authentication` sub-message.
 
 | Upstream | OpenMCF | Notes |
 |----------|---------|-------|
 | `selector` (`type.v1beta1.WorkloadSelector`) | `selector` (`KubernetesIstioApiWorkloadSelector`) | Shared type in `istio_api.proto`, reused across the family. |
 | `mtls` (`MutualTLS`) | `mtls` (`KubernetesPeerAuthenticationMutualTls`) | One field, `mode`. |
-| `mtls.mode` (`Mode` enum) | `mtls.mode` (`string`) | DD-008: closed string set, not a proto enum. |
+| `mtls.mode` (`Mode` enum) | `mtls.mode` (`string`) | Closed string set, not a proto enum. |
 | `port_level_mtls` (`map<uint32, MutualTLS>`) | `port_level_mtls` (`map<uint32, KubernetesPeerAuthenticationMutualTls>`) | Reuses the same MutualTLS message, 1:1 with upstream. |
 
 ### Why `mtls.mode` is required-in-set (and the empty string is invalid)
@@ -85,19 +83,19 @@ made because the empty string is not a valid wire value here.
 ### Enum case
 
 The values are UPPERCASE (`STRICT`, `PERMISSIVE`, ...) because Istio is an
-external standard (DD-003). The field carries the
+external standard. The field carries the
 `// external standard exception` comment.
 
 ### Validation rules (each has accept + reject coverage in `spec_test.go`)
 
 | Rule | Origin |
 |------|--------|
-| `peer_authentication_mtls.mode_enum` | Closed mode set (DD-008). |
+| `peer_authentication_mtls.mode_enum` | Closed mode set. |
 | `port_level_mtls` key range 1-65535 | Upstream port-key XValidation. |
 | `peer_authentication.port_level_mtls_requires_selector` (message-level) | Upstream `portLevelMtls requires selector` XValidation. |
 | selector `match_labels` non-empty keys / no-wildcard keys / no-wildcard values | Upstream WorkloadSelector XValidation (added to the shared `istio_api.proto` type, since PeerAuthentication is its first consumer). |
 
-## 4. Composability (DD-009)
+## 4. Composability
 
 - **`namespace`** is the one true foreign key: `StringValueOrRef` ->
   `KubernetesNamespace` (`spec.name`). It can be a literal or a `valueFrom`
@@ -117,7 +115,7 @@ Both engines are feature-equal and emit the same `security.istio.io/v1`
 `PeerAuthentication`:
 
 - **Pulumi** uses the typed crd2pulumi resource
-  `istiosecurityv1.NewPeerAuthentication` (DD-005), so field-name/structure errors
+  `istiosecurityv1.NewPeerAuthentication`, so field-name/structure errors
   are caught at compile time. `mtls`, `selector`, and `port_level_mtls` are only
   attached when present. The proto's `uint32` `port_level_mtls` keys are converted
   to decimal strings because the SDK models the field as `pulumi.StringMapMap`

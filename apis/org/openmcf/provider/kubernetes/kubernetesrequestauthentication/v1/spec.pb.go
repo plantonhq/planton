@@ -35,7 +35,7 @@ const (
 // (security/v1beta1/request_authentication.proto, served as security.istio.io/v1),
 // pinned to the 1.26 line (tag 1.26.8). Upstream spec fields are flattened directly
 // after the OpenMCF namespaced envelope (target_cluster, namespace); there is no
-// nested `request_authentication` sub-message (DD-002).
+// nested `request_authentication` sub-message.
 //
 // Scope semantics (upstream): if neither `selector` nor `target_refs` is set the
 // policy matches all workloads in its namespace (or, in the mesh root namespace,
@@ -55,7 +55,7 @@ type KubernetesRequestAuthenticationSpec struct {
 	// (and target_refs is also omitted), the policy applies to every workload in its
 	// namespace (or, in the root namespace, the whole mesh).
 	//
-	// INFRA-CHART COMPOSABILITY (DD-009): selector is a PLAIN label match, not an
+	// INFRA-CHART COMPOSABILITY: selector is a PLAIN label match, not an
 	// OpenMCF foreign key (StringValueOrRef). It is matched at runtime by istiod
 	// against pod labels and creates NO automatic DAG edge to any workload resource.
 	// To order this policy after the workload it protects in an infra chart, an author
@@ -74,7 +74,7 @@ type KubernetesRequestAuthenticationSpec struct {
 	// `target_refs` may be set (enforced below). Waypoint proxies require this field
 	// (label `selector` policies are ignored by waypoints). Upstream allows up to 16.
 	//
-	// INFRA-CHART COMPOSABILITY (DD-009): a target reference is a PLAIN cross-resource
+	// INFRA-CHART COMPOSABILITY: a target reference is a PLAIN cross-resource
 	// reference, not an OpenMCF foreign key. istiod resolves it at runtime, creating
 	// NO automatic DAG edge. Order this policy after the referenced resource via
 	// metadata.relationships (`uses` -> KubernetesGateway / KubernetesService /
@@ -194,7 +194,7 @@ type KubernetesRequestAuthenticationJwtRule struct {
 	// claims rather than the whole payload.
 	OutputClaimToHeaders []*KubernetesRequestAuthenticationClaimToHeader `protobuf:"bytes,10,rep,name=output_claim_to_headers,json=outputClaimToHeaders,proto3" json:"output_claim_to_headers,omitempty"`
 	// Maximum time the resolver spends fetching the JWKS. A google.protobuf.Duration
-	// string (e.g. "5s", "1500ms", "1m30s"); per DD-002 durations are strings.
+	// string (e.g. "5s", "1500ms", "1m30s"); durations are modeled as strings.
 	// Upstream default is 5s and minimum is 1ms.
 	Timeout       *string `protobuf:"bytes,11,opt,name=timeout,proto3,oneof" json:"timeout,omitempty"`
 	unknownFields protoimpl.UnknownFields

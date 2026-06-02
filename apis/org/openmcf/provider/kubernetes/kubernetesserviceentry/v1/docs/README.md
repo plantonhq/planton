@@ -2,11 +2,8 @@
 
 This document captures the deployment landscape, the modeling rationale, and the
 fidelity decisions behind the `KubernetesServiceEntry` OpenMCF component (kind 862).
-It is the third typed Istio API component (after `KubernetesPeerAuthentication`, 863,
-and `KubernetesRequestAuthentication`, 864) and the first networking-group member of
-the family -- it introduces the `networking/v1alpha3` workload selector, the
-location/resolution enums, the list-map port shape, and inline `WorkloadEntry`
-endpoints that its siblings (EnvoyFilter, DestinationRule) reuse.
+It uses the `networking/v1alpha3` workload selector, the location/resolution enums,
+the list-map port shape, and inline `WorkloadEntry` endpoints.
 
 ## 1. What ServiceEntry is
 
@@ -25,20 +22,19 @@ workload sees). ServiceEntry is the only one of the three that *adds* destinatio
 
 Translated proto-to-proto from the upstream `istio.io/api` clone pinned to tag
 **1.26.8** (`networking/v1alpha3/service_entry.proto`; the `v1` CRD is a type alias of
-`v1alpha3`). Per DD-001, the local clone is authoritative; no specs are pulled from
-the internet. The crd2pulumi typed SDK and the CRDs installed by
-`KubernetesIstioBaseCrds` are likewise generated from Istio `release-1.26`, so the
-proto, the typed Pulumi resource, and the cluster CRD all agree on the schema.
+`v1alpha3`). The local clone is authoritative; no specs are pulled from the internet.
+The crd2pulumi typed SDK and the CRDs installed by `KubernetesIstioBaseCrds` are
+likewise generated from Istio `release-1.26`, so the proto, the typed Pulumi resource,
+and the cluster CRD all agree on the schema.
 
 ServiceEntry has **no** `google.protobuf.Duration`, no wrapper types, and **no proto
-`oneof`** -- so unlike DestinationRule it needs no DD-004 discriminators. It also has
-**no `credential_name`/TLS field** in 1.26.8 (that is DestinationRule's; DD-002 D2.5's
-mention of ServiceEntry is stale and has been annotated).
+`oneof`**. It also has **no `credential_name`/TLS field** in 1.26.8 (that lives on
+DestinationRule).
 
 ## 3. OpenMCF spec shape (fidelity decisions)
 
 The OpenMCF spec flattens the upstream `ServiceEntry` fields directly after the
-namespaced envelope (`target_cluster`, `namespace`), per DD-002. There is no nested
+namespaced envelope (`target_cluster`, `namespace`). There is no nested
 `service_entry` sub-message. Fields are numbered sequentially from 1 -- the OpenMCF
 proto is its own wire contract and does not preserve upstream field-number gaps.
 
@@ -46,8 +42,8 @@ proto is its own wire contract and does not preserve upstream field-number gaps.
 |----------|---------|-------|
 | `hosts` / `addresses` / `exportTo` / `subjectAltNames` | same (`repeated string`) | Plain lists; not foreign keys. |
 | `ports` (`ServicePort`) | `ports` (`KubernetesServiceEntryPort`) | List-map keyed by `name`; `number`+`name` unique. |
-| `location` (enum) | `location` (`optional string`, closed set) | DD-008: UPPERCASE string + `in`, not a proto enum. |
-| `resolution` (enum) | `resolution` (`optional string`, closed set) | DD-008. |
+| `location` (enum) | `location` (`optional string`, closed set) | UPPERCASE string + `in`, not a proto enum. |
+| `resolution` (enum) | `resolution` (`optional string`, closed set) | UPPERCASE string + `in`, not a proto enum. |
 | `endpoints` (`WorkloadEntry`) | `endpoints` (`KubernetesServiceEntryEndpoint`) | Inline subset; `ports` is `map<string,uint32>`. |
 | `workloadSelector` (`networking.v1alpha3.WorkloadSelector`) | `workload_selector` (`KubernetesIstioApiNetworkingWorkloadSelector`) | New shared type (see below). |
 
@@ -60,20 +56,19 @@ the policy CRDs do not:
   Used by PeerAuthentication / RequestAuthentication / AuthorizationPolicy. Modeled by
   the shared `KubernetesIstioApiWorkloadSelector`.
 - `istio.networking.v1alpha3.WorkloadSelector` -- field `labels` (JSON `labels`). Used
-  by ServiceEntry, Sidecar, Gateway, EnvoyFilter, DestinationRule. Modeled by the new
-  shared `KubernetesIstioApiNetworkingWorkloadSelector` (this component is its first
-  consumer; EnvoyFilter and DestinationRule reuse it).
+  by ServiceEntry, Sidecar, Gateway, and EnvoyFilter. Modeled by the shared
+  `KubernetesIstioApiNetworkingWorkloadSelector`. (Note: DestinationRule uses the
+  type/v1beta1 `match_labels` selector instead, despite being a networking CRD.)
 
 They are not interchangeable -- the JSON key differs (`labels` vs `matchLabels`), so
 conflating them would emit a CR the CRD rejects. The networking selector is
 constrained to ServiceEntry's CRD exactly (max 256 entries, value <= 63 chars,
 no-wildcard *values*); unlike the policy selector it deliberately does **not** enforce
 non-empty / no-wildcard *keys*, because the ServiceEntry CRD does not -- adding those
-rules would reject configurations the CRD accepts (DD-001 = match the validated
-outcome). EnvoyFilter/DestinationRule must re-confirm their own CRD's selector
-constraints before reusing this type.
+rules would reject configurations the CRD accepts (match the validated outcome).
+Each consumer must re-confirm its own CRD's selector constraints before reusing this type.
 
-### Enum case / external standard (DD-008)
+### Enum case / external standard
 
 `location` and `resolution` are closed-set `optional string` fields validated by the
 protovalidate `string.in` rule with the UPPERCASE upstream constants
@@ -81,7 +76,7 @@ protovalidate `string.in` rule with the UPPERCASE upstream constants
 enums (which would change CEL string-comparison semantics). `protocol` is modeled the
 same way against the documented set `HTTP|HTTPS|GRPC|HTTP2|MONGO|TCP|TLS`. Leaving any
 of them unset omits the field from the CR, so istiod's own default
-(`MESH_EXTERNAL`/`NONE`) applies -- the upstream defaults are not baked in (pitfall #5).
+(`MESH_EXTERNAL`/`NONE`) applies -- the upstream defaults are not baked in.
 
 ### CEL portability
 
@@ -115,7 +110,7 @@ validated outcome. Unset `resolution` is treated as its upstream default `NONE`.
 | endpoint `address`-or-`network`; UDS no-ports / absolute-or-abstract / not-a-dir; `ports` 1-65535 + key pattern | Upstream WorkloadEntry XValidations + markers. |
 | `workload_selector.labels` value no-wildcard | Networking WorkloadSelector CRD. |
 
-## 4. Composability (DD-009)
+## 4. Composability
 
 - **`namespace`** is the one true foreign key: `StringValueOrRef` ->
   `KubernetesNamespace` (`spec.name`). Literal or `valueFrom`; creates a real DAG edge.
@@ -134,10 +129,10 @@ validated outcome. Unset `resolution` is treated as its upstream default `NONE`.
 Both engines are feature-equal and emit the same `networking.istio.io/v1`
 `ServiceEntry`:
 
-- **Pulumi** uses the typed crd2pulumi resource `istionetworkingv1.NewServiceEntry`
-  (DD-005). The `Spec` field is a `PtrInput` satisfied by the `ServiceEntrySpecArgs`
+- **Pulumi** uses the typed crd2pulumi resource `istionetworkingv1.NewServiceEntry`.
+  The `Spec` field is a `PtrInput` satisfied by the `ServiceEntrySpecArgs`
   **value** (the `*Ptr()` wrapper marshals to the wrong element type and panics at
-  apply -- a bug the PeerAuthentication forge caught live). `hosts` is always set
+  apply). `hosts` is always set
   (required); `ports`, `endpoints`, `workload_selector`, the string lists, and the
   optional `location`/`resolution` scalars are attached only when present. Proto
   `uint32` port numbers/weights are cast to the SDK's `int` inputs, and the endpoint

@@ -170,7 +170,7 @@ spec:
 `valueFrom`. Neither `workload_selector.labels` nor any `target_refs` entry is a foreign key --
 istiod resolves them at runtime, so they create no automatic DAG edge to a workload, gateway,
 or service. To order this EnvoyFilter relative to what it patches, declare the dependency on
-`metadata.relationships` (DD-009):
+`metadata.relationships`:
 
 ```yaml
 metadata:

@@ -26,8 +26,9 @@ const (
 // by label. Faithful to istio.io/api `istio.type.v1beta1.WorkloadSelector`. When multiple
 // labels are given, all must match. Label search is scoped to the resource's namespace.
 //
-// DD-009 composability: the selected workloads are not a typed cross-resource reference;
-// they are matched by label at runtime by istiod. No automatic DAG edge is created.
+// Infra-chart composability: the selected workloads are not a typed cross-resource
+// reference; they are matched by label at runtime by istiod. No automatic DAG edge is
+// created.
 type KubernetesIstioApiWorkloadSelector struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// One or more labels indicating the set of pods/VMs the policy applies to.
@@ -89,13 +90,16 @@ func (x *KubernetesIstioApiWorkloadSelector) GetMatchLabels() map[string]string 
 // (networking/v1alpha3 vs type/v1beta1) and must not be conflated. When multiple labels
 // are given, all must match; the search is scoped to the resource's namespace.
 //
-// First consumer: ServiceEntry (T04). EnvoyFilter (T05) and DestinationRule (T06) also use
-// this same upstream selector and may reuse this type — but each MUST first confirm its
-// own CRD's selector constraints match those encoded below before reusing it (this file is
-// grown just-in-time per consumer).
+// Consumers: ServiceEntry and EnvoyFilter — both use the networking/v1alpha3
+// WorkloadSelector (field `labels`). NOTE: DestinationRule does NOT use this selector —
+// its upstream `workload_selector` is the type/v1beta1 WorkloadSelector (field
+// `match_labels`), so it reuses `KubernetesIstioApiWorkloadSelector` above, not this one.
+// Each consumer must confirm its own CRD's selector field/constraints before reusing a
+// shared type.
 //
-// DD-009 composability: the selected workloads are not a typed cross-resource reference;
-// they are matched by label at runtime by istiod. No automatic DAG edge is created.
+// Infra-chart composability: the selected workloads are not a typed cross-resource
+// reference; they are matched by label at runtime by istiod. No automatic DAG edge is
+// created.
 type KubernetesIstioApiNetworkingWorkloadSelector struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// One or more labels indicating the set of pods/VMs the resource applies to.
@@ -104,7 +108,7 @@ type KubernetesIstioApiNetworkingWorkloadSelector struct {
 	// and wildcards ('*') are not permitted in values. NOTE: unlike the policy selector
 	// (`match_labels` above), the ServiceEntry CRD does NOT enforce non-empty keys or
 	// no-wildcard keys, so those two rules are deliberately omitted here — adding them would
-	// reject configurations the CRD accepts (DD-001: match the upstream validated outcome).
+	// reject configurations the CRD accepts (match the upstream validated outcome).
 	Labels        map[string]string `protobuf:"bytes,1,rep,name=labels,proto3" json:"labels,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -195,9 +199,9 @@ func (x *KubernetesIstioApiPortSelector) GetNumber() uint32 {
 }
 
 // KubernetesIstioApiStringMatch matches a string by one of three strategies.
-// DD-004: Istio models this as a `oneof { exact, prefix, regex }`; OpenMCF flattens it to a
-// `match_type` discriminator + a single `value`. DD-008: `match_type` is a closed string set,
-// not a proto enum.
+// Istio models this as a `oneof { exact, prefix, regex }` (all same-type), so OpenMCF
+// collapses it to a `match_type` discriminator + a single `value`. `match_type` is a
+// closed string set, not a proto enum.
 type KubernetesIstioApiStringMatch struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Match strategy applied to `value`. One of:
@@ -260,10 +264,10 @@ func (x *KubernetesIstioApiStringMatch) GetValue() string {
 
 // KubernetesIstioApiPolicyTargetReference attaches a policy to a specific resource
 // (rather than selecting workloads by label). Faithful to istio.io/api
-// `istio.type.v1beta1.PolicyTargetReference`. First consumer: RequestAuthentication
-// (T03); also reused by AuthorizationPolicy (T05).
+// `istio.type.v1beta1.PolicyTargetReference`. Consumers: RequestAuthentication and
+// AuthorizationPolicy.
 //
-// DD-009 composability: a target reference is a PLAIN cross-resource reference, not
+// Infra-chart composability: a target reference is a PLAIN cross-resource reference, not
 // an OpenMCF foreign key (StringValueOrRef). istiod resolves `group`/`kind`/`name`
 // against the cluster at runtime, so it creates NO automatic DAG edge. In an infra
 // chart, order the policy after the resource it targets via metadata.relationships,

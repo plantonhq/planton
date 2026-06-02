@@ -110,7 +110,7 @@ spec:
 output via `valueFrom`. The `selector.match_labels` is NOT a foreign key -- istiod
 matches it against pod labels at runtime, so it creates no automatic DAG edge to
 the workload it protects. To order this policy relative to that workload in an
-infra chart, declare the dependency on `metadata.relationships` (DD-009):
+infra chart, declare the dependency on `metadata.relationships`:
 
 ```yaml
 metadata:

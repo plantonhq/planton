@@ -32,7 +32,7 @@ const (
 // (security/v1beta1/peer_authentication.proto, served as security.istio.io/v1),
 // pinned to the 1.26 line (tag 1.26.8). Upstream spec fields are flattened
 // directly after the OpenMCF namespaced envelope (target_cluster, namespace);
-// there is no nested `peer_authentication` sub-message (DD-002).
+// there is no nested `peer_authentication` sub-message.
 //
 // Scope semantics (upstream): if `selector` is omitted the policy applies to all
 // workloads in its namespace; in the mesh root namespace an empty selector makes
@@ -52,7 +52,7 @@ type KubernetesPeerAuthenticationSpec struct {
 	// the policy applies to every workload in its namespace (or, in the root
 	// namespace, the whole mesh).
 	//
-	// INFRA-CHART COMPOSABILITY (DD-009): selector is a PLAIN label match, not an
+	// INFRA-CHART COMPOSABILITY: selector is a PLAIN label match, not an
 	// OpenMCF foreign key (StringValueOrRef). It is matched at runtime by istiod
 	// against pod labels and creates NO automatic DAG edge to any workload
 	// resource. To order this policy after the workload it protects in an infra
@@ -157,7 +157,7 @@ type KubernetesPeerAuthenticationMutualTls struct {
 	//
 	// UNSET/DISABLE/PERMISSIVE/STRICT // external standard exception -- Istio MutualTLS.Mode enum
 	//
-	// DD-008: modeled as a closed string set (not a proto enum). Unlike most
+	// Modeled as a closed string set (not a proto enum). Unlike most
 	// OpenMCF enum-like fields, the empty string is NOT a valid wire value here:
 	// MutualTLS's only field is `mode`, so an mtls block must carry a real mode.
 	// Omitting the whole `mtls` block (or a port_level_mtls entry) is how
