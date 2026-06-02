@@ -319,6 +319,7 @@ go_library(
         "//apis/org/openmcf/provider/kubernetes/kubernetestcproute/v1:kubernetestcproute",
         "//apis/org/openmcf/provider/kubernetes/kubernetestekton/v1:kubernetestekton",
         "//apis/org/openmcf/provider/kubernetes/kubernetestektonoperator/v1:kubernetestektonoperator",
+        "//apis/org/openmcf/provider/kubernetes/kubernetestelemetry/v1:kubernetestelemetry",
         "//apis/org/openmcf/provider/kubernetes/kubernetestemporal/v1:kubernetestemporal",
         "//apis/org/openmcf/provider/kubernetes/kubernetestlsroute/v1:kubernetestlsroute",
         "//apis/org/openmcf/provider/kubernetes/kuberneteszalandopostgresoperator/v1:kuberneteszalandopostgresoperator",

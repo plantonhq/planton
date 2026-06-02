@@ -133,6 +133,7 @@ var istioApiKinds = map[string]string{
 	"kubernetesserviceentry":          "serviceentries.networking.istio.io",
 	"kubernetesdestinationrule":       "destinationrules.networking.istio.io",
 	"kubernetesenvoyfilter":           "envoyfilters.networking.istio.io",
+	"kubernetestelemetry":             "telemetries.telemetry.istio.io",
 }
 
 // GetVerifierFromManifest creates the appropriate verifier by parsing the manifest.

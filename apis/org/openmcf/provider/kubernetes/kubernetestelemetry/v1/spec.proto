@@ -1,0 +1,407 @@
+syntax = "proto3";
+
+package org.openmcf.provider.kubernetes.kubernetestelemetry.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/kubernetes/istio_api.proto";
+import "org/openmcf/provider/kubernetes/target_cluster.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// KubernetesTelemetrySpec defines an Istio Telemetry resource: a namespaced
+// configuration of how telemetry (traces, metrics, and access logs) is generated
+// for the workloads it selects.
+//
+// 100% fidelity with the upstream istio.io/api Telemetry
+// (telemetry/v1alpha1/telemetry.proto, served as telemetry.istio.io/v1), pinned to
+// the 1.26 line (tag 1.26.8). Upstream spec fields are flattened directly after the
+// OpenMCF namespaced envelope (target_cluster, namespace); there is no nested
+// `telemetry` sub-message.
+//
+// Scope semantics (upstream): a Telemetry resource with no selector and no
+// target_refs applies to all workloads in its namespace (or, in the mesh root
+// namespace, the whole mesh). At most one of `selector` and `target_refs` may be set
+// (enforced below). Gateways and waypoints are targeted via `target_refs`; waypoint
+// proxies require `target_refs` (label `selector` policies are ignored by waypoints).
+message KubernetesTelemetrySpec {
+  // Message-level rule mirrors the upstream CRD XValidation. The upstream rule
+  // `oneof(self.selector, self.targetRef, self.targetRefs)` uses a Kubernetes
+  // apiserver-CEL helper (`oneof()`) that is NOT available under protovalidate/
+  // cel-go, so it is re-expressed with portable primitives that preserve the
+  // validated outcome. (The upstream `targetRef` arm is the hidden, singular
+  // `$hide_from_docs` field, which this spec does not surface; see `target_refs`.)
+  option (buf.validate.message).cel = {
+    id: "telemetry.selector_xor_target_refs"
+    message: "at most one of selector or target_refs may be set"
+    expression: "!(has(this.selector) && size(this.target_refs) > 0)"
+  };
+
+  // Target Kubernetes cluster where this Telemetry resource is created. The Istio
+  // CRDs (KubernetesIstioBaseCrds) must already be present on the cluster; telemetry
+  // is only generated where istiod (the Istio control plane) is running.
+  org.openmcf.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  // Namespace in which the Telemetry resource is created. The configuration's scope
+  // is this namespace (or mesh-wide if this is the Istio root namespace and no
+  // selector or target_refs is set).
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // Selects the workloads (by pod/VM label) this configuration applies to. When
+  // omitted (and target_refs is also omitted), it applies to every workload in its
+  // namespace (or, in the root namespace, the whole mesh). At most one of `selector`
+  // and `target_refs` may be set (enforced above).
+  //
+  // INFRA-CHART COMPOSABILITY: selector is a PLAIN label match, not an OpenMCF
+  // foreign key (StringValueOrRef). It is matched at runtime by istiod against pod
+  // labels and creates NO automatic DAG edge to any workload resource. To order this
+  // configuration after the workload it observes in an infra chart, express the
+  // dependency via metadata.relationships. See the component's "Composing in Infra
+  // Charts" docs for the full pattern.
+  org.openmcf.provider.kubernetes.KubernetesIstioApiWorkloadSelector selector = 3;
+
+  // Attaches the configuration to specific resources (Gateway, GatewayClass,
+  // Service, ServiceEntry) instead of selecting workloads by label. At most one of
+  // `selector` and `target_refs` may be set (enforced above). Waypoint proxies
+  // require this field. Upstream allows up to 16.
+  //
+  // INFRA-CHART COMPOSABILITY: a target reference is a PLAIN cross-resource
+  // reference, not an OpenMCF foreign key. istiod resolves it at runtime, creating
+  // NO automatic DAG edge. Order this configuration after the referenced resource via
+  // metadata.relationships (`uses` -> KubernetesGateway / KubernetesService /
+  // KubernetesServiceEntry). See the component's "Composing in Infra Charts" docs.
+  repeated org.openmcf.provider.kubernetes.KubernetesIstioApiPolicyTargetReference target_refs = 4 [(buf.validate.field).repeated.max_items = 16];
+
+  // Tracing configuration for the selected workloads. Each entry can enable/disable
+  // span reporting, set the sampling rate, choose providers, and add custom span
+  // tags. Multiple entries are merged by istiod with later entries overriding earlier
+  // ones (and parent-scope resources).
+  repeated KubernetesTelemetryTracing tracing = 5;
+
+  // Metrics configuration for the selected workloads. Each entry can choose
+  // providers and apply ordered overrides (enable/disable a metric, add/remove tag
+  // dimensions) to the generated metrics.
+  repeated KubernetesTelemetryMetrics metrics = 6;
+
+  // Access logging configuration for the selected workloads. Each entry can choose
+  // providers, enable/disable logging, and attach a CEL filter.
+  repeated KubernetesTelemetryAccessLogging access_logging = 7;
+}
+
+// KubernetesTelemetryTracing configures tracing behavior for the selected workloads.
+// Faithful to the upstream istio.io/api Telemetry.Tracing message.
+message KubernetesTelemetryTracing {
+  // Tailors the tracing configuration to specific traffic conditions (currently the
+  // traffic direction relative to the proxied workload). When omitted, the
+  // configuration applies to both directions.
+  KubernetesTelemetryTracingSelector match = 1;
+
+  // Provider(s) to use for span reporting. If unset, the mesh default tracing
+  // provider is used. NOTE: upstream currently honors only a single provider per
+  // Tracing rule.
+  repeated KubernetesTelemetryProviderRef providers = 2;
+
+  // The percentage of requests selected for tracing when no prior sampling decision
+  // exists, in 0.01% increments. Valid range [0.00-100.00]. Defaults to 0% upstream
+  // when unset. Faithful to the upstream `google.protobuf.DoubleValue`
+  // random_sampling_percentage (modeled as an optional scalar with the upstream
+  // Minimum/Maximum bounds).
+  optional double random_sampling_percentage = 3 [(buf.validate.field).double = {
+    gte: 0
+    lte: 100
+  }];
+
+  // When true, no spans are reported for the selected workloads. Does NOT affect
+  // context propagation or trace sampling. Faithful to the upstream
+  // `google.protobuf.BoolValue` (optional scalar).
+  optional bool disable_span_reporting = 4;
+
+  // Custom tags to add to generated trace spans, keyed by tag name. Each value
+  // supplies the tag from exactly one source: a literal value, an environment
+  // variable, or a request header. NOTE (upstream): when specified, custom_tags
+  // fully replaces any values inherited from parent configuration.
+  map<string, KubernetesTelemetryCustomTag> custom_tags = 5;
+
+  // When true (the default), Envoy includes Istio-specific tags in generated trace
+  // spans. Faithful to the upstream `google.protobuf.BoolValue` (optional scalar).
+  optional bool enable_istio_tags = 6;
+
+  // Controls whether Envoy bases its sampling decision on the Request ID it
+  // generated. Set false to keep traces intact when the upstream Request ID is not
+  // in Envoy's format. Advanced, hidden-from-docs upstream knob (extended release
+  // channel); carried for full fidelity since the CRD accepts it. Faithful to the
+  // upstream `google.protobuf.BoolValue` (optional scalar).
+  optional bool use_request_id_for_trace_sampling = 7;
+}
+
+// KubernetesTelemetryTracingSelector narrows a tracing rule to a traffic direction.
+// Faithful to the upstream Telemetry.Tracing.TracingSelector message.
+message KubernetesTelemetryTracingSelector {
+  // The workload's role in the matched traffic. When unset, defaults to
+  // CLIENT_AND_SERVER. One of:
+  //   CLIENT_AND_SERVER — match whether the workload is the source or destination.
+  //   CLIENT            — match when the workload is the traffic source (outbound).
+  //   SERVER            — match when the workload is the traffic destination (inbound).
+  // CLIENT_AND_SERVER/CLIENT/SERVER // external standard exception -- Istio WorkloadMode enum
+  optional string mode = 1 [(buf.validate.field).string = {
+    in: [
+      "CLIENT_AND_SERVER",
+      "CLIENT",
+      "SERVER"
+    ]
+  }];
+}
+
+// KubernetesTelemetryCustomTag adds one custom tag to a trace span from exactly one
+// source. Istio models this as a `oneof { literal, environment, header }`; OpenMCF
+// keeps each member as an optional sibling field with an "at most one" rule, 1:1 with
+// the CRD JSON (the upstream CRD itself models this as an OpenAPI `oneOf`, not a
+// discriminator). Faithful to the upstream Telemetry.Tracing.CustomTag message.
+message KubernetesTelemetryCustomTag {
+  // At most one source may be set. Mirrors the upstream CRD oneOf over
+  // literal/environment/header.
+  option (buf.validate.message).cel = {
+    id: "telemetry_custom_tag.at_most_one_source"
+    message: "at most one of literal, environment, or header may be set"
+    expression: "(has(this.literal) ? 1 : 0) + (has(this.environment) ? 1 : 0) + (has(this.header) ? 1 : 0) <= 1"
+  };
+
+  // Adds the same hard-coded value to each span.
+  KubernetesTelemetryCustomTagLiteral literal = 1;
+
+  // Adds the value of an environment variable (read by the sidecar) to each span.
+  KubernetesTelemetryCustomTagEnvironment environment = 2;
+
+  // Adds the value of a request header to each span.
+  KubernetesTelemetryCustomTagRequestHeader header = 3;
+}
+
+// KubernetesTelemetryCustomTagLiteral supplies a custom tag from a literal value.
+message KubernetesTelemetryCustomTagLiteral {
+  // The tag value to use. Required.
+  string value = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {min_len: 1}
+  ];
+}
+
+// KubernetesTelemetryCustomTagEnvironment supplies a custom tag from an environment
+// variable known to the sidecar proxy.
+message KubernetesTelemetryCustomTagEnvironment {
+  // Name of the environment variable from which to read the tag value. Required.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {min_len: 1}
+  ];
+
+  // Fallback value used when the environment variable is not found.
+  string default_value = 2;
+}
+
+// KubernetesTelemetryCustomTagRequestHeader supplies a custom tag from a request
+// header.
+message KubernetesTelemetryCustomTagRequestHeader {
+  // Name of the request header from which to read the tag value. Required.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {min_len: 1}
+  ];
+
+  // Fallback value used when the header is not found.
+  string default_value = 2;
+}
+
+// KubernetesTelemetryProviderRef binds a telemetry rule to a named provider declared
+// in the mesh's MeshConfig extension providers. Faithful to the upstream
+// Telemetry.ProviderRef message; reused by tracing, metrics, and access logging.
+message KubernetesTelemetryProviderRef {
+  // Name of a telemetry provider in MeshConfig. Required.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {min_len: 1}
+  ];
+}
+
+// KubernetesTelemetryMetrics configures metrics generation for the selected
+// workloads. Faithful to the upstream Telemetry.Metrics message.
+message KubernetesTelemetryMetrics {
+  // Provider(s) this configuration applies to. If unset, the mesh default metrics
+  // provider is used.
+  repeated KubernetesTelemetryProviderRef providers = 1;
+
+  // Ordered overrides applied to metrics generation. Overrides are applied in order
+  // (and on top of inherited mesh/namespace/workload overrides), so list least
+  // specific matches first.
+  repeated KubernetesTelemetryMetricsOverride overrides = 2;
+
+  // The interval between TCP metrics reports. Defaults to `5s` upstream. Modeled as a
+  // duration string (DD-008); must be a valid duration of at least 1ms, mirroring the
+  // upstream CRD XValidation `duration(self) >= duration('1ms')`.
+  optional string reporting_interval = 3 [(buf.validate.field).cel = {
+    id: "telemetry_metrics.reporting_interval_min"
+    message: "reporting_interval must be a valid duration of at least 1ms (e.g. \"5s\")"
+    expression: "this == '' || duration(this) >= duration('1ms')"
+  }];
+}
+
+// KubernetesTelemetryMetricsOverride customizes generation behavior for an
+// individual metric or the full standard metric set. Faithful to the upstream
+// Telemetry.MetricsOverrides message.
+message KubernetesTelemetryMetricsOverride {
+  // Scopes the override to specific metric(s) and workload mode(s). When omitted, the
+  // override applies to all metrics in both client and server modes.
+  KubernetesTelemetryMetricSelector match = 1;
+
+  // When true, disables reporting for the matched metrics. Must be explicitly set to
+  // false to re-enable a metric disabled by a parent configuration. Faithful to the
+  // upstream `google.protobuf.BoolValue` (optional scalar).
+  optional bool disabled = 2;
+
+  // Tag (dimension) operations to apply to the matched metrics, keyed by tag name.
+  // Each value either upserts the tag with a CEL value expression or removes it.
+  // WARNING (upstream): some providers may not support adding/removing tags.
+  map<string, KubernetesTelemetryTagOverride> tag_overrides = 3;
+}
+
+// KubernetesTelemetryMetricSelector matches metric(s) for an override. Istio models
+// the metric choice as a `oneof { metric, custom_metric }`; OpenMCF keeps each member
+// as an optional sibling field with an "at most one" rule, 1:1 with the CRD JSON.
+// Faithful to the upstream Telemetry.MetricSelector message.
+message KubernetesTelemetryMetricSelector {
+  // At most one of metric or custom_metric may be set. Mirrors the upstream CRD oneOf.
+  option (buf.validate.message).cel = {
+    id: "telemetry_metric_selector.at_most_one_metric"
+    message: "at most one of metric or custom_metric may be set"
+    expression: "(has(this.metric) ? 1 : 0) + (has(this.custom_metric) ? 1 : 0) <= 1"
+  };
+
+  // One of the well-known Istio standard metrics. One of:
+  //   ALL_METRICS            — apply to all Istio default metrics.
+  //   REQUEST_COUNT          — counter of HTTP/HTTP2/gRPC requests.
+  //   REQUEST_DURATION       — histogram of request durations.
+  //   REQUEST_SIZE           — histogram of request body sizes.
+  //   RESPONSE_SIZE          — histogram of response body sizes.
+  //   TCP_OPENED_CONNECTIONS — counter of opened TCP connections.
+  //   TCP_CLOSED_CONNECTIONS — counter of closed TCP connections.
+  //   TCP_SENT_BYTES         — counter of bytes sent over TCP.
+  //   TCP_RECEIVED_BYTES     — counter of bytes received over TCP.
+  //   GRPC_REQUEST_MESSAGES  — counter of gRPC messages sent from a client.
+  //   GRPC_RESPONSE_MESSAGES — counter of gRPC messages sent from a server.
+  // ALL_METRICS/... // external standard exception -- Istio MetricSelector.IstioMetric enum
+  optional string metric = 1 [(buf.validate.field).string = {
+    in: [
+      "ALL_METRICS",
+      "REQUEST_COUNT",
+      "REQUEST_DURATION",
+      "REQUEST_SIZE",
+      "RESPONSE_SIZE",
+      "TCP_OPENED_CONNECTIONS",
+      "TCP_CLOSED_CONNECTIONS",
+      "TCP_SENT_BYTES",
+      "TCP_RECEIVED_BYTES",
+      "GRPC_REQUEST_MESSAGES",
+      "GRPC_RESPONSE_MESSAGES"
+    ]
+  }];
+
+  // A free-form custom metric name. No validation of custom metrics is provided
+  // upstream beyond non-emptiness.
+  optional string custom_metric = 2 [(buf.validate.field).string = {min_len: 1}];
+
+  // The workload mode the override applies to. When unset, defaults to
+  // CLIENT_AND_SERVER. One of CLIENT_AND_SERVER, CLIENT, or SERVER.
+  // CLIENT_AND_SERVER/CLIENT/SERVER // external standard exception -- Istio WorkloadMode enum
+  optional string mode = 3 [(buf.validate.field).string = {
+    in: [
+      "CLIENT_AND_SERVER",
+      "CLIENT",
+      "SERVER"
+    ]
+  }];
+}
+
+// KubernetesTelemetryTagOverride upserts or removes one metric tag (dimension).
+// Faithful to the upstream Telemetry.MetricsOverrides.TagOverride message.
+message KubernetesTelemetryTagOverride {
+  // These mirror the upstream CRD XValidations, which use the apiserver-CEL
+  // `default()` extension (not available under protovalidate/cel-go). `operation` and
+  // `value` are modeled as `optional` so an UNSET operation is distinguishable from an
+  // explicit UPSERT — matching the upstream rules, which treat an unset operation as
+  // neither UPSERT nor REMOVE (no value constraint).
+  option (buf.validate.message).cel = {
+    id: "telemetry_tag_override.upsert_requires_value"
+    message: "value must be set when operation is UPSERT"
+    expression: "!(has(this.operation) && this.operation == 'UPSERT') || (has(this.value) && this.value != '')"
+  };
+  option (buf.validate.message).cel = {
+    id: "telemetry_tag_override.remove_forbids_value"
+    message: "value must not be set when operation is REMOVE"
+    expression: "!(has(this.operation) && this.operation == 'REMOVE') || !has(this.value)"
+  };
+
+  // Whether to update/add the tag or remove it. When unset, upstream treats the
+  // operation as UPSERT (the enum default). One of:
+  //   UPSERT — insert or update the tag with `value` (which must then be set).
+  //   REMOVE — exclude the tag from the metric (`value` must not be set).
+  // UPSERT/REMOVE // external standard exception -- Istio TagOverride.Operation enum
+  optional string operation = 1 [(buf.validate.field).string = {
+    in: [
+      "UPSERT",
+      "REMOVE"
+    ]
+  }];
+
+  // A CEL expression over Istio/Envoy attributes whose result becomes the tag value.
+  // Considered only when operation is UPSERT. Examples: `string(destination.port)`,
+  // `request.host`.
+  optional string value = 2;
+}
+
+// KubernetesTelemetryAccessLogging configures access log generation for the selected
+// workloads. Faithful to the upstream Telemetry.AccessLogging message.
+message KubernetesTelemetryAccessLogging {
+  // Tailors the logging configuration to specific traffic conditions (currently the
+  // traffic direction). When omitted, applies to both directions.
+  KubernetesTelemetryAccessLoggingSelector match = 1;
+
+  // Provider(s) this configuration applies to. If unset, the mesh default logging
+  // provider is used.
+  repeated KubernetesTelemetryProviderRef providers = 2;
+
+  // When true, no access logs are generated for the selected workloads (for the
+  // selected providers). To re-enable logging disabled by a parent configuration,
+  // set this explicitly to false. Faithful to the upstream `google.protobuf.BoolValue`
+  // (optional scalar).
+  optional bool disabled = 3;
+
+  // A CEL filter selecting which requests/connections are logged. When omitted, all
+  // are logged (subject to provider behavior).
+  KubernetesTelemetryAccessLoggingFilter filter = 4;
+}
+
+// KubernetesTelemetryAccessLoggingSelector narrows an access logging rule to a
+// traffic direction. Faithful to the upstream
+// Telemetry.AccessLogging.LogSelector message.
+message KubernetesTelemetryAccessLoggingSelector {
+  // The workload's role in the matched traffic. When unset, defaults to
+  // CLIENT_AND_SERVER. One of CLIENT_AND_SERVER, CLIENT, or SERVER.
+  // CLIENT_AND_SERVER/CLIENT/SERVER // external standard exception -- Istio WorkloadMode enum
+  optional string mode = 1 [(buf.validate.field).string = {
+    in: [
+      "CLIENT_AND_SERVER",
+      "CLIENT",
+      "SERVER"
+    ]
+  }];
+}
+
+// KubernetesTelemetryAccessLoggingFilter selects which requests/connections are
+// logged via a CEL expression. Faithful to the upstream
+// Telemetry.AccessLogging.Filter message.
+message KubernetesTelemetryAccessLoggingFilter {
+  // A CEL expression for selecting when requests/connections should be logged, e.g.
+  // `response.code >= 400`. Free-form; upstream applies no schema validation.
+  string expression = 1;
+}

@@ -264,8 +264,8 @@ func (x *KubernetesIstioApiStringMatch) GetValue() string {
 
 // KubernetesIstioApiPolicyTargetReference attaches a policy to a specific resource
 // (rather than selecting workloads by label). Faithful to istio.io/api
-// `istio.type.v1beta1.PolicyTargetReference`. Consumers: RequestAuthentication and
-// AuthorizationPolicy.
+// `istio.type.v1beta1.PolicyTargetReference`. Consumers: RequestAuthentication,
+// AuthorizationPolicy, and Telemetry.
 //
 // Infra-chart composability: a target reference is a PLAIN cross-resource reference, not
 // an OpenMCF foreign key (StringValueOrRef). istiod resolves `group`/`kind`/`name`

@@ -303,6 +303,7 @@ import (
 	kubernetestcproutev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetestcproute/v1"
 	kubernetestektonv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetestekton/v1"
 	kubernetestektonoperatorv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetestektonoperator/v1"
+	kubernetestelemetryv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetestelemetry/v1"
 	kubernetestemporalv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetestemporal/v1"
 	kubernetestlsroutev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetestlsroute/v1"
 	kuberneteszalandopostgresoperatorv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kuberneteszalandopostgresoperator/v1"
@@ -735,6 +736,7 @@ var ProviderKubernetesMap = map[cloudresourcekind.CloudResourceKind]proto.Messag
 	cloudresourcekind.CloudResourceKind_KubernetesTcpRoute:                    &kubernetestcproutev1.KubernetesTcpRoute{},
 	cloudresourcekind.CloudResourceKind_KubernetesTekton:                      &kubernetestektonv1.KubernetesTekton{},
 	cloudresourcekind.CloudResourceKind_KubernetesTektonOperator:              &kubernetestektonoperatorv1.KubernetesTektonOperator{},
+	cloudresourcekind.CloudResourceKind_KubernetesTelemetry:                   &kubernetestelemetryv1.KubernetesTelemetry{},
 	cloudresourcekind.CloudResourceKind_KubernetesTemporal:                    &kubernetestemporalv1.KubernetesTemporal{},
 	cloudresourcekind.CloudResourceKind_KubernetesTlsRoute:                    &kubernetestlsroutev1.KubernetesTlsRoute{},
 	cloudresourcekind.CloudResourceKind_KubernetesZalandoPostgresOperator:     &kuberneteszalandopostgresoperatorv1.KubernetesZalandoPostgresOperator{},

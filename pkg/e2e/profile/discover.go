@@ -272,6 +272,7 @@ func toPascalCase(name string) string {
 		{"kubernetesserviceentry", "KubernetesServiceEntry"},
 		{"kubernetesdestinationrule", "KubernetesDestinationRule"},
 		{"kubernetesenvoyfilter", "KubernetesEnvoyFilter"},
+		{"kubernetestelemetry", "KubernetesTelemetry"},
 		{"kubernetesgharunnerscalesetcontroller", "KubernetesGhaRunnerScaleSetController"},
 		{"kubernetesrookcephoperator", "KubernetesRookCephOperator"},
 		{"kubernetesexternalsecrets", "KubernetesExternalSecrets"},
