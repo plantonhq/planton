@@ -302,6 +302,7 @@ go_library(
         "//apis/org/openmcf/provider/kubernetes/kubernetesprometheus/v1:kubernetesprometheus",
         "//apis/org/openmcf/provider/kubernetes/kubernetesredis/v1:kubernetesredis",
         "//apis/org/openmcf/provider/kubernetes/kubernetesreferencegrant/v1:kubernetesreferencegrant",
+        "//apis/org/openmcf/provider/kubernetes/kubernetesrequestauthentication/v1:kubernetesrequestauthentication",
         "//apis/org/openmcf/provider/kubernetes/kubernetesrookcephcluster/v1:kubernetesrookcephcluster",
         "//apis/org/openmcf/provider/kubernetes/kubernetesrookcephoperator/v1:kubernetesrookcephoperator",
         "//apis/org/openmcf/provider/kubernetes/kubernetessecret/v1:kubernetessecret",

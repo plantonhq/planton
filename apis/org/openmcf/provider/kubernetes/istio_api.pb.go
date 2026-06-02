@@ -190,6 +190,100 @@ func (x *KubernetesIstioApiStringMatch) GetValue() string {
 	return ""
 }
 
+// KubernetesIstioApiPolicyTargetReference attaches a policy to a specific resource
+// (rather than selecting workloads by label). Faithful to istio.io/api
+// `istio.type.v1beta1.PolicyTargetReference`. First consumer: RequestAuthentication
+// (T03); also reused by AuthorizationPolicy (T05).
+//
+// DD-009 composability: a target reference is a PLAIN cross-resource reference, not
+// an OpenMCF foreign key (StringValueOrRef). istiod resolves `group`/`kind`/`name`
+// against the cluster at runtime, so it creates NO automatic DAG edge. In an infra
+// chart, order the policy after the resource it targets via metadata.relationships,
+// e.g. (`uses` -> KubernetesGateway / KubernetesService / KubernetesServiceEntry):
+//
+//	metadata:
+//	  relationships:
+//	    - kind: KubernetesGateway
+//	      name: "{{ values.gateway }}"
+//	      type: depends_on
+//
+// See the consuming component's "Composing in Infra Charts" docs.
+type KubernetesIstioApiPolicyTargetReference struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Group of the target resource. Empty for the core API group (Services). Faithful
+	// to the upstream pattern (empty, or a DNS-1123 subdomain).
+	Group string `protobuf:"bytes,1,opt,name=group,proto3" json:"group,omitempty"`
+	// Kind of the target resource (e.g. Gateway, Service, ServiceEntry). Required.
+	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
+	// Name of the target resource. Required.
+	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	// Namespace of the target resource. Cross-namespace attachment is not supported
+	// upstream in the 1.26 line, so this must be empty (the target is resolved in the
+	// policy's own namespace). Mirrors the upstream XValidation rule
+	// "cross namespace referencing is not currently supported".
+	Namespace     string `protobuf:"bytes,4,opt,name=namespace,proto3" json:"namespace,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *KubernetesIstioApiPolicyTargetReference) Reset() {
+	*x = KubernetesIstioApiPolicyTargetReference{}
+	mi := &file_org_openmcf_provider_kubernetes_istio_api_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesIstioApiPolicyTargetReference) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesIstioApiPolicyTargetReference) ProtoMessage() {}
+
+func (x *KubernetesIstioApiPolicyTargetReference) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_kubernetes_istio_api_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesIstioApiPolicyTargetReference.ProtoReflect.Descriptor instead.
+func (*KubernetesIstioApiPolicyTargetReference) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_kubernetes_istio_api_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *KubernetesIstioApiPolicyTargetReference) GetGroup() string {
+	if x != nil {
+		return x.Group
+	}
+	return ""
+}
+
+func (x *KubernetesIstioApiPolicyTargetReference) GetKind() string {
+	if x != nil {
+		return x.Kind
+	}
+	return ""
+}
+
+func (x *KubernetesIstioApiPolicyTargetReference) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *KubernetesIstioApiPolicyTargetReference) GetNamespace() string {
+	if x != nil {
+		return x.Namespace
+	}
+	return ""
+}
+
 var File_org_openmcf_provider_kubernetes_istio_api_proto protoreflect.FileDescriptor
 
 const file_org_openmcf_provider_kubernetes_istio_api_proto_rawDesc = "" +
@@ -208,7 +302,14 @@ const file_org_openmcf_provider_kubernetes_istio_api_proto_rawDesc = "" +
 	"\x1dKubernetesIstioApiStringMatch\x12:\n" +
 	"\n" +
 	"match_type\x18\x01 \x01(\tB\x1b\xbaH\x18r\x16R\x05EXACTR\x06PREFIXR\x05REGEXR\tmatchType\x12\x1d\n" +
-	"\x05value\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x05valueB\x97\x02\n" +
+	"\x05value\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x05value\"\xb5\x03\n" +
+	"'KubernetesIstioApiPolicyTargetReference\x12d\n" +
+	"\x05group\x18\x01 \x01(\tBN\xbaHKrI\x18\xfd\x012D^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$R\x05group\x12G\n" +
+	"\x04kind\x18\x02 \x01(\tB3\xbaH0\xc8\x01\x01r+\x10\x01\x18?2%^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$R\x04kind\x12!\n" +
+	"\x04name\x18\x03 \x01(\tB\r\xbaH\n" +
+	"\xc8\x01\x01r\x05\x10\x01\x18\xfd\x01R\x04name\x12\xb7\x01\n" +
+	"\tnamespace\x18\x04 \x01(\tB\x98\x01\xbaH\x94\x01\xba\x01\x90\x01\n" +
+	"0istio_policy_target_reference.no_cross_namespace\x12Jcross-namespace target references are not supported; leave namespace empty\x1a\x10this.size() == 0R\tnamespaceB\x97\x02\n" +
 	"#com.org.openmcf.provider.kubernetesB\rIstioApiProtoP\x01ZAgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes\xa2\x02\x04OOPK\xaa\x02\x1fOrg.Openmcf.Provider.Kubernetes\xca\x02\x1fOrg\\Openmcf\\Provider\\Kubernetes\xe2\x02+Org\\Openmcf\\Provider\\Kubernetes\\GPBMetadata\xea\x02\"Org::Openmcf::Provider::Kubernetesb\x06proto3"
 
 var (
@@ -223,15 +324,16 @@ func file_org_openmcf_provider_kubernetes_istio_api_proto_rawDescGZIP() []byte {
 	return file_org_openmcf_provider_kubernetes_istio_api_proto_rawDescData
 }
 
-var file_org_openmcf_provider_kubernetes_istio_api_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_org_openmcf_provider_kubernetes_istio_api_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_org_openmcf_provider_kubernetes_istio_api_proto_goTypes = []any{
-	(*KubernetesIstioApiWorkloadSelector)(nil), // 0: org.openmcf.provider.kubernetes.KubernetesIstioApiWorkloadSelector
-	(*KubernetesIstioApiPortSelector)(nil),     // 1: org.openmcf.provider.kubernetes.KubernetesIstioApiPortSelector
-	(*KubernetesIstioApiStringMatch)(nil),      // 2: org.openmcf.provider.kubernetes.KubernetesIstioApiStringMatch
-	nil,                                        // 3: org.openmcf.provider.kubernetes.KubernetesIstioApiWorkloadSelector.MatchLabelsEntry
+	(*KubernetesIstioApiWorkloadSelector)(nil),      // 0: org.openmcf.provider.kubernetes.KubernetesIstioApiWorkloadSelector
+	(*KubernetesIstioApiPortSelector)(nil),          // 1: org.openmcf.provider.kubernetes.KubernetesIstioApiPortSelector
+	(*KubernetesIstioApiStringMatch)(nil),           // 2: org.openmcf.provider.kubernetes.KubernetesIstioApiStringMatch
+	(*KubernetesIstioApiPolicyTargetReference)(nil), // 3: org.openmcf.provider.kubernetes.KubernetesIstioApiPolicyTargetReference
+	nil, // 4: org.openmcf.provider.kubernetes.KubernetesIstioApiWorkloadSelector.MatchLabelsEntry
 }
 var file_org_openmcf_provider_kubernetes_istio_api_proto_depIdxs = []int32{
-	3, // 0: org.openmcf.provider.kubernetes.KubernetesIstioApiWorkloadSelector.match_labels:type_name -> org.openmcf.provider.kubernetes.KubernetesIstioApiWorkloadSelector.MatchLabelsEntry
+	4, // 0: org.openmcf.provider.kubernetes.KubernetesIstioApiWorkloadSelector.match_labels:type_name -> org.openmcf.provider.kubernetes.KubernetesIstioApiWorkloadSelector.MatchLabelsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
@@ -250,7 +352,7 @@ func file_org_openmcf_provider_kubernetes_istio_api_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_org_openmcf_provider_kubernetes_istio_api_proto_rawDesc), len(file_org_openmcf_provider_kubernetes_istio_api_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

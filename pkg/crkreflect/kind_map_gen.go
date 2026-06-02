@@ -286,6 +286,7 @@ import (
 	kubernetesprometheusv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesprometheus/v1"
 	kubernetesredisv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesredis/v1"
 	kubernetesreferencegrantv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesreferencegrant/v1"
+	kubernetesrequestauthenticationv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesrequestauthentication/v1"
 	kubernetesrookcephclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesrookcephcluster/v1"
 	kubernetesrookcephoperatorv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesrookcephoperator/v1"
 	kubernetessecretv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetessecret/v1"
@@ -713,6 +714,7 @@ var ProviderKubernetesMap = map[cloudresourcekind.CloudResourceKind]proto.Messag
 	cloudresourcekind.CloudResourceKind_KubernetesPrometheus:                  &kubernetesprometheusv1.KubernetesPrometheus{},
 	cloudresourcekind.CloudResourceKind_KubernetesRedis:                       &kubernetesredisv1.KubernetesRedis{},
 	cloudresourcekind.CloudResourceKind_KubernetesReferenceGrant:              &kubernetesreferencegrantv1.KubernetesReferenceGrant{},
+	cloudresourcekind.CloudResourceKind_KubernetesRequestAuthentication:       &kubernetesrequestauthenticationv1.KubernetesRequestAuthentication{},
 	cloudresourcekind.CloudResourceKind_KubernetesRookCephCluster:             &kubernetesrookcephclusterv1.KubernetesRookCephCluster{},
 	cloudresourcekind.CloudResourceKind_KubernetesRookCephOperator:            &kubernetesrookcephoperatorv1.KubernetesRookCephOperator{},
 	cloudresourcekind.CloudResourceKind_KubernetesSecret:                      &kubernetessecretv1.KubernetesSecret{},

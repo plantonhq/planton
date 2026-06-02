@@ -127,7 +127,8 @@ var gatewayApiKinds = map[string]gatewayApiCustomResource{
 // prerequisite before the component applies. All seven Istio kinds are
 // namespaced, so no clusterScoped flag is needed.
 var istioApiKinds = map[string]string{
-	"kubernetespeerauthentication": "peerauthentications.security.istio.io",
+	"kubernetespeerauthentication":    "peerauthentications.security.istio.io",
+	"kubernetesrequestauthentication": "requestauthentications.security.istio.io",
 }
 
 // GetVerifierFromManifest creates the appropriate verifier by parsing the manifest.
