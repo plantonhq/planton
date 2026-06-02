@@ -266,6 +266,23 @@ var _ = ginkgo.Describe("KubernetesAuthorizationPolicy Validation Tests", func()
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 			})
 		})
+
+		ginkgo.Context("with a malformed group", func() {
+			ginkgo.It("should return a validation error", func() {
+				ref := targetRef("Gateway", "edge-gateway")
+				ref.Group = "Not A Valid Group"
+				input.Spec.TargetRefs = []*kubernetes.KubernetesIstioApiPolicyTargetReference{ref}
+				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+			})
+		})
+
+		ginkgo.Context("with a name exceeding the length bound", func() {
+			ginkgo.It("should return a validation error", func() {
+				ref := targetRef("Gateway", strings.Repeat("a", 254))
+				input.Spec.TargetRefs = []*kubernetes.KubernetesIstioApiPolicyTargetReference{ref}
+				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+			})
+		})
 	})
 
 	ginkgo.Describe("When the action is invalid", func() {

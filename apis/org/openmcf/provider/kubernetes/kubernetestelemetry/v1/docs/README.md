@@ -134,7 +134,8 @@ unset fields. Two shapes are handled differently:
   keys -- istiod resolves them at runtime, so they create no automatic DAG edge. An
   infra-chart author who needs ordering declares it on `metadata.relationships`
   (`depends_on` -> the observed workload/gateway). Provider names refer to MeshConfig
-  extension providers, not OpenMCF resources.
+  extension providers, not OpenMCF resources. See the README's "Composing in Infra
+  Charts" section for a worked example.
 - **Outputs** export the honest `telemetry_name` + `namespace`; Telemetry is a config
   resource with no controller-reconciled status worth surfacing.
 
