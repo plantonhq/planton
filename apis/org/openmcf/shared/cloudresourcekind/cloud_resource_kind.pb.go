@@ -352,6 +352,7 @@ const (
 	CloudResourceKind_Auth0EventStream    CloudResourceKind = 2102
 	CloudResourceKind_Auth0ResourceServer CloudResourceKind = 2103
 	CloudResourceKind_Auth0Action         CloudResourceKind = 2104
+	CloudResourceKind_Auth0Role           CloudResourceKind = 2105
 	// 2300–2499: OpenFGA resources
 	// Note: OpenFGA is Terraform-only - there is no Pulumi provider available.
 	// Pulumi modules for OpenFGA resources are pass-through placeholders.
@@ -744,6 +745,7 @@ var (
 		2102: "Auth0EventStream",
 		2103: "Auth0ResourceServer",
 		2104: "Auth0Action",
+		2105: "Auth0Role",
 		2300: "OpenFgaStore",
 		2301: "OpenFgaAuthorizationModel",
 		2302: "OpenFgaRelationshipTuple",
@@ -1129,6 +1131,7 @@ var (
 		"Auth0EventStream":                      2102,
 		"Auth0ResourceServer":                   2103,
 		"Auth0Action":                           2104,
+		"Auth0Role":                             2105,
 		"OpenFgaStore":                          2300,
 		"OpenFgaAuthorizationModel":             2301,
 		"OpenFgaRelationshipTuple":              2302,
@@ -1507,7 +1510,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x04kind\x18\x02 \x01(\tR\x04kind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\x9a\x87\x01\n" +
+	"\x02v1\x10\x01*\xbc\x87\x01\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12,\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1817,7 +1820,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\b\x15\x10\x01\"\x04a0es\x12(\n" +
 	"\x13Auth0ResourceServer\x10\xb7\x10\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\x15\x10\x01\"\x04a0rs\x12!\n" +
-	"\vAuth0Action\x10\xb8\x10\x1a\x0f\xa2\xf7\x04\v\b\x15\x10\x01\"\x05a0act\x12%\n" +
+	"\vAuth0Action\x10\xb8\x10\x1a\x0f\xa2\xf7\x04\v\b\x15\x10\x01\"\x05a0act\x12 \n" +
+	"\tAuth0Role\x10\xb9\x10\x1a\x10\xa2\xf7\x04\f\b\x15\x10\x01\"\x06a0role\x12%\n" +
 	"\fOpenFgaStore\x10\xfc\x11\x1a\x12\xa2\xf7\x04\x0e\b\x16\x10\x01\"\bfgastore\x122\n" +
 	"\x19OpenFgaAuthorizationModel\x10\xfd\x11\x1a\x12\xa2\xf7\x04\x0e\b\x16\x10\x01\"\bfgamodel\x121\n" +
 	"\x18OpenFgaRelationshipTuple\x10\xfe\x11\x1a\x12\xa2\xf7\x04\x0e\b\x16\x10\x01\"\bfgatuple\x12%\n" +

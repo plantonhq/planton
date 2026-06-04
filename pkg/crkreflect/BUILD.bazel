@@ -63,6 +63,7 @@ go_library(
         "//apis/org/openmcf/provider/auth0/auth0connection/v1:auth0connection",
         "//apis/org/openmcf/provider/auth0/auth0eventstream/v1:auth0eventstream",
         "//apis/org/openmcf/provider/auth0/auth0resourceserver/v1:auth0resourceserver",
+        "//apis/org/openmcf/provider/auth0/auth0role/v1:auth0role",
         "//apis/org/openmcf/provider/aws/awsalb/v1:awsalb",
         "//apis/org/openmcf/provider/aws/awsapprunnerservice/v1:awsapprunnerservice",
         "//apis/org/openmcf/provider/aws/awsathenaworkgroup/v1:awsathenaworkgroup",

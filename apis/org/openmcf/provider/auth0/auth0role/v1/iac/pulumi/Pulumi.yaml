@@ -1,0 +1,6 @@
+# Auth0Role Pulumi Module
+# This module creates and manages Auth0 Roles and their permissions.
+name: auth0-role
+runtime:
+  name: go
+description: Pulumi module for Auth0Role deployment component
