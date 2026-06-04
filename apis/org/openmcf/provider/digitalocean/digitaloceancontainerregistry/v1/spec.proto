@@ -20,8 +20,9 @@ message DigitalOceanContainerRegistrySpec {
   // Subscription tier slug (defines storage limits and pricing).
   DigitalOceanContainerRegistryTier subscription_tier = 2 [(buf.validate.field).required = true];
 
-  // Optional region slug where registry data is stored (e.g., "nyc3", "sfo3").
-  // If omitted, DigitalOcean chooses a default/nearest region.
+  // Required region slug where registry data is stored (e.g., "nyc3", "sfo3").
+  // DigitalOcean container registries are single-region and the region cannot
+  // be changed after creation, so a region must be specified explicitly.
   DigitalOceanRegion region = 3 [(buf.validate.field).required = true];
 
   // Enable garbage collection of untagged images.

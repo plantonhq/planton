@@ -76,5 +76,21 @@ func nodePool(
 	// 7. Export stack outputs.
 	ctx.Export(OpNodePoolId, createdNodePool.ID())
 
+	// node_ids: the Droplet IDs backing the pool's nodes. The provider populates
+	// KubernetesNodePool.Nodes once the pool's Droplets exist; project each
+	// node's droplet_id into a string slice for the repeated proto output.
+	nodeDropletIds := createdNodePool.Nodes.ApplyT(
+		func(nodes []digitalocean.KubernetesNodePoolNode) []string {
+			ids := make([]string, 0, len(nodes))
+			for _, node := range nodes {
+				if node.DropletId != nil {
+					ids = append(ids, *node.DropletId)
+				}
+			}
+			return ids
+		},
+	).(pulumi.StringArrayOutput)
+	ctx.Export(OpNodeIds, nodeDropletIds)
+
 	return createdNodePool, nil
 }

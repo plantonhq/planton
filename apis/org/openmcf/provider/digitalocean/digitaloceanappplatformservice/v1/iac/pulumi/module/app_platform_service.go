@@ -82,6 +82,10 @@ func appPlatformService(
 	// --------------------------------------------
 	ctx.Export(OpAppId, createdApp.ID())
 	ctx.Export(OpLiveUrl, createdApp.LiveUrl)
+	// default_hostname: the App's default ondigitalocean.app ingress, assigned by
+	// the platform regardless of any custom domain. DefaultIngress is the SDK's
+	// default-hostname attribute (distinct from LiveUrl, which can be a custom domain).
+	ctx.Export(OpDefaultHostname, createdApp.DefaultIngress)
 
 	return createdApp, nil
 }
