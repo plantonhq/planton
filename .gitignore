@@ -47,6 +47,10 @@ web-app/src/gen/
 !app/entrypoint-unified.sh
 !tools/ci/release/package_content.sh
 **/*.env
+# Local-only provider credentials for live E2E (see forge rule "Post-Forge Live
+# E2E Validation"). NEVER commit. Note **/*.env above does not match *.env.e2e.
+**/.env.e2e
+**/*.env.e2e
 _aacursor/
 backend.tf
 /pulumi

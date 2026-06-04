@@ -135,6 +135,69 @@ Expected result: **95-100% completion score**
 
 If score is lower, the audit report will identify gaps and suggest fixes.
 
+## Post-Forge Live E2E Validation (provider credentials)
+
+Steps 018–019 prove the component compiles and its schema validates. **Live E2E**
+proves the IaC modules actually create, verify, and destroy real resources via
+the provider API. Every component ships an `e2e/profile.yaml` + `e2e/scenarios/*.yaml`,
+and the provider harness (`apis/org/openmcf/provider/<provider>/aa_e2e/`) runs them
+on both Pulumi and Terraform.
+
+Live E2E needs provider credentials. **Never ask the human to paste them, and never
+fabricate them.** Acquire them with this do-first, two-tier protocol. (Note: `gh`
+can `secret list` names but CANNOT read Actions secret VALUES — they are write-only.
+Only the CI runner can read them.)
+
+### Wire the kind into the provider E2E first (required for either tier)
+
+A new kind is only exercised once it is registered in the provider harness:
+
+- `aa_e2e/verify/verifier.go` — add `"<component>": &apiPathVerifier{component: "<component>", pathFormat: "<api-path>/%s"}` (the Management/API path that fetches the resource by id, e.g. `roles/%s`).
+- `e2e/<provider>/<provider>_test.go` — add `Test<Kind>_Pulumi` / `Test<Kind>_Terraform` entrypoints. Scenarios are auto-discovered; the entry funcs are not.
+
+### Tier 1 — Local run (preferred: fast on-machine loop)
+
+Local credentials live in a gitignored `.env.e2e` at the repo root (ignored via
+`.gitignore`; NEVER commit it). The harness reads credentials from environment
+variables — discover the exact names by reading the harness `Setup`
+(`aa_e2e/harness.go`); e.g. Auth0 uses `AUTH0_DOMAIN`, `AUTH0_CLIENT_ID`,
+`AUTH0_CLIENT_SECRET`.
+
+```bash
+# Confirm which provider secrets exist (names only) and match the harness env vars:
+gh secret list
+
+# If .env.e2e exists, source it and run ONLY this component's scenarios:
+set -a; source .env.e2e; set +a
+go test -tags e2e ./e2e/<provider>/... -run 'Test<Kind>' -v -count=1
+```
+
+If `.env.e2e` is absent, do NOT invent it: tell the human exactly which variables it
+must contain (from the harness) and that it is gitignored, then use Tier 2 so the
+validation still happens this session.
+
+### Tier 2 — CI dispatch (fallback: Actions injects the secrets)
+
+```bash
+git push -u origin <feature-branch>
+gh workflow run e2e-<provider>.yaml --ref <feature-branch>
+RUN_ID=$(gh run list --workflow=e2e-<provider>.yaml --branch <feature-branch> --limit 1 --json databaseId -q '.[0].databaseId')
+gh run watch "$RUN_ID" --exit-status --interval 20
+```
+
+Then confirm the new kind actually ran (not skipped) and passed both provisioners:
+
+```bash
+gh run view "$RUN_ID" --log | rg -i '<kind>'
+# expect: ✓ <Kind> pulumi <scenario> ... ✓ <Kind> terraform <scenario>
+```
+
+Keep self-contained scenarios self-contained: a `minimal.yaml` should not depend on
+resources that may not exist in the test tenant (e.g. an Auth0 role's `minimal`
+scenario omits permissions so it needs no pre-existing resource server). Add a
+richer scenario (seeding the dependency) when you need live coverage of dependent
+fields.
+
 ## Reference
 
 - **Ideal State Definition:** `architecture/deployment-component.md`
