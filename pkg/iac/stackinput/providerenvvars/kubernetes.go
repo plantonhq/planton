@@ -70,6 +70,12 @@ func loadKubernetesEnvVars(providerConfigYaml []byte, fileCacheLoc string) (map[
 			return nil, errors.Wrap(err, "failed to build kube-config for Azure AKS")
 		}
 	default:
+		// FOLLOW-UP: digital_ocean_doks is mapped by the runner's providerconfig
+		// (mapKubernetesDoks resolves the kube_config secret) but has no arm here, so a DOKS
+		// connection currently fails at env-var loading. Wiring it means writing the resolved
+		// kube_config to a file and returning it under KUBECONFIG / KUBE_CONFIG_PATH like the
+		// other providers. AWS EKS / Azure AKS builders above are likewise stubs (see their
+		// TODOs). These need their own change + a real connection to validate; out of scope here.
 		return nil, errors.Errorf("unsupported kubernetes provider: %v", config.Provider)
 	}
 
@@ -79,8 +85,16 @@ func loadKubernetesEnvVars(providerConfigYaml []byte, fileCacheLoc string) (map[
 		return nil, errors.Wrap(err, "failed to write kube-config to file")
 	}
 
+	// The Pulumi and Terraform/OpenTofu Kubernetes providers read different env vars
+	// to locate a kubeconfig file: Pulumi honors KUBECONFIG, while the Terraform/OpenTofu
+	// hashicorp/kubernetes (and helm) provider honors KUBE_CONFIG_PATH. Both names point
+	// at the same generated kubeconfig so either engine resolves the connection; setting
+	// the name the active engine ignores is harmless. Omitting KUBE_CONFIG_PATH makes the
+	// tofu provider silently fall back to in-cluster auth (the runner pod's own service
+	// account), which is the wrong cluster.
 	envVars := map[string]string{
-		"KUBECONFIG": kubeConfigPath,
+		"KUBECONFIG":       kubeConfigPath,
+		"KUBE_CONFIG_PATH": kubeConfigPath,
 	}
 
 	return envVars, nil

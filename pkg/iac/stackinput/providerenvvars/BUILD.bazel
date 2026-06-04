@@ -1,4 +1,4 @@
-load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "providerenvvars",
@@ -46,5 +46,15 @@ go_library(
         "@com_github_pkg_errors//:errors",
         "@in_gopkg_yaml_v3//:yaml_v3",
         "@org_golang_google_protobuf//proto",
+    ],
+)
+
+go_test(
+    name = "providerenvvars_test",
+    srcs = ["kubernetes_test.go"],
+    embed = [":providerenvvars"],
+    deps = [
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
     ],
 )

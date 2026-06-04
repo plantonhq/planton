@@ -60,8 +60,10 @@ func BuildTerraformInput(manifestPath, workDir string) (*TerraformInput, error) 
 	}
 
 	// The Terraform Kubernetes provider uses KUBE_CONFIG_PATH (not KUBECONFIG).
-	// If KUBECONFIG is set in the process (by the kind harness), bridge it so the
-	// TF provider can find the kubeconfig.
+	// This bridges a DIFFERENT case than providerenvvars.loadKubernetesEnvVars (which now
+	// sets both names for connection-derived kubeconfigs): here the kind harness exports
+	// KUBECONFIG into the process for an in-cluster test kubeconfig, so we forward it to
+	// KUBE_CONFIG_PATH for the TF provider. Kept distinct on purpose.
 	if kubeconfig := os.Getenv("KUBECONFIG"); kubeconfig != "" {
 		if _, exists := providerEnvVarMap["KUBE_CONFIG_PATH"]; !exists {
 			providerEnvVarMap["KUBE_CONFIG_PATH"] = kubeconfig
