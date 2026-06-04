@@ -1,12 +1,10 @@
 package tofumodule
 
 import (
-	"bufio"
 	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
-	"runtime/debug"
 
 	"github.com/pkg/errors"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/iac/terraform"
@@ -69,61 +67,16 @@ func RunOperation(
 	fmt.Printf("%s module directory: %s\n", binaryName, modulePath)
 	fmt.Printf("running command: %s\n", cmd.String())
 
-	// If JSON output, capture stdout in a goroutine with panic recovery
+	// If JSON output, stream stdout line-by-line (see streamCommandJSONOutput for
+	// the read-before-Wait ordering that avoids a "file already closed" race).
 	if isJsonOutput {
-		stdoutPipe, err := cmd.StdoutPipe()
-		if err != nil {
-			return errors.Wrap(err, "failed to create stdout pipe")
-		}
+		return streamCommandJSONOutput(binaryName, cmd, jsonLogEventsChan)
+	}
 
-		if err := cmd.Start(); err != nil {
-			return errors.Wrapf(err, "failed to start %s command %s", binaryName, cmd.String())
-		}
-
-		// Capture errors (panic or scanner errors) in errChan
-		errChan := make(chan error, 1)
-
-		go func() {
-			defer func() {
-				if r := recover(); r != nil {
-					stack := debug.Stack()
-					panicErr := fmt.Errorf(
-						"panic recovered in RunOperation stdout reader: %v\nstack trace:\n%s",
-						r, string(stack),
-					)
-					errChan <- panicErr
-				}
-				close(errChan)
-			}()
-
-			scanner := bufio.NewScanner(stdoutPipe)
-			for scanner.Scan() {
-				line := scanner.Text()
-				if jsonLogEventsChan != nil {
-					jsonLogEventsChan <- line
-				} else {
-					fmt.Println(line)
-				}
-			}
-			if err := scanner.Err(); err != nil {
-				errChan <- fmt.Errorf("error reading %s output: %v", binaryName, err)
-			}
-		}()
-
-		if err := cmd.Wait(); err != nil {
-			return errors.Wrapf(err, "failed to execute %s command %s", binaryName, cmd.String())
-		}
-
-		if readErr, ok := <-errChan; ok && readErr != nil {
-			return readErr
-		}
-	} else {
-		// Stream stdout to console
-		cmd.Stdout = os.Stdout
-
-		if err := cmd.Run(); err != nil {
-			return errors.Wrapf(err, "failed to execute %s command %s", binaryName, cmd.String())
-		}
+	// Otherwise stream stdout directly to the console.
+	cmd.Stdout = os.Stdout
+	if err := cmd.Run(); err != nil {
+		return errors.Wrapf(err, "failed to execute %s command %s", binaryName, cmd.String())
 	}
 
 	return nil

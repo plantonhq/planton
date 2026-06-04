@@ -1,4 +1,4 @@
-load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "tofumodule",
@@ -7,6 +7,7 @@ go_library(
         "providers.go",
         "run_command.go",
         "run_operation.go",
+        "stream_output.go",
         "tofu_init.go",
     ],
     importpath = "github.com/plantonhq/openmcf/pkg/iac/tofu/tofumodule",
@@ -32,4 +33,10 @@ go_library(
         "@com_github_sirupsen_logrus//:logrus",
         "@org_golang_google_protobuf//proto",
     ],
+)
+
+go_test(
+    name = "tofumodule_test",
+    srcs = ["stream_output_test.go"],
+    embed = [":tofumodule"],
 )
