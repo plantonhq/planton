@@ -9,4 +9,12 @@ message AwsIamRoleStackOutputs {
 
   // role_name is the name of the IAM role in AWS.
   string role_name = 2;
+
+  // instance_profile_arn is the ARN of the IAM instance profile that wraps this
+  // role. EC2 requires an instance profile (not a bare role) to assume a role,
+  // so this is what an AwsEc2Instance.iam_instance_profile_arn should reference.
+  string instance_profile_arn = 3;
+
+  // instance_profile_name is the name of the IAM instance profile wrapping this role.
+  string instance_profile_name = 4;
 }

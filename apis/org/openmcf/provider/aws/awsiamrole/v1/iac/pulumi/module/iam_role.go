@@ -61,9 +61,24 @@ func iamRole(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) error 
 		}
 	}
 
+	// Always create an instance profile that wraps this role. Instance profiles
+	// are free and idempotent in AWS, and EC2 requires one (not a bare role) to
+	// assume a role. Exporting its ARN lets an EC2 instance reference the role via
+	// iam_instance_profile_arn -> AwsIamRole/status.outputs.instance_profile_arn.
+	instanceProfile, err := iam.NewInstanceProfile(ctx, roleName, &iam.InstanceProfileArgs{
+		Name: pulumi.String(roleName),
+		Role: iamRole.Name,
+		Tags: pulumi.ToStringMap(locals.AwsTags),
+	}, pulumi.Provider(provider))
+	if err != nil {
+		return errors.Wrap(err, "failed to create IAM instance profile")
+	}
+
 	// Export final outputs
 	ctx.Export(OpRoleArn, iamRole.Arn)
 	ctx.Export(OpRoleName, iamRole.Name)
+	ctx.Export(OpInstanceProfileArn, instanceProfile.Arn)
+	ctx.Export(OpInstanceProfileName, instanceProfile.Name)
 
 	return nil
 }

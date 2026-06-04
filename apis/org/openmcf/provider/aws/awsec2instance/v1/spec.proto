@@ -74,7 +74,7 @@ message AwsEc2InstanceSpec {
   // **Required if** connection_method is SSM; optional otherwise.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef iam_instance_profile_arn = 8 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsIamRole,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.role_arn"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.instance_profile_arn"
   ];
 
   // The name of an EC2 Key Pair to associate with the instance for SSH access.

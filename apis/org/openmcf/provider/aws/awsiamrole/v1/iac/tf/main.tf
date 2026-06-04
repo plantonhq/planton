@@ -22,5 +22,14 @@ resource "aws_iam_role_policy" "inline" {
   policy = jsonencode(each.value)
 }
 
+# Always create an instance profile that wraps this role. Instance profiles are
+# free and idempotent in AWS, and EC2 requires one (not a bare role) to assume a
+# role. Its ARN is what an AwsEc2Instance.iam_instance_profile_arn references.
+resource "aws_iam_instance_profile" "this" {
+  name = local.resource_name
+  role = aws_iam_role.this.name
+  tags = local.tags
+}
+
 
 
