@@ -24,11 +24,13 @@ message DigitalOceanKubernetesClusterSpec {
   string kubernetes_version = 3 [(buf.validate.field).required = true];
 
   // Reference to the DigitalOcean VPC where the cluster's control plane will reside.
-  // This must be an existing VPC in the same region. Only the VPC's name is needed; the system will resolve it to the VPC ID.
+  // This must be an existing VPC in the same region. The cluster consumes the VPC's
+  // ID (a DigitalOcean UUID), so a reference resolves to the DigitalOceanVpc's
+  // exported vpc_id output rather than its metadata name.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc = 4 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = DigitalOceanVpc,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "metadata.name"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
   ];
 
   // Whether to enable a highly available control plane for the cluster.

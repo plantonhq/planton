@@ -269,7 +269,7 @@ var _ = Describe("GcpCloudRunSpec validations", func() {
 			spec.Dns = &GcpCloudRunDns{
 				Enabled:     true,
 				Hostnames:   []string{"api.example.com"},
-				ManagedZone: "example-zone",
+				ManagedZone: strVal("example-zone"),
 			}
 			err := protovalidate.Validate(spec)
 			Expect(err).To(BeNil())
@@ -280,7 +280,7 @@ var _ = Describe("GcpCloudRunSpec validations", func() {
 			spec.Dns = &GcpCloudRunDns{
 				Enabled:     true,
 				Hostnames:   []string{},
-				ManagedZone: "example-zone",
+				ManagedZone: strVal("example-zone"),
 			}
 			err := protovalidate.Validate(spec)
 			Expect(err).NotTo(BeNil())
@@ -291,7 +291,7 @@ var _ = Describe("GcpCloudRunSpec validations", func() {
 			spec.Dns = &GcpCloudRunDns{
 				Enabled:     true,
 				Hostnames:   []string{"api.example.com"},
-				ManagedZone: "",
+				ManagedZone: strVal(""),
 			}
 			err := protovalidate.Validate(spec)
 			Expect(err).NotTo(BeNil())
@@ -311,7 +311,7 @@ var _ = Describe("GcpCloudRunSpec validations", func() {
 			spec.Dns = &GcpCloudRunDns{
 				Enabled:     true,
 				Hostnames:   []string{"api.example.com", "api.example.com"},
-				ManagedZone: "example-zone",
+				ManagedZone: strVal("example-zone"),
 			}
 			err := protovalidate.Validate(spec)
 			Expect(err).NotTo(BeNil())
@@ -322,7 +322,7 @@ var _ = Describe("GcpCloudRunSpec validations", func() {
 			spec.Dns = &GcpCloudRunDns{
 				Enabled:     true,
 				Hostnames:   []string{"API.example.com"},
-				ManagedZone: "example-zone",
+				ManagedZone: strVal("example-zone"),
 			}
 			err := protovalidate.Validate(spec)
 			Expect(err).NotTo(BeNil())

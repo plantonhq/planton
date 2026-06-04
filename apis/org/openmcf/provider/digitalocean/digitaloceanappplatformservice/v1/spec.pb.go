@@ -514,9 +514,9 @@ const file_org_openmcf_provider_digitalocean_digitaloceanappplatformservice_v1_s
 	"\x06branch\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06branch\x12#\n" +
 	"\rbuild_command\x18\x03 \x01(\tR\fbuildCommand\x12\x1f\n" +
 	"\vrun_command\x18\x04 \x01(\tR\n" +
-	"runCommand\"\xe5\x01\n" +
-	"%DigitalOceanAppPlatformRegistrySource\x12z\n" +
-	"\bregistry\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB*\xbaH\x03\xc8\x01\x01\x88\xd4a\xb2\t\x92\xd4a\x1bstatus.outputs.registry_urlR\bregistry\x12&\n" +
+	"runCommand\"\xe3\x01\n" +
+	"%DigitalOceanAppPlatformRegistrySource\x12x\n" +
+	"\bregistry\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x03\xc8\x01\x01\x88\xd4a\xb2\t\x92\xd4a\x19status.outputs.server_urlR\bregistry\x12&\n" +
 	"\n" +
 	"repository\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\n" +
 	"repository\x12\x18\n" +

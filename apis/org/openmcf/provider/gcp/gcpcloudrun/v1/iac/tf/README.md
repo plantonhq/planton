@@ -81,7 +81,7 @@ module "cloudrun_with_dns" {
     dns = {
       enabled      = true
       hostnames    = ["api.example.com"]
-      managed_zone = "example-com-zone"
+      managed_zone = { value = "example-com-zone" }
     }
   }
 }

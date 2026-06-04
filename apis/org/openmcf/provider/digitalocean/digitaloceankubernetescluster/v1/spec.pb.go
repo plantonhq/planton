@@ -40,7 +40,9 @@ type DigitalOceanKubernetesClusterSpec struct {
 	// Example: "1.26.3"
 	KubernetesVersion string `protobuf:"bytes,3,opt,name=kubernetes_version,json=kubernetesVersion,proto3" json:"kubernetes_version,omitempty"`
 	// Reference to the DigitalOcean VPC where the cluster's control plane will reside.
-	// This must be an existing VPC in the same region. Only the VPC's name is needed; the system will resolve it to the VPC ID.
+	// This must be an existing VPC in the same region. The cluster consumes the VPC's
+	// ID (a DigitalOcean UUID), so a reference resolves to the DigitalOceanVpc's
+	// exported vpc_id output rather than its metadata name.
 	Vpc *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=vpc,proto3" json:"vpc,omitempty"`
 	// Whether to enable a highly available control plane for the cluster.
 	// If true, the cluster is created with a High Availability control plane (multiple masters for increased uptime, additional cost).
@@ -279,12 +281,12 @@ var File_org_openmcf_provider_digitalocean_digitaloceankubernetescluster_v1_spec
 
 const file_org_openmcf_provider_digitalocean_digitaloceankubernetescluster_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Morg/openmcf/provider/digitalocean/digitaloceankubernetescluster/v1/spec.proto\x12Borg.openmcf.provider.digitalocean.digitaloceankubernetescluster.v1\x1a\x1bbuf/validate/validate.proto\x1a.org/openmcf/provider/digitalocean/region.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xb6\x06\n" +
+	"Morg/openmcf/provider/digitalocean/digitaloceankubernetescluster/v1/spec.proto\x12Borg.openmcf.provider.digitalocean.digitaloceankubernetescluster.v1\x1a\x1bbuf/validate/validate.proto\x1a.org/openmcf/provider/digitalocean/region.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xbe\x06\n" +
 	"!DigitalOceanKubernetesClusterSpec\x12)\n" +
 	"\fcluster_name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\vclusterName\x12U\n" +
 	"\x06region\x18\x02 \x01(\x0e25.org.openmcf.provider.digitalocean.DigitalOceanRegionB\x06\xbaH\x03\xc8\x01\x01R\x06region\x125\n" +
-	"\x12kubernetes_version\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x11kubernetesVersion\x12b\n" +
-	"\x03vpc\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1c\xbaH\x03\xc8\x01\x01\x88\xd4a\xbc\t\x92\xd4a\rmetadata.nameR\x03vpc\x124\n" +
+	"\x12kubernetes_version\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x11kubernetesVersion\x12j\n" +
+	"\x03vpc\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xbc\t\x92\xd4a\x15status.outputs.vpc_idR\x03vpc\x124\n" +
 	"\x10highly_available\x18\x05 \x01(\bB\t\x92\xa6\x1d\x05falseR\x0fhighlyAvailable\x12!\n" +
 	"\fauto_upgrade\x18\x06 \x01(\bR\vautoUpgrade\x122\n" +
 	"\x15disable_surge_upgrade\x18\a \x01(\bR\x13disableSurgeUpgrade\x12-\n" +

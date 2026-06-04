@@ -62,7 +62,7 @@ func customDns(ctx *pulumi.Context,
 	_, err = dns.NewRecordSet(ctx,
 		"domain-verification",
 		&dns.RecordSetArgs{
-			ManagedZone: pulumi.String(locals.GcpCloudRun.Spec.Dns.ManagedZone),
+			ManagedZone: pulumi.String(locals.GcpCloudRun.Spec.Dns.ManagedZone.GetValue()),
 			Name:        pulumi.String(fmt.Sprintf("%s.", hostname)),
 			Ttl:         pulumi.Int(300),
 			Type:        pulumi.String("TXT"),

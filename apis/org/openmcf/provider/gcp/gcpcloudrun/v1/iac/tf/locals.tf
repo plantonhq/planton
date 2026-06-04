@@ -61,7 +61,7 @@ locals {
   # DNS configuration
   dns_enabled      = var.spec.dns != null ? var.spec.dns.enabled : false
   dns_hostnames    = var.spec.dns != null ? var.spec.dns.hostnames : []
-  dns_managed_zone = var.spec.dns != null ? var.spec.dns.managed_zone : ""
+  dns_managed_zone = var.spec.dns != null ? var.spec.dns.managed_zone.value : ""
 
   # VPC access configuration
   has_vpc_access = var.spec.vpc_access != null && (

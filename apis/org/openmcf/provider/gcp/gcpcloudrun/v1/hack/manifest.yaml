@@ -45,4 +45,6 @@ spec:
     enabled: false
     hostnames:
       - nginx-cloud-run.testing.openmcf.org
-    managedZone: openmcf-org-zone
+    # managedZone using StringValueOrRef format (can use value or valueFrom)
+    managedZone:
+      value: openmcf-org-zone

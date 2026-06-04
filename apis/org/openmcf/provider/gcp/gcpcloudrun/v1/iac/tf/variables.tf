@@ -91,9 +91,13 @@ variable "spec" {
 
     # Optional: Custom DNS mapping
     dns = optional(object({
-      enabled      = bool         # Enable custom domain mapping
-      hostnames    = list(string) # List of custom hostnames
-      managed_zone = string       # Cloud DNS managed zone for verification
+      enabled   = bool         # Enable custom domain mapping
+      hostnames = list(string) # List of custom hostnames
+      # Cloud DNS managed zone for verification. StringValueOrRef: the platform
+      # resolves any reference to a literal before apply, so only `value` arrives.
+      managed_zone = object({
+        value = string
+      })
     }))
 
     # Optional: Deletion protection to prevent accidental deletion (default false)

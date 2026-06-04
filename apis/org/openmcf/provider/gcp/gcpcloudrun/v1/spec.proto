@@ -197,12 +197,18 @@ message GcpCloudRunDns {
   ];
 
   // Cloud DNS managed zone used for domain-verification records.
-  string managed_zone = 3;
+  // Can be a direct value (the Cloud DNS zone name) or a reference to a
+  // GcpDnsZone resource, in which case it resolves to that zone's exported
+  // zone_name output.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef managed_zone = 3 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = GcpDnsZone,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_name"
+  ];
 
   option (buf.validate.message).cel = {
     id: "dns.enabled-requires-fields"
     message: "hostnames and managed_zone must be set when dns.enabled is true"
-    expression: "!this.enabled || (size(this.hostnames) > 0 && this.managed_zone != '')"
+    expression: "!this.enabled || (size(this.hostnames) > 0 && ((has(this.managed_zone.value) && this.managed_zone.value != '') || has(this.managed_zone.value_from)))"
   };
 }
 
