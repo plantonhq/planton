@@ -471,7 +471,10 @@ message AwsOpenSearchDomainAdvancedSecurityOptions {
   // IAM entity ARN (user or role) designated as the master user. The master user
   // has full access to the cluster, indices, and OpenSearch Dashboards.
   // Mutually exclusive with master_user_name/master_user_password.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef master_user_arn = 3;
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef master_user_arn = 3 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsIamRole,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.role_arn"
+  ];
 
   // Username for the internal user database master user.
   // Mutually exclusive with master_user_arn.

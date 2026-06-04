@@ -76,7 +76,7 @@ message AwsLambdaSpec {
   // Typically private subnets. Provide at least two across different AZs for HA.
   // Accepts either literal subnet IDs (value) or references to other resources
   // that expose subnet IDs via their status/outputs.
-  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnets = 11 [(org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc];
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnets = 11 [(org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc, (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[*].id"];
 
   // Security groups attached to the Lambda ENIs. Ensure outbound rules allow
   // access to required services (e.g., databases, AWS endpoints, the Internet

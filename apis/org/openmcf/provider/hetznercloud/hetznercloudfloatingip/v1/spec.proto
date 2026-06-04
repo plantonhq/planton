@@ -70,7 +70,10 @@ message HetznerCloudFloatingIpSpec {
   //       kind: HetznerCloudServer
   //       name: my-server
   //       fieldPath: status.outputs.server_id
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef server_id = 4;
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef server_id = 4 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = HetznerCloudServer,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.server_id"
+  ];
 
   // Reverse DNS pointer record for the allocated IP address. If set, an
   // hcloud_rdns resource is created that maps the IP to this hostname.

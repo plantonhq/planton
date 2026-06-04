@@ -34,7 +34,8 @@ message AwsClientVpnSpec {
   repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnets = 4 [
     (buf.validate.field).required = true,
     (buf.validate.field).repeated.min_items = 1,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[*].id"
   ];
 
   // The IPv4 address range, in CIDR notation, from which to assign client IP addresses. For example, "10.0.0.0/22".

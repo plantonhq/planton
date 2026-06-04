@@ -19,7 +19,7 @@ message GcpGkeClusterSpec {
   org.openmcf.shared.foreignkey.v1.StringValueOrRef network_self_link = 2 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = GcpVpc,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.self_link"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_self_link"
   ];
 
   // Location for the cluster: region (for regional) or zone (for zonal).
@@ -33,21 +33,21 @@ message GcpGkeClusterSpec {
   org.openmcf.shared.foreignkey.v1.StringValueOrRef subnetwork_self_link = 4 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = GcpSubnetwork,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.self_link"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnetwork_self_link"
   ];
 
   // Name of the secondary range on the subnetwork for Pod IPs (VPC-native aliasing).
   org.openmcf.shared.foreignkey.v1.StringValueOrRef cluster_secondary_range_name = 5 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = GcpSubnetwork,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.pods_secondary_range_name"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.secondary_ranges.[*].range_name"
   ];
 
   // Name of the secondary range on the subnetwork for Service IPs.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef services_secondary_range_name = 6 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = GcpSubnetwork,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.services_secondary_range_name"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.secondary_ranges.[*].range_name"
   ];
 
   // RFC1918 /28 CIDR block for the Kubernetes control-plane masters (private endpoint range).
