@@ -35,7 +35,7 @@ message OciFunctionsApplicationSpec {
   org.openmcf.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = OciCompartment,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartmentId"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartment_id"
   ];
 
   // OCIDs of the subnets in which to run functions. At least one subnet
@@ -44,7 +44,7 @@ message OciFunctionsApplicationSpec {
   repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 2 [
     (buf.validate.field).repeated.min_items = 1,
     (org.openmcf.shared.foreignkey.v1.default_kind) = OciSubnet,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnetId"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
   ];
 
   // Display name for the application. Must be unique within the compartment.
@@ -67,7 +67,7 @@ message OciFunctionsApplicationSpec {
   // OCIDs of network security groups applied to the application.
   repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef network_security_group_ids = 6 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = OciSecurityGroup,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.networkSecurityGroupId"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_security_group_id"
   ];
 
   // Syslog URL to send all function logs. Supports tcp, udp, and tcp+tls
@@ -109,7 +109,7 @@ message OciFunctionsApplicationSpec {
     org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 1 [
       (buf.validate.field).required = true,
       (org.openmcf.shared.foreignkey.v1.default_kind) = OciKmsKey,
-      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.keyId"
+      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
     ];
   }
 

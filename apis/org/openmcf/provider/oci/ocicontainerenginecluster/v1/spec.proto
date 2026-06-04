@@ -27,7 +27,7 @@ message OciContainerEngineClusterSpec {
   org.openmcf.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = OciCompartment,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartmentId"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartment_id"
   ];
 
   // OCID of the VCN where the cluster will be deployed.
@@ -35,7 +35,7 @@ message OciContainerEngineClusterSpec {
   org.openmcf.shared.foreignkey.v1.StringValueOrRef vcn_id = 2 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = OciVcn,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vcnId"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vcn_id"
   ];
 
   // Human-readable name for the cluster shown in the OCI Console.
@@ -69,8 +69,10 @@ message OciContainerEngineClusterSpec {
   // OCID of the KMS key to encrypt Kubernetes secrets at rest.
   // Requires kubernetes_version >= v1.13.0.
   // Changing this after creation forces cluster recreation.
-  // default_kind will be updated when OciKmsKey (R25) is implemented.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 9;
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 9 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = OciKmsKey,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+  ];
 
   // Image verification policy for the cluster. When enabled, all container
   // images deployed to the cluster must be signed with one of the specified
@@ -112,7 +114,7 @@ message OciContainerEngineClusterSpec {
     org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_id = 1 [
       (buf.validate.field).required = true,
       (org.openmcf.shared.foreignkey.v1.default_kind) = OciSubnet,
-      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnetId"
+      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
     ];
 
     // Whether to assign a public IP to the API server endpoint.
@@ -123,7 +125,7 @@ message OciContainerEngineClusterSpec {
     // OCIDs of network security groups applied to the API server endpoint.
     repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef nsg_ids = 3 [
       (org.openmcf.shared.foreignkey.v1.default_kind) = OciSecurityGroup,
-      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.networkSecurityGroupId"
+      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_security_group_id"
     ];
   }
 
@@ -139,7 +141,7 @@ message OciContainerEngineClusterSpec {
     // Changing this after creation forces cluster recreation.
     repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef service_lb_subnet_ids = 2 [
       (org.openmcf.shared.foreignkey.v1.default_kind) = OciSubnet,
-      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnetId"
+      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
     ];
 
     // IP address family for the cluster. Use [ipv4] for IPv4-only (default)
@@ -182,7 +184,7 @@ message OciContainerEngineClusterSpec {
     // OCIDs of NSGs applied to load balancer backends.
     repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef backend_nsg_ids = 1 [
       (org.openmcf.shared.foreignkey.v1.default_kind) = OciSecurityGroup,
-      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.networkSecurityGroupId"
+      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_security_group_id"
     ];
 
     // Freeform tags applied to service load balancers.
@@ -275,7 +277,9 @@ message OciContainerEngineClusterSpec {
   // ImagePolicyKeyDetail identifies a KMS key for image signature verification.
   message ImagePolicyKeyDetail {
     // OCID of the KMS key used to verify image signatures.
-    // default_kind will be updated when OciKmsKey (R25) is implemented.
-    org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 1;
+    org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 1 [
+      (org.openmcf.shared.foreignkey.v1.default_kind) = OciKmsKey,
+      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+    ];
   }
 }

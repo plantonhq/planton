@@ -32,14 +32,14 @@ message OciQueueSpec {
   org.openmcf.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = OciCompartment,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartmentId"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartment_id"
   ];
 
   // OCID of the custom encryption key for encrypting message content.
   // When omitted, Oracle-managed encryption is used.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef custom_encryption_key_id = 2 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = OciKmsKey,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.keyId"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
   ];
 
   // Number of delivery attempts before a message is moved to the dead

@@ -41,7 +41,7 @@ message OciPostgresqlDbSystemSpec {
   org.openmcf.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = OciCompartment,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartmentId"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartment_id"
   ];
 
   // Human-readable name shown in the OCI Console.
@@ -109,13 +109,13 @@ message OciPostgresqlDbSystemSpec {
     org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_id = 1 [
       (buf.validate.field).required = true,
       (org.openmcf.shared.foreignkey.v1.default_kind) = OciSubnet,
-      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnetId"
+      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
     ];
 
     // OCIDs of network security groups for the DB System instances.
     repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef nsg_ids = 2 [
       (org.openmcf.shared.foreignkey.v1.default_kind) = OciSecurityGroup,
-      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.networkSecurityGroupId"
+      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_security_group_id"
     ];
 
     // When true, a reader endpoint is created for distributing read

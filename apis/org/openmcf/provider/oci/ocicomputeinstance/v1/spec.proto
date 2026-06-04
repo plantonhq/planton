@@ -21,7 +21,7 @@ message OciComputeInstanceSpec {
   org.openmcf.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = OciCompartment,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartmentId"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartment_id"
   ];
 
   // Availability domain where the instance will be placed
@@ -136,8 +136,10 @@ message OciComputeInstanceSpec {
     optional int64 boot_volume_vpus_per_gb = 4;
 
     // OCID of a KMS key to encrypt the boot volume at rest.
-    // default_kind will be added when OciKmsKey (R25) is implemented.
-    org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 5;
+    org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = 5 [
+      (org.openmcf.shared.foreignkey.v1.default_kind) = OciKmsKey,
+      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+    ];
 
     enum SourceType {
       source_type_unspecified = 0;
@@ -154,14 +156,14 @@ message OciComputeInstanceSpec {
     org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_id = 1 [
       (buf.validate.field).required = true,
       (org.openmcf.shared.foreignkey.v1.default_kind) = OciSubnet,
-      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnetId"
+      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
     ];
 
     // OCIDs of network security groups to associate with the VNIC.
     repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef nsg_ids = 2 [
       (buf.validate.field).repeated.max_items = 5,
       (org.openmcf.shared.foreignkey.v1.default_kind) = OciSecurityGroup,
-      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.networkSecurityGroupId"
+      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_security_group_id"
     ];
 
     // Whether to assign a public IP. When unset, uses the subnet default

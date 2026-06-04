@@ -17,6 +17,11 @@ across the catalog.
 
 ## Problem Statement / Motivation
 
+GoSilver is the first org to deploy Kubernetes add-ons via the **tofu** (not Pulumi)
+provisioner, which exposed defects the Pulumi-only path had hidden.
+
+### Pain Points
+
 - **Unpinned helm provider (the defect).** `kubernetesexternaldns` and six other modules
   (`certmanager`, `keycloak`, `neo4j`, `gitlab`, `elasticoperator`, `argocd`) had a bare
   `provider "kubernetes" {}` with no version pin, so the helm major was decided by
@@ -31,6 +36,23 @@ across the catalog.
   already exported `solver_sa`), plus three extra outputs absent from the proto and Pulumi.
 
 ## Solution / What's New
+
+The break is a provider-resolution + config-decode problem, so the fix migrates each module
+to the helm v3 idiom and pins the major for deterministic resolution.
+
+```mermaid
+flowchart LR
+  subgraph cause [Root cause]
+    UP["unpinned required_providers"] --> V3["tofu init resolves helm v3"]
+    V3 --> SET["v2 set {} block rejected"]
+  end
+  subgraph fix [Fix]
+    PIN["pin helm ~> 3.0 (all modules)"]
+    VAL["set {} -> values=[yamlencode(...)] (10 modules)"]
+    PAR["ExternalDns: _v1 resources + solver_sa output parity"]
+  end
+  cause --> fix
+```
 
 ### 1. Helm v3 migration, the parity-correct way
 
@@ -70,6 +92,19 @@ Added a `KubernetesExternalDns` case to `pkg/outputs/conformance_test.go`
 (`TestStackOutputsConformance`): the three outputs fully populate the StackOutputs proto
 with zero unmapped, locking in the `solver_sa` rename.
 
+## Implementation Details
+
+- **Conditional values in HCL.** helm v3 dropped `set {}`, and tofu cannot type-unify
+  bare-object conditional branches (`cond ? {a=1} : {}` errors). Provider-specific value
+  fragments are therefore appended as single-element lists and merged:
+  `merge(concat([{base}], cond ? [{frag}] : [])...)` -- lists unify where objects do not.
+- **helm v3 provider config.** The empty `provider "helm" { kubernetes {} }` nested block is
+  invalid in v3 (the `kubernetes` block became an attribute); replaced with bare
+  `provider "helm" {}`, which inherits the default kube config the runner already provides.
+- **Pulumi is unchanged.** It uses the `pulumi-kubernetes` helm/v3 SDK with a `Values` map,
+  unaffected by the Terraform helm-provider change; the tofu values maps were written to
+  mirror those maps so the two engines stay behaviorally identical.
+
 ## Validation
 
 - `tofu init -upgrade` resolves `hashicorp/helm` v3.x and `tofu validate` passes on every
@@ -95,9 +130,35 @@ changed in this (cross-cutting) pass:
 - `temporal` — Pulumi additionally emits `server.dynamicConfig.limit.blobSize.*` and sets
   `server.config.persistence` for embedded mysql/postgresql; tofu does neither.
 
+## Benefits
+
+- **ExternalDNS deploys on tofu** -- the immediate GoSilver blocker is resolved.
+- **Deterministic helm resolution** across all 27 helm modules; a future helm v4 cannot
+  silently re-break them (major pinned `~> 3.0`).
+- **Cleaner, parity-correct modules**: `values=[yamlencode(...)]` replaces brittle `--set`
+  index/escape strings and mirrors the Pulumi `Values` map, improving cross-engine parity;
+  ExternalDNS also sheds its deprecated non-`_v1` resources and dead outputs.
+- **Conformance locked in CI** for the `solver_sa` output via the new test case.
+
 ## Impact
 
 - **Operators** deploying any Kubernetes add-on via the tofu provisioner are no longer
   exposed to helm-major drift; ExternalDNS (the immediate GoSilver blocker) deploys.
 - **No blast radius for working modules:** value-only modules were behavior-preserving
   version-pin bumps; `set`-block modules were faithful translations verified by render.
+- **Coding agents** get a corrected parity doctrine (neither engine privileged; the proto
+  contract + intended behavior decide correctness) across the forge/audit rules and
+  `pkg/iac/MODULE_PARITY.md`.
+
+## Related Work
+
+- Builds on the `2026-06-04-...-iac-tofu-pulumi-parity-postgres-fix-and-drift-detection`
+  changelog (the parity doctrine + `pkg/outputs` conformance framework this reuses).
+- Followed in the same session by
+  `2026-06-04-...-terraform-provider-pin-guard-and-validate-ci` -- the CI gate that prevents
+  this class from regressing.
+
+---
+
+**Status**: ✅ Production Ready
+**Timeline**: One session (catalog-wide migration + exemplar parity fix + doctrine correction)

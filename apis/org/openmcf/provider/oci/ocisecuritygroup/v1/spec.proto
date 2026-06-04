@@ -22,14 +22,14 @@ message OciSecurityGroupSpec {
   org.openmcf.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = OciCompartment,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartmentId"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartment_id"
   ];
 
   // OCID of the VCN that this NSG belongs to. Changing this forces recreation.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef vcn_id = 2 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = OciVcn,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vcnId"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vcn_id"
   ];
 
   // Human-readable name shown in the OCI Console.

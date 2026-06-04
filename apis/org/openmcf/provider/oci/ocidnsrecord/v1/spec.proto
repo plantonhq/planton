@@ -48,7 +48,7 @@ message OciDnsRecordSpec {
   org.openmcf.shared.foreignkey.v1.StringValueOrRef zone_name_or_id = 1 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = OciDnsZone,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zoneId"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
   ];
 
   // Fully qualified domain name for the record set (e.g.,
@@ -62,8 +62,11 @@ message OciDnsRecordSpec {
 
   // OCID of the private DNS view. Required when accessing a private
   // zone by name. Not needed when zone_name_or_id is an OCID.
+  // No default_kind/default_kind_field_path: OCI private DNS views are not
+  // modeled as an OpenMCF kind, so this stays literal-only with no
+  // cross-resource reference default.
   // ForceNew.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef view_id = 4 [(org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.viewId"];
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef view_id = 4;
 
   // DNS records in this record set. At least one record is required.
   repeated RecordItem items = 5 [(buf.validate.field).repeated.min_items = 1];

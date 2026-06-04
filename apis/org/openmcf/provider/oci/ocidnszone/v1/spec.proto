@@ -92,7 +92,7 @@ message OciDnsZoneSpec {
   org.openmcf.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = OciCompartment,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartmentId"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartment_id"
   ];
 
   // Zone type: PRIMARY or SECONDARY. Required. ForceNew.
@@ -104,7 +104,10 @@ message OciDnsZoneSpec {
 
   // OCID of the private DNS view. Required when scope is private.
   // Not applicable for global zones. ForceNew.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef view_id = 4 [(org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.viewId"];
+  // No default_kind/default_kind_field_path: OCI private DNS views are not
+  // modeled as an OpenMCF kind, so this stays literal-only with no
+  // cross-resource reference default.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef view_id = 4;
 
   // Enable DNSSEC signing for the zone. When true, OCI generates
   // KSK and ZSK key pairs and signs zone records. Only meaningful

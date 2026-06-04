@@ -43,11 +43,11 @@ message AwsEc2InstanceSpec {
 
   // Reference to the target subnet where this instance will reside.
   // This should be a private subnet within an existing VPC.
-  // The default kind expects an AwsVpc resource, using one of its private subnet IDs.
+  // The default kind expects an AwsVpc resource, using its first private subnet ID.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_id = 5 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.id"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[0].id"
   ];
 
   // One or more security group IDs to attach to the instance's network interface.

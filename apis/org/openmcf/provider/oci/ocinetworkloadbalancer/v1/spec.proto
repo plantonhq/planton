@@ -33,7 +33,7 @@ message OciNetworkLoadBalancerSpec {
   org.openmcf.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = OciCompartment,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartmentId"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartment_id"
   ];
 
   // Human-readable name for the network load balancer shown in the OCI Console.
@@ -47,7 +47,7 @@ message OciNetworkLoadBalancerSpec {
   org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_id = 3 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = OciSubnet,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnetId"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
   ];
 
   // When true, creates a private network load balancer that is not accessible
@@ -73,7 +73,7 @@ message OciNetworkLoadBalancerSpec {
   // OCIDs of network security groups applied to the network load balancer.
   repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef network_security_group_ids = 7 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = OciSecurityGroup,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.networkSecurityGroupId"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_security_group_id"
   ];
 
   // IP version for the network load balancer. Accepted values:

@@ -27,7 +27,7 @@ message OciContainerEngineNodePoolSpec {
   org.openmcf.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = OciCompartment,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartmentId"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartment_id"
   ];
 
   // OCID of the OKE cluster to which this node pool is attached.
@@ -35,7 +35,7 @@ message OciContainerEngineNodePoolSpec {
   org.openmcf.shared.foreignkey.v1.StringValueOrRef cluster_id = 2 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = OciContainerEngineCluster,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.clusterId"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.cluster_id"
   ];
 
   // Human-readable name for the node pool shown in the OCI Console.
@@ -148,7 +148,7 @@ message OciContainerEngineNodePoolSpec {
     // OCIDs of network security groups applied to the node VNICs.
     repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef nsg_ids = 3 [
       (org.openmcf.shared.foreignkey.v1.default_kind) = OciSecurityGroup,
-      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.networkSecurityGroupId"
+      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_security_group_id"
     ];
 
     // OCID of the KMS key for encrypting boot volumes at rest.
@@ -175,7 +175,7 @@ message OciContainerEngineNodePoolSpec {
     org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_id = 2 [
       (buf.validate.field).required = true,
       (org.openmcf.shared.foreignkey.v1.default_kind) = OciSubnet,
-      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnetId"
+      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
     ];
 
     // Fault domains within the AD to constrain node placement.
@@ -219,7 +219,7 @@ message OciContainerEngineNodePoolSpec {
     // oci_vcn_ip_native.
     repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef pod_nsg_ids = 3 [
       (org.openmcf.shared.foreignkey.v1.default_kind) = OciSecurityGroup,
-      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.networkSecurityGroupId"
+      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_security_group_id"
     ];
 
     // OCIDs of subnets for pod IP allocation. Only applicable for
@@ -227,7 +227,7 @@ message OciContainerEngineNodePoolSpec {
     // subnets.
     repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef pod_subnet_ids = 4 [
       (org.openmcf.shared.foreignkey.v1.default_kind) = OciSubnet,
-      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnetId"
+      (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
     ];
   }
 

@@ -50,7 +50,7 @@ message OciVaultSecretSpec {
   org.openmcf.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = OciCompartment,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartmentId"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartment_id"
   ];
 
   // User-friendly name for the secret. Must be unique within the vault.
@@ -62,7 +62,7 @@ message OciVaultSecretSpec {
   org.openmcf.shared.foreignkey.v1.StringValueOrRef vault_id = 3 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = OciKmsVault,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vaultId"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vault_id"
   ];
 
   // OCID of the master encryption key used to encrypt this secret.
@@ -71,7 +71,7 @@ message OciVaultSecretSpec {
   org.openmcf.shared.foreignkey.v1.StringValueOrRef key_id = 4 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = OciKmsKey,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.keyId"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
   ];
 
   // Brief description of the secret.
@@ -225,7 +225,7 @@ message OciVaultSecretSpec {
       // Required when target_system_type is adb.
       org.openmcf.shared.foreignkey.v1.StringValueOrRef adb_id = 2 [
         (org.openmcf.shared.foreignkey.v1.default_kind) = OciAutonomousDatabase,
-        (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.autonomousDatabaseId"
+        (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.autonomous_database_id"
       ];
 
       // OCID of the OCI Functions function invoked during rotation.

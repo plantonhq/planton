@@ -33,7 +33,7 @@ message OciLogGroupSpec {
   org.openmcf.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = OciCompartment,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartmentId"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartment_id"
   ];
 
   // Description for the log group.
@@ -123,7 +123,7 @@ message OciLogGroupSpec {
       // When omitted, the log group's compartment is used.
       org.openmcf.shared.foreignkey.v1.StringValueOrRef compartment_id = 5 [
         (org.openmcf.shared.foreignkey.v1.default_kind) = OciCompartment,
-        (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartmentId"
+        (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartment_id"
       ];
     }
   }
