@@ -46,6 +46,8 @@ web-app/src/gen/
 *.sh
 !app/entrypoint-unified.sh
 !tools/ci/release/package_content.sh
+# CI guard scripts must be tracked (run by .github/workflows/lint.*.yaml)
+!hack/guards/*.sh
 **/*.env
 # Local-only provider credentials for live E2E (see forge rule "Post-Forge Live
 # E2E Validation"). NEVER commit. Note **/*.env above does not match *.env.e2e.

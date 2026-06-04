@@ -1,0 +1,149 @@
+# =============================================================================
+# Terraform Module Static Gate
+# =============================================================================
+# Catches the class of failure that reached production via KubernetesExternalDns:
+# an unpinned helm provider floated to v3 on a fresh `tofu init`, and the v2 `set {}`
+# block was rejected by the v3 schema. Both are STATIC errors -- they surface at
+# `tofu init` + `tofu validate`, with no cluster/DNS/credentials -- so they belong in
+# the build lane, not in e2e (which needs real infra and skips DNS-dependent kinds).
+#
+# Jobs:
+#   tf-provider-pins   (PR + push, BLOCKING) -- every iac/tf module must pin every
+#                       provider it references (root-cause guard; repo-wide, static).
+#   tf-validate-changed (PR, BLOCKING)       -- tofu fmt -check + init -backend=false +
+#                       validate on the iac/tf modules changed in the PR.
+#   tf-validate-all    (nightly + manual)    -- init + validate across ALL modules, the
+#                       net for provider-release drift in modules no PR touched (the exact
+#                       ExternalDns scenario). Reports failures; does not gate PRs.
+#
+# See hack/guards/ensure_tf_provider_pins.sh and
+# _changelog/2026-06/2026-06-04-191500-helm-provider-v3-migration-and-externaldns-parity.md
+# =============================================================================
+
+name: lint.terraform-modules
+
+on:
+  pull_request:
+    paths:
+      - 'apis/**/iac/tf/**'
+      - 'hack/guards/ensure_tf_provider_pins.sh'
+      - '.github/workflows/lint.terraform-modules.yaml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'apis/**/iac/tf/**'
+      - 'hack/guards/ensure_tf_provider_pins.sh'
+      - '.github/workflows/lint.terraform-modules.yaml'
+  schedule:
+    - cron: '17 6 * * *' # nightly full validate (provider-drift net)
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tf-lint-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Root-cause guard: static, no network. Runs on every PR/push (and harmlessly on
+  # schedule). This is what would have failed the original ExternalDns PR.
+  tf-provider-pins:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify all iac/tf modules pin their providers
+        run: bash ./hack/guards/ensure_tf_provider_pins.sh
+
+  # Fast PR feedback: validate only the modules changed in this PR.
+  tf-validate-changed:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install OpenTofu
+        run: |
+          curl -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh
+          chmod +x install-opentofu.sh
+          ./install-opentofu.sh --install-method standalone --skip-verify
+          rm install-opentofu.sh
+
+      - name: Determine changed iac/tf modules
+        id: changed
+        run: |
+          base="origin/${{ github.base_ref }}"
+          git fetch --no-tags --depth=1 origin "${{ github.base_ref }}" || true
+          : > changed_modules.txt
+          git diff --name-only "$base"...HEAD -- 'apis/**/iac/tf/**' \
+            | sed -nE 's#^(apis/.*/v1/iac/tf)/.*#\1#p' \
+            | sort -u >> changed_modules.txt || true
+          echo "Changed iac/tf modules:"
+          cat changed_modules.txt
+
+      - name: tofu fmt + init + validate (changed modules)
+        run: |
+          rc=0
+          while IFS= read -r d; do
+            [ -z "$d" ] && continue
+            [ -d "$d" ] || continue
+            echo "::group::$d"
+            (
+              cd "$d"
+              tofu fmt -check -recursive
+              tofu init -backend=false -input=false -no-color
+              tofu validate -no-color
+            ) || { echo "::error file=$d::tofu fmt/validate failed"; rc=1; }
+            echo "::endgroup::"
+          done < changed_modules.txt
+          exit $rc
+
+  # Drift net: validate every module. A new provider major that breaks an UNCHANGED
+  # module (the ExternalDns case) only shows up here. Scheduled-only, so it never gates
+  # a PR; a red run is the signal to fix.
+  tf-validate-all:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      TF_PLUGIN_CACHE_DIR: ${{ github.workspace }}/.tofu-plugin-cache
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install OpenTofu
+        run: |
+          curl -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh
+          chmod +x install-opentofu.sh
+          ./install-opentofu.sh --install-method standalone --skip-verify
+          rm install-opentofu.sh
+
+      - name: Cache provider plugins
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.TF_PLUGIN_CACHE_DIR }}
+          key: tofu-plugins-${{ runner.os }}
+
+      - name: init + validate (all modules)
+        run: |
+          mkdir -p "$TF_PLUGIN_CACHE_DIR"
+          rc=0
+          failed=()
+          while IFS= read -r d; do
+            echo "::group::$d"
+            if ! ( cd "$d" && tofu init -backend=false -input=false -no-color >/dev/null && tofu validate -no-color ); then
+              echo "::error file=$d::tofu validate failed"
+              failed+=("$d")
+              rc=1
+            fi
+            echo "::endgroup::"
+          done < <(find apis -type d -path '*/v1/iac/tf' | sort)
+          if [ ${#failed[@]} -gt 0 ]; then
+            echo "::warning::${#failed[@]} module(s) failed validate:"
+            printf '  - %s\n' "${failed[@]}"
+          fi
+          exit $rc
