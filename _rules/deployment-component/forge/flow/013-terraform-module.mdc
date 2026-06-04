@@ -17,8 +17,49 @@ TOOLS
 - Reference components (live ground truth): `apis/org/openmcf/provider/aws/awsvpc/v1/iac/tf/`
   and `aws/awsalb/v1/iac/tf/` -- canonical `variables.tf`/`provider.tf`/`locals.tf`/`main.tf`/`outputs.tf` layout.
 
+PARITY WITH PULUMI (MANDATORY -- read before writing any HCL)
+Terraform is authored AFTER the Pulumi module on purpose: the Pulumi module
+(`iac/pulumi/module/*.go`) is the source of truth, and this rule's job is to produce a
+Terraform module that is at **100% behavioral parity** with it -- the same cloud objects,
+names, labels, selectors, environment, dependency ordering, and stack outputs for an
+identical `stack-input`. Do not author Terraform "from the proto" in isolation and hope it
+lines up; author it by reconciling against the existing Pulumi module field by field.
+
+Before drafting, OPEN the sibling Pulumi module and walk the parity-dimension checklist in
+`pkg/iac/MODULE_PARITY.md`. Confirm your Terraform matches Pulumi on each:
+- **Namespace / scope source** -- same spec field (e.g. `var.spec.namespace`), never a
+  derived name or `metadata.id`.
+- **Resource naming basis** -- created objects (operator CRs, secret names, pod annotations)
+  key off the SAME field Pulumi uses (`metadata.name` is the established basis). A common
+  drift is keying off a `resource_id` local instead.
+- **Labels** -- identical keys AND values to `locals.go` (the `kuberneteslabelkeys` set;
+  the kind value is the `CloudResourceKind` enum string, NOT an ad-hoc string like
+  `"postgres_kubernetes"`; conditional labels appear under the same condition).
+- **Selectors** -- pod/service selectors must match the labels the operator/chart actually
+  applies to workload pods (e.g. Zalando/Spilo pods are `application: spilo`), exactly as
+  Pulumi selects. A selector built from resource-identity labels matches zero pods.
+- **Spec feature coverage** -- every field in `spec.proto` that Pulumi honors is honored
+  here too (backup, restore/standby, ingress, env injection, sizing, ...). A field handled
+  in `module/*.go` but absent from `*.tf` is a parity defect, even if `terraform validate`
+  passes.
+- **Dependency ordering** -- the same edges Pulumi expresses via `pulumi.DependsOn`
+  appear here via `depends_on` / `metadata.relationships`.
+- **Outputs** -- `outputs.tf` must emit shapes that flatten onto the SAME
+  `*_stack_outputs.proto` fields Pulumi exports. Nested proto messages are emitted as nested
+  HCL objects (`output "x" { value = { name = ..., key = ... } }`), which the generic
+  transformer flattens to `x.name` / `x.key`. NEVER emit flat names like `x_name` -- they
+  never reach the nested proto field.
+
+DEVIATION POLICY: the default is exact parity. Deviate ONLY for a strong technical reason
+(a provider feature absent from one SDK, an operator that names a thing differently). When
+you must, keep the divergence minimal, ensure it does NOT change the stack outputs, and add
+a `# PARITY-EXCEPTION:` comment here AND a matching `// PARITY-EXCEPTION:` in the Pulumi
+module stating what differs and why. An undocumented divergence is a defect.
+
 SEQUENTIAL STEPS
 1) Read: Use proto readers to derive `<Kind>`, spec, outputs, and provider context.
+   ALSO read the sibling Pulumi module (`iac/pulumi/module/*.go`) -- it is the parity
+   reference for everything below.
 
    FAST PATH -- Kubernetes-CRD-projection kinds: If the kind's spec is a direct
    1:1 projection of a single Kubernetes custom resource (Istio, Gateway API,
@@ -44,16 +85,27 @@ SEQUENTIAL STEPS
      { "files": [ {"name": "provider.tf", "content": "..."}, {"name": "locals.tf", "content": "..."}, {"name": "outputs.tf", "content": "..."} ] }
      JSON
    - If validation fails, refine and re-run (≤3).
+5) Reconcile parity (MANDATORY): re-walk the PARITY WITH PULUMI checklist above against the
+   finished module and confirm each dimension matches the Pulumi module. Verify outputs with
+   the automated guard rather than by eye:
+   `openmcf validate-outputs --kind <Kind> --module-dir apis/.../v1/iac/tf --sample-outputs <sample>.json`
+   (expect full proto population, zero unmapped). Resolve every mismatch now, or record it as
+   a documented `PARITY-EXCEPTION:` in both modules.
 
 OUTPUT
 - Show variables generation outcome (path/exit code) and confirm `variables.tf` was read.
 - Show created/updated file list and key JSON fields from the writer tool.
 - Show validate results.
+- Report the parity reconciliation outcome: "parity achieved" or the explicit list of
+  documented `PARITY-EXCEPTION:` divergences.
 
 SUCCESS CRITERIA
 - `variables.tf` is generated in step 2 at the module path and matches the expected schema
 - Drafted files reference inputs that exist in `variables.tf`
 - Core files (`provider.tf`, `locals.tf`, `outputs.tf`, resource files) exist and `terraform validate` passes
+- **Cross-engine parity holds:** every parity dimension matches the Pulumi module, or the
+  divergence is minimal, output-neutral, and carries a `PARITY-EXCEPTION:` comment in BOTH
+  modules; `openmcf validate-outputs` reports full proto population with zero unmapped outputs
 
 NOTES
 - Generate variables once up-front; derive convenience in `locals.tf`.

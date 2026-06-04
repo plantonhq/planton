@@ -1,12 +1,12 @@
 variable "metadata" {
   description = "Metadata for the resource, including name and labels"
   type = object({
-    name = string,
-    id = optional(string),
-    org = optional(string),
-    env = optional(string),
-    labels = optional(map(string)),
-    tags = optional(list(string)),
+    name    = string,
+    id      = optional(string),
+    org     = optional(string),
+    env     = optional(string),
+    labels  = optional(map(string)),
+    tags    = optional(list(string)),
     version = optional(object({ id = string, message = string }))
   })
 }
@@ -66,6 +66,41 @@ variable "spec" {
 
       # The full hostname for external access.
       hostname = string
+    }))
+
+    # Per-database backup configuration. When set, these settings override the
+    # operator-level backup configuration. Mirrors KubernetesPostgresBackupConfig
+    # in spec.proto and the Pulumi module's backup_config.go / restore_config.go.
+    backup_config = optional(object({
+
+      # Custom S3/R2 prefix path for this database's backups (WALG_S3_PREFIX).
+      s3_prefix = optional(string)
+
+      # Custom backup schedule in cron format (BACKUP_SCHEDULE).
+      backup_schedule = optional(string)
+
+      # Explicitly enable/disable backups for this database (USE_WALG_BACKUP).
+      enable_backup = optional(bool)
+
+      # Disaster-recovery restore configuration (Zalando spec.standby + STANDBY_* env).
+      restore = optional(object({
+
+        # When true, the database bootstraps as a read-only standby from backups.
+        enabled = optional(bool, false)
+
+        # S3/R2 bucket holding the backup source.
+        bucket_name = optional(string)
+
+        # S3 path to the backup directory (without s3:// prefix or bucket name).
+        s3_path = optional(string)
+
+        # R2/S3 credentials used during standby bootstrap.
+        r2_config = optional(object({
+          cloudflare_account_id = string
+          access_key_id         = string
+          secret_access_key     = string
+        }))
+      }))
     }))
 
     # List of databases to create.

@@ -17,7 +17,7 @@ You are the OpenMCF Code Partner. This rule orchestrates all forge flow rules to
 A complete deployment component includes:
 
 ✅ **Proto API Definitions** - All 4 proto files with validations and tests
-✅ **IaC Modules** - Both Pulumi and Terraform with feature parity  
+✅ **IaC Modules** - Both Pulumi and Terraform at **100% behavioral parity** (see the Parity Mandate below)
 ✅ **Documentation** - User-facing, research, and technical docs
 ✅ **Supporting Files** - Test manifests, debug scripts, build configs
 ✅ **Registry Entry** - Registered in cloud_resource_kind.proto
@@ -25,6 +25,38 @@ A complete deployment component includes:
 ✅ **Validation** - Build and test validation passed
 
 **Result:** 95-100% completion score when audited against ideal state!
+
+## Parity Mandate (NON-NEGOTIABLE)
+
+A deployment component ships **two** IaC implementations of the SAME contract: a Pulumi
+module (`iac/pulumi/module/`) and an OpenTofu/Terraform module (`iac/tf/`). For an
+identical `stack-input` they MUST produce the **same** cloud objects, names, labels,
+selectors, environment, dependency ordering, and stack outputs. **The default is 100%
+behavioral parity.** This is not a "nice to have" -- a silent divergence means the
+deployed result depends on which provisioner a resource happens to use, which on a real
+platform breaks auth, networking, or data depending on the field that drifted.
+
+**Pulumi is the source of truth** unless the proto contract says otherwise: it is the
+more complete implementation and it is what `*_stack_outputs.proto` is modeled against.
+When you author or change one engine, you reconcile the other in the SAME session.
+
+**Deviation is allowed ONLY with a strong, documented technical reason.** If the two
+engines genuinely cannot match (a provider feature exists in one SDK but not the other, an
+operator names a resource differently, etc.), you MUST:
+
+1. Keep the divergence as small as possible (match everything that CAN match).
+2. Add an inline comment in BOTH modules at the point of divergence, prefixed
+   `# PARITY-EXCEPTION:` (HCL) / `// PARITY-EXCEPTION:` (Go), stating exactly what differs
+   and the technical reason.
+3. Ensure the divergence does NOT change the stack outputs (the proto contract is the same
+   for both engines regardless of internal differences).
+
+An undocumented divergence is a defect, not a deviation. The cross-engine parity gate
+(below) and `@audit-openmcf-component` both treat an unexplained mismatch as a critical gap.
+
+**Reference:** `pkg/iac/MODULE_PARITY.md` is the authoritative parity-dimension checklist
+and explains the automated guards (`pkg/outputs` conformance + `openmcf validate-outputs`).
+Read it before authoring either engine.
 
 ## Usage
 
@@ -82,7 +114,43 @@ The following 20 rules execute in order. Each rule is atomic and can be run indi
 ### Phase 6: Terraform Implementation (Rules 013, 015)
 
 16. **013-terraform-module** - Generate tf/ (variables.tf, main.tf, locals.tf, outputs.tf, provider.tf)
+    - Rule 013 ends with the mandatory **PARITY WITH PULUMI** reconciliation (see that rule).
+      Terraform is authored AFTER Pulumi precisely so it can be reconciled field-by-field
+      against the source-of-truth engine.
 17. **015-terraform-docs** - Generate iac/tf/README.md
+
+### Phase 6b: Cross-Engine Parity Gate (orchestrator gate -- no flow-rule file)
+
+After BOTH engines exist, the orchestrator runs an explicit reconciliation gate before
+moving on. This is a hard gate: do not proceed to presets/validation while an
+**undocumented** divergence remains. Walk the parity-dimension checklist from
+`pkg/iac/MODULE_PARITY.md` and confirm Pulumi (`iac/pulumi/module/*.go`) and Terraform
+(`iac/tf/*.tf`) agree on each, for an identical `stack-input`:
+
+- **Namespace / scope source** -- both read the same spec field (e.g. `spec.namespace`),
+  not a derived or resource-id value.
+- **Resource naming basis** -- created objects (CRs, operator names, secret names, pod
+  annotations) key off the SAME field on both sides (`metadata.name` is the established basis).
+- **Labels** -- identical keys AND values (the `kuberneteslabelkeys` set; kind value is the
+  `CloudResourceKind` enum string; conditional labels like `id` appear under the same condition).
+- **Selectors** -- pod/service selectors match the labels the operator/chart actually applies
+  (a wrong selector "succeeds" but matches zero pods).
+- **Spec feature coverage** -- every field in `spec.proto` is honored by BOTH engines
+  (backup, restore, ingress, env injection, sizing, etc.). A field implemented on one side
+  and ignored on the other is a parity defect.
+- **Dependency ordering** -- the same `depends_on`/relationship edges exist on both sides.
+- **Stack outputs** -- both engines emit output shapes that flatten onto the SAME
+  `*_stack_outputs.proto` fields. Verify with the automated guard, not by eye:
+  ```bash
+  openmcf validate-outputs --kind <Kind> --module-dir apis/.../v1/iac/tf --sample-outputs <sample>.json
+  ```
+  Expect full proto population and zero unmapped outputs. Add/extend the per-kind case in
+  `pkg/outputs/conformance_test.go` so the parity bar is enforced in CI thereafter.
+
+For any dimension that genuinely cannot match, apply the Parity Mandate's
+`PARITY-EXCEPTION:` protocol (documented in BOTH modules) -- otherwise fix the lagging
+engine in this session. Report the gate result (parity achieved, or the explicit list of
+documented exceptions) in the progress output.
 
 ### Phase 7: Presets (Rule 022)
 
@@ -209,7 +277,7 @@ fields.
 - All steps run non-interactively (no user input required)
 - Uses local backends by default (Pulumi local, Terraform local)
 - Generated code follows OpenMCF conventions
-- Both IaC implementations have feature parity
+- Both IaC implementations are at 100% behavioral parity (Parity Mandate + Phase 6b gate); any divergence is documented inline with `PARITY-EXCEPTION:`
 - All documentation is substantial and production-ready
 - Component is immediately usable after forge completes
 
@@ -228,6 +296,7 @@ After forge completes, the component should have:
 ✅ Pulumi module that compiles and works
 ✅ **Pulumi entrypoint at canonical root** (`iac/pulumi/main.go` is `package main`; no `main/` or `entrypoint/` subdir)
 ✅ Terraform module that validates and works
+✅ **Cross-engine parity gate passed** (Phase 6b) -- Pulumi and Terraform agree on namespace, naming basis, labels, selectors, feature coverage, dependency ordering, and stack outputs; any divergence carries a `PARITY-EXCEPTION:` comment in both modules
 ✅ Supporting files (manifests, debug scripts, module overviews)
 ✅ Initial presets generated (2-3 common configuration templates)
 ✅ Build validation passed -- BOTH `go build ./apis/.../v1/...` AND the release-equivalent `go build -o /dev/null ./apis/.../v1/iac/pulumi`

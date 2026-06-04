@@ -6,8 +6,9 @@ resource "kubernetes_manifest" "database" {
     kind       = "postgresql"
     metadata = {
       # For the Zalando operator, the name must be prefixed by the teamId (which is "db")
-      # followed by our stable resource ID.
-      name      = "db-${local.resource_id}"
+      # followed by metadata.name (matching the Pulumi module, which names the CR
+      # "<teamId>-<metadata.name>"). The operator creates a service with this same name.
+      name      = "db-${var.metadata.name}"
       namespace = local.namespace_name
       labels    = local.final_labels
     }
@@ -21,12 +22,12 @@ resource "kubernetes_manifest" "database" {
 
         # Pod annotations
         podAnnotations = {
-          "postgres-cluster-id" = local.resource_id
+          "postgres-cluster-id" = var.metadata.name
         }
 
         # PostgreSQL settings
         postgresql = {
-          version    = "14"
+          version = "14"
           parameters = {
             "max_connections" = "200"
           }
@@ -61,6 +62,16 @@ resource "kubernetes_manifest" "database" {
       # Convert list of users to map[string][]string format expected by Zalando operator
       length(var.spec.users) > 0 ? {
         users = { for user in var.spec.users : user.name => user.flags }
+      } : {},
+      # Disaster-recovery standby block (Zalando spec.standby); present only when
+      # backup_config.restore.enabled. Matches the Pulumi restore_config.go behavior.
+      local.standby_block != null ? {
+        standby = local.standby_block
+      } : {},
+      # Merged backup + standby environment overrides on the operator pods.
+      # Matches the Pulumi backup_config.go + restore_config.go env merge (standby first).
+      length(local.all_env) > 0 ? {
+        env = local.all_env
       } : {}
     )
   }

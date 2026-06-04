@@ -23,23 +23,24 @@ output "external_hostname" {
   value       = local.ingress_external_hostname
 }
 
-output "password_secret_name" {
-  description = "Name of the secret holding the Postgres password."
-  # Matches the pattern used by Zalando's operator for password credentials
-  value       = "postgres.db-${local.resource_id}.credentials.postgresql.acid.zalan.do"
+# Nested objects so the generic outputs transformer (pkg/outputs.Flatten) produces
+# the dotted keys password_secret.name / password_secret.key that the
+# KubernetesPostgresStackOutputs proto's password_secret (KubernetesSecretKey)
+# field expects -- matching the Pulumi module's "password_secret.name" exports.
+# The secret name follows the Zalando operator convention for the superuser
+# credentials of the "db-<metadata.name>" cluster.
+output "password_secret" {
+  description = "Kubernetes secret key for the Postgres superuser password."
+  value = {
+    name = "postgres.db-${var.metadata.name}.credentials.postgresql.acid.zalan.do"
+    key  = "password"
+  }
 }
 
-output "password_secret_key" {
-  description = "Key within the secret that contains the Postgres password."
-  value       = "password"
-}
-
-output "username_secret_name" {
-  description = "Name of the secret holding the Postgres username."
-  value       = "postgres.db-${local.resource_id}.credentials.postgresql.acid.zalan.do"
-}
-
-output "username_secret_key" {
-  description = "Key within the secret that contains the Postgres username."
-  value       = "username"
+output "username_secret" {
+  description = "Kubernetes secret key for the Postgres superuser username."
+  value = {
+    name = "postgres.db-${var.metadata.name}.credentials.postgresql.acid.zalan.do"
+    key  = "username"
+  }
 }

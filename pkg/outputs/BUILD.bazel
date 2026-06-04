@@ -32,6 +32,7 @@ go_library(
 go_test(
     name = "outputs_test",
     srcs = [
+        "conformance_test.go",
         "discover_test.go",
         "executable_test.go",
         "flatten_test.go",

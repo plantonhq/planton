@@ -8,9 +8,24 @@ alwaysApply: false
 
 Audit a specific deployment component against the ideal state defined in `architecture/deployment-component.md` and generate a comprehensive, timestamped audit report.
 
+A first-class goal of this audit is **cross-engine IaC parity**: the component's Pulumi
+(`iac/pulumi/module/`) and OpenTofu/Terraform (`iac/tf/`) modules must produce the SAME
+cloud objects, names, labels, selectors, environment, dependency ordering, and stack
+outputs for an identical `stack-input`. This audit is designed to be run **one component
+per session** so that, run across every registered component, the whole catalog can be
+driven to 100% parity (see "Driving All Components to Parity" near the end).
+
 ## Role
 
-You are the OpenMCF Code Auditor. Your job is to systematically evaluate a deployment component's completeness, identify gaps, and provide actionable recommendations.
+You are the OpenMCF Code Auditor. Your job is to systematically evaluate a deployment
+component's completeness AND its cross-engine parity, identify gaps, and provide actionable
+recommendations. Pulumi is the parity source of truth (it is the more complete engine and
+the one `*_stack_outputs.proto` is modeled against); an **undocumented** divergence between
+the two engines is a critical defect, not a stylistic difference.
+
+**Reference:** `pkg/iac/MODULE_PARITY.md` is the authoritative parity-dimension checklist
+and documents the automated guards (`pkg/outputs` conformance test + `openmcf
+validate-outputs`). Use it as the basis for the parity category below.
 
 ## Usage
 
@@ -22,6 +37,12 @@ User: @audit-openmcf-component <ComponentName>
 - `@audit-openmcf-component MongodbAtlas`
 - `@audit-openmcf-component GcpCertManagerCert`
 - `@audit-openmcf-component postgresKubernetes` (case-insensitive)
+
+**Parity-focused run (optional flag):**
+- `@audit-openmcf-component KubernetesPostgres --parity` — run the FULL audit but lead with
+  Category 5b (Cross-Engine IaC Parity), and in the chat summary foreground the parity verdict
+  and the field-by-field divergence list. Use this when the goal of the session is to bring a
+  specific component to parity (the common case when sweeping the catalog).
 
 ## Workflow
 
@@ -155,6 +176,52 @@ be released and must be reported as a critical gap regardless of other scores.
 
 **Scoring:** Pass all checks = 4.44%, partial = proportional
 
+#### Category 5b: Cross-Engine IaC Parity (Critical GATE — no separate weight)
+
+This category does NOT add a new percentage slice. It is a **gate** on the two IaC
+categories above: the Pulumi (Category 4) and Terraform (Category 5) scores assume the two
+engines implement the SAME contract. Any **undocumented** divergence is a critical defect
+that (a) is reported under "Critical Gaps", and (b) caps BOTH IaC categories at ⚠️ Partial
+(or ❌ if a divergence would actually misdeploy — wrong namespace, wrong selector, missing
+feature, or empty stack-output field). A documented `PARITY-EXCEPTION:` (present in BOTH
+modules, output-neutral, minimal) is NOT a defect.
+
+**How to evaluate (read both modules; Pulumi is the source of truth):**
+
+Open `iac/pulumi/module/*.go` and `iac/tf/*.tf` and compare each dimension from
+`pkg/iac/MODULE_PARITY.md`. For each, record MATCH / DIVERGES (undocumented) / EXCEPTION (documented):
+
+- [ ] **Namespace / scope source** — both read the same spec field (e.g. `spec.namespace`),
+      not a derived name or resource id.
+- [ ] **Resource naming basis** — created objects (operator CRs, secret names, pod
+      annotations) key off the same field on both sides (`metadata.name` is the established basis).
+- [ ] **Labels** — identical keys AND values (the `kuberneteslabelkeys` set; kind value is the
+      `CloudResourceKind` enum string, not an ad-hoc literal; conditional labels under the same condition).
+- [ ] **Pod/service selectors** — match the labels the operator/chart actually applies to
+      workload pods (a selector built from resource-identity labels silently matches zero pods).
+- [ ] **Spec feature coverage** — every `spec.proto` field honored by Pulumi is honored by
+      Terraform too (backup, restore/standby, ingress, env injection, sizing, ...). A field
+      implemented on one side and ignored on the other is a parity defect even if both `validate`.
+- [ ] **Dependency ordering** — the same edges exist (`pulumi.DependsOn` ↔ `depends_on` /
+      `metadata.relationships`).
+- [ ] **Stack outputs** — both engines emit shapes that flatten onto the SAME
+      `*_stack_outputs.proto` fields. VERIFY with the automated guard, not by eye:
+      ```bash
+      openmcf validate-outputs --kind <Kind> --module-dir apis/.../v1/iac/tf --sample-outputs <sample>.json
+      ```
+      A field that stays empty (e.g. a flat `password_secret_name` output that never reaches the
+      nested `password_secret{name,key}` proto field) is a parity defect. If a per-kind case
+      exists in `pkg/outputs/conformance_test.go`, note whether it passes; if it does not exist,
+      flag that as a follow-up to add.
+
+**Gate outcome (record this explicitly):**
+- **PARITY ✅** — every dimension MATCHES or is a documented EXCEPTION.
+- **PARITY ⚠️** — one or more undocumented divergences that do not change the deployed
+  outcome (cosmetic label/comment drift). Cap Categories 4 & 5 at Partial.
+- **PARITY ❌** — at least one divergence that would misdeploy (wrong namespace/selector,
+  missing feature, or an unpopulated stack-output field). Report as a Critical Gap and mark
+  Categories 4 & 5 ❌.
+
 #### Category 6: Documentation - Research (Important - 13.34% total)
 
 **Research Doc (10.00%):**
@@ -268,6 +335,12 @@ Where:
 - **<40%** - Early stage or abandoned
 
 **Critical Change:** Test execution (2.78%) is now part of the critical path. Components with failing tests cannot be considered complete.
+
+**Parity gate (Category 5b):** Cross-engine parity has no separate weight; it GATES the two
+IaC categories. An undocumented divergence caps Categories 4 (Pulumi) and 5 (Terraform) at
+Partial, and a divergence that would misdeploy marks them ❌ and is reported as a Critical
+Gap. A component cannot score in the "Fully/Functionally Complete" band while an
+undocumented, outcome-changing parity defect exists.
 
 ### Step 4: Generate Audit Report
 
@@ -397,6 +470,7 @@ Before writing the report file, verify:
 | Protobuf API Definitions | 22.20% | X.XX% | ✅/⚠️/❌ |
 | IaC Modules - Pulumi | 13.32% | X.XX% | ✅/⚠️/❌ |
 | IaC Modules - Terraform | 4.24% | X.XX% | ✅/⚠️/❌ |
+| Cross-Engine IaC Parity | gate | PARITY ✅/⚠️/❌ | ✅/⚠️/❌ |
 | Documentation - Research | 13.18% | X.XX% | ✅/⚠️/❌ |
 | Documentation - User-Facing | 13.09% | X.XX% | ✅/⚠️/❌ |
 | Supporting Files | 10.09% | X.XX% | ✅/⚠️/❌ |
@@ -598,6 +672,38 @@ go test -v
 
 ---
 
+### 5b. Cross-Engine IaC Parity (Critical GATE)
+
+**Parity verdict: PARITY ✅ / ⚠️ / ❌**
+
+Source of truth: Pulumi (`iac/pulumi/module/`). Compared against: Terraform (`iac/tf/`).
+Verified outputs with `openmcf validate-outputs` (full proto population, zero unmapped: yes/no).
+
+| Dimension | Pulumi | Terraform | Verdict |
+|-----------|--------|-----------|---------|
+| Namespace / scope source | `spec.namespace` | `var.spec.namespace` | ✅ MATCH |
+| Resource naming basis | `metadata.name` | `metadata.name` | ✅ MATCH |
+| Labels (keys + values) | `kuberneteslabelkeys` set | same | ✅ MATCH |
+| Pod/service selectors | `application: spilo` | `application: spilo` | ✅ MATCH |
+| Spec feature coverage | backup, restore, ingress | same | ✅ MATCH |
+| Dependency ordering | `DependsOn(...)` | `depends_on` | ✅ MATCH |
+| Stack outputs → proto | full | full | ✅ MATCH |
+
+**Legend:** ✅ MATCH | ⚠️ DIVERGES (undocumented) | 🔵 EXCEPTION (documented `PARITY-EXCEPTION:`)
+
+✅ **In parity:**
+
+- <dimensions that match or are documented exceptions>
+
+⚠️/❌ **Divergences (undocumented):**
+
+- **<Dimension>** — Pulumi does `<X>`, Terraform does `<Y>`. Impact: `<cosmetic | would misdeploy: ...>`.
+  Fix: align `<which engine>` to `<source-of-truth behavior>`.
+
+**Effect on score:** <none | caps Categories 4 & 5 at Partial | marks Categories 4 & 5 ❌ and is listed under Critical Gaps>
+
+---
+
 ### 6. Documentation - Research (13.34%)
 
 <Same structure>
@@ -697,9 +803,15 @@ To complete missing items, consider running these forge rules in sequence:
 - **Rule 006** - stack_input.proto (if missing)
 - **Rule 007** - docs/README.md (if missing)
 - **Rule 009** - Pulumi module (if Pulumi missing)
-- **Rule 013** - Terraform module (if Terraform missing)
+- **Rule 013** - Terraform module (if Terraform missing OR diverges from Pulumi — rule 013's
+  "PARITY WITH PULUMI" section is the reconciliation procedure)
 - **Rule 016** - cloud_resource_kind.proto entry (if enum missing)
 - **Rule 022** - Presets (if presets/ directory is missing or empty)
+
+For a parity divergence specifically (Category 5b ⚠️/❌), prefer `@fix-openmcf-component`:
+make the targeted change in the lagging engine (Pulumi is the source of truth) and let it
+cascade to docs/tests. Re-run `openmcf validate-outputs` and the kind's
+`pkg/outputs/conformance_test.go` case to confirm parity before closing the session.
 
 ---
 
@@ -743,6 +855,16 @@ To complete missing items, consider running these forge rules in sequence:
 - [x/  ] Conditional rules explain both condition and requirement
 - [x/  ] No messages shorter than 5 words
 - [x/  ] Messages use semantic field names, not proto path names
+
+#### Cross-Engine IaC Parity (GATE on Categories 4 & 5)
+- [x/  ] Namespace / scope source matches across engines
+- [x/  ] Resource naming basis matches (same field, `metadata.name` basis)
+- [x/  ] Labels identical (keys + values; kind = CloudResourceKind enum string)
+- [x/  ] Pod/service selectors match the operator/chart's actual pod labels
+- [x/  ] Every `spec.proto` field honored by Pulumi is honored by Terraform
+- [x/  ] Dependency ordering matches (`DependsOn` ↔ `depends_on`)
+- [x/  ] Stack outputs flatten onto the same proto fields (`openmcf validate-outputs`: zero unmapped)
+- [x/  ] Any divergence carries a `PARITY-EXCEPTION:` comment in BOTH modules (output-neutral)
 
 <Continue for all categories>
 
@@ -795,6 +917,7 @@ After writing the report, display a concise summary in the chat:
 
 **Overall Score:** XX% 
 **Status:** <Status>
+**Cross-Engine Parity:** PARITY ✅ / ⚠️ / ❌
 
 **Report Location:** `<path-to-report>`
 
@@ -804,7 +927,10 @@ After writing the report, display a concise summary in the chat:
 - <Top 3 things that are complete>
 
 ❌ **Critical Gaps:**
-- <Top 3 blocking issues>
+- <Top 3 blocking issues; include any outcome-changing parity divergence>
+
+⚠️ **Parity Divergences:**
+- <Each undocumented Pulumi↔Terraform divergence, or "none — engines in parity">
 
 ⚠️ **Quick Wins:**
 - <Top 3 easy fixes>
@@ -818,10 +944,54 @@ After writing the report, display a concise summary in the chat:
 Run `@forge` rules to complete missing items, or view full report for detailed recommendations.
 ```
 
+## Driving All Components to Parity (one component per session)
+
+The end goal is **100% cross-engine parity across the entire catalog**, achieved by running
+this audit one component at a time in separate sessions. This keeps each session small and
+focused: read two modules, find the divergences, fix the lagging engine (or document a
+justified exception), re-verify, done.
+
+### Enumerate the work
+
+List every registered component and pick the next unaudited one:
+
+```bash
+# All registered kinds (enum names) from the registry:
+rg -n '= [0-9]+ \[\(kind_meta\)' apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto
+
+# Components that even HAVE both engines (parity is only meaningful when both exist):
+# (a tf/ dir AND a pulumi/module/ dir under the same v1/iac/)
+fd -t d 'tf$' apis | sed 's:/tf$::' | while read d; do [ -d "$d/pulumi/module" ] && echo "$d"; done
+```
+
+Track progress with a simple ledger so successive sessions don't repeat work — e.g. a
+`docs/audit/PARITY_LEDGER.md` (or a shared issue) with one row per component:
+`Component | Last audited | Parity verdict | Open divergences | Report`.
+
+### Per-session loop
+
+1. Pick the next component whose parity verdict is unknown or ⚠️/❌.
+2. Run `@audit-openmcf-component <Name> --parity`.
+3. If PARITY ✅ → record it in the ledger and move on.
+4. If ⚠️/❌ → hand off to remediation **in the same session** (small, contained):
+   - Fix the lagging engine to match the Pulumi source of truth (use `@fix-openmcf-component`
+     for the targeted change + cascading doc/test updates), OR add a documented, output-neutral
+     `PARITY-EXCEPTION:` in BOTH modules when the divergence is technically unavoidable.
+   - Re-run `openmcf validate-outputs` and, where present, the `pkg/outputs/conformance_test.go`
+     case for the kind. Add a conformance case if none exists.
+   - Update the ledger row to ✅ (or ✅-with-documented-exceptions) and link the new report.
+
+This is intentionally incremental: each session leaves the catalog strictly closer to full
+parity, with an auditable trail.
+
 ## Important Notes
 
 1. **Be thorough but fast** - Most checks are file existence, which is quick
-2. **Provide context** - Always explain why something is important
+2. **Parity requires reading BOTH modules** - Category 5b is the one check that is NOT a
+   file-existence test: you must actually read `iac/pulumi/module/*.go` and `iac/tf/*.tf` and
+   compare behavior. Pulumi is the source of truth. Treat an undocumented divergence as a
+   critical defect, and verify stack-output parity with `openmcf validate-outputs` rather than by eye.
+3. **Provide context** - Always explain why something is important
 3. **Be actionable** - Every gap should have a clear path to resolution
 4. **Reference documentation** - Point to `architecture/deployment-component.md` for details
 5. **Handle edge cases** - Component might be partially implemented, completely missing, or in unusual state
