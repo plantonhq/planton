@@ -58,6 +58,7 @@ var verifiers = map[string]Verifier{
 	"auth0resourceserver": &apiPathVerifier{component: "auth0resourceserver", pathFormat: "resource-servers/%s"},
 	"auth0action":         &apiPathVerifier{component: "auth0action", pathFormat: "actions/actions/%s"},
 	"auth0eventstream":    &apiPathVerifier{component: "auth0eventstream", pathFormat: "event-streams/%s"},
+	"auth0role":           &apiPathVerifier{component: "auth0role", pathFormat: "roles/%s"},
 }
 
 // GetVerifier returns the verifier for a component, or an error if unknown.

@@ -1526,6 +1526,11 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "a0act"
   }];
+  Auth0Role = 2105 [(kind_meta) = {
+    provider: auth0
+    version: v1
+    id_prefix: "a0role"
+  }];
 
   // 2300–2499: OpenFGA resources
   // Note: OpenFGA is Terraform-only - there is no Pulumi provider available.

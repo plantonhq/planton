@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package org.openmcf.provider.auth0.auth0role.v1;
+
+// Auth0RoleStackOutputs contains the outputs from an Auth0 Role deployment.
+// These outputs provide the identifiers needed to reference the role when
+// assigning it to users or auditing access control configuration.
+//
+// https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/role#attributes-reference
+// https://www.pulumi.com/registry/packages/auth0/api-docs/role/#outputs
+message Auth0RoleStackOutputs {
+  // id is the unique identifier of the Auth0 role (e.g., "rol_abc123").
+  // Assigned by Auth0 and used to reference the role when assigning it to users
+  // and in Management API calls.
+  string id = 1;
+
+  // name is the human-readable name of the role.
+  // Reflects spec.name, or metadata.name when spec.name is omitted.
+  string name = 2;
+
+  // description is the human-readable description of the role.
+  string description = 3;
+}
