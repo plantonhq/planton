@@ -14,50 +14,31 @@ resource "helm_release" "grafana" {
   chart      = "grafana"
   version    = "8.7.0"
 
-  set {
-    name  = "fullnameOverride"
-    value = var.metadata.name
-  }
-
-  set {
-    name  = "resources.requests.cpu"
-    value = var.spec.container.resources.requests.cpu
-  }
-
-  set {
-    name  = "resources.requests.memory"
-    value = var.spec.container.resources.requests.memory
-  }
-
-  set {
-    name  = "resources.limits.cpu"
-    value = var.spec.container.resources.limits.cpu
-  }
-
-  set {
-    name  = "resources.limits.memory"
-    value = var.spec.container.resources.limits.memory
-  }
-
-  set {
-    name  = "service.type"
-    value = "ClusterIP"
-  }
-
-  set {
-    name  = "adminUser"
-    value = "admin"
-  }
-
-  set {
-    name  = "adminPassword"
-    value = "admin"
-  }
-
-  set {
-    name  = "persistence.enabled"
-    value = "false"
-  }
+  # helm provider v3 replaced `set {}` blocks with list attributes; use the house
+  # values=[yamlencode(...)] idiom. Mirrors the Pulumi module's helm values.
+  values = [
+    yamlencode({
+      fullnameOverride = var.metadata.name
+      resources = {
+        requests = {
+          cpu    = var.spec.container.resources.requests.cpu
+          memory = var.spec.container.resources.requests.memory
+        }
+        limits = {
+          cpu    = var.spec.container.resources.limits.cpu
+          memory = var.spec.container.resources.limits.memory
+        }
+      }
+      service = {
+        type = "ClusterIP"
+      }
+      adminUser     = "admin"
+      adminPassword = "admin"
+      persistence = {
+        enabled = false
+      }
+    })
+  ]
 }
 
 resource "kubernetes_ingress_v1" "grafana_external" {

@@ -8,7 +8,9 @@
 
 The `KubernetesPostgres` OpenTofu module had silently diverged from its Pulumi
 counterpart in ways that would misdeploy on a real cluster. This change brings the
-tofu module to behavioral parity with Pulumi (the source of truth), adds a reusable
+tofu module to behavioral parity with Pulumi (neither engine is privileged — the proto
+contract and intended behavior are the arbiter; here the Pulumi module was the correct one),
+adds a reusable
 drift-detection guard built on the existing `pkg/outputs` framework, and hardens the
 deployment-component forge and audit workflows so coding agents now treat 100%
 tofu↔pulumi parity as the default — deviating only with a documented technical reason.
@@ -107,8 +109,10 @@ cross-engine parity invariant** — no brittle tofu-vs-pulumi string diffing.
 The architecture doc already *declared* "feature parity," but no workflow operationalized
 it. That is now fixed:
 
-- `forge-openmcf-component.mdc` — a non-negotiable **Parity Mandate** (Pulumi is the source
-  of truth; deviation only via a documented `PARITY-EXCEPTION:` comment in both modules) and
+- `forge-openmcf-component.mdc` — a non-negotiable **Parity Mandate** (neither engine is
+  privileged; the proto contract + intended behavior decide which is correct, and the wrong
+  engine is fixed; deviation only via a documented `PARITY-EXCEPTION:` comment in both
+  modules) and
   a **Phase 6b Cross-Engine Parity Gate** that runs after both engines exist and walks the
   dimension checklist before presets/validation.
 - `forge/flow/013-terraform-module.mdc` — a mandatory **PARITY WITH PULUMI** section: since

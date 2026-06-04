@@ -21,29 +21,23 @@ resource "helm_release" "ingress_nginx" {
   wait_for_jobs    = true
   timeout          = 180
 
-  # Controller configuration
-  set {
-    name  = "controller.service.type"
-    value = local.service_type
-  }
-
-  set {
-    name  = "controller.ingressClassResource.default"
-    value = "true"
-  }
-
-  set {
-    name  = "controller.watchIngressWithoutClass"
-    value = "true"
-  }
-
-  # Apply service annotations dynamically
-  dynamic "set" {
-    for_each = local.service_annotations
-    content {
-      name  = "controller.service.annotations.${replace(set.key, "/", "\\.")}"
-      value = set.value
-    }
-  }
+  # helm provider v3 replaced `set {}`/`dynamic "set"` blocks with list attributes;
+  # use the house values=[yamlencode(...)] idiom, which also lets annotation keys
+  # (containing "/" and ".") be set literally instead of via --set escaping.
+  # Mirrors the Pulumi module's controller values.
+  values = [
+    yamlencode({
+      controller = {
+        service = {
+          type        = local.service_type
+          annotations = local.service_annotations
+        }
+        ingressClassResource = {
+          default = true
+        }
+        watchIngressWithoutClass = true
+      }
+    })
+  ]
 }
 

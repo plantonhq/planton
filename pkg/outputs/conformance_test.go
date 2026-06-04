@@ -65,6 +65,21 @@ func TestStackOutputsConformance(t *testing.T) {
 				"external_hostname", "password_secret", "username_secret",
 			},
 		},
+		{
+			// Guards the externaldns tofu module's output rename to solver_sa: the
+			// module previously emitted "service_account_name", which does not flatten
+			// onto the KubernetesExternalDnsStackOutputs.solver_sa proto field (the
+			// Pulumi module already exported "solver_sa"). Both engines now emit the
+			// same three outputs.
+			name: "KubernetesExternalDns",
+			kind: cloudresourcekind.CloudResourceKind_KubernetesExternalDns,
+			rawOutputs: map[string]interface{}{
+				"namespace":    "external-dns",
+				"release_name": "gosilver-in-external-dns",
+				"solver_sa":    "gosilver-in-external-dns",
+			},
+			mustPopulate: []string{"namespace", "release_name", "solver_sa"},
+		},
 	}
 
 	for _, tc := range cases {

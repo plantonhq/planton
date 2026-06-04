@@ -36,9 +36,13 @@ behavioral parity.** This is not a "nice to have" -- a silent divergence means t
 deployed result depends on which provisioner a resource happens to use, which on a real
 platform breaks auth, networking, or data depending on the field that drifted.
 
-**Pulumi is the source of truth** unless the proto contract says otherwise: it is the
-more complete implementation and it is what `*_stack_outputs.proto` is modeled against.
-When you author or change one engine, you reconcile the other in the SAME session.
+**Neither engine is privileged — both must be behaviorally identical.** The arbiter of
+"correct" is the proto contract (`spec.proto` + `*_stack_outputs.proto`) and the intended
+behavior, NOT one engine. When the two engines disagree, determine which is right and bring
+the other into line; when you author or change one engine, reconcile the other in the SAME
+session. (In the forge sequence Pulumi is generated first, so Terraform is reconciled
+against the existing Pulumi module — but if the Pulumi module is the one that is wrong, fix
+Pulumi.)
 
 **Deviation is allowed ONLY with a strong, documented technical reason.** If the two
 engines genuinely cannot match (a provider feature exists in one SDK but not the other, an
@@ -115,8 +119,9 @@ The following 20 rules execute in order. Each rule is atomic and can be run indi
 
 16. **013-terraform-module** - Generate tf/ (variables.tf, main.tf, locals.tf, outputs.tf, provider.tf)
     - Rule 013 ends with the mandatory **PARITY WITH PULUMI** reconciliation (see that rule).
-      Terraform is authored AFTER Pulumi precisely so it can be reconciled field-by-field
-      against the source-of-truth engine.
+      Terraform is authored AFTER Pulumi in the sequence, so it is reconciled field-by-field
+      against the existing Pulumi module — fixing whichever engine is wrong, since neither is
+      privileged (the proto contract + intended behavior decide correctness).
 17. **015-terraform-docs** - Generate iac/tf/README.md
 
 ### Phase 6b: Cross-Engine Parity Gate (orchestrator gate -- no flow-rule file)

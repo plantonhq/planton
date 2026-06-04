@@ -166,11 +166,11 @@ locals {
   )
 
   # Dynamic configuration
-  has_dynamic_config            = var.spec.dynamic_config != null
-  history_size_limit_error      = try(var.spec.dynamic_config.history_size_limit_error, null)
-  history_count_limit_error     = try(var.spec.dynamic_config.history_count_limit_error, null)
-  history_size_limit_warn       = try(var.spec.dynamic_config.history_size_limit_warn, null)
-  history_count_limit_warn      = try(var.spec.dynamic_config.history_count_limit_warn, null)
+  has_dynamic_config        = var.spec.dynamic_config != null
+  history_size_limit_error  = try(var.spec.dynamic_config.history_size_limit_error, null)
+  history_count_limit_error = try(var.spec.dynamic_config.history_count_limit_error, null)
+  history_size_limit_warn   = try(var.spec.dynamic_config.history_size_limit_warn, null)
+  history_count_limit_warn  = try(var.spec.dynamic_config.history_count_limit_warn, null)
 
   # History shards configuration
   num_history_shards = var.spec.num_history_shards
@@ -198,5 +198,238 @@ locals {
   worker_replicas           = try(var.spec.services.worker.replicas, null)
   worker_resources_limits   = try(var.spec.services.worker.resources.limits, null)
   worker_resources_requests = try(var.spec.services.worker.resources.requests, null)
+
+  # ---------------------------------------------------------------- Helm values
+  # The following locals assemble the Temporal Helm chart values map. They mirror the
+  # prior `set {}`/`dynamic "set"` keys exactly (helm provider v3 dropped those blocks),
+  # rendered through the house values=[yamlencode(...)] idiom. Conditional fragments are
+  # appended as single-element lists so conditional branches share a list type (bare-object
+  # branches fail tofu's type unification). This mirrors the Pulumi module's values map.
+
+  # Datastore enable flags (+ embedded cassandra config). Exactly one branch is active.
+  temporal_db_values = merge(concat(
+    local.has_external_database ? [{
+      cassandra  = { enabled = false }
+      mysql      = { enabled = false }
+      postgresql = { enabled = false }
+    }] : [],
+    (!local.has_external_database && local.is_cassandra) ? [{
+      cassandra = {
+        enabled      = true
+        replicaCount = var.spec.cassandra_replicas
+        config = {
+          dev          = true
+          cluster_size = var.spec.cassandra_replicas
+        }
+      }
+      mysql      = { enabled = false }
+      postgresql = { enabled = false }
+    }] : [],
+    (!local.has_external_database && local.is_mysql) ? [{
+      cassandra  = { enabled = false }
+      mysql      = { enabled = true }
+      postgresql = { enabled = false }
+    }] : [],
+    (!local.has_external_database && local.is_postgresql) ? [{
+      cassandra  = { enabled = false }
+      mysql      = { enabled = false }
+      postgresql = { enabled = true }
+    }] : [],
+  )...)
+
+  # server.config: frontend RPC ports always; external-DB SQL persistence when configured.
+  temporal_server_config = merge(concat(
+    [{
+      services = {
+        frontend = {
+          rpc = {
+            grpcPort = local.frontend_grpc_port
+            httpPort = local.frontend_http_port
+          }
+        }
+      }
+    }],
+    local.has_external_database ? [{
+      persistence = {
+        driver = "sql"
+        default = {
+          driver = "sql"
+          sql = {
+            driver            = local.sql_driver
+            host              = local.external_db_host
+            port              = local.external_db_port
+            database          = local.database_name
+            user              = local.external_db_username
+            existingSecret    = local.db_secret_name
+            existingSecretKey = local.db_secret_key
+            tls = {
+              enabled                = true
+              enableHostVerification = false
+            }
+          }
+        }
+        visibility = {
+          driver = "sql"
+          sql = {
+            driver            = local.sql_driver
+            host              = local.external_db_host
+            port              = local.external_db_port
+            database          = local.visibility_name
+            user              = local.external_db_username
+            existingSecret    = local.db_secret_name
+            existingSecretKey = local.db_secret_key
+            tls = {
+              enabled                = true
+              enableHostVerification = false
+            }
+          }
+        }
+      }
+    }] : [],
+  )...)
+
+  # server.dynamicConfig: each history limit override is a single-element list of {value}.
+  temporal_dynamic_config = merge(concat(
+    local.history_size_limit_error != null ? [{ "limit.historySize.error" = [{ value = local.history_size_limit_error }] }] : [],
+    local.history_count_limit_error != null ? [{ "limit.historyCount.error" = [{ value = local.history_count_limit_error }] }] : [],
+    local.history_size_limit_warn != null ? [{ "limit.historySize.warn" = [{ value = local.history_size_limit_warn }] }] : [],
+    local.history_count_limit_warn != null ? [{ "limit.historyCount.warn" = [{ value = local.history_count_limit_warn }] }] : [],
+  )...)
+
+  # Per-service (frontend/history/matching/worker) replicaCount + resources, each leaf optional.
+  temporal_frontend_values = merge(concat(
+    local.frontend_replicas != null ? [{ replicaCount = local.frontend_replicas }] : [],
+    (try(local.frontend_resources_limits.cpu, null) != null || try(local.frontend_resources_limits.memory, null) != null || try(local.frontend_resources_requests.cpu, null) != null || try(local.frontend_resources_requests.memory, null) != null) ? [{
+      resources = merge(concat(
+        (try(local.frontend_resources_limits.cpu, null) != null || try(local.frontend_resources_limits.memory, null) != null) ? [{
+          limits = merge(concat(
+            try(local.frontend_resources_limits.cpu, null) != null ? [{ cpu = local.frontend_resources_limits.cpu }] : [],
+            try(local.frontend_resources_limits.memory, null) != null ? [{ memory = local.frontend_resources_limits.memory }] : [],
+          )...)
+        }] : [],
+        (try(local.frontend_resources_requests.cpu, null) != null || try(local.frontend_resources_requests.memory, null) != null) ? [{
+          requests = merge(concat(
+            try(local.frontend_resources_requests.cpu, null) != null ? [{ cpu = local.frontend_resources_requests.cpu }] : [],
+            try(local.frontend_resources_requests.memory, null) != null ? [{ memory = local.frontend_resources_requests.memory }] : [],
+          )...)
+        }] : [],
+      )...)
+    }] : [],
+  )...)
+
+  temporal_history_values = merge(concat(
+    local.history_replicas != null ? [{ replicaCount = local.history_replicas }] : [],
+    (try(local.history_resources_limits.cpu, null) != null || try(local.history_resources_limits.memory, null) != null || try(local.history_resources_requests.cpu, null) != null || try(local.history_resources_requests.memory, null) != null) ? [{
+      resources = merge(concat(
+        (try(local.history_resources_limits.cpu, null) != null || try(local.history_resources_limits.memory, null) != null) ? [{
+          limits = merge(concat(
+            try(local.history_resources_limits.cpu, null) != null ? [{ cpu = local.history_resources_limits.cpu }] : [],
+            try(local.history_resources_limits.memory, null) != null ? [{ memory = local.history_resources_limits.memory }] : [],
+          )...)
+        }] : [],
+        (try(local.history_resources_requests.cpu, null) != null || try(local.history_resources_requests.memory, null) != null) ? [{
+          requests = merge(concat(
+            try(local.history_resources_requests.cpu, null) != null ? [{ cpu = local.history_resources_requests.cpu }] : [],
+            try(local.history_resources_requests.memory, null) != null ? [{ memory = local.history_resources_requests.memory }] : [],
+          )...)
+        }] : [],
+      )...)
+    }] : [],
+  )...)
+
+  temporal_matching_values = merge(concat(
+    local.matching_replicas != null ? [{ replicaCount = local.matching_replicas }] : [],
+    (try(local.matching_resources_limits.cpu, null) != null || try(local.matching_resources_limits.memory, null) != null || try(local.matching_resources_requests.cpu, null) != null || try(local.matching_resources_requests.memory, null) != null) ? [{
+      resources = merge(concat(
+        (try(local.matching_resources_limits.cpu, null) != null || try(local.matching_resources_limits.memory, null) != null) ? [{
+          limits = merge(concat(
+            try(local.matching_resources_limits.cpu, null) != null ? [{ cpu = local.matching_resources_limits.cpu }] : [],
+            try(local.matching_resources_limits.memory, null) != null ? [{ memory = local.matching_resources_limits.memory }] : [],
+          )...)
+        }] : [],
+        (try(local.matching_resources_requests.cpu, null) != null || try(local.matching_resources_requests.memory, null) != null) ? [{
+          requests = merge(concat(
+            try(local.matching_resources_requests.cpu, null) != null ? [{ cpu = local.matching_resources_requests.cpu }] : [],
+            try(local.matching_resources_requests.memory, null) != null ? [{ memory = local.matching_resources_requests.memory }] : [],
+          )...)
+        }] : [],
+      )...)
+    }] : [],
+  )...)
+
+  temporal_worker_values = merge(concat(
+    local.worker_replicas != null ? [{ replicaCount = local.worker_replicas }] : [],
+    (try(local.worker_resources_limits.cpu, null) != null || try(local.worker_resources_limits.memory, null) != null || try(local.worker_resources_requests.cpu, null) != null || try(local.worker_resources_requests.memory, null) != null) ? [{
+      resources = merge(concat(
+        (try(local.worker_resources_limits.cpu, null) != null || try(local.worker_resources_limits.memory, null) != null) ? [{
+          limits = merge(concat(
+            try(local.worker_resources_limits.cpu, null) != null ? [{ cpu = local.worker_resources_limits.cpu }] : [],
+            try(local.worker_resources_limits.memory, null) != null ? [{ memory = local.worker_resources_limits.memory }] : [],
+          )...)
+        }] : [],
+        (try(local.worker_resources_requests.cpu, null) != null || try(local.worker_resources_requests.memory, null) != null) ? [{
+          requests = merge(concat(
+            try(local.worker_resources_requests.cpu, null) != null ? [{ cpu = local.worker_resources_requests.cpu }] : [],
+            try(local.worker_resources_requests.memory, null) != null ? [{ memory = local.worker_resources_requests.memory }] : [],
+          )...)
+        }] : [],
+      )...)
+    }] : [],
+  )...)
+
+  # Merge per-service configs into the server map (only services with config).
+  temporal_server_services = merge(concat(
+    length(local.temporal_frontend_values) > 0 ? [{ frontend = local.temporal_frontend_values }] : [],
+    length(local.temporal_history_values) > 0 ? [{ history = local.temporal_history_values }] : [],
+    length(local.temporal_matching_values) > 0 ? [{ matching = local.temporal_matching_values }] : [],
+    length(local.temporal_worker_values) > 0 ? [{ worker = local.temporal_worker_values }] : [],
+  )...)
+
+  # The full server map: config (always), numHistoryShards/dynamicConfig (optional),
+  # and per-service overrides.
+  temporal_server = merge(concat(
+    [{ config = local.temporal_server_config }],
+    local.num_history_shards != null ? [{ numHistoryShards = local.num_history_shards }] : [],
+    length(local.temporal_dynamic_config) > 0 ? [{ dynamicConfig = local.temporal_dynamic_config }] : [],
+    [local.temporal_server_services],
+  )...)
+
+  # External Elasticsearch values (only meaningful when external ES is configured).
+  temporal_es_external = merge(concat(
+    [{
+      enabled = false
+      host    = local.external_es_host
+      port    = local.external_es_port
+      scheme  = "http"
+    }],
+    local.external_es_user != "" ? [{ username = local.external_es_user }] : [],
+    (!local.use_existing_es_secret && local.external_es_password_string != "") ? [{ password = local.external_es_password_string }] : [],
+    local.use_existing_es_secret ? [{
+      existingSecret    = local.external_es_password_secret_ref.name
+      existingSecretKey = local.external_es_password_secret_ref.key
+    }] : [],
+  )...)
+
+  # Top-level Helm values.
+  helm_values = merge(concat(
+    [{
+      fullnameOverride = var.metadata.name
+      schema = {
+        createDatabase = {
+          enabled = !local.disable_auto_schema_setup
+        }
+        setup  = { enabled = true }
+        update = { enabled = true }
+      }
+      prometheus          = { enabled = local.enable_monitoring_stack }
+      grafana             = { enabled = local.enable_monitoring_stack }
+      kubePrometheusStack = { enabled = local.enable_monitoring_stack }
+      server              = local.temporal_server
+    }],
+    [local.temporal_db_values],
+    var.spec.disable_web_ui ? [{ web = { enabled = false } }] : [],
+    local.has_external_elasticsearch ? [{ elasticsearch = local.temporal_es_external }] : [],
+    (!local.has_external_elasticsearch && !var.spec.enable_embedded_elasticsearch) ? [{ elasticsearch = { enabled = false } }] : [],
+  )...)
 }
 

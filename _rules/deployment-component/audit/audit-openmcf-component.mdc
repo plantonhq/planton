@@ -19,9 +19,10 @@ driven to 100% parity (see "Driving All Components to Parity" near the end).
 
 You are the OpenMCF Code Auditor. Your job is to systematically evaluate a deployment
 component's completeness AND its cross-engine parity, identify gaps, and provide actionable
-recommendations. Pulumi is the parity source of truth (it is the more complete engine and
-the one `*_stack_outputs.proto` is modeled against); an **undocumented** divergence between
-the two engines is a critical defect, not a stylistic difference.
+recommendations. Neither engine is privileged: both must be behaviorally identical, judged
+against the proto contract (`spec.proto` + `*_stack_outputs.proto`) and intended behavior.
+An **undocumented** divergence between the two engines is a critical defect, not a stylistic
+difference.
 
 **Reference:** `pkg/iac/MODULE_PARITY.md` is the authoritative parity-dimension checklist
 and documents the automated guards (`pkg/outputs` conformance test + `openmcf
@@ -186,7 +187,7 @@ that (a) is reported under "Critical Gaps", and (b) caps BOTH IaC categories at 
 feature, or empty stack-output field). A documented `PARITY-EXCEPTION:` (present in BOTH
 modules, output-neutral, minimal) is NOT a defect.
 
-**How to evaluate (read both modules; Pulumi is the source of truth):**
+**How to evaluate (read both modules; neither is privileged — compare against the proto contract + intended behavior):**
 
 Open `iac/pulumi/module/*.go` and `iac/tf/*.tf` and compare each dimension from
 `pkg/iac/MODULE_PARITY.md`. For each, record MATCH / DIVERGES (undocumented) / EXCEPTION (documented):
@@ -199,9 +200,9 @@ Open `iac/pulumi/module/*.go` and `iac/tf/*.tf` and compare each dimension from
       `CloudResourceKind` enum string, not an ad-hoc literal; conditional labels under the same condition).
 - [ ] **Pod/service selectors** — match the labels the operator/chart actually applies to
       workload pods (a selector built from resource-identity labels silently matches zero pods).
-- [ ] **Spec feature coverage** — every `spec.proto` field honored by Pulumi is honored by
-      Terraform too (backup, restore/standby, ingress, env injection, sizing, ...). A field
-      implemented on one side and ignored on the other is a parity defect even if both `validate`.
+- [ ] **Spec feature coverage** — every `spec.proto` field is honored by BOTH engines
+      (backup, restore/standby, ingress, env injection, sizing, ...). A field implemented on
+      one side and ignored on the other is a parity defect even if both `validate`.
 - [ ] **Dependency ordering** — the same edges exist (`pulumi.DependsOn` ↔ `depends_on` /
       `metadata.relationships`).
 - [ ] **Stack outputs** — both engines emit shapes that flatten onto the SAME
@@ -676,7 +677,7 @@ go test -v
 
 **Parity verdict: PARITY ✅ / ⚠️ / ❌**
 
-Source of truth: Pulumi (`iac/pulumi/module/`). Compared against: Terraform (`iac/tf/`).
+Compared engines: Pulumi (`iac/pulumi/module/`) and Terraform (`iac/tf/`), both judged against the proto contract + intended behavior (neither is privileged).
 Verified outputs with `openmcf validate-outputs` (full proto population, zero unmapped: yes/no).
 
 | Dimension | Pulumi | Terraform | Verdict |
@@ -698,7 +699,7 @@ Verified outputs with `openmcf validate-outputs` (full proto population, zero un
 ⚠️/❌ **Divergences (undocumented):**
 
 - **<Dimension>** — Pulumi does `<X>`, Terraform does `<Y>`. Impact: `<cosmetic | would misdeploy: ...>`.
-  Fix: align `<which engine>` to `<source-of-truth behavior>`.
+  Fix: align the incorrect engine to the correct behavior (per the proto contract + intent).
 
 **Effect on score:** <none | caps Categories 4 & 5 at Partial | marks Categories 4 & 5 ❌ and is listed under Critical Gaps>
 
@@ -809,9 +810,10 @@ To complete missing items, consider running these forge rules in sequence:
 - **Rule 022** - Presets (if presets/ directory is missing or empty)
 
 For a parity divergence specifically (Category 5b ⚠️/❌), prefer `@fix-openmcf-component`:
-make the targeted change in the lagging engine (Pulumi is the source of truth) and let it
-cascade to docs/tests. Re-run `openmcf validate-outputs` and the kind's
-`pkg/outputs/conformance_test.go` case to confirm parity before closing the session.
+make the targeted change in whichever engine is wrong (decide via the proto contract +
+intended behavior; neither engine is privileged) and let it cascade to docs/tests. Re-run
+`openmcf validate-outputs` and the kind's `pkg/outputs/conformance_test.go` case to confirm
+parity before closing the session.
 
 ---
 
@@ -861,7 +863,7 @@ cascade to docs/tests. Re-run `openmcf validate-outputs` and the kind's
 - [x/  ] Resource naming basis matches (same field, `metadata.name` basis)
 - [x/  ] Labels identical (keys + values; kind = CloudResourceKind enum string)
 - [x/  ] Pod/service selectors match the operator/chart's actual pod labels
-- [x/  ] Every `spec.proto` field honored by Pulumi is honored by Terraform
+- [x/  ] Every `spec.proto` field is honored by BOTH engines
 - [x/  ] Dependency ordering matches (`DependsOn` ↔ `depends_on`)
 - [x/  ] Stack outputs flatten onto the same proto fields (`openmcf validate-outputs`: zero unmapped)
 - [x/  ] Any divergence carries a `PARITY-EXCEPTION:` comment in BOTH modules (output-neutral)
@@ -948,7 +950,7 @@ Run `@forge` rules to complete missing items, or view full report for detailed r
 
 The end goal is **100% cross-engine parity across the entire catalog**, achieved by running
 this audit one component at a time in separate sessions. This keeps each session small and
-focused: read two modules, find the divergences, fix the lagging engine (or document a
+focused: read two modules, find the divergences, fix the incorrect engine (or document a
 justified exception), re-verify, done.
 
 ### Enumerate the work
@@ -974,8 +976,9 @@ Track progress with a simple ledger so successive sessions don't repeat work —
 2. Run `@audit-openmcf-component <Name> --parity`.
 3. If PARITY ✅ → record it in the ledger and move on.
 4. If ⚠️/❌ → hand off to remediation **in the same session** (small, contained):
-   - Fix the lagging engine to match the Pulumi source of truth (use `@fix-openmcf-component`
-     for the targeted change + cascading doc/test updates), OR add a documented, output-neutral
+   - Fix the incorrect engine to match the correct behavior — decided by the proto contract +
+     intended behavior, not by privileging either engine (use `@fix-openmcf-component` for the
+     targeted change + cascading doc/test updates), OR add a documented, output-neutral
      `PARITY-EXCEPTION:` in BOTH modules when the divergence is technically unavoidable.
    - Re-run `openmcf validate-outputs` and, where present, the `pkg/outputs/conformance_test.go`
      case for the kind. Add a conformance case if none exists.
@@ -989,8 +992,9 @@ parity, with an auditable trail.
 1. **Be thorough but fast** - Most checks are file existence, which is quick
 2. **Parity requires reading BOTH modules** - Category 5b is the one check that is NOT a
    file-existence test: you must actually read `iac/pulumi/module/*.go` and `iac/tf/*.tf` and
-   compare behavior. Pulumi is the source of truth. Treat an undocumented divergence as a
-   critical defect, and verify stack-output parity with `openmcf validate-outputs` rather than by eye.
+   compare behavior. Neither engine is privileged — compare both against the proto contract +
+   intended behavior. Treat an undocumented divergence as a critical defect, and verify
+   stack-output parity with `openmcf validate-outputs` rather than by eye.
 3. **Provide context** - Always explain why something is important
 3. **Be actionable** - Every gap should have a clear path to resolution
 4. **Reference documentation** - Point to `architecture/deployment-component.md` for details

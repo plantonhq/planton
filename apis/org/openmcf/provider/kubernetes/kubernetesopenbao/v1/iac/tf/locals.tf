@@ -79,7 +79,7 @@ locals {
   # Example: "openbao.example.com" -> "example.com"
   ingress_cert_cluster_issuer_name = local.ingress_external_hostname != null ? (
     join(".", slice(split(".", local.ingress_external_hostname), 1,
-      length(split(".", local.ingress_external_hostname))))
+    length(split(".", local.ingress_external_hostname))))
   ) : null
 
   # Auto-unseal seal HCL stanza
@@ -160,4 +160,66 @@ EOT
   ingress_gateway_name             = "${var.metadata.name}-external"
   ingress_http_redirect_route_name = "${var.metadata.name}-http-redirect"
   ingress_https_route_name         = "${var.metadata.name}-https"
+
+  # OpenBao Helm chart values. Mirrors the Pulumi module's helm values map
+  # (iac/pulumi/module/helm_chart.go) so both engines render the same chart config;
+  # consumed by helm_release via `values = [yamlencode(local.helm_values)]`. helm
+  # provider v3 dropped the `set {}` block, so conditional fragments are appended as
+  # single-element lists (list branches unify where bare-object branches do not).
+  helm_values = {
+    fullnameOverride = var.metadata.name
+    global = {
+      enabled    = true
+      tlsDisable = !local.tls_enabled
+    }
+    server = merge(concat(
+      [
+        {
+          dataStorage = {
+            enabled = true
+            size    = var.spec.server_container.data_storage_size
+          }
+          resources = {
+            requests = {
+              cpu    = var.spec.server_container.resources.requests.cpu
+              memory = var.spec.server_container.resources.requests.memory
+            }
+            limits = {
+              cpu    = var.spec.server_container.resources.limits.cpu
+              memory = var.spec.server_container.resources.limits.memory
+            }
+          }
+          ha = merge(concat(
+            [{ enabled = local.ha_enabled }],
+            local.ha_enabled ? [{
+              replicas = local.ha_replicas
+              raft = {
+                enabled   = true
+                setNodeId = true
+                config    = local.ha_raft_config
+              }
+            }] : [],
+          )...)
+          standalone = merge(concat(
+            [{ enabled = !local.ha_enabled }],
+            local.ha_enabled ? [] : [{ config = local.standalone_config }],
+          )...)
+        },
+      ],
+      local.workload_identity_sa != "" ? [{
+        serviceAccount = {
+          annotations = {
+            "iam.gke.io/gcp-service-account" = local.workload_identity_sa
+          }
+        }
+      }] : [],
+    )...)
+    ui = {
+      enabled = local.ui_enabled
+    }
+    injector = merge(concat(
+      [{ enabled = local.injector_enabled }],
+      local.injector_enabled ? [{ replicas = local.injector_replicas }] : [],
+    )...)
+  }
 }

@@ -18,12 +18,15 @@ TOOLS
   and `aws/awsalb/v1/iac/tf/` -- canonical `variables.tf`/`provider.tf`/`locals.tf`/`main.tf`/`outputs.tf` layout.
 
 PARITY WITH PULUMI (MANDATORY -- read before writing any HCL)
-Terraform is authored AFTER the Pulumi module on purpose: the Pulumi module
-(`iac/pulumi/module/*.go`) is the source of truth, and this rule's job is to produce a
-Terraform module that is at **100% behavioral parity** with it -- the same cloud objects,
-names, labels, selectors, environment, dependency ordering, and stack outputs for an
-identical `stack-input`. Do not author Terraform "from the proto" in isolation and hope it
-lines up; author it by reconciling against the existing Pulumi module field by field.
+Terraform is authored AFTER the Pulumi module in the sequence, so the Pulumi module
+(`iac/pulumi/module/*.go`) already exists and is the thing to reconcile against. This rule's
+job is to produce a Terraform module that is at **100% behavioral parity** with it -- the
+same cloud objects, names, labels, selectors, environment, dependency ordering, and stack
+outputs for an identical `stack-input`. Neither engine is privileged: the proto contract
+(`spec.proto` + `*_stack_outputs.proto`) and intended behavior decide correctness, so if the
+Pulumi module is the one that is wrong, fix it too. Do not author Terraform "from the proto"
+in isolation and hope it lines up; author it by reconciling against the existing Pulumi
+module field by field.
 
 Before drafting, OPEN the sibling Pulumi module and walk the parity-dimension checklist in
 `pkg/iac/MODULE_PARITY.md`. Confirm your Terraform matches Pulumi on each:
@@ -58,8 +61,9 @@ module stating what differs and why. An undocumented divergence is a defect.
 
 SEQUENTIAL STEPS
 1) Read: Use proto readers to derive `<Kind>`, spec, outputs, and provider context.
-   ALSO read the sibling Pulumi module (`iac/pulumi/module/*.go`) -- it is the parity
-   reference for everything below.
+   ALSO read the sibling Pulumi module (`iac/pulumi/module/*.go`) -- it is the existing
+   engine to reconcile against for everything below (correct it if it is the wrong one;
+   neither engine is privileged).
 
    FAST PATH -- Kubernetes-CRD-projection kinds: If the kind's spec is a direct
    1:1 projection of a single Kubernetes custom resource (Istio, Gateway API,

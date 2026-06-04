@@ -6,11 +6,12 @@ terraform {
       source  = "hashicorp/kubernetes"
       version = ">= 2.0"
     }
-    # Pinned to the v3 line: main.tf uses the helm-provider-v3 `set = [{...}]` attribute
-    # syntax (v2 nested `set {}` blocks are rejected by v3). Keep this and the syntax aligned.
+    # Pinned to the v3 major: main.tf uses the helm-provider-v3 values/`set = [{...}]`
+    # attribute syntax (v2 nested `set {}` blocks are rejected by v3). The ~> 3.0 pin keeps
+    # the major fixed so a future helm v4 cannot silently reintroduce a breaking change.
     helm = {
       source  = "hashicorp/helm"
-      version = ">= 3.0"
+      version = "~> 3.0"
     }
   }
 }

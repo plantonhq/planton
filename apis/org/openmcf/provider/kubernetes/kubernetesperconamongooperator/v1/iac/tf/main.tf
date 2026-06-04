@@ -17,30 +17,23 @@ resource "helm_release" "percona_operator" {
   version    = local.helm_chart_version
   namespace  = var.spec.create_namespace ? kubernetes_namespace.percona_operator[0].metadata[0].name : local.namespace
 
-  set {
-    name  = "resources.limits.cpu"
-    value = var.spec.container.resources.limits.cpu
-  }
-
-  set {
-    name  = "resources.limits.memory"
-    value = var.spec.container.resources.limits.memory
-  }
-
-  set {
-    name  = "resources.requests.cpu"
-    value = var.spec.container.resources.requests.cpu
-  }
-
-  set {
-    name  = "resources.requests.memory"
-    value = var.spec.container.resources.requests.memory
-  }
-
-  set {
-    name  = "watchAllNamespaces"
-    value = "true"
-  }
+  # helm provider v3 replaced `set {}` blocks with list attributes; use the house
+  # values=[yamlencode(...)] idiom. Mirrors the Pulumi module's helm values.
+  values = [
+    yamlencode({
+      watchAllNamespaces = true
+      resources = {
+        limits = {
+          cpu    = var.spec.container.resources.limits.cpu
+          memory = var.spec.container.resources.limits.memory
+        }
+        requests = {
+          cpu    = var.spec.container.resources.requests.cpu
+          memory = var.spec.container.resources.requests.memory
+        }
+      }
+    })
+  ]
 
   timeout         = 300
   atomic          = true

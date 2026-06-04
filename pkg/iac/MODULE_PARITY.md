@@ -6,6 +6,11 @@ a Pulumi module (`pulumi/module/*.go`) and an OpenTofu module (`tf/*.tf`). For a
 environment, and stack outputs. A divergence here is not cosmetic: it silently changes
 what gets deployed depending on which provisioner a resource happens to use.
 
+**Neither engine is the reference.** Both must match the proto contract (`spec.proto` +
+`*_stack_outputs.proto`) and the intended behavior. When the two disagree, determine which
+is correct against that contract/intent and fix the incorrect one — it can be either engine,
+not always Terraform.
+
 This note is the standing "keep an eye out for drift" practice. Read it whenever you
 touch a module on either side (or add a new kind).
 

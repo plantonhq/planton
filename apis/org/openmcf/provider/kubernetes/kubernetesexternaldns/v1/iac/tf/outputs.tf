@@ -1,6 +1,9 @@
 ###########################
 # outputs.tf
 ###########################
+# Output shape matches the KubernetesExternalDnsStackOutputs proto and the Pulumi
+# module's exports (namespace, release_name, solver_sa) so both engines populate the
+# same status.outputs fields. Do not emit flat/extra names that never reach the proto.
 
 output "namespace" {
   description = "Namespace where ExternalDNS is deployed"
@@ -12,23 +15,7 @@ output "release_name" {
   value       = helm_release.external_dns.name
 }
 
-output "service_account_name" {
+output "solver_sa" {
   description = "Kubernetes service account name for ExternalDNS"
-  value       = kubernetes_service_account.external_dns.metadata[0].name
+  value       = kubernetes_service_account_v1.external_dns.metadata[0].name
 }
-
-output "provider_type" {
-  description = "DNS provider type (google, aws, azure, cloudflare)"
-  value       = local.provider_type
-}
-
-output "gke_service_account_email" {
-  description = "Google Service Account email for Workload Identity (GKE only)"
-  value       = local.is_gke ? local.gke_gsa_email : null
-}
-
-output "cloudflare_secret_name" {
-  description = "Kubernetes secret name for Cloudflare API token (Cloudflare only)"
-  value       = local.is_cloudflare ? local.cloudflare_api_token_secret_name : null
-}
-

@@ -79,61 +79,31 @@ resource "helm_release" "postgres_operator" {
   wait_for_jobs = true
   timeout       = 180
 
-  # Configure inherited labels that will be propagated to all PostgreSQL databases
-  set {
-    name  = "configKubernetes.inherited_labels[0]"
-    value = "resource"
-  }
-
-  set {
-    name  = "configKubernetes.inherited_labels[1]"
-    value = "organization"
-  }
-
-  set {
-    name  = "configKubernetes.inherited_labels[2]"
-    value = "environment"
-  }
-
-  set {
-    name  = "configKubernetes.inherited_labels[3]"
-    value = "resource_kind"
-  }
-
-  set {
-    name  = "configKubernetes.inherited_labels[4]"
-    value = "resource_id"
-  }
-
-  # Configure pod environment ConfigMap (only when backup is configured)
-  dynamic "set" {
-    for_each = local.has_backup_config ? [1] : []
-    content {
-      name  = "configKubernetes.pod_environment_configmap"
-      value = "${local.namespace}/${local.backup_configmap_name}"
-    }
-  }
-
-  # Configure operator container resources
-  set {
-    name  = "resources.requests.cpu"
-    value = var.spec.container.resources.requests.cpu
-  }
-
-  set {
-    name  = "resources.requests.memory"
-    value = var.spec.container.resources.requests.memory
-  }
-
-  set {
-    name  = "resources.limits.cpu"
-    value = var.spec.container.resources.limits.cpu
-  }
-
-  set {
-    name  = "resources.limits.memory"
-    value = var.spec.container.resources.limits.memory
-  }
+  # helm provider v3 replaced `set {}`/`dynamic "set"` blocks with list attributes;
+  # use the house values=[yamlencode(...)] idiom. inherited_labels[N] set keys become a
+  # real list; the optional pod_environment_configmap is appended via the list-merge idiom.
+  values = [
+    yamlencode({
+      configKubernetes = merge(concat(
+        [{
+          inherited_labels = ["resource", "organization", "environment", "resource_kind", "resource_id"]
+        }],
+        local.has_backup_config ? [{
+          pod_environment_configmap = "${local.namespace}/${local.backup_configmap_name}"
+        }] : [],
+      )...)
+      resources = {
+        requests = {
+          cpu    = var.spec.container.resources.requests.cpu
+          memory = var.spec.container.resources.requests.memory
+        }
+        limits = {
+          cpu    = var.spec.container.resources.limits.cpu
+          memory = var.spec.container.resources.limits.memory
+        }
+      }
+    })
+  ]
 
   depends_on = [
     kubernetes_namespace_v1.postgres_operator,

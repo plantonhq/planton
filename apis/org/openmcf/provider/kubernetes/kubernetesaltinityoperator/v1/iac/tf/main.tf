@@ -16,35 +16,29 @@ resource "helm_release" "kubernetes_altinity_operator" {
   version    = "0.25.4"
   namespace  = local.namespace
 
-  set {
-    name  = "operator.createCRD"
-    value = "true"
-  }
-
-  set {
-    name  = "watchNamespaces"
-    value = "{}"
-  }
-
-  set {
-    name  = "operator.resources.limits.cpu"
-    value = var.spec.container.resources.limits.cpu
-  }
-
-  set {
-    name  = "operator.resources.limits.memory"
-    value = var.spec.container.resources.limits.memory
-  }
-
-  set {
-    name  = "operator.resources.requests.cpu"
-    value = var.spec.container.resources.requests.cpu
-  }
-
-  set {
-    name  = "operator.resources.requests.memory"
-    value = var.spec.container.resources.requests.memory
-  }
+  # Chart values mirror the prior --set keys. helm provider v3 replaced the
+  # `set {}` block with the `values`/`set` list attributes; we use the house
+  # values=[yamlencode(...)] idiom. `--set watchNamespaces={}` parsed to an empty
+  # list, preserved here as []. PARITY-NOTE: the Pulumi module instead sets
+  # configs.files."config.yaml".watch.namespaces=[".*"]; reconcile via the parity sweep.
+  values = [
+    yamlencode({
+      operator = {
+        createCRD = true
+        resources = {
+          limits = {
+            cpu    = var.spec.container.resources.limits.cpu
+            memory = var.spec.container.resources.limits.memory
+          }
+          requests = {
+            cpu    = var.spec.container.resources.requests.cpu
+            memory = var.spec.container.resources.requests.memory
+          }
+        }
+      }
+      watchNamespaces = []
+    })
+  ]
 
   timeout         = 300
   atomic          = true

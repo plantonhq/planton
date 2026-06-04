@@ -17,25 +17,22 @@ resource "helm_release" "percona_mysql_operator" {
   version    = local.helm_chart_version
   namespace  = local.namespace
 
-  set {
-    name  = "resources.limits.cpu"
-    value = var.spec.container.resources.limits.cpu
-  }
-
-  set {
-    name  = "resources.limits.memory"
-    value = var.spec.container.resources.limits.memory
-  }
-
-  set {
-    name  = "resources.requests.cpu"
-    value = var.spec.container.resources.requests.cpu
-  }
-
-  set {
-    name  = "resources.requests.memory"
-    value = var.spec.container.resources.requests.memory
-  }
+  # helm provider v3 replaced `set {}` blocks with list attributes; use the house
+  # values=[yamlencode(...)] idiom. Mirrors the Pulumi module's resources map.
+  values = [
+    yamlencode({
+      resources = {
+        limits = {
+          cpu    = var.spec.container.resources.limits.cpu
+          memory = var.spec.container.resources.limits.memory
+        }
+        requests = {
+          cpu    = var.spec.container.resources.requests.cpu
+          memory = var.spec.container.resources.requests.memory
+        }
+      }
+    })
+  ]
 
   timeout         = 300
   atomic          = true
