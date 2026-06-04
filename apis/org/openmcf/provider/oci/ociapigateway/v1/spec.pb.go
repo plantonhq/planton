@@ -1679,14 +1679,14 @@ var File_org_openmcf_provider_oci_ociapigateway_v1_spec_proto protoreflect.FileD
 
 const file_org_openmcf_provider_oci_ociapigateway_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"4org/openmcf/provider/oci/ociapigateway/v1/spec.proto\x12)org.openmcf.provider.oci.ociapigateway.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x9c4\n" +
-	"\x11OciApiGatewaySpec\x12\x86\x01\n" +
-	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB+\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1cstatus.outputs.compartmentIdR\rcompartmentId\x12x\n" +
-	"\rendpoint_type\x18\x02 \x01(\x0e2I.org.openmcf.provider.oci.ociapigateway.v1.OciApiGatewaySpec.EndpointTypeB\b\xbaH\x05\x82\x01\x02 \x00R\fendpointType\x12w\n" +
-	"\tsubnet_id\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xe5\x19\x92\xd4a\x17status.outputs.subnetIdR\bsubnetId\x12!\n" +
+	"4org/openmcf/provider/oci/ociapigateway/v1/spec.proto\x12)org.openmcf.provider.oci.ociapigateway.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xa14\n" +
+	"\x11OciApiGatewaySpec\x12\x87\x01\n" +
+	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x12x\n" +
+	"\rendpoint_type\x18\x02 \x01(\x0e2I.org.openmcf.provider.oci.ociapigateway.v1.OciApiGatewaySpec.EndpointTypeB\b\xbaH\x05\x82\x01\x02 \x00R\fendpointType\x12x\n" +
+	"\tsubnet_id\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\xe5\x19\x92\xd4a\x18status.outputs.subnet_idR\bsubnetId\x12!\n" +
 	"\fdisplay_name\x18\x04 \x01(\tR\vdisplayName\x12%\n" +
-	"\x0ecertificate_id\x18\x05 \x01(\tR\rcertificateId\x12\x9f\x01\n" +
-	"\x1anetwork_security_group_ids\x18\x06 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xe6\x19\x92\xd4a%status.outputs.networkSecurityGroupIdR\x17networkSecurityGroupIds\x12o\n" +
+	"\x0ecertificate_id\x18\x05 \x01(\tR\rcertificateId\x12\xa2\x01\n" +
+	"\x1anetwork_security_group_ids\x18\x06 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB1\x88\xd4a\xe6\x19\x92\xd4a(status.outputs.network_security_group_idR\x17networkSecurityGroupIds\x12o\n" +
 	"\n" +
 	"deployment\x18\a \x01(\v2G.org.openmcf.provider.oci.ociapigateway.v1.OciApiGatewaySpec.DeploymentB\x06\xbaH\x03\xc8\x01\x01R\n" +
 	"deployment\x1a\xb4\x03\n" +

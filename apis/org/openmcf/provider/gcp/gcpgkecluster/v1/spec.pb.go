@@ -241,15 +241,15 @@ var File_org_openmcf_provider_gcp_gcpgkecluster_v1_spec_proto protoreflect.FileD
 
 const file_org_openmcf_provider_gcp_gcpgkecluster_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"4org/openmcf/provider/gcp/gcpgkecluster/v1/spec.proto\x12)org.openmcf.provider.gcp.gcpgkecluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xa5\v\n" +
+	"4org/openmcf/provider/gcp/gcpgkecluster/v1/spec.proto\x12)org.openmcf.provider.gcp.gcpgkecluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xc0\v\n" +
 	"\x11GcpGkeClusterSpec\x12{\n" +
 	"\n" +
-	"project_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x03\xc8\x01\x01\x88\xd4a\xe1\x04\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\x87\x01\n" +
-	"\x11network_self_link\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\xe2\x04\x92\xd4a\x18status.outputs.self_linkR\x0fnetworkSelfLink\x12C\n" +
-	"\blocation\x18\x03 \x01(\tB'\xbaH$\xc8\x01\x01r\x1f2\x1d^[a-z]+-[a-z]+[0-9](-[a-z])?$R\blocation\x12\x8d\x01\n" +
-	"\x14subnetwork_self_link\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\xe3\x04\x92\xd4a\x18status.outputs.self_linkR\x12subnetworkSelfLink\x12\xac\x01\n" +
-	"\x1ccluster_secondary_range_name\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB7\xbaH\x03\xc8\x01\x01\x88\xd4a\xe3\x04\x92\xd4a(status.outputs.pods_secondary_range_nameR\x19clusterSecondaryRangeName\x12\xb2\x01\n" +
-	"\x1dservices_secondary_range_name\x18\x06 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB;\xbaH\x03\xc8\x01\x01\x88\xd4a\xe3\x04\x92\xd4a,status.outputs.services_secondary_range_nameR\x1aservicesSecondaryRangeName\x12W\n" +
+	"project_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x03\xc8\x01\x01\x88\xd4a\xe1\x04\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\x8f\x01\n" +
+	"\x11network_self_link\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB/\xbaH\x03\xc8\x01\x01\x88\xd4a\xe2\x04\x92\xd4a status.outputs.network_self_linkR\x0fnetworkSelfLink\x12C\n" +
+	"\blocation\x18\x03 \x01(\tB'\xbaH$\xc8\x01\x01r\x1f2\x1d^[a-z]+-[a-z]+[0-9](-[a-z])?$R\blocation\x12\x98\x01\n" +
+	"\x14subnetwork_self_link\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB2\xbaH\x03\xc8\x01\x01\x88\xd4a\xe3\x04\x92\xd4a#status.outputs.subnetwork_self_linkR\x12subnetworkSelfLink\x12\xb2\x01\n" +
+	"\x1ccluster_secondary_range_name\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB=\xbaH\x03\xc8\x01\x01\x88\xd4a\xe3\x04\x92\xd4a.status.outputs.secondary_ranges.[*].range_nameR\x19clusterSecondaryRangeName\x12\xb4\x01\n" +
+	"\x1dservices_secondary_range_name\x18\x06 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB=\xbaH\x03\xc8\x01\x01\x88\xd4a\xe3\x04\x92\xd4a.status.outputs.secondary_ranges.[*].range_nameR\x1aservicesSecondaryRangeName\x12W\n" +
 	"\x16master_ipv4_cidr_block\x18\a \x01(\tB\"\xbaH\x1f\xc8\x01\x01r\x1a2\x18^\\d+\\.\\d+\\.\\d+\\.\\d+\\/28$R\x13masterIpv4CidrBlock\x12.\n" +
 	"\x13enable_public_nodes\x18\b \x01(\bR\x11enablePublicNodes\x12w\n" +
 	"\x0frelease_channel\x18\t \x01(\x0e2<.org.openmcf.provider.gcp.gcpgkecluster.v1.GkeReleaseChannelB\v\x8a\xa6\x1d\aREGULARH\x00R\x0ereleaseChannel\x88\x01\x01\x124\n" +

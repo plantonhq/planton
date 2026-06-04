@@ -231,11 +231,11 @@ var File_org_openmcf_provider_oci_ocirediscluster_v1_spec_proto protoreflect.Fil
 
 const file_org_openmcf_provider_oci_ocirediscluster_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"6org/openmcf/provider/oci/ocirediscluster/v1/spec.proto\x12+org.openmcf.provider.oci.ocirediscluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xa1\b\n" +
-	"\x13OciRedisClusterSpec\x12\x86\x01\n" +
-	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB+\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1cstatus.outputs.compartmentIdR\rcompartmentId\x12!\n" +
-	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName\x12w\n" +
-	"\tsubnet_id\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xe5\x19\x92\xd4a\x17status.outputs.subnetIdR\bsubnetId\x12&\n" +
+	"6org/openmcf/provider/oci/ocirediscluster/v1/spec.proto\x12+org.openmcf.provider.oci.ocirediscluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xa6\b\n" +
+	"\x13OciRedisClusterSpec\x12\x87\x01\n" +
+	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x12!\n" +
+	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName\x12x\n" +
+	"\tsubnet_id\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\xe5\x19\x92\xd4a\x18status.outputs.subnet_idR\bsubnetId\x12&\n" +
 	"\n" +
 	"node_count\x18\x04 \x01(\x05B\a\xbaH\x04\x1a\x02(\x01R\tnodeCount\x127\n" +
 	"\x12node_memory_in_gbs\x18\x05 \x01(\x02B\n" +
@@ -244,8 +244,8 @@ const file_org_openmcf_provider_oci_ocirediscluster_v1_spec_proto_rawDesc = "" +
 	"\x10software_version\x18\x06 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x0fsoftwareVersion\x12o\n" +
 	"\fcluster_mode\x18\a \x01(\x0e2L.org.openmcf.provider.oci.ocirediscluster.v1.OciRedisClusterSpec.ClusterModeR\vclusterMode\x12\x1f\n" +
 	"\vshard_count\x18\b \x01(\x05R\n" +
-	"shardCount\x12{\n" +
-	"\ansg_ids\x18\t \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xe6\x19\x92\xd4a%status.outputs.networkSecurityGroupIdR\x06nsgIds\x12V\n" +
+	"shardCount\x12~\n" +
+	"\ansg_ids\x18\t \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB1\x88\xd4a\xe6\x19\x92\xd4a(status.outputs.network_security_group_idR\x06nsgIds\x12V\n" +
 	"\rconfig_set_id\x18\n" +
 	" \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\vconfigSetId\"H\n" +
 	"\vClusterMode\x12\x1c\n" +

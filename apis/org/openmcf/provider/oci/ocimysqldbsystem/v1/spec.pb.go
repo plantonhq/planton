@@ -1368,14 +1368,14 @@ var File_org_openmcf_provider_oci_ocimysqldbsystem_v1_spec_proto protoreflect.Fi
 
 const file_org_openmcf_provider_oci_ocimysqldbsystem_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"7org/openmcf/provider/oci/ocimysqldbsystem/v1/spec.proto\x12,org.openmcf.provider.oci.ocimysqldbsystem.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xe6+\n" +
-	"\x14OciMysqlDbSystemSpec\x12\x86\x01\n" +
-	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB+\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1cstatus.outputs.compartmentIdR\rcompartmentId\x12!\n" +
+	"7org/openmcf/provider/oci/ocimysqldbsystem/v1/spec.proto\x12,org.openmcf.provider.oci.ocimysqldbsystem.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xeb+\n" +
+	"\x14OciMysqlDbSystemSpec\x12\x87\x01\n" +
+	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x12!\n" +
 	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName\x128\n" +
 	"\x13availability_domain\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x12availabilityDomain\x12&\n" +
 	"\n" +
-	"shape_name\x18\x04 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\tshapeName\x12w\n" +
-	"\tsubnet_id\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xe5\x19\x92\xd4a\x17status.outputs.subnetIdR\bsubnetId\x12%\n" +
+	"shape_name\x18\x04 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\tshapeName\x12x\n" +
+	"\tsubnet_id\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\xe5\x19\x92\xd4a\x18status.outputs.subnet_idR\bsubnetId\x12%\n" +
 	"\x0eadmin_username\x18\x06 \x01(\tR\radminUsername\x12%\n" +
 	"\x0eadmin_password\x18\a \x01(\tR\radminPassword\x12#\n" +
 	"\rmysql_version\x18\b \x01(\tR\fmysqlVersion\x12]\n" +
@@ -1390,8 +1390,8 @@ const file_org_openmcf_provider_oci_ocimysqldbsystem_v1_spec_proto_rawDesc = "" 
 	"\x06port_x\x18\x0f \x01(\x05R\x05portX\x12 \n" +
 	"\vdescription\x18\x10 \x01(\tR\vdescription\x12%\n" +
 	"\x0ecrash_recovery\x18\x11 \x01(\tR\rcrashRecovery\x12/\n" +
-	"\x13database_management\x18\x12 \x01(\tR\x12databaseManagement\x12{\n" +
-	"\ansg_ids\x18\x13 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xe6\x19\x92\xd4a%status.outputs.networkSecurityGroupIdR\x06nsgIds\x12q\n" +
+	"\x13database_management\x18\x12 \x01(\tR\x12databaseManagement\x12~\n" +
+	"\ansg_ids\x18\x13 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB1\x88\xd4a\xe6\x19\x92\xd4a(status.outputs.network_security_group_idR\x06nsgIds\x12q\n" +
 	"\fdata_storage\x18\x14 \x01(\v2N.org.openmcf.provider.oci.ocimysqldbsystem.v1.OciMysqlDbSystemSpec.DataStorageR\vdataStorage\x12t\n" +
 	"\rbackup_policy\x18\x15 \x01(\v2O.org.openmcf.provider.oci.ocimysqldbsystem.v1.OciMysqlDbSystemSpec.BackupPolicyR\fbackupPolicy\x12p\n" +
 	"\vmaintenance\x18\x16 \x01(\v2N.org.openmcf.provider.oci.ocimysqldbsystem.v1.OciMysqlDbSystemSpec.MaintenanceR\vmaintenance\x12z\n" +

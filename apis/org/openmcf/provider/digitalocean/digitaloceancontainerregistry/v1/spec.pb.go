@@ -86,8 +86,9 @@ type DigitalOceanContainerRegistrySpec struct {
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// Subscription tier slug (defines storage limits and pricing).
 	SubscriptionTier DigitalOceanContainerRegistryTier `protobuf:"varint,2,opt,name=subscription_tier,json=subscriptionTier,proto3,enum=org.openmcf.provider.digitalocean.digitaloceancontainerregistry.v1.DigitalOceanContainerRegistryTier" json:"subscription_tier,omitempty"`
-	// Optional region slug where registry data is stored (e.g., "nyc3", "sfo3").
-	// If omitted, DigitalOcean chooses a default/nearest region.
+	// Required region slug where registry data is stored (e.g., "nyc3", "sfo3").
+	// DigitalOcean container registries are single-region and the region cannot
+	// be changed after creation, so a region must be specified explicitly.
 	Region digitalocean.DigitalOceanRegion `protobuf:"varint,3,opt,name=region,proto3,enum=org.openmcf.provider.digitalocean.DigitalOceanRegion" json:"region,omitempty"`
 	// Enable garbage collection of untagged images.
 	// Default is false (no automatic GC).

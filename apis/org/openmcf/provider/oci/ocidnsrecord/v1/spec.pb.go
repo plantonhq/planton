@@ -61,6 +61,9 @@ type OciDnsRecordSpec struct {
 	Rtype string `protobuf:"bytes,3,opt,name=rtype,proto3" json:"rtype,omitempty"`
 	// OCID of the private DNS view. Required when accessing a private
 	// zone by name. Not needed when zone_name_or_id is an OCID.
+	// No default_kind/default_kind_field_path: OCI private DNS views are not
+	// modeled as an OpenMCF kind, so this stays literal-only with no
+	// cross-resource reference default.
 	// ForceNew.
 	ViewId *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=view_id,json=viewId,proto3" json:"view_id,omitempty"`
 	// DNS records in this record set. At least one record is required.
@@ -197,12 +200,12 @@ var File_org_openmcf_provider_oci_ocidnsrecord_v1_spec_proto protoreflect.FileDe
 
 const file_org_openmcf_provider_oci_ocidnsrecord_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"3org/openmcf/provider/oci/ocidnsrecord/v1/spec.proto\x12(org.openmcf.provider.oci.ocidnsrecord.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xea\x03\n" +
-	"\x10OciDnsRecordSpec\x12\x7f\n" +
-	"\x0fzone_name_or_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xbe\x1a\x92\xd4a\x15status.outputs.zoneIdR\fzoneNameOrId\x12\x1f\n" +
+	"3org/openmcf/provider/oci/ocidnsrecord/v1/spec.proto\x12(org.openmcf.provider.oci.ocidnsrecord.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xd1\x03\n" +
+	"\x10OciDnsRecordSpec\x12\x80\x01\n" +
+	"\x0fzone_name_or_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB%\xbaH\x03\xc8\x01\x01\x88\xd4a\xbe\x1a\x92\xd4a\x16status.outputs.zone_idR\fzoneNameOrId\x12\x1f\n" +
 	"\x06domain\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06domain\x12\x1d\n" +
-	"\x05rtype\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x05rtype\x12f\n" +
-	"\aview_id\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x19\x92\xd4a\x15status.outputs.viewIdR\x06viewId\x12e\n" +
+	"\x05rtype\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x05rtype\x12K\n" +
+	"\aview_id\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x06viewId\x12e\n" +
 	"\x05items\x18\x05 \x03(\v2E.org.openmcf.provider.oci.ocidnsrecord.v1.OciDnsRecordSpec.RecordItemB\b\xbaH\x05\x92\x01\x02\b\x01R\x05items\x1aF\n" +
 	"\n" +
 	"RecordItem\x12\x1d\n" +

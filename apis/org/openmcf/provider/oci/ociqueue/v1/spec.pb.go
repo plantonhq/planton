@@ -250,10 +250,10 @@ var File_org_openmcf_provider_oci_ociqueue_v1_spec_proto protoreflect.FileDescri
 
 const file_org_openmcf_provider_oci_ociqueue_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"/org/openmcf/provider/oci/ociqueue/v1/spec.proto\x12$org.openmcf.provider.oci.ociqueue.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xd9\t\n" +
-	"\fOciQueueSpec\x12\x86\x01\n" +
-	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB+\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1cstatus.outputs.compartmentIdR\rcompartmentId\x12\x8a\x01\n" +
-	"\x18custom_encryption_key_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1d\x88\xd4a\x97\x1a\x92\xd4a\x14status.outputs.keyIdR\x15customEncryptionKeyId\x12K\n" +
+	"/org/openmcf/provider/oci/ociqueue/v1/spec.proto\x12$org.openmcf.provider.oci.ociqueue.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xdb\t\n" +
+	"\fOciQueueSpec\x12\x87\x01\n" +
+	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x12\x8b\x01\n" +
+	"\x18custom_encryption_key_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x97\x1a\x92\xd4a\x15status.outputs.key_idR\x15customEncryptionKeyId\x12K\n" +
 	" dead_letter_queue_delivery_count\x18\x03 \x01(\x05H\x00R\x1cdeadLetterQueueDeliveryCount\x88\x01\x01\x125\n" +
 	"\x14retention_in_seconds\x18\x04 \x01(\x05H\x01R\x12retentionInSeconds\x88\x01\x01\x121\n" +
 	"\x12timeout_in_seconds\x18\x05 \x01(\x05H\x02R\x10timeoutInSeconds\x88\x01\x01\x127\n" +

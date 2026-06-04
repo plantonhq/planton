@@ -505,11 +505,11 @@ var File_org_openmcf_provider_oci_ocikmskey_v1_spec_proto protoreflect.FileDescr
 
 const file_org_openmcf_provider_oci_ocikmskey_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"0org/openmcf/provider/oci/ocikmskey/v1/spec.proto\x12%org.openmcf.provider.oci.ocikmskey.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xa0\x16\n" +
-	"\rOciKmsKeySpec\x12\x86\x01\n" +
-	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB+\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1cstatus.outputs.compartmentIdR\rcompartmentId\x12!\n" +
-	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName\x12\x95\x01\n" +
-	"\x13management_endpoint\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB0\xbaH\x03\xc8\x01\x01\x88\xd4a\x96\x1a\x92\xd4a!status.outputs.managementEndpointR\x12managementEndpoint\x12b\n" +
+	"0org/openmcf/provider/oci/ocikmskey/v1/spec.proto\x12%org.openmcf.provider.oci.ocikmskey.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xa2\x16\n" +
+	"\rOciKmsKeySpec\x12\x87\x01\n" +
+	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x12!\n" +
+	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName\x12\x96\x01\n" +
+	"\x13management_endpoint\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB1\xbaH\x03\xc8\x01\x01\x88\xd4a\x96\x1a\x92\xd4a\"status.outputs.management_endpointR\x12managementEndpoint\x12b\n" +
 	"\tkey_shape\x18\x04 \x01(\v2=.org.openmcf.provider.oci.ocikmskey.v1.OciKmsKeySpec.KeyShapeB\x06\xbaH\x03\xc8\x01\x01R\bkeyShape\x12v\n" +
 	"\x0fprotection_mode\x18\x05 \x01(\x0e2C.org.openmcf.provider.oci.ocikmskey.v1.OciKmsKeySpec.ProtectionModeB\b\xbaH\x05\x82\x01\x02\x10\x01R\x0eprotectionMode\x127\n" +
 	"\x18is_auto_rotation_enabled\x18\x06 \x01(\bR\x15isAutoRotationEnabled\x12\x86\x01\n" +

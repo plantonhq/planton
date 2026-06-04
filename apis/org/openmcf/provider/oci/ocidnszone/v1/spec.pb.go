@@ -166,6 +166,9 @@ type OciDnsZoneSpec struct {
 	Scope OciDnsZoneSpec_Scope `protobuf:"varint,3,opt,name=scope,proto3,enum=org.openmcf.provider.oci.ocidnszone.v1.OciDnsZoneSpec_Scope" json:"scope,omitempty"`
 	// OCID of the private DNS view. Required when scope is private.
 	// Not applicable for global zones. ForceNew.
+	// No default_kind/default_kind_field_path: OCI private DNS views are not
+	// modeled as an OpenMCF kind, so this stays literal-only with no
+	// cross-resource reference default.
 	ViewId *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=view_id,json=viewId,proto3" json:"view_id,omitempty"`
 	// Enable DNSSEC signing for the zone. When true, OCI generates
 	// KSK and ZSK key pairs and signs zone records. Only meaningful
@@ -333,12 +336,12 @@ var File_org_openmcf_provider_oci_ocidnszone_v1_spec_proto protoreflect.FileDesc
 
 const file_org_openmcf_provider_oci_ocidnszone_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"1org/openmcf/provider/oci/ocidnszone/v1/spec.proto\x12&org.openmcf.provider.oci.ocidnszone.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xdb\v\n" +
-	"\x0eOciDnsZoneSpec\x12\x86\x01\n" +
-	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB+\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1cstatus.outputs.compartmentIdR\rcompartmentId\x12\\\n" +
+	"1org/openmcf/provider/oci/ocidnszone/v1/spec.proto\x12&org.openmcf.provider.oci.ocidnszone.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xc1\v\n" +
+	"\x0eOciDnsZoneSpec\x12\x87\x01\n" +
+	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x12\\\n" +
 	"\tzone_type\x18\x02 \x01(\x0e2?.org.openmcf.provider.oci.ocidnszone.v1.OciDnsZoneSpec.ZoneTypeR\bzoneType\x12R\n" +
-	"\x05scope\x18\x03 \x01(\x0e2<.org.openmcf.provider.oci.ocidnszone.v1.OciDnsZoneSpec.ScopeR\x05scope\x12f\n" +
-	"\aview_id\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x19\x92\xd4a\x15status.outputs.viewIdR\x06viewId\x12/\n" +
+	"\x05scope\x18\x03 \x01(\x0e2<.org.openmcf.provider.oci.ocidnszone.v1.OciDnsZoneSpec.ScopeR\x05scope\x12K\n" +
+	"\aview_id\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x06viewId\x12/\n" +
 	"\x11is_dnssec_enabled\x18\x05 \x01(\bH\x00R\x0fisDnssecEnabled\x88\x01\x01\x12p\n" +
 	"\x10external_masters\x18\x06 \x03(\v2E.org.openmcf.provider.oci.ocidnszone.v1.OciDnsZoneSpec.ExternalServerR\x0fexternalMasters\x12x\n" +
 	"\x14external_downstreams\x18\a \x03(\v2E.org.openmcf.provider.oci.ocidnszone.v1.OciDnsZoneSpec.ExternalServerR\x13externalDownstreams\x1au\n" +

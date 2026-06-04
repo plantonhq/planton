@@ -715,13 +715,13 @@ var File_org_openmcf_provider_oci_ocivaultsecret_v1_spec_proto protoreflect.File
 
 const file_org_openmcf_provider_oci_ocivaultsecret_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"5org/openmcf/provider/oci/ocivaultsecret/v1/spec.proto\x12*org.openmcf.provider.oci.ocivaultsecret.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xfc\x1c\n" +
-	"\x12OciVaultSecretSpec\x12\x86\x01\n" +
-	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB+\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1cstatus.outputs.compartmentIdR\rcompartmentId\x12(\n" +
+	"5org/openmcf/provider/oci/ocivaultsecret/v1/spec.proto\x12*org.openmcf.provider.oci.ocivaultsecret.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x81\x1d\n" +
+	"\x12OciVaultSecretSpec\x12\x87\x01\n" +
+	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x12(\n" +
 	"\vsecret_name\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\n" +
-	"secretName\x12t\n" +
-	"\bvault_id\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB%\xbaH\x03\xc8\x01\x01\x88\xd4a\x96\x1a\x92\xd4a\x16status.outputs.vaultIdR\avaultId\x12n\n" +
-	"\x06key_id\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB#\xbaH\x03\xc8\x01\x01\x88\xd4a\x97\x1a\x92\xd4a\x14status.outputs.keyIdR\x05keyId\x12 \n" +
+	"secretName\x12u\n" +
+	"\bvault_id\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\x96\x1a\x92\xd4a\x17status.outputs.vault_idR\avaultId\x12o\n" +
+	"\x06key_id\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\x97\x1a\x92\xd4a\x15status.outputs.key_idR\x05keyId\x12 \n" +
 	"\vdescription\x18\x05 \x01(\tR\vdescription\x12s\n" +
 	"\x0esecret_content\x18\x06 \x01(\v2L.org.openmcf.provider.oci.ocivaultsecret.v1.OciVaultSecretSpec.SecretContentR\rsecretContent\x124\n" +
 	"\x16enable_auto_generation\x18\a \x01(\bR\x14enableAutoGeneration\x12\x92\x01\n" +
@@ -761,15 +761,15 @@ const file_org_openmcf_provider_oci_ocivaultsecret_v1_spec_proto_rawDesc = "" +
 	"\bRuleType\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12\x16\n" +
 	"\x12secret_expiry_rule\x10\x01\x12\x15\n" +
-	"\x11secret_reuse_rule\x10\x02\x1a\xf1\x05\n" +
+	"\x11secret_reuse_rule\x10\x02\x1a\xf3\x05\n" +
 	"\x0eRotationConfig\x12A\n" +
 	"\x1dis_scheduled_rotation_enabled\x18\x01 \x01(\bR\x1aisScheduledRotationEnabled\x12+\n" +
 	"\x11rotation_interval\x18\x02 \x01(\tR\x10rotationInterval\x12\x9d\x01\n" +
-	"\x15target_system_details\x18\x03 \x01(\v2a.org.openmcf.provider.oci.ocivaultsecret.v1.OciVaultSecretSpec.RotationConfig.TargetSystemDetailsB\x06\xbaH\x03\xc8\x01\x01R\x13targetSystemDetails\x1a\xce\x03\n" +
+	"\x15target_system_details\x18\x03 \x01(\v2a.org.openmcf.provider.oci.ocivaultsecret.v1.OciVaultSecretSpec.RotationConfig.TargetSystemDetailsB\x06\xbaH\x03\xc8\x01\x01R\x13targetSystemDetails\x1a\xd0\x03\n" +
 	"\x13TargetSystemDetails\x12\xac\x01\n" +
 	"\x12target_system_type\x18\x01 \x01(\x0e2r.org.openmcf.provider.oci.ocivaultsecret.v1.OciVaultSecretSpec.RotationConfig.TargetSystemDetails.TargetSystemTypeB\n" +
-	"\xbaH\a\x82\x01\x04\x10\x01 \x00R\x10targetSystemType\x12w\n" +
-	"\x06adb_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\x88\xd4a\x82\x1a\x92\xd4a#status.outputs.autonomousDatabaseIdR\x05adbId\x12S\n" +
+	"\xbaH\a\x82\x01\x04\x10\x01 \x00R\x10targetSystemType\x12y\n" +
+	"\x06adb_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\x82\x1a\x92\xd4a%status.outputs.autonomous_database_idR\x05adbId\x12S\n" +
 	"\vfunction_id\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\n" +
 	"functionId\":\n" +
 	"\x10TargetSystemType\x12\x0f\n" +

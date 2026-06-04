@@ -279,11 +279,11 @@ var File_org_openmcf_provider_aws_awsalb_v1_spec_proto protoreflect.FileDescript
 
 const file_org_openmcf_provider_aws_awsalb_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"-org/openmcf/provider/aws/awsalb/v1/spec.proto\x12\"org.openmcf.provider.aws.awsalb.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xaa\x04\n" +
+	"-org/openmcf/provider/aws/awsalb/v1/spec.proto\x12\"org.openmcf.provider.aws.awsalb.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xd4\x04\n" +
 	"\n" +
 	"AwsAlbSpec\x12\x1f\n" +
-	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12^\n" +
-	"\asubnets\x18\x02 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x10\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x02\x88\xd4a\xd8\x01R\asubnets\x12\x86\x01\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x87\x01\n" +
+	"\asubnets\x18\x02 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB9\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x02\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\asubnets\x12\x86\x01\n" +
 	"\x0fsecurity_groups\x18\x03 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x0esecurityGroups\x12\x1a\n" +
 	"\binternal\x18\x04 \x01(\bR\binternal\x12:\n" +
 	"\x19delete_protection_enabled\x18\x05 \x01(\bR\x17deleteProtectionEnabled\x128\n" +

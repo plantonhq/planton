@@ -136,9 +136,9 @@ var File_org_openmcf_provider_oci_ocipublicip_v1_spec_proto protoreflect.FileDes
 
 const file_org_openmcf_provider_oci_ocipublicip_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"2org/openmcf/provider/oci/ocipublicip/v1/spec.proto\x12'org.openmcf.provider.oci.ocipublicip.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xc4\x04\n" +
-	"\x0fOciPublicIpSpec\x12\x86\x01\n" +
-	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB+\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1cstatus.outputs.compartmentIdR\rcompartmentId\x126\n" +
+	"2org/openmcf/provider/oci/ocipublicip/v1/spec.proto\x12'org.openmcf.provider.oci.ocipublicip.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xc5\x04\n" +
+	"\x0fOciPublicIpSpec\x12\x87\x01\n" +
+	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x126\n" +
 	"\blifetime\x18\x02 \x01(\tB\x1a\xbaH\x17r\x15R\bRESERVEDR\tEPHEMERALR\blifetime\x12!\n" +
 	"\fdisplay_name\x18\x03 \x01(\tR\vdisplayName\x12V\n" +
 	"\rprivate_ip_id\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\vprivateIpId\x12]\n" +

@@ -608,7 +608,6 @@ type OciComputeInstanceSpec_SourceDetails struct {
 	// 30-120=Ultra High Performance). Defaults to 10.
 	BootVolumeVpusPerGb *int64 `protobuf:"varint,4,opt,name=boot_volume_vpus_per_gb,json=bootVolumeVpusPerGb,proto3,oneof" json:"boot_volume_vpus_per_gb,omitempty"`
 	// OCID of a KMS key to encrypt the boot volume at rest.
-	// default_kind will be added when OciKmsKey (R25) is implemented.
 	KmsKeyId      *v1.StringValueOrRef `protobuf:"bytes,5,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -1312,9 +1311,9 @@ var File_org_openmcf_provider_oci_ocicomputeinstance_v1_spec_proto protoreflect.
 
 const file_org_openmcf_provider_oci_ocicomputeinstance_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"9org/openmcf/provider/oci/ocicomputeinstance/v1/spec.proto\x12.org.openmcf.provider.oci.ocicomputeinstance.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xfa3\n" +
-	"\x16OciComputeInstanceSpec\x12\x86\x01\n" +
-	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB+\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1cstatus.outputs.compartmentIdR\rcompartmentId\x128\n" +
+	"9org/openmcf/provider/oci/ocicomputeinstance/v1/spec.proto\x12.org.openmcf.provider.oci.ocicomputeinstance.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x9f4\n" +
+	"\x16OciComputeInstanceSpec\x12\x87\x01\n" +
+	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x128\n" +
 	"\x13availability_domain\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x12availabilityDomain\x12\x1d\n" +
 	"\x05shape\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x05shape\x12!\n" +
 	"\fdisplay_name\x18\x04 \x01(\tR\vdisplayName\x12u\n" +
@@ -1343,25 +1342,25 @@ const file_org_openmcf_provider_oci_ocicomputeinstance_v1_spec_proto_rawDesc = "
 	"\x05nvmes\x18\x04 \x01(\x05H\x02R\x05nvmes\x88\x01\x01B\b\n" +
 	"\x06_ocpusB\x10\n" +
 	"\x0e_memory_in_gbsB\b\n" +
-	"\x06_nvmes\x1a\x89\x04\n" +
+	"\x06_nvmes\x1a\xa9\x04\n" +
 	"\rSourceDetails\x12\x8a\x01\n" +
 	"\vsource_type\x18\x01 \x01(\x0e2_.org.openmcf.provider.oci.ocicomputeinstance.v1.OciComputeInstanceSpec.SourceDetails.SourceTypeB\b\xbaH\x05\x82\x01\x02 \x00R\n" +
 	"sourceType\x12$\n" +
 	"\tsource_id\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\bsourceId\x129\n" +
 	"\x17boot_volume_size_in_gbs\x18\x03 \x01(\x03H\x00R\x13bootVolumeSizeInGbs\x88\x01\x01\x129\n" +
-	"\x17boot_volume_vpus_per_gb\x18\x04 \x01(\x03H\x01R\x13bootVolumeVpusPerGb\x88\x01\x01\x12P\n" +
+	"\x17boot_volume_vpus_per_gb\x18\x04 \x01(\x03H\x01R\x13bootVolumeVpusPerGb\x88\x01\x01\x12p\n" +
 	"\n" +
-	"kms_key_id\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\bkmsKeyId\"E\n" +
+	"kms_key_id\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x97\x1a\x92\xd4a\x15status.outputs.key_idR\bkmsKeyId\"E\n" +
 	"\n" +
 	"SourceType\x12\x1b\n" +
 	"\x17source_type_unspecified\x10\x00\x12\t\n" +
 	"\x05image\x10\x01\x12\x0f\n" +
 	"\vboot_volume\x10\x02B\x1a\n" +
 	"\x18_boot_volume_size_in_gbsB\x1a\n" +
-	"\x18_boot_volume_vpus_per_gb\x1a\xf2\x04\n" +
-	"\x11CreateVnicDetails\x12w\n" +
-	"\tsubnet_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xe5\x19\x92\xd4a\x17status.outputs.subnetIdR\bsubnetId\x12\x83\x01\n" +
-	"\ansg_ids\x18\x02 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB6\xbaH\x05\x92\x01\x02\x10\x05\x88\xd4a\xe6\x19\x92\xd4a%status.outputs.networkSecurityGroupIdR\x06nsgIds\x12-\n" +
+	"\x18_boot_volume_vpus_per_gb\x1a\xf6\x04\n" +
+	"\x11CreateVnicDetails\x12x\n" +
+	"\tsubnet_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\xe5\x19\x92\xd4a\x18status.outputs.subnet_idR\bsubnetId\x12\x86\x01\n" +
+	"\ansg_ids\x18\x02 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB9\xbaH\x05\x92\x01\x02\x10\x05\x88\xd4a\xe6\x19\x92\xd4a(status.outputs.network_security_group_idR\x06nsgIds\x12-\n" +
 	"\x10assign_public_ip\x18\x03 \x01(\bH\x00R\x0eassignPublicIp\x88\x01\x01\x12!\n" +
 	"\fdisplay_name\x18\x04 \x01(\tR\vdisplayName\x12%\n" +
 	"\x0ehostname_label\x18\x05 \x01(\tR\rhostnameLabel\x12\x1d\n" +

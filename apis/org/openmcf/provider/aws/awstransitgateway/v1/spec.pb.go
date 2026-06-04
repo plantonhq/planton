@@ -394,13 +394,13 @@ const file_org_openmcf_provider_aws_awstransitgateway_v1_spec_proto_rawDesc = ""
 	"\x1btransit_gateway_cidr_blocks\x18\v \x03(\tR\x18transitGatewayCidrBlocks\x12\x83\x01\n" +
 	"\x0fvpc_attachments\x18\f \x03(\v2M.org.openmcf.provider.aws.awstransitgateway.v1.AwsTransitGatewayVpcAttachmentB\v\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01R\x0evpcAttachments:\xc8\x03\xbaH\xc4\x03\x1a\x91\x01\n" +
 	"!transit_gateway_cidr_blocks_max_5\x12?transit_gateway_cidr_blocks supports a maximum of 5 CIDR blocks\x1a+size(this.transit_gateway_cidr_blocks) <= 5\x1a\xad\x02\n" +
-	"\x1bamazon_side_asn_valid_range\x12`amazon_side_asn must be in range 64512-65534 (16-bit) or 4200000000-4294967294 (32-bit) when set\x1a\xab\x01this.amazon_side_asn == 0 || (this.amazon_side_asn >= 64512 && this.amazon_side_asn <= 65534) || (this.amazon_side_asn >= 4200000000 && this.amazon_side_asn <= 4294967294)\"\xf0\x05\n" +
+	"\x1bamazon_side_asn_valid_range\x12`amazon_side_asn must be in range 64512-65534 (16-bit) or 4200000000-4294967294 (32-bit) when set\x1a\xab\x01this.amazon_side_asn == 0 || (this.amazon_side_asn >= 64512 && this.amazon_side_asn <= 65534) || (this.amazon_side_asn >= 4200000000 && this.amazon_side_asn <= 4294967294)\"\x9a\x06\n" +
 	"\x1eAwsTransitGatewayVpcAttachment\x12\xd1\x01\n" +
 	"\x04name\x18\x01 \x01(\tB\xbc\x01\xbaH\xb8\x01\xba\x01\xb1\x01\n" +
 	"\x16attachment_name_format\x12oname must start with a lowercase letter and contain only lowercase letters, numbers, and hyphens (max 63 chars)\x1a&this.matches('^[a-z][a-z0-9-]{0,62}$')\xc8\x01\x01R\x04name\x12o\n" +
-	"\x06vpc_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xd8\x01\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12c\n" +
+	"\x06vpc_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xd8\x01\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12\x8c\x01\n" +
 	"\n" +
-	"subnet_ids\x18\x03 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x10\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01\x88\xd4a\xd8\x01R\tsubnetIds\x12)\n" +
+	"subnet_ids\x18\x03 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB9\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12)\n" +
 	"\vdns_support\x18\x04 \x01(\bB\b\x92\xa6\x1d\x04trueR\n" +
 	"dnsSupport\x12!\n" +
 	"\fipv6_support\x18\x05 \x01(\bR\vipv6Support\x124\n" +

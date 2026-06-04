@@ -20,13 +20,13 @@
 //     protojson -> JSON map -> Flatten (applies type rules using proto
 //     descriptors) -> WriteMapToHCL -> string. Two emission modes exist,
 //     selected per kind by RenderTFVars:
-//       - snake_case (ProtoToTFVars): keys renamed to proto snake_case to match
-//         the generated snake_case variables.tf that provider-abstraction
-//         modules consume.
-//       - camelCase (ProtoToManifestTFVars): keys kept as the CRD's camelCase
-//         JSON, for kinds whose CloudResourceKindMeta carries a
-//         kubernetes_manifest_projection -- their `spec` is fed verbatim to a
-//         kubernetes_manifest passthrough module (see manifestmodule.go).
+//     - snake_case (ProtoToTFVars): keys renamed to proto snake_case to match
+//     the generated snake_case variables.tf that provider-abstraction
+//     modules consume.
+//     - camelCase (ProtoToManifestTFVars): keys kept as the CRD's camelCase
+//     JSON, for kinds whose CloudResourceKindMeta carries a
+//     kubernetes_manifest_projection -- their `spec` is fed verbatim to a
+//     kubernetes_manifest passthrough module (see manifestmodule.go).
 //
 //  3. variables.tf generation (tftype.go, variablestf.go) -- walks a proto
 //     message descriptor to produce Terraform variable blocks. Consults the

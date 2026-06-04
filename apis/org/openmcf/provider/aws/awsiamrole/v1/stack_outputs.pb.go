@@ -27,9 +27,15 @@ type AwsIamRoleStackOutputs struct {
 	// role_arn is the Amazon Resource Name (ARN) of the created IAM role.
 	RoleArn string `protobuf:"bytes,1,opt,name=role_arn,json=roleArn,proto3" json:"role_arn,omitempty"`
 	// role_name is the name of the IAM role in AWS.
-	RoleName      string `protobuf:"bytes,2,opt,name=role_name,json=roleName,proto3" json:"role_name,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	RoleName string `protobuf:"bytes,2,opt,name=role_name,json=roleName,proto3" json:"role_name,omitempty"`
+	// instance_profile_arn is the ARN of the IAM instance profile that wraps this
+	// role. EC2 requires an instance profile (not a bare role) to assume a role,
+	// so this is what an AwsEc2Instance.iam_instance_profile_arn should reference.
+	InstanceProfileArn string `protobuf:"bytes,3,opt,name=instance_profile_arn,json=instanceProfileArn,proto3" json:"instance_profile_arn,omitempty"`
+	// instance_profile_name is the name of the IAM instance profile wrapping this role.
+	InstanceProfileName string `protobuf:"bytes,4,opt,name=instance_profile_name,json=instanceProfileName,proto3" json:"instance_profile_name,omitempty"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
 }
 
 func (x *AwsIamRoleStackOutputs) Reset() {
@@ -76,14 +82,30 @@ func (x *AwsIamRoleStackOutputs) GetRoleName() string {
 	return ""
 }
 
+func (x *AwsIamRoleStackOutputs) GetInstanceProfileArn() string {
+	if x != nil {
+		return x.InstanceProfileArn
+	}
+	return ""
+}
+
+func (x *AwsIamRoleStackOutputs) GetInstanceProfileName() string {
+	if x != nil {
+		return x.InstanceProfileName
+	}
+	return ""
+}
+
 var File_org_openmcf_provider_aws_awsiamrole_v1_stack_outputs_proto protoreflect.FileDescriptor
 
 const file_org_openmcf_provider_aws_awsiamrole_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
-	":org/openmcf/provider/aws/awsiamrole/v1/stack_outputs.proto\x12&org.openmcf.provider.aws.awsiamrole.v1\"P\n" +
+	":org/openmcf/provider/aws/awsiamrole/v1/stack_outputs.proto\x12&org.openmcf.provider.aws.awsiamrole.v1\"\xb6\x01\n" +
 	"\x16AwsIamRoleStackOutputs\x12\x19\n" +
 	"\brole_arn\x18\x01 \x01(\tR\aroleArn\x12\x1b\n" +
-	"\trole_name\x18\x02 \x01(\tR\broleNameB\xd5\x02\n" +
+	"\trole_name\x18\x02 \x01(\tR\broleName\x120\n" +
+	"\x14instance_profile_arn\x18\x03 \x01(\tR\x12instanceProfileArn\x122\n" +
+	"\x15instance_profile_name\x18\x04 \x01(\tR\x13instanceProfileNameB\xd5\x02\n" +
 	"*com.org.openmcf.provider.aws.awsiamrole.v1B\x11StackOutputsProtoP\x01ZUgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsiamrole/v1;awsiamrolev1\xa2\x02\x05OOPAA\xaa\x02&Org.Openmcf.Provider.Aws.Awsiamrole.V1\xca\x02&Org\\Openmcf\\Provider\\Aws\\Awsiamrole\\V1\xe2\x022Org\\Openmcf\\Provider\\Aws\\Awsiamrole\\V1\\GPBMetadata\xea\x02+Org::Openmcf::Provider::Aws::Awsiamrole::V1b\x06proto3"
 
 var (

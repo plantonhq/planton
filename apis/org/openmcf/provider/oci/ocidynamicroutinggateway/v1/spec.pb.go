@@ -860,9 +860,9 @@ var File_org_openmcf_provider_oci_ocidynamicroutinggateway_v1_spec_proto protore
 
 const file_org_openmcf_provider_oci_ocidynamicroutinggateway_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"?org/openmcf/provider/oci/ocidynamicroutinggateway/v1/spec.proto\x124org.openmcf.provider.oci.ocidynamicroutinggateway.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xa8\x18\n" +
-	"\x1cOciDynamicRoutingGatewaySpec\x12\x86\x01\n" +
-	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB+\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1cstatus.outputs.compartmentIdR\rcompartmentId\x12!\n" +
+	"?org/openmcf/provider/oci/ocidynamicroutinggateway/v1/spec.proto\x124org.openmcf.provider.oci.ocidynamicroutinggateway.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xa9\x18\n" +
+	"\x1cOciDynamicRoutingGatewaySpec\x12\x87\x01\n" +
+	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x12!\n" +
 	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName\x12\x82\x01\n" +
 	"\vattachments\x18\x03 \x03(\v2`.org.openmcf.provider.oci.ocidynamicroutinggateway.v1.OciDynamicRoutingGatewaySpec.DrgAttachmentR\vattachments\x12\x83\x01\n" +
 	"\froute_tables\x18\x04 \x03(\v2`.org.openmcf.provider.oci.ocidynamicroutinggateway.v1.OciDynamicRoutingGatewaySpec.DrgRouteTableR\vrouteTables\x12\x98\x01\n" +

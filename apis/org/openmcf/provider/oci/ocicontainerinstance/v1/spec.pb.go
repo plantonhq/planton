@@ -1543,9 +1543,9 @@ var File_org_openmcf_provider_oci_ocicontainerinstance_v1_spec_proto protoreflec
 
 const file_org_openmcf_provider_oci_ocicontainerinstance_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	";org/openmcf/provider/oci/ocicontainerinstance/v1/spec.proto\x120org.openmcf.provider.oci.ocicontainerinstance.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x99,\n" +
-	"\x18OciContainerInstanceSpec\x12\x86\x01\n" +
-	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB+\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1cstatus.outputs.compartmentIdR\rcompartmentId\x128\n" +
+	";org/openmcf/provider/oci/ocicontainerinstance/v1/spec.proto\x120org.openmcf.provider.oci.ocicontainerinstance.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x9e,\n" +
+	"\x18OciContainerInstanceSpec\x12\x87\x01\n" +
+	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x128\n" +
 	"\x13availability_domain\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x12availabilityDomain\x12!\n" +
 	"\fdisplay_name\x18\x03 \x01(\tR\vdisplayName\x12\x1d\n" +
 	"\x05shape\x18\x04 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x05shape\x12\x81\x01\n" +
@@ -1621,13 +1621,13 @@ const file_org_openmcf_provider_oci_ocicontainerinstance_v1_spec_proto_rawDesc =
 	"\fis_read_only\x18\x03 \x01(\bR\n" +
 	"isReadOnly\x12\x1c\n" +
 	"\tpartition\x18\x04 \x01(\x05R\tpartition\x12\x19\n" +
-	"\bsub_path\x18\x05 \x01(\tR\asubPath\x1a\xec\x03\n" +
-	"\x04Vnic\x12w\n" +
-	"\tsubnet_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xe5\x19\x92\xd4a\x17status.outputs.subnetIdR\bsubnetId\x12!\n" +
+	"\bsub_path\x18\x05 \x01(\tR\asubPath\x1a\xf0\x03\n" +
+	"\x04Vnic\x12x\n" +
+	"\tsubnet_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\xe5\x19\x92\xd4a\x18status.outputs.subnet_idR\bsubnetId\x12!\n" +
 	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName\x12%\n" +
 	"\x0ehostname_label\x18\x03 \x01(\tR\rhostnameLabel\x126\n" +
-	"\x15is_public_ip_assigned\x18\x04 \x01(\bH\x00R\x12isPublicIpAssigned\x88\x01\x01\x12{\n" +
-	"\ansg_ids\x18\x05 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xe6\x19\x92\xd4a%status.outputs.networkSecurityGroupIdR\x06nsgIds\x12\x1d\n" +
+	"\x15is_public_ip_assigned\x18\x04 \x01(\bH\x00R\x12isPublicIpAssigned\x88\x01\x01\x12~\n" +
+	"\ansg_ids\x18\x05 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB1\x88\xd4a\xe6\x19\x92\xd4a(status.outputs.network_security_group_idR\x06nsgIds\x12\x1d\n" +
 	"\n" +
 	"private_ip\x18\x06 \x01(\tR\tprivateIp\x123\n" +
 	"\x16skip_source_dest_check\x18\a \x01(\bR\x13skipSourceDestCheckB\x18\n" +

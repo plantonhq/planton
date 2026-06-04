@@ -1275,13 +1275,13 @@ var File_org_openmcf_provider_oci_ocidbsystem_v1_spec_proto protoreflect.FileDes
 
 const file_org_openmcf_provider_oci_ocidbsystem_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"2org/openmcf/provider/oci/ocidbsystem/v1/spec.proto\x12'org.openmcf.provider.oci.ocidbsystem.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xfa,\n" +
-	"\x0fOciDbSystemSpec\x12\x86\x01\n" +
-	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB+\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1cstatus.outputs.compartmentIdR\rcompartmentId\x12!\n" +
+	"2org/openmcf/provider/oci/ocidbsystem/v1/spec.proto\x12'org.openmcf.provider.oci.ocidbsystem.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x83-\n" +
+	"\x0fOciDbSystemSpec\x12\x87\x01\n" +
+	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x12!\n" +
 	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName\x128\n" +
 	"\x13availability_domain\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x12availabilityDomain\x12\x1d\n" +
-	"\x05shape\x18\x04 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x05shape\x12w\n" +
-	"\tsubnet_id\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xe5\x19\x92\xd4a\x17status.outputs.subnetIdR\bsubnetId\x120\n" +
+	"\x05shape\x18\x04 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x05shape\x12x\n" +
+	"\tsubnet_id\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\xe5\x19\x92\xd4a\x18status.outputs.subnet_idR\bsubnetId\x120\n" +
 	"\x0fssh_public_keys\x18\x06 \x03(\tB\b\xbaH\x05\x92\x01\x02\b\x01R\rsshPublicKeys\x12#\n" +
 	"\bhostname\x18\a \x01(\tB\a\xbaH\x04r\x02\x10\x01R\bhostname\x12$\n" +
 	"\x0ecpu_core_count\x18\b \x01(\x05R\fcpuCoreCount\x12s\n" +
@@ -1295,10 +1295,10 @@ const file_org_openmcf_provider_oci_ocidbsystem_v1_spec_proto_rawDesc = "" +
 	"node_count\x18\x0e \x01(\x05R\tnodeCount\x12\x16\n" +
 	"\x06domain\x18\x0f \x01(\tR\x06domain\x12!\n" +
 	"\fcluster_name\x18\x10 \x01(\tR\vclusterName\x12#\n" +
-	"\rfault_domains\x18\x11 \x03(\tR\ffaultDomains\x12{\n" +
-	"\ansg_ids\x18\x12 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xe6\x19\x92\xd4a%status.outputs.networkSecurityGroupIdR\x06nsgIds\x12~\n" +
-	"\x10backup_subnet_id\x18\x13 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB \x88\xd4a\xe5\x19\x92\xd4a\x17status.outputs.subnetIdR\x0ebackupSubnetId\x12\x97\x01\n" +
-	"\x16backup_network_nsg_ids\x18\x14 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xe6\x19\x92\xd4a%status.outputs.networkSecurityGroupIdR\x13backupNetworkNsgIds\x12P\n" +
+	"\rfault_domains\x18\x11 \x03(\tR\ffaultDomains\x12~\n" +
+	"\ansg_ids\x18\x12 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB1\x88\xd4a\xe6\x19\x92\xd4a(status.outputs.network_security_group_idR\x06nsgIds\x12\x7f\n" +
+	"\x10backup_subnet_id\x18\x13 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xe5\x19\x92\xd4a\x18status.outputs.subnet_idR\x0ebackupSubnetId\x12\x9a\x01\n" +
+	"\x16backup_network_nsg_ids\x18\x14 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB1\x88\xd4a\xe6\x19\x92\xd4a(status.outputs.network_security_group_idR\x13backupNetworkNsgIds\x12P\n" +
 	"\n" +
 	"kms_key_id\x18\x15 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\bkmsKeyId\x12+\n" +
 	"\x12kms_key_version_id\x18\x16 \x01(\tR\x0fkmsKeyVersionId\x12\x1b\n" +

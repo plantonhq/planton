@@ -2079,17 +2079,17 @@ var File_org_openmcf_provider_oci_ociapplicationloadbalancer_v1_spec_proto proto
 
 const file_org_openmcf_provider_oci_ociapplicationloadbalancer_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Aorg/openmcf/provider/oci/ociapplicationloadbalancer/v1/spec.proto\x126org.openmcf.provider.oci.ociapplicationloadbalancer.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xdd<\n" +
-	"\x1eOciApplicationLoadBalancerSpec\x12\x86\x01\n" +
-	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB+\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1cstatus.outputs.compartmentIdR\rcompartmentId\x12!\n" +
+	"Aorg/openmcf/provider/oci/ociapplicationloadbalancer/v1/spec.proto\x126org.openmcf.provider.oci.ociapplicationloadbalancer.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xe2<\n" +
+	"\x1eOciApplicationLoadBalancerSpec\x12\x87\x01\n" +
+	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x12!\n" +
 	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName\x12\x1d\n" +
 	"\x05shape\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x05shape\x12\x88\x01\n" +
-	"\rshape_details\x18\x04 \x01(\v2c.org.openmcf.provider.oci.ociapplicationloadbalancer.v1.OciApplicationLoadBalancerSpec.ShapeDetailsR\fshapeDetails\x12{\n" +
+	"\rshape_details\x18\x04 \x01(\v2c.org.openmcf.provider.oci.ociapplicationloadbalancer.v1.OciApplicationLoadBalancerSpec.ShapeDetailsR\fshapeDetails\x12|\n" +
 	"\n" +
-	"subnet_ids\x18\x05 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x05\x92\x01\x02\b\x01\x88\xd4a\xe5\x19\x92\xd4a\x17status.outputs.subnetIdR\tsubnetIds\x12\x1d\n" +
+	"subnet_ids\x18\x05 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\xbaH\x05\x92\x01\x02\b\x01\x88\xd4a\xe5\x19\x92\xd4a\x18status.outputs.subnet_idR\tsubnetIds\x12\x1d\n" +
 	"\n" +
-	"is_private\x18\x06 \x01(\bR\tisPrivate\x12\x9f\x01\n" +
-	"\x1anetwork_security_group_ids\x18\a \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xe6\x19\x92\xd4a%status.outputs.networkSecurityGroupIdR\x17networkSecurityGroupIds\x12?\n" +
+	"is_private\x18\x06 \x01(\bR\tisPrivate\x12\xa2\x01\n" +
+	"\x1anetwork_security_group_ids\x18\a \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB1\x88\xd4a\xe6\x19\x92\xd4a(status.outputs.network_security_group_idR\x17networkSecurityGroupIds\x12?\n" +
 	"\x1cis_delete_protection_enabled\x18\b \x01(\bR\x19isDeleteProtectionEnabled\x12\x17\n" +
 	"\aip_mode\x18\t \x01(\tR\x06ipMode\x12\x84\x01\n" +
 	"\freserved_ips\x18\n" +

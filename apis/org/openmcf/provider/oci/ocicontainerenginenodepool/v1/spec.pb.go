@@ -895,11 +895,11 @@ var File_org_openmcf_provider_oci_ocicontainerenginenodepool_v1_spec_proto proto
 
 const file_org_openmcf_provider_oci_ocicontainerenginenodepool_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Aorg/openmcf/provider/oci/ocicontainerenginenodepool/v1/spec.proto\x126org.openmcf.provider.oci.ocicontainerenginenodepool.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xc7 \n" +
-	"\x1eOciContainerEngineNodePoolSpec\x12\x86\x01\n" +
-	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB+\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1cstatus.outputs.compartmentIdR\rcompartmentId\x12z\n" +
+	"Aorg/openmcf/provider/oci/ocicontainerenginenodepool/v1/spec.proto\x126org.openmcf.provider.oci.ocicontainerenginenodepool.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xd1 \n" +
+	"\x1eOciContainerEngineNodePoolSpec\x12\x87\x01\n" +
+	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x12{\n" +
 	"\n" +
-	"cluster_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\xef\x19\x92\xd4a\x18status.outputs.clusterIdR\tclusterId\x12\x12\n" +
+	"cluster_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x03\xc8\x01\x01\x88\xd4a\xef\x19\x92\xd4a\x19status.outputs.cluster_idR\tclusterId\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04name\x12-\n" +
 	"\x12kubernetes_version\x18\x04 \x01(\tR\x11kubernetesVersion\x12&\n" +
 	"\n" +
@@ -921,29 +921,29 @@ const file_org_openmcf_provider_oci_ocicontainerenginenodepool_v1_spec_proto_raw
 	"\rmemory_in_gbs\x18\x02 \x01(\x02R\vmemoryInGbs\x1am\n" +
 	"\x11NodeSourceDetails\x12\"\n" +
 	"\bimage_id\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\aimageId\x124\n" +
-	"\x17boot_volume_size_in_gbs\x18\x02 \x01(\x03R\x13bootVolumeSizeInGbs\x1a\x9a\x05\n" +
+	"\x17boot_volume_size_in_gbs\x18\x02 \x01(\x03R\x13bootVolumeSizeInGbs\x1a\x9d\x05\n" +
 	"\x11NodeConfigDetails\x12\x9d\x01\n" +
 	"\x11placement_configs\x18\x01 \x03(\v2f.org.openmcf.provider.oci.ocicontainerenginenodepool.v1.OciContainerEngineNodePoolSpec.PlacementConfigB\b\xbaH\x05\x92\x01\x02\b\x01R\x10placementConfigs\x12\x1b\n" +
-	"\x04size\x18\x02 \x01(\x05B\a\xbaH\x04\x1a\x02 \x00R\x04size\x12{\n" +
-	"\ansg_ids\x18\x03 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xe6\x19\x92\xd4a%status.outputs.networkSecurityGroupIdR\x06nsgIds\x12P\n" +
+	"\x04size\x18\x02 \x01(\x05B\a\xbaH\x04\x1a\x02 \x00R\x04size\x12~\n" +
+	"\ansg_ids\x18\x03 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB1\x88\xd4a\xe6\x19\x92\xd4a(status.outputs.network_security_group_idR\x06nsgIds\x12P\n" +
 	"\n" +
 	"kms_key_id\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\bkmsKeyId\x12K\n" +
 	"#is_pv_encryption_in_transit_enabled\x18\x05 \x01(\bR\x1eisPvEncryptionInTransitEnabled\x12\xab\x01\n" +
-	"\x1apod_network_option_details\x18\x06 \x01(\v2n.org.openmcf.provider.oci.ocicontainerenginenodepool.v1.OciContainerEngineNodePoolSpec.PodNetworkOptionDetailsR\x17podNetworkOptionDetails\x1a\xfc\x03\n" +
+	"\x1apod_network_option_details\x18\x06 \x01(\v2n.org.openmcf.provider.oci.ocicontainerenginenodepool.v1.OciContainerEngineNodePoolSpec.PodNetworkOptionDetailsR\x17podNetworkOptionDetails\x1a\xfd\x03\n" +
 	"\x0fPlacementConfig\x128\n" +
-	"\x13availability_domain\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x12availabilityDomain\x12w\n" +
-	"\tsubnet_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xe5\x19\x92\xd4a\x17status.outputs.subnetIdR\bsubnetId\x12#\n" +
+	"\x13availability_domain\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x12availabilityDomain\x12x\n" +
+	"\tsubnet_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\xe5\x19\x92\xd4a\x18status.outputs.subnet_idR\bsubnetId\x12#\n" +
 	"\rfault_domains\x18\x03 \x03(\tR\ffaultDomains\x12j\n" +
 	"\x17capacity_reservation_id\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x15capacityReservationId\x12\xa4\x01\n" +
 	"\x17preemptible_node_config\x18\x05 \x01(\v2l.org.openmcf.provider.oci.ocicontainerenginenodepool.v1.OciContainerEngineNodePoolSpec.PreemptibleNodeConfigR\x15preemptibleNodeConfig\x1ao\n" +
 	"\x15PreemptibleNodeConfig\x12:\n" +
 	"\x17is_preserve_boot_volume\x18\x01 \x01(\bH\x00R\x14isPreserveBootVolume\x88\x01\x01B\x1a\n" +
-	"\x18_is_preserve_boot_volume\x1a\xcb\x03\n" +
+	"\x18_is_preserve_boot_volume\x1a\xcf\x03\n" +
 	"\x17PodNetworkOptionDetails\x12\x83\x01\n" +
 	"\bcni_type\x18\x01 \x01(\x0e2^.org.openmcf.provider.oci.ocicontainerenginenodepool.v1.OciContainerEngineNodePoolSpec.CniTypeB\b\xbaH\x05\x82\x01\x02 \x00R\acniType\x12)\n" +
-	"\x11max_pods_per_node\x18\x02 \x01(\x05R\x0emaxPodsPerNode\x12\x82\x01\n" +
-	"\vpod_nsg_ids\x18\x03 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xe6\x19\x92\xd4a%status.outputs.networkSecurityGroupIdR\tpodNsgIds\x12z\n" +
-	"\x0epod_subnet_ids\x18\x04 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB \x88\xd4a\xe5\x19\x92\xd4a\x17status.outputs.subnetIdR\fpodSubnetIds\x1a3\n" +
+	"\x11max_pods_per_node\x18\x02 \x01(\x05R\x0emaxPodsPerNode\x12\x85\x01\n" +
+	"\vpod_nsg_ids\x18\x03 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB1\x88\xd4a\xe6\x19\x92\xd4a(status.outputs.network_security_group_idR\tpodNsgIds\x12{\n" +
+	"\x0epod_subnet_ids\x18\x04 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xe5\x19\x92\xd4a\x18status.outputs.subnet_idR\fpodSubnetIds\x1a3\n" +
 	"\tNodeLabel\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value\x1a\xc8\x02\n" +

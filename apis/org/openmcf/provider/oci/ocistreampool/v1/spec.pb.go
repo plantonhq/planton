@@ -333,12 +333,12 @@ var File_org_openmcf_provider_oci_ocistreampool_v1_spec_proto protoreflect.FileD
 
 const file_org_openmcf_provider_oci_ocistreampool_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"4org/openmcf/provider/oci/ocistreampool/v1/spec.proto\x12)org.openmcf.provider.oci.ocistreampool.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xdc\r\n" +
-	"\x11OciStreamPoolSpec\x12\x86\x01\n" +
-	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB+\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1cstatus.outputs.compartmentIdR\rcompartmentId\x12q\n" +
-	"\x0ekafka_settings\x18\x02 \x01(\v2J.org.openmcf.provider.oci.ocistreampool.v1.OciStreamPoolSpec.KafkaSettingsR\rkafkaSettings\x12o\n" +
+	"4org/openmcf/provider/oci/ocistreampool/v1/spec.proto\x12)org.openmcf.provider.oci.ocistreampool.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xe2\r\n" +
+	"\x11OciStreamPoolSpec\x12\x87\x01\n" +
+	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x12q\n" +
+	"\x0ekafka_settings\x18\x02 \x01(\v2J.org.openmcf.provider.oci.ocistreampool.v1.OciStreamPoolSpec.KafkaSettingsR\rkafkaSettings\x12p\n" +
 	"\n" +
-	"kms_key_id\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1d\x88\xd4a\x97\x1a\x92\xd4a\x14status.outputs.keyIdR\bkmsKeyId\x12\x90\x01\n" +
+	"kms_key_id\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x97\x1a\x92\xd4a\x15status.outputs.key_idR\bkmsKeyId\x12\x90\x01\n" +
 	"\x19private_endpoint_settings\x18\x04 \x01(\v2T.org.openmcf.provider.oci.ocistreampool.v1.OciStreamPoolSpec.PrivateEndpointSettingsR\x17privateEndpointSettings\x12]\n" +
 	"\astreams\x18\x05 \x03(\v2C.org.openmcf.provider.oci.ocistreampool.v1.OciStreamPoolSpec.StreamR\astreams\x1a\xc4\x03\n" +
 	"\rKafkaSettings\x12>\n" +
@@ -348,10 +348,10 @@ const file_org_openmcf_provider_oci_ocistreampool_v1_spec_proto_rawDesc = "" +
 	"\x19log_retention_hours_range\x12=log_retention_hours must be between 24 and 168 when specified\x1ae!has(this.log_retention_hours) || (this.log_retention_hours >= 24 && this.log_retention_hours <= 168)B\x1c\n" +
 	"\x1a_auto_create_topics_enableB\x16\n" +
 	"\x14_log_retention_hoursB\x11\n" +
-	"\x0f_num_partitions\x1a\xbf\x02\n" +
-	"\x17PrivateEndpointSettings\x12w\n" +
-	"\tsubnet_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xe5\x19\x92\xd4a\x17status.outputs.subnetIdR\bsubnetId\x12{\n" +
-	"\ansg_ids\x18\x02 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xe6\x19\x92\xd4a%status.outputs.networkSecurityGroupIdR\x06nsgIds\x12.\n" +
+	"\x0f_num_partitions\x1a\xc3\x02\n" +
+	"\x17PrivateEndpointSettings\x12x\n" +
+	"\tsubnet_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\xe5\x19\x92\xd4a\x18status.outputs.subnet_idR\bsubnetId\x12~\n" +
+	"\ansg_ids\x18\x02 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB1\x88\xd4a\xe6\x19\x92\xd4a(status.outputs.network_security_group_idR\x06nsgIds\x12.\n" +
 	"\x13private_endpoint_ip\x18\x03 \x01(\tR\x11privateEndpointIp\x1a\xde\x02\n" +
 	"\x06Stream\x12\x1b\n" +
 	"\x04name\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x04name\x12'\n" +

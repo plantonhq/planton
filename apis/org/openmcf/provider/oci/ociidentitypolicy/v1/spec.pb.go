@@ -132,9 +132,9 @@ var File_org_openmcf_provider_oci_ociidentitypolicy_v1_spec_proto protoreflect.F
 
 const file_org_openmcf_provider_oci_ociidentitypolicy_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"8org/openmcf/provider/oci/ociidentitypolicy/v1/spec.proto\x12-org.openmcf.provider.oci.ociidentitypolicy.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xac\x02\n" +
-	"\x15OciIdentityPolicySpec\x12\x86\x01\n" +
-	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB+\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1cstatus.outputs.compartmentIdR\rcompartmentId\x12\x12\n" +
+	"8org/openmcf/provider/oci/ociidentitypolicy/v1/spec.proto\x12-org.openmcf.provider.oci.ociidentitypolicy.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xad\x02\n" +
+	"\x15OciIdentityPolicySpec\x12\x87\x01\n" +
+	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12)\n" +
 	"\vdescription\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\vdescription\x12(\n" +
 	"\n" +

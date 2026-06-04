@@ -229,12 +229,12 @@ var File_org_openmcf_provider_hetznercloud_hetznercloudfloatingip_v1_spec_proto 
 
 const file_org_openmcf_provider_hetznercloud_hetznercloudfloatingip_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Forg/openmcf/provider/hetznercloud/hetznercloudfloatingip/v1/spec.proto\x12;org.openmcf.provider.hetznercloud.hetznercloudfloatingip.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xbb\x03\n" +
+	"Forg/openmcf/provider/hetznercloud/hetznercloudfloatingip/v1/spec.proto\x12;org.openmcf.provider.hetznercloud.hetznercloudfloatingip.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xde\x03\n" +
 	"\x1aHetznerCloudFloatingIpSpec\x12\x7f\n" +
 	"\x04type\x18\x01 \x01(\x0e2^.org.openmcf.provider.hetznercloud.hetznercloudfloatingip.v1.HetznerCloudFloatingIpSpec.IpTypeB\v\xbaH\b\xc8\x01\x01\x82\x01\x02\x10\x01R\x04type\x12,\n" +
 	"\rhome_location\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\fhomeLocation\x12 \n" +
-	"\vdescription\x18\x03 \x01(\tR\vdescription\x12O\n" +
-	"\tserver_id\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\bserverId\x12\x17\n" +
+	"\vdescription\x18\x03 \x01(\tR\vdescription\x12r\n" +
+	"\tserver_id\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xc0\x1b\x92\xd4a\x18status.outputs.server_idR\bserverId\x12\x17\n" +
 	"\adns_ptr\x18\x05 \x01(\tR\x06dnsPtr\x12+\n" +
 	"\x11delete_protection\x18\x06 \x01(\bR\x10deleteProtection\"5\n" +
 	"\x06IpType\x12\x17\n" +

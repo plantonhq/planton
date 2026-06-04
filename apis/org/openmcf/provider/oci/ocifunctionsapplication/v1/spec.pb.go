@@ -391,15 +391,15 @@ var File_org_openmcf_provider_oci_ocifunctionsapplication_v1_spec_proto protoref
 
 const file_org_openmcf_provider_oci_ocifunctionsapplication_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	">org/openmcf/provider/oci/ocifunctionsapplication/v1/spec.proto\x123org.openmcf.provider.oci.ocifunctionsapplication.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xc8\x0e\n" +
-	"\x1bOciFunctionsApplicationSpec\x12\x86\x01\n" +
-	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB+\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1cstatus.outputs.compartmentIdR\rcompartmentId\x12{\n" +
+	">org/openmcf/provider/oci/ocifunctionsapplication/v1/spec.proto\x123org.openmcf.provider.oci.ocifunctionsapplication.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xce\x0e\n" +
+	"\x1bOciFunctionsApplicationSpec\x12\x87\x01\n" +
+	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x12|\n" +
 	"\n" +
-	"subnet_ids\x18\x02 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x05\x92\x01\x02\b\x01\x88\xd4a\xe5\x19\x92\xd4a\x17status.outputs.subnetIdR\tsubnetIds\x12!\n" +
+	"subnet_ids\x18\x02 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\xbaH\x05\x92\x01\x02\b\x01\x88\xd4a\xe5\x19\x92\xd4a\x18status.outputs.subnet_idR\tsubnetIds\x12!\n" +
 	"\fdisplay_name\x18\x03 \x01(\tR\vdisplayName\x12l\n" +
 	"\x05shape\x18\x04 \x01(\x0e2V.org.openmcf.provider.oci.ocifunctionsapplication.v1.OciFunctionsApplicationSpec.ShapeR\x05shape\x12t\n" +
-	"\x06config\x18\x05 \x03(\v2\\.org.openmcf.provider.oci.ocifunctionsapplication.v1.OciFunctionsApplicationSpec.ConfigEntryR\x06config\x12\x9f\x01\n" +
-	"\x1anetwork_security_group_ids\x18\x06 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xe6\x19\x92\xd4a%status.outputs.networkSecurityGroupIdR\x17networkSecurityGroupIds\x12\x1d\n" +
+	"\x06config\x18\x05 \x03(\v2\\.org.openmcf.provider.oci.ocifunctionsapplication.v1.OciFunctionsApplicationSpec.ConfigEntryR\x06config\x12\xa2\x01\n" +
+	"\x1anetwork_security_group_ids\x18\x06 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB1\x88\xd4a\xe6\x19\x92\xd4a(status.outputs.network_security_group_idR\x17networkSecurityGroupIds\x12\x1d\n" +
 	"\n" +
 	"syslog_url\x18\a \x01(\tR\tsyslogUrl\x12\x92\x01\n" +
 	"\x13image_policy_config\x18\b \x01(\v2b.org.openmcf.provider.oci.ocifunctionsapplication.v1.OciFunctionsApplicationSpec.ImagePolicyConfigR\x11imagePolicyConfig\x12\x7f\n" +
@@ -410,10 +410,10 @@ const file_org_openmcf_provider_oci_ocifunctionsapplication_v1_spec_proto_rawDes
 	"\x11ImagePolicyConfig\x12*\n" +
 	"\x11is_policy_enabled\x18\x01 \x01(\bR\x0fisPolicyEnabled\x12\x86\x01\n" +
 	"\vkey_details\x18\x02 \x03(\v2e.org.openmcf.provider.oci.ocifunctionsapplication.v1.OciFunctionsApplicationSpec.ImagePolicyKeyDetailR\n" +
-	"keyDetails\x1a\x8d\x01\n" +
-	"\x14ImagePolicyKeyDetail\x12u\n" +
+	"keyDetails\x1a\x8e\x01\n" +
+	"\x14ImagePolicyKeyDetail\x12v\n" +
 	"\n" +
-	"kms_key_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB#\xbaH\x03\xc8\x01\x01\x88\xd4a\x97\x1a\x92\xd4a\x14status.outputs.keyIdR\bkmsKeyId\x1a]\n" +
+	"kms_key_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\x97\x1a\x92\xd4a\x15status.outputs.key_idR\bkmsKeyId\x1a]\n" +
 	"\vTraceConfig\x12\"\n" +
 	"\n" +
 	"is_enabled\x18\x01 \x01(\bH\x00R\tisEnabled\x88\x01\x01\x12\x1b\n" +

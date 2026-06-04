@@ -219,7 +219,6 @@ type OciContainerEngineClusterSpec struct {
 	// OCID of the KMS key to encrypt Kubernetes secrets at rest.
 	// Requires kubernetes_version >= v1.13.0.
 	// Changing this after creation forces cluster recreation.
-	// default_kind will be updated when OciKmsKey (R25) is implemented.
 	KmsKeyId *v1.StringValueOrRef `protobuf:"bytes,9,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
 	// Image verification policy for the cluster. When enabled, all container
 	// images deployed to the cluster must be signed with one of the specified
@@ -955,7 +954,6 @@ func (x *OciContainerEngineClusterSpec_ImagePolicyConfig) GetKeyDetails() []*Oci
 type OciContainerEngineClusterSpec_ImagePolicyKeyDetail struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// OCID of the KMS key used to verify image signatures.
-	// default_kind will be updated when OciKmsKey (R25) is implemented.
 	KmsKeyId      *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=kms_key_id,json=kmsKeyId,proto3" json:"kms_key_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -1002,28 +1000,28 @@ var File_org_openmcf_provider_oci_ocicontainerenginecluster_v1_spec_proto protor
 
 const file_org_openmcf_provider_oci_ocicontainerenginecluster_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"@org/openmcf/provider/oci/ocicontainerenginecluster/v1/spec.proto\x125org.openmcf.provider.oci.ocicontainerenginecluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x85&\n" +
-	"\x1dOciContainerEngineClusterSpec\x12\x86\x01\n" +
-	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB+\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1cstatus.outputs.compartmentIdR\rcompartmentId\x12n\n" +
-	"\x06vcn_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB#\xbaH\x03\xc8\x01\x01\x88\xd4a\xe4\x19\x92\xd4a\x14status.outputs.vcnIdR\x05vcnId\x12\x12\n" +
+	"@org/openmcf/provider/oci/ocicontainerenginecluster/v1/spec.proto\x125org.openmcf.provider.oci.ocicontainerenginecluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xd0&\n" +
+	"\x1dOciContainerEngineClusterSpec\x12\x87\x01\n" +
+	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x12o\n" +
+	"\x06vcn_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xe4\x19\x92\xd4a\x15status.outputs.vcn_idR\x05vcnId\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04name\x126\n" +
 	"\x12kubernetes_version\x18\x04 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x11kubernetesVersion\x12t\n" +
 	"\x04type\x18\x05 \x01(\x0e2`.org.openmcf.provider.oci.ocicontainerenginecluster.v1.OciContainerEngineClusterSpec.ClusterTypeR\x04type\x12w\n" +
 	"\bcni_type\x18\x06 \x01(\x0e2\\.org.openmcf.provider.oci.ocicontainerenginecluster.v1.OciContainerEngineClusterSpec.CniTypeR\acniType\x12\x8c\x01\n" +
 	"\x0fendpoint_config\x18\a \x01(\v2c.org.openmcf.provider.oci.ocicontainerenginecluster.v1.OciContainerEngineClusterSpec.EndpointConfigR\x0eendpointConfig\x12}\n" +
-	"\aoptions\x18\b \x01(\v2c.org.openmcf.provider.oci.ocicontainerenginecluster.v1.OciContainerEngineClusterSpec.ClusterOptionsR\aoptions\x12P\n" +
+	"\aoptions\x18\b \x01(\v2c.org.openmcf.provider.oci.ocicontainerenginecluster.v1.OciContainerEngineClusterSpec.ClusterOptionsR\aoptions\x12p\n" +
 	"\n" +
-	"kms_key_id\x18\t \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\bkmsKeyId\x12\x96\x01\n" +
+	"kms_key_id\x18\t \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x97\x1a\x92\xd4a\x15status.outputs.key_idR\bkmsKeyId\x12\x96\x01\n" +
 	"\x13image_policy_config\x18\n" +
-	" \x01(\v2f.org.openmcf.provider.oci.ocicontainerenginecluster.v1.OciContainerEngineClusterSpec.ImagePolicyConfigR\x11imagePolicyConfig\x1a\xd5\x02\n" +
-	"\x0eEndpointConfig\x12w\n" +
-	"\tsubnet_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xe5\x19\x92\xd4a\x17status.outputs.subnetIdR\bsubnetId\x124\n" +
-	"\x14is_public_ip_enabled\x18\x02 \x01(\bH\x00R\x11isPublicIpEnabled\x88\x01\x01\x12{\n" +
-	"\ansg_ids\x18\x03 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xe6\x19\x92\xd4a%status.outputs.networkSecurityGroupIdR\x06nsgIdsB\x17\n" +
-	"\x15_is_public_ip_enabled\x1a\xaa\b\n" +
+	" \x01(\v2f.org.openmcf.provider.oci.ocicontainerenginecluster.v1.OciContainerEngineClusterSpec.ImagePolicyConfigR\x11imagePolicyConfig\x1a\xd9\x02\n" +
+	"\x0eEndpointConfig\x12x\n" +
+	"\tsubnet_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\xe5\x19\x92\xd4a\x18status.outputs.subnet_idR\bsubnetId\x124\n" +
+	"\x14is_public_ip_enabled\x18\x02 \x01(\bH\x00R\x11isPublicIpEnabled\x88\x01\x01\x12~\n" +
+	"\ansg_ids\x18\x03 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB1\x88\xd4a\xe6\x19\x92\xd4a(status.outputs.network_security_group_idR\x06nsgIdsB\x17\n" +
+	"\x15_is_public_ip_enabled\x1a\xab\b\n" +
 	"\x0eClusterOptions\x12\xa8\x01\n" +
-	"\x19kubernetes_network_config\x18\x01 \x01(\v2l.org.openmcf.provider.oci.ocicontainerenginecluster.v1.OciContainerEngineClusterSpec.KubernetesNetworkConfigR\x17kubernetesNetworkConfig\x12\x87\x01\n" +
-	"\x15service_lb_subnet_ids\x18\x02 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB \x88\xd4a\xe5\x19\x92\xd4a\x17status.outputs.subnetIdR\x12serviceLbSubnetIds\x12~\n" +
+	"\x19kubernetes_network_config\x18\x01 \x01(\v2l.org.openmcf.provider.oci.ocicontainerenginecluster.v1.OciContainerEngineClusterSpec.KubernetesNetworkConfigR\x17kubernetesNetworkConfig\x12\x88\x01\n" +
+	"\x15service_lb_subnet_ids\x18\x02 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xe5\x19\x92\xd4a\x18status.outputs.subnet_idR\x12serviceLbSubnetIds\x12~\n" +
 	"\vip_families\x18\x03 \x03(\x0e2].org.openmcf.provider.oci.ocicontainerenginecluster.v1.OciContainerEngineClusterSpec.IpFamilyR\n" +
 	"ipFamilies\x12\x90\x01\n" +
 	"\x11service_lb_config\x18\x04 \x01(\v2d.org.openmcf.provider.oci.ocicontainerenginecluster.v1.OciContainerEngineClusterSpec.ServiceLbConfigR\x0fserviceLbConfig\x12\xa5\x01\n" +
@@ -1032,9 +1030,9 @@ const file_org_openmcf_provider_oci_ocicontainerenginecluster_v1_spec_proto_rawD
 	"$is_open_id_connect_discovery_enabled\x18\a \x01(\bR\x1fisOpenIdConnectDiscoveryEnabled\x1a[\n" +
 	"\x17KubernetesNetworkConfig\x12\x1b\n" +
 	"\tpods_cidr\x18\x01 \x01(\tR\bpodsCidr\x12#\n" +
-	"\rservices_cidr\x18\x02 \x01(\tR\fservicesCidr\x1a\xd8\x04\n" +
-	"\x0fServiceLbConfig\x12\x8a\x01\n" +
-	"\x0fbackend_nsg_ids\x18\x01 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xe6\x19\x92\xd4a%status.outputs.networkSecurityGroupIdR\rbackendNsgIds\x12\x9b\x01\n" +
+	"\rservices_cidr\x18\x02 \x01(\tR\fservicesCidr\x1a\xdb\x04\n" +
+	"\x0fServiceLbConfig\x12\x8d\x01\n" +
+	"\x0fbackend_nsg_ids\x18\x01 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB1\x88\xd4a\xe6\x19\x92\xd4a(status.outputs.network_security_group_idR\rbackendNsgIds\x12\x9b\x01\n" +
 	"\rfreeform_tags\x18\x02 \x03(\v2v.org.openmcf.provider.oci.ocicontainerenginecluster.v1.OciContainerEngineClusterSpec.ServiceLbConfig.FreeformTagsEntryR\ffreeformTags\x12\x98\x01\n" +
 	"\fdefined_tags\x18\x03 \x03(\v2u.org.openmcf.provider.oci.ocicontainerenginecluster.v1.OciContainerEngineClusterSpec.ServiceLbConfig.DefinedTagsEntryR\vdefinedTags\x1a?\n" +
 	"\x11FreeformTagsEntry\x12\x10\n" +
@@ -1072,10 +1070,10 @@ const file_org_openmcf_provider_oci_ocicontainerenginecluster_v1_spec_proto_rawD
 	"\x11ImagePolicyConfig\x12*\n" +
 	"\x11is_policy_enabled\x18\x01 \x01(\bR\x0fisPolicyEnabled\x12\x8a\x01\n" +
 	"\vkey_details\x18\x02 \x03(\v2i.org.openmcf.provider.oci.ocicontainerenginecluster.v1.OciContainerEngineClusterSpec.ImagePolicyKeyDetailR\n" +
-	"keyDetails\x1ah\n" +
-	"\x14ImagePolicyKeyDetail\x12P\n" +
+	"keyDetails\x1a\x88\x01\n" +
+	"\x14ImagePolicyKeyDetail\x12p\n" +
 	"\n" +
-	"kms_key_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\bkmsKeyId\"G\n" +
+	"kms_key_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x97\x1a\x92\xd4a\x15status.outputs.key_idR\bkmsKeyId\"G\n" +
 	"\vClusterType\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12\x11\n" +
 	"\rbasic_cluster\x10\x01\x12\x14\n" +

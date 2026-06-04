@@ -501,10 +501,10 @@ var File_org_openmcf_provider_oci_ocialarm_v1_spec_proto protoreflect.FileDescri
 
 const file_org_openmcf_provider_oci_ocialarm_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"/org/openmcf/provider/oci/ocialarm/v1/spec.proto\x12$org.openmcf.provider.oci.ocialarm.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xd1\x0e\n" +
-	"\fOciAlarmSpec\x12\x86\x01\n" +
-	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB+\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1cstatus.outputs.compartmentIdR\rcompartmentId\x12\x93\x01\n" +
-	"\x15metric_compartment_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB+\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1cstatus.outputs.compartmentIdR\x13metricCompartmentId\x12%\n" +
+	"/org/openmcf/provider/oci/ocialarm/v1/spec.proto\x12$org.openmcf.provider.oci.ocialarm.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xd3\x0e\n" +
+	"\fOciAlarmSpec\x12\x87\x01\n" +
+	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x12\x94\x01\n" +
+	"\x15metric_compartment_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\x13metricCompartmentId\x12%\n" +
 	"\tnamespace\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\tnamespace\x12\x1d\n" +
 	"\x05query\x18\x04 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x05query\x12\xc2\x01\n" +
 	"\bseverity\x18\x05 \x01(\x0e2;.org.openmcf.provider.oci.ocialarm.v1.OciAlarmSpec.SeverityBi\xbaHf\xba\x01c\n" +

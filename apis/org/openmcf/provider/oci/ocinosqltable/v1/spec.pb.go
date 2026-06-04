@@ -392,9 +392,9 @@ var File_org_openmcf_provider_oci_ocinosqltable_v1_spec_proto protoreflect.FileD
 
 const file_org_openmcf_provider_oci_ocinosqltable_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"4org/openmcf/provider/oci/ocinosqltable/v1/spec.proto\x12)org.openmcf.provider.oci.ocinosqltable.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x84\v\n" +
-	"\x11OciNosqlTableSpec\x12\x86\x01\n" +
-	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB+\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1cstatus.outputs.compartmentIdR\rcompartmentId\x12\x1b\n" +
+	"4org/openmcf/provider/oci/ocinosqltable/v1/spec.proto\x12)org.openmcf.provider.oci.ocinosqltable.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x85\v\n" +
+	"\x11OciNosqlTableSpec\x12\x87\x01\n" +
+	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x12\x1b\n" +
 	"\x04name\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x04name\x12,\n" +
 	"\rddl_statement\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\fddlStatement\x12s\n" +
 	"\ftable_limits\x18\x04 \x01(\v2H.org.openmcf.provider.oci.ocinosqltable.v1.OciNosqlTableSpec.TableLimitsB\x06\xbaH\x03\xc8\x01\x01R\vtableLimits\x12.\n" +

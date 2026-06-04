@@ -323,12 +323,12 @@ var File_org_openmcf_provider_aws_awsclientvpn_v1_spec_proto protoreflect.FileDe
 
 const file_org_openmcf_provider_aws_awsclientvpn_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"3org/openmcf/provider/aws/awsclientvpn/v1/spec.proto\x12(org.openmcf.provider.aws.awsclientvpn.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x9a\x10\n" +
+	"3org/openmcf/provider/aws/awsclientvpn/v1/spec.proto\x12(org.openmcf.provider.aws.awsclientvpn.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xc4\x10\n" +
 	"\x10AwsClientVpnSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12 \n" +
 	"\vdescription\x18\x02 \x01(\tR\vdescription\x12o\n" +
-	"\x06vpc_id\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xd8\x01\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12^\n" +
-	"\asubnets\x18\x04 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x10\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01\x88\xd4a\xd8\x01R\asubnets\x12m\n" +
+	"\x06vpc_id\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xd8\x01\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12\x87\x01\n" +
+	"\asubnets\x18\x04 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB9\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\asubnets\x12m\n" +
 	"\x11client_cidr_block\x18\x05 \x01(\tBA\xbaH>\xc8\x01\x01r927^([0-9]{1,3}\\.){3}[0-9]{1,3}/([0-9]|[1-2][0-9]|3[0-2])$R\x0fclientCidrBlock\x12\x83\x01\n" +
 	"\x13authentication_type\x18\x06 \x01(\x0e2H.org.openmcf.provider.aws.awsclientvpn.v1.AwsClientVpnAuthenticationTypeB\b\xbaH\x05\x82\x01\x02\x10\x01R\x12authenticationType\x12\x90\x01\n" +
 	"\x16server_certificate_arn\x18\a \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xc9\x01\x92\xd4a\x17status.outputs.cert_arnR\x14serverCertificateArn\x12B\n" +

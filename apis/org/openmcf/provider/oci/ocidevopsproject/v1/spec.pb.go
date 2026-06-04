@@ -116,9 +116,9 @@ var File_org_openmcf_provider_oci_ocidevopsproject_v1_spec_proto protoreflect.Fi
 
 const file_org_openmcf_provider_oci_ocidevopsproject_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"7org/openmcf/provider/oci/ocidevopsproject/v1/spec.proto\x12,org.openmcf.provider.oci.ocidevopsproject.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xb1\x02\n" +
-	"\x14OciDevopsProjectSpec\x12\x86\x01\n" +
-	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB+\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1cstatus.outputs.compartmentIdR\rcompartmentId\x12n\n" +
+	"7org/openmcf/provider/oci/ocidevopsproject/v1/spec.proto\x12,org.openmcf.provider.oci.ocidevopsproject.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xb2\x02\n" +
+	"\x14OciDevopsProjectSpec\x12\x87\x01\n" +
+	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x12n\n" +
 	"\x15notification_topic_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x06\xbaH\x03\xc8\x01\x01R\x13notificationTopicId\x12 \n" +
 	"\vdescription\x18\x03 \x01(\tR\vdescriptionB\xf7\x02\n" +
 	"0com.org.openmcf.provider.oci.ocidevopsproject.v1B\tSpecProtoP\x01Zagithub.com/plantonhq/openmcf/apis/org/openmcf/provider/oci/ocidevopsproject/v1;ocidevopsprojectv1\xa2\x02\x05OOPOO\xaa\x02,Org.Openmcf.Provider.Oci.Ocidevopsproject.V1\xca\x02,Org\\Openmcf\\Provider\\Oci\\Ocidevopsproject\\V1\xe2\x028Org\\Openmcf\\Provider\\Oci\\Ocidevopsproject\\V1\\GPBMetadata\xea\x021Org::Openmcf::Provider::Oci::Ocidevopsproject::V1b\x06proto3"

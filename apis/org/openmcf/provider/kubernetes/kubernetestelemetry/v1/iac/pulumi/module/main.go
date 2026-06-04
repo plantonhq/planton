@@ -2,8 +2,8 @@ package module
 
 import (
 	"github.com/pkg/errors"
-	kubernetestelemetryv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetestelemetry/v1"
 	istioapi "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes"
+	kubernetestelemetryv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetestelemetry/v1"
 	"github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider"
 	"github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes"
 	"github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/apiextensions"

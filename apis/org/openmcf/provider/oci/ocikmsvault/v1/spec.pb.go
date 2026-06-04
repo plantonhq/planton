@@ -315,10 +315,10 @@ var File_org_openmcf_provider_oci_ocikmsvault_v1_spec_proto protoreflect.FileDes
 
 const file_org_openmcf_provider_oci_ocikmsvault_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"2org/openmcf/provider/oci/ocikmsvault/v1/spec.proto\x12'org.openmcf.provider.oci.ocikmsvault.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xdd\n" +
+	"2org/openmcf/provider/oci/ocikmsvault/v1/spec.proto\x12'org.openmcf.provider.oci.ocikmsvault.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xde\n" +
 	"\n" +
-	"\x0fOciKmsVaultSpec\x12\x86\x01\n" +
-	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB+\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1cstatus.outputs.compartmentIdR\rcompartmentId\x12!\n" +
+	"\x0fOciKmsVaultSpec\x12\x87\x01\n" +
+	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x12!\n" +
 	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName\x12m\n" +
 	"\n" +
 	"vault_type\x18\x03 \x01(\x0e2B.org.openmcf.provider.oci.ocikmsvault.v1.OciKmsVaultSpec.VaultTypeB\n" +

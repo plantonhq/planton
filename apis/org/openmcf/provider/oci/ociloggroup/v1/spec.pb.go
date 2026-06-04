@@ -353,11 +353,11 @@ var File_org_openmcf_provider_oci_ociloggroup_v1_spec_proto protoreflect.FileDes
 
 const file_org_openmcf_provider_oci_ociloggroup_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"2org/openmcf/provider/oci/ociloggroup/v1/spec.proto\x12'org.openmcf.provider.oci.ociloggroup.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xde\f\n" +
-	"\x0fOciLogGroupSpec\x12\x86\x01\n" +
-	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB+\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1cstatus.outputs.compartmentIdR\rcompartmentId\x12 \n" +
+	"2org/openmcf/provider/oci/ociloggroup/v1/spec.proto\x12'org.openmcf.provider.oci.ociloggroup.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xe0\f\n" +
+	"\x0fOciLogGroupSpec\x12\x87\x01\n" +
+	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x12 \n" +
 	"\vdescription\x18\x02 \x01(\tR\vdescription\x12P\n" +
-	"\x04logs\x18\x03 \x03(\v2<.org.openmcf.provider.oci.ociloggroup.v1.OciLogGroupSpec.LogR\x04logs\x1a\xcd\n" +
+	"\x04logs\x18\x03 \x03(\v2<.org.openmcf.provider.oci.ociloggroup.v1.OciLogGroupSpec.LogR\x04logs\x1a\xce\n" +
 	"\n" +
 	"\x03Log\x12*\n" +
 	"\fdisplay_name\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\vdisplayName\x12\xba\x01\n" +
@@ -367,15 +367,15 @@ const file_org_openmcf_provider_oci_ociloggroup_v1_spec_proto_rawDesc = "" +
 	"is_enabled\x18\x03 \x01(\bH\x00R\tisEnabled\x88\x01\x01\x12\xc9\x01\n" +
 	"\x12retention_duration\x18\x04 \x01(\x05B\x94\x01\xbaH\x90\x01\xba\x01\x8c\x01\n" +
 	"\x1bretention_30_day_increments\x12@retention_duration must be a 30-day increment between 30 and 180\x1a+this >= 30 && this <= 180 && this % 30 == 0H\x01R\x11retentionDuration\x88\x01\x01\x12z\n" +
-	"\rconfiguration\x18\x05 \x01(\v2T.org.openmcf.provider.oci.ociloggroup.v1.OciLogGroupSpec.Log.ServiceLogConfigurationR\rconfiguration\x1a\x82\x04\n" +
+	"\rconfiguration\x18\x05 \x01(\v2T.org.openmcf.provider.oci.ociloggroup.v1.OciLogGroupSpec.Log.ServiceLogConfigurationR\rconfiguration\x1a\x83\x04\n" +
 	"\x17ServiceLogConfiguration\x12!\n" +
 	"\aservice\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\aservice\x12V\n" +
 	"\bresource\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x06\xbaH\x03\xc8\x01\x01R\bresource\x12#\n" +
 	"\bcategory\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\bcategory\x12\x84\x01\n" +
 	"\n" +
 	"parameters\x18\x04 \x03(\v2d.org.openmcf.provider.oci.ociloggroup.v1.OciLogGroupSpec.Log.ServiceLogConfiguration.ParametersEntryR\n" +
-	"parameters\x12\x80\x01\n" +
-	"\x0ecompartment_id\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB%\x88\xd4a\xe7\x19\x92\xd4a\x1cstatus.outputs.compartmentIdR\rcompartmentId\x1a=\n" +
+	"parameters\x12\x81\x01\n" +
+	"\x0ecompartment_id\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x1a=\n" +
 	"\x0fParametersEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"3\n" +
