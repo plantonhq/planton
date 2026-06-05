@@ -1,35 +1,25 @@
 locals {
-  # Derive a stable resource ID
-  resource_id = (
-    var.metadata.id != null && var.metadata.id != ""
-    ? var.metadata.id
-    : var.metadata.name
+  # The Pulumi module exports the resource_id LABEL only when metadata.id is set;
+  # everything else keys off metadata.name. Normalize null -> "" because `try`
+  # only catches errors, not nulls.
+  resource_id = var.metadata.id == null ? "" : var.metadata.id
+
+  # Resource identity labels mirror the Pulumi module exactly (parity per
+  # pkg/iac/MODULE_PARITY.md): the kuberneteslabelkeys keys are planton.ai/<key>
+  # and the kind is the CloudResourceKind enum string ("KubernetesTemporal").
+  # These are identity labels only (applied to the helm release and the LB
+  # service metadata, never used as a pod selector), so aligning them changes
+  # discovery/identity, not connectivity.
+  final_labels = merge(
+    {
+      "planton.ai/resource" = "true"
+      "planton.ai/name"     = var.metadata.name
+      "planton.ai/kind"     = "KubernetesTemporal"
+    },
+    local.resource_id != "" ? { "planton.ai/id" = local.resource_id } : {},
+    try(var.metadata.org, "") != "" ? { "planton.ai/organization" = var.metadata.org } : {},
+    try(var.metadata.env, "") != "" ? { "planton.ai/environment" = var.metadata.env } : {},
   )
-
-  # Base labels following OpenMCF conventions
-  base_labels = {
-    "resource"      = "true"
-    "resource_id"   = local.resource_id
-    "resource_name" = var.metadata.name
-    "resource_kind" = "kubernetes_temporal"
-  }
-
-  # Organization label only if var.metadata.org is non-empty
-  org_label = (
-    var.metadata.org != null && var.metadata.org != ""
-    ) ? {
-    "organization" = var.metadata.org
-  } : {}
-
-  # Environment label only if var.metadata.env is non-empty
-  env_label = (
-    var.metadata.env != null && var.metadata.env != ""
-    ) ? {
-    "environment" = var.metadata.env
-  } : {}
-
-  # Merge all labels
-  final_labels = merge(local.base_labels, local.org_label, local.env_label)
 
   # Namespace from spec
   namespace = var.spec.namespace
