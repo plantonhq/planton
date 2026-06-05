@@ -90,18 +90,12 @@ module "external_dns" {
   }
 
   spec = {
-    namespace = {
-      value = "external-dns"  # optional, defaults to "external-dns"
-    }
-    create_namespace = true  # optional, defaults to false
-    
+    namespace        = "external-dns"  # required
+    create_namespace = true            # optional, defaults to false
+
     gke = {
-      project_id = {
-        value = "my-gcp-project"
-      }
-      dns_zone_id = {
-        value = "my-cloud-dns-zone-id"
-      }
+      project_id  = "my-gcp-project"
+      dns_zone_id = "my-cloud-dns-zone-id"
     }
   }
 }
@@ -118,10 +112,9 @@ module "external_dns" {
   }
 
   spec = {
+    namespace = "external-dns"  # required
     eks = {
-      route53_zone_id = {
-        value = "Z1234567890ABC"
-      }
+      route53_zone_id        = "Z1234567890ABC"
       irsa_role_arn_override = "arn:aws:iam::123456789012:role/external-dns-role"  # optional
     }
   }
@@ -139,6 +132,7 @@ module "external_dns" {
   }
 
   spec = {
+    namespace = "external-dns"  # required
     cloudflare = {
       api_token   = var.cloudflare_api_token  # Use variable for sensitive data
       dns_zone_id = "1234567890abcdef1234567890abcdef"
@@ -158,9 +152,7 @@ When `create_namespace` is set to `true`, the module creates the namespace:
 
 ```hcl
 spec = {
-  namespace = {
-    value = "external-dns"
-  }
+  namespace        = "external-dns"
   create_namespace = true  # Module will create the namespace
   # ... provider config
 }
@@ -172,9 +164,7 @@ When `create_namespace` is `false` (default), the module uses a data source to l
 
 ```hcl
 spec = {
-  namespace = {
-    value = "existing-namespace"
-  }
+  namespace        = "existing-namespace"
   create_namespace = false  # Namespace must already exist
   # ... provider config
 }
@@ -209,20 +199,14 @@ The `spec` variable defines the ExternalDNS configuration. Choose **one** provid
 
 ```hcl
 spec = {
-  namespace = {
-    value = "external-dns"  # Optional
-  }
-  create_namespace = true  # Optional, defaults to false
-  kubernetes_external_dns_version = "v0.19.0"  # Optional
-  helm_chart_version = "1.19.0"  # Optional
-  
+  namespace            = "external-dns"  # Required
+  create_namespace     = true            # Optional, defaults to false
+  external_dns_version = "v0.19.0"        # Optional
+  helm_chart_version   = "1.19.0"         # Optional
+
   gke = {
-    project_id = {
-      value = "my-gcp-project"  # GCP project ID
-    }
-    dns_zone_id = {
-      value = "my-dns-zone-id"  # Cloud DNS zone ID
-    }
+    project_id  = "my-gcp-project"  # GCP project ID
+    dns_zone_id = "my-dns-zone-id"  # Cloud DNS zone ID
   }
 }
 ```
@@ -231,10 +215,9 @@ spec = {
 
 ```hcl
 spec = {
+  namespace = "external-dns"  # Required
   eks = {
-    route53_zone_id = {
-      value = "Z1234567890ABC"  # Route53 hosted zone ID
-    }
+    route53_zone_id        = "Z1234567890ABC"  # Route53 hosted zone ID
     irsa_role_arn_override = "arn:aws:iam::123456789012:role/external-dns-role"  # Optional
   }
 }
@@ -244,9 +227,10 @@ spec = {
 
 ```hcl
 spec = {
+  namespace = "external-dns"  # Required
   aks = {
-    dns_zone_id = "/subscriptions/.../dnszones/example.com"  # Azure DNS zone ID
-    managed_identity_client_id = "12345678-1234-1234-1234-123456789012"  # Managed Identity client ID
+    dns_zone_id                = "/subscriptions/.../dnszones/example.com"  # Azure DNS zone ID
+    managed_identity_client_id = "12345678-1234-1234-1234-123456789012"     # Managed Identity client ID
   }
 }
 ```
@@ -255,10 +239,11 @@ spec = {
 
 ```hcl
 spec = {
+  namespace = "external-dns"  # Required
   cloudflare = {
-    api_token = "your-api-token"  # Cloudflare API token
+    api_token   = "your-api-token"                     # Cloudflare API token
     dns_zone_id = "1234567890abcdef1234567890abcdef"  # Cloudflare zone ID
-    is_proxied = true  # Optional: Enable Cloudflare proxy
+    is_proxied  = true                                 # Optional: Enable Cloudflare proxy
   }
 }
 ```

@@ -33,8 +33,9 @@ locals {
 
   final_labels = merge(local.base_labels, local.org_label, local.env_label)
 
-  # Namespace with default (StringValueOrRef)
-  namespace = try(var.spec.namespace.value, "external-dns")
+  # Namespace where ExternalDNS is installed. Required field; the proto->tfvars
+  # converter flattens the StringValueOrRef to a plain string before apply.
+  namespace = var.spec.namespace
 
   # Namespace reference - either created or existing
   namespace_name = try(var.spec.create_namespace, false) ? (
@@ -72,21 +73,21 @@ locals {
   )
 
   # GKE configuration
-  gke_project_id  = local.is_gke ? try(var.spec.gke.project_id.value, "") : ""
-  gke_dns_zone_id = local.is_gke ? try(var.spec.gke.dns_zone_id.value, "") : ""
+  gke_project_id  = local.is_gke ? try(var.spec.gke.project_id, "") : ""
+  gke_dns_zone_id = local.is_gke ? try(var.spec.gke.dns_zone_id, "") : ""
   gke_gsa_email   = local.is_gke ? "${local.ksa_name}@${local.gke_project_id}.iam.gserviceaccount.com" : ""
 
   # EKS configuration
-  eks_route53_zone_id = local.is_eks ? try(var.spec.eks.route53_zone_id.value, "") : ""
+  eks_route53_zone_id = local.is_eks ? try(var.spec.eks.route53_zone_id, "") : ""
   eks_irsa_role_arn   = local.is_eks ? try(var.spec.eks.irsa_role_arn_override, "") : ""
 
   # AKS configuration
-  aks_dns_zone_id                = local.is_aks ? try(var.spec.aks.dns_zone_id.value, "") : ""
+  aks_dns_zone_id                = local.is_aks ? try(var.spec.aks.dns_zone_id, "") : ""
   aks_managed_identity_client_id = local.is_aks ? try(var.spec.aks.managed_identity_client_id, "") : ""
 
   # Cloudflare configuration
   cf_api_token   = local.is_cloudflare ? try(var.spec.cloudflare.api_token, "") : ""
-  cf_dns_zone_id = local.is_cloudflare ? try(var.spec.cloudflare.dns_zone_id.value, "") : ""
+  cf_dns_zone_id = local.is_cloudflare ? try(var.spec.cloudflare.dns_zone_id, "") : ""
   cf_is_proxied  = local.is_cloudflare ? try(var.spec.cloudflare.is_proxied, false) : false
   # Computed resource names to avoid conflicts when multiple instances share a namespace
   # Format: {metadata.name}-{purpose}
