@@ -18,8 +18,13 @@ variable "spec" {
     # Kubernetes namespace to install PostgreSQL.
     namespace = string
 
-    # flag to indicate if the namespace should be created
-    create_namespace = optional(bool, true)
+    # flag to indicate if the namespace should be created.
+    # Default MUST be false to match the proto3 default (spec.proto field 3) and the
+    # Pulumi module: an unset create_namespace serializes away (proto omits false), so a
+    # tofu default of true diverged -- the module created a namespace from spec.namespace
+    # even when callers (e.g. an InfraChart with a dedicated KubernetesNamespace) never
+    # asked it to, which on an unresolved/empty namespace produced an invalid (empty) name.
+    create_namespace = optional(bool, false)
 
     # The container specifications for the PostgreSQL deployment.
     container = object({

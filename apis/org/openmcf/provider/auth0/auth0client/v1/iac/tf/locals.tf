@@ -2,20 +2,24 @@
 # These values are computed from the input variables
 
 locals {
-  # Core client configuration
+  # Core client configuration.
+  # NOTE: optional spec fields with no variables.tf default arrive as null when the
+  # caller omits them; `coalesce` rejects null AND empty values ("no non-null,
+  # non-empty-string arguments"), so a client that omits e.g. description failed at
+  # plan. Use a null-test instead so the empty default is honored without erroring.
   client_name      = var.metadata.name
   application_type = var.spec.application_type
-  description      = coalesce(var.spec.description, "")
+  description      = var.spec.description != null ? var.spec.description : ""
   logo_uri         = var.spec.logo_uri
 
   # URLs configuration
-  callbacks           = coalesce(var.spec.callbacks, [])
-  allowed_logout_urls = coalesce(var.spec.allowed_logout_urls, [])
-  web_origins         = coalesce(var.spec.web_origins, [])
-  allowed_origins     = coalesce(var.spec.allowed_origins, [])
+  callbacks           = var.spec.callbacks != null ? var.spec.callbacks : []
+  allowed_logout_urls = var.spec.allowed_logout_urls != null ? var.spec.allowed_logout_urls : []
+  web_origins         = var.spec.web_origins != null ? var.spec.web_origins : []
+  allowed_origins     = var.spec.allowed_origins != null ? var.spec.allowed_origins : []
 
   # OAuth configuration
-  grant_types     = coalesce(var.spec.grant_types, [])
+  grant_types     = var.spec.grant_types != null ? var.spec.grant_types : []
   oidc_conformant = coalesce(var.spec.oidc_conformant, true)
   is_first_party  = coalesce(var.spec.is_first_party, true)
 
@@ -37,22 +41,22 @@ locals {
   organization_require_behavior = var.spec.organization_require_behavior
 
   # Client metadata
-  client_metadata = coalesce(var.spec.client_metadata, {})
-  client_aliases  = coalesce(var.spec.client_aliases, [])
+  client_metadata = var.spec.client_metadata != null ? var.spec.client_metadata : {}
+  client_aliases  = var.spec.client_aliases != null ? var.spec.client_aliases : []
 
   # Additional settings
   is_token_endpoint_ip_header_trusted = coalesce(var.spec.is_token_endpoint_ip_header_trusted, false)
 
   # enabled_connections values are already flattened to plain strings by the tfvars generator.
   enabled_connections = [
-    for conn in coalesce(var.spec.enabled_connections, []) : conn
+    for conn in(var.spec.enabled_connections != null ? var.spec.enabled_connections : []) : conn
     if conn != null && conn != ""
   ]
 
   # JWT configuration with defaults
   jwt_configuration = var.spec.jwt_configuration != null ? {
     lifetime_in_seconds = var.spec.jwt_configuration.lifetime_in_seconds
-    scopes              = coalesce(var.spec.jwt_configuration.scopes, {})
+    scopes              = var.spec.jwt_configuration.scopes != null ? var.spec.jwt_configuration.scopes : {}
     alg                 = var.spec.jwt_configuration.alg
     secret_encoded      = coalesce(var.spec.jwt_configuration.secret_encoded, false)
   } : null
@@ -82,7 +86,7 @@ locals {
   mobile = var.spec.mobile != null ? {
     android = var.spec.mobile.android != null ? {
       app_package_name         = var.spec.mobile.android.app_package_name
-      sha256_cert_fingerprints = coalesce(var.spec.mobile.android.sha256_cert_fingerprints, [])
+      sha256_cert_fingerprints = var.spec.mobile.android.sha256_cert_fingerprints != null ? var.spec.mobile.android.sha256_cert_fingerprints : []
     } : null
     ios = var.spec.mobile.ios != null ? {
       team_id               = var.spec.mobile.ios.team_id
@@ -92,15 +96,15 @@ locals {
 
   # OIDC backchannel logout
   oidc_backchannel_logout = var.spec.oidc_backchannel_logout != null ? {
-    backchannel_logout_urls = coalesce(var.spec.oidc_backchannel_logout.backchannel_logout_urls, [])
+    backchannel_logout_urls = var.spec.oidc_backchannel_logout.backchannel_logout_urls != null ? var.spec.oidc_backchannel_logout.backchannel_logout_urls : []
   } : null
 
   # API grants for authorizing API access
   # audience is already flattened to a plain string by the tfvars generator.
   api_grants = [
-    for grant in coalesce(var.spec.api_grants, []) : {
+    for grant in(var.spec.api_grants != null ? var.spec.api_grants : []) : {
       audience               = grant.audience
-      scopes                 = coalesce(grant.scopes, [])
+      scopes                 = grant.scopes != null ? grant.scopes : []
       allow_any_organization = coalesce(grant.allow_any_organization, false)
       organization_usage     = grant.organization_usage
     }
