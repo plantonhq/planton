@@ -18,7 +18,7 @@ variable "spec" {
     namespace = optional(string, "rook-ceph")
 
     # Flag to indicate if the namespace should be created
-    create_namespace = optional(bool, true)
+    create_namespace = optional(bool, false)
 
     # Namespace where the Rook Ceph Operator is installed
     operator_namespace = optional(string, "rook-ceph")
@@ -28,25 +28,25 @@ variable "spec" {
 
     # Ceph container image configuration
     ceph_image = optional(object({
-      repository       = optional(string, "quay.io/ceph/ceph")
-      tag              = optional(string, "v19.2.3")
+      repository        = optional(string, "quay.io/ceph/ceph")
+      tag               = optional(string, "v19.2.3")
       allow_unsupported = optional(bool, false)
     }))
 
     # Core Ceph cluster configuration
     cluster = optional(object({
       data_dir_host_path = optional(string, "/var/lib/rook")
-      
+
       mon = optional(object({
-        count                  = optional(number, 3)
+        count                   = optional(number, 3)
         allow_multiple_per_node = optional(bool, false)
       }))
-      
+
       mgr = optional(object({
-        count                  = optional(number, 2)
+        count                   = optional(number, 2)
         allow_multiple_per_node = optional(bool, false)
       }))
-      
+
       storage = optional(object({
         use_all_nodes   = optional(bool, true)
         use_all_devices = optional(bool, true)
@@ -57,13 +57,13 @@ variable "spec" {
           device_filter = optional(string)
         })))
       }))
-      
+
       network = optional(object({
         enable_encryption  = optional(bool, false)
         enable_compression = optional(bool, false)
         require_msgr2      = optional(bool, false)
       }))
-      
+
       resources = optional(object({
         mon = optional(object({
           limits = optional(object({
@@ -104,12 +104,12 @@ variable "spec" {
       failure_domain  = optional(string, "host")
       replicated_size = optional(number, 3)
       storage_class = optional(object({
-        enabled               = optional(bool, true)
-        name                  = string
-        is_default            = optional(bool, false)
-        reclaim_policy        = optional(string, "Delete")
+        enabled                = optional(bool, true)
+        name                   = string
+        is_default             = optional(bool, false)
+        reclaim_policy         = optional(string, "Delete")
         allow_volume_expansion = optional(bool, true)
-        volume_binding_mode   = optional(string, "Immediate")
+        volume_binding_mode    = optional(string, "Immediate")
       }))
     })))
 
@@ -132,12 +132,12 @@ variable "spec" {
         }))
       }))
       storage_class = optional(object({
-        enabled               = optional(bool, true)
-        name                  = string
-        is_default            = optional(bool, false)
-        reclaim_policy        = optional(string, "Delete")
+        enabled                = optional(bool, true)
+        name                   = string
+        is_default             = optional(bool, false)
+        reclaim_policy         = optional(string, "Delete")
         allow_volume_expansion = optional(bool, true)
-        volume_binding_mode   = optional(string, "Immediate")
+        volume_binding_mode    = optional(string, "Immediate")
       }))
     })))
 
@@ -162,12 +162,12 @@ variable "spec" {
         }))
       }))
       storage_class = optional(object({
-        enabled               = optional(bool, true)
-        name                  = string
-        is_default            = optional(bool, false)
-        reclaim_policy        = optional(string, "Delete")
+        enabled                = optional(bool, true)
+        name                   = string
+        is_default             = optional(bool, false)
+        reclaim_policy         = optional(string, "Delete")
         allow_volume_expansion = optional(bool, true)
-        volume_binding_mode   = optional(string, "Immediate")
+        volume_binding_mode    = optional(string, "Immediate")
       }))
     })))
 

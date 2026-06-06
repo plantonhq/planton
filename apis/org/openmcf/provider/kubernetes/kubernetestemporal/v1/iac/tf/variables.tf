@@ -18,7 +18,7 @@ variable "spec" {
     namespace = string
 
     # Flag to indicate if the namespace should be created
-    create_namespace = optional(bool, true)
+    create_namespace = optional(bool, false)
 
     # Database configuration
     database = object({

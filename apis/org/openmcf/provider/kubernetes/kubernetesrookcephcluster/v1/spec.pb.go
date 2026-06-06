@@ -36,9 +36,9 @@ type KubernetesRookCephClusterSpec struct {
 	// This namespace should match or be different from the operator namespace depending on your multi-tenancy requirements.
 	// Default: rook-ceph
 	Namespace *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=namespace,proto3" json:"namespace,omitempty"`
-	// Flag to indicate if the namespace should be created if it does not exist.
-	// Default: true
-	CreateNamespace *bool `protobuf:"varint,3,opt,name=create_namespace,json=createNamespace,proto3,oneof" json:"create_namespace,omitempty"`
+	// Flag to indicate if the namespace should be created. Defaults to false (the proto3
+	// zero value): the namespace must already exist unless this is explicitly set to true.
+	CreateNamespace bool `protobuf:"varint,3,opt,name=create_namespace,json=createNamespace,proto3" json:"create_namespace,omitempty"`
 	// Namespace where the Rook Ceph Operator is installed.
 	// Default: rook-ceph
 	OperatorNamespace *string `protobuf:"bytes,4,opt,name=operator_namespace,json=operatorNamespace,proto3,oneof" json:"operator_namespace,omitempty"`
@@ -117,8 +117,8 @@ func (x *KubernetesRookCephClusterSpec) GetNamespace() *v1.StringValueOrRef {
 }
 
 func (x *KubernetesRookCephClusterSpec) GetCreateNamespace() bool {
-	if x != nil && x.CreateNamespace != nil {
-		return *x.CreateNamespace
+	if x != nil {
+		return x.CreateNamespace
 	}
 	return false
 }
@@ -1164,14 +1164,13 @@ var File_org_openmcf_provider_kubernetes_kubernetesrookcephcluster_v1_spec_proto
 
 const file_org_openmcf_provider_kubernetes_kubernetesrookcephcluster_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Gorg/openmcf/provider/kubernetes/kubernetesrookcephcluster/v1/spec.proto\x12<org.openmcf.provider.kubernetes.kubernetesrookcephcluster.v1\x1a\x1bbuf/validate/validate.proto\x1a0org/openmcf/provider/kubernetes/kubernetes.proto\x1a4org/openmcf/provider/kubernetes/target_cluster.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x9d\n" +
-	"\n" +
+	"Gorg/openmcf/provider/kubernetes/kubernetesrookcephcluster/v1/spec.proto\x12<org.openmcf.provider.kubernetes.kubernetesrookcephcluster.v1\x1a\x1bbuf/validate/validate.proto\x1a0org/openmcf/provider/kubernetes/kubernetes.proto\x1a4org/openmcf/provider/kubernetes/target_cluster.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xf9\t\n" +
 	"\x1dKubernetesRookCephClusterSpec\x12a\n" +
 	"\x0etarget_cluster\x18\x01 \x01(\v2:.org.openmcf.provider.kubernetes.KubernetesClusterSelectorR\rtargetCluster\x12j\n" +
-	"\tnamespace\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xc4\x06\x92\xd4a\tspec.nameR\tnamespace\x128\n" +
-	"\x10create_namespace\x18\x03 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\x0fcreateNamespace\x88\x01\x01\x12H\n" +
-	"\x12operator_namespace\x18\x04 \x01(\tB\x14\xbaH\x04r\x02\x10\x01\x8a\xa6\x1d\trook-cephH\x01R\x11operatorNamespace\x88\x01\x01\x12E\n" +
-	"\x12helm_chart_version\x18\x05 \x01(\tB\x12\xbaH\x04r\x02\x10\x01\x8a\xa6\x1d\av1.16.6H\x02R\x10helmChartVersion\x88\x01\x01\x12j\n" +
+	"\tnamespace\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xc4\x06\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
+	"\x10create_namespace\x18\x03 \x01(\bR\x0fcreateNamespace\x12H\n" +
+	"\x12operator_namespace\x18\x04 \x01(\tB\x14\xbaH\x04r\x02\x10\x01\x8a\xa6\x1d\trook-cephH\x00R\x11operatorNamespace\x88\x01\x01\x12E\n" +
+	"\x12helm_chart_version\x18\x05 \x01(\tB\x12\xbaH\x04r\x02\x10\x01\x8a\xa6\x1d\av1.16.6H\x01R\x10helmChartVersion\x88\x01\x01\x12j\n" +
 	"\n" +
 	"ceph_image\x18\x06 \x01(\v2K.org.openmcf.provider.kubernetes.kubernetesrookcephcluster.v1.CephImageSpecR\tcephImage\x12i\n" +
 	"\acluster\x18\a \x01(\v2O.org.openmcf.provider.kubernetes.kubernetesrookcephcluster.v1.CephClusterConfigR\acluster\x12p\n" +
@@ -1180,10 +1179,9 @@ const file_org_openmcf_provider_kubernetes_kubernetesrookcephcluster_v1_spec_pro
 	"\vfilesystems\x18\t \x03(\v2P.org.openmcf.provider.kubernetes.kubernetesrookcephcluster.v1.CephFilesystemSpecR\vfilesystems\x12v\n" +
 	"\robject_stores\x18\n" +
 	" \x03(\v2Q.org.openmcf.provider.kubernetes.kubernetesrookcephcluster.v1.CephObjectStoreSpecR\fobjectStores\x125\n" +
-	"\x0eenable_toolbox\x18\v \x01(\bB\t\x8a\xa6\x1d\x05falseH\x03R\renableToolbox\x88\x01\x01\x12;\n" +
-	"\x11enable_monitoring\x18\f \x01(\bB\t\x8a\xa6\x1d\x05falseH\x04R\x10enableMonitoring\x88\x01\x01\x128\n" +
-	"\x10enable_dashboard\x18\r \x01(\bB\b\x8a\xa6\x1d\x04trueH\x05R\x0fenableDashboard\x88\x01\x01B\x13\n" +
-	"\x11_create_namespaceB\x15\n" +
+	"\x0eenable_toolbox\x18\v \x01(\bB\t\x8a\xa6\x1d\x05falseH\x02R\renableToolbox\x88\x01\x01\x12;\n" +
+	"\x11enable_monitoring\x18\f \x01(\bB\t\x8a\xa6\x1d\x05falseH\x03R\x10enableMonitoring\x88\x01\x01\x128\n" +
+	"\x10enable_dashboard\x18\r \x01(\bB\b\x8a\xa6\x1d\x04trueH\x04R\x0fenableDashboard\x88\x01\x01B\x15\n" +
 	"\x13_operator_namespaceB\x15\n" +
 	"\x13_helm_chart_versionB\x11\n" +
 	"\x0f_enable_toolboxB\x14\n" +

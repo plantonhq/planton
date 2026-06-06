@@ -203,9 +203,9 @@ resource "helm_release" "nats" {
     [var.spec.disable_jet_stream
       ? yamlencode({ config = { jetstream = { enabled = false } } })
       : yamlencode({ config = { jetstream = {
-          enabled   = true
-          fileStore = { enabled = true, pvc = { size = var.spec.server_container.disk_size } }
-        } } })
+        enabled   = true
+        fileStore = { enabled = true, pvc = { size = var.spec.server_container.disk_size } }
+      } } })
     ],
 
     # Bearer token auth (conditional list: list(string) vs empty list)

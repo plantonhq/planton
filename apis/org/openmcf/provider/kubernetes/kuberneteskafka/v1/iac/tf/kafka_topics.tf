@@ -16,9 +16,9 @@ resource "kubernetes_manifest" "kafka_topic" {
       labels    = local.final_labels
     }
     spec = {
-      topicName = each.value.name
+      topicName  = each.value.name
       partitions = try(each.value.partitions, 1)
-      replicas = try(each.value.replicas, 1)
+      replicas   = try(each.value.replicas, 1)
 
       # Merge default config with any user-provided config
       config = merge(
@@ -34,7 +34,7 @@ resource "kubernetes_manifest" "kafka_topic" {
           "segment.bytes"                       = "1073741824"
           "segment.ms"                          = "604800000"
         },
-          each.value.config != null ? each.value.config : {}
+        each.value.config != null ? each.value.config : {}
       )
     }
   }

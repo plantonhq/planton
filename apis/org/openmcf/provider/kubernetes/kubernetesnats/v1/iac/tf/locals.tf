@@ -43,7 +43,7 @@ locals {
   external_lb_service_name = "${var.metadata.name}-external-lb"
 
   # NATS service name (created by Helm chart)
-  nats_service_name = "${var.metadata.name}"
+  nats_service_name = var.metadata.name
 
   # Fixed NATS client port
   nats_client_port = 4222

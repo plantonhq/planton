@@ -21,7 +21,7 @@ variable "spec" {
     namespace = optional(string, "percona-operator")
 
     # Flag to indicate if the namespace should be created
-    create_namespace = optional(bool, true)
+    create_namespace = optional(bool, false)
 
     # The container specifications for the operator deployment.
     container = object({

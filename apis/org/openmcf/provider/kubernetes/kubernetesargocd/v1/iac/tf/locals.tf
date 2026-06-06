@@ -18,14 +18,14 @@ locals {
   # Organization label only if org is non-empty
   org_label = (
     var.metadata.org != null && var.metadata.org != ""
-  ) ? {
+    ) ? {
     "organization" = var.metadata.org
   } : {}
 
   # Environment label only if env is provided
   env_label = (
     var.metadata.env != null && var.metadata.env != ""
-  ) ? {
+    ) ? {
     "environment" = var.metadata.env
   } : {}
 
@@ -38,7 +38,7 @@ locals {
   # Namespace reference - either created or existing
   namespace_name = var.spec.create_namespace ? (
     length(kubernetes_namespace.argocd_namespace) > 0 ? kubernetes_namespace.argocd_namespace[0].metadata[0].name : local.namespace
-  ) : (
+    ) : (
     length(data.kubernetes_namespace.existing) > 0 ? data.kubernetes_namespace.existing[0].metadata[0].name : local.namespace
   )
 
@@ -80,7 +80,7 @@ locals {
   ingress_cert_cluster_issuer_name = local.ingress_dns_domain
   # Computed TLS secret name to avoid conflicts when multiple instances share a namespace
   # Format: {metadata.name}-{purpose}
-  ingress_cert_secret_name         = "${var.metadata.name}-tls"
+  ingress_cert_secret_name = "${var.metadata.name}-tls"
 
   # Hostnames list for certificate
   ingress_hostnames = compact([

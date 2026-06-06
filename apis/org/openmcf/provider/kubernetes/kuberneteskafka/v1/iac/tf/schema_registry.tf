@@ -46,11 +46,11 @@ resource "kubernetes_manifest" "schema_registry_deployment" {
 
               resources = {
                 limits = {
-                  cpu = try(var.spec.schema_registry_container.resources.limits.cpu, "1000m")
+                  cpu    = try(var.spec.schema_registry_container.resources.limits.cpu, "1000m")
                   memory = try(var.spec.schema_registry_container.resources.limits.memory, "1Gi")
                 }
                 requests = {
-                  cpu = try(var.spec.schema_registry_container.resources.requests.cpu, "50m")
+                  cpu    = try(var.spec.schema_registry_container.resources.requests.cpu, "50m")
                   memory = try(var.spec.schema_registry_container.resources.requests.memory, "100Mi")
                 }
               }
@@ -89,8 +89,8 @@ resource "kubernetes_manifest" "schema_registry_deployment" {
                   name = "SCHEMA_REGISTRY_KAFKASTORE_SASL_JAAS_CONFIG"
                   valueFrom = {
                     secretKeyRef = {
-                      name = local.admin_password_secret_name  # The KafkaUser Secret uses the same name as the user
-                      key = "sasl.jaas.config"
+                      name = local.admin_password_secret_name # The KafkaUser Secret uses the same name as the user
+                      key  = "sasl.jaas.config"
                     }
                   }
                 }

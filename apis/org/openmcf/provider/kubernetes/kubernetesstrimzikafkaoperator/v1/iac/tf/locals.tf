@@ -24,8 +24,8 @@ locals {
 
   namespace = coalesce(var.spec.namespace, "strimzi-kafka-operator")
 
-  helm_release_name    = var.metadata.name
-  helm_chart_name      = "strimzi-kafka-operator"
-  helm_chart_repo      = "https://strimzi.io/charts/"
-  helm_chart_version   = "0.42.0"
+  helm_release_name  = var.metadata.name
+  helm_chart_name    = "strimzi-kafka-operator"
+  helm_chart_repo    = "https://strimzi.io/charts/"
+  helm_chart_version = "0.42.0"
 }

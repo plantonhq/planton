@@ -19,7 +19,7 @@ variable "spec" {
     namespace = string
 
     # Flag to indicate if the namespace should be created
-    create_namespace = optional(bool, true)
+    create_namespace = optional(bool, false)
 
     # The version of the microservice being deployed.
     # This is usually either "main" (the default git branch name) or "review-<id>" where <id> is the merge request number.

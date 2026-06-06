@@ -33,11 +33,11 @@ locals {
       replicas = var.spec.master_container.replicas
       resources = {
         requests = {
-          cpu = try(var.spec.master_container.resources.requests.cpu, null)
+          cpu    = try(var.spec.master_container.resources.requests.cpu, null)
           memory = try(var.spec.master_container.resources.requests.memory, null)
         }
         limits = {
-          cpu = try(var.spec.master_container.resources.limits.cpu, null)
+          cpu    = try(var.spec.master_container.resources.limits.cpu, null)
           memory = try(var.spec.master_container.resources.limits.memory, null)
         }
       }
@@ -47,11 +47,11 @@ locals {
       replicas = var.spec.worker_container.replicas
       resources = {
         requests = {
-          cpu = try(var.spec.worker_container.resources.requests.cpu, null)
+          cpu    = try(var.spec.worker_container.resources.requests.cpu, null)
           memory = try(var.spec.worker_container.resources.requests.memory, null)
         }
         limits = {
-          cpu = try(var.spec.worker_container.resources.limits.cpu, null)
+          cpu    = try(var.spec.worker_container.resources.limits.cpu, null)
           memory = try(var.spec.worker_container.resources.limits.memory, null)
         }
       }
@@ -72,9 +72,9 @@ locals {
 }
 
 resource "helm_release" "this" {
-  name             = local.resource_id
-  repository       = "https://charts.deliveryhero.io"
-  chart = "locust"
+  name       = local.resource_id
+  repository = "https://charts.deliveryhero.io"
+  chart      = "locust"
   # set the chart version you want to deploy
   version          = "0.31.5"
   namespace        = var.spec.create_namespace ? kubernetes_namespace.this[0].metadata[0].name : local.namespace

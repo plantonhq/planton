@@ -78,7 +78,7 @@ resource "kubernetes_manifest" "kowl_deployment" {
         spec = {
           containers = [
             {
-              name = local.kowl_deployment_name
+              name  = local.kowl_deployment_name
               image = "quay.io/cloudhut/kowl:master-59f68da"
 
               # Kowl arguments to load the config file & reference Kafka password
@@ -100,8 +100,8 @@ resource "kubernetes_manifest" "kowl_deployment" {
                   name = "KAFKA_SASL_PASSWORD"
                   valueFrom = {
                     secretKeyRef = {
-                      name = local.admin_password_secret_name    # matches the KafkaUser secret
-                      key = "password" # scram-sha-512 password
+                      name = local.admin_password_secret_name # matches the KafkaUser secret
+                      key  = "password"                       # scram-sha-512 password
                     }
                   }
                 }
@@ -205,7 +205,7 @@ resource "kubernetes_manifest" "kowl_ingress_certificate" {
       labels    = local.final_labels
     }
     spec = {
-      dnsNames = [local.kowl_external_hostname]
+      dnsNames   = [local.kowl_external_hostname]
       secretName = local.ingress_kowl_cert_secret_name
       issuerRef = {
         kind = "ClusterIssuer"
@@ -311,7 +311,7 @@ resource "kubernetes_manifest" "kowl_http_route" {
           ]
           backendRefs = [
             {
-              name = local.kowl_kube_service_name # reference the Service name
+              name      = local.kowl_kube_service_name # reference the Service name
               namespace = local.namespace
               port      = 80
             }

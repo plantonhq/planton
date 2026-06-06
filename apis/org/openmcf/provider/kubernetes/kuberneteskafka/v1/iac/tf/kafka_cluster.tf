@@ -15,13 +15,13 @@ resource "kubernetes_manifest" "kafka_cluster" {
       # Entity Operator handles topic/user creation & configuration
       entityOperator = {
         topicOperator = {}
-        userOperator = {}
+        userOperator  = {}
       }
 
       kafka = {
         # Configure simple authorization with an 'admin' superuser
         authorization = {
-          type = "simple"
+          type       = "simple"
           superUsers = [local.admin_username]
         }
 
@@ -47,7 +47,7 @@ resource "kubernetes_manifest" "kafka_cluster" {
               }
             }
           ],
-            local.ingress_is_enabled && local.ingress_dns_domain != "" ? [
+          local.ingress_is_enabled && local.ingress_dns_domain != "" ? [
             # Private external listener
             {
               name = "extpvt"
@@ -85,11 +85,11 @@ resource "kubernetes_manifest" "kafka_cluster" {
         # CPU/memory resources for Kafka brokers
         resources = {
           limits = {
-            cpu = try(var.spec.broker_container.resources.limits.cpu, "1000m")
+            cpu    = try(var.spec.broker_container.resources.limits.cpu, "1000m")
             memory = try(var.spec.broker_container.resources.limits.memory, "1Gi")
           }
           requests = {
-            cpu = try(var.spec.broker_container.resources.requests.cpu, "50m")
+            cpu    = try(var.spec.broker_container.resources.requests.cpu, "50m")
             memory = try(var.spec.broker_container.resources.requests.memory, "100Mi")
           }
         }
@@ -100,7 +100,7 @@ resource "kubernetes_manifest" "kafka_cluster" {
           volumes = [
             {
               id          = 0
-              size = try(var.spec.broker_container.disk_size, "1Gi")
+              size        = try(var.spec.broker_container.disk_size, "1Gi")
               type        = "persistent-claim"
               deleteClaim = false
             }
@@ -115,11 +115,11 @@ resource "kubernetes_manifest" "kafka_cluster" {
         # CPU/memory resources for Zookeeper
         resources = {
           limits = {
-            cpu = try(var.spec.zookeeper_container.resources.limits.cpu, "1000m")
+            cpu    = try(var.spec.zookeeper_container.resources.limits.cpu, "1000m")
             memory = try(var.spec.zookeeper_container.resources.limits.memory, "1Gi")
           }
           requests = {
-            cpu = try(var.spec.zookeeper_container.resources.requests.cpu, "50m")
+            cpu    = try(var.spec.zookeeper_container.resources.requests.cpu, "50m")
             memory = try(var.spec.zookeeper_container.resources.requests.memory, "100Mi")
           }
         }
@@ -127,7 +127,7 @@ resource "kubernetes_manifest" "kafka_cluster" {
         # Persistent storage for Zookeeper
         storage = {
           type        = "persistent-claim"
-          size = try(var.spec.zookeeper_container.disk_size, "1Gi")
+          size        = try(var.spec.zookeeper_container.disk_size, "1Gi")
           deleteClaim = false
         }
       }

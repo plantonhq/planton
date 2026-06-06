@@ -18,7 +18,7 @@ variable "spec" {
     namespace = optional(string, "arc-system")
 
     # Whether to create the namespace
-    create_namespace = optional(bool, true)
+    create_namespace = optional(bool, false)
 
     # Version of the Helm chart to deploy
     helm_chart_version = optional(string, "0.13.1")

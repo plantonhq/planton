@@ -24,9 +24,9 @@ message KubernetesRookCephClusterSpec {
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
   ];
 
-  // Flag to indicate if the namespace should be created if it does not exist.
-  // Default: true
-  optional bool create_namespace = 3 [(org.openmcf.shared.options.default) = "true"];
+  // Flag to indicate if the namespace should be created. Defaults to false (the proto3
+  // zero value): the namespace must already exist unless this is explicitly set to true.
+  bool create_namespace = 3;
 
   // Namespace where the Rook Ceph Operator is installed.
   // Default: rook-ceph

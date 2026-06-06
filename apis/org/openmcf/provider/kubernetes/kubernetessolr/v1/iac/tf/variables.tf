@@ -18,7 +18,7 @@ variable "spec" {
     namespace = string
 
     # flag to indicate if the namespace should be created
-    create_namespace = optional(bool, true)
+    create_namespace = optional(bool, false)
 
     # The specifications for the Solr container deployment.
     solr_container = object({

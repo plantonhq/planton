@@ -17,12 +17,12 @@ resource "kubernetes_manifest" "elasticsearch" {
         # We define a single nodeSet in an array (or more if needed).
         nodeSets = [
           {
-            name = "elasticsearch"
+            name  = "elasticsearch"
             count = var.spec.elasticsearch.container.replicas
 
             # Additional configuration
             config = {
-              "node.roles" = ["master", "data", "ingest"]
+              "node.roles"            = ["master", "data", "ingest"]
               "node.store.allow_mmap" = false
             }
 

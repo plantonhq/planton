@@ -15,7 +15,7 @@ resource "random_password" "jenkins_admin_password" {
 locals {
   jenkins_admin_username            = "admin"
   jenkins_admin_password_secret_key = "admin-password"
-  jenkins_admin_password_b64 = base64encode(random_password.jenkins_admin_password.result)
+  jenkins_admin_password_b64        = base64encode(random_password.jenkins_admin_password.result)
 }
 
 # 3) Create or update the K8s secret containing the Jenkins admin password

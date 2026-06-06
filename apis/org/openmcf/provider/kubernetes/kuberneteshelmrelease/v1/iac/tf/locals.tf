@@ -15,15 +15,15 @@ locals {
 
   # Organization label if org is provided
   org_label = (
-  var.metadata.org != null && var.metadata.org != ""
-  ) ? {
+    var.metadata.org != null && var.metadata.org != ""
+    ) ? {
     "organization" = var.metadata.org
   } : {}
 
   # Environment label if env is provided and env.id is non-empty
   env_label = (
-  var.metadata.env != null && try(var.metadata.env, "") != ""
-  ) ? {
+    var.metadata.env != null && try(var.metadata.env, "") != ""
+    ) ? {
     "environment" = var.metadata.env
   } : {}
 
@@ -33,8 +33,9 @@ locals {
   # Namespace from spec.namespace (StringValueOrRef), with fallback to resource_id
   namespace_name = try(var.spec.namespace.value, local.resource_id)
 
-  # Flag to determine if namespace should be created
-  create_namespace = try(var.spec.create_namespace, true)
+  # Flag to determine if namespace should be created. Defaults to false (namespace must
+  # pre-exist) to match the proto3 zero value -- an unset create_namespace serializes away.
+  create_namespace = try(var.spec.create_namespace, false)
 
   # The helm release fields for direct reference:
   helm_repo    = var.spec.repo

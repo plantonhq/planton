@@ -43,8 +43,8 @@ locals {
   helm_chart_version = trimprefix(var.spec.helm_chart_version, "v")
 
   # Computed resource names
-  helm_release_name  = var.metadata.name
-  ceph_cluster_name  = var.metadata.name
+  helm_release_name = var.metadata.name
+  ceph_cluster_name = var.metadata.name
 
   # Ceph image configuration with defaults
   ceph_image = var.spec.ceph_image != null ? var.spec.ceph_image : {
@@ -68,7 +68,7 @@ locals {
       use_all_nodes   = true
       use_all_devices = true
     }
-    network = null
+    network   = null
     resources = null
   }
 
@@ -183,22 +183,22 @@ locals {
   # Build cephClusterSpec
   ceph_cluster_spec = {
     dataDirHostPath = try(local.cluster_config.data_dir_host_path, "/var/lib/rook")
-    
+
     dashboard = {
       enabled = var.spec.enable_dashboard
       ssl     = true
     }
-    
+
     mon = {
       count                = try(local.cluster_config.mon.count, 3)
       allowMultiplePerNode = try(local.cluster_config.mon.allow_multiple_per_node, false)
     }
-    
+
     mgr = {
       count                = try(local.cluster_config.mgr.count, 2)
       allowMultiplePerNode = try(local.cluster_config.mgr.allow_multiple_per_node, false)
     }
-    
+
     storage = {
       useAllNodes   = try(local.cluster_config.storage.use_all_nodes, true)
       useAllDevices = try(local.cluster_config.storage.use_all_devices, true)

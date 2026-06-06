@@ -15,15 +15,15 @@ locals {
 
   # Organization label only if var.metadata.org is non-empty
   org_label = (
-  var.metadata.org != null && var.metadata.org != ""
-  ) ? {
+    var.metadata.org != null && var.metadata.org != ""
+    ) ? {
     "organization" = var.metadata.org
   } : {}
 
   # Environment label only if var.metadata.env is non-empty
   env_label = (
-  var.metadata.env != null && try(var.metadata.env, "") != ""
-  ) ? {
+    var.metadata.env != null && try(var.metadata.env, "") != ""
+    ) ? {
     "environment" = var.metadata.env
   } : {}
 
@@ -38,16 +38,16 @@ locals {
   )
 
   # Prefixed resource names to avoid conflicts when multiple Kafka instances share a namespace
-  kafka_cluster_name               = var.metadata.name
-  kafka_ingress_cert_name          = "${var.metadata.name}-kafka-ingress"
-  kafka_ingress_cert_secret_name   = "cert-${var.metadata.name}-kafka-ingress"
-  admin_username                   = "${var.metadata.name}-admin"
-  admin_password_secret_name       = "${var.metadata.name}-admin"
-  schema_registry_deployment_name  = "${var.metadata.name}-schema-registry"
+  kafka_cluster_name                = var.metadata.name
+  kafka_ingress_cert_name           = "${var.metadata.name}-kafka-ingress"
+  kafka_ingress_cert_secret_name    = "cert-${var.metadata.name}-kafka-ingress"
+  admin_username                    = "${var.metadata.name}-admin"
+  admin_password_secret_name        = "${var.metadata.name}-admin"
+  schema_registry_deployment_name   = "${var.metadata.name}-schema-registry"
   schema_registry_kube_service_name = "${var.metadata.name}-sr"
-  kowl_config_map_name             = "${var.metadata.name}-kowl"
-  kowl_deployment_name             = "${var.metadata.name}-kowl"
-  kowl_kube_service_name           = "${var.metadata.name}-kowl"
+  kowl_config_map_name              = "${var.metadata.name}-kowl"
+  kowl_deployment_name              = "${var.metadata.name}-kowl"
+  kowl_kube_service_name            = "${var.metadata.name}-kowl"
 
   # Kafka broker container replicas (for convenience)
   broker_replicas = try(var.spec.broker_container.replicas, 1)
@@ -65,24 +65,24 @@ locals {
 
   # External and internal bootstrap hostnames (null if ingress is disabled)
   ingress_external_bootstrap_hostname = (
-  local.ingress_is_enabled && local.ingress_dns_domain != ""
+    local.ingress_is_enabled && local.ingress_dns_domain != ""
   ) ? "${local.resource_id}-bootstrap.${local.ingress_dns_domain}" : null
 
   ingress_internal_bootstrap_hostname = (
-  local.ingress_is_enabled && local.ingress_dns_domain != ""
+    local.ingress_is_enabled && local.ingress_dns_domain != ""
   ) ? "${local.resource_id}-bootstrap-internal.${local.ingress_dns_domain}" : null
 
   # Generate per-broker hostnames for external and internal listeners (empty lists if ingress is disabled)
   ingress_external_broker_hostnames = (
-  local.ingress_is_enabled && local.ingress_dns_domain != ""
-  ) ? [
+    local.ingress_is_enabled && local.ingress_dns_domain != ""
+    ) ? [
     for i in range(local.broker_replicas) :
     "${local.resource_id}-broker-b${i}.${local.ingress_dns_domain}"
   ] : []
 
   ingress_internal_broker_hostnames = (
-  local.ingress_is_enabled && local.ingress_dns_domain != ""
-  ) ? [
+    local.ingress_is_enabled && local.ingress_dns_domain != ""
+    ) ? [
     for i in range(local.broker_replicas) :
     "${local.resource_id}-broker-b${i}-internal.${local.ingress_dns_domain}"
   ] : []
@@ -99,11 +99,11 @@ locals {
 
   # Schema Registry external and internal hostnames (null if ingress or registry is disabled)
   schema_registry_external_hostname = (
-  local.ingress_is_enabled && local.ingress_dns_domain != "" && local.is_schema_registry_enabled
+    local.ingress_is_enabled && local.ingress_dns_domain != "" && local.is_schema_registry_enabled
   ) ? "${var.metadata.name}-schema-registry.${local.ingress_dns_domain}" : null
 
   schema_registry_internal_hostname = (
-  local.ingress_is_enabled && local.ingress_dns_domain != "" && local.is_schema_registry_enabled
+    local.ingress_is_enabled && local.ingress_dns_domain != "" && local.is_schema_registry_enabled
   ) ? "${var.metadata.name}-schema-registry-internal.${local.ingress_dns_domain}" : null
 
   schema_registry_hostnames = concat(
@@ -121,7 +121,7 @@ locals {
 
   # Kowl external hostname (null if ingress is disabled or if we're not deploying it)
   kowl_external_hostname = (
-  local.ingress_is_enabled && local.ingress_dns_domain != "" && local.is_deploy_kafka_ui
+    local.ingress_is_enabled && local.ingress_dns_domain != "" && local.is_deploy_kafka_ui
   ) ? "${var.metadata.name}-kowl.${local.ingress_dns_domain}" : null
 
   # Kowl service FQDN for internal cluster access

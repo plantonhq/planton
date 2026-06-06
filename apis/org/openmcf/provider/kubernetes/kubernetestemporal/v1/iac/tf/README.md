@@ -4,7 +4,17 @@
 
 This module supports two namespace management modes:
 
-### 1. Create New Namespace (Default)
+### 1. Use Existing Namespace (Default)
+
+```hcl
+spec = {
+  namespace = "existing-namespace"
+  # create_namespace defaults to false  # Namespace must already exist
+  # ...
+}
+```
+
+### 2. Create New Namespace
 
 ```hcl
 spec = {
@@ -14,17 +24,7 @@ spec = {
 }
 ```
 
-### 2. Use Existing Namespace
-
-```hcl
-spec = {
-  namespace = "existing-namespace"  
-  create_namespace = false  # Namespace must exist
-  # ...
-}
-```
-
-**Important**: When `create_namespace = false`, ensure the namespace exists before running `terraform apply`.
+**Important**: `create_namespace` defaults to `false` (matching the proto3 zero value), so the namespace must exist before running `terraform apply` unless you set `create_namespace = true`.
 
 ## Usage
 

@@ -1,12 +1,12 @@
 variable "metadata" {
   description = "Metadata for the resource, including name and labels"
   type = object({
-    name = string,
-    id = optional(string),
-    org = optional(string),
-    env = optional(string),
-    labels = optional(map(string)),
-    tags = optional(list(string)),
+    name    = string,
+    id      = optional(string),
+    org     = optional(string),
+    env     = optional(string),
+    labels  = optional(map(string)),
+    tags    = optional(list(string)),
     version = optional(object({ id = string, message = string }))
   })
 }
@@ -19,15 +19,15 @@ variable "spec" {
     namespace = string
 
     # Flag to indicate if the namespace should be created
-    create_namespace = optional(bool, true)
+    create_namespace = optional(bool, false)
 
     # Elasticsearch configuration
     elasticsearch = object({
       # Container configuration
       container = object({
-        replicas             = number
-        persistence_enabled  = bool
-        disk_size            = string
+        replicas            = number
+        persistence_enabled = bool
+        disk_size           = string
         resources = object({
           limits = object({
             cpu    = string

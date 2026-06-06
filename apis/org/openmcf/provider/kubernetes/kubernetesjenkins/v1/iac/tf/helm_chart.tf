@@ -16,7 +16,7 @@ resource "helm_release" "jenkins" {
           "fullnameOverride" = local.resource_id,
           "controller" = {
             "image" = {
-              "tag" = "latest"  # Or your chosen tag
+              "tag" = "latest" # Or your chosen tag
             },
             "admin" = {
               "existingSecret" = local.admin_credentials_secret_name,
@@ -24,7 +24,7 @@ resource "helm_release" "jenkins" {
             },
             "resources" = {
               # CPU/memory from your container_resources
-              "limits"   = {
+              "limits" = {
                 "cpu"    = var.spec.container_resources.limits.cpu
                 "memory" = var.spec.container_resources.limits.memory
               },
@@ -36,7 +36,7 @@ resource "helm_release" "jenkins" {
           }
         },
         # Merge any user-provided overrides
-          var.spec.helm_values != null ? var.spec.helm_values : {}
+        var.spec.helm_values != null ? var.spec.helm_values : {}
       )
     )
   ]

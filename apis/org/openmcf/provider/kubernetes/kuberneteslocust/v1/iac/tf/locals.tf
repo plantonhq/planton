@@ -15,13 +15,13 @@ locals {
 
   # Organization label only if var.metadata.org is non-empty
   org_label = (
-  var.metadata.org != null && var.metadata.org != ""
+    var.metadata.org != null && var.metadata.org != ""
   ) ? { "organization" = var.metadata.org } : {}
 
   # Environment label only if var.metadata.env is non-empty
   env_label = (
-  var.metadata.env != null &&
-  try(var.metadata.env, "") != ""
+    var.metadata.env != null &&
+    try(var.metadata.env, "") != ""
   ) ? { "environment" = var.metadata.env } : {}
 
   # Merge base, org, and environment labels
@@ -45,12 +45,12 @@ locals {
 
   # External hostname (null if not applicable)
   ingress_external_hostname = (
-  local.ingress_is_enabled && local.ingress_dns_domain != ""
+    local.ingress_is_enabled && local.ingress_dns_domain != ""
   ) ? "${local.resource_id}.${local.ingress_dns_domain}" : null
 
   # Internal hostname (null if not applicable)
   ingress_internal_hostname = (
-  local.ingress_is_enabled && local.ingress_dns_domain != ""
+    local.ingress_is_enabled && local.ingress_dns_domain != ""
   ) ? "${local.resource_id}-internal.${local.ingress_dns_domain}" : null
 
   # For certificate creation (using the same logic as in code)

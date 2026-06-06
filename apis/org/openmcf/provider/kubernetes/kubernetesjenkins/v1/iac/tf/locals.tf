@@ -18,15 +18,15 @@ locals {
 
   # Organization label only if org is non-empty
   org_label = (
-  var.metadata.org != null && var.metadata.org != ""
-  ) ? {
+    var.metadata.org != null && var.metadata.org != ""
+    ) ? {
     "organization" = var.metadata.org
   } : {}
 
   # Environment label only if env and env.id are provided
   env_label = (
-  var.metadata.env != null && var.metadata.env != ""
-  ) ? {
+    var.metadata.env != null && var.metadata.env != ""
+    ) ? {
     "organization" = var.metadata.env
   } : {}
   final_labels = merge(local.base_labels, local.org_label, local.env_label)
@@ -44,16 +44,16 @@ locals {
 
   # If ingress is enabled and domain is non-empty, define external/internal hostnames
   ingress_external_hostname = (
-  local.ingress_is_enabled && local.ingress_dns_domain != ""
+    local.ingress_is_enabled && local.ingress_dns_domain != ""
   ) ? "${local.resource_id}.${local.ingress_dns_domain}" : null
 
   ingress_internal_hostname = (
-  local.ingress_is_enabled && local.ingress_dns_domain != ""
+    local.ingress_is_enabled && local.ingress_dns_domain != ""
   ) ? "${local.resource_id}-internal.${local.ingress_dns_domain}" : null
 
   # Official Jenkins helm chart repository & chart name
-  jenkins_chart_repo    = "https://charts.jenkins.io"
-  jenkins_chart_name    = "jenkins"
+  jenkins_chart_repo = "https://charts.jenkins.io"
+  jenkins_chart_name = "jenkins"
   # Pin a specific chart version, or allow the user to override in var.spec.helm_values
   # You could also expose this as a variable if you prefer
   jenkins_chart_version = "5.8.8"

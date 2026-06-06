@@ -15,15 +15,15 @@ locals {
 
   # Organization label only if var.metadata.org is non-empty
   org_label = (
-  var.metadata.org != null && var.metadata.org != ""
-  ) ? {
+    var.metadata.org != null && var.metadata.org != ""
+    ) ? {
     "organization" = var.metadata.org
   } : {}
 
   # Environment label only if var.metadata.env is non-empty
   env_label = (
-  var.metadata.env != null && try(var.metadata.env, "") != ""
-  ) ? {
+    var.metadata.env != null && try(var.metadata.env, "") != ""
+    ) ? {
     "environment" = var.metadata.env
   } : {}
 

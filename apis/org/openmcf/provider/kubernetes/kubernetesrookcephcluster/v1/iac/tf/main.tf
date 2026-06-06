@@ -65,11 +65,11 @@ resource "helm_release" "rook_ceph_cluster" {
   create_namespace = false
 
   # Helm release options
-  atomic          = true  # Atomic rollback on failure
-  cleanup_on_fail = true  # Clean up resources if deployment fails
-  wait            = true  # Wait for resources to be ready
-  wait_for_jobs   = true  # Wait for any jobs to complete
-  timeout         = 600   # 10 minutes timeout (Ceph cluster takes longer)
+  atomic          = true # Atomic rollback on failure
+  cleanup_on_fail = true # Clean up resources if deployment fails
+  wait            = true # Wait for resources to be ready
+  wait_for_jobs   = true # Wait for any jobs to complete
+  timeout         = 600  # 10 minutes timeout (Ceph cluster takes longer)
 
   # Configure Rook Ceph Cluster
   values = [yamlencode({

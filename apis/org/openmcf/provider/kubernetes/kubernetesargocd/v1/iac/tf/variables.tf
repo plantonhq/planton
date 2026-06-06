@@ -1,12 +1,12 @@
 variable "metadata" {
   description = "Metadata for the resource, including name and labels"
   type = object({
-    name = string,
-    id = optional(string),
-    org = optional(string),
-    env = optional(string),
-    labels = optional(map(string)),
-    tags = optional(list(string)),
+    name    = string,
+    id      = optional(string),
+    org     = optional(string),
+    env     = optional(string),
+    labels  = optional(map(string)),
+    tags    = optional(list(string)),
     version = optional(object({ id = string, message = string }))
   })
 }
@@ -20,7 +20,7 @@ variable "spec" {
 
     # Flag to indicate if the namespace should be created by the module.
     # Set to true to create the namespace, false to use an existing namespace.
-    create_namespace = optional(bool, true)
+    create_namespace = optional(bool, false)
 
     # The container specifications for the Argo CD deployment.
     container = object({
