@@ -770,7 +770,7 @@ variable "alternate_domain_names" {
 
 **Purpose:** Production-quality, directly deployable YAML manifests representing the most common real-world configuration patterns for the component. Each preset is a ranked starting point that users can deploy immediately (after replacing placeholders) without needing to understand every field in `spec.proto`.
 
-**Reference:** See `architecture/presets.md` for the full convention specification and `.cursor/info/presets.md` for the concise authoring guide.
+**Reference:** See `architecture/presets.md` for the full convention specification and authoring guide.
 
 **Requirements:**
 
