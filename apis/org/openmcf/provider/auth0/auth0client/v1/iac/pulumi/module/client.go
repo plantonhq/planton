@@ -109,10 +109,16 @@ func createClient(ctx *pulumi.Context, locals *Locals, provider *auth0.Provider)
 			hasJwtConfig = true
 		}
 
-		if locals.JwtConfiguration.Alg != "" {
-			jwtConfig.Alg = pulumi.String(locals.JwtConfiguration.Alg)
-			hasJwtConfig = true
+		// Default the id_token signing alg to RS256 (the proto's documented default and
+		// Auth0's recommendation): JWKS-verifying clients (e.g. NextAuth) reject an HS256
+		// id_token. Kept in parity with the tofu module's variables.tf
+		// `alg = optional(string, "RS256")`.
+		alg := locals.JwtConfiguration.Alg
+		if alg == "" {
+			alg = "RS256"
 		}
+		jwtConfig.Alg = pulumi.String(alg)
+		hasJwtConfig = true
 
 		jwtConfig.SecretEncoded = pulumi.Bool(locals.JwtConfiguration.SecretEncoded)
 
