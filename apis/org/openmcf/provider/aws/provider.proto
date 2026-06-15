@@ -26,11 +26,14 @@ message AwsProviderConfig {
   ];
 
   // The AWS Access Key ID, which is used to authenticate API requests to AWS services.
-  // This is a required field, and it must start with either 'AKIA' (long-term credentials) or 'ASIA' (temporary security credentials)
-  // followed by 16 alphanumeric characters. This field must contain exactly 20 characters.
+  // Required for static-credential auth; left empty for keyless web-identity auth
+  // (see web_identity below). When present, it must start with either 'AKIA'
+  // (long-term credentials) or 'ASIA' (temporary security credentials) followed by
+  // 16 alphanumeric characters, for a total of 20 characters. The format rules are
+  // skipped when the field is empty (IGNORE_IF_ZERO_VALUE) so keyless configs validate.
   // For more information do refer this link https://docs.aws.amazon.com/IAM/latest/UserGuide/access-keys-admin-managed.html
   string access_key_id = 2 [
-    (buf.validate.field).required = true,
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).string.len = 20,
     (buf.validate.field).cel = {
       id: "spec.access_key_id.prefix"
@@ -46,12 +49,14 @@ message AwsProviderConfig {
     }
   ];
 
-  // The AWS Secret Access Key, which is used in combination with the access key ID to authenticate API requests to AWS services.
-  // This is a required field, and the value must be exactly 40 characters long.
-  // The secret access key can include numbers, lowercase and uppercase letters, slashes (/), and plus signs (+).
+  // The AWS Secret Access Key, used together with the access key ID to authenticate API requests to AWS services.
+  // Required for static-credential auth; left empty for keyless web-identity auth
+  // (see web_identity below). When present, the value must be exactly 40 characters
+  // consisting of numbers, lowercase and uppercase letters, slashes (/), and plus
+  // signs (+). The format rule is skipped when the field is empty (IGNORE_IF_ZERO_VALUE).
   // For more information do refer this link https://docs.aws.amazon.com/IAM/latest/UserGuide/access-keys-admin-managed.html
   string secret_access_key = 3 [
-    (buf.validate.field).required = true,
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).string.len = 40,
     (buf.validate.field).cel = {
       id: "spec.aws.secret_access_key"
@@ -72,4 +77,60 @@ message AwsProviderConfig {
   // Temporary credentials have Access Key IDs starting with 'ASIA'.
   // For more information refer to https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp.html
   string session_token = 5;
+
+  // Keyless web-identity (OIDC) authentication. When set, the provider authenticates
+  // via STS AssumeRoleWithWebIdentity instead of static access keys -- so access_key_id
+  // and secret_access_key are left empty in this mode. Exactly one of {static keys,
+  // web_identity} is populated; if neither is set the provider is built with region only.
+  AwsWebIdentityProviderConfig web_identity = 6;
+}
+
+// AwsWebIdentityProviderConfig holds the inputs for keyless OIDC federation (DD-002):
+// the Planton runner mints a connection-scoped JWT from the Planton OIDC issuer and the
+// pulumi/tofu AWS provider exchanges it for credentials via STS AssumeRoleWithWebIdentity.
+//
+// It powers two auth modes with one mechanism:
+//   - oidc: single hop -- assume the customer role directly with the web identity.
+//   - cross_account_trust: two hops -- assume a Planton base role in account
+//     066380525333 with the web identity (role_arn below), then role-chain into the
+//     customer role via chained_assume_roles (capped at a 1h session by AWS).
+//
+// The token is carried in memory (web_identity_token) and never written to disk: a stack
+// job's runtime stays within the token TTL, so no file-based provider refresh is needed.
+message AwsWebIdentityProviderConfig {
+  // The minted OIDC JWT presented to STS. Maps to pulumi-aws
+  // ProviderAssumeRoleWithWebIdentity.WebIdentityToken.
+  string web_identity_token = 1 [(buf.validate.field).required = true];
+
+  // ARN of the first-hop role assumed with the web identity:
+  //   - oidc: the customer's role.
+  //   - cross_account_trust: the Planton base role in account 066380525333.
+  string role_arn = 2 [(buf.validate.field).required = true];
+
+  // Optional session name for the web-identity assumption. Provider default applies when empty.
+  string session_name = 3;
+
+  // Optional session duration string (e.g. "1h"). Provider default applies when empty.
+  string duration = 4;
+
+  // Optional chained role hops applied after the web-identity assumption, in order.
+  // Used by cross_account_trust for the second hop into the customer role; empty for oidc.
+  repeated AwsAssumeRoleConfig chained_assume_roles = 5;
+}
+
+// AwsAssumeRoleConfig describes a single STS AssumeRole hop chained off an already-assumed
+// identity (e.g. the cross_account_trust hop from the Planton base role into the customer role).
+message AwsAssumeRoleConfig {
+  // ARN of the role to assume in this hop.
+  string role_arn = 1 [(buf.validate.field).required = true];
+
+  // Optional external ID for confused-deputy prevention, embedded in the target role's
+  // trust policy as an sts:ExternalId condition.
+  string external_id = 2;
+
+  // Optional session name for this hop. Provider default applies when empty.
+  string session_name = 3;
+
+  // Optional session duration string (e.g. "1h"). Role chaining caps the session at 1h.
+  string duration = 4;
 }

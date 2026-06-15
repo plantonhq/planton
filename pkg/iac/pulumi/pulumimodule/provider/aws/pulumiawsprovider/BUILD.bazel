@@ -1,0 +1,28 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "pulumiawsprovider",
+    srcs = ["provider.go"],
+    importpath = "github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/provider/aws/pulumiawsprovider",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/org/openmcf/provider/aws",
+        "//pkg/iac/pulumi/pulumimodule/pulumi/pulumioutput",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_aws_sdk_v7//go/aws",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)
+
+go_test(
+    name = "pulumiawsprovider_test",
+    srcs = ["provider_test.go"],
+    embed = [":pulumiawsprovider"],
+    deps = [
+        "//apis/org/openmcf/provider/aws",
+        "@com_github_pulumi_pulumi_aws_sdk_v7//go/aws",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
+    ],
+)

@@ -37,13 +37,18 @@ type AwsProviderConfig struct {
 	// For more information do refer this link https://docs.aws.amazon.com/accounts/latest/reference/manage-acct-identifiers.html
 	AccountId string `protobuf:"bytes,1,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
 	// The AWS Access Key ID, which is used to authenticate API requests to AWS services.
-	// This is a required field, and it must start with either 'AKIA' (long-term credentials) or 'ASIA' (temporary security credentials)
-	// followed by 16 alphanumeric characters. This field must contain exactly 20 characters.
+	// Required for static-credential auth; left empty for keyless web-identity auth
+	// (see web_identity below). When present, it must start with either 'AKIA'
+	// (long-term credentials) or 'ASIA' (temporary security credentials) followed by
+	// 16 alphanumeric characters, for a total of 20 characters. The format rules are
+	// skipped when the field is empty (IGNORE_IF_ZERO_VALUE) so keyless configs validate.
 	// For more information do refer this link https://docs.aws.amazon.com/IAM/latest/UserGuide/access-keys-admin-managed.html
 	AccessKeyId string `protobuf:"bytes,2,opt,name=access_key_id,json=accessKeyId,proto3" json:"access_key_id,omitempty"`
-	// The AWS Secret Access Key, which is used in combination with the access key ID to authenticate API requests to AWS services.
-	// This is a required field, and the value must be exactly 40 characters long.
-	// The secret access key can include numbers, lowercase and uppercase letters, slashes (/), and plus signs (+).
+	// The AWS Secret Access Key, used together with the access key ID to authenticate API requests to AWS services.
+	// Required for static-credential auth; left empty for keyless web-identity auth
+	// (see web_identity below). When present, the value must be exactly 40 characters
+	// consisting of numbers, lowercase and uppercase letters, slashes (/), and plus
+	// signs (+). The format rule is skipped when the field is empty (IGNORE_IF_ZERO_VALUE).
 	// For more information do refer this link https://docs.aws.amazon.com/IAM/latest/UserGuide/access-keys-admin-managed.html
 	SecretAccessKey string `protobuf:"bytes,3,opt,name=secret_access_key,json=secretAccessKey,proto3" json:"secret_access_key,omitempty"`
 	// The AWS region to be used when configuring this AWS credential.
@@ -55,7 +60,12 @@ type AwsProviderConfig struct {
 	// AWS STS operations (e.g., AssumeRole, GetSessionToken).
 	// Temporary credentials have Access Key IDs starting with 'ASIA'.
 	// For more information refer to https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp.html
-	SessionToken  string `protobuf:"bytes,5,opt,name=session_token,json=sessionToken,proto3" json:"session_token,omitempty"`
+	SessionToken string `protobuf:"bytes,5,opt,name=session_token,json=sessionToken,proto3" json:"session_token,omitempty"`
+	// Keyless web-identity (OIDC) authentication. When set, the provider authenticates
+	// via STS AssumeRoleWithWebIdentity instead of static access keys -- so access_key_id
+	// and secret_access_key are left empty in this mode. Exactly one of {static keys,
+	// web_identity} is populated; if neither is set the provider is built with region only.
+	WebIdentity   *AwsWebIdentityProviderConfig `protobuf:"bytes,6,opt,name=web_identity,json=webIdentity,proto3" json:"web_identity,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -125,22 +135,214 @@ func (x *AwsProviderConfig) GetSessionToken() string {
 	return ""
 }
 
+func (x *AwsProviderConfig) GetWebIdentity() *AwsWebIdentityProviderConfig {
+	if x != nil {
+		return x.WebIdentity
+	}
+	return nil
+}
+
+// AwsWebIdentityProviderConfig holds the inputs for keyless OIDC federation (DD-002):
+// the Planton runner mints a connection-scoped JWT from the Planton OIDC issuer and the
+// pulumi/tofu AWS provider exchanges it for credentials via STS AssumeRoleWithWebIdentity.
+//
+// It powers two auth modes with one mechanism:
+//   - oidc: single hop -- assume the customer role directly with the web identity.
+//   - cross_account_trust: two hops -- assume a Planton base role in account
+//     066380525333 with the web identity (role_arn below), then role-chain into the
+//     customer role via chained_assume_roles (capped at a 1h session by AWS).
+//
+// The token is carried in memory (web_identity_token) and never written to disk: a stack
+// job's runtime stays within the token TTL, so no file-based provider refresh is needed.
+type AwsWebIdentityProviderConfig struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The minted OIDC JWT presented to STS. Maps to pulumi-aws
+	// ProviderAssumeRoleWithWebIdentity.WebIdentityToken.
+	WebIdentityToken string `protobuf:"bytes,1,opt,name=web_identity_token,json=webIdentityToken,proto3" json:"web_identity_token,omitempty"`
+	// ARN of the first-hop role assumed with the web identity:
+	//   - oidc: the customer's role.
+	//   - cross_account_trust: the Planton base role in account 066380525333.
+	RoleArn string `protobuf:"bytes,2,opt,name=role_arn,json=roleArn,proto3" json:"role_arn,omitempty"`
+	// Optional session name for the web-identity assumption. Provider default applies when empty.
+	SessionName string `protobuf:"bytes,3,opt,name=session_name,json=sessionName,proto3" json:"session_name,omitempty"`
+	// Optional session duration string (e.g. "1h"). Provider default applies when empty.
+	Duration string `protobuf:"bytes,4,opt,name=duration,proto3" json:"duration,omitempty"`
+	// Optional chained role hops applied after the web-identity assumption, in order.
+	// Used by cross_account_trust for the second hop into the customer role; empty for oidc.
+	ChainedAssumeRoles []*AwsAssumeRoleConfig `protobuf:"bytes,5,rep,name=chained_assume_roles,json=chainedAssumeRoles,proto3" json:"chained_assume_roles,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *AwsWebIdentityProviderConfig) Reset() {
+	*x = AwsWebIdentityProviderConfig{}
+	mi := &file_org_openmcf_provider_aws_provider_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AwsWebIdentityProviderConfig) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AwsWebIdentityProviderConfig) ProtoMessage() {}
+
+func (x *AwsWebIdentityProviderConfig) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_aws_provider_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AwsWebIdentityProviderConfig.ProtoReflect.Descriptor instead.
+func (*AwsWebIdentityProviderConfig) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_aws_provider_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *AwsWebIdentityProviderConfig) GetWebIdentityToken() string {
+	if x != nil {
+		return x.WebIdentityToken
+	}
+	return ""
+}
+
+func (x *AwsWebIdentityProviderConfig) GetRoleArn() string {
+	if x != nil {
+		return x.RoleArn
+	}
+	return ""
+}
+
+func (x *AwsWebIdentityProviderConfig) GetSessionName() string {
+	if x != nil {
+		return x.SessionName
+	}
+	return ""
+}
+
+func (x *AwsWebIdentityProviderConfig) GetDuration() string {
+	if x != nil {
+		return x.Duration
+	}
+	return ""
+}
+
+func (x *AwsWebIdentityProviderConfig) GetChainedAssumeRoles() []*AwsAssumeRoleConfig {
+	if x != nil {
+		return x.ChainedAssumeRoles
+	}
+	return nil
+}
+
+// AwsAssumeRoleConfig describes a single STS AssumeRole hop chained off an already-assumed
+// identity (e.g. the cross_account_trust hop from the Planton base role into the customer role).
+type AwsAssumeRoleConfig struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// ARN of the role to assume in this hop.
+	RoleArn string `protobuf:"bytes,1,opt,name=role_arn,json=roleArn,proto3" json:"role_arn,omitempty"`
+	// Optional external ID for confused-deputy prevention, embedded in the target role's
+	// trust policy as an sts:ExternalId condition.
+	ExternalId string `protobuf:"bytes,2,opt,name=external_id,json=externalId,proto3" json:"external_id,omitempty"`
+	// Optional session name for this hop. Provider default applies when empty.
+	SessionName string `protobuf:"bytes,3,opt,name=session_name,json=sessionName,proto3" json:"session_name,omitempty"`
+	// Optional session duration string (e.g. "1h"). Role chaining caps the session at 1h.
+	Duration      string `protobuf:"bytes,4,opt,name=duration,proto3" json:"duration,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AwsAssumeRoleConfig) Reset() {
+	*x = AwsAssumeRoleConfig{}
+	mi := &file_org_openmcf_provider_aws_provider_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AwsAssumeRoleConfig) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AwsAssumeRoleConfig) ProtoMessage() {}
+
+func (x *AwsAssumeRoleConfig) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_aws_provider_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AwsAssumeRoleConfig.ProtoReflect.Descriptor instead.
+func (*AwsAssumeRoleConfig) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_aws_provider_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *AwsAssumeRoleConfig) GetRoleArn() string {
+	if x != nil {
+		return x.RoleArn
+	}
+	return ""
+}
+
+func (x *AwsAssumeRoleConfig) GetExternalId() string {
+	if x != nil {
+		return x.ExternalId
+	}
+	return ""
+}
+
+func (x *AwsAssumeRoleConfig) GetSessionName() string {
+	if x != nil {
+		return x.SessionName
+	}
+	return ""
+}
+
+func (x *AwsAssumeRoleConfig) GetDuration() string {
+	if x != nil {
+		return x.Duration
+	}
+	return ""
+}
+
 var File_org_openmcf_provider_aws_provider_proto protoreflect.FileDescriptor
 
 const file_org_openmcf_provider_aws_provider_proto_rawDesc = "" +
 	"\n" +
-	"'org/openmcf/provider/aws/provider.proto\x12\x18org.openmcf.provider.aws\x1a\x1bbuf/validate/validate.proto\"\xe8\x06\n" +
+	"'org/openmcf/provider/aws/provider.proto\x12\x18org.openmcf.provider.aws\x1a\x1bbuf/validate/validate.proto\"\xc3\a\n" +
 	"\x11AwsProviderConfig\x12w\n" +
 	"\n" +
 	"account_id\x18\x01 \x01(\tBX\xbaHU\xba\x01O\n" +
 	"\x13spec.aws.account_id\x12\x1eOnly numbers (0-9) are allowed\x1a\x18this.matches('^[0-9]+$')\xc8\x01\x01R\taccountId\x12\xb5\x02\n" +
 	"\raccess_key_id\x18\x02 \x01(\tB\x90\x02\xbaH\x8c\x02\xba\x01r\n" +
 	"\x19spec.access_key_id.prefix\x128Must start with 'AKIA' (long-term) or 'ASIA' (temporary)\x1a\x1bthis.matches('^A(K|S)IA.*')\xba\x01\x8b\x01\n" +
-	"\x19spec.access_key_id.format\x12GMust start with 'AKIA' or 'ASIA' followed by 16 alphanumeric characters\x1a%this.matches('^.{4}[a-zA-Z0-9]{16}$')\xc8\x01\x01r\x03\x98\x01\x14R\vaccessKeyId\x12\xdc\x02\n" +
+	"\x19spec.access_key_id.format\x12GMust start with 'AKIA' or 'ASIA' followed by 16 alphanumeric characters\x1a%this.matches('^.{4}[a-zA-Z0-9]{16}$')\xd8\x01\x01r\x03\x98\x01\x14R\vaccessKeyId\x12\xdc\x02\n" +
 	"\x11secret_access_key\x18\x03 \x01(\tB\xaf\x02\xbaH\xab\x02\xba\x01\x9f\x02\n" +
-	"\x1aspec.aws.secret_access_key\x12\xdb\x01The provided AWS Secret Access Key is invalid. It must contain exactly 40 characters consisting of numbers, lowercase and uppercase letters, slashes (/), and plus signs (+). Please double-check your input and try again.\x1a#this.matches('^[0-9a-zA-Z/+]{40}$')\xc8\x01\x01r\x03\x98\x01(R\x0fsecretAccessKey\x12\x1e\n" +
+	"\x1aspec.aws.secret_access_key\x12\xdb\x01The provided AWS Secret Access Key is invalid. It must contain exactly 40 characters consisting of numbers, lowercase and uppercase letters, slashes (/), and plus signs (+). Please double-check your input and try again.\x1a#this.matches('^[0-9a-zA-Z/+]{40}$')\xd8\x01\x01r\x03\x98\x01(R\x0fsecretAccessKey\x12\x1e\n" +
 	"\x06region\x18\x04 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06region\x12#\n" +
-	"\rsession_token\x18\x05 \x01(\tR\fsessionTokenB\xed\x01\n" +
+	"\rsession_token\x18\x05 \x01(\tR\fsessionToken\x12Y\n" +
+	"\fweb_identity\x18\x06 \x01(\v26.org.openmcf.provider.aws.AwsWebIdentityProviderConfigR\vwebIdentity\"\x97\x02\n" +
+	"\x1cAwsWebIdentityProviderConfig\x124\n" +
+	"\x12web_identity_token\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x10webIdentityToken\x12!\n" +
+	"\brole_arn\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\aroleArn\x12!\n" +
+	"\fsession_name\x18\x03 \x01(\tR\vsessionName\x12\x1a\n" +
+	"\bduration\x18\x04 \x01(\tR\bduration\x12_\n" +
+	"\x14chained_assume_roles\x18\x05 \x03(\v2-.org.openmcf.provider.aws.AwsAssumeRoleConfigR\x12chainedAssumeRoles\"\x98\x01\n" +
+	"\x13AwsAssumeRoleConfig\x12!\n" +
+	"\brole_arn\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\aroleArn\x12\x1f\n" +
+	"\vexternal_id\x18\x02 \x01(\tR\n" +
+	"externalId\x12!\n" +
+	"\fsession_name\x18\x03 \x01(\tR\vsessionName\x12\x1a\n" +
+	"\bduration\x18\x04 \x01(\tR\bdurationB\xed\x01\n" +
 	"\x1ccom.org.openmcf.provider.awsB\rProviderProtoP\x01Z:github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws\xa2\x02\x04OOPA\xaa\x02\x18Org.Openmcf.Provider.Aws\xca\x02\x18Org\\Openmcf\\Provider\\Aws\xe2\x02$Org\\Openmcf\\Provider\\Aws\\GPBMetadata\xea\x02\x1bOrg::Openmcf::Provider::Awsb\x06proto3"
 
 var (
@@ -155,16 +357,20 @@ func file_org_openmcf_provider_aws_provider_proto_rawDescGZIP() []byte {
 	return file_org_openmcf_provider_aws_provider_proto_rawDescData
 }
 
-var file_org_openmcf_provider_aws_provider_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_org_openmcf_provider_aws_provider_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_org_openmcf_provider_aws_provider_proto_goTypes = []any{
-	(*AwsProviderConfig)(nil), // 0: org.openmcf.provider.aws.AwsProviderConfig
+	(*AwsProviderConfig)(nil),            // 0: org.openmcf.provider.aws.AwsProviderConfig
+	(*AwsWebIdentityProviderConfig)(nil), // 1: org.openmcf.provider.aws.AwsWebIdentityProviderConfig
+	(*AwsAssumeRoleConfig)(nil),          // 2: org.openmcf.provider.aws.AwsAssumeRoleConfig
 }
 var file_org_openmcf_provider_aws_provider_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	1, // 0: org.openmcf.provider.aws.AwsProviderConfig.web_identity:type_name -> org.openmcf.provider.aws.AwsWebIdentityProviderConfig
+	2, // 1: org.openmcf.provider.aws.AwsWebIdentityProviderConfig.chained_assume_roles:type_name -> org.openmcf.provider.aws.AwsAssumeRoleConfig
+	2, // [2:2] is the sub-list for method output_type
+	2, // [2:2] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_aws_provider_proto_init() }
@@ -178,7 +384,7 @@ func file_org_openmcf_provider_aws_provider_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_org_openmcf_provider_aws_provider_proto_rawDesc), len(file_org_openmcf_provider_aws_provider_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
