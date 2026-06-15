@@ -100,6 +100,14 @@ var file_org_openmcf_shared_options_options_proto_extTypes = []protoimpl.Extensi
 		Filename:      "org/openmcf/shared/options/options.proto",
 	},
 	{
+		ExtendedType:  (*descriptorpb.FieldOptions)(nil),
+		ExtensionType: (*bool)(nil),
+		Field:         60004,
+		Name:          "org.openmcf.shared.options.sensitive",
+		Tag:           "varint,60004,opt,name=sensitive",
+		Filename:      "org/openmcf/shared/options/options.proto",
+	},
+	{
 		ExtendedType:  (*descriptorpb.EnumValueOptions)(nil),
 		ExtensionType: (*string)(nil),
 		Field:         60050,
@@ -117,12 +125,20 @@ var (
 	E_RecommendedDefault = &file_org_openmcf_shared_options_options_proto_extTypes[1]
 	// repeated org.openmcf.shared.options.KeyValuePair recommended_default_map = 60003;
 	E_RecommendedDefaultMap = &file_org_openmcf_shared_options_options_proto_extTypes[2]
+	// Marks a field as holding a secret value (a credential, token, password, key,
+	// etc.). Downstream platforms (e.g. Planton) use this to force the value to be
+	// a reference to a managed secret rather than plaintext, and to resolve that
+	// reference just-in-time at deploy. Applies to string fields and to the literal
+	// value of StringValueOrRef fields.
+	//
+	// optional bool sensitive = 60004;
+	E_Sensitive = &file_org_openmcf_shared_options_options_proto_extTypes[3]
 )
 
 // Extension fields to descriptorpb.EnumValueOptions.
 var (
 	// optional string display_label = 60050;
-	E_DisplayLabel = &file_org_openmcf_shared_options_options_proto_extTypes[3]
+	E_DisplayLabel = &file_org_openmcf_shared_options_options_proto_extTypes[4]
 )
 
 var File_org_openmcf_shared_options_options_proto protoreflect.FileDescriptor
@@ -135,7 +151,8 @@ const file_org_openmcf_shared_options_options_proto_rawDesc = "" +
 	"\x05value\x18\x02 \x01(\tR\x05value:9\n" +
 	"\adefault\x12\x1d.google.protobuf.FieldOptions\x18\xe1\xd4\x03 \x01(\tR\adefault:P\n" +
 	"\x13recommended_default\x12\x1d.google.protobuf.FieldOptions\x18\xe2\xd4\x03 \x01(\tR\x12recommendedDefault:\x81\x01\n" +
-	"\x17recommended_default_map\x12\x1d.google.protobuf.FieldOptions\x18\xe3\xd4\x03 \x03(\v2(.org.openmcf.shared.options.KeyValuePairR\x15recommendedDefaultMap:H\n" +
+	"\x17recommended_default_map\x12\x1d.google.protobuf.FieldOptions\x18\xe3\xd4\x03 \x03(\v2(.org.openmcf.shared.options.KeyValuePairR\x15recommendedDefaultMap:=\n" +
+	"\tsensitive\x12\x1d.google.protobuf.FieldOptions\x18\xe4\xd4\x03 \x01(\bR\tsensitive:H\n" +
 	"\rdisplay_label\x12!.google.protobuf.EnumValueOptions\x18\x92\xd5\x03 \x01(\tR\fdisplayLabelB\xf8\x01\n" +
 	"\x1ecom.org.openmcf.shared.optionsB\fOptionsProtoP\x01Z<github.com/plantonhq/openmcf/apis/org/openmcf/shared/options\xa2\x02\x04OOSO\xaa\x02\x1aOrg.Openmcf.Shared.Options\xca\x02\x1aOrg\\Openmcf\\Shared\\Options\xe2\x02&Org\\Openmcf\\Shared\\Options\\GPBMetadata\xea\x02\x1dOrg::Openmcf::Shared::Optionsb\x06proto3"
 
@@ -161,12 +178,13 @@ var file_org_openmcf_shared_options_options_proto_depIdxs = []int32{
 	1, // 0: org.openmcf.shared.options.default:extendee -> google.protobuf.FieldOptions
 	1, // 1: org.openmcf.shared.options.recommended_default:extendee -> google.protobuf.FieldOptions
 	1, // 2: org.openmcf.shared.options.recommended_default_map:extendee -> google.protobuf.FieldOptions
-	2, // 3: org.openmcf.shared.options.display_label:extendee -> google.protobuf.EnumValueOptions
-	0, // 4: org.openmcf.shared.options.recommended_default_map:type_name -> org.openmcf.shared.options.KeyValuePair
-	5, // [5:5] is the sub-list for method output_type
-	5, // [5:5] is the sub-list for method input_type
-	4, // [4:5] is the sub-list for extension type_name
-	0, // [0:4] is the sub-list for extension extendee
+	1, // 3: org.openmcf.shared.options.sensitive:extendee -> google.protobuf.FieldOptions
+	2, // 4: org.openmcf.shared.options.display_label:extendee -> google.protobuf.EnumValueOptions
+	0, // 5: org.openmcf.shared.options.recommended_default_map:type_name -> org.openmcf.shared.options.KeyValuePair
+	6, // [6:6] is the sub-list for method output_type
+	6, // [6:6] is the sub-list for method input_type
+	5, // [5:6] is the sub-list for extension type_name
+	0, // [0:5] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
 }
 
@@ -182,7 +200,7 @@ func file_org_openmcf_shared_options_options_proto_init() {
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_org_openmcf_shared_options_options_proto_rawDesc), len(file_org_openmcf_shared_options_options_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   1,
-			NumExtensions: 4,
+			NumExtensions: 5,
 			NumServices:   0,
 		},
 		GoTypes:           file_org_openmcf_shared_options_options_proto_goTypes,

@@ -613,7 +613,7 @@ message AzureLinuxWebAppDockerConfig {
   // This is a sensitive credential. Provide directly or via StringValueOrRef.
   //
   // Not needed when using managed identity for ACR authentication.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef registry_password = 5;
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef registry_password = 5 [(org.openmcf.shared.options.sensitive) = true];
 }
 
 // AzureLinuxWebAppIdentity configures managed identity for the Web App.

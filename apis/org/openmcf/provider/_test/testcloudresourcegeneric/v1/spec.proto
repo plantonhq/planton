@@ -63,6 +63,16 @@ message TestCloudResourceGenericSpec {
   // ─── Repeated field (defaults applier must skip) ──────────────────────────────
 
   repeated string commands = 14;
+
+  // ─── Sensitive fields ─────────────────────────────────────────────────────────
+  //
+  // Permanent, hermetic coverage for the (org.openmcf.shared.options.sensitive)
+  // option: downstream consumers (Planton) detect these to enforce secret-only
+  // values and resolve them just-in-time. Covers both a raw string slot and the
+  // literal value of a StringValueOrRef slot.
+
+  string sensitive_string = 15 [(org.openmcf.shared.options.sensitive) = true];
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef sensitive_ref = 16 [(org.openmcf.shared.options.sensitive) = true];
 }
 
 // TestGenericNestedMessage tests nested message defaults

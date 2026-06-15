@@ -13,6 +13,12 @@ extend google.protobuf.FieldOptions {
   string default = 60001;
   string recommended_default = 60002;
   repeated KeyValuePair recommended_default_map = 60003;
+  // Marks a field as holding a secret value (a credential, token, password, key,
+  // etc.). Downstream platforms (e.g. Planton) use this to force the value to be
+  // a reference to a managed secret rather than plaintext, and to resolve that
+  // reference just-in-time at deploy. Applies to string fields and to the literal
+  // value of StringValueOrRef fields.
+  bool sensitive = 60004;
 }
 
 extend google.protobuf.EnumValueOptions {

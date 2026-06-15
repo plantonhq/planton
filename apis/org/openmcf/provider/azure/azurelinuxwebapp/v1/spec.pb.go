@@ -1816,7 +1816,7 @@ const file_org_openmcf_provider_azure_azurelinuxwebapp_v1_spec_proto_rawDesc = "
 	"javaServer\x12.\n" +
 	"\x13java_server_version\x18\t \x01(\tR\x11javaServerVersion\x12d\n" +
 	"\x06docker\x18\n" +
-	" \x01(\v2L.org.openmcf.provider.azure.azurelinuxwebapp.v1.AzureLinuxWebAppDockerConfigR\x06docker\"\xaf\x02\n" +
+	" \x01(\v2L.org.openmcf.provider.azure.azurelinuxwebapp.v1.AzureLinuxWebAppDockerConfigR\x06docker\"\xb5\x02\n" +
 	"\x1cAzureLinuxWebAppDockerConfig\x12-\n" +
 	"\fregistry_url\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\vregistryUrl\x12)\n" +
@@ -1825,8 +1825,8 @@ const file_org_openmcf_provider_azure_azurelinuxwebapp_v1_spec_proto_rawDesc = "
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\timageName\x12'\n" +
 	"\timage_tag\x18\x03 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\bimageTag\x12+\n" +
-	"\x11registry_username\x18\x04 \x01(\tR\x10registryUsername\x12_\n" +
-	"\x11registry_password\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x10registryPassword\"\xea\x02\n" +
+	"\x11registry_username\x18\x04 \x01(\tR\x10registryUsername\x12e\n" +
+	"\x11registry_password\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x04\xa0\xa6\x1d\x01R\x10registryPassword\"\xea\x02\n" +
 	"\x18AzureLinuxWebAppIdentity\x12\xd1\x01\n" +
 	"\x04type\x18\x01 \x01(\tB\xbc\x01\xbaH\xb8\x01\xba\x01\xb1\x01\n" +
 	"\x13identity_type_valid\x12Otype must be 'SystemAssigned', 'UserAssigned', or 'SystemAssigned,UserAssigned'\x1aIthis in ['SystemAssigned', 'UserAssigned', 'SystemAssigned,UserAssigned']\xc8\x01\x01R\x04type\x12z\n" +
