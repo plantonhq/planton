@@ -88,7 +88,13 @@ variable "spec" {
 
       # alg is the algorithm used to sign the JWT.
       # One of: HS256, RS256, PS256
-      alg = optional(string)
+      # Defaults to RS256 (the proto's documented default and Auth0's recommendation):
+      # JWKS-verifying clients (e.g. NextAuth) reject an HS256 id_token. The default lives
+      # here rather than via the proto (options.default) because the Planton deploy path
+      # renders tfvars from the pruned manifest and never runs protodefaults.ApplyDefaults
+      # (only the OpenMCF CLI does). Mirrors secret_encoded below. Kept in parity with the
+      # pulumi module (client.go defaults Alg to RS256 when empty).
+      alg = optional(string, "RS256")
 
       # secret_encoded indicates if the client secret is base64 encoded.
       secret_encoded = optional(bool, false)

@@ -1,1 +1,5 @@
-site/public/docs/catalog
+# Secrets — .gitignore only blocks indexing, not Agent/Tab read access
+**/.env
+**/*.env
+**/.env.e2e
+**/*.env.e2e

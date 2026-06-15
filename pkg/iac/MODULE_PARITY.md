@@ -76,3 +76,13 @@ namespace source, `metadata.name` naming basis, `application: spilo` LB selector
 `planton.ai/*` labels, backup + disaster-recovery standby/env, and nested secret
 outputs). See the conformance guard's `KubernetesPostgres` case and its negative
 counterpart `TestStackOutputsConformance_DetectsFlatSecretDrift`.
+
+The `Auth0Client` `jwt_configuration.alg` default is another spec-feature-coverage parity
+case: the proto documents `Default: RS256`, but both engines previously passed an omitted
+`alg` through (Auth0 then defaulted HS256, which JWKS-verifying clients like NextAuth reject).
+Both engines now encode the default -- tofu via `alg = optional(string, "RS256")` in
+`variables.tf` (beside `secret_encoded = optional(bool, false)`), Pulumi via an else-RS256 in
+`client.go`. The default is module-level rather than a proto `(options.default)` because the
+proto-default applier (`internal/manifest/protodefaults.ApplyDefaults`) runs only in the CLI
+manifest loader, not on the tfvars-render path used by orchestrated deploys (`pkg/iac/tofu/generators/tfvars.go`
+prunes unset fields). `alg` is not a stack output, so the conformance guard is unaffected.
