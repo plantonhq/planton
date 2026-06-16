@@ -8,6 +8,7 @@ package auth0resourceserverv1
 
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
+	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -276,7 +277,7 @@ var File_org_openmcf_provider_auth0_auth0resourceserver_v1_spec_proto protorefle
 
 const file_org_openmcf_provider_auth0_auth0resourceserver_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"<org/openmcf/provider/auth0/auth0resourceserver/v1/spec.proto\x121org.openmcf.provider.auth0.auth0resourceserver.v1\x1a\x1bbuf/validate/validate.proto\"\xaa\x05\n" +
+	"<org/openmcf/provider/auth0/auth0resourceserver/v1/spec.proto\x121org.openmcf.provider.auth0.auth0resourceserver.v1\x1a\x1bbuf/validate/validate.proto\x1a(org/openmcf/shared/options/options.proto\"\xf8\x05\n" +
 	"\x17Auth0ResourceServerSpec\x12&\n" +
 	"\n" +
 	"identifier\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\n" +
@@ -288,8 +289,8 @@ const file_org_openmcf_provider_auth0_auth0resourceserver_v1_spec_proto_rawDesc 
 	"\x0etoken_lifetime\x18\x05 \x01(\x05B\f\xbaH\t\x1a\a\x18\x80\x9a\x9e\x01(\x00R\rtokenLifetime\x12A\n" +
 	"\x16token_lifetime_for_web\x18\x06 \x01(\x05B\f\xbaH\t\x1a\a\x18\x80\x9a\x9e\x01(\x00R\x13tokenLifetimeForWeb\x12b\n" +
 	"/skip_consent_for_verifiable_first_party_clients\x18\a \x01(\bR)skipConsentForVerifiableFirstPartyClients\x12)\n" +
-	"\x10enforce_policies\x18\b \x01(\bR\x0fenforcePolicies\x12v\n" +
-	"\rtoken_dialect\x18\t \x01(\tBQ\xbaHNrLR\x00R\faccess_tokenR\x12access_token_authzR\x0frfc9068_profileR\x15rfc9068_profile_authzR\ftokenDialect\x12c\n" +
+	"\x10enforce_policies\x18\b \x01(\bR\x0fenforcePolicies\x12\xc3\x01\n" +
+	"\rtoken_dialect\x18\t \x01(\tB\x9d\x01\xbaHNrLR\x00R\faccess_tokenR\x12access_token_authzR\x0frfc9068_profileR\x15rfc9068_profile_authz\xaa\xa6\x1dHAccess-token format selector (e.g. rfc9068_profile), not a secret value.R\ftokenDialect\x12c\n" +
 	"\x06scopes\x18\n" +
 	" \x03(\v2K.org.openmcf.provider.auth0.auth0resourceserver.v1.Auth0ResourceServerScopeR\x06scopes\"X\n" +
 	"\x18Auth0ResourceServerScope\x12\x1a\n" +

@@ -108,6 +108,14 @@ var file_org_openmcf_shared_options_options_proto_extTypes = []protoimpl.Extensi
 		Filename:      "org/openmcf/shared/options/options.proto",
 	},
 	{
+		ExtendedType:  (*descriptorpb.FieldOptions)(nil),
+		ExtensionType: (*string)(nil),
+		Field:         60005,
+		Name:          "org.openmcf.shared.options.sensitive_exempt_reason",
+		Tag:           "bytes,60005,opt,name=sensitive_exempt_reason",
+		Filename:      "org/openmcf/shared/options/options.proto",
+	},
+	{
 		ExtendedType:  (*descriptorpb.EnumValueOptions)(nil),
 		ExtensionType: (*string)(nil),
 		Field:         60050,
@@ -133,12 +141,26 @@ var (
 	//
 	// optional bool sensitive = 60004;
 	E_Sensitive = &file_org_openmcf_shared_options_options_proto_extTypes[3]
+	// Justification that a field whose NAME matches the secret-coverage heuristic
+	// (password|token|secret|key|credential|...) is intentionally NOT a secret
+	// value -- e.g. a public key, an access-key *id*, a resource *name*, or a key
+	// *algorithm*. A non-empty value exempts the field from the secret-coverage gap
+	// report and records WHY (the value is the audit trail).
+	//
+	// This is read ONLY by secret-coverage tooling. It has NO effect on enforcement
+	// or just-in-time resolution: a field is secret-by-default solely when
+	// `sensitive` is true, so an exemption can never let a secret field accept
+	// plaintext. Setting both `sensitive` and `sensitive_exempt_reason` on the same
+	// field is a contradiction the coverage gate rejects.
+	//
+	// optional string sensitive_exempt_reason = 60005;
+	E_SensitiveExemptReason = &file_org_openmcf_shared_options_options_proto_extTypes[4]
 )
 
 // Extension fields to descriptorpb.EnumValueOptions.
 var (
 	// optional string display_label = 60050;
-	E_DisplayLabel = &file_org_openmcf_shared_options_options_proto_extTypes[4]
+	E_DisplayLabel = &file_org_openmcf_shared_options_options_proto_extTypes[5]
 )
 
 var File_org_openmcf_shared_options_options_proto protoreflect.FileDescriptor
@@ -152,7 +174,8 @@ const file_org_openmcf_shared_options_options_proto_rawDesc = "" +
 	"\adefault\x12\x1d.google.protobuf.FieldOptions\x18\xe1\xd4\x03 \x01(\tR\adefault:P\n" +
 	"\x13recommended_default\x12\x1d.google.protobuf.FieldOptions\x18\xe2\xd4\x03 \x01(\tR\x12recommendedDefault:\x81\x01\n" +
 	"\x17recommended_default_map\x12\x1d.google.protobuf.FieldOptions\x18\xe3\xd4\x03 \x03(\v2(.org.openmcf.shared.options.KeyValuePairR\x15recommendedDefaultMap:=\n" +
-	"\tsensitive\x12\x1d.google.protobuf.FieldOptions\x18\xe4\xd4\x03 \x01(\bR\tsensitive:H\n" +
+	"\tsensitive\x12\x1d.google.protobuf.FieldOptions\x18\xe4\xd4\x03 \x01(\bR\tsensitive:W\n" +
+	"\x17sensitive_exempt_reason\x12\x1d.google.protobuf.FieldOptions\x18\xe5\xd4\x03 \x01(\tR\x15sensitiveExemptReason:H\n" +
 	"\rdisplay_label\x12!.google.protobuf.EnumValueOptions\x18\x92\xd5\x03 \x01(\tR\fdisplayLabelB\xf8\x01\n" +
 	"\x1ecom.org.openmcf.shared.optionsB\fOptionsProtoP\x01Z<github.com/plantonhq/openmcf/apis/org/openmcf/shared/options\xa2\x02\x04OOSO\xaa\x02\x1aOrg.Openmcf.Shared.Options\xca\x02\x1aOrg\\Openmcf\\Shared\\Options\xe2\x02&Org\\Openmcf\\Shared\\Options\\GPBMetadata\xea\x02\x1dOrg::Openmcf::Shared::Optionsb\x06proto3"
 
@@ -179,12 +202,13 @@ var file_org_openmcf_shared_options_options_proto_depIdxs = []int32{
 	1, // 1: org.openmcf.shared.options.recommended_default:extendee -> google.protobuf.FieldOptions
 	1, // 2: org.openmcf.shared.options.recommended_default_map:extendee -> google.protobuf.FieldOptions
 	1, // 3: org.openmcf.shared.options.sensitive:extendee -> google.protobuf.FieldOptions
-	2, // 4: org.openmcf.shared.options.display_label:extendee -> google.protobuf.EnumValueOptions
-	0, // 5: org.openmcf.shared.options.recommended_default_map:type_name -> org.openmcf.shared.options.KeyValuePair
-	6, // [6:6] is the sub-list for method output_type
-	6, // [6:6] is the sub-list for method input_type
-	5, // [5:6] is the sub-list for extension type_name
-	0, // [0:5] is the sub-list for extension extendee
+	1, // 4: org.openmcf.shared.options.sensitive_exempt_reason:extendee -> google.protobuf.FieldOptions
+	2, // 5: org.openmcf.shared.options.display_label:extendee -> google.protobuf.EnumValueOptions
+	0, // 6: org.openmcf.shared.options.recommended_default_map:type_name -> org.openmcf.shared.options.KeyValuePair
+	7, // [7:7] is the sub-list for method output_type
+	7, // [7:7] is the sub-list for method input_type
+	6, // [6:7] is the sub-list for extension type_name
+	0, // [0:6] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
 }
 
@@ -200,7 +224,7 @@ func file_org_openmcf_shared_options_options_proto_init() {
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_org_openmcf_shared_options_options_proto_rawDesc), len(file_org_openmcf_shared_options_options_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   1,
-			NumExtensions: 5,
+			NumExtensions: 6,
 			NumServices:   0,
 		},
 		GoTypes:           file_org_openmcf_shared_options_options_proto_goTypes,

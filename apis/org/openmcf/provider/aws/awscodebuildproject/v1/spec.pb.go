@@ -1261,13 +1261,13 @@ const file_org_openmcf_provider_aws_awscodebuildproject_v1_spec_proto_rawDesc = 
 	"\x04name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12\x1c\n" +
 	"\x05value\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x05value\x12X\n" +
 	"\x04type\x18\x03 \x01(\tB?\xbaH/r-R\tPLAINTEXTR\x0fPARAMETER_STORER\x0fSECRETS_MANAGER\x8a\xa6\x1d\tPLAINTEXTH\x00R\x04type\x88\x01\x01B\a\n" +
-	"\x05_type\"\x94\x01\n" +
+	"\x05_type\"\xfb\x01\n" +
 	"\x1eAwsCodeBuildRegistryCredential\x12&\n" +
 	"\n" +
 	"credential\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\n" +
-	"credential\x12J\n" +
-	"\x13credential_provider\x18\x02 \x01(\tB\x19\xbaH\x16\xc8\x01\x01r\x11\n" +
-	"\x0fSECRETS_MANAGERR\x12credentialProvider\"\x97\x03\n" +
+	"credential\x12\xb0\x01\n" +
+	"\x13credential_provider\x18\x02 \x01(\tB\x7f\xbaH\x16\xc8\x01\x01r\x11\n" +
+	"\x0fSECRETS_MANAGER\xaa\xa6\x1dbProvider-type selector (constant SECRETS_MANAGER), not a secret value; the secret is `credential`.R\x12credentialProvider\"\x97\x03\n" +
 	"\x15AwsCodeBuildArtifacts\x12<\n" +
 	"\x04type\x18\x01 \x01(\tB(\xbaH%\xc8\x01\x01r R\fNO_ARTIFACTSR\x02S3R\fCODEPIPELINER\x04type\x12s\n" +
 	"\blocation\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB#\x88\xd4a\xd5\x01\x92\xd4a\x1astatus.outputs.bucket_nameR\blocation\x12\x12\n" +

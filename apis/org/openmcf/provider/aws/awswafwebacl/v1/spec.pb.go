@@ -9,6 +9,7 @@ package awswafwebaclv1
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
+	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	structpb "google.golang.org/protobuf/types/known/structpb"
@@ -1437,7 +1438,7 @@ var File_org_openmcf_provider_aws_awswafwebacl_v1_spec_proto protoreflect.FileDe
 
 const file_org_openmcf_provider_aws_awswafwebacl_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"3org/openmcf/provider/aws/awswafwebacl/v1/spec.proto\x12(org.openmcf.provider.aws.awswafwebacl.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xa4\x06\n" +
+	"3org/openmcf/provider/aws/awswafwebacl/v1/spec.proto\x12(org.openmcf.provider.aws.awswafwebacl.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xee\x06\n" +
 	"\x10AwsWafWebAclSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x1c\n" +
 	"\x05scope\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x05scope\x12r\n" +
@@ -1445,8 +1446,8 @@ const file_org_openmcf_provider_aws_awswafwebacl_v1_spec_proto_rawDesc = "" +
 	"\vdescription\x18\x04 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x02R\vdescription\x12P\n" +
 	"\x05rules\x18\x05 \x03(\v2:.org.openmcf.provider.aws.awswafwebacl.v1.AwsWafWebAclRuleR\x05rules\x12s\n" +
 	"\x11visibility_config\x18\x06 \x01(\v2F.org.openmcf.provider.aws.awswafwebacl.v1.AwsWafWebAclVisibilityConfigR\x10visibilityConfig\x12~\n" +
-	"\x16custom_response_bodies\x18\a \x03(\v2H.org.openmcf.provider.aws.awswafwebacl.v1.AwsWafWebAclCustomResponseBodyR\x14customResponseBodies\x12#\n" +
-	"\rtoken_domains\x18\b \x03(\tR\ftokenDomains\x12]\n" +
+	"\x16custom_response_bodies\x18\a \x03(\v2H.org.openmcf.provider.aws.awswafwebacl.v1.AwsWafWebAclCustomResponseBodyR\x14customResponseBodies\x12m\n" +
+	"\rtoken_domains\x18\b \x03(\tBH\xaa\xa6\x1dDDomain names for CAPTCHA/Challenge token scoping, not secret values.R\ftokenDomains\x12]\n" +
 	"\alogging\x18\t \x01(\v2C.org.openmcf.provider.aws.awswafwebacl.v1.AwsWafWebAclLoggingConfigR\alogging:f\xbaHc\x1aa\n" +
 	"\vscope_valid\x12(scope must be 'REGIONAL' or 'CLOUDFRONT'\x1a(this.scope in ['REGIONAL', 'CLOUDFRONT']\"\xd4\x05\n" +
 	"\x19AwsWafWebAclDefaultAction\x12\x1a\n" +

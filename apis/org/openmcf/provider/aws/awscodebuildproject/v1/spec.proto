@@ -318,6 +318,7 @@ message AwsCodeBuildRegistryCredential {
   // credential_provider is the credential provider type.
   // Currently only SECRETS_MANAGER is supported by AWS.
   string credential_provider = 2 [
+    (org.openmcf.shared.options.sensitive_exempt_reason) = "Provider-type selector (constant SECRETS_MANAGER), not a secret value; the secret is `credential`.",
     (buf.validate.field).required = true,
     (buf.validate.field).string.const = "SECRETS_MANAGER"
   ];

@@ -1,0 +1,26 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "secretcoverage",
+    srcs = [
+        "analyze.go",
+        "baseline.go",
+        "heuristic.go",
+    ],
+    importpath = "github.com/plantonhq/openmcf/pkg/secretcoverage",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/org/openmcf/shared/cloudresourcekind",
+        "//apis/org/openmcf/shared/options",
+        "//pkg/crkreflect",
+        "@in_gopkg_yaml_v3//:yaml_v3",
+        "@org_golang_google_protobuf//proto",
+        "@org_golang_google_protobuf//reflect/protoreflect",
+    ],
+)
+
+go_test(
+    name = "secretcoverage_test",
+    srcs = ["heuristic_test.go"],
+    embed = [":secretcoverage"],
+)

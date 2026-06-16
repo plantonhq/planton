@@ -3,6 +3,7 @@ syntax = "proto3";
 package org.openmcf.provider.auth0.auth0resourceserver.v1;
 
 import "buf/validate/validate.proto";
+import "org/openmcf/shared/options/options.proto";
 
 // Auth0ResourceServerSpec defines the configuration for an Auth0 Resource Server (API).
 // In Auth0, Resource Servers represent APIs that your applications can request access to.
@@ -96,15 +97,18 @@ message Auth0ResourceServerSpec {
   // Default: access_token
   //
   // https://auth0.com/docs/secure/tokens/access-tokens/access-token-profiles
-  string token_dialect = 9 [(buf.validate.field).string = {
-    in: [
-      "",
-      "access_token",
-      "access_token_authz",
-      "rfc9068_profile",
-      "rfc9068_profile_authz"
-    ]
-  }];
+  string token_dialect = 9 [
+    (org.openmcf.shared.options.sensitive_exempt_reason) = "Access-token format selector (e.g. rfc9068_profile), not a secret value.",
+    (buf.validate.field).string = {
+      in: [
+        "",
+        "access_token",
+        "access_token_authz",
+        "rfc9068_profile",
+        "rfc9068_profile_authz"
+      ]
+    }
+  ];
 
   // scopes defines the permissions that can be granted for this API.
   // Each scope represents a specific permission that applications can request.

@@ -1,0 +1,114 @@
+# Secret-coverage baseline -- the accepted backlog of cloud-resource fields that
+# LOOK sensitive by name (the secret heuristic) but are not yet annotated with the
+# OpenMCF `sensitive` option. This is the annotation-sweep TODO list.
+#
+# It is NOT a permanent exemption. A field that is intentionally not a secret (a
+# public key, an access-key id, a resource name) must use the proto
+# `sensitive_exempt_reason` option instead, which documents WHY in the proto itself.
+#
+# The CI guardrail (go test ./pkg/secretcoverage/...) fails when:
+#   - a gap appears that is NOT listed here (a new unannotated secret field shipped), or
+#   - a listed entry is no longer a gap (it was annotated/exempted -- remove it here).
+# As the sweep proceeds, annotate fields and delete their lines; this list trends to 0.
+#
+# Regenerate with:  openmcf secret-coverage --write-baseline
+gaps:
+  - AliCloudCdnDomain:spec.certificate_config.private_key
+  - AliCloudContainerRegistry:spec.password
+  - AliCloudEcsInstance:spec.password
+  - AliCloudKubernetesNodePool:spec.password
+  - AliCloudMongodbInstance:spec.account_password
+  - AliCloudMongodbInstance:spec.cloud_disk_encryption_key
+  - AliCloudMongodbInstance:spec.encryption_key
+  - AliCloudPolardbCluster:spec.accounts.account_password
+  - AliCloudPolardbCluster:spec.encryption_key
+  - AliCloudRdsInstance:spec.accounts.account_password
+  - AliCloudRdsInstance:spec.encryption_key
+  - AliCloudRedisInstance:spec.encryption_key
+  - AliCloudRedisInstance:spec.password
+  - AliCloudRocketmqInstance:spec.product_info.storage_secret_key
+  - Auth0Connection:spec.azure_ad_options.client_secret
+  - Auth0Connection:spec.oidc_options.client_secret
+  - Auth0Connection:spec.social_options.client_secret
+  - Auth0EventStream:spec.webhook_configuration.webhook_authorization.password
+  - Auth0EventStream:spec.webhook_configuration.webhook_authorization.token
+  - AwsAppRunnerService:spec.environment_secrets
+  - AwsCodeBuildProject:spec.encryption_key
+  - AwsCodeBuildProject:spec.environment.registry_credential.credential
+  - AwsCognitoIdentityProvider:spec.facebook.client_secret
+  - AwsCognitoIdentityProvider:spec.google.client_secret
+  - AwsCognitoIdentityProvider:spec.login_with_amazon.client_secret
+  - AwsCognitoIdentityProvider:spec.oidc.client_secret
+  - AwsCognitoIdentityProvider:spec.sign_in_with_apple.private_key
+  - AwsCognitoUserPool:spec.lambda_config.pre_token_generation
+  - AwsDocumentDb:spec.master_password
+  - AwsEcsService:spec.container.env.secrets
+  - AwsFsxOntapFileSystem:spec.fsx_admin_password
+  - AwsFsxOntapStorageVirtualMachine:spec.active_directory_configuration.password
+  - AwsFsxOntapStorageVirtualMachine:spec.svm_admin_password
+  - AwsFsxWindowsFileSystem:spec.self_managed_active_directory.password
+  - AwsKinesisFirehose:spec.redshift.password
+  - AwsOpenSearchDomain:spec.advanced_security_options.master_user_password
+  - AwsRdsCluster:spec.password
+  - AwsRdsInstance:spec.password
+  - AwsRedisElasticache:spec.auth_token
+  - AwsRedshiftCluster:spec.master_password
+  - AwsSecretsManager:spec.secret_names
+  - AzureFunctionApp:spec.application_insights_connection_string
+  - AzureFunctionApp:spec.site_config.application_stack.docker.registry_password
+  - AzureKeyVault:spec.secret_names
+  - AzureLinuxWebApp:spec.application_insights_connection_string
+  - AzureMssqlServer:spec.administrator_password
+  - AzureMysqlFlexibleServer:spec.administrator_password
+  - AzurePostgresqlFlexibleServer:spec.administrator_password
+  - AzureVirtualMachine:spec.admin_password
+  - CivoCertificate:spec.custom.private_key
+  - CloudflareWorker:spec.env.secrets
+  - DigitalOceanCertificate:spec.custom.private_key
+  - DigitalOceanFunction:spec.secret_environment_variables
+  - GcpAlloydbCluster:spec.initial_user.password
+  - GcpCloudCdn:spec.frontend_config.ssl_certificate.self_managed.private_key_pem
+  - GcpCloudFunction:spec.service_config.secret_environment_variables
+  - GcpCloudRun:spec.container.env.secrets
+  - GcpCloudSql:spec.root_password
+  - GcpSecretsManager:spec.secret_names
+  - HetznerCloudCertificate:spec.uploaded.private_key
+  - KubernetesClusterIssuer:spec.cloudflare.api_token
+  - KubernetesDestinationRule:spec.subsets.traffic_policy.port_level_settings.tls.private_key
+  - KubernetesDestinationRule:spec.subsets.traffic_policy.tls.private_key
+  - KubernetesDestinationRule:spec.traffic_policy.port_level_settings.tls.private_key
+  - KubernetesDestinationRule:spec.traffic_policy.tls.private_key
+  - KubernetesExternalDns:spec.cloudflare.api_token
+  - KubernetesGhaRunnerScaleSet:spec.github.github_app.private_key_base64
+  - KubernetesGhaRunnerScaleSet:spec.github.pat_token.token
+  - KubernetesGhaRunnerScaleSet:spec.image_pull_secrets
+  - KubernetesGhaRunnerScaleSetController:spec.image_pull_secrets
+  - KubernetesHarbor:spec.cache.external_cache.password
+  - KubernetesHarbor:spec.database.external_database.password
+  - KubernetesHarbor:spec.storage.oss.access_key_secret
+  - KubernetesHarbor:spec.storage.s3.secret_key
+  - KubernetesPostgres:spec.backup_config.restore.r2_config.secret_access_key
+  - KubernetesSecret:spec.basic_auth.password
+  - KubernetesSecret:spec.docker_config_json.password
+  - KubernetesSecret:spec.ssh_auth.ssh_private_key
+  - KubernetesZalandoPostgresOperator:spec.backup_config.r2_config.secret_access_key
+  - OciApiGateway:spec.deployment.request_policies.authentication.token_auth_scheme
+  - OciApiGateway:spec.deployment.request_policies.authentication.token_header
+  - OciApiGateway:spec.deployment.request_policies.authentication.token_query_param
+  - OciApplicationLoadBalancer:spec.certificates.passphrase
+  - OciApplicationLoadBalancer:spec.certificates.private_key
+  - OciAutonomousDatabase:spec.admin_password
+  - OciContainerInstance:spec.image_pull_secrets.password
+  - OciDbSystem:spec.db_home.database.admin_password
+  - OciKmsVault:spec.external_key_manager_metadata.oauth_metadata.client_app_secret
+  - OciMysqlDbSystem:spec.admin_password
+  - OciPostgresqlDbSystem:spec.credentials.password_details.password
+  - OciVaultSecret:spec.secret_generation_context.secret_template
+  - OciVaultSecret:spec.secret_metadata
+  - OciVaultSecret:spec.secret_rules.secret_version_expiry_interval
+  - OpenStackApplicationCredential:spec.secret
+  - ScalewayMongodbInstance:spec.admin_password
+  - ScalewayMongodbInstance:spec.users.password
+  - ScalewayRdbInstance:spec.admin_password
+  - ScalewayRdbInstance:spec.users.password
+  - ScalewayRedisCluster:spec.password

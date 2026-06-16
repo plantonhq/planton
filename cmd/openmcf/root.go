@@ -55,6 +55,7 @@ func init() {
 		root.Pull,
 		root.Pulumi,
 		root.Refresh,
+		root.SecretCoverage,
 		root.Terraform,
 		root.Tofu,
 		root.Upgrade,

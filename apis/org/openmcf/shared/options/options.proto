@@ -19,6 +19,19 @@ extend google.protobuf.FieldOptions {
   // reference just-in-time at deploy. Applies to string fields and to the literal
   // value of StringValueOrRef fields.
   bool sensitive = 60004;
+
+  // Justification that a field whose NAME matches the secret-coverage heuristic
+  // (password|token|secret|key|credential|...) is intentionally NOT a secret
+  // value -- e.g. a public key, an access-key *id*, a resource *name*, or a key
+  // *algorithm*. A non-empty value exempts the field from the secret-coverage gap
+  // report and records WHY (the value is the audit trail).
+  //
+  // This is read ONLY by secret-coverage tooling. It has NO effect on enforcement
+  // or just-in-time resolution: a field is secret-by-default solely when
+  // `sensitive` is true, so an exemption can never let a secret field accept
+  // plaintext. Setting both `sensitive` and `sensitive_exempt_reason` on the same
+  // field is a contradiction the coverage gate rejects.
+  string sensitive_exempt_reason = 60005;
 }
 
 extend google.protobuf.EnumValueOptions {

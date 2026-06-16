@@ -5,6 +5,7 @@ package org.openmcf.provider.aws.awswafwebacl.v1;
 import "buf/validate/validate.proto";
 import "google/protobuf/struct.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
 
 // AwsWafWebAclSpec defines the desired configuration for an AWS WAFv2 Web ACL.
 //
@@ -119,7 +120,7 @@ message AwsWafWebAclSpec {
   // Domains to accept in web request tokens for CAPTCHA and Challenge actions.
   // Required when using CAPTCHA/Challenge with multiple domains that share
   // the same Web ACL. When omitted, tokens are scoped to the request domain.
-  repeated string token_domains = 8;
+  repeated string token_domains = 8 [(org.openmcf.shared.options.sensitive_exempt_reason) = "Domain names for CAPTCHA/Challenge token scoping, not secret values."];
 
   // ---------------------------------------------------------------------------
   // Logging
