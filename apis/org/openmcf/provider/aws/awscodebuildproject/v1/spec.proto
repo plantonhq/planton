@@ -47,6 +47,7 @@ message AwsCodeBuildProjectSpec {
   // encryption_key is the ARN of a KMS key used to encrypt build artifacts.
   // If omitted, CodeBuild uses the AWS-managed key for S3.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef encryption_key = 7 [
+    (org.openmcf.shared.options.sensitive_exempt_reason) = "Foreign-key reference to an AwsKmsKey (the KMS key ARN), not secret key material.",
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
   ];
@@ -313,7 +314,10 @@ message AwsCodeBuildEnvironmentVariable {
 message AwsCodeBuildRegistryCredential {
   // credential is the ARN or name of the Secrets Manager secret containing
   // the Docker registry credentials (username + password).
-  string credential = 1 [(buf.validate.field).required = true];
+  string credential = 1 [
+    (org.openmcf.shared.options.sensitive_exempt_reason) = "ARN or name of a Secrets Manager secret (a reference), not the secret value itself.",
+    (buf.validate.field).required = true
+  ];
 
   // credential_provider is the credential provider type.
   // Currently only SECRETS_MANAGER is supported by AWS.

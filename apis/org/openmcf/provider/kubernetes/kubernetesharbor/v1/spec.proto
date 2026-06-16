@@ -188,7 +188,10 @@ message KubernetesHarborExternalPostgresql {
   string username = 3 [(buf.validate.field).required = true];
 
   // The password for authenticating to PostgreSQL.
-  string password = 4 [(buf.validate.field).required = true];
+  string password = 4 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.options.sensitive) = true
+  ];
 
   // The name of the database for Harbor Core (default is "registry").
   optional string core_database = 5 [(org.openmcf.shared.options.default) = "registry"];
@@ -316,7 +319,7 @@ message KubernetesHarborExternalRedis {
   string username = 3;
 
   // The password for authenticating to Redis.
-  string password = 4;
+  string password = 4 [(org.openmcf.shared.options.sensitive) = true];
 
   // The Redis database index to use (default is 0).
   optional int32 database_index = 5 [(org.openmcf.shared.options.default) = "0"];
@@ -482,7 +485,10 @@ message KubernetesHarborS3Storage {
   string access_key = 3 [(buf.validate.field).required = true];
 
   // The AWS secret access key.
-  string secret_key = 4 [(buf.validate.field).required = true];
+  string secret_key = 4 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.options.sensitive) = true
+  ];
 
   // Whether to use regional endpoint (default is false for global endpoint).
   bool region_endpoint = 5;
@@ -508,7 +514,10 @@ message KubernetesHarborGcsStorage {
   string bucket = 1 [(buf.validate.field).required = true];
 
   // The base64-encoded service account key JSON.
-  string key_data = 2 [(buf.validate.field).required = true];
+  string key_data = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.options.sensitive) = true
+  ];
 
   // The root directory path within the bucket.
   string root_directory = 3;
@@ -525,7 +534,10 @@ message KubernetesHarborAzureStorage {
   string account_name = 1 [(buf.validate.field).required = true];
 
   // The Azure storage account key.
-  string account_key = 2 [(buf.validate.field).required = true];
+  string account_key = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.options.sensitive) = true
+  ];
 
   // The Azure blob container name.
   string container = 3 [(buf.validate.field).required = true];
@@ -548,7 +560,10 @@ message KubernetesHarborOssStorage {
   string access_key_id = 3 [(buf.validate.field).required = true];
 
   // The access key secret.
-  string access_key_secret = 4 [(buf.validate.field).required = true];
+  string access_key_secret = 4 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.options.sensitive) = true
+  ];
 
   // The root directory path within the bucket.
   string root_directory = 5;

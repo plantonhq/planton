@@ -528,7 +528,7 @@ var File_org_openmcf_provider_aws_awsrediselasticache_v1_spec_proto protoreflect
 
 const file_org_openmcf_provider_aws_awsrediselasticache_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	":org/openmcf/provider/aws/awsrediselasticache/v1/spec.proto\x12/org.openmcf.provider.aws.awsrediselasticache.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xb1\"\n" +
+	":org/openmcf/provider/aws/awsrediselasticache/v1/spec.proto\x12/org.openmcf.provider.aws.awsrediselasticache.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xb7\"\n" +
 	"\x17AwsRedisElasticacheSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x1e\n" +
 	"\x06engine\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06engine\x12%\n" +
@@ -549,9 +549,9 @@ const file_org_openmcf_provider_aws_awsrediselasticache_v1_spec_proto_rawDesc = 
 	"\x1atransit_encryption_enabled\x18\x0f \x01(\bB\b\x92\xa6\x1d\x04trueR\x18transitEncryptionEnabled\x126\n" +
 	"\x17transit_encryption_mode\x18\x10 \x01(\tR\x15transitEncryptionMode\x12q\n" +
 	"\n" +
-	"kms_key_id\x18\x11 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12Q\n" +
+	"kms_key_id\x18\x11 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12W\n" +
 	"\n" +
-	"auth_token\x18\x12 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\tauthToken\x12$\n" +
+	"auth_token\x18\x12 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x04\xa0\xa6\x1d\x01R\tauthToken\x12$\n" +
 	"\x0euser_group_ids\x18\x13 \x03(\tR\fuserGroupIds\x12\xb4\x01\n" +
 	"\x12maintenance_window\x18\x14 \x01(\tB\x84\x01\xbaH\x80\x01\xd8\x01\x01r{2y^(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]-(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]$R\x11maintenanceWindow\x12C\n" +
 	"\x18snapshot_retention_limit\x18\x15 \x01(\x05B\t\xbaH\x06\x1a\x04\x18#(\x00R\x16snapshotRetentionLimit\x12p\n" +

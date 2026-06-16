@@ -3,6 +3,7 @@ syntax = "proto3";
 package org.openmcf.provider.hetznercloud.hetznercloudcertificate.v1;
 
 import "buf/validate/validate.proto";
+import "org/openmcf/shared/options/options.proto";
 
 // HetznerCloudCertificateSpec defines the specification for a Hetzner Cloud
 // TLS certificate used by load balancer HTTPS services.
@@ -60,7 +61,10 @@ message UploadedCertificateConfig {
   //
   // SENSITIVE — this field contains secret cryptographic material.
   // Changing this value forces replacement of the certificate resource.
-  string private_key = 2 [(buf.validate.field).string.min_len = 1];
+  string private_key = 2 [
+    (buf.validate.field).string.min_len = 1,
+    (org.openmcf.shared.options.sensitive) = true
+  ];
 }
 
 // ManagedCertificateConfig specifies domain names for which Hetzner Cloud

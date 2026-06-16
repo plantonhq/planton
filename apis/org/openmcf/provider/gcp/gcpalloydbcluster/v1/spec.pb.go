@@ -9,6 +9,7 @@ package gcpalloydbclusterv1
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
+	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -839,10 +840,9 @@ var File_org_openmcf_provider_gcp_gcpalloydbcluster_v1_spec_proto protoreflect.F
 
 const file_org_openmcf_provider_gcp_gcpalloydbcluster_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"8org/openmcf/provider/gcp/gcpalloydbcluster/v1/spec.proto\x12-org.openmcf.provider.gcp.gcpalloydbcluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"Z\n" +
-	"\x1cGcpAlloydbClusterInitialUser\x12&\n" +
-	"\bpassword\x18\x01 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\bR\bpassword\x12\x12\n" +
+	"8org/openmcf/provider/gcp/gcpalloydbcluster/v1/spec.proto\x12-org.openmcf.provider.gcp.gcpalloydbcluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"^\n" +
+	"\x1cGcpAlloydbClusterInitialUser\x12*\n" +
+	"\bpassword\x18\x01 \x01(\tB\x0e\xbaH\a\xc8\x01\x01r\x02\x10\b\xa0\xa6\x1d\x01R\bpassword\x12\x12\n" +
 	"\x04user\x18\x02 \x01(\tR\x04user\"\xbb\x01\n" +
 	"\x1fGcpAlloydbClusterBackupSchedule\x12n\n" +
 	"\fdays_of_week\x18\x01 \x03(\tBL\xbaHI\x92\x01F\x18\x01\"Br@R\x06MONDAYR\aTUESDAYR\tWEDNESDAYR\bTHURSDAYR\x06FRIDAYR\bSATURDAYR\x06SUNDAYR\n" +

@@ -9,6 +9,7 @@ package gcpsecretsmanagerv1
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
+	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -89,11 +90,11 @@ var File_org_openmcf_provider_gcp_gcpsecretsmanager_v1_spec_proto protoreflect.F
 
 const file_org_openmcf_provider_gcp_gcpsecretsmanager_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"8org/openmcf/provider/gcp/gcpsecretsmanager/v1/spec.proto\x12-org.openmcf.provider.gcp.gcpsecretsmanager.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xb7\x01\n" +
+	"8org/openmcf/provider/gcp/gcpsecretsmanager/v1/spec.proto\x12-org.openmcf.provider.gcp.gcpsecretsmanager.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xfd\x01\n" +
 	"\x15GcpSecretsManagerSpec\x12{\n" +
 	"\n" +
-	"project_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x03\xc8\x01\x01\x88\xd4a\xe1\x04\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12!\n" +
-	"\fsecret_names\x18\x02 \x03(\tR\vsecretNamesB\xfe\x02\n" +
+	"project_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x03\xc8\x01\x01\x88\xd4a\xe1\x04\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12g\n" +
+	"\fsecret_names\x18\x02 \x03(\tBD\xaa\xa6\x1d@Names of secrets to create in Secret Manager, not secret values.R\vsecretNamesB\xfe\x02\n" +
 	"1com.org.openmcf.provider.gcp.gcpsecretsmanager.v1B\tSpecProtoP\x01Zcgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpsecretsmanager/v1;gcpsecretsmanagerv1\xa2\x02\x05OOPGG\xaa\x02-Org.Openmcf.Provider.Gcp.Gcpsecretsmanager.V1\xca\x02-Org\\Openmcf\\Provider\\Gcp\\Gcpsecretsmanager\\V1\xe2\x029Org\\Openmcf\\Provider\\Gcp\\Gcpsecretsmanager\\V1\\GPBMetadata\xea\x022Org::Openmcf::Provider::Gcp::Gcpsecretsmanager::V1b\x06proto3"
 
 var (

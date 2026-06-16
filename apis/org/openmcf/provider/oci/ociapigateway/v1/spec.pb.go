@@ -9,6 +9,7 @@ package ociapigatewayv1
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
+	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -1679,7 +1680,7 @@ var File_org_openmcf_provider_oci_ociapigateway_v1_spec_proto protoreflect.FileD
 
 const file_org_openmcf_provider_oci_ociapigateway_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"4org/openmcf/provider/oci/ociapigateway/v1/spec.proto\x12)org.openmcf.provider.oci.ociapigateway.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xa14\n" +
+	"4org/openmcf/provider/oci/ociapigateway/v1/spec.proto\x12)org.openmcf.provider.oci.ociapigateway.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xff5\n" +
 	"\x11OciApiGatewaySpec\x12\x87\x01\n" +
 	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x12x\n" +
 	"\rendpoint_type\x18\x02 \x01(\x0e2I.org.openmcf.provider.oci.ociapigateway.v1.OciApiGatewaySpec.EndpointTypeB\b\xbaH\x05\x82\x01\x02 \x00R\fendpointType\x12x\n" +
@@ -1713,13 +1714,13 @@ const file_org_openmcf_provider_oci_ociapigateway_v1_spec_proto_rawDesc = "" +
 	"\x0fRequestPolicies\x12s\n" +
 	"\x0eauthentication\x18\x01 \x01(\v2K.org.openmcf.provider.oci.ociapigateway.v1.OciApiGatewaySpec.AuthenticationR\x0eauthentication\x12[\n" +
 	"\x04cors\x18\x02 \x01(\v2G.org.openmcf.provider.oci.ociapigateway.v1.OciApiGatewaySpec.CorsPolicyR\x04cors\x12n\n" +
-	"\rrate_limiting\x18\x03 \x01(\v2I.org.openmcf.provider.oci.ociapigateway.v1.OciApiGatewaySpec.RateLimitingR\frateLimiting\x1a\xc5\x05\n" +
+	"\rrate_limiting\x18\x03 \x01(\v2I.org.openmcf.provider.oci.ociapigateway.v1.OciApiGatewaySpec.RateLimitingR\frateLimiting\x1a\xa3\a\n" +
 	"\x0eAuthentication\x12\x18\n" +
 	"\aissuers\x18\x01 \x03(\tR\aissuers\x12\x1c\n" +
-	"\taudiences\x18\x02 \x03(\tR\taudiences\x12!\n" +
-	"\ftoken_header\x18\x03 \x01(\tR\vtokenHeader\x12*\n" +
-	"\x11token_query_param\x18\x04 \x01(\tR\x0ftokenQueryParam\x12*\n" +
-	"\x11token_auth_scheme\x18\x05 \x01(\tR\x0ftokenAuthScheme\x12=\n" +
+	"\taudiences\x18\x02 \x03(\tR\taudiences\x12k\n" +
+	"\ftoken_header\x18\x03 \x01(\tBH\xaa\xa6\x1dDName of the HTTP header that carries the token, not the token value.R\vtokenHeader\x12x\n" +
+	"\x11token_query_param\x18\x04 \x01(\tBL\xaa\xa6\x1dHName of the query parameter that carries the token, not the token value.R\x0ftokenQueryParam\x12p\n" +
+	"\x11token_auth_scheme\x18\x05 \x01(\tBD\xaa\xa6\x1d@Authentication scheme prefix (e.g. Bearer), not the token value.R\x0ftokenAuthScheme\x12=\n" +
 	"\x19max_clock_skew_in_seconds\x18\x06 \x01(\x02H\x00R\x15maxClockSkewInSeconds\x88\x01\x01\x12B\n" +
 	"\x1bis_anonymous_access_allowed\x18\a \x01(\bH\x01R\x18isAnonymousAccessAllowed\x88\x01\x01\x12h\n" +
 	"\vpublic_keys\x18\b \x01(\v2G.org.openmcf.provider.oci.ociapigateway.v1.OciApiGatewaySpec.PublicKeysR\n" +

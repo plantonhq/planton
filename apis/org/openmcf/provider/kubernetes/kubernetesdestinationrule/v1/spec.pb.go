@@ -10,6 +10,7 @@ import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	kubernetes "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes"
 	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
+	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -1796,7 +1797,7 @@ var File_org_openmcf_provider_kubernetes_kubernetesdestinationrule_v1_spec_proto
 
 const file_org_openmcf_provider_kubernetes_kubernetesdestinationrule_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Gorg/openmcf/provider/kubernetes/kubernetesdestinationrule/v1/spec.proto\x12<org.openmcf.provider.kubernetes.kubernetesdestinationrule.v1\x1a\x1bbuf/validate/validate.proto\x1a/org/openmcf/provider/kubernetes/istio_api.proto\x1a4org/openmcf/provider/kubernetes/target_cluster.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xa0\x05\n" +
+	"Gorg/openmcf/provider/kubernetes/kubernetesdestinationrule/v1/spec.proto\x12<org.openmcf.provider.kubernetes.kubernetesdestinationrule.v1\x1a\x1bbuf/validate/validate.proto\x1a/org/openmcf/provider/kubernetes/istio_api.proto\x1a4org/openmcf/provider/kubernetes/target_cluster.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xa0\x05\n" +
 	"\x1dKubernetesDestinationRuleSpec\x12a\n" +
 	"\x0etarget_cluster\x18\x01 \x01(\v2:.org.openmcf.provider.kubernetes.KubernetesClusterSelectorR\rtargetCluster\x12j\n" +
 	"\tnamespace\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xc4\x06\x92\xd4a\tspec.nameR\tnamespace\x12\x1a\n" +
@@ -1931,11 +1932,11 @@ const file_org_openmcf_provider_kubernetes_kubernetesdestinationrule_v1_spec_pro
 	"\t_intervalB\x15\n" +
 	"\x13_base_ejection_timeB\x17\n" +
 	"\x15_max_ejection_percentB\x15\n" +
-	"\x13_min_health_percent\"\xc3\x04\n" +
+	"\x13_min_health_percent\"\xb2\x05\n" +
 	"*KubernetesDestinationRuleClientTlsSettings\x12E\n" +
 	"\x04mode\x18\x01 \x01(\tB,\xbaH)r'R\aDISABLER\x06SIMPLER\x06MUTUALR\fISTIO_MUTUALH\x00R\x04mode\x88\x01\x01\x122\n" +
-	"\x12client_certificate\x18\x02 \x01(\tH\x01R\x11clientCertificate\x88\x01\x01\x12$\n" +
-	"\vprivate_key\x18\x03 \x01(\tH\x02R\n" +
+	"\x12client_certificate\x18\x02 \x01(\tH\x01R\x11clientCertificate\x88\x01\x01\x12\x92\x01\n" +
+	"\vprivate_key\x18\x03 \x01(\tBl\xaa\xa6\x1dhFilesystem path to the client private key (Istio mounts the key from disk), not the key material itself.H\x02R\n" +
 	"privateKey\x88\x01\x01\x12,\n" +
 	"\x0fca_certificates\x18\x04 \x01(\tH\x03R\x0ecaCertificates\x88\x01\x01\x12,\n" +
 	"\x0fcredential_name\x18\x05 \x01(\tH\x04R\x0ecredentialName\x88\x01\x01\x12*\n" +

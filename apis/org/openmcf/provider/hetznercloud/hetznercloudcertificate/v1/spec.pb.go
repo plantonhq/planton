@@ -8,6 +8,7 @@ package hetznercloudcertificatev1
 
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
+	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -264,14 +265,14 @@ var File_org_openmcf_provider_hetznercloud_hetznercloudcertificate_v1_spec_proto
 
 const file_org_openmcf_provider_hetznercloud_hetznercloudcertificate_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Gorg/openmcf/provider/hetznercloud/hetznercloudcertificate/v1/spec.proto\x12<org.openmcf.provider.hetznercloud.hetznercloudcertificate.v1\x1a\x1bbuf/validate/validate.proto\"\x9e\x02\n" +
+	"Gorg/openmcf/provider/hetznercloud/hetznercloudcertificate/v1/spec.proto\x12<org.openmcf.provider.hetznercloud.hetznercloudcertificate.v1\x1a\x1bbuf/validate/validate.proto\x1a(org/openmcf/shared/options/options.proto\"\x9e\x02\n" +
 	"\x1bHetznerCloudCertificateSpec\x12u\n" +
 	"\buploaded\x18\x01 \x01(\v2W.org.openmcf.provider.hetznercloud.hetznercloudcertificate.v1.UploadedCertificateConfigH\x00R\buploaded\x12r\n" +
 	"\amanaged\x18\x02 \x01(\v2V.org.openmcf.provider.hetznercloud.hetznercloudcertificate.v1.ManagedCertificateConfigH\x00R\amanagedB\x14\n" +
-	"\vcertificate\x12\x05\xbaH\x02\b\x01\"p\n" +
+	"\vcertificate\x12\x05\xbaH\x02\b\x01\"t\n" +
 	"\x19UploadedCertificateConfig\x12)\n" +
-	"\vcertificate\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\vcertificate\x12(\n" +
-	"\vprivate_key\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\n" +
+	"\vcertificate\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\vcertificate\x12,\n" +
+	"\vprivate_key\x18\x02 \x01(\tB\v\xbaH\x04r\x02\x10\x01\xa0\xa6\x1d\x01R\n" +
 	"privateKey\"G\n" +
 	"\x18ManagedCertificateConfig\x12+\n" +
 	"\fdomain_names\x18\x01 \x03(\tB\b\xbaH\x05\x92\x01\x02\b\x01R\vdomainNamesB\xde\x03\n" +

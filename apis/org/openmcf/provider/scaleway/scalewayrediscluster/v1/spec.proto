@@ -118,6 +118,7 @@ message ScalewayRedisClusterSpec {
   // strong, randomly generated password and manage it through your
   // organization's secrets workflow.
   string password = 7 [
+    (org.openmcf.shared.options.sensitive) = true,
     (buf.validate.field).required = true,
     (buf.validate.field).string.min_len = 8
   ];

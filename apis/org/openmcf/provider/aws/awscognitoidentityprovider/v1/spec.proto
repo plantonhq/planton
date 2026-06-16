@@ -4,6 +4,7 @@ package org.openmcf.provider.aws.awscognitoidentityprovider.v1;
 
 import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
 
 // AwsCognitoIdentityProviderType enumerates the supported identity provider
 // types for Amazon Cognito User Pool federation. Values match the AWS API
@@ -33,7 +34,10 @@ message AwsCognitoIdpGoogleConfig {
   string client_id = 1 [(buf.validate.field).string.min_len = 1];
 
   // Google OAuth 2.0 client secret from the Google Cloud Console.
-  string client_secret = 2 [(buf.validate.field).string.min_len = 1];
+  string client_secret = 2 [
+    (buf.validate.field).string.min_len = 1,
+    (org.openmcf.shared.options.sensitive) = true
+  ];
 
   // Space-separated OAuth scopes (e.g., "email profile openid").
   string authorize_scopes = 3 [(buf.validate.field).string.min_len = 1];
@@ -46,7 +50,10 @@ message AwsCognitoIdpFacebookConfig {
   string client_id = 1 [(buf.validate.field).string.min_len = 1];
 
   // Facebook App Secret from the Facebook Developer Portal.
-  string client_secret = 2 [(buf.validate.field).string.min_len = 1];
+  string client_secret = 2 [
+    (buf.validate.field).string.min_len = 1,
+    (org.openmcf.shared.options.sensitive) = true
+  ];
 
   // Comma-separated OAuth scopes (e.g., "email,public_profile").
   // Note: Facebook uses comma-separated scopes, unlike other providers
@@ -65,7 +72,10 @@ message AwsCognitoIdpLoginWithAmazonConfig {
   string client_id = 1 [(buf.validate.field).string.min_len = 1];
 
   // Login with Amazon client secret from the Amazon Developer Console.
-  string client_secret = 2 [(buf.validate.field).string.min_len = 1];
+  string client_secret = 2 [
+    (buf.validate.field).string.min_len = 1,
+    (org.openmcf.shared.options.sensitive) = true
+  ];
 
   // Space-separated OAuth scopes (e.g., "profile postal_code").
   string authorize_scopes = 3 [(buf.validate.field).string.min_len = 1];
@@ -85,7 +95,10 @@ message AwsCognitoIdpSignInWithAppleConfig {
   string key_id = 3 [(buf.validate.field).string.min_len = 1];
 
   // Apple private key in PEM format. Used to generate the client_secret JWT.
-  string private_key = 4 [(buf.validate.field).string.min_len = 1];
+  string private_key = 4 [
+    (buf.validate.field).string.min_len = 1,
+    (org.openmcf.shared.options.sensitive) = true
+  ];
 
   // Space-separated OAuth scopes (e.g., "email name").
   string authorize_scopes = 5 [(buf.validate.field).string.min_len = 1];
@@ -107,7 +120,7 @@ message AwsCognitoIdpOidcConfig {
   string authorize_scopes = 3;
 
   // OIDC client secret. Optional for public clients that use PKCE.
-  string client_secret = 4;
+  string client_secret = 4 [(org.openmcf.shared.options.sensitive) = true];
 
   // HTTP method for the userinfo endpoint: "GET" or "POST".
   // When omitted, Cognito defaults to "GET".

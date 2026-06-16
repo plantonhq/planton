@@ -4,6 +4,7 @@ package org.openmcf.provider.gcp.gcpalloydbcluster.v1;
 
 import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
 
 // GcpAlloydbClusterInitialUser defines the initial database superuser
 // created during cluster provisioning. AlloyDB is PostgreSQL-compatible,
@@ -16,7 +17,8 @@ message GcpAlloydbClusterInitialUser {
   // This value is sensitive and should be handled accordingly.
   string password = 1 [
     (buf.validate.field).required = true,
-    (buf.validate.field).string.min_len = 8
+    (buf.validate.field).string.min_len = 8,
+    (org.openmcf.shared.options.sensitive) = true
   ];
 
   // Username for the initial user. If not specified, defaults to "postgres"

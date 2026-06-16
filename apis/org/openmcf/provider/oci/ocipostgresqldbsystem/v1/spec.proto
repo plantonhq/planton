@@ -4,6 +4,7 @@ package org.openmcf.provider.oci.ocipostgresqldbsystem.v1;
 
 import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
 
 // OciPostgresqlDbSystemSpec defines the specification for an Oracle Cloud
 // Infrastructure PostgreSQL Database System -- a fully managed PostgreSQL
@@ -169,7 +170,7 @@ message OciPostgresqlDbSystemSpec {
 
     // Database password in plain text. Required when password_type
     // is plain_text. Not returned by the API after creation.
-    string password = 2;
+    string password = 2 [(org.openmcf.shared.options.sensitive) = true];
 
     // OCID of the OCI Vault secret containing the password.
     // Required when password_type is vault_secret.

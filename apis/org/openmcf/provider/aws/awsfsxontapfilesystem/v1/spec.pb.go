@@ -428,7 +428,7 @@ var File_org_openmcf_provider_aws_awsfsxontapfilesystem_v1_spec_proto protorefle
 
 const file_org_openmcf_provider_aws_awsfsxontapfilesystem_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"<org/openmcf/provider/aws/awsfsxontapfilesystem/v1/spec.proto\x121org.openmcf.provider.aws.awsfsxontapfilesystem.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xdd\x1b\n" +
+	"<org/openmcf/provider/aws/awsfsxontapfilesystem/v1/spec.proto\x121org.openmcf.provider.aws.awsfsxontapfilesystem.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xe3\x1b\n" +
 	"\x19AwsFsxOntapFileSystemSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12=\n" +
 	"\x0fdeployment_type\x18\x02 \x01(\tB\x0f\x8a\xa6\x1d\vSINGLE_AZ_2H\x00R\x0edeploymentType\x88\x01\x01\x12>\n" +
@@ -444,8 +444,8 @@ const file_org_openmcf_provider_aws_awsfsxontapfilesystem_v1_spec_proto_rawDesc 
 	" \x01(\tR\x16endpointIpAddressRange\x12Z\n" +
 	"\x0froute_table_ids\x18\v \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\rrouteTableIds\x12q\n" +
 	"\n" +
-	"kms_key_id\x18\f \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12,\n" +
-	"\x12fsx_admin_password\x18\r \x01(\tR\x10fsxAdminPassword\x12\x95\x01\n" +
+	"kms_key_id\x18\f \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x122\n" +
+	"\x12fsx_admin_password\x18\r \x01(\tB\x04\xa0\xa6\x1d\x01R\x10fsxAdminPassword\x12\x95\x01\n" +
 	"\x17disk_iops_configuration\x18\x0e \x01(\v2].org.openmcf.provider.aws.awsfsxontapfilesystem.v1.AwsFsxOntapFileSystemDiskIopsConfigurationR\x15diskIopsConfiguration\x12Z\n" +
 	"\x1fautomatic_backup_retention_days\x18\x0f \x01(\x05B\x0e\xbaH\x06\x1a\x04\x18Z(\x00\x8a\xa6\x1d\x010H\x03R\x1cautomaticBackupRetentionDays\x88\x01\x01\x12H\n" +
 	"!daily_automatic_backup_start_time\x18\x10 \x01(\tR\x1ddailyAutomaticBackupStartTime\x12/\n" +

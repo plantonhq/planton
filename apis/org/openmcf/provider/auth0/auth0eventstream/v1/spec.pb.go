@@ -8,6 +8,7 @@ package auth0eventstreamv1
 
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
+	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -382,7 +383,7 @@ var File_org_openmcf_provider_auth0_auth0eventstream_v1_spec_proto protoreflect.
 
 const file_org_openmcf_provider_auth0_auth0eventstream_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"9org/openmcf/provider/auth0/auth0eventstream/v1/spec.proto\x12.org.openmcf.provider.auth0.auth0eventstream.v1\x1a\x1bbuf/validate/validate.proto\"\x9e\x03\n" +
+	"9org/openmcf/provider/auth0/auth0eventstream/v1/spec.proto\x12.org.openmcf.provider.auth0.auth0eventstream.v1\x1a\x1bbuf/validate/validate.proto\x1a(org/openmcf/shared/options/options.proto\"\x9e\x03\n" +
 	"\x14Auth0EventStreamSpec\x12I\n" +
 	"\x10destination_type\x18\x01 \x01(\tB\x1e\xbaH\x1b\xc8\x01\x01r\x16R\veventbridgeR\awebhookR\x0fdestinationType\x12.\n" +
 	"\rsubscriptions\x18\x02 \x03(\tB\b\xbaH\x05\x92\x01\x02\b\x01R\rsubscriptions\x12\x8a\x01\n" +
@@ -395,12 +396,12 @@ const file_org_openmcf_provider_auth0_auth0eventstream_v1_spec_proto_rawDesc = "
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\tawsRegion\"\xe6\x01\n" +
 	"\x19Auth0WebhookConfiguration\x12@\n" +
 	"\x10webhook_endpoint\x18\x01 \x01(\tB\x15\xbaH\x12\xc8\x01\x01r\r2\v^https://.+R\x0fwebhookEndpoint\x12\x86\x01\n" +
-	"\x15webhook_authorization\x18\x02 \x01(\v2I.org.openmcf.provider.auth0.auth0eventstream.v1.Auth0WebhookAuthorizationB\x06\xbaH\x03\xc8\x01\x01R\x14webhookAuthorization\"\x80\x05\n" +
+	"\x15webhook_authorization\x18\x02 \x01(\v2I.org.openmcf.provider.auth0.auth0eventstream.v1.Auth0WebhookAuthorizationB\x06\xbaH\x03\xc8\x01\x01R\x14webhookAuthorization\"\x8c\x05\n" +
 	"\x19Auth0WebhookAuthorization\x12/\n" +
 	"\x06method\x18\x01 \x01(\tB\x17\xbaH\x14\xc8\x01\x01r\x0fR\x05basicR\x06bearerR\x06method\x12\x1a\n" +
-	"\busername\x18\x02 \x01(\tR\busername\x12\x1a\n" +
-	"\bpassword\x18\x03 \x01(\tR\bpassword\x12\x14\n" +
-	"\x05token\x18\x04 \x01(\tR\x05token:\xe3\x03\xbaH\xdf\x03\x1a\xb6\x01\n" +
+	"\busername\x18\x02 \x01(\tR\busername\x12 \n" +
+	"\bpassword\x18\x03 \x01(\tB\x04\xa0\xa6\x1d\x01R\bpassword\x12\x1a\n" +
+	"\x05token\x18\x04 \x01(\tB\x04\xa0\xa6\x1d\x01R\x05token:\xe3\x03\xbaH\xdf\x03\x1a\xb6\x01\n" +
 	"\"webhook_auth_bearer_token_required\x12ctoken is required when authorization method is 'bearer'. Generate one with: openssl rand -base64 32\x1a+this.method != 'bearer' || this.token != ''\x1a\x90\x01\n" +
 	"$webhook_auth_basic_username_required\x129username is required when authorization method is 'basic'\x1a-this.method != 'basic' || this.username != ''\x1a\x90\x01\n" +
 	"$webhook_auth_basic_password_required\x129password is required when authorization method is 'basic'\x1a-this.method != 'basic' || this.password != ''B\x83\x03\n" +

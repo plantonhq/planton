@@ -709,7 +709,7 @@ var File_org_openmcf_provider_scaleway_scalewayrdbinstance_v1_spec_proto protore
 
 const file_org_openmcf_provider_scaleway_scalewayrdbinstance_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"?org/openmcf/provider/scaleway/scalewayrdbinstance/v1/spec.proto\x124org.openmcf.provider.scaleway.scalewayrdbinstance.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x90\v\n" +
+	"?org/openmcf/provider/scaleway/scalewayrdbinstance/v1/spec.proto\x124org.openmcf.provider.scaleway.scalewayrdbinstance.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x94\v\n" +
 	"\x17ScalewayRdbInstanceSpec\x12\x1e\n" +
 	"\x06region\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06region\x12=\n" +
 	"\x06engine\x18\x02 \x01(\tB%\xbaH\"\xc8\x01\x01r\x1d2\x1b^(PostgreSQL|MySQL)-[0-9]+$R\x06engine\x12#\n" +
@@ -727,9 +727,8 @@ const file_org_openmcf_provider_scaleway_scalewayrdbinstance_v1_spec_proto_rawDe
 	"\tacl_rules\x18\f \x03(\v2H.org.openmcf.provider.scaleway.scalewayrdbinstance.v1.ScalewayRdbAclRuleR\baclRules\x12)\n" +
 	"\n" +
 	"admin_user\x18\r \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x18?R\tadminUser\x121\n" +
-	"\x0eadmin_password\x18\x0e \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\bR\radminPassword\x12g\n" +
+	"\xbaH\a\xc8\x01\x01r\x02\x18?R\tadminUser\x125\n" +
+	"\x0eadmin_password\x18\x0e \x01(\tB\x0e\xbaH\a\xc8\x01\x01r\x02\x10\b\xa0\xa6\x1d\x01R\radminPassword\x12g\n" +
 	"\tdatabases\x18\x0f \x03(\v2I.org.openmcf.provider.scaleway.scalewayrdbinstance.v1.ScalewayRdbDatabaseR\tdatabases\x12[\n" +
 	"\x05users\x18\x10 \x03(\v2E.org.openmcf.provider.scaleway.scalewayrdbinstance.v1.ScalewayRdbUserR\x05users\x12w\n" +
 	"\bsettings\x18\x11 \x03(\v2[.org.openmcf.provider.scaleway.scalewayrdbinstance.v1.ScalewayRdbInstanceSpec.SettingsEntryR\bsettings\x12\x84\x01\n" +

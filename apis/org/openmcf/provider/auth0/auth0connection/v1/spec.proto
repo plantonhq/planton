@@ -4,6 +4,7 @@ package org.openmcf.provider.auth0.auth0connection.v1;
 
 import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
 
 // Auth0ConnectionSpec defines the configuration for an Auth0 Connection.
 // A connection in Auth0 represents an identity provider - either a user database,
@@ -196,7 +197,10 @@ message Auth0SocialOptions {
   // client_secret is the OAuth client secret from the social provider.
   // This is obtained from the provider's developer console.
   // Required for all social connections.
-  string client_secret = 2 [(buf.validate.field).required = true];
+  string client_secret = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.options.sensitive) = true
+  ];
 
   // scopes is a list of OAuth scopes to request from the social provider.
   // These determine what user information Auth0 can access.
@@ -305,7 +309,7 @@ message Auth0OidcOptions {
 
   // client_secret is the OAuth client secret from the OIDC provider.
   // Required for OIDC connections using authorization code flow.
-  string client_secret = 3;
+  string client_secret = 3 [(org.openmcf.shared.options.sensitive) = true];
 
   // scopes is a list of OIDC scopes to request.
   // "openid" is always requested implicitly.
@@ -358,7 +362,10 @@ message Auth0AzureAdOptions {
   // client_secret is the client secret from Azure AD app registration.
   // Found in Azure Portal > Azure Active Directory > App Registrations > Your App > Certificates & secrets
   // Required for Azure AD connections.
-  string client_secret = 2 [(buf.validate.field).required = true];
+  string client_secret = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.options.sensitive) = true
+  ];
 
   // domain is the Azure AD tenant domain.
   // This can be the primary domain (e.g., "contoso.onmicrosoft.com")

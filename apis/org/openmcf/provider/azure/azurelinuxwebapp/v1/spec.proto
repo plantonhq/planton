@@ -133,6 +133,7 @@ message AzureLinuxWebAppSpec {
   //
   // Uses the connection_string format (not the legacy instrumentation_key).
   org.openmcf.shared.foreignkey.v1.StringValueOrRef application_insights_connection_string = 8 [
+    (org.openmcf.shared.options.sensitive_exempt_reason) = "Foreign-key reference to an AzureApplicationInsights output (the connection string is sourced from the referenced resource, not a user-supplied secret literal).",
     (org.openmcf.shared.foreignkey.v1.default_kind) = AzureApplicationInsights,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.connection_string"
   ];

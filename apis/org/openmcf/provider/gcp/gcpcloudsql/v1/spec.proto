@@ -89,6 +89,7 @@ message GcpCloudSqlSpec {
 
   // Initial root password for the database instance.
   string root_password = 16 [
+    (org.openmcf.shared.options.sensitive) = true,
     (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).string = {min_len: 8}
   ];

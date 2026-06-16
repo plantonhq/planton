@@ -3,6 +3,7 @@ syntax = "proto3";
 package org.openmcf.provider.civo.civocertificate.v1;
 
 import "buf/validate/validate.proto";
+import "org/openmcf/shared/options/options.proto";
 
 // CivoCertificateSpec defines the fields required to create a TLS certificate in Civo.
 message CivoCertificateSpec {
@@ -68,6 +69,7 @@ message CivoCertificateCustomParams {
 
   // private_key is the PEM‑encoded private key.
   string private_key = 2 [
+    (org.openmcf.shared.options.sensitive) = true,
     (buf.validate.field).required = true,
     (buf.validate.field).string.min_len = 1
   ];

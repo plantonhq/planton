@@ -4,6 +4,7 @@ package org.openmcf.provider.oci.ocikmsvault.v1;
 
 import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
 
 // OciKmsVaultSpec defines the specification for an OCI KMS Vault --
 // an HSM-backed container for encryption keys used by other OCI services
@@ -97,7 +98,10 @@ message OciKmsVaultSpec {
 
       // Secret of the client app registered in IDCS. This value is
       // sensitive and will not be returned by the API after creation.
-      string client_app_secret = 2 [(buf.validate.field).string.min_len = 1];
+      string client_app_secret = 2 [
+        (buf.validate.field).string.min_len = 1,
+        (org.openmcf.shared.options.sensitive) = true
+      ];
 
       // Base URL of the IDCS account (e.g., "https://idcs-xxx.identity.oraclecloud.com").
       string idcs_account_name_url = 3 [(buf.validate.field).string.min_len = 1];

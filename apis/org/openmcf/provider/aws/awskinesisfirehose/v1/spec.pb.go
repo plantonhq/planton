@@ -9,6 +9,7 @@ package awskinesisfirehosev1
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
+	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -1872,7 +1873,7 @@ var File_org_openmcf_provider_aws_awskinesisfirehose_v1_spec_proto protoreflect.
 
 const file_org_openmcf_provider_aws_awskinesisfirehose_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"9org/openmcf/provider/aws/awskinesisfirehose/v1/spec.proto\x12.org.openmcf.provider.aws.awskinesisfirehose.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xba\t\n" +
+	"9org/openmcf/provider/aws/awskinesisfirehose/v1/spec.proto\x12.org.openmcf.provider.aws.awskinesisfirehose.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xba\t\n" +
 	"\x16AwsKinesisFirehoseSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x89\x01\n" +
 	"\x15kinesis_stream_source\x18\x02 \x01(\v2U.org.openmcf.provider.aws.awskinesisfirehose.v1.AwsKinesisFirehoseKinesisStreamSourceR\x13kinesisStreamSource\x12\x1f\n" +
@@ -2008,13 +2009,13 @@ const file_org_openmcf_provider_aws_awskinesisfirehose_v1_spec_proto_rawDesc = "
 	"\x1bdomain_or_endpoint_required\x129exactly one of domain_arn or cluster_endpoint must be set\x1ao(has(this.domain_arn) && this.cluster_endpoint == '') || (!has(this.domain_arn) && this.cluster_endpoint != '')\x1a\xff\x01\n" +
 	"\x1bindex_rotation_period_valid\x12bindex_rotation_period must be 'NoRotation', 'OneHour', 'OneDay', 'OneWeek', or 'OneMonth' when set\x1a|this.index_rotation_period == '' || this.index_rotation_period in ['NoRotation', 'OneHour', 'OneDay', 'OneWeek', 'OneMonth']\x1a\xbc\x01\n" +
 	"\x14s3_backup_mode_valid\x12Gs3_backup_mode must be 'FailedDocumentsOnly' or 'AllDocuments' when set\x1a[this.s3_backup_mode == '' || this.s3_backup_mode in ['FailedDocumentsOnly', 'AllDocuments']\x1a\xcd\x01\n" +
-	"\x14retry_duration_range\x12=retry_duration_in_seconds must be between 0 and 7200 when set\x1avthis.retry_duration_in_seconds == 0 || (this.retry_duration_in_seconds >= 0 && this.retry_duration_in_seconds <= 7200)\"\xe0\n" +
+	"\x14retry_duration_range\x12=retry_duration_in_seconds must be between 0 and 7200 when set\x1avthis.retry_duration_in_seconds == 0 || (this.retry_duration_in_seconds >= 0 && this.retry_duration_in_seconds <= 7200)\"\xe6\n" +
 	"\n" +
 	")AwsKinesisFirehoseHttpEndpointDestination\x12\x19\n" +
 	"\x03url\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x03url\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1d\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12#\n" +
 	"\n" +
-	"access_key\x18\x03 \x01(\tR\taccessKey\x12o\n" +
+	"access_key\x18\x03 \x01(\tB\x04\xa0\xa6\x1d\x01R\taccessKey\x12o\n" +
 	"\brole_arn\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB \x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\aroleArn\x12n\n" +
 	"\tbuffering\x18\x05 \x01(\v2P.org.openmcf.provider.aws.awskinesisfirehose.v1.AwsKinesisFirehoseBufferingHintsR\tbuffering\x129\n" +
 	"\x19retry_duration_in_seconds\x18\x06 \x01(\x05R\x16retryDurationInSeconds\x12$\n" +
@@ -2035,15 +2036,15 @@ const file_org_openmcf_provider_aws_awskinesisfirehose_v1_spec_proto_rawDesc = "
 	"\x16content_encoding_valid\x122content_encoding must be 'NONE' or 'GZIP' when set\x1aHthis.content_encoding == '' || this.content_encoding in ['NONE', 'GZIP']\"`\n" +
 	"\"AwsKinesisFirehoseRequestAttribute\x12\x1b\n" +
 	"\x04name\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x04name\x12\x1d\n" +
-	"\x05value\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x05value\"\xde\v\n" +
+	"\x05value\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x05value\"\xe4\v\n" +
 	"%AwsKinesisFirehoseRedshiftDestination\x120\n" +
 	"\x0fcluster_jdbcurl\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x0eclusterJdbcurl\x12u\n" +
 	"\brole_arn\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\aroleArn\x12/\n" +
 	"\x0fdata_table_name\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\rdataTableName\x12,\n" +
 	"\x12data_table_columns\x18\x04 \x01(\tR\x10dataTableColumns\x12!\n" +
 	"\fcopy_options\x18\x05 \x01(\tR\vcopyOptions\x12\x1a\n" +
-	"\busername\x18\x06 \x01(\tR\busername\x12N\n" +
-	"\bpassword\x18\a \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\bpassword\x12o\n" +
+	"\busername\x18\x06 \x01(\tR\busername\x12T\n" +
+	"\bpassword\x18\a \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x04\xa0\xa6\x1d\x01R\bpassword\x12o\n" +
 	"\ts3_config\x18\b \x01(\v2J.org.openmcf.provider.aws.awskinesisfirehose.v1.AwsKinesisFirehoseS3ConfigB\x06\xbaH\x03\xc8\x01\x01R\bs3Config\x129\n" +
 	"\x19retry_duration_in_seconds\x18\t \x01(\x05R\x16retryDurationInSeconds\x12$\n" +
 	"\x0es3_backup_mode\x18\n" +

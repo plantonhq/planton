@@ -629,7 +629,7 @@ var File_org_openmcf_provider_kubernetes_kubernetesgharunnerscalesetcontroller_v
 
 const file_org_openmcf_provider_kubernetes_kubernetesgharunnerscalesetcontroller_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Sorg/openmcf/provider/kubernetes/kubernetesgharunnerscalesetcontroller/v1/spec.proto\x12Horg.openmcf.provider.kubernetes.kubernetesgharunnerscalesetcontroller.v1\x1a\x1bbuf/validate/validate.proto\x1a0org/openmcf/provider/kubernetes/kubernetes.proto\x1a-org/openmcf/provider/kubernetes/options.proto\x1a4org/openmcf/provider/kubernetes/target_cluster.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xdd\a\n" +
+	"Sorg/openmcf/provider/kubernetes/kubernetesgharunnerscalesetcontroller/v1/spec.proto\x12Horg.openmcf.provider.kubernetes.kubernetesgharunnerscalesetcontroller.v1\x1a\x1bbuf/validate/validate.proto\x1a0org/openmcf/provider/kubernetes/kubernetes.proto\x1a-org/openmcf/provider/kubernetes/options.proto\x1a4org/openmcf/provider/kubernetes/target_cluster.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xa4\b\n" +
 	")KubernetesGhaRunnerScaleSetControllerSpec\x12a\n" +
 	"\x0etarget_cluster\x18\x01 \x01(\v2:.org.openmcf.provider.kubernetes.KubernetesClusterSelectorR\rtargetCluster\x12j\n" +
 	"\tnamespace\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xc4\x06\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
@@ -639,8 +639,8 @@ const file_org_openmcf_provider_kubernetes_kubernetesgharunnerscalesetcontroller
 	"\rreplica_count\x18\x05 \x01(\x05B\x05\x8a\xa6\x1d\x011H\x01R\freplicaCount\x88\x01\x01\x12\x9e\x01\n" +
 	"\tcontainer\x18\x06 \x01(\v2x.org.openmcf.provider.kubernetes.kubernetesgharunnerscalesetcontroller.v1.KubernetesGhaRunnerScaleSetControllerContainerB\x06\xbaH\x03\xc8\x01\x01R\tcontainer\x12\x8a\x01\n" +
 	"\x05flags\x18\a \x01(\v2t.org.openmcf.provider.kubernetes.kubernetesgharunnerscalesetcontroller.v1.KubernetesGhaRunnerScaleSetControllerFlagsR\x05flags\x12\x90\x01\n" +
-	"\ametrics\x18\b \x01(\v2v.org.openmcf.provider.kubernetes.kubernetesgharunnerscalesetcontroller.v1.KubernetesGhaRunnerScaleSetControllerMetricsR\ametrics\x12,\n" +
-	"\x12image_pull_secrets\x18\t \x03(\tR\x10imagePullSecrets\x12.\n" +
+	"\ametrics\x18\b \x01(\v2v.org.openmcf.provider.kubernetes.kubernetesgharunnerscalesetcontroller.v1.KubernetesGhaRunnerScaleSetControllerMetricsR\ametrics\x12s\n" +
+	"\x12image_pull_secrets\x18\t \x03(\tBE\xaa\xa6\x1dANames of existing Kubernetes imagePullSecrets, not secret values.R\x10imagePullSecrets\x12.\n" +
 	"\x13priority_class_name\x18\n" +
 	" \x01(\tR\x11priorityClassNameB\x15\n" +
 	"\x13_helm_chart_versionB\x10\n" +

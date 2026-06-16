@@ -51,6 +51,7 @@ message AliCloudRedisInstanceSpec {
   // Instance authentication password. 8-32 characters, must contain at least
   // three of: uppercase letters, lowercase letters, digits, special characters.
   string password = 4 [
+    (org.openmcf.shared.options.sensitive) = true,
     (buf.validate.field).required = true,
     (buf.validate.field).string.min_len = 8,
     (buf.validate.field).string.max_len = 32
@@ -159,7 +160,7 @@ message AliCloudRedisInstanceSpec {
 
   // Custom KMS key ID for TDE encryption. When set with tde_status = Enabled,
   // uses a customer-managed key instead of the service-managed default.
-  string encryption_key = 19;
+  string encryption_key = 19 [(org.openmcf.shared.options.sensitive_exempt_reason) = "Customer-managed KMS key identifier (a reference), not secret key material."];
 
   // VPC authentication mode. "Open" requires password authentication for
   // VPC-internal connections. "Close" disables password authentication for

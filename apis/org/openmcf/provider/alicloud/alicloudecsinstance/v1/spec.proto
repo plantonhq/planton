@@ -99,11 +99,14 @@ message AliCloudEcsInstanceSpec {
   // Instance login password. 8-30 characters, must contain at least three
   // of: uppercase, lowercase, digits, special characters.
   // Mutually exclusive authentication option with key_name.
-  string password = 12 [(buf.validate.field).cel = {
-    id: "password_length"
-    message: "password must be between 8 and 30 characters when set"
-    expression: "this == '' || (this.size() >= 8 && this.size() <= 30)"
-  }];
+  string password = 12 [
+    (org.openmcf.shared.options.sensitive) = true,
+    (buf.validate.field).cel = {
+      id: "password_length"
+      message: "password must be between 8 and 30 characters when set"
+      expression: "this == '' || (this.size() >= 8 && this.size() <= 30)"
+    }
+  ];
 
   // Maximum outbound internet bandwidth in Mbps. A value > 0 causes Alibaba
   // Cloud to allocate a public IP address to the instance.

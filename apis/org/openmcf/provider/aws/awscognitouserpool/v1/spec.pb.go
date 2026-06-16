@@ -9,6 +9,7 @@ package awscognitouserpoolv1
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
+	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -1030,7 +1031,7 @@ var File_org_openmcf_provider_aws_awscognitouserpool_v1_spec_proto protoreflect.
 
 const file_org_openmcf_provider_aws_awscognitouserpool_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"9org/openmcf/provider/aws/awscognitouserpool/v1/spec.proto\x12.org.openmcf.provider.aws.awscognitouserpool.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x8f\x19\n" +
+	"9org/openmcf/provider/aws/awscognitouserpool/v1/spec.proto\x12.org.openmcf.provider.aws.awscognitouserpool.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x8f\x19\n" +
 	"\x16AwsCognitoUserPoolSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12/\n" +
 	"\x13username_attributes\x18\x02 \x03(\tR\x12usernameAttributes\x12)\n" +
@@ -1088,13 +1089,13 @@ const file_org_openmcf_provider_aws_awscognitouserpool_v1_spec_proto_rawDesc = "
 	"\x11string_max_length\x18\x06 \x01(\tR\x0fstringMaxLength\x12(\n" +
 	"\x10number_min_value\x18\a \x01(\tR\x0enumberMinValue\x12(\n" +
 	"\x10number_max_value\x18\b \x01(\tR\x0enumberMaxValue:\xb5\x01\xbaH\xb1\x01\x1a\xae\x01\n" +
-	"\x19attribute_data_type_valid\x12Hattribute_data_type must be 'String', 'Number', 'DateTime', or 'Boolean'\x1aGthis.attribute_data_type in ['String', 'Number', 'DateTime', 'Boolean']\"\x85\v\n" +
+	"\x19attribute_data_type_valid\x12Hattribute_data_type must be 'String', 'Number', 'DateTime', or 'Boolean'\x1aGthis.attribute_data_type in ['String', 'Number', 'DateTime', 'Boolean']\"\xf7\v\n" +
 	"\x1eAwsCognitoUserPoolLambdaConfig\x12x\n" +
 	"\vpre_sign_up\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\x88\xd4a\xd1\x01\x92\xd4a\x1bstatus.outputs.function_arnR\tpreSignUp\x12\x87\x01\n" +
 	"\x12pre_authentication\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\x88\xd4a\xd1\x01\x92\xd4a\x1bstatus.outputs.function_arnR\x11preAuthentication\x12\x89\x01\n" +
 	"\x13post_authentication\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\x88\xd4a\xd1\x01\x92\xd4a\x1bstatus.outputs.function_arnR\x12postAuthentication\x12\x85\x01\n" +
-	"\x11post_confirmation\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\x88\xd4a\xd1\x01\x92\xd4a\x1bstatus.outputs.function_arnR\x10postConfirmation\x12\x8a\x01\n" +
-	"\x14pre_token_generation\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\x88\xd4a\xd1\x01\x92\xd4a\x1bstatus.outputs.function_arnR\x12preTokenGeneration\x12\x7f\n" +
+	"\x11post_confirmation\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\x88\xd4a\xd1\x01\x92\xd4a\x1bstatus.outputs.function_arnR\x10postConfirmation\x12\xfc\x01\n" +
+	"\x14pre_token_generation\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x95\x01\xaa\xa6\x1dmForeign-key reference to an AwsLambda trigger function (heuristic matched the word token), not a token value.\x88\xd4a\xd1\x01\x92\xd4a\x1bstatus.outputs.function_arnR\x12preTokenGeneration\x12\x7f\n" +
 	"\x0ecustom_message\x18\x06 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\x88\xd4a\xd1\x01\x92\xd4a\x1bstatus.outputs.function_arnR\rcustomMessage\x12\x7f\n" +
 	"\x0euser_migration\x18\a \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\x88\xd4a\xd1\x01\x92\xd4a\x1bstatus.outputs.function_arnR\ruserMigration\x12\x8c\x01\n" +
 	"\x15define_auth_challenge\x18\b \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\x88\xd4a\xd1\x01\x92\xd4a\x1bstatus.outputs.function_arnR\x13defineAuthChallenge\x12\x8c\x01\n" +

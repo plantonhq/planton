@@ -8,6 +8,7 @@ package alicloudcdndomainv1
 
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
+	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -383,7 +384,7 @@ var File_org_openmcf_provider_alicloud_alicloudcdndomain_v1_spec_proto protorefl
 
 const file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"=org/openmcf/provider/alicloud/alicloudcdndomain/v1/spec.proto\x122org.openmcf.provider.alicloud.alicloudcdndomain.v1\x1a\x1bbuf/validate/validate.proto\"\xf2\x06\n" +
+	"=org/openmcf/provider/alicloud/alicloudcdndomain/v1/spec.proto\x122org.openmcf.provider.alicloud.alicloudcdndomain.v1\x1a\x1bbuf/validate/validate.proto\x1a(org/openmcf/shared/options/options.proto\"\xf2\x06\n" +
 	"\x15AliCloudCdnDomainSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12-\n" +
@@ -410,7 +411,7 @@ const file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_spec_proto_rawDesc
 	"\bpriority\x18\x04 \x01(\x05BT\xbaHQ\xba\x01N\n" +
 	"\x0epriority_range\x12\"priority must be between 0 and 100\x1a\x18this >= 0 && this <= 100R\bpriority\x12h\n" +
 	"\x06weight\x18\x05 \x01(\x05BP\xbaHM\xba\x01J\n" +
-	"\fweight_range\x12 weight must be between 0 and 100\x1a\x18this >= 0 && this <= 100R\x06weight\"\x90\x04\n" +
+	"\fweight_range\x12 weight must be between 0 and 100\x1a\x18this >= 0 && this <= 100R\x06weight\"\x96\x04\n" +
 	"\"AliCloudCdnDomainCertificateConfig\x12\x1b\n" +
 	"\tcert_name\x18\x01 \x01(\tR\bcertName\x12\x92\x01\n" +
 	"\tcert_type\x18\x02 \x01(\tBu\xbaHr\xba\x01o\n" +
@@ -418,8 +419,8 @@ const file_org_openmcf_provider_alicloud_alicloudcdndomain_v1_spec_proto_rawDesc
 	"\acert_id\x18\x03 \x01(\tR\x06certId\x12\x1f\n" +
 	"\vcert_region\x18\x04 \x01(\tR\n" +
 	"certRegion\x12-\n" +
-	"\x12server_certificate\x18\x05 \x01(\tR\x11serverCertificate\x12\x1f\n" +
-	"\vprivate_key\x18\x06 \x01(\tR\n" +
+	"\x12server_certificate\x18\x05 \x01(\tR\x11serverCertificate\x12%\n" +
+	"\vprivate_key\x18\x06 \x01(\tB\x04\xa0\xa6\x1d\x01R\n" +
 	"privateKey\x12\xad\x01\n" +
 	"\x19server_certificate_status\x18\a \x01(\tBq\xbaHn\xba\x01k\n" +
 	"\x11cert_status_valid\x121server_certificate_status must be one of: on, off\x1a#this == '' || this in ['on', 'off']R\x17serverCertificateStatusB\x9c\x03\n" +

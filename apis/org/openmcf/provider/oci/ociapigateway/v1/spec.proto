@@ -4,6 +4,7 @@ package org.openmcf.provider.oci.ociapigateway.v1;
 
 import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
 
 // OciApiGatewaySpec defines the specification for an OCI API Gateway bundled
 // with a single API deployment.
@@ -167,15 +168,15 @@ message OciApiGatewaySpec {
     repeated string audiences = 2;
 
     // HTTP header containing the token. Defaults to "Authorization" on the OCI side.
-    string token_header = 3;
+    string token_header = 3 [(org.openmcf.shared.options.sensitive_exempt_reason) = "Name of the HTTP header that carries the token, not the token value."];
 
     // Query parameter containing the token. Mutually exclusive with token_header
     // in practice, but OCI allows both (header takes precedence).
-    string token_query_param = 4;
+    string token_query_param = 4 [(org.openmcf.shared.options.sensitive_exempt_reason) = "Name of the query parameter that carries the token, not the token value."];
 
     // Authentication scheme prefix in the header value (e.g., "Bearer").
     // Defaults to "Bearer" on the OCI side.
-    string token_auth_scheme = 5;
+    string token_auth_scheme = 5 [(org.openmcf.shared.options.sensitive_exempt_reason) = "Authentication scheme prefix (e.g. Bearer), not the token value."];
 
     // Maximum allowed clock skew in seconds when verifying token exp/nbf/iat claims.
     optional float max_clock_skew_in_seconds = 6;

@@ -144,7 +144,7 @@ message AliCloudKubernetesNodePoolSpec {
 
   // SSH password for node access. 8-30 characters.
   // Mutually exclusive with key_name. Sensitive value.
-  string password = 26;
+  string password = 26 [(org.openmcf.shared.options.sensitive) = true];
 
   // ──────────────────────────────────────────────────────────────────────────
   // Kubernetes Configuration (fields 30–39)

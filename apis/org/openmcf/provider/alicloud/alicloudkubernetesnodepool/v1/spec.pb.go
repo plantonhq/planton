@@ -909,7 +909,7 @@ var File_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_proto 
 
 const file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Forg/openmcf/provider/alicloud/alicloudkubernetesnodepool/v1/spec.proto\x12;org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xb1!\n" +
+	"Forg/openmcf/provider/alicloud/alicloudkubernetesnodepool/v1/spec.proto\x12;org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xb7!\n" +
 	"\x1eAliCloudKubernetesNodePoolSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12{\n" +
@@ -934,8 +934,8 @@ const file_org_openmcf_provider_alicloud_alicloudkubernetesnodepool_v1_spec_prot
 	"\x1ainternet_max_bandwidth_out\x18\x15 \x01(\x05B\t\xbaH\x06\x1a\x04\x18d(\x00H\x02R\x17internetMaxBandwidthOut\x88\x01\x01\x12\xd9\x01\n" +
 	"\x14internet_charge_type\x18\x16 \x01(\tB\xa1\x01\xbaH\x9d\x01\xba\x01\x99\x01\n" +
 	"\x1ainternet_charge_type_valid\x12Ainternet_charge_type must be one of: PayByBandwidth, PayByTraffic\x1a8this == '' || this in ['PayByBandwidth', 'PayByTraffic']H\x03R\x12internetChargeType\x88\x01\x01\x12\x19\n" +
-	"\bkey_name\x18\x19 \x01(\tR\akeyName\x12\x1a\n" +
-	"\bpassword\x18\x1a \x01(\tR\bpassword\x12\x7f\n" +
+	"\bkey_name\x18\x19 \x01(\tR\akeyName\x12 \n" +
+	"\bpassword\x18\x1a \x01(\tB\x04\xa0\xa6\x1d\x01R\bpassword\x12\x7f\n" +
 	"\x06labels\x18\x1e \x03(\v2g.org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolSpec.LabelsEntryR\x06labels\x12t\n" +
 	"\x06taints\x18\x1f \x03(\v2\\.org.openmcf.provider.alicloud.alicloudkubernetesnodepool.v1.AliCloudKubernetesNodePoolTaintR\x06taints\x12\x8f\x01\n" +
 	"\n" +

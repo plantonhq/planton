@@ -193,7 +193,7 @@ message AwsFsxOntapFileSystemSpec {
   //
   // Length: 8-50 characters. Optional — omit if ONTAP CLI access is not needed.
   // This value is sensitive and will not be returned in read operations.
-  string fsx_admin_password = 13;
+  string fsx_admin_password = 13 [(org.openmcf.shared.options.sensitive) = true];
 
   // ---------------------------------------------------------------------------
   // Disk IOPS Configuration

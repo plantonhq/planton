@@ -214,7 +214,7 @@ message AliCloudPolardbClusterSpec {
 
   // KMS encryption key ID for TDE. Required when tde_status is "Enabled".
   // Cannot be changed after TDE is enabled.
-  string encryption_key = 23;
+  string encryption_key = 23 [(org.openmcf.shared.options.sensitive_exempt_reason) = "Customer-managed KMS key identifier (a reference), not secret key material."];
 
   // Deletion protection lock. Prevents accidental cluster deletion via
   // console or API. Set to 1 to enable, 0 to disable.

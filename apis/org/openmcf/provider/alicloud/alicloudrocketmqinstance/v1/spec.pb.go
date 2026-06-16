@@ -767,7 +767,7 @@ const file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_spec_proto_
 	"\n" +
 	"\b_enabledB\x10\n" +
 	"\x0e_flow_out_typeB\x15\n" +
-	"\x13_flow_out_bandwidth\"\xf1\x04\n" +
+	"\x13_flow_out_bandwidth\"\xda\x05\n" +
 	"\x1bAliCloudRocketmqProductInfo\x12\x9e\x01\n" +
 	"\x16message_retention_time\x18\x01 \x01(\x05Bc\xbaH`\xba\x01]\n" +
 	"\x1fmessage_retention_time_positive\x120message_retention_time must be positive when set\x1a\bthis > 0H\x00R\x14messageRetentionTime\x88\x01\x01\x12\x9f\x01\n" +
@@ -775,8 +775,8 @@ const file_org_openmcf_provider_alicloud_alicloudrocketmqinstance_v1_spec_proto_
 	"\x18send_receive_ratio_range\x12.send_receive_ratio must be between 0.2 and 0.5\x1a\x1athis >= 0.2 && this <= 0.5H\x01R\x10sendReceiveRatio\x88\x01\x01\x12&\n" +
 	"\fauto_scaling\x18\x03 \x01(\bH\x02R\vautoScaling\x88\x01\x01\x12\x1e\n" +
 	"\btrace_on\x18\x04 \x01(\bH\x03R\atraceOn\x88\x01\x01\x122\n" +
-	"\x12storage_encryption\x18\x05 \x01(\bH\x04R\x11storageEncryption\x88\x01\x01\x12,\n" +
-	"\x12storage_secret_key\x18\x06 \x01(\tR\x10storageSecretKeyB\x19\n" +
+	"\x12storage_encryption\x18\x05 \x01(\bH\x04R\x11storageEncryption\x88\x01\x01\x12\x94\x01\n" +
+	"\x12storage_secret_key\x18\x06 \x01(\tBf\xaa\xa6\x1dbCustomer-managed KMS key identifier for encryption at rest (a reference), not secret key material.R\x10storageSecretKeyB\x19\n" +
 	"\x17_message_retention_timeB\x15\n" +
 	"\x13_send_receive_ratioB\x0f\n" +
 	"\r_auto_scalingB\v\n" +

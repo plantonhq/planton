@@ -9,6 +9,7 @@ package awsrdsinstancev1
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
+	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -221,7 +222,7 @@ var File_org_openmcf_provider_aws_awsrdsinstance_v1_spec_proto protoreflect.File
 
 const file_org_openmcf_provider_aws_awsrdsinstance_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"5org/openmcf/provider/aws/awsrdsinstance/v1/spec.proto\x12*org.openmcf.provider.aws.awsrdsinstance.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xba\t\n" +
+	"5org/openmcf/provider/aws/awsrdsinstance/v1/spec.proto\x12*org.openmcf.provider.aws.awsrdsinstance.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xbe\t\n" +
 	"\x12AwsRdsInstanceSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x81\x01\n" +
 	"\n" +
@@ -236,8 +237,8 @@ const file_org_openmcf_provider_aws_awsrdsinstance_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	"kms_key_id\x18\n" +
 	" \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12#\n" +
-	"\busername\x18\v \x01(\tB\a\xbaH\x04r\x02\x10\x01R\busername\x12#\n" +
-	"\bpassword\x18\f \x01(\tB\a\xbaH\x04r\x02\x10\x01R\bpassword\x12\x1f\n" +
+	"\busername\x18\v \x01(\tB\a\xbaH\x04r\x02\x10\x01R\busername\x12'\n" +
+	"\bpassword\x18\f \x01(\tB\v\xbaH\x04r\x02\x10\x01\xa0\xa6\x1d\x01R\bpassword\x12\x1f\n" +
 	"\x04port\x18\r \x01(\x05B\v\xbaH\b\x1a\x06\x18\xff\xff\x03(\x00R\x04port\x12/\n" +
 	"\x13publicly_accessible\x18\x0e \x01(\bR\x12publiclyAccessible\x12\x19\n" +
 	"\bmulti_az\x18\x0f \x01(\bR\amultiAz\x120\n" +

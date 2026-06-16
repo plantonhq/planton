@@ -4,6 +4,7 @@ package org.openmcf.provider.oci.ocidbsystem.v1;
 
 import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
 
 // OciDbSystemSpec defines the specification for an Oracle Cloud Infrastructure
 // Database System -- a managed Oracle Database running on Virtual Machine or
@@ -256,7 +257,10 @@ message OciDbSystemSpec {
     // characters, contain at least one uppercase, one lowercase, and one
     // numeric character. Cannot contain the double-quote character.
     // This value is not returned by the API after creation.
-    string admin_password = 1 [(buf.validate.field).string.min_len = 2];
+    string admin_password = 1 [
+      (buf.validate.field).string.min_len = 2,
+      (org.openmcf.shared.options.sensitive) = true
+    ];
     // Database name. Must be alphanumeric, begin with a letter, and be
     // at most 8 characters for single-node or 30 characters otherwise.
     // Changing this forces recreation.

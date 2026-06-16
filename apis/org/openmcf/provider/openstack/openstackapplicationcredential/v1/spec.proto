@@ -39,7 +39,7 @@ message OpenStackApplicationCredentialSpec {
   // If provided, the user-specified secret is used.
   // ForceNew: cannot be changed after creation.
   // The secret is sensitive and should be stored securely.
-  string secret = 3;
+  string secret = 3 [(org.openmcf.shared.options.sensitive) = true];
 
   // roles is a list of role names to scope the application credential.
   // The credential can only perform actions allowed by these roles.

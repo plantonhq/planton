@@ -4,6 +4,7 @@ package org.openmcf.provider.gcp.gcpcloudcdn.v1;
 
 import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
 
 // **GcpCloudCdnSpec** defines the configuration for deploying a Google Cloud CDN (Content Delivery Network).
 // This message specifies the necessary parameters to create and manage a Cloud CDN within a
@@ -390,7 +391,10 @@ message SelfManagedCertificateConfig {
 
   // PEM-encoded private key.
   // Required field.
-  string private_key_pem = 2 [(buf.validate.field).required = true];
+  string private_key_pem = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.options.sensitive) = true
+  ];
 }
 
 // **CloudArmorConfig** enables Google Cloud Armor (WAF and DDoS protection).

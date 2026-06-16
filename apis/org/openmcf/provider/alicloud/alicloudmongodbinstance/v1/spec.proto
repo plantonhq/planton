@@ -67,6 +67,7 @@ message AliCloudMongodbInstanceSpec {
   // Root account password. 8-32 characters, must contain at least three of:
   // uppercase letters, lowercase letters, digits, special characters.
   string account_password = 6 [
+    (org.openmcf.shared.options.sensitive) = true,
     (buf.validate.field).required = true,
     (buf.validate.field).string.min_len = 8,
     (buf.validate.field).string.max_len = 32
@@ -187,7 +188,7 @@ message AliCloudMongodbInstanceSpec {
 
   // Custom KMS key ID for TDE encryption. When set with tde_status = "enabled",
   // uses a customer-managed key instead of the service-managed default.
-  string encryption_key = 23;
+  string encryption_key = 23 [(org.openmcf.shared.options.sensitive_exempt_reason) = "Customer-managed KMS key identifier (a reference), not secret key material."];
 
   // Cloud disk encryption. Encrypts the underlying cloud disk at the
   // infrastructure layer. Mutually exclusive with `tde_status`.
@@ -195,7 +196,7 @@ message AliCloudMongodbInstanceSpec {
 
   // KMS key ID for cloud disk encryption. Only applicable when encrypted
   // is true. Mutually exclusive with `tde_status` and `encryption_key`.
-  string cloud_disk_encryption_key = 25;
+  string cloud_disk_encryption_key = 25 [(org.openmcf.shared.options.sensitive_exempt_reason) = "Customer-managed KMS key identifier (a reference), not secret key material."];
 
   // Maintenance window start time in UTC format (e.g., "02:00Z").
   // Alibaba Cloud may perform minor version upgrades or patches during

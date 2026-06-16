@@ -4,6 +4,7 @@ package org.openmcf.provider.gcp.gcpsecretsmanager.v1;
 
 import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
 
 // **GcpSecretsManagerSpec** defines the configuration for managing secrets using Google Cloud Secrets Manager.
 // This message specifies the parameters required to create and manage secrets within a specified GCP project.
@@ -22,5 +23,5 @@ message GcpSecretsManagerSpec {
 
   // A list of secret names to create in Google Cloud Secrets Manager.
   // Each name represents a unique secret that can store sensitive data securely.
-  repeated string secret_names = 2;
+  repeated string secret_names = 2 [(org.openmcf.shared.options.sensitive_exempt_reason) = "Names of secrets to create in Secret Manager, not secret values."];
 }

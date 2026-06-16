@@ -597,7 +597,7 @@ var File_org_openmcf_provider_gcp_gcpcloudsql_v1_spec_proto protoreflect.FileDes
 
 const file_org_openmcf_provider_gcp_gcpcloudsql_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"2org/openmcf/provider/gcp/gcpcloudsql/v1/spec.proto\x12'org.openmcf.provider.gcp.gcpcloudsql.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xd6\n" +
+	"2org/openmcf/provider/gcp/gcpcloudsql/v1/spec.proto\x12'org.openmcf.provider.gcp.gcpcloudsql.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xda\n" +
 	"\n" +
 	"\x0fGcpCloudSqlSpec\x12{\n" +
 	"\n" +
@@ -622,9 +622,8 @@ const file_org_openmcf_provider_gcp_gcpcloudsql_v1_spec_proto_rawDesc = "" +
 	"\anetwork\x18\f \x01(\v2;.org.openmcf.provider.gcp.gcpcloudsql.v1.GcpCloudSqlNetworkR\anetwork\x12q\n" +
 	"\x11high_availability\x18\r \x01(\v2D.org.openmcf.provider.gcp.gcpcloudsql.v1.GcpCloudSqlHighAvailabilityR\x10highAvailability\x12R\n" +
 	"\x06backup\x18\x0e \x01(\v2:.org.openmcf.provider.gcp.gcpcloudsql.v1.GcpCloudSqlBackupR\x06backup\x12r\n" +
-	"\x0edatabase_flags\x18\x0f \x03(\v2K.org.openmcf.provider.gcp.gcpcloudsql.v1.GcpCloudSqlSpec.DatabaseFlagsEntryR\rdatabaseFlags\x12/\n" +
-	"\rroot_password\x18\x10 \x01(\tB\n" +
-	"\xbaH\a\xd8\x01\x01r\x02\x10\bR\frootPassword\x1a@\n" +
+	"\x0edatabase_flags\x18\x0f \x03(\v2K.org.openmcf.provider.gcp.gcpcloudsql.v1.GcpCloudSqlSpec.DatabaseFlagsEntryR\rdatabaseFlags\x123\n" +
+	"\rroot_password\x18\x10 \x01(\tB\x0e\xbaH\a\xd8\x01\x01r\x02\x10\b\xa0\xa6\x1d\x01R\frootPassword\x1a@\n" +
 	"\x12DatabaseFlagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\x8a\x04\n" +

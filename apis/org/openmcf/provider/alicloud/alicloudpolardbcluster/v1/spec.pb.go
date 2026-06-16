@@ -704,7 +704,7 @@ var File_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_spec_proto prot
 
 const file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Borg/openmcf/provider/alicloud/alicloudpolardbcluster/v1/spec.proto\x127org.openmcf.provider.alicloud.alicloudpolardbcluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x9d\x1f\n" +
+	"Borg/openmcf/provider/alicloud/alicloudpolardbcluster/v1/spec.proto\x127org.openmcf.provider.alicloud.alicloudpolardbcluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xee\x1f\n" +
 	"\x1aAliCloudPolardbClusterSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12\x8f\x01\n" +
@@ -746,8 +746,8 @@ const file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_spec_proto_ra
 	"\x13storage_space_range\x124storage_space must be between 20 and 100000 when set\x1a\x1cthis >= 20 && this <= 100000H\bR\fstorageSpace\x88\x01\x01\x12\x99\x01\n" +
 	"\n" +
 	"tde_status\x18\x16 \x01(\tBu\xbaHr\xba\x01o\n" +
-	"\x10tde_status_valid\x12,tde_status must be one of: Enabled, Disabled\x1a-this == '' || this in ['Enabled', 'Disabled']H\tR\ttdeStatus\x88\x01\x01\x12%\n" +
-	"\x0eencryption_key\x18\x17 \x01(\tR\rencryptionKey\x12s\n" +
+	"\x10tde_status_valid\x12,tde_status must be one of: Enabled, Disabled\x1a-this == '' || this in ['Enabled', 'Disabled']H\tR\ttdeStatus\x88\x01\x01\x12v\n" +
+	"\x0eencryption_key\x18\x17 \x01(\tBO\xaa\xa6\x1dKCustomer-managed KMS key identifier (a reference), not secret key material.R\rencryptionKey\x12s\n" +
 	"\rdeletion_lock\x18\x18 \x01(\x05BI\xbaHF\xba\x01C\n" +
 	"\x13deletion_lock_valid\x12\x1cdeletion_lock must be 0 or 1\x1a\x0ethis in [0, 1]H\n" +
 	"R\fdeletionLock\x88\x01\x01\x12\xaf\x01\n" +

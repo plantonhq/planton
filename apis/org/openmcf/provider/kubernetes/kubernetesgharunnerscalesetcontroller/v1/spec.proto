@@ -53,7 +53,7 @@ message KubernetesGhaRunnerScaleSetControllerSpec {
 
   // Image pull secrets for private container registries.
   // These secrets are also passed to the auto-scaler for pulling listener images.
-  repeated string image_pull_secrets = 9;
+  repeated string image_pull_secrets = 9 [(org.openmcf.shared.options.sensitive_exempt_reason) = "Names of existing Kubernetes imagePullSecrets, not secret values."];
 
   // Priority class name for the controller pods.
   // Use "system-cluster-critical" to ensure controller survives resource pressure.

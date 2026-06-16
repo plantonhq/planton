@@ -366,7 +366,7 @@ var File_org_openmcf_provider_aws_awsdocumentdb_v1_spec_proto protoreflect.FileD
 
 const file_org_openmcf_provider_aws_awsdocumentdb_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"4org/openmcf/provider/aws/awsdocumentdb/v1/spec.proto\x12)org.openmcf.provider.aws.awsdocumentdb.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xb3\x16\n" +
+	"4org/openmcf/provider/aws/awsdocumentdb/v1/spec.proto\x12)org.openmcf.provider.aws.awsdocumentdb.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xb7\x16\n" +
 	"\x11AwsDocumentDbSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12|\n" +
 	"\asubnets\x18\x02 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\asubnets\x12Z\n" +
@@ -377,9 +377,10 @@ const file_org_openmcf_provider_aws_awsdocumentdb_v1_spec_proto_rawDesc = "" +
 	"\x0eengine_version\x18\a \x01(\tB\x10\xbaH\x04r\x02\x10\x01\x8a\xa6\x1d\x055.0.0H\x00R\rengineVersion\x88\x01\x01\x12-\n" +
 	"\x04port\x18\b \x01(\x05B\x14\xbaH\b\x1a\x06\x18\xff\xff\x03(\x01\x8a\xa6\x1d\x0527017H\x01R\x04port\x88\x01\x01\x12C\n" +
 	"\x0fmaster_username\x18\t \x01(\tB\x15\xbaH\x04r\x02\x10\x01\x8a\xa6\x1d\n" +
-	"docdbadminH\x02R\x0emasterUsername\x88\x01\x01\x12/\n" +
+	"docdbadminH\x02R\x0emasterUsername\x88\x01\x01\x123\n" +
 	"\x0fmaster_password\x18\n" +
-	" \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x0emasterPassword\x128\n" +
+	" \x01(\tB\n" +
+	"\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01R\x0emasterPassword\x128\n" +
 	"\x0einstance_count\x18\v \x01(\x05B\f\xbaH\x04\x1a\x02(\x01\x8a\xa6\x1d\x011H\x03R\rinstanceCount\x88\x01\x01\x12C\n" +
 	"\x0einstance_class\x18\f \x01(\tB\x17\xbaH\x04r\x02\x10\x01\x8a\xa6\x1d\fdb.r6g.largeH\x04R\rinstanceClass\x88\x01\x01\x12:\n" +
 	"\x11storage_encrypted\x18\r \x01(\bB\b\x8a\xa6\x1d\x04trueH\x05R\x10storageEncrypted\x88\x01\x01\x12l\n" +

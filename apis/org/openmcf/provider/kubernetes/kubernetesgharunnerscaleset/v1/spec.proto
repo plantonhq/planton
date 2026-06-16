@@ -73,7 +73,7 @@ message KubernetesGhaRunnerScaleSetSpec {
   KubernetesGhaRunnerScaleSetControllerServiceAccount controller_service_account = 12;
 
   // Image pull secrets for private container registries.
-  repeated string image_pull_secrets = 13;
+  repeated string image_pull_secrets = 13 [(org.openmcf.shared.options.sensitive_exempt_reason) = "Names of existing Kubernetes imagePullSecrets, not secret values."];
 
   // Labels to apply to all resources created by the scale set.
   map<string, string> labels = 14;
@@ -122,7 +122,10 @@ message KubernetesGhaRunnerScaleSetGitHubConfig {
 message KubernetesGhaRunnerScaleSetPatToken {
   // The GitHub Personal Access Token.
   // Must have appropriate permissions for the scope (repo, org, or enterprise).
-  string token = 1 [(buf.validate.field).required = true];
+  string token = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.options.sensitive) = true
+  ];
 }
 
 // KubernetesGhaRunnerScaleSetGitHubApp configures GitHub App authentication.
@@ -136,7 +139,10 @@ message KubernetesGhaRunnerScaleSetGitHubApp {
   // The private key for the GitHub App (base64 encoded PEM format).
   // The PEM file contents must be base64 encoded before providing here.
   // Example: cat private-key.pem | base64
-  string private_key_base64 = 3 [(buf.validate.field).required = true];
+  string private_key_base64 = 3 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.options.sensitive) = true
+  ];
 }
 
 // KubernetesGhaRunnerScaleSetScaling defines autoscaling behavior.

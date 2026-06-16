@@ -700,9 +700,9 @@ const file_org_openmcf_provider_alicloud_alicloudvpngateway_v1_spec_proto_rawDes
 	"\x13health_check_config\x18\v \x01(\v2Q.org.openmcf.provider.alicloud.alicloudvpngateway.v1.AliCloudVpnHealthCheckConfigR\x11healthCheckConfigB\r\n" +
 	"\v_enable_dpdB\x17\n" +
 	"\x15_enable_nat_traversalB\x15\n" +
-	"\x13_effect_immediately\"\xb8\t\n" +
-	"\x11AliCloudIkeConfig\x12\x19\n" +
-	"\x03psk\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x18dR\x03psk\x12\x9c\x01\n" +
+	"\x13_effect_immediately\"\xbc\t\n" +
+	"\x11AliCloudIkeConfig\x12\x1d\n" +
+	"\x03psk\x18\x01 \x01(\tB\v\xbaH\x04r\x02\x18d\xa0\xa6\x1d\x01R\x03psk\x12\x9c\x01\n" +
 	"\vike_version\x18\x02 \x01(\tBv\xbaHj\xba\x01g\n" +
 	"\x11ike_version_valid\x12(ike_version must be one of: ikev1, ikev2\x1a(this == '' || this in ['ikev1', 'ikev2']\x8a\xa6\x1d\x05ikev2H\x00R\n" +
 	"ikeVersion\x88\x01\x01\x12\x97\x01\n" +

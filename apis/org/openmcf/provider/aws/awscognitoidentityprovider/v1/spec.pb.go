@@ -9,6 +9,7 @@ package awscognitoidentityproviderv1
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
+	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -865,34 +866,34 @@ var File_org_openmcf_provider_aws_awscognitoidentityprovider_v1_spec_proto proto
 
 const file_org_openmcf_provider_aws_awscognitoidentityprovider_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Aorg/openmcf/provider/aws/awscognitoidentityprovider/v1/spec.proto\x126org.openmcf.provider.aws.awscognitoidentityprovider.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xa3\x01\n" +
+	"Aorg/openmcf/provider/aws/awscognitoidentityprovider/v1/spec.proto\x126org.openmcf.provider.aws.awscognitoidentityprovider.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xa7\x01\n" +
 	"\x19AwsCognitoIdpGoogleConfig\x12$\n" +
-	"\tclient_id\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\bclientId\x12,\n" +
-	"\rclient_secret\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\fclientSecret\x122\n" +
-	"\x10authorize_scopes\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x0fauthorizeScopes\"\xc6\x01\n" +
+	"\tclient_id\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\bclientId\x120\n" +
+	"\rclient_secret\x18\x02 \x01(\tB\v\xbaH\x04r\x02\x10\x01\xa0\xa6\x1d\x01R\fclientSecret\x122\n" +
+	"\x10authorize_scopes\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x0fauthorizeScopes\"\xca\x01\n" +
 	"\x1bAwsCognitoIdpFacebookConfig\x12$\n" +
-	"\tclient_id\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\bclientId\x12,\n" +
-	"\rclient_secret\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\fclientSecret\x122\n" +
+	"\tclient_id\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\bclientId\x120\n" +
+	"\rclient_secret\x18\x02 \x01(\tB\v\xbaH\x04r\x02\x10\x01\xa0\xa6\x1d\x01R\fclientSecret\x122\n" +
 	"\x10authorize_scopes\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x0fauthorizeScopes\x12\x1f\n" +
 	"\vapi_version\x18\x04 \x01(\tR\n" +
-	"apiVersion\"\xac\x01\n" +
+	"apiVersion\"\xb0\x01\n" +
 	"\"AwsCognitoIdpLoginWithAmazonConfig\x12$\n" +
-	"\tclient_id\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\bclientId\x12,\n" +
-	"\rclient_secret\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\fclientSecret\x122\n" +
-	"\x10authorize_scopes\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x0fauthorizeScopes\"\xea\x01\n" +
+	"\tclient_id\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\bclientId\x120\n" +
+	"\rclient_secret\x18\x02 \x01(\tB\v\xbaH\x04r\x02\x10\x01\xa0\xa6\x1d\x01R\fclientSecret\x122\n" +
+	"\x10authorize_scopes\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x0fauthorizeScopes\"\xee\x01\n" +
 	"\"AwsCognitoIdpSignInWithAppleConfig\x12$\n" +
 	"\tclient_id\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\bclientId\x12 \n" +
 	"\ateam_id\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06teamId\x12\x1e\n" +
-	"\x06key_id\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x05keyId\x12(\n" +
-	"\vprivate_key\x18\x04 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\n" +
+	"\x06key_id\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x05keyId\x12,\n" +
+	"\vprivate_key\x18\x04 \x01(\tB\v\xbaH\x04r\x02\x10\x01\xa0\xa6\x1d\x01R\n" +
 	"privateKey\x122\n" +
-	"\x10authorize_scopes\x18\x05 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x0fauthorizeScopes\"\xf9\x02\n" +
+	"\x10authorize_scopes\x18\x05 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x0fauthorizeScopes\"\xff\x02\n" +
 	"\x17AwsCognitoIdpOidcConfig\x12$\n" +
 	"\tclient_id\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\bclientId\x12(\n" +
 	"\voidc_issuer\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\n" +
 	"oidcIssuer\x12)\n" +
-	"\x10authorize_scopes\x18\x03 \x01(\tR\x0fauthorizeScopes\x12#\n" +
-	"\rclient_secret\x18\x04 \x01(\tR\fclientSecret\x12:\n" +
+	"\x10authorize_scopes\x18\x03 \x01(\tR\x0fauthorizeScopes\x12)\n" +
+	"\rclient_secret\x18\x04 \x01(\tB\x04\xa0\xa6\x1d\x01R\fclientSecret\x12:\n" +
 	"\x19attributes_request_method\x18\x05 \x01(\tR\x17attributesRequestMethod\x12#\n" +
 	"\rauthorize_url\x18\x06 \x01(\tR\fauthorizeUrl\x12\x1b\n" +
 	"\ttoken_url\x18\a \x01(\tR\btokenUrl\x12%\n" +

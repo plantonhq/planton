@@ -68,7 +68,10 @@ message ClusterIssuerAcmeConfig {
 message CloudflareDnsSolver {
   // Cloudflare API token with Zone:Zone:Read and Zone:DNS:Edit permissions.
   // Scope the token to the specific zone for security best practices.
-  string api_token = 1 [(buf.validate.field).required = true];
+  string api_token = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.options.sensitive) = true
+  ];
 }
 
 // GcpCloudDnsSolver configures Google Cloud DNS for DNS-01 ACME challenges.

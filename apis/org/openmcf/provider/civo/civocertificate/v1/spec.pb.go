@@ -8,6 +8,7 @@ package civocertificatev1
 
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
+	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -320,7 +321,7 @@ var File_org_openmcf_provider_civo_civocertificate_v1_spec_proto protoreflect.Fi
 
 const file_org_openmcf_provider_civo_civocertificate_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"7org/openmcf/provider/civo/civocertificate/v1/spec.proto\x12,org.openmcf.provider.civo.civocertificate.v1\x1a\x1bbuf/validate/validate.proto\"\xf3\x03\n" +
+	"7org/openmcf/provider/civo/civocertificate/v1/spec.proto\x12,org.openmcf.provider.civo.civocertificate.v1\x1a\x1bbuf/validate/validate.proto\x1a(org/openmcf/shared/options/options.proto\"\xf3\x03\n" +
 	"\x13CivoCertificateSpec\x127\n" +
 	"\x10certificate_name\x18\x01 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x01\x18@R\x0fcertificateName\x12b\n" +
 	"\x04type\x18\x02 \x01(\x0e2A.org.openmcf.provider.civo.civocertificate.v1.CivoCertificateTypeB\v\xbaH\b\xc8\x01\x01\x82\x01\x02\x10\x01R\x04type\x12s\n" +
@@ -331,12 +332,11 @@ const file_org_openmcf_provider_civo_civocertificate_v1_spec_proto_rawDesc = "" 
 	"\x12certificate_source\x12\x05\xbaH\x02\b\x01\"\xb6\x01\n" +
 	" CivoCertificateLetsEncryptParams\x12d\n" +
 	"\adomains\x18\x01 \x03(\tBJ\xbaHG\xc8\x01\x01\x92\x01A\x18\x01\"=r;29^(?:\\*\\.[A-Za-z0-9\\-\\.]+|[A-Za-z0-9\\-\\.]+\\.[A-Za-z]{2,})$R\adomains\x12,\n" +
-	"\x12disable_auto_renew\x18\x02 \x01(\bR\x10disableAutoRenew\"\xae\x01\n" +
+	"\x12disable_auto_renew\x18\x02 \x01(\bR\x10disableAutoRenew\"\xb2\x01\n" +
 	"\x1bCivoCertificateCustomParams\x125\n" +
 	"\x10leaf_certificate\x18\x01 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x0fleafCertificate\x12+\n" +
-	"\vprivate_key\x18\x02 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\n" +
+	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x0fleafCertificate\x12/\n" +
+	"\vprivate_key\x18\x02 \x01(\tB\x0e\xbaH\a\xc8\x01\x01r\x02\x10\x01\xa0\xa6\x1d\x01R\n" +
 	"privateKey\x12+\n" +
 	"\x11certificate_chain\x18\x03 \x01(\tR\x10certificateChain*Y\n" +
 	"\x13CivoCertificateType\x12%\n" +

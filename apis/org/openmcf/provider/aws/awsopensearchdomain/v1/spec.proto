@@ -483,7 +483,7 @@ message AwsOpenSearchDomainAdvancedSecurityOptions {
   // Password for the internal user database master user. Must be at least 8
   // characters with uppercase, lowercase, digit, and special character.
   // Mutually exclusive with master_user_arn.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef master_user_password = 5;
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef master_user_password = 5 [(org.openmcf.shared.options.sensitive) = true];
 
   // ---------------------------------------------------------------------------
   // CEL validations

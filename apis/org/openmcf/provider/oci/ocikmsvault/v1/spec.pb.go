@@ -9,6 +9,7 @@ package ocikmsvaultv1
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
+	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -315,7 +316,7 @@ var File_org_openmcf_provider_oci_ocikmsvault_v1_spec_proto protoreflect.FileDes
 
 const file_org_openmcf_provider_oci_ocikmsvault_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"2org/openmcf/provider/oci/ocikmsvault/v1/spec.proto\x12'org.openmcf.provider.oci.ocikmsvault.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xde\n" +
+	"2org/openmcf/provider/oci/ocikmsvault/v1/spec.proto\x12'org.openmcf.provider.oci.ocikmsvault.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xe2\n" +
 	"\n" +
 	"\x0fOciKmsVaultSpec\x12\x87\x01\n" +
 	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x12!\n" +
@@ -323,14 +324,14 @@ const file_org_openmcf_provider_oci_ocikmsvault_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	"vault_type\x18\x03 \x01(\x0e2B.org.openmcf.provider.oci.ocikmsvault.v1.OciKmsVaultSpec.VaultTypeB\n" +
 	"\xbaH\a\x82\x01\x04\x10\x01 \x00R\tvaultType\x12\x96\x01\n" +
-	"\x1dexternal_key_manager_metadata\x18\x04 \x01(\v2S.org.openmcf.provider.oci.ocikmsvault.v1.OciKmsVaultSpec.ExternalKeyManagerMetadataR\x1aexternalKeyManagerMetadata\x1a\xe0\x03\n" +
+	"\x1dexternal_key_manager_metadata\x18\x04 \x01(\v2S.org.openmcf.provider.oci.ocikmsvault.v1.OciKmsVaultSpec.ExternalKeyManagerMetadataR\x1aexternalKeyManagerMetadata\x1a\xe4\x03\n" +
 	"\x1aExternalKeyManagerMetadata\x12F\n" +
 	"\x1bexternal_vault_endpoint_url\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x18externalVaultEndpointUrl\x12\x90\x01\n" +
 	"\x0eoauth_metadata\x18\x02 \x01(\v2a.org.openmcf.provider.oci.ocikmsvault.v1.OciKmsVaultSpec.ExternalKeyManagerMetadata.OAuthMetadataB\x06\xbaH\x03\xc8\x01\x01R\roauthMetadata\x127\n" +
-	"\x13private_endpoint_id\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x11privateEndpointId\x1a\xad\x01\n" +
+	"\x13private_endpoint_id\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x11privateEndpointId\x1a\xb1\x01\n" +
 	"\rOAuthMetadata\x12+\n" +
-	"\rclient_app_id\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\vclientAppId\x123\n" +
-	"\x11client_app_secret\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x0fclientAppSecret\x12:\n" +
+	"\rclient_app_id\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\vclientAppId\x127\n" +
+	"\x11client_app_secret\x18\x02 \x01(\tB\v\xbaH\x04r\x02\x10\x01\xa0\xa6\x1d\x01R\x0fclientAppSecret\x12:\n" +
 	"\x15idcs_account_name_url\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x12idcsAccountNameUrl\"R\n" +
 	"\tVaultType\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12\x11\n" +

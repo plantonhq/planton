@@ -12,102 +12,46 @@
 # As the sweep proceeds, annotate fields and delete their lines; this list trends to 0.
 #
 # Regenerate with:  openmcf secret-coverage --write-baseline
+#
+# ─────────────────────────────────────────────────────────────────────────────
+# Remaining backlog after the 2026-06-16 secure-by-default annotation sweep.
+# These 20 fields ARE real secrets, deliberately deferred (not yet annotated) for
+# one of four reasons, each to be closed in a follow-up:
+#   (R)  Secret nested inside a REPEATED message. The web wizard renders these
+#        rows with a raw input today, so annotating would degrade the create UX
+#        until the repeated-row secret picker lands (planton follow-up).
+#   (C)  Service env-var secret maps. Governed by the env-resolution path and the
+#        still-open reference-only (allow_literals) decision; annotating here would
+#        pre-empt that decision.
+#   (D)  Secret-holder kinds (KubernetesSecret, OciVaultSecret) whose purpose is to
+#        materialize a secret. Reference-only is the right end state but a
+#        fundamental UX shift; needs its own design slice.
+#   (FK) AzureVirtualMachine.admin_password also offers a foreign-key reference to
+#        an AzureKeyVault secret; annotating would override that picker -- pending a
+#        product decision on which reference model wins.
+# ─────────────────────────────────────────────────────────────────────────────
 gaps:
-  - AliCloudCdnDomain:spec.certificate_config.private_key
-  - AliCloudContainerRegistry:spec.password
-  - AliCloudEcsInstance:spec.password
-  - AliCloudKubernetesNodePool:spec.password
-  - AliCloudMongodbInstance:spec.account_password
-  - AliCloudMongodbInstance:spec.cloud_disk_encryption_key
-  - AliCloudMongodbInstance:spec.encryption_key
+  # (R) nested-in-repeated secret rows
   - AliCloudPolardbCluster:spec.accounts.account_password
-  - AliCloudPolardbCluster:spec.encryption_key
   - AliCloudRdsInstance:spec.accounts.account_password
-  - AliCloudRdsInstance:spec.encryption_key
-  - AliCloudRedisInstance:spec.encryption_key
-  - AliCloudRedisInstance:spec.password
-  - AliCloudRocketmqInstance:spec.product_info.storage_secret_key
-  - Auth0Connection:spec.azure_ad_options.client_secret
-  - Auth0Connection:spec.oidc_options.client_secret
-  - Auth0Connection:spec.social_options.client_secret
-  - Auth0EventStream:spec.webhook_configuration.webhook_authorization.password
-  - Auth0EventStream:spec.webhook_configuration.webhook_authorization.token
+  - OciApplicationLoadBalancer:spec.certificates.passphrase
+  - OciApplicationLoadBalancer:spec.certificates.private_key
+  - OciContainerInstance:spec.image_pull_secrets.password
+  - ScalewayMongodbInstance:spec.users.password
+  - ScalewayRdbInstance:spec.users.password
+  # (C) service env-var secret maps
   - AwsAppRunnerService:spec.environment_secrets
-  - AwsCodeBuildProject:spec.encryption_key
-  - AwsCodeBuildProject:spec.environment.registry_credential.credential
-  - AwsCognitoIdentityProvider:spec.facebook.client_secret
-  - AwsCognitoIdentityProvider:spec.google.client_secret
-  - AwsCognitoIdentityProvider:spec.login_with_amazon.client_secret
-  - AwsCognitoIdentityProvider:spec.oidc.client_secret
-  - AwsCognitoIdentityProvider:spec.sign_in_with_apple.private_key
-  - AwsCognitoUserPool:spec.lambda_config.pre_token_generation
-  - AwsDocumentDb:spec.master_password
   - AwsEcsService:spec.container.env.secrets
-  - AwsFsxOntapFileSystem:spec.fsx_admin_password
-  - AwsFsxOntapStorageVirtualMachine:spec.active_directory_configuration.password
-  - AwsFsxOntapStorageVirtualMachine:spec.svm_admin_password
-  - AwsFsxWindowsFileSystem:spec.self_managed_active_directory.password
-  - AwsKinesisFirehose:spec.redshift.password
-  - AwsOpenSearchDomain:spec.advanced_security_options.master_user_password
-  - AwsRdsCluster:spec.password
-  - AwsRdsInstance:spec.password
-  - AwsRedisElasticache:spec.auth_token
-  - AwsRedshiftCluster:spec.master_password
-  - AwsSecretsManager:spec.secret_names
-  - AzureFunctionApp:spec.application_insights_connection_string
-  - AzureFunctionApp:spec.site_config.application_stack.docker.registry_password
-  - AzureKeyVault:spec.secret_names
-  - AzureLinuxWebApp:spec.application_insights_connection_string
-  - AzureMssqlServer:spec.administrator_password
-  - AzureMysqlFlexibleServer:spec.administrator_password
-  - AzurePostgresqlFlexibleServer:spec.administrator_password
-  - AzureVirtualMachine:spec.admin_password
-  - CivoCertificate:spec.custom.private_key
   - CloudflareWorker:spec.env.secrets
-  - DigitalOceanCertificate:spec.custom.private_key
   - DigitalOceanFunction:spec.secret_environment_variables
-  - GcpAlloydbCluster:spec.initial_user.password
-  - GcpCloudCdn:spec.frontend_config.ssl_certificate.self_managed.private_key_pem
   - GcpCloudFunction:spec.service_config.secret_environment_variables
   - GcpCloudRun:spec.container.env.secrets
-  - GcpCloudSql:spec.root_password
-  - GcpSecretsManager:spec.secret_names
-  - HetznerCloudCertificate:spec.uploaded.private_key
-  - KubernetesClusterIssuer:spec.cloudflare.api_token
-  - KubernetesDestinationRule:spec.subsets.traffic_policy.port_level_settings.tls.private_key
-  - KubernetesDestinationRule:spec.subsets.traffic_policy.tls.private_key
-  - KubernetesDestinationRule:spec.traffic_policy.port_level_settings.tls.private_key
-  - KubernetesDestinationRule:spec.traffic_policy.tls.private_key
-  - KubernetesExternalDns:spec.cloudflare.api_token
-  - KubernetesGhaRunnerScaleSet:spec.github.github_app.private_key_base64
-  - KubernetesGhaRunnerScaleSet:spec.github.pat_token.token
-  - KubernetesGhaRunnerScaleSet:spec.image_pull_secrets
-  - KubernetesGhaRunnerScaleSetController:spec.image_pull_secrets
-  - KubernetesHarbor:spec.cache.external_cache.password
-  - KubernetesHarbor:spec.database.external_database.password
-  - KubernetesHarbor:spec.storage.oss.access_key_secret
-  - KubernetesHarbor:spec.storage.s3.secret_key
+  # (D) secret-holder kinds
   - KubernetesSecret:spec.basic_auth.password
   - KubernetesSecret:spec.docker_config_json.password
   - KubernetesSecret:spec.ssh_auth.ssh_private_key
-  - KubernetesZalandoPostgresOperator:spec.backup_config.r2_config.secret_access_key
-  - OciApiGateway:spec.deployment.request_policies.authentication.token_auth_scheme
-  - OciApiGateway:spec.deployment.request_policies.authentication.token_header
-  - OciApiGateway:spec.deployment.request_policies.authentication.token_query_param
-  - OciApplicationLoadBalancer:spec.certificates.passphrase
-  - OciApplicationLoadBalancer:spec.certificates.private_key
-  - OciAutonomousDatabase:spec.admin_password
-  - OciContainerInstance:spec.image_pull_secrets.password
-  - OciDbSystem:spec.db_home.database.admin_password
-  - OciKmsVault:spec.external_key_manager_metadata.oauth_metadata.client_app_secret
-  - OciMysqlDbSystem:spec.admin_password
-  - OciPostgresqlDbSystem:spec.credentials.password_details.password
   - OciVaultSecret:spec.secret_generation_context.secret_template
   - OciVaultSecret:spec.secret_metadata
   - OciVaultSecret:spec.secret_rules.secret_version_expiry_interval
-  - OpenStackApplicationCredential:spec.secret
-  - ScalewayMongodbInstance:spec.admin_password
-  - ScalewayMongodbInstance:spec.users.password
-  - ScalewayRdbInstance:spec.admin_password
-  - ScalewayRdbInstance:spec.users.password
-  - ScalewayRedisCluster:spec.password
+  # (FK) foreign-key alternative pending product decision
+  - AzureVirtualMachine:spec.admin_password

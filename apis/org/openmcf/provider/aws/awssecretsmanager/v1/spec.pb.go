@@ -8,6 +8,7 @@ package awssecretsmanagerv1
 
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
+	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -89,11 +90,11 @@ var File_org_openmcf_provider_aws_awssecretsmanager_v1_spec_proto protoreflect.F
 
 const file_org_openmcf_provider_aws_awssecretsmanager_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"8org/openmcf/provider/aws/awssecretsmanager/v1/spec.proto\x12-org.openmcf.provider.aws.awssecretsmanager.v1\x1a\x1bbuf/validate/validate.proto\"m\n" +
+	"8org/openmcf/provider/aws/awssecretsmanager/v1/spec.proto\x12-org.openmcf.provider.aws.awssecretsmanager.v1\x1a\x1bbuf/validate/validate.proto\x1a(org/openmcf/shared/options/options.proto\"\xb2\x01\n" +
 	"\x15AwsSecretsManagerSpec\x12\x1f\n" +
-	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x123\n" +
-	"\fsecret_names\x18\x02 \x03(\tB\x10\xbaH\r\x92\x01\n" +
-	"\b\x01\x18\x01\"\x04r\x02\x10\x01R\vsecretNamesB\xfe\x02\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12x\n" +
+	"\fsecret_names\x18\x02 \x03(\tBU\xbaH\r\x92\x01\n" +
+	"\b\x01\x18\x01\"\x04r\x02\x10\x01\xaa\xa6\x1dANames of secrets to create in Secrets Manager, not secret values.R\vsecretNamesB\xfe\x02\n" +
 	"1com.org.openmcf.provider.aws.awssecretsmanager.v1B\tSpecProtoP\x01Zcgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awssecretsmanager/v1;awssecretsmanagerv1\xa2\x02\x05OOPAA\xaa\x02-Org.Openmcf.Provider.Aws.Awssecretsmanager.V1\xca\x02-Org\\Openmcf\\Provider\\Aws\\Awssecretsmanager\\V1\xe2\x029Org\\Openmcf\\Provider\\Aws\\Awssecretsmanager\\V1\\GPBMetadata\xea\x022Org::Openmcf::Provider::Aws::Awssecretsmanager::V1b\x06proto3"
 
 var (

@@ -4,6 +4,7 @@ package org.openmcf.provider.aws.awscognitouserpool.v1;
 
 import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
 
 // AwsCognitoUserPoolSpec defines the desired configuration for an AWS Cognito User Pool
 // with bundled app clients and an optional hosted UI domain.
@@ -392,6 +393,7 @@ message AwsCognitoUserPoolLambdaConfig {
 
   // Invoked before token generation to add, remove, or modify claims.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef pre_token_generation = 5 [
+    (org.openmcf.shared.options.sensitive_exempt_reason) = "Foreign-key reference to an AwsLambda trigger function (heuristic matched the word token), not a token value.",
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsLambda,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.function_arn"
   ];

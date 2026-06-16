@@ -3,6 +3,7 @@ syntax = "proto3";
 package org.openmcf.provider.auth0.auth0eventstream.v1;
 
 import "buf/validate/validate.proto";
+import "org/openmcf/shared/options/options.proto";
 
 // Auth0EventStreamSpec defines the configuration for an Auth0 Event Stream.
 // Event Streams enable real-time delivery of Auth0 events to external systems,
@@ -181,7 +182,7 @@ message Auth0WebhookAuthorization {
   // Required when method is "basic".
   // This value is stored securely and never returned by the API.
   // Ignored when method is "bearer".
-  string password = 3;
+  string password = 3 [(org.openmcf.shared.options.sensitive) = true];
 
   // token is the bearer token for token-based authentication.
   // Required when method is "bearer".
@@ -194,5 +195,5 @@ message Auth0WebhookAuthorization {
   //
   // The same token must be configured on your webhook server to validate
   // incoming requests via the Authorization: Bearer <token> header.
-  string token = 4;
+  string token = 4 [(org.openmcf.shared.options.sensitive) = true];
 }

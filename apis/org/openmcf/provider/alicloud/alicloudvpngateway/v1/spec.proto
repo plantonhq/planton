@@ -192,7 +192,10 @@ message AliCloudVpnConnection {
 message AliCloudIkeConfig {
   // Pre-shared key (PSK) for IKE authentication. 1-100 characters.
   // If omitted, the provider auto-generates a random PSK.
-  string psk = 1 [(buf.validate.field).string.max_len = 100];
+  string psk = 1 [
+    (buf.validate.field).string.max_len = 100,
+    (org.openmcf.shared.options.sensitive) = true
+  ];
 
   // IKE protocol version. IKEv2 is recommended for better performance and
   // security. Default: "ikev2"

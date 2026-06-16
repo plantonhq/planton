@@ -4,6 +4,7 @@ package org.openmcf.provider.oci.ocimysqldbsystem.v1;
 
 import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
 
 // OciMysqlDbSystemSpec defines the specification for an Oracle Cloud
 // Infrastructure MySQL HeatWave Database System -- a fully managed MySQL
@@ -73,7 +74,7 @@ message OciMysqlDbSystemSpec {
   // Administrative password for the database. Must be 8-32 characters and
   // contain at least one numeric, one lowercase, one uppercase, and one
   // special character. Changing this forces recreation.
-  string admin_password = 7;
+  string admin_password = 7 [(org.openmcf.shared.options.sensitive) = true];
 
   // MySQL version identifier (e.g. "8.0.36", "9.1.0").
   // When omitted, the latest available version is used.

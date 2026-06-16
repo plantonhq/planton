@@ -190,7 +190,7 @@ message AliCloudRdsInstanceSpec {
 
   // KMS key ID for disk encryption. When set, the instance's storage is
   // encrypted using this customer-managed key.
-  string encryption_key = 20;
+  string encryption_key = 20 [(org.openmcf.shared.options.sensitive_exempt_reason) = "Customer-managed KMS key identifier (a reference), not secret key material."];
 
   // Auto-renewal for Prepaid instances. Ignored for Postpaid instances.
   optional bool auto_renew = 21;

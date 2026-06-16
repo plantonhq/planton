@@ -38,7 +38,7 @@ message AwsRedshiftClusterSpec {
 
   // master_password is the admin password (8-64 chars, at least one uppercase, one lowercase, one digit).
   // Mutually exclusive with manage_master_password.
-  string master_password = 6;
+  string master_password = 6 [(org.openmcf.shared.options.sensitive) = true];
 
   // manage_master_password delegates password lifecycle to AWS Secrets Manager.
   // When true, AWS generates, rotates, and stores the password automatically.

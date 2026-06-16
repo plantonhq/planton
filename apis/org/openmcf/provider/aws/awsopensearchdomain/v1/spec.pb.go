@@ -895,14 +895,14 @@ const file_org_openmcf_provider_aws_awsopensearchdomain_v1_spec_proto_rawDesc = 
 	"\x1fcustom_endpoint_certificate_arn\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\x88\xd4a\xc9\x01\x92\xd4a\x1estatus.outputs.certificate_arnR\x1ccustomEndpointCertificateArn:\xdc\x02\xbaH\xd8\x02\x1a\x9b\x01\n" +
 	" custom_endpoint_requires_enabled\x12;custom_endpoint requires custom_endpoint_enabled to be true\x1a:this.custom_endpoint == '' || this.custom_endpoint_enabled\x1a\xb7\x01\n" +
 	"\x1ccert_requires_custom_enabled\x12Kcustom_endpoint_certificate_arn requires custom_endpoint_enabled to be true\x1aJ!has(this.custom_endpoint_certificate_arn) || this.custom_endpoint_enabledB\x10\n" +
-	"\x0e_enforce_https\"\xe1\n" +
+	"\x0e_enforce_https\"\xe7\n" +
 	"\n" +
 	"*AwsOpenSearchDomainAdvancedSecurityOptions\x12\x18\n" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x12C\n" +
 	"\x1einternal_user_database_enabled\x18\x02 \x01(\bR\x1binternalUserDatabaseEnabled\x12|\n" +
 	"\x0fmaster_user_arn\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB \x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\rmasterUserArn\x12(\n" +
-	"\x10master_user_name\x18\x04 \x01(\tR\x0emasterUserName\x12d\n" +
-	"\x14master_user_password\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x12masterUserPassword:\xc5\a\xbaH\xc1\a\x1a\xa1\x01\n" +
+	"\x10master_user_name\x18\x04 \x01(\tR\x0emasterUserName\x12j\n" +
+	"\x14master_user_password\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x04\xa0\xa6\x1d\x01R\x12masterUserPassword:\xc5\a\xbaH\xc1\a\x1a\xa1\x01\n" +
 	"\x19internal_db_requires_fgac\x12Ninternal_user_database_enabled requires advanced security (enabled) to be true\x1a4!this.internal_user_database_enabled || this.enabled\x1a\xf0\x01\n" +
 	"\x1cmaster_user_mutual_exclusion\x12\x92\x01master_user_arn and master_user_name/master_user_password are mutually exclusive; use IAM-based OR internal user database authentication, not both\x1a;!(has(this.master_user_arn) && this.master_user_name != '')\x1a\xfc\x01\n" +
 	"!master_user_required_when_enabled\x12\x8b\x01when advanced security is enabled, provide either master_user_arn (IAM) or master_user_name + master_user_password (internal user database)\x1aI!this.enabled || has(this.master_user_arn) || this.master_user_name != ''\x1a\x96\x01\n" +

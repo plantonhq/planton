@@ -574,15 +574,16 @@ var File_org_openmcf_provider_azure_azuremysqlflexibleserver_v1_spec_proto proto
 
 const file_org_openmcf_provider_azure_azuremysqlflexibleserver_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Aorg/openmcf/provider/azure/azuremysqlflexibleserver/v1/spec.proto\x126org.openmcf.provider.azure.azuremysqlflexibleserver.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xf4\r\n" +
+	"Aorg/openmcf/provider/azure/azuremysqlflexibleserver/v1/spec.proto\x126org.openmcf.provider.azure.azuremysqlflexibleserver.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xf8\r\n" +
 	"\x1cAzureMysqlFlexibleServerSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12\x8c\x01\n" +
 	"\x0eresource_group\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB1\xbaH\x03\xc8\x01\x01\x88\xd4a\x90\x03\x92\xd4a\"status.outputs.resource_group_nameR\rresourceGroup\x12\xd1\x01\n" +
 	"\x04name\x18\x03 \x01(\tB\xbc\x01\xbaH\xb8\x01\xba\x01\xab\x01\n" +
 	"\x12server_name_format\x12gServer name must start with a letter or number and contain only lowercase letters, numbers, and hyphens\x1a,this.matches('^[a-z0-9][a-z0-9-]*[a-z0-9]$')\xc8\x01\x01r\x04\x10\x03\x18?R\x04name\x12=\n" +
-	"\x13administrator_login\x18\x04 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x01\x18 R\x12administratorLogin\x12q\n" +
-	"\x16administrator_password\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x06\xbaH\x03\xc8\x01\x01R\x15administratorPassword\x12\x8a\x01\n" +
+	"\x13administrator_login\x18\x04 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x01\x18 R\x12administratorLogin\x12u\n" +
+	"\x16administrator_password\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\n" +
+	"\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01R\x15administratorPassword\x12\x8a\x01\n" +
 	"\aversion\x18\x06 \x01(\tBk\xbaH^\xba\x01[\n" +
 	"\rversion_valid\x12(version must be one of: 5.7, 8.0.21, 8.4\x1a this in ['5.7', '8.0.21', '8.4']\x8a\xa6\x1d\x068.0.21H\x00R\aversion\x88\x01\x01\x12%\n" +
 	"\bsku_name\x18\a \x01(\tB\n" +

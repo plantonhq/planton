@@ -248,7 +248,7 @@ var File_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_spec_proto p
 
 const file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Eorg/openmcf/provider/alicloud/alicloudcontainerregistry/v1/spec.proto\x12:org.openmcf.provider.alicloud.alicloudcontainerregistry.v1\x1a\x1bbuf/validate/validate.proto\x1a(org/openmcf/shared/options/options.proto\"\xd5\x05\n" +
+	"Eorg/openmcf/provider/alicloud/alicloudcontainerregistry/v1/spec.proto\x12:org.openmcf.provider.alicloud.alicloudcontainerregistry.v1\x1a\x1bbuf/validate/validate.proto\x1a(org/openmcf/shared/options/options.proto\"\xdb\x05\n" +
 	"\x1dAliCloudContainerRegistrySpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12/\n" +
@@ -258,8 +258,8 @@ const file_org_openmcf_provider_alicloud_alicloudcontainerregistry_v1_spec_proto
 	"\x13instance_type_valid\x127instance_type must be one of: Basic, Standard, Advanced\x1a)this in ['Basic', 'Standard', 'Advanced']\xc8\x01\x01R\finstanceType\x12\xc2\x01\n" +
 	"\fpayment_type\x18\x04 \x01(\tB\x99\x01\xbaH\x85\x01\xba\x01\x81\x01\n" +
 	"\x12payment_type_valid\x125payment_type must be one of: Subscription, PayAsYouGo\x1a4this == '' || this in ['Subscription', 'PayAsYouGo']\x8a\xa6\x1d\fSubscriptionH\x00R\vpaymentType\x88\x01\x01\x12\x16\n" +
-	"\x06period\x18\x05 \x01(\x05R\x06period\x12\x1a\n" +
-	"\bpassword\x18\x06 \x01(\tR\bpassword\x12*\n" +
+	"\x06period\x18\x05 \x01(\x05R\x06period\x12 \n" +
+	"\bpassword\x18\x06 \x01(\tB\x04\xa0\xa6\x1d\x01R\bpassword\x12*\n" +
 	"\x11resource_group_id\x18\a \x01(\tR\x0fresourceGroupId\x12~\n" +
 	"\n" +
 	"namespaces\x18\b \x03(\v2^.org.openmcf.provider.alicloud.alicloudcontainerregistry.v1.AliCloudContainerRegistryNamespaceR\n" +

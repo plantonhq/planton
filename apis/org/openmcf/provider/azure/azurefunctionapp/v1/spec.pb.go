@@ -1636,7 +1636,7 @@ var File_org_openmcf_provider_azure_azurefunctionapp_v1_spec_proto protoreflect.
 
 const file_org_openmcf_provider_azure_azurefunctionapp_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"9org/openmcf/provider/azure/azurefunctionapp/v1/spec.proto\x12.org.openmcf.provider.azure.azurefunctionapp.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x82\x18\n" +
+	"9org/openmcf/provider/azure/azurefunctionapp/v1/spec.proto\x12.org.openmcf.provider.azure.azurefunctionapp.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xae\x19\n" +
 	"\x14AzureFunctionAppSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12\x8c\x01\n" +
@@ -1644,16 +1644,16 @@ const file_org_openmcf_provider_azure_azurefunctionapp_v1_spec_proto_rawDesc = "
 	"\x04name\x18\x03 \x01(\tB\xda\x01\xbaH\xd6\x01\xba\x01\xc9\x01\n" +
 	"\x18function_app_name_format\x12qname must contain only alphanumeric characters and hyphens, and must start and end with an alphanumeric character\x1a:this.matches('^[a-zA-Z0-9][a-zA-Z0-9-]{0,58}[a-zA-Z0-9]$')\xc8\x01\x01r\x04\x10\x02\x18<R\x04name\x12\x81\x01\n" +
 	"\x0fservice_plan_id\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB%\xbaH\x03\xc8\x01\x01\x88\xd4a\xba\x03\x92\xd4a\x16status.outputs.plan_idR\rservicePlanId\x12\x98\x01\n" +
-	"\x14storage_account_name\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB2\xbaH\x03\xc8\x01\x01\x88\xd4a\x99\x03\x92\xd4a#status.outputs.storage_account_nameR\x12storageAccountName\x12o\n" +
-	"\x1astorage_account_access_key\x18\x06 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x17storageAccountAccessKey\x12Q\n" +
+	"\x14storage_account_name\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB2\xbaH\x03\xc8\x01\x01\x88\xd4a\x99\x03\x92\xd4a#status.outputs.storage_account_nameR\x12storageAccountName\x12u\n" +
+	"\x1astorage_account_access_key\x18\x06 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x04\xa0\xa6\x1d\x01R\x17storageAccountAccessKey\x12Q\n" +
 	"\x1dstorage_uses_managed_identity\x18\a \x01(\bB\t\x8a\xa6\x1d\x05falseH\x00R\x1astorageUsesManagedIdentity\x88\x01\x01\x12K\n" +
 	"\x1bfunctions_extension_version\x18\b \x01(\tB\x06\x8a\xa6\x1d\x02~4H\x01R\x19functionsExtensionVersion\x88\x01\x01\x12s\n" +
 	"\vsite_config\x18\t \x01(\v2J.org.openmcf.provider.azure.azurefunctionapp.v1.AzureFunctionAppSiteConfigB\x06\xbaH\x03\xc8\x01\x01R\n" +
 	"siteConfig\x12x\n" +
 	"\fapp_settings\x18\n" +
 	" \x03(\v2U.org.openmcf.provider.azure.azurefunctionapp.v1.AzureFunctionAppSpec.AppSettingsEntryR\vappSettings\x12\x7f\n" +
-	"\x12connection_strings\x18\v \x03(\v2P.org.openmcf.provider.azure.azurefunctionapp.v1.AzureFunctionAppConnectionStringR\x11connectionStrings\x12\xb2\x01\n" +
-	"&application_insights_connection_string\x18\f \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xc3\x03\x92\xd4a status.outputs.connection_stringR#applicationInsightsConnectionString\x12,\n" +
+	"\x12connection_strings\x18\v \x03(\v2P.org.openmcf.provider.azure.azurefunctionapp.v1.AzureFunctionAppConnectionStringR\x11connectionStrings\x12\xd8\x02\n" +
+	"&application_insights_connection_string\x18\f \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\xce\x01\xaa\xa6\x1d\xa0\x01Foreign-key reference to an AzureApplicationInsights output (the connection string is sourced from the referenced resource, not a user-supplied secret literal).\x88\xd4a\xc3\x03\x92\xd4a status.outputs.connection_stringR#applicationInsightsConnectionString\x12,\n" +
 	"\n" +
 	"https_only\x18\r \x01(\bB\b\x8a\xa6\x1d\x04trueH\x02R\thttpsOnly\x88\x01\x01\x12P\n" +
 	"\x1dpublic_network_access_enabled\x18\x0e \x01(\bB\b\x8a\xa6\x1d\x04trueH\x03R\x1apublicNetworkAccessEnabled\x88\x01\x01\x12E\n" +
@@ -1751,7 +1751,7 @@ const file_org_openmcf_provider_azure_azurefunctionapp_v1_spec_proto_rawDesc = "
 	"\x06docker\x18\a \x01(\v2L.org.openmcf.provider.azure.azurefunctionapp.v1.AzureFunctionAppDockerConfigR\x06docker\x121\n" +
 	"\x12use_custom_runtime\x18\b \x01(\bH\x01R\x10useCustomRuntime\x88\x01\x01B\x1e\n" +
 	"\x1c_use_dotnet_isolated_runtimeB\x15\n" +
-	"\x13_use_custom_runtime\"\xaf\x02\n" +
+	"\x13_use_custom_runtime\"\xb5\x02\n" +
 	"\x1cAzureFunctionAppDockerConfig\x12-\n" +
 	"\fregistry_url\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\vregistryUrl\x12)\n" +
@@ -1760,8 +1760,8 @@ const file_org_openmcf_provider_azure_azurefunctionapp_v1_spec_proto_rawDesc = "
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\timageName\x12'\n" +
 	"\timage_tag\x18\x03 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\bimageTag\x12+\n" +
-	"\x11registry_username\x18\x04 \x01(\tR\x10registryUsername\x12_\n" +
-	"\x11registry_password\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x10registryPassword\"\xea\x02\n" +
+	"\x11registry_username\x18\x04 \x01(\tR\x10registryUsername\x12e\n" +
+	"\x11registry_password\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x04\xa0\xa6\x1d\x01R\x10registryPassword\"\xea\x02\n" +
 	"\x18AzureFunctionAppIdentity\x12\xd1\x01\n" +
 	"\x04type\x18\x01 \x01(\tB\xbc\x01\xbaH\xb8\x01\xba\x01\xb1\x01\n" +
 	"\x13identity_type_valid\x12Otype must be 'SystemAssigned', 'UserAssigned', or 'SystemAssigned,UserAssigned'\x1aIthis in ['SystemAssigned', 'UserAssigned', 'SystemAssigned,UserAssigned']\xc8\x01\x01R\x04type\x12z\n" +

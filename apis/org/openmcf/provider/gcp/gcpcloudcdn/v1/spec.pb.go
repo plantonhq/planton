@@ -9,6 +9,7 @@ package gcpcloudcdnv1
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
+	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -1465,7 +1466,7 @@ var File_org_openmcf_provider_gcp_gcpcloudcdn_v1_spec_proto protoreflect.FileDes
 
 const file_org_openmcf_provider_gcp_gcpcloudcdn_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"2org/openmcf/provider/gcp/gcpcloudcdn/v1/spec.proto\x12'org.openmcf.provider.gcp.gcpcloudcdn.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xcd\a\n" +
+	"2org/openmcf/provider/gcp/gcpcloudcdn/v1/spec.proto\x12'org.openmcf.provider.gcp.gcpcloudcdn.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xcd\a\n" +
 	"\x0fGcpCloudCdnSpec\x12\x82\x01\n" +
 	"\x0egcp_project_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x03\xc8\x01\x01\x88\xd4a\xe1\x04\x92\xd4a\x19status.outputs.project_idR\fgcpProjectId\x12]\n" +
 	"\abackend\x18\x02 \x01(\v2;.org.openmcf.provider.gcp.gcpcloudcdn.v1.GcpCloudCdnBackendB\x06\xbaH\x03\xc8\x01\x01R\abackend\x12`\n" +
@@ -1576,10 +1577,11 @@ const file_org_openmcf_provider_gcp_gcpcloudcdn_v1_spec_proto_rawDesc = "" +
 	"\fself_managed\x18\x02 \x01(\v2E.org.openmcf.provider.gcp.gcpcloudcdn.v1.SelfManagedCertificateConfigH\x00R\vselfManagedB\x12\n" +
 	"\x10certificate_type\"s\n" +
 	"\x1eGoogleManagedCertificateConfig\x12Q\n" +
-	"\adomains\x18\x01 \x03(\tB7\xbaH4\xc8\x01\x01\x92\x01.\b\x01\"*r(2&^([a-z0-9-]+\\.)*[a-z0-9-]+\\.[a-z]{2,}$R\adomains\"\x7f\n" +
+	"\adomains\x18\x01 \x03(\tB7\xbaH4\xc8\x01\x01\x92\x01.\b\x01\"*r(2&^([a-z0-9-]+\\.)*[a-z0-9-]+\\.[a-z]{2,}$R\adomains\"\x83\x01\n" +
 	"\x1cSelfManagedCertificateConfig\x12/\n" +
-	"\x0fcertificate_pem\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x0ecertificatePem\x12.\n" +
-	"\x0fprivate_key_pem\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\rprivateKeyPem\"^\n" +
+	"\x0fcertificate_pem\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x0ecertificatePem\x122\n" +
+	"\x0fprivate_key_pem\x18\x02 \x01(\tB\n" +
+	"\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01R\rprivateKeyPem\"^\n" +
 	"\x10CloudArmorConfig\x12\x18\n" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x120\n" +
 	"\x14security_policy_name\x18\x02 \x01(\tR\x12securityPolicyName*j\n" +

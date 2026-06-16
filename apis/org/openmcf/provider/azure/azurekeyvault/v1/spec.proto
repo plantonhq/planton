@@ -60,6 +60,7 @@ message AzureKeyVaultSpec {
   // The actual secret values should be set separately after vault creation using Azure SDK,
   // Azure CLI, or the Key Vault API (never hardcoded in IaC).
   repeated string secret_names = 8 [
+    (org.openmcf.shared.options.sensitive_exempt_reason) = "Names of secrets to create in the Key Vault, not secret values (the values are set separately after creation).",
     (buf.validate.field).repeated.min_items = 0,
     (buf.validate.field).repeated.max_items = 100
   ];

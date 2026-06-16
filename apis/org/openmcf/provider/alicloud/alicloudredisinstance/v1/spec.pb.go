@@ -396,15 +396,15 @@ var File_org_openmcf_provider_alicloud_alicloudredisinstance_v1_spec_proto proto
 
 const file_org_openmcf_provider_alicloud_alicloudredisinstance_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Aorg/openmcf/provider/alicloud/alicloudredisinstance/v1/spec.proto\x126org.openmcf.provider.alicloud.alicloudredisinstance.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xa4\x17\n" +
+	"Aorg/openmcf/provider/alicloud/alicloudredisinstance/v1/spec.proto\x126org.openmcf.provider.alicloud.alicloudredisinstance.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xf9\x17\n" +
 	"\x19AliCloudRedisInstanceSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12{\n" +
 	"\n" +
 	"vswitch_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x03\xc8\x01\x01\x88\xd4a\xcd\x17\x92\xd4a\x19status.outputs.vswitch_idR\tvswitchId\x121\n" +
 	"\x0einstance_class\x18\x03 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\rinstanceClass\x12(\n" +
-	"\bpassword\x18\x04 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\b\x18 R\bpassword\x12\xc5\x01\n" +
+	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\rinstanceClass\x12,\n" +
+	"\bpassword\x18\x04 \x01(\tB\x10\xbaH\t\xc8\x01\x01r\x04\x10\b\x18 \xa0\xa6\x1d\x01R\bpassword\x12\xc5\x01\n" +
 	"\x0eengine_version\x18\x05 \x01(\tB\x98\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
 	"\x14engine_version_valid\x126engine_version must be one of: 2.8, 4.0, 5.0, 6.0, 7.0\x1a9this == '' || this in ['2.8', '4.0', '5.0', '6.0', '7.0']\x8a\xa6\x1d\x037.0H\x00R\rengineVersion\x88\x01\x01\x12\xab\x01\n" +
 	"\rinstance_type\x18\x06 \x01(\tB\x80\x01\xbaHt\xba\x01q\n" +
@@ -428,8 +428,8 @@ const file_org_openmcf_provider_alicloud_alicloudredisinstance_v1_spec_proto_raw
 	"\x10ssl_enable_valid\x122ssl_enable must be one of: Enable, Disable, Update\x1a5this == '' || this in ['Enable', 'Disable', 'Update']H\x05R\tsslEnable\x88\x01\x01\x12y\n" +
 	"\n" +
 	"tde_status\x18\x12 \x01(\tBU\xbaHR\xba\x01O\n" +
-	"\x10tde_status_valid\x12\x1atde_status must be Enabled\x1a\x1fthis == '' || this == 'Enabled'H\x06R\ttdeStatus\x88\x01\x01\x12%\n" +
-	"\x0eencryption_key\x18\x13 \x01(\tR\rencryptionKey\x12\xa0\x01\n" +
+	"\x10tde_status_valid\x12\x1atde_status must be Enabled\x1a\x1fthis == '' || this == 'Enabled'H\x06R\ttdeStatus\x88\x01\x01\x12v\n" +
+	"\x0eencryption_key\x18\x13 \x01(\tBO\xaa\xa6\x1dKCustomer-managed KMS key identifier (a reference), not secret key material.R\rencryptionKey\x12\xa0\x01\n" +
 	"\rvpc_auth_mode\x18\x14 \x01(\tBw\xbaHl\xba\x01i\n" +
 	"\x13vpc_auth_mode_valid\x12)vpc_auth_mode must be one of: Open, Close\x1a'this == '' || this in ['Open', 'Close']\x8a\xa6\x1d\x04OpenH\aR\vvpcAuthMode\x88\x01\x01\x12u\n" +
 	"\x06config\x18\x15 \x03(\v2].org.openmcf.provider.alicloud.alicloudredisinstance.v1.AliCloudRedisInstanceSpec.ConfigEntryR\x06config\x12C\n" +

@@ -24,6 +24,7 @@ Each changelog entry should include:
 
 ## Recent Changes
 
+- [2026-06-16: Secure-by-default secret-field annotation sweep](.changelog/2026-06-16-secure-by-default-annotation-sweep.md) - Annotated 62 real secret fields `sensitive` (secret-by-default, fail-closed against plaintext) and exempted 19 heuristic false positives with an auditable `sensitive_exempt_reason`, raising measured secret-coverage from 3.9% to 81.7% across all providers; 20 real secrets deliberately deferred and tracked in the coverage baseline
 - [2025-10-17: ExternalDNS Cloudflare Provider Support](.changelog/2025-10-17-external-dns-cloudflare-support.md) - Added comprehensive Cloudflare provider support to ExternalDNS Kubernetes addon, enabling automated DNS record management with Cloudflare proxy support, API rate limiting optimization, and multi-domain deployment capabilities
 - [2025-10-16: Temporal Search Attributes Refactor](.changelog/2025-10-16-temporal-search-attributes-refactor.md) - Refactored Temporal Kubernetes search attributes from enum to validated string using Temporal's official naming convention, eliminating programming language keyword conflicts and improving user experience
 - [2025-10-11: Percona PostgreSQL Operator Support](.changelog/2025-10-11-percona-postgresql-operator.md) - Added support for deploying and managing the Percona Distribution for PostgreSQL Operator on Kubernetes clusters with automated deployment, high availability, backup, and disaster recovery features

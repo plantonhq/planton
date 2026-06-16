@@ -4,6 +4,7 @@ package org.openmcf.provider.aws.awsrdsinstance.v1;
 
 import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
 
 // AwsRdsInstanceSpec defines the minimal configuration to create a single AWS RDS DB instance
 // (engines like postgres, mysql, mariadb, oracle, sqlserver). It focuses on essential 80/20 fields
@@ -56,7 +57,10 @@ message AwsRdsInstanceSpec {
 
   // Master user credentials. When using platform-managed secrets, a later rule will define validations.
   string username = 11 [(buf.validate.field).string.min_len = 1];
-  string password = 12 [(buf.validate.field).string.min_len = 1];
+  string password = 12 [
+    (buf.validate.field).string.min_len = 1,
+    (org.openmcf.shared.options.sensitive) = true
+  ];
 
   // Database port.
   int32 port = 13 [

@@ -4,6 +4,7 @@ package org.openmcf.provider.oci.ociautonomousdatabase.v1;
 
 import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
 
 // OciAutonomousDatabaseSpec defines the specification for an Oracle Cloud
 // Infrastructure Autonomous Database.
@@ -109,7 +110,7 @@ message OciAutonomousDatabaseSpec {
   // contain at least one uppercase, one lowercase, and one numeric character.
   // Cannot contain the word "admin" or the double-quote character.
   // Mutually exclusive with secret_id.
-  string admin_password = 16;
+  string admin_password = 16 [(org.openmcf.shared.options.sensitive) = true];
 
   // OCID of a Vault secret containing the administrator password.
   // Use this instead of admin_password for production environments where

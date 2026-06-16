@@ -4,6 +4,7 @@ package org.openmcf.provider.aws.awskinesisfirehose.v1;
 
 import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
 
 // AwsKinesisFirehoseSpec defines the desired configuration for an Amazon Kinesis
 // Data Firehose delivery stream.
@@ -861,7 +862,7 @@ message AwsKinesisFirehoseHttpEndpointDestination {
   // Access key for endpoint authentication. The value is sent in the
   // X-Amz-Firehose-Access-Key header. Sensitive -- treated as a secret.
   // Maximum 4096 characters.
-  string access_key = 3;
+  string access_key = 3 [(org.openmcf.shared.options.sensitive) = true];
 
   // IAM role ARN granting Firehose permission to deliver to the endpoint
   // and write to the S3 backup bucket.
@@ -1026,7 +1027,7 @@ message AwsKinesisFirehoseRedshiftDestination {
   // Redshift database password for authentication. Sensitive.
   // Consider using AWS Secrets Manager for production workloads (not
   // supported in v1 -- use direct credentials).
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef password = 7;
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef password = 7 [(org.openmcf.shared.options.sensitive) = true];
 
   // ---------------------------------------------------------------------------
   // S3 intermediate staging (required)

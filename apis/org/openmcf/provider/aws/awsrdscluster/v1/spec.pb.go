@@ -498,7 +498,7 @@ var File_org_openmcf_provider_aws_awsrdscluster_v1_spec_proto protoreflect.FileD
 
 const file_org_openmcf_provider_aws_awsrdscluster_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"4org/openmcf/provider/aws/awsrdscluster/v1/spec.proto\x12)org.openmcf.provider.aws.awsrdscluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xa8\x1e\n" +
+	"4org/openmcf/provider/aws/awsrdscluster/v1/spec.proto\x12)org.openmcf.provider.aws.awsrdscluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xae\x1e\n" +
 	"\x11AwsRdsClusterSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x81\x01\n" +
 	"\n" +
@@ -512,8 +512,8 @@ const file_org_openmcf_provider_aws_awsrdscluster_v1_spec_proto_rawDesc = "" +
 	"\x1dmaster_user_secret_kms_key_id\x18\t \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\x18masterUserSecretKmsKeyId\x12+\n" +
 	"\busername\x18\n" +
 	" \x01(\tB\n" +
-	"\x8a\xa6\x1d\x06masterH\x00R\busername\x88\x01\x01\x12\x1a\n" +
-	"\bpassword\x18\v \x01(\tR\bpassword\x12\x1f\n" +
+	"\x8a\xa6\x1d\x06masterH\x00R\busername\x88\x01\x01\x12 \n" +
+	"\bpassword\x18\v \x01(\tB\x04\xa0\xa6\x1d\x01R\bpassword\x12\x1f\n" +
 	"\x04port\x18\f \x01(\x05B\v\xbaH\b\x1a\x06\x18\xff\xff\x03(\x00R\x04port\x12\x1e\n" +
 	"\x06engine\x18\r \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06engine\x12-\n" +
 	"\x0eengine_version\x18\x0e \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\rengineVersion\x12+\n" +

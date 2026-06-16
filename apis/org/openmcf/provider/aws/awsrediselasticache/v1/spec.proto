@@ -155,7 +155,7 @@ message AwsRedisElasticacheSpec {
   // Redis AUTH token (password) for client authentication. Requires
   // `transit_encryption_enabled` to be true. 16–128 printable characters.
   // Mutually exclusive with `user_group_ids`.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef auth_token = 18;
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef auth_token = 18 [(org.openmcf.shared.options.sensitive) = true];
 
   // Redis ACL user group IDs for fine-grained access control. Each user group
   // defines users with specific command and key permissions. Mutually exclusive

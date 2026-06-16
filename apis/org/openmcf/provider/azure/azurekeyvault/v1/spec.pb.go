@@ -343,7 +343,7 @@ var File_org_openmcf_provider_azure_azurekeyvault_v1_spec_proto protoreflect.Fil
 
 const file_org_openmcf_provider_azure_azurekeyvault_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"6org/openmcf/provider/azure/azurekeyvault/v1/spec.proto\x12+org.openmcf.provider.azure.azurekeyvault.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x9f\x06\n" +
+	"6org/openmcf/provider/azure/azurekeyvault/v1/spec.proto\x12+org.openmcf.provider.azure.azurekeyvault.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x92\a\n" +
 	"\x11AzureKeyVaultSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12\x8c\x01\n" +
@@ -352,9 +352,8 @@ const file_org_openmcf_provider_azure_azurekeyvault_v1_spec_proto_rawDesc = "" +
 	"\x19enable_rbac_authorization\x18\x04 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x01R\x17enableRbacAuthorization\x88\x01\x01\x12E\n" +
 	"\x17enable_purge_protection\x18\x05 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x02R\x15enablePurgeProtection\x88\x01\x01\x12Q\n" +
 	"\x1asoft_delete_retention_days\x18\x06 \x01(\x05B\x0f\xbaH\x06\x1a\x04\x18Z(\a\x8a\xa6\x1d\x0290H\x03R\x17softDeleteRetentionDays\x88\x01\x01\x12m\n" +
-	"\fnetwork_acls\x18\a \x01(\v2E.org.openmcf.provider.azure.azurekeyvault.v1.AzureKeyVaultNetworkAclsH\x04R\vnetworkAcls\x88\x01\x01\x12-\n" +
-	"\fsecret_names\x18\b \x03(\tB\n" +
-	"\xbaH\a\x92\x01\x04\b\x00\x10dR\vsecretNamesB\x06\n" +
+	"\fnetwork_acls\x18\a \x01(\v2E.org.openmcf.provider.azure.azurekeyvault.v1.AzureKeyVaultNetworkAclsH\x04R\vnetworkAcls\x88\x01\x01\x12\x9f\x01\n" +
+	"\fsecret_names\x18\b \x03(\tB|\xbaH\a\x92\x01\x04\b\x00\x10d\xaa\xa6\x1dnNames of secrets to create in the Key Vault, not secret values (the values are set separately after creation).R\vsecretNamesB\x06\n" +
 	"\x04_skuB\x1c\n" +
 	"\x1a_enable_rbac_authorizationB\x1a\n" +
 	"\x18_enable_purge_protectionB\x1d\n" +

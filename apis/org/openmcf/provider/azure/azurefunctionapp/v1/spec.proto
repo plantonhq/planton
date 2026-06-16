@@ -135,7 +135,7 @@ message AzureFunctionAppSpec {
   // the key directly or use storage_uses_managed_identity instead.
   //
   // Conflicts with storage_uses_managed_identity.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef storage_account_access_key = 6;
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef storage_account_access_key = 6 [(org.openmcf.shared.options.sensitive) = true];
 
   // Use the Function App's managed identity to access the storage account
   // instead of an access key. This is the modern, credential-free approach.
@@ -191,6 +191,7 @@ message AzureFunctionAppSpec {
   //
   // Uses the connection_string format (not the legacy instrumentation_key).
   org.openmcf.shared.foreignkey.v1.StringValueOrRef application_insights_connection_string = 12 [
+    (org.openmcf.shared.options.sensitive_exempt_reason) = "Foreign-key reference to an AzureApplicationInsights output (the connection string is sourced from the referenced resource, not a user-supplied secret literal).",
     (org.openmcf.shared.foreignkey.v1.default_kind) = AzureApplicationInsights,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.connection_string"
   ];
@@ -646,7 +647,7 @@ message AzureFunctionAppDockerConfig {
   // This is a sensitive credential. Provide directly or via StringValueOrRef.
   //
   // Not needed when using managed identity for ACR authentication.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef registry_password = 5;
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef registry_password = 5 [(org.openmcf.shared.options.sensitive) = true];
 }
 
 // AzureFunctionAppIdentity configures managed identity for the Function App.

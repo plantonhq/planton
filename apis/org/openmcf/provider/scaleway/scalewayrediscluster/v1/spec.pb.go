@@ -350,7 +350,7 @@ var File_org_openmcf_provider_scaleway_scalewayrediscluster_v1_spec_proto protor
 
 const file_org_openmcf_provider_scaleway_scalewayrediscluster_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"@org/openmcf/provider/scaleway/scalewayrediscluster/v1/spec.proto\x125org.openmcf.provider.scaleway.scalewayrediscluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xd8\a\n" +
+	"@org/openmcf/provider/scaleway/scalewayrediscluster/v1/spec.proto\x125org.openmcf.provider.scaleway.scalewayrediscluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xdc\a\n" +
 	"\x18ScalewayRedisClusterSpec\x12\x1a\n" +
 	"\x04zone\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04zone\x12<\n" +
 	"\aversion\x18\x02 \x01(\tB\"\xbaH\x1f\xc8\x01\x01r\x1a2\x18^[0-9]+\\.[0-9]+\\.[0-9]+$R\aversion\x12#\n" +
@@ -359,9 +359,8 @@ const file_org_openmcf_provider_scaleway_scalewayrediscluster_v1_spec_proto_rawD
 	"\vtls_enabled\x18\x05 \x01(\bR\n" +
 	"tlsEnabled\x12'\n" +
 	"\tuser_name\x18\x06 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x18?R\buserName\x12&\n" +
-	"\bpassword\x18\a \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\bR\bpassword\x12h\n" +
+	"\xbaH\a\xc8\x01\x01r\x02\x18?R\buserName\x12*\n" +
+	"\bpassword\x18\a \x01(\tB\x0e\xbaH\a\xc8\x01\x01r\x02\x10\b\xa0\xa6\x1d\x01R\bpassword\x12h\n" +
 	"\tacl_rules\x18\b \x03(\v2K.org.openmcf.provider.scaleway.scalewayrediscluster.v1.ScalewayRedisAclRuleR\baclRules\x12\x8c\x01\n" +
 	"\x12private_network_id\x18\t \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB*\x88\xd4a\xf1\x15\x92\xd4a!status.outputs.private_network_idR\x10privateNetworkId\x12y\n" +
 	"\bsettings\x18\n" +

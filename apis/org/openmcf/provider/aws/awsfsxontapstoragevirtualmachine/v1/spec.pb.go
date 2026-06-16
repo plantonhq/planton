@@ -325,26 +325,26 @@ var File_org_openmcf_provider_aws_awsfsxontapstoragevirtualmachine_v1_spec_proto
 
 const file_org_openmcf_provider_aws_awsfsxontapstoragevirtualmachine_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Gorg/openmcf/provider/aws/awsfsxontapstoragevirtualmachine/v1/spec.proto\x12<org.openmcf.provider.aws.awsfsxontapstoragevirtualmachine.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x88\t\n" +
+	"Gorg/openmcf/provider/aws/awsfsxontapstoragevirtualmachine/v1/spec.proto\x12<org.openmcf.provider.aws.awsfsxontapstoragevirtualmachine.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x8e\t\n" +
 	"$AwsFsxOntapStorageVirtualMachineSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x86\x01\n" +
 	"\x0efile_system_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xa6\x02\x92\xd4a\x1dstatus.outputs.file_system_idR\ffileSystemId\x12\x1d\n" +
 	"\x04name\x18\x03 \x01(\tB\t\xbaH\x06r\x04\x10\x01\x18/R\x04name\x12J\n" +
-	"\x1aroot_volume_security_style\x18\x04 \x01(\tB\b\x8a\xa6\x1d\x04UNIXH\x00R\x17rootVolumeSecurityStyle\x88\x01\x01\x12,\n" +
-	"\x12svm_admin_password\x18\x05 \x01(\tR\x10svmAdminPassword\x12\xc0\x01\n" +
+	"\x1aroot_volume_security_style\x18\x04 \x01(\tB\b\x8a\xa6\x1d\x04UNIXH\x00R\x17rootVolumeSecurityStyle\x88\x01\x01\x122\n" +
+	"\x12svm_admin_password\x18\x05 \x01(\tB\x04\xa0\xa6\x1d\x01R\x10svmAdminPassword\x12\xc0\x01\n" +
 	"\x1eactive_directory_configuration\x18\x06 \x01(\v2z.org.openmcf.provider.aws.awsfsxontapstoragevirtualmachine.v1.AwsFsxOntapStorageVirtualMachineActiveDirectoryConfigurationR\x1cactiveDirectoryConfiguration:\xba\x04\xbaH\xb6\x04\x1a\xbc\x01\n" +
 	"\x14security_style_valid\x12=root_volume_security_style must be 'UNIX', 'NTFS', or 'MIXED'\x1aethis.root_volume_security_style == '' || this.root_volume_security_style in ['UNIX', 'NTFS', 'MIXED']\x1a\xbf\x01\n" +
 	"\x15admin_password_length\x128svm_admin_password must be 8-50 characters when provided\x1althis.svm_admin_password == '' || (size(this.svm_admin_password) >= 8 && size(this.svm_admin_password) <= 50)\x1a\xb2\x01\n" +
 	"\vname_format\x12jname must contain only alphanumeric characters and underscores (no hyphens, spaces, or special characters)\x1a7this.name == '' || this.name.matches('^[a-zA-Z0-9_]+$')B\x1d\n" +
-	"\x1b_root_volume_security_style\"\x84\x05\n" +
+	"\x1b_root_volume_security_style\"\x88\x05\n" +
 	"<AwsFsxOntapStorageVirtualMachineActiveDirectoryConfiguration\x12!\n" +
 	"\fnetbios_name\x18\x01 \x01(\tR\vnetbiosName\x12(\n" +
 	"\vdomain_name\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\n" +
 	"domainName\x12#\n" +
 	"\adns_ips\x18\x03 \x03(\tB\n" +
 	"\xbaH\a\x92\x01\x04\b\x01\x10\x03R\x06dnsIps\x12#\n" +
-	"\busername\x18\x04 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\busername\x12#\n" +
-	"\bpassword\x18\x05 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\bpassword\x12_\n" +
+	"\busername\x18\x04 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\busername\x12'\n" +
+	"\bpassword\x18\x05 \x01(\tB\v\xbaH\x04r\x02\x10\x01\xa0\xa6\x1d\x01R\bpassword\x12_\n" +
 	" file_system_administrators_group\x18\x06 \x01(\tB\x11\x8a\xa6\x1d\rDomain AdminsH\x00R\x1dfileSystemAdministratorsGroup\x88\x01\x01\x12S\n" +
 	"&organizational_unit_distinguished_name\x18\a \x01(\tR#organizationalUnitDistinguishedName:\xac\x01\xbaH\xa8\x01\x1a\xa5\x01\n" +
 	"\x13netbios_name_length\x122netbios_name must be 1-15 characters when provided\x1aZthis.netbios_name == '' || (size(this.netbios_name) >= 1 && size(this.netbios_name) <= 15)B#\n" +

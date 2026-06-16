@@ -1697,12 +1697,13 @@ const file_org_openmcf_provider_kubernetes_kubernetesharbor_v1_spec_proto_rawDes
 	"isExternal\x12\x84\x01\n" +
 	"\x11external_database\x18\x02 \x01(\v2W.org.openmcf.provider.kubernetes.kubernetesharbor.v1.KubernetesHarborExternalPostgresqlR\x10externalDatabase\x12\x81\x01\n" +
 	"\x10managed_database\x18\x03 \x01(\v2V.org.openmcf.provider.kubernetes.kubernetesharbor.v1.KubernetesHarborManagedPostgresqlR\x0fmanagedDatabase:\xa0\x01\xbaH\x9c\x01\x1a\x99\x01\n" +
-	"\x1fspec.database.external_required\x12DExternal database configuration is required when is_external is true\x1a0!this.is_external || has(this.external_database)\"\xbe\x04\n" +
+	"\x1fspec.database.external_required\x12DExternal database configuration is required when is_external is true\x1a0!this.is_external || has(this.external_database)\"\xc2\x04\n" +
 	"\"KubernetesHarborExternalPostgresql\x12\x1a\n" +
 	"\x04host\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04host\x12,\n" +
 	"\x04port\x18\x02 \x01(\x05B\x13\xbaH\b\x1a\x06\x18\xff\xff\x03 \x00\x8a\xa6\x1d\x045432H\x00R\x04port\x88\x01\x01\x12\"\n" +
-	"\busername\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\busername\x12\"\n" +
-	"\bpassword\x18\x04 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bpassword\x126\n" +
+	"\busername\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\busername\x12&\n" +
+	"\bpassword\x18\x04 \x01(\tB\n" +
+	"\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01R\bpassword\x126\n" +
 	"\rcore_database\x18\x05 \x01(\tB\f\x8a\xa6\x1d\bregistryH\x01R\fcoreDatabase\x88\x01\x01\x125\n" +
 	"\x0eclair_database\x18\x06 \x01(\tB\t\x8a\xa6\x1d\x05clairH\x02R\rclairDatabase\x88\x01\x01\x12L\n" +
 	"\x16notary_server_database\x18\a \x01(\tB\x11\x8a\xa6\x1d\rnotary_serverH\x03R\x14notaryServerDatabase\x88\x01\x01\x12L\n" +
@@ -1730,12 +1731,12 @@ const file_org_openmcf_provider_kubernetes_kubernetesharbor_v1_spec_proto_rawDes
 	"isExternal\x12y\n" +
 	"\x0eexternal_cache\x18\x02 \x01(\v2R.org.openmcf.provider.kubernetes.kubernetesharbor.v1.KubernetesHarborExternalRedisR\rexternalCache\x12v\n" +
 	"\rmanaged_cache\x18\x03 \x01(\v2Q.org.openmcf.provider.kubernetes.kubernetesharbor.v1.KubernetesHarborManagedRedisR\fmanagedCache:\x97\x01\xbaH\x93\x01\x1a\x90\x01\n" +
-	"\x1cspec.cache.external_required\x12AExternal cache configuration is required when is_external is true\x1a-!this.is_external || has(this.external_cache)\"\xec\x03\n" +
+	"\x1cspec.cache.external_required\x12AExternal cache configuration is required when is_external is true\x1a-!this.is_external || has(this.external_cache)\"\xf2\x03\n" +
 	"\x1dKubernetesHarborExternalRedis\x12\x1a\n" +
 	"\x04host\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04host\x12,\n" +
 	"\x04port\x18\x02 \x01(\x05B\x13\xbaH\b\x1a\x06\x18\xff\xff\x03 \x00\x8a\xa6\x1d\x046379H\x00R\x04port\x88\x01\x01\x12\x1a\n" +
-	"\busername\x18\x03 \x01(\tR\busername\x12\x1a\n" +
-	"\bpassword\x18\x04 \x01(\tR\bpassword\x121\n" +
+	"\busername\x18\x03 \x01(\tR\busername\x12 \n" +
+	"\bpassword\x18\x04 \x01(\tB\x04\xa0\xa6\x1d\x01R\bpassword\x121\n" +
 	"\x0edatabase_index\x18\x05 \x01(\x05B\x05\x8a\xa6\x1d\x010H\x01R\rdatabaseIndex\x88\x01\x01\x12!\n" +
 	"\fuse_sentinel\x18\x06 \x01(\bR\vuseSentinel\x12.\n" +
 	"\x13sentinel_master_set\x18\a \x01(\tR\x11sentinelMasterSet:\xa6\x01\xbaH\xa2\x01\x1a\x9f\x01\n" +
@@ -1768,37 +1769,41 @@ const file_org_openmcf_provider_kubernetes_kubernetesharbor_v1_spec_proto_rawDes
 	"\x19spec.storage.gcs_required\x126GCS configuration is required when storage type is gcs\x1a\x1fthis.type != 3 || has(this.gcs)\x1a|\n" +
 	"\x1bspec.storage.azure_required\x12:Azure configuration is required when storage type is azure\x1a!this.type != 4 || has(this.azure)\x1at\n" +
 	"\x19spec.storage.oss_required\x126OSS configuration is required when storage type is oss\x1a\x1fthis.type != 5 || has(this.oss)\x1a\x90\x01\n" +
-	" spec.storage.filesystem_required\x12DFilesystem configuration is required when storage type is filesystem\x1a&this.type != 1 || has(this.filesystem)\"\xce\x02\n" +
+	" spec.storage.filesystem_required\x12DFilesystem configuration is required when storage type is filesystem\x1a&this.type != 1 || has(this.filesystem)\"\xd2\x02\n" +
 	"\x19KubernetesHarborS3Storage\x12\x1e\n" +
 	"\x06bucket\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06bucket\x12\x1e\n" +
 	"\x06region\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06region\x12%\n" +
 	"\n" +
-	"access_key\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\taccessKey\x12%\n" +
+	"access_key\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\taccessKey\x12)\n" +
 	"\n" +
-	"secret_key\x18\x04 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\tsecretKey\x12'\n" +
+	"secret_key\x18\x04 \x01(\tB\n" +
+	"\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01R\tsecretKey\x12'\n" +
 	"\x0fregion_endpoint\x18\x05 \x01(\bR\x0eregionEndpoint\x12\x18\n" +
 	"\aencrypt\x18\x06 \x01(\bR\aencrypt\x12\x16\n" +
 	"\x06secure\x18\a \x01(\bR\x06secure\x12%\n" +
 	"\x0eroot_directory\x18\b \x01(\tR\rrootDirectory\x12!\n" +
-	"\fendpoint_url\x18\t \x01(\tR\vendpointUrl\"\xc6\x01\n" +
+	"\fendpoint_url\x18\t \x01(\tR\vendpointUrl\"\xca\x01\n" +
 	"\x1aKubernetesHarborGcsStorage\x12\x1e\n" +
-	"\x06bucket\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06bucket\x12!\n" +
-	"\bkey_data\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\akeyData\x12%\n" +
+	"\x06bucket\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06bucket\x12%\n" +
+	"\bkey_data\x18\x02 \x01(\tB\n" +
+	"\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01R\akeyData\x12%\n" +
 	"\x0eroot_directory\x18\x03 \x01(\tR\rrootDirectory\x12/\n" +
 	"\n" +
 	"chunk_size\x18\x04 \x01(\x05B\v\x8a\xa6\x1d\a5242880H\x00R\tchunkSize\x88\x01\x01B\r\n" +
-	"\v_chunk_size\"\xbf\x01\n" +
+	"\v_chunk_size\"\xc3\x01\n" +
 	"\x1cKubernetesHarborAzureStorage\x12)\n" +
-	"\faccount_name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\vaccountName\x12'\n" +
-	"\vaccount_key\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\n" +
+	"\faccount_name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\vaccountName\x12+\n" +
+	"\vaccount_key\x18\x02 \x01(\tB\n" +
+	"\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01R\n" +
 	"accountKey\x12$\n" +
 	"\tcontainer\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\tcontainer\x12%\n" +
-	"\x0eroot_directory\x18\x04 \x01(\tR\rrootDirectory\"\xff\x01\n" +
+	"\x0eroot_directory\x18\x04 \x01(\tR\rrootDirectory\"\x83\x02\n" +
 	"\x1aKubernetesHarborOssStorage\x12\x1e\n" +
 	"\x06bucket\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06bucket\x12\"\n" +
 	"\bendpoint\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bendpoint\x12*\n" +
-	"\raccess_key_id\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\vaccessKeyId\x122\n" +
-	"\x11access_key_secret\x18\x04 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x0faccessKeySecret\x12%\n" +
+	"\raccess_key_id\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\vaccessKeyId\x126\n" +
+	"\x11access_key_secret\x18\x04 \x01(\tB\n" +
+	"\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01R\x0faccessKeySecret\x12%\n" +
 	"\x0eroot_directory\x18\x05 \x01(\tR\rrootDirectory\x12\x16\n" +
 	"\x06secure\x18\x06 \x01(\bR\x06secure\"\xa5\x02\n" +
 	"!KubernetesHarborFilesystemStorage\x12\xda\x01\n" +

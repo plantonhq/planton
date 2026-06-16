@@ -76,7 +76,7 @@ message AliCloudContainerRegistrySpec {
   // Login password for the registry instance. Used for authenticating
   // docker login / image push and pull operations.
   // 8-32 characters.
-  string password = 6;
+  string password = 6 [(org.openmcf.shared.options.sensitive) = true];
 
   // Alibaba Cloud resource group ID for organizational grouping (per DD05).
   // If omitted, the instance is placed in the account's default resource group.

@@ -243,11 +243,11 @@ var File_org_openmcf_provider_openstack_openstackapplicationcredential_v1_spec_p
 
 const file_org_openmcf_provider_openstack_openstackapplicationcredential_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Korg/openmcf/provider/openstack/openstackapplicationcredential/v1/spec.proto\x12@org.openmcf.provider.openstack.openstackapplicationcredential.v1\x1a\x1bbuf/validate/validate.proto\x1a(org/openmcf/shared/options/options.proto\"\xe1\x02\n" +
+	"Korg/openmcf/provider/openstack/openstackapplicationcredential/v1/spec.proto\x12@org.openmcf.provider.openstack.openstackapplicationcredential.v1\x1a\x1bbuf/validate/validate.proto\x1a(org/openmcf/shared/options/options.proto\"\xe7\x02\n" +
 	"\"OpenStackApplicationCredentialSpec\x12 \n" +
 	"\vdescription\x18\x01 \x01(\tR\vdescription\x122\n" +
-	"\funrestricted\x18\x02 \x01(\bB\t\x8a\xa6\x1d\x05falseH\x00R\funrestricted\x88\x01\x01\x12\x16\n" +
-	"\x06secret\x18\x03 \x01(\tR\x06secret\x12\x14\n" +
+	"\funrestricted\x18\x02 \x01(\bB\t\x8a\xa6\x1d\x05falseH\x00R\funrestricted\x88\x01\x01\x12\x1c\n" +
+	"\x06secret\x18\x03 \x01(\tB\x04\xa0\xa6\x1d\x01R\x06secret\x12\x14\n" +
 	"\x05roles\x18\x04 \x03(\tR\x05roles\x12o\n" +
 	"\faccess_rules\x18\x05 \x03(\v2L.org.openmcf.provider.openstack.openstackapplicationcredential.v1.AccessRuleR\vaccessRules\x12\x1d\n" +
 	"\n" +

@@ -324,7 +324,7 @@ message AwsFsxWindowsFileSystemSelfManagedActiveDirectory {
   //
   // For production workloads, prefer `domain_join_service_account_secret_arn`
   // to avoid storing credentials in the resource manifest.
-  string password = 4;
+  string password = 4 [(org.openmcf.shared.options.sensitive) = true];
 
   // ARN of an AWS Secrets Manager secret containing the service account
   // credentials for domain join. Mutually exclusive with `username`/`password`.

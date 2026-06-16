@@ -9,6 +9,7 @@ package ocimysqldbsystemv1
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
+	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -1368,7 +1369,7 @@ var File_org_openmcf_provider_oci_ocimysqldbsystem_v1_spec_proto protoreflect.Fi
 
 const file_org_openmcf_provider_oci_ocimysqldbsystem_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"7org/openmcf/provider/oci/ocimysqldbsystem/v1/spec.proto\x12,org.openmcf.provider.oci.ocimysqldbsystem.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xeb+\n" +
+	"7org/openmcf/provider/oci/ocimysqldbsystem/v1/spec.proto\x12,org.openmcf.provider.oci.ocimysqldbsystem.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xf1+\n" +
 	"\x14OciMysqlDbSystemSpec\x12\x87\x01\n" +
 	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x12!\n" +
 	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName\x128\n" +
@@ -1376,8 +1377,8 @@ const file_org_openmcf_provider_oci_ocimysqldbsystem_v1_spec_proto_rawDesc = "" 
 	"\n" +
 	"shape_name\x18\x04 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\tshapeName\x12x\n" +
 	"\tsubnet_id\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\xe5\x19\x92\xd4a\x18status.outputs.subnet_idR\bsubnetId\x12%\n" +
-	"\x0eadmin_username\x18\x06 \x01(\tR\radminUsername\x12%\n" +
-	"\x0eadmin_password\x18\a \x01(\tR\radminPassword\x12#\n" +
+	"\x0eadmin_username\x18\x06 \x01(\tR\radminUsername\x12+\n" +
+	"\x0eadmin_password\x18\a \x01(\tB\x04\xa0\xa6\x1d\x01R\radminPassword\x12#\n" +
 	"\rmysql_version\x18\b \x01(\tR\fmysqlVersion\x12]\n" +
 	"\x10configuration_id\x18\t \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x0fconfigurationId\x123\n" +
 	"\x13is_highly_available\x18\n" +

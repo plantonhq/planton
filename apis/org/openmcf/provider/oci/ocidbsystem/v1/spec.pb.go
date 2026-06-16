@@ -9,6 +9,7 @@ package ocidbsystemv1
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
+	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -1275,7 +1276,7 @@ var File_org_openmcf_provider_oci_ocidbsystem_v1_spec_proto protoreflect.FileDes
 
 const file_org_openmcf_provider_oci_ocidbsystem_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"2org/openmcf/provider/oci/ocidbsystem/v1/spec.proto\x12'org.openmcf.provider.oci.ocidbsystem.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x83-\n" +
+	"2org/openmcf/provider/oci/ocidbsystem/v1/spec.proto\x12'org.openmcf.provider.oci.ocidbsystem.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x87-\n" +
 	"\x0fOciDbSystemSpec\x12\x87\x01\n" +
 	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x12!\n" +
 	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName\x128\n" +
@@ -1343,9 +1344,9 @@ const file_org_openmcf_provider_oci_ocidbsystem_v1_spec_proto_rawDesc = "" +
 	"db_version\x18\x01 \x01(\tR\tdbVersion\x12!\n" +
 	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName\x12o\n" +
 	"\x1adatabase_software_image_id\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x17databaseSoftwareImageId\x12e\n" +
-	"\bdatabase\x18\x04 \x01(\v2A.org.openmcf.provider.oci.ocidbsystem.v1.OciDbSystemSpec.DatabaseB\x06\xbaH\x03\xc8\x01\x01R\bdatabase\x1a\xbb\x04\n" +
-	"\bDatabase\x12.\n" +
-	"\x0eadmin_password\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x02R\radminPassword\x12:\n" +
+	"\bdatabase\x18\x04 \x01(\v2A.org.openmcf.provider.oci.ocidbsystem.v1.OciDbSystemSpec.DatabaseB\x06\xbaH\x03\xc8\x01\x01R\bdatabase\x1a\xbf\x04\n" +
+	"\bDatabase\x122\n" +
+	"\x0eadmin_password\x18\x01 \x01(\tB\v\xbaH\x04r\x02\x10\x02\xa0\xa6\x1d\x01R\radminPassword\x12:\n" +
 	"\adb_name\x18\x02 \x01(\tB!\xbaH\x1er\x1c\x10\x01\x18\x1e2\x16^[a-zA-Z][a-zA-Z0-9]*$R\x06dbName\x12#\n" +
 	"\rcharacter_set\x18\x03 \x01(\tR\fcharacterSet\x12%\n" +
 	"\x0encharacter_set\x18\x04 \x01(\tR\rncharacterSet\x12\x19\n" +

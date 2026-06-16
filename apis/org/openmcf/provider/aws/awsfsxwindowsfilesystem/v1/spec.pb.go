@@ -668,14 +668,14 @@ const file_org_openmcf_provider_aws_awsfsxwindowsfilesystem_v1_spec_proto_rawDes
 	"\x10_deployment_typeB\x0f\n" +
 	"\r_storage_typeB\"\n" +
 	" _automatic_backup_retention_daysB\x14\n" +
-	"\x12_skip_final_backup\"\xaf\b\n" +
+	"\x12_skip_final_backup\"\xb5\b\n" +
 	"1AwsFsxWindowsFileSystemSelfManagedActiveDirectory\x12(\n" +
 	"\vdomain_name\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\n" +
 	"domainName\x12#\n" +
 	"\adns_ips\x18\x02 \x03(\tB\n" +
 	"\xbaH\a\x92\x01\x04\b\x01\x10\x02R\x06dnsIps\x12\x1a\n" +
-	"\busername\x18\x03 \x01(\tR\busername\x12\x1a\n" +
-	"\bpassword\x18\x04 \x01(\tR\bpassword\x12\x85\x01\n" +
+	"\busername\x18\x03 \x01(\tR\busername\x12 \n" +
+	"\bpassword\x18\x04 \x01(\tB\x04\xa0\xa6\x1d\x01R\bpassword\x12\x85\x01\n" +
 	"&domain_join_service_account_secret_arn\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR!domainJoinServiceAccountSecretArn\x12_\n" +
 	" file_system_administrators_group\x18\x06 \x01(\tB\x11\x8a\xa6\x1d\rDomain AdminsH\x00R\x1dfileSystemAdministratorsGroup\x88\x01\x01\x12S\n" +
 	"&organizational_unit_distinguished_name\x18\a \x01(\tR#organizationalUnitDistinguishedName:\x8f\x04\xbaH\x8b\x04\x1a\xbe\x02\n" +

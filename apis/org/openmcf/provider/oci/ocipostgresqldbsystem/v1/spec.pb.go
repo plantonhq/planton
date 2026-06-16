@@ -9,6 +9,7 @@ package ocipostgresqldbsystemv1
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
+	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -830,7 +831,7 @@ var File_org_openmcf_provider_oci_ocipostgresqldbsystem_v1_spec_proto protorefle
 
 const file_org_openmcf_provider_oci_ocipostgresqldbsystem_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"<org/openmcf/provider/oci/ocipostgresqldbsystem/v1/spec.proto\x121org.openmcf.provider.oci.ocipostgresqldbsystem.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xdd\x1c\n" +
+	"<org/openmcf/provider/oci/ocipostgresqldbsystem/v1/spec.proto\x121org.openmcf.provider.oci.ocipostgresqldbsystem.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xe3\x1c\n" +
 	"\x19OciPostgresqlDbSystemSpec\x12\x87\x01\n" +
 	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x12!\n" +
 	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName\x12&\n" +
@@ -860,10 +861,10 @@ const file_org_openmcf_provider_oci_ocipostgresqldbsystem_v1_spec_proto_rawDesc 
 	"\x04iops\x18\x03 \x01(\x03R\x04iops\x1a\xc4\x01\n" +
 	"\vCredentials\x12#\n" +
 	"\busername\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\busername\x12\x8f\x01\n" +
-	"\x10password_details\x18\x02 \x01(\v2\\.org.openmcf.provider.oci.ocipostgresqldbsystem.v1.OciPostgresqlDbSystemSpec.PasswordDetailsB\x06\xbaH\x03\xc8\x01\x01R\x0fpasswordDetails\x1a\xa5\x02\n" +
+	"\x10password_details\x18\x02 \x01(\v2\\.org.openmcf.provider.oci.ocipostgresqldbsystem.v1.OciPostgresqlDbSystemSpec.PasswordDetailsB\x06\xbaH\x03\xc8\x01\x01R\x0fpasswordDetails\x1a\xab\x02\n" +
 	"\x0fPasswordDetails\x12~\n" +
-	"\rpassword_type\x18\x01 \x01(\x0e2Y.org.openmcf.provider.oci.ocipostgresqldbsystem.v1.OciPostgresqlDbSystemSpec.PasswordTypeR\fpasswordType\x12\x1a\n" +
-	"\bpassword\x18\x02 \x01(\tR\bpassword\x12O\n" +
+	"\rpassword_type\x18\x01 \x01(\x0e2Y.org.openmcf.provider.oci.ocipostgresqldbsystem.v1.OciPostgresqlDbSystemSpec.PasswordTypeR\fpasswordType\x12 \n" +
+	"\bpassword\x18\x02 \x01(\tB\x04\xa0\xa6\x1d\x01R\bpassword\x12O\n" +
 	"\tsecret_id\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\bsecretId\x12%\n" +
 	"\x0esecret_version\x18\x04 \x01(\tR\rsecretVersion\x1a\xcc\x01\n" +
 	"\x10ManagementPolicy\x12~\n" +

@@ -79,7 +79,10 @@ message KubernetesExternalDnsAksConfig {
 // KubernetesExternalDnsCloudflareConfig defines configuration for ExternalDNS with Cloudflare DNS.
 message KubernetesExternalDnsCloudflareConfig {
   // Cloudflare API token for authentication (scoped with Zone:Zone:Read and Zone:DNS:Edit permissions).
-  string api_token = 1 [(buf.validate.field).required = true];
+  string api_token = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.options.sensitive) = true
+  ];
 
   // Cloudflare DNS zone ID to manage. ExternalDNS will only manage records in this zone.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef dns_zone_id = 2 [

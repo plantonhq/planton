@@ -1707,7 +1707,7 @@ var File_org_openmcf_provider_azure_azurelinuxwebapp_v1_spec_proto protoreflect.
 
 const file_org_openmcf_provider_azure_azurelinuxwebapp_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"9org/openmcf/provider/azure/azurelinuxwebapp/v1/spec.proto\x12.org.openmcf.provider.azure.azurelinuxwebapp.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xad\x14\n" +
+	"9org/openmcf/provider/azure/azurelinuxwebapp/v1/spec.proto\x12.org.openmcf.provider.azure.azurelinuxwebapp.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xd3\x15\n" +
 	"\x14AzureLinuxWebAppSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12\x8c\x01\n" +
@@ -1718,8 +1718,8 @@ const file_org_openmcf_provider_azure_azurelinuxwebapp_v1_spec_proto_rawDesc = "
 	"\vsite_config\x18\x05 \x01(\v2J.org.openmcf.provider.azure.azurelinuxwebapp.v1.AzureLinuxWebAppSiteConfigB\x06\xbaH\x03\xc8\x01\x01R\n" +
 	"siteConfig\x12x\n" +
 	"\fapp_settings\x18\x06 \x03(\v2U.org.openmcf.provider.azure.azurelinuxwebapp.v1.AzureLinuxWebAppSpec.AppSettingsEntryR\vappSettings\x12\x7f\n" +
-	"\x12connection_strings\x18\a \x03(\v2P.org.openmcf.provider.azure.azurelinuxwebapp.v1.AzureLinuxWebAppConnectionStringR\x11connectionStrings\x12\xb2\x01\n" +
-	"&application_insights_connection_string\x18\b \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xc3\x03\x92\xd4a status.outputs.connection_stringR#applicationInsightsConnectionString\x12,\n" +
+	"\x12connection_strings\x18\a \x03(\v2P.org.openmcf.provider.azure.azurelinuxwebapp.v1.AzureLinuxWebAppConnectionStringR\x11connectionStrings\x12\xd8\x02\n" +
+	"&application_insights_connection_string\x18\b \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\xce\x01\xaa\xa6\x1d\xa0\x01Foreign-key reference to an AzureApplicationInsights output (the connection string is sourced from the referenced resource, not a user-supplied secret literal).\x88\xd4a\xc3\x03\x92\xd4a status.outputs.connection_stringR#applicationInsightsConnectionString\x12,\n" +
 	"\n" +
 	"https_only\x18\t \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\thttpsOnly\x88\x01\x01\x12P\n" +
 	"\x1dpublic_network_access_enabled\x18\n" +

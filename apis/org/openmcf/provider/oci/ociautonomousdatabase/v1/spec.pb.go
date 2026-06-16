@@ -9,6 +9,7 @@ package ociautonomousdatabasev1
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
+	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -759,7 +760,7 @@ var File_org_openmcf_provider_oci_ociautonomousdatabase_v1_spec_proto protorefle
 
 const file_org_openmcf_provider_oci_ociautonomousdatabase_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"<org/openmcf/provider/oci/ociautonomousdatabase/v1/spec.proto\x121org.openmcf.provider.oci.ociautonomousdatabase.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xdb\x1d\n" +
+	"<org/openmcf/provider/oci/ociautonomousdatabase/v1/spec.proto\x121org.openmcf.provider.oci.ociautonomousdatabase.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xe1\x1d\n" +
 	"\x19OciAutonomousDatabaseSpec\x12\x87\x01\n" +
 	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x12:\n" +
 	"\adb_name\x18\x02 \x01(\tB!\xbaH\x1er\x1c\x10\x01\x18\x1e2\x16^[a-zA-Z][a-zA-Z0-9]*$R\x06dbName\x12!\n" +
@@ -778,8 +779,8 @@ const file_org_openmcf_provider_oci_ociautonomousdatabase_v1_spec_proto_rawDesc 
 	"\x18data_storage_size_in_tbs\x18\f \x01(\x05R\x14dataStorageSizeInTbs\x124\n" +
 	"\x17data_storage_size_in_gb\x18\r \x01(\x05R\x13dataStorageSizeInGb\x12:\n" +
 	"\x17is_auto_scaling_enabled\x18\x0e \x01(\bH\x01R\x14isAutoScalingEnabled\x88\x01\x01\x12P\n" +
-	"#is_auto_scaling_for_storage_enabled\x18\x0f \x01(\bH\x02R\x1eisAutoScalingForStorageEnabled\x88\x01\x01\x12%\n" +
-	"\x0eadmin_password\x18\x10 \x01(\tR\radminPassword\x12O\n" +
+	"#is_auto_scaling_for_storage_enabled\x18\x0f \x01(\bH\x02R\x1eisAutoScalingForStorageEnabled\x88\x01\x01\x12+\n" +
+	"\x0eadmin_password\x18\x10 \x01(\tB\x04\xa0\xa6\x1d\x01R\radminPassword\x12O\n" +
 	"\tsecret_id\x18\x11 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\bsecretId\x122\n" +
 	"\x15secret_version_number\x18\x12 \x01(\x05R\x13secretVersionNumber\x12r\n" +
 	"\tsubnet_id\x18\x13 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xe5\x19\x92\xd4a\x18status.outputs.subnet_idR\bsubnetId\x12\x86\x01\n" +

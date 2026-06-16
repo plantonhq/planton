@@ -540,7 +540,8 @@ var File_org_openmcf_provider_scaleway_scalewaymongodbinstance_v1_spec_proto pro
 
 const file_org_openmcf_provider_scaleway_scalewaymongodbinstance_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Corg/openmcf/provider/scaleway/scalewaymongodbinstance/v1/spec.proto\x128org.openmcf.provider.scaleway.scalewaymongodbinstance.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xfc\t\n" +
+	"Corg/openmcf/provider/scaleway/scalewaymongodbinstance/v1/spec.proto\x128org.openmcf.provider.scaleway.scalewaymongodbinstance.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x80\n" +
+	"\n" +
 	"\x1bScalewayMongodbInstanceSpec\x12\x1e\n" +
 	"\x06region\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06region\x12<\n" +
 	"\aversion\x18\x02 \x01(\tB\"\xbaH\x1f\xc8\x01\x01r\x1a2\x18^[0-9]+\\.[0-9]+\\.[0-9]+$R\aversion\x12#\n" +
@@ -559,9 +560,8 @@ const file_org_openmcf_provider_scaleway_scalewaymongodbinstance_v1_spec_proto_r
 	" snapshot_schedule_retention_days\x18\v \x01(\rR\x1dsnapshotScheduleRetentionDays\x12)\n" +
 	"\n" +
 	"admin_user\x18\f \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x18?R\tadminUser\x121\n" +
-	"\x0eadmin_password\x18\r \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\bR\radminPassword\x12c\n" +
+	"\xbaH\a\xc8\x01\x01r\x02\x18?R\tadminUser\x125\n" +
+	"\x0eadmin_password\x18\r \x01(\tB\x0e\xbaH\a\xc8\x01\x01r\x02\x10\b\xa0\xa6\x1d\x01R\radminPassword\x12c\n" +
 	"\x05users\x18\x0e \x03(\v2M.org.openmcf.provider.scaleway.scalewaymongodbinstance.v1.ScalewayMongodbUserR\x05users\x12\x7f\n" +
 	"\bsettings\x18\x0f \x03(\v2c.org.openmcf.provider.scaleway.scalewaymongodbinstance.v1.ScalewayMongodbInstanceSpec.SettingsEntryR\bsettings\x1a;\n" +
 	"\rSettingsEntry\x12\x10\n" +

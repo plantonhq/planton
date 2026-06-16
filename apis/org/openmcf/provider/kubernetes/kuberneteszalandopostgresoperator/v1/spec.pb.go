@@ -10,6 +10,7 @@ import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	kubernetes "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes"
 	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
+	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -335,7 +336,7 @@ var File_org_openmcf_provider_kubernetes_kuberneteszalandopostgresoperator_v1_sp
 
 const file_org_openmcf_provider_kubernetes_kuberneteszalandopostgresoperator_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Oorg/openmcf/provider/kubernetes/kuberneteszalandopostgresoperator/v1/spec.proto\x12Dorg.openmcf.provider.kubernetes.kuberneteszalandopostgresoperator.v1\x1a\x1bbuf/validate/validate.proto\x1a0org/openmcf/provider/kubernetes/kubernetes.proto\x1a-org/openmcf/provider/kubernetes/options.proto\x1a4org/openmcf/provider/kubernetes/target_cluster.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xd9\x04\n" +
+	"Oorg/openmcf/provider/kubernetes/kuberneteszalandopostgresoperator/v1/spec.proto\x12Dorg.openmcf.provider.kubernetes.kuberneteszalandopostgresoperator.v1\x1a\x1bbuf/validate/validate.proto\x1a0org/openmcf/provider/kubernetes/kubernetes.proto\x1a-org/openmcf/provider/kubernetes/options.proto\x1a4org/openmcf/provider/kubernetes/target_cluster.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xd9\x04\n" +
 	"%KubernetesZalandoPostgresOperatorSpec\x12a\n" +
 	"\x0etarget_cluster\x18\x01 \x01(\v2:.org.openmcf.provider.kubernetes.KubernetesClusterSelectorR\rtargetCluster\x12j\n" +
 	"\tnamespace\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xc4\x06\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
@@ -346,7 +347,7 @@ const file_org_openmcf_provider_kubernetes_kuberneteszalandopostgresoperator_v1_
 	"\tresources\x18\x01 \x01(\v23.org.openmcf.provider.kubernetes.ContainerResourcesB!\xba\xfb\xa4\x02\x1c\n" +
 	"\f\n" +
 	"\x051000m\x12\x031Gi\x12\f\n" +
-	"\x0350m\x12\x05100MiR\tresources\"\x86\x02\n" +
+	"\x0350m\x12\x05100MiR\tresources\"\x8a\x02\n" +
 	"/KubernetesZalandoPostgresOperatorBackupR2Config\x12>\n" +
 	"\x15cloudflare_account_id\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x13cloudflareAccountId\x12+\n" +
@@ -354,9 +355,8 @@ const file_org_openmcf_provider_kubernetes_kuberneteszalandopostgresoperator_v1_
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\n" +
 	"bucketName\x12.\n" +
 	"\raccess_key_id\x18\x03 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\vaccessKeyId\x126\n" +
-	"\x11secret_access_key\x18\x04 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x0fsecretAccessKey\"\xcb\x03\n" +
+	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\vaccessKeyId\x12:\n" +
+	"\x11secret_access_key\x18\x04 \x01(\tB\x0e\xbaH\a\xc8\x01\x01r\x02\x10\x01\xa0\xa6\x1d\x01R\x0fsecretAccessKey\"\xcb\x03\n" +
 	"-KubernetesZalandoPostgresOperatorBackupConfig\x12\x9a\x01\n" +
 	"\tr2_config\x18\x01 \x01(\v2u.org.openmcf.provider.kubernetes.kuberneteszalandopostgresoperator.v1.KubernetesZalandoPostgresOperatorBackupR2ConfigB\x06\xbaH\x03\xc8\x01\x01R\br2Config\x12,\n" +
 	"\x12s3_prefix_template\x18\x02 \x01(\tR\x10s3PrefixTemplate\x123\n" +

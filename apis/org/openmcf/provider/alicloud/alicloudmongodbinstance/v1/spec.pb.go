@@ -431,7 +431,7 @@ var File_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_spec_proto pro
 
 const file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Corg/openmcf/provider/alicloud/alicloudmongodbinstance/v1/spec.proto\x128org.openmcf.provider.alicloud.alicloudmongodbinstance.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x8a\x1b\n" +
+	"Corg/openmcf/provider/alicloud/alicloudmongodbinstance/v1/spec.proto\x128org.openmcf.provider.alicloud.alicloudmongodbinstance.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xb1\x1c\n" +
 	"\x1bAliCloudMongodbInstanceSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12{\n" +
@@ -442,8 +442,8 @@ const file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_spec_proto_r
 	"\x11db_instance_class\x18\x04 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x0fdbInstanceClass\x12:\n" +
 	"\x13db_instance_storage\x18\x05 \x01(\x05B\n" +
-	"\xbaH\a\xc8\x01\x01\x1a\x02(\x01R\x11dbInstanceStorage\x127\n" +
-	"\x10account_password\x18\x06 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\b\x18 R\x0faccountPassword\x12\xc4\x01\n" +
+	"\xbaH\a\xc8\x01\x01\x1a\x02(\x01R\x11dbInstanceStorage\x12;\n" +
+	"\x10account_password\x18\x06 \x01(\tB\x10\xbaH\t\xc8\x01\x01r\x04\x10\b\x18 \xa0\xa6\x1d\x01R\x0faccountPassword\x12\xc4\x01\n" +
 	"\x10db_instance_name\x18\a \x01(\tB\x99\x01\xbaH\x95\x01\xba\x01\x91\x01\n" +
 	"\x17db_instance_name_length\x12>db_instance_name must be between 2 and 256 characters when set\x1a6this == '' || (this.size() >= 2 && this.size() <= 256)R\x0edbInstanceName\x12\x17\n" +
 	"\azone_id\x18\b \x01(\tR\x06zoneId\x12*\n" +
@@ -470,10 +470,10 @@ const file_org_openmcf_provider_alicloud_alicloudmongodbinstance_v1_spec_proto_r
 	"\x10ssl_action_valid\x12.ssl_action must be one of: Open, Close, Update\x1a1this == '' || this in ['Open', 'Close', 'Update']H\x06R\tsslAction\x88\x01\x01\x12y\n" +
 	"\n" +
 	"tde_status\x18\x16 \x01(\tBU\xbaHR\xba\x01O\n" +
-	"\x10tde_status_valid\x12\x1atde_status must be enabled\x1a\x1fthis == '' || this == 'enabled'H\aR\ttdeStatus\x88\x01\x01\x12%\n" +
-	"\x0eencryption_key\x18\x17 \x01(\tR\rencryptionKey\x12!\n" +
-	"\tencrypted\x18\x18 \x01(\bH\bR\tencrypted\x88\x01\x01\x129\n" +
-	"\x19cloud_disk_encryption_key\x18\x19 \x01(\tR\x16cloudDiskEncryptionKey\x12.\n" +
+	"\x10tde_status_valid\x12\x1atde_status must be enabled\x1a\x1fthis == '' || this == 'enabled'H\aR\ttdeStatus\x88\x01\x01\x12v\n" +
+	"\x0eencryption_key\x18\x17 \x01(\tBO\xaa\xa6\x1dKCustomer-managed KMS key identifier (a reference), not secret key material.R\rencryptionKey\x12!\n" +
+	"\tencrypted\x18\x18 \x01(\bH\bR\tencrypted\x88\x01\x01\x12\x8a\x01\n" +
+	"\x19cloud_disk_encryption_key\x18\x19 \x01(\tBO\xaa\xa6\x1dKCustomer-managed KMS key identifier (a reference), not secret key material.R\x16cloudDiskEncryptionKey\x12.\n" +
 	"\x13maintain_start_time\x18\x1a \x01(\tR\x11maintainStartTime\x12*\n" +
 	"\x11maintain_end_time\x18\x1b \x01(\tR\x0fmaintainEndTime\x12\x1f\n" +
 	"\vbackup_time\x18\x1c \x01(\tR\n" +

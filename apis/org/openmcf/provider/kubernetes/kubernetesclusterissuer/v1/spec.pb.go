@@ -475,9 +475,10 @@ const file_org_openmcf_provider_kubernetes_kubernetesclusterissuer_v1_spec_proto
 	"\x17ClusterIssuerAcmeConfig\x12\x1c\n" +
 	"\x05email\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x05email\x12O\n" +
 	"\x06server\x18\x02 \x01(\tB2\x8a\xa6\x1d.https://acme-v02.api.letsencrypt.org/directoryH\x00R\x06server\x88\x01\x01B\t\n" +
-	"\a_server\":\n" +
-	"\x13CloudflareDnsSolver\x12#\n" +
-	"\tapi_token\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bapiToken\":\n" +
+	"\a_server\">\n" +
+	"\x13CloudflareDnsSolver\x12'\n" +
+	"\tapi_token\x18\x01 \x01(\tB\n" +
+	"\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01R\bapiToken\":\n" +
 	"\x11GcpCloudDnsSolver\x12%\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\tprojectId\"2\n" +

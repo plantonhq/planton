@@ -538,7 +538,7 @@ var File_org_openmcf_provider_alicloud_alicloudecsinstance_v1_spec_proto protore
 
 const file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"?org/openmcf/provider/alicloud/alicloudecsinstance/v1/spec.proto\x124org.openmcf.provider.alicloud.alicloudecsinstance.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xfb\x18\n" +
+	"?org/openmcf/provider/alicloud/alicloudecsinstance/v1/spec.proto\x124org.openmcf.provider.alicloud.alicloudecsinstance.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xff\x18\n" +
 	"\x17AliCloudEcsInstanceSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12{\n" +
@@ -559,9 +559,9 @@ const file_org_openmcf_provider_alicloud_alicloudecsinstance_v1_spec_proto_rawDe
 	"\n" +
 	"data_disks\x18\n" +
 	" \x03(\v2I.org.openmcf.provider.alicloud.alicloudecsinstance.v1.AliCloudEcsDataDiskB\b\xbaH\x05\x92\x01\x02\x10\x10R\tdataDisks\x12\x19\n" +
-	"\bkey_name\x18\v \x01(\tR\akeyName\x12\xa3\x01\n" +
-	"\bpassword\x18\f \x01(\tB\x86\x01\xbaH\x82\x01\xba\x01\x7f\n" +
-	"\x0fpassword_length\x125password must be between 8 and 30 characters when set\x1a5this == '' || (this.size() >= 8 && this.size() <= 30)R\bpassword\x12P\n" +
+	"\bkey_name\x18\v \x01(\tR\akeyName\x12\xa7\x01\n" +
+	"\bpassword\x18\f \x01(\tB\x8a\x01\xbaH\x82\x01\xba\x01\x7f\n" +
+	"\x0fpassword_length\x125password must be between 8 and 30 characters when set\x1a5this == '' || (this.size() >= 8 && this.size() <= 30)\xa0\xa6\x1d\x01R\bpassword\x12P\n" +
 	"\x1ainternet_max_bandwidth_out\x18\r \x01(\x05B\x0e\xbaH\x06\x1a\x04\x18d(\x00\x8a\xa6\x1d\x010H\x00R\x17internetMaxBandwidthOut\x88\x01\x01\x12\xd9\x01\n" +
 	"\x14internet_charge_type\x18\x0e \x01(\tB\xa1\x01\xbaH\x9d\x01\xba\x01\x99\x01\n" +
 	"\x1ainternet_charge_type_valid\x12Ainternet_charge_type must be one of: PayByTraffic, PayByBandwidth\x1a8this == '' || this in ['PayByTraffic', 'PayByBandwidth']H\x01R\x12internetChargeType\x88\x01\x01\x12\xcf\x01\n" +

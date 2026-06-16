@@ -235,7 +235,7 @@ message AliCloudRocketmqProductInfo {
   // KMS key for encryption at rest. Only applicable when
   // storage_encryption is true.
   // ForceNew: changing this replaces the instance.
-  string storage_secret_key = 6;
+  string storage_secret_key = 6 [(org.openmcf.shared.options.sensitive_exempt_reason) = "Customer-managed KMS key identifier for encryption at rest (a reference), not secret key material."];
 }
 
 // AliCloudRocketmqTopic defines a topic to create within the instance.

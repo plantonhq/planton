@@ -95,7 +95,10 @@ message AzureMssqlServerSpec {
   //
   // This is a polymorphic StringValueOrRef with no default_kind because
   // the password source varies (literal, chart variable, external secret).
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef administrator_password = 5 [(buf.validate.field).required = true];
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef administrator_password = 5 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.options.sensitive) = true
+  ];
 
   // The version of SQL Server.
   // Azure SQL Database supports two version identifiers:

@@ -1141,7 +1141,7 @@ var File_org_openmcf_provider_kubernetes_kubernetesgharunnerscaleset_v1_spec_pro
 
 const file_org_openmcf_provider_kubernetes_kubernetesgharunnerscaleset_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Iorg/openmcf/provider/kubernetes/kubernetesgharunnerscaleset/v1/spec.proto\x12>org.openmcf.provider.kubernetes.kubernetesgharunnerscaleset.v1\x1a\x1bbuf/validate/validate.proto\x1a0org/openmcf/provider/kubernetes/kubernetes.proto\x1a-org/openmcf/provider/kubernetes/options.proto\x1a4org/openmcf/provider/kubernetes/target_cluster.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x9c\x0e\n" +
+	"Iorg/openmcf/provider/kubernetes/kubernetesgharunnerscaleset/v1/spec.proto\x12>org.openmcf.provider.kubernetes.kubernetesgharunnerscaleset.v1\x1a\x1bbuf/validate/validate.proto\x1a0org/openmcf/provider/kubernetes/kubernetes.proto\x1a-org/openmcf/provider/kubernetes/options.proto\x1a4org/openmcf/provider/kubernetes/target_cluster.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xe3\x0e\n" +
 	"\x1fKubernetesGhaRunnerScaleSetSpec\x12a\n" +
 	"\x0etarget_cluster\x18\x01 \x01(\v2:.org.openmcf.provider.kubernetes.KubernetesClusterSelectorR\rtargetCluster\x12j\n" +
 	"\tnamespace\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xc4\x06\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
@@ -1156,8 +1156,8 @@ const file_org_openmcf_provider_kubernetes_kubernetesgharunnerscaleset_v1_spec_p
 	"\x06runner\x18\n" +
 	" \x01(\v2a.org.openmcf.provider.kubernetes.kubernetesgharunnerscaleset.v1.KubernetesGhaRunnerScaleSetRunnerR\x06runner\x12\x9a\x01\n" +
 	"\x12persistent_volumes\x18\v \x03(\v2k.org.openmcf.provider.kubernetes.kubernetesgharunnerscaleset.v1.KubernetesGhaRunnerScaleSetPersistentVolumeR\x11persistentVolumes\x12\xb1\x01\n" +
-	"\x1acontroller_service_account\x18\f \x01(\v2s.org.openmcf.provider.kubernetes.kubernetesgharunnerscaleset.v1.KubernetesGhaRunnerScaleSetControllerServiceAccountR\x18controllerServiceAccount\x12,\n" +
-	"\x12image_pull_secrets\x18\r \x03(\tR\x10imagePullSecrets\x12\x83\x01\n" +
+	"\x1acontroller_service_account\x18\f \x01(\v2s.org.openmcf.provider.kubernetes.kubernetesgharunnerscaleset.v1.KubernetesGhaRunnerScaleSetControllerServiceAccountR\x18controllerServiceAccount\x12s\n" +
+	"\x12image_pull_secrets\x18\r \x03(\tBE\xaa\xa6\x1dANames of existing Kubernetes imagePullSecrets, not secret values.R\x10imagePullSecrets\x12\x83\x01\n" +
 	"\x06labels\x18\x0e \x03(\v2k.org.openmcf.provider.kubernetes.kubernetesgharunnerscaleset.v1.KubernetesGhaRunnerScaleSetSpec.LabelsEntryR\x06labels\x12\x92\x01\n" +
 	"\vannotations\x18\x0f \x03(\v2p.org.openmcf.provider.kubernetes.kubernetesgharunnerscaleset.v1.KubernetesGhaRunnerScaleSetSpec.AnnotationsEntryR\vannotations\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
@@ -1176,13 +1176,15 @@ const file_org_openmcf_provider_kubernetes_kubernetesgharunnerscaleset_v1_spec_p
 	"\n" +
 	"github_app\x18\x03 \x01(\v2d.org.openmcf.provider.kubernetes.kubernetesgharunnerscaleset.v1.KubernetesGhaRunnerScaleSetGitHubAppH\x00R\tgithubApp\x122\n" +
 	"\x14existing_secret_name\x18\x04 \x01(\tH\x00R\x12existingSecretNameB\x06\n" +
-	"\x04auth\"C\n" +
-	"#KubernetesGhaRunnerScaleSetPatToken\x12\x1c\n" +
-	"\x05token\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x05token\"\xac\x01\n" +
+	"\x04auth\"G\n" +
+	"#KubernetesGhaRunnerScaleSetPatToken\x12 \n" +
+	"\x05token\x18\x01 \x01(\tB\n" +
+	"\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01R\x05token\"\xb0\x01\n" +
 	"$KubernetesGhaRunnerScaleSetGitHubApp\x12\x1d\n" +
 	"\x06app_id\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x05appId\x12/\n" +
-	"\x0finstallation_id\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x0einstallationId\x124\n" +
-	"\x12private_key_base64\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x10privateKeyBase64\"\xac\x01\n" +
+	"\x0finstallation_id\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x0einstallationId\x128\n" +
+	"\x12private_key_base64\x18\x03 \x01(\tB\n" +
+	"\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01R\x10privateKeyBase64\"\xac\x01\n" +
 	"\"KubernetesGhaRunnerScaleSetScaling\x122\n" +
 	"\vmin_runners\x18\x01 \x01(\x05B\f\xbaH\x04\x1a\x02(\x00\x8a\xa6\x1d\x010H\x00R\n" +
 	"minRunners\x88\x01\x01\x122\n" +

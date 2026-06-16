@@ -569,7 +569,7 @@ var File_org_openmcf_provider_azure_azurepostgresqlflexibleserver_v1_spec_proto 
 
 const file_org_openmcf_provider_azure_azurepostgresqlflexibleserver_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Forg/openmcf/provider/azure/azurepostgresqlflexibleserver/v1/spec.proto\x12;org.openmcf.provider.azure.azurepostgresqlflexibleserver.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x89\x0e\n" +
+	"Forg/openmcf/provider/azure/azurepostgresqlflexibleserver/v1/spec.proto\x12;org.openmcf.provider.azure.azurepostgresqlflexibleserver.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x8d\x0e\n" +
 	"!AzurePostgresqlFlexibleServerSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12\x8c\x01\n" +
@@ -577,8 +577,9 @@ const file_org_openmcf_provider_azure_azurepostgresqlflexibleserver_v1_spec_prot
 	"\x04name\x18\x03 \x01(\tB\xa7\x01\xbaH\xa3\x01\xba\x01\x96\x01\n" +
 	"\x12server_name_format\x12]Server name must start with a letter and contain only lowercase letters, numbers, and hyphens\x1a!this.matches('^[a-z][a-z0-9-]*$')\xc8\x01\x01r\x04\x10\x03\x18?R\x04name\x12;\n" +
 	"\x13administrator_login\x18\x04 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x12administratorLogin\x12q\n" +
-	"\x16administrator_password\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x06\xbaH\x03\xc8\x01\x01R\x15administratorPassword\x12\x98\x01\n" +
+	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x12administratorLogin\x12u\n" +
+	"\x16administrator_password\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\n" +
+	"\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01R\x15administratorPassword\x12\x98\x01\n" +
 	"\aversion\x18\x06 \x01(\tBy\xbaHp\xba\x01m\n" +
 	"\rversion_valid\x12.version must be one of: 12, 13, 14, 15, 16, 17\x1a,this in ['12', '13', '14', '15', '16', '17']\x8a\xa6\x1d\x0216H\x00R\aversion\x88\x01\x01\x12%\n" +
 	"\bsku_name\x18\a \x01(\tB\n" +

@@ -60,7 +60,7 @@ message AwsRdsClusterSpec {
   optional string username = 10 [(org.openmcf.shared.options.default) = "master"];
 
   // password is the master user password. Cannot be set when manage_master_user_password is true.
-  string password = 11;
+  string password = 11 [(org.openmcf.shared.options.sensitive) = true];
 
   // port on which the cluster accepts connections.
   int32 port = 12 [

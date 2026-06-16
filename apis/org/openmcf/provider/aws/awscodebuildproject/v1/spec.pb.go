@@ -1211,15 +1211,15 @@ var File_org_openmcf_provider_aws_awscodebuildproject_v1_spec_proto protoreflect
 
 const file_org_openmcf_provider_aws_awscodebuildproject_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	":org/openmcf/provider/aws/awscodebuildproject/v1/spec.proto\x12/org.openmcf.provider.aws.awscodebuildproject.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xe4\x13\n" +
+	":org/openmcf/provider/aws/awscodebuildproject/v1/spec.proto\x12/org.openmcf.provider.aws.awscodebuildproject.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xba\x14\n" +
 	"\x17AwsCodeBuildProjectSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12c\n" +
 	"\x06source\x18\x02 \x01(\v2C.org.openmcf.provider.aws.awscodebuildproject.v1.AwsCodeBuildSourceB\x06\xbaH\x03\xc8\x01\x01R\x06source\x12r\n" +
 	"\venvironment\x18\x03 \x01(\v2H.org.openmcf.provider.aws.awscodebuildproject.v1.AwsCodeBuildEnvironmentB\x06\xbaH\x03\xc8\x01\x01R\venvironment\x12l\n" +
 	"\tartifacts\x18\x04 \x01(\v2F.org.openmcf.provider.aws.awscodebuildproject.v1.AwsCodeBuildArtifactsB\x06\xbaH\x03\xc8\x01\x01R\tartifacts\x12}\n" +
 	"\fservice_role\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\vserviceRole\x12*\n" +
-	"\vdescription\x18\x06 \x01(\tB\b\xbaH\x05r\x03\x18\xff\x01R\vdescription\x12z\n" +
-	"\x0eencryption_key\x18\a \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\rencryptionKey\x12:\n" +
+	"\vdescription\x18\x06 \x01(\tB\b\xbaH\x05r\x03\x18\xff\x01R\vdescription\x12\xcf\x01\n" +
+	"\x0eencryption_key\x18\a \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefBt\xaa\xa6\x1dQForeign-key reference to an AwsKmsKey (the KMS key ARN), not secret key material.\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\rencryptionKey\x12:\n" +
 	"\rbuild_timeout\x18\b \x01(\x05B\x10\xbaH\a\x1a\x05\x18\xf0\x10(\x05\x8a\xa6\x1d\x0260H\x00R\fbuildTimeout\x88\x01\x01\x12=\n" +
 	"\x0equeued_timeout\x18\t \x01(\x05B\x11\xbaH\a\x1a\x05\x18\xe0\x03(\x05\x8a\xa6\x1d\x03480H\x01R\rqueuedTimeout\x88\x01\x01\x12@\n" +
 	"\x16concurrent_build_limit\x18\n" +
@@ -1261,10 +1261,10 @@ const file_org_openmcf_provider_aws_awscodebuildproject_v1_spec_proto_rawDesc = 
 	"\x04name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12\x1c\n" +
 	"\x05value\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x05value\x12X\n" +
 	"\x04type\x18\x03 \x01(\tB?\xbaH/r-R\tPLAINTEXTR\x0fPARAMETER_STORER\x0fSECRETS_MANAGER\x8a\xa6\x1d\tPLAINTEXTH\x00R\x04type\x88\x01\x01B\a\n" +
-	"\x05_type\"\xfb\x01\n" +
-	"\x1eAwsCodeBuildRegistryCredential\x12&\n" +
+	"\x05_type\"\xd2\x02\n" +
+	"\x1eAwsCodeBuildRegistryCredential\x12}\n" +
 	"\n" +
-	"credential\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\n" +
+	"credential\x18\x01 \x01(\tB]\xbaH\x03\xc8\x01\x01\xaa\xa6\x1dSARN or name of a Secrets Manager secret (a reference), not the secret value itself.R\n" +
 	"credential\x12\xb0\x01\n" +
 	"\x13credential_provider\x18\x02 \x01(\tB\x7f\xbaH\x16\xc8\x01\x01r\x11\n" +
 	"\x0fSECRETS_MANAGER\xaa\xa6\x1dbProvider-type selector (constant SECRETS_MANAGER), not a secret value; the secret is `credential`.R\x12credentialProvider\"\x97\x03\n" +

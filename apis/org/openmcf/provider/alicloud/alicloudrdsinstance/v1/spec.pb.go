@@ -668,7 +668,7 @@ var File_org_openmcf_provider_alicloud_alicloudrdsinstance_v1_spec_proto protore
 
 const file_org_openmcf_provider_alicloud_alicloudrdsinstance_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"?org/openmcf/provider/alicloud/alicloudrdsinstance/v1/spec.proto\x124org.openmcf.provider.alicloud.alicloudrdsinstance.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xcd\x18\n" +
+	"?org/openmcf/provider/alicloud/alicloudrdsinstance/v1/spec.proto\x124org.openmcf.provider.alicloud.alicloudrdsinstance.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x9e\x19\n" +
 	"\x17AliCloudRdsInstanceSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12\xb7\x01\n" +
@@ -704,8 +704,8 @@ const file_org_openmcf_provider_alicloud_alicloudrdsinstance_v1_spec_proto_rawDe
 	"\x10ssl_action_valid\x12&ssl_action must be one of: Open, Close\x1a'this == '' || this in ['Open', 'Close']H\x05R\tsslAction\x88\x01\x01\x12\x99\x01\n" +
 	"\n" +
 	"tde_status\x18\x13 \x01(\tBu\xbaHr\xba\x01o\n" +
-	"\x10tde_status_valid\x12,tde_status must be one of: Enabled, Disabled\x1a-this == '' || this in ['Enabled', 'Disabled']H\x06R\ttdeStatus\x88\x01\x01\x12%\n" +
-	"\x0eencryption_key\x18\x14 \x01(\tR\rencryptionKey\x12\"\n" +
+	"\x10tde_status_valid\x12,tde_status must be one of: Enabled, Disabled\x1a-this == '' || this in ['Enabled', 'Disabled']H\x06R\ttdeStatus\x88\x01\x01\x12v\n" +
+	"\x0eencryption_key\x18\x14 \x01(\tBO\xaa\xa6\x1dKCustomer-managed KMS key identifier (a reference), not secret key material.R\rencryptionKey\x12\"\n" +
 	"\n" +
 	"auto_renew\x18\x15 \x01(\bH\aR\tautoRenew\x88\x01\x01\x12:\n" +
 	"\x11auto_renew_period\x18\x16 \x01(\x05B\t\xbaH\x06\x1a\x04\x18\f(\x01H\bR\x0fautoRenewPeriod\x88\x01\x01\x12\x8b\x01\n" +

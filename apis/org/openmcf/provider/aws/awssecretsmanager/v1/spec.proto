@@ -3,6 +3,7 @@ syntax = "proto3";
 package org.openmcf.provider.aws.awssecretsmanager.v1;
 
 import "buf/validate/validate.proto";
+import "org/openmcf/shared/options/options.proto";
 
 // AwsSecretsManagerSpec defines the specification required to create and manage secrets in AWS Secrets Manager.
 // This message encapsulates configurations necessary for creating secrets, allowing you to specify a list of
@@ -19,6 +20,7 @@ message AwsSecretsManagerSpec {
   // Each name corresponds to a unique secret that will be securely stored and managed.
   // Secret names must be unique within your AWS account and region.
   repeated string secret_names = 2 [
+    (org.openmcf.shared.options.sensitive_exempt_reason) = "Names of secrets to create in Secrets Manager, not secret values.",
     (buf.validate.field).repeated = {
       min_items: 1
       unique: true

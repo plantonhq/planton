@@ -9,6 +9,7 @@ package auth0connectionv1
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
+	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -881,7 +882,7 @@ var File_org_openmcf_provider_auth0_auth0connection_v1_spec_proto protoreflect.F
 
 const file_org_openmcf_provider_auth0_auth0connection_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"8org/openmcf/provider/auth0/auth0connection/v1/spec.proto\x12-org.openmcf.provider.auth0.auth0connection.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xfc\b\n" +
+	"8org/openmcf/provider/auth0/auth0connection/v1/spec.proto\x12-org.openmcf.provider.auth0.auth0connection.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xfc\b\n" +
 	"\x13Auth0ConnectionSpec\x12\x96\x01\n" +
 	"\bstrategy\x18\x01 \x01(\tBz\xbaHw\xc8\x01\x01rrR\x05auth0R\rgoogle-oauth2R\bfacebookR\x06githubR\blinkedinR\atwitterR\x11microsoft-accountR\x05appleR\x05samlpR\x04oidcR\x04waadR\x02adR\x04adfsR\bstrategy\x12!\n" +
 	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName\x12~\n" +
@@ -908,10 +909,11 @@ const file_org_openmcf_provider_auth0_auth0connection_v1_spec_proto_rawDesc = ""
 	"\x19password_no_personal_info\x18\x06 \x01(\bR\x16passwordNoPersonalInfo\x12/\n" +
 	"\x13password_dictionary\x18\a \x01(\bR\x12passwordDictionary\x12\x1f\n" +
 	"\vmfa_enabled\x18\b \x01(\bR\n" +
-	"mfaEnabled\"\xee\x02\n" +
+	"mfaEnabled\"\xf2\x02\n" +
 	"\x12Auth0SocialOptions\x12#\n" +
-	"\tclient_id\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bclientId\x12+\n" +
-	"\rclient_secret\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\fclientSecret\x12\x16\n" +
+	"\tclient_id\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bclientId\x12/\n" +
+	"\rclient_secret\x18\x02 \x01(\tB\n" +
+	"\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01R\fclientSecret\x12\x16\n" +
 	"\x06scopes\x18\x03 \x03(\tR\x06scopes\x12+\n" +
 	"\x11allowed_audiences\x18\x04 \x03(\tR\x10allowedAudiences\x12~\n" +
 	"\x0fupstream_params\x18\x05 \x03(\v2U.org.openmcf.provider.auth0.auth0connection.v1.Auth0SocialOptions.UpstreamParamsEntryR\x0eupstreamParams\x1aA\n" +
@@ -933,11 +935,11 @@ const file_org_openmcf_provider_auth0_auth0connection_v1_spec_proto_rawDesc = ""
 	" \x03(\v2V.org.openmcf.provider.auth0.auth0connection.v1.Auth0SamlOptions.AttributeMappingsEntryR\x11attributeMappings\x1aD\n" +
 	"\x16AttributeMappingsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xc2\x04\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xc8\x04\n" +
 	"\x10Auth0OidcOptions\x12\x1e\n" +
 	"\x06issuer\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06issuer\x12#\n" +
-	"\tclient_id\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bclientId\x12#\n" +
-	"\rclient_secret\x18\x03 \x01(\tR\fclientSecret\x12\x16\n" +
+	"\tclient_id\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bclientId\x12)\n" +
+	"\rclient_secret\x18\x03 \x01(\tB\x04\xa0\xa6\x1d\x01R\fclientSecret\x12\x16\n" +
 	"\x06scopes\x18\x04 \x03(\tR\x06scopes\x128\n" +
 	"\x04type\x18\x05 \x01(\tB$\xbaH!r\x1fR\x00R\rfront_channelR\fback_channelR\x04type\x125\n" +
 	"\x16authorization_endpoint\x18\x06 \x01(\tR\x15authorizationEndpoint\x12%\n" +
@@ -948,10 +950,11 @@ const file_org_openmcf_provider_auth0_auth0connection_v1_spec_proto_rawDesc = ""
 	" \x03(\v2V.org.openmcf.provider.auth0.auth0connection.v1.Auth0OidcOptions.AttributeMappingsEntryR\x11attributeMappings\x1aD\n" +
 	"\x16AttributeMappingsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xfb\x02\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xff\x02\n" +
 	"\x13Auth0AzureAdOptions\x12#\n" +
-	"\tclient_id\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bclientId\x12+\n" +
-	"\rclient_secret\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\fclientSecret\x12\x1e\n" +
+	"\tclient_id\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bclientId\x12/\n" +
+	"\rclient_secret\x18\x02 \x01(\tB\n" +
+	"\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01R\fclientSecret\x12\x1e\n" +
 	"\x06domain\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06domain\x12\x1b\n" +
 	"\ttenant_id\x18\x04 \x01(\tR\btenantId\x12.\n" +
 	"\x13use_common_endpoint\x18\x05 \x01(\bR\x11useCommonEndpoint\x12<\n" +

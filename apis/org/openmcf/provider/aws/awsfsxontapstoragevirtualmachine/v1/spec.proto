@@ -107,7 +107,7 @@ message AwsFsxOntapStorageVirtualMachineSpec {
   //
   // Length: 8-50 characters. Optional — omit if SVM CLI access is not needed.
   // This value is sensitive and will not be returned in read operations.
-  string svm_admin_password = 5;
+  string svm_admin_password = 5 [(org.openmcf.shared.options.sensitive) = true];
 
   // ---------------------------------------------------------------------------
   // Active Directory (optional — for SMB access)
@@ -193,7 +193,10 @@ message AwsFsxOntapStorageVirtualMachineActiveDirectoryConfiguration {
   // This value is sensitive and will not be returned in read operations.
   // For production workloads, consider injecting this value via CI/CD secrets
   // management rather than storing it in the resource manifest.
-  string password = 5 [(buf.validate.field).string.min_len = 1];
+  string password = 5 [
+    (buf.validate.field).string.min_len = 1,
+    (org.openmcf.shared.options.sensitive) = true
+  ];
 
   // Name of the AD domain group whose members are granted administrative
   // privileges on the SVM for file share management.

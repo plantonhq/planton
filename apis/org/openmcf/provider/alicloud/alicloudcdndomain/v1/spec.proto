@@ -3,6 +3,7 @@ syntax = "proto3";
 package org.openmcf.provider.alicloud.alicloudcdndomain.v1;
 
 import "buf/validate/validate.proto";
+import "org/openmcf/shared/options/options.proto";
 
 // AliCloudCdnDomainSpec defines the configuration for an Alibaba Cloud CDN
 // accelerated domain managed by the CDN service.
@@ -164,7 +165,7 @@ message AliCloudCdnDomainCertificateConfig {
 
   // PEM-encoded private key content.
   // Required when cert_type is "upload".
-  string private_key = 6;
+  string private_key = 6 [(org.openmcf.shared.options.sensitive) = true];
 
   // Whether HTTPS is enabled on the CDN domain.
   //   - "on"  : HTTPS enabled (default when certificate_config is provided)
