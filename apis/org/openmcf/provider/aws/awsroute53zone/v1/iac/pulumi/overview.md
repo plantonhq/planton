@@ -1,5 +1,0 @@
-# Overview
-
-The AWS AWS Route53 Zone Pulumi Module is designed to simplify the management and provisioning of DNS zones using Amazon Route53. By integrating the module with Planton's Kubernetes-like API resource model, developers can define Route53 zones and DNS records using simple YAML files. The module leverages Pulumi for infrastructure provisioning, automating the creation of hosted zones and their associated DNS records. This approach enhances scalability and provides a seamless, multi-cloud infrastructure experience while abstracting away complex AWS operations.
-
-With built-in support for both the AWS Native and AWS Classic providers, this module ensures full coverage of AWS Route53 functionalities. While the Native provider handles the creation of hosted zones, the Classic provider is used for managing DNS records. This dual-provider setup guarantees that developers can configure hosted zones with minimal effort and apply updates or changes as required. All key outputs, including zone IDs and nameservers, are captured in `status.outputs` to facilitate seamless integration with other services and applications.

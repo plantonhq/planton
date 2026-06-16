@@ -3,7 +3,7 @@ package module
 import (
 	"github.com/pkg/errors"
 	awsroute53dnsrecordv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsroute53dnsrecord/v1"
-	awsclassic "github.com/pulumi/pulumi-aws/sdk/v7/go/aws"
+	"github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/provider/aws/pulumiawsprovider"
 	awsclassicroute53 "github.com/pulumi/pulumi-aws/sdk/v7/go/aws/route53"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
@@ -13,32 +13,13 @@ func Resources(ctx *pulumi.Context, stackInput *awsroute53dnsrecordv1.AwsRoute53
 	dnsRecord := locals.AwsRoute53DnsRecord
 	spec := dnsRecord.Spec
 
-	awsProviderConfig := stackInput.ProviderConfig
-	var provider *awsclassic.Provider
-	var err error
-
-	// Create AWS provider with optional credentials
-	if awsProviderConfig == nil {
-		provider, err = awsclassic.NewProvider(ctx,
-			"aws-provider",
-			&awsclassic.ProviderArgs{
-				Region: pulumi.String(locals.AwsRoute53DnsRecord.Spec.Region),
-			})
-		if err != nil {
-			return errors.Wrap(err, "failed to create default AWS provider")
-		}
-	} else {
-		provider, err = awsclassic.NewProvider(ctx,
-			"aws-provider",
-			&awsclassic.ProviderArgs{
-				AccessKey: pulumi.String(awsProviderConfig.AccessKeyId),
-				SecretKey: pulumi.String(awsProviderConfig.SecretAccessKey),
-				Region:    pulumi.String(locals.AwsRoute53DnsRecord.Spec.Region),
-				Token:     pulumi.StringPtr(awsProviderConfig.SessionToken),
-			})
-		if err != nil {
-			return errors.Wrap(err, "failed to create AWS provider with custom credentials")
-		}
+	// Build the AWS provider via the shared keyless builder, which resolves the right
+	// credential mechanism (static keys, keyless web identity, or the ambient chain)
+	// from the provider config -- the same convergent path every other AWS pulumi
+	// module uses. Region comes from the resource's spec so the provider matches it.
+	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, spec.Region)
+	if err != nil {
+		return errors.Wrap(err, "failed to create aws classic provider")
 	}
 
 	// Extract zone_id from StringValueOrRef

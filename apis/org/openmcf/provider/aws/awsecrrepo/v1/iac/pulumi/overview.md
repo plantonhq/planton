@@ -1,5 +1,0 @@
-# Overview
-
-The AWS ECR Repo Pulumi module enables developers to define and deploy Virtual Private Clouds (ECRs) on AWS using a standardized, Kubernetes-like API resource model. By specifying configurations in a YAML file—such as ECR CIDR block, availability zones, number of subnets per availability zone, subnet sizes, and DNS settings—the module automates the provisioning of AWS ECR Repo resources. It accepts the `AwsEcrRepo` API resource as input and utilizes Pulumi to create the necessary AWS infrastructure based on the provided specifications, capturing outputs like ECR ID, Internet Gateway ID, and subnet details in `status.outputs`.
-
-By abstracting the complexities of AWS networking, this module allows developers to set up secure and scalable network environments efficiently with minimal effort. It integrates seamlessly with our unified APIs and adheres to a consistent resource structure across multi-cloud environments. This approach enhances productivity by enabling developers to focus on their applications while the module handles the underlying network infrastructure provisioning and configuration.

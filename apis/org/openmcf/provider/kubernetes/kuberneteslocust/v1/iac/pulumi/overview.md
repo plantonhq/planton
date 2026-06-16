@@ -1,5 +1,0 @@
-# Overview
-
-The **Locust Kubernetes Pulumi Module** is designed to deploy and manage Locust clusters for distributed load testing on Kubernetes. This module accepts a `LocustKubernetes` API resource as input, allowing you to define the configuration of both the master and worker Locust containers, along with load test specifications, custom Helm values, and ingress configuration. The module automatically provisions Kubernetes resources based on the provided specification, enabling scalable and customizable load testing infrastructure.
-
-With this module, developers and QA engineers can deploy Locust clusters that simulate heavy user traffic for performance testing on any target application. The module supports both internal and external access configurations through Kubernetes services and ingress, with customizable options for TLS, routing, and resource management. Key outputs like service endpoints and port-forwarding commands are made available in the `status.outputs` for easy access post-deployment.

@@ -1,5 +1,0 @@
-# Overview
-
-The AWS S3 Object Set Pulumi module enables developers to declaratively upload and manage one or more S3 objects to a target bucket using a standardized, Kubernetes-like API resource model. By specifying objects in a YAML manifest -- including their keys, content (inline text or base64-encoded binary), content types, and metadata -- the module automates the provisioning of S3 objects through Pulumi. It accepts the `AwsS3ObjectSet` API resource as input and creates `s3.BucketObjectv2` resources for each object in the spec, capturing outputs like ETags and version IDs in `status.outputs`.
-
-By abstracting the complexity of individual S3 object uploads into a single declarative resource, this module allows developers to manage configuration files, static assets, and seed data alongside their infrastructure. Tags are inherited hierarchically from labels through set-level to object-level, reducing configuration duplication. The foreign key integration for the bucket field enables seamless wiring with AwsS3Bucket components.

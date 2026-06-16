@@ -152,18 +152,36 @@ func (x *AwsProviderConfig) GetWebIdentity() *AwsWebIdentityProviderConfig {
 //   - two hops: assume a base role with the web identity (role_arn below), then role-chain
 //     into the target role via chained_assume_roles (capped at a 1h session by AWS).
 //
-// The token is carried in memory (web_identity_token) and never written to disk: a stack
-// job's runtime stays within the token TTL, so no file-based provider refresh is needed.
+// The token is supplied one of two ways (exactly one): inline in memory (web_identity_token),
+// or as a path to a file the provider re-reads (web_identity_token_file). Inline suits a stack
+// job whose runtime stays within a single assumed-role session (the token never touches disk);
+// the file path suits a long-running job that outlives the session, where the pulumi-aws
+// "classic" provider re-reads the file to refresh -- so the caller MUST keep the file's contents
+// a currently-valid (non-expired) minted JWT for the job's lifetime.
+//
+// These provider-config fields are constructed by the caller (e.g. the Planton runner) at deploy
+// time, not supplied as user input in a resource spec, so they are intentionally outside the spec
+// secret-coverage surface and carry no `sensitive` annotation.
 //
 // Exchange site differs by provider: the pulumi-aws "classic" provider performs the exchange
-// itself from web_identity_token, whereas pulumi-aws-native has no web-identity support
-// (upstream pulumi/pulumi-aws-native#1042) so its builder performs the STS exchange and injects
-// the resulting temporary credentials.
+// itself (and is the only engine that honors web_identity_token_file's re-read refresh), whereas
+// pulumi-aws-native has no web-identity support (upstream pulumi/pulumi-aws-native#1042) so its
+// builder performs a one-shot STS exchange and injects the resulting temporary credentials; the
+// builder-side exchange engines (aws-native, tofu) require the inline web_identity_token.
 type AwsWebIdentityProviderConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The minted OIDC JWT presented to STS. Maps to pulumi-aws
-	// ProviderAssumeRoleWithWebIdentity.WebIdentityToken.
+	// The minted OIDC JWT presented to STS, supplied inline (in memory). Maps to pulumi-aws
+	// ProviderAssumeRoleWithWebIdentity.WebIdentityToken. Exactly one of web_identity_token or
+	// web_identity_token_file must be set (enforced by the message-level rule below).
 	WebIdentityToken string `protobuf:"bytes,1,opt,name=web_identity_token,json=webIdentityToken,proto3" json:"web_identity_token,omitempty"`
+	// Path to a file holding the minted OIDC JWT, for long-running stack jobs whose runtime
+	// outlives a single assumed-role session. Maps to pulumi-aws
+	// ProviderAssumeRoleWithWebIdentity.WebIdentityTokenFile, which the classic provider re-reads
+	// to refresh credentials -- so the caller MUST keep the file's contents a currently-valid
+	// (non-expired) JWT for the job's lifetime. Honored only by the pulumi-aws classic provider;
+	// the builder-side exchange engines (aws-native, tofu) reject it and require web_identity_token.
+	// Exactly one of web_identity_token or web_identity_token_file must be set.
+	WebIdentityTokenFile string `protobuf:"bytes,6,opt,name=web_identity_token_file,json=webIdentityTokenFile,proto3" json:"web_identity_token_file,omitempty"`
 	// ARN of the first-hop role assumed with the web identity:
 	//   - single hop: the target (customer) role.
 	//   - two hops: the base role (in cross-account-trust, a role in the platform's account),
@@ -213,6 +231,13 @@ func (*AwsWebIdentityProviderConfig) Descriptor() ([]byte, []int) {
 func (x *AwsWebIdentityProviderConfig) GetWebIdentityToken() string {
 	if x != nil {
 		return x.WebIdentityToken
+	}
+	return ""
+}
+
+func (x *AwsWebIdentityProviderConfig) GetWebIdentityTokenFile() string {
+	if x != nil {
+		return x.WebIdentityTokenFile
 	}
 	return ""
 }
@@ -336,13 +361,15 @@ const file_org_openmcf_provider_aws_provider_proto_rawDesc = "" +
 	"\x1aspec.aws.secret_access_key\x12\xdb\x01The provided AWS Secret Access Key is invalid. It must contain exactly 40 characters consisting of numbers, lowercase and uppercase letters, slashes (/), and plus signs (+). Please double-check your input and try again.\x1a#this.matches('^[0-9a-zA-Z/+]{40}$')\xd8\x01\x01r\x03\x98\x01(R\x0fsecretAccessKey\x12\x1e\n" +
 	"\x06region\x18\x04 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06region\x12#\n" +
 	"\rsession_token\x18\x05 \x01(\tR\fsessionToken\x12Y\n" +
-	"\fweb_identity\x18\x06 \x01(\v26.org.openmcf.provider.aws.AwsWebIdentityProviderConfigR\vwebIdentity\"\x97\x02\n" +
-	"\x1cAwsWebIdentityProviderConfig\x124\n" +
-	"\x12web_identity_token\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x10webIdentityToken\x12!\n" +
+	"\fweb_identity\x18\x06 \x01(\v26.org.openmcf.provider.aws.AwsWebIdentityProviderConfigR\vwebIdentity\"\xb4\x04\n" +
+	"\x1cAwsWebIdentityProviderConfig\x12,\n" +
+	"\x12web_identity_token\x18\x01 \x01(\tR\x10webIdentityToken\x125\n" +
+	"\x17web_identity_token_file\x18\x06 \x01(\tR\x14webIdentityTokenFile\x12!\n" +
 	"\brole_arn\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\aroleArn\x12!\n" +
 	"\fsession_name\x18\x03 \x01(\tR\vsessionName\x12\x1a\n" +
 	"\bduration\x18\x04 \x01(\tR\bduration\x12_\n" +
-	"\x14chained_assume_roles\x18\x05 \x03(\v2-.org.openmcf.provider.aws.AwsAssumeRoleConfigR\x12chainedAssumeRoles\"\x98\x01\n" +
+	"\x14chained_assume_roles\x18\x05 \x03(\v2-.org.openmcf.provider.aws.AwsAssumeRoleConfigR\x12chainedAssumeRoles:\xeb\x01\xbaH\xe7\x01\x1a\xe4\x01\n" +
+	"\x1faws.web_identity.token_xor_file\x12xProvide exactly one of web_identity_token (inline JWT) or web_identity_token_file (file path), not both and not neither.\x1aG(this.web_identity_token != '') != (this.web_identity_token_file != '')\"\x98\x01\n" +
 	"\x13AwsAssumeRoleConfig\x12!\n" +
 	"\brole_arn\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\aroleArn\x12\x1f\n" +
 	"\vexternal_id\x18\x02 \x01(\tR\n" +

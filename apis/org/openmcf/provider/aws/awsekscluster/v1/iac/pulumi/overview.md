@@ -1,5 +1,0 @@
-# Overview
-
-The AWS AWS EKS Cluster Pulumi module enables developers to define and deploy Amazon Elastic Kubernetes Service (EKS) clusters on AWS using a standardized, Kubernetes-like API resource model. By specifying configurations in a YAML file—such as AWS region, VPC ID, and worker node management mode—the module automates the provisioning of EKS clusters. It accepts the `AwsEksCluster` API resource as input and utilizes Pulumi to create the necessary AWS infrastructure based on the provided specifications, capturing outputs like the cluster endpoint and certificate authority data in `status.outputs`.
-
-By abstracting the complexities of AWS service interactions, this module allows developers to set up scalable Kubernetes clusters efficiently with minimal effort. It integrates seamlessly with our unified APIs and adheres to a consistent resource structure across multi-cloud environments. This approach enhances productivity by enabling developers to focus on deploying and managing applications while the module handles the underlying cluster provisioning and configuration.

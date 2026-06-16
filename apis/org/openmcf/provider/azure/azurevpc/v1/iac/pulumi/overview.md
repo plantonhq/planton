@@ -1,7 +1,0 @@
-# Overview
-
-The provided Pulumi module is designed to manage the lifecycle of an Azure Virtual Network (VNet) through our Unified APIs that mimic Kubernetes' resource modeling. The module accepts an `AzureVpcStackInput`, which includes the Pulumi input configurations, the target Azure VPC resource, and Azure credentials. Specifically, it utilizes the Azure credentials from the `stackInput` to instantiate an Azure provider within the Pulumi context. This setup allows the module to securely interact with Azure resources using the provided `ClientId`, `ClientSecret`, `SubscriptionId`, and `TenantId`.
-
-By initializing the Azure provider with these credentials, the module prepares the environment for deploying and managing the Virtual Network infrastructure as defined in the `api-resource.yaml` file. The module provisions a complete networking stack including a Resource Group, Virtual Network, subnet for AKS nodes or other workloads, optional NAT Gateway for outbound connectivity, and optional Private DNS zone links for name resolution.
-
-This Pulumi module exemplifies the standardized structure of our APIs and demonstrates how developers can deploy complex network infrastructure using a single YAML configuration, benefiting from consistent documentation available via buf.build. The module follows Azure networking best practices, including proper address space planning, subnet segmentation, and scalable outbound connectivity patterns.

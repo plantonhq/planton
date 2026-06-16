@@ -1,5 +1,0 @@
-# Overview
-
-The Neo4j Kubernetes Pulumi module provides a flexible and scalable solution for deploying Neo4j database instances on Kubernetes using a unified API resource model. By adhering to Kubernetes conventions, the module simplifies the deployment and management of Neo4j instances, allowing users to configure essential parameters like CPU and memory resources, as well as ingress for external access. The module automates the creation of Kubernetes resources such as namespaces, services, and ingress, ensuring that deployments are standardized and easy to manage.
-
-This Pulumi module integrates with the Kubernetes provider to dynamically set up resources based on the provided `Neo4jKubernetesStackInput`. It leverages the flexibility of Kubernetes to provision and manage the Neo4j instances, and it captures essential outputs such as service names, endpoints, and port-forwarding commands. These outputs provide developers with the necessary information to manage and access their Neo4j database both internally within the Kubernetes cluster and externally when ingress is enabled.
