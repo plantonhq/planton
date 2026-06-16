@@ -78,17 +78,29 @@ variable "spec" {
     # in spec.proto and the Pulumi module's backup_config.go / restore_config.go.
     backup_config = optional(object({
 
+      # Explicitly enable/disable backups for this database (USE_WALG_BACKUP).
+      enable_backup = optional(bool)
+
       # Custom S3/R2 prefix path for this database's backups (WALG_S3_PREFIX).
       s3_prefix = optional(string)
 
       # Custom backup schedule in cron format (BACKUP_SCHEDULE).
       backup_schedule = optional(string)
 
-      # Explicitly enable/disable backups for this database (USE_WALG_BACKUP).
-      enable_backup = optional(bool)
+      # Number of base backups to retain (BACKUP_NUM_TO_RETAIN).
+      backup_retain_count = optional(number)
+
+      # Dedicated R2 credentials + endpoint for this database's backups, independent
+      # of any operator-level S3 config. When set, the module creates a Secret from
+      # these credentials and references it via secretKeyRef in the pod env.
+      r2_config = optional(object({
+        cloudflare_account_id = string
+        access_key_id         = string
+        secret_access_key     = string
+      }))
 
       # Disaster-recovery restore configuration (Zalando spec.standby + STANDBY_* env).
-      restore = optional(object({
+      restore_config = optional(object({
 
         # When true, the database bootstraps as a read-only standby from backups.
         enabled = optional(bool, false)

@@ -1,5 +1,9 @@
 resource "kubernetes_manifest" "database" {
-  depends_on = [kubernetes_namespace_v1.postgres_namespace]
+  depends_on = [
+    kubernetes_namespace_v1.postgres_namespace,
+    kubernetes_secret_v1.backup_r2_credentials,
+    kubernetes_secret_v1.restore_r2_credentials,
+  ]
 
   manifest = {
     apiVersion = "acid.zalan.do/v1"

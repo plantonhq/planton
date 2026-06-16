@@ -87,7 +87,6 @@ gaps:
   - KubernetesHarbor:spec.database.external_database.password
   - KubernetesHarbor:spec.storage.oss.access_key_secret
   - KubernetesHarbor:spec.storage.s3.secret_key
-  - KubernetesPostgres:spec.backup_config.restore.r2_config.secret_access_key
   - KubernetesSecret:spec.basic_auth.password
   - KubernetesSecret:spec.docker_config_json.password
   - KubernetesSecret:spec.ssh_auth.ssh_private_key

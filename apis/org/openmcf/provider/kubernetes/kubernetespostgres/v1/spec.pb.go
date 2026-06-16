@@ -10,6 +10,7 @@ import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	kubernetes "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes"
 	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
+	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	descriptorpb "google.golang.org/protobuf/types/descriptorpb"
@@ -25,34 +26,39 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// R2/S3-compatible storage credentials for restore operations
-type KubernetesPostgresR2Config struct {
+// R2/S3-compatible storage credentials for BACKUP (WAL-G push) operations.
+// Kept separate from the restore-side message so backup and restore evolve
+// independently. Today this targets Cloudflare R2; it is intentionally a discrete
+// typed message to allow future S3-compatible backup backends (e.g. AWS S3, GCS)
+// to be added as siblings without disruption.
+type KubernetesPostgresBackupR2Config struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Cloudflare account ID for R2 endpoint construction
+	// Cloudflare account ID for R2 endpoint construction.
 	// Used to build: https://<account_id>.r2.cloudflarestorage.com
 	CloudflareAccountId string `protobuf:"bytes,1,opt,name=cloudflare_account_id,json=cloudflareAccountId,proto3" json:"cloudflare_account_id,omitempty"`
-	// R2 Access Key ID
+	// R2 access-key ID. A public identifier (like a username), not a secret.
 	AccessKeyId string `protobuf:"bytes,2,opt,name=access_key_id,json=accessKeyId,proto3" json:"access_key_id,omitempty"`
-	// R2 Secret Access Key
+	// R2 secret access key. Secret: must be provided as a managed-secret reference
+	// and resolved just-in-time at deploy (never plaintext).
 	SecretAccessKey string `protobuf:"bytes,3,opt,name=secret_access_key,json=secretAccessKey,proto3" json:"secret_access_key,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *KubernetesPostgresR2Config) Reset() {
-	*x = KubernetesPostgresR2Config{}
+func (x *KubernetesPostgresBackupR2Config) Reset() {
+	*x = KubernetesPostgresBackupR2Config{}
 	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesPostgresR2Config) String() string {
+func (x *KubernetesPostgresBackupR2Config) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesPostgresR2Config) ProtoMessage() {}
+func (*KubernetesPostgresBackupR2Config) ProtoMessage() {}
 
-func (x *KubernetesPostgresR2Config) ProtoReflect() protoreflect.Message {
+func (x *KubernetesPostgresBackupR2Config) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,26 +70,94 @@ func (x *KubernetesPostgresR2Config) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesPostgresR2Config.ProtoReflect.Descriptor instead.
-func (*KubernetesPostgresR2Config) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesPostgresBackupR2Config.ProtoReflect.Descriptor instead.
+func (*KubernetesPostgresBackupR2Config) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesPostgresR2Config) GetCloudflareAccountId() string {
+func (x *KubernetesPostgresBackupR2Config) GetCloudflareAccountId() string {
 	if x != nil {
 		return x.CloudflareAccountId
 	}
 	return ""
 }
 
-func (x *KubernetesPostgresR2Config) GetAccessKeyId() string {
+func (x *KubernetesPostgresBackupR2Config) GetAccessKeyId() string {
 	if x != nil {
 		return x.AccessKeyId
 	}
 	return ""
 }
 
-func (x *KubernetesPostgresR2Config) GetSecretAccessKey() string {
+func (x *KubernetesPostgresBackupR2Config) GetSecretAccessKey() string {
+	if x != nil {
+		return x.SecretAccessKey
+	}
+	return ""
+}
+
+// R2/S3-compatible storage credentials for RESTORE (standby bootstrap / PITR)
+// operations. Kept separate from the backup-side message so the two evolve
+// independently.
+type KubernetesPostgresRestoreR2Config struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Cloudflare account ID for R2 endpoint construction.
+	// Used to build: https://<account_id>.r2.cloudflarestorage.com
+	CloudflareAccountId string `protobuf:"bytes,1,opt,name=cloudflare_account_id,json=cloudflareAccountId,proto3" json:"cloudflare_account_id,omitempty"`
+	// R2 access-key ID. A public identifier (like a username), not a secret.
+	AccessKeyId string `protobuf:"bytes,2,opt,name=access_key_id,json=accessKeyId,proto3" json:"access_key_id,omitempty"`
+	// R2 secret access key. Secret: must be provided as a managed-secret reference
+	// and resolved just-in-time at deploy (never plaintext).
+	SecretAccessKey string `protobuf:"bytes,3,opt,name=secret_access_key,json=secretAccessKey,proto3" json:"secret_access_key,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *KubernetesPostgresRestoreR2Config) Reset() {
+	*x = KubernetesPostgresRestoreR2Config{}
+	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesPostgresRestoreR2Config) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesPostgresRestoreR2Config) ProtoMessage() {}
+
+func (x *KubernetesPostgresRestoreR2Config) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesPostgresRestoreR2Config.ProtoReflect.Descriptor instead.
+func (*KubernetesPostgresRestoreR2Config) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *KubernetesPostgresRestoreR2Config) GetCloudflareAccountId() string {
+	if x != nil {
+		return x.CloudflareAccountId
+	}
+	return ""
+}
+
+func (x *KubernetesPostgresRestoreR2Config) GetAccessKeyId() string {
+	if x != nil {
+		return x.AccessKeyId
+	}
+	return ""
+}
+
+func (x *KubernetesPostgresRestoreR2Config) GetSecretAccessKey() string {
 	if x != nil {
 		return x.SecretAccessKey
 	}
@@ -125,14 +199,14 @@ type KubernetesPostgresRestoreConfig struct {
 	// Optional: Allows per-database independent credentials for disaster recovery
 	// If not specified, operators may use shared credentials or fail
 	// Recommended: Provide credentials for true cross-cluster independence
-	R2Config      *KubernetesPostgresR2Config `protobuf:"bytes,4,opt,name=r2_config,json=r2Config,proto3,oneof" json:"r2_config,omitempty"`
+	R2Config      *KubernetesPostgresRestoreR2Config `protobuf:"bytes,4,opt,name=r2_config,json=r2Config,proto3,oneof" json:"r2_config,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *KubernetesPostgresRestoreConfig) Reset() {
 	*x = KubernetesPostgresRestoreConfig{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[1]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -144,7 +218,7 @@ func (x *KubernetesPostgresRestoreConfig) String() string {
 func (*KubernetesPostgresRestoreConfig) ProtoMessage() {}
 
 func (x *KubernetesPostgresRestoreConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[1]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -157,7 +231,7 @@ func (x *KubernetesPostgresRestoreConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesPostgresRestoreConfig.ProtoReflect.Descriptor instead.
 func (*KubernetesPostgresRestoreConfig) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_rawDescGZIP(), []int{1}
+	return file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *KubernetesPostgresRestoreConfig) GetEnabled() bool {
@@ -181,7 +255,7 @@ func (x *KubernetesPostgresRestoreConfig) GetS3Path() string {
 	return ""
 }
 
-func (x *KubernetesPostgresRestoreConfig) GetR2Config() *KubernetesPostgresR2Config {
+func (x *KubernetesPostgresRestoreConfig) GetR2Config() *KubernetesPostgresRestoreR2Config {
 	if x != nil {
 		return x.R2Config
 	}
@@ -193,30 +267,41 @@ func (x *KubernetesPostgresRestoreConfig) GetR2Config() *KubernetesPostgresR2Con
 // When specified, these settings override operator-level backup configuration.
 type KubernetesPostgresBackupConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Optional: Custom S3/R2 prefix path for this database's backups
-	// If not specified, uses operator-level default or standard naming
+	// Optional: Enable or disable backups for this specific database -> USE_WALG_BACKUP.
+	// If true, backups are explicitly enabled (overrides operator setting).
+	// If false, backups are explicitly disabled for this database.
+	// If not specified, uses operator-level setting (or defaults to true when r2_config is set).
+	EnableBackup *bool `protobuf:"varint,1,opt,name=enable_backup,json=enableBackup,proto3,oneof" json:"enable_backup,omitempty"`
+	// Optional: Custom S3/R2 prefix path for this database's backups -> WALG_S3_PREFIX.
+	// When r2_config is set, this is the FULL s3://<bucket>/<path> target for the
+	// dedicated bucket (prefer Zalando's $(SCOPE)/$(PGVERSION) substitution in the path).
+	// When r2_config is unset, it overrides the operator-level prefix as before.
 	// Example: "backups/my-app/production/postgres/$(PGVERSION)"
-	// Note: $(PGVERSION) will be replaced by the Postgres version
-	S3Prefix string `protobuf:"bytes,1,opt,name=s3_prefix,json=s3Prefix,proto3" json:"s3_prefix,omitempty"`
-	// Optional: Custom backup schedule in cron format
-	// If not specified, uses operator-level schedule
+	S3Prefix string `protobuf:"bytes,2,opt,name=s3_prefix,json=s3Prefix,proto3" json:"s3_prefix,omitempty"`
+	// Optional: Custom backup schedule in cron format -> BACKUP_SCHEDULE.
+	// If not specified, uses operator-level schedule.
 	// Example: "0 3 * * *" for 3 AM daily backups
-	BackupSchedule string `protobuf:"bytes,2,opt,name=backup_schedule,json=backupSchedule,proto3" json:"backup_schedule,omitempty"`
-	// Optional: Enable or disable backups for this specific database
-	// If true, backups are explicitly enabled (overrides operator setting)
-	// If false, backups are explicitly disabled for this database
-	// If not specified, uses operator-level setting
-	EnableBackup *bool `protobuf:"varint,3,opt,name=enable_backup,json=enableBackup,proto3,oneof" json:"enable_backup,omitempty"`
+	BackupSchedule string `protobuf:"bytes,3,opt,name=backup_schedule,json=backupSchedule,proto3" json:"backup_schedule,omitempty"`
+	// Optional: Number of base backups to retain -> BACKUP_NUM_TO_RETAIN.
+	// If not specified, uses the operator default. For a financial datastore,
+	// set this explicitly (e.g. 14).
+	BackupRetainCount *int32 `protobuf:"varint,4,opt,name=backup_retain_count,json=backupRetainCount,proto3,oneof" json:"backup_retain_count,omitempty"`
+	// Optional: Dedicated R2 credentials + endpoint for THIS database's backups,
+	// independent of any operator-level S3 configuration. When set, the module
+	// provisions the backup target with these credentials (a generated Kubernetes
+	// Secret referenced via secretKeyRef) rather than inheriting the cluster
+	// operator's bucket/credentials. The bucket is taken from s3_prefix.
+	R2Config *KubernetesPostgresBackupR2Config `protobuf:"bytes,5,opt,name=r2_config,json=r2Config,proto3,oneof" json:"r2_config,omitempty"`
 	// Disaster recovery restore configuration
 	// When set, enables cross-cluster database restoration from backup files
-	Restore       *KubernetesPostgresRestoreConfig `protobuf:"bytes,6,opt,name=restore,proto3,oneof" json:"restore,omitempty"`
+	RestoreConfig *KubernetesPostgresRestoreConfig `protobuf:"bytes,6,opt,name=restore_config,json=restoreConfig,proto3,oneof" json:"restore_config,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *KubernetesPostgresBackupConfig) Reset() {
 	*x = KubernetesPostgresBackupConfig{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[2]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -228,7 +313,7 @@ func (x *KubernetesPostgresBackupConfig) String() string {
 func (*KubernetesPostgresBackupConfig) ProtoMessage() {}
 
 func (x *KubernetesPostgresBackupConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[2]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -241,7 +326,14 @@ func (x *KubernetesPostgresBackupConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesPostgresBackupConfig.ProtoReflect.Descriptor instead.
 func (*KubernetesPostgresBackupConfig) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_rawDescGZIP(), []int{2}
+	return file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *KubernetesPostgresBackupConfig) GetEnableBackup() bool {
+	if x != nil && x.EnableBackup != nil {
+		return *x.EnableBackup
+	}
+	return false
 }
 
 func (x *KubernetesPostgresBackupConfig) GetS3Prefix() string {
@@ -258,16 +350,23 @@ func (x *KubernetesPostgresBackupConfig) GetBackupSchedule() string {
 	return ""
 }
 
-func (x *KubernetesPostgresBackupConfig) GetEnableBackup() bool {
-	if x != nil && x.EnableBackup != nil {
-		return *x.EnableBackup
+func (x *KubernetesPostgresBackupConfig) GetBackupRetainCount() int32 {
+	if x != nil && x.BackupRetainCount != nil {
+		return *x.BackupRetainCount
 	}
-	return false
+	return 0
 }
 
-func (x *KubernetesPostgresBackupConfig) GetRestore() *KubernetesPostgresRestoreConfig {
+func (x *KubernetesPostgresBackupConfig) GetR2Config() *KubernetesPostgresBackupR2Config {
 	if x != nil {
-		return x.Restore
+		return x.R2Config
+	}
+	return nil
+}
+
+func (x *KubernetesPostgresBackupConfig) GetRestoreConfig() *KubernetesPostgresRestoreConfig {
+	if x != nil {
+		return x.RestoreConfig
 	}
 	return nil
 }
@@ -293,7 +392,7 @@ type KubernetesPostgresUser struct {
 
 func (x *KubernetesPostgresUser) Reset() {
 	*x = KubernetesPostgresUser{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[3]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -305,7 +404,7 @@ func (x *KubernetesPostgresUser) String() string {
 func (*KubernetesPostgresUser) ProtoMessage() {}
 
 func (x *KubernetesPostgresUser) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[3]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -318,7 +417,7 @@ func (x *KubernetesPostgresUser) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesPostgresUser.ProtoReflect.Descriptor instead.
 func (*KubernetesPostgresUser) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_rawDescGZIP(), []int{3}
+	return file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *KubernetesPostgresUser) GetName() string {
@@ -351,7 +450,7 @@ type KubernetesPostgresDatabase struct {
 
 func (x *KubernetesPostgresDatabase) Reset() {
 	*x = KubernetesPostgresDatabase{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[4]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -363,7 +462,7 @@ func (x *KubernetesPostgresDatabase) String() string {
 func (*KubernetesPostgresDatabase) ProtoMessage() {}
 
 func (x *KubernetesPostgresDatabase) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[4]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -376,7 +475,7 @@ func (x *KubernetesPostgresDatabase) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesPostgresDatabase.ProtoReflect.Descriptor instead.
 func (*KubernetesPostgresDatabase) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_rawDescGZIP(), []int{4}
+	return file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *KubernetesPostgresDatabase) GetName() string {
@@ -435,7 +534,7 @@ type KubernetesPostgresSpec struct {
 
 func (x *KubernetesPostgresSpec) Reset() {
 	*x = KubernetesPostgresSpec{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[5]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -447,7 +546,7 @@ func (x *KubernetesPostgresSpec) String() string {
 func (*KubernetesPostgresSpec) ProtoMessage() {}
 
 func (x *KubernetesPostgresSpec) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[5]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -460,7 +559,7 @@ func (x *KubernetesPostgresSpec) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesPostgresSpec.ProtoReflect.Descriptor instead.
 func (*KubernetesPostgresSpec) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_rawDescGZIP(), []int{5}
+	return file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *KubernetesPostgresSpec) GetTargetCluster() *kubernetes.KubernetesClusterSelector {
@@ -539,7 +638,7 @@ type KubernetesPostgresContainer struct {
 
 func (x *KubernetesPostgresContainer) Reset() {
 	*x = KubernetesPostgresContainer{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[6]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -551,7 +650,7 @@ func (x *KubernetesPostgresContainer) String() string {
 func (*KubernetesPostgresContainer) ProtoMessage() {}
 
 func (x *KubernetesPostgresContainer) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[6]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -564,7 +663,7 @@ func (x *KubernetesPostgresContainer) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesPostgresContainer.ProtoReflect.Descriptor instead.
 func (*KubernetesPostgresContainer) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_rawDescGZIP(), []int{6}
+	return file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *KubernetesPostgresContainer) GetReplicas() int32 {
@@ -606,7 +705,7 @@ type KubernetesPostgresIngress struct {
 
 func (x *KubernetesPostgresIngress) Reset() {
 	*x = KubernetesPostgresIngress{}
-	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[7]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -618,7 +717,7 @@ func (x *KubernetesPostgresIngress) String() string {
 func (*KubernetesPostgresIngress) ProtoMessage() {}
 
 func (x *KubernetesPostgresIngress) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[7]
+	mi := &file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -631,7 +730,7 @@ func (x *KubernetesPostgresIngress) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesPostgresIngress.ProtoReflect.Descriptor instead.
 func (*KubernetesPostgresIngress) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_rawDescGZIP(), []int{7}
+	return file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *KubernetesPostgresIngress) GetEnabled() bool {
@@ -669,28 +768,38 @@ var File_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto protor
 
 const file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"@org/openmcf/provider/kubernetes/kubernetespostgres/v1/spec.proto\x125org.openmcf.provider.kubernetes.kubernetespostgres.v1\x1a\x1bbuf/validate/validate.proto\x1a google/protobuf/descriptor.proto\x1a0org/openmcf/provider/kubernetes/kubernetes.proto\x1a4org/openmcf/provider/kubernetes/target_cluster.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xb8\x01\n" +
-	"\x1aKubernetesPostgresR2Config\x12:\n" +
+	"@org/openmcf/provider/kubernetes/kubernetespostgres/v1/spec.proto\x125org.openmcf.provider.kubernetes.kubernetespostgres.v1\x1a\x1bbuf/validate/validate.proto\x1a google/protobuf/descriptor.proto\x1a0org/openmcf/provider/kubernetes/kubernetes.proto\x1a4org/openmcf/provider/kubernetes/target_cluster.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xc2\x01\n" +
+	" KubernetesPostgresBackupR2Config\x12:\n" +
 	"\x15cloudflare_account_id\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x13cloudflareAccountId\x12*\n" +
-	"\raccess_key_id\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\vaccessKeyId\x122\n" +
-	"\x11secret_access_key\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x0fsecretAccessKey\"\x8d\x02\n" +
+	"\raccess_key_id\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\vaccessKeyId\x126\n" +
+	"\x11secret_access_key\x18\x03 \x01(\tB\n" +
+	"\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01R\x0fsecretAccessKey\"\xc3\x01\n" +
+	"!KubernetesPostgresRestoreR2Config\x12:\n" +
+	"\x15cloudflare_account_id\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x13cloudflareAccountId\x12*\n" +
+	"\raccess_key_id\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\vaccessKeyId\x126\n" +
+	"\x11secret_access_key\x18\x03 \x01(\tB\n" +
+	"\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01R\x0fsecretAccessKey\"\x94\x02\n" +
 	"\x1fKubernetesPostgresRestoreConfig\x12\x18\n" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x12$\n" +
 	"\vbucket_name\x18\x02 \x01(\tH\x00R\n" +
 	"bucketName\x88\x01\x01\x12\x17\n" +
-	"\as3_path\x18\x03 \x01(\tR\x06s3Path\x12s\n" +
-	"\tr2_config\x18\x04 \x01(\v2Q.org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresR2ConfigH\x01R\br2Config\x88\x01\x01B\x0e\n" +
+	"\as3_path\x18\x03 \x01(\tR\x06s3Path\x12z\n" +
+	"\tr2_config\x18\x04 \x01(\v2X.org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresRestoreR2ConfigH\x01R\br2Config\x88\x01\x01B\x0e\n" +
 	"\f_bucket_nameB\f\n" +
 	"\n" +
-	"_r2_config\"\xa5\x02\n" +
-	"\x1eKubernetesPostgresBackupConfig\x12\x1b\n" +
-	"\ts3_prefix\x18\x01 \x01(\tR\bs3Prefix\x12'\n" +
-	"\x0fbackup_schedule\x18\x02 \x01(\tR\x0ebackupSchedule\x12(\n" +
-	"\renable_backup\x18\x03 \x01(\bH\x00R\fenableBackup\x88\x01\x01\x12u\n" +
-	"\arestore\x18\x06 \x01(\v2V.org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresRestoreConfigH\x01R\arestore\x88\x01\x01B\x10\n" +
-	"\x0e_enable_backupB\n" +
+	"_r2_config\"\x90\x04\n" +
+	"\x1eKubernetesPostgresBackupConfig\x12(\n" +
+	"\renable_backup\x18\x01 \x01(\bH\x00R\fenableBackup\x88\x01\x01\x12\x1b\n" +
+	"\ts3_prefix\x18\x02 \x01(\tR\bs3Prefix\x12'\n" +
+	"\x0fbackup_schedule\x18\x03 \x01(\tR\x0ebackupSchedule\x123\n" +
+	"\x13backup_retain_count\x18\x04 \x01(\x05H\x01R\x11backupRetainCount\x88\x01\x01\x12y\n" +
+	"\tr2_config\x18\x05 \x01(\v2W.org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresBackupR2ConfigH\x02R\br2Config\x88\x01\x01\x12\x82\x01\n" +
+	"\x0erestore_config\x18\x06 \x01(\v2V.org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresRestoreConfigH\x03R\rrestoreConfig\x88\x01\x01B\x10\n" +
+	"\x0e_enable_backupB\x16\n" +
+	"\x14_backup_retain_countB\f\n" +
 	"\n" +
-	"\b_restore\"J\n" +
+	"_r2_configB\x11\n" +
+	"\x0f_restore_config\"J\n" +
 	"\x16KubernetesPostgresUser\x12\x1a\n" +
 	"\x04name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12\x14\n" +
 	"\x05flags\x18\x02 \x03(\tR\x05flags\"W\n" +
@@ -734,39 +843,41 @@ func file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_rawDe
 	return file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_rawDescData
 }
 
-var file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_goTypes = []any{
-	(*KubernetesPostgresR2Config)(nil),           // 0: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresR2Config
-	(*KubernetesPostgresRestoreConfig)(nil),      // 1: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresRestoreConfig
-	(*KubernetesPostgresBackupConfig)(nil),       // 2: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresBackupConfig
-	(*KubernetesPostgresUser)(nil),               // 3: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresUser
-	(*KubernetesPostgresDatabase)(nil),           // 4: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresDatabase
-	(*KubernetesPostgresSpec)(nil),               // 5: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresSpec
-	(*KubernetesPostgresContainer)(nil),          // 6: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresContainer
-	(*KubernetesPostgresIngress)(nil),            // 7: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresIngress
-	(*kubernetes.KubernetesClusterSelector)(nil), // 8: org.openmcf.provider.kubernetes.KubernetesClusterSelector
-	(*v1.StringValueOrRef)(nil),                  // 9: org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	(*kubernetes.ContainerResources)(nil),        // 10: org.openmcf.provider.kubernetes.ContainerResources
-	(*descriptorpb.FieldOptions)(nil),            // 11: google.protobuf.FieldOptions
+	(*KubernetesPostgresBackupR2Config)(nil),     // 0: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresBackupR2Config
+	(*KubernetesPostgresRestoreR2Config)(nil),    // 1: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresRestoreR2Config
+	(*KubernetesPostgresRestoreConfig)(nil),      // 2: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresRestoreConfig
+	(*KubernetesPostgresBackupConfig)(nil),       // 3: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresBackupConfig
+	(*KubernetesPostgresUser)(nil),               // 4: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresUser
+	(*KubernetesPostgresDatabase)(nil),           // 5: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresDatabase
+	(*KubernetesPostgresSpec)(nil),               // 6: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresSpec
+	(*KubernetesPostgresContainer)(nil),          // 7: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresContainer
+	(*KubernetesPostgresIngress)(nil),            // 8: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresIngress
+	(*kubernetes.KubernetesClusterSelector)(nil), // 9: org.openmcf.provider.kubernetes.KubernetesClusterSelector
+	(*v1.StringValueOrRef)(nil),                  // 10: org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	(*kubernetes.ContainerResources)(nil),        // 11: org.openmcf.provider.kubernetes.ContainerResources
+	(*descriptorpb.FieldOptions)(nil),            // 12: google.protobuf.FieldOptions
 }
 var file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_depIdxs = []int32{
-	0,  // 0: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresRestoreConfig.r2_config:type_name -> org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresR2Config
-	1,  // 1: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresBackupConfig.restore:type_name -> org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresRestoreConfig
-	8,  // 2: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresSpec.target_cluster:type_name -> org.openmcf.provider.kubernetes.KubernetesClusterSelector
-	9,  // 3: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresSpec.namespace:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	6,  // 4: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresSpec.container:type_name -> org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresContainer
-	7,  // 5: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresSpec.ingress:type_name -> org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresIngress
-	2,  // 6: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresSpec.backup_config:type_name -> org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresBackupConfig
-	4,  // 7: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresSpec.databases:type_name -> org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresDatabase
-	3,  // 8: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresSpec.users:type_name -> org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresUser
-	10, // 9: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresContainer.resources:type_name -> org.openmcf.provider.kubernetes.ContainerResources
-	11, // 10: org.openmcf.provider.kubernetes.kubernetespostgres.v1.default_container:extendee -> google.protobuf.FieldOptions
-	6,  // 11: org.openmcf.provider.kubernetes.kubernetespostgres.v1.default_container:type_name -> org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresContainer
-	12, // [12:12] is the sub-list for method output_type
-	12, // [12:12] is the sub-list for method input_type
-	11, // [11:12] is the sub-list for extension type_name
-	10, // [10:11] is the sub-list for extension extendee
-	0,  // [0:10] is the sub-list for field type_name
+	1,  // 0: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresRestoreConfig.r2_config:type_name -> org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresRestoreR2Config
+	0,  // 1: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresBackupConfig.r2_config:type_name -> org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresBackupR2Config
+	2,  // 2: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresBackupConfig.restore_config:type_name -> org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresRestoreConfig
+	9,  // 3: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresSpec.target_cluster:type_name -> org.openmcf.provider.kubernetes.KubernetesClusterSelector
+	10, // 4: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresSpec.namespace:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	7,  // 5: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresSpec.container:type_name -> org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresContainer
+	8,  // 6: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresSpec.ingress:type_name -> org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresIngress
+	3,  // 7: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresSpec.backup_config:type_name -> org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresBackupConfig
+	5,  // 8: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresSpec.databases:type_name -> org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresDatabase
+	4,  // 9: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresSpec.users:type_name -> org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresUser
+	11, // 10: org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresContainer.resources:type_name -> org.openmcf.provider.kubernetes.ContainerResources
+	12, // 11: org.openmcf.provider.kubernetes.kubernetespostgres.v1.default_container:extendee -> google.protobuf.FieldOptions
+	7,  // 12: org.openmcf.provider.kubernetes.kubernetespostgres.v1.default_container:type_name -> org.openmcf.provider.kubernetes.kubernetespostgres.v1.KubernetesPostgresContainer
+	13, // [13:13] is the sub-list for method output_type
+	13, // [13:13] is the sub-list for method input_type
+	12, // [12:13] is the sub-list for extension type_name
+	11, // [11:12] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_init() }
@@ -774,15 +885,15 @@ func file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_init(
 	if File_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto != nil {
 		return
 	}
-	file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[1].OneofWrappers = []any{}
 	file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[2].OneofWrappers = []any{}
+	file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_msgTypes[3].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_rawDesc), len(file_org_openmcf_provider_kubernetes_kubernetespostgres_v1_spec_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   9,
 			NumExtensions: 1,
 			NumServices:   0,
 		},

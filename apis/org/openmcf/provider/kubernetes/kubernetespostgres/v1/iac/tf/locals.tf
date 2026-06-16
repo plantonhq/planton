@@ -51,30 +51,51 @@ locals {
 
   # ── Backup / restore (mirror of the Pulumi backup_config.go + restore_config.go) ──
   backup_config   = try(var.spec.backup_config, null)
-  restore         = try(local.backup_config.restore, null)
-  restore_enabled = try(local.restore.enabled, false)
+  backup_r2       = try(local.backup_config.r2_config, null)
+  restore_config  = try(local.backup_config.restore_config, null)
+  restore_enabled = try(local.restore_config.enabled, false)
+  restore_r2      = local.restore_enabled ? try(local.restore_config.r2_config, null) : null
+
+  backup_r2_present  = local.backup_r2 != null
+  restore_r2_present = local.restore_enabled && local.restore_r2 != null
+
+  # Names of the per-database R2 credential Secrets (created in credentials.tf).
+  backup_r2_secret_name  = "${var.metadata.name}-backup-r2-credentials"
+  restore_r2_secret_name = "${var.metadata.name}-restore-r2-credentials"
 
   # Zalando spec.standby block for cross-cluster disaster recovery. Present only when
-  # restore.enabled; the database then bootstraps read-only from the backup WAL path.
+  # restore is enabled; the database then bootstraps read-only from the backup WAL path.
   standby_block = local.restore_enabled ? {
-    s3_wal_path = format("s3://%s/%s", local.restore.bucket_name, local.restore.s3_path)
+    s3_wal_path = format("s3://%s/%s", local.restore_config.bucket_name, local.restore_config.s3_path)
   } : null
 
-  # Per-database backup env overrides (override operator-level settings).
+  # Per-database backup env overrides. When r2_config is set, the dedicated R2 target
+  # (endpoint/region/path-style as plain values; credentials via secretKeyRef) is added.
+  # Matches backup_config.go. Each entry is appended via a single-element conditional so
+  # plain ({name,value}) and secretKeyRef ({name,valueFrom}) entries can coexist (concat
+  # preserves per-element tuple types; a single mixed-shape ternary would not type-check).
   backup_env = local.backup_config == null ? [] : concat(
+    # USE_WALG_BACKUP: explicit enable_backup wins; otherwise r2_config implies true.
+    try(local.backup_config.enable_backup, null) != null ? [{ name = "USE_WALG_BACKUP", value = local.backup_config.enable_backup ? "true" : "false" }] : (local.backup_r2_present ? [{ name = "USE_WALG_BACKUP", value = "true" }] : []),
     try(local.backup_config.s3_prefix, "") != "" ? [{ name = "WALG_S3_PREFIX", value = format("s3://%s", local.backup_config.s3_prefix) }] : [],
     try(local.backup_config.backup_schedule, "") != "" ? [{ name = "BACKUP_SCHEDULE", value = local.backup_config.backup_schedule }] : [],
-    try(local.backup_config.enable_backup, null) != null ? [{ name = "USE_WALG_BACKUP", value = local.backup_config.enable_backup ? "true" : "false" }] : [],
+    try(local.backup_config.backup_retain_count, null) != null ? [{ name = "BACKUP_NUM_TO_RETAIN", value = tostring(local.backup_config.backup_retain_count) }] : [],
+    local.backup_r2_present ? [{ name = "AWS_ENDPOINT", value = format("https://%s.r2.cloudflarestorage.com", local.backup_r2.cloudflare_account_id) }] : [],
+    local.backup_r2_present ? [{ name = "AWS_REGION", value = "auto" }] : [],
+    local.backup_r2_present ? [{ name = "AWS_FORCE_PATH_STYLE", value = "true" }] : [],
+    local.backup_r2_present ? [{ name = "USE_WALG_RESTORE", value = "true" }] : [],
+    local.backup_r2_present ? [{ name = "AWS_ACCESS_KEY_ID", valueFrom = { secretKeyRef = { name = local.backup_r2_secret_name, key = "access_key_id" } } }] : [],
+    local.backup_r2_present ? [{ name = "AWS_SECRET_ACCESS_KEY", valueFrom = { secretKeyRef = { name = local.backup_r2_secret_name, key = "secret_access_key" } } }] : [],
   )
 
   # STANDBY_* env for R2 access during standby bootstrap. Present only when restore is
-  # enabled AND r2_config is supplied (matches restore_config.go).
-  standby_env = (local.restore_enabled && try(local.restore.r2_config, null) != null) ? [
-    { name = "STANDBY_AWS_ENDPOINT", value = format("https://%s.r2.cloudflarestorage.com", local.restore.r2_config.cloudflare_account_id) },
-    { name = "STANDBY_AWS_FORCE_PATH_STYLE", value = "true" },
-    { name = "STANDBY_AWS_ACCESS_KEY_ID", value = local.restore.r2_config.access_key_id },
-    { name = "STANDBY_AWS_SECRET_ACCESS_KEY", value = local.restore.r2_config.secret_access_key },
-  ] : []
+  # enabled AND r2_config is supplied (matches restore_config.go); credentials via secretKeyRef.
+  standby_env = concat(
+    local.restore_r2_present ? [{ name = "STANDBY_AWS_ENDPOINT", value = format("https://%s.r2.cloudflarestorage.com", local.restore_r2.cloudflare_account_id) }] : [],
+    local.restore_r2_present ? [{ name = "STANDBY_AWS_FORCE_PATH_STYLE", value = "true" }] : [],
+    local.restore_r2_present ? [{ name = "STANDBY_AWS_ACCESS_KEY_ID", valueFrom = { secretKeyRef = { name = local.restore_r2_secret_name, key = "access_key_id" } } }] : [],
+    local.restore_r2_present ? [{ name = "STANDBY_AWS_SECRET_ACCESS_KEY", valueFrom = { secretKeyRef = { name = local.restore_r2_secret_name, key = "secret_access_key" } } }] : [],
+  )
 
   # Pulumi merges standby env first, then backup env.
   all_env = concat(local.standby_env, local.backup_env)

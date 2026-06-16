@@ -31,38 +31,36 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetespostgresv1.KubernetesP
 		namespaceDeps = append(namespaceDeps, pulumi.DependsOn([]pulumi.Resource{createdNamespace}))
 	}
 
-	// Build restore configuration (standby block + STANDBY_* env vars)
-	// Pass operator-level bucket as fallback (if available from stack input)
-	// TODO: Extract operator bucket from stackInput if operator config is available
-	operatorBucket := ""
+	// Build restore (standby block + STANDBY_* env) and backup (WALG_*/AWS_* env)
+	// configurations. Both credential paths create a Secret and reference it via
+	// secretKeyRef, so credentials never land in plaintext in the postgresql CR.
+	backupConfig := locals.KubernetesPostgres.Spec.BackupConfig
+
 	var restoreConfig *kubernetespostgresv1.KubernetesPostgresRestoreConfig
-	if locals.KubernetesPostgres.Spec.BackupConfig != nil {
-		restoreConfig = locals.KubernetesPostgres.Spec.BackupConfig.Restore
+	if backupConfig != nil {
+		restoreConfig = backupConfig.RestoreConfig
 	}
-	standbyBlock, standbyEnvVars, err := buildRestoreConfig(restoreConfig, operatorBucket)
+
+	standbyBlock, err := buildRestoreStandbyBlock(restoreConfig)
 	if err != nil {
-		return errors.Wrap(err, "failed to build restore configuration")
+		return errors.Wrap(err, "failed to build restore standby block")
 	}
 
-	// Build backup environment variables (existing function)
-	backupEnvVars := buildBackupEnvVars(locals.KubernetesPostgres.Spec.BackupConfig, locals.KubernetesPostgres.Metadata.Name)
+	restoreEnvVars, err := buildRestoreEnvVars(ctx, kubernetesProvider, locals, namespaceDeps, restoreConfig)
+	if err != nil {
+		return errors.Wrap(err, "failed to build restore environment")
+	}
 
-	// Merge backup and restore environment variables
+	backupEnvVars, err := buildBackupEnvVars(ctx, kubernetesProvider, locals, namespaceDeps, backupConfig)
+	if err != nil {
+		return errors.Wrap(err, "failed to build backup environment")
+	}
+
+	// Standby env first, then backup env (preserves prior ordering).
 	var allEnvVars pulumi.MapArrayInput
-	if standbyEnvVars != nil && backupEnvVars != nil {
-		// Both sets of env vars exist, merge them
-		backupArray, ok := backupEnvVars.(pulumi.MapArray)
-		if ok {
-			allEnvVars = pulumi.MapArray(append(standbyEnvVars, backupArray...))
-		} else {
-			allEnvVars = pulumi.MapArray(standbyEnvVars)
-		}
-	} else if standbyEnvVars != nil {
-		// Only standby env vars
-		allEnvVars = pulumi.MapArray(standbyEnvVars)
-	} else {
-		// Only backup env vars (or none)
-		allEnvVars = backupEnvVars
+	mergedEnvVars := append(restoreEnvVars, backupEnvVars...)
+	if len(mergedEnvVars) > 0 {
+		allEnvVars = pulumi.MapArray(mergedEnvVars)
 	}
 
 	// Convert databases list to map[string]string for Zalando operator

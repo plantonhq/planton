@@ -9,92 +9,67 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// buildRestoreConfig generates Zalando operator's spec:standby configuration and STANDBY_* environment
-// variables for cross-cluster disaster recovery using the Standby-then-Promote pattern.
+// buildRestoreStandbyBlock generates the Zalando operator's spec.standby block for
+// cross-cluster disaster recovery using the Standby-then-Promote pattern.
 //
-// When restore.enabled=true:
-//   - Returns a populated standby block with s3_wal_path
-//   - Returns STANDBY_* environment variables for R2 access
-//   - Database bootstraps as read-only standby from R2 backups
-//
-// When restore.enabled=false or restore=nil:
-//   - Returns nil for both standby and env vars
-//   - Database runs as normal read-write primary
-//   - If previously in standby mode, triggers promotion
-//
-// Parameters:
-//   - restoreConfig: User's restore configuration from API spec
-//   - operatorBucketName: Fallback bucket from operator-level config (optional)
-//
-// Returns:
-//   - standby block for Zalando manifest (or nil)
-//   - STANDBY_* environment variables (or nil)
-//   - error if configuration is invalid
-func buildRestoreConfig(
+// When restore is enabled it returns a populated standby block with s3_wal_path so the
+// database bootstraps read-only from the backup WAL path. When restore is disabled or
+// nil it returns nil (normal read-write primary; removing a previously-set standby
+// triggers promotion).
+func buildRestoreStandbyBlock(
 	restoreConfig *kubernetespostgresv1.KubernetesPostgresRestoreConfig,
-	operatorBucketName string,
-) (*zalandov1.PostgresqlSpecStandbyArgs, []pulumi.MapInput, error) {
-
-	// If restore is not configured or disabled, return nil (normal primary mode)
+) (*zalandov1.PostgresqlSpecStandbyArgs, error) {
 	if restoreConfig == nil || !restoreConfig.Enabled {
-		return nil, nil, nil
+		return nil, nil
 	}
 
-	// Validate s3_path is provided
 	if restoreConfig.S3Path == "" {
-		return nil, nil, errors.New("restore.s3_path is required when restore.enabled=true")
+		return nil, errors.New("restore_config.s3_path is required when restore_config.enabled=true")
+	}
+	if restoreConfig.BucketName == nil || *restoreConfig.BucketName == "" {
+		return nil, errors.New("restore_config.bucket_name is required when restore_config.enabled=true")
 	}
 
-	// Determine bucket name (per-database overrides operator-level)
-	var bucketName string
-	if restoreConfig.BucketName != nil && *restoreConfig.BucketName != "" {
-		// Use per-database bucket
-		bucketName = *restoreConfig.BucketName
-	} else if operatorBucketName != "" {
-		// Fallback to operator-level bucket
-		bucketName = operatorBucketName
-	} else {
-		return nil, nil, errors.New("restore.bucket_name is required when restore.enabled=true (not found in database or operator config)")
-	}
-
-	// Construct full S3 path for Zalando's spec:standby.s3_wal_path
 	// Format: s3://bucket-name/path/to/backups
-	fullS3Path := fmt.Sprintf("s3://%s/%s", bucketName, restoreConfig.S3Path)
-
-	// Create Zalando standby block
-	standbyBlock := &zalandov1.PostgresqlSpecStandbyArgs{
+	fullS3Path := fmt.Sprintf("s3://%s/%s", *restoreConfig.BucketName, restoreConfig.S3Path)
+	return &zalandov1.PostgresqlSpecStandbyArgs{
 		S3_wal_path: pulumi.String(fullS3Path),
+	}, nil
+}
+
+// buildRestoreEnvVars returns the STANDBY_* spec.env entries used by Spilo/Patroni
+// during standby bootstrap. Endpoint and path-style are plain values; the credentials
+// are injected via a generated Secret + secretKeyRef (never plaintext). Returns nil
+// when restore is disabled or no r2_config is supplied.
+func buildRestoreEnvVars(
+	ctx *pulumi.Context,
+	kubernetesProvider pulumi.ProviderResource,
+	locals *Locals,
+	namespaceDeps []pulumi.ResourceOption,
+	restoreConfig *kubernetespostgresv1.KubernetesPostgresRestoreConfig,
+) ([]pulumi.MapInput, error) {
+	if restoreConfig == nil || !restoreConfig.Enabled || restoreConfig.R2Config == nil {
+		return nil, nil
 	}
 
-	// Build STANDBY_* environment variables for R2 access
-	var envVars []pulumi.MapInput
+	r2 := restoreConfig.R2Config
+	endpoint := fmt.Sprintf("https://%s.r2.cloudflarestorage.com", r2.CloudflareAccountId)
 
-	if restoreConfig.R2Config != nil {
-		// Construct R2 endpoint URL
-		r2Endpoint := fmt.Sprintf("https://%s.r2.cloudflarestorage.com",
-			restoreConfig.R2Config.CloudflareAccountId)
-
-		// STANDBY_* env vars are used by Spilo/Patroni during standby bootstrap
-		// These are distinct from WALG_* (ongoing backups) and CLONE_* (clone operations)
-		envVars = []pulumi.MapInput{
-			pulumi.Map{
-				"name":  pulumi.String("STANDBY_AWS_ENDPOINT"),
-				"value": pulumi.String(r2Endpoint),
-			},
-			pulumi.Map{
-				"name":  pulumi.String("STANDBY_AWS_FORCE_PATH_STYLE"),
-				"value": pulumi.String("true"),
-			},
-			pulumi.Map{
-				"name":  pulumi.String("STANDBY_AWS_ACCESS_KEY_ID"),
-				"value": pulumi.String(restoreConfig.R2Config.AccessKeyId),
-			},
-			pulumi.Map{
-				"name":  pulumi.String("STANDBY_AWS_SECRET_ACCESS_KEY"),
-				"value": pulumi.String(restoreConfig.R2Config.SecretAccessKey),
-			},
-		}
+	// STANDBY_* env vars are used by Spilo during standby bootstrap; these are
+	// distinct from the WALG_*/AWS_* (ongoing backup) set.
+	envVars := []pulumi.MapInput{
+		envVar("STANDBY_AWS_ENDPOINT", endpoint),
+		envVar("STANDBY_AWS_FORCE_PATH_STYLE", "true"),
 	}
 
-	return standbyBlock, envVars, nil
+	credEnvVars, err := r2CredentialEnvVars(ctx, kubernetesProvider, locals.Namespace, namespaceDeps,
+		fmt.Sprintf("%s-restore-r2-credentials", locals.KubernetesPostgres.Metadata.Name),
+		"STANDBY_AWS_ACCESS_KEY_ID", "STANDBY_AWS_SECRET_ACCESS_KEY",
+		locals.Labels, r2.AccessKeyId, r2.SecretAccessKey)
+	if err != nil {
+		return nil, err
+	}
+	envVars = append(envVars, credEnvVars...)
+
+	return envVars, nil
 }
