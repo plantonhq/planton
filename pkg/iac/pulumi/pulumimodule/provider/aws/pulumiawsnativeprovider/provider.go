@@ -8,8 +8,8 @@
 // is no AssumeRoleWithWebIdentity field (upstream tracking issue
 // pulumi/pulumi-aws-native#1042, open since 2023). So unlike the classic builder -- which
 // hands the inline web-identity token to the provider and lets the provider plugin exchange
-// it -- this builder performs the STS AssumeRoleWithWebIdentity exchange itself (via
-// aws-sdk-go-v2) and injects the resulting short-lived credentials as static keys.
+// it -- this builder performs the STS exchange itself (via the engine-neutral
+// awswebidentity package) and injects the resulting short-lived credentials as static keys.
 //
 // This builder-side exchange is the only way to make pulumi-aws-native keyless today; it is
 // issuer-agnostic (the web_identity_token is an opaque OIDC JWT minted by the caller, e.g.
@@ -28,13 +28,9 @@ import (
 	"context"
 	"fmt"
 	"reflect"
-	"time"
 
-	awssdk "github.com/aws/aws-sdk-go-v2/aws"
-	awsconfig "github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/credentials/stscreds"
-	"github.com/aws/aws-sdk-go-v2/service/sts"
 	awsprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws"
+	"github.com/plantonhq/openmcf/pkg/iac/provider/aws/awswebidentity"
 	"github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/pulumi/pulumioutput"
 
 	"github.com/pkg/errors"
@@ -42,19 +38,13 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// credentialResolver exchanges a web-identity config for temporary AWS credentials. It is an
-// injectable seam so the credential dispatch (the security-critical part) is unit-testable
-// without a live STS endpoint; production uses resolveWebIdentityCredentials.
-type credentialResolver func(goCtx context.Context, region string,
-	webIdentity *awsprovider.AwsWebIdentityProviderConfig) (awssdk.Credentials, error)
-
 // Get builds an aws-native Provider from the given AwsProviderConfig. region is supplied by
 // the caller (the resource's region). nameSuffixes disambiguate the provider resource name
 // when a module needs more than one provider.
 func Get(ctx *pulumi.Context, awsProviderConfig *awsprovider.AwsProviderConfig,
 	region string, nameSuffixes ...string) (*awsnative.Provider, error) {
 	// ctx.Context() is the stack job's Go context; the STS exchange (when needed) runs on it.
-	providerArgs, err := buildProviderArgs(ctx.Context(), awsProviderConfig, region, resolveWebIdentityCredentials)
+	providerArgs, err := buildProviderArgs(ctx.Context(), awsProviderConfig, region, awswebidentity.ResolveCredentials)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to build aws-native provider args")
 	}
@@ -71,7 +61,7 @@ func Get(ctx *pulumi.Context, awsProviderConfig *awsprovider.AwsProviderConfig,
 // arm it calls resolve to perform the STS exchange and injects the temporary credentials; this
 // is the structural difference from the classic builder, forced by pulumi-aws-native#1042.
 func buildProviderArgs(goCtx context.Context, awsProviderConfig *awsprovider.AwsProviderConfig,
-	region string, resolve credentialResolver) (*awsnative.ProviderArgs, error) {
+	region string, resolve awswebidentity.CredentialResolver) (*awsnative.ProviderArgs, error) {
 	providerArgs := &awsnative.ProviderArgs{}
 	if region != "" {
 		providerArgs.Region = pulumi.String(region)
@@ -85,13 +75,8 @@ func buildProviderArgs(goCtx context.Context, awsProviderConfig *awsprovider.Aws
 	switch {
 	case awsProviderConfig.GetWebIdentity() != nil:
 		webIdentity := awsProviderConfig.GetWebIdentity()
-		if webIdentity.GetWebIdentityToken() == "" || webIdentity.GetRoleArn() == "" {
-			return nil, errors.New("web_identity requires both web_identity_token and role_arn")
-		}
-		for i, hop := range webIdentity.GetChainedAssumeRoles() {
-			if hop.GetRoleArn() == "" {
-				return nil, errors.Errorf("chained_assume_roles[%d] requires role_arn", i)
-			}
+		if err := awswebidentity.Validate(webIdentity); err != nil {
+			return nil, err
 		}
 
 		// pulumi-aws-native cannot exchange the JWT itself, so we resolve credentials here and
@@ -121,77 +106,6 @@ func buildProviderArgs(goCtx context.Context, awsProviderConfig *awsprovider.Aws
 	}
 
 	return providerArgs, nil
-}
-
-// resolveWebIdentityCredentials performs the STS exchange: AssumeRoleWithWebIdentity into the
-// first-hop role (oidc single hop), then any chained AssumeRole hops (cross_account_trust),
-// and returns the final temporary credentials. AssumeRoleWithWebIdentity needs no ambient
-// credentials (the JWT is the credential); the base config supplies only the region/HTTP client.
-func resolveWebIdentityCredentials(goCtx context.Context, region string,
-	webIdentity *awsprovider.AwsWebIdentityProviderConfig) (awssdk.Credentials, error) {
-	baseCfg, err := awsconfig.LoadDefaultConfig(goCtx, awsconfig.WithRegion(region))
-	if err != nil {
-		return awssdk.Credentials{}, errors.Wrap(err, "loading base AWS config")
-	}
-
-	var provider awssdk.CredentialsProvider = stscreds.NewWebIdentityRoleProvider(
-		sts.NewFromConfig(baseCfg),
-		webIdentity.GetRoleArn(),
-		identityToken(webIdentity.GetWebIdentityToken()),
-		func(o *stscreds.WebIdentityRoleOptions) {
-			if webIdentity.GetSessionName() != "" {
-				o.RoleSessionName = webIdentity.GetSessionName()
-			}
-			if d := parseDuration(webIdentity.GetDuration()); d > 0 {
-				o.Duration = d
-			}
-		},
-	)
-
-	// Each chained hop assumes the next role using the previous hop's credentials.
-	for _, hop := range webIdentity.GetChainedAssumeRoles() {
-		hopCfg := baseCfg.Copy()
-		hopCfg.Credentials = awssdk.NewCredentialsCache(provider)
-		h := hop
-		provider = stscreds.NewAssumeRoleProvider(
-			sts.NewFromConfig(hopCfg),
-			h.GetRoleArn(),
-			func(o *stscreds.AssumeRoleOptions) {
-				if h.GetExternalId() != "" {
-					o.ExternalID = awssdk.String(h.GetExternalId())
-				}
-				if h.GetSessionName() != "" {
-					o.RoleSessionName = h.GetSessionName()
-				}
-				if d := parseDuration(h.GetDuration()); d > 0 {
-					o.Duration = d
-				}
-			},
-		)
-	}
-
-	return awssdk.NewCredentialsCache(provider).Retrieve(goCtx)
-}
-
-// parseDuration returns the parsed duration, or 0 when empty/invalid (the provider default applies).
-func parseDuration(d string) time.Duration {
-	if d == "" {
-		return 0
-	}
-	parsed, err := time.ParseDuration(d)
-	if err != nil {
-		return 0
-	}
-	return parsed
-}
-
-// identityToken adapts an inline minted JWT to the AWS SDK's stscreds.IdentityTokenRetriever
-// (the SDK calls GetIdentityToken each time it exchanges the token at STS).
-type identityToken string
-
-// GetIdentityToken returns the minted JWT bytes.
-func (t identityToken) GetIdentityToken() ([]byte, error) {
-	return []byte(t), nil
 }
 
 // ProviderResourceName returns the Pulumi resource name for the aws-native provider.

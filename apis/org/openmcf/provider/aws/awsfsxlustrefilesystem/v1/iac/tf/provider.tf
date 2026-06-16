@@ -1,10 +1,3 @@
-# ---------------------------------------------------------------------------
-# AWS Provider Configuration
-# ---------------------------------------------------------------------------
-# Provider credentials and region are supplied via variables to support
-# dynamic credential injection (e.g., from stack inputs or CI/CD).
-# ---------------------------------------------------------------------------
-
 terraform {
   required_providers {
     aws = {
@@ -15,8 +8,9 @@ terraform {
 }
 
 provider "aws" {
-  access_key = var.access_key
-  secret_key = var.secret_key
-  region     = var.spec.region
-  token      = var.session_token
+  # Region and credentials are injected by the runtime as environment variables
+  # (AWS_REGION + AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY / AWS_SESSION_TOKEN), resolved
+  # from the stack input's provider_config. For keyless (oidc / cross_account_trust)
+  # connections the runtime performs the STS web-identity exchange and injects the resulting
+  # short-lived credentials. Keep this block empty -- do not wire region or static keys here.
 }

@@ -4,6 +4,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
 	"github.com/plantonhq/openmcf/pkg/crkreflect"
+	"github.com/plantonhq/openmcf/pkg/iac/provider/aws/awswebidentity"
 	"gopkg.in/yaml.v3"
 )
 
@@ -25,6 +26,15 @@ type Options struct {
 	// FileCacheLoc is the directory where temporary files (like kubeconfig) can be written.
 	// Required for Kubernetes provider.
 	FileCacheLoc string
+
+	// ResolveAwsWebIdentity, when true, makes the AWS loader perform the STS
+	// AssumeRoleWithWebIdentity exchange for keyless (oidc / cross_account_trust) provider
+	// configs and emit the resulting short-lived credentials as AWS_* env vars. The
+	// tofu/terraform execution path sets this (its HCL `provider "aws" {}` block is empty, so
+	// credentials must arrive via env vars); the pulumi path leaves it false because its
+	// in-program builder owns provider auth -- resolving here would trigger a wasteful STS
+	// call whose output is shadowed by the state-backend keys anyway.
+	ResolveAwsWebIdentity bool
 }
 
 // GetEnvVarsWithOptions takes stack input YAML and options, returns provider-specific environment variables.
@@ -54,14 +64,26 @@ func GetEnvVarsWithOptions(stackInputYaml string, opts Options) (map[string]stri
 		return map[string]string{}, nil
 	}
 
-	// 5. Check if provider_config exists in stack input
-	providerConfigYaml, exists := extractProviderConfigYaml(stackInputMap)
-	if !exists {
+	// 5. Read provider_config (may be absent for ambient-credential runs).
+	providerConfigYaml, hasProviderConfig := extractProviderConfigYaml(stackInputMap)
+
+	// 6. AWS is handled here -- NOT in loadProviderEnvVars -- because the AWS tofu modules ship
+	//    an empty `provider "aws" {}` block, so both region and credentials are injection-driven:
+	//    AWS_REGION is a RESOURCE property that must be emitted even when there is no
+	//    provider_config (the standalone-CLI ambient case), and keyless connections require an
+	//    STS exchange. Every other provider keeps the simple provider_config -> env-var mapping.
+	if provider == cloudresourcekind.CloudResourceProvider_aws {
+		resourceRegion := extractTargetSpecRegion(stackInputMap)
+		return loadAwsEnvVars(providerConfigYaml, hasProviderConfig, resourceRegion, opts,
+			awswebidentity.ResolveCredentials)
+	}
+
+	if !hasProviderConfig {
 		// No provider_config in stack input - return empty map
 		return map[string]string{}, nil
 	}
 
-	// 6. Load provider_config and convert to env vars based on provider
+	// 7. Load provider_config and convert to env vars based on provider
 	return loadProviderEnvVars(providerConfigYaml, provider, opts)
 }
 
@@ -95,7 +117,24 @@ func extractProviderConfigYaml(stackInputMap map[string]interface{}) ([]byte, bo
 	return providerConfigYaml, true
 }
 
+// extractTargetSpecRegion reads target.spec.region from the parsed stack input. AWS region is a
+// resource property, so it is sourced from the target manifest (the connection region carried in
+// provider_config is only a fallback). Returns "" when absent.
+func extractTargetSpecRegion(stackInputMap map[string]interface{}) string {
+	target, ok := stackInputMap["target"].(map[string]interface{})
+	if !ok {
+		return ""
+	}
+	spec, ok := target["spec"].(map[string]interface{})
+	if !ok {
+		return ""
+	}
+	region, _ := spec["region"].(string)
+	return region
+}
+
 // loadProviderEnvVars loads the provider config YAML and returns environment variables based on the provider type.
+// AWS is intentionally absent here -- it is handled in GetEnvVarsWithOptions (region injection + STS exchange).
 func loadProviderEnvVars(providerConfigYaml []byte, provider cloudresourcekind.CloudResourceProvider, opts Options) (map[string]string, error) {
 	switch provider {
 	case cloudresourcekind.CloudResourceProvider_openfga:
@@ -104,8 +143,6 @@ func loadProviderEnvVars(providerConfigYaml []byte, provider cloudresourcekind.C
 		return loadGcpEnvVars(providerConfigYaml)
 	case cloudresourcekind.CloudResourceProvider_azure:
 		return loadAzureEnvVars(providerConfigYaml)
-	case cloudresourcekind.CloudResourceProvider_aws:
-		return loadAwsEnvVars(providerConfigYaml)
 	case cloudresourcekind.CloudResourceProvider_atlas:
 		return loadAtlasEnvVars(providerConfigYaml)
 	case cloudresourcekind.CloudResourceProvider_auth0:

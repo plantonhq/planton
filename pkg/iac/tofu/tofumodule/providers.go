@@ -9,8 +9,13 @@ import (
 // It delegates to the IaC-agnostic providerenvvars package which determines the correct provider
 // based on the target's api_version/kind and loads only the relevant provider configuration.
 func GetProviderConfigEnvVars(stackInputYaml, fileCacheLoc, kubeContext string) ([]string, error) {
+	// ResolveAwsWebIdentity is set here because this is the tofu/terraform execution boundary:
+	// the AWS modules' `provider "aws" {}` block is empty, so keyless connections must have
+	// their web-identity JWT exchanged for temporary credentials and injected as AWS_* env
+	// vars. The pulumi path calls GetEnvVarsWithOptions directly and leaves this false.
 	providerConfigEnvVars, err := providerenvvars.GetEnvVarsWithOptions(stackInputYaml, providerenvvars.Options{
-		FileCacheLoc: fileCacheLoc,
+		FileCacheLoc:          fileCacheLoc,
+		ResolveAwsWebIdentity: true,
 	})
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get provider env vars from stack input")

@@ -41,6 +41,7 @@ go_library(
         "//apis/org/openmcf/provider/snowflake",
         "//apis/org/openmcf/shared/cloudresourcekind",
         "//pkg/crkreflect",
+        "//pkg/iac/provider/aws/awswebidentity",
         "//pkg/protobufyaml",
         "@com_github_google_uuid//:uuid",
         "@com_github_pkg_errors//:errors",
@@ -51,10 +52,18 @@ go_library(
 
 go_test(
     name = "providerenvvars_test",
-    srcs = ["kubernetes_test.go"],
+    srcs = [
+        "aws_test.go",
+        "awsprovidertf_guard_test.go",
+        "kubernetes_test.go",
+    ],
     embed = [":providerenvvars"],
     deps = [
+        "//apis/org/openmcf/provider/aws",
+        "//pkg/iac/provider/aws/awswebidentity",
+        "@com_github_aws_aws_sdk_go_v2//aws",
         "@com_github_stretchr_testify//assert",
         "@com_github_stretchr_testify//require",
+        "@org_golang_google_protobuf//encoding/protojson",
     ],
 )

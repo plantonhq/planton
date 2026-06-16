@@ -52,12 +52,3 @@ variable "spec" {
   })
 }
 
-variable "provider_config" {
-  description = "AWS provider configuration"
-  type = object({
-    region            = string
-    access_key_id     = optional(string, "")
-    secret_access_key = optional(string, "")
-    session_token     = optional(string, "")
-  })
-}

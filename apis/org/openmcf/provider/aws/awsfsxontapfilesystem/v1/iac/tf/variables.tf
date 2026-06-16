@@ -1,33 +1,3 @@
-# ---------------------------------------------------------------------------
-# Provider Configuration
-# ---------------------------------------------------------------------------
-
-variable "access_key" {
-  description = "AWS access key ID for provider authentication."
-  type        = string
-  default     = ""
-  sensitive   = true
-}
-
-variable "secret_key" {
-  description = "AWS secret access key for provider authentication."
-  type        = string
-  default     = ""
-  sensitive   = true
-}
-
-variable "region" {
-  description = "AWS region where the FSx ONTAP file system will be created."
-  type        = string
-}
-
-variable "session_token" {
-  description = "AWS session token for temporary credentials (e.g., assumed role)."
-  type        = string
-  default     = ""
-  sensitive   = true
-}
-
 variable "spec" {
   description = "AwsFsxOntapFileSystemSpec — desired configuration passed from the manifest."
   type        = any

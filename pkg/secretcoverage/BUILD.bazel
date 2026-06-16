@@ -21,6 +21,13 @@ go_library(
 
 go_test(
     name = "secretcoverage_test",
-    srcs = ["heuristic_test.go"],
+    srcs = [
+        "coverage_test.go",
+        "heuristic_test.go",
+    ],
     embed = [":secretcoverage"],
+    deps = [
+        "//apis/org/openmcf/shared/cloudresourcekind",
+        "//pkg/crkreflect",
+    ],
 )

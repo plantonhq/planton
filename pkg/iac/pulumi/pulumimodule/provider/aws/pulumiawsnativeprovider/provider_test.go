@@ -7,6 +7,7 @@ import (
 
 	awssdk "github.com/aws/aws-sdk-go-v2/aws"
 	awsprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws"
+	"github.com/plantonhq/openmcf/pkg/iac/provider/aws/awswebidentity"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -194,7 +195,7 @@ func TestProviderResourceName(t *testing.T) {
 
 // failingResolver returns a resolver that fails the test if invoked -- used by cases where the
 // dispatch must never reach the STS exchange (region-only, static keys, validation errors).
-func failingResolver(t *testing.T) credentialResolver {
+func failingResolver(t *testing.T) awswebidentity.CredentialResolver {
 	t.Helper()
 	return func(_ context.Context, _ string,
 		_ *awsprovider.AwsWebIdentityProviderConfig) (awssdk.Credentials, error) {
