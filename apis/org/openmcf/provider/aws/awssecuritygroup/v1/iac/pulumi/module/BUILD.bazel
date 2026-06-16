@@ -14,6 +14,7 @@ go_library(
         "//apis/org/openmcf/provider/aws/awssecuritygroup/v1:awssecuritygroup",
         "//apis/org/openmcf/shared/cloudresourcekind",
         "//pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys",
+        "//pkg/iac/pulumi/pulumimodule/provider/aws/pulumiawsprovider",
         "@com_github_pkg_errors//:errors",
         "@com_github_pulumi_pulumi_aws_sdk_v7//go/aws",
         "@com_github_pulumi_pulumi_aws_sdk_v7//go/aws/ec2",

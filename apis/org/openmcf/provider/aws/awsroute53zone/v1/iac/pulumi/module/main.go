@@ -6,7 +6,8 @@ import (
 
 	"github.com/pkg/errors"
 	awsroute53zonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsroute53zone/v1"
-	"github.com/pulumi/pulumi-aws-native/sdk/go/aws"
+	"github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/provider/aws/pulumiawsnativeprovider"
+	"github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/provider/aws/pulumiawsprovider"
 	"github.com/pulumi/pulumi-aws-native/sdk/go/aws/route53"
 	awsclassic "github.com/pulumi/pulumi-aws/sdk/v7/go/aws"
 	awsclassicroute53 "github.com/pulumi/pulumi-aws/sdk/v7/go/aws/route53"
@@ -17,52 +18,18 @@ func Resources(ctx *pulumi.Context, stackInput *awsroute53zonev1.AwsRoute53ZoneS
 	locals := initializeLocals(ctx, stackInput)
 	awsRoute53Zone := locals.AwsRoute53Zone
 
-	awsProviderConfig := stackInput.ProviderConfig
-	var provider *aws.Provider
-	var classicProvider *awsclassic.Provider
-	var err error
-
-	// If the user didn't provide AWS credentials, create a default provider.
-	// Otherwise, inject custom credentials for the region, access key, etc.
-	if awsProviderConfig == nil {
-		provider, err = aws.NewProvider(ctx,
-			"native-provider",
-			&aws.ProviderArgs{
-				Region: pulumi.String(locals.AwsRoute53Zone.Spec.Region),
-			})
-		if err != nil {
-			return errors.Wrap(err, "failed to create default AWS provider")
-		}
-		classicProvider, err = awsclassic.NewProvider(ctx,
-			"classic-provider",
-			&awsclassic.ProviderArgs{
-				Region: pulumi.String(locals.AwsRoute53Zone.Spec.Region),
-			})
-		if err != nil {
-			return errors.Wrap(err, "failed to create default AWS classic provider")
-		}
-	} else {
-		provider, err = aws.NewProvider(ctx,
-			"native-provider",
-			&aws.ProviderArgs{
-				AccessKey: pulumi.String(awsProviderConfig.AccessKeyId),
-				SecretKey: pulumi.String(awsProviderConfig.SecretAccessKey),
-				Region:    pulumi.String(locals.AwsRoute53Zone.Spec.Region),
-			})
-		if err != nil {
-			return errors.Wrap(err, "failed to create AWS provider with custom credentials")
-		}
-		classicProvider, err = awsclassic.NewProvider(ctx,
-			"classic-provider",
-			&awsclassic.ProviderArgs{
-				AccessKey: pulumi.String(awsProviderConfig.AccessKeyId),
-				SecretKey: pulumi.String(awsProviderConfig.SecretAccessKey),
-				Region:    pulumi.String(locals.AwsRoute53Zone.Spec.Region),
-				Token:     pulumi.StringPtr(awsProviderConfig.SessionToken),
-			})
-		if err != nil {
-			return errors.Wrap(err, "failed to create AWS classic provider with custom credentials")
-		}
+	// Build both AWS providers from the stack input via the shared builders, which resolve the
+	// right credential mechanism (static keys, keyless web identity, or ambient chain) from the
+	// provider config. This module needs both: the HostedZone is created with the aws-native
+	// provider, while DNSSEC, query-logging and DNS records use the classic provider.
+	region := locals.AwsRoute53Zone.Spec.Region
+	provider, err := pulumiawsnativeprovider.Get(ctx, stackInput.ProviderConfig, region)
+	if err != nil {
+		return errors.Wrap(err, "failed to create aws-native provider")
+	}
+	classicProvider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, region)
+	if err != nil {
+		return errors.Wrap(err, "failed to create aws classic provider")
 	}
 
 	// Replace dots with hyphens to create valid managed-zone name

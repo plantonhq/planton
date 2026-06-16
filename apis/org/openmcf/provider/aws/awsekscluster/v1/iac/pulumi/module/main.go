@@ -3,7 +3,7 @@ package module
 import (
 	"github.com/pkg/errors"
 	awseksclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsekscluster/v1"
-	"github.com/pulumi/pulumi-aws/sdk/v7/go/aws"
+	"github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/provider/aws/pulumiawsprovider"
 	"github.com/pulumi/pulumi-aws/sdk/v7/go/aws/eks"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
@@ -12,26 +12,11 @@ func Resources(ctx *pulumi.Context, stackInput *awseksclusterv1.AwsEksClusterSta
 	// Initialize locals with computed values
 	locals := initializeLocals(ctx, stackInput)
 
-	var provider *aws.Provider
-	awsProviderConfig := stackInput.ProviderConfig
-
-	if awsProviderConfig == nil {
-		provider, err = aws.NewProvider(ctx, "classic-provider", &aws.ProviderArgs{
-			Region: pulumi.String(locals.AwsEksCluster.Spec.Region),
-		})
-		if err != nil {
-			return errors.Wrap(err, "failed to create default AWS provider")
-		}
-	} else {
-		provider, err = aws.NewProvider(ctx, "classic-provider", &aws.ProviderArgs{
-			AccessKey: pulumi.String(awsProviderConfig.AccessKeyId),
-			SecretKey: pulumi.String(awsProviderConfig.SecretAccessKey),
-			Region:    pulumi.String(locals.AwsEksCluster.Spec.Region),
-			Token:     pulumi.StringPtr(awsProviderConfig.SessionToken),
-		})
-		if err != nil {
-			return errors.Wrap(err, "failed to create AWS provider with custom credentials")
-		}
+	// Build the AWS provider from the stack input via the shared builder, which resolves
+	// the right credential mechanism (static keys, keyless web identity, or ambient chain).
+	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.AwsEksCluster.Spec.Region)
+	if err != nil {
+		return errors.Wrap(err, "failed to create AWS provider")
 	}
 
 	// Inputs

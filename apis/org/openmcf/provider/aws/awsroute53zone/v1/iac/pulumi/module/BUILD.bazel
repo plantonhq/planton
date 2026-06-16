@@ -11,8 +11,9 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//apis/org/openmcf/provider/aws/awsroute53zone/v1:awsroute53zone",
+        "//pkg/iac/pulumi/pulumimodule/provider/aws/pulumiawsnativeprovider",
+        "//pkg/iac/pulumi/pulumimodule/provider/aws/pulumiawsprovider",
         "@com_github_pkg_errors//:errors",
-        "@com_github_pulumi_pulumi_aws_native_sdk//go/aws",
         "@com_github_pulumi_pulumi_aws_native_sdk//go/aws/route53",
         "@com_github_pulumi_pulumi_aws_sdk_v7//go/aws",
         "@com_github_pulumi_pulumi_aws_sdk_v7//go/aws/route53",

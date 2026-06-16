@@ -142,26 +142,32 @@ func (x *AwsProviderConfig) GetWebIdentity() *AwsWebIdentityProviderConfig {
 	return nil
 }
 
-// AwsWebIdentityProviderConfig holds the inputs for keyless OIDC federation (DD-002):
-// the Planton runner mints a connection-scoped JWT from the Planton OIDC issuer and the
-// pulumi/tofu AWS provider exchanges it for credentials via STS AssumeRoleWithWebIdentity.
+// AwsWebIdentityProviderConfig holds the inputs for keyless OIDC federation: the caller mints
+// a short-lived OIDC JWT from an issuer it controls, and the AWS provider exchanges it for
+// credentials via STS AssumeRoleWithWebIdentity. The token is opaque to OpenMCF, which is
+// agnostic to the issuer (a platform-owned issuer, GitHub Actions, GitLab CI, etc.).
 //
 // It powers two auth modes with one mechanism:
-//   - oidc: single hop -- assume the customer role directly with the web identity.
-//   - cross_account_trust: two hops -- assume a Planton base role in account
-//     066380525333 with the web identity (role_arn below), then role-chain into the
-//     customer role via chained_assume_roles (capped at a 1h session by AWS).
+//   - single hop: assume the target role directly with the web identity.
+//   - two hops: assume a base role with the web identity (role_arn below), then role-chain
+//     into the target role via chained_assume_roles (capped at a 1h session by AWS).
 //
 // The token is carried in memory (web_identity_token) and never written to disk: a stack
 // job's runtime stays within the token TTL, so no file-based provider refresh is needed.
+//
+// Exchange site differs by provider: the pulumi-aws "classic" provider performs the exchange
+// itself from web_identity_token, whereas pulumi-aws-native has no web-identity support
+// (upstream pulumi/pulumi-aws-native#1042) so its builder performs the STS exchange and injects
+// the resulting temporary credentials.
 type AwsWebIdentityProviderConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The minted OIDC JWT presented to STS. Maps to pulumi-aws
 	// ProviderAssumeRoleWithWebIdentity.WebIdentityToken.
 	WebIdentityToken string `protobuf:"bytes,1,opt,name=web_identity_token,json=webIdentityToken,proto3" json:"web_identity_token,omitempty"`
 	// ARN of the first-hop role assumed with the web identity:
-	//   - oidc: the customer's role.
-	//   - cross_account_trust: the Planton base role in account 066380525333.
+	//   - single hop: the target (customer) role.
+	//   - two hops: the base role (in cross-account-trust, a role in the platform's account),
+	//     from which chained_assume_roles reaches the target role.
 	RoleArn string `protobuf:"bytes,2,opt,name=role_arn,json=roleArn,proto3" json:"role_arn,omitempty"`
 	// Optional session name for the web-identity assumption. Provider default applies when empty.
 	SessionName string `protobuf:"bytes,3,opt,name=session_name,json=sessionName,proto3" json:"session_name,omitempty"`
@@ -240,7 +246,7 @@ func (x *AwsWebIdentityProviderConfig) GetChainedAssumeRoles() []*AwsAssumeRoleC
 }
 
 // AwsAssumeRoleConfig describes a single STS AssumeRole hop chained off an already-assumed
-// identity (e.g. the cross_account_trust hop from the Planton base role into the customer role).
+// identity (e.g. the cross-account-trust hop from a base role into the target role).
 type AwsAssumeRoleConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// ARN of the role to assume in this hop.
