@@ -1,4 +1,4 @@
-load("@rules_go//go:def.bzl", "go_library", "go_test")
+load("@rules_go//go:def.bzl", "go_library")
 
 go_library(
     name = "aws",
@@ -13,11 +13,4 @@ go_library(
         "@org_golang_google_protobuf//reflect/protoreflect",
         "@org_golang_google_protobuf//runtime/protoimpl",
     ],
-)
-
-go_test(
-    name = "aws_test",
-    srcs = ["provider_test.go"],
-    embed = [":aws"],
-    deps = ["@build_buf_go_protovalidate//:protovalidate"],
 )

@@ -1,7 +1,6 @@
 package awswebidentity
 
 import (
-	"strings"
 	"testing"
 
 	awsprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws"
@@ -19,20 +18,6 @@ func TestValidate(t *testing.T) {
 			RoleArn:          roleArn,
 		}); err != nil {
 			t.Fatalf("expected no error, got %v", err)
-		}
-	})
-
-	t.Run("token file is rejected with a classic-only explanation", func(t *testing.T) {
-		// The builder-side exchange is one-shot, so the re-read file source is not honored here.
-		err := Validate(&awsprovider.AwsWebIdentityProviderConfig{
-			WebIdentityTokenFile: "/var/run/planton/web-identity-token",
-			RoleArn:              roleArn,
-		})
-		if err == nil {
-			t.Fatal("expected an error for web_identity_token_file on a builder-side exchange engine")
-		}
-		if !strings.Contains(err.Error(), "web_identity_token_file") {
-			t.Fatalf("error should name the offending field, got %v", err)
 		}
 	})
 

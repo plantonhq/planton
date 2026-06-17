@@ -101,15 +101,6 @@ func Validate(webIdentity *awsprovider.AwsWebIdentityProviderConfig) error {
 	if webIdentity == nil {
 		return errors.New("web_identity is nil")
 	}
-	// The builder-side exchange (this package, used by aws-native + tofu) is one-shot: it
-	// resolves credentials once at build time and cannot refresh. A token *file* only adds value
-	// where the provider itself re-reads it (the pulumi-aws classic provider), so reject it here
-	// with an explanation instead of silently exchanging it once like an inline token.
-	if webIdentity.GetWebIdentityTokenFile() != "" {
-		return errors.New("web_identity_token_file is honored only by the pulumi-aws classic provider, " +
-			"which re-reads it to refresh; the builder-side exchange (aws-native, tofu) is one-shot and " +
-			"requires the inline web_identity_token")
-	}
 	if webIdentity.GetWebIdentityToken() == "" || webIdentity.GetRoleArn() == "" {
 		return errors.New("web_identity requires both web_identity_token and role_arn")
 	}

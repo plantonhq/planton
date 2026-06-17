@@ -64,30 +64,21 @@ func buildProviderArgs(awsProviderConfig *awsprovider.AwsProviderConfig,
 
 	switch {
 	case awsProviderConfig.GetWebIdentity() != nil:
-		// Keyless OIDC federation. The caller (e.g. the runner) supplies the minted JWT and the
-		// provider exchanges it for credentials via STS AssumeRoleWithWebIdentity. The token is
-		// supplied either inline in memory (web_identity_token) or as a path the provider re-reads
-		// (web_identity_token_file) -- the latter lets a long-running job outlive a single
-		// assumed-role session, since the classic provider re-reads the file to refresh.
+		// Keyless OIDC federation. The caller (e.g. the runner) supplies the minted JWT inline and
+		// the provider exchanges it for credentials via STS AssumeRoleWithWebIdentity. The runner
+		// re-mints a fresh token before each pulumi operation, so no on-disk file refresh is needed.
 		webIdentity := awsProviderConfig.GetWebIdentity()
 		token := webIdentity.GetWebIdentityToken()
-		tokenFile := webIdentity.GetWebIdentityTokenFile()
 		if webIdentity.GetRoleArn() == "" {
 			return nil, errors.New("web_identity requires role_arn")
 		}
-		// Exactly one token source. Both-or-neither is a malformed config; reject it here as
-		// defense in depth alongside the proto message-level CEL (token_xor_file).
-		if (token == "") == (tokenFile == "") {
-			return nil, errors.New("web_identity requires exactly one of web_identity_token or web_identity_token_file")
+		if token == "" {
+			return nil, errors.New("web_identity requires web_identity_token")
 		}
 
 		assumeRoleWithWebIdentity := aws.ProviderAssumeRoleWithWebIdentityArgs{
-			RoleArn: pulumi.String(webIdentity.GetRoleArn()),
-		}
-		if tokenFile != "" {
-			assumeRoleWithWebIdentity.WebIdentityTokenFile = pulumi.String(tokenFile)
-		} else {
-			assumeRoleWithWebIdentity.WebIdentityToken = pulumi.String(token)
+			RoleArn:          pulumi.String(webIdentity.GetRoleArn()),
+			WebIdentityToken: pulumi.String(token),
 		}
 		if webIdentity.GetSessionName() != "" {
 			assumeRoleWithWebIdentity.SessionName = pulumi.String(webIdentity.GetSessionName())

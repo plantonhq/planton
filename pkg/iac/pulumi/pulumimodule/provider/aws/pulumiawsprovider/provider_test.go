@@ -141,59 +141,6 @@ func TestBuildProviderArgs_WebIdentity_TwoHop_CrossAccountTrust(t *testing.T) {
 	assert.Equal(t, pulumi.String("1h"), hop.Duration)
 }
 
-func TestBuildProviderArgs_WebIdentity_TokenFile_SingleHop(t *testing.T) {
-	cfg := &awsprovider.AwsProviderConfig{
-		AccountId: "123456789012",
-		Region:    "us-west-2",
-		WebIdentity: &awsprovider.AwsWebIdentityProviderConfig{
-			// File source (for long-running jobs the classic provider refreshes by re-reading).
-			WebIdentityTokenFile: "/var/run/planton/web-identity-token",
-			RoleArn:              "arn:aws:iam::123456789012:role/customer-oidc",
-			Duration:             "1h",
-		},
-	}
-
-	args, err := buildProviderArgs(cfg, "us-west-2")
-	require.NoError(t, err)
-
-	require.NotNil(t, args.AssumeRoleWithWebIdentity)
-	webIdentity, ok := args.AssumeRoleWithWebIdentity.(aws.ProviderAssumeRoleWithWebIdentityArgs)
-	require.True(t, ok)
-	// File source sets WebIdentityTokenFile and leaves the inline WebIdentityToken unset.
-	assert.Equal(t, pulumi.String("/var/run/planton/web-identity-token"), webIdentity.WebIdentityTokenFile)
-	assert.Nil(t, webIdentity.WebIdentityToken)
-	assert.Equal(t, pulumi.String("arn:aws:iam::123456789012:role/customer-oidc"), webIdentity.RoleArn)
-	assert.Equal(t, pulumi.String("1h"), webIdentity.Duration)
-}
-
-func TestBuildProviderArgs_WebIdentity_BothTokenAndFile_Errors(t *testing.T) {
-	// Both sources set is malformed -- exactly one is required.
-	cfg := &awsprovider.AwsProviderConfig{
-		Region: "us-west-2",
-		WebIdentity: &awsprovider.AwsWebIdentityProviderConfig{
-			WebIdentityToken:     "eyJhbGciOiJSUzI1NiJ9.payload.sig",
-			WebIdentityTokenFile: "/var/run/planton/web-identity-token",
-			RoleArn:              "arn:aws:iam::123456789012:role/customer-oidc",
-		},
-	}
-
-	_, err := buildProviderArgs(cfg, "us-west-2")
-	assert.Error(t, err)
-}
-
-func TestBuildProviderArgs_WebIdentity_NeitherTokenNorFile_Errors(t *testing.T) {
-	// role_arn present but no token source at all -> neither -> error.
-	cfg := &awsprovider.AwsProviderConfig{
-		Region: "us-west-2",
-		WebIdentity: &awsprovider.AwsWebIdentityProviderConfig{
-			RoleArn: "arn:aws:iam::123456789012:role/customer-oidc",
-		},
-	}
-
-	_, err := buildProviderArgs(cfg, "us-west-2")
-	assert.Error(t, err)
-}
-
 func TestBuildProviderArgs_WebIdentity_MissingToken_Errors(t *testing.T) {
 	cfg := &awsprovider.AwsProviderConfig{
 		Region: "us-west-2",
