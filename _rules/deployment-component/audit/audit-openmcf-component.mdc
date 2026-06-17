@@ -303,6 +303,40 @@ Open `iac/pulumi/module/*.go` and `iac/tf/*.tf` and compare each dimension from
 
 > **Note:** For a deeper preset-specific audit (gap analysis, missing patterns, per-field validation), use the dedicated `@audit-openmcf-presets` rule.
 
+#### Category 11: Secure-by-Default Sensitive Coverage (Critical GATE — no separate weight)
+
+This category does NOT add a percentage slice. It is a **gate**: a secret-bearing field that is
+not annotated `(sensitive) = true` (or exempted with `sensitive_exempt_reason`) is a critical
+security defect — downstream the platform would let that field accept plaintext instead of forcing
+a managed-secret reference. The detection heuristic is single-sourced in the analyzer; this audit
+RUNS it, it never re-derives the token list.
+
+**How to evaluate (run the analyzer; do not eyeball field names):**
+
+```bash
+openmcf secret-coverage --output json
+```
+
+The JSON `gaps[]` entries are `"<Kind>:<spec.field.path>"` ids. Filter to THIS component's kind:
+
+- [ ] **No gap for this kind** — no `gaps[]` entry is prefixed `<Kind>:`. A gap means a field looks
+      secret-bearing by name but is neither annotated `(sensitive)` nor exempted.
+- [ ] **No self-contradiction** — `openmcf secret-coverage --check` does not flag this kind's field
+      as both `sensitive` and `sensitive_exempt_reason` (the gate rejects the contradiction).
+- [ ] **Exemptions are honest** — each exempted look-alike (access-key *id*, public key, resource
+      *name*, key *algorithm*, KMS key *id*) carries a truthful `sensitive_exempt_reason`.
+
+Authority for the option semantics: the `sensitive` / `sensitive_exempt_reason` field comments in
+`org/openmcf/shared/options/options.proto`. The same gate runs in CI as
+`go test ./pkg/secretcoverage/...`.
+
+**Gate outcome (record this explicitly):**
+- **COVERAGE ✅** — zero gaps for this kind and no contradiction.
+- **COVERAGE ❌** — one or more unannotated secret-bearing fields (or a contradiction). Report each
+  under "Critical Gaps" with the fix ("annotate `(sensitive) = true`, or exempt with
+  `sensitive_exempt_reason`"). A component cannot score in the Fully/Functionally Complete band
+  while an unannotated secret-bearing field exists.
+
 ### Step 3: Calculate Completion Score
 
 **Scoring Formula:**
@@ -341,6 +375,12 @@ IaC categories. An undocumented divergence caps Categories 4 (Pulumi) and 5 (Ter
 Partial, and a divergence that would misdeploy marks them ❌ and is reported as a Critical
 Gap. A component cannot score in the "Fully/Functionally Complete" band while an
 undocumented, outcome-changing parity defect exists.
+
+**Secure-by-default gate (Category 11):** Sensitive coverage has no separate weight; it GATES the
+whole component. An unannotated secret-bearing field (a `gaps[]` entry for this kind from
+`openmcf secret-coverage --output json`) is a Critical Gap that bars the Fully/Functionally
+Complete band until the field is annotated `(sensitive) = true` or exempted with
+`sensitive_exempt_reason`.
 
 ### Step 4: Generate Audit Report
 
@@ -476,6 +516,7 @@ Before writing the report file, verify:
 | Supporting Files | 10.09% | X.XX% | ✅/⚠️/❌ |
 | Presets | 5.00% | X.XX% | ✅/⚠️/❌ |
 | Nice to Have | 10.00% | X.XX% | ✅/⚠️/❌ |
+| Secure-by-Default Coverage | gate | COVERAGE ✅/❌ | ✅/❌ |
 
 **Legend:** ✅ Complete | ⚠️ Partial | ❌ Missing
 
@@ -772,6 +813,29 @@ Verified outputs with `openmcf validate-outputs` (full proto population, zero un
 
 ---
 
+### 11. Secure-by-Default Sensitive Coverage (Critical GATE)
+
+**Coverage verdict: COVERAGE ✅ / ❌**
+
+Ran `openmcf secret-coverage --output json` and filtered `gaps[]` to `<Kind>:`. Per-field result
+for this kind:
+
+| Field path | Classification | Note |
+|-----------|----------------|------|
+| `spec.<field>` | covered / exempt / GAP | `<sensitive | reason | unannotated secret>` |
+
+**Legend:** covered (annotated `sensitive`) | exempt (`sensitive_exempt_reason`) | GAP (unannotated secret-looking)
+
+❌ **Gaps (unannotated secret-bearing fields):**
+
+- **`spec.<field>`** — looks secret-bearing; annotate `(org.openmcf.shared.options.sensitive) = true`,
+  or if it is a look-alike (access-key *id*, public key, resource *name*, key *algorithm*) exempt it
+  with `(org.openmcf.shared.options.sensitive_exempt_reason) = "<why>"`. Never both.
+
+**Effect on score:** <none | listed under Critical Gaps; bars the Fully/Functionally Complete band>
+
+---
+
 ## Prioritized Recommendations
 
 ### High Priority (Do First)
@@ -866,6 +930,12 @@ parity before closing the session.
 - [x/  ] Dependency ordering matches (`DependsOn` ↔ `depends_on`)
 - [x/  ] Stack outputs flatten onto the same proto fields (`openmcf validate-outputs`: zero unmapped)
 - [x/  ] Any divergence carries a `PARITY-EXCEPTION:` comment in BOTH modules (output-neutral)
+
+#### Secure-by-Default Sensitive Coverage (GATE on the whole component)
+- [x/  ] `openmcf secret-coverage --output json` reports zero `gaps[]` for this kind
+- [x/  ] `openmcf secret-coverage --check` reports no `sensitive`/`sensitive_exempt_reason` contradiction
+- [x/  ] Every secret-bearing field is annotated `(sensitive) = true`
+- [x/  ] Every look-alike (access-key *id*, public key, *name*, *algorithm*, KMS key *id*) carries a truthful `sensitive_exempt_reason`
 
 <Continue for all categories>
 
