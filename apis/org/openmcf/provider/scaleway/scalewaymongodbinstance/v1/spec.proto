@@ -281,6 +281,7 @@ message ScalewayMongodbUser {
   // Must meet minimum complexity requirements. For production, use a
   // strong, randomly generated password.
   string password = 2 [
+    (org.openmcf.shared.options.sensitive) = true,
     (buf.validate.field).required = true,
     (buf.validate.field).string.min_len = 8
   ];

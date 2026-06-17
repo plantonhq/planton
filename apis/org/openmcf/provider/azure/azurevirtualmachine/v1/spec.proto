@@ -68,6 +68,7 @@ message AzureVirtualMachineSpec {
   // For production, prefer SSH keys for Linux VMs.
   // Can be a literal value or a reference to an AzureKeyVault secret.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef admin_password = 10 [
+    (org.openmcf.shared.options.sensitive) = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = AzureKeyVault,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vault_uri"
   ];

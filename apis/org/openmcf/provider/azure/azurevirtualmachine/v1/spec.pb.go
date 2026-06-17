@@ -889,7 +889,7 @@ var File_org_openmcf_provider_azure_azurevirtualmachine_v1_spec_proto protorefle
 
 const file_org_openmcf_provider_azure_azurevirtualmachine_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"<org/openmcf/provider/azure/azurevirtualmachine/v1/spec.proto\x121org.openmcf.provider.azure.azurevirtualmachine.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xa1\x10\n" +
+	"<org/openmcf/provider/azure/azurevirtualmachine/v1/spec.proto\x121org.openmcf.provider.azure.azurevirtualmachine.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xa6\x10\n" +
 	"\x17AzureVirtualMachineSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12\x8c\x01\n" +
@@ -901,9 +901,9 @@ const file_org_openmcf_provider_azure_azurevirtualmachine_v1_spec_proto_rawDesc 
 	"\n" +
 	"data_disks\x18\a \x03(\v2N.org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineDataDiskR\tdataDisks\x12B\n" +
 	"\x0eadmin_username\x18\b \x01(\tB\x16\xbaH\x06r\x04\x10\x01\x18@\x8a\xa6\x1d\tazureuserH\x01R\radminUsername\x88\x01\x01\x12$\n" +
-	"\x0essh_public_key\x18\t \x01(\tR\fsshPublicKey\x12|\n" +
+	"\x0essh_public_key\x18\t \x01(\tR\fsshPublicKey\x12\x80\x01\n" +
 	"\x0eadmin_password\x18\n" +
-	" \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\x95\x03\x92\xd4a\x18status.outputs.vault_uriR\radminPassword\x12m\n" +
+	" \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB%\xa0\xa6\x1d\x01\x88\xd4a\x95\x03\x92\xd4a\x18status.outputs.vault_uriR\radminPassword\x12m\n" +
 	"\anetwork\x18\v \x01(\v2S.org.openmcf.provider.azure.azurevirtualmachine.v1.AzureVirtualMachineNetworkConfigR\anetwork\x12=\n" +
 	"\x11availability_zone\x18\f \x01(\tB\x10\xbaH\rr\vR\x00R\x011R\x012R\x013R\x10availabilityZone\x12E\n" +
 	"\x17enable_boot_diagnostics\x18\r \x01(\bB\b\x8a\xa6\x1d\x04trueH\x02R\x15enableBootDiagnostics\x88\x01\x01\x12E\n" +

@@ -9,6 +9,7 @@ package ocicontainerinstancev1
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
+	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -1543,7 +1544,7 @@ var File_org_openmcf_provider_oci_ocicontainerinstance_v1_spec_proto protoreflec
 
 const file_org_openmcf_provider_oci_ocicontainerinstance_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	";org/openmcf/provider/oci/ocicontainerinstance/v1/spec.proto\x120org.openmcf.provider.oci.ocicontainerinstance.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\x9e,\n" +
+	";org/openmcf/provider/oci/ocicontainerinstance/v1/spec.proto\x120org.openmcf.provider.oci.ocicontainerinstance.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xa4,\n" +
 	"\x18OciContainerInstanceSpec\x12\x87\x01\n" +
 	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x128\n" +
 	"\x13availability_domain\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x12availabilityDomain\x12!\n" +
@@ -1635,13 +1636,13 @@ const file_org_openmcf_provider_oci_ocicontainerinstance_v1_spec_proto_rawDesc =
 	"\tDnsConfig\x12 \n" +
 	"\vnameservers\x18\x01 \x03(\tR\vnameservers\x12\x18\n" +
 	"\aoptions\x18\x02 \x03(\tR\aoptions\x12\x1a\n" +
-	"\bsearches\x18\x03 \x03(\tR\bsearches\x1a\xd3\x02\n" +
+	"\bsearches\x18\x03 \x03(\tR\bsearches\x1a\xd9\x02\n" +
 	"\x0fImagePullSecret\x124\n" +
 	"\x11registry_endpoint\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x10registryEndpoint\x12\x80\x01\n" +
 	"\vsecret_type\x18\x02 \x01(\x0e2U.org.openmcf.provider.oci.ocicontainerinstance.v1.OciContainerInstanceSpec.SecretTypeB\b\xbaH\x05\x82\x01\x02 \x00R\n" +
 	"secretType\x12\x1a\n" +
-	"\busername\x18\x03 \x01(\tR\busername\x12\x1a\n" +
-	"\bpassword\x18\x04 \x01(\tR\bpassword\x12O\n" +
+	"\busername\x18\x03 \x01(\tR\busername\x12 \n" +
+	"\bpassword\x18\x04 \x01(\tB\x04\xa0\xa6\x1d\x01R\bpassword\x12O\n" +
 	"\tsecret_id\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\bsecretId\x1a\xc0\x02\n" +
 	"\x06Volume\x12\x1b\n" +
 	"\x04name\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x04name\x12\x80\x01\n" +

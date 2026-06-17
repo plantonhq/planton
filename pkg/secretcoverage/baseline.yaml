@@ -14,31 +14,26 @@
 # Regenerate with:  openmcf secret-coverage --write-baseline
 #
 # ─────────────────────────────────────────────────────────────────────────────
-# Remaining backlog after the 2026-06-16 secure-by-default annotation sweep.
-# These 20 fields ARE real secrets, deliberately deferred (not yet annotated) for
-# one of four reasons, each to be closed in a follow-up:
-#   (R)  Secret nested inside a REPEATED message. The web wizard renders these
-#        rows with a raw input today, so annotating would degrade the create UX
-#        until the repeated-row secret picker lands (planton follow-up).
+# Remaining backlog after the secure-by-default annotation sweep.
+#
+# CLOSED in the 2026-06-17 planton-half session (now annotated `sensitive`):
+#   (R)  the 7 secrets nested in repeated rows -- the web wizard's repeated-row
+#        cards were converged onto the shared sensitivity-aware picker (and the
+#        4 with no console UI were annotated to secure the CLI/manifest path), so
+#        none dead-ends; and
+#   (FK) AzureVirtualMachine.admin_password -- the wizard now renders the DD-006
+#        dual-mode "managed secret | reference AzureKeyVault" picker.
+#
+# These 12 fields ARE real secrets, deliberately deferred (not yet annotated) for
+# one of two reasons, each to be closed in a follow-up:
 #   (C)  Service env-var secret maps. Governed by the env-resolution path and the
 #        still-open reference-only (allow_literals) decision; annotating here would
-#        pre-empt that decision.
+#        pre-empt that decision (PO-13).
 #   (D)  Secret-holder kinds (KubernetesSecret, OciVaultSecret) whose purpose is to
 #        materialize a secret. Reference-only is the right end state but a
 #        fundamental UX shift; needs its own design slice.
-#   (FK) AzureVirtualMachine.admin_password also offers a foreign-key reference to
-#        an AzureKeyVault secret; annotating would override that picker -- pending a
-#        product decision on which reference model wins.
 # ─────────────────────────────────────────────────────────────────────────────
 gaps:
-  # (R) nested-in-repeated secret rows
-  - AliCloudPolardbCluster:spec.accounts.account_password
-  - AliCloudRdsInstance:spec.accounts.account_password
-  - OciApplicationLoadBalancer:spec.certificates.passphrase
-  - OciApplicationLoadBalancer:spec.certificates.private_key
-  - OciContainerInstance:spec.image_pull_secrets.password
-  - ScalewayMongodbInstance:spec.users.password
-  - ScalewayRdbInstance:spec.users.password
   # (C) service env-var secret maps
   - AwsAppRunnerService:spec.environment_secrets
   - AwsEcsService:spec.container.env.secrets
@@ -53,5 +48,3 @@ gaps:
   - OciVaultSecret:spec.secret_generation_context.secret_template
   - OciVaultSecret:spec.secret_metadata
   - OciVaultSecret:spec.secret_rules.secret_version_expiry_interval
-  # (FK) foreign-key alternative pending product decision
-  - AzureVirtualMachine:spec.admin_password

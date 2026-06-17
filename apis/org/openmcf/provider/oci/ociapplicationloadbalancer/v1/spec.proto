@@ -4,6 +4,7 @@ package org.openmcf.provider.oci.ociapplicationloadbalancer.v1;
 
 import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
 
 // OciApplicationLoadBalancerSpec defines the specification for an Oracle Cloud
 // Infrastructure Application Load Balancer (Layer 7).
@@ -439,10 +440,10 @@ message OciApplicationLoadBalancerSpec {
     string public_certificate = 3;
 
     // PEM-encoded private key for the certificate. Sensitive.
-    string private_key = 4;
+    string private_key = 4 [(org.openmcf.shared.options.sensitive) = true];
 
     // Passphrase for an encrypted private key. Sensitive.
-    string passphrase = 5;
+    string passphrase = 5 [(org.openmcf.shared.options.sensitive) = true];
   }
 
   // Hostname defines a virtual hostname for host-based routing.

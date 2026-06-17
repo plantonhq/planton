@@ -278,6 +278,7 @@ message AliCloudRdsAccount {
   // requirements: 8-32 characters, containing at least three of uppercase,
   // lowercase, digits, and special characters.
   string account_password = 2 [
+    (org.openmcf.shared.options.sensitive) = true,
     (buf.validate.field).required = true,
     (buf.validate.field).string.min_len = 8
   ];

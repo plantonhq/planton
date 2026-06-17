@@ -4,6 +4,7 @@ package org.openmcf.provider.oci.ocicontainerinstance.v1;
 
 import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
 
 // OciContainerInstanceSpec defines the specification for an Oracle Cloud
 // Infrastructure Container Instance.
@@ -359,7 +360,7 @@ message OciContainerInstanceSpec {
 
     // Password for basic authentication. Required when secret_type is basic.
     // Must be base64-encoded.
-    string password = 4;
+    string password = 4 [(org.openmcf.shared.options.sensitive) = true];
 
     // OCID of an OCI Vault secret containing registry credentials.
     // Required when secret_type is vault.

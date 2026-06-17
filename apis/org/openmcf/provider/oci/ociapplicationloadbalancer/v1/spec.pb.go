@@ -9,6 +9,7 @@ package ociapplicationloadbalancerv1
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
+	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -2079,7 +2080,7 @@ var File_org_openmcf_provider_oci_ociapplicationloadbalancer_v1_spec_proto proto
 
 const file_org_openmcf_provider_oci_ociapplicationloadbalancer_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Aorg/openmcf/provider/oci/ociapplicationloadbalancer/v1/spec.proto\x126org.openmcf.provider.oci.ociapplicationloadbalancer.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xe2<\n" +
+	"Aorg/openmcf/provider/oci/ociapplicationloadbalancer/v1/spec.proto\x126org.openmcf.provider.oci.ociapplicationloadbalancer.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xee<\n" +
 	"\x1eOciApplicationLoadBalancerSpec\x12\x87\x01\n" +
 	"\x0ecompartment_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe7\x19\x92\xd4a\x1dstatus.outputs.compartment_idR\rcompartmentId\x12!\n" +
 	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName\x12\x1d\n" +
@@ -2194,15 +2195,15 @@ const file_org_openmcf_provider_oci_ociapplicationloadbalancer_v1_spec_proto_raw
 	"\x04grpc\x10\x04\x1a\x9c\x01\n" +
 	"\x17ConnectionConfiguration\x125\n" +
 	"\x17idle_timeout_in_seconds\x18\x01 \x01(\x03R\x14idleTimeoutInSeconds\x12J\n" +
-	"\"backend_tcp_proxy_protocol_version\x18\x02 \x01(\x05R\x1ebackendTcpProxyProtocolVersion\x1a\xd8\x01\n" +
+	"\"backend_tcp_proxy_protocol_version\x18\x02 \x01(\x05R\x1ebackendTcpProxyProtocolVersion\x1a\xe4\x01\n" +
 	"\vCertificate\x122\n" +
 	"\x10certificate_name\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x0fcertificateName\x12%\n" +
 	"\x0eca_certificate\x18\x02 \x01(\tR\rcaCertificate\x12-\n" +
-	"\x12public_certificate\x18\x03 \x01(\tR\x11publicCertificate\x12\x1f\n" +
-	"\vprivate_key\x18\x04 \x01(\tR\n" +
-	"privateKey\x12\x1e\n" +
+	"\x12public_certificate\x18\x03 \x01(\tR\x11publicCertificate\x12%\n" +
+	"\vprivate_key\x18\x04 \x01(\tB\x04\xa0\xa6\x1d\x01R\n" +
+	"privateKey\x12$\n" +
 	"\n" +
-	"passphrase\x18\x05 \x01(\tR\n" +
+	"passphrase\x18\x05 \x01(\tB\x04\xa0\xa6\x1d\x01R\n" +
 	"passphrase\x1aL\n" +
 	"\bHostname\x12\x1b\n" +
 	"\x04name\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x04name\x12#\n" +

@@ -744,12 +744,11 @@ const file_org_openmcf_provider_scaleway_scalewayrdbinstance_v1_spec_proto_rawDe
 	"\vdescription\x18\x02 \x01(\tR\vdescription\"5\n" +
 	"\x13ScalewayRdbDatabase\x12\x1e\n" +
 	"\x04name\x18\x01 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x18?R\x04name\"\xe4\x01\n" +
+	"\xbaH\a\xc8\x01\x01r\x02\x18?R\x04name\"\xe8\x01\n" +
 	"\x0fScalewayRdbUser\x12\x1e\n" +
 	"\x04name\x18\x01 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x18?R\x04name\x12&\n" +
-	"\bpassword\x18\x02 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\bR\bpassword\x12\x19\n" +
+	"\xbaH\a\xc8\x01\x01r\x02\x18?R\x04name\x12*\n" +
+	"\bpassword\x18\x02 \x01(\tB\x0e\xbaH\a\xc8\x01\x01r\x02\x10\b\xa0\xa6\x1d\x01R\bpassword\x12\x19\n" +
 	"\bis_admin\x18\x03 \x01(\bR\aisAdmin\x12n\n" +
 	"\n" +
 	"privileges\x18\x04 \x03(\v2N.org.openmcf.provider.scaleway.scalewayrdbinstance.v1.ScalewayRdbUserPrivilegeR\n" +

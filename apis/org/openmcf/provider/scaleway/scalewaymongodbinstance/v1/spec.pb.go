@@ -567,12 +567,11 @@ const file_org_openmcf_provider_scaleway_scalewaymongodbinstance_v1_spec_proto_r
 	"\rSettingsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xc1\x01\xbaH\xbd\x01\x1a\xba\x01\n" +
-	"\x11valid_node_number\x12inode_number must be 1 (standalone) or 3 (replica set) -- MongoDB requires an odd number of voting members\x1a:this.node_number == uint(1) || this.node_number == uint(3)\"\xc6\x01\n" +
+	"\x11valid_node_number\x12inode_number must be 1 (standalone) or 3 (replica set) -- MongoDB requires an odd number of voting members\x1a:this.node_number == uint(1) || this.node_number == uint(3)\"\xca\x01\n" +
 	"\x13ScalewayMongodbUser\x12\x1e\n" +
 	"\x04name\x18\x01 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x18?R\x04name\x12&\n" +
-	"\bpassword\x18\x02 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\bR\bpassword\x12g\n" +
+	"\xbaH\a\xc8\x01\x01r\x02\x18?R\x04name\x12*\n" +
+	"\bpassword\x18\x02 \x01(\tB\x0e\xbaH\a\xc8\x01\x01r\x02\x10\b\xa0\xa6\x1d\x01R\bpassword\x12g\n" +
 	"\x05roles\x18\x03 \x03(\v2Q.org.openmcf.provider.scaleway.scalewaymongodbinstance.v1.ScalewayMongodbUserRoleR\x05roles\"\xfe\x02\n" +
 	"\x17ScalewayMongodbUserRole\x128\n" +
 	"\x04role\x18\x01 \x01(\tB$\xbaH!\xc8\x01\x01r\x1cR\x04readR\n" +

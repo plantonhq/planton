@@ -787,12 +787,11 @@ const file_org_openmcf_provider_alicloud_alicloudpolardbcluster_v1_spec_proto_ra
 	"\x12character_set_name\x18\x02 \x01(\tR\x10characterSetName\x12%\n" +
 	"\x0edb_description\x18\x03 \x01(\tR\rdbDescription\x12\x18\n" +
 	"\acollate\x18\x04 \x01(\tR\acollate\x12\x14\n" +
-	"\x05ctype\x18\x05 \x01(\tR\x05ctype\"\xe0\x03\n" +
+	"\x05ctype\x18\x05 \x01(\tR\x05ctype\"\xe4\x03\n" +
 	"\x16AliCloudPolardbAccount\x12-\n" +
 	"\faccount_name\x18\x01 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x02R\vaccountName\x125\n" +
-	"\x10account_password\x18\x02 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\bR\x0faccountPassword\x12\xa3\x01\n" +
+	"\xbaH\a\xc8\x01\x01r\x02\x10\x02R\vaccountName\x129\n" +
+	"\x10account_password\x18\x02 \x01(\tB\x0e\xbaH\a\xc8\x01\x01r\x02\x10\b\xa0\xa6\x1d\x01R\x0faccountPassword\x12\xa3\x01\n" +
 	"\faccount_type\x18\x03 \x01(\tB{\xbaHn\xba\x01k\n" +
 	"\x12account_type_valid\x12*account_type must be one of: Normal, Super\x1a)this == '' || this in ['Normal', 'Super']\x8a\xa6\x1d\x06NormalH\x00R\vaccountType\x88\x01\x01\x12/\n" +
 	"\x13account_description\x18\x04 \x01(\tR\x12accountDescription\x12x\n" +

@@ -315,6 +315,7 @@ message AliCloudPolardbAccount {
   // uppercase letters, lowercase letters, digits, and special characters
   // (!@#$%^&*()_+-=).
   string account_password = 2 [
+    (org.openmcf.shared.options.sensitive) = true,
     (buf.validate.field).required = true,
     (buf.validate.field).string.min_len = 8
   ];
