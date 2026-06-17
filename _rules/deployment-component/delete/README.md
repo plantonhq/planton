@@ -99,7 +99,6 @@ apis/org/openmcf/provider/<provider>/<component>/v1/
     │   ├── Pulumi.yaml          ❌ Deleted
     │   ├── Makefile             ❌ Deleted
     │   ├── README.md            ❌ Deleted
-    │   ├── overview.md          ❌ Deleted
     │   ├── debug.sh             ❌ Deleted
     │   └── module/
     │       ├── main.go          ❌ Deleted

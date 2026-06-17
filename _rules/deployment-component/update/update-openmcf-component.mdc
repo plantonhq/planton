@@ -54,7 +54,6 @@ Use update when you need to:
 **Example gaps:**
 - Missing Terraform module → runs rules 013-015
 - Missing research docs → runs rule 020
-- Missing Pulumi overview → runs rule 021
 - Failed tests → fixes and re-runs rule 019
 - Missing presets → runs rule 022 to generate initial presets (2-3 common configurations)
 
@@ -281,7 +280,6 @@ Show:
 # Update executes:
 # - Rule 013-015 (Terraform module)
 # - Rule 020 (Research docs)
-# - Rule 021 (Pulumi overview)
 # - Rule 022 (Presets -- generates 2-3 initial presets)
 # - Rules 018-019 (Validation)
 
@@ -467,8 +465,7 @@ Phase 1: Terraform Module
 [8/8] ✅ Passed Terraform E2E test
 
 Phase 2: Documentation
-[9/10] ✅ Generated v1/docs/README.md (research document)
-[10/10] ✅ Generated iac/pulumi/overview.md
+[9/9] ✅ Generated v1/docs/README.md (research document)
 
 Phase 3: Final Validation
 [11/11] ✅ Build validation passed

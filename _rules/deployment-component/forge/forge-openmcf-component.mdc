@@ -108,21 +108,20 @@ The following 20 rules execute in order. Each rule is atomic and can be run indi
 
 11. **008-hack-manifest** - Generate iac/hack/manifest.yaml (test manifest)
 
-### Phase 5: Pulumi Implementation (Rules 009-010, 012, 021)
+### Phase 5: Pulumi Implementation (Rules 009-010, 012)
 
 12. **009-pulumi-module** - Generate module/ (main.go, locals.go, outputs.go, resources)
 13. **010-pulumi-entrypoint** - Generate entrypoint (main.go, Pulumi.yaml, Makefile)
 14. **012-pulumi-docs** - Generate iac/pulumi/README.md and debug.sh
-15. **021-pulumi-overview** - Generate iac/pulumi/overview.md (architecture)
 
 ### Phase 6: Terraform Implementation (Rules 013, 015)
 
-16. **013-terraform-module** - Generate tf/ (variables.tf, main.tf, locals.tf, outputs.tf, provider.tf)
+15. **013-terraform-module** - Generate tf/ (variables.tf, main.tf, locals.tf, outputs.tf, provider.tf)
     - Rule 013 ends with the mandatory **PARITY WITH PULUMI** reconciliation (see that rule).
       Terraform is authored AFTER Pulumi in the sequence, so it is reconciled field-by-field
       against the existing Pulumi module — fixing whichever engine is wrong, since neither is
       privileged (the proto contract + intended behavior decide correctness).
-17. **015-terraform-docs** - Generate iac/tf/README.md
+16. **015-terraform-docs** - Generate iac/tf/README.md
 
 ### Phase 6b: Cross-Engine Parity Gate (orchestrator gate -- no flow-rule file)
 
@@ -159,19 +158,19 @@ documented exceptions) in the progress output.
 
 ### Phase 7: Presets (Rule 022)
 
-18. **022-presets** - Generate initial presets (2-3 common configuration templates)
+17. **022-presets** - Generate initial presets (2-3 common configuration templates)
     - Reads `spec.proto` to identify field combinations that produce distinct deployment patterns
     - Creates ranked YAML manifests + companion markdown in `v1/presets/`
     - Follows conventions from `architecture/presets.md`
 
 ### Phase 8: Final Validation (Rules 018-019)
 
-19. **018-build-validation** - Verify component Go code compiles AND the Pulumi entrypoint
+18. **018-build-validation** - Verify component Go code compiles AND the Pulumi entrypoint
     builds as the release builds it. Runs BOTH `go build ./apis/.../v1/...` (recursive, catches
     module/proto errors) and `go build -o /dev/null ./apis/.../v1/iac/pulumi` (non-recursive,
     the release contract -- requires a `package main` at the entrypoint root). Also asserts the
     entrypoint lives at `iac/pulumi/` root with no `main/` or `entrypoint/` subdir.
-20. **019-test-validation** - Run `go test -v ./apis/.../v1/` (verify component tests pass)
+19. **019-test-validation** - Run `go test -v ./apis/.../v1/` (verify component tests pass)
     - Validates spec_test.go tests all buf.validate rules
     - Ensures validation rules are syntactically and semantically correct
 

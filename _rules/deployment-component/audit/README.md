@@ -142,7 +142,6 @@ Audit evaluates **9 categories** against the ideal state:
 
 **Pulumi:**
 - [ ] `iac/pulumi/README.md` exists
-- [ ] `iac/pulumi/overview.md` exists
 
 **Terraform:**
 - [ ] `iac/tf/README.md` exists
@@ -256,12 +255,7 @@ Items that are easy to fix and would improve the score:
    - Creates comprehensive docs/README.md
    - 10-15 minutes
 
-3. **Generate Pulumi Overview** - Add 5%
-   - Run rule 021
-   - Creates iac/pulumi/overview.md
-   - 5 minutes
-
-**Total Quick Win Potential: +22.78% → 88% Complete**
+**Total Quick Win Potential: +17.78%**
 ```
 
 ### Critical Gaps
@@ -388,13 +382,7 @@ Blocking issues that prevent production readiness:
 
 ### Medium Priority (Do Next)
 
-3. **Generate Pulumi Overview**
-   - **File:** `iac/pulumi/overview.md`
-   - **Why:** Helps developers understand module architecture
-   - **How:** Run forge rule 021
-   - **Impact:** +5% (82.78% → 87.78%)
-
-4. **Expand Examples**
+3. **Expand Examples**
    - **File:** `examples.md`
    - **Why:** Only 1 example, need 3-5 for completeness
    - **How:** Add more use cases to examples.md

@@ -101,8 +101,7 @@ Phase 1: Generate Terraform Module
 [7/7] ✅ Passed terraform validate
 
 Phase 2: Generate Documentation
-[8/9] ✅ Generated v1/docs/README.md (research document, 850 lines)
-[9/9] ✅ Generated iac/pulumi/overview.md
+[8/8] ✅ Generated v1/docs/README.md (research document, 850 lines)
 
 Phase 3: Enhance Presets
 [10/10] ✅ Verified presets match current spec.proto
@@ -174,7 +173,6 @@ Improvement: +33% (65% → 98%)
 Files Created:
   ✅ iac/tf/ (6 files) - Terraform module
   ✅ v1/docs/README.md (850 lines) - Research documentation
-  ✅ iac/pulumi/overview.md - Architecture overview
   ✅ Verified presets are up to date
 
 Audit Reports:
@@ -210,14 +208,12 @@ Current State (from audit):
   Missing:
     ❌ Terraform module (4.44%)
     ❌ Research docs (13.34%)
-    ❌ Pulumi overview (5%)
     ⚠️  Examples incomplete (3.33%)
 
 Planned Actions:
   1. Run forge rules 013-015 → Create Terraform module
   2. Run forge rule 020 → Generate research docs
-  3. Run forge rule 021 → Generate Pulumi overview
-  4. Run validation (rules 018-019)
+  3. Run validation (rules 018-019)
 
 Expected Result:
   Score: 98% (+33%)
@@ -245,7 +241,7 @@ Stop when target score is reached:
 **Use when:**
 - You want "good enough" not "perfect"
 - Time-constrained (90% might be achievable in 10 min vs 100% in 30 min)
-- Some gaps are acceptable (e.g., missing overview.md is ok for your use case)
+- Some gaps are acceptable (e.g., missing examples is ok for your use case)
 
 **Default target:** 95% (functionally complete)
 

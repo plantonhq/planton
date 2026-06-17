@@ -25,7 +25,6 @@ Based on rules 001-022:
 - ✅ E2E testing (rule 011)
 - ✅ `README.md` (rule 012)
 - ✅ `debug.sh` (rule 012)
-- ✅ `overview.md` (rule 021)
 
 #### IaC - Terraform
 - ✅ Module files: `variables.tf`, `provider.tf`, `locals.tf`, `main.tf`, `outputs.tf` (rule 013)
@@ -55,9 +54,6 @@ Based on rules 001-022:
 - ✅ Includes comprehensive research doc (v1/docs/README.md)
 - ✅ Includes presets with companion documentation
 
-**Nice to Have (10% - Polish)**
-- ✅ overview.md covers architecture documentation
-
 **Result:** Forge creates 95-100% complete components matching ideal state!
 
 ### Forge Sequence
@@ -76,11 +72,10 @@ Based on rules 001-022:
 11. 008-hack-manifest.mdc - Generate test manifest
 12. 009-pulumi-module.mdc - Generate Pulumi module
 13. 010-pulumi-entrypoint.mdc - Generate Pulumi entrypoint
-14. 021-pulumi-overview.mdc - Generate iac/pulumi/overview.md
-15. 012-pulumi-docs.mdc - Generate iac/pulumi/README.md, debug.sh
-16. 013-terraform-module.mdc - Generate Terraform module
-17. 015-terraform-docs.mdc - Generate iac/tf/README.md
-18. 022-presets.mdc - Generate initial presets (2-3 common configurations)
-19. 018-build-validation.mdc - Validate build
-20. 019-test-validation.mdc - Validate tests
+14. 012-pulumi-docs.mdc - Generate iac/pulumi/README.md, debug.sh
+15. 013-terraform-module.mdc - Generate Terraform module
+16. 015-terraform-docs.mdc - Generate iac/tf/README.md
+17. 022-presets.mdc - Generate initial presets (2-3 common configurations)
+18. 018-build-validation.mdc - Validate build
+19. 019-test-validation.mdc - Validate tests
 ```

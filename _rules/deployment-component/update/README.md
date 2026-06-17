@@ -387,7 +387,6 @@ Phase 1: Create Terraform Module
 
 Phase 2: Generate Documentation
 [8/8] ✅ Generated v1/docs/README.md (research document, 850 lines)
-[9/9] ✅ Generated iac/pulumi/overview.md
 
 Phase 3: Validation
 [10/10] ✅ Build passed (go build ./apis/.../v1/...)

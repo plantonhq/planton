@@ -175,11 +175,6 @@ go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/
    - Update if new configuration options added
    - Update if usage patterns changed
 
-5. **Update iac/pulumi/overview.md** (if architecture changed)
-   - Update resource relationships if changed
-   - Update data flow if changed
-   - Update design decisions if changed
-
 ### Step 4: Validate Consistency
 
 **Consistency Checks:**
@@ -344,10 +339,9 @@ Next Steps:
 3. Run build: `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...`
 4. Update spec_test.go (test backup retention values)
 5. Run component tests: `go test ./apis/org/openmcf/provider/aws/awsrdsinstance/v1/`
-6. Update iac/pulumi/overview.md (document backup behavior)
-8. Run E2E tests to verify fix works
-9. Run all tests: `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/`
-10. Validate consistency
+6. Run E2E tests to verify fix works
+7. Run all tests: `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/`
+8. Validate consistency
 
 ### Scenario 3: Documentation Out of Sync
 

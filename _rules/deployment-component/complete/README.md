@@ -111,7 +111,6 @@ Based on audit results, complete will create:
 - IaC documentation (Pulumi/Terraform READMEs)
 
 **Nice-to-Have Items (if missing and target=100%):**
-- Pulumi overview (iac/pulumi/overview.md)
 - Additional examples
 - Extra supporting files
 

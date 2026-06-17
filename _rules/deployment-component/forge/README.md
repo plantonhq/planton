@@ -22,7 +22,7 @@ When you run forge, you get a fully-implemented deployment component:
 ### IaC Modules - Pulumi
 - ✅ Module files: `main.go`, `locals.go`, `outputs.go`, resource-specific files
 - ✅ Entrypoint: `main.go`, `Pulumi.yaml`, `Makefile`
-- ✅ Documentation: `README.md`, `overview.md`, `debug.sh`
+- ✅ Documentation: `README.md`, `debug.sh`
 - ✅ E2E tested and validated
 
 ### IaC Modules - Terraform
@@ -141,18 +141,17 @@ profiles, not the forge pipeline.)
 12. `009-pulumi-module` - Generate module
 13. `010-pulumi-entrypoint` - Generate entrypoint
 14. `012-pulumi-docs` - Generate docs
-15. `021-pulumi-overview` - Generate architecture overview
 
 ### Phase 6: Terraform Implementation
-16. `013-terraform-module` - Generate module
-17. `015-terraform-docs` - Generate docs
+15. `013-terraform-module` - Generate module
+16. `015-terraform-docs` - Generate docs
 
 ### Phase 7: Presets
-18. `022-presets` - Generate initial presets (2-3 common configuration templates)
+17. `022-presets` - Generate initial presets (2-3 common configuration templates)
 
 ### Phase 8: Final Validation
-19. `018-build-validation` - Compile all Go code
-20. `019-test-validation` - Run all tests
+18. `018-build-validation` - Compile all Go code
+19. `019-test-validation` - Run all tests
 
 ## Progress Tracking
 

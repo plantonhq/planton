@@ -257,7 +257,6 @@ Open `iac/pulumi/module/*.go` and `iac/tf/*.tf` and compare each dimension from
 
 **Pulumi Supporting Docs (6.67%):**
 - [ ] `iac/pulumi/README.md` exists
-- [ ] `iac/pulumi/overview.md` exists
 
 **Terraform Supporting Docs (3.33%):**
 - [ ] `iac/tf/README.md` exists
