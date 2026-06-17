@@ -6,6 +6,7 @@ go_library(
         "analyze.go",
         "baseline.go",
         "heuristic.go",
+        "report.go",
     ],
     importpath = "github.com/plantonhq/openmcf/pkg/secretcoverage",
     visibility = ["//visibility:public"],
@@ -24,6 +25,7 @@ go_test(
     srcs = [
         "coverage_test.go",
         "heuristic_test.go",
+        "report_test.go",
     ],
     embed = [":secretcoverage"],
     deps = [

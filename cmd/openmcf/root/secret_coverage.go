@@ -4,9 +4,9 @@
 package root
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
-	"sort"
 
 	"github.com/plantonhq/openmcf/internal/cli/cliprint"
 	"github.com/plantonhq/openmcf/pkg/secretcoverage"
@@ -21,9 +21,12 @@ var SecretCoverage = &cobra.Command{
   exempt   -- annotated (org.openmcf.shared.options.sensitive_exempt_reason) = "..."
   gap      -- looks like a secret by name but is not annotated
 
-Default output is a coverage report. Use --check in CI to fail on any new gap (one
-not in the baseline), any stale baseline entry, or a self-contradictory annotation.
-Use --write-baseline to record the current accepted gaps after an annotation pass.`,
+Default output is a human-readable coverage report. Use --output json to emit a
+machine-readable report (overall + per-provider summary + gap list) for downstream
+surfaces such as the Planton OS secret-coverage audit tile. Use --check in CI to
+fail on any new gap (one not in the baseline), any stale baseline entry, or a
+self-contradictory annotation. Use --write-baseline to record the current accepted
+gaps after an annotation pass.`,
 	Run: secretCoverageHandler,
 }
 
@@ -31,6 +34,7 @@ func init() {
 	SecretCoverage.Flags().Bool("check", false, "exit non-zero if the coverage gate fails (for CI)")
 	SecretCoverage.Flags().Bool("write-baseline", false, "regenerate the accepted-gap baseline file")
 	SecretCoverage.Flags().String("baseline", secretcoverage.DefaultBaselinePath, "path to the baseline file")
+	SecretCoverage.Flags().String("output", "text", "output format: text | json")
 }
 
 func secretCoverageHandler(cmd *cobra.Command, _ []string) {
@@ -51,7 +55,22 @@ func secretCoverageHandler(cmd *cobra.Command, _ []string) {
 		return
 	}
 
+	if output, _ := cmd.Flags().GetString("output"); output == "json" {
+		printJSONReport(findings)
+		return
+	}
+
 	printReport(findings)
+}
+
+func printJSONReport(findings []secretcoverage.Finding) {
+	report := secretcoverage.BuildReport(findings)
+	encoded, err := json.MarshalIndent(report, "", "  ")
+	if err != nil {
+		cliprint.PrintError(fmt.Sprintf("failed to marshal coverage report: %v", err))
+		os.Exit(1)
+	}
+	fmt.Println(string(encoded))
 }
 
 func runCheck(findings []secretcoverage.Finding, baselinePath string) {
@@ -80,45 +99,21 @@ func runCheck(findings []secretcoverage.Finding, baselinePath string) {
 }
 
 func printReport(findings []secretcoverage.Finding) {
-	summary := secretcoverage.Summarize(findings)
+	report := secretcoverage.BuildReport(findings)
 	fmt.Printf("Secure-by-default coverage: %.1f%%  (covered=%d exempt=%d gap=%d)\n",
-		summary.CoveragePercent(), summary.Covered, summary.Exempt, summary.Gap)
-	if summary.Violations > 0 {
-		fmt.Printf("annotation violations: %d (run with --check for detail)\n", summary.Violations)
+		report.CoveragePercent, report.Covered, report.Exempt, report.Gap)
+	if report.Violations > 0 {
+		fmt.Printf("annotation violations: %d (run with --check for detail)\n", report.Violations)
 	}
-
-	byProvider := map[string]*secretcoverage.Summary{}
-	for _, f := range findings {
-		s := byProvider[f.Provider]
-		if s == nil {
-			s = &secretcoverage.Summary{}
-			byProvider[f.Provider] = s
-		}
-		switch f.Class {
-		case secretcoverage.Covered:
-			s.Covered++
-		case secretcoverage.Exempt:
-			s.Exempt++
-		case secretcoverage.Gap:
-			s.Gap++
-		}
-	}
-	providers := make([]string, 0, len(byProvider))
-	for p := range byProvider {
-		providers = append(providers, p)
-	}
-	sort.Strings(providers)
 
 	fmt.Println("\nBy provider:")
-	for _, p := range providers {
-		s := byProvider[p]
-		fmt.Printf("  %-16s %.0f%%  covered=%d exempt=%d gap=%d\n", p, s.CoveragePercent(), s.Covered, s.Exempt, s.Gap)
+	for _, p := range report.Providers {
+		fmt.Printf("  %-16s %.0f%%  covered=%d exempt=%d gap=%d\n", p.Provider, p.CoveragePercent, p.Covered, p.Exempt, p.Gap)
 	}
 
-	gaps := secretcoverage.GapIDs(findings)
-	if len(gaps) > 0 {
-		fmt.Printf("\nGaps (%d) -- unannotated fields that look sensitive:\n", len(gaps))
-		for _, id := range gaps {
+	if len(report.Gaps) > 0 {
+		fmt.Printf("\nGaps (%d) -- unannotated fields that look sensitive:\n", len(report.Gaps))
+		for _, id := range report.Gaps {
 			fmt.Printf("  %s\n", id)
 		}
 	}
