@@ -72,3 +72,25 @@ PROACTIVE DEFAULT IDENTIFICATION (MANDATORY STEP)
 - The heuristic: if 80%+ of users would use the same value, it deserves a default.
 - This step prevents IaC modules from needing defensive default logic and ensures
   OpenMCF middleware handles defaults centrally.
+
+PROACTIVE SENSITIVE-FIELD IDENTIFICATION (MANDATORY STEP)
+- While authoring the schema, review EVERY string field and the literal of EVERY
+  `StringValueOrRef` field and ask: "Does this hold a secret value?" A secret is a
+  credential a holder could use to authenticate or decrypt -- it must never live in
+  plaintext in the control plane.
+- Flag these for annotation (the annotation itself is added in rule 002, mirroring
+  how defaults are flagged here and formalized there -- 001 stays validation/option-free):
+  - **Secret-bearing** (annotate `sensitive` in 002): passwords, master/admin passwords,
+    auth tokens / PATs, API *secrets* / client *secrets*, private keys / PEM material,
+    pre-shared keys, registry/storage access-key *secrets*, connection strings embedding
+    a credential.
+  - **Look-alike but NOT a secret** (exempt with `sensitive_exempt_reason` in 002): a
+    *public* key, an access-key *id* (a username-like identifier), a resource/secret
+    *name*, a key *algorithm* or *dialect*, a KMS key *identifier*. These trip the
+    secret-coverage name heuristic but carry no secret value.
+- The downstream contract: a `sensitive` field becomes reference-only end to end --
+  the platform forces a managed-secret reference (`$secret/<slug>`), rejects plaintext,
+  and resolves the reference just-in-time at deploy. Getting the annotation right here
+  is what makes that secure-by-default behavior automatic for every consumer.
+- Authority for the option semantics: the `sensitive` / `sensitive_exempt_reason` field
+  comments in `org/openmcf/shared/options/options.proto`.

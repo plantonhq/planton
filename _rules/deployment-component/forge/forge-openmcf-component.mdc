@@ -62,6 +62,28 @@ An undocumented divergence is a defect, not a deviation. The cross-engine parity
 and explains the automated guards (`pkg/outputs` conformance + `openmcf validate-outputs`).
 Read it before authoring either engine.
 
+## Secret-by-default (sensitive fields) (NON-NEGOTIABLE)
+
+A field that holds a secret (a password, token, API/client *secret*, private key/PEM, PSK,
+storage/registry access-key *secret*, or a credential-bearing connection string) MUST be
+annotated `(org.openmcf.shared.options.sensitive) = true` in `spec.proto`. Downstream
+platforms then force it to be a managed-secret REFERENCE (`$secret/<slug>`), reject plaintext
+at create/update, and resolve the reference just-in-time at deploy -- so the secret never lives
+in plaintext in the control plane. The annotation applies to string fields and to the literal
+value of `StringValueOrRef` fields, and composes with the foreign-key
+`(org.openmcf.shared.foreignkey.v1.default_kind)` annotation (a sensitive FK offers a managed
+secret OR a cross-resource reference, never plaintext).
+
+A field whose NAME merely *looks* like a secret (a public key, an access-key *id*, a resource
+*name*, a key *algorithm*) is NOT a secret -- exempt it with
+`(org.openmcf.shared.options.sensitive_exempt_reason) = "<why>"`. Never set both options on one
+field.
+
+This is identified in rule 001 and applied in rule 002. The ratcheting gate
+`openmcf secret-coverage --check` fails the build on any unannotated secret-looking field, so a
+forged component is not done until the gate is green. Authority: the option comments in
+`org/openmcf/shared/options/options.proto`.
+
 ## Usage
 
 ```
@@ -88,6 +110,10 @@ The following 20 rules execute in order. Each rule is atomic and can be run indi
      handles defaults centrally. This eliminates defensive default logic in IaC modules.
 2. **002-spec-validate** - Add buf.validate rules and CEL validations
    - Also verifies that all identified defaults carry the formal `optional` + default field option.
+   - **Also annotates secret-by-default fields** -- every secret-bearing field gets
+     `(org.openmcf.shared.options.sensitive) = true`; every name-heuristic look-alike that is NOT a
+     secret gets `(sensitive_exempt_reason)`; never both. See rule `002-spec-validate`
+     ("SENSITIVE FIELD OPTIONS") and the Secret-by-default section below.
    - **Every CEL `message` must be a user-facing, empathetic string** -- see rule `002-spec-validate` ("VALIDATION MESSAGE QUALITY"). These messages are rendered directly in UIs and CLIs. Write them like a knowledgeable colleague, not a compiler.
 3. **003-spec-tests** - Generate spec_test.go with validation tests
 4. **004-stack-outputs** - Generate stack_outputs.proto (deployment outputs)
@@ -291,6 +317,8 @@ After forge completes, the component should have:
 
 ✅ All 4 proto files with validations
 ✅ **Every CEL message is user-facing quality** (clear, actionable, empathetic -- see rule `002-spec-validate`, "VALIDATION MESSAGE QUALITY")
+✅ **Every secret-bearing field annotated `(sensitive)`; every look-alike non-secret exempted with `sensitive_exempt_reason`** (see the Secret-by-default section)
+✅ **`openmcf secret-coverage --check` passes** (no unannotated secret-looking field)
 ✅ Generated .pb.go stubs
 ✅ spec_test.go with validation tests
 ✅ **Component tests execute and pass** (validates buf.validate rules)

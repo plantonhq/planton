@@ -76,8 +76,12 @@ Use update when you need to:
    - Checks for changed `StringValueOrRef` types (may need `value:` wrapper added or removed)
    - Checks for changed `recommended_default` / `default` annotations (preset values and comments may need updating)
    - Updates stale presets to match the new schema
-6. Runs build validation: `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...` (rule 018)
-7. Runs test validation: `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/` (rule 019)
+6. **Annotates secret-by-default fields**: any newly added or renamed secret-bearing field MUST be
+   annotated `(org.openmcf.shared.options.sensitive) = true` (a look-alike non-secret gets
+   `(sensitive_exempt_reason)` instead); then `openmcf secret-coverage --check` MUST pass. See rule
+   `002-spec-validate` ("SENSITIVE FIELD OPTIONS"). (For a dedicated annotation-only pass, see Scenario 8.)
+7. Runs build validation: `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...` (rule 018)
+8. Runs test validation: `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/` (rule 019)
 
 **Use when:**
 - Added new fields to spec.proto
@@ -343,6 +347,8 @@ Specify update scenario:
 - `proto-changed` - Propagate proto schema changes
 - `refresh-docs` - Update documentation
 - `update-iac` - Modify deployment logic
+- `apply-default-semantics` - Formalize comment-only defaults as field options (Scenario 7)
+- `annotate-sensitive` - Annotate/exempt secret-by-default fields and pass the coverage gate (Scenario 8)
 - `auto` - Let AI determine scenario (default)
 
 ### --explain "<description>"
@@ -430,7 +436,9 @@ Update validates after each major change:
    - Validates buf.validate rules in spec.proto are correct
    - Ensures spec_test.go passes with current validation logic
 3. Run `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...` to validate build
-4. If `v1/presets/` exists: validate all preset field names exist in the updated spec.proto, check StringValueOrRef compliance, and verify apiVersion/kind still match api.proto
+4. Run `openmcf secret-coverage --check` -- any newly added/renamed secret-bearing field must be
+   annotated `sensitive` (or exempted with `sensitive_exempt_reason`); the gate must be green
+5. If `v1/presets/` exists: validate all preset field names exist in the updated spec.proto, check StringValueOrRef compliance, and verify apiVersion/kind still match api.proto
 
 **After Pulumi/Go Code Changes:**
 1. Run `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...` to validate build
@@ -612,3 +620,36 @@ After update completes:
 - Custom linter `DEFAULT_REQUIRES_OPTIONAL` would fail on new defaults
 
 **Reference:** See `apis/_rules/apply-openmcf-default-option-semantics.mdc` for detailed process
+
+#### Scenario 8: Annotate Sensitive Fields (Secret-by-default)
+
+**When:** A component has secret-bearing fields that are not yet annotated `sensitive` (e.g. a
+pre-existing component, or `openmcf secret-coverage --check` reports a gap)
+
+```
+@update-openmcf-component AwsRdsInstance --scenario annotate-sensitive
+```
+
+**What it does:**
+1. Runs `openmcf secret-coverage --check` (and/or reads the report) to list unannotated
+   secret-looking fields for the component.
+2. For each field, decides secret vs look-alike:
+   - **Secret** (password, token, API/client *secret*, private key/PEM, PSK, access-key *secret*,
+     credential-bearing connection string) -> add `[(org.openmcf.shared.options.sensitive) = true]`.
+     Applies to string fields and to the literal of `StringValueOrRef` fields; composes with the
+     foreign-key `(org.openmcf.shared.foreignkey.v1.default_kind)` annotation.
+   - **Look-alike, NOT a secret** (public key, access-key *id*, resource *name*, key *algorithm*) ->
+     add `[(org.openmcf.shared.options.sensitive_exempt_reason) = "<why>"]`. Never both on one field.
+3. Regenerates proto stubs: `make protos`.
+4. Re-runs the gate until green: `openmcf secret-coverage --check`. A genuine, deliberate deferral
+   (rare) is recorded with `openmcf secret-coverage --write-baseline` -- never to silence a field that
+   should simply be annotated.
+5. Runs build + test validation (rules 018/019).
+
+**Use when:**
+- `openmcf secret-coverage --check` reports a new gap
+- A secret-bearing field was added without its `sensitive` annotation
+- Backfilling secure-by-default coverage on an older component
+
+**Reference:** rule `002-spec-validate` ("SENSITIVE FIELD OPTIONS") and the `sensitive` /
+`sensitive_exempt_reason` comments in `org/openmcf/shared/options/options.proto`.
