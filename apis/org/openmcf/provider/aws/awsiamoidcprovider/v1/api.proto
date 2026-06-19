@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awsiamoidcprovider.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/aws/awsiamoidcprovider/v1/spec.proto";
+import "org/openmcf/provider/aws/awsiamoidcprovider/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// AwsIamOidcProvider represents an AWS IAM OpenID Connect (OIDC) identity provider.
+// It establishes trust between an AWS account and an external OIDC issuer so that
+// the issuer's short-lived tokens can be exchanged for AWS credentials via STS
+// web-identity federation -- powering EKS IRSA and keyless CI/CD without long-lived keys.
+message AwsIamOidcProvider {
+  // api-version must be set to "aws.openmcf.org/v1".
+  string api_version = 1 [(buf.validate.field).string.const = "aws.openmcf.org/v1"];
+
+  // resource-kind for this OIDC provider resource, typically "AwsIamOidcProvider".
+  string kind = 2 [(buf.validate.field).string.const = 'AwsIamOidcProvider'];
+
+  // metadata captures identifying information (name, org, version, etc.)
+  // and must pass standard validations for resource naming.
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec holds the core configuration: the issuer URL, allowed client IDs, and optional thumbprints.
+  AwsIamOidcProviderSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status holds runtime or post-deployment information.
+  AwsIamOidcProviderStatus status = 5;
+}
+
+// AwsIamOidcProviderStatus describes the status fields for an OIDC provider resource.
+message AwsIamOidcProviderStatus {
+  // stack_outputs captures the outputs returned by Pulumi/Terraform after provisioning.
+  AwsIamOidcProviderStackOutputs outputs = 1;
+}

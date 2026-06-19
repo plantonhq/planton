@@ -1,0 +1,15 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsIamOidcProvider
+metadata:
+  name: github-actions-oidc-demo
+spec:
+  region: us-west-2
+  # GitHub Actions' OIDC issuer: a real, publicly reachable, well-known-CA issuer.
+  # Because its CA is publicly trusted, thumbprintList is omitted and AWS derives it.
+  # (For EKS IRSA, set url.valueFrom to an AwsEksCluster's status.outputs.oidc_issuer_url;
+  # see presets/01-eks-irsa.yaml.)
+  url:
+    value: "https://token.actions.githubusercontent.com"
+  # sts.amazonaws.com is the audience AWS expects for GitHub Actions web-identity tokens.
+  clientIdList:
+    - sts.amazonaws.com

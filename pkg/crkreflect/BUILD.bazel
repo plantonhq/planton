@@ -98,6 +98,7 @@ go_library(
         "//apis/org/openmcf/provider/aws/awsglobalaccelerator/v1:awsglobalaccelerator",
         "//apis/org/openmcf/provider/aws/awsgluecatalogdatabase/v1:awsgluecatalogdatabase",
         "//apis/org/openmcf/provider/aws/awshttpapigateway/v1:awshttpapigateway",
+        "//apis/org/openmcf/provider/aws/awsiamoidcprovider/v1:awsiamoidcprovider",
         "//apis/org/openmcf/provider/aws/awsiamrole/v1:awsiamrole",
         "//apis/org/openmcf/provider/aws/awsiamuser/v1:awsiamuser",
         "//apis/org/openmcf/provider/aws/awskinesisfirehose/v1:awskinesisfirehose",

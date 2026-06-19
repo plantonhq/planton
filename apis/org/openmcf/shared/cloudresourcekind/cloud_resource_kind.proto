@@ -255,6 +255,11 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "awsebr"
   }];
+  AwsIamOidcProvider = 229 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "oidcp"
+  }];
   AwsHttpApiGateway = 240 [(kind_meta) = {
     provider: aws
     version: v1

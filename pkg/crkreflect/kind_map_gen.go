@@ -82,6 +82,7 @@ import (
 	awsglobalacceleratorv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsglobalaccelerator/v1"
 	awsgluecatalogdatabasev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsgluecatalogdatabase/v1"
 	awshttpapigatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awshttpapigateway/v1"
+	awsiamoidcproviderv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsiamoidcprovider/v1"
 	awsiamrolev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsiamrole/v1"
 	awsiamuserv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsiamuser/v1"
 	awskinesisfirehosev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awskinesisfirehose/v1"
@@ -492,6 +493,7 @@ var ProviderAwsMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_AwsGlobalAccelerator:             &awsglobalacceleratorv1.AwsGlobalAccelerator{},
 	cloudresourcekind.CloudResourceKind_AwsGlueCatalogDatabase:           &awsgluecatalogdatabasev1.AwsGlueCatalogDatabase{},
 	cloudresourcekind.CloudResourceKind_AwsHttpApiGateway:                &awshttpapigatewayv1.AwsHttpApiGateway{},
+	cloudresourcekind.CloudResourceKind_AwsIamOidcProvider:               &awsiamoidcproviderv1.AwsIamOidcProvider{},
 	cloudresourcekind.CloudResourceKind_AwsIamRole:                       &awsiamrolev1.AwsIamRole{},
 	cloudresourcekind.CloudResourceKind_AwsIamUser:                       &awsiamuserv1.AwsIamUser{},
 	cloudresourcekind.CloudResourceKind_AwsKinesisFirehose:               &awskinesisfirehosev1.AwsKinesisFirehose{},
