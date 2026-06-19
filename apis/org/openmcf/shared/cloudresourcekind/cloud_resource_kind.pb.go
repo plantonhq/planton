@@ -111,6 +111,7 @@ const (
 	CloudResourceKind_AwsSnsTopic                      CloudResourceKind = 226
 	CloudResourceKind_AwsEventBridgeBus                CloudResourceKind = 227
 	CloudResourceKind_AwsEventBridgeRule               CloudResourceKind = 228
+	CloudResourceKind_AwsIamOidcProvider               CloudResourceKind = 229
 	CloudResourceKind_AwsHttpApiGateway                CloudResourceKind = 240
 	CloudResourceKind_AwsStepFunction                  CloudResourceKind = 241
 	CloudResourceKind_AwsRedisElasticache              CloudResourceKind = 250
@@ -522,6 +523,7 @@ var (
 		226:  "AwsSnsTopic",
 		227:  "AwsEventBridgeBus",
 		228:  "AwsEventBridgeRule",
+		229:  "AwsIamOidcProvider",
 		240:  "AwsHttpApiGateway",
 		241:  "AwsStepFunction",
 		250:  "AwsRedisElasticache",
@@ -908,6 +910,7 @@ var (
 		"AwsSnsTopic":                           226,
 		"AwsEventBridgeBus":                     227,
 		"AwsEventBridgeRule":                    228,
+		"AwsIamOidcProvider":                    229,
 		"AwsHttpApiGateway":                     240,
 		"AwsStepFunction":                       241,
 		"AwsRedisElasticache":                   250,
@@ -1510,7 +1513,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x04kind\x18\x02 \x01(\tR\x04kind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xbc\x87\x01\n" +
+	"\x02v1\x10\x01*\xe6\x87\x01\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12,\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1552,7 +1555,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\vAwsSqsQueue\x10\xe1\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awssqs\x12\"\n" +
 	"\vAwsSnsTopic\x10\xe2\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awssns\x12'\n" +
 	"\x11AwsEventBridgeBus\x10\xe3\x01\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05awseb\x12)\n" +
-	"\x12AwsEventBridgeRule\x10\xe4\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsebr\x12.\n" +
+	"\x12AwsEventBridgeRule\x10\xe4\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsebr\x12(\n" +
+	"\x12AwsIamOidcProvider\x10\xe5\x01\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05oidcp\x12.\n" +
 	"\x11AwsHttpApiGateway\x10\xf0\x01\x1a\x16\xa2\xf7\x04\x12\b\f\x10\x01\"\fawshttpapigw\x12&\n" +
 	"\x0fAwsStepFunction\x10\xf1\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awssfn\x12,\n" +
 	"\x13AwsRedisElasticache\x10\xfa\x01\x1a\x12\xa2\xf7\x04\x0e\b\f\x10\x01\"\bawsredis\x12)\n" +
