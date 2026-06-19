@@ -7,6 +7,7 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//apis/org/openmcf/provider/aws",
+        "//pkg/iac/provider/aws/awswebidentity",
         "//pkg/iac/pulumi/pulumimodule/pulumi/pulumioutput",
         "@com_github_pkg_errors//:errors",
         "@com_github_pulumi_pulumi_aws_sdk_v7//go/aws",
@@ -20,7 +21,8 @@ go_test(
     embed = [":pulumiawsprovider"],
     deps = [
         "//apis/org/openmcf/provider/aws",
-        "@com_github_pulumi_pulumi_aws_sdk_v7//go/aws",
+        "//pkg/iac/provider/aws/awswebidentity",
+        "@com_github_aws_aws_sdk_go_v2//aws",
         "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
         "@com_github_stretchr_testify//assert",
         "@com_github_stretchr_testify//require",

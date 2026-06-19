@@ -1,23 +1,27 @@
 // Package awswebidentity is the engine-neutral place that exchanges an OIDC web-identity
-// JWT for temporary AWS credentials via STS. Both the pulumi-aws-native builder and the
-// OpenTofu/Terraform provider-env path resolve credentials here, so the security-critical
-// STS dance -- AssumeRoleWithWebIdentity (single hop for `oidc`) plus any chained
-// AssumeRole hops (the `cross_account_trust` second hop) -- lives in one tested place
-// instead of being copied per engine.
+// JWT for temporary AWS credentials via STS. All three AWS keyless paths -- the pulumi-aws
+// "classic" builder, the pulumi-aws-native builder, and the OpenTofu/Terraform provider-env
+// path -- resolve credentials here, so the security-critical STS dance --
+// AssumeRoleWithWebIdentity (single hop for `oidc`) plus any chained AssumeRole hops (the
+// `cross_account_trust` second hop) -- lives in one tested place instead of being copied per
+// engine.
 //
-// Why a builder/runner-side exchange exists at all:
-//   - pulumi-aws-native has no web-identity field (upstream #1042), so it cannot exchange
-//     the JWT itself -- the caller must hand it temporary credentials.
+// Why a builder/runner-side exchange exists at all (rather than letting each provider plugin
+// exchange the JWT natively):
+//   - pulumi-aws "classic" CAN exchange a provider-level token natively, but its pre-configure
+//     credential validation is currently broken for AssumeRoleWithWebIdentity (upstream
+//     pulumi-aws#6228), failing provider init before STS is called -- so the classic builder
+//     exchanges here and injects static credentials to take the provider's working static path.
+//   - pulumi-aws-native has no web-identity field at all (upstream pulumi-aws-native#1042), so
+//     it cannot exchange the JWT itself -- the caller must hand it temporary credentials.
 //   - the OpenTofu AWS provider block is deliberately empty (region + credentials are
 //     injected as env vars from the stack input), and a two-hop chained assume-role is not
 //     expressible as a single set of SDK env vars -- so the runtime performs the exchange
 //     and injects the resulting short-lived credentials.
 //
-// The pulumi-aws "classic" builder is the exception: it hands the inline token to the
-// provider plugin and lets the plugin exchange it, so it does NOT use this package.
-//
-// This package is issuer-agnostic: web_identity_token is an opaque OIDC JWT minted by the
-// caller (e.g. the Planton runner); nothing here talks to any issuer or minter.
+// Each consumer documents its own switch-back trigger (when its upstream gap is fixed) in its
+// own package doc. This package is issuer-agnostic: web_identity_token is an opaque OIDC JWT
+// minted by the caller (e.g. the Planton runner); nothing here talks to any issuer or minter.
 package awswebidentity
 
 import (

@@ -1,17 +1,27 @@
 package pulumiawsprovider
 
 import (
+	"context"
+	"errors"
 	"testing"
 
+	awssdk "github.com/aws/aws-sdk-go-v2/aws"
 	awsprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws"
-	"github.com/pulumi/pulumi-aws/sdk/v7/go/aws"
+	"github.com/plantonhq/openmcf/pkg/iac/provider/aws/awswebidentity"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
+// stubCreds is what the fake resolver returns; the web-identity dispatch must inject these.
+var stubCreds = awssdk.Credentials{
+	AccessKeyID:     "ASIASTUBACCESSKEY",
+	SecretAccessKey: "stub-secret-access-key",
+	SessionToken:    "stub-session-token",
+}
+
 func TestBuildProviderArgs_NilConfig_RegionOnly(t *testing.T) {
-	args, err := buildProviderArgs(nil, "us-west-2")
+	args, err := buildProviderArgs(context.Background(), nil, "us-west-2", failingResolver(t))
 	require.NoError(t, err)
 	require.NotNil(t, args)
 
@@ -27,7 +37,7 @@ func TestBuildProviderArgs_RunnerMode_RegionOnly(t *testing.T) {
 	// No static keys and no web identity -> region only (ambient credential chain).
 	cfg := &awsprovider.AwsProviderConfig{AccountId: "123456789012", Region: "eu-central-1"}
 
-	args, err := buildProviderArgs(cfg, "eu-central-1")
+	args, err := buildProviderArgs(context.Background(), cfg, "eu-central-1", failingResolver(t))
 	require.NoError(t, err)
 
 	assert.Equal(t, pulumi.String("eu-central-1"), args.Region)
@@ -45,7 +55,7 @@ func TestBuildProviderArgs_StaticCredentials(t *testing.T) {
 		SessionToken:    "FQoGZXIvYXdzEXAMPLE",
 	}
 
-	args, err := buildProviderArgs(cfg, "us-east-1")
+	args, err := buildProviderArgs(context.Background(), cfg, "us-east-1", failingResolver(t))
 	require.NoError(t, err)
 
 	assert.Equal(t, pulumi.String("AKIAIOSFODNN7EXAMPLE"), args.AccessKey)
@@ -65,7 +75,7 @@ func TestBuildProviderArgs_StaticCredentials_NoSessionToken(t *testing.T) {
 		Region:          "us-east-1",
 	}
 
-	args, err := buildProviderArgs(cfg, "us-east-1")
+	args, err := buildProviderArgs(context.Background(), cfg, "us-east-1", failingResolver(t))
 	require.NoError(t, err)
 
 	assert.Equal(t, pulumi.String("AKIAIOSFODNN7EXAMPLE"), args.AccessKey)
@@ -73,7 +83,7 @@ func TestBuildProviderArgs_StaticCredentials_NoSessionToken(t *testing.T) {
 	assert.Nil(t, args.Token)
 }
 
-func TestBuildProviderArgs_WebIdentity_SingleHop_Oidc(t *testing.T) {
+func TestBuildProviderArgs_WebIdentity_SingleHop_InjectsResolvedCreds(t *testing.T) {
 	cfg := &awsprovider.AwsProviderConfig{
 		AccountId: "123456789012",
 		Region:    "us-west-2",
@@ -85,25 +95,33 @@ func TestBuildProviderArgs_WebIdentity_SingleHop_Oidc(t *testing.T) {
 		},
 	}
 
-	args, err := buildProviderArgs(cfg, "us-west-2")
+	var gotRegion string
+	var gotWebIdentity *awsprovider.AwsWebIdentityProviderConfig
+	resolve := func(_ context.Context, region string,
+		wi *awsprovider.AwsWebIdentityProviderConfig) (awssdk.Credentials, error) {
+		gotRegion = region
+		gotWebIdentity = wi
+		return stubCreds, nil
+	}
+
+	args, err := buildProviderArgs(context.Background(), cfg, "us-west-2", resolve)
 	require.NoError(t, err)
 
-	// Keyless path is taken; static keys must remain unset.
-	assert.Nil(t, args.AccessKey)
-	assert.Nil(t, args.SecretKey)
-	// No chained hops for single-hop oidc.
-	assert.Nil(t, args.AssumeRoles)
+	// The resolver received the resource region and the web-identity config.
+	assert.Equal(t, "us-west-2", gotRegion)
+	assert.Equal(t, "arn:aws:iam::123456789012:role/customer-oidc", gotWebIdentity.GetRoleArn())
 
-	require.NotNil(t, args.AssumeRoleWithWebIdentity)
-	webIdentity, ok := args.AssumeRoleWithWebIdentity.(aws.ProviderAssumeRoleWithWebIdentityArgs)
-	require.True(t, ok)
-	assert.Equal(t, pulumi.String("arn:aws:iam::123456789012:role/customer-oidc"), webIdentity.RoleArn)
-	assert.Equal(t, pulumi.String("eyJhbGciOiJSUzI1NiJ9.payload.sig"), webIdentity.WebIdentityToken)
-	assert.Equal(t, pulumi.String("planton-oidc"), webIdentity.SessionName)
-	assert.Equal(t, pulumi.String("1h"), webIdentity.Duration)
+	// The resolved temporary credentials were injected statically; no provider-native web identity.
+	assert.Equal(t, pulumi.String(stubCreds.AccessKeyID), args.AccessKey)
+	assert.Equal(t, pulumi.String(stubCreds.SecretAccessKey), args.SecretKey)
+	assert.Nil(t, args.AssumeRoleWithWebIdentity)
+	assert.Nil(t, args.AssumeRoles)
+	// The session token is present but secret-wrapped (an Output), so it is not a bare pulumi.String.
+	require.NotNil(t, args.Token)
+	assert.NotEqual(t, pulumi.String(stubCreds.SessionToken), args.Token)
 }
 
-func TestBuildProviderArgs_WebIdentity_TwoHop_CrossAccountTrust(t *testing.T) {
+func TestBuildProviderArgs_WebIdentity_TwoHop_PassesChainToResolver(t *testing.T) {
 	cfg := &awsprovider.AwsProviderConfig{
 		AccountId: "123456789012",
 		Region:    "us-west-2",
@@ -122,23 +140,25 @@ func TestBuildProviderArgs_WebIdentity_TwoHop_CrossAccountTrust(t *testing.T) {
 		},
 	}
 
-	args, err := buildProviderArgs(cfg, "us-west-2")
+	var gotWebIdentity *awsprovider.AwsWebIdentityProviderConfig
+	resolve := func(_ context.Context, _ string,
+		wi *awsprovider.AwsWebIdentityProviderConfig) (awssdk.Credentials, error) {
+		gotWebIdentity = wi
+		return stubCreds, nil
+	}
+
+	args, err := buildProviderArgs(context.Background(), cfg, "us-west-2", resolve)
 	require.NoError(t, err)
 
-	require.NotNil(t, args.AssumeRoleWithWebIdentity)
-	webIdentity, ok := args.AssumeRoleWithWebIdentity.(aws.ProviderAssumeRoleWithWebIdentityArgs)
-	require.True(t, ok)
-	assert.Equal(t, pulumi.String("arn:aws:iam::066380525333:role/planton-base"), webIdentity.RoleArn)
-
-	require.NotNil(t, args.AssumeRoles)
-	chain, ok := args.AssumeRoles.(aws.ProviderAssumeRoleArray)
-	require.True(t, ok)
-	require.Len(t, chain, 1)
-	hop, ok := chain[0].(aws.ProviderAssumeRoleArgs)
-	require.True(t, ok)
-	assert.Equal(t, pulumi.String("arn:aws:iam::123456789012:role/customer-cat"), hop.RoleArn)
-	assert.Equal(t, pulumi.String("ext-secret-123"), hop.ExternalId)
-	assert.Equal(t, pulumi.String("1h"), hop.Duration)
+	// The full chain (hop 1 role + hop 2 customer role with external id) reaches the resolver,
+	// which performs the chained AssumeRole; the builder only injects the final credentials.
+	require.Len(t, gotWebIdentity.GetChainedAssumeRoles(), 1)
+	assert.Equal(t, "arn:aws:iam::066380525333:role/planton-base", gotWebIdentity.GetRoleArn())
+	assert.Equal(t, "arn:aws:iam::123456789012:role/customer-cat",
+		gotWebIdentity.GetChainedAssumeRoles()[0].GetRoleArn())
+	assert.Equal(t, "ext-secret-123", gotWebIdentity.GetChainedAssumeRoles()[0].GetExternalId())
+	assert.Equal(t, pulumi.String(stubCreds.AccessKeyID), args.AccessKey)
+	assert.Nil(t, args.AssumeRoles)
 }
 
 func TestBuildProviderArgs_WebIdentity_MissingToken_Errors(t *testing.T) {
@@ -149,7 +169,7 @@ func TestBuildProviderArgs_WebIdentity_MissingToken_Errors(t *testing.T) {
 		},
 	}
 
-	_, err := buildProviderArgs(cfg, "us-west-2")
+	_, err := buildProviderArgs(context.Background(), cfg, "us-west-2", failingResolver(t))
 	assert.Error(t, err)
 }
 
@@ -163,7 +183,24 @@ func TestBuildProviderArgs_WebIdentity_ChainedHopMissingRoleArn_Errors(t *testin
 		},
 	}
 
-	_, err := buildProviderArgs(cfg, "us-west-2")
+	_, err := buildProviderArgs(context.Background(), cfg, "us-west-2", failingResolver(t))
+	assert.Error(t, err)
+}
+
+func TestBuildProviderArgs_WebIdentity_ResolverError_Propagates(t *testing.T) {
+	cfg := &awsprovider.AwsProviderConfig{
+		Region: "us-west-2",
+		WebIdentity: &awsprovider.AwsWebIdentityProviderConfig{
+			WebIdentityToken: "eyJhbGciOiJSUzI1NiJ9.payload.sig",
+			RoleArn:          "arn:aws:iam::123456789012:role/customer-oidc",
+		},
+	}
+	resolve := func(_ context.Context, _ string,
+		_ *awsprovider.AwsWebIdentityProviderConfig) (awssdk.Credentials, error) {
+		return awssdk.Credentials{}, errors.New("sts exchange failed")
+	}
+
+	_, err := buildProviderArgs(context.Background(), cfg, "us-west-2", resolve)
 	assert.Error(t, err)
 }
 
@@ -172,4 +209,15 @@ func TestProviderResourceName(t *testing.T) {
 	assert.Equal(t, "classic-provider", ProviderResourceName(nil))
 	assert.Equal(t, "classic-provider-replica", ProviderResourceName([]string{"replica"}))
 	assert.Equal(t, "classic-provider-us-east-1", ProviderResourceName([]string{"us", "east-1"}))
+}
+
+// failingResolver returns a resolver that fails the test if invoked -- used by cases where the
+// dispatch must never reach the STS exchange (region-only, static keys, validation errors).
+func failingResolver(t *testing.T) awswebidentity.CredentialResolver {
+	t.Helper()
+	return func(_ context.Context, _ string,
+		_ *awsprovider.AwsWebIdentityProviderConfig) (awssdk.Credentials, error) {
+		t.Fatal("credential resolver must not be called for this case")
+		return awssdk.Credentials{}, nil
+	}
 }
