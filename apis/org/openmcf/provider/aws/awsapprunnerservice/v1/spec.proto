@@ -114,8 +114,8 @@ message AwsAppRunnerServiceSpec {
   // your VPC (databases, caches, internal APIs). Provide subnets in at least two
   // Availability Zones for high availability. Mutually exclusive with vpc_connector_arn.
   repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 14 [
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[*].id"
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
   ];
 
   // Security group IDs for the inline VPC Connector. Controls what VPC resources

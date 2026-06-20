@@ -851,15 +851,15 @@ const file_org_openmcf_provider_aws_awsbatchcomputeenvironment_v1_spec_proto_raw
 	"\n" +
 	"job_queues\x18\x06 \x03(\v2H.org.openmcf.provider.aws.awsbatchcomputeenvironment.v1.AwsBatchJobQueueB\b\xbaH\x05\x92\x01\x02\b\x01R\tjobQueues\x12}\n" +
 	"\x11scheduling_policy\x18\a \x01(\v2P.org.openmcf.provider.aws.awsbatchcomputeenvironment.v1.AwsBatchSchedulingPolicyR\x10schedulingPolicyB\b\n" +
-	"\x06_state\"\xc9\x0e\n" +
+	"\x06_state\"\xbb\x0e\n" +
 	"\x18AwsBatchComputeResources\x12;\n" +
 	"\x04type\x18\x01 \x01(\tB'\xbaH$r\"R\x03EC2R\x04SPOTR\aFARGATER\fFARGATE_SPOTR\x04type\x12'\n" +
 	"\tmax_vcpus\x18\x02 \x01(\x05B\n" +
 	"\xbaH\a\xc8\x01\x01\x1a\x02(\x01R\bmaxVcpus\x12'\n" +
 	"\tmin_vcpus\x18\x03 \x01(\x05B\x05\x8a\xa6\x1d\x010H\x00R\bminVcpus\x88\x01\x01\x12#\n" +
-	"\rdesired_vcpus\x18\x04 \x01(\x05R\fdesiredVcpus\x12\x8c\x01\n" +
+	"\rdesired_vcpus\x18\x04 \x01(\x05R\fdesiredVcpus\x12\x7f\n" +
 	"\n" +
-	"subnet_ids\x18\x05 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB9\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x8b\x01\n" +
+	"subnet_ids\x18\x05 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01\x88\xd4a\x9c\x02\x92\xd4a\x18status.outputs.subnet_idR\tsubnetIds\x12\x8b\x01\n" +
 	"\x12security_group_ids\x18\x06 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12%\n" +
 	"\x0einstance_types\x18\a \x03(\tR\rinstanceTypes\x12\x87\x01\n" +
 	"\x13allocation_strategy\x18\b \x01(\tBV\xbaHS\xd8\x01\x01rNR\x14BEST_FIT_PROGRESSIVER\x17SPOT_CAPACITY_OPTIMIZEDR\x1dSPOT_PRICE_CAPACITY_OPTIMIZEDR\x12allocationStrategy\x12\x85\x01\n" +

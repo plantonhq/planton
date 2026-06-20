@@ -61,7 +61,7 @@ This creates a single PostgreSQL 14.10 instance on a `db.t3.micro` with 20 GiB o
 | `region` | `string` | AWS region where the RDS instance will be created. Example: `us-west-2`, `eu-west-1`. | |
 | `subnetIds` | `string[]` | Subnet IDs for the DB subnet group. Provide at least two private subnets for high availability. Required unless `dbSubnetGroupName` is set. | Minimum 2 items when used |
 | `subnetIds[].value` | `string` | Direct subnet ID value | — |
-| `subnetIds[].valueFrom` | `object` | Foreign key reference to an AwsVpc resource | Default kind: `AwsVpc`, field: `status.outputs.private_subnets.[*].id` |
+| `subnetIds[].valueFrom` | `object` | Foreign key reference to an AwsSubnet resource | Default kind: `AwsSubnet`, field: `status.outputs.subnet_id` |
 | `dbSubnetGroupName` | `string` | Name of an existing DB subnet group. Required unless `subnetIds` (>=2) is provided. Can reference another resource via `valueFrom`. | — |
 | `engine` | `string` | Database engine identifier (e.g., `"postgres"`, `"mysql"`, `"mariadb"`, `"oracle-se2"`, `"sqlserver-ex"`). | Minimum length 1 |
 | `engineVersion` | `string` | Engine version string (e.g., `"14.10"` for PostgreSQL, `"8.0.35"` for MySQL). | Minimum length 1 |
@@ -200,13 +200,13 @@ spec:
   region: us-west-2
   subnetIds:
     - valueFrom:
-        kind: AwsVpc
-        name: my-vpc
-        field: status.outputs.private_subnets.[0].id
+        kind: AwsSubnet
+        name: my-private-subnet-a
+        fieldPath: status.outputs.subnet_id
     - valueFrom:
-        kind: AwsVpc
-        name: my-vpc
-        field: status.outputs.private_subnets.[1].id
+        kind: AwsSubnet
+        name: my-private-subnet-b
+        fieldPath: status.outputs.subnet_id
   securityGroupIds:
     - valueFrom:
         kind: AwsSecurityGroup

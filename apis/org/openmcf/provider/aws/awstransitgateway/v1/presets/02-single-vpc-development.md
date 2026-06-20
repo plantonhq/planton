@@ -19,7 +19,7 @@ Minimal Transit Gateway with a single VPC attachment for development or testing.
 | Placeholder | Description | Where to Find |
 |---|---|---|
 | `<dev-vpc-id>` | Development VPC ID | AwsVpc status.outputs.vpc_id |
-| `<dev-private-subnet>` | Dev VPC private subnet | AwsVpc status.outputs.private_subnets[0].id |
+| `<dev-private-subnet>` | Dev VPC private subnet | AwsSubnet status.outputs.subnet_id |
 
 ## Related Presets
 

@@ -198,17 +198,17 @@ spec:
       fieldPath: status.outputs.vpc_id
   subnetIds:
     - valueFrom:
-        kind: AwsVpc
-        name: ml-platform-vpc
-        fieldPath: status.outputs.private_subnets.[0].id
+        kind: AwsSubnet
+        name: ml-platform-private-subnet-a
+        fieldPath: status.outputs.subnet_id
     - valueFrom:
-        kind: AwsVpc
-        name: ml-platform-vpc
-        fieldPath: status.outputs.private_subnets.[1].id
+        kind: AwsSubnet
+        name: ml-platform-private-subnet-b
+        fieldPath: status.outputs.subnet_id
     - valueFrom:
-        kind: AwsVpc
-        name: ml-platform-vpc
-        fieldPath: status.outputs.private_subnets.[2].id
+        kind: AwsSubnet
+        name: ml-platform-private-subnet-c
+        fieldPath: status.outputs.subnet_id
   kmsKeyId:
     valueFrom:
       kind: AwsKmsKey

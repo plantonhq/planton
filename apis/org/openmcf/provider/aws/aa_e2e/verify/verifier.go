@@ -27,12 +27,13 @@ type Verifier interface {
 // verifiers maps a component name to its verifier. New AWS components register
 // here as they are forged; today it carries the S3 walking-skeleton only.
 var verifiers = map[string]Verifier{
-	"awss3bucket":        &s3Verifier{},
-	"awssubnet":          &subnetVerifier{},
-	"awsvpc":             &vpcVerifier{},
-	"awsinternetgateway": &internetGatewayVerifier{},
-	"awsnatgateway":      &natGatewayVerifier{},
-	"awselasticip":       &elasticIpVerifier{},
+	"awss3bucket":                  &s3Verifier{},
+	"awssubnet":                    &subnetVerifier{},
+	"awsvpc":                       &vpcVerifier{},
+	"awsinternetgateway":           &internetGatewayVerifier{},
+	"awsegressonlyinternetgateway": &egressOnlyInternetGatewayVerifier{},
+	"awsnatgateway":                &natGatewayVerifier{},
+	"awselasticip":                 &elasticIpVerifier{},
 }
 
 // GetVerifier returns the verifier for a component, or an error if none is registered.

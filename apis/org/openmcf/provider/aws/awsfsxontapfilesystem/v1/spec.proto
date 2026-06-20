@@ -123,8 +123,8 @@ message AwsFsxOntapFileSystemSpec {
   // must have network connectivity to these subnets.
   repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 7 [
     (buf.validate.field).repeated.min_items = 1,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[*].id"
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
   ];
 
   // Preferred subnet for the active file server in a multi-AZ deployment.
@@ -134,8 +134,8 @@ message AwsFsxOntapFileSystemSpec {
   // In a failover event, the standby file server in the other subnet takes over
   // automatically. Ignored for single-AZ deployments.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef preferred_subnet_id = 8 [
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[0].id"
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
   ];
 
   // Security groups for the file system's network interfaces. ForceNew.

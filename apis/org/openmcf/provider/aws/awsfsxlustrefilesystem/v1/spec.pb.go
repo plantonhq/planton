@@ -465,7 +465,7 @@ var File_org_openmcf_provider_aws_awsfsxlustrefilesystem_v1_spec_proto protorefl
 
 const file_org_openmcf_provider_aws_awsfsxlustrefilesystem_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"=org/openmcf/provider/aws/awsfsxlustrefilesystem/v1/spec.proto\x122org.openmcf.provider.aws.awsfsxlustrefilesystem.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x92\x18\n" +
+	"=org/openmcf/provider/aws/awsfsxlustrefilesystem/v1/spec.proto\x122org.openmcf.provider.aws.awsfsxlustrefilesystem.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x84\x18\n" +
 	"\x1aAwsFsxLustreFileSystemSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12;\n" +
 	"\x0fdeployment_type\x18\x02 \x01(\tB\r\x8a\xa6\x1d\tSCRATCH_2H\x00R\x0edeploymentType\x88\x01\x01\x12:\n" +
@@ -473,8 +473,8 @@ const file_org_openmcf_provider_aws_awsfsxlustrefilesystem_v1_spec_proto_rawDesc
 	"\fstorage_type\x18\x04 \x01(\tB\a\x8a\xa6\x1d\x03SSDH\x01R\vstorageType\x88\x01\x01\x12=\n" +
 	"\x1bper_unit_storage_throughput\x18\x05 \x01(\x05R\x18perUnitStorageThroughput\x12A\n" +
 	"\x15data_compression_type\x18\x06 \x01(\tB\b\x8a\xa6\x1d\x04NONEH\x02R\x13dataCompressionType\x88\x01\x01\x127\n" +
-	"\x18file_system_type_version\x18\a \x01(\tR\x15fileSystemTypeVersion\x12\x85\x01\n" +
-	"\tsubnet_id\x18\b \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB4\xbaH\x03\xc8\x01\x01\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[0].idR\bsubnetId\x12\x8b\x01\n" +
+	"\x18file_system_type_version\x18\a \x01(\tR\x15fileSystemTypeVersion\x12x\n" +
+	"\tsubnet_id\x18\b \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\x9c\x02\x92\xd4a\x18status.outputs.subnet_idR\bsubnetId\x12\x8b\x01\n" +
 	"\x12security_group_ids\x18\t \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12q\n" +
 	"\n" +
 	"kms_key_id\x18\n" +

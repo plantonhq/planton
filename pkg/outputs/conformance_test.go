@@ -99,6 +99,21 @@ func TestStackOutputsConformance(t *testing.T) {
 			},
 		},
 		{
+			// AwsEgressOnlyInternetGateway: flat scalar outputs from both engines
+			// (gateway id, attached vpc id, region) must each land on the StackOutputs
+			// proto. An egress-only gateway has no ARN, so none is emitted.
+			name: "AwsEgressOnlyInternetGateway",
+			kind: cloudresourcekind.CloudResourceKind_AwsEgressOnlyInternetGateway,
+			rawOutputs: map[string]interface{}{
+				"egress_only_internet_gateway_id": "eigw-0abc123",
+				"vpc_id":                          "vpc-0abc123",
+				"region":                          "us-west-2",
+			},
+			mustPopulate: []string{
+				"egress_only_internet_gateway_id", "vpc_id", "region",
+			},
+		},
+		{
 			// AwsNatGateway: flat scalar outputs from both engines (gateway id,
 			// public/private ip, ENI id, subnet id, region) must each land on the
 			// StackOutputs proto. A NAT gateway has no ARN, so none is emitted.

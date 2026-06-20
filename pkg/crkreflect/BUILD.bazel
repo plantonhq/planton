@@ -83,6 +83,7 @@ go_library(
         "//apis/org/openmcf/provider/aws/awsecrrepo/v1:awsecrrepo",
         "//apis/org/openmcf/provider/aws/awsecscluster/v1:awsecscluster",
         "//apis/org/openmcf/provider/aws/awsecsservice/v1:awsecsservice",
+        "//apis/org/openmcf/provider/aws/awsegressonlyinternetgateway/v1:awsegressonlyinternetgateway",
         "//apis/org/openmcf/provider/aws/awsekscluster/v1:awsekscluster",
         "//apis/org/openmcf/provider/aws/awseksnodegroup/v1:awseksnodegroup",
         "//apis/org/openmcf/provider/aws/awselasticfilesystem/v1:awselasticfilesystem",

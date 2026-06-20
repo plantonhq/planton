@@ -428,17 +428,17 @@ var File_org_openmcf_provider_aws_awsfsxontapfilesystem_v1_spec_proto protorefle
 
 const file_org_openmcf_provider_aws_awsfsxontapfilesystem_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"<org/openmcf/provider/aws/awsfsxontapfilesystem/v1/spec.proto\x121org.openmcf.provider.aws.awsfsxontapfilesystem.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xe3\x1b\n" +
+	"<org/openmcf/provider/aws/awsfsxontapfilesystem/v1/spec.proto\x121org.openmcf.provider.aws.awsfsxontapfilesystem.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xc8\x1b\n" +
 	"\x19AwsFsxOntapFileSystemSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12=\n" +
 	"\x0fdeployment_type\x18\x02 \x01(\tB\x0f\x8a\xa6\x1d\vSINGLE_AZ_2H\x00R\x0edeploymentType\x88\x01\x01\x12>\n" +
 	"\x14storage_capacity_gib\x18\x03 \x01(\x05B\f\xbaH\t\x1a\a\x18\x80\x80@(\x80\bR\x12storageCapacityGib\x12/\n" +
 	"\fstorage_type\x18\x04 \x01(\tB\a\x8a\xa6\x1d\x03SSDH\x01R\vstorageType\x88\x01\x01\x12M\n" +
 	"\x1fthroughput_capacity_per_ha_pair\x18\x05 \x01(\x05B\a\xbaH\x04\x1a\x02 \x00R\x1bthroughputCapacityPerHaPair\x12.\n" +
-	"\bha_pairs\x18\x06 \x01(\x05B\x0e\xbaH\x06\x1a\x04\x18\f(\x01\x8a\xa6\x1d\x011H\x02R\ahaPairs\x88\x01\x01\x12\x89\x01\n" +
+	"\bha_pairs\x18\x06 \x01(\x05B\x0e\xbaH\x06\x1a\x04\x18\f(\x01\x8a\xa6\x1d\x011H\x02R\ahaPairs\x88\x01\x01\x12|\n" +
 	"\n" +
-	"subnet_ids\x18\a \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB6\xbaH\x05\x92\x01\x02\b\x01\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x92\x01\n" +
-	"\x13preferred_subnet_id\x18\b \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[0].idR\x11preferredSubnetId\x12\x8b\x01\n" +
+	"subnet_ids\x18\a \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\xbaH\x05\x92\x01\x02\b\x01\x88\xd4a\x9c\x02\x92\xd4a\x18status.outputs.subnet_idR\tsubnetIds\x12\x85\x01\n" +
+	"\x13preferred_subnet_id\x18\b \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\x9c\x02\x92\xd4a\x18status.outputs.subnet_idR\x11preferredSubnetId\x12\x8b\x01\n" +
 	"\x12security_group_ids\x18\t \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x129\n" +
 	"\x19endpoint_ip_address_range\x18\n" +
 	" \x01(\tR\x16endpointIpAddressRange\x12Z\n" +

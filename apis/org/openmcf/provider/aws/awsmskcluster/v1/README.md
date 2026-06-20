@@ -163,17 +163,17 @@ spec:
   instanceType: kafka.m7g.xlarge
   subnetIds:
     - valueFrom:
-        kind: AwsVpc
-        name: production-vpc
-        fieldPath: status.outputs.private_subnets.[0].id
+        kind: AwsSubnet
+        name: production-private-subnet-a
+        fieldPath: status.outputs.subnet_id
     - valueFrom:
-        kind: AwsVpc
-        name: production-vpc
-        fieldPath: status.outputs.private_subnets.[1].id
+        kind: AwsSubnet
+        name: production-private-subnet-b
+        fieldPath: status.outputs.subnet_id
     - valueFrom:
-        kind: AwsVpc
-        name: production-vpc
-        fieldPath: status.outputs.private_subnets.[2].id
+        kind: AwsSubnet
+        name: production-private-subnet-c
+        fieldPath: status.outputs.subnet_id
   vpcId:
     valueFrom:
       kind: AwsVpc

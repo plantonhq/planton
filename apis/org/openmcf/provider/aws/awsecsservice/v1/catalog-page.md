@@ -316,13 +316,13 @@ spec:
   network:
     subnets:
       - valueFrom:
-          kind: AwsVpc
-          name: prod-vpc
-          field: status.outputs.private_subnets[0].id
+          kind: AwsSubnet
+          name: prod-private-subnet-a
+          fieldPath: status.outputs.subnet_id
       - valueFrom:
-          kind: AwsVpc
-          name: prod-vpc
-          field: status.outputs.private_subnets[1].id
+          kind: AwsSubnet
+          name: prod-private-subnet-b
+          fieldPath: status.outputs.subnet_id
     securityGroups:
       - valueFrom:
           kind: AwsSecurityGroup

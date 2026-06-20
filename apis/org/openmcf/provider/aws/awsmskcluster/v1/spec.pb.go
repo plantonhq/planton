@@ -684,15 +684,15 @@ var File_org_openmcf_provider_aws_awsmskcluster_v1_spec_proto protoreflect.FileD
 
 const file_org_openmcf_provider_aws_awsmskcluster_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"4org/openmcf/provider/aws/awsmskcluster/v1/spec.proto\x12)org.openmcf.provider.aws.awsmskcluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xcf\x17\n" +
+	"4org/openmcf/provider/aws/awsmskcluster/v1/spec.proto\x12)org.openmcf.provider.aws.awsmskcluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xc1\x17\n" +
 	"\x11AwsMskClusterSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12+\n" +
 	"\rkafka_version\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\fkafkaVersion\x12?\n" +
 	"\x16number_of_broker_nodes\x18\x03 \x01(\x05B\n" +
 	"\xbaH\a\xc8\x01\x01\x1a\x02(\x01R\x13numberOfBrokerNodes\x12+\n" +
-	"\rinstance_type\x18\x04 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\finstanceType\x12\x89\x01\n" +
+	"\rinstance_type\x18\x04 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\finstanceType\x12|\n" +
 	"\n" +
-	"subnet_ids\x18\x05 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB6\xbaH\x05\x92\x01\x02\b\x01\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x8b\x01\n" +
+	"subnet_ids\x18\x05 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\xbaH\x05\x92\x01\x02\b\x01\x88\xd4a\x9c\x02\x92\xd4a\x18status.outputs.subnet_idR\tsubnetIds\x12\x8b\x01\n" +
 	"\x12security_group_ids\x18\x06 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12\xa1\x01\n" +
 	"\x13allowed_cidr_blocks\x18\a \x03(\tBq\xbaHn\x92\x01k\x18\x01\"gre2c^(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}/(?:[0-9]|[12]\\d|3[0-2])$R\x11allowedCidrBlocks\x12\x9e\x01\n" +
 	"\x1cassociate_security_group_ids\x18\b \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x19associateSecurityGroupIds\x12i\n" +
@@ -743,10 +743,10 @@ const file_org_openmcf_provider_aws_awsmskcluster_v1_spec_proto_rawDesc = "" +
 	"\x1cAwsMskClusterFirehoseLogging\x12\x18\n" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x12\x89\x01\n" +
 	"\x0fdelivery_stream\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\x88\xd4a\x85\x02\x92\xd4a#status.outputs.delivery_stream_nameR\x0edeliveryStream:\x9d\x01\xbaH\x99\x01\x1a\x96\x01\n" +
-	"%delivery_stream_required_when_enabled\x12<delivery_stream is required when Firehose logging is enabled\x1a/this.enabled ? has(this.delivery_stream) : true\"\xb7\x02\n" +
+	"%delivery_stream_required_when_enabled\x12<delivery_stream is required when Firehose logging is enabled\x1a/this.enabled ? has(this.delivery_stream) : true\"\xb5\x02\n" +
 	"\x16AwsMskClusterS3Logging\x12\x18\n" +
-	"\aenabled\x18\x01 \x01(\bR\aenabled\x12o\n" +
-	"\x06bucket\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB#\x88\xd4a\xd5\x01\x92\xd4a\x1astatus.outputs.bucket_nameR\x06bucket\x12\x16\n" +
+	"\aenabled\x18\x01 \x01(\bR\aenabled\x12m\n" +
+	"\x06bucket\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xd5\x01\x92\xd4a\x18status.outputs.bucket_idR\x06bucket\x12\x16\n" +
 	"\x06prefix\x18\x03 \x01(\tR\x06prefix:z\xbaHw\x1au\n" +
 	"\x1cbucket_required_when_enabled\x12-bucket is required when S3 logging is enabled\x1a&this.enabled ? has(this.bucket) : trueB\xe2\x02\n" +
 	"-com.org.openmcf.provider.aws.awsmskcluster.v1B\tSpecProtoP\x01Z[github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsmskcluster/v1;awsmskclusterv1\xa2\x02\x05OOPAA\xaa\x02)Org.Openmcf.Provider.Aws.Awsmskcluster.V1\xca\x02)Org\\Openmcf\\Provider\\Aws\\Awsmskcluster\\V1\xe2\x025Org\\Openmcf\\Provider\\Aws\\Awsmskcluster\\V1\\GPBMetadata\xea\x02.Org::Openmcf::Provider::Aws::Awsmskcluster::V1b\x06proto3"

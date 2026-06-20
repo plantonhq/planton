@@ -165,9 +165,9 @@ spec:
       fieldPath: status.outputs.key_arn
   subnet_ids:
     - valueFrom:
-        kind: AwsVpc
-        name: prod-vpc
-        fieldPath: status.outputs.private_subnets.[0].id
+        kind: AwsSubnet
+        name: prod-private-subnet-a
+        fieldPath: status.outputs.subnet_id
   security_group_ids:
     - valueFrom:
         kind: AwsSecurityGroup
@@ -208,18 +208,18 @@ spec:
   throughput_capacity: 512
   subnet_ids:
     - valueFrom:
-        kind: AwsVpc
-        name: ha-vpc
-        fieldPath: status.outputs.private_subnets.[0].id
+        kind: AwsSubnet
+        name: ha-private-subnet-a
+        fieldPath: status.outputs.subnet_id
     - valueFrom:
-        kind: AwsVpc
-        name: ha-vpc
-        fieldPath: status.outputs.private_subnets.[1].id
+        kind: AwsSubnet
+        name: ha-private-subnet-b
+        fieldPath: status.outputs.subnet_id
   preferred_subnet_id:
     valueFrom:
-      kind: AwsVpc
-      name: ha-vpc
-      fieldPath: status.outputs.private_subnets.[0].id
+      kind: AwsSubnet
+      name: ha-private-subnet-a
+      fieldPath: status.outputs.subnet_id
   security_group_ids:
     - valueFrom:
         kind: AwsSecurityGroup

@@ -87,7 +87,9 @@ func TestAwsSubnet_Terraform(t *testing.T) { runAllScenariosForComponent(t, "aws
 
 // --- AWS NAT Gateway (deep composed topology: AwsVpc -> AwsSubnet -> AwsElasticIp) ---
 
-func TestAwsNatGateway_Pulumi(t *testing.T) { runAllScenariosForComponent(t, "awsnatgateway", "pulumi") }
+func TestAwsNatGateway_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "awsnatgateway", "pulumi")
+}
 func TestAwsNatGateway_Terraform(t *testing.T) {
 	runAllScenariosForComponent(t, "awsnatgateway", "terraform")
 }
@@ -99,6 +101,15 @@ func TestAwsInternetGateway_Pulumi(t *testing.T) {
 }
 func TestAwsInternetGateway_Terraform(t *testing.T) {
 	runAllScenariosForComponent(t, "awsinternetgateway", "terraform")
+}
+
+// --- AWS Egress-Only Internet Gateway (IPv6 outbound-only; attaches to an AwsVpc prerequisite) ---
+
+func TestAwsEgressOnlyInternetGateway_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "awsegressonlyinternetgateway", "pulumi")
+}
+func TestAwsEgressOnlyInternetGateway_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "awsegressonlyinternetgateway", "terraform")
 }
 
 // runAllScenariosForComponent discovers and runs all E2E scenarios for an AWS component.

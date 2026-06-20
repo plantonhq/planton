@@ -1927,10 +1927,10 @@ const file_org_openmcf_provider_aws_awskinesisfirehose_v1_spec_proto_rawDesc = "
 	"\x0elog_group_name\x18\x02 \x01(\tR\flogGroupName\x12&\n" +
 	"\x0flog_stream_name\x18\x03 \x01(\tR\rlogStreamName:\x8f\x02\xbaH\x8b\x02\x1a\x81\x01\n" +
 	"\x1flog_group_required_when_enabled\x122log_group_name is required when logging is enabled\x1a*!this.enabled || this.log_group_name != ''\x1a\x84\x01\n" +
-	" log_stream_required_when_enabled\x123log_stream_name is required when logging is enabled\x1a+!this.enabled || this.log_stream_name != ''\"\xa6\x03\n" +
-	"\x1bAwsKinesisFirehoseVpcConfig\x12\x81\x01\n" +
+	" log_stream_required_when_enabled\x123log_stream_name is required when logging is enabled\x1a+!this.enabled || this.log_stream_name != ''\"\x98\x03\n" +
+	"\x1bAwsKinesisFirehoseVpcConfig\x12t\n" +
 	"\n" +
-	"subnet_ids\x18\x01 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x8b\x01\n" +
+	"subnet_ids\x18\x01 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\x9c\x02\x92\xd4a\x18status.outputs.subnet_idR\tsubnetIds\x12\x8b\x01\n" +
 	"\x12security_group_ids\x18\x02 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12u\n" +
 	"\brole_arn\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\aroleArn\"\xfe\x0e\n" +
 	"'AwsKinesisFirehoseExtendedS3Destination\x12{\n" +

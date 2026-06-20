@@ -528,7 +528,7 @@ var File_org_openmcf_provider_aws_awsrediselasticache_v1_spec_proto protoreflect
 
 const file_org_openmcf_provider_aws_awsrediselasticache_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	":org/openmcf/provider/aws/awsrediselasticache/v1/spec.proto\x12/org.openmcf.provider.aws.awsrediselasticache.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xb7\"\n" +
+	":org/openmcf/provider/aws/awsrediselasticache/v1/spec.proto\x12/org.openmcf.provider.aws.awsrediselasticache.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xa9\"\n" +
 	"\x17AwsRedisElasticacheSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x1e\n" +
 	"\x06engine\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06engine\x12%\n" +
@@ -541,9 +541,9 @@ const file_org_openmcf_provider_aws_awsrediselasticache_v1_spec_proto_rawDesc = 
 	"\x17replicas_per_node_group\x18\t \x01(\x05B\t\xbaH\x06\x1a\x04\x18\x05(\x00R\x14replicasPerNodeGroup\x12<\n" +
 	"\x1aautomatic_failover_enabled\x18\n" +
 	" \x01(\bR\x18automaticFailoverEnabled\x12(\n" +
-	"\x10multi_az_enabled\x18\v \x01(\bR\x0emultiAzEnabled\x12\x81\x01\n" +
+	"\x10multi_az_enabled\x18\v \x01(\bR\x0emultiAzEnabled\x12t\n" +
 	"\n" +
-	"subnet_ids\x18\f \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x8b\x01\n" +
+	"subnet_ids\x18\f \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\x9c\x02\x92\xd4a\x18status.outputs.subnet_idR\tsubnetIds\x12\x8b\x01\n" +
 	"\x12security_group_ids\x18\r \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12E\n" +
 	"\x1aat_rest_encryption_enabled\x18\x0e \x01(\bB\b\x92\xa6\x1d\x04trueR\x17atRestEncryptionEnabled\x12F\n" +
 	"\x1atransit_encryption_enabled\x18\x0f \x01(\bB\b\x92\xa6\x1d\x04trueR\x18transitEncryptionEnabled\x126\n" +

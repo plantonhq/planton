@@ -1126,10 +1126,10 @@ const file_org_openmcf_provider_aws_awscognitouserpool_v1_spec_proto_rawDesc = "
 	"\x1dprevent_user_existence_errors\x18\x0f \x01(\tR\x1apreventUserExistenceErrors:\x9e\x05\xbaH\x9a\x05\x1a\xc0\x01\n" +
 	"\x19allowed_oauth_flows_valid\x12Qallowed_oauth_flows must contain only 'code', 'implicit', or 'client_credentials'\x1aPthis.allowed_oauth_flows.all(f, f in ['code', 'implicit', 'client_credentials'])\x1a\xfd\x01\n" +
 	"\x19explicit_auth_flows_valid\x121explicit_auth_flows must contain valid flow types\x1a\xac\x01this.explicit_auth_flows.all(f, f in ['ALLOW_USER_SRP_AUTH', 'ALLOW_REFRESH_TOKEN_AUTH', 'ALLOW_USER_PASSWORD_AUTH', 'ALLOW_ADMIN_USER_PASSWORD_AUTH', 'ALLOW_CUSTOM_AUTH'])\x1a\xd4\x01\n" +
-	"#prevent_user_existence_errors_valid\x12Dprevent_user_existence_errors must be 'ENABLED' or 'LEGACY' when set\x1agthis.prevent_user_existence_errors == '' || this.prevent_user_existence_errors in ['ENABLED', 'LEGACY']\"\xc8\x01\n" +
+	"#prevent_user_existence_errors_valid\x12Dprevent_user_existence_errors must be 'ENABLED' or 'LEGACY' when set\x1agthis.prevent_user_existence_errors == '' || this.prevent_user_existence_errors in ['ENABLED', 'LEGACY']\"\xc0\x01\n" +
 	"\x1eAwsCognitoUserPoolDomainConfig\x12\x1f\n" +
-	"\x06domain\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06domain\x12\x84\x01\n" +
-	"\x0fcertificate_arn\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\x88\xd4a\xc9\x01\x92\xd4a\x1estatus.outputs.certificate_arnR\x0ecertificateArnB\x85\x03\n" +
+	"\x06domain\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06domain\x12}\n" +
+	"\x0fcertificate_arn\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB \x88\xd4a\xc9\x01\x92\xd4a\x17status.outputs.cert_arnR\x0ecertificateArnB\x85\x03\n" +
 	"2com.org.openmcf.provider.aws.awscognitouserpool.v1B\tSpecProtoP\x01Zegithub.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awscognitouserpool/v1;awscognitouserpoolv1\xa2\x02\x05OOPAA\xaa\x02.Org.Openmcf.Provider.Aws.Awscognitouserpool.V1\xca\x02.Org\\Openmcf\\Provider\\Aws\\Awscognitouserpool\\V1\xe2\x02:Org\\Openmcf\\Provider\\Aws\\Awscognitouserpool\\V1\\GPBMetadata\xea\x023Org::Openmcf::Provider::Aws::Awscognitouserpool::V1b\x06proto3"
 
 var (

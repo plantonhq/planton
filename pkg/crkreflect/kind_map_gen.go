@@ -67,6 +67,7 @@ import (
 	awsecrrepov1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsecrrepo/v1"
 	awsecsclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsecscluster/v1"
 	awsecsservicev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsecsservice/v1"
+	awsegressonlyinternetgatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsegressonlyinternetgateway/v1"
 	awseksclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsekscluster/v1"
 	awseksnodegroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awseksnodegroup/v1"
 	awselasticfilesystemv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awselasticfilesystem/v1"
@@ -481,6 +482,7 @@ var ProviderAwsMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_AwsEcrRepo:                       &awsecrrepov1.AwsEcrRepo{},
 	cloudresourcekind.CloudResourceKind_AwsEcsCluster:                    &awsecsclusterv1.AwsEcsCluster{},
 	cloudresourcekind.CloudResourceKind_AwsEcsService:                    &awsecsservicev1.AwsEcsService{},
+	cloudresourcekind.CloudResourceKind_AwsEgressOnlyInternetGateway:     &awsegressonlyinternetgatewayv1.AwsEgressOnlyInternetGateway{},
 	cloudresourcekind.CloudResourceKind_AwsEksCluster:                    &awseksclusterv1.AwsEksCluster{},
 	cloudresourcekind.CloudResourceKind_AwsEksNodeGroup:                  &awseksnodegroupv1.AwsEksNodeGroup{},
 	cloudresourcekind.CloudResourceKind_AwsElasticFileSystem:             &awselasticfilesystemv1.AwsElasticFileSystem{},

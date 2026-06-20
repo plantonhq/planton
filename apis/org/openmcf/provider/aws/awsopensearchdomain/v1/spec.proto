@@ -395,8 +395,8 @@ message AwsOpenSearchDomainVpcOptions {
   // Subnet IDs where OpenSearch deploys ENIs. For zone-aware domains, provide
   // subnets in 2 or 3 AZs matching the cluster's availability_zone_count.
   repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 1 [
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[*].id"
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
   ];
 
   // Security group IDs controlling inbound/outbound traffic to the domain.
@@ -432,7 +432,7 @@ message AwsOpenSearchDomainEndpointOptions {
   // Only used when `custom_endpoint_enabled` is true.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef custom_endpoint_certificate_arn = 5 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsCertManagerCert,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.certificate_arn"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.cert_arn"
   ];
 
   // ---------------------------------------------------------------------------

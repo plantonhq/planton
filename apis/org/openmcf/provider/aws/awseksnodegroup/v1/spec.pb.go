@@ -92,7 +92,7 @@ type AwsEksNodeGroupSpec struct {
 	NodeRoleArn *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=node_role_arn,json=nodeRoleArn,proto3" json:"node_role_arn,omitempty"`
 	// subnet_ids are the IDs of at least two subnets where the worker nodes will be launched.
 	// Typically these are private subnets in the cluster's VPC to ensure high availability.
-	// If referencing an AwsVpc resource, this defaults to its status.outputs.private_subnets[*].id.
+	// Each entry references an AwsSubnet, defaulting to its status.outputs.subnet_id.
 	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,4,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
 	// instance_type is the EC2 instance type for the worker nodes.
 	// Example values: "t3.small", "m5.xlarge". Must match the pattern "<family>.<size>",
@@ -286,13 +286,13 @@ var File_org_openmcf_provider_aws_awseksnodegroup_v1_spec_proto protoreflect.Fil
 
 const file_org_openmcf_provider_aws_awseksnodegroup_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"6org/openmcf/provider/aws/awseksnodegroup/v1/spec.proto\x12+org.openmcf.provider.aws.awseksnodegroup.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xde\a\n" +
+	"6org/openmcf/provider/aws/awseksnodegroup/v1/spec.proto\x12+org.openmcf.provider.aws.awseksnodegroup.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xd0\a\n" +
 	"\x13AwsEksNodeGroupSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12s\n" +
 	"\fcluster_name\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1c\xbaH\x03\xc8\x01\x01\x88\xd4a\xcf\x01\x92\xd4a\rmetadata.nameR\vclusterName\x12~\n" +
-	"\rnode_role_arn\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\vnodeRoleArn\x12\x8c\x01\n" +
+	"\rnode_role_arn\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\vnodeRoleArn\x12\x7f\n" +
 	"\n" +
-	"subnet_ids\x18\x04 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB9\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x02\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12+\n" +
+	"subnet_ids\x18\x04 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x02\x88\xd4a\x9c\x02\x92\xd4a\x18status.outputs.subnet_idR\tsubnetIds\x12+\n" +
 	"\rinstance_type\x18\x05 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\finstanceType\x12k\n" +
 	"\ascaling\x18\x06 \x01(\v2I.org.openmcf.provider.aws.awseksnodegroup.v1.AwsEksNodeGroupScalingConfigB\x06\xbaH\x03\xc8\x01\x01R\ascaling\x12|\n" +
 	"\rcapacity_type\x18\a \x01(\x0e2H.org.openmcf.provider.aws.awseksnodegroup.v1.AwsEksNodeGroupCapacityTypeB\r\x92\xa6\x1d\ton_demandR\fcapacityType\x12)\n" +

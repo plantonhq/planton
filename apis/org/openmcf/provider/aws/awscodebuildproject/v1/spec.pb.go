@@ -1267,18 +1267,18 @@ const file_org_openmcf_provider_aws_awscodebuildproject_v1_spec_proto_rawDesc = 
 	"credential\x18\x01 \x01(\tB]\xbaH\x03\xc8\x01\x01\xaa\xa6\x1dSARN or name of a Secrets Manager secret (a reference), not the secret value itself.R\n" +
 	"credential\x12\xb0\x01\n" +
 	"\x13credential_provider\x18\x02 \x01(\tB\x7f\xbaH\x16\xc8\x01\x01r\x11\n" +
-	"\x0fSECRETS_MANAGER\xaa\xa6\x1dbProvider-type selector (constant SECRETS_MANAGER), not a secret value; the secret is `credential`.R\x12credentialProvider\"\x97\x03\n" +
+	"\x0fSECRETS_MANAGER\xaa\xa6\x1dbProvider-type selector (constant SECRETS_MANAGER), not a secret value; the secret is `credential`.R\x12credentialProvider\"\x95\x03\n" +
 	"\x15AwsCodeBuildArtifacts\x12<\n" +
-	"\x04type\x18\x01 \x01(\tB(\xbaH%\xc8\x01\x01r R\fNO_ARTIFACTSR\x02S3R\fCODEPIPELINER\x04type\x12s\n" +
-	"\blocation\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB#\x88\xd4a\xd5\x01\x92\xd4a\x1astatus.outputs.bucket_nameR\blocation\x12\x12\n" +
+	"\x04type\x18\x01 \x01(\tB(\xbaH%\xc8\x01\x01r R\fNO_ARTIFACTSR\x02S3R\fCODEPIPELINER\x04type\x12q\n" +
+	"\blocation\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xd5\x01\x92\xd4a\x18status.outputs.bucket_idR\blocation\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04name\x12\x12\n" +
 	"\x04path\x18\x04 \x01(\tR\x04path\x121\n" +
 	"\tpackaging\x18\x05 \x01(\tB\x13\xbaH\x10\xd8\x01\x01r\vR\x04NONER\x03ZIPR\tpackaging\x12?\n" +
 	"\x0enamespace_type\x18\x06 \x01(\tB\x18\xbaH\x15\xd8\x01\x01r\x10R\x04NONER\bBUILD_IDR\rnamespaceType\x12/\n" +
-	"\x13encryption_disabled\x18\a \x01(\bR\x12encryptionDisabled\"\xe8\x01\n" +
+	"\x13encryption_disabled\x18\a \x01(\bR\x12encryptionDisabled\"\xe6\x01\n" +
 	"\x11AwsCodeBuildCache\x12?\n" +
-	"\x04type\x18\x01 \x01(\tB&\xbaH\x17r\x15R\bNO_CACHER\x02S3R\x05LOCAL\x8a\xa6\x1d\bNO_CACHEH\x00R\x04type\x88\x01\x01\x12s\n" +
-	"\blocation\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB#\x88\xd4a\xd5\x01\x92\xd4a\x1astatus.outputs.bucket_nameR\blocation\x12\x14\n" +
+	"\x04type\x18\x01 \x01(\tB&\xbaH\x17r\x15R\bNO_CACHER\x02S3R\x05LOCAL\x8a\xa6\x1d\bNO_CACHEH\x00R\x04type\x88\x01\x01\x12q\n" +
+	"\blocation\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xd5\x01\x92\xd4a\x18status.outputs.bucket_idR\blocation\x12\x14\n" +
 	"\x05modes\x18\x03 \x03(\tR\x05modesB\a\n" +
 	"\x05_type\"\xec\x01\n" +
 	"\x16AwsCodeBuildLogsConfig\x12t\n" +
@@ -1290,17 +1290,17 @@ const file_org_openmcf_provider_aws_awscodebuildproject_v1_spec_proto_rawDesc = 
 	"group_name\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\x88\xd4a\xb6\x02\x92\xd4a\x1dstatus.outputs.log_group_nameR\tgroupName\x12\x1f\n" +
 	"\vstream_name\x18\x03 \x01(\tR\n" +
 	"streamNameB\t\n" +
-	"\a_status\"\x88\x02\n" +
+	"\a_status\"\x86\x02\n" +
 	"\x12AwsCodeBuildS3Logs\x12A\n" +
-	"\x06status\x18\x01 \x01(\tB$\xbaH\x15r\x13R\aENABLEDR\bDISABLED\x8a\xa6\x1d\bDISABLEDH\x00R\x06status\x88\x01\x01\x12s\n" +
-	"\blocation\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB#\x88\xd4a\xd5\x01\x92\xd4a\x1astatus.outputs.bucket_nameR\blocation\x12/\n" +
+	"\x06status\x18\x01 \x01(\tB$\xbaH\x15r\x13R\aENABLEDR\bDISABLED\x8a\xa6\x1d\bDISABLEDH\x00R\x06status\x88\x01\x01\x12q\n" +
+	"\blocation\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xd5\x01\x92\xd4a\x18status.outputs.bucket_idR\blocation\x12/\n" +
 	"\x13encryption_disabled\x18\x03 \x01(\bR\x12encryptionDisabledB\t\n" +
-	"\a_status\"\xb4\x03\n" +
+	"\a_status\"\xa7\x03\n" +
 	"\x15AwsCodeBuildVpcConfig\x12o\n" +
-	"\x06vpc_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xd8\x01\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12\x8e\x01\n" +
+	"\x06vpc_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xd8\x01\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12\x81\x01\n" +
 	"\n" +
-	"subnet_ids\x18\x02 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB;\xbaH\n" +
-	"\xc8\x01\x01\x92\x01\x04\b\x01\x10\x10\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x98\x01\n" +
+	"subnet_ids\x18\x02 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\xbaH\n" +
+	"\xc8\x01\x01\x92\x01\x04\b\x01\x10\x10\x88\xd4a\x9c\x02\x92\xd4a\x18status.outputs.subnet_idR\tsubnetIds\x12\x98\x01\n" +
 	"\x12security_group_ids\x18\x03 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB6\xbaH\n" +
 	"\xc8\x01\x01\x92\x01\x04\b\x01\x10\x05\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\"\xc8\x01\n" +
 	"\x13AwsCodeBuildWebhook\x12;\n" +

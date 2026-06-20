@@ -882,17 +882,17 @@ const file_org_openmcf_provider_aws_awsopensearchdomain_v1_spec_proto_rawDesc = 
 	"\x11volume_type_valid\x12?volume_type must be 'gp3', 'gp2', 'io1', or 'standard' when set\x1aOthis.volume_type == '' || this.volume_type in ['gp3', 'gp2', 'io1', 'standard']\x1a\x85\x01\n" +
 	"\x19iops_requires_volume_type\x122iops is only valid for 'gp3' or 'io1' volume types\x1a4this.iops == 0 || this.volume_type in ['gp3', 'io1']\x1a|\n" +
 	"\x17throughput_requires_gp3\x12.throughput is only valid for 'gp3' volume type\x1a1this.throughput == 0 || this.volume_type == 'gp3'\x1at\n" +
-	"\x12throughput_minimum\x12.throughput must be at least 125 MiB/s when set\x1a.this.throughput == 0 || this.throughput >= 125\"\xb1\x02\n" +
-	"\x1dAwsOpenSearchDomainVpcOptions\x12\x81\x01\n" +
+	"\x12throughput_minimum\x12.throughput must be at least 125 MiB/s when set\x1a.this.throughput == 0 || this.throughput >= 125\"\xa3\x02\n" +
+	"\x1dAwsOpenSearchDomainVpcOptions\x12t\n" +
 	"\n" +
-	"subnet_ids\x18\x01 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x8b\x01\n" +
-	"\x12security_group_ids\x18\x02 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\"\xff\x05\n" +
+	"subnet_ids\x18\x01 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\x9c\x02\x92\xd4a\x18status.outputs.subnet_idR\tsubnetIds\x12\x8b\x01\n" +
+	"\x12security_group_ids\x18\x02 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\"\xf8\x05\n" +
 	"\"AwsOpenSearchDomainEndpointOptions\x122\n" +
 	"\renforce_https\x18\x01 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\fenforceHttps\x88\x01\x01\x12.\n" +
 	"\x13tls_security_policy\x18\x02 \x01(\tR\x11tlsSecurityPolicy\x126\n" +
 	"\x17custom_endpoint_enabled\x18\x03 \x01(\bR\x15customEndpointEnabled\x12'\n" +
-	"\x0fcustom_endpoint\x18\x04 \x01(\tR\x0ecustomEndpoint\x12\xa2\x01\n" +
-	"\x1fcustom_endpoint_certificate_arn\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\x88\xd4a\xc9\x01\x92\xd4a\x1estatus.outputs.certificate_arnR\x1ccustomEndpointCertificateArn:\xdc\x02\xbaH\xd8\x02\x1a\x9b\x01\n" +
+	"\x0fcustom_endpoint\x18\x04 \x01(\tR\x0ecustomEndpoint\x12\x9b\x01\n" +
+	"\x1fcustom_endpoint_certificate_arn\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB \x88\xd4a\xc9\x01\x92\xd4a\x17status.outputs.cert_arnR\x1ccustomEndpointCertificateArn:\xdc\x02\xbaH\xd8\x02\x1a\x9b\x01\n" +
 	" custom_endpoint_requires_enabled\x12;custom_endpoint requires custom_endpoint_enabled to be true\x1a:this.custom_endpoint == '' || this.custom_endpoint_enabled\x1a\xb7\x01\n" +
 	"\x1ccert_requires_custom_enabled\x12Kcustom_endpoint_certificate_arn requires custom_endpoint_enabled to be true\x1aJ!has(this.custom_endpoint_certificate_arn) || this.custom_endpoint_enabledB\x10\n" +
 	"\x0e_enforce_https\"\xe7\n" +

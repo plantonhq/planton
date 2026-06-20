@@ -117,8 +117,8 @@ message AwsEcsServiceNetwork {
   // Typically private subnets for production, often at least two for high availability.
   repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnets = 1 [
     (buf.validate.field).required = true,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[*].id"
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
   ];
 
   // security_groups is a list of security group IDs to apply to each task's ENI.

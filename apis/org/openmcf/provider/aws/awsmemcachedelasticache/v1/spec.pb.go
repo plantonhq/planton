@@ -329,7 +329,7 @@ var File_org_openmcf_provider_aws_awsmemcachedelasticache_v1_spec_proto protoref
 
 const file_org_openmcf_provider_aws_awsmemcachedelasticache_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	">org/openmcf/provider/aws/awsmemcachedelasticache/v1/spec.proto\x123org.openmcf.provider.aws.awsmemcachedelasticache.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xae\x0f\n" +
+	">org/openmcf/provider/aws/awsmemcachedelasticache/v1/spec.proto\x123org.openmcf.provider.aws.awsmemcachedelasticache.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xa0\x0f\n" +
 	"\x1bAwsMemcachedElasticacheSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12-\n" +
 	"\x0eengine_version\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\rengineVersion\x12#\n" +
@@ -337,9 +337,9 @@ const file_org_openmcf_provider_aws_awsmemcachedelasticache_v1_spec_proto_rawDes
 	"\x0fnum_cache_nodes\x18\x04 \x01(\x05B\t\xbaH\x06\x1a\x04\x18((\x01R\rnumCacheNodes\x12\x17\n" +
 	"\aaz_mode\x18\x05 \x01(\tR\x06azMode\x12-\n" +
 	"\x04port\x18\x06 \x01(\x05B\x14\xbaH\b\x1a\x06\x18\xff\xff\x03(\x01\x8a\xa6\x1d\x0511211H\x00R\x04port\x88\x01\x01\x12<\n" +
-	"\x1atransit_encryption_enabled\x18\a \x01(\bR\x18transitEncryptionEnabled\x12\x81\x01\n" +
+	"\x1atransit_encryption_enabled\x18\a \x01(\bR\x18transitEncryptionEnabled\x12t\n" +
 	"\n" +
-	"subnet_ids\x18\b \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x8b\x01\n" +
+	"subnet_ids\x18\b \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\x9c\x02\x92\xd4a\x18status.outputs.subnet_idR\tsubnetIds\x12\x8b\x01\n" +
 	"\x12security_group_ids\x18\t \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x124\n" +
 	"\x16parameter_group_family\x18\n" +
 	" \x01(\tR\x14parameterGroupFamily\x12u\n" +

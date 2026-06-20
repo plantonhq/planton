@@ -46,8 +46,8 @@ message AwsMskClusterSpec {
   // ForceNew: changing subnets forces cluster replacement.
   repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 5 [
     (buf.validate.field).repeated.min_items = 1,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[*].id"
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
   ];
 
   // security_group_ids are source security groups allowed to reach brokers on Kafka and ZooKeeper ports.
@@ -338,7 +338,7 @@ message AwsMskClusterS3Logging {
   // Required when enabled is true.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef bucket = 2 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsS3Bucket,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_name"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_id"
   ];
 
   // prefix is an optional S3 key prefix for log objects.

@@ -335,6 +335,12 @@ enum CloudResourceKind {
       AwsInternetGateway
     ]
   }];
+  AwsEgressOnlyInternetGateway = 287 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awseigw"
+    prerequisites: [AwsVpc]
+  }];
 
   // --- Storage ---
 

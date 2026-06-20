@@ -247,12 +247,12 @@ var File_org_openmcf_provider_aws_awscloudfront_v1_spec_proto protoreflect.FileD
 
 const file_org_openmcf_provider_aws_awscloudfront_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"4org/openmcf/provider/aws/awscloudfront/v1/spec.proto\x12)org.openmcf.provider.aws.awscloudfront.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xf9\b\n" +
+	"4org/openmcf/provider/aws/awscloudfront/v1/spec.proto\x12)org.openmcf.provider.aws.awscloudfront.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xf1\b\n" +
 	"\x11AwsCloudFrontSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x18\n" +
 	"\aenabled\x18\x02 \x01(\bR\aenabled\x12H\n" +
-	"\aaliases\x18\x03 \x03(\tB.\xbaH+\x92\x01(\x18\x01\"$r\"2 ^[A-Za-z0-9\\-\\.]+\\.[A-Za-z]{2,}$R\aaliases\x12\x84\x01\n" +
-	"\x0fcertificate_arn\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\x88\xd4a\xc9\x01\x92\xd4a\x1estatus.outputs.certificate_arnR\x0ecertificateArn\x12r\n" +
+	"\aaliases\x18\x03 \x03(\tB.\xbaH+\x92\x01(\x18\x01\"$r\"2 ^[A-Za-z0-9\\-\\.]+\\.[A-Za-z]{2,}$R\aaliases\x12}\n" +
+	"\x0fcertificate_arn\x18\x04 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB \x88\xd4a\xc9\x01\x92\xd4a\x17status.outputs.cert_arnR\x0ecertificateArn\x12r\n" +
 	"\vprice_class\x18\x05 \x01(\x0e2G.org.openmcf.provider.aws.awscloudfront.v1.AwsCloudFrontSpec.PriceClassB\b\xbaH\x05\x82\x01\x02\x10\x01R\n" +
 	"priceClass\x12g\n" +
 	"\aorigins\x18\x06 \x03(\v2C.org.openmcf.provider.aws.awscloudfront.v1.AwsCloudFrontSpec.OriginB\b\xbaH\x05\x92\x01\x02\b\x01R\aorigins\x12K\n" +

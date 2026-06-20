@@ -445,7 +445,7 @@ var File_org_openmcf_provider_aws_awslambda_v1_spec_proto protoreflect.FileDescr
 
 const file_org_openmcf_provider_aws_awslambda_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"0org/openmcf/provider/aws/awslambda/v1/spec.proto\x12%org.openmcf.provider.aws.awslambda.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xd7\x12\n" +
+	"0org/openmcf/provider/aws/awslambda/v1/spec.proto\x12%org.openmcf.provider.aws.awslambda.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xca\x12\n" +
 	"\rAwsLambdaSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12,\n" +
 	"\rfunction_name\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\ffunctionName\x12 \n" +
@@ -457,8 +457,8 @@ const file_org_openmcf_provider_aws_awslambda_v1_spec_proto_rawDesc = "" +
 	"\x0ftimeout_seconds\x18\b \x01(\x05R\x0etimeoutSeconds\x121\n" +
 	"\x14reserved_concurrency\x18\t \x01(\x05R\x13reservedConcurrency\x12g\n" +
 	"\venvironment\x18\n" +
-	" \x03(\v2E.org.openmcf.provider.aws.awslambda.v1.AwsLambdaSpec.EnvironmentEntryR\venvironment\x12|\n" +
-	"\asubnets\x18\v \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\asubnets\x12\x86\x01\n" +
+	" \x03(\v2E.org.openmcf.provider.aws.awslambda.v1.AwsLambdaSpec.EnvironmentEntryR\venvironment\x12o\n" +
+	"\asubnets\x18\v \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\x9c\x02\x92\xd4a\x18status.outputs.subnet_idR\asubnets\x12\x86\x01\n" +
 	"\x0fsecurity_groups\x18\f \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x0esecurityGroups\x12a\n" +
 	"\farchitecture\x18\r \x01(\x0e23.org.openmcf.provider.aws.awslambda.v1.ArchitectureB\b\xbaH\x05\x82\x01\x02\x10\x01R\farchitecture\x12Q\n" +
 	"\n" +

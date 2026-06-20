@@ -211,13 +211,13 @@ spec:
           field: status.outputs.vpc_id
       subnetIds:
         - valueFrom:
-            kind: AwsVpc
-            name: app-vpc
-            field: status.outputs.private_subnets[0].id
+            kind: AwsSubnet
+            name: app-private-subnet-a
+            fieldPath: status.outputs.subnet_id
         - valueFrom:
-            kind: AwsVpc
-            name: app-vpc
-            field: status.outputs.private_subnets[1].id
+            kind: AwsSubnet
+            name: app-private-subnet-b
+            fieldPath: status.outputs.subnet_id
     - name: db-vpc
       vpcId:
         valueFrom:
@@ -226,13 +226,13 @@ spec:
           field: status.outputs.vpc_id
       subnetIds:
         - valueFrom:
-            kind: AwsVpc
-            name: db-vpc
-            field: status.outputs.private_subnets[0].id
+            kind: AwsSubnet
+            name: db-private-subnet-a
+            fieldPath: status.outputs.subnet_id
         - valueFrom:
-            kind: AwsVpc
-            name: db-vpc
-            field: status.outputs.private_subnets[1].id
+            kind: AwsSubnet
+            name: db-private-subnet-b
+            fieldPath: status.outputs.subnet_id
 ```
 
 ## Stack Outputs

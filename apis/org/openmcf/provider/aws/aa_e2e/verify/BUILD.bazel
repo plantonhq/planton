@@ -3,6 +3,7 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "verify",
     srcs = [
+        "egress_only_internet_gateway.go",
         "elastic_ip.go",
         "internet_gateway.go",
         "nat_gateway.go",

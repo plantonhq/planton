@@ -712,10 +712,10 @@ const file_org_openmcf_provider_aws_awsglobalaccelerator_v1_spec_proto_rawDesc =
 	"\x12ip_addresses_max_2\x124ip_addresses supports a maximum of 2 BYOIP addresses\x1a\x1csize(this.ip_addresses) <= 2B\n" +
 	"\n" +
 	"\b_enabledB\x12\n" +
-	"\x10_ip_address_type\"\xcb\x01\n" +
+	"\x10_ip_address_type\"\xc9\x01\n" +
 	"\x1cAwsGlobalAcceleratorFlowLogs\x12\x18\n" +
-	"\aenabled\x18\x01 \x01(\bR\aenabled\x12t\n" +
-	"\ts3_bucket\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB#\x88\xd4a\xd5\x01\x92\xd4a\x1astatus.outputs.bucket_nameR\bs3Bucket\x12\x1b\n" +
+	"\aenabled\x18\x01 \x01(\bR\aenabled\x12r\n" +
+	"\ts3_bucket\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xd5\x01\x92\xd4a\x18status.outputs.bucket_idR\bs3Bucket\x12\x1b\n" +
 	"\ts3_prefix\x18\x03 \x01(\tR\bs3Prefix\"\xca\a\n" +
 	"\x1cAwsGlobalAcceleratorListener\x12\xcf\x01\n" +
 	"\x04name\x18\x01 \x01(\tB\xba\x01\xbaH\xb6\x01\xba\x01\xaf\x01\n" +

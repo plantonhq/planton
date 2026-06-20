@@ -1,0 +1,27 @@
+# Minimal AwsEgressOnlyInternetGateway scenario. vpcId is a value_from reference
+# to the AwsVpc prerequisite (declared via prerequisites: [AwsVpc] in the kind
+# registry); the E2E harness deploys that VPC first and resolves this reference to
+# the created vpc-id before the gateway is applied. An egress-only gateway attaches
+# to any VPC at creation, so no internet gateway is needed. Full metadata is
+# supplied for tagging/orphan cleanup.
+apiVersion: aws.openmcf.org/v1
+kind: AwsEgressOnlyInternetGateway
+metadata:
+  name: planton-oss-e2e-awseigw-smoke
+  id: planton-oss-e2e-awseigw-smoke
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: openmcf-e2e
+    e2e-component: awsegressonlyinternetgateway
+  annotations:
+    openmcf.org/e2e: "true"
+  tags:
+    - openmcf-e2e
+spec:
+  region: us-west-2
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: planton-oss-e2e-awsvpc-prereq
+      fieldPath: status.outputs.vpc_id

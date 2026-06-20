@@ -366,10 +366,10 @@ var File_org_openmcf_provider_aws_awsdocumentdb_v1_spec_proto protoreflect.FileD
 
 const file_org_openmcf_provider_aws_awsdocumentdb_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"4org/openmcf/provider/aws/awsdocumentdb/v1/spec.proto\x12)org.openmcf.provider.aws.awsdocumentdb.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xb7\x16\n" +
+	"4org/openmcf/provider/aws/awsdocumentdb/v1/spec.proto\x12)org.openmcf.provider.aws.awsdocumentdb.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xaa\x16\n" +
 	"\x11AwsDocumentDbSpec\x12\x1f\n" +
-	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12|\n" +
-	"\asubnets\x18\x02 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\asubnets\x12Z\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12o\n" +
+	"\asubnets\x18\x02 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\x9c\x02\x92\xd4a\x18status.outputs.subnet_idR\asubnets\x12Z\n" +
 	"\x0fdb_subnet_group\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\rdbSubnetGroup\x12\x86\x01\n" +
 	"\x0fsecurity_groups\x18\x04 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x0esecurityGroups\x12\x96\x01\n" +
 	"\rallowed_cidrs\x18\x05 \x03(\tBq\xbaHn\x92\x01k\x18\x01\"gre2c^(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}/(?:[0-9]|[12]\\d|3[0-2])$R\fallowedCidrs\x12d\n" +
