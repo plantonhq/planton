@@ -277,15 +277,15 @@ var File_org_openmcf_provider_aws_awsec2instance_v1_spec_proto protoreflect.File
 
 const file_org_openmcf_provider_aws_awsec2instance_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"5org/openmcf/provider/aws/awsec2instance/v1/spec.proto\x12*org.openmcf.provider.aws.awsec2instance.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x91\r\n" +
+	"5org/openmcf/provider/aws/awsec2instance/v1/spec.proto\x12*org.openmcf.provider.aws.awsec2instance.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x83\r\n" +
 	"\x12AwsEc2InstanceSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12/\n" +
 	"\rinstance_name\x18\x02 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\finstanceName\x12(\n" +
 	"\x06ami_id\x18\x03 \x01(\tB\x11\xbaH\x0e\xc8\x01\x01r\t\x10\x012\x05^ami-R\x05amiId\x12/\n" +
 	"\rinstance_type\x18\x04 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\finstanceType\x12\x85\x01\n" +
-	"\tsubnet_id\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB4\xbaH\x03\xc8\x01\x01\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[0].idR\bsubnetId\x12\x96\x01\n" +
+	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\finstanceType\x12x\n" +
+	"\tsubnet_id\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\x9c\x02\x92\xd4a\x18status.outputs.subnet_idR\bsubnetId\x12\x96\x01\n" +
 	"\x12security_group_ids\x18\x06 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB4\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12\x8d\x01\n" +
 	"\x11connection_method\x18\a \x01(\x0e2J.org.openmcf.provider.aws.awsec2instance.v1.AwsEc2InstanceConnectionMethodB\x0f\xbaH\x05\x82\x01\x02\x10\x01\x8a\xa6\x1d\x03SSMH\x00R\x10connectionMethod\x88\x01\x01\x12\x99\x01\n" +
 	"\x18iam_instance_profile_arn\x18\b \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\x88\xd4a\xd0\x01\x92\xd4a#status.outputs.instance_profile_arnR\x15iamInstanceProfileArn\x12\x19\n" +

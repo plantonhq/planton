@@ -76,7 +76,7 @@ This creates a PostgreSQL 15 instance on a `db-n1-standard-1` machine with 10 GB
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
-| `diskAutoresize` | `bool` | `true` | Automatically increase storage when approaching capacity. |
+| `diskAutoResize` | `bool` | `true` | Automatically increase storage when approaching capacity. |
 | `edition` | `enum` | `ENTERPRISE` | Cloud SQL edition. `ENTERPRISE`: standard, 99.95% SLA for HA instances. `ENTERPRISE_PLUS`: premium, 99.99% SLA, faster reads. |
 | `deletionProtection` | `bool` | `false` | Prevents accidental deletion of the instance when enabled. |
 | `queryInsightsEnabled` | `bool` | `false` | Enables Query Insights for performance monitoring and query analysis. |
@@ -177,7 +177,7 @@ spec:
   databaseVersion: POSTGRES_15
   tier: db-custom-4-16384
   storageGb: 200
-  diskAutoresize: true
+  diskAutoResize: true
   edition: ENTERPRISE_PLUS
   deletionProtection: true
   queryInsightsEnabled: true
@@ -221,7 +221,7 @@ spec:
     valueFrom:
       kind: GcpProject
       name: my-project
-      field: status.outputs.project_id
+      fieldPath: status.outputs.project_id
   region: us-central1
   databaseEngine: POSTGRESQL
   databaseVersion: POSTGRES_15
@@ -232,7 +232,7 @@ spec:
       valueFrom:
         kind: GcpVpc
         name: my-vpc
-        field: status.outputs.network_id
+        fieldPath: status.outputs.network_id
     privateIpEnabled: true
   backup:
     enabled: true

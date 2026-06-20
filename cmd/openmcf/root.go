@@ -61,6 +61,7 @@ func init() {
 		root.Upgrade,
 		root.ValidateManifest,
 		root.ValidateOutputs,
+		root.ValidateRefs,
 		root.Version,
 	)
 }

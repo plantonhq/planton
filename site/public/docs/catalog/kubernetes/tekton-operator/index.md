@@ -213,4 +213,4 @@ After deployment, the following outputs are available in `status.outputs`:
 - [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — namespaces for workloads that Tekton pipelines build and deploy into
 - [KubernetesSecret](/docs/catalog/kubernetes/secret) — secrets for Git credentials, container registry tokens, and other pipeline authentication needs
 - [KubernetesIstio](/docs/catalog/kubernetes/istio) — Istio service mesh required for dashboard ingress via Gateway API
-- [KubernetesCertManager](/docs/catalog/kubernetes/cert-manager) — cert-manager for automatic TLS certificate provisioning on dashboard ingress
+- [KubernetesCertManager](/docs/catalog/kubernetes/kubernetescertmanager) — cert-manager for automatic TLS certificate provisioning on dashboard ingress

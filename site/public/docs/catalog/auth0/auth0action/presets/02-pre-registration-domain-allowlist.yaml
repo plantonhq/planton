@@ -1,0 +1,25 @@
+apiVersion: auth0.openmcf.org/v1
+kind: Auth0Action
+metadata:
+  name: validate-email-domain
+  org: example-org
+  env: production
+spec:
+  supported_trigger:
+    id: pre-user-registration
+    version: v2
+  code: |
+    exports.onExecutePreUserRegistration = async (event, api) => {
+      const allowedDomains = event.secrets.ALLOWED_DOMAINS.split(',').map(d => d.trim().toLowerCase());
+      const userDomain = event.user.email.split('@')[1].toLowerCase();
+
+      if (!allowedDomains.includes(userDomain)) {
+        api.access.deny('registration_denied', `Registration is restricted to approved email domains. Contact your administrator if you believe this is an error.`);
+      }
+    };
+  runtime: node22
+  deploy: true
+  secrets:
+    - name: ALLOWED_DOMAINS
+      value: "example.com,mycompany.com"
+  trigger_binding: {}

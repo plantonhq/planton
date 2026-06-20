@@ -1,15 +1,14 @@
 package module
 
 const (
-	OpInternetGatewayId         = "internet_gateway_id"
-	OpPrivateSubnets            = "private_subnets"
-	OpPublicSubnets             = "public_subnets"
-	OpSubnetCidr                = "cidr"
-	OpSubnetId                  = "id"
-	OpSubnetName                = "name"
-	OpSubnetNatGatewayId        = "nat_gateway.id"
-	OpSubnetNatGatewayPrivateIp = "nat_gateway.private_ip"
-	OpSubnetNatGatewayPublicIp  = "nat_gateway.public_ip"
-	OpVpcCidr                   = "vpc_cidr"
-	OpVpcId                     = "vpc_id"
+	OpVpcId                  = "vpc_id"
+	OpVpcArn                 = "vpc_arn"
+	OpCidrBlock              = "cidr_block"
+	OpIpv6CidrBlock          = "ipv6_cidr_block"
+	OpOwnerId                = "owner_id"
+	OpMainRouteTableId       = "main_route_table_id"
+	OpDefaultSecurityGroupId = "default_security_group_id"
+	OpDefaultNetworkAclId    = "default_network_acl_id"
+	OpDefaultRouteTableId    = "default_route_table_id"
+	OpRegion                 = "region"
 )

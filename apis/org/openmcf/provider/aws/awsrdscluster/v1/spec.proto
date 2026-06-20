@@ -18,8 +18,8 @@ message AwsRdsClusterSpec {
   // subnet_ids is the list of subnet IDs used by the DB subnet group for the cluster.
   // Provide at least two subnets in distinct Availability Zones for high availability.
   repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 2 [
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[*].id"
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
   ];
 
   // Optional name of an existing DB subnet group to use instead of providing subnet_ids.

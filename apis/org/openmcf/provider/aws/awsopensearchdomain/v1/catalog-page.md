@@ -277,13 +277,13 @@ spec:
   vpcOptions:
     subnetIds:
       - valueFrom:
-          kind: AwsVpc
-          name: main-vpc
-          field: status.outputs.private_subnets[0].id
+          kind: AwsSubnet
+          name: main-private-subnet-a
+          fieldPath: status.outputs.subnet_id
       - valueFrom:
-          kind: AwsVpc
-          name: main-vpc
-          field: status.outputs.private_subnets[1].id
+          kind: AwsSubnet
+          name: main-private-subnet-b
+          fieldPath: status.outputs.subnet_id
     securityGroupIds:
       - valueFrom:
           kind: AwsSecurityGroup
@@ -297,7 +297,7 @@ spec:
       valueFrom:
         kind: AwsCertManagerCert
         name: search-cert
-        field: status.outputs.certificate_arn
+        fieldPath: status.outputs.cert_arn
 ```
 
 ## Stack Outputs

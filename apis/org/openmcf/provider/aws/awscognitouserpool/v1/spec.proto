@@ -578,6 +578,6 @@ message AwsCognitoUserPoolDomainConfig {
   // Not applicable for Cognito-hosted prefix domains.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef certificate_arn = 2 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsCertManagerCert,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.certificate_arn"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.cert_arn"
   ];
 }

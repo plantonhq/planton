@@ -349,7 +349,7 @@ message AwsCodeBuildArtifacts {
   // Required when type is S3.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef location = 2 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsS3Bucket,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_name"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_id"
   ];
 
   // name is the artifact output name (object key in S3).
@@ -410,7 +410,7 @@ message AwsCodeBuildCache {
   // Required when type is S3. Format: "bucket-name" or "bucket-name/prefix".
   org.openmcf.shared.foreignkey.v1.StringValueOrRef location = 2 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsS3Bucket,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_name"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_id"
   ];
 
   // modes specifies what to cache when type is LOCAL.
@@ -473,7 +473,7 @@ message AwsCodeBuildS3Logs {
   // Format: "bucket-name" or "bucket-name/prefix".
   org.openmcf.shared.foreignkey.v1.StringValueOrRef location = 2 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsS3Bucket,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_name"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_id"
   ];
 
   // encryption_disabled disables server-side encryption for log files.
@@ -496,8 +496,8 @@ message AwsCodeBuildVpcConfig {
     (buf.validate.field).required = true,
     (buf.validate.field).repeated.min_items = 1,
     (buf.validate.field).repeated.max_items = 16,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[*].id"
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
   ];
 
   // security_group_ids are the VPC security groups applied to build containers.

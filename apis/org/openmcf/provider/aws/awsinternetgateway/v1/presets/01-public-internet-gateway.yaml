@@ -1,0 +1,11 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsInternetGateway
+metadata:
+  name: main-igw
+spec:
+  region: us-west-2
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: <awsvpc-name>
+      fieldPath: status.outputs.vpc_id

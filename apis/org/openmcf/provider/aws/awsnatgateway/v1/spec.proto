@@ -1,0 +1,132 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awsnatgateway.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// AwsNatGatewaySpec defines a NAT gateway for an AWS Virtual Private Cloud (VPC).
+//
+// A NAT (network address translation) gateway gives instances in a private
+// subnet outbound access without exposing them to inbound connections from the
+// internet. It is an AWS-managed, highly-available service that lives in a
+// single subnet and is referenced by other subnets' route tables as the target
+// of their default route.
+//
+// There are two kinds, selected by connectivity_type:
+//   - public  (the common case): the gateway lives in a PUBLIC subnet (one that
+//     routes to an internet gateway) and is fronted by an Elastic IP. Private
+//     subnets send 0.0.0.0/0 to it to reach the internet outbound-only.
+//   - private: the gateway lives in any subnet and has no Elastic IP. It enables
+//     outbound communication to other VPCs or an on-premises network (via a
+//     transit/VPN/peering path) while keeping instances unreachable from those
+//     networks.
+//
+// A NAT gateway does not, by itself, route anything: a private subnet becomes
+// NAT-egressed only when its route table sends a default route
+// (target_type = nat_gateway) to this gateway. The Elastic IP is composed by
+// reference (allocation_id -> AwsElasticIp), never embedded, so the address has
+// its own lifecycle and can be reasoned about as a first-class node.
+message AwsNatGatewaySpec {
+  // AWS region the NAT gateway is created in. Must match the region of the
+  // subnet it lives in. Example: "us-west-2", "eu-west-1". This drives provider
+  // construction, so it is required even though the gateway logically inherits
+  // the subnet's region.
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  // How the gateway connects: "public" (default) or "private".
+  //
+  // - "public": the gateway is placed in a public subnet and assigned an Elastic
+  //   IP (allocation_id is required); it provides outbound internet access for
+  //   private subnets that route to it.
+  // - "private": the gateway has no Elastic IP and provides outbound access only
+  //   to other private networks (peered/transit/VPN), never the internet.
+  //
+  // AWS's own default for a new NAT gateway is public; this field is required so
+  // the choice is always explicit (an empty value is rejected) and the two IaC
+  // engines never need to invent a default. ForceNew: changing it replaces the
+  // gateway.
+  string connectivity_type = 2 [
+    (buf.validate.field).cel = {
+      id: "connectivity_type_valid"
+      message: "connectivity_type must be one of: public, private"
+      expression: "this in ['public', 'private']"
+    },
+    (org.openmcf.shared.options.recommended_default) = "public"
+  ];
+
+  // The subnet the NAT gateway is created in. Supply a literal subnet-id or
+  // reference an AwsSubnet and the platform resolves its subnet_id output. For a
+  // public gateway this must be a PUBLIC subnet (one whose route table reaches an
+  // internet gateway); for a private gateway any subnet works. Immutable:
+  // changing the subnet replaces the gateway.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_id = 3 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  ];
+
+  // The Elastic IP allocation that gives a public gateway its stable outbound
+  // address. Supply a literal eipalloc-id or reference an AwsElasticIp and the
+  // platform resolves its allocation_id output. Required when
+  // connectivity_type is public; must be empty when it is private. ForceNew:
+  // changing it replaces the gateway.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef allocation_id = 4 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsElasticIp,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.allocation_id"
+  ];
+
+  // The private IPv4 address to assign to a private gateway from the subnet's
+  // range. Only valid when connectivity_type is private; leave empty to let AWS
+  // choose. ForceNew: changing it replaces the gateway.
+  string private_ip = 5;
+
+  // Additional Elastic IP allocations to attach to a public gateway, increasing
+  // the number of available source ports for very high-throughput egress. Each
+  // entry is a literal eipalloc-id or a reference to an AwsElasticIp. Only valid
+  // when connectivity_type is public.
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef secondary_allocation_ids = 6 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsElasticIp,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.allocation_id"
+  ];
+
+  // Additional private IPv4 addresses to assign to a private gateway, increasing
+  // the number of available source ports. Only valid when connectivity_type is
+  // private. Mutually exclusive with secondary_private_ip_address_count.
+  repeated string secondary_private_ip_addresses = 7;
+
+  // Number of additional private IPv4 addresses to let AWS assign to a private
+  // gateway (an alternative to listing them explicitly). Only valid when
+  // connectivity_type is private. Mutually exclusive with
+  // secondary_private_ip_addresses.
+  int32 secondary_private_ip_address_count = 8;
+
+  // A public gateway requires an Elastic IP.
+  option (buf.validate.message).cel = {
+    id: "public_requires_allocation_id"
+    message: "allocation_id is required when connectivity_type is public (a public NAT gateway needs an Elastic IP)"
+    expression: "this.connectivity_type != 'public' || has(this.allocation_id)"
+  };
+
+  // A private gateway must not carry any Elastic IP.
+  option (buf.validate.message).cel = {
+    id: "private_forbids_eip"
+    message: "allocation_id and secondary_allocation_ids are not allowed when connectivity_type is private"
+    expression: "this.connectivity_type != 'private' || (!has(this.allocation_id) && this.secondary_allocation_ids.size() == 0)"
+  };
+
+  // Private-IP addressing applies only to a private gateway.
+  option (buf.validate.message).cel = {
+    id: "public_forbids_private_addressing"
+    message: "private_ip, secondary_private_ip_addresses, and secondary_private_ip_address_count are only valid when connectivity_type is private"
+    expression: "this.connectivity_type != 'public' || (this.private_ip == '' && this.secondary_private_ip_addresses.size() == 0 && this.secondary_private_ip_address_count == 0)"
+  };
+
+  // The two ways to add secondary private IPs are mutually exclusive.
+  option (buf.validate.message).cel = {
+    id: "secondary_private_ip_exclusive"
+    message: "secondary_private_ip_addresses and secondary_private_ip_address_count are mutually exclusive"
+    expression: "this.secondary_private_ip_addresses.size() == 0 || this.secondary_private_ip_address_count == 0"
+  };
+}

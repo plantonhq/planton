@@ -79,7 +79,7 @@ This creates a private Airflow environment with the default `mw1.small` instance
 | `executionRoleArn.valueFrom` | `object` | Foreign key reference to an AwsIamRole resource | Default field: `status.outputs.role_arn` |
 | `subnetIds` | `StringValueOrRef[]` | Private subnets where MWAA creates network interfaces. Must be in different Availability Zones. Changing subnets forces replacement. | Minimum 2 items |
 | `subnetIds[].value` | `string` | Direct subnet ID value | — |
-| `subnetIds[].valueFrom` | `object` | Foreign key reference to an AwsVpc resource | Default field: `status.outputs.private_subnets.[*].id` |
+| `subnetIds[].valueFrom` | `object` | Foreign key reference to an AwsSubnet resource | Default field: `status.outputs.subnet_id` |
 
 At least one of `vpcId` (for managed SG) or `associateSecurityGroupIds` must be provided for VPC endpoint security.
 
@@ -243,13 +243,13 @@ spec:
       field: status.outputs.role_arn
   subnetIds:
     - valueFrom:
-        kind: AwsVpc
-        name: main-vpc
-        field: status.outputs.private_subnets[0].id
+        kind: AwsSubnet
+        name: main-private-subnet-a
+        fieldPath: status.outputs.subnet_id
     - valueFrom:
-        kind: AwsVpc
-        name: main-vpc
-        field: status.outputs.private_subnets[1].id
+        kind: AwsSubnet
+        name: main-private-subnet-b
+        fieldPath: status.outputs.subnet_id
   vpcId:
     valueFrom:
       kind: AwsVpc

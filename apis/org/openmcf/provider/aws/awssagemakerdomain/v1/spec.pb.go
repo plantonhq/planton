@@ -972,14 +972,14 @@ var File_org_openmcf_provider_aws_awssagemakerdomain_v1_spec_proto protoreflect.
 
 const file_org_openmcf_provider_aws_awssagemakerdomain_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"9org/openmcf/provider/aws/awssagemakerdomain/v1/spec.proto\x12.org.openmcf.provider.aws.awssagemakerdomain.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x9c\n" +
+	"9org/openmcf/provider/aws/awssagemakerdomain/v1/spec.proto\x12.org.openmcf.provider.aws.awssagemakerdomain.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x8e\n" +
 	"\n" +
 	"\x16AwsSagemakerDomainSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12#\n" +
 	"\tauth_mode\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bauthMode\x12o\n" +
-	"\x06vpc_id\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xd8\x01\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12\x89\x01\n" +
+	"\x06vpc_id\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xd8\x01\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12|\n" +
 	"\n" +
-	"subnet_ids\x18\x04 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB6\xbaH\x05\x92\x01\x02\b\x01\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12q\n" +
+	"subnet_ids\x18\x04 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\xbaH\x05\x92\x01\x02\b\x01\x88\xd4a\x9c\x02\x92\xd4a\x18status.outputs.subnet_idR\tsubnetIds\x12q\n" +
 	"\n" +
 	"kms_key_id\x18\x05 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\bkmsKeyId\x12R\n" +
 	"\x17app_network_access_type\x18\x06 \x01(\tB\x16\x8a\xa6\x1d\x12PublicInternetOnlyH\x00R\x14appNetworkAccessType\x88\x01\x01\x12\x91\x01\n" +

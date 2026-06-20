@@ -33,11 +33,11 @@ Transit Gateway with a centralized inspection VPC running a virtual firewall app
 | Placeholder | Description | Where to Find |
 |---|---|---|
 | `<inspection-vpc-id>` | Inspection/firewall VPC ID | AwsVpc status.outputs.vpc_id |
-| `<inspection-subnet-az1>` | Inspection VPC subnet in AZ1 | AwsVpc status.outputs.private_subnets[0].id |
-| `<inspection-subnet-az2>` | Inspection VPC subnet in AZ2 | AwsVpc status.outputs.private_subnets[1].id |
+| `<inspection-subnet-az1>` | Inspection VPC subnet in AZ1 | AwsSubnet status.outputs.subnet_id |
+| `<inspection-subnet-az2>` | Inspection VPC subnet in AZ2 | AwsSubnet status.outputs.subnet_id |
 | `<workload-vpc-id>` | Workload VPC ID | AwsVpc status.outputs.vpc_id |
-| `<workload-subnet-az1>` | Workload VPC subnet in AZ1 | AwsVpc status.outputs.private_subnets[0].id |
-| `<workload-subnet-az2>` | Workload VPC subnet in AZ2 | AwsVpc status.outputs.private_subnets[1].id |
+| `<workload-subnet-az1>` | Workload VPC subnet in AZ1 | AwsSubnet status.outputs.subnet_id |
+| `<workload-subnet-az2>` | Workload VPC subnet in AZ2 | AwsSubnet status.outputs.subnet_id |
 
 ## Related Presets
 

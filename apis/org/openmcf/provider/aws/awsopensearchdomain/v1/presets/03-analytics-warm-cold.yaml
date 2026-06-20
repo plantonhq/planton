@@ -28,17 +28,17 @@ spec:
   vpcOptions:
     subnetIds:
       - valueFrom:
-          kind: AwsVpc
-          name: <vpc-name>
-          fieldPath: status.outputs.private_subnets.[0].id
+          kind: AwsSubnet
+          name: <private-subnet-1-name>
+          fieldPath: status.outputs.subnet_id
       - valueFrom:
-          kind: AwsVpc
-          name: <vpc-name>
-          fieldPath: status.outputs.private_subnets.[1].id
+          kind: AwsSubnet
+          name: <private-subnet-2-name>
+          fieldPath: status.outputs.subnet_id
       - valueFrom:
-          kind: AwsVpc
-          name: <vpc-name>
-          fieldPath: status.outputs.private_subnets.[2].id
+          kind: AwsSubnet
+          name: <private-subnet-3-name>
+          fieldPath: status.outputs.subnet_id
     securityGroupIds:
       - valueFrom:
           kind: AwsSecurityGroup

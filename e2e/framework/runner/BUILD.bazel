@@ -6,6 +6,7 @@ go_library(
         "dependencies.go",
         "outputs_verifier.go",
         "pulumi.go",
+        "refresolve.go",
         "runner.go",
         "stackinput.go",
         "terraform.go",
@@ -15,6 +16,7 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//apis/org/openmcf/shared/cloudresourcekind",
+        "//apis/org/openmcf/shared/foreignkey/v1:foreignkey",
         "//apis/org/openmcf/shared/iac/terraform",
         "//e2e/framework/provider",
         "//internal/manifest",
@@ -26,6 +28,8 @@ go_library(
         "//pkg/outputs",
         "@com_github_gruntwork_io_terratest//modules/terraform",
         "@com_github_pkg_errors//:errors",
+        "@io_k8s_sigs_yaml//:yaml",
+        "@org_golang_google_protobuf//encoding/protojson",
         "@org_golang_google_protobuf//proto",
         "@org_golang_google_protobuf//reflect/protoreflect",
     ],
@@ -36,9 +40,13 @@ go_test(
     srcs = [
         "dependencies_test.go",
         "outputs_verifier_test.go",
+        "refresolve_test.go",
     ],
     embed = [":runner"],
     deps = [
         "//apis/org/openmcf/provider/auth0/auth0resourceserver/v1:auth0resourceserver",
+        "//apis/org/openmcf/provider/aws/awssubnet/v1:awssubnet",
+        "//apis/org/openmcf/shared/cloudresourcekind",
+        "//internal/manifest",
     ],
 )

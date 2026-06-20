@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awsegressonlyinternetgateway.v1;
+
+import "org/openmcf/provider/aws/awsegressonlyinternetgateway/v1/api.proto";
+import "org/openmcf/provider/aws/provider.proto";
+
+// AwsEgressOnlyInternetGatewayStackInput is the input to the IaC modules (Pulumi
+// / Terraform) that deploy an AwsEgressOnlyInternetGateway resource.
+message AwsEgressOnlyInternetGatewayStackInput {
+  // target cloud-resource
+  AwsEgressOnlyInternetGateway target = 1;
+  // provider-config
+  org.openmcf.provider.aws.AwsProviderConfig provider_config = 2;
+}

@@ -1,52 +1,52 @@
 # Overview
 
-The AWS VPC (Virtual Private Cloud) API resource provides a consistent and streamlined interface for deploying and managing AWS VPCs within our cloud infrastructure. By abstracting the complexities of VPC configurations, this resource allows you to define your network environments effortlessly while ensuring consistency and compliance across different environments.
+The AwsVpc API resource provisions an AWS Virtual Private Cloud (VPC): the
+isolated virtual network that is the foundation for nearly every other AWS
+resource. It is a thin, composable building block -- an IP address space plus a
+few network-wide settings -- not a bundle of subnets and gateways.
 
 ## Why We Created This API Resource
 
-Configuring AWS VPCs can be intricate due to the numerous networking components, best practices, and security considerations involved. To simplify this process and promote a standardized approach, we developed this API resource. It enables you to:
+A VPC is the root of an AWS network topology, but the resources that make a
+network useful -- subnets, internet gateways, NAT gateways, route tables -- each
+have their own lifecycle and are most powerful when modeled as independent,
+referenceable nodes. This resource keeps the VPC itself clean so a topology can
+be composed from first-class components rather than hidden inside one opaque
+object. It lets you:
 
-- **Simplify Network Configuration**: Easily set up VPCs with the desired CIDR blocks, subnets, and availability zones without dealing with low-level AWS networking details.
-- **Ensure Consistency**: Maintain uniform network architectures across different environments and projects.
-- **Enhance Productivity**: Reduce the time and effort required to configure VPCs, allowing you to focus on developing and deploying applications.
+- **Define the address space deliberately**: one primary IPv4 CIDR, optional
+  secondary IPv4 CIDRs, and optional IPv6 -- explicitly or from an IPAM pool.
+- **Compose, don't bundle**: attach `AwsSubnet`, `AwsInternetGateway`,
+  `AwsNatGateway`, and other components by reference, each owning its own
+  lifecycle.
+- **Stay consistent across environments**: the same declarative shape on both
+  Terraform and Pulumi.
 
 ## Key Features
 
-### Environment Integration
+### Address Space
 
-- **Environment Info**: Seamlessly integrates with our environment management system to deploy VPCs within specific environments.
-- **Stack Job Settings**: Supports custom stack-update settings for infrastructure-as-code deployments.
+- **Primary IPv4 CIDR**: the VPC's main range (e.g. `10.0.0.0/16`), specified
+  directly or allocated from an IPAM pool.
+- **Secondary IPv4 CIDRs**: additional ranges associated with the VPC, added or
+  removed without recreating it.
+- **IPv6**: an Amazon-provided /56 or an IPAM-allocated block, for dual-stack
+  networks.
 
-### AWS Credential Management
+### Network Settings
 
-- **AWS Credential ID**: Utilizes specified AWS credentials to ensure secure and authorized deployments.
-
-### Customizable VPC Specifications
-
-#### Network Configuration
-
-- **VPC CIDR Block**: Define the IP address range for the VPC using CIDR notation (e.g., `10.0.0.0/16`).
-- **Availability Zones**: Specify the AWS availability zones to span the VPC (e.g., `["us-west-2a", "us-west-2b"]`).
-
-#### Subnet Configuration
-
-- **Subnets per Availability Zone**: Determine the number of subnets to create in each availability zone for better resource distribution and fault tolerance.
-- **Subnet Size**: Specify the number of hosts in each subnet to control the subnet's IP address range.
-
-#### NAT Gateway
-
-- **NAT Gateway Enablement**: Toggle to enable or disable a NAT gateway for private subnets, allowing instances in private subnets to access the internet securely.
-
-#### DNS Settings
-
-- **DNS Hostnames**: Enable or disable DNS hostnames within the VPC to allow instances to have DNS names that resolve to their private IP addresses.
-- **DNS Support**: Enable or disable DNS resolution through the Amazon-provided DNS server, which is essential for internal DNS resolution within the VPC.
+- **Instance tenancy**: shared (`default`) or single-tenant (`dedicated`)
+  hardware.
+- **DNS**: Amazon-provided DNS resolution and public DNS hostnames.
+- **Network Address Usage metrics**: optional CloudWatch IP-consumption metrics
+  for capacity planning.
 
 ## Benefits
 
-- **Simplified Deployment**: Abstracts the complexities of AWS VPC configurations into an easy-to-use API.
-- **Consistency**: Ensures all VPCs adhere to organizational standards for networking, security, and compliance.
-- **Scalability**: Allows for flexible network architectures that can grow with your application's needs.
-- **Security**: Provides options to configure network isolation, control internet access, and manage DNS settings securely.
-- **Flexibility**: Customize VPCs extensively to meet specific application requirements without compromising best practices.
-- **Cost Efficiency**: Optimize resource allocation by precisely controlling subnet sizes and NAT gateway usage.
+- **Composability**: subnets and gateways are first-class components that
+  reference the VPC, so the architecture graph reflects the real topology.
+- **Feature depth**: secondary CIDRs, IPv6, and IPAM are available from day one,
+  not deferred.
+- **Consistency**: identical behavior across Terraform and Pulumi.
+- **Correctness**: cross-field validation mirrors what AWS itself enforces, so
+  invalid IP configurations are caught before deployment.

@@ -51,7 +51,7 @@ Two mutually exclusive methods:
 
 | Field | Default Reference |
 |-------|-------------------|
-| `subnetIds` | `AwsVpc.status.outputs.private_subnets.[*].id` |
+| `subnetIds` | `AwsSubnet.status.outputs.subnet_id` |
 | `securityGroupIds` | `AwsSecurityGroup.status.outputs.security_group_id` |
 | `kmsKeyId` | `AwsKmsKey.status.outputs.key_arn` |
 | `notificationTopicArn` | `AwsSnsTopic.status.outputs.topic_arn` |

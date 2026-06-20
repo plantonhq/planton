@@ -1,0 +1,26 @@
+# AwsEgressOnlyInternetGateway install profile, available for composed components
+# that need an IPv6 egress gateway present before they deploy. The E2E harness
+# deploys the AwsVpc prerequisite first and resolves this gateway's vpc_id against
+# its outputs. Full metadata is supplied; the managed-by label tags resources for
+# orphan cleanup.
+apiVersion: aws.openmcf.org/v1
+kind: AwsEgressOnlyInternetGateway
+metadata:
+  name: planton-oss-e2e-awseigw-prereq
+  id: planton-oss-e2e-awseigw-prereq
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: openmcf-e2e
+    e2e-component: awsegressonlyinternetgateway
+  annotations:
+    openmcf.org/e2e: "true"
+  tags:
+    - openmcf-e2e
+spec:
+  region: us-west-2
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: planton-oss-e2e-awsvpc-prereq
+      fieldPath: status.outputs.vpc_id

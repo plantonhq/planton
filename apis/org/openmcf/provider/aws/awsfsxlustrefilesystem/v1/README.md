@@ -170,9 +170,9 @@ spec:
       fieldPath: status.outputs.key_arn
   subnet_id:
     valueFrom:
-      kind: AwsVpc
-      name: ml-vpc
-      fieldPath: status.outputs.private_subnets.[0].id
+      kind: AwsSubnet
+      name: ml-private-subnet-a
+      fieldPath: status.outputs.subnet_id
   security_group_ids:
     - valueFrom:
         kind: AwsSecurityGroup

@@ -1,0 +1,12 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesClusterIssuer
+metadata:
+  name: my-cluster-issuer
+spec:
+  certManagerNamespace:
+    value: cert-manager
+  dnsDomain: "<your-domain.com>"
+  acme:
+    email: "<your-acme-email@example.com>"
+  awsRoute53:
+    region: "<your-aws-region>"

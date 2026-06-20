@@ -3,37 +3,47 @@ output "vpc_id" {
   value       = aws_vpc.this.id
 }
 
-output "internet_gateway_id" {
-  description = "The ID of the Internet Gateway"
-  value       = aws_internet_gateway.this.id
+output "vpc_arn" {
+  description = "The ARN of the VPC"
+  value       = aws_vpc.this.arn
 }
 
-output "public_subnet_ids" {
-  description = "Map of all public subnets created keyed by their for_each keys"
-  value       = { for k, v in aws_subnet.public : k => v.id }
+output "cidr_block" {
+  description = "The primary IPv4 CIDR block of the VPC"
+  value       = aws_vpc.this.cidr_block
 }
 
-output "private_subnet_ids" {
-  description = "Map of all private subnets created keyed by their for_each keys"
-  value       = { for k, v in aws_subnet.private : k => v.id }
+output "ipv6_cidr_block" {
+  description = "The IPv6 CIDR block associated with the VPC (empty when IPv4-only)"
+  value       = aws_vpc.this.ipv6_cidr_block
 }
 
-output "public_route_table_id" {
-  description = "The ID of the public route table"
-  value       = aws_route_table.public.id
+output "owner_id" {
+  description = "The AWS account ID that owns the VPC"
+  value       = aws_vpc.this.owner_id
 }
 
-output "private_route_table_ids" {
-  description = "Map of private route table IDs keyed by their corresponding private subnet keys"
-  value       = { for k, v in aws_route_table.private : k => v.id }
+output "main_route_table_id" {
+  description = "The ID of the VPC's main route table"
+  value       = aws_vpc.this.main_route_table_id
 }
 
-output "nat_gateway_ids" {
-  description = "Map of NAT gateway IDs keyed by AZ (only if NAT is enabled)"
-  value       = { for k, v in aws_nat_gateway.this : k => v.id }
+output "default_security_group_id" {
+  description = "The ID of the default security group created with the VPC"
+  value       = aws_vpc.this.default_security_group_id
 }
 
-output "nat_gateway_eip_addresses" {
-  description = "Map of NAT Gateway EIP addresses keyed by AZ (only if NAT is enabled)"
-  value       = { for k, v in aws_eip.nat : k => v.public_ip }
+output "default_network_acl_id" {
+  description = "The ID of the default network ACL created with the VPC"
+  value       = aws_vpc.this.default_network_acl_id
+}
+
+output "default_route_table_id" {
+  description = "The ID of the default route table created with the VPC"
+  value       = aws_vpc.this.default_route_table_id
+}
+
+output "region" {
+  description = "The region the VPC was created in"
+  value       = var.spec.region
 }

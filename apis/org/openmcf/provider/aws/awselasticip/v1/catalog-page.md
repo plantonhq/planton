@@ -110,7 +110,7 @@ spec:
           valueFrom:
             kind: AwsCertManagerCert
             name: api-cert
-            field: status.outputs.certificate_arn
+            fieldPath: status.outputs.cert_arn
       targetGroup:
         port: 8443
         protocol: TCP

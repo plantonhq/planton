@@ -1,0 +1,16 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "aa_e2e",
+    srcs = ["harness.go"],
+    importpath = "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/aa_e2e",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/org/openmcf/provider/aws/aa_e2e/verify",
+        "//e2e/framework/provider",
+        "@com_github_aws_aws_sdk_go_v2//aws",
+        "@com_github_aws_aws_sdk_go_v2_config//:config",
+        "@com_github_aws_aws_sdk_go_v2_service_sts//:sts",
+        "@com_github_pkg_errors//:errors",
+    ],
+)

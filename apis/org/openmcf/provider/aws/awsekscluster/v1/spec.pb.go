@@ -146,11 +146,11 @@ var File_org_openmcf_provider_aws_awsekscluster_v1_spec_proto protoreflect.FileD
 
 const file_org_openmcf_provider_aws_awsekscluster_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"4org/openmcf/provider/aws/awsekscluster/v1/spec.proto\x12)org.openmcf.provider.aws.awsekscluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xee\x05\n" +
+	"4org/openmcf/provider/aws/awsekscluster/v1/spec.proto\x12)org.openmcf.provider.aws.awsekscluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xe0\x05\n" +
 	"\x11AwsEksClusterSpec\x12\x1f\n" +
-	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x8c\x01\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x7f\n" +
 	"\n" +
-	"subnet_ids\x18\x02 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB9\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x02\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x84\x01\n" +
+	"subnet_ids\x18\x02 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x02\x88\xd4a\x9c\x02\x92\xd4a\x18status.outputs.subnet_idR\tsubnetIds\x12\x84\x01\n" +
 	"\x10cluster_role_arn\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\x0eclusterRoleArn\x12\x18\n" +
 	"\aversion\x18\x04 \x01(\tR\aversion\x126\n" +
 	"\x17disable_public_endpoint\x18\x05 \x01(\bR\x15disablePublicEndpoint\x12\x9f\x01\n" +

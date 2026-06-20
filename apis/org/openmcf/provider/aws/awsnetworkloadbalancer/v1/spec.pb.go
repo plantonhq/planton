@@ -862,9 +862,9 @@ const file_org_openmcf_provider_aws_awsnetworkloadbalancer_v1_spec_proto_rawDesc
 	"\x03dns\x18\n" +
 	" \x01(\v2M.org.openmcf.provider.aws.awsnetworkloadbalancer.v1.AwsNetworkLoadBalancerDnsR\x03dns:\x99\x04\xbaH\x95\x04\x1a\x9c\x01\n" +
 	"\x15ip_address_type_valid\x126ip_address_type must be 'ipv4' or 'dualstack' when set\x1aKthis.ip_address_type == '' || this.ip_address_type in ['ipv4', 'dualstack']\x1a\xf3\x02\n" +
-	"&dns_record_client_routing_policy_valid\x12\x90\x01dns_record_client_routing_policy must be 'any_availability_zone', 'availability_zone_affinity', or 'partial_availability_zone_affinity' when set\x1a\xb5\x01this.dns_record_client_routing_policy == '' || this.dns_record_client_routing_policy in ['any_availability_zone', 'availability_zone_affinity', 'partial_availability_zone_affinity']\"\xdf\x02\n" +
-	"#AwsNetworkLoadBalancerSubnetMapping\x12\x85\x01\n" +
-	"\tsubnet_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB4\xbaH\x03\xc8\x01\x01\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\bsubnetId\x12~\n" +
+	"&dns_record_client_routing_policy_valid\x12\x90\x01dns_record_client_routing_policy must be 'any_availability_zone', 'availability_zone_affinity', or 'partial_availability_zone_affinity' when set\x1a\xb5\x01this.dns_record_client_routing_policy == '' || this.dns_record_client_routing_policy in ['any_availability_zone', 'availability_zone_affinity', 'partial_availability_zone_affinity']\"\xd1\x02\n" +
+	"#AwsNetworkLoadBalancerSubnetMapping\x12x\n" +
+	"\tsubnet_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\x9c\x02\x92\xd4a\x18status.outputs.subnet_idR\bsubnetId\x12~\n" +
 	"\rallocation_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB%\x88\xd4a\x99\x02\x92\xd4a\x1cstatus.outputs.allocation_idR\fallocationId\x120\n" +
 	"\x14private_ipv4_address\x18\x03 \x01(\tR\x12privateIpv4Address\"\xdd\f\n" +
 	"\x1eAwsNetworkLoadBalancerListener\x12\xcf\x01\n" +

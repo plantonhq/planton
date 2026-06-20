@@ -227,9 +227,9 @@ spec:
   instanceType: t3.small
   subnetId:
     valueFrom:
-      kind: AwsVpc
-      name: my-vpc
-      field: status.outputs.private_subnets.id
+      kind: AwsSubnet
+      name: my-private-subnet
+      fieldPath: status.outputs.subnet_id
   securityGroupIds:
     - valueFrom:
         kind: AwsSecurityGroup

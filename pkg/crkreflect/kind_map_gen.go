@@ -67,6 +67,7 @@ import (
 	awsecrrepov1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsecrrepo/v1"
 	awsecsclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsecscluster/v1"
 	awsecsservicev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsecsservice/v1"
+	awsegressonlyinternetgatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsegressonlyinternetgateway/v1"
 	awseksclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsekscluster/v1"
 	awseksnodegroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awseksnodegroup/v1"
 	awselasticfilesystemv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awselasticfilesystem/v1"
@@ -85,6 +86,7 @@ import (
 	awsiamoidcproviderv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsiamoidcprovider/v1"
 	awsiamrolev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsiamrole/v1"
 	awsiamuserv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsiamuser/v1"
+	awsinternetgatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsinternetgateway/v1"
 	awskinesisfirehosev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awskinesisfirehose/v1"
 	awskinesisstreamv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awskinesisstream/v1"
 	awskinesisstreamconsumerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awskinesisstreamconsumer/v1"
@@ -94,6 +96,7 @@ import (
 	awsmemorydbclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsmemorydbcluster/v1"
 	awsmskclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsmskcluster/v1"
 	awsmwaaenvironmentv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsmwaaenvironment/v1"
+	awsnatgatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsnatgateway/v1"
 	awsneptuneclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsneptunecluster/v1"
 	awsnetworkloadbalancerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsnetworkloadbalancer/v1"
 	awsopensearchdomainv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsopensearchdomain/v1"
@@ -112,6 +115,7 @@ import (
 	awssnstopicv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awssnstopic/v1"
 	awssqsqueuev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awssqsqueue/v1"
 	awsstepfunctionv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsstepfunction/v1"
+	awssubnetv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awssubnet/v1"
 	awstransitgatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awstransitgateway/v1"
 	awsvpcv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsvpc/v1"
 	awswafwebaclv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awswafwebacl/v1"
@@ -478,6 +482,7 @@ var ProviderAwsMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_AwsEcrRepo:                       &awsecrrepov1.AwsEcrRepo{},
 	cloudresourcekind.CloudResourceKind_AwsEcsCluster:                    &awsecsclusterv1.AwsEcsCluster{},
 	cloudresourcekind.CloudResourceKind_AwsEcsService:                    &awsecsservicev1.AwsEcsService{},
+	cloudresourcekind.CloudResourceKind_AwsEgressOnlyInternetGateway:     &awsegressonlyinternetgatewayv1.AwsEgressOnlyInternetGateway{},
 	cloudresourcekind.CloudResourceKind_AwsEksCluster:                    &awseksclusterv1.AwsEksCluster{},
 	cloudresourcekind.CloudResourceKind_AwsEksNodeGroup:                  &awseksnodegroupv1.AwsEksNodeGroup{},
 	cloudresourcekind.CloudResourceKind_AwsElasticFileSystem:             &awselasticfilesystemv1.AwsElasticFileSystem{},
@@ -496,6 +501,7 @@ var ProviderAwsMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_AwsIamOidcProvider:               &awsiamoidcproviderv1.AwsIamOidcProvider{},
 	cloudresourcekind.CloudResourceKind_AwsIamRole:                       &awsiamrolev1.AwsIamRole{},
 	cloudresourcekind.CloudResourceKind_AwsIamUser:                       &awsiamuserv1.AwsIamUser{},
+	cloudresourcekind.CloudResourceKind_AwsInternetGateway:               &awsinternetgatewayv1.AwsInternetGateway{},
 	cloudresourcekind.CloudResourceKind_AwsKinesisFirehose:               &awskinesisfirehosev1.AwsKinesisFirehose{},
 	cloudresourcekind.CloudResourceKind_AwsKinesisStream:                 &awskinesisstreamv1.AwsKinesisStream{},
 	cloudresourcekind.CloudResourceKind_AwsKinesisStreamConsumer:         &awskinesisstreamconsumerv1.AwsKinesisStreamConsumer{},
@@ -505,6 +511,7 @@ var ProviderAwsMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_AwsMemorydbCluster:               &awsmemorydbclusterv1.AwsMemorydbCluster{},
 	cloudresourcekind.CloudResourceKind_AwsMskCluster:                    &awsmskclusterv1.AwsMskCluster{},
 	cloudresourcekind.CloudResourceKind_AwsMwaaEnvironment:               &awsmwaaenvironmentv1.AwsMwaaEnvironment{},
+	cloudresourcekind.CloudResourceKind_AwsNatGateway:                    &awsnatgatewayv1.AwsNatGateway{},
 	cloudresourcekind.CloudResourceKind_AwsNeptuneCluster:                &awsneptuneclusterv1.AwsNeptuneCluster{},
 	cloudresourcekind.CloudResourceKind_AwsNetworkLoadBalancer:           &awsnetworkloadbalancerv1.AwsNetworkLoadBalancer{},
 	cloudresourcekind.CloudResourceKind_AwsOpenSearchDomain:              &awsopensearchdomainv1.AwsOpenSearchDomain{},
@@ -523,6 +530,7 @@ var ProviderAwsMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_AwsSnsTopic:                      &awssnstopicv1.AwsSnsTopic{},
 	cloudresourcekind.CloudResourceKind_AwsSqsQueue:                      &awssqsqueuev1.AwsSqsQueue{},
 	cloudresourcekind.CloudResourceKind_AwsStepFunction:                  &awsstepfunctionv1.AwsStepFunction{},
+	cloudresourcekind.CloudResourceKind_AwsSubnet:                        &awssubnetv1.AwsSubnet{},
 	cloudresourcekind.CloudResourceKind_AwsTransitGateway:                &awstransitgatewayv1.AwsTransitGateway{},
 	cloudresourcekind.CloudResourceKind_AwsVpc:                           &awsvpcv1.AwsVpc{},
 	cloudresourcekind.CloudResourceKind_AwsWafWebAcl:                     &awswafwebaclv1.AwsWafWebAcl{},

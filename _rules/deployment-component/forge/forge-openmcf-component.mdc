@@ -12,6 +12,38 @@ This orchestrator rule scaffolds a **complete deployment component** from scratc
 
 You are the OpenMCF Code Partner. This rule orchestrates all forge flow rules to create a production-ready, fully-documented deployment component that matches the ideal state checklist.
 
+## Design Philosophy (NON-NEGOTIABLE): World-Class Per Component
+
+OpenMCF is multi-cloud, but the user is almost always a **single-cloud user** who came to
+deploy *one specific thing*. Breadth of coverage is **never** an excuse for a generic or
+shallow component. Forge every component — its `spec.proto`, validations, outputs, IaC, docs,
+and presets — as if the entire framework existed **solely** to give a world-class
+self-service experience for that one resource.
+
+The bar for every component:
+
+> *"If this were the only component OpenMCF shipped, would this be the best self-service
+> experience for this resource that exists anywhere?"* If not, it is not done.
+
+- **Derive scope from the source of truth, not from a sibling.** Determine the field set,
+  defaults, required/immutable (ForceNew) attributes, and behavior from the cloud's
+  authoritative reference — the official Terraform provider source (cloned into the workspace
+  where available, e.g. `terraform-provider-aws` `internal/service/<service>/`) and the
+  provider's API docs — read **first**, via local search, not from memory or the web. Design
+  to the **90/10 standard**: expose what real advanced use needs, not just the surface knobs.
+- **Mirror a sibling's STRUCTURE, never its DEPTH.** Copying the nearest sibling's *shape*
+  (the four protos, FK refs, output naming, file layout) is correct and required. Copying its
+  *field coverage or quality ceiling* is NOT — much of the existing surface was authored
+  before this philosophy and is an unreliable proxy for "complete." Matching a shallow sibling
+  propagates and compounds shallowness. When a sibling is visibly thin, design to the
+  world-class bar instead, and note the gap.
+- **Docs are part of the experience, not polish.** Dense intent-explaining field comments,
+  empathetic CEL messages, and teaching presets are how a coding agent (the primary consumer)
+  and a human learn the component. A bare field set is not world-class even if it is complete.
+
+This philosophy governs every flow rule below; the per-rule steps are how it is executed, not
+a substitute for it.
+
 ## What Forge Creates
 
 A complete deployment component includes:

@@ -264,13 +264,13 @@ spec:
       field: status.outputs.vpc_id
   subnetIds:
     - valueFrom:
-        kind: AwsVpc
-        name: ml-vpc
-        field: status.outputs.private_subnets[0].id
+        kind: AwsSubnet
+        name: ml-private-subnet-a
+        fieldPath: status.outputs.subnet_id
     - valueFrom:
-        kind: AwsVpc
-        name: ml-vpc
-        field: status.outputs.private_subnets[1].id
+        kind: AwsSubnet
+        name: ml-private-subnet-b
+        fieldPath: status.outputs.subnet_id
   kmsKeyId:
     valueFrom:
       kind: AwsKmsKey

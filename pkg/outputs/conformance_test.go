@@ -66,6 +66,97 @@ func TestStackOutputsConformance(t *testing.T) {
 			},
 		},
 		{
+			// AwsSubnet: flat scalar outputs from both engines (subnet id/arn, AZ,
+			// CIDR, route table id, region) must each land on the StackOutputs proto.
+			name: "AwsSubnet",
+			kind: cloudresourcekind.CloudResourceKind_AwsSubnet,
+			rawOutputs: map[string]interface{}{
+				"subnet_id":         "subnet-0abc123",
+				"subnet_arn":        "arn:aws:ec2:us-west-2:123456789012:subnet/subnet-0abc123",
+				"availability_zone": "us-west-2a",
+				"cidr_block":        "10.0.1.0/24",
+				"route_table_id":    "rtb-0abc123",
+				"region":            "us-west-2",
+			},
+			mustPopulate: []string{
+				"subnet_id", "subnet_arn", "availability_zone",
+				"cidr_block", "route_table_id", "region",
+			},
+		},
+		{
+			// AwsInternetGateway: flat scalar outputs from both engines (gateway
+			// id/arn, attached vpc id, region) must each land on the StackOutputs proto.
+			name: "AwsInternetGateway",
+			kind: cloudresourcekind.CloudResourceKind_AwsInternetGateway,
+			rawOutputs: map[string]interface{}{
+				"internet_gateway_id":  "igw-0abc123",
+				"internet_gateway_arn": "arn:aws:ec2:us-west-2:123456789012:internet-gateway/igw-0abc123",
+				"vpc_id":               "vpc-0abc123",
+				"region":               "us-west-2",
+			},
+			mustPopulate: []string{
+				"internet_gateway_id", "internet_gateway_arn", "vpc_id", "region",
+			},
+		},
+		{
+			// AwsEgressOnlyInternetGateway: flat scalar outputs from both engines
+			// (gateway id, attached vpc id, region) must each land on the StackOutputs
+			// proto. An egress-only gateway has no ARN, so none is emitted.
+			name: "AwsEgressOnlyInternetGateway",
+			kind: cloudresourcekind.CloudResourceKind_AwsEgressOnlyInternetGateway,
+			rawOutputs: map[string]interface{}{
+				"egress_only_internet_gateway_id": "eigw-0abc123",
+				"vpc_id":                          "vpc-0abc123",
+				"region":                          "us-west-2",
+			},
+			mustPopulate: []string{
+				"egress_only_internet_gateway_id", "vpc_id", "region",
+			},
+		},
+		{
+			// AwsNatGateway: flat scalar outputs from both engines (gateway id,
+			// public/private ip, ENI id, subnet id, region) must each land on the
+			// StackOutputs proto. A NAT gateway has no ARN, so none is emitted.
+			name: "AwsNatGateway",
+			kind: cloudresourcekind.CloudResourceKind_AwsNatGateway,
+			rawOutputs: map[string]interface{}{
+				"nat_gateway_id":       "nat-0abc123",
+				"public_ip":            "52.10.20.30",
+				"private_ip":           "10.0.0.10",
+				"network_interface_id": "eni-0abc123",
+				"subnet_id":            "subnet-0abc123",
+				"region":               "us-west-2",
+			},
+			mustPopulate: []string{
+				"nat_gateway_id", "public_ip", "private_ip",
+				"network_interface_id", "subnet_id", "region",
+			},
+		},
+		{
+			// AwsVpc: flat scalar outputs from both engines (vpc id/arn, primary and
+			// IPv6 CIDR, owner, the route-table/default-resource ids, region) must
+			// each land on the thin StackOutputs proto.
+			name: "AwsVpc",
+			kind: cloudresourcekind.CloudResourceKind_AwsVpc,
+			rawOutputs: map[string]interface{}{
+				"vpc_id":                    "vpc-0abc123",
+				"vpc_arn":                   "arn:aws:ec2:us-west-2:123456789012:vpc/vpc-0abc123",
+				"cidr_block":                "10.0.0.0/16",
+				"ipv6_cidr_block":           "2600:1f18:abcd:1200::/56",
+				"owner_id":                  "123456789012",
+				"main_route_table_id":       "rtb-0abc123",
+				"default_security_group_id": "sg-0abc123",
+				"default_network_acl_id":    "acl-0abc123",
+				"default_route_table_id":    "rtb-0abc123",
+				"region":                    "us-west-2",
+			},
+			mustPopulate: []string{
+				"vpc_id", "vpc_arn", "cidr_block", "ipv6_cidr_block", "owner_id",
+				"main_route_table_id", "default_security_group_id",
+				"default_network_acl_id", "default_route_table_id", "region",
+			},
+		},
+		{
 			// Guards the externaldns tofu module's output rename to solver_sa: the
 			// module previously emitted "service_account_name", which does not flatten
 			// onto the KubernetesExternalDnsStackOutputs.solver_sa proto field (the

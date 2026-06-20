@@ -86,8 +86,8 @@ This creates a CronJob in the `my-namespace` namespace that runs every hour usin
 | `resources.limits.memory` | `string` | `1Gi` | Maximum memory allocation. |
 | `resources.requests.cpu` | `string` | `50m` | Minimum guaranteed CPU. |
 | `resources.requests.memory` | `string` | `100Mi` | Minimum guaranteed memory. |
-| `env.variables` | `map<string, StringValueOrRef>` | `{}` | Environment variables. Each value can be a direct string via `value` or a reference to another resource via `valueFrom`. |
-| `env.secrets` | `map<string, KubernetesSensitiveValue>` | `{}` | Secret environment variables. Each value can be a direct string via `value` (auto-stored in a Kubernetes Secret) or a reference to an existing Kubernetes Secret via `secretRef`. |
+| `env.variables` | `ContainerEnvVariable[]` | `[]` | Environment variables as a list. Each entry has a `name` and either a direct string `value` or a `valueFrom` reference to another resource. |
+| `env.secrets` | `ContainerEnvSecret[]` | `[]` | Secret environment variables as a list. Each entry has a `name` and either a direct string `value` (auto-stored in a Kubernetes Secret) or a `secretRef` referencing an existing Kubernetes Secret. |
 | `concurrencyPolicy` | `string` | `Forbid` | How concurrent job runs are handled. Valid values: `Allow`, `Forbid`, `Replace`. |
 | `startingDeadlineSeconds` | `uint64` | `0` | Deadline in seconds for starting the job if it misses its scheduled time. `0` means no deadline. |
 | `suspend` | `bool` | `false` | When `true`, no subsequent runs are scheduled. |
@@ -171,19 +171,19 @@ spec:
     - "pg_dump -h $DATABASE_HOST -U $DATABASE_USER -d $DATABASE_NAME > /tmp/backup.sql && echo 'Backup complete'"
   env:
     variables:
-      DATABASE_HOST:
+      - name: DATABASE_HOST
         valueFrom:
           kind: KubernetesPostgres
           name: my-postgres
           field: status.outputs.service
-      DATABASE_NAME:
+      - name: DATABASE_NAME
         value: "app_production"
-      DATABASE_USER:
+      - name: DATABASE_USER
         value: "backup_user"
-      BACKUP_RETENTION_DAYS:
+      - name: BACKUP_RETENTION_DAYS
         value: "30"
     secrets:
-      DATABASE_PASSWORD:
+      - name: DATABASE_PASSWORD
         secretRef:
           name: postgres-credentials
           key: password
@@ -224,16 +224,16 @@ spec:
     - /scripts/backup.sh
   env:
     variables:
-      BACKUP_BUCKET:
+      - name: BACKUP_BUCKET
         value: "s3://my-backups"
-      NOTIFICATION_URL:
+      - name: NOTIFICATION_URL
         value: "https://hooks.slack.com/services/XXX"
     secrets:
-      AWS_ACCESS_KEY_ID:
+      - name: AWS_ACCESS_KEY_ID
         secretRef:
           name: aws-credentials
           key: access-key-id
-      AWS_SECRET_ACCESS_KEY:
+      - name: AWS_SECRET_ACCESS_KEY
         secretRef:
           name: aws-credentials
           key: secret-access-key
@@ -293,20 +293,20 @@ spec:
     - "--batch-size=1000"
   env:
     variables:
-      SOURCE_DB_HOST:
+      - name: SOURCE_DB_HOST
         valueFrom:
           kind: KubernetesPostgres
           name: old-postgres
           field: status.outputs.service
-      TARGET_DB_HOST:
+      - name: TARGET_DB_HOST
         valueFrom:
           kind: KubernetesPostgres
           name: new-postgres
           field: status.outputs.service
     secrets:
-      SOURCE_DB_PASSWORD:
+      - name: SOURCE_DB_PASSWORD
         value: "temp-migration-password"
-      TARGET_DB_PASSWORD:
+      - name: TARGET_DB_PASSWORD
         secretRef:
           name: new-db-credentials
           key: password

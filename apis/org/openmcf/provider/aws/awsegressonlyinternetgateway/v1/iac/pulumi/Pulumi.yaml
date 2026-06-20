@@ -1,0 +1,3 @@
+name: awsegressonlyinternetgateway-pulumi-project
+runtime:
+  name: go

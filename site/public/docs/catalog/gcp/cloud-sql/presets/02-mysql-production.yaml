@@ -10,7 +10,7 @@ spec:
   databaseVersion: MYSQL_8_0
   tier: db-custom-2-8192  # 2 vCPU, 8 GB RAM
   storageGb: 20
-  diskAutoresize: true  # recommended_default from spec
+  diskAutoResize: true  # recommended_default from spec
   edition: ENTERPRISE  # recommended_default from spec
   deletionProtection: true
   queryInsightsEnabled: true

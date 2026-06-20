@@ -1,0 +1,14 @@
+apiVersion: auth0.openmcf.org/v1
+kind: Auth0Role
+metadata:
+  name: my-editor-role
+  org: example-org
+  env: production
+spec:
+  name: Editor
+  description: Read and write access to the application API
+  permissions:
+    - name: read:items
+      resource_server_identifier: https://api.example.com/
+    - name: write:items
+      resource_server_identifier: https://api.example.com/

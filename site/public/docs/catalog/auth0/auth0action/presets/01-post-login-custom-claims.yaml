@@ -1,0 +1,31 @@
+apiVersion: auth0.openmcf.org/v1
+kind: Auth0Action
+metadata:
+  name: enrich-token-claims
+  org: example-org
+  env: production
+spec:
+  supported_trigger:
+    id: post-login
+    version: v3
+  code: |
+    exports.onExecutePostLogin = async (event, api) => {
+      const namespace = 'https://myapp.example.com';
+
+      // Add user roles from authorization context
+      api.idToken.setCustomClaim(`${namespace}/roles`, event.authorization?.roles || []);
+      api.accessToken.setCustomClaim(`${namespace}/roles`, event.authorization?.roles || []);
+
+      // Add user email to access token for downstream APIs
+      api.accessToken.setCustomClaim(`${namespace}/email`, event.user.email);
+
+      // Add organization ID when using Auth0 Organizations
+      if (event.organization) {
+        api.accessToken.setCustomClaim(`${namespace}/org_id`, event.organization.id);
+        api.idToken.setCustomClaim(`${namespace}/org_name`, event.organization.name);
+      }
+    };
+  runtime: node22
+  deploy: true
+  trigger_binding:
+    display_name: Enrich Token Claims

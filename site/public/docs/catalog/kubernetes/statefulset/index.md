@@ -98,8 +98,8 @@ This creates a single-replica PostgreSQL StatefulSet with a headless service, a 
 | `container.app.resources.limits.memory` | `string` | `1Gi` | Maximum memory allocation. |
 | `container.app.resources.requests.cpu` | `string` | `50m` | Minimum guaranteed CPU. |
 | `container.app.resources.requests.memory` | `string` | `100Mi` | Minimum guaranteed memory. |
-| `container.app.env.variables` | `map<string, StringValueOrRef>` | `{}` | Environment variables. Each value can be a direct string via `value` or a reference to another resource via `valueFrom`. |
-| `container.app.env.secrets` | `map<string, KubernetesSensitiveValue>` | `{}` | Secret environment variables. Each value can be a direct string via `value` (auto-stored in a Kubernetes Secret) or a reference to an existing Kubernetes Secret via `secretRef`. |
+| `container.app.env.variables` | `ContainerEnvVariable[]` | `[]` | Environment variables as a list. Each entry has a `name` and either a direct string `value` or a `valueFrom` reference to another resource. |
+| `container.app.env.secrets` | `ContainerEnvSecret[]` | `[]` | Secret environment variables as a list. Each entry has a `name` and either a direct string `value` (auto-stored in a Kubernetes Secret) or a `secretRef` referencing an existing Kubernetes Secret. |
 | `container.app.ports` | `object[]` | `[]` | Container port definitions. Each port requires `name` (lowercase alphanumeric and hyphens), `containerPort`, `networkProtocol` (`TCP`, `UDP`, or `SCTP`), `appProtocol`, and `servicePort`. |
 | `container.app.ports[].isIngressPort` | `bool` | `false` | When `true`, ingress traffic routes to this port's `servicePort`. |
 | `container.app.livenessProbe` | `Probe` | — | Periodic probe of container liveness. Restarts the container on failure. Supports `httpGet`, `tcpSocket`, `grpc`, and `exec` handlers. |
@@ -156,10 +156,10 @@ spec:
           servicePort: 5432
       env:
         variables:
-          POSTGRES_DB:
+          - name: POSTGRES_DB
             value: "appdb"
         secrets:
-          POSTGRES_PASSWORD:
+          - name: POSTGRES_PASSWORD
             value: "change-me-in-production"
       readinessProbe:
         exec:
@@ -226,7 +226,7 @@ spec:
         - "yes"
       env:
         variables:
-          SENTINEL_HOST:
+          - name: SENTINEL_HOST
             valueFrom:
               kind: KubernetesRedis
               name: sentinel
@@ -311,19 +311,19 @@ spec:
           servicePort: 9090
       env:
         variables:
-          CLUSTER_SIZE:
+          - name: CLUSTER_SIZE
             value: "5"
-          DATABASE_HOST:
+          - name: DATABASE_HOST
             valueFrom:
               kind: KubernetesPostgres
               name: prod-postgres
               field: status.outputs.service
         secrets:
-          DATABASE_PASSWORD:
+          - name: DATABASE_PASSWORD
             secretRef:
               name: prod-db-credentials
               key: password
-          API_KEY:
+          - name: API_KEY
             secretRef:
               name: prod-api-keys
               key: event-store
@@ -395,5 +395,5 @@ After deployment, the following outputs are available in `status.outputs`:
 - [KubernetesDeployment](/docs/catalog/kubernetes/deployment) — alternative for stateless workloads that do not require stable identity or persistent storage per pod
 - [KubernetesPostgres](/docs/catalog/kubernetes/postgres) — commonly referenced for database connection environment variables
 - [KubernetesRedis](/docs/catalog/kubernetes/redis) — commonly referenced for cache connection environment variables
-- [KubernetesCertManager](/docs/catalog/kubernetes/cert-manager) — provides the ClusterIssuer for ingress TLS certificates
+- [KubernetesCertManager](/docs/catalog/kubernetes/kubernetescertmanager) — provides the ClusterIssuer for ingress TLS certificates
 - [KubernetesIstio](/docs/catalog/kubernetes/istio) — provides the Gateway API controller for ingress routing

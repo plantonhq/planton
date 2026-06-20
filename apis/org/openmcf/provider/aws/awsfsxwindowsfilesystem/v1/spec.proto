@@ -97,8 +97,8 @@ message AwsFsxWindowsFileSystemSpec {
   // connectivity to these subnets (TCP port 445).
   repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 6 [
     (buf.validate.field).repeated.min_items = 1,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[*].id"
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
   ];
 
   // Preferred subnet for the active file server in a MULTI_AZ_1 deployment.
@@ -108,8 +108,8 @@ message AwsFsxWindowsFileSystemSpec {
   // In a failover event, the standby file server in the other subnet takes over.
   // Ignored for SINGLE_AZ deployments.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef preferred_subnet_id = 7 [
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[0].id"
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
   ];
 
   // Security groups for the file system's network interfaces. ForceNew.

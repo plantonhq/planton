@@ -1,0 +1,26 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpCloudRun
+metadata:
+  name: my-backend-service
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  region: <gcp-region>
+  container:
+    image:
+      repo: <container-image-repo>
+      tag: <image-tag>
+    port: 8080
+    cpu: 1  # recommended_default from spec
+    memory: 1024  # 1 GiB for services doing database queries
+    replicas:
+      min: 1  # always-warm to avoid cold starts for database-backed services
+      max: 10
+  maxConcurrency: 80  # recommended_default from spec
+  timeoutSeconds: 300  # recommended_default from spec
+  cloudSql:
+    connection:
+      instances:
+        - value: "<gcp-project-id>:<gcp-region>:<cloud-sql-instance-name>"
+  allowUnauthenticated: true  # recommended_default from spec; set false for internal services
+  executionEnvironment: EXECUTION_ENVIRONMENT_GEN2  # recommended_default from spec

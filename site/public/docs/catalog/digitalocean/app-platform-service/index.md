@@ -72,7 +72,7 @@ This creates a single-instance web service in the NYC3 region, built from the `m
 | `instanceSizeSlug` | `enum` | Instance size plan. Valid values: `basic-xxs`, `basic-xs`, `basic-s`, `basic-m`, `basic-l`, `professional-xs`, `professional-s`, `professional-m`, `professional-l`, `professional-xl`. | Required; recommended default `basic-xxs` |
 | `gitSource.repoUrl` | `string` | HTTPS or git URL of the source repository. | Required when using `gitSource` |
 | `gitSource.branch` | `string` | Git branch to deploy from. | Required when using `gitSource` |
-| `imageSource.registry` | `StringValueOrRef` | Reference to a DigitalOceanContainerRegistry resource. Resolves to the registry URL via `status.outputs.registry_url`. | Required when using `imageSource` |
+| `imageSource.registry` | `StringValueOrRef` | Reference to a DigitalOceanContainerRegistry resource. Resolves to the registry URL via `status.outputs.server_url`. | Required when using `imageSource` |
 | `imageSource.repository` | `string` | Repository name within the registry (e.g., `myapp/backend`). | Required when using `imageSource` |
 | `imageSource.tag` | `string` | Image tag to deploy (e.g., `latest` or `v1.0.0`). | Required when using `imageSource` |
 
@@ -144,7 +144,7 @@ spec:
       valueFrom:
         kind: DigitalOceanContainerRegistry
         name: prod-registry
-        field: status.outputs.registry_url
+        field: status.outputs.server_url
     repository: "myapp/queue-processor"
     tag: "v2.1.0"
   instanceSizeSlug: professional-s
@@ -177,7 +177,7 @@ spec:
       valueFrom:
         kind: DigitalOceanContainerRegistry
         name: prod-registry
-        field: status.outputs.registry_url
+        field: status.outputs.server_url
     repository: "myapp/frontend"
     tag: "v3.0.1"
   instanceSizeSlug: professional-m

@@ -83,8 +83,8 @@ message AwsFsxOpenzfsFileSystemSpec {
   // connectivity to these subnets.
   repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 5 [
     (buf.validate.field).repeated.min_items = 1,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[*].id"
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
   ];
 
   // Security groups for the file system's network interfaces. ForceNew.
@@ -107,8 +107,8 @@ message AwsFsxOpenzfsFileSystemSpec {
   // In a failover event, the standby file server in the other subnet takes over.
   // Ignored for SINGLE_AZ deployments.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef preferred_subnet_id = 7 [
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[0].id"
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
   ];
 
   // IP address range for the file system endpoints in a MULTI_AZ_1 deployment.

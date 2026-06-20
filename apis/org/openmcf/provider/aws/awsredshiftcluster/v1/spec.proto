@@ -64,8 +64,8 @@ message AwsRedshiftClusterSpec {
   // subnet_ids for automatic Redshift subnet group creation.
   // Provide at least two subnets in distinct Availability Zones for high availability.
   repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 10 [
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[*].id"
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
   ];
 
   // cluster_subnet_group_name uses an existing Redshift subnet group instead of creating one from subnet_ids.

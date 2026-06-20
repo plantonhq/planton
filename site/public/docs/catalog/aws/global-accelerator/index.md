@@ -243,7 +243,7 @@ spec:
       valueFrom:
         kind: AwsS3Bucket
         name: ga-logs
-        field: status.outputs.bucket_name
+        fieldPath: status.outputs.bucket_id
   listeners:
     - name: https
       protocol: TCP

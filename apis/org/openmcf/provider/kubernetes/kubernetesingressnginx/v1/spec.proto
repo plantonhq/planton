@@ -56,14 +56,14 @@ message KubernetesIngressNginxEksConfig {
   // controller‑managed SG).
   repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef additional_security_group_ids = 1 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.id"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
   ];
 
   // Subnet IDs where the ELB/NLB should be placed.  Leave empty to let AWS
   // pick all subnets of the selected scheme (public/private).
   repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 2 [
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.public_subnet_ids"
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
   ];
 
   // Optional existing IAM role ARN for IRSA.  If empty the stack can

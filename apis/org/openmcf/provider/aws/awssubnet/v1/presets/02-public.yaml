@@ -1,0 +1,16 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsSubnet
+metadata:
+  name: public-usw2a
+spec:
+  region: us-west-2
+  vpcId:
+    value: <vpc-id>
+  availabilityZone: us-west-2a
+  cidrBlock: 10.0.0.0/24
+  mapPublicIpOnLaunch: true
+  routes:
+    - destinationCidrBlock: 0.0.0.0/0
+      targetType: internet_gateway
+      targetId:
+        value: <internet-gateway-id>

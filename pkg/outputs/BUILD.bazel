@@ -51,6 +51,7 @@ go_test(
         "//apis/org/openmcf/provider/auth0/auth0resourceserver/v1:auth0resourceserver",
         "//apis/org/openmcf/provider/aws/awsvpc/v1:awsvpc",
         "//apis/org/openmcf/provider/gcp/gcpdnszone/v1:gcpdnszone",
+        "//apis/org/openmcf/provider/gcp/gcpsubnetwork/v1:gcpsubnetwork",
         "//apis/org/openmcf/provider/kubernetes/kubernetespostgres/v1:kubernetespostgres",
         "//apis/org/openmcf/shared/cloudresourcekind",
         "//pkg/crkreflect",

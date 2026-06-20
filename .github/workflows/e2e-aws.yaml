@@ -1,0 +1,156 @@
+# =============================================================================
+# AWS E2E Tests
+# =============================================================================
+# Provisions real AWS resources via OpenMCF IaC modules (Pulumi + Terraform) and
+# verifies them through the AWS SDK.
+#
+# Authentication is KEYLESS: the job assumes an IAM role via GitHub Actions OIDC
+# (`aws-actions/configure-aws-credentials`). There are NO stored AWS secrets --
+# `id-token: write` lets GitHub mint a short-lived OIDC token, which AWS exchanges
+# for temporary credentials. The role ARN (not a secret) is a repository variable.
+#
+# This is OpenMCF's first OIDC-based E2E workflow; e2e-auth0.yaml / e2e-kubernetes
+# still use stored secrets and should be retrofitted onto OIDC (tracked).
+#
+# Test selection uses direct package invocation (`go test ./e2e/aws/...`), NOT the
+# generated tier matrix: the matrix's component->test-name PascalCaser is
+# Kubernetes-only today, so a generated -run regex would silently match zero AWS
+# tests. Generalizing the PascalCaser is a tracked E2E-framework follow-up.
+#
+# Triggers:
+#   - Pull requests (path-filtered): build-check only (no cloud spend)
+#   - Weekly schedule: full pipeline
+#   - Manual dispatch
+# =============================================================================
+
+name: e2e-aws
+
+on:
+  schedule:
+    - cron: '0 5 * * 0' # Weekly Sunday 5am UTC (after Auth0)
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'apis/org/openmcf/provider/aws/**'
+      - 'e2e/aws/**'
+      - 'e2e/framework/**'
+      - 'pkg/iac/**'
+      - 'go.mod'
+      - 'go.sum'
+      - '.github/workflows/e2e-aws.yaml'
+
+concurrency:
+  group: e2e-aws-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  id-token: write # required for GitHub OIDC -> AWS credential exchange
+
+env:
+  PULUMI_CONFIG_PASSPHRASE: ''
+  AWS_REGION: us-west-2
+
+jobs:
+  # ============================================================================
+  # Build Check -- fast compile + vet gate (every trigger, no AWS needed)
+  # ============================================================================
+  build-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+
+      - name: Compile AWS E2E tests
+        run: go test -tags=e2e -c -o /dev/null ./e2e/aws/...
+
+      - name: Vet AWS E2E packages
+        run: go vet -tags=e2e ./e2e/aws/...
+
+  # ============================================================================
+  # E2E -- provision + verify against the AWS test account (keyless OIDC)
+  # ============================================================================
+  e2e:
+    needs: build-check
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: e2e-aws
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+
+      # Keyless: exchange the GitHub OIDC token for short-lived AWS credentials.
+      # vars.PLANTON_OSS_GITHUB_ACTIONS_ROLE_ARN is the role in the test account
+      # whose trust policy pins this repo's OIDC subject (no stored secret).
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.PLANTON_OSS_GITHUB_ACTIONS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: openmcf-e2e-aws-${{ github.run_id }}
+
+      - name: Verify AWS identity
+        run: aws sts get-caller-identity
+
+      - name: Install gotestsum
+        run: go install gotest.tools/gotestsum@latest
+
+      - name: Install Pulumi
+        run: curl -fsSL https://get.pulumi.com | sh && echo "$HOME/.pulumi/bin" >> "$GITHUB_PATH"
+
+      - name: Install OpenTofu
+        run: |
+          curl -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh
+          chmod +x install-opentofu.sh
+          ./install-opentofu.sh --install-method standalone --skip-verify
+          rm install-opentofu.sh
+
+      - name: Run AWS E2E tests
+        run: |
+          gotestsum \
+            --format=testdox \
+            --junitfile=results-aws.xml \
+            -- \
+            -tags=e2e \
+            -timeout=25m \
+            -v \
+            -count=1 \
+            ./e2e/aws/...
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-results-aws
+          path: results-aws.xml
+          retention-days: 30
+
+      - name: Generate summary
+        if: always()
+        run: |
+          echo "## AWS E2E Results" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ -f results-aws.xml ]; then
+            TESTS="$(grep -c '<testcase' results-aws.xml 2>/dev/null | tr -d '[:space:]')"
+            TESTS="${TESTS:-0}"
+            FAILURES="$(grep -oP 'failures="\K[0-9]+' results-aws.xml 2>/dev/null | head -1 | tr -d '[:space:]')"
+            FAILURES="${FAILURES:-0}"
+            SKIPPED="$(grep -c '<skipped' results-aws.xml 2>/dev/null | tr -d '[:space:]')"
+            SKIPPED="${SKIPPED:-0}"
+            PASSED=$((TESTS - FAILURES - SKIPPED))
+
+            echo "| Tests | Passed | Failed | Skipped |" >> "$GITHUB_STEP_SUMMARY"
+            echo "|-------|--------|--------|---------|" >> "$GITHUB_STEP_SUMMARY"
+            echo "| $TESTS | $PASSED | $FAILURES | $SKIPPED |" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No test results found." >> "$GITHUB_STEP_SUMMARY"
+          fi

@@ -131,7 +131,7 @@ message AwsCodePipelineArtifactStore {
   org.openmcf.shared.foreignkey.v1.StringValueOrRef location = 1 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsS3Bucket,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_name"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_id"
   ];
 
   // region is the AWS region for this artifact store. Required only for

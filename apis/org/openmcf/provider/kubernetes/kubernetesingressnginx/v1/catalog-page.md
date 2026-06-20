@@ -171,12 +171,12 @@ spec:
       - valueFrom:
           kind: AwsSecurityGroup
           name: ingress-sg
-          field: status.outputs.id
+          fieldPath: status.outputs.security_group_id
     subnetIds:
       - valueFrom:
-          kind: AwsVpc
-          name: platform-vpc
-          field: status.outputs.public_subnet_ids
+          kind: AwsSubnet
+          name: platform-public-subnet-a
+          fieldPath: status.outputs.subnet_id
 ```
 
 ## Stack Outputs

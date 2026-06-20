@@ -1,0 +1,10 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsVpc
+metadata:
+  name: my-production-vpc
+spec:
+  region: <aws-region>
+  cidrBlock: 10.0.0.0/16
+  assignGeneratedIpv6CidrBlock: true  # dual-stack: Amazon-provided IPv6 /56
+  enableDnsHostnames: true  # required for private hosted zones and service discovery
+  enableDnsSupport: true  # Amazon-provided DNS resolution (on by default)

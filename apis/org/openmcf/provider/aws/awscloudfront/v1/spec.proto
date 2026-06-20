@@ -26,7 +26,7 @@ message AwsCloudFrontSpec {
   // Required when aliases are provided. Can reference an AwsCertManagerCert resource.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef certificate_arn = 4 [
     (org.openmcf.shared.foreignkey.v1.default_kind) = AwsCertManagerCert,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.certificate_arn"
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.cert_arn"
   ];
 
   // Price class for edge locations.

@@ -394,7 +394,7 @@ var File_org_openmcf_provider_aws_awsmemorydbcluster_v1_spec_proto protoreflect.
 
 const file_org_openmcf_provider_aws_awsmemorydbcluster_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"9org/openmcf/provider/aws/awsmemorydbcluster/v1/spec.proto\x12.org.openmcf.provider.aws.awsmemorydbcluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xce\x13\n" +
+	"9org/openmcf/provider/aws/awsmemorydbcluster/v1/spec.proto\x12.org.openmcf.provider.aws.awsmemorydbcluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xc0\x13\n" +
 	"\x16AwsMemorydbClusterSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x1e\n" +
 	"\x06engine\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06engine\x12%\n" +
@@ -405,10 +405,10 @@ const file_org_openmcf_provider_aws_awsmemorydbcluster_v1_spec_proto_rawDesc = "
 	"\n" +
 	"num_shards\x18\a \x01(\x05B\f\xbaH\x04\x1a\x02(\x01\x8a\xa6\x1d\x011H\x01R\tnumShards\x88\x01\x01\x12H\n" +
 	"\x16num_replicas_per_shard\x18\b \x01(\x05B\x0e\xbaH\x06\x1a\x04\x18\x05(\x00\x8a\xa6\x1d\x011H\x02R\x13numReplicasPerShard\x88\x01\x01\x126\n" +
-	"\bacl_name\x18\t \x01(\tB\x16\xbaH\x04r\x02\x10\x01\x8a\xa6\x1d\vopen-accessH\x03R\aaclName\x88\x01\x01\x12\x81\x01\n" +
+	"\bacl_name\x18\t \x01(\tB\x16\xbaH\x04r\x02\x10\x01\x8a\xa6\x1d\vopen-accessH\x03R\aaclName\x88\x01\x01\x12t\n" +
 	"\n" +
 	"subnet_ids\x18\n" +
-	" \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x8b\x01\n" +
+	" \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\x9c\x02\x92\xd4a\x18status.outputs.subnet_idR\tsubnetIds\x12\x8b\x01\n" +
 	"\x12security_group_ids\x18\v \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12.\n" +
 	"\vtls_enabled\x18\f \x01(\bB\b\x8a\xa6\x1d\x04trueH\x04R\n" +
 	"tlsEnabled\x88\x01\x01\x12q\n" +

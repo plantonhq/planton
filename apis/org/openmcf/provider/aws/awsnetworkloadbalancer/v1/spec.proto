@@ -155,8 +155,8 @@ message AwsNetworkLoadBalancerSubnetMapping {
   // the NLB's scheme (public subnet for internet-facing, private for internal).
   org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_id = 1 [
     (buf.validate.field).required = true,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[*].id"
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
   ];
 
   // Elastic IP allocation ID for a static public IP address on this NLB node.

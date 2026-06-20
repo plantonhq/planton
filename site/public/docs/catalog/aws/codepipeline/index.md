@@ -488,7 +488,7 @@ spec:
         valueFrom:
           kind: AwsS3Bucket
           name: pipeline-artifacts
-          field: status.outputs.bucket_name
+          fieldPath: status.outputs.bucket_id
       encryptionKeyId:
         valueFrom:
           kind: AwsKmsKey

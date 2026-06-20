@@ -676,7 +676,7 @@ var File_org_openmcf_provider_aws_awsapprunnerservice_v1_spec_proto protoreflect
 
 const file_org_openmcf_provider_aws_awsapprunnerservice_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	":org/openmcf/provider/aws/awsapprunnerservice/v1/spec.proto\x12/org.openmcf.provider.aws.awsapprunnerservice.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xa1\x1b\n" +
+	":org/openmcf/provider/aws/awsapprunnerservice/v1/spec.proto\x12/org.openmcf.provider.aws.awsapprunnerservice.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x93\x1b\n" +
 	"\x17AwsAppRunnerServiceSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12r\n" +
 	"\fimage_source\x18\x02 \x01(\v2O.org.openmcf.provider.aws.awsapprunnerservice.v1.AwsAppRunnerServiceImageSourceR\vimageSource\x12o\n" +
@@ -692,9 +692,9 @@ const file_org_openmcf_provider_aws_awsapprunnerservice_v1_spec_proto_rawDesc = 
 	" \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB \x88\xd4a\xd0\x01\x92\xd4a\x17status.outputs.role_arnR\x0finstanceRoleArn\x12r\n" +
 	"\fhealth_check\x18\v \x01(\v2O.org.openmcf.provider.aws.awsapprunnerservice.v1.AwsAppRunnerServiceHealthCheckR\vhealthCheck\x12r\n" +
 	"\fauto_scaling\x18\f \x01(\v2O.org.openmcf.provider.aws.awsapprunnerservice.v1.AwsAppRunnerServiceAutoScalingR\vautoScaling\x12^\n" +
-	"\x11vpc_connector_arn\x18\r \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x0fvpcConnectorArn\x12\x81\x01\n" +
+	"\x11vpc_connector_arn\x18\r \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x0fvpcConnectorArn\x12t\n" +
 	"\n" +
-	"subnet_ids\x18\x0e \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x8b\x01\n" +
+	"subnet_ids\x18\x0e \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\x9c\x02\x92\xd4a\x18status.outputs.subnet_idR\tsubnetIds\x12\x8b\x01\n" +
 	"\x12security_group_ids\x18\x0f \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12C\n" +
 	"\x16is_publicly_accessible\x18\x10 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x03R\x14isPubliclyAccessible\x88\x01\x01\x125\n" +
 	"\x0fip_address_type\x18\x11 \x01(\tB\b\x8a\xa6\x1d\x04IPV4H\x04R\ripAddressType\x88\x01\x01\x12s\n" +

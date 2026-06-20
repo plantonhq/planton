@@ -18,8 +18,8 @@ message AwsRdsInstanceSpec {
   // Subnets for the DB subnet group. Provide at least two private subnets for high availability.
   // Alternatively, provide an existing DB subnet group name via db_subnet_group_name.
   repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 2 [
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[*].id"
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
   ];
 
   // Name of an existing DB subnet group to use instead of specifying subnet_ids.

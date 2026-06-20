@@ -126,13 +126,13 @@ spec:
   backup_enabled: true
   subnet_ids:
     - valueFrom:
-        kind: AwsVpc
-        name: prod-vpc
-        fieldPath: status.outputs.private_subnets.[0].id
+        kind: AwsSubnet
+        name: prod-private-subnet-a
+        fieldPath: status.outputs.subnet_id
     - valueFrom:
-        kind: AwsVpc
-        name: prod-vpc
-        fieldPath: status.outputs.private_subnets.[1].id
+        kind: AwsSubnet
+        name: prod-private-subnet-b
+        fieldPath: status.outputs.subnet_id
   security_group_ids:
     - valueFrom:
         kind: AwsSecurityGroup

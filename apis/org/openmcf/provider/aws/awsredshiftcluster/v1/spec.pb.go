@@ -523,7 +523,7 @@ var File_org_openmcf_provider_aws_awsredshiftcluster_v1_spec_proto protoreflect.
 
 const file_org_openmcf_provider_aws_awsredshiftcluster_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"9org/openmcf/provider/aws/awsredshiftcluster/v1/spec.proto\x12.org.openmcf.provider.aws.awsredshiftcluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xff\x1a\n" +
+	"9org/openmcf/provider/aws/awsredshiftcluster/v1/spec.proto\x12.org.openmcf.provider.aws.awsredshiftcluster.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xf1\x1a\n" +
 	"\x16AwsRedshiftClusterSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12#\n" +
 	"\tnode_type\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bnodeType\x129\n" +
@@ -533,10 +533,10 @@ const file_org_openmcf_provider_aws_awsredshiftcluster_v1_spec_proto_rawDesc = "
 	"\x0fmaster_password\x18\x06 \x01(\tB\x04\xa0\xa6\x1d\x01R\x0emasterPassword\x12>\n" +
 	"\x16manage_master_password\x18\a \x01(\bB\b\x92\xa6\x1d\x04trueR\x14manageMasterPassword\x12\x9c\x01\n" +
 	"!master_password_secret_kms_key_id\x18\b \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\x1cmasterPasswordSecretKmsKeyId\x12-\n" +
-	"\x04port\x18\t \x01(\x05B\x14\xbaH\t\x1a\a\x18\xff\xff\x03(\xdb\b\x8a\xa6\x1d\x045439H\x03R\x04port\x88\x01\x01\x12\x81\x01\n" +
+	"\x04port\x18\t \x01(\x05B\x14\xbaH\t\x1a\a\x18\xff\xff\x03(\xdb\b\x8a\xa6\x1d\x045439H\x03R\x04port\x88\x01\x01\x12t\n" +
 	"\n" +
 	"subnet_ids\x18\n" +
-	" \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12m\n" +
+	" \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\x9c\x02\x92\xd4a\x18status.outputs.subnet_idR\tsubnetIds\x12m\n" +
 	"\x19cluster_subnet_group_name\x18\v \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefR\x16clusterSubnetGroupName\x12\x8b\x01\n" +
 	"\x12security_group_ids\x18\f \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12\xa1\x01\n" +
 	"\x13allowed_cidr_blocks\x18\r \x03(\tBq\xbaHn\x92\x01k\x18\x01\"gre2c^(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}/(?:[0-9]|[12]\\d|3[0-2])$R\x11allowedCidrBlocks\x12\x9e\x01\n" +

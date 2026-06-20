@@ -907,9 +907,9 @@ const file_org_openmcf_provider_aws_awscodepipeline_v1_spec_proto_rawDesc = "" +
 	"\x14variables_require_v2\x12Yvariables are only supported on V2 pipelines; set pipeline_type to V2 or remove variables\x1aosize(this.variables) == 0 || !has(this.pipeline_type) || this.pipeline_type == '' || this.pipeline_type == 'V2'\x1a\xa2\x02\n" +
 	"#advanced_execution_mode_requires_v2\x12Eexecution_mode QUEUED and PARALLEL are only supported on V2 pipelines\x1a\xb3\x01!has(this.execution_mode) || this.execution_mode == '' || this.execution_mode == 'SUPERSEDED' || !has(this.pipeline_type) || this.pipeline_type == '' || this.pipeline_type == 'V2'B\x10\n" +
 	"\x0e_pipeline_typeB\x11\n" +
-	"\x0f_execution_mode\"\xb2\x02\n" +
-	"\x1cAwsCodePipelineArtifactStore\x12y\n" +
-	"\blocation\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\xbaH\x03\xc8\x01\x01\x88\xd4a\xd5\x01\x92\xd4a\x1astatus.outputs.bucket_nameR\blocation\x12\x16\n" +
+	"\x0f_execution_mode\"\xb0\x02\n" +
+	"\x1cAwsCodePipelineArtifactStore\x12w\n" +
+	"\blocation\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\xd5\x01\x92\xd4a\x18status.outputs.bucket_idR\blocation\x12\x16\n" +
 	"\x06region\x18\x02 \x01(\tR\x06region\x12\x7f\n" +
 	"\x11encryption_key_id\x18\x03 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xdb\x01\x92\xd4a\x16status.outputs.key_arnR\x0fencryptionKeyId\"\xa3\x01\n" +
 	"\x14AwsCodePipelineStage\x12 \n" +

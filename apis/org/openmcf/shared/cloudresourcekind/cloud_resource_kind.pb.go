@@ -82,46 +82,53 @@ const (
 	CloudResourceKind_AtlasMongodb      CloudResourceKind = 51
 	CloudResourceKind_SnowflakeDatabase CloudResourceKind = 52
 	// 200–399: AWS resources
-	CloudResourceKind_AwsAlb                           CloudResourceKind = 200
-	CloudResourceKind_AwsCertManagerCert               CloudResourceKind = 201
-	CloudResourceKind_AwsCloudFront                    CloudResourceKind = 202
-	CloudResourceKind_AwsDynamodb                      CloudResourceKind = 203
-	CloudResourceKind_AwsEcrRepo                       CloudResourceKind = 204
-	CloudResourceKind_AwsEcsCluster                    CloudResourceKind = 205
-	CloudResourceKind_AwsEcsService                    CloudResourceKind = 206
-	CloudResourceKind_AwsEksCluster                    CloudResourceKind = 207
-	CloudResourceKind_AwsIamRole                       CloudResourceKind = 208
-	CloudResourceKind_AwsLambda                        CloudResourceKind = 209
-	CloudResourceKind_AwsRdsCluster                    CloudResourceKind = 210
-	CloudResourceKind_AwsRdsInstance                   CloudResourceKind = 211
-	CloudResourceKind_AwsRoute53Zone                   CloudResourceKind = 212
-	CloudResourceKind_AwsS3Bucket                      CloudResourceKind = 213
-	CloudResourceKind_AwsSecretsManager                CloudResourceKind = 214
-	CloudResourceKind_AwsSecurityGroup                 CloudResourceKind = 215
-	CloudResourceKind_AwsVpc                           CloudResourceKind = 216
-	CloudResourceKind_AwsEksNodeGroup                  CloudResourceKind = 217
-	CloudResourceKind_AwsIamUser                       CloudResourceKind = 218
-	CloudResourceKind_AwsKmsKey                        CloudResourceKind = 219
-	CloudResourceKind_AwsEc2Instance                   CloudResourceKind = 220
-	CloudResourceKind_AwsClientVpn                     CloudResourceKind = 221
-	CloudResourceKind_AwsDocumentDb                    CloudResourceKind = 222
-	CloudResourceKind_AwsRoute53DnsRecord              CloudResourceKind = 223
-	CloudResourceKind_AwsS3ObjectSet                   CloudResourceKind = 224
-	CloudResourceKind_AwsSqsQueue                      CloudResourceKind = 225
-	CloudResourceKind_AwsSnsTopic                      CloudResourceKind = 226
-	CloudResourceKind_AwsEventBridgeBus                CloudResourceKind = 227
-	CloudResourceKind_AwsEventBridgeRule               CloudResourceKind = 228
-	CloudResourceKind_AwsIamOidcProvider               CloudResourceKind = 229
-	CloudResourceKind_AwsHttpApiGateway                CloudResourceKind = 240
-	CloudResourceKind_AwsStepFunction                  CloudResourceKind = 241
-	CloudResourceKind_AwsRedisElasticache              CloudResourceKind = 250
-	CloudResourceKind_AwsOpenSearchDomain              CloudResourceKind = 251
-	CloudResourceKind_AwsMemcachedElasticache          CloudResourceKind = 252
-	CloudResourceKind_AwsServerlessElasticache         CloudResourceKind = 253
-	CloudResourceKind_AwsNetworkLoadBalancer           CloudResourceKind = 280
-	CloudResourceKind_AwsElasticIp                     CloudResourceKind = 281
-	CloudResourceKind_AwsTransitGateway                CloudResourceKind = 282
-	CloudResourceKind_AwsGlobalAccelerator             CloudResourceKind = 283
+	CloudResourceKind_AwsAlb                   CloudResourceKind = 200
+	CloudResourceKind_AwsCertManagerCert       CloudResourceKind = 201
+	CloudResourceKind_AwsCloudFront            CloudResourceKind = 202
+	CloudResourceKind_AwsDynamodb              CloudResourceKind = 203
+	CloudResourceKind_AwsEcrRepo               CloudResourceKind = 204
+	CloudResourceKind_AwsEcsCluster            CloudResourceKind = 205
+	CloudResourceKind_AwsEcsService            CloudResourceKind = 206
+	CloudResourceKind_AwsEksCluster            CloudResourceKind = 207
+	CloudResourceKind_AwsIamRole               CloudResourceKind = 208
+	CloudResourceKind_AwsLambda                CloudResourceKind = 209
+	CloudResourceKind_AwsRdsCluster            CloudResourceKind = 210
+	CloudResourceKind_AwsRdsInstance           CloudResourceKind = 211
+	CloudResourceKind_AwsRoute53Zone           CloudResourceKind = 212
+	CloudResourceKind_AwsS3Bucket              CloudResourceKind = 213
+	CloudResourceKind_AwsSecretsManager        CloudResourceKind = 214
+	CloudResourceKind_AwsSecurityGroup         CloudResourceKind = 215
+	CloudResourceKind_AwsVpc                   CloudResourceKind = 216
+	CloudResourceKind_AwsEksNodeGroup          CloudResourceKind = 217
+	CloudResourceKind_AwsIamUser               CloudResourceKind = 218
+	CloudResourceKind_AwsKmsKey                CloudResourceKind = 219
+	CloudResourceKind_AwsEc2Instance           CloudResourceKind = 220
+	CloudResourceKind_AwsClientVpn             CloudResourceKind = 221
+	CloudResourceKind_AwsDocumentDb            CloudResourceKind = 222
+	CloudResourceKind_AwsRoute53DnsRecord      CloudResourceKind = 223
+	CloudResourceKind_AwsS3ObjectSet           CloudResourceKind = 224
+	CloudResourceKind_AwsSqsQueue              CloudResourceKind = 225
+	CloudResourceKind_AwsSnsTopic              CloudResourceKind = 226
+	CloudResourceKind_AwsEventBridgeBus        CloudResourceKind = 227
+	CloudResourceKind_AwsEventBridgeRule       CloudResourceKind = 228
+	CloudResourceKind_AwsIamOidcProvider       CloudResourceKind = 229
+	CloudResourceKind_AwsHttpApiGateway        CloudResourceKind = 240
+	CloudResourceKind_AwsStepFunction          CloudResourceKind = 241
+	CloudResourceKind_AwsRedisElasticache      CloudResourceKind = 250
+	CloudResourceKind_AwsOpenSearchDomain      CloudResourceKind = 251
+	CloudResourceKind_AwsMemcachedElasticache  CloudResourceKind = 252
+	CloudResourceKind_AwsServerlessElasticache CloudResourceKind = 253
+	CloudResourceKind_AwsNetworkLoadBalancer   CloudResourceKind = 280
+	CloudResourceKind_AwsElasticIp             CloudResourceKind = 281
+	CloudResourceKind_AwsTransitGateway        CloudResourceKind = 282
+	CloudResourceKind_AwsGlobalAccelerator     CloudResourceKind = 283
+	CloudResourceKind_AwsSubnet                CloudResourceKind = 284
+	CloudResourceKind_AwsInternetGateway       CloudResourceKind = 285
+	// AwsInternetGateway is a prerequisite because a public NAT gateway can only
+	// become available once the VPC it sits in has an internet gateway attached
+	// (AWS rejects the create otherwise) -- so the gateway must be deployed first.
+	CloudResourceKind_AwsNatGateway                    CloudResourceKind = 286
+	CloudResourceKind_AwsEgressOnlyInternetGateway     CloudResourceKind = 287
 	CloudResourceKind_AwsElasticFileSystem             CloudResourceKind = 290
 	CloudResourceKind_AwsFsxLustreFileSystem           CloudResourceKind = 291
 	CloudResourceKind_AwsFsxOpenzfsFileSystem          CloudResourceKind = 292
@@ -534,6 +541,10 @@ var (
 		281:  "AwsElasticIp",
 		282:  "AwsTransitGateway",
 		283:  "AwsGlobalAccelerator",
+		284:  "AwsSubnet",
+		285:  "AwsInternetGateway",
+		286:  "AwsNatGateway",
+		287:  "AwsEgressOnlyInternetGateway",
 		290:  "AwsElasticFileSystem",
 		291:  "AwsFsxLustreFileSystem",
 		292:  "AwsFsxOpenzfsFileSystem",
@@ -921,6 +932,10 @@ var (
 		"AwsElasticIp":                          281,
 		"AwsTransitGateway":                     282,
 		"AwsGlobalAccelerator":                  283,
+		"AwsSubnet":                             284,
+		"AwsInternetGateway":                    285,
+		"AwsNatGateway":                         286,
+		"AwsEgressOnlyInternetGateway":          287,
 		"AwsElasticFileSystem":                  290,
 		"AwsFsxLustreFileSystem":                291,
 		"AwsFsxOpenzfsFileSystem":               292,
@@ -1513,7 +1528,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x04kind\x18\x02 \x01(\tR\x04kind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xe6\x87\x01\n" +
+	"\x02v1\x10\x01*\xa2\x89\x01\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12,\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1566,7 +1581,11 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x16AwsNetworkLoadBalancer\x10\x98\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsnlb\x12#\n" +
 	"\fAwsElasticIp\x10\x99\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awseip\x12(\n" +
 	"\x11AwsTransitGateway\x10\x9a\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awstgw\x12*\n" +
-	"\x14AwsGlobalAccelerator\x10\x9b\x02\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05awsga\x12+\n" +
+	"\x14AwsGlobalAccelerator\x10\x9b\x02\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05awsga\x12#\n" +
+	"\tAwsSubnet\x10\x9c\x02\x1a\x13\xa2\xf7\x04\x0f\b\f\x10\x01\"\x05awssn:\x02\xd8\x01\x12-\n" +
+	"\x12AwsInternetGateway\x10\x9d\x02\x1a\x14\xa2\xf7\x04\x10\b\f\x10\x01\"\x06awsigw:\x02\xd8\x01\x12,\n" +
+	"\rAwsNatGateway\x10\x9e\x02\x1a\x18\xa2\xf7\x04\x14\b\f\x10\x01\"\x06awsnat:\x06\x9c\x02\x99\x02\x9d\x02\x128\n" +
+	"\x1cAwsEgressOnlyInternetGateway\x10\x9f\x02\x1a\x15\xa2\xf7\x04\x11\b\f\x10\x01\"\aawseigw:\x02\xd8\x01\x12+\n" +
 	"\x14AwsElasticFileSystem\x10\xa2\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsefs\x12-\n" +
 	"\x16AwsFsxLustreFileSystem\x10\xa3\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsfxl\x12.\n" +
 	"\x17AwsFsxOpenzfsFileSystem\x10\xa4\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsfxz\x12.\n" +

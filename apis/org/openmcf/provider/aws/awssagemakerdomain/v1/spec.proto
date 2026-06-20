@@ -44,8 +44,8 @@ message AwsSagemakerDomainSpec {
   // ForceNew: changing subnets forces domain replacement.
   repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 4 [
     (buf.validate.field).repeated.min_items = 1,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[*].id"
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
   ];
 
   // kms_key_id is the KMS key ARN used to encrypt the EFS volume attached to the domain.

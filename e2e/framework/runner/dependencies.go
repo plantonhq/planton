@@ -32,6 +32,11 @@ type DependencyState struct {
 	StackName      string
 	BackendURL     string
 	StackInputPath string
+
+	// Outputs are the dependency's captured stack outputs. They are used both to
+	// verify the dependency and to resolve the dependent component's value_from
+	// references (see ResolveManifestRefs).
+	Outputs map[string]interface{}
 }
 
 // ResolveDependencies returns the ordered, deduplicated list of prerequisite
@@ -104,8 +109,22 @@ func DeployDependencies(ctx context.Context, repoRoot, componentProvider, compon
 
 	fmt.Printf("  [deps] Deploying %d dependencies for %s\n", len(deps), component)
 
+	// accumulated holds each deployed prerequisite's outputs keyed by kind. A later
+	// prerequisite that references an earlier one (e.g. an AwsSubnet's vpc_id -> the
+	// AwsVpc it sits in) has its value_from refs resolved against this map before it
+	// deploys -- the same resolution RunComponentTest applies to the component under
+	// test, extended transitively across the prerequisite chain so deep compositions
+	// (VPC -> Subnet -> NatGateway) can be tested standalone.
+	accumulated := make(map[cloudresourcekind.CloudResourceKind]map[string]interface{}, len(deps))
+
 	var deployed []DependencyState
 	for _, dep := range deps {
+		resolvedManifestPath, err := ResolveManifestRefs(dep.ManifestPath, accumulated)
+		if err != nil {
+			return deployed, errors.Wrapf(err, "failed to resolve references for dependency %q", dep.KindSlug)
+		}
+		dep.ManifestPath = resolvedManifestPath
+
 		state, err := deployDependency(ctx, repoRoot, componentProvider, dep, backendURL, runID, harness)
 		// A non-empty stack name means Pulumi created resources we must track for
 		// teardown, even if verification afterwards failed.
@@ -115,6 +134,7 @@ func DeployDependencies(ctx context.Context, repoRoot, componentProvider, compon
 		if err != nil {
 			return deployed, err
 		}
+		accumulated[crkreflect.KindFromString(dep.KindSlug)] = state.Outputs
 	}
 	return deployed, nil
 }
@@ -154,8 +174,21 @@ func deployDependency(ctx context.Context, repoRoot, componentProvider string, d
 		StackInputPath: stackInputPath,
 	}
 
+	// Capture the dependency's outputs so its verifier can confirm it (cloud
+	// verifiers need the resource id from the outputs) and so the dependent
+	// component's value_from refs can resolve against them.
+	outputsJSON, err := PulumiStackOutputs(moduleDir, stackName, backendURL)
+	if err != nil {
+		return state, errors.Wrapf(err, "failed to read outputs for dependency %q", dep.KindSlug)
+	}
+	depStackOutputs, err := parsePulumiOutputs(outputsJSON)
+	if err != nil {
+		return state, errors.Wrapf(err, "failed to parse outputs for dependency %q", dep.KindSlug)
+	}
+	state.Outputs = depStackOutputs
+
 	verifyCtx := context.WithValue(ctx, provider.ManifestPathKey{}, dep.ManifestPath)
-	if err := harness.VerifyDeployed(verifyCtx, dep.KindSlug, nil); err != nil {
+	if err := harness.VerifyDeployed(verifyCtx, dep.KindSlug, state.Outputs); err != nil {
 		return state, errors.Wrapf(err, "dependency %q deployed but verification failed", dep.KindSlug)
 	}
 

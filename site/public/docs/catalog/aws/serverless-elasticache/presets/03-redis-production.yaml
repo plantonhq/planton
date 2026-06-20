@@ -21,17 +21,17 @@ spec:
       fieldPath: status.outputs.key_arn
   subnetIds:
     - valueFrom:
-        kind: AwsVpc
-        name: ${vpc_name}
-        fieldPath: status.outputs.private_subnets.[0].id
+        kind: AwsSubnet
+        name: ${private_subnet_1_name}
+        fieldPath: status.outputs.subnet_id
     - valueFrom:
-        kind: AwsVpc
-        name: ${vpc_name}
-        fieldPath: status.outputs.private_subnets.[1].id
+        kind: AwsSubnet
+        name: ${private_subnet_2_name}
+        fieldPath: status.outputs.subnet_id
     - valueFrom:
-        kind: AwsVpc
-        name: ${vpc_name}
-        fieldPath: status.outputs.private_subnets.[2].id
+        kind: AwsSubnet
+        name: ${private_subnet_3_name}
+        fieldPath: status.outputs.subnet_id
   securityGroupIds:
     - valueFrom:
         kind: AwsSecurityGroup

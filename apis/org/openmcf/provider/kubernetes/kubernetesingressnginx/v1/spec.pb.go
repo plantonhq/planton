@@ -373,11 +373,11 @@ const file_org_openmcf_provider_kubernetes_kubernetesingressnginx_v1_spec_proto_
 	"\x0fprovider_config\"y\n" +
 	"\x1fKubernetesIngressNginxGkeConfig\x12$\n" +
 	"\x0estatic_ip_name\x18\x01 \x01(\tR\fstaticIpName\x120\n" +
-	"\x14subnetwork_self_link\x18\x02 \x01(\tR\x12subnetworkSelfLink\"\xe8\x02\n" +
-	"\x1fKubernetesIngressNginxEksConfig\x12\x91\x01\n" +
-	"\x1dadditional_security_group_ids\x18\x01 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1a\x88\xd4a\xd7\x01\x92\xd4a\x11status.outputs.idR\x1aadditionalSecurityGroupIds\x12|\n" +
+	"\x14subnetwork_self_link\x18\x02 \x01(\tR\x12subnetworkSelfLink\"\xef\x02\n" +
+	"\x1fKubernetesIngressNginxEksConfig\x12\xa0\x01\n" +
+	"\x1dadditional_security_group_ids\x18\x01 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x1aadditionalSecurityGroupIds\x12t\n" +
 	"\n" +
-	"subnet_ids\x18\x02 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd8\x01\x92\xd4a status.outputs.public_subnet_idsR\tsubnetIds\x123\n" +
+	"subnet_ids\x18\x02 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\x9c\x02\x92\xd4a\x18status.outputs.subnet_idR\tsubnetIds\x123\n" +
 	"\x16irsa_role_arn_override\x18\x03 \x01(\tR\x13irsaRoleArnOverride\"\x84\x01\n" +
 	"\x1fKubernetesIngressNginxAksConfig\x12;\n" +
 	"\x1amanaged_identity_client_id\x18\x01 \x01(\tR\x17managedIdentityClientId\x12$\n" +

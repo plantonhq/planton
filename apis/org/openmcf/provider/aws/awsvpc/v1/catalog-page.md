@@ -1,25 +1,30 @@
 # AWS VPC
 
-Deploys an AWS Virtual Private Cloud with automatic subnet calculation, public and private subnet creation across specified Availability Zones, an Internet Gateway for public routing, and optional NAT Gateways for private subnet internet access.
+Deploys a thin AWS Virtual Private Cloud: an isolated IP address space (primary
+IPv4 CIDR, optional secondary IPv4 CIDRs, and optional IPv6) with configurable
+tenancy and DNS settings. Subnets, gateways, and route tables are separate,
+composable components that reference this VPC.
 
 ## What Gets Created
 
 When you deploy an AwsVpc resource, OpenMCF provisions:
 
-- **VPC** — an `ec2.Vpc` resource with the specified CIDR block, DNS support, and DNS hostname settings
-- **Internet Gateway** — an `ec2.InternetGateway` attached to the VPC for public internet access
-- **Public Route Table** — an `ec2.RouteTable` with a default route (`0.0.0.0/0`) pointing to the Internet Gateway
-- **Public Subnets** — one or more `ec2.Subnet` resources per Availability Zone with `MapPublicIpOnLaunch` enabled, each associated with the public route table via `ec2.RouteTableAssociation`
-- **Private Subnets** — one or more `ec2.Subnet` resources per Availability Zone with `MapPublicIpOnLaunch` disabled
-- **Elastic IPs** (NAT only) — one `ec2.Eip` per Availability Zone, created only when `isNatGatewayEnabled` is `true`
-- **NAT Gateways** (NAT only) — one `ec2.NatGateway` per Availability Zone placed in the first public subnet, created only when `isNatGatewayEnabled` is `true`
-- **Private Route Tables** (NAT only) — one `ec2.RouteTable` per private subnet routing `0.0.0.0/0` through the AZ's NAT Gateway, each associated via `ec2.RouteTableAssociation`
+- **VPC** — an `aws_vpc` / `ec2.Vpc` with the primary IPv4 CIDR (specified
+  directly or allocated from an IPAM pool), tenancy, DNS, and optional IPv6.
+- **Secondary IPv4 CIDR associations** — one `aws_vpc_ipv4_cidr_block_association`
+  / `ec2.VpcIpv4CidrBlockAssociation` per entry in `secondaryIpv4CidrBlocks`,
+  each independently associated so it can be added or removed without recreating
+  the VPC.
+
+Subnets, internet gateways, NAT gateways, and route tables are **not** created
+here — deploy `AwsSubnet`, `AwsInternetGateway`, and `AwsNatGateway` components
+that reference this VPC's `vpc_id` output.
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
-- **A valid CIDR block** for the VPC (e.g., `10.0.0.0/16`)
-- **At least one Availability Zone** in the target AWS region
+- **AWS credentials** configured via the OpenMCF provider config (keyless SSO/OIDC).
+- **A primary IPv4 source**: either a `cidrBlock` (e.g. `10.0.0.0/16`) or an
+  `ipv4IpamPoolId`.
 
 ## Quick Start
 
@@ -30,16 +35,10 @@ apiVersion: aws.openmcf.org/v1
 kind: AwsVpc
 metadata:
   name: my-vpc
-  labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsVpc.my-vpc
 spec:
   region: us-west-2
-  vpcCidr: "10.0.0.0/16"
-  subnetsPerAvailabilityZone: 1
-  subnetSize: 24
+  cidrBlock: "10.0.0.0/16"
+  enableDnsHostnames: true
 ```
 
 Deploy:
@@ -48,131 +47,61 @@ Deploy:
 openmcf apply -f vpc.yaml
 ```
 
-This creates a VPC with the `10.0.0.0/16` CIDR block. No subnets are created until you also specify `availabilityZones`.
-
 ## Configuration Reference
 
 ### Required Fields
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
-| `region` | `string` | AWS region where the VPC will be created (e.g., `us-west-2`, `eu-west-1`). | Required; non-empty |
-| `vpcCidr` | `string` | CIDR block for the VPC (e.g., `10.0.0.0/16`). Defines the full IP address range. | Must be a valid CIDR notation |
-| `subnetsPerAvailabilityZone` | `int32` | Number of subnets to create in each Availability Zone. Recommended default: `1`. | Required |
-| `subnetSize` | `int32` | Subnet mask size (e.g., `24` for `/24` subnets with 256 addresses). Must not be larger than the VPC CIDR mask. Recommended default: `1`. | Required; must be >= VPC CIDR mask size |
+| `region` | `string` | AWS region where the VPC is created (e.g. `us-west-2`). | Required; non-empty |
+| `cidrBlock` *or* `ipv4IpamPoolId` | `string` | Primary IPv4 source: an explicit CIDR (e.g. `10.0.0.0/16`) or an IPAM pool. | Exactly one is required |
 
 ### Optional Fields
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
-| `availabilityZones` | `string[]` | `[]` | List of Availability Zones to span (e.g., `["us-west-2a", "us-west-2b"]`). Public and private subnets are created in each AZ. |
-| `isNatGatewayEnabled` | `bool` | `false` | When `true`, creates one NAT Gateway per AZ in the first public subnet, with an Elastic IP and private route tables for outbound internet access from private subnets. |
-| `isDnsHostnamesEnabled` | `bool` | `false` | When `true`, instances with public IPs receive corresponding public DNS hostnames. |
-| `isDnsSupportEnabled` | `bool` | `false` | When `true`, enables DNS resolution through the Amazon-provided DNS server within the VPC. |
+| `secondaryIpv4CidrBlocks` | `string[]` | `[]` | Additional IPv4 CIDRs associated with the VPC. |
+| `ipv4NetmaskLength` | `int32` | — | Netmask of the primary CIDR to allocate from `ipv4IpamPoolId` (16–28). Requires `ipv4IpamPoolId`; mutually exclusive with `cidrBlock`. |
+| `instanceTenancy` | `string` | `default` | `default` (shared) or `dedicated` (single-tenant hardware). |
+| `enableDnsSupport` | `bool` | `true` | Amazon-provided DNS resolution within the VPC. Unset keeps it on. |
+| `enableDnsHostnames` | `bool` | `false` | Public DNS hostnames for instances with public IPs. |
+| `enableNetworkAddressUsageMetrics` | `bool` | `false` | CloudWatch Network Address Usage metrics. |
+| `assignGeneratedIpv6CidrBlock` | `bool` | `false` | Request an Amazon-provided IPv6 /56. Mutually exclusive with the IPAM IPv6 fields. |
+| `ipv6CidrBlock` | `string` | — | Explicit IPv6 CIDR to allocate from `ipv6IpamPoolId`. Requires `ipv6IpamPoolId`. |
+| `ipv6CidrBlockNetworkBorderGroup` | `string` | — | Advertisement border group for an Amazon-provided IPv6 CIDR. Requires `assignGeneratedIpv6CidrBlock`. |
+| `ipv6IpamPoolId` | `string` | — | IPAM pool for the IPv6 CIDR. |
+| `ipv6NetmaskLength` | `int32` | — | IPv6 netmask to allocate from `ipv6IpamPoolId` (44, 48, 52, 56, or 60). Mutually exclusive with `ipv6CidrBlock`. |
 
 ## Examples
 
-### Two-AZ VPC with Public and Private Subnets
-
-A typical VPC spanning two Availability Zones with one public and one private subnet per AZ:
+### Dual-stack VPC with a secondary CIDR
 
 ```yaml
 apiVersion: aws.openmcf.org/v1
 kind: AwsVpc
 metadata:
-  name: two-az-vpc
-  labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsVpc.two-az-vpc
-spec:
-  region: us-east-1
-  vpcCidr: "10.0.0.0/16"
-  availabilityZones:
-    - us-east-1a
-    - us-east-1b
-  subnetsPerAvailabilityZone: 1
-  subnetSize: 24
-```
-
-### VPC with NAT Gateway
-
-Private subnets that can reach the internet through NAT Gateways, with DNS support enabled:
-
-```yaml
-apiVersion: aws.openmcf.org/v1
-kind: AwsVpc
-metadata:
-  name: nat-vpc
-  labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.AwsVpc.nat-vpc
+  name: dual-stack-vpc
 spec:
   region: us-west-2
-  vpcCidr: "10.1.0.0/16"
-  availabilityZones:
-    - us-west-2a
-    - us-west-2b
-  subnetsPerAvailabilityZone: 1
-  subnetSize: 24
-  isNatGatewayEnabled: true
-  isDnsSupportEnabled: true
-  isDnsHostnamesEnabled: true
+  cidrBlock: "10.0.0.0/16"
+  secondaryIpv4CidrBlocks:
+    - "100.64.0.0/16"
+  assignGeneratedIpv6CidrBlock: true
+  enableDnsHostnames: true
 ```
 
-### Three-AZ Production VPC
-
-A production VPC spanning three Availability Zones with multiple subnets per AZ, NAT Gateways, and full DNS support:
+### IPAM-allocated VPC
 
 ```yaml
 apiVersion: aws.openmcf.org/v1
 kind: AwsVpc
 metadata:
-  name: prod-vpc
-  labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsVpc.prod-vpc
+  name: ipam-vpc
 spec:
-  region: eu-west-1
-  vpcCidr: "10.10.0.0/16"
-  availabilityZones:
-    - eu-west-1a
-    - eu-west-1b
-    - eu-west-1c
-  subnetsPerAvailabilityZone: 2
-  subnetSize: 24
-  isNatGatewayEnabled: true
-  isDnsSupportEnabled: true
-  isDnsHostnamesEnabled: true
-```
-
-### Large VPC with Small Subnets
-
-A VPC with a `/20` address space divided into `/28` subnets (16 addresses each) for fine-grained network segmentation:
-
-```yaml
-apiVersion: aws.openmcf.org/v1
-kind: AwsVpc
-metadata:
-  name: segmented-vpc
-  labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsVpc.segmented-vpc
-spec:
-  region: ap-southeast-1
-  vpcCidr: "172.16.0.0/20"
-  availabilityZones:
-    - ap-southeast-1a
-    - ap-southeast-1b
-  subnetsPerAvailabilityZone: 3
-  subnetSize: 28
+  region: us-west-2
+  ipv4IpamPoolId: "ipam-pool-0abc123"
+  ipv4NetmaskLength: 16
+  enableDnsHostnames: true
 ```
 
 ## Stack Outputs
@@ -181,27 +110,20 @@ After deployment, the following outputs are available in `status.outputs`:
 
 | Output | Type | Description |
 |--------|------|-------------|
-| `vpc_id` | `string` | ID of the created VPC |
-| `internet_gateway_id` | `string` | ID of the Internet Gateway attached to the VPC |
-| `vpc_cidr` | `string` | CIDR block associated with the VPC |
-| `public_subnets` | `AwsVpcSubnetStackOutputs[]` | List of public subnet details (see below) |
-| `private_subnets` | `AwsVpcSubnetStackOutputs[]` | List of private subnet details (see below) |
-
-Each subnet entry in `public_subnets` and `private_subnets` contains:
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `name` | `string` | Name of the subnet (e.g., `public-subnet-us-east-1a-0`) |
-| `id` | `string` | AWS subnet ID |
-| `cidr` | `string` | CIDR block of the subnet |
-| `nat_gateway.id` | `string` | NAT Gateway ID (public subnets only, when NAT is enabled) |
-| `nat_gateway.private_ip` | `string` | NAT Gateway private IP address |
-| `nat_gateway.public_ip` | `string` | NAT Gateway public IP (Elastic IP) address |
+| `vpc_id` | `string` | ID of the VPC. Referenced by subnets, gateways, and security groups. |
+| `vpc_arn` | `string` | ARN of the VPC. |
+| `cidr_block` | `string` | Primary IPv4 CIDR of the VPC. |
+| `ipv6_cidr_block` | `string` | IPv6 CIDR of the VPC (empty when IPv4-only). |
+| `owner_id` | `string` | AWS account ID that owns the VPC. |
+| `main_route_table_id` | `string` | ID of the VPC's main route table. |
+| `default_security_group_id` | `string` | ID of the default security group. |
+| `default_network_acl_id` | `string` | ID of the default network ACL. |
+| `default_route_table_id` | `string` | ID of the default route table. |
+| `region` | `string` | Region the VPC was created in. |
 
 ## Related Components
 
-- [AwsSecurityGroup](/docs/catalog/aws/awssecuritygroup) — controls network traffic for resources deployed in the VPC
-- [AwsAlb](/docs/catalog/aws/awsalb) — deploys an Application Load Balancer in the VPC's subnets
-- [AwsEksCluster](/docs/catalog/aws/awsekscluster) — deploys a Kubernetes cluster in the VPC
-- [AwsClientVpn](/docs/catalog/aws/awsclientvpn) — provides VPN access into the VPC
-- [AwsEc2Instance](/docs/catalog/aws/awsec2instance) — launches EC2 instances in the VPC's subnets
+- [AwsSubnet](/docs/catalog/aws/awssubnet) — a subnet within the VPC (with routing folded in)
+- [AwsInternetGateway](/docs/catalog/aws/awsinternetgateway) — internet access for public subnets
+- [AwsNatGateway](/docs/catalog/aws/awsnatgateway) — outbound internet access for private subnets
+- [AwsSecurityGroup](/docs/catalog/aws/awssecuritygroup) — controls network traffic for resources in the VPC

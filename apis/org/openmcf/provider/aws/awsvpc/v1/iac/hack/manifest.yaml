@@ -4,13 +4,5 @@ metadata:
   name: awsvpc-demo
 spec:
   region: us-west-2
-  vpcCidr: 10.0.0.0/16
-  availabilityZones:
-    - us-west-2a
-    - us-west-2b
-  subnetsPerAvailabilityZone: 1
-  subnetSize: 1
-  isNatGatewayEnabled: false
-  isDnsHostnamesEnabled: true
-  isDnsSupportEnabled: true
-
+  cidrBlock: 10.0.0.0/16
+  enableDnsHostnames: true

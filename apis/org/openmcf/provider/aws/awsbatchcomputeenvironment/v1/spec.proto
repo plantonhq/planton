@@ -106,8 +106,8 @@ message AwsBatchComputeResources {
   repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_ids = 5 [
     (buf.validate.field).required = true,
     (buf.validate.field).repeated.min_items = 1,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_subnets.[*].id"
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
   ];
 
   // security_group_ids are the VPC security groups to associate with the

@@ -222,13 +222,13 @@ spec:
       field: status.outputs.vpc_id
   subnets:
     - valueFrom:
-        kind: AwsVpc
-        name: my-vpc
-        field: status.outputs.private_subnets[0]
+        kind: AwsSubnet
+        name: my-private-subnet-a
+        fieldPath: status.outputs.subnet_id
     - valueFrom:
-        kind: AwsVpc
-        name: my-vpc
-        field: status.outputs.private_subnets[1]
+        kind: AwsSubnet
+        name: my-private-subnet-b
+        fieldPath: status.outputs.subnet_id
   clientCidrBlock: "10.100.0.0/22"
   serverCertificateArn:
     valueFrom:

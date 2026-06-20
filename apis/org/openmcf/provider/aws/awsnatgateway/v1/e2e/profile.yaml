@@ -1,0 +1,19 @@
+apiVersion: qa.openmcf.org/v1
+kind: ComponentE2EProfile
+metadata:
+  name: awsnatgateway
+spec:
+  # First deep (two-level) composed AWS topology under live E2E: the harness
+  # deploys an AwsVpc -> AwsSubnet -> AwsElasticIp prerequisite chain (the subnet
+  # resolves its own vpc_id from the VPC's outputs), resolves the NAT gateway's
+  # subnet_id and allocation_id from the subnet/EIP outputs, then runs deploy ->
+  # DescribeNatGateways verify -> destroy -> verify-destroyed on both provisioners
+  # against the AWS test account via keyless SSO/OIDC credentials.
+  tier: 1
+  status: green
+  validated_provisioners:
+    - pulumi
+    - terraform
+  # NAT gateways are slow to create and especially to delete (the AWS provider
+  # uses a 30-minute delete timeout), so the per-scenario budget is generous.
+  timeout_minutes: 20

@@ -553,7 +553,7 @@ var File_org_openmcf_provider_aws_awselasticfilesystem_v1_spec_proto protoreflec
 
 const file_org_openmcf_provider_aws_awselasticfilesystem_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	";org/openmcf/provider/aws/awselasticfilesystem/v1/spec.proto\x120org.openmcf.provider.aws.awselasticfilesystem.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xf3\x19\n" +
+	";org/openmcf/provider/aws/awselasticfilesystem/v1/spec.proto\x120org.openmcf.provider.aws.awselasticfilesystem.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xe5\x19\n" +
 	"\x18AwsElasticFileSystemSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12&\n" +
 	"\tencrypted\x18\x02 \x01(\bB\b\x92\xa6\x1d\x04trueR\tencrypted\x12q\n" +
@@ -567,9 +567,9 @@ const file_org_openmcf_provider_aws_awselasticfilesystem_v1_spec_proto_rawDesc =
 	"\x15transition_to_archive\x18\t \x01(\tR\x13transitionToArchive\x12L\n" +
 	"#transition_to_primary_storage_class\x18\n" +
 	" \x01(\tR\x1ftransitionToPrimaryStorageClass\x12%\n" +
-	"\x0ebackup_enabled\x18\v \x01(\bR\rbackupEnabled\x12\x8c\x01\n" +
+	"\x0ebackup_enabled\x18\v \x01(\bR\rbackupEnabled\x12\x7f\n" +
 	"\n" +
-	"subnet_ids\x18\f \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB9\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01\x88\xd4a\xd8\x01\x92\xd4a%status.outputs.private_subnets.[*].idR\tsubnetIds\x12\x8b\x01\n" +
+	"subnet_ids\x18\f \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB,\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01\x88\xd4a\x9c\x02\x92\xd4a\x18status.outputs.subnet_idR\tsubnetIds\x12\x8b\x01\n" +
 	"\x12security_group_ids\x18\r \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12v\n" +
 	"\raccess_points\x18\x0e \x03(\v2Q.org.openmcf.provider.aws.awselasticfilesystem.v1.AwsElasticFileSystemAccessPointR\faccessPoints\x12/\n" +
 	"\x06policy\x18\x0f \x01(\v2\x17.google.protobuf.StructR\x06policy:\xb0\x11\xbaH\xac\x11\x1a\xac\x01\n" +

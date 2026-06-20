@@ -2,39 +2,42 @@ syntax = "proto3";
 
 package org.openmcf.provider.aws.awsvpc.v1;
 
-//aws-vpc stack outputs
+// AwsVpcStackOutputs captures the observable outputs of a provisioned VPC, for
+// downstream resources (subnets, gateways, security groups, ...) to reference.
 message AwsVpcStackOutputs {
-  //id of the vpc created on aws
+  // The ID of the VPC (e.g. "vpc-0abc123"). The primary handle other resources
+  // reference via status.outputs.vpc_id.
   string vpc_id = 1;
-  //id of the internet-gateway
-  string internet_gateway_id = 2;
-  //private subnets
-  repeated AwsVpcSubnetStackOutputs private_subnets = 3;
-  //public subnets
-  repeated AwsVpcSubnetStackOutputs public_subnets = 4;
 
-  // vpc_cidr is the CIDR block associated with the VPC.
-  string vpc_cidr = 5;
-}
+  // The ARN of the VPC.
+  string vpc_arn = 2;
 
-//aws-vpc subnet outputs
-message AwsVpcSubnetStackOutputs {
-  //subnet name
-  string name = 1;
-  //subnet id
-  string id = 2;
-  //subnet cidr
-  string cidr = 3;
-  //nat-gateway
-  AwsVpcNatGatewayStackOutputs nat_gateway = 4;
-}
+  // The primary IPv4 CIDR block of the VPC (e.g. "10.0.0.0/16"). Reflects the
+  // allocated block even when it was assigned from IPAM.
+  string cidr_block = 3;
 
-//aws vpc nat-gateway outputs
-message AwsVpcNatGatewayStackOutputs {
-  //id of the nat gateway
-  string id = 1;
-  //nat gateway private ip address
-  string private_ip = 2;
-  //nat gateway public ip address
-  string public_ip = 3;
+  // The IPv6 CIDR block associated with the VPC (e.g.
+  // "2600:1f18:abcd:1200::/56"), empty when the VPC is IPv4-only.
+  string ipv6_cidr_block = 4;
+
+  // The AWS account ID that owns the VPC.
+  string owner_id = 5;
+
+  // The ID of the VPC's main route table. Subnets with no explicit route-table
+  // association use this table.
+  string main_route_table_id = 6;
+
+  // The ID of the default security group created with the VPC.
+  string default_security_group_id = 7;
+
+  // The ID of the default network ACL created with the VPC.
+  string default_network_acl_id = 8;
+
+  // The ID of the default route table created with the VPC (equal to the main
+  // route table).
+  string default_route_table_id = 9;
+
+  // The region the VPC was created in (mirrors spec.region, included for
+  // convenience).
+  string region = 10;
 }

@@ -195,5 +195,6 @@ After deployment, the following outputs are available in `status.outputs`:
 ## Related Components
 
 - [Auth0Client](/docs/catalog/auth0/client) — applications that request access to this API via `apiGrants`
+- [Auth0Role](/docs/catalog/auth0/auth0role) — groups this API's scopes (permissions) into roles for RBAC
 - [Auth0Connection](/docs/catalog/auth0/connection) — authentication connections used by clients accessing this API
 - [Auth0EventStream](/docs/catalog/auth0/event-stream) — streams authentication and authorization events from the Auth0 tenant

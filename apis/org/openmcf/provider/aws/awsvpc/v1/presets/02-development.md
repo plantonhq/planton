@@ -1,25 +1,28 @@
 # Development VPC
 
-This preset creates a minimal VPC in a single Availability Zone without a NAT gateway. This reduces costs significantly (NAT gateway charges ~$32/month + data transfer) while still providing a functional networking environment for development and testing workloads.
+This preset creates a minimal IPv4-only VPC with a `/16` CIDR and DNS enabled --
+a clean foundation for development and testing networks. Add `AwsSubnet`
+components (and, if outbound internet access is needed, an `AwsInternetGateway` or
+`AwsNatGateway`) that reference this VPC to build out the environment.
 
 ## When to Use
 
-- Development and testing environments where high availability is not required
-- Cost-sensitive workloads that do not need private subnet internet access
-- Quick sandbox environments for prototyping
+- Development and testing environments
+- Quick sandbox networks for prototyping
+- Any case where IPv6 and secondary CIDRs are not (yet) needed
 
 ## Key Configuration Choices
 
-- **Single AZ** (`availabilityZones: [a]`) -- Minimal footprint; no cross-AZ redundancy
-- **No NAT gateway** (`isNatGatewayEnabled: false`) -- Saves ~$32/month; instances in private subnets cannot reach the internet (use public subnets or VPC endpoints if needed)
-- **DNS enabled** -- DNS hostnames and support remain on for service discovery compatibility
+- **/16 IPv4 CIDR** (`cidrBlock: 10.0.0.0/16`) -- ample room for development subnets
+- **DNS enabled** -- DNS hostnames and support are on for service-discovery
+  compatibility
 
 ## Placeholders to Replace
 
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
-| `<aws-region>` | AWS region code (e.g., `us-east-1`); appended with `a` for AZ suffix | Your deployment region |
+| `<aws-region>` | AWS region code (e.g., `us-east-1`) | Your deployment region |
 
 ## Related Presets
 
-- **01-production-multi-az** -- Use instead for production deployments requiring multi-AZ redundancy and NAT gateway
+- **01-production-dual-stack** -- a dual-stack (IPv4 + IPv6) production foundation

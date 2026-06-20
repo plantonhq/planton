@@ -1,0 +1,15 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsIamOidcProvider
+metadata:
+  name: my-eks-irsa-oidc
+spec:
+  region: <aws-region>
+  # Reference the EKS cluster so its OIDC issuer URL flows through automatically.
+  url:
+    valueFrom:
+      kind: AwsEksCluster
+      name: <eks-cluster-name>
+      fieldPath: status.outputs.oidc_issuer_url
+  # sts.amazonaws.com is the audience EKS IRSA web-identity tokens carry.
+  clientIdList:
+    - sts.amazonaws.com

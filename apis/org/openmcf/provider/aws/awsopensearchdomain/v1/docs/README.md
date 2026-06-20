@@ -278,10 +278,10 @@ Auto-Tune monitors cluster performance and applies changes during the maintenanc
 Several spec fields accept `StringValueOrRef`, enabling runtime composition with other OpenMCF resources:
 
 - `kmsKeyId` — reference an `AwsKmsKey` output (`status.outputs.key_arn`)
-- `vpcOptions.subnetIds` — reference `AwsVpc` outputs (`status.outputs.private_subnets.[*].id`)
+- `vpcOptions.subnetIds` — reference `AwsSubnet` outputs (`status.outputs.subnet_id`)
 - `vpcOptions.securityGroupIds` — reference `AwsSecurityGroup` outputs (`status.outputs.security_group_id`)
 - `advancedSecurityOptions.masterUserArn` — reference `AwsIamRole` outputs (`status.outputs.role_arn`)
-- `domainEndpointOptions.customEndpointCertificateArn` — reference `AwsCertManagerCert` outputs (`status.outputs.certificate_arn`)
+- `domainEndpointOptions.customEndpointCertificateArn` — reference `AwsCertManagerCert` outputs (`status.outputs.cert_arn`)
 - `logPublishingOptions[].cloudwatchLogGroupArn` — reference log group ARNs
 
 This allows building complete infrastructure stacks where the VPC, security groups, KMS keys, and OpenSearch domain are all declared as separate resources with automatic dependency resolution.

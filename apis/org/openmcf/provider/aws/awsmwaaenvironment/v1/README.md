@@ -63,7 +63,7 @@ spec: { ... }
 
 | Field | Type | Required | Default | Description |
 |---|---|---|---|---|
-| `subnetIds` | list(StringValueOrRef) | **yes** (≥2) | — | Private subnets in 2 different AZs for MWAA network interfaces. **ForceNew**. Default ref: `AwsVpc → status.outputs.private_subnets.[*].id`. |
+| `subnetIds` | list(StringValueOrRef) | **yes** (≥2) | — | Private subnets in 2 different AZs for MWAA network interfaces. **ForceNew**. Default ref: `AwsSubnet → status.outputs.subnet_id`. |
 | `securityGroupIds` | list(StringValueOrRef) | no | [] | Source security groups. When set (with `vpcId`), creates a managed SG with self-referencing rule + HTTPS (443) ingress. Default ref: `AwsSecurityGroup → status.outputs.security_group_id`. |
 | `allowedCidrBlocks` | list(string) | no | [] | IPv4 CIDRs allowed to reach MWAA endpoints on port 443. Same managed-SG behavior as `securityGroupIds`. Validated CIDR format. |
 | `associateSecurityGroupIds` | list(StringValueOrRef) | no | [] | Existing SGs attached directly alongside the managed SG. Use when you already have a self-referencing SG. Default ref: `AwsSecurityGroup → status.outputs.security_group_id`. |
@@ -185,13 +185,13 @@ spec:
       fieldPath: status.outputs.role_arn
   subnetIds:
     - valueFrom:
-        kind: AwsVpc
-        name: production-vpc
-        fieldPath: status.outputs.private_subnets.[0].id
+        kind: AwsSubnet
+        name: production-private-subnet-a
+        fieldPath: status.outputs.subnet_id
     - valueFrom:
-        kind: AwsVpc
-        name: production-vpc
-        fieldPath: status.outputs.private_subnets.[1].id
+        kind: AwsSubnet
+        name: production-private-subnet-b
+        fieldPath: status.outputs.subnet_id
   vpcId:
     valueFrom:
       kind: AwsVpc

@@ -317,5 +317,6 @@ After deployment, the following outputs are available in `status.outputs`:
 ## Related Components
 
 - [Auth0ResourceServer](/docs/catalog/auth0/resource-server) — defines the APIs that this client can be authorized to access via `apiGrants`
+- [Auth0Role](/docs/catalog/auth0/auth0role) — groups API permissions into roles assigned to this client's users
 - [Auth0Connection](/docs/catalog/auth0/connection) — provides authentication connections that can be linked via `enabledConnections`
 - [Auth0EventStream](/docs/catalog/auth0/event-stream) — streams authentication events from the Auth0 tenant

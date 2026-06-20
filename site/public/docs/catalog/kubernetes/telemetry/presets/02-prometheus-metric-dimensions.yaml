@@ -1,0 +1,20 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesTelemetry
+metadata:
+  name: prometheus-dimensions
+spec:
+  namespace:
+    value: <namespace>
+  metrics:
+    - providers:
+        - name: prometheus
+      overrides:
+        - match:
+            metric: REQUEST_COUNT
+            mode: SERVER
+          tag_overrides:
+            request_host:
+              operation: UPSERT
+              value: request.host
+            response_code:
+              operation: REMOVE

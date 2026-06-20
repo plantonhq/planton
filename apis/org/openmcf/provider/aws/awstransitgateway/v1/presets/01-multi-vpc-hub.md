@@ -22,11 +22,11 @@ Production Transit Gateway connecting application and shared-services VPCs with 
 | Placeholder | Description | Where to Find |
 |---|---|---|
 | `<app-vpc-id>` | Application VPC ID | AwsVpc status.outputs.vpc_id |
-| `<app-private-subnet-az1>` | App VPC private subnet in AZ1 | AwsVpc status.outputs.private_subnets[0].id |
-| `<app-private-subnet-az2>` | App VPC private subnet in AZ2 | AwsVpc status.outputs.private_subnets[1].id |
+| `<app-private-subnet-az1>` | App VPC private subnet in AZ1 | AwsSubnet status.outputs.subnet_id |
+| `<app-private-subnet-az2>` | App VPC private subnet in AZ2 | AwsSubnet status.outputs.subnet_id |
 | `<shared-services-vpc-id>` | Shared services VPC ID | AwsVpc status.outputs.vpc_id |
-| `<shared-private-subnet-az1>` | Shared VPC private subnet in AZ1 | AwsVpc status.outputs.private_subnets[0].id |
-| `<shared-private-subnet-az2>` | Shared VPC private subnet in AZ2 | AwsVpc status.outputs.private_subnets[1].id |
+| `<shared-private-subnet-az1>` | Shared VPC private subnet in AZ1 | AwsSubnet status.outputs.subnet_id |
+| `<shared-private-subnet-az2>` | Shared VPC private subnet in AZ2 | AwsSubnet status.outputs.subnet_id |
 
 ## Related Presets
 

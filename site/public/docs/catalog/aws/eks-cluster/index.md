@@ -64,7 +64,7 @@ This creates an EKS cluster with a public API endpoint across two subnets, using
 | `region` | `string` | AWS region where the EKS cluster will be created (e.g., `us-west-2`, `eu-west-1`). | Required; non-empty |
 | `subnetIds` | `string[]` | Subnet IDs in the cluster's VPC where the EKS control plane attaches network interfaces. Use at least two subnets in distinct Availability Zones. | Minimum 2 items required |
 | `subnetIds[].value` | `string` | Direct subnet ID value | — |
-| `subnetIds[].valueFrom` | `object` | Foreign key reference to an AwsVpc resource | Default kind: `AwsVpc`, field: `status.outputs.private_subnets.[*].id` |
+| `subnetIds[].valueFrom` | `object` | Foreign key reference to an AwsSubnet resource | Default kind: `AwsSubnet`, field: `status.outputs.subnet_id` |
 | `clusterRoleArn` | `string` | ARN of an IAM role for the EKS cluster to use when interacting with AWS services. Must have `AmazonEKSClusterPolicy` attached. | Required |
 | `clusterRoleArn.value` | `string` | Direct IAM role ARN value | — |
 | `clusterRoleArn.valueFrom` | `object` | Foreign key reference to an AwsIamRole resource | Default kind: `AwsIamRole`, field: `status.outputs.role_arn` |
@@ -178,13 +178,13 @@ spec:
   region: us-west-2
   subnetIds:
     - valueFrom:
-        kind: AwsVpc
-        name: my-vpc
-        field: status.outputs.private_subnets.[0].id
+        kind: AwsSubnet
+        name: my-private-subnet-a
+        fieldPath: status.outputs.subnet_id
     - valueFrom:
-        kind: AwsVpc
-        name: my-vpc
-        field: status.outputs.private_subnets.[1].id
+        kind: AwsSubnet
+        name: my-private-subnet-b
+        fieldPath: status.outputs.subnet_id
   clusterRoleArn:
     valueFrom:
       kind: AwsIamRole

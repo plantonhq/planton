@@ -8,7 +8,7 @@ bazel_dep(name = "gazelle", version = "0.47.0")
 
 # Pin the Go toolchain Bazel uses (hermetic; no host Go required)
 go_sdk = use_extension("@rules_go//go:extensions.bzl", "go_sdk")
-go_sdk.download(version = "1.25.0")
+go_sdk.download(version = "1.26.0")
 go_sdk.nogo(nogo = "//:openmcf_nogo")
 
 # Read Go deps from this repo's go.mod (bzlmod-friendly)
@@ -31,7 +31,10 @@ use_repo(
     "com_github_aws_aws_sdk_go_v2",
     "com_github_aws_aws_sdk_go_v2_config",
     "com_github_aws_aws_sdk_go_v2_credentials",
+    "com_github_aws_aws_sdk_go_v2_service_ec2",
+    "com_github_aws_aws_sdk_go_v2_service_s3",
     "com_github_aws_aws_sdk_go_v2_service_sts",
+    "com_github_aws_smithy_go",
     "com_github_blang_semver",
     "com_github_charmbracelet_bubbletea",
     "com_github_charmbracelet_lipgloss",

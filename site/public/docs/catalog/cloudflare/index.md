@@ -9,6 +9,7 @@ order: 10
 
 The following CLOUDFLARE resources can be deployed using OpenMCF:
 
+- [CloudflareRuleset — Technical Deep Dive](/docs/catalog/cloudflare/cloudflareruleset-technical-deep-dive)
 - [D1 Database](/docs/catalog/cloudflare/d1-database)
 - [DNS Record](/docs/catalog/cloudflare/dns-record)
 - [DNS Zone](/docs/catalog/cloudflare/dns-zone)

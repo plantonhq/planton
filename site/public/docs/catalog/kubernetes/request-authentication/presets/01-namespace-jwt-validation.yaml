@@ -1,0 +1,10 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesRequestAuthentication
+metadata:
+  name: jwt-auth
+spec:
+  namespace:
+    value: <namespace>
+  jwt_rules:
+    - issuer: <issuer-url>
+      jwks_uri: <jwks-url>

@@ -5,10 +5,8 @@ go_library(
     srcs = [
         "locals.go",
         "main.go",
-        "nat_gateway.go",
         "outputs.go",
-        "subnets.go",
-        "variables.go",
+        "vpc.go",
     ],
     importpath = "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsvpc/v1/iac/pulumi/module",
     visibility = ["//visibility:public"],
