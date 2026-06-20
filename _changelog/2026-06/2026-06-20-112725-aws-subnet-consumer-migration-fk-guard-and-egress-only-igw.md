@@ -98,9 +98,10 @@ flowchart LR
 - `go build` of the new component + Pulumi entrypoint, and a sample of migrated
   components — pass
 - `bazel build` of all touched targets incl. nogo lint — pass
-- **Live E2E** for `AwsEgressOnlyInternetGateway` is prepared (verifier + green profile +
-  scenario) and pending one interactive `aws sso login` (the only step that needs a live
-  cloud account).
+- **Live E2E (keyless SSO, account 859666865785) GREEN on both engines** for
+  `AwsEgressOnlyInternetGateway` — VPC prereq → egress-only gateway →
+  `DescribeEgressOnlyInternetGateways` verify → destroy → verify-clean, zero orphans
+  (`ok e2e/aws 124.7s`).
 
 ## Impact
 
@@ -117,4 +118,4 @@ forge gate alongside `secret-coverage` and `validate-outputs`.
 
 ---
 
-**Status**: ✅ Offline-validated on both Pulumi and Terraform; egress-only live E2E pending SSO login
+**Status**: ✅ Production Ready — live-proven on both Pulumi and Terraform (egress-only live E2E green, zero orphans)
