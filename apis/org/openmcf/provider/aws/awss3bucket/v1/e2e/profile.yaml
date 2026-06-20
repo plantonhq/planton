@@ -3,10 +3,11 @@ kind: ComponentE2EProfile
 metadata:
   name: awss3bucket
 spec:
-  # Walking skeleton for the AWS harness. Flips to `green` after the first live
-  # run proves deploy -> verify -> destroy on both provisioners.
+  # Walking skeleton for the AWS harness, live-validated on both provisioners
+  # (deploy -> HeadBucket verify -> destroy -> verify-destroyed) against the AWS
+  # test account via keyless SSO credentials.
   tier: 1
-  status: stub
+  status: green
   validated_provisioners:
     - pulumi
     - terraform
