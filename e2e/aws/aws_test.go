@@ -80,6 +80,13 @@ func TestAwsS3Bucket_Terraform(t *testing.T) {
 func TestAwsSubnet_Pulumi(t *testing.T)    { runAllScenariosForComponent(t, "awssubnet", "pulumi") }
 func TestAwsSubnet_Terraform(t *testing.T) { runAllScenariosForComponent(t, "awssubnet", "terraform") }
 
+// --- AWS NAT Gateway (deep composed topology: AwsVpc -> AwsSubnet -> AwsElasticIp) ---
+
+func TestAwsNatGateway_Pulumi(t *testing.T) { runAllScenariosForComponent(t, "awsnatgateway", "pulumi") }
+func TestAwsNatGateway_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "awsnatgateway", "terraform")
+}
+
 // AwsInternetGateway live E2E is intentionally not wired yet: a live attach needs
 // a VPC without an internet gateway, but the AwsVpc component (the only VPC the
 // harness can stand up as a prerequisite) bundles its own internet gateway, and

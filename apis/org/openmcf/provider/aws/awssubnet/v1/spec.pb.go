@@ -302,9 +302,11 @@ type AwsSubnetSpec_AwsSubnetRoute struct {
 	// attribute target_id maps to (gateway_id, nat_gateway_id, etc.).
 	TargetType AwsSubnetSpec_AwsSubnetRoute_RouteTargetType `protobuf:"varint,4,opt,name=target_type,json=targetType,proto3,enum=org.openmcf.provider.aws.awssubnet.v1.AwsSubnetSpec_AwsSubnetRoute_RouteTargetType" json:"target_type,omitempty"`
 	// Identifier of the target. Supply a literal id, or reference the resource
-	// that produces it. (Internet, NAT, and egress-only gateways become
-	// first-class AwsInternetGateway / AwsNatGateway / AwsEgressOnlyInternetGateway
-	// kinds; until then they are referenced by literal id.)
+	// that produces it (e.g. an AwsInternetGateway's internet_gateway_id or an
+	// AwsNatGateway's nat_gateway_id). This single field is intentionally
+	// polymorphic across all of target_type's kinds, so it carries no
+	// default_kind -- the target's kind is given by target_type, and the
+	// producing resource is referenced explicitly via value_from.
 	TargetId      *v1.StringValueOrRef `protobuf:"bytes,5,opt,name=target_id,json=targetId,proto3" json:"target_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache

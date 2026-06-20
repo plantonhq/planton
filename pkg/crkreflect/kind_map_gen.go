@@ -95,6 +95,7 @@ import (
 	awsmemorydbclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsmemorydbcluster/v1"
 	awsmskclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsmskcluster/v1"
 	awsmwaaenvironmentv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsmwaaenvironment/v1"
+	awsnatgatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsnatgateway/v1"
 	awsneptuneclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsneptunecluster/v1"
 	awsnetworkloadbalancerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsnetworkloadbalancer/v1"
 	awsopensearchdomainv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsopensearchdomain/v1"
@@ -508,6 +509,7 @@ var ProviderAwsMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_AwsMemorydbCluster:               &awsmemorydbclusterv1.AwsMemorydbCluster{},
 	cloudresourcekind.CloudResourceKind_AwsMskCluster:                    &awsmskclusterv1.AwsMskCluster{},
 	cloudresourcekind.CloudResourceKind_AwsMwaaEnvironment:               &awsmwaaenvironmentv1.AwsMwaaEnvironment{},
+	cloudresourcekind.CloudResourceKind_AwsNatGateway:                    &awsnatgatewayv1.AwsNatGateway{},
 	cloudresourcekind.CloudResourceKind_AwsNeptuneCluster:                &awsneptuneclusterv1.AwsNeptuneCluster{},
 	cloudresourcekind.CloudResourceKind_AwsNetworkLoadBalancer:           &awsnetworkloadbalancerv1.AwsNetworkLoadBalancer{},
 	cloudresourcekind.CloudResourceKind_AwsOpenSearchDomain:              &awsopensearchdomainv1.AwsOpenSearchDomain{},

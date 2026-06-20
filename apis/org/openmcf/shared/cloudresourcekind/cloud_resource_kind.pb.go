@@ -124,6 +124,7 @@ const (
 	CloudResourceKind_AwsGlobalAccelerator             CloudResourceKind = 283
 	CloudResourceKind_AwsSubnet                        CloudResourceKind = 284
 	CloudResourceKind_AwsInternetGateway               CloudResourceKind = 285
+	CloudResourceKind_AwsNatGateway                    CloudResourceKind = 286
 	CloudResourceKind_AwsElasticFileSystem             CloudResourceKind = 290
 	CloudResourceKind_AwsFsxLustreFileSystem           CloudResourceKind = 291
 	CloudResourceKind_AwsFsxOpenzfsFileSystem          CloudResourceKind = 292
@@ -538,6 +539,7 @@ var (
 		283:  "AwsGlobalAccelerator",
 		284:  "AwsSubnet",
 		285:  "AwsInternetGateway",
+		286:  "AwsNatGateway",
 		290:  "AwsElasticFileSystem",
 		291:  "AwsFsxLustreFileSystem",
 		292:  "AwsFsxOpenzfsFileSystem",
@@ -927,6 +929,7 @@ var (
 		"AwsGlobalAccelerator":                  283,
 		"AwsSubnet":                             284,
 		"AwsInternetGateway":                    285,
+		"AwsNatGateway":                         286,
 		"AwsElasticFileSystem":                  290,
 		"AwsFsxLustreFileSystem":                291,
 		"AwsFsxOpenzfsFileSystem":               292,
@@ -1519,7 +1522,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x04kind\x18\x02 \x01(\tR\x04kind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xba\x88\x01\n" +
+	"\x02v1\x10\x01*\xe6\x88\x01\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12,\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1574,7 +1577,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x11AwsTransitGateway\x10\x9a\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awstgw\x12*\n" +
 	"\x14AwsGlobalAccelerator\x10\x9b\x02\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05awsga\x12#\n" +
 	"\tAwsSubnet\x10\x9c\x02\x1a\x13\xa2\xf7\x04\x0f\b\f\x10\x01\"\x05awssn:\x02\xd8\x01\x12-\n" +
-	"\x12AwsInternetGateway\x10\x9d\x02\x1a\x14\xa2\xf7\x04\x10\b\f\x10\x01\"\x06awsigw:\x02\xd8\x01\x12+\n" +
+	"\x12AwsInternetGateway\x10\x9d\x02\x1a\x14\xa2\xf7\x04\x10\b\f\x10\x01\"\x06awsigw:\x02\xd8\x01\x12*\n" +
+	"\rAwsNatGateway\x10\x9e\x02\x1a\x16\xa2\xf7\x04\x12\b\f\x10\x01\"\x06awsnat:\x04\x9c\x02\x99\x02\x12+\n" +
 	"\x14AwsElasticFileSystem\x10\xa2\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsefs\x12-\n" +
 	"\x16AwsFsxLustreFileSystem\x10\xa3\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsfxl\x12.\n" +
 	"\x17AwsFsxOpenzfsFileSystem\x10\xa4\x02\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsfxz\x12.\n" +

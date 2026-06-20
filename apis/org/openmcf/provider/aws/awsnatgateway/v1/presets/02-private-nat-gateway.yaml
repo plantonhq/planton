@@ -1,0 +1,12 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsNatGateway
+metadata:
+  name: private-nat
+spec:
+  region: us-west-2
+  connectivityType: private
+  subnetId:
+    valueFrom:
+      kind: AwsSubnet
+      name: <subnet-name>
+      fieldPath: status.outputs.subnet_id

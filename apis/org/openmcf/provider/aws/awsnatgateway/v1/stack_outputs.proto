@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awsnatgateway.v1;
+
+// AwsNatGatewayStackOutputs contains the values produced by deploying an
+// AwsNatGateway. Downstream components reference these via StringValueOrRef --
+// most commonly an AwsSubnet route whose target is this gateway's id.
+//
+// Note: a NAT gateway has no ARN. The AWS resource exposes none (and neither
+// does the underlying API), so the gateway is identified solely by
+// nat_gateway_id. Do not add a nat_gateway_arn output -- there is nothing to
+// populate it with.
+message AwsNatGatewayStackOutputs {
+  // The NAT gateway's id (e.g. "nat-0abc123"). This is the value a subnet route
+  // uses as its target_id when target_type is nat_gateway.
+  string nat_gateway_id = 1;
+
+  // The public IPv4 address of a public gateway (the Elastic IP's address).
+  // Empty for a private gateway.
+  string public_ip = 2;
+
+  // The private IPv4 address assigned to the gateway within its subnet.
+  string private_ip = 3;
+
+  // The id of the elastic network interface AWS created for the gateway.
+  string network_interface_id = 4;
+
+  // The id of the subnet the gateway lives in.
+  string subnet_id = 5;
+
+  // The AWS region the NAT gateway was created in. Echoed so downstream tooling
+  // and verifiers can target the correct region.
+  string region = 6;
+}

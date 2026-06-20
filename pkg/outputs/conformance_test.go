@@ -99,6 +99,25 @@ func TestStackOutputsConformance(t *testing.T) {
 			},
 		},
 		{
+			// AwsNatGateway: flat scalar outputs from both engines (gateway id,
+			// public/private ip, ENI id, subnet id, region) must each land on the
+			// StackOutputs proto. A NAT gateway has no ARN, so none is emitted.
+			name: "AwsNatGateway",
+			kind: cloudresourcekind.CloudResourceKind_AwsNatGateway,
+			rawOutputs: map[string]interface{}{
+				"nat_gateway_id":       "nat-0abc123",
+				"public_ip":            "52.10.20.30",
+				"private_ip":           "10.0.0.10",
+				"network_interface_id": "eni-0abc123",
+				"subnet_id":            "subnet-0abc123",
+				"region":               "us-west-2",
+			},
+			mustPopulate: []string{
+				"nat_gateway_id", "public_ip", "private_ip",
+				"network_interface_id", "subnet_id", "region",
+			},
+		},
+		{
 			// Guards the externaldns tofu module's output rename to solver_sa: the
 			// module previously emitted "service_account_name", which does not flatten
 			// onto the KubernetesExternalDnsStackOutputs.solver_sa proto field (the

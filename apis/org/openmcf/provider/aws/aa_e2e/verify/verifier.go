@@ -31,6 +31,8 @@ var verifiers = map[string]Verifier{
 	"awssubnet":          &subnetVerifier{},
 	"awsvpc":             &vpcVerifier{},
 	"awsinternetgateway": &internetGatewayVerifier{},
+	"awsnatgateway":      &natGatewayVerifier{},
+	"awselasticip":       &elasticIpVerifier{},
 }
 
 // GetVerifier returns the verifier for a component, or an error if none is registered.

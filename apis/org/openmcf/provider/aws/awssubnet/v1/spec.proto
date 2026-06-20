@@ -121,9 +121,11 @@ message AwsSubnetSpec {
     }];
 
     // Identifier of the target. Supply a literal id, or reference the resource
-    // that produces it. (Internet, NAT, and egress-only gateways become
-    // first-class AwsInternetGateway / AwsNatGateway / AwsEgressOnlyInternetGateway
-    // kinds; until then they are referenced by literal id.)
+    // that produces it (e.g. an AwsInternetGateway's internet_gateway_id or an
+    // AwsNatGateway's nat_gateway_id). This single field is intentionally
+    // polymorphic across all of target_type's kinds, so it carries no
+    // default_kind -- the target's kind is given by target_type, and the
+    // producing resource is referenced explicitly via value_from.
     org.openmcf.shared.foreignkey.v1.StringValueOrRef target_id = 5 [(buf.validate.field).required = true];
 
     // RouteTargetType enumerates the AWS route target kinds.

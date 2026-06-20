@@ -322,6 +322,15 @@ enum CloudResourceKind {
     id_prefix: "awsigw"
     prerequisites: [AwsVpc]
   }];
+  AwsNatGateway = 286 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsnat"
+    prerequisites: [
+      AwsSubnet,
+      AwsElasticIp
+    ]
+  }];
 
   // --- Storage ---
 

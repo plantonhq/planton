@@ -1,0 +1,3 @@
+name: awsnatgateway-pulumi-project
+runtime:
+  name: go

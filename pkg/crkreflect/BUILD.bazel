@@ -111,6 +111,7 @@ go_library(
         "//apis/org/openmcf/provider/aws/awsmemorydbcluster/v1:awsmemorydbcluster",
         "//apis/org/openmcf/provider/aws/awsmskcluster/v1:awsmskcluster",
         "//apis/org/openmcf/provider/aws/awsmwaaenvironment/v1:awsmwaaenvironment",
+        "//apis/org/openmcf/provider/aws/awsnatgateway/v1:awsnatgateway",
         "//apis/org/openmcf/provider/aws/awsneptunecluster/v1:awsneptunecluster",
         "//apis/org/openmcf/provider/aws/awsnetworkloadbalancer/v1:awsnetworkloadbalancer",
         "//apis/org/openmcf/provider/aws/awsopensearchdomain/v1:awsopensearchdomain",

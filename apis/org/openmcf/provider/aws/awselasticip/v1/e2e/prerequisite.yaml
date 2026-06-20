@@ -1,0 +1,21 @@
+# AwsElasticIp install profile used as a prerequisite by composed components (e.g.
+# AwsNatGateway, whose public form needs a stable outbound address). The E2E
+# harness deploys this EIP first (via its Pulumi module), captures its outputs,
+# and resolves the dependent's allocation_id reference against them. Full metadata
+# is supplied and the managed-by label tags resources for orphan cleanup.
+apiVersion: aws.openmcf.org/v1
+kind: AwsElasticIp
+metadata:
+  name: planton-oss-e2e-awselasticip-prereq
+  id: planton-oss-e2e-awselasticip-prereq
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: openmcf-e2e
+    e2e-component: awselasticip
+  annotations:
+    openmcf.org/e2e: "true"
+  tags:
+    - openmcf-e2e
+spec:
+  region: us-west-2

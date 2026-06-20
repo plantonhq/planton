@@ -93,3 +93,33 @@ func TestResolveDependencies_MissingInstallManifestErrors(t *testing.T) {
 		t.Fatal("expected an error when the prerequisite install manifest is missing, got nil")
 	}
 }
+
+// TestResolveDependencies_TransitiveDeployOrder guards the deep-composition
+// ordering DeployDependencies relies on: AwsNatGateway -> [AwsSubnet, AwsElasticIp]
+// with AwsSubnet -> [AwsVpc] must resolve to [AwsVpc, AwsSubnet, AwsElasticIp], so
+// the VPC's outputs are accumulated before the Subnet whose vpc_id references them.
+func TestResolveDependencies_TransitiveDeployOrder(t *testing.T) {
+	repoRoot := t.TempDir()
+	writeManifest(t, repoRoot, "apis/org/openmcf/provider/aws/awsvpc/v1/e2e/prerequisite.yaml")
+	writeManifest(t, repoRoot, "apis/org/openmcf/provider/aws/awssubnet/v1/e2e/scenarios/minimal.yaml")
+	writeManifest(t, repoRoot, "apis/org/openmcf/provider/aws/awselasticip/v1/e2e/prerequisite.yaml")
+
+	deps, err := ResolveDependencies(repoRoot, "aws", "awsnatgateway")
+	if err != nil {
+		t.Fatalf("ResolveDependencies: %v", err)
+	}
+
+	got := make([]string, len(deps))
+	for i, d := range deps {
+		got[i] = d.KindSlug
+	}
+	want := []string{"awsvpc", "awssubnet", "awselasticip"}
+	if len(got) != len(want) {
+		t.Fatalf("dependency count = %d (%v), want %d (%v)", len(got), got, len(want), want)
+	}
+	for i := range want {
+		if got[i] != want[i] {
+			t.Fatalf("dependency order = %v, want %v (VPC must precede Subnet)", got, want)
+		}
+	}
+}
