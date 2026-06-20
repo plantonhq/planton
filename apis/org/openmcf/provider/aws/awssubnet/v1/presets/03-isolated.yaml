@@ -1,0 +1,10 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsSubnet
+metadata:
+  name: data-isolated-usw2a
+spec:
+  region: us-west-2
+  vpcId:
+    value: <vpc-id>
+  availabilityZone: us-west-2a
+  cidrBlock: 10.0.2.0/24

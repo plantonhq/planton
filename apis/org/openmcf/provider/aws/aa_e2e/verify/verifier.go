@@ -28,6 +28,8 @@ type Verifier interface {
 // here as they are forged; today it carries the S3 walking-skeleton only.
 var verifiers = map[string]Verifier{
 	"awss3bucket": &s3Verifier{},
+	"awssubnet":   &subnetVerifier{},
+	"awsvpc":      &vpcVerifier{},
 }
 
 // GetVerifier returns the verifier for a component, or an error if none is registered.

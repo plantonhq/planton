@@ -8,7 +8,9 @@ import (
 
 	tt "github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/pkg/errors"
+	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
 	"github.com/plantonhq/openmcf/e2e/framework/provider"
+	"github.com/plantonhq/openmcf/pkg/crkreflect"
 )
 
 // Phase represents a stage in the E2E test lifecycle.
@@ -75,6 +77,31 @@ func RunComponentTest(ctx context.Context, tc *provider.ComponentTestContext, ha
 			TeardownDependencies(dependencyStates)
 			result.Duration = time.Since(start)
 			return result
+		}
+
+		// Resolve the component manifest's value_from refs against the deployed
+		// prerequisites' outputs -- the orchestrator's resolution step, performed
+		// here so a composed topology (e.g. subnet -> vpc) can be tested standalone.
+		if len(dependencyStates) > 0 {
+			depOutputs := make(map[cloudresourcekind.CloudResourceKind]map[string]interface{}, len(dependencyStates))
+			for _, depState := range dependencyStates {
+				depOutputs[crkreflect.KindFromString(depState.Dependency.KindSlug)] = depState.Outputs
+			}
+			resolvedPath, resolveErr := ResolveManifestRefs(tc.ManifestPath, depOutputs)
+			if resolveErr != nil {
+				result.Passed = false
+				result.Phases = append(result.Phases, PhaseResult{
+					Phase:    PhaseValidate,
+					Duration: 0,
+					Passed:   false,
+					Error:    errors.Wrap(resolveErr, "failed to resolve manifest references from dependency outputs"),
+				})
+				TeardownDependencies(dependencyStates)
+				result.Duration = time.Since(start)
+				return result
+			}
+			tc.ManifestPath = resolvedPath
+			verifyCtx = context.WithValue(ctx, provider.ManifestPathKey{}, tc.ManifestPath)
 		}
 	}
 

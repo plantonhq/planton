@@ -1,0 +1,31 @@
+# AwsVpc install profile used as a prerequisite by composed components (e.g.
+# AwsSubnet). The E2E harness deploys this VPC first (via its Pulumi module),
+# captures its outputs, and resolves the dependent's vpc_id reference against
+# them. NAT is disabled to keep the prerequisite cheap and fast; full metadata is
+# supplied and the managed-by label tags resources for orphan cleanup.
+apiVersion: aws.openmcf.org/v1
+kind: AwsVpc
+metadata:
+  name: planton-oss-e2e-awsvpc-prereq
+  id: planton-oss-e2e-awsvpc-prereq
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: openmcf-e2e
+    e2e-component: awsvpc
+  annotations:
+    openmcf.org/e2e: "true"
+  tags:
+    - openmcf-e2e
+spec:
+  region: us-west-2
+  vpcCidr: 10.0.0.0/16
+  availabilityZones:
+    - us-west-2a
+  subnetsPerAvailabilityZone: 1
+  # The AwsVpc Pulumi module (which deploys this prerequisite) reads subnetSize as
+  # an absolute subnet prefix length, so /24 subnets in this /16 VPC means 24.
+  subnetSize: 24
+  isNatGatewayEnabled: false
+  isDnsHostnamesEnabled: true
+  isDnsSupportEnabled: true

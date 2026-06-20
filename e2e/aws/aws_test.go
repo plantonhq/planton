@@ -73,6 +73,11 @@ func TestMain(m *testing.M) {
 func TestAwsS3Bucket_Pulumi(t *testing.T)    { runAllScenariosForComponent(t, "awss3bucket", "pulumi") }
 func TestAwsS3Bucket_Terraform(t *testing.T) { runAllScenariosForComponent(t, "awss3bucket", "terraform") }
 
+// --- AWS Subnet (first composed topology: deploys an AwsVpc prerequisite) ---
+
+func TestAwsSubnet_Pulumi(t *testing.T)    { runAllScenariosForComponent(t, "awssubnet", "pulumi") }
+func TestAwsSubnet_Terraform(t *testing.T) { runAllScenariosForComponent(t, "awssubnet", "terraform") }
+
 // runAllScenariosForComponent discovers and runs all E2E scenarios for an AWS component.
 func runAllScenariosForComponent(t *testing.T, component, engine string) {
 	t.Helper()

@@ -66,6 +66,24 @@ func TestStackOutputsConformance(t *testing.T) {
 			},
 		},
 		{
+			// AwsSubnet: flat scalar outputs from both engines (subnet id/arn, AZ,
+			// CIDR, route table id, region) must each land on the StackOutputs proto.
+			name: "AwsSubnet",
+			kind: cloudresourcekind.CloudResourceKind_AwsSubnet,
+			rawOutputs: map[string]interface{}{
+				"subnet_id":         "subnet-0abc123",
+				"subnet_arn":        "arn:aws:ec2:us-west-2:123456789012:subnet/subnet-0abc123",
+				"availability_zone": "us-west-2a",
+				"cidr_block":        "10.0.1.0/24",
+				"route_table_id":    "rtb-0abc123",
+				"region":            "us-west-2",
+			},
+			mustPopulate: []string{
+				"subnet_id", "subnet_arn", "availability_zone",
+				"cidr_block", "route_table_id", "region",
+			},
+		},
+		{
 			// Guards the externaldns tofu module's output rename to solver_sa: the
 			// module previously emitted "service_account_name", which does not flatten
 			// onto the KubernetesExternalDnsStackOutputs.solver_sa proto field (the

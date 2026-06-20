@@ -310,6 +310,12 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "awsga"
   }];
+  AwsSubnet = 284 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awssn"
+    prerequisites: [AwsVpc]
+  }];
 
   // --- Storage ---
 

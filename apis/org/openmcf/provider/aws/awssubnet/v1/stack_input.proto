@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awssubnet.v1;
+
+import "org/openmcf/provider/aws/awssubnet/v1/api.proto";
+import "org/openmcf/provider/aws/provider.proto";
+
+// AwsSubnetStackInput is the input to the IaC modules (Pulumi / Terraform) that
+// deploy an AwsSubnet resource.
+message AwsSubnetStackInput {
+  // target cloud-resource
+  AwsSubnet target = 1;
+  // provider-config
+  org.openmcf.provider.aws.AwsProviderConfig provider_config = 2;
+}

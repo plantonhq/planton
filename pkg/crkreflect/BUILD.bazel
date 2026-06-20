@@ -128,6 +128,7 @@ go_library(
         "//apis/org/openmcf/provider/aws/awssnstopic/v1:awssnstopic",
         "//apis/org/openmcf/provider/aws/awssqsqueue/v1:awssqsqueue",
         "//apis/org/openmcf/provider/aws/awsstepfunction/v1:awsstepfunction",
+        "//apis/org/openmcf/provider/aws/awssubnet/v1:awssubnet",
         "//apis/org/openmcf/provider/aws/awstransitgateway/v1:awstransitgateway",
         "//apis/org/openmcf/provider/aws/awsvpc/v1:awsvpc",
         "//apis/org/openmcf/provider/aws/awswafwebacl/v1:awswafwebacl",

@@ -4,14 +4,18 @@ go_library(
     name = "verify",
     srcs = [
         "s3.go",
+        "subnet.go",
         "verifier.go",
+        "vpc.go",
     ],
     importpath = "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/aa_e2e/verify",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_aws_aws_sdk_go_v2//aws",
+        "@com_github_aws_aws_sdk_go_v2_service_ec2//:ec2",
         "@com_github_aws_aws_sdk_go_v2_service_s3//:s3",
         "@com_github_aws_aws_sdk_go_v2_service_s3//types",
+        "@com_github_aws_smithy_go//:smithy-go",
         "@com_github_pkg_errors//:errors",
     ],
 )

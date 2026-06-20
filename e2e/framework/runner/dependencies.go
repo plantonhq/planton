@@ -32,6 +32,11 @@ type DependencyState struct {
 	StackName      string
 	BackendURL     string
 	StackInputPath string
+
+	// Outputs are the dependency's captured stack outputs. They are used both to
+	// verify the dependency and to resolve the dependent component's value_from
+	// references (see ResolveManifestRefs).
+	Outputs map[string]interface{}
 }
 
 // ResolveDependencies returns the ordered, deduplicated list of prerequisite
@@ -154,8 +159,21 @@ func deployDependency(ctx context.Context, repoRoot, componentProvider string, d
 		StackInputPath: stackInputPath,
 	}
 
+	// Capture the dependency's outputs so its verifier can confirm it (cloud
+	// verifiers need the resource id from the outputs) and so the dependent
+	// component's value_from refs can resolve against them.
+	outputsJSON, err := PulumiStackOutputs(moduleDir, stackName, backendURL)
+	if err != nil {
+		return state, errors.Wrapf(err, "failed to read outputs for dependency %q", dep.KindSlug)
+	}
+	depStackOutputs, err := parsePulumiOutputs(outputsJSON)
+	if err != nil {
+		return state, errors.Wrapf(err, "failed to parse outputs for dependency %q", dep.KindSlug)
+	}
+	state.Outputs = depStackOutputs
+
 	verifyCtx := context.WithValue(ctx, provider.ManifestPathKey{}, dep.ManifestPath)
-	if err := harness.VerifyDeployed(verifyCtx, dep.KindSlug, nil); err != nil {
+	if err := harness.VerifyDeployed(verifyCtx, dep.KindSlug, state.Outputs); err != nil {
 		return state, errors.Wrapf(err, "dependency %q deployed but verification failed", dep.KindSlug)
 	}
 
