@@ -21,19 +21,36 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// aws-vpc stack outputs
+// AwsVpcStackOutputs captures the observable outputs of a provisioned VPC, for
+// downstream resources (subnets, gateways, security groups, ...) to reference.
 type AwsVpcStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// id of the vpc created on aws
+	// The ID of the VPC (e.g. "vpc-0abc123"). The primary handle other resources
+	// reference via status.outputs.vpc_id.
 	VpcId string `protobuf:"bytes,1,opt,name=vpc_id,json=vpcId,proto3" json:"vpc_id,omitempty"`
-	// id of the internet-gateway
-	InternetGatewayId string `protobuf:"bytes,2,opt,name=internet_gateway_id,json=internetGatewayId,proto3" json:"internet_gateway_id,omitempty"`
-	// private subnets
-	PrivateSubnets []*AwsVpcSubnetStackOutputs `protobuf:"bytes,3,rep,name=private_subnets,json=privateSubnets,proto3" json:"private_subnets,omitempty"`
-	// public subnets
-	PublicSubnets []*AwsVpcSubnetStackOutputs `protobuf:"bytes,4,rep,name=public_subnets,json=publicSubnets,proto3" json:"public_subnets,omitempty"`
-	// vpc_cidr is the CIDR block associated with the VPC.
-	VpcCidr       string `protobuf:"bytes,5,opt,name=vpc_cidr,json=vpcCidr,proto3" json:"vpc_cidr,omitempty"`
+	// The ARN of the VPC.
+	VpcArn string `protobuf:"bytes,2,opt,name=vpc_arn,json=vpcArn,proto3" json:"vpc_arn,omitempty"`
+	// The primary IPv4 CIDR block of the VPC (e.g. "10.0.0.0/16"). Reflects the
+	// allocated block even when it was assigned from IPAM.
+	CidrBlock string `protobuf:"bytes,3,opt,name=cidr_block,json=cidrBlock,proto3" json:"cidr_block,omitempty"`
+	// The IPv6 CIDR block associated with the VPC (e.g.
+	// "2600:1f18:abcd:1200::/56"), empty when the VPC is IPv4-only.
+	Ipv6CidrBlock string `protobuf:"bytes,4,opt,name=ipv6_cidr_block,json=ipv6CidrBlock,proto3" json:"ipv6_cidr_block,omitempty"`
+	// The AWS account ID that owns the VPC.
+	OwnerId string `protobuf:"bytes,5,opt,name=owner_id,json=ownerId,proto3" json:"owner_id,omitempty"`
+	// The ID of the VPC's main route table. Subnets with no explicit route-table
+	// association use this table.
+	MainRouteTableId string `protobuf:"bytes,6,opt,name=main_route_table_id,json=mainRouteTableId,proto3" json:"main_route_table_id,omitempty"`
+	// The ID of the default security group created with the VPC.
+	DefaultSecurityGroupId string `protobuf:"bytes,7,opt,name=default_security_group_id,json=defaultSecurityGroupId,proto3" json:"default_security_group_id,omitempty"`
+	// The ID of the default network ACL created with the VPC.
+	DefaultNetworkAclId string `protobuf:"bytes,8,opt,name=default_network_acl_id,json=defaultNetworkAclId,proto3" json:"default_network_acl_id,omitempty"`
+	// The ID of the default route table created with the VPC (equal to the main
+	// route table).
+	DefaultRouteTableId string `protobuf:"bytes,9,opt,name=default_route_table_id,json=defaultRouteTableId,proto3" json:"default_route_table_id,omitempty"`
+	// The region the VPC was created in (mirrors spec.region, included for
+	// convenience).
+	Region        string `protobuf:"bytes,10,opt,name=region,proto3" json:"region,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -75,167 +92,65 @@ func (x *AwsVpcStackOutputs) GetVpcId() string {
 	return ""
 }
 
-func (x *AwsVpcStackOutputs) GetInternetGatewayId() string {
+func (x *AwsVpcStackOutputs) GetVpcArn() string {
 	if x != nil {
-		return x.InternetGatewayId
+		return x.VpcArn
 	}
 	return ""
 }
 
-func (x *AwsVpcStackOutputs) GetPrivateSubnets() []*AwsVpcSubnetStackOutputs {
+func (x *AwsVpcStackOutputs) GetCidrBlock() string {
 	if x != nil {
-		return x.PrivateSubnets
-	}
-	return nil
-}
-
-func (x *AwsVpcStackOutputs) GetPublicSubnets() []*AwsVpcSubnetStackOutputs {
-	if x != nil {
-		return x.PublicSubnets
-	}
-	return nil
-}
-
-func (x *AwsVpcStackOutputs) GetVpcCidr() string {
-	if x != nil {
-		return x.VpcCidr
+		return x.CidrBlock
 	}
 	return ""
 }
 
-// aws-vpc subnet outputs
-type AwsVpcSubnetStackOutputs struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// subnet name
-	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// subnet id
-	Id string `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
-	// subnet cidr
-	Cidr string `protobuf:"bytes,3,opt,name=cidr,proto3" json:"cidr,omitempty"`
-	// nat-gateway
-	NatGateway    *AwsVpcNatGatewayStackOutputs `protobuf:"bytes,4,opt,name=nat_gateway,json=natGateway,proto3" json:"nat_gateway,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *AwsVpcSubnetStackOutputs) Reset() {
-	*x = AwsVpcSubnetStackOutputs{}
-	mi := &file_org_openmcf_provider_aws_awsvpc_v1_stack_outputs_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *AwsVpcSubnetStackOutputs) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*AwsVpcSubnetStackOutputs) ProtoMessage() {}
-
-func (x *AwsVpcSubnetStackOutputs) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_aws_awsvpc_v1_stack_outputs_proto_msgTypes[1]
+func (x *AwsVpcStackOutputs) GetIpv6CidrBlock() string {
 	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use AwsVpcSubnetStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsVpcSubnetStackOutputs) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_aws_awsvpc_v1_stack_outputs_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *AwsVpcSubnetStackOutputs) GetName() string {
-	if x != nil {
-		return x.Name
+		return x.Ipv6CidrBlock
 	}
 	return ""
 }
 
-func (x *AwsVpcSubnetStackOutputs) GetId() string {
+func (x *AwsVpcStackOutputs) GetOwnerId() string {
 	if x != nil {
-		return x.Id
+		return x.OwnerId
 	}
 	return ""
 }
 
-func (x *AwsVpcSubnetStackOutputs) GetCidr() string {
+func (x *AwsVpcStackOutputs) GetMainRouteTableId() string {
 	if x != nil {
-		return x.Cidr
+		return x.MainRouteTableId
 	}
 	return ""
 }
 
-func (x *AwsVpcSubnetStackOutputs) GetNatGateway() *AwsVpcNatGatewayStackOutputs {
+func (x *AwsVpcStackOutputs) GetDefaultSecurityGroupId() string {
 	if x != nil {
-		return x.NatGateway
-	}
-	return nil
-}
-
-// aws vpc nat-gateway outputs
-type AwsVpcNatGatewayStackOutputs struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// id of the nat gateway
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	// nat gateway private ip address
-	PrivateIp string `protobuf:"bytes,2,opt,name=private_ip,json=privateIp,proto3" json:"private_ip,omitempty"`
-	// nat gateway public ip address
-	PublicIp      string `protobuf:"bytes,3,opt,name=public_ip,json=publicIp,proto3" json:"public_ip,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *AwsVpcNatGatewayStackOutputs) Reset() {
-	*x = AwsVpcNatGatewayStackOutputs{}
-	mi := &file_org_openmcf_provider_aws_awsvpc_v1_stack_outputs_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *AwsVpcNatGatewayStackOutputs) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*AwsVpcNatGatewayStackOutputs) ProtoMessage() {}
-
-func (x *AwsVpcNatGatewayStackOutputs) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_aws_awsvpc_v1_stack_outputs_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use AwsVpcNatGatewayStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsVpcNatGatewayStackOutputs) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_aws_awsvpc_v1_stack_outputs_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *AwsVpcNatGatewayStackOutputs) GetId() string {
-	if x != nil {
-		return x.Id
+		return x.DefaultSecurityGroupId
 	}
 	return ""
 }
 
-func (x *AwsVpcNatGatewayStackOutputs) GetPrivateIp() string {
+func (x *AwsVpcStackOutputs) GetDefaultNetworkAclId() string {
 	if x != nil {
-		return x.PrivateIp
+		return x.DefaultNetworkAclId
 	}
 	return ""
 }
 
-func (x *AwsVpcNatGatewayStackOutputs) GetPublicIp() string {
+func (x *AwsVpcStackOutputs) GetDefaultRouteTableId() string {
 	if x != nil {
-		return x.PublicIp
+		return x.DefaultRouteTableId
+	}
+	return ""
+}
+
+func (x *AwsVpcStackOutputs) GetRegion() string {
+	if x != nil {
+		return x.Region
 	}
 	return ""
 }
@@ -244,24 +159,20 @@ var File_org_openmcf_provider_aws_awsvpc_v1_stack_outputs_proto protoreflect.Fil
 
 const file_org_openmcf_provider_aws_awsvpc_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6org/openmcf/provider/aws/awsvpc/v1/stack_outputs.proto\x12\"org.openmcf.provider.aws.awsvpc.v1\"\xc2\x02\n" +
+	"6org/openmcf/provider/aws/awsvpc/v1/stack_outputs.proto\x12\"org.openmcf.provider.aws.awsvpc.v1\"\x92\x03\n" +
 	"\x12AwsVpcStackOutputs\x12\x15\n" +
-	"\x06vpc_id\x18\x01 \x01(\tR\x05vpcId\x12.\n" +
-	"\x13internet_gateway_id\x18\x02 \x01(\tR\x11internetGatewayId\x12e\n" +
-	"\x0fprivate_subnets\x18\x03 \x03(\v2<.org.openmcf.provider.aws.awsvpc.v1.AwsVpcSubnetStackOutputsR\x0eprivateSubnets\x12c\n" +
-	"\x0epublic_subnets\x18\x04 \x03(\v2<.org.openmcf.provider.aws.awsvpc.v1.AwsVpcSubnetStackOutputsR\rpublicSubnets\x12\x19\n" +
-	"\bvpc_cidr\x18\x05 \x01(\tR\avpcCidr\"\xb5\x01\n" +
-	"\x18AwsVpcSubnetStackOutputs\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x0e\n" +
-	"\x02id\x18\x02 \x01(\tR\x02id\x12\x12\n" +
-	"\x04cidr\x18\x03 \x01(\tR\x04cidr\x12a\n" +
-	"\vnat_gateway\x18\x04 \x01(\v2@.org.openmcf.provider.aws.awsvpc.v1.AwsVpcNatGatewayStackOutputsR\n" +
-	"natGateway\"j\n" +
-	"\x1cAwsVpcNatGatewayStackOutputs\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
+	"\x06vpc_id\x18\x01 \x01(\tR\x05vpcId\x12\x17\n" +
+	"\avpc_arn\x18\x02 \x01(\tR\x06vpcArn\x12\x1d\n" +
 	"\n" +
-	"private_ip\x18\x02 \x01(\tR\tprivateIp\x12\x1b\n" +
-	"\tpublic_ip\x18\x03 \x01(\tR\bpublicIpB\xb9\x02\n" +
+	"cidr_block\x18\x03 \x01(\tR\tcidrBlock\x12&\n" +
+	"\x0fipv6_cidr_block\x18\x04 \x01(\tR\ripv6CidrBlock\x12\x19\n" +
+	"\bowner_id\x18\x05 \x01(\tR\aownerId\x12-\n" +
+	"\x13main_route_table_id\x18\x06 \x01(\tR\x10mainRouteTableId\x129\n" +
+	"\x19default_security_group_id\x18\a \x01(\tR\x16defaultSecurityGroupId\x123\n" +
+	"\x16default_network_acl_id\x18\b \x01(\tR\x13defaultNetworkAclId\x123\n" +
+	"\x16default_route_table_id\x18\t \x01(\tR\x13defaultRouteTableId\x12\x16\n" +
+	"\x06region\x18\n" +
+	" \x01(\tR\x06regionB\xb9\x02\n" +
 	"&com.org.openmcf.provider.aws.awsvpc.v1B\x11StackOutputsProtoP\x01ZMgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsvpc/v1;awsvpcv1\xa2\x02\x05OOPAA\xaa\x02\"Org.Openmcf.Provider.Aws.Awsvpc.V1\xca\x02\"Org\\Openmcf\\Provider\\Aws\\Awsvpc\\V1\xe2\x02.Org\\Openmcf\\Provider\\Aws\\Awsvpc\\V1\\GPBMetadata\xea\x02'Org::Openmcf::Provider::Aws::Awsvpc::V1b\x06proto3"
 
 var (
@@ -276,21 +187,16 @@ func file_org_openmcf_provider_aws_awsvpc_v1_stack_outputs_proto_rawDescGZIP() [
 	return file_org_openmcf_provider_aws_awsvpc_v1_stack_outputs_proto_rawDescData
 }
 
-var file_org_openmcf_provider_aws_awsvpc_v1_stack_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_org_openmcf_provider_aws_awsvpc_v1_stack_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_org_openmcf_provider_aws_awsvpc_v1_stack_outputs_proto_goTypes = []any{
-	(*AwsVpcStackOutputs)(nil),           // 0: org.openmcf.provider.aws.awsvpc.v1.AwsVpcStackOutputs
-	(*AwsVpcSubnetStackOutputs)(nil),     // 1: org.openmcf.provider.aws.awsvpc.v1.AwsVpcSubnetStackOutputs
-	(*AwsVpcNatGatewayStackOutputs)(nil), // 2: org.openmcf.provider.aws.awsvpc.v1.AwsVpcNatGatewayStackOutputs
+	(*AwsVpcStackOutputs)(nil), // 0: org.openmcf.provider.aws.awsvpc.v1.AwsVpcStackOutputs
 }
 var file_org_openmcf_provider_aws_awsvpc_v1_stack_outputs_proto_depIdxs = []int32{
-	1, // 0: org.openmcf.provider.aws.awsvpc.v1.AwsVpcStackOutputs.private_subnets:type_name -> org.openmcf.provider.aws.awsvpc.v1.AwsVpcSubnetStackOutputs
-	1, // 1: org.openmcf.provider.aws.awsvpc.v1.AwsVpcStackOutputs.public_subnets:type_name -> org.openmcf.provider.aws.awsvpc.v1.AwsVpcSubnetStackOutputs
-	2, // 2: org.openmcf.provider.aws.awsvpc.v1.AwsVpcSubnetStackOutputs.nat_gateway:type_name -> org.openmcf.provider.aws.awsvpc.v1.AwsVpcNatGatewayStackOutputs
-	3, // [3:3] is the sub-list for method output_type
-	3, // [3:3] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	0, // [0:0] is the sub-list for method output_type
+	0, // [0:0] is the sub-list for method input_type
+	0, // [0:0] is the sub-list for extension type_name
+	0, // [0:0] is the sub-list for extension extendee
+	0, // [0:0] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_aws_awsvpc_v1_stack_outputs_proto_init() }
@@ -304,7 +210,7 @@ func file_org_openmcf_provider_aws_awsvpc_v1_stack_outputs_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_org_openmcf_provider_aws_awsvpc_v1_stack_outputs_proto_rawDesc), len(file_org_openmcf_provider_aws_awsvpc_v1_stack_outputs_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   1,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

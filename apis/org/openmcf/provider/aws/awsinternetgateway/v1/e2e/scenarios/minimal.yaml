@@ -1,13 +1,9 @@
 # Minimal AwsInternetGateway scenario. vpcId is a value_from reference to the
 # AwsVpc prerequisite (declared via prerequisites: [AwsVpc] in the kind registry);
 # the E2E harness deploys that VPC first and resolves this reference to the created
-# vpc-id before the gateway is applied. Full metadata is supplied for
-# tagging/orphan cleanup.
-#
-# NOTE: this scenario is not yet executed live (no harness entry funcs reference
-# it). The AwsVpc prerequisite bundles its own internet gateway and AWS permits
-# only one per VPC, so a live attach against it fails; this scenario is activated
-# once AwsVpc no longer bundles an internet gateway. See ../profile.yaml.
+# vpc-id before the gateway is applied. The prerequisite VPC carries no internet
+# gateway of its own, so this standalone gateway attaches cleanly. Full metadata
+# is supplied for tagging/orphan cleanup.
 apiVersion: aws.openmcf.org/v1
 kind: AwsInternetGateway
 metadata:

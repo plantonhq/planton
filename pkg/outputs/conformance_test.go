@@ -118,6 +118,30 @@ func TestStackOutputsConformance(t *testing.T) {
 			},
 		},
 		{
+			// AwsVpc: flat scalar outputs from both engines (vpc id/arn, primary and
+			// IPv6 CIDR, owner, the route-table/default-resource ids, region) must
+			// each land on the thin StackOutputs proto.
+			name: "AwsVpc",
+			kind: cloudresourcekind.CloudResourceKind_AwsVpc,
+			rawOutputs: map[string]interface{}{
+				"vpc_id":                    "vpc-0abc123",
+				"vpc_arn":                   "arn:aws:ec2:us-west-2:123456789012:vpc/vpc-0abc123",
+				"cidr_block":                "10.0.0.0/16",
+				"ipv6_cidr_block":           "2600:1f18:abcd:1200::/56",
+				"owner_id":                  "123456789012",
+				"main_route_table_id":       "rtb-0abc123",
+				"default_security_group_id": "sg-0abc123",
+				"default_network_acl_id":    "acl-0abc123",
+				"default_route_table_id":    "rtb-0abc123",
+				"region":                    "us-west-2",
+			},
+			mustPopulate: []string{
+				"vpc_id", "vpc_arn", "cidr_block", "ipv6_cidr_block", "owner_id",
+				"main_route_table_id", "default_security_group_id",
+				"default_network_acl_id", "default_route_table_id", "region",
+			},
+		},
+		{
 			// Guards the externaldns tofu module's output rename to solver_sa: the
 			// module previously emitted "service_account_name", which does not flatten
 			// onto the KubernetesExternalDnsStackOutputs.solver_sa proto field (the

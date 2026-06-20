@@ -9,6 +9,7 @@ import (
 	auth0v1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/auth0/auth0resourceserver/v1"
 	awsvpcv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsvpc/v1"
 	gcpdnsv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpdnszone/v1"
+	gcpsubnetworkv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpsubnetwork/v1"
 	k8spgv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetespostgres/v1"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
 )
@@ -96,21 +97,16 @@ func TestTransform_GcpDnsZone(t *testing.T) {
 
 func TestTransform_AwsVpc(t *testing.T) {
 	outputs := map[string]string{
-		"vpc_id":                                    "vpc-0abc123",
-		"internet_gateway_id":                       "igw-xyz789",
-		"vpc_cidr":                                  "10.0.0.0/16",
-		"private_subnets[0].id":                     "subnet-priv-001",
-		"private_subnets[0].name":                   "private-a",
-		"private_subnets[0].cidr":                   "10.0.1.0/24",
-		"private_subnets[0].nat_gateway.id":         "nat-001",
-		"private_subnets[0].nat_gateway.public_ip":  "34.56.78.90",
-		"private_subnets[0].nat_gateway.private_ip": "10.0.1.5",
-		"private_subnets[1].id":                     "subnet-priv-002",
-		"private_subnets[1].name":                   "private-b",
-		"private_subnets[1].cidr":                   "10.0.2.0/24",
-		"public_subnets[0].id":                      "subnet-pub-001",
-		"public_subnets[0].name":                    "public-a",
-		"public_subnets[0].cidr":                    "10.0.100.0/24",
+		"vpc_id":                    "vpc-0abc123",
+		"vpc_arn":                   "arn:aws:ec2:us-west-2:123456789012:vpc/vpc-0abc123",
+		"cidr_block":                "10.0.0.0/16",
+		"ipv6_cidr_block":           "2600:1f18:abcd:1200::/56",
+		"owner_id":                  "123456789012",
+		"main_route_table_id":       "rtb-0abc123",
+		"default_security_group_id": "sg-0abc123",
+		"default_network_acl_id":    "acl-0abc123",
+		"default_route_table_id":    "rtb-0abc123",
+		"region":                    "us-west-2",
 	}
 
 	msg, err := Transform(cloudresourcekind.CloudResourceKind_AwsVpc, outputs)
@@ -126,31 +122,20 @@ func TestTransform_AwsVpc(t *testing.T) {
 	if typed.GetVpcId() != "vpc-0abc123" {
 		t.Errorf("vpc_id: expected %q, got %q", "vpc-0abc123", typed.GetVpcId())
 	}
-	if typed.GetVpcCidr() != "10.0.0.0/16" {
-		t.Errorf("vpc_cidr: expected %q, got %q", "10.0.0.0/16", typed.GetVpcCidr())
+	if typed.GetVpcArn() != "arn:aws:ec2:us-west-2:123456789012:vpc/vpc-0abc123" {
+		t.Errorf("vpc_arn: got %q", typed.GetVpcArn())
 	}
-
-	privSubnets := typed.GetPrivateSubnets()
-	if len(privSubnets) != 2 {
-		t.Fatalf("private_subnets: expected 2, got %d", len(privSubnets))
+	if typed.GetCidrBlock() != "10.0.0.0/16" {
+		t.Errorf("cidr_block: expected %q, got %q", "10.0.0.0/16", typed.GetCidrBlock())
 	}
-	if privSubnets[0].GetId() != "subnet-priv-001" {
-		t.Errorf("private_subnets[0].id: expected %q, got %q", "subnet-priv-001", privSubnets[0].GetId())
+	if typed.GetIpv6CidrBlock() != "2600:1f18:abcd:1200::/56" {
+		t.Errorf("ipv6_cidr_block: got %q", typed.GetIpv6CidrBlock())
 	}
-	if privSubnets[0].GetNatGateway() == nil {
-		t.Fatal("private_subnets[0].nat_gateway: expected non-nil")
+	if typed.GetOwnerId() != "123456789012" {
+		t.Errorf("owner_id: expected %q, got %q", "123456789012", typed.GetOwnerId())
 	}
-	if privSubnets[0].GetNatGateway().GetPublicIp() != "34.56.78.90" {
-		t.Errorf("private_subnets[0].nat_gateway.public_ip: expected %q, got %q",
-			"34.56.78.90", privSubnets[0].GetNatGateway().GetPublicIp())
-	}
-
-	pubSubnets := typed.GetPublicSubnets()
-	if len(pubSubnets) != 1 {
-		t.Fatalf("public_subnets: expected 1, got %d", len(pubSubnets))
-	}
-	if pubSubnets[0].GetName() != "public-a" {
-		t.Errorf("public_subnets[0].name: expected %q, got %q", "public-a", pubSubnets[0].GetName())
+	if typed.GetMainRouteTableId() != "rtb-0abc123" {
+		t.Errorf("main_route_table_id: expected %q, got %q", "rtb-0abc123", typed.GetMainRouteTableId())
 	}
 }
 
@@ -218,24 +203,25 @@ func TestTransform_UnknownKind(t *testing.T) {
 }
 
 // TestTransform_KeyPreprocessing verifies that keys with dots-before-brackets
-// and hyphens are normalized before field lookup.
+// and hyphens are normalized before field lookup, exercised against a repeated
+// nested-message output (GcpSubnetwork.secondary_ranges).
 func TestTransform_KeyPreprocessing(t *testing.T) {
 	outputs := map[string]string{
-		"private_subnets.[0].id": "subnet-001",
-		"vpc_id":                 "vpc-abc",
+		"secondary_ranges.[0].range_name": "pods",
+		"subnetwork_name":                 "my-subnet",
 	}
 
-	msg, err := Transform(cloudresourcekind.CloudResourceKind_AwsVpc, outputs)
+	msg, err := Transform(cloudresourcekind.CloudResourceKind_GcpSubnetwork, outputs)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	typed := msg.(*awsvpcv1.AwsVpcStackOutputs)
-	if len(typed.GetPrivateSubnets()) != 1 {
-		t.Fatalf("private_subnets: expected 1, got %d", len(typed.GetPrivateSubnets()))
+	typed := msg.(*gcpsubnetworkv1.GcpSubnetworkStackOutputs)
+	if len(typed.GetSecondaryRanges()) != 1 {
+		t.Fatalf("secondary_ranges: expected 1, got %d", len(typed.GetSecondaryRanges()))
 	}
-	if typed.GetPrivateSubnets()[0].GetId() != "subnet-001" {
-		t.Errorf("private_subnets[0].id: expected %q, got %q",
-			"subnet-001", typed.GetPrivateSubnets()[0].GetId())
+	if typed.GetSecondaryRanges()[0].GetRangeName() != "pods" {
+		t.Errorf("secondary_ranges[0].range_name: expected %q, got %q",
+			"pods", typed.GetSecondaryRanges()[0].GetRangeName())
 	}
 }

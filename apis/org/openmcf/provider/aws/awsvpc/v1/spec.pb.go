@@ -23,47 +23,98 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsVpcSpec defines the specification required to deploy an AWS Virtual Private Cloud (VPC).
-// This message encapsulates all configurations necessary for setting up a VPC, including CIDR blocks,
-// availability zones, subnets, and various networking features like NAT gateways, DNS hostnames, and DNS support.
-// An AWS VPC allows you to create a virtual network in the AWS cloud, where you can launch AWS resources in a
-// logically isolated section with complete control over your virtual networking environment.
-// With VPC, you can define your own IP address range, create subnets, and configure route tables and network gateways.
-// This specification helps in automating the VPC creation process with specified configurations, ensuring a consistent
-// and repeatable setup for your AWS environment.
+// AwsVpcSpec defines an AWS Virtual Private Cloud (VPC): an isolated virtual
+// network in which other AWS resources are launched.
+//
+// A VPC is the networking foundation for nearly everything else on AWS, but it
+// is itself a thin construct: an IP address space (one primary IPv4 CIDR, plus
+// optional secondary IPv4 CIDRs and an IPv6 CIDR), a tenancy mode, and a few
+// DNS toggles. The things that make a network useful -- subnets, internet
+// gateways, NAT gateways, route tables -- are separate, independently ownable
+// components that reference this VPC. Keeping the VPC a clean building block is
+// what lets a topology be composed from first-class nodes rather than hidden
+// inside one opaque resource.
+//
+// The primary IPv4 CIDR can be specified explicitly (cidr_block) or allocated
+// from an IPAM pool (ipv4_ipam_pool_id [+ ipv4_netmask_length]). IPv6 is opt-in
+// and supports either an Amazon-provided /56 (assign_generated_ipv6_cidr_block)
+// or an IPAM-allocated block (ipv6_ipam_pool_id). The cross-field rules below
+// mirror what AWS itself enforces.
 type AwsVpcSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the VPC will be created.
-	// Example: "us-west-2", "eu-west-1", "ap-southeast-1"
-	// For a list of AWS regions, see: https://aws.amazon.com/about-aws/global-infrastructure/regions_az/
+	// Example: "us-west-2", "eu-west-1", "ap-southeast-1".
+	// For the list of regions, see:
+	// https://aws.amazon.com/about-aws/global-infrastructure/regions_az/
 	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
-	// The CIDR (Classless Inter-Domain Routing) block for the VPC.
-	// This defines the IP address range for the VPC.
-	// Example: "10.0.0.0/16" allows IP addresses from 10.0.0.0 to 10.0.255.255.
-	VpcCidr string `protobuf:"bytes,2,opt,name=vpc_cidr,json=vpcCidr,proto3" json:"vpc_cidr,omitempty"`
-	// The list of availability zones where the VPC will be spanned.
-	// AWS regions are divided into multiple availability zones (AZs) for high availability.
-	// Example: ["us-west-2a", "us-west-2b"] indicates that resources will be spread across these two AZs.
-	AvailabilityZones []string `protobuf:"bytes,3,rep,name=availability_zones,json=availabilityZones,proto3" json:"availability_zones,omitempty"`
-	// The number of subnets to be created in each availability zone.
-	// Subnets are segments of the VPC's IP address range where you can place groups of isolated resources.
-	SubnetsPerAvailabilityZone int32 `protobuf:"varint,4,opt,name=subnets_per_availability_zone,json=subnetsPerAvailabilityZone,proto3" json:"subnets_per_availability_zone,omitempty"`
-	// The number of hosts (IP addresses) in each subnet.
-	// This determines the size of each subnet's CIDR block.
-	SubnetSize int32 `protobuf:"varint,5,opt,name=subnet_size,json=subnetSize,proto3" json:"subnet_size,omitempty"`
-	// Toggle to enable or disable a NAT (Network Address Translation) gateway for private subnets created in the VPC.
-	// A NAT gateway allows instances in a private subnet to connect to the internet or other AWS services, but prevents
-	// the internet from initiating a connection with those instances.
-	IsNatGatewayEnabled bool `protobuf:"varint,6,opt,name=is_nat_gateway_enabled,json=isNatGatewayEnabled,proto3" json:"is_nat_gateway_enabled,omitempty"`
-	// Toggle to enable or disable DNS hostnames in the VPC.
-	// When enabled, instances with public IP addresses receive corresponding public DNS hostnames.
-	// See AWS documentation: https://docs.aws.amazon.com/vpc/latest/userguide/vpc-dns.html#vpc-dns-hostnames
-	IsDnsHostnamesEnabled bool `protobuf:"varint,7,opt,name=is_dns_hostnames_enabled,json=isDnsHostnamesEnabled,proto3" json:"is_dns_hostnames_enabled,omitempty"`
-	// Toggle to enable or disable DNS resolution in the VPC through the Amazon-provided DNS server.
-	// When enabled, the Amazon DNS server resolves DNS hostnames for your instances.
-	IsDnsSupportEnabled bool `protobuf:"varint,8,opt,name=is_dns_support_enabled,json=isDnsSupportEnabled,proto3" json:"is_dns_support_enabled,omitempty"`
-	unknownFields       protoimpl.UnknownFields
-	sizeCache           protoimpl.SizeCache
+	// The primary IPv4 CIDR block for the VPC. This is the VPC's main address
+	// range and is immutable: changing it replaces the VPC. The mask must be
+	// between /16 and /28 (AWS limits), e.g. "10.0.0.0/16" yields 65,536
+	// addresses. Leave empty only when allocating the primary CIDR from IPAM
+	// (set ipv4_ipam_pool_id instead); exactly one of cidr_block or
+	// ipv4_ipam_pool_id must be provided.
+	CidrBlock string `protobuf:"bytes,2,opt,name=cidr_block,json=cidrBlock,proto3" json:"cidr_block,omitempty"`
+	// Additional IPv4 CIDR blocks to associate with the VPC beyond the primary
+	// one (e.g. ["10.1.0.0/16", "100.64.0.0/16"]). Each is associated as its own
+	// resource and can be added or removed without recreating the VPC. Each block
+	// must be non-overlapping and within the AWS /16-/28 mask limits. Useful when
+	// a single /16 runs out of subnet space or when carving a distinct range
+	// (such as the 100.64.0.0/10 shared space) for specific workloads.
+	SecondaryIpv4CidrBlocks []string `protobuf:"bytes,3,rep,name=secondary_ipv4_cidr_blocks,json=secondaryIpv4CidrBlocks,proto3" json:"secondary_ipv4_cidr_blocks,omitempty"`
+	// The IPAM (IP Address Manager) pool to allocate the primary IPv4 CIDR from,
+	// instead of specifying cidr_block directly. Pair with ipv4_netmask_length to
+	// let IPAM choose a block of the requested size, or with cidr_block to take a
+	// specific block from the pool. Immutable: changing it replaces the VPC.
+	Ipv4IpamPoolId string `protobuf:"bytes,4,opt,name=ipv4_ipam_pool_id,json=ipv4IpamPoolId,proto3" json:"ipv4_ipam_pool_id,omitempty"`
+	// The netmask length of the primary IPv4 CIDR to allocate from
+	// ipv4_ipam_pool_id (e.g. 16 for a /16). Must be between 16 and 28. Requires
+	// ipv4_ipam_pool_id and is mutually exclusive with cidr_block. Immutable:
+	// changing it replaces the VPC.
+	Ipv4NetmaskLength int32 `protobuf:"varint,5,opt,name=ipv4_netmask_length,json=ipv4NetmaskLength,proto3" json:"ipv4_netmask_length,omitempty"`
+	// The tenancy of instances launched into this VPC: "default" (instances may
+	// run on shared hardware) or "dedicated" (every instance runs on
+	// single-tenant hardware, at higher cost). Leave empty for the AWS default
+	// ("default"). Note that AWS only supports changing "dedicated" -> "default"
+	// in place; other tenancy changes are not permitted by the API.
+	InstanceTenancy string `protobuf:"bytes,6,opt,name=instance_tenancy,json=instanceTenancy,proto3" json:"instance_tenancy,omitempty"`
+	// Whether the Amazon-provided DNS server (the .2 resolver) answers DNS
+	// queries from within the VPC. AWS enables this by default, and disabling it
+	// breaks name resolution for most workloads, so when this field is unset the
+	// VPC keeps DNS resolution ON. Set it explicitly to false only to deliberately
+	// turn the Amazon resolver off.
+	EnableDnsSupport *bool `protobuf:"varint,7,opt,name=enable_dns_support,json=enableDnsSupport,proto3,oneof" json:"enable_dns_support,omitempty"`
+	// Whether instances with public IP addresses receive public DNS hostnames.
+	// AWS leaves this off by default; turn it on for VPCs whose instances should
+	// be reachable by DNS name. See:
+	// https://docs.aws.amazon.com/vpc/latest/userguide/vpc-dns.html#vpc-dns-hostnames
+	EnableDnsHostnames bool `protobuf:"varint,8,opt,name=enable_dns_hostnames,json=enableDnsHostnames,proto3" json:"enable_dns_hostnames,omitempty"`
+	// Whether to enable Network Address Usage (NAU) metrics for the VPC. NAU is a
+	// CloudWatch metric that tracks how the VPC's IP address space is consumed,
+	// useful for capacity planning in large networks. Off by default.
+	EnableNetworkAddressUsageMetrics bool `protobuf:"varint,9,opt,name=enable_network_address_usage_metrics,json=enableNetworkAddressUsageMetrics,proto3" json:"enable_network_address_usage_metrics,omitempty"`
+	// Request an Amazon-provided IPv6 /56 CIDR block for the VPC. This is the
+	// simplest way to make a VPC dual-stack. Mutually exclusive with the IPAM
+	// IPv6 fields (ipv6_ipam_pool_id / ipv6_cidr_block / ipv6_netmask_length).
+	AssignGeneratedIpv6CidrBlock bool `protobuf:"varint,10,opt,name=assign_generated_ipv6_cidr_block,json=assignGeneratedIpv6CidrBlock,proto3" json:"assign_generated_ipv6_cidr_block,omitempty"`
+	// An explicit IPv6 CIDR block to allocate from ipv6_ipam_pool_id (e.g.
+	// "2600:1f18:abcd:1200::/56"). Requires ipv6_ipam_pool_id (a bring-your-own
+	// IPv6 block without IPAM is not supported on the VPC resource) and is
+	// mutually exclusive with ipv6_netmask_length.
+	Ipv6CidrBlock string `protobuf:"bytes,11,opt,name=ipv6_cidr_block,json=ipv6CidrBlock,proto3" json:"ipv6_cidr_block,omitempty"`
+	// The network border group from which to advertise an Amazon-provided IPv6
+	// CIDR (a Local Zone / Wavelength advertisement scope). Only valid together
+	// with assign_generated_ipv6_cidr_block.
+	Ipv6CidrBlockNetworkBorderGroup string `protobuf:"bytes,12,opt,name=ipv6_cidr_block_network_border_group,json=ipv6CidrBlockNetworkBorderGroup,proto3" json:"ipv6_cidr_block_network_border_group,omitempty"`
+	// The IPAM pool to allocate the IPv6 CIDR from. Pair with ipv6_netmask_length
+	// (the size to allocate) or ipv6_cidr_block (a specific block). Mutually
+	// exclusive with assign_generated_ipv6_cidr_block.
+	Ipv6IpamPoolId string `protobuf:"bytes,13,opt,name=ipv6_ipam_pool_id,json=ipv6IpamPoolId,proto3" json:"ipv6_ipam_pool_id,omitempty"`
+	// The netmask length of the IPv6 CIDR to allocate from ipv6_ipam_pool_id.
+	// Must be one of 44, 48, 52, 56, or 60. Requires ipv6_ipam_pool_id and is
+	// mutually exclusive with ipv6_cidr_block.
+	Ipv6NetmaskLength int32 `protobuf:"varint,14,opt,name=ipv6_netmask_length,json=ipv6NetmaskLength,proto3" json:"ipv6_netmask_length,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
 }
 
 func (x *AwsVpcSpec) Reset() {
@@ -103,71 +154,131 @@ func (x *AwsVpcSpec) GetRegion() string {
 	return ""
 }
 
-func (x *AwsVpcSpec) GetVpcCidr() string {
+func (x *AwsVpcSpec) GetCidrBlock() string {
 	if x != nil {
-		return x.VpcCidr
+		return x.CidrBlock
 	}
 	return ""
 }
 
-func (x *AwsVpcSpec) GetAvailabilityZones() []string {
+func (x *AwsVpcSpec) GetSecondaryIpv4CidrBlocks() []string {
 	if x != nil {
-		return x.AvailabilityZones
+		return x.SecondaryIpv4CidrBlocks
 	}
 	return nil
 }
 
-func (x *AwsVpcSpec) GetSubnetsPerAvailabilityZone() int32 {
+func (x *AwsVpcSpec) GetIpv4IpamPoolId() string {
 	if x != nil {
-		return x.SubnetsPerAvailabilityZone
+		return x.Ipv4IpamPoolId
+	}
+	return ""
+}
+
+func (x *AwsVpcSpec) GetIpv4NetmaskLength() int32 {
+	if x != nil {
+		return x.Ipv4NetmaskLength
 	}
 	return 0
 }
 
-func (x *AwsVpcSpec) GetSubnetSize() int32 {
+func (x *AwsVpcSpec) GetInstanceTenancy() string {
 	if x != nil {
-		return x.SubnetSize
+		return x.InstanceTenancy
+	}
+	return ""
+}
+
+func (x *AwsVpcSpec) GetEnableDnsSupport() bool {
+	if x != nil && x.EnableDnsSupport != nil {
+		return *x.EnableDnsSupport
+	}
+	return false
+}
+
+func (x *AwsVpcSpec) GetEnableDnsHostnames() bool {
+	if x != nil {
+		return x.EnableDnsHostnames
+	}
+	return false
+}
+
+func (x *AwsVpcSpec) GetEnableNetworkAddressUsageMetrics() bool {
+	if x != nil {
+		return x.EnableNetworkAddressUsageMetrics
+	}
+	return false
+}
+
+func (x *AwsVpcSpec) GetAssignGeneratedIpv6CidrBlock() bool {
+	if x != nil {
+		return x.AssignGeneratedIpv6CidrBlock
+	}
+	return false
+}
+
+func (x *AwsVpcSpec) GetIpv6CidrBlock() string {
+	if x != nil {
+		return x.Ipv6CidrBlock
+	}
+	return ""
+}
+
+func (x *AwsVpcSpec) GetIpv6CidrBlockNetworkBorderGroup() string {
+	if x != nil {
+		return x.Ipv6CidrBlockNetworkBorderGroup
+	}
+	return ""
+}
+
+func (x *AwsVpcSpec) GetIpv6IpamPoolId() string {
+	if x != nil {
+		return x.Ipv6IpamPoolId
+	}
+	return ""
+}
+
+func (x *AwsVpcSpec) GetIpv6NetmaskLength() int32 {
+	if x != nil {
+		return x.Ipv6NetmaskLength
 	}
 	return 0
-}
-
-func (x *AwsVpcSpec) GetIsNatGatewayEnabled() bool {
-	if x != nil {
-		return x.IsNatGatewayEnabled
-	}
-	return false
-}
-
-func (x *AwsVpcSpec) GetIsDnsHostnamesEnabled() bool {
-	if x != nil {
-		return x.IsDnsHostnamesEnabled
-	}
-	return false
-}
-
-func (x *AwsVpcSpec) GetIsDnsSupportEnabled() bool {
-	if x != nil {
-		return x.IsDnsSupportEnabled
-	}
-	return false
 }
 
 var File_org_openmcf_provider_aws_awsvpc_v1_spec_proto protoreflect.FileDescriptor
 
 const file_org_openmcf_provider_aws_awsvpc_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"-org/openmcf/provider/aws/awsvpc/v1/spec.proto\x12\"org.openmcf.provider.aws.awsvpc.v1\x1a\x1bbuf/validate/validate.proto\x1a(org/openmcf/shared/options/options.proto\"\xa0\x03\n" +
+	"-org/openmcf/provider/aws/awsvpc/v1/spec.proto\x12\"org.openmcf.provider.aws.awsvpc.v1\x1a\x1bbuf/validate/validate.proto\x1a(org/openmcf/shared/options/options.proto\"\x9e\x15\n" +
 	"\n" +
 	"AwsVpcSpec\x12\x1f\n" +
-	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12!\n" +
-	"\bvpc_cidr\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\avpcCidr\x12-\n" +
-	"\x12availability_zones\x18\x03 \x03(\tR\x11availabilityZones\x12N\n" +
-	"\x1dsubnets_per_availability_zone\x18\x04 \x01(\x05B\v\xbaH\x03\xc8\x01\x01\x92\xa6\x1d\x011R\x1asubnetsPerAvailabilityZone\x12,\n" +
-	"\vsubnet_size\x18\x05 \x01(\x05B\v\xbaH\x03\xc8\x01\x01\x92\xa6\x1d\x011R\n" +
-	"subnetSize\x123\n" +
-	"\x16is_nat_gateway_enabled\x18\x06 \x01(\bR\x13isNatGatewayEnabled\x127\n" +
-	"\x18is_dns_hostnames_enabled\x18\a \x01(\bR\x15isDnsHostnamesEnabled\x123\n" +
-	"\x16is_dns_support_enabled\x18\b \x01(\bR\x13isDnsSupportEnabledB\xb1\x02\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x1d\n" +
+	"\n" +
+	"cidr_block\x18\x02 \x01(\tR\tcidrBlock\x12;\n" +
+	"\x1asecondary_ipv4_cidr_blocks\x18\x03 \x03(\tR\x17secondaryIpv4CidrBlocks\x12)\n" +
+	"\x11ipv4_ipam_pool_id\x18\x04 \x01(\tR\x0eipv4IpamPoolId\x12.\n" +
+	"\x13ipv4_netmask_length\x18\x05 \x01(\x05R\x11ipv4NetmaskLength\x12\xbb\x01\n" +
+	"\x10instance_tenancy\x18\x06 \x01(\tB\x8f\x01\xbaH\x80\x01\xba\x01}\n" +
+	"\x16instance_tenancy_valid\x123instance_tenancy must be one of: default, dedicated\x1a.this == '' || this in ['default', 'dedicated']\x92\xa6\x1d\adefaultR\x0finstanceTenancy\x12;\n" +
+	"\x12enable_dns_support\x18\a \x01(\bB\b\x92\xa6\x1d\x04trueH\x00R\x10enableDnsSupport\x88\x01\x01\x12:\n" +
+	"\x14enable_dns_hostnames\x18\b \x01(\bB\b\x92\xa6\x1d\x04trueR\x12enableDnsHostnames\x12N\n" +
+	"$enable_network_address_usage_metrics\x18\t \x01(\bR enableNetworkAddressUsageMetrics\x12F\n" +
+	" assign_generated_ipv6_cidr_block\x18\n" +
+	" \x01(\bR\x1cassignGeneratedIpv6CidrBlock\x12&\n" +
+	"\x0fipv6_cidr_block\x18\v \x01(\tR\ripv6CidrBlock\x12M\n" +
+	"$ipv6_cidr_block_network_border_group\x18\f \x01(\tR\x1fipv6CidrBlockNetworkBorderGroup\x12)\n" +
+	"\x11ipv6_ipam_pool_id\x18\r \x01(\tR\x0eipv6IpamPoolId\x12.\n" +
+	"\x13ipv6_netmask_length\x18\x0e \x01(\x05R\x11ipv6NetmaskLength:\xff\r\xbaH\xfb\r\x1a\x9b\x01\n" +
+	"\x1cipv4_primary_source_required\x12Dset exactly one primary IPv4 source: cidr_block or ipv4_ipam_pool_id\x1a5this.cidr_block != '' || this.ipv4_ipam_pool_id != ''\x1a\x99\x01\n" +
+	"$ipv4_cidr_block_vs_netmask_exclusive\x129cidr_block and ipv4_netmask_length are mutually exclusive\x1a6this.cidr_block == '' || this.ipv4_netmask_length == 0\x1a\xaf\x01\n" +
+	"\x16ipv4_cidr_block_format\x126cidr_block must be a valid IPv4 CIDR, e.g. 10.0.0.0/16\x1a]this.cidr_block == '' || this.cidr_block.matches('^([0-9]{1,3}\\\\.){3}[0-9]{1,3}/[0-9]{1,2}$')\x1a\xef\x01\n" +
+	"\x19ipv4_netmask_length_valid\x12Lipv4_netmask_length must be between 16 and 28 and requires ipv4_ipam_pool_id\x1a\x83\x01this.ipv4_netmask_length == 0 || (this.ipv4_netmask_length >= 16 && this.ipv4_netmask_length <= 28 && this.ipv4_ipam_pool_id != '')\x1a\xb1\x02\n" +
+	"\x1dipv6_amazon_vs_ipam_exclusive\x12\x85\x01assign_generated_ipv6_cidr_block cannot be combined with the IPAM IPv6 fields (ipv6_ipam_pool_id/ipv6_cidr_block/ipv6_netmask_length)\x1a\x87\x01!this.assign_generated_ipv6_cidr_block || (this.ipv6_ipam_pool_id == '' && this.ipv6_cidr_block == '' && this.ipv6_netmask_length == 0)\x1a\x87\x01\n" +
+	"\x1dipv6_cidr_block_requires_ipam\x12*ipv6_cidr_block requires ipv6_ipam_pool_id\x1a:this.ipv6_cidr_block == '' || this.ipv6_ipam_pool_id != ''\x1a\xe6\x01\n" +
+	"\x19ipv6_netmask_length_valid\x12Tipv6_netmask_length must be one of 44, 48, 52, 56, 60 and requires ipv6_ipam_pool_id\x1asthis.ipv6_netmask_length == 0 || (this.ipv6_netmask_length in [44, 48, 52, 56, 60] && this.ipv6_ipam_pool_id != '')\x1a\xa3\x01\n" +
+	"$ipv6_cidr_block_vs_netmask_exclusive\x12>ipv6_cidr_block and ipv6_netmask_length are mutually exclusive\x1a;this.ipv6_cidr_block == '' || this.ipv6_netmask_length == 0\x1a\xcd\x01\n" +
+	"!ipv6_border_group_requires_amazon\x12Nipv6_cidr_block_network_border_group requires assign_generated_ipv6_cidr_block\x1aXthis.ipv6_cidr_block_network_border_group == '' || this.assign_generated_ipv6_cidr_blockB\x15\n" +
+	"\x13_enable_dns_supportB\xb1\x02\n" +
 	"&com.org.openmcf.provider.aws.awsvpc.v1B\tSpecProtoP\x01ZMgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsvpc/v1;awsvpcv1\xa2\x02\x05OOPAA\xaa\x02\"Org.Openmcf.Provider.Aws.Awsvpc.V1\xca\x02\"Org\\Openmcf\\Provider\\Aws\\Awsvpc\\V1\xe2\x02.Org\\Openmcf\\Provider\\Aws\\Awsvpc\\V1\\GPBMetadata\xea\x02'Org::Openmcf::Provider::Aws::Awsvpc::V1b\x06proto3"
 
 var (
@@ -199,6 +310,7 @@ func file_org_openmcf_provider_aws_awsvpc_v1_spec_proto_init() {
 	if File_org_openmcf_provider_aws_awsvpc_v1_spec_proto != nil {
 		return
 	}
+	file_org_openmcf_provider_aws_awsvpc_v1_spec_proto_msgTypes[0].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

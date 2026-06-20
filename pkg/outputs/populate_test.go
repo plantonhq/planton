@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	auth0v1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/auth0/auth0resourceserver/v1"
-	awsvpcv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsvpc/v1"
 	gcpdnsv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpdnszone/v1"
+	gcpsubnetworkv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpsubnetwork/v1"
 	k8spgv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetespostgres/v1"
 )
 
@@ -122,42 +122,34 @@ func TestPopulate_NestedMessageJSON(t *testing.T) {
 }
 
 func TestPopulate_RepeatedMessageWithBracketIndex(t *testing.T) {
-	msg := &awsvpcv1.AwsVpcStackOutputs{}
+	msg := &gcpsubnetworkv1.GcpSubnetworkStackOutputs{}
 	outputs := map[string]string{
-		"vpc_id":                  "vpc-abc",
-		"private_subnets[0].id":   "subnet-001",
-		"private_subnets[0].cidr": "10.0.1.0/24",
-		"private_subnets[0].nat_gateway.public_ip": "34.56.78.90",
-		"private_subnets[1].id":                    "subnet-002",
-		"private_subnets[1].cidr":                  "10.0.2.0/24",
+		"subnetwork_name":                   "my-subnet",
+		"secondary_ranges[0].range_name":    "pods",
+		"secondary_ranges[0].ip_cidr_range": "10.1.0.0/16",
+		"secondary_ranges[1].range_name":    "services",
+		"secondary_ranges[1].ip_cidr_range": "10.2.0.0/20",
 	}
 
 	if err := populateMessage(msg, outputs); err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	if msg.GetVpcId() != "vpc-abc" {
-		t.Errorf("vpc_id: expected %q, got %q", "vpc-abc", msg.GetVpcId())
+	if msg.GetSubnetworkName() != "my-subnet" {
+		t.Errorf("subnetwork_name: expected %q, got %q", "my-subnet", msg.GetSubnetworkName())
 	}
-	subnets := msg.GetPrivateSubnets()
-	if len(subnets) != 2 {
-		t.Fatalf("private_subnets: expected 2, got %d", len(subnets))
+	ranges := msg.GetSecondaryRanges()
+	if len(ranges) != 2 {
+		t.Fatalf("secondary_ranges: expected 2, got %d", len(ranges))
 	}
-	if subnets[0].GetId() != "subnet-001" {
-		t.Errorf("private_subnets[0].id: expected %q, got %q", "subnet-001", subnets[0].GetId())
+	if ranges[0].GetRangeName() != "pods" {
+		t.Errorf("secondary_ranges[0].range_name: expected %q, got %q", "pods", ranges[0].GetRangeName())
 	}
-	if subnets[0].GetCidr() != "10.0.1.0/24" {
-		t.Errorf("private_subnets[0].cidr: expected %q, got %q", "10.0.1.0/24", subnets[0].GetCidr())
+	if ranges[0].GetIpCidrRange() != "10.1.0.0/16" {
+		t.Errorf("secondary_ranges[0].ip_cidr_range: expected %q, got %q", "10.1.0.0/16", ranges[0].GetIpCidrRange())
 	}
-	if subnets[0].GetNatGateway() == nil {
-		t.Fatal("private_subnets[0].nat_gateway: expected non-nil")
-	}
-	if subnets[0].GetNatGateway().GetPublicIp() != "34.56.78.90" {
-		t.Errorf("private_subnets[0].nat_gateway.public_ip: expected %q, got %q",
-			"34.56.78.90", subnets[0].GetNatGateway().GetPublicIp())
-	}
-	if subnets[1].GetId() != "subnet-002" {
-		t.Errorf("private_subnets[1].id: expected %q, got %q", "subnet-002", subnets[1].GetId())
+	if ranges[1].GetRangeName() != "services" {
+		t.Errorf("secondary_ranges[1].range_name: expected %q, got %q", "services", ranges[1].GetRangeName())
 	}
 }
 
