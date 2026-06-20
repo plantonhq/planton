@@ -1,0 +1,12 @@
+apiVersion: aws.openmcf.org/v1
+kind: AwsIamOidcProvider
+metadata:
+  name: github-actions-oidc
+spec:
+  region: <aws-region>
+  # GitHub Actions' OIDC issuer. This is the same for every GitHub-hosted repo.
+  url:
+    value: https://token.actions.githubusercontent.com
+  # AWS uses sts.amazonaws.com as the audience for GitHub Actions web-identity tokens.
+  clientIdList:
+    - sts.amazonaws.com

@@ -10,7 +10,7 @@ spec:
   databaseVersion: POSTGRES_15
   tier: db-f1-micro  # shared-core, 0.6 GB RAM; smallest available
   storageGb: 10  # recommended_default from spec; minimum
-  diskAutoresize: true  # recommended_default from spec
+  diskAutoResize: true  # recommended_default from spec
   edition: ENTERPRISE  # recommended_default from spec
   network:
     ipv4Enabled: true  # public IP for developer access via Cloud SQL Proxy

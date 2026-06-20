@@ -16,6 +16,10 @@ presets:
     rank: "02"
     title: "Wildcard Domain Certificate"
     excerpt: "This preset creates a Google-managed wildcard TLS certificate (`*.example.com`) with the apex domain (`example.com`) as a Subject Alternative Name. This covers all subdomains under a single..."
+  - slug: "03-external-dns"
+    rank: "03"
+    title: "External DNS (Manual Validation)"
+    excerpt: "This preset creates a Google-managed TLS certificate without auto-creating DNS validation records in Cloud DNS. The `cloudDnsZoneId` field is intentionally omitted so the module exports the required..."
 ---
 
 # Certificate Manager Cert Presets

@@ -16,6 +16,10 @@ presets:
     rank: "02"
     title: "Private VPC-Connected Cloud Run Service"
     excerpt: "This preset deploys a Cloud Run service that is only accessible internally (within the VPC and other GCP services), requires IAM authentication, and has Direct VPC Egress for connecting to private..."
+  - slug: "03-cloud-sql-connected"
+    rank: "03"
+    title: "Cloud Run with Cloud SQL Native Connection"
+    excerpt: "This preset deploys a Cloud Run service connected to a Cloud SQL instance via the native GCP-managed volume mount. GCP automatically creates a Unix socket at `/cloudsql/<connection_name>` for each..."
 ---
 
 # Cloud Run Presets

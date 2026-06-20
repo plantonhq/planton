@@ -217,13 +217,13 @@ spec:
       field: status.outputs.key_arn
   subnetIds:
     - valueFrom:
-        kind: AwsVpc
-        name: my-vpc
-        field: status.outputs.private_subnets[0].id
+        kind: AwsSubnet
+        name: my-private-subnet-a
+        fieldPath: status.outputs.subnet_id
     - valueFrom:
-        kind: AwsVpc
-        name: my-vpc
-        field: status.outputs.private_subnets[1].id
+        kind: AwsSubnet
+        name: my-private-subnet-b
+        fieldPath: status.outputs.subnet_id
   securityGroupIds:
     - valueFrom:
         kind: AwsSecurityGroup

@@ -1,0 +1,8 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesIssuer
+metadata:
+  name: my-selfsigned-issuer
+spec:
+  namespace:
+    value: "<your-namespace>"
+  selfSigned: {}

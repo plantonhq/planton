@@ -1,0 +1,21 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesRequestAuthentication
+metadata:
+  name: <workload>-jwt
+spec:
+  namespace:
+    value: <namespace>
+  selector:
+    match_labels:
+      app: <workload>
+  jwt_rules:
+    - issuer: <issuer-url>
+      jwks_uri: <jwks-url>
+      audiences:
+        - <audience>
+      from_headers:
+        - name: x-jwt-assertion
+          prefix: "Bearer "
+      output_claim_to_headers:
+        - header: x-jwt-group
+          claim: groups

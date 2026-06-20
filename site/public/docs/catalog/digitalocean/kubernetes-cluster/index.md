@@ -173,7 +173,7 @@ spec:
     valueFrom:
       kind: DigitalOceanVpc
       name: prod-vpc
-      field: metadata.name
+      field: status.outputs.vpc_id
   highlyAvailable: true
   autoUpgrade: true
   disableSurgeUpgrade: false

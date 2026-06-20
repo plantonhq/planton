@@ -1,0 +1,20 @@
+apiVersion: auth0.openmcf.org/v1
+kind: Auth0Role
+metadata:
+  name: my-administrator-role
+  org: example-org
+  env: production
+spec:
+  name: Administrator
+  description: Full administrative access across the orders and billing APIs
+  permissions:
+    - name: read:orders
+      resource_server_identifier: https://api.example.com/orders
+    - name: write:orders
+      resource_server_identifier: https://api.example.com/orders
+    - name: delete:orders
+      resource_server_identifier: https://api.example.com/orders
+    - name: read:billing
+      resource_server_identifier: https://api.example.com/billing
+    - name: manage:billing
+      resource_server_identifier: https://api.example.com/billing

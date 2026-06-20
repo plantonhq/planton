@@ -1,0 +1,34 @@
+apiVersion: cloudflare.openmcf.org/v1
+kind: CloudflareRuleset
+metadata:
+  name: my-cache-rules
+spec:
+  zone_id:
+    value: "<cloudflare-zone-id>"
+  ruleset_kind: zone
+  phase: http_request_cache_settings
+  name: "Custom cache settings"
+  rules:
+    - ref: "cache-static-assets"
+      expression: >-
+        http.request.uri.path starts_with "/assets" or
+        http.request.uri.path starts_with "/_next/static" or
+        http.request.uri.path starts_with "/_site"
+      action: set_cache_settings
+      description: "Aggressively cache static assets at edge for 24 hours"
+      enabled: true
+      action_parameters:
+        cache: true
+        edge_ttl:
+          mode: "override_origin"
+          default_ttl: 86400
+        browser_ttl:
+          mode: "override_origin"
+          default_ttl: 3600
+    - ref: "bypass-api-cache"
+      expression: 'http.request.uri.path starts_with "/api"'
+      action: set_cache_settings
+      description: "Never cache API responses"
+      enabled: true
+      action_parameters:
+        cache: false

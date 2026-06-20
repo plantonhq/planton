@@ -207,9 +207,9 @@ spec:
   throughputCapacity: 320
   subnetIds:
     - valueFrom:
-        kind: AwsVpc
-        name: my-vpc
-        field: status.outputs.private_subnets[0].id
+        kind: AwsSubnet
+        name: my-private-subnet-a
+        fieldPath: status.outputs.subnet_id
   securityGroupIds:
     - valueFrom:
         kind: AwsSecurityGroup

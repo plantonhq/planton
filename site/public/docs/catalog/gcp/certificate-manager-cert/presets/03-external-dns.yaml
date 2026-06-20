@@ -1,0 +1,9 @@
+apiVersion: gcp.openmcf.org/v1
+kind: GcpCertManagerCert
+metadata:
+  name: my-external-dns-cert
+spec:
+  gcpProjectId: <gcp-project-id>
+  primaryDomainName: <your-domain.com>
+  certificateType: MANAGED  # default from spec; Google Certificate Manager
+  validationMethod: DNS  # default from spec; DNS validation

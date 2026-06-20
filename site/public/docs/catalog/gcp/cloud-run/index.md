@@ -98,7 +98,7 @@ This creates a publicly accessible Cloud Run service with 1 vCPU, 512 MiB memory
 | `vpcAccess.egress` | `string` | — | Egress routing: `ALL_TRAFFIC` routes all egress through VPC, `PRIVATE_RANGES_ONLY` routes only private IP traffic. |
 | `dns.enabled` | `bool` | `false` | Enables custom domain mapping for the service. |
 | `dns.hostnames` | `string[]` | `[]` | Fully-qualified hostnames routed to the service. Must be unique. Required when `dns.enabled` is `true`. |
-| `dns.managedZone` | `string` | — | Cloud DNS managed zone for domain verification records. Required when `dns.enabled` is `true`. |
+| `dns.managedZone` | `string` | — | Cloud DNS managed zone for domain verification records. Required when `dns.enabled` is `true`. Can reference a GcpDnsZone resource via `valueFrom`. |
 
 ## Examples
 

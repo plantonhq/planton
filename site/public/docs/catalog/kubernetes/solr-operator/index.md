@@ -189,4 +189,4 @@ After deployment, the following outputs are available in `status.outputs`:
 
 - [KubernetesNamespace](/docs/catalog/kubernetes/namespace) — provides the target namespace via `valueFrom` reference
 - [KubernetesSolr](/docs/catalog/kubernetes/solr) — deploys SolrCloud clusters that depend on the operator installed by this component
-- [KubernetesCertManager](/docs/catalog/kubernetes/cert-manager) — manages TLS certificates for SolrCloud ingress when external access is configured
+- [KubernetesCertManager](/docs/catalog/kubernetes/kubernetescertmanager) — manages TLS certificates for SolrCloud ingress when external access is configured

@@ -4,11 +4,6 @@ metadata:
   name: my-development-vpc
 spec:
   region: <aws-region>
-  vpcCidr: 10.0.0.0/16
-  availabilityZones:
-    - <aws-region>a
-  subnetsPerAvailabilityZone: 1  # recommended_default from spec
-  subnetSize: 1  # recommended_default from spec
-  isNatGatewayEnabled: false  # No NAT gateway to reduce costs
-  isDnsHostnamesEnabled: true
-  isDnsSupportEnabled: true
+  cidrBlock: 10.0.0.0/16
+  enableDnsHostnames: true
+  enableDnsSupport: true

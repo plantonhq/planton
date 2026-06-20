@@ -1,0 +1,23 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesCertificate
+metadata:
+  name: my-root-ca
+spec:
+  namespace:
+    value: "<your-namespace>"
+  dnsNames:
+    - "<your-root-ca-name>"
+  secretName: "<your-root-ca-secret>"
+  isCa: true
+  issuerRef:
+    issuer:
+      name:
+        value: "<your-selfsigned-issuer>"
+  durationConfig:
+    duration: "87600h"
+    renewBefore: "2160h"
+  privateKey:
+    algorithm: rsa
+    size: 4096
+    encoding: pkcs1
+    rotationPolicy: never

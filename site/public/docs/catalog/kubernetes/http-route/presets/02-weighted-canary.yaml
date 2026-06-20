@@ -1,0 +1,23 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesHttpRoute
+metadata:
+  name: my-canary-route
+spec:
+  namespace:
+    value: app-ns
+  parentRefs:
+    - name: <gateway-name>
+  hostnames:
+    - <app-hostname>
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: <stable-service-name>
+          port: 8080
+          weight: 90
+        - name: <canary-service-name>
+          port: 8080
+          weight: 10

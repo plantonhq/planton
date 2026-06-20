@@ -21,7 +21,7 @@ spec:
           memory: 1Gi
       env:
         variables:
-          WORKER_CONCURRENCY:
+          - name: WORKER_CONCURRENCY
             value: "4"
   availability:
     minReplicas: 1

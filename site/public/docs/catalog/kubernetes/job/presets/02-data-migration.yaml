@@ -23,7 +23,7 @@ spec:
   restartPolicy: Never
   env:
     variables:
-      DATABASE_URL:
+      - name: DATABASE_URL
         value: "<your-database-connection-string>"
   command:
     - /bin/sh

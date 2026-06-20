@@ -1,0 +1,13 @@
+apiVersion: kubernetes.openmcf.org/v1
+kind: KubernetesAuthorizationPolicy
+metadata:
+  name: require-jwt
+spec:
+  namespace:
+    value: <namespace>
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            request_principals:
+              - "*"
