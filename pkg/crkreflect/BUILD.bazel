@@ -101,6 +101,7 @@ go_library(
         "//apis/org/openmcf/provider/aws/awsiamoidcprovider/v1:awsiamoidcprovider",
         "//apis/org/openmcf/provider/aws/awsiamrole/v1:awsiamrole",
         "//apis/org/openmcf/provider/aws/awsiamuser/v1:awsiamuser",
+        "//apis/org/openmcf/provider/aws/awsinternetgateway/v1:awsinternetgateway",
         "//apis/org/openmcf/provider/aws/awskinesisfirehose/v1:awskinesisfirehose",
         "//apis/org/openmcf/provider/aws/awskinesisstream/v1:awskinesisstream",
         "//apis/org/openmcf/provider/aws/awskinesisstreamconsumer/v1:awskinesisstreamconsumer",

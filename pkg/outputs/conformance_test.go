@@ -84,6 +84,21 @@ func TestStackOutputsConformance(t *testing.T) {
 			},
 		},
 		{
+			// AwsInternetGateway: flat scalar outputs from both engines (gateway
+			// id/arn, attached vpc id, region) must each land on the StackOutputs proto.
+			name: "AwsInternetGateway",
+			kind: cloudresourcekind.CloudResourceKind_AwsInternetGateway,
+			rawOutputs: map[string]interface{}{
+				"internet_gateway_id":  "igw-0abc123",
+				"internet_gateway_arn": "arn:aws:ec2:us-west-2:123456789012:internet-gateway/igw-0abc123",
+				"vpc_id":               "vpc-0abc123",
+				"region":               "us-west-2",
+			},
+			mustPopulate: []string{
+				"internet_gateway_id", "internet_gateway_arn", "vpc_id", "region",
+			},
+		},
+		{
 			// Guards the externaldns tofu module's output rename to solver_sa: the
 			// module previously emitted "service_account_name", which does not flatten
 			// onto the KubernetesExternalDnsStackOutputs.solver_sa proto field (the

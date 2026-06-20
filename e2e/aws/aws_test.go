@@ -70,13 +70,23 @@ func TestMain(m *testing.M) {
 
 // --- AWS S3 Bucket (walking skeleton) ---
 
-func TestAwsS3Bucket_Pulumi(t *testing.T)    { runAllScenariosForComponent(t, "awss3bucket", "pulumi") }
-func TestAwsS3Bucket_Terraform(t *testing.T) { runAllScenariosForComponent(t, "awss3bucket", "terraform") }
+func TestAwsS3Bucket_Pulumi(t *testing.T) { runAllScenariosForComponent(t, "awss3bucket", "pulumi") }
+func TestAwsS3Bucket_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "awss3bucket", "terraform")
+}
 
 // --- AWS Subnet (first composed topology: deploys an AwsVpc prerequisite) ---
 
 func TestAwsSubnet_Pulumi(t *testing.T)    { runAllScenariosForComponent(t, "awssubnet", "pulumi") }
 func TestAwsSubnet_Terraform(t *testing.T) { runAllScenariosForComponent(t, "awssubnet", "terraform") }
+
+// AwsInternetGateway live E2E is intentionally not wired yet: a live attach needs
+// a VPC without an internet gateway, but the AwsVpc component (the only VPC the
+// harness can stand up as a prerequisite) bundles its own internet gateway, and
+// AWS permits only one per VPC. The entry funcs + scenario activation land once
+// AwsVpc no longer bundles an internet gateway. The component is otherwise fully
+// validated offline (spec tests, outputs conformance/parity, tofu validate,
+// secret-coverage, bazel/nogo). See its e2e/profile.yaml.
 
 // runAllScenariosForComponent discovers and runs all E2E scenarios for an AWS component.
 func runAllScenariosForComponent(t *testing.T, component, engine string) {

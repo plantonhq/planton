@@ -316,6 +316,12 @@ enum CloudResourceKind {
     id_prefix: "awssn"
     prerequisites: [AwsVpc]
   }];
+  AwsInternetGateway = 285 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "awsigw"
+    prerequisites: [AwsVpc]
+  }];
 
   // --- Storage ---
 

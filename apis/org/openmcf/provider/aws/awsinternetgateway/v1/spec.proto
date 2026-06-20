@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package org.openmcf.provider.aws.awsinternetgateway.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// AwsInternetGatewaySpec defines an internet gateway for an AWS Virtual Private
+// Cloud (VPC).
+//
+// An internet gateway is the VPC's door to the public internet: a horizontally
+// scaled, redundant, AWS-managed component that allows bidirectional IPv4 (and,
+// for dual-stack VPCs, inbound/outbound IPv6) traffic between the VPC and the
+// internet. It performs network address translation for instances that have a
+// public IPv4 address.
+//
+// Attaching a gateway to a VPC does not, by itself, expose anything: a subnet
+// only becomes "public" once its route table sends a default route
+// (0.0.0.0/0, or ::/0 for IPv6) to this gateway. The standard public-subnet
+// recipe is therefore an AwsInternetGateway attached here plus an AwsSubnet
+// whose route targets it (target_type = internet_gateway).
+//
+// A VPC can have at most one internet gateway attached at a time. For
+// IPv6-only outbound access without inbound exposure, use an egress-only
+// internet gateway instead.
+message AwsInternetGatewaySpec {
+  // AWS region the internet gateway is created in. Must match the region of the
+  // VPC it attaches to. Example: "us-west-2", "eu-west-1". This drives provider
+  // construction, so it is required even though the gateway logically inherits
+  // the VPC's region.
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  // The VPC this internet gateway attaches to. Supply a literal vpc-id or
+  // reference an AwsVpc and the platform resolves its vpc_id output. Unlike a
+  // subnet's vpc_id, this is updatable: changing it detaches the gateway from
+  // the old VPC and attaches it to the new one (the gateway itself is not
+  // replaced). A VPC may have only one internet gateway attached at a time.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef vpc_id = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = AwsVpc,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
+  ];
+}

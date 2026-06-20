@@ -85,6 +85,7 @@ import (
 	awsiamoidcproviderv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsiamoidcprovider/v1"
 	awsiamrolev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsiamrole/v1"
 	awsiamuserv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsiamuser/v1"
+	awsinternetgatewayv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsinternetgateway/v1"
 	awskinesisfirehosev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awskinesisfirehose/v1"
 	awskinesisstreamv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awskinesisstream/v1"
 	awskinesisstreamconsumerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awskinesisstreamconsumer/v1"
@@ -497,6 +498,7 @@ var ProviderAwsMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_AwsIamOidcProvider:               &awsiamoidcproviderv1.AwsIamOidcProvider{},
 	cloudresourcekind.CloudResourceKind_AwsIamRole:                       &awsiamrolev1.AwsIamRole{},
 	cloudresourcekind.CloudResourceKind_AwsIamUser:                       &awsiamuserv1.AwsIamUser{},
+	cloudresourcekind.CloudResourceKind_AwsInternetGateway:               &awsinternetgatewayv1.AwsInternetGateway{},
 	cloudresourcekind.CloudResourceKind_AwsKinesisFirehose:               &awskinesisfirehosev1.AwsKinesisFirehose{},
 	cloudresourcekind.CloudResourceKind_AwsKinesisStream:                 &awskinesisstreamv1.AwsKinesisStream{},
 	cloudresourcekind.CloudResourceKind_AwsKinesisStreamConsumer:         &awskinesisstreamconsumerv1.AwsKinesisStreamConsumer{},
