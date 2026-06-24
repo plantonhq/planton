@@ -58,10 +58,13 @@ module "origin_rule" {
 | `zone_id` | Zone ID (pass-through) |
 | `phase` | Phase (pass-through) |
 
-## Dynamic Blocks
+## Rule and Action Parameter Construction
 
-The `main.tf` uses Terraform dynamic blocks extensively to handle the optional nature of action parameters. Each action type's parameters are wrapped in `dynamic` blocks that only render when the corresponding fields are non-null.
+The `main.tf` builds the `rules` list and each rule's `action_parameters` using attribute
+(object) syntax. Optional nested attributes are emitted as `null` when the corresponding spec
+fields are absent, so only the parameters relevant to each rule's action are sent to Cloudflare.
 
 ## Provider Version
 
-Uses `cloudflare/cloudflare ~> 4.0`. The `cloudflare_ruleset` resource is available in all 4.x versions.
+Uses `cloudflare/cloudflare ~> 5.0`. In provider v5 the `cloudflare_ruleset` rules and action
+parameters are nested attributes (assigned with object syntax), not nested blocks.

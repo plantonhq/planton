@@ -14,10 +14,8 @@ variable "metadata" {
 variable "spec" {
   description = "CloudflareRulesetSpec defines the configuration for a Cloudflare Ruleset"
   type = object({
-    # Cloudflare Zone ID (StringValueOrRef — use value for literal)
-    zone_id = optional(object({
-      value = string
-    }))
+    # Cloudflare Zone ID (StringValueOrRef flattened to a plain string by the tfvars converter)
+    zone_id = optional(string)
 
     # Cloudflare Account ID (for account-level rulesets)
     account_id = optional(string, "")

@@ -230,6 +230,19 @@ func TestStackOutputsConformance(t *testing.T) {
 			},
 			mustPopulate: []string{"zone_id", "nameservers"},
 		},
+		{
+			// CloudflareRuleset: both engines emit ruleset id, version, and the
+			// zone_id/phase pass-throughs as flat scalars onto the proto.
+			name: "CloudflareRuleset",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareRuleset,
+			rawOutputs: map[string]interface{}{
+				"ruleset_id": "2f2feab2026849078ba485f918791bdc",
+				"version":    "3",
+				"zone_id":    "023e105f4ecef8ad9ca31a8372d0c353",
+				"phase":      "http_request_origin",
+			},
+			mustPopulate: []string{"ruleset_id", "version", "zone_id", "phase"},
+		},
 	}
 
 	for _, tc := range cases {
