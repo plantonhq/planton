@@ -232,7 +232,7 @@ Open `iac/pulumi/module/*.go` and `iac/tf/*.tf` and compare each dimension from
 **Content Quality (3.34%):**
 - [ ] Contains landscape analysis sections (check for headers like "Level", "Approach", "Method", "Comparison")
 - [ ] Contains best practices or recommendations section
-- [ ] Explains 80/20 scoping decisions (what's included and why)
+- [ ] Explains 90/10 coverage decisions (what's covered, and what's skipped and why)
 - [ ] Documents deployment methods comparison
 
 **Note:** This document is the **primary source of truth** for understanding:

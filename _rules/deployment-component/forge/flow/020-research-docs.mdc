@@ -20,7 +20,7 @@ SCOPE
 PURPOSE
 The research document (v1/docs/README.md) serves multiple purposes:
 1. **Landscape Analysis** - Survey all deployment methods from manual to automated
-2. **80/20 Rationale** - Explain which features were included and why
+2. **90/10 Coverage Rationale** - Explain which provider surface is covered and why (and what is deliberately skipped)
 3. **Best Practices** - Document production-ready patterns
 4. **Historical Context** - Explain the evolution of the technology
 5. **Comparison** - Show how OpenMCF compares to other approaches
@@ -104,7 +104,7 @@ SEQUENTIAL STEPS
    - How OpenMCF's abstraction works
    - What it automates
    - What it simplifies
-   - The 80/20 principle application
+   - The 90/10 principle application
    - Why certain fields were included
    - Why certain fields were excluded
    - API design decisions
@@ -165,7 +165,7 @@ SUCCESS CRITERIA
 - Contains landscape analysis section
 - Contains best practices section
 - Contains OpenMCF's approach explanation
-- Document explains 80/20 scoping decisions
+- Document explains 90/10 coverage decisions
 - Examples are specific and actionable
 
 OUTPUT

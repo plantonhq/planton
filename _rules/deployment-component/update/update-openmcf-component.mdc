@@ -181,7 +181,7 @@ Use update when you need to:
 
 **Important:** Before proceeding with any update, read the component's research document (`v1/docs/README.md`) if it exists. This document contains critical context about:
 - Component's purpose and design philosophy
-- 80/20 scoping decisions (what's in-scope vs out-of-scope)
+- 90/10 coverage decisions (what's covered vs deliberately skipped)
 - Deployment landscape and provider-specific considerations
 - Best practices and known gotchas
 - Historical evolution and design rationale

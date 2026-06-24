@@ -7,7 +7,7 @@ locals {
     "name" = local.resource_name
   }, try(var.metadata.labels, {}))
 
-  # Bucket configuration
+  # Core bucket configuration
   bucket_name = var.spec.bucket_name
   account_id  = var.spec.account_id
 
@@ -16,16 +16,31 @@ locals {
   location      = coalesce(try(var.spec.location, null), "auto")
   location_hint = local.location == "auto" ? null : local.location
 
-  # Public access via the managed r2.dev URL is handled outside this module.
+  # Jurisdiction is part of the bucket identity and is applied to the bucket and
+  # every bucket-scoped sub-resource. Omitted -> null -> provider default "default".
+  jurisdiction = try(var.spec.jurisdiction, null) != null && try(var.spec.jurisdiction, "") != "" ? var.spec.jurisdiction : null
+
+  # Default storage class for new objects. Omitted -> null -> provider default "Standard".
+  storage_class = try(var.spec.storage_class, null) != null && try(var.spec.storage_class, "") != "" ? var.spec.storage_class : null
+
+  # Public access via the managed r2.dev domain.
   public_access = coalesce(try(var.spec.public_access, null), false)
 
   # Path-style S3 API URL for the bucket.
   bucket_url = "https://${local.account_id}.r2.cloudflarestorage.com/${local.bucket_name}"
 
-  # Custom domain configuration. zone_id is resolved to a plain string before
-  # this module runs, so it is read directly.
-  custom_domain_enabled = try(var.spec.custom_domain.enabled, false)
-  custom_domain_zone_id = try(var.spec.custom_domain.zone_id, "")
-  custom_domain_name    = try(var.spec.custom_domain.domain, "")
-}
+  # Enabled custom domains, keyed by domain name for for_each.
+  custom_domains_enabled = {
+    for cd in coalesce(try(var.spec.custom_domains, []), []) :
+    cd.domain => cd if try(cd.enabled, false)
+  }
 
+  # CORS rules (empty list when no cors block).
+  cors_rules = try(var.spec.cors.rules, [])
+
+  # Lifecycle rules (empty list when no lifecycle block).
+  lifecycle_rules = try(var.spec.lifecycle.rules, [])
+
+  # Lock rules (empty list when no lock block).
+  lock_rules = try(var.spec.lock.rules, [])
+}

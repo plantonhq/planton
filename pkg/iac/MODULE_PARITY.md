@@ -110,13 +110,20 @@ not flag the `_id` suffix), so it needs no annotation. The cluster-wide
 engines. None of these are stack outputs, so the conformance guard is unaffected.
 
 The `CloudflareR2Bucket` module pins the Cloudflare provider to v5 on both engines (tofu
-`~> 5.0`, Pulumi `sdk/v6`). The `location` hint is the enum value used verbatim as the provider
-string (`wnam`/`enam`/`weur`/`eeur`/`apac`/`oc`); `auto` (the enum zero value) means "no hint" and
-is omitted from the resource on both sides (tofu sets the attribute to `null`, Pulumi leaves the
-`Location` arg unset), letting Cloudflare choose. The custom domain (`cloudflare_r2_custom_domain`)
-is created only when `custom_domain.enabled` and uses the v5 attributes `domain` + `enabled = true`
-on both engines; `custom_domain.zone_id` is a `StringValueOrRef` resolved to a plain string before
-tfvars, so `variables.tf` types it as `optional(string)`. Stack outputs are the three proto fields
+`~> 5.0`, Pulumi `sdk/v6`) and provisions the bucket plus its bucket-scoped sub-resources in one
+module. The `location` hint is the enum value used verbatim as the provider string
+(`wnam`/`enam`/`weur`/`eeur`/`apac`/`oc`); `auto` (the enum zero value) means "no hint" and is
+omitted on both sides (tofu sets `null`, Pulumi leaves the `Location` arg unset). `jurisdiction`
+(a validated string) and `storage_class` (an enum used verbatim) are likewise omitted when empty so
+the provider applies its defaults, and `jurisdiction` is passed to every sub-resource so the whole
+bucket shares one jurisdiction. `public_access` provisions `cloudflare_r2_managed_domain`
+(`enabled = true`) and surfaces the r2.dev domain. `custom_domains` is a list: each enabled entry
+becomes one `cloudflare_r2_custom_domain` (tofu `for_each` keyed by domain, Pulumi a loop), with the
+v5 attrs `domain`/`zone_id`/`enabled = true` plus optional `min_tls`/`ciphers`; `zone_id` is a
+`StringValueOrRef` resolved to a plain string before tfvars. CORS, lifecycle, and lock are each a
+single sub-resource created only when their `rules` list is non-empty; the abort-multipart transition
+is always an `Age` condition and storage-class transitions always target `InfrequentAccess` (the sole
+supported class), hard-set identically on both engines. Stack outputs are the proto fields
 `bucket_name`, `bucket_url` (the path-style `https://<account_id>.r2.cloudflarestorage.com/<bucket>`
-S3 URL), and `custom_domain_url` (set only when a custom domain is enabled) — see the conformance
-guard's `CloudflareR2Bucket` case.
+S3 URL), `custom_domain_urls` (one per enabled custom domain), and `public_url` (the r2.dev domain
+when public access is enabled) — see the conformance guard's `CloudflareR2Bucket` case.

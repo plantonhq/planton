@@ -191,7 +191,7 @@ R2 bucket specification.
   ```hcl
   public_access = true
   ```
-  **Note**: The managed r2.dev URL has its own lifecycle and is configured outside this module; use a custom domain for production.
+  **Note**: enabling `public_access` provisions the managed r2.dev domain; use a custom domain for production traffic.
 
 ## Outputs
 
@@ -199,7 +199,8 @@ R2 bucket specification.
 |--------|------|-------------|
 | `bucket_name` | string | The name of the R2 bucket |
 | `bucket_url` | string | The path-style S3 API URL for the bucket |
-| `custom_domain_url` | string | The custom domain URL when `custom_domain.enabled` is `true` |
+| `custom_domain_urls` | list(string) | URLs of the configured custom domains (one per enabled custom domain) |
+| `public_url` | string | The managed r2.dev public URL when `public_access` is enabled; empty otherwise |
 
 Access outputs:
 
@@ -512,7 +513,7 @@ tfsec .
 
 ### Public Access
 
-The managed r2.dev public URL has its own lifecycle and is configured outside this module. For production public access, attach a custom domain (`custom_domain`), which this module provisions directly.
+Enabling `public_access` provisions the managed r2.dev domain directly. For production public access, attach one or more custom domains (`custom_domains`), which this module also provisions.
 - See: https://developers.cloudflare.com/r2/buckets/public-buckets/
 
 ### Versioning

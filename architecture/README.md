@@ -607,10 +607,10 @@ This document defines:
 - Complete checklist of required artifacts
 - Quality standards for each category
 - Scoring weights and rationale
-- 80/20 principle (focus on essentials)
+- 90/10 principle (provider schema as the floor)
 - Examples of complete components
 
-**Key Insight:** The ideal state is **intentionally pragmatic**—it focuses on the 20% of work that delivers 80% of the value. Not every component needs every possible artifact, but every production component should reach 95%+ completion.
+**Key Insight:** The ideal state is **intentionally pragmatic**—it focuses effort on the highest-leverage work. Not every component needs every possible artifact, but every production component should reach 95%+ completion, covering the provider's real surface to the floor.
 
 ---
 
@@ -685,29 +685,29 @@ openmcf validate --manifest config.yaml
 
 **Result:** 90%+ of errors caught before making any cloud API calls.
 
-### The 80/20 Principle
+### The 90/10 Principle
 
-**Not all configuration is equal.**
+**Coverage is benchmarked against the provider, not trimmed below it.**
 
-For every cloud resource, 80% of users only configure 20% of the available options. OpenMCF focuses on that 20%.
+For every cloud resource, OpenMCF covers the broad majority of what real users need -- the ~90% of the provider's surface that production deployments actually reach -- using the provider's own API as the floor for completeness, never the ceiling.
 
 **Example: PostgreSQL on Kubernetes**
 
-**Essential (80% of users need):**
+**Most-reached (the common path):**
 - Replicas (1 or 3)
 - Storage size (10Gi, 50Gi, 100Gi)
 - CPU and memory limits
 - Database name and credentials
 
-**Rare (only 20% of users need):**
+**Long tail (covered, with sensible defaults):**
 - Custom WAL configuration
-- Exotic replication topologies
+- Replication topologies
 - Fine-grained operator settings
 
 **OpenMCF's approach:**
-- Default modules expose the essential 20%
-- Power users can fork modules for advanced use cases
-- Keeps APIs simple and approachable
+- Default modules cover the real surface to the provider floor
+- Sensible defaults keep the common path simple
+- Genuinely beta/niche knobs are skipped with a recorded reason (or left to an escape hatch)
 
 ### Provider-Specific vs. Generic
 
@@ -1035,7 +1035,7 @@ Research → Forge → Audit → (Complete) → Deploy & Test → Commit
 1. **Research Phase**
    - Understand the resource (AWS RDS, GKE Cluster, etc.)
    - Research deployment methods (manual, Terraform, Pulumi)
-   - Identify 80/20 configuration (essential fields)
+   - Identify 90/10 coverage (the provider's real surface, benchmarked against the schema as the floor)
    - Document findings
 
 2. **Forge Phase**
@@ -1565,7 +1565,7 @@ OpenMCF is a multi-cloud deployment framework that provides **consistency withou
 
 **Philosophy:**
 - Consistency of experience, not abstraction of providers
-- 80/20 principle (focus on essential configuration)
+- 90/10 principle (cover the provider surface to the floor, with sensible defaults)
 - Deliberately simple IaC modules (adoption over perfection)
 - Language neutrality (build tools in any language)
 - Open source foundation (transparent, forkable, extendable)

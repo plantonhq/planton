@@ -188,7 +188,7 @@ Rank reflects **real-world deployment frequency**, not complexity or feature cov
 
 - Security-conscious defaults (HTTPS where applicable, deletion protection enabled)
 - Common sizing (not minimal, not maximum)
-- Features that 80%+ of production deployments use
+- Features that the large majority of production deployments use
 
 **Rank 02** -- The second most common pattern. Often the "opposite" of rank 01:
 
@@ -428,7 +428,7 @@ Not every pattern applies to every component. Use the following as a reference f
 
 ### Standard Production (Almost Always Rank 01)
 
-The configuration 80% of production deployments use. Security-conscious, reasonably sized, with essential features enabled. This is the default choice.
+The configuration the large majority of production deployments use. Security-conscious, reasonably sized, with essential features enabled. This is the default choice.
 
 ### Development / Minimal
 

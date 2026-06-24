@@ -4,7 +4,7 @@ This directory contains the Pulumi module for deploying Cloudflare R2 buckets us
 
 ## Overview
 
-The Pulumi module provisions Cloudflare R2 buckets with S3-compatible object storage and zero egress fees. R2 buckets are simpler than S3—no versioning, no bucket policies—optimized for the 80% use case of storing and serving content.
+The Pulumi module provisions Cloudflare R2 buckets with S3-compatible object storage and zero egress fees, along with their bucket-scoped configuration: managed and custom-domain access, CORS, lifecycle, and object lock. R2 is simpler than S3—no versioning, no bucket policies—while covering the object-storage surface most teams actually use.
 
 ## Directory Structure
 

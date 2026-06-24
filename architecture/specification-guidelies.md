@@ -6,9 +6,9 @@ When writing `spec.proto` files for Planton resources, we follow a fundamental p
 
 Think of it like ordering food at a restaurant. You tell the waiter "I'd like a medium-rare steak with mashed potatoes," not "Please cook beef at 135°F for 4 minutes per side, boil potatoes, mash them with butter..." The kitchen (deployment layer) handles the implementation details.
 
-## The 80/20 Rule (Pareto's Principle)
+## The 90/10 Coverage Principle
 
-Our specifications capture the **20% of configurations that 80% of users need**. We deliberately avoid exposing every knob and dial of the underlying deployment tool.
+Our specifications cover the broad majority of what real users need, benchmarked against the underlying provider's own API as the **floor** for completeness -- never the ceiling. Where a provider's surface is bounded (a Terraform provider is the reference), we reach the long tail of fields production deployments actually use, with sensible defaults so breadth never costs usability. Where the underlying tool's configuration is effectively unbounded (large Helm charts, raw manifests), we cover the real surface and add an escape hatch for the genuine edge.
 
 ### Why This Matters
 
@@ -17,12 +17,12 @@ Consider MongoDB deployment options:
 - Percona operator CRD has 150+ fields
 - Raw Kubernetes manifests have unlimited possibilities
 
-Our `MongodbKubernetesSpec` has just 3 fields:
+Our `MongodbKubernetesSpec` covers what real deployments use without drowning users in Helm internals:
 - `container` - replicas, resources, persistence, disk size
 - `ingress` - external access configuration
-- `helm_values` - escape hatch for advanced users
+- `helm_values` - escape hatch for the unbounded tail
 
-This covers the vast majority of use cases while keeping the API intuitive and maintainable.
+This reaches the vast majority of use cases while keeping the API intuitive and maintainable.
 
 ## Deployment-Agnostic Design
 
@@ -149,7 +149,7 @@ Ask: "What does a user want to accomplish?" Not: "What does the deployment tool 
 
 ### 2. Use Sensible Defaults
 
-Every field should have a default value that works for 80% of cases:
+Every field should have a default value that works for the common case:
 
 ```protobuf
 MongodbKubernetesContainer container = 1 [
@@ -176,7 +176,7 @@ spec: {}  # All defaults work!
 
 ### 3. Provide Escape Hatches
 
-For the 20% of users with special needs, provide escape hatches:
+For users whose needs go beyond the covered surface, provide escape hatches:
 
 ```protobuf
 // Advanced users can override specific Helm values
@@ -323,7 +323,7 @@ Add a comment explaining why you're deviating from the lowercase pattern.
 When you write a spec, ask yourself:
 
 1. ✅ **Deployment-agnostic?** Could this spec work with a different deployment tool?
-2. ✅ **80/20 compliant?** Does it cover common use cases without overwhelming users?
+2. ✅ **90/10 coverage?** Does it reach the provider's real surface (benchmarked against the schema as the floor) with sensible defaults, without overwhelming users?
 3. ✅ **Intuitive?** Would a Kubernetes engineer understand it without reading documentation?
 4. ✅ **Future-proof?** Can we add features without breaking changes?
 5. ✅ **Sensible defaults?** Can users deploy with minimal configuration?

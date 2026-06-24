@@ -82,47 +82,46 @@ Completeness of a deployment component is **contextual and principle-driven**, n
 
 ### Philosophy of Completeness
 
-**The 80/20 Principle:**
+**The 90/10 Principle:**
 
-A complete deployment component captures the 20% of configuration that 80% of users need. This means:
+A complete deployment component covers the broad majority of what real users need -- the ~90% of a provider's surface that production deployments actually reach -- benchmarked against the provider's own canonical API as the **floor** for completeness, never the ceiling for ambition. This means:
 
-- **Not Every Field** - We don't expose every knob and dial the underlying provider offers
-- **Essential Fields Only** - Focus on fields that matter for production deployments
-- **Research-Driven** - Completeness is determined by research into real-world usage patterns
-- **Opinionated Defaults** - Provide sensible defaults for advanced fields
+- **Schema as the Floor** - The provider's canonical API (the Terraform provider is the reference) is the minimum bar for how complete a component should be. An advanced organization should be able to reach the long tail of what the provider offers, not just the surface knobs.
+- **Broad, Production-Grade Coverage** - Expose the fields production deployments actually use, across both common and advanced scenarios.
+- **Research-Driven** - Coverage is grounded in the provider schema and real-world usage patterns, not guesswork.
+- **Opinionated Defaults** - Provide sensible defaults so breadth never costs usability: advanced fields default well and stay out of the way until a user needs them.
 
-**Example:** For `GcpCertManagerCert`, the essential fields are:
+**Example:** For `GcpCertManagerCert`, the most-reached fields are:
 - `gcp_project_id` - Where to deploy
 - `primary_domain_name` - What domain to secure
 - `cloud_dns_zone_id` - Where to create validation records
 - `certificate_type` - MANAGED vs LOAD_BALANCER
 
-Advanced fields like certificate scope, location, labels are either defaulted or considered out of scope for the 80/20 use case.
+Advanced fields like certificate scope, location, and labels are exposed with sensible defaults so the long tail is reachable without burdening the common case.
 
 ### Contextual vs Absolute Completeness
 
 **Contextual Completeness** means a component is complete when:
 
-1. **Research Validates Scope** - The `docs/README.md` research document identifies the deployment landscape and justifies why certain features are in-scope and others are not
+1. **Research Validates Coverage** - The `docs/README.md` research document maps the deployment landscape and the provider's surface, and justifies the coverage reached (and any genuinely-niche surface deliberately skipped, with a reason)
 
-2. **Proto Schema Matches Research** - The `spec.proto` accurately reflects the researched 80/20 features, not a wholesale copy of the provider's API
+2. **Proto Schema Meets the Floor** - The `spec.proto` covers the provider's real surface to the 90/10 bar, benchmarked against the provider's API as the floor -- not arbitrarily trimmed below it
 
 3. **Both IaC Modules Implement the Schema** - Every field defined in `spec.proto` is actually used in both Pulumi and Terraform modules (no unused fields, no missing implementations)
 
 4. **Presets Validate the API** - The preset YAML files contain working, deployable configurations that demonstrate the API's capabilities and validate against the current schema
 
-5. **Documentation Explains Decisions** - Users understand *why* certain features are included and others are not, reducing support burden
+5. **Documentation Explains Decisions** - Users understand the coverage and the rationale for anything deliberately skipped, reducing support burden
 
-**Absolute Completeness** (what we explicitly avoid):
+**What we still avoid** (90/10 is deliberately not literal 100%):
 
-- Exposing every provider-specific field "just in case"
+- Genuinely beta, deprecated, or vendor-locked fields with no real-world use -- skipped *with a recorded reason*, not silently
 - Supporting every possible deployment method
-- Creating examples for every possible combination
-- Documenting features that 95% of users will never need
+- Field count for its own sake -- coverage must be tested, parity-verified, and deploy-validated
 
-### Quality Over Quantity
+### Quality At Scale
 
-A deployment component with 10 well-researched, documented, and tested fields is **more complete** than one with 50 hastily-added fields lacking documentation or real-world validation.
+A deployment component reaches 90/10 by covering the provider's real surface **with** the same rigor -- every field researched, documented, validated, and exercised in both engines. Breadth never excuses a hastily-added, undocumented, or untested field: quality is the constant, and coverage is raised to the floor on top of it.
 
 **Completeness Indicators:**
 - ✅ Research document explains landscape and rationale
@@ -307,7 +306,7 @@ apis/org/openmcf/provider/gcp/gcpcertmanagercert/v1/
   - String patterns: `[(buf.validate.field).string.pattern = "regex"]`
   - Numeric ranges: `[(buf.validate.field).int32 = {gte: 1, lte: 100}]`
 - [ ] **Documentation** - Every field has a comment explaining its purpose
-- [ ] **80/20 Scoping** - Fields reflect research findings (not every possible provider option)
+- [ ] **90/10 Coverage** - Fields reach the provider's real surface (benchmarked against the schema as the floor), with sensible defaults
 - [ ] **Enums for Choices** - Use enums for fields with fixed choices (not free-form strings)
 
 **Example:**
@@ -640,10 +639,10 @@ variable "alternate_domain_names" {
   - IaC tools (Terraform, Pulumi, CloudFormation, etc.)
   - Specialized tools (Helm, Ansible, Crossplane, etc.)
   - Comparison of approaches
-- [ ] **80/20 Scoping Decision** - Explicit explanation of:
-  - Which features are in-scope and why
-  - Which features are out-of-scope and why
-  - How the 20% was determined
+- [ ] **90/10 Coverage Decision** - Explicit explanation of:
+  - Which provider surface is covered and why
+  - Which genuinely-niche features are skipped, and the reason
+  - How coverage was benchmarked against the provider schema as the floor
 - [ ] **Best Practices** - Production-ready recommendations
 - [ ] **Common Pitfalls** - Known issues and how to avoid them
 - [ ] **Research-Backed** - References to official documentation, community discussions, real-world usage
