@@ -161,26 +161,30 @@ Terraform's official `cloudflare/cloudflare` provider is automatically generated
 **Example:**
 
 ```hcl
-resource "cloudflare_worker_script" "api" {
-  account_id = var.cloudflare_account_id
-  name       = "api-gateway"
-  content    = file("./dist/worker.js")
-  
-  kv_namespace_binding {
-    name         = "CACHE"
-    namespace_id = cloudflare_workers_kv_namespace.cache.id
-  }
-  
-  plain_text_binding {
-    name = "ENVIRONMENT"
-    text = "production"
-  }
+resource "cloudflare_workers_script" "api" {
+  account_id  = var.cloudflare_account_id
+  script_name = "api-gateway"
+  content     = file("./dist/worker.js")
+  main_module = "index.js"
+
+  bindings = [
+    {
+      name         = "CACHE"
+      type         = "kv_namespace"
+      namespace_id = cloudflare_workers_kv_namespace.cache.id
+    },
+    {
+      name = "ENVIRONMENT"
+      type = "plain_text"
+      text = "production"
+    }
+  ]
 }
 
-resource "cloudflare_worker_route" "api_route" {
-  zone_id     = var.cloudflare_zone_id
-  pattern     = "api.example.com/*"
-  script_name = cloudflare_worker_script.api.name
+resource "cloudflare_workers_route" "api_route" {
+  zone_id = var.cloudflare_zone_id
+  pattern = "api.example.com/*"
+  script  = cloudflare_workers_script.api.script_name
 }
 ```
 

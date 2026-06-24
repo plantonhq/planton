@@ -255,6 +255,17 @@ func TestStackOutputsConformance(t *testing.T) {
 			},
 			mustPopulate: []string{"load_balancer_id", "load_balancer_dns_record_name", "load_balancer_cname_target"},
 		},
+		{
+			// CloudflareWorker: both engines emit the script id (scalar) and the
+			// route urls (repeated string) onto the StackOutputs proto.
+			name: "CloudflareWorker",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareWorker,
+			rawOutputs: map[string]interface{}{
+				"script_id":  "my-worker",
+				"route_urls": []interface{}{"https://app.example.com"},
+			},
+			mustPopulate: []string{"script_id", "route_urls"},
+		},
 	}
 
 	for _, tc := range cases {

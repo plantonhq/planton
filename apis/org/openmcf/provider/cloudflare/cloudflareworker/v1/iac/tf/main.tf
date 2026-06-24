@@ -8,72 +8,70 @@ data "aws_s3_object" "worker_bundle" {
 
 # Cloudflare Worker Script
 resource "cloudflare_workers_script" "main" {
-  account_id = var.spec.account_id
-  name       = local.script_name
+  account_id  = var.spec.account_id
+  script_name = local.script_name
 
   # Worker content from R2 bundle
   content = data.aws_s3_object.worker_bundle.body
 
-  # Module format (as opposed to service worker format)
-  module = true
+  # Module-format worker (the entrypoint is an ES module).
+  main_module = "index.js"
 
   # Compatibility settings
   compatibility_date  = local.compatibility_date
   compatibility_flags = ["nodejs_compat"]
 
-  # Plain text bindings (environment variables)
-  dynamic "plain_text_binding" {
-    for_each = local.env_variables
-    content {
-      name = plain_text_binding.key
-      text = plain_text_binding.value
-    }
-  }
+  # Flat bindings list. Each element carries the full attribute set; unused
+  # attributes are null so all elements share one object type.
+  bindings = concat(
+    [for k, v in local.env_variables : {
+      name         = k
+      type         = "plain_text"
+      text         = v
+      namespace_id = null
+    }],
+    [for b in local.kv_bindings : {
+      name         = b.name
+      type         = "kv_namespace"
+      text         = null
+      namespace_id = b.field_path
+    }],
+    [for k, v in local.env_secrets : {
+      name         = k
+      type         = "secret_text"
+      text         = v
+      namespace_id = null
+    }],
+  )
 
-  # KV namespace bindings
-  dynamic "kv_namespace_binding" {
-    for_each = local.kv_bindings
-    content {
-      name         = kv_namespace_binding.value.name
-      namespace_id = kv_namespace_binding.value.field_path
-    }
+  # Enable Workers Logs for observability.
+  observability = {
+    enabled            = true
+    head_sampling_rate = 1
   }
-
-  # Secret bindings
-  # Note: Terraform doesn't support uploading secrets directly
-  # Secrets must be managed separately via Cloudflare API or dashboard
-  dynamic "secret_text_binding" {
-    for_each = local.env_secrets
-    content {
-      name = secret_text_binding.key
-      text = secret_text_binding.value
-    }
-  }
-
-  # Enable observability (logs)
-  logpush = true
 }
 
 # DNS Record for custom domain (if DNS is enabled)
-resource "cloudflare_record" "worker_dns" {
+resource "cloudflare_dns_record" "worker_dns" {
   count = local.dns_enabled ? 1 : 0
 
   zone_id = local.dns_zone_id
   name    = local.dns_hostname
   type    = "AAAA"
-  value   = "100::"  # Dummy IPv6 address for Workers routes
-  proxied = true      # Orange cloud - required for Workers
+  content = "100::" # Dummy IPv6 address; the proxied Worker handles requests at the edge
+  ttl     = 1
+  proxied = true # Orange cloud - required for Workers
 }
 
 # Worker Route (if DNS is enabled)
-resource "cloudflare_worker_route" "main" {
+resource "cloudflare_workers_route" "main" {
   count = local.dns_enabled ? 1 : 0
 
-  zone_id     = local.dns_zone_id
-  pattern     = local.route_pattern
-  script_name = cloudflare_workers_script.main.name
+  zone_id = local.dns_zone_id
+  pattern = local.route_pattern
+  script  = cloudflare_workers_script.main.script_name
 
   # Ensure DNS record exists before creating route
-  depends_on = [cloudflare_record.worker_dns]
+  depends_on = [cloudflare_dns_record.worker_dns]
 }
 

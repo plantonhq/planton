@@ -44,6 +44,14 @@ func createWorkerScript(
 				Text: pulumi.String(v),
 			})
 		}
+		// Secret environment variables become secret_text bindings (stored encrypted).
+		for k, v := range locals.CloudflareWorker.Spec.Env.Secrets {
+			bindings = append(bindings, cloudfl.WorkersScriptBindingArgs{
+				Name: pulumi.String(k),
+				Type: pulumi.String("secret_text"),
+				Text: pulumi.String(v),
+			})
+		}
 	}
 
 	// Add KV namespace bindings
