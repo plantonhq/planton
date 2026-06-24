@@ -108,3 +108,15 @@ not flag the `_id` suffix), so it needs no annotation. The cluster-wide
 `KubernetesZalandoPostgresOperator` backup config mirrors the same `bucket` + `object_prefix` +
 `credentials` shape, composing the identical `WALG_S3_PREFIX` into its operator configmap on both
 engines. None of these are stack outputs, so the conformance guard is unaffected.
+
+The `CloudflareR2Bucket` module pins the Cloudflare provider to v5 on both engines (tofu
+`~> 5.0`, Pulumi `sdk/v6`). The `location` hint is the enum value used verbatim as the provider
+string (`wnam`/`enam`/`weur`/`eeur`/`apac`/`oc`); `auto` (the enum zero value) means "no hint" and
+is omitted from the resource on both sides (tofu sets the attribute to `null`, Pulumi leaves the
+`Location` arg unset), letting Cloudflare choose. The custom domain (`cloudflare_r2_custom_domain`)
+is created only when `custom_domain.enabled` and uses the v5 attributes `domain` + `enabled = true`
+on both engines; `custom_domain.zone_id` is a `StringValueOrRef` resolved to a plain string before
+tfvars, so `variables.tf` types it as `optional(string)`. Stack outputs are the three proto fields
+`bucket_name`, `bucket_url` (the path-style `https://<account_id>.r2.cloudflarestorage.com/<bucket>`
+S3 URL), and `custom_domain_url` (set only when a custom domain is enabled) — see the conformance
+guard's `CloudflareR2Bucket` case.

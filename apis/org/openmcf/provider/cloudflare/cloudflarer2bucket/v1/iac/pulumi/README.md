@@ -66,11 +66,10 @@ target:
   metadata:
     name: media-bucket
   spec:
-    bucket_name: myapp-media-assets
-    account_id: "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"  # Your account ID
-    location: 3  # WEUR (Western Europe)
-    public_access: true
-    versioning_enabled: false
+    bucketName: myapp-media-assets
+    accountId: "0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"  # Your account ID
+    location: weur  # Western Europe
+    publicAccess: true
 
 provider_config:
   # Cloudflare credentials provided via environment variables
@@ -166,12 +165,12 @@ Pulumi will show a diff of changes before applying.
 
 **Change location**:
 ```yaml
-location: 5  # APAC instead of WEUR
+location: apac  # Asia-Pacific instead of weur
 ```
 
 **Enable public access**:
 ```yaml
-public_access: true
+publicAccess: true
 ```
 
 **Note**: Some changes (like bucket name) require bucket replacement (destroy + create).
@@ -357,19 +356,17 @@ pulumi import cloudflare:index/r2Bucket:R2Bucket main <bucket-id>
 
 ### Public Access
 
-The Cloudflare Pulumi provider does not yet expose a direct field for toggling r2.dev public URLs. When `public_access: true` is specified:
-- A warning is logged
-- Public access must be enabled manually via Cloudflare Dashboard or API
+The managed r2.dev public URL has its own lifecycle and is configured outside this module. For production public access, attach a custom domain (`custom_domain`), which this module provisions directly.
 
 ### Versioning
 
-R2 does not support object versioning. The `versioning_enabled` field is ignored with a warning.
+R2 does not support object versioning, so it is not modeled by this component.
 
 ## Additional Resources
 
 - [Pulumi Cloudflare Provider Docs](https://www.pulumi.com/registry/packages/cloudflare/)
 - [Cloudflare R2 API Docs](https://developers.cloudflare.com/api/operations/r2-create-bucket)
-- [overview.md](./overview.md) - Architecture and design decisions
+- [Architecture deep dive](../../docs/README.md) - Architecture and design decisions
 - [Component README](../../README.md) - User-facing component documentation
 
 ## Support

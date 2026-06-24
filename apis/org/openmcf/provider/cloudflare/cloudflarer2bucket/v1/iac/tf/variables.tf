@@ -20,31 +20,20 @@ variable "spec" {
     # Cloudflare account ID (32 hex characters)
     account_id = string
 
-    # Primary region for the bucket (location hint)
-    # 1=WNAM, 2=ENAM, 3=WEUR, 4=EEUR, 5=APAC, 6=OC
-    location = number
+    # Primary region for the bucket (location hint), e.g. "auto", "wnam",
+    # "enam", "weur", "eeur", "apac", "oc". "auto" lets Cloudflare choose.
+    location = optional(string)
 
-    # Expose bucket via public URL (r2.dev domain)
+    # Expose bucket via the managed r2.dev public URL.
     public_access = optional(bool, false)
-
-    # Enable object versioning (Note: R2 does not support versioning)
-    versioning_enabled = optional(bool, false)
 
     # Custom domain configuration for the bucket
     custom_domain = optional(object({
       # Whether to enable custom domain access for the bucket
       enabled = bool
 
-      # The Cloudflare Zone ID (literal value or reference)
-      zone_id = object({
-        value      = optional(string)
-        value_from = optional(object({
-          kind       = optional(string)
-          env        = optional(string)
-          name       = string
-          field_path = optional(string)
-        }))
-      })
+      # The Cloudflare Zone ID hosting the custom domain (resolved literal).
+      zone_id = optional(string)
 
       # The full domain name to use for accessing the bucket
       domain = string

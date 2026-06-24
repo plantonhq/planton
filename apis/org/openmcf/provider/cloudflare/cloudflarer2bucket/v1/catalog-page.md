@@ -1,13 +1,13 @@
 # Cloudflare R2 Bucket
 
-Deploys a Cloudflare R2 object storage bucket with a configurable location hint and optional custom domain access via an R2 managed domain. The component supports all six R2 location regions and integrates with CloudflareDnsZone for custom domain configuration.
+Deploys a Cloudflare R2 object storage bucket with a configurable location hint and optional custom domain access. The component supports all six R2 location regions and integrates with CloudflareDnsZone for custom domain configuration.
 
 ## What Gets Created
 
 When you deploy a CloudflareR2Bucket resource, OpenMCF provisions:
 
 - **R2 Bucket** — a `cloudflare_r2_bucket` resource in the specified Cloudflare account with the configured location hint
-- **R2 Custom Domain** — created only when `customDomain.enabled` is `true`, attaches a custom domain to the bucket via a `cloudflare_r2_custom_domain` resource so the bucket is accessible at the specified hostname
+- **R2 Custom Domain** — created only when `customDomain.enabled` is `true`, attaches a custom domain to the bucket via a `cloudflare_r2_custom_domain` resource so the bucket is accessible at the specified domain
 
 ## Prerequisites
 
@@ -32,7 +32,7 @@ metadata:
 spec:
   bucketName: my-app-assets
   accountId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
-  location: WNAM
+  location: wnam
 ```
 
 Deploy:
@@ -51,14 +51,13 @@ This creates an R2 bucket named `my-app-assets` in Western North America with no
 |-------|------|-------------|------------|
 | `bucketName` | `string` | Name of the R2 bucket. Must be DNS-compatible. | 3–63 characters, pattern `^[a-z0-9]([-a-z0-9]*[a-z0-9])?$` |
 | `accountId` | `string` | Cloudflare account ID where the bucket is created. | Exactly 32 hex characters, pattern `^[0-9a-fA-F]{32}$` |
-| `location` | `enum` | Location hint for the bucket's primary storage region. | One of: `auto`, `WNAM`, `ENAM`, `WEUR`, `EEUR`, `APAC`, `OC` |
 
 ### Optional Fields
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
-| `publicAccess` | `bool` | `false` | Expose the bucket via Cloudflare's managed `r2.dev` public URL. Note: this currently requires manual enablement via the Cloudflare Dashboard or API. |
-
+| `location` | `enum` | `auto` | Location hint for the bucket's primary storage region. One of: `auto`, `wnam`, `enam`, `weur`, `eeur`, `apac`, `oc`. `auto` lets Cloudflare choose; the hint is only honored at creation and is best-effort. |
+| `publicAccess` | `bool` | `false` | Expose the bucket via Cloudflare's managed `r2.dev` public URL. |
 | `customDomain.enabled` | `bool` | `false` | Enables custom domain access for the bucket. When `true`, `customDomain.zoneId` and `customDomain.domain` are required. |
 | `customDomain.zoneId` | `string` | — | Cloudflare Zone ID where the custom domain is configured. Can reference a CloudflareDnsZone resource via `valueFrom`. Required when `customDomain.enabled` is `true`. |
 | `customDomain.domain` | `string` | — | Fully qualified domain name for accessing the bucket (e.g., `media.example.com`). Must be within the zone specified by `customDomain.zoneId`. Maximum 253 characters. Required when `customDomain.enabled` is `true`. |
@@ -102,7 +101,7 @@ metadata:
 spec:
   bucketName: prod-media-assets
   accountId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
-  location: ENAM
+  location: enam
   customDomain:
     enabled: true
     zoneId: a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6
@@ -126,7 +125,7 @@ metadata:
 spec:
   bucketName: prod-static-assets
   accountId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
-  location: WEUR
+  location: weur
   customDomain:
     enabled: true
     zoneId:

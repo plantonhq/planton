@@ -11,7 +11,7 @@ Creates a private R2 bucket with no public access. Data is accessible only via W
 ## Key Configuration Choices
 
 - **publicAccess: false** (`publicAccess: false`) -- No public URL; access via Workers or credentials only.
-- **location** (`location: auto`) -- Auto lets Cloudflare choose; or WNAM, ENAM, WEUR, EEUR, APAC, OC.
+- **location** (`location: auto`) -- Auto lets Cloudflare choose; or wnam, enam, weur, eeur, apac, oc.
 - **bucketName** (`bucketName`) -- DNS-compatible, 3–63 chars, lowercase alphanumeric and hyphens.
 
 ## Placeholders to Replace

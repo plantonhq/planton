@@ -77,7 +77,7 @@ provider "cloudflare" {
 resource "cloudflare_r2_bucket" "media" {
   account_id = var.account_id
   name       = "media-bucket"
-  location   = "WEUR"  # Western Europe
+  location   = "weur"  # Western Europe
 }
 
 # For CORS, use AWS provider pointing at R2
@@ -106,14 +106,14 @@ resource "aws_s3_bucket_cors_configuration" "media_cors" {
 
 ```go
 import (
-    "github.com/pulumi/pulumi-cloudflare/sdk/v5/go/cloudflare"
+    "github.com/pulumi/pulumi-cloudflare/sdk/v6/go/cloudflare"
     "github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
 bucket, err := cloudflare.NewR2Bucket(ctx, "media-bucket", &cloudflare.R2BucketArgs{
     AccountId: pulumi.String(accountId),
     Name:      pulumi.String("media-bucket"),
-    Location:  pulumi.String("WEUR"),
+    Location:  pulumi.String("weur"),
 })
 ```
 
@@ -316,7 +316,7 @@ When integrating R2 into OpenMCF's multi-cloud IaC framework, we design the sche
 
 2. **Account ID**: Cloudflare account to create the bucket in. **Required.** (OpenMCF may infer this from provider config, but it must be specified somewhere.)
 
-3. **Region/Location**: Location hint (`WNAM`, `ENAM`, `WEUR`, etc.) for latency optimization. **Recommended.** Default to `auto` (Cloudflare chooses) if unspecified.
+3. **Region/Location**: Location hint (`wnam`, `enam`, `weur`, etc.) for latency optimization. **Recommended.** Default to `auto` (Cloudflare chooses) if unspecified.
 
 4. **Public Access**: Boolean to indicate if the bucket should be publicly accessible. **Common.** If `true`, decide between:
    - `public_dev_url`: Enable `r2.dev` URL (dev/test only)
@@ -342,7 +342,7 @@ When integrating R2 into OpenMCF's multi-cloud IaC framework, we design the sche
 
 ### What We Omit from the Spec
 
-- **Versioning**: R2 doesn't support it. (Note: The current `spec.proto` mistakenly includes `versioning_enabled`—this should be removed.)
+- **Versioning**: R2 doesn't support it, so the spec does not model it.
 - **Bucket Policies / ACLs**: Not applicable to R2.
 - **Static Website Hosting**: Not a bucket-level config in R2 (use Cloudflare Pages/Workers instead).
 
@@ -364,7 +364,7 @@ message CloudflareR2BucketSpec {
   // Cloudflare account ID (32-char hex)
   string account_id = 2;
 
-  // Region/location hint (WNAM, ENAM, WEUR, etc.)
+  // Region/location hint (wnam, enam, weur, etc.; auto = let Cloudflare choose)
   CloudflareR2Location location = 3;
 
   // Enable public access via r2.dev URL (dev/test only)
@@ -384,7 +384,7 @@ message CloudflareR2BucketSpec {
 }
 ```
 
-**Note:** The current `spec.proto` includes `versioning_enabled`, which is not supported by R2. This field should be removed to avoid confusion.
+**Note:** R2 does not support object versioning, so the spec deliberately does not model it.
 
 ### Default Choices
 
@@ -419,7 +419,7 @@ metadata:
 spec:
   bucketName: dev-test-uploads
   account_id: 1234567890abcdef1234567890abcdef
-  location: WNAM
+  location: wnam
   public_access: false
 ```
 
@@ -442,7 +442,7 @@ metadata:
 spec:
   bucketName: staging-assets
   account_id: 1234567890abcdef1234567890abcdef
-  location: WEUR
+  location: weur
   public_access: true
   public_dev_url: true  # Use r2.dev for staging (custom domain not needed yet)
   cors:
@@ -473,7 +473,7 @@ metadata:
 spec:
   bucketName: prod-media
   account_id: 1234567890abcdef1234567890abcdef
-  location: ENAM
+  location: enam
   public_access: true
   custom_domain: media.example.com
   cors:
@@ -509,7 +509,7 @@ metadata:
 spec:
   bucketName: prod-user-data-eu
   account_id: 1234567890abcdef1234567890abcdef
-  location: WEUR
+  location: weur
   jurisdiction: EU  # Enforce data stays within EU
   public_access: false
   lifecycle:
