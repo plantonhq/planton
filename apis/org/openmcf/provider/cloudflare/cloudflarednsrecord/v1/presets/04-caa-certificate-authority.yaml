@@ -1,13 +1,15 @@
 apiVersion: cloudflare.openmcf.org/v1
 kind: CloudflareDnsRecord
 metadata:
-  name: my-mx-email-record
+  name: my-caa-record
 spec:
   zoneId:
     value: <cloudflare-zone-id>
   name: "@"
-  type: MX
-  content: <mail-server-hostname>
-  priority: 10
-  proxied: false
+  type: CAA
   ttl: 3600
+  data:
+    caa:
+      flags: 0
+      tag: issue
+      value: letsencrypt.org

@@ -214,11 +214,11 @@ func TestStackOutputsConformance(t *testing.T) {
 			kind: cloudresourcekind.CloudResourceKind_CloudflareDnsRecord,
 			rawOutputs: map[string]interface{}{
 				"record_id":   "372e67954025e0ba6aaa6d586b9e0b59",
-				"hostname":    "www",
+				"record_name": "www",
 				"record_type": "A",
 				"proxied":     true,
 			},
-			mustPopulate: []string{"record_id", "hostname", "record_type", "proxied"},
+			mustPopulate: []string{"record_id", "record_name", "record_type", "proxied"},
 		},
 		{
 			// CloudflareDnsZone: both engines emit the zone id (scalar) and the
@@ -226,10 +226,20 @@ func TestStackOutputsConformance(t *testing.T) {
 			name: "CloudflareDnsZone",
 			kind: cloudresourcekind.CloudResourceKind_CloudflareDnsZone,
 			rawOutputs: map[string]interface{}{
-				"zone_id":     "023e105f4ecef8ad9ca31a8372d0c353",
-				"nameservers": []interface{}{"ns1.cloudflare.com", "ns2.cloudflare.com"},
+				"zone_id":                 "023e105f4ecef8ad9ca31a8372d0c353",
+				"nameservers":             []interface{}{"ns1.cloudflare.com", "ns2.cloudflare.com"},
+				"status":                  "active",
+				"dnssec_status":           "active",
+				"dnssec_ds":               "example.com. 3600 IN DS 2371 13 2 ABCDEF",
+				"dnssec_digest":           "abcdef0123456789",
+				"dnssec_digest_type":      "2",
+				"dnssec_digest_algorithm": "SHA256",
+				"dnssec_algorithm":        "13",
+				"dnssec_key_tag":          "2371",
+				"dnssec_public_key":       "mdsswUyr3DPW132mOi8V9xESWE8jTo0d",
+				"dnssec_flags":            "257",
 			},
-			mustPopulate: []string{"zone_id", "nameservers"},
+			mustPopulate: []string{"zone_id", "nameservers", "status", "dnssec_ds", "dnssec_key_tag"},
 		},
 		{
 			// CloudflareRuleset: both engines emit ruleset id, version, and the

@@ -22,14 +22,14 @@ const (
 )
 
 // CloudflareDnsRecordStackOutputs captures the outputs after provisioning a Cloudflare DNS record.
-// It includes the record's unique identifier and hostname for reference.
+// It includes the record's unique identifier and name for reference.
 type CloudflareDnsRecordStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The unique identifier of the created DNS record in Cloudflare.
 	RecordId string `protobuf:"bytes,1,opt,name=record_id,json=recordId,proto3" json:"record_id,omitempty"`
-	// The fully qualified hostname of the DNS record.
-	// For example: "www.example.com" or "example.com" for apex records.
-	Hostname string `protobuf:"bytes,2,opt,name=hostname,proto3" json:"hostname,omitempty"`
+	// The DNS record name as stored by Cloudflare (the record's name within the
+	// zone, e.g. "www" or "@" for the apex).
+	RecordName string `protobuf:"bytes,2,opt,name=record_name,json=recordName,proto3" json:"record_name,omitempty"`
 	// The DNS record type that was created.
 	RecordType string `protobuf:"bytes,3,opt,name=record_type,json=recordType,proto3" json:"record_type,omitempty"`
 	// Whether the record is proxied through Cloudflare (orange cloud).
@@ -75,9 +75,9 @@ func (x *CloudflareDnsRecordStackOutputs) GetRecordId() string {
 	return ""
 }
 
-func (x *CloudflareDnsRecordStackOutputs) GetHostname() string {
+func (x *CloudflareDnsRecordStackOutputs) GetRecordName() string {
 	if x != nil {
-		return x.Hostname
+		return x.RecordName
 	}
 	return ""
 }
@@ -100,10 +100,11 @@ var File_org_openmcf_provider_cloudflare_cloudflarednsrecord_v1_stack_outputs_pr
 
 const file_org_openmcf_provider_cloudflare_cloudflarednsrecord_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Jorg/openmcf/provider/cloudflare/cloudflarednsrecord/v1/stack_outputs.proto\x126org.openmcf.provider.cloudflare.cloudflarednsrecord.v1\"\x95\x01\n" +
+	"Jorg/openmcf/provider/cloudflare/cloudflarednsrecord/v1/stack_outputs.proto\x126org.openmcf.provider.cloudflare.cloudflarednsrecord.v1\"\x9a\x01\n" +
 	"\x1fCloudflareDnsRecordStackOutputs\x12\x1b\n" +
-	"\trecord_id\x18\x01 \x01(\tR\brecordId\x12\x1a\n" +
-	"\bhostname\x18\x02 \x01(\tR\bhostname\x12\x1f\n" +
+	"\trecord_id\x18\x01 \x01(\tR\brecordId\x12\x1f\n" +
+	"\vrecord_name\x18\x02 \x01(\tR\n" +
+	"recordName\x12\x1f\n" +
 	"\vrecord_type\x18\x03 \x01(\tR\n" +
 	"recordType\x12\x18\n" +
 	"\aproxied\x18\x04 \x01(\bR\aproxiedB\xbe\x03\n" +

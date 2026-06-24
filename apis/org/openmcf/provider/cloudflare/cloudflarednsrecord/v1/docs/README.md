@@ -207,13 +207,13 @@ import (
 func main() {
 	pulumi.Run(func(ctx *pulumi.Context) error {
 		// A Record
-		www, err := cloudflare.NewRecord(ctx, "www-record", &cloudflare.RecordArgs{
+		www, err := cloudflare.NewDnsRecord(ctx, "www-record", &cloudflare.DnsRecordArgs{
 			ZoneId:  pulumi.String(zoneId),
 			Name:    pulumi.String("www"),
 			Type:    pulumi.String("A"),
-			Value:   pulumi.String("192.0.2.1"),
+			Content: pulumi.String("192.0.2.1"),
 			Proxied: pulumi.Bool(true),
-			Ttl:     pulumi.Int(1),
+			Ttl:     pulumi.Float64(1),
 			Comment: pulumi.String("Primary web server"),
 		})
 		if err != nil {
@@ -294,18 +294,20 @@ OpenMCF applies the **Kubernetes Resource Model (KRM)** philosophy to DNS record
 
 ### Design Philosophy
 
-**1. 80/20 Principle:**
-The component exposes only the essential fields that 80% of users need:
+**1. Complete coverage, coherent surface:**
+The component covers the full Cloudflare record surface against the provider schema as the floor:
 - `zone_id` - Where to create the record
 - `name` - The subdomain (or @ for root)
-- `type` - A, AAAA, CNAME, MX, TXT, etc.
-- `value` - The record target/content
+- `type` - any of the 21 Cloudflare record types
+- `content` - presentation-format value for simple types
+- `data` - typed per-type block for structured types (SRV, CAA, DS, HTTPS, ...)
 - `proxied` - Orange cloud or grey cloud
 - `ttl` - Time to live
-- `priority` - For MX/SRV records
+- `priority` - For MX records
+- `tags`, `settings` - record tags and proxied-record behavior
 - `comment` - Documentation
 
-Advanced Cloudflare features (tags, priority for A records, custom metadata) are intentionally excluded because they're rarely needed and add cognitive overhead.
+Rather than a flat bag of every possible attribute, structured record data is modeled as a typed `data` oneof so each record type exposes only its relevant, validated fields.
 
 **2. Unified API:**
 ```yaml
@@ -317,7 +319,7 @@ spec:
   zone_id: "abc123"
   name: "www"
   type: A
-  value: "192.0.2.1"
+  content: "192.0.2.1"
   proxied: true
 ```
 
@@ -325,16 +327,16 @@ This manifest works with both Pulumi and Terraform backends—users don't need t
 
 **3. Built-in Validation:**
 The protobuf schema enforces rules at definition time:
-- Required fields (zone_id, name, type, value)
-- TTL range validation (1 or 60-86400)
-- Priority range (0-65535)
+- Required fields (zone_id, name, type)
+- Exactly one of `content` or a `data` block, matching the record type
+- TTL range validation (0/1 auto, or 30-86400)
+- Priority range (0-65535) and priority required for MX
 - Cross-field validation (proxied only for A/AAAA/CNAME)
-- Priority required for MX records
 
 **4. Consistent Outputs:**
 Every deployment produces the same outputs:
 - `record_id` - Cloudflare record identifier
-- `hostname` - Fully qualified hostname
+- `record_name` - The record name as stored by Cloudflare
 - `record_type` - The created record type
 - `proxied` - Whether traffic is proxied
 

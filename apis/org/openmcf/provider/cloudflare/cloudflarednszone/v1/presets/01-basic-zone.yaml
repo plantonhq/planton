@@ -5,4 +5,3 @@ metadata:
 spec:
   zoneName: <your-domain.com>
   accountId: <cloudflare-account-id>
-  plan: FREE

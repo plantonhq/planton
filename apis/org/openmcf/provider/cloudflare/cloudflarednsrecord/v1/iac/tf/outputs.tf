@@ -5,8 +5,8 @@ output "record_id" {
   value       = cloudflare_dns_record.main.id
 }
 
-output "hostname" {
-  description = "The name of the DNS record"
+output "record_name" {
+  description = "The DNS record name as stored by Cloudflare"
   value       = cloudflare_dns_record.main.name
 }
 

@@ -80,7 +80,7 @@ make test
 | Output | Description |
 |--------|-------------|
 | `record_id` | Cloudflare DNS record ID |
-| `hostname` | Fully qualified hostname |
+| `record_name` | The record name as stored by Cloudflare |
 | `record_type` | DNS record type |
 | `proxied` | Whether the record is proxied |
 

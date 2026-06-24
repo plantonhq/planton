@@ -9,11 +9,16 @@ spec:
   records:
     - name: www
       type: A
-      value: "192.0.2.1"
+      content: "192.0.2.1"
       proxied: true
       ttl: 1
     - name: "@"
       type: MX
-      value: mail.openmcf-example.com
+      content: mail.openmcf-example.com
       ttl: 1
       priority: 10
+  dnsSettings:
+    flattenAllCnames: true
+    zoneMode: standard
+  dnssec:
+    enabled: true
