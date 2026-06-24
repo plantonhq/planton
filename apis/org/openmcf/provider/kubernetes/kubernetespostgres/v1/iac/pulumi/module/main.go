@@ -38,13 +38,10 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetespostgresv1.KubernetesP
 
 	var restoreConfig *kubernetespostgresv1.KubernetesPostgresRestoreConfig
 	if backupConfig != nil {
-		restoreConfig = backupConfig.RestoreConfig
+		restoreConfig = backupConfig.Restore
 	}
 
-	standbyBlock, err := buildRestoreStandbyBlock(restoreConfig)
-	if err != nil {
-		return errors.Wrap(err, "failed to build restore standby block")
-	}
+	standbyBlock := buildRestoreStandbyBlock(restoreConfig)
 
 	restoreEnvVars, err := buildRestoreEnvVars(ctx, kubernetesProvider, locals, namespaceDeps, restoreConfig)
 	if err != nil {

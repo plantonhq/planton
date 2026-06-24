@@ -69,12 +69,12 @@ This installs the Zalando Postgres Operator into the `postgres-operator` namespa
 | `container.resources.requests.cpu` | `string` | `50m` | Minimum guaranteed CPU for the operator pod. |
 | `container.resources.requests.memory` | `string` | `100Mi` | Minimum guaranteed memory for the operator pod. |
 | `backupConfig` | `object` | — | WAL-G backup configuration for all PostgreSQL databases managed by this operator. When provided, creates a Secret and ConfigMap for R2-based backups. |
-| `backupConfig.r2Config.cloudflareAccountId` | `string` | — | Cloudflare account ID used to construct the R2 endpoint URL (`https://<accountId>.r2.cloudflarestorage.com`). Required when `backupConfig` is specified. |
-| `backupConfig.r2Config.bucketName` | `string` | — | R2 bucket name for storing backups. Required when `backupConfig` is specified. |
-| `backupConfig.r2Config.accessKeyId` | `string` | — | R2 access key ID. Stored in a Kubernetes Secret. Required when `backupConfig` is specified. |
-| `backupConfig.r2Config.secretAccessKey` | `string` | — | R2 secret access key. Stored in a Kubernetes Secret. Required when `backupConfig` is specified. |
-| `backupConfig.s3PrefixTemplate` | `string` | `backups/$(SCOPE)/$(PGVERSION)` | Custom S3 prefix template for WAL-G. Zalando variables `$(SCOPE)` (cluster name) and `$(PGVERSION)` (postgres version) are interpolated at runtime. |
-| `backupConfig.backupSchedule` | `string` | — | Cron schedule for base backups (e.g., `0 2 * * *` for 2 AM daily). Required when `backupConfig` is specified. |
+| `backupConfig.bucket` | `StringValueOrRef` | — | Bucket that stores backups for every database on the cluster. A literal name, or a `valueFrom` reference to any S3-compatible bucket resource's output (e.g. a `CloudflareR2Bucket`'s `status.outputs.bucket_name`). Set the referenced `kind` explicitly. Required when `backupConfig` is specified. |
+| `backupConfig.objectPrefix` | `string` | — | Base path under the bucket. The module appends the per-cluster/per-version suffix automatically. |
+| `backupConfig.schedule` | `string` | — | Cron schedule for base backups (e.g., `0 2 * * *` for 2 AM daily). Required when `backupConfig` is specified. |
+| `backupConfig.credentials.cloudflareAccountId` | `string` | — | Cloudflare account ID used to construct the R2 endpoint URL (`https://<accountId>.r2.cloudflarestorage.com`). Required when `backupConfig` is specified. |
+| `backupConfig.credentials.accessKeyId` | `string` | — | R2 access key ID. Stored in a Kubernetes Secret. Required when `backupConfig` is specified. |
+| `backupConfig.credentials.secretAccessKey` | `string` | — | R2 secret access key. Stored in a Kubernetes Secret. Required when `backupConfig` is specified. |
 | `backupConfig.enableWalGBackup` | `bool` | `true` | Enable WAL-G for continuous archiving backups. |
 | `backupConfig.enableWalGRestore` | `bool` | `true` | Enable WAL-G for point-in-time restore operations. |
 | `backupConfig.enableCloneWalGRestore` | `bool` | `true` | Enable WAL-G for clone-from-backup operations. |
@@ -135,15 +135,17 @@ spec:
         cpu: "200m"
         memory: "256Mi"
   backupConfig:
-    r2Config:
-      cloudflareAccountId: "abc123def456"
-      bucketName: "prod-pg-backups"
-      accessKeyId: "R2_ACCESS_KEY"
-      secretAccessKey: "R2_SECRET_KEY"
-    backupSchedule: "0 2 * * *"
+    bucket:
+      value: "prod-pg-backups"
+    objectPrefix: production
+    schedule: "0 2 * * *"
     enableWalGBackup: true
     enableWalGRestore: true
     enableCloneWalGRestore: true
+    credentials:
+      cloudflareAccountId: "abc123def456"
+      accessKeyId: "R2_ACCESS_KEY"
+      secretAccessKey: "R2_SECRET_KEY"
 ```
 
 ### Operator with Foreign Key Namespace Reference
@@ -176,9 +178,9 @@ spec:
         memory: "128Mi"
 ```
 
-### Backups with Custom S3 Prefix Template
+### Backups with a Custom Object Prefix
 
-Organize backup paths by team or environment using a custom S3 prefix template:
+Organize backup paths by team or environment using a custom object prefix; the module appends the per-cluster/per-version segments automatically:
 
 ```yaml
 apiVersion: kubernetes.openmcf.org/v1
@@ -202,15 +204,19 @@ spec:
         cpu: "50m"
         memory: "100Mi"
   backupConfig:
-    r2Config:
-      cloudflareAccountId: "abc123def456"
-      bucketName: "shared-pg-backups"
-      accessKeyId: "R2_ACCESS_KEY"
-      secretAccessKey: "R2_SECRET_KEY"
-    backupSchedule: "0 3 * * 0"
-    s3PrefixTemplate: "team-alpha/$(SCOPE)/$(PGVERSION)"
+    bucket:
+      valueFrom:
+        kind: CloudflareR2Bucket
+        name: shared-pg-backups
+        fieldPath: status.outputs.bucket_name
+    objectPrefix: team-alpha
+    schedule: "0 3 * * 0"
     enableWalGBackup: true
     enableWalGRestore: true
+    credentials:
+      cloudflareAccountId: "abc123def456"
+      accessKeyId: "R2_ACCESS_KEY"
+      secretAccessKey: "R2_SECRET_KEY"
 ```
 
 ## Stack Outputs

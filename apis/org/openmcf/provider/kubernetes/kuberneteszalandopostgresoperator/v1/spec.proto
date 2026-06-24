@@ -48,66 +48,67 @@ message KubernetesZalandoPostgresOperatorSpecContainer {
   }];
 }
 
-// Cloudflare R2-specific storage configuration for PostgreSQL backups.
-// This is separate to allow future support for other S3-compatible backends.
-message KubernetesZalandoPostgresOperatorBackupR2Config {
-  // Cloudflare R2 account ID (used to construct endpoint URL)
-  // The endpoint will be: https://<account_id>.r2.cloudflarestorage.com
+// R2/S3-compatible storage credentials that authenticate WAL-G against the backup
+// bucket. Cloudflare R2 is the storage backend: the S3 API endpoint is derived from
+// the account ID as https://<cloudflare_account_id>.r2.cloudflarestorage.com, with
+// region "auto" and path-style addressing.
+message KubernetesZalandoPostgresOperatorR2Credentials {
+  // Cloudflare account ID that owns the R2 bucket, used to construct the S3 API
+  // endpoint. An account identifier, not a secret.
   string cloudflare_account_id = 1 [
     (buf.validate.field).required = true,
     (buf.validate.field).string.min_len = 1
   ];
 
-  // R2 bucket name for storing backups
-  string bucket_name = 2 [
+  // R2 access-key ID. A public identifier (like a username), not a secret.
+  string access_key_id = 2 [
     (buf.validate.field).required = true,
     (buf.validate.field).string.min_len = 1
   ];
 
-  // R2 Access Key ID
-  // The Pulumi module will create a Kubernetes Secret from these credentials
-  string access_key_id = 3 [
-    (buf.validate.field).required = true,
-    (buf.validate.field).string.min_len = 1
-  ];
-
-  // R2 Secret Access Key
-  // The Pulumi module will create a Kubernetes Secret from these credentials
-  string secret_access_key = 4 [
+  // R2 secret access key. Provided as a managed-secret reference and resolved
+  // just-in-time at deploy: the module writes it to a Kubernetes Secret, never
+  // as plaintext in the operator configmap or pod spec.
+  string secret_access_key = 3 [
     (org.openmcf.shared.options.sensitive) = true,
     (buf.validate.field).required = true,
     (buf.validate.field).string.min_len = 1
   ];
 }
 
-// Zalando-specific backup configuration for all PostgreSQL databases managed by this operator.
-// This configures the pod_environment_configmap used by Zalando operator for WAL-G backups.
-// The Pulumi module will automatically create a Kubernetes Secret from the R2 credentials.
+// Cluster-wide backup configuration for every PostgreSQL database the operator
+// manages. It configures the pod_environment_configmap the Zalando operator injects
+// into each database for WAL-G backups. The module composes the full WAL-G target as
+// s3://<bucket>/<object_prefix>/$(SCOPE)/$(PGVERSION); one configmap serves every
+// database, so the per-cluster and per-version segments are substituted at runtime.
 message KubernetesZalandoPostgresOperatorBackupConfig {
-  // Cloudflare R2 storage configuration (includes credentials)
-  KubernetesZalandoPostgresOperatorBackupR2Config r2_config = 1 [(buf.validate.field).required = true];
+  // Bucket that stores backups for every database on this cluster. A literal bucket
+  // name, or a reference (value_from) to any S3-compatible bucket resource's output --
+  // for example a CloudflareR2Bucket's status.outputs.bucket_name. Set the referenced
+  // kind explicitly; this field assumes no single provider.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef bucket = 1 [(buf.validate.field).required = true];
 
-  // Optional: Custom S3 prefix template for WAL-G
-  // Default: "backups/$(SCOPE)/$(PGVERSION)"
-  // Zalando variables: $(SCOPE) = cluster name, $(PGVERSION) = postgres version
-  string s3_prefix_template = 2;
+  // Base path under the bucket for backups. The module appends the per-cluster and
+  // per-version segments, so every database on the cluster shares the bucket without
+  // collision.
+  string object_prefix = 2;
 
-  // Cron schedule for base backups (e.g., "0 2 * * *" for 2 AM daily)
-  // This maps to Zalando's BACKUP_SCHEDULE environment variable
-  string backup_schedule = 3 [
+  // Cron schedule for base backups, for example "0 2 * * *" for 02:00 daily. Maps to
+  // the operator's BACKUP_SCHEDULE environment variable.
+  string schedule = 3 [
     (buf.validate.field).required = true,
     (buf.validate.field).string.min_len = 1
   ];
 
-  // Enable WAL-G for backups (default: true)
-  // Maps to USE_WALG_BACKUP environment variable
+  // Enable WAL-G for backups (default: true). Maps to USE_WALG_BACKUP.
   bool enable_wal_g_backup = 4;
 
-  // Enable WAL-G for restores (default: true)
-  // Maps to USE_WALG_RESTORE environment variable
+  // Enable WAL-G for restores (default: true). Maps to USE_WALG_RESTORE.
   bool enable_wal_g_restore = 5;
 
-  // Enable WAL-G for clone operations (default: true)
-  // Maps to CLONE_USE_WALG_RESTORE environment variable
+  // Enable WAL-G for clone operations (default: true). Maps to CLONE_USE_WALG_RESTORE.
   bool enable_clone_wal_g_restore = 6;
+
+  // Credentials WAL-G uses to read and write backups for every database on the cluster.
+  KubernetesZalandoPostgresOperatorR2Credentials credentials = 7 [(buf.validate.field).required = true];
 }

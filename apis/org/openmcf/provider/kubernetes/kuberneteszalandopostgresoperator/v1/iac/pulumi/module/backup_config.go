@@ -27,9 +27,9 @@ func createBackupResources(
 		return pulumi.String("").ToStringOutput(), nil
 	}
 
-	r2Config := backupConfig.R2Config
-	if r2Config == nil {
-		return pulumi.String("").ToStringOutput(), errors.New("backup_config.r2_config is required when backup_config is specified")
+	creds := backupConfig.Credentials
+	if creds == nil {
+		return pulumi.String("").ToStringOutput(), errors.New("backup_config.credentials is required when backup_config is specified")
 	}
 
 	// 1. Create Secret for R2 credentials
@@ -44,8 +44,8 @@ func createBackupResources(
 			}),
 			Type: pulumi.String("Opaque"),
 			StringData: pulumi.StringMap{
-				"AWS_ACCESS_KEY_ID":     pulumi.String(r2Config.AccessKeyId),
-				"AWS_SECRET_ACCESS_KEY": pulumi.String(r2Config.SecretAccessKey),
+				"AWS_ACCESS_KEY_ID":     pulumi.String(creds.AccessKeyId),
+				"AWS_SECRET_ACCESS_KEY": pulumi.String(creds.SecretAccessKey),
 			},
 		},
 		secretOpts...,
@@ -55,18 +55,9 @@ func createBackupResources(
 	}
 
 	// 2. Build R2 endpoint URL
-	r2Endpoint := fmt.Sprintf("https://%s.r2.cloudflarestorage.com", r2Config.CloudflareAccountId)
+	r2Endpoint := fmt.Sprintf("https://%s.r2.cloudflarestorage.com", creds.CloudflareAccountId)
 
-	// 3. Build S3 prefix (default or custom)
-	s3Prefix := "backups/$(SCOPE)/$(PGVERSION)"
-	if backupConfig.S3PrefixTemplate != "" {
-		s3Prefix = backupConfig.S3PrefixTemplate
-	}
-
-	// Full WALG_S3_PREFIX with bucket and path
-	walgS3Prefix := fmt.Sprintf("s3://%s/%s", r2Config.BucketName, s3Prefix)
-
-	// 4. Build ConfigMap data
+	// 3. Build ConfigMap data
 	configMapData := pulumi.StringMap{
 		// WAL-G flags (default to true if not explicitly disabled)
 		"USE_WALG_BACKUP":        pulumi.String(boolToString(backupConfig.EnableWalGBackup, true)),
@@ -74,19 +65,19 @@ func createBackupResources(
 		"CLONE_USE_WALG_RESTORE": pulumi.String(boolToString(backupConfig.EnableCloneWalGRestore, true)),
 
 		// S3/R2 configuration
-		"WALG_S3_PREFIX":       pulumi.String(walgS3Prefix),
+		"WALG_S3_PREFIX":       pulumi.String(backupWalgS3Prefix(backupConfig)),
 		"AWS_ENDPOINT":         pulumi.String(r2Endpoint),
 		"AWS_REGION":           pulumi.String("auto"), // R2 uses "auto" region
 		"AWS_FORCE_PATH_STYLE": pulumi.String("true"), // Required for R2
 
 		// Backup schedule
-		"BACKUP_SCHEDULE": pulumi.String(backupConfig.BackupSchedule),
+		"BACKUP_SCHEDULE": pulumi.String(backupConfig.Schedule),
 
 		// Credentials (reference the Secret - Zalando operator will mount them)
 		// We don't include credentials in ConfigMap; they come from the Secret
 		// The Secret will be mounted at /run/etc/wal-e.d/env by Zalando operator
-		"AWS_ACCESS_KEY_ID":     pulumi.String(r2Config.AccessKeyId),
-		"AWS_SECRET_ACCESS_KEY": pulumi.String(r2Config.SecretAccessKey),
+		"AWS_ACCESS_KEY_ID":     pulumi.String(creds.AccessKeyId),
+		"AWS_SECRET_ACCESS_KEY": pulumi.String(creds.SecretAccessKey),
 	}
 
 	// 5. Create ConfigMap
@@ -123,4 +114,16 @@ func boolToString(value bool, defaultWhenFalse bool) string {
 		return "true"
 	}
 	return "false"
+}
+
+// backupWalgS3Prefix composes the WAL-G push target as
+// s3://<bucket>[/<object_prefix>]/$(SCOPE)/$(PGVERSION). One operator configmap serves
+// every database on the cluster, so Spilo/Patroni substitutes the $(SCOPE)/$(PGVERSION)
+// suffix per database at runtime.
+func backupWalgS3Prefix(backupConfig *kuberneteszalandopostgresoperatorv1.KubernetesZalandoPostgresOperatorBackupConfig) string {
+	prefix := fmt.Sprintf("s3://%s", backupConfig.GetBucket().GetValue())
+	if objectPrefix := backupConfig.ObjectPrefix; objectPrefix != "" {
+		prefix = fmt.Sprintf("%s/%s", prefix, objectPrefix)
+	}
+	return fmt.Sprintf("%s/$(SCOPE)/$(PGVERSION)", prefix)
 }

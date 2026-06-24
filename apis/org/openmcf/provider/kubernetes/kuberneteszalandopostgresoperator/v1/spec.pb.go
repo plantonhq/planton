@@ -156,39 +156,39 @@ func (x *KubernetesZalandoPostgresOperatorSpecContainer) GetResources() *kuberne
 	return nil
 }
 
-// Cloudflare R2-specific storage configuration for PostgreSQL backups.
-// This is separate to allow future support for other S3-compatible backends.
-type KubernetesZalandoPostgresOperatorBackupR2Config struct {
+// R2/S3-compatible storage credentials that authenticate WAL-G against the backup
+// bucket. Cloudflare R2 is the storage backend: the S3 API endpoint is derived from
+// the account ID as https://<cloudflare_account_id>.r2.cloudflarestorage.com, with
+// region "auto" and path-style addressing.
+type KubernetesZalandoPostgresOperatorR2Credentials struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Cloudflare R2 account ID (used to construct endpoint URL)
-	// The endpoint will be: https://<account_id>.r2.cloudflarestorage.com
+	// Cloudflare account ID that owns the R2 bucket, used to construct the S3 API
+	// endpoint. An account identifier, not a secret.
 	CloudflareAccountId string `protobuf:"bytes,1,opt,name=cloudflare_account_id,json=cloudflareAccountId,proto3" json:"cloudflare_account_id,omitempty"`
-	// R2 bucket name for storing backups
-	BucketName string `protobuf:"bytes,2,opt,name=bucket_name,json=bucketName,proto3" json:"bucket_name,omitempty"`
-	// R2 Access Key ID
-	// The Pulumi module will create a Kubernetes Secret from these credentials
-	AccessKeyId string `protobuf:"bytes,3,opt,name=access_key_id,json=accessKeyId,proto3" json:"access_key_id,omitempty"`
-	// R2 Secret Access Key
-	// The Pulumi module will create a Kubernetes Secret from these credentials
-	SecretAccessKey string `protobuf:"bytes,4,opt,name=secret_access_key,json=secretAccessKey,proto3" json:"secret_access_key,omitempty"`
+	// R2 access-key ID. A public identifier (like a username), not a secret.
+	AccessKeyId string `protobuf:"bytes,2,opt,name=access_key_id,json=accessKeyId,proto3" json:"access_key_id,omitempty"`
+	// R2 secret access key. Provided as a managed-secret reference and resolved
+	// just-in-time at deploy: the module writes it to a Kubernetes Secret, never
+	// as plaintext in the operator configmap or pod spec.
+	SecretAccessKey string `protobuf:"bytes,3,opt,name=secret_access_key,json=secretAccessKey,proto3" json:"secret_access_key,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *KubernetesZalandoPostgresOperatorBackupR2Config) Reset() {
-	*x = KubernetesZalandoPostgresOperatorBackupR2Config{}
+func (x *KubernetesZalandoPostgresOperatorR2Credentials) Reset() {
+	*x = KubernetesZalandoPostgresOperatorR2Credentials{}
 	mi := &file_org_openmcf_provider_kubernetes_kuberneteszalandopostgresoperator_v1_spec_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesZalandoPostgresOperatorBackupR2Config) String() string {
+func (x *KubernetesZalandoPostgresOperatorR2Credentials) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesZalandoPostgresOperatorBackupR2Config) ProtoMessage() {}
+func (*KubernetesZalandoPostgresOperatorR2Credentials) ProtoMessage() {}
 
-func (x *KubernetesZalandoPostgresOperatorBackupR2Config) ProtoReflect() protoreflect.Message {
+func (x *KubernetesZalandoPostgresOperatorR2Credentials) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_kubernetes_kuberneteszalandopostgresoperator_v1_spec_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -200,64 +200,61 @@ func (x *KubernetesZalandoPostgresOperatorBackupR2Config) ProtoReflect() protore
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesZalandoPostgresOperatorBackupR2Config.ProtoReflect.Descriptor instead.
-func (*KubernetesZalandoPostgresOperatorBackupR2Config) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesZalandoPostgresOperatorR2Credentials.ProtoReflect.Descriptor instead.
+func (*KubernetesZalandoPostgresOperatorR2Credentials) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_kubernetes_kuberneteszalandopostgresoperator_v1_spec_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *KubernetesZalandoPostgresOperatorBackupR2Config) GetCloudflareAccountId() string {
+func (x *KubernetesZalandoPostgresOperatorR2Credentials) GetCloudflareAccountId() string {
 	if x != nil {
 		return x.CloudflareAccountId
 	}
 	return ""
 }
 
-func (x *KubernetesZalandoPostgresOperatorBackupR2Config) GetBucketName() string {
-	if x != nil {
-		return x.BucketName
-	}
-	return ""
-}
-
-func (x *KubernetesZalandoPostgresOperatorBackupR2Config) GetAccessKeyId() string {
+func (x *KubernetesZalandoPostgresOperatorR2Credentials) GetAccessKeyId() string {
 	if x != nil {
 		return x.AccessKeyId
 	}
 	return ""
 }
 
-func (x *KubernetesZalandoPostgresOperatorBackupR2Config) GetSecretAccessKey() string {
+func (x *KubernetesZalandoPostgresOperatorR2Credentials) GetSecretAccessKey() string {
 	if x != nil {
 		return x.SecretAccessKey
 	}
 	return ""
 }
 
-// Zalando-specific backup configuration for all PostgreSQL databases managed by this operator.
-// This configures the pod_environment_configmap used by Zalando operator for WAL-G backups.
-// The Pulumi module will automatically create a Kubernetes Secret from the R2 credentials.
+// Cluster-wide backup configuration for every PostgreSQL database the operator
+// manages. It configures the pod_environment_configmap the Zalando operator injects
+// into each database for WAL-G backups. The module composes the full WAL-G target as
+// s3://<bucket>/<object_prefix>/$(SCOPE)/$(PGVERSION); one configmap serves every
+// database, so the per-cluster and per-version segments are substituted at runtime.
 type KubernetesZalandoPostgresOperatorBackupConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Cloudflare R2 storage configuration (includes credentials)
-	R2Config *KubernetesZalandoPostgresOperatorBackupR2Config `protobuf:"bytes,1,opt,name=r2_config,json=r2Config,proto3" json:"r2_config,omitempty"`
-	// Optional: Custom S3 prefix template for WAL-G
-	// Default: "backups/$(SCOPE)/$(PGVERSION)"
-	// Zalando variables: $(SCOPE) = cluster name, $(PGVERSION) = postgres version
-	S3PrefixTemplate string `protobuf:"bytes,2,opt,name=s3_prefix_template,json=s3PrefixTemplate,proto3" json:"s3_prefix_template,omitempty"`
-	// Cron schedule for base backups (e.g., "0 2 * * *" for 2 AM daily)
-	// This maps to Zalando's BACKUP_SCHEDULE environment variable
-	BackupSchedule string `protobuf:"bytes,3,opt,name=backup_schedule,json=backupSchedule,proto3" json:"backup_schedule,omitempty"`
-	// Enable WAL-G for backups (default: true)
-	// Maps to USE_WALG_BACKUP environment variable
+	// Bucket that stores backups for every database on this cluster. A literal bucket
+	// name, or a reference (value_from) to any S3-compatible bucket resource's output --
+	// for example a CloudflareR2Bucket's status.outputs.bucket_name. Set the referenced
+	// kind explicitly; this field assumes no single provider.
+	Bucket *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=bucket,proto3" json:"bucket,omitempty"`
+	// Base path under the bucket for backups. The module appends the per-cluster and
+	// per-version segments, so every database on the cluster shares the bucket without
+	// collision.
+	ObjectPrefix string `protobuf:"bytes,2,opt,name=object_prefix,json=objectPrefix,proto3" json:"object_prefix,omitempty"`
+	// Cron schedule for base backups, for example "0 2 * * *" for 02:00 daily. Maps to
+	// the operator's BACKUP_SCHEDULE environment variable.
+	Schedule string `protobuf:"bytes,3,opt,name=schedule,proto3" json:"schedule,omitempty"`
+	// Enable WAL-G for backups (default: true). Maps to USE_WALG_BACKUP.
 	EnableWalGBackup bool `protobuf:"varint,4,opt,name=enable_wal_g_backup,json=enableWalGBackup,proto3" json:"enable_wal_g_backup,omitempty"`
-	// Enable WAL-G for restores (default: true)
-	// Maps to USE_WALG_RESTORE environment variable
+	// Enable WAL-G for restores (default: true). Maps to USE_WALG_RESTORE.
 	EnableWalGRestore bool `protobuf:"varint,5,opt,name=enable_wal_g_restore,json=enableWalGRestore,proto3" json:"enable_wal_g_restore,omitempty"`
-	// Enable WAL-G for clone operations (default: true)
-	// Maps to CLONE_USE_WALG_RESTORE environment variable
+	// Enable WAL-G for clone operations (default: true). Maps to CLONE_USE_WALG_RESTORE.
 	EnableCloneWalGRestore bool `protobuf:"varint,6,opt,name=enable_clone_wal_g_restore,json=enableCloneWalGRestore,proto3" json:"enable_clone_wal_g_restore,omitempty"`
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	// Credentials WAL-G uses to read and write backups for every database on the cluster.
+	Credentials   *KubernetesZalandoPostgresOperatorR2Credentials `protobuf:"bytes,7,opt,name=credentials,proto3" json:"credentials,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *KubernetesZalandoPostgresOperatorBackupConfig) Reset() {
@@ -290,23 +287,23 @@ func (*KubernetesZalandoPostgresOperatorBackupConfig) Descriptor() ([]byte, []in
 	return file_org_openmcf_provider_kubernetes_kuberneteszalandopostgresoperator_v1_spec_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *KubernetesZalandoPostgresOperatorBackupConfig) GetR2Config() *KubernetesZalandoPostgresOperatorBackupR2Config {
+func (x *KubernetesZalandoPostgresOperatorBackupConfig) GetBucket() *v1.StringValueOrRef {
 	if x != nil {
-		return x.R2Config
+		return x.Bucket
 	}
 	return nil
 }
 
-func (x *KubernetesZalandoPostgresOperatorBackupConfig) GetS3PrefixTemplate() string {
+func (x *KubernetesZalandoPostgresOperatorBackupConfig) GetObjectPrefix() string {
 	if x != nil {
-		return x.S3PrefixTemplate
+		return x.ObjectPrefix
 	}
 	return ""
 }
 
-func (x *KubernetesZalandoPostgresOperatorBackupConfig) GetBackupSchedule() string {
+func (x *KubernetesZalandoPostgresOperatorBackupConfig) GetSchedule() string {
 	if x != nil {
-		return x.BackupSchedule
+		return x.Schedule
 	}
 	return ""
 }
@@ -332,6 +329,13 @@ func (x *KubernetesZalandoPostgresOperatorBackupConfig) GetEnableCloneWalGRestor
 	return false
 }
 
+func (x *KubernetesZalandoPostgresOperatorBackupConfig) GetCredentials() *KubernetesZalandoPostgresOperatorR2Credentials {
+	if x != nil {
+		return x.Credentials
+	}
+	return nil
+}
+
 var File_org_openmcf_provider_kubernetes_kuberneteszalandopostgresoperator_v1_spec_proto protoreflect.FileDescriptor
 
 const file_org_openmcf_provider_kubernetes_kuberneteszalandopostgresoperator_v1_spec_proto_rawDesc = "" +
@@ -347,24 +351,22 @@ const file_org_openmcf_provider_kubernetes_kuberneteszalandopostgresoperator_v1_
 	"\tresources\x18\x01 \x01(\v23.org.openmcf.provider.kubernetes.ContainerResourcesB!\xba\xfb\xa4\x02\x1c\n" +
 	"\f\n" +
 	"\x051000m\x12\x031Gi\x12\f\n" +
-	"\x0350m\x12\x05100MiR\tresources\"\x8a\x02\n" +
-	"/KubernetesZalandoPostgresOperatorBackupR2Config\x12>\n" +
+	"\x0350m\x12\x05100MiR\tresources\"\xdc\x01\n" +
+	".KubernetesZalandoPostgresOperatorR2Credentials\x12>\n" +
 	"\x15cloudflare_account_id\x18\x01 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x13cloudflareAccountId\x12+\n" +
-	"\vbucket_name\x18\x02 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\n" +
-	"bucketName\x12.\n" +
-	"\raccess_key_id\x18\x03 \x01(\tB\n" +
+	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x13cloudflareAccountId\x12.\n" +
+	"\raccess_key_id\x18\x02 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\vaccessKeyId\x12:\n" +
-	"\x11secret_access_key\x18\x04 \x01(\tB\x0e\xbaH\a\xc8\x01\x01r\x02\x10\x01\xa0\xa6\x1d\x01R\x0fsecretAccessKey\"\xcb\x03\n" +
-	"-KubernetesZalandoPostgresOperatorBackupConfig\x12\x9a\x01\n" +
-	"\tr2_config\x18\x01 \x01(\v2u.org.openmcf.provider.kubernetes.kuberneteszalandopostgresoperator.v1.KubernetesZalandoPostgresOperatorBackupR2ConfigB\x06\xbaH\x03\xc8\x01\x01R\br2Config\x12,\n" +
-	"\x12s3_prefix_template\x18\x02 \x01(\tR\x10s3PrefixTemplate\x123\n" +
-	"\x0fbackup_schedule\x18\x03 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x0ebackupSchedule\x12-\n" +
+	"\x11secret_access_key\x18\x03 \x01(\tB\x0e\xbaH\a\xc8\x01\x01r\x02\x10\x01\xa0\xa6\x1d\x01R\x0fsecretAccessKey\"\x8d\x04\n" +
+	"-KubernetesZalandoPostgresOperatorBackupConfig\x12R\n" +
+	"\x06bucket\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x06\xbaH\x03\xc8\x01\x01R\x06bucket\x12#\n" +
+	"\robject_prefix\x18\x02 \x01(\tR\fobjectPrefix\x12&\n" +
+	"\bschedule\x18\x03 \x01(\tB\n" +
+	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\bschedule\x12-\n" +
 	"\x13enable_wal_g_backup\x18\x04 \x01(\bR\x10enableWalGBackup\x12/\n" +
 	"\x14enable_wal_g_restore\x18\x05 \x01(\bR\x11enableWalGRestore\x12:\n" +
-	"\x1aenable_clone_wal_g_restore\x18\x06 \x01(\bR\x16enableCloneWalGRestoreB\x99\x04\n" +
+	"\x1aenable_clone_wal_g_restore\x18\x06 \x01(\bR\x16enableCloneWalGRestore\x12\x9e\x01\n" +
+	"\vcredentials\x18\a \x01(\v2t.org.openmcf.provider.kubernetes.kuberneteszalandopostgresoperator.v1.KubernetesZalandoPostgresOperatorR2CredentialsB\x06\xbaH\x03\xc8\x01\x01R\vcredentialsB\x99\x04\n" +
 	"Hcom.org.openmcf.provider.kubernetes.kuberneteszalandopostgresoperator.v1B\tSpecProtoP\x01Z\x8a\x01github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kuberneteszalandopostgresoperator/v1;kuberneteszalandopostgresoperatorv1\xa2\x02\x05OOPKK\xaa\x02DOrg.Openmcf.Provider.Kubernetes.Kuberneteszalandopostgresoperator.V1\xca\x02DOrg\\Openmcf\\Provider\\Kubernetes\\Kuberneteszalandopostgresoperator\\V1\xe2\x02POrg\\Openmcf\\Provider\\Kubernetes\\Kuberneteszalandopostgresoperator\\V1\\GPBMetadata\xea\x02IOrg::Openmcf::Provider::Kubernetes::Kuberneteszalandopostgresoperator::V1b\x06proto3"
 
 var (
@@ -381,13 +383,13 @@ func file_org_openmcf_provider_kubernetes_kuberneteszalandopostgresoperator_v1_s
 
 var file_org_openmcf_provider_kubernetes_kuberneteszalandopostgresoperator_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_org_openmcf_provider_kubernetes_kuberneteszalandopostgresoperator_v1_spec_proto_goTypes = []any{
-	(*KubernetesZalandoPostgresOperatorSpec)(nil),           // 0: org.openmcf.provider.kubernetes.kuberneteszalandopostgresoperator.v1.KubernetesZalandoPostgresOperatorSpec
-	(*KubernetesZalandoPostgresOperatorSpecContainer)(nil),  // 1: org.openmcf.provider.kubernetes.kuberneteszalandopostgresoperator.v1.KubernetesZalandoPostgresOperatorSpecContainer
-	(*KubernetesZalandoPostgresOperatorBackupR2Config)(nil), // 2: org.openmcf.provider.kubernetes.kuberneteszalandopostgresoperator.v1.KubernetesZalandoPostgresOperatorBackupR2Config
-	(*KubernetesZalandoPostgresOperatorBackupConfig)(nil),   // 3: org.openmcf.provider.kubernetes.kuberneteszalandopostgresoperator.v1.KubernetesZalandoPostgresOperatorBackupConfig
-	(*kubernetes.KubernetesClusterSelector)(nil),            // 4: org.openmcf.provider.kubernetes.KubernetesClusterSelector
-	(*v1.StringValueOrRef)(nil),                             // 5: org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	(*kubernetes.ContainerResources)(nil),                   // 6: org.openmcf.provider.kubernetes.ContainerResources
+	(*KubernetesZalandoPostgresOperatorSpec)(nil),          // 0: org.openmcf.provider.kubernetes.kuberneteszalandopostgresoperator.v1.KubernetesZalandoPostgresOperatorSpec
+	(*KubernetesZalandoPostgresOperatorSpecContainer)(nil), // 1: org.openmcf.provider.kubernetes.kuberneteszalandopostgresoperator.v1.KubernetesZalandoPostgresOperatorSpecContainer
+	(*KubernetesZalandoPostgresOperatorR2Credentials)(nil), // 2: org.openmcf.provider.kubernetes.kuberneteszalandopostgresoperator.v1.KubernetesZalandoPostgresOperatorR2Credentials
+	(*KubernetesZalandoPostgresOperatorBackupConfig)(nil),  // 3: org.openmcf.provider.kubernetes.kuberneteszalandopostgresoperator.v1.KubernetesZalandoPostgresOperatorBackupConfig
+	(*kubernetes.KubernetesClusterSelector)(nil),           // 4: org.openmcf.provider.kubernetes.KubernetesClusterSelector
+	(*v1.StringValueOrRef)(nil),                            // 5: org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	(*kubernetes.ContainerResources)(nil),                  // 6: org.openmcf.provider.kubernetes.ContainerResources
 }
 var file_org_openmcf_provider_kubernetes_kuberneteszalandopostgresoperator_v1_spec_proto_depIdxs = []int32{
 	4, // 0: org.openmcf.provider.kubernetes.kuberneteszalandopostgresoperator.v1.KubernetesZalandoPostgresOperatorSpec.target_cluster:type_name -> org.openmcf.provider.kubernetes.KubernetesClusterSelector
@@ -395,12 +397,13 @@ var file_org_openmcf_provider_kubernetes_kuberneteszalandopostgresoperator_v1_sp
 	1, // 2: org.openmcf.provider.kubernetes.kuberneteszalandopostgresoperator.v1.KubernetesZalandoPostgresOperatorSpec.container:type_name -> org.openmcf.provider.kubernetes.kuberneteszalandopostgresoperator.v1.KubernetesZalandoPostgresOperatorSpecContainer
 	3, // 3: org.openmcf.provider.kubernetes.kuberneteszalandopostgresoperator.v1.KubernetesZalandoPostgresOperatorSpec.backup_config:type_name -> org.openmcf.provider.kubernetes.kuberneteszalandopostgresoperator.v1.KubernetesZalandoPostgresOperatorBackupConfig
 	6, // 4: org.openmcf.provider.kubernetes.kuberneteszalandopostgresoperator.v1.KubernetesZalandoPostgresOperatorSpecContainer.resources:type_name -> org.openmcf.provider.kubernetes.ContainerResources
-	2, // 5: org.openmcf.provider.kubernetes.kuberneteszalandopostgresoperator.v1.KubernetesZalandoPostgresOperatorBackupConfig.r2_config:type_name -> org.openmcf.provider.kubernetes.kuberneteszalandopostgresoperator.v1.KubernetesZalandoPostgresOperatorBackupR2Config
-	6, // [6:6] is the sub-list for method output_type
-	6, // [6:6] is the sub-list for method input_type
-	6, // [6:6] is the sub-list for extension type_name
-	6, // [6:6] is the sub-list for extension extendee
-	0, // [0:6] is the sub-list for field type_name
+	5, // 5: org.openmcf.provider.kubernetes.kuberneteszalandopostgresoperator.v1.KubernetesZalandoPostgresOperatorBackupConfig.bucket:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	2, // 6: org.openmcf.provider.kubernetes.kuberneteszalandopostgresoperator.v1.KubernetesZalandoPostgresOperatorBackupConfig.credentials:type_name -> org.openmcf.provider.kubernetes.kuberneteszalandopostgresoperator.v1.KubernetesZalandoPostgresOperatorR2Credentials
+	7, // [7:7] is the sub-list for method output_type
+	7, // [7:7] is the sub-list for method input_type
+	7, // [7:7] is the sub-list for extension type_name
+	7, // [7:7] is the sub-list for extension extendee
+	0, // [0:7] is the sub-list for field type_name
 }
 
 func init() {

@@ -50,40 +50,36 @@ variable "spec" {
       })
     })
 
-    # Optional: Backup configuration for all databases managed by this operator
+    # Optional: Backup configuration for all databases managed by this operator. The
+    # module composes the WAL-G target from bucket + object_prefix and appends the
+    # per-cluster/per-version suffix.
     backup_config = optional(object({
 
-      # Cloudflare R2 storage configuration (includes credentials)
-      r2_config = object({
+      # Bucket that stores backups for every database on this cluster. Planton resolves
+      # the value-or-ref to a plain bucket name before tfvars.
+      bucket = string
 
-        # Cloudflare R2 account ID (used to construct endpoint URL)
-        cloudflare_account_id = string
+      # Base path under the bucket; the module appends the per-cluster/per-version suffix.
+      object_prefix = optional(string)
 
-        # R2 bucket name for storing backups
-        bucket_name = string
+      # Cron schedule for base backups (e.g., "0 2 * * *" for 2 AM daily).
+      schedule = string
 
-        # R2 Access Key ID
-        access_key_id = string
-
-        # R2 Secret Access Key
-        secret_access_key = string
-      })
-
-      # Optional: Custom S3 prefix template for WAL-G
-      # Default: "backups/$(SCOPE)/$(PGVERSION)"
-      s3_prefix_template = optional(string, "backups/$(SCOPE)/$(PGVERSION)")
-
-      # Cron schedule for base backups (e.g., "0 2 * * *" for 2 AM daily)
-      backup_schedule = string
-
-      # Enable WAL-G for backups (default: true)
+      # Enable WAL-G for backups (default: true).
       enable_wal_g_backup = optional(bool, true)
 
-      # Enable WAL-G for restores (default: true)
+      # Enable WAL-G for restores (default: true).
       enable_wal_g_restore = optional(bool, true)
 
-      # Enable WAL-G for clone operations (default: true)
+      # Enable WAL-G for clone operations (default: true).
       enable_clone_wal_g_restore = optional(bool, true)
+
+      # Credentials WAL-G uses to read and write backups.
+      credentials = object({
+        cloudflare_account_id = string
+        access_key_id         = string
+        secret_access_key     = string
+      })
     }))
   })
 }

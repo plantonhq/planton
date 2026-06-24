@@ -51,20 +51,40 @@ var _ = ginkgo.Describe("KubernetesZalandoPostgresOperator Custom Validation Tes
 		})
 	})
 
-	ginkgo.Describe("When backup_config is provided with valid r2_config", func() {
+	ginkgo.Describe("When backup_config is provided with a bucket and credentials", func() {
 		ginkgo.Context("kubernetes_zalando_postgres_operator with backup", func() {
 			ginkgo.It("should not return a validation error", func() {
 				input.Spec.BackupConfig = &KubernetesZalandoPostgresOperatorBackupConfig{
-					R2Config: &KubernetesZalandoPostgresOperatorBackupR2Config{
+					Bucket: &foreignkeyv1.StringValueOrRef{
+						LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-bucket"},
+					},
+					ObjectPrefix: "prod",
+					Schedule:     "0 2 * * *",
+					Credentials: &KubernetesZalandoPostgresOperatorR2Credentials{
 						CloudflareAccountId: "test-account-id",
-						BucketName:          "test-bucket",
 						AccessKeyId:         "test-access-key",
 						SecretAccessKey:     "test-secret-key",
 					},
-					BackupSchedule: "0 2 * * *",
 				}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).To(gomega.BeNil())
+			})
+		})
+	})
+
+	ginkgo.Describe("When backup_config is missing its bucket", func() {
+		ginkgo.Context("kubernetes_zalando_postgres_operator with incomplete backup", func() {
+			ginkgo.It("should return a validation error", func() {
+				input.Spec.BackupConfig = &KubernetesZalandoPostgresOperatorBackupConfig{
+					Schedule: "0 2 * * *",
+					Credentials: &KubernetesZalandoPostgresOperatorR2Credentials{
+						CloudflareAccountId: "test-account-id",
+						AccessKeyId:         "test-access-key",
+						SecretAccessKey:     "test-secret-key",
+					},
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).NotTo(gomega.BeNil())
 			})
 		})
 	})

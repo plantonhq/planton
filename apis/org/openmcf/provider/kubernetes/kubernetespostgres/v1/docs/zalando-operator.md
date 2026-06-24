@@ -453,31 +453,40 @@ Our IaC modules (Pulumi/Terraform) translate your high-level API to Zalando's `p
 | `container.replicas` | `spec.numberOfInstances` | Number of PostgreSQL pods |
 | `container.resources` | `spec.resources` | CPU/memory allocation |
 | `container.disk_size` | `spec.volume.size` | PVC size per pod |
-| `backup_config.s3_prefix` | `env: WALG_S3_PREFIX` | Backup storage location |
-| `backup_config.backup_schedule` | `env: BACKUP_SCHEDULE` | Cron schedule for base backups |
-| `backup_config.restore_from_s3_path` | `spec.standby.s3_wal_path` | Disaster recovery restore path |
+| `backup_config.bucket` + `backup_config.object_prefix` | `env: WALG_S3_PREFIX` | Backup storage location; the module composes `s3://<bucket>/<object_prefix>/$(SCOPE)/$(PGVERSION)` |
+| `backup_config.schedule` | `env: BACKUP_SCHEDULE` | Cron schedule for base backups |
+| `backup_config.restore` | `spec.standby.s3_wal_path` | Disaster recovery restore source |
 | `ingress.enabled` | `spec.service.type: LoadBalancer` | External access |
 
 ### Disaster Recovery in the API
 
-When you set `restore_from_s3_path`, the IaC module:
+When you set `backup_config.restore.enabled` (with its `bucket`, `object_prefix`, and `credentials`), the IaC module:
 
-1. Adds `spec.standby` to the generated manifest
+1. Adds `spec.standby` to the generated manifest, pointing at `s3://<bucket>/<object_prefix>`
 2. Injects `STANDBY_*` environment variables
 3. Creates the cluster as a read-only standby
 
-To promote to primary, you remove `restore_from_s3_path` from your API declaration. The IaC regenerates the manifest without `spec.standby`, triggering promotion.
+To promote to primary, you set `backup_config.restore.enabled` to `false`. The IaC regenerates the manifest without `spec.standby`, triggering promotion.
 
 This abstraction makes disaster recovery as simple as:
 
 ```yaml
 # Stage 1: Restore as standby
 backup_config:
-  restore_from_s3_path: "s3://bucket/backups/prod-db/15"
+  restore:
+    enabled: true
+    bucket:
+      value: prod-db-backups
+    object_prefix: production
+    credentials:
+      cloudflare_account_id: a1b2c3d4
+      access_key_id: r2-access-key-id
+      secret_access_key: $secret/postgres-r2-secret-access-key
 
-# Stage 2: Promote (remove the restore path)
+# Stage 2: Promote (disable restore)
 backup_config:
-  # restore_from_s3_path: REMOVED
+  restore:
+    enabled: false
 ```
 
 ---

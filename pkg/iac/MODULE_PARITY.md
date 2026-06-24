@@ -87,16 +87,24 @@ proto-default applier (`internal/manifest/protodefaults.ApplyDefaults`) runs onl
 manifest loader, not on the tfvars-render path used by orchestrated deploys (`pkg/iac/tofu/generators/tfvars.go`
 prunes unset fields). `alg` is not a stack output, so the conformance guard is unaffected.
 
-The `KubernetesPostgres` per-database **backup R2 credentials** (`spec.backup_config.r2_config`,
-plus the symmetric `spec.backup_config.restore_config.r2_config`) are a spec-feature-coverage +
-secret-handling parity case. Both engines, when `r2_config` is set, create a Kubernetes Secret
+The `KubernetesPostgres` per-database **backup R2 credentials** (`spec.backup_config.credentials`,
+plus the symmetric `spec.backup_config.restore.credentials`) are a spec-feature-coverage +
+secret-handling parity case. Both engines, when `credentials` is set, create a Kubernetes Secret
 holding `access_key_id`/`secret_access_key` and inject the credentials into the Spilo `spec.env`
 via `secretKeyRef` (never plaintext in the postgresql CR/pod) -- Pulumi in `backup_config.go`
 (`r2CredentialEnvVars`, shared with `restore_config.go`), tofu via `kubernetes_secret_v1` in
 `credentials.tf` referenced from the `valueFrom.secretKeyRef` env entries in `locals.tf`. The
-non-secret backup env (`AWS_ENDPOINT`/`AWS_REGION=auto`/`AWS_FORCE_PATH_STYLE=true`/`WALG_S3_PREFIX`/
-`USE_WALG_BACKUP`/`USE_WALG_RESTORE`/`BACKUP_SCHEDULE`/`BACKUP_NUM_TO_RETAIN`) and the standby
-`STANDBY_AWS_*` set match across engines, as does the standby-env-first / backup-env-second merge
-order. `secret_access_key` carries `(options.sensitive) = true`; `access_key_id` is an identifier
-(the secret-coverage heuristic does not flag the `_id` suffix), so it needs no annotation. None of
-these are stack outputs, so the conformance guard is unaffected.
+backup target is composed identically on both engines from `backup_config.bucket` +
+`backup_config.object_prefix` as `WALG_S3_PREFIX = s3://<bucket>/<object_prefix>/$(SCOPE)/$(PGVERSION)`
+(the `object_prefix` segment is dropped when empty), and restore composes
+`s3://<bucket>/<object_prefix>` for the standby `s3_wal_path`. The non-secret backup env
+(`AWS_ENDPOINT`/`AWS_REGION=auto`/`AWS_FORCE_PATH_STYLE=true`/`WALG_S3_PREFIX`/`USE_WALG_BACKUP`/
+`USE_WALG_RESTORE`/`BACKUP_SCHEDULE`/`BACKUP_NUM_TO_RETAIN`) and the standby `STANDBY_AWS_*` set
+match across engines, as does the standby-env-first / backup-env-second merge order.
+`backup_config.bucket` is a `StringValueOrRef` resolved to a plain bucket name before tfvars (like
+`spec.namespace`), so both engines receive an identical literal. `secret_access_key` carries
+`(options.sensitive) = true`; `access_key_id` is an identifier (the secret-coverage heuristic does
+not flag the `_id` suffix), so it needs no annotation. The cluster-wide
+`KubernetesZalandoPostgresOperator` backup config mirrors the same `bucket` + `object_prefix` +
+`credentials` shape, composing the identical `WALG_S3_PREFIX` into its operator configmap on both
+engines. None of these are stack outputs, so the conformance guard is unaffected.

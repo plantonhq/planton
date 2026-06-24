@@ -66,5 +66,40 @@ var _ = ginkgo.Describe("KubernetesPostgres Custom Validation Tests", func() {
 				gomega.Expect(err).To(gomega.BeNil())
 			})
 		})
+
+		ginkgo.Context("with a backup config", func() {
+			ginkgo.It("should accept a literal bucket with credentials", func() {
+				input.Spec.BackupConfig = &KubernetesPostgresBackupConfig{
+					Enabled: true,
+					Bucket: &foreignkeyv1.StringValueOrRef{
+						LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "pg-backups"},
+					},
+					ObjectPrefix: "prod",
+					Schedule:     "0 2 * * *",
+					RetainCount:  14,
+					Credentials: &KubernetesPostgresR2Credentials{
+						CloudflareAccountId: "acct-123",
+						AccessKeyId:         "ak-123",
+						SecretAccessKey:     "sk-123",
+					},
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).To(gomega.BeNil())
+			})
+		})
+	})
+
+	ginkgo.Describe("When invalid input is passed", func() {
+		ginkgo.Context("with restore enabled but no source", func() {
+			ginkgo.It("should require bucket, object_prefix, and credentials", func() {
+				input.Spec.BackupConfig = &KubernetesPostgresBackupConfig{
+					Restore: &KubernetesPostgresRestoreConfig{
+						Enabled: true,
+					},
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).NotTo(gomega.BeNil())
+			})
+		})
 	})
 })

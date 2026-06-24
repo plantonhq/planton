@@ -72,13 +72,16 @@ This creates a single-replica PostgreSQL instance with 1Gi disk, 1 CPU, and 1Gi 
 | `users` | `User[]` | `[]` | PostgreSQL users/roles to create. Each has a `name` (required) and optional `flags` (e.g., `["createdb"]`, `["superuser"]`). |
 | `ingress.enabled` | `bool` | `false` | Expose PostgreSQL externally via a LoadBalancer service with external-dns. |
 | `ingress.hostname` | `string` | — | Hostname for external access (e.g., `postgres.example.com`). Required when `ingress.enabled` is `true`. |
-| `backupConfig.s3Prefix` | `string` | — | Custom S3/R2 prefix path for backups. |
-| `backupConfig.backupSchedule` | `string` | — | Cron expression for backup schedule (e.g., `"0 3 * * *"`). |
-| `backupConfig.enableBackup` | `bool` | — | Explicitly enable or disable backups for this database. |
+| `backupConfig.enabled` | `bool` | — | Enable continuous WAL-G backups for this database. |
+| `backupConfig.bucket` | `StringValueOrRef` | — | Bucket that stores backups. A literal name, or a `valueFrom` reference to any S3-compatible bucket resource's output (e.g. a `CloudflareR2Bucket`'s `status.outputs.bucket_name`). Set the referenced `kind` explicitly. |
+| `backupConfig.objectPrefix` | `string` | — | Base path under the bucket (e.g. the environment). The module appends the per-cluster/per-version suffix automatically. |
+| `backupConfig.schedule` | `string` | — | Cron expression for base backups (e.g., `"0 2 * * *"`). |
+| `backupConfig.retainCount` | `int32` | — | Number of base backups to retain before the oldest is pruned. |
+| `backupConfig.credentials` | `object` | — | R2 credentials (`cloudflareAccountId`, `accessKeyId`, `secretAccessKey`) WAL-G uses to write backups. |
 | `backupConfig.restore.enabled` | `bool` | `false` | Enable restore mode to bootstrap from a backup. Set to `false` after restore to promote to primary. |
-| `backupConfig.restore.bucketName` | `string` | — | S3/R2 bucket name for the backup source. |
-| `backupConfig.restore.s3Path` | `string` | — | Path to backup directory within the bucket. |
-| `backupConfig.restore.r2Config` | `object` | — | R2-specific credentials (`cloudflareAccountId`, `accessKeyId`, `secretAccessKey`) for cross-cluster restore. |
+| `backupConfig.restore.bucket` | `StringValueOrRef` | — | Bucket holding the source backup. A literal name or a `valueFrom` reference (set `kind` explicitly). |
+| `backupConfig.restore.objectPrefix` | `string` | — | Path under the bucket locating the source backup. |
+| `backupConfig.restore.credentials` | `object` | — | R2 credentials (`cloudflareAccountId`, `accessKeyId`, `secretAccessKey`) used to read the source backup. |
 
 ## Examples
 
@@ -186,9 +189,19 @@ spec:
     - name: app_db
       ownerRole: app_user
   backupConfig:
-    enableBackup: true
-    backupSchedule: "0 3 * * *"
-    s3Prefix: "backups/full-postgres/$(PGVERSION)"
+    enabled: true
+    schedule: "0 3 * * *"
+    retainCount: 14
+    bucket:
+      valueFrom:
+        kind: CloudflareR2Bucket
+        name: full-postgres-backups
+        fieldPath: status.outputs.bucket_name
+    objectPrefix: production
+    credentials:
+      cloudflareAccountId: a1b2c3d4
+      accessKeyId: r2-access-key-id
+      secretAccessKey: $secret/postgres-r2-secret-access-key
 ```
 
 ## Stack Outputs

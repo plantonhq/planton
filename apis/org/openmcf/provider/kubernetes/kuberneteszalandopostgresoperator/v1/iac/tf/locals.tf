@@ -50,22 +50,28 @@ locals {
   backup_secret_name    = "${var.metadata.name}-backup-credentials"
   backup_configmap_name = "${var.metadata.name}-backup-config"
 
-  # R2 configuration (when backup is enabled)
-  r2_account_id    = try(var.spec.backup_config.r2_config.cloudflare_account_id, "")
-  r2_bucket_name   = try(var.spec.backup_config.r2_config.bucket_name, "")
-  r2_access_key_id = try(var.spec.backup_config.r2_config.access_key_id, "")
-  r2_secret_key    = try(var.spec.backup_config.r2_config.secret_access_key, "")
+  # R2 configuration (when backup is enabled). The bucket arrives as a resolved plain
+  # name (Planton resolves the value-or-ref before tfvars).
+  r2_account_id    = try(var.spec.backup_config.credentials.cloudflare_account_id, "")
+  r2_bucket        = try(var.spec.backup_config.bucket, "")
+  r2_object_prefix = try(var.spec.backup_config.object_prefix, "")
+  r2_access_key_id = try(var.spec.backup_config.credentials.access_key_id, "")
+  r2_secret_key    = try(var.spec.backup_config.credentials.secret_access_key, "")
   r2_endpoint      = local.has_backup_config ? "https://${local.r2_account_id}.r2.cloudflarestorage.com" : ""
 
   # Backup settings
-  backup_schedule            = try(var.spec.backup_config.backup_schedule, "")
-  s3_prefix_template         = try(var.spec.backup_config.s3_prefix_template, "backups/$(SCOPE)/$(PGVERSION)")
+  backup_schedule            = try(var.spec.backup_config.schedule, "")
   enable_wal_g_backup        = try(var.spec.backup_config.enable_wal_g_backup, true)
   enable_wal_g_restore       = try(var.spec.backup_config.enable_wal_g_restore, true)
   enable_clone_wal_g_restore = try(var.spec.backup_config.enable_clone_wal_g_restore, true)
 
-  # Full WAL-G S3 prefix with bucket
-  walg_s3_prefix = local.has_backup_config ? "s3://${local.r2_bucket_name}/${local.s3_prefix_template}" : ""
+  # WAL-G push target: s3://<bucket>[/<object_prefix>]/$(SCOPE)/$(PGVERSION). One operator
+  # configmap serves every database, so Spilo/Patroni substitutes the suffix at runtime.
+  walg_s3_prefix = !local.has_backup_config ? "" : (
+    local.r2_object_prefix != "" ?
+    "s3://${local.r2_bucket}/${local.r2_object_prefix}/$(SCOPE)/$(PGVERSION)" :
+    "s3://${local.r2_bucket}/$(SCOPE)/$(PGVERSION)"
+  )
 
   # Labels to be inherited by all PostgreSQL databases
   inherited_labels = [

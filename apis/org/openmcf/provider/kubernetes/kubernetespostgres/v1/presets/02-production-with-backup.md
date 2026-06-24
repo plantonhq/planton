@@ -13,7 +13,8 @@ This preset deploys a 2-replica PostgreSQL cluster with streaming replication, d
 - **2 replicas** -- primary with one streaming replica for read scaling and automatic failover
 - **50Gi disk** -- production-sized persistent storage; adjust based on your data growth projections
 - **Higher resources** (`250m`/`512Mi` requests, `2000m`/`4Gi` limits) -- production-appropriate for moderate workloads
-- **Daily backups** (`0 2 * * *`) -- base backup at 2:00 AM UTC; configure S3/R2 credentials separately if needed
+- **Daily backups** (`0 2 * * *`) -- base backup at 2:00 AM UTC, retaining 14 base backups, streamed by WAL-G to an S3-compatible bucket
+- **Referenceable bucket** -- `bucket` is a value-or-ref: use a literal name as shown, or wire it to a `CloudflareR2Bucket` (or any S3-compatible bucket) output via `valueFrom`
 - **Pre-configured database** (`app`) -- owned by `app_owner` role with LOGIN and CREATEDB privileges
 
 ## Placeholders to Replace
@@ -21,6 +22,10 @@ This preset deploys a 2-replica PostgreSQL cluster with streaming replication, d
 | Placeholder | Description | Where to Find |
 |---|---|---|
 | `<your-namespace>` | Target namespace | Your namespace management or `KubernetesNamespace` resource |
+| `my-postgres-backups` | Backup bucket name | Your S3-compatible bucket, or reference a `CloudflareR2Bucket` resource |
+| `<cloudflare-account-id>` | Cloudflare account that owns the R2 bucket | Cloudflare dashboard |
+| `<r2-access-key-id>` | R2 access-key ID | Cloudflare R2 API token |
+| `<r2-secret-access-key>` | R2 secret access key | Cloudflare R2 API token (store as a managed secret) |
 
 ## Related Presets
 

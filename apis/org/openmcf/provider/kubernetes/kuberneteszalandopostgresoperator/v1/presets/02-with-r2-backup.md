@@ -12,6 +12,8 @@ This preset deploys the Zalando Postgres Operator with WAL-G continuous archivin
 ## Key Configuration Choices
 
 - **Backup schedule** (`0 2 * * *`) -- daily base backup at 2:00 AM UTC; adjust to your maintenance window
+- **Referenceable bucket** -- `bucket` is a value-or-ref: use a literal name as shown, or wire it to a `CloudflareR2Bucket` (or any S3-compatible bucket) output via `valueFrom`
+- **Object prefix** (`backups`) -- base path under the bucket; the module appends the per-cluster/per-version segments automatically
 - **WAL-G backup enabled** (`true`) -- enables continuous WAL archiving to R2 between base backups
 - **WAL-G restore enabled** (`true`) -- allows restoring PostgreSQL clusters from R2 backups
 - **Clone WAL-G restore enabled** (`true`) -- allows cloning a PostgreSQL cluster from an R2 backup (useful for staging environments)

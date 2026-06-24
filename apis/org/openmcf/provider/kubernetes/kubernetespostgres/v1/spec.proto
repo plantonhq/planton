@@ -13,120 +13,102 @@ extend google.protobuf.FieldOptions {
   KubernetesPostgresContainer default_container = 534001;
 }
 
-// R2/S3-compatible storage credentials for BACKUP (WAL-G push) operations.
-// Kept separate from the restore-side message so backup and restore evolve
-// independently. Today this targets Cloudflare R2; it is intentionally a discrete
-// typed message to allow future S3-compatible backup backends (e.g. AWS S3, GCS)
-// to be added as siblings without disruption.
-message KubernetesPostgresBackupR2Config {
-  // Cloudflare account ID for R2 endpoint construction.
-  // Used to build: https://<account_id>.r2.cloudflarestorage.com
+// R2/S3-compatible storage credentials that authenticate WAL-G against the backup
+// bucket. Cloudflare R2 is the storage backend: the S3 API endpoint is derived from
+// the account ID as https://<cloudflare_account_id>.r2.cloudflarestorage.com, with
+// region "auto" and path-style addressing. The same credential shape authenticates
+// both writing backups and reading them back during a restore.
+message KubernetesPostgresR2Credentials {
+  // Cloudflare account ID that owns the R2 bucket, used to construct the S3 API
+  // endpoint. An account identifier, not a secret.
   string cloudflare_account_id = 1 [(buf.validate.field).required = true];
 
   // R2 access-key ID. A public identifier (like a username), not a secret.
   string access_key_id = 2 [(buf.validate.field).required = true];
 
-  // R2 secret access key. Secret: must be provided as a managed-secret reference
-  // and resolved just-in-time at deploy (never plaintext).
+  // R2 secret access key. Provided as a managed-secret reference and resolved
+  // just-in-time at deploy: it is written to a Kubernetes Secret and injected via
+  // secretKeyRef, never as plaintext in the postgresql custom resource or pod spec.
   string secret_access_key = 3 [
     (buf.validate.field).required = true,
     (org.openmcf.shared.options.sensitive) = true
   ];
 }
 
-// R2/S3-compatible storage credentials for RESTORE (standby bootstrap / PITR)
-// operations. Kept separate from the backup-side message so the two evolve
-// independently.
-message KubernetesPostgresRestoreR2Config {
-  // Cloudflare account ID for R2 endpoint construction.
-  // Used to build: https://<account_id>.r2.cloudflarestorage.com
-  string cloudflare_account_id = 1 [(buf.validate.field).required = true];
-
-  // R2 access-key ID. A public identifier (like a username), not a secret.
-  string access_key_id = 2 [(buf.validate.field).required = true];
-
-  // R2 secret access key. Secret: must be provided as a managed-secret reference
-  // and resolved just-in-time at deploy (never plaintext).
-  string secret_access_key = 3 [
-    (buf.validate.field).required = true,
-    (org.openmcf.shared.options.sensitive) = true
-  ];
-}
-
-// Technology-agnostic disaster recovery restore configuration
-// Enables database restoration from S3/R2 backup files independent of source cluster
-//
-// Usage Pattern (Two-Stage Workflow):
-// Stage 1 - Bootstrap from Backup:
-//   Set enabled=true to restore from backup (read-only validation mode)
-// Stage 2 - Promote to Primary:
-//   Set enabled=false to promote to read-write primary
-//
-// Operator Implementation:
-// - Zalando: enabled=true → spec:standby, enabled=false → remove spec:standby
-// - Percona: enabled=true → spec:dataSource, enabled=false → normal bootstrap
-// - CloudNativePG: enabled=true → spec:bootstrap.recovery, enabled=false → normal start
+// Disaster-recovery restore configuration. When enabled, the database bootstraps as
+// a read-only standby that replays an existing backup from the bucket instead of
+// initializing empty; disabling it (after the standby has caught up) promotes the
+// database to a read-write primary. The module locates the source backup at
+// s3://<bucket>/<object_prefix> and authenticates with restore credentials that are
+// independent of the ongoing-backup credentials, so a cluster can restore from a
+// bucket it does not itself back up to.
 message KubernetesPostgresRestoreConfig {
-  // Enable or disable restore mode
-  // When enabled: Database bootstraps from backup (implementation varies by operator)
-  // When disabled or unset: Database runs as normal primary
+  option (buf.validate.message).cel = {
+    id: "restore.requires_source"
+    expression: "!this.enabled || (has(this.bucket) && this.object_prefix != '' && has(this.credentials))"
+    message: "to restore, set bucket, object_prefix, and credentials so the module can locate and read the source backup"
+  };
+
+  // Bootstrap this database from an existing backup. When true the database starts
+  // as a read-only standby replaying the source backup; set false once it has caught
+  // up to promote it to a read-write primary.
   bool enabled = 1;
 
-  // S3/R2 bucket name for backup source
-  // Optional: If not specified, uses operator-level bucket configuration
-  // If operator-level bucket also not configured, deployment will fail
-  optional string bucket_name = 2;
+  // Bucket holding the source backup to restore from. A literal bucket name, or a
+  // reference (value_from) to any S3-compatible bucket resource's output -- for
+  // example a CloudflareR2Bucket's status.outputs.bucket_name. Set the referenced
+  // kind explicitly; this field assumes no single provider.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef bucket = 2;
 
-  // S3 path to backup directory (without s3:// prefix or bucket name)
-  // Required when enabled=true
-  // Example: "backups/db-app-prod-main/14"
-  // Path should contain operator-specific backup structure (e.g., basebackups_005/, wal_005/)
-  string s3_path = 3;
+  // Path under the bucket locating the source backup (for example the originating
+  // environment). This is the explicit source key: unlike the ongoing-backup path it
+  // carries no runtime substitution, because the source scope is historical.
+  string object_prefix = 3;
 
-  // R2/S3 credentials for restore access
-  // Optional: Allows per-database independent credentials for disaster recovery
-  // If not specified, operators may use shared credentials or fail
-  // Recommended: Provide credentials for true cross-cluster independence
-  optional KubernetesPostgresRestoreR2Config r2_config = 4;
+  // Credentials used to read the source backup during standby bootstrap.
+  KubernetesPostgresR2Credentials credentials = 4;
 }
 
-// Manager-agnostic backup configuration for a PostgreSQL database.
-// This configuration allows per-database backup overrides independent of the operator implementation.
-// When specified, these settings override operator-level backup configuration.
+// Per-database backup configuration. WAL-G streams base backups and WAL to an
+// S3-compatible bucket on the configured schedule. The module composes the full
+// WAL-G target as s3://<bucket>/<object_prefix>/<cluster-scope>/<pg-version>,
+// appending the per-cluster and per-version segments itself so that backups from
+// many clusters and versions can share one bucket without collision; callers specify
+// only the bucket and an optional object_prefix.
 message KubernetesPostgresBackupConfig {
-  // Optional: Enable or disable backups for this specific database -> USE_WALG_BACKUP.
-  // If true, backups are explicitly enabled (overrides operator setting).
-  // If false, backups are explicitly disabled for this database.
-  // If not specified, uses operator-level setting (or defaults to true when r2_config is set).
-  optional bool enable_backup = 1;
+  option (buf.validate.message).cel = {
+    id: "backup.credentials_require_bucket"
+    expression: "!has(this.credentials) || has(this.bucket)"
+    message: "set a bucket when backup credentials are provided, so WAL-G has a target to write to"
+  };
 
-  // Optional: Custom S3/R2 prefix path for this database's backups -> WALG_S3_PREFIX.
-  // When r2_config is set, this is the FULL s3://<bucket>/<path> target for the
-  // dedicated bucket (prefer Zalando's $(SCOPE)/$(PGVERSION) substitution in the path).
-  // When r2_config is unset, it overrides the operator-level prefix as before.
-  // Example: "backups/my-app/production/postgres/$(PGVERSION)"
-  string s3_prefix = 2;
+  // Enable continuous WAL-G backups for this database.
+  bool enabled = 1;
 
-  // Optional: Custom backup schedule in cron format -> BACKUP_SCHEDULE.
-  // If not specified, uses operator-level schedule.
-  // Example: "0 3 * * *" for 3 AM daily backups
-  string backup_schedule = 3;
+  // Bucket that stores this database's backups. A literal bucket name, or a
+  // reference (value_from) to any S3-compatible bucket resource's output -- for
+  // example a CloudflareR2Bucket's status.outputs.bucket_name. Set the referenced
+  // kind explicitly; this field assumes no single provider.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef bucket = 2;
 
-  // Optional: Number of base backups to retain -> BACKUP_NUM_TO_RETAIN.
-  // If not specified, uses the operator default. For a financial datastore,
-  // set this explicitly (e.g. 14).
-  optional int32 backup_retain_count = 4;
+  // Base path under the bucket for this database's backups (for example the
+  // environment). The module appends the per-cluster and per-version segments.
+  string object_prefix = 3;
 
-  // Optional: Dedicated R2 credentials + endpoint for THIS database's backups,
-  // independent of any operator-level S3 configuration. When set, the module
-  // provisions the backup target with these credentials (a generated Kubernetes
-  // Secret referenced via secretKeyRef) rather than inheriting the cluster
-  // operator's bucket/credentials. The bucket is taken from s3_prefix.
-  optional KubernetesPostgresBackupR2Config r2_config = 5;
+  // Cron schedule for base backups, for example "0 2 * * *" for 02:00 daily. WAL is
+  // archived continuously between base backups.
+  string schedule = 4;
 
-  // Disaster recovery restore configuration
-  // When set, enables cross-cluster database restoration from backup files
-  optional KubernetesPostgresRestoreConfig restore_config = 6;
+  // Number of base backups to retain before the oldest is pruned. For a financial
+  // datastore set this explicitly (for example 14).
+  int32 retain_count = 5;
+
+  // Credentials WAL-G uses to write backups to the bucket.
+  KubernetesPostgresR2Credentials credentials = 6;
+
+  // Disaster-recovery restore configuration for bootstrapping this database from an
+  // existing backup.
+  KubernetesPostgresRestoreConfig restore = 7;
 }
 
 // PostgreSQL user/role definition

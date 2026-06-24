@@ -116,14 +116,14 @@ variable "spec" {
       })
     })
     backup_config = optional(object({
-      r2_config = object({
+      bucket        = string
+      object_prefix = optional(string)
+      schedule      = string
+      credentials = object({
         cloudflare_account_id = string
-        bucket_name           = string
         access_key_id         = string
         secret_access_key     = string
       })
-      s3_prefix_template         = optional(string, "backups/$(SCOPE)/$(PGVERSION)")
-      backup_schedule            = string
       enable_wal_g_backup        = optional(bool, true)
       enable_wal_g_restore       = optional(bool, true)
       enable_clone_wal_g_restore = optional(bool, true)
@@ -194,14 +194,14 @@ module "postgres_operator" {
       }
     }
     backup_config = {
-      r2_config = {
+      bucket        = "postgres-backups-prod"
+      object_prefix = "prod/pg"
+      schedule      = "0 2 * * *"
+      credentials = {
         cloudflare_account_id = var.cloudflare_account_id
-        bucket_name           = "postgres-backups-prod"
         access_key_id         = var.r2_access_key_id
         secret_access_key     = var.r2_secret_access_key
       }
-      backup_schedule            = "0 2 * * *"
-      s3_prefix_template         = "prod/pg/$(SCOPE)/v$(PGVERSION)"
       enable_wal_g_backup        = true
       enable_wal_g_restore       = true
       enable_clone_wal_g_restore = true
@@ -470,13 +470,13 @@ spec = {
     }
   }
   backup_config = {
-    r2_config = {
+    bucket   = "postgres-backups-prod"
+    schedule = "0 2 * * *"
+    credentials = {
       cloudflare_account_id = var.cloudflare_account_id
-      bucket_name           = "postgres-backups-prod"
       access_key_id         = var.r2_access_key_id
       secret_access_key     = var.r2_secret_access_key
     }
-    backup_schedule = "0 2 * * *"
   }
 }
 ```

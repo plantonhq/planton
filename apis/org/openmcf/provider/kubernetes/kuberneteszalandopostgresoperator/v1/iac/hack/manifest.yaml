@@ -18,14 +18,15 @@ spec:
         memory: 1Gi
   # Uncomment to enable backup configuration for testing
   # backup_config:
-  #   r2_config:
-  #     cloudflare_account_id: "your-account-id-here"
-  #     bucket_name: "postgres-backups-dev"
-  #     access_key_id: "your-r2-access-key-id"
-  #     secret_access_key: "your-r2-secret-access-key"
-  #   backup_schedule: "0 2 * * *"
-  #   s3_prefix_template: "backups/$(SCOPE)/$(PGVERSION)"
+  #   bucket:
+  #     value: "postgres-backups-dev"
+  #   object_prefix: development
+  #   schedule: "0 2 * * *"
   #   enable_wal_g_backup: true
   #   enable_wal_g_restore: true
   #   enable_clone_wal_g_restore: true
+  #   credentials:
+  #     cloudflare_account_id: "your-account-id-here"
+  #     access_key_id: "your-r2-access-key-id"
+  #     secret_access_key: "your-r2-secret-access-key"
 

@@ -15,12 +15,22 @@ spec:
         cpu: 1000m
         memory: 1Gi
   backupConfig:
-    r2Config:
-      cloudflareAccountId: "<your-cloudflare-account-id>"
-      bucketName: "<your-r2-backup-bucket>"
-      accessKeyId: "<your-r2-access-key-id>"
-      secretAccessKey: "<your-r2-secret-access-key>"
-    backupSchedule: "0 2 * * *"  # daily at 2:00 AM UTC
+    # Bucket holding backups for every database on the cluster. A literal name, or a
+    # reference to any S3-compatible bucket resource's output, e.g.:
+    #   bucket:
+    #     valueFrom:
+    #       kind: CloudflareR2Bucket
+    #       name: my-r2-backup-bucket
+    #       fieldPath: status.outputs.bucket_name
+    bucket:
+      value: "<your-r2-backup-bucket>"
+    # Base path under the bucket; the module appends the per-cluster/per-version suffix.
+    objectPrefix: backups
+    schedule: "0 2 * * *"  # daily at 2:00 AM UTC
     enableWalGBackup: true
     enableWalGRestore: true
     enableCloneWalGRestore: true
+    credentials:
+      cloudflareAccountId: "<your-cloudflare-account-id>"
+      accessKeyId: "<your-r2-access-key-id>"
+      secretAccessKey: "<your-r2-secret-access-key>"

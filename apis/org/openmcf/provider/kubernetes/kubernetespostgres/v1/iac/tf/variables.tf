@@ -73,46 +73,49 @@ variable "spec" {
       hostname = string
     }))
 
-    # Per-database backup configuration. When set, these settings override the
-    # operator-level backup configuration. Mirrors KubernetesPostgresBackupConfig
-    # in spec.proto and the Pulumi module's backup_config.go / restore_config.go.
+    # Per-database backup configuration. WAL-G streams base backups and WAL to an
+    # S3-compatible bucket; the module composes the full target from bucket +
+    # object_prefix and appends the per-cluster/per-version suffix.
     backup_config = optional(object({
 
-      # Explicitly enable/disable backups for this database (USE_WALG_BACKUP).
-      enable_backup = optional(bool)
+      # Enable continuous WAL-G backups for this database (USE_WALG_BACKUP).
+      enabled = optional(bool)
 
-      # Custom S3/R2 prefix path for this database's backups (WALG_S3_PREFIX).
-      s3_prefix = optional(string)
+      # Bucket that stores this database's backups. Planton resolves the value-or-ref
+      # to a plain bucket name before tfvars.
+      bucket = optional(string)
 
-      # Custom backup schedule in cron format (BACKUP_SCHEDULE).
-      backup_schedule = optional(string)
+      # Base path under the bucket; the module appends the per-cluster/per-version suffix.
+      object_prefix = optional(string)
+
+      # Cron schedule for base backups (BACKUP_SCHEDULE).
+      schedule = optional(string)
 
       # Number of base backups to retain (BACKUP_NUM_TO_RETAIN).
-      backup_retain_count = optional(number)
+      retain_count = optional(number)
 
-      # Dedicated R2 credentials + endpoint for this database's backups, independent
-      # of any operator-level S3 config. When set, the module creates a Secret from
+      # Credentials WAL-G uses to write backups. The module creates a Secret from
       # these credentials and references it via secretKeyRef in the pod env.
-      r2_config = optional(object({
+      credentials = optional(object({
         cloudflare_account_id = string
         access_key_id         = string
         secret_access_key     = string
       }))
 
       # Disaster-recovery restore configuration (Zalando spec.standby + STANDBY_* env).
-      restore_config = optional(object({
+      restore = optional(object({
 
-        # When true, the database bootstraps as a read-only standby from backups.
+        # When true, the database bootstraps as a read-only standby from the source backup.
         enabled = optional(bool, false)
 
-        # S3/R2 bucket holding the backup source.
-        bucket_name = optional(string)
+        # Bucket holding the source backup. Resolved to a plain name before tfvars.
+        bucket = optional(string)
 
-        # S3 path to the backup directory (without s3:// prefix or bucket name).
-        s3_path = optional(string)
+        # Path under the bucket locating the source backup.
+        object_prefix = optional(string)
 
-        # R2/S3 credentials used during standby bootstrap.
-        r2_config = optional(object({
+        # Credentials used to read the source backup during standby bootstrap.
+        credentials = optional(object({
           cloudflare_account_id = string
           access_key_id         = string
           secret_access_key     = string

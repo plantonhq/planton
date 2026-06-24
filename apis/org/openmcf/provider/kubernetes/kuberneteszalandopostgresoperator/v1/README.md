@@ -174,15 +174,17 @@ spec:
         cpu: 2000m
         memory: 2Gi
   backup_config:
-    r2_config:
-      cloudflare_account_id: "abc123xyz"
-      bucket_name: "postgres-backups-prod"
-      access_key_id: "${R2_ACCESS_KEY_ID}"
-      secret_access_key: "${R2_SECRET_ACCESS_KEY}"
-    backup_schedule: "0 2 * * *"  # 2 AM daily
+    bucket:
+      value: "postgres-backups-prod"
+    object_prefix: production
+    schedule: "0 2 * * *"  # 2 AM daily
     enable_wal_g_backup: true
     enable_wal_g_restore: true
     enable_clone_wal_g_restore: true
+    credentials:
+      cloudflare_account_id: "abc123xyz"
+      access_key_id: "${R2_ACCESS_KEY_ID}"
+      secret_access_key: "${R2_SECRET_ACCESS_KEY}"
 ```
 
 ### Configuration Fields
@@ -217,12 +219,12 @@ spec:
 
 | Field | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
-| `backup_config.r2_config.cloudflare_account_id` | string | Yes* | - | Cloudflare account ID for R2 endpoint |
-| `backup_config.r2_config.bucket_name` | string | Yes* | - | R2 bucket name for backups |
-| `backup_config.r2_config.access_key_id` | string | Yes* | - | R2 access key ID |
-| `backup_config.r2_config.secret_access_key` | string | Yes* | - | R2 secret access key |
-| `backup_config.backup_schedule` | string | Yes* | - | Cron schedule (e.g., `0 2 * * *`) |
-| `backup_config.s3_prefix_template` | string | No | `backups/$(SCOPE)/$(PGVERSION)` | S3 prefix template for WAL-G |
+| `backup_config.bucket` | StringValueOrRef | Yes* | - | Bucket for backups (literal name or `valueFrom` reference to any S3-compatible bucket, e.g. a `CloudflareR2Bucket`) |
+| `backup_config.object_prefix` | string | No | - | Base path under the bucket; the module appends the per-cluster/per-version suffix |
+| `backup_config.schedule` | string | Yes* | - | Cron schedule (e.g., `0 2 * * *`) |
+| `backup_config.credentials.cloudflare_account_id` | string | Yes* | - | Cloudflare account ID for R2 endpoint |
+| `backup_config.credentials.access_key_id` | string | Yes* | - | R2 access key ID |
+| `backup_config.credentials.secret_access_key` | string | Yes* | - | R2 secret access key |
 | `backup_config.enable_wal_g_backup` | bool | No | `true` | Enable WAL-G backups |
 | `backup_config.enable_wal_g_restore` | bool | No | `true` | Enable WAL-G restores |
 | `backup_config.enable_clone_wal_g_restore` | bool | No | `true` | Enable WAL-G for clone operations |

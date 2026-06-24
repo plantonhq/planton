@@ -148,17 +148,17 @@ message KubernetesZalandoPostgresOperatorSpec {
 ```protobuf
 message KubernetesZalandoPostgresOperatorSpec {
   backup_config {
-    r2_config {
+    bucket                     // literal name or value_from ref to an S3-compatible bucket
+    object_prefix              // base path; module appends the per-cluster/per-version suffix
+    schedule                   // e.g., "0 2 * * *"
+    enable_wal_g_backup        // defaults to true
+    enable_wal_g_restore       // defaults to true
+    enable_clone_wal_g_restore // defaults to true
+    credentials {
       cloudflare_account_id
-      bucket_name
       access_key_id
       secret_access_key
     }
-    backup_schedule         // e.g., "0 2 * * *"
-    s3_prefix_template      // defaults to "backups/$(SCOPE)/$(PGVERSION)"
-    enable_wal_g_backup     // defaults to true
-    enable_wal_g_restore    // defaults to true
-    enable_clone_wal_g_restore // defaults to true
   }
 }
 ```

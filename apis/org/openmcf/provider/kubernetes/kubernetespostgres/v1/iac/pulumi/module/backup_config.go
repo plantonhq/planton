@@ -85,10 +85,10 @@ func r2CredentialEnvVars(
 }
 
 // buildBackupEnvVars returns the spec.env entries that configure per-database WAL-G
-// backups. When r2_config is set it additionally provisions a dedicated R2 target
-// (endpoint + credentials via a generated Secret) independent of any operator-level
-// S3 configuration. Returns nil when backupConfig is nil (the database then inherits
-// operator-level backup settings).
+// backups. The WAL-G push target is composed from the bucket and object_prefix; when
+// credentials are supplied the dedicated R2 endpoint and the credentials (via a
+// generated Secret + secretKeyRef) are wired so the database backs up to its own
+// bucket. Returns nil when backups are disabled.
 func buildBackupEnvVars(
 	ctx *pulumi.Context,
 	kubernetesProvider pulumi.ProviderResource,
@@ -96,39 +96,29 @@ func buildBackupEnvVars(
 	namespaceDeps []pulumi.ResourceOption,
 	backupConfig *kubernetespostgresv1.KubernetesPostgresBackupConfig,
 ) ([]pulumi.MapInput, error) {
-	if backupConfig == nil {
+	if backupConfig == nil || !backupConfig.Enabled {
 		return nil, nil
 	}
 
-	var envVars []pulumi.MapInput
+	envVars := []pulumi.MapInput{envVar("USE_WALG_BACKUP", "true")}
 
-	// USE_WALG_BACKUP: an explicit enable_backup wins; otherwise a dedicated
-	// r2_config implies backups are enabled. Emitted at most once to avoid
-	// duplicate keys in spec.env.
-	if backupConfig.EnableBackup != nil {
-		envVars = append(envVars, envVar("USE_WALG_BACKUP", boolToString(*backupConfig.EnableBackup)))
-	} else if backupConfig.R2Config != nil {
-		envVars = append(envVars, envVar("USE_WALG_BACKUP", "true"))
+	if walgS3Prefix := backupWalgS3Prefix(backupConfig); walgS3Prefix != "" {
+		envVars = append(envVars, envVar("WALG_S3_PREFIX", walgS3Prefix))
 	}
 
-	if backupConfig.S3Prefix != "" {
-		envVars = append(envVars, envVar("WALG_S3_PREFIX", fmt.Sprintf("s3://%s", backupConfig.S3Prefix)))
+	if backupConfig.Schedule != "" {
+		envVars = append(envVars, envVar("BACKUP_SCHEDULE", backupConfig.Schedule))
 	}
 
-	if backupConfig.BackupSchedule != "" {
-		envVars = append(envVars, envVar("BACKUP_SCHEDULE", backupConfig.BackupSchedule))
+	if backupConfig.RetainCount > 0 {
+		envVars = append(envVars, envVar("BACKUP_NUM_TO_RETAIN", strconv.Itoa(int(backupConfig.RetainCount))))
 	}
 
-	if backupConfig.BackupRetainCount != nil {
-		envVars = append(envVars, envVar("BACKUP_NUM_TO_RETAIN", strconv.Itoa(int(*backupConfig.BackupRetainCount))))
-	}
-
-	// Dedicated R2 backup target: endpoint/region/path-style as plain values and
-	// the credentials via a generated Secret + secretKeyRef. USE_WALG_RESTORE is
-	// enabled so WAL-G can also fetch from the same bucket when needed.
-	if backupConfig.R2Config != nil {
-		r2 := backupConfig.R2Config
-		endpoint := fmt.Sprintf("https://%s.r2.cloudflarestorage.com", r2.CloudflareAccountId)
+	// Dedicated R2 backup target: endpoint/region/path-style as plain values and the
+	// credentials via a generated Secret + secretKeyRef. USE_WALG_RESTORE is enabled
+	// so WAL-G can also fetch from the same bucket when needed.
+	if creds := backupConfig.Credentials; creds != nil {
+		endpoint := fmt.Sprintf("https://%s.r2.cloudflarestorage.com", creds.CloudflareAccountId)
 		envVars = append(envVars,
 			envVar("AWS_ENDPOINT", endpoint),
 			envVar("AWS_REGION", "auto"),
@@ -139,23 +129,28 @@ func buildBackupEnvVars(
 		credEnvVars, err := r2CredentialEnvVars(ctx, kubernetesProvider, locals.Namespace, namespaceDeps,
 			fmt.Sprintf("%s-backup-r2-credentials", locals.KubernetesPostgres.Metadata.Name),
 			"AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY",
-			locals.Labels, r2.AccessKeyId, r2.SecretAccessKey)
+			locals.Labels, creds.AccessKeyId, creds.SecretAccessKey)
 		if err != nil {
 			return nil, err
 		}
 		envVars = append(envVars, credEnvVars...)
 	}
 
-	if len(envVars) == 0 {
-		return nil, nil
-	}
 	return envVars, nil
 }
 
-// boolToString converts a bool to "true" or "false" string.
-func boolToString(value bool) string {
-	if value {
-		return "true"
+// backupWalgS3Prefix composes the WAL-G push target as
+// s3://<bucket>[/<object_prefix>]/$(SCOPE)/$(PGVERSION). Spilo/Patroni substitutes
+// the $(SCOPE)/$(PGVERSION) suffix at runtime, so backups from many clusters and
+// versions share one bucket without collision. Returns "" when no bucket is set.
+func backupWalgS3Prefix(backupConfig *kubernetespostgresv1.KubernetesPostgresBackupConfig) string {
+	bucket := backupConfig.GetBucket().GetValue()
+	if bucket == "" {
+		return ""
 	}
-	return "false"
+	prefix := fmt.Sprintf("s3://%s", bucket)
+	if objectPrefix := backupConfig.ObjectPrefix; objectPrefix != "" {
+		prefix = fmt.Sprintf("%s/%s", prefix, objectPrefix)
+	}
+	return fmt.Sprintf("%s/$(SCOPE)/$(PGVERSION)", prefix)
 }
