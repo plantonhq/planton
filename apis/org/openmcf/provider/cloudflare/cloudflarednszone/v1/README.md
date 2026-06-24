@@ -248,7 +248,7 @@ After zone creation, you can configure additional settings:
 - **Caching Rules**: Configure cache behavior
 - **WAF Rules**: Set up Web Application Firewall
 
-These settings are managed separately via Cloudflare dashboard, Terraform `cloudflare_zone_settings_override`, or Pulumi.
+These settings are managed separately via Cloudflare dashboard, the per-setting Terraform `cloudflare_zone_setting` resource, or Pulumi.
 
 ## Troubleshooting
 

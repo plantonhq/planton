@@ -2,31 +2,13 @@
 
 # Create the Cloudflare DNS Zone
 resource "cloudflare_zone" "main" {
-  account_id = var.spec.account_id
-  zone       = var.spec.zone_name
-  plan       = local.plan_id
-  paused     = var.spec.paused
-
-  # Jump start automatically scans and imports existing DNS records
-  # Set to false for clean zone creation
-  jump_start = false
+  account = {
+    id = var.spec.account_id
+  }
+  name   = var.spec.zone_name
+  paused = var.spec.paused
 
   # Type is always "full" (standard nameserver delegation)
   # "partial" (CNAME setup) is Business/Enterprise only and not in the 80/20
   type = "full"
-}
-
-# Configure zone settings including default_proxied
-resource "cloudflare_zone_settings_override" "main" {
-  zone_id = cloudflare_zone.main.id
-
-  settings {
-    # Set default proxied behavior for new DNS records
-    # This is configured as a zone setting, not at zone creation
-    always_online = "on"
-    
-    # Note: default_proxied is not a direct zone setting in the Cloudflare API
-    # It's a UI/dashboard feature. For Infrastructure-as-Code, you control
-    # the proxied state explicitly when creating each DNS record.
-  }
 }

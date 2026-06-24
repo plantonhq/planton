@@ -219,6 +219,17 @@ func TestStackOutputsConformance(t *testing.T) {
 			},
 			mustPopulate: []string{"record_id", "hostname", "record_type", "proxied"},
 		},
+		{
+			// CloudflareDnsZone: both engines emit the zone id (scalar) and the
+			// assigned nameservers (repeated string) onto the StackOutputs proto.
+			name: "CloudflareDnsZone",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareDnsZone,
+			rawOutputs: map[string]interface{}{
+				"zone_id":     "023e105f4ecef8ad9ca31a8372d0c353",
+				"nameservers": []interface{}{"ns1.cloudflare.com", "ns2.cloudflare.com"},
+			},
+			mustPopulate: []string{"zone_id", "nameservers"},
+		},
 	}
 
 	for _, tc := range cases {
