@@ -30,7 +30,41 @@ var _ = ginkgo.Describe("CloudflareR2BucketSpec Custom Validation Tests", func()
 					Spec: &CloudflareR2BucketSpec{
 						BucketName: "test-bucket",
 						AccountId:  "00000000000000000000000000000000",
-						Location:   CloudflareR2Location_WEUR,
+						Location:   CloudflareR2Location_weur,
+					},
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).To(gomega.BeNil())
+			})
+
+			ginkgo.It("should not return a validation error when location is omitted (auto)", func() {
+				input := &CloudflareR2Bucket{
+					ApiVersion: "cloudflare.openmcf.org/v1",
+					Kind:       "CloudflareR2Bucket",
+					Metadata: &shared.CloudResourceMetadata{
+						Name: "test-r2-bucket-auto",
+					},
+					Spec: &CloudflareR2BucketSpec{
+						BucketName: "test-auto-bucket",
+						AccountId:  "00000000000000000000000000000000",
+						// Location left unset == auto (no hint).
+					},
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).To(gomega.BeNil())
+			})
+
+			ginkgo.It("should not return a validation error for a non-auto region", func() {
+				input := &CloudflareR2Bucket{
+					ApiVersion: "cloudflare.openmcf.org/v1",
+					Kind:       "CloudflareR2Bucket",
+					Metadata: &shared.CloudResourceMetadata{
+						Name: "test-r2-bucket-region",
+					},
+					Spec: &CloudflareR2BucketSpec{
+						BucketName: "test-region-bucket",
+						AccountId:  "00000000000000000000000000000000",
+						Location:   CloudflareR2Location_enam,
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -47,7 +81,7 @@ var _ = ginkgo.Describe("CloudflareR2BucketSpec Custom Validation Tests", func()
 					Spec: &CloudflareR2BucketSpec{
 						BucketName:   "test-public-bucket",
 						AccountId:    "00000000000000000000000000000000",
-						Location:     CloudflareR2Location_WEUR,
+						Location:     CloudflareR2Location_weur,
 						PublicAccess: true,
 					},
 				}
@@ -65,7 +99,7 @@ var _ = ginkgo.Describe("CloudflareR2BucketSpec Custom Validation Tests", func()
 					Spec: &CloudflareR2BucketSpec{
 						BucketName: "test-custom-domain-bucket",
 						AccountId:  "00000000000000000000000000000000",
-						Location:   CloudflareR2Location_WEUR,
+						Location:   CloudflareR2Location_weur,
 						CustomDomain: &CloudflareR2BucketCustomDomainConfig{
 							Enabled: true,
 							ZoneId: &foreignkeyv1.StringValueOrRef{
@@ -91,7 +125,7 @@ var _ = ginkgo.Describe("CloudflareR2BucketSpec Custom Validation Tests", func()
 					Spec: &CloudflareR2BucketSpec{
 						BucketName: "test-disabled-custom-domain",
 						AccountId:  "00000000000000000000000000000000",
-						Location:   CloudflareR2Location_WEUR,
+						Location:   CloudflareR2Location_weur,
 						CustomDomain: &CloudflareR2BucketCustomDomainConfig{
 							Enabled: false,
 						},
@@ -115,7 +149,7 @@ var _ = ginkgo.Describe("CloudflareR2BucketSpec Custom Validation Tests", func()
 					},
 					Spec: &CloudflareR2BucketSpec{
 						BucketName: "test-bucket",
-						Location:   CloudflareR2Location_WEUR,
+						Location:   CloudflareR2Location_weur,
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -132,7 +166,7 @@ var _ = ginkgo.Describe("CloudflareR2BucketSpec Custom Validation Tests", func()
 					Spec: &CloudflareR2BucketSpec{
 						BucketName: "test-bucket",
 						AccountId:  "123",
-						Location:   CloudflareR2Location_WEUR,
+						Location:   CloudflareR2Location_weur,
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -149,7 +183,7 @@ var _ = ginkgo.Describe("CloudflareR2BucketSpec Custom Validation Tests", func()
 					Spec: &CloudflareR2BucketSpec{
 						BucketName: "test-bucket",
 						AccountId:  "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ",
-						Location:   CloudflareR2Location_WEUR,
+						Location:   CloudflareR2Location_weur,
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -168,7 +202,7 @@ var _ = ginkgo.Describe("CloudflareR2BucketSpec Custom Validation Tests", func()
 					},
 					Spec: &CloudflareR2BucketSpec{
 						AccountId: "00000000000000000000000000000000",
-						Location:  CloudflareR2Location_WEUR,
+						Location:  CloudflareR2Location_weur,
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -185,7 +219,7 @@ var _ = ginkgo.Describe("CloudflareR2BucketSpec Custom Validation Tests", func()
 					Spec: &CloudflareR2BucketSpec{
 						BucketName: "ab",
 						AccountId:  "00000000000000000000000000000000",
-						Location:   CloudflareR2Location_WEUR,
+						Location:   CloudflareR2Location_weur,
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -202,7 +236,7 @@ var _ = ginkgo.Describe("CloudflareR2BucketSpec Custom Validation Tests", func()
 					Spec: &CloudflareR2BucketSpec{
 						BucketName: "Test_Bucket",
 						AccountId:  "00000000000000000000000000000000",
-						Location:   CloudflareR2Location_WEUR,
+						Location:   CloudflareR2Location_weur,
 					},
 				}
 				err := protovalidate.Validate(input)
@@ -222,7 +256,7 @@ var _ = ginkgo.Describe("CloudflareR2BucketSpec Custom Validation Tests", func()
 					Spec: &CloudflareR2BucketSpec{
 						BucketName: "test-bucket",
 						AccountId:  "00000000000000000000000000000000",
-						Location:   CloudflareR2Location_WEUR,
+						Location:   CloudflareR2Location_weur,
 						CustomDomain: &CloudflareR2BucketCustomDomainConfig{
 							Enabled: true,
 							Domain:  "media.example.com",
@@ -243,7 +277,7 @@ var _ = ginkgo.Describe("CloudflareR2BucketSpec Custom Validation Tests", func()
 					Spec: &CloudflareR2BucketSpec{
 						BucketName: "test-bucket",
 						AccountId:  "00000000000000000000000000000000",
-						Location:   CloudflareR2Location_WEUR,
+						Location:   CloudflareR2Location_weur,
 						CustomDomain: &CloudflareR2BucketCustomDomainConfig{
 							Enabled: true,
 							ZoneId: &foreignkeyv1.StringValueOrRef{
@@ -268,7 +302,7 @@ var _ = ginkgo.Describe("CloudflareR2BucketSpec Custom Validation Tests", func()
 					Spec: &CloudflareR2BucketSpec{
 						BucketName: "test-bucket",
 						AccountId:  "00000000000000000000000000000000",
-						Location:   CloudflareR2Location_WEUR,
+						Location:   CloudflareR2Location_weur,
 						CustomDomain: &CloudflareR2BucketCustomDomainConfig{
 							Enabled: true,
 							ZoneId: &foreignkeyv1.StringValueOrRef{

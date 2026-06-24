@@ -13,34 +13,32 @@ func bucket(
 	cloudflareProvider *cloudflare.Provider,
 ) (*cloudflare.R2Bucket, error) {
 
-	// 1. Get the location string directly from the enum.
-	// The enum values (auto, WNAM, ENAM, etc.) match Cloudflare's expected strings.
-	bucketLocation := locals.CloudflareR2Bucket.Spec.Location.String()
+	// 1. Assemble the bucket arguments. The location hint is omitted when "auto"
+	// (the enum zero value) so Cloudflare selects the region. The enum value
+	// name matches the string the provider expects, so .String() is used directly.
+	bucketArgs := &cloudflare.R2BucketArgs{
+		AccountId: pulumi.String(locals.CloudflareR2Bucket.Spec.AccountId),
+		Name:      pulumi.String(locals.CloudflareR2Bucket.Spec.BucketName),
+	}
+	if locals.CloudflareR2Bucket.Spec.Location != 0 {
+		bucketArgs.Location = pulumi.String(locals.CloudflareR2Bucket.Spec.Location.String())
+	}
 
 	// 2. Create the bucket.
 	createdBucket, err := cloudflare.NewR2Bucket(
 		ctx,
 		"bucket",
-		&cloudflare.R2BucketArgs{
-			AccountId: pulumi.String(locals.CloudflareR2Bucket.Spec.AccountId),
-			Name:      pulumi.String(locals.CloudflareR2Bucket.Spec.BucketName),
-			Location:  pulumi.String(bucketLocation),
-		},
+		bucketArgs,
 		pulumi.Provider(cloudflareProvider),
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create Cloudflare R2 bucket")
 	}
 
-	// 4. Handle public access (r2.dev subdomain).
-	// Note: The Cloudflare Pulumi provider does not yet expose a direct field for toggling
-	// the r2.dev public URL. This currently requires using the Cloudflare API directly
-	// or the dashboard. We log a warning if public_access is requested.
-	if locals.CloudflareR2Bucket.Spec.PublicAccess {
-		ctx.Log.Warn("Public access (r2.dev subdomain) must be enabled manually via Cloudflare Dashboard or API - field noted but not yet implemented in provider.", nil)
-	}
+	// 3. Public access via the managed r2.dev URL has its own lifecycle and is
+	// configured outside this module; the custom domain below is the production path.
 
-	// 5. Handle custom domain configuration.
+	// 4. Handle custom domain configuration.
 	if locals.CloudflareR2Bucket.Spec.CustomDomain != nil && locals.CloudflareR2Bucket.Spec.CustomDomain.Enabled {
 		customDomain := locals.CloudflareR2Bucket.Spec.CustomDomain
 		zoneId := customDomain.ZoneId.GetValue()
@@ -60,8 +58,13 @@ func bucket(
 		ctx.Export(OpCustomDomainUrl, pulumi.Sprintf("https://%s", customDomain.Domain))
 	}
 
-	// 7. Export stack outputs.
+	// 5. Export stack outputs.
 	ctx.Export(OpBucketName, createdBucket.Name)
+	ctx.Export(OpBucketUrl, pulumi.Sprintf(
+		"https://%s.r2.cloudflarestorage.com/%s",
+		locals.CloudflareR2Bucket.Spec.AccountId,
+		locals.CloudflareR2Bucket.Spec.BucketName,
+	))
 
 	return createdBucket, nil
 }

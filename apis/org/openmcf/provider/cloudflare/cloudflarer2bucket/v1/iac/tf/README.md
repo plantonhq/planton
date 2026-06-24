@@ -57,7 +57,7 @@ terraform {
   required_providers {
     cloudflare = {
       source  = "cloudflare/cloudflare"
-      version = "~> 4.0"
+      version = "~> 5.0"
     }
   }
 }
@@ -78,11 +78,10 @@ module "r2_bucket" {
   }
 
   spec = {
-    bucket_name        = "myapp-media-assets"
-    account_id         = "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"  # Your account ID
-    location           = 3  # WEUR (Western Europe)
-    public_access      = true
-    versioning_enabled = false
+    bucket_name   = "myapp-media-assets"
+    account_id    = "0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"  # Your account ID
+    location      = "weur"  # Western Europe
+    public_access = true
   }
 }
 
@@ -116,8 +115,8 @@ Terraform will perform the following actions:
   + resource "cloudflare_r2_bucket" "main" {
       + id         = (known after apply)
       + name       = "myapp-media-assets"
-      + account_id = "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"
-      + location   = "WEUR"
+      + account_id = "0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"
+      + location   = "weur"
     }
 
 Plan: 1 to add, 0 to change, 0 to destroy.
@@ -170,43 +169,37 @@ R2 bucket specification.
 
 - **`account_id`** (string): Cloudflare account ID (32 hex characters)
   ```hcl
-  account_id = "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"
-  ```
-
-- **`location`** (number): Primary region for the bucket
-  - `0` = auto (unspecified)
-  - `1` = WNAM (Western North America)
-  - `2` = ENAM (Eastern North America)
-  - `3` = WEUR (Western Europe)
-  - `4` = EEUR (Eastern Europe)
-  - `5` = APAC (Asia-Pacific)
-  - `6` = OC (Oceania)
-  ```hcl
-  location = 3  # WEUR
+  account_id = "0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"
   ```
 
 **Optional fields**:
 
-- **`public_access`** (bool): Enable public access via r2.dev subdomain - Default: `false`
+- **`location`** (string): Primary region for the bucket (location hint) - Default: `auto`
+  - `auto` = no hint; Cloudflare selects the optimal region
+  - `wnam` = Western North America
+  - `enam` = Eastern North America
+  - `weur` = Western Europe
+  - `eeur` = Eastern Europe
+  - `apac` = Asia-Pacific
+  - `oc` = Oceania
+  ```hcl
+  location = "weur"
+  ```
+  When `auto` (or omitted), the hint is not sent and Cloudflare chooses the region.
+
+- **`public_access`** (bool): Expose the bucket via the managed r2.dev public URL - Default: `false`
   ```hcl
   public_access = true
   ```
-  **Note**: Terraform provider doesn't yet support toggling this. Must enable manually via Dashboard.
-
-- **`versioning_enabled`** (bool): Enable object versioning - Default: `false`
-  ```hcl
-  versioning_enabled = false
-  ```
-  **Note**: R2 does not support versioning. This field is ignored.
+  **Note**: The managed r2.dev URL has its own lifecycle and is configured outside this module; use a custom domain for production.
 
 ## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
 | `bucket_name` | string | The name of the R2 bucket |
-| `bucket_id` | string | The ID of the R2 bucket |
-| `account_id` | string | The Cloudflare account ID |
-| `location` | string | The location hint for the bucket |
+| `bucket_url` | string | The path-style S3 API URL for the bucket |
+| `custom_domain_url` | string | The custom domain URL when `custom_domain.enabled` is `true` |
 
 Access outputs:
 
@@ -242,8 +235,8 @@ module "private_bucket" {
 
   spec = {
     bucket_name  = "myapp-private-data"
-    account_id   = "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"
-    location     = 2  # ENAM
+    account_id   = "0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"
+    location     = "enam"  # Eastern North America
     public_access = false
   }
 }
@@ -261,8 +254,8 @@ module "cdn_bucket" {
 
   spec = {
     bucket_name  = "public-cdn-assets"
-    account_id   = "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"
-    location     = 3  # WEUR
+    account_id   = "0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"
+    location     = "weur"  # Western Europe
     public_access = true
   }
 }
@@ -281,8 +274,8 @@ module "bucket_us" {
 
   spec = {
     bucket_name = "myapp-assets-us"
-    account_id  = "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"
-    location    = 2  # ENAM
+    account_id  = "0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"
+    location    = "enam"  # Eastern North America
   }
 }
 
@@ -296,8 +289,8 @@ module "bucket_eu" {
 
   spec = {
     bucket_name = "myapp-assets-eu"
-    account_id  = "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"
-    location    = 3  # WEUR
+    account_id  = "0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"
+    location    = "weur"  # Western Europe
   }
 }
 ```
@@ -357,7 +350,7 @@ terraform apply  # Apply changes
 **Change location**:
 
 ```hcl
-location = 5  # APAC instead of WEUR
+location = "apac"  # Asia-Pacific instead of weur
 ```
 
 **Enable public access**:
@@ -519,21 +512,19 @@ tfsec .
 
 ### Public Access
 
-The Cloudflare Terraform provider does not yet expose a field for toggling the r2.dev public URL. When `public_access: true` is specified:
-- Terraform creates the bucket
-- Public access must be enabled manually via Cloudflare Dashboard or API
+The managed r2.dev public URL has its own lifecycle and is configured outside this module. For production public access, attach a custom domain (`custom_domain`), which this module provisions directly.
 - See: https://developers.cloudflare.com/r2/buckets/public-buckets/
 
 ### Versioning
 
-R2 does not support object versioning. The `versioning_enabled` field is ignored.
+R2 does not support object versioning, so it is not modeled by this component.
 
 ## Additional Resources
 
 - [Cloudflare Terraform Provider Docs](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs)
 - [Cloudflare R2 API Docs](https://developers.cloudflare.com/api/operations/r2-create-bucket)
 - [Component README](../../README.md) - User-facing documentation
-- [Examples](../../examples.md) - Complete usage examples
+- [Presets](../../presets/) - Complete usage examples
 
 ## Support
 

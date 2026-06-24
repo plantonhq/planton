@@ -46,10 +46,10 @@ kind: CloudflareR2Bucket
 metadata:
   name: media-bucket
 spec:
-  bucket_name: my-media-assets
-  account_id: "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"  # Your Cloudflare account ID (32 hex chars)
-  location: WEUR  # Western Europe
-  public_access: false
+  bucketName: my-media-assets
+  accountId: "0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"  # Your Cloudflare account ID (32 hex chars)
+  location: weur  # Western Europe
+  publicAccess: false
 ```
 
 This creates an R2 bucket in Western Europe with private access (authentication required).
@@ -58,38 +58,35 @@ This creates an R2 bucket in Western Europe with private access (authentication 
 
 ### Required Fields
 
-- **`bucket_name`** (string): DNS-compatible name (3-63 characters, lowercase alphanumeric + hyphens)
+- **`bucketName`** (string): DNS-compatible name (3-63 characters, lowercase alphanumeric + hyphens)
   - Must be globally unique within your Cloudflare account
   - Example: `my-app-assets`, `user-uploads-prod`
 
-- **`account_id`** (string): Your Cloudflare account ID (exactly 32 hexadecimal characters)
+- **`accountId`** (string): Your Cloudflare account ID (exactly 32 hexadecimal characters)
   - Found in Cloudflare Dashboard → Account Home → Account ID
-  - Example: `a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6`
-
-- **`location`** (enum): Primary region for the bucket (location hint)
-  - `WNAM`: Western North America (US West)
-  - `ENAM`: Eastern North America (US East)
-  - `WEUR`: Western Europe
-  - `EEUR`: Eastern Europe
-  - `APAC`: Asia-Pacific
-  - `OC`: Oceania
+  - Example: `0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d`
 
 ### Optional Fields
 
-- **`public_access`** (bool): Enable public access via r2.dev subdomain - Default: `false`
-  - `true`: Bucket accessible at `https://<bucket-name>.<account-id>.r2.dev`
+- **`location`** (enum): Primary region for the bucket (location hint) - Default: `auto`
+  - `auto`: No hint; Cloudflare selects the optimal region
+  - `wnam`: Western North America (US West)
+  - `enam`: Eastern North America (US East)
+  - `weur`: Western Europe
+  - `eeur`: Eastern Europe
+  - `apac`: Asia-Pacific
+  - `oc`: Oceania
+  - The hint is only honored when the bucket is first created and is best-effort.
+
+- **`publicAccess`** (bool): Expose the bucket via Cloudflare's managed r2.dev public URL - Default: `false`
   - `false`: Bucket requires authentication (API keys or presigned URLs)
-  - **Note**: r2.dev URLs are rate-limited; use custom domains for production public buckets
+  - **Note**: r2.dev URLs are rate-limited; use a custom domain for production public buckets
 
-- **`versioning_enabled`** (bool): Enable object versioning - Default: `false`
-  - **Important**: R2 does not currently support object versioning
-  - This field is present for future compatibility but will be ignored
-
-- **`custom_domain`** (object): Custom domain configuration for the bucket
+- **`customDomain`** (object): Custom domain configuration for the bucket
   - **`enabled`** (bool): Whether to enable custom domain access
-  - **`zone_id`** (StringValueOrRef): Cloudflare Zone ID where the domain exists
-    - Can be a literal value: `zone_id: { value: "..." }`
-    - Or reference a CloudflareDnsZone: `zone_id: { valueFrom: { name: "my-dns-zone" } }`
+  - **`zoneId`** (StringValueOrRef): Cloudflare Zone ID where the domain exists
+    - Can be a literal value: `zoneId: { value: "..." }`
+    - Or reference a CloudflareDnsZone: `zoneId: { valueFrom: { name: "my-dns-zone" } }`
   - **`domain`** (string): Full domain name (e.g., "media.example.com")
 
 ## Common Patterns
@@ -102,10 +99,10 @@ kind: CloudflareR2Bucket
 metadata:
   name: app-data-bucket
 spec:
-  bucket_name: myapp-user-uploads
-  account_id: "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"
-  location: ENAM  # Eastern North America
-  public_access: false  # Requires authentication
+  bucketName: myapp-user-uploads
+  accountId: "0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"
+  location: enam  # Eastern North America
+  publicAccess: false  # Requires authentication
 ```
 
 **Access**: Use R2 API keys or presigned URLs in your application.
@@ -118,13 +115,13 @@ kind: CloudflareR2Bucket
 metadata:
   name: cdn-assets
 spec:
-  bucket_name: public-cdn-assets
-  account_id: "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"
-  location: WEUR  # Western Europe
-  public_access: true  # Enable r2.dev public URL
+  bucketName: public-cdn-assets
+  accountId: "0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"
+  location: weur  # Western Europe
+  publicAccess: true  # Expose via the managed r2.dev public URL
 ```
 
-**Access**: Objects accessible at `https://public-cdn-assets.<account-id>.r2.dev/<object-key>`
+**Access**: Once the managed public URL is enabled, objects are served from a Cloudflare-assigned `r2.dev` address.
 
 **Production Best Practice**: Use a custom domain instead of r2.dev (see documentation).
 
@@ -140,9 +137,9 @@ kind: CloudflareR2Bucket
 metadata:
   name: assets-us
 spec:
-  bucket_name: myapp-assets-us
-  account_id: "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"
-  location: ENAM
+  bucketName: myapp-assets-us
+  accountId: "0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"
+  location: enam
 
 ---
 # EU bucket
@@ -151,9 +148,9 @@ kind: CloudflareR2Bucket
 metadata:
   name: assets-eu
 spec:
-  bucket_name: myapp-assets-eu
-  account_id: "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"
-  location: WEUR
+  bucketName: myapp-assets-eu
+  accountId: "0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"
+  location: weur
 ```
 
 Route users to the nearest bucket for optimal latency.
@@ -164,12 +161,13 @@ R2's location hints optimize data placement for performance:
 
 | Location | Region | Best For |
 |----------|--------|----------|
-| **WNAM** | Western North America (US West) | Users in US West Coast, CA, Pacific Northwest |
-| **ENAM** | Eastern North America (US East) | Users in US East Coast, NY, Midwest |
-| **WEUR** | Western Europe | Users in UK, France, Spain, Western EU |
-| **EEUR** | Eastern Europe | Users in Germany, Poland, Eastern EU |
-| **APAC** | Asia-Pacific | Users in Australia, Japan, Singapore, India |
-| **OC** | Oceania | Users in Australia, New Zealand |
+| **auto** | Cloudflare chooses | No strong regional preference |
+| **wnam** | Western North America (US West) | Users in US West Coast, CA, Pacific Northwest |
+| **enam** | Eastern North America (US East) | Users in US East Coast, NY, Midwest |
+| **weur** | Western Europe | Users in UK, France, Spain, Western EU |
+| **eeur** | Eastern Europe | Users in Germany, Poland, Eastern EU |
+| **apac** | Asia-Pacific | Users in Australia, Japan, Singapore, India |
+| **oc** | Oceania | Users in Australia, New Zealand |
 
 **Important**: Location hints are optimization suggestions, not strict geo-fencing. R2 automatically replicates data globally for durability. The hint influences initial placement and caching.
 
@@ -217,10 +215,7 @@ aws s3 cp s3://my-bucket/file.txt ./
 
 ### r2.dev Public URLs (Development)
 
-When `public_access: true`, objects are accessible at:
-```
-https://<bucket-name>.<account-id>.r2.dev/<object-key>
-```
+When `publicAccess: true`, objects are served from a Cloudflare-assigned `r2.dev` address for the bucket.
 
 **Limitations**:
 - Rate-limited (not suitable for high traffic)
@@ -239,12 +234,12 @@ kind: CloudflareR2Bucket
 metadata:
   name: media-bucket
 spec:
-  bucket_name: media-assets
-  account_id: "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"
-  location: WEUR
-  custom_domain:
+  bucketName: media-assets
+  accountId: "0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"
+  location: weur
+  customDomain:
     enabled: true
-    zone_id:
+    zoneId:
       value: "f1e2d3c4b5a6978899aabbccddeeff00"  # Your Cloudflare Zone ID
     domain: "media.example.com"
 ```
@@ -253,9 +248,9 @@ Or reference a `CloudflareDnsZone` resource:
 
 ```yaml
 spec:
-  custom_domain:
+  customDomain:
     enabled: true
-    zone_id:
+    zoneId:
       valueFrom:
         name: my-dns-zone  # References CloudflareDnsZone named "my-dns-zone"
     domain: "media.example.com"
@@ -382,7 +377,7 @@ OpenMCF handles creating the R2 bucket via either Pulumi or Terraform:
 
 ## Examples
 
-See [examples.md](./examples.md) for complete, working examples including:
+See the [Common Patterns](#common-patterns) above and the ready-to-use [presets](./presets/) for complete, working examples including:
 - Private buckets for application data
 - Public buckets for CDN/media delivery
 - Multi-region deployment strategies
@@ -403,7 +398,7 @@ See [examples.md](./examples.md) for complete, working examples including:
 
 ## What's Next?
 
-- Explore [examples.md](./examples.md) for complete usage patterns
+- Explore the [presets](./presets/) for complete usage patterns
 - Read [docs/README.md](./docs/README.md) for architectural deep dive
 - Deploy using [iac/pulumi/](./iac/pulumi/) or [iac/tf/](./iac/tf/)
 - Review [R2 API documentation](https://developers.cloudflare.com/r2/)

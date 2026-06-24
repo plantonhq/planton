@@ -9,6 +9,7 @@ package cloudflarer2bucketv1
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
+	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -23,39 +24,41 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Supported Cloudflare R2 bucket regions (location hints).
-// These values must match Cloudflare's expected location strings exactly.
+// Location hint for an R2 bucket's primary storage region. The hint influences
+// where objects are initially placed; R2 still serves and caches globally.
+// Value names match the strings the Cloudflare API expects exactly, so the
+// generated enum is used directly (.String()) when calling the provider.
 type CloudflareR2Location int32
 
 const (
-	CloudflareR2Location_auto CloudflareR2Location = 0 // Auto (Cloudflare chooses optimal region)
-	CloudflareR2Location_WNAM CloudflareR2Location = 1 // Western North America (US West)
-	CloudflareR2Location_ENAM CloudflareR2Location = 2 // Eastern North America (US East)
-	CloudflareR2Location_WEUR CloudflareR2Location = 3 // Western Europe
-	CloudflareR2Location_EEUR CloudflareR2Location = 4 // Eastern Europe
-	CloudflareR2Location_APAC CloudflareR2Location = 5 // Asia-Pacific
-	CloudflareR2Location_OC   CloudflareR2Location = 6 // Oceania
+	CloudflareR2Location_auto CloudflareR2Location = 0 // No location hint; Cloudflare selects the optimal region.
+	CloudflareR2Location_wnam CloudflareR2Location = 1 // Western North America (US West).
+	CloudflareR2Location_enam CloudflareR2Location = 2 // Eastern North America (US East).
+	CloudflareR2Location_weur CloudflareR2Location = 3 // Western Europe.
+	CloudflareR2Location_eeur CloudflareR2Location = 4 // Eastern Europe.
+	CloudflareR2Location_apac CloudflareR2Location = 5 // Asia-Pacific.
+	CloudflareR2Location_oc   CloudflareR2Location = 6 // Oceania.
 )
 
 // Enum value maps for CloudflareR2Location.
 var (
 	CloudflareR2Location_name = map[int32]string{
 		0: "auto",
-		1: "WNAM",
-		2: "ENAM",
-		3: "WEUR",
-		4: "EEUR",
-		5: "APAC",
-		6: "OC",
+		1: "wnam",
+		2: "enam",
+		3: "weur",
+		4: "eeur",
+		5: "apac",
+		6: "oc",
 	}
 	CloudflareR2Location_value = map[string]int32{
 		"auto": 0,
-		"WNAM": 1,
-		"ENAM": 2,
-		"WEUR": 3,
-		"EEUR": 4,
-		"APAC": 5,
-		"OC":   6,
+		"wnam": 1,
+		"enam": 2,
+		"weur": 3,
+		"eeur": 4,
+		"apac": 5,
+		"oc":   6,
 	}
 )
 
@@ -93,7 +96,9 @@ type CloudflareR2BucketSpec struct {
 	BucketName string `protobuf:"bytes,1,opt,name=bucket_name,json=bucketName,proto3" json:"bucket_name,omitempty"`
 	// The Cloudflare account ID in which to create the bucket.
 	AccountId string `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
-	// primary region for the bucket (location hint)
+	// Primary region for the bucket (location hint). Leave as `auto` to let
+	// Cloudflare choose the optimal region; the hint is only honored when the
+	// bucket is first created and is best-effort, not a guarantee.
 	Location CloudflareR2Location `protobuf:"varint,3,opt,name=location,proto3,enum=org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2Location" json:"location,omitempty"`
 	// expose bucket via public URL (Cloudflare-managed r2.dev domain; default: false)
 	PublicAccess bool `protobuf:"varint,4,opt,name=public_access,json=publicAccess,proto3" json:"public_access,omitempty"`
@@ -241,13 +246,13 @@ var File_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto protor
 
 const file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"@org/openmcf/provider/cloudflare/cloudflarer2bucket/v1/spec.proto\x125org.openmcf.provider.cloudflare.cloudflarer2bucket.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xc0\x03\n" +
+	"@org/openmcf/provider/cloudflare/cloudflarer2bucket/v1/spec.proto\x125org.openmcf.provider.cloudflare.cloudflarer2bucket.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xc2\x03\n" +
 	"\x16CloudflareR2BucketSpec\x12N\n" +
 	"\vbucket_name\x18\x01 \x01(\tB-\xbaH*\xc8\x01\x01r%\x10\x03\x18?2\x1f^[a-z0-9]([-a-z0-9]*[a-z0-9])?$R\n" +
 	"bucketName\x12=\n" +
 	"\n" +
-	"account_id\x18\x02 \x01(\tB\x1e\xbaH\x1b\xc8\x01\x01r\x162\x11^[0-9a-fA-F]{32}$\x98\x01 R\taccountId\x12o\n" +
-	"\blocation\x18\x03 \x01(\x0e2K.org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2LocationB\x06\xbaH\x03\xc8\x01\x01R\blocation\x12#\n" +
+	"account_id\x18\x02 \x01(\tB\x1e\xbaH\x1b\xc8\x01\x01r\x162\x11^[0-9a-fA-F]{32}$\x98\x01 R\taccountId\x12q\n" +
+	"\blocation\x18\x03 \x01(\x0e2K.org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2LocationB\b\x92\xa6\x1d\x04autoR\blocation\x12#\n" +
 	"\rpublic_access\x18\x04 \x01(\bR\fpublicAccess\x12\x80\x01\n" +
 	"\rcustom_domain\x18\x05 \x01(\v2[.org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketCustomDomainConfigR\fcustomDomain\"\xc7\x03\n" +
 	"$CloudflareR2BucketCustomDomainConfig\x12\x18\n" +
@@ -258,12 +263,12 @@ const file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawD
 	"\x1dcustom_domain_domain_required\x120domain is required when custom domain is enabled\x1a\"!this.enabled || this.domain != ''*Z\n" +
 	"\x14CloudflareR2Location\x12\b\n" +
 	"\x04auto\x10\x00\x12\b\n" +
-	"\x04WNAM\x10\x01\x12\b\n" +
-	"\x04ENAM\x10\x02\x12\b\n" +
-	"\x04WEUR\x10\x03\x12\b\n" +
-	"\x04EEUR\x10\x04\x12\b\n" +
-	"\x04APAC\x10\x05\x12\x06\n" +
-	"\x02OC\x10\x06B\xaf\x03\n" +
+	"\x04wnam\x10\x01\x12\b\n" +
+	"\x04enam\x10\x02\x12\b\n" +
+	"\x04weur\x10\x03\x12\b\n" +
+	"\x04eeur\x10\x04\x12\b\n" +
+	"\x04apac\x10\x05\x12\x06\n" +
+	"\x02oc\x10\x06B\xaf\x03\n" +
 	"9com.org.openmcf.provider.cloudflare.cloudflarer2bucket.v1B\tSpecProtoP\x01Zlgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarer2bucket/v1;cloudflarer2bucketv1\xa2\x02\x05OOPCC\xaa\x025Org.Openmcf.Provider.Cloudflare.Cloudflarer2bucket.V1\xca\x025Org\\Openmcf\\Provider\\Cloudflare\\Cloudflarer2bucket\\V1\xe2\x02AOrg\\Openmcf\\Provider\\Cloudflare\\Cloudflarer2bucket\\V1\\GPBMetadata\xea\x02:Org::Openmcf::Provider::Cloudflare::Cloudflarer2bucket::V1b\x06proto3"
 
 var (

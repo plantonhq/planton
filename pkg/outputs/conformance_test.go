@@ -171,6 +171,19 @@ func TestStackOutputsConformance(t *testing.T) {
 			},
 			mustPopulate: []string{"namespace", "release_name", "solver_sa"},
 		},
+		{
+			// CloudflareR2Bucket: both engines emit the same three flat outputs
+			// (bucket name, path-style S3 URL, custom domain URL), each of which
+			// must land on the StackOutputs proto.
+			name: "CloudflareR2Bucket",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareR2Bucket,
+			rawOutputs: map[string]interface{}{
+				"bucket_name":       "media-assets",
+				"bucket_url":        "https://00000000000000000000000000000000.r2.cloudflarestorage.com/media-assets",
+				"custom_domain_url": "https://media.example.com",
+			},
+			mustPopulate: []string{"bucket_name", "bucket_url", "custom_domain_url"},
+		},
 	}
 
 	for _, tc := range cases {
