@@ -22,4 +22,11 @@ message CloudflareKvNamespaceSpec {
   // (Optional) A short description of the namespace.
   // Useful for documentation or identifying the purpose of this KV store.
   string description = 3 [(buf.validate.field).string.max_len = 256];
+
+  // The Cloudflare account ID that owns this KV namespace.
+  string account_id = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.len = 32,
+    (buf.validate.field).string.pattern = "^[0-9a-fA-F]{32}$"
+  ];
 }

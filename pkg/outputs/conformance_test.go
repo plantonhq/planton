@@ -184,6 +184,28 @@ func TestStackOutputsConformance(t *testing.T) {
 			},
 			mustPopulate: []string{"bucket_name", "bucket_url", "custom_domain_url"},
 		},
+		{
+			// CloudflareD1Database: both engines emit the database id and name as
+			// flat scalars; connection_string is emitted empty (no v5 attribute).
+			name: "CloudflareD1Database",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareD1Database,
+			rawOutputs: map[string]interface{}{
+				"database_id":       "9a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+				"database_name":     "app-prod-db",
+				"connection_string": "",
+			},
+			mustPopulate: []string{"database_id", "database_name"},
+		},
+		{
+			// CloudflareKvNamespace: both engines emit the namespace id as a flat
+			// scalar, which must land on the StackOutputs proto.
+			name: "CloudflareKvNamespace",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareKvNamespace,
+			rawOutputs: map[string]interface{}{
+				"namespace_id": "0f1e2d3c4b5a69788796a5b4c3d2e1f0",
+			},
+			mustPopulate: []string{"namespace_id"},
+		},
 	}
 
 	for _, tc := range cases {

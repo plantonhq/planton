@@ -32,6 +32,7 @@ metadata:
     pulumi.openmcf.org/stack.name: dev.CloudflareKvNamespace.my-kv
 spec:
   namespaceName: my-kv-store
+  accountId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
 ```
 
 Deploy:
@@ -49,6 +50,7 @@ This creates a KV namespace titled `my-kv-store` in your Cloudflare account. Bin
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
 | `namespaceName` | `string` | A human-readable name for the KV namespace. Must be unique within the Cloudflare account. | Required, max 64 characters |
+| `accountId` | `string` | The Cloudflare account ID that owns the namespace. | Required, 32 hex characters |
 
 ### Optional Fields
 
@@ -75,6 +77,7 @@ metadata:
     pulumi.openmcf.org/stack.name: dev.CloudflareKvNamespace.dev-cache
 spec:
   namespaceName: dev-cache
+  accountId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
 ```
 
 ### Session Store with TTL Hint
@@ -93,6 +96,7 @@ metadata:
     pulumi.openmcf.org/stack.name: prod.CloudflareKvNamespace.session-store
 spec:
   namespaceName: prod-session-store
+  accountId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
   ttlSeconds: 3600
   description: "Session data for authenticated users"
 ```
@@ -113,6 +117,7 @@ metadata:
     pulumi.openmcf.org/stack.name: prod.CloudflareKvNamespace.feature-flags
 spec:
   namespaceName: feature-flags-prod
+  accountId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
   description: "Global feature flags consumed by edge Workers"
 ```
 

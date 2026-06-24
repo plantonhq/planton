@@ -3,6 +3,7 @@ kind: CloudflareKvNamespace
 metadata:
   name: example-kv-namespace
 spec:
-  namespace_name: myapp-config-prod
-  ttl_seconds: 0  # No automatic expiration (persistent config)
+  namespaceName: myapp-config-prod
+  accountId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
+  ttlSeconds: 0  # No automatic expiration (persistent config)
   description: "Example KV namespace for feature flags and configuration"
