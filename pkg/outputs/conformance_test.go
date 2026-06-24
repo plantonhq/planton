@@ -243,6 +243,18 @@ func TestStackOutputsConformance(t *testing.T) {
 			},
 			mustPopulate: []string{"ruleset_id", "version", "zone_id", "phase"},
 		},
+		{
+			// CloudflareLoadBalancer: both engines emit the load balancer id,
+			// hostname, and cname target as flat scalars onto the proto.
+			name: "CloudflareLoadBalancer",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareLoadBalancer,
+			rawOutputs: map[string]interface{}{
+				"load_balancer_id":              "699d98642c564d2e855e9661899b7252",
+				"load_balancer_dns_record_name": "lb.example.com",
+				"load_balancer_cname_target":    "699d98642c564d2e855e9661899b7252",
+			},
+			mustPopulate: []string{"load_balancer_id", "load_balancer_dns_record_name", "load_balancer_cname_target"},
+		},
 	}
 
 	for _, tc := range cases {

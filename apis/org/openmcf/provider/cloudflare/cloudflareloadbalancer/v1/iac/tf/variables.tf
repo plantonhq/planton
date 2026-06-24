@@ -17,11 +17,9 @@ variable "spec" {
     # The DNS hostname for the load balancer (e.g., "app.example.com")
     hostname = string
 
-    # Foreign key reference to a Cloudflare DNS zone
-    zone_id = object({
-      value = optional(string)
-      ref   = optional(string)
-    })
+    # Foreign key reference to a Cloudflare DNS zone (StringValueOrRef flattened
+    # to a plain string by the tfvars converter).
+    zone_id = optional(string)
 
     # List of origin servers behind this load balancer
     origins = list(object({
@@ -36,10 +34,10 @@ variable "spec" {
     # HTTP path to use for health monitoring of origins
     health_probe_path = optional(string, "/")
 
-    # Session affinity setting (0 = none, 1 = cookie)
-    session_affinity = optional(number, 0)
+    # Session affinity setting ("none" or "cookie"); enum flattens to its string name.
+    session_affinity = optional(string, "none")
 
-    # Traffic steering policy (0 = off/failover, 1 = geo, 2 = random)
-    steering_policy = optional(number, 0)
+    # Traffic steering policy ("off"/failover, "geo", or "random"); enum flattens to its string name.
+    steering_policy = optional(string, "off")
   })
 }
