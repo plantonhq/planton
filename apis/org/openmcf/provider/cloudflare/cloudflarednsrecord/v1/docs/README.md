@@ -134,7 +134,7 @@ terraform {
   required_providers {
     cloudflare = {
       source  = "cloudflare/cloudflare"
-      version = "~> 4.0"
+      version = "~> 5.0"
     }
   }
 }
@@ -144,31 +144,33 @@ provider "cloudflare" {
 }
 
 # A Record
-resource "cloudflare_record" "www" {
+resource "cloudflare_dns_record" "www" {
   zone_id = var.zone_id
   name    = "www"
   type    = "A"
-  value   = "192.0.2.1"
+  content = "192.0.2.1"
   proxied = true
   ttl     = 1
   comment = "Primary web server"
 }
 
 # CNAME Record
-resource "cloudflare_record" "api" {
+resource "cloudflare_dns_record" "api" {
   zone_id = var.zone_id
   name    = "api"
   type    = "CNAME"
-  value   = "api-lb.example.com"
+  content = "api-lb.example.com"
   proxied = true
+  ttl     = 1
 }
 
 # MX Record (note: cannot be proxied)
-resource "cloudflare_record" "mx_primary" {
+resource "cloudflare_dns_record" "mx_primary" {
   zone_id  = var.zone_id
   name     = "@"
   type     = "MX"
-  value    = "mail.example.com"
+  content  = "mail.example.com"
+  ttl      = 1
   priority = 10
 }
 ```
@@ -404,7 +406,7 @@ iac/tf/
 **Key implementation details:**
 1. Variables mirror the protobuf spec exactly
 2. Locals handle type conversion and defaults
-3. Single `cloudflare_record` resource
+3. Single `cloudflare_dns_record` resource
 4. Outputs match `stack_outputs.proto`
 
 ## Production Best Practices

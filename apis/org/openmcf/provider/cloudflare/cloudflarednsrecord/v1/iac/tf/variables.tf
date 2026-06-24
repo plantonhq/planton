@@ -14,11 +14,9 @@ variable "metadata" {
 variable "spec" {
   description = "CloudflareDnsRecordSpec defines the configuration for creating a DNS record"
   type = object({
-    # (Required) The Cloudflare Zone ID where this DNS record will be created
-    # Supports StringValueOrRef pattern - use {value: "zone-id"} for literal values.
-    zone_id = object({
-      value = string
-    })
+    # (Required) The Cloudflare Zone ID where this DNS record will be created.
+    # StringValueOrRef is flattened to a plain string by the tfvars converter.
+    zone_id = optional(string)
 
     # (Required) The name of the DNS record (e.g., "www", "api", "@" for root)
     name = string

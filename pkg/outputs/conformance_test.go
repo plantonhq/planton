@@ -206,6 +206,19 @@ func TestStackOutputsConformance(t *testing.T) {
 			},
 			mustPopulate: []string{"namespace_id"},
 		},
+		{
+			// CloudflareDnsRecord: both engines emit the record id, name, type and
+			// proxied flag as flat scalars onto the StackOutputs proto.
+			name: "CloudflareDnsRecord",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareDnsRecord,
+			rawOutputs: map[string]interface{}{
+				"record_id":   "372e67954025e0ba6aaa6d586b9e0b59",
+				"hostname":    "www",
+				"record_type": "A",
+				"proxied":     true,
+			},
+			mustPopulate: []string{"record_id", "hostname", "record_type", "proxied"},
+		},
 	}
 
 	for _, tc := range cases {
