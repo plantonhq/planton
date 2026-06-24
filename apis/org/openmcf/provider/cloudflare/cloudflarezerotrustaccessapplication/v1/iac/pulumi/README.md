@@ -185,18 +185,19 @@ pulumi stack output policy_id
 
 The `application.go` module creates:
 
-1. **Access Application** (`cloudflare.NewAccessApplication`):
+1. **Zone Lookup** (`cloudflare.LookupZone`):
+   - Looks up the Cloudflare zone to retrieve the account ID (required for the account-scoped policy and application)
+
+2. **Access Policy** (`cloudflare.NewZeroTrustAccessPolicy`):
+   - Creates a standalone, account-scoped policy with decision type (allow or deny)
+   - Adds Include rules for allowed emails and Google groups
+   - Adds Require rules for MFA enforcement (if enabled)
+
+3. **Access Application** (`cloudflare.NewZeroTrustAccessApplication`):
    - Sets application name and hostname
    - Configures session duration (converted from minutes to duration string, e.g., "480m")
    - Sets type to "self_hosted"
-
-2. **Zone Lookup** (`cloudflare.LookupZone`):
-   - Looks up the Cloudflare zone to retrieve the account ID (required for Access Policy)
-
-3. **Access Policy** (`cloudflare.NewAccessPolicy`):
-   - Creates policy with decision type (allow or deny)
-   - Adds Include rules for allowed emails and Google groups
-   - Adds Require rules for MFA enforcement (if enabled)
+   - References the policy through its `policies` list
 
 ### Policy Logic
 

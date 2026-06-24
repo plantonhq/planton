@@ -266,6 +266,18 @@ func TestStackOutputsConformance(t *testing.T) {
 			},
 			mustPopulate: []string{"script_id", "route_urls"},
 		},
+		{
+			// CloudflareZeroTrustAccessApplication: both engines emit the
+			// application id, protected hostname, and policy id as flat scalars.
+			name: "CloudflareZeroTrustAccessApplication",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareZeroTrustAccessApplication,
+			rawOutputs: map[string]interface{}{
+				"application_id":  "f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
+				"public_hostname": "dashboard.example.com",
+				"policy_id":       "699d98642c564d2e855e9661899b7252",
+			},
+			mustPopulate: []string{"application_id", "public_hostname", "policy_id"},
+		},
 	}
 
 	for _, tc := range cases {

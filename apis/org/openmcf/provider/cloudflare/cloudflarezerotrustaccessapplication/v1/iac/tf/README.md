@@ -219,74 +219,47 @@ The `main.tf` file contains the core resource definitions:
    ```
    Looks up the zone to retrieve the account ID (required for Access Policy).
 
-2. **Resource: Access Application**
+2. **Resource: Access Policy**
    ```hcl
-   resource "cloudflare_access_application" "main" {
-     account_id       = data.cloudflare_zone.main.account_id
+   resource "cloudflare_zero_trust_access_policy" "main" {
+     account_id = data.cloudflare_zone.main.account.id
+     name       = "default-policy"
+     decision   = var.spec.policy_type == "BLOCK" ? "deny" : "allow"
+
+     include = concat(
+       [for e in var.spec.allowed_emails : { email = { email = e }, group = null }],
+       [for g in var.spec.allowed_google_groups : { email = null, group = { id = g } }],
+     )
+     require = var.spec.require_mfa ? [{ auth_method = { auth_method = "mfa" } }] : []
+   }
+   ```
+   A policy is a standalone, account-scoped object with Include (who can access) and Require (MFA) rules.
+
+3. **Resource: Access Application**
+   ```hcl
+   resource "cloudflare_zero_trust_access_application" "main" {
+     account_id       = data.cloudflare_zone.main.account.id
      name             = var.spec.application_name
      domain           = var.spec.hostname
      type             = "self_hosted"
      session_duration = var.spec.session_duration_minutes > 0 ? "${var.spec.session_duration_minutes}m" : "24h"
+
+     policies = [{
+       id         = cloudflare_zero_trust_access_policy.main.id
+       precedence = 1
+     }]
    }
    ```
-   Creates the Access Application with hostname and session configuration.
+   The application references the policy through its `policies` list (precedence sets evaluation order).
 
-3. **Resource: Access Policy**
-   ```hcl
-   resource "cloudflare_access_policy" "main" {
-     account_id     = data.cloudflare_zone.main.account_id
-     application_id = cloudflare_access_application.main.id
-     name           = "default-policy"
-     decision       = var.spec.policy_type == "BLOCK" ? "deny" : "allow"
-     
-     # Dynamic Include blocks for emails and groups
-     # Dynamic Require block for MFA
-   }
-   ```
-   Creates the policy with Include (who can access) and Require (MFA) rules.
+### Rule Construction
 
-### Dynamic Blocks
+Include and Require rules are built with attribute (object) syntax. Each include element carries the
+full attribute set (unused keys are `null`) so all elements share one object type:
 
-The implementation uses **dynamic blocks** to conditionally create Include and Require rules:
-
-#### Email Include Rules
-
-```hcl
-dynamic "include" {
-  for_each = var.spec.allowed_emails
-  content {
-    email = [include.value]
-  }
-}
-```
-
-Each email in `allowed_emails` creates a separate Include block.
-
-#### Group Include Rules
-
-```hcl
-dynamic "include" {
-  for_each = var.spec.allowed_google_groups
-  content {
-    group = [include.value]
-  }
-}
-```
-
-Each group in `allowed_google_groups` creates a separate Include block.
-
-#### MFA Require Rule
-
-```hcl
-dynamic "require" {
-  for_each = var.spec.require_mfa ? [1] : []
-  content {
-    auth_method = ["mfa"]
-  }
-}
-```
-
-If `require_mfa` is `true`, creates a Require block enforcing MFA.
+- Each email in `allowed_emails` becomes `{ email = { email = <value> } }`.
+- Each group in `allowed_google_groups` becomes `{ group = { id = <value> } }`.
+- When `require_mfa` is `true`, the require list contains `{ auth_method = { auth_method = "mfa" } }`.
 
 ## State Management
 
@@ -500,10 +473,10 @@ If you have existing Access Applications created via the dashboard, import them:
 
 ```bash
 # Import Access Application
-terraform import cloudflare_access_application.main <account_id>/<application_id>
+terraform import cloudflare_zero_trust_access_application.main <account_id>/<application_id>
 
 # Import Access Policy
-terraform import cloudflare_access_policy.main <account_id>/<policy_id>
+terraform import cloudflare_zero_trust_access_policy.main <account_id>/<policy_id>
 ```
 
 ## Debugging

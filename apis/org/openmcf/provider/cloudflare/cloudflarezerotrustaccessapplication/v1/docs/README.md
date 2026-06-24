@@ -80,27 +80,26 @@ Not all approaches to configuring Cloudflare Access are created equal. Here's th
 **Terraform example:**
 
 ```hcl
+resource "cloudflare_zero_trust_access_policy" "allow_employees" {
+  account_id = var.cloudflare_account_id
+  name       = "Allow employees with MFA"
+  decision   = "allow"
+
+  include = [{ email_domain = { domain = "example.com" } }]
+  require = [{ auth_method = { auth_method = "mfa" } }]
+}
+
 resource "cloudflare_zero_trust_access_application" "internal_dashboard" {
   account_id       = var.cloudflare_account_id
   name             = "Internal Dashboard"
   domain           = "dash.example.com"
   type             = "self_hosted"
   session_duration = "8h"
-}
 
-resource "cloudflare_access_policy" "allow_employees" {
-  application_id = cloudflare_zero_trust_access_application.internal_dashboard.id
-  name           = "Allow employees with MFA"
-  decision       = "allow"
-  precedence     = 1
-
-  include {
-    email_domain = ["example.com"]
-  }
-
-  require {
-    auth_method = ["mfa"]
-  }
+  policies = [{
+    id         = cloudflare_zero_trust_access_policy.allow_employees.id
+    precedence = 1
+  }]
 }
 ```
 
@@ -109,20 +108,20 @@ resource "cloudflare_access_policy" "allow_employees" {
 ```python
 import pulumi_cloudflare as cloudflare
 
+policy = cloudflare.ZeroTrustAccessPolicy("allow-employees",
+    account_id=account_id,
+    name="Allow employees with MFA",
+    decision="allow",
+    includes=[{"email_domain": {"domain": "example.com"}}],
+    requires=[{"auth_method": {"auth_method": "mfa"}}])
+
 app = cloudflare.ZeroTrustAccessApplication("internal-dashboard",
     account_id=account_id,
     name="Internal Dashboard",
     domain="dash.example.com",
     type="self_hosted",
-    session_duration="8h")
-
-policy = cloudflare.AccessPolicy("allow-employees",
-    application_id=app.id,
-    name="Allow employees with MFA",
-    decision="allow",
-    precedence=1,
-    includes=[{"email_domain": ["example.com"]}],
-    requires=[{"auth_method": ["mfa"]}])
+    session_duration="8h",
+    policies=[{"id": policy.id, "precedence": 1}])
 ```
 
 **What it solves:** Everything. You get:
@@ -158,7 +157,7 @@ Both tools cover Cloudflare Access comprehensively. The choice comes down to pre
 - Cloudflare's docs often reference Terraform examples directly
 
 **Considerations:**
-- Recent provider updates renamed resources (e.g., `cloudflare_access_application` → `cloudflare_zero_trust_access_application`). Upgrading requires migration.
+- Access resources are named `cloudflare_zero_trust_access_application` and `cloudflare_zero_trust_access_policy`; a policy is a standalone account-scoped object that an application references through its `policies` list.
 - Edge cases like policy rule logic (AND vs. OR) can be tricky to express in HCL, requiring careful reading of docs.
 
 ### Pulumi: The Programmable Alternative

@@ -2,7 +2,7 @@
 
 output "application_id" {
   description = "The unique ID of the Cloudflare Access Application"
-  value       = cloudflare_access_application.main.id
+  value       = cloudflare_zero_trust_access_application.main.id
 }
 
 output "public_hostname" {
@@ -12,6 +12,6 @@ output "public_hostname" {
 
 output "policy_id" {
   description = "The ID of the Cloudflare Access policy associated with this application"
-  value       = cloudflare_access_policy.main.id
+  value       = cloudflare_zero_trust_access_policy.main.id
 }
 
