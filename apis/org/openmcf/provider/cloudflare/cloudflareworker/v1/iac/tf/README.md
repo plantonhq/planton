@@ -90,7 +90,7 @@ terraform {
   required_providers {
     cloudflare = {
       source  = "cloudflare/cloudflare"
-      version = "~> 4.0"
+      version = "~> 5.0"
     }
     aws = {
       source  = "hashicorp/aws"
@@ -172,8 +172,8 @@ terraform apply
 Plan: 3 to add, 0 to change, 0 to destroy.
 
   + cloudflare_workers_script.main
-  + cloudflare_record.worker_dns[0]
-  + cloudflare_worker_route.main[0]
+  + cloudflare_dns_record.worker_dns[0]
+  + cloudflare_workers_route.main[0]
 
 Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
 

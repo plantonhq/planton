@@ -35,7 +35,9 @@ type CloudflareKvNamespaceSpec struct {
 	TtlSeconds int32 `protobuf:"varint,2,opt,name=ttl_seconds,json=ttlSeconds,proto3" json:"ttl_seconds,omitempty"`
 	// (Optional) A short description of the namespace.
 	// Useful for documentation or identifying the purpose of this KV store.
-	Description   string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	Description string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	// The Cloudflare account ID that owns this KV namespace.
+	AccountId     string `protobuf:"bytes,4,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -91,17 +93,26 @@ func (x *CloudflareKvNamespaceSpec) GetDescription() string {
 	return ""
 }
 
+func (x *CloudflareKvNamespaceSpec) GetAccountId() string {
+	if x != nil {
+		return x.AccountId
+	}
+	return ""
+}
+
 var File_org_openmcf_provider_cloudflare_cloudflarekvnamespace_v1_spec_proto protoreflect.FileDescriptor
 
 const file_org_openmcf_provider_cloudflare_cloudflarekvnamespace_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Corg/openmcf/provider/cloudflare/cloudflarekvnamespace/v1/spec.proto\x128org.openmcf.provider.cloudflare.cloudflarekvnamespace.v1\x1a\x1bbuf/validate/validate.proto\"\xa4\x01\n" +
+	"Corg/openmcf/provider/cloudflare/cloudflarekvnamespace/v1/spec.proto\x128org.openmcf.provider.cloudflare.cloudflarekvnamespace.v1\x1a\x1bbuf/validate/validate.proto\"\xe3\x01\n" +
 	"\x19CloudflareKvNamespaceSpec\x121\n" +
 	"\x0enamespace_name\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x18@R\rnamespaceName\x12(\n" +
 	"\vttl_seconds\x18\x02 \x01(\x05B\a\xbaH\x04\x1a\x02(\x00R\n" +
 	"ttlSeconds\x12*\n" +
-	"\vdescription\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x02R\vdescriptionB\xc4\x03\n" +
+	"\vdescription\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x02R\vdescription\x12=\n" +
+	"\n" +
+	"account_id\x18\x04 \x01(\tB\x1e\xbaH\x1b\xc8\x01\x01r\x162\x11^[0-9a-fA-F]{32}$\x98\x01 R\taccountIdB\xc4\x03\n" +
 	"<com.org.openmcf.provider.cloudflare.cloudflarekvnamespace.v1B\tSpecProtoP\x01Zrgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarekvnamespace/v1;cloudflarekvnamespacev1\xa2\x02\x05OOPCC\xaa\x028Org.Openmcf.Provider.Cloudflare.Cloudflarekvnamespace.V1\xca\x028Org\\Openmcf\\Provider\\Cloudflare\\Cloudflarekvnamespace\\V1\xe2\x02DOrg\\Openmcf\\Provider\\Cloudflare\\Cloudflarekvnamespace\\V1\\GPBMetadata\xea\x02=Org::Openmcf::Provider::Cloudflare::Cloudflarekvnamespace::V1b\x06proto3"
 
 var (

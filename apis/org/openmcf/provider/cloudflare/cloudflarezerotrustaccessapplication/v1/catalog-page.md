@@ -6,8 +6,8 @@ Deploys a Cloudflare Zero Trust Access Application that protects a hostname behi
 
 When you deploy a CloudflareZeroTrustAccessApplication resource, OpenMCF provisions:
 
-- **Access Application** — a `cloudflare_access_application` of type `self_hosted`, bound to the specified DNS zone and hostname, with an optional custom session duration
-- **Access Policy** — a `cloudflare_access_policy` attached to the application with an `allow` or `deny` decision, email-based include rules, optional Google Workspace group includes, and an optional MFA requirement
+- **Access Application** — a `cloudflare_zero_trust_access_application` of type `self_hosted`, bound to the specified DNS zone and hostname, with an optional custom session duration
+- **Access Policy** — a `cloudflare_zero_trust_access_policy` attached to the application with an `allow` or `deny` decision, email-based include rules, optional Google Workspace group includes, and an optional MFA requirement
 
 ## Prerequisites
 

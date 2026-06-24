@@ -3,11 +3,12 @@ kind: CloudflareWorker
 metadata:
   name: test-worker
 spec:
-  account_id: "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"
-  script:
-    name: test-worker
-    bundle:
-      bucket: test-workers-bucket
-      path: builds/test-worker-v1.0.0.js
-  compatibility_date: "2025-01-15"
-
+  accountId: "0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"
+  workerName: test-worker
+  scriptBundle:
+    bucket: openmcf-workers
+    path: builds/test-worker-v1.0.0.js
+  compatibilityDate: "2025-01-15"
+  env:
+    variables:
+      LOG_LEVEL: info

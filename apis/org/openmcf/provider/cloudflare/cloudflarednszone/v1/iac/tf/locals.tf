@@ -28,16 +28,5 @@ locals {
 
   # Merge base, org, and environment labels
   final_labels = merge(local.base_labels, local.org_label, local.env_label)
-
-  # Map plan enum string to Cloudflare plan ID
-  plan_map = {
-    "free"       = "free"
-    "pro"        = "pro"
-    "business"   = "business"
-    "enterprise" = "enterprise"
-  }
-
-  # Get the plan ID, defaulting to free if invalid
-  plan_id = lookup(local.plan_map, lower(var.spec.plan), "free")
 }
 

@@ -184,6 +184,100 @@ func TestStackOutputsConformance(t *testing.T) {
 			},
 			mustPopulate: []string{"bucket_name", "bucket_url", "custom_domain_url"},
 		},
+		{
+			// CloudflareD1Database: both engines emit the database id and name as
+			// flat scalars; connection_string is emitted empty (no v5 attribute).
+			name: "CloudflareD1Database",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareD1Database,
+			rawOutputs: map[string]interface{}{
+				"database_id":       "9a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+				"database_name":     "app-prod-db",
+				"connection_string": "",
+			},
+			mustPopulate: []string{"database_id", "database_name"},
+		},
+		{
+			// CloudflareKvNamespace: both engines emit the namespace id as a flat
+			// scalar, which must land on the StackOutputs proto.
+			name: "CloudflareKvNamespace",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareKvNamespace,
+			rawOutputs: map[string]interface{}{
+				"namespace_id": "0f1e2d3c4b5a69788796a5b4c3d2e1f0",
+			},
+			mustPopulate: []string{"namespace_id"},
+		},
+		{
+			// CloudflareDnsRecord: both engines emit the record id, name, type and
+			// proxied flag as flat scalars onto the StackOutputs proto.
+			name: "CloudflareDnsRecord",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareDnsRecord,
+			rawOutputs: map[string]interface{}{
+				"record_id":   "372e67954025e0ba6aaa6d586b9e0b59",
+				"hostname":    "www",
+				"record_type": "A",
+				"proxied":     true,
+			},
+			mustPopulate: []string{"record_id", "hostname", "record_type", "proxied"},
+		},
+		{
+			// CloudflareDnsZone: both engines emit the zone id (scalar) and the
+			// assigned nameservers (repeated string) onto the StackOutputs proto.
+			name: "CloudflareDnsZone",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareDnsZone,
+			rawOutputs: map[string]interface{}{
+				"zone_id":     "023e105f4ecef8ad9ca31a8372d0c353",
+				"nameservers": []interface{}{"ns1.cloudflare.com", "ns2.cloudflare.com"},
+			},
+			mustPopulate: []string{"zone_id", "nameservers"},
+		},
+		{
+			// CloudflareRuleset: both engines emit ruleset id, version, and the
+			// zone_id/phase pass-throughs as flat scalars onto the proto.
+			name: "CloudflareRuleset",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareRuleset,
+			rawOutputs: map[string]interface{}{
+				"ruleset_id": "2f2feab2026849078ba485f918791bdc",
+				"version":    "3",
+				"zone_id":    "023e105f4ecef8ad9ca31a8372d0c353",
+				"phase":      "http_request_origin",
+			},
+			mustPopulate: []string{"ruleset_id", "version", "zone_id", "phase"},
+		},
+		{
+			// CloudflareLoadBalancer: both engines emit the load balancer id,
+			// hostname, and cname target as flat scalars onto the proto.
+			name: "CloudflareLoadBalancer",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareLoadBalancer,
+			rawOutputs: map[string]interface{}{
+				"load_balancer_id":              "699d98642c564d2e855e9661899b7252",
+				"load_balancer_dns_record_name": "lb.example.com",
+				"load_balancer_cname_target":    "699d98642c564d2e855e9661899b7252",
+			},
+			mustPopulate: []string{"load_balancer_id", "load_balancer_dns_record_name", "load_balancer_cname_target"},
+		},
+		{
+			// CloudflareWorker: both engines emit the script id (scalar) and the
+			// route urls (repeated string) onto the StackOutputs proto.
+			name: "CloudflareWorker",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareWorker,
+			rawOutputs: map[string]interface{}{
+				"script_id":  "my-worker",
+				"route_urls": []interface{}{"https://app.example.com"},
+			},
+			mustPopulate: []string{"script_id", "route_urls"},
+		},
+		{
+			// CloudflareZeroTrustAccessApplication: both engines emit the
+			// application id, protected hostname, and policy id as flat scalars.
+			name: "CloudflareZeroTrustAccessApplication",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareZeroTrustAccessApplication,
+			rawOutputs: map[string]interface{}{
+				"application_id":  "f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
+				"public_hostname": "dashboard.example.com",
+				"policy_id":       "699d98642c564d2e855e9661899b7252",
+			},
+			mustPopulate: []string{"application_id", "public_hostname", "policy_id"},
+		},
 	}
 
 	for _, tc := range cases {

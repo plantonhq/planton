@@ -35,6 +35,7 @@ The specification follows the **80/20 principle**—exposing only the most commo
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `namespace_name` | string | Yes | Human-readable name for the KV namespace. Must be unique within the Cloudflare account. Limited to 64 characters. |
+| `account_id` | string | Yes | The Cloudflare account ID (32 hex characters) that owns the namespace. |
 | `ttl_seconds` | int32 | No | Default TTL for key-value entries in seconds. Set to 0 (default) for no expiration. Minimum value is 60 seconds if set. |
 | `description` | string | No | Short description of the namespace's purpose. Max 256 characters. Useful for documentation. |
 

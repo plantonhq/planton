@@ -129,12 +129,14 @@ resource "cloudflare_load_balancer_pool" "primary" {
   account_id       = var.cloudflare_account_id
   name             = "primary-pool-us-east"
   monitor          = cloudflare_load_balancer_monitor.http_check.id
-  
-  origins {
-    name    = "primary-origin-1"
-    address = "198.51.100.1"
-    enabled = true
-  }
+
+  origins = [
+    {
+      name    = "primary-origin-1"
+      address = "198.51.100.1"
+      enabled = true
+    }
+  ]
 }
 
 # 3. Define the Secondary/Backup Pool (Account-level)
@@ -142,12 +144,14 @@ resource "cloudflare_load_balancer_pool" "secondary" {
   account_id       = var.cloudflare_account_id
   name             = "secondary-pool-us-west"
   monitor          = cloudflare_load_balancer_monitor.http_check.id
-  
-  origins {
-    name    = "backup-origin-1"
-    address = "198.51.100.2"
-    enabled = true
-  }
+
+  origins = [
+    {
+      name    = "backup-origin-1"
+      address = "198.51.100.2"
+      enabled = true
+    }
+  ]
 }
 
 # 4. Define the Load Balancer (Zone-level)
@@ -160,13 +164,13 @@ resource "cloudflare_load_balancer" "failover_lb" {
   steering_policy = "off"
   
   # Failover priority: primary -> secondary
-  default_pool_ids = [
+  default_pools = [
     cloudflare_load_balancer_pool.primary.id,
     cloudflare_load_balancer_pool.secondary.id
   ]
   
   # Pool of last resort. If both primary and secondary fail, send here.
-  fallback_pool_id = cloudflare_load_balancer_pool.secondary.id
+  fallback_pool = cloudflare_load_balancer_pool.secondary.id
   
   # Enable sticky sessions
   session_affinity = "cookie"
@@ -344,10 +348,10 @@ A user on a Pro plan *cannot* achieve a failover time of less than 60 seconds. T
 **Active-Passive Failover** is the most common resilience pattern. The configuration is counter-intuitive:
 
 1. `steering_policy` must be set to **`"off"`** (not `"failover"`)
-2. The `default_pool_ids` list is treated as an **ordered priority list**
+2. The `default_pools` list is treated as an **ordered priority list**
 3. Traffic is sent *only* to the first healthy pool in the list
 
-**Fallback Pool**: A `fallback_pool_id` is required. This is the pool of last resort. If all pools in the `default_pool_ids` list are marked unhealthy, Cloudflare will send all traffic to the `fallback_pool_id` *regardless of its own health status*. This ensures traffic continues flowing, even if it's to a degraded origin.
+**Fallback Pool**: A `fallback_pool` is required. This is the pool of last resort. If all pools in the `default_pools` list are marked unhealthy, Cloudflare will send all traffic to the `fallback_pool` *regardless of its own health status*. This ensures traffic continues flowing, even if it's to a degraded origin.
 
 **Failback**: When a higher-priority pool (e.g., the primary pool) recovers and is marked healthy again, the load balancer will automatically "fail back," shifting traffic away from the passive pool and back to the primary.
 
@@ -355,7 +359,7 @@ A user on a Pro plan *cannot* achieve a failover time of less than 60 seconds. T
 
 The `steering_policy` parameter dictates how the load balancer selects a pool:
 
-- **`"off"`** (Default): Disables dynamic steering and enables Active-Passive Failover. Uses `default_pool_ids` as a static failover priority.
+- **`"off"`** (Default): Disables dynamic steering and enables Active-Passive Failover. Uses `default_pools` as a static failover priority.
 - **`"random"`**: Distributes traffic randomly across pools based on configured weights. Used for active-active load balancing or A/B testing.
 - **`"geo"`**: Steers traffic based on the user's geographic location, matching it against `region_pools` or `country_pools` maps.
 - **`"dynamic_latency"`** (Enterprise only): Steers traffic to the pool with the lowest measured Round Trip Time (RTT) from the Cloudflare edge PoP.
@@ -376,7 +380,7 @@ Session affinity ensures that subsequent requests from the same end-user are "st
 - **Response Code Mismatch**: The monitor expects `expected_codes = "200"`, but the origin's health endpoint issues an HTTP 301 or 302 redirect. Solution: Set `follow_redirects = true` on the monitor.
 - **TLS Mismatch**: An HTTPS monitor is used against an origin with a self-signed or invalid certificate. The TLS handshake fails. Solution: Use a free Cloudflare Origin CA certificate on the origin or, if security is not paramount, set `allow_insecure = true` on the monitor.
 
-**No Fallback Pool**: Failing to define a `fallback_pool_id`. If all `default_pool_ids` become unhealthy, there is no "pool of last resort," and users will receive an error (e.g., HTTP 530).
+**No Fallback Pool**: Failing to define a `fallback_pool`. If all `default_pools` become unhealthy, there is no "pool of last resort," and users will receive an error (e.g., HTTP 530).
 
 **Single Origin**: Configuring a load balancer with a single pool containing only one origin. This provides no resilience, no failover, and serves no purpose beyond that of a standard DNS record.
 
@@ -512,8 +516,8 @@ Behind the scenes, the OpenMCF controller:
 2. Creates two Cloudflare Pools (one for each origin), both referencing the Monitor
 3. Creates a Cloudflare Load Balancer with:
    - `steering_policy = "off"`
-   - `default_pool_ids` set to the primary pool ID (index 0) and secondary pool ID (index 1)
-   - `fallback_pool_id` set to the secondary pool ID
+   - `default_pools` set to the primary pool ID (index 0) and secondary pool ID (index 1)
+   - `fallback_pool` set to the secondary pool ID
    - `session_affinity = "cookie"`
 
 The user sees a simple, intuitive API. OpenMCF handles the complexity.
@@ -528,7 +532,7 @@ The API design makes correct configuration easy and incorrect configuration diff
 
 Future enhancements can add:
 - Validation to require at least two origins for production environments
-- Auto-configuration of `fallback_pool_id` to the last origin in the list
+- Auto-configuration of `fallback_pool` to the last origin in the list
 - Built-in geo-routing templates (e.g., "US-East + US-West + EU")
 
 ---

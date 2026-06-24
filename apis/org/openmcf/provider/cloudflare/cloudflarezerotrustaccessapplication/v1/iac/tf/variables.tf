@@ -16,10 +16,9 @@ variable "metadata" {
 variable "spec" {
   description = "CloudflareZeroTrustAccessApplicationSpec defines the configuration for the Access Application"
   type = object({
-    application_name         = string
-    zone_id = object({
-      value = string
-    })
+    application_name = string
+    # StringValueOrRef flattened to a plain string by the tfvars converter.
+    zone_id                  = optional(string)
     hostname                 = string
     policy_type              = optional(string, "ALLOW")
     allowed_emails           = optional(list(string), [])

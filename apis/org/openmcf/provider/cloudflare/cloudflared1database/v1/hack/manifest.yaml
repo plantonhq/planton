@@ -1,5 +1,10 @@
 apiVersion: cloudflare.openmcf.org/v1
 kind: CloudflareD1Database
 metadata:
-  name: first-certificate
+  name: d1-hack-database
 spec:
+  databaseName: openmcf-d1-hack
+  accountId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
+  region: wnam
+  readReplication:
+    mode: disabled

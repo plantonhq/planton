@@ -9,14 +9,3 @@ output "nameservers" {
   description = "The Cloudflare nameservers assigned to this zone"
   value       = cloudflare_zone.main.name_servers
 }
-
-output "zone_name" {
-  description = "The zone name (same as input)"
-  value       = cloudflare_zone.main.zone
-}
-
-output "status" {
-  description = "The current status of the zone"
-  value       = cloudflare_zone.main.status
-}
-

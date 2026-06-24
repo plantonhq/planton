@@ -7,7 +7,7 @@ Deploys a Cloudflare DNS zone with optional inline DNS record management. The co
 When you deploy a CloudflareDnsZone resource, OpenMCF provisions:
 
 - **DNS Zone** — a `cloudflare_zone` resource attached to the specified Cloudflare account, with configurable pause state
-- **DNS Records** — one `cloudflare_record` resource per entry in the `records` list, created within the zone with support for proxied mode, custom TTL, priority, and comments
+- **DNS Records** — one `cloudflare_dns_record` resource per entry in the `records` list, created within the zone with support for proxied mode, custom TTL, priority, and comments
 
 ## Prerequisites
 

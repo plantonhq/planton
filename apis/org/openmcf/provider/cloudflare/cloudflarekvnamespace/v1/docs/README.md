@@ -467,7 +467,7 @@ OpenMCF abstracts Workers KV into a clean protobuf API that captures the 80% use
 
 ### The 80/20 Configuration
 
-The `CloudflareKvNamespaceSpec` includes just three fields:
+The `CloudflareKvNamespaceSpec` includes a small set of fields:
 
 **1. `namespace_name` (required)**
 - The human-readable identifier for the namespace
@@ -475,18 +475,23 @@ The `CloudflareKvNamespaceSpec` includes just three fields:
 - Limited to 64 characters
 - Example: `myapp-config-prod`
 
-**2. `ttl_seconds` (optional)**
+**2. `account_id` (required)**
+- The Cloudflare account ID (32 hex characters) that owns the namespace
+- A KV namespace is account-scoped, so the account must be specified
+- Example: `0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d`
+
+**3. `ttl_seconds` (optional)**
 - Default TTL for keys in this namespace (documentation/convention)
 - Minimum: 60 seconds (enforced by Cloudflare when writing keys)
 - Use `0` or omit for no default expiration
 - Example: `3600` (1 hour)
 
-**3. `description` (optional)**
+**4. `description` (optional)**
 - Short human-readable description of the namespace's purpose
 - Max 256 characters
 - Example: `"Feature flags and configuration for MyApp production"`
 
-**Rationale:** These three fields cover the vast majority of KV namespace configurations. We intentionally omit:
+**Rationale:** These fields cover the vast majority of KV namespace configurations. We intentionally omit:
 - **Network IDs:** Not applicable to Workers KV (unlike compute resources)
 - **Performance tiers:** KV has a single storage tier
 - **Access controls:** Managed via Cloudflare API tokens, not per-namespace
@@ -558,6 +563,7 @@ metadata:
   name: myapp-dev-alice
 spec:
   namespace_name: myapp-dev-alice
+  account_id: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
   ttl_seconds: 300  # 5-minute default TTL for quick cache expiration
   description: "Alice's dev environment for MyApp"
 ```
@@ -580,6 +586,7 @@ metadata:
   name: myapp-config-staging
 spec:
   namespace_name: myapp-config-staging
+  account_id: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
   ttl_seconds: 0  # No default expiration (persistent config)
   description: "Feature flags and configuration for MyApp staging"
 ```
@@ -604,6 +611,7 @@ metadata:
   name: myapp-config-prod
 spec:
   namespace_name: myapp-config-prod
+  account_id: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
   ttl_seconds: 0  # Persistent configuration
   description: "Feature flags and application configuration (production)"
 ```
@@ -617,6 +625,7 @@ metadata:
   name: myapp-cache-prod
 spec:
   namespace_name: myapp-cache-prod
+  account_id: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
   ttl_seconds: 3600  # 1-hour default TTL for cache entries
   description: "Cached API responses and transient data (production)"
 ```
@@ -630,6 +639,7 @@ metadata:
   name: myapp-session-prod
 spec:
   namespace_name: myapp-session-prod
+  account_id: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
   ttl_seconds: 1800  # 30-minute session expiration
   description: "User session tokens and temporary auth data (production)"
 ```
@@ -732,7 +742,7 @@ wrangler kv:bulk import --namespace-id=$NEW_NAMESPACE_ID backup.json
 
 6. **Implement TTLs where appropriate.** Use expiration for ephemeral data (sessions, cache). Leave config data without TTL.
 
-7. **OpenMCF simplifies the API.** Three fields (`namespace_name`, `ttl_seconds`, `description`) cover 80% of use cases. Advanced patterns happen at the application layer, not in infrastructure config.
+7. **OpenMCF simplifies the API.** A small field set (`namespace_name`, `account_id`, `ttl_seconds`, `description`) covers 80% of use cases. Advanced patterns happen at the application layer, not in infrastructure config.
 
 ---
 

@@ -20,7 +20,7 @@ func records(
 		// Include index to ensure uniqueness when multiple records have same name and type
 		resourceName := fmt.Sprintf("%s-%s-%d", record.Name, record.Type.String(), idx)
 
-		recordArgs := &cloudflare.RecordArgs{
+		recordArgs := &cloudflare.DnsRecordArgs{
 			ZoneId:  zone.ID(),
 			Name:    pulumi.String(record.Name),
 			Type:    pulumi.String(record.Type.String()),
@@ -46,7 +46,7 @@ func records(
 			recordArgs.Comment = pulumi.String(record.Comment)
 		}
 
-		_, err := cloudflare.NewRecord(
+		_, err := cloudflare.NewDnsRecord(
 			ctx,
 			resourceName,
 			recordArgs,

@@ -6,176 +6,127 @@ resource "cloudflare_ruleset" "main" {
   name        = var.spec.name
   description = var.spec.description
 
-  dynamic "rules" {
-    for_each = var.spec.rules
-    content {
-      ref         = rules.value.ref != "" ? rules.value.ref : null
-      expression  = rules.value.expression
-      action      = rules.value.action
-      description = rules.value.description != "" ? rules.value.description : null
-      enabled     = rules.value.enabled
+  rules = [
+    for r in var.spec.rules : {
+      ref         = r.ref != "" ? r.ref : null
+      expression  = r.expression
+      action      = r.action
+      description = r.description != "" ? r.description : null
+      enabled     = r.enabled
 
-      dynamic "action_parameters" {
-        for_each = rules.value.action_parameters != null ? [rules.value.action_parameters] : []
-        content {
-          # Origin Rules (route)
-          host_header = action_parameters.value.host_header
+      action_parameters = r.action_parameters == null ? null : {
+        # Origin Rules (route)
+        host_header = r.action_parameters.host_header
 
-          dynamic "origin" {
-            for_each = action_parameters.value.origin != null ? [action_parameters.value.origin] : []
-            content {
-              host = origin.value.host
-              port = origin.value.port
-            }
+        origin = r.action_parameters.origin == null ? null : {
+          host = r.action_parameters.origin.host
+          port = r.action_parameters.origin.port
+        }
+
+        sni = r.action_parameters.sni == null ? null : {
+          value = r.action_parameters.sni.value
+        }
+
+        # Block
+        response = r.action_parameters.response == null ? null : {
+          status_code  = r.action_parameters.response.status_code
+          content      = r.action_parameters.response.content
+          content_type = r.action_parameters.response.content_type
+        }
+
+        # Rewrite
+        uri = r.action_parameters.uri == null ? null : {
+          path = r.action_parameters.uri.path == null ? null : {
+            value      = r.action_parameters.uri.path.value != "" ? r.action_parameters.uri.path.value : null
+            expression = r.action_parameters.uri.path.expression != "" ? r.action_parameters.uri.path.expression : null
           }
-
-          dynamic "sni" {
-            for_each = action_parameters.value.sni != null ? [action_parameters.value.sni] : []
-            content {
-              value = sni.value.value
-            }
+          query = r.action_parameters.uri.query == null ? null : {
+            value      = r.action_parameters.uri.query.value != "" ? r.action_parameters.uri.query.value : null
+            expression = r.action_parameters.uri.query.expression != "" ? r.action_parameters.uri.query.expression : null
           }
+        }
 
-          # Block
-          dynamic "response" {
-            for_each = action_parameters.value.response != null ? [action_parameters.value.response] : []
-            content {
-              status_code  = response.value.status_code
-              content      = response.value.content
-              content_type = response.value.content_type
-            }
+        # Header transforms: the v5 map key is the header name.
+        headers = length(r.action_parameters.headers) > 0 ? {
+          for name, h in r.action_parameters.headers : name => {
+            operation  = h.operation
+            value      = h.value != "" ? h.value : null
+            expression = h.expression != "" ? h.expression : null
           }
+        } : null
 
-          # Rewrite
-          dynamic "uri" {
-            for_each = action_parameters.value.uri != null ? [action_parameters.value.uri] : []
-            content {
-              dynamic "path" {
-                for_each = uri.value.path != null ? [uri.value.path] : []
-                content {
-                  value      = path.value.value != "" ? path.value.value : null
-                  expression = path.value.expression != "" ? path.value.expression : null
-                }
-              }
-              dynamic "query" {
-                for_each = uri.value.query != null ? [uri.value.query] : []
-                content {
-                  value      = query.value.value != "" ? query.value.value : null
-                  expression = query.value.expression != "" ? query.value.expression : null
-                }
-              }
-            }
+        # Redirect
+        from_value = r.action_parameters.from_value == null ? null : {
+          status_code           = r.action_parameters.from_value.status_code
+          preserve_query_string = r.action_parameters.from_value.preserve_query_string
+          target_url = {
+            value      = r.action_parameters.from_value.target_url.value != "" ? r.action_parameters.from_value.target_url.value : null
+            expression = r.action_parameters.from_value.target_url.expression != "" ? r.action_parameters.from_value.target_url.expression : null
           }
+        }
 
-          dynamic "headers" {
-            for_each = action_parameters.value.headers
-            content {
-              name       = headers.key
-              operation  = headers.value.operation
-              value      = headers.value.value != "" ? headers.value.value : null
-              expression = headers.value.expression != "" ? headers.value.expression : null
+        # Skip
+        phases   = length(r.action_parameters.phases) > 0 ? r.action_parameters.phases : null
+        products = length(r.action_parameters.products) > 0 ? r.action_parameters.products : null
+        ruleset  = r.action_parameters.ruleset != "" ? r.action_parameters.ruleset : null
+        rulesets = length(r.action_parameters.rulesets) > 0 ? r.action_parameters.rulesets : null
+
+        # Execute
+        id = r.action_parameters.id != "" ? r.action_parameters.id : null
+
+        overrides = r.action_parameters.overrides == null ? null : {
+          action            = r.action_parameters.overrides.action != "" ? r.action_parameters.overrides.action : null
+          enabled           = r.action_parameters.overrides.enabled
+          sensitivity_level = r.action_parameters.overrides.sensitivity_level != "" ? r.action_parameters.overrides.sensitivity_level : null
+
+          categories = length(r.action_parameters.overrides.categories) > 0 ? [
+            for c in r.action_parameters.overrides.categories : {
+              category          = c.category
+              action            = c.action
+              enabled           = c.enabled
+              sensitivity_level = c.sensitivity_level != "" ? c.sensitivity_level : null
             }
-          }
+          ] : null
 
-          # Redirect
-          dynamic "from_value" {
-            for_each = action_parameters.value.from_value != null ? [action_parameters.value.from_value] : []
-            content {
-              status_code          = from_value.value.status_code
-              preserve_query_string = from_value.value.preserve_query_string
-
-              dynamic "target_url" {
-                for_each = from_value.value.target_url != null ? [from_value.value.target_url] : []
-                content {
-                  value      = target_url.value.value != "" ? target_url.value.value : null
-                  expression = target_url.value.expression != "" ? target_url.value.expression : null
-                }
-              }
+          rules = length(r.action_parameters.overrides.rules) > 0 ? [
+            for ru in r.action_parameters.overrides.rules : {
+              id                = ru.id
+              action            = ru.action
+              enabled           = ru.enabled
+              score_threshold   = ru.score_threshold > 0 ? ru.score_threshold : null
+              sensitivity_level = ru.sensitivity_level != "" ? ru.sensitivity_level : null
             }
-          }
+          ] : null
+        }
 
-          # Skip
-          phases   = length(action_parameters.value.phases) > 0 ? action_parameters.value.phases : null
-          products = length(action_parameters.value.products) > 0 ? action_parameters.value.products : null
-          ruleset  = action_parameters.value.ruleset != "" ? action_parameters.value.ruleset : null
-          rulesets = length(action_parameters.value.rulesets) > 0 ? action_parameters.value.rulesets : null
+        # Cache
+        cache = r.action_parameters.cache
 
-          # Execute
-          id = action_parameters.value.id != "" ? action_parameters.value.id : null
+        edge_ttl = r.action_parameters.edge_ttl == null ? null : {
+          mode    = r.action_parameters.edge_ttl.mode
+          default = r.action_parameters.edge_ttl.default_ttl > 0 ? r.action_parameters.edge_ttl.default_ttl : null
 
-          dynamic "overrides" {
-            for_each = action_parameters.value.overrides != null ? [action_parameters.value.overrides] : []
-            content {
-              action            = overrides.value.action != "" ? overrides.value.action : null
-              enabled           = overrides.value.enabled
-              sensitivity_level = overrides.value.sensitivity_level != "" ? overrides.value.sensitivity_level : null
-
-              dynamic "categories" {
-                for_each = overrides.value.categories
-                content {
-                  category          = categories.value.category
-                  action            = categories.value.action
-                  enabled           = categories.value.enabled
-                  sensitivity_level = categories.value.sensitivity_level != "" ? categories.value.sensitivity_level : null
-                }
-              }
-
-              dynamic "rules" {
-                for_each = overrides.value.rules
-                content {
-                  id                = rules.value.id
-                  action            = rules.value.action
-                  enabled           = rules.value.enabled
-                  score_threshold   = rules.value.score_threshold > 0 ? rules.value.score_threshold : null
-                  sensitivity_level = rules.value.sensitivity_level != "" ? rules.value.sensitivity_level : null
-                }
+          status_code_ttl = length(r.action_parameters.edge_ttl.status_code_ttls) > 0 ? [
+            for s in r.action_parameters.edge_ttl.status_code_ttls : {
+              value       = s.value
+              status_code = s.status_code
+              status_code_range = s.status_code_range == null ? null : {
+                from = s.status_code_range.from
+                to   = s.status_code_range.to
               }
             }
-          }
+          ] : null
+        }
 
-          # Cache
-          cache = action_parameters.value.cache
+        browser_ttl = r.action_parameters.browser_ttl == null ? null : {
+          mode    = r.action_parameters.browser_ttl.mode
+          default = r.action_parameters.browser_ttl.default_ttl > 0 ? r.action_parameters.browser_ttl.default_ttl : null
+        }
 
-          dynamic "edge_ttl" {
-            for_each = action_parameters.value.edge_ttl != null ? [action_parameters.value.edge_ttl] : []
-            content {
-              mode    = edge_ttl.value.mode
-              default = edge_ttl.value.default_ttl > 0 ? edge_ttl.value.default_ttl : null
-
-              dynamic "status_code_ttl" {
-                for_each = edge_ttl.value.status_code_ttls
-                content {
-                  value       = status_code_ttl.value.value
-                  status_code = status_code_ttl.value.status_code > 0 ? status_code_ttl.value.status_code : null
-
-                  dynamic "status_code_range" {
-                    for_each = status_code_ttl.value.status_code_range != null ? [status_code_ttl.value.status_code_range] : []
-                    content {
-                      from = status_code_range.value.from
-                      to   = status_code_range.value.to
-                    }
-                  }
-                }
-              }
-            }
-          }
-
-          dynamic "browser_ttl" {
-            for_each = action_parameters.value.browser_ttl != null ? [action_parameters.value.browser_ttl] : []
-            content {
-              mode    = browser_ttl.value.mode
-              default = browser_ttl.value.default_ttl > 0 ? browser_ttl.value.default_ttl : null
-            }
-          }
-
-          dynamic "serve_stale" {
-            for_each = action_parameters.value.serve_stale != null ? [action_parameters.value.serve_stale] : []
-            content {
-              disable_stale_while_updating = serve_stale.value.disable_stale_while_updating
-            }
-          }
+        serve_stale = r.action_parameters.serve_stale == null ? null : {
+          disable_stale_while_updating = r.action_parameters.serve_stale.disable_stale_while_updating
         }
       }
     }
-  }
+  ]
 }

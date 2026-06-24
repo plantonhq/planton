@@ -45,7 +45,7 @@ Managing DNS zones on Cloudflare can be approached in many ways, from point-and-
 curl -X POST "https://api.cloudflare.com/client/v4/zones" \
   -H "Authorization: Bearer $CF_API_TOKEN" \
   -H "Content-Type: application/json" \
-  --data '{"name":"example.com","account":{"id":"'$ACCOUNT_ID'"},"jump_start":false}'
+  --data '{"name":"example.com","account":{"id":"'$ACCOUNT_ID'"}}'
 
 # Add an A record
 curl -X POST "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records" \
@@ -128,28 +128,27 @@ provider "cloudflare" {
 }
 
 resource "cloudflare_zone" "example" {
-  zone       = "example.com"
-  account_id = var.cloudflare_account_id
-  plan       = "free"
-  paused     = false
+  name = "example.com"
+  account = {
+    id = var.cloudflare_account_id
+  }
+  paused = false
 }
 
-resource "cloudflare_record" "www" {
+resource "cloudflare_dns_record" "www" {
   zone_id = cloudflare_zone.example.id
   name    = "www"
   type    = "A"
-  value   = "198.51.100.4"
+  content = "198.51.100.4"
+  ttl     = 1
   proxied = true
 }
 
-resource "cloudflare_zone_settings_override" "example_settings" {
-  zone_id = cloudflare_zone.example.id
-
-  settings {
-    ssl                      = "full"
-    always_use_https         = "on"
-    automatic_https_rewrites = "on"
-  }
+# In provider v5 each zone setting is its own resource.
+resource "cloudflare_zone_setting" "ssl" {
+  zone_id    = cloudflare_zone.example.id
+  setting_id = "ssl"
+  value      = "full"
 }
 ```
 
@@ -171,7 +170,7 @@ resource "cloudflare_zone_settings_override" "example_settings" {
 cf-terraforming generate --resource-type cloudflare_zone --account $ACCOUNT_ID > zones.tf
 
 # Generate DNS records for a specific zone
-cf-terraforming generate --resource-type cloudflare_record --zone $ZONE_ID > records.tf
+cf-terraforming generate --resource-type cloudflare_dns_record --zone $ZONE_ID > records.tf
 
 # Import state
 terraform import cloudflare_zone.example $ZONE_ID
@@ -397,19 +396,21 @@ Both Terraform and Pulumi are production-ready for managing Cloudflare DNS. Here
 ```hcl
 # Simple and readable for standard use cases
 resource "cloudflare_zone" "example" {
-  zone       = "example.com"
-  account_id = var.account_id
-  plan       = "free"
+  name = "example.com"
+  account = {
+    id = var.account_id
+  }
 }
 
 # Looping requires for_each or count
-resource "cloudflare_record" "subdomains" {
+resource "cloudflare_dns_record" "subdomains" {
   for_each = toset(["app1", "app2", "app3"])
-  
+
   zone_id = cloudflare_zone.example.id
   name    = each.value
   type    = "CNAME"
-  value   = "lb.example.com"
+  content = "lb.example.com"
+  ttl     = 1
   proxied = true
 }
 ```
@@ -699,7 +700,7 @@ Typically enabled post-creation via separate API call or dashboard toggle (not p
 Business/Enterprise feature for branding (e.g., `ns1.yourdomain.com` instead of Cloudflare's NS). Rare need.
 
 **Zone settings (SSL mode, caching rules, WAF):**  
-Managed separately via `cloudflare_zone_settings_override` resource in Terraform or dedicated API calls. Not part of the zone creation spec—these are post-creation configurations.
+Managed separately via the per-setting `cloudflare_zone_setting` resource in Terraform or dedicated API calls. Not part of the zone creation spec—these are post-creation configurations.
 
 ---
 

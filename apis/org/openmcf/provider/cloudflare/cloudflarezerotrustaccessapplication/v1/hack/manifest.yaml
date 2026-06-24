@@ -1,5 +1,17 @@
 apiVersion: cloudflare.openmcf.org/v1
 kind: CloudflareZeroTrustAccessApplication
 metadata:
-  name: first-certificate
+  name: access-app-hack
 spec:
+  applicationName: Internal Dashboard
+  zoneId:
+    value: "0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"
+  hostname: dashboard.openmcf-example.com
+  policyType: ALLOW
+  allowedEmails:
+    - alice@example.com
+    - bob@example.com
+  allowedGoogleGroups:
+    - "1234567890abcdef1234567890abcdef"
+  sessionDurationMinutes: 1440
+  requireMfa: true

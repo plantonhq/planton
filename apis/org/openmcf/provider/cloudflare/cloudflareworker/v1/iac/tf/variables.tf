@@ -22,22 +22,20 @@ variable "spec" {
 
     # Worker script bundle configuration (R2 object reference)
     script_bundle = object({
-      bucket = string  # R2 bucket name
-      path   = string  # Path to bundle in R2
+      bucket = string # R2 bucket name
+      path   = string # Path to bundle in R2
     })
 
     # Optional KV namespace bindings
     kv_bindings = optional(list(object({
       name       = string
-      field_path = string  # Namespace ID reference
+      field_path = string # Namespace ID reference
     })), [])
 
     # Optional DNS configuration for custom domain
     dns = optional(object({
-      enabled = optional(bool, false)
-      zone_id = optional(object({
-        value = optional(string, "")
-      }))
+      enabled       = optional(bool, false)
+      zone_id       = optional(string)
       hostname      = optional(string, "")
       route_pattern = optional(string, "")
     }))
@@ -45,8 +43,8 @@ variable "spec" {
     # Compatibility date (YYYY-MM-DD format)
     compatibility_date = optional(string, "")
 
-    # Usage model: 0=BUNDLED, 1=UNBOUND
-    usage_model = optional(number, 0)
+    # Usage model ("standard"/"bundled"/"unbound"); enum flattens to its string name.
+    usage_model = optional(string)
 
     # Environment variables and secrets
     env = optional(object({

@@ -2,7 +2,7 @@
 
 # Create DNS records within the zone
 # Include index to ensure uniqueness when multiple records have same name and type
-resource "cloudflare_record" "records" {
+resource "cloudflare_dns_record" "records" {
   for_each = { for idx, record in var.spec.records : "${record.name}-${record.type}-${idx}" => record }
 
   zone_id = cloudflare_zone.main.id

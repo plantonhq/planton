@@ -15,10 +15,11 @@ func kvNamespace(
 
 	// Build the namespace arguments directly from proto fields.
 	kvArgs := &cloudflare.WorkersKvNamespaceArgs{
-		Title: pulumi.String(locals.CloudflareKvNamespace.Spec.NamespaceName),
+		AccountId: pulumi.String(locals.CloudflareKvNamespace.Spec.AccountId),
+		Title:     pulumi.String(locals.CloudflareKvNamespace.Spec.NamespaceName),
 		// NOTE:
-		// The Cloudflare Pulumi provider (v5) does not expose "ttl_seconds" or "description"
-		// fields on a KV namespace resource. These spec fields are therefore ignored.
+		// The Cloudflare KV namespace resource does not expose "ttl_seconds" or
+		// "description" fields, so those spec fields are not set here.
 	}
 
 	// Create the namespace.
