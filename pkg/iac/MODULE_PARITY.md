@@ -139,7 +139,17 @@ configured on the bundle path). Routing folds onto the worker as `cloudflare_wor
 (workers.dev), `cloudflare_workers_custom_domain` (one per hostname, `environment = "production"`),
 and `cloudflare_workers_route` (one per pattern); cron schedules fold onto
 `cloudflare_workers_cron_trigger`. Stack outputs are `script_id`, `script_name`,
-`custom_domain_hostnames`, and `route_patterns`. The provider pins the Pulumi Cloudflare SDK at
+`custom_domain_hostnames`, and `route_patterns`. **Workers Static Assets** (`spec.assets`)
+fold onto the same `cloudflare_workers_script` as the `assets` block: both engines set
+`directory` and the `config` sub-fields (`html_handling`, `not_found_handling`, `headers`,
+`redirects`) identically, and model `run_worker_first` as the provider's dynamic field — a
+`[]string` of path rules when `run_worker_first_rules` is set, else a bool from
+`run_worker_first` (full parity on v6.17.0, where `WorkersScriptAssetsConfig.RunWorkerFirst`
+is `interface{}`; mutually-exclusive by CEL). When `assets` is set without a script source the
+Worker is assets-only: both engines omit `content`/`main_module`. `assets.binding_name` appends
+an `assets`-type entry to the shared bindings list so a full-stack worker can read assets via
+`env.<NAME>`. No new stack outputs (the workers.dev URL is not derivable — the provider exposes
+no account-subdomain lookup). The provider pins the Pulumi Cloudflare SDK at
 **v6.17.0**, and tofu↔Pulumi are at **full parity** across the family: D1 `jurisdiction`, the worker
 service-binding `entrypoint`, worker `limits.subrequests`, the worker custom-domain `zone_id`, and the
 DNS-record `private_routing` are all modeled in the proto and honored by both engines (these were

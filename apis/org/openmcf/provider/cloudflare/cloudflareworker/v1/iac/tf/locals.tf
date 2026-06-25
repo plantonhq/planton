@@ -1,9 +1,13 @@
 locals {
   script_name = var.spec.worker_name
 
-  # Script source: inline content, else the R2 bundle body.
+  # Script source: inline content, else the R2 bundle body. A worker may instead
+  # be a pure static site (assets only, no script) — in that case content and
+  # main_module are null so the provider treats it as an assets-only Worker.
   use_bundle     = var.spec.r2_bundle != null
-  script_content = var.spec.content != "" ? var.spec.content : (local.use_bundle ? data.aws_s3_object.bundle[0].body : "")
+  has_script     = var.spec.content != "" || local.use_bundle
+  script_content = local.has_script ? (var.spec.content != "" ? var.spec.content : data.aws_s3_object.bundle[0].body) : null
+  main_module    = local.has_script ? var.spec.main_module : null
 
   # Compatibility date defaults to today when unset.
   compatibility_date = var.spec.compatibility_date != "" ? var.spec.compatibility_date : formatdate("YYYY-MM-DD", timestamp())
@@ -40,7 +44,30 @@ locals {
     [for b in var.spec.vectorize_indexes : merge(local.null_attrs, { name = b.name, type = "vectorize", index_name = b.index_name })],
     [for b in var.spec.ai : merge(local.null_attrs, { name = b.name, type = "ai" })],
     [for b in var.spec.version_metadata : merge(local.null_attrs, { name = b.name, type = "version_metadata" })],
+    # Assets binding (env.<NAME>) when a full-stack worker wants programmatic access.
+    (try(var.spec.assets.binding_name, "") != "") ? [merge(local.null_attrs, { name = var.spec.assets.binding_name, type = "assets" })] : [],
   )
+
+  # Workers Static Assets configuration. The provider's run_worker_first is a
+  # DYNAMIC field that accepts either a bool (apply to all paths) or a list of
+  # path rules. HCL conditionals must unify to one type, so we cannot write a
+  # `rules : bool` ternary directly — instead we encode the chosen value to JSON
+  # (always a string) and decode it, which defers the bool-or-list typing to
+  # runtime and lets us feed the dynamic attribute. null means "not configured".
+  assets = try(var.spec.assets, null) != null ? {
+    directory = var.spec.assets.directory
+    config = try(var.spec.assets.config, null) != null ? {
+      html_handling      = var.spec.assets.config.html_handling != "" ? var.spec.assets.config.html_handling : null
+      not_found_handling = var.spec.assets.config.not_found_handling != "" ? var.spec.assets.config.not_found_handling : null
+      headers            = var.spec.assets.config.headers != "" ? var.spec.assets.config.headers : null
+      redirects          = var.spec.assets.config.redirects != "" ? var.spec.assets.config.redirects : null
+      run_worker_first = jsondecode(
+        length(var.spec.assets.config.run_worker_first_rules) > 0
+        ? jsonencode(var.spec.assets.config.run_worker_first_rules)
+        : (var.spec.assets.config.run_worker_first ? "true" : "null")
+      )
+    } : null
+  } : null
 
   observability = try(var.spec.observability, null) != null ? {
     enabled            = try(var.spec.observability.enabled, false)

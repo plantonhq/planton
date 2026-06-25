@@ -46,6 +46,38 @@ var _ = ginkgo.Describe("CloudflareWorkerSpec Custom Validation Tests", func() {
 			gomega.Expect(protovalidate.Validate(in)).To(gomega.BeNil())
 		})
 
+		ginkgo.It("accepts a pure static site (assets only, no script source)", func() {
+			in := validWorker()
+			in.Spec.Source = nil
+			in.Spec.Assets = &CloudflareWorkerAssets{
+				Directory: "dist",
+				Config:    &CloudflareWorkerAssetsConfig{NotFoundHandling: "single-page-application"},
+			}
+			gomega.Expect(protovalidate.Validate(in)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("accepts a full-stack worker (script + assets + binding)", func() {
+			in := validWorker()
+			in.Spec.Assets = &CloudflareWorkerAssets{
+				Directory:   "dist",
+				BindingName: "ASSETS",
+				Config: &CloudflareWorkerAssetsConfig{
+					HtmlHandling:     "auto-trailing-slash",
+					NotFoundHandling: "404-page",
+					Headers:          "/*\n  X-Frame-Options: DENY",
+					Redirects:        "/old /new 301",
+					RunWorkerFirstRules: []string{"/api/*", "!/api/docs/*"},
+				},
+			}
+			gomega.Expect(protovalidate.Validate(in)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("accepts run_worker_first as a global switch", func() {
+			in := validWorker()
+			in.Spec.Assets = &CloudflareWorkerAssets{Directory: "dist", Config: &CloudflareWorkerAssetsConfig{RunWorkerFirst: true}}
+			gomega.Expect(protovalidate.Validate(in)).To(gomega.BeNil())
+		})
+
 		ginkgo.It("accepts grouped bindings, routing, and schedules", func() {
 			in := validWorker()
 			in.Spec.Vars = map[string]string{"LOG_LEVEL": "info"}
@@ -67,9 +99,36 @@ var _ = ginkgo.Describe("CloudflareWorkerSpec Custom Validation Tests", func() {
 	})
 
 	ginkgo.Describe("When invalid input is passed", func() {
-		ginkgo.It("rejects a worker with no script source", func() {
+		ginkgo.It("rejects a worker with neither a script source nor assets", func() {
 			in := validWorker()
 			in.Spec.Source = nil
+			gomega.Expect(protovalidate.Validate(in)).ToNot(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects an invalid assets html_handling", func() {
+			in := validWorker()
+			in.Spec.Assets = &CloudflareWorkerAssets{Directory: "dist", Config: &CloudflareWorkerAssetsConfig{HtmlHandling: "sometimes"}}
+			gomega.Expect(protovalidate.Validate(in)).ToNot(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects an invalid assets not_found_handling", func() {
+			in := validWorker()
+			in.Spec.Assets = &CloudflareWorkerAssets{Directory: "dist", Config: &CloudflareWorkerAssetsConfig{NotFoundHandling: "redirect"}}
+			gomega.Expect(protovalidate.Validate(in)).ToNot(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects assets with no directory", func() {
+			in := validWorker()
+			in.Spec.Assets = &CloudflareWorkerAssets{Config: &CloudflareWorkerAssetsConfig{RunWorkerFirst: true}}
+			gomega.Expect(protovalidate.Validate(in)).ToNot(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects run_worker_first set together with run_worker_first_rules", func() {
+			in := validWorker()
+			in.Spec.Assets = &CloudflareWorkerAssets{
+				Directory: "dist",
+				Config:    &CloudflareWorkerAssetsConfig{RunWorkerFirst: true, RunWorkerFirstRules: []string{"/api/*"}},
+			}
 			gomega.Expect(protovalidate.Validate(in)).ToNot(gomega.BeNil())
 		})
 

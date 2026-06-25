@@ -119,6 +119,13 @@ func buildBindings(spec *cloudflareworkerv1.CloudflareWorkerSpec) cloudfl.Worker
 			Type: pulumi.String("version_metadata"),
 		})
 	}
+	// Assets binding (env.<NAME>) for full-stack workers that read assets in code.
+	if a := spec.Assets; a != nil && a.BindingName != "" {
+		bindings = append(bindings, cloudfl.WorkersScriptBindingArgs{
+			Name: pulumi.String(a.BindingName),
+			Type: pulumi.String("assets"),
+		})
+	}
 
 	return bindings
 }

@@ -12,12 +12,15 @@ resource "cloudflare_workers_script" "main" {
   script_name = local.script_name
 
   content     = local.script_content
-  main_module = var.spec.main_module
+  main_module = local.main_module
 
   compatibility_date  = local.compatibility_date
   compatibility_flags = length(var.spec.compatibility_flags) > 0 ? var.spec.compatibility_flags : null
 
   bindings = length(local.bindings) > 0 ? local.bindings : null
+
+  # Workers Static Assets (built site directory served from the edge).
+  assets = local.assets
 
   observability  = local.observability
   placement      = local.placement

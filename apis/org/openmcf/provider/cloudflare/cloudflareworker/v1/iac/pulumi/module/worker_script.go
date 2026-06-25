@@ -29,20 +29,53 @@ func worker(
 	scriptArgs := &cloudfl.WorkersScriptArgs{
 		AccountId:         pulumi.String(spec.AccountId),
 		ScriptName:        pulumi.String(spec.WorkerName),
-		MainModule:        pulumi.String(spec.MainModule),
 		CompatibilityDate: pulumi.String(compatibilityDate),
 		Bindings:          buildBindings(spec),
 	}
 
-	// Script source: inline content, else the R2 bundle body.
+	// Script source: inline content, else the R2 bundle body. A worker may instead
+	// be a pure static site (assets only, no script) — main_module is then omitted.
 	if spec.GetContent() != "" {
 		scriptArgs.Content = pulumi.StringPtr(spec.GetContent())
+		scriptArgs.MainModule = pulumi.String(spec.MainModule)
 	} else if bundle := spec.GetR2Bundle(); bundle != nil {
 		obj := s3.GetObjectOutput(ctx, s3.GetObjectOutputArgs{
 			Bucket: pulumi.String(bundle.Bucket),
 			Key:    pulumi.String(bundle.Path),
 		}, pulumi.Provider(r2Provider))
 		scriptArgs.Content = obj.Body().ApplyT(func(s string) *string { return &s }).(pulumi.StringPtrOutput)
+		scriptArgs.MainModule = pulumi.String(spec.MainModule)
+	}
+
+	// Workers Static Assets: upload a built site directory served from the edge.
+	if a := spec.Assets; a != nil {
+		assetsArgs := &cloudfl.WorkersScriptAssetsArgs{
+			Directory: pulumi.String(a.Directory),
+		}
+		if c := a.Config; c != nil {
+			cfgArgs := &cloudfl.WorkersScriptAssetsConfigArgs{}
+			if c.HtmlHandling != "" {
+				cfgArgs.HtmlHandling = pulumi.String(c.HtmlHandling)
+			}
+			if c.NotFoundHandling != "" {
+				cfgArgs.NotFoundHandling = pulumi.String(c.NotFoundHandling)
+			}
+			if c.Headers != "" {
+				cfgArgs.Headers = pulumi.String(c.Headers)
+			}
+			if c.Redirects != "" {
+				cfgArgs.Redirects = pulumi.String(c.Redirects)
+			}
+			// run_worker_first is the provider's dynamic field: a list of path
+			// rules when provided, else a bool toggle.
+			if len(c.RunWorkerFirstRules) > 0 {
+				cfgArgs.RunWorkerFirst = pulumi.ToStringArray(c.RunWorkerFirstRules)
+			} else if c.RunWorkerFirst {
+				cfgArgs.RunWorkerFirst = pulumi.Bool(true)
+			}
+			assetsArgs.Config = cfgArgs
+		}
+		scriptArgs.Assets = assetsArgs
 	}
 
 	if len(spec.CompatibilityFlags) > 0 {

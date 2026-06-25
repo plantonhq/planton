@@ -107,5 +107,19 @@ variable "spec" {
       environment = optional(string, "")
       namespace   = optional(string, "")
     })), [])
+
+    # Workers Static Assets: a built site directory served from the edge.
+    assets = optional(object({
+      directory    = string
+      binding_name = optional(string, "")
+      config = optional(object({
+        html_handling          = optional(string, "")
+        not_found_handling     = optional(string, "")
+        headers                = optional(string, "")
+        redirects              = optional(string, "")
+        run_worker_first       = optional(bool, false)
+        run_worker_first_rules = optional(list(string), [])
+      }))
+    }))
   })
 }

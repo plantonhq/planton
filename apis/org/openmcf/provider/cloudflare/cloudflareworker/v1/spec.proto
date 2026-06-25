@@ -13,12 +13,16 @@ import "org/openmcf/shared/options/options.proto";
 // binding accepts a literal value or a reference to the producing resource, so a
 // Worker composes as a real node in the resource graph.
 message CloudflareWorkerSpec {
-  // Cross-field validation: exactly one script source — inline content or an R2
-  // bundle reference — must be provided.
+  // Cross-field validation: a Worker must carry executable code, a static-asset
+  // bundle, or both. Inline content and an R2 bundle are mutually exclusive (the
+  // oneof enforces that); assets may stand alone (a pure static site) or sit
+  // alongside a script (a full-stack app whose Functions serve dynamic routes).
+  // This mirrors the Cloudflare API, which requires at least one of content or
+  // assets on a script.
   option (buf.validate.message).cel = {
-    id: "spec.script_source_required"
-    message: "provide exactly one script source: inline content or an r2_bundle reference"
-    expression: "has(this.content) || has(this.r2_bundle)"
+    id: "spec.code_or_assets_required"
+    message: "provide a script source (content or r2_bundle) and/or a static-asset directory (assets)"
+    expression: "has(this.content) || has(this.r2_bundle) || has(this.assets)"
   };
 
   // The Cloudflare account ID in which to create the worker.
@@ -136,6 +140,15 @@ message CloudflareWorkerSpec {
 
   // Tail consumers: other Workers that receive this Worker's tail (trace) events.
   repeated CloudflareWorkerTailConsumer tail_consumers = 29;
+
+  // Static assets served by this Worker (Cloudflare Workers Static Assets). Point
+  // it at a built site directory to host a static site or single-page app at the
+  // edge; combine it with a script source above to run a full-stack app whose
+  // Functions handle dynamic routes while everything else is served as a static
+  // asset. When assets are set without a script source, the Worker is a pure
+  // static site. This is Cloudflare's converged successor to Pages for the
+  // "build-and-upload" hosting model.
+  CloudflareWorkerAssets assets = 30;
 }
 
 // CloudflareWorkerScriptBundle references a pre-built script bundle in R2.
@@ -387,4 +400,74 @@ message CloudflareWorkerTailConsumer {
 
   // Optional dispatch namespace of the consuming Worker.
   string namespace = 3;
+}
+
+// CloudflareWorkerAssets configures Cloudflare Workers Static Assets: a built
+// directory of files (HTML/CSS/JS/images) uploaded with the Worker and served
+// directly from Cloudflare's edge. The module uploads the directory's contents
+// and Cloudflare computes the asset manifest; a new deploy with a changed
+// directory ships a new version of the site.
+message CloudflareWorkerAssets {
+  // Filesystem path to the directory of built assets to upload. Interpreted on
+  // the deploy runner — point it at your build output (e.g. "dist" or "build").
+  string directory = 1 [(buf.validate.field).required = true];
+
+  // Behavior for serving the assets (header injection, redirects, HTML routing,
+  // SPA handling). Optional; sensible Cloudflare defaults apply when omitted.
+  CloudflareWorkerAssetsConfig config = 2;
+
+  // When set, exposes the asset namespace to the Worker script as a binding of
+  // this JS variable name (so code can call e.g. env.ASSETS.fetch(request)).
+  // Leave empty for a pure static site that has no script. Only meaningful when
+  // a script source is also provided.
+  string binding_name = 3;
+}
+
+// CloudflareWorkerAssetsConfig controls how static assets are served.
+message CloudflareWorkerAssetsConfig {
+  // Cross-field validation: run_worker_first is either a single on/off switch or
+  // a set of path rules — not both.
+  option (buf.validate.message).cel = {
+    id: "assets_config.run_worker_first_exclusive"
+    message: "set run_worker_first (apply to all paths) or run_worker_first_rules (per-path), not both"
+    expression: "!(this.run_worker_first && size(this.run_worker_first_rules) > 0)"
+  };
+
+  // Trailing-slash and rewrite behavior for HTML requests. One of
+  // "auto-trailing-slash", "force-trailing-slash", "drop-trailing-slash", or
+  // "none". Empty uses Cloudflare's default.
+  string html_handling = 1 [(buf.validate.field).cel = {
+    id: "assets_config_html_handling.valid"
+    message: "html_handling must be one of \"auto-trailing-slash\", \"force-trailing-slash\", \"drop-trailing-slash\", \"none\""
+    expression: "this == '' || this in ['auto-trailing-slash', 'force-trailing-slash', 'drop-trailing-slash', 'none']"
+  }];
+
+  // Response when a request matches no static asset and no Worker script handles
+  // it. One of "none", "404-page" (serve /404.html), or "single-page-application"
+  // (serve /index.html — the SPA fallback). Empty uses Cloudflare's default.
+  string not_found_handling = 2 [(buf.validate.field).cel = {
+    id: "assets_config_not_found_handling.valid"
+    message: "not_found_handling must be one of \"none\", \"404-page\", \"single-page-application\""
+    expression: "this == '' || this in ['none', '404-page', 'single-page-application']"
+  }];
+
+  // The contents of a `_headers` file: rules that attach custom headers to asset
+  // responses. See Cloudflare's _headers syntax.
+  string headers = 3;
+
+  // The contents of a `_redirects` file: redirect/rewrite rules applied ahead of
+  // asset serving. See Cloudflare's _redirects syntax.
+  string redirects = 4;
+
+  // Invoke the Worker script before attempting to serve any asset (applies to all
+  // paths). Use this when the script must run on every request. Mutually
+  // exclusive with run_worker_first_rules. When neither is set, Cloudflare serves
+  // a matching asset first and falls back to the script.
+  bool run_worker_first = 5;
+
+  // Per-path control over whether the Worker runs before asset serving. Each
+  // entry is a path rule; "/api/*" routes through the script, "!/api/docs/*"
+  // (negative, higher precedence) excludes a subtree. Mutually exclusive with
+  // run_worker_first.
+  repeated string run_worker_first_rules = 6;
 }

@@ -110,6 +110,14 @@ type CloudflareWorkerSpec struct {
 	Logpush bool `protobuf:"varint,28,opt,name=logpush,proto3" json:"logpush,omitempty"`
 	// Tail consumers: other Workers that receive this Worker's tail (trace) events.
 	TailConsumers []*CloudflareWorkerTailConsumer `protobuf:"bytes,29,rep,name=tail_consumers,json=tailConsumers,proto3" json:"tail_consumers,omitempty"`
+	// Static assets served by this Worker (Cloudflare Workers Static Assets). Point
+	// it at a built site directory to host a static site or single-page app at the
+	// edge; combine it with a script source above to run a full-stack app whose
+	// Functions handle dynamic routes while everything else is served as a static
+	// asset. When assets are set without a script source, the Worker is a pure
+	// static site. This is Cloudflare's converged successor to Pages for the
+	// "build-and-upload" hosting model.
+	Assets        *CloudflareWorkerAssets `protobuf:"bytes,30,opt,name=assets,proto3" json:"assets,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -354,6 +362,13 @@ func (x *CloudflareWorkerSpec) GetLogpush() bool {
 func (x *CloudflareWorkerSpec) GetTailConsumers() []*CloudflareWorkerTailConsumer {
 	if x != nil {
 		return x.TailConsumers
+	}
+	return nil
+}
+
+func (x *CloudflareWorkerSpec) GetAssets() *CloudflareWorkerAssets {
+	if x != nil {
+		return x.Assets
 	}
 	return nil
 }
@@ -1512,11 +1527,187 @@ func (x *CloudflareWorkerTailConsumer) GetNamespace() string {
 	return ""
 }
 
+// CloudflareWorkerAssets configures Cloudflare Workers Static Assets: a built
+// directory of files (HTML/CSS/JS/images) uploaded with the Worker and served
+// directly from Cloudflare's edge. The module uploads the directory's contents
+// and Cloudflare computes the asset manifest; a new deploy with a changed
+// directory ships a new version of the site.
+type CloudflareWorkerAssets struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Filesystem path to the directory of built assets to upload. Interpreted on
+	// the deploy runner — point it at your build output (e.g. "dist" or "build").
+	Directory string `protobuf:"bytes,1,opt,name=directory,proto3" json:"directory,omitempty"`
+	// Behavior for serving the assets (header injection, redirects, HTML routing,
+	// SPA handling). Optional; sensible Cloudflare defaults apply when omitted.
+	Config *CloudflareWorkerAssetsConfig `protobuf:"bytes,2,opt,name=config,proto3" json:"config,omitempty"`
+	// When set, exposes the asset namespace to the Worker script as a binding of
+	// this JS variable name (so code can call e.g. env.ASSETS.fetch(request)).
+	// Leave empty for a pure static site that has no script. Only meaningful when
+	// a script source is also provided.
+	BindingName   string `protobuf:"bytes,3,opt,name=binding_name,json=bindingName,proto3" json:"binding_name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CloudflareWorkerAssets) Reset() {
+	*x = CloudflareWorkerAssets{}
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CloudflareWorkerAssets) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CloudflareWorkerAssets) ProtoMessage() {}
+
+func (x *CloudflareWorkerAssets) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CloudflareWorkerAssets.ProtoReflect.Descriptor instead.
+func (*CloudflareWorkerAssets) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *CloudflareWorkerAssets) GetDirectory() string {
+	if x != nil {
+		return x.Directory
+	}
+	return ""
+}
+
+func (x *CloudflareWorkerAssets) GetConfig() *CloudflareWorkerAssetsConfig {
+	if x != nil {
+		return x.Config
+	}
+	return nil
+}
+
+func (x *CloudflareWorkerAssets) GetBindingName() string {
+	if x != nil {
+		return x.BindingName
+	}
+	return ""
+}
+
+// CloudflareWorkerAssetsConfig controls how static assets are served.
+type CloudflareWorkerAssetsConfig struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Trailing-slash and rewrite behavior for HTML requests. One of
+	// "auto-trailing-slash", "force-trailing-slash", "drop-trailing-slash", or
+	// "none". Empty uses Cloudflare's default.
+	HtmlHandling string `protobuf:"bytes,1,opt,name=html_handling,json=htmlHandling,proto3" json:"html_handling,omitempty"`
+	// Response when a request matches no static asset and no Worker script handles
+	// it. One of "none", "404-page" (serve /404.html), or "single-page-application"
+	// (serve /index.html — the SPA fallback). Empty uses Cloudflare's default.
+	NotFoundHandling string `protobuf:"bytes,2,opt,name=not_found_handling,json=notFoundHandling,proto3" json:"not_found_handling,omitempty"`
+	// The contents of a `_headers` file: rules that attach custom headers to asset
+	// responses. See Cloudflare's _headers syntax.
+	Headers string `protobuf:"bytes,3,opt,name=headers,proto3" json:"headers,omitempty"`
+	// The contents of a `_redirects` file: redirect/rewrite rules applied ahead of
+	// asset serving. See Cloudflare's _redirects syntax.
+	Redirects string `protobuf:"bytes,4,opt,name=redirects,proto3" json:"redirects,omitempty"`
+	// Invoke the Worker script before attempting to serve any asset (applies to all
+	// paths). Use this when the script must run on every request. Mutually
+	// exclusive with run_worker_first_rules. When neither is set, Cloudflare serves
+	// a matching asset first and falls back to the script.
+	RunWorkerFirst bool `protobuf:"varint,5,opt,name=run_worker_first,json=runWorkerFirst,proto3" json:"run_worker_first,omitempty"`
+	// Per-path control over whether the Worker runs before asset serving. Each
+	// entry is a path rule; "/api/*" routes through the script, "!/api/docs/*"
+	// (negative, higher precedence) excludes a subtree. Mutually exclusive with
+	// run_worker_first.
+	RunWorkerFirstRules []string `protobuf:"bytes,6,rep,name=run_worker_first_rules,json=runWorkerFirstRules,proto3" json:"run_worker_first_rules,omitempty"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
+}
+
+func (x *CloudflareWorkerAssetsConfig) Reset() {
+	*x = CloudflareWorkerAssetsConfig{}
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CloudflareWorkerAssetsConfig) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CloudflareWorkerAssetsConfig) ProtoMessage() {}
+
+func (x *CloudflareWorkerAssetsConfig) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CloudflareWorkerAssetsConfig.ProtoReflect.Descriptor instead.
+func (*CloudflareWorkerAssetsConfig) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDescGZIP(), []int{22}
+}
+
+func (x *CloudflareWorkerAssetsConfig) GetHtmlHandling() string {
+	if x != nil {
+		return x.HtmlHandling
+	}
+	return ""
+}
+
+func (x *CloudflareWorkerAssetsConfig) GetNotFoundHandling() string {
+	if x != nil {
+		return x.NotFoundHandling
+	}
+	return ""
+}
+
+func (x *CloudflareWorkerAssetsConfig) GetHeaders() string {
+	if x != nil {
+		return x.Headers
+	}
+	return ""
+}
+
+func (x *CloudflareWorkerAssetsConfig) GetRedirects() string {
+	if x != nil {
+		return x.Redirects
+	}
+	return ""
+}
+
+func (x *CloudflareWorkerAssetsConfig) GetRunWorkerFirst() bool {
+	if x != nil {
+		return x.RunWorkerFirst
+	}
+	return false
+}
+
+func (x *CloudflareWorkerAssetsConfig) GetRunWorkerFirstRules() []string {
+	if x != nil {
+		return x.RunWorkerFirstRules
+	}
+	return nil
+}
+
 var File_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto protoreflect.FileDescriptor
 
 const file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	">org/openmcf/provider/cloudflare/cloudflareworker/v1/spec.proto\x123org.openmcf.provider.cloudflare.cloudflareworker.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x98\x18\n" +
+	">org/openmcf/provider/cloudflare/cloudflareworker/v1/spec.proto\x123org.openmcf.provider.cloudflare.cloudflareworker.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x9e\x19\n" +
 	"\x14CloudflareWorkerSpec\x12=\n" +
 	"\n" +
 	"account_id\x18\x01 \x01(\tB\x1e\xbaH\x1b\xc8\x01\x01r\x162\x11^[0-9a-fA-F]{32}$\x98\x01 R\taccountId\x12-\n" +
@@ -1552,11 +1743,12 @@ const file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDes
 	"\tplacement\x18\x1a \x01(\v2N.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerPlacementR\tplacement\x12c\n" +
 	"\x06limits\x18\x1b \x01(\v2K.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerLimitsR\x06limits\x12\x18\n" +
 	"\alogpush\x18\x1c \x01(\bR\alogpush\x12x\n" +
-	"\x0etail_consumers\x18\x1d \x03(\v2Q.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerTailConsumerR\rtailConsumers\x1a7\n" +
+	"\x0etail_consumers\x18\x1d \x03(\v2Q.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerTailConsumerR\rtailConsumers\x12c\n" +
+	"\x06assets\x18\x1e \x01(\v2K.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerAssetsR\x06assets\x1a7\n" +
 	"\tVarsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\x9b\x01\xbaH\x97\x01\x1a\x94\x01\n" +
-	"\x1bspec.script_source_required\x12Kprovide exactly one script source: inline content or an r2_bundle reference\x1a(has(this.content) || has(this.r2_bundle)B\b\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xbc\x01\xbaH\xb8\x01\x1a\xb5\x01\n" +
+	"\x1cspec.code_or_assets_required\x12Wprovide a script source (content or r2_bundle) and/or a static-asset directory (assets)\x1a<has(this.content) || has(this.r2_bundle) || has(this.assets)B\b\n" +
 	"\x06source\"Z\n" +
 	"\x1cCloudflareWorkerScriptBundle\x12\x1e\n" +
 	"\x06bucket\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06bucket\x12\x1a\n" +
@@ -1634,7 +1826,21 @@ const file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDes
 	"\x1cCloudflareWorkerTailConsumer\x12 \n" +
 	"\aservice\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\aservice\x12 \n" +
 	"\venvironment\x18\x02 \x01(\tR\venvironment\x12\x1c\n" +
-	"\tnamespace\x18\x03 \x01(\tR\tnamespaceB\xa1\x03\n" +
+	"\tnamespace\x18\x03 \x01(\tR\tnamespace\"\xcc\x01\n" +
+	"\x16CloudflareWorkerAssets\x12$\n" +
+	"\tdirectory\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\tdirectory\x12i\n" +
+	"\x06config\x18\x02 \x01(\v2Q.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerAssetsConfigR\x06config\x12!\n" +
+	"\fbinding_name\x18\x03 \x01(\tR\vbindingName\"\xa5\a\n" +
+	"\x1cCloudflareWorkerAssetsConfig\x12\xa2\x02\n" +
+	"\rhtml_handling\x18\x01 \x01(\tB\xfc\x01\xbaH\xf8\x01\xba\x01\xf4\x01\n" +
+	"!assets_config_html_handling.valid\x12ihtml_handling must be one of \"auto-trailing-slash\", \"force-trailing-slash\", \"drop-trailing-slash\", \"none\"\x1adthis == '' || this in ['auto-trailing-slash', 'force-trailing-slash', 'drop-trailing-slash', 'none']R\fhtmlHandling\x12\xf7\x01\n" +
+	"\x12not_found_handling\x18\x02 \x01(\tB\xc8\x01\xbaH\xc4\x01\xba\x01\xc0\x01\n" +
+	"&assets_config_not_found_handling.valid\x12Onot_found_handling must be one of \"none\", \"404-page\", \"single-page-application\"\x1aEthis == '' || this in ['none', '404-page', 'single-page-application']R\x10notFoundHandling\x12\x18\n" +
+	"\aheaders\x18\x03 \x01(\tR\aheaders\x12\x1c\n" +
+	"\tredirects\x18\x04 \x01(\tR\tredirects\x12(\n" +
+	"\x10run_worker_first\x18\x05 \x01(\bR\x0erunWorkerFirst\x123\n" +
+	"\x16run_worker_first_rules\x18\x06 \x03(\tR\x13runWorkerFirstRules:\xce\x01\xbaH\xca\x01\x1a\xc7\x01\n" +
+	"(assets_config.run_worker_first_exclusive\x12Xset run_worker_first (apply to all paths) or run_worker_first_rules (per-path), not both\x1aA!(this.run_worker_first && size(this.run_worker_first_rules) > 0)B\xa1\x03\n" +
 	"7com.org.openmcf.provider.cloudflare.cloudflareworker.v1B\tSpecProtoP\x01Zhgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflareworker/v1;cloudflareworkerv1\xa2\x02\x05OOPCC\xaa\x023Org.Openmcf.Provider.Cloudflare.Cloudflareworker.V1\xca\x023Org\\Openmcf\\Provider\\Cloudflare\\Cloudflareworker\\V1\xe2\x02?Org\\Openmcf\\Provider\\Cloudflare\\Cloudflareworker\\V1\\GPBMetadata\xea\x028Org::Openmcf::Provider::Cloudflare::Cloudflareworker::V1b\x06proto3"
 
 var (
@@ -1649,7 +1855,7 @@ func file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDesc
 	return file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDescData
 }
 
-var file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
+var file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 24)
 var file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_goTypes = []any{
 	(*CloudflareWorkerSpec)(nil),                   // 0: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec
 	(*CloudflareWorkerScriptBundle)(nil),           // 1: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerScriptBundle
@@ -1672,12 +1878,14 @@ var file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_goTypes 
 	(*CloudflareWorkerPlacement)(nil),              // 18: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerPlacement
 	(*CloudflareWorkerLimits)(nil),                 // 19: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerLimits
 	(*CloudflareWorkerTailConsumer)(nil),           // 20: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerTailConsumer
-	nil,                                            // 21: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.VarsEntry
-	(*v1.StringValueOrRef)(nil),                    // 22: org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	(*CloudflareWorkerAssets)(nil),                 // 21: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerAssets
+	(*CloudflareWorkerAssetsConfig)(nil),           // 22: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerAssetsConfig
+	nil,                                            // 23: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.VarsEntry
+	(*v1.StringValueOrRef)(nil),                    // 24: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_depIdxs = []int32{
 	1,  // 0: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.r2_bundle:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerScriptBundle
-	21, // 1: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.vars:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.VarsEntry
+	23, // 1: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.vars:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.VarsEntry
 	2,  // 2: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.secrets:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSecretBinding
 	3,  // 3: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.kv_namespaces:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerKvBinding
 	4,  // 4: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.r2_buckets:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerR2Binding
@@ -1697,20 +1905,22 @@ var file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_depIdxs 
 	18, // 18: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.placement:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerPlacement
 	19, // 19: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.limits:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerLimits
 	20, // 20: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.tail_consumers:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerTailConsumer
-	22, // 21: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSecretBinding.value:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	22, // 22: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerKvBinding.namespace_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	22, // 23: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerR2Binding.bucket_name:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	22, // 24: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerD1Binding.database_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	22, // 25: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerHyperdriveBinding.config_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	22, // 26: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerServiceBinding.service:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	22, // 27: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerQueueBinding.queue_name:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	22, // 28: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerCustomDomain.zone_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	22, // 29: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerRoute.zone_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	30, // [30:30] is the sub-list for method output_type
-	30, // [30:30] is the sub-list for method input_type
-	30, // [30:30] is the sub-list for extension type_name
-	30, // [30:30] is the sub-list for extension extendee
-	0,  // [0:30] is the sub-list for field type_name
+	21, // 21: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.assets:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerAssets
+	24, // 22: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSecretBinding.value:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	24, // 23: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerKvBinding.namespace_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	24, // 24: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerR2Binding.bucket_name:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	24, // 25: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerD1Binding.database_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	24, // 26: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerHyperdriveBinding.config_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	24, // 27: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerServiceBinding.service:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	24, // 28: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerQueueBinding.queue_name:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	24, // 29: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerCustomDomain.zone_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	24, // 30: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerRoute.zone_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	22, // 31: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerAssets.config:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerAssetsConfig
+	32, // [32:32] is the sub-list for method output_type
+	32, // [32:32] is the sub-list for method input_type
+	32, // [32:32] is the sub-list for extension type_name
+	32, // [32:32] is the sub-list for extension extendee
+	0,  // [0:32] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_init() }
@@ -1728,7 +1938,7 @@ func file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_init() 
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDesc), len(file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   22,
+			NumMessages:   24,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
