@@ -227,7 +227,36 @@ func bucket(
 		}
 	}
 
-	// 8. Export stack outputs.
+	// 8. Event notifications: forward object events to Cloudflare Queues.
+	for i, en := range spec.GetEventNotifications() {
+		rules := cloudflare.R2BucketEventNotificationRuleArray{}
+		for _, r := range en.GetRules() {
+			ruleArgs := cloudflare.R2BucketEventNotificationRuleArgs{
+				Actions: toStringArray(r.GetActions()),
+			}
+			if r.GetDescription() != "" {
+				ruleArgs.Description = pulumi.String(r.GetDescription())
+			}
+			if r.GetPrefix() != "" {
+				ruleArgs.Prefix = pulumi.String(r.GetPrefix())
+			}
+			if r.GetSuffix() != "" {
+				ruleArgs.Suffix = pulumi.String(r.GetSuffix())
+			}
+			rules = append(rules, ruleArgs)
+		}
+		if _, err := cloudflare.NewR2BucketEventNotification(ctx, fmt.Sprintf("event-notification-%d", i), &cloudflare.R2BucketEventNotificationArgs{
+			AccountId:    pulumi.String(spec.GetAccountId()),
+			BucketName:   createdBucket.Name,
+			QueueId:      pulumi.String(en.GetQueue().GetValue()),
+			Jurisdiction: jurisdiction,
+			Rules:        rules,
+		}, pulumi.Provider(cloudflareProvider), dependsOnBucket); err != nil {
+			return nil, errors.Wrap(err, "failed to configure Cloudflare R2 bucket event notification")
+		}
+	}
+
+	// 9. Export stack outputs.
 	ctx.Export(OpBucketName, createdBucket.Name)
 	ctx.Export(OpBucketUrl, pulumi.Sprintf(
 		"https://%s.r2.cloudflarestorage.com/%s",

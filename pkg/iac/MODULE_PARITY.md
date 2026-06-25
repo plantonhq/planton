@@ -194,3 +194,30 @@ warning and skip that one variant. Every other field is at full parity. When a n
 note (see each component's Pulumi `README.md`). See the conformance guard's
 `CloudflareZeroTrustAccessApplication`, `CloudflareZeroTrustAccessPolicy`, and
 `CloudflareZeroTrustAccessGroup` cases.
+
+The `CloudflareRuleset` component carries the full v5 `cloudflare_ruleset` surface: the 20-value action
+set, rule-level `ratelimit` / `logging` / `exposed_credential_check`, and the deep `action_parameters`
+tree — `set_config` (SSL/security-level/Polish/Rocket Loader/autominify/…), the full cache surface
+(`cache_key.custom_key` cookie/header/host/query_string/user, `cache_reserve`, `edge_ttl`/`browser_ttl`,
+`additional_cacheable_ports`, strip/respect toggles), the `set_cache_control` directives (modeled with
+three reusable shapes), `set_cache_tags`, `log_custom_field` lists, `from_list`, `algorithms`,
+`matched_data`, `increment`, and `serve_error`. Value-set fields (modes, operations, sensitivity levels,
+content types, SSL/security-level/Polish/body-buffering) are CEL-validated. `exposed_credential_check.
+password_expression` is a wirefilter expression locating the password, not a secret, so it carries
+`sensitive_exempt_reason`.
+
+**One tofu↔Pulumi parity gap (documented):** `action_parameters.vary` (variant caching keyed on response
+headers) exists in the Terraform provider (v5.21.1) but **not in the pulumi-cloudflare SDK (v6.17.0)** —
+there is no `vary` field on `RulesetRuleActionParametersArgs`. The proto models it (future-proof source of
+truth) and the Terraform module provisions it; the Pulumi module omits it with an inline note. When a newer
+Pulumi SDK exposes `RulesetRuleActionParameters.Vary`, wire it in and remove the note (see the ruleset
+Pulumi `README.md`). Every other ruleset field is at full parity.
+
+The `CloudflareQueue` component models the queue plus its single (folded) consumer; the Pulumi SDK
+(v6.17.0) and Terraform provider (v5.21.1) are at **full parity** (`cloudflare_queue` +
+`cloudflare_queue_consumer`, both engines). The consumer is folded onto the queue because at the resource
+level a queue has exactly one consumer with no independent lifecycle (the module still provisions the
+separate consumer resource). The queue has no secret-bearing fields. The v5 API caps
+`message_retention_period` at 86400s (1 day) despite docs implying 14 days — the CEL matches the API.
+The Worker `queues` producer binding and the R2 `event_notifications` reference a `CloudflareQueue` by name
+and id respectively, at full parity on both engines. See the conformance guard's `CloudflareQueue` case.

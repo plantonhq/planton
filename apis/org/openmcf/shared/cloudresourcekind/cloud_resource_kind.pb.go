@@ -360,6 +360,7 @@ const (
 	CloudResourceKind_CloudflareLoadBalancerMonitor        CloudResourceKind = 1812
 	CloudResourceKind_CloudflareZeroTrustAccessPolicy      CloudResourceKind = 1813
 	CloudResourceKind_CloudflareZeroTrustAccessGroup       CloudResourceKind = 1814
+	CloudResourceKind_CloudflareQueue                      CloudResourceKind = 1815
 	// 2100–2299: Auth0 resources
 	CloudResourceKind_Auth0Connection     CloudResourceKind = 2100
 	CloudResourceKind_Auth0Client         CloudResourceKind = 2101
@@ -765,6 +766,7 @@ var (
 		1812: "CloudflareLoadBalancerMonitor",
 		1813: "CloudflareZeroTrustAccessPolicy",
 		1814: "CloudflareZeroTrustAccessGroup",
+		1815: "CloudflareQueue",
 		2100: "Auth0Connection",
 		2101: "Auth0Client",
 		2102: "Auth0EventStream",
@@ -1162,6 +1164,7 @@ var (
 		"CloudflareLoadBalancerMonitor":         1812,
 		"CloudflareZeroTrustAccessPolicy":       1813,
 		"CloudflareZeroTrustAccessGroup":        1814,
+		"CloudflareQueue":                       1815,
 		"Auth0Connection":                       2100,
 		"Auth0Client":                           2101,
 		"Auth0EventStream":                      2102,
@@ -1546,7 +1549,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x04kind\x18\x02 \x01(\tR\x04kind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\u05cb\x01\n" +
+	"\x02v1\x10\x01*\xfc\x8b\x01\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12,\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1860,7 +1863,8 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x1aCloudflareLoadBalancerPool\x10\x93\x0e\x1a\x0f\xa2\xf7\x04\v\b\x0f\x10\x01\"\x05cflbp\x123\n" +
 	"\x1dCloudflareLoadBalancerMonitor\x10\x94\x0e\x1a\x0f\xa2\xf7\x04\v\b\x0f\x10\x01\"\x05cflbm\x125\n" +
 	"\x1fCloudflareZeroTrustAccessPolicy\x10\x95\x0e\x1a\x0f\xa2\xf7\x04\v\b\x0f\x10\x01\"\x05cfztp\x124\n" +
-	"\x1eCloudflareZeroTrustAccessGroup\x10\x96\x0e\x1a\x0f\xa2\xf7\x04\v\b\x0f\x10\x01\"\x05cfztg\x12&\n" +
+	"\x1eCloudflareZeroTrustAccessGroup\x10\x96\x0e\x1a\x0f\xa2\xf7\x04\v\b\x0f\x10\x01\"\x05cfztg\x12#\n" +
+	"\x0fCloudflareQueue\x10\x97\x0e\x1a\r\xa2\xf7\x04\t\b\x0f\x10\x01\"\x03cfq\x12&\n" +
 	"\x0fAuth0Connection\x10\xb4\x10\x1a\x10\xa2\xf7\x04\f\b\x15\x10\x01\"\x06a0conn\x12!\n" +
 	"\vAuth0Client\x10\xb5\x10\x1a\x0f\xa2\xf7\x04\v\b\x15\x10\x01\"\x05a0cli\x12%\n" +
 	"\x10Auth0EventStream\x10\xb6\x10\x1a\x0e\xa2\xf7\x04\n" +

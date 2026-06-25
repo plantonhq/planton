@@ -117,3 +117,21 @@ resource "cloudflare_r2_bucket_lock" "main" {
     }
   }]
 }
+
+# Event notifications. One resource per destination queue; created only for the
+# queues listed in spec.event_notifications.
+resource "cloudflare_r2_bucket_event_notification" "main" {
+  for_each = local.event_notifications
+
+  account_id   = local.account_id
+  bucket_name  = cloudflare_r2_bucket.main.name
+  queue_id     = each.value.queue
+  jurisdiction = local.jurisdiction
+
+  rules = [for r in each.value.rules : {
+    actions     = r.actions
+    description = try(r.description, "") != "" ? r.description : null
+    prefix      = try(r.prefix, "") != "" ? r.prefix : null
+    suffix      = try(r.suffix, "") != "" ? r.suffix : null
+  }]
+}

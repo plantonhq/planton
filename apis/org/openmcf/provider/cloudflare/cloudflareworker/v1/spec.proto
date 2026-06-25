@@ -244,8 +244,12 @@ message CloudflareWorkerQueueBinding {
   // The JS binding (variable) name.
   string name = 1 [(buf.validate.field).required = true];
 
-  // The Cloudflare Queue name to produce to.
-  string queue_name = 2 [(buf.validate.field).required = true];
+  // The Cloudflare Queue name to produce to, or a reference to a CloudflareQueue resource.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef queue_name = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = CloudflareQueue,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.queue_name"
+  ];
 }
 
 // CloudflareWorkerDurableObjectBinding binds a Durable Object namespace (class).

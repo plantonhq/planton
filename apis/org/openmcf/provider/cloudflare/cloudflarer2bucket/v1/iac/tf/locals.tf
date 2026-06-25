@@ -43,4 +43,7 @@ locals {
 
   # Lock rules (empty list when no lock block).
   lock_rules = try(var.spec.lock.rules, [])
+
+  # Event notifications, keyed by destination queue for a stable for_each.
+  event_notifications = { for en in try(var.spec.event_notifications, []) : en.queue => en }
 }

@@ -1565,6 +1565,11 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "cfztg"
   }];
+  CloudflareQueue = 1815 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfq"
+  }];
 
   // 2100–2299: Auth0 resources
   Auth0Connection = 2100 [(kind_meta) = {

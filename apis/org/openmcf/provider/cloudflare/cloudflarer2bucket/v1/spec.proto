@@ -113,6 +113,42 @@ message CloudflareR2BucketSpec {
   // Object lock configuration: retention rules that prevent objects from being
   // deleted or overwritten for a period (or indefinitely), for compliance.
   CloudflareR2BucketLockConfig lock = 10;
+
+  // Event notifications: push object lifecycle events (uploads, deletions) to
+  // Cloudflare Queues for downstream processing by a Worker. A bucket may notify
+  // multiple queues; each entry filters the events it forwards by action and by an
+  // optional key prefix/suffix.
+  repeated CloudflareR2BucketEventNotification event_notifications = 11 [(buf.validate.field).repeated.max_items = 100];
+}
+
+// CloudflareR2BucketEventNotification forwards matching object events to a queue.
+message CloudflareR2BucketEventNotification {
+  // The destination Cloudflare Queue id, or a reference to a CloudflareQueue resource.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef queue = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = CloudflareQueue,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.queue_id"
+  ];
+
+  // The rules that select which object events are forwarded to the queue.
+  repeated CloudflareR2BucketEventNotificationRule rules = 2 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// CloudflareR2BucketEventNotificationRule selects object events by action and key.
+message CloudflareR2BucketEventNotificationRule {
+  // Object actions that trigger a notification, e.g. "PutObject", "CopyObject",
+  // "DeleteObject", "CompleteMultipartUpload", "AbortMultipartUpload",
+  // "LifecycleDeletion".
+  repeated string actions = 1 [(buf.validate.field).repeated.min_items = 1];
+
+  // Optional human-readable description of the rule.
+  string description = 2;
+
+  // Only notify for objects whose key starts with this prefix. Empty = all keys.
+  string prefix = 3;
+
+  // Only notify for objects whose key ends with this suffix. Empty = all keys.
+  string suffix = 4;
 }
 
 // CloudflareR2BucketCustomDomainConfig configures one custom domain for the bucket.

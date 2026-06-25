@@ -1,0 +1,33 @@
+apiVersion: cloudflare.openmcf.org/v1
+kind: CloudflareRuleset
+metadata:
+  name: my-config-rules
+spec:
+  zone_id:
+    value: "<cloudflare-zone-id>"
+  ruleset_kind: zone
+  phase: http_config_settings
+  name: "Per-path configuration settings"
+  rules:
+    - ref: "harden-admin"
+      expression: 'http.request.uri.path starts_with "/admin"'
+      action: set_config
+      description: "Raise security level and SSL strictness on the admin area"
+      enabled: true
+      action_parameters:
+        security_level: high
+        ssl: strict
+        email_obfuscation: true
+    - ref: "optimize-marketing"
+      expression: 'http.request.uri.path starts_with "/blog"'
+      action: set_config
+      description: "Enable performance optimizations on marketing pages"
+      enabled: true
+      action_parameters:
+        rocket_loader: true
+        mirage: true
+        polish: lossless
+        autominify:
+          css: true
+          html: true
+          js: true

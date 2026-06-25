@@ -229,6 +229,19 @@ func TestStackOutputsConformance(t *testing.T) {
 			mustPopulate: []string{"hyperdrive_id", "name"},
 		},
 		{
+			// CloudflareQueue: both engines emit the queue id and name (referenced by
+			// consumers, worker producer bindings, and R2 event notifications).
+			name: "CloudflareQueue",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareQueue,
+			rawOutputs: map[string]interface{}{
+				"queue_id":    "a1b2c3d4e5f60718293a4b5c6d7e8f90",
+				"queue_name":  "orders-queue",
+				"created_on":  "2026-06-25T00:00:00Z",
+				"modified_on": "2026-06-25T00:00:00Z",
+			},
+			mustPopulate: []string{"queue_id", "queue_name"},
+		},
+		{
 			// CloudflareDnsRecord: both engines emit the record id, name, type and
 			// proxied flag as flat scalars onto the StackOutputs proto.
 			name: "CloudflareDnsRecord",

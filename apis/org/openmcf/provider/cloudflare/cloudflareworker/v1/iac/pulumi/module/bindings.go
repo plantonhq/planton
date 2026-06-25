@@ -76,7 +76,7 @@ func buildBindings(spec *cloudflareworkerv1.CloudflareWorkerSpec) cloudfl.Worker
 		bindings = append(bindings, cloudfl.WorkersScriptBindingArgs{
 			Name:      pulumi.String(b.Name),
 			Type:      pulumi.String("queue"),
-			QueueName: pulumi.String(b.QueueName),
+			QueueName: pulumi.String(b.QueueName.GetValue()),
 		})
 	}
 	for _, b := range spec.DurableObjects {

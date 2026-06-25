@@ -1,0 +1,35 @@
+apiVersion: cloudflare.openmcf.org/v1
+kind: CloudflareRuleset
+metadata:
+  name: my-rate-limit-rules
+spec:
+  zone_id:
+    value: "<cloudflare-zone-id>"
+  ruleset_kind: zone
+  phase: http_ratelimit
+  name: "API rate limiting"
+  rules:
+    - ref: "limit-login-attempts"
+      expression: 'http.request.uri.path eq "/api/login" and http.request.method eq "POST"'
+      action: block
+      description: "Block clients exceeding 10 login attempts per minute"
+      enabled: true
+      ratelimit:
+        characteristics:
+          - "ip.src"
+          - "cf.colo.id"
+        period: 60
+        requests_per_period: 10
+        mitigation_timeout: 600
+    - ref: "limit-api-by-key"
+      expression: 'http.request.uri.path starts_with "/api/"'
+      action: managed_challenge
+      description: "Challenge clients exceeding 100 requests/min per API key"
+      enabled: true
+      ratelimit:
+        characteristics:
+          - 'http.request.headers["x-api-key"]'
+        period: 60
+        requests_per_period: 100
+        counting_expression: 'http.response.code ge 200'
+        requests_to_origin: true

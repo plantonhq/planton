@@ -294,9 +294,14 @@ type CloudflareR2BucketSpec struct {
 	Lifecycle *CloudflareR2BucketLifecycleConfig `protobuf:"bytes,9,opt,name=lifecycle,proto3" json:"lifecycle,omitempty"`
 	// Object lock configuration: retention rules that prevent objects from being
 	// deleted or overwritten for a period (or indefinitely), for compliance.
-	Lock          *CloudflareR2BucketLockConfig `protobuf:"bytes,10,opt,name=lock,proto3" json:"lock,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	Lock *CloudflareR2BucketLockConfig `protobuf:"bytes,10,opt,name=lock,proto3" json:"lock,omitempty"`
+	// Event notifications: push object lifecycle events (uploads, deletions) to
+	// Cloudflare Queues for downstream processing by a Worker. A bucket may notify
+	// multiple queues; each entry filters the events it forwards by action and by an
+	// optional key prefix/suffix.
+	EventNotifications []*CloudflareR2BucketEventNotification `protobuf:"bytes,11,rep,name=event_notifications,json=eventNotifications,proto3" json:"event_notifications,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
 }
 
 func (x *CloudflareR2BucketSpec) Reset() {
@@ -399,6 +404,143 @@ func (x *CloudflareR2BucketSpec) GetLock() *CloudflareR2BucketLockConfig {
 	return nil
 }
 
+func (x *CloudflareR2BucketSpec) GetEventNotifications() []*CloudflareR2BucketEventNotification {
+	if x != nil {
+		return x.EventNotifications
+	}
+	return nil
+}
+
+// CloudflareR2BucketEventNotification forwards matching object events to a queue.
+type CloudflareR2BucketEventNotification struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The destination Cloudflare Queue id, or a reference to a CloudflareQueue resource.
+	Queue *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=queue,proto3" json:"queue,omitempty"`
+	// The rules that select which object events are forwarded to the queue.
+	Rules         []*CloudflareR2BucketEventNotificationRule `protobuf:"bytes,2,rep,name=rules,proto3" json:"rules,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CloudflareR2BucketEventNotification) Reset() {
+	*x = CloudflareR2BucketEventNotification{}
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CloudflareR2BucketEventNotification) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CloudflareR2BucketEventNotification) ProtoMessage() {}
+
+func (x *CloudflareR2BucketEventNotification) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CloudflareR2BucketEventNotification.ProtoReflect.Descriptor instead.
+func (*CloudflareR2BucketEventNotification) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *CloudflareR2BucketEventNotification) GetQueue() *v1.StringValueOrRef {
+	if x != nil {
+		return x.Queue
+	}
+	return nil
+}
+
+func (x *CloudflareR2BucketEventNotification) GetRules() []*CloudflareR2BucketEventNotificationRule {
+	if x != nil {
+		return x.Rules
+	}
+	return nil
+}
+
+// CloudflareR2BucketEventNotificationRule selects object events by action and key.
+type CloudflareR2BucketEventNotificationRule struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Object actions that trigger a notification, e.g. "PutObject", "CopyObject",
+	// "DeleteObject", "CompleteMultipartUpload", "AbortMultipartUpload",
+	// "LifecycleDeletion".
+	Actions []string `protobuf:"bytes,1,rep,name=actions,proto3" json:"actions,omitempty"`
+	// Optional human-readable description of the rule.
+	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	// Only notify for objects whose key starts with this prefix. Empty = all keys.
+	Prefix string `protobuf:"bytes,3,opt,name=prefix,proto3" json:"prefix,omitempty"`
+	// Only notify for objects whose key ends with this suffix. Empty = all keys.
+	Suffix        string `protobuf:"bytes,4,opt,name=suffix,proto3" json:"suffix,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CloudflareR2BucketEventNotificationRule) Reset() {
+	*x = CloudflareR2BucketEventNotificationRule{}
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CloudflareR2BucketEventNotificationRule) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CloudflareR2BucketEventNotificationRule) ProtoMessage() {}
+
+func (x *CloudflareR2BucketEventNotificationRule) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CloudflareR2BucketEventNotificationRule.ProtoReflect.Descriptor instead.
+func (*CloudflareR2BucketEventNotificationRule) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *CloudflareR2BucketEventNotificationRule) GetActions() []string {
+	if x != nil {
+		return x.Actions
+	}
+	return nil
+}
+
+func (x *CloudflareR2BucketEventNotificationRule) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *CloudflareR2BucketEventNotificationRule) GetPrefix() string {
+	if x != nil {
+		return x.Prefix
+	}
+	return ""
+}
+
+func (x *CloudflareR2BucketEventNotificationRule) GetSuffix() string {
+	if x != nil {
+		return x.Suffix
+	}
+	return ""
+}
+
 // CloudflareR2BucketCustomDomainConfig configures one custom domain for the bucket.
 type CloudflareR2BucketCustomDomainConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -422,7 +564,7 @@ type CloudflareR2BucketCustomDomainConfig struct {
 
 func (x *CloudflareR2BucketCustomDomainConfig) Reset() {
 	*x = CloudflareR2BucketCustomDomainConfig{}
-	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[1]
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -434,7 +576,7 @@ func (x *CloudflareR2BucketCustomDomainConfig) String() string {
 func (*CloudflareR2BucketCustomDomainConfig) ProtoMessage() {}
 
 func (x *CloudflareR2BucketCustomDomainConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[1]
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -447,7 +589,7 @@ func (x *CloudflareR2BucketCustomDomainConfig) ProtoReflect() protoreflect.Messa
 
 // Deprecated: Use CloudflareR2BucketCustomDomainConfig.ProtoReflect.Descriptor instead.
 func (*CloudflareR2BucketCustomDomainConfig) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDescGZIP(), []int{1}
+	return file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *CloudflareR2BucketCustomDomainConfig) GetEnabled() bool {
@@ -496,7 +638,7 @@ type CloudflareR2BucketCorsConfig struct {
 
 func (x *CloudflareR2BucketCorsConfig) Reset() {
 	*x = CloudflareR2BucketCorsConfig{}
-	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[2]
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -508,7 +650,7 @@ func (x *CloudflareR2BucketCorsConfig) String() string {
 func (*CloudflareR2BucketCorsConfig) ProtoMessage() {}
 
 func (x *CloudflareR2BucketCorsConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[2]
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -521,7 +663,7 @@ func (x *CloudflareR2BucketCorsConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CloudflareR2BucketCorsConfig.ProtoReflect.Descriptor instead.
 func (*CloudflareR2BucketCorsConfig) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDescGZIP(), []int{2}
+	return file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *CloudflareR2BucketCorsConfig) GetRules() []*CloudflareR2BucketCorsRule {
@@ -550,7 +692,7 @@ type CloudflareR2BucketCorsRule struct {
 
 func (x *CloudflareR2BucketCorsRule) Reset() {
 	*x = CloudflareR2BucketCorsRule{}
-	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[3]
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -562,7 +704,7 @@ func (x *CloudflareR2BucketCorsRule) String() string {
 func (*CloudflareR2BucketCorsRule) ProtoMessage() {}
 
 func (x *CloudflareR2BucketCorsRule) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[3]
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -575,7 +717,7 @@ func (x *CloudflareR2BucketCorsRule) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CloudflareR2BucketCorsRule.ProtoReflect.Descriptor instead.
 func (*CloudflareR2BucketCorsRule) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDescGZIP(), []int{3}
+	return file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *CloudflareR2BucketCorsRule) GetAllowed() *CloudflareR2BucketCorsAllowed {
@@ -623,7 +765,7 @@ type CloudflareR2BucketCorsAllowed struct {
 
 func (x *CloudflareR2BucketCorsAllowed) Reset() {
 	*x = CloudflareR2BucketCorsAllowed{}
-	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[4]
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -635,7 +777,7 @@ func (x *CloudflareR2BucketCorsAllowed) String() string {
 func (*CloudflareR2BucketCorsAllowed) ProtoMessage() {}
 
 func (x *CloudflareR2BucketCorsAllowed) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[4]
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -648,7 +790,7 @@ func (x *CloudflareR2BucketCorsAllowed) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CloudflareR2BucketCorsAllowed.ProtoReflect.Descriptor instead.
 func (*CloudflareR2BucketCorsAllowed) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDescGZIP(), []int{4}
+	return file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *CloudflareR2BucketCorsAllowed) GetMethods() []CloudflareR2CorsAllowedMethod {
@@ -683,7 +825,7 @@ type CloudflareR2BucketLifecycleConfig struct {
 
 func (x *CloudflareR2BucketLifecycleConfig) Reset() {
 	*x = CloudflareR2BucketLifecycleConfig{}
-	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[5]
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -695,7 +837,7 @@ func (x *CloudflareR2BucketLifecycleConfig) String() string {
 func (*CloudflareR2BucketLifecycleConfig) ProtoMessage() {}
 
 func (x *CloudflareR2BucketLifecycleConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[5]
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -708,7 +850,7 @@ func (x *CloudflareR2BucketLifecycleConfig) ProtoReflect() protoreflect.Message 
 
 // Deprecated: Use CloudflareR2BucketLifecycleConfig.ProtoReflect.Descriptor instead.
 func (*CloudflareR2BucketLifecycleConfig) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDescGZIP(), []int{5}
+	return file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *CloudflareR2BucketLifecycleConfig) GetRules() []*CloudflareR2BucketLifecycleRule {
@@ -740,7 +882,7 @@ type CloudflareR2BucketLifecycleRule struct {
 
 func (x *CloudflareR2BucketLifecycleRule) Reset() {
 	*x = CloudflareR2BucketLifecycleRule{}
-	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[6]
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -752,7 +894,7 @@ func (x *CloudflareR2BucketLifecycleRule) String() string {
 func (*CloudflareR2BucketLifecycleRule) ProtoMessage() {}
 
 func (x *CloudflareR2BucketLifecycleRule) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[6]
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -765,7 +907,7 @@ func (x *CloudflareR2BucketLifecycleRule) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CloudflareR2BucketLifecycleRule.ProtoReflect.Descriptor instead.
 func (*CloudflareR2BucketLifecycleRule) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDescGZIP(), []int{6}
+	return file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *CloudflareR2BucketLifecycleRule) GetId() string {
@@ -821,7 +963,7 @@ type CloudflareR2BucketLifecycleConditions struct {
 
 func (x *CloudflareR2BucketLifecycleConditions) Reset() {
 	*x = CloudflareR2BucketLifecycleConditions{}
-	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[7]
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -833,7 +975,7 @@ func (x *CloudflareR2BucketLifecycleConditions) String() string {
 func (*CloudflareR2BucketLifecycleConditions) ProtoMessage() {}
 
 func (x *CloudflareR2BucketLifecycleConditions) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[7]
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -846,7 +988,7 @@ func (x *CloudflareR2BucketLifecycleConditions) ProtoReflect() protoreflect.Mess
 
 // Deprecated: Use CloudflareR2BucketLifecycleConditions.ProtoReflect.Descriptor instead.
 func (*CloudflareR2BucketLifecycleConditions) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDescGZIP(), []int{7}
+	return file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *CloudflareR2BucketLifecycleConditions) GetPrefix() string {
@@ -868,7 +1010,7 @@ type CloudflareR2BucketLifecycleAbortMultipartUploadsTransition struct {
 
 func (x *CloudflareR2BucketLifecycleAbortMultipartUploadsTransition) Reset() {
 	*x = CloudflareR2BucketLifecycleAbortMultipartUploadsTransition{}
-	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[8]
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -880,7 +1022,7 @@ func (x *CloudflareR2BucketLifecycleAbortMultipartUploadsTransition) String() st
 func (*CloudflareR2BucketLifecycleAbortMultipartUploadsTransition) ProtoMessage() {}
 
 func (x *CloudflareR2BucketLifecycleAbortMultipartUploadsTransition) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[8]
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -893,7 +1035,7 @@ func (x *CloudflareR2BucketLifecycleAbortMultipartUploadsTransition) ProtoReflec
 
 // Deprecated: Use CloudflareR2BucketLifecycleAbortMultipartUploadsTransition.ProtoReflect.Descriptor instead.
 func (*CloudflareR2BucketLifecycleAbortMultipartUploadsTransition) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDescGZIP(), []int{8}
+	return file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *CloudflareR2BucketLifecycleAbortMultipartUploadsTransition) GetMaxAgeSeconds() int64 {
@@ -914,7 +1056,7 @@ type CloudflareR2BucketLifecycleDeleteObjectsTransition struct {
 
 func (x *CloudflareR2BucketLifecycleDeleteObjectsTransition) Reset() {
 	*x = CloudflareR2BucketLifecycleDeleteObjectsTransition{}
-	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[9]
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -926,7 +1068,7 @@ func (x *CloudflareR2BucketLifecycleDeleteObjectsTransition) String() string {
 func (*CloudflareR2BucketLifecycleDeleteObjectsTransition) ProtoMessage() {}
 
 func (x *CloudflareR2BucketLifecycleDeleteObjectsTransition) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[9]
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -939,7 +1081,7 @@ func (x *CloudflareR2BucketLifecycleDeleteObjectsTransition) ProtoReflect() prot
 
 // Deprecated: Use CloudflareR2BucketLifecycleDeleteObjectsTransition.ProtoReflect.Descriptor instead.
 func (*CloudflareR2BucketLifecycleDeleteObjectsTransition) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDescGZIP(), []int{9}
+	return file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *CloudflareR2BucketLifecycleDeleteObjectsTransition) GetCondition() *CloudflareR2BucketLifecycleTransitionCondition {
@@ -961,7 +1103,7 @@ type CloudflareR2BucketLifecycleStorageClassTransition struct {
 
 func (x *CloudflareR2BucketLifecycleStorageClassTransition) Reset() {
 	*x = CloudflareR2BucketLifecycleStorageClassTransition{}
-	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[10]
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -973,7 +1115,7 @@ func (x *CloudflareR2BucketLifecycleStorageClassTransition) String() string {
 func (*CloudflareR2BucketLifecycleStorageClassTransition) ProtoMessage() {}
 
 func (x *CloudflareR2BucketLifecycleStorageClassTransition) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[10]
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -986,7 +1128,7 @@ func (x *CloudflareR2BucketLifecycleStorageClassTransition) ProtoReflect() proto
 
 // Deprecated: Use CloudflareR2BucketLifecycleStorageClassTransition.ProtoReflect.Descriptor instead.
 func (*CloudflareR2BucketLifecycleStorageClassTransition) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDescGZIP(), []int{10}
+	return file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *CloudflareR2BucketLifecycleStorageClassTransition) GetCondition() *CloudflareR2BucketLifecycleTransitionCondition {
@@ -1013,7 +1155,7 @@ type CloudflareR2BucketLifecycleTransitionCondition struct {
 
 func (x *CloudflareR2BucketLifecycleTransitionCondition) Reset() {
 	*x = CloudflareR2BucketLifecycleTransitionCondition{}
-	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[11]
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1025,7 +1167,7 @@ func (x *CloudflareR2BucketLifecycleTransitionCondition) String() string {
 func (*CloudflareR2BucketLifecycleTransitionCondition) ProtoMessage() {}
 
 func (x *CloudflareR2BucketLifecycleTransitionCondition) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[11]
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1038,7 +1180,7 @@ func (x *CloudflareR2BucketLifecycleTransitionCondition) ProtoReflect() protoref
 
 // Deprecated: Use CloudflareR2BucketLifecycleTransitionCondition.ProtoReflect.Descriptor instead.
 func (*CloudflareR2BucketLifecycleTransitionCondition) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDescGZIP(), []int{11}
+	return file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *CloudflareR2BucketLifecycleTransitionCondition) GetType() CloudflareR2ConditionType {
@@ -1073,7 +1215,7 @@ type CloudflareR2BucketLockConfig struct {
 
 func (x *CloudflareR2BucketLockConfig) Reset() {
 	*x = CloudflareR2BucketLockConfig{}
-	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[12]
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1085,7 +1227,7 @@ func (x *CloudflareR2BucketLockConfig) String() string {
 func (*CloudflareR2BucketLockConfig) ProtoMessage() {}
 
 func (x *CloudflareR2BucketLockConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[12]
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1098,7 +1240,7 @@ func (x *CloudflareR2BucketLockConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CloudflareR2BucketLockConfig.ProtoReflect.Descriptor instead.
 func (*CloudflareR2BucketLockConfig) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDescGZIP(), []int{12}
+	return file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *CloudflareR2BucketLockConfig) GetRules() []*CloudflareR2BucketLockRule {
@@ -1126,7 +1268,7 @@ type CloudflareR2BucketLockRule struct {
 
 func (x *CloudflareR2BucketLockRule) Reset() {
 	*x = CloudflareR2BucketLockRule{}
-	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[13]
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1138,7 +1280,7 @@ func (x *CloudflareR2BucketLockRule) String() string {
 func (*CloudflareR2BucketLockRule) ProtoMessage() {}
 
 func (x *CloudflareR2BucketLockRule) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[13]
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1151,7 +1293,7 @@ func (x *CloudflareR2BucketLockRule) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CloudflareR2BucketLockRule.ProtoReflect.Descriptor instead.
 func (*CloudflareR2BucketLockRule) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDescGZIP(), []int{13}
+	return file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *CloudflareR2BucketLockRule) GetId() string {
@@ -1197,7 +1339,7 @@ type CloudflareR2BucketLockRuleCondition struct {
 
 func (x *CloudflareR2BucketLockRuleCondition) Reset() {
 	*x = CloudflareR2BucketLockRuleCondition{}
-	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[14]
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1209,7 +1351,7 @@ func (x *CloudflareR2BucketLockRuleCondition) String() string {
 func (*CloudflareR2BucketLockRuleCondition) ProtoMessage() {}
 
 func (x *CloudflareR2BucketLockRuleCondition) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[14]
+	mi := &file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1222,7 +1364,7 @@ func (x *CloudflareR2BucketLockRuleCondition) ProtoReflect() protoreflect.Messag
 
 // Deprecated: Use CloudflareR2BucketLockRuleCondition.ProtoReflect.Descriptor instead.
 func (*CloudflareR2BucketLockRuleCondition) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDescGZIP(), []int{14}
+	return file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *CloudflareR2BucketLockRuleCondition) GetType() CloudflareR2ConditionType {
@@ -1250,7 +1392,7 @@ var File_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto protor
 
 const file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"@org/openmcf/provider/cloudflare/cloudflarer2bucket/v1/spec.proto\x125org.openmcf.provider.cloudflare.cloudflarer2bucket.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xd8\b\n" +
+	"@org/openmcf/provider/cloudflare/cloudflarer2bucket/v1/spec.proto\x125org.openmcf.provider.cloudflare.cloudflarer2bucket.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xf0\t\n" +
 	"\x16CloudflareR2BucketSpec\x12N\n" +
 	"\vbucket_name\x18\x01 \x01(\tB-\xbaH*\xc8\x01\x01r%\x10\x03\x18?2\x1f^[a-z0-9]([-a-z0-9]*[a-z0-9])?$R\n" +
 	"bucketName\x12=\n" +
@@ -1265,7 +1407,16 @@ const file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawD
 	"\x04cors\x18\b \x01(\v2S.org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketCorsConfigR\x04cors\x12v\n" +
 	"\tlifecycle\x18\t \x01(\v2X.org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleConfigR\tlifecycle\x12g\n" +
 	"\x04lock\x18\n" +
-	" \x01(\v2S.org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLockConfigR\x04lock\"\x8e\x05\n" +
+	" \x01(\v2S.org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLockConfigR\x04lock\x12\x95\x01\n" +
+	"\x13event_notifications\x18\v \x03(\v2Z.org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketEventNotificationB\b\xbaH\x05\x92\x01\x02\x10dR\x12eventNotifications\"\x97\x02\n" +
+	"#CloudflareR2BucketEventNotification\x12p\n" +
+	"\x05queue\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\x97\x0e\x92\xd4a\x17status.outputs.queue_idR\x05queue\x12~\n" +
+	"\x05rules\x18\x02 \x03(\v2^.org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketEventNotificationRuleB\b\xbaH\x05\x92\x01\x02\b\x01R\x05rules\"\x9f\x01\n" +
+	"'CloudflareR2BucketEventNotificationRule\x12\"\n" +
+	"\aactions\x18\x01 \x03(\tB\b\xbaH\x05\x92\x01\x02\b\x01R\aactions\x12 \n" +
+	"\vdescription\x18\x02 \x01(\tR\vdescription\x12\x16\n" +
+	"\x06prefix\x18\x03 \x01(\tR\x06prefix\x12\x16\n" +
+	"\x06suffix\x18\x04 \x01(\tR\x06suffix\"\x8e\x05\n" +
 	"$CloudflareR2BucketCustomDomainConfig\x12\x18\n" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x12l\n" +
 	"\azone_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\x88\x0e\x92\xd4a\x16status.outputs.zone_idR\x06zoneId\x12 \n" +
@@ -1370,56 +1521,61 @@ func file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDe
 }
 
 var file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
-var file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
+var file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
 var file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_goTypes = []any{
 	(CloudflareR2Location)(0),                                          // 0: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2Location
 	(CloudflareR2StorageClass)(0),                                      // 1: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2StorageClass
 	(CloudflareR2CorsAllowedMethod)(0),                                 // 2: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2CorsAllowedMethod
 	(CloudflareR2ConditionType)(0),                                     // 3: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2ConditionType
 	(*CloudflareR2BucketSpec)(nil),                                     // 4: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketSpec
-	(*CloudflareR2BucketCustomDomainConfig)(nil),                       // 5: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketCustomDomainConfig
-	(*CloudflareR2BucketCorsConfig)(nil),                               // 6: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketCorsConfig
-	(*CloudflareR2BucketCorsRule)(nil),                                 // 7: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketCorsRule
-	(*CloudflareR2BucketCorsAllowed)(nil),                              // 8: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketCorsAllowed
-	(*CloudflareR2BucketLifecycleConfig)(nil),                          // 9: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleConfig
-	(*CloudflareR2BucketLifecycleRule)(nil),                            // 10: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleRule
-	(*CloudflareR2BucketLifecycleConditions)(nil),                      // 11: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleConditions
-	(*CloudflareR2BucketLifecycleAbortMultipartUploadsTransition)(nil), // 12: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleAbortMultipartUploadsTransition
-	(*CloudflareR2BucketLifecycleDeleteObjectsTransition)(nil),         // 13: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleDeleteObjectsTransition
-	(*CloudflareR2BucketLifecycleStorageClassTransition)(nil),          // 14: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleStorageClassTransition
-	(*CloudflareR2BucketLifecycleTransitionCondition)(nil),             // 15: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleTransitionCondition
-	(*CloudflareR2BucketLockConfig)(nil),                               // 16: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLockConfig
-	(*CloudflareR2BucketLockRule)(nil),                                 // 17: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLockRule
-	(*CloudflareR2BucketLockRuleCondition)(nil),                        // 18: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLockRuleCondition
-	(*v1.StringValueOrRef)(nil),                                        // 19: org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	(*CloudflareR2BucketEventNotification)(nil),                        // 5: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketEventNotification
+	(*CloudflareR2BucketEventNotificationRule)(nil),                    // 6: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketEventNotificationRule
+	(*CloudflareR2BucketCustomDomainConfig)(nil),                       // 7: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketCustomDomainConfig
+	(*CloudflareR2BucketCorsConfig)(nil),                               // 8: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketCorsConfig
+	(*CloudflareR2BucketCorsRule)(nil),                                 // 9: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketCorsRule
+	(*CloudflareR2BucketCorsAllowed)(nil),                              // 10: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketCorsAllowed
+	(*CloudflareR2BucketLifecycleConfig)(nil),                          // 11: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleConfig
+	(*CloudflareR2BucketLifecycleRule)(nil),                            // 12: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleRule
+	(*CloudflareR2BucketLifecycleConditions)(nil),                      // 13: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleConditions
+	(*CloudflareR2BucketLifecycleAbortMultipartUploadsTransition)(nil), // 14: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleAbortMultipartUploadsTransition
+	(*CloudflareR2BucketLifecycleDeleteObjectsTransition)(nil),         // 15: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleDeleteObjectsTransition
+	(*CloudflareR2BucketLifecycleStorageClassTransition)(nil),          // 16: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleStorageClassTransition
+	(*CloudflareR2BucketLifecycleTransitionCondition)(nil),             // 17: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleTransitionCondition
+	(*CloudflareR2BucketLockConfig)(nil),                               // 18: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLockConfig
+	(*CloudflareR2BucketLockRule)(nil),                                 // 19: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLockRule
+	(*CloudflareR2BucketLockRuleCondition)(nil),                        // 20: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLockRuleCondition
+	(*v1.StringValueOrRef)(nil),                                        // 21: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_depIdxs = []int32{
 	0,  // 0: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketSpec.location:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2Location
-	5,  // 1: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketSpec.custom_domains:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketCustomDomainConfig
+	7,  // 1: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketSpec.custom_domains:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketCustomDomainConfig
 	1,  // 2: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketSpec.storage_class:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2StorageClass
-	6,  // 3: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketSpec.cors:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketCorsConfig
-	9,  // 4: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketSpec.lifecycle:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleConfig
-	16, // 5: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketSpec.lock:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLockConfig
-	19, // 6: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketCustomDomainConfig.zone_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	7,  // 7: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketCorsConfig.rules:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketCorsRule
-	8,  // 8: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketCorsRule.allowed:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketCorsAllowed
-	2,  // 9: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketCorsAllowed.methods:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2CorsAllowedMethod
-	10, // 10: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleConfig.rules:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleRule
-	11, // 11: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleRule.conditions:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleConditions
-	12, // 12: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleRule.abort_multipart_uploads_transition:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleAbortMultipartUploadsTransition
-	13, // 13: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleRule.delete_objects_transition:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleDeleteObjectsTransition
-	14, // 14: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleRule.storage_class_transitions:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleStorageClassTransition
-	15, // 15: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleDeleteObjectsTransition.condition:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleTransitionCondition
-	15, // 16: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleStorageClassTransition.condition:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleTransitionCondition
-	3,  // 17: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleTransitionCondition.type:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2ConditionType
-	17, // 18: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLockConfig.rules:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLockRule
-	18, // 19: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLockRule.condition:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLockRuleCondition
-	3,  // 20: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLockRuleCondition.type:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2ConditionType
-	21, // [21:21] is the sub-list for method output_type
-	21, // [21:21] is the sub-list for method input_type
-	21, // [21:21] is the sub-list for extension type_name
-	21, // [21:21] is the sub-list for extension extendee
-	0,  // [0:21] is the sub-list for field type_name
+	8,  // 3: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketSpec.cors:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketCorsConfig
+	11, // 4: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketSpec.lifecycle:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleConfig
+	18, // 5: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketSpec.lock:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLockConfig
+	5,  // 6: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketSpec.event_notifications:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketEventNotification
+	21, // 7: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketEventNotification.queue:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	6,  // 8: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketEventNotification.rules:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketEventNotificationRule
+	21, // 9: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketCustomDomainConfig.zone_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	9,  // 10: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketCorsConfig.rules:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketCorsRule
+	10, // 11: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketCorsRule.allowed:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketCorsAllowed
+	2,  // 12: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketCorsAllowed.methods:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2CorsAllowedMethod
+	12, // 13: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleConfig.rules:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleRule
+	13, // 14: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleRule.conditions:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleConditions
+	14, // 15: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleRule.abort_multipart_uploads_transition:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleAbortMultipartUploadsTransition
+	15, // 16: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleRule.delete_objects_transition:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleDeleteObjectsTransition
+	16, // 17: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleRule.storage_class_transitions:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleStorageClassTransition
+	17, // 18: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleDeleteObjectsTransition.condition:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleTransitionCondition
+	17, // 19: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleStorageClassTransition.condition:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleTransitionCondition
+	3,  // 20: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLifecycleTransitionCondition.type:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2ConditionType
+	19, // 21: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLockConfig.rules:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLockRule
+	20, // 22: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLockRule.condition:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLockRuleCondition
+	3,  // 23: org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2BucketLockRuleCondition.type:type_name -> org.openmcf.provider.cloudflare.cloudflarer2bucket.v1.CloudflareR2ConditionType
+	24, // [24:24] is the sub-list for method output_type
+	24, // [24:24] is the sub-list for method input_type
+	24, // [24:24] is the sub-list for extension type_name
+	24, // [24:24] is the sub-list for extension extendee
+	0,  // [0:24] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_init() }
@@ -1433,7 +1589,7 @@ func file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_init(
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDesc), len(file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_spec_proto_rawDesc)),
 			NumEnums:      4,
-			NumMessages:   15,
+			NumMessages:   17,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

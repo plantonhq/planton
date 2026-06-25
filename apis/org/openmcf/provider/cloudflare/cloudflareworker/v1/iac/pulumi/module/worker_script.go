@@ -155,9 +155,9 @@ func worker(
 			schedules = append(schedules, cloudfl.WorkersCronTriggerScheduleArgs{Cron: pulumi.String(s)})
 		}
 		if _, err := cloudfl.NewWorkersCronTrigger(ctx, "cron-trigger", &cloudfl.WorkersCronTriggerArgs{
-			AccountId:   pulumi.String(spec.AccountId),
-			ScriptName:  createdScript.ScriptName,
-			Schedules:   schedules,
+			AccountId:  pulumi.String(spec.AccountId),
+			ScriptName: createdScript.ScriptName,
+			Schedules:  schedules,
 		}, pulumi.Provider(cloudflareProvider)); err != nil {
 			return errors.Wrap(err, "failed to create workers cron trigger")
 		}

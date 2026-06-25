@@ -97,5 +97,17 @@ variable "spec" {
         prefix  = optional(string, "")
       })), [])
     }))
+
+    # Event notifications: forward object events to Cloudflare Queues. The queue
+    # field is a StringValueOrRef flattened to a plain string by the tfvars converter.
+    event_notifications = optional(list(object({
+      queue = string
+      rules = list(object({
+        actions     = list(string)
+        description = optional(string, "")
+        prefix      = optional(string, "")
+        suffix      = optional(string, "")
+      }))
+    })), [])
   })
 }

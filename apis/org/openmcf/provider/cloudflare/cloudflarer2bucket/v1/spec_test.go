@@ -65,6 +65,36 @@ var _ = ginkgo.Describe("CloudflareR2BucketSpec Custom Validation Tests", func()
 			})
 		})
 
+		ginkgo.Context("event notifications", func() {
+
+			ginkgo.It("should accept an event notification targeting a queue", func() {
+				input := newBucket("test-r2-events", &CloudflareR2BucketSpec{
+					BucketName: "test-events-bucket",
+					AccountId:  testAccountID,
+					EventNotifications: []*CloudflareR2BucketEventNotification{
+						{
+							Queue: literalRef("0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"),
+							Rules: []*CloudflareR2BucketEventNotificationRule{
+								{Actions: []string{"PutObject", "DeleteObject"}, Prefix: "uploads/"},
+							},
+						},
+					},
+				})
+				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+			})
+
+			ginkgo.It("should reject an event notification with no rules", func() {
+				input := newBucket("test-r2-events-norules", &CloudflareR2BucketSpec{
+					BucketName: "test-events-bucket",
+					AccountId:  testAccountID,
+					EventNotifications: []*CloudflareR2BucketEventNotification{
+						{Queue: literalRef("0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d")},
+					},
+				})
+				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
+			})
+		})
+
 		ginkgo.Context("jurisdiction and storage_class", func() {
 
 			ginkgo.It("should accept each valid jurisdiction value", func() {
@@ -142,9 +172,9 @@ var _ = ginkgo.Describe("CloudflareR2BucketSpec Custom Validation Tests", func()
 					AccountId:  testAccountID,
 					Lifecycle: &CloudflareR2BucketLifecycleConfig{
 						Rules: []*CloudflareR2BucketLifecycleRule{{
-							Id:         "expire-logs",
-							Conditions: &CloudflareR2BucketLifecycleConditions{Prefix: "logs/"},
-							Enabled:    true,
+							Id:                              "expire-logs",
+							Conditions:                      &CloudflareR2BucketLifecycleConditions{Prefix: "logs/"},
+							Enabled:                         true,
 							AbortMultipartUploadsTransition: &CloudflareR2BucketLifecycleAbortMultipartUploadsTransition{MaxAgeSeconds: 604800},
 							DeleteObjectsTransition: &CloudflareR2BucketLifecycleDeleteObjectsTransition{
 								Condition: &CloudflareR2BucketLifecycleTransitionCondition{Type: CloudflareR2ConditionType_Age, MaxAgeSeconds: 2592000},

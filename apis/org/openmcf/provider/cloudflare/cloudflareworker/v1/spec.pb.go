@@ -796,8 +796,8 @@ type CloudflareWorkerQueueBinding struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The JS binding (variable) name.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// The Cloudflare Queue name to produce to.
-	QueueName     string `protobuf:"bytes,2,opt,name=queue_name,json=queueName,proto3" json:"queue_name,omitempty"`
+	// The Cloudflare Queue name to produce to, or a reference to a CloudflareQueue resource.
+	QueueName     *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=queue_name,json=queueName,proto3" json:"queue_name,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -839,11 +839,11 @@ func (x *CloudflareWorkerQueueBinding) GetName() string {
 	return ""
 }
 
-func (x *CloudflareWorkerQueueBinding) GetQueueName() string {
+func (x *CloudflareWorkerQueueBinding) GetQueueName() *v1.StringValueOrRef {
 	if x != nil {
 		return x.QueueName
 	}
-	return ""
+	return nil
 }
 
 // CloudflareWorkerDurableObjectBinding binds a Durable Object namespace (class).
@@ -1587,11 +1587,11 @@ const file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDes
 	"\venvironment\x18\x03 \x01(\tR\venvironment\x12\x1e\n" +
 	"\n" +
 	"entrypoint\x18\x04 \x01(\tR\n" +
-	"entrypoint\"a\n" +
+	"entrypoint\"\xb7\x01\n" +
 	"\x1cCloudflareWorkerQueueBinding\x12\x1a\n" +
-	"\x04name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12%\n" +
+	"\x04name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12{\n" +
 	"\n" +
-	"queue_name\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\tqueueName\"\xac\x01\n" +
+	"queue_name\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x03\xc8\x01\x01\x88\xd4a\x97\x0e\x92\xd4a\x19status.outputs.queue_nameR\tqueueName\"\xac\x01\n" +
 	"$CloudflareWorkerDurableObjectBinding\x12\x1a\n" +
 	"\x04name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12%\n" +
 	"\n" +
@@ -1703,13 +1703,14 @@ var file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_depIdxs 
 	22, // 24: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerD1Binding.database_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
 	22, // 25: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerHyperdriveBinding.config_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
 	22, // 26: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerServiceBinding.service:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	22, // 27: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerCustomDomain.zone_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	22, // 28: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerRoute.zone_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	29, // [29:29] is the sub-list for method output_type
-	29, // [29:29] is the sub-list for method input_type
-	29, // [29:29] is the sub-list for extension type_name
-	29, // [29:29] is the sub-list for extension extendee
-	0,  // [0:29] is the sub-list for field type_name
+	22, // 27: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerQueueBinding.queue_name:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	22, // 28: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerCustomDomain.zone_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	22, // 29: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerRoute.zone_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	30, // [30:30] is the sub-list for method output_type
+	30, // [30:30] is the sub-list for method input_type
+	30, // [30:30] is the sub-list for extension type_name
+	30, // [30:30] is the sub-list for extension extendee
+	0,  // [0:30] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_init() }
