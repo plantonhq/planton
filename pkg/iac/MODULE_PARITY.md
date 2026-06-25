@@ -231,3 +231,26 @@ separate consumer resource). The queue has no secret-bearing fields. The v5 API 
 `message_retention_period` at 86400s (1 day) despite docs implying 14 days — the CEL matches the API.
 The Worker `queues` producer binding and the R2 `event_notifications` reference a `CloudflareQueue` by name
 and id respectively, at full parity on both engines. See the conformance guard's `CloudflareQueue` case.
+
+The `CloudflarePagesProject` component manages the Pages **project** (build config, optional git source,
+per-environment deployment configs, and folded custom domains via `cloudflare_pages_domain`); it never
+manages deployments, because the Cloudflare provider (v5.21.1) and Pulumi SDK (v6.17.0) expose no Pages
+deployment resource — versions are produced out-of-band (git push for git-connected projects, or
+`wrangler pages deploy` for direct-upload). Both engines are at **full parity** on the project surface, with
+three behaviors that BOTH engines implement identically (learned from the live API):
+1. **Env-var grain.** The proto splits env vars into plain `vars` + secret `secrets` (the secret value is
+   `(sensitive)`); both engines recombine them into the provider's single `env_vars` map keyed by name, with
+   `type = plain_text`/`secret_text`. This keeps the secret annotation static (vs the provider's conditionally
+   sensitive `{type,value}`).
+2. **Paired environments.** Cloudflare rejects a project whose `preview` and `production` configs are
+   inconsistent (e.g. `fail_open` must match). When only one environment is supplied, both engines mirror it
+   to the other (tofu via `dc_*_src` coalescing in `locals.tf`, Pulumi via the mirror in
+   `deployment_config.go`).
+3. **Empty binding maps are omitted, not `{}`.** The provider normalizes an empty map to null and flags an
+   inconsistent apply otherwise; both engines send null for any empty binding group (tofu via
+   `length(...) > 0 ? {...} : null`, Pulumi by only assigning a non-empty `...Map`). Bindings resolve a
+   `StringValueOrRef` to a plain id (KV/D1/R2/Queue/Hyperdrive/Worker). Stack outputs are `project_name`,
+   `subdomain`, `domains`, and `created_on` (no deployment-level outputs — none exist at provision time). The
+   web-analytics token and secret env values are `(sensitive)`. `CloudflarePagesProject` is **not** marked
+   `is_service_kind`: with the git-connected model Cloudflare is the deployer, so Service Hub drives no version
+   deploys. See the conformance guard's `CloudflarePagesProject` case.

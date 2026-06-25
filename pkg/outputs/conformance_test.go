@@ -242,6 +242,19 @@ func TestStackOutputsConformance(t *testing.T) {
 			mustPopulate: []string{"queue_id", "queue_name"},
 		},
 		{
+			// CloudflarePagesProject: both engines emit the project name, its
+			// pages.dev subdomain, attached custom domains, and creation time.
+			name: "CloudflarePagesProject",
+			kind: cloudresourcekind.CloudResourceKind_CloudflarePagesProject,
+			rawOutputs: map[string]interface{}{
+				"project_name": "marketing-site",
+				"subdomain":    "marketing-site.pages.dev",
+				"domains":      []interface{}{"www.example.com"},
+				"created_on":   "2026-06-25T00:00:00Z",
+			},
+			mustPopulate: []string{"project_name", "subdomain"},
+		},
+		{
 			// CloudflareDnsRecord: both engines emit the record id, name, type and
 			// proxied flag as flat scalars onto the StackOutputs proto.
 			name: "CloudflareDnsRecord",

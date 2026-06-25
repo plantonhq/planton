@@ -1,0 +1,28 @@
+apiVersion: cloudflare.openmcf.org/v1
+kind: CloudflarePagesProject
+metadata:
+  name: git-connected-site
+spec:
+  accountId: <cloudflare-account-id>
+  name: git-connected-site
+  productionBranch: main
+  # Cloudflare builds a new deployment on every push to the connected repo.
+  # Requires a one-time git authorization in the Cloudflare dashboard.
+  source:
+    type: github
+    config:
+      owner: <github-owner>
+      repoName: <repo-name>
+      productionBranch: main
+      prCommentsEnabled: true
+      previewDeploymentSetting: all
+  buildConfig:
+    buildCommand: npm run build
+    destinationDir: dist
+  deploymentConfigs:
+    production:
+      compatibilityDate: "2025-01-15"
+      compatibilityFlags:
+        - nodejs_compat
+      vars:
+        ENVIRONMENT: production

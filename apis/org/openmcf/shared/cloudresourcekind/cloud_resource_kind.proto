@@ -1570,6 +1570,11 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "cfq"
   }];
+  CloudflarePagesProject = 1816 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfpg"
+  }];
 
   // 2100–2299: Auth0 resources
   Auth0Connection = 2100 [(kind_meta) = {
