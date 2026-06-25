@@ -67,7 +67,7 @@ message CloudflareWorkerSpec {
 
   // Secret bindings: sensitive values exposed to the Worker as env vars. Provide
   // each as a managed-secret reference; resolved just-in-time at deploy.
-  repeated CloudflareWorkerSecretBinding secrets = 9;
+  repeated CloudflareWorkerSecretBinding secrets = 9 [(org.openmcf.shared.options.sensitive_exempt_reason) = "wrapper list; the secret is the inner binding's value field, which is annotated sensitive"];
 
   // KV namespace bindings. Each binds a CloudflareKvNamespace (by id or
   // reference) to a JS variable the Worker uses for edge key-value access.

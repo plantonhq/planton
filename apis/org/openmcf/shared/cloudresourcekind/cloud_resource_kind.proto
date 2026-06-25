@@ -1575,6 +1575,21 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "cfpg"
   }];
+  CloudflareZeroTrustTunnel = 1817 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfztun"
+  }];
+  CloudflareZeroTrustTunnelVirtualNetwork = 1818 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfztvn"
+  }];
+  CloudflareZeroTrustTunnelRoute = 1819 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfztrt"
+  }];
 
   // 2100–2299: Auth0 resources
   Auth0Connection = 2100 [(kind_meta) = {

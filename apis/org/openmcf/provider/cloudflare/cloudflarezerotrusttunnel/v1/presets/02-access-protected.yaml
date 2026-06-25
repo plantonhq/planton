@@ -1,0 +1,21 @@
+apiVersion: cloudflare.openmcf.org/v1
+kind: CloudflareZeroTrustTunnel
+metadata:
+  name: secure-tunnel
+spec:
+  accountId: <cloudflare-account-id>
+  name: secure-tunnel
+  configSrc: cloudflare
+  ingress:
+    - hostname: admin.example.com
+      service: http://localhost:3000
+      originRequest:
+        access:
+          teamName: <zero-trust-org>
+          required: true
+          audTag:
+            - valueFrom:
+                kind: CloudflareZeroTrustAccessApplication
+                name: <access-app-name>
+                fieldPath: status.outputs.aud
+    - service: http_status:404

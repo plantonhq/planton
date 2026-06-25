@@ -1,0 +1,207 @@
+syntax = "proto3";
+
+package org.openmcf.provider.cloudflare.cloudflarezerotrusttunnel.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// CloudflareZeroTrustTunnelSpec configures a Cloudflare Tunnel (cloudflared): a secure,
+// outbound-only connection from a private network to Cloudflare's edge. A tunnel exposes
+// private HTTP/TCP/SSH/RDP services via public hostnames (ingress rules) and/or makes
+// private IP ranges reachable to WARP clients (via CloudflareZeroTrustTunnelRoute). The
+// connector (cloudflared) authenticates with the tunnel token exported in the stack
+// outputs, so no inbound firewall ports are ever opened.
+//
+// When managed remotely (config_src = cloudflare, the default), the ingress rules are
+// configured here as desired state. When managed locally (config_src = local), ingress
+// lives in a YAML file on the origin machine and is not set here. The remote ingress
+// configuration is provisioned as its own provider resource, so editing ingress never
+// recreates the tunnel.
+message CloudflareZeroTrustTunnelSpec {
+  // The Cloudflare account ID that owns this tunnel.
+  string account_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.len = 32,
+    (buf.validate.field).string.pattern = "^[0-9a-fA-F]{32}$"
+  ];
+
+  // A user-friendly name for the tunnel (shown in the Zero Trust dashboard).
+  string name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 100
+  ];
+
+  // Where the tunnel's configuration is managed. `cloudflare` (the default) manages the
+  // ingress rules below as desired state from the control plane; `local` leaves ingress
+  // to a cloudflared YAML file on the origin and manages only the tunnel object + token.
+  optional CloudflareZeroTrustTunnelConfigSource config_src = 3 [(org.openmcf.shared.options.default) = "cloudflare"];
+
+  // Optional secret used to run a locally-managed tunnel, as a base64 string encoding at
+  // least 32 bytes. Omit to let Cloudflare generate one (recommended); the run token is
+  // always available in `status.outputs.tunnel_token` regardless.
+  string tunnel_secret = 4 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.min_len = 32,
+    (buf.validate.field).string.pattern = "^[A-Za-z0-9+/]+={0,2}$",
+    (org.openmcf.shared.options.sensitive) = true
+  ];
+
+  // Public-hostname ingress rules, evaluated top to bottom. Each rule maps a hostname
+  // (and optional path) to a local service. The final rule MUST be a catch-all (a
+  // service with no hostname, for example `http_status:404`). Only valid when
+  // config_src = cloudflare.
+  repeated CloudflareZeroTrustTunnelIngressRule ingress = 5;
+
+  // Default origin connection settings applied to every ingress rule unless a rule
+  // overrides them. Only meaningful when config_src = cloudflare.
+  CloudflareZeroTrustTunnelOriginRequest origin_request = 6;
+
+  // Ingress rules are only configurable on a remotely-managed (cloudflare) tunnel.
+  option (buf.validate.message).cel = {
+    id: "tunnel.ingress_requires_remote_config"
+    message: "ingress rules require config_src 'cloudflare' (remote management); a 'local' tunnel is configured by a YAML file on the origin"
+    expression: "size(this.ingress) == 0 || this.config_src != 1"
+  };
+
+  // The final ingress rule must be a catch-all: a service with no hostname.
+  option (buf.validate.message).cel = {
+    id: "tunnel.ingress_last_rule_is_catch_all"
+    message: "the last ingress rule must be a catch-all (a service with no hostname, e.g. http_status:404)"
+    expression: "size(this.ingress) == 0 || this.ingress[size(this.ingress) - 1].hostname == ''"
+  };
+}
+
+// CloudflareZeroTrustTunnelConfigSource selects local vs. remote tunnel configuration.
+enum CloudflareZeroTrustTunnelConfigSource {
+  cloudflare_zero_trust_tunnel_config_source_unspecified = 0;
+  // Ingress lives in a cloudflared YAML file on the origin machine.
+  local = 1;
+  // Ingress is managed remotely as desired state (the default for this component).
+  cloudflare = 2;
+}
+
+// CloudflareZeroTrustTunnelIngressRule maps a public hostname (and optional path) to a
+// local service reachable by the connector.
+message CloudflareZeroTrustTunnelIngressRule {
+  // Public hostname this rule matches (for example app.example.com). Leave empty ONLY
+  // on the final catch-all rule. A DNS record for this hostname must CNAME to the
+  // tunnel's `status.outputs.tunnel_cname`.
+  string hostname = 1 [(buf.validate.field).string.max_len = 255];
+
+  // Protocol and address of the local service, for example http://localhost:8080,
+  // tcp://10.0.0.5:22, ssh://10.0.0.5:22, or an HTTP status response like
+  // http_status:404 (used for the catch-all rule).
+  string service = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Optional path filter: only requests whose path matches route to this service
+  // (for example "/api/.*").
+  string path = 3;
+
+  // Optional per-rule origin connection settings, overriding the tunnel-level defaults.
+  CloudflareZeroTrustTunnelOriginRequest origin_request = 4;
+}
+
+// CloudflareZeroTrustTunnelOriginRequest holds connection settings between cloudflared
+// and the local origin server. Used both as the tunnel-level default and per ingress
+// rule.
+message CloudflareZeroTrustTunnelOriginRequest {
+  // Require Cloudflare Access authentication for L7 requests to the matched hostname(s).
+  CloudflareZeroTrustTunnelAccessConfig access = 1;
+
+  // Path to a certificate authority (CA) bundle for the origin's certificate, used when
+  // the origin certificate is not signed by Cloudflare.
+  string ca_pool = 2;
+
+  // Seconds to wait when establishing a new TCP connection to the origin (excludes TLS).
+  int64 connect_timeout = 3 [(buf.validate.field).cel = {
+    id: "origin_request_connect_timeout.valid_range"
+    message: "connect_timeout must be between 0 and 3600 seconds"
+    expression: "this >= 0 && this <= 3600"
+  }];
+
+  // Disable chunked transfer encoding (useful for some WSGI origins).
+  bool disable_chunked_encoding = 4;
+
+  // Attempt to connect to the origin over HTTP/2 (origin must serve HTTPS).
+  bool http2_origin = 5;
+
+  // Override the HTTP Host header sent to the local service.
+  string http_host_header = 6;
+
+  // Maximum number of idle keepalive connections to the origin (does not cap total
+  // concurrent connections).
+  int64 keep_alive_connections = 7 [(buf.validate.field).cel = {
+    id: "origin_request_keep_alive_connections.valid_range"
+    message: "keep_alive_connections must be between 0 and 10000"
+    expression: "this >= 0 && this <= 10000"
+  }];
+
+  // Seconds after which an idle keepalive connection to the origin is discarded.
+  int64 keep_alive_timeout = 8 [(buf.validate.field).cel = {
+    id: "origin_request_keep_alive_timeout.valid_range"
+    message: "keep_alive_timeout must be between 0 and 3600 seconds"
+    expression: "this >= 0 && this <= 3600"
+  }];
+
+  // Auto-configure the expected origin server name from the request hostname.
+  bool match_sni_to_host = 9;
+
+  // Disable the "happy eyeballs" IPv4/IPv6 fallback algorithm.
+  bool no_happy_eyeballs = 10;
+
+  // Disable TLS verification of the origin certificate (accepts any origin cert).
+  bool no_tls_verify = 11;
+
+  // Hostname cloudflared should expect on the origin server's certificate.
+  string origin_server_name = 12;
+
+  // Proxy type for TCP-over-HTTP services: empty for the regular proxy, or "socks" for
+  // a SOCKS5 proxy.
+  string proxy_type = 13 [(buf.validate.field).cel = {
+    id: "origin_request_proxy_type.valid_value"
+    message: "proxy_type must be empty or 'socks'"
+    expression: "this == '' || this == 'socks'"
+  }];
+
+  // Seconds between TCP keepalive packets on the connection to the origin.
+  int64 tcp_keep_alive = 14 [(buf.validate.field).cel = {
+    id: "origin_request_tcp_keep_alive.valid_range"
+    message: "tcp_keep_alive must be between 0 and 3600 seconds"
+    expression: "this >= 0 && this <= 3600"
+  }];
+
+  // Seconds to complete a TLS handshake to an HTTPS origin.
+  int64 tls_timeout = 15 [(buf.validate.field).cel = {
+    id: "origin_request_tls_timeout.valid_range"
+    message: "tls_timeout must be between 0 and 3600 seconds"
+    expression: "this >= 0 && this <= 3600"
+  }];
+}
+
+// CloudflareZeroTrustTunnelAccessConfig enforces Cloudflare Access on requests to the
+// matched hostname(s): cloudflared validates each request's Access JWT.
+message CloudflareZeroTrustTunnelAccessConfig {
+  // Audience (AUD) tags of the Access applications allowed to reach this hostname. Each
+  // is a literal AUD tag, or a reference to a CloudflareZeroTrustAccessApplication
+  // resource (whose `aud` output is used) — so an Access app and the tunnel ingress it
+  // protects compose as an explicit graph edge.
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef aud_tag = 1 [
+    (buf.validate.field).repeated.min_items = 1,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = CloudflareZeroTrustAccessApplication,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.aud"
+  ];
+
+  // The Zero Trust organization (team) name that owns the Access applications.
+  string team_name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Deny traffic that has not satisfied Access authorization.
+  bool required = 3;
+}

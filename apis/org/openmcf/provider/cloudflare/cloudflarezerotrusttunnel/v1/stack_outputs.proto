@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package org.openmcf.provider.cloudflare.cloudflarezerotrusttunnel.v1;
+
+// CloudflareZeroTrustTunnelStackOutputs captures the outputs after provisioning a
+// Cloudflare Tunnel.
+message CloudflareZeroTrustTunnelStackOutputs {
+  // The Cloudflare-assigned UUID of the tunnel. Referenced by routes
+  // (CloudflareZeroTrustTunnelRoute) and used to build the CNAME target.
+  string tunnel_id = 1;
+
+  // The CNAME target for public hostnames served by this tunnel
+  // (<tunnel_id>.cfargotunnel.com). Point a CloudflareDnsRecord CNAME at this value to
+  // route a public hostname through the tunnel.
+  string tunnel_cname = 2;
+
+  // The connector run token. cloudflared uses this to authenticate and establish the
+  // tunnel (for example `cloudflared tunnel run --token <token>`). Sensitive.
+  string tunnel_token = 3;
+
+  // The tunnel status: inactive, degraded, healthy, or down.
+  string tunnel_status = 4;
+
+  // The Cloudflare account tag the tunnel belongs to.
+  string account_tag = 5;
+
+  // RFC3339 timestamp of when the tunnel was created.
+  string created_on = 6;
+}

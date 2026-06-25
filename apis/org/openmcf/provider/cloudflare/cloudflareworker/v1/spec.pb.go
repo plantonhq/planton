@@ -1707,7 +1707,7 @@ var File_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto protoref
 
 const file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	">org/openmcf/provider/cloudflare/cloudflareworker/v1/spec.proto\x123org.openmcf.provider.cloudflare.cloudflareworker.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x9e\x19\n" +
+	">org/openmcf/provider/cloudflare/cloudflareworker/v1/spec.proto\x123org.openmcf.provider.cloudflare.cloudflareworker.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xfe\x19\n" +
 	"\x14CloudflareWorkerSpec\x12=\n" +
 	"\n" +
 	"account_id\x18\x01 \x01(\tB\x1e\xbaH\x1b\xc8\x01\x01r\x162\x11^[0-9a-fA-F]{32}$\x98\x01 R\taccountId\x12-\n" +
@@ -1719,8 +1719,8 @@ const file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDes
 	"\vmain_module\x18\x06 \x01(\tB\f\x92\xa6\x1d\bindex.jsR\n" +
 	"mainModule\x12/\n" +
 	"\x13compatibility_flags\x18\a \x03(\tR\x12compatibilityFlags\x12g\n" +
-	"\x04vars\x18\b \x03(\v2S.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.VarsEntryR\x04vars\x12l\n" +
-	"\asecrets\x18\t \x03(\v2R.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSecretBindingR\asecrets\x12s\n" +
+	"\x04vars\x18\b \x03(\v2S.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.VarsEntryR\x04vars\x12\xcb\x01\n" +
+	"\asecrets\x18\t \x03(\v2R.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSecretBindingB]\xaa\xa6\x1dYwrapper list; the secret is the inner binding's value field, which is annotated sensitiveR\asecrets\x12s\n" +
 	"\rkv_namespaces\x18\n" +
 	" \x03(\v2N.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerKvBindingR\fkvNamespaces\x12m\n" +
 	"\n" +

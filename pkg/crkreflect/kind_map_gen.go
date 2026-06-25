@@ -182,6 +182,9 @@ import (
 	cloudflarezerotrustaccessapplicationv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarezerotrustaccessapplication/v1"
 	cloudflarezerotrustaccessgroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarezerotrustaccessgroup/v1"
 	cloudflarezerotrustaccesspolicyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarezerotrustaccesspolicy/v1"
+	cloudflarezerotrusttunnelv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarezerotrusttunnel/v1"
+	cloudflarezerotrusttunnelroutev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarezerotrusttunnelroute/v1"
+	cloudflarezerotrusttunnelvirtualnetworkv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarezerotrusttunnelvirtualnetwork/v1"
 	confluentkafkav1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/confluent/confluentkafka/v1"
 	digitaloceanappplatformservicev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/digitalocean/digitaloceanappplatformservice/v1"
 	digitaloceanbucketv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/digitalocean/digitaloceanbucket/v1"
@@ -597,23 +600,26 @@ var ProviderCivoMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 }
 
 var ProviderCloudflareMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
-	cloudresourcekind.CloudResourceKind_CloudflareD1Database:                 &cloudflared1databasev1.CloudflareD1Database{},
-	cloudresourcekind.CloudResourceKind_CloudflareDnsRecord:                  &cloudflarednsrecordv1.CloudflareDnsRecord{},
-	cloudresourcekind.CloudResourceKind_CloudflareDnsZone:                    &cloudflarednszonev1.CloudflareDnsZone{},
-	cloudresourcekind.CloudResourceKind_CloudflareHyperdriveConfig:           &cloudflarehyperdriveconfigv1.CloudflareHyperdriveConfig{},
-	cloudresourcekind.CloudResourceKind_CloudflareKvNamespace:                &cloudflarekvnamespacev1.CloudflareKvNamespace{},
-	cloudresourcekind.CloudResourceKind_CloudflareLoadBalancer:               &cloudflareloadbalancerv1.CloudflareLoadBalancer{},
-	cloudresourcekind.CloudResourceKind_CloudflareLoadBalancerMonitor:        &cloudflareloadbalancermonitorv1.CloudflareLoadBalancerMonitor{},
-	cloudresourcekind.CloudResourceKind_CloudflareLoadBalancerPool:           &cloudflareloadbalancerpoolv1.CloudflareLoadBalancerPool{},
-	cloudresourcekind.CloudResourceKind_CloudflarePagesProject:               &cloudflarepagesprojectv1.CloudflarePagesProject{},
-	cloudresourcekind.CloudResourceKind_CloudflareQueue:                      &cloudflarequeuev1.CloudflareQueue{},
-	cloudresourcekind.CloudResourceKind_CloudflareR2Bucket:                   &cloudflarer2bucketv1.CloudflareR2Bucket{},
-	cloudresourcekind.CloudResourceKind_CloudflareRuleset:                    &cloudflarerulesetv1.CloudflareRuleset{},
-	cloudresourcekind.CloudResourceKind_CloudflareWorker:                     &cloudflareworkerv1.CloudflareWorker{},
-	cloudresourcekind.CloudResourceKind_CloudflareWorkersKvPair:              &cloudflareworkerskvpairv1.CloudflareWorkersKvPair{},
-	cloudresourcekind.CloudResourceKind_CloudflareZeroTrustAccessApplication: &cloudflarezerotrustaccessapplicationv1.CloudflareZeroTrustAccessApplication{},
-	cloudresourcekind.CloudResourceKind_CloudflareZeroTrustAccessGroup:       &cloudflarezerotrustaccessgroupv1.CloudflareZeroTrustAccessGroup{},
-	cloudresourcekind.CloudResourceKind_CloudflareZeroTrustAccessPolicy:      &cloudflarezerotrustaccesspolicyv1.CloudflareZeroTrustAccessPolicy{},
+	cloudresourcekind.CloudResourceKind_CloudflareD1Database:                    &cloudflared1databasev1.CloudflareD1Database{},
+	cloudresourcekind.CloudResourceKind_CloudflareDnsRecord:                     &cloudflarednsrecordv1.CloudflareDnsRecord{},
+	cloudresourcekind.CloudResourceKind_CloudflareDnsZone:                       &cloudflarednszonev1.CloudflareDnsZone{},
+	cloudresourcekind.CloudResourceKind_CloudflareHyperdriveConfig:              &cloudflarehyperdriveconfigv1.CloudflareHyperdriveConfig{},
+	cloudresourcekind.CloudResourceKind_CloudflareKvNamespace:                   &cloudflarekvnamespacev1.CloudflareKvNamespace{},
+	cloudresourcekind.CloudResourceKind_CloudflareLoadBalancer:                  &cloudflareloadbalancerv1.CloudflareLoadBalancer{},
+	cloudresourcekind.CloudResourceKind_CloudflareLoadBalancerMonitor:           &cloudflareloadbalancermonitorv1.CloudflareLoadBalancerMonitor{},
+	cloudresourcekind.CloudResourceKind_CloudflareLoadBalancerPool:              &cloudflareloadbalancerpoolv1.CloudflareLoadBalancerPool{},
+	cloudresourcekind.CloudResourceKind_CloudflarePagesProject:                  &cloudflarepagesprojectv1.CloudflarePagesProject{},
+	cloudresourcekind.CloudResourceKind_CloudflareQueue:                         &cloudflarequeuev1.CloudflareQueue{},
+	cloudresourcekind.CloudResourceKind_CloudflareR2Bucket:                      &cloudflarer2bucketv1.CloudflareR2Bucket{},
+	cloudresourcekind.CloudResourceKind_CloudflareRuleset:                       &cloudflarerulesetv1.CloudflareRuleset{},
+	cloudresourcekind.CloudResourceKind_CloudflareWorker:                        &cloudflareworkerv1.CloudflareWorker{},
+	cloudresourcekind.CloudResourceKind_CloudflareWorkersKvPair:                 &cloudflareworkerskvpairv1.CloudflareWorkersKvPair{},
+	cloudresourcekind.CloudResourceKind_CloudflareZeroTrustAccessApplication:    &cloudflarezerotrustaccessapplicationv1.CloudflareZeroTrustAccessApplication{},
+	cloudresourcekind.CloudResourceKind_CloudflareZeroTrustAccessGroup:          &cloudflarezerotrustaccessgroupv1.CloudflareZeroTrustAccessGroup{},
+	cloudresourcekind.CloudResourceKind_CloudflareZeroTrustAccessPolicy:         &cloudflarezerotrustaccesspolicyv1.CloudflareZeroTrustAccessPolicy{},
+	cloudresourcekind.CloudResourceKind_CloudflareZeroTrustTunnel:               &cloudflarezerotrusttunnelv1.CloudflareZeroTrustTunnel{},
+	cloudresourcekind.CloudResourceKind_CloudflareZeroTrustTunnelRoute:          &cloudflarezerotrusttunnelroutev1.CloudflareZeroTrustTunnelRoute{},
+	cloudresourcekind.CloudResourceKind_CloudflareZeroTrustTunnelVirtualNetwork: &cloudflarezerotrusttunnelvirtualnetworkv1.CloudflareZeroTrustTunnelVirtualNetwork{},
 }
 
 var ProviderConfluentMap = map[cloudresourcekind.CloudResourceKind]proto.Message{

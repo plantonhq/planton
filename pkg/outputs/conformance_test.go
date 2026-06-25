@@ -386,6 +386,47 @@ func TestStackOutputsConformance(t *testing.T) {
 			},
 			mustPopulate: []string{"group_id"},
 		},
+		{
+			// CloudflareZeroTrustTunnel: both engines emit flat scalar outputs --
+			// tunnel id, CNAME target, the (sensitive) connector token, status, the
+			// account tag, and the creation timestamp.
+			name: "CloudflareZeroTrustTunnel",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareZeroTrustTunnel,
+			rawOutputs: map[string]interface{}{
+				"tunnel_id":     "f70ff985-a4ef-4643-bbbc-4a0ed4fc8415",
+				"tunnel_cname":  "f70ff985-a4ef-4643-bbbc-4a0ed4fc8415.cfargotunnel.com",
+				"tunnel_token":  "eyJhIjoiMDc0NzU1YTc4ZDhlIn0=",
+				"tunnel_status": "healthy",
+				"account_tag":   "074755a78d8e8f77c119a90a125e8a06",
+				"created_on":    "2026-06-25T12:00:00Z",
+			},
+			mustPopulate: []string{
+				"tunnel_id", "tunnel_cname", "tunnel_token",
+				"tunnel_status", "account_tag", "created_on",
+			},
+		},
+		{
+			// CloudflareZeroTrustTunnelVirtualNetwork: both engines emit the virtual
+			// network id and name.
+			name: "CloudflareZeroTrustTunnelVirtualNetwork",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareZeroTrustTunnelVirtualNetwork,
+			rawOutputs: map[string]interface{}{
+				"virtual_network_id":   "aaaa1111-bbbb-2222-cccc-333344445555",
+				"virtual_network_name": "prod-vnet",
+			},
+			mustPopulate: []string{"virtual_network_id", "virtual_network_name"},
+		},
+		{
+			// CloudflareZeroTrustTunnelRoute: both engines emit the route id and the
+			// advertised CIDR.
+			name: "CloudflareZeroTrustTunnelRoute",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareZeroTrustTunnelRoute,
+			rawOutputs: map[string]interface{}{
+				"route_id": "b8f2e1c0-1111-2222-3333-444455556666",
+				"network":  "10.0.0.0/24",
+			},
+			mustPopulate: []string{"route_id", "network"},
+		},
 	}
 
 	for _, tc := range cases {
