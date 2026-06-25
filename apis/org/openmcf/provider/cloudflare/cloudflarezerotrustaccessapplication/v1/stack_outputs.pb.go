@@ -21,19 +21,30 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// *
-// **CloudflareZeroTrustAccessApplicationStackOutputs** captures the outputs after provisioning a Cloudflare Zero Trust Access Application.
-// These outputs include identifiers and endpoints that result from the deployment.
+// CloudflareZeroTrustAccessApplicationStackOutputs captures the outputs after
+// provisioning a Cloudflare Zero Trust Access application.
 type CloudflareZeroTrustAccessApplicationStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The unique ID of the Cloudflare Access Application.
+	// The unique ID of the Access application.
 	ApplicationId string `protobuf:"bytes,1,opt,name=application_id,json=applicationId,proto3" json:"application_id,omitempty"`
-	// The hostname being protected by this Access Application (echoes the input hostname).
-	PublicHostname string `protobuf:"bytes,2,opt,name=public_hostname,json=publicHostname,proto3" json:"public_hostname,omitempty"`
-	// The ID of the Cloudflare Access policy associated with this application.
-	PolicyId      string `protobuf:"bytes,3,opt,name=policy_id,json=policyId,proto3" json:"policy_id,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	// The application's audience (AUD) tag. Downstream services and Workers use this
+	// to validate the Cloudflare Access JWT for requests to this application.
+	Aud string `protobuf:"bytes,2,opt,name=aud,proto3" json:"aud,omitempty"`
+	// The primary domain protected by this application (echoes the input domain when
+	// set, otherwise the provider-resolved value).
+	Domain string `protobuf:"bytes,3,opt,name=domain,proto3" json:"domain,omitempty"`
+	// For SaaS (OIDC) applications: the issued OAuth client ID.
+	SaasClientId string `protobuf:"bytes,4,opt,name=saas_client_id,json=saasClientId,proto3" json:"saas_client_id,omitempty"`
+	// For SaaS (OIDC) applications: the issued OAuth client secret.
+	SaasClientSecret string `protobuf:"bytes,5,opt,name=saas_client_secret,json=saasClientSecret,proto3" json:"saas_client_secret,omitempty"`
+	// For SaaS (SAML) applications: the IdP-facing public key (certificate).
+	SaasPublicKey string `protobuf:"bytes,6,opt,name=saas_public_key,json=saasPublicKey,proto3" json:"saas_public_key,omitempty"`
+	// For SaaS (SAML) applications: the single sign-on (SSO) endpoint URL.
+	SaasSsoEndpoint string `protobuf:"bytes,7,opt,name=saas_sso_endpoint,json=saasSsoEndpoint,proto3" json:"saas_sso_endpoint,omitempty"`
+	// For SaaS (SAML) applications: the IdP entity ID.
+	SaasIdpEntityId string `protobuf:"bytes,8,opt,name=saas_idp_entity_id,json=saasIdpEntityId,proto3" json:"saas_idp_entity_id,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *CloudflareZeroTrustAccessApplicationStackOutputs) Reset() {
@@ -73,16 +84,51 @@ func (x *CloudflareZeroTrustAccessApplicationStackOutputs) GetApplicationId() st
 	return ""
 }
 
-func (x *CloudflareZeroTrustAccessApplicationStackOutputs) GetPublicHostname() string {
+func (x *CloudflareZeroTrustAccessApplicationStackOutputs) GetAud() string {
 	if x != nil {
-		return x.PublicHostname
+		return x.Aud
 	}
 	return ""
 }
 
-func (x *CloudflareZeroTrustAccessApplicationStackOutputs) GetPolicyId() string {
+func (x *CloudflareZeroTrustAccessApplicationStackOutputs) GetDomain() string {
 	if x != nil {
-		return x.PolicyId
+		return x.Domain
+	}
+	return ""
+}
+
+func (x *CloudflareZeroTrustAccessApplicationStackOutputs) GetSaasClientId() string {
+	if x != nil {
+		return x.SaasClientId
+	}
+	return ""
+}
+
+func (x *CloudflareZeroTrustAccessApplicationStackOutputs) GetSaasClientSecret() string {
+	if x != nil {
+		return x.SaasClientSecret
+	}
+	return ""
+}
+
+func (x *CloudflareZeroTrustAccessApplicationStackOutputs) GetSaasPublicKey() string {
+	if x != nil {
+		return x.SaasPublicKey
+	}
+	return ""
+}
+
+func (x *CloudflareZeroTrustAccessApplicationStackOutputs) GetSaasSsoEndpoint() string {
+	if x != nil {
+		return x.SaasSsoEndpoint
+	}
+	return ""
+}
+
+func (x *CloudflareZeroTrustAccessApplicationStackOutputs) GetSaasIdpEntityId() string {
+	if x != nil {
+		return x.SaasIdpEntityId
 	}
 	return ""
 }
@@ -91,11 +137,16 @@ var File_org_openmcf_provider_cloudflare_cloudflarezerotrustaccessapplication_v1
 
 const file_org_openmcf_provider_cloudflare_cloudflarezerotrustaccessapplication_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
-	"[org/openmcf/provider/cloudflare/cloudflarezerotrustaccessapplication/v1/stack_outputs.proto\x12Gorg.openmcf.provider.cloudflare.cloudflarezerotrustaccessapplication.v1\"\x9f\x01\n" +
+	"[org/openmcf/provider/cloudflare/cloudflarezerotrustaccessapplication/v1/stack_outputs.proto\x12Gorg.openmcf.provider.cloudflare.cloudflarezerotrustaccessapplication.v1\"\xd8\x02\n" +
 	"0CloudflareZeroTrustAccessApplicationStackOutputs\x12%\n" +
-	"\x0eapplication_id\x18\x01 \x01(\tR\rapplicationId\x12'\n" +
-	"\x0fpublic_hostname\x18\x02 \x01(\tR\x0epublicHostname\x12\x1b\n" +
-	"\tpolicy_id\x18\x03 \x01(\tR\bpolicyIdB\xb6\x04\n" +
+	"\x0eapplication_id\x18\x01 \x01(\tR\rapplicationId\x12\x10\n" +
+	"\x03aud\x18\x02 \x01(\tR\x03aud\x12\x16\n" +
+	"\x06domain\x18\x03 \x01(\tR\x06domain\x12$\n" +
+	"\x0esaas_client_id\x18\x04 \x01(\tR\fsaasClientId\x12,\n" +
+	"\x12saas_client_secret\x18\x05 \x01(\tR\x10saasClientSecret\x12&\n" +
+	"\x0fsaas_public_key\x18\x06 \x01(\tR\rsaasPublicKey\x12*\n" +
+	"\x11saas_sso_endpoint\x18\a \x01(\tR\x0fsaasSsoEndpoint\x12+\n" +
+	"\x12saas_idp_entity_id\x18\b \x01(\tR\x0fsaasIdpEntityIdB\xb6\x04\n" +
 	"Kcom.org.openmcf.provider.cloudflare.cloudflarezerotrustaccessapplication.v1B\x11StackOutputsProtoP\x01Z\x90\x01github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarezerotrustaccessapplication/v1;cloudflarezerotrustaccessapplicationv1\xa2\x02\x05OOPCC\xaa\x02GOrg.Openmcf.Provider.Cloudflare.Cloudflarezerotrustaccessapplication.V1\xca\x02GOrg\\Openmcf\\Provider\\Cloudflare\\Cloudflarezerotrustaccessapplication\\V1\xe2\x02SOrg\\Openmcf\\Provider\\Cloudflare\\Cloudflarezerotrustaccessapplication\\V1\\GPBMetadata\xea\x02LOrg::Openmcf::Provider::Cloudflare::Cloudflarezerotrustaccessapplication::V1b\x06proto3"
 
 var (

@@ -194,6 +194,8 @@ go_library(
         "//apis/org/openmcf/provider/cloudflare/cloudflareworker/v1:cloudflareworker",
         "//apis/org/openmcf/provider/cloudflare/cloudflareworkerskvpair/v1:cloudflareworkerskvpair",
         "//apis/org/openmcf/provider/cloudflare/cloudflarezerotrustaccessapplication/v1:cloudflarezerotrustaccessapplication",
+        "//apis/org/openmcf/provider/cloudflare/cloudflarezerotrustaccessgroup/v1:cloudflarezerotrustaccessgroup",
+        "//apis/org/openmcf/provider/cloudflare/cloudflarezerotrustaccesspolicy/v1:cloudflarezerotrustaccesspolicy",
         "//apis/org/openmcf/provider/confluent/confluentkafka/v1:confluentkafka",
         "//apis/org/openmcf/provider/digitalocean/digitaloceanappplatformservice/v1:digitaloceanappplatformservice",
         "//apis/org/openmcf/provider/digitalocean/digitaloceanbucket/v1:digitaloceanbucket",

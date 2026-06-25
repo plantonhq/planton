@@ -1,0 +1,373 @@
+syntax = "proto3";
+
+package org.openmcf.provider.cloudflare.cloudflarezerotrustaccessgroup.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// CloudflareZeroTrustAccessGroupSpec defines a reusable Cloudflare Zero Trust
+// Access group: a named bundle of access rules (the same include/exclude/require
+// building blocks an Access policy uses) that can be referenced by many policies
+// and other groups via the `group` rule. Factoring shared membership criteria
+// (an engineering team, a set of corporate email domains, a country allow-list)
+// into a group keeps policies small and lets the criteria evolve in one place.
+//
+// A group is account-scoped or zone-scoped (exactly one of account_id or
+// zone_id). Account-scoped groups are the common case and can be reused across
+// every application in the account.
+message CloudflareZeroTrustAccessGroupSpec {
+  // Exactly one of account_id or zone_id must be set: a group lives either at the
+  // account level (reusable across all the account's applications — the common
+  // case) or scoped to a single zone.
+  option (buf.validate.message).cel = {
+    id: "spec.account_xor_zone"
+    message: "set exactly one of account_id or zone_id"
+    expression: "(this.account_id != '') != has(this.zone_id)"
+  };
+
+  // The Cloudflare account ID that owns this group. Set this for an
+  // account-scoped group (reusable across every application in the account).
+  // Mutually exclusive with zone_id.
+  string account_id = 1 [(buf.validate.field).cel = {
+    id: "account_id.hex32"
+    message: "account_id must be a 32-character hex string"
+    expression: "this == '' || this.matches('^[0-9a-fA-F]{32}$')"
+  }];
+
+  // The Cloudflare zone this group is scoped to, as a literal zone ID or a
+  // reference to a CloudflareDnsZone. Set this for a zone-scoped group. Mutually
+  // exclusive with account_id.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef zone_id = 2 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = CloudflareDnsZone,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
+  ];
+
+  // The display name of the Access group.
+  string name = 3 [(buf.validate.field).string.min_len = 1];
+
+  // Rules evaluated with an OR operator: a user matches the group if they satisfy
+  // ANY include rule. At least one include rule is required.
+  repeated CloudflareAccessRule include = 4 [(buf.validate.field).repeated.min_items = 1];
+
+  // Rules evaluated with a NOT operator: a user is removed from the group if they
+  // satisfy ANY exclude rule (exclude wins over include). Optional.
+  repeated CloudflareAccessRule exclude = 5;
+
+  // Rules evaluated with an AND operator: a user must satisfy EVERY require rule
+  // to remain in the group (e.g. require a country AND a device-posture check).
+  // Optional.
+  repeated CloudflareAccessRule require = 6;
+
+  // Whether this is the account's default Access group, automatically included in
+  // the membership of newly created applications. Defaults to false.
+  bool is_default = 7;
+}
+
+// CloudflareAccessRule is a single membership criterion. Exactly one variant is
+// set (the rule's "type"); the provider evaluates the chosen variant. The same
+// rule shape powers Access groups and Access policies, mirroring Cloudflare's own
+// include/exclude/require model.
+message CloudflareAccessRule {
+  oneof rule {
+    option (buf.validate.oneof).required = true;
+
+    // Match a single email address (e.g. "jane@example.com").
+    AccessRuleEmail email = 1;
+
+    // Match any email at a domain (e.g. "example.com").
+    AccessRuleEmailDomain email_domain = 2;
+
+    // Match emails in a Cloudflare email list (by list ID).
+    AccessRuleListRef email_list = 3;
+
+    // Match everyone (an unconditional allow building block).
+    AccessRuleEmpty everyone = 4;
+
+    // Match a client IP or CIDR range (e.g. "203.0.113.0/24").
+    AccessRuleIp ip = 5;
+
+    // Match client IPs in a Cloudflare IP list (by list ID).
+    AccessRuleListRef ip_list = 6;
+
+    // Match a valid mutual-TLS client certificate (presence only).
+    AccessRuleEmpty certificate = 7;
+
+    // Match members of another Access group (group-of-groups composition).
+    AccessRuleGroupRef group = 8;
+
+    // Match an Azure AD / Entra ID group.
+    AccessRuleAzureAd azure_ad = 9;
+
+    // Match a GitHub organization (optionally a specific team).
+    AccessRuleGithubOrganization github_organization = 10;
+
+    // Match a Google Workspace group.
+    AccessRuleGsuite gsuite = 11;
+
+    // Match an Okta group.
+    AccessRuleOkta okta = 12;
+
+    // Match a SAML attribute name/value pair.
+    AccessRuleSaml saml = 13;
+
+    // Match an OIDC claim name/value pair.
+    AccessRuleOidc oidc = 14;
+
+    // Match an authentication context from an identity provider.
+    AccessRuleAuthContext auth_context = 15;
+
+    // Match a specific authentication method (AMR value, e.g. "mfa", "pwd").
+    AccessRuleAuthMethod auth_method = 16;
+
+    // Match an mTLS client certificate common name.
+    AccessRuleCommonName common_name = 17;
+
+    // Match a country by ISO 3166-1 alpha-2 code (e.g. "US").
+    AccessRuleGeo geo = 18;
+
+    // Match a device-posture check result (by posture integration UID).
+    AccessRuleDevicePosture device_posture = 19;
+
+    // Delegate the decision to an external evaluation service.
+    AccessRuleExternalEvaluation external_evaluation = 20;
+
+    // Match users who authenticated through a specific login method / IdP.
+    AccessRuleLoginMethod login_method = 21;
+
+    // Match a specific Access service token (by token ID).
+    AccessRuleServiceToken service_token = 22;
+
+    // Match any valid Access service token (machine-to-machine).
+    AccessRuleEmpty any_valid_service_token = 23;
+
+    // Match a token minted by a linked Access application (by app UID).
+    AccessRuleLinkedAppToken linked_app_token = 24;
+
+    // Match users whose Cloudflare user-risk score is in the given set.
+    AccessRuleUserRiskScore user_risk_score = 25;
+
+    // Match members of the Cloudflare account (by account ID).
+    //
+    // tofu↔pulumi parity: the Pulumi Cloudflare SDK (v6.17.0) does not yet expose
+    // this rule variant; the Terraform module implements it and the Pulumi module
+    // omits it. See the Pulumi module README.
+    AccessRuleCloudflareAccountMember cloudflare_account_member = 26;
+  }
+}
+
+// AccessRuleEmpty is a rule with no parameters (everyone / certificate /
+// any_valid_service_token). The presence of the variant is the entire criterion.
+message AccessRuleEmpty {}
+
+// AccessRuleEmail matches one email address.
+message AccessRuleEmail {
+  // The email address to match.
+  string email = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.email = true
+  ];
+}
+
+// AccessRuleEmailDomain matches any email at a domain.
+message AccessRuleEmailDomain {
+  // The email domain to match (e.g. "example.com").
+  string domain = 1 [(buf.validate.field).required = true];
+}
+
+// AccessRuleIp matches a client IP or CIDR range.
+message AccessRuleIp {
+  // An IPv4/IPv6 address or CIDR range (e.g. "203.0.113.4" or "203.0.113.0/24").
+  string ip = 1 [(buf.validate.field).required = true];
+}
+
+// AccessRuleListRef matches entries in a Cloudflare list (email list or IP list).
+message AccessRuleListRef {
+  // The Cloudflare list ID, as a literal or a reference to another resource's
+  // output (future-proofed for a first-class list kind).
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef id = 1 [(buf.validate.field).required = true];
+}
+
+// AccessRuleGroupRef matches members of another Access group.
+message AccessRuleGroupRef {
+  // The Access group to include, as a literal group ID or a reference to a
+  // CloudflareZeroTrustAccessGroup — enabling group-of-groups composition.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef id = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = CloudflareZeroTrustAccessGroup,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.group_id"
+  ];
+}
+
+// AccessRuleAzureAd matches an Azure AD / Entra ID group.
+message AccessRuleAzureAd {
+  // The Azure AD group ID.
+  string id = 1 [(buf.validate.field).required = true];
+
+  // The Cloudflare identity-provider ID for the Azure AD connection, as a literal
+  // or a reference to another resource's output.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef identity_provider_id = 2 [(buf.validate.field).required = true];
+}
+
+// AccessRuleGithubOrganization matches a GitHub organization (and optional team).
+message AccessRuleGithubOrganization {
+  // The Cloudflare identity-provider ID for the GitHub connection.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef identity_provider_id = 1 [(buf.validate.field).required = true];
+
+  // The GitHub organization name.
+  string name = 2 [(buf.validate.field).required = true];
+
+  // Optional GitHub team slug within the organization; omit to match the whole org.
+  string team = 3;
+}
+
+// AccessRuleGsuite matches a Google Workspace group.
+message AccessRuleGsuite {
+  // The Google Workspace group email.
+  string email = 1 [(buf.validate.field).required = true];
+
+  // The Cloudflare identity-provider ID for the Google Workspace connection.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef identity_provider_id = 2 [(buf.validate.field).required = true];
+}
+
+// AccessRuleOkta matches an Okta group.
+message AccessRuleOkta {
+  // The Okta group name.
+  string name = 1 [(buf.validate.field).required = true];
+
+  // The Cloudflare identity-provider ID for the Okta connection.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef identity_provider_id = 2 [(buf.validate.field).required = true];
+}
+
+// AccessRuleSaml matches a SAML attribute name/value pair.
+message AccessRuleSaml {
+  // The SAML attribute name (e.g. "groups").
+  string attribute_name = 1 [(buf.validate.field).required = true];
+
+  // The SAML attribute value to match.
+  string attribute_value = 2 [(buf.validate.field).required = true];
+
+  // The Cloudflare identity-provider ID for the SAML connection.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef identity_provider_id = 3 [(buf.validate.field).required = true];
+}
+
+// AccessRuleOidc matches an OIDC claim name/value pair.
+message AccessRuleOidc {
+  // The OIDC claim name (e.g. "groups").
+  string claim_name = 1 [(buf.validate.field).required = true];
+
+  // The OIDC claim value to match.
+  string claim_value = 2 [(buf.validate.field).required = true];
+
+  // The Cloudflare identity-provider ID for the OIDC connection.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef identity_provider_id = 3 [(buf.validate.field).required = true];
+}
+
+// AccessRuleAuthContext matches an authentication context from an IdP.
+message AccessRuleAuthContext {
+  // The authentication-context ID.
+  string id = 1 [(buf.validate.field).required = true];
+
+  // The authentication-context "ac_id" as configured at the identity provider.
+  string ac_id = 2 [(buf.validate.field).required = true];
+
+  // The Cloudflare identity-provider ID this auth context belongs to.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef identity_provider_id = 3 [(buf.validate.field).required = true];
+}
+
+// AccessRuleAuthMethod matches a specific authentication method (AMR).
+message AccessRuleAuthMethod {
+  // The authentication method reference value (e.g. "mfa", "pwd", "swk").
+  string auth_method = 1 [(buf.validate.field).required = true];
+}
+
+// AccessRuleCommonName matches an mTLS client-certificate common name.
+message AccessRuleCommonName {
+  // The certificate common name to match.
+  string common_name = 1 [(buf.validate.field).required = true];
+}
+
+// AccessRuleGeo matches a country.
+message AccessRuleGeo {
+  // The ISO 3166-1 alpha-2 country code (e.g. "US", "DE").
+  string country_code = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.len = 2
+  ];
+}
+
+// AccessRuleDevicePosture matches a device-posture check result.
+message AccessRuleDevicePosture {
+  // The device-posture integration UID whose result must pass, as a literal or a
+  // reference to another resource's output.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef integration_uid = 1 [(buf.validate.field).required = true];
+}
+
+// AccessRuleExternalEvaluation delegates the decision to an external service.
+message AccessRuleExternalEvaluation {
+  // The URL Cloudflare calls to evaluate the request.
+  string evaluate_url = 1 [(buf.validate.field).required = true];
+
+  // The URL serving the public keys used to verify the evaluation response.
+  string keys_url = 2 [(buf.validate.field).required = true];
+}
+
+// AccessRuleLoginMethod matches users who authenticated via a specific IdP.
+message AccessRuleLoginMethod {
+  // The Cloudflare identity-provider ID of the required login method, as a literal
+  // or a reference to another resource's output.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef id = 1 [(buf.validate.field).required = true];
+}
+
+// AccessRuleServiceToken matches a specific Access service token.
+message AccessRuleServiceToken {
+  // The Access service-token ID, as a literal or a reference to another resource's
+  // output (future-proofed for a first-class service-token kind).
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef token_id = 1 [(buf.validate.field).required = true];
+}
+
+// AccessRuleLinkedAppToken matches a token minted by a linked Access application.
+message AccessRuleLinkedAppToken {
+  // The UID of the linked Access application, as a literal or a reference to
+  // another resource's output.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef app_uid = 1 [(buf.validate.field).required = true];
+}
+
+// AccessRuleUserRiskScore matches users whose Cloudflare risk score is in a set.
+message AccessRuleUserRiskScore {
+  // Cloudflare user-risk levels.
+  enum Level {
+    // Unspecified (invalid).
+    level_unspecified = 0;
+    // Low risk.
+    low = 1;
+    // Medium risk.
+    medium = 2;
+    // High risk.
+    high = 3;
+    // No score computed yet.
+    unscored = 4;
+  }
+
+  // The set of risk levels that match. At least one is required. (The field name
+  // mirrors the Cloudflare provider's nested attribute for a 1:1 mapping.)
+  repeated Level user_risk_score = 1 [
+    (buf.validate.field).repeated.min_items = 1,
+    (buf.validate.field).repeated.items.enum.defined_only = true,
+    (buf.validate.field).cel = {
+      id: "user_risk_score.levels_not_unspecified"
+      message: "user-risk levels must be low, medium, high, or unscored"
+      expression: "this.all(l, l != 0)"
+    }
+  ];
+}
+
+// AccessRuleCloudflareAccountMember matches members of a Cloudflare account.
+message AccessRuleCloudflareAccountMember {
+  // The Cloudflare account ID whose members match. Omit to match the account that
+  // owns this group.
+  string account_id = 1 [(buf.validate.field).cel = {
+    id: "cloudflare_account_member.account_id_hex32"
+    message: "account_id must be a 32-character hex string"
+    expression: "this == '' || this.matches('^[0-9a-fA-F]{32}$')"
+  }];
+}

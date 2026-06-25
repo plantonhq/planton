@@ -1555,6 +1555,16 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "cflbm"
   }];
+  CloudflareZeroTrustAccessPolicy = 1813 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfztp"
+  }];
+  CloudflareZeroTrustAccessGroup = 1814 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfztg"
+  }];
 
   // 2100–2299: Auth0 resources
   Auth0Connection = 2100 [(kind_meta) = {

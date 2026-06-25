@@ -1,0 +1,21 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "module",
+    srcs = [
+        "locals.go",
+        "main.go",
+        "outputs.go",
+        "policy.go",
+    ],
+    importpath = "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarezerotrustaccesspolicy/v1/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/org/openmcf/provider/cloudflare",
+        "//apis/org/openmcf/provider/cloudflare/cloudflarezerotrustaccesspolicy/v1:cloudflarezerotrustaccesspolicy",
+        "//pkg/iac/pulumi/pulumimodule/provider/cloudflare/pulumicloudflareprovider",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_cloudflare_sdk_v6//go/cloudflare",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)

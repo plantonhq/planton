@@ -324,15 +324,41 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// CloudflareZeroTrustAccessApplication: both engines emit the
-			// application id, protected hostname, and policy id as flat scalars.
+			// application id, audience tag, protected domain, and SaaS material.
 			name: "CloudflareZeroTrustAccessApplication",
 			kind: cloudresourcekind.CloudResourceKind_CloudflareZeroTrustAccessApplication,
 			rawOutputs: map[string]interface{}{
-				"application_id":  "f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
-				"public_hostname": "dashboard.example.com",
-				"policy_id":       "699d98642c564d2e855e9661899b7252",
+				"application_id":     "f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
+				"aud":                "8a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b",
+				"domain":             "dashboard.example.com",
+				"saas_client_id":     "client-abc",
+				"saas_client_secret": "secret-xyz",
+				"saas_public_key":    "MIIBIjANBgkqh...",
+				"saas_sso_endpoint":  "https://example.cloudflareaccess.com/cdn-cgi/access/sso/saml/abc",
+				"saas_idp_entity_id": "https://example.cloudflareaccess.com",
 			},
-			mustPopulate: []string{"application_id", "public_hostname", "policy_id"},
+			mustPopulate: []string{
+				"application_id", "aud", "domain", "saas_client_id", "saas_client_secret",
+				"saas_public_key", "saas_sso_endpoint", "saas_idp_entity_id",
+			},
+		},
+		{
+			// CloudflareZeroTrustAccessPolicy: both engines emit the policy id.
+			name: "CloudflareZeroTrustAccessPolicy",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareZeroTrustAccessPolicy,
+			rawOutputs: map[string]interface{}{
+				"policy_id": "699d98642c564d2e855e9661899b7252",
+			},
+			mustPopulate: []string{"policy_id"},
+		},
+		{
+			// CloudflareZeroTrustAccessGroup: both engines emit the group id.
+			name: "CloudflareZeroTrustAccessGroup",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareZeroTrustAccessGroup,
+			rawOutputs: map[string]interface{}{
+				"group_id": "aa9d98642c564d2e855e9661899b7252",
+			},
+			mustPopulate: []string{"group_id"},
 		},
 	}
 

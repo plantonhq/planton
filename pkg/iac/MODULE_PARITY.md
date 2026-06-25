@@ -169,3 +169,28 @@ consecutive up/down, follow-redirects, allow-insecure, probe-zone) with a CEL ru
 tcp/udp_icmp/smtp. The Pulumi SDK is pinned at **v6.17.0** and tofu↔Pulumi are at **full parity** across
 the family (no deferrals). The family has no secret-bearing fields. See the conformance guard's
 `CloudflareLoadBalancer`, `CloudflareLoadBalancerPool`, and `CloudflareLoadBalancerMonitor` cases.
+
+The Zero Trust Access family (`CloudflareZeroTrustAccessApplication`, `CloudflareZeroTrustAccessPolicy`,
+`CloudflareZeroTrustAccessGroup`) pins the Cloudflare provider to v5 on both engines and mirrors
+Cloudflare's own resource topology: a reusable account/zone-scoped **group** (a named bundle of access
+rules) is referenced by a reusable account-scoped **policy** (decision + rules), which is referenced by
+the **application** (the protected resource) via `policies[]` (`StringValueOrRef` → policy id). Policy and
+group share an identical `CloudflareAccessRule` oneof (26 variants: identity, network/device, service
+token, user-risk, and external evaluation) modeled independently in each component (the codebase has no
+cross-component proto imports); the Terraform modules pass the rule lists straight through (proto field
+names match the provider 1:1, including the nested `user_risk_score.user_risk_score`), while the Pulumi
+modules map each variant explicitly. The application carries the full v5 surface — typed `type` enum,
+`destinations`, app-launcher visuals, self-hosted cookie/CORS/interstitial controls, `mfa_config`,
+`oauth_configuration`, `target_criteria` (with `target_attributes` rebuilt into the provider's
+`{name => values}` map), and the deep `saas_app` (SAML + OIDC) and `scim_config` subtrees — and exports
+`application_id`, `aud`, `domain`, and the SaaS signing/SSO material. Secret-bearing SCIM authentication
+fields (`password`, `token`, `client_secret`) are `(sensitive)`.
+
+**One tofu↔Pulumi parity gap (documented):** the `cloudflare_account_member` access-rule variant exists in
+the Terraform provider (v5.21.1) but **not in the Pulumi Cloudflare SDK (v6.17.0)** for group/policy rules.
+The proto models it (full source-of-truth) and the Terraform modules provision it; the Pulumi modules log a
+warning and skip that one variant. Every other field is at full parity. When a newer Pulumi SDK exposes
+`ZeroTrustAccess{Group,Policy}Include/Exclude/Require.CloudflareAccountMember`, wire it in and remove the
+note (see each component's Pulumi `README.md`). See the conformance guard's
+`CloudflareZeroTrustAccessApplication`, `CloudflareZeroTrustAccessPolicy`, and
+`CloudflareZeroTrustAccessGroup` cases.
