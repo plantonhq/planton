@@ -365,6 +365,12 @@ const (
 	CloudResourceKind_CloudflareZeroTrustTunnel               CloudResourceKind = 1817
 	CloudResourceKind_CloudflareZeroTrustTunnelVirtualNetwork CloudResourceKind = 1818
 	CloudResourceKind_CloudflareZeroTrustTunnelRoute          CloudResourceKind = 1819
+	CloudResourceKind_CloudflareList                          CloudResourceKind = 1820
+	CloudResourceKind_CloudflareListItem                      CloudResourceKind = 1821
+	CloudResourceKind_CloudflareTurnstileWidget               CloudResourceKind = 1822
+	CloudResourceKind_CloudflareEmailRoutingZone              CloudResourceKind = 1823
+	CloudResourceKind_CloudflareEmailRoutingRule              CloudResourceKind = 1824
+	CloudResourceKind_CloudflareEmailRoutingAddress           CloudResourceKind = 1825
 	// 2100–2299: Auth0 resources
 	CloudResourceKind_Auth0Connection     CloudResourceKind = 2100
 	CloudResourceKind_Auth0Client         CloudResourceKind = 2101
@@ -775,6 +781,12 @@ var (
 		1817: "CloudflareZeroTrustTunnel",
 		1818: "CloudflareZeroTrustTunnelVirtualNetwork",
 		1819: "CloudflareZeroTrustTunnelRoute",
+		1820: "CloudflareList",
+		1821: "CloudflareListItem",
+		1822: "CloudflareTurnstileWidget",
+		1823: "CloudflareEmailRoutingZone",
+		1824: "CloudflareEmailRoutingRule",
+		1825: "CloudflareEmailRoutingAddress",
 		2100: "Auth0Connection",
 		2101: "Auth0Client",
 		2102: "Auth0EventStream",
@@ -1177,6 +1189,12 @@ var (
 		"CloudflareZeroTrustTunnel":               1817,
 		"CloudflareZeroTrustTunnelVirtualNetwork": 1818,
 		"CloudflareZeroTrustTunnelRoute":          1819,
+		"CloudflareList":                          1820,
+		"CloudflareListItem":                      1821,
+		"CloudflareTurnstileWidget":               1822,
+		"CloudflareEmailRoutingZone":              1823,
+		"CloudflareEmailRoutingRule":              1824,
+		"CloudflareEmailRoutingAddress":           1825,
 		"Auth0Connection":                         2100,
 		"Auth0Client":                             2101,
 		"Auth0EventStream":                        2102,
@@ -1561,7 +1579,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x04kind\x18\x02 \x01(\tR\x04kind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*ҍ\x01\n" +
+	"\x02v1\x10\x01*\xed\x8f\x01\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12,\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1881,7 +1899,14 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\b\x0f\x10\x01\"\x04cfpg\x120\n" +
 	"\x19CloudflareZeroTrustTunnel\x10\x99\x0e\x1a\x10\xa2\xf7\x04\f\b\x0f\x10\x01\"\x06cfztun\x12>\n" +
 	"'CloudflareZeroTrustTunnelVirtualNetwork\x10\x9a\x0e\x1a\x10\xa2\xf7\x04\f\b\x0f\x10\x01\"\x06cfztvn\x125\n" +
-	"\x1eCloudflareZeroTrustTunnelRoute\x10\x9b\x0e\x1a\x10\xa2\xf7\x04\f\b\x0f\x10\x01\"\x06cfztrt\x12&\n" +
+	"\x1eCloudflareZeroTrustTunnelRoute\x10\x9b\x0e\x1a\x10\xa2\xf7\x04\f\b\x0f\x10\x01\"\x06cfztrt\x12%\n" +
+	"\x0eCloudflareList\x10\x9c\x0e\x1a\x10\xa2\xf7\x04\f\b\x0f\x10\x01\"\x06cflist\x12'\n" +
+	"\x12CloudflareListItem\x10\x9d\x0e\x1a\x0e\xa2\xf7\x04\n" +
+	"\b\x0f\x10\x01\"\x04cfli\x120\n" +
+	"\x19CloudflareTurnstileWidget\x10\x9e\x0e\x1a\x10\xa2\xf7\x04\f\b\x0f\x10\x01\"\x06cfturn\x120\n" +
+	"\x1aCloudflareEmailRoutingZone\x10\x9f\x0e\x1a\x0f\xa2\xf7\x04\v\b\x0f\x10\x01\"\x05cferz\x120\n" +
+	"\x1aCloudflareEmailRoutingRule\x10\xa0\x0e\x1a\x0f\xa2\xf7\x04\v\b\x0f\x10\x01\"\x05cferr\x123\n" +
+	"\x1dCloudflareEmailRoutingAddress\x10\xa1\x0e\x1a\x0f\xa2\xf7\x04\v\b\x0f\x10\x01\"\x05cfera\x12&\n" +
 	"\x0fAuth0Connection\x10\xb4\x10\x1a\x10\xa2\xf7\x04\f\b\x15\x10\x01\"\x06a0conn\x12!\n" +
 	"\vAuth0Client\x10\xb5\x10\x1a\x0f\xa2\xf7\x04\v\b\x15\x10\x01\"\x05a0cli\x12%\n" +
 	"\x10Auth0EventStream\x10\xb6\x10\x1a\x0e\xa2\xf7\x04\n" +

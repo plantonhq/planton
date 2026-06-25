@@ -427,6 +427,75 @@ func TestStackOutputsConformance(t *testing.T) {
 			},
 			mustPopulate: []string{"route_id", "network"},
 		},
+		{
+			// CloudflareList: both engines emit the list id, name, and kind.
+			name: "CloudflareList",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareList,
+			rawOutputs: map[string]interface{}{
+				"list_id": "2c0fc9fa937b11eaa1b71c4d701ab86e",
+				"name":    "office_allowlist",
+				"kind":    "ip",
+			},
+			mustPopulate: []string{"list_id", "name", "kind"},
+		},
+		{
+			// CloudflareListItem: both engines emit the item id and parent list id.
+			name: "CloudflareListItem",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareListItem,
+			rawOutputs: map[string]interface{}{
+				"item_id": "70c4e0c9b0e34f1a9b6f2d3c4a5b6c7d",
+				"list_id": "2c0fc9fa937b11eaa1b71c4d701ab86e",
+			},
+			mustPopulate: []string{"item_id", "list_id"},
+		},
+		{
+			// CloudflareTurnstileWidget: both engines emit the site key, the
+			// (sensitive) secret, and timestamps.
+			name: "CloudflareTurnstileWidget",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareTurnstileWidget,
+			rawOutputs: map[string]interface{}{
+				"sitekey":     "0x4AAAAAAA_examplesitekey",
+				"secret":      "0x4AAAAAAA_examplesecretkey",
+				"created_on":  "2026-06-25T00:00:00Z",
+				"modified_on": "2026-06-25T00:00:00Z",
+			},
+			mustPopulate: []string{"sitekey", "secret"},
+		},
+		{
+			// CloudflareEmailRoutingZone: both engines emit the zone id, enabled
+			// flag, status, and name.
+			name: "CloudflareEmailRoutingZone",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareEmailRoutingZone,
+			rawOutputs: map[string]interface{}{
+				"zone_id": "023e105f4ecef8ad9ca31a8372d0c353",
+				"enabled": "true",
+				"status":  "ready",
+				"name":    "example.com",
+			},
+			mustPopulate: []string{"zone_id", "status", "name"},
+		},
+		{
+			// CloudflareEmailRoutingRule: both engines emit the rule id and zone id.
+			name: "CloudflareEmailRoutingRule",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareEmailRoutingRule,
+			rawOutputs: map[string]interface{}{
+				"rule_id": "a1b2c3d4e5f60718293a4b5c6d7e8f90",
+				"zone_id": "023e105f4ecef8ad9ca31a8372d0c353",
+			},
+			mustPopulate: []string{"rule_id", "zone_id"},
+		},
+		{
+			// CloudflareEmailRoutingAddress: both engines emit the address id,
+			// email, and timestamps.
+			name: "CloudflareEmailRoutingAddress",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareEmailRoutingAddress,
+			rawOutputs: map[string]interface{}{
+				"address_id": "b8f2e1c0a1b2c3d4e5f60718293a4b5c",
+				"email":      "ops@example.com",
+				"created":    "2026-06-25T00:00:00Z",
+			},
+			mustPopulate: []string{"address_id", "email"},
+		},
 	}
 
 	for _, tc := range cases {

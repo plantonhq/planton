@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.cloudflare.cloudflarelistitem.v1;
+
+import "org/openmcf/provider/cloudflare/cloudflarelistitem/v1/api.proto";
+import "org/openmcf/provider/cloudflare/provider.proto";
+
+//cloudflare-list-item stack-input
+message CloudflareListItemStackInput {
+  //target cloud-resource
+  CloudflareListItem target = 1;
+  //provider-config
+  org.openmcf.provider.cloudflare.CloudflareProviderConfig provider_config = 2;
+}

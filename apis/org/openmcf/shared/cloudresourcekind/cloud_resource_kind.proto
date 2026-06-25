@@ -1590,6 +1590,36 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "cfztrt"
   }];
+  CloudflareList = 1820 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cflist"
+  }];
+  CloudflareListItem = 1821 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfli"
+  }];
+  CloudflareTurnstileWidget = 1822 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfturn"
+  }];
+  CloudflareEmailRoutingZone = 1823 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cferz"
+  }];
+  CloudflareEmailRoutingRule = 1824 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cferr"
+  }];
+  CloudflareEmailRoutingAddress = 1825 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfera"
+  }];
 
   // 2100–2299: Auth0 resources
   Auth0Connection = 2100 [(kind_meta) = {

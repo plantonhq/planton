@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package org.openmcf.provider.cloudflare.cloudflareemailroutingaddress.v1;
+
+import "buf/validate/validate.proto";
+
+// CloudflareEmailRoutingAddressSpec declares a verified destination address for
+// Email Routing. Destination addresses are account-scoped (shared across zones)
+// and referenced by routing rules and catch-all rules as forwarding targets.
+//
+// Creating an address triggers a verification email to that mailbox; the address
+// is not usable as a forwarding target until its owner clicks the verification
+// link. The `verified` output reflects this (null until verified).
+message CloudflareEmailRoutingAddressSpec {
+  // The Cloudflare account ID that owns this destination address.
+  string account_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.len = 32,
+    (buf.validate.field).string.pattern = "^[0-9a-fA-F]{32}$"
+  ];
+
+  // The destination email address (e.g. "ops@example.com"). A verification email
+  // is sent here on creation. Immutable — changing it replaces the address.
+  string email = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.email = true
+  ];
+}
