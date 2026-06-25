@@ -11,6 +11,10 @@ failover decisions.
 ## Prerequisites
 
 - A Cloudflare account ID.
+- The **Load Balancing add-on** enabled on the account (paid add-on) — otherwise the
+  Load Balancing API returns `403`.
+- An API token with **Account → Load Balancing: Monitors and Pools → Edit** (monitors
+  are account-scoped).
 
 ## Configuration Reference
 

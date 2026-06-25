@@ -12,7 +12,13 @@ steer traffic to.
 ## Prerequisites
 
 - A Cloudflare account ID.
-- Optionally, a `CloudflareLoadBalancerMonitor` to health-check the origins.
+- The **Load Balancing add-on** enabled on the account (paid add-on) — otherwise the
+  Load Balancing API returns `403`.
+- An API token with **Account → Load Balancing: Monitors and Pools → Edit** (pools are
+  account-scoped).
+- Optionally, a `CloudflareLoadBalancerMonitor` to health-check the origins. When a
+  monitor is attached, origin addresses must be **globally routable** (Cloudflare
+  rejects reserved / non-routable IPs), and `checkRegions` is **capped by plan tier**.
 
 ## Configuration Reference
 

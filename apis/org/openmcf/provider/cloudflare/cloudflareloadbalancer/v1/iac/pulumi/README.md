@@ -30,7 +30,12 @@ arrive resolved via `StringValueOrRef.GetValue()`.
 - `load_balancer_dns_record_name` — the hostname.
 - `load_balancer_cname_target` — the hostname clients point their DNS at.
 
-## Credentials
+## Requirements
 
-The Cloudflare provider is configured from the stack-input provider config /
-`CLOUDFLARE_API_TOKEN`. The referenced pools/monitors are account-scoped resources.
+- **Load Balancing add-on** must be enabled on the account (paid add-on); otherwise
+  the Load Balancing API returns `403`.
+- The Cloudflare provider is configured from the stack-input provider config /
+  `CLOUDFLARE_API_TOKEN`. The token needs **Zone → Load Balancers → Edit** for the
+  zone-scoped load balancer (distinct from the account-level "Load Balancers Account"
+  permission), plus **Account → Load Balancing: Monitors and Pools → Edit** for the
+  pools/monitors it references, and the zone in its Zone Resources scope.

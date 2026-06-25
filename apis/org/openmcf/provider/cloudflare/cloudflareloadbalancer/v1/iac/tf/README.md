@@ -26,7 +26,12 @@ account-scoped pools. Pools and monitors are separate modules
 | `load_balancer_dns_record_name` | The hostname |
 | `load_balancer_cname_target` | The hostname clients point their DNS at |
 
-## Credentials
+## Requirements
 
-The provider reads `CLOUDFLARE_API_TOKEN` from the environment (Load Balancers:
-Edit on the zone; the pools/monitors it references are account-scoped).
+- **Load Balancing add-on** must be enabled on the account (paid add-on); otherwise
+  the Load Balancing API returns `403`.
+- The provider reads `CLOUDFLARE_API_TOKEN` from the environment. The token needs
+  **Zone → Load Balancers → Edit** for the zone-scoped load balancer (distinct from
+  the account-level "Load Balancers Account" permission), plus
+  **Account → Load Balancing: Monitors and Pools → Edit** for the pools/monitors it
+  references, and the zone in its Zone Resources scope.

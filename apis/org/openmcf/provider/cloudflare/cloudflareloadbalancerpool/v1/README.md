@@ -12,6 +12,18 @@ many load balancers across different zones, with an independent lifecycle. Editi
 a pool's origins should not churn the load balancers that reference it — so a pool
 is its own resource, referenced by ID or `valueFrom`.
 
+## Requirements
+
+- **Load Balancing add-on**: Cloudflare Load Balancing is a paid account add-on and
+  must be enabled on the account first, or the entire Load Balancing API returns `403`.
+- **API token**: requires **Account → Load Balancing: Monitors and Pools → Edit**
+  (pools are account-scoped).
+- **Origins must be globally routable** when a `monitor` is attached — Cloudflare
+  rejects reserved / non-routable addresses (e.g. RFC 5737 documentation ranges like
+  `203.0.113.x`) with health monitoring enabled.
+- **`checkRegions` is capped by plan tier** — exceeding the allowed number of probe
+  regions fails validation; leave it empty to health-check from every region.
+
 ## Quick start
 
 ```yaml

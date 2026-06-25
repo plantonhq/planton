@@ -16,7 +16,12 @@ pools here by ID or `valueFrom`.
 
 ## Prerequisites
 
-- Cloudflare Load Balancing add-on enabled (paid feature).
+- Cloudflare Load Balancing add-on enabled on the account (paid feature) — otherwise
+  the Load Balancing API returns `403`.
+- An API token with **Zone → Load Balancers → Edit** (zone-scoped; distinct from the
+  account-level "Load Balancers Account" permission), plus
+  **Account → Load Balancing: Monitors and Pools → Edit** for the pools/monitors it
+  references, and the target zone in the token's Zone Resources scope.
 - An existing Cloudflare DNS zone (literal zone ID or a `CloudflareDnsZone` ref).
 - One or more `CloudflareLoadBalancerPool` resources (each optionally health-checked
   by a `CloudflareLoadBalancerMonitor`).

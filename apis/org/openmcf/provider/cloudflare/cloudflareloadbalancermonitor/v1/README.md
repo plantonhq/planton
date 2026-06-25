@@ -11,6 +11,14 @@ can health-check the origins of many pools. Modeling it as its own resource (rat
 than burying it inside a load balancer) lets you define a health check once and
 reference it from every pool that should share it.
 
+## Requirements
+
+- **Load Balancing add-on**: Cloudflare Load Balancing is a paid account add-on and
+  must be enabled on the account first. Until it is, the entire Load Balancing API
+  (read and write) returns `403`.
+- **API token**: requires **Account → Load Balancing: Monitors and Pools → Edit**
+  (monitors are account-scoped).
+
 ## Quick start
 
 ```yaml

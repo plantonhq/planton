@@ -21,6 +21,17 @@ load balancers, and one monitor can health-check many pools. This load balancer
 references pools by ID or `valueFrom`; define the pools and monitor as their own
 resources.
 
+## Requirements
+
+- **Load Balancing add-on**: Cloudflare Load Balancing is a paid account add-on and
+  must be enabled on the account first, or the entire Load Balancing API returns `403`.
+- **API token**: requires **Zone → Load Balancers → Edit** for the load balancer
+  (zone-scoped), plus **Account → Load Balancing: Monitors and Pools → Edit** for the
+  pools and monitors it references. Note the zone-scoped `Load Balancers` group is
+  distinct from the account-level "Load Balancers Account" permission — the zone-scoped
+  group is what authorizes creating a load balancer on a zone
+  (`POST /zones/{zone}/load_balancers`).
+
 ## Quick start
 
 ```yaml
