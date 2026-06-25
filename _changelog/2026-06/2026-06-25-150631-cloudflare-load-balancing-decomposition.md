@@ -101,13 +101,20 @@ guard); `pkg/secretcoverage` green (the family has no secret-bearing fields);
 `tofu validate` of all three modules against the real v5 provider; kind-map
 regenerated and gazelle BUILD files regenerated.
 
-## Known Limitations
+## Live validation
 
-- A live `tofu apply` could not complete: the test Cloudflare account does not
-  have the Load Balancing add-on enabled, so the entire Load Balancing API
-  (read and write) returns `403`. The modules are `tofu validate`-clean and the
-  plan renders the correct API request; live create/destroy needs an account with
-  Load Balancing entitlement.
+A full **live `tofu apply` + `destroy`** against a real Cloudflare account
+exercised the whole dependency chain end to end: a Monitor, then a Pool wired to
+that monitor (`monitor` FK resolved), then a zone-scoped Load Balancer wired to
+that pool (`default_pools`/`fallback_pool` FKs resolved) on a throwaway hostname
+(`lb-openmcf-test.gitr.dev`), followed by a clean teardown of all three (zero
+leftover resources). The `load_balancer_cname_target` output correctly resolved to
+the hostname. Cloudflare's own server-side validations were observed working
+through the modules along the way (rejecting non-globally-routable origins under an
+attached monitor; enforcing the plan's probe-region cap). Enabling this required
+the account's Load Balancing add-on plus an API token carrying the account-scoped
+`Load Balancing: Monitors and Pools` and the zone-scoped `Load Balancers`
+permission groups.
 
 ## Related Work
 
@@ -117,4 +124,4 @@ regenerated and gazelle BUILD files regenerated.
 
 ---
 
-**Status**: ✅ Production Ready (pending a live apply on a Load-Balancing-entitled account)
+**Status**: ✅ Production Ready (live apply/destroy validated end to end)
