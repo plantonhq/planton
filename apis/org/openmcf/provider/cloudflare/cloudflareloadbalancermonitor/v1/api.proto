@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package org.openmcf.provider.cloudflare.cloudflareloadbalancermonitor.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/cloudflare/cloudflareloadbalancermonitor/v1/spec.proto";
+import "org/openmcf/provider/cloudflare/cloudflareloadbalancermonitor/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// cloudflare-load-balancer-monitor
+message CloudflareLoadBalancerMonitor {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'cloudflare.openmcf.org/v1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'CloudflareLoadBalancerMonitor'];
+
+  //metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  CloudflareLoadBalancerMonitorSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  CloudflareLoadBalancerMonitorStatus status = 5;
+}
+
+// cloudflare-load-balancer-monitor status
+message CloudflareLoadBalancerMonitorStatus {
+  //stack-outputs
+  //  cloudflare-load-balancer-monitor stack-outputs
+  CloudflareLoadBalancerMonitorStackOutputs outputs = 1;
+}

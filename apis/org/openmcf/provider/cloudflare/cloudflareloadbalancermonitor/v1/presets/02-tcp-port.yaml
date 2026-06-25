@@ -1,0 +1,11 @@
+apiVersion: cloudflare.openmcf.org/v1
+kind: CloudflareLoadBalancerMonitor
+metadata:
+  name: db-tcp
+spec:
+  accountId: <cloudflare-account-id>
+  type: tcp
+  port: 5432
+  interval: 60
+  timeout: 5
+  retries: 2

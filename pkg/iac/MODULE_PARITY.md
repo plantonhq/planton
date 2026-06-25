@@ -150,3 +150,22 @@ Hyperdrive's `origin.password`/`origin.access_client_secret` and the worker `sec
 `StringValueOrRef + (sensitive)`. See the conformance guard's `CloudflareWorker`,
 `CloudflareKvNamespace`, `CloudflareWorkersKvPair`, `CloudflareD1Database`, and
 `CloudflareHyperdriveConfig` cases.
+
+The Load Balancing family (`CloudflareLoadBalancer`, `CloudflareLoadBalancerPool`,
+`CloudflareLoadBalancerMonitor`) pins the Cloudflare provider to v5 on both engines and mirrors
+Cloudflare's own resource topology: the monitor and pool are account-scoped, reusable resources, and
+the load balancer is zone-scoped and references pools by id/`StringValueOrRef`. `CloudflareLoadBalancer`
+carries the full v5 steering surface — `default_pools`/`fallback_pool`, `steering_policy`,
+`session_affinity` (+ `session_affinity_attributes`), `region/country/pop_pools` (modeled as
+`[{code, pool_ids[]}]` and rebuilt into the provider's `{code => pool_ids}` map by both engines),
+`adaptive_routing`, `location_strategy`, and `random_steering`; the `rules[]` beta surface is a recorded
+skip. Both engines omit the `none`/`off` enum defaults so the provider applies its own, and
+`load_balancer_cname_target` resolves to the hostname (not the opaque LB id). `CloudflareLoadBalancerPool`
+carries origins (each `address` a `StringValueOrRef` with no fixed kind, plus weight/port/host-header/
+virtual-network/flatten-cname), a `monitor` reference, `check_regions`, `load_shedding`,
+`origin_steering`, and `notification_filter`; `monitor_group` is reserved. `CloudflareLoadBalancerMonitor`
+carries the full probe surface (type, path/codes/body/method/headers, port, interval/timeout/retries,
+consecutive up/down, follow-redirects, allow-insecure, probe-zone) with a CEL rule requiring a port for
+tcp/udp_icmp/smtp. The Pulumi SDK is pinned at **v6.17.0** and tofu↔Pulumi are at **full parity** across
+the family (no deferrals). The family has no secret-bearing fields. See the conformance guard's
+`CloudflareLoadBalancer`, `CloudflareLoadBalancerPool`, and `CloudflareLoadBalancerMonitor` cases.

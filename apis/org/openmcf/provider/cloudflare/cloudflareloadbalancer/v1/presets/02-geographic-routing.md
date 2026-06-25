@@ -1,28 +1,32 @@
 # Geographic Routing
 
-Multiple origins with steering=geo: Cloudflare routes clients to the geographically nearest healthy origin. Use for multi-region deployments where latency matters (e.g., US, EU, APAC).
+A monitor, two regional pools (US and EU), and a load balancer with
+`steeringPolicy: geo` and `regionPools` mapping regions to pools. Users are routed
+to the nearest healthy region, falling back to `defaultPools` when no mapping
+matches.
 
 ## When to Use
 
-- Multi-region backends (US, EU, Asia)
-- Latency-sensitive applications with regional origins
-- Global traffic distribution by user location
+- Multi-region deployments where latency matters
+- Data-residency routing (serve EU users from EU origins)
 
 ## Key Configuration Choices
 
-- **steeringPolicy: geo** (`steeringPolicy: geo`) -- Route by client geography to nearest origin.
-- **origins** (`origins`) -- One per region; address can be IP or hostname.
-- **zoneId** (`zoneId`) -- Zone ID; use value wrapper or reference to CloudflareDnsZone.
+- **`steeringPolicy: geo`** — route by `regionPools`/`countryPools`/`popPools`.
+- **`regionPools`** — map each region code (e.g. `WNAM`, `WEU`) to its pool.
+- **`fallbackPool`** — the pool of last resort if every mapped pool is unhealthy.
+- One reusable monitor health-checks both pools.
 
 ## Placeholders to Replace
 
-| Placeholder | Description | Where to Find |
-|-------------|-------------|---------------|
-| `<cloudflare-zone-id>` | Zone ID containing hostname | CloudflareDnsZone status.outputs.zone_id |
-| `www.example.com` | Hostname for the load balancer | Your application FQDN |
-| `us-origin.example.com`, etc. | Origin hostnames or IPs per region | Your regional origin servers |
+| Placeholder | Description |
+|---|---|
+| `<cloudflare-account-id>` | Account that owns the monitor and pools |
+| `<cloudflare-zone-id>` | Zone containing the hostname |
+| `<www-subdomain>.<your-domain.com>` | Load balancer hostname |
+| `<us-east-origin-ip-or-hostname>` / `<eu-west-origin-ip-or-hostname>` | Regional origin addresses |
 
 ## Related Presets
 
-- **01-active-passive-failover** -- Use for failover instead of geo-routing
-- **03-weighted-ab-testing** -- Use for weighted traffic split
+- **01-active-passive-failover** — simple primary/backup failover
+- **03-weighted-ab-testing** — split traffic across pools by weight

@@ -1,0 +1,158 @@
+syntax = "proto3";
+
+package org.openmcf.provider.cloudflare.cloudflareloadbalancermonitor.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// Health-check protocol a monitor uses to probe origins. Value names match the
+// Cloudflare API strings exactly and are used directly via .String().
+enum CloudflareLoadBalancerMonitorType {
+  // Unspecified — the module treats this as "http" (the Cloudflare default).
+  monitor_type_unspecified = 0;
+  // HTTP health check (application-layer; supports path/codes/body/headers).
+  http = 1;
+  // HTTPS health check (application-layer over TLS).
+  https = 2;
+  // TCP connection check (transport-layer; requires a port).
+  tcp = 3;
+  // UDP check via ICMP (requires a port).
+  udp_icmp = 4;
+  // ICMP echo (ping) reachability check.
+  icmp_ping = 5;
+  // SMTP health check (requires a port).
+  smtp = 6;
+}
+
+// CloudflareLoadBalancerMonitorSpec defines an account-scoped health monitor for
+// Cloudflare Load Balancing. A monitor probes the origins inside a
+// CloudflareLoadBalancerPool and decides whether each origin (and the pool) is
+// healthy. Monitors are reusable: many pools can reference the same monitor.
+message CloudflareLoadBalancerMonitorSpec {
+  // Application-layer fields (path, expected_codes/body, method, headers,
+  // follow_redirects, allow_insecure, probe_zone) apply only to http/https
+  // monitors; a port is required for tcp, udp_icmp, and smtp monitors.
+  option (buf.validate.message).cel = {
+    id: "monitor.port_required_for_l4"
+    message: "a port is required for tcp, udp_icmp, and smtp monitors"
+    expression: "!(this.type in [3, 4, 6]) || this.port > 0"
+  };
+
+  // The Cloudflare account ID that owns this monitor. Must match the account of
+  // every pool that references it.
+  string account_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.len = 32,
+    (buf.validate.field).string.pattern = "^[0-9a-fA-F]{32}$"
+  ];
+
+  // The health-check protocol. Defaults to http when unspecified.
+  CloudflareLoadBalancerMonitorType type = 2 [
+    (buf.validate.field).enum.defined_only = true,
+    (org.openmcf.shared.options.recommended_default) = "http"
+  ];
+
+  // Human-readable description shown in the Cloudflare dashboard.
+  string description = 3;
+
+  // The endpoint path to health-check against (e.g. "/healthz"). Only valid for
+  // http/https monitors.
+  string path = 4;
+
+  // The expected HTTP response code or range that marks an origin healthy
+  // (e.g. "200", "2xx", "200-299"). Only valid for http/https monitors.
+  string expected_codes = 5 [(org.openmcf.shared.options.recommended_default) = "2xx"];
+
+  // A case-insensitive substring that must appear in the response body for the
+  // origin to be considered healthy. Only valid for http/https monitors.
+  string expected_body = 6;
+
+  // The HTTP method for the health check. Leave empty to use the protocol
+  // default ("GET" for http/https, "connection_established" for tcp). Only
+  // meaningful for http/https monitors.
+  string method = 7;
+
+  // HTTP request headers to send with the health check, keyed by header name
+  // (each may carry multiple values). Setting a "Host" header is recommended.
+  // Only valid for http/https monitors.
+  repeated CloudflareLoadBalancerMonitorHeader headers = 8;
+
+  // The port to connect to. Required for tcp, udp_icmp, and smtp monitors; for
+  // http/https set it only when using a non-standard port (defaults: 80/443).
+  int32 port = 9 [(buf.validate.field).cel = {
+    id: "monitor.port_valid_range"
+    message: "port must be 0 (protocol default) or between 1 and 65535"
+    expression: "this == 0 || (this >= 1 && this <= 65535)"
+  }];
+
+  // Seconds between health checks. Leave 0 for the Cloudflare default (60).
+  // Shorter intervals improve failover time but increase origin load.
+  int32 interval = 10 [
+    (org.openmcf.shared.options.recommended_default) = "60",
+    (buf.validate.field).cel = {
+      id: "monitor.interval_non_negative"
+      message: "interval must be 0 (default) or a positive number of seconds"
+      expression: "this >= 0"
+    }
+  ];
+
+  // Seconds to wait before a single probe is considered failed. Leave 0 for the
+  // Cloudflare default (5).
+  int32 timeout = 11 [
+    (org.openmcf.shared.options.recommended_default) = "5",
+    (buf.validate.field).cel = {
+      id: "monitor.timeout_non_negative"
+      message: "timeout must be 0 (default) or a positive number of seconds"
+      expression: "this >= 0"
+    }
+  ];
+
+  // Number of immediate retries after a failed probe before marking the origin
+  // unhealthy. Leave 0 for the Cloudflare default (2).
+  int32 retries = 12 [
+    (org.openmcf.shared.options.recommended_default) = "2",
+    (buf.validate.field).cel = {
+      id: "monitor.retries_non_negative"
+      message: "retries must be 0 (default) or a positive number"
+      expression: "this >= 0"
+    }
+  ];
+
+  // Consecutive passing checks required to mark a previously-unhealthy origin
+  // healthy. Leave 0 to use Cloudflare's behavior.
+  int32 consecutive_up = 13 [(buf.validate.field).cel = {
+    id: "monitor.consecutive_up_non_negative"
+    message: "consecutive_up must be 0 or a positive number"
+    expression: "this >= 0"
+  }];
+
+  // Consecutive failing checks required to mark a healthy origin unhealthy.
+  // Leave 0 to use Cloudflare's behavior.
+  int32 consecutive_down = 14 [(buf.validate.field).cel = {
+    id: "monitor.consecutive_down_non_negative"
+    message: "consecutive_down must be 0 or a positive number"
+    expression: "this >= 0"
+  }];
+
+  // Follow redirects returned by the origin. Only valid for http/https monitors.
+  bool follow_redirects = 15;
+
+  // Skip TLS certificate validation when probing over HTTPS. Only valid for
+  // https monitors; use with care.
+  bool allow_insecure = 16;
+
+  // Probe as if from this zone (emulates the zone while probing). Only valid for
+  // http/https monitors.
+  string probe_zone = 17;
+}
+
+// CloudflareLoadBalancerMonitorHeader is a single HTTP request header (with one
+// or more values) sent with the health check.
+message CloudflareLoadBalancerMonitorHeader {
+  // The header name (e.g. "Host").
+  string name = 1 [(buf.validate.field).required = true];
+
+  // The header value(s). Cloudflare currently supports a single Host override
+  // per monitor, but the API models each header as a list of values.
+  repeated string values = 2 [(buf.validate.field).repeated.min_items = 1];
+}

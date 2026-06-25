@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.cloudflare.cloudflareloadbalancerpool.v1;
+
+import "org/openmcf/provider/cloudflare/cloudflareloadbalancerpool/v1/api.proto";
+import "org/openmcf/provider/cloudflare/provider.proto";
+
+//cloudflare-load-balancer-pool stack-input
+message CloudflareLoadBalancerPoolStackInput {
+  //target cloud-resource
+  CloudflareLoadBalancerPool target = 1;
+  //provider-config
+  org.openmcf.provider.cloudflare.CloudflareProviderConfig provider_config = 2;
+}

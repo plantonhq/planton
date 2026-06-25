@@ -288,6 +288,28 @@ func TestStackOutputsConformance(t *testing.T) {
 			mustPopulate: []string{"load_balancer_id", "load_balancer_dns_record_name", "load_balancer_cname_target"},
 		},
 		{
+			// CloudflareLoadBalancerPool: both engines emit the pool id and name
+			// (account-scoped pool referenced by load balancers).
+			name: "CloudflareLoadBalancerPool",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareLoadBalancerPool,
+			rawOutputs: map[string]interface{}{
+				"pool_id":   "17b5962d775c646f3f9725cbc7a53df4",
+				"pool_name": "web-pool",
+			},
+			mustPopulate: []string{"pool_id", "pool_name"},
+		},
+		{
+			// CloudflareLoadBalancerMonitor: both engines emit the monitor id and
+			// its protocol (account-scoped health check referenced by pools).
+			name: "CloudflareLoadBalancerMonitor",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareLoadBalancerMonitor,
+			rawOutputs: map[string]interface{}{
+				"monitor_id":   "f1aba936b94213e5b8dca0c0dbf1f9cc",
+				"monitor_type": "https",
+			},
+			mustPopulate: []string{"monitor_id", "monitor_type"},
+		},
+		{
 			// CloudflareWorker: both engines emit the script id and name (scalars)
 			// and the custom-domain hostnames / route patterns (repeated strings).
 			name: "CloudflareWorker",

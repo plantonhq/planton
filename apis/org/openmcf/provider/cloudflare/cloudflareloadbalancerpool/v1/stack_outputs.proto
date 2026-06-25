@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.cloudflare.cloudflareloadbalancerpool.v1;
+
+// CloudflareLoadBalancerPoolStackOutputs captures the outputs after deploying a
+// Cloudflare Load Balancer pool.
+message CloudflareLoadBalancerPoolStackOutputs {
+  // The Cloudflare-assigned identifier of the pool. A CloudflareLoadBalancer
+  // references this value in its default_pools, fallback_pool, or geo-pool maps.
+  string pool_id = 1;
+
+  // The pool name (echoed for convenience).
+  string pool_name = 2;
+}

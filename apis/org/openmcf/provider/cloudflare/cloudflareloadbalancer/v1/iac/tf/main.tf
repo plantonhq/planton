@@ -1,68 +1,31 @@
-# The load balancer is zone-scoped, while the pool and monitor are account-scoped.
-# Derive the account id from the zone so the spec only needs the zone reference.
-data "cloudflare_zone" "this" {
-  zone_id = local.zone_id
-}
-
-# Cloudflare Load Balancer Monitor (Health Check)
-# This is an account-level resource that probes origins
-resource "cloudflare_load_balancer_monitor" "health_check" {
-  account_id     = data.cloudflare_zone.this.account.id
-  type           = "https"
-  method         = "GET"
-  path           = local.health_probe_path
-  expected_codes = "2xx"
-  timeout        = 5
-  interval       = 60 # 60 seconds minimum for Pro plan
-  retries        = 2
-
-  description = "Health check for ${local.resource_name}"
-}
-
-# Cloudflare Load Balancer Pool
-# This is an account-level resource that groups origins
-resource "cloudflare_load_balancer_pool" "main" {
-  account_id = data.cloudflare_zone.this.account.id
-  name       = "${local.resource_name}-pool"
-  monitor    = cloudflare_load_balancer_monitor.health_check.id
-  enabled    = true
-
-  # One origin object per origin in the spec
-  origins = [
-    for o in local.origins : {
-      name    = o.name
-      address = o.address
-      enabled = true
-      weight  = coalesce(o.weight, 1)
-    }
-  ]
-
-  description = "Pool for ${local.resource_name}"
-}
-
-# Cloudflare Load Balancer
-# This is a zone-level resource that ties everything together
+# Cloudflare Load Balancer: a zone-scoped resource that attaches a DNS hostname to
+# account-scoped pools (CloudflareLoadBalancerPool) and steers traffic across them.
+# Pools and their monitors are separate, reusable resources referenced by ID/ref.
 resource "cloudflare_load_balancer" "main" {
   zone_id = local.zone_id
   name    = var.spec.hostname
 
-  # Pool configuration
-  default_pools = [cloudflare_load_balancer_pool.main.id]
-  fallback_pool = cloudflare_load_balancer_pool.main.id
+  default_pools = var.spec.default_pools
+  fallback_pool = var.spec.fallback_pool
 
-  # Proxy configuration
-  proxied = local.proxied
+  description = var.spec.description != "" ? var.spec.description : null
 
-  # Traffic steering
-  steering_policy = local.steering_policy
+  proxied = var.spec.proxied
+  enabled = var.spec.enabled
 
-  # Session affinity
+  steering_policy  = local.steering_policy
   session_affinity = local.session_affinity
 
-  description = "Load balancer for ${var.spec.hostname}"
+  ttl                  = var.spec.ttl > 0 ? var.spec.ttl : null
+  session_affinity_ttl = var.spec.session_affinity_ttl > 0 ? var.spec.session_affinity_ttl : null
 
-  # Wait for the pool to be created before creating the load balancer
-  depends_on = [
-    cloudflare_load_balancer_pool.main
-  ]
+  session_affinity_attributes = local.saa
+
+  region_pools  = length(local.region_pools) > 0 ? local.region_pools : null
+  country_pools = length(local.country_pools) > 0 ? local.country_pools : null
+  pop_pools     = length(local.pop_pools) > 0 ? local.pop_pools : null
+
+  adaptive_routing  = local.adaptive_routing
+  location_strategy = local.location_strategy
+  random_steering   = local.random_steering
 }

@@ -187,6 +187,8 @@ go_library(
         "//apis/org/openmcf/provider/cloudflare/cloudflarehyperdriveconfig/v1:cloudflarehyperdriveconfig",
         "//apis/org/openmcf/provider/cloudflare/cloudflarekvnamespace/v1:cloudflarekvnamespace",
         "//apis/org/openmcf/provider/cloudflare/cloudflareloadbalancer/v1:cloudflareloadbalancer",
+        "//apis/org/openmcf/provider/cloudflare/cloudflareloadbalancermonitor/v1:cloudflareloadbalancermonitor",
+        "//apis/org/openmcf/provider/cloudflare/cloudflareloadbalancerpool/v1:cloudflareloadbalancerpool",
         "//apis/org/openmcf/provider/cloudflare/cloudflarer2bucket/v1:cloudflarer2bucket",
         "//apis/org/openmcf/provider/cloudflare/cloudflareruleset/v1:cloudflareruleset",
         "//apis/org/openmcf/provider/cloudflare/cloudflareworker/v1:cloudflareworker",

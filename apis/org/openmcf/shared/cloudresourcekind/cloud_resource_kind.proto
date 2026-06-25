@@ -1545,6 +1545,16 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "cfhyp"
   }];
+  CloudflareLoadBalancerPool = 1811 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cflbp"
+  }];
+  CloudflareLoadBalancerMonitor = 1812 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cflbm"
+  }];
 
   // 2100–2299: Auth0 resources
   Auth0Connection = 2100 [(kind_meta) = {

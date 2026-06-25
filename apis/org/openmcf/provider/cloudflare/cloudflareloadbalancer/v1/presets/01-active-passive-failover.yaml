@@ -1,4 +1,36 @@
 apiVersion: cloudflare.openmcf.org/v1
+kind: CloudflareLoadBalancerMonitor
+metadata:
+  name: failover-https
+spec:
+  accountId: <cloudflare-account-id>
+  type: https
+  path: /
+  expectedCodes: "2xx"
+---
+apiVersion: cloudflare.openmcf.org/v1
+kind: CloudflareLoadBalancerPool
+metadata:
+  name: failover-pool
+spec:
+  accountId: <cloudflare-account-id>
+  name: failover-pool
+  origins:
+    - name: primary
+      address:
+        value: 192.0.2.1
+      weight: 1
+    - name: secondary
+      address:
+        value: 192.0.2.2
+      weight: 1
+  monitor:
+    valueFrom:
+      kind: CloudflareLoadBalancerMonitor
+      name: failover-https
+      fieldPath: status.outputs.monitor_id
+---
+apiVersion: cloudflare.openmcf.org/v1
 kind: CloudflareLoadBalancer
 metadata:
   name: my-active-passive-failover
@@ -6,13 +38,15 @@ spec:
   hostname: <app-subdomain>.<your-domain.com>
   zoneId:
     value: <cloudflare-zone-id>
-  origins:
-    - name: primary
-      address: 192.0.2.1
-      weight: 1
-    - name: secondary
-      address: 192.0.2.2
-      weight: 1
+  defaultPools:
+    - valueFrom:
+        kind: CloudflareLoadBalancerPool
+        name: failover-pool
+        fieldPath: status.outputs.pool_id
+  fallbackPool:
+    valueFrom:
+      kind: CloudflareLoadBalancerPool
+      name: failover-pool
+      fieldPath: status.outputs.pool_id
   proxied: true
-  healthProbePath: /
   steeringPolicy: off

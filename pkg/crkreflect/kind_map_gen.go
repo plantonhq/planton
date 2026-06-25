@@ -171,6 +171,8 @@ import (
 	cloudflarehyperdriveconfigv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarehyperdriveconfig/v1"
 	cloudflarekvnamespacev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarekvnamespace/v1"
 	cloudflareloadbalancerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflareloadbalancer/v1"
+	cloudflareloadbalancermonitorv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflareloadbalancermonitor/v1"
+	cloudflareloadbalancerpoolv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflareloadbalancerpool/v1"
 	cloudflarer2bucketv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarer2bucket/v1"
 	cloudflarerulesetv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflareruleset/v1"
 	cloudflareworkerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflareworker/v1"
@@ -597,6 +599,8 @@ var ProviderCloudflareMap = map[cloudresourcekind.CloudResourceKind]proto.Messag
 	cloudresourcekind.CloudResourceKind_CloudflareHyperdriveConfig:           &cloudflarehyperdriveconfigv1.CloudflareHyperdriveConfig{},
 	cloudresourcekind.CloudResourceKind_CloudflareKvNamespace:                &cloudflarekvnamespacev1.CloudflareKvNamespace{},
 	cloudresourcekind.CloudResourceKind_CloudflareLoadBalancer:               &cloudflareloadbalancerv1.CloudflareLoadBalancer{},
+	cloudresourcekind.CloudResourceKind_CloudflareLoadBalancerMonitor:        &cloudflareloadbalancermonitorv1.CloudflareLoadBalancerMonitor{},
+	cloudresourcekind.CloudResourceKind_CloudflareLoadBalancerPool:           &cloudflareloadbalancerpoolv1.CloudflareLoadBalancerPool{},
 	cloudresourcekind.CloudResourceKind_CloudflareR2Bucket:                   &cloudflarer2bucketv1.CloudflareR2Bucket{},
 	cloudresourcekind.CloudResourceKind_CloudflareRuleset:                    &cloudflarerulesetv1.CloudflareRuleset{},
 	cloudresourcekind.CloudResourceKind_CloudflareWorker:                     &cloudflareworkerv1.CloudflareWorker{},
