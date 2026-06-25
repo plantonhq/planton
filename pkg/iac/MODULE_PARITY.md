@@ -139,12 +139,14 @@ configured on the bundle path). Routing folds onto the worker as `cloudflare_wor
 (workers.dev), `cloudflare_workers_custom_domain` (one per hostname, `environment = "production"`),
 and `cloudflare_workers_route` (one per pattern); cron schedules fold onto
 `cloudflare_workers_cron_trigger`. Stack outputs are `script_id`, `script_name`,
-`custom_domain_hostnames`, and `route_patterns`. To preserve strict tofu↔Pulumi parity, three v5
-fields that the Pulumi SDK (v6.10.1) does not expose are **deferred** rather than shipped on one
-engine only: D1 `jurisdiction`, the worker service-binding `entrypoint`, and worker
-`limits.subrequests` (the worker custom-domain `zone_id` is likewise omitted — Pulumi infers the zone
-and the tofu attribute is computed). Each is a reserved proto field, to be added once both engines
-support it. Hyperdrive's `origin.password`/`origin.access_client_secret` and the worker
-`secrets[].value` are `StringValueOrRef + (sensitive)`. See the conformance guard's `CloudflareWorker`,
+`custom_domain_hostnames`, and `route_patterns`. The provider pins the Pulumi Cloudflare SDK at
+**v6.17.0**, and tofu↔Pulumi are at **full parity** across the family: D1 `jurisdiction`, the worker
+service-binding `entrypoint`, worker `limits.subrequests`, the worker custom-domain `zone_id`, and the
+DNS-record `private_routing` are all modeled in the proto and honored by both engines (these were
+briefly deferred against the older v6.10.1 SDK, then restored on the upgrade — see
+`coding-guidelines/0004` in the project for the standing principle: the proto stays future-proof, the
+lagging engine is upgraded or degraded-and-documented, never held back with proto `reserved`).
+Hyperdrive's `origin.password`/`origin.access_client_secret` and the worker `secrets[].value` are
+`StringValueOrRef + (sensitive)`. See the conformance guard's `CloudflareWorker`,
 `CloudflareKvNamespace`, `CloudflareWorkersKvPair`, `CloudflareD1Database`, and
 `CloudflareHyperdriveConfig` cases.

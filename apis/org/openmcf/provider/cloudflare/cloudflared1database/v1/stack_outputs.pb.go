@@ -81,11 +81,11 @@ var File_org_openmcf_provider_cloudflare_cloudflared1database_v1_stack_outputs_p
 
 const file_org_openmcf_provider_cloudflare_cloudflared1database_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Korg/openmcf/provider/cloudflare/cloudflared1database/v1/stack_outputs.proto\x127org.openmcf.provider.cloudflare.cloudflared1database.v1\"\x81\x01\n" +
+	"Korg/openmcf/provider/cloudflare/cloudflared1database/v1/stack_outputs.proto\x127org.openmcf.provider.cloudflare.cloudflared1database.v1\"h\n" +
 	" CloudflareD1DatabaseStackOutputs\x12\x1f\n" +
 	"\vdatabase_id\x18\x01 \x01(\tR\n" +
 	"databaseId\x12#\n" +
-	"\rdatabase_name\x18\x02 \x01(\tR\fdatabaseNameJ\x04\b\x03\x10\x04R\x11connection_stringB\xc5\x03\n" +
+	"\rdatabase_name\x18\x02 \x01(\tR\fdatabaseNameB\xc5\x03\n" +
 	";com.org.openmcf.provider.cloudflare.cloudflared1database.v1B\x11StackOutputsProtoP\x01Zpgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflared1database/v1;cloudflared1databasev1\xa2\x02\x05OOPCC\xaa\x027Org.Openmcf.Provider.Cloudflare.Cloudflared1database.V1\xca\x027Org\\Openmcf\\Provider\\Cloudflare\\Cloudflared1database\\V1\xe2\x02COrg\\Openmcf\\Provider\\Cloudflare\\Cloudflared1database\\V1\\GPBMetadata\xea\x02<Org::Openmcf::Provider::Cloudflare::Cloudflared1database::V1b\x06proto3"
 
 var (

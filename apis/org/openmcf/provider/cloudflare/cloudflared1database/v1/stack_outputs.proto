@@ -10,9 +10,4 @@ message CloudflareD1DatabaseStackOutputs {
 
   // The name of the database (same as the input name).
   string database_name = 2;
-
-  // 3: connection_string was removed — the Cloudflare v5 provider exposes no
-  // connection string for D1 (a Worker reaches D1 through its binding, not a DSN).
-  reserved 3;
-  reserved "connection_string";
 }

@@ -16,14 +16,8 @@ message CloudflareKvNamespaceSpec {
     (buf.validate.field).string.max_len = 64
   ];
 
-  // 2: ttl_seconds and 3: description were removed — the Cloudflare KV namespace
-  // resource has no per-namespace TTL or description (TTL is set per write; a
-  // namespace carries only an account and a title).
-  reserved 2, 3;
-  reserved "ttl_seconds", "description";
-
   // The Cloudflare account ID that owns this KV namespace.
-  string account_id = 4 [
+  string account_id = 2 [
     (buf.validate.field).required = true,
     (buf.validate.field).string.len = 32,
     (buf.validate.field).string.pattern = "^[0-9a-fA-F]{32}$"

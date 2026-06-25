@@ -53,13 +53,14 @@ var _ = ginkgo.Describe("CloudflareWorkerSpec Custom Validation Tests", func() {
 			in.Spec.KvNamespaces = []*CloudflareWorkerKvBinding{{Name: "CONFIG", NamespaceId: ref("0f1e2d3c4b5a69788796a5b4c3d2e1f0")}}
 			in.Spec.D1Databases = []*CloudflareWorkerD1Binding{{Name: "DB", DatabaseId: ref("9a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d")}}
 			in.Spec.R2Buckets = []*CloudflareWorkerR2Binding{{Name: "ASSETS", BucketName: ref("media"), Jurisdiction: "eu"}}
+			in.Spec.Services = []*CloudflareWorkerServiceBinding{{Name: "AUTH", Service: ref("auth-worker"), Environment: "production", Entrypoint: "AuthEntrypoint"}}
 			in.Spec.WorkersDev = &CloudflareWorkerWorkersDev{Enabled: true}
-			in.Spec.CustomDomains = []*CloudflareWorkerCustomDomain{{Hostname: "api.example.com"}}
+			in.Spec.CustomDomains = []*CloudflareWorkerCustomDomain{{Hostname: "api.example.com", ZoneId: ref("023e105f4ecef8ad9ca31a8372d0c353")}}
 			in.Spec.Routes = []*CloudflareWorkerRoute{{ZoneId: ref("023e105f4ecef8ad9ca31a8372d0c353"), Pattern: "api.example.com/*"}}
 			in.Spec.Schedules = []string{"0 * * * *"}
 			in.Spec.Observability = &CloudflareWorkerObservability{Enabled: true, HeadSamplingRate: 1}
 			in.Spec.Placement = &CloudflareWorkerPlacement{Mode: "smart"}
-			in.Spec.Limits = &CloudflareWorkerLimits{CpuMs: 50}
+			in.Spec.Limits = &CloudflareWorkerLimits{CpuMs: 50, Subrequests: 100}
 			gomega.Expect(protovalidate.Validate(in)).To(gomega.BeNil())
 		})
 	})

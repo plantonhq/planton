@@ -51,6 +51,12 @@ var _ = ginkgo.Describe("CloudflareD1DatabaseSpec Custom Validation Tests", func
 			}
 		})
 
+		ginkgo.It("accepts a jurisdiction (without a region)", func() {
+			in := validD1()
+			in.Spec.Jurisdiction = "eu"
+			gomega.Expect(protovalidate.Validate(in)).To(gomega.BeNil())
+		})
+
 		ginkgo.It("accepts database_name at the 64-char limit", func() {
 			in := validD1()
 			in.Spec.DatabaseName = "a234567890123456789012345678901234567890123456789012345678901234"
@@ -97,6 +103,19 @@ var _ = ginkgo.Describe("CloudflareD1DatabaseSpec Custom Validation Tests", func
 		ginkgo.It("rejects read_replication with an unspecified mode", func() {
 			in := validD1()
 			in.Spec.ReadReplication = &CloudflareD1ReadReplication{}
+			gomega.Expect(protovalidate.Validate(in)).ToNot(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects an invalid jurisdiction", func() {
+			in := validD1()
+			in.Spec.Jurisdiction = "antarctica"
+			gomega.Expect(protovalidate.Validate(in)).ToNot(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects region and jurisdiction set together", func() {
+			in := validD1()
+			in.Spec.Region = CloudflareD1Region_weur
+			in.Spec.Jurisdiction = "eu"
 			gomega.Expect(protovalidate.Validate(in)).ToNot(gomega.BeNil())
 		})
 	})

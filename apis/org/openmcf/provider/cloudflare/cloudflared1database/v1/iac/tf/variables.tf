@@ -34,5 +34,9 @@ variable "spec" {
       # Valid values: "auto" (enable automatic read replication), "disabled" (disable replication).
       mode = string
     }))
+
+    # (Optional) Data-residency jurisdiction ("eu" or "fedramp"). Mutually
+    # exclusive with region; fixed at creation.
+    jurisdiction = optional(string)
   })
 }

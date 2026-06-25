@@ -206,6 +206,11 @@ message CloudflareDnsRecordSpec {
 
   // Optional record-level settings controlling how proxied records are served.
   CloudflareDnsRecordSettings settings = 23;
+
+  // Whether the record is restricted to Cloudflare's internal (private) routing
+  // and not served over the public internet — used for internal DNS / Magic WAN
+  // scenarios. Defaults to false (public).
+  bool private_routing = 24;
 }
 
 // CloudflareDnsRecordSettings holds record-level behavior toggles. These only

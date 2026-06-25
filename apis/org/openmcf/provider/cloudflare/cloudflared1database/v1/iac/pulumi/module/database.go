@@ -28,7 +28,12 @@ func database(
 		}
 	}
 
-	// 3. Add optional read replication configuration if specified.
+	// 3. Add optional data-residency jurisdiction (mutually exclusive with region).
+	if locals.CloudflareD1Database.Spec.Jurisdiction != "" {
+		d1Args.Jurisdiction = pulumi.String(locals.CloudflareD1Database.Spec.Jurisdiction)
+	}
+
+	// 4. Add optional read replication configuration if specified.
 	if locals.CloudflareD1Database.Spec.ReadReplication != nil {
 		d1Args.ReadReplication = &cloudflare.D1DatabaseReadReplicationArgs{
 			Mode: pulumi.String(locals.CloudflareD1Database.Spec.ReadReplication.Mode.String()),

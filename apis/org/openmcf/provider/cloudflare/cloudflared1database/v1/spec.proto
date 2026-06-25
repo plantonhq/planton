@@ -6,9 +6,18 @@ import "buf/validate/validate.proto";
 
 // CloudflareD1DatabaseSpec provisions a Cloudflare D1 database: a serverless
 // SQLite database that a Worker queries via a `d1` binding. Placement is fixed at
-// creation by an optional region hint; schema (tables, indexes) is managed by the
-// application via Wrangler migrations, not at this layer.
+// creation by an optional region hint or a data-residency jurisdiction; schema
+// (tables, indexes) is managed by the application via Wrangler migrations, not at
+// this layer.
 message CloudflareD1DatabaseSpec {
+  // Cross-field validation: region and jurisdiction both fix placement and are
+  // mutually exclusive — jurisdiction implies a residency-constrained location.
+  option (buf.validate.message).cel = {
+    id: "spec.region_xor_jurisdiction"
+    message: "set at most one of region or jurisdiction (jurisdiction already constrains placement)"
+    expression: "!(this.jurisdiction != '' && this.region != 0)"
+  };
+
   // The Cloudflare account ID in which to create the database.
   string account_id = 1 [
     (buf.validate.field).required = true,
@@ -32,11 +41,14 @@ message CloudflareD1DatabaseSpec {
   // to use the D1 Sessions API for consistency; omit to disable.
   CloudflareD1ReadReplication read_replication = 4;
 
-  // 5: jurisdiction is reserved. Data-residency jurisdiction is deferred until
-  // the Pulumi Cloudflare SDK exposes it on the D1 resource — modeling a field
-  // only Terraform supports would break the tofu<->pulumi parity mandate.
-  reserved 5;
-  reserved "jurisdiction";
+  // Data-residency jurisdiction, fixed at creation. One of "eu" (European Union)
+  // or "fedramp" (US FedRAMP). Constrains where the database is placed; mutually
+  // exclusive with region. Leave empty for no residency constraint.
+  string jurisdiction = 5 [(buf.validate.field).cel = {
+    id: "jurisdiction.valid"
+    message: "jurisdiction must be one of \"eu\", \"fedramp\""
+    expression: "this == '' || this in ['eu', 'fedramp']"
+  }];
 }
 
 // Region hint for a D1 database's primary instance. Value names map to the

@@ -18,6 +18,7 @@ locals {
     text         = null
     service      = null
     environment  = null
+    entrypoint   = null
     queue_name   = null
     class_name   = null
     script_name  = null
@@ -32,7 +33,7 @@ locals {
     [for b in var.spec.r2_buckets : merge(local.null_attrs, { name = b.name, type = "r2_bucket", bucket_name = b.bucket_name, jurisdiction = b.jurisdiction != "" ? b.jurisdiction : null })],
     [for b in var.spec.d1_databases : merge(local.null_attrs, { name = b.name, type = "d1", id = b.database_id })],
     [for b in var.spec.hyperdrive_configs : merge(local.null_attrs, { name = b.name, type = "hyperdrive", id = b.config_id })],
-    [for b in var.spec.services : merge(local.null_attrs, { name = b.name, type = "service", service = b.service, environment = b.environment != "" ? b.environment : null })],
+    [for b in var.spec.services : merge(local.null_attrs, { name = b.name, type = "service", service = b.service, environment = b.environment != "" ? b.environment : null, entrypoint = b.entrypoint != "" ? b.entrypoint : null })],
     [for b in var.spec.queues : merge(local.null_attrs, { name = b.name, type = "queue", queue_name = b.queue_name })],
     [for b in var.spec.durable_objects : merge(local.null_attrs, { name = b.name, type = "durable_object_namespace", class_name = b.class_name, script_name = b.script_name != "" ? b.script_name : null, environment = b.environment != "" ? b.environment : null })],
     [for b in var.spec.analytics_engine_datasets : merge(local.null_attrs, { name = b.name, type = "analytics_engine", dataset = b.dataset })],
@@ -48,8 +49,9 @@ locals {
 
   placement = (try(var.spec.placement.mode, "") != "") ? { mode = var.spec.placement.mode } : null
 
-  limits = (try(var.spec.limits.cpu_ms, 0) > 0) ? {
-    cpu_ms = var.spec.limits.cpu_ms
+  limits = (try(var.spec.limits.cpu_ms, 0) > 0 || try(var.spec.limits.subrequests, 0) > 0) ? {
+    cpu_ms      = try(var.spec.limits.cpu_ms, 0) > 0 ? var.spec.limits.cpu_ms : null
+    subrequests = try(var.spec.limits.subrequests, 0) > 0 ? var.spec.limits.subrequests : null
   } : null
 
   workers_dev_enabled = try(var.spec.workers_dev.enabled, false)

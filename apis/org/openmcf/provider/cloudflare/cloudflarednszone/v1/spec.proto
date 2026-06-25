@@ -10,9 +10,6 @@ import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
 // be managed independently as first-class CloudflareDnsRecord resources; the
 // embedded list is a convenience for records whose lifecycle tracks the zone.
 message CloudflareDnsZoneSpec {
-  reserved 3, 5;
-  reserved "plan", "default_proxied";
-
   // The zone's deployment type. A full zone hosts DNS entirely with Cloudflare;
   // a partial (CNAME setup) zone is partner-hosted; secondary mirrors an
   // external primary; internal is for internal-only resolution.
@@ -47,27 +44,27 @@ message CloudflareDnsZoneSpec {
 
   // Whether the zone is created paused. A paused zone uses Cloudflare DNS only
   // and receives no security or performance (proxy/CDN/WAF) benefits.
-  bool paused = 4;
+  bool paused = 3;
 
   // DNS records managed alongside this zone. For records with independent
   // lifecycles (or that need the full record feature set), prefer standalone
   // CloudflareDnsRecord resources instead.
-  repeated CloudflareDnsZoneRecord records = 6;
+  repeated CloudflareDnsZoneRecord records = 4;
 
   // The zone's deployment type. Defaults to "full".
-  ZoneType type = 7;
+  ZoneType type = 5;
 
   // Custom (vanity) name servers for the zone. Only available on Business and
   // Enterprise plans; leave empty to use Cloudflare's assigned name servers.
-  repeated string vanity_name_servers = 8;
+  repeated string vanity_name_servers = 6;
 
   // Optional zone-wide DNS settings (CNAME flattening, zone mode, SOA, etc.).
   // Omit to leave Cloudflare's defaults in place.
-  CloudflareDnsZoneDnsSettings dns_settings = 9;
+  CloudflareDnsZoneDnsSettings dns_settings = 7;
 
   // Optional DNSSEC configuration. Enable to have Cloudflare sign the zone; the
   // DS record material to hand to your registrar is published as stack outputs.
-  CloudflareDnsZoneDnssec dnssec = 10;
+  CloudflareDnsZoneDnssec dnssec = 8;
 }
 
 // CloudflareDnsZoneRecord is a DNS record managed inline with the zone. It

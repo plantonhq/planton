@@ -67,6 +67,9 @@ func buildBindings(spec *cloudflareworkerv1.CloudflareWorkerSpec) cloudfl.Worker
 		if b.Environment != "" {
 			args.Environment = pulumi.String(b.Environment)
 		}
+		if b.Entrypoint != "" {
+			args.Entrypoint = pulumi.String(b.Entrypoint)
+		}
 		bindings = append(bindings, args)
 	}
 	for _, b := range spec.Queues {

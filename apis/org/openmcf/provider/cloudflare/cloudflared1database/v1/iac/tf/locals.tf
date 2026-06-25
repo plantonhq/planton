@@ -35,5 +35,8 @@ locals {
   primary_location_hint = (
     local.region != "" && local.region != "cloudflare_d1_region_unspecified"
   ) ? local.region : null
+
+  # Data-residency jurisdiction (eu/fedramp); omitted -> null -> no constraint.
+  jurisdiction = try(var.spec.jurisdiction, "") != "" ? var.spec.jurisdiction : null
 }
 

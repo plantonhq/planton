@@ -57,14 +57,27 @@ values derived from other resources' outputs).
 - D1: `read_replication.mode` is now an enum (`auto`/`disabled`); dropped the
   phantom `connection_string` output; tightened `account_id` to 32-hex.
 
-## Engine-parity deferrals
+## Engine parity: SDK upgraded, full parity (no deferrals, no proto `reserved`)
 
-Three v5 fields the Pulumi SDK (v6.10.1) does not expose were **deferred** rather
-than shipped on Terraform only (preserving the strict tofu↔pulumi parity mandate):
-D1 `jurisdiction`, the worker service-binding `entrypoint`, and worker
-`limits.subrequests` (the worker custom-domain `zone_id` is likewise omitted —
-Pulumi infers the zone). Each is a reserved proto field to be added once both
-engines support it.
+An initial pass deferred four v5 fields because the then-pinned Pulumi Cloudflare
+SDK (v6.10.1) did not expose them, and marked them with proto `reserved`. That was
+the wrong instinct: the proto is the future-proof source of truth and must not be
+held back by an engine SDK lag, and this codebase does not use `reserved` for
+backward-compatibility. Corrected by **upgrading `pulumi-cloudflare/sdk/v6` to
+v6.17.0** (transitively `pulumi/sdk/v3` → v3.242.0; `go 1.26` already satisfies the
+toolchain), which exposes all of them. Now modeled in the proto and honored by
+**both** engines at full parity:
+
+- D1 `jurisdiction` (eu/fedramp, mutually exclusive with region)
+- worker service-binding `entrypoint`
+- worker `limits.subrequests`
+- worker custom-domain `zone_id` (FK → CloudflareDnsZone)
+- DNS-record `private_routing` (the same upgrade unlocked this slice-2 deferral too)
+
+Every `reserved` marker added during the deferral was removed and the affected
+specs renumbered contiguously, leaving zero engine-driven deferrals and zero
+`reserved` cruft in the Cloudflare provider. The durable principle is captured in
+the project's `coding-guidelines/0004-engine-parity-and-no-proto-reserved.md`.
 
 ## Validation
 
@@ -75,7 +88,11 @@ guard); `pkg/secretcoverage` gate green (new sensitive fields covered, stale
 five modules against the real v5 provider; all five Pulumi entrypoints build the
 release way. **Live `tofu apply` + `destroy`** against a real Cloudflare account
 created and tore down a KV namespace + KV pair, a D1 database, and a Worker binding
-both (workers.dev enabled) with zero leftover resources.
+both (workers.dev enabled) with zero leftover resources. After the SDK upgrade and
+field restoration, re-validated: `make protos`, the affected spec tests, conformance
+and secret-coverage gates, `tofu validate` of the worker/d1/dns-record modules with
+the restored attributes, and a live `tofu apply`/`destroy` of a D1 database with
+`jurisdiction: eu` (a restored field, confirmed provisioning on v6.17.0).
 
 ## Known follow-ups
 

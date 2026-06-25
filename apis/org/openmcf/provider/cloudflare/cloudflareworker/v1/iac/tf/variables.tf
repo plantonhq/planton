@@ -49,6 +49,7 @@ variable "spec" {
       name        = string
       service     = optional(string, "")
       environment = optional(string, "")
+      entrypoint  = optional(string, "")
     })), [])
     queues = optional(list(object({
       name       = string
@@ -78,6 +79,7 @@ variable "spec" {
     }))
     custom_domains = optional(list(object({
       hostname = string
+      zone_id  = optional(string, "")
     })), [])
     routes = optional(list(object({
       zone_id = optional(string, "")
@@ -96,7 +98,8 @@ variable "spec" {
       mode = optional(string, "")
     }))
     limits = optional(object({
-      cpu_ms = optional(number, 0)
+      cpu_ms      = optional(number, 0)
+      subrequests = optional(number, 0)
     }))
     logpush = optional(bool, false)
     tail_consumers = optional(list(object({

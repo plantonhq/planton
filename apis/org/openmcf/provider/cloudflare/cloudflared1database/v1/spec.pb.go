@@ -148,8 +148,9 @@ func (CloudflareD1ReadReplicationMode) EnumDescriptor() ([]byte, []int) {
 
 // CloudflareD1DatabaseSpec provisions a Cloudflare D1 database: a serverless
 // SQLite database that a Worker queries via a `d1` binding. Placement is fixed at
-// creation by an optional region hint; schema (tables, indexes) is managed by the
-// application via Wrangler migrations, not at this layer.
+// creation by an optional region hint or a data-residency jurisdiction; schema
+// (tables, indexes) is managed by the application via Wrangler migrations, not at
+// this layer.
 type CloudflareD1DatabaseSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Cloudflare account ID in which to create the database.
@@ -164,8 +165,12 @@ type CloudflareD1DatabaseSpec struct {
 	// lower global read latency. WARNING: enabling replication requires the Worker
 	// to use the D1 Sessions API for consistency; omit to disable.
 	ReadReplication *CloudflareD1ReadReplication `protobuf:"bytes,4,opt,name=read_replication,json=readReplication,proto3" json:"read_replication,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	// Data-residency jurisdiction, fixed at creation. One of "eu" (European Union)
+	// or "fedramp" (US FedRAMP). Constrains where the database is placed; mutually
+	// exclusive with region. Leave empty for no residency constraint.
+	Jurisdiction  string `protobuf:"bytes,5,opt,name=jurisdiction,proto3" json:"jurisdiction,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *CloudflareD1DatabaseSpec) Reset() {
@@ -226,6 +231,13 @@ func (x *CloudflareD1DatabaseSpec) GetReadReplication() *CloudflareD1ReadReplica
 	return nil
 }
 
+func (x *CloudflareD1DatabaseSpec) GetJurisdiction() string {
+	if x != nil {
+		return x.Jurisdiction
+	}
+	return ""
+}
+
 // CloudflareD1ReadReplication configures D1 Read Replication.
 type CloudflareD1ReadReplication struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -277,14 +289,17 @@ var File_org_openmcf_provider_cloudflare_cloudflared1database_v1_spec_proto prot
 
 const file_org_openmcf_provider_cloudflare_cloudflared1database_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Borg/openmcf/provider/cloudflare/cloudflared1database/v1/spec.proto\x127org.openmcf.provider.cloudflare.cloudflared1database.v1\x1a\x1bbuf/validate/validate.proto\"\x84\x03\n" +
+	"Borg/openmcf/provider/cloudflare/cloudflared1database/v1/spec.proto\x127org.openmcf.provider.cloudflare.cloudflared1database.v1\x1a\x1bbuf/validate/validate.proto\"\xb6\x05\n" +
 	"\x18CloudflareD1DatabaseSpec\x12=\n" +
 	"\n" +
 	"account_id\x18\x01 \x01(\tB\x1e\xbaH\x1b\xc8\x01\x01r\x162\x11^[0-9a-fA-F]{32}$\x98\x01 R\taccountId\x12/\n" +
 	"\rdatabase_name\x18\x02 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x18@R\fdatabaseName\x12c\n" +
 	"\x06region\x18\x03 \x01(\x0e2K.org.openmcf.provider.cloudflare.cloudflared1database.v1.CloudflareD1RegionR\x06region\x12\x7f\n" +
-	"\x10read_replication\x18\x04 \x01(\v2T.org.openmcf.provider.cloudflare.cloudflared1database.v1.CloudflareD1ReadReplicationR\x0freadReplicationJ\x04\b\x05\x10\x06R\fjurisdiction\"\xf1\x01\n" +
+	"\x10read_replication\x18\x04 \x01(\v2T.org.openmcf.provider.cloudflare.cloudflared1database.v1.CloudflareD1ReadReplicationR\x0freadReplication\x12\x94\x01\n" +
+	"\fjurisdiction\x18\x05 \x01(\tBp\xbaHm\xba\x01j\n" +
+	"\x12jurisdiction.valid\x12+jurisdiction must be one of \"eu\", \"fedramp\"\x1a'this == '' || this in ['eu', 'fedramp']R\fjurisdiction:\xac\x01\xbaH\xa8\x01\x1a\xa5\x01\n" +
+	"\x1cspec.region_xor_jurisdiction\x12Uset at most one of region or jurisdiction (jurisdiction already constrains placement)\x1a.!(this.jurisdiction != '' && this.region != 0)\"\xf1\x01\n" +
 	"\x1bCloudflareD1ReadReplication\x12\xd1\x01\n" +
 	"\x04mode\x18\x01 \x01(\x0e2X.org.openmcf.provider.cloudflare.cloudflared1database.v1.CloudflareD1ReadReplicationModeBc\xbaH`\xba\x01U\n" +
 	"\x14mode.not_unspecified\x122read_replication.mode must be \"auto\" or \"disabled\"\x1a\tthis != 0\xc8\x01\x01\x82\x01\x02\x10\x01R\x04mode*t\n" +

@@ -224,22 +224,22 @@ type CloudflareDnsZoneSpec struct {
 	AccountId string `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
 	// Whether the zone is created paused. A paused zone uses Cloudflare DNS only
 	// and receives no security or performance (proxy/CDN/WAF) benefits.
-	Paused bool `protobuf:"varint,4,opt,name=paused,proto3" json:"paused,omitempty"`
+	Paused bool `protobuf:"varint,3,opt,name=paused,proto3" json:"paused,omitempty"`
 	// DNS records managed alongside this zone. For records with independent
 	// lifecycles (or that need the full record feature set), prefer standalone
 	// CloudflareDnsRecord resources instead.
-	Records []*CloudflareDnsZoneRecord `protobuf:"bytes,6,rep,name=records,proto3" json:"records,omitempty"`
+	Records []*CloudflareDnsZoneRecord `protobuf:"bytes,4,rep,name=records,proto3" json:"records,omitempty"`
 	// The zone's deployment type. Defaults to "full".
-	Type CloudflareDnsZoneSpec_ZoneType `protobuf:"varint,7,opt,name=type,proto3,enum=org.openmcf.provider.cloudflare.cloudflarednszone.v1.CloudflareDnsZoneSpec_ZoneType" json:"type,omitempty"`
+	Type CloudflareDnsZoneSpec_ZoneType `protobuf:"varint,5,opt,name=type,proto3,enum=org.openmcf.provider.cloudflare.cloudflarednszone.v1.CloudflareDnsZoneSpec_ZoneType" json:"type,omitempty"`
 	// Custom (vanity) name servers for the zone. Only available on Business and
 	// Enterprise plans; leave empty to use Cloudflare's assigned name servers.
-	VanityNameServers []string `protobuf:"bytes,8,rep,name=vanity_name_servers,json=vanityNameServers,proto3" json:"vanity_name_servers,omitempty"`
+	VanityNameServers []string `protobuf:"bytes,6,rep,name=vanity_name_servers,json=vanityNameServers,proto3" json:"vanity_name_servers,omitempty"`
 	// Optional zone-wide DNS settings (CNAME flattening, zone mode, SOA, etc.).
 	// Omit to leave Cloudflare's defaults in place.
-	DnsSettings *CloudflareDnsZoneDnsSettings `protobuf:"bytes,9,opt,name=dns_settings,json=dnsSettings,proto3" json:"dns_settings,omitempty"`
+	DnsSettings *CloudflareDnsZoneDnsSettings `protobuf:"bytes,7,opt,name=dns_settings,json=dnsSettings,proto3" json:"dns_settings,omitempty"`
 	// Optional DNSSEC configuration. Enable to have Cloudflare sign the zone; the
 	// DS record material to hand to your registrar is published as stack outputs.
-	Dnssec        *CloudflareDnsZoneDnssec `protobuf:"bytes,10,opt,name=dnssec,proto3" json:"dnssec,omitempty"`
+	Dnssec        *CloudflareDnsZoneDnssec `protobuf:"bytes,8,opt,name=dnssec,proto3" json:"dnssec,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -843,19 +843,18 @@ var File_org_openmcf_provider_cloudflare_cloudflarednszone_v1_spec_proto protore
 
 const file_org_openmcf_provider_cloudflare_cloudflarednszone_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"?org/openmcf/provider/cloudflare/cloudflarednszone/v1/spec.proto\x124org.openmcf.provider.cloudflare.cloudflarednszone.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xd9\a\n" +
+	"?org/openmcf/provider/cloudflare/cloudflarednszone/v1/spec.proto\x124org.openmcf.provider.cloudflare.cloudflarednszone.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xb6\a\n" +
 	"\x15CloudflareDnsZoneSpec\x12\xd0\x01\n" +
 	"\tzone_name\x18\x01 \x01(\tB\xb2\x01\xbaH\xae\x01\xba\x01\xa7\x01\n" +
 	"\tzone_name\x125zone_name must be a valid fully qualified domain name\x1acthis.matches('^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?[.])+(?:[a-z](?:[a-z0-9-]{0,61}[a-z0-9])?)$')\xc8\x01\x01R\bzoneName\x12%\n" +
 	"\n" +
 	"account_id\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\taccountId\x12\x16\n" +
-	"\x06paused\x18\x04 \x01(\bR\x06paused\x12g\n" +
-	"\arecords\x18\x06 \x03(\v2M.org.openmcf.provider.cloudflare.cloudflarednszone.v1.CloudflareDnsZoneRecordR\arecords\x12h\n" +
-	"\x04type\x18\a \x01(\x0e2T.org.openmcf.provider.cloudflare.cloudflarednszone.v1.CloudflareDnsZoneSpec.ZoneTypeR\x04type\x12.\n" +
-	"\x13vanity_name_servers\x18\b \x03(\tR\x11vanityNameServers\x12u\n" +
-	"\fdns_settings\x18\t \x01(\v2R.org.openmcf.provider.cloudflare.cloudflarednszone.v1.CloudflareDnsZoneDnsSettingsR\vdnsSettings\x12e\n" +
-	"\x06dnssec\x18\n" +
-	" \x01(\v2M.org.openmcf.provider.cloudflare.cloudflarednszone.v1.CloudflareDnsZoneDnssecR\x06dnssec\"Y\n" +
+	"\x06paused\x18\x03 \x01(\bR\x06paused\x12g\n" +
+	"\arecords\x18\x04 \x03(\v2M.org.openmcf.provider.cloudflare.cloudflarednszone.v1.CloudflareDnsZoneRecordR\arecords\x12h\n" +
+	"\x04type\x18\x05 \x01(\x0e2T.org.openmcf.provider.cloudflare.cloudflarednszone.v1.CloudflareDnsZoneSpec.ZoneTypeR\x04type\x12.\n" +
+	"\x13vanity_name_servers\x18\x06 \x03(\tR\x11vanityNameServers\x12u\n" +
+	"\fdns_settings\x18\a \x01(\v2R.org.openmcf.provider.cloudflare.cloudflarednszone.v1.CloudflareDnsZoneDnsSettingsR\vdnsSettings\x12e\n" +
+	"\x06dnssec\x18\b \x01(\v2M.org.openmcf.provider.cloudflare.cloudflarednszone.v1.CloudflareDnsZoneDnssecR\x06dnssec\"Y\n" +
 	"\bZoneType\x12\x19\n" +
 	"\x15zone_type_unspecified\x10\x00\x12\b\n" +
 	"\x04full\x10\x01\x12\v\n" +
@@ -866,7 +865,7 @@ const file_org_openmcf_provider_cloudflare_cloudflarednszone_v1_spec_proto_rawDe
 	"\x15zone_mode_unspecified\x10\x00\x12\f\n" +
 	"\bstandard\x10\x01\x12\f\n" +
 	"\bcdn_only\x10\x02\x12\f\n" +
-	"\bdns_only\x10\x03J\x04\b\x03\x10\x04J\x04\b\x05\x10\x06R\x04planR\x0fdefault_proxied\"\x9a\b\n" +
+	"\bdns_only\x10\x03\"\x9a\b\n" +
 	"\x17CloudflareDnsZoneRecord\x12\x1a\n" +
 	"\x04name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12\xd9\x01\n" +
 	"\x04type\x18\x02 \x01(\x0e2X.org.openmcf.provider.cloudflare.cloudflarednszone.v1.CloudflareDnsZoneRecord.RecordTypeBk\xbaHh\xba\x01]\n" +

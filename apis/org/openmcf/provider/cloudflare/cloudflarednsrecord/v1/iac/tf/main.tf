@@ -23,4 +23,7 @@ resource "cloudflare_dns_record" "main" {
 
   # Record-level settings (only affect proxied records)
   settings = var.spec.settings
+
+  # Restrict the record to Cloudflare internal (private) routing when set.
+  private_routing = var.spec.private_routing ? true : null
 }

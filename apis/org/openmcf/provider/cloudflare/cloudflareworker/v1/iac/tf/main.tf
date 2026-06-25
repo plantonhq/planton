@@ -44,6 +44,8 @@ resource "cloudflare_workers_custom_domain" "main" {
   hostname    = each.value.hostname
   service     = cloudflare_workers_script.main.script_name
   environment = "production"
+  # Zone is optional — Cloudflare infers it from the hostname when omitted.
+  zone_id = each.value.zone_id != "" ? each.value.zone_id : null
 }
 
 # Pattern-based routes mapping zone requests to the Worker.

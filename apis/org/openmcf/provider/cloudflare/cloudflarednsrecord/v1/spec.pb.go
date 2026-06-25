@@ -216,9 +216,13 @@ type CloudflareDnsRecordSpec struct {
 	// organizing and filtering records.
 	Tags []string `protobuf:"bytes,22,rep,name=tags,proto3" json:"tags,omitempty"`
 	// Optional record-level settings controlling how proxied records are served.
-	Settings      *CloudflareDnsRecordSettings `protobuf:"bytes,23,opt,name=settings,proto3" json:"settings,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	Settings *CloudflareDnsRecordSettings `protobuf:"bytes,23,opt,name=settings,proto3" json:"settings,omitempty"`
+	// Whether the record is restricted to Cloudflare's internal (private) routing
+	// and not served over the public internet — used for internal DNS / Magic WAN
+	// scenarios. Defaults to false (public).
+	PrivateRouting bool `protobuf:"varint,24,opt,name=private_routing,json=privateRouting,proto3" json:"private_routing,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *CloudflareDnsRecordSpec) Reset() {
@@ -443,6 +447,13 @@ func (x *CloudflareDnsRecordSpec) GetSettings() *CloudflareDnsRecordSettings {
 		return x.Settings
 	}
 	return nil
+}
+
+func (x *CloudflareDnsRecordSpec) GetPrivateRouting() bool {
+	if x != nil {
+		return x.PrivateRouting
+	}
+	return false
 }
 
 type isCloudflareDnsRecordSpec_Data interface {
@@ -1609,7 +1620,7 @@ var File_org_openmcf_provider_cloudflare_cloudflarednsrecord_v1_spec_proto proto
 
 const file_org_openmcf_provider_cloudflare_cloudflarednsrecord_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Aorg/openmcf/provider/cloudflare/cloudflarednsrecord/v1/spec.proto\x126org.openmcf.provider.cloudflare.cloudflarednsrecord.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xa2\x1f\n" +
+	"Aorg/openmcf/provider/cloudflare/cloudflarednsrecord/v1/spec.proto\x126org.openmcf.provider.cloudflare.cloudflarednsrecord.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xcb\x1f\n" +
 	"\x17CloudflareDnsRecordSpec\x12r\n" +
 	"\azone_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB%\xbaH\x03\xc8\x01\x01\x88\xd4a\x88\x0e\x92\xd4a\x16status.outputs.zone_idR\x06zoneId\x12\x1a\n" +
 	"\x04name\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12\xdb\x01\n" +
@@ -1637,7 +1648,8 @@ const file_org_openmcf_provider_cloudflare_cloudflarednsrecord_v1_spec_proto_raw
 	"\x04tlsa\x18\x14 \x01(\v2@.org.openmcf.provider.cloudflare.cloudflarednsrecord.v1.TlsaDataH\x00R\x04tlsa\x12S\n" +
 	"\x03uri\x18\x15 \x01(\v2?.org.openmcf.provider.cloudflare.cloudflarednsrecord.v1.UriDataH\x00R\x03uri\x12\x12\n" +
 	"\x04tags\x18\x16 \x03(\tR\x04tags\x12o\n" +
-	"\bsettings\x18\x17 \x01(\v2S.org.openmcf.provider.cloudflare.cloudflarednsrecord.v1.CloudflareDnsRecordSettingsR\bsettings\"\xfa\x01\n" +
+	"\bsettings\x18\x17 \x01(\v2S.org.openmcf.provider.cloudflare.cloudflarednsrecord.v1.CloudflareDnsRecordSettingsR\bsettings\x12'\n" +
+	"\x0fprivate_routing\x18\x18 \x01(\bR\x0eprivateRouting\"\xfa\x01\n" +
 	"\n" +
 	"RecordType\x12\x1b\n" +
 	"\x17record_type_unspecified\x10\x00\x12\x05\n" +

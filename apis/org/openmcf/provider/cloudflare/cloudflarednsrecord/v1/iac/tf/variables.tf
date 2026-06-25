@@ -52,6 +52,9 @@ variable "spec" {
       flatten_cname = optional(bool)
     }))
 
+    # (Optional) Restrict the record to Cloudflare internal (private) routing.
+    private_routing = optional(bool, false)
+
     # (Optional) Structured data for non-simple record types. Exactly one case
     # is set; locals.tf flattens it into the provider's single data object.
     data = optional(object({

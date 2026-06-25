@@ -32,7 +32,7 @@ type CloudflareKvNamespaceSpec struct {
 	// maps to the namespace's `title` in the Cloudflare API.
 	NamespaceName string `protobuf:"bytes,1,opt,name=namespace_name,json=namespaceName,proto3" json:"namespace_name,omitempty"`
 	// The Cloudflare account ID that owns this KV namespace.
-	AccountId     string `protobuf:"bytes,4,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	AccountId     string `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -85,12 +85,12 @@ var File_org_openmcf_provider_cloudflare_cloudflarekvnamespace_v1_spec_proto pro
 
 const file_org_openmcf_provider_cloudflare_cloudflarekvnamespace_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Corg/openmcf/provider/cloudflare/cloudflarekvnamespace/v1/spec.proto\x128org.openmcf.provider.cloudflare.cloudflarekvnamespace.v1\x1a\x1bbuf/validate/validate.proto\"\xb3\x01\n" +
+	"Corg/openmcf/provider/cloudflare/cloudflarekvnamespace/v1/spec.proto\x128org.openmcf.provider.cloudflare.cloudflarekvnamespace.v1\x1a\x1bbuf/validate/validate.proto\"\x8d\x01\n" +
 	"\x19CloudflareKvNamespaceSpec\x121\n" +
 	"\x0enamespace_name\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x18@R\rnamespaceName\x12=\n" +
 	"\n" +
-	"account_id\x18\x04 \x01(\tB\x1e\xbaH\x1b\xc8\x01\x01r\x162\x11^[0-9a-fA-F]{32}$\x98\x01 R\taccountIdJ\x04\b\x02\x10\x03J\x04\b\x03\x10\x04R\vttl_secondsR\vdescriptionB\xc4\x03\n" +
+	"account_id\x18\x02 \x01(\tB\x1e\xbaH\x1b\xc8\x01\x01r\x162\x11^[0-9a-fA-F]{32}$\x98\x01 R\taccountIdB\xc4\x03\n" +
 	"<com.org.openmcf.provider.cloudflare.cloudflarekvnamespace.v1B\tSpecProtoP\x01Zrgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarekvnamespace/v1;cloudflarekvnamespacev1\xa2\x02\x05OOPCC\xaa\x028Org.Openmcf.Provider.Cloudflare.Cloudflarekvnamespace.V1\xca\x028Org\\Openmcf\\Provider\\Cloudflare\\Cloudflarekvnamespace\\V1\xe2\x02DOrg\\Openmcf\\Provider\\Cloudflare\\Cloudflarekvnamespace\\V1\\GPBMetadata\xea\x02=Org::Openmcf::Provider::Cloudflare::Cloudflarekvnamespace::V1b\x06proto3"
 
 var (

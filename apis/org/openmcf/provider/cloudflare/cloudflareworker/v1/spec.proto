@@ -10,7 +10,7 @@ import "org/openmcf/shared/options/options.proto";
 // hangs off it: its resource bindings, routing (workers.dev, custom domains,
 // routes), scheduled (cron) invocations, and runtime settings. Bindings are
 // grouped by type (the wrangler.toml authoring grain) and each cross-resource
-// binding accepts a literal id or a reference to the producing resource, so a
+// binding accepts a literal value or a reference to the producing resource, so a
 // Worker composes as a real node in the resource graph.
 message CloudflareWorkerSpec {
   // Cross-field validation: exactly one script source — inline content or an R2
@@ -36,112 +36,106 @@ message CloudflareWorkerSpec {
     (buf.validate.field).string.max_len = 63
   ];
 
-  // 3: script_bundle was replaced by the `source` oneof (content | r2_bundle);
-  // 4: kv_bindings, 5: dns, 7: usage_model, 8: env were replaced by the grouped
-  // binding lists, the routing block, and first-class secret/var bindings.
-  reserved 3, 4, 5, 7, 8;
-  reserved "script_bundle", "kv_bindings", "dns", "usage_model", "env";
-
   // Compatibility date (YYYY-MM-DD) pinning the Workers runtime behavior. When
   // unset, the module pins today's date at deploy.
-  string compatibility_date = 6 [(buf.validate.field).string.pattern = "^([0-9]{4}-[0-9]{2}-[0-9]{2})?$"];
+  string compatibility_date = 3 [(buf.validate.field).string.pattern = "^([0-9]{4}-[0-9]{2}-[0-9]{2})?$"];
 
   // Script source — exactly one of the two cases below.
   oneof source {
     // Inline ES-module source. Convenient for small or generated scripts.
-    string content = 9;
+    string content = 4;
 
     // A pre-built script bundle stored in an R2 bucket (the CI build-artifact
     // flow). The module fetches the object and deploys it.
-    CloudflareWorkerScriptBundle r2_bundle = 10;
+    CloudflareWorkerScriptBundle r2_bundle = 5;
   }
 
   // The entrypoint module filename within the bundle (module-format workers).
-  string main_module = 11 [(org.openmcf.shared.options.recommended_default) = "index.js"];
+  string main_module = 6 [(org.openmcf.shared.options.recommended_default) = "index.js"];
 
   // Runtime compatibility flags (e.g. "nodejs_compat"). See the Cloudflare
   // compatibility-flags docs for the set valid on a given compatibility_date.
-  repeated string compatibility_flags = 12;
+  repeated string compatibility_flags = 7;
 
   // Plain-text variable bindings: non-secret configuration exposed to the Worker
   // as env vars. Map key is the JS binding name, value is the literal string.
-  map<string, string> vars = 13;
+  map<string, string> vars = 8;
 
   // Secret bindings: sensitive values exposed to the Worker as env vars. Provide
   // each as a managed-secret reference; resolved just-in-time at deploy.
-  repeated CloudflareWorkerSecretBinding secrets = 14;
+  repeated CloudflareWorkerSecretBinding secrets = 9;
 
   // KV namespace bindings. Each binds a CloudflareKvNamespace (by id or
   // reference) to a JS variable the Worker uses for edge key-value access.
-  repeated CloudflareWorkerKvBinding kv_namespaces = 15;
+  repeated CloudflareWorkerKvBinding kv_namespaces = 10;
 
   // R2 bucket bindings. Each binds a CloudflareR2Bucket (by name or reference)
   // for object storage access from the Worker.
-  repeated CloudflareWorkerR2Binding r2_buckets = 16;
+  repeated CloudflareWorkerR2Binding r2_buckets = 11;
 
   // D1 database bindings. Each binds a CloudflareD1Database (by id or reference)
   // for serverless SQL access from the Worker.
-  repeated CloudflareWorkerD1Binding d1_databases = 17;
+  repeated CloudflareWorkerD1Binding d1_databases = 12;
 
   // Hyperdrive bindings. Each binds a CloudflareHyperdriveConfig (by id or
   // reference) for pooled, cached access to a regional SQL database.
-  repeated CloudflareWorkerHyperdriveBinding hyperdrive_configs = 18;
+  repeated CloudflareWorkerHyperdriveBinding hyperdrive_configs = 13;
 
   // Service bindings: bind another Worker (by name or reference) for direct
   // worker-to-worker calls without going over the public internet.
-  repeated CloudflareWorkerServiceBinding services = 19;
+  repeated CloudflareWorkerServiceBinding services = 14;
 
   // Queue producer bindings: let the Worker enqueue messages to a Cloudflare
   // Queue by name.
-  repeated CloudflareWorkerQueueBinding queues = 20;
+  repeated CloudflareWorkerQueueBinding queues = 15;
 
   // Durable Object bindings: bind a Durable Object namespace (a class) for
   // strongly-consistent, stateful coordination.
-  repeated CloudflareWorkerDurableObjectBinding durable_objects = 21;
+  repeated CloudflareWorkerDurableObjectBinding durable_objects = 16;
 
   // Analytics Engine bindings: bind a dataset the Worker writes analytics data points to.
-  repeated CloudflareWorkerAnalyticsEngineBinding analytics_engine_datasets = 22;
+  repeated CloudflareWorkerAnalyticsEngineBinding analytics_engine_datasets = 17;
 
   // Vectorize bindings: bind a vector-search index for AI/embedding workloads.
-  repeated CloudflareWorkerVectorizeBinding vectorize_indexes = 23;
+  repeated CloudflareWorkerVectorizeBinding vectorize_indexes = 18;
 
   // Workers AI bindings: bind the account's AI inference gateway. Each entry is
   // just the JS variable name the Worker calls models through.
-  repeated CloudflareWorkerAiBinding ai = 24;
+  repeated CloudflareWorkerAiBinding ai = 19;
 
   // Version-metadata bindings: expose the deployed version id/tag to the Worker
   // at runtime via the named binding.
-  repeated CloudflareWorkerVersionMetadataBinding version_metadata = 25;
+  repeated CloudflareWorkerVersionMetadataBinding version_metadata = 20;
 
   // workers.dev subdomain exposure (e.g. <name>.<subdomain>.workers.dev).
-  CloudflareWorkerWorkersDev workers_dev = 26;
+  CloudflareWorkerWorkersDev workers_dev = 21;
 
   // Custom domains that route directly to this Worker (a managed hostname with
   // automatic TLS), distinct from pattern-based routes.
-  repeated CloudflareWorkerCustomDomain custom_domains = 27;
+  repeated CloudflareWorkerCustomDomain custom_domains = 22;
 
   // Route patterns within a zone that map matching requests to this Worker.
-  repeated CloudflareWorkerRoute routes = 28;
+  repeated CloudflareWorkerRoute routes = 23;
 
   // Cron schedules that invoke the Worker's scheduled handler. Each entry is a
   // cron expression (e.g. "0 * * * *").
-  repeated string schedules = 29;
+  repeated string schedules = 24;
 
   // Observability (Workers Logs) configuration.
-  CloudflareWorkerObservability observability = 30;
+  CloudflareWorkerObservability observability = 25;
 
   // Smart Placement: let Cloudflare run the Worker closer to backend services it
   // calls, instead of closest to the user.
-  CloudflareWorkerPlacement placement = 31;
+  CloudflareWorkerPlacement placement = 26;
 
   // Per-invocation resource limits.
-  CloudflareWorkerLimits limits = 32;
+  CloudflareWorkerLimits limits = 27;
 
   // Enable Logpush for the Worker's logs (push to a configured Logpush job).
-  bool logpush = 33;
+  bool logpush = 28;
 
   // Tail consumers: other Workers that receive this Worker's tail (trace) events.
-  repeated CloudflareWorkerTailConsumer tail_consumers = 34;
+  repeated CloudflareWorkerTailConsumer tail_consumers = 29;
 }
 
 // CloudflareWorkerScriptBundle references a pre-built script bundle in R2.
@@ -241,10 +235,8 @@ message CloudflareWorkerServiceBinding {
   // Optional environment of the target Worker to bind to.
   string environment = 3;
 
-  // 4: entrypoint (named WorkerEntrypoint) is reserved — deferred until the
-  // Pulumi Cloudflare SDK exposes it on the binding, to keep tofu<->pulumi parity.
-  reserved 4;
-  reserved "entrypoint";
+  // Optional named entrypoint (WorkerEntrypoint) to invoke on the target Worker.
+  string entrypoint = 4;
 }
 
 // CloudflareWorkerQueueBinding lets the Worker produce messages to a Queue.
@@ -314,15 +306,15 @@ message CloudflareWorkerWorkersDev {
 // CloudflareWorkerCustomDomain attaches a managed custom domain to the Worker.
 message CloudflareWorkerCustomDomain {
   // The fully qualified hostname to route to the Worker (e.g. "api.example.com").
-  // Cloudflare provisions and manages TLS for it automatically and infers the
-  // owning zone from the hostname.
+  // Cloudflare provisions and manages TLS for it automatically.
   string hostname = 1 [(buf.validate.field).required = true];
 
-  // 2: zone_id is reserved — the Pulumi Cloudflare SDK's custom-domain resource
-  // does not accept a zone id (Cloudflare infers it), so it is omitted to keep
-  // tofu<->pulumi parity.
-  reserved 2;
-  reserved "zone_id";
+  // The Cloudflare Zone ID hosting the hostname, or a reference to a
+  // CloudflareDnsZone. Optional — Cloudflare can infer the zone from the hostname.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef zone_id = 2 [
+    (org.openmcf.shared.foreignkey.v1.default_kind) = CloudflareDnsZone,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
+  ];
 }
 
 // CloudflareWorkerRoute maps a URL pattern within a zone to the Worker.
@@ -372,10 +364,13 @@ message CloudflareWorkerLimits {
     expression: "this >= 0"
   }];
 
-  // 2: subrequests is reserved — the Pulumi Cloudflare SDK's limits only expose
-  // cpu_ms, so subrequests is deferred to keep tofu<->pulumi parity.
-  reserved 2;
-  reserved "subrequests";
+  // Maximum number of subrequests the Worker may make per invocation. Leave 0
+  // for the plan default.
+  int64 subrequests = 2 [(buf.validate.field).cel = {
+    id: "limits_subrequests.non_negative"
+    message: "subrequests must be 0 (default) or positive"
+    expression: "this >= 0"
+  }];
 }
 
 // CloudflareWorkerTailConsumer names another Worker that consumes tail events.

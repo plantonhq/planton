@@ -65,8 +65,15 @@ func worker(
 		scriptArgs.Placement = &cloudfl.WorkersScriptPlacementArgs{Mode: pulumi.String(p.Mode)}
 	}
 
-	if l := spec.Limits; l != nil && l.CpuMs > 0 {
-		scriptArgs.Limits = &cloudfl.WorkersScriptLimitsArgs{CpuMs: pulumi.Int(int(l.CpuMs))}
+	if l := spec.Limits; l != nil && (l.CpuMs > 0 || l.Subrequests > 0) {
+		limitsArgs := &cloudfl.WorkersScriptLimitsArgs{}
+		if l.CpuMs > 0 {
+			limitsArgs.CpuMs = pulumi.Int(int(l.CpuMs))
+		}
+		if l.Subrequests > 0 {
+			limitsArgs.Subrequests = pulumi.Int(int(l.Subrequests))
+		}
+		scriptArgs.Limits = limitsArgs
 	}
 
 	if spec.Logpush {
@@ -108,12 +115,17 @@ func worker(
 	// Managed custom domains.
 	customDomainHostnames := make(pulumi.StringArray, 0, len(spec.CustomDomains))
 	for i, cd := range spec.CustomDomains {
-		if _, err := cloudfl.NewWorkersCustomDomain(ctx, fmt.Sprintf("custom-domain-%d", i), &cloudfl.WorkersCustomDomainArgs{
+		cdArgs := &cloudfl.WorkersCustomDomainArgs{
 			AccountId:   pulumi.String(spec.AccountId),
 			Environment: pulumi.String("production"),
 			Hostname:    pulumi.String(cd.Hostname),
 			Service:     createdScript.ScriptName,
-		}, pulumi.Provider(cloudflareProvider)); err != nil {
+		}
+		// Zone is optional — Cloudflare infers it from the hostname when omitted.
+		if cd.ZoneId != nil && cd.ZoneId.GetValue() != "" {
+			cdArgs.ZoneId = pulumi.String(cd.ZoneId.GetValue())
+		}
+		if _, err := cloudfl.NewWorkersCustomDomain(ctx, fmt.Sprintf("custom-domain-%d", i), cdArgs, pulumi.Provider(cloudflareProvider)); err != nil {
 			return errors.Wrap(err, "failed to create workers custom domain")
 		}
 		customDomainHostnames = append(customDomainHostnames, pulumi.String(cd.Hostname))
