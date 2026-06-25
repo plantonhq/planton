@@ -56,7 +56,7 @@ This creates a D1 database named `my-app-db` with Cloudflare selecting the defau
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
 | `region` | `enum` | unspecified | The geographical region for the database's primary instance. Maps to Cloudflare's `primary_location_hint`. If omitted, Cloudflare selects a default location based on account settings. One of: `weur` (Western Europe), `eeur` (Eastern Europe), `apac` (Asia Pacific), `oc` (Oceania), `wnam` (Western North America), `enam` (Eastern North America). |
-| `readReplication.mode` | `string` | — | The replication mode. Set to `auto` to enable automatic read replication across regions, or `disabled` to turn it off. Required when the `readReplication` object is present. Enabling replication requires application-level code changes to use the D1 Sessions API. |
+| `readReplication.mode` | `enum` | — | The replication mode: `auto` (enable automatic read replication across regions) or `disabled` (turn it off). Required when the `readReplication` object is present. Enabling replication requires application-level code changes to use the D1 Sessions API. |
 
 ## Examples
 
@@ -127,9 +127,8 @@ After deployment, the following outputs are available in `status.outputs`:
 
 | Output | Type | Description |
 |--------|------|-------------|
-| `databaseId` | `string` | The unique identifier (UUID) of the created D1 database |
+| `databaseId` | `string` | The unique identifier (UUID) of the created D1 database (referenced by a Worker `d1` binding) |
 | `databaseName` | `string` | The name of the database as confirmed by Cloudflare |
-| `connectionString` | `string` | Reserved for future use. The Pulumi Cloudflare provider does not currently expose a connection string for D1, so this field is empty. |
 
 ## Related Components
 

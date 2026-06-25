@@ -4,12 +4,15 @@ package org.openmcf.provider.cloudflare.cloudflared1database.v1;
 
 // CloudflareD1DatabaseStackOutputs captures the outputs after provisioning a Cloudflare D1 database.
 message CloudflareD1DatabaseStackOutputs {
-  // The unique identifier of the created D1 database.
+  // The unique identifier of the created D1 database. A Worker's `d1` binding
+  // references this value.
   string database_id = 1;
 
   // The name of the database (same as the input name).
   string database_name = 2;
 
-  // The connection string for connecting to the D1 database.
-  string connection_string = 3;
+  // 3: connection_string was removed — the Cloudflare v5 provider exposes no
+  // connection string for D1 (a Worker reaches D1 through its binding, not a DSN).
+  reserved 3;
+  reserved "connection_string";
 }

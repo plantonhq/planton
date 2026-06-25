@@ -28,5 +28,12 @@ locals {
 
   # Merge base, org, and environment labels
   final_labels = merge(local.base_labels, local.org_label, local.env_label)
+
+  # The tfvars converter emits an unset enum as its zero-value name; treat the
+  # region sentinel (and empty) as "no hint" so the provider chooses a default.
+  region = try(var.spec.region, "")
+  primary_location_hint = (
+    local.region != "" && local.region != "cloudflare_d1_region_unspecified"
+  ) ? local.region : null
 }
 

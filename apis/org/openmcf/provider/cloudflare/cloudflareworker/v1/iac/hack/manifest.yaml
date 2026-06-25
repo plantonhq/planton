@@ -5,10 +5,19 @@ metadata:
 spec:
   accountId: "0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"
   workerName: test-worker
-  scriptBundle:
-    bucket: openmcf-workers
-    path: builds/test-worker-v1.0.0.js
+  content: |
+    export default {
+      async fetch(request, env, ctx) {
+        return new Response("ok");
+      }
+    };
   compatibilityDate: "2025-01-15"
-  env:
-    variables:
-      LOG_LEVEL: info
+  compatibilityFlags:
+    - nodejs_compat
+  vars:
+    LOG_LEVEL: info
+  workersDev:
+    enabled: true
+  observability:
+    enabled: true
+    headSamplingRate: 1

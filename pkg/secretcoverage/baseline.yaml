@@ -37,7 +37,6 @@ gaps:
   # (C) service env-var secret maps
   - AwsAppRunnerService:spec.environment_secrets
   - AwsEcsService:spec.container.env.secrets
-  - CloudflareWorker:spec.env.secrets
   - DigitalOceanFunction:spec.secret_environment_variables
   - GcpCloudFunction:spec.service_config.secret_environment_variables
   - GcpCloudRun:spec.container.env.secrets

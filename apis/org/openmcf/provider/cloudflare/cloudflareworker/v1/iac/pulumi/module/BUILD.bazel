@@ -3,12 +3,10 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "module",
     srcs = [
-        "dns_record.go",
+        "bindings.go",
         "locals.go",
         "main.go",
         "outputs.go",
-        "route.go",
-        "secrets.go",
         "worker_script.go",
     ],
     importpath = "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflareworker/v1/iac/pulumi/module",

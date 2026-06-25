@@ -10,8 +10,3 @@ output "database_name" {
   value       = cloudflare_d1_database.main.name
 }
 
-output "connection_string" {
-  description = "The connection string for connecting to the D1 database (currently not available in Terraform provider)"
-  value       = ""
-}
-

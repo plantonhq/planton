@@ -4,8 +4,21 @@ package org.openmcf.provider.cloudflare.cloudflareworker.v1;
 
 // CloudflareWorkerStackOutputs captures the outputs after deploying a Cloudflare Worker.
 message CloudflareWorkerStackOutputs {
-  // The Cloudflare-assigned identifier or name of the deployed Worker script.
+  // The Cloudflare-assigned identifier of the deployed Worker script (equals the
+  // script name in v5).
   string script_id = 1;
-  // The route URL(s) or patterns where this Worker is active (e.g., workers.dev subdomain or custom domain routes).
-  repeated string route_urls = 2;
+
+  // 2: route_urls was replaced by the explicit script_name + custom-domain +
+  // route outputs below (the old field conflated names, patterns, and URLs).
+  reserved 2;
+  reserved "route_urls";
+
+  // The Worker script name — the target a service binding references.
+  string script_name = 3;
+
+  // The custom-domain hostnames attached to this Worker.
+  repeated string custom_domain_hostnames = 4;
+
+  // The route patterns mapped to this Worker.
+  repeated string route_patterns = 5;
 }

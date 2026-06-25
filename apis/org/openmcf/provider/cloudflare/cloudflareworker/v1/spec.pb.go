@@ -9,6 +9,7 @@ package cloudflareworkerv1
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
+	_ "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -23,76 +24,92 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Supported usage models for Cloudflare Workers.
-type CloudflareWorkerSpec_CloudflareWorkerUsageModel int32
-
-const (
-	CloudflareWorkerSpec_BUNDLED CloudflareWorkerSpec_CloudflareWorkerUsageModel = 0
-	CloudflareWorkerSpec_UNBOUND CloudflareWorkerSpec_CloudflareWorkerUsageModel = 1
-)
-
-// Enum value maps for CloudflareWorkerSpec_CloudflareWorkerUsageModel.
-var (
-	CloudflareWorkerSpec_CloudflareWorkerUsageModel_name = map[int32]string{
-		0: "BUNDLED",
-		1: "UNBOUND",
-	}
-	CloudflareWorkerSpec_CloudflareWorkerUsageModel_value = map[string]int32{
-		"BUNDLED": 0,
-		"UNBOUND": 1,
-	}
-)
-
-func (x CloudflareWorkerSpec_CloudflareWorkerUsageModel) Enum() *CloudflareWorkerSpec_CloudflareWorkerUsageModel {
-	p := new(CloudflareWorkerSpec_CloudflareWorkerUsageModel)
-	*p = x
-	return p
-}
-
-func (x CloudflareWorkerSpec_CloudflareWorkerUsageModel) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (CloudflareWorkerSpec_CloudflareWorkerUsageModel) Descriptor() protoreflect.EnumDescriptor {
-	return file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_enumTypes[0].Descriptor()
-}
-
-func (CloudflareWorkerSpec_CloudflareWorkerUsageModel) Type() protoreflect.EnumType {
-	return &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_enumTypes[0]
-}
-
-func (x CloudflareWorkerSpec_CloudflareWorkerUsageModel) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use CloudflareWorkerSpec_CloudflareWorkerUsageModel.Descriptor instead.
-func (CloudflareWorkerSpec_CloudflareWorkerUsageModel) EnumDescriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDescGZIP(), []int{0, 0}
-}
-
-// CloudflareWorkerSpec defines user-provided configuration for deploying a Cloudflare Worker.
+// CloudflareWorkerSpec deploys a Cloudflare Worker script and everything that
+// hangs off it: its resource bindings, routing (workers.dev, custom domains,
+// routes), scheduled (cron) invocations, and runtime settings. Bindings are
+// grouped by type (the wrangler.toml authoring grain) and each cross-resource
+// binding accepts a literal id or a reference to the producing resource, so a
+// Worker composes as a real node in the resource graph.
 type CloudflareWorkerSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Cloudflare account ID in which to create the worker.
 	AccountId string `protobuf:"bytes,1,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
-	// The name of the Cloudflare Worker.
-	// This is the worker name that will be visible in the Cloudflare dashboard.
+	// The Worker script name, visible in the Cloudflare dashboard and used as the
+	// target of service bindings and routes.
 	WorkerName string `protobuf:"bytes,2,opt,name=worker_name,json=workerName,proto3" json:"worker_name,omitempty"`
-	// Worker script bundle configuration.
-	// Specifies the R2 bucket and path where the pre-built Worker script bundle is stored.
-	ScriptBundle *CloudflareWorkerScriptBundle `protobuf:"bytes,3,opt,name=script_bundle,json=scriptBundle,proto3" json:"script_bundle,omitempty"`
-	// (Optional) One or more KV namespaces to bind to this Worker (referenced by CloudflareKVNamespace.namespace_id).
-	KvBindings []*v1.StringValueOrRef `protobuf:"bytes,4,rep,name=kv_bindings,json=kvBindings,proto3" json:"kv_bindings,omitempty"`
-	// (Optional) DNS configuration for attaching the Worker to a custom domain.
-	Dns *CloudflareWorkerDns `protobuf:"bytes,5,opt,name=dns,proto3" json:"dns,omitempty"`
-	// (Optional) Compatibility date for the Worker script (YYYY-MM-DD). If unset, defaults to today's date.
+	// Compatibility date (YYYY-MM-DD) pinning the Workers runtime behavior. When
+	// unset, the module pins today's date at deploy.
 	CompatibilityDate string `protobuf:"bytes,6,opt,name=compatibility_date,json=compatibilityDate,proto3" json:"compatibility_date,omitempty"`
-	// (Optional) Billing/usage model for the Worker. Defaults to BUNDLED if unspecified.
-	UsageModel CloudflareWorkerSpec_CloudflareWorkerUsageModel `protobuf:"varint,7,opt,name=usage_model,json=usageModel,proto3,enum=org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec_CloudflareWorkerUsageModel" json:"usage_model,omitempty"`
-	// Environment configuration supporting variables and secrets.
-	// Variables become plain-text bindings in the Worker.
-	// Secrets are uploaded via Cloudflare Workers Secrets API (encrypted at rest).
-	Env           *CloudflareWorkerEnv `protobuf:"bytes,8,opt,name=env,proto3" json:"env,omitempty"`
+	// Script source — exactly one of the two cases below.
+	//
+	// Types that are valid to be assigned to Source:
+	//
+	//	*CloudflareWorkerSpec_Content
+	//	*CloudflareWorkerSpec_R2Bundle
+	Source isCloudflareWorkerSpec_Source `protobuf_oneof:"source"`
+	// The entrypoint module filename within the bundle (module-format workers).
+	MainModule string `protobuf:"bytes,11,opt,name=main_module,json=mainModule,proto3" json:"main_module,omitempty"`
+	// Runtime compatibility flags (e.g. "nodejs_compat"). See the Cloudflare
+	// compatibility-flags docs for the set valid on a given compatibility_date.
+	CompatibilityFlags []string `protobuf:"bytes,12,rep,name=compatibility_flags,json=compatibilityFlags,proto3" json:"compatibility_flags,omitempty"`
+	// Plain-text variable bindings: non-secret configuration exposed to the Worker
+	// as env vars. Map key is the JS binding name, value is the literal string.
+	Vars map[string]string `protobuf:"bytes,13,rep,name=vars,proto3" json:"vars,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	// Secret bindings: sensitive values exposed to the Worker as env vars. Provide
+	// each as a managed-secret reference; resolved just-in-time at deploy.
+	Secrets []*CloudflareWorkerSecretBinding `protobuf:"bytes,14,rep,name=secrets,proto3" json:"secrets,omitempty"`
+	// KV namespace bindings. Each binds a CloudflareKvNamespace (by id or
+	// reference) to a JS variable the Worker uses for edge key-value access.
+	KvNamespaces []*CloudflareWorkerKvBinding `protobuf:"bytes,15,rep,name=kv_namespaces,json=kvNamespaces,proto3" json:"kv_namespaces,omitempty"`
+	// R2 bucket bindings. Each binds a CloudflareR2Bucket (by name or reference)
+	// for object storage access from the Worker.
+	R2Buckets []*CloudflareWorkerR2Binding `protobuf:"bytes,16,rep,name=r2_buckets,json=r2Buckets,proto3" json:"r2_buckets,omitempty"`
+	// D1 database bindings. Each binds a CloudflareD1Database (by id or reference)
+	// for serverless SQL access from the Worker.
+	D1Databases []*CloudflareWorkerD1Binding `protobuf:"bytes,17,rep,name=d1_databases,json=d1Databases,proto3" json:"d1_databases,omitempty"`
+	// Hyperdrive bindings. Each binds a CloudflareHyperdriveConfig (by id or
+	// reference) for pooled, cached access to a regional SQL database.
+	HyperdriveConfigs []*CloudflareWorkerHyperdriveBinding `protobuf:"bytes,18,rep,name=hyperdrive_configs,json=hyperdriveConfigs,proto3" json:"hyperdrive_configs,omitempty"`
+	// Service bindings: bind another Worker (by name or reference) for direct
+	// worker-to-worker calls without going over the public internet.
+	Services []*CloudflareWorkerServiceBinding `protobuf:"bytes,19,rep,name=services,proto3" json:"services,omitempty"`
+	// Queue producer bindings: let the Worker enqueue messages to a Cloudflare
+	// Queue by name.
+	Queues []*CloudflareWorkerQueueBinding `protobuf:"bytes,20,rep,name=queues,proto3" json:"queues,omitempty"`
+	// Durable Object bindings: bind a Durable Object namespace (a class) for
+	// strongly-consistent, stateful coordination.
+	DurableObjects []*CloudflareWorkerDurableObjectBinding `protobuf:"bytes,21,rep,name=durable_objects,json=durableObjects,proto3" json:"durable_objects,omitempty"`
+	// Analytics Engine bindings: bind a dataset the Worker writes analytics data points to.
+	AnalyticsEngineDatasets []*CloudflareWorkerAnalyticsEngineBinding `protobuf:"bytes,22,rep,name=analytics_engine_datasets,json=analyticsEngineDatasets,proto3" json:"analytics_engine_datasets,omitempty"`
+	// Vectorize bindings: bind a vector-search index for AI/embedding workloads.
+	VectorizeIndexes []*CloudflareWorkerVectorizeBinding `protobuf:"bytes,23,rep,name=vectorize_indexes,json=vectorizeIndexes,proto3" json:"vectorize_indexes,omitempty"`
+	// Workers AI bindings: bind the account's AI inference gateway. Each entry is
+	// just the JS variable name the Worker calls models through.
+	Ai []*CloudflareWorkerAiBinding `protobuf:"bytes,24,rep,name=ai,proto3" json:"ai,omitempty"`
+	// Version-metadata bindings: expose the deployed version id/tag to the Worker
+	// at runtime via the named binding.
+	VersionMetadata []*CloudflareWorkerVersionMetadataBinding `protobuf:"bytes,25,rep,name=version_metadata,json=versionMetadata,proto3" json:"version_metadata,omitempty"`
+	// workers.dev subdomain exposure (e.g. <name>.<subdomain>.workers.dev).
+	WorkersDev *CloudflareWorkerWorkersDev `protobuf:"bytes,26,opt,name=workers_dev,json=workersDev,proto3" json:"workers_dev,omitempty"`
+	// Custom domains that route directly to this Worker (a managed hostname with
+	// automatic TLS), distinct from pattern-based routes.
+	CustomDomains []*CloudflareWorkerCustomDomain `protobuf:"bytes,27,rep,name=custom_domains,json=customDomains,proto3" json:"custom_domains,omitempty"`
+	// Route patterns within a zone that map matching requests to this Worker.
+	Routes []*CloudflareWorkerRoute `protobuf:"bytes,28,rep,name=routes,proto3" json:"routes,omitempty"`
+	// Cron schedules that invoke the Worker's scheduled handler. Each entry is a
+	// cron expression (e.g. "0 * * * *").
+	Schedules []string `protobuf:"bytes,29,rep,name=schedules,proto3" json:"schedules,omitempty"`
+	// Observability (Workers Logs) configuration.
+	Observability *CloudflareWorkerObservability `protobuf:"bytes,30,opt,name=observability,proto3" json:"observability,omitempty"`
+	// Smart Placement: let Cloudflare run the Worker closer to backend services it
+	// calls, instead of closest to the user.
+	Placement *CloudflareWorkerPlacement `protobuf:"bytes,31,opt,name=placement,proto3" json:"placement,omitempty"`
+	// Per-invocation resource limits.
+	Limits *CloudflareWorkerLimits `protobuf:"bytes,32,opt,name=limits,proto3" json:"limits,omitempty"`
+	// Enable Logpush for the Worker's logs (push to a configured Logpush job).
+	Logpush bool `protobuf:"varint,33,opt,name=logpush,proto3" json:"logpush,omitempty"`
+	// Tail consumers: other Workers that receive this Worker's tail (trace) events.
+	TailConsumers []*CloudflareWorkerTailConsumer `protobuf:"bytes,34,rep,name=tail_consumers,json=tailConsumers,proto3" json:"tail_consumers,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -141,27 +158,6 @@ func (x *CloudflareWorkerSpec) GetWorkerName() string {
 	return ""
 }
 
-func (x *CloudflareWorkerSpec) GetScriptBundle() *CloudflareWorkerScriptBundle {
-	if x != nil {
-		return x.ScriptBundle
-	}
-	return nil
-}
-
-func (x *CloudflareWorkerSpec) GetKvBindings() []*v1.StringValueOrRef {
-	if x != nil {
-		return x.KvBindings
-	}
-	return nil
-}
-
-func (x *CloudflareWorkerSpec) GetDns() *CloudflareWorkerDns {
-	if x != nil {
-		return x.Dns
-	}
-	return nil
-}
-
 func (x *CloudflareWorkerSpec) GetCompatibilityDate() string {
 	if x != nil {
 		return x.CompatibilityDate
@@ -169,87 +165,224 @@ func (x *CloudflareWorkerSpec) GetCompatibilityDate() string {
 	return ""
 }
 
-func (x *CloudflareWorkerSpec) GetUsageModel() CloudflareWorkerSpec_CloudflareWorkerUsageModel {
+func (x *CloudflareWorkerSpec) GetSource() isCloudflareWorkerSpec_Source {
 	if x != nil {
-		return x.UsageModel
-	}
-	return CloudflareWorkerSpec_BUNDLED
-}
-
-func (x *CloudflareWorkerSpec) GetEnv() *CloudflareWorkerEnv {
-	if x != nil {
-		return x.Env
+		return x.Source
 	}
 	return nil
 }
 
-// CloudflareWorkerEnv defines environment variables and secrets for a CloudflareWorker.
-type CloudflareWorkerEnv struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// Non-sensitive configuration (becomes plain-text bindings in the Worker).
-	// Supports plain values or $variables-group/... references.
-	// Example: LOG_LEVEL: "info"
-	// Example: NAMESPACE: "$variables-group/temporal/namespace"
-	Variables map[string]string `protobuf:"bytes,1,rep,name=variables,proto3" json:"variables,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	// Sensitive configuration (uploaded via Cloudflare Secrets API, encrypted at rest).
-	// Supports plain values or $secrets-group/... references.
-	// Example: API_KEY: "$secrets-group/external-apis/stripe-key"
-	// Note: Secrets are uploaded separately from the worker version and are never logged.
-	Secrets       map[string]string `protobuf:"bytes,2,rep,name=secrets,proto3" json:"secrets,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *CloudflareWorkerEnv) Reset() {
-	*x = CloudflareWorkerEnv{}
-	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *CloudflareWorkerEnv) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CloudflareWorkerEnv) ProtoMessage() {}
-
-func (x *CloudflareWorkerEnv) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[1]
+func (x *CloudflareWorkerSpec) GetContent() string {
 	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
+		if x, ok := x.Source.(*CloudflareWorkerSpec_Content); ok {
+			return x.Content
 		}
-		return ms
 	}
-	return mi.MessageOf(x)
+	return ""
 }
 
-// Deprecated: Use CloudflareWorkerEnv.ProtoReflect.Descriptor instead.
-func (*CloudflareWorkerEnv) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *CloudflareWorkerEnv) GetVariables() map[string]string {
+func (x *CloudflareWorkerSpec) GetR2Bundle() *CloudflareWorkerScriptBundle {
 	if x != nil {
-		return x.Variables
+		if x, ok := x.Source.(*CloudflareWorkerSpec_R2Bundle); ok {
+			return x.R2Bundle
+		}
 	}
 	return nil
 }
 
-func (x *CloudflareWorkerEnv) GetSecrets() map[string]string {
+func (x *CloudflareWorkerSpec) GetMainModule() string {
+	if x != nil {
+		return x.MainModule
+	}
+	return ""
+}
+
+func (x *CloudflareWorkerSpec) GetCompatibilityFlags() []string {
+	if x != nil {
+		return x.CompatibilityFlags
+	}
+	return nil
+}
+
+func (x *CloudflareWorkerSpec) GetVars() map[string]string {
+	if x != nil {
+		return x.Vars
+	}
+	return nil
+}
+
+func (x *CloudflareWorkerSpec) GetSecrets() []*CloudflareWorkerSecretBinding {
 	if x != nil {
 		return x.Secrets
 	}
 	return nil
 }
 
-// CloudflareWorkerScriptBundle defines the R2 object reference for the pre-built Worker script bundle.
+func (x *CloudflareWorkerSpec) GetKvNamespaces() []*CloudflareWorkerKvBinding {
+	if x != nil {
+		return x.KvNamespaces
+	}
+	return nil
+}
+
+func (x *CloudflareWorkerSpec) GetR2Buckets() []*CloudflareWorkerR2Binding {
+	if x != nil {
+		return x.R2Buckets
+	}
+	return nil
+}
+
+func (x *CloudflareWorkerSpec) GetD1Databases() []*CloudflareWorkerD1Binding {
+	if x != nil {
+		return x.D1Databases
+	}
+	return nil
+}
+
+func (x *CloudflareWorkerSpec) GetHyperdriveConfigs() []*CloudflareWorkerHyperdriveBinding {
+	if x != nil {
+		return x.HyperdriveConfigs
+	}
+	return nil
+}
+
+func (x *CloudflareWorkerSpec) GetServices() []*CloudflareWorkerServiceBinding {
+	if x != nil {
+		return x.Services
+	}
+	return nil
+}
+
+func (x *CloudflareWorkerSpec) GetQueues() []*CloudflareWorkerQueueBinding {
+	if x != nil {
+		return x.Queues
+	}
+	return nil
+}
+
+func (x *CloudflareWorkerSpec) GetDurableObjects() []*CloudflareWorkerDurableObjectBinding {
+	if x != nil {
+		return x.DurableObjects
+	}
+	return nil
+}
+
+func (x *CloudflareWorkerSpec) GetAnalyticsEngineDatasets() []*CloudflareWorkerAnalyticsEngineBinding {
+	if x != nil {
+		return x.AnalyticsEngineDatasets
+	}
+	return nil
+}
+
+func (x *CloudflareWorkerSpec) GetVectorizeIndexes() []*CloudflareWorkerVectorizeBinding {
+	if x != nil {
+		return x.VectorizeIndexes
+	}
+	return nil
+}
+
+func (x *CloudflareWorkerSpec) GetAi() []*CloudflareWorkerAiBinding {
+	if x != nil {
+		return x.Ai
+	}
+	return nil
+}
+
+func (x *CloudflareWorkerSpec) GetVersionMetadata() []*CloudflareWorkerVersionMetadataBinding {
+	if x != nil {
+		return x.VersionMetadata
+	}
+	return nil
+}
+
+func (x *CloudflareWorkerSpec) GetWorkersDev() *CloudflareWorkerWorkersDev {
+	if x != nil {
+		return x.WorkersDev
+	}
+	return nil
+}
+
+func (x *CloudflareWorkerSpec) GetCustomDomains() []*CloudflareWorkerCustomDomain {
+	if x != nil {
+		return x.CustomDomains
+	}
+	return nil
+}
+
+func (x *CloudflareWorkerSpec) GetRoutes() []*CloudflareWorkerRoute {
+	if x != nil {
+		return x.Routes
+	}
+	return nil
+}
+
+func (x *CloudflareWorkerSpec) GetSchedules() []string {
+	if x != nil {
+		return x.Schedules
+	}
+	return nil
+}
+
+func (x *CloudflareWorkerSpec) GetObservability() *CloudflareWorkerObservability {
+	if x != nil {
+		return x.Observability
+	}
+	return nil
+}
+
+func (x *CloudflareWorkerSpec) GetPlacement() *CloudflareWorkerPlacement {
+	if x != nil {
+		return x.Placement
+	}
+	return nil
+}
+
+func (x *CloudflareWorkerSpec) GetLimits() *CloudflareWorkerLimits {
+	if x != nil {
+		return x.Limits
+	}
+	return nil
+}
+
+func (x *CloudflareWorkerSpec) GetLogpush() bool {
+	if x != nil {
+		return x.Logpush
+	}
+	return false
+}
+
+func (x *CloudflareWorkerSpec) GetTailConsumers() []*CloudflareWorkerTailConsumer {
+	if x != nil {
+		return x.TailConsumers
+	}
+	return nil
+}
+
+type isCloudflareWorkerSpec_Source interface {
+	isCloudflareWorkerSpec_Source()
+}
+
+type CloudflareWorkerSpec_Content struct {
+	// Inline ES-module source. Convenient for small or generated scripts.
+	Content string `protobuf:"bytes,9,opt,name=content,proto3,oneof"`
+}
+
+type CloudflareWorkerSpec_R2Bundle struct {
+	// A pre-built script bundle stored in an R2 bucket (the CI build-artifact
+	// flow). The module fetches the object and deploys it.
+	R2Bundle *CloudflareWorkerScriptBundle `protobuf:"bytes,10,opt,name=r2_bundle,json=r2Bundle,proto3,oneof"`
+}
+
+func (*CloudflareWorkerSpec_Content) isCloudflareWorkerSpec_Source() {}
+
+func (*CloudflareWorkerSpec_R2Bundle) isCloudflareWorkerSpec_Source() {}
+
+// CloudflareWorkerScriptBundle references a pre-built script bundle in R2.
 type CloudflareWorkerScriptBundle struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The R2 bucket name where the script bundle is stored.
 	Bucket string `protobuf:"bytes,1,opt,name=bucket,proto3" json:"bucket,omitempty"`
-	// The path to the script bundle within the R2 bucket.
+	// The object key (path) of the script bundle within the bucket.
 	Path          string `protobuf:"bytes,2,opt,name=path,proto3" json:"path,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -257,7 +390,7 @@ type CloudflareWorkerScriptBundle struct {
 
 func (x *CloudflareWorkerScriptBundle) Reset() {
 	*x = CloudflareWorkerScriptBundle{}
-	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[2]
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -269,7 +402,7 @@ func (x *CloudflareWorkerScriptBundle) String() string {
 func (*CloudflareWorkerScriptBundle) ProtoMessage() {}
 
 func (x *CloudflareWorkerScriptBundle) ProtoReflect() protoreflect.Message {
-	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[2]
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -282,7 +415,7 @@ func (x *CloudflareWorkerScriptBundle) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CloudflareWorkerScriptBundle.ProtoReflect.Descriptor instead.
 func (*CloudflareWorkerScriptBundle) Descriptor() ([]byte, []int) {
-	return file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDescGZIP(), []int{2}
+	return file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *CloudflareWorkerScriptBundle) GetBucket() string {
@@ -299,38 +432,87 @@ func (x *CloudflareWorkerScriptBundle) GetPath() string {
 	return ""
 }
 
-// CloudflareWorkerDns defines DNS configuration for attaching a Worker to a custom domain.
-type CloudflareWorkerDns struct {
+// CloudflareWorkerSecretBinding binds a secret value to a JS variable.
+type CloudflareWorkerSecretBinding struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Enable or disable DNS/route configuration. Set to false to deploy worker without a route.
-	Enabled bool `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
-	// The Cloudflare Zone ID where the Worker route will be created.
-	// Can be a literal value or referenced from a CloudflareDnsZone resource.
-	ZoneId *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=zone_id,json=zoneId,proto3" json:"zone_id,omitempty"`
-	// The fully qualified domain name where the Worker will be accessible (e.g., "git-webhooks.planton.live").
-	// A DNS record will be created automatically for this hostname with proxy (orange cloud) enabled.
-	Hostname string `protobuf:"bytes,3,opt,name=hostname,proto3" json:"hostname,omitempty"`
-	// (Optional) URL pattern to match incoming requests. If not specified, defaults to "hostname/*".
-	// Examples: "git-webhooks.planton.live/*", "api.example.com/webhooks/*"
-	RoutePattern  string `protobuf:"bytes,4,opt,name=route_pattern,json=routePattern,proto3" json:"route_pattern,omitempty"`
+	// The JS binding (variable) name the Worker reads the secret through.
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// The secret value. Provide a managed-secret reference; the platform resolves
+	// it just-in-time at deploy and never stores plaintext.
+	Value         *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareWorkerDns) Reset() {
-	*x = CloudflareWorkerDns{}
+func (x *CloudflareWorkerSecretBinding) Reset() {
+	*x = CloudflareWorkerSecretBinding{}
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CloudflareWorkerSecretBinding) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CloudflareWorkerSecretBinding) ProtoMessage() {}
+
+func (x *CloudflareWorkerSecretBinding) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CloudflareWorkerSecretBinding.ProtoReflect.Descriptor instead.
+func (*CloudflareWorkerSecretBinding) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *CloudflareWorkerSecretBinding) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *CloudflareWorkerSecretBinding) GetValue() *v1.StringValueOrRef {
+	if x != nil {
+		return x.Value
+	}
+	return nil
+}
+
+// CloudflareWorkerKvBinding binds a KV namespace to a JS variable.
+type CloudflareWorkerKvBinding struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The JS binding (variable) name.
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// The KV namespace ID, or a reference to a CloudflareKvNamespace resource.
+	NamespaceId   *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=namespace_id,json=namespaceId,proto3" json:"namespace_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CloudflareWorkerKvBinding) Reset() {
+	*x = CloudflareWorkerKvBinding{}
 	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareWorkerDns) String() string {
+func (x *CloudflareWorkerKvBinding) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareWorkerDns) ProtoMessage() {}
+func (*CloudflareWorkerKvBinding) ProtoMessage() {}
 
-func (x *CloudflareWorkerDns) ProtoReflect() protoreflect.Message {
+func (x *CloudflareWorkerKvBinding) ProtoReflect() protoreflect.Message {
 	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -342,35 +524,962 @@ func (x *CloudflareWorkerDns) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareWorkerDns.ProtoReflect.Descriptor instead.
-func (*CloudflareWorkerDns) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareWorkerKvBinding.ProtoReflect.Descriptor instead.
+func (*CloudflareWorkerKvBinding) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *CloudflareWorkerDns) GetEnabled() bool {
+func (x *CloudflareWorkerKvBinding) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *CloudflareWorkerKvBinding) GetNamespaceId() *v1.StringValueOrRef {
+	if x != nil {
+		return x.NamespaceId
+	}
+	return nil
+}
+
+// CloudflareWorkerR2Binding binds an R2 bucket to a JS variable.
+type CloudflareWorkerR2Binding struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The JS binding (variable) name.
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// The R2 bucket name, or a reference to a CloudflareR2Bucket resource.
+	BucketName *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=bucket_name,json=bucketName,proto3" json:"bucket_name,omitempty"`
+	// Optional data-residency jurisdiction of the bucket. One of "eu", "fedramp",
+	// or "fedramp-high"; leave empty for the default jurisdiction.
+	Jurisdiction  string `protobuf:"bytes,3,opt,name=jurisdiction,proto3" json:"jurisdiction,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CloudflareWorkerR2Binding) Reset() {
+	*x = CloudflareWorkerR2Binding{}
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CloudflareWorkerR2Binding) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CloudflareWorkerR2Binding) ProtoMessage() {}
+
+func (x *CloudflareWorkerR2Binding) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CloudflareWorkerR2Binding.ProtoReflect.Descriptor instead.
+func (*CloudflareWorkerR2Binding) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *CloudflareWorkerR2Binding) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *CloudflareWorkerR2Binding) GetBucketName() *v1.StringValueOrRef {
+	if x != nil {
+		return x.BucketName
+	}
+	return nil
+}
+
+func (x *CloudflareWorkerR2Binding) GetJurisdiction() string {
+	if x != nil {
+		return x.Jurisdiction
+	}
+	return ""
+}
+
+// CloudflareWorkerD1Binding binds a D1 database to a JS variable.
+type CloudflareWorkerD1Binding struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The JS binding (variable) name.
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// The D1 database ID, or a reference to a CloudflareD1Database resource.
+	DatabaseId    *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=database_id,json=databaseId,proto3" json:"database_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CloudflareWorkerD1Binding) Reset() {
+	*x = CloudflareWorkerD1Binding{}
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CloudflareWorkerD1Binding) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CloudflareWorkerD1Binding) ProtoMessage() {}
+
+func (x *CloudflareWorkerD1Binding) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CloudflareWorkerD1Binding.ProtoReflect.Descriptor instead.
+func (*CloudflareWorkerD1Binding) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *CloudflareWorkerD1Binding) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *CloudflareWorkerD1Binding) GetDatabaseId() *v1.StringValueOrRef {
+	if x != nil {
+		return x.DatabaseId
+	}
+	return nil
+}
+
+// CloudflareWorkerHyperdriveBinding binds a Hyperdrive config to a JS variable.
+type CloudflareWorkerHyperdriveBinding struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The JS binding (variable) name.
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// The Hyperdrive config ID, or a reference to a CloudflareHyperdriveConfig resource.
+	ConfigId      *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=config_id,json=configId,proto3" json:"config_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CloudflareWorkerHyperdriveBinding) Reset() {
+	*x = CloudflareWorkerHyperdriveBinding{}
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CloudflareWorkerHyperdriveBinding) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CloudflareWorkerHyperdriveBinding) ProtoMessage() {}
+
+func (x *CloudflareWorkerHyperdriveBinding) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CloudflareWorkerHyperdriveBinding.ProtoReflect.Descriptor instead.
+func (*CloudflareWorkerHyperdriveBinding) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *CloudflareWorkerHyperdriveBinding) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *CloudflareWorkerHyperdriveBinding) GetConfigId() *v1.StringValueOrRef {
+	if x != nil {
+		return x.ConfigId
+	}
+	return nil
+}
+
+// CloudflareWorkerServiceBinding binds another Worker for direct service-to-service calls.
+type CloudflareWorkerServiceBinding struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The JS binding (variable) name.
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// The target Worker's script name, or a reference to a CloudflareWorker resource.
+	Service *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=service,proto3" json:"service,omitempty"`
+	// Optional environment of the target Worker to bind to.
+	Environment   string `protobuf:"bytes,3,opt,name=environment,proto3" json:"environment,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CloudflareWorkerServiceBinding) Reset() {
+	*x = CloudflareWorkerServiceBinding{}
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CloudflareWorkerServiceBinding) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CloudflareWorkerServiceBinding) ProtoMessage() {}
+
+func (x *CloudflareWorkerServiceBinding) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CloudflareWorkerServiceBinding.ProtoReflect.Descriptor instead.
+func (*CloudflareWorkerServiceBinding) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *CloudflareWorkerServiceBinding) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *CloudflareWorkerServiceBinding) GetService() *v1.StringValueOrRef {
+	if x != nil {
+		return x.Service
+	}
+	return nil
+}
+
+func (x *CloudflareWorkerServiceBinding) GetEnvironment() string {
+	if x != nil {
+		return x.Environment
+	}
+	return ""
+}
+
+// CloudflareWorkerQueueBinding lets the Worker produce messages to a Queue.
+type CloudflareWorkerQueueBinding struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The JS binding (variable) name.
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// The Cloudflare Queue name to produce to.
+	QueueName     string `protobuf:"bytes,2,opt,name=queue_name,json=queueName,proto3" json:"queue_name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CloudflareWorkerQueueBinding) Reset() {
+	*x = CloudflareWorkerQueueBinding{}
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CloudflareWorkerQueueBinding) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CloudflareWorkerQueueBinding) ProtoMessage() {}
+
+func (x *CloudflareWorkerQueueBinding) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CloudflareWorkerQueueBinding.ProtoReflect.Descriptor instead.
+func (*CloudflareWorkerQueueBinding) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *CloudflareWorkerQueueBinding) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *CloudflareWorkerQueueBinding) GetQueueName() string {
+	if x != nil {
+		return x.QueueName
+	}
+	return ""
+}
+
+// CloudflareWorkerDurableObjectBinding binds a Durable Object namespace (class).
+type CloudflareWorkerDurableObjectBinding struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The JS binding (variable) name.
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// The Durable Object class name that implements the namespace.
+	ClassName string `protobuf:"bytes,2,opt,name=class_name,json=className,proto3" json:"class_name,omitempty"`
+	// Script that defines the class, when it lives in a different Worker. Leave
+	// empty when the class is defined in this Worker.
+	ScriptName string `protobuf:"bytes,3,opt,name=script_name,json=scriptName,proto3" json:"script_name,omitempty"`
+	// Optional environment of the defining script.
+	Environment   string `protobuf:"bytes,4,opt,name=environment,proto3" json:"environment,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CloudflareWorkerDurableObjectBinding) Reset() {
+	*x = CloudflareWorkerDurableObjectBinding{}
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CloudflareWorkerDurableObjectBinding) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CloudflareWorkerDurableObjectBinding) ProtoMessage() {}
+
+func (x *CloudflareWorkerDurableObjectBinding) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CloudflareWorkerDurableObjectBinding.ProtoReflect.Descriptor instead.
+func (*CloudflareWorkerDurableObjectBinding) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *CloudflareWorkerDurableObjectBinding) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *CloudflareWorkerDurableObjectBinding) GetClassName() string {
+	if x != nil {
+		return x.ClassName
+	}
+	return ""
+}
+
+func (x *CloudflareWorkerDurableObjectBinding) GetScriptName() string {
+	if x != nil {
+		return x.ScriptName
+	}
+	return ""
+}
+
+func (x *CloudflareWorkerDurableObjectBinding) GetEnvironment() string {
+	if x != nil {
+		return x.Environment
+	}
+	return ""
+}
+
+// CloudflareWorkerAnalyticsEngineBinding binds an Analytics Engine dataset.
+type CloudflareWorkerAnalyticsEngineBinding struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The JS binding (variable) name.
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// The Analytics Engine dataset the Worker writes data points to.
+	Dataset       string `protobuf:"bytes,2,opt,name=dataset,proto3" json:"dataset,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CloudflareWorkerAnalyticsEngineBinding) Reset() {
+	*x = CloudflareWorkerAnalyticsEngineBinding{}
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CloudflareWorkerAnalyticsEngineBinding) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CloudflareWorkerAnalyticsEngineBinding) ProtoMessage() {}
+
+func (x *CloudflareWorkerAnalyticsEngineBinding) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CloudflareWorkerAnalyticsEngineBinding.ProtoReflect.Descriptor instead.
+func (*CloudflareWorkerAnalyticsEngineBinding) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *CloudflareWorkerAnalyticsEngineBinding) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *CloudflareWorkerAnalyticsEngineBinding) GetDataset() string {
+	if x != nil {
+		return x.Dataset
+	}
+	return ""
+}
+
+// CloudflareWorkerVectorizeBinding binds a Vectorize index.
+type CloudflareWorkerVectorizeBinding struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The JS binding (variable) name.
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// The Vectorize index name.
+	IndexName     string `protobuf:"bytes,2,opt,name=index_name,json=indexName,proto3" json:"index_name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CloudflareWorkerVectorizeBinding) Reset() {
+	*x = CloudflareWorkerVectorizeBinding{}
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CloudflareWorkerVectorizeBinding) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CloudflareWorkerVectorizeBinding) ProtoMessage() {}
+
+func (x *CloudflareWorkerVectorizeBinding) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CloudflareWorkerVectorizeBinding.ProtoReflect.Descriptor instead.
+func (*CloudflareWorkerVectorizeBinding) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *CloudflareWorkerVectorizeBinding) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *CloudflareWorkerVectorizeBinding) GetIndexName() string {
+	if x != nil {
+		return x.IndexName
+	}
+	return ""
+}
+
+// CloudflareWorkerAiBinding binds the Workers AI inference gateway.
+type CloudflareWorkerAiBinding struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The JS binding (variable) name the Worker calls AI models through.
+	Name          string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CloudflareWorkerAiBinding) Reset() {
+	*x = CloudflareWorkerAiBinding{}
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CloudflareWorkerAiBinding) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CloudflareWorkerAiBinding) ProtoMessage() {}
+
+func (x *CloudflareWorkerAiBinding) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CloudflareWorkerAiBinding.ProtoReflect.Descriptor instead.
+func (*CloudflareWorkerAiBinding) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *CloudflareWorkerAiBinding) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+// CloudflareWorkerVersionMetadataBinding exposes the deployed version metadata.
+type CloudflareWorkerVersionMetadataBinding struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The JS binding (variable) name exposing the version id/tag.
+	Name          string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CloudflareWorkerVersionMetadataBinding) Reset() {
+	*x = CloudflareWorkerVersionMetadataBinding{}
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CloudflareWorkerVersionMetadataBinding) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CloudflareWorkerVersionMetadataBinding) ProtoMessage() {}
+
+func (x *CloudflareWorkerVersionMetadataBinding) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CloudflareWorkerVersionMetadataBinding.ProtoReflect.Descriptor instead.
+func (*CloudflareWorkerVersionMetadataBinding) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *CloudflareWorkerVersionMetadataBinding) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+// CloudflareWorkerWorkersDev controls workers.dev subdomain exposure.
+type CloudflareWorkerWorkersDev struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Expose the Worker at <name>.<account-subdomain>.workers.dev.
+	Enabled bool `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	// Also enable per-version preview URLs (<version>-<name>.<subdomain>.workers.dev).
+	PreviewsEnabled bool `protobuf:"varint,2,opt,name=previews_enabled,json=previewsEnabled,proto3" json:"previews_enabled,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *CloudflareWorkerWorkersDev) Reset() {
+	*x = CloudflareWorkerWorkersDev{}
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CloudflareWorkerWorkersDev) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CloudflareWorkerWorkersDev) ProtoMessage() {}
+
+func (x *CloudflareWorkerWorkersDev) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CloudflareWorkerWorkersDev.ProtoReflect.Descriptor instead.
+func (*CloudflareWorkerWorkersDev) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *CloudflareWorkerWorkersDev) GetEnabled() bool {
 	if x != nil {
 		return x.Enabled
 	}
 	return false
 }
 
-func (x *CloudflareWorkerDns) GetZoneId() *v1.StringValueOrRef {
+func (x *CloudflareWorkerWorkersDev) GetPreviewsEnabled() bool {
 	if x != nil {
-		return x.ZoneId
+		return x.PreviewsEnabled
 	}
-	return nil
+	return false
 }
 
-func (x *CloudflareWorkerDns) GetHostname() string {
+// CloudflareWorkerCustomDomain attaches a managed custom domain to the Worker.
+type CloudflareWorkerCustomDomain struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The fully qualified hostname to route to the Worker (e.g. "api.example.com").
+	// Cloudflare provisions and manages TLS for it automatically and infers the
+	// owning zone from the hostname.
+	Hostname      string `protobuf:"bytes,1,opt,name=hostname,proto3" json:"hostname,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CloudflareWorkerCustomDomain) Reset() {
+	*x = CloudflareWorkerCustomDomain{}
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CloudflareWorkerCustomDomain) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CloudflareWorkerCustomDomain) ProtoMessage() {}
+
+func (x *CloudflareWorkerCustomDomain) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CloudflareWorkerCustomDomain.ProtoReflect.Descriptor instead.
+func (*CloudflareWorkerCustomDomain) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *CloudflareWorkerCustomDomain) GetHostname() string {
 	if x != nil {
 		return x.Hostname
 	}
 	return ""
 }
 
-func (x *CloudflareWorkerDns) GetRoutePattern() string {
+// CloudflareWorkerRoute maps a URL pattern within a zone to the Worker.
+type CloudflareWorkerRoute struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The Cloudflare Zone ID the route belongs to, or a reference to a CloudflareDnsZone.
+	ZoneId *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=zone_id,json=zoneId,proto3" json:"zone_id,omitempty"`
+	// The route pattern (e.g. "api.example.com/webhooks/*").
+	Pattern       string `protobuf:"bytes,2,opt,name=pattern,proto3" json:"pattern,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CloudflareWorkerRoute) Reset() {
+	*x = CloudflareWorkerRoute{}
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CloudflareWorkerRoute) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CloudflareWorkerRoute) ProtoMessage() {}
+
+func (x *CloudflareWorkerRoute) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[16]
 	if x != nil {
-		return x.RoutePattern
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CloudflareWorkerRoute.ProtoReflect.Descriptor instead.
+func (*CloudflareWorkerRoute) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *CloudflareWorkerRoute) GetZoneId() *v1.StringValueOrRef {
+	if x != nil {
+		return x.ZoneId
+	}
+	return nil
+}
+
+func (x *CloudflareWorkerRoute) GetPattern() string {
+	if x != nil {
+		return x.Pattern
+	}
+	return ""
+}
+
+// CloudflareWorkerObservability configures Workers Logs.
+type CloudflareWorkerObservability struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Enable Workers Logs (structured logs visible in the dashboard / queryable).
+	Enabled bool `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	// Fraction of requests sampled for logging, 0.0–1.0. Leave 0 for the default
+	// (1.0 = sample all) when enabled.
+	HeadSamplingRate float64 `protobuf:"fixed64,2,opt,name=head_sampling_rate,json=headSamplingRate,proto3" json:"head_sampling_rate,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *CloudflareWorkerObservability) Reset() {
+	*x = CloudflareWorkerObservability{}
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CloudflareWorkerObservability) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CloudflareWorkerObservability) ProtoMessage() {}
+
+func (x *CloudflareWorkerObservability) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CloudflareWorkerObservability.ProtoReflect.Descriptor instead.
+func (*CloudflareWorkerObservability) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *CloudflareWorkerObservability) GetEnabled() bool {
+	if x != nil {
+		return x.Enabled
+	}
+	return false
+}
+
+func (x *CloudflareWorkerObservability) GetHeadSamplingRate() float64 {
+	if x != nil {
+		return x.HeadSamplingRate
+	}
+	return 0
+}
+
+// CloudflareWorkerPlacement configures Smart Placement.
+type CloudflareWorkerPlacement struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Placement mode. "smart" lets Cloudflare run the Worker near the backends it
+	// calls. Leave empty to keep the default (run near the user).
+	Mode          string `protobuf:"bytes,1,opt,name=mode,proto3" json:"mode,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CloudflareWorkerPlacement) Reset() {
+	*x = CloudflareWorkerPlacement{}
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CloudflareWorkerPlacement) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CloudflareWorkerPlacement) ProtoMessage() {}
+
+func (x *CloudflareWorkerPlacement) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CloudflareWorkerPlacement.ProtoReflect.Descriptor instead.
+func (*CloudflareWorkerPlacement) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *CloudflareWorkerPlacement) GetMode() string {
+	if x != nil {
+		return x.Mode
+	}
+	return ""
+}
+
+// CloudflareWorkerLimits sets per-invocation resource limits.
+type CloudflareWorkerLimits struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// CPU time limit in milliseconds per invocation. Leave 0 for the plan default.
+	CpuMs         int64 `protobuf:"varint,1,opt,name=cpu_ms,json=cpuMs,proto3" json:"cpu_ms,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CloudflareWorkerLimits) Reset() {
+	*x = CloudflareWorkerLimits{}
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CloudflareWorkerLimits) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CloudflareWorkerLimits) ProtoMessage() {}
+
+func (x *CloudflareWorkerLimits) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CloudflareWorkerLimits.ProtoReflect.Descriptor instead.
+func (*CloudflareWorkerLimits) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *CloudflareWorkerLimits) GetCpuMs() int64 {
+	if x != nil {
+		return x.CpuMs
+	}
+	return 0
+}
+
+// CloudflareWorkerTailConsumer names another Worker that consumes tail events.
+type CloudflareWorkerTailConsumer struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The consuming Worker's service (script) name.
+	Service string `protobuf:"bytes,1,opt,name=service,proto3" json:"service,omitempty"`
+	// Optional environment of the consuming Worker.
+	Environment string `protobuf:"bytes,2,opt,name=environment,proto3" json:"environment,omitempty"`
+	// Optional dispatch namespace of the consuming Worker.
+	Namespace     string `protobuf:"bytes,3,opt,name=namespace,proto3" json:"namespace,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CloudflareWorkerTailConsumer) Reset() {
+	*x = CloudflareWorkerTailConsumer{}
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CloudflareWorkerTailConsumer) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CloudflareWorkerTailConsumer) ProtoMessage() {}
+
+func (x *CloudflareWorkerTailConsumer) ProtoReflect() protoreflect.Message {
+	mi := &file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CloudflareWorkerTailConsumer.ProtoReflect.Descriptor instead.
+func (*CloudflareWorkerTailConsumer) Descriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *CloudflareWorkerTailConsumer) GetService() string {
+	if x != nil {
+		return x.Service
+	}
+	return ""
+}
+
+func (x *CloudflareWorkerTailConsumer) GetEnvironment() string {
+	if x != nil {
+		return x.Environment
+	}
+	return ""
+}
+
+func (x *CloudflareWorkerTailConsumer) GetNamespace() string {
+	if x != nil {
+		return x.Namespace
 	}
 	return ""
 }
@@ -379,40 +1488,120 @@ var File_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto protoref
 
 const file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	">org/openmcf/provider/cloudflare/cloudflareworker/v1/spec.proto\x123org.openmcf.provider.cloudflare.cloudflareworker.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\"\xcb\x06\n" +
+	">org/openmcf/provider/cloudflare/cloudflareworker/v1/spec.proto\x123org.openmcf.provider.cloudflare.cloudflareworker.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xe9\x18\n" +
 	"\x14CloudflareWorkerSpec\x12=\n" +
 	"\n" +
 	"account_id\x18\x01 \x01(\tB\x1e\xbaH\x1b\xc8\x01\x01r\x162\x11^[0-9a-fA-F]{32}$\x98\x01 R\taccountId\x12-\n" +
 	"\vworker_name\x18\x02 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x01\x18?R\n" +
-	"workerName\x12~\n" +
-	"\rscript_bundle\x18\x03 \x01(\v2Q.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerScriptBundleB\x06\xbaH\x03\xc8\x01\x01R\fscriptBundle\x12y\n" +
-	"\vkv_bindings\x18\x04 \x03(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB$\x88\xd4a\x89\x0e\x92\xd4a\x1bstatus.outputs.namespace_idR\n" +
-	"kvBindings\x12Z\n" +
-	"\x03dns\x18\x05 \x01(\v2H.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerDnsR\x03dns\x12R\n" +
-	"\x12compatibility_date\x18\x06 \x01(\tB#\xbaH r\x1e2\x1c^[0-9]{4}-[0-9]{2}-[0-9]{2}$R\x11compatibilityDate\x12\x85\x01\n" +
-	"\vusage_model\x18\a \x01(\x0e2d.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.CloudflareWorkerUsageModelR\n" +
-	"usageModel\x12Z\n" +
-	"\x03env\x18\b \x01(\v2H.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerEnvR\x03env\"6\n" +
-	"\x1aCloudflareWorkerUsageModel\x12\v\n" +
-	"\aBUNDLED\x10\x00\x12\v\n" +
-	"\aUNBOUND\x10\x01\"\xf7\x02\n" +
-	"\x13CloudflareWorkerEnv\x12u\n" +
-	"\tvariables\x18\x01 \x03(\v2W.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerEnv.VariablesEntryR\tvariables\x12o\n" +
-	"\asecrets\x18\x02 \x03(\v2U.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerEnv.SecretsEntryR\asecrets\x1a<\n" +
-	"\x0eVariablesEntry\x12\x10\n" +
+	"workerName\x12U\n" +
+	"\x12compatibility_date\x18\x06 \x01(\tB&\xbaH#r!2\x1f^([0-9]{4}-[0-9]{2}-[0-9]{2})?$R\x11compatibilityDate\x12\x1a\n" +
+	"\acontent\x18\t \x01(\tH\x00R\acontent\x12p\n" +
+	"\tr2_bundle\x18\n" +
+	" \x01(\v2Q.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerScriptBundleH\x00R\br2Bundle\x12-\n" +
+	"\vmain_module\x18\v \x01(\tB\f\x92\xa6\x1d\bindex.jsR\n" +
+	"mainModule\x12/\n" +
+	"\x13compatibility_flags\x18\f \x03(\tR\x12compatibilityFlags\x12g\n" +
+	"\x04vars\x18\r \x03(\v2S.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.VarsEntryR\x04vars\x12l\n" +
+	"\asecrets\x18\x0e \x03(\v2R.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSecretBindingR\asecrets\x12s\n" +
+	"\rkv_namespaces\x18\x0f \x03(\v2N.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerKvBindingR\fkvNamespaces\x12m\n" +
+	"\n" +
+	"r2_buckets\x18\x10 \x03(\v2N.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerR2BindingR\tr2Buckets\x12q\n" +
+	"\fd1_databases\x18\x11 \x03(\v2N.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerD1BindingR\vd1Databases\x12\x85\x01\n" +
+	"\x12hyperdrive_configs\x18\x12 \x03(\v2V.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerHyperdriveBindingR\x11hyperdriveConfigs\x12o\n" +
+	"\bservices\x18\x13 \x03(\v2S.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerServiceBindingR\bservices\x12i\n" +
+	"\x06queues\x18\x14 \x03(\v2Q.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerQueueBindingR\x06queues\x12\x82\x01\n" +
+	"\x0fdurable_objects\x18\x15 \x03(\v2Y.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerDurableObjectBindingR\x0edurableObjects\x12\x97\x01\n" +
+	"\x19analytics_engine_datasets\x18\x16 \x03(\v2[.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerAnalyticsEngineBindingR\x17analyticsEngineDatasets\x12\x82\x01\n" +
+	"\x11vectorize_indexes\x18\x17 \x03(\v2U.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerVectorizeBindingR\x10vectorizeIndexes\x12^\n" +
+	"\x02ai\x18\x18 \x03(\v2N.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerAiBindingR\x02ai\x12\x86\x01\n" +
+	"\x10version_metadata\x18\x19 \x03(\v2[.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerVersionMetadataBindingR\x0fversionMetadata\x12p\n" +
+	"\vworkers_dev\x18\x1a \x01(\v2O.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerWorkersDevR\n" +
+	"workersDev\x12x\n" +
+	"\x0ecustom_domains\x18\x1b \x03(\v2Q.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerCustomDomainR\rcustomDomains\x12b\n" +
+	"\x06routes\x18\x1c \x03(\v2J.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerRouteR\x06routes\x12\x1c\n" +
+	"\tschedules\x18\x1d \x03(\tR\tschedules\x12x\n" +
+	"\robservability\x18\x1e \x01(\v2R.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerObservabilityR\robservability\x12l\n" +
+	"\tplacement\x18\x1f \x01(\v2N.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerPlacementR\tplacement\x12c\n" +
+	"\x06limits\x18  \x01(\v2K.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerLimitsR\x06limits\x12\x18\n" +
+	"\alogpush\x18! \x01(\bR\alogpush\x12x\n" +
+	"\x0etail_consumers\x18\" \x03(\v2Q.org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerTailConsumerR\rtailConsumers\x1a7\n" +
+	"\tVarsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a:\n" +
-	"\fSecretsEntry\x12\x10\n" +
-	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"Z\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\x9b\x01\xbaH\x97\x01\x1a\x94\x01\n" +
+	"\x1bspec.script_source_required\x12Kprovide exactly one script source: inline content or an r2_bundle reference\x1a(has(this.content) || has(this.r2_bundle)B\b\n" +
+	"\x06sourceJ\x04\b\x03\x10\x04J\x04\b\x04\x10\x05J\x04\b\x05\x10\x06J\x04\b\a\x10\bJ\x04\b\b\x10\tR\rscript_bundleR\vkv_bindingsR\x03dnsR\vusage_modelR\x03env\"Z\n" +
 	"\x1cCloudflareWorkerScriptBundle\x12\x1e\n" +
 	"\x06bucket\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06bucket\x12\x1a\n" +
-	"\x04path\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04path\"\xe7\x01\n" +
-	"\x13CloudflareWorkerDns\x12\x18\n" +
-	"\aenabled\x18\x01 \x01(\bR\aenabled\x12l\n" +
-	"\azone_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\x88\x0e\x92\xd4a\x16status.outputs.zone_idR\x06zoneId\x12#\n" +
-	"\bhostname\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\bhostname\x12#\n" +
-	"\rroute_pattern\x18\x04 \x01(\tR\froutePatternB\xa1\x03\n" +
+	"\x04path\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04path\"\x91\x01\n" +
+	"\x1dCloudflareWorkerSecretBinding\x12\x1a\n" +
+	"\x04name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12T\n" +
+	"\x05value\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\n" +
+	"\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01R\x05value\"\xbb\x01\n" +
+	"\x19CloudflareWorkerKvBinding\x12\x1a\n" +
+	"\x04name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12\x81\x01\n" +
+	"\fnamespace_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB*\xbaH\x03\xc8\x01\x01\x88\xd4a\x89\x0e\x92\xd4a\x1bstatus.outputs.namespace_idR\vnamespaceId\"\xfc\x02\n" +
+	"\x19CloudflareWorkerR2Binding\x12\x1a\n" +
+	"\x04name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12~\n" +
+	"\vbucket_name\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\xbaH\x03\xc8\x01\x01\x88\xd4a\x8a\x0e\x92\xd4a\x1astatus.outputs.bucket_nameR\n" +
+	"bucketName\x12\xc2\x01\n" +
+	"\fjurisdiction\x18\x03 \x01(\tB\x9d\x01\xbaH\x99\x01\xba\x01\x95\x01\n" +
+	"\x1dr2_binding_jurisdiction.valid\x12;jurisdiction must be one of \"eu\", \"fedramp\", \"fedramp-high\"\x1a7this == '' || this in ['eu', 'fedramp', 'fedramp-high']R\fjurisdiction\"\xb7\x01\n" +
+	"\x19CloudflareWorkerD1Binding\x12\x1a\n" +
+	"\x04name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12~\n" +
+	"\vdatabase_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\xbaH\x03\xc8\x01\x01\x88\xd4a\x8d\x0e\x92\xd4a\x1astatus.outputs.database_idR\n" +
+	"databaseId\"\xbd\x01\n" +
+	"!CloudflareWorkerHyperdriveBinding\x12\x1a\n" +
+	"\x04name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12|\n" +
+	"\tconfig_id\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB+\xbaH\x03\xc8\x01\x01\x88\xd4a\x92\x0e\x92\xd4a\x1cstatus.outputs.hyperdrive_idR\bconfigId\"\xe9\x01\n" +
+	"\x1eCloudflareWorkerServiceBinding\x12\x1a\n" +
+	"\x04name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12w\n" +
+	"\aservice\x18\x02 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB)\xbaH\x03\xc8\x01\x01\x88\xd4a\x8b\x0e\x92\xd4a\x1astatus.outputs.script_nameR\aservice\x12 \n" +
+	"\venvironment\x18\x03 \x01(\tR\venvironmentJ\x04\b\x04\x10\x05R\n" +
+	"entrypoint\"a\n" +
+	"\x1cCloudflareWorkerQueueBinding\x12\x1a\n" +
+	"\x04name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12%\n" +
+	"\n" +
+	"queue_name\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\tqueueName\"\xac\x01\n" +
+	"$CloudflareWorkerDurableObjectBinding\x12\x1a\n" +
+	"\x04name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12%\n" +
+	"\n" +
+	"class_name\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\tclassName\x12\x1f\n" +
+	"\vscript_name\x18\x03 \x01(\tR\n" +
+	"scriptName\x12 \n" +
+	"\venvironment\x18\x04 \x01(\tR\venvironment\"f\n" +
+	"&CloudflareWorkerAnalyticsEngineBinding\x12\x1a\n" +
+	"\x04name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12 \n" +
+	"\adataset\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\adataset\"e\n" +
+	" CloudflareWorkerVectorizeBinding\x12\x1a\n" +
+	"\x04name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12%\n" +
+	"\n" +
+	"index_name\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\tindexName\"7\n" +
+	"\x19CloudflareWorkerAiBinding\x12\x1a\n" +
+	"\x04name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\"D\n" +
+	"&CloudflareWorkerVersionMetadataBinding\x12\x1a\n" +
+	"\x04name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\"a\n" +
+	"\x1aCloudflareWorkerWorkersDev\x12\x18\n" +
+	"\aenabled\x18\x01 \x01(\bR\aenabled\x12)\n" +
+	"\x10previews_enabled\x18\x02 \x01(\bR\x0fpreviewsEnabled\"Q\n" +
+	"\x1cCloudflareWorkerCustomDomain\x12\"\n" +
+	"\bhostname\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bhostnameJ\x04\b\x02\x10\x03R\azone_id\"\xad\x01\n" +
+	"\x15CloudflareWorkerRoute\x12r\n" +
+	"\azone_id\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB%\xbaH\x03\xc8\x01\x01\x88\xd4a\x88\x0e\x92\xd4a\x16status.outputs.zone_idR\x06zoneId\x12 \n" +
+	"\apattern\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\apattern\"\xe2\x01\n" +
+	"\x1dCloudflareWorkerObservability\x12\x18\n" +
+	"\aenabled\x18\x01 \x01(\bR\aenabled\x12\xa6\x01\n" +
+	"\x12head_sampling_rate\x18\x02 \x01(\x01Bx\xbaHu\xba\x01r\n" +
+	",observability_head_sampling_rate.valid_range\x12*head_sampling_rate must be between 0 and 1\x1a\x16this >= 0 && this <= 1R\x10headSamplingRate\"\x8c\x01\n" +
+	"\x19CloudflareWorkerPlacement\x12o\n" +
+	"\x04mode\x18\x01 \x01(\tB[\xbaHX\xba\x01U\n" +
+	"\x14placement_mode.valid\x12\x1eplacement mode must be \"smart\"\x1a\x1dthis == '' || this == 'smart'R\x04mode\"\x99\x01\n" +
+	"\x16CloudflareWorkerLimits\x12l\n" +
+	"\x06cpu_ms\x18\x01 \x01(\x03BU\xbaHR\xba\x01O\n" +
+	"\x1alimits_cpu_ms.non_negative\x12&cpu_ms must be 0 (default) or positive\x1a\tthis >= 0R\x05cpuMsJ\x04\b\x02\x10\x03R\vsubrequests\"\x80\x01\n" +
+	"\x1cCloudflareWorkerTailConsumer\x12 \n" +
+	"\aservice\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\aservice\x12 \n" +
+	"\venvironment\x18\x02 \x01(\tR\venvironment\x12\x1c\n" +
+	"\tnamespace\x18\x03 \x01(\tR\tnamespaceB\xa1\x03\n" +
 	"7com.org.openmcf.provider.cloudflare.cloudflareworker.v1B\tSpecProtoP\x01Zhgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflareworker/v1;cloudflareworkerv1\xa2\x02\x05OOPCC\xaa\x023Org.Openmcf.Provider.Cloudflare.Cloudflareworker.V1\xca\x023Org\\Openmcf\\Provider\\Cloudflare\\Cloudflareworker\\V1\xe2\x02?Org\\Openmcf\\Provider\\Cloudflare\\Cloudflareworker\\V1\\GPBMetadata\xea\x028Org::Openmcf::Provider::Cloudflare::Cloudflareworker::V1b\x06proto3"
 
 var (
@@ -427,32 +1616,66 @@ func file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDesc
 	return file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDescData
 }
 
-var file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
 var file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_goTypes = []any{
-	(CloudflareWorkerSpec_CloudflareWorkerUsageModel)(0), // 0: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.CloudflareWorkerUsageModel
-	(*CloudflareWorkerSpec)(nil),                         // 1: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec
-	(*CloudflareWorkerEnv)(nil),                          // 2: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerEnv
-	(*CloudflareWorkerScriptBundle)(nil),                 // 3: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerScriptBundle
-	(*CloudflareWorkerDns)(nil),                          // 4: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerDns
-	nil,                                                  // 5: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerEnv.VariablesEntry
-	nil,                                                  // 6: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerEnv.SecretsEntry
-	(*v1.StringValueOrRef)(nil),                          // 7: org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	(*CloudflareWorkerSpec)(nil),                   // 0: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec
+	(*CloudflareWorkerScriptBundle)(nil),           // 1: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerScriptBundle
+	(*CloudflareWorkerSecretBinding)(nil),          // 2: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSecretBinding
+	(*CloudflareWorkerKvBinding)(nil),              // 3: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerKvBinding
+	(*CloudflareWorkerR2Binding)(nil),              // 4: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerR2Binding
+	(*CloudflareWorkerD1Binding)(nil),              // 5: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerD1Binding
+	(*CloudflareWorkerHyperdriveBinding)(nil),      // 6: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerHyperdriveBinding
+	(*CloudflareWorkerServiceBinding)(nil),         // 7: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerServiceBinding
+	(*CloudflareWorkerQueueBinding)(nil),           // 8: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerQueueBinding
+	(*CloudflareWorkerDurableObjectBinding)(nil),   // 9: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerDurableObjectBinding
+	(*CloudflareWorkerAnalyticsEngineBinding)(nil), // 10: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerAnalyticsEngineBinding
+	(*CloudflareWorkerVectorizeBinding)(nil),       // 11: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerVectorizeBinding
+	(*CloudflareWorkerAiBinding)(nil),              // 12: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerAiBinding
+	(*CloudflareWorkerVersionMetadataBinding)(nil), // 13: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerVersionMetadataBinding
+	(*CloudflareWorkerWorkersDev)(nil),             // 14: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerWorkersDev
+	(*CloudflareWorkerCustomDomain)(nil),           // 15: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerCustomDomain
+	(*CloudflareWorkerRoute)(nil),                  // 16: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerRoute
+	(*CloudflareWorkerObservability)(nil),          // 17: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerObservability
+	(*CloudflareWorkerPlacement)(nil),              // 18: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerPlacement
+	(*CloudflareWorkerLimits)(nil),                 // 19: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerLimits
+	(*CloudflareWorkerTailConsumer)(nil),           // 20: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerTailConsumer
+	nil,                                            // 21: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.VarsEntry
+	(*v1.StringValueOrRef)(nil),                    // 22: org.openmcf.shared.foreignkey.v1.StringValueOrRef
 }
 var file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_depIdxs = []int32{
-	3, // 0: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.script_bundle:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerScriptBundle
-	7, // 1: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.kv_bindings:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	4, // 2: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.dns:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerDns
-	0, // 3: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.usage_model:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.CloudflareWorkerUsageModel
-	2, // 4: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.env:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerEnv
-	5, // 5: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerEnv.variables:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerEnv.VariablesEntry
-	6, // 6: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerEnv.secrets:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerEnv.SecretsEntry
-	7, // 7: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerDns.zone_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
-	8, // [8:8] is the sub-list for method output_type
-	8, // [8:8] is the sub-list for method input_type
-	8, // [8:8] is the sub-list for extension type_name
-	8, // [8:8] is the sub-list for extension extendee
-	0, // [0:8] is the sub-list for field type_name
+	1,  // 0: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.r2_bundle:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerScriptBundle
+	21, // 1: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.vars:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.VarsEntry
+	2,  // 2: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.secrets:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSecretBinding
+	3,  // 3: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.kv_namespaces:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerKvBinding
+	4,  // 4: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.r2_buckets:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerR2Binding
+	5,  // 5: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.d1_databases:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerD1Binding
+	6,  // 6: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.hyperdrive_configs:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerHyperdriveBinding
+	7,  // 7: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.services:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerServiceBinding
+	8,  // 8: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.queues:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerQueueBinding
+	9,  // 9: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.durable_objects:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerDurableObjectBinding
+	10, // 10: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.analytics_engine_datasets:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerAnalyticsEngineBinding
+	11, // 11: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.vectorize_indexes:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerVectorizeBinding
+	12, // 12: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.ai:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerAiBinding
+	13, // 13: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.version_metadata:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerVersionMetadataBinding
+	14, // 14: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.workers_dev:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerWorkersDev
+	15, // 15: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.custom_domains:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerCustomDomain
+	16, // 16: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.routes:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerRoute
+	17, // 17: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.observability:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerObservability
+	18, // 18: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.placement:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerPlacement
+	19, // 19: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.limits:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerLimits
+	20, // 20: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSpec.tail_consumers:type_name -> org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerTailConsumer
+	22, // 21: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerSecretBinding.value:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	22, // 22: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerKvBinding.namespace_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	22, // 23: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerR2Binding.bucket_name:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	22, // 24: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerD1Binding.database_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	22, // 25: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerHyperdriveBinding.config_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	22, // 26: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerServiceBinding.service:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	22, // 27: org.openmcf.provider.cloudflare.cloudflareworker.v1.CloudflareWorkerRoute.zone_id:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	28, // [28:28] is the sub-list for method output_type
+	28, // [28:28] is the sub-list for method input_type
+	28, // [28:28] is the sub-list for extension type_name
+	28, // [28:28] is the sub-list for extension extendee
+	0,  // [0:28] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_init() }
@@ -460,19 +1683,22 @@ func file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_init() 
 	if File_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto != nil {
 		return
 	}
+	file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes[0].OneofWrappers = []any{
+		(*CloudflareWorkerSpec_Content)(nil),
+		(*CloudflareWorkerSpec_R2Bundle)(nil),
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDesc), len(file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_rawDesc)),
-			NumEnums:      1,
-			NumMessages:   6,
+			NumEnums:      0,
+			NumMessages:   22,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_goTypes,
 		DependencyIndexes: file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_depIdxs,
-		EnumInfos:         file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_enumTypes,
 		MessageInfos:      file_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto_msgTypes,
 	}.Build()
 	File_org_openmcf_provider_cloudflare_cloudflareworker_v1_spec_proto = out.File

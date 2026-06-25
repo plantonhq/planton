@@ -1,5 +1,0 @@
-apiVersion: cloudflare.openmcf.org/v1
-kind: CloudflareWorker
-metadata:
-  name: first-certificate
-spec:

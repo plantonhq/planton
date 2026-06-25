@@ -22,24 +22,24 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Enumeration of supported regions for Cloudflare D1 databases.
-// These values map to the primary_location_hint field in the Cloudflare API.
+// Region hint for a D1 database's primary instance. Value names map to the
+// Cloudflare API primary_location_hint values and are used directly via .String().
 type CloudflareD1Region int32
 
 const (
-	// Unspecified region (Cloudflare will select a default).
+	// Unspecified region (Cloudflare selects a default).
 	CloudflareD1Region_cloudflare_d1_region_unspecified CloudflareD1Region = 0
-	// Western Europe
+	// Western Europe.
 	CloudflareD1Region_weur CloudflareD1Region = 1
-	// Eastern Europe
+	// Eastern Europe.
 	CloudflareD1Region_eeur CloudflareD1Region = 2
-	// Asia Pacific
+	// Asia-Pacific.
 	CloudflareD1Region_apac CloudflareD1Region = 3
-	// Oceania
+	// Oceania.
 	CloudflareD1Region_oc CloudflareD1Region = 4
-	// Western North America
+	// Western North America.
 	CloudflareD1Region_wnam CloudflareD1Region = 5
-	// Eastern North America
+	// Eastern North America.
 	CloudflareD1Region_enam CloudflareD1Region = 6
 )
 
@@ -92,36 +92,77 @@ func (CloudflareD1Region) EnumDescriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_cloudflare_cloudflared1database_v1_spec_proto_rawDescGZIP(), []int{0}
 }
 
-// CloudflareD1DatabaseSpec defines the essential configuration for creating a Cloudflare D1 database.
-// This follows the 80/20 principle: only the most commonly used fields are exposed to keep the API simple.
-//
-// Essential Fields (The 80%):
-//   - account_id: Required. The Cloudflare account ID.
-//   - database_name: Required. The human-readable name for the database.
-//   - region: Optional. The geographical region for the database's primary instance.
-//
-// Production Optional (The 20%):
-//   - read_replication: Optional. Configures D1 Read Replication (Beta).
-//
-// Note: Preview environments are handled via Worker bindings (preview_database_id), not as a database property.
-// Schema management (tables, indexes, primary keys) is handled via Wrangler CLI migrations, not at the resource level.
+// Read-replication mode for a D1 database. Value names match the Cloudflare API
+// strings exactly and are used directly via .String().
+type CloudflareD1ReadReplicationMode int32
+
+const (
+	// Unspecified (treated as the API default).
+	CloudflareD1ReadReplicationMode_read_replication_mode_unspecified CloudflareD1ReadReplicationMode = 0
+	// Automatic read replication across regions.
+	CloudflareD1ReadReplicationMode_auto CloudflareD1ReadReplicationMode = 1
+	// Replication disabled (single primary).
+	CloudflareD1ReadReplicationMode_disabled CloudflareD1ReadReplicationMode = 2
+)
+
+// Enum value maps for CloudflareD1ReadReplicationMode.
+var (
+	CloudflareD1ReadReplicationMode_name = map[int32]string{
+		0: "read_replication_mode_unspecified",
+		1: "auto",
+		2: "disabled",
+	}
+	CloudflareD1ReadReplicationMode_value = map[string]int32{
+		"read_replication_mode_unspecified": 0,
+		"auto":                              1,
+		"disabled":                          2,
+	}
+)
+
+func (x CloudflareD1ReadReplicationMode) Enum() *CloudflareD1ReadReplicationMode {
+	p := new(CloudflareD1ReadReplicationMode)
+	*p = x
+	return p
+}
+
+func (x CloudflareD1ReadReplicationMode) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (CloudflareD1ReadReplicationMode) Descriptor() protoreflect.EnumDescriptor {
+	return file_org_openmcf_provider_cloudflare_cloudflared1database_v1_spec_proto_enumTypes[1].Descriptor()
+}
+
+func (CloudflareD1ReadReplicationMode) Type() protoreflect.EnumType {
+	return &file_org_openmcf_provider_cloudflare_cloudflared1database_v1_spec_proto_enumTypes[1]
+}
+
+func (x CloudflareD1ReadReplicationMode) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use CloudflareD1ReadReplicationMode.Descriptor instead.
+func (CloudflareD1ReadReplicationMode) EnumDescriptor() ([]byte, []int) {
+	return file_org_openmcf_provider_cloudflare_cloudflared1database_v1_spec_proto_rawDescGZIP(), []int{1}
+}
+
+// CloudflareD1DatabaseSpec provisions a Cloudflare D1 database: a serverless
+// SQLite database that a Worker queries via a `d1` binding. Placement is fixed at
+// creation by an optional region hint; schema (tables, indexes) is managed by the
+// application via Wrangler migrations, not at this layer.
 type CloudflareD1DatabaseSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// (Required) The Cloudflare account ID in which to create the database.
+	// The Cloudflare account ID in which to create the database.
 	AccountId string `protobuf:"bytes,1,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
-	// (Required) The unique name for the D1 database.
-	// Must be unique within the account.
+	// The unique name for the D1 database, unique within the account.
 	DatabaseName string `protobuf:"bytes,2,opt,name=database_name,json=databaseName,proto3" json:"database_name,omitempty"`
-	// (Optional) The Cloudflare region where the D1 database will be hosted.
-	// This maps to the primary_location_hint property in the Cloudflare API.
-	// Valid values: weur, eeur, apac, oc, wnam, enam.
-	// If omitted, Cloudflare selects a default location based on your account settings.
+	// Region hint for the database's primary instance (maps to
+	// primary_location_hint). Fixed at creation. Leave unspecified to let
+	// Cloudflare choose, or use jurisdiction for a data-residency constraint.
 	Region CloudflareD1Region `protobuf:"varint,3,opt,name=region,proto3,enum=org.openmcf.provider.cloudflare.cloudflared1database.v1.CloudflareD1Region" json:"region,omitempty"`
-	// (Optional) Configures D1 Read Replication (Beta).
-	// Enables automatic read replication across multiple regions for lower global read latency.
-	// WARNING: Enabling replication requires application-level code changes to use the D1 Sessions API.
-	// Failing to use the Sessions API will cause data consistency errors.
-	// If omitted, replication is disabled.
+	// Configures D1 Read Replication: read-only replicas in multiple regions for
+	// lower global read latency. WARNING: enabling replication requires the Worker
+	// to use the D1 Sessions API for consistency; omit to disable.
 	ReadReplication *CloudflareD1ReadReplication `protobuf:"bytes,4,opt,name=read_replication,json=readReplication,proto3" json:"read_replication,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
@@ -185,13 +226,12 @@ func (x *CloudflareD1DatabaseSpec) GetReadReplication() *CloudflareD1ReadReplica
 	return nil
 }
 
-// CloudflareD1ReadReplication configures D1 Read Replication (Beta).
-// Read replication creates read-only replicas in multiple regions to reduce global read latency.
+// CloudflareD1ReadReplication configures D1 Read Replication.
 type CloudflareD1ReadReplication struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// (Required if read_replication is set) The replication mode.
-	// Valid values: "auto" (enable automatic read replication), "disabled" (disable replication).
-	Mode          string `protobuf:"bytes,1,opt,name=mode,proto3" json:"mode,omitempty"`
+	// Replication mode. `auto` enables cross-region read replicas; `disabled`
+	// keeps a single primary.
+	Mode          CloudflareD1ReadReplicationMode `protobuf:"varint,1,opt,name=mode,proto3,enum=org.openmcf.provider.cloudflare.cloudflared1database.v1.CloudflareD1ReadReplicationMode" json:"mode,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -226,27 +266,28 @@ func (*CloudflareD1ReadReplication) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_cloudflare_cloudflared1database_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflareD1ReadReplication) GetMode() string {
+func (x *CloudflareD1ReadReplication) GetMode() CloudflareD1ReadReplicationMode {
 	if x != nil {
 		return x.Mode
 	}
-	return ""
+	return CloudflareD1ReadReplicationMode_read_replication_mode_unspecified
 }
 
 var File_org_openmcf_provider_cloudflare_cloudflared1database_v1_spec_proto protoreflect.FileDescriptor
 
 const file_org_openmcf_provider_cloudflare_cloudflared1database_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Borg/openmcf/provider/cloudflare/cloudflared1database/v1/spec.proto\x127org.openmcf.provider.cloudflare.cloudflared1database.v1\x1a\x1bbuf/validate/validate.proto\"\xd8\x02\n" +
-	"\x18CloudflareD1DatabaseSpec\x12%\n" +
+	"Borg/openmcf/provider/cloudflare/cloudflared1database/v1/spec.proto\x127org.openmcf.provider.cloudflare.cloudflared1database.v1\x1a\x1bbuf/validate/validate.proto\"\x84\x03\n" +
+	"\x18CloudflareD1DatabaseSpec\x12=\n" +
 	"\n" +
-	"account_id\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\taccountId\x12/\n" +
+	"account_id\x18\x01 \x01(\tB\x1e\xbaH\x1b\xc8\x01\x01r\x162\x11^[0-9a-fA-F]{32}$\x98\x01 R\taccountId\x12/\n" +
 	"\rdatabase_name\x18\x02 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x18@R\fdatabaseName\x12c\n" +
 	"\x06region\x18\x03 \x01(\x0e2K.org.openmcf.provider.cloudflare.cloudflared1database.v1.CloudflareD1RegionR\x06region\x12\x7f\n" +
-	"\x10read_replication\x18\x04 \x01(\v2T.org.openmcf.provider.cloudflare.cloudflared1database.v1.CloudflareD1ReadReplicationR\x0freadReplication\"9\n" +
-	"\x1bCloudflareD1ReadReplication\x12\x1a\n" +
-	"\x04mode\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04mode*t\n" +
+	"\x10read_replication\x18\x04 \x01(\v2T.org.openmcf.provider.cloudflare.cloudflared1database.v1.CloudflareD1ReadReplicationR\x0freadReplicationJ\x04\b\x05\x10\x06R\fjurisdiction\"\xf1\x01\n" +
+	"\x1bCloudflareD1ReadReplication\x12\xd1\x01\n" +
+	"\x04mode\x18\x01 \x01(\x0e2X.org.openmcf.provider.cloudflare.cloudflared1database.v1.CloudflareD1ReadReplicationModeBc\xbaH`\xba\x01U\n" +
+	"\x14mode.not_unspecified\x122read_replication.mode must be \"auto\" or \"disabled\"\x1a\tthis != 0\xc8\x01\x01\x82\x01\x02\x10\x01R\x04mode*t\n" +
 	"\x12CloudflareD1Region\x12$\n" +
 	" cloudflare_d1_region_unspecified\x10\x00\x12\b\n" +
 	"\x04weur\x10\x01\x12\b\n" +
@@ -254,7 +295,11 @@ const file_org_openmcf_provider_cloudflare_cloudflared1database_v1_spec_proto_ra
 	"\x04apac\x10\x03\x12\x06\n" +
 	"\x02oc\x10\x04\x12\b\n" +
 	"\x04wnam\x10\x05\x12\b\n" +
-	"\x04enam\x10\x06B\xbd\x03\n" +
+	"\x04enam\x10\x06*`\n" +
+	"\x1fCloudflareD1ReadReplicationMode\x12%\n" +
+	"!read_replication_mode_unspecified\x10\x00\x12\b\n" +
+	"\x04auto\x10\x01\x12\f\n" +
+	"\bdisabled\x10\x02B\xbd\x03\n" +
 	";com.org.openmcf.provider.cloudflare.cloudflared1database.v1B\tSpecProtoP\x01Zpgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflared1database/v1;cloudflared1databasev1\xa2\x02\x05OOPCC\xaa\x027Org.Openmcf.Provider.Cloudflare.Cloudflared1database.V1\xca\x027Org\\Openmcf\\Provider\\Cloudflare\\Cloudflared1database\\V1\xe2\x02COrg\\Openmcf\\Provider\\Cloudflare\\Cloudflared1database\\V1\\GPBMetadata\xea\x02<Org::Openmcf::Provider::Cloudflare::Cloudflared1database::V1b\x06proto3"
 
 var (
@@ -269,21 +314,23 @@ func file_org_openmcf_provider_cloudflare_cloudflared1database_v1_spec_proto_raw
 	return file_org_openmcf_provider_cloudflare_cloudflared1database_v1_spec_proto_rawDescData
 }
 
-var file_org_openmcf_provider_cloudflare_cloudflared1database_v1_spec_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_org_openmcf_provider_cloudflare_cloudflared1database_v1_spec_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
 var file_org_openmcf_provider_cloudflare_cloudflared1database_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_org_openmcf_provider_cloudflare_cloudflared1database_v1_spec_proto_goTypes = []any{
-	(CloudflareD1Region)(0),             // 0: org.openmcf.provider.cloudflare.cloudflared1database.v1.CloudflareD1Region
-	(*CloudflareD1DatabaseSpec)(nil),    // 1: org.openmcf.provider.cloudflare.cloudflared1database.v1.CloudflareD1DatabaseSpec
-	(*CloudflareD1ReadReplication)(nil), // 2: org.openmcf.provider.cloudflare.cloudflared1database.v1.CloudflareD1ReadReplication
+	(CloudflareD1Region)(0),              // 0: org.openmcf.provider.cloudflare.cloudflared1database.v1.CloudflareD1Region
+	(CloudflareD1ReadReplicationMode)(0), // 1: org.openmcf.provider.cloudflare.cloudflared1database.v1.CloudflareD1ReadReplicationMode
+	(*CloudflareD1DatabaseSpec)(nil),     // 2: org.openmcf.provider.cloudflare.cloudflared1database.v1.CloudflareD1DatabaseSpec
+	(*CloudflareD1ReadReplication)(nil),  // 3: org.openmcf.provider.cloudflare.cloudflared1database.v1.CloudflareD1ReadReplication
 }
 var file_org_openmcf_provider_cloudflare_cloudflared1database_v1_spec_proto_depIdxs = []int32{
 	0, // 0: org.openmcf.provider.cloudflare.cloudflared1database.v1.CloudflareD1DatabaseSpec.region:type_name -> org.openmcf.provider.cloudflare.cloudflared1database.v1.CloudflareD1Region
-	2, // 1: org.openmcf.provider.cloudflare.cloudflared1database.v1.CloudflareD1DatabaseSpec.read_replication:type_name -> org.openmcf.provider.cloudflare.cloudflared1database.v1.CloudflareD1ReadReplication
-	2, // [2:2] is the sub-list for method output_type
-	2, // [2:2] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	3, // 1: org.openmcf.provider.cloudflare.cloudflared1database.v1.CloudflareD1DatabaseSpec.read_replication:type_name -> org.openmcf.provider.cloudflare.cloudflared1database.v1.CloudflareD1ReadReplication
+	1, // 2: org.openmcf.provider.cloudflare.cloudflared1database.v1.CloudflareD1ReadReplication.mode:type_name -> org.openmcf.provider.cloudflare.cloudflared1database.v1.CloudflareD1ReadReplicationMode
+	3, // [3:3] is the sub-list for method output_type
+	3, // [3:3] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_cloudflare_cloudflared1database_v1_spec_proto_init() }
@@ -296,7 +343,7 @@ func file_org_openmcf_provider_cloudflare_cloudflared1database_v1_spec_proto_ini
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_org_openmcf_provider_cloudflare_cloudflared1database_v1_spec_proto_rawDesc), len(file_org_openmcf_provider_cloudflare_cloudflared1database_v1_spec_proto_rawDesc)),
-			NumEnums:      1,
+			NumEnums:      2,
 			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,

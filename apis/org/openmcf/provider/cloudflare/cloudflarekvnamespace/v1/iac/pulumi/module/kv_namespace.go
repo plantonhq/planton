@@ -14,12 +14,11 @@ func kvNamespace(
 ) (*cloudflare.WorkersKvNamespace, error) {
 
 	// Build the namespace arguments directly from proto fields.
+	// A KV namespace carries only an account and a title; entries are seeded as
+	// CloudflareWorkersKvPair resources or written by the Worker at runtime.
 	kvArgs := &cloudflare.WorkersKvNamespaceArgs{
 		AccountId: pulumi.String(locals.CloudflareKvNamespace.Spec.AccountId),
 		Title:     pulumi.String(locals.CloudflareKvNamespace.Spec.NamespaceName),
-		// NOTE:
-		// The Cloudflare KV namespace resource does not expose "ttl_seconds" or
-		// "description" fields, so those spec fields are not set here.
 	}
 
 	// Create the namespace.
@@ -33,8 +32,9 @@ func kvNamespace(
 		return nil, errors.Wrap(err, "failed to create workers kv namespace")
 	}
 
-	// Export the namespace ID as a stack output.
+	// Export the namespace ID and URL-encoding support as stack outputs.
 	ctx.Export(OpNamespaceId, createdKvNamespace.ID())
+	ctx.Export(OpSupportsUrlEncoding, createdKvNamespace.SupportsUrlEncoding)
 
 	return createdKvNamespace, nil
 }

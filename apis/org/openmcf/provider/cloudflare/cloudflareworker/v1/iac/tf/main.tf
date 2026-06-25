@@ -1,77 +1,65 @@
-# Fetch worker script bundle from R2
-# Uses AWS S3 provider configured for R2
-data "aws_s3_object" "worker_bundle" {
+# Fetch the pre-built worker bundle from R2 when spec.r2_bundle is set.
+data "aws_s3_object" "bundle" {
+  count    = local.use_bundle ? 1 : 0
   provider = aws.r2
-  bucket   = local.r2_bucket
-  key      = local.r2_path
+  bucket   = var.spec.r2_bundle.bucket
+  key      = var.spec.r2_bundle.path
 }
 
-# Cloudflare Worker Script
+# The Worker script and all of its bindings.
 resource "cloudflare_workers_script" "main" {
   account_id  = var.spec.account_id
   script_name = local.script_name
 
-  # Worker content from R2 bundle
-  content = data.aws_s3_object.worker_bundle.body
+  content     = local.script_content
+  main_module = var.spec.main_module
 
-  # Module-format worker (the entrypoint is an ES module).
-  main_module = "index.js"
-
-  # Compatibility settings
   compatibility_date  = local.compatibility_date
-  compatibility_flags = ["nodejs_compat"]
+  compatibility_flags = length(var.spec.compatibility_flags) > 0 ? var.spec.compatibility_flags : null
 
-  # Flat bindings list. Each element carries the full attribute set; unused
-  # attributes are null so all elements share one object type.
-  bindings = concat(
-    [for k, v in local.env_variables : {
-      name         = k
-      type         = "plain_text"
-      text         = v
-      namespace_id = null
-    }],
-    [for b in local.kv_bindings : {
-      name         = b.name
-      type         = "kv_namespace"
-      text         = null
-      namespace_id = b.field_path
-    }],
-    [for k, v in local.env_secrets : {
-      name         = k
-      type         = "secret_text"
-      text         = v
-      namespace_id = null
-    }],
-  )
+  bindings = length(local.bindings) > 0 ? local.bindings : null
 
-  # Enable Workers Logs for observability.
-  observability = {
-    enabled            = true
-    head_sampling_rate = 1
-  }
+  observability  = local.observability
+  placement      = local.placement
+  limits         = local.limits
+  logpush        = var.spec.logpush
+  tail_consumers = length(local.tail_consumers) > 0 ? local.tail_consumers : null
 }
 
-# DNS Record for custom domain (if DNS is enabled)
-resource "cloudflare_dns_record" "worker_dns" {
-  count = local.dns_enabled ? 1 : 0
+# workers.dev subdomain exposure.
+resource "cloudflare_workers_script_subdomain" "main" {
+  count = local.workers_dev_enabled ? 1 : 0
 
-  zone_id = local.dns_zone_id
-  name    = local.dns_hostname
-  type    = "AAAA"
-  content = "100::" # Dummy IPv6 address; the proxied Worker handles requests at the edge
-  ttl     = 1
-  proxied = true # Orange cloud - required for Workers
+  account_id       = var.spec.account_id
+  script_name      = cloudflare_workers_script.main.script_name
+  enabled          = true
+  previews_enabled = try(var.spec.workers_dev.previews_enabled, false)
 }
 
-# Worker Route (if DNS is enabled)
+# Managed custom domains routed directly to the Worker.
+resource "cloudflare_workers_custom_domain" "main" {
+  for_each = local.custom_domains_map
+
+  account_id  = var.spec.account_id
+  hostname    = each.value.hostname
+  service     = cloudflare_workers_script.main.script_name
+  environment = "production"
+}
+
+# Pattern-based routes mapping zone requests to the Worker.
 resource "cloudflare_workers_route" "main" {
-  count = local.dns_enabled ? 1 : 0
+  for_each = local.routes_map
 
-  zone_id = local.dns_zone_id
-  pattern = local.route_pattern
+  zone_id = each.value.zone_id
+  pattern = each.value.pattern
   script  = cloudflare_workers_script.main.script_name
-
-  # Ensure DNS record exists before creating route
-  depends_on = [cloudflare_dns_record.worker_dns]
 }
 
+# Cron-triggered invocations of the Worker's scheduled handler.
+resource "cloudflare_workers_cron_trigger" "main" {
+  count = length(var.spec.schedules) > 0 ? 1 : 0
+
+  account_id  = var.spec.account_id
+  script_name = cloudflare_workers_script.main.script_name
+  schedules   = [for s in var.spec.schedules : { cron = s }]
+}

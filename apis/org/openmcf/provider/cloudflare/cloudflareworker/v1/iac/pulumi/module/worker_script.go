@@ -2,6 +2,7 @@ package module
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/pkg/errors"
 	"github.com/pulumi/pulumi-aws/sdk/v7/go/aws"
@@ -10,104 +11,150 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// createWorkerScript creates the Worker script resource with content from R2 bundle.
-// Uses AWS S3 provider for IaC-native private R2 bucket access.
-func createWorkerScript(
+// worker provisions the Worker script and its routing, schedules, and settings.
+func worker(
 	ctx *pulumi.Context,
 	locals *Locals,
 	cloudflareProvider *cloudfl.Provider,
 	r2Provider *aws.Provider,
-) (*cloudfl.WorkersScript, error) {
+) error {
+	spec := locals.CloudflareWorker.Spec
 
-	// Fetch script content from R2 bundle
-	bundle := locals.CloudflareWorker.Spec.ScriptBundle
-
-	// Use GetObject instead of deprecated LookupBucketObject
-	scriptObject := s3.GetObjectOutput(ctx, s3.GetObjectOutputArgs{
-		Bucket: pulumi.String(bundle.Bucket),
-		Key:    pulumi.String(bundle.Path),
-	}, pulumi.Provider(r2Provider))
-
-	scriptContent := scriptObject.Body()
-
-	// Build bindings array (unified in v6 API)
-	// Includes both plain-text environment variables and KV namespace bindings
-	var bindings cloudfl.WorkersScriptBindingArray
-
-	// Add plain-text environment variable bindings
-	// Note: env.secrets are uploaded separately via Cloudflare Secrets API
-	if locals.CloudflareWorker.Spec.Env != nil {
-		for k, v := range locals.CloudflareWorker.Spec.Env.Variables {
-			bindings = append(bindings, cloudfl.WorkersScriptBindingArgs{
-				Name: pulumi.String(k),
-				Type: pulumi.String("plain_text"),
-				Text: pulumi.String(v),
-			})
-		}
-		// Secret environment variables become secret_text bindings (stored encrypted).
-		for k, v := range locals.CloudflareWorker.Spec.Env.Secrets {
-			bindings = append(bindings, cloudfl.WorkersScriptBindingArgs{
-				Name: pulumi.String(k),
-				Type: pulumi.String("secret_text"),
-				Text: pulumi.String(v),
-			})
-		}
+	// Compatibility date defaults to today when unset.
+	compatibilityDate := spec.CompatibilityDate
+	if compatibilityDate == "" {
+		compatibilityDate = time.Now().UTC().Format("2006-01-02")
 	}
 
-	// Add KV namespace bindings
-	// Each binding is a StringValueOrRef: either a literal namespace ID or a cross-resource reference.
-	for i, kvBinding := range locals.CloudflareWorker.Spec.KvBindings {
-		if ref := kvBinding.GetValueFrom(); ref != nil {
-			// Cross-resource reference: use the referenced resource name as the binding name
-			bindings = append(bindings, cloudfl.WorkersScriptBindingArgs{
-				Name:        pulumi.String(ref.Name),
-				Type:        pulumi.String("kv_namespace"),
-				NamespaceId: pulumi.String(ref.FieldPath),
-			})
-		} else if val := kvBinding.GetValue(); val != "" {
-			// Literal namespace ID
-			bindings = append(bindings, cloudfl.WorkersScriptBindingArgs{
-				Name:        pulumi.String(fmt.Sprintf("KV_%d", i)),
-				Type:        pulumi.String("kv_namespace"),
-				NamespaceId: pulumi.String(val),
-			})
-		}
-	}
-
-	// Build Worker script arguments
-	// Use MainModule for module syntax workers (with import/export)
-	// Content is only for service worker syntax (with addEventListener)
 	scriptArgs := &cloudfl.WorkersScriptArgs{
-		AccountId:          pulumi.String(locals.CloudflareWorker.Spec.AccountId),
-		ScriptName:         pulumi.String(locals.CloudflareWorker.Spec.WorkerName),
-		MainModule:         pulumi.String("index.js"), // Indicates this is a module worker
-		Content:            scriptContent,             // The actual module code
-		Bindings:           bindings,
-		CompatibilityFlags: pulumi.StringArray{pulumi.String("nodejs_compat")}, // Enable Node.js compatibility
-		// Enable Workers Logs by default for observability
-		Observability: &cloudfl.WorkersScriptObservabilityArgs{
-			Enabled:          pulumi.Bool(true),
-			HeadSamplingRate: pulumi.Float64(1.0), // 100% sampling rate for full observability
-		},
+		AccountId:         pulumi.String(spec.AccountId),
+		ScriptName:        pulumi.String(spec.WorkerName),
+		MainModule:        pulumi.String(spec.MainModule),
+		CompatibilityDate: pulumi.String(compatibilityDate),
+		Bindings:          buildBindings(spec),
 	}
 
-	if locals.CloudflareWorker.Spec.CompatibilityDate != "" {
-		scriptArgs.CompatibilityDate = pulumi.StringPtr(locals.CloudflareWorker.Spec.CompatibilityDate)
+	// Script source: inline content, else the R2 bundle body.
+	if spec.GetContent() != "" {
+		scriptArgs.Content = pulumi.StringPtr(spec.GetContent())
+	} else if bundle := spec.GetR2Bundle(); bundle != nil {
+		obj := s3.GetObjectOutput(ctx, s3.GetObjectOutputArgs{
+			Bucket: pulumi.String(bundle.Bucket),
+			Key:    pulumi.String(bundle.Path),
+		}, pulumi.Provider(r2Provider))
+		scriptArgs.Content = obj.Body().ApplyT(func(s string) *string { return &s }).(pulumi.StringPtrOutput)
 	}
 
-	// Create the Worker script using new WorkersScript resource
-	createdWorkerScript, err := cloudfl.NewWorkersScript(
-		ctx,
-		"workers-script",
-		scriptArgs,
-		pulumi.Provider(cloudflareProvider),
-	)
+	if len(spec.CompatibilityFlags) > 0 {
+		flags := make(pulumi.StringArray, 0, len(spec.CompatibilityFlags))
+		for _, f := range spec.CompatibilityFlags {
+			flags = append(flags, pulumi.String(f))
+		}
+		scriptArgs.CompatibilityFlags = flags
+	}
+
+	if o := spec.Observability; o != nil {
+		obsArgs := &cloudfl.WorkersScriptObservabilityArgs{Enabled: pulumi.Bool(o.Enabled)}
+		if o.HeadSamplingRate > 0 {
+			obsArgs.HeadSamplingRate = pulumi.Float64(o.HeadSamplingRate)
+		}
+		scriptArgs.Observability = obsArgs
+	}
+
+	if p := spec.Placement; p != nil && p.Mode != "" {
+		scriptArgs.Placement = &cloudfl.WorkersScriptPlacementArgs{Mode: pulumi.String(p.Mode)}
+	}
+
+	if l := spec.Limits; l != nil && l.CpuMs > 0 {
+		scriptArgs.Limits = &cloudfl.WorkersScriptLimitsArgs{CpuMs: pulumi.Int(int(l.CpuMs))}
+	}
+
+	if spec.Logpush {
+		scriptArgs.Logpush = pulumi.Bool(true)
+	}
+
+	if len(spec.TailConsumers) > 0 {
+		var tc cloudfl.WorkersScriptTailConsumerArray
+		for _, t := range spec.TailConsumers {
+			a := cloudfl.WorkersScriptTailConsumerArgs{Service: pulumi.String(t.Service)}
+			if t.Environment != "" {
+				a.Environment = pulumi.String(t.Environment)
+			}
+			if t.Namespace != "" {
+				a.Namespace = pulumi.String(t.Namespace)
+			}
+			tc = append(tc, a)
+		}
+		scriptArgs.TailConsumers = tc
+	}
+
+	createdScript, err := cloudfl.NewWorkersScript(ctx, "workers-script", scriptArgs, pulumi.Provider(cloudflareProvider))
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to create cloudflare workers script")
+		return errors.Wrap(err, "failed to create workers script")
 	}
 
-	// Export stack output
-	ctx.Export(OpScriptId, createdWorkerScript.ID())
+	// workers.dev subdomain.
+	if wd := spec.WorkersDev; wd != nil && wd.Enabled {
+		if _, err := cloudfl.NewWorkersScriptSubdomain(ctx, "workers-dev", &cloudfl.WorkersScriptSubdomainArgs{
+			AccountId:       pulumi.String(spec.AccountId),
+			ScriptName:      createdScript.ScriptName,
+			Enabled:         pulumi.Bool(true),
+			PreviewsEnabled: pulumi.Bool(wd.PreviewsEnabled),
+		}, pulumi.Provider(cloudflareProvider)); err != nil {
+			return errors.Wrap(err, "failed to create workers.dev subdomain")
+		}
+	}
 
-	return createdWorkerScript, nil
+	// Managed custom domains.
+	customDomainHostnames := make(pulumi.StringArray, 0, len(spec.CustomDomains))
+	for i, cd := range spec.CustomDomains {
+		if _, err := cloudfl.NewWorkersCustomDomain(ctx, fmt.Sprintf("custom-domain-%d", i), &cloudfl.WorkersCustomDomainArgs{
+			AccountId:   pulumi.String(spec.AccountId),
+			Environment: pulumi.String("production"),
+			Hostname:    pulumi.String(cd.Hostname),
+			Service:     createdScript.ScriptName,
+		}, pulumi.Provider(cloudflareProvider)); err != nil {
+			return errors.Wrap(err, "failed to create workers custom domain")
+		}
+		customDomainHostnames = append(customDomainHostnames, pulumi.String(cd.Hostname))
+	}
+
+	// Pattern-based routes.
+	routePatterns := make(pulumi.StringArray, 0, len(spec.Routes))
+	for i, r := range spec.Routes {
+		zoneId := ""
+		if r.ZoneId != nil {
+			zoneId = r.ZoneId.GetValue()
+		}
+		if _, err := cloudfl.NewWorkersRoute(ctx, fmt.Sprintf("workers-route-%d", i), &cloudfl.WorkersRouteArgs{
+			ZoneId:  pulumi.String(zoneId),
+			Pattern: pulumi.String(r.Pattern),
+			Script:  createdScript.ScriptName,
+		}, pulumi.Provider(cloudflareProvider)); err != nil {
+			return errors.Wrap(err, "failed to create workers route")
+		}
+		routePatterns = append(routePatterns, pulumi.String(r.Pattern))
+	}
+
+	// Cron-triggered invocations.
+	if len(spec.Schedules) > 0 {
+		var schedules cloudfl.WorkersCronTriggerScheduleArray
+		for _, s := range spec.Schedules {
+			schedules = append(schedules, cloudfl.WorkersCronTriggerScheduleArgs{Cron: pulumi.String(s)})
+		}
+		if _, err := cloudfl.NewWorkersCronTrigger(ctx, "cron-trigger", &cloudfl.WorkersCronTriggerArgs{
+			AccountId:   pulumi.String(spec.AccountId),
+			ScriptName:  createdScript.ScriptName,
+			Schedules:   schedules,
+		}, pulumi.Provider(cloudflareProvider)); err != nil {
+			return errors.Wrap(err, "failed to create workers cron trigger")
+		}
+	}
+
+	ctx.Export(OpScriptId, createdScript.ID())
+	ctx.Export(OpScriptName, createdScript.ScriptName)
+	ctx.Export(OpCustomDomainHostnames, customDomainHostnames)
+	ctx.Export(OpRoutePatterns, routePatterns)
+
+	return nil
 }

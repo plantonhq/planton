@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package org.openmcf.provider.cloudflare.cloudflareworkerskvpair.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+
+// CloudflareWorkersKvPairSpec declares a single key-value entry inside a
+// Workers KV namespace. It exists as a first-class kind so configuration keys
+// can be seeded and versioned through infrastructure (and reference other
+// resources' outputs), distinct from the high-churn application data a Worker
+// writes at runtime.
+message CloudflareWorkersKvPairSpec {
+  // The Cloudflare account ID that owns the namespace this entry belongs to.
+  string account_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.len = 32,
+    (buf.validate.field).string.pattern = "^[0-9a-fA-F]{32}$"
+  ];
+
+  // The KV namespace this entry is written to. Can be a literal namespace ID or
+  // a reference to a CloudflareKvNamespace resource (defaulting to that
+  // namespace's status.outputs.namespace_id).
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef namespace_id = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = CloudflareKvNamespace,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.namespace_id"
+  ];
+
+  // The entry's key. Up to 512 bytes. This is the lookup key a Worker reads
+  // (e.g. env.MY_KV.get(key_name)).
+  string key_name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 512
+  ];
+
+  // The value stored at key_name (up to 25 MiB). KV is general-purpose storage;
+  // values are not treated as secrets. Keep credentials out of KV — use a Worker
+  // `secret_text` binding or Cloudflare Secrets Store for those.
+  string value = 4 [(buf.validate.field).required = true];
+
+  // Optional arbitrary JSON metadata associated with the entry (up to 1024
+  // bytes), returned alongside the value on read. Leave empty for none.
+  string metadata = 5;
+}

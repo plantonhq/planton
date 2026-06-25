@@ -127,3 +127,24 @@ supported class), hard-set identically on both engines. Stack outputs are the pr
 `bucket_name`, `bucket_url` (the path-style `https://<account_id>.r2.cloudflarestorage.com/<bucket>`
 S3 URL), `custom_domain_urls` (one per enabled custom domain), and `public_url` (the r2.dev domain
 when public access is enabled) — see the conformance guard's `CloudflareR2Bucket` case.
+
+The Workers family (`CloudflareWorker`, `CloudflareKvNamespace`, `CloudflareWorkersKvPair`,
+`CloudflareD1Database`, `CloudflareHyperdriveConfig`) pins the Cloudflare provider to v5 on both
+engines. `CloudflareWorker` models bindings as grouped, type-specific lists (the wrangler.toml grain);
+both engines flatten them into the provider's single discriminated `bindings` array (tofu builds
+uniform objects via `merge(null_attrs, ...)`, Pulumi appends `WorkersScriptBindingArgs`), each cross-
+resource binding resolving a `StringValueOrRef` to a plain id. The script source is a oneof — inline
+`content` or an R2 `r2_bundle` fetched through the S3-compatible provider (the AWS provider is only
+configured on the bundle path). Routing folds onto the worker as `cloudflare_workers_script_subdomain`
+(workers.dev), `cloudflare_workers_custom_domain` (one per hostname, `environment = "production"`),
+and `cloudflare_workers_route` (one per pattern); cron schedules fold onto
+`cloudflare_workers_cron_trigger`. Stack outputs are `script_id`, `script_name`,
+`custom_domain_hostnames`, and `route_patterns`. To preserve strict tofu↔Pulumi parity, three v5
+fields that the Pulumi SDK (v6.10.1) does not expose are **deferred** rather than shipped on one
+engine only: D1 `jurisdiction`, the worker service-binding `entrypoint`, and worker
+`limits.subrequests` (the worker custom-domain `zone_id` is likewise omitted — Pulumi infers the zone
+and the tofu attribute is computed). Each is a reserved proto field, to be added once both engines
+support it. Hyperdrive's `origin.password`/`origin.access_client_secret` and the worker
+`secrets[].value` are `StringValueOrRef + (sensitive)`. See the conformance guard's `CloudflareWorker`,
+`CloudflareKvNamespace`, `CloudflareWorkersKvPair`, `CloudflareD1Database`, and
+`CloudflareHyperdriveConfig` cases.

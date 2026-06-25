@@ -187,25 +187,46 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// CloudflareD1Database: both engines emit the database id and name as
-			// flat scalars; connection_string is emitted empty (no v5 attribute).
+			// flat scalars (a Worker reaches D1 through its binding; no DSN exists).
 			name: "CloudflareD1Database",
 			kind: cloudresourcekind.CloudResourceKind_CloudflareD1Database,
 			rawOutputs: map[string]interface{}{
-				"database_id":       "9a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
-				"database_name":     "app-prod-db",
-				"connection_string": "",
+				"database_id":   "9a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+				"database_name": "app-prod-db",
 			},
 			mustPopulate: []string{"database_id", "database_name"},
 		},
 		{
-			// CloudflareKvNamespace: both engines emit the namespace id as a flat
-			// scalar, which must land on the StackOutputs proto.
+			// CloudflareKvNamespace: both engines emit the namespace id and the
+			// url-encoding support flag.
 			name: "CloudflareKvNamespace",
 			kind: cloudresourcekind.CloudResourceKind_CloudflareKvNamespace,
 			rawOutputs: map[string]interface{}{
+				"namespace_id":          "0f1e2d3c4b5a69788796a5b4c3d2e1f0",
+				"supports_url_encoding": true,
+			},
+			mustPopulate: []string{"namespace_id", "supports_url_encoding"},
+		},
+		{
+			// CloudflareWorkersKvPair: both engines emit the entry key and the
+			// namespace it was written to.
+			name: "CloudflareWorkersKvPair",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareWorkersKvPair,
+			rawOutputs: map[string]interface{}{
+				"key_name":     "feature.new-dashboard",
 				"namespace_id": "0f1e2d3c4b5a69788796a5b4c3d2e1f0",
 			},
-			mustPopulate: []string{"namespace_id"},
+			mustPopulate: []string{"key_name", "namespace_id"},
+		},
+		{
+			// CloudflareHyperdriveConfig: both engines emit the config id and name.
+			name: "CloudflareHyperdriveConfig",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareHyperdriveConfig,
+			rawOutputs: map[string]interface{}{
+				"hyperdrive_id": "a1b2c3d4e5f60718293a4b5c6d7e8f90",
+				"name":          "app-prod-pg",
+			},
+			mustPopulate: []string{"hyperdrive_id", "name"},
 		},
 		{
 			// CloudflareDnsRecord: both engines emit the record id, name, type and
@@ -267,15 +288,17 @@ func TestStackOutputsConformance(t *testing.T) {
 			mustPopulate: []string{"load_balancer_id", "load_balancer_dns_record_name", "load_balancer_cname_target"},
 		},
 		{
-			// CloudflareWorker: both engines emit the script id (scalar) and the
-			// route urls (repeated string) onto the StackOutputs proto.
+			// CloudflareWorker: both engines emit the script id and name (scalars)
+			// and the custom-domain hostnames / route patterns (repeated strings).
 			name: "CloudflareWorker",
 			kind: cloudresourcekind.CloudResourceKind_CloudflareWorker,
 			rawOutputs: map[string]interface{}{
-				"script_id":  "my-worker",
-				"route_urls": []interface{}{"https://app.example.com"},
+				"script_id":               "my-worker",
+				"script_name":             "my-worker",
+				"custom_domain_hostnames": []interface{}{"api.example.com"},
+				"route_patterns":          []interface{}{"api.example.com/*"},
 			},
-			mustPopulate: []string{"script_id", "route_urls"},
+			mustPopulate: []string{"script_id", "script_name", "custom_domain_hostnames", "route_patterns"},
 		},
 		{
 			// CloudflareZeroTrustAccessApplication: both engines emit the

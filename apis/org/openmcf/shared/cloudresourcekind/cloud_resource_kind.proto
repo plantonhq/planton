@@ -1535,6 +1535,16 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "cfrs"
   }];
+  CloudflareWorkersKvPair = 1809 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfkvp"
+  }];
+  CloudflareHyperdriveConfig = 1810 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfhyp"
+  }];
 
   // 2100–2299: Auth0 resources
   Auth0Connection = 2100 [(kind_meta) = {

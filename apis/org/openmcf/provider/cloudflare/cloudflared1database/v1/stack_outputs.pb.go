@@ -24,14 +24,13 @@ const (
 // CloudflareD1DatabaseStackOutputs captures the outputs after provisioning a Cloudflare D1 database.
 type CloudflareD1DatabaseStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The unique identifier of the created D1 database.
+	// The unique identifier of the created D1 database. A Worker's `d1` binding
+	// references this value.
 	DatabaseId string `protobuf:"bytes,1,opt,name=database_id,json=databaseId,proto3" json:"database_id,omitempty"`
 	// The name of the database (same as the input name).
-	DatabaseName string `protobuf:"bytes,2,opt,name=database_name,json=databaseName,proto3" json:"database_name,omitempty"`
-	// The connection string for connecting to the D1 database.
-	ConnectionString string `protobuf:"bytes,3,opt,name=connection_string,json=connectionString,proto3" json:"connection_string,omitempty"`
-	unknownFields    protoimpl.UnknownFields
-	sizeCache        protoimpl.SizeCache
+	DatabaseName  string `protobuf:"bytes,2,opt,name=database_name,json=databaseName,proto3" json:"database_name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *CloudflareD1DatabaseStackOutputs) Reset() {
@@ -78,23 +77,15 @@ func (x *CloudflareD1DatabaseStackOutputs) GetDatabaseName() string {
 	return ""
 }
 
-func (x *CloudflareD1DatabaseStackOutputs) GetConnectionString() string {
-	if x != nil {
-		return x.ConnectionString
-	}
-	return ""
-}
-
 var File_org_openmcf_provider_cloudflare_cloudflared1database_v1_stack_outputs_proto protoreflect.FileDescriptor
 
 const file_org_openmcf_provider_cloudflare_cloudflared1database_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Korg/openmcf/provider/cloudflare/cloudflared1database/v1/stack_outputs.proto\x127org.openmcf.provider.cloudflare.cloudflared1database.v1\"\x95\x01\n" +
+	"Korg/openmcf/provider/cloudflare/cloudflared1database/v1/stack_outputs.proto\x127org.openmcf.provider.cloudflare.cloudflared1database.v1\"\x81\x01\n" +
 	" CloudflareD1DatabaseStackOutputs\x12\x1f\n" +
 	"\vdatabase_id\x18\x01 \x01(\tR\n" +
 	"databaseId\x12#\n" +
-	"\rdatabase_name\x18\x02 \x01(\tR\fdatabaseName\x12+\n" +
-	"\x11connection_string\x18\x03 \x01(\tR\x10connectionStringB\xc5\x03\n" +
+	"\rdatabase_name\x18\x02 \x01(\tR\fdatabaseNameJ\x04\b\x03\x10\x04R\x11connection_stringB\xc5\x03\n" +
 	";com.org.openmcf.provider.cloudflare.cloudflared1database.v1B\x11StackOutputsProtoP\x01Zpgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflared1database/v1;cloudflared1databasev1\xa2\x02\x05OOPCC\xaa\x027Org.Openmcf.Provider.Cloudflare.Cloudflared1database.V1\xca\x027Org\\Openmcf\\Provider\\Cloudflare\\Cloudflared1database\\V1\xe2\x02COrg\\Openmcf\\Provider\\Cloudflare\\Cloudflared1database\\V1\\GPBMetadata\xea\x02<Org::Openmcf::Provider::Cloudflare::Cloudflared1database::V1b\x06proto3"
 
 var (

@@ -109,7 +109,9 @@ After deployment, the following outputs are available:
 
 - `database_id`: The unique identifier of the created D1 database
 - `database_name`: The name of the database (same as input)
-- `connection_string`: Connection string (currently empty - D1 uses Worker bindings instead)
+
+A Worker reaches D1 through its `d1` binding (referencing `database_id`); there is
+no connection string.
 
 Access outputs:
 

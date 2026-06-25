@@ -1,0 +1,87 @@
+# Cloudflare Workers / KV / D1 family to 90/10 on provider v5
+
+**Date**: June 25, 2026
+**Type**: Enhancement
+**Components**: API Definitions, Provider Framework, IAC (Terraform + Pulumi), Resource Management
+
+## Summary
+
+Raised the Cloudflare Workers/KV/D1 family to deep ("90/10") coverage on provider
+v5 and forged two new composable kinds. `CloudflareWorker` was rewritten around
+grouped, foreign-keyed binding lists (the wrangler.toml grain) plus folded
+routing, cron, and runtime settings; `CloudflareKvNamespace` and
+`CloudflareD1Database` were enriched and corrected; and `CloudflareHyperdriveConfig`
+and `CloudflareWorkersKvPair` were added as first-class kinds. Both engines move
+together, and the work was validated to a live `tofu apply`/`destroy` against a
+real Cloudflare account.
+
+## What's New
+
+### CloudflareWorker — rewritten (kind 1803)
+
+- **Script source** is now a oneof: inline `content` or an R2 `r2_bundle`
+  artifact (the old R2-only bundle model).
+- **Bindings are grouped, typed lists** — `vars`, `secrets`, `kv_namespaces`,
+  `r2_buckets`, `d1_databases`, `hyperdrive_configs`, `services`, `queues`,
+  `durable_objects`, `analytics_engine_datasets`, `vectorize_indexes`, `ai`,
+  `version_metadata` — each cross-resource binding a `StringValueOrRef` to the
+  producing kind (KV/R2/D1/Hyperdrive/Worker). The IaC layer flattens these into
+  the provider's single discriminated `bindings` array.
+- **Routing folds onto the worker**: `workers_dev` (workers.dev subdomain),
+  `custom_domains` (managed TLS hostnames), and `routes` (zone patterns),
+  replacing the old dummy-AAAA-record + route hack.
+- **Cron, observability, placement, limits, logpush, tail_consumers** folded on.
+- Removed the dead `env{}` model and the disabled Secrets-API uploader; secrets
+  are now `secret_text` bindings (`StringValueOrRef + (sensitive)`, JIT-resolved).
+- Outputs: `script_id`, `script_name`, `custom_domain_hostnames`, `route_patterns`.
+
+### CloudflareHyperdriveConfig — forged (kind 1810, `cfhyp`)
+
+Account-scoped connection pooler + edge cache for a regional SQL database. Models
+`origin` (database/scheme/user/host/port, with `password` and
+`access_client_secret` as `StringValueOrRef + (sensitive)`), `caching`, `mtls`
+(`sslmode` a validated string), and `origin_connection_limit` (≥5). A Worker binds
+it via `hyperdrive_configs`.
+
+### CloudflareWorkersKvPair — forged (kind 1809, `cfkvp`)
+
+A single key-value entry in a KV namespace, as a first-class composable resource —
+distinct from runtime application data. `namespace_id` is a `StringValueOrRef` to
+`CloudflareKvNamespace`. Lets infrastructure seed configuration keys (including
+values derived from other resources' outputs).
+
+### CloudflareKvNamespace / CloudflareD1Database — enriched
+
+- KV: dropped the dead `ttl_seconds`/`description` (not on the v5 resource);
+  added the `supports_url_encoding` output.
+- D1: `read_replication.mode` is now an enum (`auto`/`disabled`); dropped the
+  phantom `connection_string` output; tightened `account_id` to 32-hex.
+
+## Engine-parity deferrals
+
+Three v5 fields the Pulumi SDK (v6.10.1) does not expose were **deferred** rather
+than shipped on Terraform only (preserving the strict tofu↔pulumi parity mandate):
+D1 `jurisdiction`, the worker service-binding `entrypoint`, and worker
+`limits.subrequests` (the worker custom-domain `zone_id` is likewise omitted —
+Pulumi infers the zone). Each is a reserved proto field to be added once both
+engines support it.
+
+## Validation
+
+`make protos` (incl. the Java compile gate) green; `go build ./...`; all five
+component spec tests pass; `pkg/outputs` conformance extended and green (the parity
+guard); `pkg/secretcoverage` gate green (new sensitive fields covered, stale
+`CloudflareWorker:spec.env.secrets` baseline entry removed); `tofu validate` on all
+five modules against the real v5 provider; all five Pulumi entrypoints build the
+release way. **Live `tofu apply` + `destroy`** against a real Cloudflare account
+created and tore down a KV namespace + KV pair, a D1 database, and a Worker binding
+both (workers.dev enabled) with zero leftover resources.
+
+## Known follow-ups
+
+- A live `tofu apply` for `CloudflareHyperdriveConfig` needs a reachable origin
+  database (Hyperdrive verifies connectivity at create); the module is
+  `tofu validate`-clean and plan-ready.
+- The deep `docs/README.md` research essays for the worker/KV/D1 components retain
+  some pre-rewrite field names; the user-facing `README.md` and `catalog-page.md`
+  are current.
