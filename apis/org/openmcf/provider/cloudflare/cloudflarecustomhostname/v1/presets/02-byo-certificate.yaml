@@ -1,0 +1,13 @@
+apiVersion: cloudflare.openmcf.org/v1
+kind: CloudflareCustomHostname
+metadata:
+  name: byo-certificate-hostname
+spec:
+  zoneId:
+    value: <saas-zone-id>
+  hostname: <customer-hostname>
+  customOriginServer:
+    value: <origin-hostname>
+  ssl:
+    customCertificate: <pem-encoded-certificate>
+    customKey: <pem-encoded-private-key>

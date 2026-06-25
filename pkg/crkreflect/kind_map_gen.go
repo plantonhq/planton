@@ -165,6 +165,9 @@ import (
 	civokubernetesnodepoolv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/civo/civokubernetesnodepool/v1"
 	civovolumev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/civo/civovolume/v1"
 	civovpcv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/civo/civovpc/v1"
+	cloudflarecertificatepackv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarecertificatepack/v1"
+	cloudflarecustomhostnamev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarecustomhostname/v1"
+	cloudflarecustomhostnamefallbackoriginv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarecustomhostnamefallbackorigin/v1"
 	cloudflared1databasev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflared1database/v1"
 	cloudflarednsrecordv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarednsrecord/v1"
 	cloudflarednszonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarednszone/v1"
@@ -178,6 +181,7 @@ import (
 	cloudflareloadbalancerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflareloadbalancer/v1"
 	cloudflareloadbalancermonitorv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflareloadbalancermonitor/v1"
 	cloudflareloadbalancerpoolv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflareloadbalancerpool/v1"
+	cloudflareorigincacertificatev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflareorigincacertificate/v1"
 	cloudflarepagesprojectv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarepagesproject/v1"
 	cloudflarequeuev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarequeue/v1"
 	cloudflarer2bucketv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarer2bucket/v1"
@@ -606,6 +610,9 @@ var ProviderCivoMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 }
 
 var ProviderCloudflareMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
+	cloudresourcekind.CloudResourceKind_CloudflareCertificatePack:               &cloudflarecertificatepackv1.CloudflareCertificatePack{},
+	cloudresourcekind.CloudResourceKind_CloudflareCustomHostname:                &cloudflarecustomhostnamev1.CloudflareCustomHostname{},
+	cloudresourcekind.CloudResourceKind_CloudflareCustomHostnameFallbackOrigin:  &cloudflarecustomhostnamefallbackoriginv1.CloudflareCustomHostnameFallbackOrigin{},
 	cloudresourcekind.CloudResourceKind_CloudflareD1Database:                    &cloudflared1databasev1.CloudflareD1Database{},
 	cloudresourcekind.CloudResourceKind_CloudflareDnsRecord:                     &cloudflarednsrecordv1.CloudflareDnsRecord{},
 	cloudresourcekind.CloudResourceKind_CloudflareDnsZone:                       &cloudflarednszonev1.CloudflareDnsZone{},
@@ -619,6 +626,7 @@ var ProviderCloudflareMap = map[cloudresourcekind.CloudResourceKind]proto.Messag
 	cloudresourcekind.CloudResourceKind_CloudflareLoadBalancer:                  &cloudflareloadbalancerv1.CloudflareLoadBalancer{},
 	cloudresourcekind.CloudResourceKind_CloudflareLoadBalancerMonitor:           &cloudflareloadbalancermonitorv1.CloudflareLoadBalancerMonitor{},
 	cloudresourcekind.CloudResourceKind_CloudflareLoadBalancerPool:              &cloudflareloadbalancerpoolv1.CloudflareLoadBalancerPool{},
+	cloudresourcekind.CloudResourceKind_CloudflareOriginCaCertificate:           &cloudflareorigincacertificatev1.CloudflareOriginCaCertificate{},
 	cloudresourcekind.CloudResourceKind_CloudflarePagesProject:                  &cloudflarepagesprojectv1.CloudflarePagesProject{},
 	cloudresourcekind.CloudResourceKind_CloudflareQueue:                         &cloudflarequeuev1.CloudflareQueue{},
 	cloudresourcekind.CloudResourceKind_CloudflareR2Bucket:                      &cloudflarer2bucketv1.CloudflareR2Bucket{},

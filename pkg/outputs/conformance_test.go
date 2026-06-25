@@ -496,6 +496,62 @@ func TestStackOutputsConformance(t *testing.T) {
 			},
 			mustPopulate: []string{"address_id", "email"},
 		},
+		{
+			// CloudflareOriginCaCertificate: both engines emit the certificate id,
+			// the certificate PEM, the (sensitive) generated private key, and expiry.
+			name: "CloudflareOriginCaCertificate",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareOriginCaCertificate,
+			rawOutputs: map[string]interface{}{
+				"certificate_id": "b8f2e1c0a1b2c3d4e5f60718293a4b5c",
+				"certificate":    "-----BEGIN CERTIFICATE-----\nMIIB\n-----END CERTIFICATE-----",
+				"private_key":    "-----BEGIN PRIVATE KEY-----\nMIIE\n-----END PRIVATE KEY-----",
+				"expires_on":     "2041-06-25T00:00:00Z",
+			},
+			mustPopulate: []string{"certificate_id", "certificate"},
+		},
+		{
+			// CloudflareCertificatePack: both engines emit the pack id, status, and
+			// primary certificate id.
+			name: "CloudflareCertificatePack",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareCertificatePack,
+			rawOutputs: map[string]interface{}{
+				"certificate_pack_id": "3822ff90e3534420ac41fc7e4a1f4b07",
+				"status":              "active",
+				"primary_certificate": "caa875a3-b2f0-4f7e-9a1e-0d2b4c6e8f10",
+			},
+			mustPopulate: []string{"certificate_pack_id", "status"},
+		},
+		{
+			// CloudflareCustomHostname: both engines emit the hostname id, status,
+			// the ownership-verification records, and the creation timestamp.
+			name: "CloudflareCustomHostname",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareCustomHostname,
+			rawOutputs: map[string]interface{}{
+				"custom_hostname_id":               "0d89c70f8d4f4b1aa1b5d2e3f4a5b6c7",
+				"status":                           "pending",
+				"ownership_verification_name":      "_cf-custom-hostname.support.acme.com",
+				"ownership_verification_type":      "txt",
+				"ownership_verification_value":     "1f2e3d4c5b6a7988",
+				"ownership_verification_http_url":  "http://support.acme.com/.well-known/cf-custom-hostname-challenge/0d89",
+				"ownership_verification_http_body": "1f2e3d4c5b6a7988",
+				"verification_errors":              []interface{}{},
+				"created_at":                       "2026-06-25T00:00:00Z",
+			},
+			mustPopulate: []string{"custom_hostname_id", "status"},
+		},
+		{
+			// CloudflareCustomHostnameFallbackOrigin: both engines emit status and
+			// timestamps for the zone's fallback origin.
+			name: "CloudflareCustomHostnameFallbackOrigin",
+			kind: cloudresourcekind.CloudResourceKind_CloudflareCustomHostnameFallbackOrigin,
+			rawOutputs: map[string]interface{}{
+				"status":     "active",
+				"created_at": "2026-06-25T00:00:00Z",
+				"updated_at": "2026-06-25T00:00:00Z",
+				"errors":     []interface{}{},
+			},
+			mustPopulate: []string{"status"},
+		},
 	}
 
 	for _, tc := range cases {

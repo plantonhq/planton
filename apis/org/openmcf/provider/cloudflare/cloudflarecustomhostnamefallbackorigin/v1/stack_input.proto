@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.cloudflare.cloudflarecustomhostnamefallbackorigin.v1;
+
+import "org/openmcf/provider/cloudflare/cloudflarecustomhostnamefallbackorigin/v1/api.proto";
+import "org/openmcf/provider/cloudflare/provider.proto";
+
+//cloudflare-custom-hostname-fallback-origin stack-input
+message CloudflareCustomHostnameFallbackOriginStackInput {
+  //target cloud-resource
+  CloudflareCustomHostnameFallbackOrigin target = 1;
+  //provider-config
+  org.openmcf.provider.cloudflare.CloudflareProviderConfig provider_config = 2;
+}

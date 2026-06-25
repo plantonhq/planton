@@ -371,6 +371,10 @@ const (
 	CloudResourceKind_CloudflareEmailRoutingZone              CloudResourceKind = 1823
 	CloudResourceKind_CloudflareEmailRoutingRule              CloudResourceKind = 1824
 	CloudResourceKind_CloudflareEmailRoutingAddress           CloudResourceKind = 1825
+	CloudResourceKind_CloudflareOriginCaCertificate           CloudResourceKind = 1826
+	CloudResourceKind_CloudflareCertificatePack               CloudResourceKind = 1827
+	CloudResourceKind_CloudflareCustomHostname                CloudResourceKind = 1828
+	CloudResourceKind_CloudflareCustomHostnameFallbackOrigin  CloudResourceKind = 1829
 	// 2100–2299: Auth0 resources
 	CloudResourceKind_Auth0Connection     CloudResourceKind = 2100
 	CloudResourceKind_Auth0Client         CloudResourceKind = 2101
@@ -787,6 +791,10 @@ var (
 		1823: "CloudflareEmailRoutingZone",
 		1824: "CloudflareEmailRoutingRule",
 		1825: "CloudflareEmailRoutingAddress",
+		1826: "CloudflareOriginCaCertificate",
+		1827: "CloudflareCertificatePack",
+		1828: "CloudflareCustomHostname",
+		1829: "CloudflareCustomHostnameFallbackOrigin",
 		2100: "Auth0Connection",
 		2101: "Auth0Client",
 		2102: "Auth0EventStream",
@@ -1195,6 +1203,10 @@ var (
 		"CloudflareEmailRoutingZone":              1823,
 		"CloudflareEmailRoutingRule":              1824,
 		"CloudflareEmailRoutingAddress":           1825,
+		"CloudflareOriginCaCertificate":           1826,
+		"CloudflareCertificatePack":               1827,
+		"CloudflareCustomHostname":                1828,
+		"CloudflareCustomHostnameFallbackOrigin":  1829,
 		"Auth0Connection":                         2100,
 		"Auth0Client":                             2101,
 		"Auth0EventStream":                        2102,
@@ -1579,7 +1591,7 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x04kind\x18\x02 \x01(\tR\x04kind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\xed\x8f\x01\n" +
+	"\x02v1\x10\x01*Ƒ\x01\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12,\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1906,7 +1918,11 @@ const file_org_openmcf_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x19CloudflareTurnstileWidget\x10\x9e\x0e\x1a\x10\xa2\xf7\x04\f\b\x0f\x10\x01\"\x06cfturn\x120\n" +
 	"\x1aCloudflareEmailRoutingZone\x10\x9f\x0e\x1a\x0f\xa2\xf7\x04\v\b\x0f\x10\x01\"\x05cferz\x120\n" +
 	"\x1aCloudflareEmailRoutingRule\x10\xa0\x0e\x1a\x0f\xa2\xf7\x04\v\b\x0f\x10\x01\"\x05cferr\x123\n" +
-	"\x1dCloudflareEmailRoutingAddress\x10\xa1\x0e\x1a\x0f\xa2\xf7\x04\v\b\x0f\x10\x01\"\x05cfera\x12&\n" +
+	"\x1dCloudflareEmailRoutingAddress\x10\xa1\x0e\x1a\x0f\xa2\xf7\x04\v\b\x0f\x10\x01\"\x05cfera\x123\n" +
+	"\x1dCloudflareOriginCaCertificate\x10\xa2\x0e\x1a\x0f\xa2\xf7\x04\v\b\x0f\x10\x01\"\x05cfoca\x121\n" +
+	"\x19CloudflareCertificatePack\x10\xa3\x0e\x1a\x11\xa2\xf7\x04\r\b\x0f\x10\x01\"\acfcertp\x120\n" +
+	"\x18CloudflareCustomHostname\x10\xa4\x0e\x1a\x11\xa2\xf7\x04\r\b\x0f\x10\x01\"\acfchost\x12=\n" +
+	"&CloudflareCustomHostnameFallbackOrigin\x10\xa5\x0e\x1a\x10\xa2\xf7\x04\f\b\x0f\x10\x01\"\x06cfchfo\x12&\n" +
 	"\x0fAuth0Connection\x10\xb4\x10\x1a\x10\xa2\xf7\x04\f\b\x15\x10\x01\"\x06a0conn\x12!\n" +
 	"\vAuth0Client\x10\xb5\x10\x1a\x0f\xa2\xf7\x04\v\b\x15\x10\x01\"\x05a0cli\x12%\n" +
 	"\x10Auth0EventStream\x10\xb6\x10\x1a\x0e\xa2\xf7\x04\n" +

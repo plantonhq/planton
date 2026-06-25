@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package org.openmcf.provider.cloudflare.cloudflarecustomhostname.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/cloudflare/cloudflarecustomhostname/v1/spec.proto";
+import "org/openmcf/provider/cloudflare/cloudflarecustomhostname/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// cloudflare-custom-hostname
+message CloudflareCustomHostname {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'cloudflare.openmcf.org/v1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'CloudflareCustomHostname'];
+
+  //metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  CloudflareCustomHostnameSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  CloudflareCustomHostnameStatus status = 5;
+}
+
+// cloudflare-custom-hostname status
+message CloudflareCustomHostnameStatus {
+  //stack-outputs
+  //  cloudflare-custom-hostname stack-outputs
+  CloudflareCustomHostnameStackOutputs outputs = 1;
+}

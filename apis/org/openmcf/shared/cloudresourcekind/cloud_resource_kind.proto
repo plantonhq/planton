@@ -1620,6 +1620,26 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "cfera"
   }];
+  CloudflareOriginCaCertificate = 1826 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfoca"
+  }];
+  CloudflareCertificatePack = 1827 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfcertp"
+  }];
+  CloudflareCustomHostname = 1828 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfchost"
+  }];
+  CloudflareCustomHostnameFallbackOrigin = 1829 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfchfo"
+  }];
 
   // 2100–2299: Auth0 resources
   Auth0Connection = 2100 [(kind_meta) = {
