@@ -62,10 +62,10 @@ var _ = ginkgo.Describe("CloudflareWorkerSpec Custom Validation Tests", func() {
 				Directory:   "dist",
 				BindingName: "ASSETS",
 				Config: &CloudflareWorkerAssetsConfig{
-					HtmlHandling:     "auto-trailing-slash",
-					NotFoundHandling: "404-page",
-					Headers:          "/*\n  X-Frame-Options: DENY",
-					Redirects:        "/old /new 301",
+					HtmlHandling:        "auto-trailing-slash",
+					NotFoundHandling:    "404-page",
+					Headers:             "/*\n  X-Frame-Options: DENY",
+					Redirects:           "/old /new 301",
 					RunWorkerFirstRules: []string{"/api/*", "!/api/docs/*"},
 				},
 			}
