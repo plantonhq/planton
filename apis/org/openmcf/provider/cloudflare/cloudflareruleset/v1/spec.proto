@@ -9,7 +9,7 @@ import "org/openmcf/shared/options/options.proto";
 //
 // Rulesets are ordered collections of rules that execute during specific phases of HTTP
 // request processing on the Cloudflare network. They power Origin Rules, WAF Custom Rules,
-// Cache Rules, Redirect Rules, Transform Rules, and more.
+// Cache Rules, Redirect Rules, Transform Rules, Rate Limiting, Configuration Rules, and more.
 //
 // Exactly one of zone_id or account_id must be provided. Zone-level rulesets apply to a
 // single domain; account-level rulesets apply across all zones in the account.
@@ -34,7 +34,7 @@ message CloudflareRulesetSpec {
     ddos_l4 = 1;
     // DDoS protection at L7 (application layer).
     ddos_l7 = 2;
-    // Configuration settings (e.g., automatic HTTPS rewrites, browser integrity check).
+    // Configuration settings (e.g., SSL mode, security level, Rocket Loader) via set_config.
     http_config_settings = 3;
     // Custom error responses.
     http_custom_errors = 4;
@@ -160,6 +160,20 @@ message CloudflareRulesetRule {
     compress_response = 12;
     // Assign a threat score to the request.
     score = 13;
+    // Apply an adaptive (managed) DDoS mitigation.
+    ddos_dynamic = 14;
+    // Force the connection to close after the response.
+    force_connection_close = 15;
+    // Add custom fields to the request/response logs (http_log_custom_fields phase).
+    log_custom_field = 16;
+    // Serve a custom error asset or inline error response.
+    serve_error = 17;
+    // Set individual Cache-Control response directives.
+    set_cache_control = 18;
+    // Set, add, or remove cache tags on the response.
+    set_cache_tags = 19;
+    // Set zone configuration settings (SSL mode, security level, etc.; http_config_settings phase).
+    set_config = 20;
   }
 
   // Stable reference ID for the rule.
@@ -191,6 +205,64 @@ message CloudflareRulesetRule {
 
   // Action-specific parameters. The applicable fields depend on the chosen action.
   CloudflareRulesetActionParameters action_parameters = 6;
+
+  // Rate-limiting configuration. Required for rules in the http_ratelimit phase.
+  CloudflareRulesetRatelimit ratelimit = 7;
+
+  // Per-rule logging configuration (override the rule's default log behavior).
+  CloudflareRulesetLogging logging = 8;
+
+  // Leaked-credential / exposed-credential detection for the matched request.
+  CloudflareRulesetExposedCredentialCheck exposed_credential_check = 9;
+}
+
+// CloudflareRulesetRatelimit configures rate limiting for a rule (http_ratelimit phase).
+message CloudflareRulesetRatelimit {
+  // Characteristics (buckets) that requests are counted against, e.g.
+  // ["ip.src", "cf.colo.id"] or ["http.request.headers[\"x-api-key\"]"].
+  repeated string characteristics = 1 [(buf.validate.field).repeated.min_items = 1];
+
+  // The period in seconds over which requests/score are counted (10, 60, 120, 300, 600, ...).
+  int64 period = 2 [(buf.validate.field).int64.gt = 0];
+
+  // Optional expression defining what counts toward the rate limit. Defaults to the
+  // rule's match expression when empty.
+  string counting_expression = 3;
+
+  // Seconds the mitigation (the rule's action) stays in effect once triggered.
+  // Leave 0 to use the period.
+  int64 mitigation_timeout = 4 [(buf.validate.field).int64.gte = 0];
+
+  // Number of requests per period that triggers the rule. Use this OR score_per_period.
+  int64 requests_per_period = 5 [(buf.validate.field).int64.gte = 0];
+
+  // Count only requests that reach the origin (not those served from cache/edge).
+  bool requests_to_origin = 6;
+
+  // Score per period that triggers the rule (for score-based rate limiting). Use this
+  // OR requests_per_period.
+  int64 score_per_period = 7 [(buf.validate.field).int64.gte = 0];
+
+  // Response header name whose value is summed into the score for score-based limiting.
+  string score_response_header_name = 8;
+}
+
+// CloudflareRulesetLogging configures per-rule logging.
+message CloudflareRulesetLogging {
+  // Whether request logging is enabled for this rule.
+  bool enabled = 1;
+}
+
+// CloudflareRulesetExposedCredentialCheck detects requests carrying leaked credentials.
+message CloudflareRulesetExposedCredentialCheck {
+  // Expression that extracts the submitted username from the request.
+  string username_expression = 1 [(buf.validate.field).string.min_len = 1];
+
+  // Expression that extracts the submitted password from the request.
+  string password_expression = 2 [
+    (buf.validate.field).string.min_len = 1,
+    (org.openmcf.shared.options.sensitive_exempt_reason) = "a wirefilter expression locating the password field in the request (e.g. http.request.body.form[...]), not a secret value"
+  ];
 }
 
 // CloudflareRulesetActionParameters contains configuration for rule actions.
@@ -201,10 +273,17 @@ message CloudflareRulesetRule {
 //   route:             origin, host_header, sni
 //   block:             response
 //   rewrite:           uri, headers
-//   redirect:          from_value
+//   redirect:          from_value, from_list
 //   skip:              phases, products, ruleset, rulesets
-//   execute:           id, overrides
-//   set_cache_settings: cache, edge_ttl, browser_ttl, serve_stale
+//   execute:           id, overrides, matched_data
+//   score:             increment
+//   compress_response: algorithms
+//   serve_error:       asset_name, content, content_type, status_code
+//   set_config:        ssl, security_level, autominify, polish, rocket_loader, bic, ... (see fields)
+//   set_cache_settings: cache, edge_ttl, browser_ttl, serve_stale, cache_key, cache_reserve, vary, ...
+//   set_cache_control: max_age, s_maxage, stale_while_revalidate, private, no_cache, ...
+//   set_cache_tags:    operation, values, expression
+//   log_custom_field:  cookie_fields, request_fields, response_fields, ...
 message CloudflareRulesetActionParameters {
   // ---- Origin Rules (action: route) ----
 
@@ -217,7 +296,7 @@ message CloudflareRulesetActionParameters {
   // Override the SNI value used during TLS handshake with the origin.
   CloudflareRulesetSni sni = 3;
 
-  // ---- Block (action: block) ----
+  // ---- Block / serve_error (action: block, serve_error) ----
 
   // Custom response returned to the client when the request is blocked.
   CloudflareRulesetResponse response = 4;
@@ -232,7 +311,7 @@ message CloudflareRulesetActionParameters {
 
   // ---- Redirect (action: redirect) ----
 
-  // Redirect configuration with target URL and status code.
+  // Redirect configuration with a static/dynamic target URL and status code.
   CloudflareRulesetFromValue from_value = 7;
 
   // ---- Skip (action: skip) ----
@@ -243,7 +322,7 @@ message CloudflareRulesetActionParameters {
   // List of Cloudflare products to skip (e.g., "zoneLockdown", "uaBlock", "waf").
   repeated string products = 9;
 
-  // Single ruleset ID to skip.
+  // Single ruleset ID to skip (use "current" to skip the remainder of this ruleset).
   string ruleset = 10;
 
   // Multiple ruleset IDs to skip.
@@ -270,6 +349,240 @@ message CloudflareRulesetActionParameters {
 
   // Controls serving stale content while revalidating with the origin.
   CloudflareRulesetServeStale serve_stale = 17;
+
+  // ---- Redirect from a list (action: redirect) ----
+
+  // Redirect using a Bulk Redirect list rather than an inline target.
+  CloudflareRulesetFromList from_list = 18;
+
+  // ---- Compress response (action: compress_response) ----
+
+  // Ordered list of compression algorithms the edge may use (e.g. "brotli", "gzip",
+  // "zstd", "auto", "default", "none").
+  repeated CloudflareRulesetAlgorithm algorithms = 19;
+
+  // ---- Execute: sensitive-data logging (action: execute) ----
+
+  // Public key used to encrypt matched sensitive data for the Exposed Credentials /
+  // Sensitive Data Detection logs.
+  CloudflareRulesetMatchedData matched_data = 20;
+
+  // ---- Score (action: score) ----
+
+  // Amount to increment the threat score by.
+  int64 increment = 21;
+
+  // ---- Serve error (action: serve_error) ----
+
+  // Name of the custom error asset to serve.
+  string asset_name = 22;
+
+  // Inline error response body to serve.
+  string content = 23;
+
+  // MIME type of the inline error response (e.g. "text/html", "application/json",
+  // "text/plain", "text/xml").
+  string content_type = 24 [(buf.validate.field).cel = {
+    id: "action_parameters_content_type.valid"
+    message: "content_type must be one of \"application/json\", \"text/html\", \"text/plain\", \"text/xml\""
+    expression: "this == '' || this in ['application/json', 'text/html', 'text/plain', 'text/xml']"
+  }];
+
+  // HTTP status code of the served error response.
+  int64 status_code = 25;
+
+  // ---- Configuration settings (action: set_config, phase http_config_settings) ----
+
+  // Enable Automatic HTTPS Rewrites.
+  optional bool automatic_https_rewrites = 26;
+
+  // Auto-minify settings for CSS/HTML/JS.
+  CloudflareRulesetAutominify autominify = 27;
+
+  // Enable Browser Integrity Check.
+  optional bool bic = 28;
+
+  // Enable the content converter.
+  optional bool content_converter = 29;
+
+  // Disable Cloudflare Apps.
+  optional bool disable_apps = 30;
+
+  // Disable Real User Monitoring (RUM).
+  optional bool disable_rum = 31;
+
+  // Disable Zaraz.
+  optional bool disable_zaraz = 32;
+
+  // Enable Email Obfuscation.
+  optional bool email_obfuscation = 33;
+
+  // Enable Cloudflare Fonts.
+  optional bool fonts = 34;
+
+  // Enable Hotlink Protection.
+  optional bool hotlink_protection = 35;
+
+  // Enable Mirage image optimization.
+  optional bool mirage = 36;
+
+  // Enable Opportunistic Encryption.
+  optional bool opportunistic_encryption = 37;
+
+  // Polish image optimization level: "off", "lossless", "lossy", or "webp".
+  string polish = 38 [(buf.validate.field).cel = {
+    id: "action_parameters_polish.valid"
+    message: "polish must be one of \"off\", \"lossless\", \"lossy\", \"webp\""
+    expression: "this == '' || this in ['off', 'lossless', 'lossy', 'webp']"
+  }];
+
+  // Whether to allow AI training crawlers to follow redirects.
+  optional bool redirects_for_ai_training = 39;
+
+  // Request body buffering mode: "none", "standard", or "full".
+  string request_body_buffering = 40 [(buf.validate.field).cel = {
+    id: "action_parameters_request_body_buffering.valid"
+    message: "request_body_buffering must be one of \"none\", \"standard\", \"full\""
+    expression: "this == '' || this in ['none', 'standard', 'full']"
+  }];
+
+  // Response body buffering mode: "none" or "standard".
+  string response_body_buffering = 41 [(buf.validate.field).cel = {
+    id: "action_parameters_response_body_buffering.valid"
+    message: "response_body_buffering must be one of \"none\", \"standard\""
+    expression: "this == '' || this in ['none', 'standard']"
+  }];
+
+  // Enable Rocket Loader.
+  optional bool rocket_loader = 42;
+
+  // Security level: "off", "essentially_off", "low", "medium", "high", "under_attack".
+  string security_level = 43 [(buf.validate.field).cel = {
+    id: "action_parameters_security_level.valid"
+    message: "security_level must be one of \"off\", \"essentially_off\", \"low\", \"medium\", \"high\", \"under_attack\""
+    expression: "this == '' || this in ['off', 'essentially_off', 'low', 'medium', 'high', 'under_attack']"
+  }];
+
+  // Enable Server-Side Excludes.
+  optional bool server_side_excludes = 44;
+
+  // SSL/TLS mode: "off", "flexible", "full", "strict", or "origin_pull".
+  string ssl = 45 [(buf.validate.field).cel = {
+    id: "action_parameters_ssl.valid"
+    message: "ssl must be one of \"off\", \"flexible\", \"full\", \"strict\", \"origin_pull\""
+    expression: "this == '' || this in ['off', 'flexible', 'full', 'strict', 'origin_pull']"
+  }];
+
+  // Enable Signed Exchanges (SXG).
+  optional bool sxg = 46;
+
+  // ---- Advanced cache (action: set_cache_settings) ----
+
+  // Additional origin ports that are eligible for caching.
+  repeated int64 additional_cacheable_ports = 47;
+
+  // Custom cache key configuration (what request attributes form the cache key).
+  CloudflareRulesetCacheKey cache_key = 48;
+
+  // Cache Reserve configuration (persist eligible objects to Cache Reserve).
+  CloudflareRulesetCacheReserve cache_reserve = 49;
+
+  // Honor origin Cache-Control headers.
+  optional bool origin_cache_control = 50;
+
+  // Pass through origin error pages instead of Cloudflare's.
+  optional bool origin_error_page_passthru = 51;
+
+  // Origin response timeout in seconds (Enterprise).
+  int64 read_timeout = 52;
+
+  // Respect strong ETags from the origin.
+  optional bool respect_strong_etags = 53;
+
+  // Vary-based caching (cache variants keyed on response headers).
+  CloudflareRulesetVary vary = 54;
+
+  // Strip ETag headers from the response.
+  optional bool strip_etags = 55;
+
+  // Strip Last-Modified headers from the response.
+  optional bool strip_last_modified = 56;
+
+  // Strip Set-Cookie headers from the cached response.
+  optional bool strip_set_cookie = 57;
+
+  // ---- Log custom fields (action: log_custom_field, phase http_log_custom_fields) ----
+
+  // Cookie fields to add to logs.
+  repeated CloudflareRulesetLogField cookie_fields = 58;
+
+  // Raw (unmodified) response header fields to add to logs.
+  repeated CloudflareRulesetLogResponseField raw_response_fields = 59;
+
+  // Request header fields to add to logs.
+  repeated CloudflareRulesetLogField request_fields = 60;
+
+  // Response header fields to add to logs.
+  repeated CloudflareRulesetLogResponseField response_fields = 61;
+
+  // Transformed request header fields to add to logs.
+  repeated CloudflareRulesetLogField transformed_request_fields = 62;
+
+  // ---- Set Cache-Control directives (action: set_cache_control) ----
+
+  // Cache-Control max-age directive.
+  CloudflareRulesetCacheControlValue max_age = 63;
+
+  // Cache-Control s-maxage directive.
+  CloudflareRulesetCacheControlValue s_maxage = 64;
+
+  // Cache-Control stale-while-revalidate directive.
+  CloudflareRulesetCacheControlValue stale_while_revalidate = 65;
+
+  // Cache-Control stale-if-error directive.
+  CloudflareRulesetCacheControlValue stale_if_error = 66;
+
+  // Cache-Control private directive (with optional field qualifiers).
+  CloudflareRulesetCacheControlQualifiers private = 67;
+
+  // Cache-Control no-cache directive (with optional field qualifiers).
+  CloudflareRulesetCacheControlQualifiers no_cache = 68;
+
+  // Cache-Control must-revalidate directive.
+  CloudflareRulesetCacheControlFlag must_revalidate = 69;
+
+  // Cache-Control proxy-revalidate directive.
+  CloudflareRulesetCacheControlFlag proxy_revalidate = 70;
+
+  // Cache-Control must-understand directive.
+  CloudflareRulesetCacheControlFlag must_understand = 71;
+
+  // Cache-Control no-transform directive.
+  CloudflareRulesetCacheControlFlag no_transform = 72;
+
+  // Cache-Control immutable directive.
+  CloudflareRulesetCacheControlFlag immutable = 73;
+
+  // Cache-Control no-store directive.
+  CloudflareRulesetCacheControlFlag no_store = 74;
+
+  // Cache-Control public directive.
+  CloudflareRulesetCacheControlFlag public = 75;
+
+  // ---- Set cache tags (action: set_cache_tags) ----
+
+  // Operation on the cache tags: "set", "add", or "remove".
+  string operation = 76 [(buf.validate.field).cel = {
+    id: "action_parameters_operation.valid"
+    message: "operation must be one of \"set\", \"add\", \"remove\""
+    expression: "this == '' || this in ['set', 'add', 'remove']"
+  }];
+
+  // Cache tag values to apply.
+  repeated string values = 77;
+
+  // Expression that evaluates to additional cache tags.
+  string expression = 78;
 }
 
 // CloudflareRulesetOrigin identifies the origin server to route traffic to.
@@ -321,7 +634,11 @@ message CloudflareRulesetUriComponent {
 // CloudflareRulesetHeader defines a modification to an HTTP header.
 message CloudflareRulesetHeader {
   // The operation to perform: "set", "add", or "remove".
-  string operation = 1;
+  string operation = 1 [(buf.validate.field).cel = {
+    id: "header_operation.valid"
+    message: "operation must be one of \"set\", \"add\", \"remove\""
+    expression: "this == '' || this in ['set', 'add', 'remove']"
+  }];
 
   // Static value for the header (used with "set" and "add" operations).
   string value = 2;
@@ -330,7 +647,7 @@ message CloudflareRulesetHeader {
   string expression = 3;
 }
 
-// CloudflareRulesetFromValue configures a redirect action.
+// CloudflareRulesetFromValue configures a redirect action with an inline target.
 message CloudflareRulesetFromValue {
   // The target URL to redirect to.
   CloudflareRulesetTargetUrl target_url = 1;
@@ -352,6 +669,49 @@ message CloudflareRulesetTargetUrl {
   string expression = 2;
 }
 
+// CloudflareRulesetFromList configures a redirect that resolves the target from a
+// Bulk Redirect list.
+message CloudflareRulesetFromList {
+  // The Bulk Redirect list to match against, identified by name. Accepts a
+  // literal list name or a reference to a CloudflareList resource (defaulting to
+  // that list's name output), so a redirect ruleset composes with the list that
+  // backs it. Cloudflare resolves the list by name, so the referenced output is
+  // the list's name (not its id).
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef name = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = CloudflareList,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
+
+  // Expression that produces the lookup key into the list (e.g.
+  // "http.request.full_uri").
+  string key = 2 [(buf.validate.field).string.min_len = 1];
+}
+
+// CloudflareRulesetAlgorithm names a single compression algorithm.
+message CloudflareRulesetAlgorithm {
+  // Algorithm name: "none", "auto", "default", "gzip", "brotli", or "zstd".
+  string name = 1 [(buf.validate.field).string.min_len = 1];
+}
+
+// CloudflareRulesetMatchedData carries the public key used to encrypt logged matched data.
+message CloudflareRulesetMatchedData {
+  // Base64-encoded public key for encrypting matched sensitive data.
+  string public_key = 1 [(buf.validate.field).string.min_len = 1];
+}
+
+// CloudflareRulesetAutominify configures HTML/CSS/JS auto-minification (set_config).
+message CloudflareRulesetAutominify {
+  // Minify CSS.
+  optional bool css = 1;
+
+  // Minify HTML.
+  optional bool html = 2;
+
+  // Minify JavaScript.
+  optional bool js = 3;
+}
+
 // CloudflareRulesetOverrides configures overrides when executing a managed ruleset.
 message CloudflareRulesetOverrides {
   // Default action to apply to all rules in the managed ruleset.
@@ -366,14 +726,18 @@ message CloudflareRulesetOverrides {
   // Individual rule-level overrides.
   repeated CloudflareRulesetRuleOverride rules = 4;
 
-  // Sensitivity level for all rules (e.g., "default", "medium", "low", "eoff").
-  string sensitivity_level = 5;
+  // Sensitivity level for all rules: "default", "medium", "low", or "eoff".
+  string sensitivity_level = 5 [(buf.validate.field).cel = {
+    id: "overrides_sensitivity_level.valid"
+    message: "sensitivity_level must be one of \"default\", \"medium\", \"low\", \"eoff\""
+    expression: "this == '' || this in ['default', 'medium', 'low', 'eoff']"
+  }];
 }
 
 // CloudflareRulesetCategoryOverride overrides settings for a rule category in a managed ruleset.
 message CloudflareRulesetCategoryOverride {
   // The category name (e.g., "wordpress", "xss", "sqli").
-  string category = 1;
+  string category = 1 [(buf.validate.field).string.min_len = 1];
 
   // Action to apply to rules in this category.
   string action = 2;
@@ -381,14 +745,18 @@ message CloudflareRulesetCategoryOverride {
   // Whether rules in this category are enabled.
   bool enabled = 3;
 
-  // Sensitivity level for this category.
-  string sensitivity_level = 4;
+  // Sensitivity level for this category: "default", "medium", "low", or "eoff".
+  string sensitivity_level = 4 [(buf.validate.field).cel = {
+    id: "category_override_sensitivity_level.valid"
+    message: "sensitivity_level must be one of \"default\", \"medium\", \"low\", \"eoff\""
+    expression: "this == '' || this in ['default', 'medium', 'low', 'eoff']"
+  }];
 }
 
 // CloudflareRulesetRuleOverride overrides settings for a specific rule in a managed ruleset.
 message CloudflareRulesetRuleOverride {
   // The rule ID within the managed ruleset.
-  string id = 1;
+  string id = 1 [(buf.validate.field).string.min_len = 1];
 
   // Action to apply for this rule.
   string action = 2;
@@ -399,14 +767,22 @@ message CloudflareRulesetRuleOverride {
   // Score threshold for this rule.
   int32 score_threshold = 4;
 
-  // Sensitivity level for this rule.
-  string sensitivity_level = 5;
+  // Sensitivity level for this rule: "default", "medium", "low", or "eoff".
+  string sensitivity_level = 5 [(buf.validate.field).cel = {
+    id: "rule_override_sensitivity_level.valid"
+    message: "sensitivity_level must be one of \"default\", \"medium\", \"low\", \"eoff\""
+    expression: "this == '' || this in ['default', 'medium', 'low', 'eoff']"
+  }];
 }
 
 // CloudflareRulesetEdgeTtl configures how long Cloudflare caches responses at the edge.
 message CloudflareRulesetEdgeTtl {
-  // TTL mode: "override_origin" ignores origin Cache-Control, "respect_origin" honors it.
-  string mode = 1;
+  // TTL mode: "respect_origin", "override_origin", or "bypass_by_default".
+  string mode = 1 [(buf.validate.field).cel = {
+    id: "edge_ttl_mode.valid"
+    message: "mode must be one of \"respect_origin\", \"override_origin\", \"bypass_by_default\""
+    expression: "this == '' || this in ['respect_origin', 'override_origin', 'bypass_by_default']"
+  }];
 
   // Default TTL in seconds when mode is "override_origin".
   int32 default_ttl = 2;
@@ -438,8 +814,12 @@ message CloudflareRulesetStatusCodeRange {
 
 // CloudflareRulesetBrowserTtl configures the Cache-Control max-age sent to clients.
 message CloudflareRulesetBrowserTtl {
-  // TTL mode: "override_origin" ignores origin Cache-Control, "respect_origin" honors it.
-  string mode = 1;
+  // TTL mode: "respect_origin", "override_origin", "bypass_by_default", or "bypass".
+  string mode = 1 [(buf.validate.field).cel = {
+    id: "browser_ttl_mode.valid"
+    message: "mode must be one of \"respect_origin\", \"override_origin\", \"bypass_by_default\", \"bypass\""
+    expression: "this == '' || this in ['respect_origin', 'override_origin', 'bypass_by_default', 'bypass']"
+  }];
 
   // Default TTL in seconds when mode is "override_origin".
   int32 default_ttl = 2;
@@ -449,4 +829,203 @@ message CloudflareRulesetBrowserTtl {
 message CloudflareRulesetServeStale {
   // When true, Cloudflare will not serve stale content while revalidating.
   bool disable_stale_while_updating = 1;
+}
+
+// CloudflareRulesetCacheKey customizes which request attributes form the cache key.
+message CloudflareRulesetCacheKey {
+  // Include the device type (mobile/tablet/desktop) in the cache key.
+  optional bool cache_by_device_type = 1;
+
+  // Protect against cache deception attacks.
+  optional bool cache_deception_armor = 2;
+
+  // Fine-grained custom cache key components.
+  CloudflareRulesetCacheKeyCustomKey custom_key = 3;
+
+  // Treat query string parameters as unordered when forming the cache key.
+  optional bool ignore_query_strings_order = 4;
+}
+
+// CloudflareRulesetCacheKeyCustomKey configures the components of a custom cache key.
+message CloudflareRulesetCacheKeyCustomKey {
+  // Cookie-based cache key components.
+  CloudflareRulesetCacheKeyCookie cookie = 1;
+
+  // Header-based cache key components.
+  CloudflareRulesetCacheKeyHeader header = 2;
+
+  // Host-based cache key components.
+  CloudflareRulesetCacheKeyHost host = 3;
+
+  // Query-string-based cache key components.
+  CloudflareRulesetCacheKeyQueryString query_string = 4;
+
+  // User-attribute-based cache key components.
+  CloudflareRulesetCacheKeyUser user = 5;
+}
+
+// CloudflareRulesetCacheKeyCookie selects cookies that contribute to the cache key.
+message CloudflareRulesetCacheKeyCookie {
+  // Cookies whose presence (not value) is included in the cache key.
+  repeated string check_presence = 1;
+
+  // Cookies whose name and value are included in the cache key.
+  repeated string include = 2;
+}
+
+// CloudflareRulesetCacheKeyHeader selects headers that contribute to the cache key.
+message CloudflareRulesetCacheKeyHeader {
+  // Headers whose presence (not value) is included in the cache key.
+  repeated string check_presence = 1;
+
+  // For each header name, only include the request when its value contains one of the
+  // listed substrings.
+  map<string, CloudflareRulesetStringList> contains = 2;
+
+  // Exclude the Origin header from the cache key.
+  optional bool exclude_origin = 3;
+
+  // Headers whose name and value are included in the cache key.
+  repeated string include = 4;
+}
+
+// CloudflareRulesetStringList wraps a repeated string for use as a map value.
+message CloudflareRulesetStringList {
+  // The list of string values.
+  repeated string values = 1;
+}
+
+// CloudflareRulesetCacheKeyHost configures host-based cache key components.
+message CloudflareRulesetCacheKeyHost {
+  // Use the resolved (origin) host rather than the request host.
+  optional bool resolved = 1;
+}
+
+// CloudflareRulesetCacheKeyQueryString configures query-string cache key components.
+message CloudflareRulesetCacheKeyQueryString {
+  // Query parameters to include in the cache key.
+  CloudflareRulesetCacheKeyQueryStringFilter include = 1;
+
+  // Query parameters to exclude from the cache key.
+  CloudflareRulesetCacheKeyQueryStringFilter exclude = 2;
+}
+
+// CloudflareRulesetCacheKeyQueryStringFilter selects query parameters by list or all.
+message CloudflareRulesetCacheKeyQueryStringFilter {
+  // Specific query parameter names. Used when "all" is false.
+  repeated string list = 1;
+
+  // Apply to all query parameters.
+  optional bool all = 2;
+}
+
+// CloudflareRulesetCacheKeyUser configures user-attribute cache key components.
+message CloudflareRulesetCacheKeyUser {
+  // Include the user's device type.
+  optional bool device_type = 1;
+
+  // Include the user's country/region (geo).
+  optional bool geo = 2;
+
+  // Include the user's language.
+  optional bool lang = 3;
+}
+
+// CloudflareRulesetCacheReserve configures Cache Reserve persistence.
+message CloudflareRulesetCacheReserve {
+  // Whether matching objects are eligible for Cache Reserve.
+  bool eligible = 1;
+
+  // Minimum object size in bytes to be stored in Cache Reserve.
+  int64 minimum_file_size = 2;
+}
+
+// CloudflareRulesetVary configures variant caching keyed on response headers.
+message CloudflareRulesetVary {
+  // Default vary behavior.
+  CloudflareRulesetVaryDefault default = 1;
+
+  // Per-header vary configuration. Key is the header name.
+  map<string, CloudflareRulesetVaryHeader> headers = 2;
+}
+
+// CloudflareRulesetVaryDefault is the default vary action.
+message CloudflareRulesetVaryDefault {
+  // The default vary action.
+  string action = 1 [(buf.validate.field).string.min_len = 1];
+}
+
+// CloudflareRulesetVaryHeader configures vary for a single response header.
+message CloudflareRulesetVaryHeader {
+  // The vary action for this header.
+  string action = 1 [(buf.validate.field).string.min_len = 1];
+
+  // Media types this header variant applies to.
+  repeated string media_types = 2;
+
+  // Languages this header variant applies to.
+  repeated string languages = 3;
+}
+
+// CloudflareRulesetLogField names a field to add to custom logs.
+message CloudflareRulesetLogField {
+  // The field name.
+  string name = 1 [(buf.validate.field).string.min_len = 1];
+}
+
+// CloudflareRulesetLogResponseField names a response field to add to custom logs.
+message CloudflareRulesetLogResponseField {
+  // The field name.
+  string name = 1 [(buf.validate.field).string.min_len = 1];
+
+  // Whether to preserve duplicate occurrences of the field.
+  bool preserve_duplicates = 2;
+}
+
+// CloudflareRulesetCacheControlValue is a Cache-Control directive that carries a numeric
+// value (e.g. max-age, s-maxage, stale-while-revalidate, stale-if-error).
+message CloudflareRulesetCacheControlValue {
+  // The operation: "set" or "remove".
+  string operation = 1 [(buf.validate.field).cel = {
+    id: "cache_control_value_operation.valid"
+    message: "operation must be one of \"set\", \"remove\""
+    expression: "this == '' || this in ['set', 'remove']"
+  }];
+
+  // The numeric value in seconds (used with "set").
+  int64 value = 2;
+
+  // Apply the directive only to Cloudflare's cache, not the client.
+  bool cloudflare_only = 3;
+}
+
+// CloudflareRulesetCacheControlQualifiers is a Cache-Control directive that carries an
+// optional list of field qualifiers (e.g. private, no-cache).
+message CloudflareRulesetCacheControlQualifiers {
+  // The operation: "set" or "remove".
+  string operation = 1 [(buf.validate.field).cel = {
+    id: "cache_control_qualifiers_operation.valid"
+    message: "operation must be one of \"set\", \"remove\""
+    expression: "this == '' || this in ['set', 'remove']"
+  }];
+
+  // Optional header field names the directive applies to.
+  repeated string qualifiers = 2;
+
+  // Apply the directive only to Cloudflare's cache, not the client.
+  bool cloudflare_only = 3;
+}
+
+// CloudflareRulesetCacheControlFlag is a boolean Cache-Control directive (e.g.
+// must-revalidate, immutable, no-store, public).
+message CloudflareRulesetCacheControlFlag {
+  // The operation: "set" or "remove".
+  string operation = 1 [(buf.validate.field).cel = {
+    id: "cache_control_flag_operation.valid"
+    message: "operation must be one of \"set\", \"remove\""
+    expression: "this == '' || this in ['set', 'remove']"
+  }];
+
+  // Apply the directive only to Cloudflare's cache, not the client.
+  bool cloudflare_only = 2;
 }

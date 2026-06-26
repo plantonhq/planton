@@ -7,7 +7,7 @@ spec:
     value: <cloudflare-zone-id>
   name: "@"
   type: MX
-  value: <mail-server-hostname>
+  content: <mail-server-hostname>
   priority: 10
   proxied: false
   ttl: 3600

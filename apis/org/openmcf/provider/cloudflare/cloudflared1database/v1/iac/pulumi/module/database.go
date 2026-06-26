@@ -28,10 +28,15 @@ func database(
 		}
 	}
 
-	// 3. Add optional read replication configuration if specified.
+	// 3. Add optional data-residency jurisdiction (mutually exclusive with region).
+	if locals.CloudflareD1Database.Spec.Jurisdiction != "" {
+		d1Args.Jurisdiction = pulumi.String(locals.CloudflareD1Database.Spec.Jurisdiction)
+	}
+
+	// 4. Add optional read replication configuration if specified.
 	if locals.CloudflareD1Database.Spec.ReadReplication != nil {
 		d1Args.ReadReplication = &cloudflare.D1DatabaseReadReplicationArgs{
-			Mode: pulumi.String(locals.CloudflareD1Database.Spec.ReadReplication.Mode),
+			Mode: pulumi.String(locals.CloudflareD1Database.Spec.ReadReplication.Mode.String()),
 		}
 	}
 
@@ -46,13 +51,10 @@ func database(
 		return nil, errors.Wrap(err, "failed to create cloudflare d1 database")
 	}
 
-	// 5.  Export stack outputs.
+	// 5.  Export stack outputs. A Worker reaches D1 through its binding, so there
+	// is no connection string to export (none exists on the v5 resource).
 	ctx.Export(OpDatabaseId, createdD1Database.ID())
 	ctx.Export(OpDatabaseName, createdD1Database.Name)
-
-	// NOTE: Pulumi's Cloudflare provider (v6.4.1) does not yet expose a connection
-	// string for D1. We export an empty value to satisfy the OpenMCF schema.
-	ctx.Export(OpConnectionString, pulumi.String(""))
 
 	return createdD1Database, nil
 }

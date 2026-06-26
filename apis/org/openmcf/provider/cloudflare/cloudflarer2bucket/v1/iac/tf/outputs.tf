@@ -4,11 +4,16 @@ output "bucket_name" {
 }
 
 output "bucket_url" {
-  description = "The path-style S3 API URL for the bucket"
+  description = "The S3-compatible API URL for the bucket"
   value       = local.bucket_url
 }
 
-output "custom_domain_url" {
-  description = "The custom domain URL if configured (e.g., https://media.example.com)"
-  value       = local.custom_domain_enabled ? "https://${local.custom_domain_name}" : null
+output "custom_domain_urls" {
+  description = "URLs of the configured custom domains (one per enabled custom domain)"
+  value       = [for domain, cd in cloudflare_r2_custom_domain.main : "https://${cd.domain}"]
+}
+
+output "public_url" {
+  description = "The Cloudflare-managed r2.dev public URL, when public access is enabled"
+  value       = local.public_access ? "https://${cloudflare_r2_managed_domain.main[0].domain}" : ""
 }

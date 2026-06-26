@@ -4,45 +4,776 @@ package org.openmcf.provider.cloudflare.cloudflarezerotrustaccessapplication.v1;
 
 import "buf/validate/validate.proto";
 import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
 
-/**
- * **CloudflareZeroTrustAccessApplicationSpec** defines the configuration for a Cloudflare Zero Trust Access Application.
- * This resource configures a Zero Trust access policy for a specific hostname within a Cloudflare DNS zone.
- * It includes settings for who can access the application and how (e.g., allowed emails, MFA requirements).
- */
+// CloudflareZeroTrustAccessApplicationSpec defines a Cloudflare Zero Trust Access
+// application: the protected resource (a self-hosted web app, a SaaS app, an SSH
+// /VNC/RDP target, an app launcher, a warp/biso/bookmark entry, an
+// infrastructure target, or an MCP endpoint) that Cloudflare Access guards. The
+// application binds one or more standalone Access policies (referenced by ID) to
+// the resource and configures how users reach and authenticate to it.
+//
+// An application is account-scoped or zone-scoped (exactly one of account_id or
+// zone_id). Account scope is the common case and lets the app reuse account-level
+// policies and groups.
 message CloudflareZeroTrustAccessApplicationSpec {
-  // The display name of the Zero Trust Access Application.
-  string application_name = 1 [(buf.validate.field).string.min_len = 1];
+  // Exactly one of account_id or zone_id must be set: an application lives either
+  // at the account level (the common case) or scoped to a single zone.
+  option (buf.validate.message).cel = {
+    id: "spec.account_xor_zone"
+    message: "set exactly one of account_id or zone_id"
+    expression: "(this.account_id != '') != has(this.zone_id)"
+  };
 
-  // The Cloudflare DNS zone ID (from a CloudflareDnsZone resource) for the domain.
-  // Can be a literal value or referenced from a CloudflareDnsZone resource.
+  // A domain is required for the resource-backed application types (self_hosted,
+  // ssh, vnc, rdp); other types (app_launcher, saas, warp, infrastructure, ...)
+  // do not use a single domain.
+  option (buf.validate.message).cel = {
+    id: "spec.domain_required_for_self_hosted"
+    message: "domain is required for self_hosted, ssh, vnc, and rdp application types"
+    expression: "!(this.type in [1, 3, 4, 11]) || this.domain != ''"
+  };
+
+  // The Cloudflare account ID that owns this application. Set this for an
+  // account-scoped application. Mutually exclusive with zone_id.
+  string account_id = 1 [(buf.validate.field).cel = {
+    id: "account_id.hex32"
+    message: "account_id must be a 32-character hex string"
+    expression: "this == '' || this.matches('^[0-9a-fA-F]{32}$')"
+  }];
+
+  // The Cloudflare zone this application is scoped to, as a literal zone ID or a
+  // reference to a CloudflareDnsZone. Mutually exclusive with account_id.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef zone_id = 2 [
-    (buf.validate.field).required = true,
     (org.openmcf.shared.foreignkey.v1.default_kind) = CloudflareDnsZone,
     (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
   ];
 
-  // The fully qualified domain name to protect (e.g., "app.example.com").
-  string hostname = 3 [(buf.validate.field).required = true];
+  // The display name of the Access application.
+  string name = 3 [(buf.validate.field).string.min_len = 1];
 
-  // The type of access policy for this application (ALLOW or BLOCK). Defaults to ALLOW if unspecified.
-  CloudflareZeroTrustPolicyType policy_type = 4;
+  // The application type, which determines which other fields apply. Defaults to
+  // self_hosted.
+  CloudflareZeroTrustAccessApplicationType type = 4 [(buf.validate.field).enum.defined_only = true];
 
-  // A list of email addresses that are allowed access (applicable only when policy_type = ALLOW).
-  repeated string allowed_emails = 5;
+  // The primary fully-qualified domain protected by this application (e.g.
+  // "app.example.com"). Required for self_hosted/ssh/vnc/rdp; ignored for types
+  // that don't front a single hostname.
+  string domain = 5;
 
-  // The duration of each authenticated session, in minutes (default: 1440 minutes, i.e., 24 hours).
-  int32 session_duration_minutes = 6;
+  // The policies that govern this application, in evaluation order. Each entry
+  // references a standalone CloudflareZeroTrustAccessPolicy by ID; precedence
+  // (lower first) breaks ties, otherwise list order applies.
+  repeated CloudflareZeroTrustAccessApplicationPolicyRef policies = 6;
 
-  // Whether multi-factor authentication (MFA) is required for access.
-  bool require_mfa = 7;
+  // Additional destinations this application serves beyond `domain` (public URLs
+  // and private network targets). The modern replacement for self-hosted domain
+  // lists; applies to self_hosted/ssh/vnc/rdp/mcp(_portal).
+  repeated CloudflareZeroTrustAccessApplicationDestination destinations = 7;
 
-  // A list of allowed Google Workspace group email addresses (optional).
-  repeated string allowed_google_groups = 8;
+  // Identity providers allowed to authenticate to this application, by IdP ID
+  // (literal or reference to another resource's output). Empty allows all
+  // configured IdPs.
+  repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef allowed_idps = 8;
+
+  // Automatically redirect the user to the identity provider when only one is
+  // configured, skipping the IdP chooser. Defaults to false.
+  bool auto_redirect_to_identity = 9;
+
+  // How long a user session is valid before re-authentication, as a duration
+  // string (e.g. "24h"). Empty uses the account default.
+  string session_duration = 10;
+
+  // Free-form tags used to organize applications in the Access dashboard.
+  repeated string tags = 11;
+
+  // Names of custom Access pages (block / identity-denied) to render for this
+  // application.
+  repeated string custom_pages = 12;
+
+  // Whether the application appears in the Access app launcher. Applies to
+  // self_hosted/ssh/vnc/rdp/saas/bookmark. Omit to use the provider default.
+  optional bool app_launcher_visible = 13;
+
+  // For app_launcher applications, skip the app-launcher login page. Defaults to
+  // false.
+  bool skip_app_launcher_login_page = 14;
+
+  // App-launcher logo URL (app_launcher type only).
+  string app_launcher_logo_url = 15;
+
+  // App-launcher background color (app_launcher type only).
+  string bg_color = 16;
+
+  // App-launcher header background color (app_launcher type only).
+  string header_bg_color = 17;
+
+  // Logo URL shown on the Access login page.
+  string logo_url = 18;
+
+  // Visual design of the app-launcher landing page (app_launcher type only).
+  CloudflareZeroTrustAccessApplicationLandingPageDesign landing_page_design = 19;
+
+  // Footer links shown on the app-launcher page (app_launcher type only).
+  repeated CloudflareZeroTrustAccessApplicationFooterLink footer_links = 20;
+
+  // Allow users to authenticate to this application from the WARP client.
+  // Applies to self_hosted/ssh/vnc/rdp/saas/dash_sso.
+  bool allow_authenticate_via_warp = 21;
+
+  // Allow this application to be rendered inside an iframe. Applies to
+  // self_hosted/ssh/vnc/rdp/mcp_portal.
+  bool allow_iframe = 22;
+
+  // Bypass Access for CORS preflight (OPTIONS) requests. Cannot be combined with
+  // cors_headers. Self-hosted types.
+  bool options_preflight_bypass = 23;
+
+  // Read the Access service-token from this request header instead of the default.
+  // Self-hosted types.
+  string read_service_tokens_from_header = 24 [(org.openmcf.shared.options.sensitive_exempt_reason) = "the NAME of the header to read the service token from, not a secret value"];
+
+  // SameSite attribute for the Access cookie ("lax", "strict", or "none"). Empty
+  // uses the Cloudflare default. Self-hosted types.
+  string same_site_cookie_attribute = 25 [(buf.validate.field).cel = {
+    id: "same_site_cookie_attribute.valid"
+    message: "same_site_cookie_attribute must be \"lax\", \"strict\", or \"none\""
+    expression: "this == '' || this in ['lax', 'strict', 'none']"
+  }];
+
+  // Return a 401 instead of redirecting to login when a service-auth request is
+  // unauthenticated. Self-hosted types.
+  bool service_auth_401_redirect = 26;
+
+  // Skip the Access interstitial confirmation page (e.g. for SSH). Self-hosted
+  // types.
+  bool skip_interstitial = 27;
+
+  // Bind the Access cookie to the user's device. Self-hosted types.
+  bool enable_binding_cookie = 28;
+
+  // Add the HttpOnly flag to the Access cookie. Self-hosted types. Omit to use the
+  // provider default.
+  optional bool http_only_cookie_attribute = 29;
+
+  // Scope the Access cookie to the application path. Self-hosted types.
+  bool path_cookie_attribute = 30;
+
+  // Custom message shown to users who are denied access.
+  string custom_deny_message = 31;
+
+  // URL to redirect denied users to (instead of the default block page).
+  string custom_deny_url = 32;
+
+  // URL to redirect denied non-identity (service-token) requests to.
+  string custom_non_identity_deny_url = 33;
+
+  // Cross-origin resource sharing (CORS) settings for the application. Self-hosted
+  // types. Mutually exclusive with options_preflight_bypass.
+  CloudflareZeroTrustAccessApplicationCorsHeaders cors_headers = 34;
+
+  // Application-level multi-factor requirements (self_hosted/ssh/vnc/rdp).
+  CloudflareZeroTrustAccessApplicationMfaConfig mfa_config = 35;
+
+  // OAuth/MCP authorization-server settings (for MCP applications acting as an
+  // OAuth provider).
+  CloudflareZeroTrustAccessApplicationOauthConfiguration oauth_configuration = 36;
+
+  // Target selection criteria for rdp/infrastructure applications (which targets,
+  // ports, and attributes this application brokers).
+  repeated CloudflareZeroTrustAccessApplicationTargetCriteria target_criteria = 37;
+
+  // SaaS application settings (SAML or OIDC). Required when type is saas or
+  // dash_sso; ignored otherwise.
+  CloudflareZeroTrustAccessSaasApp saas_app = 38;
+
+  // SCIM provisioning settings (push users/groups from an IdP to the application).
+  CloudflareZeroTrustAccessScimConfig scim_config = 39;
 }
 
-/** Types of access policies for Cloudflare Zero Trust Access Applications. */
-enum CloudflareZeroTrustPolicyType {
-  ALLOW = 0;
-  BLOCK = 1;
+// Cloudflare Zero Trust Access application types.
+enum CloudflareZeroTrustAccessApplicationType {
+  // Unspecified — treated as self_hosted.
+  application_type_unspecified = 0;
+  // A self-hosted web application fronted by Cloudflare.
+  self_hosted = 1;
+  // A SaaS application Cloudflare federates into (SAML/OIDC).
+  saas = 2;
+  // An SSH target brokered through Access.
+  ssh = 3;
+  // A VNC target brokered through Access.
+  vnc = 4;
+  // An Access app launcher.
+  app_launcher = 5;
+  // A WARP enrollment application.
+  warp = 6;
+  // A browser-isolation (BISO) application.
+  biso = 7;
+  // A bookmark tile in the app launcher.
+  bookmark = 8;
+  // The Cloudflare dashboard SSO application.
+  dash_sso = 9;
+  // An infrastructure (targets) application.
+  infrastructure = 10;
+  // An RDP target brokered through Access.
+  rdp = 11;
+  // A Model Context Protocol (MCP) application.
+  mcp = 12;
+  // An MCP portal application.
+  mcp_portal = 13;
+  // A proxy-endpoint application.
+  proxy_endpoint = 14;
+}
+
+// OIDC scopes a SaaS application can request or attach claims to. Top-level so its
+// provider-exact value names (openid/groups/email/profile) don't collide with the
+// SaaS NameID format enum.
+enum CloudflareZeroTrustAccessSaasScope {
+  // Unspecified (invalid).
+  scope_unspecified = 0;
+  openid = 1;
+  groups = 2;
+  email = 3;
+  profile = 4;
+}
+
+// CloudflareZeroTrustAccessApplicationPolicyRef attaches a standalone policy to
+// the application with an evaluation precedence.
+message CloudflareZeroTrustAccessApplicationPolicyRef {
+  // The policy to attach, as a literal policy ID or a reference to a
+  // CloudflareZeroTrustAccessPolicy.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef policy = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = CloudflareZeroTrustAccessPolicy,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.policy_id"
+  ];
+
+  // Evaluation order (lower is evaluated first). Leave 0 to use list order.
+  uint32 precedence = 2;
+}
+
+// CloudflareZeroTrustAccessApplicationDestination is a public or private target
+// served by the application.
+message CloudflareZeroTrustAccessApplicationDestination {
+  // Destination kind: "public" (a public URI) or "private" (a network target
+  // reachable over a Cloudflare Tunnel virtual network). Empty defaults to public.
+  string type = 1 [(buf.validate.field).cel = {
+    id: "destination.type_valid"
+    message: "destination type must be \"public\", \"private\", or \"via_mcp_server_portal\""
+    expression: "this == '' || this in ['public', 'private', 'via_mcp_server_portal']"
+  }];
+
+  // For public destinations: the URI (e.g. "https://app.example.com").
+  string uri = 2;
+
+  // For private destinations: the CIDR the target falls within.
+  string cidr = 3;
+
+  // For private destinations: the target hostname.
+  string hostname = 4;
+
+  // For private destinations: the layer-4 protocol ("tcp" or "udp").
+  string l4_protocol = 5 [(buf.validate.field).cel = {
+    id: "destination.l4_protocol_valid"
+    message: "l4_protocol must be \"tcp\" or \"udp\""
+    expression: "this == '' || this in ['tcp', 'udp']"
+  }];
+
+  // For private destinations: the port range (e.g. "8080" or "8080-8090").
+  string port_range = 6;
+
+  // For private destinations: the Cloudflare Tunnel virtual-network ID.
+  string vnet_id = 7;
+
+  // For via_mcp_server_portal destinations: the MCP server ID.
+  string mcp_server_id = 8;
+}
+
+// CloudflareZeroTrustAccessApplicationLandingPageDesign styles the app-launcher
+// landing page.
+message CloudflareZeroTrustAccessApplicationLandingPageDesign {
+  // Title text.
+  string title = 1;
+
+  // Body message.
+  string message = 2;
+
+  // Hero image URL.
+  string image_url = 3;
+
+  // Primary button background color.
+  string button_color = 4;
+
+  // Primary button text color.
+  string button_text_color = 5;
+}
+
+// CloudflareZeroTrustAccessApplicationFooterLink is a labeled link on the
+// app-launcher footer.
+message CloudflareZeroTrustAccessApplicationFooterLink {
+  // The link label.
+  string name = 1 [(buf.validate.field).required = true];
+
+  // The link URL.
+  string url = 2 [(buf.validate.field).required = true];
+}
+
+// CloudflareZeroTrustAccessApplicationCorsHeaders configures CORS for the app.
+message CloudflareZeroTrustAccessApplicationCorsHeaders {
+  // HTTP methods Cloudflare permits cross-origin. Empty with allow_all_methods
+  // permits all.
+  enum Method {
+    // Unspecified (invalid).
+    method_unspecified = 0;
+    GET = 1;
+    POST = 2;
+    HEAD = 3;
+    PUT = 4;
+    DELETE = 5;
+    CONNECT = 6;
+    OPTIONS = 7;
+    TRACE = 8;
+    PATCH = 9;
+  }
+
+  // Allow all request headers cross-origin (mutually exclusive with
+  // allowed_headers).
+  bool allow_all_headers = 1;
+
+  // Allow all methods cross-origin (mutually exclusive with allowed_methods).
+  bool allow_all_methods = 2;
+
+  // Allow all origins cross-origin (mutually exclusive with allowed_origins).
+  bool allow_all_origins = 3;
+
+  // Allow credentials (cookies/authorization) on cross-origin requests. Cannot be
+  // combined with allow_all_origins.
+  bool allow_credentials = 4;
+
+  // Explicit list of allowed request headers.
+  repeated string allowed_headers = 5;
+
+  // Explicit list of allowed methods.
+  repeated Method allowed_methods = 6 [(buf.validate.field).repeated.items.enum.defined_only = true];
+
+  // Explicit list of allowed origins.
+  repeated string allowed_origins = 7;
+
+  // Preflight cache lifetime in seconds (-1 to 86400).
+  int32 max_age = 8 [(buf.validate.field).cel = {
+    id: "cors.max_age_range"
+    message: "max_age must be between -1 and 86400"
+    expression: "this >= -1 && this <= 86400"
+  }];
+}
+
+// CloudflareZeroTrustAccessApplicationMfaConfig adds application-level MFA.
+message CloudflareZeroTrustAccessApplicationMfaConfig {
+  // Allowed multi-factor authenticators.
+  enum Authenticator {
+    // Unspecified (invalid).
+    authenticator_unspecified = 0;
+    // Time-based one-time password.
+    totp = 1;
+    // Platform biometrics.
+    biometrics = 2;
+    // Hardware/passkey security key.
+    security_key = 3;
+  }
+
+  // The set of authenticators a user may use to satisfy MFA.
+  repeated Authenticator allowed_authenticators = 1 [
+    (buf.validate.field).repeated.items.enum.defined_only = true,
+    (buf.validate.field).cel = {
+      id: "app_mfa.authenticators_not_unspecified"
+      message: "allowed_authenticators must be totp, biometrics, or security_key"
+      expression: "this.all(a, a != 0)"
+    }
+  ];
+
+  // Disable MFA enforcement (overrides allowed_authenticators).
+  bool mfa_disabled = 2;
+
+  // Re-prompt for MFA after this duration (e.g. "8h").
+  string session_duration = 3;
+}
+
+// CloudflareZeroTrustAccessApplicationOauthConfiguration configures an MCP
+// application acting as an OAuth authorization server.
+message CloudflareZeroTrustAccessApplicationOauthConfiguration {
+  // Whether the OAuth authorization server is enabled.
+  bool enabled = 1;
+
+  // Dynamic client registration settings.
+  CloudflareZeroTrustAccessApplicationOauthDcr dynamic_client_registration = 2;
+
+  // Token / session grant settings.
+  CloudflareZeroTrustAccessApplicationOauthGrant grant = 3;
+}
+
+// CloudflareZeroTrustAccessApplicationOauthDcr configures dynamic client
+// registration for the OAuth server.
+message CloudflareZeroTrustAccessApplicationOauthDcr {
+  // Whether dynamic client registration is enabled.
+  bool enabled = 1;
+
+  // Allow registering clients with any localhost redirect URI.
+  bool allow_any_on_localhost = 2;
+
+  // Allow registering clients with any loopback redirect URI.
+  bool allow_any_on_loopback = 3;
+
+  // Explicit list of allowed redirect URIs.
+  repeated string allowed_uris = 4;
+}
+
+// CloudflareZeroTrustAccessApplicationOauthGrant configures OAuth grant lifetimes.
+message CloudflareZeroTrustAccessApplicationOauthGrant {
+  // Access-token lifetime (e.g. "1h").
+  string access_token_lifetime = 1 [(org.openmcf.shared.options.sensitive_exempt_reason) = "a duration string controlling token lifetime, not a secret value"];
+
+  // Session duration (e.g. "24h").
+  string session_duration = 2;
+}
+
+// CloudflareZeroTrustAccessApplicationTargetCriteria selects infrastructure /
+// RDP targets the application brokers.
+message CloudflareZeroTrustAccessApplicationTargetCriteria {
+  // The protocol this criterion applies to.
+  enum Protocol {
+    // Unspecified (invalid).
+    protocol_unspecified = 0;
+    // Secure Shell.
+    SSH = 1;
+    // Remote Desktop Protocol.
+    RDP = 2;
+  }
+
+  // The target port.
+  uint32 port = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).uint32.lte = 65535
+  ];
+
+  // The protocol.
+  Protocol protocol = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).enum.defined_only = true,
+    (buf.validate.field).cel = {
+      id: "target_criteria.protocol_not_unspecified"
+      message: "protocol must be SSH or RDP"
+      expression: "this != 0"
+    }
+  ];
+
+  // Target attributes (e.g. "hostname" -> ["db-1","db-2"]) used to match the
+  // brokered targets. At least one attribute is required.
+  repeated CloudflareZeroTrustAccessApplicationTargetAttribute target_attributes = 3 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// CloudflareZeroTrustAccessApplicationTargetAttribute is one named attribute with
+// one or more values, rebuilt into the provider's attribute map by the modules.
+message CloudflareZeroTrustAccessApplicationTargetAttribute {
+  // The attribute name (e.g. "hostname").
+  string name = 1 [(buf.validate.field).required = true];
+
+  // The attribute values.
+  repeated string values = 2 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// CloudflareZeroTrustAccessSaasApp configures a federated SaaS application
+// (SAML or OIDC), selected by auth_type.
+message CloudflareZeroTrustAccessSaasApp {
+  // SaaS federation protocol.
+  enum AuthType {
+    // Unspecified — defaults to saml.
+    auth_type_unspecified = 0;
+    // SAML 2.0.
+    saml = 1;
+    // OpenID Connect.
+    oidc = 2;
+  }
+
+  // SAML NameID format.
+  enum NameIdFormat {
+    // Unspecified — provider default.
+    name_id_format_unspecified = 0;
+    // Use the user's email as the NameID.
+    email = 1;
+    // Use the user's unique ID as the NameID.
+    id = 2;
+  }
+
+  // OIDC grant types.
+  enum GrantType {
+    // Unspecified (invalid).
+    grant_type_unspecified = 0;
+    authorization_code = 1;
+    authorization_code_with_pkce = 2;
+    refresh_tokens = 3;
+    hybrid = 4;
+    implicit = 5;
+  }
+
+  // The federation protocol. Defaults to saml.
+  AuthType auth_type = 1 [(buf.validate.field).enum.defined_only = true];
+
+  // --- SAML fields (auth_type = saml) ---
+
+  // The SAML Assertion Consumer Service (ACS) URL the IdP posts assertions to.
+  string consumer_service_url = 2;
+
+  // The Service Provider entity ID.
+  string sp_entity_id = 3;
+
+  // The SAML NameID format.
+  NameIdFormat name_id_format = 4 [(buf.validate.field).enum.defined_only = true];
+
+  // A JSONata expression transforming the NameID before it is sent.
+  string name_id_transform_jsonata = 5;
+
+  // A JSONata expression transforming SAML attributes before they are sent.
+  string saml_attribute_transform_jsonata = 6;
+
+  // The default RelayState passed to the IdP.
+  string default_relay_state = 7;
+
+  // Custom SAML attributes to include in the assertion.
+  repeated CloudflareZeroTrustAccessSaasCustomAttribute custom_attributes = 8;
+
+  // --- OIDC fields (auth_type = oidc) ---
+
+  // Allowed OIDC redirect URIs.
+  repeated string redirect_uris = 9;
+
+  // OIDC grant types the app supports.
+  repeated GrantType grant_types = 10 [(buf.validate.field).repeated.items.enum.defined_only = true];
+
+  // OIDC scopes the app requests.
+  repeated CloudflareZeroTrustAccessSaasScope scopes = 11 [(buf.validate.field).repeated.items.enum.defined_only = true];
+
+  // A regex selecting which groups are emitted in the OIDC token.
+  string group_filter_regex = 12;
+
+  // The app-launcher URL for the OIDC app.
+  string app_launcher_url = 13;
+
+  // OIDC access-token lifetime (e.g. "10m").
+  string access_token_lifetime = 14 [(org.openmcf.shared.options.sensitive_exempt_reason) = "a duration string controlling token lifetime, not a secret value"];
+
+  // Allow PKCE without a client secret.
+  bool allow_pkce_without_client_secret = 15;
+
+  // Custom OIDC claims to include in the token.
+  repeated CloudflareZeroTrustAccessSaasCustomClaim custom_claims = 16;
+
+  // Hybrid/implicit flow options.
+  CloudflareZeroTrustAccessSaasHybridImplicitOptions hybrid_and_implicit_options = 17;
+
+  // Refresh-token options.
+  CloudflareZeroTrustAccessSaasRefreshTokenOptions refresh_token_options = 18;
+}
+
+// CloudflareZeroTrustAccessSaasCustomAttribute is a SAML assertion attribute.
+message CloudflareZeroTrustAccessSaasCustomAttribute {
+  // The attribute name.
+  string name = 1;
+
+  // A friendly name for the attribute.
+  string friendly_name = 2;
+
+  // The SAML name format URN (e.g.
+  // "urn:oasis:names:tc:SAML:2.0:attrname-format:basic").
+  string name_format = 3 [(buf.validate.field).cel = {
+    id: "custom_attribute.name_format_valid"
+    message: "name_format must be a SAML attrname-format URN (unspecified, basic, or uri) when set"
+    expression: "this == '' || this in ['urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified', 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic', 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri']"
+  }];
+
+  // Whether the attribute is required in the assertion.
+  bool required = 4;
+
+  // The source of the attribute value.
+  CloudflareZeroTrustAccessSaasAttributeSource source = 5;
+}
+
+// CloudflareZeroTrustAccessSaasAttributeSource maps an IdP attribute to a SAML
+// attribute, optionally per-IdP.
+message CloudflareZeroTrustAccessSaasAttributeSource {
+  // The source attribute name at the IdP.
+  string name = 1;
+
+  // Per-IdP source-name overrides.
+  repeated CloudflareZeroTrustAccessSaasSourceNameByIdp name_by_idp = 2;
+}
+
+// CloudflareZeroTrustAccessSaasSourceNameByIdp overrides the source attribute
+// name for one identity provider.
+message CloudflareZeroTrustAccessSaasSourceNameByIdp {
+  // The identity-provider ID, as a literal or a reference to another resource's
+  // output.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef idp_id = 1;
+
+  // The source attribute name to use for that IdP.
+  string source_name = 2;
+}
+
+// CloudflareZeroTrustAccessSaasCustomClaim is an OIDC token claim.
+message CloudflareZeroTrustAccessSaasCustomClaim {
+  // The claim name.
+  string name = 1;
+
+  // Whether the claim is required.
+  bool required = 2;
+
+  // The OIDC scope the claim belongs to.
+  CloudflareZeroTrustAccessSaasScope scope = 3 [(buf.validate.field).enum.defined_only = true];
+
+  // The source of the claim value.
+  CloudflareZeroTrustAccessSaasClaimSource source = 4;
+}
+
+// CloudflareZeroTrustAccessSaasClaimSource maps an IdP attribute to an OIDC claim,
+// optionally per-IdP.
+message CloudflareZeroTrustAccessSaasClaimSource {
+  // The source attribute name at the IdP.
+  string name = 1;
+
+  // Per-IdP source-name overrides (IdP ID -> source attribute name).
+  map<string, string> name_by_idp = 2;
+}
+
+// CloudflareZeroTrustAccessSaasHybridImplicitOptions configures hybrid/implicit
+// OIDC flows.
+message CloudflareZeroTrustAccessSaasHybridImplicitOptions {
+  // Return an access token from the authorization endpoint.
+  bool return_access_token_from_authorization_endpoint = 1;
+
+  // Return an ID token from the authorization endpoint.
+  bool return_id_token_from_authorization_endpoint = 2;
+}
+
+// CloudflareZeroTrustAccessSaasRefreshTokenOptions configures OIDC refresh tokens.
+message CloudflareZeroTrustAccessSaasRefreshTokenOptions {
+  // Refresh-token lifetime (e.g. "30d").
+  string lifetime = 1;
+}
+
+// CloudflareZeroTrustAccessScimConfig configures SCIM provisioning from an IdP to
+// the application.
+message CloudflareZeroTrustAccessScimConfig {
+  // The IdP UID supplying the SCIM source, as a literal or a reference to another
+  // resource's output.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef idp_uid = 1 [(buf.validate.field).required = true];
+
+  // The SCIM remote URI Cloudflare provisions against.
+  string remote_uri = 2 [(buf.validate.field).required = true];
+
+  // Whether SCIM provisioning is enabled.
+  bool enabled = 3;
+
+  // De-provision (deactivate) users in the application when they are removed at
+  // the source.
+  bool deactivate_on_delete = 4;
+
+  // Authentication used to reach the SCIM endpoint.
+  CloudflareZeroTrustAccessScimAuthentication authentication = 5;
+
+  // Attribute/group mapping rules.
+  repeated CloudflareZeroTrustAccessScimMapping mappings = 6;
+}
+
+// CloudflareZeroTrustAccessScimAuthentication holds SCIM endpoint credentials.
+message CloudflareZeroTrustAccessScimAuthentication {
+  // The authentication scheme.
+  enum Scheme {
+    // Unspecified (invalid).
+    scheme_unspecified = 0;
+    // HTTP basic auth (user + password).
+    httpbasic = 1;
+    // OAuth bearer token.
+    oauthbearertoken = 2;
+    // OAuth 2.0 client credentials.
+    oauth2 = 3;
+    // Cloudflare Access service token.
+    access_service_token = 4;
+  }
+
+  // The authentication scheme.
+  Scheme scheme = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).enum.defined_only = true,
+    (buf.validate.field).cel = {
+      id: "scim_auth.scheme_not_unspecified"
+      message: "scheme must be httpbasic, oauthbearertoken, oauth2, or access_service_token"
+      expression: "this != 0"
+    }
+  ];
+
+  // Basic-auth username (httpbasic).
+  string user = 2;
+
+  // Basic-auth password (httpbasic).
+  string password = 3 [(org.openmcf.shared.options.sensitive) = true];
+
+  // Bearer token (oauthbearertoken).
+  string token = 4 [(org.openmcf.shared.options.sensitive) = true];
+
+  // OAuth client ID (oauth2).
+  string client_id = 5;
+
+  // OAuth client secret (oauth2).
+  string client_secret = 6 [(org.openmcf.shared.options.sensitive) = true];
+
+  // OAuth authorization URL (oauth2).
+  string authorization_url = 7;
+
+  // OAuth token URL (oauth2).
+  string token_url = 8;
+
+  // OAuth scopes (oauth2).
+  repeated string scopes = 9;
+}
+
+// CloudflareZeroTrustAccessScimMapping is one SCIM mapping rule.
+message CloudflareZeroTrustAccessScimMapping {
+  // Strictness of the mapping.
+  enum Strictness {
+    // Unspecified — provider default.
+    strictness_unspecified = 0;
+    // Strictly apply the mapping.
+    strict = 1;
+    // Pass through unmapped attributes.
+    passthrough = 2;
+  }
+
+  // The SCIM schema URI this mapping applies to.
+  string schema = 1 [(buf.validate.field).required = true];
+
+  // Whether this mapping is enabled.
+  bool enabled = 2;
+
+  // A filter expression selecting which resources the mapping applies to.
+  string filter = 3;
+
+  // Mapping strictness.
+  Strictness strictness = 4 [(buf.validate.field).enum.defined_only = true];
+
+  // A JSONata transform applied to the mapped resource.
+  string transform_jsonata = 5;
+
+  // Per-operation toggles (create/update/delete).
+  CloudflareZeroTrustAccessScimMappingOperations operations = 6;
+}
+
+// CloudflareZeroTrustAccessScimMappingOperations toggles SCIM operations.
+message CloudflareZeroTrustAccessScimMappingOperations {
+  // Apply the mapping on create.
+  bool create = 1;
+
+  // Apply the mapping on update.
+  bool update = 2;
+
+  // Apply the mapping on delete.
+  bool delete = 3;
 }

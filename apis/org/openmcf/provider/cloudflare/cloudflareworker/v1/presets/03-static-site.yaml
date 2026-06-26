@@ -1,0 +1,17 @@
+apiVersion: cloudflare.openmcf.org/v1
+kind: CloudflareWorker
+metadata:
+  name: static-site
+spec:
+  accountId: <cloudflare-account-id>
+  workerName: static-site
+  # Pure static site: assets only, no script source. Point `directory` at your
+  # build output (e.g. the result of `npm run build`).
+  assets:
+    directory: dist
+    config:
+      # Serve /index.html for unmatched routes — the single-page-app fallback.
+      notFoundHandling: single-page-application
+      htmlHandling: auto-trailing-slash
+  workersDev:
+    enabled: true

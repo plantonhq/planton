@@ -7,6 +7,6 @@ spec:
     value: <cloudflare-zone-id>
   name: www
   type: A
-  value: <origin-ip-address>
+  content: <origin-ip-address>
   proxied: true
   ttl: 1

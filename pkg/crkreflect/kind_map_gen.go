@@ -165,15 +165,36 @@ import (
 	civokubernetesnodepoolv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/civo/civokubernetesnodepool/v1"
 	civovolumev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/civo/civovolume/v1"
 	civovpcv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/civo/civovpc/v1"
+	cloudflarecertificatepackv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarecertificatepack/v1"
+	cloudflarecustomhostnamev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarecustomhostname/v1"
+	cloudflarecustomhostnamefallbackoriginv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarecustomhostnamefallbackorigin/v1"
 	cloudflared1databasev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflared1database/v1"
 	cloudflarednsrecordv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarednsrecord/v1"
 	cloudflarednszonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarednszone/v1"
+	cloudflareemailroutingaddressv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflareemailroutingaddress/v1"
+	cloudflareemailroutingrulev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflareemailroutingrule/v1"
+	cloudflareemailroutingzonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflareemailroutingzone/v1"
+	cloudflarehyperdriveconfigv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarehyperdriveconfig/v1"
 	cloudflarekvnamespacev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarekvnamespace/v1"
+	cloudflarelistv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarelist/v1"
+	cloudflarelistitemv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarelistitem/v1"
 	cloudflareloadbalancerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflareloadbalancer/v1"
+	cloudflareloadbalancermonitorv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflareloadbalancermonitor/v1"
+	cloudflareloadbalancerpoolv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflareloadbalancerpool/v1"
+	cloudflareorigincacertificatev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflareorigincacertificate/v1"
+	cloudflarepagesprojectv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarepagesproject/v1"
+	cloudflarequeuev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarequeue/v1"
 	cloudflarer2bucketv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarer2bucket/v1"
 	cloudflarerulesetv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflareruleset/v1"
+	cloudflareturnstilewidgetv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflareturnstilewidget/v1"
 	cloudflareworkerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflareworker/v1"
+	cloudflareworkerskvpairv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflareworkerskvpair/v1"
 	cloudflarezerotrustaccessapplicationv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarezerotrustaccessapplication/v1"
+	cloudflarezerotrustaccessgroupv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarezerotrustaccessgroup/v1"
+	cloudflarezerotrustaccesspolicyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarezerotrustaccesspolicy/v1"
+	cloudflarezerotrusttunnelv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarezerotrusttunnel/v1"
+	cloudflarezerotrusttunnelroutev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarezerotrusttunnelroute/v1"
+	cloudflarezerotrusttunnelvirtualnetworkv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarezerotrusttunnelvirtualnetwork/v1"
 	confluentkafkav1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/confluent/confluentkafka/v1"
 	digitaloceanappplatformservicev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/digitalocean/digitaloceanappplatformservice/v1"
 	digitaloceanbucketv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/digitalocean/digitaloceanbucket/v1"
@@ -589,15 +610,36 @@ var ProviderCivoMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 }
 
 var ProviderCloudflareMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
-	cloudresourcekind.CloudResourceKind_CloudflareD1Database:                 &cloudflared1databasev1.CloudflareD1Database{},
-	cloudresourcekind.CloudResourceKind_CloudflareDnsRecord:                  &cloudflarednsrecordv1.CloudflareDnsRecord{},
-	cloudresourcekind.CloudResourceKind_CloudflareDnsZone:                    &cloudflarednszonev1.CloudflareDnsZone{},
-	cloudresourcekind.CloudResourceKind_CloudflareKvNamespace:                &cloudflarekvnamespacev1.CloudflareKvNamespace{},
-	cloudresourcekind.CloudResourceKind_CloudflareLoadBalancer:               &cloudflareloadbalancerv1.CloudflareLoadBalancer{},
-	cloudresourcekind.CloudResourceKind_CloudflareR2Bucket:                   &cloudflarer2bucketv1.CloudflareR2Bucket{},
-	cloudresourcekind.CloudResourceKind_CloudflareRuleset:                    &cloudflarerulesetv1.CloudflareRuleset{},
-	cloudresourcekind.CloudResourceKind_CloudflareWorker:                     &cloudflareworkerv1.CloudflareWorker{},
-	cloudresourcekind.CloudResourceKind_CloudflareZeroTrustAccessApplication: &cloudflarezerotrustaccessapplicationv1.CloudflareZeroTrustAccessApplication{},
+	cloudresourcekind.CloudResourceKind_CloudflareCertificatePack:               &cloudflarecertificatepackv1.CloudflareCertificatePack{},
+	cloudresourcekind.CloudResourceKind_CloudflareCustomHostname:                &cloudflarecustomhostnamev1.CloudflareCustomHostname{},
+	cloudresourcekind.CloudResourceKind_CloudflareCustomHostnameFallbackOrigin:  &cloudflarecustomhostnamefallbackoriginv1.CloudflareCustomHostnameFallbackOrigin{},
+	cloudresourcekind.CloudResourceKind_CloudflareD1Database:                    &cloudflared1databasev1.CloudflareD1Database{},
+	cloudresourcekind.CloudResourceKind_CloudflareDnsRecord:                     &cloudflarednsrecordv1.CloudflareDnsRecord{},
+	cloudresourcekind.CloudResourceKind_CloudflareDnsZone:                       &cloudflarednszonev1.CloudflareDnsZone{},
+	cloudresourcekind.CloudResourceKind_CloudflareEmailRoutingAddress:           &cloudflareemailroutingaddressv1.CloudflareEmailRoutingAddress{},
+	cloudresourcekind.CloudResourceKind_CloudflareEmailRoutingRule:              &cloudflareemailroutingrulev1.CloudflareEmailRoutingRule{},
+	cloudresourcekind.CloudResourceKind_CloudflareEmailRoutingZone:              &cloudflareemailroutingzonev1.CloudflareEmailRoutingZone{},
+	cloudresourcekind.CloudResourceKind_CloudflareHyperdriveConfig:              &cloudflarehyperdriveconfigv1.CloudflareHyperdriveConfig{},
+	cloudresourcekind.CloudResourceKind_CloudflareKvNamespace:                   &cloudflarekvnamespacev1.CloudflareKvNamespace{},
+	cloudresourcekind.CloudResourceKind_CloudflareList:                          &cloudflarelistv1.CloudflareList{},
+	cloudresourcekind.CloudResourceKind_CloudflareListItem:                      &cloudflarelistitemv1.CloudflareListItem{},
+	cloudresourcekind.CloudResourceKind_CloudflareLoadBalancer:                  &cloudflareloadbalancerv1.CloudflareLoadBalancer{},
+	cloudresourcekind.CloudResourceKind_CloudflareLoadBalancerMonitor:           &cloudflareloadbalancermonitorv1.CloudflareLoadBalancerMonitor{},
+	cloudresourcekind.CloudResourceKind_CloudflareLoadBalancerPool:              &cloudflareloadbalancerpoolv1.CloudflareLoadBalancerPool{},
+	cloudresourcekind.CloudResourceKind_CloudflareOriginCaCertificate:           &cloudflareorigincacertificatev1.CloudflareOriginCaCertificate{},
+	cloudresourcekind.CloudResourceKind_CloudflarePagesProject:                  &cloudflarepagesprojectv1.CloudflarePagesProject{},
+	cloudresourcekind.CloudResourceKind_CloudflareQueue:                         &cloudflarequeuev1.CloudflareQueue{},
+	cloudresourcekind.CloudResourceKind_CloudflareR2Bucket:                      &cloudflarer2bucketv1.CloudflareR2Bucket{},
+	cloudresourcekind.CloudResourceKind_CloudflareRuleset:                       &cloudflarerulesetv1.CloudflareRuleset{},
+	cloudresourcekind.CloudResourceKind_CloudflareTurnstileWidget:               &cloudflareturnstilewidgetv1.CloudflareTurnstileWidget{},
+	cloudresourcekind.CloudResourceKind_CloudflareWorker:                        &cloudflareworkerv1.CloudflareWorker{},
+	cloudresourcekind.CloudResourceKind_CloudflareWorkersKvPair:                 &cloudflareworkerskvpairv1.CloudflareWorkersKvPair{},
+	cloudresourcekind.CloudResourceKind_CloudflareZeroTrustAccessApplication:    &cloudflarezerotrustaccessapplicationv1.CloudflareZeroTrustAccessApplication{},
+	cloudresourcekind.CloudResourceKind_CloudflareZeroTrustAccessGroup:          &cloudflarezerotrustaccessgroupv1.CloudflareZeroTrustAccessGroup{},
+	cloudresourcekind.CloudResourceKind_CloudflareZeroTrustAccessPolicy:         &cloudflarezerotrustaccesspolicyv1.CloudflareZeroTrustAccessPolicy{},
+	cloudresourcekind.CloudResourceKind_CloudflareZeroTrustTunnel:               &cloudflarezerotrusttunnelv1.CloudflareZeroTrustTunnel{},
+	cloudresourcekind.CloudResourceKind_CloudflareZeroTrustTunnelRoute:          &cloudflarezerotrusttunnelroutev1.CloudflareZeroTrustTunnelRoute{},
+	cloudresourcekind.CloudResourceKind_CloudflareZeroTrustTunnelVirtualNetwork: &cloudflarezerotrusttunnelvirtualnetworkv1.CloudflareZeroTrustTunnelVirtualNetwork{},
 }
 
 var ProviderConfluentMap = map[cloudresourcekind.CloudResourceKind]proto.Message{

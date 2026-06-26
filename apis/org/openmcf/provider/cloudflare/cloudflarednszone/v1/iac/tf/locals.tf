@@ -28,5 +28,22 @@ locals {
 
   # Merge base, org, and environment labels
   final_labels = merge(local.base_labels, local.org_label, local.env_label)
+
+  # Zone type defaults to "full" (guard the proto's unspecified zero value).
+  zone_type = (
+    var.spec.type == null || var.spec.type == "" || var.spec.type == "zone_type_unspecified"
+    ? "full"
+    : var.spec.type
+  )
+
+  # Zone mode: drop the proto's unspecified zero value.
+  zone_mode = (
+    try(var.spec.dns_settings.zone_mode, null) == "zone_mode_unspecified"
+    ? null
+    : try(var.spec.dns_settings.zone_mode, null)
+  )
+
+  has_dns_settings = var.spec.dns_settings != null
+  has_dnssec       = var.spec.dnssec != null ? var.spec.dnssec.enabled : false
 }
 

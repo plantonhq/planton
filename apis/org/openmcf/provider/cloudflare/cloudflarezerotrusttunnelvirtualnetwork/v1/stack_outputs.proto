@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package org.openmcf.provider.cloudflare.cloudflarezerotrusttunnelvirtualnetwork.v1;
+
+// CloudflareZeroTrustTunnelVirtualNetworkStackOutputs captures the outputs after
+// provisioning a Cloudflare Tunnel virtual network.
+message CloudflareZeroTrustTunnelVirtualNetworkStackOutputs {
+  // The Cloudflare-assigned UUID of the virtual network. A route
+  // (CloudflareZeroTrustTunnelRoute) references this value to bind a private network
+  // to this segment.
+  string virtual_network_id = 1;
+
+  // The virtual network name (echoed for convenience).
+  string virtual_network_name = 2;
+}

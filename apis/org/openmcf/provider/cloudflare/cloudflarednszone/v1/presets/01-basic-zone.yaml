@@ -1,0 +1,7 @@
+apiVersion: cloudflare.openmcf.org/v1
+kind: CloudflareDnsZone
+metadata:
+  name: my-dns-zone
+spec:
+  zoneName: <your-domain.com>
+  accountId: <cloudflare-account-id>

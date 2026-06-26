@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package org.openmcf.provider.cloudflare.cloudflarecustomhostnamefallbackorigin.v1;
+
+// CloudflareCustomHostnameFallbackOriginStackOutputs captures the outputs after
+// setting a zone's fallback origin.
+message CloudflareCustomHostnameFallbackOriginStackOutputs {
+  // The status of the fallback origin (e.g. "pending_deployment", "active").
+  string status = 1;
+
+  // RFC3339 timestamp of when the fallback origin was created.
+  string created_at = 2;
+
+  // RFC3339 timestamp of when the fallback origin was last updated.
+  string updated_at = 3;
+
+  // Any errors reported while deploying the fallback origin.
+  repeated string errors = 4;
+}

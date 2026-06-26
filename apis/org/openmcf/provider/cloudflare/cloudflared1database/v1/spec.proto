@@ -4,73 +4,94 @@ package org.openmcf.provider.cloudflare.cloudflared1database.v1;
 
 import "buf/validate/validate.proto";
 
-// CloudflareD1DatabaseSpec defines the essential configuration for creating a Cloudflare D1 database.
-// This follows the 80/20 principle: only the most commonly used fields are exposed to keep the API simple.
-//
-// Essential Fields (The 80%):
-//   - account_id: Required. The Cloudflare account ID.
-//   - database_name: Required. The human-readable name for the database.
-//   - region: Optional. The geographical region for the database's primary instance.
-//
-// Production Optional (The 20%):
-//   - read_replication: Optional. Configures D1 Read Replication (Beta).
-//
-// Note: Preview environments are handled via Worker bindings (preview_database_id), not as a database property.
-// Schema management (tables, indexes, primary keys) is handled via Wrangler CLI migrations, not at the resource level.
+// CloudflareD1DatabaseSpec provisions a Cloudflare D1 database: a serverless
+// SQLite database that a Worker queries via a `d1` binding. Placement is fixed at
+// creation by an optional region hint or a data-residency jurisdiction; schema
+// (tables, indexes) is managed by the application via Wrangler migrations, not at
+// this layer.
 message CloudflareD1DatabaseSpec {
-  // (Required) The Cloudflare account ID in which to create the database.
-  string account_id = 1 [(buf.validate.field).required = true];
+  // Cross-field validation: region and jurisdiction both fix placement and are
+  // mutually exclusive — jurisdiction implies a residency-constrained location.
+  option (buf.validate.message).cel = {
+    id: "spec.region_xor_jurisdiction"
+    message: "set at most one of region or jurisdiction (jurisdiction already constrains placement)"
+    expression: "!(this.jurisdiction != '' && this.region != 0)"
+  };
 
-  // (Required) The unique name for the D1 database.
-  // Must be unique within the account.
+  // The Cloudflare account ID in which to create the database.
+  string account_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.len = 32,
+    (buf.validate.field).string.pattern = "^[0-9a-fA-F]{32}$"
+  ];
+
+  // The unique name for the D1 database, unique within the account.
   string database_name = 2 [
     (buf.validate.field).required = true,
     (buf.validate.field).string.max_len = 64
   ];
 
-  // (Optional) The Cloudflare region where the D1 database will be hosted.
-  // This maps to the primary_location_hint property in the Cloudflare API.
-  // Valid values: weur, eeur, apac, oc, wnam, enam.
-  // If omitted, Cloudflare selects a default location based on your account settings.
+  // Region hint for the database's primary instance (maps to
+  // primary_location_hint). Fixed at creation. Leave unspecified to let
+  // Cloudflare choose, or use jurisdiction for a data-residency constraint.
   CloudflareD1Region region = 3;
 
-  // (Optional) Configures D1 Read Replication (Beta).
-  // Enables automatic read replication across multiple regions for lower global read latency.
-  // WARNING: Enabling replication requires application-level code changes to use the D1 Sessions API.
-  // Failing to use the Sessions API will cause data consistency errors.
-  // If omitted, replication is disabled.
+  // Configures D1 Read Replication: read-only replicas in multiple regions for
+  // lower global read latency. WARNING: enabling replication requires the Worker
+  // to use the D1 Sessions API for consistency; omit to disable.
   CloudflareD1ReadReplication read_replication = 4;
+
+  // Data-residency jurisdiction, fixed at creation. One of "eu" (European Union)
+  // or "fedramp" (US FedRAMP). Constrains where the database is placed; mutually
+  // exclusive with region. Leave empty for no residency constraint.
+  string jurisdiction = 5 [(buf.validate.field).cel = {
+    id: "jurisdiction.valid"
+    message: "jurisdiction must be one of \"eu\", \"fedramp\""
+    expression: "this == '' || this in ['eu', 'fedramp']"
+  }];
 }
 
-// Enumeration of supported regions for Cloudflare D1 databases.
-// These values map to the primary_location_hint field in the Cloudflare API.
+// Region hint for a D1 database's primary instance. Value names map to the
+// Cloudflare API primary_location_hint values and are used directly via .String().
 enum CloudflareD1Region {
-  // Unspecified region (Cloudflare will select a default).
+  // Unspecified region (Cloudflare selects a default).
   cloudflare_d1_region_unspecified = 0;
-
-  // Western Europe
+  // Western Europe.
   weur = 1;
-
-  // Eastern Europe
+  // Eastern Europe.
   eeur = 2;
-
-  // Asia Pacific
+  // Asia-Pacific.
   apac = 3;
-
-  // Oceania
+  // Oceania.
   oc = 4;
-
-  // Western North America
+  // Western North America.
   wnam = 5;
-
-  // Eastern North America
+  // Eastern North America.
   enam = 6;
 }
 
-// CloudflareD1ReadReplication configures D1 Read Replication (Beta).
-// Read replication creates read-only replicas in multiple regions to reduce global read latency.
+// Read-replication mode for a D1 database. Value names match the Cloudflare API
+// strings exactly and are used directly via .String().
+enum CloudflareD1ReadReplicationMode {
+  // Unspecified (treated as the API default).
+  read_replication_mode_unspecified = 0;
+  // Automatic read replication across regions.
+  auto = 1;
+  // Replication disabled (single primary).
+  disabled = 2;
+}
+
+// CloudflareD1ReadReplication configures D1 Read Replication.
 message CloudflareD1ReadReplication {
-  // (Required if read_replication is set) The replication mode.
-  // Valid values: "auto" (enable automatic read replication), "disabled" (disable replication).
-  string mode = 1 [(buf.validate.field).required = true];
+  // Replication mode. `auto` enables cross-region read replicas; `disabled`
+  // keeps a single primary.
+  CloudflareD1ReadReplicationMode mode = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).enum.defined_only = true,
+    (buf.validate.field).cel = {
+      id: "mode.not_unspecified"
+      message: "read_replication.mode must be \"auto\" or \"disabled\""
+      expression: "this != 0"
+    }
+  ];
 }

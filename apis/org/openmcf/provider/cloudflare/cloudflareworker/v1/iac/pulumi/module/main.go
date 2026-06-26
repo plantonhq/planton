@@ -10,91 +10,58 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Resources is the entry‑point expected by the OpenMCF CLI.
+// Resources is the entry-point expected by the OpenMCF CLI.
 func Resources(
 	ctx *pulumi.Context,
 	stackInput *cloudflareworkerv1.CloudflareWorkerStackInput,
 ) error {
-	// 1. Prepare handy references.
 	locals := initializeLocals(ctx, stackInput)
 
-	// 2. Stand‑up a Cloudflare provider from the supplied credential.
-	createdProvider, err := pulumicloudflareprovider.Get(
-		ctx,
-		locals.CloudflareProviderConfig,
-	)
+	cloudflareProvider, err := pulumicloudflareprovider.Get(ctx, locals.CloudflareProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to set up cloudflare provider")
 	}
 
-	// 3. Create AWS provider for R2 (with explicit creds or default from env)
+	// An AWS (S3) provider aimed at the R2 endpoint is only needed when the
+	// script source is an R2 bundle.
 	var r2Provider *aws.Provider
-	if locals.CloudflareProviderConfig != nil && locals.CloudflareProviderConfig.R2 != nil {
-		// Use explicit R2 credentials
-		r2Creds := locals.CloudflareProviderConfig.R2
-
-		// Determine R2 endpoint (use custom if provided, otherwise derive from account ID)
-		var endpoint string
-		if r2Creds.Endpoint != "" {
-			endpoint = r2Creds.Endpoint
-		} else {
-			endpoint = fmt.Sprintf("https://%s.r2.cloudflarestorage.com", locals.CloudflareWorker.Spec.AccountId)
+	if locals.CloudflareWorker.Spec.GetR2Bundle() != nil {
+		r2Provider, err = newR2Provider(ctx, locals)
+		if err != nil {
+			return errors.Wrap(err, "failed to create R2 provider")
 		}
-
-		r2Provider, err = aws.NewProvider(ctx, "r2-provider", &aws.ProviderArgs{
-			Region:                    pulumi.String("auto"),
-			AccessKey:                 pulumi.String(r2Creds.AccessKeyId),
-			SecretKey:                 pulumi.String(r2Creds.SecretAccessKey),
-			S3UsePathStyle:            pulumi.Bool(true),
-			SkipCredentialsValidation: pulumi.Bool(true),
-			SkipMetadataApiCheck:      pulumi.Bool(true),
-			SkipRegionValidation:      pulumi.Bool(true),
-			SkipRequestingAccountId:   pulumi.Bool(true),
-			Endpoints: aws.ProviderEndpointArray{
-				aws.ProviderEndpointArgs{
-					S3: pulumi.String(endpoint),
-				},
-			},
-		})
-	} else {
-		// No explicit credentials - use AWS env vars but configure for R2
-		endpoint := fmt.Sprintf("https://%s.r2.cloudflarestorage.com", locals.CloudflareWorker.Spec.AccountId)
-
-		r2Provider, err = aws.NewProvider(ctx, "r2-provider", &aws.ProviderArgs{
-			Region:                    pulumi.String("auto"),
-			S3UsePathStyle:            pulumi.Bool(true),
-			SkipCredentialsValidation: pulumi.Bool(true),
-			SkipMetadataApiCheck:      pulumi.Bool(true),
-			SkipRegionValidation:      pulumi.Bool(true),
-			SkipRequestingAccountId:   pulumi.Bool(true),
-			Endpoints: aws.ProviderEndpointArray{
-				aws.ProviderEndpointArgs{
-					S3: pulumi.String(endpoint),
-				},
-			},
-		})
-	}
-	if err != nil {
-		return errors.Wrap(err, "failed to create R2 provider")
 	}
 
-	// 4. Create the Worker script with content from R2 bundle.
-	createdWorkerScript, err := createWorkerScript(ctx, locals, createdProvider, r2Provider)
-	if err != nil {
-		return errors.Wrap(err, "failed to create worker script")
-	}
-
-	// 5. Secrets upload - REMOVED
-	// TODO: Implement secrets management as a separate feature in the future
-	// Secrets should be managed via Cloudflare Workers Secrets API or separate resource
-
-	// 6. Optionally attach to a route.
-	// TODO: Temporarily commented out to test worker script deployment
-	// The API token needs "Workers Routes: Edit" permission for this to work
-	// createdWorkerScript variable would be used here when route creation is re-enabled
-	if _, err := route(ctx, locals, createdProvider, createdWorkerScript); err != nil {
-		return errors.Wrap(err, "failed to create cloudflare worker route")
+	if err := worker(ctx, locals, cloudflareProvider, r2Provider); err != nil {
+		return errors.Wrap(err, "failed to create cloudflare worker")
 	}
 
 	return nil
+}
+
+// newR2Provider builds an S3-compatible provider pointed at the account's R2
+// endpoint, using explicit credentials when present, otherwise the environment.
+func newR2Provider(ctx *pulumi.Context, locals *Locals) (*aws.Provider, error) {
+	endpoint := fmt.Sprintf("https://%s.r2.cloudflarestorage.com", locals.CloudflareWorker.Spec.AccountId)
+
+	args := &aws.ProviderArgs{
+		Region:                    pulumi.String("auto"),
+		S3UsePathStyle:            pulumi.Bool(true),
+		SkipCredentialsValidation: pulumi.Bool(true),
+		SkipMetadataApiCheck:      pulumi.Bool(true),
+		SkipRegionValidation:      pulumi.Bool(true),
+		SkipRequestingAccountId:   pulumi.Bool(true),
+	}
+	if r2 := locals.CloudflareProviderConfig.GetR2(); r2 != nil {
+		if r2.Endpoint != "" {
+			endpoint = r2.Endpoint
+		}
+		args.AccessKey = pulumi.String(r2.AccessKeyId)
+		args.SecretKey = pulumi.String(r2.SecretAccessKey)
+	}
+	args.Endpoints = aws.ProviderEndpointArray{
+		aws.ProviderEndpointArgs{S3: pulumi.String(endpoint)},
+	}
+
+	return aws.NewProvider(ctx, "r2-provider", args)
 }

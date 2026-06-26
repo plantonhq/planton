@@ -1,0 +1,9 @@
+apiVersion: cloudflare.openmcf.org/v1
+kind: CloudflareDnsZone
+metadata:
+  name: my-signed-zone
+spec:
+  zoneName: <your-domain.com>
+  accountId: <cloudflare-account-id>
+  dnssec:
+    enabled: true

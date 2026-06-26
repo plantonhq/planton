@@ -8,7 +8,7 @@ For years, the conventional wisdom around cloud object storage was simple: "It's
 
 The impact? Up to **99% cost savings** for egress-heavy workloads. R2 positions itself as a multi-cloud escape hatch: store once, serve anywhere, without vendor lock-in or exit penalties. It's S3-compatible (most tools "just work"), strongly consistent (no eventual-consistency pitfalls), and designed to pair seamlessly with Cloudflare's CDN, Workers, and Pages.
 
-But R2 isn't S3. It omits features like object versioning, bucket policies, and static website hosting. It's simpler, cheaper, and opinionated—optimized for the 80% use case of storing and serving content, not the 20% of complex AWS integrations. For teams deploying multi-cloud architectures or escaping egress fees, R2 is a strategic weapon. This guide explains how to deploy R2 buckets in production, what methods work at scale, and how OpenMCF abstracts the complexity into a clean API.
+But R2 isn't S3. It omits features like object versioning, bucket policies, and static website hosting. It's simpler, cheaper, and opinionated—covering the object-storage surface most teams actually use (storage class, jurisdiction, public and custom-domain access, CORS, lifecycle, and object lock) without legacy AWS-specific complexity. For teams deploying multi-cloud architectures or escaping egress fees, R2 is a strategic weapon. This guide explains how to deploy R2 buckets in production, what methods work at scale, and how OpenMCF abstracts the complexity into a clean API.
 
 ---
 
@@ -306,45 +306,36 @@ These omissions simplify R2 (less surface area, lower cost) but mean you can't b
 
 ---
 
-## 80/20 Configuration Analysis: What Most Users Need
+## 90/10 Coverage Analysis: What the Spec Covers
 
-When integrating R2 into OpenMCF's multi-cloud IaC framework, we design the schema to cover **80% of use cases with minimal, intuitive config**, while allowing advanced features as opt-in.
+The schema covers the broad majority of R2's real configuration surface, benchmarked against the Cloudflare provider as the floor, with sensible defaults so the common path stays a few lines and advanced data-management features are reachable when needed.
 
-### Essential Fields (The 80%)
+### Core (almost every bucket)
 
 1. **Bucket Name**: Unique identifier (3-63 chars, lowercase alphanumeric + hyphens). **Required.**
+2. **Account ID**: Cloudflare account to create the bucket in. **Required.**
+3. **Location**: Location hint (`wnam`, `enam`, `weur`, etc.) for latency optimization. Defaults to `auto`.
+4. **Storage Class**: Default class for new objects — `Standard` (default) or `InfrequentAccess`.
+5. **Jurisdiction**: `default`, `eu`, or `fedramp` data residency. Fixed at creation; applied to the bucket and every sub-resource.
 
-2. **Account ID**: Cloudflare account to create the bucket in. **Required.** (OpenMCF may infer this from provider config, but it must be specified somewhere.)
+### Access
 
-3. **Region/Location**: Location hint (`wnam`, `enam`, `weur`, etc.) for latency optimization. **Recommended.** Default to `auto` (Cloudflare chooses) if unspecified.
+6. **Public Access**: Enable the managed `r2.dev` URL (development-grade; rate-limited).
+7. **Custom Domains**: One or more production hostnames, each with optional minimum TLS version and cipher allowlist.
 
-4. **Public Access**: Boolean to indicate if the bucket should be publicly accessible. **Common.** If `true`, decide between:
-   - `public_dev_url`: Enable `r2.dev` URL (dev/test only)
-   - `custom_domain`: Attach a custom domain (production)
+### Data management
 
-### Common Options (The Next 15%)
+8. **CORS**: Allowed methods, origins, and headers; exposed headers; preflight max-age.
+9. **Lifecycle**: Storage-class transitions (to Infrequent Access), object expiration, and cleanup of incomplete multipart uploads — by age or date.
+10. **Object Lock**: Write-once retention by age, until a date, or indefinitely.
 
-5. **CORS Settings**: Allow cross-origin requests from browsers. Common for public asset buckets. A simple `allowed_origins` list and `allowed_methods` covers 95% of cases.
+### Deliberately not modeled (with reason)
 
-6. **Lifecycle Policy**: Auto-expiration or transition to IA after N days. Most users want a single global rule (e.g., "delete after 90 days" or "move to IA after 30 days"). Advanced multi-rule lifecycles are rare.
-
-7. **Custom Domain**: For production public buckets. Takes a domain name (e.g., `media.example.com`) and optionally auto-creates DNS record.
-
-### Rare/Advanced Options (The 5%)
-
-8. **Jurisdiction**: EU or FedRAMP compliance. Most users don't need this unless legally required.
-
-9. **Event Notifications**: Push object events to Cloudflare Queues. Useful for serverless pipelines but niche.
-
-10. **Bucket Lock / WORM**: Write-once-read-many retention policies (compliance use cases). Very rare.
-
-11. **Infrequent Access Default**: Most buckets start with Standard storage; use lifecycle rules to transition. Defaulting to IA is unusual.
-
-### What We Omit from the Spec
-
-- **Versioning**: R2 doesn't support it, so the spec does not model it.
-- **Bucket Policies / ACLs**: Not applicable to R2.
-- **Static Website Hosting**: Not a bucket-level config in R2 (use Cloudflare Pages/Workers instead).
+- **Versioning**: R2 does not support it.
+- **Bucket Policies / ACLs**: Not applicable to R2; use R2 API tokens.
+- **Static Website Hosting**: Use Cloudflare Pages/Workers instead.
+- **Event Notifications**: Push object events to a Cloudflare Queue — modeled once a first-class Queue resource exists to reference (a bare queue id would not compose in the resource graph).
+- **Data Catalog**: Beta; omitted until it stabilizes.
 
 ---
 
@@ -354,7 +345,7 @@ OpenMCF abstracts R2 provisioning behind a clean, protobuf-defined API (`Cloudfl
 
 ### The `CloudflareR2BucketSpec` (Simplified)
 
-Based on the 80/20 analysis, the ideal spec includes:
+Based on the 90/10 coverage analysis, the spec includes:
 
 ```protobuf
 message CloudflareR2BucketSpec {
@@ -367,20 +358,22 @@ message CloudflareR2BucketSpec {
   // Region/location hint (wnam, enam, weur, etc.; auto = let Cloudflare choose)
   CloudflareR2Location location = 3;
 
-  // Enable public access via r2.dev URL (dev/test only)
+  // Enable public access via the managed r2.dev URL (development-grade)
   bool public_access = 4;
 
-  // Optional: Custom domain for production public access
-  string custom_domain = 5;
+  // Custom domains for production access (one or more)
+  repeated CloudflareR2BucketCustomDomainConfig custom_domains = 5;
 
-  // Optional: CORS settings
-  CorsConfig cors = 6;
+  // Data-residency jurisdiction: "default", "eu", "fedramp"
+  string jurisdiction = 6;
 
-  // Optional: Lifecycle rules
-  LifecycleConfig lifecycle = 7;
+  // Default storage class for new objects: Standard or InfrequentAccess
+  CloudflareR2StorageClass storage_class = 7;
 
-  // Optional: Jurisdiction (EU, FedRAMP)
-  string jurisdiction = 8;
+  // CORS, lifecycle, and object-lock configuration (all optional)
+  CloudflareR2BucketCorsConfig cors = 8;
+  CloudflareR2BucketLifecycleConfig lifecycle = 9;
+  CloudflareR2BucketLockConfig lock = 10;
 }
 ```
 
@@ -589,7 +582,7 @@ rclone sync s3:my-s3-bucket r2:my-r2-bucket --progress
 
 3. **Manual management is an anti-pattern.** Use IaC (Terraform or Pulumi) for production. The Cloudflare provider is mature and stable.
 
-4. **The 80/20 config is bucket name, account ID, location, and public access settings.** Advanced features (CORS, lifecycle, custom domains) are opt-in for specific use cases.
+4. **The common path is bucket name, account ID, and location;** storage class and jurisdiction default sensibly, and the data-management features (custom domains, CORS, lifecycle, object lock) are opt-in nested config.
 
 5. **For public buckets, use custom domains in production.** The `r2.dev` URL is rate-limited and lacks CDN features—fine for dev/test, not for production.
 
@@ -625,5 +618,5 @@ The cloud storage wars are over. Cloudflare won on egress. The question is: are 
 
 ---
 
-**Bottom Line:** Cloudflare R2 gives you S3-compatible object storage with zero egress fees, strong consistency, and production-grade durability at a fraction of the cost of AWS/GCP/Azure for content delivery and multi-cloud workflows. Manage it with Terraform or Pulumi, design for the 80% use case, and let OpenMCF abstract the complexity into a clean, protobuf API. The result: predictable costs, portable architecture, and freedom from vendor lock-in.
+**Bottom Line:** Cloudflare R2 gives you S3-compatible object storage with zero egress fees, strong consistency, and production-grade durability at a fraction of the cost of AWS/GCP/Azure for content delivery and multi-cloud workflows. Manage it with Terraform or Pulumi, cover the provider surface to the floor, and let OpenMCF abstract the complexity into a clean, protobuf API. The result: predictable costs, portable architecture, and freedom from vendor lock-in.
 

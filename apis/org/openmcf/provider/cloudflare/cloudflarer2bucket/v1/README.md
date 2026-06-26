@@ -14,7 +14,7 @@ This fundamental shift makes R2 ideal for:
 - **Multi-cloud architectures** (store once, serve anywhere without vendor lock-in)
 - **Backup repositories** (retrieve when needed without surprise bills)
 
-R2 is S3-compatible for data operations (GET/PUT/DELETE, multipart uploads, presigned URLs), allowing most S3 tools and SDKs to work with minimal changes. It's simpler than S3 by design—optimized for the 80% use case of storing and serving content, without the complexity of advanced AWS features.
+R2 is S3-compatible for data operations (GET/PUT/DELETE, multipart uploads, presigned URLs), allowing most S3 tools and SDKs to work with minimal changes. It covers the object-storage surface most teams actually use—storage class and jurisdiction, public and custom-domain access, CORS, lifecycle transitions and expiration, and object lock—without legacy AWS-specific complexity.
 
 ### Key Features
 
@@ -78,16 +78,31 @@ This creates an R2 bucket in Western Europe with private access (authentication 
   - `oc`: Oceania
   - The hint is only honored when the bucket is first created and is best-effort.
 
+- **`jurisdiction`** (string): Data-residency jurisdiction - Default: `default`
+  - One of `default` (standard global), `eu` (European Union), `fedramp` (US FedRAMP)
+  - Fixed at creation; applied to the bucket and every bucket-scoped sub-resource
+
+- **`storageClass`** (enum): Default storage class for new objects - Default: `Standard`
+  - `Standard` for frequently accessed data; `InfrequentAccess` for cheaper, rarely accessed data
+
 - **`publicAccess`** (bool): Expose the bucket via Cloudflare's managed r2.dev public URL - Default: `false`
   - `false`: Bucket requires authentication (API keys or presigned URLs)
   - **Note**: r2.dev URLs are rate-limited; use a custom domain for production public buckets
 
-- **`customDomain`** (object): Custom domain configuration for the bucket
-  - **`enabled`** (bool): Whether to enable custom domain access
+- **`customDomains`** (list): Custom domains serving the bucket over your own hostnames. A bucket may have multiple.
+  - **`enabled`** (bool): Whether to enable this custom domain
   - **`zoneId`** (StringValueOrRef): Cloudflare Zone ID where the domain exists
     - Can be a literal value: `zoneId: { value: "..." }`
     - Or reference a CloudflareDnsZone: `zoneId: { valueFrom: { name: "my-dns-zone" } }`
   - **`domain`** (string): Full domain name (e.g., "media.example.com")
+  - **`minTls`** (string): Minimum TLS version (`1.0`–`1.3`); defaults to `1.0`
+  - **`ciphers`** (list): Optional allowlist of TLS ciphers (BoringSSL format)
+
+- **`cors`** (object): CORS configuration. `cors.rules[]` each specify `allowed.methods`, `allowed.origins`, optional `allowed.headers`, `exposeHeaders`, and `maxAgeSeconds`.
+
+- **`lifecycle`** (object): Object-lifecycle rules. `lifecycle.rules[]` automate storage-class transitions, object expiration, and cleanup of incomplete multipart uploads.
+
+- **`lock`** (object): Object-lock (retention) rules. `lock.rules[]` retain matching objects (write-once) for an age, until a date, or indefinitely.
 
 ## Common Patterns
 
@@ -183,14 +198,15 @@ R2 is S3-compatible for data operations:
 ✅ **Range Requests**: Partial object downloads  
 ✅ **Metadata**: Custom object metadata  
 ✅ **ETags**: Content integrity verification  
-✅ **CORS**: Cross-origin resource sharing (configured via S3 API)  
+✅ **CORS**: Cross-origin resource sharing (configured declaratively via `cors.rules`)  
+✅ **Object Lock**: Write-once retention (configured declaratively via `lock.rules`)  
+✅ **Lifecycle**: Storage-class transitions and expiration (configured via `lifecycle.rules`)  
 
 ### Not Supported
 
 ❌ **Object Versioning**: R2 does not support versioning  
 ❌ **Bucket Policies**: Use R2 API tokens for access control  
 ❌ **Static Website Hosting**: Use Cloudflare Pages instead  
-❌ **Object Lock/Legal Hold**: Not available  
 ❌ **S3 Select**: Query-in-place not supported  
 
 ### Using AWS CLI with R2
@@ -237,23 +253,24 @@ spec:
   bucketName: media-assets
   accountId: "0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"
   location: weur
-  customDomain:
-    enabled: true
-    zoneId:
-      value: "f1e2d3c4b5a6978899aabbccddeeff00"  # Your Cloudflare Zone ID
-    domain: "media.example.com"
+  customDomains:
+    - enabled: true
+      zoneId:
+        value: "f1e2d3c4b5a6978899aabbccddeeff00"  # Your Cloudflare Zone ID
+      domain: "media.example.com"
+      minTls: "1.2"
 ```
 
 Or reference a `CloudflareDnsZone` resource:
 
 ```yaml
 spec:
-  customDomain:
-    enabled: true
-    zoneId:
-      valueFrom:
-        name: my-dns-zone  # References CloudflareDnsZone named "my-dns-zone"
-    domain: "media.example.com"
+  customDomains:
+    - enabled: true
+      zoneId:
+        valueFrom:
+          name: my-dns-zone  # References CloudflareDnsZone named "my-dns-zone"
+      domain: "media.example.com"
 ```
 
 **Benefits**:
@@ -331,7 +348,7 @@ rclone sync s3:my-s3-bucket r2:my-r2-bucket --progress
 
 1. **Use location hints strategically**: Choose the region closest to most users
 2. **Custom domains for production public buckets**: Don't rely on rate-limited r2.dev URLs
-3. **Enable CORS via S3 API**: Configure cross-origin access for web apps
+3. **Configure CORS declaratively**: Use `cors.rules` to grant web apps cross-origin access
 4. **Use presigned URLs for temporary access**: Better than embedding credentials
 5. **Monitor costs in Cloudflare Dashboard**: Track storage and operation usage
 6. **Plan for no versioning**: Implement application-level versioning if needed
@@ -385,7 +402,7 @@ See the [Common Patterns](#common-patterns) above and the ready-to-use [presets]
 
 ## Documentation
 
-- **[Research Documentation](./docs/README.md)**: Deep dive into R2 architecture, deployment methods, and 80/20 scoping decisions
+- **[Research Documentation](./docs/README.md)**: Deep dive into R2 architecture, deployment methods, and 90/10 coverage decisions
 - **[Pulumi Module](./iac/pulumi/README.md)**: Pulumi deployment guide and architecture
 - **[Terraform Module](./iac/tf/README.md)**: Terraform deployment guide
 

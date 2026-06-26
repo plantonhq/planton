@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.openmcf.provider.cloudflare.cloudflarezerotrusttunnel.v1;
+
+import "org/openmcf/provider/cloudflare/cloudflarezerotrusttunnel/v1/api.proto";
+import "org/openmcf/provider/cloudflare/provider.proto";
+
+//cloudflare-zero-trust-tunnel stack-input
+message CloudflareZeroTrustTunnelStackInput {
+  //target cloud-resource
+  CloudflareZeroTrustTunnel target = 1;
+  //provider-config
+  org.openmcf.provider.cloudflare.CloudflareProviderConfig provider_config = 2;
+}

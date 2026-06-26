@@ -383,6 +383,30 @@ These can be added as optional fields when needed, but most Workers are simple r
 
 ---
 
+## Static Assets: Static Sites and Full-Stack Apps
+
+A Worker is no longer only "code." With **Workers Static Assets**, a Worker can upload and serve a directory of built files (HTML/CSS/JS/images) directly from Cloudflare's edge — and optionally pair that with a script that handles dynamic routes. This is Cloudflare's converged successor to Cloudflare Pages for the *build-and-upload* hosting model: the same product surface now hosts static sites, single-page apps, and full-stack apps, and — crucially for IaC — the asset directory is a **managed attribute of the Worker resource**, so a deploy with a changed directory ships a new version as ordinary desired state.
+
+Set it via `spec.assets`:
+
+- `directory` — the built site to upload (e.g. your `dist`). Interpreted on the deploy runner.
+- `bindingName` — optionally exposes the asset namespace to the script as `env.<NAME>`, so server code can serve assets explicitly (`env.ASSETS.fetch(request)`).
+- `config` — serving behavior: `htmlHandling` (trailing-slash strategy), `notFoundHandling` (`none` | `404-page` | `single-page-application` — the SPA fallback), `headers` (a `_headers` file body), `redirects` (a `_redirects` file body), and run-order control via `runWorkerFirst` (a single on/off for all paths) **or** `runWorkerFirstRules` (per-path rules; `!`-prefixed exclusions take precedence). The two run-order fields are mutually exclusive.
+
+Three shapes fall out of this:
+
+| Shape | `assets` | script source (`content`/`r2Bundle`) | Result |
+|---|---|---|---|
+| Static site / SPA | set | unset | Pure static hosting at the edge |
+| Full-stack app | set | set | Script serves dynamic routes; assets serve the rest |
+| Classic Worker | unset | set | A pure request handler (no static assets) |
+
+The spec rule mirrors the Cloudflare API exactly: a Worker must carry **a script source, assets, or both** (the two script sources remain mutually exclusive). For an assets-only Worker, `content` and `mainModule` are omitted so the provider treats it as an assets-only script.
+
+**Two hosting models, by who owns the build.** Workers Static Assets is the *you-build-then-upload* model (your CI or Planton's pipeline produces the directory, then the deploy uploads it) and fits the normal declarative deploy flow. The complementary *Cloudflare-builds-on-git-push* model is served by a separate Pages-project resource that carries the git connection and lets Cloudflare's own build pipeline produce each deployment. Pick Workers Static Assets when you want to own the build and deploy as state; pick the git-connected Pages project when you want Cloudflare to be the CI.
+
+---
+
 ## Production Configuration Examples
 
 ### Example 1: Minimal Worker (Dev/Test)
@@ -576,7 +600,7 @@ Because secrets are write-only, implement a rotation process:
 
 5. **OpenMCF solves artifact storage.** By referencing R2-hosted bundles, the `CloudflareWorker` API decouples build from deploy, enabling immutable artifacts and GitOps workflows.
 
-6. **Workers are primitives, not platforms.** Cloudflare Pages is the opinionated, GitOps-native platform. Workers are the low-level primitive for teams that want declarative control.
+6. **Workers now host static sites too.** With Workers Static Assets, a Worker hosts static sites, SPAs, and full-stack apps — Cloudflare's converged successor to Pages for the build-and-upload model — and deploys as ordinary desired state. The git-connected "Cloudflare builds on push" model remains available via a dedicated Pages-project resource.
 
 ---
 

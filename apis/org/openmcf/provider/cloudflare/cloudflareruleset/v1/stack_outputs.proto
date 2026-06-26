@@ -15,4 +15,7 @@ message CloudflareRulesetStackOutputs {
 
   // The phase the ruleset executes in (pass-through for infra-chart conditionals).
   string phase = 4;
+
+  // RFC3339 timestamp of the ruleset's last update.
+  string last_updated = 5;
 }

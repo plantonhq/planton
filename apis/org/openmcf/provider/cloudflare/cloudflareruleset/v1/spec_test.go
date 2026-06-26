@@ -122,6 +122,142 @@ var _ = ginkgo.Describe("CloudflareRulesetSpec Validation", func() {
 			}
 			gomega.Expect(protovalidate.Validate(r)).To(gomega.BeNil())
 		})
+
+		ginkgo.It("accepts a rate-limit rule", func() {
+			r := validResource()
+			r.Spec.Phase = CloudflareRulesetSpec_http_ratelimit
+			r.Spec.Rules = []*CloudflareRulesetRule{
+				{
+					Expression: "true",
+					Action:     CloudflareRulesetRule_block,
+					Enabled:    boolPtr(true),
+					Ratelimit: &CloudflareRulesetRatelimit{
+						Characteristics:   []string{"ip.src", "cf.colo.id"},
+						Period:            60,
+						RequestsPerPeriod: 100,
+						MitigationTimeout: 600,
+					},
+				},
+			}
+			gomega.Expect(protovalidate.Validate(r)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("accepts a set_config rule with config settings", func() {
+			r := validResource()
+			r.Spec.Phase = CloudflareRulesetSpec_http_config_settings
+			r.Spec.Rules = []*CloudflareRulesetRule{
+				{
+					Expression: "true",
+					Action:     CloudflareRulesetRule_set_config,
+					Enabled:    boolPtr(true),
+					ActionParameters: &CloudflareRulesetActionParameters{
+						Ssl:           "full",
+						SecurityLevel: "high",
+						Polish:        "lossless",
+						RocketLoader:  boolPtr(true),
+						Autominify:    &CloudflareRulesetAutominify{Css: boolPtr(true), Js: boolPtr(true)},
+					},
+				},
+			}
+			gomega.Expect(protovalidate.Validate(r)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("accepts an advanced cache rule with custom cache key", func() {
+			r := validResource()
+			r.Spec.Phase = CloudflareRulesetSpec_http_request_cache_settings
+			r.Spec.Rules = []*CloudflareRulesetRule{
+				{
+					Expression: "true",
+					Action:     CloudflareRulesetRule_set_cache_settings,
+					Enabled:    boolPtr(true),
+					ActionParameters: &CloudflareRulesetActionParameters{
+						Cache:   true,
+						EdgeTtl: &CloudflareRulesetEdgeTtl{Mode: "override_origin", DefaultTtl: 7200},
+						CacheKey: &CloudflareRulesetCacheKey{
+							CacheByDeviceType: boolPtr(true),
+							CustomKey: &CloudflareRulesetCacheKeyCustomKey{
+								QueryString: &CloudflareRulesetCacheKeyQueryString{
+									Include: &CloudflareRulesetCacheKeyQueryStringFilter{All: boolPtr(true)},
+								},
+							},
+						},
+						CacheReserve: &CloudflareRulesetCacheReserve{Eligible: true, MinimumFileSize: 1024},
+					},
+				},
+			}
+			gomega.Expect(protovalidate.Validate(r)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("accepts a set_cache_control rule with directives", func() {
+			r := validResource()
+			r.Spec.Phase = CloudflareRulesetSpec_http_response_headers_transform
+			r.Spec.Rules = []*CloudflareRulesetRule{
+				{
+					Expression: "true",
+					Action:     CloudflareRulesetRule_set_cache_control,
+					Enabled:    boolPtr(true),
+					ActionParameters: &CloudflareRulesetActionParameters{
+						MaxAge:  &CloudflareRulesetCacheControlValue{Operation: "set", Value: 3600},
+						Private: &CloudflareRulesetCacheControlQualifiers{Operation: "set", Qualifiers: []string{"Set-Cookie"}},
+						NoStore: &CloudflareRulesetCacheControlFlag{Operation: "set"},
+					},
+				},
+			}
+			gomega.Expect(protovalidate.Validate(r)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("accepts a log_custom_field rule", func() {
+			r := validResource()
+			r.Spec.Phase = CloudflareRulesetSpec_http_log_custom_fields
+			r.Spec.Rules = []*CloudflareRulesetRule{
+				{
+					Expression: "true",
+					Action:     CloudflareRulesetRule_log_custom_field,
+					Enabled:    boolPtr(true),
+					ActionParameters: &CloudflareRulesetActionParameters{
+						RequestFields:  []*CloudflareRulesetLogField{{Name: "cf-ray"}},
+						ResponseFields: []*CloudflareRulesetLogResponseField{{Name: "x-trace-id", PreserveDuplicates: true}},
+					},
+				},
+			}
+			gomega.Expect(protovalidate.Validate(r)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("accepts an exposed-credential-check rule", func() {
+			r := validResource()
+			r.Spec.Phase = CloudflareRulesetSpec_http_request_firewall_custom
+			r.Spec.Rules = []*CloudflareRulesetRule{
+				{
+					Expression: "http.request.method eq \"POST\"",
+					Action:     CloudflareRulesetRule_managed_challenge,
+					Enabled:    boolPtr(true),
+					ExposedCredentialCheck: &CloudflareRulesetExposedCredentialCheck{
+						UsernameExpression: "url_decode(http.request.body.form[\"user\"][0])",
+						PasswordExpression: "url_decode(http.request.body.form[\"pass\"][0])",
+					},
+				},
+			}
+			gomega.Expect(protovalidate.Validate(r)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("accepts a bulk-redirect rule referencing a list by name", func() {
+			r := validResource()
+			r.Spec.Phase = CloudflareRulesetSpec_http_request_redirect
+			r.Spec.Rules = []*CloudflareRulesetRule{
+				{
+					Expression: "true",
+					Action:     CloudflareRulesetRule_redirect,
+					Enabled:    boolPtr(true),
+					ActionParameters: &CloudflareRulesetActionParameters{
+						FromList: &CloudflareRulesetFromList{
+							Name: &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "my_redirects"}},
+							Key:  "http.request.full_uri",
+						},
+					},
+				},
+			}
+			gomega.Expect(protovalidate.Validate(r)).To(gomega.BeNil())
+		})
 	})
 
 	// ---- Negative cases ----
@@ -180,6 +316,127 @@ var _ = ginkgo.Describe("CloudflareRulesetSpec Validation", func() {
 			err := protovalidate.Validate(r)
 			gomega.Expect(err).ToNot(gomega.BeNil())
 			gomega.Expect(err.Error()).To(gomega.ContainSubstring("action"))
+		})
+
+		ginkgo.It("rejects an invalid ssl mode", func() {
+			r := validResource()
+			r.Spec.Rules[0].ActionParameters = &CloudflareRulesetActionParameters{Ssl: "totally-secure"}
+			err := protovalidate.Validate(r)
+			gomega.Expect(err).ToNot(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("ssl"))
+		})
+
+		ginkgo.It("rejects an invalid security_level", func() {
+			r := validResource()
+			r.Spec.Rules[0].ActionParameters = &CloudflareRulesetActionParameters{SecurityLevel: "paranoid"}
+			err := protovalidate.Validate(r)
+			gomega.Expect(err).ToNot(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("security_level"))
+		})
+
+		ginkgo.It("rejects a from_list whose list name is empty", func() {
+			r := validResource()
+			r.Spec.Phase = CloudflareRulesetSpec_http_request_redirect
+			r.Spec.Rules = []*CloudflareRulesetRule{
+				{
+					Expression: "true",
+					Action:     CloudflareRulesetRule_redirect,
+					Enabled:    boolPtr(true),
+					ActionParameters: &CloudflareRulesetActionParameters{
+						FromList: &CloudflareRulesetFromList{
+							Name: &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: ""}},
+							Key:  "http.request.full_uri",
+						},
+					},
+				},
+			}
+			err := protovalidate.Validate(r)
+			gomega.Expect(err).ToNot(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects a from_list missing the list name", func() {
+			r := validResource()
+			r.Spec.Phase = CloudflareRulesetSpec_http_request_redirect
+			r.Spec.Rules = []*CloudflareRulesetRule{
+				{
+					Expression: "true",
+					Action:     CloudflareRulesetRule_redirect,
+					Enabled:    boolPtr(true),
+					ActionParameters: &CloudflareRulesetActionParameters{
+						FromList: &CloudflareRulesetFromList{
+							Key: "http.request.full_uri",
+						},
+					},
+				},
+			}
+			err := protovalidate.Validate(r)
+			gomega.Expect(err).ToNot(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects an invalid polish value", func() {
+			r := validResource()
+			r.Spec.Rules[0].ActionParameters = &CloudflareRulesetActionParameters{Polish: "max"}
+			err := protovalidate.Validate(r)
+			gomega.Expect(err).ToNot(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("polish"))
+		})
+
+		ginkgo.It("rejects an invalid content_type for serve_error", func() {
+			r := validResource()
+			r.Spec.Rules[0].ActionParameters = &CloudflareRulesetActionParameters{ContentType: "text/markdown"}
+			err := protovalidate.Validate(r)
+			gomega.Expect(err).ToNot(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("content_type"))
+		})
+
+		ginkgo.It("rejects an invalid set_cache_tags operation", func() {
+			r := validResource()
+			r.Spec.Rules[0].ActionParameters = &CloudflareRulesetActionParameters{Operation: "append"}
+			err := protovalidate.Validate(r)
+			gomega.Expect(err).ToNot(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("operation"))
+		})
+
+		ginkgo.It("rejects an invalid edge_ttl mode", func() {
+			r := validResource()
+			r.Spec.Rules[0].ActionParameters = &CloudflareRulesetActionParameters{
+				EdgeTtl: &CloudflareRulesetEdgeTtl{Mode: "always_cache"},
+			}
+			err := protovalidate.Validate(r)
+			gomega.Expect(err).ToNot(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("mode"))
+		})
+
+		ginkgo.It("rejects an invalid header operation", func() {
+			r := validResource()
+			r.Spec.Rules[0].ActionParameters = &CloudflareRulesetActionParameters{
+				Headers: map[string]*CloudflareRulesetHeader{
+					"X-Foo": {Operation: "upsert", Value: "bar"},
+				},
+			}
+			err := protovalidate.Validate(r)
+			gomega.Expect(err).ToNot(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("operation"))
+		})
+
+		ginkgo.It("rejects an invalid overrides sensitivity_level", func() {
+			r := validResource()
+			r.Spec.Rules[0].ActionParameters = &CloudflareRulesetActionParameters{
+				Overrides: &CloudflareRulesetOverrides{SensitivityLevel: "extreme"},
+			}
+			err := protovalidate.Validate(r)
+			gomega.Expect(err).ToNot(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("sensitivity_level"))
+		})
+
+		ginkgo.It("rejects a ratelimit with empty characteristics", func() {
+			r := validResource()
+			r.Spec.Phase = CloudflareRulesetSpec_http_ratelimit
+			r.Spec.Rules[0].Action = CloudflareRulesetRule_block
+			r.Spec.Rules[0].ActionParameters = nil
+			r.Spec.Rules[0].Ratelimit = &CloudflareRulesetRatelimit{Characteristics: nil, Period: 60}
+			err := protovalidate.Validate(r)
+			gomega.Expect(err).ToNot(gomega.BeNil())
 		})
 	})
 })

@@ -14,16 +14,18 @@ Common use cases include:
 - **Redirect Rules** (`http_request_dynamic_redirect`) — Redirect requests with custom status codes
 - **Transform Rules** (`http_request_transform`, `http_response_headers_transform`) — Rewrite URLs or modify headers
 
-This component follows the **80/20 principle**: it exposes the action parameters needed for the most common ruleset types while keeping the API manageable. Niche settings (autominify, polish, rocket loader, etc.) are intentionally excluded.
+This component models the full v5 `cloudflare_ruleset` surface — every phase and action, with the complete `action_parameters` tree — so an advanced organization can reach the long tail (custom cache keys, Cache Reserve, set_config, set_cache_control directives, log custom fields, rate limiting) rather than just the common knobs.
 
 ## Key Features
 
 - **All 24 Phases**: Full coverage of Cloudflare's request processing pipeline
-- **13 Action Types**: route, block, challenge, execute, skip, redirect, rewrite, set_cache_settings, and more
+- **20 Action Types**: route, block, challenge, execute, skip, redirect, rewrite, score, compress_response, serve_error, set_cache_settings, set_cache_control, set_cache_tags, set_config, log_custom_field, and more
+- **Rate Limiting**: Per-rule `ratelimit` (characteristics, period, thresholds, mitigation timeout) for the `http_ratelimit` phase
+- **Configuration Rules**: `set_config` per-path settings — SSL mode, security level, Rocket Loader, Polish, auto-minify, email obfuscation, and the rest
 - **Origin Override**: Route traffic to different origins with custom Host headers and SNI
-- **Managed WAF Integration**: Execute Cloudflare's managed rulesets with per-rule and per-category overrides
-- **Cache Control**: Edge TTL, browser TTL, status-code-specific TTLs, and serve-stale configuration
-- **Validation**: Built-in protobuf validation for required fields, enum ranges, and mutual-exclusion constraints
+- **Managed WAF Integration**: Execute Cloudflare's managed rulesets with per-rule and per-category overrides; `exposed_credential_check` for leaked-credential detection
+- **Advanced Cache Control**: Custom cache keys (cookie/header/host/query-string/user), Cache Reserve, edge/browser TTLs, vary, set-cache-control directives, and serve-stale
+- **Validation**: Built-in protobuf/CEL validation for required fields, enum value sets, and mutual-exclusion constraints
 - **Zone or Account Scope**: Create rulesets at zone level (single domain) or account level (all domains)
 
 ## Prerequisites
@@ -143,10 +145,13 @@ spec:
 |-------|------|----------|-------------|
 | `ref` | string | No | Stable reference ID (prevents rule recreation) |
 | `expression` | string | Yes | Cloudflare wirefilter expression |
-| `action` | enum | Yes | Action to perform (13 values) |
+| `action` | enum | Yes | Action to perform (20 values) |
 | `description` | string | No | Rule description |
 | `enabled` | bool | No (default: true) | Whether rule is active |
 | `actionParameters` | message | Depends on action | Action-specific configuration |
+| `ratelimit` | message | For `http_ratelimit` | Rate-limit characteristics, period, thresholds |
+| `logging` | message | No | Per-rule logging toggle |
+| `exposedCredentialCheck` | message | No | Leaked-credential detection expressions |
 
 ### Action Parameters (by action type)
 
@@ -157,8 +162,16 @@ spec:
 | `rewrite` | `uri { path, query }`, `headers` (map) |
 | `redirect` | `fromValue { targetUrl, statusCode, preserveQueryString }` |
 | `skip` | `phases`, `products`, `ruleset`, `rulesets` |
-| `execute` | `id`, `overrides { action, enabled, categories, rules }` |
-| `set_cache_settings` | `cache`, `edgeTtl`, `browserTtl`, `serveStale` |
+| `execute` | `id`, `overrides { action, enabled, categories, rules }`, `matchedData { publicKey }` |
+| `redirect` (from list) | `fromList { name (literal list name or a reference to a CloudflareList), key }` |
+| `score` | `increment` |
+| `compress_response` | `algorithms [{ name }]` |
+| `serve_error` | `assetName`, `content`, `contentType`, `statusCode` |
+| `set_cache_settings` | `cache`, `edgeTtl`, `browserTtl`, `serveStale`, `cacheKey`, `cacheReserve`, `vary`, `additionalCacheablePorts`, strip/respect toggles |
+| `set_cache_control` | `maxAge`, `sMaxage`, `staleWhileRevalidate`, `private`, `noCache`, `mustRevalidate`, `immutable`, `noStore`, `public`, … |
+| `set_cache_tags` | `operation`, `values`, `expression` |
+| `set_config` | `ssl`, `securityLevel`, `polish`, `rocketLoader`, `autominify`, `bic`, `emailObfuscation`, … |
+| `log_custom_field` | `cookieFields`, `requestFields`, `responseFields`, `rawResponseFields`, `transformedRequestFields` |
 
 ## Stack Outputs
 
@@ -168,6 +181,7 @@ spec:
 | `version` | string | Current ruleset version |
 | `zone_id` | string | Zone ID (pass-through) |
 | `phase` | string | Phase (pass-through) |
+| `last_updated` | string | RFC3339 timestamp of the ruleset's last update |
 
 ## Phases Reference
 

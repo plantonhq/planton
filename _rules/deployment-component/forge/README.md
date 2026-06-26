@@ -38,7 +38,7 @@ When you run forge, you get a fully-implemented deployment component:
   - Deployment landscape analysis
   - Method comparisons
   - Best practices
-  - 80/20 scoping rationale
+  - 90/10 coverage rationale
 
 ### Supporting Files
 - ✅ `iac/hack/manifest.yaml` - Test manifest
@@ -307,7 +307,7 @@ Forge creates a **production-ready baseline**. Common customizations:
 
 1. **Research the resource** - Understand what you're creating
 2. **Check if it exists** - Run `@audit-openmcf-component` first
-3. **Plan your API** - Know which fields are essential (80/20)
+3. **Plan your API** - Know the provider's real surface and cover it to the floor (90/10)
 4. **Gather examples** - Have reference configurations ready
 
 ### During Forge

@@ -1,0 +1,17 @@
+apiVersion: cloudflare.openmcf.org/v1
+kind: CloudflareLoadBalancerMonitor
+metadata:
+  name: web-https
+spec:
+  accountId: <cloudflare-account-id>
+  type: https
+  path: /healthz
+  expectedCodes: "2xx"
+  method: GET
+  interval: 60
+  timeout: 5
+  retries: 2
+  headers:
+    - name: Host
+      values:
+        - <origin-host>

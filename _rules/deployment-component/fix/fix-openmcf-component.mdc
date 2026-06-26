@@ -167,7 +167,7 @@ go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/
 3. **Update docs/README.md** (research document)
    - Update if fix changes deployment approach
    - Update if fix changes best practices
-   - Update if fix affects 80/20 scoping decisions
+   - Update if fix affects 90/10 coverage decisions
    - Generally more stable (only update if architectural change)
 
 4. **Update IaC READMEs** (Pulumi/Terraform)

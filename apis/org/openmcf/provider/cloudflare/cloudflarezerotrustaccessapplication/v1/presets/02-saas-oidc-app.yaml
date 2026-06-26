@@ -1,0 +1,27 @@
+apiVersion: cloudflare.openmcf.org/v1
+kind: CloudflareZeroTrustAccessApplication
+metadata:
+  name: grafana-saas
+spec:
+  accountId: "REPLACE_WITH_ACCOUNT_ID"
+  name: grafana
+  type: saas
+  # Federate into a SaaS app over OIDC. Cloudflare issues the client_id/secret
+  # (exported as stack outputs) for you to paste into the SaaS provider.
+  saasApp:
+    authType: oidc
+    redirectUris:
+      - https://grafana.example.com/login/generic_oauth
+    grantTypes:
+      - authorization_code
+    scopes:
+      - openid
+      - email
+      - profile
+  policies:
+    - policy:
+        valueFrom:
+          kind: CloudflareZeroTrustAccessPolicy
+          name: allow-staff
+          fieldPath: status.outputs.policy_id
+      precedence: 1

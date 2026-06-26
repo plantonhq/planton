@@ -22,13 +22,34 @@ const (
 )
 
 // **CloudflareDnsZoneStackOutputs** captures the outputs after provisioning a Cloudflare DNS Zone.
-// It includes the zone's unique identifier and the nameservers assigned to the zone.
+// It includes the zone's identifier, assigned nameservers, status, and — when DNSSEC is
+// enabled — the DS record material to enter at the domain registrar.
 type CloudflareDnsZoneStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Cloudflare Zone ID of the created DNS zone.
 	ZoneId string `protobuf:"bytes,1,opt,name=zone_id,json=zoneId,proto3" json:"zone_id,omitempty"`
 	// The list of nameserver addresses assigned to this DNS zone.
-	Nameservers   []string `protobuf:"bytes,2,rep,name=nameservers,proto3" json:"nameservers,omitempty"`
+	Nameservers []string `protobuf:"bytes,2,rep,name=nameservers,proto3" json:"nameservers,omitempty"`
+	// The zone status on Cloudflare (e.g., "initializing", "pending", "active", "moved").
+	Status string `protobuf:"bytes,3,opt,name=status,proto3" json:"status,omitempty"`
+	// DNSSEC status (e.g., "active", "disabled"). Empty when DNSSEC is not enabled.
+	DnssecStatus string `protobuf:"bytes,4,opt,name=dnssec_status,json=dnssecStatus,proto3" json:"dnssec_status,omitempty"`
+	// The full DS record to enter at your registrar. Empty unless DNSSEC is enabled.
+	DnssecDs string `protobuf:"bytes,5,opt,name=dnssec_ds,json=dnssecDs,proto3" json:"dnssec_ds,omitempty"`
+	// The DS record digest. Empty unless DNSSEC is enabled.
+	DnssecDigest string `protobuf:"bytes,6,opt,name=dnssec_digest,json=dnssecDigest,proto3" json:"dnssec_digest,omitempty"`
+	// The DS digest type code (e.g., "2" for SHA-256). Empty unless DNSSEC is enabled.
+	DnssecDigestType string `protobuf:"bytes,7,opt,name=dnssec_digest_type,json=dnssecDigestType,proto3" json:"dnssec_digest_type,omitempty"`
+	// The DS digest algorithm name. Empty unless DNSSEC is enabled.
+	DnssecDigestAlgorithm string `protobuf:"bytes,8,opt,name=dnssec_digest_algorithm,json=dnssecDigestAlgorithm,proto3" json:"dnssec_digest_algorithm,omitempty"`
+	// The DNSKEY algorithm code. Empty unless DNSSEC is enabled.
+	DnssecAlgorithm string `protobuf:"bytes,9,opt,name=dnssec_algorithm,json=dnssecAlgorithm,proto3" json:"dnssec_algorithm,omitempty"`
+	// The DNSKEY key tag. Empty unless DNSSEC is enabled.
+	DnssecKeyTag string `protobuf:"bytes,10,opt,name=dnssec_key_tag,json=dnssecKeyTag,proto3" json:"dnssec_key_tag,omitempty"`
+	// The DNSKEY public key. Empty unless DNSSEC is enabled.
+	DnssecPublicKey string `protobuf:"bytes,11,opt,name=dnssec_public_key,json=dnssecPublicKey,proto3" json:"dnssec_public_key,omitempty"`
+	// The DNSKEY flags. Empty unless DNSSEC is enabled.
+	DnssecFlags   string `protobuf:"bytes,12,opt,name=dnssec_flags,json=dnssecFlags,proto3" json:"dnssec_flags,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -77,14 +98,95 @@ func (x *CloudflareDnsZoneStackOutputs) GetNameservers() []string {
 	return nil
 }
 
+func (x *CloudflareDnsZoneStackOutputs) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *CloudflareDnsZoneStackOutputs) GetDnssecStatus() string {
+	if x != nil {
+		return x.DnssecStatus
+	}
+	return ""
+}
+
+func (x *CloudflareDnsZoneStackOutputs) GetDnssecDs() string {
+	if x != nil {
+		return x.DnssecDs
+	}
+	return ""
+}
+
+func (x *CloudflareDnsZoneStackOutputs) GetDnssecDigest() string {
+	if x != nil {
+		return x.DnssecDigest
+	}
+	return ""
+}
+
+func (x *CloudflareDnsZoneStackOutputs) GetDnssecDigestType() string {
+	if x != nil {
+		return x.DnssecDigestType
+	}
+	return ""
+}
+
+func (x *CloudflareDnsZoneStackOutputs) GetDnssecDigestAlgorithm() string {
+	if x != nil {
+		return x.DnssecDigestAlgorithm
+	}
+	return ""
+}
+
+func (x *CloudflareDnsZoneStackOutputs) GetDnssecAlgorithm() string {
+	if x != nil {
+		return x.DnssecAlgorithm
+	}
+	return ""
+}
+
+func (x *CloudflareDnsZoneStackOutputs) GetDnssecKeyTag() string {
+	if x != nil {
+		return x.DnssecKeyTag
+	}
+	return ""
+}
+
+func (x *CloudflareDnsZoneStackOutputs) GetDnssecPublicKey() string {
+	if x != nil {
+		return x.DnssecPublicKey
+	}
+	return ""
+}
+
+func (x *CloudflareDnsZoneStackOutputs) GetDnssecFlags() string {
+	if x != nil {
+		return x.DnssecFlags
+	}
+	return ""
+}
+
 var File_org_openmcf_provider_cloudflare_cloudflarednszone_v1_stack_outputs_proto protoreflect.FileDescriptor
 
 const file_org_openmcf_provider_cloudflare_cloudflarednszone_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Horg/openmcf/provider/cloudflare/cloudflarednszone/v1/stack_outputs.proto\x124org.openmcf.provider.cloudflare.cloudflarednszone.v1\"Z\n" +
+	"Horg/openmcf/provider/cloudflare/cloudflarednszone/v1/stack_outputs.proto\x124org.openmcf.provider.cloudflare.cloudflarednszone.v1\"\xdf\x03\n" +
 	"\x1dCloudflareDnsZoneStackOutputs\x12\x17\n" +
 	"\azone_id\x18\x01 \x01(\tR\x06zoneId\x12 \n" +
-	"\vnameservers\x18\x02 \x03(\tR\vnameserversB\xb0\x03\n" +
+	"\vnameservers\x18\x02 \x03(\tR\vnameservers\x12\x16\n" +
+	"\x06status\x18\x03 \x01(\tR\x06status\x12#\n" +
+	"\rdnssec_status\x18\x04 \x01(\tR\fdnssecStatus\x12\x1b\n" +
+	"\tdnssec_ds\x18\x05 \x01(\tR\bdnssecDs\x12#\n" +
+	"\rdnssec_digest\x18\x06 \x01(\tR\fdnssecDigest\x12,\n" +
+	"\x12dnssec_digest_type\x18\a \x01(\tR\x10dnssecDigestType\x126\n" +
+	"\x17dnssec_digest_algorithm\x18\b \x01(\tR\x15dnssecDigestAlgorithm\x12)\n" +
+	"\x10dnssec_algorithm\x18\t \x01(\tR\x0fdnssecAlgorithm\x12$\n" +
+	"\x0ednssec_key_tag\x18\n" +
+	" \x01(\tR\fdnssecKeyTag\x12*\n" +
+	"\x11dnssec_public_key\x18\v \x01(\tR\x0fdnssecPublicKey\x12!\n" +
+	"\fdnssec_flags\x18\f \x01(\tR\vdnssecFlagsB\xb0\x03\n" +
 	"8com.org.openmcf.provider.cloudflare.cloudflarednszone.v1B\x11StackOutputsProtoP\x01Zjgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarednszone/v1;cloudflarednszonev1\xa2\x02\x05OOPCC\xaa\x024Org.Openmcf.Provider.Cloudflare.Cloudflarednszone.V1\xca\x024Org\\Openmcf\\Provider\\Cloudflare\\Cloudflarednszone\\V1\xe2\x02@Org\\Openmcf\\Provider\\Cloudflare\\Cloudflarednszone\\V1\\GPBMetadata\xea\x029Org::Openmcf::Provider::Cloudflare::Cloudflarednszone::V1b\x06proto3"
 
 var (

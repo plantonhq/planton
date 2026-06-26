@@ -62,7 +62,7 @@ The Protocol Buffer definitions are the foundation. Every other piece — IaC mo
 
 #### 1.1 Create `spec.proto`
 
-The spec defines the user-facing configuration fields. Design the spec around the 80/20 principle: cover the 20% of configuration options that satisfy 80% of deployment scenarios. Advanced settings can be added later.
+The spec defines the user-facing configuration fields. Design the spec around the 90/10 principle: cover the broad majority of the provider's real surface, benchmarked against the provider's own API as the floor for completeness, with sensible defaults so advanced fields stay out of the way until needed.
 
 ```protobuf
 syntax = "proto3";
@@ -426,7 +426,7 @@ Create `README.md` at the component root with a concise overview of what the com
 
 #### 5.2 Research Doc
 
-Create `docs/README.md` with deeper design rationale: why certain fields were chosen, what the 80/20 trade-offs are, deployment best practices, and anti-patterns to avoid.
+Create `docs/README.md` with deeper design rationale: why certain fields were chosen, what the 90/10 coverage trade-offs are, deployment best practices, and anti-patterns to avoid.
 
 #### 5.3 Hack Manifest
 
@@ -471,9 +471,9 @@ All checks must pass before submitting a pull request.
 
 ## Design Principles
 
-### 80/20 Rule
+### 90/10 Coverage
 
-Focus on the 20% of configuration that covers 80% of use cases. A component with 10 well-chosen fields is more valuable than one with 100 fields that nobody understands. Advanced options can always be added in follow-up iterations.
+Cover the broad majority of the provider's real surface, benchmarked against the provider's own API as the floor -- reach the long tail an advanced user needs, with sensible defaults so the common path stays simple. Quality is the constant: every field is researched, validated, and exercised in both engines; genuinely beta or niche knobs are skipped with a recorded reason.
 
 ### Deployment-Agnostic Specs
 

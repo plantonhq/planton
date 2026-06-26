@@ -1,0 +1,10 @@
+apiVersion: cloudflare.openmcf.org/v1
+kind: CloudflareTurnstileWidget
+metadata:
+  name: invisible-widget
+spec:
+  accountId: <cloudflare-account-id>
+  name: <widget-name>
+  domains:
+    - <domain>
+  mode: invisible

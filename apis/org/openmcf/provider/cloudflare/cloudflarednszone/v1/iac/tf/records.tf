@@ -8,7 +8,7 @@ resource "cloudflare_dns_record" "records" {
   zone_id = cloudflare_zone.main.id
   name    = each.value.name
   type    = each.value.type
-  content = each.value.value
+  content = each.value.content
   ttl     = each.value.ttl
 
   # proxied is only applicable to A, AAAA, and CNAME records

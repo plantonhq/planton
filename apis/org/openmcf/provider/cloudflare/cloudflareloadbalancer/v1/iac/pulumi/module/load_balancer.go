@@ -1,110 +1,147 @@
 package module
 
 import (
-	"fmt"
-
+	"github.com/pkg/errors"
+	cloudflareloadbalancerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflareloadbalancer/v1"
 	"github.com/pulumi/pulumi-cloudflare/sdk/v6/go/cloudflare"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// load_balancer provisions:
-//  1. A Monitor (health check)
-//  2. A Pool (collection of origins)
-//  3. The Load Balancer itself
-//
-// It also exports stack outputs defined in outputs.go.
+// load_balancer provisions the zone-scoped Cloudflare Load Balancer, wiring it to
+// account-scoped pools referenced by ID/reference. Pools and their monitors are
+// separate resources (CloudflareLoadBalancerPool / CloudflareLoadBalancerMonitor).
 func load_balancer(
 	ctx *pulumi.Context,
 	locals *Locals,
 	cloudflareProvider *cloudflare.Provider,
 ) (*cloudflare.LoadBalancer, error) {
+	spec := locals.CloudflareLoadBalancer.Spec
 
-	resourceName := locals.CloudflareLoadBalancer.Metadata.Name
+	var defaultPools pulumi.StringArray
+	for _, p := range spec.DefaultPools {
+		defaultPools = append(defaultPools, pulumi.String(p.GetValue()))
+	}
 
-	// The load balancer is zone-scoped, while the pool and monitor are
-	// account-scoped. Derive the account id from the zone so the spec only
-	// needs the zone reference.
-	zoneId := locals.CloudflareLoadBalancer.Spec.ZoneId.GetValue()
-	zone, err := cloudflare.LookupZone(ctx, &cloudflare.LookupZoneArgs{
-		ZoneId: pulumi.StringRef(zoneId),
-	}, pulumi.Provider(cloudflareProvider))
+	args := &cloudflare.LoadBalancerArgs{
+		ZoneId:       pulumi.String(spec.ZoneId.GetValue()),
+		Name:         pulumi.String(spec.Hostname),
+		DefaultPools: defaultPools,
+		FallbackPool: pulumi.String(spec.FallbackPool.GetValue()),
+	}
+
+	if spec.Description != "" {
+		args.Description = pulumi.StringPtr(spec.Description)
+	}
+	if spec.Proxied != nil {
+		args.Proxied = pulumi.BoolPtr(*spec.Proxied)
+	}
+	if spec.Enabled != nil {
+		args.Enabled = pulumi.BoolPtr(*spec.Enabled)
+	}
+	if spec.Ttl > 0 {
+		args.Ttl = pulumi.Float64Ptr(spec.Ttl)
+	}
+	if spec.SessionAffinity != cloudflareloadbalancerv1.CloudflareLoadBalancerSessionAffinity_none {
+		args.SessionAffinity = pulumi.StringPtr(spec.SessionAffinity.String())
+	}
+	if spec.SteeringPolicy != cloudflareloadbalancerv1.CloudflareLoadBalancerSteeringPolicy_off {
+		args.SteeringPolicy = pulumi.StringPtr(spec.SteeringPolicy.String())
+	}
+	if spec.SessionAffinityTtl > 0 {
+		args.SessionAffinityTtl = pulumi.Float64Ptr(spec.SessionAffinityTtl)
+	}
+
+	if saa := spec.SessionAffinityAttributes; saa != nil {
+		saaArgs := &cloudflare.LoadBalancerSessionAffinityAttributesArgs{
+			RequireAllHeaders: pulumi.BoolPtr(saa.RequireAllHeaders),
+		}
+		if saa.DrainDuration > 0 {
+			saaArgs.DrainDuration = pulumi.Float64Ptr(saa.DrainDuration)
+		}
+		if len(saa.Headers) > 0 {
+			saaArgs.Headers = pulumi.ToStringArray(saa.Headers)
+		}
+		if saa.Samesite != "" {
+			saaArgs.Samesite = pulumi.StringPtr(saa.Samesite)
+		}
+		if saa.Secure != "" {
+			saaArgs.Secure = pulumi.StringPtr(saa.Secure)
+		}
+		if saa.ZeroDowntimeFailover != "" {
+			saaArgs.ZeroDowntimeFailover = pulumi.StringPtr(saa.ZeroDowntimeFailover)
+		}
+		args.SessionAffinityAttributes = saaArgs
+	}
+
+	if m := geoPoolMap(spec.RegionPools); len(m) > 0 {
+		args.RegionPools = m
+	}
+	if m := geoPoolMap(spec.CountryPools); len(m) > 0 {
+		args.CountryPools = m
+	}
+	if m := geoPoolMap(spec.PopPools); len(m) > 0 {
+		args.PopPools = m
+	}
+
+	if ar := spec.AdaptiveRouting; ar != nil {
+		args.AdaptiveRouting = &cloudflare.LoadBalancerAdaptiveRoutingArgs{
+			FailoverAcrossPools: pulumi.BoolPtr(ar.FailoverAcrossPools),
+		}
+	}
+	if ls := spec.LocationStrategy; ls != nil && (ls.Mode != "" || ls.PreferEcs != "") {
+		lsArgs := &cloudflare.LoadBalancerLocationStrategyArgs{}
+		if ls.Mode != "" {
+			lsArgs.Mode = pulumi.StringPtr(ls.Mode)
+		}
+		if ls.PreferEcs != "" {
+			lsArgs.PreferEcs = pulumi.StringPtr(ls.PreferEcs)
+		}
+		args.LocationStrategy = lsArgs
+	}
+	if rs := spec.RandomSteering; rs != nil {
+		rsArgs := &cloudflare.LoadBalancerRandomSteeringArgs{}
+		if rs.DefaultWeight > 0 {
+			rsArgs.DefaultWeight = pulumi.Float64Ptr(rs.DefaultWeight)
+		}
+		if len(rs.PoolWeights) > 0 {
+			weights := pulumi.Float64Map{}
+			for k, v := range rs.PoolWeights {
+				weights[k] = pulumi.Float64(v)
+			}
+			rsArgs.PoolWeights = weights
+		}
+		args.RandomSteering = rsArgs
+	}
+
+	created, err := cloudflare.NewLoadBalancer(
+		ctx,
+		"load_balancer",
+		args,
+		pulumi.Provider(cloudflareProvider),
+	)
 	if err != nil {
-		return nil, fmt.Errorf("failed to look up zone for account id: %w", err)
-	}
-	accountId := zone.Account.Id
-
-	// ---------------------------------------------------------------------
-	// 1. Monitor (health check) – uses the health_probe_path from the spec.
-	// ---------------------------------------------------------------------
-	createdMonitor, err := cloudflare.NewLoadBalancerMonitor(ctx, "monitor",
-		&cloudflare.LoadBalancerMonitorArgs{
-			AccountId:     pulumi.String(accountId),
-			Type:          pulumi.String("https"),
-			Method:        pulumi.String("GET"),
-			Path:          pulumi.String(locals.CloudflareLoadBalancer.Spec.HealthProbePath),
-			ExpectedCodes: pulumi.String("2xx"),
-			Timeout:       pulumi.Int(5),
-			Interval:      pulumi.Int(60),
-			Retries:       pulumi.Int(2),
-			Description:   pulumi.String(fmt.Sprintf("Health check for %s", resourceName)),
-		}, pulumi.Provider(cloudflareProvider))
-	if err != nil {
-		return nil, fmt.Errorf("failed to create monitor: %w", err)
+		return nil, errors.Wrap(err, "failed to create cloudflare load balancer")
 	}
 
-	// ---------------------------------------------------------------------
-	// 2. Pool – one pool containing all declared origins.
-	// ---------------------------------------------------------------------
-	var poolOrigins cloudflare.LoadBalancerPoolOriginArray
-	for _, o := range locals.CloudflareLoadBalancer.Spec.Origins {
-		poolOrigins = append(poolOrigins, cloudflare.LoadBalancerPoolOriginArgs{
-			Name:    pulumi.String(o.Name),
-			Address: pulumi.String(o.Address),
-			Enabled: pulumi.Bool(true),
-			Weight:  pulumi.Float64Ptr(float64(o.Weight)),
-		})
+	ctx.Export(OpLoadBalancerId, created.ID())
+	ctx.Export(OpLoadBalancerDnsRecordName, created.Name)
+	// The CNAME target for a Cloudflare load balancer is its hostname (clients
+	// point their DNS at it); it is not the opaque load-balancer ID.
+	ctx.Export(OpLoadBalancerCnameTarget, created.Name)
+
+	return created, nil
+}
+
+// geoPoolMap converts a list of geo-pool mappings into the provider's
+// map[code] -> ordered pool IDs shape.
+func geoPoolMap(entries []*cloudflareloadbalancerv1.CloudflareLoadBalancerGeoPools) pulumi.StringArrayMap {
+	m := pulumi.StringArrayMap{}
+	for _, gp := range entries {
+		var ids pulumi.StringArray
+		for _, p := range gp.PoolIds {
+			ids = append(ids, pulumi.String(p.GetValue()))
+		}
+		m[gp.Code] = ids
 	}
-
-	createdPool, err := cloudflare.NewLoadBalancerPool(ctx, "pool", &cloudflare.LoadBalancerPoolArgs{
-		AccountId:   pulumi.String(accountId),
-		Name:        pulumi.String(resourceName + "-pool"),
-		Origins:     poolOrigins,
-		Monitor:     createdMonitor.ID(),
-		Enabled:     pulumi.Bool(true),
-		Description: pulumi.String(fmt.Sprintf("Pool for %s", resourceName)),
-	}, pulumi.Provider(cloudflareProvider))
-	if err != nil {
-		return nil, fmt.Errorf("failed to create pool: %w", err)
-	}
-
-	// ---------------------------------------------------------------------
-	// 3. Load Balancer – wires everything together.
-	// ---------------------------------------------------------------------
-	// Get steering policy and session affinity directly from enum strings.
-	// Enum values match Cloudflare API expected strings.
-	steering := pulumi.StringPtr(locals.CloudflareLoadBalancer.Spec.SteeringPolicy.String())
-	affinity := pulumi.StringPtr(locals.CloudflareLoadBalancer.Spec.SessionAffinity.String())
-
-	createdLoadBalancer, err := cloudflare.NewLoadBalancer(ctx, "load_balancer", &cloudflare.LoadBalancerArgs{
-		ZoneId:          pulumi.String(zoneId),
-		Name:            pulumi.String(locals.CloudflareLoadBalancer.Spec.Hostname),
-		DefaultPools:    pulumi.StringArray{createdPool.ID()},
-		FallbackPool:    createdPool.ID(),
-		Proxied:         pulumi.BoolPtr(locals.CloudflareLoadBalancer.Spec.Proxied),
-		SteeringPolicy:  steering,
-		SessionAffinity: affinity,
-		Description:     pulumi.String(fmt.Sprintf("Load balancer for %s", locals.CloudflareLoadBalancer.Spec.Hostname)),
-	}, pulumi.Provider(cloudflareProvider))
-	if err != nil {
-		return nil, fmt.Errorf("failed to create load balancer: %w", err)
-	}
-
-	// ---------------------------------------------------------------------
-	// 4. Stack outputs.
-	// ---------------------------------------------------------------------
-	ctx.Export(OpLoadBalancerId, createdLoadBalancer.ID())
-	ctx.Export(OpLoadBalancerDnsRecordName, pulumi.String(locals.CloudflareLoadBalancer.Spec.Hostname))
-	ctx.Export(OpLoadBalancerCnameTarget, createdLoadBalancer.ID())
-
-	return createdLoadBalancer, nil
+	return m
 }

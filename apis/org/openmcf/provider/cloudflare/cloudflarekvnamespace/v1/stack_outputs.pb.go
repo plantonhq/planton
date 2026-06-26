@@ -24,10 +24,13 @@ const (
 // CloudflareKvNamespaceStackOutputs captures the key outputs after provisioning a Cloudflare KV namespace.
 type CloudflareKvNamespaceStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The unique identifier (ID) of the created KV namespace.
-	NamespaceId   string `protobuf:"bytes,1,opt,name=namespace_id,json=namespaceId,proto3" json:"namespace_id,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	// The unique identifier (ID) of the created KV namespace. A Worker's
+	// `kv_namespace` binding and a CloudflareWorkersKvPair both reference this.
+	NamespaceId string `protobuf:"bytes,1,opt,name=namespace_id,json=namespaceId,proto3" json:"namespace_id,omitempty"`
+	// Whether keys in this namespace support URL encoding (reported by Cloudflare).
+	SupportsUrlEncoding bool `protobuf:"varint,2,opt,name=supports_url_encoding,json=supportsUrlEncoding,proto3" json:"supports_url_encoding,omitempty"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
 }
 
 func (x *CloudflareKvNamespaceStackOutputs) Reset() {
@@ -67,13 +70,21 @@ func (x *CloudflareKvNamespaceStackOutputs) GetNamespaceId() string {
 	return ""
 }
 
+func (x *CloudflareKvNamespaceStackOutputs) GetSupportsUrlEncoding() bool {
+	if x != nil {
+		return x.SupportsUrlEncoding
+	}
+	return false
+}
+
 var File_org_openmcf_provider_cloudflare_cloudflarekvnamespace_v1_stack_outputs_proto protoreflect.FileDescriptor
 
 const file_org_openmcf_provider_cloudflare_cloudflarekvnamespace_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Lorg/openmcf/provider/cloudflare/cloudflarekvnamespace/v1/stack_outputs.proto\x128org.openmcf.provider.cloudflare.cloudflarekvnamespace.v1\"F\n" +
+	"Lorg/openmcf/provider/cloudflare/cloudflarekvnamespace/v1/stack_outputs.proto\x128org.openmcf.provider.cloudflare.cloudflarekvnamespace.v1\"z\n" +
 	"!CloudflareKvNamespaceStackOutputs\x12!\n" +
-	"\fnamespace_id\x18\x01 \x01(\tR\vnamespaceIdB\xcc\x03\n" +
+	"\fnamespace_id\x18\x01 \x01(\tR\vnamespaceId\x122\n" +
+	"\x15supports_url_encoding\x18\x02 \x01(\bR\x13supportsUrlEncodingB\xcc\x03\n" +
 	"<com.org.openmcf.provider.cloudflare.cloudflarekvnamespace.v1B\x11StackOutputsProtoP\x01Zrgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarekvnamespace/v1;cloudflarekvnamespacev1\xa2\x02\x05OOPCC\xaa\x028Org.Openmcf.Provider.Cloudflare.Cloudflarekvnamespace.V1\xca\x028Org\\Openmcf\\Provider\\Cloudflare\\Cloudflarekvnamespace\\V1\xe2\x02DOrg\\Openmcf\\Provider\\Cloudflare\\Cloudflarekvnamespace\\V1\\GPBMetadata\xea\x02=Org::Openmcf::Provider::Cloudflare::Cloudflarekvnamespace::V1b\x06proto3"
 
 var (

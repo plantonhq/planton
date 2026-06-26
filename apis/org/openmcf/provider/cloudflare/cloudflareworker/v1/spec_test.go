@@ -3,13 +3,31 @@ package cloudflareworkerv1
 import (
 	"testing"
 
+	"buf.build/go/protovalidate"
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
-
-	"buf.build/go/protovalidate"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared"
 	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
 )
+
+const validAccountID = "0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"
+
+func ref(v string) *foreignkeyv1.StringValueOrRef {
+	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: v}}
+}
+
+func validWorker() *CloudflareWorker {
+	return &CloudflareWorker{
+		ApiVersion: "cloudflare.openmcf.org/v1",
+		Kind:       "CloudflareWorker",
+		Metadata:   &shared.CloudResourceMetadata{Name: "test-worker"},
+		Spec: &CloudflareWorkerSpec{
+			AccountId:  validAccountID,
+			WorkerName: "test-worker",
+			Source:     &CloudflareWorkerSpec_Content{Content: "export default { fetch() { return new Response('ok'); } }"},
+		},
+	}
+}
 
 func TestCloudflareWorkerSpec(t *testing.T) {
 	gomega.RegisterFailHandler(ginkgo.Fail)
@@ -17,225 +35,149 @@ func TestCloudflareWorkerSpec(t *testing.T) {
 }
 
 var _ = ginkgo.Describe("CloudflareWorkerSpec Custom Validation Tests", func() {
-
 	ginkgo.Describe("When valid input is passed", func() {
-		ginkgo.Context("cloudflare_worker", func() {
+		ginkgo.It("accepts a minimal inline-content worker", func() {
+			gomega.Expect(protovalidate.Validate(validWorker())).To(gomega.BeNil())
+		})
 
-			ginkgo.It("should not return a validation error for minimal valid fields", func() {
-				input := &CloudflareWorker{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareWorker",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-worker",
-					},
-					Spec: &CloudflareWorkerSpec{
-						AccountId:  "00000000000000000000000000000000",
-						WorkerName: "test-worker-script",
-						ScriptBundle: &CloudflareWorkerScriptBundle{
-							Bucket: "test-bucket",
-							Path:   "test/script.js",
-						},
-						CompatibilityDate: "2024-01-01",
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).To(gomega.BeNil())
-			})
+		ginkgo.It("accepts an r2_bundle source", func() {
+			in := validWorker()
+			in.Spec.Source = &CloudflareWorkerSpec_R2Bundle{R2Bundle: &CloudflareWorkerScriptBundle{Bucket: "builds", Path: "worker.js"}}
+			gomega.Expect(protovalidate.Validate(in)).To(gomega.BeNil())
+		})
 
-			ginkgo.It("should not return a validation error with environment variables and secrets", func() {
-				input := &CloudflareWorker{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareWorker",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-worker-env",
-					},
-					Spec: &CloudflareWorkerSpec{
-						AccountId:  "00000000000000000000000000000000",
-						WorkerName: "test-worker-with-env",
-						ScriptBundle: &CloudflareWorkerScriptBundle{
-							Bucket: "test-bucket",
-							Path:   "test/script-with-env.js",
-						},
-						CompatibilityDate: "2024-01-01",
-						Env: &CloudflareWorkerEnv{
-							Variables: map[string]string{
-								"LOG_LEVEL": "info",
-								"ENV":       "production",
-							},
-							Secrets: map[string]string{
-								"API_KEY": "test-secret-key",
-							},
-						},
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).To(gomega.BeNil())
-			})
+		ginkgo.It("accepts a pure static site (assets only, no script source)", func() {
+			in := validWorker()
+			in.Spec.Source = nil
+			in.Spec.Assets = &CloudflareWorkerAssets{
+				Directory: "dist",
+				Config:    &CloudflareWorkerAssetsConfig{NotFoundHandling: "single-page-application"},
+			}
+			gomega.Expect(protovalidate.Validate(in)).To(gomega.BeNil())
+		})
 
-			ginkgo.It("should not return a validation error with route pattern", func() {
-				input := &CloudflareWorker{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareWorker",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-worker-route",
-					},
-					Spec: &CloudflareWorkerSpec{
-						AccountId:  "00000000000000000000000000000000",
-						WorkerName: "test-worker-with-route",
-						ScriptBundle: &CloudflareWorkerScriptBundle{
-							Bucket: "test-bucket",
-							Path:   "test/script-with-route.js",
-						},
-						Dns: &CloudflareWorkerDns{
-							Enabled: true,
-							ZoneId: &foreignkeyv1.StringValueOrRef{
-								LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
-									Value: "00000000000000000000000000000000",
-								},
-							},
-							Hostname:     "api.example.com",
-							RoutePattern: "https://example.com/*",
-						},
-						CompatibilityDate: "2024-01-01",
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).To(gomega.BeNil())
-			})
+		ginkgo.It("accepts a full-stack worker (script + assets + binding)", func() {
+			in := validWorker()
+			in.Spec.Assets = &CloudflareWorkerAssets{
+				Directory:   "dist",
+				BindingName: "ASSETS",
+				Config: &CloudflareWorkerAssetsConfig{
+					HtmlHandling:     "auto-trailing-slash",
+					NotFoundHandling: "404-page",
+					Headers:          "/*\n  X-Frame-Options: DENY",
+					Redirects:        "/old /new 301",
+					RunWorkerFirstRules: []string{"/api/*", "!/api/docs/*"},
+				},
+			}
+			gomega.Expect(protovalidate.Validate(in)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("accepts run_worker_first as a global switch", func() {
+			in := validWorker()
+			in.Spec.Assets = &CloudflareWorkerAssets{Directory: "dist", Config: &CloudflareWorkerAssetsConfig{RunWorkerFirst: true}}
+			gomega.Expect(protovalidate.Validate(in)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("accepts grouped bindings, routing, and schedules", func() {
+			in := validWorker()
+			in.Spec.Vars = map[string]string{"LOG_LEVEL": "info"}
+			in.Spec.Secrets = []*CloudflareWorkerSecretBinding{{Name: "API_KEY", Value: ref("secret")}}
+			in.Spec.KvNamespaces = []*CloudflareWorkerKvBinding{{Name: "CONFIG", NamespaceId: ref("0f1e2d3c4b5a69788796a5b4c3d2e1f0")}}
+			in.Spec.D1Databases = []*CloudflareWorkerD1Binding{{Name: "DB", DatabaseId: ref("9a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d")}}
+			in.Spec.R2Buckets = []*CloudflareWorkerR2Binding{{Name: "ASSETS", BucketName: ref("media"), Jurisdiction: "eu"}}
+			in.Spec.Services = []*CloudflareWorkerServiceBinding{{Name: "AUTH", Service: ref("auth-worker"), Environment: "production", Entrypoint: "AuthEntrypoint"}}
+			in.Spec.Queues = []*CloudflareWorkerQueueBinding{{Name: "ORDERS", QueueName: ref("orders-queue")}}
+			in.Spec.WorkersDev = &CloudflareWorkerWorkersDev{Enabled: true}
+			in.Spec.CustomDomains = []*CloudflareWorkerCustomDomain{{Hostname: "api.example.com", ZoneId: ref("023e105f4ecef8ad9ca31a8372d0c353")}}
+			in.Spec.Routes = []*CloudflareWorkerRoute{{ZoneId: ref("023e105f4ecef8ad9ca31a8372d0c353"), Pattern: "api.example.com/*"}}
+			in.Spec.Schedules = []string{"0 * * * *"}
+			in.Spec.Observability = &CloudflareWorkerObservability{Enabled: true, HeadSamplingRate: 1}
+			in.Spec.Placement = &CloudflareWorkerPlacement{Mode: "smart"}
+			in.Spec.Limits = &CloudflareWorkerLimits{CpuMs: 50, Subrequests: 100}
+			gomega.Expect(protovalidate.Validate(in)).To(gomega.BeNil())
 		})
 	})
 
 	ginkgo.Describe("When invalid input is passed", func() {
-		ginkgo.Context("account_id validation", func() {
-
-			ginkgo.It("should return error if account_id is missing", func() {
-				input := &CloudflareWorker{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareWorker",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-no-account",
-					},
-					Spec: &CloudflareWorkerSpec{
-						WorkerName: "test-worker",
-						ScriptBundle: &CloudflareWorkerScriptBundle{
-							Bucket: "test-bucket",
-							Path:   "test/script.js",
-						},
-						CompatibilityDate: "2024-01-01",
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).NotTo(gomega.BeNil())
-			})
-
-			ginkgo.It("should return error if account_id is not 32 characters", func() {
-				input := &CloudflareWorker{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareWorker",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-short-account",
-					},
-					Spec: &CloudflareWorkerSpec{
-						AccountId:  "123",
-						WorkerName: "test-worker",
-						ScriptBundle: &CloudflareWorkerScriptBundle{
-							Bucket: "test-bucket",
-							Path:   "test/script.js",
-						},
-						CompatibilityDate: "2024-01-01",
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).NotTo(gomega.BeNil())
-			})
-
-			ginkgo.It("should return error if account_id contains non-hex characters", func() {
-				input := &CloudflareWorker{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareWorker",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-invalid-hex",
-					},
-					Spec: &CloudflareWorkerSpec{
-						AccountId:  "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ",
-						WorkerName: "test-worker",
-						ScriptBundle: &CloudflareWorkerScriptBundle{
-							Bucket: "test-bucket",
-							Path:   "test/script.js",
-						},
-						CompatibilityDate: "2024-01-01",
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).NotTo(gomega.BeNil())
-			})
+		ginkgo.It("rejects a worker with neither a script source nor assets", func() {
+			in := validWorker()
+			in.Spec.Source = nil
+			gomega.Expect(protovalidate.Validate(in)).ToNot(gomega.BeNil())
 		})
 
-		ginkgo.Context("worker_name validation", func() {
-
-			ginkgo.It("should return error if worker_name is missing", func() {
-				input := &CloudflareWorker{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareWorker",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-no-worker-name",
-					},
-					Spec: &CloudflareWorkerSpec{
-						AccountId: "00000000000000000000000000000000",
-						ScriptBundle: &CloudflareWorkerScriptBundle{
-							Bucket: "test-bucket",
-							Path:   "test/script.js",
-						},
-						CompatibilityDate: "2024-01-01",
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).NotTo(gomega.BeNil())
-			})
+		ginkgo.It("rejects an invalid assets html_handling", func() {
+			in := validWorker()
+			in.Spec.Assets = &CloudflareWorkerAssets{Directory: "dist", Config: &CloudflareWorkerAssetsConfig{HtmlHandling: "sometimes"}}
+			gomega.Expect(protovalidate.Validate(in)).ToNot(gomega.BeNil())
 		})
 
-		ginkgo.Context("script_bundle validation", func() {
-
-			ginkgo.It("should return error if script_bundle is missing", func() {
-				input := &CloudflareWorker{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareWorker",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-no-source",
-					},
-					Spec: &CloudflareWorkerSpec{
-						AccountId:         "00000000000000000000000000000000",
-						WorkerName:        "test-worker",
-						CompatibilityDate: "2024-01-01",
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).NotTo(gomega.BeNil())
-			})
+		ginkgo.It("rejects an invalid assets not_found_handling", func() {
+			in := validWorker()
+			in.Spec.Assets = &CloudflareWorkerAssets{Directory: "dist", Config: &CloudflareWorkerAssetsConfig{NotFoundHandling: "redirect"}}
+			gomega.Expect(protovalidate.Validate(in)).ToNot(gomega.BeNil())
 		})
 
-		ginkgo.Context("compatibility_date validation", func() {
+		ginkgo.It("rejects assets with no directory", func() {
+			in := validWorker()
+			in.Spec.Assets = &CloudflareWorkerAssets{Config: &CloudflareWorkerAssetsConfig{RunWorkerFirst: true}}
+			gomega.Expect(protovalidate.Validate(in)).ToNot(gomega.BeNil())
+		})
 
-			ginkgo.It("should return error if compatibility_date has invalid format", func() {
-				input := &CloudflareWorker{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareWorker",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-invalid-date",
-					},
-					Spec: &CloudflareWorkerSpec{
-						AccountId:  "00000000000000000000000000000000",
-						WorkerName: "test-worker",
-						ScriptBundle: &CloudflareWorkerScriptBundle{
-							Bucket: "test-bucket",
-							Path:   "test/script.js",
-						},
-						CompatibilityDate: "2024/01/01",
-					},
-				}
-				err := protovalidate.Validate(input)
-				gomega.Expect(err).NotTo(gomega.BeNil())
-			})
+		ginkgo.It("rejects run_worker_first set together with run_worker_first_rules", func() {
+			in := validWorker()
+			in.Spec.Assets = &CloudflareWorkerAssets{
+				Directory: "dist",
+				Config:    &CloudflareWorkerAssetsConfig{RunWorkerFirst: true, RunWorkerFirstRules: []string{"/api/*"}},
+			}
+			gomega.Expect(protovalidate.Validate(in)).ToNot(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects a non-hex account_id", func() {
+			in := validWorker()
+			in.Spec.AccountId = "nope"
+			gomega.Expect(protovalidate.Validate(in)).ToNot(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects a missing worker_name", func() {
+			in := validWorker()
+			in.Spec.WorkerName = ""
+			gomega.Expect(protovalidate.Validate(in)).ToNot(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects a secret binding with no value", func() {
+			in := validWorker()
+			in.Spec.Secrets = []*CloudflareWorkerSecretBinding{{Name: "API_KEY"}}
+			gomega.Expect(protovalidate.Validate(in)).ToNot(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects a kv binding with an empty namespace_id", func() {
+			in := validWorker()
+			in.Spec.KvNamespaces = []*CloudflareWorkerKvBinding{{Name: "CONFIG", NamespaceId: ref("")}}
+			gomega.Expect(protovalidate.Validate(in)).ToNot(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects an invalid r2 binding jurisdiction", func() {
+			in := validWorker()
+			in.Spec.R2Buckets = []*CloudflareWorkerR2Binding{{Name: "ASSETS", BucketName: ref("media"), Jurisdiction: "mars"}}
+			gomega.Expect(protovalidate.Validate(in)).ToNot(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects a head_sampling_rate above 1", func() {
+			in := validWorker()
+			in.Spec.Observability = &CloudflareWorkerObservability{Enabled: true, HeadSamplingRate: 2}
+			gomega.Expect(protovalidate.Validate(in)).ToNot(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects an invalid placement mode", func() {
+			in := validWorker()
+			in.Spec.Placement = &CloudflareWorkerPlacement{Mode: "random"}
+			gomega.Expect(protovalidate.Validate(in)).ToNot(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects a bad compatibility_date format", func() {
+			in := validWorker()
+			in.Spec.CompatibilityDate = "2024/01/01"
+			gomega.Expect(protovalidate.Validate(in)).ToNot(gomega.BeNil())
 		})
 	})
 })

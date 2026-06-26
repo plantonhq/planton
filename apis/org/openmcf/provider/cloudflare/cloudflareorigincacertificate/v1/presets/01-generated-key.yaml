@@ -1,0 +1,10 @@
+apiVersion: cloudflare.openmcf.org/v1
+kind: CloudflareOriginCaCertificate
+metadata:
+  name: generated-origin-cert
+spec:
+  hostnames:
+    - <domain>
+    - "*.<domain>"
+  requestType: origin-rsa
+  requestedValidity: 5475

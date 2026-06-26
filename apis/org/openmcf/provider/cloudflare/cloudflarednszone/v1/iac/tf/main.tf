@@ -7,8 +7,7 @@ resource "cloudflare_zone" "main" {
   }
   name   = var.spec.zone_name
   paused = var.spec.paused
+  type   = local.zone_type
 
-  # Type is always "full" (standard nameserver delegation)
-  # "partial" (CNAME setup) is Business/Enterprise only and not in the 80/20
-  type = "full"
+  vanity_name_servers = length(var.spec.vanity_name_servers) > 0 ? var.spec.vanity_name_servers : null
 }

@@ -31,7 +31,9 @@ type CloudflareRulesetStackOutputs struct {
 	// The zone ID the ruleset belongs to (pass-through for downstream resource references).
 	ZoneId string `protobuf:"bytes,3,opt,name=zone_id,json=zoneId,proto3" json:"zone_id,omitempty"`
 	// The phase the ruleset executes in (pass-through for infra-chart conditionals).
-	Phase         string `protobuf:"bytes,4,opt,name=phase,proto3" json:"phase,omitempty"`
+	Phase string `protobuf:"bytes,4,opt,name=phase,proto3" json:"phase,omitempty"`
+	// RFC3339 timestamp of the ruleset's last update.
+	LastUpdated   string `protobuf:"bytes,5,opt,name=last_updated,json=lastUpdated,proto3" json:"last_updated,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -94,17 +96,25 @@ func (x *CloudflareRulesetStackOutputs) GetPhase() string {
 	return ""
 }
 
+func (x *CloudflareRulesetStackOutputs) GetLastUpdated() string {
+	if x != nil {
+		return x.LastUpdated
+	}
+	return ""
+}
+
 var File_org_openmcf_provider_cloudflare_cloudflareruleset_v1_stack_outputs_proto protoreflect.FileDescriptor
 
 const file_org_openmcf_provider_cloudflare_cloudflareruleset_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Horg/openmcf/provider/cloudflare/cloudflareruleset/v1/stack_outputs.proto\x124org.openmcf.provider.cloudflare.cloudflareruleset.v1\"\x87\x01\n" +
+	"Horg/openmcf/provider/cloudflare/cloudflareruleset/v1/stack_outputs.proto\x124org.openmcf.provider.cloudflare.cloudflareruleset.v1\"\xaa\x01\n" +
 	"\x1dCloudflareRulesetStackOutputs\x12\x1d\n" +
 	"\n" +
 	"ruleset_id\x18\x01 \x01(\tR\trulesetId\x12\x18\n" +
 	"\aversion\x18\x02 \x01(\tR\aversion\x12\x17\n" +
 	"\azone_id\x18\x03 \x01(\tR\x06zoneId\x12\x14\n" +
-	"\x05phase\x18\x04 \x01(\tR\x05phaseB\xb0\x03\n" +
+	"\x05phase\x18\x04 \x01(\tR\x05phase\x12!\n" +
+	"\flast_updated\x18\x05 \x01(\tR\vlastUpdatedB\xb0\x03\n" +
 	"8com.org.openmcf.provider.cloudflare.cloudflareruleset.v1B\x11StackOutputsProtoP\x01Zjgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflareruleset/v1;cloudflarerulesetv1\xa2\x02\x05OOPCC\xaa\x024Org.Openmcf.Provider.Cloudflare.Cloudflareruleset.V1\xca\x024Org\\Openmcf\\Provider\\Cloudflare\\Cloudflareruleset\\V1\xe2\x02@Org\\Openmcf\\Provider\\Cloudflare\\Cloudflareruleset\\V1\\GPBMetadata\xea\x029Org::Openmcf::Provider::Cloudflare::Cloudflareruleset::V1b\x06proto3"
 
 var (

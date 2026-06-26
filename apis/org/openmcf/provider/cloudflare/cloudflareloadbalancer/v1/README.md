@@ -1,305 +1,148 @@
-# Cloudflare Load Balancer
+# CloudflareLoadBalancer
 
-A OpenMCF deployment component for deploying and managing Cloudflare Load Balancers - a Global Server Load Balancing (GSLB) solution that provides intelligent traffic steering, health monitoring, and automatic failover across geographically distributed origins.
+A zone-scoped Cloudflare Load Balancer: Global Server Load Balancing (GSLB) that
+attaches a DNS hostname to one or more **pools** and steers traffic across them
+with health-aware failover, geo-routing, weighted distribution, and session
+affinity.
 
-## Overview
+## The three resources
 
-Cloudflare Load Balancer operates at the DNS level and is tightly integrated with Cloudflare's global network of 330+ data centers. Unlike static DNS round-robin, it continuously monitors origin health and dynamically routes traffic away from failures and toward healthy endpoints - providing high availability without managing hardware or installing software.
+Cloudflare models load balancing as three resources with distinct scopes and
+lifecycles, and OpenMCF mirrors that with three composable kinds:
 
-### Key Features
+| Kind | Scope | Role |
+|---|---|---|
+| `CloudflareLoadBalancerMonitor` | account | Health check that probes origins |
+| `CloudflareLoadBalancerPool` | account | A group of origins, health-checked by a monitor |
+| `CloudflareLoadBalancer` | zone | Attaches a hostname to pools and steers traffic |
 
-- **Global Traffic Management**: Distribute traffic across geographically dispersed data centers
-- **Active-Passive Failover**: Automatic traffic rerouting when health checks fail (failover in seconds)
-- **Geo-Steering**: Route users to the nearest origin for reduced latency
-- **Health Monitoring**: Continuous health checks from multiple global locations
-- **Session Affinity**: Sticky sessions for stateful applications
-- **Traffic Steering Policies**: Support for failover, geo-routing, and weighted distribution
-- **Proxied Mode**: Layer 7 routing with WAF, CDN caching, and advanced features
-- **DNS-Only Mode**: Direct DNS responses for non-HTTP traffic
+Pools and monitors are **account-scoped and reusable** — one pool can back many
+load balancers, and one monitor can health-check many pools. This load balancer
+references pools by ID or `valueFrom`; define the pools and monitor as their own
+resources.
 
-### Use Cases
+## Requirements
 
-Use Cloudflare Load Balancer when you need:
+- **Load Balancing add-on**: Cloudflare Load Balancing is a paid account add-on and
+  must be enabled on the account first, or the entire Load Balancing API returns `403`.
+- **API token**: requires **Zone → Load Balancers → Edit** for the load balancer
+  (zone-scoped), plus **Account → Load Balancing: Monitors and Pools → Edit** for the
+  pools and monitors it references. Note the zone-scoped `Load Balancers` group is
+  distinct from the account-level "Load Balancers Account" permission — the zone-scoped
+  group is what authorizes creating a load balancer on a zone
+  (`POST /zones/{zone}/load_balancers`).
 
-- **Multi-region high availability**: Failover between primary and backup data centers
-- **Global performance optimization**: Route users to the closest origin server
-- **Multi-cloud abstraction**: Balance traffic across AWS, GCP, Azure, and on-premises
-- **Blue-green deployments**: Gradually shift traffic to new application versions
-- **Disaster recovery**: Automatic failover to DR sites with configurable health checks
-
-## Quick Start
-
-### Basic Load Balancer with Two Origins
+## Quick start
 
 ```yaml
+# 1. A health check (account-scoped, reusable)
 apiVersion: cloudflare.openmcf.org/v1
-kind: CloudflareLoadBalancer
+kind: CloudflareLoadBalancerMonitor
 metadata:
-  name: api-lb
+  name: web-https
 spec:
-  hostname: api.example.com
-  zone_id:
-    value: "abc123def456"  # Your Cloudflare zone ID
+  accountId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
+  type: https
+  path: /health
+  expectedCodes: "2xx"
+---
+# 2. A pool of origins, health-checked by the monitor
+apiVersion: cloudflare.openmcf.org/v1
+kind: CloudflareLoadBalancerPool
+metadata:
+  name: web-pool
+spec:
+  accountId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
+  name: web-pool
   origins:
     - name: primary
-      address: 203.0.113.10
-      weight: 1
-    - name: secondary  
-      address: 198.51.100.20
-      weight: 1
-  proxied: true
-  health_probe_path: /health
-  session_affinity: SESSION_AFFINITY_COOKIE
-  steering_policy: STEERING_OFF  # Active-passive failover
-```
-
-This configuration creates:
-1. A health monitor that checks `/health` on each origin
-2. A pool containing both origins
-3. A load balancer at `api.example.com` with failover enabled
-4. Sticky sessions via cookies
-
-Traffic flows to the primary origin. If it fails health checks, traffic automatically moves to the secondary.
-
-## Specification Fields
-
-### Required Fields
-
-- **`hostname`** (string): The DNS hostname for the load balancer (e.g., `api.example.com`)
-  - Must be a valid DNS name within the specified zone
-  
-- **`zone_id`** (StringValueOrRef): Reference to the Cloudflare DNS zone
-  - Can be a direct value or a reference to a CloudflareDnsZone resource
-  - Example: `zone_id: { value: "abc123" }` or `zone_id: { ref: "my-zone" }`
-
-- **`origins`** (list): List of origin servers (minimum 1 required)
-  - **`name`** (string): Unique identifier for the origin
-  - **`address`** (string): IP address or DNS hostname of the origin
-  - **`weight`** (int32): Traffic weight for weighted distribution (default: 1)
-
-### Optional Fields
-
-- **`proxied`** (bool): Enable Cloudflare proxy (orange cloud) - Default: `true`
-  - `true`: Traffic flows through Cloudflare's Layer 7 proxy (enables WAF, caching, session affinity)
-  - `false`: DNS-only mode - Cloudflare returns origin IP directly
-
-- **`health_probe_path`** (string): HTTP path for health checks - Default: `"/"`
-  - Should point to an endpoint that returns HTTP 200 when healthy
-  - Examples: `/health`, `/healthz`, `/api/status`
-
-- **`session_affinity`** (enum): Session stickiness setting - Default: `SESSION_AFFINITY_NONE`
-  - `SESSION_AFFINITY_NONE` (0): No sticky sessions
-  - `SESSION_AFFINITY_COOKIE` (1): Cookie-based sticky sessions (requires proxied mode)
-
-- **`steering_policy`** (enum): Traffic distribution policy - Default: `STEERING_OFF`
-  - `STEERING_OFF` (0): Active-passive failover (uses priority order)
-  - `STEERING_GEO` (1): Geographic routing (route to nearest origin)
-  - `STEERING_RANDOM` (2): Weighted distribution (for A/B testing)
-
-## Common Patterns
-
-### Active-Passive Failover
-
-Route all traffic to primary origin, fail over to secondary if primary is unhealthy:
-
-```yaml
-spec:
-  hostname: app.example.com
-  steering_policy: STEERING_OFF  # Priority-based failover
-  origins:
-    - name: primary-us-east
-      address: 203.0.113.10
-    - name: backup-us-west
-      address: 198.51.100.20
-```
-
-### Geographic Routing
-
-Route users to the nearest origin for optimal latency:
-
-```yaml
-spec:
-  hostname: app.example.com
-  steering_policy: STEERING_GEO
-  origins:
-    - name: us-origin
-      address: 203.0.113.10
-    - name: eu-origin
-      address: 198.51.100.20
-    - name: asia-origin
-      address: 192.0.2.30
-```
-
-### Weighted A/B Testing
-
-Send 80% of traffic to the stable version, 20% to the new version:
-
-```yaml
-spec:
-  hostname: app.example.com
-  steering_policy: STEERING_RANDOM
-  origins:
-    - name: stable-v1
-      address: 203.0.113.10
-      weight: 80
-    - name: canary-v2
-      address: 198.51.100.20
-      weight: 20
-```
-
-### Multi-Cloud Load Balancing
-
-Balance traffic across AWS, GCP, and on-premises:
-
-```yaml
-spec:
-  hostname: api.example.com
-  origins:
-    - name: aws-us-east-1
-      address: 203.0.113.10
-    - name: gcp-us-central1
-      address: 198.51.100.20
-    - name: on-prem-datacenter
-      address: 192.0.2.30
-```
-
-## Health Monitoring
-
-Cloudflare probes origins from three separate data centers per region. An origin is marked healthy only if the majority of probes succeed. Health check configuration:
-
-- **Type**: HTTPS (or HTTP for non-TLS origins)
-- **Path**: Configured via `health_probe_path` (default: `/`)
-- **Expected Response**: HTTP 2xx status codes
-- **Interval**: 60 seconds (Pro plan minimum)
-- **Timeout**: 5 seconds
-- **Retries**: 2 attempts before marking unhealthy
-
-**Important**: Ensure origin firewalls allow Cloudflare health check IP ranges.
-
-## Session Affinity
-
-When `session_affinity: SESSION_AFFINITY_COOKIE` is set:
-
-1. Cloudflare generates a `__cflb` cookie on the first request
-2. Subsequent requests from the same client route to the same origin
-3. Ensures stateful applications (e.g., shopping carts) work correctly
-
-**Note**: Session affinity requires `proxied: true` (orange cloud mode).
-
-## Failover Behavior
-
-With `steering_policy: STEERING_OFF` (active-passive failover):
-
-1. All traffic goes to the first origin in the list
-2. If that origin fails health checks, traffic moves to the next origin
-3. When the primary recovers, traffic automatically "fails back"
-4. Failover time depends on health check interval (60s for Pro plan)
-
-## Cost Considerations
-
-Cloudflare Load Balancing is a paid add-on service:
-
-- **Base Fee**: $5/month (includes 2 origins)
-- **Additional Origins**: $5/month per origin
-- **Geo-Routing**: $10/month (flat fee)
-- **DNS Queries**: First 500,000/month free, then $0.50 per 500K
-
-**Health check interval** is gated by plan tier:
-- Pro Plan ($20/mo): 60-second minimum (60s RTO)
-- Business Plan ($200/mo): 15-second minimum (15s RTO)
-- Enterprise Plan: 10-second minimum (10s RTO)
-
-## Integration with Other Components
-
-### With CloudflareDnsZone
-
-Reference a CloudflareDnsZone resource for the zone_id:
-
-```yaml
+      address:
+        value: 203.0.113.10
+    - name: secondary
+      address:
+        value: 198.51.100.20
+  monitor:
+    valueFrom:
+      kind: CloudflareLoadBalancerMonitor
+      name: web-https
+      fieldPath: status.outputs.monitor_id
 ---
-apiVersion: cloudflare.openmcf.org/v1
-kind: CloudflareDnsZone
-metadata:
-  name: example-zone
-spec:
-  domain_name: example.com
----
+# 3. The load balancer (zone-scoped) referencing the pool
 apiVersion: cloudflare.openmcf.org/v1
 kind: CloudflareLoadBalancer
 metadata:
   name: api-lb
 spec:
   hostname: api.example.com
-  zone_id:
-    ref: example-zone  # References the CloudflareDnsZone above
-  origins:
-    - name: origin-1
-      address: 203.0.113.10
+  zoneId:
+    valueFrom:
+      kind: CloudflareDnsZone
+      name: example-zone
+      fieldPath: status.outputs.zone_id
+  defaultPools:
+    - valueFrom:
+        kind: CloudflareLoadBalancerPool
+        name: web-pool
+        fieldPath: status.outputs.pool_id
+  fallbackPool:
+    valueFrom:
+      kind: CloudflareLoadBalancerPool
+      name: web-pool
+      fieldPath: status.outputs.pool_id
+  proxied: true
+  sessionAffinity: cookie
+  steeringPolicy: off
 ```
 
-### With Cloudflare Tunnel
+## Configuration reference
 
-Use Cloudflare Tunnel to load balance private origins without public IPs:
+| Field | Required | Description |
+|---|---|---|
+| `hostname` | yes | DNS hostname for the load balancer |
+| `zoneId` | yes | Zone that owns the hostname (ID or `CloudflareDnsZone` ref) |
+| `defaultPools[]` | yes | Ordered pools by failover priority (pool IDs/refs) |
+| `fallbackPool` | yes | Pool of last resort when all others are unhealthy |
+| `proxied` | no | Proxy through Cloudflare (orange cloud); default false |
+| `enabled` | no | Enable the load balancer; default true |
+| `steeringPolicy` | no | `off` (default), `geo`, `random`, `dynamic_latency`, `proximity`, `least_outstanding_requests`, `least_connections` |
+| `sessionAffinity` | no | `none` (default), `cookie`, `ip_cookie`, `header` |
+| `sessionAffinityTtl` | no | Affinity session expiry (seconds) |
+| `sessionAffinityAttributes` | no | Drain, headers, cookie flags, zero-downtime failover |
+| `ttl` | no | DNS TTL (gray-clouded only) |
+| `regionPools` / `countryPools` / `popPools` | no | Geo code -> ordered pool list |
+| `adaptiveRouting` | no | Zero-downtime failover across pools |
+| `locationStrategy` | no | Location steering for non-proxied requests |
+| `randomSteering` | no | Pool weights for random/least-* policies |
 
-```yaml
-spec:
-  hostname: internal-api.example.com
-  origins:
-    - name: private-origin
-      address: <tunnel-uuid>.cfargotunnel.com  # Cloudflare Tunnel hostname
+## Steering policies
+
+- **`off`** (default): static failover over `defaultPools` (priority order).
+- **`geo`**: route by `regionPools` / `countryPools` / `popPools`.
+- **`random`**: weighted random selection (`randomSteering`).
+- **`dynamic_latency`**: closest pool by round-trip time.
+- **`proximity`**: closest pool by pool latitude/longitude.
+- **`least_outstanding_requests`** / **`least_connections`**: load-aware selection.
+
+## Outputs
+
+| Output | Description |
+|---|---|
+| `load_balancer_id` | The load balancer ID |
+| `load_balancer_dns_record_name` | The load balancer hostname |
+| `load_balancer_cname_target` | The hostname clients point their DNS at |
+
+## Composition
+
+```
+Monitor (account) -> Pool (account) -> LoadBalancer (zone) -> CloudflareDnsZone
 ```
 
-## Best Practices
+Define a monitor and pool once, then reference the pool from any number of load
+balancers across zones. Origins can themselves reference compute outputs, so the
+whole traffic path is expressible as a dependency graph.
 
-1. **Always define at least 2 origins** for true high availability
-2. **Use health check paths that accurately reflect service health** (not just `/` which might always return 200)
-3. **Separate environments by account** (dev and prod in different Cloudflare accounts)
-4. **Enable session affinity** for stateful applications
-5. **Use proxied mode** (default) to benefit from WAF and CDN features
-6. **Configure fallback pool** (automatically set to the last origin in OpenMCF)
-7. **Monitor health check results** in Cloudflare dashboard
+## Related components
 
-## Anti-Patterns to Avoid
-
-❌ **Single origin**: Provides no redundancy  
-❌ **Missing health checks**: Can route to failed origins  
-❌ **Firewall blocking health checks**: Causes false negatives  
-❌ **Creating load balancer before pool is healthy**: Can cause immediate outage  
-❌ **Sharing pools across dev/prod**: Environment isolation violation  
-
-## Deployment
-
-OpenMCF handles the complexity of creating and linking:
-1. A Cloudflare Monitor (health check) - account-level resource
-2. A Cloudflare Pool (origin grouping) - account-level resource  
-3. A Cloudflare Load Balancer (hostname mapping) - zone-level resource
-
-You define a simple, denormalized spec - OpenMCF manages the resource dependency graph.
-
-## Examples
-
-See [examples.md](./examples.md) for complete, working examples including:
-- Basic active-passive failover
-- Geographic routing
-- Weighted A/B testing
-- Multi-cloud load balancing
-- Session affinity configuration
-
-## Documentation
-
-- **[Research Documentation](./docs/README.md)**: Deep dive into deployment methods, architectural decisions, and 80/20 scoping
-- **[Pulumi Module](./iac/pulumi/README.md)**: Pulumi deployment guide
-- **[Terraform Module](./iac/tf/README.md)**: Terraform deployment guide
-
-## Support
-
-- Cloudflare Load Balancer: [Official Docs](https://developers.cloudflare.com/load-balancing/)
-- Health Checks: [Cloudflare Health Check Documentation](https://developers.cloudflare.com/load-balancing/monitors/)
-- Traffic Steering: [Cloudflare Steering Policies](https://developers.cloudflare.com/load-balancing/understand-basics/traffic-steering/)
-
-## What's Next?
-
-- Explore [examples.md](./examples.md) for complete usage patterns
-- Read [docs/README.md](./docs/README.md) for architectural deep dive
-- Deploy using [iac/pulumi/](./iac/pulumi/) or [iac/terraform/](./iac/tf/)
-
+- `CloudflareLoadBalancerPool` — referenced by `defaultPools`/`fallbackPool`/geo maps.
+- `CloudflareLoadBalancerMonitor` — referenced by a pool's `monitor`.
+- `CloudflareDnsZone` — provides `zoneId`.

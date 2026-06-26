@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package org.openmcf.provider.cloudflare.cloudflarezerotrusttunnelroute.v1;
+
+// CloudflareZeroTrustTunnelRouteStackOutputs captures the outputs after provisioning a
+// Cloudflare Tunnel route.
+message CloudflareZeroTrustTunnelRouteStackOutputs {
+  // The Cloudflare-assigned UUID of the route.
+  string route_id = 1;
+
+  // The private CIDR advertised by this route (echoed for convenience).
+  string network = 2;
+}

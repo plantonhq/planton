@@ -26,7 +26,7 @@ variable "spec" {
     # If omitted, Cloudflare selects a default location based on your account settings.
     region = optional(string)
 
-    # (Optional) Configures D1 Read Replication (Beta).
+    # (Optional) Configures D1 Read Replication.
     # Enables automatic read replication across multiple regions for lower global read latency.
     # WARNING: Enabling replication requires application-level code changes to use the D1 Sessions API.
     read_replication = optional(object({
@@ -34,5 +34,9 @@ variable "spec" {
       # Valid values: "auto" (enable automatic read replication), "disabled" (disable replication).
       mode = string
     }))
+
+    # (Optional) Data-residency jurisdiction ("eu" or "fedramp"). Mutually
+    # exclusive with region; fixed at creation.
+    jurisdiction = optional(string)
   })
 }

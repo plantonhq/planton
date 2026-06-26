@@ -12,12 +12,12 @@ terraform {
 }
 
 provider "cloudflare" {
-  # Cloudflare provider configuration
-  # API token should be provided via CLOUDFLARE_API_TOKEN environment variable
+  # Cloudflare provider configuration.
+  # API token is provided via the CLOUDFLARE_API_TOKEN environment variable.
 }
 
-# AWS provider configured for R2 access
-# Required to fetch worker bundle from R2 bucket
+# AWS provider aimed at the R2 S3-compatible endpoint, used only to fetch a
+# pre-built worker bundle when spec.r2_bundle is set.
 provider "aws" {
   alias                       = "r2"
   region                      = "auto"
@@ -26,12 +26,9 @@ provider "aws" {
   skip_region_validation      = true
   skip_requesting_account_id  = true
 
-  # R2 endpoint
   endpoints {
     s3 = "https://${var.spec.account_id}.r2.cloudflarestorage.com"
   }
 
-  # R2 credentials should be provided via:
-  # AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables
+  # R2 credentials are provided via AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY.
 }
-

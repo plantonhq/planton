@@ -1,32 +1,26 @@
-# locals.tf
-
 locals {
-  # Derive a stable resource ID
-  resource_id = (
-    var.metadata.id != null && var.metadata.id != ""
-    ? var.metadata.id
-    : var.metadata.name
-  )
+  resource_name = coalesce(try(var.metadata.name, null), "cloudflare-zero-trust-access-application")
 
-  # Base labels
-  base_labels = {
-    "resource"      = "true"
-    "resource_id"   = local.resource_id
-    "resource_kind" = "cloudflare_zero_trust_access_application"
-  }
+  # The type enum flattens to its string name; unspecified maps to self_hosted.
+  app_type = (
+    try(var.spec.type, "") == "" || var.spec.type == "application_type_unspecified"
+  ) ? "self_hosted" : var.spec.type
 
-  # Organization label only if var.metadata.org is non-empty
-  org_label = (
-    var.metadata.org != null && var.metadata.org != ""
-  ) ? { "organization" = var.metadata.org } : {}
+  # Policies are referenced by ID; the proto's `policy` value carries the policy ID.
+  policies = [
+    for p in try(var.spec.policies, []) : {
+      id         = p.policy
+      precedence = try(p.precedence, 0) > 0 ? p.precedence : null
+    }
+  ]
 
-  # Environment label only if var.metadata.env is non-empty
-  env_label = (
-    var.metadata.env != null &&
-    try(var.metadata.env, "") != ""
-  ) ? { "environment" = var.metadata.env } : {}
-
-  # Merge base, org, and environment labels
-  final_labels = merge(local.base_labels, local.org_label, local.env_label)
+  # Rebuild the provider's target_attributes map ({name => values}) from the
+  # proto's [{name, values}] list (proto maps can't carry repeated values).
+  target_criteria = [
+    for tc in try(var.spec.target_criteria, []) : {
+      port              = tc.port
+      protocol          = tc.protocol
+      target_attributes = { for a in tc.target_attributes : a.name => a.values }
+    }
+  ]
 }
-

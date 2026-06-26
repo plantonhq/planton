@@ -5,5 +5,3 @@ metadata:
 spec:
   namespaceName: <namespace-name>
   accountId: <cloudflare-account-id>
-  ttlSeconds: 0
-  description: <short-description>

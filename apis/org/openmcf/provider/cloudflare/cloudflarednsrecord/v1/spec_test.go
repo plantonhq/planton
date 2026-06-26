@@ -15,419 +15,257 @@ func TestCloudflareDnsRecordSpec(t *testing.T) {
 	ginkgo.RunSpecs(t, "CloudflareDnsRecordSpec Custom Validation Tests")
 }
 
+// zoneRef is a convenience for building a literal zone_id reference.
+func zoneRef() *foreignkeyv1.StringValueOrRef {
+	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "abc123def456"}}
+}
+
+// record wraps a spec in a full resource for validation.
+func record(name string, spec *CloudflareDnsRecordSpec) *CloudflareDnsRecord {
+	return &CloudflareDnsRecord{
+		ApiVersion: "cloudflare.openmcf.org/v1",
+		Kind:       "CloudflareDnsRecord",
+		Metadata:   &shared.CloudResourceMetadata{Name: name},
+		Spec:       spec,
+	}
+}
+
 var _ = ginkgo.Describe("CloudflareDnsRecordSpec Custom Validation Tests", func() {
 
 	ginkgo.Describe("When valid input is passed", func() {
-		ginkgo.Context("cloudflare_dns_record", func() {
+		ginkgo.Context("simple (content) records", func() {
 
-			ginkgo.It("should not return a validation error for minimal valid A record", func() {
-				input := &CloudflareDnsRecord{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareDnsRecord",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-a-record",
-					},
-					Spec: &CloudflareDnsRecordSpec{
-						ZoneId: &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "abc123def456"}},
-						Name:   "www",
-						Type:   CloudflareDnsRecordSpec_A,
-						Value:  "192.0.2.1",
-					},
-				}
-				err := protovalidate.Validate(input)
+			ginkgo.It("accepts a minimal A record", func() {
+				err := protovalidate.Validate(record("a", &CloudflareDnsRecordSpec{
+					ZoneId: zoneRef(), Name: "www", Type: CloudflareDnsRecordSpec_A, Content: "192.0.2.1",
+				}))
 				gomega.Expect(err).To(gomega.BeNil())
 			})
 
-			ginkgo.It("should not return a validation error for AAAA record", func() {
-				input := &CloudflareDnsRecord{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareDnsRecord",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-aaaa-record",
-					},
-					Spec: &CloudflareDnsRecordSpec{
-						ZoneId: &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "abc123def456"}},
-						Name:   "www",
-						Type:   CloudflareDnsRecordSpec_AAAA,
-						Value:  "2001:db8::1",
-					},
-				}
-				err := protovalidate.Validate(input)
+			ginkgo.It("accepts an AAAA record", func() {
+				err := protovalidate.Validate(record("aaaa", &CloudflareDnsRecordSpec{
+					ZoneId: zoneRef(), Name: "www", Type: CloudflareDnsRecordSpec_AAAA, Content: "2001:db8::1",
+				}))
 				gomega.Expect(err).To(gomega.BeNil())
 			})
 
-			ginkgo.It("should not return a validation error for CNAME record", func() {
-				input := &CloudflareDnsRecord{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareDnsRecord",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-cname-record",
-					},
-					Spec: &CloudflareDnsRecordSpec{
-						ZoneId: &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "abc123def456"}},
-						Name:   "app",
-						Type:   CloudflareDnsRecordSpec_CNAME,
-						Value:  "www.example.com",
-					},
-				}
-				err := protovalidate.Validate(input)
+			ginkgo.It("accepts a CNAME record", func() {
+				err := protovalidate.Validate(record("cname", &CloudflareDnsRecordSpec{
+					ZoneId: zoneRef(), Name: "app", Type: CloudflareDnsRecordSpec_CNAME, Content: "www.example.com",
+				}))
 				gomega.Expect(err).To(gomega.BeNil())
 			})
 
-			ginkgo.It("should not return a validation error for MX record with priority", func() {
-				input := &CloudflareDnsRecord{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareDnsRecord",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-mx-record",
-					},
-					Spec: &CloudflareDnsRecordSpec{
-						ZoneId:   &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "abc123def456"}},
-						Name:     "@",
-						Type:     CloudflareDnsRecordSpec_MX,
-						Value:    "mail.example.com",
-						Priority: 10,
-					},
-				}
-				err := protovalidate.Validate(input)
+			ginkgo.It("accepts an MX record with priority", func() {
+				err := protovalidate.Validate(record("mx", &CloudflareDnsRecordSpec{
+					ZoneId: zoneRef(), Name: "@", Type: CloudflareDnsRecordSpec_MX, Content: "mail.example.com", Priority: 10,
+				}))
 				gomega.Expect(err).To(gomega.BeNil())
 			})
 
-			ginkgo.It("should not return a validation error for TXT record", func() {
-				input := &CloudflareDnsRecord{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareDnsRecord",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-txt-record",
-					},
-					Spec: &CloudflareDnsRecordSpec{
-						ZoneId: &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "abc123def456"}},
-						Name:   "@",
-						Type:   CloudflareDnsRecordSpec_TXT,
-						Value:  "v=spf1 include:_spf.google.com ~all",
-					},
-				}
-				err := protovalidate.Validate(input)
+			ginkgo.It("accepts a TXT record", func() {
+				err := protovalidate.Validate(record("txt", &CloudflareDnsRecordSpec{
+					ZoneId: zoneRef(), Name: "@", Type: CloudflareDnsRecordSpec_TXT, Content: "v=spf1 include:_spf.google.com ~all",
+				}))
 				gomega.Expect(err).To(gomega.BeNil())
 			})
 
-			ginkgo.It("should not return a validation error for proxied A record", func() {
-				input := &CloudflareDnsRecord{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareDnsRecord",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-proxied-record",
-					},
-					Spec: &CloudflareDnsRecordSpec{
-						ZoneId:  &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "abc123def456"}},
-						Name:    "www",
-						Type:    CloudflareDnsRecordSpec_A,
-						Value:   "192.0.2.1",
-						Proxied: true,
-					},
-				}
-				err := protovalidate.Validate(input)
+			ginkgo.It("accepts a PTR record (new type)", func() {
+				err := protovalidate.Validate(record("ptr", &CloudflareDnsRecordSpec{
+					ZoneId: zoneRef(), Name: "1.2.0.192.in-addr.arpa", Type: CloudflareDnsRecordSpec_PTR, Content: "host.example.com",
+				}))
 				gomega.Expect(err).To(gomega.BeNil())
 			})
 
-			ginkgo.It("should not return a validation error for record with TTL of 1 (auto)", func() {
-				input := &CloudflareDnsRecord{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareDnsRecord",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-auto-ttl-record",
-					},
-					Spec: &CloudflareDnsRecordSpec{
-						ZoneId: &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "abc123def456"}},
-						Name:   "www",
-						Type:   CloudflareDnsRecordSpec_A,
-						Value:  "192.0.2.1",
-						Ttl:    1,
-					},
-				}
-				err := protovalidate.Validate(input)
+			ginkgo.It("accepts a proxied A record", func() {
+				err := protovalidate.Validate(record("proxied", &CloudflareDnsRecordSpec{
+					ZoneId: zoneRef(), Name: "www", Type: CloudflareDnsRecordSpec_A, Content: "192.0.2.1", Proxied: true,
+				}))
 				gomega.Expect(err).To(gomega.BeNil())
 			})
 
-			ginkgo.It("should not return a validation error for record with valid TTL", func() {
-				input := &CloudflareDnsRecord{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareDnsRecord",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-ttl-record",
-					},
-					Spec: &CloudflareDnsRecordSpec{
-						ZoneId: &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "abc123def456"}},
-						Name:   "www",
-						Type:   CloudflareDnsRecordSpec_A,
-						Value:  "192.0.2.1",
-						Ttl:    3600,
-					},
-				}
-				err := protovalidate.Validate(input)
+			ginkgo.It("accepts a record with auto TTL (1)", func() {
+				err := protovalidate.Validate(record("ttl-auto", &CloudflareDnsRecordSpec{
+					ZoneId: zoneRef(), Name: "www", Type: CloudflareDnsRecordSpec_A, Content: "192.0.2.1", Ttl: 1,
+				}))
 				gomega.Expect(err).To(gomega.BeNil())
 			})
 
-			ginkgo.It("should not return a validation error for record with comment", func() {
-				input := &CloudflareDnsRecord{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareDnsRecord",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-comment-record",
-					},
-					Spec: &CloudflareDnsRecordSpec{
-						ZoneId:  &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "abc123def456"}},
-						Name:    "www",
-						Type:    CloudflareDnsRecordSpec_A,
-						Value:   "192.0.2.1",
-						Comment: "Main web server",
-					},
-				}
-				err := protovalidate.Validate(input)
+			ginkgo.It("accepts a record with TTL of 30 (Enterprise floor)", func() {
+				err := protovalidate.Validate(record("ttl-30", &CloudflareDnsRecordSpec{
+					ZoneId: zoneRef(), Name: "www", Type: CloudflareDnsRecordSpec_A, Content: "192.0.2.1", Ttl: 30,
+				}))
 				gomega.Expect(err).To(gomega.BeNil())
 			})
 
-			ginkgo.It("should not return a validation error for CAA record", func() {
-				input := &CloudflareDnsRecord{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareDnsRecord",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-caa-record",
-					},
-					Spec: &CloudflareDnsRecordSpec{
-						ZoneId: &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "abc123def456"}},
-						Name:   "@",
-						Type:   CloudflareDnsRecordSpec_CAA,
-						Value:  "0 issue \"letsencrypt.org\"",
-					},
-				}
-				err := protovalidate.Validate(input)
+			ginkgo.It("accepts tags and settings", func() {
+				err := protovalidate.Validate(record("extras", &CloudflareDnsRecordSpec{
+					ZoneId: zoneRef(), Name: "www", Type: CloudflareDnsRecordSpec_A, Content: "192.0.2.1",
+					Tags:     []string{"team:web", "env:prod"},
+					Settings: &CloudflareDnsRecordSettings{Ipv4Only: true},
+				}))
+				gomega.Expect(err).To(gomega.BeNil())
+			})
+
+			ginkgo.It("accepts a long comment (no artificial cap)", func() {
+				err := protovalidate.Validate(record("comment", &CloudflareDnsRecordSpec{
+					ZoneId: zoneRef(), Name: "www", Type: CloudflareDnsRecordSpec_A, Content: "192.0.2.1",
+					Comment: "This is a deliberately long comment that would have exceeded the old 100 character cap which has been removed.",
+				}))
+				gomega.Expect(err).To(gomega.BeNil())
+			})
+		})
+
+		ginkgo.Context("structured (data) records", func() {
+
+			ginkgo.It("accepts an SRV record via data.srv", func() {
+				err := protovalidate.Validate(record("srv", &CloudflareDnsRecordSpec{
+					ZoneId: zoneRef(), Name: "_sip._tcp", Type: CloudflareDnsRecordSpec_SRV,
+					Data: &CloudflareDnsRecordSpec_Srv{Srv: &SrvData{Priority: 10, Weight: 5, Port: 5060, Target: "sip.example.com"}},
+				}))
+				gomega.Expect(err).To(gomega.BeNil())
+			})
+
+			ginkgo.It("accepts a CAA record via data.caa", func() {
+				err := protovalidate.Validate(record("caa", &CloudflareDnsRecordSpec{
+					ZoneId: zoneRef(), Name: "@", Type: CloudflareDnsRecordSpec_CAA,
+					Data: &CloudflareDnsRecordSpec_Caa{Caa: &CaaData{Flags: 0, Tag: "issue", Value: "letsencrypt.org"}},
+				}))
+				gomega.Expect(err).To(gomega.BeNil())
+			})
+
+			ginkgo.It("accepts a DS record via data.ds", func() {
+				err := protovalidate.Validate(record("ds", &CloudflareDnsRecordSpec{
+					ZoneId: zoneRef(), Name: "sub", Type: CloudflareDnsRecordSpec_DS,
+					Data: &CloudflareDnsRecordSpec_Ds{Ds: &DsData{KeyTag: 2371, Algorithm: 13, DigestType: 2, Digest: "ABCDEF0123456789"}},
+				}))
+				gomega.Expect(err).To(gomega.BeNil())
+			})
+
+			ginkgo.It("accepts an HTTPS record via data.https", func() {
+				err := protovalidate.Validate(record("https", &CloudflareDnsRecordSpec{
+					ZoneId: zoneRef(), Name: "@", Type: CloudflareDnsRecordSpec_HTTPS,
+					Data: &CloudflareDnsRecordSpec_Https{Https: &HttpsData{Priority: 1, Target: ".", Value: "alpn=\"h2,h3\""}},
+				}))
 				gomega.Expect(err).To(gomega.BeNil())
 			})
 		})
 	})
 
 	ginkgo.Describe("When invalid input is passed", func() {
-		ginkgo.Context("cloudflare_dns_record", func() {
+		ginkgo.Context("required fields", func() {
 
-			ginkgo.It("should return a validation error when zone_id is missing", func() {
-				input := &CloudflareDnsRecord{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareDnsRecord",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-record",
-					},
-					Spec: &CloudflareDnsRecordSpec{
-						Name:  "www",
-						Type:  CloudflareDnsRecordSpec_A,
-						Value: "192.0.2.1",
-					},
-				}
-				err := protovalidate.Validate(input)
+			ginkgo.It("rejects a missing zone_id", func() {
+				err := protovalidate.Validate(record("r", &CloudflareDnsRecordSpec{
+					Name: "www", Type: CloudflareDnsRecordSpec_A, Content: "192.0.2.1",
+				}))
 				gomega.Expect(err).ToNot(gomega.BeNil())
 			})
 
-			ginkgo.It("should return a validation error when name is missing", func() {
-				input := &CloudflareDnsRecord{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareDnsRecord",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-record",
-					},
-					Spec: &CloudflareDnsRecordSpec{
-						ZoneId: &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "abc123def456"}},
-						Type:   CloudflareDnsRecordSpec_A,
-						Value:  "192.0.2.1",
-					},
-				}
-				err := protovalidate.Validate(input)
+			ginkgo.It("rejects a missing name", func() {
+				err := protovalidate.Validate(record("r", &CloudflareDnsRecordSpec{
+					ZoneId: zoneRef(), Type: CloudflareDnsRecordSpec_A, Content: "192.0.2.1",
+				}))
 				gomega.Expect(err).ToNot(gomega.BeNil())
 			})
 
-			ginkgo.It("should return a validation error when type is unspecified", func() {
-				input := &CloudflareDnsRecord{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareDnsRecord",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-record",
-					},
-					Spec: &CloudflareDnsRecordSpec{
-						ZoneId: &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "abc123def456"}},
-						Name:   "www",
-						Type:   CloudflareDnsRecordSpec_record_type_unspecified,
-						Value:  "192.0.2.1",
-					},
-				}
-				err := protovalidate.Validate(input)
+			ginkgo.It("rejects an unspecified type", func() {
+				err := protovalidate.Validate(record("r", &CloudflareDnsRecordSpec{
+					ZoneId: zoneRef(), Name: "www", Type: CloudflareDnsRecordSpec_record_type_unspecified, Content: "192.0.2.1",
+				}))
+				gomega.Expect(err).ToNot(gomega.BeNil())
+			})
+		})
+
+		ginkgo.Context("content / data coherence", func() {
+
+			ginkgo.It("rejects a simple type with neither content nor data", func() {
+				err := protovalidate.Validate(record("r", &CloudflareDnsRecordSpec{
+					ZoneId: zoneRef(), Name: "www", Type: CloudflareDnsRecordSpec_A,
+				}))
 				gomega.Expect(err).ToNot(gomega.BeNil())
 			})
 
-			ginkgo.It("should return a validation error when value is missing", func() {
-				input := &CloudflareDnsRecord{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareDnsRecord",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-record",
-					},
-					Spec: &CloudflareDnsRecordSpec{
-						ZoneId: &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "abc123def456"}},
-						Name:   "www",
-						Type:   CloudflareDnsRecordSpec_A,
-					},
-				}
-				err := protovalidate.Validate(input)
+			ginkgo.It("rejects a structured type supplied via content", func() {
+				err := protovalidate.Validate(record("r", &CloudflareDnsRecordSpec{
+					ZoneId: zoneRef(), Name: "@", Type: CloudflareDnsRecordSpec_CAA, Content: "0 issue \"letsencrypt.org\"",
+				}))
 				gomega.Expect(err).ToNot(gomega.BeNil())
 			})
 
-			ginkgo.It("should return a validation error for invalid TTL", func() {
-				input := &CloudflareDnsRecord{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareDnsRecord",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-record",
-					},
-					Spec: &CloudflareDnsRecordSpec{
-						ZoneId: &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "abc123def456"}},
-						Name:   "www",
-						Type:   CloudflareDnsRecordSpec_A,
-						Value:  "192.0.2.1",
-						Ttl:    30,
-					},
-				}
-				err := protovalidate.Validate(input)
+			ginkgo.It("rejects setting both content and a data block", func() {
+				err := protovalidate.Validate(record("r", &CloudflareDnsRecordSpec{
+					ZoneId: zoneRef(), Name: "_sip._tcp", Type: CloudflareDnsRecordSpec_SRV, Content: "10 5 5060 sip.example.com",
+					Data: &CloudflareDnsRecordSpec_Srv{Srv: &SrvData{Priority: 10, Weight: 5, Port: 5060, Target: "sip.example.com"}},
+				}))
 				gomega.Expect(err).ToNot(gomega.BeNil())
 			})
 
-			ginkgo.It("should return a validation error for TTL exceeding max", func() {
-				input := &CloudflareDnsRecord{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareDnsRecord",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-record",
-					},
-					Spec: &CloudflareDnsRecordSpec{
-						ZoneId: &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "abc123def456"}},
-						Name:   "www",
-						Type:   CloudflareDnsRecordSpec_A,
-						Value:  "192.0.2.1",
-						Ttl:    100000,
-					},
-				}
-				err := protovalidate.Validate(input)
+			ginkgo.It("rejects a data block that does not match the type", func() {
+				err := protovalidate.Validate(record("r", &CloudflareDnsRecordSpec{
+					ZoneId: zoneRef(), Name: "@", Type: CloudflareDnsRecordSpec_SRV,
+					Data: &CloudflareDnsRecordSpec_Caa{Caa: &CaaData{Tag: "issue", Value: "letsencrypt.org"}},
+				}))
+				gomega.Expect(err).ToNot(gomega.BeNil())
+			})
+		})
+
+		ginkgo.Context("field constraints", func() {
+
+			ginkgo.It("rejects a TTL below the floor", func() {
+				err := protovalidate.Validate(record("r", &CloudflareDnsRecordSpec{
+					ZoneId: zoneRef(), Name: "www", Type: CloudflareDnsRecordSpec_A, Content: "192.0.2.1", Ttl: 10,
+				}))
 				gomega.Expect(err).ToNot(gomega.BeNil())
 			})
 
-			ginkgo.It("should return a validation error for negative priority", func() {
-				input := &CloudflareDnsRecord{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareDnsRecord",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-record",
-					},
-					Spec: &CloudflareDnsRecordSpec{
-						ZoneId:   &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "abc123def456"}},
-						Name:     "@",
-						Type:     CloudflareDnsRecordSpec_MX,
-						Value:    "mail.example.com",
-						Priority: -1,
-					},
-				}
-				err := protovalidate.Validate(input)
+			ginkgo.It("rejects a TTL exceeding the max", func() {
+				err := protovalidate.Validate(record("r", &CloudflareDnsRecordSpec{
+					ZoneId: zoneRef(), Name: "www", Type: CloudflareDnsRecordSpec_A, Content: "192.0.2.1", Ttl: 100000,
+				}))
 				gomega.Expect(err).ToNot(gomega.BeNil())
 			})
 
-			ginkgo.It("should return a validation error for priority exceeding max", func() {
-				input := &CloudflareDnsRecord{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareDnsRecord",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-record",
-					},
-					Spec: &CloudflareDnsRecordSpec{
-						ZoneId:   &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "abc123def456"}},
-						Name:     "@",
-						Type:     CloudflareDnsRecordSpec_MX,
-						Value:    "mail.example.com",
-						Priority: 70000,
-					},
-				}
-				err := protovalidate.Validate(input)
+			ginkgo.It("rejects a negative priority", func() {
+				err := protovalidate.Validate(record("r", &CloudflareDnsRecordSpec{
+					ZoneId: zoneRef(), Name: "@", Type: CloudflareDnsRecordSpec_MX, Content: "mail.example.com", Priority: -1,
+				}))
 				gomega.Expect(err).ToNot(gomega.BeNil())
 			})
 
-			ginkgo.It("should return a validation error for comment exceeding max length", func() {
-				input := &CloudflareDnsRecord{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareDnsRecord",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-record",
-					},
-					Spec: &CloudflareDnsRecordSpec{
-						ZoneId:  &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "abc123def456"}},
-						Name:    "www",
-						Type:    CloudflareDnsRecordSpec_A,
-						Value:   "192.0.2.1",
-						Comment: "This is a very long comment that exceeds the 100 character limit for DNS record comments in Cloudflare's system.",
-					},
-				}
-				err := protovalidate.Validate(input)
+			ginkgo.It("rejects a priority exceeding the max", func() {
+				err := protovalidate.Validate(record("r", &CloudflareDnsRecordSpec{
+					ZoneId: zoneRef(), Name: "@", Type: CloudflareDnsRecordSpec_MX, Content: "mail.example.com", Priority: 70000,
+				}))
 				gomega.Expect(err).ToNot(gomega.BeNil())
 			})
 
-			ginkgo.It("should return a validation error for proxied TXT record", func() {
-				input := &CloudflareDnsRecord{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareDnsRecord",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-record",
-					},
-					Spec: &CloudflareDnsRecordSpec{
-						ZoneId:  &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "abc123def456"}},
-						Name:    "@",
-						Type:    CloudflareDnsRecordSpec_TXT,
-						Value:   "test",
-						Proxied: true,
-					},
-				}
-				err := protovalidate.Validate(input)
+			ginkgo.It("rejects a proxied TXT record", func() {
+				err := protovalidate.Validate(record("r", &CloudflareDnsRecordSpec{
+					ZoneId: zoneRef(), Name: "@", Type: CloudflareDnsRecordSpec_TXT, Content: "test", Proxied: true,
+				}))
 				gomega.Expect(err).ToNot(gomega.BeNil())
 			})
 
-			ginkgo.It("should return a validation error for proxied MX record", func() {
-				input := &CloudflareDnsRecord{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareDnsRecord",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-record",
-					},
-					Spec: &CloudflareDnsRecordSpec{
-						ZoneId:   &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "abc123def456"}},
-						Name:     "@",
-						Type:     CloudflareDnsRecordSpec_MX,
-						Value:    "mail.example.com",
-						Priority: 10,
-						Proxied:  true,
-					},
-				}
-				err := protovalidate.Validate(input)
+			ginkgo.It("rejects a proxied MX record", func() {
+				err := protovalidate.Validate(record("r", &CloudflareDnsRecordSpec{
+					ZoneId: zoneRef(), Name: "@", Type: CloudflareDnsRecordSpec_MX, Content: "mail.example.com", Priority: 10, Proxied: true,
+				}))
 				gomega.Expect(err).ToNot(gomega.BeNil())
 			})
 
-			ginkgo.It("should return a validation error for MX record without priority", func() {
-				input := &CloudflareDnsRecord{
-					ApiVersion: "cloudflare.openmcf.org/v1",
-					Kind:       "CloudflareDnsRecord",
-					Metadata: &shared.CloudResourceMetadata{
-						Name: "test-record",
-					},
-					Spec: &CloudflareDnsRecordSpec{
-						ZoneId: &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "abc123def456"}},
-						Name:   "@",
-						Type:   CloudflareDnsRecordSpec_MX,
-						Value:  "mail.example.com",
-					},
-				}
-				err := protovalidate.Validate(input)
+			ginkgo.It("rejects an MX record without priority", func() {
+				err := protovalidate.Validate(record("r", &CloudflareDnsRecordSpec{
+					ZoneId: zoneRef(), Name: "@", Type: CloudflareDnsRecordSpec_MX, Content: "mail.example.com",
+				}))
+				gomega.Expect(err).ToNot(gomega.BeNil())
+			})
+
+			ginkgo.It("rejects a CAA flags value over 255", func() {
+				err := protovalidate.Validate(record("r", &CloudflareDnsRecordSpec{
+					ZoneId: zoneRef(), Name: "@", Type: CloudflareDnsRecordSpec_CAA,
+					Data: &CloudflareDnsRecordSpec_Caa{Caa: &CaaData{Flags: 300, Tag: "issue", Value: "letsencrypt.org"}},
+				}))
 				gomega.Expect(err).ToNot(gomega.BeNil())
 			})
 		})

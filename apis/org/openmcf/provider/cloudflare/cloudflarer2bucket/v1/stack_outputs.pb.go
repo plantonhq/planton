@@ -26,12 +26,17 @@ type CloudflareR2BucketStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The name of the bucket (same as spec.bucket_name)
 	BucketName string `protobuf:"bytes,1,opt,name=bucket_name,json=bucketName,proto3" json:"bucket_name,omitempty"`
-	// The accessible bucket URL (e.g., R2 public endpoint or base S3 API URL)
+	// The S3-compatible API URL for the bucket
+	// (e.g., https://<account_id>.r2.cloudflarestorage.com/<bucket>)
 	BucketUrl string `protobuf:"bytes,2,opt,name=bucket_url,json=bucketUrl,proto3" json:"bucket_url,omitempty"`
-	// The custom domain URL if configured (e.g., https://media.example.com)
-	CustomDomainUrl string `protobuf:"bytes,3,opt,name=custom_domain_url,json=customDomainUrl,proto3" json:"custom_domain_url,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	// The custom-domain URLs configured for the bucket (one per enabled custom domain),
+	// e.g., ["https://media.example.com"].
+	CustomDomainUrls []string `protobuf:"bytes,3,rep,name=custom_domain_urls,json=customDomainUrls,proto3" json:"custom_domain_urls,omitempty"`
+	// The Cloudflare-managed public URL (r2.dev) when public_access is enabled,
+	// e.g., https://pub-<hash>.r2.dev. Empty when public access is disabled.
+	PublicUrl     string `protobuf:"bytes,4,opt,name=public_url,json=publicUrl,proto3" json:"public_url,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *CloudflareR2BucketStackOutputs) Reset() {
@@ -78,9 +83,16 @@ func (x *CloudflareR2BucketStackOutputs) GetBucketUrl() string {
 	return ""
 }
 
-func (x *CloudflareR2BucketStackOutputs) GetCustomDomainUrl() string {
+func (x *CloudflareR2BucketStackOutputs) GetCustomDomainUrls() []string {
 	if x != nil {
-		return x.CustomDomainUrl
+		return x.CustomDomainUrls
+	}
+	return nil
+}
+
+func (x *CloudflareR2BucketStackOutputs) GetPublicUrl() string {
+	if x != nil {
+		return x.PublicUrl
 	}
 	return ""
 }
@@ -89,13 +101,15 @@ var File_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_stack_outputs_pro
 
 const file_org_openmcf_provider_cloudflare_cloudflarer2bucket_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Iorg/openmcf/provider/cloudflare/cloudflarer2bucket/v1/stack_outputs.proto\x125org.openmcf.provider.cloudflare.cloudflarer2bucket.v1\"\x8c\x01\n" +
+	"Iorg/openmcf/provider/cloudflare/cloudflarer2bucket/v1/stack_outputs.proto\x125org.openmcf.provider.cloudflare.cloudflarer2bucket.v1\"\xad\x01\n" +
 	"\x1eCloudflareR2BucketStackOutputs\x12\x1f\n" +
 	"\vbucket_name\x18\x01 \x01(\tR\n" +
 	"bucketName\x12\x1d\n" +
 	"\n" +
-	"bucket_url\x18\x02 \x01(\tR\tbucketUrl\x12*\n" +
-	"\x11custom_domain_url\x18\x03 \x01(\tR\x0fcustomDomainUrlB\xb7\x03\n" +
+	"bucket_url\x18\x02 \x01(\tR\tbucketUrl\x12,\n" +
+	"\x12custom_domain_urls\x18\x03 \x03(\tR\x10customDomainUrls\x12\x1d\n" +
+	"\n" +
+	"public_url\x18\x04 \x01(\tR\tpublicUrlB\xb7\x03\n" +
 	"9com.org.openmcf.provider.cloudflare.cloudflarer2bucket.v1B\x11StackOutputsProtoP\x01Zlgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarer2bucket/v1;cloudflarer2bucketv1\xa2\x02\x05OOPCC\xaa\x025Org.Openmcf.Provider.Cloudflare.Cloudflarer2bucket.V1\xca\x025Org\\Openmcf\\Provider\\Cloudflare\\Cloudflarer2bucket\\V1\xe2\x02AOrg\\Openmcf\\Provider\\Cloudflare\\Cloudflarer2bucket\\V1\\GPBMetadata\xea\x02:Org::Openmcf::Provider::Cloudflare::Cloudflarer2bucket::V1b\x06proto3"
 
 var (

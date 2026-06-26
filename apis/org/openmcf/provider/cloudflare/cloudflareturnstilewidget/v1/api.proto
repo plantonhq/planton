@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package org.openmcf.provider.cloudflare.cloudflareturnstilewidget.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/cloudflare/cloudflareturnstilewidget/v1/spec.proto";
+import "org/openmcf/provider/cloudflare/cloudflareturnstilewidget/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// cloudflare-turnstile-widget
+message CloudflareTurnstileWidget {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'cloudflare.openmcf.org/v1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'CloudflareTurnstileWidget'];
+
+  //metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  CloudflareTurnstileWidgetSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  CloudflareTurnstileWidgetStatus status = 5;
+}
+
+// cloudflare-turnstile-widget status
+message CloudflareTurnstileWidgetStatus {
+  //stack-outputs
+  //  cloudflare-turnstile-widget stack-outputs
+  CloudflareTurnstileWidgetStackOutputs outputs = 1;
+}

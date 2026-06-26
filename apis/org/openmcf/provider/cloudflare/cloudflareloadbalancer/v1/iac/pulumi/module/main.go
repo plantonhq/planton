@@ -25,7 +25,7 @@ func Resources(
 		return errors.Wrap(err, "failed to setup cloudflare provider")
 	}
 
-	// 3. Provision the load balancer & its pool / monitor.
+	// 3. Provision the zone-scoped load balancer (pools/monitors are separate kinds).
 	if _, err := load_balancer(ctx, locals, cloudflareProvider); err != nil {
 		return errors.Wrap(err, "failed to create cloudflare load balancer")
 	}

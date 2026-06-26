@@ -20,12 +20,17 @@ func records(
 		// Include index to ensure uniqueness when multiple records have same name and type
 		resourceName := fmt.Sprintf("%s-%s-%d", record.Name, record.Type.String(), idx)
 
+		ttl := float64(1)
+		if record.Ttl > 0 {
+			ttl = float64(record.Ttl)
+		}
+
 		recordArgs := &cloudflare.DnsRecordArgs{
 			ZoneId:  zone.ID(),
 			Name:    pulumi.String(record.Name),
 			Type:    pulumi.String(record.Type.String()),
-			Content: pulumi.String(record.Value),
-			Ttl:     pulumi.Float64(float64(record.Ttl)),
+			Content: pulumi.String(record.Content),
+			Ttl:     pulumi.Float64(ttl),
 		}
 
 		// proxied is only applicable to A, AAAA, and CNAME records

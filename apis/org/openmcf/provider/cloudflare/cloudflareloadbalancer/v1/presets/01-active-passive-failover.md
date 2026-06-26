@@ -1,29 +1,33 @@
 # Active-Passive Failover
 
-Two origins with steering=off: traffic goes to the first healthy origin; if it fails, traffic fails over to the second. Proxied through Cloudflare for DDoS protection and CDN. Use for high-availability with primary/backup origins.
+A monitor, a single pool with a primary and secondary origin, and a load balancer
+with `steeringPolicy: off`. Traffic goes to the first healthy origin; if it fails
+health checks, it fails over to the next. Proxied through Cloudflare for DDoS
+protection and CDN.
 
 ## When to Use
 
-- Primary + backup servers (e.g., main DB, standby)
-- DR failover when primary becomes unhealthy
+- Primary + backup servers (e.g., main site, standby)
+- DR failover when the primary becomes unhealthy
 - Simple active-passive redundancy
 
 ## Key Configuration Choices
 
-- **steeringPolicy: off** (`steeringPolicy: off`) -- Static/failover; first healthy origin gets all traffic.
-- **proxied: true** (`proxied: true`) -- Recommended; traffic through Cloudflare.
-- **healthProbePath** (`healthProbePath: /`) -- Path for health checks; default is /.
-- **zoneId** (`zoneId`) -- Zone ID; use value wrapper or reference to CloudflareDnsZone.
+- **`steeringPolicy: off`** — static failover; the first healthy origin gets all traffic.
+- **`proxied: true`** — recommended; traffic flows through Cloudflare.
+- **Monitor `path`/`expectedCodes`** — tune the health check to a real endpoint.
+- **`zoneId`** — a value or a reference to a `CloudflareDnsZone`.
 
 ## Placeholders to Replace
 
-| Placeholder | Description | Where to Find |
-|-------------|-------------|---------------|
-| `<cloudflare-zone-id>` | Zone ID containing hostname | CloudflareDnsZone status.outputs.zone_id |
-| `app.example.com` | Hostname for the load balancer | Your application FQDN |
-| `192.0.2.1`, `192.0.2.2` | Primary and secondary origin IPs | Your server IPs or hostnames |
+| Placeholder | Description |
+|---|---|
+| `<cloudflare-account-id>` | Account that owns the monitor and pool |
+| `<cloudflare-zone-id>` | Zone containing the hostname |
+| `<app-subdomain>.<your-domain.com>` | Load balancer hostname |
+| `192.0.2.1`, `192.0.2.2` | Primary and secondary origin addresses |
 
 ## Related Presets
 
-- **02-geographic-routing** -- Use when routing by geography instead of failover
-- **03-weighted-ab-testing** -- Use when splitting traffic by weight
+- **02-geographic-routing** — route by geography across regional pools
+- **03-weighted-ab-testing** — split traffic across pools by weight

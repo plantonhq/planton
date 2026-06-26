@@ -1,0 +1,426 @@
+syntax = "proto3";
+
+package org.openmcf.provider.cloudflare.cloudflarepagesproject.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "org/openmcf/shared/options/options.proto";
+
+// CloudflarePagesProjectSpec configures a Cloudflare Pages project: a managed
+// site host that builds and serves a static site or full-stack app (static
+// assets + Pages Functions) from Cloudflare's edge.
+//
+// This models the durable *project* — its build configuration, optional git
+// connection, per-environment runtime configuration (bindings, env vars,
+// compatibility), and custom domains. The actual *deployments* (the built
+// versions of the site) are produced out-of-band: for a git-connected project
+// Cloudflare builds a new deployment on every push to the connected repository;
+// for a direct-upload project a deployment is pushed with `wrangler pages
+// deploy`. The Cloudflare Terraform/Pulumi providers expose no deployment
+// resource, so this component never creates a deployment — it manages the
+// project that deployments land in.
+//
+// Prerequisite for git-connected projects: the Cloudflare account must already
+// be authorized with the git provider (the GitHub App install / GitLab OAuth
+// connection), which is a one-time, browser-driven step in the Cloudflare
+// dashboard. The provider manages the `source` configuration (which repo,
+// branch, and build settings), not the underlying authorization.
+message CloudflarePagesProjectSpec {
+  // The Cloudflare account ID that owns this project.
+  string account_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.len = 32,
+    (buf.validate.field).string.pattern = "^[0-9a-fA-F]{32}$"
+  ];
+
+  // The project name. Lowercase alphanumeric with hyphens; this is also the
+  // project's `*.pages.dev` subdomain label. Immutable — changing it replaces
+  // the project.
+  string name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 58,
+    (buf.validate.field).string.pattern = "^[a-z0-9][a-z0-9-]*$"
+  ];
+
+  // The production branch name (e.g. "main"). For a git-connected project,
+  // pushes to this branch produce production deployments; other branches produce
+  // preview deployments. Required even for direct-upload projects.
+  string production_branch = 3 [(buf.validate.field).required = true];
+
+  // Build configuration: how Cloudflare builds the site from source (used by
+  // git-connected projects and by `wrangler pages deploy` builds). Omit for a
+  // pre-built direct-upload project.
+  CloudflarePagesBuildConfig build_config = 4;
+
+  // Git connection. When set, Cloudflare connects to the repository and builds a
+  // new deployment on every push (Cloudflare is the CI). Omit for a direct-upload
+  // project whose deployments are pushed with `wrangler pages deploy`.
+  CloudflarePagesSource source = 5;
+
+  // Per-environment runtime configuration (bindings, env vars, compatibility,
+  // limits) for preview and production deployments.
+  CloudflarePagesDeploymentConfigs deployment_configs = 6;
+
+  // Custom domains to attach to the project. Each must be a hostname in a zone on
+  // this Cloudflare account; Cloudflare provisions and manages its certificate.
+  // The project's `*.pages.dev` subdomain is always available regardless.
+  repeated string domains = 7;
+}
+
+// CloudflarePagesBuildConfig controls how Cloudflare builds the site.
+message CloudflarePagesBuildConfig {
+  // The build command Cloudflare runs (e.g. "npm run build").
+  string build_command = 1;
+
+  // The directory containing the build output to serve (e.g. "dist").
+  string destination_dir = 2;
+
+  // The repository subdirectory to treat as the project root (for monorepos).
+  string root_dir = 3;
+
+  // Enable build caching to speed up successive builds.
+  bool build_caching = 4;
+
+  // Web Analytics tag to inject into served pages.
+  string web_analytics_tag = 5;
+
+  // Web Analytics token paired with the tag. Secret — provide a managed-secret
+  // reference; resolved just-in-time at deploy.
+  string web_analytics_token = 6 [(org.openmcf.shared.options.sensitive) = true];
+}
+
+// CloudflarePagesSource configures the git connection that drives Cloudflare-side
+// builds.
+message CloudflarePagesSource {
+  // The git provider hosting the repository.
+  string type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "source_type.valid"
+      message: "source type must be one of \"github\", \"gitlab\""
+      expression: "this in ['github', 'gitlab']"
+    }
+  ];
+
+  // Repository and branch-deployment settings.
+  CloudflarePagesSourceConfig config = 2 [(buf.validate.field).required = true];
+}
+
+// CloudflarePagesSourceConfig holds the connected repository and branch settings.
+message CloudflarePagesSourceConfig {
+  // The repository owner (user or organization).
+  string owner = 1;
+
+  // The repository name.
+  string repo_name = 2;
+
+  // The production branch; pushes here produce production deployments. Defaults to
+  // the project's production_branch when unset.
+  string production_branch = 3;
+
+  // Post a deployment status comment on pull requests.
+  bool pr_comments_enabled = 4;
+
+  // Enable automatic deployments on push (both preview and production).
+  bool deployments_enabled = 5;
+
+  // Enable automatic production deployments specifically.
+  bool production_deployments_enabled = 6;
+
+  // Which non-production branches get preview deployments. One of "all", "none",
+  // or "custom" (use the include/exclude lists below). Empty uses Cloudflare's
+  // default ("all").
+  string preview_deployment_setting = 7 [(buf.validate.field).cel = {
+    id: "source_config_preview_deployment_setting.valid"
+    message: "preview_deployment_setting must be one of \"all\", \"none\", \"custom\""
+    expression: "this == '' || this in ['all', 'none', 'custom']"
+  }];
+
+  // With preview_deployment_setting = "custom", branches matched here get preview
+  // deployments.
+  repeated string preview_branch_includes = 8;
+
+  // With preview_deployment_setting = "custom", branches matched here are excluded
+  // from preview deployments.
+  repeated string preview_branch_excludes = 9;
+
+  // Only build when files under these paths change.
+  repeated string path_includes = 10;
+
+  // Skip builds when only files under these paths change.
+  repeated string path_excludes = 11;
+}
+
+// CloudflarePagesDeploymentConfigs bundles the preview and production environment
+// configuration. The two share the same shape.
+message CloudflarePagesDeploymentConfigs {
+  // Configuration applied to preview deployments.
+  CloudflarePagesDeploymentConfig preview = 1;
+
+  // Configuration applied to production deployments.
+  CloudflarePagesDeploymentConfig production = 2;
+}
+
+// CloudflarePagesDeploymentConfig is the runtime configuration for one
+// environment (preview or production): the bindings, environment variables,
+// compatibility, and limits applied to that environment's Pages Functions.
+message CloudflarePagesDeploymentConfig {
+  // Compatibility date (YYYY-MM-DD) pinning the Workers runtime behavior for
+  // Functions.
+  string compatibility_date = 1 [(buf.validate.field).string.pattern = "^([0-9]{4}-[0-9]{2}-[0-9]{2})?$"];
+
+  // Runtime compatibility flags (e.g. "nodejs_compat").
+  repeated string compatibility_flags = 2;
+
+  // Always build Functions against the latest compatibility date instead of a
+  // pinned one.
+  bool always_use_latest_compatibility_date = 3;
+
+  // Major version of the Cloudflare build image to use. Leave 0 for the default.
+  int64 build_image_major_version = 4 [(buf.validate.field).cel = {
+    id: "deployment_config_build_image_major_version.non_negative"
+    message: "build_image_major_version must be 0 (default) or positive"
+    expression: "this >= 0"
+  }];
+
+  // Continue serving (fail open) when a Function cannot be invoked, rather than
+  // returning an error.
+  bool fail_open = 5;
+
+  // Functions usage/pricing model. One of "standard", "bundled", or "unbound".
+  // Empty uses the account default. ("bundled"/"unbound" are legacy models.)
+  string usage_model = 6 [(buf.validate.field).cel = {
+    id: "deployment_config_usage_model.valid"
+    message: "usage_model must be one of \"standard\", \"bundled\", \"unbound\""
+    expression: "this == '' || this in ['standard', 'bundled', 'unbound']"
+  }];
+
+  // Per-invocation limits for Functions.
+  CloudflarePagesLimits limits = 7;
+
+  // Smart Placement configuration for Functions.
+  CloudflarePagesPlacement placement = 8;
+
+  // Plain-text environment variables exposed to builds and Functions. Map key is
+  // the variable name, value is the literal string. Put secret values in
+  // `secrets` instead.
+  map<string, string> vars = 9;
+
+  // Secret environment variables exposed to Functions. Each value is secret —
+  // provide a managed-secret reference; resolved just-in-time at deploy.
+  repeated CloudflarePagesSecret secrets = 10;
+
+  // KV namespace bindings.
+  repeated CloudflarePagesKvBinding kv_namespaces = 11;
+
+  // D1 database bindings.
+  repeated CloudflarePagesD1Binding d1_databases = 12;
+
+  // R2 bucket bindings.
+  repeated CloudflarePagesR2Binding r2_buckets = 13;
+
+  // Queue producer bindings (enqueue to a Cloudflare Queue).
+  repeated CloudflarePagesQueueProducerBinding queue_producers = 14;
+
+  // Hyperdrive bindings (pooled access to a regional SQL database).
+  repeated CloudflarePagesHyperdriveBinding hyperdrive_bindings = 15;
+
+  // Service bindings to other Workers.
+  repeated CloudflarePagesServiceBinding services = 16;
+
+  // Durable Object namespace bindings.
+  repeated CloudflarePagesDurableObjectBinding durable_object_namespaces = 17;
+
+  // Analytics Engine dataset bindings.
+  repeated CloudflarePagesAnalyticsEngineBinding analytics_engine_datasets = 18;
+
+  // Vectorize index bindings.
+  repeated CloudflarePagesVectorizeBinding vectorize_bindings = 19;
+
+  // Workers AI / Constellation bindings.
+  repeated CloudflarePagesAiBinding ai_bindings = 20;
+
+  // mTLS certificate bindings.
+  repeated CloudflarePagesMtlsCertificateBinding mtls_certificates = 21;
+
+  // Browser Rendering bindings. Each entry is just the JS binding name.
+  repeated CloudflarePagesBrowserBinding browsers = 22;
+}
+
+// CloudflarePagesLimits sets per-invocation Function limits.
+message CloudflarePagesLimits {
+  // CPU time limit in milliseconds per invocation. Leave 0 for the plan default.
+  int64 cpu_ms = 1 [(buf.validate.field).cel = {
+    id: "limits_cpu_ms.non_negative"
+    message: "cpu_ms must be 0 (default) or positive"
+    expression: "this >= 0"
+  }];
+}
+
+// CloudflarePagesPlacement configures Smart Placement for Functions.
+message CloudflarePagesPlacement {
+  // Placement mode. "smart" runs Functions near the backends they call. Empty
+  // keeps the default (run near the user).
+  string mode = 1 [(buf.validate.field).cel = {
+    id: "placement_mode.valid"
+    message: "placement mode must be \"smart\""
+    expression: "this == '' || this == 'smart'"
+  }];
+}
+
+// CloudflarePagesSecret binds a secret value to a Function environment variable.
+message CloudflarePagesSecret {
+  // The environment variable name the Function reads the secret through.
+  string name = 1 [(buf.validate.field).required = true];
+
+  // The secret value. Provide a managed-secret reference; the platform resolves
+  // it just-in-time at deploy and never stores plaintext.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef value = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.options.sensitive) = true
+  ];
+}
+
+// CloudflarePagesKvBinding binds a KV namespace to a JS variable.
+message CloudflarePagesKvBinding {
+  // The JS binding (variable) name.
+  string name = 1 [(buf.validate.field).required = true];
+
+  // The KV namespace ID, or a reference to a CloudflareKvNamespace resource.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef namespace_id = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = CloudflareKvNamespace,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.namespace_id"
+  ];
+}
+
+// CloudflarePagesD1Binding binds a D1 database to a JS variable.
+message CloudflarePagesD1Binding {
+  // The JS binding (variable) name.
+  string name = 1 [(buf.validate.field).required = true];
+
+  // The D1 database ID, or a reference to a CloudflareD1Database resource.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef database_id = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = CloudflareD1Database,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.database_id"
+  ];
+}
+
+// CloudflarePagesR2Binding binds an R2 bucket to a JS variable.
+message CloudflarePagesR2Binding {
+  // The JS binding (variable) name.
+  string name = 1 [(buf.validate.field).required = true];
+
+  // The R2 bucket name, or a reference to a CloudflareR2Bucket resource.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef bucket_name = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = CloudflareR2Bucket,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_name"
+  ];
+
+  // Optional data-residency jurisdiction of the bucket ("eu", "fedramp",
+  // "fedramp-high"); leave empty for the default jurisdiction.
+  string jurisdiction = 3 [(buf.validate.field).cel = {
+    id: "r2_binding_jurisdiction.valid"
+    message: "jurisdiction must be one of \"eu\", \"fedramp\", \"fedramp-high\""
+    expression: "this == '' || this in ['eu', 'fedramp', 'fedramp-high']"
+  }];
+}
+
+// CloudflarePagesQueueProducerBinding lets a Function enqueue to a Cloudflare Queue.
+message CloudflarePagesQueueProducerBinding {
+  // The JS binding (variable) name.
+  string name = 1 [(buf.validate.field).required = true];
+
+  // The Cloudflare Queue name, or a reference to a CloudflareQueue resource.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef queue_name = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = CloudflareQueue,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.queue_name"
+  ];
+}
+
+// CloudflarePagesHyperdriveBinding binds a Hyperdrive config to a JS variable.
+message CloudflarePagesHyperdriveBinding {
+  // The JS binding (variable) name.
+  string name = 1 [(buf.validate.field).required = true];
+
+  // The Hyperdrive config ID, or a reference to a CloudflareHyperdriveConfig resource.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef config_id = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = CloudflareHyperdriveConfig,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.hyperdrive_id"
+  ];
+}
+
+// CloudflarePagesServiceBinding binds another Worker for direct service-to-service calls.
+message CloudflarePagesServiceBinding {
+  // The JS binding (variable) name.
+  string name = 1 [(buf.validate.field).required = true];
+
+  // The target Worker's script name, or a reference to a CloudflareWorker resource.
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef service = 2 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = CloudflareWorker,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.script_name"
+  ];
+
+  // Optional named entrypoint (WorkerEntrypoint) on the target Worker.
+  string entrypoint = 3;
+
+  // Optional environment of the target Worker.
+  string environment = 4;
+}
+
+// CloudflarePagesDurableObjectBinding binds a Durable Object namespace.
+message CloudflarePagesDurableObjectBinding {
+  // The JS binding (variable) name.
+  string name = 1 [(buf.validate.field).required = true];
+
+  // The Durable Object namespace ID to bind.
+  string namespace_id = 2 [(buf.validate.field).required = true];
+}
+
+// CloudflarePagesAnalyticsEngineBinding binds an Analytics Engine dataset.
+message CloudflarePagesAnalyticsEngineBinding {
+  // The JS binding (variable) name.
+  string name = 1 [(buf.validate.field).required = true];
+
+  // The Analytics Engine dataset to write data points to.
+  string dataset = 2 [(buf.validate.field).required = true];
+}
+
+// CloudflarePagesVectorizeBinding binds a Vectorize index.
+message CloudflarePagesVectorizeBinding {
+  // The JS binding (variable) name.
+  string name = 1 [(buf.validate.field).required = true];
+
+  // The Vectorize index name.
+  string index_name = 2 [(buf.validate.field).required = true];
+}
+
+// CloudflarePagesAiBinding binds a Workers AI / Constellation project.
+message CloudflarePagesAiBinding {
+  // The JS binding (variable) name.
+  string name = 1 [(buf.validate.field).required = true];
+
+  // The Constellation project ID to bind.
+  string project_id = 2 [(buf.validate.field).required = true];
+}
+
+// CloudflarePagesMtlsCertificateBinding binds an mTLS certificate.
+message CloudflarePagesMtlsCertificateBinding {
+  // The JS binding (variable) name.
+  string name = 1 [(buf.validate.field).required = true];
+
+  // The mTLS certificate ID to bind.
+  string certificate_id = 2 [(buf.validate.field).required = true];
+}
+
+// CloudflarePagesBrowserBinding binds the Browser Rendering API.
+message CloudflarePagesBrowserBinding {
+  // The JS binding (variable) name the Function calls Browser Rendering through.
+  string name = 1 [(buf.validate.field).required = true];
+}

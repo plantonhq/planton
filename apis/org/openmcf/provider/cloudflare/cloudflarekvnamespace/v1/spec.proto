@@ -4,27 +4,20 @@ package org.openmcf.provider.cloudflare.cloudflarekvnamespace.v1;
 
 import "buf/validate/validate.proto";
 
-// CloudflareKvNamespaceSpec defines the essential configuration for creating a Workers KV namespace on Cloudflare.
-// This follows the 80/20 principle: only the most commonly used fields are exposed to keep the API simple.
+// CloudflareKvNamespaceSpec provisions a Workers KV namespace: a low-latency,
+// eventually-consistent key-value store readable from Workers at the edge. The
+// namespace is the container; individual entries are seeded as
+// CloudflareWorkersKvPair resources (or written by the application at runtime).
 message CloudflareKvNamespaceSpec {
-  // A human-readable name for the KV namespace.
-  // This name must be unique within the Cloudflare account.
+  // A human-readable title for the KV namespace, unique within the account. This
+  // maps to the namespace's `title` in the Cloudflare API.
   string namespace_name = 1 [
     (buf.validate.field).required = true,
     (buf.validate.field).string.max_len = 64
   ];
 
-  // (Optional) Default time-to-live for key-value entries, in seconds.
-  // If set to 0 or left unset, keys will never expire by default (infinite TTL).
-  // If set to a positive value, it should be at least 60 seconds (minimum enforced by Cloudflare for expiring keys).
-  int32 ttl_seconds = 2 [(buf.validate.field).int32.gte = 0];
-
-  // (Optional) A short description of the namespace.
-  // Useful for documentation or identifying the purpose of this KV store.
-  string description = 3 [(buf.validate.field).string.max_len = 256];
-
   // The Cloudflare account ID that owns this KV namespace.
-  string account_id = 4 [
+  string account_id = 2 [
     (buf.validate.field).required = true,
     (buf.validate.field).string.len = 32,
     (buf.validate.field).string.pattern = "^[0-9a-fA-F]{32}$"

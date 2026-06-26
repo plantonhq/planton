@@ -73,8 +73,8 @@ This component models the fields needed for the most common IaC-managed ruleset 
 | **Origin Rules** | host_header, origin, sni | — |
 | **Security** | block response, skip phases/products, execute overrides | exposed_credential_check, ratelimit (separate from phase) |
 | **Cache** | cache, edge_ttl, browser_ttl, serve_stale | cache_key, cache_reserve, origin_cache_control |
-| **Transforms** | uri rewrite, headers | from_list (bulk redirects use a different pattern) |
-| **Redirects** | from_value with target_url | from_list |
+| **Transforms** | uri rewrite, headers | — |
+| **Redirects** | from_value with target_url; from_list (Bulk Redirect, by list name → CloudflareList) | — |
 | **Config** | — | autominify, bic, email_obfuscation, fonts, hotlink_protection, mirage, opportunistic_encryption, polish, rocket_loader, security_level, server_side_excludes, ssl, sxg |
 
 ### Flat Action Parameters (Matching Provider API)

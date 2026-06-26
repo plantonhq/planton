@@ -17,3 +17,8 @@ output "phase" {
   description = "The phase the ruleset executes in (pass-through)"
   value       = local.phase
 }
+
+output "last_updated" {
+  description = "RFC3339 timestamp of the ruleset's last update"
+  value       = cloudflare_ruleset.main.last_updated
+}

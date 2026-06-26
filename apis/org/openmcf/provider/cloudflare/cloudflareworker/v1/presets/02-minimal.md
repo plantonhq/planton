@@ -1,28 +1,22 @@
-# Minimal Worker
+# Preset: Minimal Worker
 
-Bare minimum Cloudflare Worker with only the script bundle. No KV bindings, DNS routes, or env vars. Use when deploying a Worker that will be attached to routes or configured elsewhere (e.g., via Wrangler or dashboard).
+The smallest deployable Worker: an inline script exposed on a workers.dev
+subdomain. No external bindings or custom domains.
 
-## When to Use
+## When to use
 
-- Initial Worker deployment; add DNS/routes later
-- Workers invoked by Cron Triggers or Queues only
-- Simplest possible Worker manifest
+- A quick edge endpoint, a webhook receiver, or a starting point you will grow.
+- Trying out the platform without first uploading a build artifact to R2.
 
-## Key Configuration Choices
+## Key choices
 
-- **scriptBundle only** (`scriptBundle`) -- R2 bucket and path to the pre-built Worker bundle.
-- **No dns** (`dns` omitted) -- Worker runs but has no route; attach via dashboard or separate config.
-- **No kvBindings** (`kvBindings` omitted) -- Add when Worker needs KV storage.
+- `content`: the inline ES-module source. For larger or CI-built workers, use the
+  `r2_bundle` source instead (see the full-featured preset).
+- `workersDev.enabled`: exposes the Worker at
+  `<name>.<account-subdomain>.workers.dev`.
 
-## Placeholders to Replace
+## Placeholders
 
-| Placeholder | Description | Where to Find |
-|-------------|-------------|---------------|
-| `<cloudflare-account-id>` | Cloudflare account ID | Dashboard → Overview → Account ID |
-| `<worker-name>` | Worker name | Descriptive name (e.g., hello-world) |
-| `<r2-bucket-name>` | R2 bucket containing the script bundle | CloudflareR2Bucket or upload target |
-| `<script-bundle-path>` | Path to bundle in R2 | Your build output (e.g., dist/worker.js) |
-
-## Related Presets
-
-- **01-api-with-custom-domain** -- Use when you need KV bindings, DNS, and env vars
+| Placeholder | Description |
+|---|---|
+| `<cloudflare-account-id>` | 32-character Cloudflare account ID |

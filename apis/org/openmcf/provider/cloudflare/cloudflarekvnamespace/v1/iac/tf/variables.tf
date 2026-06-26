@@ -19,13 +19,5 @@ variable "spec" {
 
     # Cloudflare account ID (32 hex characters) that owns the namespace.
     account_id = string
-
-    # Default time-to-live for entries, in seconds. Not represented on the
-    # Cloudflare KV namespace resource itself; kept for spec completeness.
-    ttl_seconds = optional(number)
-
-    # Free-form description. Not represented on the Cloudflare KV namespace
-    # resource itself; kept for spec completeness.
-    description = optional(string)
   })
 }

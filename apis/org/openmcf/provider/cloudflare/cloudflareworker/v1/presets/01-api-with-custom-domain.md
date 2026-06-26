@@ -1,32 +1,33 @@
-# API Worker with Custom Domain
+# Preset: Edge API with Custom Domain
 
-Full-featured Worker with KV bindings, custom domain DNS routing, and environment variables. Use for production APIs that need storage, a custom hostname, and config. Script bundle must be pre-built and uploaded to R2.
+A production-shaped Worker: deployed from a CI-built bundle in R2, wired to KV and
+D1 by reference, exposed on a managed custom domain, with observability on.
 
-## When to Use
+## When to use
 
-- REST or GraphQL APIs running at the edge
-- Workers needing KV for cache or session data
-- Custom domain for API (e.g., api.example.com)
+- A real edge API or backend with configuration (KV), data (D1), and secrets.
+- A CI/CD flow that builds the worker bundle and uploads it to an R2 bucket; the
+  deploy then references that artifact.
 
-## Key Configuration Choices
+## Key choices
 
-- **kvBindings** (`kvBindings`) -- Each entry uses value wrapper; reference CloudflareKvNamespace namespace_id.
-- **dns** (`dns`) -- enabled, zoneId, hostname; routePattern defaults to hostname/* if omitted.
-- **env.variables** (`env.variables`) -- Non-sensitive config; use env.secrets for sensitive values.
-- **scriptBundle** (`scriptBundle`) -- R2 bucket and path to the pre-built Worker bundle.
+- `r2Bundle`: points at the pre-built bundle object in R2. For small or inline
+  scripts use `content` instead.
+- `kvNamespaces` / `d1Databases`: bind other resources by reference so the graph
+  expresses the dependency and ids resolve from upstream outputs.
+- `secrets`: provide each value as a managed-secret reference; resolved
+  just-in-time at deploy.
+- `customDomains`: Cloudflare provisions and manages TLS and infers the zone from
+  the hostname.
 
-## Placeholders to Replace
+## Placeholders
 
-| Placeholder | Description | Where to Find |
-|-------------|-------------|---------------|
-| `<cloudflare-account-id>` | Cloudflare account ID | Dashboard → Overview → Account ID |
-| `<worker-name>` | Worker name (visible in dashboard) | Descriptive name (e.g., api-gateway) |
-| `<r2-bucket-name>` | R2 bucket containing the script bundle | CloudflareR2Bucket bucket_name |
-| `<script-bundle-path>` | Path to bundle in R2 (e.g., dist/worker.js) | Your build output path |
-| `<kv-namespace-id>` | KV namespace ID to bind | CloudflareKvNamespace status.outputs.namespace_id |
-| `<cloudflare-zone-id>` | Zone ID for DNS route | CloudflareDnsZone status.outputs.zone_id |
-| `api.example.com` | Hostname for the Worker | Your desired API subdomain |
-
-## Related Presets
-
-- **02-minimal** -- Use when you only need a bare Worker with script bundle
+| Placeholder | Description |
+|---|---|
+| `<cloudflare-account-id>` | 32-character Cloudflare account ID |
+| `<build-artifacts-bucket>` | R2 bucket holding the built worker bundle |
+| `<path/to/worker-bundle.js>` | Object key of the bundle in that bucket |
+| `<managed-secret-reference>` | Managed-secret reference for API_KEY |
+| `<kv-namespace-name>` | CloudflareKvNamespace to bind as CONFIG |
+| `<d1-database-name>` | CloudflareD1Database to bind as DB |
+| `<api.example.com>` | Custom hostname to route to the Worker |

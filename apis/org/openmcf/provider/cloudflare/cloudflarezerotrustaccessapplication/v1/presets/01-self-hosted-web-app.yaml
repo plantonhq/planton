@@ -1,0 +1,19 @@
+apiVersion: cloudflare.openmcf.org/v1
+kind: CloudflareZeroTrustAccessApplication
+metadata:
+  name: internal-dashboard
+spec:
+  accountId: "REPLACE_WITH_ACCOUNT_ID"
+  name: internal-dashboard
+  type: self_hosted
+  domain: dashboard.example.com
+  sessionDuration: 24h
+  autoRedirectToIdentity: true
+  # Attach a standalone Access policy by reference.
+  policies:
+    - policy:
+        valueFrom:
+          kind: CloudflareZeroTrustAccessPolicy
+          name: allow-staff
+          fieldPath: status.outputs.policy_id
+      precedence: 1

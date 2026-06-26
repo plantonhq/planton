@@ -69,7 +69,7 @@ PROACTIVE DEFAULT IDENTIFICATION (MANDATORY STEP)
   - **Retention periods**: Provider-documented defaults (e.g., 7 days)
   - **ACLs/visibility**: `private` (secure default)
   - **Regions**: Only if the component is region-scoped with an obvious default
-- The heuristic: if 80%+ of users would use the same value, it deserves a default.
+- The heuristic: if the large majority of users would use the same value, it deserves a default.
 - This step prevents IaC modules from needing defensive default logic and ensures
   OpenMCF middleware handles defaults centrally.
 

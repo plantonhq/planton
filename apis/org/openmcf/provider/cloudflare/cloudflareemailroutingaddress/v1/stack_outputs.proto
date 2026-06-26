@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package org.openmcf.provider.cloudflare.cloudflareemailroutingaddress.v1;
+
+// CloudflareEmailRoutingAddressStackOutputs captures the outputs after creating a
+// destination address.
+message CloudflareEmailRoutingAddressStackOutputs {
+  // The Cloudflare-assigned identifier of the destination address.
+  string address_id = 1;
+
+  // The destination email address (echoed; referenced by routing rules).
+  string email = 2;
+
+  // RFC3339 timestamp of when the address was verified, or empty if not yet
+  // verified (verification requires the owner to click an emailed link).
+  string verified = 3;
+
+  // RFC3339 timestamp of when the address was created.
+  string created = 4;
+}

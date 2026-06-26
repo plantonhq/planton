@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package org.openmcf.provider.cloudflare.cloudflareturnstilewidget.v1;
+
+import "buf/validate/validate.proto";
+
+// CloudflareTurnstileWidgetSpec provisions a Cloudflare Turnstile widget: a
+// privacy-preserving CAPTCHA alternative. A widget yields a public site key
+// (embedded in the page's frontend) and a secret key (used server-side to call
+// the /siteverify endpoint). The secret is exported as a sensitive stack output
+// so a Worker or backend that validates tokens can reference it.
+//
+// Allowed-value sets (mode, clearance_level, region) are validated with CEL using
+// the provider's exact strings rather than proto enums: Turnstile's `mode`
+// includes the hyphenated value "non-interactive", and "managed" is a valid value
+// for both `mode` and `clearance_level` (proto enum value names are file-scoped
+// and could not collide), so plain strings keep the spec faithful to the API
+// without a lossy enum-to-string mapping in the modules.
+message CloudflareTurnstileWidgetSpec {
+  // The Cloudflare account ID that owns this widget.
+  string account_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.len = 32,
+    (buf.validate.field).string.pattern = "^[0-9a-fA-F]{32}$"
+  ];
+
+  // A human-readable widget name (not unique). Set something meaningful so the
+  // widget is easy to identify and locate where it is used.
+  string name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The domains the widget may be served on (e.g. "example.com"). At least one
+  // is required. Use "localhost" for local development.
+  repeated string domains = 3 [
+    (buf.validate.field).repeated.min_items = 1,
+    (buf.validate.field).repeated.items.string.min_len = 1
+  ];
+
+  // Widget mode: "non-interactive", "invisible", or "managed" (Cloudflare
+  // decides the challenge — the recommended default).
+  string mode = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "turnstile.mode_valid"
+      message: "mode must be one of non-interactive, invisible, managed"
+      expression: "this in ['non-interactive', 'invisible', 'managed']"
+    }
+  ];
+
+  // Clearance level granted when the widget is embedded on a Cloudflare-proxied
+  // site: "no_clearance", "jschallenge", "managed", or "interactive". Leave
+  // empty to use the provider's behavior.
+  string clearance_level = 5 [(buf.validate.field).cel = {
+    id: "turnstile.clearance_level_valid"
+    message: "clearance_level must be empty or one of no_clearance, jschallenge, managed, interactive"
+    expression: "this == '' || this in ['no_clearance', 'jschallenge', 'managed', 'interactive']"
+  }];
+
+  // Issue computationally-expensive challenges to malicious bots (Enterprise
+  // only).
+  bool bot_fight_mode = 6;
+
+  // Return the Ephemeral ID in /siteverify responses (Enterprise only).
+  bool ephemeral_id = 7;
+
+  // Hide all Cloudflare branding on the widget (Enterprise only).
+  bool offlabel = 8;
+
+  // Region the widget can be used in: "world" (default) or "china". Immutable —
+  // cannot be changed after creation. Leave empty to use the provider default
+  // ("world").
+  string region = 9 [(buf.validate.field).cel = {
+    id: "turnstile.region_valid"
+    message: "region must be empty or one of world, china"
+    expression: "this == '' || this in ['world', 'china']"
+  }];
+}

@@ -12,32 +12,67 @@ variable "metadata" {
 }
 
 variable "spec" {
-  description = "Specification for Cloudflare Load Balancer"
+  description = "CloudflareLoadBalancerSpec — a zone-scoped load balancer over account-scoped pools"
+  # NOTE: StringValueOrRef fields (zone_id, pool references) flatten to plain
+  # strings (and repeated ones to list(string)); enums flatten to their string
+  # names; unset proto3 `optional` scalars arrive as null.
   type = object({
-    # The DNS hostname for the load balancer (e.g., "app.example.com")
+    # (Required) DNS hostname for the load balancer.
     hostname = string
 
-    # Foreign key reference to a Cloudflare DNS zone (StringValueOrRef flattened
-    # to a plain string by the tfvars converter).
-    zone_id = optional(string)
+    # (Required) Zone that owns the hostname (StringValueOrRef -> string).
+    zone_id = optional(string, "")
 
-    # List of origin servers behind this load balancer
-    origins = list(object({
-      name    = string
-      address = string
-      weight  = optional(number, 1)
+    # (Required) Ordered default pools and the fallback pool (pool IDs/refs).
+    default_pools = list(string)
+    fallback_pool = string
+
+    # Enum names; "none"/"off"/"" mean the respective defaults.
+    session_affinity = optional(string, "")
+    steering_policy  = optional(string, "")
+
+    proxied = optional(bool)
+    enabled = optional(bool)
+
+    ttl                  = optional(number, 0)
+    session_affinity_ttl = optional(number, 0)
+
+    description = optional(string, "")
+
+    session_affinity_attributes = optional(object({
+      drain_duration         = optional(number, 0)
+      headers                = optional(list(string), [])
+      require_all_headers    = optional(bool, false)
+      samesite               = optional(string, "")
+      secure                 = optional(string, "")
+      zero_downtime_failover = optional(string, "")
     }))
 
-    # Whether Cloudflare's proxy is enabled for this hostname (orange cloud)
-    proxied = optional(bool, true)
+    region_pools = optional(list(object({
+      code     = string
+      pool_ids = list(string)
+    })), [])
+    country_pools = optional(list(object({
+      code     = string
+      pool_ids = list(string)
+    })), [])
+    pop_pools = optional(list(object({
+      code     = string
+      pool_ids = list(string)
+    })), [])
 
-    # HTTP path to use for health monitoring of origins
-    health_probe_path = optional(string, "/")
+    adaptive_routing = optional(object({
+      failover_across_pools = optional(bool, false)
+    }))
 
-    # Session affinity setting ("none" or "cookie"); enum flattens to its string name.
-    session_affinity = optional(string, "none")
+    location_strategy = optional(object({
+      mode       = optional(string, "")
+      prefer_ecs = optional(string, "")
+    }))
 
-    # Traffic steering policy ("off"/failover, "geo", or "random"); enum flattens to its string name.
-    steering_policy = optional(string, "off")
+    random_steering = optional(object({
+      default_weight = optional(number, 0)
+      pool_weights   = optional(map(number), {})
+    }))
   })
 }

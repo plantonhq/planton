@@ -12,44 +12,114 @@ variable "metadata" {
 }
 
 variable "spec" {
-  description = "Specification for Cloudflare Worker"
+  description = "Specification for a Cloudflare Worker (script, bindings, routing, schedules, settings)"
+  # NOTE: StringValueOrRef fields (binding ids, secret values, zone ids) are
+  # flattened to plain strings by the proto->tfvars converter.
   type = object({
-    # Cloudflare account ID (32 hex characters)
-    account_id = string
-
-    # Worker name (1-63 characters)
+    account_id  = string
     worker_name = string
 
-    # Worker script bundle configuration (R2 object reference)
-    script_bundle = object({
-      bucket = string # R2 bucket name
-      path   = string # Path to bundle in R2
-    })
+    compatibility_date  = optional(string, "")
+    content             = optional(string, "")
+    r2_bundle           = optional(object({ bucket = string, path = string }))
+    main_module         = optional(string, "index.js")
+    compatibility_flags = optional(list(string), [])
 
-    # Optional KV namespace bindings
-    kv_bindings = optional(list(object({
+    # Bindings, grouped by type (flattened into the provider's bindings list).
+    vars    = optional(map(string), {})
+    secrets = optional(list(object({ name = string, value = string })), [])
+    kv_namespaces = optional(list(object({
+      name         = string
+      namespace_id = optional(string, "")
+    })), [])
+    r2_buckets = optional(list(object({
+      name         = string
+      bucket_name  = optional(string, "")
+      jurisdiction = optional(string, "")
+    })), [])
+    d1_databases = optional(list(object({
+      name        = string
+      database_id = optional(string, "")
+    })), [])
+    hyperdrive_configs = optional(list(object({
+      name      = string
+      config_id = optional(string, "")
+    })), [])
+    services = optional(list(object({
+      name        = string
+      service     = optional(string, "")
+      environment = optional(string, "")
+      entrypoint  = optional(string, "")
+    })), [])
+    queues = optional(list(object({
       name       = string
-      field_path = string # Namespace ID reference
+      queue_name = string
+    })), [])
+    durable_objects = optional(list(object({
+      name        = string
+      class_name  = string
+      script_name = optional(string, "")
+      environment = optional(string, "")
+    })), [])
+    analytics_engine_datasets = optional(list(object({
+      name    = string
+      dataset = string
+    })), [])
+    vectorize_indexes = optional(list(object({
+      name       = string
+      index_name = string
+    })), [])
+    ai               = optional(list(object({ name = string })), [])
+    version_metadata = optional(list(object({ name = string })), [])
+
+    # Routing.
+    workers_dev = optional(object({
+      enabled          = optional(bool, false)
+      previews_enabled = optional(bool, false)
+    }))
+    custom_domains = optional(list(object({
+      hostname = string
+      zone_id  = optional(string, "")
+    })), [])
+    routes = optional(list(object({
+      zone_id = optional(string, "")
+      pattern = string
     })), [])
 
-    # Optional DNS configuration for custom domain
-    dns = optional(object({
-      enabled       = optional(bool, false)
-      zone_id       = optional(string)
-      hostname      = optional(string, "")
-      route_pattern = optional(string, "")
+    # Cron schedules.
+    schedules = optional(list(string), [])
+
+    # Runtime settings.
+    observability = optional(object({
+      enabled            = optional(bool, false)
+      head_sampling_rate = optional(number, 0)
     }))
+    placement = optional(object({
+      mode = optional(string, "")
+    }))
+    limits = optional(object({
+      cpu_ms      = optional(number, 0)
+      subrequests = optional(number, 0)
+    }))
+    logpush = optional(bool, false)
+    tail_consumers = optional(list(object({
+      service     = string
+      environment = optional(string, "")
+      namespace   = optional(string, "")
+    })), [])
 
-    # Compatibility date (YYYY-MM-DD format)
-    compatibility_date = optional(string, "")
-
-    # Usage model ("standard"/"bundled"/"unbound"); enum flattens to its string name.
-    usage_model = optional(string)
-
-    # Environment variables and secrets
-    env = optional(object({
-      variables = optional(map(string), {})
-      secrets   = optional(map(string), {})
+    # Workers Static Assets: a built site directory served from the edge.
+    assets = optional(object({
+      directory    = string
+      binding_name = optional(string, "")
+      config = optional(object({
+        html_handling          = optional(string, "")
+        not_found_handling     = optional(string, "")
+        headers                = optional(string, "")
+        redirects              = optional(string, "")
+        run_worker_first       = optional(bool, false)
+        run_worker_first_rules = optional(list(string), [])
+      }))
     }))
   })
 }

@@ -6,3 +6,43 @@ spec:
   bucketName: openmcf-r2-hack-bucket
   accountId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
   location: weur
+  jurisdiction: default
+  storageClass: Standard
+  publicAccess: true
+  customDomains:
+    - enabled: true
+      zoneId:
+        value: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
+      domain: media.example.com
+      minTls: "1.2"
+  cors:
+    rules:
+      - allowed:
+          methods: [GET, HEAD]
+          origins:
+            - https://app.example.com
+        maxAgeSeconds: 3600
+  lifecycle:
+    rules:
+      - id: expire-temp
+        enabled: true
+        conditions:
+          prefix: tmp/
+        abortMultipartUploadsTransition:
+          maxAgeSeconds: 604800
+        deleteObjectsTransition:
+          condition:
+            type: Age
+            maxAgeSeconds: 2592000
+        storageClassTransitions:
+          - condition:
+              type: Age
+              maxAgeSeconds: 86400
+  lock:
+    rules:
+      - id: retain-logs
+        enabled: true
+        prefix: logs/
+        condition:
+          type: Age
+          maxAgeSeconds: 2592000

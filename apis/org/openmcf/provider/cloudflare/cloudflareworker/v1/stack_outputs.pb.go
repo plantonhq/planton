@@ -24,10 +24,15 @@ const (
 // CloudflareWorkerStackOutputs captures the outputs after deploying a Cloudflare Worker.
 type CloudflareWorkerStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The Cloudflare-assigned identifier or name of the deployed Worker script.
+	// The Cloudflare-assigned identifier of the deployed Worker script (equals the
+	// script name in v5).
 	ScriptId string `protobuf:"bytes,1,opt,name=script_id,json=scriptId,proto3" json:"script_id,omitempty"`
-	// The route URL(s) or patterns where this Worker is active (e.g., workers.dev subdomain or custom domain routes).
-	RouteUrls     []string `protobuf:"bytes,2,rep,name=route_urls,json=routeUrls,proto3" json:"route_urls,omitempty"`
+	// The Worker script name — the target a service binding references.
+	ScriptName string `protobuf:"bytes,2,opt,name=script_name,json=scriptName,proto3" json:"script_name,omitempty"`
+	// The custom-domain hostnames attached to this Worker.
+	CustomDomainHostnames []string `protobuf:"bytes,3,rep,name=custom_domain_hostnames,json=customDomainHostnames,proto3" json:"custom_domain_hostnames,omitempty"`
+	// The route patterns mapped to this Worker.
+	RoutePatterns []string `protobuf:"bytes,4,rep,name=route_patterns,json=routePatterns,proto3" json:"route_patterns,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -69,9 +74,23 @@ func (x *CloudflareWorkerStackOutputs) GetScriptId() string {
 	return ""
 }
 
-func (x *CloudflareWorkerStackOutputs) GetRouteUrls() []string {
+func (x *CloudflareWorkerStackOutputs) GetScriptName() string {
 	if x != nil {
-		return x.RouteUrls
+		return x.ScriptName
+	}
+	return ""
+}
+
+func (x *CloudflareWorkerStackOutputs) GetCustomDomainHostnames() []string {
+	if x != nil {
+		return x.CustomDomainHostnames
+	}
+	return nil
+}
+
+func (x *CloudflareWorkerStackOutputs) GetRoutePatterns() []string {
+	if x != nil {
+		return x.RoutePatterns
 	}
 	return nil
 }
@@ -80,11 +99,13 @@ var File_org_openmcf_provider_cloudflare_cloudflareworker_v1_stack_outputs_proto
 
 const file_org_openmcf_provider_cloudflare_cloudflareworker_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Gorg/openmcf/provider/cloudflare/cloudflareworker/v1/stack_outputs.proto\x123org.openmcf.provider.cloudflare.cloudflareworker.v1\"Z\n" +
+	"Gorg/openmcf/provider/cloudflare/cloudflareworker/v1/stack_outputs.proto\x123org.openmcf.provider.cloudflare.cloudflareworker.v1\"\xbb\x01\n" +
 	"\x1cCloudflareWorkerStackOutputs\x12\x1b\n" +
-	"\tscript_id\x18\x01 \x01(\tR\bscriptId\x12\x1d\n" +
-	"\n" +
-	"route_urls\x18\x02 \x03(\tR\trouteUrlsB\xa9\x03\n" +
+	"\tscript_id\x18\x01 \x01(\tR\bscriptId\x12\x1f\n" +
+	"\vscript_name\x18\x02 \x01(\tR\n" +
+	"scriptName\x126\n" +
+	"\x17custom_domain_hostnames\x18\x03 \x03(\tR\x15customDomainHostnames\x12%\n" +
+	"\x0eroute_patterns\x18\x04 \x03(\tR\rroutePatternsB\xa9\x03\n" +
 	"7com.org.openmcf.provider.cloudflare.cloudflareworker.v1B\x11StackOutputsProtoP\x01Zhgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflareworker/v1;cloudflareworkerv1\xa2\x02\x05OOPCC\xaa\x023Org.Openmcf.Provider.Cloudflare.Cloudflareworker.V1\xca\x023Org\\Openmcf\\Provider\\Cloudflare\\Cloudflareworker\\V1\xe2\x02?Org\\Openmcf\\Provider\\Cloudflare\\Cloudflareworker\\V1\\GPBMetadata\xea\x028Org::Openmcf::Provider::Cloudflare::Cloudflareworker::V1b\x06proto3"
 
 var (

@@ -1535,6 +1535,111 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "cfrs"
   }];
+  CloudflareWorkersKvPair = 1809 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfkvp"
+  }];
+  CloudflareHyperdriveConfig = 1810 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfhyp"
+  }];
+  CloudflareLoadBalancerPool = 1811 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cflbp"
+  }];
+  CloudflareLoadBalancerMonitor = 1812 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cflbm"
+  }];
+  CloudflareZeroTrustAccessPolicy = 1813 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfztp"
+  }];
+  CloudflareZeroTrustAccessGroup = 1814 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfztg"
+  }];
+  CloudflareQueue = 1815 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfq"
+  }];
+  CloudflarePagesProject = 1816 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfpg"
+  }];
+  CloudflareZeroTrustTunnel = 1817 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfztun"
+  }];
+  CloudflareZeroTrustTunnelVirtualNetwork = 1818 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfztvn"
+  }];
+  CloudflareZeroTrustTunnelRoute = 1819 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfztrt"
+  }];
+  CloudflareList = 1820 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cflist"
+  }];
+  CloudflareListItem = 1821 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfli"
+  }];
+  CloudflareTurnstileWidget = 1822 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfturn"
+  }];
+  CloudflareEmailRoutingZone = 1823 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cferz"
+  }];
+  CloudflareEmailRoutingRule = 1824 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cferr"
+  }];
+  CloudflareEmailRoutingAddress = 1825 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfera"
+  }];
+  CloudflareOriginCaCertificate = 1826 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfoca"
+  }];
+  CloudflareCertificatePack = 1827 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfcertp"
+  }];
+  CloudflareCustomHostname = 1828 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfchost"
+  }];
+  CloudflareCustomHostnameFallbackOrigin = 1829 [(kind_meta) = {
+    provider: cloudflare
+    version: v1
+    id_prefix: "cfchfo"
+  }];
 
   // 2100–2299: Auth0 resources
   Auth0Connection = 2100 [(kind_meta) = {

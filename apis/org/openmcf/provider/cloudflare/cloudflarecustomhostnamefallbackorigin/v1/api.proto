@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package org.openmcf.provider.cloudflare.cloudflarecustomhostnamefallbackorigin.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/cloudflare/cloudflarecustomhostnamefallbackorigin/v1/spec.proto";
+import "org/openmcf/provider/cloudflare/cloudflarecustomhostnamefallbackorigin/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// cloudflare-custom-hostname-fallback-origin
+message CloudflareCustomHostnameFallbackOrigin {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'cloudflare.openmcf.org/v1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'CloudflareCustomHostnameFallbackOrigin'];
+
+  //metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  CloudflareCustomHostnameFallbackOriginSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  CloudflareCustomHostnameFallbackOriginStatus status = 5;
+}
+
+// cloudflare-custom-hostname-fallback-origin status
+message CloudflareCustomHostnameFallbackOriginStatus {
+  //stack-outputs
+  //  cloudflare-custom-hostname-fallback-origin stack-outputs
+  CloudflareCustomHostnameFallbackOriginStackOutputs outputs = 1;
+}

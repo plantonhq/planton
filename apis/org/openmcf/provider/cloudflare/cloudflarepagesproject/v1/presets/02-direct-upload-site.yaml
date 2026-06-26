@@ -1,0 +1,25 @@
+apiVersion: cloudflare.openmcf.org/v1
+kind: CloudflarePagesProject
+metadata:
+  name: direct-upload-site
+spec:
+  accountId: <cloudflare-account-id>
+  name: direct-upload-site
+  productionBranch: main
+  # No git source: you build the site yourself and push it with
+  #   wrangler pages deploy ./dist --project-name=direct-upload-site
+  buildConfig:
+    buildCommand: npm run build
+    destinationDir: dist
+  deploymentConfigs:
+    production:
+      compatibilityDate: "2025-01-15"
+      vars:
+        ENVIRONMENT: production
+      kvNamespaces:
+        - name: CONFIG
+          namespaceId:
+            valueFrom:
+              kind: CloudflareKvNamespace
+              name: app-config
+              fieldPath: status.outputs.namespace_id

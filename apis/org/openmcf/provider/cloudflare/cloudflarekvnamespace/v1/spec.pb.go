@@ -22,22 +22,17 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareKvNamespaceSpec defines the essential configuration for creating a Workers KV namespace on Cloudflare.
-// This follows the 80/20 principle: only the most commonly used fields are exposed to keep the API simple.
+// CloudflareKvNamespaceSpec provisions a Workers KV namespace: a low-latency,
+// eventually-consistent key-value store readable from Workers at the edge. The
+// namespace is the container; individual entries are seeded as
+// CloudflareWorkersKvPair resources (or written by the application at runtime).
 type CloudflareKvNamespaceSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// A human-readable name for the KV namespace.
-	// This name must be unique within the Cloudflare account.
+	// A human-readable title for the KV namespace, unique within the account. This
+	// maps to the namespace's `title` in the Cloudflare API.
 	NamespaceName string `protobuf:"bytes,1,opt,name=namespace_name,json=namespaceName,proto3" json:"namespace_name,omitempty"`
-	// (Optional) Default time-to-live for key-value entries, in seconds.
-	// If set to 0 or left unset, keys will never expire by default (infinite TTL).
-	// If set to a positive value, it should be at least 60 seconds (minimum enforced by Cloudflare for expiring keys).
-	TtlSeconds int32 `protobuf:"varint,2,opt,name=ttl_seconds,json=ttlSeconds,proto3" json:"ttl_seconds,omitempty"`
-	// (Optional) A short description of the namespace.
-	// Useful for documentation or identifying the purpose of this KV store.
-	Description string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
 	// The Cloudflare account ID that owns this KV namespace.
-	AccountId     string `protobuf:"bytes,4,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	AccountId     string `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -79,20 +74,6 @@ func (x *CloudflareKvNamespaceSpec) GetNamespaceName() string {
 	return ""
 }
 
-func (x *CloudflareKvNamespaceSpec) GetTtlSeconds() int32 {
-	if x != nil {
-		return x.TtlSeconds
-	}
-	return 0
-}
-
-func (x *CloudflareKvNamespaceSpec) GetDescription() string {
-	if x != nil {
-		return x.Description
-	}
-	return ""
-}
-
 func (x *CloudflareKvNamespaceSpec) GetAccountId() string {
 	if x != nil {
 		return x.AccountId
@@ -104,15 +85,12 @@ var File_org_openmcf_provider_cloudflare_cloudflarekvnamespace_v1_spec_proto pro
 
 const file_org_openmcf_provider_cloudflare_cloudflarekvnamespace_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Corg/openmcf/provider/cloudflare/cloudflarekvnamespace/v1/spec.proto\x128org.openmcf.provider.cloudflare.cloudflarekvnamespace.v1\x1a\x1bbuf/validate/validate.proto\"\xe3\x01\n" +
+	"Corg/openmcf/provider/cloudflare/cloudflarekvnamespace/v1/spec.proto\x128org.openmcf.provider.cloudflare.cloudflarekvnamespace.v1\x1a\x1bbuf/validate/validate.proto\"\x8d\x01\n" +
 	"\x19CloudflareKvNamespaceSpec\x121\n" +
 	"\x0enamespace_name\x18\x01 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x18@R\rnamespaceName\x12(\n" +
-	"\vttl_seconds\x18\x02 \x01(\x05B\a\xbaH\x04\x1a\x02(\x00R\n" +
-	"ttlSeconds\x12*\n" +
-	"\vdescription\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x02R\vdescription\x12=\n" +
+	"\xbaH\a\xc8\x01\x01r\x02\x18@R\rnamespaceName\x12=\n" +
 	"\n" +
-	"account_id\x18\x04 \x01(\tB\x1e\xbaH\x1b\xc8\x01\x01r\x162\x11^[0-9a-fA-F]{32}$\x98\x01 R\taccountIdB\xc4\x03\n" +
+	"account_id\x18\x02 \x01(\tB\x1e\xbaH\x1b\xc8\x01\x01r\x162\x11^[0-9a-fA-F]{32}$\x98\x01 R\taccountIdB\xc4\x03\n" +
 	"<com.org.openmcf.provider.cloudflare.cloudflarekvnamespace.v1B\tSpecProtoP\x01Zrgithub.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare/cloudflarekvnamespace/v1;cloudflarekvnamespacev1\xa2\x02\x05OOPCC\xaa\x028Org.Openmcf.Provider.Cloudflare.Cloudflarekvnamespace.V1\xca\x028Org\\Openmcf\\Provider\\Cloudflare\\Cloudflarekvnamespace\\V1\xe2\x02DOrg\\Openmcf\\Provider\\Cloudflare\\Cloudflarekvnamespace\\V1\\GPBMetadata\xea\x02=Org::Openmcf::Provider::Cloudflare::Cloudflarekvnamespace::V1b\x06proto3"
 
 var (

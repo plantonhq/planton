@@ -1,0 +1,16 @@
+apiVersion: cloudflare.openmcf.org/v1
+kind: CloudflareListItem
+metadata:
+  name: redirect-entry
+spec:
+  accountId: <cloudflare-account-id>
+  listId:
+    valueFrom:
+      kind: CloudflareList
+      name: <redirect-list-name>
+      fieldPath: status.outputs.list_id
+  redirect:
+    sourceUrl: <source-url>
+    targetUrl: <target-url>
+    statusCode: 301
+    preserveQueryString: true

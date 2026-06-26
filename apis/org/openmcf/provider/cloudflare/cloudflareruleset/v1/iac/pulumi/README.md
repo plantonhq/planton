@@ -20,6 +20,15 @@ main.go (entrypoint)
 3. `ruleset.go` maps proto `CloudflareRulesetRule` messages to Pulumi `cloudflare.RulesetRuleArgs` — including all action parameter sub-types (origin, response, uri, headers, from_value, overrides, cache settings).
 4. Stack outputs are exported matching `CloudflareRulesetStackOutputs`.
 
+## Engine parity note
+
+One `action_parameters` field — `vary` (variant caching keyed on response headers) — is modeled in the
+proto and provisioned by the Terraform module, but the pulumi-cloudflare SDK (v6.17.0) does not expose a
+`vary` field on `RulesetRuleActionParametersArgs`, so this module omits it (see the inline note in
+`module/ruleset.go` and `pkg/iac/MODULE_PARITY.md`). When a newer Pulumi SDK adds
+`RulesetRuleActionParameters.Vary`, map it and remove the note. Every other ruleset field is at full
+tofu↔Pulumi parity on provider v5.
+
 ## Local Development
 
 ```bash

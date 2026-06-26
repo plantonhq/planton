@@ -10,9 +10,10 @@ Creates a public R2 bucket served via a custom domain (e.g., media.example.com).
 
 ## Key Configuration Choices
 
-- **publicAccess: true** (`publicAccess: true`) -- Enables public read access.
-- **customDomain** (`customDomain`) -- Requires zoneId (value wrapper) and domain. Must be in the zone.
-- **zoneId** (`customDomain.zoneId`) -- Cloudflare zone ID; use value wrapper or reference to CloudflareDnsZone.
+- **publicAccess: true** (`publicAccess: true`) -- Enables the managed r2.dev public URL.
+- **customDomains** (`customDomains`) -- A list; each entry requires zoneId (value wrapper) and domain in that zone. A bucket may serve multiple custom domains.
+- **minTls** (`customDomains[].minTls`) -- Minimum TLS version ("1.0"-"1.3"); "1.2" is a sensible secure default.
+- **cors** (`cors.rules`) -- Allows browsers to fetch objects cross-origin; tighten `origins` from `"*"` to your app's origin in production.
 
 ## Placeholders to Replace
 

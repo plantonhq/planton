@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package org.openmcf.provider.cloudflare.cloudflarezerotrusttunnelroute.v1;
+
+import "buf/validate/validate.proto";
+import "org/openmcf/provider/cloudflare/cloudflarezerotrusttunnelroute/v1/spec.proto";
+import "org/openmcf/provider/cloudflare/cloudflarezerotrusttunnelroute/v1/stack_outputs.proto";
+import "org/openmcf/shared/metadata.proto";
+
+// cloudflare-zero-trust-tunnel-route
+message CloudflareZeroTrustTunnelRoute {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'cloudflare.openmcf.org/v1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'CloudflareZeroTrustTunnelRoute'];
+
+  //metadata
+  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  CloudflareZeroTrustTunnelRouteSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  CloudflareZeroTrustTunnelRouteStatus status = 5;
+}
+
+// cloudflare-zero-trust-tunnel-route status
+message CloudflareZeroTrustTunnelRouteStatus {
+  //stack-outputs
+  //  cloudflare-zero-trust-tunnel-route stack-outputs
+  CloudflareZeroTrustTunnelRouteStackOutputs outputs = 1;
+}

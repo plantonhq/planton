@@ -1,0 +1,9 @@
+apiVersion: cloudflare.openmcf.org/v1
+kind: CloudflareList
+metadata:
+  name: ip-allowlist
+spec:
+  accountId: <cloudflare-account-id>
+  kind: ip
+  name: office_allowlist
+  description: IPs allowed through WAF custom rules

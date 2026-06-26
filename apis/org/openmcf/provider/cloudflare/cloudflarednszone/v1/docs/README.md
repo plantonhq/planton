@@ -10,7 +10,7 @@ But that conventional wisdom has blind spots. Cloud provider DNS services typica
 
 This flexibility makes Cloudflare DNS uniquely positioned for modern multi-cloud and edge-native architectures. Whether you're running a personal blog on the free tier, a SaaS platform serving millions of users across continents, or a hybrid infrastructure spanning AWS, GCP, and on-premises datacenters, Cloudflare DNS can serve as your unified global control plane for traffic routing.
 
-This guide explains the landscape of deployment methods for Cloudflare DNS zones—from manual console operations to production-grade Infrastructure-as-Code—and shows how OpenMCF distills Cloudflare's extensive feature set into a clean, protobuf-defined API that exposes the 20% of configuration that 80% of users actually need.
+This guide explains the landscape of deployment methods for Cloudflare DNS zones—from manual console operations to production-grade Infrastructure-as-Code—and shows how OpenMCF distills Cloudflare's extensive feature set into a clean, protobuf-defined API covering the zone, its DNS settings, DNSSEC, and records.
 
 ---
 
@@ -567,7 +567,7 @@ Cloudflare's unique feature is the **proxy toggle** for each DNS record:
 
 **Common mistake:** Proxying non-HTTP services will break them (e.g., proxying your mail server's A record prevents SMTP connections). Always grey-cloud MX records and the A/AAAA records they point to.
 
-**Default behavior:** Set `default_proxied: true` in your zone configuration to default new records to orange-cloud (safer default, ensures you don't accidentally expose origins).
+**Default behavior:** Set `proxied: true` on each web-facing A/AAAA/CNAME record to route it through Cloudflare (orange-cloud) and avoid exposing origin IPs.
 
 ---
 
@@ -648,13 +648,13 @@ Always grey-cloud MX records and the A/AAAA records mail servers point to. Proxy
 
 ---
 
-## The 80/20 Configuration: What Most Users Actually Need
+## The Configuration Surface: Zone, Settings, DNSSEC, and Records
 
-Cloudflare offers hundreds of settings across zones, DNS, SSL, caching, firewall, Workers, and more. But for most deployments, you need only a handful of core configurations to get 80% of the value.
+Cloudflare offers hundreds of settings across zones, DNS, SSL, caching, firewall, Workers, and more. This component focuses on the zone itself and the DNS-level configuration that belongs with it — zone-wide DNS settings and DNSSEC fold onto the zone, while records are managed inline (lean) or as standalone resources (full feature set).
 
 ### Core Fields for Zone Creation
 
-**`CloudflareDnsZoneSpec` (OpenMCF's protobuf):**
+**`CloudflareDnsZoneSpec` (OpenMCF's protobuf), abbreviated:**
 
 ```protobuf
 message CloudflareDnsZoneSpec {
@@ -664,102 +664,84 @@ message CloudflareDnsZoneSpec {
   // Cloudflare account ID. Required.
   string account_id = 2;
 
-  // Plan tier: FREE (default), PRO, BUSINESS, ENTERPRISE.
-  CloudflareDnsZonePlan plan = 3;
-
   // Paused state: if true, zone is DNS-only with no proxy/WAF/CDN. Default: false.
   bool paused = 4;
 
-  // Default proxied: if true, new DNS records default to orange-cloud. Default: false.
-  bool default_proxied = 5;
+  // Inline DNS records (lean convenience model).
+  repeated CloudflareDnsZoneRecord records = 6;
+
+  // Zone type: full (default), partial, secondary, internal.
+  ZoneType type = 7;
+
+  // Custom (vanity) name servers (Business/Enterprise).
+  repeated string vanity_name_servers = 8;
+
+  // Folded zone-wide DNS settings (CNAME flattening, zone mode, SOA, ...).
+  CloudflareDnsZoneDnsSettings dns_settings = 9;
+
+  // Folded DNSSEC configuration; DS material is exported as stack outputs.
+  CloudflareDnsZoneDnssec dnssec = 10;
 }
 ```
 
-### Why These Five Fields?
+### Why These Fields?
 
 | Field | Why It Matters | Default/Typical Value |
 |-------|---------------|----------------------|
 | **zone_name** | The domain you're managing (e.g., `example.com`) | *Required* (no default) |
 | **account_id** | Cloudflare account context (for API token scope, billing) | *Required* (no default) |
-| **plan** | Free vs paid features (WAF, support, SLA) | `FREE` (can upgrade to PRO/BUSINESS) |
-| **paused** | Whether zone is active (proxying enabled) or paused (DNS-only) | `false` (active by default) |
-| **default_proxied** | Default new DNS records to orange-cloud (safer) vs grey-cloud | `false` (can set to `true` for security) |
+| **type** | full (delegated), partial (CNAME setup), secondary, internal | `full` |
+| **paused** | Whether zone is active or paused (DNS-only) | `false` (active by default) |
+| **dns_settings** | Zone-wide DNS behavior (CNAME flattening, zone mode, SOA, NS TTL) | omitted (Cloudflare defaults) |
+| **dnssec** | Sign the zone; DS material exported for the registrar | omitted (DNSSEC off) |
 
-### What's Not Included (and Why)
+> Zone **plan/subscription** is intentionally not modeled here: in provider v5 it is a
+> deprecated/computed attribute managed through the separate zone-subscription API, not a
+> zone-creation input.
 
-**Zone type (full vs partial):**  
-Partial (CNAME) setup is Business/Enterprise only and is an advanced use case (needed when you can't delegate nameservers). For 80% of users, full setup (standard nameserver delegation) is the only mode.
+### Zone settings (SSL mode, caching rules, WAF)
 
-**Jump-start (DNS scan on creation):**  
-Convenience feature that scans existing DNS and imports records. Useful for migrations but not critical when defining zones as code (you'll define records explicitly).
-
-**DNSSEC settings:**  
-Typically enabled post-creation via separate API call or dashboard toggle (not part of initial zone spec).
-
-**Advanced nameservers (vanity NS):**  
-Business/Enterprise feature for branding (e.g., `ns1.yourdomain.com` instead of Cloudflare's NS). Rare need.
-
-**Zone settings (SSL mode, caching rules, WAF):**  
-Managed separately via the per-setting `cloudflare_zone_setting` resource in Terraform or dedicated API calls. Not part of the zone creation spec—these are post-creation configurations.
+These remain separate concerns, managed via the per-setting `cloudflare_zone_setting`
+resource or dedicated kinds — they are not part of the zone-creation spec.
 
 ---
 
 ### Example Configurations
 
-#### Development: Minimal Free Zone
+#### Minimal Zone
 
 ```yaml
 apiVersion: cloudflare.openmcf.org/v1
 kind: CloudflareDnsZone
 metadata:
-  name: dev-example-zone
-spec:
-  zone_name: "dev.example.com"
-  account_id: "abc123..."
-  plan: FREE
-  paused: false
-  default_proxied: true  # Orange-cloud new records by default
-```
-
-**Use case:** Developer testing environment. Free plan, proxying enabled by default to protect origin IPs even in dev.
-
----
-
-#### Staging: Pro Plan with Proxying
-
-```yaml
-apiVersion: cloudflare.openmcf.org/v1
-kind: CloudflareDnsZone
-metadata:
-  name: staging-zone
-spec:
-  zone_name: "staging.example.com"
-  account_id: "abc123..."
-  plan: PRO
-  paused: false
-  default_proxied: true
-```
-
-**Use case:** Staging environment with Pro-level WAF and SSL features. Orange-cloud by default to mirror production config.
-
----
-
-#### Production: Business Plan, Explicit Control
-
-```yaml
-apiVersion: cloudflare.openmcf.org/v1
-kind: CloudflareDnsZone
-metadata:
-  name: production-zone
+  name: example-zone
 spec:
   zone_name: "example.com"
-  account_id: "xyz789..."
-  plan: BUSINESS
-  paused: false
-  default_proxied: false  # Explicitly set proxy per record in prod
+  account_id: "abc123..."
 ```
 
-**Use case:** Production site on Business plan (SLA, 24/7 support, custom nameservers). `default_proxied: false` because operations team wants to explicitly control which records are proxied (some internal APIs stay grey-cloud).
+**Use case:** A clean, full (Cloudflare-hosted) zone; layer records, DNS settings, or DNSSEC onto it as needed.
+
+---
+
+#### Zone with DNS Settings and DNSSEC
+
+```yaml
+apiVersion: cloudflare.openmcf.org/v1
+kind: CloudflareDnsZone
+metadata:
+  name: secure-zone
+spec:
+  zone_name: "example.com"
+  account_id: "abc123..."
+  dns_settings:
+    flatten_all_cnames: true
+    zone_mode: standard
+  dnssec:
+    enabled: true
+```
+
+**Use case:** A production zone with CNAME flattening and DNSSEC signing; read the exported `dnssec_ds` output and enter it at the registrar.
 
 ---
 
@@ -773,9 +755,9 @@ OpenMCF provides a **protobuf-defined API** that abstracts Cloudflare DNS zone c
 Whether you're deploying AWS Route 53, GCP Cloud DNS, or Cloudflare DNS, OpenMCF's resource specs follow similar patterns (zone name, account context, plan tier). This makes multi-cloud DNS management predictable.
 
 **Intelligent defaults:**
-- `plan` defaults to `FREE` (most users start here)
+- `type` defaults to `full` (standard nameserver delegation)
 - `paused` defaults to `false` (zones are active by default)
-- `default_proxied` defaults to `false` (but can be set to `true` for orange-cloud-by-default behavior)
+- `dns_settings` and `dnssec` are omitted by default (Cloudflare defaults apply; DNSSEC off)
 
 **Separation of concerns:**  
 Zone creation is separate from DNS record management, zone settings configuration, and DNSSEC enablement. This prevents overwhelming users with dozens of options when all they need is "create a zone for `example.com`."
@@ -797,8 +779,8 @@ OpenMCF currently uses **Pulumi (Go SDK)** to provision Cloudflare DNS zones. Wh
 - We don't auto-enable jump-start (DNS scan) because infrastructure-as-code should define records explicitly, not rely on auto-discovery.
 
 **Flexibility where it matters:**
-- Users can choose Free, Pro, Business, or Enterprise plans via the `plan` field.
-- Users can set `default_proxied: true` to enforce orange-cloud defaults (security-conscious teams prefer this).
+- Users can choose the zone `type` (full, partial, secondary, internal).
+- Users can fold zone-wide `dns_settings` (CNAME flattening, zone mode, SOA) and enable `dnssec`.
 - Users can pause zones (`paused: true`) for maintenance or debugging.
 
 ---
