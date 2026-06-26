@@ -43,9 +43,20 @@ inherit this. Destroying this kind removes the enablement and (when locked) the
 DNS records, but the catch-all simply remains at its last-applied configuration.
 This is upstream provider behavior, not a module defect.
 
+## Prerequisite: the zone must have no conflicting MX records
+
+Cloudflare's enable endpoint refuses to turn on Email Routing while the zone
+still has MX records it does not manage: the API returns `409 Conflict` with code
+`2008` (`Non-Cloudflare MX records exist`). This is a safety guard so enabling
+never silently displaces an existing mail provider (e.g. a Google Workspace
+`smtp.google.com` MX). Remove or migrate the existing MX records first; on enable,
+Cloudflare provisions its own `*.mx.cloudflare.net` MX (and the SPF record). This
+is upstream behavior surfaced by the module, not a module defect.
+
 ## Live-validation note
 
 Enabling Email Routing rewrites a real zone's MX/SPF/DKIM records, so live
-apply must target a disposable zone. Destination-address verification and real
+apply must target a disposable zone (and the zone must first be free of
+non-Cloudflare MX records — see above). Destination-address verification and real
 end-to-end mail delivery require receiving Cloudflare's verification email and so
 are out of scope for automated validation.
