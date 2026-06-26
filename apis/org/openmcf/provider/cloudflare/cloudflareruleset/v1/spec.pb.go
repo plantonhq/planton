@@ -2021,8 +2021,12 @@ func (x *CloudflareRulesetTargetUrl) GetExpression() string {
 // Bulk Redirect list.
 type CloudflareRulesetFromList struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The name of the Bulk Redirect list.
-	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// The Bulk Redirect list to match against, identified by name. Accepts a
+	// literal list name or a reference to a CloudflareList resource (defaulting to
+	// that list's name output), so a redirect ruleset composes with the list that
+	// backs it. Cloudflare resolves the list by name, so the referenced output is
+	// the list's name (not its id).
+	Name *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// Expression that produces the lookup key into the list (e.g.
 	// "http.request.full_uri").
 	Key           string `protobuf:"bytes,2,opt,name=key,proto3" json:"key,omitempty"`
@@ -2060,11 +2064,11 @@ func (*CloudflareRulesetFromList) Descriptor() ([]byte, []int) {
 	return file_org_openmcf_provider_cloudflare_cloudflareruleset_v1_spec_proto_rawDescGZIP(), []int{14}
 }
 
-func (x *CloudflareRulesetFromList) GetName() string {
+func (x *CloudflareRulesetFromList) GetName() *v1.StringValueOrRef {
 	if x != nil {
 		return x.Name
 	}
-	return ""
+	return nil
 }
 
 func (x *CloudflareRulesetFromList) GetKey() string {
@@ -4073,9 +4077,9 @@ const file_org_openmcf_provider_cloudflare_cloudflareruleset_v1_spec_proto_rawDe
 	"\x05value\x18\x01 \x01(\tR\x05value\x12\x1e\n" +
 	"\n" +
 	"expression\x18\x02 \x01(\tR\n" +
-	"expression\"S\n" +
-	"\x19CloudflareRulesetFromList\x12\x1b\n" +
-	"\x04name\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x04name\x12\x19\n" +
+	"expression\"\xa2\x01\n" +
+	"\x19CloudflareRulesetFromList\x12j\n" +
+	"\x04name\x18\x01 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\"\xbaH\x03\xc8\x01\x01\x88\xd4a\x9c\x0e\x92\xd4a\x13status.outputs.nameR\x04name\x12\x19\n" +
 	"\x03key\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x03key\"9\n" +
 	"\x1aCloudflareRulesetAlgorithm\x12\x1b\n" +
 	"\x04name\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x04name\"F\n" +
@@ -4333,29 +4337,30 @@ var file_org_openmcf_provider_cloudflare_cloudflareruleset_v1_spec_proto_depIdxs
 	13, // 44: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetUri.path:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetUriComponent
 	13, // 45: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetUri.query:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetUriComponent
 	16, // 46: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetFromValue.target_url:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetTargetUrl
-	22, // 47: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetOverrides.categories:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCategoryOverride
-	23, // 48: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetOverrides.rules:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetRuleOverride
-	25, // 49: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetEdgeTtl.status_code_ttls:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetStatusCodeTtl
-	26, // 50: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetStatusCodeTtl.status_code_range:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetStatusCodeRange
-	30, // 51: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKey.custom_key:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyCustomKey
-	31, // 52: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyCustomKey.cookie:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyCookie
-	32, // 53: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyCustomKey.header:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyHeader
-	34, // 54: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyCustomKey.host:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyHost
-	35, // 55: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyCustomKey.query_string:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyQueryString
-	37, // 56: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyCustomKey.user:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyUser
-	48, // 57: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyHeader.contains:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyHeader.ContainsEntry
-	36, // 58: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyQueryString.include:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyQueryStringFilter
-	36, // 59: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyQueryString.exclude:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyQueryStringFilter
-	40, // 60: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetVary.default:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetVaryDefault
-	49, // 61: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetVary.headers:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetVary.HeadersEntry
-	14, // 62: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetActionParameters.HeadersEntry.value:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetHeader
-	33, // 63: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyHeader.ContainsEntry.value:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetStringList
-	41, // 64: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetVary.HeadersEntry.value:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetVaryHeader
-	65, // [65:65] is the sub-list for method output_type
-	65, // [65:65] is the sub-list for method input_type
-	65, // [65:65] is the sub-list for extension type_name
-	65, // [65:65] is the sub-list for extension extendee
-	0,  // [0:65] is the sub-list for field type_name
+	50, // 47: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetFromList.name:type_name -> org.openmcf.shared.foreignkey.v1.StringValueOrRef
+	22, // 48: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetOverrides.categories:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCategoryOverride
+	23, // 49: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetOverrides.rules:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetRuleOverride
+	25, // 50: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetEdgeTtl.status_code_ttls:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetStatusCodeTtl
+	26, // 51: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetStatusCodeTtl.status_code_range:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetStatusCodeRange
+	30, // 52: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKey.custom_key:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyCustomKey
+	31, // 53: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyCustomKey.cookie:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyCookie
+	32, // 54: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyCustomKey.header:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyHeader
+	34, // 55: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyCustomKey.host:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyHost
+	35, // 56: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyCustomKey.query_string:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyQueryString
+	37, // 57: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyCustomKey.user:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyUser
+	48, // 58: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyHeader.contains:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyHeader.ContainsEntry
+	36, // 59: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyQueryString.include:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyQueryStringFilter
+	36, // 60: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyQueryString.exclude:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyQueryStringFilter
+	40, // 61: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetVary.default:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetVaryDefault
+	49, // 62: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetVary.headers:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetVary.HeadersEntry
+	14, // 63: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetActionParameters.HeadersEntry.value:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetHeader
+	33, // 64: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetCacheKeyHeader.ContainsEntry.value:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetStringList
+	41, // 65: org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetVary.HeadersEntry.value:type_name -> org.openmcf.provider.cloudflare.cloudflareruleset.v1.CloudflareRulesetVaryHeader
+	66, // [66:66] is the sub-list for method output_type
+	66, // [66:66] is the sub-list for method input_type
+	66, // [66:66] is the sub-list for extension type_name
+	66, // [66:66] is the sub-list for extension extendee
+	0,  // [0:66] is the sub-list for field type_name
 }
 
 func init() { file_org_openmcf_provider_cloudflare_cloudflareruleset_v1_spec_proto_init() }

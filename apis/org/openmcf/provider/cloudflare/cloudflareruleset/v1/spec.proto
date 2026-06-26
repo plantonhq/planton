@@ -672,8 +672,16 @@ message CloudflareRulesetTargetUrl {
 // CloudflareRulesetFromList configures a redirect that resolves the target from a
 // Bulk Redirect list.
 message CloudflareRulesetFromList {
-  // The name of the Bulk Redirect list.
-  string name = 1 [(buf.validate.field).string.min_len = 1];
+  // The Bulk Redirect list to match against, identified by name. Accepts a
+  // literal list name or a reference to a CloudflareList resource (defaulting to
+  // that list's name output), so a redirect ruleset composes with the list that
+  // backs it. Cloudflare resolves the list by name, so the referenced output is
+  // the list's name (not its id).
+  org.openmcf.shared.foreignkey.v1.StringValueOrRef name = 1 [
+    (buf.validate.field).required = true,
+    (org.openmcf.shared.foreignkey.v1.default_kind) = CloudflareList,
+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
 
   // Expression that produces the lookup key into the list (e.g.
   // "http.request.full_uri").

@@ -185,8 +185,12 @@ func buildActionParameters(ap *cloudflarerulesetv1.CloudflareRulesetActionParame
 		args.FromValue = fv
 	}
 	if ap.FromList != nil {
+		fromListName := ""
+		if ap.FromList.Name != nil {
+			fromListName = ap.FromList.Name.GetValue()
+		}
 		args.FromList = &cloudflare.RulesetRuleActionParametersFromListArgs{
-			Name: pulumi.String(ap.FromList.Name),
+			Name: pulumi.String(fromListName),
 			Key:  pulumi.String(ap.FromList.Key),
 		}
 	}

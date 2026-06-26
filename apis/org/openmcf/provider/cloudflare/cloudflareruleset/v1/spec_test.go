@@ -239,6 +239,25 @@ var _ = ginkgo.Describe("CloudflareRulesetSpec Validation", func() {
 			}
 			gomega.Expect(protovalidate.Validate(r)).To(gomega.BeNil())
 		})
+
+		ginkgo.It("accepts a bulk-redirect rule referencing a list by name", func() {
+			r := validResource()
+			r.Spec.Phase = CloudflareRulesetSpec_http_request_redirect
+			r.Spec.Rules = []*CloudflareRulesetRule{
+				{
+					Expression: "true",
+					Action:     CloudflareRulesetRule_redirect,
+					Enabled:    boolPtr(true),
+					ActionParameters: &CloudflareRulesetActionParameters{
+						FromList: &CloudflareRulesetFromList{
+							Name: &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "my_redirects"}},
+							Key:  "http.request.full_uri",
+						},
+					},
+				},
+			}
+			gomega.Expect(protovalidate.Validate(r)).To(gomega.BeNil())
+		})
 	})
 
 	// ---- Negative cases ----
@@ -313,6 +332,45 @@ var _ = ginkgo.Describe("CloudflareRulesetSpec Validation", func() {
 			err := protovalidate.Validate(r)
 			gomega.Expect(err).ToNot(gomega.BeNil())
 			gomega.Expect(err.Error()).To(gomega.ContainSubstring("security_level"))
+		})
+
+		ginkgo.It("rejects a from_list whose list name is empty", func() {
+			r := validResource()
+			r.Spec.Phase = CloudflareRulesetSpec_http_request_redirect
+			r.Spec.Rules = []*CloudflareRulesetRule{
+				{
+					Expression: "true",
+					Action:     CloudflareRulesetRule_redirect,
+					Enabled:    boolPtr(true),
+					ActionParameters: &CloudflareRulesetActionParameters{
+						FromList: &CloudflareRulesetFromList{
+							Name: &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: ""}},
+							Key:  "http.request.full_uri",
+						},
+					},
+				},
+			}
+			err := protovalidate.Validate(r)
+			gomega.Expect(err).ToNot(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects a from_list missing the list name", func() {
+			r := validResource()
+			r.Spec.Phase = CloudflareRulesetSpec_http_request_redirect
+			r.Spec.Rules = []*CloudflareRulesetRule{
+				{
+					Expression: "true",
+					Action:     CloudflareRulesetRule_redirect,
+					Enabled:    boolPtr(true),
+					ActionParameters: &CloudflareRulesetActionParameters{
+						FromList: &CloudflareRulesetFromList{
+							Key: "http.request.full_uri",
+						},
+					},
+				},
+			}
+			err := protovalidate.Validate(r)
+			gomega.Expect(err).ToNot(gomega.BeNil())
 		})
 
 		ginkgo.It("rejects an invalid polish value", func() {

@@ -107,6 +107,8 @@ variable "spec" {
           status_code           = number
           preserve_query_string = optional(bool, false)
         }))
+        # Bulk Redirect list lookup. name is a StringValueOrRef flattened to a
+        # plain list name by the tfvars converter.
         from_list = optional(object({
           name = string
           key  = string

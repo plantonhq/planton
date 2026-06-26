@@ -163,7 +163,7 @@ spec:
 | `redirect` | `fromValue { targetUrl, statusCode, preserveQueryString }` |
 | `skip` | `phases`, `products`, `ruleset`, `rulesets` |
 | `execute` | `id`, `overrides { action, enabled, categories, rules }`, `matchedData { publicKey }` |
-| `redirect` (from list) | `fromList { name, key }` |
+| `redirect` (from list) | `fromList { name (literal list name or a reference to a CloudflareList), key }` |
 | `score` | `increment` |
 | `compress_response` | `algorithms [{ name }]` |
 | `serve_error` | `assetName`, `content`, `contentType`, `statusCode` |
