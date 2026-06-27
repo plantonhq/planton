@@ -1,0 +1,22 @@
+apiVersion: cloudflare.openmcf.org/v1
+kind: CloudflareHyperdriveConfig
+metadata:
+  name: app-prod-pg-vpc
+spec:
+  accountId: <cloudflare-account-id>
+  name: app-prod-pg-vpc
+  origin:
+    database: <database-name>
+    scheme: postgres
+    user: <database-user>
+    host: <private-database-host>
+    port: 5432
+    password:
+      value: <database-password>
+    # Egress to the private origin through this Workers VPC Service instead of
+    # dialing a public host. Mutually exclusive with the mtls block (TLS is
+    # managed on the VPC Service).
+    serviceId: <workers-vpc-service-id>
+  caching:
+    disabled: false
+  originConnectionLimit: 25

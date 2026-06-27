@@ -32,6 +32,10 @@ func hyperdriveConfig(
 	if origin.AccessClientSecret != nil && origin.AccessClientSecret.GetValue() != "" {
 		originArgs.AccessClientSecret = pulumi.StringPtr(origin.AccessClientSecret.GetValue())
 	}
+	// Egress through a Workers VPC Service instead of dialing the public host.
+	if origin.ServiceId != "" {
+		originArgs.ServiceId = pulumi.StringPtr(origin.ServiceId)
+	}
 
 	args := &cloudflare.HyperdriveConfigArgs{
 		AccountId: pulumi.String(spec.AccountId),

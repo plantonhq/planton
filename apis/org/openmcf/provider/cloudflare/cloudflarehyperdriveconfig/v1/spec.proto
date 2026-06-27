@@ -60,6 +60,14 @@ message CloudflareHyperdriveConfigSpec {
     message: "origin_connection_limit must be 0 (plan default) or between 5 and 100"
     expression: "this == 0 || (this >= 5 && this <= 100)"
   }];
+
+  // A VPC Service origin (origin.service_id) manages TLS on the VPC Service, so
+  // it cannot be combined with the mtls block. Set at most one of the two.
+  option (buf.validate.message).cel = {
+    id: "mtls.not_with_vpc_service"
+    message: "mtls cannot be combined with a VPC Service origin (origin.service_id); TLS is managed on the VPC Service"
+    expression: "!has(this.origin) || this.origin.service_id == '' || !has(this.mtls)"
+  };
 }
 
 // CloudflareHyperdriveOrigin holds the origin database connection details.
@@ -112,6 +120,13 @@ message CloudflareHyperdriveOrigin {
   // Cloudflare Access client secret for the service token in access_client_id.
   // Provide a managed-secret reference; resolved just-in-time at deploy.
   org.openmcf.shared.foreignkey.v1.StringValueOrRef access_client_secret = 8 [(org.openmcf.shared.options.sensitive) = true];
+
+  // Identifier of the Workers VPC Service to connect through. When set,
+  // Hyperdrive egresses to the origin over that VPC Service (private
+  // connectivity) instead of dialing the public host. Leave empty for a
+  // public/Access-fronted origin. Mutually exclusive with the spec-level mtls
+  // block, since TLS is managed on the VPC Service.
+  string service_id = 9;
 }
 
 // CloudflareHyperdriveCaching controls query-result caching at the edge.

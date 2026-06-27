@@ -156,7 +156,11 @@ DNS-record `private_routing` are all modeled in the proto and honored by both en
 briefly deferred against the older v6.10.1 SDK, then restored on the upgrade — see
 `coding-guidelines/0004` in the project for the standing principle: the proto stays future-proof, the
 lagging engine is upgraded or degraded-and-documented, never held back with proto `reserved`).
-Hyperdrive's `origin.password`/`origin.access_client_secret` and the worker `secrets[].value` are
+Hyperdrive's `origin.service_id` (egress through a Workers VPC Service for a private origin) is
+modeled and honored by both engines (tofu `main.tf` origin block, Pulumi `originArgs.ServiceId`),
+omitted when empty; it is mutually exclusive with the spec-level `mtls` block by a message CEL
+(TLS is managed on the VPC Service) and is not a stack output, so the conformance guard is
+unaffected. Hyperdrive's `origin.password`/`origin.access_client_secret` and the worker `secrets[].value` are
 `StringValueOrRef + (sensitive)`. See the conformance guard's `CloudflareWorker`,
 `CloudflareKvNamespace`, `CloudflareWorkersKvPair`, `CloudflareD1Database`, and
 `CloudflareHyperdriveConfig` cases.

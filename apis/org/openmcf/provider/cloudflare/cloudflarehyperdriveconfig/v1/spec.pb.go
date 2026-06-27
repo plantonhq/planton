@@ -209,8 +209,14 @@ type CloudflareHyperdriveOrigin struct {
 	// Cloudflare Access client secret for the service token in access_client_id.
 	// Provide a managed-secret reference; resolved just-in-time at deploy.
 	AccessClientSecret *v1.StringValueOrRef `protobuf:"bytes,8,opt,name=access_client_secret,json=accessClientSecret,proto3" json:"access_client_secret,omitempty"`
-	unknownFields      protoimpl.UnknownFields
-	sizeCache          protoimpl.SizeCache
+	// Identifier of the Workers VPC Service to connect through. When set,
+	// Hyperdrive egresses to the origin over that VPC Service (private
+	// connectivity) instead of dialing the public host. Leave empty for a
+	// public/Access-fronted origin. Mutually exclusive with the spec-level mtls
+	// block, since TLS is managed on the VPC Service.
+	ServiceId     string `protobuf:"bytes,9,opt,name=service_id,json=serviceId,proto3" json:"service_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *CloudflareHyperdriveOrigin) Reset() {
@@ -297,6 +303,13 @@ func (x *CloudflareHyperdriveOrigin) GetAccessClientSecret() *v1.StringValueOrRe
 		return x.AccessClientSecret
 	}
 	return nil
+}
+
+func (x *CloudflareHyperdriveOrigin) GetServiceId() string {
+	if x != nil {
+		return x.ServiceId
+	}
+	return ""
 }
 
 // CloudflareHyperdriveCaching controls query-result caching at the edge.
@@ -439,7 +452,7 @@ var File_org_openmcf_provider_cloudflare_cloudflarehyperdriveconfig_v1_spec_prot
 
 const file_org_openmcf_provider_cloudflare_cloudflarehyperdriveconfig_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Horg/openmcf/provider/cloudflare/cloudflarehyperdriveconfig/v1/spec.proto\x12=org.openmcf.provider.cloudflare.cloudflarehyperdriveconfig.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\xb8\x05\n" +
+	"Horg/openmcf/provider/cloudflare/cloudflarehyperdriveconfig/v1/spec.proto\x12=org.openmcf.provider.cloudflare.cloudflarehyperdriveconfig.v1\x1a\x1bbuf/validate/validate.proto\x1a2org/openmcf/shared/foreignkey/v1/foreign_key.proto\x1a(org/openmcf/shared/options/options.proto\"\x8d\a\n" +
 	"\x1eCloudflareHyperdriveConfigSpec\x12=\n" +
 	"\n" +
 	"account_id\x18\x01 \x01(\tB\x1e\xbaH\x1b\xc8\x01\x01r\x162\x11^[0-9a-fA-F]{32}$\x98\x01 R\taccountId\x12 \n" +
@@ -448,7 +461,8 @@ const file_org_openmcf_provider_cloudflare_cloudflarehyperdriveconfig_v1_spec_pr
 	"\acaching\x18\x04 \x01(\v2Z.org.openmcf.provider.cloudflare.cloudflarehyperdriveconfig.v1.CloudflareHyperdriveCachingR\acaching\x12k\n" +
 	"\x04mtls\x18\x05 \x01(\v2W.org.openmcf.provider.cloudflare.cloudflarehyperdriveconfig.v1.CloudflareHyperdriveMtlsR\x04mtls\x12\xd6\x01\n" +
 	"\x17origin_connection_limit\x18\x06 \x01(\x03B\x9d\x01\xbaH\x99\x01\xba\x01\x95\x01\n" +
-	"#origin_connection_limit.valid_range\x12Eorigin_connection_limit must be 0 (plan default) or between 5 and 100\x1a'this == 0 || (this >= 5 && this <= 100)R\x15originConnectionLimit\"\xda\x05\n" +
+	"#origin_connection_limit.valid_range\x12Eorigin_connection_limit must be 0 (plan default) or between 5 and 100\x1a'this == 0 || (this >= 5 && this <= 100)R\x15originConnectionLimit:\xd2\x01\xbaH\xce\x01\x1a\xcb\x01\n" +
+	"\x19mtls.not_with_vpc_service\x12hmtls cannot be combined with a VPC Service origin (origin.service_id); TLS is managed on the VPC Service\x1aD!has(this.origin) || this.origin.service_id == '' || !has(this.mtls)\"\xf9\x05\n" +
 	"\x1aCloudflareHyperdriveOrigin\x12\"\n" +
 	"\bdatabase\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bdatabase\x12\xda\x01\n" +
 	"\x06scheme\x18\x02 \x01(\x0e2Y.org.openmcf.provider.cloudflare.cloudflarehyperdriveconfig.v1.CloudflareHyperdriveSchemeBg\xbaHd\xba\x01Y\n" +
@@ -460,7 +474,9 @@ const file_org_openmcf_provider_cloudflare_cloudflarehyperdriveconfig_v1_spec_pr
 	"\bpassword\x18\x06 \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\n" +
 	"\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01R\bpassword\x12(\n" +
 	"\x10access_client_id\x18\a \x01(\tR\x0eaccessClientId\x12j\n" +
-	"\x14access_client_secret\x18\b \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x04\xa0\xa6\x1d\x01R\x12accessClientSecret\"\xf1\x02\n" +
+	"\x14access_client_secret\x18\b \x01(\v22.org.openmcf.shared.foreignkey.v1.StringValueOrRefB\x04\xa0\xa6\x1d\x01R\x12accessClientSecret\x12\x1d\n" +
+	"\n" +
+	"service_id\x18\t \x01(\tR\tserviceId\"\xf1\x02\n" +
 	"\x1bCloudflareHyperdriveCaching\x12\x1a\n" +
 	"\bdisabled\x18\x01 \x01(\bR\bdisabled\x12\x85\x01\n" +
 	"\amax_age\x18\x02 \x01(\x03Bl\xbaHi\xba\x01f\n" +

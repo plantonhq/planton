@@ -73,6 +73,12 @@ var _ = ginkgo.Describe("CloudflareHyperdriveConfigSpec Custom Validation Tests"
 			in.Spec.Origin.AccessClientSecret = secretValue("client-secret")
 			gomega.Expect(protovalidate.Validate(in)).To(gomega.BeNil())
 		})
+
+		ginkgo.It("accepts a VPC Service origin (service_id without mtls)", func() {
+			in := validHyperdrive()
+			in.Spec.Origin.ServiceId = "vpc-service-123"
+			gomega.Expect(protovalidate.Validate(in)).To(gomega.BeNil())
+		})
 	})
 
 	ginkgo.Describe("When invalid input is passed", func() {
@@ -127,6 +133,13 @@ var _ = ginkgo.Describe("CloudflareHyperdriveConfigSpec Custom Validation Tests"
 		ginkgo.It("rejects a port above the valid range", func() {
 			in := validHyperdrive()
 			in.Spec.Origin.Port = 70000
+			gomega.Expect(protovalidate.Validate(in)).ToNot(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects mtls combined with a VPC Service origin", func() {
+			in := validHyperdrive()
+			in.Spec.Origin.ServiceId = "vpc-service-123"
+			in.Spec.Mtls = &CloudflareHyperdriveMtls{Sslmode: "verify-full"}
 			gomega.Expect(protovalidate.Validate(in)).ToNot(gomega.BeNil())
 		})
 	})

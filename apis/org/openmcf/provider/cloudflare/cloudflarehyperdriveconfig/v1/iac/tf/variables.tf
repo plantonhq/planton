@@ -31,6 +31,8 @@ variable "spec" {
       password             = string
       access_client_id     = optional(string, "")
       access_client_secret = optional(string, "")
+      # Workers VPC Service to egress through (mutually exclusive with mtls).
+      service_id = optional(string, "")
     })
 
     # (Optional) Query-result caching behavior.

@@ -22,7 +22,10 @@ This kind models a single Hyperdrive config:
 - **origin** — how to reach the database: `database`, `scheme`
   (`postgres`/`postgresql`/`mysql`), `user`, `host`, `port`, and the
   secret-by-default `password`. For databases published behind Cloudflare Access,
-  `accessClientId` / `accessClientSecret` carry the service-token credentials.
+  `accessClientId` / `accessClientSecret` carry the service-token credentials. For
+  private origins reached over a Workers VPC Service, set `serviceId` to egress
+  through that VPC Service instead of dialing the public host — mutually exclusive
+  with `mtls` (TLS is managed on the VPC Service).
 - **caching** — `disabled`, `maxAge`, `staleWhileRevalidate`. Caching is on by
   default; disable it for workloads that cannot tolerate stale reads.
 - **mtls** — `caCertificateId`, `mtlsCertificateId`, `sslmode` for origins that

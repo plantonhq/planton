@@ -26,6 +26,7 @@ and edge query caching.
 **Optional**
 
 - `origin.host`, `origin.port`, `origin.accessClientId`, `origin.accessClientSecret`.
+- `origin.serviceId` — Workers VPC Service to egress through (mutually exclusive with `mtls`).
 - `caching.disabled`, `caching.maxAge`, `caching.staleWhileRevalidate`.
 - `mtls.caCertificateId`, `mtls.mtlsCertificateId`, `mtls.sslmode`.
 - `originConnectionLimit`.

@@ -52,6 +52,7 @@ spec:
 | `origin.host` | no | Hostname/IP reachable from Cloudflare |
 | `origin.port` | no | Port (defaults to the engine default) |
 | `origin.accessClientId` / `accessClientSecret` | no | Cloudflare Access service-token credentials for Access-fronted origins |
+| `origin.serviceId` | no | Workers VPC Service to egress through for private origins (mutually exclusive with `mtls`) |
 | `caching.disabled` | no | Disable query caching (default: caching on) |
 | `caching.maxAge` | no | Max cache age in seconds (default 60) |
 | `caching.staleWhileRevalidate` | no | Stale-serve window in seconds (default 15) |

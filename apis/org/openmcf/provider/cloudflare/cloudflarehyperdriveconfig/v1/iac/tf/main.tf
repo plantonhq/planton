@@ -15,6 +15,9 @@ resource "cloudflare_hyperdrive_config" "main" {
 
     access_client_id     = try(local.origin.access_client_id, "") != "" ? local.origin.access_client_id : null
     access_client_secret = try(local.origin.access_client_secret, "") != "" ? local.origin.access_client_secret : null
+
+    # Egress through a Workers VPC Service when set; omit so the public host applies.
+    service_id = try(local.origin.service_id, "") != "" ? local.origin.service_id : null
   }
 
   caching = local.caching
