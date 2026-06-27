@@ -15,10 +15,26 @@ spec:
         Action: "sts:AssumeRole"
   managedPolicyArns:
     - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+  # Two intentionally differently-shaped inline policies. inline_policies is a free-form JSON map
+  # (map<string, google.protobuf.Struct>); these two entries do not share a single object type
+  # (different statement counts, one carries a Sid and the other does not), which is exactly the
+  # shape that fails when the variable is typed map(any) instead of any. Keep BOTH so the fixture
+  # reproduces the heterogeneous-map case a single-policy fixture would miss.
   inlinePolicies:
+    extraLoggingPermissions:
+      Version: "2012-10-17"
+      Statement:
+        - Sid: "CreateCloudWatchGroups"
+          Effect: "Allow"
+          Action:
+            - "logs:CreateLogGroup"
+          Resource: "*"
     customS3Access:
       Version: "2012-10-17"
       Statement:
+        - Effect: "Allow"
+          Action: "s3:ListBucket"
+          Resource: "arn:aws:s3:::demo-bucket"
         - Effect: "Allow"
           Action:
             - "s3:GetObject"

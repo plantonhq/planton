@@ -24,8 +24,8 @@ output "repository_uri" {
 }
 
 output "lifecycle_policy" {
-  description = "The lifecycle policy attached to the repository."
-  value       = aws_ecr_lifecycle_policy.this.policy
+  description = "The lifecycle policy attached to the repository, or null when none is configured."
+  value       = length(aws_ecr_lifecycle_policy.this) > 0 ? aws_ecr_lifecycle_policy.this[0].policy : null
 }
 
 

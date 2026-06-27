@@ -70,6 +70,28 @@
 // generator the single source of truth and preventing any regression to a
 // hand-edited or legacy (all-required) schema.
 //
+// # Free-form JSON maps must be `any`, not map(any)
+//
+// A field typed map<string, google.protobuf.Struct> (e.g. AwsIamRole.inline_policies,
+// a map of policy-name -> arbitrary policy document) holds entries with independent,
+// heterogeneous shapes. Terraform's map(any) requires every element to converge to a
+// SINGLE common type and fails input validation with
+//
+//	attribute "X": all map elements must have the same type
+//
+// the moment two differently-shaped entries are passed. The generator therefore emits
+// such fields as the bare `any` keyword (TFFreeFormMap), letting Terraform infer a
+// heterogeneous object; the optional default stays an empty map ({}). A single
+// google.protobuf.Struct field (e.g. AwsIamRole.trust_policy) is already `any` for the
+// same reason -- only the map case needed fixing.
+//
+// Module contract for these fields: because the value is `any` (an object, not a map),
+// a consuming module must NOT pass it straight to for_each. The canonical idiom is to
+// encode at the boundary into a homogeneous map(string) first:
+//
+//	inline_policies_json = { for k, v in try(var.spec.inline_policies, {}) : k => jsonencode(v) }
+//	# then: for_each = local.inline_policies_json ; policy = each.value
+//
 // # Extensibility
 //
 // To handle a new OpenMCF wrapper type, add one entry to DefaultRules() in

@@ -127,8 +127,18 @@ func fieldToTFType(fd protoreflect.FieldDescriptor, parentMD protoreflect.Messag
 // mapFieldToTFType converts a proto map<K, V> field to TFMap. The key type is
 // always string in OpenMCF protos. The value type is determined by consulting
 // type rules (a map<string, StringValueOrRef> becomes map(string)).
+//
+// A map whose value is a free-form JSON well-known type (map<string,
+// google.protobuf.Struct/Value/ListValue>) is the exception: its entries are
+// independently-shaped, so it cannot be a homogeneous map(any). It becomes a
+// TFFreeFormMap (rendered `any`) -- see that type for the rationale.
 func mapFieldToTFType(fd protoreflect.FieldDescriptor, rules map[string]TypeRule) (TFType, error) {
 	valDesc := fd.MapValue()
+
+	if valDesc.Kind() == protoreflect.MessageKind &&
+		isWellKnownJSONType(string(valDesc.Message().FullName())) {
+		return TFFreeFormMap{}, nil
+	}
 
 	valType, err := mapValueToTFType(valDesc, rules)
 	if err != nil {

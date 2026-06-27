@@ -15,38 +15,15 @@ resource "aws_ecr_repository" "this" {
   tags = local.tags
 }
 
-# Lifecycle policy to clean up untagged images older than 1 day
+# Lifecycle policy for cost control. Created only when spec.lifecycle_policy is set and yields at
+# least one rule; the rules themselves (a single untagged-by-age rule and/or an any-keep-last-N
+# rule) are assembled in locals so the AWS "only one untagged rule" constraint always holds.
 resource "aws_ecr_lifecycle_policy" "this" {
+  count      = local.lifecycle_policy != null && length(local.lifecycle_rules) > 0 ? 1 : 0
   repository = aws_ecr_repository.this.name
 
   policy = jsonencode({
-    rules = [
-      {
-        rulePriority = 1
-        description  = "Keep last 30 images, expire all others"
-        selection = {
-          tagStatus     = "untagged"
-          countType     = "imageCountMoreThan"
-          countNumber   = 30
-        }
-        action = {
-          type = "expire"
-        }
-      },
-      {
-        rulePriority = 2
-        description  = "Remove untagged images older than 1 day"
-        selection = {
-          tagStatus   = "untagged"
-          countType   = "sinceImagePushed"
-          countUnit   = "days"
-          countNumber = 1
-        }
-        action = {
-          type = "expire"
-        }
-      }
-    ]
+    rules = local.lifecycle_rules
   })
 }
 

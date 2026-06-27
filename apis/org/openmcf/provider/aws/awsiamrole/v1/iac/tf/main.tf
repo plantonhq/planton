@@ -8,18 +8,17 @@ resource "aws_iam_role" "this" {
 }
 
 resource "aws_iam_role_policy_attachment" "managed" {
-  for_each = toset(local.managed_policy_arns)
-  role     = aws_iam_role.this.name
+  for_each   = toset(local.managed_policy_arns)
+  role       = aws_iam_role.this.name
   policy_arn = each.value
 }
 
 resource "aws_iam_role_policy" "inline" {
-  for_each = local.inline_policies_map
+  for_each = local.inline_policies_json
   name     = each.key
   role     = aws_iam_role.this.id
-  # each.value is a free-form JSON object (google.protobuf.Struct); aws_iam_role_policy
-  # wants policy as a JSON string.
-  policy = jsonencode(each.value)
+  # each.value is already a JSON-encoded policy string (see locals.inline_policies_json).
+  policy = each.value
 }
 
 # Always create an instance profile that wraps this role. Instance profiles are

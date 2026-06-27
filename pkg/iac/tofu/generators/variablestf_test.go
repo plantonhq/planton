@@ -8,12 +8,50 @@ import (
 	"github.com/hashicorp/hcl/v2/hclparse"
 
 	awsecrrepov1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsecrrepo/v1"
+	awsiamrolev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsiamrole/v1"
 	awsroute53zonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsroute53zone/v1"
 	awssubnetv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awssubnet/v1"
 	kubernetescronjobv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetescronjob/v1"
 	"github.com/plantonhq/openmcf/apis/org/openmcf/shared"
 	"google.golang.org/protobuf/proto"
 )
+
+func TestProtoToVariablesTF_FreeFormJsonMapIsAnyNotMapAny(t *testing.T) {
+	// inline_policies is map<string, google.protobuf.Struct>: each entry is an
+	// independently-shaped JSON document, so it must be typed `any` (optional with a {}
+	// default), never map(any) -- map(any) forces a single common element type and a
+	// Terraform module fails input validation with "all map elements must have the same
+	// type" the moment two differently-shaped policies are passed. trust_policy is a single
+	// Struct and stays `any`.
+	msg := &awsiamrolev1.AwsIamRole{}
+
+	got, err := ProtoToVariablesTF(msg)
+	if err != nil {
+		t.Fatalf("ProtoToVariablesTF: %v", err)
+	}
+
+	if !strings.Contains(got, "inline_policies = optional(any, {})") {
+		t.Errorf("inline_policies (map<string, Struct>) must render as optional(any, {}), got:\n%s", got)
+	}
+	if strings.Contains(got, "map(any)") {
+		t.Errorf("a free-form JSON map must not render as map(any) (heterogeneous values), got:\n%s", got)
+	}
+}
+
+func TestTFFreeFormMap_RendersAnyWithEmptyMapDefault(t *testing.T) {
+	if got := (TFFreeFormMap{}).Format(1); got != "any" {
+		t.Errorf("TFFreeFormMap.Format = %q, want \"any\"", got)
+	}
+	def, ok := zeroDefaultLiteral(TFFreeFormMap{})
+	if !ok || def != "{}" {
+		t.Errorf("zeroDefaultLiteral(TFFreeFormMap) = (%q, %v), want (\"{}\", true)", def, ok)
+	}
+	// As an optional object attribute it must read optional(any, {}).
+	obj := TFObject{Fields: []TFField{{Name: "inline_policies", Type: TFFreeFormMap{}, Optional: true}}}
+	if got := obj.Format(0); !strings.Contains(got, "inline_policies = optional(any, {})") {
+		t.Errorf("optional free-form map should render optional(any, {}), got:\n%s", got)
+	}
+}
 
 func TestProtoToVariablesTF_CronJob_TargetClusterSkipped(t *testing.T) {
 	msg := &kubernetescronjobv1.KubernetesCronJob{}

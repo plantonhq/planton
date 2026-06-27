@@ -40,6 +40,20 @@ func (m TFMap) Format(indent int) string {
 	return fmt.Sprintf("map(%s)", m.Value.Format(indent))
 }
 
+// TFFreeFormMap represents a proto map whose value is a free-form JSON well-known
+// type (map<string, google.protobuf.Struct/Value/ListValue>). It renders as the
+// bare `any` keyword rather than `map(any)`: each map entry is an arbitrary,
+// independently-shaped JSON object, and Terraform's `map(any)` requires every
+// element to converge to a single common type ("all map elements must have the
+// same type"). Typing the whole attribute `any` lets Terraform infer a
+// heterogeneous object instead. Its zero default is an empty map ({}) so a pruned
+// field reconstructs to something a `for`/`for_each` can iterate.
+type TFFreeFormMap struct{}
+
+func (TFFreeFormMap) Format(_ int) string {
+	return "any"
+}
+
 // TFObject represents a Terraform object type with named fields.
 type TFObject struct {
 	Fields []TFField
@@ -114,6 +128,9 @@ func zeroDefaultLiteral(t TFType) (string, bool) {
 	case TFList:
 		return "[]", true
 	case TFMap:
+		return "{}", true
+	case TFFreeFormMap:
+		// Still a map semantically (just untyped values): default to an empty map.
 		return "{}", true
 	default: // TFObject and anything else: default to null
 		return "", false

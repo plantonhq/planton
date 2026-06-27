@@ -19,6 +19,6 @@ variable "spec" {
     path = optional(string, "")
     trust_policy = any
     managed_policy_arns = optional(list(string), [])
-    inline_policies = optional(map(any), {})
+    inline_policies = optional(any, {})
   })
 }
