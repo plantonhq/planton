@@ -21,6 +21,15 @@ egress through the specified VPC Service to reach the origin database." Our
 `CloudflareHyperdriveConfig` proto omitted it, so a Planton-managed Hyperdrive could
 not front a VPC-private database — only public or Cloudflare-Access-fronted origins.
 
+### Pain Points
+
+- A Hyperdrive could only reach origins on a public address (or one fronted by
+  Cloudflare Access); a database reachable only inside a VPC had no expressible path.
+- The proto lagged the live provider surface, so a capability the API supports was
+  invisible to Planton users and to the web wizard generated from the proto.
+- Nothing encoded the provider's rule that mTLS and a VPC Service origin are
+  incompatible, so an invalid combination could only fail late, at apply time.
+
 ## Solution / What's New
 
 A new optional `service_id` on the origin message, plus a message-level CEL that
@@ -45,6 +54,19 @@ option (buf.validate.message).cel = {
   expression: "!has(this.origin) || this.origin.service_id == '' || !has(this.mtls)"
 };
 ```
+
+### Topology
+
+```mermaid
+flowchart LR
+    Worker["CloudflareWorker"] -->|hyperdrive binding| HYP["CloudflareHyperdriveConfig"]
+    HYP -->|"egress via service_id"| VPC["Workers VPC Service"]
+    VPC -->|private connectivity| DB[(VPC-private SQL DB)]
+    HYP -.->|"public host (when service_id unset)"| PUB[(Public / Access-fronted DB)]
+```
+
+With `service_id` set, Hyperdrive egresses through the named Workers VPC Service to a
+private origin; left empty, it dials the public host exactly as before.
 
 ## Implementation Details
 
@@ -82,6 +104,17 @@ manifests and presets are unaffected; only a config that set both `service_id` a
 so the cross-engine outputs conformance guard is unaffected. Live `tofu apply`
 against a real VPC Service was not run (requires a provisioned Workers VPC Service);
 the proto + both engines are validated statically.
+
+## Benefits
+
+- **New capability**: Hyperdrive can front a VPC-private origin database, not just
+  public/Access-fronted ones.
+- **Validated early**: the mTLS/VPC-Service mutual exclusion is enforced at the spec
+  level, so an invalid combination is rejected before any provider call.
+- **Zero blast radius**: additive optional field with both engines at parity; existing
+  manifests, presets, and stack outputs are unchanged.
+- **Proto stays the source of truth**: the proto now matches the live provider surface,
+  and the web wizard generated from it gains the field for free on its next forge.
 
 ## Impact
 
