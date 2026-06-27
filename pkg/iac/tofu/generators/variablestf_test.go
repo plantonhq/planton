@@ -4,11 +4,15 @@ import (
 	"strings"
 	"testing"
 
-	kubernetescronjobv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetescronjob/v1"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared"
-
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclparse"
+
+	awsecrrepov1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsecrrepo/v1"
+	awsroute53zonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsroute53zone/v1"
+	awssubnetv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awssubnet/v1"
+	kubernetescronjobv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetescronjob/v1"
+	"github.com/plantonhq/openmcf/apis/org/openmcf/shared"
+	"google.golang.org/protobuf/proto"
 )
 
 func TestProtoToVariablesTF_CronJob_TargetClusterSkipped(t *testing.T) {
@@ -34,13 +38,14 @@ func TestProtoToVariablesTF_CronJob_NamespaceIsString(t *testing.T) {
 		t.Fatalf("ProtoToVariablesTF: %v", err)
 	}
 
-	// namespace should be flattened to string, not object({value = string, ...})
-	// It appears inside the spec object type.
+	// namespace should be flattened to string, not object({value = string, ...}).
 	if strings.Contains(got, "namespace = object(") {
 		t.Errorf("namespace should be 'string' (flattened from StringValueOrRef), not an object:\n%s", got)
 	}
-	if !strings.Contains(got, "namespace = string") {
-		t.Errorf("namespace should appear as 'string' in the spec object, got:\n%s", got)
+	// It is required (presence-constrained) so it stays bare, or optional with a
+	// string default; either way the element type is string, never an object.
+	if !strings.Contains(got, "namespace = string") && !strings.Contains(got, `namespace = optional(string, "")`) {
+		t.Errorf("namespace should be a flattened string in the spec object, got:\n%s", got)
 	}
 }
 
@@ -52,10 +57,15 @@ func TestProtoToVariablesTF_CronJob_VariablesIsMapString(t *testing.T) {
 		t.Fatalf("ProtoToVariablesTF: %v", err)
 	}
 
-	// map<string, StringValueOrRef> variables should become map(string),
-	// not map(object({...})) or an object with synthetic map-entry fields.
-	if !strings.Contains(got, "variables = map(string)") {
-		t.Errorf("variables should be 'map(string)', got:\n%s", got)
+	// A map<string, StringValueOrRef> field (config_maps) flattens to map(string).
+	// Being optional, it is wrapped with a {} zero default so a pruned tfvars
+	// validates -- but the element type must remain map(string), never an object,
+	// and maps must never be mis-rendered as object({key, value}).
+	if !strings.Contains(got, "config_maps = optional(map(string), {})") {
+		t.Errorf("config_maps should be 'optional(map(string), {})', got:\n%s", got)
+	}
+	if strings.Contains(got, "map(object(") {
+		t.Errorf("a map field must not be modeled as map(object(...)), got:\n%s", got)
 	}
 }
 
@@ -145,4 +155,118 @@ func TestProtoToVariablesTF_SimpleMessage_BackwardCompatible(t *testing.T) {
 	if strings.Contains(got, `"version"`) {
 		t.Errorf("version should be skipped in metadata messages, got:\n%s", got)
 	}
+}
+
+// --- Optional()/required schema coverage (the production schema-skew fix) ---
+
+// canonicalMetadataBlock is the exact metadata variable every module must carry:
+// name is required (always rendered), the rest are optional with proto zero
+// defaults so a null-pruned tfvars validates. This is the contract the runtime
+// renderer (ProtoToTFVars, EmitUnpopulated=false) depends on.
+const canonicalMetadataBlock = `variable "metadata" {
+  description = "Cloud resource metadata"
+  type = object({
+    name = string
+    id = optional(string, "")
+    org = optional(string, "")
+    env = optional(string, "")
+    labels = optional(map(string), {})
+    annotations = optional(map(string), {})
+    tags = optional(list(string), [])
+  })
+}`
+
+func generateVariables(t *testing.T, msg proto.Message) string {
+	t.Helper()
+	got, err := ProtoToVariablesTF(msg)
+	if err != nil {
+		t.Fatalf("ProtoToVariablesTF: %v", err)
+	}
+	parser := hclparse.NewParser()
+	if _, diags := parser.ParseHCL([]byte(got), "variables.tf"); diags.HasErrors() {
+		t.Fatalf("generated variables.tf is not valid HCL: %s\n%s", diags.Error(), got)
+	}
+	return got
+}
+
+// TestProtoToVariablesTF_CanonicalMetadata asserts the shared metadata envelope
+// is emitted from the canonical block (name required, rest optional) and never
+// leaks orchestrator-only envelope fields (slug/group/relationships) or version.
+func TestProtoToVariablesTF_CanonicalMetadata(t *testing.T) {
+	got := generateVariables(t, &awssubnetv1.AwsSubnet{})
+
+	if !strings.Contains(got, canonicalMetadataBlock) {
+		t.Errorf("metadata block is not the canonical form.\nwant:\n%s\n\ngot:\n%s", canonicalMetadataBlock, got)
+	}
+	metaBlock := extractBlock(got, `variable "metadata"`)
+	for _, leaked := range []string{"slug", "group", "relationships", "version"} {
+		if strings.Contains(metaBlock, leaked) {
+			t.Errorf("metadata block leaked envelope/orchestrator field %q:\n%s", leaked, got)
+		}
+	}
+}
+
+// TestProtoToVariablesTF_RequiredVsOptional asserts the required-detection rule:
+// buf.validate required OR a presence-implying constraint (string min_len) keeps
+// an attribute bare; everything else is optional() with a zero default.
+func TestProtoToVariablesTF_RequiredVsOptional(t *testing.T) {
+	spec := extractBlock(generateVariables(t, &awssubnetv1.AwsSubnet{}), `variable "spec"`)
+
+	// region (string.min_len) and cidr_block / vpc_id (required) stay bare.
+	for _, bare := range []string{"region = string", "cidr_block = string", "vpc_id = string", "availability_zone = string"} {
+		if !strings.Contains(spec, bare) {
+			t.Errorf("expected required field rendered bare %q in spec:\n%s", bare, spec)
+		}
+	}
+	// optional scalars carry their proto zero default.
+	for _, opt := range []string{
+		"map_public_ip_on_launch = optional(bool, false)",
+		"ipv6_cidr_block = optional(string, \"\")",
+	} {
+		if !strings.Contains(spec, opt) {
+			t.Errorf("expected optional field %q in spec:\n%s", opt, spec)
+		}
+	}
+	// optional repeated message -> optional(list(object({...})), [])
+	if !strings.Contains(spec, "routes = optional(list(object({") || !strings.Contains(spec, "})), [])") {
+		t.Errorf("expected routes as optional list-of-object with [] default:\n%s", spec)
+	}
+}
+
+// TestProtoToVariablesTF_OptionalScalarsAndMaps covers the kinds that failed in
+// production (route53 records, ecr force_delete): all must be optional so a
+// pruned tfvars validates instead of erroring "attribute X is required".
+func TestProtoToVariablesTF_OptionalScalarsAndMaps(t *testing.T) {
+	r53spec := extractBlock(generateVariables(t, &awsroute53zonev1.AwsRoute53Zone{}), `variable "spec"`)
+	if !strings.Contains(r53spec, "records = optional(list(object({") {
+		t.Errorf("route53 spec.records must be optional list-of-object:\n%s", r53spec)
+	}
+
+	ecrspec := extractBlock(generateVariables(t, &awsecrrepov1.AwsEcrRepo{}), `variable "spec"`)
+	if !strings.Contains(ecrspec, "force_delete = optional(bool, false)") {
+		t.Errorf("ecr spec.force_delete must be optional(bool, false):\n%s", ecrspec)
+	}
+}
+
+// extractBlock returns the substring from the first occurrence of header to the
+// matching top-level closing brace (best-effort, for assertions/diagnostics).
+func extractBlock(s, header string) string {
+	i := strings.Index(s, header)
+	if i < 0 {
+		return ""
+	}
+	rest := s[i:]
+	depth := 0
+	for j := 0; j < len(rest); j++ {
+		switch rest[j] {
+		case '{':
+			depth++
+		case '}':
+			depth--
+			if depth == 0 {
+				return rest[:j+1]
+			}
+		}
+	}
+	return rest
 }

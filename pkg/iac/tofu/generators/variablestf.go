@@ -5,18 +5,24 @@ import (
 	"fmt"
 	"strings"
 
+	"buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/internal/apidocs"
 	"github.com/plantonhq/openmcf/pkg/strings/caseconverter"
-	gendoc "github.com/pseudomuto/protoc-gen-doc"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
-var defaultFieldDescriptions = map[string]string{
-	"metadata": "Metadata for the resource, including name and labels",
-	"spec":     "Specification for Deployment Component",
-}
+// metadataVariableDescription is the fixed description of the shared resource
+// envelope variable.
+const metadataVariableDescription = "Cloud resource metadata"
+
+// cloudResourceMetadataFullName is the shared resource-envelope message. Its
+// Terraform shape is an invariant across every kind, so it is emitted from one
+// canonical block (canonicalMetadataObject) rather than derived per kind -- the
+// proto carries no field constraints, and the envelope deliberately exposes only
+// name/id/org/env/labels/annotations/tags to modules (slug/group/relationships
+// are orchestrator concerns dropped during object conversion).
+const cloudResourceMetadataFullName = "org.openmcf.shared.CloudResourceMetadata"
 
 // topLevelSkipFieldNames lists proto field names to skip at the top level of
 // the resource message. These are proto envelope fields that have no meaning
@@ -32,14 +38,13 @@ var topLevelSkipFieldNames = map[string]bool{
 //   - Skip orchestrator-only fields (KubernetesClusterSelector, ValueFromRef)
 //   - Flatten wrapper types to primitives (StringValueOrRef -> string)
 //   - Handle proto maps as map(valueType) instead of misrepresenting them as objects
+//   - Mark every non-required attribute optional() with its proto zero default
 //
-// Field descriptions are extracted from the proto API docs JSON.
+// The output is fully deterministic and offline: it depends only on the compiled
+// proto descriptor (types + buf.validate constraints), never on a network call
+// or external docs source. Determinism is what lets the committed variables.tf be
+// guarded against drift by regenerating and comparing.
 func ProtoToVariablesTF(msg proto.Message) (string, error) {
-	// API docs provide proto field descriptions for the generated variables.tf
-	// comments. If unavailable (e.g., during unit tests or offline builds),
-	// fall back to default descriptions rather than failing.
-	apiDocsJSON, _ := apidocs.GetApiDocsJson()
-
 	md := msg.ProtoReflect().Descriptor()
 	rules := DefaultRules()
 
@@ -54,16 +59,27 @@ func ProtoToVariablesTF(msg proto.Message) (string, error) {
 			continue
 		}
 
-		tfType, err := fieldToTFType(fd, md, rules, apiDocsJSON)
-		if err != nil {
-			return "", errors.Wrapf(err, "failed to convert field %q to terraform type", fieldName)
+		var tfType TFType
+		var desc string
+		if isCloudResourceMetadataField(fd) {
+			// The resource envelope is uniform across kinds: emit the canonical
+			// block instead of deriving from the (constraint-free) proto, which
+			// would wrongly mark every attribute required and leak orchestrator
+			// fields.
+			tfType = canonicalMetadataObject()
+			desc = metadataVariableDescription
+		} else {
+			t, err := fieldToTFType(fd, md, rules)
+			if err != nil {
+				return "", errors.Wrapf(err, "failed to convert field %q to terraform type", fieldName)
+			}
+			if t == nil {
+				// Field was skipped by a type rule.
+				continue
+			}
+			tfType = t
+			desc = variableDescription(md, fieldName)
 		}
-		if tfType == nil {
-			// Field was skipped by a type rule.
-			continue
-		}
-
-		desc := resolveFieldDescription(apiDocsJSON, string(md.FullName()), fieldName, fd)
 		typeStr := tfType.Format(1)
 
 		fmt.Fprintf(&buf, "variable %q {\n  description = %q\n  type = %s\n}\n\n",
@@ -73,17 +89,28 @@ func ProtoToVariablesTF(msg proto.Message) (string, error) {
 	return strings.TrimSpace(buf.String()), nil
 }
 
+// variableDescription returns a deterministic one-line description for a
+// top-level variable. The spec variable reads "<Kind> specification" (matching
+// the established module style); any other top-level field falls back to a
+// generic, stable phrasing.
+func variableDescription(resourceMD protoreflect.MessageDescriptor, fieldName string) string {
+	if fieldName == "spec" {
+		return fmt.Sprintf("%s specification", resourceMD.Name())
+	}
+	return fmt.Sprintf("%s %s", resourceMD.Name(), fieldName)
+}
+
 // fieldToTFType converts a proto field descriptor to a TFType, consulting type
 // rules for skip/flatten decisions. Returns nil if the field should be skipped.
-func fieldToTFType(fd protoreflect.FieldDescriptor, parentMD protoreflect.MessageDescriptor, rules map[string]TypeRule, apiDocsJSON *gendoc.Template) (TFType, error) {
+func fieldToTFType(fd protoreflect.FieldDescriptor, parentMD protoreflect.MessageDescriptor, rules map[string]TypeRule) (TFType, error) {
 	// Handle map fields first (before IsList, since maps are also "repeated" in proto).
 	if fd.IsMap() {
-		return mapFieldToTFType(fd, rules, apiDocsJSON)
+		return mapFieldToTFType(fd, rules)
 	}
 
 	// Handle repeated (list) fields.
 	if fd.IsList() {
-		elemType, err := scalarOrMsgToTFType(fd, parentMD, rules, apiDocsJSON)
+		elemType, err := scalarOrMsgToTFType(fd, parentMD, rules)
 		if err != nil {
 			return nil, err
 		}
@@ -94,16 +121,16 @@ func fieldToTFType(fd protoreflect.FieldDescriptor, parentMD protoreflect.Messag
 	}
 
 	// Singular field.
-	return scalarOrMsgToTFType(fd, parentMD, rules, apiDocsJSON)
+	return scalarOrMsgToTFType(fd, parentMD, rules)
 }
 
 // mapFieldToTFType converts a proto map<K, V> field to TFMap. The key type is
 // always string in OpenMCF protos. The value type is determined by consulting
 // type rules (a map<string, StringValueOrRef> becomes map(string)).
-func mapFieldToTFType(fd protoreflect.FieldDescriptor, rules map[string]TypeRule, apiDocsJSON *gendoc.Template) (TFType, error) {
+func mapFieldToTFType(fd protoreflect.FieldDescriptor, rules map[string]TypeRule) (TFType, error) {
 	valDesc := fd.MapValue()
 
-	valType, err := mapValueToTFType(valDesc, rules, apiDocsJSON)
+	valType, err := mapValueToTFType(valDesc, rules)
 	if err != nil {
 		return nil, err
 	}
@@ -115,7 +142,7 @@ func mapFieldToTFType(fd protoreflect.FieldDescriptor, rules map[string]TypeRule
 }
 
 // mapValueToTFType resolves the TFType for a map value descriptor.
-func mapValueToTFType(valDesc protoreflect.FieldDescriptor, rules map[string]TypeRule, apiDocsJSON *gendoc.Template) (TFType, error) {
+func mapValueToTFType(valDesc protoreflect.FieldDescriptor, rules map[string]TypeRule) (TFType, error) {
 	switch valDesc.Kind() {
 	case protoreflect.StringKind:
 		return TFPrimitive("string"), nil
@@ -143,7 +170,7 @@ func mapValueToTFType(valDesc protoreflect.FieldDescriptor, rules map[string]Typ
 		if isWellKnownJSONType(fullName) {
 			return TFPrimitive("any"), nil
 		}
-		return msgDescToTFObject(valDesc.Message(), valDesc, rules, apiDocsJSON)
+		return msgDescToTFObject(valDesc.Message(), rules)
 	default:
 		return TFPrimitive("string"), nil
 	}
@@ -151,7 +178,7 @@ func mapValueToTFType(valDesc protoreflect.FieldDescriptor, rules map[string]Typ
 
 // scalarOrMsgToTFType converts a single (non-map, non-list-wrapper) field to
 // a TFType. For message-kind fields, consults type rules.
-func scalarOrMsgToTFType(fd protoreflect.FieldDescriptor, parentMD protoreflect.MessageDescriptor, rules map[string]TypeRule, apiDocsJSON *gendoc.Template) (TFType, error) {
+func scalarOrMsgToTFType(fd protoreflect.FieldDescriptor, parentMD protoreflect.MessageDescriptor, rules map[string]TypeRule) (TFType, error) {
 	switch fd.Kind() {
 	case protoreflect.StringKind:
 		return TFPrimitive("string"), nil
@@ -184,7 +211,7 @@ func scalarOrMsgToTFType(fd protoreflect.FieldDescriptor, parentMD protoreflect.
 			return TFPrimitive("any"), nil
 		}
 
-		return msgDescToTFObject(fd.Message(), fd, rules, apiDocsJSON)
+		return msgDescToTFObject(fd.Message(), rules)
 	default:
 		return nil, fmt.Errorf("unsupported field kind: %v", fd.Kind())
 	}
@@ -192,13 +219,13 @@ func scalarOrMsgToTFType(fd protoreflect.FieldDescriptor, parentMD protoreflect.
 
 // msgDescToTFObject recursively converts a proto message descriptor to a
 // TFObject, respecting type rules and skipping the "version" field inside
-// metadata messages.
-func msgDescToTFObject(md protoreflect.MessageDescriptor, fd protoreflect.FieldDescriptor, rules map[string]TypeRule, apiDocsJSON *gendoc.Template) (TFType, error) {
+// metadata messages. Each attribute is marked optional unless the proto field is
+// required (see isRequiredField).
+func msgDescToTFObject(md protoreflect.MessageDescriptor, rules map[string]TypeRule) (TFType, error) {
 	fields := md.Fields()
 	obj := TFObject{}
 
 	shouldSkipVersion := strings.HasSuffix(strings.ToLower(string(md.Name())), "metadata")
-	parentFullName := string(md.FullName())
 
 	for i := 0; i < fields.Len(); i++ {
 		f := fields.Get(i)
@@ -208,7 +235,7 @@ func msgDescToTFObject(md protoreflect.MessageDescriptor, fd protoreflect.FieldD
 			continue
 		}
 
-		valType, err := fieldToTFType(f, md, rules, apiDocsJSON)
+		valType, err := fieldToTFType(f, md, rules)
 		if err != nil {
 			return nil, err
 		}
@@ -216,64 +243,69 @@ func msgDescToTFObject(md protoreflect.MessageDescriptor, fd protoreflect.FieldD
 			continue
 		}
 
-		desc := resolveFieldDescription(apiDocsJSON, parentFullName, fieldName, f)
 		obj.Fields = append(obj.Fields, TFField{
-			Name:        caseconverter.ToSnakeCase(fieldName),
-			Description: desc,
-			Type:        valType,
+			Name:     caseconverter.ToSnakeCase(fieldName),
+			Type:     valType,
+			Optional: !isRequiredField(f),
 		})
 	}
 
 	return obj, nil
 }
 
-// resolveFieldDescription finds the best description for a proto field,
-// checking API docs first, then falling back to message-level docs, then to
-// hardcoded defaults.
-func resolveFieldDescription(apiDocsJSON *gendoc.Template, parentFullName, fieldName string, fd protoreflect.FieldDescriptor) string {
-	desc := findFieldDesc(apiDocsJSON, parentFullName, fieldName)
-	if desc == "" && fd.Kind() == protoreflect.MessageKind && !fd.IsMap() {
-		desc = findMsgDesc(apiDocsJSON, string(fd.Message().FullName()))
+// isRequiredField reports whether a proto field must always be present in the
+// rendered tfvars, and therefore must stay a bare (non-optional) attribute. The
+// source of truth is buf.validate: a field is required if it is explicitly
+// (buf.validate.field).required, or if it carries a presence-implying constraint
+// (string min_len >= 1, repeated min_items >= 1). Everything else is optional,
+// because the renderer prunes unset/zero fields and a bare attribute would then
+// fail object validation.
+func isRequiredField(fd protoreflect.FieldDescriptor) bool {
+	opts := fd.Options()
+	if opts == nil {
+		return false
 	}
-	if desc == "" {
-		desc = defaultFieldDescriptions[fieldName]
+	if !proto.HasExtension(opts, validate.E_Field) {
+		return false
 	}
-	if desc == "" {
-		desc = fmt.Sprintf("Description for %s", fieldName)
+	rules, ok := proto.GetExtension(opts, validate.E_Field).(*validate.FieldRules)
+	if !ok || rules == nil {
+		return false
 	}
-	return desc
+	if rules.GetRequired() {
+		return true
+	}
+	if s := rules.GetString(); s != nil && s.GetMinLen() >= 1 {
+		return true
+	}
+	if r := rules.GetRepeated(); r != nil && r.GetMinItems() >= 1 {
+		return true
+	}
+	return false
 }
 
-func findMsgDesc(apiDocsJSON *gendoc.Template, fullName string) string {
-	if apiDocsJSON == nil {
-		return ""
-	}
-	for _, f := range apiDocsJSON.Files {
-		for _, m := range f.Messages {
-			if m.FullName == fullName {
-				return strings.TrimSpace(m.Description)
-			}
-		}
-	}
-	return ""
+// isCloudResourceMetadataField reports whether a field is the shared resource
+// metadata envelope, which is emitted from the canonical block.
+func isCloudResourceMetadataField(fd protoreflect.FieldDescriptor) bool {
+	return fd.Kind() == protoreflect.MessageKind &&
+		!fd.IsMap() && !fd.IsList() &&
+		string(fd.Message().FullName()) == cloudResourceMetadataFullName
 }
 
-func findFieldDesc(apiDocsJSON *gendoc.Template, msgFullName, fieldName string) string {
-	if apiDocsJSON == nil {
-		return ""
-	}
-	for _, f := range apiDocsJSON.Files {
-		for _, m := range f.Messages {
-			if m.FullName == msgFullName {
-				for _, fld := range m.Fields {
-					if fld.Name == fieldName {
-						return strings.TrimSpace(fld.Description)
-					}
-				}
-			}
-		}
-	}
-	return ""
+// canonicalMetadataObject returns the fixed Terraform shape of the shared
+// resource metadata envelope: name is always present (required); the rest are
+// optional with their zero-value defaults so a pruned tfvars validates. This
+// mirrors the contract every module relies on and is identical across kinds.
+func canonicalMetadataObject() TFObject {
+	return TFObject{Fields: []TFField{
+		{Name: "name", Type: TFPrimitive("string")},
+		{Name: "id", Type: TFPrimitive("string"), Optional: true},
+		{Name: "org", Type: TFPrimitive("string"), Optional: true},
+		{Name: "env", Type: TFPrimitive("string"), Optional: true},
+		{Name: "labels", Type: TFMap{Value: TFPrimitive("string")}, Optional: true},
+		{Name: "annotations", Type: TFMap{Value: TFPrimitive("string")}, Optional: true},
+		{Name: "tags", Type: TFList{Elem: TFPrimitive("string")}, Optional: true},
+	}}
 }
 
 // isWellKnownJSONType returns true for protobuf well-known types representing

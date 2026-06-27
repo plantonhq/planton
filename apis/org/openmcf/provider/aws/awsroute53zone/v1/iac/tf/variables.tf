@@ -1,75 +1,56 @@
 variable "metadata" {
-  description = "metadata for the resource\nid format \"<id-prefix>-<env-id>-<normalized-resource-name>\""
+  description = "Cloud resource metadata"
   type = object({
-
-    # name of the resource
     name = string
-
-    # id of the resource
-    id = string
-
-    # id of the organization to which the api-resource belongs to
-    org = string
-
-    # environment to which the resource belongs to
-    env = string
-
-    # labels for the resource
-    labels = object({
-
-      # Description for key
-      key = string
-
-      # Description for value
-      value = string
-    })
-
-    # annotations for the resource
-    annotations = object({
-
-      # Description for key
-      key = string
-
-      # Description for value
-      value = string
-    })
-
-    # tags for the resource
-    tags = list(string)
+    id = optional(string, "")
+    org = optional(string, "")
+    env = optional(string, "")
+    labels = optional(map(string), {})
+    annotations = optional(map(string), {})
+    tags = optional(list(string), [])
   })
 }
 
 variable "spec" {
-  description = "aws-route53-zone spec"
+  description = "AwsRoute53Zone specification"
   type = object({
-
-    # The AWS region where the resource will be created.
     region = string
-
-    # The DNS records that are added to the zone.
-    # Each record represents a DNS resource record, such as A, AAAA, CNAME, MX, TXT, etc.
-    # These records define how your domain or subdomains are routed to your resources.
-    records = list(object({
-
-      # The DNS record type.
-      # This specifies the type of DNS record, such as A, AAAA, CNAME, MX, TXT, etc.
-      # The record type determines how the DNS query is processed and what kind of data is returned.
+    is_private = optional(bool, false)
+    vpc_associations = optional(list(object({
+      vpc_id = string
+      vpc_region = string
+    })), [])
+    enable_query_logging = optional(bool, false)
+    query_log_group_name = optional(string, "")
+    enable_dnssec = optional(bool, false)
+    records = optional(list(object({
       record_type = string
-
-      # The name of the DNS record, e.g., "example.com." or "dev.example.com.".
-      # This is the domain name or subdomain for which the DNS record applies.
-      # The value should always end with a dot, following DNS standards to denote a fully qualified domain name.
       name = string
-
-      # The values for the DNS record.
-      # This field contains the data associated with the DNS record type.
-      # For example, for an A record, it would be the IP address(es) the domain resolves to.
-      # If the record type is CNAME, each value in the list should end with a dot to denote a fully qualified domain name.
-      values = list(string)
-
-      # The Time To Live (TTL) for the DNS record, in seconds.
-      # TTL specifies how long DNS resolvers should cache the DNS record before querying again.
-      ttl_seconds = number
-    }))
+      ttl_seconds = optional(number, 0)
+      values = optional(list(string), [])
+      alias_target = optional(object({
+        dns_name = string
+        hosted_zone_id = string
+        evaluate_target_health = optional(bool, false)
+      }))
+      routing_policy = optional(object({
+        weighted = optional(object({
+          weight = optional(number, 0)
+        }))
+        latency = optional(object({
+          region = string
+        }))
+        failover = optional(object({
+          type = string
+        }))
+        geolocation = optional(object({
+          continent = optional(string, "")
+          country = optional(string, "")
+          subdivision = optional(string, "")
+        }))
+      }))
+      health_check_id = optional(string, "")
+      set_identifier = optional(string, "")
+    })), [])
   })
 }

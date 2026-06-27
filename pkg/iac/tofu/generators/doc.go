@@ -41,6 +41,35 @@
 // (it hardcodes openmcf type rules and reads kind metadata via crkreflect); it
 // is not a standalone proto->HCL library.
 //
+// # The optional() contract (renderer and module must agree)
+//
+// The tfvars renderer (ProtoToTFVars) marshals with protojson
+// EmitUnpopulated=false, so any proto field left at its zero value is ABSENT
+// from the emitted terraform.tfvars (it is "null-pruned"). A Terraform object
+// type rejects a value that omits a non-optional attribute. Therefore every
+// attribute that the renderer may prune MUST be declared optional() in
+// variables.tf, with a default equal to the proto zero value so the pruned field
+// reconstructs to the same zero. variables.tf generation enforces this by
+// construction:
+//
+//   - An attribute is REQUIRED (left bare) only when the proto field carries a
+//     presence guarantee: (buf.validate.field).required = true, or a
+//     presence-implying constraint such as string min_len >= 1 or repeated
+//     min_items >= 1. See isRequiredField.
+//   - Every other attribute is optional(<type>, <zero>): string -> "", number ->
+//     0, bool -> false, map -> {}, list -> []. Nested objects and `any` default
+//     to null (consumers null-guard with try()/!= null).
+//   - The shared resource envelope (CloudResourceMetadata) is emitted from one
+//     canonical block (name required; id/org/env/labels/annotations/tags
+//     optional), independent of the constraint-free envelope proto.
+//
+// Output is deterministic and offline -- it depends only on the compiled proto
+// descriptor, never on a network call -- so the committed variables.tf can be
+// regenerated and diffed. TestVariablesTFDrift guards this: for every migrated
+// kind, the committed variables.tf must equal the generator output, making the
+// generator the single source of truth and preventing any regression to a
+// hand-edited or legacy (all-required) schema.
+//
 // # Extensibility
 //
 // To handle a new OpenMCF wrapper type, add one entry to DefaultRules() in

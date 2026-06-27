@@ -20,7 +20,7 @@ resource "aws_ecs_cluster" "this" {
             cloud_watch_encryption_enabled = try(local.exec_log_config.cloud_watch_encryption_enabled, false)
             s3_bucket_name                 = try(local.exec_log_config.s3_bucket_name, null)
             s3_key_prefix                  = try(local.exec_log_config.s3_key_prefix, null)
-            s3_encryption_enabled          = try(local.exec_log_config.s3_encryption_enabled, false)
+            s3_bucket_encryption_enabled   = try(local.exec_log_config.s3_encryption_enabled, false)
           }
         }
       }

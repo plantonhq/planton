@@ -1,9 +1,8 @@
 locals {
-  # Safe handling of Route53 hosted zone ID with fallback
-  safe_route53_zone_id = coalesce(
-    try(var.spec.route53_hosted_zone_id.value, null),
-    try(var.spec.route53_hosted_zone_id.value_from.name, null)
-  )
+  # Route53 hosted zone ID. The generator flattens StringValueOrRef to its
+  # resolved string (the orchestrator resolves any value_from before the module
+  # runs), so the value is consumed directly.
+  safe_route53_zone_id = var.spec.route53_hosted_zone_id
 
   # Boolean for DNS validation method
   is_dns_validation = upper(try(var.spec.validation_method, "DNS")) == "DNS"

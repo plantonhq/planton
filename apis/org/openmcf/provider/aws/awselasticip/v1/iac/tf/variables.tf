@@ -1,9 +1,22 @@
 variable "metadata" {
-  description = "Resource metadata (name, org, env, id, labels)."
-  type        = any
+  description = "Cloud resource metadata"
+  type = object({
+    name = string
+    id = optional(string, "")
+    org = optional(string, "")
+    env = optional(string, "")
+    labels = optional(map(string), {})
+    annotations = optional(map(string), {})
+    tags = optional(list(string), [])
+  })
 }
 
 variable "spec" {
-  description = "AwsElasticIpSpec — desired configuration for the Elastic IP."
-  type        = any
+  description = "AwsElasticIp specification"
+  type = object({
+    region = string
+    public_ipv4_pool = optional(string, "")
+    address = optional(string, "")
+    network_border_group = optional(string, "")
+  })
 }

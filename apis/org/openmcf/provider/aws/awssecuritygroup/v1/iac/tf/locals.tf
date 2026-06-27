@@ -45,6 +45,6 @@ locals {
   description = var.spec.description
 
   # VPC ID
-  vpc_id = var.spec.vpc_id.value
+  vpc_id = var.spec.vpc_id
 }
 
