@@ -1,9 +1,9 @@
 package tofumodule
 
 import (
+	"context"
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
 
 	"github.com/pkg/errors"
@@ -15,7 +15,12 @@ import (
 // RunOperation runs an HCL-based IaC command (tofu or terraform), optionally adding -json flag
 // and streaming output lines. It recovers from any panic in the stdout-reading goroutine.
 // The binaryName parameter specifies which CLI binary to use ("tofu" or "terraform").
+//
+// ctx controls the lifetime of the child process: cancelling it terminates the entire
+// tofu process group (see newReapableCommand), so a cancelled/superseded stack job never
+// orphans a tofu that would keep holding the state lock.
 func RunOperation(
+	ctx context.Context,
 	binaryName string,
 	modulePath string,
 	terraformOperation terraform.TerraformOperationType,
@@ -54,7 +59,7 @@ func RunOperation(
 		args = append(args, "-json")
 	}
 
-	cmd := exec.Command(binaryName, args...)
+	cmd := newReapableCommand(ctx, binaryName, args...)
 	cmd.Dir = modulePath
 	// https://stackoverflow.com/a/41133244
 	cmd.Env = os.Environ()

@@ -160,6 +160,7 @@ func initHandler(cmd *cobra.Command, args []string) {
 	cliprint.PrintHandoff("OpenTofu")
 
 	err = tofumodule.Init(
+		cmd.Context(),
 		"tofu",
 		tofuModulePath,
 		manifestObject,

@@ -1,8 +1,8 @@
 package tofumodule
 
 import (
+	"context"
 	"os"
-	"os/exec"
 	"path/filepath"
 
 	"github.com/pkg/errors"
@@ -14,7 +14,11 @@ import (
 
 // Init initializes an HCL module (tofu or terraform) with optional JSON streaming.
 // The binaryName parameter specifies which CLI binary to use ("tofu" or "terraform").
+//
+// ctx controls the lifetime of the child process (see newReapableCommand): cancelling it
+// terminates the whole tofu process group so a cancelled init is never orphaned.
 func Init(
+	ctx context.Context,
 	binaryName string,
 	modulePath string,
 	manifestObject proto.Message,
@@ -49,7 +53,7 @@ func Init(
 		cmdArgs = append(cmdArgs, "--backend-config", backendConfig)
 	}
 
-	cmd := exec.Command(binaryName, cmdArgs...)
+	cmd := newReapableCommand(ctx, binaryName, cmdArgs...)
 	cmd.Dir = modulePath
 	// https://stackoverflow.com/a/41133244
 	cmd.Env = os.Environ()

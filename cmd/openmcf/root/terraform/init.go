@@ -148,6 +148,7 @@ func initHandler(cmd *cobra.Command, args []string) {
 	cliprint.PrintHandoff("Terraform")
 
 	err = tofumodule.Init(
+		cmd.Context(),
 		"terraform",
 		modulePath,
 		manifestObject,

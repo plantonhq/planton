@@ -281,6 +281,7 @@ func initWithTofu(cmd *cobra.Command, moduleDir, targetManifestPath string, valu
 	cliprint.PrintHandoff("OpenTofu")
 
 	err = tofumodule.Init(
+		cmd.Context(),
 		"tofu",
 		tofuModulePath,
 		manifestObject,
@@ -365,6 +366,7 @@ func initWithTerraform(cmd *cobra.Command, moduleDir, targetManifestPath string,
 	cliprint.PrintHandoff("Terraform")
 
 	err = tofumodule.Init(
+		cmd.Context(),
 		"terraform",
 		modulePath,
 		manifestObject,

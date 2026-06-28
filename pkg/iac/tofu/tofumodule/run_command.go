@@ -1,6 +1,7 @@
 package tofumodule
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -114,14 +115,16 @@ func RunCommand(
 		return errors.Wrap(err, "failed to get provider config env vars")
 	}
 
-	// Initialize with backend configuration before any operation
-	err = Init(binaryName, modulePath, manifestObject, backendType, backendConfigArgs,
+	// Initialize with backend configuration before any operation.
+	// CLI usage has no cancellation context to thread, so use context.Background();
+	// the runner passes the real activity ctx through its own RunOperation/Init calls.
+	err = Init(context.Background(), binaryName, modulePath, manifestObject, backendType, backendConfigArgs,
 		providerConfigEnvVars, isReconfigure, false, nil)
 	if err != nil {
 		return errors.Wrapf(err, "failed to initialize %s module", binaryName)
 	}
 
-	err = RunOperation(binaryName, modulePath, terraformOperation,
+	err = RunOperation(context.Background(), binaryName, modulePath, terraformOperation,
 		isAutoApprove, isDestroyPlan, manifestObject,
 		providerConfigEnvVars, false, nil)
 	if err != nil {
