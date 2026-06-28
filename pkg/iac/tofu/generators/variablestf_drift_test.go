@@ -32,10 +32,7 @@ var migratedKinds = []string{
 	"AwsSecurityGroup",
 	"AwsAlb",
 	"AwsCertManagerCert",
-	// NOTE: AwsEcsService is intentionally NOT migrated yet. Beyond the wrapper
-	// flattening, its module carries a pre-existing defect (a dynamic
-	// lifecycle.ignore_changes, which Terraform forbids) that needs a separate
-	// behavior decision. Tracked as a follow-up batch.
+	"AwsEcsService",
 	// AWS networking primitives already on the modern schema, brought under the
 	// guard so they cannot regress.
 	"AwsVpc",

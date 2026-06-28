@@ -109,9 +109,14 @@ resource "aws_ecs_service" "this" {
   # Health check grace period (only when ALB is enabled)
   health_check_grace_period_seconds = local.alb_enabled && local.container_port != null ? local.health_check_grace_period_seconds : null
 
-  # Ignore changes to desired_count when autoscaling is enabled
+  # desired_count is runtime state: when autoscaling is enabled the appautoscaling
+  # target owns it, and operators may scale out of band. Terraform sets the initial
+  # count from spec.container.replicas and then leaves it alone. ignore_changes must
+  # be a static literal list (OpenTofu forbids a conditional expression here), so this
+  # always ignores -- matching the house convention for autoscaling-managed counts
+  # (e.g. gcp-gke-node-pool's node_count).
   lifecycle {
-    ignore_changes = local.autoscaling_enabled ? [desired_count] : []
+    ignore_changes = [desired_count]
   }
 
   depends_on = [aws_ecs_task_definition.this]
