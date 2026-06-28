@@ -51,13 +51,39 @@ resource "aws_lb_listener" "https" {
   }
 }
 
-# Optional Route53 records for each hostname when DNS is enabled
+# Plain HTTP listener when SSL is NOT enabled. Without this an HTTP-only ALB has no
+# listener at all, so downstream services (e.g. an ECS service) have nothing to attach
+# their host/path routing rules to. The default action mirrors the https listener's
+# fixed-response 200; services add forwarding rules on top of it.
+resource "aws_lb_listener" "http" {
+  count = local.is_ssl_enabled ? 0 : 1
+
+  load_balancer_arn = aws_lb.this.arn
+  port              = 80
+  protocol          = "HTTP"
+
+  default_action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "OK"
+      status_code  = "200"
+    }
+  }
+}
+
+# Optional Route53 records for each hostname when DNS is enabled.
+# allow_overwrite adopts an existing alias record (e.g. left by a prior partial apply,
+# or one already pointing at this ALB) instead of failing the apply on a CREATE
+# collision -- this alias record is owned by the ALB module.
 resource "aws_route53_record" "this" {
   for_each = local.create_dns_records ? toset(var.spec.dns.hostnames) : []
 
-  zone_id = local.route53_zone_id
-  name    = each.value
-  type    = "A"
+  allow_overwrite = true
+  zone_id         = local.route53_zone_id
+  name            = each.value
+  type            = "A"
 
   alias {
     name                   = aws_lb.this.dns_name

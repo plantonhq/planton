@@ -108,12 +108,16 @@ data "aws_lb" "this_vpc" {
 # Route53 DNS Records (optional)
 # ──────────────────────────────────────────────────────────────────────────────
 
+# allow_overwrite adopts an existing alias record (e.g. left by a prior partial apply,
+# or one already pointing at this NLB) instead of failing the apply on a CREATE
+# collision -- this alias record is owned by the NLB module.
 resource "aws_route53_record" "this" {
   for_each = local.dns_records
 
-  zone_id = var.spec.dns.route53_zone_id
-  name    = each.value
-  type    = "A"
+  allow_overwrite = true
+  zone_id         = var.spec.dns.route53_zone_id
+  name            = each.value
+  type            = "A"
 
   alias {
     name                   = aws_lb.this.dns_name

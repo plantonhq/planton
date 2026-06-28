@@ -15,6 +15,24 @@ data "aws_lb" "selected" {
   arn   = local.safe_alb_arn
 }
 
+# Resolve the VPC from the first service subnet. The ALB target group needs a VPC id
+# but the spec only carries subnet ids, so we derive it -- matching the Pulumi module's
+# ec2.LookupSubnet(firstSubnet).VpcId.
+data "aws_subnet" "first" {
+  count = local.alb_enabled && local.container_port != null ? 1 : 0
+  id    = local.safe_subnet_ids[0]
+}
+
+# Resolve the real ALB listener ARN by load balancer + port. A listener ARN cannot be
+# synthesized from the load balancer ARN, so we look it up -- matching the Pulumi
+# module's lb.LookupListener(LoadBalancerArn, Port). The ALB module creates the listener
+# on this port (443 when SSL is on, 80 otherwise) before this service's node runs.
+data "aws_lb_listener" "selected" {
+  count             = local.alb_enabled && local.container_port != null ? 1 : 0
+  load_balancer_arn = local.safe_alb_arn
+  port              = local.alb_listener_port
+}
+
 # Current AWS region data source
 data "aws_region" "current" {}
 
@@ -123,13 +141,17 @@ resource "aws_ecs_service" "this" {
   tags       = local.tags
 }
 
-# ALB Target Group (only if ALB is enabled and container port is specified)
+# ALB Target Group (only if ALB is enabled and container port is specified).
+# Fargate tasks use awsvpc networking, so they register with the load balancer by IP
+# (target_type = "ip"), which also requires the VPC id -- derived from the service's
+# first subnet above. Matches the Pulumi module (TargetType "ip", VpcId from the subnet).
 resource "aws_lb_target_group" "this" {
-  count    = local.alb_enabled && local.container_port != null ? 1 : 0
-  name     = substr("tg-${local.resource_name}", 0, 32)
-  port     = local.container_port
-  protocol = "HTTP"
-  vpc_id   = null
+  count       = local.alb_enabled && local.container_port != null ? 1 : 0
+  name        = substr("tg-${local.resource_name}", 0, 32)
+  port        = local.container_port
+  protocol    = "HTTP"
+  target_type = "ip"
+  vpc_id      = data.aws_subnet.first[0].vpc_id
 
   # Health check configuration
   health_check {
@@ -149,7 +171,7 @@ resource "aws_lb_target_group" "this" {
 # ALB Listener Rule (only if ALB is enabled and container port is specified)
 resource "aws_lb_listener_rule" "this" {
   count        = local.alb_enabled && local.container_port != null ? 1 : 0
-  listener_arn = "${local.safe_alb_arn}:listener/${local.alb_listener_port}"
+  listener_arn = data.aws_lb_listener.selected[0].arn
   priority     = local.alb_listener_priority
 
   action {

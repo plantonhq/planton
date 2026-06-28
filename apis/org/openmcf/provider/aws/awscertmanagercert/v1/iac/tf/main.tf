@@ -17,7 +17,12 @@ resource "aws_acm_certificate" "this" {
   }
 }
 
-# DNS validation records (only when DNS validation is selected)
+# DNS validation records (only when DNS validation is selected).
+# A domain and its wildcard SAN (e.g. app.example.com and *.app.example.com) share
+# the SAME ACM validation CNAME, so this for_each emits two entries with an identical
+# record name. allow_overwrite makes each an UPSERT instead of a CREATE, so the
+# duplicate is idempotent and a record left behind by a prior partial apply is adopted
+# rather than colliding ("InvalidChangeBatch ... already exists").
 resource "aws_route53_record" "validation" {
   for_each = local.is_dns_validation ? {
     for dvo in aws_acm_certificate.this.domain_validation_options : dvo.domain_name => {
@@ -28,11 +33,12 @@ resource "aws_route53_record" "validation" {
     }
   } : {}
 
-  zone_id = each.value.zone_id
-  name    = each.value.name
-  type    = each.value.type
-  ttl     = 60
-  records = [each.value.value]
+  allow_overwrite = true
+  zone_id         = each.value.zone_id
+  name            = each.value.name
+  type            = each.value.type
+  ttl             = 60
+  records         = [each.value.value]
 
   depends_on = [aws_acm_certificate.this]
 }

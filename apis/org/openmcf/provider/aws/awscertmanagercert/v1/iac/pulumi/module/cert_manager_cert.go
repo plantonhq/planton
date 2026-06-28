@@ -42,7 +42,10 @@ func certManagerCert(ctx *pulumi.Context, locals *Locals, provider *aws.Provider
 			distinct[*dvo.ResourceRecordName] = true
 
 			record, createErr := route53.NewRecord(ctx, fmt.Sprintf("%s-cname-%d", meta.Name, i), &route53.RecordArgs{
-				Name: pulumi.String(*dvo.ResourceRecordName),
+				// UPSERT instead of CREATE so a validation record left by a prior
+				// partial apply (or shared across certs) is adopted, not collided with.
+				AllowOverwrite: pulumi.Bool(true),
+				Name:           pulumi.String(*dvo.ResourceRecordName),
 				Records: pulumi.StringArray{
 					pulumi.String(*dvo.ResourceRecordValue),
 				},

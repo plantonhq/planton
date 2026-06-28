@@ -32,9 +32,12 @@ func dns(
 		recordName := fmt.Sprintf("%s-dns-%d", locals.Nlb.Metadata.Name, i)
 
 		_, err := route53.NewRecord(ctx, recordName, &route53.RecordArgs{
-			Name:   pulumi.String(hostname),
-			Type:   pulumi.String("A"),
-			ZoneId: pulumi.String(dnsSpec.Route53ZoneId.GetValue()),
+			// UPSERT instead of CREATE so an alias record left by a prior partial
+			// apply (or already pointing at this NLB) is adopted, not collided with.
+			AllowOverwrite: pulumi.Bool(true),
+			Name:           pulumi.String(hostname),
+			Type:           pulumi.String("A"),
+			ZoneId:         pulumi.String(dnsSpec.Route53ZoneId.GetValue()),
 			Aliases: route53.RecordAliasArray{
 				route53.RecordAliasArgs{
 					Name:                 nlbResource.DnsName,
