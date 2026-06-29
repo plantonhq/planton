@@ -4,7 +4,10 @@ go_library(
     name = "tofumodule",
     srcs = [
         "module_directory.go",
+        "procattr_other.go",
+        "procattr_unix.go",
         "providers.go",
+        "reapable_command.go",
         "run_command.go",
         "run_operation.go",
         "stream_output.go",
@@ -37,6 +40,9 @@ go_library(
 
 go_test(
     name = "tofumodule_test",
-    srcs = ["stream_output_test.go"],
+    srcs = [
+        "reapable_command_test.go",
+        "stream_output_test.go",
+    ],
     embed = [":tofumodule"],
 )
