@@ -1,0 +1,14 @@
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareQueue
+metadata:
+  name: ingestion-queue
+spec:
+  accountId: <cloudflare-account-id>
+  queueName: ingestion-queue
+  consumer:
+    type: http_pull
+    settings:
+      batchSize: 50
+      maxRetries: 3
+      retryDelay: 30
+      visibilityTimeoutMs: 60000

@@ -8,10 +8,14 @@ provider: "cloudflare"
 icon: "package"
 order: 200
 presets:
-  - slug: "01-free-plan"
+  - slug: "01-basic-zone"
     rank: "01"
-    title: "Free Plan Zone"
-    excerpt: "Creates a Cloudflare DNS zone with no inline records, using the free plan. Ideal when you want to manage DNS records separately via CloudflareDnsRecord resources. Requires zone_name and account_id."
+    title: "Basic Zone"
+    excerpt: "Creates a Cloudflare DNS zone with no inline records. Ideal when you want to manage DNS records separately via CloudflareDnsRecord resources. Requires only `zoneName` and `accountId`; the zone..."
+  - slug: "02-dnssec-signed"
+    rank: "02"
+    title: "DNSSEC-Signed Zone"
+    excerpt: "Creates a zone with DNSSEC enabled. Cloudflare signs the zone, and the DS record material (digest, key tag, algorithm, and the full DS record) is published as stack outputs for you to enter at your..."
 ---
 
 # DNS Zone Presets

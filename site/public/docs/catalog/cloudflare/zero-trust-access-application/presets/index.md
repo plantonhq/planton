@@ -8,14 +8,14 @@ provider: "cloudflare"
 icon: "package"
 order: 200
 presets:
-  - slug: "01-company-wide-email"
+  - slug: "01-self-hosted-web-app"
     rank: "01"
-    title: "Company-Wide Email Domain Access"
-    excerpt: "Allows access to a protected hostname for anyone with an email from your company domain (e.g., @company.com). Simple Zero Trust policy for internal tools when the entire organization should have..."
-  - slug: "02-team-google-groups"
+    title: "Preset: Self-hosted web application"
+    excerpt: "A self-hosted web app behind Cloudflare Access, protecting `dashboard.example.com` with a referenced Access policy and a 24-hour session."
+  - slug: "02-saas-oidc-app"
     rank: "02"
-    title: "Team Access with Google Groups + MFA"
-    excerpt: "Restricts access to a hostname to specific Google Workspace groups and requires multi-factor authentication. Use for sensitive internal tools where only certain teams should have access and MFA is..."
+    title: "Preset: SaaS application (OIDC)"
+    excerpt: "Federate a SaaS application into Cloudflare Access over OIDC. Cloudflare acts as the identity provider; it issues the OAuth `client_id` / `client_secret` (exported as stack outputs) that you paste..."
 ---
 
 # Zero Trust Access Application Presets

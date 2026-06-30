@@ -8,13 +8,13 @@ componentName: "cloudflarednsrecord"
 
 # Cloudflare DNS Record
 
-Deploys a single DNS record into an existing Cloudflare DNS zone. The component supports A, AAAA, CNAME, MX, TXT, SRV, NS, and CAA record types, with optional Cloudflare proxy (orange-cloud) mode for A, AAAA, and CNAME records.
+Deploys a single DNS record into an existing Cloudflare DNS zone. The component supports all 21 Cloudflare record types — simple types whose value is a `content` string (A, AAAA, CNAME, MX, NS, PTR, TXT, OPENPGPKEY) and structured types configured through a typed `data` block (CAA, CERT, DNSKEY, DS, HTTPS, LOC, NAPTR, SMIMEA, SRV, SSHFP, SVCB, TLSA, URI) — with optional Cloudflare proxy (orange-cloud) mode for A, AAAA, and CNAME records.
 
 ## What Gets Created
 
 When you deploy a CloudflareDnsRecord resource, Planton provisions:
 
-- **DNS Record** — a `cloudflare_dns_record` resource in the specified zone, configured with the given type, value, TTL, proxy setting, and optional priority and comment
+- **DNS Record** — a `cloudflare_dns_record` resource in the specified zone, configured with the given type, value (`content` or a `data` block), TTL, proxy setting, tags, settings, and optional priority and comment
 
 ## Prerequisites
 
@@ -31,17 +31,12 @@ apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareDnsRecord
 metadata:
   name: my-record
-  labels:
-    planton.dev/provisioner: pulumi
-    pulumi.planton.dev/organization: my-org
-    pulumi.planton.dev/project: my-project
-    pulumi.planton.dev/stack.name: dev.CloudflareDnsRecord.my-record
 spec:
   zoneId:
     value: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
   name: www
   type: A
-  value: "203.0.113.50"
+  content: "203.0.113.50"
   proxied: true
 ```
 
@@ -59,33 +54,33 @@ This creates a proxied A record for `www` in the specified zone, routing traffic
 
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
-| `zoneId` | `StringValueOrRef` | The Cloudflare Zone ID where this DNS record will be created. Accepts a literal `value` string or a `valueFrom` reference to a CloudflareDnsZone resource. | Required |
-| `name` | `string` | The name of the DNS record (e.g., `www`, `api`, `@` for zone apex). | Required, non-empty |
-| `type` | `enum` | The DNS record type. One of: `A`, `AAAA`, `CNAME`, `MX`, `TXT`, `SRV`, `NS`, `CAA`. | Required, must be a defined value |
-| `value` | `string` | The record value. For A records: an IPv4 address. For AAAA: an IPv6 address. For CNAME: a target hostname. For MX: a mail server hostname. For TXT: a text string. | Required, non-empty |
+| `zoneId` | `StringValueOrRef` | The Cloudflare Zone ID. Accepts a literal `value` or a `valueFrom` reference to a CloudflareDnsZone. | Required |
+| `name` | `string` | The record name (e.g., `www`, `api`, `@` for zone apex). | Required, non-empty |
+| `type` | `enum` | The DNS record type — one of the 21 supported types. | Required, defined value |
+
+Exactly one of `content` or a `data` block is required and must match the `type`.
+
+### Value Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `content` | `string` | Presentation-format value for simple types (A, AAAA, CNAME, MX, NS, PTR, TXT, OPENPGPKEY). |
+| `data` | `oneof` | Typed block for structured types: `caa`, `cert`, `dnskey`, `ds`, `https`, `loc`, `naptr`, `smimea`, `srv`, `sshfp`, `svcb`, `tlsa`, `uri`. |
 
 ### Optional Fields
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
-| `proxied` | `bool` | `false` | Route traffic through Cloudflare's CDN/WAF (orange-cloud). Only applicable to `A`, `AAAA`, and `CNAME` records. The spec rejects `proxied: true` for other record types. |
-| `ttl` | `int32` | `1` (auto) | Time to live in seconds. `1` for automatic TTL (recommended for proxied records), or `60`–`86400`. A value of `0` is treated as `1` (automatic). |
-| `priority` | `int32` | `0` | Record priority. Required for `MX` records, optional for `SRV`. Range: 0–65535. |
-| `comment` | `string` | `""` | A note describing the record's purpose. Maximum 100 characters. |
+| `proxied` | `bool` | `false` | Route traffic through Cloudflare's CDN/WAF (orange-cloud). Only valid for `A`, `AAAA`, `CNAME`. |
+| `ttl` | `int32` | `1` (auto) | Time to live in seconds. `0`/`1` for automatic, or `30`–`86400`. |
+| `priority` | `int32` | `0` | Required for `MX` records. Range 0–65535. (SRV/URI/HTTPS/SVCB carry priority inside `data`.) |
+| `comment` | `string` | `""` | A note describing the record's purpose. |
+| `tags` | `string[]` | `[]` | Custom tags for organizing and filtering records. |
+| `settings` | `object` | — | `ipv4_only`, `ipv6_only`, `flatten_cname` (apply to proxied records only). |
 
 ### Zone ID Reference
 
-The `zoneId` field accepts either a literal value or a cross-resource reference.
-
-**Literal value:**
-
-```yaml
-spec:
-  zoneId:
-    value: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
-```
-
-**Reference to a CloudflareDnsZone resource:**
+The `zoneId` field accepts either a literal value or a cross-resource reference:
 
 ```yaml
 spec:
@@ -94,85 +89,66 @@ spec:
       name: my-zone
 ```
 
-When using `valueFrom`, the `kind` defaults to `CloudflareDnsZone` and the `fieldPath` defaults to `status.outputs.zone_id`, so only the resource `name` is required. You may also specify `env` to reference a zone deployed in a different environment.
+When using `valueFrom`, the `kind` defaults to `CloudflareDnsZone` and the `fieldPath` defaults to `status.outputs.zone_id`, so only the resource `name` is required.
 
 ## Examples
 
-### Proxied A Record
-
-An A record with Cloudflare proxy enabled, suitable for a web server:
-
-```yaml
-apiVersion: cloudflare.planton.dev/v1
-kind: CloudflareDnsRecord
-metadata:
-  name: web-a-record
-  labels:
-    planton.dev/provisioner: pulumi
-    pulumi.planton.dev/organization: my-org
-    pulumi.planton.dev/project: my-project
-    pulumi.planton.dev/stack.name: prod.CloudflareDnsRecord.web-a-record
-spec:
-  zoneId:
-    valueFrom:
-      name: prod-zone
-  name: "@"
-  type: A
-  value: "198.51.100.10"
-  proxied: true
-  ttl: 1
-  comment: "Production web server"
-```
-
 ### MX Record for Mail Delivery
-
-An MX record pointing to a mail server, with priority set:
 
 ```yaml
 apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareDnsRecord
 metadata:
   name: mail-mx-record
-  labels:
-    planton.dev/provisioner: pulumi
-    pulumi.planton.dev/organization: my-org
-    pulumi.planton.dev/project: my-project
-    pulumi.planton.dev/stack.name: prod.CloudflareDnsRecord.mail-mx-record
 spec:
   zoneId:
     value: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
   name: "@"
   type: MX
-  value: aspmx.l.google.com
+  content: aspmx.l.google.com
   priority: 1
   ttl: 3600
   comment: "Google Workspace primary"
 ```
 
-### TXT Record for SPF
-
-A TXT record at the zone apex defining an SPF policy:
+### SRV Record (structured data)
 
 ```yaml
 apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareDnsRecord
 metadata:
-  name: spf-txt-record
-  labels:
-    planton.dev/provisioner: pulumi
-    pulumi.planton.dev/organization: my-org
-    pulumi.planton.dev/project: my-project
-    pulumi.planton.dev/stack.name: prod.CloudflareDnsRecord.spf-txt-record
+  name: sip-srv-record
 spec:
   zoneId:
     valueFrom:
       name: prod-zone
-      env: prod
+  name: "_sip._tcp"
+  type: SRV
+  data:
+    srv:
+      priority: 10
+      weight: 5
+      port: 5060
+      target: sip.example.com
+```
+
+### CAA Record (structured data)
+
+```yaml
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareDnsRecord
+metadata:
+  name: caa-record
+spec:
+  zoneId:
+    value: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
   name: "@"
-  type: TXT
-  value: "v=spf1 include:_spf.google.com ~all"
-  ttl: 3600
-  comment: "SPF for Google Workspace"
+  type: CAA
+  data:
+    caa:
+      flags: 0
+      tag: issue
+      value: letsencrypt.org
 ```
 
 ## Stack Outputs
@@ -182,8 +158,8 @@ After deployment, the following outputs are available in `status.outputs`:
 | Output | Type | Description |
 |--------|------|-------------|
 | `recordId` | `string` | The unique identifier of the created DNS record in Cloudflare |
-| `hostname` | `string` | The fully qualified hostname of the DNS record (e.g., `www.example.com`) |
-| `recordType` | `string` | The DNS record type that was created (e.g., `A`, `CNAME`) |
+| `recordName` | `string` | The record name as stored by Cloudflare |
+| `recordType` | `string` | The DNS record type that was created |
 | `proxied` | `bool` | Whether the record is proxied through Cloudflare |
 
 ## Related Components

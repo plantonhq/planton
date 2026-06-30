@@ -4,5 +4,4 @@ metadata:
   name: my-kv-namespace
 spec:
   namespaceName: <namespace-name>
-  ttlSeconds: 0
-  description: <short-description>
+  accountId: <cloudflare-account-id>

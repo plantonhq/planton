@@ -25,16 +25,23 @@ spec:
         - LOGIN
         - CREATEDB
   backupConfig:
-    enableBackup: true
-    backupSchedule: "0 2 * * *"
-    backupRetainCount: 14
-    # s3Prefix is the full s3://<bucket>/<path> target when r2Config is set
-    # (prefer Zalando's $(SCOPE)/$(PGVERSION) substitution in the path).
-    s3Prefix: my-postgres-backups/$(SCOPE)/$(PGVERSION)
-    # Dedicated R2 credentials for this database's backups, independent of any
-    # operator-level S3 configuration. The module creates a Secret from these and
-    # references it via secretKeyRef in the pod env.
-    r2Config:
+    enabled: true
+    schedule: "0 2 * * *"
+    retainCount: 14
+    # Bucket holding backups. A literal name, or a reference to any S3-compatible
+    # bucket resource's output, e.g.:
+    #   bucket:
+    #     valueFrom:
+    #       kind: CloudflareR2Bucket
+    #       name: my-postgres-backups
+    #       fieldPath: status.outputs.bucket_name
+    bucket:
+      value: my-postgres-backups
+    # Base path under the bucket; the module appends the per-cluster/per-version suffix.
+    objectPrefix: production
+    # Credentials WAL-G uses to write backups. The module creates a Secret from these
+    # and references it via secretKeyRef in the pod env.
+    credentials:
       cloudflareAccountId: "<cloudflare-account-id>"
       accessKeyId: "<r2-access-key-id>"
       secretAccessKey: "<r2-secret-access-key>"

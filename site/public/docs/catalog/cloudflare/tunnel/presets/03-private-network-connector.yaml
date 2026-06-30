@@ -1,0 +1,8 @@
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareZeroTrustTunnel
+metadata:
+  name: private-net-tunnel
+spec:
+  accountId: <cloudflare-account-id>
+  name: private-net-tunnel
+  configSrc: cloudflare

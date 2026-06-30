@@ -1,0 +1,15 @@
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareDnsRecord
+metadata:
+  name: my-caa-record
+spec:
+  zoneId:
+    value: <cloudflare-zone-id>
+  name: "@"
+  type: CAA
+  ttl: 3600
+  data:
+    caa:
+      flags: 0
+      tag: issue
+      value: letsencrypt.org

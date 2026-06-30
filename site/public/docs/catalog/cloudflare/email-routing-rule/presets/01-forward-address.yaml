@@ -1,0 +1,19 @@
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareEmailRoutingRule
+metadata:
+  name: forward-rule
+spec:
+  zoneId:
+    valueFrom:
+      kind: CloudflareDnsZone
+      name: <zone-name>
+      fieldPath: status.outputs.zone_id
+  name: <rule-name>
+  matchers:
+    - type: literal
+      field: to
+      value: <matched-address>
+  action:
+    type: forward
+    forwardTo:
+      - value: <destination-email>

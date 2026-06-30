@@ -1,10 +1,15 @@
 apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareWorker
 metadata:
-  name: my-minimal-worker
+  name: minimal-worker
 spec:
   accountId: <cloudflare-account-id>
-  workerName: <worker-name>
-  scriptBundle:
-    bucket: <r2-bucket-name>
-    path: <script-bundle-path>
+  workerName: minimal-worker
+  content: |
+    export default {
+      async fetch(request, env, ctx) {
+        return new Response("Hello from the edge");
+      }
+    };
+  workersDev:
+    enabled: true

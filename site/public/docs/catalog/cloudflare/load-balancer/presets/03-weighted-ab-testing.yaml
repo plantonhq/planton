@@ -1,4 +1,48 @@
 apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareLoadBalancerMonitor
+metadata:
+  name: ab-https
+spec:
+  accountId: <cloudflare-account-id>
+  type: https
+  path: /
+  expectedCodes: "2xx"
+---
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareLoadBalancerPool
+metadata:
+  name: control-pool
+spec:
+  accountId: <cloudflare-account-id>
+  name: control-pool
+  origins:
+    - name: control
+      address:
+        value: <control-origin-ip-or-hostname>
+  monitor:
+    valueFrom:
+      kind: CloudflareLoadBalancerMonitor
+      name: ab-https
+      fieldPath: status.outputs.monitor_id
+---
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareLoadBalancerPool
+metadata:
+  name: variant-pool
+spec:
+  accountId: <cloudflare-account-id>
+  name: variant-pool
+  origins:
+    - name: variant
+      address:
+        value: <variant-origin-ip-or-hostname>
+  monitor:
+    valueFrom:
+      kind: CloudflareLoadBalancerMonitor
+      name: ab-https
+      fieldPath: status.outputs.monitor_id
+---
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareLoadBalancer
 metadata:
   name: my-weighted-ab-testing
@@ -6,13 +50,21 @@ spec:
   hostname: <app-subdomain>.<your-domain.com>
   zoneId:
     value: <cloudflare-zone-id>
-  origins:
-    - name: control
-      address: <control-origin-ip-or-hostname>
-      weight: 70
-    - name: variant
-      address: <variant-origin-ip-or-hostname>
-      weight: 30
+  defaultPools:
+    - valueFrom:
+        kind: CloudflareLoadBalancerPool
+        name: control-pool
+        fieldPath: status.outputs.pool_id
+    - valueFrom:
+        kind: CloudflareLoadBalancerPool
+        name: variant-pool
+        fieldPath: status.outputs.pool_id
+  fallbackPool:
+    valueFrom:
+      kind: CloudflareLoadBalancerPool
+      name: control-pool
+      fieldPath: status.outputs.pool_id
   proxied: true
-  healthProbePath: /
   steeringPolicy: random
+  randomSteering:
+    defaultWeight: 0.7

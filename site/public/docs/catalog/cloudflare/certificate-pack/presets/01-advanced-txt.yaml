@@ -1,0 +1,13 @@
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareCertificatePack
+metadata:
+  name: advanced-edge-cert
+spec:
+  zoneId:
+    value: <cloudflare-zone-id>
+  certificateAuthority: google
+  validationMethod: txt
+  validityDays: 90
+  hosts:
+    - <domain>
+    - "*.<domain>"

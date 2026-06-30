@@ -11,15 +11,15 @@ presets:
   - slug: "01-active-passive-failover"
     rank: "01"
     title: "Active-Passive Failover"
-    excerpt: "Two origins with steering=off: traffic goes to the first healthy origin; if it fails, traffic fails over to the second. Proxied through Cloudflare for DDoS protection and CDN. Use for..."
+    excerpt: "A monitor, a single pool with a primary and secondary origin, and a load balancer with `steeringPolicy: off`. Traffic goes to the first healthy origin; if it fails health checks, it fails over to the..."
   - slug: "02-geographic-routing"
     rank: "02"
     title: "Geographic Routing"
-    excerpt: "Multiple origins with steering=geo: Cloudflare routes clients to the geographically nearest healthy origin. Use for multi-region deployments where latency matters (e.g., US, EU, APAC)."
+    excerpt: "A monitor, two regional pools (US and EU), and a load balancer with `steeringPolicy: geo` and `regionPools` mapping regions to pools. Users are routed to the nearest healthy region, falling back to..."
   - slug: "03-weighted-ab-testing"
     rank: "03"
     title: "Weighted A/B Testing"
-    excerpt: "Two origins with steering=random and different weights: traffic is distributed by weight (e.g., 70% control, 30% variant). Use for A/B tests, canary deployments, or gradual rollouts."
+    excerpt: "A monitor, two pools (control and variant), and a load balancer with `steeringPolicy: random` plus `randomSteering` weights. Cloudflare selects a pool at random in proportion to the configured..."
 ---
 
 # Load Balancer Presets

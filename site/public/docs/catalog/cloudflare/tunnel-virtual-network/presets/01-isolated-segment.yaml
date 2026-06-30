@@ -1,0 +1,8 @@
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareZeroTrustTunnelVirtualNetwork
+metadata:
+  name: prod-vnet
+spec:
+  accountId: <cloudflare-account-id>
+  name: prod-vnet
+  comment: Production routing segment

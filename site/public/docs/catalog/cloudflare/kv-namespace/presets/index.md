@@ -11,7 +11,7 @@ presets:
   - slug: "01-standard"
     rank: "01"
     title: "Standard KV Namespace"
-    excerpt: "Creates a Workers KV namespace for key-value storage. KV provides globally replicated, eventually consistent storage for Workers. Only three fields: name, ttl, and description."
+    excerpt: "Creates a Workers KV namespace for key-value storage. KV provides globally replicated, eventually consistent storage for Workers. The namespace is created under the given Cloudflare account; the..."
 ---
 
 # KV Namespace Presets

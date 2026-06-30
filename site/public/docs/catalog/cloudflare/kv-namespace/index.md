@@ -40,6 +40,7 @@ metadata:
     pulumi.planton.dev/stack.name: dev.CloudflareKvNamespace.my-kv
 spec:
   namespaceName: my-kv-store
+  accountId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
 ```
 
 Deploy:
@@ -57,13 +58,11 @@ This creates a KV namespace titled `my-kv-store` in your Cloudflare account. Bin
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
 | `namespaceName` | `string` | A human-readable name for the KV namespace. Must be unique within the Cloudflare account. | Required, max 64 characters |
+| `accountId` | `string` | The Cloudflare account ID that owns the namespace. | Required, 32 hex characters |
 
-### Optional Fields
-
-| Field | Type | Default | Description |
-|-------|------|---------|-------------|
-| `ttlSeconds` | `int32` | `0` (no expiry) | Default time-to-live for key-value entries, in seconds. A value of `0` or unset means keys never expire. If set, must be at least `60` (Cloudflare minimum for expiring keys). **Note:** this field is stored in the spec for documentation purposes but is not currently enforced by the underlying Pulumi provider resource. |
-| `description` | `string` | `""` | A short description of the namespace, useful for identifying its purpose. Maximum 256 characters. **Note:** this field is stored in the spec for documentation purposes but is not currently enforced by the underlying Pulumi provider resource. |
+A KV namespace carries only an account and a title; there are no per-namespace
+TTL or description settings (TTL is set per write). Seed entries with
+`CloudflareWorkersKvPair`, or have the Worker write them at runtime.
 
 ## Examples
 
@@ -83,11 +82,12 @@ metadata:
     pulumi.planton.dev/stack.name: dev.CloudflareKvNamespace.dev-cache
 spec:
   namespaceName: dev-cache
+  accountId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
 ```
 
-### Session Store with TTL Hint
+### Session Store
 
-A KV namespace intended for session data, with the spec recording a 1-hour TTL intent:
+A KV namespace intended for session data (TTL is applied per write by the Worker):
 
 ```yaml
 apiVersion: cloudflare.planton.dev/v1
@@ -101,13 +101,13 @@ metadata:
     pulumi.planton.dev/stack.name: prod.CloudflareKvNamespace.session-store
 spec:
   namespaceName: prod-session-store
-  ttlSeconds: 3600
-  description: "Session data for authenticated users"
+  accountId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
 ```
 
 ### Feature Flags Namespace
 
-A KV namespace dedicated to feature flag storage, referenced by multiple Workers:
+A KV namespace dedicated to feature flag storage, referenced by multiple Workers.
+Seed individual flags with `CloudflareWorkersKvPair`:
 
 ```yaml
 apiVersion: cloudflare.planton.dev/v1
@@ -121,7 +121,7 @@ metadata:
     pulumi.planton.dev/stack.name: prod.CloudflareKvNamespace.feature-flags
 spec:
   namespaceName: feature-flags-prod
-  description: "Global feature flags consumed by edge Workers"
+  accountId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
 ```
 
 ## Stack Outputs
@@ -131,9 +131,11 @@ After deployment, the following outputs are available in `status.outputs`:
 | Output | Type | Description |
 |--------|------|-------------|
 | `namespaceId` | `string` | The unique identifier of the created KV namespace in Cloudflare |
+| `supportsUrlEncoding` | `bool` | Whether keys in this namespace support URL encoding |
 
 ## Related Components
 
+- [CloudflareWorkersKvPair](/docs/catalog/cloudflare/workers-kv-pair) — seed individual key-value entries into this namespace as managed, composable resources
 - [CloudflareWorker](/docs/catalog/cloudflare/worker) — Workers consume KV namespaces via bindings; use the `namespaceId` output to wire a KV store to your Worker
 - [CloudflareR2Bucket](/docs/catalog/cloudflare/r2-bucket) — object storage for larger or binary data, complementary to KV for small-value, read-heavy access patterns
 - [CloudflareD1Database](/docs/catalog/cloudflare/d1-database) — relational SQL storage at the edge; use when you need structured queries rather than simple key-value lookups

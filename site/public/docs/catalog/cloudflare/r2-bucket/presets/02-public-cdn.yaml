@@ -7,8 +7,16 @@ spec:
   accountId: <cloudflare-account-id>
   location: auto
   publicAccess: true
-  customDomain:
-    enabled: true
-    zoneId:
-      value: <cloudflare-zone-id>
-    domain: <cdn-subdomain>.<your-domain.com>
+  customDomains:
+    - enabled: true
+      zoneId:
+        value: <cloudflare-zone-id>
+      domain: <cdn-subdomain>.<your-domain.com>
+      minTls: "1.2"
+  cors:
+    rules:
+      - allowed:
+          methods: [GET, HEAD]
+          origins:
+            - "*"
+        maxAgeSeconds: 3600
