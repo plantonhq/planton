@@ -3,6 +3,6 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "version",
     srcs = ["version.go"],
-    importpath = "github.com/plantonhq/openmcf/internal/cli/version",
+    importpath = "github.com/plantonhq/planton/internal/cli/version",
     visibility = ["//:__subpackages__"],
 )

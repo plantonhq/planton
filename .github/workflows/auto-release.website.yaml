@@ -1,7 +1,7 @@
 # =============================================================================
 # Website Auto-Release
 # =============================================================================
-# Builds and deploys openmcf.org to GitHub Pages for auto-releases.
+# Builds and deploys planton.dev to GitHub Pages for auto-releases.
 # The tag serves as an audit trail for deployments.
 #
 # Tag Format: v{semver}-website.{YYYYMMDD}.{N}
@@ -86,7 +86,7 @@ jobs:
           cat > release-notes.md << 'EOF'
           ## Website Auto-Release
 
-          This is an auto-release of the OpenMCF documentation website.
+          This is an auto-release of the Planton documentation website.
 
           ---
 
@@ -94,7 +94,7 @@ jobs:
 
           The updated documentation is now live at:
 
-          **https://openmcf.org**
+          **https://planton.dev**
 
           ---
 

@@ -12,13 +12,13 @@ Deploys an Oracle Cloud Infrastructure Functions application — the organizatio
 
 ## What Gets Created
 
-When you deploy an OciFunctionsApplication resource, OpenMCF provisions:
+When you deploy an OciFunctionsApplication resource, Planton provisions:
 
 - **Functions Application** — a `functions.Application` resource in the specified compartment and subnets with configurable processor shape, application config (environment variables), optional NSG bindings, optional image signature verification via KMS keys, and optional APM tracing integration.
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the application will be created — either a literal value or a reference to an OciCompartment resource
 - **At least one subnet OCID** — subnets where functions will execute, either as literal values or via `valueFrom` referencing OciSubnet resources
 - **KMS key OCIDs** (for image verification only) — if enabling image signature verification
@@ -29,15 +29,15 @@ When you deploy an OciFunctionsApplication resource, OpenMCF provisions:
 Create a file `functions-app.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciFunctionsApplication
 metadata:
   name: my-app
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciFunctionsApplication.my-app
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciFunctionsApplication.my-app
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -48,7 +48,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f functions-app.yaml
+planton apply -f functions-app.yaml
 ```
 
 This creates a Functions application with GENERIC_X86 architecture in the specified subnet. The application OCID is exported as a stack output. Individual functions are deployed separately via `fn deploy` or CI/CD pipelines.
@@ -101,15 +101,15 @@ This creates a Functions application with GENERIC_X86 architecture in the specif
 An application with default x86 architecture in a single subnet:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciFunctionsApplication
 metadata:
   name: my-app
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciFunctionsApplication.my-app
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciFunctionsApplication.my-app
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -122,15 +122,15 @@ spec:
 An application running on Ampere A1 processors with shared environment variables and NSG binding:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciFunctionsApplication
 metadata:
   name: arm-app
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciFunctionsApplication.arm-app
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciFunctionsApplication.arm-app
 spec:
   compartmentId:
     valueFrom:
@@ -158,15 +158,15 @@ spec:
 An application with image signature verification — only images signed by the specified KMS key can be deployed:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciFunctionsApplication
 metadata:
   name: secure-app
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciFunctionsApplication.secure-app
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciFunctionsApplication.secure-app
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -187,15 +187,15 @@ spec:
 An application with multi-architecture support, syslog forwarding, and APM distributed tracing:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciFunctionsApplication
 metadata:
   name: traced-app
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciFunctionsApplication.traced-app
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciFunctionsApplication.traced-app
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"

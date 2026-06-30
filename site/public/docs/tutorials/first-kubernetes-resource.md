@@ -7,7 +7,7 @@ order: 30
 
 # Deploy Your First Kubernetes Resource
 
-In this tutorial, you will deploy a PostgreSQL database to a Kubernetes cluster using OpenMCF. Unlike the [Getting Started](../getting-started) guide, which covers a minimal deployment, this tutorial builds a production-oriented configuration with custom databases, named users, tuned resource limits, and persistent storage.
+In this tutorial, you will deploy a PostgreSQL database to a Kubernetes cluster using Planton. Unlike the [Getting Started](../getting-started) guide, which covers a minimal deployment, this tutorial builds a production-oriented configuration with custom databases, named users, tuned resource limits, and persistent storage.
 
 By the end, you will know how to configure a Kubernetes component with real-world settings, connect to the deployed database, modify the deployment through manifest changes and runtime overrides, and tear it down cleanly.
 
@@ -25,7 +25,7 @@ A PostgreSQL deployment on Kubernetes with:
 
 Before starting, ensure you have:
 
-- **OpenMCF CLI** installed (`openmcf version`). See [Getting Started](../getting-started) for installation.
+- **Planton CLI** installed (`planton version`). See [Getting Started](../getting-started) for installation.
 - **A Kubernetes cluster** running and accessible via `kubectl`. A local cluster works fine — [Getting Started](../getting-started) shows how to create one with Kind.
 - **Pulumi CLI** installed (`brew install pulumi`) with a backend configured (`pulumi login --local` for local state).
 - **psql** (PostgreSQL client) installed for verification (`brew install libpq`). Optional but recommended.
@@ -35,12 +35,12 @@ Before starting, ensure you have:
 Create a file named `postgres.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPostgres
 metadata:
   name: tutorial-postgres
   labels:
-    openmcf.org/provisioner: pulumi
+    planton.dev/provisioner: pulumi
 spec:
   namespace:
     value: tutorial-postgres
@@ -128,10 +128,10 @@ When `enabled` is `false`, PostgreSQL is only accessible within the cluster (or 
 
 ## Step 2: Preview the Deployment
 
-Preview what OpenMCF will create:
+Preview what Planton will create:
 
 ```bash
-openmcf plan -f postgres.yaml
+planton plan -f postgres.yaml
 ```
 
 The plan shows the Kubernetes resources that will be created: namespace, StatefulSet, PersistentVolumeClaim, Services, Secrets, and the PostgreSQL databases and users. Review the output to confirm it matches your expectations.
@@ -141,10 +141,10 @@ The plan shows the Kubernetes resources that will be created: namespace, Statefu
 Apply the manifest:
 
 ```bash
-openmcf apply -f postgres.yaml
+planton apply -f postgres.yaml
 ```
 
-OpenMCF resolves the `KubernetesPostgres` component module, sets up the deployment environment with your manifest as input, and delegates to Pulumi. The deployment creates the namespace, installs the PostgreSQL operator resources, and initializes your databases and users.
+Planton resolves the `KubernetesPostgres` component module, sets up the deployment environment with your manifest as input, and delegates to Pulumi. The deployment creates the namespace, installs the PostgreSQL operator resources, and initializes your databases and users.
 
 ## Step 4: Verify
 
@@ -221,17 +221,17 @@ Add a third database by editing `postgres.yaml`:
 Then re-apply:
 
 ```bash
-openmcf apply -f postgres.yaml
+planton apply -f postgres.yaml
 ```
 
-OpenMCF computes the diff and applies only the change — the new database is created without affecting the existing ones.
+Planton computes the diff and applies only the change — the new database is created without affecting the existing ones.
 
 ### Option B: Use Runtime Overrides
 
 Scale the replicas without editing the manifest file:
 
 ```bash
-openmcf apply -f postgres.yaml --set spec.container.replicas=2
+planton apply -f postgres.yaml --set spec.container.replicas=2
 ```
 
 The `--set` flag overrides manifest values at deploy time. This is useful for CI/CD pipelines where environment-specific values differ from the base manifest. See [CLI Reference](../cli/cli-reference) for full details on the `--set` flag.
@@ -241,7 +241,7 @@ The `--set` flag overrides manifest values at deploy time. This is useful for CI
 Destroy the deployment:
 
 ```bash
-openmcf destroy -f postgres.yaml
+planton destroy -f postgres.yaml
 ```
 
 This removes all Kubernetes resources created by the component — the StatefulSet, Services, PersistentVolumeClaims, Secrets, and the namespace (if it was created by the component).
@@ -259,4 +259,4 @@ This removes all Kubernetes resources created by the component — the StatefulS
 - [Multi-Environment Deployments](./multi-environment) — deploy this same PostgreSQL across dev, staging, and prod using Kustomize overlays
 - [Deploy Across Providers](./multi-provider) — deploy object storage on both AWS and GCP
 - [Manifests](../concepts/manifests) — deep dive into the KRM model and label-based configuration
-- [Validation](../concepts/validation) — understand how OpenMCF validates manifests before deployment
+- [Validation](../concepts/validation) — understand how Planton validates manifests before deployment

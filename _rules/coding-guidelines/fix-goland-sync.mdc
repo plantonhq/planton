@@ -72,7 +72,7 @@ cat .cursor/workspace/goland-bazel-sync.log | grep -A 5 "ERROR:"
 ### 2. Verify Terminal Build Works
 ```bash
 # Test if terminal build succeeds (should work if only BSP sync fails)
-bazel build //:openmcf
+bazel build //:planton
 ```
 
 **If terminal works but GoLand doesn't**: Likely a repository naming or visibility issue with BSP.
@@ -228,7 +228,7 @@ bazel clean --expunge
 ./bazelw mod tidy
 
 # Try build again
-bazel build //:openmcf
+bazel build //:planton
 ```
 
 ### Fix 5: GoLand-Specific Fixes
@@ -254,7 +254,7 @@ bazel build //:openmcf
      -bazel-testlogs
    
    targets:
-     //:openmcf
+     //:planton
      //apis/...
      //cmd/...
      //internal/...
@@ -300,7 +300,7 @@ go mod tidy
 grep "com_github_<package>" MODULE.bazel
 
 # 8. Test terminal build
-bazel build //:openmcf
+bazel build //:planton
 
 # 9. If terminal build works, invalidate GoLand cache and re-sync
 # In GoLand: File → Invalidate Caches → Invalidate and Restart
@@ -364,7 +364,7 @@ grep "com_github_new_package" MODULE.bazel
 ```
 GoLand Bazel Sync Fails
 │
-├─ Does terminal build work? (bazel build //:openmcf)
+├─ Does terminal build work? (bazel build //:planton)
 │  │
 │  ├─ Yes → BSP/GoLand-specific issue
 │  │  │
@@ -385,7 +385,7 @@ GoLand Bazel Sync Fails
 └─ After fixes:
    ├─ Run: go mod tidy && ./bazelw run //:gazelle && ./bazelw mod tidy
    ├─ Verify: grep <repo_name> MODULE.bazel
-   ├─ Test: bazel build //:openmcf
+   ├─ Test: bazel build //:planton
    └─ GoLand: Invalidate Caches → Restart → Sync
 ```
 
@@ -404,4 +404,4 @@ GoLand Bazel Sync Fails
 - rules_go: https://github.com/bazelbuild/rules_go
 - GoLand Bazel plugin: https://ij.bazel.build/
 
-@openmcf-coding-guidelines.golang.mdc
+@planton-coding-guidelines.golang.mdc

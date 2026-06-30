@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added the `HetznerCloudServer` deployment component (R07, enum 3520, id_prefix: `hcsrv`) to OpenMCF. This is the most interconnected Hetzner Cloud component, bundling `hcloud_server` with optional `hcloud_rdns` and cross-referencing five foundation components (SshKey, PlacementGroup, Firewall, Network, PrimaryIp) via `StringValueOrRef`. It is the first component to use `repeated StringValueOrRef` for multi-value references (ssh_keys, firewall_ids) and nested messages with `optional bool` defaults for the PublicNet configuration.
+Added the `HetznerCloudServer` deployment component (R07, enum 3520, id_prefix: `hcsrv`) to Planton. This is the most interconnected Hetzner Cloud component, bundling `hcloud_server` with optional `hcloud_rdns` and cross-referencing five foundation components (SshKey, PlacementGroup, Firewall, Network, PrimaryIp) via `StringValueOrRef`. It is the first component to use `repeated StringValueOrRef` for multi-value references (ssh_keys, firewall_ids) and nested messages with `optional bool` defaults for the PublicNet configuration.
 
 ## Problem Statement / Motivation
 
@@ -14,7 +14,7 @@ Hetzner Cloud servers are the core compute primitive. Every infra chart in the H
 
 ### Pain Points
 
-- No way to manage Hetzner Cloud servers through OpenMCF
+- No way to manage Hetzner Cloud servers through Planton
 - No established pattern for `repeated StringValueOrRef` (multi-value cross-references)
 - Server public networking defaults (IPv4+IPv6 auto-assigned) needed careful proto3 bool handling
 - Inline network attachments required the alias_ips Terraform bridge bug workaround
@@ -25,7 +25,7 @@ Hetzner Cloud servers are the core compute primitive. Every infra chart in the H
 
 **D1: Inline network blocks over separate hcloud_server_network resource.** The server "owns" its network attachments. Splitting into a separate resource would fragment the component's self-contained nature. Network attachment keying uses `network_id` as the natural key (CG02 pattern), with `for_each` in Terraform and direct iteration in Pulumi.
 
-**D2: `optional bool` with default annotation for PublicNet.** Proto3 bools default to false, so an empty PublicNet message would unintentionally disable both IPv4 and IPv6. Using `optional bool` with `(org.openmcf.shared.options.default) = "true"` ensures the IaC modules treat unset bools as `true`, matching the provider's default behavior.
+**D2: `optional bool` with default annotation for PublicNet.** Proto3 bools default to false, so an empty PublicNet message would unintentionally disable both IPv4 and IPv6. Using `optional bool` with `(dev.planton.shared.options.default) = "true"` ensures the IaC modules treat unset bools as `true`, matching the provider's default behavior.
 
 **D3: rDNS scoped to auto-assigned IPv4 only.** The `dns_ptr` field creates an `hcloud_rdns` record for the server's computed IPv4 address. If users attach Primary IPs via `public_net.ipv4`, they should manage rDNS on the HetznerCloudPrimaryIp component instead to avoid conflicting rDNS management on the same IP.
 
@@ -97,7 +97,7 @@ flowchart TB
 
 ## Benefits
 
-- Enables core compute provisioning as a first-class OpenMCF component
+- Enables core compute provisioning as a first-class Planton component
 - Establishes `repeated StringValueOrRef` pattern for multi-value references
 - Establishes `optional bool` with defaults pattern for nested messages
 - Clean composability: all foundation components (R01-R05) can be wired via spec

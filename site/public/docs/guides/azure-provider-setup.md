@@ -1,13 +1,13 @@
 ---
 title: "Azure Provider Setup"
-description: "Configure Azure credentials for OpenMCF deployments — service principals, environment variables, and provider config files"
+description: "Configure Azure credentials for Planton deployments — service principals, environment variables, and provider config files"
 icon: "cloud"
 order: 90
 ---
 
 # Azure Provider Setup
 
-This guide covers everything you need to authenticate OpenMCF with Microsoft Azure. It applies to all Azure deployment components: `AzureAksCluster`, `AzureResourceGroup`, and others.
+This guide covers everything you need to authenticate Planton with Microsoft Azure. It applies to all Azure deployment components: `AzureAksCluster`, `AzureResourceGroup`, and others.
 
 For a quick reference of all provider credentials, see [Credentials](./credentials).
 
@@ -25,10 +25,10 @@ The fastest way to get started. Log in with your Azure account:
 ```bash
 az login
 
-openmcf pulumi up -f ops/azure/cluster.yaml
+planton pulumi up -f ops/azure/cluster.yaml
 ```
 
-This opens a browser for authentication. The resulting token is used automatically by OpenMCF and the underlying IaC engines.
+This opens a browser for authentication. The resulting token is used automatically by Planton and the underlying IaC engines.
 
 Use this for local development. For production and CI/CD, use a service principal.
 
@@ -42,7 +42,7 @@ export ARM_CLIENT_SECRET="your-client-secret"
 export ARM_TENANT_ID="tenant-id-here"
 export ARM_SUBSCRIPTION_ID="subscription-id-here"
 
-openmcf pulumi up -f ops/azure/cluster.yaml
+planton pulumi up -f ops/azure/cluster.yaml
 ```
 
 | Variable | Required | Description |
@@ -67,7 +67,7 @@ subscription_id: "subscription-id-here"
 Deploy using the `-p` flag:
 
 ```bash
-openmcf pulumi up -f ops/azure/cluster.yaml -p azure-credential.yaml
+planton pulumi up -f ops/azure/cluster.yaml -p azure-credential.yaml
 ```
 
 The CLI validates the config file against the proto schema, then converts the fields to environment variables (`ARM_CLIENT_ID`, `ARM_CLIENT_SECRET`, `ARM_TENANT_ID`, `ARM_SUBSCRIPTION_ID`) for the IaC engine subprocess.
@@ -81,7 +81,7 @@ The CLI validates the config file against the proto schema, then converts the fi
 | `tenant_id` | Yes | Azure AD tenant ID |
 | `subscription_id` | Yes | Azure subscription ID |
 
-All field names use `snake_case`, matching the protobuf definition at `apis/org/openmcf/provider/azure/provider.proto`.
+All field names use `snake_case`, matching the protobuf definition at `apis/dev/planton/provider/azure/provider.proto`.
 
 ## Creating a Service Principal
 
@@ -89,7 +89,7 @@ All field names use `snake_case`, matching the protobuf definition at `apis/org/
 
 ```bash
 az ad sp create-for-rbac \
-  --name "openmcf-deployer" \
+  --name "planton-deployer" \
   --role Contributor \
   --scopes /subscriptions/<subscription-id>
 ```
@@ -99,7 +99,7 @@ Output:
 ```json
 {
   "appId": "abc-123-def-456",
-  "displayName": "openmcf-deployer",
+  "displayName": "planton-deployer",
   "password": "your-client-secret",
   "tenant": "tenant-id-here"
 }

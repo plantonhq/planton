@@ -123,7 +123,7 @@ flowchart LR
 ## Impact
 
 ### Users Affected
-- Anyone deploying self-hosted GitHub Actions runners using openmcf
+- Anyone deploying self-hosted GitHub Actions runners using planton
 - Both Pulumi and Terraform users
 
 ### Unblocks

@@ -6,7 +6,7 @@
 
 ## Summary
 
-Implemented ScalewayInstanceSecurityGroup as the fourth Scaleway resource kind in OpenMCF. This is a standalone, non-composite, zonal firewall resource that wraps `scaleway_instance_security_group`. It introduces Scaleway's default-policy-based firewall model (allowlist vs denylist) and provides the `security_group_id` output that downstream `ScalewayInstance` resources will reference.
+Implemented ScalewayInstanceSecurityGroup as the fourth Scaleway resource kind in Planton. This is a standalone, non-composite, zonal firewall resource that wraps `scaleway_instance_security_group`. It introduces Scaleway's default-policy-based firewall model (allowlist vs denylist) and provides the `security_group_id` output that downstream `ScalewayInstance` resources will reference.
 
 ## Problem Statement / Motivation
 
@@ -14,7 +14,7 @@ The Scaleway cloud provider expansion requires firewall capabilities before Inst
 
 ### Pain Points
 
-- No firewall resource existed for Scaleway in OpenMCF
+- No firewall resource existed for Scaleway in Planton
 - ScalewayInstance (R06) depends on `security_group_id` -- this is a prerequisite
 - The kapsule-environment infra chart needs security group support for worker node firewalling
 
@@ -42,10 +42,10 @@ A complete ScalewayInstanceSecurityGroup resource kind with:
 ### Files Created (18 files)
 
 **Proto schemas (4)**:
-- `apis/org/openmcf/provider/scaleway/scalewayinstancesecuritygroup/v1/spec.proto`
-- `apis/org/openmcf/provider/scaleway/scalewayinstancesecuritygroup/v1/api.proto`
-- `apis/org/openmcf/provider/scaleway/scalewayinstancesecuritygroup/v1/stack_input.proto`
-- `apis/org/openmcf/provider/scaleway/scalewayinstancesecuritygroup/v1/stack_outputs.proto`
+- `apis/dev/planton/provider/scaleway/scalewayinstancesecuritygroup/v1/spec.proto`
+- `apis/dev/planton/provider/scaleway/scalewayinstancesecuritygroup/v1/api.proto`
+- `apis/dev/planton/provider/scaleway/scalewayinstancesecuritygroup/v1/stack_input.proto`
+- `apis/dev/planton/provider/scaleway/scalewayinstancesecuritygroup/v1/stack_outputs.proto`
 
 **Pulumi Go module (7)**:
 - `apis/.../iac/pulumi/main.go` -- Entry point

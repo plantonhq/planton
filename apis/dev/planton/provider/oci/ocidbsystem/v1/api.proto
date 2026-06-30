@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocidbsystem.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/oci/ocidbsystem/v1/spec.proto";
+import "dev/planton/provider/oci/ocidbsystem/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// OciDbSystem is the top-level resource representing an Oracle Cloud
+// Infrastructure Database System -- a managed Oracle Database running on
+// Virtual Machine or Bare Metal infrastructure with full control over
+// compute shape, storage layout, patching, and Oracle Database edition.
+message OciDbSystem {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'oci.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OciDbSystem'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OciDbSystemSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OciDbSystemStatus status = 5;
+}
+
+// OciDbSystemStatus holds the outputs produced by deploying an OciDbSystem.
+message OciDbSystemStatus {
+  // stack-outputs
+  OciDbSystemStackOutputs outputs = 1;
+}

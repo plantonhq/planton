@@ -17,7 +17,7 @@ publish: build-wasm
 	@echo "Publishing plugin version $(version)..."
 	@MAJOR=$$(echo $(version) | cut -d. -f1); \
 	MINOR=$$(echo $(version) | cut -d. -f1-2); \
-	buf plugin push buf.build/openmcf/optional-linter \
+	buf plugin push buf.build/planton/optional-linter \
 		--binary=optional-linter.wasm \
 		--create \
 		--create-type=check \

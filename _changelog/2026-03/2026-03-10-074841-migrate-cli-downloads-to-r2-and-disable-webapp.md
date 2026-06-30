@@ -6,7 +6,7 @@
 
 ## Summary
 
-The OpenMCF CLI's Pulumi binary and Terraform module download logic has been migrated from GitHub Release URLs to Cloudflare R2 (`downloads.openmcf.org`), matching the artifact hosting changes made in the R2 migration. Additionally, the webapp build has been removed from `make build` and all associated GitHub workflows have been disabled.
+The Planton CLI's Pulumi binary and Terraform module download logic has been migrated from GitHub Release URLs to Cloudflare R2 (`downloads.planton.dev`), matching the artifact hosting changes made in the R2 migration. Additionally, the webapp build has been removed from `make build` and all associated GitHub workflows have been disabled.
 
 ## Problem Statement / Motivation
 
@@ -18,14 +18,14 @@ The R2 migration (see `2026-03-10-063513`) moved all non-CLI release artifacts t
 - `pkg/iac/tofu/tofuzip/zip.go` built URLs like `github.com/.../download/{tag}/terraform-{comp}.zip`
 
 The actual artifacts now live at:
-- `downloads.openmcf.org/releases/{tag}/modules/pulumi/{comp}_{plat}.gz`
-- `downloads.openmcf.org/releases/{tag}/modules/terraform/{comp}.zip`
+- `downloads.planton.dev/releases/{tag}/modules/pulumi/{comp}_{plat}.gz`
+- `downloads.planton.dev/releases/{tag}/modules/terraform/{comp}.zip`
 
 Two mismatches per package: (1) wrong base URL, (2) redundant `pulumi-`/`terraform-` filename prefix no longer present on R2.
 
 ### Webapp No Longer Needed
 
-The self-hosted webapp is no longer part of the OpenMCF distribution. Building it in `make build` added unnecessary time and complexity, and the Docker image release pipeline consumed CI minutes for an artifact that was not shipped.
+The self-hosted webapp is no longer part of the Planton distribution. Building it in `make build` added unnecessary time and complexity, and the Docker image release pipeline consumed CI minutes for an artifact that was not shipped.
 
 ## Solution / What's New
 
@@ -41,7 +41,7 @@ flowchart LR
     end
 
     subgraph after ["After: Shared R2 URL"]
-        DL["pkg/downloads\nBaseURL = downloads.openmcf.org"]
+        DL["pkg/downloads\nBaseURL = downloads.planton.dev"]
         PB2["pulumibinary\nBuildDownloadURL"]
         TZ2["tofuzip\nBuildDownloadURL"]
         PB2 --> DL

@@ -1,6 +1,0 @@
-name: gcp-bigquery-dataset
-runtime:
-  name: go
-  options:
-    binary: ./pulumi
-description: OpenMCF GcpBigQueryDataset Pulumi module

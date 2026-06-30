@@ -2,13 +2,13 @@
 # Terraform Modules Auto-Release
 # =============================================================================
 # Zips a Terraform module, uploads it to Cloudflare R2
-# (downloads.openmcf.org), and creates a GitHub release with download links.
+# (downloads.planton.dev), and creates a GitHub release with download links.
 #
 # Tag Format: v{semver}-terraform.{component}.{YYYYMMDD}.{N}
 # Example: v0.3.5-terraform.awsecsservice.20260108.0
 #
-# Upload path: s3://openmcf-downloads-bucket/releases/{tag}/modules/terraform/{component}.zip
-# Public URL:  https://downloads.openmcf.org/releases/{tag}/modules/terraform/{component}.zip
+# Upload path: s3://planton-downloads-bucket/releases/{tag}/modules/terraform/{component}.zip
+# Public URL:  https://downloads.planton.dev/releases/{tag}/modules/terraform/{component}.zip
 #
 # Triggered by: auto-tag.yaml via workflow_dispatch (one call per component)
 # =============================================================================
@@ -32,7 +32,7 @@ on:
         required: true
         type: string
       path:
-        description: 'Path to the Terraform module (e.g., apis/org/openmcf/provider/aws/awsecsservice/v1/iac/tf)'
+        description: 'Path to the Terraform module (e.g., apis/dev/planton/provider/aws/awsecsservice/v1/iac/tf)'
         required: true
         type: string
 
@@ -40,7 +40,7 @@ permissions:
   contents: write
 
 env:
-  R2_BUCKET: openmcf-downloads-bucket
+  R2_BUCKET: planton-downloads-bucket
 
 jobs:
   release:
@@ -78,7 +78,7 @@ jobs:
           
           aws s3 cp "${ARTIFACT_NAME}" "s3://${R2_BUCKET}/${R2_KEY}" \
             --endpoint-url "${AWS_ENDPOINT_URL}"
-          echo "✓ Uploaded: https://downloads.openmcf.org/${R2_KEY}"
+          echo "✓ Uploaded: https://downloads.planton.dev/${R2_KEY}"
 
       - name: Create GitHub Release
         env:
@@ -88,7 +88,7 @@ jobs:
           COMPONENT="${{ inputs.component }}"
           PROVIDER="${{ inputs.provider }}"
           MODULE_PATH="${{ inputs.path }}"
-          DOWNLOAD_URL="https://downloads.openmcf.org/releases/${TAG}/modules/terraform/${COMPONENT}.zip"
+          DOWNLOAD_URL="https://downloads.planton.dev/releases/${TAG}/modules/terraform/${COMPONENT}.zip"
 
           cat > release-notes.md << 'EOF'
           ## Terraform Module Auto-Release
@@ -132,7 +132,7 @@ jobs:
 
           ```hcl
           module "COMPONENT_PLACEHOLDER" {
-            source = "git::https://github.com/plantonhq/openmcf.git//PATH_PLACEHOLDER?ref=TAG_PLACEHOLDER"
+            source = "git::https://github.com/plantonhq/planton.git//PATH_PLACEHOLDER?ref=TAG_PLACEHOLDER"
 
             # Add your variables here
           }
@@ -183,7 +183,7 @@ jobs:
           COMPONENT="${{ inputs.component }}"
           PROVIDER="${{ inputs.provider }}"
           MODULE_PATH="${{ inputs.path }}"
-          DOWNLOAD_URL="https://downloads.openmcf.org/releases/${TAG}/modules/terraform/${COMPONENT}.zip"
+          DOWNLOAD_URL="https://downloads.planton.dev/releases/${TAG}/modules/terraform/${COMPONENT}.zip"
           
           echo "## Terraform Module Auto-Release Complete" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY

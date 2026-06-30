@@ -2,7 +2,7 @@ package stackinput
 
 import (
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/pkg/iac/stackinput/stackinputproviderconfig"
+	"github.com/plantonhq/planton/pkg/iac/stackinput/stackinputproviderconfig"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"gopkg.in/yaml.v3"

@@ -17,7 +17,7 @@ Allocates a reassignable public IP address (IPv4 or IPv6 /64) in Hetzner Cloud t
 
 ## Prerequisites
 
-- **Hetzner Cloud API token** configured via environment variable (`HCLOUD_TOKEN`) or OpenMCF provider config
+- **Hetzner Cloud API token** configured via environment variable (`HCLOUD_TOKEN`) or Planton provider config
 - **A server in the same location** if using `serverId` to assign the Floating IP at creation time
 
 ## Quick Start
@@ -25,15 +25,15 @@ Allocates a reassignable public IP address (IPv4 or IPv6 /64) in Hetzner Cloud t
 Create a file `floating-ip.yaml`:
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudFloatingIp
 metadata:
   name: my-fip
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.HetznerCloudFloatingIp.my-fip
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.HetznerCloudFloatingIp.my-fip
 spec:
   type: ipv4
   homeLocation: fsn1
@@ -42,7 +42,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f floating-ip.yaml
+planton apply -f floating-ip.yaml
 ```
 
 This allocates a single unassigned IPv4 address in Falkenstein. The address is assigned by Hetzner Cloud and returned in `status.outputs.ip_address`.
@@ -72,15 +72,15 @@ This allocates a single unassigned IPv4 address in Falkenstein. The address is a
 A single unassigned IPv4 address in Falkenstein — the simplest working configuration.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudFloatingIp
 metadata:
   name: dev-fip
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.HetznerCloudFloatingIp.dev-fip
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.HetznerCloudFloatingIp.dev-fip
 spec:
   type: ipv4
   homeLocation: fsn1
@@ -91,17 +91,17 @@ spec:
 An IPv4 address with a reverse DNS pointer for email deliverability. The `dnsPtr` hostname must have a matching forward DNS A record.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudFloatingIp
 metadata:
   name: mail-fip
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: infrastructure
-    pulumi.openmcf.org/stack.name: production.HetznerCloudFloatingIp.mail-fip
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: infrastructure
+    pulumi.planton.dev/stack.name: production.HetznerCloudFloatingIp.mail-fip
 spec:
   type: ipv4
   homeLocation: fsn1
@@ -115,17 +115,17 @@ spec:
 An IPv6 /64 block in Helsinki with delete protection enabled.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudFloatingIp
 metadata:
   name: web-ipv6
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: infrastructure
-    pulumi.openmcf.org/stack.name: production.HetznerCloudFloatingIp.web-ipv6
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: infrastructure
+    pulumi.planton.dev/stack.name: production.HetznerCloudFloatingIp.web-ipv6
 spec:
   type: ipv6
   homeLocation: hel1
@@ -138,17 +138,17 @@ spec:
 A Floating IP assigned to a HetznerCloudServer using `valueFrom`. The Floating IP receives the server's numeric ID from the server's stack outputs, establishing a dependency edge in the deployment DAG.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudFloatingIp
 metadata:
   name: app-failover
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: infrastructure
-    pulumi.openmcf.org/stack.name: production.HetznerCloudFloatingIp.app-failover
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: infrastructure
+    pulumi.planton.dev/stack.name: production.HetznerCloudFloatingIp.app-failover
 spec:
   type: ipv4
   homeLocation: fsn1
@@ -165,17 +165,17 @@ spec:
 The server referenced by this Floating IP:
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudServer
 metadata:
   name: app-01
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: infrastructure
-    pulumi.openmcf.org/stack.name: production.HetznerCloudServer.app-01
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: infrastructure
+    pulumi.planton.dev/stack.name: production.HetznerCloudServer.app-01
 spec:
   serverType: cx22
   image: ubuntu-24.04

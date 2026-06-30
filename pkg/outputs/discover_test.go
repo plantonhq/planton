@@ -46,7 +46,7 @@ func TestDiscoverOverride_EmptyString(t *testing.T) {
 }
 
 func TestDiscoverOverride_NonexistentDir(t *testing.T) {
-	got := discoverOverride("/tmp/does-not-exist-openmcf-test-dir")
+	got := discoverOverride("/tmp/does-not-exist-planton-test-dir")
 	if got != OverrideNone {
 		t.Errorf("expected OverrideNone for nonexistent dir, got %s", got)
 	}

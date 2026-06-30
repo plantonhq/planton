@@ -51,7 +51,7 @@ Each example includes:
 Created standardized test manifest at the component level:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: RedisKubernetes
 metadata:
   name: test-redis-database
@@ -99,7 +99,7 @@ All tests continue to pass (1 Passed | 0 Failed).
 Ran Gazelle to update/generate BUILD.bazel files across the component:
 
 ```bash
-bazel run //:gazelle -- apis/org/openmcf/provider/kubernetes/kubernetesredis/v1
+bazel run //:gazelle -- apis/dev/planton/provider/kubernetes/kubernetesredis/v1
 ```
 
 Ensures proper Bazel build integration for all Go packages and test targets.
@@ -295,12 +295,12 @@ All validation checks pass:
 
 ```bash
 # Go tests
-cd apis/org/openmcf/provider/kubernetes/kubernetesredis/v1
+cd apis/dev/planton/provider/kubernetes/kubernetesredis/v1
 go test -v
 # Result: 1 Passed | 0 Failed (0.031 seconds)
 
 # Bazel test  
-bazel test //apis/org/openmcf/provider/kubernetes/kubernetesredis/v1:kubernetesredis_test
+bazel test //apis/dev/planton/provider/kubernetes/kubernetesredis/v1:kubernetesredis_test
 # Result: PASSED in 0.8s
 
 # Go build
@@ -311,7 +311,7 @@ go build ./...
 ## Files Changed
 
 ```
-apis/org/openmcf/provider/kubernetes/kubernetesredis/v1/
+apis/dev/planton/provider/kubernetes/kubernetesredis/v1/
   M  BUILD.bazel
   R  api_test.go → spec_test.go
   A  iac/hack/manifest.yaml (19 lines)

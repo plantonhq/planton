@@ -1,9 +1,0 @@
-apiVersion: openstack.openmcf.org/v1
-kind: OpenStackRouter
-metadata:
-  name: my-edge-router
-spec:
-  externalNetworkId:
-    value: <external-network-id>
-  enableSnat: true
-  description: Edge router with external gateway and SNAT

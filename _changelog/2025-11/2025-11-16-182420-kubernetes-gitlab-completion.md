@@ -81,7 +81,7 @@ Implemented a complete Terraform module matching the Pulumi functionality and fi
 
 ### Terraform Module Architecture
 
-The Terraform implementation follows OpenMCF standards:
+The Terraform implementation follows Planton standards:
 
 ```hcl
 # Local value transformations
@@ -244,7 +244,7 @@ All three use the same audit-complete-verify workflow.
 
 **Status**: ✅ Production Ready  
 **Timeline**: ~20 minutes  
-**Component Path**: `apis/org/openmcf/provider/kubernetes/kubernetesgitlab/v1/`  
+**Component Path**: `apis/dev/planton/provider/kubernetes/kubernetesgitlab/v1/`  
 **Audit Reports**: 
 - Before: `v1/docs/audit/2025-11-15-114045.md` (93.08%)
 - After: `v1/docs/audit/2025-11-16-182224.md` (100.00%)

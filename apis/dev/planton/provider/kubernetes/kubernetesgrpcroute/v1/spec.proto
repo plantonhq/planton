@@ -1,0 +1,468 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesgrpcroute.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/gateway_api.proto";
+import "dev/planton/provider/kubernetes/target_cluster.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// KubernetesGrpcRouteSpec defines a Kubernetes Gateway API GRPCRoute: a
+// namespaced set of rules that match gRPC requests (by hostname, service/method,
+// or header), optionally transform them with filters, and forward them to
+// backend Services. Routes attach to a Gateway through parent_refs.
+//
+// 100% fidelity with the upstream Gateway API v1.5.1 GRPCRouteSpec
+// (kubernetes-sigs/gateway-api apis/v1/grpcroute_types.go), standard channel.
+// Upstream spec fields are flattened after the Planton namespaced envelope
+// (target_cluster, namespace). Experimental fields are intentionally excluded
+// because they are absent from the standard-channel CRD and the typed Pulumi
+// resource Planton provisions with, so they would have no deployable target:
+//   - CommonRouteSpec.useDefaultGateways
+//   - GRPCRouteRule.sessionPersistence
+message KubernetesGrpcRouteSpec {
+  // Target Kubernetes cluster where this GRPCRoute is created. The Gateway API
+  // CRDs (KubernetesGatewayApiCrds) and a Gateway the route attaches to must
+  // already be present on the cluster.
+  dev.planton.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  // Namespace in which the GRPCRoute is created. Backends in other namespaces,
+  // and Gateways in other namespaces, are subject to the usual same-namespace /
+  // ReferenceGrant rules.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // References to the parent resources (usually Gateways) this route attaches
+  // to. Each parent must allow attachment from GRPCRoutes of this namespace.
+  //
+  // INFRA-CHART COMPOSABILITY (DD-009): parent_refs is a PLAIN reference, not an
+  // Planton foreign key (StringValueOrRef). It is an array of multi-field upstream
+  // objects, so wrapping its scalars in StringValueOrRef would break 100% upstream
+  // fidelity (DD-001) and distort the typed CRD shape (dont-do #6). Because a plain
+  // string creates NO automatic DAG edge, an infra-chart author MUST express the
+  // route -> Gateway dependency via metadata.relationships, e.g.:
+  //   metadata:
+  //     relationships:
+  //       - kind: KubernetesGateway
+  //         name: "{{ values.env }}-gateway"
+  //         type: depends_on
+  // The plain `name` here is then the literal Gateway name. See the component's
+  // "Composing in Infra Charts" docs for the full pattern.
+  //
+  // Flattened from the upstream CommonRouteSpec; the experimental
+  // useDefaultGateways field is excluded (standard channel only).
+  repeated dev.planton.provider.kubernetes.KubernetesGatewayApiParentReference parent_refs = 3 [(buf.validate.field).repeated.max_items = 32];
+
+  // Hostnames matched against the authority (Host) pseudo-header to select this
+  // route. A leading wildcard label (for example "*.example.com") is a suffix
+  // match. When empty, the route matches any hostname permitted by its parent
+  // listeners. Upstream support level: Core.
+  //
+  // Each value is an RFC 1123 hostname (IPs not allowed). Pattern (wildcard
+  // prefix allowed): ^(\*\.)?[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$
+  repeated string hostnames = 4 [(buf.validate.field).repeated = {
+    max_items: 16
+    items: {
+      string: {
+        min_len: 1
+        max_len: 253
+        pattern: "^(\\*\\.)?[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+      }
+    }
+  }];
+
+  // Routing rules: each rule matches requests, optionally applies filters, and
+  // forwards to one or more backends. At least one rule is required. Upstream
+  // allows up to 16 rules (and up to 64 matches per rule).
+  //
+  // Note: upstream also carries an aggregate "total matches across all rules
+  // must be < 128" XValidation expressed as a 16-way unrolled CEL sum. It is
+  // intentionally not translated here (consistent with KubernetesHttpRoute): it
+  // is a controller-enforced aggregate limit, the per-field rules<=16 /
+  // matches<=64 bounds are enforced, and the unrolled expression is
+  // unmaintainable. The experimental rule-name-uniqueness XValidation is also
+  // excluded (standard channel only).
+  repeated KubernetesGrpcRouteRule rules = 5 [(buf.validate.field).repeated = {
+    min_items: 1
+    max_items: 16
+  }];
+}
+
+// KubernetesGrpcRouteRule matches gRPC requests (matches), processes them
+// (filters), and forwards them to backends (backend_refs).
+//
+// Upstream: GRPCRouteRule in apis/v1/grpcroute_types.go (standard channel:
+// sessionPersistence is experimental and excluded; GRPCRouteRule has no
+// timeouts).
+message KubernetesGrpcRouteRule {
+  // non-additive header-modifier filters may appear at most once per rule.
+  option (buf.validate.message).cel = {
+    id: "grpc_route_rule.request_header_modifier_not_repeated"
+    message: "the RequestHeaderModifier filter may be specified at most once per rule"
+    expression: "this.filters.filter(f, f.type == 'RequestHeaderModifier').size() <= 1"
+  };
+  option (buf.validate.message).cel = {
+    id: "grpc_route_rule.response_header_modifier_not_repeated"
+    message: "the ResponseHeaderModifier filter may be specified at most once per rule"
+    expression: "this.filters.filter(f, f.type == 'ResponseHeaderModifier').size() <= 1"
+  };
+
+  // Name of the route rule; must be unique within the route if set. Upstream
+  // support level: Extended.
+  //
+  // Upstream SectionName constraints: 1-253 chars, lowercase RFC 1123 subdomain.
+  // Pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$
+  optional string name = 1 [(buf.validate.field).string = {
+    min_len: 1
+    max_len: 253
+    pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+  }];
+
+  // Conditions for matching requests. A request matches the rule if ANY one of
+  // the matches is satisfied (matches are ORed; conditions within a match are
+  // ANDed). When empty, the implementation matches every gRPC request.
+  repeated KubernetesGrpcRouteMatch matches = 2 [(buf.validate.field).repeated.max_items = 64];
+
+  // Filters applied to requests matching this rule (header modification,
+  // request mirror, or an implementation-specific extension).
+  repeated KubernetesGrpcRouteFilter filters = 3 [(buf.validate.field).repeated.max_items = 16];
+
+  // Backends matching requests are forwarded to. When multiple backends are
+  // given, traffic is split by weight. Upstream support level: Core for
+  // Kubernetes Service.
+  repeated KubernetesGrpcRouteBackendRef backend_refs = 4 [(buf.validate.field).repeated.max_items = 16];
+}
+
+// KubernetesGrpcRouteMatch defines a predicate for matching a request. All
+// specified conditions (method, headers) are ANDed.
+//
+// Upstream: GRPCRouteMatch in apis/v1/grpcroute_types.go
+message KubernetesGrpcRouteMatch {
+  // header match names must be unique within a match (only the first of any
+  // duplicate is honored upstream).
+  option (buf.validate.message).cel = {
+    id: "grpc_route_match.header_names_unique"
+    message: "each header match name must be unique within a match"
+    expression: "this.headers.all(h1, this.headers.exists_one(h2, h1.name == h2.name))"
+  };
+
+  // gRPC service/method matcher. When unset, all services and methods match.
+  KubernetesGrpcRouteMethodMatch method = 1;
+
+  // Request header matchers. A request must match all listed headers.
+  repeated KubernetesGrpcRouteHeaderMatch headers = 2 [(buf.validate.field).repeated.max_items = 16];
+}
+
+// KubernetesGrpcRouteMethodMatch selects a gRPC route by matching the request
+// service and/or method.
+//
+// Upstream: GRPCMethodMatch in apis/v1/grpcroute_types.go
+message KubernetesGrpcRouteMethodMatch {
+  // when type is Exact (the default), at least one of service or method must be
+  // set. (Upstream enforces this only when type is present.)
+  option (buf.validate.message).cel = {
+    id: "grpc_method_match.service_or_method_required"
+    message: "one or both of 'service' or 'method' must be specified"
+    expression: "!has(this.type) ? true : (has(this.service) || has(this.method))"
+  };
+  // for Exact matches (the default when type is unset), service must contain only
+  // valid characters.
+  option (buf.validate.message).cel = {
+    id: "grpc_method_match.service_valid_chars"
+    message: "for Exact matches, service may only contain valid characters (matching ^(?i)\\.?[a-z_][a-z_0-9]*(\\.[a-z_][a-z_0-9]*)*$)"
+    expression: "(!has(this.type) || this.type == 'Exact') && has(this.service) ? this.service.matches('^(?i)\\\\.?[a-z_][a-z_0-9]*(\\\\.[a-z_][a-z_0-9]*)*$') : true"
+  };
+  // for Exact matches (the default when type is unset), method must contain only
+  // valid characters.
+  option (buf.validate.message).cel = {
+    id: "grpc_method_match.method_valid_chars"
+    message: "for Exact matches, method may only contain valid characters (matching ^[A-Za-z_][A-Za-z_0-9]*$)"
+    expression: "(!has(this.type) || this.type == 'Exact') && has(this.method) ? this.method.matches('^[A-Za-z_][A-Za-z_0-9]*$') : true"
+  };
+
+  // How to match against the service and/or method. "Exact" (default) has Core
+  // support; "RegularExpression" is implementation-specific.
+  //
+  // Upstream default: "Exact". Closed enum.
+  optional string type = 1 [(buf.validate.field).cel = {
+    id: "grpc_method_match.type_enum"
+    message: "method match type must be either 'Exact' or 'RegularExpression'"
+    expression: "this == '' || this in ['Exact', 'RegularExpression']"
+  }];
+
+  // Value of the gRPC service to match against (for example "helloworld.Greeter").
+  // When empty or omitted, matches any service.
+  optional string service = 2 [(buf.validate.field).string.max_len = 1024];
+
+  // Value of the gRPC method to match against (for example "SayHello"). When
+  // empty or omitted, matches any method.
+  optional string method = 3 [(buf.validate.field).string.max_len = 1024];
+}
+
+// KubernetesGrpcRouteHeaderMatch matches against a request header.
+//
+// Upstream: GRPCHeaderMatch in apis/v1/grpcroute_types.go
+message KubernetesGrpcRouteHeaderMatch {
+  // How the header value is compared. "Exact" (default) has Core support;
+  // "RegularExpression" is implementation-specific.
+  //
+  // Upstream default: "Exact". Closed enum.
+  optional string type = 1 [(buf.validate.field).cel = {
+    id: "grpc_header_match.type_enum"
+    message: "header match type must be either 'Exact' or 'RegularExpression'"
+    expression: "this == '' || this in ['Exact', 'RegularExpression']"
+  }];
+
+  // Name of the gRPC header to match (case-insensitive).
+  //
+  // Upstream HeaderName pattern: ^[A-Za-z0-9!#$%&'*+\-.^_`|~]+$ (1-256 chars).
+  string name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1
+      max_len: 256
+      pattern: "^[A-Za-z0-9!#$%&'*+\\-.^_`|~]+$"
+    }
+  ];
+
+  // Value the header is matched against.
+  string value = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1
+      max_len: 4096
+    }
+  ];
+}
+
+// KubernetesGrpcRouteFilter is a processing step applied to a matching request.
+// It is a discriminated union: the type field selects exactly one of the
+// configuration fields below (discriminator + fields, not a proto oneof, to
+// preserve the upstream JSON structure).
+//
+// Upstream: GRPCRouteFilter in apis/v1/grpcroute_types.go. The GRPC filter set
+// is a subset of the HTTP one: there is no RequestRedirect, URLRewrite, or CORS
+// variant.
+message KubernetesGrpcRouteFilter {
+  // each configuration field must be populated when -- and only when -- the type
+  // discriminator selects it. (Equivalent to the upstream pair of "must be nil
+  // if type != X" / "must be set if type == X" rules, expressed as one
+  // biconditional per variant.)
+  option (buf.validate.message).cel = {
+    id: "grpc_route_filter.request_header_modifier_consistency"
+    message: "request_header_modifier must be set when type is 'RequestHeaderModifier' and must be unset otherwise"
+    expression: "has(this.request_header_modifier) == (this.type == 'RequestHeaderModifier')"
+  };
+  option (buf.validate.message).cel = {
+    id: "grpc_route_filter.response_header_modifier_consistency"
+    message: "response_header_modifier must be set when type is 'ResponseHeaderModifier' and must be unset otherwise"
+    expression: "has(this.response_header_modifier) == (this.type == 'ResponseHeaderModifier')"
+  };
+  option (buf.validate.message).cel = {
+    id: "grpc_route_filter.request_mirror_consistency"
+    message: "request_mirror must be set when type is 'RequestMirror' and must be unset otherwise"
+    expression: "has(this.request_mirror) == (this.type == 'RequestMirror')"
+  };
+  option (buf.validate.message).cel = {
+    id: "grpc_route_filter.extension_ref_consistency"
+    message: "extension_ref must be set when type is 'ExtensionRef' and must be unset otherwise"
+    expression: "has(this.extension_ref) == (this.type == 'ExtensionRef')"
+  };
+
+  // Which filter to apply. Selects exactly one configuration field below.
+  //
+  // Closed enum (external standard exception -- matches Gateway API filter type
+  // constants).
+  string type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "grpc_route_filter.type_enum"
+      message: "filter type must be one of 'RequestHeaderModifier', 'ResponseHeaderModifier', 'RequestMirror', or 'ExtensionRef'"
+      expression: "this in ['RequestHeaderModifier', 'ResponseHeaderModifier', 'RequestMirror', 'ExtensionRef']"
+    }
+  ];
+
+  // Modifies request headers before forwarding. Set when type is
+  // "RequestHeaderModifier". Upstream support level: Core.
+  KubernetesGrpcRouteHeaderFilter request_header_modifier = 2;
+
+  // Modifies response headers before returning to the client. Set when type is
+  // "ResponseHeaderModifier". Upstream support level: Extended.
+  KubernetesGrpcRouteHeaderFilter response_header_modifier = 3;
+
+  // Mirrors the request to an additional backend (responses ignored). Set when
+  // type is "RequestMirror". Upstream support level: Extended.
+  KubernetesGrpcRouteRequestMirrorFilter request_mirror = 4;
+
+  // Implementation-specific extension filter. Set when type is "ExtensionRef".
+  // Must not be used for core or extended filters. Upstream support:
+  // Implementation-specific.
+  dev.planton.provider.kubernetes.KubernetesGatewayApiLocalObjectReference extension_ref = 5;
+}
+
+// KubernetesGrpcRouteHeaderFilter adds, sets, or removes gRPC headers.
+//
+// Upstream: HTTPHeaderFilter in apis/v1/httproute_types.go (reused by GRPCRoute).
+message KubernetesGrpcRouteHeaderFilter {
+  // header names in 'set' must be unique.
+  option (buf.validate.message).cel = {
+    id: "grpc_header_filter.set_names_unique"
+    message: "each header name in 'set' must be unique"
+    expression: "this.set.all(h1, this.set.exists_one(h2, h1.name == h2.name))"
+  };
+  // header names in 'add' must be unique.
+  option (buf.validate.message).cel = {
+    id: "grpc_header_filter.add_names_unique"
+    message: "each header name in 'add' must be unique"
+    expression: "this.add.all(h1, this.add.exists_one(h2, h1.name == h2.name))"
+  };
+
+  // Headers to overwrite (set) on the message, replacing any existing values.
+  repeated KubernetesGrpcRouteHeader set = 1 [(buf.validate.field).repeated.max_items = 16];
+
+  // Headers to append, adding to any existing values for the same name.
+  repeated KubernetesGrpcRouteHeader add = 2 [(buf.validate.field).repeated.max_items = 16];
+
+  // Header names to remove from the message.
+  repeated string remove = 3 [(buf.validate.field).repeated = {
+    max_items: 16
+    unique: true
+  }];
+}
+
+// KubernetesGrpcRouteHeader is a gRPC header name/value pair.
+//
+// Upstream: HTTPHeader in apis/v1/httproute_types.go (reused by GRPCRoute).
+message KubernetesGrpcRouteHeader {
+  // Name of the header (case-insensitive).
+  //
+  // Upstream HeaderName pattern: ^[A-Za-z0-9!#$%&'*+\-.^_`|~]+$ (1-256 chars).
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1
+      max_len: 256
+      pattern: "^[A-Za-z0-9!#$%&'*+\\-.^_`|~]+$"
+    }
+  ];
+
+  // Value of the header.
+  string value = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1
+      max_len: 4096
+    }
+  ];
+}
+
+// KubernetesGrpcRouteRequestMirrorFilter mirrors matching requests to an
+// additional backend; responses from the mirror backend are ignored.
+//
+// Upstream: HTTPRequestMirrorFilter in apis/v1/httproute_types.go (reused by
+// GRPCRoute).
+message KubernetesGrpcRouteRequestMirrorFilter {
+  // mirror sampling may be expressed as a percent or a fraction, not both.
+  option (buf.validate.message).cel = {
+    id: "grpc_request_mirror.percent_xor_fraction"
+    message: "specify either percent or fraction for the mirror sampling rate, but not both"
+    expression: "!(has(this.percent) && has(this.fraction))"
+  };
+
+  // Backend that mirrored requests are sent to. Required. Upstream support
+  // level: Extended for Kubernetes Service.
+  //
+  // INFRA-CHART COMPOSABILITY (DD-009): backend_ref is a PLAIN reference (an
+  // array-free but multi-field upstream object), not a StringValueOrRef foreign
+  // key. Express the route -> mirror-backend dependency via metadata.relationships
+  // (type: uses) when the backend is an Planton-managed resource.
+  dev.planton.provider.kubernetes.KubernetesGatewayApiBackendObjectReference backend_ref = 1 [(buf.validate.field).required = true];
+
+  // Percentage of requests to mirror (0-100). When neither percent nor fraction
+  // is set, 100% are mirrored.
+  optional int32 percent = 2 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 100
+  }];
+
+  // Fraction of requests to mirror. When neither percent nor fraction is set,
+  // 100% are mirrored.
+  dev.planton.provider.kubernetes.KubernetesGatewayApiFraction fraction = 3;
+}
+
+// KubernetesGrpcRouteBackendRef is a backend a matching request is forwarded
+// to, optionally with per-backend filters. The backend reference fields are
+// flattened (matching the upstream inline GRPCBackendRef and the typed CRD
+// shape) rather than nesting the shared BackendRef message.
+//
+// Upstream: GRPCBackendRef in apis/v1/grpcroute_types.go
+//
+// INFRA-CHART COMPOSABILITY (DD-009): backend_refs is a PLAIN reference, not an
+// Planton foreign key (StringValueOrRef). It is an array of multi-field upstream
+// objects, so wrapping its scalars would break 100% fidelity (DD-001) and distort
+// the typed CRD shape (dont-do #6). Because a plain string creates NO automatic
+// DAG edge, an infra-chart author MUST express the route -> backend dependency via
+// metadata.relationships when the backend is an Planton-managed resource, e.g.:
+//   metadata:
+//     relationships:
+//       - kind: KubernetesService   # or the backend's actual kind
+//         name: "{{ values.service_name }}"
+//         type: uses
+// The plain `name` here is then the literal Kubernetes Service name. See the
+// component's "Composing in Infra Charts" docs for the full pattern.
+message KubernetesGrpcRouteBackendRef {
+  // Group of the referent. Empty string infers the core API group.
+  //
+  // Upstream default: "" (core API group).
+  // Group pattern: empty or an RFC 1123 subdomain (max 253).
+  optional string group = 1 [(buf.validate.field).string = {
+    max_len: 253
+    pattern: "^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+  }];
+
+  // Kind of the referent.
+  //
+  // Upstream default: "Service".
+  // Kind pattern: 1-63 chars, ^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$
+  optional string kind = 2 [(buf.validate.field).string = {
+    min_len: 1
+    max_len: 63
+    pattern: "^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$"
+  }];
+
+  // Name of the referent (for example a Kubernetes Service name). This is a
+  // plain name reference, not an Planton foreign key (see the message comment
+  // and spec.parent_refs for the infra-chart relationship guidance).
+  string name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1
+      max_len: 253
+    }
+  ];
+
+  // Namespace of the backend. When unspecified, the route's namespace is
+  // inferred. Cross-namespace references require a ReferenceGrant.
+  optional string namespace = 4;
+
+  // Destination port number. Required when the referent is a core Service.
+  optional int32 port = 5 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 65535
+  }];
+
+  // Relative weight for traffic splitting, computed as weight/(sum of weights).
+  //
+  // Upstream default: 1.
+  optional int32 weight = 6 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 1000000
+  }];
+
+  // Filters applied only when forwarding to this backend. Upstream support
+  // level: Implementation-specific (prefer rule-level filters for portability).
+  repeated KubernetesGrpcRouteFilter filters = 7 [(buf.validate.field).repeated.max_items = 16];
+}

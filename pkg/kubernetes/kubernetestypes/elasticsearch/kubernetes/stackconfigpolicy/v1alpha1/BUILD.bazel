@@ -9,7 +9,7 @@ go_library(
         "stackConfigPolicyList.go",
         "stackConfigPolicyPatch.go",
     ],
-    importpath = "github.com/plantonhq/openmcf/pkg/kubernetes/kubernetestypes/elasticsearch/kubernetes/stackconfigpolicy/v1alpha1",
+    importpath = "github.com/plantonhq/planton/pkg/kubernetes/kubernetestypes/elasticsearch/kubernetes/stackconfigpolicy/v1alpha1",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_blang_semver//:semver",

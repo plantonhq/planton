@@ -6,16 +6,16 @@
 
 ## Summary
 
-Added HetznerCloudDnsZone (R12) -- the 12th and final Hetzner Cloud resource kind in OpenMCF. This component bundles `hcloud_zone` with `hcloud_zone_rrset` to manage DNS zones and record sets, supporting both primary (authoritative) and secondary (zone-transfer) operating modes.
+Added HetznerCloudDnsZone (R12) -- the 12th and final Hetzner Cloud resource kind in Planton. This component bundles `hcloud_zone` with `hcloud_zone_rrset` to manage DNS zones and record sets, supporting both primary (authoritative) and secondary (zone-transfer) operating modes.
 
 ## Problem Statement / Motivation
 
-The Hetzner Cloud provider expansion required 12 resource kinds to enable 3 planned infra charts. DNS zone management was the final piece -- without it, the `hetzner-load-balanced-app` infra chart cannot create DNS records pointing to load balancer IPs, and users cannot manage Hetzner Cloud DNS from OpenMCF manifests.
+The Hetzner Cloud provider expansion required 12 resource kinds to enable 3 planned infra charts. DNS zone management was the final piece -- without it, the `hetzner-load-balanced-app` infra chart cannot create DNS records pointing to load balancer IPs, and users cannot manage Hetzner Cloud DNS from Planton manifests.
 
 ### Pain Points
 
 - No DNS management capability in the Hetzner Cloud provider
-- Users must manage DNS outside of OpenMCF even when all other infrastructure is declared as code
+- Users must manage DNS outside of Planton even when all other infrastructure is declared as code
 - Infra chart composability requires DNS records that can reference other component outputs (server IPs, LB addresses)
 
 ## Solution / What's New
@@ -68,7 +68,7 @@ flowchart TB
 ### Proto API (4 files)
 
 - `spec.proto`: `HetznerCloudDnsZoneSpec` with mode enum, `PrimaryNameserver`, `RecordSet`, and `RecordValue` messages. Three CEL validations for mode/nameserver/recordset cross-constraints.
-- `api.proto`: Standard resource wrapper with `api_version: "hetzner-cloud.openmcf.org/v1"`.
+- `api.proto`: Standard resource wrapper with `api_version: "hetzner-cloud.planton.dev/v1"`.
 - `stack_input.proto`: Stack input with target + provider config.
 - `stack_outputs.proto`: `zone_id` (string) + `nameservers` (repeated string -- assigned Hetzner nameservers for registrar configuration).
 
@@ -98,14 +98,14 @@ Comprehensive test suite covering valid specs (minimal primary, primary with rec
 
 ## Impact
 
-- **Users**: Can now manage DNS zones and records as part of their OpenMCF manifests, with full composability for infra charts.
+- **Users**: Can now manage DNS zones and records as part of their Planton manifests, with full composability for infra charts.
 - **Platform**: All 12 planned Hetzner Cloud resource kinds are now implemented (Start phase complete). Docs and presets remain for some components.
 - **Infra Charts**: DNS was the final dependency for the planned `hetzner-load-balanced-app` chart.
 
 ## Related Work
 
 - Part of the 20260219.03.sp.hetznercloud-resource-expansion sub-project (12 components)
-- Parent project: 20260212.01.openmcf-cloud-provider-expansion
+- Parent project: 20260212.01.planton-cloud-provider-expansion
 - Previous component: R11 HetznerCloudLoadBalancer (completed earlier today)
 - Coding guidelines: CG01 (label handling), CG02 (sub-resource keying)
 

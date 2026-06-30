@@ -16,7 +16,7 @@ Creates a point-in-time disk image from a Hetzner Cloud server, stored as a Hetz
 
 ## Prerequisites
 
-- **Hetzner Cloud API token** configured via environment variable (`HCLOUD_TOKEN`) or OpenMCF provider config
+- **Hetzner Cloud API token** configured via environment variable (`HCLOUD_TOKEN`) or Planton provider config
 - **An existing server** to snapshot — either a pre-existing server referenced by its numeric ID, or a `HetznerCloudServer` component referenced via `valueFrom`
 
 ## Quick Start
@@ -24,15 +24,15 @@ Creates a point-in-time disk image from a Hetzner Cloud server, stored as a Hetz
 Create a file `snapshot.yaml`:
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudSnapshot
 metadata:
   name: my-snapshot
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.HetznerCloudSnapshot.my-snapshot
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.HetznerCloudSnapshot.my-snapshot
 spec:
   serverId:
     value: "12345678"
@@ -41,7 +41,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f snapshot.yaml
+planton apply -f snapshot.yaml
 ```
 
 This creates a snapshot of server `12345678`. The snapshot's image ID is available in the stack outputs as `snapshot_id`.
@@ -67,17 +67,17 @@ This creates a snapshot of server `12345678`. The snapshot's image ID is availab
 A snapshot with a description for identification. The description appears in the Hetzner Cloud console and API listings.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudSnapshot
 metadata:
   name: pre-upgrade-baseline
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: maintenance
-    pulumi.openmcf.org/stack.name: production.HetznerCloudSnapshot.pre-upgrade-baseline
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: maintenance
+    pulumi.planton.dev/stack.name: production.HetznerCloudSnapshot.pre-upgrade-baseline
 spec:
   serverId:
     value: "12345678"
@@ -89,17 +89,17 @@ spec:
 Using `valueFrom` to reference a `HetznerCloudServer` component's output. The snapshot waits for the server to be created before attempting to capture its disk.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudSnapshot
 metadata:
   name: app-server-snapshot
   org: acme-corp
   env: staging
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: app-platform
-    pulumi.openmcf.org/stack.name: staging.HetznerCloudSnapshot.app-server-snapshot
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: app-platform
+    pulumi.planton.dev/stack.name: staging.HetznerCloudSnapshot.app-server-snapshot
 spec:
   serverId:
     valueFrom:
@@ -114,17 +114,17 @@ spec:
 Snapshot a configured template server, then use the snapshot's image ID to create identical worker servers. This is faster and more consistent than running configuration management on every new server.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudSnapshot
 metadata:
   name: golden-image-v1
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: fleet-management
-    pulumi.openmcf.org/stack.name: production.HetznerCloudSnapshot.golden-image-v1
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: fleet-management
+    pulumi.planton.dev/stack.name: production.HetznerCloudSnapshot.golden-image-v1
 spec:
   serverId:
     valueFrom:

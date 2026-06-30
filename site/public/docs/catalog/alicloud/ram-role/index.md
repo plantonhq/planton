@@ -12,14 +12,14 @@ Deploys an Alibaba Cloud RAM role with bundled policy attachments and a configur
 
 ## What Gets Created
 
-When you deploy an AliCloudRamRole resource, OpenMCF provisions:
+When you deploy an AliCloudRamRole resource, Planton provisions:
 
 - **RAM Role** — an `alicloud_ram_role` resource with the specified trust policy, session duration, and tags
 - **Policy Attachments** — one `alicloud_ram_role_policy_attachment` per entry in `policyAttachments`, granting the role permissions defined by system-managed or custom policies
 
 ## Prerequisites
 
-- **Alibaba Cloud credentials** configured via environment variables or OpenMCF provider config
+- **Alibaba Cloud credentials** configured via environment variables or Planton provider config
 - **An Alibaba Cloud account** with RAM service enabled
 - **Custom policies** must already exist before referencing them with `policyType: Custom` — create them with AliCloudRamPolicy
 
@@ -28,15 +28,15 @@ When you deploy an AliCloudRamRole resource, OpenMCF provisions:
 Create a file `ram-role.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudRamRole
 metadata:
   name: my-ecs-role
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudRamRole.my-ecs-role
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudRamRole.my-ecs-role
 spec:
   region: cn-hangzhou
   roleName: my-ecs-service-role
@@ -54,7 +54,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f ram-role.yaml
+planton apply -f ram-role.yaml
 ```
 
 This creates a RAM role that ECS instances can assume via STS. No policies are attached in this minimal configuration.
@@ -75,7 +75,7 @@ This creates a RAM role that ECS instances can assume via STS. No policies are a
 |-------|------|---------|-------------|
 | `description` | `string` | `""` | Human-readable description of the role's purpose. |
 | `maxSessionDuration` | `int` | `3600` | Maximum STS session duration in seconds when assuming this role. Range: 3600-43200 (1 hour to 12 hours). |
-| `tags` | `map<string, string>` | `{}` | Tags applied to the RAM role. Merged with standard OpenMCF tags (`resource_name`, `resource_kind`, `organization`, `environment`). User tags take precedence on conflict. |
+| `tags` | `map<string, string>` | `{}` | Tags applied to the RAM role. Merged with standard Planton tags (`resource_name`, `resource_kind`, `organization`, `environment`). User tags take precedence on conflict. |
 | `force` | `bool` | `false` | Force-detach all attached policies before deleting the role. When `false`, deletion fails if policies are still attached. |
 | `policyAttachments` | `list` | `[]` | Policies to attach to this role. Each entry creates a policy attachment resource. |
 | `policyAttachments[].policyName` | `string` | — | Policy name to attach (e.g., `AliyunECSFullAccess`, `AliyunOSSReadOnlyAccess`). Required per attachment. |
@@ -88,15 +88,15 @@ This creates a RAM role that ECS instances can assume via STS. No policies are a
 A role for ECS instances that need access to OSS and log services, with a 2-hour session duration:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudRamRole
 metadata:
   name: ecs-worker-role
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AliCloudRamRole.ecs-worker-role
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AliCloudRamRole.ecs-worker-role
 spec:
   region: cn-shanghai
   roleName: ecs-worker-role
@@ -125,15 +125,15 @@ spec:
 A role that another Alibaba Cloud account can assume for read-only audit access, with both system and custom policies:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudRamRole
 metadata:
   name: cross-account-audit
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AliCloudRamRole.cross-account-audit
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AliCloudRamRole.cross-account-audit
 spec:
   region: cn-hangzhou
   roleName: cross-account-audit-role
@@ -163,15 +163,15 @@ spec:
 A role for Function Compute functions that need VPC access and log service integration:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudRamRole
 metadata:
   name: fc-execution-role
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.AliCloudRamRole.fc-execution-role
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.AliCloudRamRole.fc-execution-role
 spec:
   region: cn-hangzhou
   roleName: fc-execution-role

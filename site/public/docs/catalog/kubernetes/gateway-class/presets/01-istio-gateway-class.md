@@ -19,7 +19,7 @@ This preset creates a GatewayClass for the Istio gateway controller. Istio is on
 
 - Your cluster runs Istio with the Gateway API controller enabled
 - You want Gateways to be provisioned and managed by Istio
-- You are following the standard OpenMCF ingress pattern (the leftbin reference setup)
+- You are following the standard Planton ingress pattern (the leftbin reference setup)
 
 ## Key Configuration Choices
 

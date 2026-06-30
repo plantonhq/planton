@@ -12,13 +12,13 @@ Deploys a DigitalOcean block storage volume that provides persistent, network-at
 
 ## What Gets Created
 
-When you deploy a DigitalOceanVolume resource, OpenMCF provisions:
+When you deploy a DigitalOceanVolume resource, Planton provisions:
 
 - **Block Storage Volume** — a `digitalocean_volume` resource in the specified region with the given size, optional filesystem formatting, and tags
 
 ## Prerequisites
 
-- **DigitalOcean credentials** configured via environment variables or OpenMCF provider config
+- **DigitalOcean credentials** configured via environment variables or Planton provider config
 - **A target region** that matches the region of any Droplet you intend to attach the volume to (volumes and Droplets must be co-located)
 - **A volume snapshot ID** if creating the volume from an existing snapshot (optional)
 
@@ -27,15 +27,15 @@ When you deploy a DigitalOceanVolume resource, OpenMCF provisions:
 Create a file `volume.yaml`:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanVolume
 metadata:
   name: my-volume
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.DigitalOceanVolume.my-volume
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.DigitalOceanVolume.my-volume
 spec:
   volumeName: my-volume
   region: nyc3
@@ -46,7 +46,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f volume.yaml
+planton apply -f volume.yaml
 ```
 
 This creates a 50 GiB block storage volume in the NYC3 region, pre-formatted with ext4.
@@ -77,15 +77,15 @@ This creates a 50 GiB block storage volume in the NYC3 region, pre-formatted wit
 A small, unformatted volume for experimentation:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanVolume
 metadata:
   name: dev-scratch
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.DigitalOceanVolume.dev-scratch
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.DigitalOceanVolume.dev-scratch
 spec:
   volumeName: dev-scratch
   region: sfo3
@@ -100,15 +100,15 @@ spec:
 A pre-formatted XFS volume sized for a staging database. XFS handles large files and concurrent I/O well, making it a common choice for PostgreSQL or MySQL data directories:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanVolume
 metadata:
   name: staging-db-data
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.DigitalOceanVolume.staging-db-data
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.DigitalOceanVolume.staging-db-data
 spec:
   volumeName: staging-db-data
   description: "Staging PostgreSQL data directory"
@@ -125,15 +125,15 @@ spec:
 A production volume restored from an existing snapshot, with ext4 formatting and compliance tags:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanVolume
 metadata:
   name: prod-app-data
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.DigitalOceanVolume.prod-app-data
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.DigitalOceanVolume.prod-app-data
 spec:
   volumeName: prod-app-data
   description: "Production app data restored from nightly snapshot"

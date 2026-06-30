@@ -12,7 +12,7 @@ Deploys a Google Cloud Artifact Registry repository with configurable format, re
 
 ## What Gets Created
 
-When you deploy a GcpArtifactRegistryRepo resource, OpenMCF provisions:
+When you deploy a GcpArtifactRegistryRepo resource, Planton provisions:
 
 - **Artifact Registry Repository** — a repository in the specified GCP project and region, with the chosen format (Docker, Maven, NPM, Python, Go, etc.) and GCP labels applied
 - **Reader Service Account** — a GCP service account with `roles/artifactregistry.reader` on the repository (for private repos) and a JSON key exported as a base64-encoded secret
@@ -22,7 +22,7 @@ When you deploy a GcpArtifactRegistryRepo resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **An existing GCP project** — referenced via `projectId`
 - **IAM permissions** to create Artifact Registry repositories and service accounts in the target project
 - **Artifact Registry API** enabled on the GCP project (`artifactregistry.googleapis.com`)
@@ -32,15 +32,15 @@ When you deploy a GcpArtifactRegistryRepo resource, OpenMCF provisions:
 Create a file `artifact-registry.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpArtifactRegistryRepo
 metadata:
   name: my-docker-repo
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpArtifactRegistryRepo.my-docker-repo
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpArtifactRegistryRepo.my-docker-repo
 spec:
   repoFormat: DOCKER
   projectId:
@@ -51,7 +51,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f artifact-registry.yaml
+planton apply -f artifact-registry.yaml
 ```
 
 This creates a private Docker repository in `us-central1` with dedicated reader and writer service accounts.
@@ -79,15 +79,15 @@ This creates a private Docker repository in `us-central1` with dedicated reader 
 A private Docker repository with dedicated service accounts for CI/CD integration:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpArtifactRegistryRepo
 metadata:
   name: backend-images
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpArtifactRegistryRepo.backend-images
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpArtifactRegistryRepo.backend-images
 spec:
   repoFormat: DOCKER
   projectId:
@@ -100,15 +100,15 @@ spec:
 A publicly readable NPM repository for distributing open-source packages:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpArtifactRegistryRepo
 metadata:
   name: oss-npm-packages
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpArtifactRegistryRepo.oss-npm-packages
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpArtifactRegistryRepo.oss-npm-packages
 spec:
   repoFormat: NPM
   projectId:
@@ -119,18 +119,18 @@ spec:
 
 ### Maven Repository with Foreign Key Reference
 
-A private Maven repository that references an OpenMCF-managed GcpProject instead of hardcoding the project ID:
+A private Maven repository that references an Planton-managed GcpProject instead of hardcoding the project ID:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpArtifactRegistryRepo
 metadata:
   name: java-artifacts
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpArtifactRegistryRepo.java-artifacts
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpArtifactRegistryRepo.java-artifacts
 spec:
   repoFormat: MAVEN
   projectId:
@@ -146,15 +146,15 @@ spec:
 A private Python repository for internal library distribution, deployed to a region close to your compute workloads:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpArtifactRegistryRepo
 metadata:
   name: internal-pypi
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: shared-services
-    pulumi.openmcf.org/stack.name: prod.GcpArtifactRegistryRepo.internal-pypi
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: shared-services
+    pulumi.planton.dev/stack.name: prod.GcpArtifactRegistryRepo.internal-pypi
 spec:
   repoFormat: PYTHON
   projectId:

@@ -1,0 +1,14 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesService
+metadata:
+  name: e2e-svc-np-auto
+spec:
+  namespace: default
+  name: e2e-svc-np-auto
+  type: node_port
+  selector:
+    app: test-app
+  ports:
+    - name: http
+      port: 80
+      target_port: "8080"

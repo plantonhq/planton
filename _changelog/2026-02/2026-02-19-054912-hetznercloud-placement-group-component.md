@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added the `HetznerCloudPlacementGroup` deployment component (R02, enum 3501, id_prefix: `hcpg`) to OpenMCF. This is the second Hetzner Cloud component and enables server anti-affinity placement -- servers assigned to a spread placement group are guaranteed to run on different physical hosts, providing fault tolerance for HA workloads.
+Added the `HetznerCloudPlacementGroup` deployment component (R02, enum 3501, id_prefix: `hcpg`) to Planton. This is the second Hetzner Cloud component and enables server anti-affinity placement -- servers assigned to a spread placement group are guaranteed to run on different physical hosts, providing fault tolerance for HA workloads.
 
 ## Problem Statement / Motivation
 
@@ -14,7 +14,7 @@ High-availability server deployments on Hetzner Cloud require anti-affinity guar
 
 ### Pain Points
 
-- No way to manage Hetzner Cloud placement groups through OpenMCF
+- No way to manage Hetzner Cloud placement groups through Planton
 - The upcoming HetznerCloudServer component (R07) needs placement group references via StringValueOrRef
 - All three planned infra charts (ha-server-cluster in particular) depend on placement groups
 
@@ -27,7 +27,7 @@ Implemented `HetznerCloudPlacementGroup` as a minimal, clean component that wrap
 The placement group resource has only one user-configurable attribute beyond metadata: `type`, which currently only supports `"spread"`. Rather than leaving the spec empty and hardcoding the type, we exposed it as an optional enum field with a default:
 
 ```proto
-optional Type type = 1 [(org.openmcf.shared.options.default) = "spread"];
+optional Type type = 1 [(dev.planton.shared.options.default) = "spread"];
 
 enum Type {
   type_unspecified = 0;

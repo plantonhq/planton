@@ -96,7 +96,7 @@ identically in both engines:
 ## Validation
 
 - `make protos`, `make generate-cloud-resource-kind-map`, `make reset-gazelle`.
-- `go test` (spec + `pkg/outputs` conformance), `openmcf secret-coverage --check`,
+- `go test` (spec + `pkg/outputs` conformance), `planton secret-coverage --check`,
   repo-wide `go build ./...`.
 - `tofu validate` against the real v5 provider; Pulumi entrypoint builds.
 - **Live `tofu apply` → update (env vars) → idempotent plan → `tofu destroy`** of
@@ -105,7 +105,7 @@ identically in both engines:
 
 ## Impact
 
-OpenMCF now answers "deploy Cloudflare Pages" with a first-class, composable kind.
+Planton now answers "deploy Cloudflare Pages" with a first-class, composable kind.
 Together with `CloudflareWorker` Static Assets it covers both Cloudflare hosting
 models. New kind requires Planton-side catalog/wizard/search wiring on
 integration.

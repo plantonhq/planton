@@ -12,7 +12,7 @@ Deploys a Google Compute Engine VM instance with configurable machine type, boot
 
 ## What Gets Created
 
-When you deploy a GcpComputeInstance resource, OpenMCF provisions:
+When you deploy a GcpComputeInstance resource, Planton provisions:
 
 - **Compute Engine Instance** — a `google_compute_instance` with the specified machine type, boot disk image, and zone, placed in the target GCP project
 - **Boot Disk** — created from the specified source image with configurable size, type, and auto-delete behavior
@@ -24,7 +24,7 @@ When you deploy a GcpComputeInstance resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **A GCP project** where the Compute Engine instance will be created
 - **Compute Engine API** enabled in the target project
 - **A VPC network or subnetwork** for network interface configuration
@@ -34,15 +34,15 @@ When you deploy a GcpComputeInstance resource, OpenMCF provisions:
 Create a file `compute-instance.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpComputeInstance
 metadata:
   name: my-vm
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpComputeInstance.my-vm
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpComputeInstance.my-vm
 spec:
   projectId: my-gcp-project
   zone: us-central1-a
@@ -58,7 +58,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f compute-instance.yaml
+planton apply -f compute-instance.yaml
 ```
 
 This creates an `e2-medium` instance running Debian 12 in `us-central1-a` with a public IP on the default VPC network.
@@ -121,15 +121,15 @@ This creates an `e2-medium` instance running Debian 12 in `us-central1-a` with a
 An `e2-small` instance running Ubuntu on the default network with an ephemeral external IP:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpComputeInstance
 metadata:
   name: web-server
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpComputeInstance.web-server
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpComputeInstance.web-server
 spec:
   projectId: my-gcp-project
   zone: us-central1-a
@@ -152,15 +152,15 @@ spec:
 An instance inside a custom VPC subnetwork with no external IP, a startup script that installs Nginx, and a dedicated service account:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpComputeInstance
 metadata:
   name: app-backend
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.GcpComputeInstance.app-backend
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.GcpComputeInstance.app-backend
 spec:
   projectId: my-gcp-project
   zone: us-east1-b
@@ -188,18 +188,18 @@ spec:
 
 ### Spot VM with Attached Disk and Foreign Key References
 
-A cost-effective Spot VM with an additional data disk, referencing other OpenMCF-managed resources for the project, network, and service account:
+A cost-effective Spot VM with an additional data disk, referencing other Planton-managed resources for the project, network, and service account:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpComputeInstance
 metadata:
   name: batch-worker
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpComputeInstance.batch-worker
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpComputeInstance.batch-worker
 spec:
   projectId:
     valueFrom:

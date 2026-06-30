@@ -8,7 +8,7 @@ TITLE
 Forge: Test Validation (component-scoped go test)
 
 ROLE
-You are the OpenMCF Code Partner working inside the developer's local workspace in Cursor. This rule validates that the component's unit tests pass by running `go test` scoped to the component directory.
+You are the Planton Code Partner working inside the developer's local workspace in Cursor. This rule validates that the component's unit tests pass by running `go test` scoped to the component directory.
 
 SCOPE
 - Run `go test` scoped to the component's v1 directory
@@ -30,12 +30,12 @@ SEQUENTIAL STEPS
 1) Verify Prerequisites:
    - Confirm proto stubs exist (.pb.go files)
    - Check that test files exist:
-     * `apis/org/openmcf/provider/<provider>/<component>/v1/spec_test.go`
+     * `apis/dev/planton/provider/<provider>/<component>/v1/spec_test.go`
    - Confirm code compiles (rule 018 passed)
    - Confirm you are in the project root directory
 
 2) Execute Command:
-   - Run: `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/`
+   - Run: `go test -v ./apis/dev/planton/provider/<provider>/<component>/v1/`
    - This runs only the component's tests, not the entire monorepo
    - Should complete in a few seconds
 
@@ -61,7 +61,7 @@ SEQUENTIAL STEPS
    - Provide fix suggestions for failures
 
 SUCCESS CRITERIA
-- `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/` exits with code 0
+- `go test -v ./apis/dev/planton/provider/<provider>/<component>/v1/` exits with code 0
 - All component tests pass (100% pass rate)
 - No test failures, errors, or panics
 - Tests complete within a few seconds
@@ -113,7 +113,7 @@ Show results clearly:
    - Test files exist
    - Code compiles
 
-🧪 Running: go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/
+🧪 Running: go test -v ./apis/dev/planton/provider/<provider>/<component>/v1/
 
 ⏱️  Duration: 2s
 
@@ -137,7 +137,7 @@ Tests failed: 2/17
 Failed tests:
 
 1. TestOpenStackNetworkSpec/should_return_a_validation_error_when_dns_domain_does_not_end_with_a_dot
-   File: apis/org/openmcf/provider/openstack/openstacknetwork/v1/spec_test.go:88
+   File: apis/dev/planton/provider/openstack/openstacknetwork/v1/spec_test.go:88
    
    Error:
    Expected error to not be nil
@@ -149,19 +149,19 @@ Failed tests:
 
 Next steps:
 1. Fix the failing tests
-2. Re-run: go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/
+2. Re-run: go test -v ./apis/dev/planton/provider/<provider>/<component>/v1/
 3. Ensure 100% pass rate before proceeding
 ```
 
 DEBUGGING TIPS
-1. **Run specific test**: `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/ -run TestName`
+1. **Run specific test**: `go test -v ./apis/dev/planton/provider/<provider>/<component>/v1/ -run TestName`
 2. **Verbose output**: `-v` flag shows detailed test output per test case
 3. **Check test setup**: Ensure test data is properly initialized
 4. **Verify validations**: Proto validations must match test expectations
 5. **Re-generate stubs**: If proto changed, run `make protos` before testing
 
 TESTING OPTIONAL FIELDS
-- Fields with `(org.openmcf.shared.options.default)` are marked `optional`
+- Fields with `(dev.planton.shared.options.default)` are marked `optional`
 - Generated Go code uses pointer types (`*string` vs `string`)
 - Tests must assign via pointers:
   ```go

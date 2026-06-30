@@ -59,9 +59,9 @@ flowchart TB
 **`spec.proto`** — Removed the required constraint and updated the field comment to describe both behaviors:
 
 ```protobuf
-org.openmcf.shared.foreignkey.v1.StringValueOrRef cloud_dns_zone_id = 4 [
-    (org.openmcf.shared.foreignkey.v1.default_kind) = GcpDnsZone,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_name"
+dev.planton.shared.foreignkey.v1.StringValueOrRef cloud_dns_zone_id = 4 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpDnsZone,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_name"
 ];
 ```
 

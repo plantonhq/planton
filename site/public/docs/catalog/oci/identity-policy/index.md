@@ -12,13 +12,13 @@ Deploys an Oracle Cloud Infrastructure IAM policy for granting access to compart
 
 ## What Gets Created
 
-When you deploy an OciIdentityPolicy resource, OpenMCF provisions:
+When you deploy an OciIdentityPolicy resource, Planton provisions:
 
-- **Identity Policy** — an `oci_identity_policy` resource in the specified compartment with the provided name, description, and policy statements. Standard OpenMCF freeform tags are applied automatically. The policy name defaults to `metadata.name` if not explicitly set in the spec.
+- **Identity Policy** — an `oci_identity_policy` resource in the specified compartment with the provided name, description, and policy statements. Standard Planton freeform tags are applied automatically. The policy name defaults to `metadata.name` if not explicitly set in the spec.
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID or tenancy OCID** where the policy will be created — the tenancy OCID for tenancy-level policies, or a compartment OCID for compartment-scoped policies (literal value or via `valueFrom` referencing an OciCompartment resource)
 - **Knowledge of OCI policy syntax** — statements follow the format `Allow <subject> to <verb> <resource-type> in <location> [where <conditions>]`. See [OCI Policy Reference](https://docs.oracle.com/iaas/Content/Identity/Reference/policyreference.htm)
 
@@ -27,15 +27,15 @@ When you deploy an OciIdentityPolicy resource, OpenMCF provisions:
 Create a file `policy.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciIdentityPolicy
 metadata:
   name: my-admin-policy
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciIdentityPolicy.my-admin-policy
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciIdentityPolicy.my-admin-policy
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -47,7 +47,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f policy.yaml
+planton apply -f policy.yaml
 ```
 
 This creates an IAM policy named `my-admin-policy` attached to the specified compartment. The single statement grants the `ProjectAdmins` group full administrative access to all resources within the `my-project` compartment and its children. The policy OCID is exported as a stack output for reference.
@@ -76,15 +76,15 @@ This creates an IAM policy named `my-admin-policy` attached to the specified com
 A policy granting a group full administrative access to all resources within a compartment — the most common OCI policy pattern:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciIdentityPolicy
 metadata:
   name: compartment-admin-policy
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciIdentityPolicy.compartment-admin-policy
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciIdentityPolicy.compartment-admin-policy
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -98,15 +98,15 @@ spec:
 A policy granting a dynamic group access to specific OCI services — the standard workload identity pattern for compute instances and OKE pods that need to call OCI APIs without stored credentials:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciIdentityPolicy
 metadata:
   name: workload-service-access
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciIdentityPolicy.workload-service-access
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciIdentityPolicy.workload-service-access
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -122,15 +122,15 @@ spec:
 A tenancy-level policy granting read-only visibility across all compartments for compliance and security auditing:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciIdentityPolicy
 metadata:
   name: auditor-policy
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciIdentityPolicy.auditor-policy
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciIdentityPolicy.auditor-policy
 spec:
   compartmentId:
     value: "ocid1.tenancy.oc1..example"
@@ -142,18 +142,18 @@ spec:
 
 ### Full-Featured with Foreign Key References
 
-A policy using `valueFrom` to reference an OpenMCF-managed compartment, with a version date for stable policy evaluation and custom metadata labels:
+A policy using `valueFrom` to reference an Planton-managed compartment, with a version date for stable policy evaluation and custom metadata labels:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciIdentityPolicy
 metadata:
   name: network-admin-policy
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: platform-infra
-    pulumi.openmcf.org/stack.name: prod.OciIdentityPolicy.network-admin-policy
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: platform-infra
+    pulumi.planton.dev/stack.name: prod.OciIdentityPolicy.network-admin-policy
     team: platform
     cost-center: infrastructure
 spec:

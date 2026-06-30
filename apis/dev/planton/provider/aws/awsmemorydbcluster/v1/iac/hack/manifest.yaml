@@ -1,0 +1,25 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsMemorydbCluster
+metadata:
+  name: test-memorydb
+  id: test-memorydb
+  org: test-org
+  env: dev
+  labels:
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: test
+    pulumi.planton.dev/project: test
+    pulumi.planton.dev/stack.name: dev.AwsMemorydbCluster.test-memorydb
+spec:
+  region: us-west-2
+  engine: redis
+  engineVersion: "7.1"
+  description: Test MemoryDB cluster
+  nodeType: db.t4g.small
+  numShards: 1
+  numReplicasPerShard: 0
+  aclName: open-access
+  tlsEnabled: true
+  subnetIds:
+    - value: subnet-0a1b2c3d4e5f00001
+    - value: subnet-0a1b2c3d4e5f00002

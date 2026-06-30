@@ -17,7 +17,7 @@ Deploys a DNS zone on Hetzner Cloud's authoritative nameservers with declarative
 
 ## Prerequisites
 
-- **Hetzner Cloud API token** configured via environment variable (`HCLOUD_TOKEN`) or OpenMCF provider config
+- **Hetzner Cloud API token** configured via environment variable (`HCLOUD_TOKEN`) or Planton provider config
 - **Domain registration** — you must own the domain and have access to its registrar to configure NS delegation after zone creation
 
 For **secondary** zones:
@@ -29,15 +29,15 @@ For **secondary** zones:
 Create a file `dns-zone.yaml`:
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudDnsZone
 metadata:
   name: my-zone
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.HetznerCloudDnsZone.my-zone
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.HetznerCloudDnsZone.my-zone
 spec:
   domainName: example.com
   mode: primary
@@ -46,7 +46,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f dns-zone.yaml
+planton apply -f dns-zone.yaml
 ```
 
 This creates an empty primary DNS zone for `example.com`. Check the `nameservers` stack output and configure these NS records at your domain registrar to activate the zone. Add record sets to the manifest to populate the zone with DNS records.
@@ -86,17 +86,17 @@ This creates an empty primary DNS zone for `example.com`. Check the `nameservers
 A production zone with A records, a CNAME alias, MX records for email, and TXT records for SPF and DMARC.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudDnsZone
 metadata:
   name: acme-zone
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: dns
-    pulumi.openmcf.org/stack.name: production.HetznerCloudDnsZone.acme-zone
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: dns
+    pulumi.planton.dev/stack.name: production.HetznerCloudDnsZone.acme-zone
 spec:
   domainName: acme-corp.com
   mode: primary
@@ -135,17 +135,17 @@ spec:
 DNS records that reference IP addresses from other Hetzner Cloud resources using `valueFrom`. When the referenced resource's IP changes, the DNS record updates automatically.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudDnsZone
 metadata:
   name: webapp-dns
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: webapp
-    pulumi.openmcf.org/stack.name: production.HetznerCloudDnsZone.webapp-dns
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: webapp
+    pulumi.planton.dev/stack.name: production.HetznerCloudDnsZone.webapp-dns
 spec:
   domainName: webapp.acme-corp.com
   mode: primary
@@ -184,17 +184,17 @@ spec:
 A secondary zone that synchronizes records from an external primary nameserver, authenticated with TSIG.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudDnsZone
 metadata:
   name: internal-dns
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: internal
-    pulumi.openmcf.org/stack.name: production.HetznerCloudDnsZone.internal-dns
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: internal
+    pulumi.planton.dev/stack.name: production.HetznerCloudDnsZone.internal-dns
 spec:
   domainName: internal.acme-corp.com
   mode: secondary

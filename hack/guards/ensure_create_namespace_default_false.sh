@@ -13,7 +13,7 @@ set -euo pipefail
 # `optional(bool, false)`: false == unset (no create), explicit true still creates.
 #
 # If a kind genuinely needs to default to CREATING the namespace, express that in the
-# proto via `optional bool create_namespace [(org.openmcf.shared.options.default) = "true"]`
+# proto via `optional bool create_namespace [(dev.planton.shared.options.default) = "true"]`
 # and let the manifest defaults applier (internal/manifest/protodefaults) inject it --
 # the TF default must still stay false, because the applier populates the field
 # regardless of the TF fallback. Never encode default-true as a TF-only fallback.
@@ -24,7 +24,7 @@ set -euo pipefail
 repo_root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$repo_root_dir"
 
-provider_base="apis/org/openmcf/provider"
+provider_base="apis/dev/planton/provider"
 
 violations=()
 

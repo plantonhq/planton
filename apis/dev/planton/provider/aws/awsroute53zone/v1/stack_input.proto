@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsroute53zone.v1;
+
+import "dev/planton/provider/aws/awsroute53zone/v1/api.proto";
+import "dev/planton/provider/aws/provider.proto";
+
+//aws-route53-zone stack-input
+message AwsRoute53ZoneStackInput {
+  //target cloud-resource
+  AwsRoute53Zone target = 1;
+  //provider-config
+  dev.planton.provider.aws.AwsProviderConfig provider_config = 2;
+}

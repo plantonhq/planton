@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocivcn.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// OciVcnSpec defines the specification for an Oracle Cloud Infrastructure
+// Virtual Cloud Network (VCN) and its optional gateway sub-resources.
+//
+// A VCN is the foundational networking construct in OCI, analogous to an AWS
+// VPC. It provides an isolated virtual network within a compartment and
+// supports multiple CIDR blocks, DNS resolution, and IPv6.
+//
+// Gateway resources (Internet, NAT, Service) are bundled into this component
+// because they are tightly coupled to the VCN lifecycle and rarely useful on
+// their own. Each gateway is controlled by a boolean toggle and only created
+// when enabled.
+message OciVcnSpec {
+  // OCID of the compartment where the VCN and its gateways will be created.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OciCompartment,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartment_id"
+  ];
+
+  // IPv4 CIDR blocks for the VCN. At least one is required.
+  // OCI supports multiple non-overlapping CIDRs per VCN (e.g. ["10.0.0.0/16", "172.16.0.0/16"]).
+  // Each block must be between /16 and /30.
+  repeated string cidr_blocks = 2 [(buf.validate.field).repeated.min_items = 1];
+
+  // Human-readable name for the VCN shown in the OCI Console.
+  // Falls back to metadata.name if not provided.
+  string display_name = 3;
+
+  // DNS label for the VCN. Enables DNS hostnames within the VCN.
+  // Must be alphanumeric, start with a letter, and be at most 15 characters.
+  // When set, the VCN domain becomes: <dns_label>.oraclevcn.com
+  string dns_label = 4;
+
+  // When true, allocate an Oracle-assigned /56 IPv6 GUA prefix for the VCN.
+  bool is_ipv6_enabled = 5;
+
+  // When true, create an Internet Gateway attached to this VCN.
+  // Required for resources that need direct inbound/outbound internet access.
+  bool is_internet_gateway_enabled = 6;
+
+  // When true, create a NAT Gateway attached to this VCN.
+  // Allows private resources to initiate outbound internet connections
+  // without exposing them to inbound traffic.
+  bool is_nat_gateway_enabled = 7;
+
+  // When true, create a Service Gateway attached to this VCN.
+  // Provides private access to OCI services (Object Storage, etc.) without
+  // traffic leaving the Oracle network. The gateway is automatically
+  // configured for "All Services in Oracle Services Network".
+  bool is_service_gateway_enabled = 8;
+}

@@ -10,10 +10,10 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/internal/cli/cliprint"
-	"github.com/plantonhq/openmcf/internal/cli/workspace"
-	"github.com/plantonhq/openmcf/pkg/fileutil"
-	"github.com/plantonhq/openmcf/pkg/iac/gitrepo"
+	"github.com/plantonhq/planton/internal/cli/cliprint"
+	"github.com/plantonhq/planton/internal/cli/workspace"
+	"github.com/plantonhq/planton/pkg/fileutil"
+	"github.com/plantonhq/planton/pkg/iac/gitrepo"
 )
 
 const (
@@ -21,7 +21,7 @@ const (
 	versionFileName = ".version"
 )
 
-// GetStagingDir returns the path to the staging directory (~/.openmcf/staging)
+// GetStagingDir returns the path to the staging directory (~/.planton/staging)
 func GetStagingDir() (string, error) {
 	workspaceDir, err := workspace.GetWorkspaceDir()
 	if err != nil {
@@ -31,7 +31,7 @@ func GetStagingDir() (string, error) {
 }
 
 // GetStagingRepoPath returns the path to the cloned repository in staging
-// (~/.openmcf/staging/openmcf)
+// (~/.planton/staging/planton)
 func GetStagingRepoPath() (string, error) {
 	stagingDir, err := GetStagingDir()
 	if err != nil {
@@ -176,7 +176,7 @@ func cloneToStaging() error {
 		return err
 	}
 
-	cliprint.PrintStep("Cloning OpenMCF repository to staging area...")
+	cliprint.PrintStep("Cloning Planton repository to staging area...")
 	cliprint.PrintInfo("This is a one-time operation. Future executions will use local copy.")
 
 	cmd := exec.Command("git", "clone", "--progress", gitrepo.CloneUrl, repoPath)

@@ -1,0 +1,30 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesCronJob
+metadata:
+  name: test-cronjob
+spec:
+  namespace:
+    value: test-cronjob-ns
+  createNamespace: true
+  schedule: "0 * * * *"
+  image:
+    repo: busybox
+    tag: latest
+  resources:
+    limits:
+      cpu: "500m"
+      memory: "256Mi"
+    requests:
+      cpu: "100m"
+      memory: "64Mi"
+  env:
+    variables:
+      - name: SOME_ENV_VAR_ONE
+        value: "some-env-var-value-one"
+  command:
+    - /bin/sh
+    - -c
+    - echo "Hello from CronJob"
+  concurrencyPolicy: Forbid
+  backoffLimit: 3
+  restartPolicy: Never

@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azurefunctionapp.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/azure/azurefunctionapp/v1/spec.proto";
+import "dev/planton/provider/azure/azurefunctionapp/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// AzureFunctionApp is the top-level API resource for an Azure Linux Function App.
+// A Function App is a serverless compute platform for event-driven workloads,
+// supporting HTTP triggers, queue triggers, timer triggers, and more.
+//
+// It runs on an AzureServicePlan (Consumption, Elastic Premium, or Dedicated)
+// and requires an AzureStorageAccount for runtime state management.
+message AzureFunctionApp {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'azure.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'AzureFunctionApp'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  AzureFunctionAppSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  AzureFunctionAppStatus status = 5;
+}
+
+// AzureFunctionAppStatus holds the deployment status and outputs.
+message AzureFunctionAppStatus {
+  // stack-outputs
+  AzureFunctionAppStackOutputs outputs = 1;
+}

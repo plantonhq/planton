@@ -1,0 +1,117 @@
+syntax = "proto3";
+
+package dev.planton.provider.openstack.openstackloadbalancermonitor.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// OpenStackLoadBalancerMonitorSpec defines the configuration for an Octavia health monitor
+// in OpenStack. A health monitor periodically checks the health of pool members and
+// removes unhealthy members from the pool's rotation until they recover.
+//
+// Terraform resource: openstack_lb_monitor_v2
+// Pulumi resource:    loadbalancer.Monitor
+//
+// Validations:
+// - url_path, http_method, and expected_codes are only valid for HTTP or HTTPS monitors.
+// - max_retries must be between 1 and 10.
+// - max_retries_down must be between 1 and 10 (when set).
+//
+// Note: The Terraform provider does NOT support tags on health monitors.
+message OpenStackLoadBalancerMonitorSpec {
+  option (buf.validate.message).cel = {
+    id: "http_fields_require_http_type"
+    message: "url_path, http_method, and expected_codes are only valid for HTTP or HTTPS monitor types"
+    expression: "(this.url_path == '' && this.http_method == '' && this.expected_codes == '') || this.type == 'HTTP' || this.type == 'HTTPS'"
+  };
+
+  // (Required) The pool to monitor.
+  // ForceNew: changing this requires recreating the monitor.
+  //
+  // FK: OpenStackLoadBalancerPool.status.outputs.pool_id
+  dev.planton.shared.foreignkey.v1.StringValueOrRef pool_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OpenStackLoadBalancerPool,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.pool_id"
+  ];
+
+  // (Required) The type of health check to perform.
+  // ForceNew: changing this requires recreating the monitor.
+  //
+  // - HTTP: Send HTTP requests and check response codes
+  // - HTTPS: Send HTTPS requests and check response codes
+  // - PING: ICMP ping the member
+  // - TCP: Attempt a TCP connection
+  // - TLS-HELLO: Perform a TLS handshake
+  // - UDP-CONNECT: Send a UDP datagram and check for ICMP errors
+  string type = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.in = "HTTP",
+    (buf.validate.field).string.in = "HTTPS",
+    (buf.validate.field).string.in = "PING",
+    (buf.validate.field).string.in = "TCP",
+    (buf.validate.field).string.in = "TLS-HELLO",
+    (buf.validate.field).string.in = "UDP-CONNECT"
+  ];
+
+  // (Required) The interval in seconds between health checks.
+  // A check is sent every `delay` seconds to each member.
+  int32 delay = 3 [(buf.validate.field).required = true];
+
+  // (Required) The maximum time in seconds to wait for a health check response.
+  // If a member does not respond within this time, the check is considered failed.
+  int32 timeout = 4 [(buf.validate.field).required = true];
+
+  // (Required) The number of consecutive successful health checks required before
+  // a member is considered healthy (brought back into rotation).
+  // Must be between 1 and 10.
+  int32 max_retries = 5 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "max_retries_range"
+      message: "max_retries must be between 1 and 10"
+      expression: "this >= 1 && this <= 10"
+    }
+  ];
+
+  // (Optional) The number of consecutive failed health checks required before
+  // a member is considered unhealthy (removed from rotation).
+  // Must be between 1 and 10. Default: Octavia uses the same value as max_retries.
+  optional int32 max_retries_down = 6 [(buf.validate.field).cel = {
+    id: "max_retries_down_range"
+    message: "max_retries_down must be between 1 and 10"
+    expression: "this >= 1 && this <= 10"
+  }];
+
+  // (Optional) The URL path to request for HTTP/HTTPS health checks.
+  // Typically "/" or "/healthz". Only applicable when type is HTTP or HTTPS.
+  string url_path = 7;
+
+  // (Optional) The HTTP method to use for HTTP/HTTPS health checks.
+  // Only applicable when type is HTTP or HTTPS.
+  string http_method = 8 [
+    (buf.validate.field).string.in = "",
+    (buf.validate.field).string.in = "GET",
+    (buf.validate.field).string.in = "HEAD",
+    (buf.validate.field).string.in = "POST",
+    (buf.validate.field).string.in = "PUT",
+    (buf.validate.field).string.in = "DELETE",
+    (buf.validate.field).string.in = "PATCH",
+    (buf.validate.field).string.in = "OPTIONS",
+    (buf.validate.field).string.in = "CONNECT",
+    (buf.validate.field).string.in = "TRACE"
+  ];
+
+  // (Optional) Expected HTTP response codes for a healthy member.
+  // Supports single codes ("200"), ranges ("200-299"), and comma-separated lists ("200,202").
+  // Only applicable when type is HTTP or HTTPS.
+  string expected_codes = 9;
+
+  // (Optional) Administrative state of the monitor.
+  // When false, the monitor stops checking members. Default: true.
+  optional bool admin_state_up = 10 [(dev.planton.shared.options.default) = "true"];
+
+  // (Optional) Override the region from the provider configuration.
+  string region = 11;
+}

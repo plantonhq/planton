@@ -12,7 +12,7 @@ Deploys an AWS App Runner Service from a container image or GitHub repository wi
 
 ## What Gets Created
 
-When you deploy an AwsAppRunnerService resource, OpenMCF provisions:
+When you deploy an AwsAppRunnerService resource, Planton provisions:
 
 - **App Runner Service** — an `aws:apprunner:Service` resource with source configuration (image or code), instance sizing, health checks, networking, encryption, and observability settings
 - **VPC Connector** — created only when `subnetIds` are provided and no existing `vpcConnectorArn` is referenced, allowing the service to reach resources in your VPC (databases, caches, internal APIs)
@@ -20,7 +20,7 @@ When you deploy an AwsAppRunnerService resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **A container image in ECR or ECR Public** if using image-based deployment
 - **An IAM access role** with ECR pull permissions if using a private ECR image (`image_repository_type: ECR`)
 - **An App Runner Connection** (created via AWS Console or CLI with GitHub OAuth) if using code-based deployment
@@ -32,15 +32,15 @@ When you deploy an AwsAppRunnerService resource, OpenMCF provisions:
 Create a file `app-runner.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsAppRunnerService
 metadata:
   name: my-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsAppRunnerService.my-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsAppRunnerService.my-api
 spec:
   region: us-east-1
   imageSource:
@@ -51,7 +51,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f app-runner.yaml
+planton apply -f app-runner.yaml
 ```
 
 This creates a publicly accessible App Runner service running an ECR Public image with default settings: 1 vCPU, 2 GB memory, port 8080, and auto scaling from 1 to 25 instances.
@@ -112,15 +112,15 @@ This creates a publicly accessible App Runner service running an ECR Public imag
 Deploy a public container image with a non-default port and reduced instance size:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsAppRunnerService
 metadata:
   name: lightweight-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsAppRunnerService.lightweight-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsAppRunnerService.lightweight-api
 spec:
   imageSource:
     imageIdentifier: public.ecr.aws/myalias/my-app:latest
@@ -135,15 +135,15 @@ spec:
 Deploy from a private ECR registry with VPC egress so the service can reach an RDS database:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsAppRunnerService
 metadata:
   name: backend-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.AwsAppRunnerService.backend-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.AwsAppRunnerService.backend-api
 spec:
   region: us-east-1
   imageSource:
@@ -178,15 +178,15 @@ spec:
 Deploy directly from a GitHub repository using a managed Node.js runtime:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsAppRunnerService
 metadata:
   name: web-frontend
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsAppRunnerService.web-frontend
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsAppRunnerService.web-frontend
 spec:
   region: us-east-1
   codeSource:
@@ -211,15 +211,15 @@ spec:
 Production configuration with private ECR, VPC networking, KMS encryption, X-Ray observability, tuned auto scaling, and controlled deployments:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsAppRunnerService
 metadata:
   name: prod-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsAppRunnerService.prod-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsAppRunnerService.prod-api
 spec:
   region: us-east-1
   imageSource:
@@ -263,18 +263,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding IDs:
+Reference other Planton-managed resources instead of hardcoding IDs:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsAppRunnerService
 metadata:
   name: ref-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsAppRunnerService.ref-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsAppRunnerService.ref-api
 spec:
   region: us-east-1
   imageSource:

@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added AzureLoadBalancer as a new deployment component in OpenMCF, providing Layer 4 (TCP/UDP) load balancing for Azure workloads. The component bundles the load balancer with backend pools, health probes, and load balancing rules. This is R09 in the Azure resource expansion project (10th of 24 Azure resources).
+Added AzureLoadBalancer as a new deployment component in Planton, providing Layer 4 (TCP/UDP) load balancing for Azure workloads. The component bundles the load balancer with backend pools, health probes, and load balancing rules. This is R09 in the Azure resource expansion project (10th of 24 Azure resources).
 
 ## Problem Statement / Motivation
 
@@ -14,7 +14,7 @@ The Azure resource expansion project aims to grow Azure coverage from 10 to 33 c
 
 ### Pain Points
 
-- No Layer 4 load balancing capability in OpenMCF for Azure
+- No Layer 4 load balancing capability in Planton for Azure
 - Enterprise network architectures require both L4 (LB) and L7 (Application Gateway) traffic distribution
 - SQL AlwaysOn, HA clustering, and NVA scenarios require Standard LB with floating IP support
 
@@ -56,7 +56,7 @@ Eight corrections were applied during deep provider research:
 
 - `spec.proto` -- AzureLoadBalancerSpec with 3 sub-messages (AzureBackendPool, AzureHealthProbe, AzureLoadBalancingRule)
 - `stack_outputs.proto` -- 5 outputs (lb_id, lb_name, frontend_ip_address, frontend_ip_configuration_id, backend_pool_id)
-- `api.proto` -- KRM wiring with api_version `azure.openmcf.org/v1`
+- `api.proto` -- KRM wiring with api_version `azure.planton.dev/v1`
 - `stack_input.proto` -- IaC module input
 - `spec_test.go` -- 28 validation tests (8 valid + 20 invalid scenarios)
 
@@ -106,7 +106,7 @@ flowchart LR
 
 ## Impact
 
-- **New capability**: Layer 4 load balancing for Azure in OpenMCF
+- **New capability**: Layer 4 load balancing for Azure in Planton
 - **Enum registration**: `AzureLoadBalancer = 417` in cloud_resource_kind.proto
 - **Infra chart enablement**: Unlocks enterprise-network-foundation chart component
 - **Files created**: ~30 files across proto, Go, HCL, YAML, and Markdown

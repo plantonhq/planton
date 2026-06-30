@@ -1,13 +1,13 @@
 ---
 title: "AWS"
-description: "Deploy AWS resources using OpenMCF"
+description: "Deploy AWS resources using Planton"
 icon: "cloud"
 order: 10
 ---
 
 # AWS
 
-The following AWS resources can be deployed using OpenMCF:
+The following AWS resources can be deployed using Planton:
 
 - [ALB](/docs/catalog/aws/alb)
 - [App Runner Service](/docs/catalog/aws/app-runner-service)

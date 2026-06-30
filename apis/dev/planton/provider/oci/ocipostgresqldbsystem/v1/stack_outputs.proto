@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocipostgresqldbsystem.v1;
+
+// OciPostgresqlDbSystemStackOutputs contains the outputs produced after
+// deploying an OciPostgresqlDbSystem.
+// These values are used by downstream components for composability via
+// StringValueOrRef.
+message OciPostgresqlDbSystemStackOutputs {
+  // OCID of the PostgreSQL DB System.
+  string db_system_id = 1;
+
+  // Private IP address of the primary (read-write) endpoint.
+  string primary_db_endpoint_private_ip = 2;
+
+  // Administrator username (computed after creation).
+  string admin_username = 3;
+}

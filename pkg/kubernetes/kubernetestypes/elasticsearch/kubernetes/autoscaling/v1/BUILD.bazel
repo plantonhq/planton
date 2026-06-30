@@ -3,7 +3,7 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "autoscaling",
     srcs = ["pulumiTypes.go"],
-    importpath = "github.com/plantonhq/openmcf/pkg/kubernetes/kubernetestypes/elasticsearch/kubernetes/autoscaling/v1",
+    importpath = "github.com/plantonhq/planton/pkg/kubernetes/kubernetestypes/elasticsearch/kubernetes/autoscaling/v1",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/meta/v1:meta",

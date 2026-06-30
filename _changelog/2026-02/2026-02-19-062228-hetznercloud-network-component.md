@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added the `HetznerCloudNetwork` deployment component (R04, enum 3510, id_prefix: `hcnet`) to OpenMCF. This is the fourth Hetzner Cloud component and the **first multi-resource bundle**, combining `hcloud_network` + `hcloud_network_subnet` (repeated) + `hcloud_network_route` (repeated) into a single composable unit. It establishes new patterns for sub-resource keying, Pulumi ID type conversion, and Terraform `for_each` maps that will be reused by at least five subsequent components.
+Added the `HetznerCloudNetwork` deployment component (R04, enum 3510, id_prefix: `hcnet`) to Planton. This is the fourth Hetzner Cloud component and the **first multi-resource bundle**, combining `hcloud_network` + `hcloud_network_subnet` (repeated) + `hcloud_network_route` (repeated) into a single composable unit. It establishes new patterns for sub-resource keying, Pulumi ID type conversion, and Terraform `for_each` maps that will be reused by at least five subsequent components.
 
 ## Problem Statement / Motivation
 
@@ -14,7 +14,7 @@ Hetzner Cloud servers and load balancers require private network connectivity. W
 
 ### Pain Points
 
-- No way to manage Hetzner Cloud private networks through OpenMCF
+- No way to manage Hetzner Cloud private networks through Planton
 - HetznerCloudServer (R07) and HetznerCloudLoadBalancer (R11) need network_id references via StringValueOrRef
 - All three planned infra charts require private networking as their foundation
 - Networks without subnets are unusable -- they must be bundled as a single component

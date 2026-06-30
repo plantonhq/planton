@@ -1,5 +1,5 @@
 module(
-    name = "openmcf",
+    name = "planton",
 )
 
 # ─── Go rules + Gazelle ──────────────────────────────────────────────────────
@@ -9,7 +9,7 @@ bazel_dep(name = "gazelle", version = "0.47.0")
 # Pin the Go toolchain Bazel uses (hermetic; no host Go required)
 go_sdk = use_extension("@rules_go//go:extensions.bzl", "go_sdk")
 go_sdk.download(version = "1.26.0")
-go_sdk.nogo(nogo = "//:openmcf_nogo")
+go_sdk.nogo(nogo = "//:planton_nogo")
 
 # Read Go deps from this repo's go.mod (bzlmod-friendly)
 go_deps = use_extension("@gazelle//:extensions.bzl", "go_deps")

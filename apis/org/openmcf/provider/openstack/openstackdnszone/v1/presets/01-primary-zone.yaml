@@ -1,8 +1,0 @@
-apiVersion: openstack.openmcf.org/v1
-kind: OpenStackDnsZone
-metadata:
-  name: my-dns-zone
-spec:
-  domainName: <your-domain.com.>
-  email: admin@<your-domain.com>
-  ttl: 3600

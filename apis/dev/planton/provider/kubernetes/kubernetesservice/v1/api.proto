@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesservice.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/kubernetesservice/v1/spec.proto";
+import "dev/planton/provider/kubernetes/kubernetesservice/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+/**
+ * **KubernetesService** defines a Kubernetes Service resource following the Kubernetes Resource Model (KRM).
+ * This resource represents a standalone Kubernetes Service for service discovery, load balancing,
+ * and external access to workloads running in a Kubernetes cluster.
+ */
+message KubernetesService {
+  // API version for this resource.
+  // Always set to "kubernetes.planton.dev/v1".
+  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.planton.dev/v1'];
+
+  // Resource kind identifier.
+  // Always set to "KubernetesService".
+  string kind = 2 [(buf.validate.field).string.const = 'KubernetesService'];
+
+  // Metadata for the Kubernetes Service resource.
+  // Includes standard fields like name, organization, environment, etc.
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // Specification of the desired state for the Kubernetes Service.
+  // Defines the service type, ports, selector, and routing configuration.
+  KubernetesServiceSpec spec = 4 [(buf.validate.field).required = true];
+
+  // Status of the Kubernetes Service resource.
+  // Contains outputs and lifecycle information populated after deployment.
+  KubernetesServiceStatus status = 5;
+}
+
+/**
+ * **KubernetesServiceStatus** captures the runtime status of a Kubernetes Service deployment.
+ * This includes outputs generated after the service is created.
+ */
+message KubernetesServiceStatus {
+  // Outputs from the service deployment.
+  // Contains observable identifiers like cluster IP, load balancer address, and DNS name.
+  KubernetesServiceStackOutputs outputs = 1;
+}

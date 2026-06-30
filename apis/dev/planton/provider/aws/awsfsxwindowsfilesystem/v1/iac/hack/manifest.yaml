@@ -1,0 +1,19 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsFsxWindowsFileSystem
+metadata:
+  org: test-org
+  env: test
+  name: test-windows-fs
+  id: awsfxw-test-windows-fs-test
+spec:
+  region: us-west-2
+  deployment_type: SINGLE_AZ_2
+  storage_capacity_gib: 32
+  storage_type: SSD
+  throughput_capacity: 32
+  subnet_ids:
+    - value: subnet-test123
+  security_group_ids:
+    - value: sg-test123
+  active_directory_id:
+    value: d-test123

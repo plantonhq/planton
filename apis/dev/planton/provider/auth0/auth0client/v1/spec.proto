@@ -1,0 +1,433 @@
+syntax = "proto3";
+
+package dev.planton.provider.auth0.auth0client.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// Auth0ClientSpec defines the configuration for an Auth0 Application (Client).
+// In Auth0, "Applications" represent the clients that interact with Auth0 for authentication.
+// Applications are the entry point for users to authenticate and authorize access to APIs.
+//
+// This spec covers the 80/20 use case for configuring Auth0 applications:
+// - Web applications (SPAs, traditional server-rendered apps)
+// - Mobile/native applications
+// - Machine-to-Machine (M2M) applications for API access
+//
+// Supported application types:
+// - native: Mobile, desktop, or CLI applications
+// - spa: Single Page Applications (JavaScript running in browser)
+// - regular_web: Traditional server-side web applications
+// - non_interactive: Machine-to-Machine (M2M) API clients
+//
+// https://auth0.com/docs/get-started/applications
+message Auth0ClientSpec {
+  // application_type defines the type of application being registered.
+  // This determines the appropriate OAuth flows and security settings.
+  //
+  // - "native": Mobile, desktop, or CLI applications that run natively on a device.
+  //   Uses Authorization Code with PKCE. Cannot securely store secrets.
+  // - "spa": Single Page Applications running JavaScript in the browser.
+  //   Uses Authorization Code with PKCE. Cannot securely store secrets.
+  // - "regular_web": Traditional web apps with server-side rendering.
+  //   Can use Authorization Code flow and securely store client secrets.
+  // - "non_interactive": Machine-to-Machine applications for API access.
+  //   Uses Client Credentials flow. Designed for backend services.
+  //
+  // https://auth0.com/docs/get-started/applications/application-types
+  string application_type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "native",
+        "spa",
+        "regular_web",
+        "non_interactive"
+      ]
+    }
+  ];
+
+  // description is an optional free-text description of the application.
+  // Useful for documenting the purpose, owner, or other metadata.
+  // Maximum 140 characters.
+  string description = 2 [(buf.validate.field).string = {max_len: 140}];
+
+  // logo_uri is the URL of the application's logo.
+  // This is displayed on the consent page and login page.
+  // Must be a valid HTTPS URL to an image file.
+  string logo_uri = 3;
+
+  // callbacks are the allowed callback URLs for the application.
+  // After authentication, Auth0 will only redirect to URLs in this list.
+  // For SPAs and native apps, include your development and production URLs.
+  // Example: ["https://myapp.com/callback", "http://localhost:3000/callback"]
+  repeated string callbacks = 4;
+
+  // allowed_logout_urls are URLs that Auth0 can redirect to after logout.
+  // Must be registered here to be used with the logout endpoint.
+  // Example: ["https://myapp.com", "http://localhost:3000"]
+  repeated string allowed_logout_urls = 5;
+
+  // web_origins are the allowed origins for web message response mode.
+  // Required for SPAs using popup or iframe-based authentication.
+  // Example: ["https://myapp.com", "http://localhost:3000"]
+  repeated string web_origins = 6;
+
+  // allowed_origins are CORS origins allowed for this application.
+  // Used for cross-origin requests from JavaScript applications.
+  // Example: ["https://myapp.com"]
+  repeated string allowed_origins = 7;
+
+  // grant_types specifies which OAuth grant types this application can use.
+  // If not specified, defaults are based on application_type.
+  //
+  // Common grant types:
+  // - "authorization_code": Standard OAuth 2.0 authorization code flow
+  // - "implicit": Implicit flow (legacy, not recommended)
+  // - "refresh_token": Allows obtaining refresh tokens
+  // - "client_credentials": For M2M applications
+  // - "password": Resource owner password grant (not recommended)
+  // - "http://auth0.com/oauth/grant-type/password-realm": Password with realm
+  // - "urn:ietf:params:oauth:grant-type:device_code": Device authorization flow
+  repeated string grant_types = 8;
+
+  // oidc_conformant enables stricter OIDC-conformant behavior.
+  // When true, the application will follow OIDC specification strictly.
+  // Recommended for new applications.
+  // Default: true
+  bool oidc_conformant = 9;
+
+  // is_first_party indicates whether this is a first-party application.
+  // First-party apps are owned by the same entity as the Auth0 tenant.
+  // They skip the consent prompt for users.
+  // Default: true
+  bool is_first_party = 10;
+
+  // cross_origin_authentication enables cross-origin authentication.
+  // Required for embedded login forms in SPAs.
+  // Only enable if you understand the security implications.
+  // Default: false
+  bool cross_origin_authentication = 11;
+
+  // cross_origin_loc is the URL for cross-origin verification fallback.
+  // Used with cross-origin authentication for certain browsers.
+  string cross_origin_loc = 12;
+
+  // sso enables Single Sign-On for this application.
+  // When enabled, users who are already logged in won't need to re-authenticate.
+  // Default: true
+  bool sso = 13;
+
+  // sso_disabled explicitly disables SSO for this application.
+  // Set to true to require authentication for each session.
+  // Default: false
+  bool sso_disabled = 14;
+
+  // custom_login_page is the custom HTML for the login page.
+  // Allows complete customization of the login experience.
+  // Only used when custom_login_page_on is true.
+  string custom_login_page = 15;
+
+  // custom_login_page_on enables the custom login page.
+  // When true, uses custom_login_page instead of Universal Login.
+  // Default: false
+  bool custom_login_page_on = 16;
+
+  // initiate_login_uri is the URL to initiate login (for OIDC third-party apps).
+  // Used for third-party initiated login flows.
+  string initiate_login_uri = 17;
+
+  // organization_usage determines how organizations are used with this app.
+  // - "deny": Organizations cannot be used (default for most apps)
+  // - "allow": Organizations can be used optionally
+  // - "require": Organizations must be specified at login
+  string organization_usage = 18 [(buf.validate.field).string = {
+    in: [
+      "",
+      "deny",
+      "allow",
+      "require"
+    ]
+  }];
+
+  // organization_require_behavior specifies when org is required.
+  // - "no_prompt": Fail silently if no organization specified
+  // - "pre_login_prompt": Show organization picker before login
+  // - "post_login_prompt": Show organization picker after login
+  // Only used when organization_usage is "require".
+  string organization_require_behavior = 19 [(buf.validate.field).string = {
+    in: [
+      "",
+      "no_prompt",
+      "pre_login_prompt",
+      "post_login_prompt"
+    ]
+  }];
+
+  // jwt_configuration contains settings for JWT tokens issued to this client.
+  Auth0JwtConfiguration jwt_configuration = 20;
+
+  // refresh_token contains settings for refresh token behavior.
+  Auth0RefreshTokenConfiguration refresh_token = 21;
+
+  // native_social_login configures native social login for mobile apps.
+  // Only applicable for native application types.
+  Auth0NativeSocialLogin native_social_login = 22;
+
+  // mobile configures mobile-specific settings.
+  // Only applicable for native application types.
+  Auth0MobileConfiguration mobile = 23;
+
+  // client_metadata is a map of custom metadata key-value pairs.
+  // Useful for storing application-specific configuration.
+  // Maximum 10 key-value pairs.
+  map<string, string> client_metadata = 24;
+
+  // client_aliases are alternative identifiers for this client.
+  // Can be used in authentication requests instead of client_id.
+  repeated string client_aliases = 25;
+
+  // is_token_endpoint_ip_header_trusted determines if IP header is trusted.
+  // When true, Auth0 uses X-Forwarded-For header for IP-based features.
+  // Default: false
+  bool is_token_endpoint_ip_header_trusted = 26;
+
+  // oidc_backchannel_logout configures OIDC back-channel logout.
+  Auth0OidcBackchannelLogout oidc_backchannel_logout = 27;
+
+  // enabled_connections limits which connections this app can use.
+  // If empty, all connections are available.
+  //
+  // You can provide either:
+  // - Direct connection name: {value: "Username-Password-Authentication"}
+  // - Reference to Auth0Connection component: {value_from: {kind: Auth0Connection, name: "my-connection"}}
+  //
+  // When using references, the connection name is automatically resolved from the
+  // Auth0Connection's status.outputs.name field.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef enabled_connections = 28 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = Auth0Connection,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
+
+  // api_grants configures which APIs this client is authorized to access.
+  // For M2M applications using client_credentials grant, at least one API grant is typically required.
+  // Each entry creates an auth0_client_grant resource linking this client to an API.
+  //
+  // Without api_grants, an M2M application can authenticate but cannot access any APIs.
+  // This is different from grant_types which only defines which OAuth flows are allowed.
+  //
+  // Example - Authorize for Auth0 Management API:
+  //   api_grants:
+  //     - audience: "https://your-tenant.us.auth0.com/api/v2/"
+  //       scopes:
+  //         - read:users
+  //         - read:user_idp_tokens
+  //
+  // Example - Authorize for custom API:
+  //   api_grants:
+  //     - audience: "https://api.example.com/"
+  //       scopes:
+  //         - read:resources
+  //         - write:resources
+  repeated Auth0ClientApiGrant api_grants = 29;
+}
+
+// Auth0JwtConfiguration configures JWT token settings for the application.
+message Auth0JwtConfiguration {
+  // lifetime_in_seconds is the expiration time for JWTs in seconds.
+  // Default: 36000 (10 hours)
+  // Range: 0-2592000 (30 days max)
+  int32 lifetime_in_seconds = 1 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 2592000
+  }];
+
+  // scopes is a map of custom scopes and their descriptions.
+  // These scopes will be available for this application.
+  // Key: scope name, Value: scope description
+  map<string, string> scopes = 2;
+
+  // alg is the algorithm used to sign the JWT.
+  // - "HS256": HMAC using SHA-256 (symmetric, uses client secret)
+  // - "RS256": RSA using SHA-256 (asymmetric, uses tenant keys)
+  // - "PS256": RSA-PSS using SHA-256
+  // Default: RS256 (recommended)
+  string alg = 3 [(buf.validate.field).string = {
+    in: [
+      "",
+      "HS256",
+      "RS256",
+      "PS256"
+    ]
+  }];
+
+  // secret_encoded indicates if the client secret is base64 encoded.
+  // Only relevant when alg is HS256.
+  // Default: false
+  bool secret_encoded = 4;
+}
+
+// Auth0RefreshTokenConfiguration configures refresh token behavior.
+message Auth0RefreshTokenConfiguration {
+  // rotation_type determines refresh token rotation behavior.
+  // - "non-rotating": Refresh tokens don't rotate (legacy behavior)
+  // - "rotating": New refresh token issued with each use (recommended)
+  // Default: non-rotating
+  string rotation_type = 1 [(buf.validate.field).string = {
+    in: [
+      "",
+      "non-rotating",
+      "rotating"
+    ]
+  }];
+
+  // expiration_type determines how refresh tokens expire.
+  // - "non-expiring": Tokens don't expire (not recommended)
+  // - "expiring": Tokens expire based on configured lifetimes
+  // Default: non-expiring
+  string expiration_type = 2 [(buf.validate.field).string = {
+    in: [
+      "",
+      "non-expiring",
+      "expiring"
+    ]
+  }];
+
+  // token_lifetime is the absolute lifetime of a refresh token in seconds.
+  // The token will expire after this time regardless of activity.
+  // Only used when expiration_type is "expiring".
+  // Default: 2592000 (30 days)
+  int32 token_lifetime = 3 [(buf.validate.field).int32 = {gte: 0}];
+
+  // idle_token_lifetime is the inactivity timeout for refresh tokens in seconds.
+  // Token expires if not used within this time.
+  // Only used when expiration_type is "expiring".
+  // Default: 1296000 (15 days)
+  int32 idle_token_lifetime = 4 [(buf.validate.field).int32 = {gte: 0}];
+
+  // infinite_token_lifetime allows tokens to never expire.
+  // Only valid when expiration_type is "non-expiring".
+  // Not recommended for security reasons.
+  // Default: false
+  bool infinite_token_lifetime = 5;
+
+  // infinite_idle_token_lifetime allows tokens to never expire due to inactivity.
+  // Only valid when expiration_type is "non-expiring".
+  // Not recommended for security reasons.
+  // Default: false
+  bool infinite_idle_token_lifetime = 6;
+
+  // leeway is the clock skew leeway in seconds for token validation.
+  // Allows for slight differences in server clocks.
+  // Default: 0
+  int32 leeway = 7 [(buf.validate.field).int32 = {gte: 0}];
+}
+
+// Auth0NativeSocialLogin configures native social login for mobile apps.
+message Auth0NativeSocialLogin {
+  // apple configures Sign in with Apple native integration.
+  Auth0NativeSocialLoginProvider apple = 1;
+
+  // facebook configures Facebook native login integration.
+  Auth0NativeSocialLoginProvider facebook = 2;
+}
+
+// Auth0NativeSocialLoginProvider configures a specific native social provider.
+message Auth0NativeSocialLoginProvider {
+  // enabled determines if this native social provider is active.
+  bool enabled = 1;
+}
+
+// Auth0MobileConfiguration configures mobile-specific settings.
+message Auth0MobileConfiguration {
+  // android configures Android-specific settings.
+  Auth0MobileAndroid android = 1;
+
+  // ios configures iOS-specific settings.
+  Auth0MobileIos ios = 2;
+}
+
+// Auth0MobileAndroid configures Android-specific settings.
+message Auth0MobileAndroid {
+  // app_package_name is the Android application package name.
+  // Example: "com.example.myapp"
+  string app_package_name = 1;
+
+  // sha256_cert_fingerprints are the SHA-256 fingerprints of signing certificates.
+  // Used for App Links and secure deep linking.
+  // Example: ["D8:A0:..."]
+  repeated string sha256_cert_fingerprints = 2;
+}
+
+// Auth0MobileIos configures iOS-specific settings.
+message Auth0MobileIos {
+  // team_id is the Apple Developer Team ID.
+  // Required for universal links.
+  string team_id = 1;
+
+  // app_bundle_identifier is the iOS application bundle identifier.
+  // Example: "com.example.myapp"
+  string app_bundle_identifier = 2;
+}
+
+// Auth0OidcBackchannelLogout configures OIDC back-channel logout.
+message Auth0OidcBackchannelLogout {
+  // backchannel_logout_urls are the URLs to receive logout tokens.
+  // Auth0 will POST a logout token to these URLs on logout.
+  repeated string backchannel_logout_urls = 1;
+}
+
+// Auth0ClientApiGrant configures API access for this client.
+// Each grant authorizes the client to call a specific API with specified scopes.
+// Maps to the auth0_client_grant Terraform resource and auth0.ClientGrant Pulumi resource.
+//
+// This is essential for Machine-to-Machine (M2M) applications that need to be
+// authorized to access APIs (including the Auth0 Management API).
+message Auth0ClientApiGrant {
+  // audience is the API identifier (Resource Server identifier) the client is authorized to access.
+  // For Auth0 Management API: "https://{tenant}.{region}.auth0.com/api/v2/"
+  // For custom APIs: the identifier you configured when creating the API in Auth0
+  //
+  // You can provide either:
+  // - Direct value: {value: "https://api.example.com/"}
+  // - Reference to Auth0ResourceServer component: {value_from: {kind: Auth0ResourceServer, name: "my-api"}}
+  //
+  // When using references, the audience is automatically resolved from the
+  // Auth0ResourceServer's status.outputs.identifier field.
+  //
+  // Example: "https://api.example.com/", "api.planton.live"
+  dev.planton.shared.foreignkey.v1.StringValueOrRef audience = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = Auth0ResourceServer,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.identifier"
+  ];
+
+  // scopes are the permissions granted for this API.
+  // For Management API, common scopes include:
+  //   - read:users, read:user_idp_tokens, create:users, update:users, delete:users
+  //   - read:clients, update:clients, delete:clients
+  //   - read:connections, update:connections
+  // For custom APIs: the scopes you defined when creating the API in Auth0.
+  // If empty, the client gets access to the API with no specific scopes
+  // (valid for APIs that don't use scope-based authorization).
+  repeated string scopes = 2;
+
+  // allow_any_organization determines if any organization can be used with this grant.
+  // If false (default), the grant must be explicitly assigned to desired organizations.
+  // Only relevant when using Auth0 Organizations feature.
+  bool allow_any_organization = 3;
+
+  // organization_usage defines whether organizations can be used with client credentials
+  // exchanges for this grant.
+  // - "deny": Organizations cannot be used (default)
+  // - "allow": Organizations can be used optionally
+  // - "require": Organizations must be specified
+  string organization_usage = 4 [(buf.validate.field).string = {
+    in: [
+      "",
+      "deny",
+      "allow",
+      "require"
+    ]
+  }];
+}

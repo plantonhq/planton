@@ -1,6 +1,0 @@
-name: gcp-vertex-ai-endpoint
-runtime:
-  name: go
-  options:
-    binary: ./pulumi
-description: OpenMCF GcpVertexAiEndpoint Pulumi module

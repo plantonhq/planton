@@ -1,0 +1,344 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcpcloudfunction.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// **GcpCloudFunctionSpec** defines the configuration for deploying a Google Cloud Function (Gen 2).
+// Gen 2 functions are built on Cloud Run and Eventarc, providing superior performance, scalability,
+// and event handling capabilities compared to Gen 1. This spec follows the 80/20 principle:
+// it exposes the essential configuration that 80% of production deployments need.
+message GcpCloudFunctionSpec {
+  // GCP project ID where the Cloud Function will be created.
+  // Supports either a literal value or a reference to another resource's output.
+  // Example literal: {value: "my-gcp-project-123"}
+  // Example reference: {value_from: {kind: GcpProject, name: "main-project", field_path: "status.outputs.project_id"}}
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // Region where the function is deployed, for example "us-central1" or "europe-west1".
+  string region = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {pattern: "^[a-z]+-[a-z]+[0-9]$"}
+  ];
+
+  // Name of the Cloud Function. If not specified, defaults to metadata.name.
+  // Must be 1-63 characters, start with a letter, and contain only lowercase letters,
+  // numbers, and hyphens.
+  string function_name = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      pattern: "^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$"
+      max_len: 63
+    }
+  ];
+
+  // Build configuration for the function (runtime, entry point, source code).
+  GcpCloudFunctionBuildConfig build_config = 4 [(buf.validate.field).required = true];
+
+  // Service configuration (compute resources, networking, environment, scaling).
+  GcpCloudFunctionServiceConfig service_config = 5;
+
+  // Trigger configuration. If not specified, defaults to HTTP trigger.
+  GcpCloudFunctionTrigger trigger = 6;
+}
+
+// GcpCloudFunctionBuildConfig defines how the function is built from source code.
+message GcpCloudFunctionBuildConfig {
+  // Runtime environment for the function. Must be a supported Gen 2 runtime.
+  // Examples: "python311", "python312", "nodejs20", "nodejs22", "go121", "go122",
+  // "java17", "java21", "dotnet6", "dotnet8", "ruby32", "php82".
+  // Only current, non-deprecated runtimes should be used in production.
+  string runtime = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {pattern: "^(python3(10|11|12|13)|nodejs(20|22)|go1(21|22|23)|java(17|21)|dotnet(6|8)|ruby(32|33)|php(82|83))$"}
+  ];
+
+  // Name of the function in source code that will be executed (the entry point).
+  // For example: "hello_http" in Python, "helloHttp" in Node.js.
+  string entry_point = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1
+      max_len: 128
+    }
+  ];
+
+  // Source code location in Google Cloud Storage.
+  GcpCloudFunctionSource source = 3 [(buf.validate.field).required = true];
+
+  // Environment variables set at build time. These are available during the build
+  // process (e.g., for customizing buildpack behavior).
+  map<string, string> build_environment_variables = 4;
+}
+
+// GcpCloudFunctionSource specifies where the source code is stored.
+// Gen 2 Cloud Functions require source code in a GCS bucket (Cloud Source Repositories
+// was deprecated for new customers in June 2024).
+message GcpCloudFunctionSource {
+  // GCS bucket name containing the source code archive.
+  // The bucket must be in the same project or accessible to the Cloud Build service account.
+  string bucket = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {pattern: "^[a-z0-9][a-z0-9._-]{1,61}[a-z0-9]$"}
+  ];
+
+  // Object name (path) of the source code archive in the bucket.
+  // Should be a .zip file containing the function code and dependencies.
+  // Example: "functions/my-function-v1.2.3.zip"
+  string object = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {min_len: 1}
+  ];
+
+  // Optional: Generation number of the object. If specified, the function will use
+  // this specific version of the object. If not specified, uses the latest version.
+  optional int64 generation = 3;
+}
+
+// GcpCloudFunctionServiceConfig defines runtime configuration: compute resources,
+// networking, environment, secrets, and scaling behavior.
+message GcpCloudFunctionServiceConfig {
+  // Service account email that the function runs as. This is the identity the function
+  // uses when calling other GCP services. Should follow least-privilege principle.
+  // If not specified, uses the default Compute Engine service account (not recommended
+  // for production due to overly broad permissions).
+  string service_account_email = 1 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {pattern: "^[a-z0-9-]+@[a-z0-9-]+\\.iam\\.gserviceaccount\\.com$"}
+  ];
+
+  // Memory allocated to each function instance in megabytes.
+  // Valid values: 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768.
+  // Higher memory allocation also increases CPU allocation.
+  int32 available_memory_mb = 2 [
+    (buf.validate.field).int32 = {
+      in: [
+        128,
+        256,
+        512,
+        1024,
+        2048,
+        4096,
+        8192,
+        16384,
+        32768
+      ]
+    },
+    (dev.planton.shared.options.recommended_default) = "256"
+  ];
+
+  // Timeout for function execution in seconds.
+  // Gen 2 HTTP functions support up to 3600 seconds (60 minutes).
+  // Event-driven functions typically use shorter timeouts.
+  int32 timeout_seconds = 3 [
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 3600
+    },
+    (dev.planton.shared.options.recommended_default) = "60"
+  ];
+
+  // Maximum number of concurrent requests that each function instance can handle.
+  // Gen 2 supports up to 1000 concurrent requests per instance.
+  // Higher concurrency reduces the number of instances needed, improving efficiency.
+  int32 max_instance_request_concurrency = 4 [
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 1000
+    },
+    (dev.planton.shared.options.recommended_default) = "80"
+  ];
+
+  // Environment variables injected into the function runtime as plain-text KEY=VALUE pairs.
+  // Use for non-sensitive configuration. For sensitive values, use secret_environment_variables.
+  map<string, string> environment_variables = 5;
+
+  // Secret Manager references injected as environment variables.
+  // Format: KEY=secret_name where secret_name is the Secret Manager secret ID.
+  // The version "latest" is used automatically unless specified otherwise in the secret name.
+  map<string, string> secret_environment_variables = 6;
+
+  // VPC connector for accessing resources in a VPC network (e.g., Cloud SQL, Memorystore).
+  // Format: "projects/{project}/locations/{region}/connectors/{connector-name}".
+  // The connector must exist before deploying the function.
+  string vpc_connector = 7 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {pattern: "^projects/[a-z][a-z0-9-]{4,28}[a-z0-9]/locations/[a-z]+-[a-z]+[0-9]/connectors/[a-z]([a-z0-9-]{0,61}[a-z0-9])?$"}
+  ];
+
+  // Egress settings for VPC connectivity.
+  // Determines which traffic is routed through the VPC connector.
+  GcpCloudFunctionVpcEgressSetting vpc_connector_egress_settings = 8 [(dev.planton.shared.options.recommended_default) = "PRIVATE_RANGES_ONLY"];
+
+  // Ingress settings control who can invoke the function.
+  // Use ALLOW_INTERNAL_ONLY for private functions accessible only within the VPC/project.
+  GcpCloudFunctionIngressSetting ingress_settings = 9 [(dev.planton.shared.options.recommended_default) = "ALLOW_ALL"];
+
+  // Scaling configuration: minimum and maximum number of function instances.
+  GcpCloudFunctionScalingConfig scaling = 10;
+
+  // If true, makes the function publicly invokable by unauthenticated users.
+  // Grants the Cloud Run Invoker role to allUsers.
+  // For private functions, set to false and explicitly grant invoker role to specific identities.
+  bool allow_unauthenticated = 11 [(dev.planton.shared.options.recommended_default) = "false"];
+}
+
+// GcpCloudFunctionScalingConfig defines auto-scaling behavior: min/max instances.
+message GcpCloudFunctionScalingConfig {
+  // Minimum number of instances to keep warm. Setting min_instance_count > 0
+  // eliminates cold starts but incurs cost for idle compute.
+  // Use for latency-sensitive, production workloads.
+  int32 min_instance_count = 1 [
+    (buf.validate.field).int32 = {
+      gte: 0
+      lte: 100
+    },
+    (dev.planton.shared.options.recommended_default) = "0"
+  ];
+
+  // Maximum number of instances. Controls cost and concurrency.
+  // Set to limit maximum scale-out and prevent runaway costs.
+  int32 max_instance_count = 2 [
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 3000
+    },
+    (dev.planton.shared.options.recommended_default) = "100"
+  ];
+
+  option (buf.validate.message).cel = {
+    id: "scaling.min-lte-max"
+    message: "min_instance_count must be less than or equal to max_instance_count"
+    expression: "this.min_instance_count <= this.max_instance_count"
+  };
+}
+
+// GcpCloudFunctionTrigger defines what invokes the function: HTTP requests or cloud events.
+message GcpCloudFunctionTrigger {
+  // Type of trigger. Defaults to HTTP if not specified.
+  GcpCloudFunctionTriggerType trigger_type = 1 [(dev.planton.shared.options.recommended_default) = "HTTP"];
+
+  // Event trigger configuration. Required if trigger_type is EVENT_TRIGGER.
+  GcpCloudFunctionEventTrigger event_trigger = 2;
+
+  option (buf.validate.message).cel = {
+    id: "trigger.event-trigger-required"
+    message: "event_trigger must be set when trigger_type is EVENT_TRIGGER"
+    expression: "this.trigger_type != 1 || has(this.event_trigger)"
+  };
+}
+
+// GcpCloudFunctionEventTrigger defines event-driven triggers (Pub/Sub, Storage, Firestore, etc.).
+message GcpCloudFunctionEventTrigger {
+  // Event type that triggers the function. Uses CloudEvents format.
+  // Common examples:
+  // - "google.cloud.pubsub.topic.v1.messagePublished" (Pub/Sub)
+  // - "google.cloud.storage.object.v1.finalized" (Storage object created)
+  // - "google.cloud.storage.object.v1.deleted" (Storage object deleted)
+  // - "google.cloud.firestore.document.v1.written" (Firestore document write)
+  string event_type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {min_len: 1}
+  ];
+
+  // Pub/Sub topic resource name for Pub/Sub triggers.
+  // Format: "projects/{project}/topics/{topic-name}".
+  // Required for Pub/Sub event types.
+  string pubsub_topic = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {pattern: "^projects/[a-z][a-z0-9-]{4,28}[a-z0-9]/topics/[a-zA-Z]([a-zA-Z0-9-_.~+%]{0,253}[a-zA-Z0-9])?$"}
+  ];
+
+  // Event filters. Used to filter events based on attributes.
+  // For Storage triggers, filter by bucket: attribute="bucket" value="my-bucket".
+  // For Firestore triggers, filter by document path pattern.
+  repeated GcpCloudFunctionEventFilter event_filters = 3;
+
+  // Region where the event trigger listens for events. Should typically match
+  // the function region for optimal performance and data locality.
+  string trigger_region = 4 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {pattern: "^[a-z]+-[a-z]+[0-9]$"}
+  ];
+
+  // Retry policy for event delivery. If RETRY_POLICY_RETRY, failed invocations
+  // are automatically retried. If RETRY_POLICY_DO_NOT_RETRY, events are delivered once.
+  GcpCloudFunctionRetryPolicy retry_policy = 5 [(dev.planton.shared.options.recommended_default) = "RETRY_POLICY_DO_NOT_RETRY"];
+
+  // Service account used by Eventarc to invoke the function.
+  // If not specified, uses the default Eventarc service account.
+  string service_account_email = 6 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {pattern: "^[a-z0-9-]+@[a-z0-9-]+\\.iam\\.gserviceaccount\\.com$"}
+  ];
+}
+
+// GcpCloudFunctionEventFilter filters events based on attribute values.
+message GcpCloudFunctionEventFilter {
+  // Attribute name to filter on (e.g., "bucket" for Storage events).
+  string attribute = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {min_len: 1}
+  ];
+
+  // Value to match. Supports wildcards (*) for pattern matching.
+  string value = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {min_len: 1}
+  ];
+
+  // Optional: Operator for matching. Defaults to exact match.
+  // Supports "match-path-pattern" for Firestore document path patterns.
+  optional string operator = 3;
+}
+
+// GcpCloudFunctionTriggerType defines how the function is invoked.
+enum GcpCloudFunctionTriggerType {
+  // HTTP trigger: Function is invoked via HTTPS requests.
+  // The function receives HTTP request/response objects and returns HTTP responses.
+  HTTP = 0;
+
+  // Event trigger: Function is invoked when a cloud event occurs.
+  // Events are delivered via Eventarc in CloudEvents format.
+  EVENT_TRIGGER = 1;
+}
+
+// GcpCloudFunctionIngressSetting controls network ingress to the function.
+enum GcpCloudFunctionIngressSetting {
+  // Allow all traffic (default): Function is accessible from the public internet.
+  ALLOW_ALL = 0;
+
+  // Allow only internal traffic: Function is accessible only from within the
+  // VPC network or from other GCP services in the same project.
+  ALLOW_INTERNAL_ONLY = 1;
+
+  // Allow only internal traffic and traffic from Cloud Load Balancing.
+  ALLOW_INTERNAL_AND_GCLB = 2;
+}
+
+// GcpCloudFunctionVpcEgressSetting controls which traffic is routed through VPC connector.
+enum GcpCloudFunctionVpcEgressSetting {
+  // Route only private IP ranges (RFC 1918) through the VPC connector.
+  // Public internet traffic uses normal egress path.
+  PRIVATE_RANGES_ONLY = 0;
+
+  // Route all outbound traffic through the VPC connector.
+  // Enables static egress IPs via Cloud NAT.
+  ALL_TRAFFIC = 1;
+}
+
+// GcpCloudFunctionRetryPolicy defines retry behavior for event-driven functions.
+enum GcpCloudFunctionRetryPolicy {
+  // Do not retry failed invocations (at-most-once delivery).
+  RETRY_POLICY_DO_NOT_RETRY = 0;
+
+  // Retry failed invocations with exponential backoff (at-least-once delivery).
+  // Function code must be idempotent to handle duplicate events.
+  RETRY_POLICY_RETRY = 1;
+}

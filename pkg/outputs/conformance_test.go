@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/apis/dev/planton/shared/cloudresourcekind"
 )
 
 // TestStackOutputsConformance is the standing guard against the systemic IaC
@@ -17,7 +17,7 @@ import (
 // "password_secret_name" output, which flattens to the key "password_secret_name"
 // -- with no dot -- and therefore never populated the proto's nested
 // password_secret{name,key} field, while the Pulumi module emitted the correct
-// "password_secret.name". See the openmcf-postgres-iac-parity work.)
+// "password_secret.name". See the planton-postgres-iac-parity work.)
 //
 // Why this also enforces tofu<->pulumi parity: both engines feed the SAME generic
 // transformer (TransformRaw -> Flatten -> populateMessage). So a single

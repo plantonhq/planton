@@ -1,0 +1,383 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azureservicebusnamespace.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// **AzureServiceBusNamespaceSpec** defines the configuration for creating an
+// Azure Service Bus namespace with optional queues and topics.
+//
+// Azure Service Bus is a fully managed enterprise message broker with
+// message queues and publish-subscribe topics. It decouples applications
+// and services from each other, providing reliable asynchronous messaging
+// with ordered delivery, temporal decoupling, and load-leveling capabilities.
+//
+// The component bundles the namespace (`azurerm_servicebus_namespace`) with
+// queues (`azurerm_servicebus_queue`) and topics (`azurerm_servicebus_topic`)
+// because a messaging namespace without at least one queue or topic is
+// incomplete for most use cases. This follows DD03 (Composite Bundling Rules).
+//
+// **SKU tiers**:
+// - **Basic**: Single queue-only tier with no topics, sessions, or duplicate
+//   detection. Suitable for simple fire-and-forget scenarios.
+// - **Standard** (default): Full-featured tier with topics, subscriptions,
+//   sessions, and duplicate detection. 99.95% SLA.
+// - **Premium**: Dedicated capacity with fixed messaging units, zone
+//   redundancy, VNet integration, and large message support (up to 100 MB).
+//   Required for enterprise networking and compliance workloads.
+//
+// **Queues vs Topics**: Queues deliver messages to a single consumer
+// (point-to-point). Topics deliver messages to multiple independent
+// subscriptions (publish-subscribe). Basic SKU supports only queues.
+//
+// **Topic subscriptions are deliberately omitted** from this component.
+// Subscriptions have a different lifecycle -- they are typically managed by
+// consuming teams, not the infrastructure team that provisions the namespace.
+// A separate `AzureServiceBusSubscription` resource kind can be added in a
+// future expansion if needed.
+//
+// **ForceNew fields** (changing these destroys and recreates the namespace):
+// `name`, `premium_messaging_partitions`.
+message AzureServiceBusNamespaceSpec {
+  // The Azure region where the Service Bus namespace will be created.
+  // Examples: "eastus", "westus2", "westeurope", "southeastasia".
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The Azure Resource Group where the Service Bus namespace will be created.
+  // Can be a literal string or a reference to an AzureResourceGroup output.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef resource_group = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AzureResourceGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.resource_group_name"
+  ];
+
+  // The name of the Service Bus namespace.
+  // Must be globally unique across Azure. Used as the endpoint:
+  // `{name}.servicebus.windows.net`
+  //
+  // Naming rules (Azure API enforced):
+  // - 6 to 50 characters
+  // - Must start with a letter
+  // - Must end with a letter or number
+  // - Can contain letters, numbers, and hyphens
+  // - Cannot end with "-sb" or "-mgmt" (reserved suffixes)
+  //
+  // **ForceNew**: Changing this destroys and recreates the namespace.
+  string name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 6,
+    (buf.validate.field).string.max_len = 50,
+    (buf.validate.field).cel = {
+      id: "namespace_name_format"
+      message: "Namespace name must start with a letter, end with a letter or number, and contain only letters, numbers, and hyphens"
+      expression: "this.matches('^[a-zA-Z][-a-zA-Z0-9]{4,48}[a-zA-Z0-9]$')"
+    }
+  ];
+
+  // The SKU tier for the Service Bus namespace.
+  // Uses Azure's exact API values for provider authenticity.
+  //
+  // Valid values:
+  // - "Basic": Queues only, no topics. Simple messaging scenarios.
+  // - "Standard" (default): Full-featured with queues and topics. Production
+  //   recommended. 99.95% SLA.
+  // - "Premium": Dedicated capacity, VNet integration, zone redundancy,
+  //   large messages up to 100 MB. Enterprise workloads.
+  //
+  // **Note**: Changing to/from Premium forces resource recreation.
+  optional string sku = 4 [
+    (dev.planton.shared.options.default) = "Standard",
+    (buf.validate.field).cel = {
+      id: "sku_valid"
+      message: "sku must be one of: Basic, Standard, Premium"
+      expression: "this in ['Basic', 'Standard', 'Premium']"
+    }
+  ];
+
+  // Messaging units for Premium SKU.
+  // Defines the dedicated processing capacity of the namespace.
+  // Higher capacity means more throughput and lower latency.
+  //
+  // Valid values: 1, 2, 4, 8, 16
+  // Only applicable for Premium SKU. Must be omitted for Basic/Standard.
+  //
+  // Each messaging unit provides approximately 1 MB/s throughput for sends
+  // and 2 MB/s for receives. Scale up for high-throughput workloads.
+  optional int32 capacity = 5 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 16
+  }];
+
+  // Premium messaging partitions for the namespace.
+  // Partitions distribute messages across multiple message stores for
+  // higher throughput and availability within the Premium tier.
+  //
+  // Valid values: 1, 2, 4
+  // Only applicable for Premium SKU. Must be omitted for Basic/Standard.
+  //
+  // **ForceNew**: Changing this destroys and recreates the namespace.
+  optional int32 premium_messaging_partitions = 6 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 4
+  }];
+
+  // Enable zone redundancy for the namespace.
+  // When enabled, the namespace metadata and data are replicated across
+  // availability zones within the region for higher availability.
+  //
+  // Only applicable for Premium SKU.
+  //
+  // Default: false
+  optional bool zone_redundant = 7 [(dev.planton.shared.options.default) = "false"];
+
+  // Minimum TLS version for client connections.
+  // Azure enforces this on all AMQP, HTTP, and SBMP connections.
+  //
+  // Default: "1.2" (recommended for all production workloads)
+  optional string minimum_tls_version = 8 [
+    (dev.planton.shared.options.default) = "1.2",
+    (buf.validate.field).cel = {
+      id: "tls_version_valid"
+      message: "minimum_tls_version must be one of: 1.0, 1.1, 1.2"
+      expression: "this in ['1.0', '1.1', '1.2']"
+    }
+  ];
+
+  // Whether the namespace is accessible over the public internet.
+  // When false, the namespace can only be accessed via AzurePrivateEndpoint
+  // or VNet service endpoints.
+  //
+  // Default: true
+  optional bool public_network_access_enabled = 9 [(dev.planton.shared.options.default) = "true"];
+
+  // Queues within this namespace.
+  // Service Bus queues deliver messages to a single consumer (point-to-point).
+  // Each queue is an independent entity within the namespace.
+  //
+  // Available in all SKU tiers (Basic, Standard, Premium).
+  repeated AzureServiceBusQueue queues = 10;
+
+  // Topics within this namespace.
+  // Service Bus topics deliver messages to multiple independent subscriptions
+  // (publish-subscribe). Each topic can have many subscriptions, each with
+  // its own filter rules.
+  //
+  // **Not available in Basic SKU.** Use Standard or Premium for topics.
+  repeated AzureServiceBusTopic topics = 11;
+}
+
+// AzureServiceBusQueue defines a queue within the Service Bus namespace.
+//
+// Queues provide reliable, ordered (FIFO) message delivery to a single
+// consumer. Messages are stored durably until explicitly received and
+// completed by a consumer.
+//
+// Key capabilities:
+// - **Lock duration**: Messages are locked during processing. If not completed
+//   within the lock duration, they become available to other consumers.
+// - **Duplicate detection**: Prevents duplicate messages based on MessageId
+//   within a configurable time window.
+// - **Sessions**: Groups related messages for ordered, stateful processing.
+// - **Dead-letter queue**: Automatically stores messages that cannot be
+//   processed (expired, exceeded max delivery count, filter evaluation errors).
+// - **Message forwarding**: Auto-forwards messages to another queue or topic
+//   within the same namespace (for routing patterns).
+//
+// **ForceNew fields**: `name`, `partitioning_enabled`, `requires_duplicate_detection`,
+// `requires_session`.
+message AzureServiceBusQueue {
+  // The queue name.
+  // Must be unique within the namespace.
+  //
+  // Naming rules: 1-260 characters, starts and ends with a letter or number.
+  // Can contain letters, numbers, periods, hyphens, underscores, tildes,
+  // and forward slashes.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 260
+  ];
+
+  // Maximum size of the queue in megabytes.
+  // Determines how much message data the queue can hold before it starts
+  // rejecting new messages.
+  //
+  // Valid values: 1024, 2048, 3072, 4096, 5120 (Standard/Basic).
+  // Premium supports up to 81920 MB.
+  // Default: varies by SKU (1024 for Standard, 81920 for Premium).
+  //
+  // **Note**: For partitioned queues in Basic/Standard, the actual storage
+  // is 16x this value (Azure API detail, handled transparently).
+  optional int32 max_size_in_megabytes = 2;
+
+  // Enable queue partitioning.
+  // Partitioned queues distribute messages across multiple message stores
+  // for higher throughput.
+  //
+  // For Premium SKU: must match the namespace's `premium_messaging_partitions`
+  // setting. The IaC modules handle this automatically.
+  //
+  // **ForceNew**: Changing this destroys and recreates the queue.
+  //
+  // Default: false
+  optional bool partitioning_enabled = 3 [(dev.planton.shared.options.default) = "false"];
+
+  // Default message time-to-live as an ISO 8601 duration.
+  // Messages older than this duration are automatically dead-lettered or
+  // discarded (depending on `dead_lettering_on_message_expiration`).
+  //
+  // Examples: "P14D" (14 days), "PT1H" (1 hour), "PT30M" (30 minutes).
+  // Default: unbounded (messages never expire).
+  optional string default_message_ttl = 4;
+
+  // How long a message is locked for processing as an ISO 8601 duration.
+  // When a consumer receives a message in PeekLock mode, the message is
+  // locked for this duration. If not completed within the lock duration,
+  // the message becomes available to other consumers.
+  //
+  // Range: PT5S (5 seconds) to PT5M (5 minutes).
+  // Default: "PT1M" (1 minute).
+  //
+  // Increase for long-running processing tasks. Decrease for fast handlers.
+  optional string lock_duration = 5 [(dev.planton.shared.options.default) = "PT1M"];
+
+  // Maximum number of delivery attempts before dead-lettering.
+  // After this many failed delivery attempts, the message is moved to
+  // the queue's dead-letter sub-queue.
+  //
+  // Minimum: 1. Default: 10.
+  //
+  // Lower values detect poison messages faster. Higher values tolerate
+  // transient consumer failures better.
+  optional int32 max_delivery_count = 6 [
+    (dev.planton.shared.options.default) = "10",
+    (buf.validate.field).int32.gte = 1
+  ];
+
+  // Enable duplicate message detection.
+  // When enabled, Service Bus tracks MessageId values for a configurable
+  // time window (default 10 minutes) and silently drops duplicate messages.
+  //
+  // Useful for idempotent messaging patterns where producers may retry
+  // sends without knowing if the original message was accepted.
+  //
+  // **ForceNew**: Changing this destroys and recreates the queue.
+  //
+  // Default: false
+  optional bool requires_duplicate_detection = 7 [(dev.planton.shared.options.default) = "false"];
+
+  // Enable message sessions for ordered processing.
+  // Sessions group related messages by a SessionId, enabling:
+  // - Strict FIFO ordering within a session
+  // - Stateful processing (session state stored on the broker)
+  // - Exclusive processing (one consumer per session at a time)
+  //
+  // All messages in a session are delivered to the same consumer in order.
+  //
+  // **ForceNew**: Changing this destroys and recreates the queue.
+  //
+  // Default: false
+  optional bool requires_session = 8 [(dev.planton.shared.options.default) = "false"];
+
+  // Move expired messages to the dead-letter queue.
+  // When true, messages that exceed their TTL are moved to the dead-letter
+  // sub-queue instead of being discarded. This enables inspection and
+  // reprocessing of expired messages.
+  //
+  // Default: false
+  optional bool dead_lettering_on_message_expiration = 9 [(dev.planton.shared.options.default) = "false"];
+
+  // Auto-forward messages to another queue or topic within the same namespace.
+  // When set, messages arriving in this queue are automatically forwarded
+  // to the specified entity. The value is the name of the target queue or
+  // topic (not the full resource ID).
+  //
+  // Useful for routing patterns and message distribution chains.
+  optional string forward_to = 10;
+
+  // Auto-forward dead-lettered messages to another queue or topic.
+  // When set, messages that are dead-lettered (expired, exceeded max
+  // delivery count) are forwarded to the specified entity instead of
+  // remaining in the dead-letter sub-queue.
+  //
+  // The value is the name of the target queue or topic within the same
+  // namespace.
+  optional string forward_dead_lettered_messages_to = 11;
+}
+
+// AzureServiceBusTopic defines a topic within the Service Bus namespace.
+//
+// Topics implement the publish-subscribe messaging pattern. Publishers send
+// messages to a topic, and multiple subscriptions can independently receive
+// copies of those messages with optional filter rules.
+//
+// **Not available in Basic SKU.** Use Standard or Premium.
+//
+// Topics do NOT have lock_duration, max_delivery_count, sessions, or
+// dead-lettering -- those are subscription-level concerns. This component
+// deliberately omits subscriptions (see spec comment).
+//
+// **ForceNew fields**: `name`, `partitioning_enabled`, `requires_duplicate_detection`.
+message AzureServiceBusTopic {
+  // The topic name.
+  // Must be unique within the namespace.
+  //
+  // Naming rules: 1-260 characters, starts and ends with a letter or number.
+  // Can contain letters, numbers, periods, hyphens, underscores, tildes,
+  // and forward slashes.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 260
+  ];
+
+  // Maximum size of the topic in megabytes.
+  // Determines how much message data the topic can hold across all
+  // subscriptions before it starts rejecting new messages.
+  //
+  // Valid values: 1024, 2048, 3072, 4096, 5120 (Standard).
+  // Premium supports up to 81920 MB.
+  // Default: varies by SKU.
+  optional int32 max_size_in_megabytes = 2;
+
+  // Enable topic partitioning.
+  // Partitioned topics distribute messages across multiple message stores
+  // for higher throughput.
+  //
+  // For Premium SKU: must match the namespace's `premium_messaging_partitions`
+  // setting. The IaC modules handle this automatically.
+  //
+  // **ForceNew**: Changing this destroys and recreates the topic.
+  //
+  // Default: false
+  optional bool partitioning_enabled = 3 [(dev.planton.shared.options.default) = "false"];
+
+  // Default message time-to-live as an ISO 8601 duration.
+  // Messages older than this duration are automatically removed.
+  //
+  // Examples: "P14D" (14 days), "PT1H" (1 hour), "P30D" (30 days).
+  // Default: unbounded (messages never expire).
+  optional string default_message_ttl = 4;
+
+  // Enable duplicate message detection.
+  // When enabled, Service Bus tracks MessageId values and silently drops
+  // duplicate messages within a configurable time window (default 10 minutes).
+  //
+  // **ForceNew**: Changing this destroys and recreates the topic.
+  //
+  // Default: false
+  optional bool requires_duplicate_detection = 5 [(dev.planton.shared.options.default) = "false"];
+
+  // Enable message ordering support.
+  // When enabled, the topic preserves the order of messages within a
+  // session. Works with session-enabled subscriptions for ordered
+  // publish-subscribe patterns.
+  //
+  // Default: false
+  optional bool support_ordering = 6 [(dev.planton.shared.options.default) = "false"];
+}

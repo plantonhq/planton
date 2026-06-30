@@ -77,7 +77,7 @@ flowchart TB
 
 ## Implementation Details
 
-Modified `apis/org/openmcf/provider/kubernetes/kubernetesopenfga/v1/iac/pulumi/module/ingress.go` to add the `pulumi.com/patchForce` annotation to all four Kubernetes resources:
+Modified `apis/dev/planton/provider/kubernetes/kubernetesopenfga/v1/iac/pulumi/module/ingress.go` to add the `pulumi.com/patchForce` annotation to all four Kubernetes resources:
 
 ### 1. Certificate Resource (istio-ingress namespace)
 

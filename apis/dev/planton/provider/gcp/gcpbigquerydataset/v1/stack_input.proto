@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcpbigquerydataset.v1;
+
+import "dev/planton/provider/gcp/gcpbigquerydataset/v1/api.proto";
+import "dev/planton/provider/gcp/provider.proto";
+
+message GcpBigQueryDatasetStackInput {
+  GcpBigQueryDataset target = 1;
+  dev.planton.provider.gcp.GcpProviderConfig provider_config = 2;
+}

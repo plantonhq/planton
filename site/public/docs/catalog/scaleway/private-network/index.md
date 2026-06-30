@@ -12,7 +12,7 @@ Deploys a Scaleway Private Network inside an existing VPC, with optional IPv4/IP
 
 ## What Gets Created
 
-When you deploy a ScalewayPrivateNetwork resource, OpenMCF provisions:
+When you deploy a ScalewayPrivateNetwork resource, Planton provisions:
 
 - **Private Network** — a `network.PrivateNetwork` resource attached to the specified VPC, with built-in DHCP and IPAM-managed addressing
 - **IPv4 Subnet** — either the user-specified CIDR or an auto-allocated subnet from Scaleway's IPAM service
@@ -21,23 +21,23 @@ When you deploy a ScalewayPrivateNetwork resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Scaleway credentials** configured via environment variables or OpenMCF provider config
-- **An existing VPC** in the target region — either a literal VPC UUID or an OpenMCF-managed ScalewayVpc resource whose output can be referenced via `valueFrom`
+- **Scaleway credentials** configured via environment variables or Planton provider config
+- **An existing VPC** in the target region — either a literal VPC UUID or an Planton-managed ScalewayVpc resource whose output can be referenced via `valueFrom`
 
 ## Quick Start
 
 Create a file `private-network.yaml`:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayPrivateNetwork
 metadata:
   name: my-network
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayPrivateNetwork.my-network
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayPrivateNetwork.my-network
 spec:
   vpcId: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
   region: fr-par
@@ -46,7 +46,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f private-network.yaml
+planton apply -f private-network.yaml
 ```
 
 This creates a Private Network in the `fr-par` region with an IPAM-auto-allocated IPv4 subnet. The allocated CIDR is available in stack outputs as `ipv4_subnet_cidr`.
@@ -75,15 +75,15 @@ This creates a Private Network in the `fr-par` region with an IPAM-auto-allocate
 A Private Network with no explicit subnet — Scaleway's IPAM assigns one automatically:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayPrivateNetwork
 metadata:
   name: dev-network
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayPrivateNetwork.dev-network
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayPrivateNetwork.dev-network
 spec:
   vpcId: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
   region: fr-par
@@ -94,15 +94,15 @@ spec:
 A Private Network with a controlled address range and cross-network routing enabled:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayPrivateNetwork
 metadata:
   name: app-network
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.ScalewayPrivateNetwork.app-network
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.ScalewayPrivateNetwork.app-network
 spec:
   vpcId: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
   region: fr-par
@@ -112,18 +112,18 @@ spec:
 
 ### Dual-Stack Network with VPC Reference
 
-A Private Network referencing an OpenMCF-managed VPC, with both IPv4 and IPv6 subnets:
+A Private Network referencing an Planton-managed VPC, with both IPv4 and IPv6 subnets:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayPrivateNetwork
 metadata:
   name: dual-stack-network
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.ScalewayPrivateNetwork.dual-stack-network
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.ScalewayPrivateNetwork.dual-stack-network
 spec:
   vpcId:
     valueFrom:

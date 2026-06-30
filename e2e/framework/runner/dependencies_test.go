@@ -14,15 +14,15 @@ func writeManifest(t *testing.T, repoRoot, relPath string) string {
 	if err := os.MkdirAll(filepath.Dir(full), 0o755); err != nil {
 		t.Fatalf("mkdir for %s: %v", relPath, err)
 	}
-	if err := os.WriteFile(full, []byte("apiVersion: kubernetes.openmcf.org/v1\nkind: Placeholder\n"), 0o600); err != nil {
+	if err := os.WriteFile(full, []byte("apiVersion: kubernetes.planton.dev/v1\nkind: Placeholder\n"), 0o600); err != nil {
 		t.Fatalf("write %s: %v", relPath, err)
 	}
 	return full
 }
 
 const (
-	gwCrdsPrereqRel  = "apis/org/openmcf/provider/kubernetes/kubernetesgatewayapicrds/v1/e2e/prerequisite.yaml"
-	gwCrdsMinimalRel = "apis/org/openmcf/provider/kubernetes/kubernetesgatewayapicrds/v1/e2e/scenarios/minimal.yaml"
+	gwCrdsPrereqRel  = "apis/dev/planton/provider/kubernetes/kubernetesgatewayapicrds/v1/e2e/prerequisite.yaml"
+	gwCrdsMinimalRel = "apis/dev/planton/provider/kubernetes/kubernetesgatewayapicrds/v1/e2e/scenarios/minimal.yaml"
 )
 
 func TestResolveDependencies_RegistryPrerequisite(t *testing.T) {
@@ -103,10 +103,10 @@ func TestResolveDependencies_MissingInstallManifestErrors(t *testing.T) {
 // attached before the public NAT that requires it).
 func TestResolveDependencies_TransitiveDeployOrder(t *testing.T) {
 	repoRoot := t.TempDir()
-	writeManifest(t, repoRoot, "apis/org/openmcf/provider/aws/awsvpc/v1/e2e/prerequisite.yaml")
-	writeManifest(t, repoRoot, "apis/org/openmcf/provider/aws/awssubnet/v1/e2e/scenarios/minimal.yaml")
-	writeManifest(t, repoRoot, "apis/org/openmcf/provider/aws/awselasticip/v1/e2e/prerequisite.yaml")
-	writeManifest(t, repoRoot, "apis/org/openmcf/provider/aws/awsinternetgateway/v1/e2e/prerequisite.yaml")
+	writeManifest(t, repoRoot, "apis/dev/planton/provider/aws/awsvpc/v1/e2e/prerequisite.yaml")
+	writeManifest(t, repoRoot, "apis/dev/planton/provider/aws/awssubnet/v1/e2e/scenarios/minimal.yaml")
+	writeManifest(t, repoRoot, "apis/dev/planton/provider/aws/awselasticip/v1/e2e/prerequisite.yaml")
+	writeManifest(t, repoRoot, "apis/dev/planton/provider/aws/awsinternetgateway/v1/e2e/prerequisite.yaml")
 
 	deps, err := ResolveDependencies(repoRoot, "aws", "awsnatgateway")
 	if err != nil {

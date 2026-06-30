@@ -8,13 +8,13 @@ TITLE
 Forge: Generate Terraform module (tf/) from proto definitions
 
 ROLE
-You are the OpenMCF Code Partner working inside the developer’s local workspace in Cursor. This rule scaffolds the Terraform module for a resource under `iac/tf/`.
+You are the Planton Code Partner working inside the developer’s local workspace in Cursor. This rule scaffolds the Terraform module for a resource under `iac/tf/`.
 
 TOOLS
 - Proto Readers: reuse readers for `api.proto`, `spec.proto`, `stack_input.proto`, `stack_outputs.proto`.
 - Variables Generator: `_rules/deployment-component/_scripts/terraform_module_write.py` (run with `--make-local --generate-variables`)
 - Module Writer: `_rules/deployment-component/_scripts/terraform_module_write.py`
-- Reference components (live ground truth): `apis/org/openmcf/provider/aws/awsvpc/v1/iac/tf/`
+- Reference components (live ground truth): `apis/dev/planton/provider/aws/awsvpc/v1/iac/tf/`
   and `aws/awsalb/v1/iac/tf/` -- canonical `variables.tf`/`provider.tf`/`locals.tf`/`main.tf`/`outputs.tf` layout.
 
 PARITY WITH PULUMI (MANDATORY -- read before writing any HCL)
@@ -77,7 +77,7 @@ SEQUENTIAL STEPS
    at runtime, so there is no snake->camel / null-prune / oneOf logic to write.
    Then STOP -- skip steps 2-4 below.
 
-   Do NOT use this path for kinds whose OpenMCF spec ABSTRACTS over the CRD
+   Do NOT use this path for kinds whose Planton spec ABSTRACTS over the CRD
    (e.g. cert-manager's issuer_ref oneof -> issuerRef.kind/name, or any CRD with
    a required field whose valid value is the empty string, which protojson omits
    -- e.g. ReferenceGrant's to[].group). Those keep the hand-written path below.
@@ -92,7 +92,7 @@ SEQUENTIAL STEPS
 5) Reconcile parity (MANDATORY): re-walk the PARITY WITH PULUMI checklist above against the
    finished module and confirm each dimension matches the Pulumi module. Verify outputs with
    the automated guard rather than by eye:
-   `openmcf validate-outputs --kind <Kind> --module-dir apis/.../v1/iac/tf --sample-outputs <sample>.json`
+   `planton validate-outputs --kind <Kind> --module-dir apis/.../v1/iac/tf --sample-outputs <sample>.json`
    (expect full proto population, zero unmapped). Resolve every mismatch now, or record it as
    a documented `PARITY-EXCEPTION:` in both modules.
 
@@ -109,14 +109,14 @@ SUCCESS CRITERIA
 - Core files (`provider.tf`, `locals.tf`, `outputs.tf`, resource files) exist and `terraform validate` passes
 - **Cross-engine parity holds:** every parity dimension matches the Pulumi module, or the
   divergence is minimal, output-neutral, and carries a `PARITY-EXCEPTION:` comment in BOTH
-  modules; `openmcf validate-outputs` reports full proto population with zero unmapped outputs
+  modules; `planton validate-outputs` reports full proto population with zero unmapped outputs
 
 NOTES
 - Generate variables once up-front; derive convenience in `locals.tf`.
 
 HANDLING OPTIONAL FIELDS WITH DEFAULTS
-- Fields with `(org.openmcf.shared.options.default)` are `optional` in the proto schema
-- OpenMCF middleware populates defaults BEFORE Terraform runs, so:
+- Fields with `(dev.planton.shared.options.default)` are `optional` in the proto schema
+- Planton middleware populates defaults BEFORE Terraform runs, so:
   - The generated `variables.tf` may show `optional(string, null)` for these fields
   - At runtime, the value will NEVER actually be null for defaulted fields
   - NO `coalesce()`, `try()`, or conditional default wrappers are needed in `locals.tf`
@@ -124,10 +124,10 @@ HANDLING OPTIONAL FIELDS WITH DEFAULTS
 - In resource definitions, use the value directly without defensive handling
 - Example:
   ```hcl
-  # CORRECT: OpenMCF guarantees content_type is populated (default: application/octet-stream)
+  # CORRECT: Planton guarantees content_type is populated (default: application/octet-stream)
   content_type = each.value.content_type
 
-  # WRONG: Unnecessary defensive default - OpenMCF already handled this
+  # WRONG: Unnecessary defensive default - Planton already handled this
   content_type = coalesce(each.value.content_type, "application/octet-stream")
   ```
 - See the reference component `iac/tf/` directories named in TOOLS for worked examples

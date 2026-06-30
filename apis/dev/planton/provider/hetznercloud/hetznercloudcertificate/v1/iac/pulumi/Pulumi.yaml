@@ -1,0 +1,3 @@
+name: planton-hetznercloud-certificate
+runtime:
+  name: go

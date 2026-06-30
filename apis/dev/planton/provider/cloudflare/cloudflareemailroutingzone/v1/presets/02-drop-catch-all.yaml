@@ -1,0 +1,13 @@
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareEmailRoutingZone
+metadata:
+  name: email-routing
+spec:
+  zoneId:
+    valueFrom:
+      kind: CloudflareDnsZone
+      name: <zone-name>
+      fieldPath: status.outputs.zone_id
+  catchAll:
+    enabled: true
+    type: drop

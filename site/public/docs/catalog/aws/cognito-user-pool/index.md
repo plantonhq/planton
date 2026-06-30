@@ -12,7 +12,7 @@ Deploys an AWS Cognito User Pool with bundled app clients and an optional hosted
 
 ## What Gets Created
 
-When you deploy an AwsCognitoUserPool resource, OpenMCF provisions:
+When you deploy an AwsCognitoUserPool resource, Planton provisions:
 
 - **Cognito User Pool** -- an `aws_cognito_user_pool` resource with the configured identity model, password policy, MFA settings, email delivery, and optional Lambda triggers
 - **App Client(s)** -- one `aws_cognito_user_pool_client` per entry in `spec.clients`, each with its own OAuth flows, scopes, token validity, and security settings
@@ -20,7 +20,7 @@ When you deploy an AwsCognitoUserPool resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **An ACM certificate in us-east-1** if configuring a custom domain (Cognito uses CloudFront for custom domains)
 - **A verified SES identity** if using `emailConfiguration.emailSendingAccount: DEVELOPER` for production email volumes
 - **Lambda function(s)** with `cognito-idp.amazonaws.com` invoke permission if configuring Lambda triggers
@@ -30,15 +30,15 @@ When you deploy an AwsCognitoUserPool resource, OpenMCF provisions:
 Create a file `cognito.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCognitoUserPool
 metadata:
   name: my-auth
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsCognitoUserPool.my-auth
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsCognitoUserPool.my-auth
 spec:
   region: us-east-1
   usernameAttributes:
@@ -55,7 +55,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f cognito.yaml
+planton apply -f cognito.yaml
 ```
 
 This creates a user pool where users sign in with their email address, email is auto-verified on sign-up, and a single app client supports SRP authentication with refresh tokens.
@@ -129,15 +129,15 @@ This creates a user pool where users sign in with their email address, email is 
 A web application using the Cognito-hosted sign-in page with Authorization Code flow:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCognitoUserPool
 metadata:
   name: webapp-auth
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme
-    pulumi.openmcf.org/project: webapp
-    pulumi.openmcf.org/stack.name: staging.AwsCognitoUserPool.webapp-auth
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme
+    pulumi.planton.dev/project: webapp
+    pulumi.planton.dev/stack.name: staging.AwsCognitoUserPool.webapp-auth
 spec:
   region: us-east-1
   usernameAttributes:
@@ -179,15 +179,15 @@ spec:
 A hardened production pool with optional MFA, SES email, a public SPA client and a confidential server client:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCognitoUserPool
 metadata:
   name: prod-auth
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme
-    pulumi.openmcf.org/project: platform
-    pulumi.openmcf.org/stack.name: prod.AwsCognitoUserPool.prod-auth
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme
+    pulumi.planton.dev/project: platform
+    pulumi.planton.dev/stack.name: prod.AwsCognitoUserPool.prod-auth
 spec:
   region: us-east-1
   usernameAttributes:
@@ -251,15 +251,15 @@ spec:
 Shows how an AwsHttpApiGateway references this pool's endpoint and client ID for JWT authorization:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsHttpApiGateway
 metadata:
   name: my-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme
-    pulumi.openmcf.org/project: platform
-    pulumi.openmcf.org/stack.name: prod.AwsHttpApiGateway.my-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme
+    pulumi.planton.dev/project: platform
+    pulumi.planton.dev/stack.name: prod.AwsHttpApiGateway.my-api
 spec:
   routes:
     - routeKey: "GET /users"

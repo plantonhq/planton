@@ -1,13 +1,13 @@
 ---
 title: "HETZNER CLOUD"
-description: "Deploy HETZNER CLOUD resources using OpenMCF"
+description: "Deploy HETZNER CLOUD resources using Planton"
 icon: "cloud"
 order: 10
 ---
 
 # HETZNER CLOUD
 
-The following HETZNER CLOUD resources can be deployed using OpenMCF:
+The following HETZNER CLOUD resources can be deployed using Planton:
 
 - [Certificate](/docs/catalog/hetznercloud/certificate)
 - [DNS Zone](/docs/catalog/hetznercloud/dns-zone)

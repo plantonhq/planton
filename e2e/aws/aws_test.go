@@ -1,7 +1,7 @@
 //go:build e2e
 
 // Package aws contains end-to-end tests that provision real AWS resources via
-// OpenMCF IaC modules and verify them through the AWS SDK. Credentials come from
+// Planton IaC modules and verify them through the AWS SDK. Credentials come from
 // the ambient chain (local AWS SSO or GitHub Actions OIDC -- never a stored
 // secret); see the aa_e2e harness package.
 //
@@ -16,10 +16,10 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-	awse2e "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/aa_e2e"
-	"github.com/plantonhq/openmcf/e2e/framework/discovery"
-	"github.com/plantonhq/openmcf/e2e/framework/provider"
-	"github.com/plantonhq/openmcf/e2e/framework/runner"
+	awse2e "github.com/plantonhq/planton/apis/dev/planton/provider/aws/aa_e2e"
+	"github.com/plantonhq/planton/e2e/framework/discovery"
+	"github.com/plantonhq/planton/e2e/framework/provider"
+	"github.com/plantonhq/planton/e2e/framework/runner"
 )
 
 var (
@@ -39,7 +39,7 @@ func TestMain(m *testing.M) {
 
 	runID = uuid.New().String()[:8]
 
-	backendDir, err := os.MkdirTemp("", "openmcf-e2e-aws-pulumi-*")
+	backendDir, err := os.MkdirTemp("", "planton-e2e-aws-pulumi-*")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to create temp backend dir: %v\n", err)
 		os.Exit(1)
@@ -119,9 +119,9 @@ func runAllScenariosForComponent(t *testing.T, component, engine string) {
 	var moduleDir string
 	switch engine {
 	case "pulumi":
-		moduleDir = filepath.Join(repoRoot, "apis", "org", "openmcf", "provider", "aws", component, "v1", "iac", "pulumi")
+		moduleDir = filepath.Join(repoRoot, "apis", "org", "planton", "provider", "aws", component, "v1", "iac", "pulumi")
 	case "terraform":
-		moduleDir = filepath.Join(repoRoot, "apis", "org", "openmcf", "provider", "aws", component, "v1", "iac", "tf")
+		moduleDir = filepath.Join(repoRoot, "apis", "org", "planton", "provider", "aws", component, "v1", "iac", "tf")
 	default:
 		t.Fatalf("unsupported engine: %s", engine)
 	}

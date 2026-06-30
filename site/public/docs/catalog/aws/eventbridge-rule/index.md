@@ -12,14 +12,14 @@ Deploys an AWS EventBridge rule with bundled targets for event-driven routing or
 
 ## What Gets Created
 
-When you deploy an AwsEventBridgeRule resource, OpenMCF provisions:
+When you deploy an AwsEventBridgeRule resource, Planton provisions:
 
 - **EventBridge Rule** — an `aws_cloudwatch_event_rule` attached to the specified event bus (or the default bus), configured with either an event pattern or a schedule expression
 - **EventBridge Targets** — one `aws_cloudwatch_event_target` per entry in `targets`, linked to the rule with optional input transformation, retry policy, and dead letter queue configuration
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **An event bus** if targeting a custom bus — use AwsEventBridgeBus to create one, or omit `eventBusName` to use the default AWS bus
 - **Target resources** must exist — Lambda functions, SQS queues, SNS topics, Step Functions state machines, etc.
 - **An IAM role** if targeting Step Functions, ECS, Kinesis, Batch, CodeBuild, or CodePipeline — EventBridge needs a role to invoke these targets
@@ -30,15 +30,15 @@ When you deploy an AwsEventBridgeRule resource, OpenMCF provisions:
 Create a file `rule.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEventBridgeRule
 metadata:
   name: hourly-cleanup
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsEventBridgeRule.hourly-cleanup
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsEventBridgeRule.hourly-cleanup
 spec:
   region: us-east-1
   description: Trigger cleanup function every hour
@@ -52,7 +52,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f rule.yaml
+planton apply -f rule.yaml
 ```
 
 This creates a scheduled rule on the default event bus that triggers a Lambda function every hour.
@@ -94,15 +94,15 @@ This creates a scheduled rule on the default event bus that triggers a Lambda fu
 Route order events from a custom bus to a Lambda processor and an SQS analytics queue:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEventBridgeRule
 metadata:
   name: order-router
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsEventBridgeRule.order-router
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsEventBridgeRule.order-router
 spec:
   region: us-east-1
   eventBusName:
@@ -142,15 +142,15 @@ spec:
 Run a batch processor at 2 AM UTC daily with a constant JSON payload and reduced retry window:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEventBridgeRule
 metadata:
   name: nightly-batch
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsEventBridgeRule.nightly-batch
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsEventBridgeRule.nightly-batch
 spec:
   region: us-east-1
   description: Run batch processing at 2 AM UTC daily
@@ -173,15 +173,15 @@ spec:
 Match EC2 state-change events, reshape the payload, and invoke a Step Functions state machine:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEventBridgeRule
 metadata:
   name: ec2-state-handler
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsEventBridgeRule.ec2-state-handler
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsEventBridgeRule.ec2-state-handler
 spec:
   region: us-east-1
   description: Handle EC2 instance state changes
@@ -216,15 +216,15 @@ spec:
 A rule created in disabled state for pre-production testing:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEventBridgeRule
 metadata:
   name: staging-order-router
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.AwsEventBridgeRule.staging-order-router
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.AwsEventBridgeRule.staging-order-router
 spec:
   region: us-east-1
   description: Order routing rule (disabled for staging validation)

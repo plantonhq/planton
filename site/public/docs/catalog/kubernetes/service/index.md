@@ -12,15 +12,15 @@ Deploys a standalone Kubernetes Service for service discovery, load balancing, a
 
 ## What Gets Created
 
-When you deploy a KubernetesService resource, OpenMCF provisions:
+When you deploy a KubernetesService resource, Planton provisions:
 
 - **Service** — a Kubernetes Service in the specified namespace with the configured type, port mappings, pod selector, and optional headless mode (`clusterIP: None`)
-- **Labels** — standard OpenMCF governance labels (`managed-by`, `resource`, `resource-kind`) merged with any user-provided labels
+- **Labels** — standard Planton governance labels (`managed-by`, `resource`, `resource-kind`) merged with any user-provided labels
 - **Annotations** — user-provided annotations passed through to the Service resource, enabling cloud-provider-specific load balancer configuration (e.g., AWS NLB, GCP NEG, Azure internal LB)
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **An existing namespace** in the target cluster where the service will be created
 - **Target pods** with labels matching the `selector` field (not required for ExternalName or selectorless services)
 - **Cloud provider load balancer support** if using `loadBalancer` type — the cluster must have a cloud controller manager or load balancer controller installed
@@ -30,15 +30,15 @@ When you deploy a KubernetesService resource, OpenMCF provisions:
 Create a file `service.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesService
 metadata:
   name: my-service
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesService.my-service
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesService.my-service
 spec:
   namespace: my-namespace
   name: my-service
@@ -53,7 +53,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f service.yaml
+planton apply -f service.yaml
 ```
 
 This creates a ClusterIP Service named `my-service` in the `my-namespace` namespace, routing TCP traffic on port 80 to port 8080 on pods matching label `app: my-app`.
@@ -75,7 +75,7 @@ This creates a ClusterIP Service named `my-service` in the `my-namespace` namesp
 |-------|------|---------|-------------|
 | `spec.targetCluster.clusterKind` | `enum` | — | Kubernetes cluster kind. Valid values: `AwsEksCluster`, `GcpGkeCluster`, `AzureAksCluster`, `DigitalOceanKubernetesCluster`, `CivoKubernetesCluster`. |
 | `spec.targetCluster.clusterName` | `string` | — | Name of the target Kubernetes cluster in the same environment. |
-| `spec.labels` | `map<string, string>` | `{}` | Additional labels merged with standard OpenMCF labels for governance and discoverability. |
+| `spec.labels` | `map<string, string>` | `{}` | Additional labels merged with standard Planton labels for governance and discoverability. |
 | `spec.annotations` | `map<string, string>` | `{}` | Annotations applied to the Service resource. Used for cloud-provider-specific load balancer configuration. |
 | `spec.type` | `enum` | `cluster_ip` | Service type. Valid values: `cluster_ip`, `node_port`, `load_balancer`, `external_name`. |
 | `spec.selector` | `map<string, string>` | `{}` | Label selector for pods this service routes traffic to. Not required for ExternalName services or services with manually managed endpoints. |
@@ -96,15 +96,15 @@ This creates a ClusterIP Service named `my-service` in the `my-namespace` namesp
 A simple internal service routing HTTP traffic to backend pods:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesService
 metadata:
   name: backend-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesService.backend-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesService.backend-api
 spec:
   namespace: backend
   name: backend-api
@@ -125,15 +125,15 @@ spec:
 An externally accessible service using a cloud load balancer with traffic restricted to specific CIDR ranges and client source IP preservation:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesService
 metadata:
   name: public-gateway
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.KubernetesService.public-gateway
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.KubernetesService.public-gateway
 spec:
   namespace: ingress
   name: public-gateway
@@ -162,15 +162,15 @@ spec:
 A production service exposing multiple protocols on explicit node ports, with session affinity and custom labels:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesService
 metadata:
   name: media-server
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesService.media-server
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesService.media-server
 spec:
   targetCluster:
     clusterKind: AwsEksCluster
@@ -210,15 +210,15 @@ spec:
 A CNAME alias pointing to an external database endpoint, with no pod selector or ports:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesService
 metadata:
   name: external-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesService.external-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesService.external-db
 spec:
   namespace: backend
   name: external-db
@@ -231,15 +231,15 @@ spec:
 A headless service for direct pod addressing, commonly used with StatefulSets:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesService
 metadata:
   name: cassandra
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesService.cassandra
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesService.cassandra
 spec:
   namespace: data
   name: cassandra

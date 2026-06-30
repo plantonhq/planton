@@ -6,15 +6,15 @@
 
 ## Summary
 
-Added the first Hetzner Cloud deployment component to OpenMCF: `HetznerCloudSshKey` (enum 3500, id_prefix: `hcssh`). This establishes the foundation patterns -- reusable provider infrastructure, label handling, and proto/IaC conventions -- that all 11 remaining Hetzner Cloud components will follow.
+Added the first Hetzner Cloud deployment component to Planton: `HetznerCloudSshKey` (enum 3500, id_prefix: `hcssh`). This establishes the foundation patterns -- reusable provider infrastructure, label handling, and proto/IaC conventions -- that all 11 remaining Hetzner Cloud components will follow.
 
 ## Problem Statement / Motivation
 
-OpenMCF had zero Hetzner Cloud resource kinds. The Hetzner Cloud provider was registered (`hetznercloud = 27`) with credential configuration (`HetznerCloudProviderConfig`), but no actual deployment components existed.
+Planton had zero Hetzner Cloud resource kinds. The Hetzner Cloud provider was registered (`hetznercloud = 27`) with credential configuration (`HetznerCloudProviderConfig`), but no actual deployment components existed.
 
 ### Pain Points
 
-- No Hetzner Cloud resources available for deployment via OpenMCF
+- No Hetzner Cloud resources available for deployment via Planton
 - No reusable Pulumi provider helper or label key infrastructure for Hetzner Cloud
 - No established patterns for Hetzner Cloud components to follow
 
@@ -96,11 +96,11 @@ Hetzner Cloud uses `map<string,string>` labels (like GCP), not flat string tags 
 - First Hetzner Cloud component available for deployment
 - Reusable shared infrastructure established for remaining 11 components
 - Clean patterns for label handling, provider wiring, and test structure
-- Consistent with existing OpenMCF conventions (Scaleway, GCP, etc.)
+- Consistent with existing Planton conventions (Scaleway, GCP, etc.)
 
 ## Impact
 
-- **Users**: Can now manage Hetzner Cloud SSH keys through OpenMCF
+- **Users**: Can now manage Hetzner Cloud SSH keys through Planton
 - **Future components**: R02-R12 can follow the patterns established here
 - **Infra charts**: SSH key is a foundation dependency for all 3 planned Hetzner infra charts
 

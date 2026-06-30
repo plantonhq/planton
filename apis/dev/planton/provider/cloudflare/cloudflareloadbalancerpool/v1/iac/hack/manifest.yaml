@@ -1,0 +1,24 @@
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareLoadBalancerPool
+metadata:
+  name: test-pool
+spec:
+  accountId: "0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"
+  name: web-pool
+  origins:
+    - name: origin-1
+      address:
+        value: "203.0.113.10"
+      weight: 1
+      enabled: true
+    - name: origin-2
+      address:
+        value: "203.0.113.11"
+      weight: 1
+      enabled: true
+  monitor:
+    value: "a1b2c3d4e5f60718293a4b5c6d7e8f90"
+  minimumOrigins: 1
+  checkRegions:
+    - WNAM
+    - WEU

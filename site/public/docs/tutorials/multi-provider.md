@@ -1,15 +1,15 @@
 ---
 title: "Deploy Across Providers"
-description: "Deploy object storage on both AWS and GCP using OpenMCF — same workflow, same CLI, different providers"
+description: "Deploy object storage on both AWS and GCP using Planton — same workflow, same CLI, different providers"
 icon: "tutorial"
 order: 50
 ---
 
 # Deploy Across Providers
 
-In this tutorial, you will deploy an object storage bucket on both AWS (S3) and GCP (GCS) using OpenMCF. The purpose is not to compare cloud providers — it is to demonstrate the pattern that makes OpenMCF useful: the same KRM manifest structure, the same CLI commands, and the same deployment workflow across every provider. Only the `spec` changes.
+In this tutorial, you will deploy an object storage bucket on both AWS (S3) and GCP (GCS) using Planton. The purpose is not to compare cloud providers — it is to demonstrate the pattern that makes Planton useful: the same KRM manifest structure, the same CLI commands, and the same deployment workflow across every provider. Only the `spec` changes.
 
-By the end, you will see how OpenMCF's consistent interface reduces the cognitive overhead of working across multiple cloud providers.
+By the end, you will see how Planton's consistent interface reduces the cognitive overhead of working across multiple cloud providers.
 
 ## What You Will Build
 
@@ -17,17 +17,17 @@ Two object storage buckets:
 
 | | AWS S3 | GCP GCS |
 |---|--------|---------|
-| apiVersion | `aws.openmcf.org/v1` | `gcp.openmcf.org/v1` |
+| apiVersion | `aws.planton.dev/v1` | `gcp.planton.dev/v1` |
 | kind | `AwsS3Bucket` | `GcpGcsBucket` |
 | Versioning | Enabled | Enabled |
 | Encryption | SSE-S3 (AES-256) | Google-managed (default) |
-| Deploy command | `openmcf apply -f aws-bucket.yaml` | `openmcf apply -f gcp-bucket.yaml` |
+| Deploy command | `planton apply -f aws-bucket.yaml` | `planton apply -f gcp-bucket.yaml` |
 
 ## Prerequisites
 
 Before starting, ensure you have:
 
-- **OpenMCF CLI** installed (`openmcf version`). See [Getting Started](../getting-started) for installation.
+- **Planton CLI** installed (`planton version`). See [Getting Started](../getting-started) for installation.
 - **AWS credentials** configured. See [AWS Provider Setup](../guides/aws-provider-setup).
 - **GCP credentials** configured. See [GCP Provider Setup](../guides/gcp-provider-setup).
 - **Pulumi CLI** installed with a backend configured.
@@ -39,19 +39,19 @@ If you have only one provider configured, you can still follow along and deploy 
 Create a file named `aws-bucket.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsS3Bucket
 metadata:
   name: multi-provider-demo-aws
   labels:
-    openmcf.org/provisioner: pulumi
+    planton.dev/provisioner: pulumi
 spec:
   awsRegion: us-east-1
   versioningEnabled: true
   encryptionType: ENCRYPTION_TYPE_SSE_S3
   tags:
     project: multi-provider-tutorial
-    managed-by: openmcf
+    managed-by: planton
 ```
 
 The `AwsS3Bucket` spec requires only `awsRegion`. Versioning, encryption, and tags are optional but represent production best practices. See [Deploy Your First AWS Resource](./first-aws-resource) for a deeper walkthrough of S3 configuration.
@@ -61,22 +61,22 @@ The `AwsS3Bucket` spec requires only `awsRegion`. Versioning, encryption, and ta
 Create a file named `gcp-bucket.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpGcsBucket
 metadata:
   name: multi-provider-demo-gcp
   labels:
-    openmcf.org/provisioner: pulumi
+    planton.dev/provisioner: pulumi
 spec:
   gcpProjectId:
     value: my-gcp-project
   location: US
-  bucketName: openmcf-multi-provider-demo
+  bucketName: planton-multi-provider-demo
   versioningEnabled: true
   uniformBucketLevelAccessEnabled: true
   gcpLabels:
     project: multi-provider-tutorial
-    managed-by: openmcf
+    managed-by: planton
 ```
 
 Replace `my-gcp-project` with your actual GCP project ID.
@@ -90,17 +90,17 @@ The `bucketName` must be globally unique across all GCP projects, 3-63 character
 Place the two manifests side by side. The structure is identical:
 
 ```
-apiVersion: <provider>.openmcf.org/v1     # Provider-specific API
+apiVersion: <provider>.planton.dev/v1     # Provider-specific API
 kind: <ComponentName>                      # Component type
 metadata:                                  # KRM metadata (same structure)
   name: <resource-name>
   labels:
-    openmcf.org/provisioner: pulumi        # Same label, same options
+    planton.dev/provisioner: pulumi        # Same label, same options
 spec:                                      # Provider-specific configuration
   ...
 ```
 
-The `apiVersion`, `kind`, `metadata` structure is the same for every OpenMCF component — AWS, GCP, Azure, Kubernetes, or any of the other providers. The only thing that changes is `spec`, because each cloud provider has different resource configuration.
+The `apiVersion`, `kind`, `metadata` structure is the same for every Planton component — AWS, GCP, Azure, Kubernetes, or any of the other providers. The only thing that changes is `spec`, because each cloud provider has different resource configuration.
 
 Here is how the provider-specific concepts map across the two manifests:
 
@@ -120,13 +120,13 @@ Some concepts are shared (versioning), some are named differently (tags vs label
 Preview:
 
 ```bash
-openmcf plan -f aws-bucket.yaml
+planton plan -f aws-bucket.yaml
 ```
 
 Deploy:
 
 ```bash
-openmcf apply -f aws-bucket.yaml
+planton apply -f aws-bucket.yaml
 ```
 
 The deployment outputs for S3:
@@ -149,13 +149,13 @@ aws s3 ls | grep multi-provider
 Preview:
 
 ```bash
-openmcf plan -f gcp-bucket.yaml
+planton plan -f gcp-bucket.yaml
 ```
 
 Deploy:
 
 ```bash
-openmcf apply -f gcp-bucket.yaml
+planton apply -f gcp-bucket.yaml
 ```
 
 The deployment output for GCS:
@@ -167,16 +167,16 @@ The deployment output for GCS:
 Verify with the gcloud CLI:
 
 ```bash
-gcloud storage ls | grep openmcf-multi-provider
+gcloud storage ls | grep planton-multi-provider
 ```
 
 ## Step 6: The Pattern
 
 Step back and look at what just happened. You deployed resources on two different cloud providers:
 
-- **Same CLI**: `openmcf apply -f <manifest>` for both
+- **Same CLI**: `planton apply -f <manifest>` for both
 - **Same manifest structure**: `apiVersion`, `kind`, `metadata`, `spec` for both
-- **Same provisioner label**: `openmcf.org/provisioner: pulumi` for both
+- **Same provisioner label**: `planton.dev/provisioner: pulumi` for both
 - **Same lifecycle**: `plan` -> `apply` -> `destroy` for both
 - **Same validation**: protobuf-defined schemas with field-level validation for both
 
@@ -189,15 +189,15 @@ This extends to all 360+ deployment components across 17 providers in the [Compo
 Destroy both buckets:
 
 ```bash
-openmcf destroy -f aws-bucket.yaml
-openmcf destroy -f gcp-bucket.yaml
+planton destroy -f aws-bucket.yaml
+planton destroy -f gcp-bucket.yaml
 ```
 
 Each `destroy` command reads the manifest, identifies the managed resources on the respective provider, and removes them.
 
 ## What You Learned
 
-- How OpenMCF provides a consistent KRM-based interface across cloud providers
+- How Planton provides a consistent KRM-based interface across cloud providers
 - How the `spec` section is the only provider-specific part of a manifest
 - How the same CLI commands (`plan`, `apply`, `destroy`) work identically across providers
 - How each component's protobuf schema defines the exact configuration surface for that provider's resources

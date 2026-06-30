@@ -6,7 +6,7 @@ go_library(
         "print.go",
         "symbols.go",
     ],
-    importpath = "github.com/plantonhq/openmcf/internal/cli/cliprint",
+    importpath = "github.com/plantonhq/planton/internal/cli/cliprint",
     visibility = ["//:__subpackages__"],
     deps = ["@com_github_fatih_color//:color"],
 )

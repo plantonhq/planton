@@ -12,7 +12,7 @@ Deploys an individual DNS record in an existing AWS Route53 hosted zone, with su
 
 ## What Gets Created
 
-When you deploy an AwsRoute53DnsRecord resource, OpenMCF provisions:
+When you deploy an AwsRoute53DnsRecord resource, Planton provisions:
 
 - **Route53 DNS Record** — a `route53.Record` (AWS Classic) resource in the specified hosted zone, configured with the given record type, values or alias target, and optional routing policy
 
@@ -24,7 +24,7 @@ Depending on configuration, the record may be:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **An existing Route53 hosted zone** — provide the zone ID directly or reference an AwsRoute53Zone resource via `valueFrom`
 - **A health check ID** (optional) if using failover routing — health checks must be created separately in Route53
 - **The target resource's DNS name and hosted zone ID** if creating alias records — or reference an AwsAlb resource via `valueFrom`
@@ -34,15 +34,15 @@ Depending on configuration, the record may be:
 Create a file `dns-record.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRoute53DnsRecord
 metadata:
   name: www-example
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsRoute53DnsRecord.www-example
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsRoute53DnsRecord.www-example
 spec:
   region: us-east-1
   zoneId: Z1234567890ABCDEF
@@ -56,7 +56,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f dns-record.yaml
+planton apply -f dns-record.yaml
 ```
 
 This creates an A record for `www.example.com` pointing to `203.0.113.10` with a 5-minute TTL.
@@ -105,15 +105,15 @@ At least one of `values` or `aliasTarget` must be specified. They are mutually e
 A basic A record pointing a subdomain to an IP address:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRoute53DnsRecord
 metadata:
   name: api-example
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsRoute53DnsRecord.api-example
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsRoute53DnsRecord.api-example
 spec:
   zoneId: Z1234567890ABCDEF
   name: api.example.com
@@ -129,15 +129,15 @@ spec:
 An alias record at the zone apex pointing to an Application Load Balancer. Alias records at the apex are not possible with CNAME, and alias queries to AWS resources are free:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRoute53DnsRecord
 metadata:
   name: apex-example
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsRoute53DnsRecord.apex-example
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsRoute53DnsRecord.apex-example
 spec:
   zoneId: Z1234567890ABCDEF
   name: example.com
@@ -150,18 +150,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding IDs. The `zoneId` defaults to kind `AwsRoute53Zone` and the alias target fields default to kind `AwsAlb`:
+Reference other Planton-managed resources instead of hardcoding IDs. The `zoneId` defaults to kind `AwsRoute53Zone` and the alias target fields default to kind `AwsAlb`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRoute53DnsRecord
 metadata:
   name: app-alias
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsRoute53DnsRecord.app-alias
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsRoute53DnsRecord.app-alias
 spec:
   zoneId:
     valueFrom:
@@ -185,15 +185,15 @@ Split traffic between two endpoints. Create two AwsRoute53DnsRecord resources wi
 **Primary (90% traffic):**
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRoute53DnsRecord
 metadata:
   name: api-stable
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsRoute53DnsRecord.api-stable
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsRoute53DnsRecord.api-stable
 spec:
   zoneId: Z1234567890ABCDEF
   name: api.example.com
@@ -210,15 +210,15 @@ spec:
 **Canary (10% traffic):**
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRoute53DnsRecord
 metadata:
   name: api-canary
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsRoute53DnsRecord.api-canary
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsRoute53DnsRecord.api-canary
 spec:
   region: us-east-1
   zoneId: Z1234567890ABCDEF
@@ -240,15 +240,15 @@ Active-passive failover between a primary and secondary endpoint. The primary re
 **Primary:**
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRoute53DnsRecord
 metadata:
   name: app-primary
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsRoute53DnsRecord.app-primary
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsRoute53DnsRecord.app-primary
 spec:
   region: us-east-1
   zoneId: Z1234567890ABCDEF
@@ -267,15 +267,15 @@ spec:
 **Secondary:**
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRoute53DnsRecord
 metadata:
   name: app-secondary
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsRoute53DnsRecord.app-secondary
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsRoute53DnsRecord.app-secondary
 spec:
   region: us-east-1
   zoneId: Z1234567890ABCDEF

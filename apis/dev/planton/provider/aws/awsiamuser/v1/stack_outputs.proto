@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsiamuser.v1;
+
+// AwsIamUserStackOutputs describes the output values after provisioning an IAM user.
+message AwsIamUserStackOutputs {
+  // user_arn is the ARN of the created IAM user.
+  string user_arn = 1;
+
+  // access_key_id is the access key ID for the user (present if an access key was created).
+  string access_key_id = 2;
+
+  // secret_access_key is the base64-encoded secret key associated with the access key.
+  // This value is sensitive and should be handled securely.
+  string secret_access_key = 3;
+
+  // console_url is the AWS console sign-in URL for this user.
+  string console_url = 4;
+
+  // user_name is the friendly name of the IAM user.
+  string user_name = 5;
+
+  // user_id is the stable unique ID of the IAM user.
+  string user_id = 6;
+}

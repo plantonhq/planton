@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package dev.planton.provider.civo.civovpc.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/civo/region.proto";
+
+// CivoVpcSpec defines the specification for an isolated private network on Civo.
+message CivoVpcSpec {
+  // The name of the network (DNS-friendly label).
+  string network_name = 2 [(buf.validate.field).required = true];
+
+  // The Civo region where this network will be created.
+  dev.planton.provider.civo.CivoRegion region = 3 [(buf.validate.field).required = true];
+
+  // The IPv4 CIDR range for the network (max /24). If omitted, an available range will be auto-allocated.
+  string ip_range_cidr = 4;
+
+  // Whether this network should be the default for the region (only one default network per region).
+  bool is_default_for_region = 5;
+
+  // An optional description for the network (up to 100 characters).
+  string description = 6 [(buf.validate.field).string.max_len = 100];
+}

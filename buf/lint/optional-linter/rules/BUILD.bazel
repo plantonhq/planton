@@ -3,10 +3,10 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "rules",
     srcs = ["default_requires_optional.go"],
-    importpath = "github.com/plantonhq/openmcf/buf/lint/optional-linter/rules",
+    importpath = "github.com/plantonhq/planton/buf/lint/optional-linter/rules",
     visibility = ["//visibility:public"],
     deps = [
-        "//apis/org/openmcf/shared/options",
+        "//apis/dev/planton/shared/options",
         "@build_buf_go_bufplugin//check:go_default_library",
         "@build_buf_go_bufplugin//check/checkutil:go_default_library",
         "@org_golang_google_protobuf//proto",

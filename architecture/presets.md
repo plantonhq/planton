@@ -54,13 +54,13 @@
 
 ## What Are Presets?
 
-A **preset** is a production-quality, directly deployable YAML manifest paired with a companion markdown document. Together, they represent a specific, real-world configuration pattern for an OpenMCF deployment component.
+A **preset** is a production-quality, directly deployable YAML manifest paired with a companion markdown document. Together, they represent a specific, real-world configuration pattern for an Planton deployment component.
 
 ### Technical Definition
 
 A preset consists of two files:
 
-1. **YAML manifest** (`{rank}-{description}.yaml`) -- A complete KRM-structured manifest with `apiVersion`, `kind`, `metadata`, and `spec`. After replacing placeholders with real values, the manifest is directly deployable via the OpenMCF CLI.
+1. **YAML manifest** (`{rank}-{description}.yaml`) -- A complete KRM-structured manifest with `apiVersion`, `kind`, `metadata`, and `spec`. After replacing placeholders with real values, the manifest is directly deployable via the Planton CLI.
 
 2. **Markdown companion** (`{rank}-{description}.md`) -- A structured document explaining what the preset configures, when to use it, and what decisions it encodes.
 
@@ -75,7 +75,7 @@ A preset consists of two files:
 
 ## Why Presets Exist
 
-OpenMCF's consistent KRM structure makes infrastructure deployment predictable, but early adopters report a recurring friction point: **the gap between understanding a component's API and knowing what configuration to actually deploy.**
+Planton's consistent KRM structure makes infrastructure deployment predictable, but early adopters report a recurring friction point: **the gap between understanding a component's API and knowing what configuration to actually deploy.**
 
 ### The Problem
 
@@ -138,15 +138,15 @@ Each deployment component has several YAML-related artifacts. They serve differe
 Presets live in a `presets/` directory within the component's `v1/` folder:
 
 ```
-apis/org/openmcf/provider/{provider}/{component}/v1/presets/
+apis/dev/planton/provider/{provider}/{component}/v1/presets/
 ```
 
 **Examples:**
 
 ```
-apis/org/openmcf/provider/aws/awsalb/v1/presets/
-apis/org/openmcf/provider/gcp/gcpgkecluster/v1/presets/
-apis/org/openmcf/provider/kubernetes/kubernetesdeployment/v1/presets/
+apis/dev/planton/provider/aws/awsalb/v1/presets/
+apis/dev/planton/provider/gcp/gcpgkecluster/v1/presets/
+apis/dev/planton/provider/kubernetes/kubernetesdeployment/v1/presets/
 ```
 
 ### Naming
@@ -216,7 +216,7 @@ Rank reflects **real-world deployment frequency**, not complexity or feature cov
 Every preset YAML is a complete KRM manifest:
 
 ```yaml
-apiVersion: <provider>.openmcf.org/v1
+apiVersion: <provider>.planton.dev/v1
 kind: <Kind>
 metadata:
   name: <descriptive-name>
@@ -249,7 +249,7 @@ metadata:
 
 ### StringValueOrRef Fields
 
-Many spec fields use the `StringValueOrRef` wrapper type from `org.openmcf.shared.foreignkey.v1`. This type is a protobuf message with a `oneof` containing `value` (literal string) and `valueFrom` (cross-resource reference).
+Many spec fields use the `StringValueOrRef` wrapper type from `dev.planton.shared.foreignkey.v1`. This type is a protobuf message with a `oneof` containing `value` (literal string) and `valueFrom` (cross-resource reference).
 
 **Presets MUST use the `value:` form.** This is the proto-correct serialization and ensures the manifest is directly deployable.
 
@@ -322,7 +322,7 @@ spec:
 - **Real value:** When the value is a sensible default that most users would keep (e.g., `idleTimeoutSeconds: 60`)
 - **Placeholder:** When the value is inherently user-specific (e.g., subnet IDs, certificate ARNs, domain names)
 
-**Honoring proto annotations:** If a field in `spec.proto` carries a `(org.openmcf.shared.options.recommended_default)` or `(org.openmcf.shared.options.default)` annotation, use that value in the preset and note it in the comment:
+**Honoring proto annotations:** If a field in `spec.proto` carries a `(dev.planton.shared.options.recommended_default)` or `(dev.planton.shared.options.default)` annotation, use that value in the preset and note it in the comment:
 
 ```yaml
 idleTimeoutSeconds: 60 # recommended_default from spec
@@ -474,7 +474,7 @@ Simple components (DNS records, IAM roles, security groups) may only have 1-2 pr
 
 A preset is production-quality when:
 
-- [ ] **Deployable** -- After replacing placeholders, the YAML is directly deployable via `openmcf pulumi up` or `openmcf tofu apply`
+- [ ] **Deployable** -- After replacing placeholders, the YAML is directly deployable via `planton pulumi up` or `planton tofu apply`
 - [ ] **Proto-correct** -- All `StringValueOrRef` fields use the `value:` wrapper; `apiVersion` and `kind` match the constants in `api.proto`
 - [ ] **Complete** -- All fields required for the use case are present; no critical configuration is left to chance
 - [ ] **Opinionated** -- Makes clear choices about defaults and settings, with YAML comments explaining why
@@ -500,7 +500,7 @@ When creating presets for a component:
 ### AwsAlb Preset: `01-internet-facing-https.yaml`
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsAlb
 metadata:
   name: my-internet-facing-alb

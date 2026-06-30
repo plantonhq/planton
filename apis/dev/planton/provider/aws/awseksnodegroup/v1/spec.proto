@@ -1,0 +1,98 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awseksnodegroup.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// AwsEksNodeGroupSpec captures the configuration for a managed EKS node group
+// (EC2 worker node group) associated with an EKS cluster. It includes essential
+// fields covering 80% use-cases, while cluster-level settings are defined in the
+// AwsEksCluster resource.
+message AwsEksNodeGroupSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  // cluster_name is the name of the EKS cluster to attach this node group to.
+  // The cluster must already exist (e.g., created by an AwsEksCluster resource).
+  // If referencing an AwsEksCluster resource, this pulls its metadata.name.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef cluster_name = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsEksCluster,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "metadata.name"
+  ];
+
+  // node_role_arn is the ARN of the IAM role to associate with the EC2 nodes.
+  // This role must have the necessary EKS worker node policies. If referencing
+  // an AwsIamRole resource, this uses its status.outputs.role_arn.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef node_role_arn = 3 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsIamRole,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.role_arn"
+  ];
+
+  // subnet_ids are the IDs of at least two subnets where the worker nodes will be launched.
+  // Typically these are private subnets in the cluster's VPC to ensure high availability.
+  // Each entry references an AwsSubnet, defaulting to its status.outputs.subnet_id.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef subnet_ids = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).repeated.min_items = 2,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  ];
+
+  // instance_type is the EC2 instance type for the worker nodes.
+  // Example values: "t3.small", "m5.xlarge". Must match the pattern "<family>.<size>",
+  // e.g., a letter family and size like nano, micro, small, medium, large, xlarge or Nxlarge.
+  string instance_type = 5 [(buf.validate.field).required = true];
+
+  // scaling defines the auto-scaling configuration (min, max, desired node counts) for the node group.
+  AwsEksNodeGroupScalingConfig scaling = 6 [(buf.validate.field).required = true];
+
+  // capacity_type specifies whether to use on-demand or Spot instances for this node group.
+  // If not set, it defaults to on_demand.
+  AwsEksNodeGroupCapacityType capacity_type = 7 [(dev.planton.shared.options.recommended_default) = "on_demand"];
+
+  // disk_size_gb is the EBS volume size (in GiB) for each node's root disk.
+  // If omitted, it is recommended to use 100 GiB by default.
+  int32 disk_size_gb = 8 [(dev.planton.shared.options.recommended_default) = "100"];
+
+  // ssh_key_name is the name of an existing EC2 Key Pair to enable SSH access to nodes.
+  // If provided, nodes will allow SSH using this key. Max length is 255 characters.
+  string ssh_key_name = 9 [(buf.validate.field).string.max_len = 255];
+
+  // labels is a set of Kubernetes labels to apply to the node group (and its nodes).
+  // Keys and values can be at most 63 characters each.
+  map<string, string> labels = 10 [(buf.validate.field).map = {
+    keys: {
+      string: {max_len: 63}
+    }
+    values: {
+      string: {max_len: 63}
+    }
+  }];
+}
+
+// CapacityType defines whether the node group uses on-demand or Spot instances.
+enum AwsEksNodeGroupCapacityType {
+  // on_demand indicates the node group uses standard on-demand EC2 instances (default).
+  on_demand = 0;
+  // spot indicates the node group uses AWS Spot instances for the worker nodes.
+  spot = 1;
+}
+
+// ScalingConfig defines the node group scaling constraints.
+message AwsEksNodeGroupScalingConfig {
+  // min_size is the minimum number of nodes to keep in the group (must be at least 1).
+  int32 min_size = 1 [(buf.validate.field).int32.gte = 1];
+
+  // max_size is the maximum number of nodes allowed in the group.
+  // Must be >= min_size.
+  int32 max_size = 2 [(buf.validate.field).int32.gte = 1];
+
+  // desired_size is the initial or target number of nodes for the group.
+  // It should be between min_size and max_size (inclusive).
+  int32 desired_size = 3 [(buf.validate.field).int32.gte = 1];
+}

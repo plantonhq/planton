@@ -1,9 +1,0 @@
-apiVersion: openstack.openmcf.org/v1
-kind: OpenStackFloatingIpAssociate
-metadata:
-  name: my-floating-ip-association
-spec:
-  floatingIp:
-    value: <floating-ip-address>
-  portId:
-    value: <port-id>

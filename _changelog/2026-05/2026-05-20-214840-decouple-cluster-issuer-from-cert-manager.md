@@ -64,7 +64,7 @@ flowchart TD
 ### New Component: 27 files created
 
 ```
-apis/org/openmcf/provider/kubernetes/kubernetesclusterissuer/v1/
+apis/dev/planton/provider/kubernetes/kubernetesclusterissuer/v1/
 ├── spec.proto, api.proto, stack_input.proto, stack_outputs.proto
 ├── spec.pb.go, api.pb.go, stack_input.pb.go, stack_outputs.pb.go
 ├── spec_test.go (17 tests -- 6 valid, 11 invalid)

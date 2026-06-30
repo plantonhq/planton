@@ -2,7 +2,7 @@
 
 **Date**: 2026-02-19
 **Type**: New Feature
-**Components**: `apis/org/openmcf/provider/oci/ociobjectstoragebucket/v1/`
+**Components**: `apis/dev/planton/provider/oci/ociobjectstoragebucket/v1/`
 
 ## Summary
 
@@ -10,7 +10,7 @@ Added the OciObjectStorageBucket deployment component -- OCI's durable, scalable
 
 ## Problem Statement / Motivation
 
-OpenMCF's OCI provider coverage had zero storage components. Object Storage is OCI's foundational storage service, used for data lakes, backups, log archives, and application assets. Without a bucket component, users could not declaratively manage their most common storage resource.
+Planton's OCI provider coverage had zero storage components. Object Storage is OCI's foundational storage service, used for data lakes, backups, log archives, and application assets. Without a bucket component, users could not declaratively manage their most common storage resource.
 
 ## Solution / What's New
 

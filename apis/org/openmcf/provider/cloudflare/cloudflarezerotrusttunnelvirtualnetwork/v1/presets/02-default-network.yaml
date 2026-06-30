@@ -1,9 +1,0 @@
-apiVersion: cloudflare.openmcf.org/v1
-kind: CloudflareZeroTrustTunnelVirtualNetwork
-metadata:
-  name: default-vnet
-spec:
-  accountId: <cloudflare-account-id>
-  name: default
-  comment: Account default routing segment
-  isDefaultNetwork: true

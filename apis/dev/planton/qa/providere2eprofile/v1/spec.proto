@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package dev.planton.qa.providere2eprofile.v1;
+
+import "dev/planton/qa/shared/cost_class.proto";
+
+// ProviderE2EProfileSpec configures provider-wide E2E test execution.
+message ProviderE2EProfileSpec {
+  // How the CI runner authenticates with this provider.
+  enum CredentialApproach {
+    credential_approach_unspecified = 0;
+    // No cloud credentials needed (e.g., Kubernetes via kind).
+    none = 1;
+    // GitHub OIDC federation (AWS, GCP, Azure).
+    oidc = 2;
+    // Scoped API token (DigitalOcean, Civo, Hetzner, Cloudflare).
+    api_token = 3;
+    // Service account JSON key (GCP).
+    service_account_key = 4;
+    // Self-hosted infrastructure (OpenFGA, OpenStack).
+    self_hosted = 5;
+  }
+
+  // What infrastructure runs the tests for this provider.
+  enum TestSubstrate {
+    test_substrate_unspecified = 0;
+    // kind cluster for Kubernetes provider.
+    kind = 1;
+    // Actual cloud provider API.
+    real_cloud = 2;
+    // Local container (OpenFGA, OpenStack DevStack).
+    local_container = 3;
+  }
+
+  // Which CI schedule lane runs by default for this provider's components.
+  enum ScheduleLane {
+    schedule_lane_unspecified = 0;
+    // Every pull request (free/local providers only).
+    pr = 1;
+    // Daily rotating smoke.
+    nightly = 2;
+    // Full provider sweep.
+    weekly = 3;
+    // Expensive or destructive scenarios.
+    monthly = 4;
+  }
+
+  CredentialApproach credential_approach = 1;
+  TestSubstrate test_substrate = 2;
+  dev.planton.qa.shared.CostClass default_cost_class = 3;
+  ScheduleLane default_schedule_lane = 4;
+  // CLI tools that must be installed on the runner (e.g., kind, kubectl, pulumi, tofu, aws-cli).
+  repeated string required_tools = 5;
+  // GitHub Actions environment name for secret isolation (e.g., e2e-kubernetes, e2e-aws).
+  string github_environment = 6;
+  // Maximum number of parallel test cells for this provider.
+  int32 max_concurrent_tests = 7;
+}

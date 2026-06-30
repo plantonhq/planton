@@ -3,7 +3,7 @@ load("@rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "backendconfig",
     srcs = ["backend_config.go"],
-    importpath = "github.com/plantonhq/openmcf/pkg/iac/pulumi/backendconfig",
+    importpath = "github.com/plantonhq/planton/pkg/iac/pulumi/backendconfig",
     visibility = ["//visibility:public"],
     deps = [
         "//pkg/iac/pulumi/pulumilabels",
@@ -17,8 +17,8 @@ go_test(
     srcs = ["backend_config_test.go"],
     embed = [":backendconfig"],
     deps = [
-        "//apis/org/openmcf/provider/aws/awsvpc/v1:awsvpc",
-        "//apis/org/openmcf/shared",
+        "//apis/dev/planton/provider/aws/awsvpc/v1:awsvpc",
+        "//apis/dev/planton/shared",
         "//pkg/iac/pulumi/pulumilabels",
         "@com_github_stretchr_testify//assert",
     ],

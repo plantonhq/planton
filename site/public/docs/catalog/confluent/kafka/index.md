@@ -12,14 +12,14 @@ Deploys a Confluent Cloud Kafka cluster with configurable cluster type, multi-zo
 
 ## What Gets Created
 
-When you deploy a ConfluentKafka resource, OpenMCF provisions:
+When you deploy a ConfluentKafka resource, Planton provisions:
 
 - **Confluent Cloud Kafka Cluster** — a `confluent_kafka_cluster` resource of the specified type (Basic, Standard, Enterprise, or Dedicated), placed in the given cloud provider region and associated with a Confluent Cloud environment
 - **Network Association** — created only when `networkConfig` is provided, associates the cluster with a pre-existing Confluent Cloud network for private connectivity (PrivateLink on AWS, Private Link on Azure, Private Service Connect on GCP)
 
 ## Prerequisites
 
-- **Confluent Cloud credentials** configured via environment variables (`CONFLUENT_CLOUD_API_KEY`, `CONFLUENT_CLOUD_API_SECRET`) or OpenMCF provider config
+- **Confluent Cloud credentials** configured via environment variables (`CONFLUENT_CLOUD_API_KEY`, `CONFLUENT_CLOUD_API_SECRET`) or Planton provider config
 - **A Confluent Cloud environment** — the `environmentId` of an existing environment where the cluster will be created
 - **A Confluent Cloud network** if enabling private networking via `networkConfig` — must be pre-created in the same environment
 - **Sufficient CKU quota** if deploying a Dedicated cluster
@@ -29,15 +29,15 @@ When you deploy a ConfluentKafka resource, OpenMCF provisions:
 Create a file `confluent-kafka.yaml`:
 
 ```yaml
-apiVersion: confluent.openmcf.org/v1
+apiVersion: confluent.planton.dev/v1
 kind: ConfluentKafka
 metadata:
   name: my-kafka
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ConfluentKafka.my-kafka
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ConfluentKafka.my-kafka
 spec:
   cloud: AWS
   region: us-east-2
@@ -48,7 +48,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f confluent-kafka.yaml
+planton apply -f confluent-kafka.yaml
 ```
 
 This creates a Standard Kafka cluster in a single availability zone on AWS `us-east-2`, associated with the specified Confluent Cloud environment.
@@ -80,15 +80,15 @@ This creates a Standard Kafka cluster in a single availability zone on AWS `us-e
 A low-cost single-zone cluster for development and testing:
 
 ```yaml
-apiVersion: confluent.openmcf.org/v1
+apiVersion: confluent.planton.dev/v1
 kind: ConfluentKafka
 metadata:
   name: dev-kafka
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ConfluentKafka.dev-kafka
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ConfluentKafka.dev-kafka
 spec:
   cloud: GCP
   region: us-central1
@@ -103,15 +103,15 @@ spec:
 A production-grade cluster with multi-zone availability for high availability:
 
 ```yaml
-apiVersion: confluent.openmcf.org/v1
+apiVersion: confluent.planton.dev/v1
 kind: ConfluentKafka
 metadata:
   name: prod-kafka
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.ConfluentKafka.prod-kafka
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.ConfluentKafka.prod-kafka
 spec:
   cloud: AWS
   region: us-east-1
@@ -126,15 +126,15 @@ spec:
 A single-tenant Dedicated cluster with provisioned capacity and private network connectivity, suitable for regulated workloads requiring network isolation:
 
 ```yaml
-apiVersion: confluent.openmcf.org/v1
+apiVersion: confluent.planton.dev/v1
 kind: ConfluentKafka
 metadata:
   name: secure-kafka
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.ConfluentKafka.secure-kafka
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.ConfluentKafka.secure-kafka
 spec:
   cloud: AZURE
   region: eastus
@@ -161,4 +161,4 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-No other OpenMCF components have direct foreign key references to ConfluentKafka. This component is typically deployed alongside application workloads that produce or consume Kafka messages.
+No other Planton components have direct foreign key references to ConfluentKafka. This component is typically deployed alongside application workloads that produce or consume Kafka messages.

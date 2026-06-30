@@ -1,4 +1,4 @@
-// Package profile loads and validates E2E profile YAML files from the openmcf
+// Package profile loads and validates E2E profile YAML files from the planton
 // repository's well-known filesystem locations.
 //
 // Provider profiles live at {provider}/aa_e2e/profile.yaml and describe how
@@ -10,5 +10,5 @@
 // timeout, deferred reason).
 //
 // Both profile types follow the KRM pattern (apiVersion + kind + metadata + spec)
-// with apiVersion "qa.openmcf.org/v1".
+// with apiVersion "qa.planton.dev/v1".
 package profile

@@ -6,11 +6,11 @@
 
 ## Summary
 
-Renamed the `PostgresOperatorKubernetes` resource to `ZalandoPostgresOperator` across all proto definitions, documentation, and implementation code to align with OpenMCF's naming conventions for Kubernetes addon operators. This change eliminates redundant "Kubernetes" suffixes, clarifies that this is specifically the Zalando implementation (not Percona or other operators), and improves consistency with other addon resources like `CertManager`, `ExternalDns`, and `IngressNginx` that are already scoped to Kubernetes via their provider namespace. The directory structure was also updated from `postgresoperatorkubernetes` to `zalandopostgresoperator`.
+Renamed the `PostgresOperatorKubernetes` resource to `ZalandoPostgresOperator` across all proto definitions, documentation, and implementation code to align with Planton's naming conventions for Kubernetes addon operators. This change eliminates redundant "Kubernetes" suffixes, clarifies that this is specifically the Zalando implementation (not Percona or other operators), and improves consistency with other addon resources like `CertManager`, `ExternalDns`, and `IngressNginx` that are already scoped to Kubernetes via their provider namespace. The directory structure was also updated from `postgresoperatorkubernetes` to `zalandopostgresoperator`.
 
 ## Problem Statement / Motivation
 
-The Postgres operator resource was originally named `PostgresOperatorKubernetes` with a directory path of `postgresoperatorkubernetes`, which had two issues: a redundant "Kubernetes" suffix and an ambiguous operator vendor identity. This naming pattern was inconsistent with OpenMCF's design philosophy and created confusion about which specific Postgres operator implementation was being deployed.
+The Postgres operator resource was originally named `PostgresOperatorKubernetes` with a directory path of `postgresoperatorkubernetes`, which had two issues: a redundant "Kubernetes" suffix and an ambiguous operator vendor identity. This naming pattern was inconsistent with Planton's design philosophy and created confusion about which specific Postgres operator implementation was being deployed.
 
 ### Pain Points
 
@@ -22,14 +22,14 @@ The Postgres operator resource was originally named `PostgresOperatorKubernetes`
 - **Poor Developer Experience**: The redundancy made code harder to read and type
 - **Vendor Clarity**: In an ecosystem with multiple PostgreSQL operators (Zalando, Percona, CloudNativePG, Crunchy), the name should clearly indicate which one is being deployed
 
-The provider namespace (`org.openmcf.provider.kubernetes.addon.zalandopostgresoperator.v1`) now clearly indicates this is a Kubernetes component, and the resource should explicitly name the vendor (Zalando) to distinguish it from other PostgreSQL operator implementations in the OpenMCF ecosystem.
+The provider namespace (`dev.planton.provider.kubernetes.addon.zalandopostgresoperator.v1`) now clearly indicates this is a Kubernetes component, and the resource should explicitly name the vendor (Zalando) to distinguish it from other PostgreSQL operator implementations in the Planton ecosystem.
 
 ## Solution / What's New
 
 Performed a comprehensive rename from `PostgresOperatorKubernetes` to `ZalandoPostgresOperator` across:
 
 1. **Directory Structure**: Renamed from `postgresoperatorkubernetes` to `zalandopostgresoperator`
-2. **Package Namespace**: Updated to `org.openmcf.provider.kubernetes.addon.zalandopostgresoperator.v1`
+2. **Package Namespace**: Updated to `dev.planton.provider.kubernetes.addon.zalandopostgresoperator.v1`
 3. **Proto API Definitions**: Updated all message types, field references, and validation constraints
 4. **Cloud Resource Registry**: Modified the enum entry in `cloud_resource_kind.proto`
 5. **Documentation**: Updated all user-facing docs and implementation guides
@@ -38,15 +38,15 @@ Performed a comprehensive rename from `PostgresOperatorKubernetes` to `ZalandoPo
 
 ### Naming Convention
 
-The new naming follows OpenMCF's established pattern while adding vendor specificity:
+The new naming follows Planton's established pattern while adding vendor specificity:
 
 ```yaml
 # Before
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: PostgresOperatorKubernetes
 
 # After
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: ZalandoPostgresOperator
 ```
 
@@ -56,7 +56,7 @@ The directory path changed from `provider/kubernetes/addon/postgresoperatorkuber
 
 ### Proto File Changes
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/zalandopostgresoperator/v1/api.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/zalandopostgresoperator/v1/api.proto`
 
 ```protobuf
 // Before
@@ -74,7 +74,7 @@ message ZalandoPostgresOperator {
 }
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/zalandopostgresoperator/v1/spec.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/zalandopostgresoperator/v1/spec.proto`
 
 ```protobuf
 // Before
@@ -90,7 +90,7 @@ message ZalandoPostgresOperatorBackupConfig { ... }
 message ZalandoPostgresOperatorBackupR2Config { ... }
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/zalandopostgresoperator/v1/stack_input.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/zalandopostgresoperator/v1/stack_input.proto`
 
 ```protobuf
 // Before
@@ -104,7 +104,7 @@ message ZalandoPostgresOperatorStackInput {
 }
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/zalandopostgresoperator/v1/stack_outputs.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/zalandopostgresoperator/v1/stack_outputs.proto`
 
 ```protobuf
 // Before
@@ -116,7 +116,7 @@ message ZalandoPostgresOperatorStackOutputs { ... }
 
 ### Registry Update
 
-**File**: `apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto`
+**File**: `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto`
 
 ```protobuf
 // Before
@@ -138,7 +138,7 @@ ZalandoPostgresOperator = 827 [(kind_meta) = {
 
 ### Implementation Code Changes
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/zalandopostgresoperator/v1/iac/pulumi/main.go`
+**File**: `apis/dev/planton/provider/kubernetes/addon/zalandopostgresoperator/v1/iac/pulumi/main.go`
 
 ```go
 // Before
@@ -148,7 +148,7 @@ stackInput := &postgresoperatorkubernetesv1.PostgresOperatorKubernetesStackInput
 stackInput := &zalandopostgresoperatorv1.ZalandoPostgresOperatorStackInput{}
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/zalandopostgresoperator/v1/iac/pulumi/module/main.go`
+**File**: `apis/dev/planton/provider/kubernetes/addon/zalandopostgresoperator/v1/iac/pulumi/module/main.go`
 
 ```go
 // Before
@@ -158,7 +158,7 @@ func Resources(ctx *pulumi.Context, stackInput *postgresoperatorkubernetesv1.Pos
 func Resources(ctx *pulumi.Context, stackInput *zalandopostgresoperatorv1.ZalandoPostgresOperatorStackInput) error
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/zalandopostgresoperator/v1/iac/pulumi/module/locals.go`
+**File**: `apis/dev/planton/provider/kubernetes/addon/zalandopostgresoperator/v1/iac/pulumi/module/locals.go`
 
 ```go
 // Before
@@ -176,7 +176,7 @@ type Locals struct {
 kubeLabels[kuberneteslabelkeys.ResourceKind] = "ZalandoPostgresOperator"
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/zalandopostgresoperator/v1/iac/pulumi/module/backup_config.go`
+**File**: `apis/dev/planton/provider/kubernetes/addon/zalandopostgresoperator/v1/iac/pulumi/module/backup_config.go`
 
 ```go
 // Before
@@ -203,7 +203,7 @@ Updated all occurrences in:
 
 Created comprehensive validation tests to ensure the refactoring works correctly:
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/zalandopostgresoperator/v1/api_test.go`
+**File**: `apis/dev/planton/provider/kubernetes/addon/zalandopostgresoperator/v1/api_test.go`
 
 ```go
 func TestZalandoPostgresOperator(t *testing.T) {
@@ -216,7 +216,7 @@ var _ = ginkgo.Describe("ZalandoPostgresOperator Custom Validation Tests", func(
   
   ginkgo.BeforeEach(func() {
     input = &ZalandoPostgresOperator{
-      ApiVersion: "kubernetes.openmcf.org/v1",
+      ApiVersion: "kubernetes.planton.dev/v1",
       Kind:       "ZalandoPostgresOperator",
       Metadata: &shared.CloudResourceMetadata{
         Name: "test-zalando-postgres-operator",
@@ -263,12 +263,12 @@ The name now explicitly identifies the Zalando implementation, making it clear t
 - Crunchy Postgres Operator
 - Other PostgreSQL operator implementations
 
-This clarity is crucial as OpenMCF may support multiple PostgreSQL operators in the future.
+This clarity is crucial as Planton may support multiple PostgreSQL operators in the future.
 
 ### Naming Consistency
 
 Aligns with the pattern where the provider namespace provides sufficient context:
-- Package: `org.openmcf.provider.kubernetes.addon.zalandopostgresoperator.v1`
+- Package: `dev.planton.provider.kubernetes.addon.zalandopostgresoperator.v1`
 - Directory: `provider/kubernetes/addon/zalandopostgresoperator/`
 - Kind: `ZalandoPostgresOperator` (context is already clear from package)
 
@@ -291,7 +291,7 @@ Users must update their YAML manifests:
 
 ```yaml
 # Update required
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: ZalandoPostgresOperator  # Changed from: PostgresOperatorKubernetes
 metadata:
   name: zalando-postgres-operator-prod
@@ -310,7 +310,7 @@ spec:
 ### Directory and Namespace Changes
 
 - **Directory structure**: Changed from `postgresoperatorkubernetes` to `zalandopostgresoperator`
-- **Package namespace**: Changed from `org.openmcf.provider.kubernetes.addon.postgresoperatorkubernetes.v1` to `org.openmcf.provider.kubernetes.addon.zalandopostgresoperator.v1`
+- **Package namespace**: Changed from `dev.planton.provider.kubernetes.addon.postgresoperatorkubernetes.v1` to `dev.planton.provider.kubernetes.addon.zalandopostgresoperator.v1`
 - **Import paths**: Changed in Go code to reflect new package namespace
 
 ### Developer Impact
@@ -353,7 +353,7 @@ spec:
 
 ## Related Work
 
-This refactoring is part of an ongoing effort to improve naming consistency across OpenMCF's Kubernetes addon operators. Similar refactoring was completed for:
+This refactoring is part of an ongoing effort to improve naming consistency across Planton's Kubernetes addon operators. Similar refactoring was completed for:
 
 - **AltinityOperator** (November 13, 2025): Renamed `AltinityOperatorKubernetes` to `AltinityOperator` to remove redundant suffix
 - **ExternalDns** (November 13, 2025): Renamed `ExternalDnsKubernetes` to `ExternalDns`
@@ -373,13 +373,13 @@ For users with existing manifests:
    find . -name "*.yaml" -type f -exec sed -i '' 's/kind: PostgresOperatorKubernetes/kind: ZalandoPostgresOperator/g' {} +
    ```
 
-2. **No CLI changes required** - The `openmcf` CLI will work with the new kind name automatically after updating to the version with this change
+2. **No CLI changes required** - The `planton` CLI will work with the new kind name automatically after updating to the version with this change
 
 3. **No infrastructure impact** - Existing deployed resources are unaffected; this only affects new deployments
 
 4. **Verify manifests** - After updating, validate manifests still pass proto validation:
    ```bash
-   openmcf pulumi preview --manifest zalando-postgres-operator.yaml --module-dir ${MODULE}
+   planton pulumi preview --manifest zalando-postgres-operator.yaml --module-dir ${MODULE}
    ```
 
 ---

@@ -1,0 +1,7 @@
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareEmailRoutingAddress
+metadata:
+  name: destination-address
+spec:
+  accountId: <cloudflare-account-id>
+  email: <destination-email>

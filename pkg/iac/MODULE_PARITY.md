@@ -22,7 +22,7 @@ touch a module on either side (or add a new kind).
   kind -- "this representative output set fully populates the `StackOutputs` proto with
   nothing left unmapped" -- enforces cross-engine output parity. Add a case for each
   kind whose outputs you care about. You can also dry-run a module ad hoc:
-  `openmcf validate-outputs --kind <Kind> --module-dir <dir> --sample-outputs <json>`.
+  `planton validate-outputs --kind <Kind> --module-dir <dir> --sample-outputs <json>`.
 - **Output transform convention** -- emit outputs that flatten to the proto field
   paths. Scalars are plain outputs; nested proto messages (e.g. `KubernetesSecretKey`)
   are emitted as nested objects (`output "password_secret" { value = { name = ..., key = ... } }`),
@@ -58,7 +58,7 @@ matching `pulumi/module/*.go`), confirm both sides agree on:
 
 ## variables.tf (a generated *scaffold*, curated in practice)
 
-`openmcf tofu generate-variables <Kind>` (`pkg/iac/tofu/generators`) renders a starting
+`planton tofu generate-variables <Kind>` (`pkg/iac/tofu/generators`) renders a starting
 `variables.tf` from the spec proto, but the committed convention is the curated
 `optional()` form (used by the large majority of modules, e.g. `kubernetesnamespace`,
 `kubernetescronjob`). The generator's raw output makes every field required, which is not

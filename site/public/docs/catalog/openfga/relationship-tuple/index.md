@@ -12,7 +12,7 @@ Deploys a relationship tuple into an existing OpenFGA store. A relationship tupl
 
 ## What Gets Created
 
-When you deploy an OpenFgaRelationshipTuple resource, OpenMCF provisions:
+When you deploy an OpenFgaRelationshipTuple resource, Planton provisions:
 
 - **Relationship Tuple** — an `openfga_relationship_tuple` resource that writes a single authorization tuple (user, relation, object) into the specified OpenFGA store
 
@@ -29,12 +29,12 @@ When you deploy an OpenFgaRelationshipTuple resource, OpenMCF provisions:
 Create a file `tuple.yaml`:
 
 ```yaml
-apiVersion: openfga.openmcf.org/v1
+apiVersion: openfga.planton.dev/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: anne-views-budget
   labels:
-    openmcf.org/provisioner: tofu
+    planton.dev/provisioner: tofu
 spec:
   storeId:
     value: "01HXYZ..."
@@ -52,7 +52,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f tuple.yaml
+planton apply -f tuple.yaml
 ```
 
 This creates a relationship tuple granting user `anne` the `viewer` relation on `document:budget-2024`.
@@ -82,12 +82,12 @@ This creates a relationship tuple granting user `anne` the `viewer` relation on 
 A minimal tuple granting a single user viewer access to a specific document, using direct values for all fields:
 
 ```yaml
-apiVersion: openfga.openmcf.org/v1
+apiVersion: openfga.planton.dev/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: anne-views-budget
   labels:
-    openmcf.org/provisioner: tofu
+    planton.dev/provisioner: tofu
 spec:
   storeId:
     value: "01HXYZ..."
@@ -107,12 +107,12 @@ spec:
 Add a user to a group using the userset format (`group:engineering#member`). Other tuples can then reference this group membership to grant indirect access:
 
 ```yaml
-apiVersion: openfga.openmcf.org/v1
+apiVersion: openfga.planton.dev/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: anne-member-engineering
   labels:
-    openmcf.org/provisioner: tofu
+    planton.dev/provisioner: tofu
 spec:
   storeId:
     value: "01HXYZ..."
@@ -130,12 +130,12 @@ spec:
 A second tuple grants all members of the engineering group editor access to a folder, using the userset `relation` field on the user:
 
 ```yaml
-apiVersion: openfga.openmcf.org/v1
+apiVersion: openfga.planton.dev/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: engineering-edits-reports
   labels:
-    openmcf.org/provisioner: tofu
+    planton.dev/provisioner: tofu
 spec:
   storeId:
     value: "01HXYZ..."
@@ -153,15 +153,15 @@ spec:
 
 ### Conditional Tuple with Foreign Key References
 
-A tuple that uses foreign key references to resolve the store and model IDs from other OpenMCF resources, and includes a condition that restricts access to a set of allowed IP ranges. The condition must be defined in the authorization model:
+A tuple that uses foreign key references to resolve the store and model IDs from other Planton resources, and includes a condition that restricts access to a set of allowed IP ranges. The condition must be defined in the authorization model:
 
 ```yaml
-apiVersion: openfga.openmcf.org/v1
+apiVersion: openfga.planton.dev/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: bob-edits-roadmap-conditional
   labels:
-    openmcf.org/provisioner: tofu
+    planton.dev/provisioner: tofu
 spec:
   storeId:
     valueFrom:

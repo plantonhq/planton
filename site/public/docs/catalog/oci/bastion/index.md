@@ -12,13 +12,13 @@ Deploys an Oracle Cloud Infrastructure Bastion — a managed SSH gateway that pr
 
 ## What Gets Created
 
-When you deploy an OciBastion resource, OpenMCF provisions:
+When you deploy an OciBastion resource, Planton provisions:
 
 - **Bastion** — a `bastion.Bastion` resource (type STANDARD) in the specified compartment with a private endpoint in the target subnet. The bastion controls which client CIDR ranges can establish sessions and enforces a maximum session TTL.
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the bastion will be created — either a literal value or a reference to an OciCompartment resource
 - **A subnet OCID** — the private subnet that the bastion connects to, either as a literal value or via `valueFrom` referencing an OciSubnet resource
 
@@ -27,15 +27,15 @@ When you deploy an OciBastion resource, OpenMCF provisions:
 Create a file `bastion.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciBastion
 metadata:
   name: my-bastion
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciBastion.my-bastion
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciBastion.my-bastion
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -46,7 +46,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f bastion.yaml
+planton apply -f bastion.yaml
 ```
 
 This creates a bastion with a private endpoint in the target subnet, no CIDR restrictions, and the OCI default maximum session TTL (3 hours). The bastion OCID and private endpoint IP are exported as stack outputs.
@@ -76,15 +76,15 @@ This creates a bastion with a private endpoint in the target subnet, no CIDR res
 A bastion with default settings — no CIDR restrictions, 3-hour maximum session TTL:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciBastion
 metadata:
   name: dev-bastion
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciBastion.dev-bastion
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciBastion.dev-bastion
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -97,15 +97,15 @@ spec:
 A bastion that only allows connections from a corporate network, with an 8-hour maximum session TTL:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciBastion
 metadata:
   name: corp-bastion
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciBastion.corp-bastion
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciBastion.corp-bastion
 spec:
   compartmentId:
     valueFrom:
@@ -129,15 +129,15 @@ spec:
 A bastion with DNS proxy support for FQDN-based target resolution and SOCKS5 dynamic port forwarding:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciBastion
 metadata:
   name: dns-bastion
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciBastion.dns-bastion
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciBastion.dns-bastion
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"

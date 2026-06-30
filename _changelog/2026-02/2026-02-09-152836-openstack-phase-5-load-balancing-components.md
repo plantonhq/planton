@@ -140,7 +140,7 @@ This eliminates the need for internet lookups when building components.
 
 - OpenStack Phase 1-4 components: `_changelog/2026-02/2026-02-09-*`
 - Provider repos cloned: terraform-provider-openstack, pulumi-openstack
-- Parent project: `planton/_projects/20260209.01.openstack-openmcf-components/`
+- Parent project: `planton/_projects/20260209.01.openstack-planton-components/`
 
 ---
 

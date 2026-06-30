@@ -12,16 +12,16 @@ Deploys an Oracle Cloud Infrastructure Network Load Balancer (Layer 4) with back
 
 ## What Gets Created
 
-When you deploy an OciNetworkLoadBalancer resource, OpenMCF provisions:
+When you deploy an OciNetworkLoadBalancer resource, Planton provisions:
 
-- **Network Load Balancer** — an `oci_network_load_balancer_network_load_balancer` resource in the specified compartment and subnet. Supports public or private deployment, optional reserved IP addresses, source IP preservation, and symmetric hashing. Standard OpenMCF freeform tags are applied for resource tracking.
+- **Network Load Balancer** — an `oci_network_load_balancer_network_load_balancer` resource in the specified compartment and subnet. Supports public or private deployment, optional reserved IP addresses, source IP preservation, and symmetric hashing. Standard Planton freeform tags are applied for resource tracking.
 - **Backend Sets** — one `oci_network_load_balancer_backend_set` per entry in `backendSets`. Each set defines a load balancing policy (tuple-based hashing), health checker configuration, and failover behavior. Backend sets are created as children of the NLB.
 - **Backends** — one `oci_network_load_balancer_backend` per entry in each backend set's `backends` list. Backends are identified by IP address, compute instance OCID, or both. Created as children of their backend set.
 - **Listeners** — one `oci_network_load_balancer_listener` per entry in `listeners`. Each listener binds a port and Layer 4 protocol to a default backend set. Listeners are created after all backend sets, ensuring referential integrity.
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the NLB will be created — literal value or reference to an OciCompartment resource
 - **A subnet OCID** for the NLB — literal value or reference to an OciSubnet resource. The subnet determines whether the NLB gets public or private IP addresses.
 - **Backend server IP addresses or compute instance OCIDs** for traffic targets
@@ -31,15 +31,15 @@ When you deploy an OciNetworkLoadBalancer resource, OpenMCF provisions:
 Create a file `nlb.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciNetworkLoadBalancer
 metadata:
   name: my-nlb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciNetworkLoadBalancer.my-nlb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciNetworkLoadBalancer.my-nlb
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -65,7 +65,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f nlb.yaml
+planton apply -f nlb.yaml
 ```
 
 This creates a public NLB listening on port 80 (TCP) and distributing traffic to two backends on port 8080 using five-tuple hashing. TCP health checks verify backend availability. The NLB ID and assigned IP addresses are exported as stack outputs.
@@ -171,15 +171,15 @@ This creates a public NLB listening on port 80 (TCP) and distributing traffic to
 A public NLB distributing TCP traffic across two backends with five-tuple hashing and TCP health checks:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciNetworkLoadBalancer
 metadata:
   name: web-nlb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciNetworkLoadBalancer.web-nlb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciNetworkLoadBalancer.web-nlb
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -210,15 +210,15 @@ spec:
 A private NLB for internal services with instant failover and fail-open enabled. When a backend becomes unhealthy, existing connections immediately move to a healthy backend with a TCP RST signal:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciNetworkLoadBalancer
 metadata:
   name: internal-nlb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme
-    pulumi.openmcf.org/project: platform
-    pulumi.openmcf.org/stack.name: prod.OciNetworkLoadBalancer.internal-nlb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme
+    pulumi.planton.dev/project: platform
+    pulumi.planton.dev/stack.name: prod.OciNetworkLoadBalancer.internal-nlb
 spec:
   compartmentId:
     valueFrom:
@@ -274,17 +274,17 @@ spec:
 An NLB in transparent mode forwarding all traffic to firewall appliances while preserving the original source and destination IPs. Symmetric hashing ensures return traffic follows the same path:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciNetworkLoadBalancer
 metadata:
   name: fw-nlb
   org: acme
   env: prod
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme
-    pulumi.openmcf.org/project: security
-    pulumi.openmcf.org/stack.name: prod.OciNetworkLoadBalancer.fw-nlb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme
+    pulumi.planton.dev/project: security
+    pulumi.planton.dev/stack.name: prod.OciNetworkLoadBalancer.fw-nlb
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -321,15 +321,15 @@ spec:
 An NLB serving both TCP and UDP traffic on separate listeners, using DNS-based health checks for a DNS server backend set:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciNetworkLoadBalancer
 metadata:
   name: dns-nlb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme
-    pulumi.openmcf.org/project: platform
-    pulumi.openmcf.org/stack.name: prod.OciNetworkLoadBalancer.dns-nlb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme
+    pulumi.planton.dev/project: platform
+    pulumi.planton.dev/stack.name: prod.OciNetworkLoadBalancer.dns-nlb
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"

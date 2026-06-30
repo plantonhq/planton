@@ -3,7 +3,7 @@ package profile
 import "path/filepath"
 
 const (
-	providerBase = "apis/org/openmcf/provider"
+	providerBase = "apis/dev/planton/provider"
 
 	// ProviderProfileRelPath is the path to the provider E2E profile relative
 	// to the provider directory (e.g., kubernetes/aa_e2e/profile.yaml).

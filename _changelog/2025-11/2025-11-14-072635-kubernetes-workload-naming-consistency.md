@@ -6,11 +6,11 @@
 
 ## Summary
 
-Completed a comprehensive rename of all 23 Kubernetes workload deployment components, systematically changing the naming convention from `{Technology}Kubernetes` (suffix pattern) to `Kubernetes{Technology}` (prefix pattern). This massive refactoring spans directory structures, package namespaces, proto message types, API kind names, Go implementation code, test suites, and external references. The change aligns workload naming with the recently completed addon operator refactorings and establishes a unified, consistent naming pattern across all Kubernetes resources in OpenMCF.
+Completed a comprehensive rename of all 23 Kubernetes workload deployment components, systematically changing the naming convention from `{Technology}Kubernetes` (suffix pattern) to `Kubernetes{Technology}` (prefix pattern). This massive refactoring spans directory structures, package namespaces, proto message types, API kind names, Go implementation code, test suites, and external references. The change aligns workload naming with the recently completed addon operator refactorings and establishes a unified, consistent naming pattern across all Kubernetes resources in Planton.
 
 ## Problem Statement / Motivation
 
-OpenMCF's Kubernetes workload components were originally structured with "Kubernetes" appearing as a suffix in component names (e.g., `PostgresKubernetes`, `RedisKubernetes`, `KafkaKubernetes`). After successfully refactoring all Kubernetes addon operators to remove redundant suffixes (e.g., `CertManagerKubernetes` → `CertManager`, `ExternalDnsKubernetes` → `ExternalDns`), we recognized that workload components needed a different treatment: they still needed the "Kubernetes" designation to distinguish them from cloud provider managed services, but the suffix pattern was inconsistent with modern naming conventions.
+Planton's Kubernetes workload components were originally structured with "Kubernetes" appearing as a suffix in component names (e.g., `PostgresKubernetes`, `RedisKubernetes`, `KafkaKubernetes`). After successfully refactoring all Kubernetes addon operators to remove redundant suffixes (e.g., `CertManagerKubernetes` → `CertManager`, `ExternalDnsKubernetes` → `ExternalDns`), we recognized that workload components needed a different treatment: they still needed the "Kubernetes" designation to distinguish them from cloud provider managed services, but the suffix pattern was inconsistent with modern naming conventions.
 
 ### Pain Points
 
@@ -61,7 +61,7 @@ kubernetespostgresv1 "github.com/.../provider/kubernetes/workload/kubernetespost
 kubernetesredisv1 "github.com/.../provider/kubernetes/workload/kubernetesredis/v1"
 ```
 
-The provider namespace (`org.openmcf.provider.kubernetes.workload`) already indicates these are Kubernetes resources, but the type names needed reordering to align with Kubernetes ecosystem conventions.
+The provider namespace (`dev.planton.provider.kubernetes.workload`) already indicates these are Kubernetes resources, but the type names needed reordering to align with Kubernetes ecosystem conventions.
 
 ## Solution / What's New
 
@@ -103,11 +103,11 @@ The new naming follows Kubernetes ecosystem standards:
 
 ```yaml
 # Before (Suffix Pattern)
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: PostgresKubernetes
 
 # After (Prefix Pattern)
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPostgres
 ```
 
@@ -122,7 +122,7 @@ kind: KubernetesPostgres
 
 ### Phase 1: Cloud Resource Registry Update
 
-**File**: `apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto`
+**File**: `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto`
 
 Updated all 23 enum entries in the registry:
 
@@ -202,7 +202,7 @@ For each of the 23 components, updated 4 proto files:
 
 ```protobuf
 // Before
-package org.openmcf.provider.kubernetes.workload.postgreskubernetes.v1;
+package dev.planton.provider.kubernetes.workload.postgreskubernetes.v1;
 
 message PostgresKubernetes {
   string kind = 2 [(buf.validate.field).string.const = 'PostgresKubernetes'];
@@ -211,7 +211,7 @@ message PostgresKubernetes {
 }
 
 // After
-package org.openmcf.provider.kubernetes.workload.kubernetespostgres.v1;
+package dev.planton.provider.kubernetes.workload.kubernetespostgres.v1;
 
 message KubernetesPostgres {
   string kind = 2 [(buf.validate.field).string.const = 'KubernetesPostgres'];
@@ -224,14 +224,14 @@ message KubernetesPostgres {
 
 ```protobuf
 // Before
-package org.openmcf.provider.kubernetes.workload.postgreskubernetes.v1;
+package dev.planton.provider.kubernetes.workload.postgreskubernetes.v1;
 
 message PostgresKubernetesSpec { ... }
 message PostgresKubernetesContainer { ... }
 message PostgresKubernetesIngress { ... }
 
 // After
-package org.openmcf.provider.kubernetes.workload.kubernetespostgres.v1;
+package dev.planton.provider.kubernetes.workload.kubernetespostgres.v1;
 
 message KubernetesPostgresSpec { ... }
 message KubernetesPostgresContainer { ... }
@@ -242,19 +242,19 @@ message KubernetesPostgresIngress { ... }
 
 ```protobuf
 // Before
-package org.openmcf.provider.kubernetes.workload.postgreskubernetes.v1;
+package dev.planton.provider.kubernetes.workload.postgreskubernetes.v1;
 
 message PostgresKubernetesStackInput {
   PostgresKubernetes target = 1;
-  org.openmcf.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+  dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
 }
 
 // After
-package org.openmcf.provider.kubernetes.workload.kubernetespostgres.v1;
+package dev.planton.provider.kubernetes.workload.kubernetespostgres.v1;
 
 message KubernetesPostgresStackInput {
   KubernetesPostgres target = 1;
-  org.openmcf.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+  dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
 }
 ```
 
@@ -262,12 +262,12 @@ message KubernetesPostgresStackInput {
 
 ```protobuf
 // Before
-package org.openmcf.provider.kubernetes.workload.postgreskubernetes.v1;
+package dev.planton.provider.kubernetes.workload.postgreskubernetes.v1;
 
 message PostgresKubernetesStackOutputs { ... }
 
 // After
-package org.openmcf.provider.kubernetes.workload.kubernetespostgres.v1;
+package dev.planton.provider.kubernetes.workload.kubernetespostgres.v1;
 
 message KubernetesPostgresStackOutputs { ... }
 ```
@@ -377,8 +377,8 @@ message KubernetesTemporalDatabaseConfig {
 package main
 
 import (
-	postgreskubernetesv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/workload/postgreskubernetes/v1"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/workload/postgreskubernetes/v1/iac/pulumi/module"
+	postgreskubernetesv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/workload/postgreskubernetes/v1"
+	"github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/workload/postgreskubernetes/v1/iac/pulumi/module"
 )
 
 func main() {
@@ -392,8 +392,8 @@ func main() {
 package main
 
 import (
-	kubernetespostgresv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/workload/kubernetespostgres/v1"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/workload/kubernetespostgres/v1/iac/pulumi/module"
+	kubernetespostgresv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/workload/kubernetespostgres/v1"
+	"github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/workload/kubernetespostgres/v1/iac/pulumi/module"
 )
 
 func main() {
@@ -458,7 +458,7 @@ var _ = ginkgo.Describe("PostgresKubernetes Custom Validation Tests", func() {
 	
 	ginkgo.BeforeEach(func() {
 		input = &PostgresKubernetes{
-			ApiVersion: "kubernetes.openmcf.org/v1",
+			ApiVersion: "kubernetes.planton.dev/v1",
 			Kind:       "PostgresKubernetes",
 			Spec: &PostgresKubernetesSpec{
 				Container: &PostgresKubernetesContainer{
@@ -482,7 +482,7 @@ var _ = ginkgo.Describe("KubernetesPostgres Custom Validation Tests", func() {
 	
 	ginkgo.BeforeEach(func() {
 		input = &KubernetesPostgres{
-			ApiVersion: "kubernetes.openmcf.org/v1",
+			ApiVersion: "kubernetes.planton.dev/v1",
 			Kind:       "KubernetesPostgres",
 			Spec: &KubernetesPostgresSpec{
 				Container: &KubernetesPostgresContainer{
@@ -503,7 +503,7 @@ var _ = ginkgo.Describe("KubernetesPostgres Custom Validation Tests", func() {
 ```go
 // Before
 import (
-	rediskubernetesv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/workload/rediskubernetes/v1"
+	rediskubernetesv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/workload/rediskubernetes/v1"
 )
 
 msg := &rediskubernetesv1.RedisKubernetes{
@@ -517,7 +517,7 @@ msg := &rediskubernetesv1.RedisKubernetes{
 
 // After
 import (
-	kubernetesredisv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/workload/kubernetesredis/v1"
+	kubernetesredisv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/workload/kubernetesredis/v1"
 )
 
 msg := &kubernetesredisv1.KubernetesRedis{
@@ -535,21 +535,21 @@ msg := &kubernetesredisv1.KubernetesRedis{
 ```go
 // Before
 import (
-	rediskubernetesv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/workload/rediskubernetes/v1"
+	rediskubernetesv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/workload/rediskubernetes/v1"
 )
 
 msg := &rediskubernetesv1.RedisKubernetes{
-	ApiVersion: "kubernetes.openmcf.org/v1",
+	ApiVersion: "kubernetes.planton.dev/v1",
 	Kind:       "RedisKubernetes",
 }
 
 // After
 import (
-	kubernetesredisv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/workload/kubernetesredis/v1"
+	kubernetesredisv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/workload/kubernetesredis/v1"
 )
 
 msg := &kubernetesredisv1.KubernetesRedis{
-	ApiVersion: "kubernetes.openmcf.org/v1",
+	ApiVersion: "kubernetes.planton.dev/v1",
 	Kind:       "KubernetesRedis",
 }
 ```
@@ -853,7 +853,7 @@ This is a **major breaking change** affecting all users of Kubernetes workload c
 ```yaml
 # PostgreSQL Example
 # Before
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: PostgresKubernetes
 metadata:
   name: my-postgres
@@ -866,7 +866,7 @@ spec:
         memory: 2Gi
 
 # After
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPostgres
 metadata:
   name: my-postgres
@@ -899,7 +899,7 @@ sed -i 's/kind: KafkaKubernetes/kind: KubernetesKafka/g' kafka.yaml
 ```go
 // Before
 import (
-	postgreskubernetesv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/workload/postgreskubernetes/v1"
+	postgreskubernetesv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/workload/postgreskubernetes/v1"
 )
 
 var db *postgreskubernetesv1.PostgresKubernetes
@@ -907,7 +907,7 @@ var spec *postgreskubernetesv1.PostgresKubernetesSpec
 
 // After
 import (
-	kubernetespostgresv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/workload/kubernetespostgres/v1"
+	kubernetespostgresv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/workload/kubernetespostgres/v1"
 )
 
 var db *kubernetespostgresv1.KubernetesPostgres
@@ -920,10 +920,10 @@ var spec *kubernetespostgresv1.KubernetesPostgresSpec
 
 ```protobuf
 // Before
-import "org/openmcf/provider/kubernetes/workload/postgreskubernetes/v1/api.proto";
+import "dev/planton/provider/kubernetes/workload/postgreskubernetes/v1/api.proto";
 
 // After
-import "org/openmcf/provider/kubernetes/workload/kubernetespostgres/v1/api.proto";
+import "dev/planton/provider/kubernetes/workload/kubernetespostgres/v1/api.proto";
 ```
 
 **Message Type References**:
@@ -944,7 +944,7 @@ KubernetesPostgresSpec spec = 2;
 - **Enum Values**: All unchanged (800-820, 830, 835)
 - **ID Prefixes**: All unchanged (`argk8s`, `pgk8s`, `redk8s`, etc.)
 - **Namespace Prefixes**: All unchanged (`argo`, `postgres`, `redis`, etc.)
-- **API Version**: Still `kubernetes.openmcf.org/v1`
+- **API Version**: Still `kubernetes.planton.dev/v1`
 - **Provider**: Still `kubernetes`
 - **Functionality**: Zero behavioral changes to deployments
 
@@ -975,7 +975,7 @@ KubernetesPostgresSpec spec = 2;
 ### Proto Generation
 
 ```bash
-cd ~/scm/github.com/plantonhq/openmcf
+cd ~/scm/github.com/plantonhq/planton
 make protos
 ```
 
@@ -1000,10 +1000,10 @@ make build
 
 **Build Metrics**:
 ```
-INFO: Analyzed target //:openmcf (823 packages loaded, 5739 targets configured).
+INFO: Analyzed target //:planton (823 packages loaded, 5739 targets configured).
 INFO: Found 1 target...
-Target //:openmcf up-to-date:
-  bazel-bin/openmcf_/openmcf
+Target //:planton up-to-date:
+  bazel-bin/planton_/planton
 INFO: Build completed successfully, 2615 total actions
 ```
 
@@ -1059,8 +1059,8 @@ sed -i 's/kind: TemporalKubernetes/kind: KubernetesTemporal/g' *.yaml
 
 ```bash
 # Validate each updated manifest
-openmcf validate --manifest postgres.yaml
-openmcf validate --manifest redis.yaml
+planton validate --manifest postgres.yaml
+planton validate --manifest redis.yaml
 # ... etc.
 ```
 
@@ -1068,7 +1068,7 @@ openmcf validate --manifest redis.yaml
 
 ```bash
 # Deploy updated manifests
-openmcf pulumi up --manifest postgres.yaml --stack dev
+planton pulumi up --manifest postgres.yaml --stack dev
 ```
 
 ### For SDK Users (Go Code Updates)
@@ -1133,10 +1133,10 @@ go test ./...
 
 ```protobuf
 // Before
-import "org/openmcf/provider/kubernetes/workload/postgreskubernetes/v1/api.proto";
+import "dev/planton/provider/kubernetes/workload/postgreskubernetes/v1/api.proto";
 
 // After
-import "org/openmcf/provider/kubernetes/workload/kubernetespostgres/v1/api.proto";
+import "dev/planton/provider/kubernetes/workload/kubernetespostgres/v1/api.proto";
 ```
 
 #### Step 2: Update Message Type References
@@ -1213,7 +1213,7 @@ All 23 workload components under `kubernetes/workload/` systematically renamed f
 
 **Namespace Already Provides Context**:
 - Directory: `provider/kubernetes/workload/kubernetespostgres/`
-- Package: `org.openmcf.provider.kubernetes.workload.kubernetespostgres.v1`
+- Package: `dev.planton.provider.kubernetes.workload.kubernetespostgres.v1`
 - Kind: `KubernetesPostgres`
 - All three layers reinforce the platform designation
 
@@ -1247,7 +1247,7 @@ Directory names, package names, and import paths all align:
 
 ```
 Directory:  kubernetespostgres/
-Package:    org.openmcf.provider.kubernetes.workload.kubernetespostgres.v1
+Package:    dev.planton.provider.kubernetes.workload.kubernetespostgres.v1
 Import:     github.com/.../provider/kubernetes/workload/kubernetespostgres/v1
 Alias:      kubernetespostgresv1
 Kind:       KubernetesPostgres
@@ -1620,7 +1620,7 @@ Cloud Services:
 
 3. **Validate Before Deploy**:
    ```bash
-   openmcf validate --manifest postgres.yaml
+   planton validate --manifest postgres.yaml
    ```
 
 4. **Test in Non-Production**:
@@ -1644,7 +1644,7 @@ Cloud Services:
 - ✅ Enum values (800-835)
 - ✅ ID prefixes (resource IDs unchanged)
 - ✅ Namespace prefixes (K8s namespace generation unchanged)
-- ✅ API version (`kubernetes.openmcf.org/v1`)
+- ✅ API version (`kubernetes.planton.dev/v1`)
 - ✅ Functionality (deployment behavior identical)
 
 ### User Action Required

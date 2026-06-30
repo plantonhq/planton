@@ -1,0 +1,394 @@
+syntax = "proto3";
+
+package dev.planton.provider.cloudflare.cloudflarer2bucket.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// Location hint for an R2 bucket's primary storage region. The hint influences
+// where objects are initially placed; R2 still serves and caches globally.
+// Value names match the strings the Cloudflare API expects exactly, so the
+// generated enum is used directly (.String()) when calling the provider.
+enum CloudflareR2Location {
+  auto = 0; // No location hint; Cloudflare selects the optimal region.
+  wnam = 1; // Western North America (US West).
+  enam = 2; // Eastern North America (US East).
+  weur = 3; // Western Europe.
+  eeur = 4; // Eastern Europe.
+  apac = 5; // Asia-Pacific.
+  oc = 6; // Oceania.
+}
+
+// Default storage class applied to newly uploaded objects unless an upload
+// overrides it. Value names match the Cloudflare API strings exactly.
+enum CloudflareR2StorageClass {
+  storage_class_unspecified = 0; // Omitted; the provider applies its default (Standard).
+  Standard = 1; // Frequently accessed data.
+  InfrequentAccess = 2; // Lower storage cost for rarely accessed data (retrieval fees apply).
+}
+
+// HTTP methods a CORS rule may allow a browser to use against the bucket.
+// Value names match the Cloudflare API strings exactly (used via .String()).
+enum CloudflareR2CorsAllowedMethod {
+  cors_allowed_method_unspecified = 0;
+  GET = 1;
+  PUT = 2;
+  POST = 3;
+  DELETE = 4;
+  HEAD = 5;
+}
+
+// Trigger type for a lifecycle or lock condition. Value names match the
+// Cloudflare API strings exactly (used via .String()).
+enum CloudflareR2ConditionType {
+  condition_type_unspecified = 0;
+  Age = 1; // Triggers after an object reaches a given age (seconds since creation).
+  Date = 2; // Triggers on/after a specific calendar date.
+  Indefinite = 3; // Never expires (object-lock only; the object is retained forever).
+}
+
+// CloudflareR2BucketSpec defines the user configuration for a Cloudflare R2 bucket
+// and its bucket-scoped configuration (custom domains, public access, CORS,
+// object lifecycle, and object lock). These sub-resources have no independent
+// lifecycle and exist only as configuration of this bucket, so they are modeled
+// as nested fields rather than separate resources.
+message CloudflareR2BucketSpec {
+  // bucket name (DNS-compatible, 3-63 characters)
+  string bucket_name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
+    (buf.validate.field).string.min_len = 3,
+    (buf.validate.field).string.max_len = 63
+  ];
+
+  // The Cloudflare account ID in which to create the bucket.
+  string account_id = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.len = 32,
+    (buf.validate.field).string.pattern = "^[0-9a-fA-F]{32}$"
+  ];
+
+  // Primary region for the bucket (location hint). Leave as `auto` to let
+  // Cloudflare choose the optimal region; the hint is only honored when the
+  // bucket is first created and is best-effort, not a guarantee.
+  CloudflareR2Location location = 3 [(dev.planton.shared.options.recommended_default) = "auto"];
+
+  // Expose the bucket publicly over Cloudflare's managed `r2.dev` domain. When
+  // true, a managed public domain is enabled and its URL is published as the
+  // `public_url` stack output. Custom domains (below) are the production-grade
+  // path; the r2.dev domain is rate-limited and intended for development.
+  bool public_access = 4;
+
+  // Custom domains that serve the bucket's objects over your own hostnames
+  // (e.g. "media.example.com"). A bucket may have multiple custom domains.
+  repeated CloudflareR2BucketCustomDomainConfig custom_domains = 5 [(buf.validate.field).repeated.max_items = 50];
+
+  // Data-residency jurisdiction for the bucket, fixed at creation and part of
+  // the bucket's identity. One of "default" (standard global storage), "eu"
+  // (European Union residency), or "fedramp" (US FedRAMP). Leave empty for
+  // "default". Every bucket-scoped sub-resource is created in this jurisdiction.
+  string jurisdiction = 6 [
+    (dev.planton.shared.options.recommended_default) = "default",
+    (buf.validate.field).cel = {
+      id: "jurisdiction.valid"
+      message: "jurisdiction must be one of \"default\", \"eu\", \"fedramp\""
+      expression: "this == '' || this in ['default', 'eu', 'fedramp']"
+    }
+  ];
+
+  // Default storage class for newly uploaded objects. `Standard` suits
+  // frequently accessed data; `InfrequentAccess` lowers storage cost for
+  // rarely accessed data at the expense of retrieval fees.
+  CloudflareR2StorageClass storage_class = 7 [(dev.planton.shared.options.recommended_default) = "Standard"];
+
+  // Cross-Origin Resource Sharing (CORS) configuration. Required when a web
+  // application served from another origin needs browser access to the bucket.
+  CloudflareR2BucketCorsConfig cors = 8;
+
+  // Object lifecycle configuration: automatic storage-class transitions,
+  // object expiration, and cleanup of incomplete multipart uploads.
+  CloudflareR2BucketLifecycleConfig lifecycle = 9;
+
+  // Object lock configuration: retention rules that prevent objects from being
+  // deleted or overwritten for a period (or indefinitely), for compliance.
+  CloudflareR2BucketLockConfig lock = 10;
+
+  // Event notifications: push object lifecycle events (uploads, deletions) to
+  // Cloudflare Queues for downstream processing by a Worker. A bucket may notify
+  // multiple queues; each entry filters the events it forwards by action and by an
+  // optional key prefix/suffix.
+  repeated CloudflareR2BucketEventNotification event_notifications = 11 [(buf.validate.field).repeated.max_items = 100];
+}
+
+// CloudflareR2BucketEventNotification forwards matching object events to a queue.
+message CloudflareR2BucketEventNotification {
+  // The destination Cloudflare Queue id, or a reference to a CloudflareQueue resource.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef queue = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareQueue,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.queue_id"
+  ];
+
+  // The rules that select which object events are forwarded to the queue.
+  repeated CloudflareR2BucketEventNotificationRule rules = 2 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// CloudflareR2BucketEventNotificationRule selects object events by action and key.
+message CloudflareR2BucketEventNotificationRule {
+  // Object actions that trigger a notification, e.g. "PutObject", "CopyObject",
+  // "DeleteObject", "CompleteMultipartUpload", "AbortMultipartUpload",
+  // "LifecycleDeletion".
+  repeated string actions = 1 [(buf.validate.field).repeated.min_items = 1];
+
+  // Optional human-readable description of the rule.
+  string description = 2;
+
+  // Only notify for objects whose key starts with this prefix. Empty = all keys.
+  string prefix = 3;
+
+  // Only notify for objects whose key ends with this suffix. Empty = all keys.
+  string suffix = 4;
+}
+
+// CloudflareR2BucketCustomDomainConfig configures one custom domain for the bucket.
+message CloudflareR2BucketCustomDomainConfig {
+  // CEL validation: zone_id is required when enabled is true.
+  option (buf.validate.message).cel = {
+    id: "custom_domain_zone_id_required"
+    message: "zone_id is required when a custom domain is enabled"
+    expression: "!this.enabled || has(this.zone_id)"
+  };
+
+  // CEL validation: domain is required when enabled is true.
+  option (buf.validate.message).cel = {
+    id: "custom_domain_domain_required"
+    message: "domain is required when a custom domain is enabled"
+    expression: "!this.enabled || this.domain != ''"
+  };
+
+  // Whether to enable public access to the bucket at this custom domain.
+  bool enabled = 1;
+
+  // The Cloudflare Zone ID that hosts this custom domain. Can be a literal
+  // value or referenced from a CloudflareDnsZone resource. Required when enabled.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef zone_id = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareDnsZone,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
+  ];
+
+  // The full domain name used to access the bucket (e.g., "media.example.com").
+  // Must be within the zone specified by zone_id. Required when enabled.
+  string domain = 3 [(buf.validate.field).string.max_len = 253];
+
+  // Minimum TLS version this custom domain accepts for incoming connections.
+  // One of "1.0", "1.1", "1.2", "1.3"; defaults to "1.0" when omitted.
+  string min_tls = 4 [(buf.validate.field).cel = {
+    id: "custom_domain_min_tls.valid"
+    message: "min_tls must be one of \"1.0\", \"1.1\", \"1.2\", \"1.3\""
+    expression: "this == '' || this in ['1.0', '1.1', '1.2', '1.3']"
+  }];
+
+  // Optional allowlist of TLS ciphers (BoringSSL format) for TLS termination
+  // at this custom domain. Leave empty to use Cloudflare's default cipher suite.
+  repeated string ciphers = 5;
+}
+
+// CloudflareR2BucketCorsConfig is the bucket's CORS configuration.
+message CloudflareR2BucketCorsConfig {
+  // Ordered list of CORS rules evaluated for each cross-origin request.
+  repeated CloudflareR2BucketCorsRule rules = 1 [(buf.validate.field).repeated.max_items = 100];
+}
+
+// CloudflareR2BucketCorsRule is a single CORS rule.
+message CloudflareR2BucketCorsRule {
+  // Allowed origins, methods, and request headers for this rule.
+  CloudflareR2BucketCorsAllowed allowed = 1 [(buf.validate.field).required = true];
+
+  // Optional identifier for this rule.
+  string id = 2;
+
+  // Response headers exposed to client-side JavaScript beyond the CORS-safelisted
+  // set (e.g., "Content-Encoding", "cf-cache-status").
+  repeated string expose_headers = 3;
+
+  // How long (in seconds) browsers may cache the CORS preflight response.
+  // Browsers may cap this at 2 hours regardless; maximum is 86400 (24h).
+  int64 max_age_seconds = 4 [(buf.validate.field).cel = {
+    id: "cors_max_age_seconds.valid_range"
+    message: "max_age_seconds must be between 0 and 86400"
+    expression: "this >= 0 && this <= 86400"
+  }];
+}
+
+// CloudflareR2BucketCorsAllowed specifies what a CORS rule permits.
+message CloudflareR2BucketCorsAllowed {
+  // HTTP methods the rule allows (Access-Control-Allow-Methods).
+  repeated CloudflareR2CorsAllowedMethod methods = 1 [
+    (buf.validate.field).repeated.min_items = 1,
+    (buf.validate.field).repeated.items.enum = {
+      defined_only: true
+      not_in: [0]
+    }
+  ];
+
+  // Allowed request origins (Access-Control-Allow-Origin), e.g.
+  // "https://app.example.com". Use ["*"] to allow any origin.
+  repeated string origins = 2 [(buf.validate.field).repeated.min_items = 1];
+
+  // Allowed request headers (Access-Control-Allow-Headers) for preflighted
+  // cross-origin requests that include custom headers (e.g., "x-user-id").
+  repeated string headers = 3;
+}
+
+// CloudflareR2BucketLifecycleConfig is the bucket's object-lifecycle configuration.
+message CloudflareR2BucketLifecycleConfig {
+  // Lifecycle rules applied to objects in the bucket.
+  repeated CloudflareR2BucketLifecycleRule rules = 1 [(buf.validate.field).repeated.max_items = 1000];
+}
+
+// CloudflareR2BucketLifecycleRule automates transitions and expiration for a set
+// of objects selected by prefix.
+message CloudflareR2BucketLifecycleRule {
+  // Unique identifier for this rule.
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Object selector for this rule. An empty prefix scopes the rule to all objects.
+  CloudflareR2BucketLifecycleConditions conditions = 2 [(buf.validate.field).required = true];
+
+  // Whether this rule is in effect.
+  bool enabled = 3;
+
+  // Abort incomplete multipart uploads older than a given age.
+  CloudflareR2BucketLifecycleAbortMultipartUploadsTransition abort_multipart_uploads_transition = 4;
+
+  // Delete (expire) objects by age or on a date.
+  CloudflareR2BucketLifecycleDeleteObjectsTransition delete_objects_transition = 5;
+
+  // Transition objects to a cheaper storage class (Infrequent Access) by age or date.
+  repeated CloudflareR2BucketLifecycleStorageClassTransition storage_class_transitions = 6;
+}
+
+// CloudflareR2BucketLifecycleConditions selects which objects a lifecycle rule applies to.
+message CloudflareR2BucketLifecycleConditions {
+  // Only objects whose key starts with this prefix are affected. Empty = all objects.
+  string prefix = 1;
+}
+
+// CloudflareR2BucketLifecycleAbortMultipartUploadsTransition aborts incomplete
+// multipart uploads once they reach the given age.
+message CloudflareR2BucketLifecycleAbortMultipartUploadsTransition {
+  // Age in seconds after which incomplete multipart uploads are aborted.
+  int64 max_age_seconds = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).int64.gt = 0
+  ];
+}
+
+// CloudflareR2BucketLifecycleDeleteObjectsTransition expires (deletes) objects.
+message CloudflareR2BucketLifecycleDeleteObjectsTransition {
+  // Condition that triggers deletion (by age or on a date).
+  CloudflareR2BucketLifecycleTransitionCondition condition = 1 [(buf.validate.field).required = true];
+}
+
+// CloudflareR2BucketLifecycleStorageClassTransition moves objects to Infrequent
+// Access storage when the condition is met.
+message CloudflareR2BucketLifecycleStorageClassTransition {
+  // Condition that triggers the transition (by age or on a date).
+  CloudflareR2BucketLifecycleTransitionCondition condition = 1 [(buf.validate.field).required = true];
+}
+
+// CloudflareR2BucketLifecycleTransitionCondition triggers a lifecycle transition
+// after an object reaches an age or on a specific date.
+message CloudflareR2BucketLifecycleTransitionCondition {
+  // Lifecycle transitions support Age or Date triggers (not Indefinite).
+  option (buf.validate.message).cel = {
+    id: "lifecycle_condition.age_or_date"
+    message: "lifecycle condition type must be Age or Date"
+    expression: "this.type == 1 || this.type == 2"
+  };
+
+  // Age (type == Age) requires a positive max_age_seconds.
+  option (buf.validate.message).cel = {
+    id: "lifecycle_condition.age_requires_max_age"
+    message: "max_age_seconds must be > 0 when type is Age"
+    expression: "this.type != 1 || this.max_age_seconds > 0"
+  };
+
+  // Date (type == Date) requires an RFC3339 date.
+  option (buf.validate.message).cel = {
+    id: "lifecycle_condition.date_requires_date"
+    message: "date (RFC3339) is required when type is Date"
+    expression: "this.type != 2 || this.date != ''"
+  };
+
+  // Whether the transition is triggered by object age or by a calendar date.
+  CloudflareR2ConditionType type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).enum.defined_only = true
+  ];
+
+  // Age in seconds since object creation (used when type is Age).
+  int64 max_age_seconds = 2;
+
+  // RFC3339 date on/after which the transition applies (used when type is Date),
+  // e.g. "2027-01-01T00:00:00Z".
+  string date = 3;
+}
+
+// CloudflareR2BucketLockConfig is the bucket's object-lock configuration.
+message CloudflareR2BucketLockConfig {
+  // Object-lock retention rules applied to objects in the bucket.
+  repeated CloudflareR2BucketLockRule rules = 1 [(buf.validate.field).repeated.max_items = 1000];
+}
+
+// CloudflareR2BucketLockRule retains objects (preventing deletion/overwrite) that
+// match a prefix, for a duration or indefinitely.
+message CloudflareR2BucketLockRule {
+  // Unique identifier for this rule.
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Retention condition: how long matching objects are locked.
+  CloudflareR2BucketLockRuleCondition condition = 2 [(buf.validate.field).required = true];
+
+  // Whether this rule is in effect.
+  bool enabled = 3;
+
+  // Only objects whose key starts with this prefix are locked. Empty = all objects.
+  string prefix = 4;
+}
+
+// CloudflareR2BucketLockRuleCondition expresses an object-lock retention period.
+message CloudflareR2BucketLockRuleCondition {
+  // Age (type == Age) requires a positive max_age_seconds.
+  option (buf.validate.message).cel = {
+    id: "lock_condition.age_requires_max_age"
+    message: "max_age_seconds must be > 0 when type is Age"
+    expression: "this.type != 1 || this.max_age_seconds > 0"
+  };
+
+  // Date (type == Date) requires an RFC3339 date.
+  option (buf.validate.message).cel = {
+    id: "lock_condition.date_requires_date"
+    message: "date (RFC3339) is required when type is Date"
+    expression: "this.type != 2 || this.date != ''"
+  };
+
+  // Whether objects are locked for an age, until a date, or indefinitely.
+  CloudflareR2ConditionType type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).enum.defined_only = true
+  ];
+
+  // Retention period in seconds (used when type is Age).
+  int64 max_age_seconds = 2;
+
+  // RFC3339 date until which objects are retained (used when type is Date).
+  string date = 3;
+}

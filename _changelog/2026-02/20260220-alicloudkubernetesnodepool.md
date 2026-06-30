@@ -14,7 +14,7 @@ This component wraps a single provider resource (`alicloud_cs_kubernetes_node_po
 ## What Was Created
 
 ### API Definition
-- `apis/org/openmcf/provider/alicloud/alicloudkubernetesnodepool/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
+- `apis/dev/planton/provider/alicloud/alicloudkubernetesnodepool/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
 - Registered `AliCloudKubernetesNodePool = 3092` in `CloudResourceKind` enum
 - 7 proto messages: spec, system_disk, data_disk, taint, scaling_config, management, spot_price_limit, plus the API/status wrappers
 

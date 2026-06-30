@@ -41,7 +41,7 @@ def build_manifest_path(repo_root: str, provider: str, kind_folder: str) -> Tupl
     relative_path = os.path.join(
         "apis",
         "org",
-        "openmcf",
+        "planton",
         "provider",
         provider,
         kind_folder,

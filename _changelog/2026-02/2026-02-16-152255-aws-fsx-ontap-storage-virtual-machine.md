@@ -41,7 +41,7 @@ flowchart LR
         A[active_directory_configuration] --> B[self_managed_active_directory_configuration]
         B --> C[domain_name, dns_ips, ...]
     end
-    subgraph openmcf [OpenMCF Schema]
+    subgraph planton [Planton Schema]
         D[active_directory_configuration] --> E[domain_name, dns_ips, ...]
     end
 ```

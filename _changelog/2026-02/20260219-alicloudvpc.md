@@ -14,7 +14,7 @@ This component manages an Alibaba Cloud Virtual Private Cloud (VPC), creating th
 ## What Was Created
 
 ### API Definition
-- `apis/org/openmcf/provider/alicloud/alicloudvpc/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
+- `apis/dev/planton/provider/alicloud/alicloudvpc/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
 - Registered `AliCloudVpc = 3020` in `CloudResourceKind` enum under the Networking category
 
 ### IaC Modules

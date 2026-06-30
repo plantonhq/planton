@@ -1,0 +1,11 @@
+apiVersion: gcp.planton.dev/v1
+kind: GcpGkeNodePool
+metadata:
+  name: test-gke-node-pool
+spec:
+  cluster_project_id:
+    value: test-project-123
+  cluster_name:
+    value: test-gke-cluster
+  node_pool_name: test-node-pool
+  node_count: 3

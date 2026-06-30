@@ -2,7 +2,7 @@ package protobufyaml
 
 import (
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/pkg/fileutil"
+	"github.com/plantonhq/planton/pkg/fileutil"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"os"

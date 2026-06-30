@@ -1,6 +1,0 @@
-name: gcp-alloydb-cluster
-runtime:
-  name: go
-  options:
-    binary: ./pulumi
-description: OpenMCF GcpAlloydbCluster Pulumi module

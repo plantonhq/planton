@@ -60,7 +60,7 @@ flowchart TB
     end
     subgraph guard [2. Drift Guard]
       C["pkg/outputs.ValidateOverride"] --> D["conformance_test.go<br/>(per-kind proto conformance)"]
-      C --> E["openmcf validate-outputs CLI"]
+      C --> E["planton validate-outputs CLI"]
     end
     subgraph rules [3. Workflow Hardening]
       F["forge: Parity Mandate + Phase 6b gate"]
@@ -73,7 +73,7 @@ flowchart TB
 
 ### 1. Postgres tofu module — now matches Pulumi
 
-All in `apis/org/openmcf/provider/kubernetes/kubernetespostgres/v1/iac/tf/`:
+All in `apis/dev/planton/provider/kubernetes/kubernetespostgres/v1/iac/tf/`:
 
 - `locals.tf` — `namespace = var.spec.namespace`; naming basis switched to `metadata.name`;
   LB selector fixed to `{ application = "spilo" }`; labels rebuilt to mirror Pulumi exactly
@@ -109,7 +109,7 @@ cross-engine parity invariant** — no brittle tofu-vs-pulumi string diffing.
 The architecture doc already *declared* "feature parity," but no workflow operationalized
 it. That is now fixed:
 
-- `forge-openmcf-component.mdc` — a non-negotiable **Parity Mandate** (neither engine is
+- `forge-planton-component.mdc` — a non-negotiable **Parity Mandate** (neither engine is
   privileged; the proto contract + intended behavior decide which is correct, and the wrong
   engine is fixed; deviation only via a documented `PARITY-EXCEPTION:` comment in both
   modules) and
@@ -117,8 +117,8 @@ it. That is now fixed:
   dimension checklist before presets/validation.
 - `forge/flow/013-terraform-module.mdc` — a mandatory **PARITY WITH PULUMI** section: since
   tofu is authored after Pulumi, the rule now reconciles field-by-field against it, with a
-  step-5 verification (`openmcf validate-outputs`) and a parity success criterion.
-- `audit/audit-openmcf-component.mdc` — a **Category 5b: Cross-Engine IaC Parity** critical
+  step-5 verification (`planton validate-outputs`) and a parity success criterion.
+- `audit/audit-planton-component.mdc` — a **Category 5b: Cross-Engine IaC Parity** critical
   gate (caps the Pulumi/Terraform scores on undocumented divergence; ❌ when a divergence
   would misdeploy), a parity verdict in the report + chat summary, a `--parity` invocation,
   and a **"Driving All Components to Parity (one component per session)"** sweep workflow so
@@ -146,7 +146,7 @@ so the nested-object fix is the house style, not a new pattern.
 
 ### Deliberate deviation from "just regenerate variables.tf"
 
-`variables.tf` is produced by a generator (`openmcf tofu generate-variables`), but the
+`variables.tf` is produced by a generator (`planton tofu generate-variables`), but the
 generator emits an **all-required** form, whereas 322/377 committed modules (incl. the
 canonical `kubernetesnamespace` and `kubernetescronjob`) use a curated `optional()` form.
 Committing the raw generator output would break runtime — generated `terraform.tfvars` omit
@@ -180,14 +180,14 @@ from the established convention. So `backup_config` was hand-added in the curate
   namespace, labels, standby block, and merged env for a representative input.
 - `go test ./pkg/outputs/` passes, including the new conformance test and its negative case;
   `go vet` clean; `bazel build //pkg/outputs:outputs_test` passes (incl. `nogo`).
-- `openmcf validate-outputs --kind KubernetesPostgres` reports 7/8 proto fields populated —
+- `planton validate-outputs --kind KubernetesPostgres` reports 7/8 proto fields populated —
   the 8th is the deprecated `internal_hostname`, which Pulumi also omits — with zero unmapped.
 
 ## Related Work
 
 - Builds directly on the `pkg/outputs` transformer framework and the tofu generators
   (`pkg/iac/tofu/generators`, the 012 redesign).
-- Follow-up sweep: apply `@audit-openmcf-component --parity` across the catalog (Redis's
+- Follow-up sweep: apply `@audit-planton-component --parity` across the catalog (Redis's
   flat-output drift is already known) to drive every component to parity.
 
 ---

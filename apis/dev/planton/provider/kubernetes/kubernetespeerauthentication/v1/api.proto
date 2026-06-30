@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetespeerauthentication.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/kubernetespeerauthentication/v1/spec.proto";
+import "dev/planton/provider/kubernetes/kubernetespeerauthentication/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// KubernetesPeerAuthentication is an Istio PeerAuthentication: a namespaced policy
+// that sets the mutual TLS (mTLS) requirements for incoming connections to the
+// workloads it selects.
+message KubernetesPeerAuthentication {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'KubernetesPeerAuthentication'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  KubernetesPeerAuthenticationSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  KubernetesPeerAuthenticationStatus status = 5;
+}
+
+// KubernetesPeerAuthenticationStatus holds the deployment status and outputs.
+message KubernetesPeerAuthenticationStatus {
+  // stack-outputs
+  KubernetesPeerAuthenticationStackOutputs outputs = 1;
+}

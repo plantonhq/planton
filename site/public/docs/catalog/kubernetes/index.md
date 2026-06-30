@@ -1,13 +1,13 @@
 ---
 title: "KUBERNETES"
-description: "Deploy KUBERNETES resources using OpenMCF"
+description: "Deploy KUBERNETES resources using Planton"
 icon: "cloud"
 order: 10
 ---
 
 # KUBERNETES
 
-The following KUBERNETES resources can be deployed using OpenMCF:
+The following KUBERNETES resources can be deployed using Planton:
 
 - [Altinity Operator](/docs/catalog/kubernetes/altinity-operator)
 - [Argo CD](/docs/catalog/kubernetes/argo-cd)

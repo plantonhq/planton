@@ -1,0 +1,214 @@
+# Rule: Pull Request Title and Description (ask-only)
+
+Purpose: When asked to write a PR title and PR description, respond with exactly two copyable code blocks — first the title, then the description — without making any repository changes.
+
+This rule is designed for ask mode only. Do not modify files, run commands, or propose edits. Output only the two fenced code blocks described below.
+
+Usage: In Ask mode, invoke explicitly as `@pr-info`.
+
+## How to respond (strict)
+1) First block: PR Title
+   - Fenced code block with language: `text`
+   - Single line only
+   - Prefix using Conventional Commits: one of `feat`, `fix`, `refactor`, `docs`, `test`, `perf`, `ci`, `build`, `chore`, `revert`
+   - Scope is required and must be repository-aware, using a path-like token derived from changed files (see heuristics)
+   - Imperative mood, concise, ≤ 72 characters after the prefix
+   - No trailing period
+
+2) Second block: PR Description
+   - Fenced code block with language: `markdown`
+   - Use the following sections when applicable. Omit any that are not relevant.
+     - "Summary": 1–3 sentences describing what this PR does in plain language
+     - "Context": Why this change is needed (problem, bug, or goal)
+     - "Changes": Bullet list of key changes; group by area if helpful
+     - "Implementation notes": Important design decisions or trade-offs
+     - "Breaking changes": Clearly call out any breaking behavior and migration steps
+     - "Test plan": How this was verified (tests, manual steps, screenshots/links)
+     - "Risks": Known risks or rollback plan
+     - "Checklist": Markdown checkboxes for docs, tests, backward compatibility
+     - Optionally include issue links like `Closes #123` when known
+   - **Include Mermaid diagrams wherever appropriate** to make the information easier to consume (see Mermaid guidance below)
+
+## Title format (exactly)
+
+```text
+<prefix>(<scope-path>): <concise, imperative title>
+```
+
+### Examples of valid scopes (Planton)
+- `apis/project/planton`
+- `charts/aws/eks-environment`
+- `charts/aws/terraform-backend`
+- `charts/gcp/gke-environment`
+- `charts/gcp/cloud-run`
+- `charts/azure/aks-environment`
+- `charts/digital-ocean/doks-environment`
+- `charts/digital-ocean/app-platform-environment`
+- `cmd/planton`
+- `internal/manifest`
+- `internal/cli/flag`
+- `pkg/protobufyaml`
+- `pkg/kubernetes/kubernetestypes`
+- `pkg/ulidgen`
+- `docs`
+- `gists/provider/kubernetes`
+- `hack/guards`
+- `.cursor`
+- `repo`
+
+## How to infer the title prefix
+- `feat`: Adds a new capability, CLI command/flag, chart, or module
+- `fix`: Corrects a bug or regression
+- `refactor`: Code restructuring without changing externally visible behavior
+- `docs`: Documentation-only changes (docs site, MDX/MD files)
+- `test`: Tests only
+- `perf`: Performance improvements
+- `ci`: CI pipeline/config changes
+- `build`: Build system or dependency changes (Bazel, Go modules, Dockerfiles)
+- `chore`: Routine maintenance (formatting, small cleanups) not covered above
+- `revert`: Reverts a previous commit/PR
+
+## Repository-aware scope heuristics (Planton)
+Determine the `<scope-path>` from the changed files. Use the most impacted area by lines changed; if multiple, see multi-area guidance.
+
+- APIs
+  - `apis/project/planton/**` → `apis/project/planton`
+  - Other files under `apis/**` (e.g., `generated`) → `apis`
+
+- Charts (multi-cloud Lego blocks)
+  - `charts/<provider>/<chart>/**` → `charts/<provider>/<chart>`
+    - Examples: `charts/aws/eks-environment`, `charts/gcp/gke-environment`, `charts/azure/aks-environment`, `charts/digital-ocean/doks-environment`
+  - Multiple charts under the same provider → `charts/<provider>`
+  - Charts across multiple providers → `charts`
+
+- CLI
+  - `cmd/planton/**` → `cmd/planton`
+
+- Internal packages
+  - `internal/<pkg>/**` → `internal/<pkg>` (e.g., `internal/manifest`, `internal/cli/panic`)
+
+- Go libraries
+  - `pkg/<lib>/**` → `pkg/<lib>` (e.g., `pkg/protobufyaml`, `pkg/ulidgen`, `pkg/kubernetes/kubernetestypes`)
+
+- Documentation and website
+  - `docs/**` or root docs content → `docs`
+
+- Gists and examples
+  - `gists/**` → `gists` or a more specific subpath like `gists/provider/kubernetes`
+
+- Tooling and developer scripts
+  - `hack/**` → `hack` (e.g., `hack/guards`)
+
+- Project configuration
+  - Root build/workspace config (e.g., `BUILD.bazel`, `go.mod`, `go.sum`, `Makefile`, `.editorconfig`) → `repo`
+  - `.cursor/**` → `.cursor`
+
+### Multi-area changes
+- If changes span multiple areas within the same parent, use the shared parent:
+  - Multiple charts under `charts/aws/*` → `charts/aws`
+  - Multiple libraries under `pkg/*` → `pkg`
+- If changes are broadly cross-cutting (≥3 unrelated parents), use `repo`.
+
+## Inputs to use when generating
+- The full diff and edit history from this session
+- Changed files and their paths to infer scope using the rules above
+- Commit messages, branch name, or linked issues if available
+
+If context is insufficient to infer details, choose the best effort scope from filenames and touched areas. Do not ask questions; still produce both blocks.
+
+## Mermaid Diagrams: Enhance Readability
+
+**⚠️ IMPORTANT**: Include Mermaid diagrams wherever they add clarity. Diagrams make PR descriptions far more consumable for reviewers.
+
+Use Mermaid diagrams to visualize:
+- **Workflows and processes** - Show step-by-step flows with decision points
+- **Before/after architecture** - Illustrate system changes side by side
+- **Sequence diagrams** - Demonstrate interactions between components
+- **State transitions** - Depict lifecycle or status changes
+- **Data flows** - Trace how data moves through the system
+- **Component relationships** - Show how modules/services connect
+
+**Common diagram types for PRs:**
+
+### Flowcharts - For process changes
+```mermaid
+flowchart TB
+    A[Start] --> B{Validation}
+    B -->|Pass| C[Deploy]
+    B -->|Fail| D[Error]
+```
+
+### Sequence Diagrams - For interaction changes
+```mermaid
+sequenceDiagram
+    participant CLI
+    participant Pulumi
+    participant Cloud
+    CLI->>Pulumi: Execute
+    Pulumi->>Cloud: Deploy
+    Cloud-->>Pulumi: Success
+    Pulumi-->>CLI: Complete
+```
+
+### State Diagrams - For status/lifecycle changes
+```mermaid
+stateDiagram-v2
+    [*] --> Pending
+    Pending --> Running
+    Running --> Completed
+    Running --> Failed
+```
+
+**When to include diagrams:**
+- ✅ Architecture or component relationship changes
+- ✅ Workflow modifications (CLI flows, deployment processes)
+- ✅ Multi-step processes with conditional logic
+- ✅ Breaking changes requiring migration paths
+- ✅ Complex interactions between services/modules
+
+**Keep diagrams:**
+- Focused on one concept per diagram
+- Clear with descriptive labels
+- Consistent in styling
+- Accompanied by brief text explanation
+
+## Output blocks (exactly two, nothing else)
+
+```text
+<prefix>(<scope-path>): <concise, imperative title>
+```
+
+```markdown
+## Summary
+<1–3 sentences>
+
+## Context
+<why this change was needed>
+
+## Changes
+- <key change 1>
+- <key change 2>
+- <key change 3>
+
+## Implementation notes
+- <notable decision or trade-off>
+
+## Breaking changes
+- <explicitly list or state "None">
+
+## Test plan
+- <how verified>
+
+## Risks
+- <risks and rollback>
+
+## Checklist
+- [ ] Docs updated (if needed)
+- [ ] Tests added/updated (if needed)
+- [ ] Backward compatible
+
+<!-- Optionally: Closes #123 -->
+```
+
+@README.md
+

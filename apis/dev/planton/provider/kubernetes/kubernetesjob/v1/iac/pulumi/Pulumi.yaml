@@ -1,0 +1,4 @@
+name: planton-kubernetes-job
+runtime:
+  name: go
+description: Pulumi module for KubernetesJob deployment

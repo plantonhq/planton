@@ -12,7 +12,7 @@ Deploys an Azure User-Assigned Managed Identity with optional RBAC role assignme
 
 ## What Gets Created
 
-When you deploy an AzureUserAssignedIdentity resource, OpenMCF provisions:
+When you deploy an AzureUserAssignedIdentity resource, Planton provisions:
 
 - **User-Assigned Managed Identity** — an `authorization.UserAssignedIdentity` resource in the specified region and resource group, tagged with resource metadata for tracking and governance
 - **RBAC Role Assignments** — an `authorization.Assignment` for each entry in `roleAssignments`, binding the identity's principal to a specific role at a specific Azure resource scope
@@ -20,7 +20,7 @@ When you deploy an AzureUserAssignedIdentity resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Resource Group** where the identity will be created (can reference an AzureResourceGroup resource)
 - **Azure resource IDs** for any scopes you want to grant role assignments on (Key Vault IDs, Storage Account IDs, subscription IDs, etc.)
 
@@ -29,15 +29,15 @@ When you deploy an AzureUserAssignedIdentity resource, OpenMCF provisions:
 Create a file `identity.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureUserAssignedIdentity
 metadata:
   name: my-identity
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureUserAssignedIdentity.my-identity
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureUserAssignedIdentity.my-identity
 spec:
   region: eastus
   resourceGroup: my-rg
@@ -47,7 +47,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f identity.yaml
+planton apply -f identity.yaml
 ```
 
 This creates a User-Assigned Managed Identity with no role assignments. The identity exists but has no permissions until role assignments are added.
@@ -77,15 +77,15 @@ This creates a User-Assigned Managed Identity with no role assignments. The iden
 A bare identity for development or testing. It has no permissions and cannot access any Azure resources until role assignments are added:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureUserAssignedIdentity
 metadata:
   name: dev-identity
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureUserAssignedIdentity.dev-identity
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureUserAssignedIdentity.dev-identity
 spec:
   region: eastus
   resourceGroup: dev-rg
@@ -97,15 +97,15 @@ spec:
 An identity granted read access to Key Vault secrets, suitable for applications that need to retrieve configuration secrets:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureUserAssignedIdentity
 metadata:
   name: app-identity
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureUserAssignedIdentity.app-identity
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureUserAssignedIdentity.app-identity
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -120,15 +120,15 @@ spec:
 An identity for a workload that needs access to several Azure services -- Key Vault for secrets, a Storage Account for blob data, and an ACR for pulling container images:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureUserAssignedIdentity
 metadata:
   name: workload-identity
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureUserAssignedIdentity.workload-identity
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureUserAssignedIdentity.workload-identity
 spec:
   region: westeurope
   resourceGroup: prod-rg
@@ -144,18 +144,18 @@ spec:
 
 ### Using Foreign Key References for Scope
 
-Reference OpenMCF-managed resources instead of hardcoding Azure resource IDs. The `valueFrom` syntax resolves the scope from another resource's stack outputs:
+Reference Planton-managed resources instead of hardcoding Azure resource IDs. The `valueFrom` syntax resolves the scope from another resource's stack outputs:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureUserAssignedIdentity
 metadata:
   name: ref-identity
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureUserAssignedIdentity.ref-identity
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureUserAssignedIdentity.ref-identity
 spec:
   region: eastus
   resourceGroup:
@@ -184,15 +184,15 @@ spec:
 An identity with Contributor access at the subscription level, useful for automation or deployment pipelines that manage resources across resource groups:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureUserAssignedIdentity
 metadata:
   name: deployer-identity
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureUserAssignedIdentity.deployer-identity
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureUserAssignedIdentity.deployer-identity
 spec:
   region: eastus
   resourceGroup: infra-rg

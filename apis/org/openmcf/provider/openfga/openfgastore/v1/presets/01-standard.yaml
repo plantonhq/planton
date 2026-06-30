@@ -1,6 +1,0 @@
-apiVersion: openfga.openmcf.org/v1
-kind: OpenFgaStore
-metadata:
-  name: my-authz-store
-spec:
-  name: my-authz-store

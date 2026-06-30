@@ -1,8 +1,0 @@
-apiVersion: alicloud.openmcf.org/v1
-kind: AliCloudVpc
-metadata:
-  name: my-development-vpc
-spec:
-  region: <alibaba-cloud-region>
-  vpcName: <your-vpc-name>
-  cidrBlock: 192.168.0.0/16

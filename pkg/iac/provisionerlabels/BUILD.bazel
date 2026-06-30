@@ -3,6 +3,6 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "provisionerlabels",
     srcs = ["labels.go"],
-    importpath = "github.com/plantonhq/openmcf/pkg/iac/provisionerlabels",
+    importpath = "github.com/plantonhq/planton/pkg/iac/provisionerlabels",
     visibility = ["//visibility:public"],
 )

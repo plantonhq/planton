@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awscloudwatchalarm.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/aws/awscloudwatchalarm/v1/spec.proto";
+import "dev/planton/provider/aws/awscloudwatchalarm/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// AwsCloudwatchAlarm represents a CloudWatch metric alarm — a monitoring
+// resource that watches a single metric or metric math expression and performs
+// actions when the value crosses a threshold for a sustained number of periods.
+//
+// Alarms support two metric definition modes:
+// 1. Simple metric mode — a single metric with statistic and dimensions.
+// 2. Metric query mode — metric math expressions, anomaly detection, or
+//    multi-metric evaluations using up to 20 queries.
+//
+// Actions are typically SNS topic notifications but can also target Auto
+// Scaling policies, EC2 automation, Lambda functions, and SSM OpsItems.
+message AwsCloudwatchAlarm {
+  // api-version must be set to "aws.planton.dev/v1".
+  string api_version = 1 [(buf.validate.field).string.const = "aws.planton.dev/v1"];
+
+  // resource-kind for this CloudWatch Alarm resource, must be "AwsCloudwatchAlarm".
+  string kind = 2 [(buf.validate.field).string.const = "AwsCloudwatchAlarm"];
+
+  // metadata captures identifying information (name, org, version, etc.)
+  // and must pass standard validations for resource naming.
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec holds the desired configuration for the alarm.
+  AwsCloudwatchAlarmSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status holds runtime or post-deployment information.
+  AwsCloudwatchAlarmStatus status = 5;
+}
+
+// AwsCloudwatchAlarmStatus describes the status fields for a CloudWatch
+// Alarm resource.
+message AwsCloudwatchAlarmStatus {
+  // stack_outputs captures the outputs returned by Pulumi/Terraform after provisioning.
+  AwsCloudwatchAlarmStackOutputs outputs = 1;
+}

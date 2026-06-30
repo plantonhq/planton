@@ -9,7 +9,7 @@ go_library(
         "strimziPodSetList.go",
         "strimziPodSetPatch.go",
     ],
-    importpath = "github.com/plantonhq/openmcf/pkg/kubernetes/kubernetestypes/strimzioperator/kubernetes/core/v1beta2",
+    importpath = "github.com/plantonhq/planton/pkg/kubernetes/kubernetestypes/strimzioperator/kubernetes/core/v1beta2",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_blang_semver//:semver",

@@ -1,9 +1,9 @@
 package iacrunner
 
 import (
-	"github.com/plantonhq/openmcf/pkg/iac/provisioner"
-	"github.com/plantonhq/openmcf/pkg/iac/stackinput/providerdetect"
-	"github.com/plantonhq/openmcf/pkg/iac/stackinput/stackinputproviderconfig"
+	"github.com/plantonhq/planton/pkg/iac/provisioner"
+	"github.com/plantonhq/planton/pkg/iac/stackinput/providerdetect"
+	"github.com/plantonhq/planton/pkg/iac/stackinput/stackinputproviderconfig"
 	"google.golang.org/protobuf/proto"
 )
 

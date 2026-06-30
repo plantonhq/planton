@@ -7,7 +7,7 @@ order: 60
 
 # Terraform Commands
 
-The `openmcf terraform` command group runs infrastructure operations using Terraform as the IaC engine. It shares the same HCL modules and execution engine as the [OpenTofu commands](./tofu-commands) but invokes the `terraform` binary instead of `tofu`.
+The `planton terraform` command group runs infrastructure operations using Terraform as the IaC engine. It shares the same HCL modules and execution engine as the [OpenTofu commands](./tofu-commands) but invokes the `terraform` binary instead of `tofu`.
 
 ## Prerequisites
 
@@ -16,7 +16,7 @@ The `openmcf terraform` command group runs infrastructure operations using Terra
 
 ## Relationship to OpenTofu
 
-OpenMCF's Terraform and OpenTofu command groups share the same:
+Planton's Terraform and OpenTofu command groups share the same:
 
 - **HCL modules**: Every deployment component has a single `iac/tf/` directory used by both engines
 - **Module resolution**: Both use the same download, caching, and staging mechanisms
@@ -31,8 +31,8 @@ The practical difference is the binary invoked: `terraform` vs. `tofu`. Choose b
 Initialize the backend configuration and download required providers.
 
 ```bash
-openmcf terraform init --manifest database.yaml
-openmcf terraform init --manifest database.yaml --backend-type s3 --backend-config bucket=my-state
+planton terraform init --manifest database.yaml
+planton terraform init --manifest database.yaml --backend-type s3 --backend-config bucket=my-state
 ```
 
 | Flag | Default | Description |
@@ -46,8 +46,8 @@ openmcf terraform init --manifest database.yaml --backend-type s3 --backend-conf
 Preview infrastructure changes without applying them.
 
 ```bash
-openmcf terraform plan --manifest database.yaml
-openmcf terraform plan --manifest database.yaml --destroy
+planton terraform plan --manifest database.yaml
+planton terraform plan --manifest database.yaml --destroy
 ```
 
 | Flag | Default | Description |
@@ -61,9 +61,9 @@ openmcf terraform plan --manifest database.yaml --destroy
 Deploy infrastructure by applying the planned changes.
 
 ```bash
-openmcf terraform apply --manifest database.yaml
-openmcf terraform apply --manifest database.yaml --auto-approve
-openmcf terraform apply --manifest api.yaml --set spec.container.replicas=5
+planton terraform apply --manifest database.yaml
+planton terraform apply --manifest database.yaml --auto-approve
+planton terraform apply --manifest api.yaml --set spec.container.replicas=5
 ```
 
 | Flag | Default | Description |
@@ -77,8 +77,8 @@ openmcf terraform apply --manifest api.yaml --set spec.container.replicas=5
 Tear down all resources managed by the current state.
 
 ```bash
-openmcf terraform destroy --manifest database.yaml
-openmcf terraform destroy --manifest database.yaml --auto-approve
+planton terraform destroy --manifest database.yaml
+planton terraform destroy --manifest database.yaml --auto-approve
 ```
 
 | Flag | Default | Description |
@@ -92,7 +92,7 @@ openmcf terraform destroy --manifest database.yaml --auto-approve
 Sync the Terraform state with actual cloud state without modifying any resources.
 
 ```bash
-openmcf terraform refresh --manifest database.yaml
+planton terraform refresh --manifest database.yaml
 ```
 
 | Flag | Default | Description |
@@ -102,7 +102,7 @@ openmcf terraform refresh --manifest database.yaml
 
 ## Flags
 
-All `openmcf terraform` subcommands inherit persistent flags from the parent command. Like OpenTofu direct commands, `--manifest` does not have the `-f` shorthand.
+All `planton terraform` subcommands inherit persistent flags from the parent command. Like OpenTofu direct commands, `--manifest` does not have the `-f` shorthand.
 
 ### Parent Persistent Flags (All Subcommands)
 
@@ -128,25 +128,25 @@ Direct Terraform commands do not support `--clipboard`, `--stack-input`, or the 
 | HCL modules | Same | Same |
 | Module resolution | Same | Same |
 
-The `generate-variables` and `load-tfvars` utility commands are only available under `openmcf tofu`. Their output is compatible with both Terraform and OpenTofu, so you can use `openmcf tofu generate-variables` even if you plan to run the generated files with Terraform.
+The `generate-variables` and `load-tfvars` utility commands are only available under `planton tofu`. Their output is compatible with both Terraform and OpenTofu, so you can use `planton tofu generate-variables` even if you plan to run the generated files with Terraform.
 
 ## Typical Workflow
 
 ```bash
 # 1. Initialize backend and download providers
-openmcf terraform init --manifest database.yaml \
+planton terraform init --manifest database.yaml \
   --backend-type s3 \
   --backend-config bucket=my-state \
   --backend-config key=database/terraform.tfstate
 
 # 2. Preview
-openmcf terraform plan --manifest database.yaml
+planton terraform plan --manifest database.yaml
 
 # 3. Deploy
-openmcf terraform apply --manifest database.yaml --auto-approve
+planton terraform apply --manifest database.yaml --auto-approve
 
 # 4. Tear down when done
-openmcf terraform destroy --manifest database.yaml --auto-approve
+planton terraform destroy --manifest database.yaml --auto-approve
 ```
 
 ## What's Next

@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azurecosmosdbaccount.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/azure/azurecosmosdbaccount/v1/spec.proto";
+import "dev/planton/provider/azure/azurecosmosdbaccount/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// AzureCosmosdbAccount is the top-level API resource for an Azure Cosmos DB
+// account.
+// Azure Cosmos DB is a globally distributed, multi-model database service
+// supporting SQL/NoSQL and MongoDB APIs with configurable consistency,
+// automatic global distribution, and elastic scalability.
+message AzureCosmosdbAccount {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'azure.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'AzureCosmosdbAccount'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  AzureCosmosdbAccountSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  AzureCosmosdbAccountStatus status = 5;
+}
+
+// AzureCosmosdbAccountStatus holds the deployment status and outputs.
+message AzureCosmosdbAccountStatus {
+  // stack-outputs
+  AzureCosmosdbAccountStackOutputs outputs = 1;
+}

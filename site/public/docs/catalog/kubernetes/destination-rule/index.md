@@ -27,7 +27,7 @@ sent to a service after routing: load balancing, connection pools, circuit break
 ## Quick Start
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDestinationRule
 metadata:
   name: reviews-lb
@@ -41,7 +41,7 @@ spec:
 ```
 
 ```bash
-openmcf apply -f destinationrule.yaml
+planton apply -f destinationrule.yaml
 ```
 
 ## Configuration Reference

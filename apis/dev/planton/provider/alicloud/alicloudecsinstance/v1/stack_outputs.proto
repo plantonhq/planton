@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package dev.planton.provider.alicloud.alicloudecsinstance.v1;
+
+// AliCloudEcsInstanceStackOutputs captures the outputs from deploying an
+// Alibaba Cloud ECS instance.
+message AliCloudEcsInstanceStackOutputs {
+  // The ECS instance ID assigned by Alibaba Cloud (e.g., "i-bp1xxxxx").
+  string instance_id = 1;
+
+  // The primary private IP address assigned to the instance within its VSwitch.
+  string private_ip = 2;
+
+  // The public IP address allocated to the instance. Empty when
+  // internet_max_bandwidth_out is 0 (no public IP requested).
+  string public_ip = 3;
+}

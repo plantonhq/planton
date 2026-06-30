@@ -155,7 +155,7 @@ spec:
 
 **Additional Content:**
 - Table of contents
-- Deployment instructions (OpenMCF CLI)
+- Deployment instructions (Planton CLI)
 - Verification commands
 - Troubleshooting section (3 common issues)
 - Debug commands
@@ -223,7 +223,7 @@ module "nginx_helm_release" {
 - `iac/tf/README.md` - Updated manifest path references from `hack/manifest.yaml` to `../hack/manifest.yaml`
 
 **Benefit:**
-- Consistent with all other OpenMCF components
+- Consistent with all other Planton components
 - Single manifest usable for both Pulumi and Terraform testing
 - Clearer file hierarchy
 
@@ -272,7 +272,7 @@ This simplicity is a feature - the component wraps any Helm chart without needin
 ### Before (Basic Example)
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: HelmRelease
 metadata:
   name: my-helm-release
@@ -286,7 +286,7 @@ spec:
 ### After (Production Example with Context)
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: HelmRelease
 metadata:
   name: myapp-prod
@@ -368,7 +368,7 @@ spec:
 This component works seamlessly with:
 - Any Helm chart from any repository (HTTP, HTTPS, OCI)
 - Integration with FluxCD/ArgoCD for GitOps workflows
-- OpenMCF CLI for manifest-based deployments
+- Planton CLI for manifest-based deployments
 
 ---
 

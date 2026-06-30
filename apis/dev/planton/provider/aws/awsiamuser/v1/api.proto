@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsiamuser.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/aws/awsiamuser/v1/spec.proto";
+import "dev/planton/provider/aws/awsiamuser/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// AwsIamUser represents an AWS IAM User resource for programmatic access.
+// IAM users provide long-lived credentials for CI/CD pipelines, third-party integrations,
+// and service accounts that require AWS API access.
+message AwsIamUser {
+  // api-version must be set to "aws.planton.dev/v1".
+  string api_version = 1 [(buf.validate.field).string.const = "aws.planton.dev/v1"];
+
+  // resource-kind for this IAM user resource, typically "AwsIamUser".
+  string kind = 2 [(buf.validate.field).string.const = 'AwsIamUser'];
+
+  // metadata captures identifying information (name, org, version, etc.)
+  // and must pass standard validations for resource naming.
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec holds the core configuration data defining the IAM user's permissions and access keys.
+  AwsIamUserSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status holds runtime or post-deployment information.
+  AwsIamUserStatus status = 5;
+}
+
+// AwsIamUserStatus describes the status fields for an IAM user resource.
+message AwsIamUserStatus {
+  // stack_outputs captures the outputs returned by Pulumi/Terraform after provisioning.
+  AwsIamUserStackOutputs outputs = 1;
+}

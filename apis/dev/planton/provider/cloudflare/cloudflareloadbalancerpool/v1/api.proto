@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package dev.planton.provider.cloudflare.cloudflareloadbalancerpool.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/cloudflare/cloudflareloadbalancerpool/v1/spec.proto";
+import "dev/planton/provider/cloudflare/cloudflareloadbalancerpool/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// cloudflare-load-balancer-pool
+message CloudflareLoadBalancerPool {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'cloudflare.planton.dev/v1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'CloudflareLoadBalancerPool'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  CloudflareLoadBalancerPoolSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  CloudflareLoadBalancerPoolStatus status = 5;
+}
+
+// cloudflare-load-balancer-pool status
+message CloudflareLoadBalancerPoolStatus {
+  //stack-outputs
+  //  cloudflare-load-balancer-pool stack-outputs
+  CloudflareLoadBalancerPoolStackOutputs outputs = 1;
+}

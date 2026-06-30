@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azurecontainerappenvironment.v1;
+
+// **AzureContainerAppEnvironmentStackOutputs** captures the outputs of
+// provisioning an Azure Container Apps Managed Environment.
+//
+// The primary output is `environment_id`, which is referenced by downstream
+// AzureContainerApp resources:
+// - AzureContainerApp (container_app_environment_id)
+//
+// The `default_domain` and `static_ip_address` outputs are useful for DNS
+// configuration, firewall rules, and debugging connectivity.
+//
+// The `platform_reserved_cidr` and `platform_reserved_dns_ip_address` outputs
+// are useful for network planning in VNet-injected environments.
+message AzureContainerAppEnvironmentStackOutputs {
+  // The Azure Resource Manager ID of the Container App Environment.
+  // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.App/managedEnvironments/{name}
+  //
+  // This is the primary reference output. Referenced by:
+  // - AzureContainerApp (container_app_environment_id)
+  string environment_id = 1;
+
+  // The default, publicly resolvable domain name for apps in this environment.
+  // Apps are accessible at {app-name}.{default_domain}.
+  //
+  // Useful for DNS CNAME records and verifying environment connectivity.
+  string default_domain = 2;
+
+  // The static IP address of the environment.
+  // For external environments, this is a public IP.
+  // For internal environments (internal_load_balancer_enabled=true), this is a private IP.
+  //
+  // Useful for DNS A records, firewall allowlists, and network debugging.
+  string static_ip_address = 3;
+
+  // The IP range (CIDR notation) reserved for environment infrastructure.
+  // This range is used by the Container Apps platform for internal services.
+  //
+  // Only populated for VNet-injected environments. Useful for network
+  // planning and ensuring no CIDR conflicts with other VNet resources.
+  string platform_reserved_cidr = 4;
+
+  // The IP address from platform_reserved_cidr reserved for the internal
+  // DNS server. Used by container apps for service discovery within the
+  // environment.
+  //
+  // Only populated for VNet-injected environments. Useful for custom DNS
+  // configuration and network debugging.
+  string platform_reserved_dns_ip_address = 5;
+}

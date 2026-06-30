@@ -1,0 +1,19 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesStrimziKafkaOperator
+metadata:
+  name: kafka-operator-example
+spec:
+  targetCluster:
+    clusterName: "test-cluster"
+  namespace:
+    value: "strimzi-kafka-operator"
+  createNamespace: true
+  container:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 100Mi
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+

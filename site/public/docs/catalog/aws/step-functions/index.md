@@ -12,16 +12,16 @@ Deploys an AWS Step Functions state machine with an Amazon States Language (ASL)
 
 ## What Gets Created
 
-When you deploy an AwsStepFunction resource, OpenMCF provisions:
+When you deploy an AwsStepFunction resource, Planton provisions:
 
-- **Step Functions State Machine** — an `aws_sfn_state_machine` resource with the provided ASL definition serialized to JSON, assigned the specified IAM execution role, and tagged with OpenMCF resource metadata
+- **Step Functions State Machine** — an `aws_sfn_state_machine` resource with the provided ASL definition serialized to JSON, assigned the specified IAM execution role, and tagged with Planton resource metadata
 - **Tracing Configuration** — enabled only when `tracingEnabled` is `true`, sends trace data to AWS X-Ray for visualizing request flows
 - **Logging Configuration** — configured only when `logging.level` is set to a value other than `OFF`, delivers execution history events to the specified CloudWatch Logs log group (the module automatically appends `:*` to the log group ARN if missing)
 - **Encryption Configuration** — configured only when the `encryption` block is provided, uses a customer-managed KMS key for encrypting state machine data, execution history, and input/output payloads
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **An IAM execution role** with a trust policy for `states.amazonaws.com` and policies granting access to all services invoked by the workflow (e.g., `lambda:InvokeFunction`, `sqs:SendMessage`, `sns:Publish`)
 - **A CloudWatch Logs log group** if enabling execution logging
 - **A customer-managed KMS key** if enabling encryption (must be a symmetric encryption key in the same region)
@@ -32,15 +32,15 @@ When you deploy an AwsStepFunction resource, OpenMCF provisions:
 Create a file `step-function.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsStepFunction
 metadata:
   name: my-step-function
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsStepFunction.my-step-function
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsStepFunction.my-step-function
 spec:
   region: us-east-1
   roleArn: arn:aws:iam::123456789012:role/step-functions-exec
@@ -56,7 +56,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f step-function.yaml
+planton apply -f step-function.yaml
 ```
 
 This creates a STANDARD state machine with a single Pass state that returns a static result.
@@ -91,15 +91,15 @@ This creates a STANDARD state machine with a single Pass state that returns a st
 A workflow that invokes a Lambda function and handles success or failure:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsStepFunction
 metadata:
   name: order-processor
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsStepFunction.order-processor
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsStepFunction.order-processor
 spec:
   region: us-east-1
   roleArn: arn:aws:iam::123456789012:role/step-functions-exec
@@ -127,15 +127,15 @@ spec:
 A high-throughput EXPRESS state machine for processing events with logging enabled:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsStepFunction
 metadata:
   name: event-ingest
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsStepFunction.event-ingest
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsStepFunction.event-ingest
 spec:
   region: us-east-1
   type: EXPRESS
@@ -168,15 +168,15 @@ spec:
 Production configuration with customer-managed KMS encryption, X-Ray tracing, and verbose logging:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsStepFunction
 metadata:
   name: payment-workflow
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsStepFunction.payment-workflow
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsStepFunction.payment-workflow
 spec:
   region: us-east-1
   roleArn: arn:aws:iam::123456789012:role/payment-sfn-exec
@@ -204,18 +204,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding ARNs:
+Reference other Planton-managed resources instead of hardcoding ARNs:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsStepFunction
 metadata:
   name: ref-step-function
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsStepFunction.ref-step-function
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsStepFunction.ref-step-function
 spec:
   region: us-east-1
   roleArn:

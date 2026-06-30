@@ -12,7 +12,7 @@ Deploys an AWS CodePipeline continuous delivery pipeline with ordered stages, pr
 
 ## What Gets Created
 
-When you deploy an AwsCodePipeline resource, OpenMCF provisions:
+When you deploy an AwsCodePipeline resource, Planton provisions:
 
 - **CodePipeline** — an `aws_codepipeline` resource (V1 or V2) with the specified execution mode, IAM role, and artifact configuration
 - **Artifact Stores** — one or more S3 bucket references for storing pipeline artifacts between stages, with optional KMS encryption and cross-region support
@@ -22,7 +22,7 @@ When you deploy an AwsCodePipeline resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **An IAM role** with policies granting CodePipeline access to all action providers used in the pipeline (CodeBuild, S3, ECS, Lambda, etc.)
 - **An S3 bucket** for artifact storage between pipeline stages
 - **At least two stages** — a Source stage and at least one Build, Test, Deploy, Approval, or Invoke stage
@@ -34,15 +34,15 @@ When you deploy an AwsCodePipeline resource, OpenMCF provisions:
 Create a file `pipeline.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCodePipeline
 metadata:
   name: my-app-pipeline
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsCodePipeline.my-app-pipeline
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsCodePipeline.my-app-pipeline
 spec:
   region: us-west-2
   roleArn: arn:aws:iam::123456789012:role/codepipeline-service-role
@@ -81,7 +81,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f pipeline.yaml
+planton apply -f pipeline.yaml
 ```
 
 This creates a V2 pipeline with a GitHub source stage and a CodeBuild build stage, using the default SUPERSEDED execution mode.
@@ -194,15 +194,15 @@ This creates a V2 pipeline with a GitHub source stage and a CodeBuild build stag
 A V2 pipeline that pulls source from GitHub via CodeStar Connection, builds with CodeBuild, and triggers automatically on pushes to `main`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCodePipeline
 metadata:
   name: my-app-ci
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsCodePipeline.my-app-ci
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsCodePipeline.my-app-ci
 spec:
   region: us-west-2
   pipelineType: V2
@@ -254,15 +254,15 @@ spec:
 A pipeline triggered by new ECR image pushes that prepares a deployment bundle and deploys to ECS:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCodePipeline
 metadata:
   name: my-service-deploy
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsCodePipeline.my-service-deploy
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsCodePipeline.my-service-deploy
 spec:
   region: us-west-2
   pipelineType: V2
@@ -316,15 +316,15 @@ spec:
 A pipeline that fetches a Lambda deployment package from S3 and invokes a deployer function:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCodePipeline
 metadata:
   name: my-lambda-deploy
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsCodePipeline.my-lambda-deploy
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsCodePipeline.my-lambda-deploy
 spec:
   region: us-west-2
   pipelineType: V2
@@ -365,15 +365,15 @@ spec:
 A production pipeline with build, staging deploy, manual approval gate, and production deploy across regions:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCodePipeline
 metadata:
   name: prod-release-pipeline
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsCodePipeline.prod-release-pipeline
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsCodePipeline.prod-release-pipeline
 spec:
   region: us-west-2
   pipelineType: V2
@@ -464,18 +464,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding ARNs and bucket names:
+Reference other Planton-managed resources instead of hardcoding ARNs and bucket names:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCodePipeline
 metadata:
   name: ref-pipeline
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsCodePipeline.ref-pipeline
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsCodePipeline.ref-pipeline
 spec:
   region: us-west-2
   roleArn:

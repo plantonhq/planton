@@ -67,9 +67,9 @@ message CloudflareR2BucketCustomDomainConfig {
 
   bool enabled = 1;
   
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef zone_id = 2 [
-    (org.openmcf.shared.foreignkey.v1.default_kind) = CloudflareDnsZone,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
+  dev.planton.shared.foreignkey.v1.StringValueOrRef zone_id = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareDnsZone,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
   ];
 
   string domain = 3 [(buf.validate.field).string.max_len = 253];
@@ -149,7 +149,7 @@ resource "cloudflare_r2_custom_domain" "main" {
 Users can now declare custom domains directly in their R2 bucket manifests:
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareR2Bucket
 metadata:
   name: media-bucket

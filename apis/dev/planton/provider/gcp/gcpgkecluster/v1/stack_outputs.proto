@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcpgkecluster.v1;
+
+// GcpGkeClusterStackOutputs captures key info after provisioning a GKE cluster.
+message GcpGkeClusterStackOutputs {
+  // Kubernetes API server endpoint for the cluster.
+  // For a private cluster, this will be an internal/private endpoint URL or IP.
+  string endpoint = 1;
+
+  // Base64-encoded CA certificate for the cluster’s API server.
+  // Clients need this to authenticate the cluster’s TLS cert.
+  string cluster_ca_certificate = 2;
+
+  // Workload Identity Pool identifier used by this cluster (e.g. "PROJECT_ID.svc.id.goog").
+  string workload_identity_pool = 3;
+
+  // Fully qualified GKE cluster resource ID.
+  // Format: projects/{project}/locations/{location}/clusters/{name}
+  // Used by downstream resources (e.g., Dataproc on GKE) to reference this cluster.
+  string cluster_id = 4;
+}

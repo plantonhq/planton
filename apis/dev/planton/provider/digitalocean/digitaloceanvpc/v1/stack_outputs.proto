@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package dev.planton.provider.digitalocean.digitaloceanvpc.v1;
+
+// DigitalOceanVpcStackOutputs captures the resulting Droplet info after provisioning.
+message DigitalOceanVpcStackOutputs {
+  // The unique identifier (UUID) of the created DigitalOcean VPC.
+  string vpc_id = 1;
+}

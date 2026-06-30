@@ -1,3 +1,0 @@
-name: aws-event-bridge-bus
-runtime: go
-description: Deploy an AWS EventBridge custom event bus using OpenMCF

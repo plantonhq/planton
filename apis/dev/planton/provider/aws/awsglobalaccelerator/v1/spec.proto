@@ -1,0 +1,427 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsglobalaccelerator.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// AwsGlobalAcceleratorSpec defines the desired configuration for an AWS Global
+// Accelerator — a networking service that routes traffic through the AWS global
+// network to optimal endpoints based on health, geography, and routing policies.
+//
+// Global Accelerator provides two static anycast IPv4 addresses (or dual-stack)
+// that serve as fixed entry points to your application. Traffic enters the AWS
+// network at the nearest edge location and is routed to healthy endpoints across
+// one or more AWS regions, providing improved availability and performance for
+// global users.
+//
+// The resource hierarchy is: Accelerator → Listeners → Endpoint Groups → Endpoints.
+// All three levels are bundled because an accelerator without listeners and
+// endpoint groups is functionally useless (just static IPs doing nothing).
+//
+// Key characteristics:
+// - Static anycast IPs: Two globally-advertised IP addresses that never change
+// - Automatic failover: Unhealthy endpoints are bypassed within seconds
+// - Multi-region: Endpoint groups in different regions for geographic distribution
+// - Protocol-agnostic: TCP and UDP at Layer 4 (not HTTP-aware like CloudFront)
+// - Client affinity: Optional SOURCE_IP stickiness per listener
+//
+// This component covers standard accelerators. Custom routing accelerators
+// (deterministic port-based routing to specific EC2 instances) are a distinct
+// resource type with ~5% adoption and are excluded from v1.
+//
+// Credentials, region, and deployment workflow live outside this spec in
+// stack inputs.
+message AwsGlobalAcceleratorSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  // ---------------------------------------------------------------------------
+  // Core configuration
+  // ---------------------------------------------------------------------------
+
+  // Whether the accelerator is enabled and accepting traffic. When disabled,
+  // the accelerator's DNS name stops resolving and no traffic is routed.
+  // Useful for temporarily disabling an accelerator during maintenance without
+  // destroying it.
+  optional bool enabled = 2 [(dev.planton.shared.options.default) = "true"];
+
+  // IP address type for the accelerator.
+  // - "IPV4": Two static IPv4 anycast addresses (default).
+  // - "DUAL_STACK": IPv4 + IPv6 anycast addresses for clients on IPv6 networks.
+  optional string ip_address_type = 3 [(dev.planton.shared.options.default) = "IPV4"];
+
+  // Bring-Your-Own-IP (BYOIP) addresses to assign to the accelerator instead
+  // of AWS-allocated anycast IPs. Provide exactly 1 or 2 IPv4 addresses from
+  // a BYOIP address pool registered with AWS.
+  //
+  // ForceNew — changing this destroys and recreates the accelerator.
+  // Leave empty to use AWS-allocated IPs (the default for most deployments).
+  repeated string ip_addresses = 4;
+
+  // ---------------------------------------------------------------------------
+  // Flow logs
+  // ---------------------------------------------------------------------------
+
+  // Optional flow log configuration for traffic analysis. When enabled,
+  // Global Accelerator publishes flow logs to the specified S3 bucket.
+  AwsGlobalAcceleratorFlowLogs flow_logs = 5;
+
+  // ---------------------------------------------------------------------------
+  // Listeners
+  // ---------------------------------------------------------------------------
+
+  // Listeners define the ports and protocols the accelerator accepts traffic on.
+  // Each listener routes traffic to one or more regional endpoint groups.
+  //
+  // At least one listener is required — an accelerator without listeners
+  // serves no purpose beyond reserving static IPs.
+  repeated AwsGlobalAcceleratorListener listeners = 6 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).repeated.min_items = 1
+  ];
+
+  // ---------------------------------------------------------------------------
+  // Spec-level CEL validations
+  // ---------------------------------------------------------------------------
+
+  // ip_address_type must be IPV4 or DUAL_STACK when set.
+  option (buf.validate.message).cel = {
+    id: "ip_address_type_valid"
+    message: "ip_address_type must be 'IPV4' or 'DUAL_STACK'"
+    expression: "!has(this.ip_address_type) || this.ip_address_type in ['IPV4', 'DUAL_STACK']"
+  };
+
+  // BYOIP: maximum 2 addresses (AWS hard limit).
+  option (buf.validate.message).cel = {
+    id: "ip_addresses_max_2"
+    message: "ip_addresses supports a maximum of 2 BYOIP addresses"
+    expression: "size(this.ip_addresses) <= 2"
+  };
+}
+
+// AwsGlobalAcceleratorFlowLogs configures flow log delivery to S3 for traffic
+// analysis. Flow logs capture information about the IP address traffic flowing
+// to and from network interfaces in Global Accelerator.
+message AwsGlobalAcceleratorFlowLogs {
+  // Enable flow log delivery.
+  bool enabled = 1;
+
+  // S3 bucket name for flow log storage. Required when enabled is true.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef s3_bucket = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsS3Bucket,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_id"
+  ];
+
+  // S3 key prefix for flow logs. Useful for organizing logs when multiple
+  // accelerators share a bucket. Example: "ga-logs/prod-accelerator/".
+  string s3_prefix = 3;
+}
+
+// AwsGlobalAcceleratorListener defines a port/protocol combination that the
+// accelerator accepts traffic on, along with the endpoint groups that receive
+// the routed traffic.
+//
+// Each listener maps to one `aws_globalaccelerator_listener` resource.
+// Listeners are ForceNew on accelerator_arn (handled automatically by the
+// module) but can have port ranges and endpoint groups updated in place.
+message AwsGlobalAcceleratorListener {
+  // User-assigned name for this listener. Used as a key in the output maps
+  // (listener_arns, endpoint_group_arns) so downstream resources can reference
+  // specific listener or endpoint group ARNs via valueFrom.
+  //
+  // Must be unique within the accelerator's listeners. Lowercase alphanumeric
+  // and hyphens only, starting with a letter (max 63 characters).
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "listener_name_format"
+      message: "name must start with a lowercase letter and contain only lowercase letters, numbers, and hyphens (max 63 chars)"
+      expression: "this.matches('^[a-z][a-z0-9-]{0,62}$')"
+    }
+  ];
+
+  // Protocol for this listener. Global Accelerator operates at Layer 4.
+  // - "TCP": For HTTP, HTTPS, WebSocket, gRPC, and other TCP workloads.
+  // - "UDP": For DNS, gaming, IoT, and real-time media workloads.
+  string protocol = 2 [(buf.validate.field).required = true];
+
+  // Client affinity setting for this listener.
+  // - "NONE" (default): Requests from the same client may be routed to
+  //   different endpoints. Best for stateless workloads.
+  // - "SOURCE_IP": All requests from the same source IP address are routed
+  //   to the same endpoint within an endpoint group. Required for stateful
+  //   protocols (gaming, WebSocket connections, long-lived TCP sessions).
+  optional string client_affinity = 3 [(dev.planton.shared.options.default) = "NONE"];
+
+  // Port ranges that this listener accepts traffic on. Each range defines
+  // a from_port and to_port (inclusive). Use a single port range for most
+  // workloads, or multiple ranges for services on different ports.
+  //
+  // At least one port range is required. Maximum 10 ranges per listener.
+  repeated AwsGlobalAcceleratorPortRange port_ranges = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).repeated.min_items = 1
+  ];
+
+  // Endpoint groups define regional destinations for this listener's traffic.
+  // Each endpoint group represents a set of endpoints in one AWS region.
+  //
+  // At least one endpoint group is required — a listener without endpoint
+  // groups drops all traffic.
+  repeated AwsGlobalAcceleratorEndpointGroup endpoint_groups = 5 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).repeated.min_items = 1
+  ];
+
+  // ---------------------------------------------------------------------------
+  // Listener-level CEL validations
+  // ---------------------------------------------------------------------------
+
+  // Protocol must be TCP or UDP.
+  option (buf.validate.message).cel = {
+    id: "listener_protocol_valid"
+    message: "protocol must be 'TCP' or 'UDP'"
+    expression: "this.protocol in ['TCP', 'UDP']"
+  };
+
+  // Client affinity must be NONE or SOURCE_IP when set.
+  option (buf.validate.message).cel = {
+    id: "client_affinity_valid"
+    message: "client_affinity must be 'NONE' or 'SOURCE_IP'"
+    expression: "!has(this.client_affinity) || this.client_affinity in ['NONE', 'SOURCE_IP']"
+  };
+
+  // Port ranges maximum 10 (AWS hard limit).
+  option (buf.validate.message).cel = {
+    id: "port_ranges_max_10"
+    message: "a listener supports a maximum of 10 port ranges"
+    expression: "size(this.port_ranges) <= 10"
+  };
+}
+
+// AwsGlobalAcceleratorPortRange defines an inclusive port range for a listener.
+message AwsGlobalAcceleratorPortRange {
+  // First port in the range (inclusive). Range: 1-65535.
+  int32 from_port = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }
+  ];
+
+  // Last port in the range (inclusive). Must be >= from_port. Range: 1-65535.
+  int32 to_port = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }
+  ];
+}
+
+// AwsGlobalAcceleratorEndpointGroup defines a regional set of endpoints that
+// receive traffic from a listener. Each endpoint group maps to one
+// `aws_globalaccelerator_endpoint_group` resource.
+//
+// Endpoint groups enable multi-region architectures: place groups in different
+// AWS regions and Global Accelerator routes users to the nearest healthy region.
+// Use traffic_dial_percentage for gradual regional traffic shifting (blue/green,
+// canary deployments across regions).
+message AwsGlobalAcceleratorEndpointGroup {
+  // User-assigned name for this endpoint group. Used as part of the composite
+  // key in the endpoint_group_arns output map (format: "listener_name/group_name").
+  //
+  // Must be unique within the parent listener's endpoint groups. Lowercase
+  // alphanumeric and hyphens only, starting with a letter (max 63 characters).
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "endpoint_group_name_format"
+      message: "name must start with a lowercase letter and contain only lowercase letters, numbers, and hyphens (max 63 chars)"
+      expression: "this.matches('^[a-z][a-z0-9-]{0,62}$')"
+    }
+  ];
+
+  // AWS region for this endpoint group (e.g., "us-east-1", "eu-west-1").
+  // When omitted, defaults to the AWS provider region. ForceNew — changing
+  // the region requires replacing the endpoint group.
+  string endpoint_group_region = 2;
+
+  // ---------------------------------------------------------------------------
+  // Health check configuration
+  // ---------------------------------------------------------------------------
+
+  // Port to use for health checks. When omitted, uses the listener port.
+  // Use this to check health on a dedicated health-check port separate from
+  // the traffic port.
+  int32 health_check_port = 3 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 65535
+  }];
+
+  // Protocol for health checks.
+  // - "TCP" (default): Verifies port reachability only.
+  // - "HTTP": Sends GET request to health_check_path, expects 200 response.
+  // - "HTTPS": Same as HTTP but over TLS.
+  optional string health_check_protocol = 4 [(dev.planton.shared.options.default) = "TCP"];
+
+  // Path for HTTP/HTTPS health checks. The accelerator sends a GET request
+  // to this path. Required when health_check_protocol is HTTP or HTTPS.
+  // Ignored for TCP health checks. Example: "/health" or "/api/status".
+  string health_check_path = 5;
+
+  // Seconds between health checks for each endpoint. AWS only supports
+  // two values: 10 or 30 seconds. This is NOT a continuous range — any
+  // other value will be rejected by the API.
+  optional int32 health_check_interval_seconds = 6 [(dev.planton.shared.options.default) = "30"];
+
+  // Number of consecutive health checks that must succeed (or fail) to
+  // change an endpoint's health status. Range: 1-10.
+  optional int32 threshold_count = 7 [
+    (dev.planton.shared.options.default) = "3",
+    (buf.validate.field).int32 = {
+      gte: 0
+      lte: 10
+    }
+  ];
+
+  // ---------------------------------------------------------------------------
+  // Traffic management
+  // ---------------------------------------------------------------------------
+
+  // Percentage of traffic to route to this endpoint group. Range: 0.0-100.0.
+  // Default: 100.0 (all traffic). Use values below 100 for gradual traffic
+  // shifting between regions (blue/green, canary deployments).
+  //
+  // Set to 0 to temporarily drain a region without removing its endpoints.
+  double traffic_dial_percentage = 8 [(dev.planton.shared.options.recommended_default) = "100.0"];
+
+  // ---------------------------------------------------------------------------
+  // Endpoints
+  // ---------------------------------------------------------------------------
+
+  // Endpoints within this regional group. Each endpoint is a resource that
+  // receives traffic — an ALB, NLB, Elastic IP, or EC2 instance.
+  //
+  // Endpoints are optional. You may create the endpoint group first and
+  // register endpoints later (e.g., when the ALB or NLB is deployed).
+  repeated AwsGlobalAcceleratorEndpoint endpoints = 9;
+
+  // ---------------------------------------------------------------------------
+  // Port overrides
+  // ---------------------------------------------------------------------------
+
+  // Port overrides remap listener ports to different endpoint ports. Useful
+  // when the listener accepts traffic on one port but the endpoint serves
+  // on a different port. Maximum 10 overrides per endpoint group.
+  //
+  // Example: listener on port 443, endpoint on port 8443.
+  repeated AwsGlobalAcceleratorPortOverride port_overrides = 10;
+
+  // ---------------------------------------------------------------------------
+  // Endpoint group-level CEL validations
+  // ---------------------------------------------------------------------------
+
+  // health_check_protocol must be TCP, HTTP, or HTTPS when set.
+  option (buf.validate.message).cel = {
+    id: "health_check_protocol_valid"
+    message: "health_check_protocol must be 'TCP', 'HTTP', or 'HTTPS'"
+    expression: "!has(this.health_check_protocol) || this.health_check_protocol in ['TCP', 'HTTP', 'HTTPS']"
+  };
+
+  // health_check_interval_seconds must be exactly 10 or 30 when set.
+  option (buf.validate.message).cel = {
+    id: "health_check_interval_valid"
+    message: "health_check_interval_seconds must be exactly 10 or 30 (AWS constraint)"
+    expression: "!has(this.health_check_interval_seconds) || this.health_check_interval_seconds in [10, 30]"
+  };
+
+  // health_check_path required for HTTP/HTTPS health checks.
+  option (buf.validate.message).cel = {
+    id: "health_check_path_required_for_http"
+    message: "health_check_path is required when health_check_protocol is 'HTTP' or 'HTTPS'"
+    expression: "!has(this.health_check_protocol) || !(this.health_check_protocol in ['HTTP', 'HTTPS']) || this.health_check_path != ''"
+  };
+
+  // traffic_dial_percentage must be between 0.0 and 100.0.
+  option (buf.validate.message).cel = {
+    id: "traffic_dial_percentage_range"
+    message: "traffic_dial_percentage must be between 0.0 and 100.0"
+    expression: "this.traffic_dial_percentage >= 0.0 && this.traffic_dial_percentage <= 100.0"
+  };
+
+  // port_overrides maximum 10 (AWS hard limit).
+  option (buf.validate.message).cel = {
+    id: "port_overrides_max_10"
+    message: "an endpoint group supports a maximum of 10 port overrides"
+    expression: "size(this.port_overrides) <= 10"
+  };
+}
+
+// AwsGlobalAcceleratorEndpoint defines a single endpoint within an endpoint
+// group. Endpoints are the actual resources that receive traffic.
+//
+// Supported endpoint types:
+// - Application Load Balancer (ALB ARN)
+// - Network Load Balancer (NLB ARN)
+// - Elastic IP (allocation ID)
+// - EC2 instance (instance ID)
+//
+// The endpoint_id field is polymorphic — Global Accelerator determines the
+// endpoint type from the identifier format.
+message AwsGlobalAcceleratorEndpoint {
+  // Resource identifier for the endpoint. Accepts:
+  // - ALB ARN: "arn:aws:elasticloadbalancing:..."
+  // - NLB ARN: "arn:aws:elasticloadbalancing:..."
+  // - EIP allocation ID: "eipalloc-..."
+  // - EC2 instance ID: "i-..."
+  //
+  // Uses StringValueOrRef for cross-resource referencing (e.g., reference an
+  // AwsAlb's load_balancer_arn output via valueFrom). No default_kind is set
+  // because the target resource type varies.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef endpoint_id = 1 [(buf.validate.field).required = true];
+
+  // Relative weight for this endpoint. Range: 0-255. Default: 128.
+  // Higher weight means more traffic. Set to 0 to temporarily stop routing
+  // traffic to this endpoint without removing it.
+  int32 weight = 2 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 255
+  }];
+
+  // Preserve the client's source IP address in requests forwarded to the
+  // endpoint. When enabled, the endpoint sees the original client IP instead
+  // of the Global Accelerator IP.
+  //
+  // Supported for ALB and EC2 instance endpoints only. For NLB and EIP
+  // endpoints, client IP is always preserved regardless of this setting.
+  bool client_ip_preservation_enabled = 3;
+}
+
+// AwsGlobalAcceleratorPortOverride remaps a listener port to a different
+// endpoint port. This allows endpoints to serve on a port different from
+// what the listener advertises.
+message AwsGlobalAcceleratorPortOverride {
+  // The listener port that is remapped. Must match a port within one of the
+  // listener's port ranges.
+  int32 listener_port = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }
+  ];
+
+  // The endpoint port that traffic is forwarded to.
+  int32 endpoint_port = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }
+  ];
+}

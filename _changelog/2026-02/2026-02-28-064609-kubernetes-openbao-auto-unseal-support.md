@@ -118,7 +118,7 @@ autoUnseal:
 
 ## Impact
 
-- **OpenMCF users**: Can configure auto-unseal declaratively in their `KubernetesOpenBao` YAML manifests
+- **Planton users**: Can configure auto-unseal declaratively in their `KubernetesOpenBao` YAML manifests
 - **Infra chart authors**: Can compose KMS resources with OpenBao using `valueFrom` references
 - **Planton platform**: Production OpenBAO can migrate from manual unseal to GCP KMS auto-unseal
 

@@ -6,7 +6,7 @@
 
 ## Summary
 
-Fixed two categories of bugs in the OpenMCF docs site: (1) a build script bug that caused duplicate sidebar entries for Auth0, OpenFGA, and Scaleway providers, and (2) four navigation issues where internal links in catalog pages navigated to the home page instead of their target, "Read next article" skipped section index pages, and showed sidebar labels instead of full page titles.
+Fixed two categories of bugs in the Planton docs site: (1) a build script bug that caused duplicate sidebar entries for Auth0, OpenFGA, and Scaleway providers, and (2) four navigation issues where internal links in catalog pages navigated to the home page instead of their target, "Read next article" skipped section index pages, and showed sidebar labels instead of full page titles.
 
 ## Problem Statement / Motivation
 

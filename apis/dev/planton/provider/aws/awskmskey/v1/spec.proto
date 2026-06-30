@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awskmskey.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/options/options.proto";
+
+// AwsKmsKeySpec captures the essential fields to create a customer-managed AWS KMS key.
+message AwsKmsKeySpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  // key_spec specifies the type of KMS key to create.
+  // If not provided, defaults to symmetric_default.
+  AwsKmsKeyType key_spec = 2;
+
+  // description is an optional description for the KMS key.
+  // Maximum length is 250 characters.
+  string description = 3 [(buf.validate.field).string.max_len = 250];
+
+  // disable_key_rotation, if true, will disable the key's automatic annual rotation.
+  // If false (default), rotation is enabled.
+  bool disable_key_rotation = 4;
+
+  // deletion_window_days is the waiting period (in days) before deletion of the KMS key.
+  // Allowed range is 7–30 days (inclusive). Default is 30 days.
+  int32 deletion_window_days = 5 [
+    (buf.validate.field).int32.gte = 7,
+    (buf.validate.field).int32.lte = 30,
+    (dev.planton.shared.options.recommended_default) = "30"
+  ];
+
+  // alias_name is an optional alias to assign to the KMS key.
+  // It must begin with "alias/" and contain 1–250 allowed characters (letters, numbers, underscore, or hyphen).
+  string alias_name = 6 [(buf.validate.field).string.pattern = "^alias/[A-Za-z0-9/_-]{1,250}$"];
+}
+
+// KeySpec defines the cryptographic key type for the KMS key.
+enum AwsKmsKeyType {
+  symmetric = 0;
+  rsa_2048 = 1;
+  rsa_4096 = 2;
+  ecc_nist_p256 = 3;
+}

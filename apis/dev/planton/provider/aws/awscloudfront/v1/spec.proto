@@ -1,0 +1,76 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awscloudfront.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// AwsCloudFrontSpec captures common fields used to configure a CloudFront distribution.
+message AwsCloudFrontSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  // Whether the distribution is enabled.
+  bool enabled = 2;
+
+  // Aliases (CNAMEs) for the distribution, e.g., "cdn.example.com".
+  repeated string aliases = 3 [
+    (buf.validate.field).repeated.unique = true,
+    (buf.validate.field).repeated.items = {
+      string: {pattern: "^[A-Za-z0-9\\-\\.]+\\.[A-Za-z]{2,}$"}
+    }
+  ];
+
+  // ACM certificate ARN for custom domains. Must be in the us-east-1 region.
+  // Required when aliases are provided. Can reference an AwsCertManagerCert resource.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef certificate_arn = 4 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsCertManagerCert,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.cert_arn"
+  ];
+
+  // Price class for edge locations.
+  enum PriceClass {
+    PRICE_CLASS_UNSPECIFIED = 0;
+    PRICE_CLASS_100 = 1;
+    PRICE_CLASS_200 = 2;
+    PRICE_CLASS_ALL = 3;
+  }
+  PriceClass price_class = 5 [(buf.validate.field).enum.defined_only = true];
+
+  // Origin definition.
+  message Origin {
+    // DNS name of the origin, e.g., "my-bucket.s3.amazonaws.com".
+    string domain_name = 1 [
+      (buf.validate.field).string.min_len = 1,
+      (buf.validate.field).string.pattern = "^[A-Za-z0-9\\-\\.]+\\.[A-Za-z]{2,}$"
+    ];
+
+    // Optional origin path that CloudFront appends to requests.
+    string origin_path = 2 [(buf.validate.field).string.pattern = "^$|^/[A-Za-z0-9\\-\\_\\/\\.]*$"];
+
+    // Whether this origin is used as the default origin for the distribution.
+    // Exactly one origin must be marked as default.
+    bool is_default = 3;
+  }
+
+  // List of origins available to the distribution.
+  // Must contain at least one origin with exactly one marked as default.
+  repeated Origin origins = 6 [(buf.validate.field).repeated.min_items = 1];
+
+  // Default root object, e.g., "index.html".
+  string default_root_object = 7 [(buf.validate.field).string.pattern = "^[A-Za-z0-9\\-\\.\\_]*$"];
+
+  // Conditional validations
+  option (buf.validate.message).cel = {
+    id: "aliases_require_cert"
+    message: "certificate_arn must be set when aliases are provided"
+    expression: "this.aliases.size() == 0 || has(this.certificate_arn)"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "exactly_one_default_origin"
+    message: "exactly one origin must be marked as default"
+    expression: "this.origins.filter(o, o.is_default).size() == 1"
+  };
+}

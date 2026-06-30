@@ -12,7 +12,7 @@ Deploys Keycloak on Kubernetes as an identity and access management solution. Pr
 
 ## What Gets Created
 
-When you deploy a KubernetesKeycloak resource, OpenMCF provisions:
+When you deploy a KubernetesKeycloak resource, Planton provisions:
 
 - **Kubernetes Namespace** — created if `createNamespace` is `true`
 - **Keycloak Deployment** — a Keycloak application instance with:
@@ -35,15 +35,15 @@ When you deploy a KubernetesKeycloak resource, OpenMCF provisions:
 Create a file `keycloak.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesKeycloak
 metadata:
   name: my-keycloak
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesKeycloak.my-keycloak
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesKeycloak.my-keycloak
 spec:
   namespace:
     value: keycloak-dev
@@ -53,7 +53,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f keycloak.yaml
+planton apply -f keycloak.yaml
 ```
 
 This creates a Keycloak instance with default resources (1 CPU / 1Gi memory limit, 50m CPU / 100Mi memory request) in the `keycloak-dev` namespace.
@@ -85,15 +85,15 @@ This creates a Keycloak instance with default resources (1 CPU / 1Gi memory limi
 Increase CPU and memory for a Keycloak instance handling a larger user base:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesKeycloak
 metadata:
   name: auth-keycloak
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesKeycloak.auth-keycloak
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesKeycloak.auth-keycloak
 spec:
   namespace:
     value: auth-services
@@ -113,15 +113,15 @@ spec:
 Use `valueFrom` to reference a namespace managed by a separate KubernetesNamespace resource:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesKeycloak
 metadata:
   name: shared-keycloak
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.KubernetesKeycloak.shared-keycloak
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.KubernetesKeycloak.shared-keycloak
 spec:
   namespace:
     valueFrom:
@@ -144,15 +144,15 @@ spec:
 External access over HTTPS for production use:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesKeycloak
 metadata:
   name: prod-keycloak
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesKeycloak.prod-keycloak
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesKeycloak.prod-keycloak
 spec:
   namespace:
     value: production

@@ -12,7 +12,7 @@ Deploys an Elasticsearch cluster on Kubernetes using the Elastic Cloud on Kubern
 
 ## What Gets Created
 
-When you deploy a KubernetesElasticsearch resource, OpenMCF provisions:
+When you deploy a KubernetesElasticsearch resource, Planton provisions:
 
 - **Namespace** — created only when `createNamespace` is `true`
 - **Elasticsearch Cluster** — an ECK-managed Elasticsearch custom resource (v8.15.0) with configurable replicas, resource limits, and node roles (master, data, ingest)
@@ -25,7 +25,7 @@ When you deploy a KubernetesElasticsearch resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
 - **ECK operator** installed in the cluster (manages Elasticsearch and Kibana custom resources)
 - **A StorageClass** available in the cluster if enabling persistence (most managed Kubernetes clusters provide a default)
@@ -38,15 +38,15 @@ When you deploy a KubernetesElasticsearch resource, OpenMCF provisions:
 Create a file `elasticsearch.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesElasticsearch
 metadata:
   name: my-es
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesElasticsearch.my-es
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesElasticsearch.my-es
 spec:
   namespace: search
   createNamespace: true
@@ -55,7 +55,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f elasticsearch.yaml
+planton apply -f elasticsearch.yaml
 ```
 
 This creates a single-node Elasticsearch 8.15.0 cluster with persistence enabled, a 1Gi PersistentVolumeClaim, default resource limits (1000m CPU, 1Gi memory), Kibana enabled with a single replica, and an auto-generated password stored in a Kubernetes Secret.
@@ -100,15 +100,15 @@ This creates a single-node Elasticsearch 8.15.0 cluster with persistence enabled
 A lightweight Elasticsearch instance for development with persistence disabled, Kibana enabled, and reduced resources:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesElasticsearch
 metadata:
   name: dev-es
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesElasticsearch.dev-es
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesElasticsearch.dev-es
 spec:
   namespace: dev
   createNamespace: true
@@ -141,15 +141,15 @@ spec:
 A production Elasticsearch cluster with multiple replicas, larger disk allocation, and higher resource limits:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesElasticsearch
 metadata:
   name: prod-es
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesElasticsearch.prod-es
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesElasticsearch.prod-es
 spec:
   namespace: production
   elasticsearch:
@@ -182,15 +182,15 @@ spec:
 Elasticsearch and Kibana exposed outside the cluster via Gateway API with TLS termination and automatic DNS:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesElasticsearch
 metadata:
   name: shared-es
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesElasticsearch.shared-es
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesElasticsearch.shared-es
 spec:
   namespace: shared-services
   elasticsearch:
@@ -226,18 +226,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed namespace instead of hardcoding the name:
+Reference an Planton-managed namespace instead of hardcoding the name:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesElasticsearch
 metadata:
   name: search
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesElasticsearch.search
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesElasticsearch.search
 spec:
   namespace:
     valueFrom:

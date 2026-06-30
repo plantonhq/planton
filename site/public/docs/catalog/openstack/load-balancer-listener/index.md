@@ -12,13 +12,13 @@ Deploys an Octavia listener on an OpenStack load balancer, binding a protocol an
 
 ## What Gets Created
 
-When you deploy an OpenStackLoadBalancerListener resource, OpenMCF provisions:
+When you deploy an OpenStackLoadBalancerListener resource, Planton provisions:
 
 - **Octavia Listener** -- a `loadbalancer.Listener` resource bound to the specified load balancer, accepting traffic on the configured protocol and port. When `defaultTlsContainerRef` is provided with the `TERMINATED_HTTPS` protocol, the listener terminates TLS using a certificate stored in Barbican. When `insertHeaders` is set, the listener injects HTTP headers (such as `X-Forwarded-For`) into requests before forwarding them to backends. When `allowedCidrs` is set, only traffic from those CIDR ranges reaches the listener.
 
 ## Prerequisites
 
-- **OpenStack credentials** configured via environment variables or OpenMCF provider config
+- **OpenStack credentials** configured via environment variables or Planton provider config
 - **An existing load balancer** (by UUID or via an OpenStackLoadBalancer resource) in ACTIVE provisioning status
 - **A Barbican secret container** holding the TLS certificate, private key, and optional intermediates if using the `TERMINATED_HTTPS` protocol
 
@@ -27,14 +27,14 @@ When you deploy an OpenStackLoadBalancerListener resource, OpenMCF provisions:
 Create a file `listener.yaml`:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackLoadBalancerListener
 metadata:
   name: http-listener
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: dev.OpenstackLoadBalancerListener.http-listener
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackloadbalancerlistener/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: dev.OpenstackLoadBalancerListener.http-listener
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackloadbalancerlistener/v1/iac/pulumi/module
 spec:
   loadbalancerId: 4a0e3c5b-2f1d-4e6a-8b9c-0d1e2f3a4b5c
   protocol: HTTP
@@ -44,7 +44,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f listener.yaml
+planton apply -f listener.yaml
 ```
 
 This creates an Octavia listener on the specified load balancer, accepting HTTP traffic on port 80.
@@ -79,14 +79,14 @@ This creates an Octavia listener on the specified load balancer, accepting HTTP 
 A minimal listener accepting HTTP traffic on port 80:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackLoadBalancerListener
 metadata:
   name: http-listener
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: dev.OpenstackLoadBalancerListener.http-listener
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackloadbalancerlistener/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: dev.OpenstackLoadBalancerListener.http-listener
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackloadbalancerlistener/v1/iac/pulumi/module
 spec:
   loadbalancerId: 4a0e3c5b-2f1d-4e6a-8b9c-0d1e2f3a4b5c
   protocol: HTTP
@@ -104,14 +104,14 @@ spec:
 A listener that terminates TLS at the load balancer using a Barbican certificate. Backends receive decrypted HTTP traffic with forwarded headers indicating the original protocol:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackLoadBalancerListener
 metadata:
   name: https-listener
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: prod.OpenstackLoadBalancerListener.https-listener
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackloadbalancerlistener/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: prod.OpenstackLoadBalancerListener.https-listener
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackloadbalancerlistener/v1/iac/pulumi/module
 spec:
   loadbalancerId: 4a0e3c5b-2f1d-4e6a-8b9c-0d1e2f3a4b5c
   protocol: TERMINATED_HTTPS
@@ -132,14 +132,14 @@ spec:
 A listener limited to specific CIDR ranges and a maximum number of concurrent connections, suitable for internal admin panels or APIs that should not be publicly accessible:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackLoadBalancerListener
 metadata:
   name: admin-api-listener
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: prod.OpenstackLoadBalancerListener.admin-api-listener
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackloadbalancerlistener/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: prod.OpenstackLoadBalancerListener.admin-api-listener
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackloadbalancerlistener/v1/iac/pulumi/module
 spec:
   loadbalancerId: 4a0e3c5b-2f1d-4e6a-8b9c-0d1e2f3a4b5c
   protocol: HTTP
@@ -156,17 +156,17 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed load balancer instead of hardcoding the UUID:
+Reference an Planton-managed load balancer instead of hardcoding the UUID:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackLoadBalancerListener
 metadata:
   name: app-listener
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: prod.OpenstackLoadBalancerListener.app-listener
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackloadbalancerlistener/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: prod.OpenstackLoadBalancerListener.app-listener
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackloadbalancerlistener/v1/iac/pulumi/module
 spec:
   loadbalancerId:
     valueFrom:

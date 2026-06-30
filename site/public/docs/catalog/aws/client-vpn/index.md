@@ -12,7 +12,7 @@ Deploys an AWS Client VPN endpoint attached to a VPC, with subnet associations, 
 
 ## What Gets Created
 
-When you deploy an AwsClientVpn resource, OpenMCF provisions:
+When you deploy an AwsClientVpn resource, Planton provisions:
 
 - **Client VPN Endpoint** — an `aws:ec2clientvpn:Endpoint` resource configured with mutual TLS authentication, the specified server certificate, client CIDR block, and connection logging settings
 - **Network Associations** — one `aws:ec2clientvpn:NetworkAssociation` per subnet in the `subnets` list, linking the VPN endpoint to each subnet's Availability Zone
@@ -20,7 +20,7 @@ When you deploy an AwsClientVpn resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **A VPC** with at least one subnet for the VPN endpoint association
 - **An ACM server certificate** for TLS termination (the certificate must be in the same AWS region)
 - **A client certificate** signed by the same CA, distributed to each VPN user
@@ -31,15 +31,15 @@ When you deploy an AwsClientVpn resource, OpenMCF provisions:
 Create a file `client-vpn.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsClientVpn
 metadata:
   name: my-vpn
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsClientVpn.my-vpn
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsClientVpn.my-vpn
 spec:
   region: us-east-1
   vpcId: vpc-0a1b2c3d4e5f00001
@@ -52,7 +52,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f client-vpn.yaml
+planton apply -f client-vpn.yaml
 ```
 
 This creates a Client VPN endpoint with certificate-based authentication, split-tunnel routing, TCP transport on port 443, and a single subnet association.
@@ -90,15 +90,15 @@ This creates a Client VPN endpoint with certificate-based authentication, split-
 A minimal VPN endpoint granting access to an internal network:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsClientVpn
 metadata:
   name: dev-vpn
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsClientVpn.dev-vpn
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsClientVpn.dev-vpn
 spec:
   region: us-east-1
   vpcId: vpc-dev-001
@@ -115,15 +115,15 @@ spec:
 A VPN endpoint spanning two Availability Zones with CloudWatch connection logging enabled:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsClientVpn
 metadata:
   name: team-vpn
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.AwsClientVpn.team-vpn
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.AwsClientVpn.team-vpn
 spec:
   region: us-east-1
   vpcId: vpc-staging-001
@@ -144,15 +144,15 @@ spec:
 Routes all client traffic through the VPN and overrides DNS resolution with custom servers:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsClientVpn
 metadata:
   name: secure-vpn
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsClientVpn.secure-vpn
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsClientVpn.secure-vpn
 spec:
   region: us-east-1
   vpcId: vpc-prod-001
@@ -177,15 +177,15 @@ spec:
 A VPN endpoint using UDP for lower-latency connections on the standard OpenVPN port:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsClientVpn
 metadata:
   name: low-latency-vpn
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsClientVpn.low-latency-vpn
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsClientVpn.low-latency-vpn
 spec:
   region: us-east-1
   vpcId: vpc-prod-001
@@ -201,18 +201,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding IDs:
+Reference other Planton-managed resources instead of hardcoding IDs:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsClientVpn
 metadata:
   name: ref-vpn
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsClientVpn.ref-vpn
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsClientVpn.ref-vpn
 spec:
   region: us-east-1
   vpcId:

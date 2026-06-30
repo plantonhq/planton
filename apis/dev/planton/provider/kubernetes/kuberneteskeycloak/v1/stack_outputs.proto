@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kuberneteskeycloak.v1;
+
+//keycloak-kubernetes stack outputs.
+message KubernetesKeycloakStackOutputs {
+  //kubernetes namespace in which keycloak-kubernetes is created.
+  string namespace = 1;
+
+  //kubernetes service name for keycloak-kubernetes.
+  //ex: main-keycloak-kubernetes
+  //in the above example, "main" is the name of the keycloak-kubernetes
+  string service = 2;
+
+  //command to setup port-forwarding to open keycloak-kubernetes from developers laptop.
+  //this might come handy when keycloak-kubernetes ingress is disabled for security reasons.
+  //this is rendered by combining keycloak_kubernetes_kubernetes_service and kubernetes_namespace
+  //ex: kubectl port-forward svc/keycloak_kubernetes_kubernetes_service -n kubernetes_namespace 6379:6379
+  //running the command from this attribute makes it possible to access keycloak-kubernetes using http://localhost:8080/keycloak
+  string port_forward_command = 3;
+
+  //kubernetes endpoint to connect to keycloak-kubernetes from the web browser.
+  //ex: main-keycloak-kubernetes.namespace.svc.cluster.local:6379
+  string kube_endpoint = 4;
+
+  //public endpoint to open keycloak-kubernetes from clients outside kubernetes.
+  //ex: https://kck8s-planton-pcs-dev-main.data.dev.planton.live
+  string external_hostname = 5;
+
+  //internal endpoint to open keycloak-kubernetes from clients inside kubernetes.
+  //ex: https://kck8s-planton-pcs-dev-main.data-internal.dev.planton.live
+  string internal_hostname = 6;
+}

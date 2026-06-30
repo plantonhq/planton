@@ -6,7 +6,7 @@
 
 ## Summary
 
-Introduced a new IaC Runner base image system in openmcf that pre-warms Go caches for all Pulumi modules. The build uses a GitHub Actions matrix strategy to compile modules for each cloud provider in parallel, then merges the caches into a single Docker image. This dramatically reduces cold start times for Pulumi Go programs from 2-5 minutes to ~0.5 seconds for cached modules.
+Introduced a new IaC Runner base image system in planton that pre-warms Go caches for all Pulumi modules. The build uses a GitHub Actions matrix strategy to compile modules for each cloud provider in parallel, then merges the caches into a single Docker image. This dramatically reduces cold start times for Pulumi Go programs from 2-5 minutes to ~0.5 seconds for cached modules.
 
 ## Problem Statement / Motivation
 
@@ -198,7 +198,7 @@ git push origin iac-runner-base-v1.0.0
 ### Use in Downstream Images
 
 ```dockerfile
-FROM ghcr.io/plantonhq/openmcf/base-images/iac-runner:v1.0.0
+FROM ghcr.io/plantonhq/planton/base-images/iac-runner:v1.0.0
 
 COPY --from=builder /app /app
 ENTRYPOINT ["/app"]

@@ -30,28 +30,28 @@ type TypeRule struct {
 	ExtractValue func(jsonVal interface{}) (interface{}, error)
 }
 
-// DefaultRules returns the standard OpenMCF type rules. Adding a new wrapper
+// DefaultRules returns the standard Planton type rules. Adding a new wrapper
 // type means adding one entry here -- no generator code changes needed.
 func DefaultRules() map[string]TypeRule {
 	return map[string]TypeRule{
 		// StringValueOrRef: proto oneof with {string value, ValueFromRef value_from}.
 		// The value_from arm is a Planton orchestrator concept resolved before IaC
 		// runs. TF modules should see a plain string.
-		"org.openmcf.shared.foreignkey.v1.StringValueOrRef": {
+		"dev.planton.shared.foreignkey.v1.StringValueOrRef": {
 			FlattenTo:    "string",
 			ExtractValue: extractStringValueOrRef,
 		},
 
 		// ValueFromRef: Planton-internal reference type. Should never appear in
 		// TF output (the orchestrator resolves it before IaC invocation).
-		"org.openmcf.shared.foreignkey.v1.ValueFromRef": {
+		"dev.planton.shared.foreignkey.v1.ValueFromRef": {
 			Skip: true,
 		},
 
 		// KubernetesClusterSelector: tells the Planton orchestrator which cluster
 		// to target. The TF module gets the cluster via KUBE_CONFIG_PATH / provider
 		// config, not this field.
-		"org.openmcf.provider.kubernetes.KubernetesClusterSelector": {
+		"dev.planton.provider.kubernetes.KubernetesClusterSelector": {
 			Skip: true,
 		},
 

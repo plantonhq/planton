@@ -1,0 +1,9 @@
+apiVersion: openstack.planton.dev/v1
+kind: OpenStackRouter
+metadata:
+  name: test-router
+spec:
+  external_network_id:
+    value: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+  enable_snat: true
+  description: "Test router for local development"

@@ -1,7 +1,0 @@
-apiVersion: azure.openmcf.org/v1
-kind: AzureResourceGroup
-metadata:
-  name: my-resource-group
-spec:
-  name: <your-resource-group-name>
-  region: <azure-region>

@@ -6,15 +6,15 @@
 
 ## Summary
 
-Added AwsAppRunnerService as the 27th new AWS resource kind in the OpenMCF cloud provider expansion project. This component provides a fully managed container application service supporting deployment from ECR images or GitHub code repositories, with inline VPC Connector creation, concurrency-based auto scaling, KMS encryption, health checks, and X-Ray observability.
+Added AwsAppRunnerService as the 27th new AWS resource kind in the Planton cloud provider expansion project. This component provides a fully managed container application service supporting deployment from ECR images or GitHub code repositories, with inline VPC Connector creation, concurrency-based auto scaling, KMS encryption, health checks, and X-Ray observability.
 
 ## Problem Statement / Motivation
 
-App Runner is AWS's simplest path from container image to production HTTPS endpoint -- an increasingly popular choice for web APIs, microservices, and internal tools. Without an OpenMCF component, teams deploying App Runner services had to fall back to raw Terraform or Pulumi, losing the declarative YAML workflow, cross-resource references via `StringValueOrRef`, and infra chart composability that OpenMCF provides for other AWS services.
+App Runner is AWS's simplest path from container image to production HTTPS endpoint -- an increasingly popular choice for web APIs, microservices, and internal tools. Without an Planton component, teams deploying App Runner services had to fall back to raw Terraform or Pulumi, losing the declarative YAML workflow, cross-resource references via `StringValueOrRef`, and infra chart composability that Planton provides for other AWS services.
 
 ### Pain Points
 
-- No declarative way to deploy App Runner services through OpenMCF
+- No declarative way to deploy App Runner services through Planton
 - VPC Connectors and Auto Scaling Configurations are separate TF/Pulumi resources that users must manage independently
 - No standard pattern for wiring App Runner services into infra charts alongside VPCs, security groups, and KMS keys
 

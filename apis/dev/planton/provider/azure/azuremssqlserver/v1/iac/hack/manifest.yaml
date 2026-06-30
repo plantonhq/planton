@@ -1,0 +1,18 @@
+apiVersion: azure.planton.dev/v1
+kind: AzureMssqlServer
+metadata:
+  name: test-sql
+spec:
+  region: eastus
+  resource_group: test-rg
+  name: test-sql-server
+  administrator_login: sqladmin
+  administrator_password: P@ssw0rd1234!
+  databases:
+    - name: myapp
+      sku_name: S0
+      max_size_gb: 50
+  firewall_rules:
+    - name: allow-azure-services
+      start_ip_address: "0.0.0.0"
+      end_ip_address: "0.0.0.0"

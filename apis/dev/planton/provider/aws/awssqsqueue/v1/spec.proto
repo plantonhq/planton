@@ -1,0 +1,220 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awssqsqueue.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "google/protobuf/struct.proto";
+
+// AwsSqsQueueSpec defines the desired configuration for an AWS SQS queue.
+//
+// SQS provides two queue types:
+// - Standard queues offer maximum throughput, best-effort ordering, and at-least-once delivery.
+// - FIFO queues guarantee exactly-once processing and strict message ordering within each
+//   message group, at the cost of lower throughput.
+//
+// Notes:
+// - Set `fifo_queue` to true to create a FIFO queue. This cannot be changed after creation.
+// - FIFO queue names must end with `.fifo`; the IaC modules append this suffix automatically
+//   when `fifo_queue` is true and the metadata name does not already include it.
+// - Encryption at rest is supported via SQS-managed SSE or a customer-managed KMS key
+//   (mutually exclusive).
+// - Dead letter queue configuration allows routing failed messages to a separate queue
+//   for investigation and reprocessing.
+// - Credentials, region, and deployment workflow live outside this spec in stack inputs.
+message AwsSqsQueueSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  // ---------------------------------------------------------------------------
+  // Queue type
+  // ---------------------------------------------------------------------------
+
+  // Whether to create a FIFO queue. Standard queues are created when false.
+  // FIFO queues guarantee exactly-once processing and strict ordering within
+  // each message group. This setting cannot be changed after queue creation.
+  bool fifo_queue = 2;
+
+  // ---------------------------------------------------------------------------
+  // Delivery settings
+  // ---------------------------------------------------------------------------
+
+  // Time in seconds that a received message is hidden from subsequent receive
+  // requests. After the timeout expires the message becomes visible again unless
+  // it was deleted. Range: 0–43200 (0s to 12h). AWS default: 30.
+  int32 visibility_timeout_seconds = 3 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 43200
+  }];
+
+  // Duration in seconds that SQS retains a message. After the retention period
+  // expires SQS deletes the message regardless of whether it was consumed.
+  // Range: 60–1209600 (1 min to 14 days). AWS default: 345600 (4 days).
+  // Leave at 0 to use the AWS default.
+  int32 message_retention_seconds = 4;
+
+  // Maximum size of a message body in bytes. Messages exceeding this limit are
+  // rejected by SQS. Range: 1024–1048576 (1 KB to 1 MB). AWS default: 262144 (256 KB).
+  // Leave at 0 to use the AWS default.
+  int32 max_message_size_bytes = 5;
+
+  // Delay in seconds before a newly sent message becomes visible in the queue.
+  // Useful for implementing delayed processing patterns.
+  // Range: 0–900 (0s to 15 min). AWS default: 0.
+  int32 delay_seconds = 6 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 900
+  }];
+
+  // Wait time in seconds for the ReceiveMessage API call. A value greater than
+  // 0 enables long polling, which reduces the number of empty responses and
+  // lowers cost. Range: 0–20. AWS default: 0 (short polling).
+  int32 receive_wait_time_seconds = 7 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 20
+  }];
+
+  // ---------------------------------------------------------------------------
+  // FIFO-specific settings (ignored for Standard queues)
+  // ---------------------------------------------------------------------------
+
+  // Enable content-based deduplication for FIFO queues. When enabled SQS uses
+  // a SHA-256 hash of the message body as the deduplication ID, removing the
+  // need for the producer to supply an explicit deduplication ID.
+  // Only valid when `fifo_queue` is true.
+  bool content_based_deduplication = 8;
+
+  // Deduplication scope for FIFO queues. Controls whether deduplication is
+  // applied per message group or across the entire queue.
+  // Valid values: "messageGroup", "queue". Only valid when `fifo_queue` is true.
+  string deduplication_scope = 9;
+
+  // Throughput limit for FIFO queues. Controls whether throughput quota applies
+  // per message group ID or per queue. Set to "perMessageGroupId" to enable
+  // high throughput mode for FIFO queues.
+  // Valid values: "perMessageGroupId", "perQueue". Only valid when `fifo_queue` is true.
+  string fifo_throughput_limit = 10;
+
+  // ---------------------------------------------------------------------------
+  // Dead letter queue
+  // ---------------------------------------------------------------------------
+
+  // Dead letter queue configuration. When a message is received more than
+  // `max_receive_count` times without being deleted, SQS moves it to the
+  // specified target queue for investigation and reprocessing.
+  AwsSqsQueueDeadLetterConfig dead_letter_config = 11;
+
+  // ---------------------------------------------------------------------------
+  // Encryption
+  // ---------------------------------------------------------------------------
+
+  // Customer-managed KMS key for server-side encryption. When set SQS encrypts
+  // message bodies using this key. Accepts a direct KMS key ID/ARN or a
+  // reference to an AwsKmsKey resource. Mutually exclusive with
+  // `sqs_managed_sse_enabled`.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_id = 12 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
+  ];
+
+  // Duration in seconds that SQS reuses a data encryption key before calling
+  // KMS again. Higher values reduce KMS costs but increase the window for key
+  // reuse. Range: 60–86400 (1 min to 24h). AWS default: 300 (5 min).
+  // Only relevant when `kms_key_id` is set.
+  int32 kms_data_key_reuse_period_seconds = 13;
+
+  // Enable SQS-managed server-side encryption (SSE-SQS). SQS manages the
+  // encryption key automatically with no additional cost. Mutually exclusive
+  // with `kms_key_id`.
+  bool sqs_managed_sse_enabled = 14;
+
+  // ---------------------------------------------------------------------------
+  // Access policy
+  // ---------------------------------------------------------------------------
+
+  // IAM access policy for the queue. Controls which AWS principals can perform
+  // actions on this queue (e.g., SendMessage, ReceiveMessage). Expressed as a
+  // standard IAM policy document structure. Common use cases include granting
+  // SNS topics permission to publish to this queue or allowing cross-account
+  // access.
+  google.protobuf.Struct policy = 15;
+
+  // ---------------------------------------------------------------------------
+  // CEL validations
+  // ---------------------------------------------------------------------------
+
+  // FIFO-only fields require fifo_queue to be true.
+  option (buf.validate.message).cel = {
+    id: "content_based_deduplication_requires_fifo"
+    message: "content_based_deduplication can only be enabled on FIFO queues (fifo_queue must be true)"
+    expression: "!this.content_based_deduplication || this.fifo_queue"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "deduplication_scope_requires_fifo"
+    message: "deduplication_scope is only valid for FIFO queues and must be 'messageGroup' or 'queue'"
+    expression: "this.deduplication_scope == '' || (this.fifo_queue && this.deduplication_scope in ['messageGroup', 'queue'])"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "fifo_throughput_limit_requires_fifo"
+    message: "fifo_throughput_limit is only valid for FIFO queues and must be 'perMessageGroupId' or 'perQueue'"
+    expression: "this.fifo_throughput_limit == '' || (this.fifo_queue && this.fifo_throughput_limit in ['perMessageGroupId', 'perQueue'])"
+  };
+
+  // Encryption: kms_key_id and sqs_managed_sse_enabled are mutually exclusive.
+  option (buf.validate.message).cel = {
+    id: "encryption_mutual_exclusion"
+    message: "kms_key_id and sqs_managed_sse_enabled are mutually exclusive; choose one encryption method"
+    expression: "!(has(this.kms_key_id) && this.sqs_managed_sse_enabled)"
+  };
+
+  // KMS data key reuse period requires KMS key to be set.
+  option (buf.validate.message).cel = {
+    id: "kms_data_key_reuse_requires_kms_key"
+    message: "kms_data_key_reuse_period_seconds requires kms_key_id to be set"
+    expression: "this.kms_data_key_reuse_period_seconds == 0 || has(this.kms_key_id)"
+  };
+
+  // Range validations for fields where 0 means "use AWS default".
+  option (buf.validate.message).cel = {
+    id: "message_retention_range"
+    message: "message_retention_seconds must be between 60 and 1209600 (1 min to 14 days) when set"
+    expression: "this.message_retention_seconds == 0 || (this.message_retention_seconds >= 60 && this.message_retention_seconds <= 1209600)"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "max_message_size_range"
+    message: "max_message_size_bytes must be between 1024 and 1048576 (1 KB to 1 MB) when set"
+    expression: "this.max_message_size_bytes == 0 || (this.max_message_size_bytes >= 1024 && this.max_message_size_bytes <= 1048576)"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "kms_data_key_reuse_range"
+    message: "kms_data_key_reuse_period_seconds must be between 60 and 86400 when set"
+    expression: "this.kms_data_key_reuse_period_seconds == 0 || (this.kms_data_key_reuse_period_seconds >= 60 && this.kms_data_key_reuse_period_seconds <= 86400)"
+  };
+}
+
+// AwsSqsQueueDeadLetterConfig configures the dead letter queue for failed message routing.
+// When a consumer receives a message more than `max_receive_count` times without
+// deleting it, SQS automatically moves the message to the specified target queue.
+message AwsSqsQueueDeadLetterConfig {
+  // ARN of the target dead letter queue. Accepts a direct ARN or a reference
+  // to another AwsSqsQueue resource. Both queues must be the same type
+  // (both Standard or both FIFO) and reside in the same AWS account and region.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef target_arn = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSqsQueue,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.queue_arn"
+  ];
+
+  // Number of times a message can be received before being moved to the dead
+  // letter queue. Must be at least 1. Common values: 3–5 for transient errors,
+  // 1 for poison pill detection. Range: 1–1000.
+  int32 max_receive_count = 2 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 1000
+  }];
+}

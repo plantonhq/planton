@@ -12,7 +12,7 @@ Deploys an Azure Cache for Redis instance with configurable SKU tier, capacity, 
 
 ## What Gets Created
 
-When you deploy an AzureRedisCache resource, OpenMCF provisions:
+When you deploy an AzureRedisCache resource, Planton provisions:
 
 - **Redis Cache** -- a `redis.Cache` resource in the specified region and resource group, configured with the chosen SKU, capacity, Redis version, TLS settings, eviction policy, and optional clustering
 - **VNet Injection** -- created only when `subnetId` is set (Premium SKU only), deploys the cache inside the specified subnet with private IP addressing
@@ -21,7 +21,7 @@ When you deploy an AzureRedisCache resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Resource Group** where the cache will be created (can reference an AzureResourceGroup resource)
 - **A globally unique cache name** -- the name becomes the endpoint `{name}.redis.cache.windows.net`
 - **A dedicated subnet** if using VNet injection (Premium SKU only) -- the subnet must contain no other resources
@@ -32,15 +32,15 @@ When you deploy an AzureRedisCache resource, OpenMCF provisions:
 Create a file `redis.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureRedisCache
 metadata:
   name: my-redis
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureRedisCache.my-redis
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureRedisCache.my-redis
 spec:
   region: eastus
   resourceGroup: my-rg
@@ -51,7 +51,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f redis.yaml
+planton apply -f redis.yaml
 ```
 
 This creates a Standard-tier Redis 6 cache with 1 GB capacity, SSL-only access, TLS 1.2, and `volatile-lru` eviction policy.
@@ -90,15 +90,15 @@ This creates a Standard-tier Redis 6 cache with 1 GB capacity, SSL-only access, 
 A Basic-tier cache for development and testing with minimal cost:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureRedisCache
 metadata:
   name: dev-redis
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureRedisCache.dev-redis
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureRedisCache.dev-redis
 spec:
   region: eastus
   resourceGroup: dev-rg
@@ -116,15 +116,15 @@ spec:
 A Standard-tier cache with `allkeys-lru` eviction for a cache-only workload, firewall rules, and a scheduled maintenance window:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureRedisCache
 metadata:
   name: prod-redis
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureRedisCache.prod-redis
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureRedisCache.prod-redis
 spec:
   region: westeurope
   resourceGroup: prod-rg
@@ -151,15 +151,15 @@ spec:
 A Premium-tier cache deployed inside a VNet with Redis Cluster sharding, zone redundancy, and private-only access:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureRedisCache
 metadata:
   name: enterprise-redis
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureRedisCache.enterprise-redis
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureRedisCache.enterprise-redis
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -182,18 +182,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference OpenMCF-managed resources instead of hardcoding IDs:
+Reference Planton-managed resources instead of hardcoding IDs:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureRedisCache
 metadata:
   name: ref-redis
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureRedisCache.ref-redis
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureRedisCache.ref-redis
 spec:
   region: eastus
   resourceGroup:

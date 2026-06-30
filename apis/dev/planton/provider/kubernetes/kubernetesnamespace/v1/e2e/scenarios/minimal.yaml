@@ -1,0 +1,6 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesNamespace
+metadata:
+  name: e2e-ns-minimal
+spec:
+  name: e2e-ns-minimal

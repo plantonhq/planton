@@ -12,13 +12,13 @@ Deploys an Oracle Cloud Infrastructure Container Instance — OCI's serverless c
 
 ## What Gets Created
 
-When you deploy an OciContainerInstance resource, OpenMCF provisions:
+When you deploy an OciContainerInstance resource, Planton provisions:
 
-- **Container Instance** — an `oci_container_instances_container_instance` resource in the specified compartment and availability domain. The instance runs one or more containers sharing the same network namespace and volume mounts, using the specified flex shape and OCPU/memory allocation. Each container can have independent health checks, resource limits, security contexts, and volume mounts. Standard OpenMCF freeform tags are applied for resource tracking.
+- **Container Instance** — an `oci_container_instances_container_instance` resource in the specified compartment and availability domain. The instance runs one or more containers sharing the same network namespace and volume mounts, using the specified flex shape and OCPU/memory allocation. Each container can have independent health checks, resource limits, security contexts, and volume mounts. Standard Planton freeform tags are applied for resource tracking.
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the container instance will be created — literal value or reference to an OciCompartment resource
 - **An availability domain name** (e.g., `Uocm:PHX-AD-1`) — run `oci iam availability-domain list` to see domains in your region
 - **A subnet OCID** for the instance's VNIC — literal value or reference to an OciSubnet resource
@@ -29,15 +29,15 @@ When you deploy an OciContainerInstance resource, OpenMCF provisions:
 Create a file `container-instance.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciContainerInstance
 metadata:
   name: web-server
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciContainerInstance.web-server
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciContainerInstance.web-server
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -55,7 +55,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f container-instance.yaml
+planton apply -f container-instance.yaml
 ```
 
 This creates a single-container instance running nginx on a 1-OCPU E4 Flex shape. OCI assigns memory based on the OCPU count (minimum 1 GB per OCPU). The container uses the default restart policy (ALWAYS) and inherits DNS settings from the subnet's DHCP options. The container instance ID and container IDs are exported as stack outputs.
@@ -212,15 +212,15 @@ This creates a single-container instance running nginx on a 1-OCPU E4 Flex shape
 A single nginx container — the simplest path to running a container on OCI:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciContainerInstance
 metadata:
   name: web-server
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciContainerInstance.web-server
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciContainerInstance.web-server
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -240,17 +240,17 @@ spec:
 A web application container with a Fluent Bit sidecar collecting logs via a shared emptydir volume — the pod-like multi-container pattern:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciContainerInstance
 metadata:
   name: web-with-logging
   org: acme
   env: prod
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme
-    pulumi.openmcf.org/project: platform
-    pulumi.openmcf.org/stack.name: prod.OciContainerInstance.web-with-logging
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme
+    pulumi.planton.dev/project: platform
+    pulumi.planton.dev/stack.name: prod.OciContainerInstance.web-with-logging
 spec:
   compartmentId:
     valueFrom:
@@ -314,17 +314,17 @@ spec:
 A production container with a read-only root filesystem, non-root user enforcement, dropped capabilities, health checks, config file injection, and OCI Vault-based image pull credentials:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciContainerInstance
 metadata:
   name: secure-api
   org: acme
   env: prod
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme
-    pulumi.openmcf.org/project: platform
-    pulumi.openmcf.org/stack.name: prod.OciContainerInstance.secure-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme
+    pulumi.planton.dev/project: platform
+    pulumi.planton.dev/stack.name: prod.OciContainerInstance.secure-api
 spec:
   compartmentId:
     valueFrom:

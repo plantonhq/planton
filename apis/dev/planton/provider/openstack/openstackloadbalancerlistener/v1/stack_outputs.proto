@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package dev.planton.provider.openstack.openstackloadbalancerlistener.v1;
+
+// OpenStackLoadBalancerListenerStackOutputs captures the observable outputs after
+// provisioning an Octavia listener in OpenStack.
+//
+// The listener_id is the primary output referenced by downstream components:
+// - OpenStackLoadBalancerPool (listener_id)
+message OpenStackLoadBalancerListenerStackOutputs {
+  // listener_id is the unique identifier (UUID) of the listener.
+  // This is the primary output used as a foreign key by pools.
+  string listener_id = 1;
+
+  // name is the name of the listener (derived from metadata.name).
+  string name = 2;
+
+  // protocol is the protocol the listener accepts (HTTP, HTTPS, TCP, UDP, TERMINATED_HTTPS).
+  string protocol = 3;
+
+  // protocol_port is the port on which the listener accepts traffic.
+  int32 protocol_port = 4;
+
+  // region is the OpenStack region where the listener was created.
+  string region = 5;
+}

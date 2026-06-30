@@ -6,12 +6,12 @@ package outputs
 import (
 	"testing"
 
-	auth0v1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/auth0/auth0resourceserver/v1"
-	awsvpcv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsvpc/v1"
-	gcpdnsv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpdnszone/v1"
-	gcpsubnetworkv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpsubnetwork/v1"
-	k8spgv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetespostgres/v1"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
+	auth0v1 "github.com/plantonhq/planton/apis/dev/planton/provider/auth0/auth0resourceserver/v1"
+	awsvpcv1 "github.com/plantonhq/planton/apis/dev/planton/provider/aws/awsvpc/v1"
+	gcpdnsv1 "github.com/plantonhq/planton/apis/dev/planton/provider/gcp/gcpdnszone/v1"
+	gcpsubnetworkv1 "github.com/plantonhq/planton/apis/dev/planton/provider/gcp/gcpsubnetwork/v1"
+	k8spgv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/kubernetespostgres/v1"
+	"github.com/plantonhq/planton/apis/dev/planton/shared/cloudresourcekind"
 )
 
 func TestTransform_Auth0ResourceServer(t *testing.T) {

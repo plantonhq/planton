@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added the `HetznerCloudFloatingIp` deployment component (R06, enum 3512, id_prefix: `hcfip`) to OpenMCF. This component manages Hetzner Cloud Floating IPs -- reassignable public IPv4 addresses or IPv6 /64 blocks that can move between servers in the same location for failover scenarios. It bundles optional reverse DNS (rDNS) and optional server assignment. This is the first Hetzner Cloud component to use `StringValueOrRef` for cross-component wiring, establishing the pattern for R07-R11.
+Added the `HetznerCloudFloatingIp` deployment component (R06, enum 3512, id_prefix: `hcfip`) to Planton. This component manages Hetzner Cloud Floating IPs -- reassignable public IPv4 addresses or IPv6 /64 blocks that can move between servers in the same location for failover scenarios. It bundles optional reverse DNS (rDNS) and optional server assignment. This is the first Hetzner Cloud component to use `StringValueOrRef` for cross-component wiring, establishing the pattern for R07-R11.
 
 ## Problem Statement / Motivation
 
@@ -14,7 +14,7 @@ Production workloads on Hetzner Cloud need IP addresses that survive server repl
 
 ### Pain Points
 
-- No way to manage reassignable failover IPs through OpenMCF
+- No way to manage reassignable failover IPs through Planton
 - HA server clusters (hetzner-ha-server-cluster infra chart) need Floating IPs that can move between servers
 - Floating IPs require reverse DNS for mail servers and identity-verified services
 - Cross-component wiring (Floating IP -> Server assignment) had no established pattern in Hetzner Cloud
@@ -25,7 +25,7 @@ Implemented `HetznerCloudFloatingIp` with three design decisions that deviate fr
 
 ### Design Decisions
 
-**D1: Dropped `hcloud_floating_ip_assignment` -- use `server_id` on main resource instead.** The plan bundled a separate assignment resource, but the main `hcloud_floating_ip` resource already supports `server_id` natively (on create, update, and delete). Within OpenMCF's single-component model, the separate resource adds complexity with zero benefit. Both Pulumi and Terraform handle this cleanly.
+**D1: Dropped `hcloud_floating_ip_assignment` -- use `server_id` on main resource instead.** The plan bundled a separate assignment resource, but the main `hcloud_floating_ip` resource already supports `server_id` natively (on create, update, and delete). Within Planton's single-component model, the separate resource adds complexity with zero benefit. Both Pulumi and Terraform handle this cleanly.
 
 **D2: `StringValueOrRef` for `server_id` WITHOUT `default_kind` option.** This is the first Hetzner Cloud component to use `StringValueOrRef`. Since HetznerCloudServer (R07, enum 3520) isn't registered yet, we can't reference its enum in the `default_kind` field option. Using `StringValueOrRef` now (vs plain `string`) is critical because migrating from scalar to message type later would be a breaking protobuf wire format change. The `default_kind` option will be added as a backward-compatible enhancement when R07 is registered.
 
@@ -72,7 +72,7 @@ flowchart TB
 - **Spec**: `IpType type` (required enum: ipv4/ipv6, ForceNew), `home_location` (required string, ForceNew), `description` (optional string), `server_id` (optional StringValueOrRef), `dns_ptr` (optional string), `delete_protection` (bool)
 - **IpType enum**: Embedded in the spec message -- `ip_type_unspecified`, `ipv4`, `ipv6` (same shape as PrimaryIp)
 - **Outputs**: `floating_ip_id` (string), `ip_address` (string), `ip_network` (string, empty for IPv4)
-- **StringValueOrRef import**: First Hetzner Cloud proto to import `org/openmcf/shared/foreignkey/v1/foreign_key.proto`
+- **StringValueOrRef import**: First Hetzner Cloud proto to import `dev/planton/shared/foreignkey/v1/foreign_key.proto`
 
 ### Pulumi Module
 
@@ -107,7 +107,7 @@ flowchart TB
 
 ## Benefits
 
-- Enables reassignable failover IP management as a first-class OpenMCF component
+- Enables reassignable failover IP management as a first-class Planton component
 - Establishes `StringValueOrRef` pattern for Hetzner Cloud cross-component wiring (R07-R11 will follow)
 - Simpler IaC than planned: one resource instead of two (dropped unnecessary assignment resource)
 - Clean composability: infra charts can wire Server -> FloatingIp assignment declaratively

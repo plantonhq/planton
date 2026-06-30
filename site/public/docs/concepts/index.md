@@ -1,13 +1,13 @@
 ---
 title: "Concepts"
-description: "The core ideas behind OpenMCF: how a multi-cloud deployment framework brings Kubernetes-style consistency to infrastructure across 17 cloud providers"
+description: "The core ideas behind Planton: how a multi-cloud deployment framework brings Kubernetes-style consistency to infrastructure across 17 cloud providers"
 icon: "lightbulb"
 order: 10
 ---
 
 # Concepts
 
-OpenMCF is a multi-cloud deployment framework that brings Kubernetes-style consistency to infrastructure provisioning across any cloud provider. It is built on three foundational ideas: Protocol Buffer APIs define the resource model, dual IaC engines (Pulumi and OpenTofu/Terraform) implement the deployments, and a Go CLI orchestrates the entire workflow.
+Planton is a multi-cloud deployment framework that brings Kubernetes-style consistency to infrastructure provisioning across any cloud provider. It is built on three foundational ideas: Protocol Buffer APIs define the resource model, dual IaC engines (Pulumi and OpenTofu/Terraform) implement the deployments, and a Go CLI orchestrates the entire workflow.
 
 This section explains the core concepts that make the framework work.
 
@@ -17,9 +17,9 @@ Deploying infrastructure across multiple cloud providers is fragmented. AWS has 
 
 The common response is to build an abstraction layer -- a `GenericDatabase` that works on every cloud. But abstractions leak. A generic database component either exposes the lowest common denominator (losing provider-specific capabilities like AWS RDS read replicas, GCP Cloud SQL private IP allocation, or Azure Managed Identity integration) or creates a fragile mapping layer that breaks when providers change.
 
-## The OpenMCF Approach
+## The Planton Approach
 
-OpenMCF takes a different path: consistency of structure and workflow, not abstraction of capability.
+Planton takes a different path: consistency of structure and workflow, not abstraction of capability.
 
 Every resource across every provider follows the same manifest format (the Kubernetes Resource Model), uses the same validation framework (Protocol Buffers with buf-validate), is deployed with the same CLI commands, and is managed through the same module and state systems. But the spec -- the actual configuration surface -- is provider-specific. An `AwsS3Bucket` exposes the full S3 feature set. A `GcpGcsBucket` exposes the full GCS feature set. Neither pretends to be the other.
 
@@ -29,7 +29,7 @@ The result: you learn one set of tools and one workflow pattern, then apply it t
 
 ### Deployment Components
 
-A deployment component is the atomic unit of OpenMCF -- a self-contained package combining a Protocol Buffer API definition, dual IaC module implementations (Pulumi and Terraform), and auto-generated documentation. OpenMCF ships with 360+ components spanning 17 providers.
+A deployment component is the atomic unit of Planton -- a self-contained package combining a Protocol Buffer API definition, dual IaC module implementations (Pulumi and Terraform), and auto-generated documentation. Planton ships with 360+ components spanning 17 providers.
 
 Every component follows the same four-file protobuf contract: `api.proto` (resource envelope), `spec.proto` (configuration surface), `stack_input.proto` (IaC input), and `stack_outputs.proto` (IaC output).
 
@@ -37,19 +37,19 @@ Every component follows the same four-file protobuf contract: `api.proto` (resou
 
 ### Manifests
 
-OpenMCF manifests use the Kubernetes Resource Model: `apiVersion`, `kind`, `metadata`, `spec`, `status`. The manifest is the single source of truth for what you want to deploy. Metadata labels configure the IaC engine and state backend. The spec holds provider-specific configuration, with every field defined by protobuf and validated before deployment.
+Planton manifests use the Kubernetes Resource Model: `apiVersion`, `kind`, `metadata`, `spec`, `status`. The manifest is the single source of truth for what you want to deploy. Metadata labels configure the IaC engine and state backend. The spec holds provider-specific configuration, with every field defined by protobuf and validated before deployment.
 
 **[Read more: Manifests](manifests)**
 
 ### Cloud Resource Kinds
 
-The `CloudResourceKind` enum is the canonical registry of everything OpenMCF can deploy -- 360+ entries mapped to 17 providers. Each kind maps to a provider, an API version, a module path, and a validation schema. The kind name in your manifest is the key that drives the entire deployment pipeline.
+The `CloudResourceKind` enum is the canonical registry of everything Planton can deploy -- 360+ entries mapped to 17 providers. Each kind maps to a provider, an API version, a module path, and a validation schema. The kind name in your manifest is the key that drives the entire deployment pipeline.
 
 **[Read more: Cloud Resource Kinds](cloud-resource-kinds)**
 
 ### Validation
 
-OpenMCF validates manifests at three layers: schema-level rules defined in protobuf (constant enforcement, required fields, patterns, CEL expressions), CLI-side validation using the protovalidate library, and cloud provider API validation during deployment. The first two layers catch the vast majority of errors before any cloud API call is made.
+Planton validates manifests at three layers: schema-level rules defined in protobuf (constant enforcement, required fields, patterns, CEL expressions), CLI-side validation using the protovalidate library, and cloud provider API validation during deployment. The first two layers catch the vast majority of errors before any cloud API call is made.
 
 **[Read more: Validation](validation)**
 
@@ -77,4 +77,4 @@ For a visual guide to how these concepts connect -- the deployment flow, the com
 
 ## Getting Started
 
-If you are ready to deploy your first resource, head to the **[Getting Started](/docs/getting-started)** guide. If you want to browse what OpenMCF can deploy, explore the **[Component Catalog](/docs/catalog)**.
+If you are ready to deploy your first resource, head to the **[Getting Started](/docs/getting-started)** guide. If you want to browse what Planton can deploy, explore the **[Component Catalog](/docs/catalog)**.

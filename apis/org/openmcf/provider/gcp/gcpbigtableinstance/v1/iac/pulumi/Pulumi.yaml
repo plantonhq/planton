@@ -1,6 +1,0 @@
-name: gcp-bigtable-instance
-runtime:
-  name: go
-  options:
-    binary: ./pulumi
-description: OpenMCF GcpBigtableInstance Pulumi module

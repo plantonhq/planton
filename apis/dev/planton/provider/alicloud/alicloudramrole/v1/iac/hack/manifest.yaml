@@ -1,0 +1,16 @@
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudRamRole
+metadata:
+  name: alicloudramrole-demo
+spec:
+  region: cn-hangzhou
+  roleName: planton-demo-role
+  assumeRolePolicyDocument: |
+    {
+      "Statement": [{
+        "Action": "sts:AssumeRole",
+        "Effect": "Allow",
+        "Principal": {"Service": ["ecs.aliyuncs.com"]}
+      }],
+      "Version": "1"
+    }

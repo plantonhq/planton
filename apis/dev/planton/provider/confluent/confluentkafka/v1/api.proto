@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package dev.planton.provider.confluent.confluentkafka.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/confluent/confluentkafka/v1/spec.proto";
+import "dev/planton/provider/confluent/confluentkafka/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+//confluent-kafka
+message ConfluentKafka {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'confluent.planton.dev/v1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'ConfluentKafka'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  ConfluentKafkaSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  ConfluentKafkaStatus status = 5;
+}
+
+//confluent-kafka status
+message ConfluentKafkaStatus {
+  //stack-outputs
+  ConfluentKafkaStackOutputs outputs = 1;
+}

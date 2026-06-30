@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcpartifactregistryrepo.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+//enumeration for supported formats - https://cloud.google.com/artifact-registry/docs/supported-formats
+//note: naming the values using uppercase letters to match the naming convention of the supported formats
+enum GcpArtifactRegistryRepoFormat {
+  gcp_artifact_registry_repo_format_unspecified = 0;
+  DOCKER = 1;
+  GENERIC = 2;
+  GO = 3;
+  KUBEFLOW = 4;
+  MAVEN = 5;
+  NPM = 6;
+  PYTHON = 7;
+  YUM = 8;
+}
+
+// **GcpArtifactRegistrySpec** defines the configuration for deploying a Google Cloud Artifact Registry.
+// This message specifies the necessary parameters to create and manage an Artifact Registry within a
+// specified GCP project and region. It allows you to set the project ID and region, and configure
+// access settings such as enabling unauthenticated external access, which is particularly useful for
+// open-source projects that require public availability of their artifacts.
+message GcpArtifactRegistryRepoSpec {
+  // The format of the repository in the Artifact Registry.
+  GcpArtifactRegistryRepoFormat repo_format = 1 [(buf.validate.field).required = true];
+
+  // The ID of the GCP project where the Artifact Registry resources will be created.
+  // Can be provided as a literal string value or as a reference to another resource's output.
+  // Example literal: {value: "my-gcp-project-123"}
+  // Example reference: {value_from: {kind: GcpProject, name: "main-project"}}
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The GCP region where the Artifact Registry will be created (e.g., "us-west2").
+  // Selecting a region close to your Kubernetes clusters can reduce service startup time
+  // by enabling faster downloads of container images.
+  string region = 3 [(buf.validate.field).required = true];
+
+  // A flag indicating whether to allow unauthenticated access to artifacts published in the repositories.
+  // Enable this for publishing artifacts for open-source projects that require public access.
+  bool enable_public_access = 4;
+}

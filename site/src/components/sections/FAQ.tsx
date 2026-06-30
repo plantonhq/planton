@@ -19,17 +19,17 @@ export default function FAQ() {
     {
       question: "Is this just another abstraction layer that hides cloud-specific details?",
       answer:
-        "No. OpenMCF manifests are deliberately provider-specific (AWS RDS has different fields than GCP Cloud SQL). The framework provides consistency in structure and workflow, not artificial abstractions that leak complexity. You write the exact configuration your cloud provider needs, just in a standardized YAML format.",
+        "No. Planton manifests are deliberately provider-specific (AWS RDS has different fields than GCP Cloud SQL). The framework provides consistency in structure and workflow, not artificial abstractions that leak complexity. You write the exact configuration your cloud provider needs, just in a standardized YAML format.",
     },
     {
       question: "Is this locked to a SaaS platform?",
       answer:
-        "No. OpenMCF is a standalone CLI tool with zero SaaS dependencies. Your manifests, your credentials, your infrastructure. Everything runs locally or in your CI/CD. There's no platform to sign up for, no API to call, no vendor to depend on.",
+        "No. Planton is a standalone CLI tool with zero SaaS dependencies. Your manifests, your credentials, your infrastructure. Everything runs locally or in your CI/CD. There's no platform to sign up for, no API to call, no vendor to depend on.",
     },
     {
       question: "Why would I use this instead of just learning Terraform or Pulumi?",
       answer:
-        "If you're deploying across multiple clouds, you'll end up learning Terraform AND Pulumi AND cloud-specific nuances anyway. OpenMCF gives you battle-tested modules, strong validation, and consistent workflow so you can focus on your infrastructure requirements, not tooling complexity.",
+        "If you're deploying across multiple clouds, you'll end up learning Terraform AND Pulumi AND cloud-specific nuances anyway. Planton gives you battle-tested modules, strong validation, and consistent workflow so you can focus on your infrastructure requirements, not tooling complexity.",
     },
     {
       question: "What if I need to customize beyond what the modules provide?",
@@ -49,12 +49,12 @@ export default function FAQ() {
     {
       question: "How are configuration errors caught before deployment?",
       answer:
-        "Each manifest is validated against Protobuf schemas with field-level rules (via Buf ProtoValidate, including CEL expressions). Running 'openmcf validate' catches errors immediately with clear messages—before any cloud APIs are called.",
+        "Each manifest is validated against Protobuf schemas with field-level rules (via Buf ProtoValidate, including CEL expressions). Running 'planton validate' catches errors immediately with clear messages—before any cloud APIs are called.",
     },
     {
       question: "Where is infrastructure state stored?",
       answer:
-        "OpenMCF creates no state management abstractions—it uses the native mechanisms of your chosen IaC engine. With OpenTofu, you configure backends (local, S3, GCS, azurerm) directly via tofu init. With Pulumi, you use standard Pulumi backends (Pulumi Cloud, S3, GCS, or local filesystem) configured via pulumi login. Whatever backend configuration you set in your environment is what gets used. You have complete control over where and how state is stored.",
+        "Planton creates no state management abstractions—it uses the native mechanisms of your chosen IaC engine. With OpenTofu, you configure backends (local, S3, GCS, azurerm) directly via tofu init. With Pulumi, you use standard Pulumi backends (Pulumi Cloud, S3, GCS, or local filesystem) configured via pulumi login. Whatever backend configuration you set in your environment is what gets used. You have complete control over where and how state is stored.",
     },
     {
       question: "How do credentials work?",
@@ -76,7 +76,7 @@ export default function FAQ() {
             Frequently Asked Questions
           </span>
         </h2>
-        <p className="text-xl text-slate-400">Everything you need to know about OpenMCF</p>
+        <p className="text-xl text-slate-400">Everything you need to know about Planton</p>
       </div>
       <div className="space-y-4">
         {faqs.map((faq, index) => {
@@ -114,9 +114,9 @@ export default function FAQ() {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <div className="bg-slate-900 rounded-lg px-6 py-3 font-mono text-sm border border-slate-700">
-            <span className="text-slate-500">$</span> <span className="text-purple-400">brew install</span> <span className="text-white">plantonhq/tap/openmcf</span>
+            <span className="text-slate-500">$</span> <span className="text-purple-400">brew install</span> <span className="text-white">plantonhq/tap/planton</span>
           </div>
-          <Link href="https://github.com/plantonhq/openmcf" target="_blank" rel="noopener noreferrer">
+          <Link href="https://github.com/plantonhq/planton" target="_blank" rel="noopener noreferrer">
             <Button
               size="lg"
               variant="outline"

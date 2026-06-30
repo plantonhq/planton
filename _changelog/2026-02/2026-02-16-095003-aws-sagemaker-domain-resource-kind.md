@@ -10,7 +10,7 @@ Added AwsSagemakerDomain as the twenty-sixth new AWS resource kind in the cloud 
 
 ## Problem Statement / Motivation
 
-ML teams need managed JupyterLab environments integrated with their VPC, IAM roles, and security boundaries. SageMaker Domain is the foundational resource for Amazon SageMaker Studio, but its Terraform provider schema has 4 levels of nesting with ~17 optional nested blocks inside `default_user_settings` alone and 10 different app settings types. Without a well-scoped OpenMCF component, teams face raw Terraform complexity that obscures the essential configuration choices.
+ML teams need managed JupyterLab environments integrated with their VPC, IAM roles, and security boundaries. SageMaker Domain is the foundational resource for Amazon SageMaker Studio, but its Terraform provider schema has 4 levels of nesting with ~17 optional nested blocks inside `default_user_settings` alone and 10 different app settings types. Without a well-scoped Planton component, teams face raw Terraform complexity that obscures the essential configuration choices.
 
 ### Pain Points
 

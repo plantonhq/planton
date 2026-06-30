@@ -12,14 +12,14 @@ Deploys an Azure App Service Plan that defines the compute tier, VM size, instan
 
 ## What Gets Created
 
-When you deploy an AzureServicePlan resource, OpenMCF provisions:
+When you deploy an AzureServicePlan resource, Planton provisions:
 
 - **App Service Plan** -- an `appservice.ServicePlan` resource in the specified region and resource group, configured with the chosen SKU tier, OS type, instance count, and optional zone balancing
 - **Azure Tags** -- resource metadata tags applied to the plan for tracking and governance
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Resource Group** where the plan will be created (can reference an AzureResourceGroup resource)
 - **SKU selection** -- determine the appropriate SKU tier before deployment: `Y1` for consumption-based Function Apps, `EP1`-`EP3` for elastic premium Functions, `B1`-`B3` for basic web apps, `P1v3`-`P3v3` for production workloads
 
@@ -28,15 +28,15 @@ When you deploy an AzureServicePlan resource, OpenMCF provisions:
 Create a file `serviceplan.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureServicePlan
 metadata:
   name: my-plan
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureServicePlan.my-plan
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureServicePlan.my-plan
 spec:
   region: eastus
   resourceGroup: my-rg
@@ -47,7 +47,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f serviceplan.yaml
+planton apply -f serviceplan.yaml
 ```
 
 This creates a Linux Basic B1 App Service Plan with a single worker instance in the `eastus` region.
@@ -90,15 +90,15 @@ This creates a Linux Basic B1 App Service Plan with a single worker instance in 
 A Consumption plan for pay-per-execution Azure Functions in development:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureServicePlan
 metadata:
   name: dev-functions
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureServicePlan.dev-functions
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureServicePlan.dev-functions
 spec:
   region: eastus
   resourceGroup: dev-rg
@@ -111,15 +111,15 @@ spec:
 A Premium v3 plan with zone balancing and multiple workers for production web applications:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureServicePlan
 metadata:
   name: prod-web
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureServicePlan.prod-web
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureServicePlan.prod-web
 spec:
   region: westeurope
   resourceGroup: prod-rg
@@ -134,15 +134,15 @@ spec:
 An Elastic Premium plan for serverless Function Apps with a capped elastic worker count to control scaling costs:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureServicePlan
 metadata:
   name: events-plan
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureServicePlan.events-plan
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureServicePlan.events-plan
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -153,18 +153,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed resource group instead of hardcoding the name:
+Reference an Planton-managed resource group instead of hardcoding the name:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureServicePlan
 metadata:
   name: ref-plan
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureServicePlan.ref-plan
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureServicePlan.ref-plan
 spec:
   region: eastus
   resourceGroup:

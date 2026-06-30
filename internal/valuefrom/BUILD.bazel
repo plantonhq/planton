@@ -3,7 +3,7 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "valuefrom",
     srcs = ["value_from.go"],
-    importpath = "github.com/plantonhq/openmcf/internal/valuefrom",
+    importpath = "github.com/plantonhq/planton/internal/valuefrom",
     visibility = ["//:__subpackages__"],
-    deps = ["//apis/org/openmcf/shared/foreignkey/v1:foreignkey"],
+    deps = ["//apis/dev/planton/shared/foreignkey/v1:foreignkey"],
 )

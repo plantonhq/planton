@@ -1,6 +1,6 @@
 ---
 title: "Preset: Stream Reference (valueFrom)"
-description: "Register an enhanced fan-out consumer with an OpenMCF-managed Kinesis stream using a `valueFrom` reference. The platform resolves the stream ARN at deployment time and creates a dependency edge in..."
+description: "Register an enhanced fan-out consumer with an Planton-managed Kinesis stream using a `valueFrom` reference. The platform resolves the stream ARN at deployment time and creates a dependency edge in..."
 type: "preset"
 rank: "02"
 presetSlug: "02-stream-reference"
@@ -15,7 +15,7 @@ order: 2
 
 ## Use Case
 
-Register an enhanced fan-out consumer with an OpenMCF-managed Kinesis stream using a `valueFrom` reference. The platform resolves the stream ARN at deployment time and creates a dependency edge in the infra chart DAG, ensuring the stream is provisioned before the consumer.
+Register an enhanced fan-out consumer with an Planton-managed Kinesis stream using a `valueFrom` reference. The platform resolves the stream ARN at deployment time and creates a dependency edge in the infra chart DAG, ensuring the stream is provisioned before the consumer.
 
 ## What You Get
 
@@ -26,7 +26,7 @@ Register an enhanced fan-out consumer with an OpenMCF-managed Kinesis stream usi
 
 ## When to Use
 
-- Production deployments where the stream is also managed by OpenMCF
+- Production deployments where the stream is also managed by Planton
 - Infra chart composition with AwsKinesisStream as a dependency
 - Multi-consumer setups where each consumer is a separate resource referencing the same stream
 

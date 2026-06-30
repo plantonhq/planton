@@ -27,7 +27,7 @@ The panic occurred at line 38 of `main.go`:
 panic: interface conversion: interface {} is sql.DatabaseInstanceIpAddress, not []interface{}
 
 Stack trace snippet:
-github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpcloudsql/v1/iac/pulumi/module.Resources.func1
+github.com/plantonhq/planton/apis/dev/planton/provider/gcp/gcpcloudsql/v1/iac/pulumi/module.Resources.func1
     at .../gcpcloudsql/v1/iac/pulumi/module/main.go:38
 ```
 
@@ -125,8 +125,8 @@ Both IaC implementations now use the same straightforward pattern.
 ## Impact
 
 ### Users
-- GCP Cloud SQL resources can now be successfully deployed via `openmcf pulumi up`
-- Preview operations (`openmcf pulumi preview`) work without panicking
+- GCP Cloud SQL resources can now be successfully deployed via `planton pulumi up`
+- Preview operations (`planton pulumi preview`) work without panicking
 - Stack outputs correctly expose both public and private IP addresses
 
 ### Developers
@@ -160,7 +160,7 @@ grep -i "IpAddress" $GOPATH/pkg/mod/.../pulumi-gcp/sdk/v8@v8.27.0/go/gcp/sql/dat
 The fix was verified against this test manifest:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudSql
 metadata:
   env: dev

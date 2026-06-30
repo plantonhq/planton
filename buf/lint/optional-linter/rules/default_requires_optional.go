@@ -6,7 +6,7 @@ import (
 
 	"buf.build/go/bufplugin/check"
 	"buf.build/go/bufplugin/check/checkutil"
-	options_pb "github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
+	options_pb "github.com/plantonhq/planton/apis/dev/planton/shared/options"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/types/descriptorpb"
@@ -16,7 +16,7 @@ import (
 // must be marked as optional to enable proper field presence tracking.
 var DefaultRequiresOptionalRule = &check.RuleSpec{
 	ID:      "DEFAULT_REQUIRES_OPTIONAL",
-	Purpose: "Checks that scalar fields with (org.openmcf.shared.options.default) are marked as optional.",
+	Purpose: "Checks that scalar fields with (dev.planton.shared.options.default) are marked as optional.",
 	Type:    check.RuleTypeLint,
 	Handler: checkutil.NewFieldRuleHandler(checkDefaultRequiresOptional),
 }
@@ -42,9 +42,9 @@ func checkDefaultRequiresOptional(_ context.Context, responseWriter check.Respon
 	if !field.HasPresence() {
 		message := fmt.Sprintf(
 			"Field %q has a default value but is not marked as optional. "+
-				"Scalar fields with (org.openmcf.shared.options.default) must use the 'optional' keyword "+
+				"Scalar fields with (dev.planton.shared.options.default) must use the 'optional' keyword "+
 				"to enable proper field presence detection.\n\n"+
-				"Fix: optional %s %s = %d [(org.openmcf.shared.options.default) = \"...\"];",
+				"Fix: optional %s %s = %d [(dev.planton.shared.options.default) = \"...\"];",
 			field.Name(),
 			field.Kind().String(),
 			field.Name(),

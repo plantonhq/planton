@@ -6,7 +6,7 @@
 
 ## Summary
 
-Standardized all DNS record components across 6 cloud providers (Cloudflare, GCP, AWS Route53, Azure, DigitalOcean, Civo) to use nested `RecordType` enums inside their spec messages and the `StringValueOrRef` pattern for zone ID fields. This refactoring improves API consistency, enhances type safety, and enables better resource referencing across OpenMCF manifests.
+Standardized all DNS record components across 6 cloud providers (Cloudflare, GCP, AWS Route53, Azure, DigitalOcean, Civo) to use nested `RecordType` enums inside their spec messages and the `StringValueOrRef` pattern for zone ID fields. This refactoring improves API consistency, enhances type safety, and enables better resource referencing across Planton manifests.
 
 ## Problem Statement / Motivation
 
@@ -14,7 +14,7 @@ The DNS record components across different cloud providers had inconsistent impl
 
 ### Pain Points
 
-- **Inconsistent enum definitions**: Some providers used shared global enums (`org.openmcf.shared.networking.enums.dnsrecordtype.DnsRecordType`), while others had standalone provider-specific enums outside the spec message
+- **Inconsistent enum definitions**: Some providers used shared global enums (`dev.planton.shared.networking.enums.dnsrecordtype.DnsRecordType`), while others had standalone provider-specific enums outside the spec message
 - **Field naming inconsistencies**: GCP and Azure used `record_type` while other providers used `type`
 - **Zone ID as plain string**: Cloudflare's `zone_id` field was a plain string, preventing resource referencing with `valueFrom` pattern
 - **Different supported record types**: Each provider supports different DNS record types, but using a shared enum forced unnecessary values
@@ -165,7 +165,7 @@ type = var.spec.type
 
 - **Cleaner namespace**: Enums scoped within their spec messages
 - **Type safety**: Each provider has its own valid record types
-- **Resource referencing**: Zone IDs can reference other OpenMCF resources
+- **Resource referencing**: Zone IDs can reference other Planton resources
 - **Consistency**: Uniform `type` field name across all providers
 
 ### For Developers
@@ -228,7 +228,7 @@ type = var.spec.type
 
 - This change enables the broader DNS zone support feature (`feat/all-dns-zone-kinds-to-support-records` branch)
 - Follows the `StringValueOrRef` pattern established in other components
-- Aligns with the nested enum pattern used in newer OpenMCF components
+- Aligns with the nested enum pattern used in newer Planton components
 
 ## Additional Fixes
 

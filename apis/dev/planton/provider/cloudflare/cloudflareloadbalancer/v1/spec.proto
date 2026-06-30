@@ -1,0 +1,248 @@
+syntax = "proto3";
+
+package dev.planton.provider.cloudflare.cloudflareloadbalancer.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// Traffic-steering policy for the load balancer. Value names match the Cloudflare
+// API strings exactly and are used directly via .String().
+enum CloudflareLoadBalancerSteeringPolicy {
+  // Use default_pools as a static failover priority list (also the default).
+  off = 0;
+  // Use region_pools / country_pools / pop_pools (geo-routing).
+  geo = 1;
+  // Select a pool at random, weighted by random_steering.
+  random = 2;
+  // Use round-trip time to pick the closest healthy pool in default_pools.
+  dynamic_latency = 3;
+  // Use pool latitude/longitude to pick the closest pool.
+  proximity = 4;
+  // Pick the pool with the fewest outstanding requests (weighted).
+  least_outstanding_requests = 5;
+  // Pick the pool with the fewest open connections (weighted).
+  least_connections = 6;
+}
+
+// Session-affinity mode that binds a client to a chosen origin. Value names match
+// the Cloudflare API strings exactly and are used directly via .String().
+enum CloudflareLoadBalancerSessionAffinity {
+  // No session affinity (the default).
+  none = 0;
+  // Cookie-based affinity.
+  cookie = 1;
+  // Cookie-based affinity with stable initial selection by client IP.
+  ip_cookie = 2;
+  // Header-based affinity (see session_affinity_attributes.headers).
+  header = 3;
+}
+
+// CloudflareLoadBalancerSpec defines a zone-scoped Cloudflare Load Balancer. The
+// load balancer attaches a DNS hostname to a set of account-scoped pools
+// (CloudflareLoadBalancerPool) and steers traffic across them with the chosen
+// steering policy, session affinity, and optional geo-routing. Pools and their
+// monitors are independent, reusable resources referenced here by ID or reference.
+message CloudflareLoadBalancerSpec {
+  // The DNS hostname to associate with this load balancer (e.g.
+  // "app.example.com"). If a DNS record with this name already exists, the load
+  // balancer takes precedence.
+  string hostname = 1 [(buf.validate.field).required = true];
+
+  // The Cloudflare zone that owns the hostname, as a literal zone ID or a
+  // reference to a CloudflareDnsZone.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef zone_id = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareDnsZone,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
+  ];
+
+  // 3: origins were moved to CloudflareLoadBalancerPool (origins belong to a
+  // pool, not the load balancer). 5: health_probe_path moved to
+  // CloudflareLoadBalancerMonitor.
+  reserved 3, 5;
+  reserved "origins", "health_probe_path";
+
+  // Whether the hostname is proxied through Cloudflare (orange cloud). Defaults
+  // to false (gray cloud) when unset; most HTTP load balancers set this true.
+  optional bool proxied = 4 [(dev.planton.shared.options.recommended_default) = "true"];
+
+  // Session-affinity mode. Defaults to none.
+  CloudflareLoadBalancerSessionAffinity session_affinity = 6 [(buf.validate.field).enum.defined_only = true];
+
+  // Traffic-steering policy. Defaults to off (static failover over default_pools).
+  CloudflareLoadBalancerSteeringPolicy steering_policy = 7 [(buf.validate.field).enum.defined_only = true];
+
+  // Ordered list of pools used by default (and when no geo mapping matches),
+  // by failover priority. Each is a literal pool ID or a reference to a
+  // CloudflareLoadBalancerPool. At least one is required.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef default_pools = 8 [
+    (buf.validate.field).repeated.min_items = 1,
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareLoadBalancerPool,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.pool_id"
+  ];
+
+  // The pool of last resort, used when every other pool is unhealthy. A literal
+  // pool ID or a reference to a CloudflareLoadBalancerPool.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef fallback_pool = 9 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareLoadBalancerPool,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.pool_id"
+  ];
+
+  // Human-readable description shown in the Cloudflare dashboard.
+  string description = 10;
+
+  // Whether the load balancer is enabled. Defaults to true when unset.
+  optional bool enabled = 11 [(dev.planton.shared.options.recommended_default) = "true"];
+
+  // TTL (seconds) of the DNS entry returned by the load balancer. Applies only to
+  // gray-clouded (unproxied) load balancers. Leave 0 to use Cloudflare's default.
+  double ttl = 12 [(buf.validate.field).cel = {
+    id: "lb.ttl_non_negative"
+    message: "ttl must be 0 (default) or a positive number of seconds"
+    expression: "this >= 0"
+  }];
+
+  // Seconds until a client's affinity session expires. Leave 0 for the
+  // Cloudflare default for the chosen session_affinity mode.
+  double session_affinity_ttl = 13 [(buf.validate.field).cel = {
+    id: "lb.session_affinity_ttl_non_negative"
+    message: "session_affinity_ttl must be 0 (default) or a positive number of seconds"
+    expression: "this >= 0"
+  }];
+
+  // Fine-grained session-affinity attributes (drain, headers, cookie flags,
+  // zero-downtime failover). Omit to use defaults.
+  CloudflareLoadBalancerSessionAffinityAttributes session_affinity_attributes = 14;
+
+  // Region-code -> ordered pool list for geo steering. Used when
+  // steering_policy is geo (or auto-geo). Regions not listed fall back to
+  // default_pools.
+  repeated CloudflareLoadBalancerGeoPools region_pools = 15;
+
+  // Country-code (ISO 3166-1 alpha-2) -> ordered pool list. Countries not listed
+  // fall back to the matching region_pools entry, else default_pools.
+  repeated CloudflareLoadBalancerGeoPools country_pools = 16;
+
+  // Cloudflare PoP code -> ordered pool list (Enterprise only). PoPs not listed
+  // fall back to country_pools, then region_pools, then default_pools.
+  repeated CloudflareLoadBalancerGeoPools pop_pools = 17;
+
+  // Adaptive-routing controls (zero-downtime failover across pools).
+  CloudflareLoadBalancerAdaptiveRouting adaptive_routing = 18;
+
+  // Location-steering controls for non-proxied requests.
+  CloudflareLoadBalancerLocationStrategy location_strategy = 19;
+
+  // Pool weighting for random / least-* steering policies.
+  CloudflareLoadBalancerRandomSteering random_steering = 20;
+
+  // 21: rules is reserved — the v5 load-balancer rules[] surface is "BETA Field
+  // Not General Access". Model it as a typed list here once it reaches general
+  // availability in the provider.
+  reserved 21;
+  reserved "rules";
+}
+
+// CloudflareLoadBalancerGeoPools maps one geo code (region, country, or PoP) to an
+// ordered list of pools for that location.
+message CloudflareLoadBalancerGeoPools {
+  // The geo code this mapping applies to: a region code (e.g. "WNAM"), an ISO
+  // country code (e.g. "US"), or a Cloudflare PoP code (e.g. "LAX"), depending on
+  // which map this entry belongs to.
+  string code = 1 [(buf.validate.field).required = true];
+
+  // Ordered pools (by failover priority) for this code. Each is a literal pool ID
+  // or a reference to a CloudflareLoadBalancerPool.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef pool_ids = 2 [
+    (buf.validate.field).repeated.min_items = 1,
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareLoadBalancerPool,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.pool_id"
+  ];
+}
+
+// CloudflareLoadBalancerSessionAffinityAttributes tunes session-affinity behavior.
+message CloudflareLoadBalancerSessionAffinityAttributes {
+  // Drain duration (seconds) applied when affinity is enabled.
+  double drain_duration = 1 [(buf.validate.field).cel = {
+    id: "saa.drain_duration_non_negative"
+    message: "drain_duration must be 0 or a positive number of seconds"
+    expression: "this >= 0"
+  }];
+
+  // HTTP header names that header-based affinity is keyed on (required when
+  // session_affinity is header). Use "cookie:<name>,<name>" to scope to cookies.
+  repeated string headers = 2;
+
+  // When header affinity is enabled, require ALL listed headers (true) or AT
+  // LEAST ONE (false) for a session to be created.
+  bool require_all_headers = 3;
+
+  // SameSite attribute on the affinity cookie: one of "Auto", "Lax", "None",
+  // "Strict". Empty uses Cloudflare's default ("Auto").
+  string samesite = 4 [(buf.validate.field).cel = {
+    id: "saa.samesite_valid"
+    message: "samesite must be one of \"Auto\", \"Lax\", \"None\", \"Strict\""
+    expression: "this == '' || this in ['Auto', 'Lax', 'None', 'Strict']"
+  }];
+
+  // Secure attribute on the affinity cookie: one of "Auto", "Always", "Never".
+  // Empty uses Cloudflare's default ("Auto").
+  string secure = 5 [(buf.validate.field).cel = {
+    id: "saa.secure_valid"
+    message: "secure must be one of \"Auto\", \"Always\", \"Never\""
+    expression: "this == '' || this in ['Auto', 'Always', 'Never']"
+  }];
+
+  // Zero-downtime failover behavior for pinned sessions: one of "none",
+  // "temporary", "sticky". Empty uses Cloudflare's default ("none").
+  string zero_downtime_failover = 6 [(buf.validate.field).cel = {
+    id: "saa.zdf_valid"
+    message: "zero_downtime_failover must be one of \"none\", \"temporary\", \"sticky\""
+    expression: "this == '' || this in ['none', 'temporary', 'sticky']"
+  }];
+}
+
+// CloudflareLoadBalancerAdaptiveRouting controls dynamic failover routing.
+message CloudflareLoadBalancerAdaptiveRouting {
+  // Extend zero-downtime failover to healthy origins in alternate pools when no
+  // healthy origin remains in the same pool. Defaults to false.
+  bool failover_across_pools = 1;
+}
+
+// CloudflareLoadBalancerLocationStrategy controls location steering for
+// non-proxied requests.
+message CloudflareLoadBalancerLocationStrategy {
+  // Authoritative location when ECS is not used: "pop" (Cloudflare PoP) or
+  // "resolver_ip" (DNS resolver GeoIP). Empty uses Cloudflare's default ("pop").
+  string mode = 1 [(buf.validate.field).cel = {
+    id: "ls.mode_valid"
+    message: "mode must be \"pop\" or \"resolver_ip\""
+    expression: "this == '' || this in ['pop', 'resolver_ip']"
+  }];
+
+  // Whether to prefer the ECS GeoIP location: one of "always", "never",
+  // "proximity", "geo". Empty uses Cloudflare's default ("proximity").
+  string prefer_ecs = 2 [(buf.validate.field).cel = {
+    id: "ls.prefer_ecs_valid"
+    message: "prefer_ecs must be one of \"always\", \"never\", \"proximity\", \"geo\""
+    expression: "this == '' || this in ['always', 'never', 'proximity', 'geo']"
+  }];
+}
+
+// CloudflareLoadBalancerRandomSteering configures pool weights for random and
+// least-* steering policies.
+message CloudflareLoadBalancerRandomSteering {
+  // Default weight for pools not present in pool_weights (0.0–1.0). Leave 0 to
+  // use the Cloudflare default (1).
+  double default_weight = 1 [(buf.validate.field).cel = {
+    id: "rs.default_weight_range"
+    message: "default_weight must be between 0 and 1"
+    expression: "this >= 0 && this <= 1"
+  }];
+
+  // Per-pool weight overrides, keyed by pool ID. Each weight is relative to the
+  // other pools in this load balancer.
+  map<string, double> pool_weights = 2;
+}

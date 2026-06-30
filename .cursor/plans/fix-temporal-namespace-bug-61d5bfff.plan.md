@@ -24,7 +24,7 @@ Change the `else` to a separate `if` statement with a non-empty check, matching 
 
 ## Files to Modify
 
-- `/Users/suresh/scm/github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/workload/temporalkubernetes/v1/iac/pulumi/module/locals.go`
+- `/Users/suresh/scm/github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/workload/temporalkubernetes/v1/iac/pulumi/module/locals.go`
 
 ## Changes
 
@@ -66,6 +66,6 @@ if stackInput.KubernetesNamespace != "" {
 
 After applying the fix:
 
-1. Run `openmcf pulumi preview --manifest temporal-test.yaml --module-dir ${TEMPORAL_MODULE}` again
+1. Run `planton pulumi preview --manifest temporal-test.yaml --module-dir ${TEMPORAL_MODULE}` again
 2. Verify that the namespace is now correctly set to `temporal-test` (from `metadata.name`)
 3. Confirm the preview succeeds without namespace errors

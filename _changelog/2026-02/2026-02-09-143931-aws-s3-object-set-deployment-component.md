@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added a new `AwsS3ObjectSet` deployment component that declaratively manages uploading one or more S3 objects to a target bucket. The component uses a foreign key reference to `AwsS3Bucket` for the bucket field, supports inline text and base64 binary content, and includes both Pulumi and Terraform IaC implementations with full feature parity. The `content_type` field uses the `optional` + default field option pattern so OpenMCF middleware automatically populates `application/octet-stream` when unset.
+Added a new `AwsS3ObjectSet` deployment component that declaratively manages uploading one or more S3 objects to a target bucket. The component uses a foreign key reference to `AwsS3Bucket` for the bucket field, supports inline text and base64 binary content, and includes both Pulumi and Terraform IaC implementations with full feature parity. The `content_type` field uses the `optional` + default field option pattern so Planton middleware automatically populates `application/octet-stream` when unset.
 
 ## Problem Statement / Motivation
 
@@ -21,7 +21,7 @@ Infrastructure tools make it easy to create S3 buckets, but populating them with
 
 ## Solution / What's New
 
-A complete `AwsS3ObjectSet` deployment component following the OpenMCF ideal state, registered as `CloudResourceKind = 224` with id prefix `s3objs`.
+A complete `AwsS3ObjectSet` deployment component following the Planton ideal state, registered as `CloudResourceKind = 224` with id prefix `s3objs`.
 
 ### Foreign Key Bucket Reference
 
@@ -61,13 +61,13 @@ spec:
 
 ### Default Content-Type via `optional` Field Option
 
-The `content_type` field uses the `optional` keyword with `(org.openmcf.shared.options.default) = "application/octet-stream"`. OpenMCF middleware guarantees this field is populated before IaC modules execute, eliminating defensive default handling in both Pulumi and Terraform implementations.
+The `content_type` field uses the `optional` keyword with `(dev.planton.shared.options.default) = "application/octet-stream"`. Planton middleware guarantees this field is populated before IaC modules execute, eliminating defensive default handling in both Pulumi and Terraform implementations.
 
 ```mermaid
 flowchart LR
     A[User Manifest] --> B{content_type set?}
     B -->|Yes| C[Use provided value]
-    B -->|No| D["OpenMCF Middleware sets application/octet-stream"]
+    B -->|No| D["Planton Middleware sets application/octet-stream"]
     C --> E[IaC Module]
     D --> E
     E --> F[S3 Object Created]
@@ -81,7 +81,7 @@ flowchart LR
 |------|---------|
 | `spec.proto` | `AwsS3ObjectSetSpec` with FK bucket, objects list, tag inheritance |
 | `stack_outputs.proto` | ETag and version ID maps per object |
-| `api.proto` | KRM envelope: `aws.openmcf.org/v1` / `AwsS3ObjectSet` |
+| `api.proto` | KRM envelope: `aws.planton.dev/v1` / `AwsS3ObjectSet` |
 | `stack_input.proto` | Standard stack input with `AwsProviderConfig` |
 
 Key spec design:
@@ -110,12 +110,12 @@ Uses `for_each` over objects keyed by S3 key. `aws_s3_object` resource with `con
 - **Declarative object management**: S3 objects managed alongside infrastructure, not as an afterthought
 - **Foreign key wiring**: Bucket name resolved automatically from `AwsS3Bucket` components
 - **Batch efficiency**: Single resource for N objects, reducing configuration duplication
-- **Centralized defaults**: `content_type` default handled by OpenMCF middleware, not duplicated in IaC modules
+- **Centralized defaults**: `content_type` default handled by Planton middleware, not duplicated in IaC modules
 - **Full IaC parity**: Both Pulumi and Terraform modules with identical capabilities
 
 ## Impact
 
-- **New component**: `AwsS3ObjectSet` available for all OpenMCF users
+- **New component**: `AwsS3ObjectSet` available for all Planton users
 - **Registry**: `CloudResourceKind = 224`, id prefix `s3objs`
 - **32 files** created across proto definitions, Go stubs, TypeScript stubs, Pulumi module, Terraform module, documentation, and tests
 - **13/13 tests passing**, `go build` clean

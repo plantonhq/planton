@@ -1,0 +1,18 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesSecret
+metadata:
+  name: test-secret
+spec:
+  name: test-secret
+  namespace: default
+  labels:
+    team: platform-engineering
+    environment: test
+    created-by: planton
+  annotations:
+    description: "Test secret created by Planton"
+  opaque:
+    data:
+      username: "test-user"
+      password: "test-password"
+      api-key: "test-api-key-12345"

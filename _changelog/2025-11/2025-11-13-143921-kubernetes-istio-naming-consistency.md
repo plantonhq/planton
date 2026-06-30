@@ -6,11 +6,11 @@
 
 ## Summary
 
-Renamed the `IstioKubernetes` resource to `KubernetesIstio` across all proto definitions, documentation, and implementation code to align with OpenMCF's naming conventions for Kubernetes addon operators. This change follows the established pattern where Kubernetes addons use the format `Kubernetes{Technology}` rather than `{Technology}Kubernetes`, improving consistency with other recently refactored resources like `AltinityOperator`, `CertManager`, `ExternalDns`, and similar components. Additionally, the directory structure was renamed from `istiokubernetes` to `kubernetesistio` to match the new naming convention.
+Renamed the `IstioKubernetes` resource to `KubernetesIstio` across all proto definitions, documentation, and implementation code to align with Planton's naming conventions for Kubernetes addon operators. This change follows the established pattern where Kubernetes addons use the format `Kubernetes{Technology}` rather than `{Technology}Kubernetes`, improving consistency with other recently refactored resources like `AltinityOperator`, `CertManager`, `ExternalDns`, and similar components. Additionally, the directory structure was renamed from `istiokubernetes` to `kubernetesistio` to match the new naming convention.
 
 ## Problem Statement / Motivation
 
-The Istio service mesh addon resource was originally named `IstioKubernetes` with a directory named `istiokubernetes`, which placed the technology name before the platform identifier. This naming pattern was inconsistent with OpenMCF's evolving design philosophy where:
+The Istio service mesh addon resource was originally named `IstioKubernetes` with a directory named `istiokubernetes`, which placed the technology name before the platform identifier. This naming pattern was inconsistent with Planton's evolving design philosophy where:
 
 ### Pain Points
 
@@ -21,7 +21,7 @@ The Istio service mesh addon resource was originally named `IstioKubernetes` wit
 - **Code Verbosity**: Proto message types like `IstioKubernetesSpec` and `IstioKubernetesStackInput` felt unnecessarily long
 - **Mixed Conventions**: Having both `{Technology}Kubernetes` and `Kubernetes{Technology}` patterns across addons created confusion about which pattern to follow for new resources
 
-The provider namespace (`org.openmcf.provider.kubernetes.addon.kubernetesistio.v1`) now clearly indicates this is a Kubernetes component with a consistent naming structure.
+The provider namespace (`dev.planton.provider.kubernetes.addon.kubernetesistio.v1`) now clearly indicates this is a Kubernetes component with a consistent naming structure.
 
 ## Solution / What's New
 
@@ -36,15 +36,15 @@ Performed a comprehensive rename from `IstioKubernetes` to `KubernetesIstio` acr
 
 ### Naming Convention
 
-The new naming follows OpenMCF's evolving pattern for Kubernetes addons:
+The new naming follows Planton's evolving pattern for Kubernetes addons:
 
 ```yaml
 # Before
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: IstioKubernetes
 
 # After
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesIstio
 ```
 
@@ -54,14 +54,14 @@ The provider path changed from `provider/kubernetes/addon/istiokubernetes/` to `
 
 ### Directory Rename
 
-**Before**: `apis/org/openmcf/provider/kubernetes/addon/istiokubernetes/`  
-**After**: `apis/org/openmcf/provider/kubernetes/addon/kubernetesistio/`
+**Before**: `apis/dev/planton/provider/kubernetes/addon/istiokubernetes/`  
+**After**: `apis/dev/planton/provider/kubernetes/addon/kubernetesistio/`
 
 All files and subdirectories were moved to reflect the new naming convention.
 
 ### Proto File Changes
 
-**File**: `apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto`
+**File**: `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto`
 
 ```protobuf
 // Before
@@ -81,11 +81,11 @@ KubernetesIstio = 825 [(kind_meta) = {
 }];
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/kubernetesistio/v1/api.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/kubernetesistio/v1/api.proto`
 
 ```protobuf
 // Before
-package org.openmcf.provider.kubernetes.addon.istiokubernetes.v1;
+package dev.planton.provider.kubernetes.addon.istiokubernetes.v1;
 
 message IstioKubernetes {
   string kind = 2 [(buf.validate.field).string.const = 'IstioKubernetes'];
@@ -98,7 +98,7 @@ message IstioKubernetesStatus {
 }
 
 // After
-package org.openmcf.provider.kubernetes.addon.kubernetesistio.v1;
+package dev.planton.provider.kubernetes.addon.kubernetesistio.v1;
 
 message KubernetesIstio {
   string kind = 2 [(buf.validate.field).string.const = 'KubernetesIstio'];
@@ -111,7 +111,7 @@ message KubernetesIstioStatus {
 }
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/kubernetesistio/v1/spec.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/kubernetesistio/v1/spec.proto`
 
 ```protobuf
 // Before (mixed naming already started migrating)
@@ -123,11 +123,11 @@ message KubernetesIstioSpec { ... }
 message KubernetesIstioSpecContainer { ... }
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/kubernetesistio/v1/stack_input.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/kubernetesistio/v1/stack_input.proto`
 
 ```protobuf
 // Before
-package org.openmcf.provider.kubernetes.addon.istiokubernetes.v1;
+package dev.planton.provider.kubernetes.addon.istiokubernetes.v1;
 
 message IstioKubernetesStackInput {
   IstioKubernetes target = 1;
@@ -135,7 +135,7 @@ message IstioKubernetesStackInput {
 }
 
 // After
-package org.openmcf.provider.kubernetes.addon.kubernetesistio.v1;
+package dev.planton.provider.kubernetes.addon.kubernetesistio.v1;
 
 message KubernetesIstioStackInput {
   KubernetesIstio target = 1;
@@ -143,53 +143,53 @@ message KubernetesIstioStackInput {
 }
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/kubernetesistio/v1/stack_outputs.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/kubernetesistio/v1/stack_outputs.proto`
 
 Package and message names updated:
 
 ```protobuf
 // Before
-package org.openmcf.provider.kubernetes.addon.istiokubernetes.v1;
+package dev.planton.provider.kubernetes.addon.istiokubernetes.v1;
 message IstioKubernetesStackOutputs { ... }
 
 // After
-package org.openmcf.provider.kubernetes.addon.kubernetesistio.v1;
+package dev.planton.provider.kubernetes.addon.kubernetesistio.v1;
 message KubernetesIstioStackOutputs { ... }
 ```
 
 ### Implementation Code Changes
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/kubernetesistio/v1/iac/pulumi/main.go`
+**File**: `apis/dev/planton/provider/kubernetes/addon/kubernetesistio/v1/iac/pulumi/main.go`
 
 ```go
 // Before
 import (
-  istiokubernetesv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/addon/istiokubernetes/v1"
+  istiokubernetesv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/addon/istiokubernetes/v1"
 )
 
 stackInput := &istiokubernetesv1.IstioKubernetesStackInput{}
 
 // After
 import (
-  kubernetesistiov1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/addon/kubernetesistio/v1"
+  kubernetesistiov1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/addon/kubernetesistio/v1"
 )
 
 stackInput := &kubernetesistiov1.KubernetesIstioStackInput{}
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/kubernetesistio/v1/iac/pulumi/module/main.go`
+**File**: `apis/dev/planton/provider/kubernetes/addon/kubernetesistio/v1/iac/pulumi/module/main.go`
 
 ```go
 // Before
 import (
-  istiokubernetesv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/addon/istiokubernetes/v1"
+  istiokubernetesv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/addon/istiokubernetes/v1"
 )
 
 func Resources(ctx *pulumi.Context, in *istiokubernetesv1.IstioKubernetesStackInput) error
 
 // After
 import (
-  kubernetesistiov1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/addon/kubernetesistio/v1"
+  kubernetesistiov1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/addon/kubernetesistio/v1"
 )
 
 func Resources(ctx *pulumi.Context, in *kubernetesistiov1.KubernetesIstioStackInput) error
@@ -221,13 +221,13 @@ addonDirMap := map[string]string{
 
 ### Documentation Updates
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/kubernetesistio/v1/docs/README.md`
+**File**: `apis/dev/planton/provider/kubernetes/addon/kubernetesistio/v1/docs/README.md`
 
 Updated all manifest examples to use the new kind name:
 
 ```yaml
 # Example manifest
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesIstio
 metadata:
   name: production-mesh
@@ -297,7 +297,7 @@ Users must update their YAML manifests:
 
 ```yaml
 # Update required
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesIstio  # Changed from: IstioKubernetes
 metadata:
   name: istio-prod
@@ -320,7 +320,7 @@ spec:
 ### Breaking Aspects
 
 - **Directory structure**: Changed from `istiokubernetes/` to `kubernetesistio/`
-- **Package namespace**: Changed from `org.openmcf.provider.kubernetes.addon.istiokubernetes.v1` to `org.openmcf.provider.kubernetes.addon.kubernetesistio.v1`
+- **Package namespace**: Changed from `dev.planton.provider.kubernetes.addon.istiokubernetes.v1` to `dev.planton.provider.kubernetes.addon.kubernetesistio.v1`
 - **Import paths**: Changed in Go code to use new directory structure
 - **Message types**: All proto message names changed from `IstioKubernetes*` to `KubernetesIstio*`
 
@@ -334,7 +334,7 @@ spec:
 
 ## Related Work
 
-This refactoring is part of an ongoing effort to improve naming consistency across OpenMCF's Kubernetes addon operators:
+This refactoring is part of an ongoing effort to improve naming consistency across Planton's Kubernetes addon operators:
 
 - **2025-11-13**: `AltinityOperatorKubernetes` → `AltinityOperator` - Established the pattern for removing redundant suffixes
 - **2025-11-13**: `IngressNginxKubernetes` → `IngressNginx` - Continued the naming consistency effort
@@ -387,17 +387,17 @@ For users with existing manifests:
 2. **Update any hardcoded import paths** in custom code:
    ```bash
    # Old
-   github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/addon/istiokubernetes/v1
+   github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/addon/istiokubernetes/v1
    
    # New
-   github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/addon/kubernetesistio/v1
+   github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/addon/kubernetesistio/v1
    ```
 
-3. **No CLI changes required** - The `openmcf` CLI will work with the new kind name automatically after updating to the version with this change
+3. **No CLI changes required** - The `planton` CLI will work with the new kind name automatically after updating to the version with this change
 
 4. **No infrastructure impact** - Existing deployed Istio installations are unaffected; this only affects new deployments and manifest files
 
-5. **Version compatibility** - Ensure you're using a compatible version of the OpenMCF CLI that includes this change before applying updated manifests
+5. **Version compatibility** - Ensure you're using a compatible version of the Planton CLI that includes this change before applying updated manifests
 
 6. **Go module updates** - Run `go mod tidy` if you have custom code that imports these packages
 

@@ -8,11 +8,11 @@ componentName: "azurecontainerapp"
 
 # Azure Container App
 
-Deploys an Azure Container App within a Container App Environment, providing a fully managed serverless container platform with configurable containers, init containers, autoscaling (HTTP, TCP, Azure Queue, custom KEDA rules), ingress with traffic splitting, Dapr sidecar integration, secrets management, container registry authentication, managed identity, volumes, and health probes. This is the most feature-rich Azure component in OpenMCF.
+Deploys an Azure Container App within a Container App Environment, providing a fully managed serverless container platform with configurable containers, init containers, autoscaling (HTTP, TCP, Azure Queue, custom KEDA rules), ingress with traffic splitting, Dapr sidecar integration, secrets management, container registry authentication, managed identity, volumes, and health probes. This is the most feature-rich Azure component in Planton.
 
 ## What Gets Created
 
-When you deploy an AzureContainerApp resource, OpenMCF provisions:
+When you deploy an AzureContainerApp resource, Planton provisions:
 
 - **Container App** -- a `containerapp.App` resource within the specified Container App Environment, configured with containers, scaling rules, ingress, secrets, and operational settings
 - **Containers** -- one or more application containers with configurable image, CPU, memory, environment variables, volume mounts, and health probes (liveness, readiness, startup)
@@ -24,7 +24,7 @@ When you deploy an AzureContainerApp resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Container App Environment** where the app will run (can reference an AzureContainerAppEnvironment resource)
 - **Container images** accessible from the specified registries -- public registries, ACR with credentials, or ACR with managed identity
 - **An Azure Resource Group** is not required directly -- the Container App inherits its resource group and region from the Container App Environment
@@ -34,15 +34,15 @@ When you deploy an AzureContainerApp resource, OpenMCF provisions:
 Create a file `containerapp.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureContainerApp
 metadata:
   name: my-app
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureContainerApp.my-app
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureContainerApp.my-app
 spec:
   resourceGroup: my-rg
   name: my-app
@@ -60,7 +60,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f containerapp.yaml
+planton apply -f containerapp.yaml
 ```
 
 This creates a Container App with a single container, external HTTP ingress on port 80, and Single revision mode.
@@ -125,15 +125,15 @@ This creates a Container App with a single container, external HTTP ingress on p
 A web service with external ingress, HTTP-based autoscaling, and environment variables:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureContainerApp
 metadata:
   name: web-service
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureContainerApp.web-service
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureContainerApp.web-service
 spec:
   resourceGroup: prod-rg
   name: web-service
@@ -180,15 +180,15 @@ spec:
 A background worker that scales based on Azure Queue depth:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureContainerApp
 metadata:
   name: worker
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureContainerApp.worker
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureContainerApp.worker
 spec:
   resourceGroup: prod-rg
   name: queue-worker
@@ -220,15 +220,15 @@ spec:
 A production API with Dapr sidecar, managed identity, and IP restrictions:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureContainerApp
 metadata:
   name: enterprise-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureContainerApp.enterprise-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureContainerApp.enterprise-api
 spec:
   resourceGroup: prod-rg
   name: enterprise-api
@@ -277,18 +277,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference OpenMCF-managed resources:
+Reference Planton-managed resources:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureContainerApp
 metadata:
   name: ref-app
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureContainerApp.ref-app
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureContainerApp.ref-app
 spec:
   resourceGroup:
     valueFrom:

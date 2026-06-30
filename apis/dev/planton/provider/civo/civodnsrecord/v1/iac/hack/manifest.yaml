@@ -1,0 +1,10 @@
+apiVersion: civo.planton.dev/v1
+kind: CivoDnsRecord
+metadata:
+  name: test-dns-record
+spec:
+  zone_id: "test-zone-id-abc123"
+  name: "www"
+  type: A
+  value: "192.0.2.1"
+  ttl: 3600

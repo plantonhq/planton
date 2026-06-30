@@ -1,9 +1,0 @@
-name: openfga-store
-description: |
-  OpenFGA Store deployment component.
-  
-  IMPORTANT: OpenFGA does not have a Pulumi provider. This module is a
-  pass-through placeholder. Use Terraform/Tofu provisioner instead:
-  
-    openmcf apply --manifest openfga-store.yaml --provisioner tofu
-runtime: go

@@ -1,0 +1,15 @@
+apiVersion: qa.planton.dev/v1
+kind: ProviderE2EProfile
+metadata:
+  name: aws
+spec:
+  credential_approach: oidc
+  test_substrate: real_cloud
+  default_cost_class: paid_ephemeral
+  default_schedule_lane: weekly
+  required_tools:
+    - pulumi
+    - tofu
+    - aws-cli
+  github_environment: e2e-aws
+  max_concurrent_tests: 4

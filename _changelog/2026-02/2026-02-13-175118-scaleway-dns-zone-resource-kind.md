@@ -6,7 +6,7 @@
 
 ## Summary
 
-Implemented ScalewayDnsZone (R15) -- the fifteenth Scaleway resource kind and first in the DNS tier. This is a composite resource that bundles a DNS zone with optional inline DNS records, following the universal pattern established across all OpenMCF DNS zone kinds (AWS, Azure, GCP, DigitalOcean, Cloudflare, Civo, OpenStack). Wraps `scaleway_domain_zone` + `scaleway_domain_record` Terraform resources.
+Implemented ScalewayDnsZone (R15) -- the fifteenth Scaleway resource kind and first in the DNS tier. This is a composite resource that bundles a DNS zone with optional inline DNS records, following the universal pattern established across all Planton DNS zone kinds (AWS, Azure, GCP, DigitalOcean, Cloudflare, Civo, OpenStack). Wraps `scaleway_domain_zone` + `scaleway_domain_record` Terraform resources.
 
 ## Problem Statement / Motivation
 
@@ -86,29 +86,29 @@ Like Container Registry (R14), Scaleway DNS zones and records do not support tag
 ## Files Created
 
 **Proto (4):**
-- `apis/org/openmcf/provider/scaleway/scalewaydnszone/v1/spec.proto`
-- `apis/org/openmcf/provider/scaleway/scalewaydnszone/v1/stack_outputs.proto`
-- `apis/org/openmcf/provider/scaleway/scalewaydnszone/v1/api.proto`
-- `apis/org/openmcf/provider/scaleway/scalewaydnszone/v1/stack_input.proto`
+- `apis/dev/planton/provider/scaleway/scalewaydnszone/v1/spec.proto`
+- `apis/dev/planton/provider/scaleway/scalewaydnszone/v1/stack_outputs.proto`
+- `apis/dev/planton/provider/scaleway/scalewaydnszone/v1/api.proto`
+- `apis/dev/planton/provider/scaleway/scalewaydnszone/v1/stack_input.proto`
 
 **Pulumi Go (6):**
-- `apis/org/openmcf/provider/scaleway/scalewaydnszone/v1/iac/pulumi/main.go`
-- `apis/org/openmcf/provider/scaleway/scalewaydnszone/v1/iac/pulumi/Pulumi.yaml`
-- `apis/org/openmcf/provider/scaleway/scalewaydnszone/v1/iac/pulumi/module/main.go`
-- `apis/org/openmcf/provider/scaleway/scalewaydnszone/v1/iac/pulumi/module/locals.go`
-- `apis/org/openmcf/provider/scaleway/scalewaydnszone/v1/iac/pulumi/module/outputs.go`
-- `apis/org/openmcf/provider/scaleway/scalewaydnszone/v1/iac/pulumi/module/dns_zone.go`
+- `apis/dev/planton/provider/scaleway/scalewaydnszone/v1/iac/pulumi/main.go`
+- `apis/dev/planton/provider/scaleway/scalewaydnszone/v1/iac/pulumi/Pulumi.yaml`
+- `apis/dev/planton/provider/scaleway/scalewaydnszone/v1/iac/pulumi/module/main.go`
+- `apis/dev/planton/provider/scaleway/scalewaydnszone/v1/iac/pulumi/module/locals.go`
+- `apis/dev/planton/provider/scaleway/scalewaydnszone/v1/iac/pulumi/module/outputs.go`
+- `apis/dev/planton/provider/scaleway/scalewaydnszone/v1/iac/pulumi/module/dns_zone.go`
 
 **Terraform HCL (5):**
-- `apis/org/openmcf/provider/scaleway/scalewaydnszone/v1/iac/tf/main.tf`
-- `apis/org/openmcf/provider/scaleway/scalewaydnszone/v1/iac/tf/variables.tf`
-- `apis/org/openmcf/provider/scaleway/scalewaydnszone/v1/iac/tf/outputs.tf`
-- `apis/org/openmcf/provider/scaleway/scalewaydnszone/v1/iac/tf/provider.tf`
-- `apis/org/openmcf/provider/scaleway/scalewaydnszone/v1/iac/tf/locals.tf`
+- `apis/dev/planton/provider/scaleway/scalewaydnszone/v1/iac/tf/main.tf`
+- `apis/dev/planton/provider/scaleway/scalewaydnszone/v1/iac/tf/variables.tf`
+- `apis/dev/planton/provider/scaleway/scalewaydnszone/v1/iac/tf/outputs.tf`
+- `apis/dev/planton/provider/scaleway/scalewaydnszone/v1/iac/tf/provider.tf`
+- `apis/dev/planton/provider/scaleway/scalewaydnszone/v1/iac/tf/locals.tf`
 
 **Documentation (2):**
-- `apis/org/openmcf/provider/scaleway/scalewaydnszone/v1/README.md`
-- `apis/org/openmcf/provider/scaleway/scalewaydnszone/v1/examples.md`
+- `apis/dev/planton/provider/scaleway/scalewaydnszone/v1/README.md`
+- `apis/dev/planton/provider/scaleway/scalewaydnszone/v1/examples.md`
 
 ## Related Work
 

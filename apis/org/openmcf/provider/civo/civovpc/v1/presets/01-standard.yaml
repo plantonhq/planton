@@ -1,9 +1,0 @@
-apiVersion: civo.openmcf.org/v1
-kind: CivoVpc
-metadata:
-  name: my-vpc
-spec:
-  networkName: my-vpc
-  region: lon1
-  ipRangeCidr: 10.0.0.0/24
-  description: Standard private network

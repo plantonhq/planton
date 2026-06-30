@@ -161,7 +161,7 @@ The `auto-release.terraform-modules.yaml` now includes three new steps:
 
 ```bash
 # Download the module
-curl -LO https://github.com/plantonhq/openmcf/releases/download/v0.3.2/terraform-awsvpc.zip
+curl -LO https://github.com/plantonhq/planton/releases/download/v0.3.2/terraform-awsvpc.zip
 
 # Extract
 unzip terraform-awsvpc.zip -d awsvpc
@@ -179,7 +179,7 @@ The git source approach still works for those who prefer it:
 
 ```hcl
 module "awsvpc" {
-  source = "git::https://github.com/plantonhq/openmcf.git//apis/org/openmcf/provider/aws/awsvpc/v1/iac/tf?ref=v0.3.2"
+  source = "git::https://github.com/plantonhq/planton.git//apis/dev/planton/provider/aws/awsvpc/v1/iac/tf?ref=v0.3.2"
 }
 ```
 

@@ -34,7 +34,7 @@ Instead of shipping Go caches, compile all 130 Pulumi deployment components to s
 ```mermaid
 flowchart TB
     subgraph Before ["Before: Cache Pre-warming"]
-        B1[Clone openmcf] --> B2[go build each module]
+        B1[Clone planton] --> B2[go build each module]
         B2 --> B3[Save Go caches to PVC]
         B3 --> B4[COPY caches to image]
         B4 --> B5["Image: 2-3GB per provider"]
@@ -78,7 +78,7 @@ strategy:
     include:
       - provider: aws
         component: awsekscluster
-        path: apis/org/openmcf/provider/aws/awsekscluster/v1/iac/pulumi
+        path: apis/dev/planton/provider/aws/awsekscluster/v1/iac/pulumi
       # ... 129 more entries
 ```
 
@@ -102,7 +102,7 @@ COPY merged-cache/go-build ${GOCACHE}
 COPY binaries/ ${PLANTON_BINARIES_DIR}/
 ```
 
-The image still includes Go toolchain for organization (custom) modules that aren't part of openmcf.
+The image still includes Go toolchain for organization (custom) modules that aren't part of planton.
 
 ### Component Coverage
 
@@ -175,12 +175,12 @@ Or manually via workflow dispatch with a version input.
 
 When adding a new deployment component:
 
-1. Create component at `apis/org/openmcf/provider/{provider}/{component}/v1/iac/pulumi/`
+1. Create component at `apis/dev/planton/provider/{provider}/{component}/v1/iac/pulumi/`
 2. Add entry to workflow matrix:
    ```yaml
    - provider: {provider}
      component: {component}
-     path: apis/org/openmcf/provider/{provider}/{component}/v1/iac/pulumi
+     path: apis/dev/planton/provider/{provider}/{component}/v1/iac/pulumi
    ```
 3. Next release will include the new binary
 

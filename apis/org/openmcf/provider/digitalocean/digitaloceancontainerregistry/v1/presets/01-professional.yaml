@@ -1,9 +1,0 @@
-apiVersion: digital-ocean.openmcf.org/v1
-kind: DigitalOceanContainerRegistry
-metadata:
-  name: my-registry
-spec:
-  name: my-registry
-  subscriptionTier: professional
-  region: nyc3
-  garbageCollectionEnabled: true

@@ -4,7 +4,7 @@
 
 ## Summary
 
-Added the **AzureDnsRecord** deployment component to OpenMCF, enabling declarative management of individual DNS records in Azure DNS Zones. The component uses `StringValueOrRef` for the `zone_name` field, allowing records to reference `AzureDnsZone` resources via `value_from` for seamless infrastructure wiring.
+Added the **AzureDnsRecord** deployment component to Planton, enabling declarative management of individual DNS records in Azure DNS Zones. The component uses `StringValueOrRef` for the `zone_name` field, allowing records to reference `AzureDnsZone` resources via `value_from` for seamless infrastructure wiring.
 
 ## Problem Statement
 
@@ -22,7 +22,7 @@ Users needed a way to create individual DNS records in Azure DNS Zones as standa
 
 ## Solution
 
-Created a complete `AzureDnsRecord` deployment component following the OpenMCF forge pattern with:
+Created a complete `AzureDnsRecord` deployment component following the Planton forge pattern with:
 
 - `zone_name` as `StringValueOrRef` with default kind `AzureDnsZone`
 - Support for all major DNS record types (A, AAAA, CNAME, MX, TXT, NS, SRV, CAA, PTR)
@@ -64,10 +64,10 @@ flowchart TB
 **spec.proto** - Key field with zone reference:
 
 ```protobuf
-org.openmcf.shared.foreignkey.v1.StringValueOrRef zone_name = 2 [
+dev.planton.shared.foreignkey.v1.StringValueOrRef zone_name = 2 [
   (buf.validate.field).required = true,
-  (org.openmcf.shared.foreignkey.v1.default_kind) = AzureDnsZone,
-  (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_name"
+  (dev.planton.shared.foreignkey.v1.default_kind) = AzureDnsZone,
+  (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_name"
 ];
 ```
 
@@ -104,7 +104,7 @@ AzureDnsRecord = 409 [(kind_meta) = {
 ## Example Usage
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureDnsRecord
 metadata:
   name: api-record

@@ -1,0 +1,16 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesElasticOperator
+metadata:
+  name: e2e-elaop-fix
+spec:
+  namespace:
+    value: e2e-elaop-fix
+  create_namespace: true
+  container:
+    resources:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 50m
+        memory: 64Mi

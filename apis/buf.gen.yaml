@@ -18,7 +18,7 @@ managed:
     - file_option: optimize_for
       value: SPEED
     - file_option: go_package_prefix
-      value: github.com/plantonhq/openmcf/apis
+      value: github.com/plantonhq/planton/apis
 plugins:
   - remote: buf.build/protocolbuffers/go:v1.36.6
     out: generated/stubs/go

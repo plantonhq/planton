@@ -6,11 +6,11 @@
 
 ## Summary
 
-Added Hetzner Cloud as provider #27 to OpenMCF, enabling users to manage Hetzner Cloud credentials through the platform. The integration spans all 6 system layers -- proto definitions, CLI guidance, stack input / env var processing, provider detection, backend credential CRUD, and frontend credential forms. Hetzner Cloud's single API token authentication model maps cleanly to 3 `HCLOUD_*`/`HETZNER_*` environment variables without the multi-method complexity required by providers like OpenStack, AliCloud, or OCI.
+Added Hetzner Cloud as provider #27 to Planton, enabling users to manage Hetzner Cloud credentials through the platform. The integration spans all 6 system layers -- proto definitions, CLI guidance, stack input / env var processing, provider detection, backend credential CRUD, and frontend credential forms. Hetzner Cloud's single API token authentication model maps cleanly to 3 `HCLOUD_*`/`HETZNER_*` environment variables without the multi-method complexity required by providers like OpenStack, AliCloud, or OCI.
 
 ## Problem Statement / Motivation
 
-OpenMCF had no Hetzner Cloud support. Organizations using Hetzner Cloud infrastructure could not store credentials, use the unified `--provider-config` flag, or leverage credential auto-resolution for Hetzner Cloud deployments.
+Planton had no Hetzner Cloud support. Organizations using Hetzner Cloud infrastructure could not store credentials, use the unified `--provider-config` flag, or leverage credential auto-resolution for Hetzner Cloud deployments.
 
 ### Pain Points
 

@@ -1,0 +1,236 @@
+syntax = "proto3";
+
+package dev.planton.provider.cloudflare.cloudflareloadbalancerpool.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// Cloudflare regions a pool's health checks can run from. Value names match the
+// Cloudflare API region codes exactly and are used directly via .String().
+enum CloudflareLoadBalancerPoolCheckRegion {
+  // Unspecified — health checks run from every Cloudflare data center.
+  check_region_unspecified = 0;
+  WNAM = 1; // Western North America
+  ENAM = 2; // Eastern North America
+  WEU = 3; // Western Europe
+  EEU = 4; // Eastern Europe
+  NSAM = 5; // Northern South America
+  SSAM = 6; // Southern South America
+  OC = 7; // Oceania
+  ME = 8; // Middle East
+  NAF = 9; // Northern Africa
+  SAF = 10; // Southern Africa
+  SAS = 11; // Southern Asia
+  SEAS = 12; // South-East Asia
+  NEAS = 13; // North-East Asia
+  ALL_REGIONS = 14; // All regions
+}
+
+// CloudflareLoadBalancerPoolSpec defines an account-scoped pool of origin servers
+// for Cloudflare Load Balancing. A pool groups origins, health-checks them via a
+// referenced monitor, and is selected by one or more zone-scoped
+// CloudflareLoadBalancers (as default, fallback, or geo-routed pools). Pools are
+// reusable across load balancers and have an independent lifecycle.
+message CloudflareLoadBalancerPoolSpec {
+  // The Cloudflare account ID that owns this pool. Must match the account of the
+  // referenced monitor and of any load balancer that uses this pool.
+  string account_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.len = 32,
+    (buf.validate.field).string.pattern = "^[0-9a-fA-F]{32}$"
+  ];
+
+  // A short name (tag) for the pool. Only alphanumeric characters, hyphens, and
+  // underscores are allowed.
+  string name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 32,
+    (buf.validate.field).string.pattern = "^[A-Za-z0-9_-]+$"
+  ];
+
+  // The origin servers in this pool. Traffic to a healthy pool is balanced
+  // across its currently-healthy origins. At least one origin is required.
+  repeated CloudflareLoadBalancerPoolOrigin origins = 3 [(buf.validate.field).repeated.min_items = 1];
+
+  // The monitor that health-checks this pool's origins, as a literal monitor ID
+  // or a reference to a CloudflareLoadBalancerMonitor. When omitted, origins are
+  // always considered healthy (not recommended for production).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef monitor = 4 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareLoadBalancerMonitor,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.monitor_id"
+  ];
+
+  // 5: monitor_group is reserved — the account-scoped monitor-group resource is a
+  // niche enterprise feature; a single `monitor` reference serves the common
+  // case. Forge a CloudflareLoadBalancerMonitorGroup kind when a multi-monitor
+  // use case appears, then wire it here.
+  reserved 5;
+  reserved "monitor_group";
+
+  // Regions from which to run health checks. Leave empty to check from every
+  // Cloudflare data center.
+  repeated CloudflareLoadBalancerPoolCheckRegion check_regions = 6 [(buf.validate.field).repeated.items.enum.defined_only = true];
+
+  // Human-readable description shown in the Cloudflare dashboard.
+  string description = 7;
+
+  // Whether the pool is enabled. A disabled pool receives no traffic and is
+  // excluded from health checks. Defaults to true when unset.
+  optional bool enabled = 8 [(dev.planton.shared.options.recommended_default) = "true"];
+
+  // The minimum number of origins that must be healthy for the pool to serve
+  // traffic; below this the pool fails over. Leave 0 for the Cloudflare default (1).
+  int32 minimum_origins = 9 [
+    (dev.planton.shared.options.recommended_default) = "1",
+    (buf.validate.field).cel = {
+      id: "pool.minimum_origins_non_negative"
+      message: "minimum_origins must be 0 (default) or a positive number"
+      expression: "this >= 0"
+    }
+  ];
+
+  // Latitude (decimal degrees) of the data center hosting these origins, used by
+  // proximity steering. If set, longitude must also be set.
+  optional double latitude = 10 [(buf.validate.field).cel = {
+    id: "pool.latitude_range"
+    message: "latitude must be between -90 and 90"
+    expression: "this >= -90 && this <= 90"
+  }];
+
+  // Longitude (decimal degrees) of the data center hosting these origins, used by
+  // proximity steering. If set, latitude must also be set.
+  optional double longitude = 11 [(buf.validate.field).cel = {
+    id: "pool.longitude_range"
+    message: "longitude must be between -180 and 180"
+    expression: "this >= -180 && this <= 180"
+  }];
+
+  // Load-shedding policy: sheds a configurable percentage of traffic away from
+  // the pool. Omit to shed nothing.
+  CloudflareLoadBalancerPoolLoadShedding load_shedding = 12;
+
+  // Origin-steering policy: how origins are selected for new sessions and traffic
+  // without session affinity. Omit for Cloudflare's default (random).
+  CloudflareLoadBalancerPoolOriginSteering origin_steering = 13;
+
+  // Filters pool/origin health-status notifications. Omit to use account defaults.
+  CloudflareLoadBalancerPoolNotificationFilter notification_filter = 14;
+}
+
+// CloudflareLoadBalancerPoolOrigin is a single origin server within a pool.
+message CloudflareLoadBalancerPoolOrigin {
+  // A human-identifiable name for the origin.
+  string name = 1 [(buf.validate.field).required = true];
+
+  // The origin address: an IP (v4/v6) or a publicly addressable hostname that
+  // resolves directly to the origin (not a Cloudflare-proxied hostname). Accepts
+  // a literal or a reference to another resource's output (e.g. a compute
+  // instance's public IP or a load balancer hostname), so origins compose in the
+  // resource graph. To use an internal/reserved address, also set
+  // virtual_network_id.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef address = 2 [(buf.validate.field).required = true];
+
+  // The weight of this origin relative to others in the pool (0.0–1.0). Defaults
+  // to 1 when unset. Used by weighted origin-steering policies.
+  optional double weight = 3 [
+    (dev.planton.shared.options.recommended_default) = "1",
+    (buf.validate.field).cel = {
+      id: "origin.weight_range"
+      message: "weight must be between 0 and 1"
+      expression: "this >= 0 && this <= 1"
+    }
+  ];
+
+  // Whether this origin is enabled within the pool. A disabled origin receives no
+  // traffic and is excluded from health checks. Defaults to true when unset.
+  optional bool enabled = 4 [(dev.planton.shared.options.recommended_default) = "true"];
+
+  // The upstream port for connections. Leave 0 to use the default port for the
+  // monitor's protocol.
+  int32 port = 5 [(buf.validate.field).cel = {
+    id: "origin.port_range"
+    message: "port must be 0 (protocol default) or between 1 and 65535"
+    expression: "this == 0 || (this >= 1 && this <= 65535)"
+  }];
+
+  // Override the HTTP Host header sent to this origin (Cloudflare supports a
+  // single Host override per origin). Leave empty to send the default Host.
+  string host_header = 6;
+
+  // The virtual-network ID this origin belongs to, required when address is an
+  // internal/reserved address reachable over a Cloudflare Tunnel virtual network.
+  string virtual_network_id = 7;
+
+  // Whether to flatten CNAME origin addresses to their A/AAAA records before
+  // returning to the client. Defaults to true when unset.
+  optional bool flatten_cname = 8 [(dev.planton.shared.options.recommended_default) = "true"];
+}
+
+// CloudflareLoadBalancerPoolLoadShedding configures shedding traffic away from a
+// pool (e.g. to drain it gracefully).
+message CloudflareLoadBalancerPoolLoadShedding {
+  // Percent of new sessions / unaffinitized traffic to shed (0–100).
+  double default_percent = 1 [(buf.validate.field).cel = {
+    id: "load_shedding.default_percent_range"
+    message: "default_percent must be between 0 and 100"
+    expression: "this >= 0 && this <= 100"
+  }];
+
+  // Policy for shedding default traffic: "random" sheds a random percent of
+  // requests; "hash" sheds all requests from a percent of client IPs. Empty
+  // defaults to "random".
+  string default_policy = 2 [(buf.validate.field).cel = {
+    id: "load_shedding.default_policy_valid"
+    message: "default_policy must be \"random\" or \"hash\""
+    expression: "this == '' || this in ['random', 'hash']"
+  }];
+
+  // Percent of existing sessions to shed (0–100).
+  double session_percent = 3 [(buf.validate.field).cel = {
+    id: "load_shedding.session_percent_range"
+    message: "session_percent must be between 0 and 100"
+    expression: "this >= 0 && this <= 100"
+  }];
+
+  // Policy for shedding existing sessions. Only "hash" is supported (to avoid
+  // exponential decay). Empty defaults to "hash".
+  string session_policy = 4 [(buf.validate.field).cel = {
+    id: "load_shedding.session_policy_valid"
+    message: "session_policy must be \"hash\""
+    expression: "this == '' || this == 'hash'"
+  }];
+}
+
+// CloudflareLoadBalancerPoolOriginSteering controls origin selection within a pool.
+message CloudflareLoadBalancerPoolOriginSteering {
+  // Origin-steering policy. One of "random", "hash",
+  // "least_outstanding_requests", or "least_connections". Empty defaults to
+  // "random".
+  string policy = 1 [(buf.validate.field).cel = {
+    id: "origin_steering.policy_valid"
+    message: "policy must be one of \"random\", \"hash\", \"least_outstanding_requests\", \"least_connections\""
+    expression: "this == '' || this in ['random', 'hash', 'least_outstanding_requests', 'least_connections']"
+  }];
+}
+
+// CloudflareLoadBalancerPoolNotificationFilter filters health notifications by
+// resource type and status.
+message CloudflareLoadBalancerPoolNotificationFilter {
+  // Notification filter for individual origins.
+  CloudflareLoadBalancerPoolNotificationFilterRule origin = 1;
+
+  // Notification filter for the pool as a whole.
+  CloudflareLoadBalancerPoolNotificationFilterRule pool = 2;
+}
+
+// CloudflareLoadBalancerPoolNotificationFilterRule is a per-resource-type filter.
+message CloudflareLoadBalancerPoolNotificationFilterRule {
+  // Disable notifications for this resource type entirely.
+  bool disable = 1;
+
+  // When set, send notifications only for this health status (e.g. false to
+  // notify only on DOWN events). Omit to notify on all events.
+  optional bool healthy = 2;
+}

@@ -29,9 +29,9 @@ import (
 	"fmt"
 	"reflect"
 
-	awsprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws"
-	"github.com/plantonhq/openmcf/pkg/iac/provider/aws/awswebidentity"
-	"github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/pulumi/pulumioutput"
+	awsprovider "github.com/plantonhq/planton/apis/dev/planton/provider/aws"
+	"github.com/plantonhq/planton/pkg/iac/provider/aws/awswebidentity"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/pulumi/pulumioutput"
 
 	"github.com/pkg/errors"
 	awsnative "github.com/pulumi/pulumi-aws-native/sdk/go/aws"

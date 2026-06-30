@@ -1,0 +1,15 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsCloudwatchLogGroup
+metadata:
+  name: test-log-group
+  org: test-org
+  env: dev
+  id: test-log-group-dev
+  labels:
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: test-org
+    pulumi.planton.dev/project: test-project
+    pulumi.planton.dev/stack.name: dev.AwsCloudwatchLogGroup.test-log-group
+spec:
+  region: us-west-2
+  retentionInDays: 30

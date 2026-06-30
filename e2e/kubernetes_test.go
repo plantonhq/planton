@@ -8,9 +8,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/plantonhq/openmcf/e2e/framework/discovery"
-	"github.com/plantonhq/openmcf/e2e/framework/provider"
-	"github.com/plantonhq/openmcf/e2e/framework/runner"
+	"github.com/plantonhq/planton/e2e/framework/discovery"
+	"github.com/plantonhq/planton/e2e/framework/provider"
+	"github.com/plantonhq/planton/e2e/framework/runner"
 )
 
 // Kubernetes Tier 1 components: native K8s resources, zero dependencies.
@@ -273,9 +273,9 @@ func runAllScenariosForComponent(t *testing.T, component, engine string) {
 	var moduleDir string
 	switch engine {
 	case "pulumi":
-		moduleDir = filepath.Join(repoRoot, "apis", "org", "openmcf", "provider", "kubernetes", component, "v1", "iac", "pulumi")
+		moduleDir = filepath.Join(repoRoot, "apis", "org", "planton", "provider", "kubernetes", component, "v1", "iac", "pulumi")
 	case "terraform":
-		moduleDir = filepath.Join(repoRoot, "apis", "org", "openmcf", "provider", "kubernetes", component, "v1", "iac", "tf")
+		moduleDir = filepath.Join(repoRoot, "apis", "org", "planton", "provider", "kubernetes", component, "v1", "iac", "tf")
 	default:
 		t.Fatalf("unsupported engine: %s", engine)
 	}

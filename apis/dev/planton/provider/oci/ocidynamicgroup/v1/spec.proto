@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocidynamicgroup.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// OciDynamicGroupSpec defines the specification for an Oracle Cloud
+// Infrastructure dynamic group.
+//
+// Dynamic groups allow OCI resources (compute instances, functions, etc.) to
+// be grouped and granted permissions via IAM policies -- enabling patterns
+// like instance principal authentication where workloads authenticate to
+// OCI services without stored credentials.
+//
+// The matching rule uses OCI's rule syntax to select which resources belong
+// to the group. Dynamic groups must be created in the tenancy (root)
+// compartment.
+message OciDynamicGroupSpec {
+  // OCID of the tenancy (root compartment).
+  // Dynamic groups are tenancy-level IAM resources and must be created
+  // in the tenancy compartment, not a child compartment.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OciCompartment,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartment_id"
+  ];
+
+  // Name assigned to the dynamic group.
+  // Must be unique across all groups (including user groups) in the tenancy
+  // and cannot be changed after creation.
+  // Falls back to metadata.name if not provided.
+  string name = 2;
+
+  // Description of the dynamic group's purpose.
+  // Required by the OCI API. Updatable after creation.
+  string description = 3 [(buf.validate.field).string.min_len = 1];
+
+  // Matching rule that defines which resources belong to this dynamic group.
+  // Uses OCI's rule syntax, e.g.:
+  //   "Any {instance.compartment.id = 'ocid1.compartment.oc1..xxx'}"
+  //   "All {resource.type = 'fnfunc', resource.compartment.id = 'ocid1...'}"
+  // See https://docs.oracle.com/iaas/Content/Identity/Tasks/managingdynamicgroups.htm
+  string matching_rule = 4 [(buf.validate.field).string.min_len = 1];
+}

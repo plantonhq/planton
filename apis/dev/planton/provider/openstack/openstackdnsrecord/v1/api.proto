@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package dev.planton.provider.openstack.openstackdnsrecord.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/openstack/openstackdnsrecord/v1/spec.proto";
+import "dev/planton/provider/openstack/openstackdnsrecord/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// OpenStackDnsRecord is a Kubernetes Resource Model (KRM) style resource for managing
+// a standalone DNS record in an OpenStack Designate zone.
+//
+// This component creates a single DNS recordset (one name + one type + one or more values)
+// in an existing zone. Use this for DAG-visible, independently managed records in
+// InfraCharts. For convenience (all records in one component), use the inline records
+// feature of OpenStackDnsZone instead.
+message OpenStackDnsRecord {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'openstack.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OpenStackDnsRecord'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OpenStackDnsRecordSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OpenStackDnsRecordStatus status = 5;
+}
+
+// OpenStackDnsRecordStatus represents the observed state of a Designate DNS record.
+message OpenStackDnsRecordStatus {
+  // stack-outputs from the IaC deployment
+  OpenStackDnsRecordStackOutputs outputs = 1;
+}

@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesgharunnerscalesetcontroller.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/kubernetesgharunnerscalesetcontroller/v1/spec.proto";
+import "dev/planton/provider/kubernetes/kubernetesgharunnerscalesetcontroller/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// KubernetesGhaRunnerScaleSetController is a deployment component that installs the GitHub Actions
+// Runner Scale Set Controller on a Kubernetes cluster. The controller manages AutoScalingRunnerSets
+// and EphemeralRunners, enabling dynamic scaling of self-hosted GitHub Actions runners based on
+// workflow demand.
+//
+// Use this component to deploy the controller first, then deploy runner scale sets using the
+// separate gha-runner-scale-set Helm chart (or a corresponding Planton component).
+message KubernetesGhaRunnerScaleSetController {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'KubernetesGhaRunnerScaleSetController'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  KubernetesGhaRunnerScaleSetControllerSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  KubernetesGhaRunnerScaleSetControllerStatus status = 5;
+}
+
+// KubernetesGhaRunnerScaleSetControllerStatus describes the observed state of the controller.
+message KubernetesGhaRunnerScaleSetControllerStatus {
+  // stack-outputs
+  KubernetesGhaRunnerScaleSetControllerStackOutputs outputs = 1;
+}

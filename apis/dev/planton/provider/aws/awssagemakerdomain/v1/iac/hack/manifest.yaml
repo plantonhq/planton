@@ -1,0 +1,21 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsSagemakerDomain
+metadata:
+  name: test-sagemaker-domain
+spec:
+  region: us-west-2
+  authMode: IAM
+  vpcId:
+    value: "<vpc-id>"
+  subnetIds:
+    - value: "<private-subnet-id-az1>"
+    - value: "<private-subnet-id-az2>"
+  defaultUserSettings:
+    executionRoleArn:
+      value: "<sagemaker-execution-role-arn>"
+    jupyterLabAppSettings:
+      defaultResourceSpec:
+        instanceType: ml.t3.medium
+      idleSettings:
+        lifecycleManagement: ENABLED
+        idleTimeoutInMinutes: 120

@@ -12,13 +12,13 @@ Deploys an Oracle Cloud Infrastructure public IPv4 address for internet connecti
 
 ## What Gets Created
 
-When you deploy an OciPublicIp resource, OpenMCF provisions:
+When you deploy an OciPublicIp resource, Planton provisions:
 
 - **Public IP** — an `oci_core_public_ip` resource in the specified compartment. The lifetime mode (`RESERVED` or `EPHEMERAL`) determines whether the IP persists independently or is tied to the assigned entity. OCI freeform tags are applied automatically with the resource kind, resource ID, organization, and environment metadata.
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the public IP will be created — either a literal value or a reference to an OciCompartment resource
 - **For ephemeral IPs**: a private IP OCID — the `privateIpId` field is required when `lifetime` is `EPHEMERAL`
 
@@ -27,15 +27,15 @@ When you deploy an OciPublicIp resource, OpenMCF provisions:
 Create a file `public-ip.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciPublicIp
 metadata:
   name: my-public-ip
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciPublicIp.my-public-ip
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciPublicIp.my-public-ip
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -45,7 +45,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f public-ip.yaml
+planton apply -f public-ip.yaml
 ```
 
 This creates a reserved public IP that is unassigned. The allocated IP address and OCID are exported as stack outputs. You can assign the IP to a private IP later via the OCI Console or API, or by updating the manifest with `privateIpId`.
@@ -74,15 +74,15 @@ This creates a reserved public IP that is unassigned. The allocated IP address a
 A reserved public IP with no private IP assignment — suitable for pre-allocating a stable address for DNS records or firewall allowlists:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciPublicIp
 metadata:
   name: reserved-ip
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciPublicIp.reserved-ip
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciPublicIp.reserved-ip
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -94,15 +94,15 @@ spec:
 A reserved public IP assigned to an existing private IP, giving a compute instance a stable internet-facing address that survives instance termination:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciPublicIp
 metadata:
   name: web-server-ip
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.OciPublicIp.web-server-ip
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.OciPublicIp.web-server-ip
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -117,15 +117,15 @@ spec:
 A reserved public IP drawn from a BYOIP pool, for organizations that own their own IP address ranges:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciPublicIp
 metadata:
   name: byoip-address
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciPublicIp.byoip-address
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciPublicIp.byoip-address
   env: prod
   org: acme
 spec:
@@ -139,18 +139,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed compartment instead of hardcoding the OCID:
+Reference an Planton-managed compartment instead of hardcoding the OCID:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciPublicIp
 metadata:
   name: ref-ip
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciPublicIp.ref-ip
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciPublicIp.ref-ip
 spec:
   compartmentId:
     valueFrom:

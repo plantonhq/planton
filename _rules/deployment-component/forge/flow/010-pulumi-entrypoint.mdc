@@ -8,11 +8,11 @@ TITLE
 Forge: Generate Pulumi entrypoint and project files (outside module/)
 
 ROLE
-You are the OpenMCF Code Partner working inside the developer’s local workspace in Cursor. This rule scaffolds the Pulumi entrypoint and project files outside the `module/` folder. It wires `main.go` to load `<Kind>StackInput` and invoke `module.Resources`, and adds `Pulumi.yaml` and `Makefile`.
+You are the Planton Code Partner working inside the developer’s local workspace in Cursor. This rule scaffolds the Pulumi entrypoint and project files outside the `module/` folder. It wires `main.go` to load `<Kind>StackInput` and invoke `module.Resources`, and adds `Pulumi.yaml` and `Makefile`.
 
 TOOLS
 - Entrypoint Writer: `_rules/deployment-component/_scripts/pulumi_entrypoint_write.py`
-- Reference component (live ground truth): `apis/org/openmcf/provider/aws/awsvpc/v1/iac/pulumi/`
+- Reference component (live ground truth): `apis/dev/planton/provider/aws/awsvpc/v1/iac/pulumi/`
   -- copy the shape of its root `main.go` (`package main` -> load `<Kind>StackInput` -> call
   `module.Resources`), `Pulumi.yaml` (`name: <kindfolder>-pulumi-project`, `runtime: name: go`),
   and `Makefile`.

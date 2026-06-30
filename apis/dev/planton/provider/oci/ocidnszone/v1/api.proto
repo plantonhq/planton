@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocidnszone.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/oci/ocidnszone/v1/spec.proto";
+import "dev/planton/provider/oci/ocidnszone/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// OciDnsZone is the top-level resource representing an OCI DNS Zone --
+// a managed authoritative DNS zone supporting public and private
+// resolution scopes with zone transfer capabilities.
+message OciDnsZone {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'oci.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OciDnsZone'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OciDnsZoneSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OciDnsZoneStatus status = 5;
+}
+
+// OciDnsZoneStatus holds the outputs produced by deploying an OciDnsZone.
+message OciDnsZoneStatus {
+  // stack-outputs
+  OciDnsZoneStackOutputs outputs = 1;
+}

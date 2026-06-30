@@ -12,7 +12,7 @@ Deploys the Elastic Cloud on Kubernetes (ECK) operator via its official Helm cha
 
 ## What Gets Created
 
-When you deploy a KubernetesElasticOperator resource, OpenMCF provisions:
+When you deploy a KubernetesElasticOperator resource, Planton provisions:
 
 - **Namespace** — created only when `createNamespace` is `true`; defaults to `elastic-system` if `namespace` is not specified
 - **ECK Operator Helm Release** — the `eck-operator` chart (v2.14.0) from `https://helm.elastic.co`, which installs:
@@ -21,7 +21,7 @@ When you deploy a KubernetesElasticOperator resource, OpenMCF provisions:
   - ServiceAccount, ClusterRole, and ClusterRoleBinding for operator RBAC
   - ValidatingWebhookConfiguration for CRD validation
   - Operator Service for webhook endpoints
-- **Kubernetes Labels** — standard OpenMCF labels (`resource`, `resource-name`, `resource-kind`, `resource-id`, `organization`, `environment`) are propagated as inherited labels so that all Elastic Stack resources created by the operator carry consistent metadata
+- **Kubernetes Labels** — standard Planton labels (`resource`, `resource-name`, `resource-kind`, `resource-id`, `organization`, `environment`) are propagated as inherited labels so that all Elastic Stack resources created by the operator carry consistent metadata
 
 ## Prerequisites
 
@@ -34,15 +34,15 @@ When you deploy a KubernetesElasticOperator resource, OpenMCF provisions:
 Create a file `elastic-operator.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesElasticOperator
 metadata:
   name: eck
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesElasticOperator.eck
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesElasticOperator.eck
 spec:
   namespace:
     value: elastic-system
@@ -60,7 +60,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f elastic-operator.yaml
+planton apply -f elastic-operator.yaml
 ```
 
 This installs the ECK operator in the `elastic-system` namespace with default resource allocations. After deployment, you can create Elasticsearch and Kibana custom resources in any namespace.
@@ -93,15 +93,15 @@ This installs the ECK operator in the `elastic-system` namespace with default re
 Install ECK with defaults in the `elastic-system` namespace:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesElasticOperator
 metadata:
   name: eck
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesElasticOperator.eck
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesElasticOperator.eck
 spec:
   namespace:
     value: elastic-system
@@ -114,15 +114,15 @@ spec:
 Deploy the operator with higher resource allocations for clusters running many Elastic Stack instances:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesElasticOperator
 metadata:
   name: eck-prod
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesElasticOperator.eck-prod
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesElasticOperator.eck-prod
 spec:
   namespace:
     value: elastic-system
@@ -139,18 +139,18 @@ spec:
 
 ### Operator in a Custom Namespace with Foreign Key Reference
 
-Install the operator in an OpenMCF-managed namespace using a `valueFrom` reference:
+Install the operator in an Planton-managed namespace using a `valueFrom` reference:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesElasticOperator
 metadata:
   name: eck-shared
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.KubernetesElasticOperator.eck-shared
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.KubernetesElasticOperator.eck-shared
 spec:
   namespace:
     valueFrom:

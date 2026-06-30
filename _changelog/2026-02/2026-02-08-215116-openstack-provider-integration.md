@@ -6,11 +6,11 @@
 
 ## Summary
 
-Added OpenStack as provider #23 to OpenMCF, enabling users to manage OpenStack cloud credentials through the platform. The integration spans all 6 system layers — proto definitions, CLI guidance, stack input / env var processing, provider detection, backend credential CRUD, and frontend credential forms. OpenStack's multi-method authentication model (password, application credentials, token) is handled via a structured `oneof` in the proto schema, providing type safety while mapping cleanly to the flat `OS_*` environment variables that the Terraform OpenStack provider expects.
+Added OpenStack as provider #23 to Planton, enabling users to manage OpenStack cloud credentials through the platform. The integration spans all 6 system layers — proto definitions, CLI guidance, stack input / env var processing, provider detection, backend credential CRUD, and frontend credential forms. OpenStack's multi-method authentication model (password, application credentials, token) is handled via a structured `oneof` in the proto schema, providing type safety while mapping cleanly to the flat `OS_*` environment variables that the Terraform OpenStack provider expects.
 
 ## Problem Statement / Motivation
 
-OpenMCF supports 12 cloud providers but had no OpenStack support. Organizations running private or hybrid OpenStack clouds could not store credentials, use the unified `--provider-config` flag, or leverage credential auto-resolution for OpenStack deployments.
+Planton supports 12 cloud providers but had no OpenStack support. Organizations running private or hybrid OpenStack clouds could not store credentials, use the unified `--provider-config` flag, or leverage credential auto-resolution for OpenStack deployments.
 
 ### Pain Points
 
@@ -91,7 +91,7 @@ flowchart LR
 
 ```protobuf
 openstack = 23 [(provider_meta) = {
-  group: "openstack.openmcf.org"
+  group: "openstack.planton.dev"
   display_name: "OpenStack"
 }];
 ```

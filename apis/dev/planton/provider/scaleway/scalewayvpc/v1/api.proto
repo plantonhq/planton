@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package dev.planton.provider.scaleway.scalewayvpc.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/scaleway/scalewayvpc/v1/spec.proto";
+import "dev/planton/provider/scaleway/scalewayvpc/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// scaleway-vpc
+message ScalewayVpc {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = "scaleway.planton.dev/v1"];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = "ScalewayVpc"];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  ScalewayVpcSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  ScalewayVpcStatus status = 5;
+}
+
+// scaleway-vpc status
+message ScalewayVpcStatus {
+  //stack-outputs
+  //  scaleway-vpc stack-outputs
+  ScalewayVpcStackOutputs outputs = 1;
+}

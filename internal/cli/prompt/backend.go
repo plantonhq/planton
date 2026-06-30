@@ -6,8 +6,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/plantonhq/openmcf/internal/cli/ui"
-	"github.com/plantonhq/openmcf/pkg/iac/tofu/backendconfig"
+	"github.com/plantonhq/planton/internal/cli/ui"
+	"github.com/plantonhq/planton/pkg/iac/tofu/backendconfig"
 )
 
 // PromptForMissingBackendConfig interactively prompts the user for missing required fields.

@@ -1,0 +1,181 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesjob.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/container_env.proto";
+import "dev/planton/provider/kubernetes/kubernetes.proto";
+import "dev/planton/provider/kubernetes/options.proto";
+import "dev/planton/provider/kubernetes/target_cluster.proto";
+import "dev/planton/provider/kubernetes/volume_mount.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+/**
+ * KubernetesJobSpec defines the configuration for deploying a one-shot Job on a Kubernetes cluster.
+ * Unlike CronJob which runs on a schedule, a Job executes immediately when created and runs pods
+ * to completion. Jobs are ideal for batch processing, data migrations, one-time tasks, and
+ * workflows that need to run to completion before the process exits.
+ */
+message KubernetesJobSpec {
+  // Target Kubernetes Cluster
+  dev.planton.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  // Kubernetes Namespace
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // Flag to indicate if the namespace should be created
+  bool create_namespace = 3;
+
+  /**
+   * The container image to be used for the job.
+   * The pull_secret_name is determined by looking up the
+   * container_image_artifact_store_id from the environment where the job is deployed.
+   */
+  dev.planton.provider.kubernetes.ContainerImage image = 4;
+
+  /**
+   * The CPU and memory resources allocated to the job container.
+   * If not specified, default container resources (limits.cpu=1000m, limits.memory=1Gi,
+   * requests.cpu=50m, requests.memory=100Mi) are applied.
+   */
+  dev.planton.provider.kubernetes.ContainerResources resources = 5 [(dev.planton.provider.kubernetes.default_container_resources) = {
+    limits: {
+      cpu: "1000m"
+      memory: "1Gi"
+    }
+    requests: {
+      cpu: "50m"
+      memory: "100Mi"
+    }
+  }];
+
+  /**
+   * Environment variables and secrets for the job container.
+   */
+  dev.planton.provider.kubernetes.ContainerEnv env = 6;
+
+  /**
+   * Number of parallel pods to run for the job.
+   * Default is 1 (sequential execution).
+   * Set higher for parallel batch processing.
+   */
+  optional uint32 parallelism = 7 [(dev.planton.shared.options.default) = "1"];
+
+  /**
+   * Number of successful completions required before the job is considered complete.
+   * Default is 1.
+   * For parallel jobs, this specifies the total number of successful pods needed.
+   * For indexed jobs, this equals the number of indexes (0 to completions-1).
+   */
+  optional uint32 completions = 8 [(dev.planton.shared.options.default) = "1"];
+
+  /**
+   * Number of retries before marking this job as failed.
+   * Default is 6.
+   */
+  optional uint32 backoff_limit = 9 [(dev.planton.shared.options.default) = "6"];
+
+  /**
+   * Maximum duration in seconds for the job to run.
+   * If the job runs longer than this, it will be terminated.
+   * Set to 0 for no deadline (default).
+   * Useful for preventing runaway jobs.
+   */
+  optional uint64 active_deadline_seconds = 10 [(dev.planton.shared.options.default) = "0"];
+
+  /**
+   * Time in seconds to retain the job after completion (either success or failure).
+   * After this duration, the job and its pods will be automatically deleted.
+   * Useful for cleanup of completed jobs.
+   * Default is 0 (no automatic cleanup).
+   */
+  optional uint32 ttl_seconds_after_finished = 11 [(dev.planton.shared.options.default) = "0"];
+
+  /**
+   * Completion mode for the job.
+   * "NonIndexed" (default): All pods are equivalent, job completes when 'completions' pods succeed.
+   * "Indexed": Each pod gets an index (0 to completions-1), job completes when each index has one successful pod.
+   * Indexed mode is useful for parallel processing of partitioned data.
+   */
+  optional string completion_mode = 12 [
+    (dev.planton.shared.options.default) = "NonIndexed",
+    (buf.validate.field).string = {
+      in: [
+        "NonIndexed",
+        "Indexed"
+      ]
+    }
+  ];
+
+  /**
+   * Pod restart policy.
+   * Allowed values: "OnFailure", "Never".
+   * Default is "Never".
+   * Note: "Always" is not allowed for Jobs.
+   */
+  optional string restart_policy = 13 [
+    (dev.planton.shared.options.default) = "Never",
+    (buf.validate.field).string = {
+      in: [
+        "OnFailure",
+        "Never"
+      ]
+    }
+  ];
+
+  /**
+   * An optional list of commands (equivalent to an ENTRYPOINT override) for the job container.
+   * If omitted, the default ENTRYPOINT in the image will be used.
+   * Example: ["sh", "-c", "python process_data.py"]
+   */
+  repeated string command = 14;
+
+  /**
+   * An optional list of arguments passed to the container command or the image's default ENTRYPOINT.
+   * If omitted, the default CMD in the image will be used.
+   * Example: ["--input", "/data/input.csv", "--output", "/data/output.csv"]
+   */
+  repeated string args = 15;
+
+  /**
+   * ConfigMaps to create alongside the Job.
+   * Key is the ConfigMap name, value is the content.
+   * These ConfigMaps can be referenced in volume mounts.
+   *
+   * Example:
+   *   config_maps:
+   *     processing-script: |
+   *       #!/bin/bash
+   *       echo "Processing data..."
+   *       python /scripts/process.py
+   */
+  map<string, string> config_maps = 16;
+
+  /**
+   * Volume mounts for the Job container.
+   * Supports mounting ConfigMaps, Secrets, HostPaths, EmptyDirs, and PVCs.
+   * ConfigMaps defined in spec.config_maps can be referenced here.
+   *
+   * Example:
+   *   volume_mounts:
+   *     - name: processing-script
+   *       mountPath: /scripts/process.sh
+   *       configMap:
+   *         name: processing-script
+   *         key: processing-script
+   *         path: process.sh
+   */
+  repeated dev.planton.provider.kubernetes.VolumeMount volume_mounts = 17;
+
+  /**
+   * If true, no pods are created for this job.
+   * Existing pods are not affected.
+   * Default is false.
+   */
+  optional bool suspend = 18 [(dev.planton.shared.options.default) = "false"];
+}

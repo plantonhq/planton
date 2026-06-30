@@ -12,7 +12,7 @@ Deploys an AWS EKS managed node group into an existing EKS cluster, provisioning
 
 ## What Gets Created
 
-When you deploy an AwsEksNodeGroup resource, OpenMCF provisions:
+When you deploy an AwsEksNodeGroup resource, Planton provisions:
 
 - **EKS Managed Node Group** — an `aws_eks_node_group` resource attached to the specified EKS cluster, running EC2 instances in the provided subnets with the configured scaling parameters, instance type, capacity type, and disk size
 - **Auto Scaling Group** — AWS automatically creates and manages an ASG behind the node group to enforce the min/max/desired node counts
@@ -20,7 +20,7 @@ When you deploy an AwsEksNodeGroup resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **An existing EKS cluster** (e.g., created by an AwsEksCluster resource)
 - **An IAM role** with the required EKS worker node policies (`AmazonEKSWorkerNodePolicy`, `AmazonEKS_CNI_Policy`, `AmazonEC2ContainerRegistryReadOnly`)
 - **At least two subnets** in different Availability Zones (typically private subnets in the cluster's VPC)
@@ -30,15 +30,15 @@ When you deploy an AwsEksNodeGroup resource, OpenMCF provisions:
 Create a file `eks-nodegroup.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEksNodeGroup
 metadata:
   name: my-nodegroup
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsEksNodeGroup.my-nodegroup
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsEksNodeGroup.my-nodegroup
 spec:
   region: us-west-2
   clusterName: my-eks-cluster
@@ -56,7 +56,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f eks-nodegroup.yaml
+planton apply -f eks-nodegroup.yaml
 ```
 
 This creates a managed node group with two `t3.medium` on-demand instances in the specified EKS cluster.
@@ -93,15 +93,15 @@ This creates a managed node group with two `t3.medium` on-demand instances in th
 Use Spot instances for cost savings on fault-tolerant workloads:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEksNodeGroup
 metadata:
   name: spot-nodegroup
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsEksNodeGroup.spot-nodegroup
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsEksNodeGroup.spot-nodegroup
 spec:
   region: us-west-2
   clusterName: my-eks-cluster
@@ -122,15 +122,15 @@ spec:
 Enable SSH for debugging and add Kubernetes labels for workload scheduling:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEksNodeGroup
 metadata:
   name: labeled-nodegroup
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.AwsEksNodeGroup.labeled-nodegroup
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.AwsEksNodeGroup.labeled-nodegroup
 spec:
   region: us-west-2
   clusterName: my-eks-cluster
@@ -156,15 +156,15 @@ spec:
 High-capacity node group for production workloads with large container images:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEksNodeGroup
 metadata:
   name: prod-nodegroup
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsEksNodeGroup.prod-nodegroup
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsEksNodeGroup.prod-nodegroup
 spec:
   region: us-west-2
   clusterName: prod-eks-cluster
@@ -187,18 +187,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding IDs:
+Reference other Planton-managed resources instead of hardcoding IDs:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEksNodeGroup
 metadata:
   name: ref-nodegroup
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsEksNodeGroup.ref-nodegroup
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsEksNodeGroup.ref-nodegroup
 spec:
   region: us-west-2
   clusterName:

@@ -1,0 +1,285 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azurestorageaccount.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// **AzureStorageAccountSpec** defines the configuration for creating an Azure Storage Account.
+// This follows the 80/20 principle: exposing the 20% of configurations that 80% of users need.
+message AzureStorageAccountSpec {
+  // The Azure region where the Storage Account will be deployed (e.g., "eastus", "westus2", "westeurope").
+  // This is required as Storage Account is a regional service.
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The Azure Resource Group where the Storage Account will be created.
+  // Can be a literal string or a reference to an AzureResourceGroup output.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef resource_group = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AzureResourceGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.resource_group_name"
+  ];
+
+  // The kind of storage account.
+  // - STORAGE_V2: General-purpose v2 (recommended for most scenarios)
+  // - BLOB_STORAGE: Specialized for blob data (hot/cool/archive tiers)
+  // - BLOCK_BLOB_STORAGE: Premium storage for block blobs and append blobs
+  // - FILE_STORAGE: Premium storage for file shares
+  // Default: STORAGE_V2
+  optional AzureStorageAccountKind account_kind = 3 [
+    (buf.validate.field).enum.defined_only = true,
+    (dev.planton.shared.options.default) = "STORAGE_V2"
+  ];
+
+  // The performance tier of the storage account.
+  // - STANDARD: Standard performance backed by HDD
+  // - PREMIUM: Premium performance backed by SSD (only for specific account kinds)
+  // Default: STANDARD
+  optional AzureStorageAccountTier account_tier = 4 [
+    (buf.validate.field).enum.defined_only = true,
+    (dev.planton.shared.options.default) = "STANDARD"
+  ];
+
+  // The replication strategy for the storage account.
+  // - LRS: Locally redundant storage (3 copies in single datacenter)
+  // - ZRS: Zone-redundant storage (3 copies across availability zones)
+  // - GRS: Geo-redundant storage (6 copies: 3 local + 3 in paired region)
+  // - GZRS: Geo-zone-redundant storage (ZRS + geo-replication)
+  // - RA_GRS: Read-access geo-redundant storage
+  // - RA_GZRS: Read-access geo-zone-redundant storage
+  // Default: LRS
+  optional AzureStorageReplicationType replication_type = 5 [
+    (buf.validate.field).enum.defined_only = true,
+    (dev.planton.shared.options.default) = "LRS"
+  ];
+
+  // The default access tier for blob data.
+  // Only applicable for BlobStorage and StorageV2 account kinds.
+  // - HOT: Optimized for frequently accessed data
+  // - COOL: Optimized for infrequently accessed data (30-day minimum retention)
+  // Default: HOT
+  optional AzureStorageAccessTier access_tier = 6 [
+    (buf.validate.field).enum.defined_only = true,
+    (dev.planton.shared.options.default) = "HOT"
+  ];
+
+  // Enable HTTPS traffic only. When true, all requests must use HTTPS.
+  // Strongly recommended for security.
+  // Default: true
+  optional bool enable_https_traffic_only = 7 [(dev.planton.shared.options.default) = "true"];
+
+  // Minimum TLS version for incoming requests.
+  // - TLS1_0: TLS 1.0 (not recommended)
+  // - TLS1_1: TLS 1.1 (not recommended)
+  // - TLS1_2: TLS 1.2 (recommended)
+  // Default: TLS1_2
+  optional AzureTlsVersion min_tls_version = 8 [
+    (buf.validate.field).enum.defined_only = true,
+    (dev.planton.shared.options.default) = "TLS1_2"
+  ];
+
+  // Network access control configuration for the Storage Account.
+  // Controls who can access the storage from where (public internet, specific IPs, VNets).
+  AzureStorageNetworkRules network_rules = 9;
+
+  // Blob service properties configuration.
+  AzureStorageBlobProperties blob_properties = 10;
+
+  // List of blob containers to create in the storage account.
+  repeated AzureStorageContainer containers = 11 [(buf.validate.field).repeated.max_items = 100];
+}
+
+// **AzureStorageAccountKind** defines the kind of storage account.
+enum AzureStorageAccountKind {
+  // Unspecified kind (will default to STORAGE_V2)
+  ACCOUNT_KIND_UNSPECIFIED = 0;
+
+  // General-purpose v2 storage account (recommended)
+  STORAGE_V2 = 1;
+
+  // Specialized blob storage with access tiers
+  BLOB_STORAGE = 2;
+
+  // Premium block blob storage (SSD-backed)
+  BLOCK_BLOB_STORAGE = 3;
+
+  // Premium file storage (SSD-backed)
+  FILE_STORAGE = 4;
+
+  // Legacy general-purpose v1 storage account
+  STORAGE = 5;
+}
+
+// **AzureStorageAccountTier** defines the performance tier.
+enum AzureStorageAccountTier {
+  // Unspecified tier (will default to STANDARD)
+  ACCOUNT_TIER_UNSPECIFIED = 0;
+
+  // Standard performance backed by HDD
+  STANDARD = 1;
+
+  // Premium performance backed by SSD
+  PREMIUM = 2;
+}
+
+// **AzureStorageReplicationType** defines the replication strategy.
+enum AzureStorageReplicationType {
+  // Unspecified replication (will default to LRS)
+  REPLICATION_UNSPECIFIED = 0;
+
+  // Locally redundant storage (3 copies in single datacenter)
+  LRS = 1;
+
+  // Zone-redundant storage (3 copies across availability zones)
+  ZRS = 2;
+
+  // Geo-redundant storage (6 copies total)
+  GRS = 3;
+
+  // Geo-zone-redundant storage
+  GZRS = 4;
+
+  // Read-access geo-redundant storage
+  RA_GRS = 5;
+
+  // Read-access geo-zone-redundant storage
+  RA_GZRS = 6;
+}
+
+// **AzureStorageAccessTier** defines the blob access tier.
+enum AzureStorageAccessTier {
+  // Unspecified tier (will default to HOT)
+  ACCESS_TIER_UNSPECIFIED = 0;
+
+  // Hot tier for frequently accessed data
+  HOT = 1;
+
+  // Cool tier for infrequently accessed data
+  COOL = 2;
+}
+
+// **AzureTlsVersion** defines the minimum TLS version.
+enum AzureTlsVersion {
+  // Unspecified version (will default to TLS1_2)
+  TLS_VERSION_UNSPECIFIED = 0;
+
+  // TLS 1.0 (not recommended)
+  TLS1_0 = 1;
+
+  // TLS 1.1 (not recommended)
+  TLS1_1 = 2;
+
+  // TLS 1.2 (recommended)
+  TLS1_2 = 3;
+}
+
+// **AzureStorageNetworkRules** defines network access control rules.
+message AzureStorageNetworkRules {
+  // Default action when no explicit rule matches.
+  // - ALLOW: Permit all traffic (not recommended for production)
+  // - DENY: Block all traffic unless explicitly allowed (recommended)
+  // Default: DENY
+  optional AzureStorageNetworkAction default_action = 1 [
+    (buf.validate.field).enum.defined_only = true,
+    (dev.planton.shared.options.default) = "DENY"
+  ];
+
+  // Allow traffic from trusted Azure services even when default_action is DENY.
+  // This includes services like Azure Backup, Azure Monitor, Azure Event Grid, etc.
+  // Default: true
+  optional bool bypass_azure_services = 2 [(dev.planton.shared.options.default) = "true"];
+
+  // List of IP addresses or CIDR ranges allowed to access the storage.
+  // Example: ["203.0.113.0/24", "198.51.100.42"]
+  repeated string ip_rules = 3 [(buf.validate.field).repeated.max_items = 200];
+
+  // List of Azure Virtual Network subnet resource IDs allowed to access the storage.
+  // Example: ["/subscriptions/{sub-id}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetworks/{vnet}/subnets/{subnet}"]
+  repeated string virtual_network_subnet_ids = 4 [(buf.validate.field).repeated.max_items = 100];
+}
+
+// **AzureStorageNetworkAction** defines the default network action.
+enum AzureStorageNetworkAction {
+  // Unspecified action (will default to DENY)
+  NETWORK_ACTION_UNSPECIFIED = 0;
+
+  // Allow all network traffic
+  ALLOW = 1;
+
+  // Deny all network traffic unless explicitly allowed
+  DENY = 2;
+}
+
+// **AzureStorageBlobProperties** defines blob service properties.
+message AzureStorageBlobProperties {
+  // Enable versioning for blobs. When enabled, Azure maintains previous versions of blobs.
+  // Useful for data protection and recovery.
+  // Default: false
+  optional bool enable_versioning = 1 [(dev.planton.shared.options.default) = "false"];
+
+  // Soft delete retention period for blobs in days (1-365 days).
+  // When set, deleted blobs are retained for the specified period and can be recovered.
+  // Set to 0 to disable soft delete.
+  // Default: 7 days
+  optional int32 soft_delete_retention_days = 2 [
+    (buf.validate.field).int32 = {
+      gte: 0
+      lte: 365
+    },
+    (dev.planton.shared.options.default) = "7"
+  ];
+
+  // Soft delete retention period for containers in days (1-365 days).
+  // When set, deleted containers are retained for the specified period and can be recovered.
+  // Set to 0 to disable container soft delete.
+  // Default: 7 days
+  optional int32 container_soft_delete_retention_days = 3 [
+    (buf.validate.field).int32 = {
+      gte: 0
+      lte: 365
+    },
+    (dev.planton.shared.options.default) = "7"
+  ];
+}
+
+// **AzureStorageContainer** defines a blob container to create.
+message AzureStorageContainer {
+  // The name of the container.
+  // Must be lowercase, 3-63 characters, and start with a letter or number.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 3
+      max_len: 63
+    }
+  ];
+
+  // The access level for the container.
+  // - PRIVATE: No public read access (default, recommended)
+  // - BLOB: Public read access for blobs only
+  // - CONTAINER: Public read access for container and blobs
+  // Default: PRIVATE
+  optional AzureStorageContainerAccess access_type = 2 [
+    (buf.validate.field).enum.defined_only = true,
+    (dev.planton.shared.options.default) = "PRIVATE"
+  ];
+}
+
+// **AzureStorageContainerAccess** defines the public access level for a container.
+enum AzureStorageContainerAccess {
+  // Unspecified access (will default to PRIVATE)
+  CONTAINER_ACCESS_UNSPECIFIED = 0;
+
+  // No public read access (recommended)
+  PRIVATE = 1;
+
+  // Public read access for blobs only
+  BLOB = 2;
+
+  // Public read access for container and blobs
+  CONTAINER = 3;
+}

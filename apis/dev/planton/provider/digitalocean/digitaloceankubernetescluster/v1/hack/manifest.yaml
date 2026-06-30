@@ -1,0 +1,26 @@
+apiVersion: digital-ocean.planton.dev/v1
+kind: DigitalOceanKubernetesCluster
+metadata:
+  name: first-cluster                 # K8s resource name (unique per namespace)
+spec:
+  clusterName: first-cluster          # Must be unique in your DigitalOcean account
+  region: blr1                       # Any valid DigitalOceanRegion slug (nyc3, sfo3, blr1, …)
+  kubernetesVersion: "1.33"        # Must match a version currently offered by DigitalOcean
+  vpc:
+    value: b5648f9e-a28a-4760-bb87-b2fad07ae295
+  highlyAvailable: false              # HA control plane (extra cost)
+  autoUpgrade: false                  # Automatic patch upgrades
+  disableSurgeUpgrade: false         # Keep surge nodes for zero‑downtime upgrades
+  maintenanceWindow: "sunday=02:00"  # Scheduled maintenance window (optional)
+  registryIntegration: false         # Enable DOCR integration (optional)
+  # controlPlaneFirewallAllowedIps:  # Restrict API access to specific IPs (optional)
+  #   - "203.0.113.5/32"
+  #   - "198.51.100.0/24"
+  tags:
+    - planton
+  defaultNodePool:
+    size: s-2vcpu-4gb
+    nodeCount: 3
+    autoScale: true
+    minNodes: 1
+    maxNodes: 5

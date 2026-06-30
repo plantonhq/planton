@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.alicloud.alicloudapplicationloadbalancer.v1;
+
+import "dev/planton/provider/alicloud/alicloudapplicationloadbalancer/v1/api.proto";
+import "dev/planton/provider/alicloud/provider.proto";
+
+// alicloud-application-load-balancer stack-input
+message AliCloudApplicationLoadBalancerStackInput {
+  // target cloud-resource
+  AliCloudApplicationLoadBalancer target = 1;
+  // provider-config
+  dev.planton.provider.alicloud.AliCloudProviderConfig provider_config = 2;
+}

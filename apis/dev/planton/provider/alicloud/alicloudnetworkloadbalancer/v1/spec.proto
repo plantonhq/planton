@@ -1,0 +1,368 @@
+syntax = "proto3";
+
+package dev.planton.provider.alicloud.alicloudnetworkloadbalancer.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// AliCloudNetworkLoadBalancerSpec defines the configuration for an Alibaba Cloud
+// Network Load Balancer (NLB) with bundled server groups and listeners.
+//
+// NLB is a modern Layer 4 load balancer for TCP, UDP, and TCPSSL traffic,
+// designed for ultra-high performance and low latency. This component bundles
+// the NLB, its server groups, and listeners into a single deployable unit
+// because an NLB without at least one server group and listener is
+// non-functional.
+//
+// Server groups are created as empty targets -- backend membership (ECS
+// instances, ENI IPs, etc.) is managed externally by ACK service controllers,
+// manual attachment, or other orchestration, matching the ALB pattern.
+//
+// Billing is hardcoded to PayAsYouGo in the IaC modules, matching the ALB
+// convention.
+//
+// Provider resources:
+//   Terraform: alicloud_nlb_load_balancer + alicloud_nlb_server_group + alicloud_nlb_listener
+//   Pulumi:    nlb.LoadBalancer + nlb.ServerGroup + nlb.Listener
+message AliCloudNetworkLoadBalancerSpec {
+  // Alibaba Cloud region where the NLB will be created.
+  // Must match the region of the VPC and VSwitches.
+  // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // VPC ID that the NLB belongs to. The NLB, all zone-mapping VSwitches,
+  // and server groups must reside in the same VPC.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef vpc_id = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AliCloudVpc,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
+  ];
+
+  // NLB name. 2-128 characters; must start with a letter; can contain
+  // digits, underscores, periods, and hyphens.
+  // If omitted, defaults to the metadata.name.
+  string load_balancer_name = 3 [(buf.validate.field).cel = {
+    id: "load_balancer_name_length"
+    message: "load_balancer_name must be between 2 and 128 characters when set"
+    expression: "this == '' || (this.size() >= 2 && this.size() <= 128)"
+  }];
+
+  // Network type of the NLB.
+  // "Internet" creates a public-facing NLB with a DNS name resolvable
+  // from the internet. "Intranet" creates a VPC-internal NLB.
+  // Default: "Internet"
+  optional string address_type = 4 [
+    (buf.validate.field).cel = {
+      id: "address_type_valid"
+      message: "address_type must be one of: Internet, Intranet"
+      expression: "this == '' || this in ['Internet', 'Intranet']"
+    },
+    (dev.planton.shared.options.default) = "Internet"
+  ];
+
+  // Availability zone mappings. Each mapping places an NLB node in a zone
+  // with a VSwitch for IP allocation. NLB requires at least 2 zones for
+  // high availability.
+  repeated AliCloudNetworkLoadBalancerZoneMapping zone_mappings = 5 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).repeated.min_items = 2
+  ];
+
+  // Alibaba Cloud resource group ID for organizational grouping (per DD05).
+  // If omitted, the NLB is placed in the account's default resource group.
+  string resource_group_id = 6;
+
+  // Whether to enable cross-zone load balancing. When enabled, NLB
+  // distributes traffic across all healthy backends in all zones. When
+  // disabled, traffic stays within the zone where it was received.
+  // Default: true
+  optional bool cross_zone_enabled = 7 [(dev.planton.shared.options.default) = "true"];
+
+  // Tags to apply to the NLB resource.
+  map<string, string> tags = 8;
+
+  // Server groups that define backend targets for the NLB.
+  // Each server group has its own health check, protocol, and scheduling
+  // configuration. Listeners reference server groups by name.
+  //
+  // Server groups are created empty -- backend membership is managed
+  // externally (by ACK service controllers, manual attachment, etc.).
+  repeated AliCloudNetworkLoadBalancerServerGroup server_groups = 9;
+
+  // Listeners that define how the NLB accepts incoming traffic.
+  // Each listener binds to a port and protocol and forwards traffic
+  // directly to a server group. TCPSSL listeners support TLS termination.
+  repeated AliCloudNetworkLoadBalancerListener listeners = 10;
+}
+
+// AliCloudNetworkLoadBalancerZoneMapping associates an availability zone with a VSwitch.
+// The NLB places a node in each mapped zone for high availability.
+message AliCloudNetworkLoadBalancerZoneMapping {
+  // Availability zone ID within the region.
+  // Examples: "cn-hangzhou-a", "cn-hangzhou-b", "us-west-1-a".
+  string zone_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // VSwitch ID in this availability zone. The NLB allocates an IP from
+  // this VSwitch. Must belong to the same VPC as the NLB's vpc_id.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef vswitch_id = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AliCloudVswitch,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vswitch_id"
+  ];
+
+  // EIP allocation ID to bind a fixed public IP to this zone's NLB node.
+  // Only meaningful for internet-facing NLBs that need stable public IPs
+  // (e.g., database access, game servers, DNS A-records).
+  // If omitted, Alibaba Cloud auto-assigns IPs.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef allocation_id = 3 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AliCloudEipAddress,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.eip_id"
+  ];
+}
+
+// AliCloudNetworkLoadBalancerServerGroup defines a backend target group with health check
+// and connection management configuration. Server groups are created empty --
+// backend membership is managed externally.
+message AliCloudNetworkLoadBalancerServerGroup {
+  // Server group name. 2-128 characters; must start with a letter.
+  // Used by listeners to reference this server group via server_group_name.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 2,
+    (buf.validate.field).string.max_len = 128
+  ];
+
+  // Backend protocol for communication between the NLB and servers.
+  // Default: "TCP"
+  optional string protocol = 2 [
+    (buf.validate.field).cel = {
+      id: "server_group_protocol_valid"
+      message: "protocol must be one of: TCP, UDP, TCPSSL"
+      expression: "this == '' || this in ['TCP', 'UDP', 'TCPSSL']"
+    },
+    (dev.planton.shared.options.default) = "TCP"
+  ];
+
+  // Scheduling algorithm for distributing connections across servers.
+  // "Wrr" -- Weighted Round Robin (default, distributes by weight).
+  // "Rr"  -- Round Robin (equal distribution).
+  // "Sch" -- Source IP Consistent Hashing (same client to same server).
+  // "Tch" -- Four-tuple Consistent Hashing (src/dst IP + port).
+  // "Qch" -- QUIC ID Consistent Hashing.
+  // "Wlc" -- Weighted Least Connections.
+  // Default: "Wrr"
+  optional string scheduler = 3 [
+    (buf.validate.field).cel = {
+      id: "scheduler_valid"
+      message: "scheduler must be one of: Wrr, Rr, Sch, Tch, Qch, Wlc"
+      expression: "this == '' || this in ['Wrr', 'Rr', 'Sch', 'Tch', 'Qch', 'Wlc']"
+    },
+    (dev.planton.shared.options.default) = "Wrr"
+  ];
+
+  // Whether to enable connection draining. When enabled, existing
+  // connections to a removed backend are allowed to complete within the
+  // drain timeout before being forcibly closed.
+  // Default: false
+  optional bool connection_drain_enabled = 4 [(dev.planton.shared.options.default) = "false"];
+
+  // Maximum time in seconds to wait for in-flight connections to complete
+  // when a backend is removed. Only effective when connection_drain_enabled
+  // is true.
+  // Range: 10-900. Default: 10
+  optional int32 connection_drain_timeout = 5 [
+    (buf.validate.field).int32 = {
+      gte: 10
+      lte: 900
+    },
+    (dev.planton.shared.options.default) = "10"
+  ];
+
+  // Whether to preserve the client's original IP address when forwarding
+  // traffic to backends. The backend sees the real client IP instead of
+  // the NLB's IP.
+  // Default: true
+  optional bool preserve_client_ip_enabled = 6 [(dev.planton.shared.options.default) = "true"];
+
+  // Health check configuration. Required for every server group.
+  AliCloudNetworkLoadBalancerHealthCheckConfig health_check = 7 [(buf.validate.field).required = true];
+}
+
+// AliCloudNetworkLoadBalancerHealthCheckConfig defines how the NLB probes backend servers.
+message AliCloudNetworkLoadBalancerHealthCheckConfig {
+  // Whether health checks are enabled for this server group.
+  // When disabled, all servers are considered healthy.
+  bool health_check_enabled = 1;
+
+  // Protocol used for health check probes.
+  // "TCP" performs a TCP connection check.
+  // "HTTP" sends an HTTP request and checks the response code.
+  // "UDP" sends a UDP packet and expects a response.
+  // Default: "TCP"
+  optional string health_check_type = 2 [
+    (buf.validate.field).cel = {
+      id: "health_check_type_valid"
+      message: "health_check_type must be one of: TCP, HTTP, UDP"
+      expression: "this == '' || this in ['TCP', 'HTTP', 'UDP']"
+    },
+    (dev.planton.shared.options.default) = "TCP"
+  ];
+
+  // Backend port used for health checks. 0 means use the port of the
+  // backend server (the default).
+  // Range: 0-65535. Default: 0
+  optional int32 health_check_connect_port = 3 [
+    (buf.validate.field).int32 = {
+      gte: 0
+      lte: 65535
+    },
+    (dev.planton.shared.options.default) = "0"
+  ];
+
+  // Maximum time to wait for a health check response, in seconds.
+  // Range: 1-300. Default: 5
+  optional int32 health_check_connect_timeout = 4 [
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 300
+    },
+    (dev.planton.shared.options.default) = "5"
+  ];
+
+  // Interval between health check probes, in seconds.
+  // Range: 5-50. Default: 10
+  optional int32 health_check_interval = 5 [
+    (buf.validate.field).int32 = {
+      gte: 5
+      lte: 50
+    },
+    (dev.planton.shared.options.default) = "10"
+  ];
+
+  // Number of consecutive successful probes before a server is marked healthy.
+  // Range: 2-10. Default: 2
+  optional int32 healthy_threshold = 6 [
+    (buf.validate.field).int32 = {
+      gte: 2
+      lte: 10
+    },
+    (dev.planton.shared.options.default) = "2"
+  ];
+
+  // Number of consecutive failed probes before a server is marked unhealthy.
+  // Range: 2-10. Default: 2
+  optional int32 unhealthy_threshold = 7 [
+    (buf.validate.field).int32 = {
+      gte: 2
+      lte: 10
+    },
+    (dev.planton.shared.options.default) = "2"
+  ];
+
+  // URL path for HTTP health check probes. Must start with "/".
+  // Only applicable when health_check_type is "HTTP".
+  // Example: "/health", "/api/healthz"
+  string health_check_url = 8;
+
+  // Domain name used in the Host header of HTTP health check probes.
+  // Only applicable when health_check_type is "HTTP".
+  // If omitted, the server's IP address is used.
+  string health_check_domain = 9;
+
+  // HTTP method for health check probes.
+  // Only applicable when health_check_type is "HTTP".
+  // Default: "GET"
+  optional string http_check_method = 10 [
+    (buf.validate.field).cel = {
+      id: "http_check_method_valid"
+      message: "http_check_method must be one of: GET, HEAD"
+      expression: "this == '' || this in ['GET', 'HEAD']"
+    },
+    (dev.planton.shared.options.default) = "GET"
+  ];
+
+  // HTTP status codes that indicate a healthy response.
+  // Only applicable when health_check_type is "HTTP".
+  // Examples: ["http_2xx"], ["http_2xx", "http_3xx"]
+  repeated string health_check_http_codes = 11;
+}
+
+// AliCloudNetworkLoadBalancerListener defines how the NLB accepts incoming traffic on a
+// specific port and protocol.
+message AliCloudNetworkLoadBalancerListener {
+  // Port on which the listener accepts traffic.
+  // Range: 1-65535. Common values: 80 (TCP), 443 (TCPSSL), 3306 (MySQL).
+  int32 listener_port = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }
+  ];
+
+  // Protocol for this listener.
+  // "TCP" for raw TCP traffic.
+  // "UDP" for UDP traffic.
+  // "TCPSSL" for TLS-encrypted TCP traffic (requires certificate_ids).
+  string listener_protocol = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "listener_protocol_valid"
+      message: "listener_protocol must be one of: TCP, UDP, TCPSSL"
+      expression: "this in ['TCP', 'UDP', 'TCPSSL']"
+    }
+  ];
+
+  // Name of the server group that receives traffic from this listener.
+  // Must match a name in the server_groups list.
+  string server_group_name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Human-readable description of this listener's purpose.
+  string listener_description = 4;
+
+  // Connection idle timeout in seconds. Connections idle longer are closed.
+  // Applies to TCP and TCPSSL only; ignored for UDP.
+  // Range: 1-900. Default: 900
+  optional int32 idle_timeout = 5 [
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 900
+    },
+    (dev.planton.shared.options.default) = "900"
+  ];
+
+  // Whether to enable the Proxy Protocol. When enabled, the NLB inserts
+  // a Proxy Protocol header so backends can read the real client IP/port.
+  // Default: false
+  optional bool proxy_protocol_enabled = 6 [(dev.planton.shared.options.default) = "false"];
+
+  // Server certificate IDs for TCPSSL listeners. At least one is required
+  // when listener_protocol is "TCPSSL".
+  // Obtain from Alibaba Cloud Certificate Management Service (CAS).
+  repeated string certificate_ids = 7;
+
+  // TLS security policy that defines the supported TLS versions and cipher
+  // suites. Only applicable for TCPSSL listeners.
+  // Examples: "tls_cipher_policy_1_0", "tls_cipher_policy_1_2_strict"
+  string security_policy_id = 8;
+
+  // CA certificate IDs for mutual TLS authentication on TCPSSL listeners.
+  // When set along with ca_enabled, the NLB validates the client certificate
+  // against these CA certificates.
+  repeated string ca_certificate_ids = 9;
+
+  // Whether to enable mutual TLS (client certificate verification)
+  // on TCPSSL listeners. Requires ca_certificate_ids to be set.
+  // Default: false
+  optional bool ca_enabled = 10 [(dev.planton.shared.options.default) = "false"];
+}

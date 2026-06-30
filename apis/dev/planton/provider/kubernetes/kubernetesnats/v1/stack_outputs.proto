@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesnats.v1;
+
+import "dev/planton/provider/kubernetes/kubernetes.proto";
+
+//nats-kubernetes stack outputs captures key runtime info after provisioning.
+message KubernetesNatsStackOutputs {
+  // kubernetes namespace in which the nats cluster is deployed.
+  string namespace = 1;
+  // internal dns url for clients (e.g. "nats://nats.default.svc:4222").
+  string client_url_internal = 2;
+  // external url if ingress or load-balancer is enabled.
+  string client_url_external = 3;
+  // reference to the secret that stores the auth token (blank if auth disabled).
+  dev.planton.provider.kubernetes.KubernetesSecretKey auth_token_secret = 4;
+  // jet-stream domain configured for the cluster (blank if jet-stream disabled).
+  string jet_stream_domain = 5;
+  // prometheus metrics endpoint (e.g. "http://nats-prom.default.svc:7777/metrics").
+  string metrics_endpoint = 6;
+  // kubernetes secret containing the tls certificate and key (blank if tls disabled).
+  dev.planton.provider.kubernetes.KubernetesSecretKey tls_secret = 7;
+}

@@ -10,7 +10,7 @@ Created 35 production-quality presets (70 files: 35 YAML + 35 MD) covering all 1
 
 ## Problem Statement / Motivation
 
-Scaleway users configuring OpenMCF components need to understand all available fields and sensible defaults before deploying. The 18 Scaleway components had `spec.proto` definitions and `examples.md` docs, but no ready-to-deploy preset files representing common real-world configurations.
+Scaleway users configuring Planton components need to understand all available fields and sensible defaults before deploying. The 18 Scaleway components had `spec.proto` definitions and `examples.md` docs, but no ready-to-deploy preset files representing common real-world configurations.
 
 ### Pain Points
 

@@ -10,7 +10,7 @@ Wrote hand-written, source-verified catalog pages for all 48 remaining Kubernete
 
 ## Problem Statement / Motivation
 
-The Kubernetes provider is OpenMCF's largest, with 51 deployment components spanning core workloads, databases, messaging, CI/CD, networking, observability, security, identity, container registries, and Kubernetes operators. Only 3 of these had hand-written catalog pages (KubernetesPostgres, KubernetesDeployment, KubernetesRedis). The remaining 48 served auto-generated `docs/README.md` content that consisted of research-style prose rather than developer-focused documentation.
+The Kubernetes provider is Planton's largest, with 51 deployment components spanning core workloads, databases, messaging, CI/CD, networking, observability, security, identity, container registries, and Kubernetes operators. Only 3 of these had hand-written catalog pages (KubernetesPostgres, KubernetesDeployment, KubernetesRedis). The remaining 48 served auto-generated `docs/README.md` content that consisted of research-style prose rather than developer-focused documentation.
 
 ### Pain Points
 
@@ -89,9 +89,9 @@ The build script (`site/scripts/copy-component-docs.ts`) automatically prefers `
 
 ## Impact
 
-- Developers evaluating OpenMCF's Kubernetes support can now browse source-verified documentation for every one of the 51 components
+- Developers evaluating Planton's Kubernetes support can now browse source-verified documentation for every one of the 51 components
 - The catalog covers the full spectrum: from simple primitives (Namespace, Secret) to complex platforms (Harbor, Temporal, Kafka, GitLab)
-- Every manifest example follows the actual protobuf schema and would pass `openmcf validate`
+- Every manifest example follows the actual protobuf schema and would pass `planton validate`
 
 ## Related Work
 

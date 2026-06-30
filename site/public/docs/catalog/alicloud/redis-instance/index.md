@@ -12,13 +12,13 @@ Deploys an Alibaba Cloud Redis (KVStore) instance for managed in-memory caching,
 
 ## What Gets Created
 
-When you deploy an AliCloudRedisInstance resource, OpenMCF provisions:
+When you deploy an AliCloudRedisInstance resource, Planton provisions:
 
 - **KVStore Instance** -- an `alicloud_kvstore_instance` with the selected engine version, instance class, and network placement
 
 ## Prerequisites
 
-- **Alibaba Cloud credentials** configured via environment variables or OpenMCF provider config
+- **Alibaba Cloud credentials** configured via environment variables or Planton provider config
 - **A VSwitch** -- the Redis instance is placed in a VSwitch (create one with AliCloudVswitch)
 - The VSwitch's VPC and availability zone determine the instance's network placement
 
@@ -27,7 +27,7 @@ When you deploy an AliCloudRedisInstance resource, OpenMCF provisions:
 Create a file `redis-instance.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudRedisInstance
 metadata:
   name: my-redis
@@ -43,7 +43,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f redis-instance.yaml
+planton apply -f redis-instance.yaml
 ```
 
 This creates a Redis 7.0 instance with the default PostPaid billing and VPC password authentication.

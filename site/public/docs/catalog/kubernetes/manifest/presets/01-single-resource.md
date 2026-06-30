@@ -1,6 +1,6 @@
 ---
 title: "Single Resource Manifest"
-description: "This preset deploys a raw Kubernetes manifest using the generic KubernetesManifest component. Use this as an escape hatch for deploying any Kubernetes resource that does not have a dedicated OpenMCF..."
+description: "This preset deploys a raw Kubernetes manifest using the generic KubernetesManifest component. Use this as an escape hatch for deploying any Kubernetes resource that does not have a dedicated Planton..."
 type: "preset"
 rank: "01"
 presetSlug: "01-single-resource"
@@ -13,11 +13,11 @@ order: 1
 
 # Single Resource Manifest
 
-This preset deploys a raw Kubernetes manifest using the generic KubernetesManifest component. Use this as an escape hatch for deploying any Kubernetes resource that does not have a dedicated OpenMCF component.
+This preset deploys a raw Kubernetes manifest using the generic KubernetesManifest component. Use this as an escape hatch for deploying any Kubernetes resource that does not have a dedicated Planton component.
 
 ## When to Use
 
-- Deploying custom resources (CRDs) not covered by OpenMCF components
+- Deploying custom resources (CRDs) not covered by Planton components
 - One-off Kubernetes resources (ConfigMaps, ServiceAccounts, RBAC rules) that do not warrant a dedicated component
 - Multi-document manifests (separate resources with `---` delimiters)
 

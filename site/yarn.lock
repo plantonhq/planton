@@ -6946,9 +6946,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"openmcf@workspace:.":
+"planton@workspace:.":
   version: 0.0.0-use.local
-  resolution: "openmcf@workspace:."
+  resolution: "planton@workspace:."
   dependencies:
     "@emotion/react": "npm:^11.14.0"
     "@emotion/styled": "npm:^11.14.1"

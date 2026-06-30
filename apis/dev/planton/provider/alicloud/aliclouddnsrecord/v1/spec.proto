@@ -1,0 +1,103 @@
+syntax = "proto3";
+
+package dev.planton.provider.alicloud.aliclouddnsrecord.v1;
+
+import "buf/validate/validate.proto";
+
+// AliCloudDnsRecordSpec defines the configuration for an Alibaba Cloud DNS
+// record managed by the Alidns service.
+//
+// A DNS record maps a host record (subdomain) to a value within a parent
+// domain. The parent domain must already exist in Alidns -- either managed
+// by the AliCloudDnsZone component or added manually in the console.
+//
+// Common record types: A (IPv4 address), AAAA (IPv6), CNAME (alias),
+// MX (mail exchange with priority), TXT (verification / SPF / DKIM),
+// NS (delegation), SRV (service locator), CAA (certificate authority).
+message AliCloudDnsRecordSpec {
+  // Alibaba Cloud region for provider initialization.
+  // Alidns is a global service, but the provider requires a region.
+  // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The parent domain name that this record belongs to.
+  // Must already exist in the Alidns service (e.g., "example.com").
+  // Cannot be changed after creation (ForceNew).
+  string domain_name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 253
+  ];
+
+  // The host record (subdomain part) of the DNS record.
+  // "rr" stands for "Resource Record" in the Alibaba Cloud API.
+  // Examples: "www", "@" (apex), "*" (wildcard), "mail", "api.v2".
+  // Maximum 253 characters; individual labels up to 63 characters.
+  string rr = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 253
+  ];
+
+  // DNS record type.
+  // Must be one of the types supported by the Alibaba Cloud Alidns API.
+  // Note: "FORWORD_URL" is the Alibaba Cloud API's actual spelling.
+  string type = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "valid_dns_record_type"
+      message: "type must be one of: A, AAAA, CNAME, MX, TXT, NS, SRV, CAA, REDIRECT_URL, FORWORD_URL"
+      expression: "this in ['A', 'AAAA', 'CNAME', 'MX', 'TXT', 'NS', 'SRV', 'CAA', 'REDIRECT_URL', 'FORWORD_URL']"
+    }
+  ];
+
+  // The record value.
+  // Interpretation depends on the record type:
+  //   A       -> IPv4 address (e.g., "1.2.3.4")
+  //   AAAA    -> IPv6 address (e.g., "2001:db8::1")
+  //   CNAME   -> target domain (e.g., "cdn.example.com"), no trailing dot
+  //   MX      -> mail server (e.g., "mx1.example.com"), no trailing dot
+  //   TXT     -> text content (e.g., "v=spf1 include:example.com ~all")
+  //   NS      -> nameserver (e.g., "ns1.example.com"), no trailing dot
+  //   SRV     -> priority weight port target
+  //   CAA     -> flags tag value (e.g., '0 issue "letsencrypt.org"')
+  string value = 5 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Time-to-live in seconds. Controls how long resolvers cache this record.
+  // Range depends on the Alidns plan: Free [600-86400], Basic [120-86400],
+  // Standard [60-86400], Ultimate [10-86400], Exclusive [1-86400].
+  // Default: 600.
+  int32 ttl = 6;
+
+  // Priority for MX records. Required when type is "MX", ignored otherwise.
+  // Range: 1 (highest priority) to 10 (lowest priority).
+  int32 priority = 7;
+
+  // DNS resolution line. Controls which ISP or geographic line resolves
+  // this record. Use "default" for standard resolution.
+  // Advanced values include ISP-specific lines (e.g., "telecom", "unicom",
+  // "mobile") and geographic lines for intelligent DNS routing.
+  // Must be "default" when type is "FORWORD_URL".
+  // Default: "default".
+  string line = 8;
+
+  // Record status. "ENABLE" activates the record; "DISABLE" keeps it
+  // in Alidns but stops it from being served in DNS responses.
+  // Useful for temporarily disabling a record without deleting it.
+  // Default: "ENABLE".
+  string status = 9 [(buf.validate.field).cel = {
+    id: "valid_dns_record_status"
+    message: "status must be either ENABLE or DISABLE"
+    expression: "this == '' || this in ['ENABLE', 'DISABLE']"
+  }];
+
+  // Remark or description for the record.
+  // Visible in the Alidns console; useful for noting the record's purpose.
+  string remark = 10;
+}

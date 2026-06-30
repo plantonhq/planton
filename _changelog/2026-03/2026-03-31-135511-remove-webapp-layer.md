@@ -1,4 +1,4 @@
-# Remove OpenMCF Web Application Layer
+# Remove Planton Web Application Layer
 
 **Date**: March 31, 2026
 **Type**: Refactoring
@@ -6,22 +6,22 @@
 
 ## Summary
 
-Completely removed the self-hosted web application layer from OpenMCF — the Go/Connect backend, Next.js frontend, Docker infrastructure, app-layer protobufs, and all CLI commands that acted as RPC clients to the webapp backend. OpenMCF now ships as the three pillars it was always meant to be: standardized APIs, IaC modules, and the CLI.
+Completely removed the self-hosted web application layer from Planton — the Go/Connect backend, Next.js frontend, Docker infrastructure, app-layer protobufs, and all CLI commands that acted as RPC clients to the webapp backend. Planton now ships as the three pillars it was always meant to be: standardized APIs, IaC modules, and the CLI.
 
 ## Problem Statement / Motivation
 
-OpenMCF experimented with an optional self-hosted web application (backend + frontend + MongoDB, shipped as a unified Docker container) that provided a local UI for managing cloud resources, credentials, and stack updates. After evaluation, the decision was made to not pursue this direction:
+Planton experimented with an optional self-hosted web application (backend + frontend + MongoDB, shipped as a unified Docker container) that provided a local UI for managing cloud resources, credentials, and stack updates. After evaluation, the decision was made to not pursue this direction:
 
 ### Pain Points
 
-- The webapp duplicated functionality better served by the Planton SaaS platform (the commercial layer above OpenMCF)
+- The webapp duplicated functionality better served by the Planton SaaS platform (the commercial layer above Planton)
 - Maintaining a Go/Connect backend, Next.js frontend, MongoDB database, and Docker orchestration added significant surface area to an open-source project whose core value is API standardization and CLI-driven IaC
 - The webapp's CI/CD pipelines were already disabled (`release.app.yaml` and `auto-release.app.yaml` both had `if: false` guards)
 - CLI commands like `cloud-resource:create`, `credential:list`, and `stack-update:stream-output` only worked when the webapp backend was running, creating a confusing two-tier experience
 
 ## Solution / What's New
 
-Removed all webapp-related code, configuration, and infrastructure, leaving a clean codebase focused on OpenMCF's three core pillars.
+Removed all webapp-related code, configuration, and infrastructure, leaving a clean codebase focused on Planton's three core pillars.
 
 ```mermaid
 flowchart TB
@@ -50,8 +50,8 @@ flowchart TB
 | Directory | Contents |
 |-----------|----------|
 | `app/` | Go backend (Connect server + MongoDB repos), Next.js frontend, Dockerfile.unified, supervisord |
-| `apis/org/openmcf/app/` | App-layer protos: cloudresource/v1, credential/v1, stackupdate/v1, commons — plus all generated Go, gRPC, and Connect stubs |
-| `cmd/openmcf/root/webapp/` | `openmcf webapp init\|start\|stop\|status\|logs\|restart\|uninstall` subcommand tree |
+| `apis/dev/planton/app/` | App-layer protos: cloudresource/v1, credential/v1, stackupdate/v1, commons — plus all generated Go, gRPC, and Connect stubs |
+| `cmd/planton/root/webapp/` | `planton webapp init\|start\|stop\|status\|logs\|restart\|uninstall` subcommand tree |
 | `docker/` | MongoDB init script for the webapp |
 
 ### Deleted Files (19 individual files)
@@ -69,7 +69,7 @@ flowchart TB
 
 | File | Change |
 |------|--------|
-| `cmd/openmcf/root.go` | Removed `webapp` import and 14 app-related command registrations |
+| `cmd/planton/root.go` | Removed `webapp` import and 14 app-related command registrations |
 | `go.work` | Removed `./app/backend` workspace member |
 | `go.mod` | Removed `replace` directive for `app/backend`; `go mod tidy` pruned `connectrpc.com/connect` |
 | `Makefile` | Removed `build-backend`, `build-frontend`, all Docker targets, `app/backend` from `vet` |
@@ -80,7 +80,7 @@ flowchart TB
 
 - **206,489 lines removed** across 1,515 files — massive reduction in maintenance surface
 - **Cleaner dependency graph** — `connectrpc.com/connect` and transitive MongoDB driver dependencies no longer in `go.mod`
-- **Simpler mental model** — OpenMCF is APIs + IaC modules + CLI, nothing else
+- **Simpler mental model** — Planton is APIs + IaC modules + CLI, nothing else
 - **No dead code** — removed CI/CD pipelines that were already disabled, config keys that pointed nowhere, and CLI commands that required a running backend
 - **Consistent Bazel build** — `MODULE.bazel` cleaned of stale `com_connectrpc_connect` reference that was causing `bazel mod tidy` failures
 
@@ -97,7 +97,7 @@ Full `make build` pipeline passed after all changes:
 1. Proto generation (`buf lint`, `buf format`, `buf generate`)
 2. Java stub compilation verification (Bazel)
 3. Gazelle BUILD.bazel regeneration (Bazel)
-4. `bazel mod tidy` + `bazel build //:openmcf`
+4. `bazel mod tidy` + `bazel build //:planton`
 5. `go fmt`, `go mod tidy`, `go vet` on `./cmd/...`, `./internal/...`, `./pkg/...`
 6. CLI binary builds for darwin-amd64, darwin-arm64, and linux-amd64
 

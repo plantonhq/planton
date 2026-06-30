@@ -14,13 +14,13 @@ Cloud Armor is a critical security layer for any production GCP deployment. With
 
 ### Pain Points
 
-- GCP users needed to configure Cloud Armor outside OpenMCF, breaking the single-manifest deployment model
-- No way to compose security policies with other OpenMCF-managed resources via infra charts
+- GCP users needed to configure Cloud Armor outside Planton, breaking the single-manifest deployment model
+- No way to compose security policies with other Planton-managed resources via infra charts
 - Cloud Armor's deeply nested rule structure (5 levels of nesting in TF) is error-prone to configure manually
 
 ## Solution / What's New
 
-A complete deployment component at `apis/org/openmcf/provider/gcp/gcpcloudarmorpolicy/v1/` that provisions a Cloud Armor security policy with inline rules supporting all core features.
+A complete deployment component at `apis/dev/planton/provider/gcp/gcpcloudarmorpolicy/v1/` that provisions a Cloud Armor security policy with inline rules supporting all core features.
 
 ### Key Design Decisions
 
@@ -58,7 +58,7 @@ A complete deployment component at `apis/org/openmcf/provider/gcp/gcpcloudarmorp
 
 ## Benefits
 
-- Complete Cloud Armor coverage for OpenMCF GCP users
+- Complete Cloud Armor coverage for Planton GCP users
 - Composable via `StringValueOrRef` -- `policySelfLink` output enables attachment to backend services in infra charts
 - 3 presets for immediate deployment: basic IP allowlist, OWASP WAF protection, API rate limiting
 

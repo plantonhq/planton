@@ -12,14 +12,14 @@ Deploys a Snowflake database with configurable Time Travel retention, transient 
 
 ## What Gets Created
 
-When you deploy a SnowflakeDatabase resource, OpenMCF provisions:
+When you deploy a SnowflakeDatabase resource, Planton provisions:
 
 - **Snowflake Database** — a `snowflake_database` resource with the specified name and all configured parameters including Time Travel retention, collation, and Iceberg settings
 - **Snowflake Provider** — configured using explicit credentials from provider config or environment variables
 
 ## Prerequisites
 
-- **Snowflake credentials** configured via environment variables (`SNOWFLAKE_ACCOUNT`, `SNOWFLAKE_USER`, `SNOWFLAKE_PASSWORD`) or OpenMCF provider config
+- **Snowflake credentials** configured via environment variables (`SNOWFLAKE_ACCOUNT`, `SNOWFLAKE_USER`, `SNOWFLAKE_PASSWORD`) or Planton provider config
 - **A Snowflake account** with permissions to create databases
 - **An external volume** if configuring Iceberg table defaults via `externalVolume`
 
@@ -28,15 +28,15 @@ When you deploy a SnowflakeDatabase resource, OpenMCF provisions:
 Create a file `snowflake-database.yaml`:
 
 ```yaml
-apiVersion: snowflake.openmcf.org/v1
+apiVersion: snowflake.planton.dev/v1
 kind: SnowflakeDatabase
 metadata:
   name: my-database
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.SnowflakeDatabase.my-database
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.SnowflakeDatabase.my-database
 spec:
   name: MY_DATABASE
 ```
@@ -44,7 +44,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f snowflake-database.yaml
+planton apply -f snowflake-database.yaml
 ```
 
 This creates a standard (non-transient) Snowflake database named `MY_DATABASE` with default settings.
@@ -88,15 +88,15 @@ This creates a standard (non-transient) Snowflake database named `MY_DATABASE` w
 A cost-optimized transient database with 1-day Time Travel retention, suitable for staging or ephemeral workloads:
 
 ```yaml
-apiVersion: snowflake.openmcf.org/v1
+apiVersion: snowflake.planton.dev/v1
 kind: SnowflakeDatabase
 metadata:
   name: staging-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.SnowflakeDatabase.staging-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.SnowflakeDatabase.staging-db
 spec:
   name: STAGING_DB
   isTransient: true
@@ -109,15 +109,15 @@ spec:
 A production database with 14-day Time Travel retention, extended data retention for stream staleness prevention, and debug-level logging:
 
 ```yaml
-apiVersion: snowflake.openmcf.org/v1
+apiVersion: snowflake.planton.dev/v1
 kind: SnowflakeDatabase
 metadata:
   name: prod-analytics
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.SnowflakeDatabase.prod-analytics
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.SnowflakeDatabase.prod-analytics
 spec:
   name: PROD_ANALYTICS
   dataRetentionTimeInDays: 14
@@ -133,15 +133,15 @@ spec:
 A database configured for Iceberg table workloads with task execution settings, suitable for data lake integration:
 
 ```yaml
-apiVersion: snowflake.openmcf.org/v1
+apiVersion: snowflake.planton.dev/v1
 kind: SnowflakeDatabase
 metadata:
   name: data-lake-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.SnowflakeDatabase.data-lake-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.SnowflakeDatabase.data-lake-db
 spec:
   name: DATA_LAKE_DB
   dataRetentionTimeInDays: 7
@@ -176,4 +176,4 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-No other OpenMCF components have direct foreign key references to SnowflakeDatabase. This component is typically deployed as a standalone resource within a Snowflake account.
+No other Planton components have direct foreign key references to SnowflakeDatabase. This component is typically deployed as a standalone resource within a Snowflake account.

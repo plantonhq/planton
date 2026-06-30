@@ -6,7 +6,7 @@ This directory contains Docker base images that provide pre-configured environme
 
 | Image                       | Description                                                    | Registry                                            |
 | --------------------------- | -------------------------------------------------------------- | --------------------------------------------------- |
-| [iac-runner](./iac-runner/) | Base image with Go, Pulumi, OpenTofu, and pre-warmed Go caches | `ghcr.io/plantonhq/openmcf/base-images/iac-runner` |
+| [iac-runner](./iac-runner/) | Base image with Go, Pulumi, OpenTofu, and pre-warmed Go caches | `ghcr.io/plantonhq/planton/base-images/iac-runner` |
 
 ## Why Base Images?
 
@@ -19,12 +19,12 @@ By pre-warming these caches during image build, runtime compilation drops from m
 
 ## Versioning
 
-Base images are tagged with the same version as openmcf releases. When you tag a new release (e.g., `v1.2.3`), the corresponding base image is built and published.
+Base images are tagged with the same version as planton releases. When you tag a new release (e.g., `v1.2.3`), the corresponding base image is built and published.
 
 ## Usage
 
 ```dockerfile
-FROM ghcr.io/plantonhq/openmcf/base-images/iac-runner:v1.2.3
+FROM ghcr.io/plantonhq/planton/base-images/iac-runner:v1.2.3
 
 # Your application
 COPY . /app

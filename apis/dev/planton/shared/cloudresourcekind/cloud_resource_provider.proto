@@ -1,0 +1,96 @@
+syntax = "proto3";
+
+package dev.planton.shared.cloudresourcekind;
+
+import "google/protobuf/descriptor.proto";
+
+//enum value options for cloud-resource-provider
+extend google.protobuf.EnumValueOptions {
+  CloudResourceProviderMeta provider_meta = 81101;
+}
+
+//metadata for cloud-resource-provider
+message CloudResourceProviderMeta {
+  //name of the cloud-resource-provider group
+  string group = 1;
+  //display name of the cloud-resource-provider group
+  string display_name = 2;
+}
+
+//cloud resource provider
+enum CloudResourceProvider {
+  cloud_resource_provider_unspecified = 0;
+  _test = 1 [(provider_meta) = {
+    group: "_test.planton.dev"
+    display_name: "Test Cloud Resources"
+  }];
+
+  atlas = 11 [(provider_meta) = {
+    group: "atlas.planton.dev"
+    display_name: "MongoDB Atlas"
+  }];
+  aws = 12 [(provider_meta) = {
+    group: "aws.planton.dev"
+    display_name: "AWS"
+  }];
+  azure = 13 [(provider_meta) = {
+    group: "azure.planton.dev"
+    display_name: "Azure"
+  }];
+  civo = 14 [(provider_meta) = {
+    group: "civo.planton.dev"
+    display_name: "Civo"
+  }];
+  cloudflare = 15 [(provider_meta) = {
+    group: "cloudflare.planton.dev"
+    display_name: "Cloudflare"
+  }];
+  confluent = 16 [(provider_meta) = {
+    group: "confluent.planton.dev"
+    display_name: "Confluent"
+  }];
+  digital_ocean = 17 [(provider_meta) = {
+    group: "digital-ocean.planton.dev"
+    display_name: "DigitalOcean"
+  }];
+  gcp = 18 [(provider_meta) = {
+    group: "gcp.planton.dev"
+    display_name: "GCP"
+  }];
+  kubernetes = 19 [(provider_meta) = {
+    group: "kubernetes.planton.dev"
+    display_name: "Kubernetes"
+  }];
+  snowflake = 20 [(provider_meta) = {
+    group: "snowflake.planton.dev"
+    display_name: "Snowflake"
+  }];
+  auth0 = 21 [(provider_meta) = {
+    group: "auth0.planton.dev"
+    display_name: "Auth0"
+  }];
+  openfga = 22 [(provider_meta) = {
+    group: "openfga.planton.dev"
+    display_name: "OpenFGA"
+  }];
+  openstack = 23 [(provider_meta) = {
+    group: "openstack.planton.dev"
+    display_name: "OpenStack"
+  }];
+  scaleway = 24 [(provider_meta) = {
+    group: "scaleway.planton.dev"
+    display_name: "Scaleway"
+  }];
+  alicloud = 25 [(provider_meta) = {
+    group: "alicloud.planton.dev"
+    display_name: "Alibaba Cloud"
+  }];
+  oci = 26 [(provider_meta) = {
+    group: "oci.planton.dev"
+    display_name: "Oracle Cloud"
+  }];
+  hetzner_cloud = 27 [(provider_meta) = {
+    group: "hetzner-cloud.planton.dev"
+    display_name: "Hetzner Cloud"
+  }];
+}

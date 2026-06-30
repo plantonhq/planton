@@ -1,6 +1,6 @@
 ---
 title: "Tutorials"
-description: "Step-by-step walkthroughs for deploying infrastructure with OpenMCF — from your first resource to multi-provider workflows"
+description: "Step-by-step walkthroughs for deploying infrastructure with Planton — from your first resource to multi-provider workflows"
 icon: "tutorial"
 order: 40
 ---
@@ -9,11 +9,11 @@ order: 40
 
 Tutorials are linear, end-to-end walkthroughs. Each one takes you from an empty directory to a deployed resource and back, covering the full lifecycle: write a manifest, preview the plan, deploy, verify, modify, and destroy.
 
-If you are looking for focused reference material on a specific topic (credentials, state backends, Kustomize configuration), see [Guides](../guides). If you want to understand the concepts behind OpenMCF's design, see [Concepts](../concepts).
+If you are looking for focused reference material on a specific topic (credentials, state backends, Kustomize configuration), see [Guides](../guides). If you want to understand the concepts behind Planton's design, see [Concepts](../concepts).
 
 ## Before You Start
 
-All tutorials assume you have the OpenMCF CLI installed. If you have not set it up yet, start with [Getting Started](../getting-started).
+All tutorials assume you have the Planton CLI installed. If you have not set it up yet, start with [Getting Started](../getting-started).
 
 ## Tutorials
 
@@ -37,7 +37,7 @@ Deploy the same PostgreSQL component to dev, staging, and production with differ
 
 ### [Deploy Across Providers](./multi-provider)
 
-Deploy object storage on both AWS (S3) and GCP (GCS) to see OpenMCF's consistent cross-provider workflow in action. Same CLI commands, same manifest structure, different `spec` fields.
+Deploy object storage on both AWS (S3) and GCP (GCS) to see Planton's consistent cross-provider workflow in action. Same CLI commands, same manifest structure, different `spec` fields.
 
 **You need**: AWS credentials, GCP credentials, Pulumi CLI
 

@@ -6,13 +6,13 @@ import { Terminal, Flag, Command } from "lucide-react";
 
 export default function CLIReference() {
   const primaryCommands = [
-    { command: "openmcf apply -f <manifest.yaml>", description: "Deploy infrastructure (kubectl-style, auto-detects provisioner) 🆕", highlight: true },
-    { command: "openmcf destroy -f <manifest.yaml>", description: "Destroy infrastructure (kubectl-style, auto-detects provisioner) 🆕", highlight: true },
-    { command: "openmcf plan -f <manifest.yaml>", description: "Preview changes (auto-detects provisioner) 🆕", highlight: true },
-    { command: "openmcf init -f <manifest.yaml>", description: "Initialize backend (auto-detects provisioner) 🆕", highlight: true },
-    { command: "openmcf refresh -f <manifest.yaml>", description: "Refresh state (auto-detects provisioner) 🆕", highlight: true },
-    { command: "openmcf validate <manifest.yaml>", description: "Validate manifest with Buf ProtoValidate" },
-    { command: "openmcf version", description: "Show CLI version" },
+    { command: "planton apply -f <manifest.yaml>", description: "Deploy infrastructure (kubectl-style, auto-detects provisioner) 🆕", highlight: true },
+    { command: "planton destroy -f <manifest.yaml>", description: "Destroy infrastructure (kubectl-style, auto-detects provisioner) 🆕", highlight: true },
+    { command: "planton plan -f <manifest.yaml>", description: "Preview changes (auto-detects provisioner) 🆕", highlight: true },
+    { command: "planton init -f <manifest.yaml>", description: "Initialize backend (auto-detects provisioner) 🆕", highlight: true },
+    { command: "planton refresh -f <manifest.yaml>", description: "Refresh state (auto-detects provisioner) 🆕", highlight: true },
+    { command: "planton validate <manifest.yaml>", description: "Validate manifest with Buf ProtoValidate" },
+    { command: "planton version", description: "Show CLI version" },
   ];
 
   const coreFlags = [
@@ -43,7 +43,7 @@ export default function CLIReference() {
         <h2 className="text-4xl font-bold mb-6">
           <span className="bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">CLI Reference</span>
         </h2>
-        <p className="text-xl text-slate-400 max-w-3xl mx-auto">Complete command reference for the OpenMCF CLI</p>
+        <p className="text-xl text-slate-400 max-w-3xl mx-auto">Complete command reference for the Planton CLI</p>
       </div>
 
       <div className="grid lg:grid-cols-2 gap-8 mb-8">
@@ -76,7 +76,7 @@ export default function CLIReference() {
           <CardContent>
             <div className="bg-slate-950 rounded-lg p-4 font-mono text-sm">
               <div className="text-slate-400 mb-2"># Validate a manifest before deployment</div>
-              <div className="text-blue-400">openmcf validate manifest.yaml</div>
+              <div className="text-blue-400">planton validate manifest.yaml</div>
               <div className="text-slate-400 mt-4 mb-2"># Example output:</div>
               <div className="text-green-400">✓ Manifest validation passed</div>
               <div className="text-green-400">✓ Buf ProtoValidate rules: OK</div>

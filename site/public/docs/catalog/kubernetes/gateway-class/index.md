@@ -12,7 +12,7 @@ Creates a cluster-scoped Kubernetes Gateway API `GatewayClass` that identifies t
 
 ## What Gets Created
 
-When you deploy a KubernetesGatewayClass resource, OpenMCF provisions:
+When you deploy a KubernetesGatewayClass resource, Planton provisions:
 
 - **A cluster-scoped GatewayClass custom resource** named after `metadata.name`, with the specified `controllerName` and optional `parametersRef` and `description`.
 
@@ -22,14 +22,14 @@ No namespaced workloads are created. The matching Gateway API controller observe
 
 - **Gateway API CRDs** installed on the target cluster -- deploy the `KubernetesGatewayApiCrds` component first (it is registered as a prerequisite of this kind).
 - **A running Gateway API controller** (Istio, Envoy Gateway, NGINX Gateway Fabric, etc.) whose identity matches `controllerName`.
-- **Kubernetes credentials** configured via the OpenMCF provider config.
+- **Kubernetes credentials** configured via the Planton provider config.
 
 ## Quick Start
 
 Create a file `gateway-class.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesGatewayClass
 metadata:
   name: istio
@@ -41,7 +41,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f gateway-class.yaml
+planton apply -f gateway-class.yaml
 ```
 
 ## Configuration Reference
@@ -69,7 +69,7 @@ openmcf apply -f gateway-class.yaml
 ### Istio GatewayClass
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesGatewayClass
 metadata:
   name: istio
@@ -81,7 +81,7 @@ spec:
 ### Envoy Gateway with a parameters reference
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesGatewayClass
 metadata:
   name: envoy-gateway

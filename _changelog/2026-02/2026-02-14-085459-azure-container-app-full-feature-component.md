@@ -6,7 +6,7 @@
 
 ## Summary
 
-Forged `AzureContainerApp` (R18) -- the most complex Azure component in OpenMCF with 21 message types across 36 files. This is a full-feature implementation of `azurerm_container_app` with zero omissions: containers, init containers, health probes, 4 scale rule types (HTTP/TCP/Azure Queue/Custom KEDA), secrets (plain + Key Vault), registries (username/password + identity), ingress (IP restrictions, CORS, mTLS), volumes, Dapr sidecar, managed identity, and all operational tunables. Build passes, 53/53 validation tests green.
+Forged `AzureContainerApp` (R18) -- the most complex Azure component in Planton with 21 message types across 36 files. This is a full-feature implementation of `azurerm_container_app` with zero omissions: containers, init containers, health probes, 4 scale rule types (HTTP/TCP/Azure Queue/Custom KEDA), secrets (plain + Key Vault), registries (username/password + identity), ingress (IP restrictions, CORS, mTLS), volumes, Dapr sidecar, managed identity, and all operational tunables. Build passes, 53/53 validation tests green.
 
 ## Problem Statement / Motivation
 
@@ -117,7 +117,7 @@ flowchart TB
 
 ## Impact
 
-- **Users**: Can deploy Azure Container Apps with full feature coverage through OpenMCF
+- **Users**: Can deploy Azure Container Apps with full feature coverage through Planton
 - **Infra charts**: container-apps-environment chart can now include workload definitions
 - **Project**: R18 of 24 Azure resources complete (75% of queue done)
 

@@ -8,12 +8,12 @@ TITLE
 Forge: Add validation rules to spec.proto (buf.validate + CEL)
 
 ROLE
-You are the OpenMCF Code Partner working inside the developer’s local workspace in Cursor. This rule only adds validations to an existing `spec.proto`. Do not change the schema.
+You are the Planton Code Partner working inside the developer’s local workspace in Cursor. This rule only adds validations to an existing `spec.proto`. Do not change the schema.
 
 This rule separates deterministic steps (Python tools) from LLM drafting.
 
 SCOPE
-- Target: `apis/org/openmcf/provider/<provider>/<kindfolder>/v1/spec.proto`
+- Target: `apis/dev/planton/provider/<provider>/<kindfolder>/v1/spec.proto`
 - Only add validations and brief comments. No field/message renames/additions/deletions.
 - Do not manually create folders; writer tool handles directories.
 - Do not edit other files.
@@ -24,7 +24,7 @@ TOOLS
 - Validation standard: the "VALIDATION MESSAGE QUALITY" section in this rule (below) is the
   authoritative standard. This rule is the canonical home for the Validation Message Philosophy.
 - Reference components (live ground truth): study the validated `spec.proto` of
-  `apis/org/openmcf/provider/aws/awsvpc/v1/spec.proto` and `aws/awsalb/v1/spec.proto` for
+  `apis/dev/planton/provider/aws/awsvpc/v1/spec.proto` and `aws/awsalb/v1/spec.proto` for
   buf.validate field options, message-level CEL, and message wording.
 
 SEQUENTIAL STEPS
@@ -59,55 +59,55 @@ SUCCESS
 - Every CEL `message` is a clear, actionable, user-facing string (see quality checklist above).
 - Every secret-bearing field is annotated `(sensitive) = true`; every look-alike non-secret
   carries a `sensitive_exempt_reason`; no field carries both.
-- `openmcf secret-coverage --check` passes (no new gap, no stale baseline entry, no
+- `planton secret-coverage --check` passes (no new gap, no stale baseline entry, no
   self-contradictory annotation).
 
 OUTPUT
 - Show created/updated path and key JSON fields from tools.
 - On success: confirm file path. On error: brief fix and rerun (≤3).
 DEFAULT FIELD OPTIONS (SEPARATE FROM VALIDATION)
-- Default values use `(org.openmcf.shared.options.default)` NOT buf.validate
-- Import: `import "org/openmcf/shared/options/options.proto";`
+- Default values use `(dev.planton.shared.options.default)` NOT buf.validate
+- Import: `import "dev/planton/shared/options/options.proto";`
 - Fields with defaults MUST be marked as `optional`
-- Example combining both: `optional string tag = 1 [(org.openmcf.shared.options.default) = "2.331.0", (buf.validate.field).string.min_len = 1];`
+- Example combining both: `optional string tag = 1 [(dev.planton.shared.options.default) = "2.331.0", (buf.validate.field).string.min_len = 1];`
 - The `DEFAULT_REQUIRES_OPTIONAL` linter enforces this pattern at build time
 - See the reference component `spec.proto` files named in TOOLS for worked examples
 
 VERIFY DEFAULTS DURING VALIDATION PASS
 - When adding validations, also verify that all fields identified in rule 001 as having
-  defaults actually carry the `optional` keyword and `(org.openmcf.shared.options.default)`.
+  defaults actually carry the `optional` keyword and `(dev.planton.shared.options.default)`.
 - If you find a field whose comment says "defaults to X" but lacks the formal field option,
   add both `optional` and the default option now (this counts as adding options, not schema change).
 - Defaults and validations are complementary, not alternatives:
   - A field can have BOTH a default AND a validation (e.g., `min_len = 1` + default = "standard")
   - The default ensures the field is populated; the validation ensures the value is acceptable
-- Example: `optional string content_type = 4 [(org.openmcf.shared.options.default) = "application/octet-stream"];`
+- Example: `optional string content_type = 4 [(dev.planton.shared.options.default) = "application/octet-stream"];`
 
 SENSITIVE FIELD OPTIONS (SEPARATE FROM VALIDATION)
 - Secret-by-default is a field OPTION, not a buf.validate rule. Annotate every
   secret-bearing field identified in rule 001 so the platform forces it to be a
   managed-secret reference (never plaintext).
-- Import: `import "org/openmcf/shared/options/options.proto";` (same import as defaults).
-- Annotate a secret: `[(org.openmcf.shared.options.sensitive) = true]`. Per the option's
+- Import: `import "dev/planton/shared/options/options.proto";` (same import as defaults).
+- Annotate a secret: `[(dev.planton.shared.options.sensitive) = true]`. Per the option's
   doc comment, this "applies to string fields and to the literal value of
   `StringValueOrRef` fields."
-  - Example (plain string): `string master_password = 10 [(buf.validate.field).required = true, (org.openmcf.shared.options.sensitive) = true];`
+  - Example (plain string): `string master_password = 10 [(buf.validate.field).required = true, (dev.planton.shared.options.sensitive) = true];`
 - Exempt a look-alike that is NOT a secret with a justification string:
-  `[(org.openmcf.shared.options.sensitive_exempt_reason) = "Access-key id (a public identifier), not a secret value."]`.
+  `[(dev.planton.shared.options.sensitive_exempt_reason) = "Access-key id (a public identifier), not a secret value."]`.
   - Set `sensitive` OR `sensitive_exempt_reason` on a field, NEVER both -- the coverage
     gate rejects the contradiction.
 - FK composition: a `StringValueOrRef` field may carry BOTH
-  `(org.openmcf.shared.options.sensitive) = true` AND its foreign-key annotation
-  `(org.openmcf.shared.foreignkey.v1.default_kind) = ...`. They compose -- annotate
+  `(dev.planton.shared.options.sensitive) = true` AND its foreign-key annotation
+  `(dev.planton.shared.foreignkey.v1.default_kind) = ...`. They compose -- annotate
   `sensitive` on the field as usual; the reference branch is unaffected (downstream the
   field offers a managed-secret reference OR a cross-resource reference, never plaintext).
 - `sensitive` and `default`/validations are complementary: a field may carry a default,
   a buf.validate rule, AND `sensitive` together.
 - Authority for the option semantics: the `sensitive` / `sensitive_exempt_reason` field
-  comments in `org/openmcf/shared/options/options.proto`.
+  comments in `dev/planton/shared/options/options.proto`.
 
 VERIFY SENSITIVE COVERAGE (RUN THE GATE)
-- After annotating, run the developer gate: `openmcf secret-coverage --check`. It fails on:
+- After annotating, run the developer gate: `planton secret-coverage --check`. It fails on:
   - a NEW gap (a field that looks sensitive by name but is neither annotated nor exempted),
   - a STALE baseline entry, or
   - a self-contradictory annotation.
@@ -116,5 +116,5 @@ VERIFY SENSITIVE COVERAGE (RUN THE GATE)
 - CI runs the same gate as `go test ./pkg/secretcoverage/...`
   (`.github/workflows/lint.secret-coverage.yaml`) -- it must be green.
 - A genuine, deliberate deferral (rare) is recorded as an accepted gap with
-  `openmcf secret-coverage --write-baseline`; do NOT use the baseline to silence a field
+  `planton secret-coverage --write-baseline`; do NOT use the baseline to silence a field
   that should simply be annotated.

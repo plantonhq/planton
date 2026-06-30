@@ -12,7 +12,7 @@ Deploys a Scaleway Managed MongoDB instance with an admin user, optional additio
 
 ## What Gets Created
 
-When you deploy a ScalewayMongodbInstance resource, OpenMCF provisions:
+When you deploy a ScalewayMongodbInstance resource, Planton provisions:
 
 - **MongoDB Instance** — a `mongodb.Instance` resource providing a fully managed MongoDB engine with the specified node type, volume configuration, admin user, and TLS certificate
 - **Private Network Endpoint** — created only when `privateNetworkId` is set, attaches the instance to a Private Network with IPAM-based IP assignment
@@ -21,7 +21,7 @@ When you deploy a ScalewayMongodbInstance resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Scaleway credentials** configured via environment variables or OpenMCF provider config
+- **Scaleway credentials** configured via environment variables or Planton provider config
 - **A supported MongoDB version** in semantic version format (e.g., `"7.0.12"`)
 - **A Private Network** in the `fr-par` region if using private connectivity (can be created via a ScalewayPrivateNetwork resource)
 - **Region availability** — Scaleway Managed MongoDB is currently only available in `fr-par` (Paris)
@@ -31,15 +31,15 @@ When you deploy a ScalewayMongodbInstance resource, OpenMCF provisions:
 Create a file `mongodb-instance.yaml`:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayMongodbInstance
 metadata:
   name: my-mongo
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayMongodbInstance.my-mongo
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayMongodbInstance.my-mongo
 spec:
   region: fr-par
   version: "7.0.12"
@@ -52,7 +52,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f mongodb-instance.yaml
+planton apply -f mongodb-instance.yaml
 ```
 
 This creates a single-node MongoDB 7.0 instance with default block storage (sbs_5k), no Private Network (public endpoint only), and no additional users beyond the admin account.
@@ -97,15 +97,15 @@ This creates a single-node MongoDB 7.0 instance with default block storage (sbs_
 A minimal single-node MongoDB instance for development and testing:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayMongodbInstance
 metadata:
   name: dev-mongo
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayMongodbInstance.dev-mongo
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayMongodbInstance.dev-mongo
 spec:
   region: fr-par
   version: "7.0.12"
@@ -126,15 +126,15 @@ spec:
 A three-node replica set with Private Network connectivity, high-IOPS storage, automated snapshots, and multiple users with scoped roles:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayMongodbInstance
 metadata:
   name: prod-mongo
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.ScalewayMongodbInstance.prod-mongo
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.ScalewayMongodbInstance.prod-mongo
 spec:
   region: fr-par
   version: "7.0.12"
@@ -170,18 +170,18 @@ spec:
 
 ### Private Network Reference with Public Endpoint
 
-A MongoDB instance referencing an OpenMCF-managed Private Network while also exposing a public endpoint for admin access:
+A MongoDB instance referencing an Planton-managed Private Network while also exposing a public endpoint for admin access:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayMongodbInstance
 metadata:
   name: staging-mongo
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.ScalewayMongodbInstance.staging-mongo
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.ScalewayMongodbInstance.staging-mongo
 spec:
   region: fr-par
   version: "7.0.12"

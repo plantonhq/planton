@@ -1,0 +1,16 @@
+apiVersion: auth0.planton.dev/v1
+kind: Auth0Action
+metadata:
+  name: e2e-post-login
+  org: e2e-org
+  env: testing
+spec:
+  supported_trigger:
+    id: post-login
+    version: v3
+  code: |
+    exports.onExecutePostLogin = async (event, api) => {
+      api.idToken.setCustomClaim('https://e2e.planton.dev/tested', true);
+    };
+  runtime: node22
+  deploy: true

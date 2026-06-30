@@ -1,13 +1,13 @@
 ---
 title: "Writing Manifests"
-description: "Practical guide to writing, validating, and managing OpenMCF manifests for infrastructure deployments"
+description: "Practical guide to writing, validating, and managing Planton manifests for infrastructure deployments"
 icon: "book"
 order: 20
 ---
 
 # Writing Manifests
 
-This guide walks you through writing OpenMCF manifests from scratch. For the conceptual foundation — KRM structure, field semantics, label conventions, and manifest sources — see [Manifests](../concepts/manifests).
+This guide walks you through writing Planton manifests from scratch. For the conceptual foundation — KRM structure, field semantics, label conventions, and manifest sources — see [Manifests](../concepts/manifests).
 
 ## Finding the Right Kind and Spec Fields
 
@@ -37,12 +37,12 @@ Once you know the kind, find the available spec fields using one of these method
 **Protocol Buffer definition** — The canonical source of truth. Every component's spec is defined at:
 
 ```
-apis/org/openmcf/provider/{provider}/{component}/v1/spec.proto
+apis/dev/planton/provider/{provider}/{component}/v1/spec.proto
 ```
 
 The proto file shows every field, its type, whether it is required, and any validation rules.
 
-**Buf Schema Registry** — Browse the API definitions at [buf.build/openmcf/openmcf](https://buf.build/openmcf/openmcf) for generated documentation of every component's spec.
+**Buf Schema Registry** — Browse the API definitions at [buf.build/planton/planton](https://buf.build/planton/planton) for generated documentation of every component's spec.
 
 ## Writing a Manifest Step by Step
 
@@ -51,7 +51,7 @@ The proto file shows every field, its type, whether it is required, and any vali
 Every manifest has the same outer structure. Fill in `apiVersion` and `kind` from the catalog:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRdsInstance
 metadata:
   name: my-database
@@ -59,14 +59,14 @@ spec:
   # Fields go here
 ```
 
-The `apiVersion` follows the pattern `{provider}.openmcf.org/v1`. The `name` in metadata must be lowercase alphanumeric with hyphens, 63 characters or fewer.
+The `apiVersion` follows the pattern `{provider}.planton.dev/v1`. The `name` in metadata must be lowercase alphanumeric with hyphens, 63 characters or fewer.
 
 ### 2. Add Required Spec Fields
 
 Check the component's spec definition for required fields. For `AwsRdsInstance`, the spec includes engine configuration, instance sizing, and network settings:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRdsInstance
 metadata:
   name: my-database
@@ -89,14 +89,14 @@ Field names in YAML use `camelCase` and match the proto field names exactly. If 
 
 ### 3. Add Provisioner and State Labels
 
-Labels tell OpenMCF which IaC engine to use and where to store state:
+Labels tell Planton which IaC engine to use and where to store state:
 
 ```yaml
 metadata:
   name: my-database
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/stack.name: prod.AwsRdsInstance.my-database
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/stack.name: prod.AwsRdsInstance.my-database
 ```
 
 For OpenTofu or Terraform, use backend labels instead:
@@ -105,11 +105,11 @@ For OpenTofu or Terraform, use backend labels instead:
 metadata:
   name: my-database
   labels:
-    openmcf.org/provisioner: tofu
-    tofu.openmcf.org/backend.type: s3
-    tofu.openmcf.org/backend.bucket: my-state-bucket
-    tofu.openmcf.org/backend.key: rds/my-database.tfstate
-    tofu.openmcf.org/backend.region: us-west-2
+    planton.dev/provisioner: tofu
+    tofu.planton.dev/backend.type: s3
+    tofu.planton.dev/backend.bucket: my-state-bucket
+    tofu.planton.dev/backend.key: rds/my-database.tfstate
+    tofu.planton.dev/backend.region: us-west-2
 ```
 
 For details on provisioner selection, see [Dual IaC Engines](../concepts/dual-iac-engines). For backend configuration, see [State Backends](./state-backends).
@@ -119,7 +119,7 @@ For details on provisioner selection, see [Dual IaC Engines](../concepts/dual-ia
 Run validation to catch errors before any cloud API call:
 
 ```bash
-openmcf validate -f my-database.yaml
+planton validate -f my-database.yaml
 ```
 
 Validation checks the manifest against the proto schema, enforces field constraints (type, range, pattern), and verifies required fields are present. If everything passes, the command exits silently with code 0. If there are errors, you get specific field-level messages.
@@ -129,25 +129,25 @@ Validation checks the manifest against the proto schema, enforces field constrai
 Many components define default values for optional fields. Use `load-manifest` to see the effective manifest with all defaults applied:
 
 ```bash
-openmcf load-manifest -f my-database.yaml
+planton load-manifest -f my-database.yaml
 ```
 
-The output shows the complete manifest as OpenMCF will interpret it, including any default values filled in for fields you omitted.
+The output shows the complete manifest as Planton will interpret it, including any default values filled in for fields you omitted.
 
 ## Real-World Examples
 
-These examples are from the OpenMCF repository and follow the actual proto schemas.
+These examples are from the Planton repository and follow the actual proto schemas.
 
 ### PostgreSQL on Kubernetes
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPostgres
 metadata:
   name: app-database
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/stack.name: prod.KubernetesPostgres.app-database
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/stack.name: prod.KubernetesPostgres.app-database
 spec:
   namespace:
     value: app-database
@@ -168,13 +168,13 @@ spec:
 ### PostgreSQL on GCP Cloud SQL
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudSql
 metadata:
   name: analytics-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/stack.name: prod.GcpCloudSql.analytics-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/stack.name: prod.GcpCloudSql.analytics-db
 spec:
   databaseEngine: POSTGRESQL
   databaseVersion: POSTGRES_15
@@ -191,13 +191,13 @@ spec:
 ### PostgreSQL on AWS RDS
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRdsInstance
 metadata:
   name: orders-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/stack.name: prod.AwsRdsInstance.orders-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/stack.name: prod.AwsRdsInstance.orders-db
 spec:
   subnetIds:
     - value: subnet-abc123
@@ -224,7 +224,7 @@ Components with defaults let you write concise manifests. You only need to speci
 
 ```yaml
 # Minimal — relies on component defaults
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPostgres
 metadata:
   name: dev-database
@@ -238,7 +238,7 @@ For production, be explicit about resource limits, replicas, and security settin
 
 ```yaml
 # Explicit — production configuration
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPostgres
 metadata:
   name: prod-database
@@ -269,8 +269,8 @@ ops/
 Deploy each resource separately:
 
 ```bash
-openmcf pulumi up -f ops/database.yaml
-openmcf pulumi up -f ops/cache.yaml
+planton pulumi up -f ops/database.yaml
+planton pulumi up -f ops/cache.yaml
 ```
 
 ### Runtime Overrides
@@ -278,7 +278,7 @@ openmcf pulumi up -f ops/cache.yaml
 Use `--set` to override individual fields without editing the file. This is useful for CI/CD pipelines, testing, and temporary changes:
 
 ```bash
-openmcf pulumi up -f ops/api.yaml \
+planton pulumi up -f ops/api.yaml \
   --set spec.container.replicas=5
 ```
 
@@ -288,7 +288,7 @@ Overrides apply after all other manifest resolution (file, Kustomize overlay). F
 
 **Use version control.** Track manifests in Git alongside application code. This gives you change history, code review, and rollback capability.
 
-**Validate before deploying.** Run `openmcf validate -f manifest.yaml` before every deployment. Validation catches field-level errors in seconds that would otherwise surface minutes into a cloud API call.
+**Validate before deploying.** Run `planton validate -f manifest.yaml` before every deployment. Validation catches field-level errors in seconds that would otherwise surface minutes into a cloud API call.
 
 **Use meaningful names.** The `metadata.name` appears in state files, cloud resources, and logs. Make it descriptive: `prod-api-postgres` instead of `db1`.
 

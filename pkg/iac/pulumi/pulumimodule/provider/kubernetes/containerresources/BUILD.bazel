@@ -3,10 +3,10 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "containerresources",
     srcs = ["convert_to_pulumi_map.go"],
-    importpath = "github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/provider/kubernetes/containerresources",
+    importpath = "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/containerresources",
     visibility = ["//visibility:public"],
     deps = [
-        "//apis/org/openmcf/provider/kubernetes",
+        "//apis/dev/planton/provider/kubernetes",
         "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
     ],
 )

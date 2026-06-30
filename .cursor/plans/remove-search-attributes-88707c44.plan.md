@@ -9,7 +9,7 @@ Remove the search attributes field from the TemporalKubernetes API contract and 
 
 ### 1. Update Protobuf Contract
 
-**File**: `/Users/suresh/scm/github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/workload/temporalkubernetes/v1/spec.proto`
+**File**: `/Users/suresh/scm/github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/workload/temporalkubernetes/v1/spec.proto`
 
 Remove:
 
@@ -20,7 +20,7 @@ This will leave the spec with only the core fields: database, disable_web_ui, en
 
 ### 2. Update IAC Module
 
-**File**: `/Users/suresh/scm/github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/workload/temporalkubernetes/v1/iac/pulumi/module/helm_chart.go`
+**File**: `/Users/suresh/scm/github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/workload/temporalkubernetes/v1/iac/pulumi/module/helm_chart.go`
 
 Remove:
 
@@ -30,7 +30,7 @@ The code between the elasticsearch configuration (line 155) and version configur
 
 ### 3. Update Documentation
 
-**File**: `/Users/suresh/scm/github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/workload/temporalkubernetes/v1/examples.md`
+**File**: `/Users/suresh/scm/github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/workload/temporalkubernetes/v1/examples.md`
 
 Remove:
 
@@ -43,7 +43,7 @@ Consider keeping the example number sequence or renumbering if there are example
 After modifying the proto files, regenerate the Go stubs:
 
 ```bash
-cd /Users/suresh/scm/github.com/plantonhq/openmcf/apis
+cd /Users/suresh/scm/github.com/plantonhq/planton/apis
 make protos
 ```
 

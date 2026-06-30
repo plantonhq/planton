@@ -1,6 +1,0 @@
-apiVersion: scaleway.openmcf.org/v1
-kind: ScalewayDnsZone
-metadata:
-  name: my-dns-zone
-spec:
-  domain: <your-domain.com>

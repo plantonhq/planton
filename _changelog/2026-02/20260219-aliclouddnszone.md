@@ -14,7 +14,7 @@ Registering a domain in Alidns does not purchase or transfer it -- it creates a 
 ## What Was Created
 
 ### API Definition
-- `apis/org/openmcf/provider/alicloud/aliclouddnszone/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
+- `apis/dev/planton/provider/alicloud/aliclouddnszone/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
 - Registered `AliCloudDnsZone = 3040` in `CloudResourceKind` enum under the DNS category
 
 ### IaC Modules

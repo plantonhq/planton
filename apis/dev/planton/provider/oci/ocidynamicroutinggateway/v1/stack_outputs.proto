@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocidynamicroutinggateway.v1;
+
+// OciDynamicRoutingGatewayStackOutputs contains the outputs produced after
+// deploying an OciDynamicRoutingGateway. These values are used by downstream
+// components for composability via StringValueOrRef.
+message OciDynamicRoutingGatewayStackOutputs {
+  // OCID of the DRG.
+  string drg_id = 1;
+
+  // OCID of the default export route distribution that OCI automatically
+  // creates for the DRG. Useful for configuring external DRG attachments
+  // (e.g., IPSec tunnels managed outside this component).
+  string default_export_drg_route_distribution_id = 2;
+}

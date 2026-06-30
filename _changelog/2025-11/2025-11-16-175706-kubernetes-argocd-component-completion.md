@@ -6,7 +6,7 @@
 
 ## Summary
 
-Completed the KubernetesArgocd component from 58.5% (Partially Complete) to ~95% (Production Ready) by implementing the entirely missing Terraform module, completing the skeleton Pulumi module with actual resource provisioning, fixing incorrect examples, and creating comprehensive documentation. **No specification changes were made** - the excellent proto definitions and tests remained unchanged. This unblocks Argo CD deployments via OpenMCF CLI.
+Completed the KubernetesArgocd component from 58.5% (Partially Complete) to ~95% (Production Ready) by implementing the entirely missing Terraform module, completing the skeleton Pulumi module with actual resource provisioning, fixing incorrect examples, and creating comprehensive documentation. **No specification changes were made** - the excellent proto definitions and tests remained unchanged. This unblocks Argo CD deployments via Planton CLI.
 
 ## Problem Statement / Motivation
 
@@ -35,7 +35,7 @@ The KubernetesArgocd component had exceptional research documentation (22KB comp
    - No hack/manifest.yaml for testing
    - No Terraform examples.md
 
-**Why it mattered**: Argo CD is the GitOps control plane for Kubernetes - the tool that manages deployments of all other applications. Teams couldn't deploy Argo CD itself using OpenMCF, creating a critical gap in the GitOps workflow.
+**Why it mattered**: Argo CD is the GitOps control plane for Kubernetes - the tool that manages deployments of all other applications. Teams couldn't deploy Argo CD itself using Planton, creating a critical gap in the GitOps workflow.
 
 ## Specification Status
 
@@ -347,7 +347,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesargocdv1.KubernetesArg
 
 **Before** (incorrect):
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: ArgocdKubernetes  # ← WRONG KIND NAME
 metadata:
   name: argocd-instance
@@ -362,7 +362,7 @@ spec:
 
 **After** (correct):
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesArgocd  # ✓ CORRECT
 metadata:
   name: my-argocd
@@ -403,7 +403,7 @@ Added 4 comprehensive examples:
 
 **Created `iac/hack/manifest.yaml`**:
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesArgocd
 metadata:
   name: test-argocd
@@ -452,7 +452,7 @@ redis:
 
 ### Namespace Pattern
 
-Follows OpenMCF workload naming convention:
+Follows Planton workload naming convention:
 
 ```
 argo-<resource-id>
@@ -479,7 +479,7 @@ All 6 outputs from `stack_outputs.proto` are now populated:
 
 ### Unblocked GitOps Workflows
 
-**Before**: Teams couldn't deploy Argo CD using OpenMCF
+**Before**: Teams couldn't deploy Argo CD using Planton
 **After**: Full support for both Pulumi and Terraform deployments
 
 ### Complete IaC Coverage
@@ -525,22 +525,22 @@ All 6 outputs from `stack_outputs.proto` are now populated:
 - QA teams validating deployment automation
 
 **Production Impact**:
-- Argo CD can now be deployed via OpenMCF CLI
+- Argo CD can now be deployed via Planton CLI
 - Both Pulumi and Terraform methods fully functional
 - Examples are correct and can be copy-pasted
 - Component ready for production use
 
 **Downstream Effects**:
-- Enables GitOps workflows for OpenMCF users
-- Argo CD can manage other Kubernetes resources deployed by OpenMCF
-- Teams can standardize on OpenMCF for all infrastructure
+- Enables GitOps workflows for Planton users
+- Argo CD can manage other Kubernetes resources deployed by Planton
+- Teams can standardize on Planton for all infrastructure
 
 ## Testing
 
 ### Unit Tests (Already Passing)
 
 ```bash
-cd apis/org/openmcf/provider/kubernetes/kubernetesargocd/v1
+cd apis/dev/planton/provider/kubernetes/kubernetesargocd/v1
 go test -v
 # Result: 1/1 PASS in 0.353s ✅
 ```
@@ -589,7 +589,7 @@ read_lints apis/.../kubernetesargocd/v1
 ```bash
 # Create manifest
 cat > argocd.yaml <<EOF
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesArgocd
 metadata:
   name: prod-argocd
@@ -605,10 +605,10 @@ EOF
 
 # Deploy with Pulumi
 export ARGOCD_MODULE=/path/to/kubernetesargocd/v1/iac/pulumi
-openmcf pulumi up --manifest argocd.yaml --module-dir ${ARGOCD_MODULE}
+planton pulumi up --manifest argocd.yaml --module-dir ${ARGOCD_MODULE}
 
 # Or deploy with Terraform
-openmcf tofu apply --manifest argocd.yaml --auto-approve
+planton tofu apply --manifest argocd.yaml --auto-approve
 
 # Access Argo CD
 # External: https://argo-prod-argocd.example.com

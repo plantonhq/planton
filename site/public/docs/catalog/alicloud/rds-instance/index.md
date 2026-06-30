@@ -12,7 +12,7 @@ Deploys an Alibaba Cloud RDS (Relational Database Service) instance with bundled
 
 ## What Gets Created
 
-When you deploy an AliCloudRdsInstance resource, OpenMCF provisions:
+When you deploy an AliCloudRdsInstance resource, Planton provisions:
 
 - **RDS Instance** -- an `alicloud_db_instance` with the selected engine, instance class, and storage
 - **Databases** -- one `alicloud_db_database` per entry in the databases list
@@ -21,7 +21,7 @@ When you deploy an AliCloudRdsInstance resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Alibaba Cloud credentials** configured via environment variables or OpenMCF provider config
+- **Alibaba Cloud credentials** configured via environment variables or Planton provider config
 - **A VSwitch** -- the RDS instance is placed in a VSwitch (create one with AliCloudVswitch)
 - The VSwitch's VPC and availability zone determine the instance's network placement
 
@@ -30,7 +30,7 @@ When you deploy an AliCloudRdsInstance resource, OpenMCF provisions:
 Create a file `rds-instance.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudRdsInstance
 metadata:
   name: my-mysql
@@ -56,7 +56,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f rds-instance.yaml
+planton apply -f rds-instance.yaml
 ```
 
 This creates a MySQL 8.0 HA instance with one database, one account, and ReadWrite access.

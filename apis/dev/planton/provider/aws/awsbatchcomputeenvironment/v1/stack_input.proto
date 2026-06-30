@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsbatchcomputeenvironment.v1;
+
+import "dev/planton/provider/aws/awsbatchcomputeenvironment/v1/api.proto";
+import "dev/planton/provider/aws/provider.proto";
+
+// AwsBatchComputeEnvironmentStackInput is the input for the IaC modules that
+// deploy the Batch compute environment, job queues, and scheduling policy.
+message AwsBatchComputeEnvironmentStackInput {
+  // target is the AwsBatchComputeEnvironment resource to deploy.
+  AwsBatchComputeEnvironment target = 1;
+  // provider_config contains the AWS provider credentials and configuration.
+  dev.planton.provider.aws.AwsProviderConfig provider_config = 2;
+}

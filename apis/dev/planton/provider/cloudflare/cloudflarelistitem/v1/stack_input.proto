@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.cloudflare.cloudflarelistitem.v1;
+
+import "dev/planton/provider/cloudflare/cloudflarelistitem/v1/api.proto";
+import "dev/planton/provider/cloudflare/provider.proto";
+
+//cloudflare-list-item stack-input
+message CloudflareListItemStackInput {
+  //target cloud-resource
+  CloudflareListItem target = 1;
+  //provider-config
+  dev.planton.provider.cloudflare.CloudflareProviderConfig provider_config = 2;
+}

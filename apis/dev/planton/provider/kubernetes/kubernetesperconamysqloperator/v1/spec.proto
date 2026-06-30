@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesperconamysqloperator.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/kubernetes.proto";
+import "dev/planton/provider/kubernetes/options.proto";
+import "dev/planton/provider/kubernetes/target_cluster.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// **KubernetesPerconaMysqlOperatorSpec** defines the configuration for deploying the Percona Operator for MySQL
+// on a Kubernetes cluster. This message specifies the parameters needed to create and manage the operator
+// deployment within a Kubernetes environment. It includes container specifications to control resource allocation.
+message KubernetesPerconaMysqlOperatorSpec {
+  // Target Kubernetes Cluster
+  dev.planton.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  // Kubernetes Namespace
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // flag to indicate if the namespace should be created
+  bool create_namespace = 3;
+
+  // Container resource specifications for the operator
+  KubernetesPerconaMysqlOperatorSpecContainer container = 4 [(buf.validate.field).required = true];
+}
+
+// **KubernetesPerconaMysqlOperatorSpecContainer** specifies the container configuration for the Percona operator.
+// It includes resource allocations for CPU and memory to ensure the operator runs efficiently.
+message KubernetesPerconaMysqlOperatorSpecContainer {
+  // CPU and memory resources for the operator pod
+  dev.planton.provider.kubernetes.ContainerResources resources = 1 [(dev.planton.provider.kubernetes.default_container_resources) = {
+    limits: {
+      cpu: "1000m"
+      memory: "1Gi"
+    }
+    requests: {
+      cpu: "100m"
+      memory: "256Mi"
+    }
+  }];
+}

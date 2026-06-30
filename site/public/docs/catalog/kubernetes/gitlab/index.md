@@ -12,7 +12,7 @@ Deploys a GitLab instance on Kubernetes with a ClusterIP Service, optional names
 
 ## What Gets Created
 
-When you deploy a KubernetesGitlab resource, OpenMCF provisions:
+When you deploy a KubernetesGitlab resource, Planton provisions:
 
 - **Namespace** — created only when `createNamespace` is `true`
 - **ClusterIP Service** — exposes GitLab on port 80 (targeting container port 8080) with app-level selectors derived from the resource metadata
@@ -20,7 +20,7 @@ When you deploy a KubernetesGitlab resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
 - **Istio** installed in the cluster if enabling ingress (the Ingress uses `ingressClassName: istio`)
 - **cert-manager** with a `letsencrypt-prod` ClusterIssuer if enabling ingress with TLS
@@ -30,15 +30,15 @@ When you deploy a KubernetesGitlab resource, OpenMCF provisions:
 Create a file `gitlab.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesGitlab
 metadata:
   name: my-gitlab
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesGitlab.my-gitlab
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesGitlab.my-gitlab
 spec:
   namespace: gitlab
   createNamespace: true
@@ -55,7 +55,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f gitlab.yaml
+planton apply -f gitlab.yaml
 ```
 
 This creates a GitLab instance in the `gitlab` namespace with a ClusterIP Service on port 80, using the default resource limits.
@@ -90,15 +90,15 @@ This creates a GitLab instance in the `gitlab` namespace with a ClusterIP Servic
 A lightweight GitLab instance for development with reduced CPU and memory:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesGitlab
 metadata:
   name: dev-gitlab
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesGitlab.dev-gitlab
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesGitlab.dev-gitlab
 spec:
   namespace: dev
   createNamespace: true
@@ -117,15 +117,15 @@ spec:
 A production GitLab instance with higher resource limits and HTTPS ingress:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesGitlab
 metadata:
   name: prod-gitlab
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesGitlab.prod-gitlab
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesGitlab.prod-gitlab
 spec:
   namespace: production
   container:
@@ -143,18 +143,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed namespace instead of hardcoding the name:
+Reference an Planton-managed namespace instead of hardcoding the name:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesGitlab
 metadata:
   name: team-gitlab
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.KubernetesGitlab.team-gitlab
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.KubernetesGitlab.team-gitlab
 spec:
   namespace:
     valueFrom:

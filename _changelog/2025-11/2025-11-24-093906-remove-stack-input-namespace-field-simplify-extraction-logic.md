@@ -17,7 +17,7 @@ After standardizing all 37 Kubernetes components to have `namespace` as a requir
 - **Redundant field**: `kubernetes_namespace` in `stack_input.proto` served no purpose since namespace is now required in spec
 - **Complex extraction logic**: Pulumi `locals.go` files had multi-level fallback chains:
   1. Default from metadata.name or computed value
-  2. Override from custom label `kubernetes.openmcf.org/namespace`
+  2. Override from custom label `kubernetes.planton.dev/namespace`
   3. Override from `spec.namespace`
   4. Override from `stackInput.kubernetes_namespace`
 - **Unnecessary imports**: Every Pulumi module imported `pkg/kubernetes/kuberneteslabels` just for namespace extraction
@@ -108,7 +108,7 @@ Components affected:
 ```diff
  message KubernetesArgocdStackInput {
    KubernetesArgocd target = 1;
-   org.openmcf.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+   dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
 -  //kubernetes namespace
 -  string kubernetes_namespace = 3;
  }
@@ -119,7 +119,7 @@ For components with additional fields (like `kubernetesdeployment` with `docker_
 ```diff
  message KubernetesDeploymentStackInput {
    KubernetesDeployment target = 1;
-   org.openmcf.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+   dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
 -  //kubernetes namespace
 -  string kubernetes_namespace = 3;
    //docker-config-json to be used for setting up image-pull-secret
@@ -137,7 +137,7 @@ For components with additional fields (like `kubernetesdeployment` with `docker_
 Before (19 lines of namespace logic):
 ```go
 import (
-    "github.com/plantonhq/openmcf/pkg/kubernetes/kuberneteslabels"
+    "github.com/plantonhq/planton/pkg/kubernetes/kuberneteslabels"
 )
 
 // Start with the required namespace field from spec
@@ -171,7 +171,7 @@ locals.Namespace = target.Spec.Namespace.GetValue()
 Before (28 lines of priority logic):
 ```go
 import (
-    "github.com/plantonhq/openmcf/pkg/kubernetes/kuberneteslabels"
+    "github.com/plantonhq/planton/pkg/kubernetes/kuberneteslabels"
 )
 
 // Priority order:
@@ -240,10 +240,10 @@ Components with BUILD.bazel updates:
 
  const (
 -    // NamespaceLabelKey allows overriding the Kubernetes namespace for a resource
--    NamespaceLabelKey = "kubernetes.openmcf.org/namespace"
+-    NamespaceLabelKey = "kubernetes.planton.dev/namespace"
 -
      // DockerConfigJsonFileLabelKey specifies the file path containing docker config JSON for image pull secret
-     DockerConfigJsonFileLabelKey = "kubernetes.openmcf.org/docker-config-json-file"
+     DockerConfigJsonFileLabelKey = "kubernetes.planton.dev/docker-config-json-file"
  )
 ```
 
@@ -286,14 +286,14 @@ This label was only used by our internal SaaS platform for namespace overrides a
 This is a **breaking API change** requiring:
 
 1. **Internal tooling updates**: Any code that populated `stackInput.kubernetes_namespace` must stop
-2. **Label-based overrides removed**: `kubernetes.openmcf.org/namespace` label no longer has effect
+2. **Label-based overrides removed**: `kubernetes.planton.dev/namespace` label no longer has effect
 3. **Proto regeneration**: All generated `.pb.go` files updated with field removal
 
 ### Migration Required
 
 **For internal SaaS platform (if applicable)**:
 - Remove code that sets `stackInput.kubernetes_namespace`
-- Remove code that sets `kubernetes.openmcf.org/namespace` label
+- Remove code that sets `kubernetes.planton.dev/namespace` label
 - Ensure all manifests have `spec.namespace.value` set (already required by validation)
 
 **For public users**:
@@ -397,10 +397,10 @@ All changes validated through:
 make protos
 
 # Verify compilation (all Pulumi modules build)
-go build ./apis/org/openmcf/provider/kubernetes/...
+go build ./apis/dev/planton/provider/kubernetes/...
 
 # Run validation tests
-go test ./apis/org/openmcf/provider/kubernetes/.../v1/
+go test ./apis/dev/planton/provider/kubernetes/.../v1/
 
 # Check git diff for staged changes
 git diff --cached --stat

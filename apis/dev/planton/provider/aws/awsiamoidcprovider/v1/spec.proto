@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsiamoidcprovider.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// AwsIamOidcProviderSpec defines an IAM OpenID Connect (OIDC) identity provider.
+//
+// An IAM OIDC provider is the trust anchor that lets an external OIDC issuer's
+// short-lived tokens be exchanged for AWS credentials via STS
+// AssumeRoleWithWebIdentity -- no long-lived access keys required. It is the
+// missing link in two of the most common keyless patterns:
+//   - EKS IRSA (IAM Roles for Service Accounts): register the cluster's OIDC
+//     issuer here, then a Kubernetes ServiceAccount annotated with an IAM role
+//     ARN can assume that role. Point `url` at an AwsEksCluster's
+//     status.outputs.oidc_issuer_url to wire this with a single reference.
+//   - CI/CD federation (GitHub Actions, GitLab, etc.): register the CI provider's
+//     issuer so pipelines assume a deploy role without storing AWS secrets.
+//
+// The resulting provider ARN (status.outputs.provider_arn) is what an AwsIamRole
+// trust policy references as a `Federated` principal, closing the loop:
+// issuer -> AwsIamOidcProvider -> AwsIamRole.
+message AwsIamOidcProviderSpec {
+  // The AWS region used to configure the provider. IAM is a global service, so
+  // the OIDC provider is account-wide regardless of region; this value only
+  // selects the regional STS/IAM endpoint the deploy talks to.
+  // Example: "us-west-2", "eu-west-1".
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  // url is the URL of the OIDC identity provider, corresponding to the issuer
+  // (`iss`) claim in the tokens it mints. It must be a valid HTTPS URL with no
+  // query or fragment (e.g. "https://oidc.eks.us-west-2.amazonaws.com/id/EXAMPLED"
+  // for EKS, or "https://token.actions.githubusercontent.com" for GitHub Actions).
+  // AWS allows at most one OIDC provider per unique URL per account.
+  //
+  // Reference an AwsEksCluster to enable IRSA without copying the issuer by hand:
+  // this defaults to that cluster's status.outputs.oidc_issuer_url.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef url = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsEksCluster,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.oidc_issuer_url"
+  ];
+
+  // client_id_list is the set of client IDs (also called audiences) that are
+  // allowed to authenticate against this provider -- the value tokens carry in
+  // their `aud` claim. For EKS IRSA this is "sts.amazonaws.com"; for GitHub
+  // Actions it is also typically "sts.amazonaws.com". At least one is required,
+  // each must be 1-255 characters, and duplicates are not allowed.
+  repeated string client_id_list = 3 [(buf.validate.field).repeated = {
+    min_items: 1
+    unique: true
+    items: {
+      string: {
+        min_len: 1
+        max_len: 255
+      }
+    }
+  }];
+
+  // thumbprint_list is an optional set of SHA-1 fingerprints of the OIDC
+  // provider's root CA certificate(s), each exactly 40 hexadecimal characters.
+  // Leave this empty for issuers backed by a well-known certificate authority
+  // (EKS, GitHub Actions, Google, etc.): AWS secures the TLS connection using its
+  // trusted CA store and derives the thumbprint for you. Supply thumbprints only
+  // for issuers whose CA is not publicly trusted. Duplicates are not allowed.
+  repeated string thumbprint_list = 4 [(buf.validate.field).repeated = {
+    unique: true
+    items: {
+      string: {pattern: "^[0-9a-fA-F]{40}$"}
+    }
+  }];
+}

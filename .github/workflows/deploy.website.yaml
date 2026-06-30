@@ -1,7 +1,7 @@
 # =============================================================================
 # Website Deploy (Manual Trigger)
 # =============================================================================
-# Builds and deploys openmcf.org to GitHub Pages from any branch.
+# Builds and deploys planton.dev to GitHub Pages from any branch.
 #
 # Use the branch picker in the GitHub Actions UI to select the branch to
 # deploy. No tagging or GitHub release is created — this is a lightweight

@@ -22,22 +22,22 @@ Deploys an AWS CloudWatch Logs log group with configurable retention policy, opt
 ## Quick Start
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCloudwatchLogGroup
 metadata:
   name: app-logs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsCloudwatchLogGroup.app-logs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsCloudwatchLogGroup.app-logs
 spec:
   region: us-west-2
   retentionInDays: 30
 ```
 
 ```shell
-openmcf apply -f log-group.yaml
+planton apply -f log-group.yaml
 ```
 
 This creates a STANDARD class log group with 30-day retention using default AWS encryption.
@@ -69,15 +69,15 @@ No fields are strictly required. An empty spec creates a STANDARD class log grou
 A general-purpose log group for application logging:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCloudwatchLogGroup
 metadata:
   name: app-logs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme
-    pulumi.openmcf.org/project: platform
-    pulumi.openmcf.org/stack.name: dev.AwsCloudwatchLogGroup.app-logs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme
+    pulumi.planton.dev/project: platform
+    pulumi.planton.dev/stack.name: dev.AwsCloudwatchLogGroup.app-logs
 spec:
   region: us-west-2
   retentionInDays: 30
@@ -88,15 +88,15 @@ spec:
 A log group with 90-day retention and KMS encryption for compliance workloads:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCloudwatchLogGroup
 metadata:
   name: prod-app-logs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme
-    pulumi.openmcf.org/project: platform
-    pulumi.openmcf.org/stack.name: prod.AwsCloudwatchLogGroup.prod-app-logs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme
+    pulumi.planton.dev/project: platform
+    pulumi.planton.dev/stack.name: prod.AwsCloudwatchLogGroup.prod-app-logs
 spec:
   region: us-west-2
   retentionInDays: 90
@@ -112,15 +112,15 @@ spec:
 A cost-optimized log group for VPC flow logs or CDN access logs:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCloudwatchLogGroup
 metadata:
   name: vpc-flow-logs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme
-    pulumi.openmcf.org/project: networking
-    pulumi.openmcf.org/stack.name: prod.AwsCloudwatchLogGroup.vpc-flow-logs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme
+    pulumi.planton.dev/project: networking
+    pulumi.planton.dev/stack.name: prod.AwsCloudwatchLogGroup.vpc-flow-logs
 spec:
   region: us-west-2
   retentionInDays: 365

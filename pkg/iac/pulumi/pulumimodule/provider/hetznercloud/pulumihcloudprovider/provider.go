@@ -3,7 +3,7 @@ package pulumihcloudprovider
 import (
 	"fmt"
 
-	hetznercloudprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/hetznercloud"
+	hetznercloudprovider "github.com/plantonhq/planton/apis/dev/planton/provider/hetznercloud"
 
 	"github.com/pkg/errors"
 	"github.com/pulumi/pulumi-hcloud/sdk/go/hcloud"

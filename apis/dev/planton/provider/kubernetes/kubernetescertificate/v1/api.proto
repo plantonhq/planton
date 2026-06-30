@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetescertificate.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/kubernetescertificate/v1/spec.proto";
+import "dev/planton/provider/kubernetes/kubernetescertificate/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// KubernetesCertificate is a cert-manager Certificate for requesting signed TLS certificates.
+message KubernetesCertificate {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.planton.dev/v1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'KubernetesCertificate'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  KubernetesCertificateSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  KubernetesCertificateStatus status = 5;
+}
+
+// KubernetesCertificateStatus holds the deployment status and outputs.
+message KubernetesCertificateStatus {
+  //stack-outputs
+  KubernetesCertificateStackOutputs outputs = 1;
+}

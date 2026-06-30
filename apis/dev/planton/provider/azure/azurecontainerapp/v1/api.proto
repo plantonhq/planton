@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azurecontainerapp.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/azure/azurecontainerapp/v1/spec.proto";
+import "dev/planton/provider/azure/azurecontainerapp/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// AzureContainerApp is the top-level API resource for an Azure Container App.
+// It defines a serverless container workload running inside an Azure Container
+// Apps Managed Environment, with containers, scaling rules, ingress, secrets,
+// and optional Dapr sidecar.
+message AzureContainerApp {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'azure.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'AzureContainerApp'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  AzureContainerAppSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  AzureContainerAppStatus status = 5;
+}
+
+// AzureContainerAppStatus holds the deployment status and outputs.
+message AzureContainerAppStatus {
+  // stack-outputs
+  AzureContainerAppStackOutputs outputs = 1;
+}

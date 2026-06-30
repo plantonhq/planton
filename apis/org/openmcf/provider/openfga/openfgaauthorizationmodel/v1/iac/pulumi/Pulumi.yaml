@@ -1,9 +1,0 @@
-name: openfga-authorization-model
-description: |
-  OpenFGA Authorization Model deployment component.
-  
-  IMPORTANT: OpenFGA does not have a Pulumi provider. This module is a
-  pass-through placeholder. Use Terraform/Tofu provisioner instead:
-  
-    openmcf apply --manifest openfga-authorization-model.yaml --provisioner tofu
-runtime: go

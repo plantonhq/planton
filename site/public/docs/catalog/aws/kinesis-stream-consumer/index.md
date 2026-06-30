@@ -12,7 +12,7 @@ Registers an Amazon Kinesis enhanced fan-out consumer for a Kinesis Data Stream,
 
 ## What Gets Created
 
-When you deploy an AwsKinesisStreamConsumer resource, OpenMCF provisions:
+When you deploy an AwsKinesisStreamConsumer resource, Planton provisions:
 
 - **Kinesis Stream Consumer** — an `aws_kinesis_stream_consumer` resource registered with the specified stream, providing dedicated 2 MB/s per shard via SubscribeToShard (HTTP/2 push delivery)
 
@@ -20,8 +20,8 @@ No additional sub-resources are created. This is a single-resource component.
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
-- **An existing Kinesis Data Stream** — the consumer registers with a stream. The stream can be managed by OpenMCF (AwsKinesisStream) or pre-existing.
+- **AWS credentials** configured via environment variables or Planton provider config
+- **An existing Kinesis Data Stream** — the consumer registers with a stream. The stream can be managed by Planton (AwsKinesisStream) or pre-existing.
 - **IAM permissions** — `kinesis:RegisterStreamConsumer` and `kinesis:DeregisterStreamConsumer`
 
 ## Quick Start
@@ -29,15 +29,15 @@ No additional sub-resources are created. This is a single-resource component.
 Create a file `kinesis-stream-consumer.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsKinesisStreamConsumer
 metadata:
   name: my-consumer
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsKinesisStreamConsumer.my-consumer
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsKinesisStreamConsumer.my-consumer
 spec:
   region: us-east-1
   streamArn:
@@ -47,7 +47,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f kinesis-stream-consumer.yaml
+planton apply -f kinesis-stream-consumer.yaml
 ```
 
 This registers an enhanced fan-out consumer with the specified stream. The consumer gets dedicated 2 MB/s read throughput per shard.
@@ -72,15 +72,15 @@ This component has no optional fields. The consumer name is derived from `metada
 Register a consumer with an existing stream using a literal ARN:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsKinesisStreamConsumer
 metadata:
   name: dashboard-consumer
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsKinesisStreamConsumer.dashboard-consumer
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsKinesisStreamConsumer.dashboard-consumer
 spec:
   region: us-east-1
   streamArn:
@@ -89,18 +89,18 @@ spec:
 
 ### Consumer with Stream Reference
 
-Reference an OpenMCF-managed Kinesis stream. The platform resolves the ARN at deployment time:
+Reference an Planton-managed Kinesis stream. The platform resolves the ARN at deployment time:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsKinesisStreamConsumer
 metadata:
   name: analytics-consumer
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsKinesisStreamConsumer.analytics-consumer
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsKinesisStreamConsumer.analytics-consumer
 spec:
   region: us-east-1
   streamArn:
@@ -116,7 +116,7 @@ Deploy multiple consumers for different processing pipelines, each with dedicate
 
 ```yaml
 # Consumer 1: Real-time dashboard
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsKinesisStreamConsumer
 metadata:
   name: dashboard-consumer
@@ -129,7 +129,7 @@ spec:
       fieldPath: status.outputs.stream_arn
 ---
 # Consumer 2: Audit trail
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsKinesisStreamConsumer
 metadata:
   name: audit-consumer

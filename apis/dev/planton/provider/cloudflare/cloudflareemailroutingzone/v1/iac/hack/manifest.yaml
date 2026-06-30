@@ -1,0 +1,11 @@
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareEmailRoutingZone
+metadata:
+  name: test-email-routing-zone
+spec:
+  zoneId:
+    value: "023e105f4ecef8ad9ca31a8372d0c353"
+  catchAll:
+    enabled: true
+    type: drop
+  lockDnsRecords: false

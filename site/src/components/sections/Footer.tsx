@@ -8,7 +8,7 @@ export default function Footer() {
     { name: "Documentation", href: "/docs", external: false },
     { name: "Getting Started", href: "/docs/getting-started", external: false },
     { name: "Components", href: "/docs/catalog", external: false },
-    { name: "GitHub", href: "https://github.com/plantonhq/openmcf", external: true },
+    { name: "GitHub", href: "https://github.com/plantonhq/planton", external: true },
   ];
 
   return (
@@ -17,8 +17,8 @@ export default function Footer() {
         <div className="grid md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
             <div className="flex items-center gap-2 mb-4">
-              <Image src="/icon.png" alt="OpenMCF mark" width={36} height={36} className="h-9 w-auto object-contain" />
-              <Image src="/text-logo.svg" alt="OpenMCF" width={155} height={32} className="h-8 w-auto object-contain" />
+              <Image src="/icon.png" alt="Planton mark" width={36} height={36} className="h-9 w-auto object-contain" />
+              <Image src="/text-logo.svg" alt="Planton" width={155} height={32} className="h-8 w-auto object-contain" />
             </div>
             <p className="text-slate-400 max-w-md mb-6">
               Kubernetes‑style manifests for multi‑cloud infrastructure. Define once. Deploy anywhere.
@@ -58,7 +58,7 @@ export default function Footer() {
             <h3 className="font-semibold text-white mb-4">Community</h3>
             <div className="space-y-3">
               <a
-                href="https://github.com/plantonhq/openmcf"
+                href="https://github.com/plantonhq/planton"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block text-slate-400 hover:text-white transition-colors"
@@ -69,7 +69,7 @@ export default function Footer() {
                 </div>
               </a>
               <a 
-                href="https://github.com/plantonhq/openmcf/discussions"
+                href="https://github.com/plantonhq/planton/discussions"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block text-slate-400 hover:text-white transition-colors"
@@ -80,7 +80,7 @@ export default function Footer() {
                 </div>
               </a>
               <a 
-                href="https://github.com/plantonhq/openmcf/issues"
+                href="https://github.com/plantonhq/planton/issues"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block text-slate-400 hover:text-white transition-colors"
@@ -94,7 +94,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="border-t border-slate-800 mt-12 pt-8 text-center">
-          <p className="text-slate-500">© 2025 OpenMCF. Open‑source under Apache-2.0 License.</p>
+          <p className="text-slate-500">© 2025 Planton. Open‑source under Apache-2.0 License.</p>
         </div>
       </div>
     </footer>

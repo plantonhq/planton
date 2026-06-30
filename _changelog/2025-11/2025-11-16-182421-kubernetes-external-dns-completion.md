@@ -336,7 +336,7 @@ Both approaches are documented in the README.
 
 ### Tests
 ```bash
-$ cd apis/org/openmcf/provider/kubernetes/kubernetesexternaldns/v1
+$ cd apis/dev/planton/provider/kubernetes/kubernetesexternaldns/v1
 $ go test -v
 # Result: Tests created, imports fixed, ready to run
 ```
@@ -366,7 +366,7 @@ The ExternalDNS component now serves as a reference implementation for multi-clo
 
 **Status**: ✅ Production Ready (100% Complete)  
 **Timeline**: ~45 minutes  
-**Component Path**: `apis/org/openmcf/provider/kubernetes/kubernetesexternaldns/v1/`  
+**Component Path**: `apis/dev/planton/provider/kubernetes/kubernetesexternaldns/v1/`  
 **Audit Reports**: 
 - Before: `v1/docs/audit/2025-11-14-061532.md` (59.20%)
 - After: `v1/docs/audit/2025-11-16-181611.md` (100.00%)

@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsathenaworkgroup.v1;
+
+// AwsAthenaWorkgroupStackOutputs captures observable identifiers from a
+// provisioned Athena workgroup. These outputs are used by downstream resources
+// (e.g., Athena named queries, prepared statements, or Glue catalog references)
+// and for operational visibility via StringValueOrRef.
+message AwsAthenaWorkgroupStackOutputs {
+  // The Amazon Resource Name (ARN) of the Athena workgroup. Used for IAM
+  // policies, cross-service permissions, and as a reference identifier.
+  string workgroup_arn = 1;
+
+  // The name of the Athena workgroup. Used in Athena API calls (StartQueryExecution,
+  // etc.) and as a human-readable identifier. The workgroup name is unique
+  // within an AWS account and region.
+  string workgroup_name = 2;
+
+  // The actual engine version in use by the workgroup. When selected_engine_version
+  // is "AUTO" or empty, this reflects the latest engine version AWS has assigned.
+  // When a specific version is pinned, this confirms the version is active.
+  string effective_engine_version = 3;
+}

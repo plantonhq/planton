@@ -12,14 +12,14 @@ Deploys a Atlas MongoDB cluster with configurable cluster type, replication topo
 
 ## What Gets Created
 
-When you deploy a AtlasMongodb resource, OpenMCF provisions:
+When you deploy a AtlasMongodb resource, Planton provisions:
 
 - **Atlas MongoDB Advanced Cluster** — a `atlasmongodb_advanced_cluster` resource with the specified cluster type, replication spec, region configuration, electable/read-only node topology, backup, and auto-scaling settings
 - **Atlas MongoDB Provider** — configured using explicit API key credentials from provider config or environment variables
 
 ## Prerequisites
 
-- **Atlas MongoDB API keys** configured via environment variables (`MONGODB_ATLAS_PUBLIC_KEY`, `MONGODB_ATLAS_PRIVATE_KEY`) or OpenMCF provider config
+- **Atlas MongoDB API keys** configured via environment variables (`MONGODB_ATLAS_PUBLIC_KEY`, `MONGODB_ATLAS_PRIVATE_KEY`) or Planton provider config
 - **A Atlas MongoDB project** with its project ID — the cluster is created inside this project
 - **Sufficient Atlas permissions** for the API key to create and manage clusters in the target project
 
@@ -28,15 +28,15 @@ When you deploy a AtlasMongodb resource, OpenMCF provisions:
 Create a file `atlas-mongodb.yaml`:
 
 ```yaml
-apiVersion: atlas.openmcf.org/v1
+apiVersion: atlas.planton.dev/v1
 kind: AtlasMongodb
 metadata:
   name: my-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AtlasMongodb.my-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AtlasMongodb.my-cluster
 spec:
   clusterConfig:
     projectId: "64a1234567890abcdef12345"
@@ -51,7 +51,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f atlas-mongodb.yaml
+planton apply -f atlas-mongodb.yaml
 ```
 
 This creates a 3-node replica set cluster on AWS using M10 instances running MongoDB 7.0.
@@ -85,15 +85,15 @@ This creates a 3-node replica set cluster on AWS using M10 instances running Mon
 A minimal 3-node replica set on AWS with M10 instances, suitable for development or small production workloads:
 
 ```yaml
-apiVersion: atlas.openmcf.org/v1
+apiVersion: atlas.planton.dev/v1
 kind: AtlasMongodb
 metadata:
   name: dev-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AtlasMongodb.dev-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AtlasMongodb.dev-cluster
 spec:
   clusterConfig:
     projectId: "64a1234567890abcdef12345"
@@ -110,15 +110,15 @@ spec:
 A production-grade replica set on GCP with cloud backup enabled, auto-scaling disk storage, and read-only nodes for offloading analytics queries:
 
 ```yaml
-apiVersion: atlas.openmcf.org/v1
+apiVersion: atlas.planton.dev/v1
 kind: AtlasMongodb
 metadata:
   name: prod-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AtlasMongodb.prod-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AtlasMongodb.prod-cluster
 spec:
   clusterConfig:
     projectId: "64a1234567890abcdef12345"
@@ -138,15 +138,15 @@ spec:
 A sharded cluster on Azure with M40 instances for high-throughput workloads that require horizontal scaling across multiple shards:
 
 ```yaml
-apiVersion: atlas.openmcf.org/v1
+apiVersion: atlas.planton.dev/v1
 kind: AtlasMongodb
 metadata:
   name: analytics-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AtlasMongodb.analytics-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AtlasMongodb.analytics-cluster
 spec:
   clusterConfig:
     projectId: "64a1234567890abcdef12345"
@@ -174,4 +174,4 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## Related Components
 
-No other OpenMCF components have direct foreign key references to AtlasMongodb. This component is typically deployed as a standalone resource within a Atlas MongoDB project.
+No other Planton components have direct foreign key references to AtlasMongodb. This component is typically deployed as a standalone resource within a Atlas MongoDB project.

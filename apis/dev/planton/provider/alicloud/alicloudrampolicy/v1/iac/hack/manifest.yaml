@@ -1,0 +1,23 @@
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudRamPolicy
+metadata:
+  name: alicloudrampolicy-demo
+spec:
+  region: cn-hangzhou
+  policyName: planton-demo-policy
+  policyDocument: |
+    {
+      "Version": "1",
+      "Statement": [
+        {
+          "Effect": "Allow",
+          "Action": [
+            "oss:GetObject",
+            "oss:ListObjects"
+          ],
+          "Resource": [
+            "acs:oss:*:*:planton-demo-bucket/*"
+          ]
+        }
+      ]
+    }

@@ -30,7 +30,7 @@ the harness to perform that resolution itself.
 
 ## Solution / What's New
 
-### `AwsSubnet` (`apis/org/openmcf/provider/aws/awssubnet/v1/`)
+### `AwsSubnet` (`apis/dev/planton/provider/aws/awssubnet/v1/`)
 
 - **Spec** with `region`, a `vpc_id` foreign key (`default_kind = AwsVpc`), `availability_zone`,
   `cidr_block`, public-IP-on-launch, dual-stack IPv6, DNS64, resource-name DNS records, and
@@ -88,7 +88,7 @@ flowchart LR
 
 - `make protos`, `make generate-cloud-resource-kind-map`, gazelle; package-scoped `go build`
   and `go test` for the component, modules, verifiers, framework, and `pkg/outputs`; `bazel
-  build` (incl. nogo) of touched targets; `openmcf secret-coverage --check`; `tofu validate`.
+  build` (incl. nogo) of touched targets; `planton secret-coverage --check`; `tofu validate`.
 - **Live E2E GREEN on both pulumi and tofu** (deploy VPC prerequisite → resolve `vpc_id` →
   deploy subnet → DescribeSubnets verify → destroy → verify-destroyed → teardown VPC), with a
   clean orphan sweep.

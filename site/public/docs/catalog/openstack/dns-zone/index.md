@@ -12,14 +12,14 @@ Deploys an OpenStack Designate DNS zone with configurable zone type (PRIMARY or 
 
 ## What Gets Created
 
-When you deploy an OpenStackDnsZone resource, OpenMCF provisions:
+When you deploy an OpenStackDnsZone resource, Planton provisions:
 
 - **DNS Zone** — an `openstack_dns_zone_v2` resource representing an authoritative domain in OpenStack Designate. The zone can be PRIMARY (Designate is the authoritative source) or SECONDARY (replicated from upstream master nameservers).
 - **Inline DNS Record Sets** (optional) — one `openstack_dns_recordset_v2` resource per entry in the `records` list. Each record set is keyed by `recordType` + `recordName` for stable IaC state management. Supported types include A, AAAA, CNAME, MX, TXT, SRV, NS, PTR, CAA, SOA, SPF, SSHFP, and NAPTR.
 
 ## Prerequisites
 
-- **OpenStack credentials** configured via environment variables or OpenMCF provider config
+- **OpenStack credentials** configured via environment variables or Planton provider config
 - **Designate DNS service** enabled and available in the target OpenStack project
 - **A valid domain name** for the zone (e.g., `example.com`)
 - **Master nameserver addresses** if creating a SECONDARY zone for zone transfers
@@ -29,14 +29,14 @@ When you deploy an OpenStackDnsZone resource, OpenMCF provisions:
 Create a file `dns-zone.yaml`:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackDnsZone
 metadata:
   name: my-zone
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: dev.OpenstackDnsZone.my-zone
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackdnszone/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: dev.OpenstackDnsZone.my-zone
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackdnszone/v1/iac/pulumi/module
 spec:
   domainName: example.com
   email: admin@example.com
@@ -45,7 +45,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f dns-zone.yaml
+planton apply -f dns-zone.yaml
 ```
 
 This creates a PRIMARY DNS zone for `example.com` in OpenStack Designate with the specified administrator email in the SOA record.
@@ -88,14 +88,14 @@ Each entry in the `records` list defines a DNS record set within the zone:
 A minimal PRIMARY zone with an administrator email and a default TTL:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackDnsZone
 metadata:
   name: example-zone
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: dev.OpenstackDnsZone.example-zone
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackdnszone/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: dev.OpenstackDnsZone.example-zone
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackdnszone/v1/iac/pulumi/module
 spec:
   domainName: example.com
   email: dns-admin@example.com
@@ -108,14 +108,14 @@ spec:
 A zone with inline records for a web application, including an A record for the apex domain and a CNAME for the `www` subdomain:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackDnsZone
 metadata:
   name: app-zone
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: dev.OpenstackDnsZone.app-zone
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackdnszone/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: dev.OpenstackDnsZone.app-zone
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackdnszone/v1/iac/pulumi/module
 spec:
   domainName: app.example.com
   email: ops@example.com
@@ -139,14 +139,14 @@ spec:
 A zone configured for email delivery with MX records pointing to mail servers and TXT records for SPF and DKIM verification:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackDnsZone
 metadata:
   name: mail-zone
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: prod.OpenstackDnsZone.mail-zone
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackdnszone/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: prod.OpenstackDnsZone.mail-zone
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackdnszone/v1/iac/pulumi/module
 spec:
   domainName: corp.example.com
   email: postmaster@corp.example.com
@@ -180,14 +180,14 @@ spec:
 A SECONDARY zone that replicates DNS data from upstream master nameservers via zone transfers (AXFR/IXFR):
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackDnsZone
 metadata:
   name: replica-zone
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: prod.OpenstackDnsZone.replica-zone
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackdnszone/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: prod.OpenstackDnsZone.replica-zone
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackdnszone/v1/iac/pulumi/module
 spec:
   domainName: replicated.example.com
   description: Secondary zone replicated from upstream nameservers

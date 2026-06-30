@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package dev.planton.provider.hetznercloud.hetznercloudserver.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/hetznercloud/hetznercloudserver/v1/spec.proto";
+import "dev/planton/provider/hetznercloud/hetznercloudserver/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// hetznercloud-server
+message HetznerCloudServer {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = "hetzner-cloud.planton.dev/v1"];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = "HetznerCloudServer"];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  HetznerCloudServerSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  HetznerCloudServerStatus status = 5;
+}
+
+// hetznercloud-server status
+message HetznerCloudServerStatus {
+  //stack-outputs
+  //  hetznercloud-server stack-outputs
+  HetznerCloudServerStackOutputs outputs = 1;
+}

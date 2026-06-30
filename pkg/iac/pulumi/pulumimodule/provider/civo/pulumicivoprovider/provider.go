@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"reflect"
 
-	civoprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/civo"
-	"github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/pulumi/pulumioutput"
+	civoprovider "github.com/plantonhq/planton/apis/dev/planton/provider/civo"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/pulumi/pulumioutput"
 
 	"github.com/pkg/errors"
 	"github.com/pulumi/pulumi-civo/sdk/v2/go/civo"

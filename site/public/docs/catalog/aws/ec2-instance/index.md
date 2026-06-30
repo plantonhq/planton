@@ -12,7 +12,7 @@ Deploys a single AWS EC2 virtual machine instance in a private subnet with confi
 
 ## What Gets Created
 
-When you deploy an AwsEc2Instance resource, OpenMCF provisions:
+When you deploy an AwsEc2Instance resource, Planton provisions:
 
 - **EC2 Instance** — an `aws:ec2:Instance` resource launched with the specified AMI, instance type, subnet, and security groups, with a configurable root EBS volume
 - **TLS Private Key** — a `tls:PrivateKey` RSA-4096 key pair, created only when `connectionMethod` is `BASTION` or `INSTANCE_CONNECT` and no `keyName` is provided
@@ -20,7 +20,7 @@ When you deploy an AwsEc2Instance resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **A VPC with at least one private subnet** where the instance will be placed
 - **At least one security group** controlling inbound/outbound traffic for the instance
 - **An AMI ID** for the desired operating system (e.g., Amazon Linux, Ubuntu)
@@ -32,15 +32,15 @@ When you deploy an AwsEc2Instance resource, OpenMCF provisions:
 Create a file `ec2-instance.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEc2Instance
 metadata:
   name: my-instance
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsEc2Instance.my-instance
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsEc2Instance.my-instance
 spec:
   region: us-west-2
   instanceName: my-instance
@@ -55,7 +55,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f ec2-instance.yaml
+planton apply -f ec2-instance.yaml
 ```
 
 This creates an EC2 instance in a private subnet using SSM (the default connection method) for shell access.
@@ -81,7 +81,7 @@ This creates an EC2 instance in a private subnet using SSM (the default connecti
 | `iamInstanceProfileArn` | `StringValueOrRef` | — | ARN of an IAM instance profile to attach. Required when `connectionMethod` is `SSM`. Can reference an AwsIamRole resource via `valueFrom`. |
 | `keyName` | `string` | — | Name of an existing EC2 key pair for SSH access. Required when `connectionMethod` is `BASTION` or `INSTANCE_CONNECT` (if omitted, a key pair is auto-generated). |
 | `rootVolumeSizeGb` | `int32` | `30` | Size of the root EBS volume in GiB. Must be greater than 0. |
-| `tags` | `map<string, string>` | `{}` | Custom tags to apply to the EC2 instance. Merged with OpenMCF-managed tags (user tags take precedence on collision). |
+| `tags` | `map<string, string>` | `{}` | Custom tags to apply to the EC2 instance. Merged with Planton-managed tags (user tags take precedence on collision). |
 | `userData` | `string` | — | Cloud-init or shell script to run on first boot. Maximum 32 KiB. |
 | `ebsOptimized` | `bool` | `false` | Enables dedicated EBS throughput for I/O-intensive workloads. |
 | `disableApiTermination` | `bool` | `false` | Prevents accidental instance termination via the AWS API. |
@@ -93,15 +93,15 @@ This creates an EC2 instance in a private subnet using SSM (the default connecti
 The default configuration for a private instance managed via AWS Systems Manager:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEc2Instance
 metadata:
   name: backend-server
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsEc2Instance.backend-server
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsEc2Instance.backend-server
 spec:
   region: us-west-2
   instanceName: backend-server
@@ -118,15 +118,15 @@ spec:
 An instance configured for direct SSH access via a pre-existing key pair:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEc2Instance
 metadata:
   name: bastion
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsEc2Instance.bastion
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsEc2Instance.bastion
 spec:
   region: us-west-2
   instanceName: bastion
@@ -142,18 +142,18 @@ spec:
 
 ### Auto-Generated Key Pair with Instance Connect
 
-When no `keyName` is provided for INSTANCE_CONNECT, OpenMCF generates an RSA-4096 key pair automatically and exposes the private key as a stack output:
+When no `keyName` is provided for INSTANCE_CONNECT, Planton generates an RSA-4096 key pair automatically and exposes the private key as a stack output:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEc2Instance
 metadata:
   name: dev-box
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsEc2Instance.dev-box
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsEc2Instance.dev-box
 spec:
   region: us-west-2
   instanceName: dev-box
@@ -177,15 +177,15 @@ spec:
 A hardened instance with custom tags, EBS optimization, and API termination protection:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEc2Instance
 metadata:
   name: prod-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsEc2Instance.prod-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsEc2Instance.prod-api
 spec:
   region: us-west-2
   instanceName: prod-api
@@ -208,18 +208,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding IDs:
+Reference other Planton-managed resources instead of hardcoding IDs:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEc2Instance
 metadata:
   name: ref-instance
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsEc2Instance.ref-instance
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsEc2Instance.ref-instance
 spec:
   region: us-west-2
   instanceName: ref-instance

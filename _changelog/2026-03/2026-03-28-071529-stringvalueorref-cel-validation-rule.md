@@ -142,7 +142,7 @@ Two existing tests documented the old blind spot as expected behavior and were i
 
 ## Benefits
 
-- **Fixes the false-positive** for all current and future `StringValueOrRef` fields across the entire OpenMCF schema
+- **Fixes the false-positive** for all current and future `StringValueOrRef` fields across the entire Planton schema
 - **One rule, universal coverage**: Single message-level CEL expression instead of per-field or per-kind rules (~60+ consumer fields)
 - **Durable test infrastructure**: Boundary tests survive regardless of which production resources come and go
 - **Cross-implementation safe**: The CEL expression handles both Go and JS proto3 oneof behaviors
@@ -151,13 +151,13 @@ Two existing tests documented the old blind spot as expected behavior and were i
 ## Impact
 
 - **Planton service wizard**: Client-side proto validation will now correctly reject empty required fields, showing violations instead of a false green badge
-- **All OpenMCF consumers**: Any system using `protovalidate` against OpenMCF schemas (CLI, backend services, CI pipelines) will now catch empty `StringValueOrRef` fields
+- **All Planton consumers**: Any system using `protovalidate` against Planton schemas (CLI, backend services, CI pipelines) will now catch empty `StringValueOrRef` fields
 - **New kind authors**: The rule is universal -- any new cloud resource kind that uses `StringValueOrRef` automatically benefits without additional annotation
 
 ## Related Work
 
 - [Cloudflare zone_id StringValueOrRef Migration](2026-03-15-195622-cloudflare-zone-id-stringvalueorref-migration.md) -- expanded `StringValueOrRef` usage across Cloudflare components
-- Planton service wizard project: client-side proto validation Phase 3 identified this gap; wizard specDefaults cleanup follows after this OpenMCF release
+- Planton service wizard project: client-side proto validation Phase 3 identified this gap; wizard specDefaults cleanup follows after this Planton release
 
 ---
 

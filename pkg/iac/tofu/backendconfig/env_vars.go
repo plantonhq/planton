@@ -7,16 +7,16 @@ import "os"
 // useful for CI/CD pipelines and 12-factor app patterns.
 const (
 	// EnvBackendType specifies the backend type (s3, gcs, azurerm, local)
-	EnvBackendType = "OPENMCF_BACKEND_TYPE"
+	EnvBackendType = "PLANTON_BACKEND_TYPE"
 
 	// EnvBackendBucket specifies the state bucket/container name
-	EnvBackendBucket = "OPENMCF_BACKEND_BUCKET"
+	EnvBackendBucket = "PLANTON_BACKEND_BUCKET"
 
 	// EnvBackendRegion specifies the AWS region (use "auto" for S3-compatible backends)
-	EnvBackendRegion = "OPENMCF_BACKEND_REGION"
+	EnvBackendRegion = "PLANTON_BACKEND_REGION"
 
 	// EnvBackendEndpoint specifies a custom S3-compatible endpoint URL (R2, MinIO, etc.)
-	EnvBackendEndpoint = "OPENMCF_BACKEND_ENDPOINT"
+	EnvBackendEndpoint = "PLANTON_BACKEND_ENDPOINT"
 )
 
 // Note: Backend key is intentionally NOT configurable via environment variable.
@@ -31,7 +31,7 @@ type EnvBackendConfig struct {
 }
 
 // ReadFromEnv reads backend configuration from environment variables.
-// Returns an EnvBackendConfig with values from OPENMCF_BACKEND_* variables.
+// Returns an EnvBackendConfig with values from PLANTON_BACKEND_* variables.
 // Empty strings are returned for unset variables.
 func ReadFromEnv() EnvBackendConfig {
 	return EnvBackendConfig{

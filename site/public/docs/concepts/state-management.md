@@ -1,15 +1,15 @@
 ---
 title: "State Management"
-description: "How OpenMCF manages deployment state across Pulumi and OpenTofu/Terraform backends -- from Pulumi Cloud and S3 to GCS, Azure Blob, and local filesystem"
+description: "How Planton manages deployment state across Pulumi and OpenTofu/Terraform backends -- from Pulumi Cloud and S3 to GCS, Azure Blob, and local filesystem"
 icon: "database"
 order: 50
 ---
 
 # State Management
 
-Every IaC deployment tracks state -- the mapping between what your manifest declares and what actually exists in the cloud. State enables OpenMCF to know what has changed between deployments, what needs to be created, updated, or destroyed, and what the current outputs of a deployment are.
+Every IaC deployment tracks state -- the mapping between what your manifest declares and what actually exists in the cloud. State enables Planton to know what has changed between deployments, what needs to be created, updated, or destroyed, and what the current outputs of a deployment are.
 
-How state is stored depends on which IaC engine you use. Pulumi and OpenTofu/Terraform have different backend systems, and OpenMCF configures them through manifest labels.
+How state is stored depends on which IaC engine you use. Pulumi and OpenTofu/Terraform have different backend systems, and Planton configures them through manifest labels.
 
 ## Pulumi State Backends
 
@@ -22,16 +22,16 @@ Pulumi state configuration is provided through manifest labels:
 ```yaml
 metadata:
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme
-    pulumi.openmcf.org/project: platform
-    pulumi.openmcf.org/stack.name: production.KubernetesPostgres.session-store
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme
+    pulumi.planton.dev/project: platform
+    pulumi.planton.dev/stack.name: production.KubernetesPostgres.session-store
 ```
 
 Or as a single FQDN using the `--stack` flag:
 
 ```bash
-openmcf pulumi up -f postgres.yaml --stack acme/platform/production
+planton pulumi up -f postgres.yaml --stack acme/platform/production
 ```
 
 ### Supported Pulumi Backends
@@ -44,29 +44,29 @@ openmcf pulumi up -f postgres.yaml --stack acme/platform/production
 | **Azure Blob** | Self-managed state in Azure Blob Storage. |
 | **Local** | State stored on the local filesystem. Suitable for development only. |
 
-The Pulumi backend is configured through Pulumi's standard mechanisms (environment variables, `pulumi login`, or configuration files). OpenMCF's role is to set the stack FQDN from the manifest labels, not to configure the backend connection itself.
+The Pulumi backend is configured through Pulumi's standard mechanisms (environment variables, `pulumi login`, or configuration files). Planton's role is to set the stack FQDN from the manifest labels, not to configure the backend connection itself.
 
 ## OpenTofu/Terraform State Backends
 
-OpenTofu and Terraform use a `backend` block in the Terraform configuration to determine where state is stored. OpenMCF generates this configuration from manifest labels.
+OpenTofu and Terraform use a `backend` block in the Terraform configuration to determine where state is stored. Planton generates this configuration from manifest labels.
 
 ### Configuring Tofu/Terraform State
 
-State backend configuration is provided through manifest labels with the `tofu.openmcf.org/backend.*` prefix:
+State backend configuration is provided through manifest labels with the `tofu.planton.dev/backend.*` prefix:
 
 ```yaml
 metadata:
   labels:
-    openmcf.org/provisioner: tofu
-    tofu.openmcf.org/backend.type: s3
-    tofu.openmcf.org/backend.bucket: my-tfstate-bucket
-    tofu.openmcf.org/backend.key: prod/postgres/terraform.tfstate
-    tofu.openmcf.org/backend.region: us-east-1
+    planton.dev/provisioner: tofu
+    tofu.planton.dev/backend.type: s3
+    tofu.planton.dev/backend.bucket: my-tfstate-bucket
+    tofu.planton.dev/backend.key: prod/postgres/terraform.tfstate
+    tofu.planton.dev/backend.region: us-east-1
 ```
 
 The CLI reads these labels, writes a `backend.tf` file in the workspace, and passes the configuration to `tofu init`.
 
-Legacy `terraform.openmcf.org/backend.*` labels are also supported for backward compatibility.
+Legacy `terraform.planton.dev/backend.*` labels are also supported for backward compatibility.
 
 ### Supported Backends and Required Fields
 
@@ -106,16 +106,16 @@ No other fields are required for local backends. State is stored in the workspac
 
 ### S3-Compatible Backends (Cloudflare R2, MinIO)
 
-OpenMCF supports S3-compatible backends for teams using Cloudflare R2, MinIO, or other S3-compatible object stores. To use an S3-compatible backend, set the region to `auto` and provide the custom endpoint:
+Planton supports S3-compatible backends for teams using Cloudflare R2, MinIO, or other S3-compatible object stores. To use an S3-compatible backend, set the region to `auto` and provide the custom endpoint:
 
 ```yaml
 metadata:
   labels:
-    tofu.openmcf.org/backend.type: s3
-    tofu.openmcf.org/backend.bucket: my-r2-state
-    tofu.openmcf.org/backend.key: prod/terraform.tfstate
-    tofu.openmcf.org/backend.region: auto
-    tofu.openmcf.org/backend.endpoint: https://your-account-id.r2.cloudflarestorage.com
+    tofu.planton.dev/backend.type: s3
+    tofu.planton.dev/backend.bucket: my-r2-state
+    tofu.planton.dev/backend.key: prod/terraform.tfstate
+    tofu.planton.dev/backend.region: auto
+    tofu.planton.dev/backend.endpoint: https://your-account-id.r2.cloudflarestorage.com
 ```
 
 When `region=auto` is detected, the CLI automatically configures the S3 backend with the compatibility flags that S3-compatible backends require.
@@ -126,11 +126,11 @@ Both engines follow the same conceptual lifecycle:
 
 | Phase | Pulumi Command | Tofu/Terraform Command | What Happens |
 |-------|---------------|----------------------|--------------|
-| **Initialize** | `openmcf pulumi init` | `openmcf tofu init` | Set up backend, download providers |
-| **Preview** | `openmcf pulumi preview` | `openmcf tofu plan` | Compare manifest against state, show planned changes |
-| **Apply** | `openmcf pulumi up` | `openmcf tofu apply` | Execute changes, update state |
-| **Refresh** | `openmcf pulumi refresh` | `openmcf tofu refresh` | Sync state with actual cloud resources |
-| **Destroy** | `openmcf pulumi destroy` | `openmcf tofu destroy` | Delete all resources, clean up state |
+| **Initialize** | `planton pulumi init` | `planton tofu init` | Set up backend, download providers |
+| **Preview** | `planton pulumi preview` | `planton tofu plan` | Compare manifest against state, show planned changes |
+| **Apply** | `planton pulumi up` | `planton tofu apply` | Execute changes, update state |
+| **Refresh** | `planton pulumi refresh` | `planton tofu refresh` | Sync state with actual cloud resources |
+| **Destroy** | `planton pulumi destroy` | `planton tofu destroy` | Delete all resources, clean up state |
 
 The preview/plan step is where state management provides its key value: by comparing your manifest against the stored state, the engine can tell you exactly what will change before you commit to the deployment.
 
@@ -140,20 +140,20 @@ Each environment should have its own isolated state. In Pulumi, this is achieved
 
 ```yaml
 # Production
-pulumi.openmcf.org/stack.name: production.KubernetesPostgres.session-store
+pulumi.planton.dev/stack.name: production.KubernetesPostgres.session-store
 
 # Staging
-pulumi.openmcf.org/stack.name: staging.KubernetesPostgres.session-store
+pulumi.planton.dev/stack.name: staging.KubernetesPostgres.session-store
 ```
 
 In OpenTofu/Terraform, this is achieved through different state file keys:
 
 ```yaml
 # Production
-tofu.openmcf.org/backend.key: production/postgres/terraform.tfstate
+tofu.planton.dev/backend.key: production/postgres/terraform.tfstate
 
 # Staging
-tofu.openmcf.org/backend.key: staging/postgres/terraform.tfstate
+tofu.planton.dev/backend.key: staging/postgres/terraform.tfstate
 ```
 
 Both approaches ensure that a deployment to staging never reads or modifies the production state, and vice versa.

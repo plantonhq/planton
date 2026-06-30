@@ -6,21 +6,21 @@
 
 ## Summary
 
-Added the OciIdentityPolicy deployment component (R05, enum 3304) to the OCI provider in OpenMCF. This component manages `oci_identity_policy` resources -- OCI's mechanism for granting IAM access through human-readable policy statements. Both Pulumi (Go) and Terraform (HCL) modules are implemented with full feature parity.
+Added the OciIdentityPolicy deployment component (R05, enum 3304) to the OCI provider in Planton. This component manages `oci_identity_policy` resources -- OCI's mechanism for granting IAM access through human-readable policy statements. Both Pulumi (Go) and Terraform (HCL) modules are implemented with full feature parity.
 
 ## Problem Statement / Motivation
 
-OCI uses a declarative policy language for IAM access control. Policies are attached to compartments and define who can do what within that compartment's scope. Without an OciIdentityPolicy component, users cannot manage IAM access as code through OpenMCF, making it impossible to build complete OCI environments that include proper access controls.
+OCI uses a declarative policy language for IAM access control. Policies are attached to compartments and define who can do what within that compartment's scope. Without an OciIdentityPolicy component, users cannot manage IAM access as code through Planton, making it impossible to build complete OCI environments that include proper access controls.
 
 ### Pain Points
 
-- No way to manage OCI IAM policies through OpenMCF
+- No way to manage OCI IAM policies through Planton
 - Infra charts like oke-environment and compute-environment need policy components for complete environment provisioning
 - The OCI identity resource family (R04 OciCompartment, R05 OciIdentityPolicy, R06 OciDynamicGroup) must all be available before OKE and compute phases can be fully realized
 
 ## Solution / What's New
 
-Single-resource deployment component that wraps `oci_identity_policy` with the standard OpenMCF KRM pattern.
+Single-resource deployment component that wraps `oci_identity_policy` with the standard Planton KRM pattern.
 
 ### Spec Fields
 
@@ -38,7 +38,7 @@ Single-resource deployment component that wraps `oci_identity_policy` with the s
 
 ### Files Created
 
-**Proto API** (`apis/org/openmcf/provider/oci/ociidentitypolicy/v1/`):
+**Proto API** (`apis/dev/planton/provider/oci/ociidentitypolicy/v1/`):
 - `spec.proto` -- Spec message with buf-validate rules (required compartment_id, min_len description, min_items statements)
 - `api.proto` -- KRM wiring with api_version/kind const validation
 - `stack_input.proto` -- IaC module input (target + provider config)
@@ -72,7 +72,7 @@ Single-resource deployment component that wraps `oci_identity_policy` with the s
 
 ## Benefits
 
-- Enables IAM-as-code for OCI environments through OpenMCF
+- Enables IAM-as-code for OCI environments through Planton
 - Supports infra-chart composability: `compartmentId` accepts `valueFrom` refs to OciCompartment outputs
 - Policy `versionDate` field supports compliance-sensitive organizations that need stable policy evaluation behavior
 - Consistent patterns with R04 OciCompartment for maintainability
@@ -87,7 +87,7 @@ Single-resource deployment component that wraps `oci_identity_policy` with the s
 
 - Predecessor: OciCompartment (R04) -- same identity service, very similar component shape
 - Next: OciDynamicGroup (R06) -- completes the identity resource family
-- Parent project: 20260212.01.openmcf-cloud-provider-expansion
+- Parent project: 20260212.01.planton-cloud-provider-expansion
 
 ---
 

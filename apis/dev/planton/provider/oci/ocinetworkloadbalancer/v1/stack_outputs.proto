@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocinetworkloadbalancer.v1;
+
+message OciNetworkLoadBalancerStackOutputs {
+  // OCID of the created network load balancer.
+  string network_load_balancer_id = 1;
+
+  // Comma-separated IP addresses assigned to the network load balancer.
+  string ip_addresses = 2;
+}

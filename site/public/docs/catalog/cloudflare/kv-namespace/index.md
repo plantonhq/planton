@@ -12,7 +12,7 @@ Deploys a Workers KV namespace on Cloudflare. Workers KV is a globally distribut
 
 ## What Gets Created
 
-When you deploy a CloudflareKvNamespace resource, OpenMCF provisions:
+When you deploy a CloudflareKvNamespace resource, Planton provisions:
 
 - **Workers KV Namespace** — a `cloudflare_workers_kv_namespace` resource with the title set to the configured `namespaceName`
 
@@ -20,7 +20,7 @@ The namespace ID is exported as a stack output so that other components (such as
 
 ## Prerequisites
 
-- **Cloudflare credentials** configured via environment variables or OpenMCF provider config
+- **Cloudflare credentials** configured via environment variables or Planton provider config
 - **A Cloudflare account** with Workers KV enabled on the plan
 - **Appropriate permissions** — the API token must have `Workers KV Storage:Edit` access
 
@@ -29,15 +29,15 @@ The namespace ID is exported as a stack output so that other components (such as
 Create a file `kv-namespace.yaml`:
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareKvNamespace
 metadata:
   name: my-kv
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CloudflareKvNamespace.my-kv
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CloudflareKvNamespace.my-kv
 spec:
   namespaceName: my-kv-store
 ```
@@ -45,7 +45,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f kv-namespace.yaml
+planton apply -f kv-namespace.yaml
 ```
 
 This creates a KV namespace titled `my-kv-store` in your Cloudflare account. Bind it to a Worker using the namespace ID from `status.outputs.namespaceId`.
@@ -72,15 +72,15 @@ This creates a KV namespace titled `my-kv-store` in your Cloudflare account. Bin
 A minimal KV namespace suitable for development or testing:
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareKvNamespace
 metadata:
   name: dev-cache
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CloudflareKvNamespace.dev-cache
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CloudflareKvNamespace.dev-cache
 spec:
   namespaceName: dev-cache
 ```
@@ -90,15 +90,15 @@ spec:
 A KV namespace intended for session data, with the spec recording a 1-hour TTL intent:
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareKvNamespace
 metadata:
   name: session-store
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CloudflareKvNamespace.session-store
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CloudflareKvNamespace.session-store
 spec:
   namespaceName: prod-session-store
   ttlSeconds: 3600
@@ -110,15 +110,15 @@ spec:
 A KV namespace dedicated to feature flag storage, referenced by multiple Workers:
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareKvNamespace
 metadata:
   name: feature-flags
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CloudflareKvNamespace.feature-flags
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CloudflareKvNamespace.feature-flags
 spec:
   namespaceName: feature-flags-prod
   description: "Global feature flags consumed by edge Workers"

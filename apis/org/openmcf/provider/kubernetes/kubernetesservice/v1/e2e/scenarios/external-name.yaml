@@ -1,9 +1,0 @@
-apiVersion: kubernetes.openmcf.org/v1
-kind: KubernetesService
-metadata:
-  name: e2e-svc-extname
-spec:
-  namespace: default
-  name: e2e-svc-extname
-  type: external_name
-  external_dns_name: "api.example.com"

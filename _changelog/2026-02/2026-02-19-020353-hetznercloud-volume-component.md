@@ -6,15 +6,15 @@
 
 ## Summary
 
-Added the `HetznerCloudVolume` deployment component (R08, enum 3521, id_prefix: `hcvol`) to OpenMCF. This component bundles `hcloud_volume` with an optional `hcloud_volume_attachment`, providing block storage that persists independently of servers. It is the first Hetzner Cloud component to use a separate provider resource for an optional sub-resource rather than an inline field on the main resource, driven by the provider's mutual exclusivity constraint between `location` and `server_id`.
+Added the `HetznerCloudVolume` deployment component (R08, enum 3521, id_prefix: `hcvol`) to Planton. This component bundles `hcloud_volume` with an optional `hcloud_volume_attachment`, providing block storage that persists independently of servers. It is the first Hetzner Cloud component to use a separate provider resource for an optional sub-resource rather than an inline field on the main resource, driven by the provider's mutual exclusivity constraint between `location` and `server_id`.
 
 ## Problem Statement / Motivation
 
-Hetzner Cloud volumes are the persistent block storage primitive. Servers need durable storage for databases, application state, and data that must survive server replacement. Until now, OpenMCF had no way to declaratively provision volumes or manage their attachment to servers.
+Hetzner Cloud volumes are the persistent block storage primitive. Servers need durable storage for databases, application state, and data that must survive server replacement. Until now, Planton had no way to declaratively provision volumes or manage their attachment to servers.
 
 ### Pain Points
 
-- No way to manage Hetzner Cloud block storage through OpenMCF
+- No way to manage Hetzner Cloud block storage through Planton
 - The `hcloud_volume` provider resource treats `location` and `server_id` as mutually exclusive at creation time, requiring a design choice about how to expose both
 - Volume formatting (ext4/xfs) and auto-mount are create-time-only settings not persisted in provider state
 
@@ -82,7 +82,7 @@ flowchart TB
 
 ## Benefits
 
-- Enables persistent block storage as a first-class OpenMCF component
+- Enables persistent block storage as a first-class Planton component
 - Clean lifecycle separation: volume exists independently of server attachment
 - Establishes the pattern for `hcloud_volume_attachment` as a separate sub-resource (contrast with FloatingIp which uses inline `server_id`)
 - `linux_device` output gives users the device path needed for OS-level mounting

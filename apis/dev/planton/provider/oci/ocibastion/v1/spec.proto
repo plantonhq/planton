@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocibastion.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// OciBastionSpec defines the specification for an OCI Bastion --
+// a managed SSH gateway that provides secure, time-limited access
+// to resources in a private subnet without requiring a public IP
+// on the target resource.
+//
+// The bastion creates a private endpoint in the target subnet and
+// allows authorized clients (by CIDR) to establish SSH sessions
+// (managed SSH, port forwarding, dynamic port forwarding) through it.
+//
+// bastion_type is hardcoded to STANDARD in IaC modules (the only
+// publicly documented type). Fields specific to non-standard types
+// (phone_book_entry, static_jump_host_ip_addresses) are excluded.
+//
+// Sessions (oci_bastion_session) are NOT bundled -- they are
+// ephemeral operational artifacts with TTLs, not infrastructure.
+// The bastion's max_session_ttl_in_seconds governs the upper bound.
+//
+// Excluded from v1:
+//   - phone_book_entry -- not applicable to STANDARD bastions
+//   - static_jump_host_ip_addresses -- not applicable to STANDARD bastions
+//   - security_attributes -- Oracle ZPR, very low adoption
+//   - defined_tags, system_tags -- managed by platform
+//   - freeform_tags -- auto-populated from metadata labels
+message OciBastionSpec {
+  // OCID of the compartment where the bastion will be created.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OciCompartment,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartment_id"
+  ];
+
+  // OCID of the subnet that the bastion connects to. The bastion
+  // creates a private endpoint in this subnet. Immutable after creation.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef target_subnet_id = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OciSubnet,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  ];
+
+  // Display name for the bastion. When omitted, the metadata name is used.
+  // Immutable after creation.
+  string display_name = 3;
+
+  // CIDR ranges allowed to connect to sessions hosted by this bastion.
+  // Example: ["10.0.0.0/16", "192.168.1.0/24"]. Updatable after creation.
+  repeated string client_cidr_block_allow_list = 4;
+
+  // Maximum TTL in seconds for any session on this bastion.
+  // When omitted, the OCI default applies (10800 = 3 hours).
+  // Updatable after creation.
+  optional int32 max_session_ttl_in_seconds = 5;
+
+  // Enable FQDN and SOCKS5 proxy support on the bastion.
+  // When true, sessions can use DNS names to reach targets.
+  // Immutable after creation. When omitted, defaults to disabled.
+  optional bool is_dns_proxy_enabled = 6;
+}

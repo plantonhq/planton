@@ -1,0 +1,68 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesRookCephCluster
+metadata:
+  name: test-ceph-cluster
+spec:
+  namespace:
+    value: "rook-ceph"
+  create_namespace: true
+  operator_namespace: "rook-ceph"
+  helm_chart_version: "v1.16.6"
+  ceph_image:
+    repository: "quay.io/ceph/ceph"
+    tag: "v19.2.3"
+  cluster:
+    data_dir_host_path: "/var/lib/rook"
+    mon:
+      count: 3
+      allow_multiple_per_node: false
+    mgr:
+      count: 2
+      allow_multiple_per_node: false
+    storage:
+      use_all_nodes: true
+      use_all_devices: true
+    network:
+      enable_encryption: false
+      enable_compression: false
+      require_msgr2: false
+  block_pools:
+    - name: "ceph-blockpool"
+      failure_domain: "host"
+      replicated_size: 3
+      storage_class:
+        enabled: true
+        name: "ceph-block"
+        is_default: true
+        reclaim_policy: "Delete"
+        allow_volume_expansion: true
+        volume_binding_mode: "Immediate"
+  filesystems:
+    - name: "ceph-filesystem"
+      metadata_pool_replicated_size: 3
+      data_pool_replicated_size: 3
+      failure_domain: "host"
+      active_mds_count: 1
+      active_standby: true
+      storage_class:
+        enabled: true
+        name: "ceph-filesystem"
+        reclaim_policy: "Delete"
+        allow_volume_expansion: true
+        volume_binding_mode: "Immediate"
+  object_stores:
+    - name: "ceph-objectstore"
+      metadata_pool_replicated_size: 3
+      data_pool_erasure_data_chunks: 2
+      data_pool_erasure_coding_chunks: 1
+      failure_domain: "host"
+      preserve_pools_on_delete: true
+      gateway_port: 80
+      gateway_instances: 1
+      storage_class:
+        enabled: true
+        name: "ceph-bucket"
+        reclaim_policy: "Delete"
+  enable_toolbox: true
+  enable_monitoring: false
+  enable_dashboard: true

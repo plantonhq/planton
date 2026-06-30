@@ -2,7 +2,7 @@ package main
 
 import (
 	"buf.build/go/bufplugin/check"
-	"github.com/plantonhq/openmcf/buf/lint/optional-linter/rules"
+	"github.com/plantonhq/planton/buf/lint/optional-linter/rules"
 )
 
 func main() {

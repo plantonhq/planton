@@ -12,7 +12,7 @@ Deploys an AWS Route53 hosted zone with optional private zone configuration, VPC
 
 ## What Gets Created
 
-When you deploy an AwsRoute53Zone resource, OpenMCF provisions:
+When you deploy an AwsRoute53Zone resource, Planton provisions:
 
 - **Route53 Hosted Zone** — a `route53.HostedZone` (AWS Native) resource, either public (internet-resolvable) or private (VPC-scoped), with the zone name derived from `metadata.name`
 - **VPC Associations** — for private zones only, each `vpcAssociations` entry associates the zone with a VPC in a specified region, enabling DNS resolution from that VPC
@@ -22,7 +22,7 @@ When you deploy an AwsRoute53Zone resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **A domain name** that you own or control, used as `metadata.name` (e.g., `example.com`)
 - **At least one VPC** with `enableDnsHostnames` and `enableDnsSupport` enabled, if creating a private zone
 - **A CloudWatch Log Group** already created in the target region, if enabling query logging
@@ -33,22 +33,22 @@ When you deploy an AwsRoute53Zone resource, OpenMCF provisions:
 Create a file `route53-zone.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRoute53Zone
 metadata:
   name: example.com
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsRoute53Zone.example-com
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsRoute53Zone.example-com
 spec: {}
 ```
 
 Deploy:
 
 ```shell
-openmcf apply -f route53-zone.yaml
+planton apply -f route53-zone.yaml
 ```
 
 This creates a public hosted zone for `example.com`. After deployment, update your domain registrar with the nameservers from the stack outputs.
@@ -105,15 +105,15 @@ No fields in `spec` are strictly required. A minimal `spec: {}` creates a public
 A public zone with basic A and CNAME records:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRoute53Zone
 metadata:
   name: example.com
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsRoute53Zone.example-com
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsRoute53Zone.example-com
 spec:
   region: us-east-1
   records:
@@ -145,15 +145,15 @@ spec:
 A private zone for internal service discovery across two VPCs:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRoute53Zone
 metadata:
   name: internal.example.com
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsRoute53Zone.internal-example-com
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsRoute53Zone.internal-example-com
 spec:
   region: us-east-1
   isPrivate: true
@@ -180,15 +180,15 @@ spec:
 A public zone with alias records pointing to an ALB and CloudFront:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRoute53Zone
 metadata:
   name: example.com
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsRoute53Zone.example-com
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsRoute53Zone.example-com
 spec:
   region: us-east-1
   enableDnssec: true
@@ -217,15 +217,15 @@ spec:
 Split traffic between two endpoints using weighted routing:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRoute53Zone
 metadata:
   name: example.com
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsRoute53Zone.example-com
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsRoute53Zone.example-com
 spec:
   region: us-east-1
   records:
@@ -254,15 +254,15 @@ spec:
 Active-passive failover between primary and secondary endpoints:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRoute53Zone
 metadata:
   name: example.com
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsRoute53Zone.example-com
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsRoute53Zone.example-com
 spec:
   region: us-east-1
   enableQueryLogging: true

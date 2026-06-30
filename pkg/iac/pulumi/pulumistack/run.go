@@ -8,15 +8,15 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/iac/pulumi"
-	"github.com/plantonhq/openmcf/internal/cli/cliprint"
-	"github.com/plantonhq/openmcf/internal/manifest"
-	"github.com/plantonhq/openmcf/pkg/crkreflect"
-	"github.com/plantonhq/openmcf/pkg/iac/pulumi/backendconfig"
-	"github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule"
-	pulumimodulestackinput "github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/stackinput"
-	"github.com/plantonhq/openmcf/pkg/iac/stackinput"
-	"github.com/plantonhq/openmcf/pkg/iac/stackinput/stackinputproviderconfig"
+	"github.com/plantonhq/planton/apis/dev/planton/shared/iac/pulumi"
+	"github.com/plantonhq/planton/internal/cli/cliprint"
+	"github.com/plantonhq/planton/internal/manifest"
+	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/backendconfig"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule"
+	pulumimodulestackinput "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/stackinput"
+	"github.com/plantonhq/planton/pkg/iac/stackinput"
+	"github.com/plantonhq/planton/pkg/iac/stackinput/stackinputproviderconfig"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -41,7 +41,7 @@ func Run(moduleDir, stackFqdn, targetManifestPath string, pulumiOperation pulumi
 
 	// Validate that we have a stack FQDN
 	if finalStackFqdn == "" {
-		return errors.New("Pulumi stack FQDN is required. Provide it via --stack flag or set pulumi.openmcf.org/stack.fqdn label in manifest")
+		return errors.New("Pulumi stack FQDN is required. Provide it via --stack flag or set pulumi.planton.dev/stack.fqdn label in manifest")
 	}
 
 	kindName, err := crkreflect.ExtractKindFromProto(manifestObject)

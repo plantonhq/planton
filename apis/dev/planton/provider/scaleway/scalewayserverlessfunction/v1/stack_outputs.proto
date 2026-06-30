@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package dev.planton.provider.scaleway.scalewayserverlessfunction.v1;
+
+// ScalewayServerlessFunctionStackOutputs captures the provisioned
+// function details after IaC deployment.
+//
+// The `domain_name` output is the primary downstream reference --
+// use it with ScalewayDnsRecord to create custom domain CNAME records
+// pointing to the function's native Scaleway endpoint.
+message ScalewayServerlessFunctionStackOutputs {
+  // The unique identifier of the deployed serverless function.
+  //
+  // Format: Scaleway-assigned UUID.
+  // Used for API operations, Scaleway CLI commands, and Terraform import.
+  string function_id = 1;
+
+  // The unique identifier of the function namespace.
+  //
+  // Useful for managing additional resources that reference the
+  // namespace (external cron triggers, tokens, or additional functions
+  // not managed by this resource).
+  string namespace_id = 2;
+
+  // The native Scaleway domain name for invoking the function.
+  //
+  // This is the HTTPS endpoint automatically assigned by Scaleway.
+  // Downstream ScalewayDnsRecord resources can create CNAME records
+  // pointing to this domain for custom domain routing.
+  //
+  // Example: "myfunc-abc123.functions.fnc.fr-par.scw.cloud"
+  string domain_name = 3;
+}

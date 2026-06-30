@@ -18,7 +18,7 @@ Auth0 Resource Servers represent APIs that applications can request access to. T
 
 ### Pain Points
 
-- No existing OpenMCF component for managing Auth0 Resource Servers
+- No existing Planton component for managing Auth0 Resource Servers
 - Manual Auth0 dashboard configuration is error-prone and not auditable
 - Token settings (lifetime, dialect, signing algorithm) needed declarative management
 - RBAC policy enforcement lacked infrastructure-as-code support
@@ -26,7 +26,7 @@ Auth0 Resource Servers represent APIs that applications can request access to. T
 
 ## Solution / What's New
 
-Implemented a complete Auth0ResourceServer deployment component following OpenMCF patterns, with field selection guided by Pareto's principle (80/20) - exposing the most commonly used 20% of features that cover 80% of use cases.
+Implemented a complete Auth0ResourceServer deployment component following Planton patterns, with field selection guided by Pareto's principle (80/20) - exposing the most commonly used 20% of features that cover 80% of use cases.
 
 ### Component Architecture
 
@@ -276,7 +276,7 @@ Auth0ResourceServer = 2103 [(kind_meta) = {
 ### Basic API Configuration
 
 ```yaml
-apiVersion: auth0.openmcf.io/v1
+apiVersion: auth0.planton.io/v1
 kind: Auth0ResourceServer
 metadata:
   name: my-api
@@ -295,7 +295,7 @@ spec:
 ### RBAC-Enabled API
 
 ```yaml
-apiVersion: auth0.openmcf.io/v1
+apiVersion: auth0.planton.io/v1
 kind: Auth0ResourceServer
 metadata:
   name: rbac-api

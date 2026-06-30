@@ -12,7 +12,7 @@ Deploys a Scaleway serverless function with its own dedicated namespace, configu
 
 ## What Gets Created
 
-When you deploy a ScalewayServerlessFunction resource, OpenMCF provisions:
+When you deploy a ScalewayServerlessFunction resource, Planton provisions:
 
 - **Function Namespace** — a single `scaleway_function_namespace` resource that acts as the grouping container for the function. One namespace is created per function for clean lifecycle management and isolation.
 - **Serverless Function** — a single `scaleway_function` resource defining the runtime, handler, memory, scaling, privacy, environment variables, secrets, and optional code deployment.
@@ -20,7 +20,7 @@ When you deploy a ScalewayServerlessFunction resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Scaleway credentials** configured via environment variables or OpenMCF provider config
+- **Scaleway credentials** configured via environment variables or Planton provider config
 - **A supported runtime** string matching an available Scaleway serverless runtime (e.g., `"node20"`, `"python312"`, `"go124"`)
 - **A Private Network** in the target region if using private connectivity (can be created via a ScalewayPrivateNetwork resource)
 
@@ -29,15 +29,15 @@ When you deploy a ScalewayServerlessFunction resource, OpenMCF provisions:
 Create a file `serverless-function.yaml`:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayServerlessFunction
 metadata:
   name: my-function
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayServerlessFunction.my-function
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayServerlessFunction.my-function
 spec:
   region: fr-par
   runtime: python312
@@ -48,7 +48,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f serverless-function.yaml
+planton apply -f serverless-function.yaml
 ```
 
 This creates a public Python 3.12 serverless function in the `fr-par` region with 256 MB memory, scale-to-zero behavior, and a 5-minute timeout. Code can be deployed separately via the Scaleway CLI (`scw function deploy`) or CI/CD pipeline.
@@ -93,15 +93,15 @@ This creates a public Python 3.12 serverless function in the `fr-par` region wit
 A minimal public HTTP function suitable for webhooks, API endpoints, or development:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayServerlessFunction
 metadata:
   name: webhook-handler
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayServerlessFunction.webhook-handler
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayServerlessFunction.webhook-handler
 spec:
   region: fr-par
   runtime: node20
@@ -122,15 +122,15 @@ spec:
 A production function with token-based authentication, encrypted secrets, HTTPS enforcement, and Private Network connectivity to reach backend databases:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayServerlessFunction
 metadata:
   name: order-processor
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.ScalewayServerlessFunction.order-processor
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.ScalewayServerlessFunction.order-processor
 spec:
   region: fr-par
   runtime: python312
@@ -164,15 +164,15 @@ spec:
 A Go function deployed via zip archive with multiple cron triggers for recurring background tasks:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayServerlessFunction
 metadata:
   name: nightly-jobs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.ScalewayServerlessFunction.nightly-jobs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.ScalewayServerlessFunction.nightly-jobs
 spec:
   region: nl-ams
   runtime: go124

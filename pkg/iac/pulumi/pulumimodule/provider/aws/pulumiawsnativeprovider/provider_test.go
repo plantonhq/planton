@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	awssdk "github.com/aws/aws-sdk-go-v2/aws"
-	awsprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws"
-	"github.com/plantonhq/openmcf/pkg/iac/provider/aws/awswebidentity"
+	awsprovider "github.com/plantonhq/planton/apis/dev/planton/provider/aws"
+	"github.com/plantonhq/planton/pkg/iac/provider/aws/awswebidentity"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

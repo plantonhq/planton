@@ -1,0 +1,174 @@
+syntax = "proto3";
+
+package dev.planton.provider.cloudflare.cloudflarehyperdriveconfig.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// Connection scheme Hyperdrive uses to reach the origin database. Value names
+// match the Cloudflare API strings exactly and are used directly via .String().
+enum CloudflareHyperdriveScheme {
+  // Unspecified scheme (invalid).
+  scheme_unspecified = 0;
+  // PostgreSQL over the postgres wire protocol.
+  postgres = 1;
+  // PostgreSQL (alias accepted by the API; identical behavior to postgres).
+  postgresql = 2;
+  // MySQL over the mysql wire protocol.
+  mysql = 3;
+}
+
+// CloudflareHyperdriveConfigSpec configures a Cloudflare Hyperdrive: a connection
+// pooler and global cache that lets a Worker reach a regional SQL database with
+// low latency. A Worker binds to this config (the `hyperdrive` binding) to query
+// the origin without paying the full connection-setup round trip on every request.
+message CloudflareHyperdriveConfigSpec {
+  // The Cloudflare account ID that owns this Hyperdrive config.
+  string account_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.len = 32,
+    (buf.validate.field).string.pattern = "^[0-9a-fA-F]{32}$"
+  ];
+
+  // Human-readable name for the Hyperdrive config (shown in the dashboard and
+  // used as the binding's target).
+  string name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 63
+  ];
+
+  // Origin database connection details. Hyperdrive opens and reuses pooled
+  // connections to this origin on behalf of the Worker.
+  CloudflareHyperdriveOrigin origin = 3 [(buf.validate.field).required = true];
+
+  // Query-result caching behavior. Caching reduces origin load and latency for
+  // repeated read queries; omit to accept Cloudflare's defaults (enabled, 60s
+  // max age, 15s stale-while-revalidate).
+  CloudflareHyperdriveCaching caching = 4;
+
+  // Optional mutual-TLS configuration for connecting to origins that require
+  // client certificates. Omit when the origin does not use mTLS.
+  CloudflareHyperdriveMtls mtls = 5;
+
+  // Maximum number of pooled connections Hyperdrive opens to the origin. Leave 0
+  // to accept the plan default. The Cloudflare minimum is 5; ceilings depend on
+  // plan (20 on the free plan, up to 100 on paid).
+  int64 origin_connection_limit = 6 [(buf.validate.field).cel = {
+    id: "origin_connection_limit.valid_range"
+    message: "origin_connection_limit must be 0 (plan default) or between 5 and 100"
+    expression: "this == 0 || (this >= 5 && this <= 100)"
+  }];
+
+  // A VPC Service origin (origin.service_id) manages TLS on the VPC Service, so
+  // it cannot be combined with the mtls block. Set at most one of the two.
+  option (buf.validate.message).cel = {
+    id: "mtls.not_with_vpc_service"
+    message: "mtls cannot be combined with a VPC Service origin (origin.service_id); TLS is managed on the VPC Service"
+    expression: "!has(this.origin) || this.origin.service_id == '' || !has(this.mtls)"
+  };
+}
+
+// CloudflareHyperdriveOrigin holds the origin database connection details.
+message CloudflareHyperdriveOrigin {
+  // Name of the database to connect to (e.g. "app_production").
+  string database = 1 [(buf.validate.field).required = true];
+
+  // Wire protocol / engine of the origin database.
+  CloudflareHyperdriveScheme scheme = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).enum.defined_only = true,
+    (buf.validate.field).cel = {
+      id: "scheme.not_unspecified"
+      message: "scheme must be one of postgres, postgresql, or mysql"
+      expression: "this != 0"
+    }
+  ];
+
+  // Database user Hyperdrive authenticates as.
+  string user = 3 [(buf.validate.field).required = true];
+
+  // Hostname or IP of the origin database. Must be reachable from Cloudflare's
+  // network (a public address, or a private address fronted by Cloudflare Access
+  // / a Cloudflare Tunnel — see access_client_id/secret).
+  string host = 4;
+
+  // TCP port of the origin database. Leave 0 to use the engine default
+  // (5432 for PostgreSQL, 3306 for MySQL).
+  int32 port = 5 [
+    (dev.planton.shared.options.recommended_default) = "5432",
+    (buf.validate.field).cel = {
+      id: "port.valid_range"
+      message: "port must be 0 (engine default) or between 1 and 65535"
+      expression: "this == 0 || (this >= 1 && this <= 65535)"
+    }
+  ];
+
+  // Password for the database user. Provide a managed-secret reference; the
+  // platform resolves it just-in-time at deploy and never stores it in plaintext.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef password = 6 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.sensitive) = true
+  ];
+
+  // Cloudflare Access client ID, when the origin is published behind Cloudflare
+  // Access (the host is fronted by an Access-protected hostname). Pairs with
+  // access_client_secret.
+  string access_client_id = 7;
+
+  // Cloudflare Access client secret for the service token in access_client_id.
+  // Provide a managed-secret reference; resolved just-in-time at deploy.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef access_client_secret = 8 [(dev.planton.shared.options.sensitive) = true];
+
+  // Identifier of the Workers VPC Service to connect through. When set,
+  // Hyperdrive egresses to the origin over that VPC Service (private
+  // connectivity) instead of dialing the public host. Leave empty for a
+  // public/Access-fronted origin. Mutually exclusive with the spec-level mtls
+  // block, since TLS is managed on the VPC Service.
+  string service_id = 9;
+}
+
+// CloudflareHyperdriveCaching controls query-result caching at the edge.
+message CloudflareHyperdriveCaching {
+  // Disable caching entirely (every query hits the origin). When false, cached
+  // results are served within the freshness window below.
+  bool disabled = 1;
+
+  // Maximum age in seconds a cached query result is served before it is
+  // considered stale. Leave 0 to use Cloudflare's default (60s).
+  int64 max_age = 2 [(buf.validate.field).cel = {
+    id: "caching_max_age.non_negative"
+    message: "max_age must be 0 (default) or a positive number of seconds"
+    expression: "this >= 0"
+  }];
+
+  // Window in seconds after max_age during which a stale result is served while
+  // the cache refreshes in the background. Leave 0 to use Cloudflare's default (15s).
+  int64 stale_while_revalidate = 3 [(buf.validate.field).cel = {
+    id: "caching_swr.non_negative"
+    message: "stale_while_revalidate must be 0 (default) or a positive number of seconds"
+    expression: "this >= 0"
+  }];
+}
+
+// CloudflareHyperdriveMtls configures mutual-TLS to origins that require a client
+// certificate. The certificate IDs reference certificates uploaded to Cloudflare.
+message CloudflareHyperdriveMtls {
+  // ID of the CA certificate (uploaded to Cloudflare) used to verify the origin's
+  // server certificate.
+  string ca_certificate_id = 1;
+
+  // ID of the client certificate (uploaded to Cloudflare) Hyperdrive presents to
+  // the origin during the mTLS handshake.
+  string mtls_certificate_id = 2;
+
+  // TLS verification mode for the origin connection. One of "require" (encrypt,
+  // do not verify), "verify-ca" (verify the CA), or "verify-full" (verify the CA
+  // and the hostname). Leave empty to use the engine default.
+  string sslmode = 3 [(buf.validate.field).cel = {
+    id: "mtls_sslmode.valid"
+    message: "sslmode must be one of \"require\", \"verify-ca\", \"verify-full\""
+    expression: "this == '' || this in ['require', 'verify-ca', 'verify-full']"
+  }];
+}

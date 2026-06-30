@@ -50,7 +50,7 @@ DigitalOcean had 15 deployment components but only 2 hand-written catalog pages 
 
 Each page was verified against the 6-point protocol:
 1. Source Code Check -- every claim cross-referenced with proto definitions and IaC modules
-2. Command Check -- CLI commands verified against `cmd/openmcf/` source
+2. Command Check -- CLI commands verified against `cmd/planton/` source
 3. Manifest Check -- every YAML manifest follows the actual protobuf schema (camelCase fields, correct nesting)
 4. Link Check -- all internal links reference existing components
 5. Planton Check -- zero references to Planton, SaaS, or commercial platform
@@ -58,7 +58,7 @@ Each page was verified against the 6-point protocol:
 
 ### Key Findings
 
-- **apiVersion discrepancy**: `DigitalOceanDnsRecord` uses `digital-ocean.openmcf.org/v1` (no hyphen) while all other DigitalOcean components use `digital-ocean.openmcf.org/v1` (with hyphen). Each page uses the correct value from its own `api.proto`.
+- **apiVersion discrepancy**: `DigitalOceanDnsRecord` uses `digital-ocean.planton.dev/v1` (no hyphen) while all other DigitalOcean components use `digital-ocean.planton.dev/v1` (with hyphen). Each page uses the correct value from its own `api.proto`.
 - **DigitalOceanFunction is Pulumi-only**: The Terraform `main.tf` is empty. The catalog page documents this limitation prominently in the overview.
 - **DigitalOceanDroplet TF module has `ssh_keys`**: This variable exists in the Terraform module but not in `spec.proto`. Correctly omitted from the catalog page (only proto-defined fields documented).
 
@@ -80,7 +80,7 @@ Each page was verified against the 6-point protocol:
 
 ## Related Work
 
-- [Catalog Page Rewrite System](2026-02-13-150154-catalog-page-rewrite-system.md) -- established the 9-section standard and `write-openmcf-component-catalog-page` rule
+- [Catalog Page Rewrite System](2026-02-13-150154-catalog-page-rewrite-system.md) -- established the 9-section standard and `write-planton-component-catalog-page` rule
 - [Catalog Page Expansion](2026-02-13-154844-catalog-page-expansion-across-all-providers.md) -- wrote the initial 2 DigitalOcean exemplar pages
 - [OpenStack Catalog Pages](2026-02-14-openstack-catalog-pages-complete-provider-coverage.md) -- previous provider to reach 100%
 

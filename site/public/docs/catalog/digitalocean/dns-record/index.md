@@ -12,14 +12,14 @@ Creates a single DNS record within an existing DigitalOcean DNS zone (domain). T
 
 ## What Gets Created
 
-When you deploy a DigitalOceanDnsRecord resource, OpenMCF provisions:
+When you deploy a DigitalOceanDnsRecord resource, Planton provisions:
 
 - **DNS Record** — a single `digitalocean_record` resource in the specified domain with the configured type, name, value, and TTL
 - **Type-Specific Attributes** — `priority` is set for MX and SRV records; `weight` and `port` are set for SRV records; `flags` and `tag` are set for CAA records. These attributes are omitted for inapplicable record types.
 
 ## Prerequisites
 
-- **DigitalOcean credentials** configured via environment variables or OpenMCF provider config
+- **DigitalOcean credentials** configured via environment variables or Planton provider config
 - **An existing DigitalOcean DNS zone (domain)** managed by DigitalOcean's DNS service. The `domain` field can reference a DigitalOceanDnsZone resource via `valueFrom`.
 
 ## Quick Start
@@ -27,15 +27,15 @@ When you deploy a DigitalOceanDnsRecord resource, OpenMCF provisions:
 Create a file `dns-record.yaml`:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: www-a-record
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.DigitalOceanDnsRecord.www-a-record
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.DigitalOceanDnsRecord.www-a-record
 spec:
   domain:
     value: "example.com"
@@ -49,7 +49,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f dns-record.yaml
+planton apply -f dns-record.yaml
 ```
 
 This creates an A record pointing `www.example.com` to `192.0.2.1` with a one-hour TTL.
@@ -90,15 +90,15 @@ The protobuf schema enforces two cross-field rules:
 Points a subdomain to an IPv4 address:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: www-a-record
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.DigitalOceanDnsRecord.www-a-record
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.DigitalOceanDnsRecord.www-a-record
 spec:
   domain:
     value: "example.com"
@@ -114,15 +114,15 @@ spec:
 Creates an alias from one hostname to another:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: blog-cname
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.DigitalOceanDnsRecord.blog-cname
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.DigitalOceanDnsRecord.blog-cname
 spec:
   domain:
     value: "example.com"
@@ -138,15 +138,15 @@ spec:
 Routes email to a mail server with explicit priority:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: mail-mx
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.DigitalOceanDnsRecord.mail-mx
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.DigitalOceanDnsRecord.mail-mx
 spec:
   domain:
     value: "example.com"
@@ -163,15 +163,15 @@ spec:
 Restricts which certificate authorities may issue certificates for the domain:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: caa-letsencrypt
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.DigitalOceanDnsRecord.caa-letsencrypt
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.DigitalOceanDnsRecord.caa-letsencrypt
 spec:
   domain:
     value: "example.com"
@@ -189,15 +189,15 @@ spec:
 Uses a `valueFrom` reference to resolve the domain from a DigitalOceanDnsZone resource instead of specifying it inline:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: api-a-record
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.DigitalOceanDnsRecord.api-a-record
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.DigitalOceanDnsRecord.api-a-record
 spec:
   domain:
     valueFrom:

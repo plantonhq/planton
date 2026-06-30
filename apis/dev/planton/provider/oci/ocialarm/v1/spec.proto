@@ -1,0 +1,184 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocialarm.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// OciAlarmSpec defines the specification for an OCI Monitoring Alarm --
+// a rule that evaluates metrics via Monitoring Query Language (MQL)
+// expressions and triggers notifications to ONS topics or Streaming
+// endpoints when thresholds are breached.
+//
+// Key behaviors:
+//   - All fields are updatable after creation (no ForceNew attributes)
+//   - Severity is required; alarms without severity cannot fire
+//   - Destinations must contain at least one ONS topic or Stream OCID
+//   - Overrides enable multi-threshold evaluation (e.g., warn at 80%,
+//     critical at 95%) with per-override query/severity/body/duration
+//
+// Excluded from v1:
+//   - suppression -- requires hardcoded RFC3339 timestamps, an
+//     anti-pattern in declarative IaC (timestamps go stale); manage
+//     via OCI Console or CLI
+//   - resolution -- only supported value is "1m", no user choice
+//   - defined_tags, system_tags -- managed by platform
+//   - freeform_tags -- auto-populated from metadata labels
+message OciAlarmSpec {
+  // Severity levels for alarm evaluation.
+  enum Severity {
+    unspecified = 0;
+    critical = 1;
+    error = 2;
+    warning = 3;
+    info = 4;
+  }
+
+  // Format for alarm notification delivery.
+  enum MessageFormat {
+    // raw is the default OCI format. Works with both Notifications
+    // and Streaming destinations.
+    raw = 0;
+    // pretty_json delivers a human-readable JSON payload.
+    // Only works with Notifications destinations.
+    pretty_json = 1;
+    // ons_optimized delivers a compact payload optimized for email.
+    // Only works with Notifications destinations.
+    ons_optimized = 2;
+  }
+
+  // OCID of the compartment where the alarm will be created.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OciCompartment,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartment_id"
+  ];
+
+  // OCID of the compartment containing the metric being evaluated.
+  // Often the same as compartment_id, but can differ when monitoring
+  // metrics from another compartment.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef metric_compartment_id = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OciCompartment,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartment_id"
+  ];
+
+  // Source service or application emitting the metric.
+  // Examples: "oci_computeagent", "oci_blockstore",
+  // "oci_autonomous_database", "oci_vcn".
+  string namespace = 3 [(buf.validate.field).string.min_len = 1];
+
+  // Monitoring Query Language (MQL) expression to evaluate.
+  // Must specify metric, statistic, interval, and trigger rule.
+  // Example: "CpuUtilization[5m].mean() > 80"
+  string query = 4 [(buf.validate.field).string.min_len = 1];
+
+  // Perceived severity when the alarm is in the FIRING state.
+  // Must be explicitly set (unspecified is rejected).
+  Severity severity = 5 [(buf.validate.field).cel = {
+    id: "severity_required"
+    message: "severity must be explicitly set (critical, error, warning, or info)"
+    expression: "this != 0"
+  }];
+
+  // OCIDs of notification destinations. Each OCID must reference an
+  // ONS Notification Topic or a Streaming stream. At least one
+  // destination is required.
+  repeated string destinations = 6 [(buf.validate.field).repeated.min_items = 1];
+
+  // Whether the alarm is enabled. When false, the alarm does not
+  // evaluate metrics or send notifications.
+  // Proto3 default is false -- alarms start disabled unless
+  // explicitly set to true.
+  bool is_enabled = 7;
+
+  // Human-readable content of the delivered alarm notification.
+  // Supports dynamic variables: {{severity}}, {{query}},
+  // {{metricValues}}, {{resourceId}}, {{timestamp}}.
+  string body = 8;
+
+  // Customizable alarm summary. Appears in the alarm message body
+  // and API responses. Supports the same dynamic variables as body.
+  string alarm_summary = 9;
+
+  // Custom notification title. Appears as the email subject line
+  // or Slack notification title. Supports dynamic variables.
+  string notification_title = 10;
+
+  // Period of time the condition must persist before the alarm
+  // transitions from OK to FIRING. ISO 8601 duration format.
+  // Minimum: PT1M. Maximum: PT1H. OCI default: PT1M.
+  string pending_duration = 11;
+
+  // Slack period to wait for metric ingestion before evaluating
+  // the alarm. Accounts for delayed metric delivery. ISO 8601
+  // duration format. Minimum: PT3M. Maximum: PT2H. OCI default: PT3M.
+  string evaluation_slack_duration = 12;
+
+  // Frequency for re-submitting alarm notifications while the
+  // alarm remains in FIRING state. ISO 8601 duration format.
+  // Minimum: PT1M. Maximum: P30D. When omitted, notifications
+  // are not re-submitted.
+  string repeat_notification_duration = 13;
+
+  // Format for alarm notification delivery.
+  // When omitted (zero-value), OCI applies RAW format.
+  MessageFormat message_format = 14;
+
+  // When true, evaluates metrics from the specified compartment
+  // and all of its sub-compartments. Can only be true when
+  // metric_compartment_id is a tenancy OCID.
+  optional bool metric_compartment_id_in_subtree = 15;
+
+  // When true, splits alarm notifications per metric stream
+  // dimension. When false (default), groups notifications across
+  // all metric streams matching the query.
+  optional bool is_notifications_per_metric_dimension_enabled = 16;
+
+  // Resource group to match when filtering metric data.
+  // When omitted, only metric data with no resource group is
+  // returned.
+  string resource_group = 17;
+
+  // Version of the alarm notification to be delivered.
+  // Format: a number (up to 4 digits) followed by a period
+  // and uppercase X (e.g., "1.X").
+  string notification_version = 18;
+
+  // Identifier for the alarm's base values for evaluation.
+  // Default value is "BASE". Only meaningful when overrides
+  // are configured. Must be unique across all rule_name values
+  // (including those in overrides).
+  string rule_name = 19;
+
+  // Overrides controlling alarm evaluation at different thresholds.
+  // Each override can specify its own query, severity, body, and
+  // pending duration. Evaluated in order before the base rule.
+  repeated AlarmOverride overrides = 20;
+
+  // AlarmOverride specifies alternative evaluation parameters for
+  // an alarm. Overrides are evaluated in order before the base
+  // rule (rule_name = "BASE"). Each override can customize the
+  // query, severity, notification body, and pending duration
+  // independently.
+  message AlarmOverride {
+    // User-friendly identifier for this override. Must be unique
+    // across all rule_name values for the alarm.
+    string rule_name = 1 [(buf.validate.field).string.min_len = 1];
+
+    // Override MQL query. When omitted, the base query is used.
+    string query = 2;
+
+    // Override severity. When unspecified (zero-value), the base
+    // severity is used.
+    Severity severity = 3;
+
+    // Override notification body. When omitted, the base body
+    // is used. Supports the same dynamic variables.
+    string body = 4;
+
+    // Override pending duration. When omitted, the base pending
+    // duration is used. ISO 8601 format.
+    string pending_duration = 5;
+  }
+}

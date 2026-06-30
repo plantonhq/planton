@@ -3,7 +3,7 @@ package outputs
 import (
 	"testing"
 
-	auth0v1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/auth0/auth0resourceserver/v1"
+	auth0v1 "github.com/plantonhq/planton/apis/dev/planton/provider/auth0/auth0resourceserver/v1"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 

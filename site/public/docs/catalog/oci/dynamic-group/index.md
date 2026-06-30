@@ -12,13 +12,13 @@ Deploys an Oracle Cloud Infrastructure dynamic group for enabling workload ident
 
 ## What Gets Created
 
-When you deploy an OciDynamicGroup resource, OpenMCF provisions:
+When you deploy an OciDynamicGroup resource, Planton provisions:
 
-- **Identity Dynamic Group** — an `oci_identity_dynamic_group` resource in the tenancy with the provided name, description, and matching rule. Standard OpenMCF freeform tags are applied automatically. The dynamic group name defaults to `metadata.name` if not explicitly set in the spec.
+- **Identity Dynamic Group** — an `oci_identity_dynamic_group` resource in the tenancy with the provided name, description, and matching rule. Standard Planton freeform tags are applied automatically. The dynamic group name defaults to `metadata.name` if not explicitly set in the spec.
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **The tenancy OCID** — dynamic groups are tenancy-level IAM resources and must be created in the tenancy root compartment, not in a child compartment (literal value or via `valueFrom` referencing an OciCompartment resource)
 - **Knowledge of matching rule syntax** — rules follow OCI's `Any {condition}` or `All {condition, condition}` syntax. See [Managing Dynamic Groups](https://docs.oracle.com/iaas/Content/Identity/Tasks/managingdynamicgroups.htm)
 
@@ -27,15 +27,15 @@ When you deploy an OciDynamicGroup resource, OpenMCF provisions:
 Create a file `dynamic-group.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciDynamicGroup
 metadata:
   name: my-compute-workers
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciDynamicGroup.my-compute-workers
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciDynamicGroup.my-compute-workers
 spec:
   compartmentId:
     value: "ocid1.tenancy.oc1..example"
@@ -46,7 +46,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f dynamic-group.yaml
+planton apply -f dynamic-group.yaml
 ```
 
 This creates a dynamic group named `my-compute-workers` in the tenancy. All compute instances in the specified compartment automatically become members. To grant these instances permissions, create a companion `OciIdentityPolicy` with statements like `Allow dynamic-group my-compute-workers to read secret-family in compartment production`. The dynamic group OCID is exported as a stack output.
@@ -74,15 +74,15 @@ This creates a dynamic group named `my-compute-workers` in the tenancy. All comp
 A dynamic group matching all compute instances in a compartment — the most common pattern for enabling instance principal authentication:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciDynamicGroup
 metadata:
   name: compute-workers
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciDynamicGroup.compute-workers
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciDynamicGroup.compute-workers
 spec:
   compartmentId:
     value: "ocid1.tenancy.oc1..example"
@@ -95,15 +95,15 @@ spec:
 A dynamic group matching all OCI Functions in a compartment for serverless workload identity. Uses `All` to require both the resource type and compartment conditions:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciDynamicGroup
 metadata:
   name: serverless-functions
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciDynamicGroup.serverless-functions
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciDynamicGroup.serverless-functions
 spec:
   compartmentId:
     value: "ocid1.tenancy.oc1..example"
@@ -116,15 +116,15 @@ spec:
 A dynamic group matching resources by freeform tag rather than compartment. This pattern allows fine-grained grouping that spans compartments or selects a subset of resources within a compartment:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciDynamicGroup
 metadata:
   name: tagged-workers
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciDynamicGroup.tagged-workers
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciDynamicGroup.tagged-workers
 spec:
   compartmentId:
     value: "ocid1.tenancy.oc1..example"
@@ -137,15 +137,15 @@ spec:
 A dynamic group using `valueFrom` to reference the tenancy compartment, with a custom name and metadata labels for organizational tracking:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciDynamicGroup
 metadata:
   name: oke-worker-nodes
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: platform-infra
-    pulumi.openmcf.org/stack.name: prod.OciDynamicGroup.oke-worker-nodes
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: platform-infra
+    pulumi.planton.dev/stack.name: prod.OciDynamicGroup.oke-worker-nodes
     team: platform
     cost-center: infrastructure
 spec:

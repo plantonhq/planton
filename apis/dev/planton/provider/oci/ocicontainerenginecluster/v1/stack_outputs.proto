@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocicontainerenginecluster.v1;
+
+// OciContainerEngineClusterStackOutputs contains the outputs produced after
+// deploying an OciContainerEngineCluster.
+// These values are used by downstream components (OciContainerEngineNodePool,
+// kubectl configuration, infra charts) for composability via StringValueOrRef.
+message OciContainerEngineClusterStackOutputs {
+  // OCID of the OKE cluster.
+  string cluster_id = 1;
+
+  // Kubernetes version running on the cluster control plane.
+  string kubernetes_version = 2;
+
+  // Kubernetes API server endpoint URL (non-native networking).
+  string kubernetes_endpoint = 3;
+
+  // Private native networking Kubernetes API server endpoint URL.
+  string private_endpoint = 4;
+
+  // Public native networking Kubernetes API server endpoint URL.
+  // Empty when the cluster endpoint is private-only.
+  string public_endpoint = 5;
+}

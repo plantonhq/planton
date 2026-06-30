@@ -1,0 +1,15 @@
+apiVersion: digital-ocean.planton.dev/v1
+kind: DigitalOceanKubernetesNodePool
+metadata:
+  name: first-node-pool                   # K8s resource name (unique per namespace)
+spec:
+  nodePoolName: first-node-pool           # Must be unique within the target DOKS cluster
+  cluster:
+    value: fb7d9b81-fe06-4ee5-87f1-b9efc5af46fd
+  size: s-4vcpu-8gb           # Any valid Droplet size slug
+  nodeCount: 1                    # Desired nodes (initial count when autoScale true)
+  autoScale: false                 # Enable autoscaling
+  minNodes: 1                     # Lower bound when autoscaling
+  maxNodes: 2                     # Upper bound when autoscaling
+  tags:
+    - planton

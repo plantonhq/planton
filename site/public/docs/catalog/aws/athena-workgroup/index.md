@@ -12,7 +12,7 @@ Deploys an Amazon Athena workgroup with configurable query result storage, serve
 
 ## What Gets Created
 
-When you deploy an AwsAthenaWorkgroup resource, OpenMCF provisions:
+When you deploy an AwsAthenaWorkgroup resource, Planton provisions:
 
 - **Athena Workgroup** — an `aws_athena_workgroup` resource with the specified name, configuration enforcement, engine version, and cost controls
 - **Result Configuration** — created only when `resultConfiguration` is set, directs query output to the specified S3 location with optional encryption and ACL settings
@@ -20,7 +20,7 @@ When you deploy an AwsAthenaWorkgroup resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **An S3 bucket** for storing query results (if setting `resultConfiguration.outputLocation`)
 - **An AWS Glue Data Catalog** with databases and tables defined over your S3 data sources
 - **A KMS key ARN** if using SSE_KMS or CSE_KMS encryption for query results
@@ -31,15 +31,15 @@ When you deploy an AwsAthenaWorkgroup resource, OpenMCF provisions:
 Create a file `athena-workgroup.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsAthenaWorkgroup
 metadata:
   name: analytics
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsAthenaWorkgroup.analytics
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsAthenaWorkgroup.analytics
 spec:
   region: us-east-1
   resultConfiguration:
@@ -49,7 +49,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f athena-workgroup.yaml
+planton apply -f athena-workgroup.yaml
 ```
 
 This creates an Athena workgroup named `analytics` with query results stored in S3, configuration enforcement enabled (default), and CloudWatch metrics published (default).
@@ -90,15 +90,15 @@ However, most practical deployments set at least `resultConfiguration.outputLoca
 A minimal workgroup directing query results to S3 with all governance defaults.
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsAthenaWorkgroup
 metadata:
   name: analytics-team
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: analytics
-    pulumi.openmcf.org/stack.name: dev.AwsAthenaWorkgroup.analytics-team
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: analytics
+    pulumi.planton.dev/stack.name: dev.AwsAthenaWorkgroup.analytics-team
 spec:
   region: us-east-1
   resultConfiguration:
@@ -110,15 +110,15 @@ spec:
 Workgroup with a 10 GB per-query scan limit and enforced minimum encryption.
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsAthenaWorkgroup
 metadata:
   name: data-science
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: data
-    pulumi.openmcf.org/stack.name: prod.AwsAthenaWorkgroup.data-science
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: data
+    pulumi.planton.dev/stack.name: prod.AwsAthenaWorkgroup.data-science
 spec:
   region: us-east-1
   resultConfiguration:
@@ -130,18 +130,18 @@ spec:
 
 ### Production KMS-Encrypted with valueFrom
 
-Production workgroup with SSE_KMS encryption referencing a KMS key from another OpenMCF resource.
+Production workgroup with SSE_KMS encryption referencing a KMS key from another Planton resource.
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsAthenaWorkgroup
 metadata:
   name: prod-analytics
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme
-    pulumi.openmcf.org/project: analytics
-    pulumi.openmcf.org/stack.name: prod.AwsAthenaWorkgroup.prod-analytics
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme
+    pulumi.planton.dev/project: analytics
+    pulumi.planton.dev/stack.name: prod.AwsAthenaWorkgroup.prod-analytics
 spec:
   region: us-east-1
   resultConfiguration:

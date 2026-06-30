@@ -1,0 +1,6 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesGatewayClass
+metadata:
+  name: e2e-gateway-class
+spec:
+  controller_name: istio.io/gateway-controller

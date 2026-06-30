@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added AwsWafWebAcl as a new OpenMCF deployment component, enabling declarative management of AWS WAFv2 Web Access Control Lists. The component uses a hybrid statement modeling approach -- four first-class typed statements covering 90% of production rules, plus a `google.protobuf.Struct` escape hatch for advanced statement types -- balancing type safety with full WAFv2 API coverage.
+Added AwsWafWebAcl as a new Planton deployment component, enabling declarative management of AWS WAFv2 Web Access Control Lists. The component uses a hybrid statement modeling approach -- four first-class typed statements covering 90% of production rules, plus a `google.protobuf.Struct` escape hatch for advanced statement types -- balancing type safety with full WAFv2 API coverage.
 
 ## Problem Statement / Motivation
 
@@ -17,7 +17,7 @@ AWS WAFv2 is essential for protecting web applications from exploits, bots, and 
 - WAFv2 has 16 statement types with recursive AND/OR/NOT nesting up to 3 levels deep
 - Modeling all statement types in protobuf would require 30-40 messages -- impractical for maintenance and usability
 - Most teams only use 4-5 rule types in production but need occasional access to advanced features
-- No existing OpenMCF component for web application firewall protection
+- No existing Planton component for web application firewall protection
 
 ## Solution / What's New
 

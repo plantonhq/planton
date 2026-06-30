@@ -26,7 +26,7 @@ Changed the `managed_zone` field from a plain `string` to `StringValueOrRef` wit
 ### Before
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpDnsRecord
 spec:
   project_id:
@@ -41,7 +41,7 @@ spec:
 ### After
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpDnsRecord
 spec:
   project_id:
@@ -78,10 +78,10 @@ string managed_zone = 2 [
 ];
 
 // After
-org.openmcf.shared.foreignkey.v1.StringValueOrRef managed_zone = 2 [
+dev.planton.shared.foreignkey.v1.StringValueOrRef managed_zone = 2 [
   (buf.validate.field).required = true,
-  (org.openmcf.shared.foreignkey.v1.default_kind) = GcpDnsZone,
-  (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_name"
+  (dev.planton.shared.foreignkey.v1.default_kind) = GcpDnsZone,
+  (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_name"
 ];
 ```
 

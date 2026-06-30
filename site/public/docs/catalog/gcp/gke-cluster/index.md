@@ -8,11 +8,11 @@ componentName: "gcpgkecluster"
 
 # GCP GKE Cluster
 
-Deploys a private GKE cluster control plane on Google Cloud with VPC-native networking, configurable release channels, Workload Identity, and Calico network policy enforcement. The component provisions the cluster itself — node pools and networking resources (VPC, subnets, Cloud NAT) are managed by separate OpenMCF components.
+Deploys a private GKE cluster control plane on Google Cloud with VPC-native networking, configurable release channels, Workload Identity, and Calico network policy enforcement. The component provisions the cluster itself — node pools and networking resources (VPC, subnets, Cloud NAT) are managed by separate Planton components.
 
 ## What Gets Created
 
-When you deploy a GcpGkeCluster resource, OpenMCF provisions:
+When you deploy a GcpGkeCluster resource, Planton provisions:
 
 - **GKE Cluster** — a `google_container_cluster` resource with:
   - Private cluster configuration (private nodes by default, private endpoint disabled)
@@ -24,7 +24,7 @@ When you deploy a GcpGkeCluster resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **An existing GCP project** — referenced via `projectId`
 - **A VPC network** with a subnetwork that has secondary ranges for pods and services
 - **A Cloud NAT** configured on the VPC for private node outbound internet access
@@ -35,15 +35,15 @@ When you deploy a GcpGkeCluster resource, OpenMCF provisions:
 Create a file `gke.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpGkeCluster
 metadata:
   name: my-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpGkeCluster.my-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpGkeCluster.my-cluster
 spec:
   clusterName: dev-cluster
   projectId:
@@ -65,7 +65,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f gke.yaml
+planton apply -f gke.yaml
 ```
 
 This creates a private GKE cluster in `us-central1` with Workload Identity enabled, REGULAR release channel, and Calico network policies.
@@ -102,15 +102,15 @@ This creates a private GKE cluster in `us-central1` with Workload Identity enabl
 A production cluster using the STABLE release channel for maximum reliability:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpGkeCluster
 metadata:
   name: prod-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpGkeCluster.prod-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpGkeCluster.prod-cluster
 spec:
   clusterName: prod-cluster
   projectId:
@@ -132,18 +132,18 @@ spec:
 
 ### Full-Featured with Foreign Key References
 
-Using OpenMCF resource references for the entire networking stack:
+Using Planton resource references for the entire networking stack:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpGkeCluster
 metadata:
   name: ref-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpGkeCluster.ref-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpGkeCluster.ref-cluster
 spec:
   clusterName: ref-cluster
   projectId:

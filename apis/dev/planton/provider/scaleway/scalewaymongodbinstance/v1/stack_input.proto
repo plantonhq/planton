@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.scaleway.scalewaymongodbinstance.v1;
+
+import "dev/planton/provider/scaleway/provider.proto";
+import "dev/planton/provider/scaleway/scalewaymongodbinstance/v1/api.proto";
+
+//scaleway-mongodb-instance stack-input
+message ScalewayMongodbInstanceStackInput {
+  //target cloud-resource
+  ScalewayMongodbInstance target = 1;
+  //provider-config
+  dev.planton.provider.scaleway.ScalewayProviderConfig provider_config = 2;
+}

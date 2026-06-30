@@ -10,17 +10,17 @@ Added GcpCloudSchedulerJob (R18) as a complete deployment component for provisio
 
 ## Problem Statement / Motivation
 
-Cloud Scheduler is a fundamental GCP service for cron-based workload scheduling -- triggering Cloud Run services, publishing to Pub/Sub topics, and invoking App Engine handlers on a recurring basis. Without this component, OpenMCF users had no declarative way to provision scheduled jobs alongside the endpoints they target.
+Cloud Scheduler is a fundamental GCP service for cron-based workload scheduling -- triggering Cloud Run services, publishing to Pub/Sub topics, and invoking App Engine handlers on a recurring basis. Without this component, Planton users had no declarative way to provision scheduled jobs alongside the endpoints they target.
 
 ### Pain Points
 
-- No infrastructure-as-code support for Cloud Scheduler in OpenMCF
+- No infrastructure-as-code support for Cloud Scheduler in Planton
 - Manual scheduling via GCP Console doesn't version-control or compose with other resources
 - No way to wire scheduler jobs to Pub/Sub topics or service accounts via cross-resource references
 
 ## Solution / What's New
 
-A complete deployment component following OpenMCF conventions:
+A complete deployment component following Planton conventions:
 
 ### Component Architecture
 

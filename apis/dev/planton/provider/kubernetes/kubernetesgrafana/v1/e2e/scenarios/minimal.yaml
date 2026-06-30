@@ -1,0 +1,18 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesGrafana
+metadata:
+  name: e2e-grafana-minimal
+spec:
+  namespace:
+    value: e2e-grafana-minimal
+  create_namespace: true
+  container:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 500m
+        memory: 256Mi
+  ingress:
+    enabled: false

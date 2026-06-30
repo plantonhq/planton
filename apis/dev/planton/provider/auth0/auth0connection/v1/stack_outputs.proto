@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+package dev.planton.provider.auth0.auth0connection.v1;
+
+// Auth0ConnectionStackOutputs contains the outputs from an Auth0 Connection deployment.
+// These outputs provide essential identifiers and information for integrating
+// the connection with applications and monitoring its configuration.
+//
+// https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/connection#attributes-reference
+// https://www.pulumi.com/registry/packages/auth0/api-docs/connection/#outputs
+message Auth0ConnectionStackOutputs {
+  // id is the unique identifier of the Auth0 connection.
+  // This is the primary identifier used in Auth0 APIs and Management Dashboard.
+  // Format: "con_" followed by a unique string (e.g., "con_0000000000000001").
+  string id = 1;
+
+  // name is the unique name of the connection within the Auth0 tenant.
+  // This name is used in authentication URLs and API calls.
+  // It is automatically generated from metadata.name or can be customized.
+  string name = 2;
+
+  // strategy is the identity provider strategy type.
+  // Reflects the connection type configured in the spec.
+  // Examples: "auth0", "google-oauth2", "samlp", "oidc", "waad"
+  string strategy = 3;
+
+  // is_enabled indicates whether the connection is currently enabled.
+  // A disabled connection cannot be used for authentication.
+  string is_enabled = 4;
+
+  // provisioning_ticket_url is the URL used for self-service connection setup.
+  // Only available for certain enterprise connections (like SAML or OIDC).
+  // Users can visit this URL to complete connection configuration.
+  string provisioning_ticket_url = 5;
+
+  // callback_url is the Auth0 callback URL for this connection.
+  // For social and enterprise connections, this URL must be registered
+  // with the identity provider.
+  // Format: https://{tenant}.auth0.com/login/callback
+  string callback_url = 6;
+
+  // metadata_url is the SAML metadata URL for this connection.
+  // Only available for SAML connections.
+  // Identity Providers can use this to configure the Service Provider.
+  // Format: https://{tenant}.auth0.com/samlp/metadata/{connection_name}
+  string metadata_url = 7;
+
+  // entity_id is the SAML Service Provider Entity ID.
+  // Only available for SAML connections.
+  // This is the unique identifier Auth0 uses as a SAML SP.
+  // Format: urn:auth0:{tenant}:{connection_name}
+  string entity_id = 8;
+
+  // enabled_client_ids is the list of Auth0 application client IDs
+  // that can use this connection.
+  repeated string enabled_client_ids = 9;
+
+  // realms is the list of realms/domains associated with this connection.
+  // Used for identifier-first authentication flows.
+  repeated string realms = 10;
+}

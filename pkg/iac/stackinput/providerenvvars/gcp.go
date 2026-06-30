@@ -2,7 +2,7 @@ package providerenvvars
 
 import (
 	"github.com/pkg/errors"
-	gcpprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp"
+	gcpprovider "github.com/plantonhq/planton/apis/dev/planton/provider/gcp"
 )
 
 // loadGcpEnvVars loads GCP provider config and returns environment variables.

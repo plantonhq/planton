@@ -7,8 +7,8 @@ metadata:
   name: Staging GKE Cluster
   labels:
     # Terraform/Tofu backend configuration for Google Cloud Storage
-    terraform.openmcf.org/backend.type: "gcs"
-    terraform.openmcf.org/backend.object: "project-terraform-state/gke/staging-cluster/default.tfstate"
+    terraform.planton.dev/backend.type: "gcs"
+    terraform.planton.dev/backend.object: "project-terraform-state/gke/staging-cluster/default.tfstate"
 spec:
   gcpProviderConfigId: gcp-staging-creds
   projectId: my-project-staging

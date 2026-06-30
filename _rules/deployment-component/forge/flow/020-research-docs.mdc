@@ -9,10 +9,10 @@ TITLE
 Forge: Generate Research Documentation (v1/docs/README.md)
 
 ROLE
-You are the OpenMCF Code Partner working inside the developer's local workspace in Cursor. This rule generates the comprehensive research document that explains the deployment landscape, rationale, and best practices for a cloud resource.
+You are the Planton Code Partner working inside the developer's local workspace in Cursor. This rule generates the comprehensive research document that explains the deployment landscape, rationale, and best practices for a cloud resource.
 
 SCOPE
-- Target: `apis/org/openmcf/provider/<provider>/<kindfolder>/v1/docs/README.md`
+- Target: `apis/dev/planton/provider/<provider>/<kindfolder>/v1/docs/README.md`
 - Create comprehensive technical research document
 - This is different from v1/README.md (user-facing overview)
 - This is the deep-dive document that justifies design decisions
@@ -23,7 +23,7 @@ The research document (v1/docs/README.md) serves multiple purposes:
 2. **90/10 Coverage Rationale** - Explain which provider surface is covered and why (and what is deliberately skipped)
 3. **Best Practices** - Document production-ready patterns
 4. **Historical Context** - Explain the evolution of the technology
-5. **Comparison** - Show how OpenMCF compares to other approaches
+5. **Comparison** - Show how Planton compares to other approaches
 
 **CRITICAL:** This document becomes the **primary source of truth** for the component. It will be consulted when:
 - **Updating** the component (understand design decisions)
@@ -56,13 +56,13 @@ SEQUENTIAL STEPS
    - What the component is
    - Why it matters
    - The problem it solves
-   - How OpenMCF approaches it
+   - How Planton approaches it
    
    **Evolution / Historical Context** (3-5 paragraphs)
    - How the technology evolved
    - Different approaches over time
    - Why the current state is complex
-   - What problems led to OpenMCF's abstraction
+   - What problems led to Planton's abstraction
    
    **Deployment Methods Landscape** (Main section - substantial)
    
@@ -100,8 +100,8 @@ SEQUENTIAL STEPS
    - Key differences highlighted
    - Trade-offs explained
    
-   **The OpenMCF Approach**
-   - How OpenMCF's abstraction works
+   **The Planton Approach**
+   - How Planton's abstraction works
    - What it automates
    - What it simplifies
    - The 90/10 principle application
@@ -134,7 +134,7 @@ SEQUENTIAL STEPS
    - **Length**: 300-1000+ lines (substantial document)
    - **Depth**: Go beyond marketing material, provide technical insights
    - **Examples**: Include real code snippets (not pseudocode)
-   - **Comparisons**: Be fair but show why OpenMCF's approach is better
+   - **Comparisons**: Be fair but show why Planton's approach is better
    - **Opinionated**: Make clear recommendations
    - **Actionable**: Readers should understand what to do
    - **Well-Structured**: Use clear headings, bullet points, tables
@@ -142,7 +142,7 @@ SEQUENTIAL STEPS
 
 4) **Write the Document**
    
-   Create the file at: `apis/org/openmcf/provider/<provider>/<kindfolder>/v1/docs/README.md`
+   Create the file at: `apis/dev/planton/provider/<provider>/<kindfolder>/v1/docs/README.md`
    
    Ensure:
    - Directory `docs/` is created if it doesn't exist
@@ -164,7 +164,7 @@ SUCCESS CRITERIA
 - File size > 10KB (indicating comprehensive coverage)
 - Contains landscape analysis section
 - Contains best practices section
-- Contains OpenMCF's approach explanation
+- Contains Planton's approach explanation
 - Document explains 90/10 coverage decisions
 - Examples are specific and actionable
 
@@ -175,7 +175,7 @@ OUTPUT
 - Highlight key insights captured
 
 EXAMPLE STRUCTURE
-See `~/scm/github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpcertmanagercert/v1/docs/README.md` for a gold-standard example.
+See `~/scm/github.com/plantonhq/planton/apis/dev/planton/provider/gcp/gcpcertmanagercert/v1/docs/README.md` for a gold-standard example.
 
 NOTES
 - This is the most substantial documentation piece

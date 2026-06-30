@@ -1,0 +1,7 @@
+apiVersion: gcp.planton.dev/v1
+kind: GcpArtifactRegistryRepo
+metadata:
+  name: test-gcp-artifact-registry
+spec:
+  projectId: pc-artifact-registry
+  region: asia-south1

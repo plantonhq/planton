@@ -1,0 +1,16 @@
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareZeroTrustAccessPolicy
+metadata:
+  name: allow-staff
+spec:
+  accountId: "REPLACE_WITH_ACCOUNT_ID"
+  name: allow-staff
+  decision: allow
+  sessionDuration: 24h
+  # Allow anyone with a corporate email, connecting from an allowed country.
+  include:
+    - emailDomain:
+        domain: example.com
+  require:
+    - geo:
+        countryCode: US

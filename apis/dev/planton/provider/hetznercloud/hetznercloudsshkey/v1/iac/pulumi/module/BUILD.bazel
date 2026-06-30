@@ -1,0 +1,23 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "module",
+    srcs = [
+        "locals.go",
+        "main.go",
+        "outputs.go",
+        "ssh_key.go",
+    ],
+    importpath = "github.com/plantonhq/planton/apis/dev/planton/provider/hetznercloud/hetznercloudsshkey/v1/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/dev/planton/provider/hetznercloud",
+        "//apis/dev/planton/provider/hetznercloud/hetznercloudsshkey/v1:hetznercloudsshkey",
+        "//apis/dev/planton/shared/cloudresourcekind",
+        "//pkg/iac/pulumi/pulumimodule/provider/hetznercloud/hcloudlabelkeys",
+        "//pkg/iac/pulumi/pulumimodule/provider/hetznercloud/pulumihcloudprovider",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_hcloud_sdk//go/hcloud",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)

@@ -1,0 +1,17 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesGitlab
+metadata:
+  name: test-gitlab
+spec:
+  container:
+    resources:
+      limits:
+        cpu: 2000m
+        memory: 4Gi
+      requests:
+        cpu: 500m
+        memory: 1Gi
+  ingress:
+    enabled: true
+    hostname: gitlab.example.com
+

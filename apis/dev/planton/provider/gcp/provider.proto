@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp;
+
+import "buf/validate/validate.proto";
+
+// GcpProviderConfig contains the authentication configuration for a Google Cloud Platform provider.
+//
+// Used as the provider_config in stack inputs for all GCP-based IaC modules. The runner or
+// IaC module uses this to configure the Pulumi/Terraform GCP provider.
+message GcpProviderConfig {
+  // JSON content of a Google Service Account key file.
+  //
+  // This is the raw JSON downloaded from the GCP Console or generated via
+  // `gcloud iam service-accounts keys create`. It contains fields such as
+  // type, project_id, private_key_id, private_key, client_email, etc.
+  //
+  // For more information: https://cloud.google.com/iam/docs/keys-create-delete
+  string service_account_key = 1 [(buf.validate.field).required = true];
+}

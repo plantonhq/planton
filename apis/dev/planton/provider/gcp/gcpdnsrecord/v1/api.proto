@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcpdnsrecord.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/gcp/gcpdnsrecord/v1/spec.proto";
+import "dev/planton/provider/gcp/gcpdnsrecord/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// GcpDnsRecord is a Kubernetes Resource Model (KRM) style resource for managing
+// individual DNS records within a Google Cloud DNS Managed Zone.
+//
+// This component provides declarative management of DNS records including:
+// - A, AAAA, CNAME, MX, TXT, SRV, NS, PTR, CAA, and SOA record types
+// - TTL configuration
+// - Round-robin support with multiple values
+// - Wildcard records
+message GcpDnsRecord {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'GcpDnsRecord'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  GcpDnsRecordSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  GcpDnsRecordStatus status = 5;
+}
+
+// GcpDnsRecordStatus represents the observed state of a GCP Cloud DNS record.
+message GcpDnsRecordStatus {
+  // stack-outputs from the IaC deployment
+  GcpDnsRecordStackOutputs outputs = 1;
+}

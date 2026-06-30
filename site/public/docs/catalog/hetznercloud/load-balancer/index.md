@@ -19,7 +19,7 @@ Deploys a Hetzner Cloud load balancer with configurable services (HTTP, HTTPS, T
 
 ## Prerequisites
 
-- **Hetzner Cloud API token** configured via environment variable (`HCLOUD_TOKEN`) or OpenMCF provider config
+- **Hetzner Cloud API token** configured via environment variable (`HCLOUD_TOKEN`) or Planton provider config
 - **At least one backend** — server targets require pre-existing servers (or `HetznerCloudServer` resources), label selector targets require servers with matching labels, IP targets require reachable external IPs
 - **A private network** if using the `network` attachment — either pre-existing or a `HetznerCloudNetwork` resource with a subnet in the same network zone as the load balancer's location
 - **TLS certificates** if configuring HTTPS services — either pre-existing certificate IDs or `HetznerCloudCertificate` resources referenced via `valueFrom`
@@ -29,15 +29,15 @@ Deploys a Hetzner Cloud load balancer with configurable services (HTTP, HTTPS, T
 Create a file `load-balancer.yaml`:
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudLoadBalancer
 metadata:
   name: my-lb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.HetznerCloudLoadBalancer.my-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.HetznerCloudLoadBalancer.my-lb
 spec:
   loadBalancerType: lb11
   location: fsn1
@@ -51,7 +51,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f load-balancer.yaml
+planton apply -f load-balancer.yaml
 ```
 
 This provisions an lb11 load balancer in Falkenstein with a single HTTP listener on port 80 forwarding to one server target.
@@ -114,15 +114,15 @@ This provisions an lb11 load balancer in Falkenstein with a single HTTP listener
 An lb11 load balancer with an HTTP listener on port 80 forwarding to a single server target.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudLoadBalancer
 metadata:
   name: web-lb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.HetznerCloudLoadBalancer.web-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.HetznerCloudLoadBalancer.web-lb
 spec:
   loadBalancerType: lb11
   location: fsn1
@@ -138,17 +138,17 @@ spec:
 An HTTPS load balancer using a certificate from a `HetznerCloudCertificate` resource. HTTP traffic is redirected to HTTPS. A custom health check verifies the backend on `/health`.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudLoadBalancer
 metadata:
   name: web-https-lb
   org: acme-corp
   env: staging
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: web-platform
-    pulumi.openmcf.org/stack.name: staging.HetznerCloudLoadBalancer.web-https-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: web-platform
+    pulumi.planton.dev/stack.name: staging.HetznerCloudLoadBalancer.web-https-lb
 spec:
   loadBalancerType: lb11
   location: fsn1
@@ -188,17 +188,17 @@ spec:
 A load balancer on a private network using label selectors to dynamically discover backend servers. All traffic flows over the private network.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudLoadBalancer
 metadata:
   name: internal-lb
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: infrastructure
-    pulumi.openmcf.org/stack.name: production.HetznerCloudLoadBalancer.internal-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: infrastructure
+    pulumi.planton.dev/stack.name: production.HetznerCloudLoadBalancer.internal-lb
 spec:
   loadBalancerType: lb21
   location: fsn1
@@ -229,17 +229,17 @@ spec:
 A production load balancer with HTTPS, sticky sessions, multiple target types, private networking, custom health checks, and delete protection.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudLoadBalancer
 metadata:
   name: prod-lb
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: infrastructure
-    pulumi.openmcf.org/stack.name: production.HetznerCloudLoadBalancer.prod-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: infrastructure
+    pulumi.planton.dev/stack.name: production.HetznerCloudLoadBalancer.prod-lb
 spec:
   loadBalancerType: lb31
   location: fsn1

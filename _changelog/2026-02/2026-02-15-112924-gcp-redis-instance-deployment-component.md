@@ -64,8 +64,8 @@ A complete deployment component with proto API, Pulumi module, Terraform module,
 
 ### Files Created
 
-- `apis/org/openmcf/provider/gcp/gcpredisinstance/v1/` -- 35 files total
-- `apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto` -- enum 631 registered
+- `apis/dev/planton/provider/gcp/gcpredisinstance/v1/` -- 35 files total
+- `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto` -- enum 631 registered
 - `site/public/docs/catalog/gcp/redis-instance.md` -- catalog page
 
 ## Benefits

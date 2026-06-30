@@ -12,7 +12,7 @@ Deploys a GCP Cloud Tasks queue with configurable dispatch rate limits, retry po
 
 ## What Gets Created
 
-When you deploy a GcpCloudTasksQueue resource, OpenMCF provisions:
+When you deploy a GcpCloudTasksQueue resource, Planton provisions:
 
 - **Cloud Tasks Queue** — a `google_cloud_tasks_queue` resource in the specified project and region with the configured dispatch and retry settings
 - **Rate Limits** — created only when `rateLimits` is specified, controls dispatch rate and concurrency
@@ -22,7 +22,7 @@ When you deploy a GcpCloudTasksQueue resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **A GCP project** with the Cloud Tasks API enabled
 - **A service account** with `iam.serviceAccounts.actAs` permission if configuring queue-level OIDC or OAuth authentication
 - **The target service** (e.g., Cloud Run, Cloud Functions) deployed if configuring `httpTarget.uriOverride`
@@ -32,15 +32,15 @@ When you deploy a GcpCloudTasksQueue resource, OpenMCF provisions:
 Create a file `cloud-tasks-queue.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudTasksQueue
 metadata:
   name: my-queue
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpCloudTasksQueue.my-queue
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpCloudTasksQueue.my-queue
 spec:
   projectId:
     value: my-gcp-project
@@ -51,7 +51,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f cloud-tasks-queue.yaml
+planton apply -f cloud-tasks-queue.yaml
 ```
 
 This creates a Cloud Tasks queue in `us-central1` with GCP-managed defaults for rate limits and retry behavior.
@@ -99,15 +99,15 @@ This creates a Cloud Tasks queue in `us-central1` with GCP-managed defaults for 
 Queue with explicit rate limits and retry configuration for production background processing:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudTasksQueue
 metadata:
   name: background-processor
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpCloudTasksQueue.background-processor
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpCloudTasksQueue.background-processor
 spec:
   projectId:
     value: my-gcp-project
@@ -130,15 +130,15 @@ spec:
 Queue configured to dispatch all tasks to a Cloud Run service with automatic OIDC token generation. This is the recommended pattern for serverless task processing:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudTasksQueue
 metadata:
   name: cloud-run-dispatcher
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpCloudTasksQueue.cloud-run-dispatcher
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpCloudTasksQueue.cloud-run-dispatcher
 spec:
   projectId:
     value: my-gcp-project
@@ -172,18 +172,18 @@ spec:
 
 ### Full-Featured Queue with Foreign Key References
 
-Production queue referencing other OpenMCF-managed resources via `valueFrom` for infra-chart composition:
+Production queue referencing other Planton-managed resources via `valueFrom` for infra-chart composition:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudTasksQueue
 metadata:
   name: composed-queue
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpCloudTasksQueue.composed-queue
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpCloudTasksQueue.composed-queue
 spec:
   projectId:
     valueFrom:

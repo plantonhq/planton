@@ -2,7 +2,7 @@
 
 ## Overview
 
-**Forge** is the rule system for bootstrapping **complete, production-ready deployment components** in OpenMCF. It orchestrates 20 atomic rules that create everything from proto definitions to IaC modules to comprehensive documentation.
+**Forge** is the rule system for bootstrapping **complete, production-ready deployment components** in Planton. It orchestrates 20 atomic rules that create everything from proto definitions to IaC modules to comprehensive documentation.
 
 **Key principle:** Forge creates components that match **95-100% of the ideal state** defined in `architecture/deployment-component.md`.
 
@@ -65,34 +65,34 @@ Use forge when you need to:
 ### Basic Usage
 
 ```
-@forge-openmcf-component <ComponentName> --provider <provider>
+@forge-planton-component <ComponentName> --provider <provider>
 ```
 
 ### Examples
 
 **Create a SaaS platform resource:**
 ```
-@forge-openmcf-component MongodbAtlas --provider atlas
+@forge-planton-component MongodbAtlas --provider atlas
 ```
 
 **Create a GCP resource:**
 ```
-@forge-openmcf-component GcpStorageBucket --provider gcp
+@forge-planton-component GcpStorageBucket --provider gcp
 ```
 
 **Create an AWS resource:**
 ```
-@forge-openmcf-component AwsSqsQueue --provider aws
+@forge-planton-component AwsSqsQueue --provider aws
 ```
 
 **Create a Kubernetes workload:**
 ```
-@forge-openmcf-component PostgresKubernetes --provider kubernetes --category workload
+@forge-planton-component PostgresKubernetes --provider kubernetes --category workload
 ```
 
 **Create a Kubernetes addon:**
 ```
-@forge-openmcf-component CertManagerKubernetes --provider kubernetes --category addon
+@forge-planton-component CertManagerKubernetes --provider kubernetes --category addon
 ```
 
 ### Required Information
@@ -198,12 +198,12 @@ Phase 8: Final Validation
 
 🎉 Component creation complete!
 
-📍 Location: apis/org/openmcf/provider/atlas/mongodbatlas/v1/
+📍 Location: apis/dev/planton/provider/atlas/mongodbatlas/v1/
 📊 Expected Audit Score: 95-100%
 
 Next steps:
 1. Review generated files
-2. Run: @audit-openmcf-component MongodbAtlas
+2. Run: @audit-planton-component MongodbAtlas
 3. Make any custom modifications
 4. Commit and push
 ```
@@ -221,7 +221,7 @@ If a rule fails after 3 attempts:
 2. Fix the issue manually
 3. Resume from the failed rule:
    ```
-   @forge-openmcf-component MongodbAtlas --resume-from 012
+   @forge-planton-component MongodbAtlas --resume-from 012
    ```
 
 ### Common Issues
@@ -245,7 +245,7 @@ After forge completes, validate the component:
 
 **Option 1: Manual Audit**
 ```bash
-@audit-openmcf-component <ComponentName>
+@audit-planton-component <ComponentName>
 ```
 **Expected Result:** 95-100% completion score
 
@@ -253,7 +253,7 @@ If score is lower, the audit report shows what's missing, why it matters, and ho
 
 **Option 2: Auto-Complete (Recommended)**
 ```bash
-@complete-openmcf-component <ComponentName>
+@complete-planton-component <ComponentName>
 ```
 Automatically audits and fills any remaining gaps to reach 95%+. Useful if forge had partial failures.
 
@@ -274,7 +274,7 @@ Forge creates a **production-ready baseline**. Common customizations:
 ### Modify IaC Implementation
 1. Update Pulumi module files (`iac/pulumi/module/*.go`)
 2. Update Terraform module files (`iac/tf/*.tf`)
-3. Test with `@forge-openmcf-component <Name> --test-only`
+3. Test with `@forge-planton-component <Name> --test-only`
 4. Update documentation if behavior changes
 
 ### Enhance Documentation
@@ -299,14 +299,14 @@ Forge creates a **production-ready baseline**. Common customizations:
 - **Ideal State Definition:** `architecture/deployment-component.md`
 - **Individual Flow Rules:** `_rules/deployment-component/forge/flow/`
 - **Forge Analysis:** `_rules/deployment-component/forge/FORGE_ANALYSIS.md`
-- **Main Orchestrator:** `_rules/deployment-component/forge/forge-openmcf-component.mdc`
+- **Main Orchestrator:** `_rules/deployment-component/forge/forge-planton-component.mdc`
 
 ## Tips and Best Practices
 
 ### Before Running Forge
 
 1. **Research the resource** - Understand what you're creating
-2. **Check if it exists** - Run `@audit-openmcf-component` first
+2. **Check if it exists** - Run `@audit-planton-component` first
 3. **Plan your API** - Know the provider's real surface and cover it to the floor (90/10)
 4. **Gather examples** - Have reference configurations ready
 
@@ -329,7 +329,7 @@ Forge creates a **production-ready baseline**. Common customizations:
 ### "Component already exists"
 **Error:** `Component MongodbAtlas already exists at ...`
 
-**Solution:** Use `@update-openmcf-component` instead, or delete first with `@delete-openmcf-component`.
+**Solution:** Use `@update-planton-component` instead, or delete first with `@delete-planton-component`.
 
 ### "Provider not recognized"
 **Error:** `Provider 'xyz' is not valid`
@@ -368,7 +368,7 @@ After reading this README:
 
 ---
 
-**Questions?** Check the troubleshooting section or run `@audit-openmcf-component` to see examples of complete components.
+**Questions?** Check the troubleshooting section or run `@audit-planton-component` to see examples of complete components.
 
-**Ready to create?** Run `@forge-openmcf-component <YourComponentName> --provider <provider>`
+**Ready to create?** Run `@forge-planton-component <YourComponentName> --provider <provider>`
 

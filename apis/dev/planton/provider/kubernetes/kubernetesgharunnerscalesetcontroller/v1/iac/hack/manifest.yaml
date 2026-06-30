@@ -1,0 +1,33 @@
+# KubernetesGhaRunnerScaleSetController - Test Manifest
+#
+# This manifest deploys the GitHub Actions Runner Scale Set Controller.
+# After deployment, you can create AutoScalingRunnerSet resources to
+# deploy actual runner pods.
+
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesGhaRunnerScaleSetController
+metadata:
+  name: arc-controller-test
+  labels:
+    app: actions-runner-controller
+    environment: development
+spec:
+  namespace:
+    value: arc-system
+  create_namespace: true
+  helm_chart_version: "0.13.1"
+  replica_count: 1
+  container:
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "128Mi"
+      limits:
+        cpu: "500m"
+        memory: "512Mi"
+  flags:
+    log_level: 1  # info
+    log_format: 1 # text
+    runner_max_concurrent_reconciles: 2
+    update_strategy: 1 # immediate
+

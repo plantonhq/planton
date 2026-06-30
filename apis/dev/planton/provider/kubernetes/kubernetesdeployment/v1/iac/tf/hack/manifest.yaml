@@ -1,0 +1,34 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesDeployment
+metadata:
+  name: test-microservice-on-kubernetes
+spec:
+  availability:
+    minReplicas: 1
+  container:
+    app:
+      env:
+        variables:
+          - name: SOME_ENV_VAR_ONE
+            value: "some-env-var-value-one"
+      image:
+        repo: nginx
+        tag: latest
+      ports:
+        - appProtocol: http
+          containerPort: 80
+          isIngressPort: true
+          name: rest-api
+          networkProtocol: TCP
+          servicePort: 80
+      resources:
+        limits:
+          cpu: 3000m
+          memory: 1Gi
+        requests:
+          cpu: 50m
+          memory: 100Mi
+  ingress:
+    dnsDomain: example.com
+    isEnabled: true
+  version: main

@@ -41,7 +41,7 @@ var _ = ginkgo.Describe("KubernetesPerconaMysqlOperator Validation Tests", func(
 
     ginkgo.BeforeEach(func() {
         input = &KubernetesPerconaMysqlOperator{
-            ApiVersion: "kubernetes.openmcf.org/v1",
+            ApiVersion: "kubernetes.planton.dev/v1",
             Kind:       "KubernetesPerconaMysqlOperator",
             Metadata:   &shared.CloudResourceMetadata{Name: "test-percona-mysql-operator"},
             Spec:       &KubernetesPerconaMysqlOperatorSpec{
@@ -124,7 +124,7 @@ locals {
     var.metadata.labels != null ? var.metadata.labels : {},
     {
       "app.kubernetes.io/name"       = "percona-mysql-operator"
-      "app.kubernetes.io/managed-by" = "openmcf"
+      "app.kubernetes.io/managed-by" = "planton"
       "app.kubernetes.io/component"  = "database-operator"
     }
   )
@@ -316,7 +316,7 @@ Percona XtraDB Cluster is a high-availability solution for MySQL:
 ### Deployment Architecture
 
 ```
-User → openmcf CLI
+User → planton CLI
   ↓
 Stack Input (spec.proto)
   ↓
@@ -382,7 +382,7 @@ No action needed - new deployments automatically use `pxc-operator`.
 
 ### Unit Test Execution
 ```bash
-cd apis/org/openmcf/provider/kubernetes/kubernetesperconamysqloperator/v1
+cd apis/dev/planton/provider/kubernetes/kubernetesperconamysqloperator/v1
 go test -v
 ```
 
@@ -415,7 +415,7 @@ As PXC operator evolves:
 ## File Locations
 
 **Component Root**:
-- `apis/org/openmcf/provider/kubernetes/kubernetesperconamysqloperator/v1/`
+- `apis/dev/planton/provider/kubernetes/kubernetesperconamysqloperator/v1/`
 
 **Key Files**:
 - `spec_test.go`: Validation test suite

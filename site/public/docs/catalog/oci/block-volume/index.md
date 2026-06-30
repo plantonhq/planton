@@ -12,14 +12,14 @@ Deploys an Oracle Cloud Infrastructure Block Volume with configurable performanc
 
 ## What Gets Created
 
-When you deploy an OciBlockVolume resource, OpenMCF provisions:
+When you deploy an OciBlockVolume resource, Planton provisions:
 
 - **Block Volume** — an `oci_core_volume` in the specified compartment and availability domain with configurable size (50-32768 GB), performance tier (VPUs/GB), optional KMS encryption, autotune policies, cross-region replicas, and SCSI persistent reservation support.
 - **Backup Policy Assignment** — created only when `backupPolicyId` is set. An `oci_core_volume_backup_policy_assignment` that links the volume to an Oracle-defined (Gold, Silver, Bronze) or custom backup policy for scheduled backups.
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the volume will be created — either a literal value or a reference to an OciCompartment resource
 - **An availability domain** name within the target region (e.g., `"Uocm:US-ASHBURN-AD-1"`) — the volume and any attached compute instance must be in the same AD
 - **A KMS key OCID** (optional) if using customer-managed encryption
@@ -30,15 +30,15 @@ When you deploy an OciBlockVolume resource, OpenMCF provisions:
 Create a file `block-volume.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciBlockVolume
 metadata:
   name: my-volume
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciBlockVolume.my-volume
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciBlockVolume.my-volume
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -49,7 +49,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f block-volume.yaml
+planton apply -f block-volume.yaml
 ```
 
 This creates a 50 GB block volume with Balanced performance (10 VPUs/GB) and Oracle-managed encryption. The volume OCID is exported as a stack output.
@@ -99,15 +99,15 @@ This creates a 50 GB block volume with Balanced performance (10 VPUs/GB) and Ora
 A 50 GB volume with default Balanced performance — suitable for development or low-IOPS workloads:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciBlockVolume
 metadata:
   name: dev-data
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciBlockVolume.dev-data
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciBlockVolume.dev-data
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -120,15 +120,15 @@ spec:
 A 500 GB volume with Higher Performance tier and KMS encryption for a database workload:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciBlockVolume
 metadata:
   name: db-data
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciBlockVolume.db-data
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciBlockVolume.db-data
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -145,15 +145,15 @@ spec:
 A volume with detached-volume autotune (reduces cost when not attached) and a Gold backup policy for daily backups with cross-region copy:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciBlockVolume
 metadata:
   name: app-storage
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciBlockVolume.app-storage
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciBlockVolume.app-storage
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -173,15 +173,15 @@ spec:
 A production volume with performance-based autotune and a cross-region replica for disaster recovery:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciBlockVolume
 metadata:
   name: critical-data
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciBlockVolume.critical-data
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciBlockVolume.critical-data
 spec:
   compartmentId:
     valueFrom:

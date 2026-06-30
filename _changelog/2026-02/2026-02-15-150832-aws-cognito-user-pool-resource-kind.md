@@ -6,22 +6,22 @@
 
 ## Summary
 
-Added AwsCognitoUserPool (R12) as a new AWS cloud resource kind in OpenMCF, providing managed user directory and authentication services with bundled app clients and an optional hosted UI domain. The component delivers 4 proto files, 47 passing validation tests, full Pulumi and Terraform modules with feature parity, 7 examples, 3 presets, and production-quality documentation.
+Added AwsCognitoUserPool (R12) as a new AWS cloud resource kind in Planton, providing managed user directory and authentication services with bundled app clients and an optional hosted UI domain. The component delivers 4 proto files, 47 passing validation tests, full Pulumi and Terraform modules with feature parity, 7 examples, 3 presets, and production-quality documentation.
 
 ## Problem Statement / Motivation
 
-AWS Cognito User Pools is the primary managed authentication service for web and mobile applications on AWS. Before this addition, OpenMCF users needing user authentication had to manage Cognito infrastructure manually or outside the framework. This gap prevented infra charts from expressing auth-enabled deployment patterns -- a critical capability for serverless-api and web application charts where the user pool, API Gateway JWT authorizer, and Lambda functions must be wired together.
+AWS Cognito User Pools is the primary managed authentication service for web and mobile applications on AWS. Before this addition, Planton users needing user authentication had to manage Cognito infrastructure manually or outside the framework. This gap prevented infra charts from expressing auth-enabled deployment patterns -- a critical capability for serverless-api and web application charts where the user pool, API Gateway JWT authorizer, and Lambda functions must be wired together.
 
 ### Pain Points
 
-- No declarative way to provision a Cognito User Pool with app clients through OpenMCF
+- No declarative way to provision a Cognito User Pool with app clients through Planton
 - Infra charts could not express JWT authorizer dependencies (issuer URL, client IDs)
 - Manual Cognito setup is error-prone: identity model choices (username vs alias attributes) are permanent (ForceNew)
 - App clients require careful OAuth/OIDC configuration that benefits from validation guardrails
 
 ## Solution / What's New
 
-A complete AwsCognitoUserPool deployment component following established OpenMCF patterns (SNS subscription bundling, Redis parameter group bundling).
+A complete AwsCognitoUserPool deployment component following established Planton patterns (SNS subscription bundling, Redis parameter group bundling).
 
 ### Component Architecture
 
@@ -76,7 +76,7 @@ flowchart TB
   - App clients: repeated with OAuth flows, scopes, token validity, auth flows, security settings
   - Domain: optional with custom domain certificate requirement
 - **stack_outputs.proto**: 7 outputs including `client_ids` and `client_secrets` maps
-- **api.proto**: KRM wiring with `aws.openmcf.org/v1` / `AwsCognitoUserPool`
+- **api.proto**: KRM wiring with `aws.planton.dev/v1` / `AwsCognitoUserPool`
 - **stack_input.proto**: Standard stack input with AwsProviderConfig
 
 ### Validation Tests (47 tests)

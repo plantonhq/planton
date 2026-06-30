@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsmskcluster.v1;
+
+// AwsMskClusterStackOutputs captures observable identifiers and endpoints from a deployed
+// Amazon MSK cluster. These outputs enable downstream resources (Lambda event source mappings,
+// ECS/EKS consumer services, Firehose delivery streams) to connect to the cluster and
+// integrate with monitoring, security, and data pipeline workflows.
+message AwsMskClusterStackOutputs {
+  // cluster_arn is the Amazon Resource Name of the MSK cluster,
+  // used in IAM policies, event source mappings, and cross-service references.
+  string cluster_arn = 1;
+
+  // cluster_name is the human-readable name of the cluster.
+  string cluster_name = 2;
+
+  // cluster_uuid is the unique identifier extracted from the cluster ARN.
+  string cluster_uuid = 3;
+
+  // current_version is the cluster version string, required for update operations.
+  // This value changes after each successful cluster modification.
+  string current_version = 4;
+
+  // bootstrap_brokers is a comma-separated list of broker endpoints for plaintext connections (port 9092).
+  // Empty when client_broker_encryption is "TLS" (plaintext disabled).
+  string bootstrap_brokers = 5;
+
+  // bootstrap_brokers_tls is a comma-separated list of broker endpoints for TLS connections (port 9094).
+  // The primary endpoint when client_broker_encryption is "TLS" or "TLS_PLAINTEXT".
+  string bootstrap_brokers_tls = 6;
+
+  // bootstrap_brokers_sasl_iam is a comma-separated list of broker endpoints for SASL/IAM connections (port 9098).
+  // Populated when authentication.sasl_iam_enabled is true.
+  string bootstrap_brokers_sasl_iam = 7;
+
+  // bootstrap_brokers_sasl_scram is a comma-separated list of broker endpoints for SASL/SCRAM connections (port 9096).
+  // Populated when authentication.sasl_scram_enabled is true.
+  string bootstrap_brokers_sasl_scram = 8;
+
+  // bootstrap_brokers_public_tls is a comma-separated list of public TLS broker endpoints.
+  // Populated when public_access_type is "SERVICE_PROVIDED_EIPS".
+  string bootstrap_brokers_public_tls = 9;
+
+  // bootstrap_brokers_public_sasl_iam is a comma-separated list of public SASL/IAM broker endpoints.
+  // Populated when public access and SASL/IAM authentication are both enabled.
+  string bootstrap_brokers_public_sasl_iam = 10;
+
+  // bootstrap_brokers_public_sasl_scram is a comma-separated list of public SASL/SCRAM broker endpoints.
+  // Populated when public access and SASL/SCRAM authentication are both enabled.
+  string bootstrap_brokers_public_sasl_scram = 11;
+
+  // zookeeper_connect_string is a comma-separated list of ZooKeeper endpoints for plaintext connections.
+  string zookeeper_connect_string = 12;
+
+  // zookeeper_connect_string_tls is a comma-separated list of ZooKeeper endpoints for TLS connections.
+  string zookeeper_connect_string_tls = 13;
+
+  // security_group_id is the ID of the managed security group, if one was created
+  // from security_group_ids or allowed_cidr_blocks in the spec.
+  string security_group_id = 14;
+
+  // configuration_arn is the ARN of the inline MSK Configuration resource,
+  // if one was created from server_properties in the spec.
+  string configuration_arn = 15;
+}

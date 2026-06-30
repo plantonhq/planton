@@ -14,7 +14,7 @@ This component bundles an `alicloud_security_group` with `alicloud_security_grou
 ## What Was Created
 
 ### API Definition
-- `apis/org/openmcf/provider/alicloud/alicloudsecuritygroup/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
+- `apis/dev/planton/provider/alicloud/alicloudsecuritygroup/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
 - `AliCloudSecurityGroupSpec` with `repeated AliCloudSecurityGroupRule rules` for composite bundling
 - Registered `AliCloudSecurityGroup = 3022` in `CloudResourceKind` enum under the Networking category
 

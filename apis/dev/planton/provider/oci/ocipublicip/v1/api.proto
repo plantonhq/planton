@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocipublicip.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/oci/ocipublicip/v1/spec.proto";
+import "dev/planton/provider/oci/ocipublicip/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// OciPublicIp is the top-level resource representing an Oracle Cloud
+// Infrastructure public IPv4 address for internet connectivity.
+message OciPublicIp {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'oci.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OciPublicIp'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OciPublicIpSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OciPublicIpStatus status = 5;
+}
+
+// OciPublicIpStatus holds the outputs produced by deploying an OciPublicIp.
+message OciPublicIpStatus {
+  // stack-outputs
+  OciPublicIpStackOutputs outputs = 1;
+}

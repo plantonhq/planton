@@ -12,13 +12,13 @@ Adds a node pool to an existing Civo Kubernetes cluster, allowing you to scale c
 
 ## What Gets Created
 
-When you deploy a CivoKubernetesNodePool resource, OpenMCF provisions:
+When you deploy a CivoKubernetesNodePool resource, Planton provisions:
 
 - **Kubernetes Node Pool** — a `civo_kubernetes_node_pool` resource attached to the referenced Civo Kubernetes cluster, with the specified instance size and labels derived from the resource metadata
 
 ## Prerequisites
 
-- **Civo credentials** configured via environment variables or OpenMCF provider config
+- **Civo credentials** configured via environment variables or Planton provider config
 - **An existing Civo Kubernetes cluster** — either created manually or managed via a CivoKubernetesCluster resource
 - **A valid instance size slug** (e.g., `g4s.kube.medium`) — check Civo's available sizes for your region
 
@@ -27,15 +27,15 @@ When you deploy a CivoKubernetesNodePool resource, OpenMCF provisions:
 Create a file `civo-node-pool.yaml`:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoKubernetesNodePool
 metadata:
   name: my-node-pool
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CivoKubernetesNodePool.my-node-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CivoKubernetesNodePool.my-node-pool
 spec:
   nodePoolName: my-node-pool
   cluster:
@@ -47,7 +47,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f civo-node-pool.yaml
+planton apply -f civo-node-pool.yaml
 ```
 
 This creates a two-node pool using `g4s.kube.medium` instances in the specified cluster.
@@ -79,15 +79,15 @@ This creates a two-node pool using `g4s.kube.medium` instances in the specified 
 A fixed-size pool added to an existing cluster by ID:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoKubernetesNodePool
 metadata:
   name: workers
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CivoKubernetesNodePool.workers
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CivoKubernetesNodePool.workers
 spec:
   nodePoolName: workers
   cluster:
@@ -101,15 +101,15 @@ spec:
 A pool that scales between 2 and 8 nodes based on demand:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoKubernetesNodePool
 metadata:
   name: autoscale-pool
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CivoKubernetesNodePool.autoscale-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CivoKubernetesNodePool.autoscale-pool
 spec:
   nodePoolName: autoscale-pool
   cluster:
@@ -126,18 +126,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed CivoKubernetesCluster instead of hardcoding the cluster ID:
+Reference an Planton-managed CivoKubernetesCluster instead of hardcoding the cluster ID:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoKubernetesNodePool
 metadata:
   name: ref-pool
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CivoKubernetesNodePool.ref-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CivoKubernetesNodePool.ref-pool
 spec:
   nodePoolName: ref-pool
   cluster:
@@ -152,7 +152,7 @@ spec:
   maxNodes: 10
   tags:
     - environment:production
-    - managed-by:openmcf
+    - managed-by:planton
 ```
 
 ## Stack Outputs

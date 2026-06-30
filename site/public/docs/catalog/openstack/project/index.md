@@ -12,13 +12,13 @@ Deploys an OpenStack Identity (Keystone) project, the fundamental organizational
 
 ## What Gets Created
 
-When you deploy an OpenStackProject resource, OpenMCF provisions:
+When you deploy an OpenStackProject resource, Planton provisions:
 
 - **Keystone Project** — an `openstack_identity_project_v3` resource with the configured description, domain, enabled state, parent hierarchy, and tags
 
 ## Prerequisites
 
-- **OpenStack credentials** configured via environment variables or OpenMCF provider config
+- **OpenStack credentials** configured via environment variables or Planton provider config
 - **Admin role** — creating projects is an admin-level operation; the credentials must have the `admin` role or equivalent permissions in Keystone
 
 ## Quick Start
@@ -26,21 +26,21 @@ When you deploy an OpenStackProject resource, OpenMCF provisions:
 Create a file `project.yaml`:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackProject
 metadata:
   name: my-project
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: dev.OpenstackProject.my-project
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackproject/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: dev.OpenstackProject.my-project
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackproject/v1/iac/pulumi/module
 spec: {}
 ```
 
 Deploy:
 
 ```shell
-openmcf apply -f project.yaml
+planton apply -f project.yaml
 ```
 
 This creates a Keystone project named `my-project` in the default domain with enabled state set to `true`.
@@ -69,14 +69,14 @@ All spec fields are optional. The project name is derived from `metadata.name`.
 A simple project for a development team with default settings:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackProject
 metadata:
   name: dev-team
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: dev.OpenstackProject.dev-team
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackproject/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: dev.OpenstackProject.dev-team
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackproject/v1/iac/pulumi/module
 spec:
   description: Development team project
 ```
@@ -86,14 +86,14 @@ spec:
 A project assigned to a custom Keystone domain, useful in multi-domain deployments:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackProject
 metadata:
   name: engineering
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: staging.OpenstackProject.engineering
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackproject/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: staging.OpenstackProject.engineering
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackproject/v1/iac/pulumi/module
 spec:
   description: Engineering department project
   domainId: abcdef12-3456-7890-abcd-ef1234567890
@@ -107,14 +107,14 @@ spec:
 A child project under a parent project for organizational structuring and nested quota management:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackProject
 metadata:
   name: backend-team
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: prod.OpenstackProject.backend-team
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackproject/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: prod.OpenstackProject.backend-team
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackproject/v1/iac/pulumi/module
 spec:
   description: Backend team project under engineering
   parentId: 12345678-abcd-ef01-2345-678901abcdef

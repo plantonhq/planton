@@ -56,13 +56,13 @@ export async function generateMetadata({ params }: { params: DocsParams }): Prom
     const title = data?.title || slug[slug.length - 1] || 'Documentation';
 
     return {
-      title: `${title} - OpenMCF Documentation`,
-      description: data?.description || 'OpenMCF Documentation',
+      title: `${title} - Planton Documentation`,
+      description: data?.description || 'Planton Documentation',
     };
   } catch {
     return {
-      title: 'Documentation - OpenMCF',
-      description: 'OpenMCF Documentation',
+      title: 'Documentation - Planton',
+      description: 'Planton Documentation',
     };
   }
 }

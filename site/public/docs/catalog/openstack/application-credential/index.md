@@ -12,13 +12,13 @@ Deploys an OpenStack Identity (Keystone) application credential, providing a sco
 
 ## What Gets Created
 
-When you deploy an OpenStackApplicationCredential resource, OpenMCF provisions:
+When you deploy an OpenStackApplicationCredential resource, Planton provisions:
 
 - **Identity Application Credential** — an `openstack_identity_application_credential_v3` resource scoped to the project that is active during creation, with optional role restrictions and fine-grained API access rules
 
 ## Prerequisites
 
-- **OpenStack credentials** configured via environment variables or OpenMCF provider config
+- **OpenStack credentials** configured via environment variables or Planton provider config
 - **Keystone v3 API** available in the target OpenStack deployment
 - **Appropriate roles** assigned to the authenticating user on the target project (the credential inherits from these roles)
 
@@ -27,21 +27,21 @@ When you deploy an OpenStackApplicationCredential resource, OpenMCF provisions:
 Create a file `app-credential.yaml`:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackApplicationCredential
 metadata:
   name: my-app-cred
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: dev.OpenstackApplicationCredential.my-app-cred
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackapplicationcredential/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: dev.OpenstackApplicationCredential.my-app-cred
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackapplicationcredential/v1/iac/pulumi/module
 spec: {}
 ```
 
 Deploy:
 
 ```shell
-openmcf apply -f app-credential.yaml
+planton apply -f app-credential.yaml
 ```
 
 This creates an application credential named `my-app-cred` with an auto-generated secret, inheriting all roles of the creating user on the current project. The secret is available in `status.outputs.secret` after deployment and cannot be retrieved again from the OpenStack API.
@@ -79,14 +79,14 @@ All spec fields are optional. The credential name is derived from `metadata.name
 A credential with default settings, suitable for development automation:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackApplicationCredential
 metadata:
   name: dev-automation
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: dev.OpenstackApplicationCredential.dev-automation
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackapplicationcredential/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: dev.OpenstackApplicationCredential.dev-automation
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackapplicationcredential/v1/iac/pulumi/module
 spec:
   description: CI/CD automation credential for development
 ```
@@ -96,14 +96,14 @@ spec:
 A credential restricted to specific roles with a defined lifetime, suitable for temporary access:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackApplicationCredential
 metadata:
   name: temp-reader
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: staging.OpenstackApplicationCredential.temp-reader
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackapplicationcredential/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: staging.OpenstackApplicationCredential.temp-reader
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackapplicationcredential/v1/iac/pulumi/module
 spec:
   description: Temporary read-only credential for audit tooling
   roles:
@@ -117,14 +117,14 @@ spec:
 A credential locked down to specific API operations, allowing only compute server listing and identity project listing:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackApplicationCredential
 metadata:
   name: monitoring-agent
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: prod.OpenstackApplicationCredential.monitoring-agent
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackapplicationcredential/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: prod.OpenstackApplicationCredential.monitoring-agent
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackapplicationcredential/v1/iac/pulumi/module
 spec:
   description: Monitoring agent with read-only access to compute and identity APIs
   roles:

@@ -10,7 +10,7 @@ Migrated the GcpCloudCdn component's `gcp_project_id` field from a plain `string
 
 ## Problem Statement / Motivation
 
-The GcpCloudCdn component used a plain `string` type for the `gcp_project_id` field with a regex pattern validation. This required users to hardcode GCP project identifiers and didn't allow referencing other OpenMCF resources.
+The GcpCloudCdn component used a plain `string` type for the `gcp_project_id` field with a regex pattern validation. This required users to hardcode GCP project identifiers and didn't allow referencing other Planton resources.
 
 ### Pain Points
 
@@ -30,10 +30,10 @@ string gcp_project_id = 1 [
 ];
 
 // AFTER
-org.openmcf.shared.foreignkey.v1.StringValueOrRef gcp_project_id = 1 [
+dev.planton.shared.foreignkey.v1.StringValueOrRef gcp_project_id = 1 [
   (buf.validate.field).required = true,
-  (org.openmcf.shared.foreignkey.v1.default_kind) = GcpProject,
-  (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+  (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
 ];
 ```
 
@@ -78,7 +78,7 @@ gcp_project_id = object({
 ### Direct Value
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudCdn
 metadata:
   name: my-cdn
@@ -92,7 +92,7 @@ spec:
 ### Cross-Resource Reference
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudCdn
 metadata:
   name: my-cdn

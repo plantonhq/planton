@@ -229,7 +229,7 @@ Terraform module documentation:
 
 ### Unit Tests (Go)
 ```bash
-cd apis/org/openmcf/provider/kubernetes/kuberneteszalandopostgresoperator/v1/
+cd apis/dev/planton/provider/kubernetes/kuberneteszalandopostgresoperator/v1/
 go test -v
 ```
 
@@ -339,7 +339,7 @@ The Terraform module implements the same functionality as Pulumi using HCL:
 
 ### Basic Deployment
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesZalandoPostgresOperator
 metadata:
   name: postgres-operator
@@ -352,7 +352,7 @@ spec:
 
 ### Production with Backups
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesZalandoPostgresOperator
 metadata:
   name: postgres-operator
@@ -483,5 +483,5 @@ The KubernetesZalandoPostgresOperator component is now fully complete and produc
 4. **Troubleshoot** using documented debugging steps
 5. **Extend** the implementation using architecture documentation
 
-The component follows OpenMCF best practices and is ready for production use.
+The component follows Planton best practices and is ready for production use.
 

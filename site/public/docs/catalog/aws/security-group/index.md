@@ -12,7 +12,7 @@ Deploys an AWS EC2 Security Group in a specified VPC with configurable ingress a
 
 ## What Gets Created
 
-When you deploy an AwsSecurityGroup resource, OpenMCF provisions:
+When you deploy an AwsSecurityGroup resource, Planton provisions:
 
 - **Security Group** — an `ec2.SecurityGroup` resource in the specified VPC with the given name, description, ingress rules, and egress rules
 - **Ingress Rules** — inbound traffic rules mapped from the `ingress` field, each specifying protocol, port range, CIDR blocks, security group references, and self-reference settings
@@ -20,7 +20,7 @@ When you deploy an AwsSecurityGroup resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **An existing VPC** where the Security Group will be created (can be managed by an AwsVpc resource)
 - **Knowledge of required ports and protocols** for your workload
 
@@ -29,15 +29,15 @@ When you deploy an AwsSecurityGroup resource, OpenMCF provisions:
 Create a file `sg.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsSecurityGroup
 metadata:
   name: my-sg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsSecurityGroup.my-sg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsSecurityGroup.my-sg
 spec:
   region: us-west-2
   vpcId: vpc-0a1b2c3d4e5f00001
@@ -47,7 +47,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f sg.yaml
+planton apply -f sg.yaml
 ```
 
 This creates a Security Group in the specified VPC with no ingress rules (all inbound traffic denied) and default AWS egress behavior.
@@ -92,15 +92,15 @@ Each `SecurityGroupRule` contains:
 A Security Group that allows inbound HTTP (80) and HTTPS (443) from anywhere, with unrestricted outbound:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsSecurityGroup
 metadata:
   name: web-sg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsSecurityGroup.web-sg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsSecurityGroup.web-sg
 spec:
   region: us-west-2
   vpcId: vpc-0a1b2c3d4e5f00001
@@ -132,15 +132,15 @@ spec:
 A Security Group that restricts SSH access to a specific CIDR range:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsSecurityGroup
 metadata:
   name: bastion-sg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsSecurityGroup.bastion-sg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsSecurityGroup.bastion-sg
 spec:
   region: us-west-2
   vpcId: vpc-0a1b2c3d4e5f00001
@@ -166,15 +166,15 @@ spec:
 A Security Group for internal services that allows traffic on a custom port from other instances in the same group:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsSecurityGroup
 metadata:
   name: internal-svc-sg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsSecurityGroup.internal-svc-sg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsSecurityGroup.internal-svc-sg
 spec:
   region: us-west-2
   vpcId: vpc-0a1b2c3d4e5f00001
@@ -204,15 +204,15 @@ spec:
 A Security Group for a database that only accepts traffic from a specific application Security Group:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsSecurityGroup
 metadata:
   name: db-sg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsSecurityGroup.db-sg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsSecurityGroup.db-sg
 spec:
   region: us-west-2
   vpcId: vpc-0a1b2c3d4e5f00001
@@ -235,18 +235,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed VPC instead of hardcoding the VPC ID:
+Reference an Planton-managed VPC instead of hardcoding the VPC ID:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsSecurityGroup
 metadata:
   name: ref-sg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsSecurityGroup.ref-sg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsSecurityGroup.ref-sg
 spec:
   region: us-west-2
   vpcId:

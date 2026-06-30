@@ -1,13 +1,13 @@
 ---
 title: "Architecture"
-description: "How the pieces of OpenMCF fit together: the deployment flow from manifest to cloud resources, the component anatomy, and the three-layer architecture"
+description: "How the pieces of Planton fit together: the deployment flow from manifest to cloud resources, the component anatomy, and the three-layer architecture"
 icon: "gear"
 order: 15
 ---
 
 # Architecture
 
-This page shows how the different parts of OpenMCF connect. Each diagram is a visual summary -- follow the links to the deep-dive page for any concept that needs more detail.
+This page shows how the different parts of Planton connect. Each diagram is a visual summary -- follow the links to the deep-dive page for any concept that needs more detail.
 
 ## The Deployment Flow
 
@@ -40,7 +40,7 @@ flowchart TD
 Every deployment component is a self-contained package at a fixed path. The Protocol Buffer definitions define the contract. The IaC modules implement it.
 
 ```text
-apis/org/openmcf/provider/{provider}/{component}/v1/
+apis/dev/planton/provider/{provider}/{component}/v1/
 |
 |-- api.proto                 <- Resource envelope
 |   apiVersion, kind,           (apiVersion + kind are const-validated)
@@ -77,7 +77,7 @@ apis/org/openmcf/provider/{provider}/{component}/v1/
 
 ## The Three Layers
 
-OpenMCF's architecture has three distinct layers, each with a clear responsibility:
+Planton's architecture has three distinct layers, each with a clear responsibility:
 
 ```mermaid
 flowchart TD
@@ -110,13 +110,13 @@ flowchart TD
 
 **The execution layer** turns manifests into cloud resources. The CLI orchestrates the process: loading manifests, running validation, resolving modules, and delegating to the correct IaC engine. The module system ensures the right code runs. The state backends ensure deployments are tracked.
 
-**The infrastructure layer** is the real world. Cloud provider APIs, actual resources, real costs. OpenMCF does not abstract this layer -- it provides consistent structure and workflow above it while exposing each provider's full native capability.
+**The infrastructure layer** is the real world. Cloud provider APIs, actual resources, real costs. Planton does not abstract this layer -- it provides consistent structure and workflow above it while exposing each provider's full native capability.
 
 **Deep dives**: [Cloud Resource Kinds](cloud-resource-kinds) | [Dual IaC Engines](dual-iac-engines) | [Module System](module-system) | [State Management](state-management)
 
 ## Auto-Generated SDKs
 
-The Protocol Buffer definitions in the API layer are published to the [Buf Schema Registry](https://buf.build/openmcf/openmcf), which auto-generates client SDKs in multiple languages:
+The Protocol Buffer definitions in the API layer are published to the [Buf Schema Registry](https://buf.build/planton/planton), which auto-generates client SDKs in multiple languages:
 
 | Language | Generation Plugin | Use Case |
 |----------|------------------|----------|
@@ -124,7 +124,7 @@ The Protocol Buffer definitions in the API layer are published to the [Buf Schem
 | **TypeScript** | `bufbuild/es` + `connectrpc/es` | Web applications, Node.js tooling |
 | **Java** | `protocolbuffers/java` + `grpc/java` | JVM-based tooling and integrations |
 
-These SDKs enable teams to build custom tools that work with OpenMCF manifests programmatically -- creating manifests, validating them, and interacting with the API surface in type-safe code.
+These SDKs enable teams to build custom tools that work with Planton manifests programmatically -- creating manifests, validating them, and interacting with the API surface in type-safe code.
 
 ## What's Next
 

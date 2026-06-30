@@ -12,7 +12,7 @@ Deploys an Azure Kubernetes Service cluster with configurable node pools, Azure 
 
 ## What Gets Created
 
-When you deploy an AzureAksCluster resource, OpenMCF provisions:
+When you deploy an AzureAksCluster resource, Planton provisions:
 
 - **AKS Managed Cluster** — a `containerservice.ManagedCluster` resource with system-assigned managed identity, the specified Kubernetes version, and a DNS prefix derived from `metadata.name`
 - **System Node Pool** — a `System` mode agent pool with autoscaling enabled, placed in the specified availability zones and VNet subnet
@@ -24,7 +24,7 @@ When you deploy an AzureAksCluster resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Resource Group** where the cluster will be created (can reference an AzureResourceGroup resource)
 - **A VNet subnet** for cluster nodes (can reference an AzureVpc resource)
 - **A Log Analytics Workspace resource ID** if enabling Container Insights
@@ -34,15 +34,15 @@ When you deploy an AzureAksCluster resource, OpenMCF provisions:
 Create a file `aks-cluster.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureAksCluster
 metadata:
   name: my-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureAksCluster.my-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureAksCluster.my-cluster
 spec:
   region: eastus
   resourceGroup: my-rg
@@ -60,7 +60,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f aks-cluster.yaml
+planton apply -f aks-cluster.yaml
 ```
 
 This creates a public AKS cluster with a single system node pool running Kubernetes 1.30 on Azure CNI Overlay networking with Standard SKU control plane.
@@ -116,15 +116,15 @@ This creates a public AKS cluster with a single system node pool running Kuberne
 A minimal cluster for development with free control plane SKU and a single availability zone:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureAksCluster
 metadata:
   name: dev-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureAksCluster.dev-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureAksCluster.dev-cluster
 spec:
   region: eastus
   resourceGroup: dev-rg
@@ -145,15 +145,15 @@ spec:
 A production cluster with Standard SKU, multi-AZ system pool, a general-purpose user pool, and Azure AD RBAC:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureAksCluster
 metadata:
   name: prod-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureAksCluster.prod-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureAksCluster.prod-cluster
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -185,15 +185,15 @@ spec:
 A private cluster with no public API endpoint, full add-on suite, a general user pool, and a cost-optimized Spot pool for batch workloads:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureAksCluster
 metadata:
   name: secure-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureAksCluster.secure-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureAksCluster.secure-cluster
 spec:
   region: westeurope
   resourceGroup: secure-rg
@@ -243,18 +243,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding IDs:
+Reference other Planton-managed resources instead of hardcoding IDs:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureAksCluster
 metadata:
   name: ref-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureAksCluster.ref-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureAksCluster.ref-cluster
 spec:
   region: eastus
   resourceGroup:

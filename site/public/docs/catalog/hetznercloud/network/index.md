@@ -18,7 +18,7 @@ Creates a private network in Hetzner Cloud with subnets and optional static rout
 
 ## Prerequisites
 
-- **Hetzner Cloud API token** configured via environment variable (`HCLOUD_TOKEN`) or OpenMCF provider config
+- **Hetzner Cloud API token** configured via environment variable (`HCLOUD_TOKEN`) or Planton provider config
 - **A Hetzner Robot vSwitch** if using `vswitch`-type subnets (requires the vSwitch numeric ID)
 
 ## Quick Start
@@ -26,15 +26,15 @@ Creates a private network in Hetzner Cloud with subnets and optional static rout
 Create a file `network.yaml`:
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudNetwork
 metadata:
   name: my-network
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.HetznerCloudNetwork.my-network
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.HetznerCloudNetwork.my-network
 spec:
   ipRange: "10.0.0.0/16"
   subnets:
@@ -46,7 +46,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f network.yaml
+planton apply -f network.yaml
 ```
 
 This creates a private network with a single cloud subnet in the `eu-central` zone. Servers can be attached to this network to communicate over private IPs.
@@ -87,15 +87,15 @@ This creates a private network with a single cloud subnet in the `eu-central` zo
 A single cloud subnet in `eu-central` — the simplest working network configuration.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudNetwork
 metadata:
   name: simple-net
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.HetznerCloudNetwork.simple-net
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.HetznerCloudNetwork.simple-net
 spec:
   ipRange: "10.0.0.0/16"
   subnets:
@@ -109,17 +109,17 @@ spec:
 Two subnets in different zones for geographic redundancy, with delete protection enabled.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudNetwork
 metadata:
   name: multi-zone
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: infrastructure
-    pulumi.openmcf.org/stack.name: production.HetznerCloudNetwork.multi-zone
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: infrastructure
+    pulumi.planton.dev/stack.name: production.HetznerCloudNetwork.multi-zone
 spec:
   ipRange: "10.0.0.0/16"
   subnets:
@@ -137,17 +137,17 @@ spec:
 A network with custom routes directing traffic for a remote network through a VPN gateway server.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudNetwork
 metadata:
   name: routed-net
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: infrastructure
-    pulumi.openmcf.org/stack.name: production.HetznerCloudNetwork.routed-net
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: infrastructure
+    pulumi.planton.dev/stack.name: production.HetznerCloudNetwork.routed-net
 spec:
   ipRange: "10.0.0.0/16"
   subnets:
@@ -168,17 +168,17 @@ spec:
 A network referenced by a HetznerCloudServer using `valueFrom`. The server receives the network's numeric ID from the network's stack outputs, establishing a dependency edge in the deployment DAG.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudNetwork
 metadata:
   name: app-network
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: infrastructure
-    pulumi.openmcf.org/stack.name: production.HetznerCloudNetwork.app-network
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: infrastructure
+    pulumi.planton.dev/stack.name: production.HetznerCloudNetwork.app-network
 spec:
   ipRange: "10.0.0.0/16"
   subnets:
@@ -191,17 +191,17 @@ spec:
 The server references this network:
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudServer
 metadata:
   name: app-01
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: infrastructure
-    pulumi.openmcf.org/stack.name: production.HetznerCloudServer.app-01
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: infrastructure
+    pulumi.planton.dev/stack.name: production.HetznerCloudServer.app-01
 spec:
   serverType: cx22
   image: ubuntu-24.04

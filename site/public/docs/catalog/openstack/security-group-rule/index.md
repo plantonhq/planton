@@ -12,30 +12,30 @@ Deploys a standalone OpenStack Neutron security group rule with configurable dir
 
 ## What Gets Created
 
-When you deploy an OpenStackSecurityGroupRule resource, OpenMCF provisions:
+When you deploy an OpenStackSecurityGroupRule resource, Planton provisions:
 
 - **Security Group Rule** — an `openstack_networking_secgroup_rule_v2` resource attached to the specified security group, with the configured direction, ethertype, protocol, port range, and remote source. All fields are ForceNew: any change to the rule recreates it. The rule appears as its own node in InfraChart DAG visualizations, making cross-security-group dependencies visually explicit.
 
 ## Prerequisites
 
-- **OpenStack credentials** configured via environment variables or OpenMCF provider config
-- **An existing security group** (UUID or OpenMCF-managed OpenStackSecurityGroup) to attach the rule to
-- **A remote security group** (UUID or OpenMCF-managed OpenStackSecurityGroup) if using `remoteGroupId` instead of `remoteIpPrefix`
+- **OpenStack credentials** configured via environment variables or Planton provider config
+- **An existing security group** (UUID or Planton-managed OpenStackSecurityGroup) to attach the rule to
+- **A remote security group** (UUID or Planton-managed OpenStackSecurityGroup) if using `remoteGroupId` instead of `remoteIpPrefix`
 
 ## Quick Start
 
 Create a file `security-group-rule.yaml`:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackSecurityGroupRule
 metadata:
   name: allow-ssh-ingress
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OpenStackSecurityGroupRule.allow-ssh-ingress
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OpenStackSecurityGroupRule.allow-ssh-ingress
 spec:
   securityGroupId: 4a0e3c5b-2f1d-4e6a-8b9c-0d1e2f3a4b5c
   direction: ingress
@@ -49,7 +49,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f security-group-rule.yaml
+planton apply -f security-group-rule.yaml
 ```
 
 This creates an ingress rule allowing SSH (TCP port 22) from any IPv4 address on the specified security group.
@@ -83,15 +83,15 @@ This creates an ingress rule allowing SSH (TCP port 22) from any IPv4 address on
 A single ingress rule permitting SSH access from all IPv4 addresses:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackSecurityGroupRule
 metadata:
   name: allow-ssh
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OpenStackSecurityGroupRule.allow-ssh
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OpenStackSecurityGroupRule.allow-ssh
 spec:
   securityGroupId: 4a0e3c5b-2f1d-4e6a-8b9c-0d1e2f3a4b5c
   direction: ingress
@@ -108,15 +108,15 @@ spec:
 An ingress rule opening the standard web ports from a private subnet, demonstrating a port range:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackSecurityGroupRule
 metadata:
   name: allow-https-from-private
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.OpenStackSecurityGroupRule.allow-https-from-private
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.OpenStackSecurityGroupRule.allow-https-from-private
 spec:
   securityGroupId: 4a0e3c5b-2f1d-4e6a-8b9c-0d1e2f3a4b5c
   direction: ingress
@@ -130,18 +130,18 @@ spec:
 
 ### Cross-Security-Group Rule with Foreign Key References
 
-A rule that allows all TCP traffic from instances in one security group to instances in another, using `valueFrom` references to OpenMCF-managed security groups. This is the primary use case for standalone rules over inline rules:
+A rule that allows all TCP traffic from instances in one security group to instances in another, using `valueFrom` references to Planton-managed security groups. This is the primary use case for standalone rules over inline rules:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackSecurityGroupRule
 metadata:
   name: app-to-db-tcp
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OpenStackSecurityGroupRule.app-to-db-tcp
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OpenStackSecurityGroupRule.app-to-db-tcp
 spec:
   securityGroupId:
     valueFrom:
@@ -166,15 +166,15 @@ spec:
 An egress rule allowing all outbound IPv4 traffic from a security group, with no protocol or port restrictions:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackSecurityGroupRule
 metadata:
   name: allow-all-egress
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OpenStackSecurityGroupRule.allow-all-egress
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OpenStackSecurityGroupRule.allow-all-egress
 spec:
   securityGroupId: 4a0e3c5b-2f1d-4e6a-8b9c-0d1e2f3a4b5c
   direction: egress

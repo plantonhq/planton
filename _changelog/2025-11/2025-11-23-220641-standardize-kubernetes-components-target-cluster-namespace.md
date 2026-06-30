@@ -10,7 +10,7 @@ Standardized all 37 Kubernetes component specifications by adding required `targ
 
 ## Problem Statement / Motivation
 
-The Kubernetes provider in OpenMCF had inconsistent field structures across components:
+The Kubernetes provider in Planton had inconsistent field structures across components:
 
 ### Pain Points
 
@@ -29,13 +29,13 @@ Added two required fields at the beginning of every Kubernetes component spec:
 ```protobuf
 message Kubernetes<ComponentName>Spec {
   // The Kubernetes cluster to install this component on.
-  org.openmcf.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+  dev.planton.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
 
   // Kubernetes namespace to install the operator.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
     (buf.validate.field).required = true,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
   ];
 
   // ... rest of component-specific fields
@@ -59,10 +59,10 @@ string namespace = 1;
 
 **To foreign key reference:**
 ```protobuf
-org.openmcf.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
   (buf.validate.field).required = true,
-  (org.openmcf.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
-  (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+  (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
 ];
 ```
 
@@ -84,12 +84,12 @@ This enables both literal values and references to `KubernetesNamespace` resourc
 
 ```diff
  message KubernetesKeycloakSpec {
-+  org.openmcf.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
++  dev.planton.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
 +
-+  org.openmcf.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
++  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
 +    (buf.validate.field).required = true,
-+    (org.openmcf.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
-+    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
++    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
++    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
 +  ];
 +
 -  string admin_username = 1;
@@ -145,8 +145,8 @@ func newLocals(stackInput *kubernetesaltinityoperatorv1.KubernetesAltinityOperat
 
 ```go
 import (
-    foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
-    "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes"
+    foreignkeyv1 "github.com/plantonhq/planton/apis/dev/planton/shared/foreignkey/v1"
+    "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes"
 )
 
 spec = &KubernetesKeycloakSpec{
@@ -381,7 +381,7 @@ This is a **breaking API change** requiring:
 Created two reusable prompts for coding agents:
 
 ### 1. Proto Update Prompt
-**File**: `apis/org/openmcf/provider/kubernetes/_cursor/add-fields.prompt.md`
+**File**: `apis/dev/planton/provider/kubernetes/_cursor/add-fields.prompt.md`
 
 Guides agents to:
 - Add required imports
@@ -390,7 +390,7 @@ Guides agents to:
 - Validate changes
 
 ### 2. Implementation Update Prompt  
-**File**: `apis/org/openmcf/provider/kubernetes/_cursor/update-all-other-aspects.md`
+**File**: `apis/dev/planton/provider/kubernetes/_cursor/update-all-other-aspects.md`
 
 Guides agents to:
 - Update Pulumi Go code with `.GetValue()` pattern
@@ -400,7 +400,7 @@ Guides agents to:
 - Run validation commands
 - Verify tests pass
 
-Combined with `@update-openmcf-component` rule for orchestration.
+Combined with `@update-planton-component` rule for orchestration.
 
 ## Validation
 
@@ -408,7 +408,7 @@ All 37 components were validated:
 
 ```bash
 # For each component
-cd apis/org/openmcf/provider/kubernetes/<component>/v1
+cd apis/dev/planton/provider/kubernetes/<component>/v1
 go test ./...
 go build ./...
 ```

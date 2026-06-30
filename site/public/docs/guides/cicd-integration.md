@@ -1,22 +1,22 @@
 ---
 title: "CI/CD Integration"
-description: "Patterns for running OpenMCF in CI/CD pipelines — GitHub Actions, GitLab CI, non-interactive flags, and credential injection"
+description: "Patterns for running Planton in CI/CD pipelines — GitHub Actions, GitLab CI, non-interactive flags, and credential injection"
 icon: "integration"
 order: 100
 ---
 
 # CI/CD Integration
 
-OpenMCF is designed to run unattended in CI/CD pipelines. This guide covers patterns for GitHub Actions, GitLab CI, and general automation, including credential injection, non-interactive execution, manifest validation, and Kustomize overlay selection.
+Planton is designed to run unattended in CI/CD pipelines. This guide covers patterns for GitHub Actions, GitLab CI, and general automation, including credential injection, non-interactive execution, manifest validation, and Kustomize overlay selection.
 
 ## Non-Interactive Flags
 
-By default, OpenMCF prompts for confirmation before making changes. In CI/CD, use `--yes` or `--auto-approve` to skip the prompt:
+By default, Planton prompts for confirmation before making changes. In CI/CD, use `--yes` or `--auto-approve` to skip the prompt:
 
 ```bash
 # Either flag works — they are equivalent
-openmcf pulumi up -f manifest.yaml --yes
-openmcf apply -f manifest.yaml --auto-approve
+planton pulumi up -f manifest.yaml --yes
+planton apply -f manifest.yaml --auto-approve
 ```
 
 Both flags are available on deployment commands (`apply`, `pulumi up`, `tofu apply`, `terraform apply`, `destroy`).
@@ -26,7 +26,7 @@ Both flags are available on deployment commands (`apply`, `pulumi up`, `tofu app
 Run manifest validation as an early step in your pipeline. Validation catches schema errors, type mismatches, and constraint violations in seconds — before any cloud API call:
 
 ```bash
-openmcf validate -f manifest.yaml
+planton validate -f manifest.yaml
 ```
 
 Exit code 0 means valid. Any non-zero exit code indicates validation failure, which should stop the pipeline.
@@ -48,15 +48,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install OpenMCF
+      - name: Install Planton
         run: |
-          curl -sSL https://get.openmcf.org | bash
+          curl -sSL https://get.planton.dev | bash
 
       - name: Validate manifest
-        run: openmcf validate -f ops/aws/database.yaml
+        run: planton validate -f ops/aws/database.yaml
 
       - name: Deploy
-        run: openmcf pulumi up -f ops/aws/database.yaml --yes
+        run: planton pulumi up -f ops/aws/database.yaml --yes
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -89,7 +89,7 @@ jobs:
 
       - name: Deploy
         run: |
-          openmcf pulumi up \
+          planton pulumi up \
             --kustomize-dir services/api/kustomize \
             --overlay ${{ steps.env.outputs.overlay }} \
             --yes
@@ -114,7 +114,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Deploy
-        run: openmcf pulumi up -f ops/gcp/database.yaml --yes
+        run: planton pulumi up -f ops/gcp/database.yaml --yes
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/gcp-key.json
 
@@ -131,7 +131,7 @@ Alternatively, use the `-p` flag with a base64-encoded key stored as a secret:
           echo "service_account_key_base64: ${{ secrets.GCP_SA_KEY_BASE64 }}" > /tmp/gcp-cred.yaml
 
       - name: Deploy
-        run: openmcf pulumi up -f ops/gcp/database.yaml -p /tmp/gcp-cred.yaml --yes
+        run: planton pulumi up -f ops/gcp/database.yaml -p /tmp/gcp-cred.yaml --yes
 ```
 
 ### Azure with Service Principal
@@ -150,7 +150,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Deploy
-        run: openmcf pulumi up -f ops/azure/cluster.yaml --yes
+        run: planton pulumi up -f ops/azure/cluster.yaml --yes
         env:
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
@@ -165,7 +165,7 @@ Use `--set` to inject build-time values like image tags:
 ```yaml
       - name: Deploy with commit SHA
         run: |
-          openmcf pulumi up \
+          planton pulumi up \
             -f ops/k8s/api.yaml \
             --set spec.container.image.tag=${{ github.sha }} \
             --yes
@@ -183,12 +183,12 @@ stages:
 validate:
   stage: validate
   script:
-    - openmcf validate -f ops/aws/database.yaml
+    - planton validate -f ops/aws/database.yaml
 
 deploy:
   stage: deploy
   script:
-    - openmcf pulumi up -f ops/aws/database.yaml --yes
+    - planton pulumi up -f ops/aws/database.yaml --yes
   variables:
     AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
     AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
@@ -211,7 +211,7 @@ deploy:
       else
         OVERLAY="dev"
       fi
-    - openmcf pulumi up --kustomize-dir services/api/kustomize --overlay $OVERLAY --yes
+    - planton pulumi up --kustomize-dir services/api/kustomize --overlay $OVERLAY --yes
   only:
     - main
     - staging
@@ -226,7 +226,7 @@ Use GitLab's environment feature for deployment approvals:
 deploy-prod:
   stage: deploy
   script:
-    - openmcf pulumi up -f ops/database.yaml --yes
+    - planton pulumi up -f ops/database.yaml --yes
   environment:
     name: production
   when: manual
@@ -256,7 +256,7 @@ jobs:
     environment: production
     steps:
       - name: Deploy
-        run: openmcf pulumi up -f ops/database.yaml --yes
+        run: planton pulumi up -f ops/database.yaml --yes
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -266,14 +266,14 @@ GitHub Actions environments can require reviewers for production deployments, pr
 
 ## Pipeline Best Practices
 
-**Validate before deploying.** Run `openmcf validate` as an early pipeline step. Failed validation should block deployment.
+**Validate before deploying.** Run `planton validate` as an early pipeline step. Failed validation should block deployment.
 
-**Use preview/plan before apply.** In production pipelines, run `openmcf pulumi preview` or `openmcf plan` first, then apply in a separate step or with manual approval:
+**Use preview/plan before apply.** In production pipelines, run `planton pulumi preview` or `planton plan` first, then apply in a separate step or with manual approval:
 
 ```bash
-openmcf pulumi preview -f manifest.yaml
+planton pulumi preview -f manifest.yaml
 # Review output
-openmcf pulumi up -f manifest.yaml --yes
+planton pulumi up -f manifest.yaml --yes
 ```
 
 **Pin manifest versions.** If manifests are in a separate repository, reference a specific commit or tag rather than a branch to ensure reproducible deployments.

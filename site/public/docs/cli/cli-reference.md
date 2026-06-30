@@ -1,20 +1,20 @@
 ---
 title: "CLI Reference"
-description: "Complete command tree, flag reference, and exit codes for the openmcf CLI"
+description: "Complete command tree, flag reference, and exit codes for the planton CLI"
 icon: "code"
 order: 20
 ---
 
 # CLI Reference
 
-This page is the single authoritative reference for every command, flag, and option in the `openmcf` CLI. Other CLI documentation pages link here for flag details.
+This page is the single authoritative reference for every command, flag, and option in the `planton` CLI. Other CLI documentation pages link here for flag details.
 
 ## Command Tree
 
 The complete command tree, verified against source. Commands are grouped by purpose.
 
 ```text
-openmcf
+planton
 |
 |-- Unified Commands (provisioner auto-detected from manifest)
 |   |-- apply                 Deploy infrastructure
@@ -83,8 +83,8 @@ These flags are inherited by every subcommand.
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `--local-module` | `false` | Use local openmcf git repository for IaC modules instead of downloading |
-| `--openmcf-git-repo` | `~/scm/github.com/plantonhq/openmcf` | Path to local openmcf git repository (used with `--local-module`) |
+| `--local-module` | `false` | Use local planton git repository for IaC modules instead of downloading |
+| `--planton-git-repo` | `~/scm/github.com/plantonhq/planton` | Path to local planton git repository (used with `--local-module`) |
 | `-v`, `--version` | | Show version information (root command only) |
 
 ## Flag Reference
@@ -121,7 +121,7 @@ These flags control how the IaC module is located and executed.
 | `--no-cleanup` | `false` | Do not clean up the workspace copy after execution |
 | `--kube-context` | | kubectl context for Kubernetes deployments (overrides manifest label) |
 | `--set` | | Override manifest values using `key=value` pairs (repeatable) |
-| `--local-module` | `false` | Use the local openmcf repository to derive the module directory |
+| `--local-module` | `false` | Use the local planton repository to derive the module directory |
 
 **Used by**: All unified commands (`apply`, `plan`, `init`, `destroy`, `refresh`).
 
@@ -178,7 +178,7 @@ These flags control how the IaC module is located and executed.
 
 ### Engine-Specific Persistent Flags (Direct Commands)
 
-When using `openmcf tofu` or `openmcf terraform` directly (not unified commands), each engine has its own set of persistent flags:
+When using `planton tofu` or `planton terraform` directly (not unified commands), each engine has its own set of persistent flags:
 
 | Flag | Short | Description |
 |------|-------|-------------|
@@ -203,29 +203,29 @@ These are registered on the `tofu` and `terraform` parent commands and inherited
 
 ## File System Paths
 
-The CLI uses the following directories under `~/.openmcf/`:
+The CLI uses the following directories under `~/.planton/`:
 
 | Path | Purpose |
 |------|---------|
-| `~/.openmcf/config.yaml` | CLI configuration file |
-| `~/.openmcf/staging/openmcf/` | Cloned openmcf repository for module resolution |
-| `~/.openmcf/staging/.version` | Current module version in staging |
-| `~/.openmcf/pulumi/binaries/{version}/` | Cached pre-built Pulumi module binaries |
-| `~/.openmcf/pulumi/staging-workspaces/{stack}/` | Pulumi workspace copies per stack |
-| `~/.openmcf/terraform/modules/{version}/{component}/` | Cached Terraform/OpenTofu module archives |
-| `~/.openmcf/downloads/` | Downloaded URL manifests |
+| `~/.planton/config.yaml` | CLI configuration file |
+| `~/.planton/staging/planton/` | Cloned planton repository for module resolution |
+| `~/.planton/staging/.version` | Current module version in staging |
+| `~/.planton/pulumi/binaries/{version}/` | Cached pre-built Pulumi module binaries |
+| `~/.planton/pulumi/staging-workspaces/{stack}/` | Pulumi workspace copies per stack |
+| `~/.planton/terraform/modules/{version}/{component}/` | Cached Terraform/OpenTofu module archives |
+| `~/.planton/downloads/` | Downloaded URL manifests |
 
 ## Getting Help
 
 ```bash
 # General help
-openmcf --help
+planton --help
 
 # Command-specific help
-openmcf apply --help
-openmcf pulumi --help
-openmcf tofu init --help
-openmcf terraform apply --help
+planton apply --help
+planton pulumi --help
+planton tofu init --help
+planton terraform apply --help
 ```
 
 Every command and subcommand supports `--help` to display its usage, flags, and description.

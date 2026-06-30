@@ -7,7 +7,7 @@ exports_files([".bazelrc"])
 # Disable Gazelle proto generation globally to avoid conflicts with buf outputs.
 # You can still enable per-package if needed later.
 # gazelle:proto disable
-# gazelle:prefix github.com/plantonhq/openmcf
+# gazelle:prefix github.com/plantonhq/planton
 # gazelle:exclude apis/generated
 
 gazelle(
@@ -19,19 +19,19 @@ gazelle(
 )
 
 go_library(
-    name = "openmcf_lib",
+    name = "planton_lib",
     srcs = ["main.go"],
-    importpath = "github.com/plantonhq/openmcf",
+    importpath = "github.com/plantonhq/planton",
     visibility = ["//visibility:private"],
     deps = [
-        "//cmd/openmcf",
+        "//cmd/planton",
         "//internal/cli/panic",
     ],
 )
 
 go_binary(
-    name = "openmcf",
-    embed = [":openmcf_lib"],
+    name = "planton",
+    embed = [":planton_lib"],
     visibility = ["//visibility:public"],
 )
 
@@ -39,7 +39,7 @@ go_binary(
 # Explicit list ensures version compatibility and transparency
 # Includes all 29 standard analyzers for complete go vet parity
 nogo(
-    name = "openmcf_nogo",
+    name = "planton_nogo",
     visibility = ["//visibility:public"],
     deps = [
         "@org_golang_x_tools//go/analysis/passes/appends:go_default_library",

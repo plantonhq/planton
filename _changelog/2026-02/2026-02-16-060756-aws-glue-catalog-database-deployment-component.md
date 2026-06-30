@@ -10,7 +10,7 @@ Added the AwsGlueCatalogDatabase deployment component — a metadata namespace f
 
 ## Problem Statement / Motivation
 
-Data engineers building analytics pipelines on AWS need a Data Catalog database to organize table definitions before they can run Athena queries, configure Glue Crawlers, or set up ETL jobs. Without an OpenMCF component for Glue Catalog Database, this foundational resource had to be created manually or outside the declarative infrastructure workflow.
+Data engineers building analytics pipelines on AWS need a Data Catalog database to organize table definitions before they can run Athena queries, configure Glue Crawlers, or set up ETL jobs. Without an Planton component for Glue Catalog Database, this foundational resource had to be created manually or outside the declarative infrastructure workflow.
 
 ### Pain Points
 
@@ -33,7 +33,7 @@ The design deliberately keeps the spec minimal because a Glue Database is a meta
 
 ### Proto API
 
-Four proto files following established OpenMCF patterns:
+Four proto files following established Planton patterns:
 - `spec.proto` — 2 optional fields, no nested messages, no CEL validations
 - `api.proto` — Standard KRM envelope (apiVersion, kind, metadata, spec, status)
 - `stack_input.proto` — Target resource + AWS provider config

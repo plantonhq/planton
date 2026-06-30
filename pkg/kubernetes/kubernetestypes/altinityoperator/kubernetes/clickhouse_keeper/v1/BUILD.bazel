@@ -9,7 +9,7 @@ go_library(
         "init.go",
         "pulumiTypes.go",
     ],
-    importpath = "github.com/plantonhq/openmcf/pkg/kubernetes/kubernetestypes/altinityoperator/kubernetes/clickhouse_keeper/v1",
+    importpath = "github.com/plantonhq/planton/pkg/kubernetes/kubernetestypes/altinityoperator/kubernetes/clickhouse_keeper/v1",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_blang_semver//:semver",

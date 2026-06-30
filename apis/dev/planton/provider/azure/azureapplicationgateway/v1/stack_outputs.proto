@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azureapplicationgateway.v1;
+
+// **AzureApplicationGatewayStackOutputs** captures the outputs of provisioning
+// an Azure Application Gateway.
+//
+// The primary outputs are `app_gateway_id` for resource identification and
+// `app_gateway_name` for display and cross-reference. In the
+// enterprise-network-foundation infra chart, the Application Gateway ID is
+// referenced by AzureDnsRecord to create DNS entries pointing to the gateway.
+//
+// Note: The public frontend IP address is not exported here because it is
+// the same as the AzurePublicIp output (the public IP is created separately
+// and referenced by the Application Gateway). DNS records should reference
+// the AzurePublicIp's `ip_address` output directly.
+message AzureApplicationGatewayStackOutputs {
+  // The Azure Resource Manager ID of the Application Gateway.
+  // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/applicationGateways/{name}
+  string app_gateway_id = 1;
+
+  // The name of the Application Gateway.
+  string app_gateway_name = 2;
+}

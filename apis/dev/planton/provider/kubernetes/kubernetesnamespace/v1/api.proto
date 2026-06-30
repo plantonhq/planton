@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesnamespace.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/kubernetesnamespace/v1/spec.proto";
+import "dev/planton/provider/kubernetes/kubernetesnamespace/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+/**
+ * **KubernetesNamespace** defines a Kubernetes namespace resource following the Kubernetes Resource Model (KRM).
+ * This resource represents a complete namespace deployment with resource quotas, network policies,
+ * and access controls configured according to the "Namespace-as-a-Service" pattern.
+ */
+message KubernetesNamespace {
+  // API version for this resource.
+  // Always set to "kubernetes.planton.dev/v1".
+  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.planton.dev/v1'];
+
+  // Resource kind identifier.
+  // Always set to "KubernetesNamespace".
+  string kind = 2 [(buf.validate.field).string.const = 'KubernetesNamespace'];
+
+  // Metadata for the Kubernetes namespace resource.
+  // Includes standard fields like name, organization, environment, etc.
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // Specification of the desired state for the Kubernetes namespace.
+  // Defines configuration for resource quotas, network policies, service mesh, and security standards.
+  KubernetesNamespaceSpec spec = 4 [(buf.validate.field).required = true];
+
+  // Status of the Kubernetes namespace resource.
+  // Contains outputs and lifecycle information populated after deployment.
+  KubernetesNamespaceStatus status = 5;
+}
+
+/**
+ * **KubernetesNamespaceStatus** captures the runtime status of a Kubernetes namespace deployment.
+ * This includes outputs generated after the namespace and its associated resources are created.
+ */
+message KubernetesNamespaceStatus {
+  // Outputs from the namespace deployment.
+  // Contains observable identifiers and configuration status.
+  KubernetesNamespaceStackOutputs outputs = 1;
+}

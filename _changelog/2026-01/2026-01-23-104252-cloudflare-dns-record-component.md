@@ -18,14 +18,14 @@ Cloudflare DNS zone management was already possible with `CloudflareDnsZone`, bu
 
 ### Pain Points
 
-- No declarative way to manage individual Cloudflare DNS records via OpenMCF
+- No declarative way to manage individual Cloudflare DNS records via Planton
 - Users had to fall back to manual dashboard operations or raw Terraform/Pulumi
 - Inconsistent patterns between DNS zone and record management
 - No validation for record-specific constraints (proxied types, MX priority requirements)
 
 ## Solution / What's New
 
-Created a complete deployment component following the OpenMCF 80/20 principle—exposing only the essential fields most users need while maintaining feature parity between Pulumi and Terraform implementations.
+Created a complete deployment component following the Planton 80/20 principle—exposing only the essential fields most users need while maintaining feature parity between Pulumi and Terraform implementations.
 
 ### Component Architecture
 
@@ -145,7 +145,7 @@ CloudflareDnsRecord = 1807 [(kind_meta) = {
 ## Files Created
 
 ```
-apis/org/openmcf/provider/cloudflare/cloudflarednsrecord/v1/
+apis/dev/planton/provider/cloudflare/cloudflarednsrecord/v1/
 ├── api.proto                    # KRM wiring
 ├── api.pb.go                    # Generated stub
 ├── spec.proto                   # Configuration schema
@@ -189,7 +189,7 @@ apis/org/openmcf/provider/cloudflare/cloudflarednsrecord/v1/
 - **Declarative DNS Management**: Define records in YAML, deploy consistently
 - **Built-in Validation**: Catch errors before deployment (wrong proxy types, missing MX priority)
 - **IaC Choice**: Use Pulumi or Terraform based on team preference
-- **Consistent API**: Same manifest format as all other OpenMCF components
+- **Consistent API**: Same manifest format as all other Planton components
 
 ### For Developers
 - **Complete Test Coverage**: 22 validation tests ensure schema correctness
@@ -217,7 +217,7 @@ SUCCESS! -- 22 Passed | 0 Failed | 0 Pending | 0 Skipped
 ## Usage Example
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareDnsRecord
 metadata:
   name: www-a-record

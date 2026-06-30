@@ -44,7 +44,7 @@ These gaps prevented Terraform/OpenTofu users from deploying the component and m
 
 #### Created `iac/tf/locals.tf`
 - Computes resource ID from metadata (id > name priority)
-- Generates OpenMCF standard labels (resource, org, env)
+- Generates Planton standard labels (resource, org, env)
 - Derives service names and endpoints
 - Calculates port-forward commands
 - Extracts and validates ingress configuration
@@ -184,7 +184,7 @@ The Terraform module now fully implements the Temporal Helm chart deployment wit
 
 ### Unit Tests (Go)
 ```bash
-cd apis/org/openmcf/provider/kubernetes/kubernetestemporal/v1/
+cd apis/dev/planton/provider/kubernetes/kubernetestemporal/v1/
 go test -v
 ```
 

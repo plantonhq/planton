@@ -3,7 +3,7 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "panic",
     srcs = ["panic.go"],
-    importpath = "github.com/plantonhq/openmcf/internal/cli/panic",
+    importpath = "github.com/plantonhq/planton/internal/cli/panic",
     visibility = ["//:__subpackages__"],
     deps = ["//internal/cli/version"],
 )

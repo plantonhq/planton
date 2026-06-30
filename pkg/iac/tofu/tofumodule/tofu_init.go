@@ -6,9 +6,9 @@ import (
 	"path/filepath"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/iac/terraform"
-	"github.com/plantonhq/openmcf/pkg/iac/tofu/generators"
-	"github.com/plantonhq/openmcf/pkg/iac/tofu/tfbackend"
+	"github.com/plantonhq/planton/apis/dev/planton/shared/iac/terraform"
+	"github.com/plantonhq/planton/pkg/iac/tofu/generators"
+	"github.com/plantonhq/planton/pkg/iac/tofu/tfbackend"
 	"google.golang.org/protobuf/proto"
 )
 

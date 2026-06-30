@@ -76,7 +76,7 @@ Release notes now include both compressed and uncompressed sizes, plus updated d
 Download and extract the binary:
 
 ```bash
-curl -LO https://github.com/plantonhq/openmcf/releases/download/pulumi-awsecsservice-20260107.0/pulumi-awsecsservice.gz
+curl -LO https://github.com/plantonhq/planton/releases/download/pulumi-awsecsservice-20260107.0/pulumi-awsecsservice.gz
 gunzip pulumi-awsecsservice.gz
 chmod +x pulumi-awsecsservice
 ./pulumi-awsecsservice

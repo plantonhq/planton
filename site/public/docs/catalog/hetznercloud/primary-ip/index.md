@@ -17,22 +17,22 @@ Allocates a persistent public IP address (IPv4 or IPv6 /64) in Hetzner Cloud tha
 
 ## Prerequisites
 
-- **Hetzner Cloud API token** configured via environment variable (`HCLOUD_TOKEN`) or OpenMCF provider config
+- **Hetzner Cloud API token** configured via environment variable (`HCLOUD_TOKEN`) or Planton provider config
 
 ## Quick Start
 
 Create a file `primary-ip.yaml`:
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudPrimaryIp
 metadata:
   name: my-ip
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.HetznerCloudPrimaryIp.my-ip
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.HetznerCloudPrimaryIp.my-ip
 spec:
   type: ipv4
   location: fsn1
@@ -41,7 +41,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f primary-ip.yaml
+planton apply -f primary-ip.yaml
 ```
 
 This allocates a single IPv4 address in Falkenstein. The address is assigned by Hetzner Cloud and returned in `status.outputs.ip_address`.
@@ -69,15 +69,15 @@ This allocates a single IPv4 address in Falkenstein. The address is assigned by 
 A single IPv4 address in Falkenstein — the simplest working configuration.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudPrimaryIp
 metadata:
   name: dev-ip
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.HetznerCloudPrimaryIp.dev-ip
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.HetznerCloudPrimaryIp.dev-ip
 spec:
   type: ipv4
   location: fsn1
@@ -88,17 +88,17 @@ spec:
 An IPv4 address with a reverse DNS pointer for email deliverability. The `dnsPtr` hostname must have a matching forward DNS A record.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudPrimaryIp
 metadata:
   name: mail-ip
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: infrastructure
-    pulumi.openmcf.org/stack.name: production.HetznerCloudPrimaryIp.mail-ip
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: infrastructure
+    pulumi.planton.dev/stack.name: production.HetznerCloudPrimaryIp.mail-ip
 spec:
   type: ipv4
   location: fsn1
@@ -111,17 +111,17 @@ spec:
 An IPv6 /64 block in Helsinki with delete protection enabled.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudPrimaryIp
 metadata:
   name: web-ipv6
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: infrastructure
-    pulumi.openmcf.org/stack.name: production.HetznerCloudPrimaryIp.web-ipv6
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: infrastructure
+    pulumi.planton.dev/stack.name: production.HetznerCloudPrimaryIp.web-ipv6
 spec:
   type: ipv6
   location: hel1
@@ -133,17 +133,17 @@ spec:
 A Primary IP referenced by a HetznerCloudServer using `valueFrom`. The server receives the IP's numeric ID from the Primary IP's stack outputs, establishing a dependency edge in the deployment DAG.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudPrimaryIp
 metadata:
   name: app-ip
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: infrastructure
-    pulumi.openmcf.org/stack.name: production.HetznerCloudPrimaryIp.app-ip
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: infrastructure
+    pulumi.planton.dev/stack.name: production.HetznerCloudPrimaryIp.app-ip
 spec:
   type: ipv4
   location: fsn1
@@ -154,17 +154,17 @@ spec:
 The server references this IP:
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudServer
 metadata:
   name: app-01
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: infrastructure
-    pulumi.openmcf.org/stack.name: production.HetznerCloudServer.app-01
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: infrastructure
+    pulumi.planton.dev/stack.name: production.HetznerCloudServer.app-01
 spec:
   serverType: cx22
   image: ubuntu-24.04

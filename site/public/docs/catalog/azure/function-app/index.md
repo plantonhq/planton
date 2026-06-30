@@ -12,7 +12,7 @@ Deploys an Azure Linux Function App -- a serverless compute platform for event-d
 
 ## What Gets Created
 
-When you deploy an AzureFunctionApp resource, OpenMCF provisions:
+When you deploy an AzureFunctionApp resource, Planton provisions:
 
 - **Linux Function App** -- an `appservice.LinuxFunctionApp` resource in the specified region and resource group, configured with the chosen runtime stack, storage binding, Application Insights connection, and operational settings
 - **Managed Identity** -- created only when `identity` is configured, provides credential-free authentication to Azure services (Key Vault, Storage, ACR)
@@ -21,7 +21,7 @@ When you deploy an AzureFunctionApp resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Resource Group** where the function app will be created (can reference an AzureResourceGroup resource)
 - **An Azure Service Plan** providing compute resources -- Consumption (`Y1`) for pay-per-execution, Elastic Premium (`EP1`-`EP3`) for pre-warmed instances, or Dedicated (`B1`-`P3v3`) for reserved capacity
 - **An Azure Storage Account** for Function App runtime state (trigger management, logs, coordination)
@@ -32,15 +32,15 @@ When you deploy an AzureFunctionApp resource, OpenMCF provisions:
 Create a file `functionapp.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureFunctionApp
 metadata:
   name: my-func
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureFunctionApp.my-func
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureFunctionApp.my-func
 spec:
   region: eastus
   resourceGroup: my-rg
@@ -56,7 +56,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f functionapp.yaml
+planton apply -f functionapp.yaml
 ```
 
 This creates a Python 3.11 Function App on the specified Service Plan with HTTPS-only access, TLS 1.2, and Functions runtime v4.
@@ -104,15 +104,15 @@ This creates a Python 3.11 Function App on the specified Service Plan with HTTPS
 A Python 3.11 Function App on a Consumption plan with Application Insights:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureFunctionApp
 metadata:
   name: python-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureFunctionApp.python-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureFunctionApp.python-api
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -136,15 +136,15 @@ spec:
 A containerized Function App on an Elastic Premium plan with VNet integration:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureFunctionApp
 metadata:
   name: docker-func
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureFunctionApp.docker-func
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureFunctionApp.docker-func
 spec:
   region: westeurope
   resourceGroup: prod-rg
@@ -169,18 +169,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference OpenMCF-managed resources for the service plan, storage, and monitoring:
+Reference Planton-managed resources for the service plan, storage, and monitoring:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureFunctionApp
 metadata:
   name: ref-func
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureFunctionApp.ref-func
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureFunctionApp.ref-func
 spec:
   region: eastus
   resourceGroup:

@@ -8,11 +8,11 @@ componentName: "awscertmanagercert"
 
 # AWS Certificate
 
-Deploys a public SSL/TLS certificate through AWS Certificate Manager (ACM) with automatic DNS validation via Route53. OpenMCF creates the certificate, provisions the required CNAME validation records in the specified hosted zone, and waits for ACM to confirm domain ownership before marking the deployment complete.
+Deploys a public SSL/TLS certificate through AWS Certificate Manager (ACM) with automatic DNS validation via Route53. Planton creates the certificate, provisions the required CNAME validation records in the specified hosted zone, and waits for ACM to confirm domain ownership before marking the deployment complete.
 
 ## What Gets Created
 
-When you deploy an AwsCertManagerCert resource, OpenMCF provisions:
+When you deploy an AwsCertManagerCert resource, Planton provisions:
 
 - **ACM Certificate** — an `acm.Certificate` resource requesting a public certificate for the primary domain and any alternate domain names, validated via DNS
 - **Route53 CNAME Records** — one `route53.Record` per unique domain validation option, created in the specified hosted zone with a TTL of 300 seconds, used by ACM to verify domain ownership
@@ -20,7 +20,7 @@ When you deploy an AwsCertManagerCert resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **A Route53 public hosted zone** that is authoritative for the domain names on the certificate
 - **Domain ownership** — the hosted zone must be able to serve the CNAME records that ACM requires for validation
 
@@ -29,15 +29,15 @@ When you deploy an AwsCertManagerCert resource, OpenMCF provisions:
 Create a file `cert.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCertManagerCert
 metadata:
   name: my-cert
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsCertManagerCert.my-cert
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsCertManagerCert.my-cert
 spec:
   region: us-east-1
   primaryDomainName: example.com
@@ -47,7 +47,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f cert.yaml
+planton apply -f cert.yaml
 ```
 
 This creates an ACM certificate for `example.com`, adds the DNS validation CNAME record to the specified Route53 zone, and waits for validation to complete.
@@ -76,15 +76,15 @@ This creates an ACM certificate for `example.com`, adds the DNS validation CNAME
 A certificate for a single apex domain:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCertManagerCert
 metadata:
   name: apex-cert
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsCertManagerCert.apex-cert
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsCertManagerCert.apex-cert
 spec:
   region: us-east-1
   primaryDomainName: example.com
@@ -96,15 +96,15 @@ spec:
 A wildcard certificate covering all subdomains of a domain:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCertManagerCert
 metadata:
   name: wildcard-cert
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsCertManagerCert.wildcard-cert
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsCertManagerCert.wildcard-cert
 spec:
   region: us-east-1
   primaryDomainName: "*.example.com"
@@ -116,15 +116,15 @@ spec:
 A certificate covering the apex domain and multiple specific subdomains:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCertManagerCert
 metadata:
   name: multi-domain-cert
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsCertManagerCert.multi-domain-cert
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsCertManagerCert.multi-domain-cert
 spec:
   region: us-east-1
   primaryDomainName: example.com
@@ -137,18 +137,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed Route53 zone instead of hardcoding the zone ID:
+Reference an Planton-managed Route53 zone instead of hardcoding the zone ID:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCertManagerCert
 metadata:
   name: ref-cert
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsCertManagerCert.ref-cert
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsCertManagerCert.ref-cert
 spec:
   region: us-east-1
   primaryDomainName: "*.example.com"

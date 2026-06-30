@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.civo.civodatabase.v1;
+
+import "dev/planton/provider/civo/civodatabase/v1/api.proto";
+import "dev/planton/provider/civo/provider.proto";
+
+//civo-database stack-input
+message CivoDatabaseStackInput {
+  //target cloud-resource
+  CivoDatabase target = 1;
+  //provider-config
+  dev.planton.provider.civo.CivoProviderConfig provider_config = 2;
+}

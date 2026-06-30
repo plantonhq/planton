@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added the AwsMwaaEnvironment resource kind (R24) to OpenMCF, enabling declarative deployment of Amazon Managed Workflows for Apache Airflow environments. The component includes managed security group creation, 5-module CloudWatch logging, S3 artifact management (DAGs, plugins, requirements, startup scripts), auto-scaling workers and webservers, KMS encryption, and endpoint management -- delivering the twenty-eighth new AWS resource kind in the expansion project.
+Added the AwsMwaaEnvironment resource kind (R24) to Planton, enabling declarative deployment of Amazon Managed Workflows for Apache Airflow environments. The component includes managed security group creation, 5-module CloudWatch logging, S3 artifact management (DAGs, plugins, requirements, startup scripts), auto-scaling workers and webservers, KMS encryption, and endpoint management -- delivering the twenty-eighth new AWS resource kind in the expansion project.
 
 ## Problem Statement / Motivation
 
@@ -15,7 +15,7 @@ Data engineering teams need a declarative, version-controlled way to provision A
 ### Pain Points
 
 - MWAA security group configuration is a common stumbling block (requires self-referencing inbound rules for VPC endpoint intercommunication)
-- No declarative abstraction existed for MWAA in OpenMCF, leaving a gap in the data pipeline orchestration space
+- No declarative abstraction existed for MWAA in Planton, leaving a gap in the data pipeline orchestration space
 - Production MWAA deployments require coordinating 5+ resources (environment, security groups, IAM roles, S3 buckets, CloudWatch log groups) across multiple services
 
 ## Solution / What's New
@@ -87,7 +87,7 @@ flowchart TB
 
 ## Impact
 
-- **Users**: Can now deploy MWAA environments through OpenMCF CLI with 41 validated spec fields
+- **Users**: Can now deploy MWAA environments through Planton CLI with 41 validated spec fields
 - **Infra Charts**: Enables new data pipeline infra charts combining MWAA with S3, Glue, Athena, and Redshift components
 - **AWS Coverage**: Brings AWS to 28 new resource kinds (of ~32 target), completing Phase 2 item R24
 

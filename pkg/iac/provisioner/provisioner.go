@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/plantonhq/openmcf/pkg/iac/provisionerlabels"
-	"github.com/plantonhq/openmcf/pkg/reflection/metadatareflect"
+	"github.com/plantonhq/planton/pkg/iac/provisionerlabels"
+	"github.com/plantonhq/planton/pkg/reflection/metadatareflect"
 	"google.golang.org/protobuf/proto"
 )
 

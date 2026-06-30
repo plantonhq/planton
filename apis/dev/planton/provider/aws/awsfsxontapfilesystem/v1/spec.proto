@@ -1,0 +1,346 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsfsxontapfilesystem.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// AwsFsxOntapFileSystemSpec defines the desired configuration for an Amazon FSx
+// for NetApp ONTAP file system — an enterprise-grade, fully managed shared
+// storage built on NetApp's ONTAP file system. It provides multi-protocol access
+// (NFS, SMB, iSCSI) with features like instant snapshots, cloning, replication,
+// data tiering, compression, and deduplication.
+//
+// FSx for ONTAP supports scale-out deployments with up to 12 HA pairs for
+// petabyte-scale single-AZ configurations, and multi-AZ deployments with
+// automatic failover for high availability. It is the most feature-rich FSx
+// type, suitable for enterprise workloads, VMware Cloud on AWS, database
+// storage, and hybrid cloud scenarios via NetApp SnapMirror.
+//
+// Key design notes:
+// - This component manages the ONTAP **file system** only. Storage Virtual
+//   Machines (SVMs) and volumes are independent lifecycle resources managed
+//   by AwsFsxOntapStorageVirtualMachine and AwsFsxOntapVolume respectively.
+// - `deployment_type`, `subnet_ids`, `preferred_subnet_id`, `security_group_ids`,
+//   `kms_key_id`, `storage_type`, and `endpoint_ip_address_range` are ForceNew —
+//   changing them requires replacing the file system.
+// - SINGLE_AZ_2 is the recommended deployment type for new workloads (latest
+//   generation with scale-out HA pair support). MULTI_AZ_2 is the latest
+//   multi-AZ type for automatic failover.
+// - HA pairs enable horizontal scale-out: total throughput = throughput per HA
+//   pair * number of HA pairs. Only single-AZ deployments support multiple HA
+//   pairs (1-12). Multi-AZ deployments are fixed at 1 HA pair.
+// - The `fsx_admin_password` provides access to the ONTAP CLI (SSH) and REST API
+//   for advanced administration (e.g., LIF management, SnapMirror configuration).
+// - Endpoints are computed outputs: management (ONTAP CLI/API) and intercluster
+//   (SnapMirror replication between file systems).
+// - Credentials, region, and deployment workflow live outside this spec in stack inputs.
+message AwsFsxOntapFileSystemSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  // ---------------------------------------------------------------------------
+  // File System Core
+  // ---------------------------------------------------------------------------
+
+  // Deployment type controlling availability, performance, and scale-out
+  // characteristics. ForceNew — cannot be changed after creation.
+  //
+  // - "SINGLE_AZ_1": first-generation single-AZ. Supports multiple HA pairs
+  //   (1-12) but increasing HA pairs requires replacement.
+  // - "SINGLE_AZ_2": latest single-AZ with scale-out HA pairs (1-12). HA pairs
+  //   can be increased without replacement. Recommended for most workloads.
+  // - "MULTI_AZ_1": first-generation multi-AZ with automatic failover across
+  //   two AZs. Fixed at 1 HA pair. Requires two subnets and preferred_subnet_id.
+  // - "MULTI_AZ_2": latest multi-AZ with automatic failover. Fixed at 1 HA pair.
+  //   Recommended for high-availability workloads.
+  //
+  // Default: SINGLE_AZ_2
+  optional string deployment_type = 2 [(dev.planton.shared.options.default) = "SINGLE_AZ_2"];
+
+  // Storage capacity in GiB. Required.
+  //
+  // Valid range: 1024–1048576 GiB (1 TiB – 1 PiB). Storage can be increased
+  // after creation but never decreased. Choose based on data size; ONTAP's
+  // built-in compression and deduplication typically achieve 2-5x data reduction.
+  int32 storage_capacity_gib = 3 [
+    (buf.validate.field).int32.gte = 1024,
+    (buf.validate.field).int32.lte = 1048576
+  ];
+
+  // Storage media type. ForceNew — cannot be changed after creation.
+  //
+  // - "SSD": solid-state drives. Sub-millisecond latency. Suitable for
+  //   performance-sensitive workloads (databases, VMware, active data).
+  // - "HDD": hard disk drives with SSD cache. Lower cost for throughput-oriented
+  //   workloads (data lakes, backups, infrequently accessed data). ONTAP's
+  //   intelligent tiering automatically caches hot data on SSD.
+  //
+  // Default: SSD
+  optional string storage_type = 4 [(dev.planton.shared.options.default) = "SSD"];
+
+  // Throughput capacity per HA pair in MB/s. Required.
+  //
+  // Valid values: 128, 256, 384, 512, 768, 1024, 1536, 2048, 3072, 4096, 6144.
+  // Total file system throughput = throughput_capacity_per_ha_pair * ha_pairs.
+  //
+  // For single HA pair deployments (the common case), this is the total
+  // throughput. For scale-out deployments with multiple HA pairs, each pair
+  // contributes this amount independently.
+  //
+  // Can be changed after creation for SINGLE_AZ_2 and MULTI_AZ_2 deployment
+  // types. For SINGLE_AZ_1 and MULTI_AZ_1, increasing throughput requires
+  // replacement.
+  int32 throughput_capacity_per_ha_pair = 5 [(buf.validate.field).int32.gt = 0];
+
+  // Number of high-availability pairs in the file system. Each HA pair adds
+  // an independent pair of file servers providing throughput and IOPS capacity.
+  //
+  // - SINGLE_AZ_1 / SINGLE_AZ_2: 1-12 HA pairs. Scale-out for throughput.
+  //   SINGLE_AZ_2 can increase HA pairs without replacement. SINGLE_AZ_1
+  //   requires replacement to add HA pairs.
+  // - MULTI_AZ_1 / MULTI_AZ_2: must be 1 (single HA pair with failover).
+  //
+  // Default: 1
+  optional int32 ha_pairs = 6 [
+    (dev.planton.shared.options.default) = "1",
+    (buf.validate.field).int32.gte = 1,
+    (buf.validate.field).int32.lte = 12
+  ];
+
+  // ---------------------------------------------------------------------------
+  // Networking (ForceNew)
+  // ---------------------------------------------------------------------------
+
+  // Subnet IDs for the file system's network interfaces. Required. ForceNew.
+  //
+  // - SINGLE_AZ_1 / SINGLE_AZ_2: exactly one subnet.
+  // - MULTI_AZ_1 / MULTI_AZ_2: exactly two subnets in different availability zones.
+  //
+  // All compute resources accessing this file system (via NFS, SMB, or iSCSI)
+  // must have network connectivity to these subnets.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef subnet_ids = 7 [
+    (buf.validate.field).repeated.min_items = 1,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  ];
+
+  // Preferred subnet for the active file server in a multi-AZ deployment.
+  // ForceNew. Required when deployment_type is MULTI_AZ_1 or MULTI_AZ_2.
+  // Must be one of the subnets specified in subnet_ids.
+  //
+  // In a failover event, the standby file server in the other subnet takes over
+  // automatically. Ignored for single-AZ deployments.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef preferred_subnet_id = 8 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  ];
+
+  // Security groups for the file system's network interfaces. ForceNew.
+  //
+  // Must allow traffic between the file system and its clients:
+  // - TCP port 111 (portmapper)
+  // - TCP port 635 (mountd)
+  // - TCP port 2049 (NFS)
+  // - TCP port 4045-4046 (NFS lock/status)
+  // - TCP port 445 (SMB)
+  // - TCP port 3260 (iSCSI)
+  // - TCP port 443 (ONTAP REST API)
+  //
+  // Up to 50 security groups.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef security_group_ids = 9 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
+  ];
+
+  // IP address range for the file system endpoints in a multi-AZ deployment.
+  // ForceNew. Must be a CIDR block within the VPC's CIDR range that does not
+  // overlap with any existing subnets. AWS assigns floating IPs from this range
+  // for seamless failover.
+  //
+  // Ignored for single-AZ deployments.
+  string endpoint_ip_address_range = 10;
+
+  // Route table IDs that need routes to the file system in a multi-AZ
+  // deployment. AWS automatically manages the routes for failover. Up to 50
+  // route tables.
+  //
+  // Ignored for single-AZ deployments.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef route_table_ids = 11;
+
+  // ---------------------------------------------------------------------------
+  // Encryption
+  // ---------------------------------------------------------------------------
+
+  // Customer-managed KMS key ARN for encryption at rest. ForceNew — the KMS key
+  // cannot be changed after creation. When omitted, the file system uses the
+  // AWS-managed FSx key. All ONTAP file systems are encrypted at rest by
+  // default; this field upgrades to a customer-managed key.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_id = 12 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
+  ];
+
+  // ---------------------------------------------------------------------------
+  // ONTAP Administration
+  // ---------------------------------------------------------------------------
+
+  // Password for the ONTAP administrative user ("fsxadmin"). Enables SSH and
+  // REST API access to the file system for advanced administration such as LIF
+  // management, SnapMirror configuration, and aggregate monitoring.
+  //
+  // Length: 8-50 characters. Optional — omit if ONTAP CLI access is not needed.
+  // This value is sensitive and will not be returned in read operations.
+  string fsx_admin_password = 13 [(dev.planton.shared.options.sensitive) = true];
+
+  // ---------------------------------------------------------------------------
+  // Disk IOPS Configuration
+  // ---------------------------------------------------------------------------
+
+  // SSD IOPS configuration for the file system. Controls the total provisioned
+  // IOPS. When omitted, AWS uses AUTOMATIC mode which provisions 3 IOPS per GiB
+  // of storage capacity. Use USER_PROVISIONED mode for workloads requiring IOPS
+  // beyond what AUTOMATIC provides.
+  AwsFsxOntapFileSystemDiskIopsConfiguration disk_iops_configuration = 14;
+
+  // ---------------------------------------------------------------------------
+  // Backup
+  // ---------------------------------------------------------------------------
+
+  // Number of days to retain automatic backups. Range: 0-90. Set to 0 to
+  // disable automatic backups. ONTAP's built-in snapshots provide point-in-time
+  // recovery independently of FSx backups.
+  //
+  // Default: 0 (no automatic backups)
+  optional int32 automatic_backup_retention_days = 15 [
+    (dev.planton.shared.options.default) = "0",
+    (buf.validate.field).int32.gte = 0,
+    (buf.validate.field).int32.lte = 90
+  ];
+
+  // Daily UTC time to start automatic backups, in HH:MM format (e.g., "05:00").
+  // If not specified and backups are enabled, AWS chooses a default window.
+  string daily_automatic_backup_start_time = 16;
+
+  // Copy tags from the file system to backups.
+  bool copy_tags_to_backups = 17;
+
+  // Skip creating a final backup when the file system is deleted.
+  //
+  // Default: true
+  optional bool skip_final_backup = 18 [(dev.planton.shared.options.default) = "true"];
+
+  // ---------------------------------------------------------------------------
+  // Maintenance
+  // ---------------------------------------------------------------------------
+
+  // Weekly UTC maintenance window in the format "d:HH:MM" where d is the day of
+  // the week (1=Monday, 7=Sunday). Example: "7:02:00" for Sunday at 02:00 UTC.
+  // If not specified, AWS chooses a default window.
+  string weekly_maintenance_start_time = 19;
+
+  // ---------------------------------------------------------------------------
+  // CEL Validations
+  // ---------------------------------------------------------------------------
+
+  // deployment_type valid values.
+  option (buf.validate.message).cel = {
+    id: "deployment_type_valid"
+    message: "deployment_type must be 'SINGLE_AZ_1', 'SINGLE_AZ_2', 'MULTI_AZ_1', or 'MULTI_AZ_2'"
+    expression: "this.deployment_type == '' || this.deployment_type in ['SINGLE_AZ_1', 'SINGLE_AZ_2', 'MULTI_AZ_1', 'MULTI_AZ_2']"
+  };
+
+  // storage_type valid values.
+  option (buf.validate.message).cel = {
+    id: "storage_type_valid"
+    message: "storage_type must be 'SSD' or 'HDD'"
+    expression: "this.storage_type == '' || this.storage_type in ['SSD', 'HDD']"
+  };
+
+  // throughput_capacity_per_ha_pair valid values.
+  option (buf.validate.message).cel = {
+    id: "throughput_valid"
+    message: "throughput_capacity_per_ha_pair must be one of: 128, 256, 384, 512, 768, 1024, 1536, 2048, 3072, 4096, 6144"
+    expression: "this.throughput_capacity_per_ha_pair in [128, 256, 384, 512, 768, 1024, 1536, 2048, 3072, 4096, 6144]"
+  };
+
+  // ha_pairs > 1 only valid for single-AZ deployment types.
+  option (buf.validate.message).cel = {
+    id: "ha_pairs_single_az_only"
+    message: "ha_pairs > 1 is only supported for SINGLE_AZ_1 and SINGLE_AZ_2 deployment types (multi-AZ is fixed at 1 HA pair)"
+    expression: "this.ha_pairs <= 1 || this.deployment_type in ['SINGLE_AZ_1', 'SINGLE_AZ_2']"
+  };
+
+  // preferred_subnet_id requires multi-AZ deployment type.
+  option (buf.validate.message).cel = {
+    id: "preferred_subnet_requires_multi_az"
+    message: "preferred_subnet_id can only be set for MULTI_AZ_1 or MULTI_AZ_2 deployment types"
+    expression: "!has(this.preferred_subnet_id) || this.deployment_type in ['MULTI_AZ_1', 'MULTI_AZ_2']"
+  };
+
+  // endpoint_ip_address_range requires multi-AZ deployment type.
+  option (buf.validate.message).cel = {
+    id: "endpoint_ip_range_requires_multi_az"
+    message: "endpoint_ip_address_range can only be set for MULTI_AZ_1 or MULTI_AZ_2 deployment types"
+    expression: "this.endpoint_ip_address_range == '' || this.deployment_type in ['MULTI_AZ_1', 'MULTI_AZ_2']"
+  };
+
+  // route_table_ids requires multi-AZ deployment type.
+  option (buf.validate.message).cel = {
+    id: "route_tables_require_multi_az"
+    message: "route_table_ids can only be set for MULTI_AZ_1 or MULTI_AZ_2 deployment types"
+    expression: "size(this.route_table_ids) == 0 || this.deployment_type in ['MULTI_AZ_1', 'MULTI_AZ_2']"
+  };
+
+  // fsx_admin_password length validation (8-50 when provided).
+  option (buf.validate.message).cel = {
+    id: "admin_password_length"
+    message: "fsx_admin_password must be 8-50 characters when provided"
+    expression: "this.fsx_admin_password == '' || (size(this.fsx_admin_password) >= 8 && size(this.fsx_admin_password) <= 50)"
+  };
+
+  // daily_automatic_backup_start_time requires backups enabled.
+  option (buf.validate.message).cel = {
+    id: "backup_time_requires_retention"
+    message: "daily_automatic_backup_start_time requires automatic_backup_retention_days > 0"
+    expression: "this.daily_automatic_backup_start_time == '' || this.automatic_backup_retention_days > 0"
+  };
+}
+
+// AwsFsxOntapFileSystemDiskIopsConfiguration controls the SSD IOPS provisioned
+// for the file system. In AUTOMATIC mode, IOPS scale with storage capacity
+// (3 IOPS per GiB). In USER_PROVISIONED mode, you specify the exact IOPS
+// independently of storage, up to 2,400,000 IOPS for scale-out configurations.
+message AwsFsxOntapFileSystemDiskIopsConfiguration {
+  // IOPS provisioning mode.
+  //
+  // - "AUTOMATIC": IOPS scale automatically based on storage capacity.
+  //   Provides 3 IOPS per GiB of storage.
+  // - "USER_PROVISIONED": you specify the exact IOPS via the `iops` field.
+  //   Allows higher performance independent of storage size but at extra cost.
+  //
+  // Default: AUTOMATIC
+  optional string mode = 1 [(dev.planton.shared.options.default) = "AUTOMATIC"];
+
+  // Total SSD IOPS provisioned. Only valid when mode is "USER_PROVISIONED".
+  //
+  // Valid range: 0–2,400,000. The maximum achievable IOPS depends on the number
+  // of HA pairs and their throughput capacity tier.
+  int32 iops = 2;
+
+  // mode valid values.
+  option (buf.validate.message).cel = {
+    id: "iops_mode_valid"
+    message: "mode must be 'AUTOMATIC' or 'USER_PROVISIONED'"
+    expression: "this.mode == '' || this.mode in ['AUTOMATIC', 'USER_PROVISIONED']"
+  };
+
+  // iops requires USER_PROVISIONED mode.
+  option (buf.validate.message).cel = {
+    id: "iops_requires_user_provisioned"
+    message: "iops can only be set when mode is 'USER_PROVISIONED'"
+    expression: "this.iops == 0 || this.mode == 'USER_PROVISIONED'"
+  };
+}

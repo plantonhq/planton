@@ -12,7 +12,7 @@ Deploys an Apache Solr cluster on Kubernetes using the Solr Operator's SolrCloud
 
 ## What Gets Created
 
-When you deploy a KubernetesSolr resource, OpenMCF provisions:
+When you deploy a KubernetesSolr resource, Planton provisions:
 
 - **Namespace** — created only when `createNamespace` is `true`
 - **SolrCloud Custom Resource** — a Solr Operator SolrCloud object that manages a StatefulSet of Solr pods with configurable replicas, container image, JVM tuning, resource limits, and persistent data volumes
@@ -25,7 +25,7 @@ When you deploy a KubernetesSolr resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
 - **Solr Operator** installed on the target cluster (manages the SolrCloud custom resource lifecycle)
 - **A StorageClass** available in the cluster for Solr and ZooKeeper persistent volumes (most managed Kubernetes clusters provide a default)
@@ -37,15 +37,15 @@ When you deploy a KubernetesSolr resource, OpenMCF provisions:
 Create a file `solr.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesSolr
 metadata:
   name: my-solr
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesSolr.my-solr
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesSolr.my-solr
 spec:
   namespace: search
   createNamespace: true
@@ -54,7 +54,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f solr.yaml
+planton apply -f solr.yaml
 ```
 
 This creates a single-replica Solr 9.10.0 instance backed by a single-replica ZooKeeper ensemble, each with 1Gi persistent volumes and default resource limits (1000m CPU, 1Gi memory).
@@ -101,15 +101,15 @@ This creates a single-replica Solr 9.10.0 instance backed by a single-replica Zo
 A lightweight single-node Solr instance for development and testing:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesSolr
 metadata:
   name: dev-solr
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesSolr.dev-solr
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesSolr.dev-solr
 spec:
   namespace: dev
   createNamespace: true
@@ -143,15 +143,15 @@ spec:
 A multi-replica Solr cluster with increased resources, larger storage, and JVM tuning for production workloads:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesSolr
 metadata:
   name: prod-solr
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesSolr.prod-solr
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesSolr.prod-solr
 spec:
   namespace: search
   solrContainer:
@@ -188,15 +188,15 @@ spec:
 Solr exposed outside the cluster via Istio Gateway with TLS termination and automatic certificate management:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesSolr
 metadata:
   name: shared-solr
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesSolr.shared-solr
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesSolr.shared-solr
 spec:
   namespace: search
   solrContainer:
@@ -231,18 +231,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed namespace instead of hardcoding the name:
+Reference an Planton-managed namespace instead of hardcoding the name:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesSolr
 metadata:
   name: search
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesSolr.search
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesSolr.search
 spec:
   namespace:
     valueFrom:

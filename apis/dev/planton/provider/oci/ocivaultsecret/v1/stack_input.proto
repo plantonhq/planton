@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocivaultsecret.v1;
+
+import "dev/planton/provider/oci/ocivaultsecret/v1/api.proto";
+import "dev/planton/provider/oci/provider.proto";
+
+// OciVaultSecretStackInput is the input contract for the Pulumi
+// program that deploys an OciVaultSecret.
+message OciVaultSecretStackInput {
+  // The OciVaultSecret resource to deploy.
+  OciVaultSecret target = 1;
+
+  // OCI provider configuration (credentials, region, tenancy).
+  dev.planton.provider.oci.OciProviderConfig provider_config = 2;
+}

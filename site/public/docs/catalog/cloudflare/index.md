@@ -1,13 +1,13 @@
 ---
 title: "CLOUDFLARE"
-description: "Deploy CLOUDFLARE resources using OpenMCF"
+description: "Deploy CLOUDFLARE resources using Planton"
 icon: "cloud"
 order: 10
 ---
 
 # CLOUDFLARE
 
-The following CLOUDFLARE resources can be deployed using OpenMCF:
+The following CLOUDFLARE resources can be deployed using Planton:
 
 - [CloudflareRuleset — Technical Deep Dive](/docs/catalog/cloudflare/cloudflareruleset-technical-deep-dive)
 - [D1 Database](/docs/catalog/cloudflare/d1-database)

@@ -7,12 +7,12 @@ import (
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclparse"
 
-	awsecrrepov1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsecrrepo/v1"
-	awsiamrolev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsiamrole/v1"
-	awsroute53zonev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsroute53zone/v1"
-	awssubnetv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awssubnet/v1"
-	kubernetescronjobv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetescronjob/v1"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared"
+	awsecrrepov1 "github.com/plantonhq/planton/apis/dev/planton/provider/aws/awsecrrepo/v1"
+	awsiamrolev1 "github.com/plantonhq/planton/apis/dev/planton/provider/aws/awsiamrole/v1"
+	awsroute53zonev1 "github.com/plantonhq/planton/apis/dev/planton/provider/aws/awsroute53zone/v1"
+	awssubnetv1 "github.com/plantonhq/planton/apis/dev/planton/provider/aws/awssubnet/v1"
+	kubernetescronjobv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/kubernetescronjob/v1"
+	"github.com/plantonhq/planton/apis/dev/planton/shared"
 	"google.golang.org/protobuf/proto"
 )
 

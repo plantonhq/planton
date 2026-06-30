@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package dev.planton.provider.cloudflare.cloudflarezerotrusttunnelroute.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// CloudflareZeroTrustTunnelRouteSpec configures a Cloudflare Tunnel route: it advertises
+// a private IP range (CIDR) as reachable through a specific tunnel, within a virtual
+// network. WARP clients and other tunnels can then reach that range. A route has an
+// independent lifecycle from the tunnel (you add or remove reachable networks without
+// touching the tunnel), and a tunnel commonly carries many routes — so it is its own
+// first-class kind, wired to its tunnel and virtual network by reference.
+message CloudflareZeroTrustTunnelRouteSpec {
+  // The Cloudflare account ID that owns this route.
+  string account_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.len = 32,
+    (buf.validate.field).string.pattern = "^[0-9a-fA-F]{32}$"
+  ];
+
+  // The private IPv4 or IPv6 range advertised by this route, in CIDR notation
+  // (for example "10.0.0.0/24" or "2001:db8::/48"). Single hosts use a /32 or /128.
+  string network = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "network.cidr"
+      message: "network must be an IPv4 or IPv6 range in CIDR notation, e.g. 10.0.0.0/24"
+      expression: "this.matches('^([0-9]{1,3}[.]){3}[0-9]{1,3}/[0-9]{1,2}$') || this.matches('^[0-9a-fA-F:]+/[0-9]{1,3}$')"
+    }
+  ];
+
+  // The tunnel that serves this network: a literal tunnel UUID, or a reference to a
+  // CloudflareZeroTrustTunnel resource.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef tunnel_id = 3 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareZeroTrustTunnel,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.tunnel_id"
+  ];
+
+  // The virtual network this route belongs to: a literal virtual network UUID, or a
+  // reference to a CloudflareZeroTrustTunnelVirtualNetwork. Omit to use the account's
+  // default virtual network. Use distinct virtual networks to advertise overlapping
+  // CIDRs through different tunnels without collision.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef virtual_network_id = 4 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareZeroTrustTunnelVirtualNetwork,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.virtual_network_id"
+  ];
+
+  // Optional remark describing the route.
+  string comment = 5 [(buf.validate.field).string.max_len = 1000];
+}

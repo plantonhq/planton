@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azurevirtualmachine.v1;
+
+// AzureVirtualMachineStackOutputs captures observable identifiers from the Azure Virtual Machine.
+message AzureVirtualMachineStackOutputs {
+  // The Azure resource ID of the Virtual Machine.
+  string vm_id = 1;
+
+  // The name of the Virtual Machine.
+  string vm_name = 2;
+
+  // The private IP address assigned to the VM's primary network interface.
+  string private_ip_address = 3;
+
+  // The public IP address assigned to the VM (if public IP is enabled).
+  string public_ip_address = 4;
+
+  // The FQDN of the public IP (if public IP is enabled with DNS label).
+  string public_ip_fqdn = 5;
+
+  // The computer name (hostname) of the Virtual Machine.
+  string computer_name = 6;
+
+  // The principal ID of the system-assigned managed identity (if enabled).
+  string system_assigned_identity_principal_id = 7;
+
+  // The Azure resource ID of the primary network interface.
+  string network_interface_id = 8;
+
+  // The availability zone where the VM is deployed (if zonal deployment).
+  string availability_zone = 9;
+}

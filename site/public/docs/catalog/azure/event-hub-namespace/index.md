@@ -12,7 +12,7 @@ Deploys an Azure Event Hubs namespace with optional event hubs and consumer grou
 
 ## What Gets Created
 
-When you deploy an AzureEventHubNamespace resource, OpenMCF provisions:
+When you deploy an AzureEventHubNamespace resource, Planton provisions:
 
 - **Event Hubs Namespace** -- an `eventhub.EventHubNamespace` resource in the specified region and resource group, configured with the chosen SKU tier, throughput capacity, TLS version, and optional auto-inflate scaling
 - **Event Hubs** -- an `eventhub.EventHub` for each entry in `eventHubs`, each with configurable partition count and message retention
@@ -21,7 +21,7 @@ When you deploy an AzureEventHubNamespace resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Resource Group** where the namespace will be created (can reference an AzureResourceGroup resource)
 - **A globally unique namespace name** -- the name becomes the endpoint `{name}.servicebus.windows.net`
 - **Partition planning** -- partition count cannot be decreased after creation; plan for peak throughput upfront
@@ -31,15 +31,15 @@ When you deploy an AzureEventHubNamespace resource, OpenMCF provisions:
 Create a file `eventhub.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureEventHubNamespace
 metadata:
   name: my-events
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureEventHubNamespace.my-events
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureEventHubNamespace.my-events
 spec:
   region: eastus
   resourceGroup: my-rg
@@ -52,7 +52,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f eventhub.yaml
+planton apply -f eventhub.yaml
 ```
 
 This creates a Standard-tier Event Hubs namespace with a single `telemetry` event hub having 4 partitions, 1-day message retention, and the auto-created `$Default` consumer group.
@@ -96,15 +96,15 @@ This creates a Standard-tier Event Hubs namespace with a single `telemetry` even
 A Standard-tier namespace with multiple event hubs for a typical data pipeline:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureEventHubNamespace
 metadata:
   name: data-pipeline
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureEventHubNamespace.data-pipeline
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureEventHubNamespace.data-pipeline
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -133,15 +133,15 @@ spec:
 A Premium-tier namespace with dedicated processing units and private-only access:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureEventHubNamespace
 metadata:
   name: enterprise-events
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureEventHubNamespace.enterprise-events
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureEventHubNamespace.enterprise-events
 spec:
   region: westeurope
   resourceGroup: prod-rg
@@ -165,15 +165,15 @@ spec:
 A namespace configured for IoT device telemetry with high partition counts for parallel processing:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureEventHubNamespace
 metadata:
   name: iot-ingestion
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureEventHubNamespace.iot-ingestion
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureEventHubNamespace.iot-ingestion
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -197,18 +197,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed resource group:
+Reference an Planton-managed resource group:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureEventHubNamespace
 metadata:
   name: ref-events
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureEventHubNamespace.ref-events
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureEventHubNamespace.ref-events
 spec:
   region: eastus
   resourceGroup:

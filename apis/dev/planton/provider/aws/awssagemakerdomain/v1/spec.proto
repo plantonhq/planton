@@ -1,0 +1,415 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awssagemakerdomain.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// AwsSagemakerDomainSpec defines the desired state of an Amazon SageMaker Domain.
+// A SageMaker Domain is the top-level organizational unit for Amazon SageMaker Studio,
+// providing a shared workspace where data scientists and ML engineers access JupyterLab
+// notebooks, custom kernels, and ML tooling. The domain provisions a dedicated EFS
+// file system for user home directories, configures VPC networking for notebook and
+// training traffic, and establishes IAM execution roles that govern what AWS resources
+// users can access from their Studio sessions.
+message AwsSagemakerDomainSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  // --- Core (ForceNew) ---
+
+  // auth_mode determines how users authenticate to the SageMaker Domain.
+  // "IAM": users authenticate with AWS IAM credentials. Suitable for single-account teams
+  //   or programmatic access. Each user's IAM identity determines their permissions.
+  // "SSO": users authenticate via AWS IAM Identity Center (formerly AWS SSO). Recommended
+  //   for enterprise teams with centralized identity management.
+  // ForceNew: changing auth_mode forces domain replacement.
+  string auth_mode = 2 [(buf.validate.field).required = true];
+
+  // vpc_id is the VPC in which the SageMaker Domain is created.
+  // All domain network interfaces (for notebooks, training, and app traffic) are placed
+  // in this VPC. The VPC must have DNS resolution and DNS hostnames enabled.
+  // ForceNew: changing the VPC forces domain replacement.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef vpc_id = 3 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsVpc,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
+  ];
+
+  // subnet_ids are the VPC subnets where SageMaker provisions elastic network interfaces
+  // for notebook and training traffic. For high availability, provide subnets in at least
+  // two Availability Zones. Maximum 16 subnets.
+  // ForceNew: changing subnets forces domain replacement.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef subnet_ids = 4 [
+    (buf.validate.field).repeated.min_items = 1,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  ];
+
+  // kms_key_id is the KMS key ARN used to encrypt the EFS volume attached to the domain.
+  // Each SageMaker Domain creates a dedicated EFS file system for user home directories.
+  // If omitted, AWS uses the default aws/elasticfilesystem service key.
+  // ForceNew: changing the KMS key forces domain replacement.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_id = 5 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
+  ];
+
+  // --- Network ---
+
+  // app_network_access_type controls whether notebook and training traffic can reach the internet.
+  // "PublicInternetOnly" (default): ENIs have internet access via VPC routing.
+  // "VpcOnly": all traffic stays within the VPC; internet access requires a NAT gateway.
+  // "VpcOnly" is recommended for production to prevent data exfiltration and satisfy
+  // compliance requirements. Docker trusted accounts only work in VpcOnly mode.
+  optional string app_network_access_type = 6 [(dev.planton.shared.options.default) = "PublicInternetOnly"];
+
+  // --- User Settings ---
+
+  // default_user_settings defines the default configuration inherited by all user profiles
+  // in the domain. These settings control the execution environment, app configurations,
+  // security boundaries, and storage defaults. Individual user profiles can override these
+  // defaults via AwsSagemakerUserProfile (not in v1 scope).
+  AwsSagemakerDomainDefaultUserSettings default_user_settings = 7 [(buf.validate.field).required = true];
+
+  // --- Domain Settings ---
+
+  // domain_security_group_ids are security groups applied at the domain level for
+  // domain-scoped apps and shared resources. These are separate from user-level security
+  // groups (default_user_settings.security_group_ids) and control domain-wide network boundaries.
+  // Maximum 3 security groups. ForceNew: changing these forces domain replacement.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef domain_security_group_ids = 8 [
+    (buf.validate.field).repeated.max_items = 3,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
+  ];
+
+  // docker_settings controls Docker access within the SageMaker Domain.
+  // When enabled, users can build and run custom Docker containers directly in their
+  // notebooks and terminals -- essential for custom training containers, inference
+  // endpoints, and reproducible ML pipelines.
+  AwsSagemakerDomainDockerSettings docker_settings = 9;
+
+  // --- Cross-field validations ---
+
+  option (buf.validate.message).cel = {
+    id: "auth_mode_valid"
+    message: "auth_mode must be 'IAM' or 'SSO'"
+    expression: "this.auth_mode in ['IAM', 'SSO']"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "app_network_access_type_valid"
+    message: "app_network_access_type must be 'PublicInternetOnly' or 'VpcOnly'"
+    expression: "!has(this.app_network_access_type) || this.app_network_access_type in ['PublicInternetOnly', 'VpcOnly']"
+  };
+}
+
+// AwsSagemakerDomainDefaultUserSettings defines the default configuration inherited by all
+// user profiles in the domain. Each setting establishes a baseline that individual user
+// profiles inherit unless explicitly overridden.
+message AwsSagemakerDomainDefaultUserSettings {
+  // execution_role_arn is the IAM role assumed by SageMaker when running notebooks,
+  // training jobs, and other ML workloads on behalf of users. This role determines what
+  // AWS resources (S3 buckets, ECR repos, Secrets Manager, etc.) users can access from
+  // their Studio sessions. The role must have a trust policy allowing
+  // sagemaker.amazonaws.com to assume it.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef execution_role_arn = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsIamRole,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.role_arn"
+  ];
+
+  // security_group_ids are user-level security groups controlling network access for
+  // notebook instances and apps. These are attached to the ENIs created for each user's
+  // apps and control inbound/outbound traffic at the user level. Maximum 5 security groups.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef security_group_ids = 2 [
+    (buf.validate.field).repeated.max_items = 5,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
+  ];
+
+  // default_landing_uri is the URI of the default app opened when a user accesses the domain.
+  // Common values:
+  //   "studio::relative/JupyterLab" - opens JupyterLab (recommended for most teams)
+  //   "studio::relative/JupyterServer:" - opens classic Jupyter Server
+  //   "studio::" - opens SageMaker Studio home
+  // If omitted, AWS uses the platform default.
+  string default_landing_uri = 3;
+
+  // studio_web_portal controls whether the SageMaker Studio web portal is accessible.
+  // "ENABLED" (default): users can access the full Studio web interface.
+  // "DISABLED": restricts access to programmatic-only usage (API/CLI).
+  optional string studio_web_portal = 4 [(dev.planton.shared.options.default) = "ENABLED"];
+
+  // jupyter_lab_app_settings configures JupyterLab, the primary IDE for SageMaker Studio.
+  // JupyterLab provides a modern notebook and code editing experience with built-in Git
+  // integration, terminal access, extension support, and collaborative editing.
+  AwsSagemakerDomainJupyterLabAppSettings jupyter_lab_app_settings = 5;
+
+  // kernel_gateway_app_settings configures KernelGateway apps that provide custom compute
+  // kernels. Use KernelGateway to bring your own Docker images with specialized ML
+  // frameworks, custom libraries, or GPU-optimized environments that go beyond the
+  // standard SageMaker-provided kernels.
+  AwsSagemakerDomainKernelGatewayAppSettings kernel_gateway_app_settings = 6;
+
+  // sharing_settings controls notebook output sharing to S3. When enabled, notebook cell
+  // outputs are persisted to an S3 location, allowing team members to view results
+  // without running the notebook.
+  AwsSagemakerDomainSharingSettings sharing_settings = 7;
+
+  // space_storage_settings configures default EBS volume sizes for user spaces.
+  // Spaces use EBS volumes for working storage beyond the shared EFS home directory.
+  AwsSagemakerDomainSpaceStorageSettings space_storage_settings = 8;
+
+  // --- Cross-field validations ---
+
+  option (buf.validate.message).cel = {
+    id: "studio_web_portal_valid"
+    message: "studio_web_portal must be 'ENABLED' or 'DISABLED'"
+    expression: "!has(this.studio_web_portal) || this.studio_web_portal in ['ENABLED', 'DISABLED']"
+  };
+}
+
+// AwsSagemakerDomainJupyterLabAppSettings configures the JupyterLab IDE for the domain.
+// JupyterLab is the recommended primary IDE for SageMaker Studio, providing notebooks,
+// code editors, terminals, and extension support in a modern web interface.
+message AwsSagemakerDomainJupyterLabAppSettings {
+  // default_resource_spec sets the default compute instance type and lifecycle configuration
+  // for new JupyterLab apps. Users can override the instance type at app creation time.
+  AwsSagemakerDomainResourceSpec default_resource_spec = 1;
+
+  // lifecycle_config_arns are ARNs of lifecycle configuration scripts that run when
+  // JupyterLab apps start. Use lifecycle configs to install Python packages, configure
+  // JupyterLab extensions, set environment variables, or mount additional storage.
+  repeated string lifecycle_config_arns = 2;
+
+  // custom_images are custom Docker images available as JupyterLab kernels.
+  // Each image must be registered in SageMaker via an AppImageConfig that defines
+  // the kernel specification and file system layout. Maximum 200 images.
+  repeated AwsSagemakerDomainCustomImage custom_images = 3 [(buf.validate.field).repeated.max_items = 200];
+
+  // code_repositories are Git repositories automatically cloned into JupyterLab on startup.
+  // Provides immediate access to team code, shared notebooks, and documentation.
+  // Maximum 10 repositories.
+  repeated AwsSagemakerDomainCodeRepository code_repositories = 4 [(buf.validate.field).repeated.max_items = 10];
+
+  // idle_settings configures automatic shutdown of idle JupyterLab instances.
+  // Critical for cost management: without idle timeout, instances run 24/7 at full
+  // compute cost even when no user is interacting with them.
+  AwsSagemakerDomainIdleSettings idle_settings = 5;
+}
+
+// AwsSagemakerDomainKernelGatewayAppSettings configures KernelGateway for custom compute kernels.
+// KernelGateway enables "bring your own image" workflows where teams use custom Docker
+// images with specialized ML frameworks, proprietary libraries, or GPU-optimized stacks
+// that are not available in the standard SageMaker-provided kernels.
+message AwsSagemakerDomainKernelGatewayAppSettings {
+  // default_resource_spec sets the default compute instance type and lifecycle configuration
+  // for new KernelGateway apps.
+  AwsSagemakerDomainResourceSpec default_resource_spec = 1;
+
+  // lifecycle_config_arns are ARNs of lifecycle configuration scripts for KernelGateway apps.
+  repeated string lifecycle_config_arns = 2;
+
+  // custom_images are custom Docker images available as KernelGateway kernels.
+  // Each image must be registered in SageMaker via an AppImageConfig. Maximum 200 images.
+  repeated AwsSagemakerDomainCustomImage custom_images = 3 [(buf.validate.field).repeated.max_items = 200];
+}
+
+// AwsSagemakerDomainResourceSpec defines the default compute and image configuration for an
+// app type. This shared structure is used by JupyterLab, KernelGateway, and other app settings.
+message AwsSagemakerDomainResourceSpec {
+  // instance_type is the EC2 instance type for the app's compute.
+  // Common choices:
+  //   "ml.t3.medium" - development/exploration (2 vCPU, 4 GB)
+  //   "ml.m5.large" - general-purpose notebooks (2 vCPU, 8 GB)
+  //   "ml.g4dn.xlarge" - GPU workloads (1 GPU, 4 vCPU, 16 GB)
+  //   "ml.p3.2xlarge" - heavy training (1 V100 GPU, 8 vCPU, 61 GB)
+  //   "system" - lightweight system-managed instance for JupyterServer
+  string instance_type = 1;
+
+  // lifecycle_config_arn is the ARN of a lifecycle configuration script that runs
+  // when this specific app type starts.
+  string lifecycle_config_arn = 2;
+
+  // sagemaker_image_arn is the ARN of a SageMaker Image that defines the app's container.
+  // Use this to specify a custom base image instead of the SageMaker-provided default.
+  string sagemaker_image_arn = 3;
+
+  // sagemaker_image_version_alias is a human-readable alias for a specific image version
+  // (e.g., "latest", "v2.0"). Mutually exclusive with sagemaker_image_version_arn.
+  string sagemaker_image_version_alias = 4;
+
+  // sagemaker_image_version_arn is the ARN of a specific SageMaker image version.
+  // Pins the app to an exact image version for reproducibility across team members.
+  // Mutually exclusive with sagemaker_image_version_alias.
+  string sagemaker_image_version_arn = 5;
+}
+
+// AwsSagemakerDomainCustomImage defines a custom Docker image available as a kernel
+// in SageMaker Studio. Custom images enable teams to standardize on specific ML framework
+// versions, proprietary libraries, or GPU-optimized environments.
+message AwsSagemakerDomainCustomImage {
+  // app_image_config_name is the name of the SageMaker AppImageConfig that defines how
+  // the image is presented to users (kernel specifications, file system configuration).
+  // The AppImageConfig must exist before referencing it here.
+  string app_image_config_name = 1 [(buf.validate.field).required = true];
+
+  // image_name is the name of the SageMaker Image resource that contains this container image.
+  // The Image resource must exist before referencing it here.
+  string image_name = 2 [(buf.validate.field).required = true];
+
+  // image_version_number pins to a specific version of the image.
+  // If omitted, the latest available version is used.
+  optional int32 image_version_number = 3;
+}
+
+// AwsSagemakerDomainCodeRepository defines a Git repository automatically cloned into
+// JupyterLab on startup, providing immediate access to team code and shared notebooks.
+message AwsSagemakerDomainCodeRepository {
+  // repository_url is the HTTPS URL of the Git repository to clone.
+  // Must be an HTTPS URL (SSH URLs are not supported by SageMaker).
+  // Examples: "https://github.com/org/ml-notebooks.git"
+  // Maximum length: 1024 characters.
+  string repository_url = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.max_len = 1024
+  ];
+}
+
+// AwsSagemakerDomainIdleSettings configures automatic shutdown of idle app instances.
+// Idle detection is based on user activity: notebook cell execution, terminal commands,
+// file operations, and UI interactions. When no activity is detected for the configured
+// timeout period, the instance is automatically stopped, releasing compute resources.
+message AwsSagemakerDomainIdleSettings {
+  // lifecycle_management enables or disables automatic idle shutdown.
+  // "ENABLED": idle instances are automatically shut down after idle_timeout_in_minutes.
+  // "DISABLED": instances run until manually stopped (not recommended for production).
+  string lifecycle_management = 1;
+
+  // idle_timeout_in_minutes is the duration of inactivity (in minutes) before an instance
+  // is automatically shut down. Range: 60-525600 (1 hour to 365 days).
+  // A reasonable production default is 120 (2 hours).
+  int32 idle_timeout_in_minutes = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).int32.gte = 60,
+    (buf.validate.field).int32.lte = 525600
+  ];
+
+  // min_idle_timeout_in_minutes sets the minimum idle timeout that individual users can
+  // configure for their own apps. Prevents users from setting excessively short timeouts
+  // that would cause disruptive shutdowns during brief pauses. Range: 60-525600.
+  int32 min_idle_timeout_in_minutes = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).int32.gte = 60,
+    (buf.validate.field).int32.lte = 525600
+  ];
+
+  // max_idle_timeout_in_minutes sets the maximum idle timeout that individual users can
+  // configure. Prevents users from effectively disabling idle shutdown by setting
+  // extremely long timeouts. Range: 60-525600.
+  int32 max_idle_timeout_in_minutes = 4 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).int32.gte = 60,
+    (buf.validate.field).int32.lte = 525600
+  ];
+
+  // --- Cross-field validations ---
+
+  option (buf.validate.message).cel = {
+    id: "lifecycle_management_valid"
+    message: "lifecycle_management must be 'ENABLED' or 'DISABLED'"
+    expression: "this.lifecycle_management == '' || this.lifecycle_management in ['ENABLED', 'DISABLED']"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "idle_timeout_requires_enabled"
+    message: "idle_timeout_in_minutes requires lifecycle_management to be 'ENABLED'"
+    expression: "this.idle_timeout_in_minutes == 0 || this.lifecycle_management == 'ENABLED'"
+  };
+}
+
+// AwsSagemakerDomainSharingSettings controls notebook output sharing to S3.
+// When enabled, notebook cell outputs (plots, tables, printed results) are automatically
+// persisted to an S3 location, allowing team members to view results without running
+// the notebook themselves -- useful for review workflows and audit trails.
+message AwsSagemakerDomainSharingSettings {
+  // notebook_output_option controls whether notebook cell outputs are persisted to S3.
+  // "Allowed": outputs are copied to S3 at the location specified by s3_output_path.
+  // "Disabled" (default): outputs are not shared externally.
+  optional string notebook_output_option = 1 [(dev.planton.shared.options.default) = "Disabled"];
+
+  // s3_kms_key_id is the KMS key used to encrypt shared notebook outputs in S3.
+  // If omitted, outputs are encrypted with the default S3 bucket encryption.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef s3_kms_key_id = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
+  ];
+
+  // s3_output_path is the S3 URI where shared notebook outputs are stored.
+  // Required when notebook_output_option is "Allowed".
+  // Example: "s3://my-team-bucket/notebook-outputs/"
+  string s3_output_path = 3;
+
+  // --- Cross-field validations ---
+
+  option (buf.validate.message).cel = {
+    id: "notebook_output_option_valid"
+    message: "notebook_output_option must be 'Allowed' or 'Disabled'"
+    expression: "!has(this.notebook_output_option) || this.notebook_output_option in ['Allowed', 'Disabled']"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "s3_output_path_required_when_allowed"
+    message: "s3_output_path is required when notebook_output_option is 'Allowed'"
+    expression: "!has(this.notebook_output_option) || this.notebook_output_option != 'Allowed' || this.s3_output_path != ''"
+  };
+}
+
+// AwsSagemakerDomainSpaceStorageSettings configures default EBS volume sizes for user spaces.
+// Spaces use EBS volumes for fast working storage (code checkouts, intermediate training data,
+// model artifacts) beyond the shared EFS home directory.
+message AwsSagemakerDomainSpaceStorageSettings {
+  // default_ebs_volume_size_in_gb is the default EBS volume size (in GB) assigned to new spaces.
+  int32 default_ebs_volume_size_in_gb = 1 [(buf.validate.field).required = true];
+
+  // maximum_ebs_volume_size_in_gb is the maximum EBS volume size (in GB) that users can request
+  // for their spaces. Must be >= default_ebs_volume_size_in_gb.
+  int32 maximum_ebs_volume_size_in_gb = 2 [(buf.validate.field).required = true];
+
+  // --- Cross-field validations ---
+
+  option (buf.validate.message).cel = {
+    id: "max_ebs_gte_default"
+    message: "maximum_ebs_volume_size_in_gb must be >= default_ebs_volume_size_in_gb"
+    expression: "this.maximum_ebs_volume_size_in_gb >= this.default_ebs_volume_size_in_gb"
+  };
+}
+
+// AwsSagemakerDomainDockerSettings controls Docker access within the SageMaker Domain.
+// Docker access enables users to build custom training containers, test inference images,
+// and create reproducible ML pipelines directly within their Studio environment.
+message AwsSagemakerDomainDockerSettings {
+  // enable_docker_access controls whether users can build and run Docker containers
+  // in their notebooks and terminals.
+  // "ENABLED": Docker commands (build, pull, run) are available.
+  // "DISABLED": Docker access is blocked.
+  string enable_docker_access = 1;
+
+  // vpc_only_trusted_accounts restricts Docker image pulling to images from specified
+  // AWS account IDs when app_network_access_type is "VpcOnly". This prevents users from
+  // pulling arbitrary images from public registries, enforcing approved image sources.
+  // Maximum 20 account IDs.
+  repeated string vpc_only_trusted_accounts = 2 [(buf.validate.field).repeated.max_items = 20];
+
+  // --- Cross-field validations ---
+
+  option (buf.validate.message).cel = {
+    id: "enable_docker_access_valid"
+    message: "enable_docker_access must be 'ENABLED' or 'DISABLED'"
+    expression: "this.enable_docker_access == '' || this.enable_docker_access in ['ENABLED', 'DISABLED']"
+  };
+}

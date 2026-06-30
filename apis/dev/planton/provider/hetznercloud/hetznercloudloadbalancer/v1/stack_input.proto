@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.hetznercloud.hetznercloudloadbalancer.v1;
+
+import "dev/planton/provider/hetznercloud/hetznercloudloadbalancer/v1/api.proto";
+import "dev/planton/provider/hetznercloud/provider.proto";
+
+//hetznercloud-load-balancer stack-input
+message HetznerCloudLoadBalancerStackInput {
+  //target cloud-resource
+  HetznerCloudLoadBalancer target = 1;
+  //provider-config
+  dev.planton.provider.hetznercloud.HetznerCloudProviderConfig provider_config = 2;
+}

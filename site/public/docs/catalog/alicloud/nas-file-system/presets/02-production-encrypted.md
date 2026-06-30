@@ -34,7 +34,7 @@ This preset creates a production-grade NAS file system with NAS-managed encrypti
 | Placeholder | Description | Where to Find |
 |-------------|-------------|---------------|
 | `<alibaba-cloud-region>` | Alibaba Cloud region code (e.g., `cn-hangzhou`, `cn-shanghai`) | Your deployment region strategy |
-| `<organization>` | Organization name for tag-based resource grouping | Your OpenMCF org configuration |
+| `<organization>` | Organization name for tag-based resource grouping | Your Planton org configuration |
 | `<purpose-description>` | Human-readable purpose (e.g., "Shared config for payment service") | Your service catalog |
 | `<vpc-id>` | VPC ID where the mount target will be created | AliCloudVpc outputs |
 | `<vswitch-id>` | VSwitch ID within the VPC | AliCloudVswitch outputs |

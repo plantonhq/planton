@@ -12,7 +12,7 @@ Deploys an Azure Container Apps Managed Environment with optional VNet injection
 
 ## What Gets Created
 
-When you deploy an AzureContainerAppEnvironment resource, OpenMCF provisions:
+When you deploy an AzureContainerAppEnvironment resource, Planton provisions:
 
 - **Managed Environment** -- a `containerapp.Environment` resource in the specified region and resource group, configured with the selected networking mode, logging destination, and optional workload profiles
 - **VNet Integration** -- created only when `infrastructureSubnetId` is set, injects the environment into the specified subnet for private connectivity to databases, storage, and other VNet resources
@@ -22,7 +22,7 @@ When you deploy an AzureContainerAppEnvironment resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Resource Group** where the environment will be created (can reference an AzureResourceGroup resource)
 - **A subnet with /21 or larger address space** if using VNet injection -- the subnet must have at least 2048 IPs for Container Apps infrastructure
 - **A Log Analytics Workspace** if persistent log collection is required (can reference an AzureLogAnalyticsWorkspace resource)
@@ -32,15 +32,15 @@ When you deploy an AzureContainerAppEnvironment resource, OpenMCF provisions:
 Create a file `container-app-env.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureContainerAppEnvironment
 metadata:
   name: my-env
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureContainerAppEnvironment.my-env
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureContainerAppEnvironment.my-env
 spec:
   region: eastus
   resourceGroup: my-rg
@@ -50,7 +50,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f container-app-env.yaml
+planton apply -f container-app-env.yaml
 ```
 
 This creates an external Container App Environment with Consumption-only compute, no VNet injection, and streaming-only logs.
@@ -82,15 +82,15 @@ This creates an external Container App Environment with Consumption-only compute
 An external environment with Log Analytics for queryable container logs:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureContainerAppEnvironment
 metadata:
   name: dev-env
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureContainerAppEnvironment.dev-env
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureContainerAppEnvironment.dev-env
 spec:
   region: eastus
   resourceGroup: dev-rg
@@ -103,15 +103,15 @@ spec:
 A VNet-injected environment with zone redundancy and logging for production workloads:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureContainerAppEnvironment
 metadata:
   name: prod-env
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureContainerAppEnvironment.prod-env
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureContainerAppEnvironment.prod-env
 spec:
   region: westeurope
   resourceGroup: prod-rg
@@ -126,15 +126,15 @@ spec:
 An internal VNet-injected environment with dedicated D8 and memory-optimized E16 workload profiles for backend microservices:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureContainerAppEnvironment
 metadata:
   name: internal-env
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureContainerAppEnvironment.internal-env
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureContainerAppEnvironment.internal-env
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -156,18 +156,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference OpenMCF-managed resources instead of hardcoding IDs:
+Reference Planton-managed resources instead of hardcoding IDs:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureContainerAppEnvironment
 metadata:
   name: ref-env
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureContainerAppEnvironment.ref-env
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureContainerAppEnvironment.ref-env
 spec:
   region: eastus
   resourceGroup:

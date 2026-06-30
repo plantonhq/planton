@@ -12,7 +12,7 @@ Deploys a managed Kubernetes cluster on DigitalOcean with a configurable default
 
 ## What Gets Created
 
-When you deploy a DigitalOceanKubernetesCluster resource, OpenMCF provisions:
+When you deploy a DigitalOceanKubernetesCluster resource, Planton provisions:
 
 - **Kubernetes Cluster** — a `digitalocean_kubernetes_cluster` resource with the specified Kubernetes version, region, and VPC, including a default node pool with the configured Droplet size and node count
 - **Default Node Pool** — embedded in the cluster resource, supports fixed sizing or auto-scaling between configurable min/max node counts
@@ -21,7 +21,7 @@ When you deploy a DigitalOceanKubernetesCluster resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **DigitalOcean credentials** configured via environment variables or OpenMCF provider config
+- **DigitalOcean credentials** configured via environment variables or Planton provider config
 - **A DigitalOcean VPC** in the target region (can reference a DigitalOceanVpc resource via `valueFrom`)
 - **A supported Kubernetes version** available in the chosen region (e.g., `1.31.1-do.5`)
 
@@ -30,15 +30,15 @@ When you deploy a DigitalOceanKubernetesCluster resource, OpenMCF provisions:
 Create a file `doks.yaml`:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanKubernetesCluster
 metadata:
   name: my-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.DigitalOceanKubernetesCluster.my-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.DigitalOceanKubernetesCluster.my-cluster
 spec:
   clusterName: my-cluster
   region: nyc3
@@ -53,7 +53,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f doks.yaml
+planton apply -f doks.yaml
 ```
 
 This creates a three-node Kubernetes cluster in the NYC3 region with `s-4vcpu-8gb` Droplets and surge upgrades enabled by default.
@@ -93,15 +93,15 @@ This creates a three-node Kubernetes cluster in the NYC3 region with `s-4vcpu-8g
 A production cluster with a highly available control plane and automatic patch upgrades:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanKubernetesCluster
 metadata:
   name: prod-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.DigitalOceanKubernetesCluster.prod-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.DigitalOceanKubernetesCluster.prod-cluster
 spec:
   clusterName: prod-cluster
   region: fra1
@@ -121,15 +121,15 @@ spec:
 A cluster with auto-scaling nodes and restricted API server access for security:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanKubernetesCluster
 metadata:
   name: secure-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.DigitalOceanKubernetesCluster.secure-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.DigitalOceanKubernetesCluster.secure-cluster
 spec:
   clusterName: secure-cluster
   region: sfo3
@@ -156,15 +156,15 @@ spec:
 Production configuration using a VPC foreign key reference, DOCR integration, and all optional features:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanKubernetesCluster
 metadata:
   name: full-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.DigitalOceanKubernetesCluster.full-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.DigitalOceanKubernetesCluster.full-cluster
 spec:
   clusterName: full-cluster
   region: ams3

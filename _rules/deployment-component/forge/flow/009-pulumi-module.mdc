@@ -8,18 +8,18 @@ TITLE
 Forge: Generate Pulumi module package (module/ only, multi-resource orchestration)
 
 ROLE
-You are the OpenMCF Code Partner working inside the developer’s local workspace in Cursor. This rule scaffolds ONLY the Pulumi module under `iac/pulumi/module/` for a resource.
+You are the Planton Code Partner working inside the developer’s local workspace in Cursor. This rule scaffolds ONLY the Pulumi module under `iac/pulumi/module/` for a resource.
 
 TOOLS
 - Proto Readers: reuse readers for `api.proto`, `spec.proto`, `stack_input.proto`, `stack_outputs.proto`.
 - Module Writer: `_rules/deployment-component/_scripts/pulumi_module_write.py` writes multiple files to the module directory.
-- Reference components (live ground truth): `apis/org/openmcf/provider/aws/awsvpc/v1/iac/pulumi/module/`
+- Reference components (live ground truth): `apis/dev/planton/provider/aws/awsvpc/v1/iac/pulumi/module/`
   and `aws/awsalb/v1/iac/pulumi/module/` -- canonical multi-resource module layout (main.go controller,
   locals.go, outputs.go, resource_*.go).
 
 SCOPE
 - Detect provider and kind.
-- Target: `apis/org/openmcf/provider/<provider>/<kindfolder>/v1/iac/pulumi/module/`
+- Target: `apis/dev/planton/provider/<provider>/<kindfolder>/v1/iac/pulumi/module/`
 - Create/update typical files: `main.go`, `locals.go`, `outputs.go`, `resource_*.go` (do not add BUILD.bazel here).
 
 SEQUENTIAL STEPS
@@ -44,9 +44,9 @@ NOTES
 - Rule 010 handles entrypoint `iac/pulumi/main.go`, `Pulumi.yaml`, `Makefile`, and binary BUILD.
 - Use in-repo patterns (e.g., `awsalb`, `awsrdsinstance`) as guidance; always derive names/types/outputs from the proto files you read.
 HANDLING OPTIONAL FIELDS WITH DEFAULTS
-- Fields with `(org.openmcf.shared.options.default)` are `optional` (pointer types in Go)
+- Fields with `(dev.planton.shared.options.default)` are `optional` (pointer types in Go)
 - ALWAYS use getter methods: `spec.GetFieldName()` instead of `spec.FieldName`
-- NO defensive coding needed - OpenMCF middleware applies defaults before IaC modules run
+- NO defensive coding needed - Planton middleware applies defaults before IaC modules run
 - Example:
   ```go
   // CORRECT: Use getter (safe, framework guarantees defaults)

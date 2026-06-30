@@ -12,7 +12,7 @@ Deploys Harbor cloud-native container registry on Kubernetes using the official 
 
 ## What Gets Created
 
-When you deploy a KubernetesHarbor resource, OpenMCF provisions:
+When you deploy a KubernetesHarbor resource, Planton provisions:
 
 - **Kubernetes Namespace** — created if `createNamespace` is `true`
 - **Harbor Helm Release** — the official `harbor` chart from `https://helm.goharbor.io`, which creates:
@@ -43,15 +43,15 @@ When you deploy a KubernetesHarbor resource, OpenMCF provisions:
 Create a file `harbor.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesHarbor
 metadata:
   name: my-harbor
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesHarbor.my-harbor
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesHarbor.my-harbor
 spec:
   namespace:
     value: harbor-dev
@@ -69,7 +69,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f harbor.yaml
+planton apply -f harbor.yaml
 ```
 
 This creates a Harbor instance with self-managed PostgreSQL (20Gi disk) and Redis (8Gi disk), filesystem-based artifact storage, and default resource allocations for all components. An admin user is created automatically with a generated password stored in a Kubernetes Secret.
@@ -170,15 +170,15 @@ This creates a Harbor instance with self-managed PostgreSQL (20Gi disk) and Redi
 A minimal Harbor deployment using self-managed PostgreSQL, Redis, and local filesystem storage for development:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesHarbor
 metadata:
   name: dev-harbor
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesHarbor.dev-harbor
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesHarbor.dev-harbor
 spec:
   namespace:
     value: harbor-dev
@@ -233,15 +233,15 @@ spec:
 A deployment using an external PostgreSQL database, self-managed Redis, S3 object storage for artifacts, and increased replicas:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesHarbor
 metadata:
   name: prod-harbor
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesHarbor.prod-harbor
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesHarbor.prod-harbor
 spec:
   namespace:
     value: harbor-prod
@@ -324,15 +324,15 @@ spec:
 External HTTPS access with TLS, GCS artifact storage, external Redis with Sentinel, and Helm value overrides for Trivy vulnerability scanning:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesHarbor
 metadata:
   name: main-harbor
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesHarbor.main-harbor
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesHarbor.main-harbor
 spec:
   namespace:
     value: harbor-production

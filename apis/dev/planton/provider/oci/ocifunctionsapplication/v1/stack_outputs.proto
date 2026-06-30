@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocifunctionsapplication.v1;
+
+// OciFunctionsApplicationStackOutputs contains the outputs produced
+// after deploying an OciFunctionsApplication.
+// The application_id is the primary composability output -- function
+// deployment tooling (fn CLI, CI/CD pipelines) uses the application
+// OCID to target function deployments.
+message OciFunctionsApplicationStackOutputs {
+  // OCID of the functions application.
+  string application_id = 1;
+}

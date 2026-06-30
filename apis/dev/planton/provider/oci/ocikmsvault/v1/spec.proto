@@ -1,0 +1,110 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocikmsvault.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// OciKmsVaultSpec defines the specification for an OCI KMS Vault --
+// an HSM-backed container for encryption keys used by other OCI services
+// (Compute, Block Volume, Object Storage, Database, etc.).
+//
+// Vault types:
+//   - default_vault   = Shared HSM partition, lower cost, lower throughput
+//   - virtual_private  = Dedicated HSM partition, higher throughput limits
+//   - external         = External key manager (BYOK/EKMS) via IDCS OAuth
+//
+// The vault exposes crypto_endpoint and management_endpoint outputs that
+// downstream OciKmsKey resources consume for key creation and crypto ops.
+//
+// Excluded from v1:
+//   - restore_from_file / restore_from_object_store / restore_trigger --
+//     operational restore, not a deployment concern
+//   - time_of_deletion -- deletion scheduling, operational concern
+//   - defined_tags, system_tags -- managed by platform
+//   - freeform_tags -- auto-populated from metadata labels
+//   - vault replication -- separate resource with independent lifecycle
+message OciKmsVaultSpec {
+  option (buf.validate.message).cel = {
+    id: "external_requires_metadata"
+    message: "external_key_manager_metadata is required when vault_type is external"
+    expression: "this.vault_type != 3 || has(this.external_key_manager_metadata)"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "non_external_forbids_metadata"
+    message: "external_key_manager_metadata must not be set when vault_type is not external"
+    expression: "this.vault_type == 3 || !has(this.external_key_manager_metadata)"
+  };
+
+  // OCID of the compartment where the vault will be created.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OciCompartment,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartment_id"
+  ];
+
+  // Display name for the vault. When omitted, the metadata name is used.
+  string display_name = 2;
+
+  // Type of vault to create. Cannot be changed after creation.
+  //   - default_vault:  shared HSM partition (lower cost)
+  //   - virtual_private: dedicated HSM partition (higher throughput)
+  //   - external:        external key manager via IDCS OAuth (BYOK/EKMS)
+  VaultType vault_type = 3 [(buf.validate.field).enum = {
+    defined_only: true
+    not_in: [0]
+  }];
+
+  // Configuration for an external key manager. Required when vault_type
+  // is external; must not be set otherwise. All sub-fields within this
+  // message are immutable after creation (ForceNew).
+  ExternalKeyManagerMetadata external_key_manager_metadata = 4;
+
+  // VaultType determines the isolation level and HSM partition model.
+  enum VaultType {
+    unspecified = 0;
+    // Shared HSM partition. Lower cost, suitable for most workloads.
+    default_vault = 1;
+    // Dedicated HSM partition. Higher throughput limits, required for
+    // high-volume cryptographic operations.
+    virtual_private = 2;
+    // External key manager (BYOK/EKMS). Keys are stored and managed
+    // outside OCI using a third-party HSM connected via IDCS OAuth.
+    external = 3;
+  }
+
+  // ExternalKeyManagerMetadata configures the connection to an external
+  // key manager for EXTERNAL vault type. All fields are immutable after
+  // creation.
+  message ExternalKeyManagerMetadata {
+    // URI of the vault on the external key manager system.
+    string external_vault_endpoint_url = 1 [(buf.validate.field).string.min_len = 1];
+
+    // OAuth credentials for authenticating with Oracle IDCS to reach
+    // the external key manager.
+    OAuthMetadata oauth_metadata = 2 [(buf.validate.field).required = true];
+
+    // OCID of the KMS private endpoint used to connect to the external
+    // key manager over a private network path.
+    string private_endpoint_id = 3 [(buf.validate.field).string.min_len = 1];
+
+    // OAuthMetadata holds the IDCS OAuth credentials for authenticating
+    // with an external key manager.
+    message OAuthMetadata {
+      // Application ID of the client app registered in IDCS.
+      string client_app_id = 1 [(buf.validate.field).string.min_len = 1];
+
+      // Secret of the client app registered in IDCS. This value is
+      // sensitive and will not be returned by the API after creation.
+      string client_app_secret = 2 [
+        (buf.validate.field).string.min_len = 1,
+        (dev.planton.shared.options.sensitive) = true
+      ];
+
+      // Base URL of the IDCS account (e.g., "https://idcs-xxx.identity.oraclecloud.com").
+      string idcs_account_name_url = 3 [(buf.validate.field).string.min_len = 1];
+    }
+  }
+}

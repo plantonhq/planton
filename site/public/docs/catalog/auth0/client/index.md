@@ -12,14 +12,14 @@ Deploys an Auth0 Application (Client) with configurable OAuth flows, token setti
 
 ## What Gets Created
 
-When you deploy an Auth0Client resource, OpenMCF provisions:
+When you deploy an Auth0Client resource, Planton provisions:
 
 - **Auth0 Client (Application)** — an `auth0_client` resource configured with the specified application type, OAuth settings, URL allowlists, and optional JWT/refresh token configuration
 - **Client Grants** — created only when `apiGrants` is configured, one `auth0_client_grant` resource per entry authorizing this client to call the specified API with the listed scopes
 
 ## Prerequisites
 
-- **Auth0 credentials** configured via environment variables (`AUTH0_DOMAIN`, `AUTH0_CLIENT_ID`, `AUTH0_CLIENT_SECRET`) or OpenMCF provider config
+- **Auth0 credentials** configured via environment variables (`AUTH0_DOMAIN`, `AUTH0_CLIENT_ID`, `AUTH0_CLIENT_SECRET`) or Planton provider config
 - **An Auth0 tenant** with sufficient application quota
 - **An Auth0 Resource Server** if configuring `apiGrants` to authorize API access
 - **An Auth0 Connection** if restricting the client to specific connections via `enabledConnections`
@@ -29,15 +29,15 @@ When you deploy an Auth0Client resource, OpenMCF provisions:
 Create a file `auth0-client.yaml`:
 
 ```yaml
-apiVersion: auth0.openmcf.org/v1
+apiVersion: auth0.planton.dev/v1
 kind: Auth0Client
 metadata:
   name: my-app
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.Auth0Client.my-app
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.Auth0Client.my-app
 spec:
   applicationType: spa
 ```
@@ -45,7 +45,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f auth0-client.yaml
+planton apply -f auth0-client.yaml
 ```
 
 This creates a Single Page Application in Auth0 with default OAuth settings and OIDC-conformant behavior.
@@ -166,15 +166,15 @@ This creates a Single Page Application in Auth0 with default OAuth settings and 
 A Single Page Application with development and production callback URLs:
 
 ```yaml
-apiVersion: auth0.openmcf.org/v1
+apiVersion: auth0.planton.dev/v1
 kind: Auth0Client
 metadata:
   name: my-spa
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.Auth0Client.my-spa
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.Auth0Client.my-spa
 spec:
   applicationType: spa
   description: React dashboard application
@@ -199,15 +199,15 @@ spec:
 A backend service client authorized to call a custom API and the Auth0 Management API:
 
 ```yaml
-apiVersion: auth0.openmcf.org/v1
+apiVersion: auth0.planton.dev/v1
 kind: Auth0Client
 metadata:
   name: backend-service
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.Auth0Client.backend-service
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.Auth0Client.backend-service
 spec:
   applicationType: non_interactive
   description: Backend API service
@@ -229,15 +229,15 @@ spec:
 A server-side web application with JWT configuration, rotating refresh tokens, and organization support:
 
 ```yaml
-apiVersion: auth0.openmcf.org/v1
+apiVersion: auth0.planton.dev/v1
 kind: Auth0Client
 metadata:
   name: web-portal
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.Auth0Client.web-portal
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.Auth0Client.web-portal
 spec:
   applicationType: regular_web
   description: Customer portal web application
@@ -264,18 +264,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed Auth0 resources instead of hardcoding identifiers:
+Reference other Planton-managed Auth0 resources instead of hardcoding identifiers:
 
 ```yaml
-apiVersion: auth0.openmcf.org/v1
+apiVersion: auth0.planton.dev/v1
 kind: Auth0Client
 metadata:
   name: ref-client
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.Auth0Client.ref-client
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.Auth0Client.ref-client
 spec:
   applicationType: non_interactive
   description: Service client with resource references

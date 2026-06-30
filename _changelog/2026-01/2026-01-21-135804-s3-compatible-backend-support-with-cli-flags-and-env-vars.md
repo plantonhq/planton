@@ -74,10 +74,10 @@ flowchart TB
 
 | Variable | Description |
 |----------|-------------|
-| `OPENMCF_BACKEND_TYPE` | Backend type |
-| `OPENMCF_BACKEND_BUCKET` | State bucket name |
-| `OPENMCF_BACKEND_REGION` | Region (`auto` for R2/MinIO) |
-| `OPENMCF_BACKEND_ENDPOINT` | Custom endpoint URL |
+| `PLANTON_BACKEND_TYPE` | Backend type |
+| `PLANTON_BACKEND_BUCKET` | State bucket name |
+| `PLANTON_BACKEND_REGION` | Region (`auto` for R2/MinIO) |
+| `PLANTON_BACKEND_ENDPOINT` | Custom endpoint URL |
 
 **Note**: `backend.key` is intentionally excluded from environment variables to ensure state paths remain explicit and traceable.
 
@@ -225,7 +225,7 @@ type ValidationResult struct {
 type MissingField struct {
     Name        string  // "endpoint"
     FlagName    string  // "--backend-endpoint"
-    LabelName   string  // "terraform.openmcf.org/backend.endpoint"
+    LabelName   string  // "terraform.planton.dev/backend.endpoint"
     Description string  // Human-readable description
     Example     string  // Example value
     Required    bool
@@ -237,7 +237,7 @@ type MissingField struct {
 ### CLI-Based R2 Configuration
 
 ```bash
-openmcf apply -f manifest.yaml \
+planton apply -f manifest.yaml \
     --backend-type s3 \
     --backend-bucket my-r2-bucket \
     --backend-key env/prod/terraform.tfstate \
@@ -248,13 +248,13 @@ openmcf apply -f manifest.yaml \
 ### Environment Variables for CI/CD
 
 ```bash
-export OPENMCF_BACKEND_TYPE=s3
-export OPENMCF_BACKEND_BUCKET=my-state-bucket
-export OPENMCF_BACKEND_REGION=auto
-export OPENMCF_BACKEND_ENDPOINT=https://account-id.r2.cloudflarestorage.com
+export PLANTON_BACKEND_TYPE=s3
+export PLANTON_BACKEND_BUCKET=my-state-bucket
+export PLANTON_BACKEND_REGION=auto
+export PLANTON_BACKEND_ENDPOINT=https://account-id.r2.cloudflarestorage.com
 
 # Key from manifest or flag
-openmcf apply -f manifest.yaml --backend-key path/to/state.tfstate
+planton apply -f manifest.yaml --backend-key path/to/state.tfstate
 ```
 
 ### GitHub Actions Example
@@ -264,14 +264,14 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      OPENMCF_BACKEND_TYPE: s3
-      OPENMCF_BACKEND_BUCKET: ${{ secrets.STATE_BUCKET }}
-      OPENMCF_BACKEND_REGION: auto
-      OPENMCF_BACKEND_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+      PLANTON_BACKEND_TYPE: s3
+      PLANTON_BACKEND_BUCKET: ${{ secrets.STATE_BUCKET }}
+      PLANTON_BACKEND_REGION: auto
+      PLANTON_BACKEND_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
     steps:
       - uses: actions/checkout@v4
       - name: Deploy infrastructure
-        run: openmcf apply -f manifest.yaml
+        run: planton apply -f manifest.yaml
 ```
 
 ### Manifest Labels (Existing)
@@ -279,12 +279,12 @@ jobs:
 ```yaml
 metadata:
   labels:
-    openmcf.org/provisioner: terraform
-    terraform.openmcf.org/backend.type: s3
-    terraform.openmcf.org/backend.bucket: my-r2-bucket
-    terraform.openmcf.org/backend.key: path/to/state.tfstate
-    terraform.openmcf.org/backend.region: auto
-    terraform.openmcf.org/backend.endpoint: https://account-id.r2.cloudflarestorage.com
+    planton.dev/provisioner: terraform
+    terraform.planton.dev/backend.type: s3
+    terraform.planton.dev/backend.bucket: my-r2-bucket
+    terraform.planton.dev/backend.key: path/to/state.tfstate
+    terraform.planton.dev/backend.region: auto
+    terraform.planton.dev/backend.endpoint: https://account-id.r2.cloudflarestorage.com
 ```
 
 ## Benefits

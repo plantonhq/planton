@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesdestinationrule.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/kubernetesdestinationrule/v1/spec.proto";
+import "dev/planton/provider/kubernetes/kubernetesdestinationrule/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// KubernetesDestinationRule is an Istio DestinationRule: a namespaced resource configuring
+// load balancing, connection pools, circuit breaking, and client TLS for traffic to a
+// service after routing has occurred, plus optional named subsets.
+message KubernetesDestinationRule {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'KubernetesDestinationRule'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  KubernetesDestinationRuleSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  KubernetesDestinationRuleStatus status = 5;
+}
+
+// KubernetesDestinationRuleStatus holds the deployment status and outputs.
+message KubernetesDestinationRuleStatus {
+  // stack-outputs
+  KubernetesDestinationRuleStackOutputs outputs = 1;
+}

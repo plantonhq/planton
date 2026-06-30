@@ -29,7 +29,7 @@ A complete deployment component (`OciDnsRecord`) wrapping `oci_dns_rrset` with p
 
 **No freeform_tags**: DNS record sets do not support OCI tagging. Unlike zone-level resources, individual RRSets are not taggable objects in the OCI data model.
 
-**Simplified record items**: The provider requires each item to carry redundant `domain` and `rtype` fields (must match the top-level values). The OpenMCF spec strips items to just `rdata` + `ttl`, and IaC modules inject domain and rtype from the spec-level fields. This eliminates YAML redundancy.
+**Simplified record items**: The provider requires each item to carry redundant `domain` and `rtype` fields (must match the top-level values). The Planton spec strips items to just `rdata` + `ttl`, and IaC modules inject domain and rtype from the spec-level fields. This eliminates YAML redundancy.
 
 **rtype as plain string (not enum)**: DNS record types (A, AAAA, CNAME, MX, TXT, NS, SRV, PTR, CAA) are IETF-standardized uppercase tokens. Proto enum convention requires lowercase values, which would force users to write `rtype: a` instead of the natural `rtype: "A"`. A plain string passes through to OCI without conversion.
 

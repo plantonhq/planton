@@ -10,7 +10,7 @@ Implemented `ScalewayKapsuleCluster` -- the seventh Scaleway resource kind and t
 
 ## Problem Statement / Motivation
 
-Scaleway's Kapsule is a managed Kubernetes service, and it's the centerpiece of the planned `kapsule-environment` infra chart. Without this resource kind, users cannot provision Kubernetes clusters on Scaleway through OpenMCF, and the most important infra chart cannot be built.
+Scaleway's Kapsule is a managed Kubernetes service, and it's the centerpiece of the planned `kapsule-environment` infra chart. Without this resource kind, users cannot provision Kubernetes clusters on Scaleway through Planton, and the most important infra chart cannot be built.
 
 ### Design Challenge
 
@@ -49,7 +49,7 @@ flowchart TB
 
 - `spec.proto` -- 5 nested messages: `ScalewayKapsuleClusterSpec`, `ScalewayKapsuleDefaultNodePool`, `ScalewayKapsuleAutoUpgrade`, `ScalewayKapsuleAutoscalerConfig`, `ScalewayKapsuleNodePoolUpgradePolicy`
 - `stack_outputs.proto` -- 6 outputs: `cluster_id`, `kubeconfig`, `apiserver_url`, `cluster_ca_certificate`, `wildcard_dns`, `default_pool_id`
-- `api.proto` -- KRM structure with `scaleway.openmcf.org/v1` apiVersion
+- `api.proto` -- KRM structure with `scaleway.planton.dev/v1` apiVersion
 - `stack_input.proto` -- Standard stack input with ScalewayProviderConfig
 
 ### Pulumi Go Module (6 files)
@@ -83,7 +83,7 @@ flowchart TB
 
 ## File Summary
 
-**24 files** in `apis/org/openmcf/provider/scaleway/scalewaykapsulecluster/v1/`:
+**24 files** in `apis/dev/planton/provider/scaleway/scalewaykapsulecluster/v1/`:
 - 4 proto schemas + 3 generated `.pb.go` stubs
 - 2 generated `BUILD.bazel` files
 - 6 Pulumi Go files (main.go, Pulumi.yaml, module/{main,locals,cluster,outputs}.go)

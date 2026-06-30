@@ -6,15 +6,15 @@
 
 ## Summary
 
-Added `AzureContainerAppEnvironment` (enum 440, id_prefix `azcae`) as a complete deployment component in OpenMCF. This is the 18th Azure resource kind (R17 in the expansion queue) and the foundation resource for the `container-apps-environment` infra chart. It provisions an Azure Container Apps Managed Environment with full support for VNet injection, Log Analytics integration, internal load balancing, zone redundancy, and dedicated workload profiles.
+Added `AzureContainerAppEnvironment` (enum 440, id_prefix `azcae`) as a complete deployment component in Planton. This is the 18th Azure resource kind (R17 in the expansion queue) and the foundation resource for the `container-apps-environment` infra chart. It provisions an Azure Container Apps Managed Environment with full support for VNet injection, Log Analytics integration, internal load balancing, zone redundancy, and dedicated workload profiles.
 
 ## Problem Statement / Motivation
 
-Azure Container Apps is Microsoft's fully managed serverless container platform, and the Managed Environment is its core hosting boundary. Without this resource in OpenMCF, users cannot compose container app deployment patterns in infra charts. It is the critical Layer 1 dependency for AzureContainerApp (R18), which defines the actual workloads.
+Azure Container Apps is Microsoft's fully managed serverless container platform, and the Managed Environment is its core hosting boundary. Without this resource in Planton, users cannot compose container app deployment patterns in infra charts. It is the critical Layer 1 dependency for AzureContainerApp (R18), which defines the actual workloads.
 
 ### Pain Points
 
-- No way to provision Azure Container App Environments through OpenMCF
+- No way to provision Azure Container App Environments through Planton
 - Cannot build the `container-apps-environment` infra chart without this foundation resource
 - AzureContainerApp (R18) is blocked until this environment resource exists
 

@@ -1,0 +1,16 @@
+apiVersion: gcp.planton.dev/v1
+kind: GcpGlobalAddress
+metadata:
+  name: test-global-address
+  labels:
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: test-org
+    pulumi.planton.dev/project: test-project
+    pulumi.planton.dev/stack.name: dev.GcpGlobalAddress.test-global-address
+spec:
+  projectId:
+    value: my-gcp-project-123
+  addressName: test-lb-external-ip
+  addressType: EXTERNAL
+  ipVersion: IPV4
+  description: Test static IP for load balancer

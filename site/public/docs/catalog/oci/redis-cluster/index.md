@@ -12,13 +12,13 @@ Deploys an Oracle Cloud Infrastructure Cache (Redis) cluster — a fully managed
 
 ## What Gets Created
 
-When you deploy an OciRedisCluster resource, OpenMCF provisions:
+When you deploy an OciRedisCluster resource, Planton provisions:
 
 - **Redis Cluster** — an `oci_redis_redis_cluster` resource in the specified compartment and subnet. Non-sharded clusters consist of a single primary with optional replicas. Sharded clusters distribute data across multiple shards, each with its own primary and replicas. Freeform tags are automatically populated from metadata labels, organization, and environment.
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the Redis cluster will be created — either a literal value or a reference to an OciCompartment resource
 - **A subnet OCID** where the Redis cluster will be placed — either a literal value or a reference to an OciSubnet resource
 - **A supported Redis version** available in the target region (e.g. `V7.0.5`, `V7.1.1`)
@@ -28,15 +28,15 @@ When you deploy an OciRedisCluster resource, OpenMCF provisions:
 Create a file `redis-cluster.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciRedisCluster
 metadata:
   name: my-cache
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciRedisCluster.my-cache
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciRedisCluster.my-cache
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -50,7 +50,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f redis-cluster.yaml
+planton apply -f redis-cluster.yaml
 ```
 
 This creates a non-sharded Redis cluster with 2 nodes (1 primary + 1 replica), each with 4 GB of memory. The cluster ID, primary endpoint, replicas endpoint, and discovery endpoint are exported as stack outputs.
@@ -84,15 +84,15 @@ This creates a non-sharded Redis cluster with 2 nodes (1 primary + 1 replica), e
 A minimal non-sharded cluster with a single replica for development workloads:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciRedisCluster
 metadata:
   name: dev-cache
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciRedisCluster.dev-cache
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciRedisCluster.dev-cache
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -108,15 +108,15 @@ spec:
 A sharded cluster with 3 shards and 3 nodes per shard for horizontally scaled production workloads:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciRedisCluster
 metadata:
   name: prod-cache
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciRedisCluster.prod-cache
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciRedisCluster.prod-cache
   env: prod
   org: acme
 spec:
@@ -136,18 +136,18 @@ spec:
 
 ### Cluster with Foreign Key References
 
-Reference OpenMCF-managed compartment, subnet, and NSG resources instead of hardcoding OCIDs:
+Reference Planton-managed compartment, subnet, and NSG resources instead of hardcoding OCIDs:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciRedisCluster
 metadata:
   name: ref-cache
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.OciRedisCluster.ref-cache
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.OciRedisCluster.ref-cache
 spec:
   compartmentId:
     valueFrom:
@@ -174,15 +174,15 @@ spec:
 A non-sharded cluster using a custom OCI Cache Config Set for tuned Redis configuration:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciRedisCluster
 metadata:
   name: custom-cache
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciRedisCluster.custom-cache
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciRedisCluster.custom-cache
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"

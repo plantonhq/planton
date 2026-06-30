@@ -12,7 +12,7 @@ Deploys the Strimzi Kafka Operator on a Kubernetes cluster using the official St
 
 ## What Gets Created
 
-When you deploy a KubernetesStrimziKafkaOperator resource, OpenMCF provisions:
+When you deploy a KubernetesStrimziKafkaOperator resource, Planton provisions:
 
 - **Namespace** — created only when `createNamespace` is `true`; defaults to `strimzi-operator` if `namespace` is not specified
 - **Strimzi Helm Release** — the `kubernetes-strimzi-kafka-operator` chart (v0.42.0) from `https://strimzi.io/charts/`, configured with `watchAnyNamespace: true`, which installs:
@@ -20,7 +20,7 @@ When you deploy a KubernetesStrimziKafkaOperator resource, OpenMCF provisions:
   - Custom Resource Definitions (CRDs) for Kafka, KafkaTopic, KafkaUser, KafkaConnect, KafkaMirrorMaker2, KafkaBridge, KafkaRebalance, and KafkaNodePool
   - ServiceAccount, ClusterRole, and ClusterRoleBinding for operator RBAC
   - ValidatingWebhookConfiguration for CRD validation
-- **Kubernetes Labels** — standard OpenMCF labels (`resource-kind`, `resource-id`, `organization`, `environment`) are applied to the namespace and propagated to operator resources for consistent metadata
+- **Kubernetes Labels** — standard Planton labels (`resource-kind`, `resource-id`, `organization`, `environment`) are applied to the namespace and propagated to operator resources for consistent metadata
 
 ## Prerequisites
 
@@ -33,15 +33,15 @@ When you deploy a KubernetesStrimziKafkaOperator resource, OpenMCF provisions:
 Create a file `strimzi-operator.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesStrimziKafkaOperator
 metadata:
   name: strimzi
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesStrimziKafkaOperator.strimzi
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesStrimziKafkaOperator.strimzi
 spec:
   namespace:
     value: strimzi-operator
@@ -59,7 +59,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f strimzi-operator.yaml
+planton apply -f strimzi-operator.yaml
 ```
 
 This installs the Strimzi Kafka Operator in the `strimzi-operator` namespace with default resource allocations. After deployment, you can create Kafka, KafkaTopic, and KafkaUser custom resources in any namespace.
@@ -85,7 +85,7 @@ This installs the Strimzi Kafka Operator in the `strimzi-operator` namespace wit
 | `container.resources.requests.cpu` | `string` | `"50m"` | CPU request for the Strimzi operator container. |
 | `container.resources.requests.memory` | `string` | `"100Mi"` | Memory request for the Strimzi operator container. |
 
-> **Note on `valueFrom`**: The `namespace` field is a `StringValueOrRef` type. You can provide a literal string with `value`, or use `valueFrom` to reference the output of another OpenMCF resource (e.g., a KubernetesNamespace). See the foreign key reference example below.
+> **Note on `valueFrom`**: The `namespace` field is a `StringValueOrRef` type. You can provide a literal string with `value`, or use `valueFrom` to reference the output of another Planton resource (e.g., a KubernetesNamespace). See the foreign key reference example below.
 
 ## Examples
 
@@ -94,15 +94,15 @@ This installs the Strimzi Kafka Operator in the `strimzi-operator` namespace wit
 Install the Strimzi Kafka Operator with defaults in the `strimzi-operator` namespace:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesStrimziKafkaOperator
 metadata:
   name: strimzi
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesStrimziKafkaOperator.strimzi
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesStrimziKafkaOperator.strimzi
 spec:
   namespace:
     value: strimzi-operator
@@ -115,15 +115,15 @@ spec:
 Deploy the operator with higher resource allocations for clusters running many Kafka instances:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesStrimziKafkaOperator
 metadata:
   name: strimzi-prod
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesStrimziKafkaOperator.strimzi-prod
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesStrimziKafkaOperator.strimzi-prod
 spec:
   namespace:
     value: strimzi-operator
@@ -140,18 +140,18 @@ spec:
 
 ### Operator in a Custom Namespace with Foreign Key Reference
 
-Install the operator in an OpenMCF-managed namespace using a `valueFrom` reference:
+Install the operator in an Planton-managed namespace using a `valueFrom` reference:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesStrimziKafkaOperator
 metadata:
   name: strimzi-shared
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.KubernetesStrimziKafkaOperator.strimzi-shared
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.KubernetesStrimziKafkaOperator.strimzi-shared
 spec:
   namespace:
     valueFrom:

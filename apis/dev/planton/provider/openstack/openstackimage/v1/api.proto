@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package dev.planton.provider.openstack.openstackimage.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/openstack/openstackimage/v1/spec.proto";
+import "dev/planton/provider/openstack/openstackimage/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// OpenStackImage is a Kubernetes Resource Model (KRM) style resource
+// for managing OpenStack Glance images.
+//
+// A Glance image is a virtual disk template used to boot compute instances
+// or initialize bootable Cinder volumes.
+//
+// Common use cases:
+//   - Upload custom VM images from URLs for developer environments
+//   - Register organization-standard golden images with visibility controls
+//   - Create bootable volume templates from cloud images
+message OpenStackImage {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'openstack.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OpenStackImage'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OpenStackImageSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OpenStackImageStatus status = 5;
+}
+
+// OpenStackImageStatus represents the observed state of an OpenStack
+// Glance image.
+message OpenStackImageStatus {
+  // stack-outputs from the IaC deployment
+  OpenStackImageStackOutputs outputs = 1;
+}

@@ -6,7 +6,7 @@
 
 ## Summary
 
-Implemented ScalewayServerlessFunction (R17) -- the seventeenth Scaleway resource kind in the OpenMCF provider. This is a composite resource that bundles a function namespace, serverless function, and optional cron triggers into a single declarable unit. Introduces a new Kubernetes-style environment variable pattern using repeated name-value messages (not maps) that preserves sort order and enables future `valueFrom` extension.
+Implemented ScalewayServerlessFunction (R17) -- the seventeenth Scaleway resource kind in the Planton provider. This is a composite resource that bundles a function namespace, serverless function, and optional cron triggers into a single declarable unit. Introduces a new Kubernetes-style environment variable pattern using repeated name-value messages (not maps) that preserves sort order and enables future `valueFrom` extension.
 
 ## Problem Statement / Motivation
 
@@ -14,7 +14,7 @@ The Scaleway provider needed a FaaS (Function-as-a-Service) resource kind to com
 
 ### Pain Points
 
-- No way to declaratively manage Scaleway serverless functions through OpenMCF
+- No way to declaratively manage Scaleway serverless functions through Planton
 - Scaleway's function model requires a namespace + function + optional triggers -- three separate Terraform resources for a single logical function
 - Previous environment variable patterns (`map<string, string>`) didn't preserve ordering and couldn't be extended with `valueFrom` semantics
 
@@ -100,22 +100,22 @@ The IaC modules convert repeated messages to `map[string]string` for the Scalewa
 
 ## Files Created
 
-- `apis/org/openmcf/provider/scaleway/scalewayserverlessfunction/v1/api.proto`
-- `apis/org/openmcf/provider/scaleway/scalewayserverlessfunction/v1/spec.proto`
-- `apis/org/openmcf/provider/scaleway/scalewayserverlessfunction/v1/stack_input.proto`
-- `apis/org/openmcf/provider/scaleway/scalewayserverlessfunction/v1/stack_outputs.proto`
-- `apis/org/openmcf/provider/scaleway/scalewayserverlessfunction/v1/iac/pulumi/module/main.go`
-- `apis/org/openmcf/provider/scaleway/scalewayserverlessfunction/v1/iac/pulumi/module/locals.go`
-- `apis/org/openmcf/provider/scaleway/scalewayserverlessfunction/v1/iac/pulumi/module/function.go`
-- `apis/org/openmcf/provider/scaleway/scalewayserverlessfunction/v1/iac/pulumi/module/outputs.go`
-- `apis/org/openmcf/provider/scaleway/scalewayserverlessfunction/v1/iac/pulumi/Pulumi.yaml`
-- `apis/org/openmcf/provider/scaleway/scalewayserverlessfunction/v1/iac/tf/main.tf`
-- `apis/org/openmcf/provider/scaleway/scalewayserverlessfunction/v1/iac/tf/variables.tf`
-- `apis/org/openmcf/provider/scaleway/scalewayserverlessfunction/v1/iac/tf/outputs.tf`
-- `apis/org/openmcf/provider/scaleway/scalewayserverlessfunction/v1/iac/tf/provider.tf`
-- `apis/org/openmcf/provider/scaleway/scalewayserverlessfunction/v1/iac/tf/locals.tf`
-- `apis/org/openmcf/provider/scaleway/scalewayserverlessfunction/v1/README.md`
-- `apis/org/openmcf/provider/scaleway/scalewayserverlessfunction/v1/examples.md`
+- `apis/dev/planton/provider/scaleway/scalewayserverlessfunction/v1/api.proto`
+- `apis/dev/planton/provider/scaleway/scalewayserverlessfunction/v1/spec.proto`
+- `apis/dev/planton/provider/scaleway/scalewayserverlessfunction/v1/stack_input.proto`
+- `apis/dev/planton/provider/scaleway/scalewayserverlessfunction/v1/stack_outputs.proto`
+- `apis/dev/planton/provider/scaleway/scalewayserverlessfunction/v1/iac/pulumi/module/main.go`
+- `apis/dev/planton/provider/scaleway/scalewayserverlessfunction/v1/iac/pulumi/module/locals.go`
+- `apis/dev/planton/provider/scaleway/scalewayserverlessfunction/v1/iac/pulumi/module/function.go`
+- `apis/dev/planton/provider/scaleway/scalewayserverlessfunction/v1/iac/pulumi/module/outputs.go`
+- `apis/dev/planton/provider/scaleway/scalewayserverlessfunction/v1/iac/pulumi/Pulumi.yaml`
+- `apis/dev/planton/provider/scaleway/scalewayserverlessfunction/v1/iac/tf/main.tf`
+- `apis/dev/planton/provider/scaleway/scalewayserverlessfunction/v1/iac/tf/variables.tf`
+- `apis/dev/planton/provider/scaleway/scalewayserverlessfunction/v1/iac/tf/outputs.tf`
+- `apis/dev/planton/provider/scaleway/scalewayserverlessfunction/v1/iac/tf/provider.tf`
+- `apis/dev/planton/provider/scaleway/scalewayserverlessfunction/v1/iac/tf/locals.tf`
+- `apis/dev/planton/provider/scaleway/scalewayserverlessfunction/v1/README.md`
+- `apis/dev/planton/provider/scaleway/scalewayserverlessfunction/v1/examples.md`
 - Plus generated Go stubs and BUILD.bazel files (via buf generate + Gazelle)
 
 ## Related Work

@@ -12,7 +12,7 @@ Deploys a production-grade PostgreSQL cluster on Kubernetes using the Zalando Po
 
 ## What Gets Created
 
-When you deploy a KubernetesPostgres resource, OpenMCF provisions:
+When you deploy a KubernetesPostgres resource, Planton provisions:
 
 - **Kubernetes Namespace** — created if `createNamespace` is `true`
 - **Zalando Postgresql Custom Resource** — a `postgresql` CR managed by the Zalando operator, which in turn creates:
@@ -34,15 +34,15 @@ When you deploy a KubernetesPostgres resource, OpenMCF provisions:
 Create a file `postgres.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPostgres
 metadata:
   name: my-postgres
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesPostgres.my-postgres
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesPostgres.my-postgres
 spec:
   namespace:
     value: postgres-dev
@@ -52,7 +52,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f postgres.yaml
+planton apply -f postgres.yaml
 ```
 
 This creates a single-replica PostgreSQL instance with 1Gi disk, 1 CPU, and 1Gi memory in the `postgres-dev` namespace.
@@ -93,15 +93,15 @@ This creates a single-replica PostgreSQL instance with 1Gi disk, 1 CPU, and 1Gi 
 ### PostgreSQL with Custom Databases and Users
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPostgres
 metadata:
   name: app-postgres
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesPostgres.app-postgres
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesPostgres.app-postgres
 spec:
   namespace:
     value: app-backend
@@ -124,15 +124,15 @@ spec:
 A multi-replica setup with tuned resources and larger storage:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPostgres
 metadata:
   name: prod-postgres
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesPostgres.prod-postgres
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesPostgres.prod-postgres
 spec:
   namespace:
     value: production
@@ -162,15 +162,15 @@ spec:
 External access, automated backups, and disaster recovery configuration:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPostgres
 metadata:
   name: full-postgres
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesPostgres.full-postgres
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesPostgres.full-postgres
 spec:
   namespace:
     value: databases

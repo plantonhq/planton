@@ -7,8 +7,8 @@ export default function HowItWorks() {
     { icon: FileText, title: "Parse", description: "apiVersion/kind/metadata/spec → Protobuf object" },
     { icon: Search, title: "Validate", description: "Buf ProtoValidate/CEL on spec" },
     { icon: Package, title: "Build", description: "stack-input = { provisioner, pulumi|terraform, target, providerCredential }" },
-    { icon: Play, title: "Plan", description: "openmcf plan (auto-detects provisioner)" },
-    { icon: CheckCircle, title: "Apply", description: "openmcf apply (backends: local|s3|gcs|azurerm)" },
+    { icon: Play, title: "Plan", description: "planton plan (auto-detects provisioner)" },
+    { icon: CheckCircle, title: "Apply", description: "planton apply (backends: local|s3|gcs|azurerm)" },
   ];
 
   return (
@@ -21,7 +21,7 @@ export default function HowItWorks() {
           From YAML manifest to deployed infrastructure in five clear steps
         </p>
         <p className="text-lg text-slate-300 max-w-3xl mx-auto mb-12">
-          Unlike tools that force you to learn different abstractions or write imperative code, OpenMCF follows the Kubernetes philosophy: <span className="text-purple-400 font-semibold">declarative configuration, strong validation, consistent workflow</span>. Whether you&apos;re deploying to AWS, GCP, Azure, or Kubernetes, the same five-step process applies.
+          Unlike tools that force you to learn different abstractions or write imperative code, Planton follows the Kubernetes philosophy: <span className="text-purple-400 font-semibold">declarative configuration, strong validation, consistent workflow</span>. Whether you&apos;re deploying to AWS, GCP, Azure, or Kubernetes, the same five-step process applies.
         </p>
       </div>
 
@@ -54,7 +54,7 @@ export default function HowItWorks() {
             <h3 className="text-2xl font-bold text-white mb-6">Input: YAML Manifest</h3>
             <div className="bg-slate-900 rounded-lg p-4 font-mono text-sm">
               <div className="text-slate-400"># example: postgres-on-kubernetes.yaml</div>
-              <div className="text-blue-400">apiVersion: <span className="text-white">kubernetes.openmcf.org/v1</span></div>
+              <div className="text-blue-400">apiVersion: <span className="text-white">kubernetes.planton.dev/v1</span></div>
               <div className="text-blue-400">kind: <span className="text-white">PostgresKubernetes</span></div>
               <div className="text-blue-400">metadata:</div>
               <div className="text-blue-400 ml-4">name: <span className="text-white">payments-db</span></div>

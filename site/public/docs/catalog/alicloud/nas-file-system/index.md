@@ -12,7 +12,7 @@ Deploys an Alibaba Cloud Network Attached Storage (NAS) file system with a VPC m
 
 ## What Gets Created
 
-When you deploy an AliCloudNasFileSystem resource, OpenMCF provisions:
+When you deploy an AliCloudNasFileSystem resource, Planton provisions:
 
 - **NAS File System** -- an `alicloud_nas_file_system` resource (Pulumi: `nas.FileSystem`) with the specified protocol type, storage tier, and optional encryption at rest
 - **Access Group + Access Rules** -- (conditional) when `accessRules` are specified, a custom `alicloud_nas_access_group` with `alicloud_nas_access_rule` entries controlling which IP ranges can mount the file system and with what permissions
@@ -23,24 +23,24 @@ When no `accessRules` are specified, the mount target uses the built-in DEFAULT_
 
 ## Prerequisites
 
-- **Alibaba Cloud credentials** configured via environment variables (`ALICLOUD_ACCESS_KEY`, `ALICLOUD_SECRET_KEY`) or OpenMCF provider config
+- **Alibaba Cloud credentials** configured via environment variables (`ALICLOUD_ACCESS_KEY`, `ALICLOUD_SECRET_KEY`) or Planton provider config
 - **A VPC and VSwitch** in the target region -- the mount target is created in this VSwitch
-- **OpenMCF CLI** installed with either Pulumi or Terraform (OpenTofu) backend
+- **Planton CLI** installed with either Pulumi or Terraform (OpenTofu) backend
 
 ## Quick Start
 
 Create a file `nas.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudNasFileSystem
 metadata:
   name: shared-data
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudNasFileSystem.shared-data
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudNasFileSystem.shared-data
 spec:
   region: cn-hangzhou
   protocolType: NFS
@@ -52,7 +52,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f nas.yaml
+planton apply -f nas.yaml
 ```
 
 This creates a standard NFS file system with Performance storage and a mount target accessible from all VPC IPs. Mount the file system:
@@ -91,7 +91,7 @@ mount -t nfs -o vers=4,minorversion=0,noresvport <mount_target_domain>:/ /mnt/na
 ### Minimal NFS File System
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudNasFileSystem
 metadata:
   name: dev-share
@@ -106,7 +106,7 @@ spec:
 ### Production NFS with Encryption and Access Rules
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudNasFileSystem
 metadata:
   name: prod-storage
@@ -133,7 +133,7 @@ spec:
 ### Extreme NAS for High-Throughput Workloads
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudNasFileSystem
 metadata:
   name: hpc-scratch

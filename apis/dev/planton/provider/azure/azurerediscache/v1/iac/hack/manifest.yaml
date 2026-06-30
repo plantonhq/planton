@@ -1,0 +1,14 @@
+apiVersion: azure.planton.dev/v1
+kind: AzureRedisCache
+metadata:
+  name: test-redis
+spec:
+  region: eastus
+  resource_group: test-rg
+  name: test-redis-cache
+  sku_name: Standard
+  capacity: 1
+  firewall_rules:
+    - name: allow_azure_services
+      start_ip: "0.0.0.0"
+      end_ip: "0.0.0.0"

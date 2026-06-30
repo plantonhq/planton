@@ -15,7 +15,7 @@ Implemented a complete full-stack application in the `/app` directory with a Go-
 
 ## Problem Statement / Motivation
 
-OpenMCF needed a web application to manage and visualize deployment components. The requirements included:
+Planton needed a web application to manage and visualize deployment components. The requirements included:
 
 - **Backend API**: A gRPC-compatible service to manage deployment component data
 - **Frontend Interface**: A modern web UI for viewing and managing deployment components
@@ -377,7 +377,7 @@ app/frontend/
 **Backend Environment Variables**:
 
 - `MONGODB_URI` - MongoDB connection string (default: `mongodb://localhost:27017`)
-- `MONGODB_DATABASE` - Database name (default: `openmcf`)
+- `MONGODB_DATABASE` - Database name (default: `planton`)
 - `SERVER_PORT` or `PORT` - Server port (default: `50051`)
 
 **Frontend Environment Variables**:
@@ -483,21 +483,21 @@ make build
 
 ```bash
 cd app/backend
-docker build -t openmcf-backend .
+docker build -t planton-backend .
 docker run -p 50051:50051 \
   -e MONGODB_URI=mongodb://mongodb:27017 \
-  -e MONGODB_DATABASE=openmcf \
-  openmcf-backend
+  -e MONGODB_DATABASE=planton \
+  planton-backend
 ```
 
 **Frontend**:
 
 ```bash
 cd app/frontend
-docker build -t openmcf-frontend .
+docker build -t planton-frontend .
 docker run -p 3000:3000 \
   -e API_ENDPOINT=http://backend:50051 \
-  openmcf-frontend
+  planton-frontend
 ```
 
 ### Docker Compose (Example)
@@ -518,7 +518,7 @@ services:
       - '50051:50051'
     environment:
       - MONGODB_URI=mongodb://mongodb:27017
-      - MONGODB_DATABASE=openmcf
+      - MONGODB_DATABASE=planton
     depends_on:
       - mongodb
 
@@ -610,9 +610,9 @@ volumes:
 
 ## Related Work
 
-This implementation establishes the foundation for OpenMCF's web application infrastructure. It integrates with:
+This implementation establishes the foundation for Planton's web application infrastructure. It integrates with:
 
-- **OpenMCF CLI**: Deployment component definitions
+- **Planton CLI**: Deployment component definitions
 - **Protobuf APIs**: Shared API definitions
 - **Docker Ecosystem**: Container orchestration platforms
 

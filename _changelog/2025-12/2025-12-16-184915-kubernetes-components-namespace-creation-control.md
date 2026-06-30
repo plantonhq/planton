@@ -15,9 +15,9 @@ Following the [November 23, 2025 namespace standardization](../2025-11/2025-11-2
 ### Pain Points
 
 - **Multi-component deployments**: When deploying multiple components to the same namespace (e.g., multiple workloads in `backend-services`), all components would attempt to create the same namespace, causing conflicts and deployment failures
-- **Pre-existing namespace management**: Organizations with existing namespace management practices (GitOps, separate namespace provisioning pipelines) couldn't leverage OpenMCF components without workarounds
+- **Pre-existing namespace management**: Organizations with existing namespace management practices (GitOps, separate namespace provisioning pipelines) couldn't leverage Planton components without workarounds
 - **Namespace ownership ambiguity**: Unclear which component "owns" a shared namespace, complicating lifecycle management and deletion
-- **Resource policy enforcement**: Namespaces with pre-configured ResourceQuotas, NetworkPolicies, or LimitRanges couldn't be used by OpenMCF components
+- **Resource policy enforcement**: Namespaces with pre-configured ResourceQuotas, NetworkPolicies, or LimitRanges couldn't be used by Planton components
 - **Compliance and security**: Enterprises with namespace creation restricted to platform teams needed a way to deploy components without namespace creation privileges
 - **Dependency ordering**: No way to ensure namespace is created first with proper labels/annotations before deploying components
 
@@ -72,13 +72,13 @@ Added to all 38 Kubernetes component specs (example shown for `KubernetesElastic
 ```protobuf
 message KubernetesElasticOperatorSpec {
   // Target Kubernetes Cluster
-  org.openmcf.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+  dev.planton.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
 
   // Kubernetes Namespace
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
     (buf.validate.field).required = true,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
   ];
 
   // flag to indicate if the namespace should be created
@@ -399,7 +399,7 @@ All documentation now includes:
 
 **Basic Example (standalone component)**:
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDeployment
 metadata:
   name: minimal-example
@@ -415,7 +415,7 @@ spec:
 **Multi-Component Example** (shown in relevant docs):
 ```yaml
 # First component - creates namespace
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDeployment
 metadata:
   name: cart-service
@@ -429,7 +429,7 @@ spec:
 
 ---
 # Additional components - use existing namespace
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDeployment
 metadata:
   name: order-service
@@ -535,7 +535,7 @@ func TestKubernetesElasticOperatorSpec_Validate(t *testing.T) {
 **Build validation**:
 ```bash
 # For each component (example)
-cd apis/org/openmcf/provider/kubernetes/kubernetesdeployment/v1
+cd apis/dev/planton/provider/kubernetes/kubernetesdeployment/v1
 go test ./...
 go build ./...
 ```
@@ -650,7 +650,7 @@ Users can now explicitly control resource creation order:
 
 ```yaml
 # Step 1: Create namespace with custom configuration
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesNamespace
 metadata:
   name: backend
@@ -658,7 +658,7 @@ spec:
   # ... namespace config with quotas, policies
 
 # Step 2: Deploy components to pre-configured namespace
-apiVersion: kubernetes.openmcf.org/v1  
+apiVersion: kubernetes.planton.dev/v1  
 kind: KubernetesPostgres
 metadata:
   name: backend-db
@@ -869,7 +869,7 @@ spec:
 
 ## Implementation Timeline
 
-This feature was implemented across multiple work sessions using the `complete-openmcf-component` rule:
+This feature was implemented across multiple work sessions using the `complete-planton-component` rule:
 
 ### Initial Development
 - **Date**: December 16, 2025
@@ -878,7 +878,7 @@ This feature was implemented across multiple work sessions using the `complete-o
 - **Files changed**: 108 (proto definitions, Go stubs, TypeScript stubs)
 
 ### Component Updates (38 separate sessions)
-- **Approach**: One conversation per component using `@complete-openmcf-component` rule
+- **Approach**: One conversation per component using `@complete-planton-component` rule
 - **Scope per session**:
   - Updated Pulumi modules with conditional namespace creation
   - Updated Terraform modules with `count` parameter
@@ -979,7 +979,7 @@ Deploying a full microservices application with multiple components to a single 
 
 ```yaml
 # 1. API Gateway (creates namespace)
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDeployment
 metadata:
   name: api-gateway
@@ -999,7 +999,7 @@ spec:
 
 ---
 # 2. Cart Service (uses existing)
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDeployment
 metadata:
   name: cart-service
@@ -1019,7 +1019,7 @@ spec:
 
 ---
 # 3. Redis Cache (uses existing)
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesRedis
 metadata:
   name: cart-cache
@@ -1038,7 +1038,7 @@ spec:
 
 ---
 # 4. PostgreSQL Database (uses existing)
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPostgres
 metadata:
   name: ecommerce-db
@@ -1094,7 +1094,7 @@ EOF
 # Development team deploys Elastic components
 ---
 # Elastic Operator
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesElasticOperator
 metadata:
   name: elastic-operator
@@ -1115,7 +1115,7 @@ spec:
 
 ---
 # Elasticsearch Cluster
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesElasticsearch
 metadata:
   name: logs-cluster
@@ -1137,7 +1137,7 @@ Different namespace strategies per environment:
 ```yaml
 # Development - auto-create namespaces for speed
 ---
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDeployment
 metadata:
   name: feature-x-api
@@ -1152,7 +1152,7 @@ spec:
 
 ---
 # Production - use pre-provisioned namespaces with governance
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDeployment
 metadata:
   name: api-production
@@ -1405,7 +1405,7 @@ spec:
 1. **Proto defaults matter**: Boolean fields default to `false` in proto3 - consider if this matches desired default behavior
 2. **Document migration**: Clear migration guide prevents production issues when changing component behavior
 3. **Test both modes**: Validate components work with both `create_namespace: true` and `false`
-4. **Use automation rules**: Leveraging `@complete-openmcf-component` rule ensured consistent updates across components
+4. **Use automation rules**: Leveraging `@complete-planton-component` rule ensured consistent updates across components
 5. **Separate concerns**: Keeping proto changes in one commit, implementation in separate conversations simplified tracking
 
 ## Future Considerations

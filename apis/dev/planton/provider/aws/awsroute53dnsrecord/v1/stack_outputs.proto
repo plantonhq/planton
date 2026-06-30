@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsroute53dnsrecord.v1;
+
+// AwsRoute53DnsRecordStackOutputs captures the outputs after provisioning a Route53 DNS record.
+// These outputs provide information about the created record for reference and integration.
+message AwsRoute53DnsRecordStackOutputs {
+  // The fully qualified domain name (FQDN) of the created DNS record.
+  // Example: "www.example.com" or "example.com" for apex records.
+  string fqdn = 1;
+
+  // The DNS record type that was created.
+  // Example: "A", "AAAA", "CNAME", "MX", "TXT"
+  string record_type = 2;
+
+  // The hosted zone ID where the record was created.
+  string zone_id = 3;
+
+  // Whether this is an alias record (pointing to an AWS resource).
+  bool is_alias = 4;
+
+  // The set identifier (if using routing policies).
+  // Empty for simple routing.
+  string set_identifier = 5;
+}

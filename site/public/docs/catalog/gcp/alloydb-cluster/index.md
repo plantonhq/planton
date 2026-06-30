@@ -12,7 +12,7 @@ Deploys an AlloyDB cluster with a bundled primary instance, automated and contin
 
 ## What Gets Created
 
-When you deploy a GcpAlloydbCluster resource, OpenMCF provisions:
+When you deploy a GcpAlloydbCluster resource, Planton provisions:
 
 - **AlloyDB Cluster** — a `google_alloydb_cluster` resource in the specified region with network configuration, backup policies, encryption, and maintenance settings
 - **Primary Instance** — a `google_alloydb_instance` of type `PRIMARY` attached to the cluster, with configurable machine size, availability type, query insights, and client connection settings
@@ -22,7 +22,7 @@ When you deploy a GcpAlloydbCluster resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **GCP credentials** configured via service account key or OpenMCF provider config
+- **GCP credentials** configured via service account key or Planton provider config
 - **A VPC network** with Private Service Access configured (the network must have a private services connection to `servicenetworking.googleapis.com`)
 - **A GCP project** with the AlloyDB API enabled (`alloydb.googleapis.com`)
 - **A Cloud KMS key** if enabling CMEK encryption (must be in the same region as the cluster)
@@ -32,15 +32,15 @@ When you deploy a GcpAlloydbCluster resource, OpenMCF provisions:
 Create a file `alloydb.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpAlloydbCluster
 metadata:
   name: my-alloydb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpAlloydbCluster.my-alloydb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpAlloydbCluster.my-alloydb
 spec:
   projectId:
     value: my-gcp-project
@@ -57,7 +57,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f alloydb.yaml
+planton apply -f alloydb.yaml
 ```
 
 This creates an AlloyDB cluster with a 2-CPU primary instance in `us-central1`, connected to the default VPC with GCP-managed encryption and default backup policies.
@@ -117,15 +117,15 @@ This creates an AlloyDB cluster with a 2-CPU primary instance in `us-central1`, 
 A production-ready cluster with REGIONAL availability, initial user, and deletion protection:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpAlloydbCluster
 metadata:
   name: prod-alloydb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: infra
-    pulumi.openmcf.org/stack.name: prod.GcpAlloydbCluster.prod-alloydb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: infra
+    pulumi.planton.dev/stack.name: prod.GcpAlloydbCluster.prod-alloydb
 spec:
   projectId:
     value: prod-project
@@ -150,15 +150,15 @@ spec:
 Full CMEK coverage with separate keys for data, backups, and PITR:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpAlloydbCluster
 metadata:
   name: enterprise-alloydb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: infra
-    pulumi.openmcf.org/stack.name: prod.GcpAlloydbCluster.enterprise-alloydb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: infra
+    pulumi.planton.dev/stack.name: prod.GcpAlloydbCluster.enterprise-alloydb
 spec:
   projectId:
     value: enterprise-project
@@ -205,15 +205,15 @@ spec:
 Quantity-based retention with a weekly schedule:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpAlloydbCluster
 metadata:
   name: backup-alloydb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: infra
-    pulumi.openmcf.org/stack.name: staging.GcpAlloydbCluster.backup-alloydb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: infra
+    pulumi.planton.dev/stack.name: staging.GcpAlloydbCluster.backup-alloydb
 spec:
   projectId:
     value: staging-project

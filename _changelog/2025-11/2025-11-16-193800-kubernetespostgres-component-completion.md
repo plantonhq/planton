@@ -30,7 +30,7 @@ Renamed `api_test.go` → `spec_test.go` to align with audit conventions and pat
 
 **File Impact**:
 ```
-apis/org/openmcf/provider/kubernetes/kubernetespostgres/v1/
+apis/dev/planton/provider/kubernetes/kubernetespostgres/v1/
   api_test.go → spec_test.go (renamed)
   BUILD.bazel (updated via Gazelle)
 ```
@@ -58,9 +58,9 @@ Each example includes:
 ### Test File Renaming
 
 ```bash
-cd apis/org/openmcf/provider/kubernetes/kubernetespostgres/v1
+cd apis/dev/planton/provider/kubernetes/kubernetespostgres/v1
 git mv api_test.go spec_test.go
-bazel run //:gazelle -- apis/org/openmcf/provider/kubernetes/kubernetespostgres/v1
+bazel run //:gazelle -- apis/dev/planton/provider/kubernetes/kubernetespostgres/v1
 ```
 
 The test file contains comprehensive validation tests using Ginkgo/Gomega:
@@ -176,12 +176,12 @@ All validations pass after changes:
 
 ```bash
 # Go tests
-cd apis/org/openmcf/provider/kubernetes/kubernetespostgres/v1
+cd apis/dev/planton/provider/kubernetes/kubernetespostgres/v1
 go test -v
 # Result: 1 Passed | 0 Failed | 0 Pending | 0 Skipped
 
 # Bazel build
-bazel test //apis/org/openmcf/provider/kubernetes/kubernetespostgres/v1:kubernetespostgres_test
+bazel test //apis/dev/planton/provider/kubernetes/kubernetespostgres/v1:kubernetespostgres_test
 # Result: PASSED in 1.1s
 
 # Go compilation
@@ -192,7 +192,7 @@ go build ./...
 ## Files Changed
 
 ```
-apis/org/openmcf/provider/kubernetes/kubernetespostgres/v1/
+apis/dev/planton/provider/kubernetes/kubernetespostgres/v1/
   M  BUILD.bazel
   R  api_test.go → spec_test.go
   A  iac/tf/examples.md (350 lines)

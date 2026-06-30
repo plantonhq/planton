@@ -1,0 +1,695 @@
+---
+description: Action rule to create structured issue files capturing discovered bugs, features, and improvements with intelligent area detection and image handling.
+globs: []
+alwaysApply: false
+---
+
+# Rule: Create Planton Issue (action)
+
+Purpose: When invoked, create a structured issue file in the `_issues/` directory that captures discovered issues (features, bugs, refactors, etc.) from the conversation, with support for image analysis and intelligent area detection.
+
+Usage: Invoke explicitly as `@create-planton-issue` after discovering an issue during a conversation.
+
+References: `@understand-cursor-rules`, existing issues in `_issues/`, `@generate-planton-pr-info`
+
+## ⚠️ CRITICAL: Explicit Invocation Only
+
+**DO NOT** create an issue file automatically or proactively. Issues must ONLY be created when the user explicitly invokes this rule with `@create-planton-issue`.
+
+Never:
+- ❌ Suggest creating an issue without being asked
+- ❌ Create an issue at the end of a conversation automatically
+- ❌ Assume the user wants an issue file created
+- ❌ Create an issue "to be helpful" without explicit request
+
+Always:
+- ✅ Wait for explicit invocation
+- ✅ Confirm the request before creating the file
+- ✅ Let the user decide when/if an issue file is needed
+
+**This is a user-controlled action, not an automatic process.**
+
+## When to Create an Issue File
+
+Create an issue file when:
+- ✅ You discover a bug during development or testing
+- ✅ A feature request emerges from customer feedback or internal discussion
+- ✅ A refactoring opportunity is identified that should be tracked
+- ✅ Technical debt or improvement areas are documented
+- ✅ You want to capture context for work that should be done later
+- ✅ Issues need to be tracked before creating GitHub issues
+
+**Skip issue files for**:
+- ✋ Issues you're fixing immediately in the same session
+- ✋ Trivial concerns already documented elsewhere
+- ✋ Duplicate issues already tracked
+
+## File Naming Convention
+
+### Format
+
+```
+YYYY-MM-DD-HHMMSS.{area}.{type}.{slug}.md
+```
+
+### Components
+
+**Timestamp** (`YYYY-MM-DD-HHMMSS`):
+- Get actual current timestamp by running: `date +"%Y-%m-%d-%H%M%S"`
+- DO NOT make up or guess the timestamp
+- Ensures chronological sorting when multiple issues created on same day
+
+**Area** (simple identifier):
+- `deployment-component` - Deployment component changes
+- `cli` - CLI changes
+- `pkg` - Package/library changes
+- `apis` - API/protobuf changes
+- `docs` - Documentation
+- `repo` - Repository-wide changes
+- `ops` - Operations/infrastructure
+- `tooling` - Build tools, scripts
+- `site` - Planton website
+- `forge` - Deployment component forge system
+
+**Type** (issue category):
+- `feat` - New feature or capability
+- `bug` - Bug fix or correction
+- `refactor` - Code restructuring without behavior change
+- `docs` - Documentation changes
+- `test` - Test additions or improvements
+- `perf` - Performance improvements
+- `chore` - Routine maintenance or cleanup
+
+**Slug** (descriptive identifier):
+- Kebab-case format
+- 30-50 characters
+- Clear and descriptive
+- No file extension in slug
+
+### Examples
+
+```
+2025-12-26-143022.deployment-component.bug.postgres-spec-validation.md
+2025-12-26-150815.cli.feat.manifest-validation-command.md
+2025-12-26-162430.forge.bug.pulumi-code-generation.md
+2025-12-26-091205.pkg.refactor.kubernetes-client-helpers.md
+2025-12-26-134512.apis.feat.new-cloud-resource-api.md
+```
+
+## Area Detection Heuristics
+
+Determine the area from conversation context using these guidelines:
+
+### File Path Mapping
+
+When file paths are mentioned in the conversation, map them to simple areas:
+
+- **`apis/dev/planton/**`** → `deployment-component`
+- **`cmd/planton/**`** → `cli`
+- **`pkg/**`** → `pkg`
+- **`internal/**`** → `cli`
+- **`apis/**` (general)** → `apis`
+- **`docs/**`, `architecture/**`** → `docs`
+- **`.cursor/**`, `Makefile`, `MODULE.bazel`** → `repo`
+- **`docker/**`, `docker-compose.yml`** → `ops`
+- **`tools/**`, `hack/**`, `build/**`** → `tooling`
+- **`site/**`** → `site`
+- **`_rules/deployment-component/forge/**`** → `forge`
+
+### Keyword Detection
+
+Look for these keywords in the conversation:
+
+- "deployment component", "IaC", "Pulumi", "Terraform", "cloud resource" → `deployment-component`
+- "CLI", "command line", "terminal", "planton" (the binary) → `cli`
+- "package", "library", "pkg/", "helper", "utility" → `pkg`
+- "protobuf", "proto", "API definition", "stubs", "buf" → `apis`
+- "forge", "code generation", "component generation" → `forge`
+- "website", "Next.js", "site", "documentation site" → `site`
+- "build", "bazel", "compilation", "tooling" → `tooling`
+
+### Multi-Area Issues
+
+When the issue spans multiple areas:
+- Use the **primary impacted area** (where most work will happen)
+- If truly cross-cutting, use `repo`
+- If unsure, ask the user which area to use
+
+### Example Detection
+
+```
+Conversation: "The Postgres deployment component spec validation is broken..."
+→ Area: deployment-component
+
+Conversation: "The CLI manifest validation command needs improvement..."
+→ Area: cli
+
+Conversation: "We need better Kubernetes client helpers in pkg/kubernetes..."
+→ Area: pkg
+
+Conversation: "The forge system's Pulumi code generation has a bug..."
+→ Area: forge
+```
+
+## Issue Type Definitions
+
+Choose the appropriate type based on the issue category:
+
+**`feat`** - New Feature or Capability
+- Adds new functionality that users can opt into
+- New command, component, or configuration option
+- Enhancement that provides new value
+
+**`bug`** - Bug Fix or Correction
+- Corrects incorrect behavior
+- Fixes regression or defect
+- Resolves error or unexpected outcome
+
+**`refactor`** - Code Restructuring
+- Improves code structure without changing behavior
+- Cleanup, reorganization, pattern improvements
+- Technical debt reduction
+
+**`docs`** - Documentation
+- Documentation-only changes
+- README updates, guides, explanations
+
+**`test`** - Testing Improvements
+- New tests or test improvements
+- Test coverage increases
+
+**`perf`** - Performance Improvements
+- Optimization work
+- Latency reduction, resource efficiency
+
+**`chore`** - Routine Maintenance
+- Dependency updates
+- Formatting, small cleanups
+- Routine maintenance not covered by other types
+
+## Issue Content Structure
+
+Use a **flexible approach** based on issue complexity. Choose freeform or structured content based on what communicates best.
+
+### Freeform Approach (Simple Issues)
+
+For straightforward issues, write naturally:
+- 2-4 paragraphs explaining the issue
+- Include relevant details, examples, and context
+- Reference specific files, errors, or behaviors
+- Keep it conversational but informative
+
+**Example:**
+
+```markdown
+The Postgres deployment component's spec validation currently doesn't check for 
+conflicting port configurations. When users specify both default and custom ports, 
+the validation passes but Pulumi deployment fails with a cryptic error.
+
+We should add validation rules to the spec.proto file to catch this at validation 
+time, before any deployment attempts. This aligns with our validation-first 
+deployment philosophy.
+```
+
+### Structured Approach (Complex Issues)
+
+For issues requiring more detail, use sections:
+
+**Problem/Context**
+- Why does this issue exist?
+- What triggered discovering it?
+
+**Current Behavior** (for bugs)
+- What's happening now that's incorrect?
+- Include error messages, screenshots, specific behaviors
+
+**Expected Behavior** (for bugs)
+- What should happen instead?
+- What's the correct outcome?
+
+**Proposed Solution** (for features)
+- How should this be implemented?
+- What's the approach or design?
+
+**Impact**
+- Who is affected? (users, developers, operations)
+- What's the severity or priority?
+- What breaks if this isn't fixed?
+
+**Acceptance Criteria**
+- When is this issue resolved?
+- What are the specific requirements?
+- How do we verify it's done?
+
+**Additional Context**
+- Screenshots, error logs, examples
+- Links to related issues or PRs
+- Code snippets or file references
+
+### Content Guidelines
+
+**Do:**
+- ✅ **Write for future implementers** - They need context to solve this
+- ✅ **Include concrete examples** - File paths, error messages, commands
+- ✅ **Reference images** - Visual aids help understanding
+- ✅ **Capture conversation context** - What led to discovering this?
+- ✅ **Be specific** - Vague issues are hard to act on
+- ✅ **Note impact** - Why does this matter?
+
+**Don't:**
+- ❌ **Be overly verbose** - Keep it focused and scannable
+- ❌ **Skip context** - Future you won't remember the conversation
+- ❌ **Assume knowledge** - Explain enough to understand the issue
+- ❌ **Ignore severity** - Note if this is blocking or low priority
+
+## Image Handling Workflow
+
+When images provide important context, follow this workflow to analyze, rename, copy, and reference them properly.
+
+### Step 1: Ask User About Images
+
+Before analyzing images, confirm with the user:
+
+**Ask:** "Do you have images in the `_issues/images/workspace/` directory that should be included in this issue?"
+
+- If **yes**: Proceed to step 2
+- If **no**: Skip to step 7 (create issue without images)
+
+### Step 2: List Workspace Images
+
+Read the `_issues/images/workspace/` directory to see what images are available:
+
+```bash
+ls -la _issues/images/workspace/
+```
+
+### Step 3: Analyze Each Image
+
+Read each image file to understand:
+- What the image shows
+- Why it's relevant to the issue
+- What it demonstrates (error, UI, behavior, etc.)
+
+Use the image analysis to create descriptive slugs in the next step.
+
+### Step 4: Rename Images
+
+Create new filenames following this pattern:
+
+**Format:** `{issue-filename-without-extension}.{image-slug}.{ext}`
+
+**Components:**
+- `issue-filename-without-extension`: Full issue filename without `.md`
+- `image-slug`: 1-3 word description of what image shows (kebab-case)
+- `ext`: Original file extension (png, jpg, jpeg, gif, etc.)
+
+**Examples:**
+
+Original: `screenshot-1.png`
+→ Renamed: `2025-12-26-143022.deployment-component.bug.postgres-spec-validation.error-output.png`
+
+Original: `error.jpg`
+→ Renamed: `2025-12-26-143022.cli.bug.manifest-validation.missing-field-log.jpg`
+
+Original: `before.png`, `after.png`
+→ Renamed: `2025-12-26-143022.forge.feat.pulumi-generation.before-code.png`
+→ Renamed: `2025-12-26-143022.forge.feat.pulumi-generation.after-code.png`
+
+### Step 5: Reference Images in Content
+
+Add markdown image references in the issue content pointing to the `images/` directory:
+
+```markdown
+![Error output](images/2025-12-26-143022.deployment-component.bug.postgres-spec-validation.error-output.png)
+```
+
+**Guidelines:**
+- Use descriptive alt text (what the image shows)
+- Place images near related content
+- Use relative paths from `_issues/` directory: `images/{filename}`
+- Reference multiple images if needed
+
+**Example in context:**
+
+```markdown
+## Current Behavior
+
+The validation passes with conflicting port configurations, but Pulumi 
+deployment fails:
+
+![Pulumi error output](images/2025-12-26-143022.deployment-component.bug.postgres-spec-validation.error-output.png)
+
+Additionally, the CLI doesn't provide a helpful error message:
+
+![CLI error message](images/2025-12-26-143022.deployment-component.bug.postgres-spec-validation.cli-error.png)
+```
+
+### Step 6: Copy Images to Images Directory
+
+Copy each renamed file from `_issues/images/workspace/` to `_issues/images/`:
+
+```bash
+cp _issues/images/workspace/{original-name}.png _issues/images/{renamed-name}.png
+```
+
+Repeat for each image file.
+
+### Step 7: Verify Copy Success
+
+Confirm files exist in `_issues/images/`:
+
+```bash
+ls -la _issues/images/{renamed-name}*
+```
+
+Verify each renamed file is present before proceeding.
+
+### Step 8: Clean Workspace Directory
+
+After confirming successful copy, delete the original images from workspace:
+
+```bash
+rm _issues/images/workspace/{original-name}.*
+```
+
+**Important:** Only delete after verifying the copy was successful.
+
+### Step 9: Confirm to User
+
+Let the user know the image handling is complete:
+
+```
+✅ Images processed:
+- Analyzed X images
+- Renamed and copied to _issues/images/
+- Cleaned up workspace directory
+- Referenced in issue content
+```
+
+## Quality Checklist
+
+Before finalizing the issue file, verify:
+
+- [ ] **Filename follows convention** with actual timestamp from `date` command
+- [ ] **Area accurately reflects** the issue scope
+- [ ] **Type correctly categorizes** the issue (feat/bug/refactor/etc.)
+- [ ] **Slug is descriptive** and concise (30-50 chars)
+- [ ] **Content captures essential context** from conversation
+- [ ] **Concrete examples included** (file paths, errors, behaviors)
+- [ ] **Images analyzed** and content understood
+- [ ] **Images renamed** with proper convention
+- [ ] **Images copied** to `_issues/images/` successfully
+- [ ] **Images referenced** correctly in markdown content
+- [ ] **Workspace cleaned** up (original images deleted)
+- [ ] **File path provided** to user
+
+## Automation Process
+
+When this rule is invoked, follow these steps:
+
+### 1. Get Current Timestamp
+
+Run the command to get actual timestamp:
+
+```bash
+date +"%Y-%m-%d-%H%M%S"
+```
+
+Use this exact output as the filename prefix. **Do not make up timestamps.**
+
+### 2. Analyze Conversation Context
+
+Extract from the conversation:
+- What issue was discovered?
+- What type of issue is it? (feat, bug, refactor, etc.)
+- What area does it belong to?
+- What are the key details and context?
+
+### 3. Detect Area
+
+Apply area detection heuristics:
+- Check for file paths mentioned
+- Look for keywords
+- Map to simple area identifiers
+- Ask user if unclear
+
+### 4. Choose Issue Type
+
+Determine the appropriate type:
+- New capability → `feat`
+- Incorrect behavior → `bug`
+- Code cleanup → `refactor`
+- Other types as appropriate
+
+### 5. Create Descriptive Slug
+
+Generate a clear, concise slug:
+- Describe the issue in 3-6 words
+- Use kebab-case
+- Keep to 30-50 characters
+- Make it searchable and memorable
+
+### 6. Handle Images (If Present)
+
+Follow the image handling workflow:
+- Ask user about workspace images
+- Analyze each image
+- Rename with convention
+- Copy to images directory
+- Verify copy success
+- Reference in content
+- Clean workspace
+
+### 7. Write Issue Content
+
+Create the issue content:
+- Use freeform or structured approach based on complexity
+- Include context from conversation
+- Add concrete examples and details
+- Reference images if present
+- Write for future implementer
+
+### 8. Create Issue File
+
+Write the file to `_issues/{filename}.md` with the generated content.
+
+### 9. Confirm Creation
+
+Provide feedback to user:
+
+```
+✅ Issue file created: _issues/2025-12-26-143022.deployment-component.bug.postgres-spec-validation.md
+
+Area: deployment-component
+Type: bug
+Summary: [Brief one-line summary]
+
+[If images were included]
+Images: X images processed and referenced
+```
+
+## Example Invocations
+
+### Simple Bug Discovery
+
+```
+User: "I noticed the Postgres component validation is broken. @create-planton-issue"
+
+Agent: 
+- Gets timestamp: 2025-12-26-143022
+- Detects area: deployment-component (Postgres component)
+- Determines type: bug
+- Creates slug: postgres-spec-validation
+- Asks about images: "Do you have images in workspace?"
+- User: "Yes"
+- Analyzes images, renames, copies, references
+- Creates: _issues/2025-12-26-143022.deployment-component.bug.postgres-spec-validation.md
+```
+
+### Feature Request
+
+```
+User: "We need a new manifest validation command in the CLI. @create-planton-issue"
+
+Agent:
+- Gets timestamp: 2025-12-26-150930
+- Detects area: cli (CLI command)
+- Determines type: feat
+- Creates slug: manifest-validation-command
+- No images needed
+- Creates: _issues/2025-12-26-150930.cli.feat.manifest-validation-command.md
+```
+
+### Forge System Issue
+
+```
+User: "The forge system's Pulumi generation has a bug. @create-planton-issue"
+
+Agent:
+- Gets timestamp: 2025-12-26-164512
+- Detects area: forge (forge system)
+- Determines type: bug
+- Creates slug: pulumi-code-generation
+- Creates: _issues/2025-12-26-164512.forge.bug.pulumi-code-generation.md
+```
+
+### Refactoring Opportunity
+
+```
+User: "We should refactor the Kubernetes client helpers. @create-planton-issue"
+
+Agent:
+- Gets timestamp: 2025-12-26-091445
+- Detects area: pkg (pkg/kubernetes)
+- Determines type: refactor
+- Creates slug: kubernetes-client-helpers
+- Creates: _issues/2025-12-26-091445.pkg.refactor.kubernetes-client-helpers.md
+```
+
+## Content Examples
+
+### Example 1: Simple Bug (Freeform)
+
+```markdown
+The Postgres deployment component's spec validation currently doesn't check for 
+conflicting port configurations. When users specify both default and custom ports, 
+the validation passes but Pulumi deployment fails with a cryptic error message.
+
+We should add validation rules to the spec.proto file to catch this at validation 
+time, before any deployment attempts. This aligns with our validation-first 
+deployment philosophy and saves debugging time.
+
+Affected file: `apis/dev/planton/provider/kubernetes/postgres/v1/spec.proto`
+```
+
+### Example 2: Feature Request (Structured)
+
+```markdown
+## Problem
+
+The CLI currently doesn't validate manifest files before attempting deployment. 
+Users discover validation errors only after initiating the deployment process, 
+wasting time and potentially incurring cloud costs.
+
+## Expected Behavior
+
+A new `planton manifest validate` command should:
+- Read the manifest file
+- Validate against proto schema
+- Check for common errors
+- Provide helpful error messages
+- Exit with appropriate status code
+
+## Proposed Solution
+
+Add a new command under `cmd/planton/manifest/validate.go`:
+- Use the existing protobuf validation logic
+- Leverage buf-validate for proto-level checks
+- Provide structured error output
+- Support JSON and YAML manifest formats
+
+## Impact
+
+- **Users**: All users deploying with manifests
+- **Priority**: Medium - improves UX significantly
+
+## Acceptance Criteria
+
+- [ ] Command `planton manifest validate <file>` implemented
+- [ ] Validates proto schema compliance
+- [ ] Provides clear error messages
+- [ ] Exits with status 0 on success, 1 on validation failure
+- [ ] Documentation added
+
+## Additional Context
+
+Similar validation commands:
+- `kubectl apply --dry-run=client`
+- `terraform validate`
+```
+
+### Example 3: Bug with Images (Structured)
+
+```markdown
+## Problem
+
+The forge system's Pulumi code generation produces incorrect import paths for 
+deployment components that use nested proto packages. This causes compilation 
+errors in the generated code.
+
+## Current Behavior
+
+![Generated code with broken imports](images/2025-12-26-164512.forge.bug.pulumi-code-generation.broken-imports.png)
+
+The generated Pulumi entrypoint shows:
+
+![Import error in IDE](images/2025-12-26-164512.forge.bug.pulumi-code-generation.ide-error.png)
+
+## Expected Behavior
+
+Import paths should correctly resolve to the nested proto package structure:
+```go
+import (
+    "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/postgres/v1"
+)
+```
+
+## Impact
+
+- **Users**: Anyone creating new deployment components
+- **Severity**: High - blocks component development
+- **Workaround**: Manual import path fixes after generation
+
+## Additional Context
+
+The issue appears to be in the import path template used by the forge system.
+
+Affected files:
+- `_rules/deployment-component/forge/_scripts/pulumi_entrypoint_write.py`
+- `_rules/deployment-component/forge/flow/010-pulumi-entrypoint.mdc`
+```
+
+## Writing Guidelines Summary
+
+### Do:
+- ✅ **Write for future implementers** - Give them the context they need
+- ✅ **Include concrete examples** - File paths, errors, specific behaviors
+- ✅ **Reference images** - Visual context helps understanding
+- ✅ **Capture conversation context** - What led to discovering this?
+- ✅ **Be specific and actionable** - Clear enough to implement
+- ✅ **Note impact and priority** - Help prioritization decisions
+
+### Don't:
+- ❌ **Be overly verbose** - Keep it focused and scannable
+- ❌ **Skip important context** - Future you won't remember the conversation
+- ❌ **Assume knowledge** - Explain enough to understand the problem
+- ❌ **Ignore severity** - Note if this is blocking or nice-to-have
+- ❌ **Leave out examples** - Concrete examples clarify abstract descriptions
+
+## Remember
+
+**Issue files are discovery artifacts** that capture:
+- What problem or opportunity was found
+- Why it matters
+- What context is needed to address it
+- Who is impacted
+
+Write for the person who will implement this later. Give them:
+- **Context**: Why does this issue exist?
+- **Clarity**: What exactly needs to be done?
+- **Completeness**: What information do they need?
+
+**When in doubt**: 
+- Start simple and add detail only where it helps
+- Use freeform for straightforward issues
+- Use structure for complex issues requiring multiple sections
+- Include images when visual context matters
+- Reference specific files, errors, and behaviors
+
+A well-written 4-paragraph issue is better than a rambling 2-page document.
+
+---
+
+**Status**: ✅ Production Ready
+
+*"Documentation is a love letter to your future self."* - Damian Conway

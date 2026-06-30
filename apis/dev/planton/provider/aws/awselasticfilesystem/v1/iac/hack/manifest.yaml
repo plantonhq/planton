@@ -1,0 +1,28 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsElasticFileSystem
+metadata:
+  org: example-org
+  env: dev
+  name: test-efs
+  id: test-efs-id
+spec:
+  region: us-east-1
+  encrypted: true
+  throughputMode: elastic
+  subnetIds:
+    - value: subnet-abc123
+    - value: subnet-def456
+  securityGroupIds:
+    - value: sg-abc123
+  backupEnabled: true
+  accessPoints:
+    - name: app-data
+      posixUser:
+        uid: 1000
+        gid: 1000
+      rootDirectory:
+        path: /app/data
+        creationInfo:
+          ownerUid: 1000
+          ownerGid: 1000
+          permissions: "0755"

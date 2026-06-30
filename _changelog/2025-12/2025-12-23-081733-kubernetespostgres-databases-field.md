@@ -30,7 +30,7 @@ The Zalando PostgreSQL operator automatically creates both the databases and the
 ### Configuration Example
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: PostgresKubernetes
 metadata:
   name: multi-db-server
@@ -141,7 +141,7 @@ Uses Terraform's `merge()` function to conditionally include the databases field
 ## Validation
 
 - ✅ `make protos` - Proto stubs regenerated successfully
-- ✅ `go test ./apis/org/openmcf/provider/kubernetes/kubernetespostgres/v1/...` - Tests pass
+- ✅ `go test ./apis/dev/planton/provider/kubernetes/kubernetespostgres/v1/...` - Tests pass
 - ✅ `make build` - Full build passes including Bazel, Go, and frontend builds
 
 ## Related Work

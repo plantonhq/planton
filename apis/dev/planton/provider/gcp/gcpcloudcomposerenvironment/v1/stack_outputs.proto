@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcpcloudcomposerenvironment.v1;
+
+// GcpCloudComposerEnvironmentStackOutputs captures observable identifiers and
+// endpoints from a provisioned Cloud Composer environment.
+message GcpCloudComposerEnvironmentStackOutputs {
+  // Fully qualified resource ID of the Composer environment.
+  // Format: projects/{project}/locations/{region}/environments/{name}
+  string environment_id = 1;
+
+  // Short name of the Composer environment.
+  string environment_name = 2;
+
+  // URI of the Apache Airflow web UI hosted by the Composer environment.
+  string airflow_uri = 3;
+
+  // Cloud Storage prefix where DAG files should be uploaded.
+  // Format: gs://{bucket}/dags
+  string dag_gcs_prefix = 4;
+
+  // Name of the underlying GKE cluster managed by Cloud Composer.
+  string gke_cluster = 5;
+}

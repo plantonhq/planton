@@ -12,7 +12,7 @@ Deploys a Google Cloud CDN endpoint backed by a Global Application Load Balancer
 
 ## What Gets Created
 
-When you deploy a GcpCloudCdn resource, OpenMCF provisions:
+When you deploy a GcpCloudCdn resource, Planton provisions:
 
 - **Global IP Address** — a static anycast IP for the load balancer frontend
 - **Backend Bucket or Backend Service** — one of the following, depending on the configured backend type:
@@ -29,7 +29,7 @@ When you deploy a GcpCloudCdn resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **An existing GCP project** — referenced via `gcpProjectId`
 - **IAM permissions** to create Compute Engine load balancer resources in the target project
 - **An existing origin** — depending on backend type:
@@ -44,15 +44,15 @@ When you deploy a GcpCloudCdn resource, OpenMCF provisions:
 Create a file `cdn.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudCdn
 metadata:
   name: my-cdn
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpCloudCdn.my-cdn
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpCloudCdn.my-cdn
 spec:
   gcpProjectId:
     value: my-gcp-project-123
@@ -64,7 +64,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f cdn.yaml
+planton apply -f cdn.yaml
 ```
 
 This creates a Cloud CDN endpoint backed by a GCS bucket, using the default `CACHE_ALL_STATIC` cache mode with a 1-hour default TTL and a 1-day max TTL.
@@ -131,15 +131,15 @@ This creates a Cloud CDN endpoint backed by a GCS bucket, using the default `CAC
 Serve a static site from a GCS bucket with default caching settings:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudCdn
 metadata:
   name: static-site-cdn
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpCloudCdn.static-site-cdn
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpCloudCdn.static-site-cdn
 spec:
   gcpProjectId:
     value: my-prod-project
@@ -157,15 +157,15 @@ spec:
 Cache a Cloud Run service behind a custom domain with a Google-managed SSL certificate:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudCdn
 metadata:
   name: api-cdn
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpCloudCdn.api-cdn
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpCloudCdn.api-cdn
 spec:
   gcpProjectId:
     value: my-prod-project
@@ -191,15 +191,15 @@ spec:
 Production deployment with tuned cache keys, negative caching policies, stale-while-revalidate, signed URLs, and Cloud Armor protection:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudCdn
 metadata:
   name: media-cdn
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpCloudCdn.media-cdn
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpCloudCdn.media-cdn
 spec:
   gcpProjectId:
     valueFrom:
@@ -257,15 +257,15 @@ spec:
 Cache content from an origin server outside GCP (multi-cloud or on-premises):
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudCdn
 metadata:
   name: hybrid-cdn
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.GcpCloudCdn.hybrid-cdn
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.GcpCloudCdn.hybrid-cdn
 spec:
   gcpProjectId:
     value: my-staging-project

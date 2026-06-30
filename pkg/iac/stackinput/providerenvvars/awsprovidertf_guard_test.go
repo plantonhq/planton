@@ -37,7 +37,7 @@ func TestAwsProviderTfConvergence(t *testing.T) {
 
 	root := repoRoot(t)
 	matches, err := filepath.Glob(filepath.Join(root,
-		"apis", "org", "openmcf", "provider", "aws", "*", "v1", "iac", "tf", "provider.tf"))
+		"apis", "org", "planton", "provider", "aws", "*", "v1", "iac", "tf", "provider.tf"))
 	require.NoError(t, err)
 
 	// Sized assertion: a new AWS tofu kind must adopt the canonical block (bump this with intent).

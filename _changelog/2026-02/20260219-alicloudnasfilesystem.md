@@ -12,7 +12,7 @@ Added the AliCloudNasFileSystem deployment component -- the second Storage-tier 
 ## What Was Created
 
 ### API Definition
-- `apis/org/openmcf/provider/alicloud/alicloudnasfilesystem/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
+- `apis/dev/planton/provider/alicloud/alicloudnasfilesystem/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
 - Registered `AliCloudNasFileSystem = 3051` in `CloudResourceKind` enum under the Storage category
 - 2 nested messages: `AliCloudNasEncryption`, `AliCloudNasAccessRule`
 

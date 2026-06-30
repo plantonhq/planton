@@ -12,13 +12,13 @@ Deploys an OpenStack Neutron floating IP, allocating an external (public) IP add
 
 ## What Gets Created
 
-When you deploy an OpenStackFloatingIp resource, OpenMCF provisions:
+When you deploy an OpenStackFloatingIp resource, Planton provisions:
 
 - **Neutron Floating IP** — an `openstack_networking_floatingip_v2` resource allocated from the specified external network, with optional built-in port association, specific address reservation, and tags
 
 ## Prerequisites
 
-- **OpenStack credentials** configured via environment variables or OpenMCF provider config
+- **OpenStack credentials** configured via environment variables or Planton provider config
 - **An existing external (provider) network** — provided as a literal UUID or via `valueFrom` reference to an OpenStackNetwork resource
 - **An existing port** if using built-in association via `portId`
 
@@ -27,15 +27,15 @@ When you deploy an OpenStackFloatingIp resource, OpenMCF provisions:
 Create a file `floating-ip.yaml`:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackFloatingIp
 metadata:
   name: my-fip
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OpenStackFloatingIp.my-fip
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OpenStackFloatingIp.my-fip
 spec:
   floatingNetworkId:
     value: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
@@ -44,7 +44,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f floating-ip.yaml
+planton apply -f floating-ip.yaml
 ```
 
 This allocates a floating IP from the specified external network. The IP is not associated with any port (allocation-only mode). Use the `address` output for DNS configuration, firewall rules, or later association.
@@ -76,15 +76,15 @@ This allocates a floating IP from the specified external network. The IP is not 
 A floating IP allocated from an external network with no port association. Suitable for reserving a public IP before the target port or instance exists:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackFloatingIp
 metadata:
   name: web-fip
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OpenStackFloatingIp.web-fip
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OpenStackFloatingIp.web-fip
 spec:
   floatingNetworkId:
     value: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
@@ -93,18 +93,18 @@ spec:
 
 ### Floating IP with Port Association
 
-A floating IP allocated and immediately associated with a port, using `valueFrom` references to other OpenMCF resources for both the external network and the target port:
+A floating IP allocated and immediately associated with a port, using `valueFrom` references to other Planton resources for both the external network and the target port:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackFloatingIp
 metadata:
   name: app-fip
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.OpenStackFloatingIp.app-fip
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.OpenStackFloatingIp.app-fip
 spec:
   floatingNetworkId:
     valueFrom:
@@ -127,15 +127,15 @@ spec:
 A floating IP with a specific address requested from the pool, useful for DNS pre-configuration or firewall whitelisting where the IP must be known before allocation:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackFloatingIp
 metadata:
   name: lb-fip
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OpenStackFloatingIp.lb-fip
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OpenStackFloatingIp.lb-fip
 spec:
   floatingNetworkId:
     valueFrom:

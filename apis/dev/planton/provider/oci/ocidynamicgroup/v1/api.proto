@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocidynamicgroup.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/oci/ocidynamicgroup/v1/spec.proto";
+import "dev/planton/provider/oci/ocidynamicgroup/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// OciDynamicGroup is the top-level resource representing an Oracle Cloud
+// Infrastructure dynamic group for granting OCI resources (compute instances,
+// functions, etc.) the ability to authenticate and call OCI APIs.
+message OciDynamicGroup {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'oci.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OciDynamicGroup'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OciDynamicGroupSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OciDynamicGroupStatus status = 5;
+}
+
+// OciDynamicGroupStatus holds the outputs produced by deploying an OciDynamicGroup.
+message OciDynamicGroupStatus {
+  // stack-outputs
+  OciDynamicGroupStackOutputs outputs = 1;
+}

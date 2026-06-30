@@ -1,3 +1,0 @@
-name: aws-kinesis-stream
-runtime: go
-description: Deploy an Amazon Kinesis Data Stream using OpenMCF

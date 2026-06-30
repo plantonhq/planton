@@ -2,7 +2,7 @@
 
 **Date**: 2026-02-20
 **Type**: New Feature
-**Components**: `apis/org/openmcf/provider/oci/ocivaultsecret/v1/`
+**Components**: `apis/dev/planton/provider/oci/ocivaultsecret/v1/`
 
 ## Summary
 
@@ -10,7 +10,7 @@ Added the OciVaultSecret deployment component -- OCI's managed secret stored in 
 
 ## Problem Statement / Motivation
 
-OpenMCF's OCI provider had KMS Vault (R24) and KMS Key (R25) components for encryption infrastructure, but no way to store secrets (credentials, API keys, certificates) within those vaults. OCI Vault Secrets are the primary mechanism for managing sensitive data across OCI services -- without them, platform teams cannot declaratively manage secrets for database credentials, API tokens, or SSH keys with proper lifecycle controls, rotation, and encryption.
+Planton's OCI provider had KMS Vault (R24) and KMS Key (R25) components for encryption infrastructure, but no way to store secrets (credentials, API keys, certificates) within those vaults. OCI Vault Secrets are the primary mechanism for managing sensitive data across OCI services -- without them, platform teams cannot declaratively manage secrets for database credentials, API tokens, or SSH keys with proper lifecycle controls, rotation, and encryption.
 
 ## Solution / What's New
 
@@ -70,8 +70,8 @@ A complete OciVaultSecret deployment component with both Pulumi (Go) and Terrafo
 
 - **content_type hardcoded to BASE64**: Only valid value today. Hardcoded in both IaC modules; not exposed in spec to avoid false optionality.
 - **stage as plain string with in-list validation**: "CURRENT" and "PENDING" are the only valid user-set values. Empty string allowed (defaults to CURRENT). Plain string avoids enum overhead for a 2-value field.
-- **secret_metadata field name**: Named `secret_metadata` to avoid collision with OpenMCF's `CloudResourceMetadata` on the parent message. Maps to OCI's `metadata` attribute.
-- **Rotation target adb_id as StringValueOrRef**: default_kind OciAutonomousDatabase enables infra-chart composability. function_id uses StringValueOrRef without default_kind (individual functions are code artifacts, not OpenMCF components).
+- **secret_metadata field name**: Named `secret_metadata` to avoid collision with Planton's `CloudResourceMetadata` on the parent message. Maps to OCI's `metadata` attribute.
+- **Rotation target adb_id as StringValueOrRef**: default_kind OciAutonomousDatabase enables infra-chart composability. function_id uses StringValueOrRef without default_kind (individual functions are code artifacts, not Planton components).
 - **Display name = secret_name**: Unlike other components that use display_name or metadata.name, secrets are identified by secret_name. The Locals.DisplayName is set to secret_name for consistency in Pulumi resource naming.
 - **Secret versions not bundled**: Secret versions are managed implicitly -- updating secret_content creates a new version automatically. current_version_number is a computed output.
 - **Directory name**: `ocivaultsecret` (per WA02 -- lowercased kind name, not id_prefix `ocisec`).

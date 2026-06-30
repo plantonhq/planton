@@ -14,7 +14,7 @@ This component wraps a single provider resource (`alicloud_cs_managed_kubernetes
 ## What Was Created
 
 ### API Definition
-- `apis/org/openmcf/provider/alicloud/alicloudkubernetescluster/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
+- `apis/dev/planton/provider/alicloud/alicloudkubernetescluster/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
 - Registered `AliCloudKubernetesCluster = 3091` in `CloudResourceKind` enum under the Containers category
 - 6 proto messages: spec, addon, logging, maintenance window, auto-upgrade, plus the API/status wrappers
 

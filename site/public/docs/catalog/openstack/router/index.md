@@ -12,13 +12,13 @@ Deploys an OpenStack Neutron router, providing L3 routing between tenant subnets
 
 ## What Gets Created
 
-When you deploy an OpenStackRouter resource, OpenMCF provisions:
+When you deploy an OpenStackRouter resource, Planton provisions:
 
 - **Neutron Router** — an `openstack_networking_router_v2` resource with the configured external gateway, SNAT settings, DVR mode, external fixed IPs, and tags
 
 ## Prerequisites
 
-- **OpenStack credentials** configured via environment variables or OpenMCF provider config
+- **OpenStack credentials** configured via environment variables or Planton provider config
 - **External network UUID** if connecting the router to an external (provider) network for internet access — this network is typically created by a cloud administrator
 - **Admin privileges** if setting `distributed` mode on deployments that restrict DVR to admin users
 
@@ -27,22 +27,22 @@ When you deploy an OpenStackRouter resource, OpenMCF provisions:
 Create a file `router.yaml`:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackRouter
 metadata:
   name: my-router
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OpenStackRouter.my-router
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OpenStackRouter.my-router
 spec: {}
 ```
 
 Deploy:
 
 ```shell
-openmcf apply -f router.yaml
+planton apply -f router.yaml
 ```
 
 This creates a Neutron router named `my-router` with default settings: admin state up and no external gateway (internal routing only).
@@ -80,15 +80,15 @@ All spec fields are optional. The router name is derived from `metadata.name`.
 A router without an external gateway, providing routing between tenant subnets only:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackRouter
 metadata:
   name: internal-router
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OpenStackRouter.internal-router
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OpenStackRouter.internal-router
 spec:
   description: Internal routing between dev subnets
   tags:
@@ -101,15 +101,15 @@ spec:
 A router connected to an external network for internet access, referencing the network by UUID:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackRouter
 metadata:
   name: gateway-router
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.OpenStackRouter.gateway-router
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.OpenStackRouter.gateway-router
 spec:
   externalNetworkId:
     value: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
@@ -125,15 +125,15 @@ spec:
 A distributed router that references an OpenStackNetwork resource for its external gateway using `valueFrom`, with a specific external IP allocation:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackRouter
 metadata:
   name: prod-router
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OpenStackRouter.prod-router
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OpenStackRouter.prod-router
 spec:
   externalNetworkId:
     valueFrom:

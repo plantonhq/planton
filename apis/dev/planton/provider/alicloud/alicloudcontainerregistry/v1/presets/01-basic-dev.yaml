@@ -1,0 +1,13 @@
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudContainerRegistry
+metadata:
+  name: dev-registry
+spec:
+  region: cn-hangzhou
+  instanceName: dev-acr
+  instanceType: Basic
+  paymentType: PayAsYouGo
+  namespaces:
+    - name: dev
+      autoCreate: true
+      defaultVisibility: PRIVATE

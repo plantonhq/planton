@@ -12,14 +12,14 @@ Deploys a Cloudflare Zero Trust Access Application that protects a hostname behi
 
 ## What Gets Created
 
-When you deploy a CloudflareZeroTrustAccessApplication resource, OpenMCF provisions:
+When you deploy a CloudflareZeroTrustAccessApplication resource, Planton provisions:
 
 - **Access Application** — a `cloudflare_access_application` of type `self_hosted`, bound to the specified DNS zone and hostname, with an optional custom session duration
 - **Access Policy** — a `cloudflare_access_policy` attached to the application with an `allow` or `deny` decision, email-based include rules, optional Google Workspace group includes, and an optional MFA requirement
 
 ## Prerequisites
 
-- **Cloudflare credentials** configured via environment variables or OpenMCF provider config
+- **Cloudflare credentials** configured via environment variables or Planton provider config
 - **A Cloudflare DNS zone** already provisioned (the `zoneId` is required); you can obtain this from a CloudflareDnsZone resource's `status.outputs.zone_id`
 - **DNS configured** — the hostname you intend to protect must resolve within the specified zone
 - **Cloudflare Zero Trust subscription** — Access Applications require a Zero Trust plan on the Cloudflare account
@@ -29,15 +29,15 @@ When you deploy a CloudflareZeroTrustAccessApplication resource, OpenMCF provisi
 Create a file `access-app.yaml`:
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareZeroTrustAccessApplication
 metadata:
   name: my-access-app
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CloudflareZeroTrustAccessApplication.my-access-app
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CloudflareZeroTrustAccessApplication.my-access-app
 spec:
   applicationName: My Internal App
   zoneId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
@@ -50,7 +50,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f access-app.yaml
+planton apply -f access-app.yaml
 ```
 
 This creates a Zero Trust Access Application protecting `app.example.com` with an allow policy that grants access only to `alice@example.com` and `bob@example.com`.
@@ -82,15 +82,15 @@ This creates a Zero Trust Access Application protecting `app.example.com` with a
 Restrict access to a staging application to a small list of team members:
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareZeroTrustAccessApplication
 metadata:
   name: staging-app
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.CloudflareZeroTrustAccessApplication.staging-app
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.CloudflareZeroTrustAccessApplication.staging-app
 spec:
   applicationName: Staging Dashboard
   zoneId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
@@ -106,15 +106,15 @@ spec:
 Protect a production admin panel with mandatory multi-factor authentication and a shorter session window:
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareZeroTrustAccessApplication
 metadata:
   name: admin-panel
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CloudflareZeroTrustAccessApplication.admin-panel
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CloudflareZeroTrustAccessApplication.admin-panel
 spec:
   applicationName: Admin Panel
   zoneId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
@@ -131,15 +131,15 @@ spec:
 Grant access to a Google Workspace group while blocking specific email addresses:
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareZeroTrustAccessApplication
 metadata:
   name: internal-wiki
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CloudflareZeroTrustAccessApplication.internal-wiki
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CloudflareZeroTrustAccessApplication.internal-wiki
 spec:
   applicationName: Internal Wiki
   zoneId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d

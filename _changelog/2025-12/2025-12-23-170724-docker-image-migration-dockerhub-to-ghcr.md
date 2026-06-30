@@ -6,11 +6,11 @@
 
 ## Summary
 
-Migrated OpenMCF's Docker image publishing from Docker Hub to GitHub Container Registry (GHCR) with automated multi-architecture builds via GitHub Actions. This eliminates the need for Docker Hub credentials, enables automatic builds on git tags (testing phase uses manual dispatch), and provides native multi-arch support (AMD64 + ARM64) for broader compatibility. All users can now pull images publicly without authentication.
+Migrated Planton's Docker image publishing from Docker Hub to GitHub Container Registry (GHCR) with automated multi-architecture builds via GitHub Actions. This eliminates the need for Docker Hub credentials, enables automatic builds on git tags (testing phase uses manual dispatch), and provides native multi-arch support (AMD64 + ARM64) for broader compatibility. All users can now pull images publicly without authentication.
 
 ## Problem Statement / Motivation
 
-The project was using Docker Hub (`satishlleftbin/openmcf`) for hosting Docker images, which created several operational and user experience challenges.
+The project was using Docker Hub (`satishlleftbin/planton`) for hosting Docker images, which created several operational and user experience challenges.
 
 ### Pain Points
 
@@ -36,7 +36,7 @@ Implemented a complete migration to GitHub Container Registry (GHCR) with automa
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    GitHub Repository                        │
-│                 plantonhq/openmcf             │
+│                 plantonhq/planton             │
 └───────────────────┬─────────────────────────────────────────┘
                     │
                     │ 1. Manual Workflow Dispatch (Testing Phase)
@@ -52,7 +52,7 @@ Implemented a complete migration to GitHub Container Registry (GHCR) with automa
 │  │ 2. Set up Docker Buildx (multi-platform support)   │    │
 │  │ 3. Login to GHCR (using GITHUB_TOKEN)             │    │
 │  │ 4. Build for linux/amd64 + linux/arm64            │    │
-│  │ 5. Push to ghcr.io/plantonhq/openmcf│    │
+│  │ 5. Push to ghcr.io/plantonhq/planton│    │
 │  │ 6. Set package visibility to public                │    │
 │  └────────────────────────────────────────────────────┘    │
 └───────────────────┬─────────────────────────────────────────┘
@@ -62,7 +62,7 @@ Implemented a complete migration to GitHub Container Registry (GHCR) with automa
                     ▼
 ┌─────────────────────────────────────────────────────────────┐
 │         GitHub Container Registry (GHCR)                    │
-│      ghcr.io/plantonhq/openmcf               │
+│      ghcr.io/plantonhq/planton               │
 │                                                              │
 │  📦 Packages:                                               │
 │     - latest (always updated)                               │
@@ -87,7 +87,7 @@ Implemented a complete migration to GitHub Container Registry (GHCR) with automa
 │    planton webapp start                                     │
 │                                                              │
 │  Docker Commands:                                           │
-│    docker pull ghcr.io/plantonhq/openmcf     │
+│    docker pull ghcr.io/plantonhq/planton     │
 │    docker-compose up                                        │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -172,11 +172,11 @@ permissions:
 ```yaml
 services:
   backend:
-    image: ${BACKEND_IMAGE:-satishlleftbin/openmcf-backend:latest}
+    image: ${BACKEND_IMAGE:-satishlleftbin/planton-backend:latest}
     # ... backend config
 
   frontend:
-    image: ${FRONTEND_IMAGE:-satishlleftbin/openmcf-frontend:latest}
+    image: ${FRONTEND_IMAGE:-satishlleftbin/planton-frontend:latest}
     # ... frontend config
 ```
 
@@ -184,8 +184,8 @@ services:
 ```yaml
 services:
   planton:
-    image: ${PLANTON_IMAGE:-ghcr.io/plantonhq/openmcf:latest}
-    container_name: openmcf
+    image: ${PLANTON_IMAGE:-ghcr.io/plantonhq/planton:latest}
+    container_name: planton
     ports:
       - '3000:3000'    # Frontend
       - '50051:50051'  # Backend gRPC
@@ -204,12 +204,12 @@ services:
 
 ### 3. CLI Webapp Commands
 
-**File**: `cmd/openmcf/root/webapp/init.go`
+**File**: `cmd/planton/root/webapp/init.go`
 
 **Before**:
 ```go
 const (
-    DockerImageName   = "satishlleftbin/openmcf"
+    DockerImageName   = "satishlleftbin/planton"
     DockerImageTag    = "latest"
     // ... other constants
 )
@@ -218,7 +218,7 @@ const (
 **After**:
 ```go
 const (
-    DockerImageName   = "ghcr.io/plantonhq/openmcf"
+    DockerImageName   = "ghcr.io/plantonhq/planton"
     DockerImageTag    = "latest"
     // ... other constants
 )
@@ -235,11 +235,11 @@ const (
 $ planton webapp init
 
 ========================================
-🚀 OpenMCF Web App Initialization
+🚀 Planton Web App Initialization
 ========================================
 
 📋 Step 3/5: Pulling Docker image...
-   Pulling ghcr.io/plantonhq/openmcf:latest...
+   Pulling ghcr.io/plantonhq/planton:latest...
 ✅ Docker image pulled successfully
 ```
 
@@ -247,7 +247,7 @@ $ planton webapp init
 
 Updated six documentation files to reflect the migration:
 
-**`_projects/20251127-openmcf-web-app/docs/docker-image-deployment.md`**:
+**`_projects/20251127-planton-web-app/docs/docker-image-deployment.md`**:
 - Complete rewrite focused on GHCR and GitHub Actions
 - Removed Docker Hub authentication instructions
 - Added workflow dispatch testing instructions
@@ -260,7 +260,7 @@ Updated six documentation files to reflect the migration:
 - Changed build/release workflow documentation
 - Updated deployment instructions
 
-**`_projects/20251127-openmcf-web-app/docs/cli-commands.md`**:
+**`_projects/20251127-planton-web-app/docs/cli-commands.md`**:
 - Updated all image references in command output examples
 - Changed pull command examples
 - Updated status command output examples
@@ -303,7 +303,7 @@ These scripts remain in place during the migration period but are no longer the 
    - Generally better performance than Docker Hub for GitHub-hosted projects
 
 4. **Clearer Source Association**
-   - `ghcr.io/plantonhq/openmcf` clearly maps to GitHub repository
+   - `ghcr.io/plantonhq/planton` clearly maps to GitHub repository
    - Easy to find source code from image name
 
 ### For Developers/Maintainers
@@ -367,7 +367,7 @@ These scripts remain in place during the migration period but are no longer the 
 **For CLI Users**:
 ```bash
 # 1. Update CLI to latest version (or rebuild from source)
-brew upgrade plantonhq/tap/openmcf
+brew upgrade plantonhq/tap/planton
 
 # 2. Uninstall old webapp (if exists)
 planton webapp uninstall
@@ -381,7 +381,7 @@ planton webapp init
 **For Docker Compose Users**:
 ```bash
 # Pull the new image
-docker pull ghcr.io/plantonhq/openmcf:latest
+docker pull ghcr.io/plantonhq/planton:latest
 
 # Restart services
 docker-compose down
@@ -392,10 +392,10 @@ docker-compose up -d
 Replace any hardcoded references:
 ```bash
 # Old
-docker pull satishlleftbin/openmcf:latest
+docker pull satishlleftbin/planton:latest
 
 # New
-docker pull ghcr.io/plantonhq/openmcf:latest
+docker pull ghcr.io/plantonhq/planton:latest
 ```
 
 ### Affected Components
@@ -433,7 +433,7 @@ docker pull ghcr.io/plantonhq/openmcf:latest
 ### Triggering a Build (Testing Phase)
 
 **Via GitHub UI**:
-1. Go to: `https://github.com/plantonhq/openmcf/actions`
+1. Go to: `https://github.com/plantonhq/planton/actions`
 2. Select "Build and Push Docker Image to GHCR"
 3. Click "Run workflow"
 4. Optional: Enter version like `test-v1` or `v0.9.0-rc1`
@@ -454,20 +454,20 @@ gh run watch
 **Direct Docker Pull**:
 ```bash
 # Pull latest (no authentication needed!)
-docker pull ghcr.io/plantonhq/openmcf:latest
+docker pull ghcr.io/plantonhq/planton:latest
 
 # Pull specific version
-docker pull ghcr.io/plantonhq/openmcf:v1.0.0
+docker pull ghcr.io/plantonhq/planton:v1.0.0
 
 # Verify architecture
-docker inspect ghcr.io/plantonhq/openmcf:latest | grep Architecture
+docker inspect ghcr.io/plantonhq/planton:latest | grep Architecture
 ```
 
 **Via CLI**:
 ```bash
 # CLI handles the pull automatically
 planton webapp init
-# Pulls ghcr.io/plantonhq/openmcf:latest
+# Pulls ghcr.io/plantonhq/planton:latest
 ```
 
 **Via Docker Compose**:
@@ -480,18 +480,18 @@ docker-compose up -d
 
 ```bash
 # Check manifest
-docker manifest inspect ghcr.io/plantonhq/openmcf:latest
+docker manifest inspect ghcr.io/plantonhq/planton:latest
 
 # Output shows both architectures:
 # - linux/amd64
 # - linux/arm64
 
 # On Intel Mac/Linux
-docker pull ghcr.io/plantonhq/openmcf:latest
+docker pull ghcr.io/plantonhq/planton:latest
 # Automatically pulls amd64 variant
 
 # On Apple Silicon Mac
-docker pull ghcr.io/plantonhq/openmcf:latest
+docker pull ghcr.io/plantonhq/planton:latest
 # Automatically pulls arm64 variant
 ```
 
@@ -631,20 +631,20 @@ This allows both automatic releases and manual emergency builds.
 
 ### CLI Still Uses Docker Hub
 
-**Symptom**: CLI pulls from `satishlleftbin/openmcf`
+**Symptom**: CLI pulls from `satishlleftbin/planton`
 
 **Solution**:
 ```bash
 # Verify constant was updated
-grep DockerImageName cmd/openmcf/root/webapp/init.go
+grep DockerImageName cmd/planton/root/webapp/init.go
 
-# Should show: ghcr.io/plantonhq/openmcf
+# Should show: ghcr.io/plantonhq/planton
 
 # Rebuild CLI
 make build-cli
 
 # Or rebuild manually
-go build -o bin/openmcf .
+go build -o bin/planton .
 ```
 
 ---

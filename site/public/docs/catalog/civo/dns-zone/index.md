@@ -12,7 +12,7 @@ Provisions a DNS zone (domain) on Civo Cloud with declarative DNS record managem
 
 ## What Gets Created
 
-When you deploy a CivoDnsZone resource, OpenMCF provisions:
+When you deploy a CivoDnsZone resource, Planton provisions:
 
 - **Civo DNS Domain** — a `civo_dns_domain_name` resource representing the DNS zone for the specified domain
 - **DNS Records** — one `civo_dns_domain_record` resource per value per record entry in the `records` list, linked to the created zone
@@ -20,7 +20,7 @@ When you deploy a CivoDnsZone resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Civo credentials** configured via environment variables or OpenMCF provider config
+- **Civo credentials** configured via environment variables or Planton provider config
 - **A registered domain name** whose nameservers you can point to the Civo nameservers returned in stack outputs
 
 ## Quick Start
@@ -28,15 +28,15 @@ When you deploy a CivoDnsZone resource, OpenMCF provisions:
 Create a file `civo-dns-zone.yaml`:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoDnsZone
 metadata:
   name: my-dns-zone
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CivoDnsZone.my-dns-zone
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CivoDnsZone.my-dns-zone
 spec:
   domainName: example.com
   records:
@@ -50,7 +50,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f civo-dns-zone.yaml
+planton apply -f civo-dns-zone.yaml
 ```
 
 This creates a DNS zone for `example.com` on Civo with a single A record pointing the apex domain to an IP address. After deployment, update your domain registrar to use the Civo nameservers returned in the stack outputs.
@@ -83,7 +83,7 @@ This creates a DNS zone for `example.com` on Civo with a single A record pointin
 Each entry in `values` is one of:
 
 - **Literal** — `{ value: "93.184.216.34" }` provides the value directly
-- **Reference** — `{ valueFrom: { kind: "...", name: "...", fieldPath: "..." } }` resolves the value from another OpenMCF resource's stack outputs at deploy time
+- **Reference** — `{ valueFrom: { kind: "...", name: "...", fieldPath: "..." } }` resolves the value from another Planton resource's stack outputs at deploy time
 
 ## Examples
 
@@ -92,15 +92,15 @@ Each entry in `values` is one of:
 A zone for `example.com` with A, CNAME, and MX records:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoDnsZone
 metadata:
   name: example-zone
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CivoDnsZone.example-zone
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CivoDnsZone.example-zone
 spec:
   domainName: example.com
   records:
@@ -127,15 +127,15 @@ spec:
 A minimal zone that sets up SPF and a domain verification TXT record:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoDnsZone
 metadata:
   name: verified-zone
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CivoDnsZone.verified-zone
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CivoDnsZone.verified-zone
 spec:
   domainName: verified.io
   records:
@@ -153,18 +153,18 @@ spec:
 
 ### Using Foreign Key References for Record Values
 
-Point a CNAME record at the IP address output from an OpenMCF-managed CivoComputeInstance instead of hardcoding it:
+Point a CNAME record at the IP address output from an Planton-managed CivoComputeInstance instead of hardcoding it:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoDnsZone
 metadata:
   name: ref-zone
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CivoDnsZone.ref-zone
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CivoDnsZone.ref-zone
 spec:
   domainName: myapp.dev
   records:

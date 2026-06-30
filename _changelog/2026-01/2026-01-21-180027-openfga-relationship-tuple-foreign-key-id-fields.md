@@ -21,7 +21,7 @@ The OpenFGA Relationship Tuple component required users to hardcode user and obj
 
 ## Solution / What's New
 
-Changed the `id` field type in both `OpenFgaRelationshipTupleUser` and `OpenFgaRelationshipTupleObject` messages from `string` to `org.openmcf.shared.foreignkey.v1.StringValueOrRef`.
+Changed the `id` field type in both `OpenFgaRelationshipTupleUser` and `OpenFgaRelationshipTupleObject` messages from `string` to `dev.planton.shared.foreignkey.v1.StringValueOrRef`.
 
 ### Field Changes
 
@@ -79,14 +79,14 @@ Updated `spec.proto` to change field types:
 message OpenFgaRelationshipTupleUser {
   string type = 1 [(buf.validate.field).required = true];
   // Changed from: string id = 2
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef id = 2 [(buf.validate.field).required = true];
+  dev.planton.shared.foreignkey.v1.StringValueOrRef id = 2 [(buf.validate.field).required = true];
   string relation = 3;
 }
 
 message OpenFgaRelationshipTupleObject {
   string type = 1 [(buf.validate.field).required = true];
   // Changed from: string id = 2
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef id = 2 [(buf.validate.field).required = true];
+  dev.planton.shared.foreignkey.v1.StringValueOrRef id = 2 [(buf.validate.field).required = true];
 }
 ```
 

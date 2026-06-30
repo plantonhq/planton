@@ -1,0 +1,15 @@
+apiVersion: auth0.planton.dev/v1
+kind: Auth0Connection
+metadata:
+  name: e2e-database
+  org: e2e-org
+  env: testing
+spec:
+  strategy: auth0
+  display_name: E2E Database Connection
+  show_as_button: true
+  database_options:
+    password_policy: good
+    requires_username: false
+    disable_signup: false
+    brute_force_protection: true

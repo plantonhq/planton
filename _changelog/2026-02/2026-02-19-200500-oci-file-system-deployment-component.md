@@ -2,7 +2,7 @@
 
 **Date**: 2026-02-19
 **Type**: New Feature
-**Components**: `apis/org/openmcf/provider/oci/ocifilesystem/v1/`
+**Components**: `apis/dev/planton/provider/oci/ocifilesystem/v1/`
 
 ## Summary
 
@@ -10,7 +10,7 @@ Added the OciFileSystem deployment component -- OCI File Storage's NFS-compatibl
 
 ## Problem Statement / Motivation
 
-OpenMCF's OCI provider had no managed NFS storage component. OCI File Storage is the standard way to provide shared, persistent NFS file systems to compute instances, container workloads, and Kubernetes pods. Without a file system component, users could not declaratively manage network-attached storage.
+Planton's OCI provider had no managed NFS storage component. OCI File Storage is the standard way to provide shared, persistent NFS file systems to compute instances, container workloads, and Kubernetes pods. Without a file system component, users could not declaratively manage network-attached storage.
 
 ## Solution / What's New
 

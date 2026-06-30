@@ -6,13 +6,13 @@
 
 ## Summary
 
-Published the `optional-linter` custom buf lint plugin to the Buf Schema Registry (BSR) as a public plugin under `buf.build/openmcf/optional-linter`. The plugin validates that scalar proto fields with `(org.openmcf.shared.options.default)` are marked as `optional`. This enables remote plugin execution, eliminates local installation requirements, and provides versioned, reproducible builds across all development and CI environments. The work included renaming the plugin from `buf-plugin-planton` to `optional-linter`, creating comprehensive build automation, and establishing a sustainable publishing workflow.
+Published the `optional-linter` custom buf lint plugin to the Buf Schema Registry (BSR) as a public plugin under `buf.build/planton/optional-linter`. The plugin validates that scalar proto fields with `(dev.planton.shared.options.default)` are marked as `optional`. This enables remote plugin execution, eliminates local installation requirements, and provides versioned, reproducible builds across all development and CI environments. The work included renaming the plugin from `buf-plugin-planton` to `optional-linter`, creating comprehensive build automation, and establishing a sustainable publishing workflow.
 
 ## Motivation
 
 ### Making the Plugin Publicly Accessible
 
-The custom buf lint plugin, originally developed as `buf-plugin-planton` and documented in `2025-10-18-03.custom-buf-lint-plugin.md`, was designed to enforce the `DEFAULT_REQUIRES_OPTIONAL` rule across OpenMCF's protobuf definitions. While the plugin worked perfectly as a locally-built binary, it had several limitations:
+The custom buf lint plugin, originally developed as `buf-plugin-planton` and documented in `2025-10-18-03.custom-buf-lint-plugin.md`, was designed to enforce the `DEFAULT_REQUIRES_OPTIONAL` rule across Planton's protobuf definitions. While the plugin worked perfectly as a locally-built binary, it had several limitations:
 
 **Local-Only Distribution Challenges**:
 - ❌ Required manual `go build` on every developer's machine
@@ -36,11 +36,11 @@ The original name `buf-plugin-planton` was too generic and didn't communicate th
 
 **Scoped, Not Extensible**: The plugin has a single, well-defined responsibility - validate that fields with defaults are marked as optional. Unlike a general-purpose linting framework, this plugin should remain focused on this one rule. The name reflects this intentional scope limitation.
 
-**Organization-Qualified Path**: With BSR publishing, the plugin path becomes `buf.build/openmcf/optional-linter`. The organization name (`openmcf`) already provides context, so the plugin name can be concise and specific to its function.
+**Organization-Qualified Path**: With BSR publishing, the plugin path becomes `buf.build/planton/optional-linter`. The organization name (`planton`) already provides context, so the plugin name can be concise and specific to its function.
 
 **Clear Purpose**: `optional-linter` immediately communicates what it does - it's a linter that validates optional field usage. This is more discoverable than a generic name.
 
-**Reusability Across Projects**: The renamed plugin can be used in both `openmcf` and the internal planton project, since both use the same `(org.openmcf.shared.options.default)` extension.
+**Reusability Across Projects**: The renamed plugin can be used in both `planton` and the internal planton project, since both use the same `(dev.planton.shared.options.default)` extension.
 
 ## What's New
 
@@ -54,7 +54,7 @@ buf/lint/planton/cmd/buf-plugin-planton/  →  buf/lint/planton/cmd/optional-lin
 **Module Path Updated**:
 ```go
 // buf/lint/planton/go.mod
-module github.com/plantonhq/openmcf/buf/lint/optional-linter
+module github.com/plantonhq/planton/buf/lint/optional-linter
 ```
 
 **Import Path Updated**:
@@ -62,7 +62,7 @@ module github.com/plantonhq/openmcf/buf/lint/optional-linter
 // cmd/optional-linter/main.go
 import (
     "buf.build/go/bufplugin/check"
-    "github.com/plantonhq/openmcf/buf/lint/optional-linter/rules"
+    "github.com/plantonhq/planton/buf/lint/optional-linter/rules"
 )
 ```
 
@@ -78,10 +78,10 @@ Created `buf/lint/planton/buf.plugin.yaml`:
 
 ```yaml
 version: v1
-name: buf.build/openmcf/optional-linter
+name: buf.build/planton/optional-linter
 plugin_version: v0.1.0
-source_url: https://github.com/plantonhq/openmcf
-description: "Validates that scalar proto fields with (org.openmcf.shared.options.default) are marked as optional"
+source_url: https://github.com/plantonhq/planton
+description: "Validates that scalar proto fields with (dev.planton.shared.options.default) are marked as optional"
 ```
 
 **Key Fields**:
@@ -116,7 +116,7 @@ publish: build-wasm
 	@echo "Publishing plugin version $(version)..."
 	@MAJOR=$$(echo $(version) | cut -d. -f1); \
 	MINOR=$$(echo $(version) | cut -d. -f1-2); \
-	buf plugin push buf.build/openmcf/optional-linter \
+	buf plugin push buf.build/planton/optional-linter \
 		--binary=optional-linter.wasm \
 		--create \
 		--create-type=check \
@@ -183,15 +183,15 @@ make publish version=v0.1.0
 ```yaml
 # Option 1: Pin to exact version (maximum stability)
 plugins:
-  - plugin: buf.build/openmcf/optional-linter:v0.1.0
+  - plugin: buf.build/planton/optional-linter:v0.1.0
 
 # Option 2: Receive patch updates (v0.1.1, v0.1.2, etc.)
 plugins:
-  - plugin: buf.build/openmcf/optional-linter:v0.1
+  - plugin: buf.build/planton/optional-linter:v0.1
 
 # Option 3: Receive all v0.x updates (v0.2.0, v0.3.0, etc.)
 plugins:
-  - plugin: buf.build/openmcf/optional-linter:v0
+  - plugin: buf.build/planton/optional-linter:v0
 ```
 
 This follows standard semantic versioning best practices and mirrors patterns used by major package registries.
@@ -211,18 +211,18 @@ Simplified to delegate to the plugin's own Makefile, following the single-respon
 **Updated `apis/buf.yaml`**:
 ```yaml
 version: v2
-name: buf.build/openmcf/apis
+name: buf.build/planton/apis
 deps:
   - buf.build/bufbuild/protovalidate
 plugins:
-  - plugin: buf.build/openmcf/optional-linter:v0.1.0  # Remote plugin
+  - plugin: buf.build/planton/optional-linter:v0.1.0  # Remote plugin
 lint:
   use:
     - STANDARD
     - DEFAULT_REQUIRES_OPTIONAL
 ```
 
-Changed from local plugin reference (`optional-linter`) to remote BSR reference (`buf.build/openmcf/optional-linter:v0.1.0`).
+Changed from local plugin reference (`optional-linter`) to remote BSR reference (`buf.build/planton/optional-linter:v0.1.0`).
 
 ### 6. WebAssembly Compilation
 
@@ -273,7 +273,7 @@ make publish version=v0.1.0
 ```
 Building WebAssembly binary...
 Publishing plugin version v0.1.0...
-buf.build/openmcf/optional-linter:9c8ab12a043245c08a92d7657c0da20a
+buf.build/planton/optional-linter:9c8ab12a043245c08a92d7657c0da20a
 Successfully published v0.1.0
 ```
 
@@ -298,7 +298,7 @@ deps:
     commit: 6c6e0d3c608e4549802254a2eee81bc8
     digest: b5:a7ca081f38656fc0f5aaa685cc111d3342876723851b47ca6b80cbb810cbb2380f8c444115c495ada58fa1f85eff44e68dc54a445761c195acdb5e8d9af675b6
 plugins:
-  - name: buf.build/openmcf/optional-linter
+  - name: buf.build/planton/optional-linter
     commit: 9c8ab12a043245c08a92d7657c0da20a
     digest: p1:91443867a760267ac68f46348f806f236f9815edff4bab881b7093898936e4433ae2d239dc68c8069f8b7bea7433cba2a06579f0fd26cfce99efe0b86a031e27
 ```
@@ -332,11 +332,11 @@ buf/lint/planton/
 
 | File | Change | Reason |
 |------|--------|--------|
-| `buf/lint/planton/go.mod` | Module path: `github.com/plantonhq/openmcf/buf/lint/optional-linter` | Reflect new plugin name |
+| `buf/lint/planton/go.mod` | Module path: `github.com/plantonhq/planton/buf/lint/optional-linter` | Reflect new plugin name |
 | `buf/lint/planton/cmd/optional-linter/main.go` | Import path updated | Use new module path |
 | `buf/lint/planton/README.md` | All references updated | Document new naming and workflows |
 | `apis/Makefile` | Simplified `build-lint-plugin` target | Delegate to plugin Makefile |
-| `apis/buf.yaml` | Plugin reference: `buf.build/openmcf/optional-linter:v0.1.0` | Use remote plugin |
+| `apis/buf.yaml` | Plugin reference: `buf.build/planton/optional-linter:v0.1.0` | Use remote plugin |
 | `apis/buf.lock` | Plugin entry added | Pin exact BSR commit |
 
 ### New Files Created
@@ -354,7 +354,7 @@ buf/lint/planton/
 GOOS=wasip1 GOARCH=wasm go build -o optional-linter.wasm ./cmd/optional-linter
 
 # Publish plugin to BSR
-buf plugin push buf.build/openmcf/optional-linter \
+buf plugin push buf.build/planton/optional-linter \
   --binary=optional-linter.wasm \
   --create \
   --create-type=check \
@@ -367,7 +367,7 @@ buf plugin push buf.build/openmcf/optional-linter \
 buf plugin update
 
 # Query plugin info from BSR
-buf registry plugin info buf.build/openmcf/optional-linter
+buf registry plugin info buf.build/planton/optional-linter
 
 # Run lint with remote plugin
 buf lint
@@ -377,7 +377,7 @@ buf lint
 
 BSR publishing requires authentication. The user must be:
 1. Authenticated with `buf registry login` (or `BUF_TOKEN` environment variable)
-2. Admin role in the `openmcf` organization on BSR
+2. Admin role in the `planton` organization on BSR
 
 These prerequisites were already satisfied before publication.
 
@@ -400,7 +400,7 @@ go build -o $(go env GOPATH)/bin/buf-plugin-planton ./cmd/buf-plugin-planton
 ```yaml
 # buf.yaml - that's it, nothing to install
 plugins:
-  - plugin: buf.build/openmcf/optional-linter:v0.1.0
+  - plugin: buf.build/planton/optional-linter:v0.1.0
 ```
 
 **Impact**: 
@@ -416,7 +416,7 @@ plugins:
 
 ```yaml
 plugins:
-  - name: buf.build/openmcf/optional-linter
+  - name: buf.build/planton/optional-linter
     commit: 9c8ab12a043245c08a92d7657c0da20a  # Exact, immutable version
     digest: p1:91443867a760267ac68f46348f806f236f9815edff4bab881b7093898936e4433ae2d239dc68c8069f8b7bea7433cba2a06579f0fd26cfce99efe0b86a031e27
 ```
@@ -429,7 +429,7 @@ plugins:
 
 ### 3. Public Accessibility and Discoverability
 
-**Plugin URL**: https://buf.build/openmcf/optional-linter
+**Plugin URL**: https://buf.build/planton/optional-linter
 
 **Visibility**: Public - anyone can discover and use this plugin
 
@@ -437,7 +437,7 @@ plugins:
 - ✅ Other organizations can use the same validation rule
 - ✅ Community contributions and feedback possible
 - ✅ Plugin appears in BSR catalog
-- ✅ Professional presentation of OpenMCF tooling
+- ✅ Professional presentation of Planton tooling
 
 ### 4. Simplified Publishing Workflow
 
@@ -466,7 +466,7 @@ buf lint             # Use local binary for testing
 **Production** (stable, versioned):
 ```yaml
 plugins:
-  - plugin: buf.build/openmcf/optional-linter:v0.1.0
+  - plugin: buf.build/planton/optional-linter:v0.1.0
 ```
 
 Developers can work with local binaries during plugin development, then publish to BSR when ready for production use.
@@ -498,7 +498,7 @@ Developers can work with local binaries during plugin development, then publish 
 
 ### Developer Experience
 
-**For OpenMCF Contributors**:
+**For Planton Contributors**:
 - Zero plugin installation steps
 - Automatic plugin updates when `buf.lock` changes
 - Consistent linting behavior across team
@@ -568,14 +568,14 @@ build-lint-plugin:
 
 ## Usage Examples
 
-### For OpenMCF (Current Project)
+### For Planton (Current Project)
 
 **buf.yaml**:
 ```yaml
 version: v2
-name: buf.build/openmcf/apis
+name: buf.build/planton/apis
 plugins:
-  - plugin: buf.build/openmcf/optional-linter:v0.1.0
+  - plugin: buf.build/planton/optional-linter:v0.1.0
 lint:
   use:
     - STANDARD
@@ -596,7 +596,7 @@ buf lint  # Plugin fetched from BSR and executed automatically
 # their-project/buf.yaml
 version: v2
 plugins:
-  - plugin: buf.build/openmcf/optional-linter:v0.1
+  - plugin: buf.build/planton/optional-linter:v0.1
 lint:
   use:
     - STANDARD
@@ -637,10 +637,10 @@ make publish version=v0.1.1
 ### Plugin Information
 
 ```bash
-$ buf registry plugin info buf.build/openmcf/optional-linter
+$ buf registry plugin info buf.build/planton/optional-linter
 
 Name                                       Create Time
-buf.build/openmcf/optional-linter  2025-10-19T00:15:57Z
+buf.build/planton/optional-linter  2025-10-19T00:15:57Z
 ```
 
 ### Plugin Execution
@@ -658,7 +658,7 @@ $ cd apis && buf lint
 ```bash
 $ cat apis/buf.lock | grep -A 2 optional-linter
 plugins:
-  - name: buf.build/openmcf/optional-linter
+  - name: buf.build/planton/optional-linter
     commit: 9c8ab12a043245c08a92d7657c0da20a
     digest: p1:91443867a760267ac68f46348f806f236f9815edff4bab881b7093898936e4433ae2d239dc68c8069f8b7bea7433cba2a06579f0fd26cfce99efe0b86a031e27
 ```
@@ -734,8 +734,8 @@ $ optional-linter --protocol
 
 ### External Resources
 
-- **Plugin Page**: https://buf.build/openmcf/optional-linter
-- **Source Code**: https://github.com/plantonhq/openmcf/tree/main/buf/lint/planton
+- **Plugin Page**: https://buf.build/planton/optional-linter
+- **Source Code**: https://github.com/plantonhq/planton/tree/main/buf/lint/planton
 - **Buf Plugin Docs**: https://buf.build/docs/bsr/remote-plugins/custom-plugins/
 - **WebAssembly Guide**: https://buf.build/docs/cli/buf-plugins/webassembly/
 
@@ -757,7 +757,7 @@ $ optional-linter --protocol
 ---
 
 **Status**: ✅ Production Ready  
-**Plugin URL**: https://buf.build/openmcf/optional-linter  
+**Plugin URL**: https://buf.build/planton/optional-linter  
 **Initial Version**: v0.1.0  
 **Timeline**: ~2 hours (renaming, automation, publication, documentation)  
 **Impact**: High - Enables professional plugin distribution and remote execution

@@ -4,11 +4,11 @@
 
 ## Summary
 
-Wrote 15 new catalog pages to bring both Civo and Cloudflare providers to 100% catalog coverage on the OpenMCF documentation site. All pages follow the established 9-section standard, are source-verified against proto definitions and Pulumi modules, and pass the 6-point verification protocol.
+Wrote 15 new catalog pages to bring both Civo and Cloudflare providers to 100% catalog coverage on the Planton documentation site. All pages follow the established 9-section standard, are source-verified against proto definitions and Pulumi modules, and pass the 6-point verification protocol.
 
 ## Problem Statement
 
-The OpenMCF docs site had catalog pages for 6 of 14 providers at full coverage (AWS, GCP, Kubernetes, Azure, OpenStack, DigitalOcean). Civo had 2 of 12 components covered and Cloudflare had 3 of 8. Users browsing the catalog for these providers would encounter legacy auto-generated research documents instead of the hand-written, developer-focused catalog pages.
+The Planton docs site had catalog pages for 6 of 14 providers at full coverage (AWS, GCP, Kubernetes, Azure, OpenStack, DigitalOcean). Civo had 2 of 12 components covered and Cloudflare had 3 of 8. Users browsing the catalog for these providers would encounter legacy auto-generated research documents instead of the hand-written, developer-focused catalog pages.
 
 ### Pain Points
 
@@ -97,23 +97,23 @@ Several upstream provider limitations were discovered and honestly documented in
 ## Files Created
 
 ### Civo (10 files)
-- `apis/org/openmcf/provider/civo/civovpc/v1/catalog-page.md`
-- `apis/org/openmcf/provider/civo/civofirewall/v1/catalog-page.md`
-- `apis/org/openmcf/provider/civo/civoipaddress/v1/catalog-page.md`
-- `apis/org/openmcf/provider/civo/civovolume/v1/catalog-page.md`
-- `apis/org/openmcf/provider/civo/civocomputeinstance/v1/catalog-page.md`
-- `apis/org/openmcf/provider/civo/civokubernetesnodepool/v1/catalog-page.md`
-- `apis/org/openmcf/provider/civo/civobucket/v1/catalog-page.md`
-- `apis/org/openmcf/provider/civo/civocertificate/v1/catalog-page.md`
-- `apis/org/openmcf/provider/civo/civodnszone/v1/catalog-page.md`
-- `apis/org/openmcf/provider/civo/civodnsrecord/v1/catalog-page.md`
+- `apis/dev/planton/provider/civo/civovpc/v1/catalog-page.md`
+- `apis/dev/planton/provider/civo/civofirewall/v1/catalog-page.md`
+- `apis/dev/planton/provider/civo/civoipaddress/v1/catalog-page.md`
+- `apis/dev/planton/provider/civo/civovolume/v1/catalog-page.md`
+- `apis/dev/planton/provider/civo/civocomputeinstance/v1/catalog-page.md`
+- `apis/dev/planton/provider/civo/civokubernetesnodepool/v1/catalog-page.md`
+- `apis/dev/planton/provider/civo/civobucket/v1/catalog-page.md`
+- `apis/dev/planton/provider/civo/civocertificate/v1/catalog-page.md`
+- `apis/dev/planton/provider/civo/civodnszone/v1/catalog-page.md`
+- `apis/dev/planton/provider/civo/civodnsrecord/v1/catalog-page.md`
 
 ### Cloudflare (5 files)
-- `apis/org/openmcf/provider/cloudflare/cloudflared1database/v1/catalog-page.md`
-- `apis/org/openmcf/provider/cloudflare/cloudflarednsrecord/v1/catalog-page.md`
-- `apis/org/openmcf/provider/cloudflare/cloudflarekvnamespace/v1/catalog-page.md`
-- `apis/org/openmcf/provider/cloudflare/cloudflareloadbalancer/v1/catalog-page.md`
-- `apis/org/openmcf/provider/cloudflare/cloudflarezerotrustaccessapplication/v1/catalog-page.md`
+- `apis/dev/planton/provider/cloudflare/cloudflared1database/v1/catalog-page.md`
+- `apis/dev/planton/provider/cloudflare/cloudflarednsrecord/v1/catalog-page.md`
+- `apis/dev/planton/provider/cloudflare/cloudflarekvnamespace/v1/catalog-page.md`
+- `apis/dev/planton/provider/cloudflare/cloudflareloadbalancer/v1/catalog-page.md`
+- `apis/dev/planton/provider/cloudflare/cloudflarezerotrustaccessapplication/v1/catalog-page.md`
 
 ---
 

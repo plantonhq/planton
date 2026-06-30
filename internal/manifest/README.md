@@ -1,6 +1,6 @@
 # Manifest Package - Technical Reference
 
-Technical reference for the `internal/manifest` package, which handles loading, validation, and manipulation of OpenMCF manifests.
+Technical reference for the `internal/manifest` package, which handles loading, validation, and manipulation of Planton manifests.
 
 ---
 
@@ -65,7 +65,7 @@ internal/manifest/
 **Usage**:
 
 ```go
-import "github.com/plantonhq/openmcf/internal/manifest"
+import "github.com/plantonhq/planton/internal/manifest"
 
 // Load manifest
 msg, err := manifest.LoadManifest("ops/resources/database.yaml")
@@ -298,8 +298,8 @@ Defaults are applied from proto field options. See `protodefaults/README.md` for
 
 ```protobuf
 message ExternalDnsKubernetesSpec {
-  optional string namespace = 1 [(org.openmcf.shared.options.default) = "external-dns"];
-  optional string version = 2 [(org.openmcf.shared.options.default) = "v0.19.0"];
+  optional string namespace = 1 [(dev.planton.shared.options.default) = "external-dns"];
+  optional string version = 2 [(dev.planton.shared.options.default) = "v0.19.0"];
 }
 ```
 
@@ -351,7 +351,7 @@ Color-coded output uses `github.com/fatih/color`.
 The `--set` flag allows runtime overrides:
 
 ```bash
-openmcf pulumi up \
+planton pulumi up \
   --manifest deployment.yaml \
   --set spec.replicas=5 \
   --set spec.container.image.tag=v2.0.0
@@ -420,7 +420,7 @@ All CLI commands (pulumi, tofu, validate, load-manifest) use this package:
 
 ```go
 // pulumi/up.go, tofu/apply.go, etc.
-import "github.com/plantonhq/openmcf/internal/manifest"
+import "github.com/plantonhq/planton/internal/manifest"
 
 // Load manifest
 manifest, err := manifest.LoadManifest(manifestPath)
@@ -440,7 +440,7 @@ Loaded manifests are passed to IaC modules (Pulumi, OpenTofu) as environment var
 
 **For Pulumi**:
 - Manifest marshaled to JSON
-- Set as `OPENMCF_MANIFEST` environment variable
+- Set as `PLANTON_MANIFEST` environment variable
 - Module reads and unmarshals
 
 **For OpenTofu**:
@@ -506,7 +506,7 @@ URL manifests are downloaded once per operation:
 
 1. Update proto definitions with buf-validate rules
 2. No code changes needed (rules applied automatically)
-3. Test with `openmcf validate`
+3. Test with `planton validate`
 
 ### Adding New Override Paths
 
@@ -545,7 +545,7 @@ manifest, err := manifest.LoadManifest("resource.yaml")
 - Run `make generate-crk-reflect` if adding new kind
 
 **"Validation failed"**:
-- Run `openmcf validate` for detailed errors
+- Run `planton validate` for detailed errors
 - Check proto definition for validation rules
 - Verify field types match expected values
 

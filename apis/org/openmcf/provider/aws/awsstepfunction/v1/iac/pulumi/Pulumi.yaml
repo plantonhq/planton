@@ -1,3 +1,0 @@
-name: aws-step-function
-runtime: go
-description: Deploy an AWS Step Functions State Machine using OpenMCF

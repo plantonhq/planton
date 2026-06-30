@@ -12,7 +12,7 @@ Deploys an Azure Database for MySQL Flexible Server with configurable compute ti
 
 ## What Gets Created
 
-When you deploy an AzureMysqlFlexibleServer resource, OpenMCF provisions:
+When you deploy an AzureMysqlFlexibleServer resource, Planton provisions:
 
 - **MySQL Flexible Server** — a `mysql.FlexibleServer` resource in the specified region and resource group, configured with the chosen SKU, MySQL version, storage size, backup retention, and high availability settings
 - **Network Access** — public access with firewall rules when no delegated subnet is provided, or private VNet access when `delegatedSubnetId` is set (public access is automatically disabled)
@@ -22,7 +22,7 @@ When you deploy an AzureMysqlFlexibleServer resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Resource Group** where the server will be created (can reference an AzureResourceGroup resource)
 - **Network planning** — if using private VNet access, a subnet delegated to `Microsoft.DBforMySQL/flexibleServers` and optionally a private DNS zone for name resolution
 
@@ -31,15 +31,15 @@ When you deploy an AzureMysqlFlexibleServer resource, OpenMCF provisions:
 Create a file `mysql.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureMysqlFlexibleServer
 metadata:
   name: my-mysql
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureMysqlFlexibleServer.my-mysql
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureMysqlFlexibleServer.my-mysql
 spec:
   region: eastus
   resourceGroup: my-rg
@@ -53,7 +53,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f mysql.yaml
+planton apply -f mysql.yaml
 ```
 
 This creates a Burstable-tier MySQL 8.0.21 server with 20 GB storage, auto-grow enabled, 7-day backup retention, and public access with no firewall rules (all connections blocked until rules are added).
@@ -95,15 +95,15 @@ This creates a Burstable-tier MySQL 8.0.21 server with 20 GB storage, auto-grow 
 A minimal server for development and testing with the smallest compute tier:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureMysqlFlexibleServer
 metadata:
   name: dev-mysql
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureMysqlFlexibleServer.dev-mysql
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureMysqlFlexibleServer.dev-mysql
 spec:
   region: eastus
   resourceGroup: dev-rg
@@ -126,15 +126,15 @@ spec:
 A General Purpose server with zone-redundant high availability, multiple databases, and restricted network access:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureMysqlFlexibleServer
 metadata:
   name: prod-mysql
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureMysqlFlexibleServer.prod-mysql
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureMysqlFlexibleServer.prod-mysql
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -170,15 +170,15 @@ spec:
 A server deployed into a private VNet with no public endpoint, using a delegated subnet and private DNS zone:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureMysqlFlexibleServer
 metadata:
   name: private-mysql
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureMysqlFlexibleServer.private-mysql
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureMysqlFlexibleServer.private-mysql
 spec:
   region: westeurope
   resourceGroup: prod-rg
@@ -197,18 +197,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference OpenMCF-managed resources instead of hardcoding Azure resource IDs:
+Reference Planton-managed resources instead of hardcoding Azure resource IDs:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureMysqlFlexibleServer
 metadata:
   name: ref-mysql
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureMysqlFlexibleServer.ref-mysql
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureMysqlFlexibleServer.ref-mysql
 spec:
   region: eastus
   resourceGroup:
@@ -241,15 +241,15 @@ spec:
 A high-performance server running the latest MySQL version on a Memory Optimized tier for analytics workloads:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureMysqlFlexibleServer
 metadata:
   name: analytics-mysql
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureMysqlFlexibleServer.analytics-mysql
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureMysqlFlexibleServer.analytics-mysql
 spec:
   region: eastus
   resourceGroup: analytics-rg

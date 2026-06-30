@@ -6,11 +6,11 @@
 
 ## Summary
 
-Added OpenFGA as a new cloud provider to OpenMCF, enabling users to manage OpenFGA authorization resources through the CLI. This implementation spans proto definitions, CLI flags, stack input processing, and Tofu/Terraform environment variable configuration. Notably, OpenFGA is Terraform-only - there is no Pulumi provider available.
+Added OpenFGA as a new cloud provider to Planton, enabling users to manage OpenFGA authorization resources through the CLI. This implementation spans proto definitions, CLI flags, stack input processing, and Tofu/Terraform environment variable configuration. Notably, OpenFGA is Terraform-only - there is no Pulumi provider available.
 
 ## Problem Statement / Motivation
 
-OpenMCF needed to expand its provider ecosystem to include OpenFGA, a popular open-source authorization system used for fine-grained access control. Without OpenFGA support, users could not:
+Planton needed to expand its provider ecosystem to include OpenFGA, a popular open-source authorization system used for fine-grained access control. Without OpenFGA support, users could not:
 
 - Store and manage OpenFGA credentials through the platform
 - Use OpenFGA credentials for infrastructure deployments
@@ -58,7 +58,7 @@ flowchart TB
 
 ### Terraform-Only Provider
 
-OpenFGA is unique among OpenMCF providers - it only has a Terraform provider, with no Pulumi equivalent. This means:
+OpenFGA is unique among Planton providers - it only has a Terraform provider, with no Pulumi equivalent. This means:
 
 - All OpenFGA deployment components must use `tofu` as the provisioner
 - Pulumi modules for OpenFGA resources will be empty placeholder modules
@@ -91,7 +91,7 @@ flowchart LR
 
 ```protobuf
 open_fga = 22 [(provider_meta) = {
-  group: "openfga.openmcf.org"
+  group: "openfga.planton.dev"
   display_name: "OpenFGA"
 }];
 ```
@@ -228,7 +228,7 @@ apiToken: your-api-token
 EOF
 
 # Use with deployment (must use tofu provisioner)
-openmcf apply --manifest openfga-store.yaml \
+planton apply --manifest openfga-store.yaml \
   --openfga-provider-config openfga-creds.yaml
 ```
 

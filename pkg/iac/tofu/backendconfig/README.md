@@ -1,6 +1,6 @@
 # Tofu Backend Config Package
 
-This package provides functionality to extract Terraform/OpenTofu backend configuration from OpenMCF resource manifests using standardized labels.
+This package provides functionality to extract Terraform/OpenTofu backend configuration from Planton resource manifests using standardized labels.
 
 ## Overview
 
@@ -12,8 +12,8 @@ The package supports provisioner-specific labels:
 
 | Provisioner | Backend Type Label | Backend Object Label |
 |-------------|-------------------|---------------------|
-| Terraform | `terraform.openmcf.org/backend.type` | `terraform.openmcf.org/backend.object` |
-| OpenTofu | `tofu.openmcf.org/backend.type` | `tofu.openmcf.org/backend.object` |
+| Terraform | `terraform.planton.dev/backend.type` | `terraform.planton.dev/backend.object` |
+| OpenTofu | `tofu.planton.dev/backend.type` | `tofu.planton.dev/backend.object` |
 
 For backward compatibility, OpenTofu also accepts the legacy `terraform.*` labels if `tofu.*` labels are not present.
 
@@ -43,7 +43,7 @@ Extracts Terraform/OpenTofu backend configuration from a manifest's metadata lab
 - `provisionerType` - The provisioner type ("terraform" or "tofu")
 
 **Behavior:**
-1. Checks for provisioner-specific labels first (e.g., `tofu.openmcf.org/*`)
+1. Checks for provisioner-specific labels first (e.g., `tofu.planton.dev/*`)
 2. Falls back to legacy `terraform.*` labels if provisioner-specific labels are not found
 3. Returns `nil, nil` if no backend labels are present (allows fallback to CLI/defaults)
 4. Returns an error if labels are partially specified
@@ -54,7 +54,7 @@ Extracts Terraform/OpenTofu backend configuration from a manifest's metadata lab
 
 ```go
 import (
-    "github.com/plantonhq/openmcf/pkg/iac/tofu/backendconfig"
+    "github.com/plantonhq/planton/pkg/iac/tofu/backendconfig"
 )
 
 // Extract backend config for OpenTofu
@@ -96,7 +96,7 @@ The package validates that the backend type is one of:
 "no labels found in manifest"
 
 // Partial configuration
-"both terraform.openmcf.org/backend.type and terraform.openmcf.org/backend.object must be specified together"
+"both terraform.planton.dev/backend.type and terraform.planton.dev/backend.object must be specified together"
 
 // Empty values
 "Terraform backend labels cannot be empty"

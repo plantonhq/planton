@@ -12,14 +12,14 @@ Deploys a GCP Pub/Sub subscription attached to a topic, with support for four de
 
 ## What Gets Created
 
-When you deploy a GcpPubSubSubscription resource, OpenMCF provisions:
+When you deploy a GcpPubSubSubscription resource, Planton provisions:
 
 - **Pub/Sub Subscription** — a `google_pubsub_subscription` resource bound to the specified topic, configured with the chosen delivery method, acknowledgement deadline, retention policy, and retry/dead-letter settings
 - **GCP Labels** — automatically applied labels containing the organization, environment, resource ID, resource name, and resource kind for consistent resource tracking
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **A GCP project** where the subscription will be created
 - **An existing Pub/Sub topic** that the subscription will receive messages from
 - **An HTTPS endpoint** if using push delivery
@@ -32,15 +32,15 @@ When you deploy a GcpPubSubSubscription resource, OpenMCF provisions:
 Create a file `pubsub-subscription.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpPubSubSubscription
 metadata:
   name: my-subscription
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpPubSubSubscription.my-subscription
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpPubSubSubscription.my-subscription
 spec:
   projectId:
     value: my-gcp-project
@@ -52,7 +52,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f pubsub-subscription.yaml
+planton apply -f pubsub-subscription.yaml
 ```
 
 This creates a pull subscription with default settings: 10-second ack deadline, 7-day message retention, and 31-day expiration for inactivity.
@@ -111,15 +111,15 @@ This creates a pull subscription with default settings: 10-second ack deadline, 
 Delivers messages to an HTTPS endpoint with OIDC-based authentication:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpPubSubSubscription
 metadata:
   name: push-subscription
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpPubSubSubscription.push-subscription
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpPubSubSubscription.push-subscription
 spec:
   projectId:
     value: my-gcp-project
@@ -139,15 +139,15 @@ spec:
 Streams messages directly to a BigQuery table, forwarding failures to a dead-letter topic after 10 attempts:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpPubSubSubscription
 metadata:
   name: bq-subscription
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpPubSubSubscription.bq-subscription
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpPubSubSubscription.bq-subscription
 spec:
   projectId:
     value: my-gcp-project
@@ -174,15 +174,15 @@ spec:
 Batches messages into Avro-formatted objects in Cloud Storage:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpPubSubSubscription
 metadata:
   name: gcs-subscription
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpPubSubSubscription.gcs-subscription
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpPubSubSubscription.gcs-subscription
 spec:
   projectId:
     value: my-gcp-project
@@ -206,18 +206,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding values:
+Reference other Planton-managed resources instead of hardcoding values:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpPubSubSubscription
 metadata:
   name: ref-subscription
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpPubSubSubscription.ref-subscription
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpPubSubSubscription.ref-subscription
 spec:
   projectId:
     valueFrom:

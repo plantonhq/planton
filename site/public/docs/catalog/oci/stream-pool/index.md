@@ -12,14 +12,14 @@ Deploys an Oracle Cloud Infrastructure Streaming stream pool with bundled stream
 
 ## What Gets Created
 
-When you deploy an OciStreamPool resource, OpenMCF provisions:
+When you deploy an OciStreamPool resource, Planton provisions:
 
 - **Stream Pool** — a `streaming.StreamPool` resource in the specified compartment with configurable Kafka compatibility settings (auto-create topics, log retention, default partitions), optional KMS encryption, and optional private endpoint.
 - **Streams** — one `streaming.Stream` per entry in the `streams` list. Each stream is created within the pool with a specified partition count and optional retention period. Streams depend on the pool for creation ordering.
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the stream pool will be created — either a literal value or a reference to an OciCompartment resource
 - **A subnet OCID** (for private pools only) — the subnet where the private endpoint will be placed
 - **A KMS key OCID** (optional) — if using customer-managed encryption
@@ -29,15 +29,15 @@ When you deploy an OciStreamPool resource, OpenMCF provisions:
 Create a file `stream-pool.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciStreamPool
 metadata:
   name: my-pool
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciStreamPool.my-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciStreamPool.my-pool
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -49,7 +49,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f stream-pool.yaml
+planton apply -f stream-pool.yaml
 ```
 
 This creates a stream pool with Oracle-managed encryption and one stream with a single partition and 24-hour default retention. The pool OCID, endpoint FQDN, and Kafka bootstrap servers are exported as stack outputs.
@@ -102,15 +102,15 @@ This creates a stream pool with Oracle-managed encryption and one stream with a 
 A stream pool with a single stream for development:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciStreamPool
 metadata:
   name: dev-pool
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciStreamPool.dev-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciStreamPool.dev-pool
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -124,15 +124,15 @@ spec:
 A pool with Kafka auto-topic creation enabled, 48-hour retention, and multiple streams:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciStreamPool
 metadata:
   name: event-hub
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciStreamPool.event-hub
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciStreamPool.event-hub
 spec:
   compartmentId:
     valueFrom:
@@ -159,15 +159,15 @@ spec:
 A pool accessible only from a private subnet, with customer-managed encryption:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciStreamPool
 metadata:
   name: secure-pool
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciStreamPool.secure-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciStreamPool.secure-pool
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"

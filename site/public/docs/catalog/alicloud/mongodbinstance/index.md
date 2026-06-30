@@ -26,7 +26,7 @@ This component wraps a single `alicloud_mongodb_instance` Terraform resource (re
 ## Quick Start
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudMongodbInstance
 metadata:
   name: my-mongodb

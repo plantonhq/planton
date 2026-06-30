@@ -12,7 +12,7 @@ Deploys an Alibaba Cloud Application Load Balancer (ALB) with bundled server gro
 
 ## What Gets Created
 
-When you deploy an AliCloudApplicationLoadBalancer resource, OpenMCF provisions:
+When you deploy an AliCloudApplicationLoadBalancer resource, Planton provisions:
 
 - **ALB Load Balancer** -- an `alicloud_alb_load_balancer` spanning multiple availability zones for high availability
 - **Server Groups** -- one `alicloud_alb_server_group` per entry in `serverGroups`, each with health check and optional session stickiness
@@ -22,7 +22,7 @@ Server groups are created empty. Backend membership (ECS instances, ENIs, IPs) i
 
 ## Prerequisites
 
-- **Alibaba Cloud credentials** configured via environment variables or OpenMCF provider config
+- **Alibaba Cloud credentials** configured via environment variables or Planton provider config
 - **An Alibaba Cloud VPC** -- the ALB must belong to a VPC (create one with AliCloudVpc)
 - **At least 2 VSwitches in different availability zones** -- ALB requires multi-AZ deployment (create with AliCloudVswitch)
 - **A server certificate** (for HTTPS listeners) -- obtain from Alibaba Cloud Certificate Management Service (CAS)
@@ -32,7 +32,7 @@ Server groups are created empty. Backend membership (ECS instances, ENIs, IPs) i
 Create a file `alb.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudApplicationLoadBalancer
 metadata:
   name: my-alb
@@ -64,7 +64,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f alb.yaml
+planton apply -f alb.yaml
 ```
 
 This creates an internet-facing ALB with an HTTP listener on port 80 across two availability zones.
@@ -161,7 +161,7 @@ This creates an internet-facing ALB with an HTTP listener on port 80 across two 
 The simplest ALB: one server group, one HTTP listener, two availability zones.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudApplicationLoadBalancer
 metadata:
   name: web-alb
@@ -192,7 +192,7 @@ spec:
 Production ALB with TLS termination, WAF edition, and strict cipher policy.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudApplicationLoadBalancer
 metadata:
   name: secure-alb
@@ -238,7 +238,7 @@ spec:
 An internal ALB for service-to-service HTTP routing with two server groups and weighted least connections scheduling.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudApplicationLoadBalancer
 metadata:
   name: internal-alb

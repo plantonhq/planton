@@ -8,18 +8,18 @@ componentName: "awskmskey"
 
 # AWS KMS Key
 
-Deploys a customer-managed AWS KMS encryption key with configurable key type, automatic rotation, and an optional alias. OpenMCF creates the key, applies organization and environment tags, and optionally registers an alias for human-readable key identification.
+Deploys a customer-managed AWS KMS encryption key with configurable key type, automatic rotation, and an optional alias. Planton creates the key, applies organization and environment tags, and optionally registers an alias for human-readable key identification.
 
 ## What Gets Created
 
-When you deploy an AwsKmsKey resource, OpenMCF provisions:
+When you deploy an AwsKmsKey resource, Planton provisions:
 
 - **KMS Key** — a `kms.Key` resource with the specified cryptographic key type, description, rotation setting, and deletion window
 - **KMS Alias** (conditional) — a `kms.Alias` resource created only when `aliasName` is provided, mapping a friendly name (e.g., `alias/my-app-key`) to the key ID
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **IAM permissions** to create and manage KMS keys (`kms:CreateKey`, `kms:CreateAlias`, `kms:EnableKeyRotation`, `kms:TagResource`)
 
 ## Quick Start
@@ -27,15 +27,15 @@ When you deploy an AwsKmsKey resource, OpenMCF provisions:
 Create a file `kms-key.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsKmsKey
 metadata:
   name: my-key
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsKmsKey.my-key
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsKmsKey.my-key
 spec:
   region: us-east-1
 ```
@@ -43,7 +43,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f kms-key.yaml
+planton apply -f kms-key.yaml
 ```
 
 This creates a symmetric KMS key with automatic annual rotation enabled and a 30-day deletion window.
@@ -75,15 +75,15 @@ All spec fields except `region` are optional. An empty `spec: {}` (without `regi
 A symmetric encryption key with all defaults — rotation enabled, 30-day deletion window:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsKmsKey
 metadata:
   name: default-key
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsKmsKey.default-key
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsKmsKey.default-key
 spec:
   region: us-east-1
 ```
@@ -93,15 +93,15 @@ spec:
 A named key for application-level encryption:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsKmsKey
 metadata:
   name: app-encryption-key
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsKmsKey.app-encryption-key
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsKmsKey.app-encryption-key
 spec:
   region: us-east-1
   description: "Encryption key for application secrets"
@@ -113,15 +113,15 @@ spec:
 An RSA 4096-bit key for signing or encryption workflows that require asymmetric cryptography:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsKmsKey
 metadata:
   name: rsa-signing-key
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsKmsKey.rsa-signing-key
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsKmsKey.rsa-signing-key
 spec:
   region: us-east-1
   keySpec: rsa_4096
@@ -135,15 +135,15 @@ spec:
 An elliptic curve key for ECDSA signing with a minimal deletion safety window:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsKmsKey
 metadata:
   name: ecc-signing-key
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.AwsKmsKey.ecc-signing-key
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.AwsKmsKey.ecc-signing-key
 spec:
   region: us-east-1
   keySpec: ecc_nist_p256
@@ -158,15 +158,15 @@ spec:
 A production symmetric key using every available field:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsKmsKey
 metadata:
   name: prod-master-key
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsKmsKey.prod-master-key
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsKmsKey.prod-master-key
 spec:
   region: us-east-1
   keySpec: symmetric

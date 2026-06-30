@@ -3,6 +3,6 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "gvk",
     srcs = ["gvk.go"],
-    importpath = "github.com/plantonhq/openmcf/pkg/apis/gvk",
+    importpath = "github.com/plantonhq/planton/pkg/apis/gvk",
     visibility = ["//visibility:public"],
 )

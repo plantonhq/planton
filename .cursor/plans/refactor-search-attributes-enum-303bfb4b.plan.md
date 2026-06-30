@@ -5,7 +5,7 @@
 
 ### 1. Update Protobuf Contract
 
-**File**: `/Users/suresh/scm/github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/workload/temporalkubernetes/v1/spec.proto`
+**File**: `/Users/suresh/scm/github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/workload/temporalkubernetes/v1/spec.proto`
 
 - Remove the `TemporalKubernetesSearchAttributeType` enum (lines 24-49)
 - Update `TemporalKubernetesSearchAttribute` message (lines 52-58):
@@ -15,20 +15,20 @@
 
 ### 2. Update Pulumi Module
 
-**File**: `/Users/suresh/scm/github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/workload/temporalkubernetes/v1/iac/pulumi/module/helm_chart.go`
+**File**: `/Users/suresh/scm/github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/workload/temporalkubernetes/v1/iac/pulumi/module/helm_chart.go`
 
 - Remove the `mapSearchAttributeType()` function (lines 202-222)
 - Update the search attributes processing logic (lines 157-181):
 - Use `attr.Type` directly as a string instead of calling `mapSearchAttributeType()`
 - Update Helm chart version field in values if version is specified in spec
 
-**File**: `/Users/suresh/scm/github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/workload/temporalkubernetes/v1/iac/pulumi/module/variables.go`
+**File**: `/Users/suresh/scm/github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/workload/temporalkubernetes/v1/iac/pulumi/module/variables.go`
 
 - Keep as-is (HelmChartVersion remains as default, can be overridden by spec.version if provided)
 
 ### 3. Update Documentation
 
-**File**: `/Users/suresh/scm/github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/workload/temporalkubernetes/v1/examples.md`
+**File**: `/Users/suresh/scm/github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/workload/temporalkubernetes/v1/examples.md`
 
 - Update Example 6 (lines 176-190):
 - Change `type: keyword` to `type: Keyword`

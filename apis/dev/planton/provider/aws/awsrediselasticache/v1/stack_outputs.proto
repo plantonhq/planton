@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsrediselasticache.v1;
+
+// AwsRedisElasticacheStackOutputs captures observable identifiers and endpoints
+// from a provisioned ElastiCache Redis/Valkey replication group. These outputs
+// are used by downstream resources to wire dependencies via StringValueOrRef.
+message AwsRedisElasticacheStackOutputs {
+  // The identifier of the replication group. Used in AWS CLI/API calls and
+  // as a reference in other ElastiCache operations.
+  string replication_group_id = 1;
+
+  // The primary (writer) endpoint DNS name. Applications connect here for
+  // read-write operations. For non-clustered mode, this is the single primary
+  // node endpoint.
+  string primary_endpoint_address = 2;
+
+  // The reader endpoint DNS name. Distributes read traffic across all read
+  // replicas using DNS round-robin. Use this endpoint for read-heavy workloads
+  // to offload the primary. Empty for single-node deployments.
+  string reader_endpoint_address = 3;
+
+  // The configuration endpoint for Cluster Mode Enabled. Redis clients that
+  // support cluster mode use this endpoint for automatic slot discovery and
+  // routing. Empty when Cluster Mode is disabled.
+  string configuration_endpoint_address = 4;
+
+  // The Amazon Resource Name of the replication group. Used in IAM policies
+  // and cross-service permissions.
+  string arn = 5;
+
+  // The port on which the cluster accepts connections.
+  int32 port = 6;
+
+  // The name of the ElastiCache subnet group associated with this cluster.
+  // Only populated when `subnet_ids` were provided and a subnet group was
+  // created by the module.
+  string subnet_group_name = 7;
+
+  // The name of the custom parameter group associated with this cluster.
+  // Only populated when `parameters` were provided and a parameter group
+  // was created by the module.
+  string parameter_group_name = 8;
+}

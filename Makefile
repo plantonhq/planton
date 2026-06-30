@@ -1,6 +1,6 @@
-name=openmcf
-name_local=openmcf
-pkg=github.com/plantonhq/openmcf
+name=planton
+name_local=planton
+pkg=github.com/plantonhq/planton
 build_dir=build
 version?=$(shell python3 tools/ci/release/next_version.py patch 2>/dev/null || echo "dev")
 LDFLAGS=-ldflags "-X ${pkg}/internal/cli/version.Version=${version}"
@@ -17,9 +17,9 @@ endif
 
 BAZEL?=./bazelw
 
-# If OPENMCF_BUILDBUDDY_API_KEY is set, enable the :bb config and inject only the header.
-ifneq ($(strip $(OPENMCF_BUILDBUDDY_API_KEY)),)
-BAZEL_REMOTE_FLAGS=--config=bb --remote_header=x-buildbuddy-api-key=$$OPENMCF_BUILDBUDDY_API_KEY
+# If PLANTON_BUILDBUDDY_API_KEY is set, enable the :bb config and inject only the header.
+ifneq ($(strip $(PLANTON_BUILDBUDDY_API_KEY)),)
+BAZEL_REMOTE_FLAGS=--config=bb --remote_header=x-buildbuddy-api-key=$$PLANTON_BUILDBUDDY_API_KEY
 else
 BAZEL_REMOTE_FLAGS=
 endif
@@ -29,7 +29,7 @@ build_cmd=go build -v ${LDFLAGS}
 PARALLEL?=$(shell getconf _NPROCESSORS_ONLN 2>/dev/null || sysctl -n hw.ncpu)
 
 clean-bazel:
-	rm -rf .bazelbsp bazel-bin bazel-out bazel-testlogs bazel-openmcf
+	rm -rf .bazelbsp bazel-bin bazel-out bazel-testlogs bazel-planton
 
 reset-ide: clean-bazel
 	rm -rf .idea
@@ -80,7 +80,7 @@ reset-gazelle: clean-gazelle gazelle
 
 .PHONY: bazel-build-cli
 bazel-build-cli:
-	${BAZEL} build ${BAZEL_REMOTE_FLAGS} //:openmcf
+	${BAZEL} build ${BAZEL_REMOTE_FLAGS} //:planton
 
 .PHONY: bazel-test
 bazel-test:

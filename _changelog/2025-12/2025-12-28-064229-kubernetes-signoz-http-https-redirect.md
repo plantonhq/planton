@@ -56,28 +56,28 @@ Updated both Pulumi and Terraform IaC modules to include:
 
 ### Pulumi Module Changes
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetessignoz/v1/iac/pulumi/module/locals.go`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetessignoz/v1/iac/pulumi/module/locals.go`
 - Added `SignozHttpRedirectRouteName` and `OtelHttpRedirectRouteName` fields to Locals struct
 - Initialized computed route names: `{name}-signoz-http-redirect` and `{name}-otel-http-redirect`
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetessignoz/v1/iac/pulumi/module/ingress_signoz.go`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetessignoz/v1/iac/pulumi/module/ingress_signoz.go`
 - Added HTTP listener (`http-external`) to SigNoz UI Gateway
 - Added HTTP redirect HTTPRoute with `RequestRedirect` filter
 - Field order aligned with majority pattern: `RequestRedirect` before `Type`
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetessignoz/v1/iac/pulumi/module/ingress_otel.go`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetessignoz/v1/iac/pulumi/module/ingress_otel.go`
 - Added HTTP listener (`http-otel-http`) to OTEL Collector Gateway
 - Added HTTP redirect HTTPRoute with `RequestRedirect` filter
 - Field order aligned with majority pattern
 
 ### Terraform Module Changes
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetessignoz/v1/iac/tf/locals.tf`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetessignoz/v1/iac/tf/locals.tf`
 - Added computed resource names for Certificates, Gateways, and HTTPRoutes
 - Added ClusterIssuer name extraction from hostname
 - Added Istio ingress constants
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetessignoz/v1/iac/tf/ingress.tf` (new)
+**File**: `apis/dev/planton/provider/kubernetes/kubernetessignoz/v1/iac/tf/ingress.tf` (new)
 - Created complete Gateway API resources for SigNoz UI ingress
 - Created complete Gateway API resources for OTEL Collector ingress
 - Each includes: Certificate, Gateway (HTTP+HTTPS), HTTP redirect route, HTTPS route
@@ -119,12 +119,12 @@ Key consistency points:
 ## Files Changed
 
 ```
-apis/org/openmcf/provider/kubernetes/kubernetessignoz/v1/iac/pulumi/module/
+apis/dev/planton/provider/kubernetes/kubernetessignoz/v1/iac/pulumi/module/
   ├── locals.go           (modified - added redirect route names)
   ├── ingress_signoz.go   (modified - added HTTP listener and redirect)
   └── ingress_otel.go     (modified - added HTTP listener and redirect)
 
-apis/org/openmcf/provider/kubernetes/kubernetessignoz/v1/iac/tf/
+apis/dev/planton/provider/kubernetes/kubernetessignoz/v1/iac/tf/
   ├── locals.tf           (modified - added ingress resource names)
   └── ingress.tf          (created - complete Gateway API resources)
 ```

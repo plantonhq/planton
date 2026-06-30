@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocistreampool.v1;
+
+// OciStreamPoolStackOutputs contains the outputs produced after
+// deploying an OciStreamPool.
+// These values are used by downstream components for composability via
+// StringValueOrRef.
+message OciStreamPoolStackOutputs {
+  // OCID of the stream pool.
+  string stream_pool_id = 1;
+
+  // FQDN for accessing streams in the pool. For private pools, this
+  // resolves only within the associated subnet.
+  string endpoint_fqdn = 2;
+
+  // Kafka-compatible bootstrap server string for producing and
+  // consuming messages via Kafka clients.
+  string kafka_bootstrap_servers = 3;
+}

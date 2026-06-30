@@ -14,7 +14,7 @@ The Azure resource expansion sub-project (20260212.05) requires 24 new Azure res
 
 ### Pain Points
 
-- No managed PostgreSQL resource existed in OpenMCF for Azure
+- No managed PostgreSQL resource existed in Planton for Azure
 - The original T02 spec design had 11 gaps discovered during deep provider research
 - Database resources require careful handling of ForceNew fields, secrets, and network modes
 

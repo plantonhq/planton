@@ -1,4 +1,4 @@
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareLoadBalancer
 metadata:
   name: my-geographic-routing

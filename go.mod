@@ -1,4 +1,4 @@
-module github.com/plantonhq/openmcf
+module github.com/plantonhq/planton
 
 go 1.26
 

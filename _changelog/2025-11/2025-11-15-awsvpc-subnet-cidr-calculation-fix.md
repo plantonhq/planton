@@ -14,7 +14,7 @@ Fixed a critical bug in the AWS VPC Pulumi module where subnet CIDR calculations
 
 The AWS VPC component's `spec.proto` allows users to specify any valid CIDR block for their VPC (e.g., `172.16.0.0/16`, `192.168.0.0/16`, `10.10.0.0/16`), but the Pulumi module implementation had a hardcoded subnet calculation that always generated subnets in the `10.0.x.0` range regardless of the specified VPC CIDR.
 
-**Affected Code** (`apis/org/openmcf/provider/aws/awsvpc/v1/iac/pulumi/module/locals.go`):
+**Affected Code** (`apis/dev/planton/provider/aws/awsvpc/v1/iac/pulumi/module/locals.go`):
 ```go
 // BEFORE (BROKEN):
 privateSubnetCidr := fmt.Sprintf("10.0.%d.0/%d", 100+azIndex*10+subnetIndex, awsVpc.Spec.SubnetSize)
@@ -158,22 +158,22 @@ This matches the `vpc_cidr` field in `AwsVpcStackOutputs` proto definition.
 
 ### Files Modified
 
-1. **`apis/org/openmcf/provider/aws/awsvpc/v1/iac/pulumi/module/locals.go`**
+1. **`apis/dev/planton/provider/aws/awsvpc/v1/iac/pulumi/module/locals.go`**
    - Added `calculateSubnetCidr()` function (38 lines)
    - Rewrote `GetPrivateAzSubnetMap()` to use proper calculation
    - Rewrote `getPublicAzSubnetMap()` to use proper calculation
    - **Impact**: Core subnet allocation logic fixed
 
-2. **`apis/org/openmcf/provider/aws/awsvpc/v1/iac/pulumi/module/subnets.go`**
+2. **`apis/dev/planton/provider/aws/awsvpc/v1/iac/pulumi/module/subnets.go`**
    - Added NAT Gateway output exports (3 lines)
    - Exports ID, private IP, and public IP for each NAT Gateway
    - **Impact**: Stack outputs now match proto definition
 
-3. **`apis/org/openmcf/provider/aws/awsvpc/v1/iac/pulumi/module/main.go`**
+3. **`apis/dev/planton/provider/aws/awsvpc/v1/iac/pulumi/module/main.go`**
    - Added VPC CIDR export (1 line)
    - **Impact**: VPC CIDR available to dependent resources
 
-4. **`apis/org/openmcf/provider/aws/awsvpc/v1/iac/pulumi/module/outputs.go`**
+4. **`apis/dev/planton/provider/aws/awsvpc/v1/iac/pulumi/module/outputs.go`**
    - Added `OpVpcCidr` constant (1 line)
    - **Impact**: Consistent output naming
 
@@ -304,7 +304,7 @@ NAT Gateways are created in the first public subnet of each availability zone:
 ### Unit Tests
 
 ```bash
-cd apis/org/openmcf/provider/aws/awsvpc/v1
+cd apis/dev/planton/provider/aws/awsvpc/v1
 go test -v
 ```
 
@@ -329,7 +329,7 @@ make build
 
 ```bash
 # Checked Pulumi module directory
-read_lints apis/org/openmcf/provider/aws/awsvpc/v1/iac/pulumi/module/
+read_lints apis/dev/planton/provider/aws/awsvpc/v1/iac/pulumi/module/
 ```
 
 **Result**: ✅ No linter errors

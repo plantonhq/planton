@@ -12,7 +12,7 @@ Refactored the Neo4j Kubernetes ingress configuration from a shared `IngressSpec
 
 ### The Problem
 
-The previous implementation used the shared `IngressSpec` from `org.openmcf.shared.kubernetes`:
+The previous implementation used the shared `IngressSpec` from `dev.planton.shared.kubernetes`:
 
 ```yaml
 ingress:
@@ -66,7 +66,7 @@ message IngressSpec {
 }
 
 message Neo4jKubernetesSpec {
-  org.openmcf.shared.kubernetes.IngressSpec ingress = 4;
+  dev.planton.shared.kubernetes.IngressSpec ingress = 4;
 }
 ```
 
@@ -98,7 +98,7 @@ message Neo4jKubernetesSpec {
 
 **Before**:
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: Neo4jKubernetes
 metadata:
   name: public-neo4j
@@ -113,7 +113,7 @@ spec:
 
 **After**:
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: Neo4jKubernetes
 metadata:
   name: public-neo4j
@@ -235,7 +235,7 @@ container:
 **File**: `apis/project/planton/provider/kubernetes/workload/neo4jkubernetes/v1/spec.proto`
 
 **Changes Made**:
-1. **Updated Field Type**: Line 36 changed from `org.openmcf.shared.kubernetes.IngressSpec` to `Neo4jKubernetesIngress`
+1. **Updated Field Type**: Line 36 changed from `dev.planton.shared.kubernetes.IngressSpec` to `Neo4jKubernetesIngress`
 2. **Added Message**: New `Neo4jKubernetesIngress` message with CEL validation (lines 66-82)
 3. **Renamed Field**: Changed `is_persistence_enabled` to `persistence_enabled` in `Neo4jKubernetesContainer` (line 48)
 
@@ -361,13 +361,13 @@ spec:
 
 ```bash
 # Update CLI
-brew update && brew upgrade openmcf
+brew update && brew upgrade planton
 
 # Or fresh install
-brew install plantonhq/tap/openmcf
+brew install plantonhq/tap/planton
 
 # Verify version
-openmcf version
+planton version
 
 # For developers: regenerate protobuf stubs
 cd apis
@@ -390,10 +390,10 @@ If you chose a different hostname than the auto-constructed one:
 
 ```bash
 # Preview changes
-openmcf pulumi preview --manifest neo4j.yaml
+planton pulumi preview --manifest neo4j.yaml
 
 # Apply
-openmcf pulumi up --manifest neo4j.yaml
+planton pulumi up --manifest neo4j.yaml
 ```
 
 ### Automated Migration Script
@@ -472,8 +472,8 @@ echo "✅ Migration complete!"
 echo ""
 echo "Next steps:"
 echo "1. Review the changes with: git diff"
-echo "2. Test with: openmcf pulumi preview --manifest <file>"
-echo "3. Apply with: openmcf pulumi up --manifest <file>"
+echo "2. Test with: planton pulumi preview --manifest <file>"
+echo "3. Apply with: planton pulumi up --manifest <file>"
 ```
 
 **Usage**:
@@ -487,7 +487,7 @@ chmod +x migrate-neo4j-ingress.sh
 ### Basic Ingress Configuration
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: Neo4jKubernetes
 metadata:
   name: graph-db
@@ -514,7 +514,7 @@ spec:
 ### Production with Custom Hostname
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: Neo4jKubernetes
 metadata:
   name: prod-graph
@@ -541,7 +541,7 @@ spec:
 ### Neo4j Without Ingress
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: Neo4jKubernetes
 metadata:
   name: internal-graph
@@ -659,7 +659,7 @@ Renamed `is_persistence_enabled` to `persistence_enabled`:
 - More idiomatic
 - Matches modern Go/protobuf conventions
 - Cleaner generated code in all languages
-- Consistent with other OpenMCF resources
+- Consistent with other Planton resources
 
 ## Validation
 
@@ -713,7 +713,7 @@ ingress:
 ```bash
 # Create manifest with new syntax
 cat > neo4j-test.yaml <<EOF
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: Neo4jKubernetes
 metadata:
   name: test-neo4j
@@ -727,7 +727,7 @@ spec:
 EOF
 
 # Deploy
-openmcf pulumi up --manifest neo4j-test.yaml
+planton pulumi up --manifest neo4j-test.yaml
 
 # Verify LoadBalancer service created with correct annotation
 kubectl get svc -n test-neo4j -o yaml | \
@@ -742,7 +742,7 @@ kubectl get svc -n test-neo4j -o yaml | \
 # After: ingress.hostname = "existing-neo4j.example.com"
 
 # Apply update
-openmcf pulumi up --manifest neo4j-existing.yaml
+planton pulumi up --manifest neo4j-existing.yaml
 
 # Verify hostname annotation updated
 kubectl get svc -n existing-neo4j -o yaml | \
@@ -754,7 +754,7 @@ kubectl get svc -n existing-neo4j -o yaml | \
 ```bash
 # Try invalid configuration
 cat > neo4j-invalid.yaml <<EOF
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: Neo4jKubernetes
 metadata:
   name: invalid-neo4j
@@ -765,7 +765,7 @@ spec:
 EOF
 
 # Attempt deploy
-openmcf pulumi up --manifest neo4j-invalid.yaml
+planton pulumi up --manifest neo4j-invalid.yaml
 # Expected error: hostname is required when ingress is enabled
 ```
 
@@ -867,7 +867,7 @@ For questions or issues with migration:
 2. Use the [automated migration script](#automated-migration-script)
 3. Check [examples](#examples) for reference configurations
 4. Verify [validation rules](#validation) are met
-5. Contact OpenMCF support if issues persist
+5. Contact Planton support if issues persist
 
 ---
 

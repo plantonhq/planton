@@ -6,16 +6,16 @@ import (
 
 	"github.com/hashicorp/hcl/v2/hclparse"
 
-	testkubernetesv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/_test/testcloudresourcekubernetes/v1"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes"
-	kubernetesredisv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesredis/v1"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared"
-	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
+	testkubernetesv1 "github.com/plantonhq/planton/apis/dev/planton/provider/_test/testcloudresourcekubernetes/v1"
+	"github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes"
+	kubernetesredisv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/kubernetesredis/v1"
+	"github.com/plantonhq/planton/apis/dev/planton/shared"
+	foreignkeyv1 "github.com/plantonhq/planton/apis/dev/planton/shared/foreignkey/v1"
 )
 
 func TestProtoToTFVars_NamespaceFlattened(t *testing.T) {
 	msg := &testkubernetesv1.TestCloudResourceKubernetes{
-		ApiVersion: "_test.openmcf.org/v1",
+		ApiVersion: "_test.planton.dev/v1",
 		Kind:       "TestCloudResourceKubernetes",
 		Spec: &testkubernetesv1.TestCloudResourceKubernetesSpec{
 			Namespace: &foreignkeyv1.StringValueOrRef{
@@ -50,7 +50,7 @@ func TestProtoToTFVars_NamespaceFlattened(t *testing.T) {
 
 func TestProtoToTFVars_TargetClusterSkipped(t *testing.T) {
 	msg := &testkubernetesv1.TestCloudResourceKubernetes{
-		ApiVersion: "_test.openmcf.org/v1",
+		ApiVersion: "_test.planton.dev/v1",
 		Kind:       "TestCloudResourceKubernetes",
 		Spec: &testkubernetesv1.TestCloudResourceKubernetesSpec{
 			TargetCluster: &kubernetes.KubernetesClusterSelector{
@@ -76,7 +76,7 @@ func TestProtoToTFVars_TargetClusterSkipped(t *testing.T) {
 
 func TestProtoToTFVars_MapRefValuesFlattened(t *testing.T) {
 	msg := &testkubernetesv1.TestCloudResourceKubernetes{
-		ApiVersion: "_test.openmcf.org/v1",
+		ApiVersion: "_test.planton.dev/v1",
 		Kind:       "TestCloudResourceKubernetes",
 		Spec: &testkubernetesv1.TestCloudResourceKubernetesSpec{
 			Namespace: &foreignkeyv1.StringValueOrRef{
@@ -109,7 +109,7 @@ func TestProtoToTFVars_MapRefValuesFlattened(t *testing.T) {
 
 func TestProtoToTFVars_ApiVersionKindSkipped(t *testing.T) {
 	msg := &testkubernetesv1.TestCloudResourceKubernetes{
-		ApiVersion: "_test.openmcf.org/v1",
+		ApiVersion: "_test.planton.dev/v1",
 		Kind:       "TestCloudResourceKubernetes",
 		Spec: &testkubernetesv1.TestCloudResourceKubernetesSpec{
 			Namespace: &foreignkeyv1.StringValueOrRef{
@@ -135,7 +135,7 @@ func TestProtoToTFVars_ApiVersionKindSkipped(t *testing.T) {
 
 func TestProtoToTFVars_Redis_BackwardCompatible(t *testing.T) {
 	msg := &kubernetesredisv1.KubernetesRedis{
-		ApiVersion: "kubernetes.openmcf.org/v1",
+		ApiVersion: "kubernetes.planton.dev/v1",
 		Kind:       "KubernetesRedis",
 		Metadata: &shared.CloudResourceMetadata{
 			Name: "red-one",

@@ -23,12 +23,12 @@ the v1.5.1 the Gateway API family targets. It was also mis-rendered in the conso
 - Fixed stale channel docs in `spec.proto` and the IaC READMEs (GRPCRoute/TLSRoute
   are standard as of v1.5.1; experimental adds TCPRoute/UDPRoute).
 
-Cross-repo stub/catalog/console propagation happens on the next openmcf release +
-`make upgrade-openmcf`; the console row was updated in lockstep (planton repo).
+Cross-repo stub/catalog/console propagation happens on the next planton release +
+`make upgrade-planton`; the console row was updated in lockstep (planton repo).
 
 ## 2. Eliminated the `reserved` keyword
 
-OpenMCF is pre-1.0 with no external wire-compatibility obligations, so `reserved`
+Planton is pre-1.0 with no external wire-compatibility obligations, so `reserved`
 is unnecessary ceremony. Both real usages were removed:
 
 - `cloudflarer2bucket/v1/spec.proto`: dropped `reserved 5` / `"versioning_enabled"`
@@ -101,8 +101,8 @@ committed. The ignore list only covered `.terraform.lock.hcl` and
   `stack_outputs.pb.go`; `custom_domain` is field 5 in the cloudflare stub;
   OpenStack companion kinds still 2525/2526 in `cloud_resource_kind.pb.go`.
 - Planton web checks intentionally deferred (per owner): the console row edit is
-  forward-compatible and propagates with the next openmcf release + `make
-  upgrade-openmcf`.
+  forward-compatible and propagates with the next planton release + `make
+  upgrade-planton`.
 
 ## Pending (handoff)
 

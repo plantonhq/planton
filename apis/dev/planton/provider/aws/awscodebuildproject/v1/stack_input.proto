@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awscodebuildproject.v1;
+
+import "dev/planton/provider/aws/awscodebuildproject/v1/api.proto";
+import "dev/planton/provider/aws/provider.proto";
+
+// AwsCodeBuildProjectStackInput is the input for the IaC modules that
+// deploy the CodeBuild project and optional webhook.
+message AwsCodeBuildProjectStackInput {
+  // target is the AwsCodeBuildProject resource to deploy.
+  AwsCodeBuildProject target = 1;
+  // provider_config contains the AWS provider credentials and configuration.
+  dev.planton.provider.aws.AwsProviderConfig provider_config = 2;
+}

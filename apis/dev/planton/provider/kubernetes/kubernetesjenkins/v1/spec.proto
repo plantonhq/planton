@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesjenkins.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/kubernetes.proto";
+import "dev/planton/provider/kubernetes/options.proto";
+import "dev/planton/provider/kubernetes/target_cluster.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// **KubernetesJenkinsSpec** defines the configuration for deploying Jenkins on a Kubernetes cluster.
+// This message specifies the parameters needed to create and manage a Jenkins deployment within a Kubernetes environment.
+// It includes container specifications, Helm chart customization options, and ingress settings to control resource allocation
+// and external access.
+message KubernetesJenkinsSpec {
+  // Target Kubernetes Cluster
+  dev.planton.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  // Kubernetes Namespace
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // flag to indicate if the namespace should be created
+  bool create_namespace = 3;
+
+  // The CPU and memory resources allocated to the Jenkins container.
+  dev.planton.provider.kubernetes.ContainerResources container_resources = 4 [(dev.planton.provider.kubernetes.default_container_resources) = {
+    limits: {
+      cpu: "1000m"
+      memory: "1Gi"
+    }
+    requests: {
+      cpu: "50m"
+      memory: "100Mi"
+    }
+  }];
+
+  // A map of key-value pairs that provide additional customization options for the Helm chart used to deploy Jenkins.
+  // These values allow for further refinement of the deployment, such as customizing resource limits, setting environment variables,
+  // or specifying version tags. For detailed information on the available options, refer to the Helm chart documentation at:
+  // https://github.com/jenkinsci/helm-charts/blob/main/charts/jenkins/values.yaml
+  map<string, string> helm_values = 5;
+
+  // The ingress configuration for the Jenkins deployment.
+  KubernetesJenkinsIngress ingress = 6;
+}
+
+/**
+ * KubernetesJenkinsIngress defines ingress configuration for Jenkins.
+ */
+message KubernetesJenkinsIngress {
+  // Flag to enable or disable ingress.
+  bool enabled = 1;
+
+  // The full hostname for external access (e.g., "jenkins.example.com").
+  // Required when enabled is true.
+  string hostname = 2;
+
+  option (buf.validate.message).cel = {
+    id: "spec.ingress.hostname.required"
+    expression: "!this.enabled || size(this.hostname) > 0"
+    message: "hostname is required when ingress is enabled"
+  };
+}

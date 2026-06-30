@@ -1,0 +1,488 @@
+syntax = "proto3";
+
+package dev.planton.provider.scaleway.scalewaykapsulecluster.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// ScalewayKapsuleClusterSpec defines the specification for a Scaleway Kapsule
+// managed Kubernetes cluster.
+//
+// Kapsule is Scaleway's managed Kubernetes service. It provisions a fully
+// managed control plane (API server, etcd, scheduler, controller-manager)
+// and delegates worker nodes to separate node pools.
+//
+// This is a **composite resource** that bundles:
+//   1. The Kapsule cluster (managed control plane).
+//   2. A default node pool (so the cluster is immediately usable).
+//
+// Additional node pools can be added via separate `ScalewayKapsulePool`
+// resources that reference this cluster's `status.outputs.cluster_id`.
+//
+// Kapsule clusters are **regional** resources (e.g., "fr-par"). Node pools
+// within the cluster can be placed in specific zones within the region.
+//
+// **Composition pattern**: The cluster requires a Private Network reference
+// via `StringValueOrRef`. Downstream resources like `ScalewayKapsulePool`
+// reference `status.outputs.cluster_id`. Infra charts use
+// `status.outputs.kubeconfig` and `status.outputs.cluster_ca_certificate`
+// to configure the Kubernetes provider for addon deployments.
+message ScalewayKapsuleClusterSpec {
+  // The Scaleway region where the cluster will be created.
+  // Examples: "fr-par", "nl-ams", "pl-waw"
+  //
+  // The region determines which data centers are available for node pools.
+  // All node pools in this cluster must be in zones within this region.
+  //
+  // This field is required and cannot be changed after creation.
+  string region = 1 [(buf.validate.field).required = true];
+
+  // Kubernetes version for the cluster.
+  //
+  // Can be a minor version (e.g., "1.32") or a full patch version (e.g.,
+  // "1.32.3"). When auto-upgrade is enabled, use a minor version so
+  // Scaleway can automatically apply patch upgrades.
+  //
+  // Available versions depend on the region and can be checked via the
+  // Scaleway API or console.
+  string kubernetes_version = 2 [(buf.validate.field).required = true];
+
+  // Container Network Interface (CNI) plugin for pod networking.
+  //
+  // Options:
+  //   - "cilium" (recommended) -- eBPF-based. High performance, advanced
+  //     network policies, service mesh integration, Hubble observability.
+  //   - "calico" -- Mature, widely adopted. Standard Kubernetes network
+  //     policies. Good for teams already familiar with Calico.
+  //
+  // IMPORTANT: This field cannot be changed after creation. Changing the
+  // CNI requires recreating the entire cluster.
+  string cni = 3 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.recommended_default) = "cilium"
+  ];
+
+  // The Private Network to attach the cluster to.
+  //
+  // All Kapsule clusters require a Private Network. Nodes communicate
+  // with the control plane and with each other over this network.
+  //
+  // Can be a literal Private Network UUID or a reference to a
+  // ScalewayPrivateNetwork resource's output.
+  //
+  // In infra charts, this is typically wired via valueFrom:
+  //
+  //   privateNetworkId:
+  //     valueFrom:
+  //       kind: ScalewayPrivateNetwork
+  //       name: my-network
+  //       fieldPath: status.outputs.private_network_id
+  //
+  // IMPORTANT: This field cannot be changed after creation.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef private_network_id = 4 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = ScalewayPrivateNetwork,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_network_id"
+  ];
+
+  // Kapsule cluster type.
+  //
+  // Options:
+  //   - "kapsule" (default) -- Mutualized (shared) control plane. Suitable
+  //     for most workloads. No additional cost for the control plane.
+  //   - "kapsule-dedicated-4"  -- Dedicated control plane, 4 nodes max.
+  //   - "kapsule-dedicated-8"  -- Dedicated control plane, 8 nodes max.
+  //   - "kapsule-dedicated-16" -- Dedicated control plane, 16 nodes max.
+  //
+  // Dedicated control planes provide isolated API servers with guaranteed
+  // resources. Use for production workloads requiring API server SLAs
+  // or strict multi-tenancy isolation.
+  //
+  // This field can be changed after creation (upgrade from mutualized
+  // to dedicated, or change dedicated tier).
+  string type = 5 [(dev.planton.shared.options.recommended_default) = "kapsule"];
+
+  // Human-readable description for the cluster.
+  //
+  // Optional. Shown in the Scaleway console for identification.
+  string description = 6;
+
+  // Whether to delete additional resources (LBs, volumes, routes) created
+  // by Kubernetes when the cluster is destroyed.
+  //
+  // When true, Scaleway automatically cleans up load balancers (from
+  // Services of type LoadBalancer), persistent volumes (from PVCs), and
+  // other resources that Kubernetes provisioned during the cluster's
+  // lifetime. When false, these resources are orphaned and must be
+  // cleaned up manually.
+  //
+  // Default: true. Set to false only when you need to preserve
+  // Kubernetes-managed resources after cluster deletion (e.g., data
+  // volumes for migration).
+  bool delete_additional_resources = 7 [(dev.planton.shared.options.recommended_default) = "true"];
+
+  // Automatic patch version upgrade configuration.
+  //
+  // When enabled, Scaleway automatically upgrades the cluster to the
+  // latest patch version within the current minor version during the
+  // specified maintenance window. For example, if the cluster is on
+  // 1.32.1, it may be upgraded to 1.32.3 during the window.
+  //
+  // Optional. If omitted, auto-upgrade is disabled and the cluster
+  // stays on the exact version specified in `kubernetes_version`.
+  ScalewayKapsuleAutoUpgrade auto_upgrade = 8;
+
+  // Cluster-wide autoscaler configuration.
+  //
+  // Controls HOW the Kubernetes cluster autoscaler behaves when scaling
+  // node pools. Autoscaling itself is toggled per-pool (on the default
+  // node pool below, or on separate ScalewayKapsulePool resources), but
+  // the behavior parameters (delays, thresholds, algorithms) are
+  // configured here at the cluster level.
+  //
+  // Optional. If omitted, Scaleway uses sensible defaults (binpacking
+  // estimator, random expander, 10m scale-down delay, 0.5 utilization
+  // threshold).
+  ScalewayKapsuleAutoscalerConfig autoscaler_config = 9;
+
+  // Kubernetes feature gates to enable on the cluster.
+  //
+  // Feature gates are alpha/beta Kubernetes features that can be toggled.
+  // Example: ["GracefulNodeShutdown", "HPAContainerMetrics"]
+  //
+  // Consult the Kubernetes documentation for available feature gates
+  // at the cluster's version. Enabling unstable feature gates may affect
+  // cluster stability.
+  //
+  // Optional. Most clusters don't need custom feature gates.
+  repeated string feature_gates = 10;
+
+  // Kubernetes admission plugins to enable on the cluster.
+  //
+  // Admission plugins intercept API server requests after authentication
+  // and authorization but before persistence. Scaleway enables a standard
+  // set by default; this field adds additional plugins.
+  //
+  // Example: ["AlwaysPullImages", "NodeRestriction"]
+  //
+  // Optional. Most clusters don't need additional admission plugins.
+  repeated string admission_plugins = 11;
+
+  // Pod CIDR for the cluster's pod network.
+  //
+  // The IP range allocated to pods. Each node gets a /24 subnet from
+  // this range. Must be large enough to accommodate all pods across
+  // all nodes.
+  //
+  // Default: "100.64.0.0/15" (131,072 addresses). Only change this
+  // if you have specific IP planning requirements or conflicts.
+  //
+  // IMPORTANT: Cannot be changed after creation.
+  string pod_cidr = 12;
+
+  // Service CIDR for Kubernetes services.
+  //
+  // The IP range allocated to ClusterIP services. Must not overlap
+  // with pod_cidr or the Private Network's subnet.
+  //
+  // Default: "10.32.0.0/20" (4,096 addresses). Only change this if
+  // you have specific IP planning requirements or conflicts.
+  //
+  // IMPORTANT: Cannot be changed after creation.
+  string service_cidr = 13;
+
+  // The default node pool configuration.
+  //
+  // Every Kapsule cluster needs at least one node pool to run workloads.
+  // This embedded pool is created alongside the cluster, giving you a
+  // working cluster from a single resource.
+  //
+  // For additional node pools with different instance types, labels, or
+  // taints, create separate `ScalewayKapsulePool` resources that reference
+  // this cluster's `status.outputs.cluster_id`.
+  ScalewayKapsuleDefaultNodePool default_node_pool = 14 [(buf.validate.field).required = true];
+}
+
+// ScalewayKapsuleDefaultNodePool defines the embedded default node pool
+// that ships with the cluster.
+//
+// This pool is created as part of the cluster composite and provides
+// immediate compute capacity. Its lifecycle is tied to the cluster --
+// deleting the cluster deletes this pool and all its nodes.
+//
+// For workload isolation (different instance types, GPU pools, spot
+// nodes), create additional `ScalewayKapsulePool` resources instead of
+// expanding this default pool.
+message ScalewayKapsuleDefaultNodePool {
+  // Pool name. If omitted, defaults to "{cluster-name}-default".
+  //
+  // Must be unique within the cluster. Use a descriptive name like
+  // "system", "default", or "general".
+  //
+  // IMPORTANT: Cannot be changed after creation.
+  string name = 1;
+
+  // Instance type for worker nodes (required).
+  //
+  // Determines CPU, RAM, and local storage for each node. Common types:
+  //   - Development:  "DEV1-M" (3 vCPU, 4 GB RAM)
+  //   - General:      "GP1-XS" (4 vCPU, 16 GB RAM), "GP1-S" (8 vCPU, 32 GB)
+  //   - Production:   "PRO2-S" (2 vCPU, 8 GB), "PRO2-M" (4 vCPU, 16 GB)
+  //
+  // See Scaleway pricing page for the full catalog. Instance type
+  // cannot be changed in-place -- changing it requires creating a new
+  // pool and migrating workloads.
+  //
+  // IMPORTANT: Cannot be changed after creation.
+  string node_type = 2 [(buf.validate.field).required = true];
+
+  // Initial number of nodes in the pool (required).
+  //
+  // When autoscaling is disabled, this is the fixed pool size. When
+  // autoscaling is enabled, this is the initial size -- the autoscaler
+  // will adjust between min_size and max_size based on workload demands.
+  //
+  // Minimum: 1 (a pool must have at least one node).
+  int32 size = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).int32.gte = 1
+  ];
+
+  // Enable the cluster autoscaler for this pool.
+  //
+  // When true, Kubernetes automatically adds or removes nodes based on
+  // pending pod resource requests. Requires min_size and max_size to
+  // be configured. The autoscaler's behavior (delays, thresholds) is
+  // controlled by the cluster-level `autoscaler_config`.
+  //
+  // Default: false.
+  bool auto_scale = 4;
+
+  // Minimum number of nodes when autoscaling is enabled.
+  //
+  // The autoscaler will not scale below this number, even if all nodes
+  // are underutilized. Set to at least 1 for availability.
+  //
+  // Only meaningful when auto_scale is true.
+  int32 min_size = 5;
+
+  // Maximum number of nodes when autoscaling is enabled.
+  //
+  // The autoscaler will not scale above this number, even if pods are
+  // pending. Controls cost ceiling.
+  //
+  // Only meaningful when auto_scale is true.
+  int32 max_size = 6;
+
+  // Enable autohealing for this pool.
+  //
+  // When true, Scaleway automatically detects and replaces unhealthy
+  // nodes. A node is considered unhealthy if its kubelet stops
+  // reporting status for a configurable period.
+  //
+  // Recommended for production clusters.
+  bool autohealing = 7;
+
+  // Container runtime for pool nodes.
+  //
+  // Options:
+  //   - "containerd" (default, recommended) -- Industry-standard container
+  //     runtime. Required for Kubernetes 1.24+.
+  //
+  // IMPORTANT: Cannot be changed after creation.
+  string container_runtime = 8 [(dev.planton.shared.options.recommended_default) = "containerd"];
+
+  // Root volume type for pool nodes.
+  //
+  // Controls the storage backing each node's root filesystem. Options
+  // depend on the instance type and availability zone.
+  //
+  // IMPORTANT: Cannot be changed after creation.
+  string root_volume_type = 9;
+
+  // Root volume size in GB for pool nodes.
+  //
+  // If omitted, uses the default size for the instance type. Increase
+  // for workloads that pull many large container images or need
+  // significant local ephemeral storage.
+  //
+  // IMPORTANT: Cannot be changed after creation.
+  int32 root_volume_size_in_gb = 10;
+
+  // Disable public IP addresses on pool nodes.
+  //
+  // When true, nodes have only private IPs (from the cluster's Private
+  // Network). This is the recommended security posture for production:
+  // nodes are not reachable from the internet.
+  //
+  // Requires a Public Gateway or NAT on the Private Network so nodes
+  // can reach external registries and APIs.
+  //
+  // Default: false (nodes get public IPs).
+  bool public_ip_disabled = 11;
+
+  // Node pool upgrade policy for rolling updates.
+  //
+  // Controls how nodes are replaced during Kubernetes version upgrades
+  // or pool configuration changes.
+  //
+  // Optional. If omitted, Scaleway uses defaults (max_surge=0,
+  // max_unavailable=1 -- one node at a time).
+  ScalewayKapsuleNodePoolUpgradePolicy upgrade_policy = 12;
+}
+
+// ScalewayKapsuleAutoUpgrade configures automatic Kubernetes patch
+// version upgrades for the cluster.
+//
+// When enabled, Scaleway upgrades the cluster to the latest available
+// patch version during the specified maintenance window. For example,
+// a cluster on 1.32.1 may be upgraded to 1.32.3.
+//
+// Auto-upgrade only applies to patch versions within the same minor
+// version. Minor version upgrades (e.g., 1.32 -> 1.33) must be
+// triggered manually.
+message ScalewayKapsuleAutoUpgrade {
+  // Whether auto-upgrade is enabled.
+  bool enable = 1 [(buf.validate.field).required = true];
+
+  // UTC hour (0-23) when the maintenance window starts.
+  //
+  // The upgrade process begins at this hour. Choose a low-traffic
+  // period for your workloads. Example: 2 (2:00 AM UTC).
+  int32 maintenance_window_start_hour = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).int32 = {
+      gte: 0
+      lte: 23
+    }
+  ];
+
+  // Day of the week for the maintenance window.
+  //
+  // Options: "monday", "tuesday", "wednesday", "thursday", "friday",
+  // "saturday", "sunday", or "any" (Scaleway picks the best day).
+  //
+  // Example: "sunday" for weekend maintenance.
+  string maintenance_window_day = 3 [(buf.validate.field).required = true];
+}
+
+// ScalewayKapsuleAutoscalerConfig controls the behavior of the Kubernetes
+// cluster autoscaler at the cluster level.
+//
+// These settings apply to ALL autoscaling-enabled pools in the cluster.
+// Individual pools toggle autoscaling on/off, but the behavior parameters
+// (how aggressively to scale, how long to wait, etc.) are configured here.
+//
+// All fields are optional. Omitted fields use Scaleway's defaults.
+message ScalewayKapsuleAutoscalerConfig {
+  // Disable the scale-down behavior entirely.
+  //
+  // When true, the autoscaler only scales UP (adds nodes) but never
+  // removes underutilized nodes. Useful during rollouts or when
+  // stability is more important than cost optimization.
+  //
+  // Default: false.
+  bool disable_scale_down = 1;
+
+  // How long to wait after a scale-up before considering scale-down.
+  //
+  // Duration string (e.g., "10m", "15m"). Prevents thrashing by
+  // allowing newly added nodes time to receive workloads.
+  //
+  // Default: "10m".
+  string scale_down_delay_after_add = 2;
+
+  // How long a node must be underutilized before it's eligible for
+  // scale-down.
+  //
+  // Duration string (e.g., "10m", "20m"). Higher values tolerate
+  // temporary dips in utilization.
+  //
+  // Default: "10m".
+  string scale_down_unneeded_time = 3;
+
+  // Resource estimation algorithm for scheduling decisions.
+  //
+  // Options:
+  //   - "binpacking" (default) -- Estimates how many nodes are needed
+  //     by bin-packing pending pods. Most accurate for heterogeneous
+  //     workloads.
+  string estimator = 4;
+
+  // Node group expansion strategy when multiple groups can accommodate
+  // pending pods.
+  //
+  // Options:
+  //   - "random" (default) -- Pick a random eligible group.
+  //   - "most-pods"  -- Pick the group that schedules the most pods.
+  //   - "least-waste" -- Pick the group with least resource waste.
+  //   - "priority" -- Pick based on user-defined priorities.
+  string expander = 5;
+
+  // CPU/memory utilization threshold below which a node is considered
+  // underutilized and eligible for scale-down.
+  //
+  // Range: 0.0 to 1.0. For example, 0.5 means a node using less than
+  // 50% of its allocatable resources is a scale-down candidate.
+  //
+  // Default: 0.5. Lower values are more aggressive (remove more nodes);
+  // higher values are more conservative (keep more headroom).
+  double scale_down_utilization_threshold = 6;
+
+  // Maximum time (in seconds) the autoscaler waits for pod termination
+  // during scale-down.
+  //
+  // Pods with long graceful termination periods may need a higher value.
+  //
+  // Default: 600 (10 minutes).
+  int32 max_graceful_termination_sec = 7;
+
+  // Whether to consider DaemonSet resource usage when calculating node
+  // utilization.
+  //
+  // When false (default), DaemonSet resource requests are excluded from
+  // utilization calculations, making scale-down more conservative.
+  //
+  // Default: false.
+  bool ignore_daemonsets_utilization = 8;
+
+  // Whether to balance the number of nodes across similar node groups.
+  //
+  // When true, the autoscaler tries to keep similarly-sized node groups
+  // at the same size. Useful for multi-AZ setups.
+  //
+  // Default: false.
+  bool balance_similar_node_groups = 9;
+
+  // Priority cutoff for expendable pods during scale-down.
+  //
+  // Pods with priority below this value are considered expendable and
+  // won't prevent scale-down. Default: -10.
+  int32 expendable_pods_priority_cutoff = 10;
+}
+
+// ScalewayKapsuleNodePoolUpgradePolicy controls how nodes are replaced
+// during pool upgrades.
+//
+// During a Kubernetes version upgrade or pool reconfiguration, nodes
+// are replaced one or more at a time according to this policy.
+message ScalewayKapsuleNodePoolUpgradePolicy {
+  // Maximum number of extra nodes created during an upgrade.
+  //
+  // Surge nodes are temporary workers that accept workloads while
+  // existing nodes are drained and replaced. Higher values speed up
+  // upgrades but temporarily increase cost.
+  //
+  // Default: 0 (no surge nodes).
+  int32 max_surge = 1;
+
+  // Maximum number of nodes that can be unavailable simultaneously
+  // during an upgrade.
+  //
+  // Controls the disruption budget. Setting this to 1 means nodes
+  // are replaced one at a time (safest but slowest).
+  //
+  // Default: 1.
+  int32 max_unavailable = 2;
+}

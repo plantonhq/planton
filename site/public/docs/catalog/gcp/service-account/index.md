@@ -12,7 +12,7 @@ Deploys a Google Cloud service account with optional JSON key generation and IAM
 
 ## What Gets Created
 
-When you deploy a GcpServiceAccount resource, OpenMCF provisions:
+When you deploy a GcpServiceAccount resource, Planton provisions:
 
 - **Service Account** — a GCP service account in the specified project, with `serviceAccountId` as the account ID and `metadata.name` as the display name
 - **Service Account Key** (conditional) — a JSON private key for the service account, created only when `createKey` is set to `true`
@@ -21,7 +21,7 @@ When you deploy a GcpServiceAccount resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **A GCP project** where the service account will be created
 - **Organization ID** if you need to assign organization-level IAM roles
 - **IAM permissions** to create service accounts and manage IAM bindings in the target project (and organization, if applicable)
@@ -31,15 +31,15 @@ When you deploy a GcpServiceAccount resource, OpenMCF provisions:
 Create a file `service-account.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpServiceAccount
 metadata:
   name: my-app-sa
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpServiceAccount.my-app-sa
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpServiceAccount.my-app-sa
 spec:
   serviceAccountId: my-app-sa
   projectId: my-gcp-project-123
@@ -48,7 +48,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f service-account.yaml
+planton apply -f service-account.yaml
 ```
 
 This creates a service account `my-app-sa@my-gcp-project-123.iam.gserviceaccount.com` with no keys and no additional IAM roles.
@@ -78,15 +78,15 @@ This creates a service account `my-app-sa@my-gcp-project-123.iam.gserviceaccount
 A service account with permissions to write logs and read Cloud Storage buckets:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpServiceAccount
 metadata:
   name: backend-worker
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpServiceAccount.backend-worker
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpServiceAccount.backend-worker
 spec:
   serviceAccountId: backend-worker
   projectId: my-gcp-project-123
@@ -100,15 +100,15 @@ spec:
 A CI/CD service account with a generated JSON key and deployment permissions:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpServiceAccount
 metadata:
   name: ci-deployer
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.GcpServiceAccount.ci-deployer
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.GcpServiceAccount.ci-deployer
 spec:
   serviceAccountId: ci-deployer
   projectId: my-gcp-project-123
@@ -124,15 +124,15 @@ spec:
 A service account that needs both project-level and organization-level permissions:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpServiceAccount
 metadata:
   name: org-auditor
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpServiceAccount.org-auditor
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpServiceAccount.org-auditor
 spec:
   serviceAccountId: org-auditor
   projectId: my-gcp-project-123
@@ -146,18 +146,18 @@ spec:
 
 ### Using a Foreign Key Reference for Project ID
 
-Reference an OpenMCF-managed GcpProject instead of hardcoding the project ID:
+Reference an Planton-managed GcpProject instead of hardcoding the project ID:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpServiceAccount
 metadata:
   name: app-runtime
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpServiceAccount.app-runtime
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpServiceAccount.app-runtime
 spec:
   serviceAccountId: app-runtime
   projectId:

@@ -12,7 +12,7 @@ Refactored the MongoDB Kubernetes ingress configuration from a shared `IngressSp
 
 ### The Problem
 
-The previous implementation used the shared `IngressSpec` from `org.openmcf.shared.kubernetes`:
+The previous implementation used the shared `IngressSpec` from `dev.planton.shared.kubernetes`:
 
 ```yaml
 ingress:
@@ -66,7 +66,7 @@ message IngressSpec {
 }
 
 message MongodbKubernetesSpec {
-  org.openmcf.shared.kubernetes.IngressSpec ingress = 2;
+  dev.planton.shared.kubernetes.IngressSpec ingress = 2;
 }
 ```
 
@@ -98,7 +98,7 @@ message MongodbKubernetesSpec {
 
 **Before**:
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: MongodbKubernetes
 metadata:
   name: prod-mongodb
@@ -115,7 +115,7 @@ spec:
 
 **After**:
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: MongodbKubernetes
 metadata:
   name: prod-mongodb
@@ -274,7 +274,7 @@ message MongodbKubernetesContainer {
 }
 ```
 
-This aligns with modern Go/protobuf conventions and matches patterns used across other OpenMCF resources.
+This aligns with modern Go/protobuf conventions and matches patterns used across other Planton resources.
 
 ## Implementation Details
 
@@ -284,7 +284,7 @@ This aligns with modern Go/protobuf conventions and matches patterns used across
 
 **Changes Made**:
 1. **Added Custom Message**: New `MongodbKubernetesIngress` message with CEL validation
-2. **Updated Field Type**: Line 41 changed from `org.openmcf.shared.kubernetes.IngressSpec` to `MongodbKubernetesIngress`
+2. **Updated Field Type**: Line 41 changed from `dev.planton.shared.kubernetes.IngressSpec` to `MongodbKubernetesIngress`
 3. **Renamed Persistence Field**: `is_persistence_enabled` → `persistence_enabled` (line 89)
 4. **Updated Default Values**: Changed default container options to use `persistence_enabled`
 5. **Updated Validation**: CEL expression now references `persistence_enabled`
@@ -426,13 +426,13 @@ spec:
 
 ```bash
 # Update CLI
-brew update && brew upgrade openmcf
+brew update && brew upgrade planton
 
 # Or fresh install
-brew install plantonhq/tap/openmcf
+brew install plantonhq/tap/planton
 
 # Verify version
-openmcf version
+planton version
 
 # For developers: regenerate protobuf stubs
 cd apis
@@ -455,10 +455,10 @@ If you chose a different hostname than the auto-constructed one:
 
 ```bash
 # Preview changes
-openmcf pulumi preview --manifest mongodb.yaml
+planton pulumi preview --manifest mongodb.yaml
 
 # Apply
-openmcf pulumi up --manifest mongodb.yaml
+planton pulumi up --manifest mongodb.yaml
 ```
 
 ### Automated Migration Script
@@ -524,8 +524,8 @@ echo "✅ Migration complete!"
 echo ""
 echo "Next steps:"
 echo "1. Review the changes with: git diff"
-echo "2. Test with: openmcf pulumi preview --manifest <file>"
-echo "3. Apply with: openmcf pulumi up --manifest <file>"
+echo "2. Test with: planton pulumi preview --manifest <file>"
+echo "3. Apply with: planton pulumi up --manifest <file>"
 ```
 
 **Usage**:
@@ -539,7 +539,7 @@ chmod +x migrate-mongodb-ingress.sh
 ### Basic Ingress Configuration
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: MongodbKubernetes
 metadata:
   name: basic-mongodb
@@ -564,7 +564,7 @@ spec:
 ### Production with Custom Hostname
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: MongodbKubernetes
 metadata:
   name: prod-mongodb
@@ -684,7 +684,7 @@ Renamed `is_persistence_enabled` to `persistence_enabled`:
 - More idiomatic
 - Matches modern Go/protobuf conventions
 - Cleaner generated code in all languages
-- Consistent with other OpenMCF resources
+- Consistent with other Planton resources
 
 ## Validation
 
@@ -738,7 +738,7 @@ ingress:
 ```bash
 # Create manifest with new syntax
 cat > mongodb-test.yaml <<EOF
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: MongodbKubernetes
 metadata:
   name: test-mongodb
@@ -754,7 +754,7 @@ spec:
 EOF
 
 # Deploy
-openmcf pulumi up --manifest mongodb-test.yaml
+planton pulumi up --manifest mongodb-test.yaml
 
 # Verify LoadBalancer service created with correct annotation
 kubectl get svc -n test-mongodb ingress-external-lb -o yaml | \
@@ -769,7 +769,7 @@ kubectl get svc -n test-mongodb ingress-external-lb -o yaml | \
 # After: ingress.hostname = "existing-mongodb.example.com"
 
 # Apply update
-openmcf pulumi up --manifest mongodb-existing.yaml
+planton pulumi up --manifest mongodb-existing.yaml
 
 # Verify hostname annotation updated
 kubectl get svc -n existing-mongodb ingress-external-lb -o yaml | \
@@ -781,7 +781,7 @@ kubectl get svc -n existing-mongodb ingress-external-lb -o yaml | \
 ```bash
 # Try invalid configuration
 cat > mongodb-invalid.yaml <<EOF
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: MongodbKubernetes
 metadata:
   name: invalid-mongodb
@@ -794,7 +794,7 @@ spec:
 EOF
 
 # Attempt deploy
-openmcf pulumi up --manifest mongodb-invalid.yaml
+planton pulumi up --manifest mongodb-invalid.yaml
 # Expected error: hostname is required when ingress is enabled
 ```
 
@@ -895,7 +895,7 @@ For questions or issues with migration:
 2. Use the [automated migration script](#automated-migration-script)
 3. Check [examples](#examples) for reference configurations
 4. Verify [validation rules](#validation) are met
-5. Contact OpenMCF support if issues persist
+5. Contact Planton support if issues persist
 
 ---
 

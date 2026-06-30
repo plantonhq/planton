@@ -10,8 +10,8 @@ directories:
 derive_targets_from_directories: false
 
 targets:
-  //:openmcf_lib
-  //:openmcf
+  //:planton_lib
+  //:planton
   //apis/...
   //cmd/...
   //internal/...

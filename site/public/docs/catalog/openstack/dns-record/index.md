@@ -12,13 +12,13 @@ Deploys a standalone DNS recordset in an OpenStack Designate zone with a configu
 
 ## What Gets Created
 
-When you deploy an OpenStackDnsRecord resource, OpenMCF provisions:
+When you deploy an OpenStackDnsRecord resource, Planton provisions:
 
 - **DNS RecordSet** — an `openstack_dns_recordset_v2` resource in the specified Designate zone. The recordset contains one fully qualified domain name, one record type, and one or more values. Multiple values in the same recordset produce a round-robin record set.
 
 ## Prerequisites
 
-- **OpenStack credentials** configured via environment variables or OpenMCF provider config
+- **OpenStack credentials** configured via environment variables or Planton provider config
 - **An existing Designate DNS zone** — provide the zone UUID directly or reference an OpenStackDnsZone resource via `valueFrom`
 - **Designate DNS service enabled** in the target OpenStack project
 
@@ -27,14 +27,14 @@ When you deploy an OpenStackDnsRecord resource, OpenMCF provisions:
 Create a file `dns-record.yaml`:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackDnsRecord
 metadata:
   name: my-a-record
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: dev.OpenstackDnsRecord.my-a-record
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackdnsrecord/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: dev.OpenstackDnsRecord.my-a-record
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackdnsrecord/v1/iac/pulumi/module
 spec:
   zoneId: 5a6b7c8d-9e0f-1a2b-3c4d-5e6f7a8b9c0d
   recordName: "www.example.com."
@@ -46,7 +46,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f dns-record.yaml
+planton apply -f dns-record.yaml
 ```
 
 This creates an A record for `www.example.com.` pointing to `192.0.2.1` in the specified Designate zone.
@@ -77,14 +77,14 @@ This creates an A record for `www.example.com.` pointing to `192.0.2.1` in the s
 A single IPv4 address record with a 5-minute TTL:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackDnsRecord
 metadata:
   name: web-a-record
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: dev.OpenstackDnsRecord.web-a-record
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackdnsrecord/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: dev.OpenstackDnsRecord.web-a-record
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackdnsrecord/v1/iac/pulumi/module
 spec:
   zoneId: 5a6b7c8d-9e0f-1a2b-3c4d-5e6f7a8b9c0d
   recordName: "web.example.com."
@@ -101,14 +101,14 @@ spec:
 An alias record pointing a subdomain to another hostname:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackDnsRecord
 metadata:
   name: docs-cname
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: prod.OpenstackDnsRecord.docs-cname
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackdnsrecord/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: prod.OpenstackDnsRecord.docs-cname
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackdnsrecord/v1/iac/pulumi/module
 spec:
   zoneId: 5a6b7c8d-9e0f-1a2b-3c4d-5e6f7a8b9c0d
   recordName: "docs.example.com."
@@ -123,14 +123,14 @@ spec:
 Mail exchange records with priority values for primary and backup mail servers:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackDnsRecord
 metadata:
   name: mail-mx
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: prod.OpenstackDnsRecord.mail-mx
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackdnsrecord/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: prod.OpenstackDnsRecord.mail-mx
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackdnsrecord/v1/iac/pulumi/module
 spec:
   zoneId: 5a6b7c8d-9e0f-1a2b-3c4d-5e6f7a8b9c0d
   recordName: "example.com."
@@ -144,17 +144,17 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed DNS zone instead of hardcoding the zone UUID:
+Reference an Planton-managed DNS zone instead of hardcoding the zone UUID:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackDnsRecord
 metadata:
   name: api-record
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: prod.OpenstackDnsRecord.api-record
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackdnsrecord/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: prod.OpenstackDnsRecord.api-record
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackdnsrecord/v1/iac/pulumi/module
 spec:
   zoneId:
     valueFrom:

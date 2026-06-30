@@ -16,7 +16,7 @@ The initial OpenFGA implementation required users to:
 2. **Use verbose JSON**: Authorization models required JSON format, which is hard to read
 3. **Construct colon-separated strings**: User and object fields required `type:id` format
 
-These patterns were error-prone and didn't leverage OpenMCF's foreign key system.
+These patterns were error-prone and didn't leverage Planton's foreign key system.
 
 ## Solution / What's New
 
@@ -241,7 +241,7 @@ Complete workflow with cross-references:
 
 ```yaml
 # 1. Store
-apiVersion: openfga.openmcf.org/v1
+apiVersion: openfga.planton.dev/v1
 kind: OpenFgaStore
 metadata:
   name: production-authz
@@ -250,7 +250,7 @@ spec:
 
 ---
 # 2. Model (references store)
-apiVersion: openfga.openmcf.org/v1
+apiVersion: openfga.planton.dev/v1
 kind: OpenFgaAuthorizationModel
 metadata:
   name: document-authz-v1
@@ -268,7 +268,7 @@ spec:
 
 ---
 # 3. Tuple (references store and model)
-apiVersion: openfga.openmcf.org/v1
+apiVersion: openfga.planton.dev/v1
 kind: OpenFgaRelationshipTuple
 metadata:
   name: anne-views-budget

@@ -12,13 +12,13 @@ Deploys an OpenStack Neutron port, providing a stable network identity (MAC addr
 
 ## What Gets Created
 
-When you deploy an OpenStackNetworkPort resource, OpenMCF provisions:
+When you deploy an OpenStackNetworkPort resource, Planton provisions:
 
 - **Neutron Port** — an `openstack_networking_port_v2` resource on the specified network, with configured fixed IPs, security groups, MAC address, admin state, port security, and tags
 
 ## Prerequisites
 
-- **OpenStack credentials** configured via environment variables or OpenMCF provider config
+- **OpenStack credentials** configured via environment variables or Planton provider config
 - **An existing Neutron network** — provided as a literal UUID or via `valueFrom` reference to an OpenStackNetwork resource
 - **Existing subnets** if specifying `fixedIps` with explicit `subnetId` values
 - **Existing security groups** if specifying `securityGroupIds`
@@ -28,15 +28,15 @@ When you deploy an OpenStackNetworkPort resource, OpenMCF provisions:
 Create a file `port.yaml`:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackNetworkPort
 metadata:
   name: my-port
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OpenStackNetworkPort.my-port
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OpenStackNetworkPort.my-port
 spec:
   networkId:
     value: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
@@ -45,7 +45,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f port.yaml
+planton apply -f port.yaml
 ```
 
 This creates a Neutron port named `my-port` on the specified network with default settings: admin state up, the project's default security group, and an auto-assigned IP from any subnet on the network.
@@ -86,15 +86,15 @@ This creates a Neutron port named `my-port` on the specified network with defaul
 A port with a single auto-assigned IP, suitable for pre-provisioning a network identity before launching an instance:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackNetworkPort
 metadata:
   name: web-port
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OpenStackNetworkPort.web-port
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OpenStackNetworkPort.web-port
 spec:
   networkId:
     value: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
@@ -103,18 +103,18 @@ spec:
 
 ### Port with Fixed IP and Security Groups
 
-A port with a specific IP address and multiple security groups, using `valueFrom` references to other OpenMCF resources:
+A port with a specific IP address and multiple security groups, using `valueFrom` references to other Planton resources:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackNetworkPort
 metadata:
   name: app-port
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.OpenStackNetworkPort.app-port
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.OpenStackNetworkPort.app-port
 spec:
   networkId:
     valueFrom:
@@ -148,15 +148,15 @@ spec:
 A port for a network appliance that bypasses all security groups, uses a specific MAC address, and disables port security:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackNetworkPort
 metadata:
   name: appliance-port
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OpenStackNetworkPort.appliance-port
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OpenStackNetworkPort.appliance-port
 spec:
   networkId:
     valueFrom:

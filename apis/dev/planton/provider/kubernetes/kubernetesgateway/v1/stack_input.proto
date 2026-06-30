@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesgateway.v1;
+
+import "dev/planton/provider/kubernetes/kubernetesgateway/v1/api.proto";
+import "dev/planton/provider/kubernetes/provider.proto";
+
+// Input for the KubernetesGateway IaC stack. The platform resolves all
+// StringValueOrRef references (namespace, gateway_class_name) to literal
+// strings before passing this to the IaC engine.
+message KubernetesGatewayStackInput {
+  // Target cloud-resource.
+  KubernetesGateway target = 1;
+  // Kubernetes provider configuration (cluster credentials).
+  dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+}

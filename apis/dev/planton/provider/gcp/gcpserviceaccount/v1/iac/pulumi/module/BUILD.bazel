@@ -1,0 +1,24 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "module",
+    srcs = [
+        "iam.go",
+        "locals.go",
+        "main.go",
+        "outputs.go",
+        "service_account.go",
+    ],
+    importpath = "github.com/plantonhq/planton/apis/dev/planton/provider/gcp/gcpserviceaccount/v1/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/dev/planton/provider/gcp/gcpserviceaccount/v1:gcpserviceaccount",
+        "//pkg/iac/pulumi/pulumimodule/provider/gcp/pulumigoogleprovider",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp",
+        "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp/organizations",
+        "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp/projects",
+        "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp/serviceaccount",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)

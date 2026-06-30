@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awss3objectset.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// AwsS3ObjectSetSpec defines the specification for uploading one or more objects to an AWS S3 bucket.
+// This component manages a collection of S3 objects in a single target bucket, supporting inline text content
+// or base64-encoded binary content. It is designed for configuration files, static assets, seed data,
+// and any scenario where objects need to be declaratively managed alongside infrastructure.
+message AwsS3ObjectSetSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  // The target S3 bucket where objects will be uploaded.
+  // Can be a literal bucket name or a reference to an AwsS3Bucket component.
+  // When referencing an AwsS3Bucket, the bucket_id is resolved from status.outputs.bucket_id.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef bucket = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsS3Bucket,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_id"
+  ];
+
+  // The list of S3 objects to upload to the target bucket.
+  // At least one object must be specified.
+  repeated AwsS3Object objects = 3 [(buf.validate.field).repeated.min_items = 1];
+
+  // Tags applied to all objects in the set.
+  // Individual object tags are merged with these, with object-level tags taking precedence.
+  map<string, string> tags = 4;
+}
+
+// AwsS3Object defines a single S3 object to be uploaded.
+message AwsS3Object {
+  // The S3 object key (path within the bucket).
+  // Examples: "config/app.json", "assets/logo.png", "data/seed.csv"
+  string key = 1 [(buf.validate.field).string.min_len = 1];
+
+  // The content source for the object. Exactly one must be specified.
+  oneof source {
+    // Inline UTF-8 text content for the object.
+    // Suitable for configuration files, JSON, YAML, HTML, and other text formats.
+    string content = 2;
+
+    // Base64-encoded binary content for the object.
+    // Suitable for images, compiled assets, or any binary data.
+    string content_base64 = 3;
+  }
+
+  // The MIME content type of the object (e.g., "application/json", "text/html", "image/png").
+  // Default: application/octet-stream
+  optional string content_type = 4 [(dev.planton.shared.options.default) = "application/octet-stream"];
+
+  // The caching behavior for the object.
+  // Example: "max-age=86400" for 24-hour caching, "no-cache" for no caching.
+  string cache_control = 5;
+
+  // How the content is encoded (e.g., "gzip", "br").
+  // Set this if the content has been pre-compressed.
+  string content_encoding = 6;
+
+  // Tags specific to this object. Merged with set-level tags (object tags take precedence).
+  map<string, string> tags = 7;
+
+  // The canned ACL for this object (e.g., "private", "public-read").
+  // If not specified, inherits the bucket's default ACL.
+  string acl = 8;
+
+  // Message-level validation: exactly one of content or content_base64 must be provided.
+  option (buf.validate.message).cel = {
+    id: "object.source.required"
+    message: "Exactly one of content or content_base64 must be specified"
+    expression: "(has(this.content) && this.content != '') || (has(this.content_base64) && this.content_base64 != '')"
+  };
+}

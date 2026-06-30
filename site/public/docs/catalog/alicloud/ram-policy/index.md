@@ -12,13 +12,13 @@ Deploys an Alibaba Cloud RAM custom policy with a JSON permission document, opti
 
 ## What Gets Created
 
-When you deploy an AliCloudRamPolicy resource, OpenMCF provisions:
+When you deploy an AliCloudRamPolicy resource, Planton provisions:
 
 - **RAM Policy** — an `alicloud_ram_policy` resource with the specified JSON policy document, version rotation strategy, and tags
 
 ## Prerequisites
 
-- **Alibaba Cloud credentials** configured via environment variables or OpenMCF provider config
+- **Alibaba Cloud credentials** configured via environment variables or Planton provider config
 - **An Alibaba Cloud account** with RAM service enabled
 - **A valid JSON policy document** conforming to the Alibaba Cloud RAM policy structure (Version, Statement, Effect, Action, Resource)
 
@@ -27,15 +27,15 @@ When you deploy an AliCloudRamPolicy resource, OpenMCF provisions:
 Create a file `ram-policy.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudRamPolicy
 metadata:
   name: my-oss-reader
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudRamPolicy.my-oss-reader
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudRamPolicy.my-oss-reader
 spec:
   region: cn-hangzhou
   policyName: oss-read-only
@@ -55,7 +55,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f ram-policy.yaml
+planton apply -f ram-policy.yaml
 ```
 
 This creates a custom RAM policy granting read-only access to a specific OSS bucket.
@@ -76,7 +76,7 @@ This creates a custom RAM policy granting read-only access to a specific OSS buc
 |-------|------|---------|-------------|
 | `description` | `string` | `""` | Human-readable description of what the policy allows or denies. Maximum 1024 characters. |
 | `rotateStrategy` | `string` | `"None"` | Strategy for handling the 5-version limit. `None`: update fails at the limit. `DeleteOldestNonDefaultVersionWhenLimitExceeded`: auto-deletes the oldest non-default version. |
-| `tags` | `map<string, string>` | `{}` | Tags applied to the policy. Merged with standard OpenMCF tags (`resource_name`, `resource_kind`, `organization`, `environment`). User tags take precedence on conflict. |
+| `tags` | `map<string, string>` | `{}` | Tags applied to the policy. Merged with standard Planton tags (`resource_name`, `resource_kind`, `organization`, `environment`). User tags take precedence on conflict. |
 | `force` | `bool` | `false` | Force-delete the policy even if attached to roles, users, or groups. When `true`, detaches from all entities and deletes all non-default versions before deletion. |
 
 ## Examples
@@ -86,15 +86,15 @@ This creates a custom RAM policy granting read-only access to a specific OSS buc
 A minimal policy granting read-only access to all OSS buckets:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudRamPolicy
 metadata:
   name: oss-reader
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudRamPolicy.oss-reader
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudRamPolicy.oss-reader
 spec:
   region: cn-hangzhou
   policyName: oss-read-only
@@ -121,15 +121,15 @@ spec:
 A policy granting full access to a specific OSS bucket with automatic version rotation for frequent updates:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudRamPolicy
 metadata:
   name: app-data-access
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AliCloudRamPolicy.app-data-access
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AliCloudRamPolicy.app-data-access
 spec:
   region: cn-shanghai
   policyName: app-data-bucket-full-access
@@ -159,15 +159,15 @@ spec:
 A cross-service policy for CI/CD pipelines with force delete enabled for clean teardowns:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudRamPolicy
 metadata:
   name: cicd-deploy-policy
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AliCloudRamPolicy.cicd-deploy-policy
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AliCloudRamPolicy.cicd-deploy-policy
 spec:
   region: cn-hangzhou
   policyName: cicd-pipeline-deploy-policy

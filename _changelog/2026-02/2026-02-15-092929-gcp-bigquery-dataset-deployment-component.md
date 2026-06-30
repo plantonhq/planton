@@ -10,11 +10,11 @@ Added GcpBigQueryDataset as the first Data & Analytics resource in the GCP provi
 
 ## Problem Statement / Motivation
 
-OpenMCF's GCP coverage lacked any data analytics resources. BigQuery is Google Cloud's flagship analytics service, and the dataset is the foundational infrastructure boundary -- controlling data location, encryption, access, and lifecycle. Without it, OpenMCF couldn't compose data analytics infra charts or serve teams building BigQuery-based data platforms.
+Planton's GCP coverage lacked any data analytics resources. BigQuery is Google Cloud's flagship analytics service, and the dataset is the foundational infrastructure boundary -- controlling data location, encryption, access, and lifecycle. Without it, Planton couldn't compose data analytics infra charts or serve teams building BigQuery-based data platforms.
 
 ### Pain Points
 
-- No BigQuery support in OpenMCF prevented data analytics infra chart composition
+- No BigQuery support in Planton prevented data analytics infra chart composition
 - Teams couldn't provision BigQuery datasets with cross-resource CMEK wiring
 - No declarative access control management for BigQuery datasets
 - Missing storage billing model control (LOGICAL vs PHYSICAL) for cost optimization
@@ -23,7 +23,7 @@ OpenMCF's GCP coverage lacked any data analytics resources. BigQuery is Google C
 
 ### Complete Deployment Component
 
-A full GcpBigQueryDataset deployment component following the established OpenMCF patterns, delivering:
+A full GcpBigQueryDataset deployment component following the established Planton patterns, delivering:
 
 - **Proto API** (4 proto files) with 14 spec fields, 2 sub-messages, 4 CEL validations
 - **Pulumi module** (4 Go files) with full field mapping including access entries
@@ -78,9 +78,9 @@ Advanced features deliberately excluded: condition (CEL-based conditional access
 
 ## Impact
 
-- **OpenMCF GCP coverage**: 20 resource kinds (from 19) -- 5 of 21 expansion resources complete
+- **Planton GCP coverage**: 20 resource kinds (from 19) -- 5 of 21 expansion resources complete
 - **Infra chart readiness**: BigQuery Dataset unlocks 3 planned infra charts (data-analytics-environment, ml-notebook-environment, event-pipeline)
-- **Users**: Any GCP user can now provision BigQuery datasets through OpenMCF with full lifecycle management
+- **Users**: Any GCP user can now provision BigQuery datasets through Planton with full lifecycle management
 
 ## Related Work
 

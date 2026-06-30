@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcpmemorystoreinstance.v1;
+
+// GcpMemorystoreInstanceStackOutputs captures observable values produced after
+// provisioning a Memorystore instance.
+//
+// The instance uses Private Service Connect (PSC) for connectivity. The
+// discovery_address and discovery_port fields provide the primary connection
+// endpoint that clients should use.
+message GcpMemorystoreInstanceStackOutputs {
+  // IP address of the instance's discovery endpoint.
+  // Clients connect to this address for cluster topology discovery and
+  // command routing. Works for both CLUSTER and CLUSTER_DISABLED modes.
+  //
+  // Extracted from the instance's PSC auto-created endpoint connections.
+  string discovery_address = 1;
+
+  // Port of the instance's discovery endpoint (typically 6379).
+  int32 discovery_port = 2;
+
+  // Server-generated unique identifier for the instance.
+  // Stable across updates, useful for tracking and correlation.
+  string instance_uid = 3;
+
+  // Memory size per node in GB, determined by the chosen node_type.
+  // Useful for capacity planning and monitoring.
+  double node_size_gb = 4;
+}

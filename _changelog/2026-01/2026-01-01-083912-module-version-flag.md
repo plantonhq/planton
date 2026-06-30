@@ -23,11 +23,11 @@ After implementing the staging-based module cache, users needed a way to:
 ### New `--module-version` Flag
 
 Added `--module-version` to all infrastructure commands:
-- `openmcf apply --module-version v0.2.273`
-- `openmcf destroy --module-version main`
-- `openmcf plan --module-version abc1234`
-- `openmcf refresh --module-version <version>`
-- `openmcf init --module-version <version>`
+- `planton apply --module-version v0.2.273`
+- `planton destroy --module-version main`
+- `planton plan --module-version abc1234`
+- `planton refresh --module-version <version>`
+- `planton init --module-version <version>`
 
 The version argument supports:
 - **Tags**: `v0.2.273`, `v1.0.0`
@@ -39,16 +39,16 @@ The version argument supports:
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                                                                 │
-│  User runs: openmcf apply --module-version v0.2.273    │
+│  User runs: planton apply --module-version v0.2.273    │
 │                                                                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  1. Ensure staging exists (clone if not)                        │
 │                                                                 │
 │  2. Copy staging → workspace                                    │
-│     ~/.openmcf/staging/openmcf                 │
+│     ~/.planton/staging/planton                 │
 │           ↓ (cp -a)                                             │
-│     ~/.openmcf/pulumi/<stack>/openmcf          │
+│     ~/.planton/pulumi/<stack>/planton          │
 │                                                                 │
 │  3. In workspace copy: git checkout v0.2.273                   │
 │     (staging unchanged - still on its current version)          │
@@ -78,10 +78,10 @@ The version argument supports:
 | `pkg/iac/tofu/tofumodule/module_directory.go` | Updated `GetModulePath()` to accept `moduleVersion` |
 | `pkg/iac/pulumi/pulumistack/*.go` | Updated all stack operations to pass `moduleVersion` |
 | `pkg/iac/tofu/tofumodule/run_command.go` | Updated to pass `moduleVersion` |
-| `cmd/openmcf/root/*.go` | Added `--module-version` flag to unified commands |
-| `cmd/openmcf/root/pulumi.go` | Added `--module-version` to Pulumi parent command |
-| `cmd/openmcf/root/pulumi/*.go` | Updated handlers to pass `moduleVersion` |
-| `cmd/openmcf/root/tofu/*.go` | Added `--module-version` flag and handlers |
+| `cmd/planton/root/*.go` | Added `--module-version` flag to unified commands |
+| `cmd/planton/root/pulumi.go` | Added `--module-version` to Pulumi parent command |
+| `cmd/planton/root/pulumi/*.go` | Updated handlers to pass `moduleVersion` |
+| `cmd/planton/root/tofu/*.go` | Added `--module-version` flag and handlers |
 
 ### New Function
 
@@ -112,21 +112,21 @@ func CheckoutVersionInWorkspace(workspacePath, version string) error {
 
 ```bash
 # Use a specific release tag
-openmcf apply -f manifest.yaml --module-version v0.2.273
+planton apply -f manifest.yaml --module-version v0.2.273
 
 # Use latest development branch
-openmcf plan -f manifest.yaml --module-version main
+planton plan -f manifest.yaml --module-version main
 
 # Debug with exact commit SHA from previous deployment
-openmcf destroy -f manifest.yaml --module-version a1b2c3d4
+planton destroy -f manifest.yaml --module-version a1b2c3d4
 
 # Combine with --no-cleanup to inspect the workspace
-openmcf apply -f manifest.yaml --module-version v0.2.270 --no-cleanup
+planton apply -f manifest.yaml --module-version v0.2.270 --no-cleanup
 ```
 
 ## Checkout Command Update
 
-The `openmcf checkout` command was already designed to support any git ref (tag, branch, or commit SHA). This changelog confirms that behavior and extends the same flexibility to `--module-version`.
+The `planton checkout` command was already designed to support any git ref (tag, branch, or commit SHA). This changelog confirms that behavior and extends the same flexibility to `--module-version`.
 
 ## Impact
 

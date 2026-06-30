@@ -12,7 +12,7 @@ Deploys an Amazon Kinesis Data Stream with configurable capacity mode (provision
 
 ## What Gets Created
 
-When you deploy an AwsKinesisStream resource, OpenMCF provisions:
+When you deploy an AwsKinesisStream resource, Planton provisions:
 
 - **Kinesis Data Stream** — an `aws_kinesis_stream` resource with the specified capacity mode, shard count (provisioned only), retention period, and encryption settings
 - **KMS Encryption** — enabled automatically when `kmsKeyId` is specified, using encryption type `KMS`
@@ -20,7 +20,7 @@ When you deploy an AwsKinesisStream resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **A KMS key** if enabling server-side encryption (can use the Kinesis-owned key `alias/aws/kinesis` at no additional KMS cost)
 
 ## Quick Start
@@ -28,15 +28,15 @@ When you deploy an AwsKinesisStream resource, OpenMCF provisions:
 Create a file `kinesis-stream.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsKinesisStream
 metadata:
   name: my-stream
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsKinesisStream.my-stream
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsKinesisStream.my-stream
 spec:
   region: us-east-1
   streamMode: ON_DEMAND
@@ -45,7 +45,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f kinesis-stream.yaml
+planton apply -f kinesis-stream.yaml
 ```
 
 This creates an on-demand Kinesis stream with 24-hour default retention, no encryption, and stream-level metrics only.
@@ -77,15 +77,15 @@ This creates an on-demand Kinesis stream with 24-hour default retention, no encr
 A provisioned stream with 4 shards, KMS encryption via the Kinesis-owned key, and 48-hour retention:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsKinesisStream
 metadata:
   name: order-events
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.AwsKinesisStream.order-events
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.AwsKinesisStream.order-events
 spec:
   region: us-east-1
   streamMode: PROVISIONED
@@ -100,15 +100,15 @@ spec:
 Production on-demand stream with 7-day retention, encryption, and all shard-level metrics for full observability:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsKinesisStream
 metadata:
   name: analytics-pipeline
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsKinesisStream.analytics-pipeline
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsKinesisStream.analytics-pipeline
 spec:
   region: us-east-1
   streamMode: ON_DEMAND
@@ -128,18 +128,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed KMS key instead of hardcoding the ARN:
+Reference an Planton-managed KMS key instead of hardcoding the ARN:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsKinesisStream
 metadata:
   name: audit-stream
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsKinesisStream.audit-stream
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsKinesisStream.audit-stream
 spec:
   region: us-east-1
   streamMode: ON_DEMAND

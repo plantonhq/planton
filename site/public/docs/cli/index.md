@@ -1,25 +1,25 @@
 ---
 title: "CLI"
-description: "Command-line interface documentation for the openmcf CLI — installation, command reference, and engine-specific guides"
+description: "Command-line interface documentation for the planton CLI — installation, command reference, and engine-specific guides"
 icon: "code"
 order: 20
 ---
 
 # CLI
 
-The `openmcf` CLI is a single binary that handles the full deployment lifecycle: manifest loading, validation, module resolution, provisioner execution, and state management across Pulumi, OpenTofu, and Terraform.
+The `planton` CLI is a single binary that handles the full deployment lifecycle: manifest loading, validation, module resolution, provisioner execution, and state management across Pulumi, OpenTofu, and Terraform.
 
 ## Installation
 
 ```bash
 # macOS (Homebrew)
-brew install plantonhq/tap/openmcf
+brew install plantonhq/tap/planton
 
 # Verify
-openmcf version
+planton version
 ```
 
-For other platforms, download the binary from [GitHub Releases](https://github.com/plantonhq/openmcf/releases).
+For other platforms, download the binary from [GitHub Releases](https://github.com/plantonhq/planton/releases).
 
 You also need at least one IaC engine installed:
 
@@ -43,7 +43,7 @@ Enable tab-completion for all commands, subcommands, and flags. This is a one-ti
 Add this line to your `~/.zshrc`:
 
 ```bash
-source <(openmcf completion zsh)
+source <(planton completion zsh)
 ```
 
 **Bash:**
@@ -51,7 +51,7 @@ source <(openmcf completion zsh)
 Add this line to your `~/.bashrc`:
 
 ```bash
-source <(openmcf completion bash)
+source <(planton completion bash)
 ```
 
 > Bash completion requires the `bash-completion` package. On macOS: `brew install bash-completion@2`.
@@ -59,7 +59,7 @@ source <(openmcf completion bash)
 **Fish:**
 
 ```bash
-openmcf completion fish > ~/.config/fish/completions/openmcf.fish
+planton completion fish > ~/.config/fish/completions/planton.fish
 ```
 
 **PowerShell:**
@@ -67,10 +67,10 @@ openmcf completion fish > ~/.config/fish/completions/openmcf.fish
 Add this line to your PowerShell profile:
 
 ```powershell
-openmcf completion powershell | Out-String | Invoke-Expression
+planton completion powershell | Out-String | Invoke-Expression
 ```
 
-After setup, open a new terminal and type `openmcf <Tab>` to see available commands.
+After setup, open a new terminal and type `planton <Tab>` to see available commands.
 
 ## How the CLI Works
 
@@ -81,7 +81,7 @@ Every deployment follows the same sequence regardless of which engine you choose
 3. **Resolve** the IaC module for the component kind
 4. **Execute** the operation through the selected provisioner
 
-You can let the CLI detect the provisioner automatically from the manifest's `openmcf.org/provisioner` label using [unified commands](./unified-commands), or choose explicitly with `openmcf pulumi`, `openmcf tofu`, or `openmcf terraform`.
+You can let the CLI detect the provisioner automatically from the manifest's `planton.dev/provisioner` label using [unified commands](./unified-commands), or choose explicitly with `planton pulumi`, `planton tofu`, or `planton terraform`.
 
 ## In This Section
 
@@ -103,40 +103,40 @@ You can let the CLI detect the provisioner automatically from the manifest's `op
 
 ```bash
 # Validate a manifest
-openmcf validate -f database.yaml
+planton validate -f database.yaml
 
 # Deploy with automatic provisioner detection
-openmcf apply -f database.yaml
+planton apply -f database.yaml
 
 # Preview changes before applying
-openmcf plan -f database.yaml
+planton plan -f database.yaml
 
 # Tear down
-openmcf destroy -f database.yaml
+planton destroy -f database.yaml
 ```
 
 Or use a specific engine directly:
 
 ```bash
 # Pulumi
-openmcf pulumi up --manifest database.yaml --yes
+planton pulumi up --manifest database.yaml --yes
 
 # OpenTofu
-openmcf tofu init --manifest database.yaml
-openmcf tofu apply --manifest database.yaml --auto-approve
+planton tofu init --manifest database.yaml
+planton tofu apply --manifest database.yaml --auto-approve
 
 # Terraform
-openmcf terraform init --manifest database.yaml
-openmcf terraform apply --manifest database.yaml --auto-approve
+planton terraform init --manifest database.yaml
+planton terraform apply --manifest database.yaml --auto-approve
 ```
 
 ## Getting Help
 
 ```bash
-openmcf --help
-openmcf apply --help
-openmcf pulumi --help
-openmcf tofu init --help
+planton --help
+planton apply --help
+planton pulumi --help
+planton tofu init --help
 ```
 
 Every command and subcommand supports `--help`.

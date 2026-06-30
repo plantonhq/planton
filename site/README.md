@@ -1,8 +1,8 @@
-# OpenMCF Website
+# Planton Website
 
 <!-- Auto-release test: Website change triggers v{semver}-website-{YYYYMMDD}.{N} tag format -->
 
-Next.js App Router project for the openmcf.org documentation website.
+Next.js App Router project for the planton.dev documentation website.
 
 Key packages:
 

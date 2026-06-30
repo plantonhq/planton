@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azureakscluster.v1;
+
+// AzureAksClusterStackOutputs captures key information after provisioning an AKS cluster.
+message AzureAksClusterStackOutputs {
+  // The URL of the Kubernetes API server endpoint for the AKS cluster.
+  string api_server_endpoint = 1;
+
+  // The Azure Resource ID of the AKS cluster.
+  string cluster_resource_id = 2;
+
+  // Kubeconfig file contents for the cluster, base64-encoded.
+  string cluster_kubeconfig = 3;
+
+  // The Azure AD principal ID of the cluster's managed identity.
+  string managed_identity_principal_id = 4;
+}

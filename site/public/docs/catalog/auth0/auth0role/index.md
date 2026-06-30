@@ -10,7 +10,7 @@ componentName: "auth0role"
 title: Auth0Role
 kind: Auth0Role
 provider: auth0
-api_version: auth0.openmcf.org/v1
+api_version: auth0.planton.dev/v1
 id_prefix: a0role
 description: Manage Auth0 Roles — named collections of API permissions that implement role-based access control (RBAC) for assignment to users.
 ---

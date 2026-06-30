@@ -43,7 +43,7 @@ Reused the existing `KubernetesSensitiveValue` proto type (from the kubernetes_s
 **Using Kubernetes Secret (Recommended for Production):**
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesOpenFga
 metadata:
   name: openfga-prod
@@ -78,7 +78,7 @@ spec:
 **Using Plain String (Dev/Test Only):**
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesOpenFga
 metadata:
   name: openfga-dev
@@ -96,7 +96,7 @@ spec:
 
 ### Proto Schema Changes
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesopenfga/v1/spec.proto`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesopenfga/v1/spec.proto`
 
 ```protobuf
 message KubernetesOpenFgaDataStore {
@@ -105,14 +105,14 @@ message KubernetesOpenFgaDataStore {
   optional int32 port = 3;  // Defaults based on engine
   string database = 4;
   string username = 5;
-  org.openmcf.provider.kubernetes.KubernetesSensitiveValue password = 6;
+  dev.planton.provider.kubernetes.KubernetesSensitiveValue password = 6;
   bool is_secure = 7;  // Adds sslmode=require (Postgres) or tls=true (MySQL)
 }
 ```
 
 ### Pulumi Module Update
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesopenfga/v1/iac/pulumi/module/helm_chart.go`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesopenfga/v1/iac/pulumi/module/helm_chart.go`
 
 The Pulumi module now:
 1. Constructs the URI from individual fields
@@ -147,7 +147,7 @@ if ds.Password.GetSecretRef() != nil {
 
 ### Terraform Module Update
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesopenfga/v1/iac/tf/variables.tf`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesopenfga/v1/iac/tf/variables.tf`
 
 ```hcl
 datastore = object({
@@ -168,7 +168,7 @@ datastore = object({
 })
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesopenfga/v1/iac/tf/helm_chart.tf`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesopenfga/v1/iac/tf/helm_chart.tf`
 
 Similar logic to Pulumi - constructs URI from fields and uses `extraEnvVars` for secret refs.
 

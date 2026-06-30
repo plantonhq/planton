@@ -31,7 +31,7 @@ Added comprehensive volume mount support to KubernetesStatefulSet, including inl
 map<string, string> config_maps = 9;  // Key=name, Value=content
 
 // In KubernetesStatefulSetContainerApp (field 5 updated)
-repeated org.openmcf.provider.kubernetes.VolumeMount volume_mounts = 5;
+repeated dev.planton.provider.kubernetes.VolumeMount volume_mounts = 5;
 ```
 
 ### Supported Volume Types
@@ -52,9 +52,9 @@ StatefulSets have special volume handling for `volumeClaimTemplates`. When a PVC
 
 ### Proto Schema Changes
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesstatefulset/v1/spec.proto`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesstatefulset/v1/spec.proto`
 
-- Added import for `org/openmcf/provider/kubernetes/volume_mount.proto`
+- Added import for `dev/planton/provider/kubernetes/volume_mount.proto`
 - Added `config_maps` field (field 9) to `KubernetesStatefulSetSpec`
 - Replaced `KubernetesStatefulSetContainerVolumeMount` with shared `VolumeMount` type
 - Deleted the component-specific `KubernetesStatefulSetContainerVolumeMount` message
@@ -120,7 +120,7 @@ resource "kubernetes_config_map" "this" {
 Deploy PostgreSQL with custom configuration:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesStatefulSet
 metadata:
   name: postgres

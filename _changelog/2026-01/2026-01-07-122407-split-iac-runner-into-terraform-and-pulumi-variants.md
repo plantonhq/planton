@@ -26,7 +26,7 @@ The original `iac-runner` base image included pre-warmed Go caches for all 11 cl
 Split the monolithic image into variant tags under the same repository:
 
 ```
-ghcr.io/plantonhq/openmcf/base-images/iac-runner
+ghcr.io/plantonhq/planton/base-images/iac-runner
 ├── :terraform-v0.0.1          # OpenTofu only (~500MB)
 ├── :pulumi-aws-v0.0.1         # Go + Pulumi + AWS SDK cache
 ├── :pulumi-gcp-v0.0.1         # Go + Pulumi + GCP SDK cache
@@ -99,7 +99,7 @@ COPY merged-cache/go-build ${GOCACHE}
 
 **Pulumi workflow** (`.github/workflows/iac-runner-pulumi.yml`):
 - Triggered by: `iac-runner-pulumi-{provider}-v*` tags
-- Runs on: `openmcf-iac-runner-base-image-builder` (self-hosted with PVC)
+- Runs on: `planton-iac-runner-base-image-builder` (self-hosted with PVC)
 - Parses provider name from tag
 - Builds only that provider's modules to warm the cache
 
@@ -169,20 +169,20 @@ VALID_PROVIDERS="atlas auth0 aws azure civo cloudflare confluent digitalocean gc
 ### Terraform Workloads
 
 ```dockerfile
-FROM ghcr.io/plantonhq/openmcf/base-images/iac-runner:terraform-v0.0.1
+FROM ghcr.io/plantonhq/planton/base-images/iac-runner:terraform-v0.0.1
 ```
 
 ### Pulumi Workloads
 
 ```dockerfile
 # For AWS deployments
-FROM ghcr.io/plantonhq/openmcf/base-images/iac-runner:pulumi-aws-v0.0.1
+FROM ghcr.io/plantonhq/planton/base-images/iac-runner:pulumi-aws-v0.0.1
 
 # For GCP deployments
-FROM ghcr.io/plantonhq/openmcf/base-images/iac-runner:pulumi-gcp-v0.0.1
+FROM ghcr.io/plantonhq/planton/base-images/iac-runner:pulumi-gcp-v0.0.1
 
 # For Kubernetes deployments
-FROM ghcr.io/plantonhq/openmcf/base-images/iac-runner:pulumi-kubernetes-v0.0.1
+FROM ghcr.io/plantonhq/planton/base-images/iac-runner:pulumi-kubernetes-v0.0.1
 ```
 
 ### Building New Versions

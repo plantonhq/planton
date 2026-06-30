@@ -1,9 +1,0 @@
-apiVersion: kubernetes.openmcf.org/v1
-kind: KubernetesIngressNginx
-metadata:
-  name: e2e-nginx
-spec:
-  namespace:
-    value: ingress-nginx
-  create_namespace: true
-  internal: false

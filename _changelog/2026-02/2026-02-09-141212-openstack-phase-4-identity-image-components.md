@@ -55,7 +55,7 @@ flowchart TB
 
 Simple admin-level resource for Keystone project/tenant management:
 - 6 spec fields: `description`, `domain_id`, `enabled` (default: true), `parent_id`, `tags`, `region`
-- `enabled` uses `optional bool` with `(org.openmcf.shared.options.default) = "true"` -- proto3 bool defaults to false, which would disable new projects
+- `enabled` uses `optional bool` with `(dev.planton.shared.options.default) = "true"` -- proto3 bool defaults to false, which would disable new projects
 - FK target for `OpenStackRoleAssignment.project_id`
 - Excluded `is_domain` -- creating Keystone domains via the Project API is confusing and extremely rare
 
@@ -135,7 +135,7 @@ Changed from the original plan's interleaved approach. All 27 components will be
 
 - OpenStack Phase 1-3 components: `_changelog/2026-02/2026-02-09-*`
 - Forward registration of Image (2514): Session 8 (FloatingIp changelog)
-- Parent project: `planton/_projects/20260209.01.openstack-openmcf-components/`
+- Parent project: `planton/_projects/20260209.01.openstack-planton-components/`
 
 ---
 

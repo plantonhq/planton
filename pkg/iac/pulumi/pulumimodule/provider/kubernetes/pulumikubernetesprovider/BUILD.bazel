@@ -3,10 +3,10 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "pulumikubernetesprovider",
     srcs = ["provider.go"],
-    importpath = "github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider",
+    importpath = "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider",
     visibility = ["//visibility:public"],
     deps = [
-        "//apis/org/openmcf/provider/kubernetes",
+        "//apis/dev/planton/provider/kubernetes",
         "//pkg/iac/pulumi/pulumimodule/provider/gcp/pulumigkekubernetesprovider",
         "@com_github_pkg_errors//:errors",
         "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes",

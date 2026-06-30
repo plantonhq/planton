@@ -42,7 +42,7 @@ Two related improvements to the AWS keyless web-identity path, plus a dead-doc c
 
 ### 1. route53dnsrecord -> shared builder
 
-`apis/org/openmcf/provider/aws/awsroute53dnsrecord/v1/iac/pulumi/module/main.go` now calls
+`apis/dev/planton/provider/aws/awsroute53dnsrecord/v1/iac/pulumi/module/main.go` now calls
 `pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, spec.Region)` -- the same convergent
 path every other AWS module uses. The two inline `aws.NewProvider("aws-provider", ...)`
 branches (and the empty-session-token-pointer bug) are gone. The module is now keyless by
@@ -82,7 +82,7 @@ consumes them; only the deployment-component authoring rules mention generating/
 
 ## Implementation Details
 
-- **`apis/org/openmcf/provider/aws/provider.proto`**: added `web_identity_token_file = 6`;
+- **`apis/dev/planton/provider/aws/provider.proto`**: added `web_identity_token_file = 6`;
   dropped `required` on `web_identity_token`; added the message-level `token_xor_file` CEL;
   documented that these provider-config fields are caller-constructed and intentionally
   outside the spec secret-coverage surface (so they carry no `sensitive` annotation, matching

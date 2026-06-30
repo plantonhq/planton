@@ -12,7 +12,7 @@ Deploys an Azure SQL Database logical server with configurable databases, firewa
 
 ## What Gets Created
 
-When you deploy an AzureMssqlServer resource, OpenMCF provisions:
+When you deploy an AzureMssqlServer resource, Planton provisions:
 
 - **SQL Server** -- a `mssql.Server` resource in the specified region and resource group, configured with administrator credentials, TLS version, public network access, and connection policy
 - **Databases** -- a `mssql.Database` resource for each entry in the `databases` list, each with its own compute SKU, maximum storage size, collation, zone redundancy, license type, and backup storage type
@@ -21,7 +21,7 @@ When you deploy an AzureMssqlServer resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Resource Group** where the server will be created (can reference an AzureResourceGroup resource)
 - **Administrator password** meeting Azure SQL requirements: 8-128 characters with characters from at least three of uppercase, lowercase, digits, and special characters
 - **Globally unique server name** -- the server name becomes the hostname `{name}.database.windows.net` and must be unique across all of Azure
@@ -31,15 +31,15 @@ When you deploy an AzureMssqlServer resource, OpenMCF provisions:
 Create a file `mssqlserver.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureMssqlServer
 metadata:
   name: my-sql-server
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureMssqlServer.my-sql-server
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureMssqlServer.my-sql-server
 spec:
   region: eastus
   resourceGroup: my-rg
@@ -55,7 +55,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f mssqlserver.yaml
+planton apply -f mssqlserver.yaml
 ```
 
 This creates a SQL Server running version 12.0 with TLS 1.2, public network access enabled, the Default connection policy, and a single Standard-tier (S0) database.
@@ -114,15 +114,15 @@ Each entry in the `firewallRules` list supports:
 A minimal server with one Standard-tier database and no firewall restrictions:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureMssqlServer
 metadata:
   name: dev-sql
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureMssqlServer.dev-sql
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureMssqlServer.dev-sql
 spec:
   region: eastus
   resourceGroup: dev-rg
@@ -140,15 +140,15 @@ spec:
 A production server with a General Purpose vCore database, geo-redundant backups, and restricted access from office IP ranges and Azure services:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureMssqlServer
 metadata:
   name: prod-sql
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureMssqlServer.prod-sql
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureMssqlServer.prod-sql
 spec:
   region: westeurope
   resourceGroup: prod-rg
@@ -182,15 +182,15 @@ spec:
 A server with public access disabled, intended for use exclusively through an AzurePrivateEndpoint. Uses a Business Critical tier with zone redundancy and Azure Hybrid Benefit:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureMssqlServer
 metadata:
   name: private-sql
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureMssqlServer.private-sql
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureMssqlServer.private-sql
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -213,15 +213,15 @@ spec:
 A server with a serverless database that auto-pauses during inactivity, suitable for intermittent workloads:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureMssqlServer
 metadata:
   name: serverless-sql
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureMssqlServer.serverless-sql
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureMssqlServer.serverless-sql
 spec:
   region: eastus
   resourceGroup: dev-rg
@@ -242,18 +242,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed resource group and use a password from another resource output instead of hardcoding values:
+Reference an Planton-managed resource group and use a password from another resource output instead of hardcoding values:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureMssqlServer
 metadata:
   name: ref-sql
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureMssqlServer.ref-sql
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureMssqlServer.ref-sql
 spec:
   region: eastus
   resourceGroup:

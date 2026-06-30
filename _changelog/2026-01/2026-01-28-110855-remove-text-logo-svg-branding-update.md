@@ -6,21 +6,21 @@
 
 ## Summary
 
-Removed the old PROJECT PLANTON text logo SVG (`logo-text.svg`) and replaced it with styled "OpenMCF" text across all site headers and footer. This completes the branding transition following the recent project rename from openmcf to OpenMCF.
+Removed the old PROJECT PLANTON text logo SVG (`logo-text.svg`) and replaced it with styled "Planton" text across all site headers and footer. This completes the branding transition following the recent project rename from planton to Planton.
 
 ## Problem Statement / Motivation
 
-After renaming the project to OpenMCF, the text logo SVG still contained the old "PROJECT PLANTON" branding. Since no OpenMCF text logo exists yet, the SVG needed to be removed and replaced with a simpler text-based solution.
+After renaming the project to Planton, the text logo SVG still contained the old "PROJECT PLANTON" branding. Since no Planton text logo exists yet, the SVG needed to be removed and replaced with a simpler text-based solution.
 
 ### Pain Points
 
 - The `logo-text.svg` displayed the old "PROJECT PLANTON" name
-- No OpenMCF text logo was available to replace it
+- No Planton text logo was available to replace it
 - Branding inconsistency between the icon (updated) and text logo (outdated)
 
 ## Solution / What's New
 
-Replaced the SVG-based text logo with styled HTML text "OpenMCF" using Tailwind CSS classes. The approach maintains visual consistency while eliminating the need for a custom text logo asset.
+Replaced the SVG-based text logo with styled HTML text "Planton" using Tailwind CSS classes. The approach maintains visual consistency while eliminating the need for a custom text logo asset.
 
 ### Component Changes
 
@@ -33,7 +33,7 @@ flowchart TB
     
     subgraph After["After"]
         A1[icon.png] --> A2["span.text-xl.font-bold"]
-        A2 --> A3["OpenMCF"]
+        A2 --> A3["Planton"]
     end
 ```
 
@@ -57,13 +57,13 @@ flowchart TB
 
 **Before:**
 ```tsx
-<Image src="/logo-text.svg" alt="OpenMCF" width={160} height={40} 
+<Image src="/logo-text.svg" alt="Planton" width={160} height={40} 
        className="h-10 w-auto object-contain hidden sm:block" />
 ```
 
 **After:**
 ```tsx
-<span className="text-xl font-bold text-white hidden sm:block">OpenMCF</span>
+<span className="text-xl font-bold text-white hidden sm:block">Planton</span>
 ```
 
 ### Styling Applied
@@ -76,17 +76,17 @@ flowchart TB
 ## Benefits
 
 - **Simplified assets**: Removed 122-line SVG file dependency
-- **Consistent branding**: "OpenMCF" text now matches project name everywhere
+- **Consistent branding**: "Planton" text now matches project name everywhere
 - **Easier updates**: Text can be styled/changed without creating new SVG assets
 - **Reduced bundle size**: ~11 KB smaller public assets
 
 ## Impact
 
 ### What Changed
-- Site header displays "OpenMCF" text instead of SVG logo
-- Docs header displays "OpenMCF" text instead of SVG logo
-- Mobile drawer displays "OpenMCF" text instead of SVG logo
-- Footer displays "OpenMCF" text instead of SVG logo
+- Site header displays "Planton" text instead of SVG logo
+- Docs header displays "Planton" text instead of SVG logo
+- Mobile drawer displays "Planton" text instead of SVG logo
+- Footer displays "Planton" text instead of SVG logo
 
 ### What Stayed the Same
 - Icon (`icon.png`) remains unchanged
@@ -96,8 +96,8 @@ flowchart TB
 
 ## Related Work
 
-- Follows from: `2026-01-28-093934-rename-project-to-openmcf.md` - Main project rename
-- Part of: OpenMCF branding consolidation effort
+- Follows from: `2026-01-28-093934-rename-project-to-planton.md` - Main project rename
+- Part of: Planton branding consolidation effort
 
 ---
 

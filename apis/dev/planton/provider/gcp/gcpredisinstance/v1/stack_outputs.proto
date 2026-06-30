@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcpredisinstance.v1;
+
+// GcpRedisInstanceStackOutputs captures observable values produced after
+// provisioning a Memorystore for Redis instance.
+message GcpRedisInstanceStackOutputs {
+  // Hostname or IP address of the primary Redis endpoint.
+  // Clients connect to this address for read and write operations.
+  string host = 1;
+
+  // Port number of the primary Redis endpoint (typically 6379).
+  int32 port = 2;
+
+  // Hostname or IP address of the read replica endpoint.
+  // Only populated when tier is STANDARD_HA with read replicas enabled.
+  // Clients can direct read-only traffic here to reduce load on the primary.
+  string read_endpoint = 3;
+
+  // Port number of the read replica endpoint.
+  // Only populated when tier is STANDARD_HA with read replicas enabled.
+  int32 read_endpoint_port = 4;
+
+  // Zone where the Redis primary is currently running.
+  // For STANDARD_HA, this may change after a failover event.
+  string current_location_id = 5;
+
+  // Redis AUTH string for client authentication.
+  // Only populated when auth_enabled is true.
+  // This value is generated and rotated by GCP automatically.
+  // Treat as a secret -- do not log or expose in UIs.
+  string auth_string = 6;
+}

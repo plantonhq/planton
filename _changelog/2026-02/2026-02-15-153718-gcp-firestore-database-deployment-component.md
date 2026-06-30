@@ -6,17 +6,17 @@
 
 ## Summary
 
-Added the GcpFirestoreDatabase deployment component to OpenMCF, enabling declarative provisioning of Google Cloud Firestore databases with configurable type (Native or Datastore mode), edition (Standard or Enterprise), CMEK encryption, point-in-time recovery, and delete protection. This is the 14th GCP resource in the provider expansion effort (R13 in the queue).
+Added the GcpFirestoreDatabase deployment component to Planton, enabling declarative provisioning of Google Cloud Firestore databases with configurable type (Native or Datastore mode), edition (Standard or Enterprise), CMEK encryption, point-in-time recovery, and delete protection. This is the 14th GCP resource in the provider expansion effort (R13 in the queue).
 
 ## Problem Statement / Motivation
 
-Cloud Firestore is Google Cloud's primary NoSQL document database, used by mobile apps, web apps, and server-side workloads. Before this component, OpenMCF users had no way to declaratively provision Firestore databases -- they had to fall back to the GCP Console, gcloud CLI, or raw Terraform/Pulumi.
+Cloud Firestore is Google Cloud's primary NoSQL document database, used by mobile apps, web apps, and server-side workloads. Before this component, Planton users had no way to declaratively provision Firestore databases -- they had to fall back to the GCP Console, gcloud CLI, or raw Terraform/Pulumi.
 
 ### Pain Points
 
-- No OpenMCF-native way to provision Firestore databases
+- No Planton-native way to provision Firestore databases
 - No infra-chart composability for Firestore (couldn't reference GcpProject or GcpKmsKey via `valueFrom`)
-- Users managing Firestore outside OpenMCF had to maintain separate IaC configurations
+- Users managing Firestore outside Planton had to maintain separate IaC configurations
 - Gap in GCP database coverage alongside Spanner, AlloyDB, and Bigtable components
 
 ## Solution / What's New
@@ -87,7 +87,7 @@ flowchart TB
 
 ## Benefits
 
-- **Declarative Firestore provisioning** via OpenMCF manifests
+- **Declarative Firestore provisioning** via Planton manifests
 - **Infra-chart composability** through StringValueOrRef on project_id and kms_key_name
 - **Full validation before deployment** with 48 test cases covering all field combinations and edge cases
 - **Consistent patterns** with the 13 prior GCP components in field naming, validation style, and module structure
@@ -95,7 +95,7 @@ flowchart TB
 
 ## Impact
 
-- **Users**: Can now provision Firestore databases through OpenMCF with the same declarative workflow used for all other GCP resources
+- **Users**: Can now provision Firestore databases through Planton with the same declarative workflow used for all other GCP resources
 - **Infra chart authors**: Can compose Firestore databases with GcpProject and GcpKmsKey resources via `valueFrom` references
 - **Platform**: GCP database coverage now includes CloudSQL, Spanner (instance+database), AlloyDB, Bigtable, Redis, Memorystore, and Firestore -- covering all major GCP database products
 

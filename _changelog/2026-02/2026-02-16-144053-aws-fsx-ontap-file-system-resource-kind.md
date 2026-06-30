@@ -6,21 +6,21 @@
 
 ## Summary
 
-Added the AwsFsxOntapFileSystem resource kind (enum 294, id_prefix `awsfxo`) to OpenMCF, enabling declarative provisioning of Amazon FSx for NetApp ONTAP file systems. This is the fourth FSx type in OpenMCF (after Lustre, OpenZFS, Windows), covering the most enterprise-grade variant with multi-protocol access, scale-out HA pairs, and SnapMirror replication support.
+Added the AwsFsxOntapFileSystem resource kind (enum 294, id_prefix `awsfxo`) to Planton, enabling declarative provisioning of Amazon FSx for NetApp ONTAP file systems. This is the fourth FSx type in Planton (after Lustre, OpenZFS, Windows), covering the most enterprise-grade variant with multi-protocol access, scale-out HA pairs, and SnapMirror replication support.
 
 ## Problem Statement / Motivation
 
-FSx for ONTAP is AWS's most feature-rich managed file system, providing enterprise NAS/SAN capabilities that no other FSx type offers: simultaneous NFS, SMB, and iSCSI protocol access from a single file system, up to 12 HA pairs for petabyte-scale single-AZ deployments, and NetApp's SnapMirror for cross-region replication. Without this component, OpenMCF users needing enterprise storage for VMware Cloud on AWS, database workloads, or hybrid cloud scenarios had no declarative option.
+FSx for ONTAP is AWS's most feature-rich managed file system, providing enterprise NAS/SAN capabilities that no other FSx type offers: simultaneous NFS, SMB, and iSCSI protocol access from a single file system, up to 12 HA pairs for petabyte-scale single-AZ deployments, and NetApp's SnapMirror for cross-region replication. Without this component, Planton users needing enterprise storage for VMware Cloud on AWS, database workloads, or hybrid cloud scenarios had no declarative option.
 
 ### Pain Points
 
-- No OpenMCF component for ONTAP file systems despite being the most requested FSx type for enterprise workloads
-- Users managing ONTAP file systems manually or through raw Terraform without the OpenMCF validation, preset, and cross-reference framework
+- No Planton component for ONTAP file systems despite being the most requested FSx type for enterprise workloads
+- Users managing ONTAP file systems manually or through raw Terraform without the Planton validation, preset, and cross-reference framework
 - The remaining FSx ONTAP sub-resources (SVMs, Volumes) depend on this file system component existing first
 
 ## Solution / What's New
 
-A complete deployment component following the OpenMCF ideal state, covering the ONTAP file system resource (the storage/networking fabric). Storage Virtual Machines and Volumes are separate lifecycle resources handled by companion components.
+A complete deployment component following the Planton ideal state, covering the ONTAP file system resource (the storage/networking fabric). Storage Virtual Machines and Volumes are separate lifecycle resources handled by companion components.
 
 ### Key Design Decisions
 
@@ -40,7 +40,7 @@ A complete deployment component following the OpenMCF ideal state, covering the 
 
 - **spec.proto**: 18 top-level fields + 1 nested message (DiskIopsConfiguration). 10 CEL cross-field validations covering deployment type constraints, HA pair limits, multi-AZ field gating, admin password length, throughput tier validation, and backup time dependencies.
 - **stack_outputs.proto**: 10 outputs including ONTAP-specific endpoints (management DNS/IPs for CLI access, intercluster DNS/IPs for SnapMirror replication).
-- **api.proto**: KRM envelope with `aws.openmcf.org/v1` API version.
+- **api.proto**: KRM envelope with `aws.planton.dev/v1` API version.
 - **stack_input.proto**: Standard stack input with AWS provider config.
 
 ### Validation Tests
@@ -78,7 +78,7 @@ A complete deployment component following the OpenMCF ideal state, covering the 
 
 ## Benefits
 
-- Enterprise storage workloads now have a first-class OpenMCF component with full validation
+- Enterprise storage workloads now have a first-class Planton component with full validation
 - Scale-out HA pair support enables petabyte-scale deployments via simple `haPairs` field
 - Rich cross-resource references via StringValueOrRef for VPC, security groups, KMS keys
 - 10 stack outputs enable downstream SVM and volume components to wire dependencies

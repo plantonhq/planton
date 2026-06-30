@@ -10,11 +10,11 @@ Added GcpFilestoreInstance as a complete deployment component for provisioning G
 
 ## Problem Statement / Motivation
 
-OpenMCF's GCP provider lacked managed NFS file storage capability. Users needing shared file systems for GKE workloads, media rendering, EDA, genomics processing, or any multi-client file access pattern had no OpenMCF component to provision Filestore instances.
+Planton's GCP provider lacked managed NFS file storage capability. Users needing shared file systems for GKE workloads, media rendering, EDA, genomics processing, or any multi-client file access pattern had no Planton component to provision Filestore instances.
 
 ### Pain Points
 
-- No managed NFS provisioning through OpenMCF
+- No managed NFS provisioning through Planton
 - GKE workloads needing ReadWriteMany persistent volumes had to use manual Filestore setup
 - No composability between Filestore and other GCP resources (VPC, KMS) via infra charts
 
@@ -94,7 +94,7 @@ flowchart TB
 
 ## Benefits
 
-- GCP users can now provision managed NFS storage through OpenMCF
+- GCP users can now provision managed NFS storage through Planton
 - GKE workloads can reference Filestore IP addresses for ReadWriteMany persistent volumes
 - Full composability with GcpVpc, GcpKmsKey, and GcpProject via StringValueOrRef
 - All 8 Filestore tiers supported from cost-effective HDD to enterprise HA

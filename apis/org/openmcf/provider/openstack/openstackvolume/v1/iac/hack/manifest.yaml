@@ -1,8 +1,0 @@
-apiVersion: openstack.openmcf.org/v1
-kind: OpenStackVolume
-metadata:
-  name: test-volume
-spec:
-  size: 10
-  description: "Test volume for development"
-  volume_type: "SSD"

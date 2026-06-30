@@ -1,0 +1,137 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcpvertexaiendpoint.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// GcpVertexAiEndpointPrivateServiceConnectConfig configures Private Service
+// Connect (PSC) networking for the endpoint. When this block is present,
+// the endpoint is exposed via PSC rather than VPC peering.
+//
+// PSC provides a private, secure connection to the endpoint without
+// requiring VPC peering. It is the modern networking model for Vertex AI
+// endpoints and supports fine-grained access control via project allowlists.
+message GcpVertexAiEndpointPrivateServiceConnectConfig {
+  // Projects allowed to create forwarding rules targeting this endpoint's
+  // service attachment. Each entry is a GCP project ID or project number.
+  // If empty, any project in the same organization can connect.
+  repeated string project_allowlist = 1;
+}
+
+// GcpVertexAiEndpointSpec defines the configuration for a GCP Vertex AI
+// Endpoint -- a stable serving surface for deploying machine learning models.
+//
+// A Vertex AI Endpoint is a lightweight resource that provides a durable
+// URL and networking boundary for model serving. Creating the endpoint
+// is an infrastructure concern; deploying models to it is an operational
+// step performed separately via the Vertex AI API or console.
+//
+// Three networking modes are available, all mutually exclusive:
+//
+//   - **Public** (default): The endpoint is accessible via the shared
+//     regional DNS ({region}-aiplatform.googleapis.com).
+//
+//   - **VPC-peered**: The endpoint is accessible only within a peered
+//     VPC network. Set the `network` field. Requires Private Services
+//     Access configured on the VPC.
+//
+//   - **Private Service Connect**: The endpoint is exposed via a PSC
+//     service attachment. Set `private_service_connect_config`. Provides
+//     the strongest network isolation without VPC peering.
+//
+// The `dedicated_endpoint_enabled` flag provides a dedicated DNS name
+// for better performance and traffic isolation, but is incompatible
+// with Private Service Connect.
+//
+// GCP labels are supported and applied automatically by the framework.
+//
+// Immutable fields (ForceNew): location, network, kms_key_name,
+// endpoint_name. Changing these requires destroying and recreating
+// the endpoint.
+message GcpVertexAiEndpointSpec {
+  option (buf.validate.message).cel = {
+    id: "network_psc_mutual_exclusion"
+    expression: "!has(this.network) || !has(this.private_service_connect_config)"
+    message: "network and private_service_connect_config are mutually exclusive; use VPC peering or PSC, not both"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "dedicated_psc_mutual_exclusion"
+    expression: "this.dedicated_endpoint_enabled == false || !has(this.private_service_connect_config)"
+    message: "dedicated_endpoint_enabled and private_service_connect_config are mutually exclusive; dedicated DNS is not available with PSC"
+  };
+
+  // GCP project where the endpoint will be created.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // Region where the endpoint will be created (e.g., "us-central1").
+  // Immutable after creation.
+  string location = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {min_len: 1}
+  ];
+
+  // Display name of the endpoint (up to 128 UTF-8 characters).
+  // This is the primary human-readable identifier for the endpoint.
+  string display_name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1
+      max_len: 128
+    }
+  ];
+
+  // Description of the endpoint.
+  string description = 4;
+
+  // VPC network for private endpoints via VPC peering.
+  // Format: projects/{project}/global/networks/{network}
+  // Requires Private Services Access configured on the VPC.
+  // Mutually exclusive with private_service_connect_config.
+  // Immutable after creation.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef network = 5 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpVpc,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_self_link"
+  ];
+
+  // KMS key for customer-managed encryption (CMEK).
+  // Format: projects/{project}/locations/{location}/keyRings/{ring}/cryptoKeys/{key}
+  // If not specified, Google-managed encryption is used.
+  // Immutable after creation.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_name = 6 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+  ];
+
+  // If true, the endpoint is exposed through a dedicated DNS name
+  // (https://{endpointId}.{region}-{projectNumber}.prediction.vertexai.goog)
+  // rather than the shared regional DNS. Dedicated endpoints provide
+  // better performance, reliability, and traffic isolation.
+  // Mutually exclusive with private_service_connect_config.
+  bool dedicated_endpoint_enabled = 7;
+
+  // Private Service Connect configuration. When present, the endpoint
+  // is exposed via a PSC service attachment rather than VPC peering.
+  // Mutually exclusive with network and dedicated_endpoint_enabled.
+  GcpVertexAiEndpointPrivateServiceConnectConfig private_service_connect_config = 8;
+
+  // GCP endpoint name (numeric identifier, max 10 digits).
+  // GCP requires Vertex AI endpoint names to be numeric only --
+  // this is the resource ID in the fully qualified path
+  // projects/{project}/locations/{location}/endpoints/{name}.
+  //
+  // If not specified, the IaC module auto-generates a numeric
+  // identifier. Most users should omit this field and use
+  // display_name for human identification.
+  // Immutable after creation.
+  string endpoint_name = 9 [(buf.validate.field).cel = {
+    id: "valid_endpoint_name"
+    expression: "this == '' || this.matches('^[1-9][0-9]{0,9}$')"
+    message: "endpoint_name must be numeric (1-10 digits, no leading zeros)"
+  }];
+}

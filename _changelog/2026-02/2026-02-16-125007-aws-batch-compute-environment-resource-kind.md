@@ -6,15 +6,15 @@
 
 ## Summary
 
-Added the `AwsBatchComputeEnvironment` resource kind (enum 321, id_prefix `awsbat`) to OpenMCF, enabling declarative management of AWS Batch compute environments with bundled job queues and optional fair-share scheduling policies. This is the 28th new AWS resource kind in the cloud provider expansion effort.
+Added the `AwsBatchComputeEnvironment` resource kind (enum 321, id_prefix `awsbat`) to Planton, enabling declarative management of AWS Batch compute environments with bundled job queues and optional fair-share scheduling policies. This is the 28th new AWS resource kind in the cloud provider expansion effort.
 
 ## Problem Statement / Motivation
 
-AWS Batch is a foundational service for running batch processing workloads — data pipelines, ETL, ML training, and scientific computing. Before this component, teams deploying AWS Batch had to manually manage the three-way relationship between compute environments, job queues, and scheduling policies. There was no declarative, version-controlled way to provision this infrastructure through OpenMCF.
+AWS Batch is a foundational service for running batch processing workloads — data pipelines, ETL, ML training, and scientific computing. Before this component, teams deploying AWS Batch had to manually manage the three-way relationship between compute environments, job queues, and scheduling policies. There was no declarative, version-controlled way to provision this infrastructure through Planton.
 
 ### Pain Points
 
-- No OpenMCF support for AWS Batch workloads
+- No Planton support for AWS Batch workloads
 - Manual orchestration of compute environments and job queues as separate Terraform/Pulumi resources
 - No built-in validation for type-specific field requirements (e.g., instance_role for EC2, spot_iam_fleet_role for SPOT)
 - No cross-resource references via StringValueOrRef for VPC, security group, and IAM role dependencies
@@ -38,7 +38,7 @@ The component bundles compute environments + job queues + scheduling policy beca
 
 - `spec.proto` — 8 message types with CEL cross-field validations (instance_role required for EC2/SPOT, spot_fleet_role required for SPOT, launch template id-or-name exclusivity)
 - `stack_outputs.proto` — 6 outputs including per-queue ARN map
-- `api.proto` — KRM wiring with `aws.openmcf.org/v1` api_version
+- `api.proto` — KRM wiring with `aws.planton.dev/v1` api_version
 - `stack_input.proto` — Standard stack input with provider config
 
 ### Pulumi Module (6 files)
@@ -78,7 +78,7 @@ The component bundles compute environments + job queues + scheduling policy beca
 ## Related Work
 
 - Part of project 20260215.02.sp.aws-resource-expansion (R28)
-- Parent project: 20260212.01.openmcf-cloud-provider-expansion
+- Parent project: 20260212.01.planton-cloud-provider-expansion
 - Follows patterns established by AwsNeptuneCluster (R26) and AwsMemorydbCluster (R27)
 
 ---

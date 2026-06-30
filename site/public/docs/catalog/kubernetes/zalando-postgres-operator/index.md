@@ -12,19 +12,19 @@ Deploys the Zalando Postgres Operator on a Kubernetes cluster using its official
 
 ## What Gets Created
 
-When you deploy a KubernetesZalandoPostgresOperator resource, OpenMCF provisions:
+When you deploy a KubernetesZalandoPostgresOperator resource, Planton provisions:
 
 - **Namespace** — created only when `createNamespace` is `true`
 - **Helm Release** — installs the `postgres-operator` Helm chart (v1.12.2) from the Zalando Helm repository, deploying the operator pod with configurable CPU and memory resources
 - **Operator Pod** — runs the Zalando Postgres Operator controller that reconciles `postgresql` custom resources into running PostgreSQL clusters managed by Patroni
 - **CRDs and RBAC** — Custom Resource Definitions for `postgresql` and associated ClusterRoles, ServiceAccounts, and bindings installed by the Helm chart
-- **Label Inheritance** — configures the operator to propagate OpenMCF resource labels (organization, environment, resource kind, resource ID) to all managed PostgreSQL clusters
+- **Label Inheritance** — configures the operator to propagate Planton resource labels (organization, environment, resource kind, resource ID) to all managed PostgreSQL clusters
 - **Backup Secret** (optional) — a Kubernetes Secret containing Cloudflare R2 credentials for WAL-G backups, created when `backupConfig` is provided
 - **Backup ConfigMap** (optional) — a Kubernetes ConfigMap with WAL-G environment variables (S3 endpoint, prefix, schedule) referenced by the operator's `pod_environment_configmap` setting
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
 - **Helm-capable cluster** — the cluster must support Helm chart installations (standard for all managed Kubernetes offerings)
 - **Cloudflare R2 credentials** (optional) — required only if configuring WAL-G backups via `backupConfig`
@@ -34,15 +34,15 @@ When you deploy a KubernetesZalandoPostgresOperator resource, OpenMCF provisions
 Create a file `zalando-postgres-operator.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesZalandoPostgresOperator
 metadata:
   name: my-pg-operator
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesZalandoPostgresOperator.my-pg-operator
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesZalandoPostgresOperator.my-pg-operator
 spec:
   namespace: postgres-operator
   createNamespace: true
@@ -51,7 +51,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f zalando-postgres-operator.yaml
+planton apply -f zalando-postgres-operator.yaml
 ```
 
 This installs the Zalando Postgres Operator into the `postgres-operator` namespace with default resource limits (1000m CPU / 1Gi memory) and requests (50m CPU / 100Mi memory).
@@ -87,7 +87,7 @@ This installs the Zalando Postgres Operator into the `postgres-operator` namespa
 | `backupConfig.enableWalGRestore` | `bool` | `true` | Enable WAL-G for point-in-time restore operations. |
 | `backupConfig.enableCloneWalGRestore` | `bool` | `true` | Enable WAL-G for clone-from-backup operations. |
 
-> **Note on `namespace`:** The `namespace` field supports `valueFrom` for referencing an OpenMCF-managed KubernetesNamespace resource. When using `valueFrom`, the namespace name is resolved at deploy time from the referenced resource's `spec.name` field.
+> **Note on `namespace`:** The `namespace` field supports `valueFrom` for referencing an Planton-managed KubernetesNamespace resource. When using `valueFrom`, the namespace name is resolved at deploy time from the referenced resource's `spec.name` field.
 
 ## Examples
 
@@ -96,15 +96,15 @@ This installs the Zalando Postgres Operator into the `postgres-operator` namespa
 Install the Zalando Postgres Operator with default resource allocations, creating the target namespace automatically:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesZalandoPostgresOperator
 metadata:
   name: pg-operator
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesZalandoPostgresOperator.pg-operator
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesZalandoPostgresOperator.pg-operator
 spec:
   namespace: postgres-operator
   createNamespace: true
@@ -123,15 +123,15 @@ spec:
 For production clusters, increase the operator's resources and enable WAL-G backups to Cloudflare R2 with a nightly schedule:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesZalandoPostgresOperator
 metadata:
   name: prod-pg-operator
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesZalandoPostgresOperator.prod-pg-operator
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesZalandoPostgresOperator.prod-pg-operator
 spec:
   namespace: postgres-operator
   container:
@@ -156,18 +156,18 @@ spec:
 
 ### Operator with Foreign Key Namespace Reference
 
-Reference an OpenMCF-managed namespace instead of hardcoding the name. The `valueFrom` syntax resolves the namespace name from a KubernetesNamespace resource at deploy time:
+Reference an Planton-managed namespace instead of hardcoding the name. The `valueFrom` syntax resolves the namespace name from a KubernetesNamespace resource at deploy time:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesZalandoPostgresOperator
 metadata:
   name: shared-pg-operator
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.KubernetesZalandoPostgresOperator.shared-pg-operator
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.KubernetesZalandoPostgresOperator.shared-pg-operator
 spec:
   namespace:
     valueFrom:
@@ -189,15 +189,15 @@ spec:
 Organize backup paths by team or environment using a custom S3 prefix template:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesZalandoPostgresOperator
 metadata:
   name: team-pg-operator
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesZalandoPostgresOperator.team-pg-operator
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesZalandoPostgresOperator.team-pg-operator
 spec:
   namespace: postgres-operator
   createNamespace: true

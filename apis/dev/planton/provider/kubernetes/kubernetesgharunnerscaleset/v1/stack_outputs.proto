@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesgharunnerscaleset.v1;
+
+// KubernetesGhaRunnerScaleSetStackOutputs describes the outputs from deploying a
+// GitHub Actions Runner Scale Set on Kubernetes.
+message KubernetesGhaRunnerScaleSetStackOutputs {
+  // Namespace where the runner scale set is deployed.
+  string namespace = 1;
+
+  // Name of the Helm release.
+  string release_name = 2;
+
+  // Version of the deployed Helm chart.
+  string chart_version = 3;
+
+  // Name of the runner scale set as registered with GitHub.
+  // Use this name in workflow runs-on labels.
+  string runner_scale_set_name = 4;
+
+  // GitHub configuration URL the runners are connected to.
+  string github_config_url = 5;
+
+  // Name of the Kubernetes secret containing GitHub credentials.
+  string github_secret_name = 6;
+
+  // Names of PVCs created for persistent volumes.
+  repeated string pvc_names = 7;
+
+  // Minimum runners configured.
+  string min_runners = 8;
+
+  // Maximum runners configured.
+  string max_runners = 9;
+
+  // Container mode type used (dind, kubernetes, kubernetes-novolume, default).
+  string container_mode = 10;
+}

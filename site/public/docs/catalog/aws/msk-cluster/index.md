@@ -12,7 +12,7 @@ Deploys an Amazon MSK (Managed Streaming for Apache Kafka) cluster with configur
 
 ## What Gets Created
 
-When you deploy an AwsMskCluster resource, OpenMCF provisions:
+When you deploy an AwsMskCluster resource, Planton provisions:
 
 - **MSK Cluster** — an `aws_msk_cluster` resource with the specified number of broker nodes distributed across subnets, configured with the requested Kafka version, instance type, authentication methods, encryption settings, and monitoring level
 - **Security Group** — created only when `securityGroupIds` or `allowedCidrBlocks` are provided; opens ports 9092-9098 (Kafka broker protocols) and 2181-2182 (ZooKeeper) for the specified source security groups and CIDR ranges, with unrestricted egress
@@ -20,7 +20,7 @@ When you deploy an AwsMskCluster resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **At least one VPC subnet** for broker placement; three subnets across distinct Availability Zones recommended for production
 - **A VPC ID** if specifying `securityGroupIds` or `allowedCidrBlocks` (required for managed security group creation)
 - **A KMS key ARN** if using customer-managed encryption at rest
@@ -34,15 +34,15 @@ When you deploy an AwsMskCluster resource, OpenMCF provisions:
 Create a file `msk.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsMskCluster
 metadata:
   name: my-kafka
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsMskCluster.my-kafka
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsMskCluster.my-kafka
 spec:
   region: us-west-2
   kafkaVersion: "3.6.0"
@@ -59,7 +59,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f msk.yaml
+planton apply -f msk.yaml
 ```
 
 This creates a 3-broker MSK cluster with SASL/IAM authentication across three subnets, TLS encryption enabled by default.
@@ -119,15 +119,15 @@ This creates a 3-broker MSK cluster with SASL/IAM authentication across three su
 A 6-broker cluster with customer-managed encryption, tiered storage, and CloudWatch monitoring:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsMskCluster
 metadata:
   name: prod-kafka
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsMskCluster.prod-kafka
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsMskCluster.prod-kafka
 spec:
   region: us-east-1
   kafkaVersion: "3.6.0"
@@ -160,15 +160,15 @@ spec:
 All three authentication methods enabled for mixed client populations:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsMskCluster
 metadata:
   name: multi-auth-kafka
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsMskCluster.multi-auth-kafka
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsMskCluster.multi-auth-kafka
 spec:
   region: us-west-2
   kafkaVersion: "3.6.0"
@@ -191,15 +191,15 @@ spec:
 Broker logs delivered to all three destinations simultaneously:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsMskCluster
 metadata:
   name: logged-kafka
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsMskCluster.logged-kafka
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsMskCluster.logged-kafka
 spec:
   region: us-west-2
   kafkaVersion: "3.6.0"
@@ -226,18 +226,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding IDs:
+Reference other Planton-managed resources instead of hardcoding IDs:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsMskCluster
 metadata:
   name: ref-kafka
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsMskCluster.ref-kafka
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsMskCluster.ref-kafka
 spec:
   region: us-east-1
   kafkaVersion: "3.6.0"

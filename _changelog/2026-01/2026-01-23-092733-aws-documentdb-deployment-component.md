@@ -6,15 +6,15 @@
 
 ## Summary
 
-Added a complete deployment component for AWS DocumentDB, a fully managed MongoDB-compatible document database service. This component follows the OpenMCF ideal state checklist with comprehensive Proto API definitions, both Pulumi (Go) and Terraform (HCL) IaC implementations, detailed documentation, and validation tests.
+Added a complete deployment component for AWS DocumentDB, a fully managed MongoDB-compatible document database service. This component follows the Planton ideal state checklist with comprehensive Proto API definitions, both Pulumi (Go) and Terraform (HCL) IaC implementations, detailed documentation, and validation tests.
 
 ## Problem Statement / Motivation
 
-Organizations using MongoDB workloads on AWS need a declarative, production-ready way to deploy DocumentDB clusters through OpenMCF. Without this component, users would need to manually configure DocumentDB through the AWS Console or write custom IaC code, missing out on OpenMCF's cross-referencing capabilities and standardized deployment patterns.
+Organizations using MongoDB workloads on AWS need a declarative, production-ready way to deploy DocumentDB clusters through Planton. Without this component, users would need to manually configure DocumentDB through the AWS Console or write custom IaC code, missing out on Planton's cross-referencing capabilities and standardized deployment patterns.
 
 ### Pain Points
 
-- No existing OpenMCF component for MongoDB-compatible databases on AWS
+- No existing Planton component for MongoDB-compatible databases on AWS
 - Manual DocumentDB deployments require extensive configuration knowledge
 - Lack of cross-referencing between VPC, subnets, security groups, and database resources
 - No standardized validation for DocumentDB configuration parameters
@@ -64,7 +64,7 @@ flowchart TB
 
 ### Cross-Reference Support
 
-The component uses `StringValueOrRef` for seamless integration with other OpenMCF resources:
+The component uses `StringValueOrRef` for seamless integration with other Planton resources:
 
 ```mermaid
 flowchart LR
@@ -83,7 +83,7 @@ flowchart LR
 
 ### Proto API Files
 
-**File**: `apis/org/openmcf/provider/aws/awsdocumentdb/v1/spec.proto`
+**File**: `apis/dev/planton/provider/aws/awsdocumentdb/v1/spec.proto`
 
 Key fields with cross-reference support:
 - `subnets` - References `AwsVpc.status.outputs.private_subnets.[*].id`
@@ -173,13 +173,13 @@ Users can now deploy DocumentDB clusters with:
 
 ```bash
 # Validate manifest
-openmcf validate --manifest docdb.yaml
+planton validate --manifest docdb.yaml
 
 # Deploy with Pulumi
-openmcf pulumi up --manifest docdb.yaml --stack org/proj/stack
+planton pulumi up --manifest docdb.yaml --stack org/proj/stack
 
 # Or deploy with Terraform
-openmcf tofu apply --manifest docdb.yaml --auto-approve
+planton tofu apply --manifest docdb.yaml --auto-approve
 ```
 
 ## Files Changed
@@ -203,7 +203,7 @@ openmcf tofu apply --manifest docdb.yaml --auto-approve
 
 - Similar pattern to `AwsRdsCluster` component for Aurora/RDS
 - Uses same cross-reference patterns as `AwsEcsService`
-- Follows forge rule: `@forge-openmcf-component`
+- Follows forge rule: `@forge-planton-component`
 
 ---
 

@@ -1,0 +1,43 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesSignoz
+metadata:
+  name: e2e-signoz-managed
+spec:
+  namespace:
+    value: e2e-signoz-managed
+  create_namespace: true
+  signoz_container:
+    replicas: 1
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+  otel_collector_container:
+    replicas: 1
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+  database:
+    isExternal: false
+    managedDatabase:
+      container:
+        replicas: 1
+        persistenceEnabled: false
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 1Gi
+      cluster:
+        isEnabled: false
+      zookeeper:
+        isEnabled: false

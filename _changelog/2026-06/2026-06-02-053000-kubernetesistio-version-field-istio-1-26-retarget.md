@@ -36,7 +36,7 @@ supported** and can break the mesh.
 redeploying, then upgrade one minor at a time.
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesIstio
 metadata:
   name: my-istio
@@ -56,7 +56,7 @@ correctly ride the new `1.26.8` default and need no change.
 ## Version model
 
 The Istio *typed-schema* version (the crd2pulumi SDK, the forthcoming typed components, and the
-CRDs installed by `KubernetesIstioBaseCrds`) is a property of this OpenMCF release, pinned in one
+CRDs installed by `KubernetesIstioBaseCrds`) is a property of this Planton release, pinned in one
 place (`pkg/kubernetes/kubernetestypes/Makefile` `istio_release`). The only user-facing version
 knob is `KubernetesIstio.version` (an untyped Helm mesh install). Coherence rule: to use the
 typed Istio components, the cluster's mesh + CRDs must be >= the release's Istio version.

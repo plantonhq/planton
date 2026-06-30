@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added AzureCosmosdbAccount as a new OpenMCF deployment component supporting both SQL/NoSQL API (GlobalDocumentDB) and MongoDB API through a single unified resource. The component bundles the Cosmos DB account with SQL databases/containers and MongoDB databases/collections, following DD03 composite bundling rules. This is the 15th Azure resource kind (R14 in the Azure resource expansion queue) and the first NoSQL database in the Azure provider.
+Added AzureCosmosdbAccount as a new Planton deployment component supporting both SQL/NoSQL API (GlobalDocumentDB) and MongoDB API through a single unified resource. The component bundles the Cosmos DB account with SQL databases/containers and MongoDB databases/collections, following DD03 composite bundling rules. This is the 15th Azure resource kind (R14 in the Azure resource expansion queue) and the first NoSQL database in the Azure provider.
 
 ## Problem Statement / Motivation
 
@@ -14,9 +14,9 @@ The Azure resource expansion project (20260212.05.sp) targets 24 new Azure resou
 
 ### Pain Points
 
-- No NoSQL database option in the Azure OpenMCF provider
+- No NoSQL database option in the Azure Planton provider
 - Enterprise Azure infra charts (database-stack) need Cosmos DB as an optional component
-- Teams using Cosmos DB had to fall back to raw Terraform/Pulumi, breaking the OpenMCF abstraction
+- Teams using Cosmos DB had to fall back to raw Terraform/Pulumi, breaking the Planton abstraction
 
 ## Solution / What's New
 
@@ -99,7 +99,7 @@ Comprehensive spec_test.go with 35 Ginkgo test cases:
 
 ## Impact
 
-- **Users**: Can deploy Cosmos DB (SQL or MongoDB API) with the same OpenMCF workflow as all other Azure resources
+- **Users**: Can deploy Cosmos DB (SQL or MongoDB API) with the same Planton workflow as all other Azure resources
 - **Infra charts**: database-stack chart can now include Cosmos DB as an optional NoSQL database
 - **Azure provider**: 15 of 24 resource kinds complete (62.5% of expansion target)
 

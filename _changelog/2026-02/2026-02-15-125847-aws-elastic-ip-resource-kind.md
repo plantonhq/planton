@@ -15,7 +15,7 @@ The AwsNetworkLoadBalancer (R09) was shipped with a gap: its `allocation_id` fie
 ### Pain Points
 
 - NLB subnet mappings required hardcoded allocation IDs (no `valueFrom` support)
-- No way to declaratively manage static public IPs in OpenMCF
+- No way to declaratively manage static public IPs in Planton
 - Missing dependency in the infra chart DAG for IP allocation
 
 ## Solution / What's New
@@ -33,8 +33,8 @@ A nearly-zero-config component that allocates a VPC Elastic IP:
 
 Updated the NLB's `allocation_id` field with:
 ```protobuf
-(org.openmcf.shared.foreignkey.v1.default_kind) = AwsElasticIp
-(org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.allocation_id"
+(dev.planton.shared.foreignkey.v1.default_kind) = AwsElasticIp
+(dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.allocation_id"
 ```
 
 ## Implementation Details
@@ -85,9 +85,9 @@ Updated the NLB's `allocation_id` field with:
 
 ## Impact
 
-- **New resource kind**: AwsElasticIp (enum 281) — the 37th cloud resource kind in OpenMCF
+- **New resource kind**: AwsElasticIp (enum 281) — the 37th cloud resource kind in Planton
 - **NLB improvement**: Existing AwsNetworkLoadBalancer gains `default_kind` for `allocation_id`
-- **Files created**: ~35 files in `apis/org/openmcf/provider/aws/awselasticip/v1/`
+- **Files created**: ~35 files in `apis/dev/planton/provider/aws/awselasticip/v1/`
 - **Files modified**: NLB spec.proto, cloud_resource_kind.proto, site catalog index
 
 ## Related Work

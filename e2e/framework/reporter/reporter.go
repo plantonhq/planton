@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/e2e/framework/runner"
+	"github.com/plantonhq/planton/e2e/framework/runner"
 )
 
 // Report is the top-level E2E test report structure.
@@ -96,7 +96,7 @@ func (r *Report) WriteJSON(path string) error {
 func (r *Report) WriteMarkdown(path string) error {
 	var sb strings.Builder
 
-	sb.WriteString("# OpenMCF E2E Test Report\n\n")
+	sb.WriteString("# Planton E2E Test Report\n\n")
 	sb.WriteString(fmt.Sprintf("**Date:** %s\n\n", r.Timestamp.Format(time.RFC3339)))
 	sb.WriteString(fmt.Sprintf("**Total:** %d | **Passed:** %d | **Failed:** %d\n\n", r.TotalTests, r.Passed, r.Failed))
 

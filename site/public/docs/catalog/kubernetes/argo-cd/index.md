@@ -12,7 +12,7 @@ Deploys Argo CD on Kubernetes using the official Argo Helm chart (argo-cd v7.7.1
 
 ## What Gets Created
 
-When you deploy a KubernetesArgocd resource, OpenMCF provisions:
+When you deploy a KubernetesArgocd resource, Planton provisions:
 
 - **Namespace** — created only when `createNamespace` is `true`
 - **Helm Release (Argo CD)** — deploys Argo CD from the `argo-cd` chart at `https://argoproj.github.io/argo-helm`, pinned to version 7.7.12, with atomic rollback enabled and a 10-minute timeout; configures resource requests/limits for the server, application controller, repo-server, and embedded Redis
@@ -20,7 +20,7 @@ When you deploy a KubernetesArgocd resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
 - **cert-manager** with a ClusterIssuer named after the parent domain (e.g., `example.com`) if enabling ingress with TLS
 - **An ingress controller** running in the cluster if enabling external access
@@ -30,15 +30,15 @@ When you deploy a KubernetesArgocd resource, OpenMCF provisions:
 Create a file `argocd.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesArgocd
 metadata:
   name: my-argocd
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesArgocd.my-argocd
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesArgocd.my-argocd
 spec:
   namespace: argocd
   createNamespace: true
@@ -48,7 +48,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f argocd.yaml
+planton apply -f argocd.yaml
 ```
 
 This creates an Argo CD instance in the `argocd` namespace with default resource limits (1000m CPU / 1Gi memory limits, 50m CPU / 100Mi memory requests) and no external ingress. Access the UI locally with the port-forward command from stack outputs.
@@ -83,15 +83,15 @@ This creates an Argo CD instance in the `argocd` namespace with default resource
 A lightweight Argo CD instance for development or testing with reduced resource allocations:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesArgocd
 metadata:
   name: dev-argocd
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesArgocd.dev-argocd
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesArgocd.dev-argocd
 spec:
   namespace: argocd-dev
   createNamespace: true
@@ -110,15 +110,15 @@ spec:
 A production Argo CD deployment exposed externally with higher resource limits:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesArgocd
 metadata:
   name: prod-argocd
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesArgocd.prod-argocd
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesArgocd.prod-argocd
 spec:
   namespace: argocd
   createNamespace: true
@@ -137,18 +137,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed namespace instead of hardcoding the name:
+Reference an Planton-managed namespace instead of hardcoding the name:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesArgocd
 metadata:
   name: platform-argocd
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesArgocd.platform-argocd
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesArgocd.platform-argocd
 spec:
   namespace:
     valueFrom:

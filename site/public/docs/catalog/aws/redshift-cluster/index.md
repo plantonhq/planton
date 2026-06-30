@@ -12,7 +12,7 @@ Deploys an Amazon Redshift data warehouse cluster with automatic subnet group cr
 
 ## What Gets Created
 
-When you deploy an AwsRedshiftCluster resource, OpenMCF provisions:
+When you deploy an AwsRedshiftCluster resource, Planton provisions:
 
 - **Redshift Cluster** — a `redshift.Cluster` with the specified node type, node count, encryption settings, snapshot configuration, and optional Multi-AZ deployment
 - **Subnet Group** — a `redshift.SubnetGroup` created automatically when `subnetIds` are provided and `clusterSubnetGroupName` is not set, placing the cluster across the specified subnets
@@ -24,7 +24,7 @@ When you deploy an AwsRedshiftCluster resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **At least two subnets** in different Availability Zones, or an existing Redshift subnet group name
 - **A VPC ID** if creating a managed security group with `securityGroupIds` or `allowedCidrBlocks`
 - **A KMS key ARN** if enabling encryption with a customer-managed key or encrypting the managed password secret
@@ -35,15 +35,15 @@ When you deploy an AwsRedshiftCluster resource, OpenMCF provisions:
 Create a file `redshift-cluster.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRedshiftCluster
 metadata:
   name: my-warehouse
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsRedshiftCluster.my-warehouse
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsRedshiftCluster.my-warehouse
 spec:
   region: us-west-2
   nodeType: dc2.large
@@ -58,7 +58,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f redshift-cluster.yaml
+planton apply -f redshift-cluster.yaml
 ```
 
 This creates a single-node dc2.large Redshift cluster across two subnets with AWS-managed encryption and a master password stored in AWS Secrets Manager.
@@ -118,15 +118,15 @@ This creates a single-node dc2.large Redshift cluster across two subnets with AW
 A minimal single-node cluster for development and testing. Uses dc2.large for low cost, skips the final snapshot, and retains automated snapshots for 1 day:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRedshiftCluster
 metadata:
   name: dev-warehouse
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsRedshiftCluster.dev-warehouse
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsRedshiftCluster.dev-warehouse
 spec:
   region: us-west-2
   nodeType: dc2.large
@@ -147,15 +147,15 @@ spec:
 A 2-node RA3 cluster with customer-managed KMS encryption, SSL enforcement, enhanced VPC routing, CloudWatch audit logging, and a 7-day snapshot retention policy:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRedshiftCluster
 metadata:
   name: prod-warehouse
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsRedshiftCluster.prod-warehouse
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsRedshiftCluster.prod-warehouse
 spec:
   region: us-west-2
   nodeType: ra3.xlplus
@@ -197,15 +197,15 @@ spec:
 A 4-node ra3.4xlarge cluster for large-scale analytics. Multi-AZ provides automatic failover, concurrency scaling handles query bursts with up to 5 additional transient clusters, and two IAM roles are attached for S3 data loading and Redshift Spectrum external table queries:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRedshiftCluster
 metadata:
   name: analytics-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsRedshiftCluster.analytics-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsRedshiftCluster.analytics-cluster
 spec:
   region: us-west-2
   nodeType: ra3.4xlarge

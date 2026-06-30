@@ -11,7 +11,7 @@ presets:
   - slug: "01-single-resource"
     rank: "01"
     title: "Single Resource Manifest"
-    excerpt: "This preset deploys a raw Kubernetes manifest using the generic KubernetesManifest component. Use this as an escape hatch for deploying any Kubernetes resource that does not have a dedicated OpenMCF..."
+    excerpt: "This preset deploys a raw Kubernetes manifest using the generic KubernetesManifest component. Use this as an escape hatch for deploying any Kubernetes resource that does not have a dedicated Planton..."
 ---
 
 # Manifest Presets

@@ -196,17 +196,17 @@ jobs:
 
           if [ "${{ inputs.force_pulumi_all }}" = "true" ]; then
             echo "Pulumi: forced all via manual dispatch"
-            PULUMI_DIRS=$(find apis/org/openmcf/provider -type d -name "pulumi" -path "*/iac/pulumi" 2>/dev/null | sort)
+            PULUMI_DIRS=$(find apis/dev/planton/provider -type d -name "pulumi" -path "*/iac/pulumi" 2>/dev/null | sort)
           else
             PULUMI_DIRS=$(echo "$CHANGED_FILES" | \
-              grep -E '^apis/org/openmcf/provider/[^/]+/[^/]+/v[0-9]+/iac/pulumi/' | \
-              sed 's|\(apis/org/openmcf/provider/[^/]*/[^/]*/v[0-9]*/iac/pulumi\)/.*|\1|' | \
+              grep -E '^apis/dev/planton/provider/[^/]+/[^/]+/v[0-9]+/iac/pulumi/' | \
+              sed 's|\(apis/dev/planton/provider/[^/]*/[^/]*/v[0-9]*/iac/pulumi\)/.*|\1|' | \
               sort -u)
           fi
 
           for dir in $PULUMI_DIRS; do
-            PROVIDER=$(echo "$dir" | sed 's|apis/org/openmcf/provider/\([^/]*\)/.*|\1|')
-            COMPONENT=$(echo "$dir" | sed 's|apis/org/openmcf/provider/[^/]*/\([^/]*\)/.*|\1|')
+            PROVIDER=$(echo "$dir" | sed 's|apis/dev/planton/provider/\([^/]*\)/.*|\1|')
+            COMPONENT=$(echo "$dir" | sed 's|apis/dev/planton/provider/[^/]*/\([^/]*\)/.*|\1|')
 
             # Skip test providers
             if [ "$PROVIDER" = "_test" ]; then
@@ -242,17 +242,17 @@ jobs:
 
           if [ "${{ inputs.force_terraform_all }}" = "true" ]; then
             echo "Terraform: forced all via manual dispatch"
-            TERRAFORM_DIRS=$(find apis/org/openmcf/provider -type d -name "tf" -path "*/iac/tf" 2>/dev/null | sort)
+            TERRAFORM_DIRS=$(find apis/dev/planton/provider -type d -name "tf" -path "*/iac/tf" 2>/dev/null | sort)
           else
             TERRAFORM_DIRS=$(echo "$CHANGED_FILES" | \
-              grep -E '^apis/org/openmcf/provider/[^/]+/[^/]+/v[0-9]+/iac/tf/' | \
-              sed 's|\(apis/org/openmcf/provider/[^/]*/[^/]*/v[0-9]*/iac/tf\)/.*|\1|' | \
+              grep -E '^apis/dev/planton/provider/[^/]+/[^/]+/v[0-9]+/iac/tf/' | \
+              sed 's|\(apis/dev/planton/provider/[^/]*/[^/]*/v[0-9]*/iac/tf\)/.*|\1|' | \
               sort -u)
           fi
 
           for dir in $TERRAFORM_DIRS; do
-            PROVIDER=$(echo "$dir" | sed 's|apis/org/openmcf/provider/\([^/]*\)/.*|\1|')
-            COMPONENT=$(echo "$dir" | sed 's|apis/org/openmcf/provider/[^/]*/\([^/]*\)/.*|\1|')
+            PROVIDER=$(echo "$dir" | sed 's|apis/dev/planton/provider/\([^/]*\)/.*|\1|')
+            COMPONENT=$(echo "$dir" | sed 's|apis/dev/planton/provider/[^/]*/\([^/]*\)/.*|\1|')
 
             # Skip test providers
             if [ "$PROVIDER" = "_test" ]; then

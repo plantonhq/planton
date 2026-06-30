@@ -67,7 +67,7 @@ With background deletion:
 
 ### Code Change
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetessolr/v1/iac/pulumi/module/solr_cloud.go`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetessolr/v1/iac/pulumi/module/solr_cloud.go`
 
 Added comprehensive documentation and the annotation:
 
@@ -93,7 +93,7 @@ Metadata: metav1.ObjectMetaArgs{
 
 ### Documentation Update
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetessolr/v1/iac/pulumi/README.md`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetessolr/v1/iac/pulumi/README.md`
 
 Added a new "Deletion Behavior" section explaining:
 - Why background deletion is used

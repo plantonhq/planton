@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awselasticfilesystem.v1;
+
+// AwsElasticFileSystemStackOutputs captures observable identifiers and endpoints
+// from a provisioned Elastic File System. These outputs are used by downstream
+// resources to wire dependencies via StringValueOrRef.
+//
+// Primary consumers:
+// - EKS (PersistentVolume via EFS CSI driver): needs `file_system_id`
+// - ECS (task definition EFS volumes): needs `file_system_id`, optionally an access point
+// - Lambda (file system config): needs an access point ARN from `access_point_arns`
+// - EC2 (direct NFS mount): uses `dns_name` or mount target DNS names
+message AwsElasticFileSystemStackOutputs {
+  // The ID of the file system (e.g., "fs-0123456789abcdef0"). This is the
+  // primary identifier used by EKS PersistentVolumes, ECS task definitions,
+  // and Lambda file system configurations.
+  string file_system_id = 1;
+
+  // The Amazon Resource Name of the file system. Used in IAM policies for
+  // resource-level permissions.
+  string file_system_arn = 2;
+
+  // The regional DNS name for mounting the file system via NFS (e.g.,
+  // "fs-0123456789abcdef0.efs.us-east-1.amazonaws.com"). Clients can mount
+  // using: `mount -t nfs4 <dns_name>:/ /mnt/efs`.
+  string dns_name = 3;
+
+  // Map of subnet ID to mount target ID. The keys correspond to the subnet IDs
+  // provided in spec.subnet_ids. Use to reference specific mount targets for
+  // monitoring or troubleshooting.
+  map<string, string> mount_target_ids = 4;
+
+  // Map of subnet ID to the mount target's IP address within that subnet.
+  // Useful for static NFS mount configurations or network debugging.
+  map<string, string> mount_target_ips = 5;
+
+  // Map of subnet ID to per-AZ mount target DNS name (e.g.,
+  // "us-east-1a.fs-xxx.efs.us-east-1.amazonaws.com"). AZ-specific DNS names
+  // route to the mount target in that AZ, avoiding cross-AZ traffic.
+  map<string, string> mount_target_dns_names = 6;
+
+  // Map of access point name to access point ID. The keys correspond to the
+  // name field of each entry in spec.access_points. Use to reference access
+  // points in ECS task definitions.
+  //
+  // Example valueFrom: status.outputs.access_point_ids.app-data
+  map<string, string> access_point_ids = 7;
+
+  // Map of access point name to access point ARN. The keys correspond to the
+  // name field of each entry in spec.access_points. Lambda file system
+  // configurations require the access point ARN.
+  //
+  // Example valueFrom: status.outputs.access_point_arns.lambda-data
+  map<string, string> access_point_arns = 8;
+}

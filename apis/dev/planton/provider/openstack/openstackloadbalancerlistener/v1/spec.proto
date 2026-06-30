@@ -1,0 +1,97 @@
+syntax = "proto3";
+
+package dev.planton.provider.openstack.openstackloadbalancerlistener.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// OpenStackLoadBalancerListenerSpec defines the configuration for an Octavia listener
+// in OpenStack. A listener binds a protocol and port to a load balancer, accepting
+// incoming traffic and forwarding it to a backend pool.
+//
+// Terraform resource: openstack_lb_listener_v2
+// Pulumi resource:    loadbalancer.Listener
+//
+// Validations:
+// - default_tls_container_ref is required when protocol is TERMINATED_HTTPS.
+// - protocol_port must be between 1 and 65535.
+message OpenStackLoadBalancerListenerSpec {
+  option (buf.validate.message).cel = {
+    id: "tls_ref_required_for_terminated_https"
+    message: "default_tls_container_ref is required when protocol is TERMINATED_HTTPS"
+    expression: "this.default_tls_container_ref != '' || this.protocol != 'TERMINATED_HTTPS'"
+  };
+
+  // (Required) The load balancer to attach this listener to.
+  // ForceNew: changing this requires recreating the listener.
+  //
+  // FK: OpenStackLoadBalancer.status.outputs.loadbalancer_id
+  dev.planton.shared.foreignkey.v1.StringValueOrRef loadbalancer_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OpenStackLoadBalancer,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.loadbalancer_id"
+  ];
+
+  // (Required) The protocol the listener accepts.
+  // ForceNew: changing this requires recreating the listener.
+  //
+  // - HTTP: Unencrypted HTTP traffic (Layer 7)
+  // - HTTPS: Pass-through encrypted traffic (Layer 4, no TLS termination)
+  // - TCP: Raw TCP traffic (Layer 4)
+  // - UDP: Raw UDP traffic (Layer 4)
+  // - TERMINATED_HTTPS: TLS termination at the load balancer (requires default_tls_container_ref)
+  string protocol = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.in = "HTTP",
+    (buf.validate.field).string.in = "HTTPS",
+    (buf.validate.field).string.in = "TCP",
+    (buf.validate.field).string.in = "UDP",
+    (buf.validate.field).string.in = "TERMINATED_HTTPS"
+  ];
+
+  // (Required) The port on which the listener accepts traffic.
+  // ForceNew: changing this requires recreating the listener.
+  // Must be between 1 and 65535.
+  int32 protocol_port = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "protocol_port_range"
+      message: "protocol_port must be between 1 and 65535"
+      expression: "this >= 1 && this <= 65535"
+    }
+  ];
+
+  // (Optional) Human-readable description of the listener.
+  string description = 4;
+
+  // (Optional) Maximum number of connections the listener allows.
+  // -1 means unlimited (Octavia default). Leave unset to use the Octavia default.
+  optional int32 connection_limit = 5;
+
+  // (Optional) URI of the Barbican TLS secret container for TLS termination.
+  // Required when protocol is TERMINATED_HTTPS. The container must hold the
+  // certificate, private key, and optional intermediates.
+  string default_tls_container_ref = 6;
+
+  // (Optional) Headers to insert into HTTP requests before forwarding to backends.
+  // Common use: {"X-Forwarded-For": "true", "X-Forwarded-Proto": "true"}
+  // Only applicable to HTTP and TERMINATED_HTTPS protocols.
+  map<string, string> insert_headers = 7;
+
+  // (Optional) List of CIDRs allowed to access this listener.
+  // When set, only traffic from these CIDRs reaches the listener; all other
+  // traffic is dropped. When empty, all traffic is allowed.
+  repeated string allowed_cidrs = 8;
+
+  // (Optional) Administrative state of the listener.
+  // When false, the listener stops accepting traffic. Default: true.
+  optional bool admin_state_up = 9 [(dev.planton.shared.options.default) = "true"];
+
+  // (Optional) Tags applied to the listener in OpenStack.
+  // Must be unique within this resource.
+  repeated string tags = 10 [(buf.validate.field).repeated.unique = true];
+
+  // (Optional) Override the region from the provider configuration.
+  string region = 11;
+}

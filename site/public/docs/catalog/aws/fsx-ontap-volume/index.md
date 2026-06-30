@@ -12,7 +12,7 @@ Creates an Amazon FSx for NetApp ONTAP Volume within a Storage Virtual Machine (
 
 ## What Gets Created
 
-When you deploy an AwsFsxOntapVolume resource, OpenMCF provisions:
+When you deploy an AwsFsxOntapVolume resource, Planton provisions:
 
 - **ONTAP Volume** — an `aws_fsx_ontap_volume` resource within the specified SVM, with configurable size, junction path, security style, and snapshot policy
 - **Tiering Policy** (optional) — automatic data movement between primary SSD and capacity pool storage based on access patterns
@@ -21,7 +21,7 @@ When you deploy an AwsFsxOntapVolume resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **An AwsFsxOntapStorageVirtualMachine** — the parent SVM that provides protocol endpoints and namespace
 - **An AwsFsxOntapFileSystem** — the grandparent file system with sufficient storage capacity
 - **Sufficient file system capacity** for the requested volume size (ONTAP volumes are thin-provisioned)
@@ -31,7 +31,7 @@ When you deploy an AwsFsxOntapVolume resource, OpenMCF provisions:
 Create a file `ontap-volume.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsFsxOntapVolume
 metadata:
   name: my-data-volume
@@ -52,7 +52,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f ontap-volume.yaml
+planton apply -f ontap-volume.yaml
 ```
 
 This creates a 100 GB read-write volume mounted at `/data` with UNIX security and storage efficiency enabled.
@@ -124,7 +124,7 @@ Each retention duration has `type` (`SECONDS`/`MINUTES`/`HOURS`/`DAYS`/`MONTHS`/
 A production volume with AUTO tiering that moves cold data to cheaper capacity pool storage after 31 days:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsFsxOntapVolume
 metadata:
   name: prod-nfs-data
@@ -152,7 +152,7 @@ spec:
 Immutable storage for SEC 17a-4 compliance with 5-year default retention and 1-day autocommit:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsFsxOntapVolume
 metadata:
   name: sec-compliance
@@ -192,7 +192,7 @@ spec:
 A distributed volume across 2 aggregates for data lake workloads requiring parallel I/O:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsFsxOntapVolume
 metadata:
   name: datalake-flexgroup
@@ -223,7 +223,7 @@ spec:
 A volume referencing its parent SVM via `valueFrom` for infra chart dependency wiring:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsFsxOntapVolume
 metadata:
   name: referenced-volume
@@ -261,8 +261,8 @@ spec:
 
 ## Related Components
 
-- [AwsFsxOntapStorageVirtualMachine](https://github.com/plantonhq/openmcf/tree/main/apis/org/openmcf/provider/aws/awsfsxontapstoragevirtualmachine/v1) — Parent SVM providing protocol endpoints and namespace
-- [AwsFsxOntapFileSystem](https://github.com/plantonhq/openmcf/tree/main/apis/org/openmcf/provider/aws/awsfsxontapfilesystem/v1) — Grandparent file system providing physical infrastructure
-- [AwsFsxLustreFileSystem](https://github.com/plantonhq/openmcf/tree/main/apis/org/openmcf/provider/aws/awsfsxlustrefilesystem/v1) — Alternative: HPC-optimized file system with S3 integration
-- [AwsFsxOpenzfsFileSystem](https://github.com/plantonhq/openmcf/tree/main/apis/org/openmcf/provider/aws/awsfsxopenzfsfilesystem/v1) — Alternative: General-purpose NFS with OpenZFS snapshots
-- [AwsElasticFileSystem](https://github.com/plantonhq/openmcf/tree/main/apis/org/openmcf/provider/aws/awselasticfilesystem/v1) — Alternative: Serverless NFS with automatic scaling
+- [AwsFsxOntapStorageVirtualMachine](https://github.com/plantonhq/planton/tree/main/apis/dev/planton/provider/aws/awsfsxontapstoragevirtualmachine/v1) — Parent SVM providing protocol endpoints and namespace
+- [AwsFsxOntapFileSystem](https://github.com/plantonhq/planton/tree/main/apis/dev/planton/provider/aws/awsfsxontapfilesystem/v1) — Grandparent file system providing physical infrastructure
+- [AwsFsxLustreFileSystem](https://github.com/plantonhq/planton/tree/main/apis/dev/planton/provider/aws/awsfsxlustrefilesystem/v1) — Alternative: HPC-optimized file system with S3 integration
+- [AwsFsxOpenzfsFileSystem](https://github.com/plantonhq/planton/tree/main/apis/dev/planton/provider/aws/awsfsxopenzfsfilesystem/v1) — Alternative: General-purpose NFS with OpenZFS snapshots
+- [AwsElasticFileSystem](https://github.com/plantonhq/planton/tree/main/apis/dev/planton/provider/aws/awselasticfilesystem/v1) — Alternative: Serverless NFS with automatic scaling

@@ -258,7 +258,7 @@ variable "spec" {
 
 #### Created `iac/pulumi/module/locals.go` (70 lines)
 
-Local variable initialization following OpenMCF patterns:
+Local variable initialization following Planton patterns:
 
 ```go
 type Locals struct {
@@ -335,7 +335,7 @@ Integrated locals:
 #### Created `iac/hack/manifest.yaml`
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesIngressNginx
 metadata:
   name: test-ingress-nginx
@@ -690,7 +690,7 @@ Result: Load balancer only accessible within VPC.
 This component enables:
 - Multi-cloud Kubernetes deployments with consistent ingress
 - Integration with cert-manager for automatic TLS
-- Foundation for all OpenMCF Kubernetes workload ingresses
+- Foundation for all Planton Kubernetes workload ingresses
 - GitOps workflows (FluxCD/ArgoCD) with standardized ingress
 
 Complements:

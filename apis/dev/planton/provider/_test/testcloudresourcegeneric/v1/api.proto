@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package dev.planton.provider._test.testcloudresourcegeneric.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/_test/testcloudresourcegeneric/v1/spec.proto";
+import "dev/planton/provider/_test/testcloudresourcegeneric/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// TestCloudResourceGeneric is permanent test infrastructure for generic (non-provider-specific)
+// proto processing tests: defaults application, validation, serialization, reflection.
+// For Kubernetes-specific testing, use TestCloudResourceKubernetes.
+message TestCloudResourceGeneric {
+  string api_version = 1 [(buf.validate.field).string.const = '_test.planton.dev/v1'];
+  string kind = 2 [(buf.validate.field).string.const = 'TestCloudResourceGeneric'];
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  TestCloudResourceGenericSpec spec = 4;
+  TestCloudResourceGenericStatus status = 5;
+}
+
+message TestCloudResourceGenericStatus {
+  TestCloudResourceGenericStackOutputs outputs = 1;
+}

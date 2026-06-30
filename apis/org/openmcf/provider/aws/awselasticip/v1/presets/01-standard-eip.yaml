@@ -1,6 +1,0 @@
-apiVersion: aws.openmcf.org/v1
-kind: AwsElasticIp
-metadata:
-  name: ${name}
-spec:
-  region: <aws-region>

@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package dev.planton.provider.hetznercloud.hetznercloudsshkey.v1;
+
+// HetznerCloudSshKeyStackOutputs captures the resulting SSH key identifiers
+// after provisioning.
+message HetznerCloudSshKeyStackOutputs {
+  // The Hetzner Cloud numeric ID of the created SSH key (as a string).
+  // Referenced by HetznerCloudServer.ssh_key_ids via StringValueOrRef.
+  string ssh_key_id = 1;
+
+  // MD5 fingerprint of the SSH public key (e.g., "aa:bb:cc:dd:...").
+  // Computed by Hetzner Cloud from the uploaded public key material.
+  string fingerprint = 2;
+}

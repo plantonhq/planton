@@ -1,0 +1,20 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesEnvoyFilter
+metadata:
+  name: e2e-envoy-filter
+spec:
+  namespace:
+    value: default
+  workload_selector:
+    labels:
+      app: e2e-app
+  config_patches:
+    - apply_to: CLUSTER
+      match:
+        context: SIDECAR_OUTBOUND
+        cluster:
+          service: reviews.default.svc.cluster.local
+      patch:
+        operation: MERGE
+        value:
+          connect_timeout: 5s

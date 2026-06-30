@@ -1,0 +1,16 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsSubnet
+metadata:
+  name: awssubnet-demo
+spec:
+  region: us-west-2
+  vpcId:
+    value: "vpc-0abc1234def567890"
+  availabilityZone: "us-west-2a"
+  cidrBlock: "10.0.1.0/24"
+  mapPublicIpOnLaunch: true
+  routes:
+    - destinationCidrBlock: "0.0.0.0/0"
+      targetType: internet_gateway
+      targetId:
+        value: "igw-0abc1234def567890"

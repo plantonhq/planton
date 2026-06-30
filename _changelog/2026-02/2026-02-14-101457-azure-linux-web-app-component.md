@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added AzureLinuxWebApp (R20) as a full-feature OpenMCF deployment component for Azure Linux Web Apps (`azurerm_linux_web_app`). This is the web hosting sibling of AzureFunctionApp (R19), providing a complete declarative interface for deploying web applications on Azure App Service (Linux) with 13 message types, ~100 fields, 7 outputs, 106 passing tests, and dual IaC implementations (Pulumi + Terraform).
+Added AzureLinuxWebApp (R20) as a full-feature Planton deployment component for Azure Linux Web Apps (`azurerm_linux_web_app`). This is the web hosting sibling of AzureFunctionApp (R19), providing a complete declarative interface for deploying web applications on Azure App Service (Linux) with 13 message types, ~100 fields, 7 outputs, 106 passing tests, and dual IaC implementations (Pulumi + Terraform).
 
 ## Problem Statement / Motivation
 
@@ -60,7 +60,7 @@ Full-feature AzureLinuxWebApp with 17 corrections from the T02 plan spec, thorou
 ### File Structure (38 files)
 
 ```
-apis/org/openmcf/provider/azure/azurelinuxwebapp/v1/
+apis/dev/planton/provider/azure/azurelinuxwebapp/v1/
 ├── spec.proto              # 13 message types, ~100 fields
 ├── stack_outputs.proto     # 7 outputs
 ├── api.proto               # KRM wiring
@@ -107,7 +107,7 @@ apis/org/openmcf/provider/azure/azurelinuxwebapp/v1/
 
 ## Impact
 
-- **Users**: Can now deploy Azure Linux Web Apps declaratively with the same consistency as all other OpenMCF resources
+- **Users**: Can now deploy Azure Linux Web Apps declaratively with the same consistency as all other Planton resources
 - **Infra charts**: The `web-app-environment` chart can now be built (T03 phase)
 - **Platform completeness**: App hosting category is now complete with 5 resources (ServicePlan, ContainerAppEnvironment, ContainerApp, FunctionApp, LinuxWebApp)
 

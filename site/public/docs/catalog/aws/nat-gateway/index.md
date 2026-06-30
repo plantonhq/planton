@@ -24,7 +24,7 @@ Create a NAT gateway so private subnets can reach the internet (or other private
 ## Quick Start
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsNatGateway
 metadata:
   name: main-nat
@@ -48,7 +48,7 @@ spec:
 A NAT gateway only provides egress once a subnet routes to it. Pair this gateway with an `AwsSubnet` whose default route targets it:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsSubnet
 metadata:
   name: private-usw2a

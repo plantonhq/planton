@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcpserviceaccount.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// GcpServiceAccountSpec defines the minimal config needed to create
+// a Google Cloud service account, optionally create a key for it, and
+// manage either project- or organization-level IAM roles for that service account.
+message GcpServiceAccountSpec {
+  // service_account_id is the short unique ID for the service account (6-30 chars),
+  // used to form the email <service_account_id>@<project>.iam.gserviceaccount.com.
+  // Required: must comply with GCP naming rules (lowercase letters, digits, etc.).
+  string service_account_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 6,
+    (buf.validate.field).string.max_len = 30
+  ];
+
+  // project_id specifies the GCP project in which the service account is created.
+  // Can be a literal value or a reference to a GcpProject resource.
+  // If omitted, the provider default project is used. Typically recommended to set explicitly.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // org_id, if set, manages org-level IAM roles for the service account.
+  // If the user wants to assign an organization role, they must provide org_id
+  // (an integer string like "123456789012", or a numeric value stored as string).
+  string org_id = 3;
+
+  // create_key indicates whether a key should be automatically generated
+  // for this service account. If true, a JSON private key is created;
+  // if false, no user-managed key is created.
+  optional bool create_key = 4 [(dev.planton.shared.options.default) = "false"];
+
+  // project_iam_roles is a list of IAM roles to be granted at the project level
+  // to this service account. For example: ["roles/logging.logWriter", "roles/storage.admin"].
+  // Each role in this list will be bound to the service account in the specified project_id.
+  repeated string project_iam_roles = 5;
+
+  // org_iam_roles is a list of IAM roles to be granted at the organization level
+  // to this service account. For example: ["roles/resourcemanager.organizationViewer"].
+  // Each role in this list will be bound to the service account in the specified org_id.
+  repeated string org_iam_roles = 6;
+}

@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesjenkins.v1;
+
+import "dev/planton/provider/kubernetes/kubernetes.proto";
+
+//jenkins-kubernetes stack outputs.
+message KubernetesJenkinsStackOutputs {
+  //kubernetes namespace in which jenkins-kubernetes is created.
+  string namespace = 1;
+
+  //kubernetes service name for jenkins-kubernetes.
+  //ex: main-jenkins-kubernetes
+  //in the above example, "main" is the name of the jenkins-kubernetes
+  string service = 2;
+
+  //command to setup port-forwarding to open jenkins-kubernetes from developers laptop.
+  //this might come handy when jenkins-kubernetes ingress is disabled for security reasons.
+  //this is rendered by combining jenkins_kubernetes_kubernetes_service and kubernetes_namespace
+  //ex: kubectl port-forward svc/jenkins_kubernetes_kubernetes_service -n kubernetes_namespace 8080:8080
+  //running the command from this attribute makes it possible to access jenkins-kubernetes using http://localhost:8080
+  string port_forward_command = 3;
+
+  //kubernetes endpoint to connect to jenkins-kubernetes from the web browser.
+  //ex: main-jenkins-kubernetes.namespace.svc.cluster.local:8080
+  string kube_endpoint = 4;
+
+  //public endpoint to open jenkins-kubernetes from clients outside kubernetes.
+  //ex: https://jnk-planton-pcs-dev-main.data.dev.planton.live:8080
+  string external_hostname = 5;
+
+  //internal postgres-kubernetes hostname.
+  //ex: https://jnk-planton-pcs-dev-main.data-internal.dev.planton.live:8080
+  string internal_hostname = 6;
+
+  //jenkins username
+  string username = 7;
+
+  //kubernetes secret key for the password.
+  dev.planton.provider.kubernetes.KubernetesSecretKey password_secret = 8;
+}

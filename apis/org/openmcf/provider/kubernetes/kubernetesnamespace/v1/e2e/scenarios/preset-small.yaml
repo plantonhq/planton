@@ -1,8 +1,0 @@
-apiVersion: kubernetes.openmcf.org/v1
-kind: KubernetesNamespace
-metadata:
-  name: e2e-ns-preset-sm
-spec:
-  name: e2e-ns-preset-sm
-  resource_profile:
-    preset: small

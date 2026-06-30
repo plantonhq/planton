@@ -1,0 +1,8 @@
+apiVersion: openstack.planton.dev/v1
+kind: OpenStackApplicationCredential
+metadata:
+  name: test-app-cred
+spec:
+  description: Test application credential for local development
+  roles:
+    - member

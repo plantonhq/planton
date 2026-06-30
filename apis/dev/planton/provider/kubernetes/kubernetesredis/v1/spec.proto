@@ -1,0 +1,109 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesredis.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/kubernetes.proto";
+import "dev/planton/provider/kubernetes/target_cluster.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "google/protobuf/descriptor.proto";
+
+extend google.protobuf.FieldOptions {
+  KubernetesRedisContainer default_container = 537001;
+}
+
+/**
+ * **KubernetesRedisSpec** defines the configuration for deploying Redis on a Kubernetes cluster.
+ * This message specifies the parameters needed to create and manage a Redis deployment within a Kubernetes environment.
+ * It includes container specifications and ingress settings to control resource allocation and external access.
+ */
+message KubernetesRedisSpec {
+  // Target Kubernetes Cluster
+  dev.planton.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  // Kubernetes Namespace
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // flag to indicate if the namespace should be created
+  bool create_namespace = 3;
+
+  // The container specifications for the Redis deployment.
+  KubernetesRedisContainer container = 4 [(default_container) = {
+    replicas: 1
+    resources: {
+      limits: {
+        cpu: "1000m"
+        memory: "1Gi"
+      }
+      requests: {
+        cpu: "50m"
+        memory: "100Mi"
+      }
+    }
+    persistence_enabled: true
+    disk_size: "1Gi"
+  }];
+
+  //The ingress configuration for the Redis deployment.
+  KubernetesRedisIngress ingress = 5;
+}
+
+// KubernetesRedisContainer defines the container specifications for the Redis deployment.
+message KubernetesRedisContainer {
+  // The number of Redis pods to deploy.
+  int32 replicas = 1;
+
+  //The CPU and memory resources allocated to the Redis container.
+  dev.planton.provider.kubernetes.ContainerResources resources = 2;
+
+  /**
+   * A flag to enable or disable data persistence for Redis.
+   * When enabled, in-memory data is persisted to a storage volume, allowing data to survive pod restarts.
+   * The backup data from the persistent volume is restored into Redis memory between pod restarts.
+   * Defaults to `false`.
+   */
+  bool persistence_enabled = 3;
+
+  /**
+   * The size of the persistent volume attached to each Redis pod (e.g., "10Gi").
+   * If the client does not provide a value, a default value is configured.
+   * This attribute is ignored when persistence is not enabled.
+   * This persistent volume is used for backing up in-memory data.
+   * Data from the persistent volume will be restored into memory between pod restarts.
+   * **Note:** This value cannot be modified after creation due to Kubernetes limitations on stateful sets.
+   */
+  option (buf.validate.message).cel = {
+    // Consolidated validation logic:
+    // If `persistence_enabled` is false, `disk_size` can be empty.
+    // If `persistence_enabled` is true, `disk_size` must be non-empty and match the regex.
+    id: "spec.container.disk_size.required"
+    expression: "((!this.persistence_enabled && (size(this.disk_size) == 0 || this.disk_size == '')) || (this.persistence_enabled && size(this.disk_size) > 0 && this.disk_size.matches('^\\\\d+(\\\\.\\\\d+)?\\\\s?(Ki|Mi|Gi|Ti|Pi|Ei|K|M|G|T|P|E)$')))"
+    message: "Disk size is required and must match the format if persistence is enabled"
+  };
+
+  string disk_size = 4;
+}
+
+/**
+ * KubernetesRedisIngress defines the ingress configuration for Redis.
+ */
+message KubernetesRedisIngress {
+  // Flag to enable or disable ingress.
+  // When enabled, creates a LoadBalancer service with external-dns annotations.
+  bool enabled = 1;
+
+  // The full hostname for external access (e.g., "redis.example.com").
+  // This hostname will be configured automatically via external-dns.
+  // Required when enabled is true.
+  string hostname = 2;
+
+  option (buf.validate.message).cel = {
+    id: "spec.ingress.hostname.required"
+    expression: "!this.enabled || size(this.hostname) > 0"
+    message: "hostname is required when ingress is enabled"
+  };
+}

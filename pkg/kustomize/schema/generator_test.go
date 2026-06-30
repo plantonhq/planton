@@ -7,8 +7,8 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
-	"github.com/plantonhq/openmcf/pkg/crkreflect"
+	"github.com/plantonhq/planton/apis/dev/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/crkreflect"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
@@ -39,7 +39,7 @@ func TestGenerate_KubernetesDeploymentMergeFields(t *testing.T) {
 		t.Fatalf("Generate() returned error: %v", err)
 	}
 
-	def := extractDefinition(t, data, "kubernetes.openmcf.org.v1.KubernetesDeployment")
+	def := extractDefinition(t, data, "kubernetes.planton.dev.v1.KubernetesDeployment")
 	assertMergeFieldExists(t, def, "spec", "container", "app", "env", "variables")
 	assertMergeFieldExists(t, def, "spec", "container", "app", "env", "secrets")
 	assertMergeFieldExists(t, def, "spec", "container", "app", "ports")
@@ -51,7 +51,7 @@ func TestGenerate_KubernetesCronJobMergeFields(t *testing.T) {
 		t.Fatalf("Generate() returned error: %v", err)
 	}
 
-	def := extractDefinition(t, data, "kubernetes.openmcf.org.v1.KubernetesCronJob")
+	def := extractDefinition(t, data, "kubernetes.planton.dev.v1.KubernetesCronJob")
 	assertMergeFieldExists(t, def, "spec", "env", "variables")
 	assertMergeFieldExists(t, def, "spec", "env", "secrets")
 }
@@ -62,7 +62,7 @@ func TestGenerate_KubernetesJobMergeFields(t *testing.T) {
 		t.Fatalf("Generate() returned error: %v", err)
 	}
 
-	def := extractDefinition(t, data, "kubernetes.openmcf.org.v1.KubernetesJob")
+	def := extractDefinition(t, data, "kubernetes.planton.dev.v1.KubernetesJob")
 	assertMergeFieldExists(t, def, "spec", "env", "variables")
 	assertMergeFieldExists(t, def, "spec", "env", "secrets")
 }
@@ -80,7 +80,7 @@ func TestGenerate_ExcludesKindsWithoutMergeFields(t *testing.T) {
 	defs := schema["definitions"].(map[string]any)
 
 	// AwsVpc should not be in the schema (no repeated message fields with name)
-	if _, ok := defs["aws.openmcf.org.v1.AwsVpc"]; ok {
+	if _, ok := defs["aws.planton.dev.v1.AwsVpc"]; ok {
 		t.Error("AwsVpc should not be in the schema (no merge fields)")
 	}
 }
@@ -91,15 +91,15 @@ func TestGenerate_GroupVersionKindMetadata(t *testing.T) {
 		t.Fatalf("Generate() returned error: %v", err)
 	}
 
-	def := extractDefinition(t, data, "kubernetes.openmcf.org.v1.KubernetesDeployment")
+	def := extractDefinition(t, data, "kubernetes.planton.dev.v1.KubernetesDeployment")
 	gvkList, ok := def["x-kubernetes-group-version-kind"].([]any)
 	if !ok || len(gvkList) == 0 {
 		t.Fatal("missing x-kubernetes-group-version-kind")
 	}
 
 	gvk := gvkList[0].(map[string]any)
-	if gvk["group"] != "kubernetes.openmcf.org" {
-		t.Errorf("expected group 'kubernetes.openmcf.org', got %v", gvk["group"])
+	if gvk["group"] != "kubernetes.planton.dev" {
+		t.Errorf("expected group 'kubernetes.planton.dev', got %v", gvk["group"])
 	}
 	if gvk["version"] != "v1" {
 		t.Errorf("expected version 'v1', got %v", gvk["version"])

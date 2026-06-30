@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awscertmanagercert.v1;
+
+// AwsCertManagerCertStackOutputs describes values returned by Pulumi/Terraform for an ECS service.
+message AwsCertManagerCertStackOutputs {
+  // cert_arn is the Amazon Resource Name (ARN) of the created ACM certificate.
+  string cert_arn = 1;
+
+  // certificate_domain_name is the primary domain name for which the certificate was issued.
+  string certificate_domain_name = 2;
+}

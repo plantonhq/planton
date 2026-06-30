@@ -1,7 +1,7 @@
 //go:build unix
 
 // Process-group control for the IaC child process on unix (linux, darwin).
-// Splitting this by build tag keeps the openmcf CLI compiling on every platform
+// Splitting this by build tag keeps the planton CLI compiling on every platform
 // while letting the runner reap the whole tofu process tree on cancellation.
 package tofumodule
 

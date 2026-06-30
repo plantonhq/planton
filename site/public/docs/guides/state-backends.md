@@ -7,7 +7,7 @@ order: 25
 
 # State Backends
 
-This guide covers how to configure state storage for Pulumi, OpenTofu, and Terraform deployments. OpenMCF reads backend configuration from manifest labels and CLI flags, eliminating the need for separate backend configuration files.
+This guide covers how to configure state storage for Pulumi, OpenTofu, and Terraform deployments. Planton reads backend configuration from manifest labels and CLI flags, eliminating the need for separate backend configuration files.
 
 For the conceptual overview of state management — what state is, why it matters, and how each engine handles it — see [State Management](../concepts/state-management).
 
@@ -17,20 +17,20 @@ For the conceptual overview of state management — what state is, why it matter
 
 | Provisioner   | Backend Labels                                                                                                      |
 | ------------- | ------------------------------------------------------------------------------------------------------------------- |
-| **Terraform** | `terraform.openmcf.org/backend.type`, `backend.bucket`, `backend.key`, `backend.region`, `backend.endpoint` |
-| **OpenTofu**  | `tofu.openmcf.org/backend.type`, `backend.bucket`, `backend.key`, `backend.region`, `backend.endpoint`      |
-| **Pulumi**    | `pulumi.openmcf.org/stack.name` (uses Pulumi Cloud or local)                                                |
+| **Terraform** | `terraform.planton.dev/backend.type`, `backend.bucket`, `backend.key`, `backend.region`, `backend.endpoint` |
+| **OpenTofu**  | `tofu.planton.dev/backend.type`, `backend.bucket`, `backend.key`, `backend.region`, `backend.endpoint`      |
+| **Pulumi**    | `pulumi.planton.dev/stack.name` (uses Pulumi Cloud or local)                                                |
 
 ### S3 Backend Labels (Complete Example)
 
 ```yaml
 metadata:
   labels:
-    openmcf.org/provisioner: terraform
-    terraform.openmcf.org/backend.type: s3
-    terraform.openmcf.org/backend.bucket: my-terraform-state
-    terraform.openmcf.org/backend.key: path/to/state.tfstate
-    terraform.openmcf.org/backend.region: us-west-2
+    planton.dev/provisioner: terraform
+    terraform.planton.dev/backend.type: s3
+    terraform.planton.dev/backend.bucket: my-terraform-state
+    terraform.planton.dev/backend.key: path/to/state.tfstate
+    terraform.planton.dev/backend.region: us-west-2
 ```
 
 ---
@@ -54,14 +54,14 @@ In addition to manifest labels, you can configure backends using CLI flags. **CL
 
 ```bash
 # Full CLI configuration
-openmcf apply -f manifest.yaml \
+planton apply -f manifest.yaml \
     --backend-type s3 \
     --backend-bucket my-state-bucket \
     --backend-key env/prod/terraform.tfstate \
     --backend-region us-west-2
 
 # Override just the bucket (other values from manifest)
-openmcf apply -f manifest.yaml --backend-bucket different-bucket
+planton apply -f manifest.yaml --backend-bucket different-bucket
 ```
 
 ### Configuration Precedence
@@ -87,10 +87,10 @@ For scenarios where CLI flags are cumbersome or manifests can't be modified, you
 
 | Variable                           | Description                                         |
 | ---------------------------------- | --------------------------------------------------- |
-| `OPENMCF_BACKEND_TYPE`     | Backend type: `s3`, `gcs`, `azurerm`, `local`       |
-| `OPENMCF_BACKEND_BUCKET`   | State bucket/container name                         |
-| `OPENMCF_BACKEND_REGION`   | AWS region (use `auto` for S3-compatible backends)  |
-| `OPENMCF_BACKEND_ENDPOINT` | Custom S3-compatible endpoint URL (R2, MinIO, etc.) |
+| `PLANTON_BACKEND_TYPE`     | Backend type: `s3`, `gcs`, `azurerm`, `local`       |
+| `PLANTON_BACKEND_BUCKET`   | State bucket/container name                         |
+| `PLANTON_BACKEND_REGION`   | AWS region (use `auto` for S3-compatible backends)  |
+| `PLANTON_BACKEND_ENDPOINT` | Custom S3-compatible endpoint URL (R2, MinIO, etc.) |
 
 **Note:** `backend.key` is intentionally NOT configurable via environment variable. State file paths should be explicit and traceable, so they must come from manifest labels or CLI flags.
 
@@ -98,16 +98,16 @@ For scenarios where CLI flags are cumbersome or manifests can't be modified, you
 
 ```bash
 # Set environment variables (e.g., in CI/CD pipeline)
-export OPENMCF_BACKEND_TYPE=s3
-export OPENMCF_BACKEND_BUCKET=my-state-bucket
-export OPENMCF_BACKEND_REGION=auto
-export OPENMCF_BACKEND_ENDPOINT=https://account-id.r2.cloudflarestorage.com
+export PLANTON_BACKEND_TYPE=s3
+export PLANTON_BACKEND_BUCKET=my-state-bucket
+export PLANTON_BACKEND_REGION=auto
+export PLANTON_BACKEND_ENDPOINT=https://account-id.r2.cloudflarestorage.com
 
 # Run with key from manifest
-openmcf apply -f manifest.yaml
+planton apply -f manifest.yaml
 
 # Or provide key via CLI flag
-openmcf apply -f manifest.yaml --backend-key env/prod/state.tfstate
+planton apply -f manifest.yaml --backend-key env/prod/state.tfstate
 ```
 
 ### CI/CD Example (GitHub Actions)
@@ -117,14 +117,14 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      OPENMCF_BACKEND_TYPE: s3
-      OPENMCF_BACKEND_BUCKET: ${{ secrets.STATE_BUCKET }}
-      OPENMCF_BACKEND_REGION: auto
-      OPENMCF_BACKEND_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+      PLANTON_BACKEND_TYPE: s3
+      PLANTON_BACKEND_BUCKET: ${{ secrets.STATE_BUCKET }}
+      PLANTON_BACKEND_REGION: auto
+      PLANTON_BACKEND_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
     steps:
       - uses: actions/checkout@v4
       - name: Deploy infrastructure
-        run: openmcf apply -f manifest.yaml
+        run: planton apply -f manifest.yaml
 ```
 
 ### Override Behavior
@@ -133,13 +133,13 @@ Environment variables serve as defaults that can be overridden:
 
 ```bash
 # Environment sets bucket to "default-bucket"
-export OPENMCF_BACKEND_BUCKET=default-bucket
+export PLANTON_BACKEND_BUCKET=default-bucket
 
 # Manifest label overrides to "manifest-bucket"
-# terraform.openmcf.org/backend.bucket: manifest-bucket
+# terraform.planton.dev/backend.bucket: manifest-bucket
 
 # CLI flag overrides to "cli-bucket" (highest priority)
-openmcf apply -f manifest.yaml --backend-bucket cli-bucket
+planton apply -f manifest.yaml --backend-bucket cli-bucket
 ```
 
 ---
@@ -151,13 +151,13 @@ Pulumi stores state either in Pulumi Cloud (default) or locally. The stack name 
 ### Stack Name Label
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPostgres
 metadata:
   name: app-database
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/stack.name: prod.KubernetesPostgres.app-database
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/stack.name: prod.KubernetesPostgres.app-database
 spec:
   container:
     replicas: 1
@@ -180,7 +180,7 @@ The stack name follows the pattern: `<environment>.<project>.<stack>`
 pulumi login
 
 # State is automatically stored in Pulumi Cloud
-openmcf apply -f database.yaml
+planton apply -f database.yaml
 ```
 
 **2. Local Backend**
@@ -190,7 +190,7 @@ openmcf apply -f database.yaml
 pulumi login --local
 
 # State stored in ~/.pulumi/
-openmcf apply -f database.yaml
+planton apply -f database.yaml
 ```
 
 **3. Self-hosted Backend (S3, GCS, Azure)**
@@ -210,7 +210,7 @@ pulumi login azblob://my-container
 
 ## OpenTofu / Terraform State
 
-OpenTofu and Terraform use a backend configuration to store state. OpenMCF reads this configuration from manifest labels.
+OpenTofu and Terraform use a backend configuration to store state. Planton reads this configuration from manifest labels.
 
 ### Label Format
 
@@ -227,38 +227,38 @@ Each provisioner uses its own label prefix. The backend configuration requires t
 ```yaml
 metadata:
   labels:
-    openmcf.org/provisioner: terraform
-    terraform.openmcf.org/backend.type: s3
-    terraform.openmcf.org/backend.bucket: my-terraform-state
-    terraform.openmcf.org/backend.key: vpc/production.tfstate
-    terraform.openmcf.org/backend.region: us-west-2
+    planton.dev/provisioner: terraform
+    terraform.planton.dev/backend.type: s3
+    terraform.planton.dev/backend.bucket: my-terraform-state
+    terraform.planton.dev/backend.key: vpc/production.tfstate
+    terraform.planton.dev/backend.region: us-west-2
 ```
 
 **For OpenTofu (GCS backend):**
 ```yaml
 metadata:
   labels:
-    openmcf.org/provisioner: tofu
-    tofu.openmcf.org/backend.type: gcs
-    tofu.openmcf.org/backend.bucket: my-tofu-state
-    tofu.openmcf.org/backend.key: vpc/production
+    planton.dev/provisioner: tofu
+    tofu.planton.dev/backend.type: gcs
+    tofu.planton.dev/backend.bucket: my-tofu-state
+    tofu.planton.dev/backend.key: vpc/production
 ```
 
 ### Backward Compatibility
 
 For backward compatibility:
-- OpenTofu accepts `terraform.openmcf.org/*` labels if provisioner-specific labels are not present
+- OpenTofu accepts `terraform.planton.dev/*` labels if provisioner-specific labels are not present
 - `backend.object` label is still supported but deprecated in favor of `backend.key`
 
 ```yaml
 metadata:
   labels:
-    openmcf.org/provisioner: tofu
+    planton.dev/provisioner: tofu
     # Legacy labels - still work
-    terraform.openmcf.org/backend.type: s3
-    terraform.openmcf.org/backend.bucket: my-bucket
-    terraform.openmcf.org/backend.object: path/to/state.tfstate  # deprecated, use backend.key
-    terraform.openmcf.org/backend.region: us-west-2
+    terraform.planton.dev/backend.type: s3
+    terraform.planton.dev/backend.bucket: my-bucket
+    terraform.planton.dev/backend.object: path/to/state.tfstate  # deprecated, use backend.key
+    terraform.planton.dev/backend.region: us-west-2
 ```
 
 We recommend using provisioner-specific labels with `backend.key` for clarity.
@@ -272,16 +272,16 @@ We recommend using provisioner-specific labels with `backend.key` for clarity.
 Store state in an S3 bucket with optional DynamoDB locking.
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsVpc
 metadata:
   name: production-vpc
   labels:
-    openmcf.org/provisioner: terraform
-    terraform.openmcf.org/backend.type: s3
-    terraform.openmcf.org/backend.bucket: my-terraform-state
-    terraform.openmcf.org/backend.key: vpc/production.tfstate
-    terraform.openmcf.org/backend.region: us-west-2
+    planton.dev/provisioner: terraform
+    terraform.planton.dev/backend.type: s3
+    terraform.planton.dev/backend.bucket: my-terraform-state
+    terraform.planton.dev/backend.key: vpc/production.tfstate
+    terraform.planton.dev/backend.region: us-west-2
 spec:
   cidrBlock: 10.0.0.0/16
   region: us-west-2
@@ -302,13 +302,13 @@ spec:
 
 ### S3-Compatible Backends (Cloudflare R2, MinIO)
 
-OpenMCF supports S3-compatible backends like Cloudflare R2, MinIO, and other S3-compatible storage services. The CLI automatically detects these backends and configures the necessary compatibility flags.
+Planton supports S3-compatible backends like Cloudflare R2, MinIO, and other S3-compatible storage services. The CLI automatically detects these backends and configures the necessary compatibility flags.
 
 **Detection signals:**
 - `backend.region` set to `auto`
 - `backend.endpoint` is specified
 
-When an S3-compatible backend is detected, OpenMCF automatically adds:
+When an S3-compatible backend is detected, Planton automatically adds:
 - `skip_credentials_validation = true`
 - `skip_region_validation = true`
 - `skip_requesting_account_id = true`
@@ -319,17 +319,17 @@ When an S3-compatible backend is detected, OpenMCF automatically adds:
 #### Cloudflare R2 Example
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsVpc
 metadata:
   name: production-vpc
   labels:
-    openmcf.org/provisioner: terraform
-    terraform.openmcf.org/backend.type: s3
-    terraform.openmcf.org/backend.bucket: my-r2-state-bucket
-    terraform.openmcf.org/backend.key: vpc/production.tfstate
-    terraform.openmcf.org/backend.region: auto
-    terraform.openmcf.org/backend.endpoint: https://<account-id>.r2.cloudflarestorage.com
+    planton.dev/provisioner: terraform
+    terraform.planton.dev/backend.type: s3
+    terraform.planton.dev/backend.bucket: my-r2-state-bucket
+    terraform.planton.dev/backend.key: vpc/production.tfstate
+    terraform.planton.dev/backend.region: auto
+    terraform.planton.dev/backend.endpoint: https://<account-id>.r2.cloudflarestorage.com
 spec:
   cidrBlock: 10.0.0.0/16
 ```
@@ -337,7 +337,7 @@ spec:
 #### CLI-Based R2 Configuration
 
 ```bash
-openmcf apply -f manifest.yaml \
+planton apply -f manifest.yaml \
     --backend-type s3 \
     --backend-bucket my-r2-state-bucket \
     --backend-key vpc/production.tfstate \
@@ -350,12 +350,12 @@ openmcf apply -f manifest.yaml \
 ```yaml
 metadata:
   labels:
-    openmcf.org/provisioner: tofu
-    tofu.openmcf.org/backend.type: s3
-    tofu.openmcf.org/backend.bucket: terraform-state
-    tofu.openmcf.org/backend.key: app/state.tfstate
-    tofu.openmcf.org/backend.region: auto
-    tofu.openmcf.org/backend.endpoint: https://minio.example.com:9000
+    planton.dev/provisioner: tofu
+    tofu.planton.dev/backend.type: s3
+    tofu.planton.dev/backend.bucket: terraform-state
+    tofu.planton.dev/backend.key: app/state.tfstate
+    tofu.planton.dev/backend.region: auto
+    tofu.planton.dev/backend.endpoint: https://minio.example.com:9000
 ```
 
 **Prerequisites for R2:**
@@ -374,15 +374,15 @@ metadata:
 Store state in a GCS bucket.
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GkeCluster
 metadata:
   name: staging-cluster
   labels:
-    openmcf.org/provisioner: tofu
-    tofu.openmcf.org/backend.type: gcs
-    tofu.openmcf.org/backend.bucket: my-gcs-state-bucket
-    tofu.openmcf.org/backend.key: gke/staging-cluster
+    planton.dev/provisioner: tofu
+    tofu.planton.dev/backend.type: gcs
+    tofu.planton.dev/backend.bucket: my-gcs-state-bucket
+    tofu.planton.dev/backend.key: gke/staging-cluster
 spec:
   projectId: my-gcp-project
   region: us-central1
@@ -404,15 +404,15 @@ spec:
 Store state in Azure Blob Storage.
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureAksCluster
 metadata:
   name: production-aks
   labels:
-    openmcf.org/provisioner: terraform
-    terraform.openmcf.org/backend.type: azurerm
-    terraform.openmcf.org/backend.bucket: tfstate-container
-    terraform.openmcf.org/backend.key: aks/production
+    planton.dev/provisioner: terraform
+    terraform.planton.dev/backend.type: azurerm
+    terraform.planton.dev/backend.bucket: tfstate-container
+    terraform.planton.dev/backend.key: aks/production
 spec:
   location: eastus
   nodeCount: 3
@@ -435,14 +435,14 @@ spec:
 Store state on the local filesystem. **Not recommended for production or team use.**
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDeployment
 metadata:
   name: test-service
   labels:
-    openmcf.org/provisioner: tofu
-    tofu.openmcf.org/backend.type: local
-    tofu.openmcf.org/backend.key: /tmp/test-service.tfstate
+    planton.dev/provisioner: tofu
+    tofu.planton.dev/backend.type: local
+    tofu.planton.dev/backend.key: /tmp/test-service.tfstate
 spec:
   replicas: 1
 ```
@@ -468,19 +468,19 @@ spec:
 ### Example 1: AWS Infrastructure with S3 Backend
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRdsInstance
 metadata:
   name: app-database
   labels:
     # Provisioner selection
-    openmcf.org/provisioner: terraform
+    planton.dev/provisioner: terraform
     
     # Backend configuration
-    terraform.openmcf.org/backend.type: s3
-    terraform.openmcf.org/backend.bucket: company-terraform-state
-    terraform.openmcf.org/backend.key: rds/app-database/production.tfstate
-    terraform.openmcf.org/backend.region: us-west-2
+    terraform.planton.dev/backend.type: s3
+    terraform.planton.dev/backend.bucket: company-terraform-state
+    terraform.planton.dev/backend.key: rds/app-database/production.tfstate
+    terraform.planton.dev/backend.region: us-west-2
 spec:
   engine: postgres
   engineVersion: "15"
@@ -491,7 +491,7 @@ spec:
 
 **Deploy:**
 ```bash
-openmcf apply -f database.yaml
+planton apply -f database.yaml
 ```
 
 ---
@@ -499,18 +499,18 @@ openmcf apply -f database.yaml
 ### Example 2: GCP Infrastructure with GCS Backend (OpenTofu)
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudRun
 metadata:
   name: api-service
   labels:
     # Provisioner selection
-    openmcf.org/provisioner: tofu
+    planton.dev/provisioner: tofu
     
     # Backend configuration (OpenTofu-specific)
-    tofu.openmcf.org/backend.type: gcs
-    tofu.openmcf.org/backend.bucket: company-tofu-state
-    tofu.openmcf.org/backend.key: cloud-run/api-service/prod
+    tofu.planton.dev/backend.type: gcs
+    tofu.planton.dev/backend.bucket: company-tofu-state
+    tofu.planton.dev/backend.key: cloud-run/api-service/prod
 spec:
   projectId: my-gcp-project
   region: us-central1
@@ -519,7 +519,7 @@ spec:
 
 **Deploy:**
 ```bash
-openmcf apply -f api-service.yaml
+planton apply -f api-service.yaml
 ```
 
 ---
@@ -528,15 +528,15 @@ openmcf apply -f api-service.yaml
 
 **Base manifest** (`base/database.yaml`):
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRdsInstance
 metadata:
   name: app-database
   labels:
-    openmcf.org/provisioner: terraform
-    terraform.openmcf.org/backend.type: s3
-    terraform.openmcf.org/backend.bucket: company-terraform-state
-    terraform.openmcf.org/backend.region: us-west-2
+    planton.dev/provisioner: terraform
+    terraform.planton.dev/backend.type: s3
+    terraform.planton.dev/backend.bucket: company-terraform-state
+    terraform.planton.dev/backend.region: us-west-2
     # Key will be patched per environment
 spec:
   engine: postgres
@@ -548,7 +548,7 @@ spec:
 patches:
   - patch: |
       - op: add
-        path: /metadata/labels/terraform.openmcf.org~1backend.key
+        path: /metadata/labels/terraform.planton.dev~1backend.key
         value: rds/app-database/production.tfstate
       - op: replace
         path: /spec/instanceClass
@@ -559,7 +559,7 @@ patches:
 
 **Deploy:**
 ```bash
-openmcf apply --kustomize-dir . --overlay prod
+planton apply --kustomize-dir . --overlay prod
 ```
 
 ---
@@ -567,16 +567,16 @@ openmcf apply --kustomize-dir . --overlay prod
 ### Example 4: Pulumi with Stack Name
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPostgres
 metadata:
   name: analytics-db
   labels:
     # Provisioner selection
-    openmcf.org/provisioner: pulumi
+    planton.dev/provisioner: pulumi
     
     # Stack name for state identification
-    pulumi.openmcf.org/stack.name: production.KubernetesPostgres.analytics-db
+    pulumi.planton.dev/stack.name: production.KubernetesPostgres.analytics-db
 spec:
   container:
     replicas: 3
@@ -592,7 +592,7 @@ spec:
 pulumi login
 
 # Deploy
-openmcf apply -f analytics-db.yaml
+planton apply -f analytics-db.yaml
 ```
 
 ---
@@ -615,16 +615,16 @@ Use different buckets or prefixes for different environments:
 
 ```yaml
 # Production
-terraform.openmcf.org/backend.bucket: prod-terraform-state
-terraform.openmcf.org/backend.key: vpc/main.tfstate
+terraform.planton.dev/backend.bucket: prod-terraform-state
+terraform.planton.dev/backend.key: vpc/main.tfstate
 
 # Staging
-terraform.openmcf.org/backend.bucket: staging-terraform-state
-terraform.openmcf.org/backend.key: vpc/main.tfstate
+terraform.planton.dev/backend.bucket: staging-terraform-state
+terraform.planton.dev/backend.key: vpc/main.tfstate
 
 # Development
-terraform.openmcf.org/backend.bucket: dev-terraform-state
-terraform.openmcf.org/backend.key: vpc/main.tfstate
+terraform.planton.dev/backend.bucket: dev-terraform-state
+terraform.planton.dev/backend.key: vpc/main.tfstate
 ```
 
 ### 3. Enable Versioning
@@ -689,10 +689,10 @@ aws dynamodb create-table \
 ```yaml
 labels:
   # S3 backend - all four labels required
-  terraform.openmcf.org/backend.type: s3
-  terraform.openmcf.org/backend.bucket: my-terraform-state
-  terraform.openmcf.org/backend.key: path/to/state.tfstate
-  terraform.openmcf.org/backend.region: us-west-2
+  terraform.planton.dev/backend.type: s3
+  terraform.planton.dev/backend.bucket: my-terraform-state
+  terraform.planton.dev/backend.key: path/to/state.tfstate
+  terraform.planton.dev/backend.region: us-west-2
 ```
 
 For GCS or Azure backends, `backend.region` is not required.
@@ -733,17 +733,17 @@ For GCS or Azure backends, `backend.region` is not required.
 
 ```yaml
 # For Terraform (S3)
-openmcf.org/provisioner: terraform
-terraform.openmcf.org/backend.type: s3
-terraform.openmcf.org/backend.bucket: my-state-bucket
-terraform.openmcf.org/backend.key: path/to/state.tfstate
-terraform.openmcf.org/backend.region: us-west-2
+planton.dev/provisioner: terraform
+terraform.planton.dev/backend.type: s3
+terraform.planton.dev/backend.bucket: my-state-bucket
+terraform.planton.dev/backend.key: path/to/state.tfstate
+terraform.planton.dev/backend.region: us-west-2
 
 # For OpenTofu (GCS)
-openmcf.org/provisioner: tofu
-tofu.openmcf.org/backend.type: gcs
-tofu.openmcf.org/backend.bucket: my-state-bucket
-tofu.openmcf.org/backend.key: path/to/state
+planton.dev/provisioner: tofu
+tofu.planton.dev/backend.type: gcs
+tofu.planton.dev/backend.bucket: my-state-bucket
+tofu.planton.dev/backend.key: path/to/state
 ```
 
 ### "Backend configuration changed"
@@ -753,10 +753,10 @@ tofu.openmcf.org/backend.key: path/to/state
 **Solution:** Use the `--reconfigure` flag to accept the new backend configuration:
 
 ```bash
-openmcf init -f manifest.yaml --reconfigure
+planton init -f manifest.yaml --reconfigure
 
 # Or with other commands that run init internally
-openmcf apply -f manifest.yaml --reconfigure
+planton apply -f manifest.yaml --reconfigure
 ```
 
 ---
@@ -772,13 +772,13 @@ openmcf apply -f manifest.yaml --reconfigure
 ```yaml
 metadata:
   labels:
-    terraform.openmcf.org/backend.region: auto
-    terraform.openmcf.org/backend.endpoint: https://<account-id>.r2.cloudflarestorage.com
+    terraform.planton.dev/backend.region: auto
+    terraform.planton.dev/backend.endpoint: https://<account-id>.r2.cloudflarestorage.com
 ```
 
 Or via CLI:
 ```bash
-openmcf apply -f manifest.yaml \
+planton apply -f manifest.yaml \
     --backend-region auto \
     --backend-endpoint https://<account-id>.r2.cloudflarestorage.com \
     --reconfigure
@@ -788,7 +788,7 @@ openmcf apply -f manifest.yaml \
 
 ### Incomplete Backend Configuration (Interactive Prompt)
 
-**Behavior:** When required backend configuration is missing, OpenMCF prompts for values interactively:
+**Behavior:** When required backend configuration is missing, Planton prompts for values interactively:
 
 ```
 ℹ  S3-Compatible Backend Detected
@@ -816,7 +816,7 @@ Enter endpoint: _
 
 ## What's Next
 
-- [State Management](../concepts/state-management) — Conceptual overview of state in OpenMCF
+- [State Management](../concepts/state-management) — Conceptual overview of state in Planton
 - [Unified Commands](/docs/cli/unified-commands) — Using apply, destroy, init, plan, refresh
 - [Credentials](./credentials) — Setting up cloud provider credentials
 - [Kustomize Integration](./kustomize) — Multi-environment deployments with per-environment state

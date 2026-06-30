@@ -14,7 +14,7 @@ Dataproc on GKE allows scheduling Spark, PySpark, and SparkR jobs as Kubernetes 
 
 ### Pain Points
 
-- No way to deploy Spark workloads on shared GKE infrastructure through OpenMCF
+- No way to deploy Spark workloads on shared GKE infrastructure through Planton
 - GcpGkeCluster did not export its fully qualified cluster ID, preventing downstream resource composition
 - GcpGkeNodePool did not export its fully qualified node pool ID for the same reason
 

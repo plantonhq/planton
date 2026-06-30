@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package dev.planton.provider.civo.civoipaddress.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/civo/region.proto";
+
+// CivoIpAddressSpec defines the specification for provisioning a static reserved IP in Civo Cloud.
+// A reserved IP is a persistent public IPv4 address that can be attached to an instance or load balancer in the same region.
+// This spec focuses on the essential fields, following the 80/20 principle: specifying the region and an optional descriptive label.
+message CivoIpAddressSpec {
+  // An optional human-readable name or description for the reserved IP.
+  // If not provided, Civo may default to using the IP address as the name.
+  string description = 1 [(buf.validate.field).string.max_len = 100];
+  // Reserved IPs are region-specific; the IP can only be attached to resources in this region.
+  CivoRegion region = 2 [(buf.validate.field).required = true];
+}

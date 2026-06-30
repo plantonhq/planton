@@ -1,0 +1,16 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: ClickHouseKubernetes
+metadata:
+  name: clickhousekubernetes-demo
+spec:
+  container:
+    replicas: 1
+    isPersistenceEnabled: true
+    diskSize: 8Gi
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 1000m
+        memory: 2Gi

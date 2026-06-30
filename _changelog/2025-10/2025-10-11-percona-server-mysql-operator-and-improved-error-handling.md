@@ -29,7 +29,7 @@ The Percona Server for MySQL Operator provides these capabilities through Kubern
 New Kubernetes cloud resource kind for deploying the Percona MySQL operator:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: PerconaServerMysqlOperator
 metadata:
   name: mysql-operator
@@ -146,10 +146,10 @@ The operator installs three Custom Resource Definitions:
 
 ```bash
 # Set local module path
-export PERCONA_SERVER_MYSQL_OPERATOR_MODULE=~/scm/github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/addon/perconaservermysqloperator/v1/iac/pulumi
+export PERCONA_SERVER_MYSQL_OPERATOR_MODULE=~/scm/github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/addon/perconaservermysqloperator/v1/iac/pulumi
 
 # Deploy operator
-openmcf pulumi up \
+planton pulumi up \
   --manifest mysql-operator.yaml \
   --module-dir ${PERCONA_SERVER_MYSQL_OPERATOR_MODULE}
 ```
@@ -225,15 +225,15 @@ Resource Kind: PerconaServerMysqlOperators
 
 2. If the kind is correct, update your CLI to the latest version:
 
-   brew update && brew upgrade openmcf
+   brew update && brew upgrade planton
 
    Or if you haven't installed via Homebrew:
 
-   brew install plantonhq/tap/openmcf
+   brew install plantonhq/tap/planton
 
    Then verify:
 
-   openmcf version
+   planton version
 
 3. Retry your command
 
@@ -353,7 +353,7 @@ None. Both features are additive:
 No migration needed - this is a new feature. To adopt:
 
 1. Create a `PerconaServerMysqlOperator` manifest
-2. Deploy using `openmcf pulumi up`
+2. Deploy using `planton pulumi up`
 3. Verify operator is running
 4. Create MySQL clusters using `PerconaServerMySQL` CRDs
 

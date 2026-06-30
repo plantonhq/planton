@@ -3,6 +3,6 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "sortstringmap",
     srcs = ["sort_string_map.go"],
-    importpath = "github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/datatypes/stringmaps/sortstringmap",
+    importpath = "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/datatypes/stringmaps/sortstringmap",
     visibility = ["//visibility:public"],
 )

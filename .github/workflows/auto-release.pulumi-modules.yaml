@@ -2,7 +2,7 @@
 # Pulumi Modules Auto-Release
 # =============================================================================
 # Builds pre-compiled binaries for Pulumi deployment components, uploads them
-# to Cloudflare R2 (downloads.openmcf.org), and creates a GitHub release with
+# to Cloudflare R2 (downloads.planton.dev), and creates a GitHub release with
 # download links.
 #
 # Tag Format: v{semver}-pulumi.{component}.{YYYYMMDD}.{N}
@@ -14,8 +14,8 @@
 #   - darwin_amd64   - Intel Macs
 #   - windows_amd64  - Windows
 #
-# Upload path: s3://openmcf-downloads-bucket/releases/{tag}/modules/pulumi/{component}_{platform}.gz
-# Public URL:  https://downloads.openmcf.org/releases/{tag}/modules/pulumi/{component}_{platform}.gz
+# Upload path: s3://planton-downloads-bucket/releases/{tag}/modules/pulumi/{component}_{platform}.gz
+# Public URL:  https://downloads.planton.dev/releases/{tag}/modules/pulumi/{component}_{platform}.gz
 #
 # Triggered by: auto-tag.yaml via workflow_dispatch (one call per component)
 # =============================================================================
@@ -39,7 +39,7 @@ on:
         required: true
         type: string
       path:
-        description: 'Path to the Pulumi module (e.g., apis/org/openmcf/provider/aws/awsecsservice/v1/iac/pulumi)'
+        description: 'Path to the Pulumi module (e.g., apis/dev/planton/provider/aws/awsecsservice/v1/iac/pulumi)'
         required: true
         type: string
 
@@ -47,7 +47,7 @@ permissions:
   contents: write
 
 env:
-  R2_BUCKET: openmcf-downloads-bucket
+  R2_BUCKET: planton-downloads-bucket
 
 jobs:
   # ===========================================================================
@@ -66,7 +66,7 @@ jobs:
           TAG="${{ inputs.tag }}"
           COMPONENT="${{ inputs.component }}"
           PROVIDER="${{ inputs.provider }}"
-          BASE_URL="https://downloads.openmcf.org/releases/${TAG}/modules/pulumi"
+          BASE_URL="https://downloads.planton.dev/releases/${TAG}/modules/pulumi"
           
           if gh release view "${TAG}" >/dev/null 2>&1; then
             echo "Release ${TAG} already exists"
@@ -118,13 +118,13 @@ jobs:
 
           ## Usage with IaC Runner
 
-          This binary is designed to be used with the OpenMCF IaC Runner.
+          This binary is designed to be used with the Planton IaC Runner.
 
           ---
 
           ## Source Code
 
-          \`apis/org/openmcf/provider/${PROVIDER}/${COMPONENT}/v1/iac/pulumi/\`
+          \`apis/dev/planton/provider/${PROVIDER}/${COMPONENT}/v1/iac/pulumi/\`
           EOF
             
             gh release create "${TAG}" \
@@ -203,7 +203,7 @@ jobs:
           # Upload to R2
           aws s3 cp "${ARTIFACT_NAME}" "s3://${R2_BUCKET}/${R2_KEY}" \
             --endpoint-url "${AWS_ENDPOINT_URL}"
-          echo "✓ Uploaded: https://downloads.openmcf.org/${R2_KEY}"
+          echo "✓ Uploaded: https://downloads.planton.dev/${R2_KEY}"
 
   # ===========================================================================
   # Summary
@@ -217,7 +217,7 @@ jobs:
           TAG="${{ inputs.tag }}"
           COMPONENT="${{ inputs.component }}"
           PROVIDER="${{ inputs.provider }}"
-          BASE_URL="https://downloads.openmcf.org/releases/${TAG}/modules/pulumi"
+          BASE_URL="https://downloads.planton.dev/releases/${TAG}/modules/pulumi"
           
           echo "## Pulumi Module Auto-Release Complete" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY

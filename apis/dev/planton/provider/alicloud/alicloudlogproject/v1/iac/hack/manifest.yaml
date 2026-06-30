@@ -1,0 +1,9 @@
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudLogProject
+metadata:
+  name: alicloudlogproject-demo
+spec:
+  region: cn-hangzhou
+  projectName: planton-demo-logs
+  logStores:
+    - name: app-logs

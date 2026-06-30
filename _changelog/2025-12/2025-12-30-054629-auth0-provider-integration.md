@@ -6,11 +6,11 @@
 
 ## Summary
 
-Added Auth0 as a new cloud provider to OpenMCF, enabling users to manage Auth0 identity resources through the platform. This implementation spans all layers of the system—from protobuf definitions through CLI flags, stack input processing, Tofu/Terraform environment configuration, backend credential management, and frontend credential forms—maintaining full consistency with existing provider patterns.
+Added Auth0 as a new cloud provider to Planton, enabling users to manage Auth0 identity resources through the platform. This implementation spans all layers of the system—from protobuf definitions through CLI flags, stack input processing, Tofu/Terraform environment configuration, backend credential management, and frontend credential forms—maintaining full consistency with existing provider patterns.
 
 ## Problem Statement / Motivation
 
-OpenMCF needed to expand its provider ecosystem to include Auth0, a popular identity platform used for authentication and authorization. Without Auth0 support, users could not:
+Planton needed to expand its provider ecosystem to include Auth0, a popular identity platform used for authentication and authorization. Without Auth0 support, users could not:
 
 - Store and manage Auth0 credentials through the platform
 - Use Auth0 credentials for infrastructure deployments
@@ -84,7 +84,7 @@ Implemented comprehensive Auth0 provider support across all system layers, follo
 **CloudResourceProvider enum** (`cloud_resource_provider.proto`):
 ```protobuf
 auth0 = 21 [(provider_meta) = {
-  group: "auth0.openmcf.org"
+  group: "auth0.planton.dev"
   display_name: "Auth0"
 }];
 ```
@@ -110,7 +110,7 @@ Added `--auth0-provider-config` flag to all deployment commands:
 // internal/cli/flag/flag.go
 Auth0ProviderConfig Flag = "auth0-provider-config"
 
-// cmd/openmcf/root/apply.go (and plan, init, destroy, refresh)
+// cmd/planton/root/apply.go (and plan, init, destroy, refresh)
 Apply.PersistentFlags().String(string(flag.Auth0ProviderConfig), "", 
     "path of the auth0-credential file")
 ```
@@ -218,7 +218,7 @@ export function Auth0CredentialForm({ register, disabled }: Auth0CredentialFormP
 ## Impact
 
 ### Direct Impact
-- Users can now manage Auth0 credentials through OpenMCF
+- Users can now manage Auth0 credentials through Planton
 - CLI supports `--auth0-provider-config` flag on all deployment commands
 - Backend API supports Auth0 credential CRUD operations
 - Frontend displays Auth0 in credential provider dropdown
@@ -240,7 +240,7 @@ clientSecret: your-client-secret
 EOF
 
 # Use with deployment
-openmcf apply --manifest auth0-connection.yaml \
+planton apply --manifest auth0-connection.yaml \
   --auth0-provider-config auth0-creds.yaml
 ```
 

@@ -12,7 +12,7 @@ Deploys a GCP BigQuery dataset with configurable data location, table lifecycle 
 
 ## What Gets Created
 
-When you deploy a GcpBigQueryDataset resource, OpenMCF provisions:
+When you deploy a GcpBigQueryDataset resource, Planton provisions:
 
 - **BigQuery Dataset** — a `google_bigquery_dataset` resource in the specified project and location, tagged with organization, environment, and resource labels
 - **Access Control Entries** — if the `access` field is provided, an authoritative set of IAM bindings granting roles to users, groups, domains, special groups, IAM members, or authorized views
@@ -20,7 +20,7 @@ When you deploy a GcpBigQueryDataset resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **A GCP project** where the dataset will be created
 - **A Cloud KMS key** if enabling customer-managed encryption (optional)
 - **BigQuery API** enabled in the target project
@@ -30,15 +30,15 @@ When you deploy a GcpBigQueryDataset resource, OpenMCF provisions:
 Create a file `bigquery-dataset.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpBigQueryDataset
 metadata:
   name: my-dataset
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpBigQueryDataset.my-dataset
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpBigQueryDataset.my-dataset
 spec:
   projectId:
     value: my-gcp-project
@@ -49,7 +49,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f bigquery-dataset.yaml
+planton apply -f bigquery-dataset.yaml
 ```
 
 This creates a BigQuery dataset named `analytics_events` in the `US` multi-region with default access (project owners = OWNER, project editors = WRITER, project viewers = READER).
@@ -96,15 +96,15 @@ This creates a BigQuery dataset named `analytics_events` in the `US` multi-regio
 Automatically delete tables after 90 days, useful for staging or transient data:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpBigQueryDataset
 metadata:
   name: staging-events
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.GcpBigQueryDataset.staging-events
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.GcpBigQueryDataset.staging-events
 spec:
   projectId:
     value: my-gcp-project
@@ -122,15 +122,15 @@ spec:
 Production dataset using customer-managed encryption and physical storage billing for cost optimization:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpBigQueryDataset
 metadata:
   name: prod-analytics
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpBigQueryDataset.prod-analytics
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpBigQueryDataset.prod-analytics
 spec:
   projectId:
     value: my-gcp-project
@@ -148,15 +148,15 @@ spec:
 Grant access to specific users, groups, and an authorized view:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpBigQueryDataset
 metadata:
   name: finance-data
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpBigQueryDataset.finance-data
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpBigQueryDataset.finance-data
 spec:
   projectId:
     value: my-gcp-project
@@ -183,18 +183,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding values:
+Reference other Planton-managed resources instead of hardcoding values:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpBigQueryDataset
 metadata:
   name: ref-dataset
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpBigQueryDataset.ref-dataset
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpBigQueryDataset.ref-dataset
 spec:
   projectId:
     valueFrom:

@@ -9,7 +9,7 @@ go_library(
         "messages.go",
         "styles.go",
     ],
-    importpath = "github.com/plantonhq/openmcf/internal/cli/ui",
+    importpath = "github.com/plantonhq/planton/internal/cli/ui",
     visibility = ["//:__subpackages__"],
     deps = [
         "//pkg/iac/tofu/backendconfig",

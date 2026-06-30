@@ -7,7 +7,7 @@
 ## Summary
 
 Swept the cloud-resource specs and annotated every field that holds a real
-user-supplied secret value with the `(org.openmcf.shared.options.sensitive) = true`
+user-supplied secret value with the `(dev.planton.shared.options.sensitive) = true`
 option, so that field becomes secret-by-default: downstream it can only hold a
 managed-secret reference (resolved just-in-time at deploy) and never plaintext.
 Heuristic false positives (KMS key identifiers, names of secrets to create,
@@ -49,7 +49,7 @@ just-in-time on the runner.
 
 ## Implementation Details
 
-- Each annotated/exempted spec gained `import "org/openmcf/shared/options/options.proto";`
+- Each annotated/exempted spec gained `import "dev/planton/shared/options/options.proto";`
   where it was not already importing it.
 - `sensitive_exempt_reason` is read **only** by the secret-coverage tooling and has no
   effect on enforcement or just-in-time resolution; a field is secret-by-default solely
@@ -78,11 +78,11 @@ string master_password = 10 [(buf.validate.field).required = true];
 // After (real secret -> secret-by-default)
 string master_password = 10 [
   (buf.validate.field).required = true,
-  (org.openmcf.shared.options.sensitive) = true
+  (dev.planton.shared.options.sensitive) = true
 ];
 
 // Heuristic false positive -> documented exemption (coverage-only)
-string encryption_key = 19 [(org.openmcf.shared.options.sensitive_exempt_reason) =
+string encryption_key = 19 [(dev.planton.shared.options.sensitive_exempt_reason) =
   "Customer-managed KMS key identifier (a reference), not secret key material."];
 ```
 

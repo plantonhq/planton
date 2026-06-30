@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocisubnet.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/oci/ocisubnet/v1/spec.proto";
+import "dev/planton/provider/oci/ocisubnet/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// OciSubnet is the top-level resource representing an Oracle Cloud Infrastructure
+// subnet within a Virtual Cloud Network (VCN).
+message OciSubnet {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'oci.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OciSubnet'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OciSubnetSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OciSubnetStatus status = 5;
+}
+
+// OciSubnetStatus holds the outputs produced by deploying an OciSubnet.
+message OciSubnetStatus {
+  // stack-outputs
+  OciSubnetStackOutputs outputs = 1;
+}

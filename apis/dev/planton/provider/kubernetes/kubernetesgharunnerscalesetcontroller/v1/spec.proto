@@ -1,0 +1,164 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesgharunnerscalesetcontroller.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/kubernetes.proto";
+import "dev/planton/provider/kubernetes/options.proto";
+import "dev/planton/provider/kubernetes/target_cluster.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// KubernetesGhaRunnerScaleSetControllerSpec defines configuration for deploying the GitHub Actions
+// Runner Scale Set Controller on a Kubernetes cluster. The controller manages AutoScalingRunnerSets
+// and EphemeralRunners custom resources, enabling self-hosted GitHub Actions runners that scale
+// dynamically based on workflow demand.
+//
+// This component deploys the controller only. Runner scale sets (the actual runner pods) are
+// deployed separately using the gha-runner-scale-set Helm chart.
+message KubernetesGhaRunnerScaleSetControllerSpec {
+  // Target Kubernetes Cluster where the controller will be deployed.
+  dev.planton.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  // Kubernetes Namespace where the controller will be installed.
+  // The controller watches for AutoScalingRunnerSet resources across all namespaces by default,
+  // or can be restricted to a single namespace via flags.watch_single_namespace.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // Flag to indicate if the namespace should be created.
+  bool create_namespace = 3;
+
+  // Version of the Helm chart to deploy.
+  // Chart versions match the controller image versions.
+  // https://github.com/actions/actions-runner-controller/releases
+  optional string helm_chart_version = 4 [(dev.planton.shared.options.default) = "0.13.1"];
+
+  // Number of controller replicas.
+  // When replicaCount > 1, leader election is automatically enabled.
+  optional int32 replica_count = 5 [(dev.planton.shared.options.default) = "1"];
+
+  // Container specifications for the controller.
+  KubernetesGhaRunnerScaleSetControllerContainer container = 6 [(buf.validate.field).required = true];
+
+  // Controller behavior flags.
+  KubernetesGhaRunnerScaleSetControllerFlags flags = 7;
+
+  // Metrics configuration for monitoring.
+  // When not specified, metrics are disabled.
+  KubernetesGhaRunnerScaleSetControllerMetrics metrics = 8;
+
+  // Image pull secrets for private container registries.
+  // These secrets are also passed to the auto-scaler for pulling listener images.
+  repeated string image_pull_secrets = 9 [(dev.planton.shared.options.sensitive_exempt_reason) = "Names of existing Kubernetes imagePullSecrets, not secret values."];
+
+  // Priority class name for the controller pods.
+  // Use "system-cluster-critical" to ensure controller survives resource pressure.
+  string priority_class_name = 10;
+}
+
+// KubernetesGhaRunnerScaleSetControllerContainer specifies container configuration for the controller.
+message KubernetesGhaRunnerScaleSetControllerContainer {
+  // CPU and memory resources for the controller container.
+  dev.planton.provider.kubernetes.ContainerResources resources = 1 [(dev.planton.provider.kubernetes.default_container_resources) = {
+    limits: {
+      cpu: "500m"
+      memory: "512Mi"
+    }
+    requests: {
+      cpu: "100m"
+      memory: "128Mi"
+    }
+  }];
+
+  // Custom container image configuration.
+  // When not specified, uses the default image from the Helm chart.
+  KubernetesGhaRunnerScaleSetControllerImage image = 2;
+}
+
+// KubernetesGhaRunnerScaleSetControllerImage configures a custom controller image.
+message KubernetesGhaRunnerScaleSetControllerImage {
+  // Container image repository.
+  // Default: ghcr.io/actions/gha-runner-scale-set-controller
+  string repository = 1;
+
+  // Image tag. When not specified, uses the chart appVersion.
+  string tag = 2;
+
+  // Image pull policy: Always, IfNotPresent, or Never.
+  string pull_policy = 3;
+}
+
+// KubernetesGhaRunnerScaleSetControllerFlags configures controller behavior.
+message KubernetesGhaRunnerScaleSetControllerFlags {
+  // Log level for the controller.
+  // Valid values: debug, info, warn, error
+  LogLevel log_level = 1;
+
+  // Log format for the controller.
+  // Valid values: text, json
+  LogFormat log_format = 2;
+
+  // When set, restricts the controller to watch only the specified namespace.
+  // By default (empty), watches all namespaces.
+  string watch_single_namespace = 3;
+
+  // Maximum concurrent reconciles for the EphemeralRunner controller.
+  // Increase to improve throughput at the cost of higher API server load.
+  optional int32 runner_max_concurrent_reconciles = 4 [(dev.planton.shared.options.default) = "2"];
+
+  // Strategy for handling upgrades while jobs are running.
+  UpdateStrategy update_strategy = 5;
+
+  // Label prefixes to exclude from propagation to internal resources.
+  // Useful for labels used by external tools (e.g., ArgoCD) that shouldn't
+  // be propagated to listener pods.
+  repeated string exclude_label_propagation_prefixes = 6;
+
+  // Kubernetes API client rate limiter QPS.
+  int32 k8s_client_rate_limiter_qps = 7;
+
+  // Kubernetes API client rate limiter burst.
+  int32 k8s_client_rate_limiter_burst = 8;
+
+  // Log level enum (nested for cleaner YAML manifests).
+  enum LogLevel {
+    log_level_unspecified = 0;
+    debug = 1;
+    info = 2;
+    warn = 3;
+    error = 4;
+  }
+
+  // Log format enum.
+  enum LogFormat {
+    log_format_unspecified = 0;
+    text = 1;
+    json = 2;
+  }
+
+  // Update strategy enum.
+  // Defines how the controller handles upgrades while jobs are running.
+  enum UpdateStrategy {
+    update_strategy_unspecified = 0;
+    // Immediately apply changes, may cause runner overprovisioning.
+    immediate = 1;
+    // Wait for pending/running jobs to complete before applying changes.
+    eventual = 2;
+  }
+}
+
+// KubernetesGhaRunnerScaleSetControllerMetrics configures metrics endpoints.
+message KubernetesGhaRunnerScaleSetControllerMetrics {
+  // Metrics address for the controller manager (e.g., ":8080").
+  string controller_manager_addr = 1;
+
+  // Metrics address for the listener (e.g., ":8080").
+  string listener_addr = 2;
+
+  // Metrics endpoint path for the listener (e.g., "/metrics").
+  string listener_endpoint = 3;
+}

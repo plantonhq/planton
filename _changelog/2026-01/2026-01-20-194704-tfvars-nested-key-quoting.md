@@ -26,7 +26,7 @@ The tfvars generator in `pkg/iac/tofu/tfvars/tfvars.go` was outputting map keys 
 ```hcl
 labels = {
     infra-hub.planton.ai/infra-project.name = "planton-gcp-dev-fga-stack"
-    openmcf.org/provisioner = "terraform"
+    planton.dev/provisioner = "terraform"
 }
 ```
 

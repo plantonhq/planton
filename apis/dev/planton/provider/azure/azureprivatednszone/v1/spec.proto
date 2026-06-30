@@ -1,0 +1,92 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azureprivatednszone.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// **AzurePrivateDnsZoneSpec** defines the configuration for creating an Azure
+// Private DNS Zone with a Virtual Network link.
+//
+// Azure Private DNS provides name resolution within a virtual network without
+// needing a custom DNS solution. Private DNS zones are used for two primary
+// scenarios:
+//
+// 1. **Private Link DNS resolution** -- Zones like "privatelink.postgres.database.azure.com"
+//    enable automatic DNS resolution for Azure Private Endpoints. When a private
+//    endpoint is created for an Azure PaaS service, its private IP is registered
+//    in the corresponding privatelink zone, allowing VNet-connected clients to
+//    resolve the service's FQDN to its private IP instead of its public IP.
+//
+// 2. **Custom internal DNS** -- Zones like "contoso.internal" or "corp.local"
+//    provide internal name resolution for VMs, containers, and other resources
+//    within a VNet. When `registration_enabled` is true on the VNet link, Azure
+//    auto-registers A records for VMs in the linked VNet.
+//
+// This component bundles the private DNS zone with a single VNet link per DD03
+// (Composite Bundling Rules): a private DNS zone without a VNet link is unreachable
+// from the VNet and serves no purpose.
+//
+// **Note:** Private DNS zones are global Azure resources -- they have no region.
+// This is why this spec omits the `region` field that other Azure resources include.
+//
+// **Known limitation:** This component creates one VNet link per zone instance.
+// For hub-spoke topologies requiring links to multiple VNets, deploy separate
+// instances or use a future dedicated VNet link resource.
+message AzurePrivateDnsZoneSpec {
+  // The Azure Resource Group where the Private DNS Zone will be created.
+  // Can be a literal string or a reference to an AzureResourceGroup output.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef resource_group = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AzureResourceGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.resource_group_name"
+  ];
+
+  // The name of the Private DNS Zone.
+  // Must be a valid DNS domain name. For Private Link scenarios, this must match
+  // the Azure-defined privatelink zone name for the target service.
+  //
+  // Common Private Link zone names:
+  // - "privatelink.postgres.database.azure.com" -- PostgreSQL Flexible Server
+  // - "privatelink.mysql.database.azure.com" -- MySQL Flexible Server
+  // - "privatelink.database.windows.net" -- Azure SQL Database
+  // - "privatelink.documents.azure.com" -- Cosmos DB
+  // - "privatelink.redis.cache.windows.net" -- Azure Cache for Redis
+  // - "privatelink.blob.core.windows.net" -- Azure Blob Storage
+  // - "privatelink.vaultcore.azure.net" -- Azure Key Vault
+  //
+  // For custom internal DNS, use any valid domain (e.g., "contoso.internal").
+  string name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "zone_name"
+      message: "Zone name must be a valid DNS domain (e.g., privatelink.postgres.database.azure.com or contoso.internal)"
+      expression: "this.matches('^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?[.])*[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$')"
+    }
+  ];
+
+  // The Azure Resource Manager ID of the Virtual Network to link to this zone.
+  // The VNet link enables DNS resolution of records in this zone from resources
+  // within the linked VNet. Without a VNet link, the zone is unreachable.
+  // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetworks/{name}
+  dev.planton.shared.foreignkey.v1.StringValueOrRef vnet_id = 3 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AzureVpc,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vnet_id"
+  ];
+
+  // Whether to enable auto-registration of VM DNS records in the linked VNet.
+  //
+  // When true, Azure automatically creates and removes A records in this zone
+  // for virtual machines in the linked VNet. This is useful for custom internal
+  // DNS zones (e.g., "contoso.internal") where you want VMs to be automatically
+  // discoverable by hostname.
+  //
+  // For Private Link zones (e.g., "privatelink.postgres.database.azure.com"),
+  // this should remain false (the default). Private endpoint DNS records are
+  // managed by the private endpoint resource itself, not by auto-registration.
+  //
+  // Default: false
+  optional bool registration_enabled = 4 [(dev.planton.shared.options.default) = "false"];
+}

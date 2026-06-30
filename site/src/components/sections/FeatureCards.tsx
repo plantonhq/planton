@@ -47,7 +47,7 @@ export default function FeatureCards() {
       <div className="text-center mb-16">
         <h2 className="text-4xl font-bold mb-6">
           <span className="bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
-            Why OpenMCF?
+            Why Planton?
           </span>
         </h2>
         <p className="text-xl text-slate-400 max-w-3xl mx-auto">

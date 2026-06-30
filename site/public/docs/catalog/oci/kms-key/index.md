@@ -12,13 +12,13 @@ Deploys an Oracle Cloud Infrastructure Key Management Service encryption key ins
 
 ## What Gets Created
 
-When you deploy an OciKmsKey resource, OpenMCF provisions:
+When you deploy an OciKmsKey resource, Planton provisions:
 
 - **KMS Key** — a `kms.Key` resource in the specified compartment and vault with configurable algorithm, key length, protection mode, and optional auto-rotation schedule. The key is created in ENABLED state and an initial key version is generated automatically.
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the key will be created — either a literal value or a reference to an OciCompartment resource
 - **A vault management endpoint** — the `managementEndpoint` output from an OciKmsVault resource, either as a literal URL or via `valueFrom`
 - **An external key ID** (for external protection mode only) — the identifier of the key on the third-party key manager
@@ -28,15 +28,15 @@ When you deploy an OciKmsKey resource, OpenMCF provisions:
 Create a file `key.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciKmsKey
 metadata:
   name: my-key
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciKmsKey.my-key
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciKmsKey.my-key
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -50,7 +50,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f key.yaml
+planton apply -f key.yaml
 ```
 
 This creates a 256-bit AES key with HSM protection (the default). The key OCID and current key version OCID are exported as stack outputs.
@@ -98,15 +98,15 @@ This creates a 256-bit AES key with HSM protection (the default). The key OCID a
 A 256-bit AES symmetric key in an HSM — the most common choice for data-at-rest encryption:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciKmsKey
 metadata:
   name: aes-key
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciKmsKey.aes-key
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciKmsKey.aes-key
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -122,15 +122,15 @@ spec:
 A 4096-bit RSA asymmetric key with automatic rotation every 90 days, using `valueFrom` to reference a vault:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciKmsKey
 metadata:
   name: rsa-signing-key
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciKmsKey.rsa-signing-key
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciKmsKey.rsa-signing-key
 spec:
   compartmentId:
     valueFrom:
@@ -155,15 +155,15 @@ spec:
 An ECDSA P-384 key with software-based protection — lower cost for non-regulatory workloads:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciKmsKey
 metadata:
   name: ecdsa-key
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.OciKmsKey.ecdsa-key
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.OciKmsKey.ecdsa-key
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -181,15 +181,15 @@ spec:
 A key backed by an external key manager for regulatory BYOK requirements:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciKmsKey
 metadata:
   name: byok-key
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciKmsKey.byok-key
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciKmsKey.byok-key
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"

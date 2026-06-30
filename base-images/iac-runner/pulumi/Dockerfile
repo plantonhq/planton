@@ -6,7 +6,7 @@
 # (custom) modules that require compilation.
 #
 # Usage:
-#   FROM ghcr.io/plantonhq/openmcf/base-images/pulumi-runner:v0.0.100
+#   FROM ghcr.io/plantonhq/planton/base-images/pulumi-runner:v0.0.100
 #
 # Build: Triggered by .github/workflows/pulumi-runner.yml
 #
@@ -30,7 +30,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PLANTON_BINARIES_DIR=/opt/planton/pulumi-binaries
 
 # OCI labels
-LABEL org.opencontainers.image.source="https://github.com/plantonhq/openmcf"
+LABEL org.opencontainers.image.source="https://github.com/plantonhq/planton"
 LABEL org.opencontainers.image.description="Pulumi Runner with pre-built binaries for all deployment components"
 LABEL org.opencontainers.image.licenses="Apache-2.0"
 

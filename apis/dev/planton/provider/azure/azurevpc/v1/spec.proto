@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azurevpc.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// AzureVpcSpec defines the configuration for an Azure Virtual Network (VNet).
+// This resource is typically used as the networking foundation for an AKS cluster.
+// It includes a primary address space and a subnet for AKS nodes, with optional features
+// like a NAT Gateway for outbound Internet access and Private DNS zone links for name resolution.
+message AzureVpcSpec {
+  // Azure region in which to create the Virtual Network (e.g., "eastus", "westeurope").
+  string region = 6 [(buf.validate.field).required = true];
+
+  // The Azure Resource Group where the Virtual Network will be created.
+  // Can be a literal string or a reference to an AzureResourceGroup output.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef resource_group = 7 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AzureResourceGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.resource_group_name"
+  ];
+
+  // The CIDR block defining the address space for the Virtual Network.
+  // Example: "10.0.0.0/16" would allow IP addresses from 10.0.0.0 to 10.0.255.255.
+  string address_space_cidr = 1 [(buf.validate.field).required = true];
+
+  // The CIDR block for the primary subnet that AKS cluster nodes will use.
+  // This should be a subset of the address_space_cidr range.
+  // Example: "10.0.0.0/18" would allocate the first half of a /16 address space to the nodes subnet.
+  string nodes_subnet_cidr = 2 [(buf.validate.field).required = true];
+
+  // Toggle to enable a NAT Gateway for the nodes subnet to allow outbound Internet connectivity.
+  // If set to true, a NAT Gateway resource will be created and associated with the subnet.
+  // Defaults to false (no NAT Gateway).
+  bool is_nat_gateway_enabled = 3;
+
+  // A list of Azure Private DNS zone resource IDs to link to this Virtual Network.
+  // Each entry should be the full resource ID of an existing Private DNS zone that needs to be resolved within the VNet.
+  // This field is optional and primarily for advanced scenarios.
+  repeated string dns_private_zone_links = 4;
+
+  // Arbitrary tags to apply to the Virtual Network (and related resources like subnets).
+  // Tags are key-value pairs for Azure resource tagging.
+  map<string, string> tags = 5;
+}

@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added the AwsEventBridgeRule (R04) deployment component to OpenMCF — the fourth new AWS resource kind in the cloud provider expansion project. EventBridge rules are the routing layer of event-driven architectures, matching incoming events by pattern or schedule and delivering them to targets like Lambda, SQS, SNS, and Step Functions.
+Added the AwsEventBridgeRule (R04) deployment component to Planton — the fourth new AWS resource kind in the cloud provider expansion project. EventBridge rules are the routing layer of event-driven architectures, matching incoming events by pattern or schedule and delivering them to targets like Lambda, SQS, SNS, and Step Functions.
 
 ## Problem Statement / Motivation
 
@@ -14,7 +14,7 @@ EventBridge rules are the core routing mechanism for event-driven architectures 
 
 ### Pain Points
 
-- No way to define EventBridge routing rules through OpenMCF
+- No way to define EventBridge routing rules through Planton
 - Infra charts for event-driven architectures were blocked without rule support
 - Manual Terraform/Pulumi code was required for event routing configuration
 
@@ -87,7 +87,7 @@ Comprehensive coverage: happy path (8), rule-level CEL (4), field constraints (2
 
 ## Impact
 
-- **New component**: `apis/org/openmcf/provider/aws/awseventbridgerule/v1/` (~48 files, ~3200 lines)
+- **New component**: `apis/dev/planton/provider/aws/awseventbridgerule/v1/` (~48 files, ~3200 lines)
 - **Enum registration**: AwsEventBridgeRule = 228 in cloud_resource_kind.proto
 - **Infra charts**: Unblocks event-driven architecture charts that require rule routing
 - **Downstream references**: Rules reference AwsEventBridgeBus (bus_name), AwsLambda (function_arn), AwsSqsQueue (queue_arn), AwsSnsTopic (topic_arn), AwsIamRole (role_arn)

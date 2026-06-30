@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesrookcephcluster.v1;
+
+import "dev/planton/provider/kubernetes/kubernetesrookcephcluster/v1/api.proto";
+import "dev/planton/provider/kubernetes/provider.proto";
+
+// KubernetesRookCephClusterStackInput defines the inputs for the IaC modules that deploy the Rook Ceph Cluster.
+message KubernetesRookCephClusterStackInput {
+  // The target resource to deploy.
+  KubernetesRookCephCluster target = 1;
+  // Kubernetes provider configuration including credentials.
+  dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+}

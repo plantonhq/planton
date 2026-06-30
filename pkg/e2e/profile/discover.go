@@ -9,9 +9,9 @@ import (
 
 	"github.com/pkg/errors"
 
-	componentv1 "github.com/plantonhq/openmcf/apis/org/openmcf/qa/componente2eprofile/v1"
-	providerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/qa/providere2eprofile/v1"
-	sharedpb "github.com/plantonhq/openmcf/apis/org/openmcf/shared"
+	componentv1 "github.com/plantonhq/planton/apis/dev/planton/qa/componente2eprofile/v1"
+	providerv1 "github.com/plantonhq/planton/apis/dev/planton/qa/providere2eprofile/v1"
+	sharedpb "github.com/plantonhq/planton/apis/dev/planton/shared"
 )
 
 // ComponentEntry pairs a component name with its loaded profile.

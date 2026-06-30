@@ -12,7 +12,7 @@ Refactored the SigNoz Kubernetes ingress configuration from two separate shared 
 
 ### The Problem
 
-The previous implementation used two separate shared `IngressSpec` fields from `org.openmcf.shared.kubernetes`:
+The previous implementation used two separate shared `IngressSpec` fields from `dev.planton.shared.kubernetes`:
 
 ```yaml
 signozIngress:
@@ -74,8 +74,8 @@ This approach:
 **Before (Flat Structure with Two Fields)**:
 ```protobuf
 message SignozKubernetesSpec {
-  org.openmcf.shared.kubernetes.IngressSpec signoz_ingress = 4;
-  org.openmcf.shared.kubernetes.IngressSpec otel_collector_ingress = 5;
+  dev.planton.shared.kubernetes.IngressSpec signoz_ingress = 4;
+  dev.planton.shared.kubernetes.IngressSpec otel_collector_ingress = 5;
 }
 ```
 
@@ -106,7 +106,7 @@ message SignozKubernetesIngressEndpoint {
 
 **Before**:
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: SignozKubernetes
 metadata:
   name: production-signoz
@@ -126,7 +126,7 @@ spec:
 
 **After**:
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: SignozKubernetes
 metadata:
   name: production-signoz
@@ -343,7 +343,7 @@ output "otel_collector_external_http_hostname" {
 **File**: `apis/project/planton/provider/kubernetes/workload/signozkubernetes/v1/spec.proto`
 
 **Changes Made**:
-1. **Removed Shared IngressSpec**: No longer uses `org.openmcf.shared.kubernetes.IngressSpec`
+1. **Removed Shared IngressSpec**: No longer uses `dev.planton.shared.kubernetes.IngressSpec`
 2. **Unified Ingress Field**: Replaced `signoz_ingress` and `otel_collector_ingress` with single `ingress` field
 3. **Added Custom Messages**: New `SignozKubernetesIngress` and `SignozKubernetesIngressEndpoint` messages with CEL validation
 4. **Field Number Update**: `helm_values` renumbered from 6 to 5 due to consolidation
@@ -541,13 +541,13 @@ spec:
 
 ```bash
 # Update CLI
-brew update && brew upgrade openmcf
+brew update && brew upgrade planton
 
 # Or fresh install
-brew install plantonhq/tap/openmcf
+brew install plantonhq/tap/planton
 
 # Verify version
-openmcf version
+planton version
 
 # For developers: regenerate protobuf stubs
 cd apis
@@ -570,10 +570,10 @@ If you chose different hostnames than the auto-constructed ones:
 
 ```bash
 # Preview changes
-openmcf pulumi preview --manifest signoz.yaml
+planton pulumi preview --manifest signoz.yaml
 
 # Apply
-openmcf pulumi up --manifest signoz.yaml
+planton pulumi up --manifest signoz.yaml
 ```
 
 ### Automated Migration Script
@@ -646,8 +646,8 @@ echo "✅ Migration complete!"
 echo ""
 echo "Next steps:"
 echo "1. Review the changes with: git diff"
-echo "2. Test with: openmcf pulumi preview --manifest <file>"
-echo "3. Apply with: openmcf pulumi up --manifest <file>"
+echo "2. Test with: planton pulumi preview --manifest <file>"
+echo "3. Apply with: planton pulumi up --manifest <file>"
 ```
 
 **Usage**:
@@ -661,7 +661,7 @@ chmod +x migrate-signoz-ingress.sh
 ### Basic Ingress Configuration
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: SignozKubernetes
 metadata:
   name: signoz-basic
@@ -703,7 +703,7 @@ spec:
 ### UI Only Ingress (No OTel Collector External Access)
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: SignozKubernetes
 metadata:
   name: signoz-ui-only
@@ -730,7 +730,7 @@ spec:
 ### OTel Collector Only Ingress (UI Internal Only)
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: SignozKubernetes
 metadata:
   name: signoz-ingest-only
@@ -757,7 +757,7 @@ spec:
 ### Production with Custom Hostnames
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: SignozKubernetes
 metadata:
   name: prod-observability
@@ -983,7 +983,7 @@ ingress:
 ```bash
 # Create manifest with new syntax
 cat > signoz-test.yaml <<EOF
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: SignozKubernetes
 metadata:
   name: test-signoz
@@ -1009,7 +1009,7 @@ spec:
 EOF
 
 # Deploy
-openmcf pulumi up --manifest signoz-test.yaml
+planton pulumi up --manifest signoz-test.yaml
 
 # Verify Gateway resources created with correct hostnames
 kubectl get gateway -n istio-ingress
@@ -1020,7 +1020,7 @@ kubectl get httproute -n test-signoz
 ```bash
 # UI ingress enabled, OTel Collector internal only
 cat > signoz-ui-only.yaml <<EOF
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: SignozKubernetes
 metadata:
   name: ui-only
@@ -1041,7 +1041,7 @@ spec:
 EOF
 
 # Deploy
-openmcf pulumi up --manifest signoz-ui-only.yaml
+planton pulumi up --manifest signoz-ui-only.yaml
 
 # Verify only UI Gateway created
 kubectl get gateway -n istio-ingress | grep ui-only
@@ -1051,7 +1051,7 @@ kubectl get gateway -n istio-ingress | grep ui-only
 ```bash
 # Try invalid configuration
 cat > signoz-invalid.yaml <<EOF
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: SignozKubernetes
 metadata:
   name: invalid-signoz
@@ -1063,7 +1063,7 @@ spec:
 EOF
 
 # Attempt deploy
-openmcf pulumi up --manifest signoz-invalid.yaml
+planton pulumi up --manifest signoz-invalid.yaml
 # Expected error: hostname is required when ingress is enabled
 ```
 
@@ -1178,7 +1178,7 @@ For questions or issues with migration:
 2. Use the [automated migration script](#automated-migration-script)
 3. Check [examples](#examples) for reference configurations
 4. Verify [validation rules](#validation) are met
-5. Contact OpenMCF support if issues persist
+5. Contact Planton support if issues persist
 
 ---
 

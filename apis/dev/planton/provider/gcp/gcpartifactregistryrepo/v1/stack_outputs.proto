@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcpartifactregistryrepo.v1;
+
+import "dev/planton/shared/gcp/gcp.proto";
+
+//gcp-artifact-registry-repo stack outputs
+message GcpArtifactRegistryRepoStackOutputs {
+  //reader service account
+  dev.planton.shared.gcp.GoogleServiceAccount reader_service_account = 1;
+
+  //writer service account
+  dev.planton.shared.gcp.GoogleServiceAccount writer_service_account = 2;
+
+  //name of the repository.
+  string repo_name = 3;
+
+  //hostname of the repository.
+  string hostname = 4;
+
+  //url for the repository.
+  string repo_url = 5;
+}

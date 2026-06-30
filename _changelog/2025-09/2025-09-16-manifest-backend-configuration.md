@@ -2,7 +2,7 @@
 
 **Date**: September 16, 2025  
 **Type**: Feature  
-**PR**: [#240](https://github.com/plantonhq/openmcf/pull/240)
+**PR**: [#240](https://github.com/plantonhq/planton/pull/240)
 
 ## Summary
 
@@ -30,12 +30,12 @@ Manifests can now specify Pulumi stack information using labels:
 metadata:
   labels:
     # Option 1: Full stack FQDN (recommended)
-    pulumi.openmcf.org/stack.fqdn: "myorg/project/stack"
+    pulumi.planton.dev/stack.fqdn: "myorg/project/stack"
     
     # Option 2: Individual components
-    pulumi.openmcf.org/organization: "myorg"
-    pulumi.openmcf.org/project: "my-project"  
-    pulumi.openmcf.org/stack.name: "production"
+    pulumi.planton.dev/organization: "myorg"
+    pulumi.planton.dev/project: "my-project"  
+    pulumi.planton.dev/stack.name: "production"
 ```
 
 ### Terraform/Tofu Backend Configuration via Labels
@@ -46,9 +46,9 @@ Manifests can specify remote state backend configuration:
 metadata:
   labels:
     # Backend type: s3, gcs, azurerm, local
-    terraform.openmcf.org/backend.type: "s3"
+    terraform.planton.dev/backend.type: "s3"
     # Backend-specific configuration
-    terraform.openmcf.org/backend.object: "bucket-name/path/to/state.tfstate"
+    terraform.planton.dev/backend.object: "bucket-name/path/to/state.tfstate"
 ```
 
 ### CLI Usage
@@ -57,10 +57,10 @@ Deploy without backend flags:
 
 ```bash
 # Pulumi - no --stack flag needed
-openmcf pulumi update --manifest https://example.com/manifest.yaml
+planton pulumi update --manifest https://example.com/manifest.yaml
 
 # Tofu - backend auto-configured
-openmcf tofu apply --manifest manifest.yaml
+planton tofu apply --manifest manifest.yaml
 ```
 
 ### Priority and Fallback
@@ -93,9 +93,9 @@ openmcf tofu apply --manifest manifest.yaml
 
 ### Supported Terraform/Tofu Backends
 
-- **S3 (AWS)**: `terraform.openmcf.org/backend.object: "bucket/key"`
-- **GCS (Google Cloud)**: `terraform.openmcf.org/backend.object: "bucket/prefix"`
-- **Azure Blob**: `terraform.openmcf.org/backend.object: "container/path"`
+- **S3 (AWS)**: `terraform.planton.dev/backend.object: "bucket/key"`
+- **GCS (Google Cloud)**: `terraform.planton.dev/backend.object: "bucket/prefix"`
+- **Azure Blob**: `terraform.planton.dev/backend.object: "container/path"`
 - **Local**: Default when no backend specified
 
 ## Security Considerations
@@ -123,7 +123,7 @@ apiVersion: code2ai.planton.ai/v1
 kind: MicroserviceKubernetes
 metadata:
   labels:
-    pulumi.openmcf.org/stack.fqdn: "acme-corp/microservices/production"
+    pulumi.planton.dev/stack.fqdn: "acme-corp/microservices/production"
 spec:
   # ... rest of spec
 ```
@@ -135,8 +135,8 @@ apiVersion: aws.planton.ai/v1
 kind: EksCluster
 metadata:
   labels:
-    terraform.openmcf.org/backend.type: "s3"
-    terraform.openmcf.org/backend.object: "terraform-state/eks/prod/terraform.tfstate"
+    terraform.planton.dev/backend.type: "s3"
+    terraform.planton.dev/backend.object: "terraform-state/eks/prod/terraform.tfstate"
 spec:
   # ... rest of spec
 ```

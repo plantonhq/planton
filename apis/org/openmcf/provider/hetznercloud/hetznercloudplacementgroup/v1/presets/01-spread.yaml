@@ -1,6 +1,0 @@
-apiVersion: hetzner-cloud.openmcf.org/v1
-kind: HetznerCloudPlacementGroup
-metadata:
-  name: my-placement-group
-spec:
-  type: spread  # default from spec

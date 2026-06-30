@@ -6,23 +6,23 @@
 
 ## Summary
 
-Added the `KubernetesService` deployment component to OpenMCF, providing declarative management of Kubernetes Service resources as standalone deployment units. The component includes complete proto API definitions with validation, dual IaC implementations (Pulumi and Terraform) with feature parity, comprehensive documentation, and 29 passing validation tests. This is the first "config" category Kubernetes primitive alongside `KubernetesNamespace`.
+Added the `KubernetesService` deployment component to Planton, providing declarative management of Kubernetes Service resources as standalone deployment units. The component includes complete proto API definitions with validation, dual IaC implementations (Pulumi and Terraform) with feature parity, comprehensive documentation, and 29 passing validation tests. This is the first "config" category Kubernetes primitive alongside `KubernetesNamespace`.
 
 ## Problem Statement / Motivation
 
-While workload components like `KubernetesDeployment` and `KubernetesStatefulSet` automatically create Services for their pods, there was no way to manage standalone Kubernetes Services through OpenMCF. This left several real-world use cases unaddressed.
+While workload components like `KubernetesDeployment` and `KubernetesStatefulSet` automatically create Services for their pods, there was no way to manage standalone Kubernetes Services through Planton. This left several real-world use cases unaddressed.
 
 ### Pain Points
 
 - No way to create **ExternalName services** to proxy external DNS endpoints (e.g., RDS instances, third-party APIs)
 - No mechanism for **services without selectors** pointing to non-Kubernetes backends
-- **Headless services** for StatefulSets managed outside OpenMCF had to be created manually
+- **Headless services** for StatefulSets managed outside Planton had to be created manually
 - **LoadBalancer/NodePort services** for existing cluster workloads required out-of-band kubectl or Helm management
-- Services targeting pods managed by Helm charts, operators, or other tools had no OpenMCF integration
+- Services targeting pods managed by Helm charts, operators, or other tools had no Planton integration
 
 ## Solution / What's New
 
-A complete deployment component following the OpenMCF forge process (19 steps), registered as `KubernetesService = 849` in the cloud resource kind registry.
+A complete deployment component following the Planton forge process (19 steps), registered as `KubernetesService = 849` in the cloud resource kind registry.
 
 ### Component Architecture
 
@@ -85,9 +85,9 @@ The `KubernetesServiceSpec` exposes 13 fields covering the 80% use case:
 - **Routing**: `selector`, `ports`, `type`
 - **Advanced**: `headless`, `external_dns_name`, `external_traffic_policy`, `session_affinity`, `load_balancer_source_ranges`
 
-Three nested enums (`KubernetesServiceType`, `KubernetesServiceExternalTrafficPolicy`, `KubernetesServiceSessionAffinity`) and one port-level enum (`KubernetesServiceProtocol`) follow the OpenMCF lowercase convention.
+Three nested enums (`KubernetesServiceType`, `KubernetesServiceExternalTrafficPolicy`, `KubernetesServiceSessionAffinity`) and one port-level enum (`KubernetesServiceProtocol`) follow the Planton lowercase convention.
 
-The `protocol` field on `KubernetesServicePort` uses the `(org.openmcf.shared.options.default) = "TCP"` pattern so OpenMCF middleware handles the default centrally.
+The `protocol` field on `KubernetesServicePort` uses the `(dev.planton.shared.options.default) = "TCP"` pattern so Planton middleware handles the default centrally.
 
 ### Cross-Field Validations (CEL)
 
@@ -103,7 +103,7 @@ The field was named `external_dns_name` instead of `external_name` because proto
 
 ### Pulumi Module
 
-The module follows the standard OpenMCF pattern:
+The module follows the standard Planton pattern:
 
 - **`locals.go`**: Maps protobuf enums to Kubernetes API strings (e.g., `cluster_ip` -> `"ClusterIP"`), merges standard labels
 - **`service.go`**: Creates `kubernetes.core/v1.Service` with conditional configuration based on service type
@@ -128,7 +128,7 @@ Feature parity with Pulumi:
 ## Impact
 
 ### Users
-- Can now manage all four Kubernetes Service types plus headless through OpenMCF manifests
+- Can now manage all four Kubernetes Service types plus headless through Planton manifests
 - ExternalName services enable clean integration with external databases and APIs
 - Cloud-provider LB annotations (AWS NLB, GCP NEG, Azure ILB) are documented in examples
 

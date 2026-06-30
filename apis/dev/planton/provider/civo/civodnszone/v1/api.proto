@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package dev.planton.provider.civo.civodnszone.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/civo/civodnszone/v1/spec.proto";
+import "dev/planton/provider/civo/civodnszone/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// civo-dns-zone
+message CivoDnsZone {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'civo.planton.dev/v1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'CivoDnsZone'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  CivoDnsZoneSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  CivoDnsZoneStatus status = 5;
+}
+
+// civo-dns-zone status
+message CivoDnsZoneStatus {
+  //stack-outputs
+  //  civo-dns-zone stack-outputs
+  CivoDnsZoneStackOutputs outputs = 1;
+}

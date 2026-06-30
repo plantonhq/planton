@@ -6,15 +6,15 @@
 
 ## Summary
 
-Added the OciComputeInstance deployment component (R07, enum 3310) to the OCI provider in OpenMCF. This is the first Phase 2 (Compute and Containers) resource and the most complex OCI component to date, with 18 spec fields, 9 nested messages, and comprehensive coverage of OCI compute instance features including flex shapes, VNIC networking, cloud-init metadata, agent configuration, preemptible instances, launch options, and platform security settings. Both Pulumi (Go) and Terraform (HCL) modules are implemented with full feature parity.
+Added the OciComputeInstance deployment component (R07, enum 3310) to the OCI provider in Planton. This is the first Phase 2 (Compute and Containers) resource and the most complex OCI component to date, with 18 spec fields, 9 nested messages, and comprehensive coverage of OCI compute instance features including flex shapes, VNIC networking, cloud-init metadata, agent configuration, preemptible instances, launch options, and platform security settings. Both Pulumi (Go) and Terraform (HCL) modules are implemented with full feature parity.
 
 ## Problem Statement / Motivation
 
-Compute instances are the fundamental workload primitive on OCI. Without this component, OpenMCF users cannot provision virtual machines or bare metal hosts, blocking the entire Compute and Containers phase (R07-R10) and three of the five planned infra charts (OKE Environment, Compute Environment, Serverless Stack).
+Compute instances are the fundamental workload primitive on OCI. Without this component, Planton users cannot provision virtual machines or bare metal hosts, blocking the entire Compute and Containers phase (R07-R10) and three of the five planned infra charts (OKE Environment, Compute Environment, Serverless Stack).
 
 ### Pain Points
 
-- No way to launch OCI compute instances through OpenMCF
+- No way to launch OCI compute instances through Planton
 - OCI compute instances have 50+ provider fields across 11 nested blocks -- raw Terraform/Pulumi requires significant boilerplate
 - Flex shapes (the modern default) require separate shape_config blocks with OCPUs and memory, adding complexity
 - VNIC networking configuration requires careful coordination with OciSubnet and OciSecurityGroup
@@ -22,7 +22,7 @@ Compute instances are the fundamental workload primitive on OCI. Without this co
 
 ## Solution / What's New
 
-Comprehensive deployment component wrapping `oci_core_instance` with the standard OpenMCF KRM pattern. The spec design covers the full mainstream API surface while deliberately excluding niche features (HPC clustering, PXE boot, licensing configs) that add complexity without broad value.
+Comprehensive deployment component wrapping `oci_core_instance` with the standard Planton KRM pattern. The spec design covers the full mainstream API surface while deliberately excluding niche features (HPC clustering, PXE boot, licensing configs) that add complexity without broad value.
 
 ### Spec Fields (18 top-level)
 
@@ -64,7 +64,7 @@ Comprehensive deployment component wrapping `oci_core_instance` with the standar
 
 ### Files Created
 
-**Proto API** (`apis/org/openmcf/provider/oci/ocicomputeinstance/v1/`):
+**Proto API** (`apis/dev/planton/provider/oci/ocicomputeinstance/v1/`):
 - `spec.proto` -- 18 fields, 9 embedded messages, 6 enums, buf-validate rules
 - `api.proto` -- KRM wiring with api_version/kind const validation
 - `stack_input.proto` -- IaC module input (target + provider config)

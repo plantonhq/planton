@@ -1,9 +1,0 @@
-apiVersion: gcp.openmcf.org/v1
-kind: GcpPubSubTopic
-metadata:
-  name: my-retained-topic
-spec:
-  projectId:
-    value: "<project-id>"  # e.g., my-gcp-project
-  topicName: <your-topic-name>  # e.g., transaction-events
-  messageRetentionDuration: "604800s"  # 7 days

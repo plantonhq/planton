@@ -12,13 +12,13 @@ Deploys an Oracle Cloud Infrastructure Key Management Service vault — an HSM-b
 
 ## What Gets Created
 
-When you deploy an OciKmsVault resource, OpenMCF provisions:
+When you deploy an OciKmsVault resource, Planton provisions:
 
 - **KMS Vault** — a `kms.Vault` resource in the specified compartment with configurable vault type (shared HSM, dedicated HSM, or external key manager). The vault exposes crypto and management endpoints consumed by downstream OciKmsKey resources.
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the vault will be created — either a literal value or a reference to an OciCompartment resource
 - **IDCS OAuth credentials** (for external vaults only) — a registered IDCS client app ID, secret, and account URL for connecting to the third-party key manager
 - **A KMS private endpoint OCID** (for external vaults only) — a pre-existing private endpoint for network connectivity to the external HSM
@@ -28,15 +28,15 @@ When you deploy an OciKmsVault resource, OpenMCF provisions:
 Create a file `vault.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciKmsVault
 metadata:
   name: my-vault
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciKmsVault.my-vault
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciKmsVault.my-vault
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -46,7 +46,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f vault.yaml
+planton apply -f vault.yaml
 ```
 
 This creates a shared-HSM vault suitable for most workloads. The vault OCID, crypto endpoint, and management endpoint are exported as stack outputs.
@@ -90,15 +90,15 @@ This creates a shared-HSM vault suitable for most workloads. The vault OCID, cry
 A default vault with shared HSM partition — suitable for most encryption use cases:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciKmsVault
 metadata:
   name: shared-vault
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciKmsVault.shared-vault
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciKmsVault.shared-vault
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -110,15 +110,15 @@ spec:
 A virtual private vault with a dedicated HSM partition for high-throughput cryptographic operations:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciKmsVault
 metadata:
   name: dedicated-vault
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciKmsVault.dedicated-vault
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciKmsVault.dedicated-vault
 spec:
   compartmentId:
     valueFrom:
@@ -134,15 +134,15 @@ spec:
 A BYOK/EKMS vault connecting to a third-party HSM via IDCS OAuth and a KMS private endpoint:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciKmsVault
 metadata:
   name: external-vault
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciKmsVault.external-vault
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciKmsVault.external-vault
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"

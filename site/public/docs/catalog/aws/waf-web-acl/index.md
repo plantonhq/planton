@@ -12,7 +12,7 @@ Deploys an AWS WAFv2 Web Access Control List with ordered rules for managed rule
 
 ## What Gets Created
 
-When you deploy an AwsWafWebAcl resource, OpenMCF provisions:
+When you deploy an AwsWafWebAcl resource, Planton provisions:
 
 - **WAFv2 Web ACL** — an `aws_wafv2_web_acl` resource with the specified scope (REGIONAL or CLOUDFRONT), default action, visibility config, and rules passed via `rule_json`
 - **Rules** — an ordered set of rules constructed from managed rule group references, rate-based limits, geographic match conditions, IP set references, and custom statement escape hatches
@@ -21,7 +21,7 @@ When you deploy an AwsWafWebAcl resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **Appropriate IAM permissions** for `wafv2:*` operations
 - **us-east-1 provider region** if using CLOUDFRONT scope
 - **WAFv2 IP Sets** created separately if using `ipSetReference` rules
@@ -32,15 +32,15 @@ When you deploy an AwsWafWebAcl resource, OpenMCF provisions:
 Create a file `waf.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsWafWebAcl
 metadata:
   name: my-web-acl
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsWafWebAcl.my-web-acl
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsWafWebAcl.my-web-acl
 spec:
   region: us-east-1
   scope: REGIONAL
@@ -58,7 +58,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f waf.yaml
+planton apply -f waf.yaml
 ```
 
 This creates a REGIONAL Web ACL that allows all traffic by default and blocks known threats via the AWS Common Rule Set.
@@ -114,15 +114,15 @@ This creates a REGIONAL Web ACL that allows all traffic by default and blocks kn
 ### Managed Rules with Rate Limiting
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsWafWebAcl
 metadata:
   name: api-protection
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsWafWebAcl.api-protection
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsWafWebAcl.api-protection
 spec:
   region: us-east-1
   scope: REGIONAL
@@ -151,15 +151,15 @@ spec:
 ### Geographic Blocking with Custom Error Response
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsWafWebAcl
 metadata:
   name: geo-restricted
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsWafWebAcl.geo-restricted
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsWafWebAcl.geo-restricted
 spec:
   region: us-east-1
   scope: REGIONAL
@@ -183,15 +183,15 @@ spec:
 ### Production Web ACL with Logging
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsWafWebAcl
 metadata:
   name: prod-waf
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsWafWebAcl.prod-waf
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsWafWebAcl.prod-waf
 spec:
   region: us-east-1
   scope: REGIONAL

@@ -1,0 +1,11 @@
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudEipAddress
+metadata:
+  name: alicloudeipaddress-demo
+spec:
+  region: cn-hangzhou
+  addressName: demo-eip
+  description: Demo EIP for local testing
+  bandwidth: 10
+  tags:
+    purpose: demo

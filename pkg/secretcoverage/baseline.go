@@ -23,7 +23,7 @@ const DefaultBaselinePath = "pkg/secretcoverage/baseline.yaml"
 
 const baselineHeader = `# Secret-coverage baseline -- the accepted backlog of cloud-resource fields that
 # LOOK sensitive by name (the secret heuristic) but are not yet annotated with the
-# OpenMCF ` + "`sensitive`" + ` option. This is the annotation-sweep TODO list.
+# Planton ` + "`sensitive`" + ` option. This is the annotation-sweep TODO list.
 #
 # It is NOT a permanent exemption. A field that is intentionally not a secret (a
 # public key, an access-key id, a resource name) must use the proto
@@ -34,7 +34,7 @@ const baselineHeader = `# Secret-coverage baseline -- the accepted backlog of cl
 #   - a listed entry is no longer a gap (it was annotated/exempted -- remove it here).
 # As the sweep proceeds, annotate fields and delete their lines; this list trends to 0.
 #
-# Regenerate with:  openmcf secret-coverage --write-baseline
+# Regenerate with:  planton secret-coverage --write-baseline
 `
 
 type baselineDoc struct {

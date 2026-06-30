@@ -49,7 +49,7 @@ def build_test_path(repo_root: str, provider: str, kind_folder: str) -> Tuple[st
     base_rel = os.path.join(
         "apis",
         "org",
-        "openmcf",
+        "planton",
         "provider",
         provider,
         kind_folder,

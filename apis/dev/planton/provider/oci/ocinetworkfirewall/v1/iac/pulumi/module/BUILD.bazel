@@ -1,0 +1,27 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "module",
+    srcs = [
+        "address_list.go",
+        "firewall.go",
+        "locals.go",
+        "main.go",
+        "outputs.go",
+        "policy.go",
+        "security_rule.go",
+        "service.go",
+        "url_list.go",
+    ],
+    importpath = "github.com/plantonhq/planton/apis/dev/planton/provider/oci/ocinetworkfirewall/v1/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/dev/planton/provider/oci/ocinetworkfirewall/v1:ocinetworkfirewall",
+        "//apis/dev/planton/shared/cloudresourcekind",
+        "//pkg/iac/pulumi/pulumimodule/provider/oci/pulumiociprovider",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_oci_sdk_v4//go/oci",
+        "@com_github_pulumi_pulumi_oci_sdk_v4//go/oci/networkfirewall",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)

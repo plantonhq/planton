@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsfsxopenzfsfilesystem.v1;
+
+// AwsFsxOpenzfsFileSystemStackOutputs captures observable identifiers and
+// endpoints from a provisioned FSx for OpenZFS file system. These outputs are
+// used by downstream resources to wire dependencies via StringValueOrRef.
+//
+// Primary consumers:
+// - EKS (PersistentVolume via FSx OpenZFS CSI driver): needs `file_system_id`
+// - ECS (task definition EFS/NFS volumes): uses `dns_name`
+// - EC2 (direct NFS mount): uses `dns_name`
+// - Child volume creation: needs `root_volume_id` as parent
+// - IAM policies: needs `file_system_arn`
+// - Multi-AZ routing: needs `endpoint_ip_address`
+//
+// Mount command: mount -t nfs <dns_name>:/fsx /mnt/fsx
+message AwsFsxOpenzfsFileSystemStackOutputs {
+  // The ID of the file system (e.g., "fs-0123456789abcdef0"). Primary
+  // identifier used by EKS PersistentVolumes, ECS task definitions, and
+  // other AWS services.
+  string file_system_id = 1;
+
+  // The Amazon Resource Name of the file system. Used in IAM policies for
+  // resource-level permissions.
+  string file_system_arn = 2;
+
+  // The DNS name for the file system (e.g.,
+  // "fs-0123456789abcdef0.fsx.us-east-1.amazonaws.com"). Used in NFS mount
+  // commands: mount -t nfs <dns_name>:/fsx /mnt/fsx
+  string dns_name = 3;
+
+  // The endpoint IP address for the file system. For MULTI_AZ_1 deployments,
+  // this is the floating IP used for failover. For SINGLE_AZ deployments,
+  // this is the primary ENI IP.
+  string endpoint_ip_address = 4;
+
+  // The root volume ID (e.g., "fsvol-0123456789abcdef0"). Required as
+  // parent_volume_id when creating child OpenZFS volumes on this file system.
+  string root_volume_id = 5;
+
+  // The network interface IDs created for the file system, in order. SINGLE_AZ
+  // creates 1 ENI; MULTI_AZ creates 2 ENIs. Useful for security group debugging
+  // and network troubleshooting.
+  repeated string network_interface_ids = 6;
+
+  // The VPC ID in which the file system was created. Computed from the subnets.
+  // Useful for constructing security group rules and verifying network placement.
+  string vpc_id = 7;
+
+  // The AWS account ID of the file system owner.
+  string owner_id = 8;
+}

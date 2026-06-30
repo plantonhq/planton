@@ -1,0 +1,29 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "pulumi",
+    srcs = [
+        "cancel.go",
+        "delete.go",
+        "destroy.go",
+        "init.go",
+        "preview.go",
+        "refresh.go",
+        "update.go",
+    ],
+    importpath = "github.com/plantonhq/planton/cmd/planton/root/pulumi",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/dev/planton/shared",
+        "//apis/dev/planton/shared/iac/pulumi",
+        "//internal/cli/cliprint",
+        "//internal/cli/flag",
+        "//internal/cli/manifest",
+        "//internal/manifest",
+        "//pkg/iac/localmodule",
+        "//pkg/iac/pulumi/pulumistack",
+        "//pkg/iac/stackinput/stackinputproviderconfig",
+        "//pkg/kubernetes/kubecontext",
+        "@com_github_spf13_cobra//:cobra",
+    ],
+)

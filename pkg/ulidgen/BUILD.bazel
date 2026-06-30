@@ -3,7 +3,7 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "ulidgen",
     srcs = ["ulid_gen.go"],
-    importpath = "github.com/plantonhq/openmcf/pkg/ulidgen",
+    importpath = "github.com/plantonhq/planton/pkg/ulidgen",
     visibility = ["//visibility:public"],
     deps = ["@com_github_oklog_ulid_v2//:ulid"],
 )

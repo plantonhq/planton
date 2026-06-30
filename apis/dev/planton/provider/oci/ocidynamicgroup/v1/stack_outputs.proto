@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocidynamicgroup.v1;
+
+// OciDynamicGroupStackOutputs contains the outputs produced after deploying
+// an OciDynamicGroup.
+message OciDynamicGroupStackOutputs {
+  // OCID of the created dynamic group.
+  string dynamic_group_id = 1;
+}

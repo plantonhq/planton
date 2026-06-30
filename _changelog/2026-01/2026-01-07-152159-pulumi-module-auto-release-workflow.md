@@ -103,10 +103,10 @@ Key detection logic:
 
 ```yaml
 # Extract provider/component pairs from changed files
-# Pattern: apis/org/openmcf/provider/{provider}/{component}/v1/iac/pulumi
+# Pattern: apis/dev/planton/provider/{provider}/{component}/v1/iac/pulumi
 PULUMI_DIRS=$(echo "$CHANGED_FILES" | \
-grep -E '^apis/org/openmcf/provider/[^/]+/[^/]+/v[0-9]+/iac/pulumi/' | \
-sed 's|\(apis/org/openmcf/provider/[^/]*/[^/]*/v[0-9]*/iac/pulumi\)/.*|\1|' | \
+grep -E '^apis/dev/planton/provider/[^/]+/[^/]+/v[0-9]+/iac/pulumi/' | \
+sed 's|\(apis/dev/planton/provider/[^/]*/[^/]*/v[0-9]*/iac/pulumi\)/.*|\1|' | \
 sort -u)
 ```
 
@@ -140,9 +140,9 @@ Example matrix for AWS:
 matrix:
   include:
     - component: awsalb
-      path: apis/org/openmcf/provider/aws/awsalb/v1/iac/pulumi
+      path: apis/dev/planton/provider/aws/awsalb/v1/iac/pulumi
     - component: awsecsservice
-      path: apis/org/openmcf/provider/aws/awsecsservice/v1/iac/pulumi
+      path: apis/dev/planton/provider/aws/awsecsservice/v1/iac/pulumi
     # ... 20 more AWS components
 ```
 
@@ -230,7 +230,7 @@ Push changes to any Pulumi module:
 
 ```bash
 # Make changes
-vim apis/org/openmcf/provider/aws/awsecsservice/v1/iac/pulumi/main.go
+vim apis/dev/planton/provider/aws/awsecsservice/v1/iac/pulumi/main.go
 
 # Commit and push
 git add .

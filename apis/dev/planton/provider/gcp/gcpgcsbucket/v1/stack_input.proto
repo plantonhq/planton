@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcpgcsbucket.v1;
+
+import "dev/planton/provider/gcp/gcpgcsbucket/v1/api.proto";
+import "dev/planton/provider/gcp/provider.proto";
+
+//gcp-gcs-bucket stack-input
+message GcpGcsBucketStackInput {
+  //target cloud-resource
+  GcpGcsBucket target = 1;
+  //provider-config
+  dev.planton.provider.gcp.GcpProviderConfig provider_config = 2;
+}

@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsfsxwindowsfilesystem.v1;
+
+import "dev/planton/provider/aws/awsfsxwindowsfilesystem/v1/api.proto";
+import "dev/planton/provider/aws/provider.proto";
+
+// aws-fsx-windows-file-system stack-input
+message AwsFsxWindowsFileSystemStackInput {
+  // target cloud-resource
+  AwsFsxWindowsFileSystem target = 1;
+  // provider-credential
+  dev.planton.provider.aws.AwsProviderConfig provider_config = 2;
+}

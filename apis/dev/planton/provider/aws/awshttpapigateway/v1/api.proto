@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awshttpapigateway.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/aws/awshttpapigateway/v1/spec.proto";
+import "dev/planton/provider/aws/awshttpapigateway/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// AwsHttpApiGateway is the Kubernetes-style resource envelope for an AWS API Gateway HTTP API.
+//
+// HTTP APIs are the recommended API type for building RESTful APIs and HTTP proxies
+// in AWS. They offer lower latency and cost compared to REST APIs, with native support
+// for Lambda proxy integration, JWT authorization, and automatic deployments.
+message AwsHttpApiGateway {
+  // api-version must be set to "aws.planton.dev/v1".
+  string api_version = 1 [(buf.validate.field).string.const = "aws.planton.dev/v1"];
+
+  // resource-kind for this HTTP API Gateway resource, must be "AwsHttpApiGateway".
+  string kind = 2 [(buf.validate.field).string.const = "AwsHttpApiGateway"];
+
+  // metadata captures identifying information (name, org, env, id, labels, relationships).
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec holds the desired configuration for the HTTP API Gateway.
+  AwsHttpApiGatewaySpec spec = 4 [(buf.validate.field).required = true];
+
+  // status holds runtime or post-deployment information.
+  AwsHttpApiGatewayStatus status = 5;
+}
+
+// AwsHttpApiGatewayStatus captures lifecycle, audit, job linkage, and observable outputs.
+message AwsHttpApiGatewayStatus {
+  // stack-outputs
+  AwsHttpApiGatewayStackOutputs outputs = 1;
+}

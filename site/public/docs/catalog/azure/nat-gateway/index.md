@@ -12,7 +12,7 @@ Deploys an Azure NAT Gateway with an automatically provisioned public IP address
 
 ## What Gets Created
 
-When you deploy an AzureNatGateway resource, OpenMCF provisions:
+When you deploy an AzureNatGateway resource, Planton provisions:
 
 - **NAT Gateway** — a Standard SKU `network.NatGateway` in the specified region and resource group, configured with an idle timeout for TCP connections
 - **Public IP** — a single Standard SKU static `network.PublicIp` allocated and associated with the gateway (when no prefix length is specified)
@@ -22,7 +22,7 @@ When you deploy an AzureNatGateway resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Resource Group** where the NAT Gateway will be created (can reference an AzureResourceGroup resource)
 - **A subnet** to attach the NAT Gateway to (can reference an AzureVpc resource's nodes subnet output)
 
@@ -31,15 +31,15 @@ When you deploy an AzureNatGateway resource, OpenMCF provisions:
 Create a file `natgateway.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureNatGateway
 metadata:
   name: my-natgw
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureNatGateway.my-natgw
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureNatGateway.my-natgw
 spec:
   region: eastus
   resourceGroup: my-rg
@@ -49,7 +49,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f natgateway.yaml
+planton apply -f natgateway.yaml
 ```
 
 This creates a Standard SKU NAT Gateway with a single static public IP, a 4-minute idle timeout, and associates it with the specified subnet.
@@ -79,15 +79,15 @@ This creates a Standard SKU NAT Gateway with a single static public IP, a 4-minu
 A NAT Gateway with default settings and a directly specified subnet:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureNatGateway
 metadata:
   name: basic-natgw
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureNatGateway.basic-natgw
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureNatGateway.basic-natgw
 spec:
   region: eastus
   resourceGroup: dev-rg
@@ -99,15 +99,15 @@ spec:
 A NAT Gateway with a longer idle timeout for workloads that hold long-lived outbound TCP connections:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureNatGateway
 metadata:
   name: long-lived-natgw
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureNatGateway.long-lived-natgw
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureNatGateway.long-lived-natgw
 spec:
   region: westeurope
   resourceGroup: prod-rg
@@ -123,15 +123,15 @@ spec:
 A NAT Gateway backed by a /28 Public IP Prefix (16 addresses) for high-throughput subnets that need multiple outbound IPs to avoid SNAT port exhaustion:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureNatGateway
 metadata:
   name: scale-natgw
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureNatGateway.scale-natgw
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureNatGateway.scale-natgw
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -144,18 +144,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference OpenMCF-managed resources for the resource group and subnet instead of hardcoding IDs:
+Reference Planton-managed resources for the resource group and subnet instead of hardcoding IDs:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureNatGateway
 metadata:
   name: ref-natgw
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureNatGateway.ref-natgw
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureNatGateway.ref-natgw
 spec:
   region: eastus
   resourceGroup:
@@ -176,15 +176,15 @@ spec:
 A NAT Gateway designed to serve as the outbound egress for an AKS cluster node subnet, with a /31 prefix (2 addresses) and a 120-minute idle timeout for long-running batch jobs:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureNatGateway
 metadata:
   name: aks-egress-natgw
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureNatGateway.aks-egress-natgw
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureNatGateway.aks-egress-natgw
 spec:
   region: eastus
   resourceGroup:

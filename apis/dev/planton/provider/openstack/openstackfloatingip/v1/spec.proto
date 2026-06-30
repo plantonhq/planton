@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+package dev.planton.provider.openstack.openstackfloatingip.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// OpenStackFloatingIpSpec defines the configuration for an OpenStack Neutron
+// floating IP allocation.
+//
+// A floating IP provides external connectivity to instances or ports on tenant
+// networks. It is allocated from an external (provider) network and can
+// optionally be associated with a port for immediate connectivity. For
+// DAG-visible association in InfraCharts, allocate without port_id and use the
+// separate OpenStackFloatingIpAssociate component.
+//
+// The floating IP name is derived from metadata.name (for Planton identity only;
+// floating IPs in OpenStack do not have a name attribute).
+//
+// Terraform resource: openstack_networking_floatingip_v2
+// Pulumi resource: openstack.networking.FloatingIp
+message OpenStackFloatingIpSpec {
+  // fixed_ip only makes sense when associating with a port.
+  // If you specify a fixed IP, you must also specify the port_id to associate with.
+  option (buf.validate.message).cel = {
+    id: "fixed_ip.requires_port_id"
+    message: "fixed_ip can only be set when port_id is configured"
+    expression: "this.fixed_ip == '' || has(this.port_id)"
+  };
+
+  // floating_network_id is the ID of the external (provider) network from which
+  // the floating IP is allocated. This is the pool of public IP addresses.
+  // Maps to the Terraform "pool" attribute.
+  // Can reference an OpenStackNetwork resource's output or be a literal network UUID.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef floating_network_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OpenStackNetwork,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_id"
+  ];
+
+  // port_id is the ID of an existing port to associate with this floating IP.
+  // When set, the floating IP is immediately bound to the port, providing
+  // external connectivity to whatever is attached to that port (typically an instance).
+  // Optional: omit for allocation-only (use OpenStackFloatingIpAssociate separately).
+  // Can reference an OpenStackNetworkPort resource's output or be a literal port UUID.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef port_id = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = OpenStackNetworkPort,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.port_id"
+  ];
+
+  // fixed_ip specifies which fixed IP address on the port to associate the
+  // floating IP with. Only relevant when port_id is set and the port has
+  // multiple IP addresses. If the port has a single IP, this can be omitted.
+  string fixed_ip = 3;
+
+  // subnet_id is the UUID of a subnet within the external network from which
+  // to allocate the floating IP. This references an admin-managed subnet on the
+  // provider network. If omitted, OpenStack allocates from any available subnet.
+  string subnet_id = 4;
+
+  // address requests a specific floating IP address from the pool.
+  // If omitted, OpenStack allocates any available address.
+  // This is a create-time setting (ForceNew in Terraform).
+  // Use case: DNS pre-configuration, firewall whitelisting, IP reservation.
+  string address = 5;
+
+  // description is a human-readable description of the floating IP.
+  // Stored on the OpenStack resource and visible in Horizon and API responses.
+  string description = 6;
+
+  // tags are string tags to associate with the floating IP in OpenStack.
+  // Tags are stored on the OpenStack resource and can be used for filtering
+  // and organization in the OpenStack API and Horizon dashboard.
+  repeated string tags = 7 [(buf.validate.field).repeated.unique = true];
+
+  // region overrides the region from the provider config for this floating IP.
+  // If omitted, the region from the OpenStack provider config is used.
+  // Example: "RegionOne"
+  string region = 8;
+}

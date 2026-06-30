@@ -1,9 +1,0 @@
-apiVersion: oci.openmcf.org/v1
-kind: OciDnsZone
-metadata:
-  name: my-public-zone
-spec:
-  compartmentId:
-    value: <compartment-ocid>
-  zoneType: primary
-  scope: global

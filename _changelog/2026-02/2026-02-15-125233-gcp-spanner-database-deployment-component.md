@@ -6,24 +6,24 @@
 
 ## Summary
 
-Added a new GcpSpannerDatabase deployment component to OpenMCF, enabling declarative provisioning of Cloud Spanner databases within existing Spanner instances. The component supports GoogleSQL and PostgreSQL dialects, initial DDL schema creation, CMEK encryption, configurable point-in-time recovery, and GCP API-level drop protection.
+Added a new GcpSpannerDatabase deployment component to Planton, enabling declarative provisioning of Cloud Spanner databases within existing Spanner instances. The component supports GoogleSQL and PostgreSQL dialects, initial DDL schema creation, CMEK encryption, configurable point-in-time recovery, and GCP API-level drop protection.
 
 ## Problem Statement / Motivation
 
-GcpSpannerInstance (R09) was already available but only provisions the compute container. Users had no way to declaratively create Spanner databases -- the actual containers of tables, indexes, and data. Without GcpSpannerDatabase, the Spanner story in OpenMCF was incomplete: you could create the "server" but not the "database."
+GcpSpannerInstance (R09) was already available but only provisions the compute container. Users had no way to declaratively create Spanner databases -- the actual containers of tables, indexes, and data. Without GcpSpannerDatabase, the Spanner story in Planton was incomplete: you could create the "server" but not the "database."
 
 ### Pain Points
 
 - No declarative database creation within Spanner instances
 - No infra-chart composability for the Spanner instance-to-database dependency
-- Manual database creation required outside OpenMCF after instance provisioning
-- No way to enforce CMEK encryption or drop protection through OpenMCF manifests
+- Manual database creation required outside Planton after instance provisioning
+- No way to enforce CMEK encryption or drop protection through Planton manifests
 
 ## Solution / What's New
 
 ### GcpSpannerDatabase (R10, enum 634, id_prefix: gcpspdb)
 
-A complete deployment component following the established OpenMCF forge pattern:
+A complete deployment component following the established Planton forge pattern:
 
 ```mermaid
 flowchart TB
@@ -60,7 +60,7 @@ flowchart TB
 
 - `spec.proto` -- 9 fields with 1 CEL validation (database_dialect in-list)
 - `stack_outputs.proto` -- 3 outputs (database_id, database_name, state)
-- `api.proto` -- KRM envelope with `gcp.openmcf.org/v1` apiVersion
+- `api.proto` -- KRM envelope with `gcp.planton.dev/v1` apiVersion
 - `stack_input.proto` -- target + GcpProviderConfig
 
 ### Spec Fields
@@ -141,7 +141,7 @@ flowchart TB
 
 - Previous: GcpSpannerInstance (R09) -- the parent compute container
 - Next: GcpAlloydbCluster (R11) -- another GCP database in the expansion queue
-- Parent project: 20260212.01.openmcf-cloud-provider-expansion
+- Parent project: 20260212.01.planton-cloud-provider-expansion
 
 ---
 

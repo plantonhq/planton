@@ -49,8 +49,8 @@ flowchart LR
 
 Renamed field 1 in two proto messages:
 
-- `org.openmcf.provider.gcp.GcpProviderConfig.service_account_key` -- authentication for all GCP IaC modules
-- `org.openmcf.provider.kubernetes.KubernetesProviderConfigGcpGke.service_account_key` -- authentication for GKE cluster access
+- `dev.planton.provider.gcp.GcpProviderConfig.service_account_key` -- authentication for all GCP IaC modules
+- `dev.planton.provider.kubernetes.KubernetesProviderConfigGcpGke.service_account_key` -- authentication for GKE cluster access
 
 ### IaC Module Consumers
 
@@ -81,8 +81,8 @@ Renamed field 1 in two proto messages:
 ## Impact
 
 - **All GCP IaC modules** (Pulumi and Terraform) consume the new field name
-- **OpenMCF backend** stores raw JSON instead of base64 in MongoDB
-- **OpenMCF CLI** sends raw JSON on credential create/update
+- **Planton backend** stores raw JSON instead of base64 in MongoDB
+- **Planton CLI** sends raw JSON on credential create/update
 - **Planton integration**: Planton's `GcpProviderConfigMapper` can now pass resolved secrets (raw JSON from config-manager) directly without encoding
 
 ## Breaking Changes

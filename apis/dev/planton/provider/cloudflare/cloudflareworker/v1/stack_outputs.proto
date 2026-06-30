@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package dev.planton.provider.cloudflare.cloudflareworker.v1;
+
+// CloudflareWorkerStackOutputs captures the outputs after deploying a Cloudflare Worker.
+message CloudflareWorkerStackOutputs {
+  // The Cloudflare-assigned identifier of the deployed Worker script (equals the
+  // script name in v5).
+  string script_id = 1;
+
+  // The Worker script name — the target a service binding references.
+  string script_name = 2;
+
+  // The custom-domain hostnames attached to this Worker.
+  repeated string custom_domain_hostnames = 3;
+
+  // The route patterns mapped to this Worker.
+  repeated string route_patterns = 4;
+}

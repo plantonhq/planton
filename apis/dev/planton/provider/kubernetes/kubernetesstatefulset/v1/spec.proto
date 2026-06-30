@@ -1,0 +1,305 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesstatefulset.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/container_env.proto";
+import "dev/planton/provider/kubernetes/kubernetes.proto";
+import "dev/planton/provider/kubernetes/options.proto";
+import "dev/planton/provider/kubernetes/probe.proto";
+import "dev/planton/provider/kubernetes/target_cluster.proto";
+import "dev/planton/provider/kubernetes/volume_mount.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+/**
+ * **KubernetesStatefulSetSpec** defines the configuration for deploying a stateful application on a Kubernetes cluster.
+ * StatefulSets are designed for applications that require:
+ * - Stable, unique network identifiers
+ * - Stable, persistent storage
+ * - Ordered, graceful deployment and scaling
+ * - Ordered, automated rolling updates
+ *
+ * Use cases include databases, distributed systems, and any application requiring persistent identity.
+ */
+message KubernetesStatefulSetSpec {
+  // Target Kubernetes Cluster
+  dev.planton.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  // Kubernetes Namespace
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // Flag to indicate if the namespace should be created
+  bool create_namespace = 3;
+
+  // The container specifications for the stateful set.
+  // This includes configurations for the main application container and any sidecar containers.
+  KubernetesStatefulSetContainer container = 4 [(buf.validate.field).required = true];
+
+  // The ingress configuration for the stateful set.
+  // This defines how the stateful set can be accessed externally.
+  KubernetesStatefulSetIngress ingress = 5;
+
+  // The availability configuration for the stateful set.
+  // This includes settings for replicas and pod management policy.
+  KubernetesStatefulSetAvailability availability = 6;
+
+  // Persistent volume claims for the stateful set.
+  // Each pod in the stateful set gets its own PVC based on these templates.
+  repeated KubernetesStatefulSetVolumeClaimTemplate volume_claim_templates = 7;
+
+  // Pod management policy for the stateful set.
+  // "OrderedReady" (default): Pods are created in order and wait for previous pod to be ready.
+  // "Parallel": All pods are created/deleted simultaneously.
+  string pod_management_policy = 8 [(buf.validate.field).cel = {
+    id: "spec.pod_management_policy"
+    message: 'Pod management policy must be either "OrderedReady" or "Parallel"'
+    expression: 'size(this) == 0 || this in ["OrderedReady", "Parallel"]'
+  }];
+
+  /**
+   * ConfigMaps to create alongside the StatefulSet.
+   * Key is the ConfigMap name, value is the content.
+   * These ConfigMaps can be referenced in volume mounts.
+   *
+   * Example:
+   *   config_maps:
+   *     app-config: |
+   *       database:
+   *         host: localhost
+   *         port: 5432
+   */
+  map<string, string> config_maps = 9;
+}
+
+/**
+ * KubernetesStatefulSetIngress defines ingress configuration for the stateful set.
+ */
+message KubernetesStatefulSetIngress {
+  // Flag to enable or disable ingress.
+  bool enabled = 1;
+
+  // The full hostname for external access (e.g., "myapp.example.com").
+  // Required when enabled is true.
+  string hostname = 2;
+
+  option (buf.validate.message).cel = {
+    id: "spec.ingress.hostname.required"
+    expression: "!this.enabled || size(this.hostname) > 0"
+    message: "hostname is required when ingress is enabled"
+  };
+}
+
+/**
+ * **KubernetesStatefulSetContainer** specifies the container configuration for the stateful set.
+ * It includes the main application container and any sidecar containers that need to run alongside it.
+ */
+message KubernetesStatefulSetContainer {
+  // The main application container specifications.
+  KubernetesStatefulSetContainerApp app = 1 [(buf.validate.field).required = true];
+
+  // A list of sidecar containers to be deployed alongside the main application container.
+  repeated dev.planton.provider.kubernetes.Container sidecars = 2;
+}
+
+/**
+ * **KubernetesStatefulSetContainerApp** specifies the configuration for the main application container.
+ * It includes the container image, resource allocations, environment variables, ports, volume mounts, and health probes.
+ */
+message KubernetesStatefulSetContainerApp {
+  /**
+   * The container image to be used for the application.
+   * The `pull_secret_name` is the name of the image pull secret to be configured in the Kubernetes StatefulSet resource.
+   */
+  dev.planton.provider.kubernetes.ContainerImage image = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "spec.container.app.image.repo"
+      message: "Image repo is required"
+      expression: "has(this.repo) && this.repo != ''"
+    },
+    (buf.validate.field).cel = {
+      id: "spec.container.app.image.tag"
+      message: "Image tag is required"
+      expression: "has(this.tag) && this.tag != ''"
+    }
+  ];
+
+  // The CPU and memory resources allocated to the application container.
+  dev.planton.provider.kubernetes.ContainerResources resources = 2 [(dev.planton.provider.kubernetes.default_container_resources) = {
+    limits: {
+      cpu: "1000m"
+      memory: "1Gi"
+    }
+    requests: {
+      cpu: "50m"
+      memory: "100Mi"
+    }
+  }];
+
+  /**
+   * The environment variables and secrets for the application container.
+   */
+  dev.planton.provider.kubernetes.ContainerEnv env = 3;
+
+  /**
+   * A list of ports to be configured for the application container.
+   */
+  repeated KubernetesStatefulSetContainerAppPort ports = 4;
+
+  /**
+   * Volume mounts for the application container.
+   * Supports mounting ConfigMaps, Secrets, HostPaths, EmptyDirs, and PVCs.
+   * For PVC mounts, reference volume_claim_template names or existing PVCs.
+   * ConfigMaps defined in spec.config_maps can be referenced here.
+   *
+   * Example:
+   *   volume_mounts:
+   *     - name: data
+   *       mount_path: /var/lib/data
+   *       pvc:
+   *         claim_name: data
+   *     - name: config-volume
+   *       mount_path: /etc/app/config.yaml
+   *       config_map:
+   *         name: app-config
+   *         key: app-config
+   */
+  repeated dev.planton.provider.kubernetes.VolumeMount volume_mounts = 5;
+
+  /**
+   * Liveness probe configuration.
+   * Periodic probe of container liveness. Container will be restarted if the probe fails.
+   * Reference: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
+   */
+  dev.planton.provider.kubernetes.Probe liveness_probe = 6;
+
+  /**
+   * Readiness probe configuration.
+   * Periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails.
+   * Reference: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
+   */
+  dev.planton.provider.kubernetes.Probe readiness_probe = 7;
+
+  /**
+   * Startup probe configuration.
+   * Indicates whether the application within the container is started.
+   * Reference: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
+   */
+  dev.planton.provider.kubernetes.Probe startup_probe = 8;
+
+  /**
+   * Optional command to run instead of the image's default entrypoint.
+   */
+  repeated string command = 9;
+
+  /**
+   * Optional arguments to pass to the command or the image's default entrypoint.
+   */
+  repeated string args = 10;
+}
+
+/**
+ * **KubernetesStatefulSetContainerAppPort** specifies the port configuration for the application container.
+ */
+message KubernetesStatefulSetContainerAppPort {
+  // The name of the port (e.g., "http", "grpc").
+  // The name must only contain lowercase alphanumeric characters and hyphens.
+  // Port names must also start and end with an alphanumeric character.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "spec.container.app.ports.name"
+      message: "Name for ports must only contain lowercase alphanumeric characters and hyphens. Port names must also start and end with an alphanumeric character."
+      expression: "this.matches('^[a-z0-9][a-z0-9-]*[a-z0-9]$')"
+    }
+  ];
+
+  // The port number on the container.
+  int32 container_port = 2 [(buf.validate.field).required = true];
+
+  // The network protocol used by the port (e.g., "TCP", "UDP", "SCTP").
+  string network_protocol = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "spec.container.app.ports.network_protocol"
+      message: 'The network protocol must be one of "SCTP", "TCP", or "UDP".'
+      expression: 'this in ["SCTP", "TCP", "UDP"]'
+    }
+  ];
+
+  // The application protocol for the service (e.g., "http").
+  string app_protocol = 4 [(buf.validate.field).required = true];
+
+  // The port number on the Kubernetes service.
+  int32 service_port = 5 [(buf.validate.field).required = true];
+
+  // A flag indicating whether this port should be exposed via ingress.
+  bool is_ingress_port = 6;
+}
+
+/**
+ * **KubernetesStatefulSetAvailability** specifies the availability configuration for the stateful set.
+ */
+message KubernetesStatefulSetAvailability {
+  // The number of pod replicas to maintain.
+  // Default is 1.
+  int32 replicas = 1;
+
+  // Pod disruption budget configuration.
+  // Ensures minimum availability during voluntary disruptions.
+  KubernetesStatefulSetPodDisruptionBudget pod_disruption_budget = 2;
+}
+
+/**
+ * **KubernetesStatefulSetPodDisruptionBudget** configures a PodDisruptionBudget for the stateful set.
+ */
+message KubernetesStatefulSetPodDisruptionBudget {
+  // Enable or disable PodDisruptionBudget creation.
+  bool enabled = 1;
+
+  // Minimum number of pods that must be available during voluntary disruptions.
+  // Can be an absolute number (e.g., 1) or a percentage (e.g., "50%").
+  string min_available = 2;
+
+  // Maximum number of pods that can be unavailable during voluntary disruptions.
+  // Can be an absolute number (e.g., 1) or a percentage (e.g., "50%").
+  // Cannot be used together with min_available.
+  string max_unavailable = 3;
+}
+
+/**
+ * **KubernetesStatefulSetVolumeClaimTemplate** defines a PVC template for persistent storage.
+ * Each pod in the StatefulSet gets a unique PVC based on this template.
+ */
+message KubernetesStatefulSetVolumeClaimTemplate {
+  // The name of the volume claim template.
+  // This name is used to reference the volume in container volume mounts.
+  string name = 1 [(buf.validate.field).required = true];
+
+  // The storage class to use for the PVC.
+  // If not specified, the default storage class is used.
+  string storage_class = 2;
+
+  // The requested storage size (e.g., "10Gi", "100Gi").
+  string size = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "spec.volume_claim_templates.size"
+      message: "Size must be a valid Kubernetes quantity (e.g., 10Gi, 100Mi)"
+      expression: "this.matches('^[0-9]+[EPTGMK]i?$')"
+    }
+  ];
+
+  // Access modes for the PVC.
+  // Common values: "ReadWriteOnce", "ReadOnlyMany", "ReadWriteMany", "ReadWriteOncePod"
+  // Default: ["ReadWriteOnce"]
+  repeated string access_modes = 4 [(buf.validate.field).cel = {
+    id: "spec.volume_claim_templates.access_modes"
+    message: 'Access modes must be one of "ReadWriteOnce", "ReadOnlyMany", "ReadWriteMany", or "ReadWriteOncePod"'
+    expression: 'size(this) == 0 || this.all(m, m in ["ReadWriteOnce", "ReadOnlyMany", "ReadWriteMany", "ReadWriteOncePod"])'
+  }];
+}

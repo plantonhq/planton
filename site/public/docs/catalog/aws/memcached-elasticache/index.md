@@ -12,7 +12,7 @@ Deploys a fully managed AWS ElastiCache cluster running the Memcached engine wit
 
 ## What Gets Created
 
-When you deploy an AwsMemcachedElasticache resource, OpenMCF provisions:
+When you deploy an AwsMemcachedElasticache resource, Planton provisions:
 
 - **ElastiCache Memcached Cluster** — an `aws_elasticache_cluster` with the `memcached` engine, placed in the specified subnets with attached security groups
 - **Subnet Group** — created automatically when `subnetIds` are provided, grouping the subnets for cluster node placement
@@ -20,7 +20,7 @@ When you deploy an AwsMemcachedElasticache resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **A VPC with private subnets** for cluster node placement (subnets in at least two AZs when using `cross-az` mode)
 - **A security group** allowing inbound traffic on the Memcached port (default 11211) — since Memcached has no authentication, security groups are the primary access control mechanism
 
@@ -29,15 +29,15 @@ When you deploy an AwsMemcachedElasticache resource, OpenMCF provisions:
 Create a file `memcached.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsMemcachedElasticache
 metadata:
   name: my-cache
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsMemcachedElasticache.my-cache
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsMemcachedElasticache.my-cache
 spec:
   region: us-west-2
   engineVersion: "1.6.22"
@@ -53,7 +53,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f memcached.yaml
+planton apply -f memcached.yaml
 ```
 
 This creates a single-node Memcached cluster on port 11211 in the specified subnets.
@@ -94,15 +94,15 @@ This creates a single-node Memcached cluster on port 11211 in the specified subn
 A production cache spread across Availability Zones for resilience:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsMemcachedElasticache
 metadata:
   name: prod-cache
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsMemcachedElasticache.prod-cache
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsMemcachedElasticache.prod-cache
 spec:
   region: us-east-1
   engineVersion: "1.6.22"
@@ -129,15 +129,15 @@ spec:
 A cluster with custom Memcached engine parameters and SNS notifications:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsMemcachedElasticache
 metadata:
   name: tuned-cache
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.AwsMemcachedElasticache.tuned-cache
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.AwsMemcachedElasticache.tuned-cache
 spec:
   region: us-west-2
   engineVersion: "1.6.22"
@@ -163,18 +163,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding IDs:
+Reference other Planton-managed resources instead of hardcoding IDs:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsMemcachedElasticache
 metadata:
   name: ref-cache
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsMemcachedElasticache.ref-cache
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsMemcachedElasticache.ref-cache
 spec:
   region: us-west-2
   engineVersion: "1.6.22"

@@ -1,7 +1,0 @@
-apiVersion: hetzner-cloud.openmcf.org/v1
-kind: HetznerCloudFloatingIp
-metadata:
-  name: my-floating-ip
-spec:
-  type: ipv4
-  homeLocation: fsn1

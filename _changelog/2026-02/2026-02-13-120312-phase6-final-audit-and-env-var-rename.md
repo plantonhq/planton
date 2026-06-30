@@ -6,11 +6,11 @@
 
 ## Summary
 
-Completed the final audit phase of the OpenMCF documentation feature parity project. Renamed all `PROJECT_PLANTON_*` environment variables to `OPENMCF_*` across the entire codebase (Go source, internal docs, changelogs, and public docs), fixing the last Planton naming remnants. Fixed critical manifest errors in `getting-started.md`, corrected the wrong `RedisKubernetes` kind name in `index.md`, and performed a systematic 40-page cross-reference and consistency audit.
+Completed the final audit phase of the Planton documentation feature parity project. Renamed all `PROJECT_PLANTON_*` environment variables to `PLANTON_*` across the entire codebase (Go source, internal docs, changelogs, and public docs), fixing the last Planton naming remnants. Fixed critical manifest errors in `getting-started.md`, corrected the wrong `RedisKubernetes` kind name in `index.md`, and performed a systematic 40-page cross-reference and consistency audit.
 
 ## Problem Statement / Motivation
 
-The OpenMCF documentation had accumulated several issues across the 5 previous phases of the docs feature parity project:
+The Planton documentation had accumulated several issues across the 5 previous phases of the docs feature parity project:
 
 ### Pain Points
 
@@ -24,16 +24,16 @@ The OpenMCF documentation had accumulated several issues across the 5 previous p
 
 ### Environment Variable Rename
 
-All `PROJECT_PLANTON_*` environment variables renamed to `OPENMCF_*`:
+All `PROJECT_PLANTON_*` environment variables renamed to `PLANTON_*`:
 
 | Old Name | New Name |
 |----------|----------|
-| `PROJECT_PLANTON_BACKEND_TYPE` | `OPENMCF_BACKEND_TYPE` |
-| `PROJECT_PLANTON_BACKEND_BUCKET` | `OPENMCF_BACKEND_BUCKET` |
-| `PROJECT_PLANTON_BACKEND_REGION` | `OPENMCF_BACKEND_REGION` |
-| `PROJECT_PLANTON_BACKEND_ENDPOINT` | `OPENMCF_BACKEND_ENDPOINT` |
-| `PROJECT_PLANTON_GIT_REPO` | `OPENMCF_GIT_REPO` |
-| `PROJECT_PLANTON_MANIFEST` | `OPENMCF_MANIFEST` |
+| `PROJECT_PLANTON_BACKEND_TYPE` | `PLANTON_BACKEND_TYPE` |
+| `PROJECT_PLANTON_BACKEND_BUCKET` | `PLANTON_BACKEND_BUCKET` |
+| `PROJECT_PLANTON_BACKEND_REGION` | `PLANTON_BACKEND_REGION` |
+| `PROJECT_PLANTON_BACKEND_ENDPOINT` | `PLANTON_BACKEND_ENDPOINT` |
+| `PROJECT_PLANTON_GIT_REPO` | `PLANTON_GIT_REPO` |
+| `PROJECT_PLANTON_MANIFEST` | `PLANTON_MANIFEST` |
 
 ### Documentation Fixes
 
@@ -82,16 +82,16 @@ All `PROJECT_PLANTON_*` environment variables renamed to `OPENMCF_*`:
 ## Benefits
 
 - New users following `getting-started.md` will no longer hit validation errors
-- Environment variables now consistently branded as `OPENMCF_*`
+- Environment variables now consistently branded as `PLANTON_*`
 - Zero `PROJECT_PLANTON` remnants anywhere in the codebase
 - All 40 documentation pages cross-referenced and consistent
 - Troubleshooting guide now discoverable from landing page and getting-started guide
 
 ## Impact
 
-- **CLI Users**: Environment variable names changed from `PROJECT_PLANTON_BACKEND_*` to `OPENMCF_BACKEND_*`. Users with existing CI/CD pipelines using the old names will need to update.
+- **CLI Users**: Environment variable names changed from `PROJECT_PLANTON_BACKEND_*` to `PLANTON_BACKEND_*`. Users with existing CI/CD pipelines using the old names will need to update.
 - **Documentation Readers**: Getting-started guide now produces working deployments on first try. All section navigation complete.
-- **Contributors**: Internal READMEs and architecture docs now use consistent `OPENMCF_*` naming.
+- **Contributors**: Internal READMEs and architecture docs now use consistent `PLANTON_*` naming.
 
 ## Related Work
 

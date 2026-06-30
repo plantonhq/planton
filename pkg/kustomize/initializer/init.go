@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/pkg/kustomize/schema"
+	"github.com/plantonhq/planton/pkg/kustomize/schema"
 )
 
 const openapiBlock = "\nopenapi:\n  path: ../../" + schema.SchemaFileName + "\n"
@@ -21,7 +21,7 @@ type InitResult struct {
 	OverlaysUpdated []string
 }
 
-// InitDir generates the universal OpenMCF kustomize schema and wires it into
+// InitDir generates the universal Planton kustomize schema and wires it into
 // the given _kustomize directory. It writes the schema file at the directory
 // root and adds the openapi: reference to every overlay kustomization.yaml.
 func InitDir(kustomizeDir string) (*InitResult, error) {

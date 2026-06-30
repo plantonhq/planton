@@ -1,0 +1,24 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesManifest
+metadata:
+  name: test-manifest
+spec:
+  namespace: test-namespace
+  create_namespace: true
+  manifest_yaml: |
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: test-config
+    data:
+      environment: test
+      log_level: debug
+    ---
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: test-secret
+    type: Opaque
+    stringData:
+      api-key: test-api-key-value
+

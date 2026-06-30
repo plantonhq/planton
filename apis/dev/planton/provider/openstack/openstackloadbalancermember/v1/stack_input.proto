@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package dev.planton.provider.openstack.openstackloadbalancermember.v1;
+
+import "dev/planton/provider/openstack/openstackloadbalancermember/v1/api.proto";
+import "dev/planton/provider/openstack/provider.proto";
+
+// OpenStackLoadBalancerMemberStackInput is the input to the IaC module.
+// It contains the target resource and provider configuration.
+message OpenStackLoadBalancerMemberStackInput {
+  // target cloud-resource to be deployed
+  OpenStackLoadBalancerMember target = 1;
+  // provider-config for OpenStack authentication
+  dev.planton.provider.openstack.OpenStackProviderConfig provider_config = 2;
+}

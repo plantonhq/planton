@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider._test;
+
+import "buf/validate/validate.proto";
+
+//TestProviderConfig used for setting up test provider
+message TestProviderConfig {
+  //username
+  string username = 1 [(buf.validate.field).required = true];
+
+  //password
+  string password = 2 [(buf.validate.field).required = true];
+}

@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure;
+
+import "buf/validate/validate.proto";
+
+// AzureProviderConfig message represents the specification required to connect an Azure account.
+// This message consolidates all necessary input parameters to establish a connection with an Azure account,
+// ensuring accurate configuration and validation of credentials.
+// Fields include client ID, client secret, tenant ID, and subscription ID, providing a complete set of information
+// for securely connecting to Azure.
+message AzureProviderConfig {
+  // The Azure Client ID, which is used to identify the application making requests to Azure services.
+  // This is a required field, and it must be a valid non-empty string.
+  string client_id = 1 [(buf.validate.field).required = true];
+
+  // The Azure Client Secret, which is used to authenticate the application with Azure services.
+  // This is a required field, and it must be a valid non-empty string.
+  string client_secret = 2 [(buf.validate.field).required = true];
+
+  // The Azure Tenant ID, which uniquely identifies the Azure Active Directory (AAD) tenant.
+  // This is a required field, and it must be a valid non-empty string.
+  string tenant_id = 3 [(buf.validate.field).required = true];
+
+  // The Azure Subscription ID, which uniquely identifies the Azure subscription.
+  // This is a required field, and it must be a valid non-empty string.
+  string subscription_id = 4 [(buf.validate.field).required = true];
+}

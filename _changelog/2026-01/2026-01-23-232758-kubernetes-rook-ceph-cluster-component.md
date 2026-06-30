@@ -14,7 +14,7 @@ Kubernetes workloads often require persistent storage, but deploying a full-feat
 
 ### Pain Points
 
-- No declarative way to deploy Ceph clusters on Kubernetes via OpenMCF
+- No declarative way to deploy Ceph clusters on Kubernetes via Planton
 - Manual Helm chart configuration is verbose and error-prone
 - No unified interface for configuring block, file, and object storage
 - Missing validation for common misconfigurations
@@ -22,7 +22,7 @@ Kubernetes workloads often require persistent storage, but deploying a full-feat
 
 ## Solution / What's New
 
-A complete deployment component following the OpenMCF KRM (Kubernetes Resource Model) pattern:
+A complete deployment component following the Planton KRM (Kubernetes Resource Model) pattern:
 
 ```mermaid
 flowchart TB
@@ -30,7 +30,7 @@ flowchart TB
         A[KubernetesRookCephCluster YAML]
     end
     
-    subgraph "OpenMCF CLI"
+    subgraph "Planton CLI"
         B[Manifest Parsing]
         C[Validation]
         D[Pulumi/Terraform]
@@ -123,7 +123,7 @@ message KubernetesRookCephClusterSpec {
 ```mermaid
 sequenceDiagram
     participant User
-    participant CLI as OpenMCF CLI
+    participant CLI as Planton CLI
     participant Pulumi
     participant Helm
     participant Rook as Rook Operator
@@ -165,7 +165,7 @@ sequenceDiagram
 ### Users Affected
 - Platform engineers deploying storage on Kubernetes
 - DevOps teams managing stateful workloads
-- Organizations using OpenMCF for infrastructure
+- Organizations using Planton for infrastructure
 
 ### Integration Points
 - Requires `KubernetesRookCephOperator` deployed first
@@ -181,7 +181,7 @@ sequenceDiagram
 ## Files Created
 
 ```
-apis/org/openmcf/provider/kubernetes/kubernetesrookcephcluster/v1/
+apis/dev/planton/provider/kubernetes/kubernetesrookcephcluster/v1/
 ├── api.proto
 ├── spec.proto
 ├── spec_test.go (29 tests)

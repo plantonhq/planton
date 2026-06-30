@@ -1,0 +1,48 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsCodePipeline
+metadata:
+  name: test-pipeline
+  id: test-pipeline
+  org: test-org
+  env: dev
+  labels:
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: test
+    pulumi.planton.dev/project: test
+    pulumi.planton.dev/stack.name: dev.AwsCodePipeline.test-pipeline
+spec:
+  region: us-west-2
+  pipelineType: V2
+  executionMode: SUPERSEDED
+  roleArn:
+    value: arn:aws:iam::123456789012:role/codepipeline-role
+  artifactStores:
+    - location:
+        value: my-artifact-bucket
+  stages:
+    - name: Source
+      actions:
+        - name: SourceAction
+          category: Source
+          owner: AWS
+          provider: CodeStarSourceConnection
+          version: "1"
+          outputArtifacts:
+            - SourceOutput
+          configuration:
+            ConnectionArn: arn:aws:codestar-connections:us-east-1:123456789012:connection/abc
+            FullRepositoryId: my-org/my-repo
+            BranchName: main
+    - name: Build
+      actions:
+        - name: BuildAction
+          category: Build
+          owner: AWS
+          provider: CodeBuild
+          version: "1"
+          inputArtifacts:
+            - SourceOutput
+          outputArtifacts:
+            - BuildOutput
+          configuration:
+            ProjectName: my-build-project

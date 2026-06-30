@@ -1,0 +1,3 @@
+name: aws-http-api-gateway
+runtime: go
+description: Deploy an AWS API Gateway HTTP API using Planton

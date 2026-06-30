@@ -1,0 +1,20 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: Neo4jKubernetes
+metadata:
+  name: first-neo4j
+spec:
+  container:
+    resources:
+      requests:
+        cpu: "50m"
+        memory: "100Mi"
+      limits:
+        cpu: "1000m"
+        memory: "1Gi"
+    persistenceEnabled: true
+    diskSize: "1Gi"
+  memoryConfig:
+    heapMax: "512m"
+    pageCache: "256m"
+  ingress:
+    enabled: false

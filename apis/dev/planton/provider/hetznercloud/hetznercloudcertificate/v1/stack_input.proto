@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.hetznercloud.hetznercloudcertificate.v1;
+
+import "dev/planton/provider/hetznercloud/hetznercloudcertificate/v1/api.proto";
+import "dev/planton/provider/hetznercloud/provider.proto";
+
+//hetznercloud-certificate stack-input
+message HetznerCloudCertificateStackInput {
+  //target cloud-resource
+  HetznerCloudCertificate target = 1;
+  //provider-config
+  dev.planton.provider.hetznercloud.HetznerCloudProviderConfig provider_config = 2;
+}

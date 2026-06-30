@@ -21,9 +21,9 @@ package secretcoverage
 import (
 	"sort"
 
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/options"
-	"github.com/plantonhq/openmcf/pkg/crkreflect"
+	"github.com/plantonhq/planton/apis/dev/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/apis/dev/planton/shared/options"
+	"github.com/plantonhq/planton/pkg/crkreflect"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
@@ -31,7 +31,7 @@ import (
 // StringValueOrRef is a secret-bearing leaf, not a message to recurse into: the
 // `sensitive` annotation lives on the outer field and only its literal `value` can
 // hold a secret (a `value_from` is a cross-resource reference owned by FK resolution).
-const stringValueOrRefFullName = "org.openmcf.shared.foreignkey.v1.StringValueOrRef"
+const stringValueOrRefFullName = "dev.planton.shared.foreignkey.v1.StringValueOrRef"
 
 // Classification is the secret-coverage verdict for a single string-bearing field.
 type Classification string

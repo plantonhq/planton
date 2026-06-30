@@ -18,7 +18,7 @@ go_library(
         "solrPrometheusExporterList.go",
         "solrPrometheusExporterPatch.go",
     ],
-    importpath = "github.com/plantonhq/openmcf/pkg/kubernetes/kubernetestypes/solroperator/kubernetes/solr/v1beta1",
+    importpath = "github.com/plantonhq/planton/pkg/kubernetes/kubernetestypes/solroperator/kubernetes/solr/v1beta1",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_blang_semver//:semver",

@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocirediscluster.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/oci/ocirediscluster/v1/spec.proto";
+import "dev/planton/provider/oci/ocirediscluster/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// OciRedisCluster is the top-level resource representing an OCI Cache
+// (Redis) cluster -- a fully managed, Redis-compatible in-memory caching
+// service supporting sharded and non-sharded topologies.
+message OciRedisCluster {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'oci.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OciRedisCluster'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OciRedisClusterSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OciRedisClusterStatus status = 5;
+}
+
+// OciRedisClusterStatus holds the outputs produced by deploying an
+// OciRedisCluster.
+message OciRedisClusterStatus {
+  // stack-outputs
+  OciRedisClusterStackOutputs outputs = 1;
+}

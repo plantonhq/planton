@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsiamuser.v1;
+
+import "buf/validate/validate.proto";
+import "google/protobuf/struct.proto";
+
+// AwsIamUserSpec defines the configuration for a long-lived AWS IAM user (for CI/CD use).
+message AwsIamUserSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  // user_name is the IAM user name. Must be 1-64 characters and match the regex
+  // pattern "^[a-zA-Z0-9+=,.@_-]{1,64}$" (letters, digits, and +=,.@_-).
+  string user_name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-zA-Z0-9+=,.@_-]{1,64}$"
+  ];
+
+  // managed_policy_arns is a list of IAM managed policy ARNs to attach to the user.
+  // Each ARN must start with "arn:aws:iam::". The list must be unique.
+  repeated string managed_policy_arns = 3 [(buf.validate.field).repeated = {
+    unique: true
+    items: {
+      string: {pattern: "^arn:aws:iam::"}
+    }
+  }];
+
+  // inline_policies is a map of inline policy documents to attach to the user.
+  // Keys are policy names (max 128 characters); values are the IAM policy JSON (as a Struct).
+  map<string, google.protobuf.Struct> inline_policies = 4 [(buf.validate.field).map.keys = {
+    string: {max_len: 128}
+  }];
+
+  // disable_access_keys, if true, prevents creation of access keys for this user.
+  // If false (default), one active access key will be created for the user.
+  bool disable_access_keys = 5;
+}

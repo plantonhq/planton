@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsecrrepo.v1;
+
+// aws-ecr-repo stack outputs
+message AwsEcrRepoStackOutputs {
+  // The repository name, matching spec.repository_name
+  string repository_name = 1;
+
+  // The repository URL, e.g. "123456789012.dkr.ecr.us-east-1.amazonaws.com/my-repo"
+  string repository_url = 2;
+
+  // The repository ARN, e.g. "arn:aws:ecr:us-east-1:123456789012:repository/my-repo"
+  string repository_arn = 3;
+
+  // The registry ID associated with this repository (i.e., the AWS Account ID)
+  string registry_id = 4;
+}

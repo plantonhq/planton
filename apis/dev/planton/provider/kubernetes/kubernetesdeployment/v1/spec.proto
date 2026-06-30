@@ -1,0 +1,367 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesdeployment.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/container_env.proto";
+import "dev/planton/provider/kubernetes/kubernetes.proto";
+import "dev/planton/provider/kubernetes/options.proto";
+import "dev/planton/provider/kubernetes/probe.proto";
+import "dev/planton/provider/kubernetes/target_cluster.proto";
+import "dev/planton/provider/kubernetes/volume_mount.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+/**
+ * **KubernetesDeploymentSpec** defines the configuration for deploying a microservice on a Kubernetes cluster.
+ * This message includes specifications for the microservice version, container configurations, ingress settings,
+ * and availability options for zero-downtime deployments.
+ */
+message KubernetesDeploymentSpec {
+  // Target Kubernetes Cluster
+  dev.planton.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  // Kubernetes Namespace
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // flag to indicate if the namespace should be created
+  bool create_namespace = 3;
+
+  //The version of the microservice being deployed.
+  //This is usually either "main" (the default git branch name) or "review-<id>" where <id> is the merge request number.
+  //It must be between 1 and 30 characters and can only contain lowercase letters, numbers, and hyphens.
+  string version = 4 [
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 30,
+    (buf.validate.field).cel = {
+      id: "spec.version.chars"
+      message: "Only lowercase letters, numbers, and hyphens are allowed"
+      // https://regex101.com/r/NKTohE/1
+      expression: "this.matches('^[a-z0-9-]+$')"
+    },
+    (buf.validate.field).cel = {
+      id: "spec.version.no-hyphen-ending"
+      message: "Must not end with a hyphen"
+      // https://regex101.com/r/reQjcB/1
+      expression: "this.matches('[^-]$')"
+    }
+  ];
+
+  // The container specifications for the microservice deployment.
+  //This includes configurations for the main application container and any sidecar containers.
+  KubernetesDeploymentContainer container = 5 [(buf.validate.field).required = true];
+
+  //The ingress configuration for the microservice.
+  //This defines how the microservice can be accessed externally.
+  KubernetesDeploymentIngress ingress = 6;
+
+  //The availability configuration for the microservice.
+  //This includes settings for replicas, autoscaling, deployment strategy, and pod disruption budgets.
+  KubernetesDeploymentAvailability availability = 7;
+
+  /**
+   * ConfigMaps to create alongside the deployment.
+   * Key is the ConfigMap name, value is the content.
+   * For multi-key ConfigMaps, use YAML format in the value.
+   * These ConfigMaps can be referenced in volume mounts.
+   *
+   * Example:
+   *   config_maps:
+   *     app-config: |
+   *       key1: value1
+   *       key2: value2
+   *     nginx-conf: |
+   *       server {
+   *         listen 80;
+   *       }
+   */
+  map<string, string> config_maps = 8;
+}
+
+/**
+ * KubernetesDeploymentIngress defines ingress configuration for the deployment.
+ */
+message KubernetesDeploymentIngress {
+  // Flag to enable or disable ingress.
+  bool enabled = 1;
+
+  // The full hostname for external access (e.g., "myapp.example.com").
+  // Required when enabled is true.
+  string hostname = 2;
+
+  option (buf.validate.message).cel = {
+    id: "spec.ingress.hostname.required"
+    expression: "!this.enabled || size(this.hostname) > 0"
+    message: "hostname is required when ingress is enabled"
+  };
+}
+
+/**
+ * **KubernetesDeploymentContainer** specifies the container configuration for the microservice.
+ * It includes the main application container and any sidecar containers that need to run alongside it.
+ */
+message KubernetesDeploymentContainer {
+  // The main application container specifications.
+  KubernetesDeploymentContainerApp app = 1 [(buf.validate.field).required = true];
+
+  //A list of sidecar containers to be deployed alongside the main application container.
+  repeated dev.planton.provider.kubernetes.Container sidecars = 2;
+}
+
+/**
+ * **KubernetesDeploymentContainerApp** specifies the configuration for the main application container.
+ * It includes the container image, resource allocations, environment variables, ports, and health probes.
+ */
+message KubernetesDeploymentContainerApp {
+  /**
+   * The container image to be used for the application.
+   * This value is computed during creation but can be updated.
+   * It is derived by combining the Docker repository of the artifact store configured for the environment and the code project path.
+   * The `pull_secret_name` is the name of the image pull secret to be configured in the Kubernetes Deployment resource.
+   * It is determined by looking up the `container_image_artifact_store_id` from the environment where the microservice is deployed.
+   */
+  dev.planton.provider.kubernetes.ContainerImage image = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "spec.container.app.image.repo"
+      message: "Image repo is required"
+      expression: "has(this.repo) && this.repo != ''"
+    },
+    (buf.validate.field).cel = {
+      id: "spec.container.app.image.tag"
+      message: "Image tag is required"
+      expression: "has(this.tag) && this.tag != ''"
+    }
+  ];
+
+  // The CPU and memory resources allocated to the application container.
+  dev.planton.provider.kubernetes.ContainerResources resources = 2 [(dev.planton.provider.kubernetes.default_container_resources) = {
+    limits: {
+      cpu: "1000m"
+      memory: "1Gi"
+    }
+    requests: {
+      cpu: "50m"
+      memory: "100Mi"
+    }
+  }];
+
+  /**
+   * The environment variables and secrets for the application container.
+   */
+  dev.planton.provider.kubernetes.ContainerEnv env = 3;
+
+  /**
+   * A list of ports to be configured for the application container.
+   */
+  repeated KubernetesDeploymentContainerAppPort ports = 4;
+
+  /**
+   * Liveness probe configuration.
+   * Periodic probe of container liveness. Container will be restarted if the probe fails.
+   * This helps detect and recover from deadlocks or unresponsive applications.
+   * Reference: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
+   */
+  dev.planton.provider.kubernetes.Probe liveness_probe = 5;
+
+  /**
+   * Readiness probe configuration.
+   * Periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails.
+   * This ensures traffic is only routed to pods that are ready to handle requests.
+   * Essential for zero-downtime deployments.
+   * Reference: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
+   */
+  dev.planton.provider.kubernetes.Probe readiness_probe = 6;
+
+  /**
+   * Startup probe configuration.
+   * Indicates whether the application within the container is started.
+   * All other probes are disabled if a startup probe is provided, until it succeeds.
+   * Useful for slow-starting containers to avoid them getting killed by liveness probes before they are up.
+   * Reference: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
+   */
+  dev.planton.provider.kubernetes.Probe startup_probe = 7;
+
+  /**
+   * Volume mounts for the application container.
+   * Supports mounting ConfigMaps, Secrets, HostPaths, EmptyDirs, and PVCs.
+   * ConfigMaps defined in spec.config_maps can be referenced here.
+   *
+   * Example:
+   *   volume_mounts:
+   *     - name: config-volume
+   *       mount_path: /etc/app/config.yaml
+   *       config_map:
+   *         name: app-config
+   *         key: app-config
+   */
+  repeated dev.planton.provider.kubernetes.VolumeMount volume_mounts = 8;
+
+  /**
+   * Command to run in the container (overrides the container image's ENTRYPOINT).
+   * Example: ["/bin/sh", "-c"]
+   */
+  repeated string command = 9;
+
+  /**
+   * Arguments to pass to the command (overrides the container image's CMD).
+   * Example: ["echo hello"]
+   */
+  repeated string args = 10;
+}
+
+/**
+ * **KubernetesDeploymentContainerAppPort** specifies the port configuration for the application container.
+ * It includes details such as the port name, container port, network protocol, application protocol, and service port.
+ */
+message KubernetesDeploymentContainerAppPort {
+  //The name of the port (e.g., "http", "grpc").
+  //The name must only contain lowercase alphanumeric characters and hyphens.
+  //Port names must also start and end with an alphanumeric character.
+  //For example, "123-abc" and "web" are valid, but "123_abc" and "-web" are not.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "spec.container.app.ports.name"
+      message: "Name for ports must only contain lowercase alphanumeric characters and hyphens. Port names must also start and end with an alphanumeric character. For example, '123-abc' and 'web' are valid, but '123_abc' and '-web' are not."
+      // https://regex101.com/r/dugcdl/1
+      expression: "this.matches('^[a-z0-9][a-z0-9-]*[a-z0-9]$')"
+    }
+  ];
+
+  // The port number on the container.
+  int32 container_port = 2 [(buf.validate.field).required = true];
+
+  //The network protocol used by the port (e.g., "TCP", "UDP", "SCTP").
+  //Must be one of "TCP", "UDP", or "SCTP".
+  string network_protocol = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "spec.container.app.ports.network_protocol"
+      message: 'The network protocol must be one of "SCTP", "TCP", or "UDP".'
+      expression: 'this in ["SCTP", "TCP", "UDP"]'
+    }
+  ];
+
+  //The application protocol for the microservice (e.g., "http").
+  //This field is used for setting up the name of the service port in Kubernetes.
+  //It is used during microservice deployment and is relevant for deployment and stateful set pod managers.
+  //Refer to: https://kubernetes.io/docs/concepts/services-networking/service/#application-protocol
+  string app_protocol = 4 [(buf.validate.field).required = true];
+
+  // The port number on the Kubernetes service.
+  int32 service_port = 5 [(buf.validate.field).required = true];
+
+  //A flag indicating whether this port should be exposed via ingress.
+  bool is_ingress_port = 6;
+}
+
+/**
+ * **KubernetesDeploymentAvailability** specifies the availability configuration for the microservice.
+ * Groups all settings related to high availability: replicas, autoscaling, deployment strategy, and disruption budgets.
+ * Proper configuration of these fields enables zero-downtime deployments and resilient operations.
+ */
+message KubernetesDeploymentAvailability {
+  //The minimum number of pod replicas to maintain.
+  int32 min_replicas = 1;
+
+  //The configuration for horizontal pod autoscaling.
+  KubernetesDeploymentAvailabilityHpa horizontal_pod_autoscaling = 2;
+
+  // Deployment strategy configuration for rolling updates.
+  // Controls how pod updates are rolled out to achieve zero-downtime deployments.
+  // If not specified, uses Kubernetes default (maxUnavailable: 25%, maxSurge: 25%).
+  KubernetesDeploymentDeploymentStrategy deployment_strategy = 3;
+
+  // Pod disruption budget configuration.
+  // Ensures minimum availability during voluntary disruptions (node maintenance, cluster upgrades).
+  // Helps prevent service outages during infrastructure operations.
+  KubernetesDeploymentPodDisruptionBudget pod_disruption_budget = 4;
+}
+
+/**
+ * **KubernetesDeploymentAvailabilityHpa** specifies the horizontal pod autoscaling configuration.
+ * It includes settings to enable autoscaling based on CPU and memory utilization.
+ */
+message KubernetesDeploymentAvailabilityHpa {
+  //A flag to enable or disable horizontal pod autoscaling.
+  bool is_enabled = 1;
+
+  //The target CPU utilization percentage to trigger autoscaling (e.g., 60.0).
+  double target_cpu_utilization_percent = 2;
+
+  //The target memory utilization to trigger autoscaling (e.g., "1Gi").
+  string target_memory_utilization = 3;
+}
+
+/**
+ * **KubernetesDeploymentDeploymentStrategy** defines the deployment strategy for rolling updates.
+ * This controls how Kubernetes replaces old pods with new ones during updates.
+ * Proper configuration enables zero-downtime deployments.
+ * Reference: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+ */
+message KubernetesDeploymentDeploymentStrategy {
+  /**
+   * The maximum number of pods that can be unavailable during the update.
+   * Can be an absolute number (e.g., 0) or a percentage of desired pods (e.g., "25%").
+   *
+   * For zero-downtime deployments, set to 0 or "0%".
+   * This ensures at least the desired number of pods are always available.
+   *
+   * Defaults to 25% if not specified.
+   * Cannot be 0 if max_surge is also 0.
+   */
+  string max_unavailable = 1;
+
+  /**
+   * The maximum number of pods that can be created above the desired number of pods.
+   * Can be an absolute number (e.g., 1) or a percentage of desired pods (e.g., "25%").
+   *
+   * For zero-downtime deployments with max_unavailable=0, set to at least 1 or "100%".
+   * This allows new pods to be created before old ones are terminated.
+   *
+   * Defaults to 25% if not specified.
+   * Cannot be 0 if max_unavailable is also 0.
+   */
+  string max_surge = 2;
+}
+
+/**
+ * **KubernetesDeploymentPodDisruptionBudget** configures a PodDisruptionBudget (PDB) to ensure
+ * minimum availability during voluntary disruptions like node maintenance or cluster upgrades.
+ * Reference: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+ */
+message KubernetesDeploymentPodDisruptionBudget {
+  /**
+   * Enable or disable PodDisruptionBudget creation.
+   * When disabled, no PDB is created and the cluster can evict pods freely.
+   * When enabled, the cluster must respect the min_available constraint.
+   */
+  bool enabled = 1;
+
+  /**
+   * Minimum number of pods that must be available during voluntary disruptions.
+   * Can be an absolute number (e.g., 1) or a percentage (e.g., "50%").
+   *
+   * For high availability, typically set to:
+   * - 1 for single-replica services (ensures at least one pod always available)
+   * - N-1 for N-replica services (allows one pod to be disrupted at a time)
+   * - A percentage like "50%" for large replica counts
+   *
+   * Cannot be used together with max_unavailable.
+   * If both min_available and max_unavailable are not set, defaults to 1.
+   */
+  string min_available = 2;
+
+  /**
+   * Maximum number of pods that can be unavailable during voluntary disruptions.
+   * Can be an absolute number (e.g., 1) or a percentage (e.g., "50%").
+   *
+   * This is an alternative to min_available.
+   * Cannot be used together with min_available.
+   */
+  string max_unavailable = 3;
+}

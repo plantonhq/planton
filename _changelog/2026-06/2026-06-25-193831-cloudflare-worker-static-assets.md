@@ -27,7 +27,7 @@ now recommends for new projects over classic Pages.
 
 ### Pain Points
 
-- No first-class way to host a static site / SPA on Cloudflare via OpenMCF.
+- No first-class way to host a static site / SPA on Cloudflare via Planton.
 - Full-stack apps (static front end + Worker API) could not be expressed.
 - The spec required a script source, so "assets only" was impossible.
 
@@ -91,7 +91,7 @@ tofu↔pulumi parity; no `PARITY-EXCEPTION`.
 - `make protos`; `go test ./apis/.../cloudflareworker/v1/` (new cases:
   assets-only, full-stack, run_worker_first switch/rules, invalid enums,
   exclusivity, missing directory).
-- `openmcf secret-coverage --check` (green; assets carries no secrets).
+- `planton secret-coverage --check` (green; assets carries no secrets).
 - Repo-wide `go build ./...`; `go test ./pkg/outputs/...` (outputs unchanged).
 - `tofu validate` against the real v5 provider; Pulumi entrypoint builds.
 - **Live `tofu apply`/`destroy`** of a pure static-assets Worker on a real
@@ -106,7 +106,7 @@ tofu↔pulumi parity; no `PARITY-EXCEPTION`.
 
 ## Impact
 
-OpenMCF users can now deploy static and full-stack Cloudflare sites through
+Planton users can now deploy static and full-stack Cloudflare sites through
 `CloudflareWorker`. No breaking change — `assets` is additive and optional; the
 relaxed source rule only permits previously-invalid (assets-only) specs.
 

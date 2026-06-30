@@ -1,0 +1,7 @@
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudStorageBucket
+metadata:
+  name: alicloudstoragebucket-demo
+spec:
+  region: cn-hangzhou
+  bucketName: alicloudstoragebucket-demo

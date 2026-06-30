@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsneptunecluster.v1;
+
+// AwsNeptuneClusterStackOutputs captures observable identifiers and endpoints
+// from the Neptune cluster deployment.
+message AwsNeptuneClusterStackOutputs {
+  // The primary writer endpoint for the Neptune cluster.
+  // Applications send Gremlin/SPARQL queries to this endpoint for read-write operations.
+  string cluster_endpoint = 1;
+
+  // The reader endpoint for load-balanced read traffic across replica instances.
+  // Distributes read-only queries across all available replicas.
+  string cluster_reader_endpoint = 2;
+
+  // The AWS identifier of the Neptune cluster.
+  string cluster_id = 3;
+
+  // The Amazon Resource Name (ARN) of the Neptune cluster.
+  string cluster_arn = 4;
+
+  // The internal AWS resource identifier for the Neptune cluster.
+  string cluster_resource_id = 5;
+
+  // The port on which the Neptune cluster accepts connections.
+  int32 cluster_port = 6;
+
+  // The name of the Neptune subnet group associated with the cluster
+  // (only populated when the module creates the subnet group).
+  string db_subnet_group_name = 7;
+
+  // The security group ID associated with the cluster
+  // (only populated when the module creates the security group).
+  string security_group_id = 8;
+
+  // The cluster parameter group name in use by the cluster
+  // (only populated when the module creates the parameter group).
+  string cluster_parameter_group_name = 9;
+
+  // The Route 53 hosted zone ID for the cluster endpoint.
+  // Useful for creating CNAME or alias records.
+  string hosted_zone_id = 10;
+}

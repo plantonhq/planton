@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcpcloudschedulerjob.v1;
+
+import "dev/planton/provider/gcp/gcpcloudschedulerjob/v1/api.proto";
+import "dev/planton/provider/gcp/provider.proto";
+
+message GcpCloudSchedulerJobStackInput {
+  GcpCloudSchedulerJob target = 1;
+  dev.planton.provider.gcp.GcpProviderConfig provider_config = 2;
+}

@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package dev.planton.provider.openstack.openstacknetwork.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/options/options.proto";
+
+// OpenStackNetworkSpec defines the configuration for an OpenStack Neutron network.
+//
+// A network is the foundational networking primitive in OpenStack. It represents an
+// isolated Layer 2 broadcast domain. Subnets, ports, routers, and security groups
+// all attach to or reference a network.
+//
+// The network name is derived from metadata.name.
+//
+// Terraform resource: openstack_networking_network_v2
+// Pulumi resource: openstack.networking.Network
+message OpenStackNetworkSpec {
+  // description is a human-readable description of the network.
+  // This is stored on the OpenStack resource and visible in Horizon and API responses.
+  string description = 1;
+
+  // admin_state_up controls the administrative state of the network.
+  // When false, the network is administratively down and will not forward traffic.
+  // Default: true
+  optional bool admin_state_up = 2 [(dev.planton.shared.options.default) = "true"];
+
+  // shared indicates whether this network is shared across all tenants/projects.
+  // Creating shared networks typically requires admin privileges.
+  // Most tenant users should leave this as false (the default).
+  bool shared = 3;
+
+  // external indicates whether this is an external (provider) network.
+  // External networks are used for floating IP allocation and router gateways.
+  // Creating external networks typically requires admin privileges.
+  bool external = 4;
+
+  // mtu is the Maximum Transmission Unit value for the network, in bytes.
+  // Common values: 1500 (standard Ethernet), 1450 (VXLAN overlay), 9000 (jumbo frames).
+  // If omitted or set to 0, OpenStack uses the default MTU for the network type.
+  int32 mtu = 5 [(buf.validate.field).int32.gte = 0];
+
+  // dns_domain is the DNS domain associated with the network.
+  // When set, ports on this network can have DNS names auto-assigned.
+  // Must end with a dot (.) if specified (e.g., "my-network.example.com.").
+  // Requires the dns-integration extension in Neutron.
+  string dns_domain = 6 [(buf.validate.field).string.pattern = "^$|\\.$"];
+
+  // port_security_enabled controls whether port security is enforced on ports
+  // created on this network. When enabled, only traffic matching the port's
+  // security groups and allowed address pairs is permitted.
+  // If omitted, the OpenStack deployment's default is used (typically true).
+  optional bool port_security_enabled = 7;
+
+  // tags are string tags to associate with the network in OpenStack.
+  // Tags are stored on the OpenStack resource and can be used for filtering
+  // and organization in the OpenStack API and Horizon dashboard.
+  repeated string tags = 8 [(buf.validate.field).repeated.unique = true];
+
+  // region overrides the region from the provider config for this network.
+  // If omitted, the region from the OpenStack provider config is used.
+  // Example: "RegionOne"
+  string region = 9;
+}

@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package dev.planton.provider.auth0.auth0resourceserver.v1;
+
+import "dev/planton/provider/auth0/auth0resourceserver/v1/api.proto";
+import "dev/planton/provider/auth0/provider.proto";
+
+// Auth0ResourceServerStackInput is the input message for the Auth0 Resource Server IaC modules.
+// This message aggregates all information needed to deploy an Auth0 Resource Server (API):
+// - The target Auth0ResourceServer resource specification
+// - The Auth0 provider configuration (credentials for API access)
+//
+// The IaC modules (Pulumi and Terraform) receive this as their input and use it
+// to create/update the Auth0 Resource Server via the Auth0 Management API.
+message Auth0ResourceServerStackInput {
+  // target is the Auth0ResourceServer resource to deploy.
+  // Contains the complete specification of the desired API configuration.
+  Auth0ResourceServer target = 1;
+
+  // provider_config contains Auth0 API credentials for authentication.
+  // These credentials are used to authenticate with Auth0's Management API.
+  // The credentials should be from a Machine-to-Machine application with
+  // appropriate permissions (create:resource_servers, update:resource_servers, etc.).
+  dev.planton.provider.auth0.Auth0ProviderConfig provider_config = 2;
+}

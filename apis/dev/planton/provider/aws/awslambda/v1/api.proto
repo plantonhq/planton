@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awslambda.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/aws/awslambda/v1/spec.proto";
+import "dev/planton/provider/aws/awslambda/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// AwsLambda is the API envelope for an AWS Lambda function resource.
+message AwsLambda {
+  // api-version must be set to "aws.planton.dev/v1".
+  string api_version = 1 [(buf.validate.field).string.const = "aws.planton.dev/v1"];
+
+  // resource-kind for this Lambda resource, must be "AwsLambda".
+  string kind = 2 [(buf.validate.field).string.const = "AwsLambda"];
+
+  // metadata captures identifying information (name, org, version, etc.).
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec holds the desired configuration for the Lambda function.
+  AwsLambdaSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status holds runtime or post-deployment information.
+  AwsLambdaStatus status = 5;
+}
+
+// AwsLambdaStatus describes the status fields for an AWS Lambda resource.
+message AwsLambdaStatus {
+  // outputs captures the observable values returned by Pulumi/Terraform after provisioning.
+  AwsLambdaStackOutputs outputs = 1;
+}

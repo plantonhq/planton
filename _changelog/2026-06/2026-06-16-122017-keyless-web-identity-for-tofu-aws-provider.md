@@ -48,9 +48,9 @@ flowchart LR
 
 - **`pkg/iac/provider/aws/awswebidentity/exchange.go`** (new): `ResolveCredentials` (single-hop web identity + chained `AssumeRole`), `Validate`, and an injectable `CredentialResolver` seam for tests. Extracted verbatim from `pulumiawsnativeprovider`, which now imports it.
 - **`pkg/iac/stackinput/providerenvvars/loader.go`**: AWS is dispatched here (not in the generic `loadProviderEnvVars`) so `AWS_REGION` is emitted from `target.spec.region` even when `provider_config` is absent (the standalone-CLI ambient case). A new `Options.ResolveAwsWebIdentity` field (backward-compatible) gates the exchange.
-- **`pkg/iac/stackinput/providerenvvars/aws.go`**: the rewritten `loadAwsEnvVars` — region-always; web-identity → STS exchange → temp creds; static → keys + `AWS_SESSION_TOKEN`; never emits empty credential keys. A bounded `context.Background()` keeps the exchange wholly within openmcf (no public-signature churn that would ripple into the runner).
+- **`pkg/iac/stackinput/providerenvvars/aws.go`**: the rewritten `loadAwsEnvVars` — region-always; web-identity → STS exchange → temp creds; static → keys + `AWS_SESSION_TOKEN`; never emits empty credential keys. A bounded `context.Background()` keeps the exchange wholly within planton (no public-signature churn that would ripple into the runner).
 - **`pkg/iac/tofu/tofumodule/providers.go`**: the tofu/terraform boundary sets `ResolveAwsWebIdentity: true`; the pulumi path calls `GetEnvVarsWithOptions` directly and leaves it false (its in-program builder owns the exchange; resolving here would be a wasteful, shadowed STS call).
-- **All 66 `apis/org/openmcf/provider/aws/*/v1/iac/tf/provider.tf`** converged to the canonical empty block; the dead `provider_config`/credential/region `variable` declarations were pruned from the 17 divergent `variables.tf` files.
+- **All 66 `apis/dev/planton/provider/aws/*/v1/iac/tf/provider.tf`** converged to the canonical empty block; the dead `provider_config`/credential/region `variable` declarations were pruned from the 17 divergent `variables.tf` files.
 
 > Why builder/runtime-side exchange (not an in-HCL `assume_role_with_web_identity` block): the two-hop `cross_account_trust` chain is not cleanly expressible as a single set of provider-block fields or SDK env vars, and the empty-block + injection model keeps all 66 modules uniform. This matches the accepted aws-native approach (forced there by upstream pulumi-aws-native#1042).
 
@@ -73,7 +73,7 @@ Tofu passes the R2 state-backend credentials as `-backend-config` **flags**, not
 ## Impact
 
 - **Tofu AWS modules**: now keyless-capable; static-key and ambient (`runner`) modes are preserved and improved (session token now flows).
-- **No proto, control-plane, or pulumi behavior change.** Pulumi keeps exchanging the inline token in its own builder. The Planton runner needs only a routine `make upgrade-openmcf` to consume this (no runner code change — the public openmcf signatures are unchanged).
+- **No proto, control-plane, or pulumi behavior change.** Pulumi keeps exchanging the inline token in its own builder. The Planton runner needs only a routine `make upgrade-planton` to consume this (no runner code change — the public planton signatures are unchanged).
 - **Provider-resource state**: terraform provider blocks are not state-tracked resources, so converging them cannot replace live infrastructure.
 
 ## Related Work

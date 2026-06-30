@@ -12,7 +12,7 @@ Deploys the Apache Solr Operator on a Kubernetes cluster using its official Helm
 
 ## What Gets Created
 
-When you deploy a KubernetesSolrOperator resource, OpenMCF provisions:
+When you deploy a KubernetesSolrOperator resource, Planton provisions:
 
 - **Namespace** — created only when `createNamespace` is `true`
 - **Solr CRDs** — the full set of Solr Operator Custom Resource Definitions (SolrCloud, SolrBackup, SolrPrometheusExporter) downloaded from the official Apache Solr release artifacts for the specified operator version
@@ -22,7 +22,7 @@ The CRDs are applied before the Helm release to guarantee that the operator cont
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
 - **Network access** from the cluster to `https://solr.apache.org` for downloading CRD manifests and pulling the Helm chart
 
@@ -31,15 +31,15 @@ The CRDs are applied before the Helm release to guarantee that the operator cont
 Create a file `solr-operator.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesSolrOperator
 metadata:
   name: main
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesSolrOperator.main
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesSolrOperator.main
 spec:
   namespace: solr-system
   createNamespace: true
@@ -56,7 +56,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f solr-operator.yaml
+planton apply -f solr-operator.yaml
 ```
 
 This installs the Solr Operator v0.9.1 into the `solr-system` namespace with default resource limits. Once the operator is running, you can create SolrCloud clusters using the [KubernetesSolr](/docs/catalog/kubernetes/solr) component.
@@ -83,7 +83,7 @@ This installs the Solr Operator v0.9.1 into the `solr-system` namespace with def
 | `container.resources.requests.cpu` | `string` | `50m` | Minimum guaranteed CPU for the operator pod. |
 | `container.resources.requests.memory` | `string` | `100Mi` | Minimum guaranteed memory for the operator pod. |
 
-> **Note on `namespace`:** This field supports `valueFrom` for referencing outputs of other OpenMCF resources. When using `valueFrom`, specify the `kind`, `name`, and `field` of the source resource instead of a literal string value.
+> **Note on `namespace`:** This field supports `valueFrom` for referencing outputs of other Planton resources. When using `valueFrom`, specify the `kind`, `name`, and `field` of the source resource instead of a literal string value.
 
 ## Examples
 
@@ -92,15 +92,15 @@ This installs the Solr Operator v0.9.1 into the `solr-system` namespace with def
 A minimal deployment suitable for development clusters where a single Solr Operator instance manages all SolrCloud resources:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesSolrOperator
 metadata:
   name: dev-operator
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesSolrOperator.dev-operator
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesSolrOperator.dev-operator
 spec:
   namespace: solr-system
   createNamespace: true
@@ -120,15 +120,15 @@ spec:
 A production-grade deployment with higher resource limits to handle reconciliation of multiple SolrCloud clusters and frequent status updates:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesSolrOperator
 metadata:
   name: prod-operator
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesSolrOperator.prod-operator
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesSolrOperator.prod-operator
 spec:
   namespace: solr-system
   operatorVersion: "v0.9.1"
@@ -144,18 +144,18 @@ spec:
 
 ### Operator with Foreign Key Namespace Reference
 
-Reference an OpenMCF-managed namespace instead of hardcoding the namespace name:
+Reference an Planton-managed namespace instead of hardcoding the namespace name:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesSolrOperator
 metadata:
   name: search-operator
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesSolrOperator.search-operator
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesSolrOperator.search-operator
 spec:
   namespace:
     valueFrom:

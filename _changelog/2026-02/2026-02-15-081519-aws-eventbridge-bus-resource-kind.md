@@ -10,17 +10,17 @@ Added `AwsEventBridgeBus` (enum 227, R03) as the third new AWS resource kind in 
 
 ## Problem Statement / Motivation
 
-EventBridge is the backbone of event-driven architectures on AWS. Without a custom bus component in OpenMCF, users building event-driven infra charts had to fall back to the default bus or manage custom buses outside the framework, breaking the declarative model.
+EventBridge is the backbone of event-driven architectures on AWS. Without a custom bus component in Planton, users building event-driven infra charts had to fall back to the default bus or manage custom buses outside the framework, breaking the declarative model.
 
 ### Pain Points
 
-- No way to provision isolated event buses through OpenMCF
+- No way to provision isolated event buses through Planton
 - No infra-chart composability for event-driven patterns (EventBridge -> Lambda, SQS, SNS)
 - The default bus is shared across all AWS services, making access control and encryption difficult for application-specific events
 
 ## Solution / What's New
 
-Added a complete `AwsEventBridgeBus` deployment component following the OpenMCF forge workflow.
+Added a complete `AwsEventBridgeBus` deployment component following the Planton forge workflow.
 
 ### Component Overview
 
@@ -65,7 +65,7 @@ flowchart TB
 ### Terraform Module (Core Features)
 
 - Supports: name, event_source_name, tags
-- **Note**: `dead_letter_config`, `log_config`, `description`, and `kms_key_identifier` require AWS provider >= 6.x. The TF module pins to 5.82.0 for consistency with other OpenMCF components. Pulumi module provides full feature support.
+- **Note**: `dead_letter_config`, `log_config`, `description`, and `kms_key_identifier` require AWS provider >= 6.x. The TF module pins to 5.82.0 for consistency with other Planton components. Pulumi module provides full feature support.
 
 ### Documentation
 

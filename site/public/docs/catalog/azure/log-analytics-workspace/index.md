@@ -12,14 +12,14 @@ Deploys an Azure Log Analytics Workspace with configurable pricing tier, data re
 
 ## What Gets Created
 
-When you deploy an AzureLogAnalyticsWorkspace resource, OpenMCF provisions:
+When you deploy an AzureLogAnalyticsWorkspace resource, Planton provisions:
 
 - **Log Analytics Workspace** — an `operationalinsights.AnalyticsWorkspace` resource in the specified region and resource group, configured with the chosen SKU pricing tier, retention period, and daily ingestion quota
 - **Azure Tags** — resource metadata tags applied to the workspace for tracking and governance, including resource name, kind, organization, and environment
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Resource Group** where the workspace will be created (can reference an AzureResourceGroup resource)
 - **Workspace naming plan** — names must be 4-63 characters, alphanumeric and hyphens only, starting with a letter, unique within the resource group
 
@@ -28,15 +28,15 @@ When you deploy an AzureLogAnalyticsWorkspace resource, OpenMCF provisions:
 Create a file `log-analytics.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureLogAnalyticsWorkspace
 metadata:
   name: my-workspace
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureLogAnalyticsWorkspace.my-workspace
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureLogAnalyticsWorkspace.my-workspace
 spec:
   region: eastus
   resourceGroup: my-rg
@@ -46,7 +46,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f log-analytics.yaml
+planton apply -f log-analytics.yaml
 ```
 
 This creates a Log Analytics Workspace with pay-as-you-go (PerGB2018) pricing, 30-day data retention, and unlimited daily ingestion.
@@ -76,15 +76,15 @@ This creates a Log Analytics Workspace with pay-as-you-go (PerGB2018) pricing, 3
 A workspace for development with short retention and unlimited ingestion:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureLogAnalyticsWorkspace
 metadata:
   name: dev-logs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureLogAnalyticsWorkspace.dev-logs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureLogAnalyticsWorkspace.dev-logs
 spec:
   region: eastus
   resourceGroup: dev-rg
@@ -98,15 +98,15 @@ spec:
 A production workspace with 180-day retention for audit compliance and a daily ingestion cap to control costs:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureLogAnalyticsWorkspace
 metadata:
   name: prod-logs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureLogAnalyticsWorkspace.prod-logs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureLogAnalyticsWorkspace.prod-logs
 spec:
   region: westeurope
   resourceGroup: prod-rg
@@ -121,15 +121,15 @@ spec:
 A workspace for regulatory compliance requiring two-year log retention:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureLogAnalyticsWorkspace
 metadata:
   name: compliance-logs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureLogAnalyticsWorkspace.compliance-logs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureLogAnalyticsWorkspace.compliance-logs
 spec:
   region: westeurope
   resourceGroup: compliance-rg
@@ -141,18 +141,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed resource group instead of hardcoding the name:
+Reference an Planton-managed resource group instead of hardcoding the name:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureLogAnalyticsWorkspace
 metadata:
   name: ref-workspace
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureLogAnalyticsWorkspace.ref-workspace
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureLogAnalyticsWorkspace.ref-workspace
 spec:
   region: eastus
   resourceGroup:

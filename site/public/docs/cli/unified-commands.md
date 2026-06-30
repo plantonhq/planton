@@ -11,23 +11,23 @@ Unified commands let you deploy, preview, initialize, destroy, and refresh infra
 
 ## How Provisioner Detection Works
 
-Every OpenMCF manifest can include a label that declares which provisioner to use:
+Every Planton manifest can include a label that declares which provisioner to use:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPostgres
 metadata:
   name: my-database
   labels:
-    openmcf.org/provisioner: tofu    # pulumi, tofu, or terraform
+    planton.dev/provisioner: tofu    # pulumi, tofu, or terraform
 spec:
   # ...
 ```
 
-When you run a unified command like `openmcf apply -f manifest.yaml`, the CLI:
+When you run a unified command like `planton apply -f manifest.yaml`, the CLI:
 
 1. Loads and validates the manifest
-2. Reads the `openmcf.org/provisioner` label
+2. Reads the `planton.dev/provisioner` label
 3. Routes to the matching engine: Pulumi, OpenTofu, or Terraform
 4. Passes all relevant flags through to the engine-specific handler
 
@@ -42,10 +42,10 @@ The label value is case-insensitive. Valid values: `pulumi`, `tofu`, `terraform`
 Deploy infrastructure. Routes to `pulumi update`, `tofu apply`, or `terraform apply` based on the manifest label.
 
 ```bash
-openmcf apply -f database.yaml
-openmcf apply --clipboard
-openmcf apply --kustomize-dir services/api --overlay prod
-openmcf apply -f api.yaml --set spec.container.replicas=3
+planton apply -f database.yaml
+planton apply --clipboard
+planton apply --kustomize-dir services/api --overlay prod
+planton apply -f api.yaml --set spec.container.replicas=3
 ```
 
 When routed to Pulumi, this runs a `pulumi update` operation. When routed to OpenTofu or Terraform, this runs the equivalent `apply` operation.
@@ -55,10 +55,10 @@ When routed to Pulumi, this runs a `pulumi update` operation. When routed to Ope
 Preview infrastructure changes without applying them. Routes to `pulumi preview`, `tofu plan`, or `terraform plan`.
 
 ```bash
-openmcf plan -f database.yaml
-openmcf preview -f database.yaml        # alias
-openmcf plan -f app.yaml --destroy       # preview a destroy (Tofu/Terraform)
-openmcf plan -f app.yaml --diff          # detailed diffs (Pulumi)
+planton plan -f database.yaml
+planton preview -f database.yaml        # alias
+planton plan -f app.yaml --destroy       # preview a destroy (Tofu/Terraform)
+planton plan -f app.yaml --diff          # detailed diffs (Pulumi)
 ```
 
 **Alias**: `preview` (for Pulumi-style workflows).
@@ -70,9 +70,9 @@ The `--destroy` flag creates a destroy plan instead of an apply plan. This flag 
 Initialize the backend or stack. Routes to `pulumi stack init`, `tofu init`, or `terraform init`.
 
 ```bash
-openmcf init -f database.yaml
-openmcf init -f app.yaml --backend-type s3 --backend-bucket my-state
-openmcf init -f app.yaml --reconfigure
+planton init -f database.yaml
+planton init -f app.yaml --backend-type s3 --backend-bucket my-state
+planton init -f app.yaml --reconfigure
 ```
 
 What initialization does depends on the provisioner:
@@ -90,10 +90,10 @@ For OpenTofu and Terraform, the backend type defaults to `local`. To use remote 
 Tear down infrastructure. Routes to `pulumi destroy`, `tofu destroy`, or `terraform destroy`.
 
 ```bash
-openmcf destroy -f database.yaml
-openmcf delete -f database.yaml          # alias
-openmcf destroy -f app.yaml --auto-approve
-openmcf destroy -f app.yaml --yes         # auto-approve for Pulumi
+planton destroy -f database.yaml
+planton delete -f database.yaml          # alias
+planton destroy -f app.yaml --auto-approve
+planton destroy -f app.yaml --yes         # auto-approve for Pulumi
 ```
 
 **Alias**: `delete` (for kubectl-style workflows).
@@ -105,8 +105,8 @@ The `--auto-approve` flag skips interactive confirmation for OpenTofu and Terraf
 Sync state with cloud reality without modifying any resources. Routes to `pulumi refresh`, `tofu refresh`, or `terraform refresh`.
 
 ```bash
-openmcf refresh -f database.yaml
-openmcf refresh -f app.yaml --diff       # detailed diffs (Pulumi)
+planton refresh -f database.yaml
+planton refresh -f app.yaml --diff       # detailed diffs (Pulumi)
 ```
 
 This queries your cloud provider for the current state of managed resources and updates the state file to match. No cloud resources are created, modified, or deleted.
@@ -129,7 +129,7 @@ Flags for an engine that is not selected are silently ignored. For example, `--y
 
 ## Unified vs. Direct Commands
 
-Unified commands and direct engine commands (`openmcf pulumi`, `openmcf tofu`, `openmcf terraform`) achieve the same result. The difference is in how the provisioner is selected and which flags are available.
+Unified commands and direct engine commands (`planton pulumi`, `planton tofu`, `planton terraform`) achieve the same result. The difference is in how the provisioner is selected and which flags are available.
 
 | Aspect | Unified Commands | Direct Engine Commands |
 |--------|-----------------|----------------------|
@@ -140,7 +140,7 @@ Unified commands and direct engine commands (`openmcf pulumi`, `openmcf tofu`, `
 | Engine-specific subcommands | Not available (`cancel`, `delete`, `generate-variables`, etc.) | Available |
 
 **Use unified commands when**:
-- Your manifests include the `openmcf.org/provisioner` label
+- Your manifests include the `planton.dev/provisioner` label
 - You want a single workflow regardless of engine
 - You need clipboard or stack-input manifest sources
 - You need the full set of backend init flags
@@ -157,7 +157,7 @@ Every unified command follows the same sequence:
 1. **Load manifest** from the specified source (file, clipboard, stack-input, input-dir, or kustomize)
 2. **Apply overrides** if `--set` flags are provided
 3. **Validate** the manifest against its protobuf schema
-4. **Detect provisioner** from the `openmcf.org/provisioner` label (or prompt)
+4. **Detect provisioner** from the `planton.dev/provisioner` label (or prompt)
 5. **Resolve module** using the module resolution chain (see [Module Management](./module-management))
 6. **Resolve credentials** from environment variables or `--provider-config` file
 7. **Hand off** to the engine-specific handler (Pulumi, OpenTofu, or Terraform)

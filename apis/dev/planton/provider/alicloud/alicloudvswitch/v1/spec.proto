@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+package dev.planton.provider.alicloud.alicloudvswitch.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// AliCloudVswitchSpec defines the configuration for an Alibaba Cloud VSwitch.
+//
+// A VSwitch is the subnet-equivalent resource in Alibaba Cloud networking.
+// It carves out a CIDR range within a VPC and pins it to a single availability
+// zone. ECS instances, RDS databases, container clusters, NAT gateways, and
+// most other VPC-aware resources are deployed into a VSwitch.
+//
+// Each VSwitch belongs to exactly one VPC and one availability zone. The CIDR
+// block must be a subset of the parent VPC's CIDR block. Changing the VPC,
+// zone, or CIDR after creation requires destroying and recreating the VSwitch.
+message AliCloudVswitchSpec {
+  // Alibaba Cloud region where the VSwitch will be created.
+  // Must match the region of the parent VPC.
+  // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // VPC ID that this VSwitch belongs to.
+  // The VSwitch's CIDR block must fall within the VPC's CIDR range.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef vpc_id = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AliCloudVpc,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
+  ];
+
+  // Availability zone for the VSwitch.
+  // Format: "{region}-{letter}" (e.g., "cn-hangzhou-a", "cn-hangzhou-b").
+  // The zone must exist in the VSwitch's region. All resources deployed into
+  // this VSwitch run in this zone.
+  string zone_id = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // IPv4 CIDR block for the VSwitch.
+  // Must be a subnet of the parent VPC's CIDR block.
+  // Mask length: 16-29 (e.g., "10.0.0.0/24" gives 256 addresses).
+  // This field is immutable after creation.
+  string cidr_block = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // VSwitch name. 1-128 characters; cannot start with http:// or https://.
+  // Maps to the provider field `vswitch_name`.
+  string vswitch_name = 5 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 128
+  ];
+
+  // Human-readable description of the VSwitch.
+  // 1-256 characters; cannot start with http:// or https://.
+  string description = 6;
+
+  // Enable IPv6 for this VSwitch.
+  // The parent VPC must have IPv6 enabled (enable_ipv6 = true) for this
+  // to take effect. When enabled, an IPv6 CIDR block is allocated to the
+  // VSwitch based on ipv6_cidr_block_mask.
+  // Default: false
+  bool enable_ipv6 = 7;
+
+  // IPv6 CIDR block mask for the VSwitch.
+  // Only meaningful when enable_ipv6 is true and the parent VPC has IPv6
+  // enabled. Valid range: 0-255. The mask selects a /64 segment from the
+  // VPC's /56 IPv6 allocation.
+  int32 ipv6_cidr_block_mask = 8 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).int32 = {
+      gte: 0
+      lte: 255
+    }
+  ];
+
+  // Tags to apply to the VSwitch.
+  map<string, string> tags = 9;
+}

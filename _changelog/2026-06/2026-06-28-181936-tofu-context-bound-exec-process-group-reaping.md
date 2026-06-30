@@ -43,7 +43,7 @@ flowchart LR
 ## Implementation Details
 
 - New files: `pkg/iac/tofu/tofumodule/reapable_command.go` (the `newReapableCommand` constructor + `reapGraceWaitDelay`), `procattr_unix.go`, `procattr_other.go`, `reapable_command_test.go`.
-- Updated callers: `RunCommand` passes `context.Background()` (no cancellation context in that path); the CLI `init` commands (`cmd/openmcf/root/init.go`, `cmd/openmcf/root/tofu/init.go`, `cmd/openmcf/root/terraform/init.go`) pass `cmd.Context()` so Ctrl-C reaps the child.
+- Updated callers: `RunCommand` passes `context.Background()` (no cancellation context in that path); the CLI `init` commands (`cmd/planton/root/init.go`, `cmd/planton/root/tofu/init.go`, `cmd/planton/root/terraform/init.go`) pass `cmd.Context()` so Ctrl-C reaps the child.
 - The existing `streamCommandJSONOutput` read-before-Wait ordering is preserved -- on cancel, the killed child closes the stdout pipe, the reader drains to EOF, then `Wait` returns.
 
 ## Benefits

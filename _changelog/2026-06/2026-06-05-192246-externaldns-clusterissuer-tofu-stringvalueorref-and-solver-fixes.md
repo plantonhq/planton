@@ -7,7 +7,7 @@
 ## Summary
 
 Two `tofu` provisioner stack jobs in the `gosilver-networking-stack` infra pipeline
-failed against OpenMCF modules pinned at `v0.3.75`. `KubernetesExternalDns` failed
+failed against Planton modules pinned at `v0.3.75`. `KubernetesExternalDns` failed
 variable parsing with `attribute "cloudflare": attribute "dns_zone_id": object
 required, but have string`, and `KubernetesClusterIssuer` failed the
 `kubernetes_manifest` morph with `Failed to transform Map element into Object
@@ -95,18 +95,18 @@ the value stays a properly typed object carrying only the active provider's solv
 
 ## Implementation Details
 
-**Module**: `apis/org/openmcf/provider/kubernetes/kubernetesexternaldns/v1/iac/tf/`
+**Module**: `apis/dev/planton/provider/kubernetes/kubernetesexternaldns/v1/iac/tf/`
 
 - `variables.tf`: foreign-key fields flipped from `object({ value, value_from })` to
   `string`; the oneof `optional(object(...))` provider blocks and slim metadata block
-  are unchanged. (A wholesale regen via `openmcf tofu generate-variables` was used to
+  are unchanged. (A wholesale regen via `planton tofu generate-variables` was used to
   confirm the canonical `string` typing, but applied as a targeted edit because the
   generator emits a naive schema that drops the oneof `optional()` wrappers and the
   slim metadata.)
 - `locals.tf`: dropped the `.value` accessor; `namespace = var.spec.namespace`.
 - `README.md`: all provider examples use the plain-string foreign-key form.
 
-**Module**: `apis/org/openmcf/provider/kubernetes/kubernetesclusterissuer/v1/iac/tf/`
+**Module**: `apis/dev/planton/provider/kubernetes/kubernetesclusterissuer/v1/iac/tf/`
 
 ```hcl
 solver = {
@@ -133,11 +133,11 @@ reintroduced. `main.tf` is unchanged (`solvers = [local.solver]`).
 
 ### Testing Strategy
 
-Validated locally with the installed `openmcf` CLI and `tofu` (no live cluster):
+Validated locally with the installed `planton` CLI and `tofu` (no live cluster):
 
 ```bash
 # 1. Converter renders foreign keys as bare strings
-openmcf tofu load-tfvars extdns-cloudflare.yaml   # namespace="...", dns_zone_id="01360d..."
+planton tofu load-tfvars extdns-cloudflare.yaml   # namespace="...", dns_zone_id="01360d..."
 
 # 2. HCL validity for both modules
 tofu -chdir=<module> init -backend=false && tofu -chdir=<module> validate   # Success
@@ -152,8 +152,8 @@ echo 'type(local.solver)' | tofu -chdir=<clusterissuer> console -var-file=ci.tfv
 #   -> object({ dns01: object({ cloudflare: object({ apiTokenSecretRef: ... }) }) })
 
 # 5. Output mapping unaffected
-openmcf validate-outputs --kind KubernetesExternalDns   --module-dir <externaldns>    # passed
-openmcf validate-outputs --kind KubernetesClusterIssuer --module-dir <clusterissuer>  # passed
+planton validate-outputs --kind KubernetesExternalDns   --module-dir <externaldns>    # passed
+planton validate-outputs --kind KubernetesClusterIssuer --module-dir <clusterissuer>  # passed
 ```
 
 ## Benefits

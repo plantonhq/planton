@@ -12,7 +12,7 @@ Deploys an Azure Application Gateway -- a Layer 7 (HTTP/HTTPS) load balancer and
 
 ## What Gets Created
 
-When you deploy an AzureApplicationGateway resource, OpenMCF provisions:
+When you deploy an AzureApplicationGateway resource, Planton provisions:
 
 - **Application Gateway** -- a `network.ApplicationGateway` resource in the specified region and resource group, configured with the chosen SKU tier, capacity or autoscale settings, and HTTP/2 support
 - **Gateway IP Configuration** -- auto-derived from the resource name (as `{name}-gw-ip-config`), binding the gateway to the dedicated subnet
@@ -30,7 +30,7 @@ When you deploy an AzureApplicationGateway resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Resource Group** where the gateway will be created (can reference an AzureResourceGroup resource)
 - **A dedicated subnet** with no other resources deployed; Application Gateway v2 requires its own subnet. A /24 CIDR block is recommended for production (supports up to 125 instances plus 5 Azure-reserved addresses)
 - **A Standard SKU public IP** with static allocation for the frontend (can reference an AzurePublicIp resource, which enforces Standard SKU and Static allocation)
@@ -41,15 +41,15 @@ When you deploy an AzureApplicationGateway resource, OpenMCF provisions:
 Create a file `appgateway.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureApplicationGateway
 metadata:
   name: my-appgw
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureApplicationGateway.my-appgw
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureApplicationGateway.my-appgw
 spec:
   region: eastus
   resourceGroup: my-rg
@@ -80,7 +80,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f appgateway.yaml
+planton apply -f appgateway.yaml
 ```
 
 This creates a Standard_v2 Application Gateway with a single HTTP listener on port 80, routing traffic to a backend pool at 10.0.1.4. Capacity defaults to 2 instances.
@@ -129,15 +129,15 @@ This creates a Standard_v2 Application Gateway with a single HTTP listener on po
 A basic HTTP-only Application Gateway with a single listener, backend pool, and routing rule:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureApplicationGateway
 metadata:
   name: basic-appgw
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureApplicationGateway.basic-appgw
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureApplicationGateway.basic-appgw
 spec:
   region: eastus
   resourceGroup: dev-rg
@@ -172,15 +172,15 @@ spec:
 An HTTPS Application Gateway using a Key Vault certificate for SSL termination, with a user-assigned managed identity for Key Vault access:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureApplicationGateway
 metadata:
   name: https-appgw
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureApplicationGateway.https-appgw
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureApplicationGateway.https-appgw
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -223,15 +223,15 @@ spec:
 A WAF_v2 Application Gateway with autoscaling, a custom health probe, and Prevention mode enabled:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureApplicationGateway
 metadata:
   name: waf-appgw
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureApplicationGateway.waf-appgw
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureApplicationGateway.waf-appgw
 spec:
   region: westeurope
   resourceGroup: prod-rg
@@ -281,15 +281,15 @@ spec:
 An Application Gateway with multiple listeners on the same port routing to different backend pools based on host name:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureApplicationGateway
 metadata:
   name: multi-host-appgw
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureApplicationGateway.multi-host-appgw
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureApplicationGateway.multi-host-appgw
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -338,18 +338,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference OpenMCF-managed resources instead of hardcoding Azure resource IDs:
+Reference Planton-managed resources instead of hardcoding Azure resource IDs:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureApplicationGateway
 metadata:
   name: ref-appgw
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureApplicationGateway.ref-appgw
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureApplicationGateway.ref-appgw
 spec:
   region: eastus
   resourceGroup:

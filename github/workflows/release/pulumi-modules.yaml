@@ -11,7 +11,7 @@
 #   - Clear progress logging with completed/remaining counts
 #   - No hardcoded component paths - auto-discovers from filesystem
 #
-# Path pattern: apis/org/openmcf/provider/{provider}/{component}/v1/iac/pulumi
+# Path pattern: apis/dev/planton/provider/{provider}/{component}/v1/iac/pulumi
 #
 # Called by: .github/workflows/release.yaml (after CLI release creates the release)
 # =============================================================================
@@ -29,7 +29,7 @@ permissions:
 
 env:
   GO_VERSION: '1.25'
-  PROVIDER_BASE_PATH: apis/org/openmcf/provider
+  PROVIDER_BASE_PATH: apis/dev/planton/provider
 
 jobs:
   # ============================================================================

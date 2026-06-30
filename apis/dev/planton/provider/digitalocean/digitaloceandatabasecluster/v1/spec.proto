@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+package dev.planton.provider.digitalocean.digitaloceandatabasecluster.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/digitalocean/region.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// DigitalOceanDatabaseClusterSpec defines the essential configuration for creating a managed database cluster on DigitalOcean.
+// This follows the 80/20 principle: only the most commonly used fields are exposed to keep the API simple.
+message DigitalOceanDatabaseClusterSpec {
+  // A human-readable name for the database cluster.
+  // This name will be used as the cluster's identifier in DigitalOcean.
+  string cluster_name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.max_len = 64
+  ];
+
+  // The database engine for the cluster.
+  // Allowed values include: POSTGRES, MYSQL, REDIS, MONGODB.
+  DigitalOceanDatabaseEngine engine = 2 [(buf.validate.field).required = true];
+
+  // The engine version for the cluster.
+  // For example, "14" for PostgreSQL 14, "8" for MySQL 8, etc.
+  // Only major (and optionally minor) version numbers are expected.
+  string engine_version = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[0-9]+(\\.[0-9]+)?$"
+  ];
+
+  // The DigitalOcean region where the cluster will be created.
+  // Determines the data center location for the cluster.
+  DigitalOceanRegion region = 4 [(buf.validate.field).required = true];
+
+  // The slug identifier for the cluster's node size (e.g., "db-s-2vcpu-4gb").
+  // This defines the CPU/memory resources for each node in the cluster.
+  string size_slug = 5 [(buf.validate.field).required = true];
+
+  // The number of nodes in the cluster. Allowed values are 1 to 3 for primary nodes.
+  uint32 node_count = 6 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).uint32.gte = 1,
+    (buf.validate.field).uint32.lte = 3
+  ];
+
+  // (Optional) Reference to a DigitalOcean VPC for the database cluster.
+  // If provided, the cluster will be created within the specified private network.
+  // Use a literal VPC UUID or a reference to a DigitalOceanVpc resource.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef vpc = 7 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = DigitalOceanVpc,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
+  ];
+
+  // (Optional) Custom storage size in GiB for the cluster.
+  // If not set, the default storage for the chosen size_slug will be used.
+  uint32 storage_gib = 8;
+
+  // (Optional) Whether to enable cluster access to public networking.
+  // When false (default), no public connection is available; the cluster is accessible only via the VPC or DigitalOcean internal network.
+  bool enable_public_connectivity = 9;
+}
+
+// Enumeration of supported database engines for DigitalOcean managed database clusters.
+// Values match DigitalOcean API expected engine slugs.
+enum DigitalOceanDatabaseEngine {
+  digital_ocean_database_engine_unspecified = 0;
+  pg = 1; // PostgreSQL (DigitalOcean uses "pg" slug)
+  mysql = 2; // MySQL
+  redis = 3; // Redis
+  mongodb = 4; // MongoDB
+}

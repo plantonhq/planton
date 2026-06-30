@@ -12,7 +12,7 @@ Deploys Tekton Pipelines and optionally Tekton Dashboard on Kubernetes by applyi
 
 ## What Gets Created
 
-When you deploy a KubernetesTekton resource, OpenMCF provisions:
+When you deploy a KubernetesTekton resource, Planton provisions:
 
 - **Tekton Pipelines** — all resources from the official Tekton Pipeline release manifest including the `tekton-pipelines` namespace, CRDs (`Task`, `Pipeline`, `TaskRun`, `PipelineRun`, etc.), controllers, and webhook admission controllers
 - **Tekton Dashboard** — the web UI for viewing and managing pipelines, tasks, and runs, deployed from the official Dashboard release manifest; created only when `dashboard.enabled` is `true`
@@ -24,7 +24,7 @@ When you deploy a KubernetesTekton resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **Istio** with Gateway API support installed if enabling dashboard ingress
 - **cert-manager** with a ClusterIssuer matching the ingress domain if enabling dashboard ingress with TLS
 
@@ -33,15 +33,15 @@ When you deploy a KubernetesTekton resource, OpenMCF provisions:
 Create a file `tekton.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesTekton
 metadata:
   name: my-tekton
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesTekton.my-tekton
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesTekton.my-tekton
 spec:
   pipelineVersion: latest
 ```
@@ -49,7 +49,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f tekton.yaml
+planton apply -f tekton.yaml
 ```
 
 This deploys the latest Tekton Pipelines release into the `tekton-pipelines` namespace. The namespace is created automatically by the upstream Tekton manifest.
@@ -80,15 +80,15 @@ All spec fields have sensible defaults. There are no strictly required fields be
 A minimal deployment that installs just the Tekton Pipeline engine with a pinned version:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesTekton
 metadata:
   name: ci-tekton
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesTekton.ci-tekton
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesTekton.ci-tekton
 spec:
   pipelineVersion: v0.65.2
 ```
@@ -98,15 +98,15 @@ spec:
 Tekton Pipelines and Dashboard deployed together, with the dashboard accessible inside the cluster via port-forward:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesTekton
 metadata:
   name: team-tekton
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.KubernetesTekton.team-tekton
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.KubernetesTekton.team-tekton
 spec:
   pipelineVersion: v0.65.2
   dashboard:
@@ -125,15 +125,15 @@ kubectl port-forward -n tekton-pipelines service/tekton-dashboard 9097:9097
 A full production setup with the dashboard exposed externally via TLS-terminated ingress and CloudEvents integration for pipeline notifications:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesTekton
 metadata:
   name: prod-tekton
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesTekton.prod-tekton
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesTekton.prod-tekton
 spec:
   pipelineVersion: v0.65.2
   dashboard:

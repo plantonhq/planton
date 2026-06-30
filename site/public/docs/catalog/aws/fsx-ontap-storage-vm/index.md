@@ -12,7 +12,7 @@ Deploys a Storage Virtual Machine (SVM) on an existing FSx for NetApp ONTAP file
 
 ## What Gets Created
 
-When you deploy an AwsFsxOntapStorageVirtualMachine resource, OpenMCF provisions:
+When you deploy an AwsFsxOntapStorageVirtualMachine resource, Planton provisions:
 
 - **ONTAP Storage Virtual Machine** — an `aws_fsx_ontap_storage_virtual_machine` resource within the specified FSx ONTAP file system, with the configured security style and optional admin password
 - **NFS Endpoint** — automatically provisioned for NFS client access to volumes on this SVM
@@ -24,7 +24,7 @@ When you deploy an AwsFsxOntapStorageVirtualMachine resource, OpenMCF provisions
 ## Prerequisites
 
 - **An existing AwsFsxOntapFileSystem** — the SVM's parent file system must be provisioned first
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **A self-managed Active Directory domain** reachable from the file system's VPC if enabling SMB access (AWS Managed Microsoft AD is not supported for ONTAP SVMs)
 - **AD service account credentials** with permission to create computer objects in the target OU if enabling Active Directory
 
@@ -33,15 +33,15 @@ When you deploy an AwsFsxOntapStorageVirtualMachine resource, OpenMCF provisions
 Create a file `svm.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsFsxOntapStorageVirtualMachine
 metadata:
   name: my-svm
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsFsxOntapStorageVirtualMachine.my-svm
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsFsxOntapStorageVirtualMachine.my-svm
 spec:
   region: us-east-1
   fileSystemId: fs-0123456789abcdef0
@@ -51,7 +51,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f svm.yaml
+planton apply -f svm.yaml
 ```
 
 This creates an NFS/iSCSI-only SVM with UNIX security style (the default) on the specified ONTAP file system.
@@ -64,7 +64,7 @@ This creates an NFS/iSCSI-only SVM with UNIX security style (the default) on the
 |-------|------|-------------|------------|
 | `region` | `string` | AWS region where the SVM will be created (e.g., `us-east-1`). | Required; non-empty |
 | `fileSystemId` | `StringValueOrRef` | ID of the parent FSx ONTAP file system. ForceNew. | Required. Can reference AwsFsxOntapFileSystem via `valueFrom`. |
-| `name` | `string` | ONTAP SVM name. ForceNew. This is the ONTAP identity, not the OpenMCF metadata name. | 1-47 characters, alphanumeric and underscore only. |
+| `name` | `string` | ONTAP SVM name. ForceNew. This is the ONTAP identity, not the Planton metadata name. | 1-47 characters, alphanumeric and underscore only. |
 
 ### Optional Fields
 
@@ -87,15 +87,15 @@ This creates an NFS/iSCSI-only SVM with UNIX security style (the default) on the
 The simplest configuration for Linux/NFS workloads:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsFsxOntapStorageVirtualMachine
 metadata:
   name: nfs-svm
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsFsxOntapStorageVirtualMachine.nfs-svm
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsFsxOntapStorageVirtualMachine.nfs-svm
 spec:
   region: us-east-1
   fileSystemId: fs-0123456789abcdef0
@@ -108,15 +108,15 @@ spec:
 Windows-focused SVM with AD domain join for SMB file share access:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsFsxOntapStorageVirtualMachine
 metadata:
   name: smb-svm
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsFsxOntapStorageVirtualMachine.smb-svm
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsFsxOntapStorageVirtualMachine.smb-svm
 spec:
   region: us-east-1
   fileSystemId: fs-0123456789abcdef0
@@ -139,15 +139,15 @@ spec:
 Dual-protocol SVM with MIXED security style for environments where both Linux and Windows clients access the same data:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsFsxOntapStorageVirtualMachine
 metadata:
   name: multi-svm
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsFsxOntapStorageVirtualMachine.multi-svm
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsFsxOntapStorageVirtualMachine.multi-svm
 spec:
   region: us-east-1
   fileSystemId: fs-0123456789abcdef0
@@ -168,18 +168,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed FSx ONTAP file system instead of hardcoding the ID:
+Reference an Planton-managed FSx ONTAP file system instead of hardcoding the ID:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsFsxOntapStorageVirtualMachine
 metadata:
   name: linked-svm
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsFsxOntapStorageVirtualMachine.linked-svm
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsFsxOntapStorageVirtualMachine.linked-svm
 spec:
   region: us-east-1
   fileSystemId:

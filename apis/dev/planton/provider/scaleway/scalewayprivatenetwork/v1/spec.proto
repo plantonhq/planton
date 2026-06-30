@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+package dev.planton.provider.scaleway.scalewayprivatenetwork.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// ScalewayPrivateNetworkSpec defines the specification for a Scaleway Private Network.
+//
+// A Scaleway Private Network is a regional, Layer 2 network that lives inside a VPC
+// and provides secure, private connectivity between Scaleway resources. It is the
+// primary attachment point for Kapsule clusters, RDB instances, Redis clusters,
+// Load Balancers, Instances, and other resources that need private communication.
+//
+// Private Networks include built-in DHCP, so resources attached to a Private Network
+// receive IP addresses automatically. You may optionally specify an IPv4 CIDR to
+// control the address range; if omitted, Scaleway's IPAM allocates one for you.
+//
+// In the Scaleway resource graph, Private Network is the "universal connector":
+// almost every infrastructure resource attaches to a Private Network rather than
+// directly to a VPC.
+message ScalewayPrivateNetworkSpec {
+  // The VPC in which to create this Private Network.
+  //
+  // Can be a literal VPC UUID or a reference to a ScalewayVpc resource's output.
+  // When used inside an infra chart, this is typically wired via valueFrom:
+  //
+  //   vpcId:
+  //     valueFrom:
+  //       kind: ScalewayVpc
+  //       name: my-vpc
+  //       fieldPath: status.outputs.vpc_id
+  //
+  // The Private Network's region must match the VPC's region.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef vpc_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = ScalewayVpc,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
+  ];
+
+  // The Scaleway region where the Private Network will be created.
+  // Examples: "fr-par", "nl-ams", "pl-waw"
+  //
+  // Must match the region of the parent VPC. This field is required and
+  // cannot be changed after creation.
+  string region = 2 [(buf.validate.field).required = true];
+
+  // IPv4 subnet in CIDR notation to associate with this Private Network.
+  // Examples: "192.168.0.0/24", "10.0.1.0/24", "172.16.0.0/22"
+  //
+  // If omitted, Scaleway's IPAM automatically allocates a subnet from a
+  // default range. Specifying a subnet gives you control over the address
+  // space, which is important when multiple Private Networks in the same
+  // VPC need non-overlapping ranges for routing to work correctly.
+  //
+  // The allocated (or auto-assigned) CIDR is always available in stack
+  // outputs as ipv4_subnet_cidr.
+  string ipv4_subnet = 3;
+
+  // IPv6 subnets in CIDR notation to associate with this Private Network.
+  // Examples: "fd46:78ab:30b8:177c::/64"
+  //
+  // Optional. Multiple IPv6 subnets can be attached for dual-stack networking.
+  // Most production deployments use IPv4 only; IPv6 is primarily useful for
+  // workloads that must be reachable on IPv6 or for advanced networking scenarios.
+  repeated string ipv6_subnets = 4;
+
+  // Whether to propagate default IPv4 and IPv6 routes for this Private Network.
+  //
+  // When enabled, resources in this Private Network receive the VPC's default
+  // routes, enabling them to communicate with resources in other Private Networks
+  // within the same VPC (provided the VPC has routing enabled).
+  //
+  // Default: false
+  bool enable_default_route_propagation = 5 [(dev.planton.shared.options.recommended_default) = "false"];
+}

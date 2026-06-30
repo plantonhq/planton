@@ -12,7 +12,7 @@ Deploys an OpenFGA store — the top-level container for authorization models an
 
 ## What Gets Created
 
-When you deploy an OpenFgaStore resource, OpenMCF provisions:
+When you deploy an OpenFgaStore resource, Planton provisions:
 
 - **OpenFGA Store** — an `openfga_store` resource that creates a named store on the configured OpenFGA server
 
@@ -27,12 +27,12 @@ When you deploy an OpenFgaStore resource, OpenMCF provisions:
 Create a file `store.yaml`:
 
 ```yaml
-apiVersion: openfga.openmcf.org/v1
+apiVersion: openfga.planton.dev/v1
 kind: OpenFgaStore
 metadata:
   name: my-store
   labels:
-    openmcf.org/provisioner: tofu
+    planton.dev/provisioner: tofu
 spec:
   name: my-authorization-store
 ```
@@ -40,7 +40,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f store.yaml
+planton apply -f store.yaml
 ```
 
 This creates a single OpenFGA store named `my-authorization-store`.
@@ -64,12 +64,12 @@ This component has no optional fields.
 A store for local development or CI environments:
 
 ```yaml
-apiVersion: openfga.openmcf.org/v1
+apiVersion: openfga.planton.dev/v1
 kind: OpenFgaStore
 metadata:
   name: dev-authz
   labels:
-    openmcf.org/provisioner: tofu
+    planton.dev/provisioner: tofu
 spec:
   name: dev-authorization-store
 ```
@@ -79,12 +79,12 @@ spec:
 Separate stores isolate authorization data between applications running in the same OpenFGA server:
 
 ```yaml
-apiVersion: openfga.openmcf.org/v1
+apiVersion: openfga.planton.dev/v1
 kind: OpenFgaStore
 metadata:
   name: billing-authz
   labels:
-    openmcf.org/provisioner: tofu
+    planton.dev/provisioner: tofu
 spec:
   name: billing-service-authz
 ```
@@ -94,12 +94,12 @@ spec:
 A production environment store with a descriptive name reflecting its scope:
 
 ```yaml
-apiVersion: openfga.openmcf.org/v1
+apiVersion: openfga.planton.dev/v1
 kind: OpenFgaStore
 metadata:
   name: prod-authz
   labels:
-    openmcf.org/provisioner: tofu
+    planton.dev/provisioner: tofu
 spec:
   name: production-authorization-store
 ```

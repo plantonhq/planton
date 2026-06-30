@@ -12,7 +12,7 @@ Deploys an AWS SQS queue — Standard or FIFO — with optional server-side encr
 
 ## What Gets Created
 
-When you deploy an AwsSqsQueue resource, OpenMCF provisions:
+When you deploy an AwsSqsQueue resource, Planton provisions:
 
 - **SQS Queue** — a Standard or FIFO `aws_sqs_queue` resource with the specified delivery settings, encryption configuration, and access policy
 - **Redrive Policy** — configured on the queue only when `deadLetterConfig` is provided, routes messages to a dead letter queue after the specified number of receive attempts
@@ -20,7 +20,7 @@ When you deploy an AwsSqsQueue resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **A dead letter queue** (another AwsSqsQueue) if using dead letter queue routing — both queues must be the same type (both Standard or both FIFO) and reside in the same account and region
 - **A KMS key** if using customer-managed encryption instead of SQS-managed SSE
 
@@ -29,15 +29,15 @@ When you deploy an AwsSqsQueue resource, OpenMCF provisions:
 Create a file `queue.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsSqsQueue
 metadata:
   name: my-queue
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsSqsQueue.my-queue
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsSqsQueue.my-queue
 spec:
   region: us-east-1
   sqsManagedSseEnabled: true
@@ -46,7 +46,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f queue.yaml
+planton apply -f queue.yaml
 ```
 
 This creates a Standard SQS queue with SQS-managed encryption and all other settings at AWS defaults.
@@ -88,15 +88,15 @@ All other configuration is optional with AWS defaults.
 A FIFO queue for payment processing with content-based deduplication and a dead letter queue for failed messages:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsSqsQueue
 metadata:
   name: payment-events
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsSqsQueue.payment-events
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsSqsQueue.payment-events
 spec:
   region: us-east-1
   fifoQueue: true
@@ -117,15 +117,15 @@ spec:
 A Standard queue configured for long polling to reduce empty responses, with a 7-day retention period:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsSqsQueue
 metadata:
   name: task-queue
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsSqsQueue.task-queue
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsSqsQueue.task-queue
 spec:
   region: us-east-1
   sqsManagedSseEnabled: true
@@ -139,15 +139,15 @@ spec:
 A queue encrypted with a customer-managed KMS key and an IAM policy granting an SNS topic permission to publish messages:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsSqsQueue
 metadata:
   name: notifications-queue
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsSqsQueue.notifications-queue
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsSqsQueue.notifications-queue
 spec:
   region: us-east-1
   kmsKeyId:

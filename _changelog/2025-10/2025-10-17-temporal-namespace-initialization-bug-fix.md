@@ -84,7 +84,7 @@ if stackInput.KubernetesNamespace != "" {
 
 1. Run Pulumi preview with a basic Temporal manifest:
    ```bash
-   openmcf pulumi preview --manifest temporal-test.yaml --module-dir ${TEMPORAL_MODULE}
+   planton pulumi preview --manifest temporal-test.yaml --module-dir ${TEMPORAL_MODULE}
    ```
 
 2. Verify namespace is correctly set:
@@ -97,7 +97,7 @@ if stackInput.KubernetesNamespace != "" {
 ### Test Scenarios
 
 - ✅ **Default behavior**: Namespace defaults to `metadata.name` when no overrides provided
-- ✅ **Label override**: Custom namespace label (`kubernetes.openmcf.org/namespace`) correctly overrides default
+- ✅ **Label override**: Custom namespace label (`kubernetes.planton.dev/namespace`) correctly overrides default
 - ✅ **StackInput override**: Non-empty `stackInput.KubernetesNamespace` takes precedence over both defaults and labels
 - ✅ **Empty StackInput**: Empty `stackInput.KubernetesNamespace` does not overwrite valid defaults
 
@@ -130,7 +130,7 @@ The corrected pattern is consistent with namespace initialization in:
 
 The namespace priority order is now explicitly documented in comments:
 1. **Default**: Uses `metadata.name` as the namespace
-2. **Label override**: Uses `kubernetes.openmcf.org/namespace` label if present and non-empty
+2. **Label override**: Uses `kubernetes.planton.dev/namespace` label if present and non-empty
 3. **StackInput override**: Uses `stackInput.KubernetesNamespace` if present and non-empty (highest precedence)
 
 ## Notes

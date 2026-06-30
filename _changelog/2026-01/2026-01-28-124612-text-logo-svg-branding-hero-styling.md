@@ -6,17 +6,17 @@
 
 ## Summary
 
-Integrated a new OpenMCF text logo SVG across all site headers and footer, replacing the plain text spans. Applied optical sizing adjustments for visual balance between icon and text logo, and updated the hero section to highlight "Open", "M", "C", "F" in the brand color (#7a4183) to subtly reinforce the OpenMCF brand name.
+Integrated a new Planton text logo SVG across all site headers and footer, replacing the plain text spans. Applied optical sizing adjustments for visual balance between icon and text logo, and updated the hero section to highlight "Open", "M", "C", "F" in the brand color (#7a4183) to subtly reinforce the Planton brand name.
 
 ## Problem Statement / Motivation
 
-Following the project rename to OpenMCF, a proper text logo SVG was created but not yet integrated into the site. The hero section also needed brand reinforcement through typography.
+Following the project rename to Planton, a proper text logo SVG was created but not yet integrated into the site. The hero section also needed brand reinforcement through typography.
 
 ### Pain Points
 
 - Text spans lacked the visual polish of a proper logo asset
 - No visual connection between the product name and the hero headline
-- Plain "OpenMCF" text didn't leverage the brand color palette
+- Plain "Planton" text didn't leverage the brand color palette
 
 ## Solution / What's New
 
@@ -27,7 +27,7 @@ Added the new `text-logo.svg` (purple #7a4183) to headers and footer, replacing 
 ```mermaid
 flowchart LR
     subgraph Before["Before"]
-        B1[icon.png] --> B2["span: OpenMCF"]
+        B1[icon.png] --> B2["span: Planton"]
     end
     
     subgraph After["After"]
@@ -52,7 +52,7 @@ Reduced gap between icon and text logo from `gap-3` (12px) to `gap-2` (8px) for 
 
 ### 4. Hero Brand Typography
 
-Updated hero headline to highlight letters spelling "OpenMCF" in brand color:
+Updated hero headline to highlight letters spelling "Planton" in brand color:
 
 ```
 An Open Source
@@ -79,7 +79,7 @@ White: everything else
 
 | File | Description |
 |------|-------------|
-| `site/public/text-logo.svg` | OpenMCF text logo in brand purple (#7a4183) |
+| `site/public/text-logo.svg` | Planton text logo in brand purple (#7a4183) |
 | `site/public/text-logo.png` | PNG version of text logo |
 
 ### Hero Section Code Pattern
@@ -115,7 +115,7 @@ White: everything else
 
 - **Professional branding**: Proper SVG logo asset vs plain text
 - **Visual balance**: Optical sizing creates harmonious icon/text pairing
-- **Brand reinforcement**: Hero headline subtly spells "OpenMCF" through color
+- **Brand reinforcement**: Hero headline subtly spells "Planton" through color
 - **Color consistency**: Uses exact brand color (#7a4183) from text logo throughout
 - **Improved UX**: Tighter spacing creates cohesive logo lockup
 
@@ -135,7 +135,7 @@ White: everything else
 ## Related Work
 
 - Follows from: `2026-01-28-110855-remove-text-logo-svg-branding-update.md` - Initial text span approach
-- Part of: OpenMCF branding consolidation effort
+- Part of: Planton branding consolidation effort
 
 ---
 

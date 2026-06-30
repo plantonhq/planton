@@ -6,15 +6,15 @@
 
 ## Summary
 
-Added `AwsOpenSearchDomain` (enum 251) as a new cloud resource kind in OpenMCF, providing managed search, analytics, and observability capabilities via Amazon OpenSearch Service. The component supports cluster configuration with dedicated masters, zone awareness, UltraWarm/cold storage tiers, fine-grained access control (FGAC), VPC deployment, log publishing, and Auto-Tune optimization.
+Added `AwsOpenSearchDomain` (enum 251) as a new cloud resource kind in Planton, providing managed search, analytics, and observability capabilities via Amazon OpenSearch Service. The component supports cluster configuration with dedicated masters, zone awareness, UltraWarm/cold storage tiers, fine-grained access control (FGAC), VPC deployment, log publishing, and Auto-Tune optimization.
 
 ## Problem Statement / Motivation
 
-OpenMCF's AWS provider catalog lacked a managed search and analytics resource. Teams deploying OpenSearch domains had no declarative, validated way to manage them through the framework. OpenSearch is a critical infrastructure component for log analytics, application search, SIEM, and observability workloads.
+Planton's AWS provider catalog lacked a managed search and analytics resource. Teams deploying OpenSearch domains had no declarative, validated way to manage them through the framework. OpenSearch is a critical infrastructure component for log analytics, application search, SIEM, and observability workloads.
 
 ### Pain Points
 
-- No declarative management of OpenSearch domains in OpenMCF
+- No declarative management of OpenSearch domains in Planton
 - OpenSearch has a large configuration surface (cluster topology, storage tiers, encryption, access control, networking) that benefits from validation and sensible defaults
 - Cross-resource dependencies (VPC, security groups, KMS keys, CloudWatch log groups, ACM certificates) needed wiring via StringValueOrRef
 

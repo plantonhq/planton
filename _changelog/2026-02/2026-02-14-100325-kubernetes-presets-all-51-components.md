@@ -6,11 +6,11 @@
 
 ## Summary
 
-Created production-quality presets for all 51 Kubernetes deployment components in OpenMCF, adding 83 presets (166 YAML + MD files, ~3,886 lines). This completes the largest single provider in the presets system, covering operators, infrastructure addons, core workloads, data services, DevOps/CI-CD platforms, observability tools, identity/security solutions, and distributed storage.
+Created production-quality presets for all 51 Kubernetes deployment components in Planton, adding 83 presets (166 YAML + MD files, ~3,886 lines). This completes the largest single provider in the presets system, covering operators, infrastructure addons, core workloads, data services, DevOps/CI-CD platforms, observability tools, identity/security solutions, and distributed storage.
 
 ## Problem Statement / Motivation
 
-The Kubernetes provider has the most components (51) of any OpenMCF provider, spanning everything from simple operator deployments to complex multi-container platforms like Harbor, Kafka, and Elasticsearch. Users needed ready-made starting points for each component to reduce the learning curve.
+The Kubernetes provider has the most components (51) of any Planton provider, spanning everything from simple operator deployments to complex multi-container platforms like Harbor, Kafka, and Elasticsearch. Users needed ready-made starting points for each component to reduce the learning curve.
 
 ### Pain Points
 

@@ -1,17 +1,17 @@
 ---
 title: "Documentation"
-description: "Comprehensive guides for OpenMCF - the open-source multi-cloud infrastructure framework"
+description: "Comprehensive guides for Planton - the open-source multi-cloud infrastructure framework"
 icon: "book"
 order: 1
 ---
 
-# Welcome to OpenMCF Documentation
+# Welcome to Planton Documentation
 
-OpenMCF is an open-source multi-cloud infrastructure framework that lets you author KRM-style YAML manifests once, validate them with Protobuf + Buf, and deploy with Pulumi or OpenTofu.
+Planton is an open-source multi-cloud infrastructure framework that lets you author KRM-style YAML manifests once, validate them with Protobuf + Buf, and deploy with Pulumi or OpenTofu.
 
 ## Getting Started
 
-New to OpenMCF? Start here:
+New to Planton? Start here:
 
 - Install the CLI via Homebrew
 - Validate your first manifest
@@ -19,7 +19,7 @@ New to OpenMCF? Start here:
 
 ## CLI Reference
 
-Master the OpenMCF command-line interface:
+Master the Planton command-line interface:
 
 - **[Unified Commands](/docs/cli/unified-commands)** - kubectl-style `apply` and `destroy` commands
 - **[Complete CLI Reference](/docs/cli/cli-reference)** - All commands, flags, and options
@@ -52,7 +52,7 @@ Copy-paste-ready manifest examples:
 
 ## Contributing
 
-Join the OpenMCF community:
+Join the Planton community:
 
 - **[How to Contribute](/docs/contributing)** - Development setup, building, testing, and PR workflow
 - **[Adding Components](/docs/contributing/adding-components)** - Create new deployment components
@@ -159,12 +159,12 @@ Browse deployment components by cloud provider in the [Catalog](/docs/catalog):
 ## Quick Example
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesRedis
 metadata:
   name: my-redis
   labels:
-    openmcf.org/provisioner: pulumi
+    planton.dev/provisioner: pulumi
 spec:
   namespace: redis
   container:
@@ -177,11 +177,11 @@ spec:
 
 ```bash
 # Simple kubectl-style workflow
-openmcf validate redis.yaml
-openmcf apply -f redis.yaml
+planton validate redis.yaml
+planton apply -f redis.yaml
 
 # Or use provisioner-specific commands
-openmcf pulumi up -f redis.yaml --stack myorg/project/dev
+planton pulumi up -f redis.yaml --stack myorg/project/dev
 ```
 
 ## Troubleshooting
@@ -197,7 +197,7 @@ For detailed solutions, see the full [Troubleshooting Guide](/docs/troubleshooti
 
 ## Resources
 
-- [GitHub Repository](https://github.com/plantonhq/openmcf)
-- [Buf Schema Registry](https://buf.build/openmcf/openmcf)
-- [Issue Tracker](https://github.com/plantonhq/openmcf/issues)
+- [GitHub Repository](https://github.com/plantonhq/planton)
+- [Buf Schema Registry](https://buf.build/planton/planton)
+- [Issue Tracker](https://github.com/plantonhq/planton/issues)
 

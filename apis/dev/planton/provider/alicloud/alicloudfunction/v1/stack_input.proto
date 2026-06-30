@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.alicloud.alicloudfunction.v1;
+
+import "dev/planton/provider/alicloud/alicloudfunction/v1/api.proto";
+import "dev/planton/provider/alicloud/provider.proto";
+
+// alicloud-function stack-input
+message AliCloudFunctionStackInput {
+  // target cloud-resource
+  AliCloudFunction target = 1;
+  // provider-config
+  dev.planton.provider.alicloud.AliCloudProviderConfig provider_config = 2;
+}

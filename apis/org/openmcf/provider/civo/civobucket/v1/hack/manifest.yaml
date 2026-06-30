@@ -1,5 +1,0 @@
-apiVersion: civo.openmcf.org/v1
-kind: CivoBucket
-metadata:
-  name: first-certificate
-spec:

@@ -1,28 +1,28 @@
 ---
 title: "Deployment Components"
-description: "The atomic unit of OpenMCF: a self-contained package combining API definition, IaC implementation, and documentation for deploying a specific cloud resource"
+description: "The atomic unit of Planton: a self-contained package combining API definition, IaC implementation, and documentation for deploying a specific cloud resource"
 icon: "package"
 order: 20
 ---
 
 # Deployment Components
 
-A deployment component is the atomic unit of OpenMCF. It is a self-contained package that combines everything needed to deploy and manage a specific type of cloud resource: a Protocol Buffer API definition, dual IaC module implementations (Pulumi and OpenTofu/Terraform), and auto-generated documentation.
+A deployment component is the atomic unit of Planton. It is a self-contained package that combines everything needed to deploy and manage a specific type of cloud resource: a Protocol Buffer API definition, dual IaC module implementations (Pulumi and OpenTofu/Terraform), and auto-generated documentation.
 
-OpenMCF ships with 362 deployment components spanning 17 cloud providers. Each component follows the same structural contract, which means once you understand how one component works, you understand them all.
+Planton ships with 362 deployment components spanning 17 cloud providers. Each component follows the same structural contract, which means once you understand how one component works, you understand them all.
 
 ## What a Component Contains
 
 Every deployment component lives at a predictable path in the repository:
 
 ```text
-apis/org/openmcf/provider/{provider}/{component}/v1/
+apis/dev/planton/provider/{provider}/{component}/v1/
 ```
 
 Inside that directory, every component contains the same set of files:
 
 ```text
-apis/org/openmcf/provider/kubernetes/kubernetespostgres/v1/
+apis/dev/planton/provider/kubernetes/kubernetespostgres/v1/
 |-- api.proto              # Resource envelope: apiVersion, kind, metadata, spec, status
 |-- spec.proto             # Configuration fields with types and validation rules
 |-- stack_input.proto      # IaC input contract: the resource + provider credentials
@@ -55,9 +55,9 @@ Here is the `api.proto` for `KubernetesPostgres`:
 
 ```protobuf
 message KubernetesPostgres {
-  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.openmcf.org/v1'];
+  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.planton.dev/v1'];
   string kind = 2 [(buf.validate.field).string.const = 'KubernetesPostgres'];
-  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
   KubernetesPostgresSpec spec = 4 [(buf.validate.field).required = true];
   KubernetesPostgresStatus status = 5;
 }
@@ -65,7 +65,7 @@ message KubernetesPostgres {
 
 Two things to notice. First, `api_version` and `kind` are enforced as constants using `buf.validate` -- this means a manifest with a wrong `apiVersion` or `kind` value will fail validation before any cloud API is ever called. Second, `metadata` and `spec` are required, while `status` is optional and populated by the system after deployment.
 
-Every component's `api.proto` follows this exact pattern. The only things that change are the provider group in `api_version` (e.g., `aws.openmcf.org/v1`, `gcp.openmcf.org/v1`), the `kind` value, and the spec/status message types.
+Every component's `api.proto` follows this exact pattern. The only things that change are the provider group in `api_version` (e.g., `aws.planton.dev/v1`, `gcp.planton.dev/v1`), the `kind` value, and the spec/status message types.
 
 ### spec.proto -- The Configuration Surface
 
@@ -119,7 +119,7 @@ message AwsS3BucketSpec {
 }
 ```
 
-This is the provider-specific design philosophy in action. `KubernetesPostgres` and `AwsS3Bucket` share the same structural envelope (apiVersion, kind, metadata, spec, status), but their specs expose the full, native capability of their respective platforms. OpenMCF does not abstract these differences away.
+This is the provider-specific design philosophy in action. `KubernetesPostgres` and `AwsS3Bucket` share the same structural envelope (apiVersion, kind, metadata, spec, status), but their specs expose the full, native capability of their respective platforms. Planton does not abstract these differences away.
 
 ### stack_input.proto -- The IaC Input Contract
 
@@ -128,7 +128,7 @@ The `stack_input.proto` file defines what the IaC modules receive when they run.
 ```protobuf
 message KubernetesPostgresStackInput {
   KubernetesPostgres target = 1;
-  org.openmcf.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+  dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
 }
 ```
 
@@ -137,7 +137,7 @@ For an AWS component, the provider config is different:
 ```protobuf
 message AwsS3BucketStackInput {
   AwsS3Bucket target = 1;
-  org.openmcf.provider.aws.AwsProviderConfig provider_config = 2;
+  dev.planton.provider.aws.AwsProviderConfig provider_config = 2;
 }
 ```
 
@@ -217,7 +217,7 @@ Both implementations receive the same input (the manifest's metadata and spec) a
 
 ## Provider-Specific by Design
 
-OpenMCF deliberately does not create abstraction layers across cloud providers. There is no `GenericDatabase` component that magically works on AWS, GCP, and Kubernetes. Instead, there are specific components for each platform:
+Planton deliberately does not create abstraction layers across cloud providers. There is no `GenericDatabase` component that magically works on AWS, GCP, and Kubernetes. Instead, there are specific components for each platform:
 
 | Need | AWS | GCP | Kubernetes |
 |------|-----|-----|------------|
@@ -228,7 +228,7 @@ OpenMCF deliberately does not create abstraction layers across cloud providers. 
 
 This is intentional. Each cloud provider has different capabilities, pricing models, operational characteristics, and configuration options. An S3 bucket supports lifecycle rules, versioning policies, and cross-region replication. A GCS bucket has different storage classes and different access control models. Abstracting these into a common interface would either lose capabilities or create a leaky abstraction.
 
-What OpenMCF provides instead is consistency at the structural level:
+What Planton provides instead is consistency at the structural level:
 
 - Every component uses the same manifest format (KRM)
 - Every component is validated using the same protobuf validation framework
@@ -242,15 +242,15 @@ The workflow is identical. The configuration is provider-specific.
 Here is a complete manifest for deploying PostgreSQL on Kubernetes:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPostgres
 metadata:
   name: session-store
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: production.KubernetesPostgres.session-store
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: production.KubernetesPostgres.session-store
 spec:
   namespace:
     value: session-store

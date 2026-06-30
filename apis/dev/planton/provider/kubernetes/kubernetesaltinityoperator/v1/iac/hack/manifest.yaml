@@ -1,0 +1,19 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesAltinityOperator
+metadata:
+  name: kubernetes-altinity-operator-test
+spec:
+  targetCluster:
+    clusterKind: GcpGkeCluster
+    clusterName: local-kind-cluster
+  namespace:
+    value: kubernetes-altinity-operator
+  container:
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+

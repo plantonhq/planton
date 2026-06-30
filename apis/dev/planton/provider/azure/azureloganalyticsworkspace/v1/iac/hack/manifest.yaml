@@ -1,0 +1,13 @@
+apiVersion: azure.planton.dev/v1
+kind: AzureLogAnalyticsWorkspace
+metadata:
+  name: test-law
+  org: test-org
+  env: dev
+spec:
+  region: eastus
+  resource_group: test-rg
+  name: test-workspace
+  sku: PerGB2018
+  retention_in_days: 30
+  daily_quota_gb: -1

@@ -1,0 +1,33 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesDaemonSet
+metadata:
+  name: e2e-ds-configmap
+spec:
+  namespace:
+    value: e2e-ds-configmap-ns
+  create_namespace: true
+  container:
+    app:
+      image:
+        repo: busybox
+        tag: "1.36"
+      resources:
+        requests:
+          cpu: "10m"
+          memory: "32Mi"
+        limits:
+          cpu: "50m"
+          memory: "64Mi"
+      command:
+        - /bin/sh
+        - -c
+        - sleep 3600
+      volume_mounts:
+        - name: app-config
+          mount_path: /etc/config
+          config_map:
+            name: app-config
+  config_maps:
+    app-config: |
+      log_level=debug
+      mode=test

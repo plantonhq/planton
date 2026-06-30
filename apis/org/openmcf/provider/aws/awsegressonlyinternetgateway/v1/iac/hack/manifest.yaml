@@ -1,8 +1,0 @@
-apiVersion: aws.openmcf.org/v1
-kind: AwsEgressOnlyInternetGateway
-metadata:
-  name: awsegressonlyinternetgateway-demo
-spec:
-  region: us-west-2
-  vpcId:
-    value: "vpc-0abc1234def567890"

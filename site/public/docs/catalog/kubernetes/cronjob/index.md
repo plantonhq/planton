@@ -8,11 +8,11 @@ componentName: "kubernetescronjob"
 
 # Kubernetes CronJob
 
-Deploys a container as a Kubernetes CronJob with configurable scheduling, concurrency control, retry policies, environment variable and secret management, ConfigMap creation, and volume mounts. OpenMCF handles the creation of all supporting resources (namespace, secrets, image pull secrets, ConfigMaps) alongside the CronJob itself.
+Deploys a container as a Kubernetes CronJob with configurable scheduling, concurrency control, retry policies, environment variable and secret management, ConfigMap creation, and volume mounts. Planton handles the creation of all supporting resources (namespace, secrets, image pull secrets, ConfigMaps) alongside the CronJob itself.
 
 ## What Gets Created
 
-When you deploy a KubernetesCronJob resource, OpenMCF provisions:
+When you deploy a KubernetesCronJob resource, Planton provisions:
 
 - **Namespace** — created only when `createNamespace` is `true`
 - **CronJob** — a Kubernetes CronJob with the specified container image, schedule, concurrency policy, resource limits, volume mounts, and restart policy
@@ -23,7 +23,7 @@ When you deploy a KubernetesCronJob resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
 - **A container image** accessible from the cluster (public registry or with a configured image pull secret)
 
@@ -32,15 +32,15 @@ When you deploy a KubernetesCronJob resource, OpenMCF provisions:
 Create a file `cronjob.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesCronJob
 metadata:
   name: my-cronjob
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesCronJob.my-cronjob
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesCronJob.my-cronjob
 spec:
   namespace: my-namespace
   createNamespace: true
@@ -58,7 +58,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f cronjob.yaml
+planton apply -f cronjob.yaml
 ```
 
 This creates a CronJob in the `my-namespace` namespace that runs every hour using a busybox container, with default resource limits (1000m CPU, 1Gi memory) and a `Forbid` concurrency policy.
@@ -107,15 +107,15 @@ This creates a CronJob in the `my-namespace` namespace that runs every hour usin
 A CronJob that runs daily at midnight to clean up old log files:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesCronJob
 metadata:
   name: log-cleanup
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesCronJob.log-cleanup
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesCronJob.log-cleanup
 spec:
   namespace: maintenance
   createNamespace: true
@@ -139,18 +139,18 @@ spec:
 
 ### Database Backup with Environment Variables and Secrets
 
-A CronJob that performs a nightly database backup, using `valueFrom` to resolve the database host from another OpenMCF resource and `secretRef` to retrieve the password from an existing Kubernetes Secret:
+A CronJob that performs a nightly database backup, using `valueFrom` to resolve the database host from another Planton resource and `secretRef` to retrieve the password from an existing Kubernetes Secret:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesCronJob
 metadata:
   name: db-backup
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.KubernetesCronJob.db-backup
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.KubernetesCronJob.db-backup
 spec:
   namespace: backups
   schedule: "0 2 * * *"
@@ -197,15 +197,15 @@ spec:
 A CronJob that runs a backup script stored in a ConfigMap, with a PVC for persistent backup storage and tuned scheduling parameters:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesCronJob
 metadata:
   name: scheduled-backup
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesCronJob.scheduled-backup
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesCronJob.scheduled-backup
 spec:
   namespace: production
   schedule: "0 3 * * 0"
@@ -272,15 +272,15 @@ spec:
 A CronJob defined in a suspended state, ready to be un-suspended or manually triggered as needed:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesCronJob
 metadata:
   name: data-migration
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesCronJob.data-migration
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesCronJob.data-migration
 spec:
   namespace: migrations
   schedule: "0 0 * * *"

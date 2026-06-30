@@ -6,11 +6,11 @@
 
 ## Summary
 
-Implemented comprehensive client-side search functionality for the openmcf documentation site using Pagefind, enabling fast, offline-capable full-text search across all documentation pages. The solution provides instant search results with highlighted matches, keyboard shortcuts (/ and Cmd/Ctrl+K), and a purple-themed Material-UI dropdown interface, all without requiring external dependencies like Algolia.
+Implemented comprehensive client-side search functionality for the planton documentation site using Pagefind, enabling fast, offline-capable full-text search across all documentation pages. The solution provides instant search results with highlighted matches, keyboard shortcuts (/ and Cmd/Ctrl+K), and a purple-themed Material-UI dropdown interface, all without requiring external dependencies like Algolia.
 
 ## Problem Statement / Motivation
 
-The openmcf documentation site lacked search functionality, making it difficult for users to quickly find relevant information across the growing collection of deployment component documentation, guides, and technical references. With 135+ documentation pages covering 10 cloud providers and 118 components, users needed an efficient way to discover content.
+The planton documentation site lacked search functionality, making it difficult for users to quickly find relevant information across the growing collection of deployment component documentation, guides, and technical references. With 135+ documentation pages covering 10 cloud providers and 118 components, users needed an efficient way to discover content.
 
 ### Pain Points
 
@@ -87,7 +87,7 @@ Replaced placeholder SearchBar.tsx with full-featured Pagefind-based search comp
 - **Dynamic Import**: Lazy-loads Pagefind library from `/_pagefind/pagefind.js`
 - **Real-Time Search**: Uses React's `useDeferredValue` for debounced search-as-you-type
 - **Keyboard Shortcuts**: `/` or `Cmd/Ctrl+K` to focus search input
-- **Purple Theme**: Material-UI components styled with OpenMCF purple (#a855f7)
+- **Purple Theme**: Material-UI components styled with Planton purple (#a855f7)
 - **Results Dropdown**: Grouped by page title with highlighted search terms
 - **Smart Navigation**: Click to navigate, handles same-page anchor scrolling
 - **Loading States**: Shows loading spinner while searching
@@ -537,7 +537,7 @@ if (!el || INPUTS.has(el.tagName) || (el as HTMLElement).isContentEditable) {
 - Automatic updates on every build
 - No maintenance burden
 
-**For OpenMCF**:
+**For Planton**:
 - Professional documentation search UX
 - Zero recurring costs (no Algolia fees)
 - Privacy-friendly solution
@@ -765,5 +765,5 @@ find out/_pagefind/fragment -type f | wc -l
 **Search Index**: 135 pages, 12,122 words, ~200KB  
 **Build Impact**: +1 second (Pagefind indexing)  
 
-The Pagefind search integration is now live, tested, and ready for user feedback. The solution provides professional documentation search without external dependencies or recurring costs, while maintaining the purple branding and Material-UI consistency of the openmcf documentation site.
+The Pagefind search integration is now live, tested, and ready for user feedback. The solution provides professional documentation search without external dependencies or recurring costs, while maintaining the purple branding and Material-UI consistency of the planton documentation site.
 

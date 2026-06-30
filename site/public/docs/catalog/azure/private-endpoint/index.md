@@ -12,7 +12,7 @@ Deploys an Azure Private Endpoint that provides secure, private connectivity to 
 
 ## What Gets Created
 
-When you deploy an AzurePrivateEndpoint resource, OpenMCF provisions:
+When you deploy an AzurePrivateEndpoint resource, Planton provisions:
 
 - **Private Endpoint** — a `privatelink.Endpoint` resource in the specified region and resource group, with an auto-approved private service connection to the target Azure service and a private IP allocated from the designated subnet
 - **Private Service Connection** — an auto-approved connection from the endpoint to the target resource, named `{metadata.name}-connection`, mapping one or more sub-resource group IDs
@@ -21,7 +21,7 @@ When you deploy an AzurePrivateEndpoint resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Resource Group** where the endpoint will be created (can reference an AzureResourceGroup resource)
 - **A Subnet** in a VNet from which the private IP will be allocated; the subnet must have private endpoint network policies configured appropriately
 - **A Private Link-enabled target resource** — the Azure PaaS service or custom Private Link Service to connect to (e.g., PostgreSQL Flexible Server, Key Vault, Storage Account)
@@ -32,15 +32,15 @@ When you deploy an AzurePrivateEndpoint resource, OpenMCF provisions:
 Create a file `private-endpoint.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzurePrivateEndpoint
 metadata:
   name: my-pe
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzurePrivateEndpoint.my-pe
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzurePrivateEndpoint.my-pe
 spec:
   region: eastus
   resourceGroup: my-rg
@@ -54,7 +54,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f private-endpoint.yaml
+planton apply -f private-endpoint.yaml
 ```
 
 This creates a private endpoint in the specified subnet with an auto-approved connection to the target PostgreSQL Flexible Server, allocating a private IP from the subnet.
@@ -69,7 +69,7 @@ This creates a private endpoint in the specified subnet with an auto-approved co
 | `resourceGroup` | `StringValueOrRef` | Azure Resource Group name. Can reference an AzureResourceGroup resource via `valueFrom`. | Required |
 | `name` | `string` | Name of the Private Endpoint. Must be unique within the resource group. Allows letters, numbers, underscores, periods, and hyphens; must start and end with an alphanumeric character. | Required, 1-80 characters |
 | `subnetId` | `StringValueOrRef` | Azure Resource Manager ID of the subnet from which a private IP will be allocated. Can reference an AzureSubnet resource via `valueFrom`. | Required |
-| `privateConnectionResourceId` | `StringValueOrRef` | Azure Resource Manager ID of the Private Link-enabled target resource. Can reference any OpenMCF resource that supports Private Link via `valueFrom` (polymorphic -- no default kind). | Required |
+| `privateConnectionResourceId` | `StringValueOrRef` | Azure Resource Manager ID of the Private Link-enabled target resource. Can reference any Planton resource that supports Private Link via `valueFrom` (polymorphic -- no default kind). | Required |
 
 ### Optional Fields
 
@@ -85,15 +85,15 @@ This creates a private endpoint in the specified subnet with an auto-approved co
 A private endpoint connecting to a PostgreSQL Flexible Server with automatic DNS registration in the corresponding privatelink zone:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzurePrivateEndpoint
 metadata:
   name: postgres-pe
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzurePrivateEndpoint.postgres-pe
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzurePrivateEndpoint.postgres-pe
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -110,15 +110,15 @@ spec:
 A private endpoint for Key Vault where DNS is managed externally:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzurePrivateEndpoint
 metadata:
   name: vault-pe
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzurePrivateEndpoint.vault-pe
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzurePrivateEndpoint.vault-pe
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -134,15 +134,15 @@ spec:
 A private endpoint for Azure Blob Storage with DNS zone group:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzurePrivateEndpoint
 metadata:
   name: blob-pe
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzurePrivateEndpoint.blob-pe
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzurePrivateEndpoint.blob-pe
 spec:
   region: westeurope
   resourceGroup: data-rg
@@ -156,18 +156,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference OpenMCF-managed resources instead of hardcoding Azure resource IDs. The `privateConnectionResourceId` field is polymorphic and can reference any resource kind that supports Private Link:
+Reference Planton-managed resources instead of hardcoding Azure resource IDs. The `privateConnectionResourceId` field is polymorphic and can reference any resource kind that supports Private Link:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzurePrivateEndpoint
 metadata:
   name: ref-pe
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzurePrivateEndpoint.ref-pe
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzurePrivateEndpoint.ref-pe
 spec:
   region: eastus
   resourceGroup:
@@ -200,15 +200,15 @@ spec:
 A private endpoint connecting to Azure Cosmos DB using the SQL API sub-resource:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzurePrivateEndpoint
 metadata:
   name: cosmos-pe
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzurePrivateEndpoint.cosmos-pe
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzurePrivateEndpoint.cosmos-pe
 spec:
   region: eastus
   resourceGroup: app-rg

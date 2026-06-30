@@ -12,7 +12,7 @@ Deploys a serverless function on DigitalOcean App Platform with GitHub-based sou
 
 ## What Gets Created
 
-When you deploy a DigitalOceanFunction resource, OpenMCF provisions:
+When you deploy a DigitalOceanFunction resource, Planton provisions:
 
 - **App Platform Application** -- a `digitalocean.App` resource containing a single function component, deployed to the specified region
 - **Function Definition** -- an `AppSpecFunction` within the app spec, configured with the chosen runtime, memory, timeout, entrypoint, and source directory
@@ -22,7 +22,7 @@ When you deploy a DigitalOceanFunction resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **DigitalOcean credentials** configured via environment variables or OpenMCF provider config
+- **DigitalOcean credentials** configured via environment variables or Planton provider config
 - **A GitHub repository** containing the function source code and a valid `project.yml` (required when using `githubSource`)
 - **DigitalOcean App Platform access** enabled on the account (App Platform is available in all regions that support it)
 
@@ -31,15 +31,15 @@ When you deploy a DigitalOceanFunction resource, OpenMCF provisions:
 Create a file `do-function.yaml`:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanFunction
 metadata:
   name: my-function
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.DigitalOceanFunction.my-function
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.DigitalOceanFunction.my-function
 spec:
   functionName: my-function
   region: nyc3
@@ -54,7 +54,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f do-function.yaml
+planton apply -f do-function.yaml
 ```
 
 This creates a Node.js 20 function deployed via App Platform in the NYC3 region, with automatic redeployment on push to the `main` branch.
@@ -92,15 +92,15 @@ This creates a Node.js 20 function deployed via App Platform in the NYC3 region,
 A function that connects to a database using secret credentials and runs with increased memory:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanFunction
 metadata:
   name: api-handler
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.DigitalOceanFunction.api-handler
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.DigitalOceanFunction.api-handler
 spec:
   functionName: api-handler
   region: fra1
@@ -125,15 +125,15 @@ spec:
 A Python function that runs on a cron schedule to perform periodic maintenance, with no HTTP endpoint:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanFunction
 metadata:
   name: nightly-cleanup
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.DigitalOceanFunction.nightly-cleanup
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.DigitalOceanFunction.nightly-cleanup
 spec:
   functionName: nightly-cleanup
   region: nyc3
@@ -157,15 +157,15 @@ spec:
 A Go function that processes incoming webhooks with maximum memory allocation:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanFunction
 metadata:
   name: webhook-processor
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.DigitalOceanFunction.webhook-processor
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.DigitalOceanFunction.webhook-processor
 spec:
   functionName: webhook-processor
   region: sfo3

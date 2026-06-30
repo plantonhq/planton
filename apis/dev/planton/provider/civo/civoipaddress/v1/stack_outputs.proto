@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package dev.planton.provider.civo.civoipaddress.v1;
+
+// CivoIpAddressStackOutputs captures the output details after provisioning a Civo reserved IP.
+message CivoIpAddressStackOutputs {
+  // The unique identifier of the reserved IP in Civo (UUID).
+  string reserved_ip_id = 1;
+
+  // The static IPv4 address allocated for this reserved IP.
+  string ip_address = 2;
+
+  // The ID of the Civo resource (instance or load balancer) currently attached to this IP, if any.
+  // Will be empty if the reserved IP is not attached to any resource.
+  string attached_resource_id = 3;
+
+  // The timestamp when the reserved IP was created, in RFC 3339 format.
+  string created_at_rfc3339 = 4;
+}

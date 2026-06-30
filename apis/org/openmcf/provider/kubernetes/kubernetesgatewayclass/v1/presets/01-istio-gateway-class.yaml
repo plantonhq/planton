@@ -1,7 +1,0 @@
-apiVersion: kubernetes.openmcf.org/v1
-kind: KubernetesGatewayClass
-metadata:
-  name: my-istio-gateway-class
-spec:
-  controllerName: istio.io/gateway-controller
-  description: "Istio gateway controller"

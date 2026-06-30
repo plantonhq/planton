@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.alicloud.alicloudnasfilesystem.v1;
+
+import "dev/planton/provider/alicloud/alicloudnasfilesystem/v1/api.proto";
+import "dev/planton/provider/alicloud/provider.proto";
+
+// alicloud-nas-file-system stack-input
+message AliCloudNasFileSystemStackInput {
+  // target cloud-resource
+  AliCloudNasFileSystem target = 1;
+  // provider-config
+  dev.planton.provider.alicloud.AliCloudProviderConfig provider_config = 2;
+}

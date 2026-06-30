@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added the `HetznerCloudFirewall` deployment component (R03, enum 3502, id_prefix: `hcfw`) to OpenMCF. This is the third Hetzner Cloud component and the first to use nested repeated messages with cross-field CEL validations, establishing patterns for all subsequent complex components. Firewalls define inbound/outbound traffic rules that servers reference via `firewall_ids`.
+Added the `HetznerCloudFirewall` deployment component (R03, enum 3502, id_prefix: `hcfw`) to Planton. This is the third Hetzner Cloud component and the first to use nested repeated messages with cross-field CEL validations, establishing patterns for all subsequent complex components. Firewalls define inbound/outbound traffic rules that servers reference via `firewall_ids`.
 
 ## Problem Statement / Motivation
 
@@ -14,7 +14,7 @@ Hetzner Cloud servers need network-level access control. Without firewalls, serv
 
 ### Pain Points
 
-- No way to manage Hetzner Cloud firewalls through OpenMCF
+- No way to manage Hetzner Cloud firewalls through Planton
 - The upcoming HetznerCloudServer component (R07) needs firewall references via StringValueOrRef
 - All three planned infra charts require firewalls for security boundaries
 
@@ -28,7 +28,7 @@ The Hetzner Cloud firewall resource has an `apply_to` attribute that pushes fire
 
 **Rationale:**
 - Avoids bidirectional coupling (firewall -> server AND server -> firewall)
-- OpenMCF's composability model (StringValueOrRef) favors explicit pull-model wiring
+- Planton's composability model (StringValueOrRef) favors explicit pull-model wiring
 - Infra-charts handle composition, making label-based targeting redundant
 - Cleaner dependency graph for the DAG visualization
 

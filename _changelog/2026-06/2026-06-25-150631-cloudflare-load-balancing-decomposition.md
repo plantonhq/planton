@@ -107,7 +107,7 @@ A full **live `tofu apply` + `destroy`** against a real Cloudflare account
 exercised the whole dependency chain end to end: a Monitor, then a Pool wired to
 that monitor (`monitor` FK resolved), then a zone-scoped Load Balancer wired to
 that pool (`default_pools`/`fallback_pool` FKs resolved) on a throwaway hostname
-(`lb-openmcf-test.gitr.dev`), followed by a clean teardown of all three (zero
+(`lb-planton-test.gitr.dev`), followed by a clean teardown of all three (zero
 leftover resources). The `load_balancer_cname_target` output correctly resolved to
 the hostname. Cloudflare's own server-side validations were observed working
 through the modules along the way (rejecting non-globally-routable origins under an

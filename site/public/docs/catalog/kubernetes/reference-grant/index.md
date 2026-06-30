@@ -28,7 +28,7 @@ backend Services across namespace boundaries).
 ## Quick Start
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesReferenceGrant
 metadata:
   name: allow-frontend-to-backend
@@ -45,7 +45,7 @@ spec:
 ```
 
 ```bash
-openmcf apply -f referencegrant.yaml
+planton apply -f referencegrant.yaml
 ```
 
 ## Configuration Reference

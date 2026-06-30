@@ -12,13 +12,13 @@ Deploys a single DNS record into an existing Cloudflare DNS zone. The component 
 
 ## What Gets Created
 
-When you deploy a CloudflareDnsRecord resource, OpenMCF provisions:
+When you deploy a CloudflareDnsRecord resource, Planton provisions:
 
 - **DNS Record** — a `cloudflare_dns_record` resource in the specified zone, configured with the given type, value, TTL, proxy setting, and optional priority and comment
 
 ## Prerequisites
 
-- **Cloudflare credentials** configured via environment variables or OpenMCF provider config
+- **Cloudflare credentials** configured via environment variables or Planton provider config
 - **An existing Cloudflare DNS zone** — either the zone ID as a literal string or a deployed CloudflareDnsZone resource to reference
 - **Appropriate permissions** — the API token must have DNS edit access for the target zone
 
@@ -27,15 +27,15 @@ When you deploy a CloudflareDnsRecord resource, OpenMCF provisions:
 Create a file `dns-record.yaml`:
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareDnsRecord
 metadata:
   name: my-record
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CloudflareDnsRecord.my-record
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CloudflareDnsRecord.my-record
 spec:
   zoneId:
     value: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
@@ -48,7 +48,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f dns-record.yaml
+planton apply -f dns-record.yaml
 ```
 
 This creates a proxied A record for `www` in the specified zone, routing traffic through Cloudflare's CDN and WAF.
@@ -103,15 +103,15 @@ When using `valueFrom`, the `kind` defaults to `CloudflareDnsZone` and the `fiel
 An A record with Cloudflare proxy enabled, suitable for a web server:
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareDnsRecord
 metadata:
   name: web-a-record
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CloudflareDnsRecord.web-a-record
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CloudflareDnsRecord.web-a-record
 spec:
   zoneId:
     valueFrom:
@@ -129,15 +129,15 @@ spec:
 An MX record pointing to a mail server, with priority set:
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareDnsRecord
 metadata:
   name: mail-mx-record
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CloudflareDnsRecord.mail-mx-record
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CloudflareDnsRecord.mail-mx-record
 spec:
   zoneId:
     value: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
@@ -154,15 +154,15 @@ spec:
 A TXT record at the zone apex defining an SPF policy:
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareDnsRecord
 metadata:
   name: spf-txt-record
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CloudflareDnsRecord.spf-txt-record
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CloudflareDnsRecord.spf-txt-record
 spec:
   zoneId:
     valueFrom:

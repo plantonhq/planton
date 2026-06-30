@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesharbor.v1;
+
+import "dev/planton/provider/kubernetes/kubernetes.proto";
+
+// KubernetesHarborStackOutputs captures observable outputs from a Harbor deployment on Kubernetes.
+message KubernetesHarborStackOutputs {
+  // namespace specifies the Kubernetes namespace in which the Harbor registry is created.
+  string namespace = 1;
+
+  // kubernetes service name for Harbor Core (API and authentication).
+  // ex: main-harbor-kubernetes-core
+  // in the above example, "main" is the name of the harbor-kubernetes
+  string core_service = 2;
+
+  // kubernetes service name for Harbor Portal (web UI).
+  // ex: main-harbor-kubernetes-portal
+  string portal_service = 3;
+
+  // kubernetes service name for Harbor Registry (Docker/OCI registry).
+  // ex: main-harbor-kubernetes-registry
+  string registry_service = 4;
+
+  // kubernetes service name for Harbor Jobservice.
+  // ex: main-harbor-kubernetes-jobservice
+  string jobservice_service = 5;
+
+  // command to setup port-forwarding to open Harbor UI from developers laptop.
+  // this might come handy when harbor-kubernetes ingress is disabled for security reasons.
+  // this is rendered by combining portal service and namespace.
+  // ex: kubectl port-forward svc/harbor-portal -n kubernetes_namespace 8080:80
+  // running the command from this attribute makes it possible to access Harbor UI using http://localhost:8080
+  string port_forward_command = 6;
+
+  // kubernetes endpoint to connect to Harbor Core from within the cluster.
+  // ex: main-harbor-kubernetes-core.namespace.svc.cluster.local:80
+  string internal_core_endpoint = 7;
+
+  // kubernetes endpoint for the Harbor Registry from within the cluster.
+  // ex: main-harbor-kubernetes-registry.namespace.svc.cluster.local:5000
+  string internal_registry_endpoint = 8;
+
+  // public endpoint to access Harbor UI from clients outside kubernetes.
+  // ex: https://harbor-planton-pcs-dev-main.registry.dev.planton.live
+  string external_hostname = 9;
+
+  // external hostname for Docker registry access (docker login, pull, push).
+  // ex: https://registry-planton-pcs-dev-main.registry.dev.planton.live
+  // this is typically the same as external_hostname unless separate domains are configured
+  string registry_external_hostname = 10;
+
+  // external hostname for Notary service (image signing) if ingress is configured.
+  // ex: https://notary-planton-pcs-dev-main.registry.dev.planton.live
+  string notary_external_hostname = 11;
+
+  // Harbor admin username for initial login.
+  // typically this is "admin"
+  string admin_username = 12;
+
+  // kubernetes secret containing the Harbor admin password.
+  // the password can be retrieved using: kubectl get secret <secret-name> -n <namespace> -o jsonpath='{.data.password}' | base64 -d
+  dev.planton.provider.kubernetes.KubernetesSecretKey admin_password_secret = 13;
+
+  // PostgreSQL database endpoint (internal cluster endpoint).
+  // ex: harbor-postgresql.namespace.svc.cluster.local:5432
+  // This is only populated when using self-managed PostgreSQL.
+  string database_endpoint = 14;
+
+  // PostgreSQL username for Harbor database access.
+  // This is only populated when using self-managed PostgreSQL.
+  string database_username = 15;
+
+  // kubernetes secret key for the PostgreSQL password.
+  // This is only populated when using self-managed PostgreSQL.
+  dev.planton.provider.kubernetes.KubernetesSecretKey database_password_secret = 16;
+
+  // Redis cache endpoint (internal cluster endpoint).
+  // ex: harbor-redis.namespace.svc.cluster.local:6379
+  // This is only populated when using self-managed Redis.
+  string redis_endpoint = 17;
+
+  // kubernetes secret key for the Redis password.
+  // This is only populated when using self-managed Redis.
+  dev.planton.provider.kubernetes.KubernetesSecretKey redis_password_secret = 18;
+}

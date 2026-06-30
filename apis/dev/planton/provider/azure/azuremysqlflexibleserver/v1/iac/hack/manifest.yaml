@@ -1,0 +1,26 @@
+api_version: azure.planton.dev/v1
+kind: AzureMysqlFlexibleServer
+metadata:
+  name: test-mysql-hack
+spec:
+  region: eastus
+  resource_group:
+    value: test-rg
+  name: test-mysql-hack
+  administrator_login: mysqladmin
+  administrator_password:
+    value: TestP@ssw0rd1234!
+  version: "8.0.21"
+  sku_name: B_Standard_B1ms
+  storage_size_gb: 20
+  auto_grow_enabled: true
+  backup_retention_days: 7
+  geo_redundant_backup_enabled: false
+  databases:
+    - name: myapp
+      charset: utf8mb4
+      collation: utf8mb4_0900_ai_ci
+  firewall_rules:
+    - name: allow-all-azure
+      start_ip_address: "0.0.0.0"
+      end_ip_address: "0.0.0.0"

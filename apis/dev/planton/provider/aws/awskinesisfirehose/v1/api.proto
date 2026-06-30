@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awskinesisfirehose.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/aws/awskinesisfirehose/v1/spec.proto";
+import "dev/planton/provider/aws/awskinesisfirehose/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// AwsKinesisFirehose is the Kubernetes-style resource envelope for an Amazon
+// Kinesis Data Firehose delivery stream.
+message AwsKinesisFirehose {
+  // api-version must be set to "aws.planton.dev/v1".
+  string api_version = 1 [(buf.validate.field).string.const = "aws.planton.dev/v1"];
+
+  // resource-kind for this Firehose delivery stream, must be "AwsKinesisFirehose".
+  string kind = 2 [(buf.validate.field).string.const = "AwsKinesisFirehose"];
+
+  // metadata captures identifying information (name, org, env, id, labels, relationships).
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec holds the desired configuration for the Firehose delivery stream.
+  AwsKinesisFirehoseSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status holds runtime or post-deployment information.
+  AwsKinesisFirehoseStatus status = 5;
+}
+
+// AwsKinesisFirehoseStatus captures lifecycle, audit, job linkage, and observable outputs.
+message AwsKinesisFirehoseStatus {
+  // stack-outputs
+  AwsKinesisFirehoseStackOutputs outputs = 1;
+}

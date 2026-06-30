@@ -12,14 +12,14 @@ Manages individual DNS records within a Civo DNS zone. The component creates a s
 
 ## What Gets Created
 
-When you deploy a CivoDnsRecord resource, OpenMCF provisions:
+When you deploy a CivoDnsRecord resource, Planton provisions:
 
 - **Civo DNS Domain Record** --- a DNS record of the specified type attached to an existing Civo DNS zone, created via the `civo.DnsDomainRecord` Pulumi resource
 - **Labels** --- key-value metadata derived from `metadata.labels` applied to internal tracking (resource name, kind, organization, environment)
 
 ## Prerequisites
 
-- **Civo credentials** configured via environment variables or OpenMCF provider config
+- **Civo credentials** configured via environment variables or Planton provider config
 - **An existing Civo DNS Zone** --- either supply the zone ID directly or reference a CivoDnsZone resource using `valueFrom`
 - **A valid record value** appropriate for the chosen record type (e.g., an IPv4 address for A records, a hostname for CNAME records)
 
@@ -28,15 +28,15 @@ When you deploy a CivoDnsRecord resource, OpenMCF provisions:
 Create a file `civo-dns-record.yaml`:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoDnsRecord
 metadata:
   name: www-record
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CivoDnsRecord.www-record
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CivoDnsRecord.www-record
 spec:
   zoneId:
     value: "a1b2c3d4-zone-id"
@@ -48,7 +48,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f civo-dns-record.yaml
+planton apply -f civo-dns-record.yaml
 ```
 
 This creates an A record for `www` in the specified DNS zone pointing to `203.0.113.10` with a default TTL of 3600 seconds (1 hour).
@@ -113,15 +113,15 @@ zoneId:
 An A record pointing a subdomain to an IPv4 address with a 5-minute TTL:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoDnsRecord
 metadata:
   name: api-a-record
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CivoDnsRecord.api-a-record
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CivoDnsRecord.api-a-record
 spec:
   zoneId:
     valueFrom:
@@ -137,15 +137,15 @@ spec:
 A mail exchange record directing email to a mail server with priority 10:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoDnsRecord
 metadata:
   name: mail-mx-record
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CivoDnsRecord.mail-mx-record
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CivoDnsRecord.mail-mx-record
 spec:
   zoneId:
     value: "a1b2c3d4-zone-id"
@@ -161,15 +161,15 @@ spec:
 A CNAME alias that resolves the zone ID from a CivoDnsZone resource:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoDnsRecord
 metadata:
   name: docs-cname
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.CivoDnsRecord.docs-cname
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.CivoDnsRecord.docs-cname
 spec:
   zoneId:
     valueFrom:

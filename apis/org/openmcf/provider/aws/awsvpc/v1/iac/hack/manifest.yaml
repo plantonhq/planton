@@ -1,8 +1,0 @@
-apiVersion: aws.openmcf.org/v1
-kind: AwsVpc
-metadata:
-  name: awsvpc-demo
-spec:
-  region: us-west-2
-  cidrBlock: 10.0.0.0/16
-  enableDnsHostnames: true

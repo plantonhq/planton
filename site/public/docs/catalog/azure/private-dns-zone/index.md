@@ -12,7 +12,7 @@ Deploys an Azure Private DNS Zone with a Virtual Network link for internal name 
 
 ## What Gets Created
 
-When you deploy an AzurePrivateDnsZone resource, OpenMCF provisions:
+When you deploy an AzurePrivateDnsZone resource, Planton provisions:
 
 - **Private DNS Zone** — a `privatedns.Zone` resource in the specified resource group. Private DNS zones are global Azure resources with no region parameter.
 - **Virtual Network Link** — a `privatedns.ZoneVirtualNetworkLink` that connects the zone to a VNet, enabling DNS resolution of zone records from resources within the linked VNet. Without this link the zone is unreachable.
@@ -20,7 +20,7 @@ When you deploy an AzurePrivateDnsZone resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Resource Group** where the zone will be created (can reference an AzureResourceGroup resource)
 - **A Virtual Network** to link to the zone (can reference an AzureVpc resource)
 - **Zone name planning** — for Private Link scenarios, the zone name must match the Azure-defined privatelink zone name for the target service (e.g., `privatelink.postgres.database.azure.com` for PostgreSQL Flexible Server)
@@ -30,15 +30,15 @@ When you deploy an AzurePrivateDnsZone resource, OpenMCF provisions:
 Create a file `private-dns-zone.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzurePrivateDnsZone
 metadata:
   name: my-zone
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzurePrivateDnsZone.my-zone
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzurePrivateDnsZone.my-zone
 spec:
   resourceGroup: my-rg
   name: privatelink.postgres.database.azure.com
@@ -48,7 +48,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f private-dns-zone.yaml
+planton apply -f private-dns-zone.yaml
 ```
 
 This creates a Private DNS Zone for PostgreSQL Private Link resolution, linked to the specified VNet with auto-registration disabled.
@@ -76,15 +76,15 @@ This creates a Private DNS Zone for PostgreSQL Private Link resolution, linked t
 A Private DNS Zone for resolving PostgreSQL Flexible Server private endpoints:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzurePrivateDnsZone
 metadata:
   name: postgres-dns
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzurePrivateDnsZone.postgres-dns
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzurePrivateDnsZone.postgres-dns
 spec:
   resourceGroup: prod-rg
   name: privatelink.postgres.database.azure.com
@@ -96,15 +96,15 @@ spec:
 A Private DNS Zone enabling private connectivity to Azure Key Vault:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzurePrivateDnsZone
 metadata:
   name: keyvault-dns
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzurePrivateDnsZone.keyvault-dns
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzurePrivateDnsZone.keyvault-dns
 spec:
   resourceGroup: prod-rg
   name: privatelink.vaultcore.azure.net
@@ -116,15 +116,15 @@ spec:
 An internal DNS zone for VM hostname discovery with auto-registration enabled:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzurePrivateDnsZone
 metadata:
   name: internal-dns
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzurePrivateDnsZone.internal-dns
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzurePrivateDnsZone.internal-dns
 spec:
   resourceGroup: dev-rg
   name: contoso.internal
@@ -137,15 +137,15 @@ spec:
 A Private DNS Zone for resolving Azure Blob Storage private endpoints:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzurePrivateDnsZone
 metadata:
   name: blob-dns
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzurePrivateDnsZone.blob-dns
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzurePrivateDnsZone.blob-dns
 spec:
   resourceGroup: prod-rg
   name: privatelink.blob.core.windows.net
@@ -154,18 +154,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference OpenMCF-managed resources instead of hardcoding IDs:
+Reference Planton-managed resources instead of hardcoding IDs:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzurePrivateDnsZone
 metadata:
   name: ref-dns
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzurePrivateDnsZone.ref-dns
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzurePrivateDnsZone.ref-dns
 spec:
   resourceGroup:
     valueFrom:

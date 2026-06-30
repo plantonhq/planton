@@ -1,0 +1,97 @@
+syntax = "proto3";
+
+package dev.planton.provider.digitalocean.digitaloceankubernetescluster.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/digitalocean/region.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// DigitalOceanKubernetesClusterSpec defines the specification for creating a managed Kubernetes cluster on DigitalOcean.
+// It focuses on essential parameters for a production-grade cluster, following the 80/20 principle to expose only the most commonly used settings.
+message DigitalOceanKubernetesClusterSpec {
+  // The name of the Kubernetes cluster. This will be the cluster's identifier in DigitalOcean.
+  // Constraints: Must be unique per account. (A maximum length or character set may be enforced by DigitalOcean, e.g., alphanumeric and hyphens.)
+  string cluster_name = 1 [(buf.validate.field).required = true];
+
+  // The DigitalOcean region where the cluster will be created.
+  // Determines where the cluster's control plane and nodes are provisioned.
+  DigitalOceanRegion region = 2 [(buf.validate.field).required = true];
+
+  // The Kubernetes version to use for the cluster (semantic versioning).
+  // Must be a supported version on DigitalOcean (e.g., 1.22+).
+  // Example: "1.26.3"
+  string kubernetes_version = 3 [(buf.validate.field).required = true];
+
+  // Reference to the DigitalOcean VPC where the cluster's control plane will reside.
+  // This must be an existing VPC in the same region. The cluster consumes the VPC's
+  // ID (a DigitalOcean UUID), so a reference resolves to the DigitalOceanVpc's
+  // exported vpc_id output rather than its metadata name.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef vpc = 4 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = DigitalOceanVpc,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
+  ];
+
+  // Whether to enable a highly available control plane for the cluster.
+  // If true, the cluster is created with a High Availability control plane (multiple masters for increased uptime, additional cost).
+  // Default: false.
+  bool highly_available = 5 [(dev.planton.shared.options.recommended_default) = "false"];
+
+  // Whether to enable automatic patch upgrades for the cluster.
+  // If true, the cluster will automatically upgrade to new patch releases of Kubernetes when available.
+  bool auto_upgrade = 6;
+
+  // Whether to disable surge upgrades for the cluster.
+  // If false(default), cluster upgrades will temporarily provision extra nodes to minimize downtime during updates.
+  bool disable_surge_upgrade = 7;
+
+  // Scheduled maintenance window for cluster updates (format: "day=HH:MM" or "any=HH:MM").
+  // Examples: "sunday=02:00" or "any=00:00"
+  // If not specified, DigitalOcean will apply updates at any time.
+  string maintenance_window = 8;
+
+  // Whether to enable DigitalOcean Container Registry (DOCR) integration.
+  // If true, automatically creates imagePullSecrets in the cluster for pulling private images from DOCR.
+  // Default: false.
+  bool registry_integration = 9;
+
+  // List of allowed IP addresses (CIDR notation) for control plane firewall.
+  // Restricts Kubernetes API server access to specified IPs for security.
+  // If empty, API server is publicly accessible (not recommended for production).
+  // Example: ["203.0.113.5/32", "198.51.100.0/24"]
+  repeated string control_plane_firewall_allowed_ips = 10;
+
+  // A list of tags to apply to the cluster.
+  // Tags help organize and identify the cluster within DigitalOcean.
+  repeated string tags = 11;
+
+  // Reference to the default node pool for the cluster.
+  DigitalOceanKubernetesClusterDefaultNodePool default_node_pool = 12 [(buf.validate.field).required = true];
+}
+
+// DigitalOcean Kubernetes Cluster Default Node Pool
+message DigitalOceanKubernetesClusterDefaultNodePool {
+  // The slug identifier for the Droplet size to use for each node (e.g., "s-4vcpu-8gb").
+  // This defines the CPU and memory of the nodes in the pool.
+  string size = 1 [(buf.validate.field).required = true];
+
+  // The number of nodes to provision in the pool.
+  // Must be at least 1. If auto_scale is enabled, this acts as the initial desired node count.
+  uint32 node_count = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).uint32.gt = 0
+  ];
+
+  // Enable auto-scaling for this node pool.
+  // If true, the platform will manage node count between min_nodes and max_nodes.
+  bool auto_scale = 3;
+
+  // Minimum number of nodes when auto-scaling is enabled.
+  // Required if auto_scale is true.
+  uint32 min_nodes = 4;
+
+  // Maximum number of nodes when auto-scaling is enabled.
+  // Required if auto_scale is true.
+  uint32 max_nodes = 5;
+}

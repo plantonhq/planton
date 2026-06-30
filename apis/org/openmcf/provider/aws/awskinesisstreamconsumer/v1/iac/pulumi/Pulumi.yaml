@@ -1,3 +1,0 @@
-name: aws-kinesis-stream-consumer
-runtime: go
-description: Deploy an Amazon Kinesis enhanced fan-out stream consumer using OpenMCF

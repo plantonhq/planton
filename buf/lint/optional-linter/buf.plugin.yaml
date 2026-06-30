@@ -1,6 +1,6 @@
 version: v1
-name: buf.build/openmcf/optional-linter
+name: buf.build/planton/optional-linter
 plugin_version: v0.1.0
-source_url: https://github.com/plantonhq/openmcf
-description: "Validates that scalar proto fields with (org.openmcf.shared.options.default) are marked as optional"
+source_url: https://github.com/plantonhq/planton
+description: "Validates that scalar proto fields with (dev.planton.shared.options.default) are marked as optional"
 

@@ -36,7 +36,7 @@ applied consistently on both engines.
 - `make protos`, `go build`, and `go vet` of the component are green.
 - `go test` for the component spec (including location-omitted and region cases),
   `pkg/outputs` (a new `CloudflareR2Bucket` conformance case), and
-  `pkg/secretcoverage` all pass; `openmcf secret-coverage --check` is green.
+  `pkg/secretcoverage` all pass; `planton secret-coverage --check` is green.
 - `tofu init`/`validate`/`plan` succeed on provider v5 against the hack manifest,
   both with and without a custom domain; a real `apply`/`destroy` was exercised
   against a sandbox account.

@@ -41,7 +41,7 @@ def base_paths(repo_root: str, provider: str, kind_folder: str) -> Tuple[str, st
     rel = os.path.join(
         "apis",
         "org",
-        "openmcf",
+        "planton",
         "provider",
         provider,
         kind_folder,

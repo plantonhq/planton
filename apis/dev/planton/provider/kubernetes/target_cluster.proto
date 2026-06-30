@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto";
+
+// **KubernetesClusterSelector** defines a selector for a Kubernetes cluster in the same environment as the addon.
+message KubernetesClusterSelector {
+  //can be one of the supported kubernetes cluster kinds
+  dev.planton.shared.cloudresourcekind.CloudResourceKind cluster_kind = 1 [(buf.validate.field).enum = {
+    in: [
+      401, //AzureAksCluster
+      207, //AwsEksCluster
+      607, //GcpGkeCluster
+      1208, //DigitalOceanKubernetesCluster
+      1507 //CivoKubernetesCluster
+    ]
+  }];
+  //name of the kubernetes cluster in the same environment as the addon
+  // if the name is different from slug, use the value of slug here.
+  // for the purposes of readbility, this field is named as cluster_name vs cluster_slug but the expected value is always slug.
+  // the provided value is automatically converted to slug for example Prod Cluster -> prod-cluster.
+  string cluster_name = 2;
+}

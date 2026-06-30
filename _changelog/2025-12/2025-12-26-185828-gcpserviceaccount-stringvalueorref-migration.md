@@ -10,7 +10,7 @@ Migrated the GcpServiceAccount component's `project_id` field from a plain `stri
 
 ## Problem Statement / Motivation
 
-The GcpServiceAccount component used a plain `string` type for the `project_id` field, requiring users to hardcode GCP project identifiers. This limited the component's composability with other OpenMCF resources.
+The GcpServiceAccount component used a plain `string` type for the `project_id` field, requiring users to hardcode GCP project identifiers. This limited the component's composability with other Planton resources.
 
 ### Pain Points
 
@@ -28,9 +28,9 @@ Implemented the `StringValueOrRef` pattern for the `project_id` field:
 string project_id = 2;
 
 // AFTER
-org.openmcf.shared.foreignkey.v1.StringValueOrRef project_id = 2 [
-  (org.openmcf.shared.foreignkey.v1.default_kind) = GcpProject,
-  (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 2 [
+  (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+  (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
 ];
 ```
 
@@ -53,14 +53,14 @@ org.openmcf.shared.foreignkey.v1.StringValueOrRef project_id = 2 [
 ### Proto Schema Change
 
 ```protobuf
-import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
 
 message GcpServiceAccountSpec {
   // project_id specifies the GCP project in which the service account is created.
   // Can be a literal value or a reference to a GcpProject resource.
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef project_id = 2 [
-    (org.openmcf.shared.foreignkey.v1.default_kind) = GcpProject,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
   ];
 }
 ```
@@ -92,7 +92,7 @@ project_id = object({
 ### Direct Value (Backward Compatible)
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpServiceAccount
 metadata:
   name: logging-writer-sa
@@ -109,7 +109,7 @@ spec:
 ### Cross-Resource Reference (New Capability)
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpServiceAccount
 metadata:
   name: myapp-service-account

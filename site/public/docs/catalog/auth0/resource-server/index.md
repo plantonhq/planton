@@ -12,14 +12,14 @@ Deploys an Auth0 Resource Server (API) with configurable token settings, scope d
 
 ## What Gets Created
 
-When you deploy an Auth0ResourceServer resource, OpenMCF provisions:
+When you deploy an Auth0ResourceServer resource, Planton provisions:
 
 - **Auth0 Resource Server** — an `auth0_resource_server` resource representing the API, configured with the specified identifier, token lifetime, signing algorithm, and access control settings
 - **Resource Server Scopes** — created only when `scopes` is configured, an `auth0_resource_server_scopes` resource defining the permissions available for this API
 
 ## Prerequisites
 
-- **Auth0 credentials** configured via environment variables (`AUTH0_DOMAIN`, `AUTH0_CLIENT_ID`, `AUTH0_CLIENT_SECRET`) or OpenMCF provider config
+- **Auth0 credentials** configured via environment variables (`AUTH0_DOMAIN`, `AUTH0_CLIENT_ID`, `AUTH0_CLIENT_SECRET`) or Planton provider config
 - **An Auth0 tenant** with sufficient API quota
 - **A unique API identifier** (audience URI) that has not already been registered in the tenant — identifiers cannot be changed after creation
 
@@ -28,15 +28,15 @@ When you deploy an Auth0ResourceServer resource, OpenMCF provisions:
 Create a file `auth0-api.yaml`:
 
 ```yaml
-apiVersion: auth0.openmcf.org/v1
+apiVersion: auth0.planton.dev/v1
 kind: Auth0ResourceServer
 metadata:
   name: my-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.Auth0ResourceServer.my-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.Auth0ResourceServer.my-api
 spec:
   identifier: https://api.example.com/
 ```
@@ -44,7 +44,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f auth0-api.yaml
+planton apply -f auth0-api.yaml
 ```
 
 This creates a Resource Server in Auth0 with the identifier `https://api.example.com/`, using default token settings (RS256 signing, 86400-second token lifetime).
@@ -80,15 +80,15 @@ This creates a Resource Server in Auth0 with the identifier `https://api.example
 A backend API with defined read and write permissions:
 
 ```yaml
-apiVersion: auth0.openmcf.org/v1
+apiVersion: auth0.planton.dev/v1
 kind: Auth0ResourceServer
 metadata:
   name: orders-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.Auth0ResourceServer.orders-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.Auth0ResourceServer.orders-api
 spec:
   identifier: https://api.example.com/orders
   name: Orders API
@@ -109,15 +109,15 @@ spec:
 An API with role-based access control that includes permissions in access tokens:
 
 ```yaml
-apiVersion: auth0.openmcf.org/v1
+apiVersion: auth0.planton.dev/v1
 kind: Auth0ResourceServer
 metadata:
   name: admin-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.Auth0ResourceServer.admin-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.Auth0ResourceServer.admin-api
 spec:
   identifier: https://api.example.com/admin
   name: Admin API
@@ -145,15 +145,15 @@ spec:
 A production API with restricted token lifetimes and no offline access:
 
 ```yaml
-apiVersion: auth0.openmcf.org/v1
+apiVersion: auth0.planton.dev/v1
 kind: Auth0ResourceServer
 metadata:
   name: payments-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.Auth0ResourceServer.payments-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.Auth0ResourceServer.payments-api
 spec:
   identifier: https://api.example.com/payments
   name: Payments API

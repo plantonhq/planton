@@ -1,0 +1,10 @@
+apiVersion: gcp.planton.dev/v1
+kind: GcpFirestoreDatabase
+metadata:
+  name: test-firestore-db
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  locationId: nam5
+  databaseName: "(default)"
+  type: FIRESTORE_NATIVE

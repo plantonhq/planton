@@ -1,11 +1,11 @@
-# OpenMCF E2E Test Framework
+# Planton E2E Test Framework
 
-End-to-end tests that deploy real infrastructure using OpenMCF IaC modules and
+End-to-end tests that deploy real infrastructure using Planton IaC modules and
 verify the results against real providers.
 
 ## What This Framework Does
 
-Every OpenMCF component ships with Pulumi and Terraform modules that create
+Every Planton component ships with Pulumi and Terraform modules that create
 cloud infrastructure. These E2E tests prove that those modules actually work by
 executing the full lifecycle against real providers:
 
@@ -31,7 +31,7 @@ Test scenarios, profiles, and fixtures live **next to their components** at the
 `v1/e2e/` level:
 
 ```
-apis/org/openmcf/provider/{provider}/{component}/v1/
+apis/dev/planton/provider/{provider}/{component}/v1/
   e2e/
     profile.yaml           <-- E2E profile (tier, status, provisioners, timeout)
     scenarios/             <-- test scenario manifests
@@ -53,7 +53,7 @@ Each cloud provider has a harness that manages test infrastructure and
 verification, plus a provider-level E2E profile:
 
 ```
-apis/org/openmcf/provider/{provider}/aa_e2e/
+apis/dev/planton/provider/{provider}/aa_e2e/
   profile.yaml             <-- Provider E2E profile (credentials, substrate, tools)
   harness.go               <-- Provider lifecycle (setup/teardown)
   verify/                  <-- Resource verification logic
@@ -84,7 +84,7 @@ operator kind, which installs from the operator's `scenarios/minimal.yaml`.
 
 ## E2E Profiles
 
-Profiles are KRM-style YAML files (`apiVersion: qa.openmcf.org/v1`) that
+Profiles are KRM-style YAML files (`apiVersion: qa.planton.dev/v1`) that
 declare how E2E tests are executed. The CI workflow reads these profiles to
 dynamically generate the test matrix -- no hardcoded component lists.
 
@@ -93,7 +93,7 @@ dynamically generate the test matrix -- no hardcoded component lists.
 Configures provider-wide E2E behavior:
 
 ```yaml
-apiVersion: qa.openmcf.org/v1
+apiVersion: qa.planton.dev/v1
 kind: ProviderE2EProfile
 metadata:
   name: kubernetes
@@ -112,7 +112,7 @@ spec:
 Declares a component's E2E readiness:
 
 ```yaml
-apiVersion: qa.openmcf.org/v1
+apiVersion: qa.planton.dev/v1
 kind: ComponentE2EProfile
 metadata:
   name: kubernetesredis
@@ -131,21 +131,21 @@ Status values:
 
 ## Discovering Components
 
-The `openmcf e2e discover` CLI command scans profiles and displays component
+The `planton e2e discover` CLI command scans profiles and displays component
 readiness:
 
 ```bash
 # Interactive TUI (default in terminal)
-openmcf e2e discover --provider kubernetes
+planton e2e discover --provider kubernetes
 
 # Plain table (default when piped)
-openmcf e2e discover --provider kubernetes --output table
+planton e2e discover --provider kubernetes --output table
 
 # GitHub Actions matrix JSON (for CI consumption)
-openmcf e2e discover --provider kubernetes --output github-matrix
+planton e2e discover --provider kubernetes --output github-matrix
 
 # Filter to GREEN Pulumi Tier 1 only
-openmcf e2e discover --provider kubernetes --status green --tier 1 --provisioner pulumi
+planton e2e discover --provider kubernetes --status green --tier 1 --provisioner pulumi
 ```
 
 ## Running Tests
@@ -170,11 +170,11 @@ go test -tags=e2e -timeout=30m -v -count=1 \
 
 ### Terraform binary selection
 
-Terraform E2E defaults to `tofu` (OpenTofu), matching the OpenMCF CLI.
+Terraform E2E defaults to `tofu` (OpenTofu), matching the Planton CLI.
 To use HashiCorp Terraform instead:
 
 ```bash
-OPENMCF_E2E_TF_BINARY=terraform make e2e-test-kubernetes-terraform-tier1
+PLANTON_E2E_TF_BINARY=terraform make e2e-test-kubernetes-terraform-tier1
 ```
 
 ### How the Terraform path works
@@ -198,7 +198,7 @@ The `e2e-kubernetes.yaml` GitHub Actions workflow automates E2E on a weekly
 schedule:
 
 1. **build-check** -- compiles E2E code + go vet (runs on every PR too)
-2. **discover** -- runs `openmcf e2e discover --output github-matrix` to
+2. **discover** -- runs `planton e2e discover --output github-matrix` to
    generate the test matrix from profiles
 3. **e2e** -- dynamic matrix of (tier x provisioner) cells, each with its own
    kind cluster, using `gotestsum` for JUnit output
@@ -251,7 +251,7 @@ scenario is as simple as dropping a YAML file into the component's
 
 ## Adding a New Provider
 
-1. Create `apis/org/openmcf/provider/{provider}/aa_e2e/` with harness, verify
+1. Create `apis/dev/planton/provider/{provider}/aa_e2e/` with harness, verify
    files, and `profile.yaml`
 2. Implement the `provider.Harness` interface (Setup, Teardown, VerifyDeployed,
    VerifyDestroyed)
@@ -278,7 +278,7 @@ pkg/e2e/profile/          -- E2E profile loader and discovery
   discover.go             -- Profile scanning, filtering, GitHub matrix generation
   paths.go                -- Well-known filesystem paths
 
-apis/org/openmcf/qa/      -- Proto schema for E2E profiles (KRM-style)
+apis/dev/planton/qa/      -- Proto schema for E2E profiles (KRM-style)
   shared/                 -- Shared enums (CostClass)
   providere2eprofile/v1/  -- ProviderE2EProfile KRM API
   componente2eprofile/v1/ -- ComponentE2EProfile KRM API

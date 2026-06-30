@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package dev.planton.provider.alicloud.alicloudfunction.v1;
+
+// AliCloudFunctionStackOutputs captures the outputs from deploying an
+// Alibaba Cloud Function Compute v3 function.
+message AliCloudFunctionStackOutputs {
+  // The function ID assigned by Alibaba Cloud.
+  string function_id = 1;
+
+  // The function name (mirrors the spec input for downstream reference).
+  string function_name = 2;
+
+  // The function ARN (Alibaba Cloud Resource Name).
+  // Format: acs:fc:{region}:{account-id}:functions/{function-name}
+  // Used in RAM policies and as a trigger source ARN.
+  string function_arn = 3;
+}

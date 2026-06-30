@@ -1,0 +1,23 @@
+syntax = "proto3";
+package dev.planton.provider.aws.awsclientvpn.v1;
+
+// AwsClientVpnStackOutputs captures the output values obtained after provisioning the AWS Client VPN endpoint.
+// These outputs include identifiers needed for connecting to or managing the VPN, and can be referenced by other resources if necessary.
+message AwsClientVpnStackOutputs {
+  // The AWS-assigned identifier for the Client VPN endpoint (e.g., "cvpn-endpoint-012345abcdeEXAMPLE").
+  // Use this ID for any AWS CLI or API operations on the Client VPN, and to retrieve or revoke the client configuration file.
+  string client_vpn_endpoint_id = 1;
+
+  // The ID of the security group applied to the Client VPN endpoint’s target network associations.
+  // If the spec did not provide any security_group_ids, this will be the ID of the security group that Planton created (or the VPC default).
+  // This security group governs traffic between VPN clients and VPC resources.
+  string security_group_id = 2;
+
+  // A map of subnet association IDs for each associated target subnet.
+  // Each key in the map is a subnet ID (from the spec’s subnet_ids list), and the value is the corresponding AWS association ID (e.g., "cvpn-assoc-0abcd1234efgh5678") for that subnet’s association with the Client VPN endpoint.
+  // These IDs can be used to reference or manage specific target network associations (for example, if removing an association later).
+  map<string, string> subnet_association_ids = 3;
+
+  // The DNS name clients use to connect to the Client VPN endpoint.
+  string endpoint_dns_name = 4;
+}

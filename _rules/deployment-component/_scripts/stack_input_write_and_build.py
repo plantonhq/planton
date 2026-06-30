@@ -20,7 +20,7 @@ def find_repo_root(start_dir: str) -> str:
 
 
 def stack_input_path(repo_root: str, provider: str, kind_folder: str) -> Tuple[str, str]:
-    rel = os.path.join("apis", "org", "openmcf", "provider", provider, kind_folder, "v1", "stack_input.proto")
+    rel = os.path.join("apis", "org", "planton", "provider", provider, kind_folder, "v1", "stack_input.proto")
     return os.path.join(repo_root, rel), rel
 
 

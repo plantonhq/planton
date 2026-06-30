@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package dev.planton.provider.hetznercloud.hetznercloudcertificate.v1;
+
+// HetznerCloudCertificateStackOutputs captures the certificate identifiers
+// and metadata after provisioning. These outputs are identical regardless of
+// whether an uploaded or managed certificate was created.
+message HetznerCloudCertificateStackOutputs {
+  // The Hetzner Cloud numeric ID of the created certificate (as a string).
+  // Referenced by HetznerCloudLoadBalancer HTTPS services via StringValueOrRef.
+  string certificate_id = 1;
+
+  // Certificate type: "uploaded" or "managed". Computed by Hetzner Cloud.
+  string type = 2;
+
+  // SHA256 fingerprint of the certificate. Computed by Hetzner Cloud.
+  string fingerprint = 3;
+
+  // Point in time when the certificate becomes valid (ISO-8601).
+  // Computed by Hetzner Cloud.
+  string not_valid_before = 4;
+
+  // Point in time when the certificate stops being valid (ISO-8601).
+  // Computed by Hetzner Cloud.
+  string not_valid_after = 5;
+}

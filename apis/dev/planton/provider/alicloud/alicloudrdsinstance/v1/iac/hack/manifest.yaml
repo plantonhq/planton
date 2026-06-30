@@ -1,0 +1,26 @@
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudRdsInstance
+metadata:
+  name: alicloudrdsinstance-demo
+spec:
+  region: cn-hangzhou
+  engine: MySQL
+  engineVersion: "8.0"
+  instanceType: rds.mysql.s2.large
+  instanceStorage: 50
+  vswitchId:
+    value: vsw-demo123
+  instanceName: demo-mysql
+  category: HighAvailability
+  dbInstanceStorageType: cloud_essd
+  securityIps:
+    - "10.0.0.0/8"
+  databases:
+    - name: appdb
+      characterSet: utf8mb4
+  accounts:
+    - accountName: app_user
+      accountPassword: DemoP@ssw0rd123
+      privileges:
+        - databaseNames: [appdb]
+          privilege: ReadWrite

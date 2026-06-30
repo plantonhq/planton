@@ -31,7 +31,7 @@ contract and deletes a foot-gun.
 
 ## What changed
 
-- **`apis/org/openmcf/provider/aws/provider.proto`**: deleted `web_identity_token_file = 6`
+- **`apis/dev/planton/provider/aws/provider.proto`**: deleted `web_identity_token_file = 6`
   and the `aws.web_identity.token_xor_file` message-level CEL; restored
   `web_identity_token = 1 [(buf.validate.field).required = true]`. Updated the message doc to
   describe the re-mint-per-operation model.
@@ -50,7 +50,7 @@ contract and deletes a foot-gun.
 - **Wire/JSON**: removing a field is technically a breaking change. `web_identity_token_file`
   shipped only in the immediately preceding tag and has **zero consumers** (the Planton runner
   only ever set the inline `web_identity_token`), so the practical blast radius is nil and the
-  field number is not reserved. (openmcf's `buf breaking` config exists but is not enforced in
+  field number is not reserved. (planton's `buf breaking` config exists but is not enforced in
   CI or `make build`/`make release`; this removal is intentional and approved.)
 - **No connect-side / runner code change** is required to consume this: the consuming repo
   never referenced the file field.

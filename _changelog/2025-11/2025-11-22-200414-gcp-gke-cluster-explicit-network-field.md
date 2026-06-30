@@ -10,7 +10,7 @@ Added explicit `network_self_link` field to GcpGkeCluster spec to resolve the "N
 
 ## Problem Statement / Motivation
 
-When deploying GKE clusters using OpenMCF in GCP projects with custom VPC configurations (no default network), the deployment consistently failed with:
+When deploying GKE clusters using Planton in GCP projects with custom VPC configurations (no default network), the deployment consistently failed with:
 
 ```
 error: sdk-v2/provider2.go:572: sdk.helper_schema: googleapi: Error 400: Network "default" does not exist.
@@ -41,10 +41,10 @@ Added explicit `network_self_link` as a required field in the GcpGkeCluster spec
 **Proto Schema Enhancement**:
 ```proto
 // VPC Network to use for this cluster (must exist).
-org.openmcf.shared.foreignkey.v1.StringValueOrRef network_self_link = 2 [
+dev.planton.shared.foreignkey.v1.StringValueOrRef network_self_link = 2 [
   (buf.validate.field).required = true,
-  (org.openmcf.shared.foreignkey.v1.default_kind) = GcpVpc,
-  (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.self_link"
+  (dev.planton.shared.foreignkey.v1.default_kind) = GcpVpc,
+  (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.self_link"
 ];
 ```
 
@@ -81,7 +81,7 @@ spec:
 
 ### 1. Proto Schema Changes
 
-**File**: `apis/org/openmcf/provider/gcp/gcpgkecluster/v1/spec.proto`
+**File**: `apis/dev/planton/provider/gcp/gcpgkecluster/v1/spec.proto`
 
 - Added `network_self_link` as field #2 (required field)
 - Configured as `StringValueOrRef` with foreign key reference to `GcpVpc` resource
@@ -92,7 +92,7 @@ This is a **breaking change** as it adds a new required field and renumbers exis
 
 ### 2. Pulumi Module Enhancement
 
-**File**: `apis/org/openmcf/provider/gcp/gcpgkecluster/v1/iac/pulumi/module/cluster.go`
+**File**: `apis/dev/planton/provider/gcp/gcpgkecluster/v1/iac/pulumi/module/cluster.go`
 
 - Added `Network` parameter to `container.ClusterArgs`
 - Positioned before `Subnetwork` parameter for clarity
@@ -101,8 +101,8 @@ This is a **breaking change** as it adds a new required field and renumbers exis
 ### 3. Terraform Module Enhancement
 
 **Files**: 
-- `apis/org/openmcf/provider/gcp/gcpgkecluster/v1/iac/tf/variables.tf`
-- `apis/org/openmcf/provider/gcp/gcpgkecluster/v1/iac/tf/main.tf`
+- `apis/dev/planton/provider/gcp/gcpgkecluster/v1/iac/tf/variables.tf`
+- `apis/dev/planton/provider/gcp/gcpgkecluster/v1/iac/tf/main.tf`
 
 **variables.tf**:
 - Added `network_self_link` object variable with `value` string field
@@ -114,13 +114,13 @@ This is a **breaking change** as it adds a new required field and renumbers exis
 
 ### 4. Test Updates
 
-**File**: `apis/org/openmcf/provider/gcp/gcpgkecluster/v1/spec_test.go`
+**File**: `apis/dev/planton/provider/gcp/gcpgkecluster/v1/spec_test.go`
 
 - Added `NetworkSelfLink` field to test input
 - Test validates that the new required field is properly enforced by buf.validate
 - Ensures validation fails when network_self_link is missing
 
-**File**: `apis/org/openmcf/provider/gcp/gcpgkecluster/_cursor/gcp-gke-cluster.yaml`
+**File**: `apis/dev/planton/provider/gcp/gcpgkecluster/_cursor/gcp-gke-cluster.yaml`
 
 - Added `networkSelfLink` with proper GCP network self-link format
 - Ready for actual Pulumi deployment testing
@@ -132,7 +132,7 @@ This is a **breaking change** as it adds a new required field and renumbers exis
 1. **GCP API Limitation**: Subnetwork self-links don't directly expose their parent network in a parseable format
 2. **Avoid Extra API Calls**: Querying the subnetwork during deployment adds unnecessary latency and API dependencies
 3. **Explicit > Implicit**: Making the network explicit is more transparent and easier to debug
-4. **Consistency**: Follows the pattern of other required infrastructure references in OpenMCF specs
+4. **Consistency**: Follows the pattern of other required infrastructure references in Planton specs
 
 **Why keep both network and subnetwork?**
 
@@ -205,7 +205,7 @@ spec:
 ### Validation Tests
 
 ```bash
-go test ./apis/org/openmcf/provider/gcp/gcpgkecluster/v1/
+go test ./apis/dev/planton/provider/gcp/gcpgkecluster/v1/
 # Result: PASS (validates field requirement)
 ```
 
@@ -272,7 +272,7 @@ Full Test Suite: ✅ PASS (2x)
 ### Before (Failed)
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpGkeCluster
 metadata:
   name: dev-main-cluster
@@ -290,7 +290,7 @@ spec:
 ### After (Success)
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpGkeCluster
 metadata:
   name: dev-main-cluster
@@ -307,14 +307,14 @@ spec:
 
 **Result**: ✅ Cluster deploys successfully
 
-### Deploying with OpenMCF
+### Deploying with Planton
 
 ```bash
 # Preview the deployment
-openmcf pulumi preview --manifest gcp-gke-cluster.yaml
+planton pulumi preview --manifest gcp-gke-cluster.yaml
 
 # Apply the changes
-openmcf pulumi up --manifest gcp-gke-cluster.yaml
+planton pulumi up --manifest gcp-gke-cluster.yaml
 
 # The cluster will now deploy successfully with explicit network configuration
 ```

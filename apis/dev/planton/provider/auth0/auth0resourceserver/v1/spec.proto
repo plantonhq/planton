@@ -1,0 +1,140 @@
+syntax = "proto3";
+
+package dev.planton.provider.auth0.auth0resourceserver.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/options/options.proto";
+
+// Auth0ResourceServerSpec defines the configuration for an Auth0 Resource Server (API).
+// In Auth0, Resource Servers represent APIs that your applications can request access to.
+// They define the audience parameter used in authorization requests and the scopes (permissions)
+// that can be granted to applications.
+//
+// This spec covers the 80/20 use case for configuring Auth0 APIs:
+// - Custom backend APIs with JWT-based access control
+// - APIs requiring role-based access control (RBAC)
+// - APIs with defined scopes/permissions for fine-grained authorization
+//
+// https://auth0.com/docs/get-started/apis
+message Auth0ResourceServerSpec {
+  // identifier is the unique identifier for the resource server.
+  // This value is used as the "audience" parameter for authorization calls.
+  // Typically a URI representing your API (e.g., "https://api.example.com/").
+  // Cannot be changed once set.
+  //
+  // Example: "https://api.mycompany.com/", "api.planton.live"
+  string identifier = 1 [(buf.validate.field).required = true];
+
+  // name is a friendly display name for the resource server.
+  // This is shown in the Auth0 dashboard and consent screens.
+  // Cannot include `<` or `>` characters.
+  string name = 2;
+
+  // signing_alg is the algorithm used to sign access tokens for this API.
+  // Options:
+  // - "RS256": RSA using SHA-256 (asymmetric, recommended)
+  // - "HS256": HMAC using SHA-256 (symmetric, requires client secret)
+  // - "PS256": RSA-PSS using SHA-256
+  // Default: RS256
+  string signing_alg = 3 [(buf.validate.field).string = {
+    in: [
+      "",
+      "RS256",
+      "HS256",
+      "PS256"
+    ]
+  }];
+
+  // allow_offline_access indicates whether refresh tokens can be issued for this API.
+  // When true, applications can request refresh tokens using the "offline_access" scope.
+  // This allows applications to obtain new access tokens without user interaction.
+  // Default: false
+  bool allow_offline_access = 4;
+
+  // token_lifetime is the duration (in seconds) that access tokens remain valid
+  // when issued from the token endpoint.
+  // Range: 0 to 2592000 (30 days)
+  // Default: 86400 (24 hours)
+  int32 token_lifetime = 5 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 2592000
+  }];
+
+  // token_lifetime_for_web is the duration (in seconds) that access tokens remain valid
+  // when issued via implicit or hybrid flows.
+  // This should typically be shorter than token_lifetime for security.
+  // Cannot be greater than token_lifetime.
+  // Range: 0 to 2592000 (30 days)
+  // Default: 7200 (2 hours)
+  int32 token_lifetime_for_web = 6 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 2592000
+  }];
+
+  // skip_consent_for_verifiable_first_party_clients indicates whether to skip
+  // the consent prompt for applications flagged as first-party.
+  // When true, first-party applications don't show the consent screen to users.
+  // Default: true
+  bool skip_consent_for_verifiable_first_party_clients = 7;
+
+  // enforce_policies enables RBAC authorization policies for this API.
+  // When true, role and permission assignments are evaluated during login.
+  // This allows you to use Auth0's built-in RBAC to control API access.
+  // Requires token_dialect to be set to a value that includes permissions.
+  // Default: false
+  //
+  // https://auth0.com/docs/manage-users/access-control/rbac
+  bool enforce_policies = 8;
+
+  // token_dialect determines the format of access tokens issued for this API.
+  // Options:
+  // - "access_token": Standard Auth0 JWT with claims
+  // - "access_token_authz": Standard Auth0 JWT including RBAC permissions claims
+  // - "rfc9068_profile": IETF JWT Access Token Profile compliant
+  // - "rfc9068_profile_authz": IETF profile with RBAC permissions claims
+  //
+  // Use "_authz" variants when enforce_policies is true to include permissions in tokens.
+  // Default: access_token
+  //
+  // https://auth0.com/docs/secure/tokens/access-tokens/access-token-profiles
+  string token_dialect = 9 [
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Access-token format selector (e.g. rfc9068_profile), not a secret value.",
+    (buf.validate.field).string = {
+      in: [
+        "",
+        "access_token",
+        "access_token_authz",
+        "rfc9068_profile",
+        "rfc9068_profile_authz"
+      ]
+    }
+  ];
+
+  // scopes defines the permissions that can be granted for this API.
+  // Each scope represents a specific permission that applications can request.
+  // Applications request scopes during authorization, and granted scopes
+  // appear in the access token's "scope" claim.
+  //
+  // Example scopes:
+  // - read:users (permission to read user data)
+  // - write:orders (permission to create/update orders)
+  // - delete:products (permission to delete products)
+  //
+  // https://auth0.com/docs/get-started/apis/api-settings#scopes
+  repeated Auth0ResourceServerScope scopes = 10;
+}
+
+// Auth0ResourceServerScope represents a single permission/scope for the API.
+// Scopes are used for fine-grained access control, allowing you to define
+// what actions applications can perform when accessing your API.
+message Auth0ResourceServerScope {
+  // name is the scope identifier used in OAuth flows.
+  // Should follow the pattern: action:resource (e.g., "read:users", "write:orders")
+  // This is what applications request and what appears in access tokens.
+  string name = 1 [(buf.validate.field).required = true];
+
+  // description is a human-readable explanation of what this scope grants.
+  // Shown on consent screens and in the Auth0 dashboard.
+  // Example: "Read access to user profiles"
+  string description = 2;
+}

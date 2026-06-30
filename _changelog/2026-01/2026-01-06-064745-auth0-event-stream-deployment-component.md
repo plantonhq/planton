@@ -19,7 +19,7 @@ Auth0 Event Streams enable real-time delivery of tenant events to external syste
 
 ### Pain Points
 
-- No way to manage Auth0 Event Streams through OpenMCF
+- No way to manage Auth0 Event Streams through Planton
 - Manual Auth0 dashboard configuration lacks version control
 - Need consistent patterns matching other Auth0 components (Auth0Connection, Auth0Client)
 - EventBridge and webhook configurations require different handling
@@ -72,7 +72,7 @@ Auth0EventStream = 2102 [(kind_meta) = {
 - AWS partner event source (for EventBridge)
 
 **api.proto** - KRM envelope:
-- apiVersion: `auth0.openmcf.org/v1`
+- apiVersion: `auth0.planton.dev/v1`
 - kind: `Auth0EventStream`
 
 **stack_input.proto** - IaC module inputs
@@ -132,7 +132,7 @@ spec_test.go covers:
 ## Impact
 
 ### Direct
-- Users can manage Auth0 Event Streams through OpenMCF
+- Users can manage Auth0 Event Streams through Planton
 - CLI supports Auth0EventStream manifests with `--auth0-provider-config` flag
 - Auth0 provider now has three deployment components
 
@@ -166,7 +166,7 @@ spec_test.go covers:
 ### EventBridge Destination
 
 ```yaml
-apiVersion: auth0.openmcf.org/v1
+apiVersion: auth0.planton.dev/v1
 kind: Auth0EventStream
 metadata:
   name: security-events
@@ -187,7 +187,7 @@ spec:
 ### Webhook Destination with Bearer Token
 
 ```yaml
-apiVersion: auth0.openmcf.org/v1
+apiVersion: auth0.planton.dev/v1
 kind: Auth0EventStream
 metadata:
   name: user-events-webhook
@@ -209,7 +209,7 @@ spec:
 ### Webhook Destination with Basic Auth
 
 ```yaml
-apiVersion: auth0.openmcf.org/v1
+apiVersion: auth0.planton.dev/v1
 kind: Auth0EventStream
 metadata:
   name: siem-events

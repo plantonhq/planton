@@ -6,15 +6,15 @@
 
 ## Summary
 
-Added the OciContainerEngineNodePool deployment component (R09, enum 3312) to the OCI provider in OpenMCF. This wraps the OKE managed node pool (`oci_containerengine_node_pool`) -- the worker node layer of Kubernetes clusters. The spec covers compute shape and flex shape configuration, node placement across availability domains and fault domains, VCN-native pod networking, preemptible (spot) instances, node eviction controls, rolling update strategy, and boot volume encryption. Both Pulumi (Go) and Terraform (HCL) modules are implemented with full feature parity.
+Added the OciContainerEngineNodePool deployment component (R09, enum 3312) to the OCI provider in Planton. This wraps the OKE managed node pool (`oci_containerengine_node_pool`) -- the worker node layer of Kubernetes clusters. The spec covers compute shape and flex shape configuration, node placement across availability domains and fault domains, VCN-native pod networking, preemptible (spot) instances, node eviction controls, rolling update strategy, and boot volume encryption. Both Pulumi (Go) and Terraform (HCL) modules are implemented with full feature parity.
 
 ## Problem Statement / Motivation
 
-With OciContainerEngineCluster (R08) providing the Kubernetes control plane, there is no way to provision worker nodes through OpenMCF. Node pools are where the actual compute resources live -- without them, an OKE cluster has no capacity to run workloads. This component is the second half of the OKE story and a prerequisite for the OKE Environment infra chart.
+With OciContainerEngineCluster (R08) providing the Kubernetes control plane, there is no way to provision worker nodes through Planton. Node pools are where the actual compute resources live -- without them, an OKE cluster has no capacity to run workloads. This component is the second half of the OKE story and a prerequisite for the OKE Environment infra chart.
 
 ### Pain Points
 
-- No way to provision OKE worker nodes through OpenMCF
+- No way to provision OKE worker nodes through Planton
 - The Terraform node pool resource has overlapping deprecated and modern config paths (`subnet_ids` vs `node_config_details`, `node_image_name` vs `node_source_details`) creating confusion
 - `source_type` in `node_source_details` only accepts "IMAGE" but is required, adding noise
 - Preemptible node configuration requires a nested `preemption_action.type = "TERMINATE"` (the only valid value), which is unnecessary boilerplate
@@ -22,7 +22,7 @@ With OciContainerEngineCluster (R08) providing the Kubernetes control plane, the
 
 ## Solution / What's New
 
-Deployment component wrapping `oci_containerengine_node_pool` with the standard OpenMCF KRM pattern. The spec design omits all deprecated paths and simplifies single-value constants:
+Deployment component wrapping `oci_containerengine_node_pool` with the standard Planton KRM pattern. The spec design omits all deprecated paths and simplifies single-value constants:
 
 - **source_type hardcoded**: Only "IMAGE" is valid, so IaC modules hardcode it -- users provide just `imageId` and optional `bootVolumeSizeInGbs`
 - **Preemptible config simplified**: The `preemption_action.type` is always "TERMINATE", so the spec exposes only `isPreserveBootVolume` -- the IaC modules inject the TERMINATE action
@@ -75,7 +75,7 @@ Deployment component wrapping `oci_containerengine_node_pool` with the standard 
 
 ### Files Created
 
-**Proto API** (`apis/org/openmcf/provider/oci/ocicontainerenginenodepool/v1/`):
+**Proto API** (`apis/dev/planton/provider/oci/ocicontainerenginenodepool/v1/`):
 - `spec.proto` -- 13 top-level fields, 8 embedded messages, 1 enum, buf-validate rules
 - `api.proto` -- KRM wiring with api_version/kind const validation
 - `stack_input.proto` -- IaC module input (target + provider config)

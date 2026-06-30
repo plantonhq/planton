@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocialarm.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/oci/ocialarm/v1/spec.proto";
+import "dev/planton/provider/oci/ocialarm/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// OciAlarm is the top-level resource representing an OCI Monitoring
+// Alarm -- a rule that evaluates metrics via MQL and triggers
+// notifications when thresholds are breached.
+message OciAlarm {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'oci.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OciAlarm'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OciAlarmSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OciAlarmStatus status = 5;
+}
+
+// OciAlarmStatus holds the outputs produced by deploying an OciAlarm.
+message OciAlarmStatus {
+  // stack-outputs
+  OciAlarmStackOutputs outputs = 1;
+}

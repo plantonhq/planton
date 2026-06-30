@@ -1,0 +1,260 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awssnstopic.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "google/protobuf/struct.proto";
+
+// AwsSnsTopicSpec defines the desired configuration for an AWS SNS topic.
+//
+// SNS provides two topic types:
+// - Standard topics offer maximum throughput, best-effort ordering, and at-least-once delivery
+//   to a wide variety of subscriber protocols (SQS, Lambda, HTTP/S, email, SMS).
+// - FIFO topics guarantee strict ordering and exactly-once message delivery to SQS FIFO
+//   subscribers, at the cost of lower throughput.
+//
+// Notes:
+// - Set `fifo_topic` to true to create a FIFO topic. This cannot be changed after creation.
+// - FIFO topic names must end with `.fifo`; the IaC modules append this suffix automatically
+//   when `fifo_topic` is true and the metadata name does not already include it.
+// - Encryption at rest is supported via a customer-managed KMS key.
+// - Subscriptions can be bundled inline. Each subscription defines a protocol, endpoint, and
+//   optional filter policy. Subscription names serve as keys in the `subscription_arns` output
+//   map for downstream reference.
+// - Credentials, region, and deployment workflow live outside this spec in stack inputs.
+message AwsSnsTopicSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  // ---------------------------------------------------------------------------
+  // Topic type
+  // ---------------------------------------------------------------------------
+
+  // Whether to create a FIFO topic. Standard topics are created when false.
+  // FIFO topics guarantee strict ordering and exactly-once delivery to SQS FIFO
+  // queue subscribers. This setting cannot be changed after topic creation.
+  bool fifo_topic = 2;
+
+  // ---------------------------------------------------------------------------
+  // FIFO-specific settings (ignored for Standard topics)
+  // ---------------------------------------------------------------------------
+
+  // Enable content-based deduplication for FIFO topics. When enabled, SNS uses
+  // a SHA-256 hash of the message body as the deduplication ID, removing the
+  // need for the publisher to supply an explicit deduplication ID.
+  // Only valid when `fifo_topic` is true.
+  bool content_based_deduplication = 3;
+
+  // Throughput scope for FIFO topics. Controls whether the throughput quota
+  // applies per topic or per message group.
+  // Valid values: "Topic", "MessageGroup". Only valid when `fifo_topic` is true.
+  string fifo_throughput_scope = 4;
+
+  // ---------------------------------------------------------------------------
+  // Display and identity
+  // ---------------------------------------------------------------------------
+
+  // Human-readable display name for the topic. Used as the "from" label in SMS
+  // messages and as a readable identifier in the AWS console. Maximum 256
+  // characters for Standard topics, 10 characters for SMS display names.
+  string display_name = 5;
+
+  // ---------------------------------------------------------------------------
+  // Encryption
+  // ---------------------------------------------------------------------------
+
+  // Customer-managed KMS key for server-side encryption. When set, SNS encrypts
+  // message bodies using this key. Accepts a direct KMS key ID/ARN or a
+  // reference to an AwsKmsKey resource. When not set, SNS does not encrypt
+  // messages at rest (unlike SQS, SNS has no "managed SSE" option — encryption
+  // requires an explicit KMS key).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_id = 6 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
+  ];
+
+  // ---------------------------------------------------------------------------
+  // Access policy
+  // ---------------------------------------------------------------------------
+
+  // IAM access policy for the topic. Controls which AWS principals can perform
+  // actions on this topic (e.g., Publish, Subscribe). Expressed as a standard
+  // IAM policy document structure. Common use cases include granting EventBridge
+  // permission to publish, allowing cross-account subscriptions, or restricting
+  // publishing to specific IAM roles.
+  google.protobuf.Struct policy = 7;
+
+  // ---------------------------------------------------------------------------
+  // Delivery configuration
+  // ---------------------------------------------------------------------------
+
+  // HTTP/HTTPS delivery retry policy for the topic. Expressed as a JSON string
+  // matching the SNS delivery policy format. Controls retry backoff, max retries,
+  // and throttle behavior for HTTP/S subscriptions. Most users do not need to
+  // customize this. When not set, AWS applies its default delivery policy.
+  string delivery_policy = 8;
+
+  // ---------------------------------------------------------------------------
+  // Observability
+  // ---------------------------------------------------------------------------
+
+  // AWS X-Ray tracing configuration. When set to "Active", SNS publishes trace
+  // data for messages. When set to "PassThrough", SNS passes through the trace
+  // header but does not sample. Leave empty to use the AWS default (PassThrough).
+  // Valid values: "Active", "PassThrough".
+  string tracing_config = 9;
+
+  // SNS message signature version. Version 1 uses SHA1, version 2 uses SHA256.
+  // SHA256 (version 2) is recommended for new topics. Leave at 0 to use the
+  // AWS default (version 1).
+  int32 signature_version = 10;
+
+  // ---------------------------------------------------------------------------
+  // Subscriptions
+  // ---------------------------------------------------------------------------
+
+  // Inline subscriptions for this topic. Each subscription defines a protocol,
+  // endpoint, and optional filtering configuration. The subscription `name` field
+  // is used as the key in the `subscription_arns` output map, enabling downstream
+  // resources to reference specific subscription ARNs via `valueFrom`.
+  repeated AwsSnsTopicSubscription subscriptions = 11;
+
+  // ---------------------------------------------------------------------------
+  // CEL validations
+  // ---------------------------------------------------------------------------
+
+  // FIFO-only fields require fifo_topic to be true.
+  option (buf.validate.message).cel = {
+    id: "content_based_deduplication_requires_fifo"
+    message: "content_based_deduplication can only be enabled on FIFO topics (fifo_topic must be true)"
+    expression: "!this.content_based_deduplication || this.fifo_topic"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "fifo_throughput_scope_requires_fifo"
+    message: "fifo_throughput_scope is only valid for FIFO topics and must be 'Topic' or 'MessageGroup'"
+    expression: "this.fifo_throughput_scope == '' || (this.fifo_topic && this.fifo_throughput_scope in ['Topic', 'MessageGroup'])"
+  };
+
+  // Signature version must be 1 or 2 when set.
+  option (buf.validate.message).cel = {
+    id: "signature_version_valid"
+    message: "signature_version must be 1 (SHA1) or 2 (SHA256) when set"
+    expression: "this.signature_version == 0 || this.signature_version in [1, 2]"
+  };
+
+  // Tracing config must be a valid value when set.
+  option (buf.validate.message).cel = {
+    id: "tracing_config_valid"
+    message: "tracing_config must be 'Active' or 'PassThrough' when set"
+    expression: "this.tracing_config == '' || this.tracing_config in ['Active', 'PassThrough']"
+  };
+}
+
+// AwsSnsTopicSubscription defines an inline subscription to deliver messages
+// from the parent SNS topic to a target endpoint.
+//
+// Subscriptions are bundled with the topic because they are tightly coupled —
+// a subscription cannot exist without a topic, and most users define them
+// together. Each subscription's `name` field serves as a key in the
+// `subscription_arns` output map.
+message AwsSnsTopicSubscription {
+  // User-assigned name for this subscription. Used as a key in the
+  // `subscription_arns` output map so downstream resources can reference
+  // specific subscription ARNs. Must be unique within the topic's subscriptions.
+  string name = 1 [(buf.validate.field).required = true];
+
+  // Protocol for message delivery. Determines how SNS delivers messages to the
+  // endpoint. Each protocol has specific endpoint format requirements:
+  // - "sqs": SQS queue ARN
+  // - "lambda": Lambda function ARN
+  // - "http" / "https": URL endpoint
+  // - "email" / "email-json": email address
+  // - "sms": phone number in E.164 format
+  // - "firehose": Kinesis Firehose delivery stream ARN
+  // - "application": mobile platform endpoint ARN
+  string protocol = 2 [(buf.validate.field).required = true];
+
+  // Endpoint to deliver messages to. The format depends on the protocol (see
+  // `protocol` field documentation). Accepts a direct value or a reference to
+  // another resource's output. For example, an SQS subscription can reference
+  // an AwsSqsQueue's queue ARN via `valueFrom`.
+  //
+  // No `default_kind` is set because the target resource varies by protocol
+  // (SQS queue, Lambda function, etc.).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef endpoint = 3 [(buf.validate.field).required = true];
+
+  // Filter policy to select which messages this subscription receives. Messages
+  // that do not match the filter are not delivered. The filter can be applied to
+  // message attributes (default) or the message body (see `filter_policy_scope`).
+  // Expressed as a JSON structure in YAML.
+  google.protobuf.Struct filter_policy = 4;
+
+  // Scope for the filter policy. Controls whether the filter is evaluated against
+  // message attributes or the message body.
+  // Valid values: "MessageAttributes" (default), "MessageBody".
+  // Only relevant when `filter_policy` is set.
+  string filter_policy_scope = 5;
+
+  // When true, messages are delivered as-is without JSON wrapping. Supported
+  // for SQS, HTTP/S, and Firehose protocols. When false (default), SNS wraps
+  // the message in a JSON envelope containing metadata (MessageId, TopicArn,
+  // Timestamp, etc.).
+  bool raw_message_delivery = 6;
+
+  // Dead letter queue configuration for this subscription. When message delivery
+  // fails after all retry attempts, the message is routed to the specified SQS
+  // queue for investigation. This is separate from the SQS queue's own DLQ —
+  // this handles SNS-to-subscriber delivery failures.
+  AwsSnsSubscriptionRedriveConfig redrive_config = 7;
+
+  // IAM role ARN for Firehose delivery. Required when protocol is "firehose".
+  // The role must grant SNS permission to write to the Firehose delivery stream.
+  // Accepts a direct ARN or a reference to an AwsIamRole resource.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef subscription_role_arn = 8 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsIamRole,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.role_arn"
+  ];
+
+  // Subscription-level CEL validations.
+
+  option (buf.validate.message).cel = {
+    id: "protocol_valid"
+    message: "protocol must be one of: sqs, lambda, http, https, email, email-json, sms, firehose, application"
+    expression: "this.protocol in ['sqs', 'lambda', 'http', 'https', 'email', 'email-json', 'sms', 'firehose', 'application']"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "filter_policy_scope_valid"
+    message: "filter_policy_scope must be 'MessageAttributes' or 'MessageBody' when set"
+    expression: "this.filter_policy_scope == '' || this.filter_policy_scope in ['MessageAttributes', 'MessageBody']"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "filter_policy_scope_requires_filter_policy"
+    message: "filter_policy_scope requires filter_policy to be set"
+    expression: "this.filter_policy_scope == '' || has(this.filter_policy)"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "subscription_role_arn_required_for_firehose"
+    message: "subscription_role_arn is required when protocol is 'firehose'"
+    expression: "this.protocol != 'firehose' || has(this.subscription_role_arn)"
+  };
+}
+
+// AwsSnsSubscriptionRedriveConfig configures the dead letter queue for a
+// subscription's delivery failures. When SNS cannot deliver a message after
+// all retry attempts, the message is moved to the specified SQS queue.
+message AwsSnsSubscriptionRedriveConfig {
+  // ARN of the SQS dead letter queue for failed message deliveries. Accepts a
+  // direct ARN or a reference to an AwsSqsQueue resource. The SQS queue must
+  // reside in the same AWS account and region as the SNS topic.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef dead_letter_target_arn = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSqsQueue,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.queue_arn"
+  ];
+}

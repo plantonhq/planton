@@ -2,7 +2,7 @@
 # Pulumi Modules Release (Reusable Workflow)
 # =============================================================================
 # Builds pre-compiled binaries for all Pulumi deployment components across
-# all providers and uploads them to Cloudflare R2 (downloads.openmcf.org).
+# all providers and uploads them to Cloudflare R2 (downloads.planton.dev).
 #
 # Features:
 #   - Dynamic component discovery from directory structure
@@ -11,10 +11,10 @@
 #   - Clear progress logging with component counts
 #   - No hardcoded component paths - auto-discovers from filesystem
 #
-# Upload path: s3://openmcf-downloads-bucket/releases/{tag}/modules/pulumi/{component}_{platform}.gz
-# Public URL:  https://downloads.openmcf.org/releases/{tag}/modules/pulumi/{component}_{platform}.gz
+# Upload path: s3://planton-downloads-bucket/releases/{tag}/modules/pulumi/{component}_{platform}.gz
+# Public URL:  https://downloads.planton.dev/releases/{tag}/modules/pulumi/{component}_{platform}.gz
 #
-# Path pattern: apis/org/openmcf/provider/{provider}/{component}/v1/iac/pulumi
+# Path pattern: apis/dev/planton/provider/{provider}/{component}/v1/iac/pulumi
 #
 # Called by: .github/workflows/release.yaml (after CLI release creates the release)
 # =============================================================================
@@ -36,8 +36,8 @@ permissions:
 
 env:
   GO_VERSION: '1.25'
-  PROVIDER_BASE_PATH: apis/org/openmcf/provider
-  R2_BUCKET: openmcf-downloads-bucket
+  PROVIDER_BASE_PATH: apis/dev/planton/provider
+  R2_BUCKET: planton-downloads-bucket
 
 jobs:
   # ============================================================================
@@ -191,7 +191,7 @@ jobs:
               # Upload to R2
               if aws s3 cp "${ARTIFACT_NAME}" "s3://${R2_BUCKET}/${R2_KEY}" \
                 --endpoint-url "${AWS_ENDPOINT_URL}"; then
-                echo "✓ Uploaded: https://downloads.openmcf.org/${R2_KEY}"
+                echo "✓ Uploaded: https://downloads.planton.dev/${R2_KEY}"
               else
                 echo "✗ ERROR: Failed to upload ${ARTIFACT_NAME} to R2"
                 FAILED=$((FAILED + 1))

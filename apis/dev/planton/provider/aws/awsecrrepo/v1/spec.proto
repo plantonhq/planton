@@ -1,0 +1,93 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsecrrepo.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// AwsEcrRepoSpec defines the configuration for creating an AWS ECR repository
+// to store and manage Docker images. Most fields are optional, with recommended
+// defaults aligned to best practices (immutable tags, scanning enabled, encryption).
+message AwsEcrRepoSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  // repositoryName is the name of the ECR repository. Must be unique within
+  // the AWS account and region. Commonly includes the microservice or project name.
+  // Example: "github.com/team-blue/my-microservice"
+  string repository_name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 2,
+    (buf.validate.field).string.max_len = 256
+  ];
+
+  // indicates whether image tags can be overwritten (MUTABLE) or not (IMMUTABLE).
+  bool image_immutable = 3;
+
+  // encryptionType determines how ECR encrypts images at rest. Default is AES256,
+  // using AWS-managed encryption. Use KMS to specify your own KMS key for compliance.
+  // EncryptionType determines how images are encrypted at rest in ECR.
+  // By default, AWS uses AES-256 (service-managed keys). Choose KMS to use
+  // a customer-managed key (CMK).
+  optional string encryption_type = 4 [
+    (dev.planton.shared.options.default) = "AES256",
+    (buf.validate.field).string = {
+      in: [
+        "AES256",
+        "KMS"
+      ]
+    }
+  ];
+
+  // kmsKeyId is the ARN or ID of a KMS key used when encryption_type = KMS.
+  // If omitted, AWS uses the default service-managed key for ECR.
+  // Ignored if encryption_type = AES256.
+  // Can reference an AwsKmsKey resource.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_id = 5 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
+  ];
+
+  // forceDelete, if true, allows deleting the repository even when it contains
+  // images (all images get removed on delete). By default, it is false, preventing
+  // accidental data loss.
+  bool force_delete = 6;
+
+  // scanOnPush enables automatic image scanning when images are pushed to the repository.
+  // This is a production security essential - enables shift-left vulnerability detection.
+  // Defaults to true for security best practices.
+  optional bool scan_on_push = 7 [(dev.planton.shared.options.default) = "true"];
+
+  // lifecyclePolicyRules defines automated image lifecycle management rules for cost control.
+  // This is essential for production to prevent uncontrolled storage costs.
+  // If not specified, no lifecycle policy is applied (not recommended for production).
+  optional AwsEcrRepoLifecyclePolicy lifecycle_policy = 8;
+}
+
+// AwsEcrRepoLifecyclePolicy defines lifecycle rules for automatic image expiration.
+// This is critical for cost control in active CI/CD environments that generate many images.
+message AwsEcrRepoLifecyclePolicy {
+  // expireUntaggedAfterDays removes untagged images after the specified number of days.
+  // Untagged images are typically intermediate build layers or failed builds.
+  // Recommended: 1-14 days. Default: 14 days if not specified.
+  optional int32 expire_untagged_after_days = 1 [
+    (dev.planton.shared.options.default) = "14",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 365
+    }
+  ];
+
+  // maxImageCount keeps only the most recent N images, expiring all older ones.
+  // This prevents unbounded growth from CI/CD pipelines creating many tagged images.
+  // Recommended: 30-100 depending on deployment frequency. Default: 30 if not specified.
+  optional int32 max_image_count = 2 [
+    (dev.planton.shared.options.default) = "30",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 1000
+    }
+  ];
+}

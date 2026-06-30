@@ -12,7 +12,7 @@ Deploys the Percona Operator for PostgreSQL on a Kubernetes cluster using its of
 
 ## What Gets Created
 
-When you deploy a KubernetesPerconaPostgresOperator resource, OpenMCF provisions:
+When you deploy a KubernetesPerconaPostgresOperator resource, Planton provisions:
 
 - **Namespace** — created only when `createNamespace` is `true`
 - **Helm Release** — installs the `pg-operator` Helm chart (v2.7.0) from the Percona Helm repository, deploying the operator pod with configurable CPU and memory resources
@@ -21,7 +21,7 @@ When you deploy a KubernetesPerconaPostgresOperator resource, OpenMCF provisions
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
 - **Helm-capable cluster** — the cluster must support Helm chart installations (standard for all managed Kubernetes offerings)
 
@@ -30,15 +30,15 @@ When you deploy a KubernetesPerconaPostgresOperator resource, OpenMCF provisions
 Create a file `percona-postgres-operator.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPerconaPostgresOperator
 metadata:
   name: my-pg-operator
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesPerconaPostgresOperator.my-pg-operator
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesPerconaPostgresOperator.my-pg-operator
 spec:
   namespace: percona-system
   createNamespace: true
@@ -47,7 +47,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f percona-postgres-operator.yaml
+planton apply -f percona-postgres-operator.yaml
 ```
 
 This installs the Percona PostgreSQL Operator into the `percona-system` namespace with default resource limits (1000m CPU / 1Gi memory) and requests (100m CPU / 256Mi memory).
@@ -80,15 +80,15 @@ This installs the Percona PostgreSQL Operator into the `percona-system` namespac
 Install the Percona PostgreSQL Operator with default resource allocations, creating the target namespace automatically:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPerconaPostgresOperator
 metadata:
   name: pg-operator
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesPerconaPostgresOperator.pg-operator
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesPerconaPostgresOperator.pg-operator
 spec:
   namespace: percona-system
   createNamespace: true
@@ -107,15 +107,15 @@ spec:
 For production clusters managing many PostgreSQL instances, increase the operator's resource allocation to handle the additional reconciliation workload:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPerconaPostgresOperator
 metadata:
   name: prod-pg-operator
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesPerconaPostgresOperator.prod-pg-operator
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesPerconaPostgresOperator.prod-pg-operator
 spec:
   namespace: percona-system
   container:
@@ -130,18 +130,18 @@ spec:
 
 ### Operator with Foreign Key Namespace Reference
 
-Reference an OpenMCF-managed namespace instead of hardcoding the name. The `valueFrom` syntax resolves the namespace name from a KubernetesNamespace resource at deploy time:
+Reference an Planton-managed namespace instead of hardcoding the name. The `valueFrom` syntax resolves the namespace name from a KubernetesNamespace resource at deploy time:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPerconaPostgresOperator
 metadata:
   name: shared-pg-operator
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.KubernetesPerconaPostgresOperator.shared-pg-operator
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.KubernetesPerconaPostgresOperator.shared-pg-operator
 spec:
   namespace:
     valueFrom:

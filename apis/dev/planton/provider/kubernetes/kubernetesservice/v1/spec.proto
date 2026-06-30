@@ -1,0 +1,283 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesservice.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/target_cluster.proto";
+import "dev/planton/shared/options/options.proto";
+
+/**
+ * **KubernetesServiceSpec** defines the configuration for creating and managing a standalone
+ * Kubernetes Service resource. This component exposes the Kubernetes Service primitive as a
+ * first-class deployment unit, enabling declarative management of service discovery, load
+ * balancing, and external access for workloads running in a Kubernetes cluster.
+ *
+ * Primary use cases include:
+ * - Exposing existing cluster workloads via LoadBalancer or NodePort
+ * - Creating ExternalName services to proxy external DNS endpoints
+ * - Headless services for direct pod addressing and custom DNS resolution
+ * - Services targeting pods managed outside of Planton
+ *
+ * This spec follows the 80/20 rule, covering the essential Service configurations that the
+ * vast majority of users need while remaining deployment-agnostic.
+ */
+message KubernetesServiceSpec {
+  // The Kubernetes cluster in which the service should be created.
+  dev.planton.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  /**
+   * The namespace in which the service will be created.
+   * Must be a valid DNS label (lowercase alphanumeric and hyphens, max 63 characters).
+   * The namespace must already exist in the target cluster.
+   */
+  string namespace = 2 [
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 63,
+    (buf.validate.field).cel = {
+      id: "namespace.dns_label"
+      message: "namespace must be a valid DNS label (lowercase alphanumeric and hyphens, no leading/trailing hyphens)"
+      expression: "this.matches('^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$')"
+    }
+  ];
+
+  /**
+   * The name of the Kubernetes Service.
+   * Used as `metadata.name` on the created Service resource.
+   * Must be a valid DNS label (lowercase alphanumeric and hyphens, max 63 characters).
+   */
+  string name = 3 [
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 63,
+    (buf.validate.field).cel = {
+      id: "name.dns_label"
+      message: "name must be a valid DNS label (lowercase alphanumeric and hyphens, no leading/trailing hyphens)"
+      expression: "this.matches('^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$')"
+    }
+  ];
+
+  /**
+   * Additional labels to apply to the Service resource.
+   * These are merged with standard Planton labels for governance and discoverability.
+   */
+  map<string, string> labels = 4;
+
+  /**
+   * Annotations to apply to the Service resource.
+   * Annotations are critical for configuring cloud-provider-specific load balancer behavior.
+   * Common use cases:
+   * - `service.beta.kubernetes.io/aws-load-balancer-type: "nlb"` for AWS NLB
+   * - `cloud.google.com/neg: '{"ingress": true}'` for GCP NEG
+   * - `service.beta.kubernetes.io/azure-load-balancer-internal: "true"` for Azure internal LB
+   */
+  map<string, string> annotations = 5;
+
+  /**
+   * **KubernetesServiceType** defines the type of Kubernetes Service to create.
+   */
+  enum KubernetesServiceType {
+    // Unspecified service type. Defaults to ClusterIP.
+    kubernetes_service_type_unspecified = 0;
+
+    // ClusterIP: Exposes the service on a cluster-internal IP.
+    // The service is only reachable from within the cluster.
+    // This is the default and most common service type.
+    cluster_ip = 1;
+
+    // NodePort: Exposes the service on each node's IP at a static port.
+    // A ClusterIP service is automatically created as well.
+    // Accessible externally via <NodeIP>:<NodePort>.
+    node_port = 2;
+
+    // LoadBalancer: Exposes the service externally using a cloud provider's load balancer.
+    // NodePort and ClusterIP services are automatically created as well.
+    load_balancer = 3;
+
+    // ExternalName: Maps the service to the contents of the external_dns_name field
+    // by returning a CNAME record. No proxying of any kind is set up.
+    external_name = 4;
+  }
+
+  /**
+   * The type of Kubernetes Service to create.
+   * Default: cluster_ip
+   */
+  optional KubernetesServiceType type = 6 [(buf.validate.field).enum.defined_only = true];
+
+  /**
+   * Label selector for identifying the pods that this service routes traffic to.
+   * The service will route traffic to pods whose labels match all key-value pairs
+   * in this selector.
+   *
+   * Not required for ExternalName services or services with manually managed endpoints.
+   */
+  map<string, string> selector = 7;
+
+  /**
+   * The list of ports exposed by this service.
+   * At least one port must be specified for all service types except ExternalName.
+   */
+  repeated KubernetesServicePort ports = 8;
+
+  /**
+   * Whether to create a headless service (clusterIP: None).
+   * Headless services do not allocate a cluster IP; DNS queries return the pod IPs directly.
+   * Useful for StatefulSets and custom service discovery mechanisms.
+   *
+   * Cannot be combined with service types NodePort or LoadBalancer.
+   */
+  bool headless = 9;
+
+  /**
+   * The external DNS name for ExternalName-type services.
+   * This must be a valid DNS name (e.g., "my-database.example.com").
+   * Only used when type is set to external_name.
+   */
+  string external_dns_name = 10;
+
+  /**
+   * **KubernetesServiceExternalTrafficPolicy** controls how external traffic is routed to service endpoints.
+   */
+  enum KubernetesServiceExternalTrafficPolicy {
+    // Unspecified. Defaults to Cluster.
+    external_traffic_policy_unspecified = 0;
+
+    // Cluster: Routes traffic to all ready endpoints across all nodes.
+    // May cause a second hop but distributes load evenly.
+    cluster = 1;
+
+    // Local: Routes traffic only to node-local endpoints.
+    // Preserves client source IP but may cause uneven load distribution.
+    // If there are no local endpoints, traffic is dropped.
+    local = 2;
+  }
+
+  /**
+   * External traffic policy for NodePort and LoadBalancer services.
+   * Controls whether traffic is routed to node-local endpoints only or across all nodes.
+   * Only applicable when type is node_port or load_balancer.
+   * Default: cluster
+   */
+  optional KubernetesServiceExternalTrafficPolicy external_traffic_policy = 11 [(buf.validate.field).enum.defined_only = true];
+
+  /**
+   * **KubernetesServiceSessionAffinity** defines session affinity behavior.
+   */
+  enum KubernetesServiceSessionAffinity {
+    // Unspecified. Defaults to none.
+    session_affinity_unspecified = 0;
+
+    // None: No session affinity. Each request may be routed to any backend pod.
+    none = 1;
+
+    // ClientIP: Routes requests from the same client IP to the same backend pod.
+    // Useful for stateful applications that require sticky sessions.
+    client_ip = 2;
+  }
+
+  /**
+   * Session affinity configuration.
+   * Determines whether requests from the same client are routed to the same backend pod.
+   * Default: none
+   */
+  optional KubernetesServiceSessionAffinity session_affinity = 12 [(buf.validate.field).enum.defined_only = true];
+
+  /**
+   * Restrict access to the load balancer by source IP ranges.
+   * Only applicable when type is load_balancer.
+   * Each entry must be a valid CIDR notation (e.g., "203.0.113.0/24", "10.0.0.0/8").
+   *
+   * An empty list means the load balancer is accessible from any source IP.
+   */
+  repeated string load_balancer_source_ranges = 13;
+
+  // -- Cross-field validations --
+
+  // ExternalName services require external_dns_name to be set.
+  option (buf.validate.message).cel = {
+    id: "external_name_requires_dns_name"
+    message: "external_dns_name must be set when type is external_name"
+    expression: "this.type != 4 || this.external_dns_name != ''"
+  };
+
+  // Headless services cannot be NodePort or LoadBalancer.
+  option (buf.validate.message).cel = {
+    id: "headless_incompatible_with_nodeport_loadbalancer"
+    message: "headless cannot be true when type is node_port or load_balancer"
+    expression: "!this.headless || (this.type != 2 && this.type != 3)"
+  };
+
+  // Non-ExternalName services must have at least one port.
+  option (buf.validate.message).cel = {
+    id: "non_external_name_requires_ports"
+    message: "at least one port must be specified for non-ExternalName services"
+    expression: "this.type == 4 || this.ports.size() > 0"
+  };
+}
+
+/**
+ * **KubernetesServicePort** defines a port exposed by the Kubernetes Service.
+ */
+message KubernetesServicePort {
+  /**
+   * **KubernetesServiceProtocol** defines the network protocol for a service port.
+   */
+  enum KubernetesServiceProtocol {
+    // Unspecified protocol. Defaults to TCP.
+    kubernetes_service_protocol_unspecified = 0;
+
+    // TCP protocol. The most common protocol for services.
+    TCP = 1;
+
+    // UDP protocol. Used for DNS, streaming, and other UDP-based services.
+    UDP = 2;
+
+    // SCTP protocol. Used for telecommunications and specialized networking.
+    SCTP = 3;
+  }
+
+  /**
+   * Optional name for this port. Must be unique within the list of ports.
+   * Required when the service exposes more than one port.
+   * Must be a valid IANA service name (lowercase alphanumeric and hyphens).
+   */
+  string name = 1 [(buf.validate.field).string.max_len = 63];
+
+  /**
+   * The IP protocol for this port.
+   * Default: TCP
+   */
+  optional KubernetesServiceProtocol protocol = 2 [
+    (dev.planton.shared.options.default) = "TCP",
+    (buf.validate.field).enum.defined_only = true
+  ];
+
+  /**
+   * The port number exposed by the service.
+   * This is the port that clients use to access the service.
+   * Must be in the range 1-65535.
+   */
+  int32 port = 3 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 65535
+  }];
+
+  /**
+   * The port on the target pod to route traffic to.
+   * Can be a numeric port (e.g., "8080") or a named port (e.g., "http") defined
+   * in the container's port list.
+   * If not specified, defaults to the same value as port.
+   */
+  string target_port = 4;
+
+  /**
+   * The port on each node to expose for NodePort and LoadBalancer services.
+   * If not specified, Kubernetes allocates a port from the node port range (default 30000-32767).
+   * Must be in the range 30000-32767 when specified.
+   * Only applicable when the service type is node_port or load_balancer.
+   */
+  int32 node_port = 5 [(buf.validate.field).cel = {
+    id: "node_port.valid_range"
+    message: "node_port must be 0 (auto-allocate) or in the range 30000-32767"
+    expression: "this == 0 || (this >= 30000 && this <= 32767)"
+  }];
+}

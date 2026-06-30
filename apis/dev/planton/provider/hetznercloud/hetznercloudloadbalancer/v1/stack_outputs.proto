@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package dev.planton.provider.hetznercloud.hetznercloudloadbalancer.v1;
+
+// HetznerCloudLoadBalancerStackOutputs captures the resulting load balancer
+// identifiers and addresses after provisioning.
+message HetznerCloudLoadBalancerStackOutputs {
+  // The Hetzner Cloud numeric ID of the created load balancer (as a string).
+  // Can be referenced by other components via StringValueOrRef.
+  string load_balancer_id = 1;
+
+  // The public IPv4 address assigned to the load balancer.
+  // Empty if the public interface is disabled via
+  // network.enable_public_interface = false.
+  string ipv4_address = 2;
+
+  // The public IPv6 address assigned to the load balancer.
+  // Empty if the public interface is disabled.
+  string ipv6_address = 3;
+}

@@ -3,6 +3,6 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "stringmaps",
     srcs = ["add_entry.go"],
-    importpath = "github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/datatypes/stringmaps",
+    importpath = "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/datatypes/stringmaps",
     visibility = ["//visibility:public"],
 )

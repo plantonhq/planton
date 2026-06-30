@@ -15,7 +15,7 @@ that match each `*_stack_outputs.proto`. Every Cloudflare kind now plans and dep
 ## Problem Statement / Motivation
 
 The Cloudflare provider v5 is a generated rewrite of v4: resources were renamed, enum casing
-changed, and many nested **blocks** became nested **attributes**. All nine OpenMCF Cloudflare
+changed, and many nested **blocks** became nested **attributes**. All nine Planton Cloudflare
 modules were pinned to `~> 4.0` and used v4 syntax, so none could `plan` against v5. Beyond the
 version pin, the audit surfaced real latent defects that would break deploys on any version.
 
@@ -34,7 +34,7 @@ version pin, the audit surfaced real latent defects that would break deploys on 
 
 ## Solution / What's New
 
-Each component was migrated through the `update-openmcf-component` flow: read the component's own
+Each component was migrated through the `update-planton-component` flow: read the component's own
 docs, then the v5 `schema.go`; migrate Terraform and Pulumi together; reconcile parity; validate;
 refresh public artifacts.
 
@@ -93,9 +93,9 @@ Agent-owned and green before handoff:
 
 ```bash
 make -C apis protos                                   # KV proto regen
-go test ./apis/org/openmcf/provider/cloudflare/...    # all nine components
+go test ./apis/dev/planton/provider/cloudflare/...    # all nine components
 go test ./pkg/outputs/                                # conformance (all nine kinds)
-openmcf secret-coverage --check
+planton secret-coverage --check
 # per component:
 tofu init && tofu validate                            # offline, against real v5 provider
 tofu plan -var-file=<generated tfvars>                # real, read-only, live account

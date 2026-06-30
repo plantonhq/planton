@@ -6,11 +6,11 @@
 
 ## Summary
 
-Reverted the recently added `namespace` and `create_namespace` fields from the KubernetesTektonOperator component after research confirmed that Tekton Operator uses **fixed namespaces** managed by the operator itself. Updated all component documentation to clearly explain this important architectural limitation that differentiates this component from other namespace-scoped resources in OpenMCF.
+Reverted the recently added `namespace` and `create_namespace` fields from the KubernetesTektonOperator component after research confirmed that Tekton Operator uses **fixed namespaces** managed by the operator itself. Updated all component documentation to clearly explain this important architectural limitation that differentiates this component from other namespace-scoped resources in Planton.
 
 ## Problem Statement / Motivation
 
-During the recent KubernetesTektonOperator component development, `namespace` and `create_namespace` fields were added following the standard pattern used by other Kubernetes components in OpenMCF. However, this approach doesn't align with how Tekton Operator actually works.
+During the recent KubernetesTektonOperator component development, `namespace` and `create_namespace` fields were added following the standard pattern used by other Kubernetes components in Planton. However, this approach doesn't align with how Tekton Operator actually works.
 
 ### Pain Points
 
@@ -50,13 +50,13 @@ These namespaces **cannot be customized** by users - they are fundamental to how
 
 ### Proto Schema Changes
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetestektonoperator/v1/spec.proto`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetestektonoperator/v1/spec.proto`
 
 Removed fields and added documentation:
 
 ```protobuf
 // IMPORTANT: Namespace Behavior
-// Unlike other Kubernetes components in OpenMCF, the Tekton Operator uses fixed namespaces
+// Unlike other Kubernetes components in Planton, the Tekton Operator uses fixed namespaces
 // that are managed by the operator itself:
 // - The Tekton Operator is installed in the 'tekton-operator' namespace
 // - Tekton components (Pipelines, Triggers, Dashboard) are installed in the 'tekton-pipelines' namespace
@@ -64,7 +64,7 @@ Removed fields and added documentation:
 // See: https://tekton.dev/docs/operator/tektonconfig/
 message KubernetesTektonOperatorSpec {
   // Target Kubernetes Cluster where the Tekton Operator will be deployed.
-  org.openmcf.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+  dev.planton.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
 
   // The container specifications for the Tekton Operator deployment.
   KubernetesTektonOperatorSpecContainer container = 2 [(buf.validate.field).required = true];
@@ -73,7 +73,7 @@ message KubernetesTektonOperatorSpec {
   KubernetesTektonOperatorComponents components = 3 [(buf.validate.field).required = true];
 
   // The version of the Tekton Operator to deploy.
-  string operator_version = 4 [(org.openmcf.shared.options.default) = "v0.78.0"];
+  string operator_version = 4 [(dev.planton.shared.options.default) = "v0.78.0"];
 }
 ```
 
@@ -120,7 +120,7 @@ Removed namespace-related variables and added documentation:
 ```hcl
 variable "spec" {
   # IMPORTANT: Namespace Behavior
-  # Unlike other Kubernetes components in OpenMCF, the Tekton Operator uses fixed namespaces
+  # Unlike other Kubernetes components in Planton, the Tekton Operator uses fixed namespaces
   # that are managed by the operator itself:
   # - The Tekton Operator is installed in the 'tekton-operator' namespace
   # - Tekton components (Pipelines, Triggers, Dashboard) are installed in the 'tekton-pipelines' namespace
@@ -166,7 +166,7 @@ Updated all documentation files with prominent warnings about the fixed namespac
 ### Example Manifest (After)
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesTektonOperator
 metadata:
   name: tekton-operator

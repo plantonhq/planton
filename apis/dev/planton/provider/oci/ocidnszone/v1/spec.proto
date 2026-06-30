@@ -1,0 +1,126 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocidnszone.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// OciDnsZoneSpec defines the specification for an OCI DNS Zone --
+// a managed authoritative DNS zone supporting both public (GLOBAL)
+// and private resolution scopes, PRIMARY and SECONDARY zone types,
+// zone transfers via external masters/downstreams, and DNSSEC signing.
+//
+// Key behaviors:
+//   - zone_type, scope, view_id, and name are ForceNew (changing
+//     them destroys and recreates the zone)
+//   - compartment_id is updatable (compartment move)
+//   - external_masters and external_downstreams are updatable
+//   - is_dnssec_enabled is updatable (toggle after creation)
+//
+// Constraints enforced via CEL:
+//   - zone_type must be explicitly set (no implicit default)
+//   - PRIVATE zones require view_id
+//   - SECONDARY zones cannot be PRIVATE (OCI limitation)
+//   - SECONDARY zones require at least one external master
+//
+// Excluded from v1:
+//   - dnssec_config -- deeply nested computed DNSSEC key version
+//     data (KSK/ZSK details); operational concern for key rotation
+//   - zone_transfer_servers -- computed; not needed for composability
+//   - is_protected -- read-only system flag
+//   - DNSSEC key lifecycle actions (stage/promote) -- operational
+//   - defined_tags, system_tags -- managed by platform
+//   - freeform_tags -- auto-populated from metadata labels
+message OciDnsZoneSpec {
+  option (buf.validate.message).cel = {
+    id: "zone_type_required"
+    message: "zone_type must be explicitly set (primary or secondary)"
+    expression: "this.zone_type != 0"
+  };
+  option (buf.validate.message).cel = {
+    id: "private_requires_view_id"
+    message: "private zones require view_id to be set"
+    expression: "this.scope != 2 || has(this.view_id)"
+  };
+  option (buf.validate.message).cel = {
+    id: "no_private_secondary"
+    message: "SECONDARY zones cannot have private scope (OCI only supports PRIMARY for private zones)"
+    expression: "this.zone_type != 2 || this.scope != 2"
+  };
+  option (buf.validate.message).cel = {
+    id: "secondary_requires_external_masters"
+    message: "SECONDARY zones require at least one external master"
+    expression: "this.zone_type != 2 || size(this.external_masters) > 0"
+  };
+
+  // Whether the zone is PRIMARY (authoritative source of truth) or
+  // SECONDARY (replicates from external masters). ForceNew.
+  enum ZoneType {
+    unspecified = 0;
+    primary = 1;
+    secondary = 2;
+  }
+
+  // DNS resolution scope. GLOBAL zones are publicly resolvable.
+  // PRIVATE zones are only resolvable within the VCN via the resolver.
+  // When omitted (unspecified), OCI defaults to GLOBAL.
+  enum Scope {
+    // Treat as GLOBAL (public DNS). This is the default when scope
+    // is omitted, matching OCI API behavior.
+    scope_unspecified = 0;
+    global = 1;
+    // Private DNS zone, resolvable only within VCNs via a DNS view.
+    scope_private = 2;
+  }
+
+  // External DNS server used for zone transfers.
+  // Used by both external_masters (inbound to SECONDARY zones) and
+  // external_downstreams (outbound from PRIMARY zones).
+  message ExternalServer {
+    // IPv4 or IPv6 address of the external DNS server.
+    string address = 1 [(buf.validate.field).string.min_len = 1];
+
+    // Port number. Must be 53 or omitted (OCI validates server-side).
+    optional int32 port = 2;
+
+    // OCID of the TSIG key for authenticating zone transfers.
+    // TSIG keys are not modeled as Planton components.
+    string tsig_key_id = 3;
+  }
+
+  // OCID of the compartment where this zone will be created.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OciCompartment,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartment_id"
+  ];
+
+  // Zone type: PRIMARY or SECONDARY. Required. ForceNew.
+  ZoneType zone_type = 2;
+
+  // Resolution scope. When omitted, defaults to GLOBAL (public DNS).
+  // ForceNew.
+  Scope scope = 3;
+
+  // OCID of the private DNS view. Required when scope is private.
+  // Not applicable for global zones. ForceNew.
+  // No default_kind/default_kind_field_path: OCI private DNS views are not
+  // modeled as an Planton kind, so this stays literal-only with no
+  // cross-resource reference default.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef view_id = 4;
+
+  // Enable DNSSEC signing for the zone. When true, OCI generates
+  // KSK and ZSK key pairs and signs zone records. Only meaningful
+  // for GLOBAL zones. Nil/omitted = OCI default (disabled).
+  optional bool is_dnssec_enabled = 5;
+
+  // External master DNS servers that this SECONDARY zone replicates
+  // from. Required when zone_type is secondary. Not applicable for
+  // PRIMARY zones (ignored if set).
+  repeated ExternalServer external_masters = 6;
+
+  // External downstream DNS servers that receive zone transfers
+  // from this PRIMARY zone. Only supported for PRIMARY zones with
+  // GLOBAL scope.
+  repeated ExternalServer external_downstreams = 7;
+}

@@ -138,7 +138,7 @@ resource "google_service_account" "main" {
   account_id   = var.spec.service_account_id
   display_name = var.metadata.name
   project      = var.spec.project_id
-  description  = "Service account managed by OpenMCF for ${var.metadata.name}"
+  description  = "Service account managed by Planton for ${var.metadata.name}"
 }
 ```
 
@@ -223,7 +223,7 @@ Replaced the incorrect DNS zone content with accurate service account descriptio
 - Key features: account creation, optional key generation, IAM role management
 - Benefits: security by default, consistency, auditability
 - Validation and compliance details
-- Integration with OpenMCF environment management
+- Integration with Planton environment management
 
 **Terraform Examples Documentation** (`iac/tf/examples.md`):  
 Created comprehensive Terraform-specific examples (308 lines):
@@ -274,7 +274,7 @@ Each example includes:
 **Terraform Validation**:
 
 ```bash
-cd apis/org/openmcf/provider/gcp/gcpserviceaccount/v1/iac/tf
+cd apis/dev/planton/provider/gcp/gcpserviceaccount/v1/iac/tf
 terraform init -backend=false
 terraform validate
 terraform fmt
@@ -289,7 +289,7 @@ terraform fmt
 **Go Component Tests**:
 
 ```bash
-go test ./apis/org/openmcf/provider/gcp/gcpserviceaccount/v1/ -v
+go test ./apis/dev/planton/provider/gcp/gcpserviceaccount/v1/ -v
 ```
 
 **Results**:
@@ -392,7 +392,7 @@ The Terraform implementation follows established patterns from other GCP compone
 **CI/CD Pipelines**: Teams using Terraform for GCP infrastructure can now include service account provisioning in their
 automated workflows
 
-**Multi-Cloud Platforms**: OpenMCF now provides consistent service account management across IaC tools, matching
+**Multi-Cloud Platforms**: Planton now provides consistent service account management across IaC tools, matching
 the pattern established for other GCP components
 
 ## Testing Strategy
@@ -436,7 +436,7 @@ the pattern established for other GCP components
 
 ### Referenced Components
 
-- **GcpSecretsManager** (`apis/org/openmcf/provider/gcp/gcpsecretsmanager/v1/`): Referenced for locals
+- **GcpSecretsManager** (`apis/dev/planton/provider/gcp/gcpsecretsmanager/v1/`): Referenced for locals
   pattern and label structure
 - **GcpGcsBucket**: Referenced for Terraform module organization
 - **GcpDnsZone**: Referenced for resource naming conventions
@@ -445,7 +445,7 @@ the pattern established for other GCP components
 
 This work addresses findings from the audit report:
 
-- **Audit File**: `apis/org/openmcf/provider/gcp/gcpserviceaccount/v1/docs/audit/2025-11-14-054137.md`
+- **Audit File**: `apis/dev/planton/provider/gcp/gcpserviceaccount/v1/docs/audit/2025-11-14-054137.md`
 - **Initial Score**: 84.40%
 - **Target Score**: 95%+
 - **Expected Final Score**: ~98% (all critical and important items complete)
@@ -453,7 +453,7 @@ This work addresses findings from the audit report:
 ### Architecture Documentation
 
 - **Component Standard**: `architecture/deployment-component.md`
-- **Research Document**: `apis/org/openmcf/provider/gcp/gcpserviceaccount/v1/docs/README.md` (18.8 KB
+- **Research Document**: `apis/dev/planton/provider/gcp/gcpserviceaccount/v1/docs/README.md` (18.8 KB
   research on service account patterns, keyless authentication, and 80/20 principle scoping)
 
 ## Design Decisions
@@ -551,7 +551,7 @@ IAM member resources rather than wrapping Pulumi calls.
 
 **Status**: ✅ Production Ready  
 **Timeline**: Completed November 15, 2025  
-**Component Path**: `apis/org/openmcf/provider/gcp/gcpserviceaccount/v1/`  
+**Component Path**: `apis/dev/planton/provider/gcp/gcpserviceaccount/v1/`  
 **Audit Improvement**: 84.40% → ~98% (+13.6 percentage points)
 
 ## Conclusion
@@ -566,24 +566,24 @@ provision GCP service accounts as part of their infrastructure-as-code workflows
 1. **Terraform Users**: Reference `iac/tf/examples.md` for usage patterns
 2. **Pulumi Users**: Continue using existing implementation (no changes required)
 3. **Documentation**: Review updated `README.md` for accurate component overview
-4. **Deployment**: Use standard OpenMCF CLI commands with either backend
+4. **Deployment**: Use standard Planton CLI commands with either backend
 
 ### Verification Commands
 
 ```bash
 # Validate Terraform module
-cd apis/org/openmcf/provider/gcp/gcpserviceaccount/v1/iac/tf
+cd apis/dev/planton/provider/gcp/gcpserviceaccount/v1/iac/tf
 terraform init -backend=false
 terraform validate
 
 # Run component tests
-go test ./apis/org/openmcf/provider/gcp/gcpserviceaccount/v1/ -v
+go test ./apis/dev/planton/provider/gcp/gcpserviceaccount/v1/ -v
 
 # Deploy with Terraform
-openmcf terraform apply --manifest service-account.yaml --stack org/project/stack
+planton terraform apply --manifest service-account.yaml --stack org/project/stack
 
 # Deploy with Pulumi
-openmcf pulumi up --manifest service-account.yaml --stack org/project/stack
+planton pulumi up --manifest service-account.yaml --stack org/project/stack
 ```
 
 ---

@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package dev.planton.provider.openstack.openstackrouterinterface.v1;
+
+// OpenStackRouterInterfaceStackOutputs captures the observable outputs after
+// provisioning an OpenStack Neutron router interface.
+//
+// The port_id is the primary output -- it is the UUID of the port that OpenStack
+// auto-creates on the subnet when the router interface is attached. This is also
+// the Terraform resource ID.
+//
+// No downstream components currently reference router interface outputs, but
+// port_id is valuable for debugging and potential future use.
+message OpenStackRouterInterfaceStackOutputs {
+  // port_id is the UUID of the port created by the router interface attachment.
+  // This is also the Terraform resource ID for the router interface.
+  string port_id = 1;
+
+  // router_id is the UUID of the router this interface is attached to.
+  string router_id = 2;
+
+  // subnet_id is the UUID of the subnet connected to the router.
+  string subnet_id = 3;
+
+  // region is the OpenStack region where the router interface was created.
+  string region = 4;
+}

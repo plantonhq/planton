@@ -12,7 +12,7 @@ Deploys Grafana on Kubernetes using the official Grafana Helm chart (v8.7.0). Pr
 
 ## What Gets Created
 
-When you deploy a KubernetesGrafana resource, OpenMCF provisions:
+When you deploy a KubernetesGrafana resource, Planton provisions:
 
 - **Kubernetes Namespace** — created if `createNamespace` is `true`
 - **Grafana Helm Release** — the official `grafana` chart (v8.7.0) from `https://grafana.github.io/helm-charts`, which creates:
@@ -34,15 +34,15 @@ When you deploy a KubernetesGrafana resource, OpenMCF provisions:
 Create a file `grafana.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesGrafana
 metadata:
   name: my-grafana
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesGrafana.my-grafana
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesGrafana.my-grafana
 spec:
   namespace:
     value: grafana-dev
@@ -52,7 +52,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f grafana.yaml
+planton apply -f grafana.yaml
 ```
 
 This creates a Grafana instance with default resources (1 CPU / 1Gi memory limit, 50m CPU / 100Mi memory request) in the `grafana-dev` namespace. Access the dashboard with `admin` / `admin` via the port-forward command in the stack outputs.
@@ -85,15 +85,15 @@ This creates a Grafana instance with default resources (1 CPU / 1Gi memory limit
 Increase CPU and memory for a busier monitoring environment:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesGrafana
 metadata:
   name: monitoring-grafana
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesGrafana.monitoring-grafana
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesGrafana.monitoring-grafana
 spec:
   namespace:
     value: monitoring
@@ -113,15 +113,15 @@ spec:
 Deploy into a pre-existing namespace without creating it, and reference a KubernetesNamespace resource via `valueFrom`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesGrafana
 metadata:
   name: team-grafana
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.KubernetesGrafana.team-grafana
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.KubernetesGrafana.team-grafana
 spec:
   namespace:
     valueFrom:
@@ -144,15 +144,15 @@ spec:
 External and internal access through nginx ingress controllers:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesGrafana
 metadata:
   name: prod-grafana
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesGrafana.prod-grafana
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesGrafana.prod-grafana
 spec:
   namespace:
     value: production

@@ -3,7 +3,7 @@ load("@rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "labelkeys",
     srcs = ["label_keys.go"],
-    importpath = "github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/labels/labelkeys",
+    importpath = "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/labels/labelkeys",
     visibility = ["//visibility:public"],
 )
 

@@ -1,3 +1,0 @@
-name: aws-elastic-ip
-runtime: go
-description: Deploy an AWS Elastic IP using OpenMCF

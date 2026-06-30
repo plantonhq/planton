@@ -1,0 +1,11 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesTemporal
+metadata:
+  name: e2e-temporal-postgres
+spec:
+  namespace:
+    value: e2e-temporal-postgres
+  create_namespace: true
+  database:
+    backend: postgresql
+  disable_web_ui: true

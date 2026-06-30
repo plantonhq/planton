@@ -3,7 +3,7 @@ load("@rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "mergestringmaps",
     srcs = ["merge_string_maps.go"],
-    importpath = "github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/datatypes/stringmaps/mergestringmaps",
+    importpath = "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/datatypes/stringmaps/mergestringmaps",
     visibility = ["//visibility:public"],
     deps = ["@com_github_pulumi_pulumi_sdk_v3//go/pulumi"],
 )

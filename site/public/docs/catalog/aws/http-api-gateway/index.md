@@ -12,7 +12,7 @@ Deploys an AWS API Gateway HTTP API (v2) with a bundled stage, routes with inlin
 
 ## What Gets Created
 
-When you deploy an AwsHttpApiGateway resource, OpenMCF provisions:
+When you deploy an AwsHttpApiGateway resource, Planton provisions:
 
 - **HTTP API** — an API Gateway v2 HTTP API with configured CORS, description, and endpoint settings
 - **Stage** — a deployment stage (defaults to `$default` with auto-deploy enabled), with optional access logging and throttling
@@ -22,7 +22,7 @@ When you deploy an AwsHttpApiGateway resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **AWS region** specified in provider config or environment
 - **Lambda functions** already deployed if using `AWS_PROXY` integrations
 - **HTTP endpoints** reachable if using `HTTP_PROXY` integrations
@@ -34,15 +34,15 @@ When you deploy an AwsHttpApiGateway resource, OpenMCF provisions:
 Create a file `api.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsHttpApiGateway
 metadata:
   name: my-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsHttpApiGateway.my-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsHttpApiGateway.my-api
 spec:
   region: us-east-1
   routes:
@@ -56,7 +56,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f api.yaml
+planton apply -f api.yaml
 ```
 
 This creates an HTTP API with a single catch-all route (`$default`) that forwards all requests to the specified Lambda function. A `$default` stage with auto-deploy is created automatically.
@@ -117,15 +117,15 @@ This creates an HTTP API with a single catch-all route (`$default`) that forward
 Multiple routes to different Lambda functions with cross-origin support:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsHttpApiGateway
 metadata:
   name: users-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsHttpApiGateway.users-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsHttpApiGateway.users-api
 spec:
   region: us-east-1
   description: "Users service API"
@@ -166,15 +166,15 @@ spec:
 Routes guarded by a JWT authorizer backed by Amazon Cognito:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsHttpApiGateway
 metadata:
   name: secure-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsHttpApiGateway.secure-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsHttpApiGateway.secure-api
 spec:
   region: us-east-1
   description: "Secured API with Cognito JWT authorization"
@@ -229,15 +229,15 @@ spec:
 An HTTP proxy API with access logging and default throttle settings:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsHttpApiGateway
 metadata:
   name: proxy-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsHttpApiGateway.proxy-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsHttpApiGateway.proxy-api
 spec:
   region: us-east-1
   description: "HTTP proxy to internal microservices"
@@ -265,18 +265,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding ARNs:
+Reference other Planton-managed resources instead of hardcoding ARNs:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsHttpApiGateway
 metadata:
   name: ref-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsHttpApiGateway.ref-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsHttpApiGateway.ref-api
 spec:
   region: us-east-1
   routes:

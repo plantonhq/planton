@@ -1,0 +1,11 @@
+apiVersion: digital-ocean.planton.dev/v1
+kind: DigitalOceanBucket
+metadata:
+  name: first-bucket          # K8s resource name
+spec:
+  bucketName: first-bucket-planton    # DNS‑compatible, 3‑63 chars
+  region: blr1                   # any valid DigitalOceanRegion enum (e.g., NYC3, FRA1)
+  accessControl: PRIVATE         # PRIVATE | PUBLIC_READ
+  versioningEnabled: true        # set to false if not needed
+  tags:
+    - planton

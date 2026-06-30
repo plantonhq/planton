@@ -1,0 +1,6 @@
+apiVersion: openstack.planton.dev/v1
+kind: OpenStackNetwork
+metadata:
+  name: test-network
+spec:
+  description: "Test network for local development"

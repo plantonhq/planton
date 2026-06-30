@@ -12,7 +12,7 @@ Deploys a Scaleway serverless container as a composite resource, provisioning a 
 
 ## What Gets Created
 
-When you deploy a ScalewayServerlessContainer resource, OpenMCF provisions:
+When you deploy a ScalewayServerlessContainer resource, Planton provisions:
 
 - **Container Namespace** — a `containers.Namespace` resource that groups the container for lifecycle isolation (one namespace per container)
 - **Serverless Container** — a `containers.Container` resource running the specified OCI image with configurable CPU, memory, scaling, health checks, and networking
@@ -22,7 +22,7 @@ The namespace is an internal implementation detail. Users interact with the cont
 
 ## Prerequisites
 
-- **Scaleway credentials** configured via environment variables or OpenMCF provider config
+- **Scaleway credentials** configured via environment variables or Planton provider config
 - **A pre-built container image** pushed to an OCI-compatible registry (Scaleway Container Registry, Docker Hub, GHCR, or any other)
 - **A valid Scaleway region** — serverless containers are available in `fr-par`, `nl-ams`, and `pl-waw`
 
@@ -31,15 +31,15 @@ The namespace is an internal implementation detail. Users interact with the cont
 Create a file `serverless-container.yaml`:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayServerlessContainer
 metadata:
   name: my-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayServerlessContainer.my-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayServerlessContainer.my-api
 spec:
   region: fr-par
   image:
@@ -54,7 +54,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f serverless-container.yaml
+planton apply -f serverless-container.yaml
 ```
 
 This creates a publicly accessible serverless container in the Paris region, listening on port 8080. After deployment, the container is reachable at the `domainName` shown in stack outputs.
@@ -105,15 +105,15 @@ This creates a publicly accessible serverless container in the Paris region, lis
 A public-facing REST API deployed from a Scaleway Container Registry image, configured with environment variables and secrets:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayServerlessContainer
 metadata:
   name: order-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayServerlessContainer.order-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayServerlessContainer.order-api
 spec:
   region: fr-par
   image:
@@ -145,15 +145,15 @@ spec:
 A private gRPC service using HTTP/2 cleartext protocol, custom health checks, request-based autoscaling, and a Private Network connection:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayServerlessContainer
 metadata:
   name: inference-grpc
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.ScalewayServerlessContainer.inference-grpc
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.ScalewayServerlessContainer.inference-grpc
 spec:
   region: nl-ams
   image:
@@ -193,15 +193,15 @@ spec:
 A container that runs scheduled data processing tasks via cron triggers, with a command override and ephemeral local storage for temporary files:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayServerlessContainer
 metadata:
   name: data-pipeline
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.ScalewayServerlessContainer.data-pipeline
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.ScalewayServerlessContainer.data-pipeline
 spec:
   region: pl-waw
   image:

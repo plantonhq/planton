@@ -12,7 +12,7 @@ Deploys an Oracle Cloud Infrastructure MySQL HeatWave Database System — a full
 
 ## What Gets Created
 
-When you deploy an OciMysqlDbSystem resource, OpenMCF provisions:
+When you deploy an OciMysqlDbSystem resource, Planton provisions:
 
 - **MySQL DB System** — an `oci_mysql_mysql_db_system` resource in the specified compartment and subnet, placed in a given availability domain on a chosen compute shape. OCI automatically creates a primary read/write endpoint with a private IP address.
 - **High Availability replicas** — when `isHighlyAvailable` is `true`, three instances are provisioned across different fault domains with automatic failover. Standby instances are not directly accessible.
@@ -23,7 +23,7 @@ When you deploy an OciMysqlDbSystem resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the DB System will be created — either a literal value or a reference to an OciCompartment resource
 - **A subnet OCID** in an existing VCN — either a literal value or a reference to an OciSubnet resource
 - **An availability domain** name (e.g., `Uocm:PHX-AD-1`)
@@ -34,15 +34,15 @@ When you deploy an OciMysqlDbSystem resource, OpenMCF provisions:
 Create a file `mysql-db.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciMysqlDbSystem
 metadata:
   name: my-mysql
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciMysqlDbSystem.my-mysql
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciMysqlDbSystem.my-mysql
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -57,7 +57,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f mysql-db.yaml
+planton apply -f mysql-db.yaml
 ```
 
 This creates a single-instance MySQL DB System with Oracle-managed encryption and the default MySQL configuration for the selected shape. The DB System ID, endpoint hostname, IP address, and port are exported as stack outputs.
@@ -193,15 +193,15 @@ This creates a single-instance MySQL DB System with Oracle-managed encryption an
 A single-instance MySQL DB System with defaults — suitable for development or testing:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciMysqlDbSystem
 metadata:
   name: dev-mysql
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciMysqlDbSystem.dev-mysql
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciMysqlDbSystem.dev-mysql
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -218,15 +218,15 @@ spec:
 HA enabled with daily backups, point-in-time recovery, and a weekly maintenance window:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciMysqlDbSystem
 metadata:
   name: ha-mysql
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.OciMysqlDbSystem.ha-mysql
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.OciMysqlDbSystem.ha-mysql
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -260,15 +260,15 @@ spec:
 Full production configuration with customer-managed encryption, deletion safeguards, read scaling, NSG attachment, and customer contact notifications:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciMysqlDbSystem
 metadata:
   name: prod-mysql
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciMysqlDbSystem.prod-mysql
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciMysqlDbSystem.prod-mysql
   env: prod
   org: acme
 spec:
@@ -330,18 +330,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference OpenMCF-managed compartment and subnet instead of hardcoding OCIDs:
+Reference Planton-managed compartment and subnet instead of hardcoding OCIDs:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciMysqlDbSystem
 metadata:
   name: ref-mysql
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciMysqlDbSystem.ref-mysql
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciMysqlDbSystem.ref-mysql
 spec:
   compartmentId:
     valueFrom:

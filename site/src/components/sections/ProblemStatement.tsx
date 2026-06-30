@@ -97,11 +97,11 @@ export default function ProblemStatement() {
 				</div>
 			</div>
 
-			{/* The OpenMCF Way */}
+			{/* The Planton Way */}
 			<div className="mb-12">
 				<h3 className="text-2xl font-bold text-center mb-8">
 					<span className="bg-gradient-to-r from-[#f0abfc] via-[#f472b6] to-[#d946ef] bg-clip-text text-transparent">
-						The OpenMCF Way
+						The Planton Way
 					</span>
 				</h3>
 
@@ -117,7 +117,7 @@ export default function ProblemStatement() {
 							<div>
 								<p className="text-sm font-bold text-purple-400 mb-2">AWS RDS</p>
 								<div className="bg-slate-950 rounded-lg p-3 font-mono text-xs whitespace-nowrap overflow-x-auto">
-									<div className="text-blue-400">apiVersion: <span className="text-white">aws.openmcf.org/v1</span></div>
+									<div className="text-blue-400">apiVersion: <span className="text-white">aws.planton.dev/v1</span></div>
 									<div className="text-blue-400">kind: <span className="text-white">AwsRdsInstance</span></div>
 									<div className="text-blue-400">metadata:</div>
 									<div className="text-blue-400 ml-2">name: <span className="text-white">mydb</span></div>
@@ -133,7 +133,7 @@ export default function ProblemStatement() {
 							<div>
 								<p className="text-sm font-bold text-purple-400 mb-2">GCP Cloud SQL</p>
 								<div className="bg-slate-950 rounded-lg p-3 font-mono text-xs whitespace-nowrap overflow-x-auto">
-									<div className="text-blue-400">apiVersion: <span className="text-white">gcp.openmcf.org/v1</span></div>
+									<div className="text-blue-400">apiVersion: <span className="text-white">gcp.planton.dev/v1</span></div>
 									<div className="text-blue-400">kind: <span className="text-white">GcpCloudSql</span></div>
 									<div className="text-blue-400">metadata:</div>
 									<div className="text-blue-400 ml-2">name: <span className="text-white">mydb</span></div>
@@ -147,7 +147,7 @@ export default function ProblemStatement() {
 							<div>
 								<p className="text-sm font-bold text-purple-400 mb-2">Kubernetes</p>
 								<div className="bg-slate-950 rounded-lg p-3 font-mono text-xs whitespace-nowrap overflow-x-auto">
-									<div className="text-blue-400">apiVersion: <span className="text-white">kubernetes.openmcf.org/v1</span></div>
+									<div className="text-blue-400">apiVersion: <span className="text-white">kubernetes.planton.dev/v1</span></div>
 									<div className="text-blue-400">kind: <span className="text-white">PostgresKubernetes</span></div>
 									<div className="text-blue-400">metadata:</div>
 									<div className="text-blue-400 ml-2">name: <span className="text-white">mydb</span></div>
@@ -161,7 +161,7 @@ export default function ProblemStatement() {
 
 					<div className="mt-6 bg-slate-950 rounded-lg p-4 font-mono text-sm text-center">
 						<div className="text-slate-400"># Same deployment command for all providers:</div>
-						<div className="text-emerald-400 mt-2">openmcf apply -f postgres.yaml</div>
+						<div className="text-emerald-400 mt-2">planton apply -f postgres.yaml</div>
 					</div>
 
 						<div className="mt-6 pt-6 border-t border-slate-700">

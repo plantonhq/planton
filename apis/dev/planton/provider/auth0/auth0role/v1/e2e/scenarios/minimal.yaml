@@ -1,0 +1,9 @@
+apiVersion: auth0.planton.dev/v1
+kind: Auth0Role
+metadata:
+  name: e2e-viewer
+  org: e2e-org
+  env: testing
+spec:
+  name: E2E Viewer
+  description: Read-only role created by the Auth0Role E2E suite

@@ -1,9 +1,0 @@
-apiVersion: auth0.openmcf.org/v1
-kind: Auth0Role
-metadata:
-  name: my-basic-role
-  org: example-org
-  env: production
-spec:
-  name: Basic
-  description: A role whose permissions are managed separately

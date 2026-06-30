@@ -1,0 +1,40 @@
+# Auth0 Role Test Manifest
+# This file is used for testing the Auth0Role deployment component
+#
+# Prerequisites:
+# 1. Set the following environment variables:
+#    - AUTH0_DOMAIN: Your Auth0 tenant domain (e.g., your-tenant.auth0.com)
+#    - AUTH0_CLIENT_ID: M2M application client ID
+#    - AUTH0_CLIENT_SECRET: M2M application client secret
+#
+# 2. The M2M application must have these scopes:
+#    - create:roles
+#    - read:roles
+#    - update:roles
+#    - delete:roles
+#    - read:resource_servers
+#
+# 3. The referenced resource server identifier and its scopes must already exist
+#    in the tenant (e.g., created via the Auth0ResourceServer component).
+
+apiVersion: auth0.planton.dev/v1
+kind: Auth0Role
+metadata:
+  name: test-viewer-role
+  org: test-org
+  env: development
+  labels:
+    purpose: testing
+spec:
+  # Optional: friendly display name (defaults to metadata.name)
+  name: Test Viewer
+
+  # Optional: description
+  description: Read-only access for testing the Auth0Role component
+
+  # Authoritative set of permissions granted to the role
+  permissions:
+    - name: read:items
+      resource_server_identifier: https://api.test.planton.dev/
+    - name: read:orders
+      resource_server_identifier: https://api.test.planton.dev/

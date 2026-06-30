@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package dev.planton.provider.openstack.openstackloadbalancerpool.v1;
+
+// OpenStackLoadBalancerPoolStackOutputs captures the observable outputs after
+// provisioning an Octavia backend pool in OpenStack.
+//
+// The pool_id is the primary output referenced by downstream components:
+// - OpenStackLoadBalancerMember (pool_id)
+// - OpenStackLoadBalancerMonitor (pool_id)
+message OpenStackLoadBalancerPoolStackOutputs {
+  // pool_id is the unique identifier (UUID) of the pool.
+  // This is the primary output used as a foreign key by members and monitors.
+  string pool_id = 1;
+
+  // name is the name of the pool (derived from metadata.name).
+  string name = 2;
+
+  // protocol is the backend protocol (HTTP, HTTPS, TCP, UDP, PROXY).
+  string protocol = 3;
+
+  // lb_method is the load-balancing algorithm (ROUND_ROBIN, LEAST_CONNECTIONS, etc.).
+  string lb_method = 4;
+
+  // region is the OpenStack region where the pool was created.
+  string region = 5;
+}

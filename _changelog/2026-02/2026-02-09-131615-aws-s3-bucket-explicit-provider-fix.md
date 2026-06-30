@@ -10,7 +10,7 @@ Fixed a critical bug in the AwsS3Bucket Pulumi module where the AWS provider was
 
 ## Problem Statement / Motivation
 
-When deploying an AwsS3Bucket resource via the OpenMCF Pulumi runner, the deployment failed immediately with:
+When deploying an AwsS3Bucket resource via the Planton Pulumi runner, the deployment failed immediately with:
 
 ```
 error: pulumi:providers:aws resource 'default_6_83_2' has a problem: unable to validate AWS credentials.
@@ -55,7 +55,7 @@ flowchart TB
 
 ### Source Code Fix: `module/main.go`
 
-**File**: `apis/org/openmcf/provider/aws/awss3bucket/v1/iac/pulumi/module/main.go`
+**File**: `apis/dev/planton/provider/aws/awss3bucket/v1/iac/pulumi/module/main.go`
 
 1. **Upgraded SDK**: Changed import from `pulumi-aws/sdk/v6` to `pulumi-aws/sdk/v7` for consistency with AwsRdsInstance
 2. **Added explicit provider creation**: Reads `stackInput.ProviderConfig` and creates an `aws.NewProvider()` with AccessKeyId, SecretAccessKey, Region, and SessionToken
@@ -80,8 +80,8 @@ Updated "AWS Provider Initialization" and "Credential Management" sections to ac
 
 ## Related Work
 
-- **Reference implementation**: `apis/org/openmcf/provider/aws/awsrdsinstance/v1/iac/pulumi/module/main.go` -- the correct pattern this fix was modeled after
-- **AWS Provider Config**: `apis/org/openmcf/provider/aws/provider.proto` -- defines `AwsProviderConfig` with account_id, access_key_id, secret_access_key, region, session_token
+- **Reference implementation**: `apis/dev/planton/provider/aws/awsrdsinstance/v1/iac/pulumi/module/main.go` -- the correct pattern this fix was modeled after
+- **AWS Provider Config**: `apis/dev/planton/provider/aws/provider.proto` -- defines `AwsProviderConfig` with account_id, access_key_id, secret_access_key, region, session_token
 
 ---
 

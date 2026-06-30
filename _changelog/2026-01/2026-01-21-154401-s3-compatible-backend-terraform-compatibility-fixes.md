@@ -112,7 +112,7 @@ Added `EnvVarName` field to `MissingField` struct and updated validation message
 
    • S3 bucket name for state storage
      Flag: --backend-bucket
-     Env:  OPENMCF_BACKEND_BUCKET
+     Env:  PLANTON_BACKEND_BUCKET
      Example: my-terraform-state-bucket
 ```
 

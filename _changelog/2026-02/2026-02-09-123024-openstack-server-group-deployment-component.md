@@ -60,7 +60,7 @@ flowchart TB
   - `policy` (required string, validated to: "affinity", "anti-affinity", "soft-affinity", "soft-anti-affinity")
   - `region` (optional string, region override)
 - `stack_outputs.proto` -- 4 outputs: server_group_id, name, members (computed list), region
-- `api.proto` -- KRM envelope with `openstack.openmcf.org/v1` + `OpenStackServerGroup`
+- `api.proto` -- KRM envelope with `openstack.planton.dev/v1` + `OpenStackServerGroup`
 - `stack_input.proto` -- target + provider_config
 - `spec_test.go` -- 13 tests (6 positive, 7 negative)
 
@@ -106,7 +106,7 @@ During implementation, we discovered that the Pulumi OpenStack SDK v5 models the
 ## Related Work
 
 - OpenStack networking components: `_changelog/2026-02/2026-02-09-*`
-- Parent project: `planton/_projects/20260209.01.openstack-openmcf-components/`
+- Parent project: `planton/_projects/20260209.01.openstack-planton-components/`
 
 ---
 

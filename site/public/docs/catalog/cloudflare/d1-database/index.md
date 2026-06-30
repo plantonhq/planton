@@ -12,14 +12,14 @@ Deploys a Cloudflare D1 serverless SQL database with an optional primary locatio
 
 ## What Gets Created
 
-When you deploy a CloudflareD1Database resource, OpenMCF provisions:
+When you deploy a CloudflareD1Database resource, Planton provisions:
 
 - **D1 Database** — a `cloudflare_d1_database` resource in the specified Cloudflare account, with an optional region hint that maps to the Cloudflare `primary_location_hint` property
 - **Read Replication (optional)** — when `readReplication` is configured, the database is created with D1 Read Replication (Beta) enabled, placing read-only replicas across multiple regions to reduce global read latency
 
 ## Prerequisites
 
-- **Cloudflare credentials** configured via environment variables or OpenMCF provider config
+- **Cloudflare credentials** configured via environment variables or Planton provider config
 - **A Cloudflare account ID** with D1 access enabled
 - **Application-level Sessions API support** if enabling read replication — failing to use the D1 Sessions API with replication enabled will cause data consistency errors
 
@@ -28,15 +28,15 @@ When you deploy a CloudflareD1Database resource, OpenMCF provisions:
 Create a file `d1-database.yaml`:
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareD1Database
 metadata:
   name: my-d1-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CloudflareD1Database.my-d1-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CloudflareD1Database.my-d1-db
 spec:
   accountId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
   databaseName: my-app-db
@@ -45,7 +45,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f d1-database.yaml
+planton apply -f d1-database.yaml
 ```
 
 This creates a D1 database named `my-app-db` with Cloudflare selecting the default storage region.
@@ -73,15 +73,15 @@ This creates a D1 database named `my-app-db` with Cloudflare selecting the defau
 A D1 database where Cloudflare selects the optimal storage location:
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareD1Database
 metadata:
   name: analytics-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CloudflareD1Database.analytics-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CloudflareD1Database.analytics-db
 spec:
   accountId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
   databaseName: analytics
@@ -92,15 +92,15 @@ spec:
 A D1 database pinned to Western Europe, useful for GDPR compliance or when your Workers are deployed in that region:
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareD1Database
 metadata:
   name: eu-users-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CloudflareD1Database.eu-users-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CloudflareD1Database.eu-users-db
 spec:
   accountId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
   databaseName: eu-users
@@ -112,15 +112,15 @@ spec:
 A production D1 database in Eastern North America with automatic read replication enabled for lower global read latency. Your application code must use the D1 Sessions API to maintain consistency:
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareD1Database
 metadata:
   name: global-app-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CloudflareD1Database.global-app-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CloudflareD1Database.global-app-db
 spec:
   accountId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
   databaseName: global-app

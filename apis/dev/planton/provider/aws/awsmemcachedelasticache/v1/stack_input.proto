@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsmemcachedelasticache.v1;
+
+import "dev/planton/provider/aws/awsmemcachedelasticache/v1/api.proto";
+import "dev/planton/provider/aws/provider.proto";
+
+// aws-memcached-elasticache stack-input
+message AwsMemcachedElasticacheStackInput {
+  // target cloud-resource
+  AwsMemcachedElasticache target = 1;
+  // provider-credential
+  dev.planton.provider.aws.AwsProviderConfig provider_config = 2;
+}

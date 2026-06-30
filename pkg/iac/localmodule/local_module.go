@@ -7,16 +7,16 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared"
-	"github.com/plantonhq/openmcf/internal/cli/cliprint"
-	"github.com/plantonhq/openmcf/pkg/crkreflect"
-	"github.com/plantonhq/openmcf/pkg/iac/gitrepo"
-	"github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule"
-	"github.com/plantonhq/openmcf/pkg/iac/tofu/tofumodule"
+	"github.com/plantonhq/planton/apis/dev/planton/shared"
+	"github.com/plantonhq/planton/internal/cli/cliprint"
+	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/iac/gitrepo"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule"
+	"github.com/plantonhq/planton/pkg/iac/tofu/tofumodule"
 	"github.com/spf13/cobra"
 )
 
-// GetModuleDir resolves the local module directory from the openmcf repo.
+// GetModuleDir resolves the local module directory from the planton repo.
 // It reads the manifest file, extracts the kind, and constructs the module path
 // based on the provisioner type.
 //
@@ -61,11 +61,11 @@ func GetModuleDir(targetManifestPath string, cmd *cobra.Command, prov shared.Iac
 			Stage:   "locating local repository",
 			Cause:   err,
 			Context: fmt.Sprintf("repo path: %s", repoPath),
-			Hint: fmt.Sprintf("The openmcf repository was not found at '%s'.\n"+
+			Hint: fmt.Sprintf("The planton repository was not found at '%s'.\n"+
 				"  Options:\n"+
-				"  1. Clone the repo: git clone https://github.com/plantonhq/openmcf %s\n"+
-				"  2. Set a different path: --openmcf-git-repo /your/path\n"+
-				"  3. Use environment variable: export OPENMCF_GIT_REPO=/your/path",
+				"  1. Clone the repo: git clone https://github.com/plantonhq/planton %s\n"+
+				"  2. Set a different path: --planton-git-repo /your/path\n"+
+				"  3. Use environment variable: export PLANTON_GIT_REPO=/your/path",
 				repoPath, repoPath),
 		}
 	}
@@ -125,7 +125,7 @@ func buildExpectedModulePath(repoPath, kindName, provName string) string {
 		subdir = "tf"
 	}
 
-	return filepath.Join(repoPath, "apis/org/openmcf/provider", provider,
+	return filepath.Join(repoPath, "apis/dev/planton/provider", provider,
 		strings.ToLower(kindName), "v1/iac", subdir)
 }
 

@@ -2,9 +2,9 @@ package stackinputproviderconfig
 
 import (
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
-	"github.com/plantonhq/openmcf/internal/cli/flag"
-	"github.com/plantonhq/openmcf/pkg/iac/stackinput/providerdetect"
+	"github.com/plantonhq/planton/apis/dev/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/internal/cli/flag"
+	"github.com/plantonhq/planton/pkg/iac/stackinput/providerdetect"
 	"github.com/spf13/pflag"
 )
 

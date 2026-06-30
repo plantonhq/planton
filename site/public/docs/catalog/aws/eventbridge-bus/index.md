@@ -12,7 +12,7 @@ Deploys an AWS EventBridge custom event bus with optional KMS encryption, dead l
 
 ## What Gets Created
 
-When you deploy an AwsEventBridgeBus resource, OpenMCF provisions:
+When you deploy an AwsEventBridgeBus resource, Planton provisions:
 
 - **EventBridge Custom Event Bus** — an `aws_cloudwatch_event_bus` resource named after `metadata.name`, with optional description, KMS encryption, and AWS resource tags for organization, environment, and resource tracking
 - **Dead Letter Config** — configured only when `deadLetterConfig` is provided, routes events that fail delivery to any rule target on this bus to the specified SQS queue
@@ -20,7 +20,7 @@ When you deploy an AwsEventBridgeBus resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **An SQS queue** if using dead letter queue routing — the queue must exist in the same account and region as the event bus
 - **A KMS key** if using customer-managed encryption — the key must grant EventBridge permission to encrypt and decrypt
 - **A partner event source** if creating a partner bus — the source must already exist in the account
@@ -30,15 +30,15 @@ When you deploy an AwsEventBridgeBus resource, OpenMCF provisions:
 Create a file `bus.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEventBridgeBus
 metadata:
   name: my-events
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsEventBridgeBus.my-events
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsEventBridgeBus.my-events
 spec:
   region: us-east-1
   description: Custom event bus for application events
@@ -47,7 +47,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f bus.yaml
+planton apply -f bus.yaml
 ```
 
 This creates a custom EventBridge bus with AWS-managed encryption and no dead letter queue or logging.
@@ -78,15 +78,15 @@ This creates a custom EventBridge bus with AWS-managed encryption and no dead le
 A bus with customer-managed KMS encryption, dead letter queue for undeliverable events, and error-level logging:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEventBridgeBus
 metadata:
   name: payment-events
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsEventBridgeBus.payment-events
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsEventBridgeBus.payment-events
 spec:
   region: us-east-1
   description: Payment processing event bus
@@ -102,15 +102,15 @@ spec:
 Verbose logging with full event detail for debugging event routing during development:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEventBridgeBus
 metadata:
   name: dev-events
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsEventBridgeBus.dev-events
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsEventBridgeBus.dev-events
 spec:
   region: us-east-1
   description: Development bus with verbose logging
@@ -121,18 +121,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding ARNs:
+Reference other Planton-managed resources instead of hardcoding ARNs:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEventBridgeBus
 metadata:
   name: order-events
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsEventBridgeBus.order-events
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsEventBridgeBus.order-events
 spec:
   region: us-east-1
   description: Order processing event bus with referenced resources

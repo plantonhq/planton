@@ -12,7 +12,7 @@ Deploys an Oracle Cloud Infrastructure File Storage file system with a dedicated
 
 ## What Gets Created
 
-When you deploy an OciFileSystem resource, OpenMCF provisions:
+When you deploy an OciFileSystem resource, Planton provisions:
 
 - **File System** — an `oci_file_storage_file_system` resource in the specified compartment and availability domain with optional KMS encryption and snapshot policy attachment.
 - **Mount Target** — an `oci_file_storage_mount_target` resource in the specified subnet providing the NFS endpoint (private IP address). OCI automatically creates an export set on the mount target.
@@ -21,7 +21,7 @@ When you deploy an OciFileSystem resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the file system and mount target will be created — either a literal value or a reference to an OciCompartment resource
 - **An availability domain** — file system and mount target must be in the same AD
 - **A subnet OCID** for the mount target — determines the VCN and network segment for NFS access
@@ -32,15 +32,15 @@ When you deploy an OciFileSystem resource, OpenMCF provisions:
 Create a file `filesystem.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciFileSystem
 metadata:
   name: my-fs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciFileSystem.my-fs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciFileSystem.my-fs
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -55,7 +55,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f filesystem.yaml
+planton apply -f filesystem.yaml
 ```
 
 This creates a file system, a mount target in the specified subnet, and one NFS export at `/shared`. The mount target IP address is exported as a stack output for use in NFS mount commands:
@@ -122,15 +122,15 @@ mount -t nfs <mount_target_ip>:/shared /mnt/shared
 A file system with one export and default NFS access — suitable for development:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciFileSystem
 metadata:
   name: dev-fs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciFileSystem.dev-fs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciFileSystem.dev-fs
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -147,15 +147,15 @@ spec:
 A file system with a predictable mount target address and DNS hostname:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciFileSystem
 metadata:
   name: app-shared
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.OciFileSystem.app-shared
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.OciFileSystem.app-shared
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -177,15 +177,15 @@ spec:
 A production file system with separate exports for different teams, each with per-CIDR access rules:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciFileSystem
 metadata:
   name: prod-shared
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciFileSystem.prod-shared
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciFileSystem.prod-shared
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -224,18 +224,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference OpenMCF-managed compartment, subnet, and NSG resources instead of hardcoding OCIDs:
+Reference Planton-managed compartment, subnet, and NSG resources instead of hardcoding OCIDs:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciFileSystem
 metadata:
   name: ref-fs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciFileSystem.ref-fs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciFileSystem.ref-fs
 spec:
   compartmentId:
     valueFrom:

@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcpcloudschedulerjob.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/gcp/gcpcloudschedulerjob/v1/spec.proto";
+import "dev/planton/provider/gcp/gcpcloudschedulerjob/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+//gcp-cloud-scheduler-job
+message GcpCloudSchedulerJob {
+  string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1'];
+  string kind = 2 [(buf.validate.field).string.const = 'GcpCloudSchedulerJob'];
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  GcpCloudSchedulerJobSpec spec = 4 [(buf.validate.field).required = true];
+  GcpCloudSchedulerJobStatus status = 5;
+}
+
+message GcpCloudSchedulerJobStatus {
+  GcpCloudSchedulerJobStackOutputs outputs = 1;
+}

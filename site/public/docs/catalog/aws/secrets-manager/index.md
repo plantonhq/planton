@@ -12,16 +12,16 @@ Deploys a set of secrets in AWS Secrets Manager from a list of logical secret na
 
 ## What Gets Created
 
-When you deploy an AwsSecretsManager resource, OpenMCF provisions:
+When you deploy an AwsSecretsManager resource, Planton provisions:
 
 - **Secrets Manager Secret** — one `secretsmanager.Secret` resource per entry in `secretNames`, named with the pattern `{metadata.id}-{secretName}` for uniqueness within the AWS account
-- **Placeholder Secret Version** — one `secretsmanager.SecretVersion` per secret, seeded with a placeholder string value; subsequent updates to the secret value outside of OpenMCF are preserved (the `secretString` field is set to ignore changes)
+- **Placeholder Secret Version** — one `secretsmanager.SecretVersion` per secret, seeded with a placeholder string value; subsequent updates to the secret value outside of Planton are preserved (the `secretString` field is set to ignore changes)
 
-All resources are tagged with OpenMCF metadata (organization, environment, resource kind, resource ID).
+All resources are tagged with Planton metadata (organization, environment, resource kind, resource ID).
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **Unique secret names** — each name in `secretNames` must be unique within the manifest (enforced by validation)
 
 ## Quick Start
@@ -29,15 +29,15 @@ All resources are tagged with OpenMCF metadata (organization, environment, resou
 Create a file `secrets.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsSecretsManager
 metadata:
   name: my-app-secrets
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsSecretsManager.my-app-secrets
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsSecretsManager.my-app-secrets
 spec:
   secretNames:
     - DB_PASSWORD
@@ -46,7 +46,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f secrets.yaml
+planton apply -f secrets.yaml
 ```
 
 This creates a single secret in AWS Secrets Manager. After deployment, populate the actual secret value using the AWS SDK or console.
@@ -71,15 +71,15 @@ This component has no optional fields. All behavior is determined by the `secret
 Create one secret for a database password:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsSecretsManager
 metadata:
   name: db-creds
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsSecretsManager.db-creds
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsSecretsManager.db-creds
 spec:
   secretNames:
     - DB_PASSWORD
@@ -90,15 +90,15 @@ spec:
 Create several secrets for a microservice that needs database, cache, and API credentials:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsSecretsManager
 metadata:
   name: payment-svc-secrets
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsSecretsManager.payment-svc-secrets
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsSecretsManager.payment-svc-secrets
 spec:
   secretNames:
     - DB_PASSWORD
@@ -112,15 +112,15 @@ spec:
 A production deployment with secrets grouped by purpose:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsSecretsManager
 metadata:
   name: prod-platform-secrets
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsSecretsManager.prod-platform-secrets
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsSecretsManager.prod-platform-secrets
 spec:
   region: us-west-2
   secretNames:

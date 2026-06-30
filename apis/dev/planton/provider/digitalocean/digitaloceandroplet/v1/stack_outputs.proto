@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package dev.planton.provider.digitalocean.digitaloceandroplet.v1;
+
+// DigitalOceanDropletStackOutputs captures the resulting Droplet info after provisioning.
+message DigitalOceanDropletStackOutputs {
+  // droplet unique identifier (DigitalOcean ID)
+  string droplet_id = 1;
+
+  // primary IPv4 address (public if available, otherwise private)
+  string ipv4_address = 2;
+
+  // IPv6 address (if IPv6 was enabled)
+  string ipv6_address = 3;
+
+  // image ID of the droplet’s base image
+  int64 image_id = 6;
+
+  // VPC network UUID in which the droplet resides
+  string vpc_uuid = 7;
+}

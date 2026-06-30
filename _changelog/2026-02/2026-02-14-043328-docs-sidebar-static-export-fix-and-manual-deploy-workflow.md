@@ -14,7 +14,7 @@ The docs sidebar fetches its navigation structure from a static JSON file (`/doc
 
 ### Pain Points
 
-- The sidebar loaded correctly on `localhost:3000` (because the script had been run manually during testing) but returned **404 on production** (`https://openmcf.org/docs-structure.json`)
+- The sidebar loaded correctly on `localhost:3000` (because the script had been run manually during testing) but returned **404 on production** (`https://planton.dev/docs-structure.json`)
 - Root cause: **Yarn Berry (4.x) does not fire `prebuild` lifecycle scripts**. The hook was silently ignored during `yarn build`, so the structure JSON was never generated in CI
 - The CI workflows had a redundant `yarn copy-docs` step that ran separately from the build, creating an implicit coupling between workflow steps and the build contract
 - No way to deploy the website from a feature branch for previewing changes before merging
@@ -96,7 +96,7 @@ Both `release.website.yaml` and `auto-release.website.yaml` had a 3-line `Copy c
 
 ## Impact
 
-- **End users**: Docs sidebar now loads correctly on `openmcf.org`
+- **End users**: Docs sidebar now loads correctly on `planton.dev`
 - **Developers**: `yarn build` and `make preview-site` work reliably from clean state
 - **CI/CD**: Simpler workflows, fewer implicit dependencies between steps
 - **Operations**: Manual deploy capability for any branch
@@ -104,7 +104,7 @@ Both `release.website.yaml` and `auto-release.website.yaml` had a 3-line `Copy c
 ## Related Work
 
 - Previous session: Created `scripts/generate-docs-structure.ts`, updated `DocsSidebar.tsx` fetch URL, deleted API route, updated `.gitignore`
-- Docs feature parity project: `_projects/20260212.03.openmcf-docs-feature-parity/`
+- Docs feature parity project: `_projects/20260212.03.planton-docs-feature-parity/`
 
 ---
 

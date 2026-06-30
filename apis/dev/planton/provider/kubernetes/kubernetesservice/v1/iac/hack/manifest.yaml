@@ -1,0 +1,25 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesService
+metadata:
+  name: test-service
+spec:
+  namespace: default
+  name: test-service
+  selector:
+    app: test-app
+    tier: backend
+  ports:
+    - name: http
+      port: 80
+      target_port: "8080"
+      protocol: TCP
+    - name: grpc
+      port: 9090
+      target_port: "9090"
+      protocol: TCP
+  labels:
+    team: platform-engineering
+    environment: test
+    created-by: planton
+  annotations:
+    description: "Test service created by Planton"

@@ -173,7 +173,7 @@ spec.proto:
 ### Basic Syntax
 
 ```bash
-@fix-openmcf-component <ComponentName> --explain "<detailed fix description>"
+@fix-planton-component <ComponentName> --explain "<detailed fix description>"
 ```
 
 ### The --explain Flag
@@ -282,7 +282,7 @@ Component tests: ✅ PASS (18/18)
 [3/5] ✅ docs/README.md (research)
   - Updated: Comparison table (wildcard support)
   - Updated: Best Practices (wildcard patterns)
-  - Updated: OpenMCF Approach section
+  - Updated: Planton Approach section
 
 [4/5] ✅ iac/pulumi/README.md
   - Added: Wildcard example to usage section
@@ -333,7 +333,7 @@ All consistency checks passed!
 🧪 Running Validation
 
 Component Tests:
-  go test ./apis/org/openmcf/provider/gcp/gcpcertmanagercert/v1/
+  go test ./apis/dev/planton/provider/gcp/gcpcertmanagercert/v1/
   ✅ PASS (18/18 tests, +2 new tests)
 
 Build Validation:
@@ -402,7 +402,7 @@ Next Steps:
 
 **Fix:**
 ```bash
-@fix-openmcf-component AwsVpc --explain "CIDR validation rejects 10.0.0.0/8 which is valid private range"
+@fix-planton-component AwsVpc --explain "CIDR validation rejects 10.0.0.0/8 which is valid private range"
 ```
 
 **Actions:**
@@ -417,7 +417,7 @@ Next Steps:
 
 **Fix:**
 ```bash
-@fix-openmcf-component MongodbAtlas --explain "spec.proto missing 'region' field which is essential for cluster deployment"
+@fix-planton-component MongodbAtlas --explain "spec.proto missing 'region' field which is essential for cluster deployment"
 ```
 
 **Actions:**
@@ -436,7 +436,7 @@ Next Steps:
 
 **Fix:**
 ```bash
-@fix-openmcf-component AwsRdsInstance --explain "Pulumi hardcodes backup_retention_period=7, should use spec.backupRetentionDays"
+@fix-planton-component AwsRdsInstance --explain "Pulumi hardcodes backup_retention_period=7, should use spec.backupRetentionDays"
 ```
 
 **Actions:**
@@ -452,7 +452,7 @@ Next Steps:
 
 **Fix:**
 ```bash
-@fix-openmcf-component PostgresKubernetes --explain "examples use 'database_name' but spec.proto uses 'db_identifier'"
+@fix-planton-component PostgresKubernetes --explain "examples use 'database_name' but spec.proto uses 'db_identifier'"
 ```
 
 **Actions:**
@@ -468,7 +468,7 @@ Next Steps:
 
 **Fix:**
 ```bash
-@fix-openmcf-component GcpCloudSql --explain "spec_test.go fails because it expects required validation on project_id but spec.proto doesn't have that rule"
+@fix-planton-component GcpCloudSql --explain "spec_test.go fails because it expects required validation on project_id but spec.proto doesn't have that rule"
 ```
 
 **Actions:**
@@ -486,7 +486,7 @@ Next Steps:
 
 **Fix:**
 ```bash
-@fix-openmcf-component GcpGkeCluster --explain "Terraform doesn't create node pool autoscaling but Pulumi does"
+@fix-planton-component GcpGkeCluster --explain "Terraform doesn't create node pool autoscaling but Pulumi does"
 ```
 
 **Actions:**
@@ -609,7 +609,7 @@ Fix updates README:
 ### Example 1: Fix Proto Validation
 
 ```bash
-@fix-openmcf-component GcpCertManagerCert --explain "primaryDomainName should allow wildcards *.example.com"
+@fix-planton-component GcpCertManagerCert --explain "primaryDomainName should allow wildcards *.example.com"
 ```
 
 **What happens:**
@@ -649,7 +649,7 @@ Total: 8 minutes
 ### Example 2: Fix IaC Implementation
 
 ```bash
-@fix-openmcf-component AwsRdsInstance --explain "backup_retention_period hardcoded to 7, should use spec.backupRetentionDays"
+@fix-planton-component AwsRdsInstance --explain "backup_retention_period hardcoded to 7, should use spec.backupRetentionDays"
 ```
 
 **What happens:**
@@ -684,7 +684,7 @@ Total: 8 minutes
 ### Example 3: Fix Documentation Only
 
 ```bash
-@fix-openmcf-component PostgresKubernetes --explain "examples.md uses deprecated 'database_name', should be 'db_identifier'"
+@fix-planton-component PostgresKubernetes --explain "examples.md uses deprecated 'database_name', should be 'db_identifier'"
 ```
 
 **What happens:**
@@ -712,7 +712,7 @@ Total: 8 minutes
 ### Example 4: Fix Test Logic
 
 ```bash
-@fix-openmcf-component MongodbAtlas --explain "test expects error for empty cluster_tier but proto has no validation rule"
+@fix-planton-component MongodbAtlas --explain "test expects error for empty cluster_tier but proto has no validation rule"
 ```
 
 **What happens:**
@@ -777,7 +777,7 @@ After fix:
 
 ```bash
 # After fix completes
-cd apis/org/openmcf/provider/<provider>/<component>/v1/iac/hack/
+cd apis/dev/planton/provider/<provider>/<component>/v1/iac/hack/
 
 # Test with Pulumi
 cd pulumi && make local && pulumi up
@@ -858,14 +858,14 @@ After fix completes:
 
 ```bash
 # Audit identifies issue
-@audit-openmcf-component MyComponent
+@audit-planton-component MyComponent
 # Report: "Examples use deprecated fields"
 
 # Fix it
-@fix-openmcf-component MyComponent --explain "update examples to use current field names"
+@fix-planton-component MyComponent --explain "update examples to use current field names"
 
 # Verify fix
-@audit-openmcf-component MyComponent
+@audit-planton-component MyComponent
 # Score maintained or improved
 ```
 
@@ -873,10 +873,10 @@ After fix completes:
 
 ```bash
 # Complete fills gaps
-@complete-openmcf-component MyComponent
+@complete-planton-component MyComponent
 
 # Then fix specific issue
-@fix-openmcf-component MyComponent --explain "validation logic has bug"
+@fix-planton-component MyComponent --explain "validation logic has bug"
 
 # Result: 95%+ with bug fixed
 ```
@@ -885,10 +885,10 @@ After fix completes:
 
 ```bash
 # Update for general improvements
-@update-openmcf-component MyComponent --scenario refresh-docs
+@update-planton-component MyComponent --scenario refresh-docs
 
 # Fix specific bug discovered
-@fix-openmcf-component MyComponent --explain "discovered validation bug while refreshing docs"
+@fix-planton-component MyComponent --explain "discovered validation bug while refreshing docs"
 ```
 
 ## Tips
@@ -911,20 +911,20 @@ After fix completes:
 
 ## Related Commands
 
-- `@audit-openmcf-component` - Check status, identify issues
-- `@update-openmcf-component` - General improvements
-- `@complete-openmcf-component` - Fill all gaps
-- `@forge-openmcf-component` - Create new component
+- `@audit-planton-component` - Check status, identify issues
+- `@update-planton-component` - General improvements
+- `@complete-planton-component` - Fill all gaps
+- `@forge-planton-component` - Create new component
 
 ## Reference
 
 - **Ideal State:** `architecture/deployment-component.md`
-- **Fix Rule:** `_rules/deployment-component/fix/fix-openmcf-component.mdc`
+- **Fix Rule:** `_rules/deployment-component/fix/fix-planton-component.mdc`
 - **Master README:** `_rules/deployment-component/README.md`
 
 ---
 
 **Remember:** Source code is truth, documentation describes truth. Fix the code first, then sync everything else!
 
-**Ready to fix?** Run `@fix-openmcf-component <ComponentName> --explain "<what needs fixing>"` for targeted fixes with automatic propagation!
+**Ready to fix?** Run `@fix-planton-component <ComponentName> --explain "<what needs fixing>"` for targeted fixes with automatic propagation!
 

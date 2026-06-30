@@ -17,7 +17,7 @@ Provisions a Hetzner Cloud block storage volume with an optional server attachme
 
 ## Prerequisites
 
-- **Hetzner Cloud API token** configured via environment variable (`HCLOUD_TOKEN`) or OpenMCF provider config
+- **Hetzner Cloud API token** configured via environment variable (`HCLOUD_TOKEN`) or Planton provider config
 - **A server in the same location** if attaching the volume via `serverId` — either pre-existing or managed as a `HetznerCloudServer` component
 
 ## Quick Start
@@ -25,15 +25,15 @@ Provisions a Hetzner Cloud block storage volume with an optional server attachme
 Create a file `volume.yaml`:
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudVolume
 metadata:
   name: my-volume
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.HetznerCloudVolume.my-volume
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.HetznerCloudVolume.my-volume
 spec:
   size: 10
   location: fsn1
@@ -42,7 +42,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f volume.yaml
+planton apply -f volume.yaml
 ```
 
 This creates a 10 GB raw (unformatted) volume in Falkenstein, unattached to any server.
@@ -72,17 +72,17 @@ This creates a 10 GB raw (unformatted) volume in Falkenstein, unattached to any 
 A formatted volume created without a server attachment. Useful for pre-provisioning storage that will be attached to a server later.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudVolume
 metadata:
   name: app-data
   org: acme-corp
   env: staging
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: storage
-    pulumi.openmcf.org/stack.name: staging.HetznerCloudVolume.app-data
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: storage
+    pulumi.planton.dev/stack.name: staging.HetznerCloudVolume.app-data
 spec:
   size: 50
   location: fsn1
@@ -94,17 +94,17 @@ spec:
 A volume attached to a server with automount enabled. The `serverId` uses a `valueFrom` reference to a `HetznerCloudServer` component, ensuring the server is created before the volume attachment.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudVolume
 metadata:
   name: db-data
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: databases
-    pulumi.openmcf.org/stack.name: production.HetznerCloudVolume.db-data
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: databases
+    pulumi.planton.dev/stack.name: production.HetznerCloudVolume.db-data
 spec:
   size: 100
   location: fsn1
@@ -122,17 +122,17 @@ spec:
 A large XFS volume for high-throughput workloads with delete protection enabled. XFS is suited for large sequential writes — log aggregation, media storage, and backup repositories.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudVolume
 metadata:
   name: media-storage
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: media-platform
-    pulumi.openmcf.org/stack.name: production.HetznerCloudVolume.media-storage
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: media-platform
+    pulumi.planton.dev/stack.name: production.HetznerCloudVolume.media-storage
     role: media
 spec:
   size: 500

@@ -6,13 +6,13 @@
 
 ## Summary
 
-Added comprehensive automation for systematically renaming deployment components across the entire OpenMCF codebase. The new rename system applies seven comprehensive naming pattern replacements, updates the cloud resource registry, modifies all documentation, and validates changes through the full build pipeline (protos, build, test). This establishes rename as the seventh lifecycle operation alongside forge, audit, update, complete, fix, and delete. Additionally, reorganized all automation scripts from `.cursor/tools/` to `_rules/deployment-component/_scripts/` for better organization and discoverability.
+Added comprehensive automation for systematically renaming deployment components across the entire Planton codebase. The new rename system applies seven comprehensive naming pattern replacements, updates the cloud resource registry, modifies all documentation, and validates changes through the full build pipeline (protos, build, test). This establishes rename as the seventh lifecycle operation alongside forge, audit, update, complete, fix, and delete. Additionally, reorganized all automation scripts from `.cursor/tools/` to `_rules/deployment-component/_scripts/` for better organization and discoverability.
 
 ## Problem Statement / Motivation
 
 ### The Need for Systematic Renaming
 
-OpenMCF's component naming sometimes doesn't accurately reflect what the components do. Examples:
+Planton's component naming sometimes doesn't accurately reflect what the components do. Examples:
 - `KubernetesMicroservice` is an abstraction - it creates a Kubernetes Deployment resource, not specifically a "microservice"
 - The November 2025 workload refactoring renamed 23 components but required custom shell scripts
 - No systematic way to rename components while preserving functionality and metadata
@@ -224,9 +224,9 @@ JSON with comprehensive metrics:
 }
 ```
 
-### Phase 3: Cursor Rule (`rename-openmcf-component.mdc`)
+### Phase 3: Cursor Rule (`rename-planton-component.mdc`)
 
-**File**: `_rules/deployment-component/rename/rename-openmcf-component.mdc`  
+**File**: `_rules/deployment-component/rename/rename-planton-component.mdc`  
 **Size**: 900 lines
 
 #### Interactive Workflow
@@ -275,7 +275,7 @@ If all tests pass:
 ✅ Rename completed successfully!
 
 Automatically creating changelog...
-@create-openmcf-changelog
+@create-planton-changelog
 ```
 
 #### Key Sections in Rule
@@ -366,7 +366,7 @@ Updated `_rules/deployment-component/README.md`:
 **Added to Decision Tree**:
 ```
 ├─ Need to rename component?
-│  └─ Use @rename-openmcf-component
+│  └─ Use @rename-planton-component
 │     Systematic rename across entire codebase
 │     7 naming patterns, build verification
 │     Name clarity, remove abstractions
@@ -461,7 +461,7 @@ _rules/deployment-component/
 ├── _scripts/
 │   └── rename_deployment_component.py      (494 lines) NEW
 └── rename/
-    ├── rename-openmcf-component.mdc (900 lines) NEW
+    ├── rename-planton-component.mdc (900 lines) NEW
     └── README.md                             (650 lines) NEW
 ```
 
@@ -487,7 +487,7 @@ None. This is a pure addition:
 
 **Simple rename**:
 ```bash
-@rename-openmcf-component
+@rename-planton-component
 
 Old component name: KubernetesMicroservice
 New component name: KubernetesDeployment
@@ -586,8 +586,8 @@ provider = component_info['provider']  # "kubernetes" from registry
 if provider == 'kubernetes':
     # Check actual location
     old_folder = to_lowercase(args.old_name)
-    workload_path = os.path.join(repo_root, "apis/org/openmcf/provider/kubernetes/workload", old_folder)
-    addon_path = os.path.join(repo_root, "apis/org/openmcf/provider/kubernetes/addon", old_folder)
+    workload_path = os.path.join(repo_root, "apis/dev/planton/provider/kubernetes/workload", old_folder)
+    addon_path = os.path.join(repo_root, "apis/dev/planton/provider/kubernetes/addon", old_folder)
     
     if os.path.exists(workload_path):
         provider = "kubernetes/workload"
@@ -634,25 +634,25 @@ The rename system was designed based on learnings from the November 2025 Kuberne
 
 **Rename + Audit**:
 ```bash
-@audit-openmcf-component KubernetesMicroservice
+@audit-planton-component KubernetesMicroservice
 # Result: Name doesn't reflect behavior
 
-@rename-openmcf-component
+@rename-planton-component
 # Rename to KubernetesDeployment
 ```
 
 **Rename + Complete**:
 ```bash
 # 1. Fix name first
-@rename-openmcf-component
+@rename-planton-component
 
 # 2. Then fill gaps
-@complete-openmcf-component KubernetesDeployment
+@complete-planton-component KubernetesDeployment
 ```
 
 **Rename as part of Fix**:
 ```bash
-@fix-openmcf-component KubernetesMicroservice \
+@fix-planton-component KubernetesMicroservice \
   --explain "Rename to KubernetesDeployment to reflect actual resource type"
 ```
 
@@ -757,7 +757,7 @@ A rename is successful when:
 
 ## Conclusion
 
-The Deployment Component Rename System establishes rename as a first-class lifecycle operation in OpenMCF, alongside forge, audit, update, complete, fix, and delete. It provides systematic, comprehensive, and safe renaming of components with build verification and automatic documentation updates.
+The Deployment Component Rename System establishes rename as a first-class lifecycle operation in Planton, alongside forge, audit, update, complete, fix, and delete. It provides systematic, comprehensive, and safe renaming of components with build verification and automatic documentation updates.
 
 **Key achievements**:
 - Seven comprehensive naming patterns

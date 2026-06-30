@@ -2,7 +2,7 @@
 
 **Date**: 2026-02-20
 **Type**: New Feature
-**Components**: `apis/org/openmcf/provider/oci/ocibastion/v1/`
+**Components**: `apis/dev/planton/provider/oci/ocibastion/v1/`
 
 ## Summary
 
@@ -10,7 +10,7 @@ Added the OciBastion deployment component -- OCI's managed SSH gateway that prov
 
 ## Problem Statement / Motivation
 
-OpenMCF's OCI provider had encryption infrastructure (KMS Vault, KMS Key, Vault Secret) for secrets management, but no way to declaratively provision secure access to private resources. OCI Bastion is the managed alternative to self-hosted jump boxes -- it provides auditable, time-limited SSH access to compute instances and other resources in private subnets. Without it, platform teams cannot declaratively manage secure connectivity for debugging, administration, and port forwarding into private infrastructure.
+Planton's OCI provider had encryption infrastructure (KMS Vault, KMS Key, Vault Secret) for secrets management, but no way to declaratively provision secure access to private resources. OCI Bastion is the managed alternative to self-hosted jump boxes -- it provides auditable, time-limited SSH access to compute instances and other resources in private subnets. Without it, platform teams cannot declaratively manage secure connectivity for debugging, administration, and port forwarding into private infrastructure.
 
 ## Solution / What's New
 

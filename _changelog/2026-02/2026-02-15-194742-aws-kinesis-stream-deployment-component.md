@@ -10,7 +10,7 @@ Added AwsKinesisStream (R16) as the first Phase 2 resource in the AWS expansion 
 
 ## Problem Statement / Motivation
 
-Kinesis Data Streams is the backbone of real-time data architectures on AWS — click-streams, IoT telemetry, database CDC, financial transactions. Without it in OpenMCF, users building analytics or event-sourcing infra charts had to manage Kinesis outside the declarative framework, breaking the dependency graph.
+Kinesis Data Streams is the backbone of real-time data architectures on AWS — click-streams, IoT telemetry, database CDC, financial transactions. Without it in Planton, users building analytics or event-sourcing infra charts had to manage Kinesis outside the declarative framework, breaking the dependency graph.
 
 ### Pain Points
 
@@ -22,7 +22,7 @@ Kinesis Data Streams is the backbone of real-time data architectures on AWS — 
 
 ### AwsKinesisStream Component
 
-A complete deployment component following the OpenMCF forge process:
+A complete deployment component following the Planton forge process:
 
 - **Proto API** — `spec.proto` with 7 fields, 0 nested messages, 6 CEL validations
 - **Stack Outputs** — `stream_arn` and `stream_name` for downstream wiring
@@ -68,7 +68,7 @@ flowchart TB
 
 ## Benefits
 
-- Enables real-time data streaming in OpenMCF infra charts
+- Enables real-time data streaming in Planton infra charts
 - Unblocks Kinesis Firehose (R17) which requires stream ARN as source
 - `stream_arn` output enables `valueFrom` references from Lambda event source mappings and EventBridge targets
 - Clean two-mode design makes the PROVISIONED vs ON_DEMAND tradeoff explicit
@@ -84,7 +84,7 @@ flowchart TB
 
 - Phase 1 complete: 18 new AWS resource kinds (R01-R15 + 3 ElastiCache splits)
 - Next: R16a AwsKinesisStreamConsumer (enhanced fan-out), then R17 AwsKinesisFirehose
-- Parent project: 20260212.01.openmcf-cloud-provider-expansion
+- Parent project: 20260212.01.planton-cloud-provider-expansion
 
 ---
 

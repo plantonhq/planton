@@ -6,13 +6,13 @@ package secretcoverage
 import (
 	"testing"
 
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
-	"github.com/plantonhq/openmcf/pkg/crkreflect"
+	"github.com/plantonhq/planton/apis/dev/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/crkreflect"
 )
 
 // TestSecretCoverageGate is the CI guardrail. The live scan over all production kinds
 // must not introduce a gap outside the baseline, leave a stale baseline entry, or carry
-// a self-contradictory annotation. On failure: run `openmcf secret-coverage` to see the
+// a self-contradictory annotation. On failure: run `planton secret-coverage` to see the
 // detail, then annotate the field `sensitive`, exempt it with `sensitive_exempt_reason`,
 // or (after annotating) regenerate the baseline with `--write-baseline`.
 func TestSecretCoverageGate(t *testing.T) {

@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsroute53dnsrecord.v1;
+
+import "dev/planton/provider/aws/awsroute53dnsrecord/v1/api.proto";
+import "dev/planton/provider/aws/provider.proto";
+
+// AwsRoute53DnsRecordStackInput defines the input for IaC modules that provision Route53 DNS records.
+// It combines the target resource specification with AWS provider configuration.
+message AwsRoute53DnsRecordStackInput {
+  // The target Route53 DNS record to create.
+  AwsRoute53DnsRecord target = 1;
+
+  // AWS provider configuration including region and credentials.
+  dev.planton.provider.aws.AwsProviderConfig provider_config = 2;
+}

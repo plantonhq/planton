@@ -1,0 +1,15 @@
+apiVersion: oci.planton.dev/v1
+kind: OciVcn
+metadata:
+  name: ocivcn-demo
+spec:
+  compartmentId:
+    value: "ocid1.compartment.oc1..example"
+  cidrBlocks:
+    - "10.0.0.0/16"
+  displayName: "demo-vcn"
+  dnsLabel: "demovcn"
+  isIpv6Enabled: false
+  isInternetGatewayEnabled: true
+  isNatGatewayEnabled: true
+  isServiceGatewayEnabled: true

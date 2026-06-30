@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added `AzureSubnet` (enum 411, id_prefix `azsub`) as a standalone deployment component for Azure Virtual Network subnets. This is the most widely referenced Azure resource in OpenMCF -- 11 downstream resource types consume its `subnet_id` output, making it a critical building block for Azure infra charts including database-stack, enterprise-network-foundation, and container-apps-environment.
+Added `AzureSubnet` (enum 411, id_prefix `azsub`) as a standalone deployment component for Azure Virtual Network subnets. This is the most widely referenced Azure resource in Planton -- 11 downstream resource types consume its `subnet_id` output, making it a critical building block for Azure infra charts including database-stack, enterprise-network-foundation, and container-apps-environment.
 
 ## Problem Statement / Motivation
 
@@ -40,7 +40,7 @@ Deep research against the `azurerm_subnet` Terraform provider schema and Pulumi 
 
 - `spec.proto` -- 8 fields with `StringValueOrRef` for `resource_group` and `vnet_id`, CEL validation on `private_endpoint_network_policies`, nested `AzureSubnetDelegation` message
 - `stack_outputs.proto` -- 3 outputs: `subnet_id`, `subnet_name`, `address_prefix`
-- `api.proto` -- KRM wiring with `azure.openmcf.org/v1` api_version
+- `api.proto` -- KRM wiring with `azure.planton.dev/v1` api_version
 - `stack_input.proto` -- Standard pattern with `AzureProviderConfig`
 
 ### Spec Validation Tests (21 tests)

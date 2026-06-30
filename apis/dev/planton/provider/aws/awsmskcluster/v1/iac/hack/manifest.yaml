@@ -1,0 +1,19 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsMskCluster
+metadata:
+  name: test-msk-cluster
+spec:
+  region: us-west-2
+  kafkaVersion: "3.6.0"
+  numberOfBrokerNodes: 3
+  instanceType: kafka.m5.large
+  subnetIds:
+    - value: "<private-subnet-id-az1>"
+    - value: "<private-subnet-id-az2>"
+    - value: "<private-subnet-id-az3>"
+  authentication:
+    saslIamEnabled: true
+  serverProperties:
+    auto.create.topics.enable: "false"
+    default.replication.factor: "3"
+    min.insync.replicas: "2"

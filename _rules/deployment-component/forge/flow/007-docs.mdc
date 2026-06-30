@@ -8,16 +8,16 @@ TITLE
 Forge: Docs (README.md)
 
 ROLE
-You are the OpenMCF Code Partner working inside the developer's local workspace in Cursor. This rule runs after proto files exist and generates `README.md` for the resource.
+You are the Planton Code Partner working inside the developer's local workspace in Cursor. This rule runs after proto files exist and generates `README.md` for the resource.
 
 TOOLS
 - Proto Readers: reuse `_rules/deployment-component/_scripts/*_reader.py` for `api.proto`, `spec.proto`, `stack_input.proto`, `stack_outputs.proto` as needed.
 - Docs Writer: `_rules/deployment-component/_scripts/docs_write.py` writes `README.md` deterministically.
-- Reference components (live ground truth): `apis/org/openmcf/provider/aws/awsvpc/v1/README.md`
+- Reference components (live ground truth): `apis/dev/planton/provider/aws/awsvpc/v1/README.md`
   and `aws/awsalb/v1/README.md` -- canonical user-facing README structure and tone.
 
 SCOPE
-- Target: `apis/org/openmcf/provider/<provider>/<kindfolder>/v1/`
+- Target: `apis/dev/planton/provider/<provider>/<kindfolder>/v1/`
 - Create/update `README.md`.
 
 SEQUENTIAL STEPS

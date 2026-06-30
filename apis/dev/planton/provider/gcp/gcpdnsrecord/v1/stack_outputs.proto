@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcpdnsrecord.v1;
+
+// GcpDnsRecordStackOutputs captures the outputs after provisioning a GCP Cloud DNS record.
+// It includes identifiers and metadata about the created record.
+message GcpDnsRecordStackOutputs {
+  // The fully qualified domain name of the created DNS record.
+  // Example: "www.example.com." or "api.example.com."
+  string fqdn = 1;
+
+  // The DNS record type that was created.
+  // Example: "A", "AAAA", "CNAME", "MX", "TXT".
+  string record_type = 2;
+
+  // The name of the managed zone containing this record.
+  string managed_zone = 3;
+
+  // The GCP project ID where the record was created.
+  string project_id = 4;
+
+  // The TTL (time to live) in seconds for the DNS record.
+  int32 ttl_seconds = 5;
+}

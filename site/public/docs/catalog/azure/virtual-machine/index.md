@@ -12,7 +12,7 @@ Deploys an Azure Virtual Machine with configurable size, OS image, network inter
 
 ## What Gets Created
 
-When you deploy an AzureVirtualMachine resource, OpenMCF provisions:
+When you deploy an AzureVirtualMachine resource, Planton provisions:
 
 - **Network Interface** — a `network.NetworkInterface` attached to the specified subnet with configurable accelerated networking, private IP allocation, and optional NSG association
 - **Public IP Address** — a `network.PublicIPAddress` with configurable SKU and allocation method, created only when `network.enablePublicIp` is `true`
@@ -21,7 +21,7 @@ When you deploy an AzureVirtualMachine resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Resource Group** where the VM will be created (can reference an AzureResourceGroup resource)
 - **A subnet** within an existing Virtual Network where the VM's network interface will be attached (can reference an AzureVpc resource)
 - **Authentication material** — either an SSH public key (Linux) or an admin password (Windows or Linux with password auth)
@@ -31,15 +31,15 @@ When you deploy an AzureVirtualMachine resource, OpenMCF provisions:
 Create a file `vm.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureVirtualMachine
 metadata:
   name: my-vm
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureVirtualMachine.my-vm
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureVirtualMachine.my-vm
 spec:
   region: eastus
   resourceGroup: my-rg
@@ -54,7 +54,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f vm.yaml
+planton apply -f vm.yaml
 ```
 
 This creates a Standard_D2s_v3 Ubuntu 22.04 VM with SSH key authentication, the default admin username `azureuser`, a Premium SSD OS disk, boot diagnostics enabled, and accelerated networking on the network interface.
@@ -113,15 +113,15 @@ This creates a Standard_D2s_v3 Ubuntu 22.04 VM with SSH key authentication, the 
 A basic Ubuntu VM with SSH access for development:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureVirtualMachine
 metadata:
   name: dev-linux
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureVirtualMachine.dev-linux
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureVirtualMachine.dev-linux
 spec:
   region: eastus
   resourceGroup: dev-rg
@@ -144,15 +144,15 @@ spec:
 A Windows Server VM with password-based admin access and a data disk:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureVirtualMachine
 metadata:
   name: win-server
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.AzureVirtualMachine.win-server
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.AzureVirtualMachine.win-server
 spec:
   region: westus2
   resourceGroup: staging-rg
@@ -182,15 +182,15 @@ spec:
 A production VM with system-assigned managed identity, zonal placement, and cloud-init:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureVirtualMachine
 metadata:
   name: prod-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureVirtualMachine.prod-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureVirtualMachine.prod-api
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -226,15 +226,15 @@ spec:
 A cost-optimized spot VM for fault-tolerant batch processing:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureVirtualMachine
 metadata:
   name: batch-worker
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureVirtualMachine.batch-worker
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureVirtualMachine.batch-worker
 spec:
   region: westeurope
   resourceGroup: batch-rg
@@ -256,18 +256,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference OpenMCF-managed resources instead of hardcoding IDs:
+Reference Planton-managed resources instead of hardcoding IDs:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureVirtualMachine
 metadata:
   name: ref-vm
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureVirtualMachine.ref-vm
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureVirtualMachine.ref-vm
 spec:
   region: eastus
   resourceGroup:

@@ -10,7 +10,7 @@ Enhanced the CLI to intelligently handle the `-i --clip` flag combination by inf
 
 ## Problem Statement / Motivation
 
-When users ran `openmcf refresh -i --clip --local-module` with stack input YAML in their clipboard, two issues occurred:
+When users ran `planton refresh -i --clip --local-module` with stack input YAML in their clipboard, two issues occurred:
 
 ### Pain Points
 
@@ -20,7 +20,7 @@ When users ran `openmcf refresh -i --clip --local-module` with stack input YAML 
 
 ```mermaid
 flowchart LR
-    A["openmcf refresh -i --clip"] --> B["Cobra parser"]
+    A["planton refresh -i --clip"] --> B["Cobra parser"]
     B --> C["-i = '--clip'"]
     B --> D["--clip NOT SET"]
     C --> E["resolveFromStackInput()"]
@@ -105,7 +105,7 @@ func resolveStackInputFromClipboard() (string, bool, error) {
 | `internal/cli/manifest/clipboard_errors.go` | Added `ClipboardNotStackInputError` type, updated handlers |
 | `internal/cli/ui/clipboard.go` | Added `ClipboardNotStackInput()` beautiful UI function |
 | `internal/cli/manifest/resolve_from_stack_input.go` | Added clipboard flag detection and structured errors |
-| `_rules/follow-openmcf-cli-terminal-ux-standards.mdc` | New rule documenting our terminal UX standards |
+| `_rules/follow-planton-cli-terminal-ux-standards.mdc` | New rule documenting our terminal UX standards |
 
 ## Benefits
 
@@ -142,7 +142,7 @@ The clipboard content is valid YAML but not a stack input.
 Stack input files must have a "target" field at the root level.
 
 Content preview:
-   apiVersion: kubernetes.openmcf.com/v1
+   apiVersion: kubernetes.planton.com/v1
    kind: PostgresKubernetes
    metadata:
      name: my-postgres
@@ -151,7 +151,7 @@ Content preview:
 Expected stack input format:
 
     target:
-      apiVersion: kubernetes.openmcf.com/v1
+      apiVersion: kubernetes.planton.com/v1
       kind: PostgresKubernetes
       ...
     provider_config:
@@ -167,11 +167,11 @@ Expected stack input format:
 ### Commands Affected
 
 All IaC operation commands that use `-i` flag with clipboard:
-- `openmcf apply`
-- `openmcf destroy`
-- `openmcf plan`
-- `openmcf refresh`
-- `openmcf init`
+- `planton apply`
+- `planton destroy`
+- `planton plan`
+- `planton refresh`
+- `planton init`
 
 ### Backward Compatibility
 
@@ -180,7 +180,7 @@ All IaC operation commands that use `-i` flag with clipboard:
 
 ## Terminal UX Standards Rule
 
-Created `_rules/follow-openmcf-cli-terminal-ux-standards.mdc` to document our CLI UX philosophy:
+Created `_rules/follow-planton-cli-terminal-ux-standards.mdc` to document our CLI UX philosophy:
 
 **Core Ethos**: Never just show an error - guide the user towards success.
 

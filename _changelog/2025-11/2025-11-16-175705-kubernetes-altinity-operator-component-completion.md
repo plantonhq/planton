@@ -35,7 +35,7 @@ The component is already in production use. All changes were implementation-only
 
 ## Solution / What's New
 
-Implemented all missing critical files following OpenMCF component completion standards:
+Implemented all missing critical files following Planton component completion standards:
 
 ### 1. Comprehensive Unit Tests (`spec_test.go`)
 
@@ -213,7 +213,7 @@ var _ = ginkgo.Describe("KubernetesAltinityOperatorSpec validations", func() {
 
 ### Terraform Module Pattern
 
-Followed standard OpenMCF Terraform module pattern:
+Followed standard Planton Terraform module pattern:
 
 1. **variables.tf** (existing) - Input schema
 2. **locals.tf** (new) - Data transformations  
@@ -336,11 +336,11 @@ func Resources(ctx *pulumi.Context, stackInput *...) error {
 ### Unit Tests
 ```bash
 # Run validation tests
-cd apis/org/openmcf/provider/kubernetes/kubernetesaltinityoperator/v1
+cd apis/dev/planton/provider/kubernetes/kubernetesaltinityoperator/v1
 go test -v
 
 # Run with Bazel
-./bazelw test //apis/org/openmcf/provider/kubernetes/kubernetesaltinityoperator/v1:all
+./bazelw test //apis/dev/planton/provider/kubernetes/kubernetesaltinityoperator/v1:all
 ```
 
 ### Build Verification
@@ -349,13 +349,13 @@ go test -v
 ./bazelw run //:gazelle
 
 # Verify build
-./bazelw build //apis/org/openmcf/provider/kubernetes/kubernetesaltinityoperator/v1:all
+./bazelw build //apis/dev/planton/provider/kubernetes/kubernetesaltinityoperator/v1:all
 ```
 
 ### Linting
 ```bash
 # No linter errors after changes
-read_lints apis/org/openmcf/provider/kubernetes/kubernetesaltinityoperator/v1
+read_lints apis/dev/planton/provider/kubernetes/kubernetesaltinityoperator/v1
 # Result: No linter errors found ✅
 ```
 

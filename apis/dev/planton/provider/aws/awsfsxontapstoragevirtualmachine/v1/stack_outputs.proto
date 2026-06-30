@@ -1,0 +1,82 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsfsxontapstoragevirtualmachine.v1;
+
+// AwsFsxOntapStorageVirtualMachineStackOutputs captures observable identifiers
+// and endpoints from a provisioned FSx for ONTAP Storage Virtual Machine. These
+// outputs are used by downstream resources to wire dependencies via
+// StringValueOrRef.
+//
+// Primary consumers:
+// - AwsFsxOntapVolume: needs `svm_id` as the parent storage virtual machine
+// - IAM policies: needs `arn` for resource-level permissions
+// - NFS clients: needs `nfs_dns_name` for mount targets
+// - SMB clients: needs `smb_dns_name` for UNC paths (requires AD)
+// - iSCSI initiators: needs `iscsi_dns_name` for target discovery
+// - SVM administration: needs `management_dns_name` for ONTAP CLI access
+message AwsFsxOntapStorageVirtualMachineStackOutputs {
+  // The ID of the SVM (e.g., "svm-0123456789abcdef0"). Primary identifier
+  // used by ONTAP volumes and other AWS services referencing this SVM.
+  string svm_id = 1;
+
+  // The Amazon Resource Name of the SVM. Used in IAM policies for
+  // resource-level permissions.
+  string arn = 2;
+
+  // The universally unique identifier of the SVM in ONTAP. Used for
+  // SnapMirror relationships and ONTAP REST API operations.
+  string uuid = 3;
+
+  // The SVM subtype (e.g., "DEFAULT"). Indicates the SVM's functional role
+  // within the file system.
+  string subtype = 4;
+
+  // ---------------------------------------------------------------------------
+  // iSCSI Endpoint
+  // ---------------------------------------------------------------------------
+
+  // The iSCSI endpoint DNS name. Used by iSCSI initiators for block-level
+  // storage access to volumes on this SVM.
+  string iscsi_dns_name = 5;
+
+  // The iSCSI endpoint IP addresses. Alternative to DNS for direct IP access
+  // to the iSCSI target portal.
+  repeated string iscsi_ip_addresses = 6;
+
+  // ---------------------------------------------------------------------------
+  // Management Endpoint
+  // ---------------------------------------------------------------------------
+
+  // The management endpoint DNS name. Used for SSH (ONTAP CLI) and REST API
+  // access scoped to this SVM. Connect via: ssh vsadmin@<management_dns_name>
+  string management_dns_name = 7;
+
+  // The management endpoint IP addresses. Alternative to DNS for direct IP
+  // access to the SVM management interface.
+  repeated string management_ip_addresses = 8;
+
+  // ---------------------------------------------------------------------------
+  // NFS Endpoint
+  // ---------------------------------------------------------------------------
+
+  // The NFS endpoint DNS name. Used by NFS clients to mount volumes on this
+  // SVM. Mount command: mount -t nfs <nfs_dns_name>:/vol1 /mnt/vol1
+  string nfs_dns_name = 9;
+
+  // The NFS endpoint IP addresses. Alternative to DNS for direct IP-based
+  // NFS mounts.
+  repeated string nfs_ip_addresses = 10;
+
+  // ---------------------------------------------------------------------------
+  // SMB Endpoint (only populated when Active Directory is configured)
+  // ---------------------------------------------------------------------------
+
+  // The SMB endpoint DNS name. Used by Windows clients for SMB/CIFS file share
+  // access. UNC path: \\<smb_dns_name>\share_name. Only available when the SVM
+  // is joined to an Active Directory domain.
+  string smb_dns_name = 11;
+
+  // The SMB endpoint IP addresses. Alternative to DNS for direct IP-based SMB
+  // access. Only populated when Active Directory is configured.
+  repeated string smb_ip_addresses = 12;
+}

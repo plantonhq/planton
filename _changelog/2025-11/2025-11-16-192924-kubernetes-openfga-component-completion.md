@@ -6,7 +6,7 @@
 
 ## Summary
 
-Completed the KubernetesOpenFga deployment component from 99.17% to 100% by addressing the final quick wins identified in the audit. This work standardized the test file naming, added comprehensive Terraform usage examples, and created a shared test manifest location for consistency across IaC implementations. The component is now production-ready with full documentation coverage and follows all OpenMCF conventions.
+Completed the KubernetesOpenFga deployment component from 99.17% to 100% by addressing the final quick wins identified in the audit. This work standardized the test file naming, added comprehensive Terraform usage examples, and created a shared test manifest location for consistency across IaC implementations. The component is now production-ready with full documentation coverage and follows all Planton conventions.
 
 ## Problem Statement / Motivation
 
@@ -18,7 +18,7 @@ The KubernetesOpenFga component was already in excellent shape at 99.17% complet
 - **Non-Standard Test Naming**: The validation test file was named `api_test.go` instead of the conventional `spec_test.go`, deviating from the standard pattern used across other components
 - **Fragmented Test Manifests**: Test manifests only existed under `iac/tf/hack/manifest.yaml` without a shared location at `iac/hack/manifest.yaml`, missing the expected convention for cross-tool test fixtures
 
-These gaps, while minor, prevented the component from achieving the ideal state defined in OpenMCF's component architecture standards.
+These gaps, while minor, prevented the component from achieving the ideal state defined in Planton's component architecture standards.
 
 ## Solution / What's New
 
@@ -43,7 +43,7 @@ Each example includes:
 
 ### 2. Standardized Test File Naming
 
-Renamed `api_test.go` to `spec_test.go` to follow OpenMCF's standard naming convention:
+Renamed `api_test.go` to `spec_test.go` to follow Planton's standard naming convention:
 - Test files validate spec.proto buf.validate rules
 - Naming pattern `spec_test.go` is consistent across all deployment components
 - No code changes - pure rename for consistency
@@ -123,7 +123,7 @@ https://<external_hostname>
 The shared manifest (`iac/hack/manifest.yaml`) includes:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: OpenFgaKubernetes
 metadata:
   name: test-open-fga-server
@@ -234,7 +234,7 @@ The `spec_test.go` (formerly `api_test.go`) validates:
 
 ### Test Execution
 ```bash
-cd apis/org/openmcf/provider/kubernetes/kubernetesopenfga/v1
+cd apis/dev/planton/provider/kubernetes/kubernetesopenfga/v1
 go test -v
 # Output: 1 Passed | 0 Failed
 ```
@@ -260,17 +260,17 @@ Test manifest at `iac/hack/manifest.yaml` can be used for:
 ## File Locations
 
 **Examples**:
-- `apis/org/openmcf/provider/kubernetes/kubernetesopenfga/v1/iac/tf/examples.md`
-- `apis/org/openmcf/provider/kubernetes/kubernetesopenfga/v1/iac/pulumi/examples.md`
+- `apis/dev/planton/provider/kubernetes/kubernetesopenfga/v1/iac/tf/examples.md`
+- `apis/dev/planton/provider/kubernetes/kubernetesopenfga/v1/iac/pulumi/examples.md`
 
 **Test Files**:
-- `apis/org/openmcf/provider/kubernetes/kubernetesopenfga/v1/spec_test.go`
-- `apis/org/openmcf/provider/kubernetes/kubernetesopenfga/v1/iac/hack/manifest.yaml`
+- `apis/dev/planton/provider/kubernetes/kubernetesopenfga/v1/spec_test.go`
+- `apis/dev/planton/provider/kubernetes/kubernetesopenfga/v1/iac/hack/manifest.yaml`
 
 **Documentation**:
-- `apis/org/openmcf/provider/kubernetes/kubernetesopenfga/v1/README.md`
-- `apis/org/openmcf/provider/kubernetes/kubernetesopenfga/v1/docs/README.md`
-- `apis/org/openmcf/provider/kubernetes/kubernetesopenfga/v1/examples.md`
+- `apis/dev/planton/provider/kubernetes/kubernetesopenfga/v1/README.md`
+- `apis/dev/planton/provider/kubernetes/kubernetesopenfga/v1/docs/README.md`
+- `apis/dev/planton/provider/kubernetes/kubernetesopenfga/v1/examples.md`
 
 ---
 

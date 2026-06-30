@@ -12,13 +12,13 @@ Deploys an Oracle Cloud Infrastructure compute instance — a virtual machine or
 
 ## What Gets Created
 
-When you deploy an OciComputeInstance resource, OpenMCF provisions:
+When you deploy an OciComputeInstance resource, Planton provisions:
 
-- **Compute Instance** — an `oci_core_instance` resource in the specified compartment and availability domain. The instance is created with the chosen shape, boots from the specified image or boot volume, and is attached to a subnet via its primary VNIC. Standard OpenMCF freeform tags are applied for resource tracking.
+- **Compute Instance** — an `oci_core_instance` resource in the specified compartment and availability domain. The instance is created with the chosen shape, boots from the specified image or boot volume, and is attached to a subnet via its primary VNIC. Standard Planton freeform tags are applied for resource tracking.
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the instance will be created — literal value or reference to an OciCompartment resource
 - **A subnet OCID** for the primary VNIC — literal value or reference to an OciSubnet resource
 - **An availability domain name** in the target region (e.g., `Ixxj:US-ASHBURN-AD-1`)
@@ -30,15 +30,15 @@ When you deploy an OciComputeInstance resource, OpenMCF provisions:
 Create a file `instance.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciComputeInstance
 metadata:
   name: my-instance
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciComputeInstance.my-instance
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciComputeInstance.my-instance
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -58,7 +58,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f instance.yaml
+planton apply -f instance.yaml
 ```
 
 This creates a 1-OCPU, 16 GB VM on the E4 Flex shape in the specified availability domain and subnet. The instance boots from the given image, receives a private IP from the subnet's CIDR, and inherits the subnet's public IP assignment policy. The instance ID, IP addresses, boot volume ID, and availability domain are exported as stack outputs.
@@ -186,15 +186,15 @@ This creates a 1-OCPU, 16 GB VM on the E4 Flex shape in the specified availabili
 A VM with the AMD E4 Flex shape, 1 OCPU, and 16 GB memory — the simplest production-capable configuration:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciComputeInstance
 metadata:
   name: web-server
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciComputeInstance.web-server
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciComputeInstance.web-server
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -213,18 +213,18 @@ spec:
 
 ### Private Application Server with Cloud-Init
 
-A private instance bootstrapped via cloud-init, secured by NSGs referenced from OpenMCF-managed resources. No public IP; the instance is accessible only through the private subnet:
+A private instance bootstrapped via cloud-init, secured by NSGs referenced from Planton-managed resources. No public IP; the instance is accessible only through the private subnet:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciComputeInstance
 metadata:
   name: app-server
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciComputeInstance.app-server
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciComputeInstance.app-server
 spec:
   compartmentId:
     valueFrom:
@@ -267,15 +267,15 @@ spec:
 A cost-optimized preemptible instance for fault-tolerant batch processing. OCI can reclaim the instance when capacity is needed; the boot volume is preserved for resuming work:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciComputeInstance
 metadata:
   name: batch-worker
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciComputeInstance.batch-worker
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciComputeInstance.batch-worker
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -300,15 +300,15 @@ spec:
 A production instance with platform security enabled — Secure Boot, Measured Boot, TPM, and memory encryption — plus IMDSv2-only access, in-transit encryption, and live migration preference:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciComputeInstance
 metadata:
   name: secure-vm
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciComputeInstance.secure-vm
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciComputeInstance.secure-vm
   env: prod
   org: acme
 spec:

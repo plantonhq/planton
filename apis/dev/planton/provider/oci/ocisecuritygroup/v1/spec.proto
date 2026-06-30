@@ -1,0 +1,173 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocisecuritygroup.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// OciSecurityGroupSpec defines the specification for an Oracle Cloud
+// Infrastructure Network Security Group (NSG) and its inline security rules.
+//
+// An NSG acts as a virtual firewall for compute instances and other resources.
+// Unlike security lists (which apply at the subnet level), NSGs provide
+// per-VNIC traffic control and are OCI's recommended approach for fine-grained
+// network security. Each NSG belongs to a single VCN and contains up to 120
+// security rules total (ingress + egress combined).
+//
+// Rules are split into ingress_rules and egress_rules so that direction is
+// implicit from the field name, eliminating the error-prone "direction +
+// conditional source/destination" pattern from the raw provider API.
+message OciSecurityGroupSpec {
+  // OCID of the compartment where the NSG will be created.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OciCompartment,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartment_id"
+  ];
+
+  // OCID of the VCN that this NSG belongs to. Changing this forces recreation.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef vcn_id = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OciVcn,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vcn_id"
+  ];
+
+  // Human-readable name shown in the OCI Console.
+  // Falls back to metadata.name if not provided.
+  string display_name = 3;
+
+  // Inbound security rules. Each rule defines traffic that is allowed TO
+  // resources associated with this NSG.
+  repeated IngressRule ingress_rules = 4;
+
+  // Outbound security rules. Each rule defines traffic that is allowed FROM
+  // resources associated with this NSG.
+  repeated EgressRule egress_rules = 5;
+
+  // Protocol identifies the transport protocol for a security rule.
+  // The IaC modules map these to OCI's protocol number strings internally
+  // ("all", "1", "6", "17", "58").
+  enum Protocol {
+    protocol_unspecified = 0;
+    all = 1;
+    icmp = 2;
+    tcp = 3;
+    udp = 4;
+    icmpv6 = 5;
+  }
+
+  // TargetType identifies whether a rule's source or destination is a CIDR
+  // block, a service CIDR label, or another NSG.
+  enum TargetType {
+    target_type_unspecified = 0;
+    cidr_block = 1;
+    service_cidr_block = 2;
+    network_security_group = 3;
+  }
+
+  // IngressRule defines a single inbound security rule.
+  message IngressRule {
+    // Traffic source: a CIDR block (e.g. "10.0.0.0/16"), a service CIDR label
+    // (e.g. "all-iad-services-in-oracle-services-network"), or the OCID of
+    // another NSG.
+    string source = 1 [(buf.validate.field).string.min_len = 1];
+
+    // Interpretation of the source field. Defaults to cidr_block when unset.
+    TargetType source_type = 2;
+
+    // Transport protocol for this rule.
+    Protocol protocol = 3 [(buf.validate.field).required = true];
+
+    // Optional human-readable description.
+    string description = 4;
+
+    // When true the rule is stateless (return traffic must be explicitly
+    // allowed). When false (the default) the rule is stateful.
+    bool stateless = 5;
+
+    // TCP port constraints. Only valid when protocol is tcp.
+    TcpOptions tcp_options = 6;
+
+    // UDP port constraints. Only valid when protocol is udp.
+    UdpOptions udp_options = 7;
+
+    // ICMP type/code constraints. Only valid when protocol is icmp or icmpv6.
+    IcmpOptions icmp_options = 8;
+  }
+
+  // EgressRule defines a single outbound security rule.
+  message EgressRule {
+    // Traffic destination: a CIDR block, a service CIDR label, or the OCID of
+    // another NSG.
+    string destination = 1 [(buf.validate.field).string.min_len = 1];
+
+    // Interpretation of the destination field. Defaults to cidr_block when unset.
+    TargetType destination_type = 2;
+
+    // Transport protocol for this rule.
+    Protocol protocol = 3 [(buf.validate.field).required = true];
+
+    // Optional human-readable description.
+    string description = 4;
+
+    // When true the rule is stateless. When false (the default) the rule is stateful.
+    bool stateless = 5;
+
+    // TCP port constraints. Only valid when protocol is tcp.
+    TcpOptions tcp_options = 6;
+
+    // UDP port constraints. Only valid when protocol is udp.
+    UdpOptions udp_options = 7;
+
+    // ICMP type/code constraints. Only valid when protocol is icmp or icmpv6.
+    IcmpOptions icmp_options = 8;
+  }
+
+  // PortRange defines a contiguous range of L4 port numbers.
+  // Set min == max to specify a single port.
+  message PortRange {
+    int32 min = 1 [(buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }];
+    int32 max = 2 [(buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }];
+
+    option (buf.validate.message).cel = {
+      id: "port_range_min_lte_max"
+      message: "min must be less than or equal to max"
+      expression: "this.min <= this.max"
+    };
+  }
+
+  // TcpOptions constrains TCP traffic by destination and/or source port range.
+  // At least one range should be provided; when omitted, all ports are allowed.
+  message TcpOptions {
+    PortRange destination_port_range = 1;
+    PortRange source_port_range = 2;
+  }
+
+  // UdpOptions constrains UDP traffic by destination and/or source port range.
+  message UdpOptions {
+    PortRange destination_port_range = 1;
+    PortRange source_port_range = 2;
+  }
+
+  // IcmpOptions constrains ICMP traffic by type and optionally code.
+  message IcmpOptions {
+    // ICMP message type (e.g. 3 for "Destination Unreachable", 8 for "Echo").
+    int32 type = 1;
+    // ICMP message code. When omitted, all codes for the given type are matched.
+    // Use optional so that code=0 (a valid ICMP code) is distinguishable from "not set".
+    optional int32 code = 2;
+  }
+
+  // OCI enforces a maximum of 120 security rules per NSG (ingress + egress combined).
+  option (buf.validate.message).cel = {
+    id: "max_120_rules"
+    message: "an NSG supports at most 120 rules (ingress + egress combined)"
+    expression: "this.ingress_rules.size() + this.egress_rules.size() <= 120"
+  };
+}

@@ -1,0 +1,13 @@
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareZeroTrustTunnelRoute
+metadata:
+  name: app-subnet
+spec:
+  accountId: <cloudflare-account-id>
+  network: 10.0.0.0/24
+  tunnelId:
+    valueFrom:
+      kind: CloudflareZeroTrustTunnel
+      name: <tunnel-name>
+      fieldPath: status.outputs.tunnel_id
+  comment: Private app subnet

@@ -1,13 +1,13 @@
 ---
 title: "DIGITAL OCEAN"
-description: "Deploy DIGITAL OCEAN resources using OpenMCF"
+description: "Deploy DIGITAL OCEAN resources using Planton"
 icon: "cloud"
 order: 10
 ---
 
 # DIGITAL OCEAN
 
-The following DIGITAL OCEAN resources can be deployed using OpenMCF:
+The following DIGITAL OCEAN resources can be deployed using Planton:
 
 - [App Platform Service](/docs/catalog/digitalocean/app-platform-service)
 - [Bucket](/docs/catalog/digitalocean/bucket)

@@ -1,0 +1,452 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ociapigateway.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// OciApiGatewaySpec defines the specification for an OCI API Gateway bundled
+// with a single API deployment.
+//
+// The gateway provides the managed network endpoint (public or private) while
+// the deployment defines the API specification: routes, backends, authentication,
+// CORS, and rate limiting. Bundling them reflects the most common pattern where
+// one gateway serves one API.
+//
+// Key behaviors:
+//   - endpoint_type and subnet_id are immutable after creation (ForceNew on gateway)
+//   - deployment.path_prefix is immutable after creation (ForceNew on deployment)
+//   - The deployment is always created in the same compartment as the gateway
+//   - JWT authentication validates tokens before forwarding to backends
+//   - Routes are evaluated in order; first match wins
+//
+// Excluded from v1:
+//   - Gateway: ca_bundles, ip_mode, IPv4/IPv6 address config, response_cache_details (external Redis), locks
+//   - Authentication: Custom (Functions-based), Token (newer JWT variant), validation_failure_policy (OAuth2 redirect)
+//   - Deployment policies: dynamic_authentication, mutual_tls, usage_plans
+//   - Route policies: body_validation, header/query transformations/validations, response_cache
+//   - Backend types: dynamic_routing, oauth2_logout
+//   - Tags: defined_tags, system_tags, freeform_tags (auto from labels)
+message OciApiGatewaySpec {
+  // ─── Gateway Fields ─────────────────────────────────────────────────
+
+  // OCID of the compartment where the gateway and deployment will be created.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OciCompartment,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartment_id"
+  ];
+
+  // Whether the gateway is internet-facing (public) or VCN-internal (private).
+  // Immutable after creation.
+  EndpointType endpoint_type = 2 [(buf.validate.field).enum = {
+    not_in: [0]
+  }];
+
+  // OCID of the subnet where the gateway will be deployed.
+  // For public gateways, this must be a public subnet. Immutable after creation.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef subnet_id = 3 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OciSubnet,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  ];
+
+  // Display name for the gateway. When omitted, the metadata name is used.
+  string display_name = 4;
+
+  // OCID of the OCI Certificates service certificate for TLS termination
+  // on the gateway. Only meaningful for public gateways serving HTTPS.
+  string certificate_id = 5;
+
+  // OCIDs of network security groups applied to the gateway.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef network_security_group_ids = 6 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = OciSecurityGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_security_group_id"
+  ];
+
+  // ─── Deployment ─────────────────────────────────────────────────────
+
+  // The API deployment that defines routes, backends, and policies.
+  Deployment deployment = 7 [(buf.validate.field).required = true];
+
+  // EndpointType determines whether the gateway is publicly accessible or
+  // restricted to the VCN.
+  enum EndpointType {
+    endpoint_type_unspecified = 0;
+    endpoint_type_public = 1;
+    endpoint_type_private = 2;
+  }
+
+  // Deployment defines the API specification deployed on the gateway.
+  // Each deployment has a unique path_prefix and contains the route
+  // definitions, request policies, and logging configuration.
+  message Deployment {
+    // URL path prefix for all routes in this deployment (e.g., "/api/v1").
+    // Must start with "/" and must be unique per gateway. Immutable after creation.
+    string path_prefix = 1 [(buf.validate.field).string = {
+      min_len: 1
+      prefix: "/"
+    }];
+
+    // Display name for the deployment. When omitted, defaults to
+    // "{gateway_display_name}-deployment".
+    string display_name = 2;
+
+    // Logging configuration for the deployment.
+    LoggingPolicies logging_policies = 3;
+
+    // Deployment-level request policies applied before route matching.
+    RequestPolicies request_policies = 4;
+
+    // API routes defining path-to-backend mappings. At least one route
+    // is required. Routes are evaluated in order; first match wins.
+    repeated Route routes = 5 [(buf.validate.field).repeated.min_items = 1];
+  }
+
+  // LoggingPolicies configures access and execution logging for the deployment
+  // or individual routes.
+  message LoggingPolicies {
+    // Access log captures every request/response pair.
+    AccessLog access_log = 1;
+
+    // Execution log captures gateway processing details.
+    ExecutionLog execution_log = 2;
+  }
+
+  // AccessLog controls request/response access logging.
+  message AccessLog {
+    // Whether access logging is enabled.
+    bool is_enabled = 1;
+  }
+
+  // ExecutionLog controls gateway processing detail logging.
+  message ExecutionLog {
+    // Whether execution logging is enabled.
+    bool is_enabled = 1;
+
+    // Log verbosity level. Only meaningful when is_enabled is true.
+    LogLevel log_level = 2;
+  }
+
+  // LogLevel controls execution log verbosity.
+  enum LogLevel {
+    log_level_unspecified = 0;
+    info = 1;
+    warn = 2;
+    error = 3;
+  }
+
+  // RequestPolicies defines deployment-level policies applied to every request
+  // before route matching.
+  message RequestPolicies {
+    // JWT-based authentication configuration.
+    Authentication authentication = 1;
+
+    // Cross-Origin Resource Sharing policy for browser-based clients.
+    CorsPolicy cors = 2;
+
+    // Rate limiting policy.
+    RateLimiting rate_limiting = 3;
+  }
+
+  // Authentication configures JWT token validation at the deployment level.
+  // Tokens are validated before requests reach route backends. This covers
+  // the most common API security pattern: an IdP (Auth0, OCI IDCS, Okta)
+  // issues tokens and the gateway validates them via JWKS or static keys.
+  message Authentication {
+    option (buf.validate.message).cel = {
+      id: "jwt_requires_public_keys"
+      message: "public_keys is required for JWT authentication"
+      expression: "has(this.public_keys)"
+    };
+
+    // Token issuers (iss claim). Tokens with issuers not in this list are rejected.
+    repeated string issuers = 1;
+
+    // Allowed audiences (aud claim). Tokens not targeting any of these audiences are rejected.
+    repeated string audiences = 2;
+
+    // HTTP header containing the token. Defaults to "Authorization" on the OCI side.
+    string token_header = 3 [(dev.planton.shared.options.sensitive_exempt_reason) = "Name of the HTTP header that carries the token, not the token value."];
+
+    // Query parameter containing the token. Mutually exclusive with token_header
+    // in practice, but OCI allows both (header takes precedence).
+    string token_query_param = 4 [(dev.planton.shared.options.sensitive_exempt_reason) = "Name of the query parameter that carries the token, not the token value."];
+
+    // Authentication scheme prefix in the header value (e.g., "Bearer").
+    // Defaults to "Bearer" on the OCI side.
+    string token_auth_scheme = 5 [(dev.planton.shared.options.sensitive_exempt_reason) = "Authentication scheme prefix (e.g. Bearer), not the token value."];
+
+    // Maximum allowed clock skew in seconds when verifying token exp/nbf/iat claims.
+    optional float max_clock_skew_in_seconds = 6;
+
+    // When true, unauthenticated requests are allowed through (routes can still
+    // enforce authorization individually). Useful for APIs with mixed public/private routes.
+    optional bool is_anonymous_access_allowed = 7;
+
+    // Public key configuration for verifying token signatures.
+    PublicKeys public_keys = 8;
+
+    // Additional claims to verify on validated tokens.
+    repeated VerifyClaim verify_claims = 9;
+  }
+
+  // PublicKeys configures how the gateway obtains keys for JWT signature verification.
+  message PublicKeys {
+    option (buf.validate.message).cel = {
+      id: "remote_jwks_requires_uri"
+      message: "uri is required when type is remote_jwks"
+      expression: "this.type != 1 || this.uri != ''"
+    };
+
+    option (buf.validate.message).cel = {
+      id: "static_keys_requires_keys"
+      message: "keys must be non-empty when type is static_keys"
+      expression: "this.type != 2 || size(this.keys) > 0"
+    };
+
+    // How public keys are obtained.
+    PublicKeyType type = 1 [(buf.validate.field).enum = {
+      not_in: [0]
+    }];
+
+    // URI of the JWKS endpoint (e.g., "https://idp.example.com/.well-known/jwks.json").
+    // Required when type is remote_jwks.
+    string uri = 2;
+
+    // Whether to skip TLS certificate verification when fetching JWKS.
+    // Only applicable when type is remote_jwks.
+    optional bool is_ssl_verify_disabled = 3;
+
+    // How long (in hours) to cache the JWKS response. Only applicable when
+    // type is remote_jwks. OCI defaults to 1 hour.
+    optional int32 max_cache_duration_in_hours = 4;
+
+    // Static keys for token verification. Required when type is static_keys.
+    repeated StaticKey keys = 5;
+  }
+
+  // PublicKeyType determines how JWT verification keys are sourced.
+  enum PublicKeyType {
+    public_key_unspecified = 0;
+    remote_jwks = 1;
+    static_keys = 2;
+  }
+
+  // StaticKey defines a single public key for JWT signature verification.
+  // Supports both PEM-encoded certificates and JSON Web Key (JWK) format.
+  message StaticKey {
+    option (buf.validate.message).cel = {
+      id: "pem_requires_key"
+      message: "key is required when format is pem"
+      expression: "this.format != 1 || this.key != ''"
+    };
+
+    option (buf.validate.message).cel = {
+      id: "jwk_requires_kty"
+      message: "kty is required when format is json_web_key"
+      expression: "this.format != 2 || this.kty != ''"
+    };
+
+    // Key identifier (kid). Used to match incoming tokens to the correct key.
+    string kid = 1 [(buf.validate.field).string.min_len = 1];
+
+    // Key encoding format.
+    KeyFormat format = 2 [(buf.validate.field).enum = {
+      not_in: [0]
+    }];
+
+    // PEM-encoded public key or certificate. Required when format is pem.
+    string key = 3;
+
+    // JWK key type (e.g., "RSA", "EC"). Required when format is json_web_key.
+    string kty = 4;
+
+    // JWK algorithm (e.g., "RS256"). Used when format is json_web_key.
+    string alg = 5;
+
+    // RSA public exponent (Base64url-encoded). Used for RSA keys in JWK format.
+    string e = 6;
+
+    // RSA modulus (Base64url-encoded). Used for RSA keys in JWK format.
+    string n = 7;
+
+    // JWK public key use (e.g., "sig"). Used when format is json_web_key.
+    string use = 8;
+  }
+
+  // KeyFormat determines the encoding of a static public key.
+  enum KeyFormat {
+    key_format_unspecified = 0;
+    pem = 1;
+    json_web_key = 2;
+  }
+
+  // VerifyClaim defines an additional claim to verify on validated JWT tokens.
+  message VerifyClaim {
+    // Claim name (e.g., "scope", "groups", "email").
+    string key = 1;
+
+    // Expected claim values. If non-empty, the token's claim must match
+    // at least one of these values.
+    repeated string values = 2;
+
+    // Whether the claim must be present in the token.
+    optional bool is_required = 3;
+  }
+
+  // CorsPolicy configures Cross-Origin Resource Sharing for browser-based clients.
+  message CorsPolicy {
+    // Allowed origins. At least one origin is required (e.g., ["*"] or
+    // ["https://app.example.com"]).
+    repeated string allowed_origins = 1 [(buf.validate.field).repeated.min_items = 1];
+
+    // Allowed HTTP methods (e.g., ["GET", "POST", "PUT", "DELETE"]).
+    repeated string allowed_methods = 2;
+
+    // Allowed request headers.
+    repeated string allowed_headers = 3;
+
+    // Response headers exposed to the browser.
+    repeated string exposed_headers = 4;
+
+    // Whether the browser may send credentials (cookies, authorization headers).
+    optional bool is_allow_credentials_enabled = 5;
+
+    // How long (in seconds) the browser may cache preflight responses.
+    optional int32 max_age_in_seconds = 6;
+  }
+
+  // RateLimiting configures request rate limiting at the deployment level.
+  message RateLimiting {
+    // Maximum number of requests per second.
+    int32 rate_in_requests_per_second = 1 [(buf.validate.field).int32.gt = 0];
+
+    // How requests are grouped for rate limiting.
+    RateKey rate_key = 2 [(buf.validate.field).enum = {
+      not_in: [0]
+    }];
+  }
+
+  // RateKey determines how requests are bucketed for rate limiting.
+  enum RateKey {
+    rate_key_unspecified = 0;
+    client_ip = 1;
+    total = 2;
+  }
+
+  // Route defines a path-to-backend mapping within the deployment.
+  message Route {
+    // URL path pattern (e.g., "/users/{userId}", "/health").
+    // Supports exact, prefix, and wildcard matching per OCI path semantics.
+    string path = 1 [(buf.validate.field).string.min_len = 1];
+
+    // HTTP methods this route handles (e.g., ["GET", "POST"]).
+    // When empty, all methods are accepted.
+    repeated string methods = 2;
+
+    // Backend that processes matching requests.
+    Backend backend = 3 [(buf.validate.field).required = true];
+
+    // Per-route authorization policy. When authentication is configured at
+    // the deployment level, this controls which routes require valid tokens.
+    RouteAuthorization authorization = 4;
+
+    // Per-route logging policy override.
+    LoggingPolicies logging_policies = 5;
+  }
+
+  // Backend defines where matching requests are forwarded.
+  message Backend {
+    option (buf.validate.message).cel = {
+      id: "http_requires_url"
+      message: "url is required when type is http"
+      expression: "this.type != 1 || this.url != ''"
+    };
+
+    option (buf.validate.message).cel = {
+      id: "functions_requires_function_id"
+      message: "function_id is required when type is oracle_functions"
+      expression: "this.type != 2 || this.function_id != ''"
+    };
+
+    // Backend type.
+    BackendType type = 1 [(buf.validate.field).enum = {
+      not_in: [0]
+    }];
+
+    // Target URL for HTTP backends (e.g., "https://backend.example.com:8080").
+    // Required when type is http.
+    string url = 2;
+
+    // OCID of the OCI function to invoke. Required when type is oracle_functions.
+    string function_id = 3;
+
+    // HTTP status code for stock responses (e.g., 200, 404).
+    // Only applicable when type is stock_response.
+    int32 status = 4;
+
+    // Response body for stock responses.
+    // Only applicable when type is stock_response.
+    string body = 5;
+
+    // Connection timeout in seconds. Applicable to http and oracle_functions backends.
+    optional float connect_timeout_in_seconds = 6;
+
+    // Read timeout in seconds. Applicable to http and oracle_functions backends.
+    optional float read_timeout_in_seconds = 7;
+
+    // Send timeout in seconds. Applicable to http and oracle_functions backends.
+    optional float send_timeout_in_seconds = 8;
+
+    // Whether to skip TLS certificate verification for the backend.
+    // Applicable to http backends.
+    optional bool is_ssl_verify_disabled = 9;
+
+    // Custom headers to add to requests forwarded to the backend.
+    repeated BackendHeader headers = 10;
+  }
+
+  // BackendType determines how matching requests are processed.
+  enum BackendType {
+    backend_unspecified = 0;
+    http = 1;
+    oracle_functions = 2;
+    stock_response = 3;
+  }
+
+  // BackendHeader is a custom HTTP header added to backend requests.
+  message BackendHeader {
+    // Header name.
+    string name = 1 [(buf.validate.field).string.min_len = 1];
+
+    // Header value.
+    string value = 2;
+  }
+
+  // RouteAuthorization controls access for individual routes when deployment-level
+  // authentication is enabled.
+  message RouteAuthorization {
+    option (buf.validate.message).cel = {
+      id: "any_of_requires_allowed_scope"
+      message: "allowed_scope must be non-empty when type is any_of"
+      expression: "this.type != 2 || size(this.allowed_scope) > 0"
+    };
+
+    // Authorization enforcement level.
+    AuthorizationType type = 1;
+
+    // OAuth2 scopes required when type is any_of. The token must contain
+    // at least one of these scopes.
+    repeated string allowed_scope = 2;
+  }
+
+  // AuthorizationType controls route-level authorization behavior.
+  enum AuthorizationType {
+    authorization_unspecified = 0;
+    anonymous = 1;
+    any_of = 2;
+    authentication_only = 3;
+  }
+}

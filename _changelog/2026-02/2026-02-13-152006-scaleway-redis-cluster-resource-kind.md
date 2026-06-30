@@ -56,7 +56,7 @@ flowchart TD
 
 - `spec.proto`: 10 fields covering zone, version, node_type, cluster_size, tls_enabled, user_name, password, acl_rules, private_network_id (StringValueOrRef), and settings. CEL validation enforces ACL/PN mutual exclusivity at the message level.
 - `stack_outputs.proto`: 6 outputs -- cluster_id, public network endpoint (port + IPs), private network endpoint (port + IPs), TLS certificate. Only one endpoint set is populated based on networking mode.
-- `api.proto`: Standard resource wrapper with `scaleway.openmcf.org/v1` API version.
+- `api.proto`: Standard resource wrapper with `scaleway.planton.dev/v1` API version.
 - `stack_input.proto`: Target + ScalewayProviderConfig.
 
 ### Pulumi Go Module (6 files)
@@ -70,7 +70,7 @@ flowchart TD
 
 - `main.tf`: Single `scaleway_redis_cluster` resource with dynamic `acl` and `private_network` blocks (mutually exclusive via conditional `for_each`/list toggle). Password changes ignored in lifecycle.
 - `outputs.tf`: Uses `tolist()` to convert `private_network` set to list for indexed access. Public/private outputs conditionally populated based on networking mode.
-- `locals.tf`: Builds standard OpenMCF tags, conditional networking flags.
+- `locals.tf`: Builds standard Planton tags, conditional networking flags.
 
 ### Documentation (2 files)
 

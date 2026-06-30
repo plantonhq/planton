@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package dev.planton.provider.openfga.openfgaauthorizationmodel.v1;
+
+// OpenFgaAuthorizationModelStackOutputs contains the outputs from an OpenFGA Authorization Model deployment.
+//
+// These outputs provide the model identifier for referencing in subsequent operations
+// (e.g., setting as the active model for a store, querying the model).
+//
+// Reference:
+// - Terraform: https://registry.terraform.io/providers/openfga/openfga/latest/docs/resources/authorization_model#attributes-reference
+message OpenFgaAuthorizationModelStackOutputs {
+  // id is the unique identifier of the authorization model.
+  // This is a version-specific identifier - each new model gets a new ID.
+  //
+  // The model ID is used to:
+  // - Reference this specific model version in API calls
+  // - Set as the active authorization model for a store
+  // - Import the model state into Terraform
+  //
+  // Format: Typically a ULID (e.g., "01HXYZ...")
+  string id = 1;
+}

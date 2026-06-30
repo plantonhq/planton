@@ -6,11 +6,11 @@
 
 ## Summary
 
-Expanded the hand-written catalog page inventory from 5 exemplars to 29 total, covering every active cloud provider in the OpenMCF framework. Each page is source-verified against spec.proto, stack_outputs.proto, and the Pulumi IaC module, following the 9-section standard established in the catalog page rewrite system. The expansion was executed in 3 rounds of 4 parallel agents, each handling 2 components, completing in a single session.
+Expanded the hand-written catalog page inventory from 5 exemplars to 29 total, covering every active cloud provider in the Planton framework. Each page is source-verified against spec.proto, stack_outputs.proto, and the Pulumi IaC module, following the 9-section standard established in the catalog page rewrite system. The expansion was executed in 3 rounds of 4 parallel agents, each handling 2 components, completing in a single session.
 
 ## Problem Statement / Motivation
 
-The catalog page rewrite system (2026-02-13) established a standard for hand-written, source-verified catalog pages and produced 5 exemplars. However, 5 pages out of ~178 components left the vast majority of the catalog using the old auto-generated research documents — multi-hundred-line essays about deployment maturity spectrums and technology comparisons that bury the actual OpenMCF-specific content.
+The catalog page rewrite system (2026-02-13) established a standard for hand-written, source-verified catalog pages and produced 5 exemplars. However, 5 pages out of ~178 components left the vast majority of the catalog using the old auto-generated research documents — multi-hundred-line essays about deployment maturity spectrums and technology comparisons that bury the actual Planton-specific content.
 
 ### Pain Points
 
@@ -123,7 +123,7 @@ flowchart TB
 
 Each agent followed the same workflow:
 
-1. Read `write-openmcf-component-catalog-page.mdc` rule
+1. Read `write-planton-component-catalog-page.mdc` rule
 2. Read AWS ALB exemplar as gold standard
 3. Read component source files (api.proto, spec.proto, stack_outputs.proto, Pulumi module)
 4. Write catalog page following the 9-section structure
@@ -136,7 +136,7 @@ All 24 pages passed all 6 verification checks:
 | Check | Description | Result |
 |-------|-------------|--------|
 | Source Code | Every field, resource, and output traced to proto/Go source | Pass (24/24) |
-| Command | CLI commands verified against `cmd/openmcf/` | Pass (24/24) |
+| Command | CLI commands verified against `cmd/planton/` | Pass (24/24) |
 | Manifest | KRM structure, camelCase fields, valid values | Pass (24/24) |
 | Link | Internal catalog links point to existing components | Pass (24/24) |
 | Planton | Zero references to Planton/SaaS/commercial platform | Pass (24/24) |
@@ -144,22 +144,22 @@ All 24 pages passed all 6 verification checks:
 
 ### Notable Findings During Writing
 
-- **OpenFGA components use `tofu` provisioner** — the OpenFGA Pulumi modules are pass-through wrappers; these components are natively OpenTofu/Terraform-based. The catalog pages correctly use `openmcf.org/provisioner: tofu` labels.
+- **OpenFGA components use `tofu` provisioner** — the OpenFGA Pulumi modules are pass-through wrappers; these components are natively OpenTofu/Terraform-based. The catalog pages correctly use `planton.dev/provisioner: tofu` labels.
 - **Auth0Client is the densest spec** — 29 fields across 9 nested messages, requiring careful organization of the Configuration Reference into logical sub-sections (OAuth, JWT, Refresh Tokens, Mobile, etc.)
 - **CloudflareR2Bucket has implementation notes** — `publicAccess` requires manual dashboard enablement, `versioningEnabled` is accepted but silently ignored. Both documented from source code comments.
 - **OpenfgaStore demonstrates minimal spec handling** — 1 field, 3 examples. The examples find meaningful variation through naming patterns for different isolation strategies (dev, per-app, production).
 
 ## Benefits
 
-- **Full provider coverage** — every developer evaluating OpenMCF for any of the 13 supported providers now finds at least 1-2 hand-written, source-verified catalog pages
+- **Full provider coverage** — every developer evaluating Planton for any of the 13 supported providers now finds at least 1-2 hand-written, source-verified catalog pages
 - **Rich reference set for automation** — the 29 pages cover every complexity level and infrastructure pattern, providing AI agents comprehensive reference material for migrating the remaining ~149 components
 - **Consistent quality** — all pages follow the same 9-section structure, persona, and tone established by the original exemplars
-- **Parallelization validated** — the 3-round execution pattern proved that the `write-openmcf-component-catalog-page.mdc` rule is self-contained enough for parallel agent execution
+- **Parallelization validated** — the 3-round execution pattern proved that the `write-planton-component-catalog-page.mdc` rule is self-contained enough for parallel agent execution
 
 ## Impact
 
 ### Users
-- Developers evaluating OpenMCF now see professional, source-verified documentation for flagship components across all providers
+- Developers evaluating Planton now see professional, source-verified documentation for flagship components across all providers
 - The catalog pages provide copy-pasteable manifests, complete field references, and progressive examples
 
 ### Documentation System
@@ -179,7 +179,7 @@ All 24 pages passed all 6 verification checks:
 
 ## Files Created
 
-24 new `catalog-page.md` files under `apis/org/openmcf/provider/`:
+24 new `catalog-page.md` files under `apis/dev/planton/provider/`:
 
 ```
 aws/awsekscluster/v1/catalog-page.md

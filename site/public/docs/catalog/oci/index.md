@@ -1,13 +1,13 @@
 ---
 title: "OCI"
-description: "Deploy OCI resources using OpenMCF"
+description: "Deploy OCI resources using Planton"
 icon: "cloud"
 order: 10
 ---
 
 # OCI
 
-The following OCI resources can be deployed using OpenMCF:
+The following OCI resources can be deployed using Planton:
 
 - [Alarm](/docs/catalog/oci/alarm)
 - [API Gateway](/docs/catalog/oci/api-gateway)

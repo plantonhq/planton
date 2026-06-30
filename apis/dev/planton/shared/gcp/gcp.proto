@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package dev.planton.shared.gcp;
+
+//google service account
+message GoogleServiceAccount {
+  // service-account email
+  string email = 1;
+
+  // base64 encoded key of the service account
+  string key_base64 = 2;
+}

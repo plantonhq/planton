@@ -6,11 +6,11 @@
 
 ## Summary
 
-Adds `Auth0Role` to the OpenMCF catalog — a deployment component that manages an Auth0 Role and its API permissions (scopes) as code. Permissions are folded into the component so a single manifest creates the role and sets its authoritative permission list across both Pulumi and Terraform. The kind is fully wired into the Auth0 provider plumbing (reflect map + E2E harness) and was validated live against a real Auth0 tenant on both provisioners.
+Adds `Auth0Role` to the Planton catalog — a deployment component that manages an Auth0 Role and its API permissions (scopes) as code. Permissions are folded into the component so a single manifest creates the role and sets its authoritative permission list across both Pulumi and Terraform. The kind is fully wired into the Auth0 provider plumbing (reflect map + E2E harness) and was validated live against a real Auth0 tenant on both provisioners.
 
 ## Problem Statement / Motivation
 
-Auth0's role-based access control (RBAC) has three layers: a resource server defines scopes, a role groups those scopes, and users are assigned roles. OpenMCF already modeled the resource server (`Auth0ResourceServer`) but had no way to declare **roles** — the middle layer that turns raw scopes into reusable access tiers (Administrator, Editor, Viewer).
+Auth0's role-based access control (RBAC) has three layers: a resource server defines scopes, a role groups those scopes, and users are assigned roles. Planton already modeled the resource server (`Auth0ResourceServer`) but had no way to declare **roles** — the middle layer that turns raw scopes into reusable access tiers (Administrator, Editor, Viewer).
 
 ### Pain Points
 
@@ -20,7 +20,7 @@ Auth0's role-based access control (RBAC) has three layers: a resource server def
 
 ## Solution / What's New
 
-A complete `Auth0Role` component at `apis/org/openmcf/provider/auth0/auth0role/v1/`, modeled on the newest Auth0 exemplar (`auth0action`) and folding the child permission resource into the parent — the same pattern `auth0action` uses for `trigger_binding` and `auth0resourceserver` uses for `scopes`.
+A complete `Auth0Role` component at `apis/dev/planton/provider/auth0/auth0role/v1/`, modeled on the newest Auth0 exemplar (`auth0action`) and folding the child permission resource into the parent — the same pattern `auth0action` uses for `trigger_binding` and `auth0resourceserver` uses for `scopes`.
 
 ```mermaid
 flowchart TB
@@ -44,7 +44,7 @@ flowchart TB
 - **Registration & dispatch**: `Auth0Role = 2105` (`id_prefix: a0role`) in `cloud_resource_kind.proto`; `pkg/crkreflect/kind_map_gen.go` regenerated via `make generate-cloud-resource-kind-map` so the runner/CLI can instantiate the kind.
 - **Provider E2E wiring** (not produced by the generic forge): registered `"auth0role" → "roles/%s"` in `aa_e2e/verify/verifier.go` and added `TestAuth0Role_Pulumi`/`_Terraform` entrypoints in `e2e/auth0/auth0_test.go`.
 - **Docs & presets**: user README, catalog page (with reciprocal cross-links from `auth0resourceserver`/`auth0client`), research doc, security/compliance/cost/permissions docs, and three ranked presets (role-with-permissions, admin multi-API, role-without-permissions).
-- **Forge rule improvement**: added a "Post-Forge Live E2E Validation" protocol to `forge-openmcf-component.mdc` codifying credential acquisition for live E2E (local `.env.e2e` preferred, CI workflow dispatch fallback), and closed a `.gitignore` gap so `.env.e2e` can never be committed.
+- **Forge rule improvement**: added a "Post-Forge Live E2E Validation" protocol to `forge-planton-component.mdc` codifying credential acquisition for live E2E (local `.env.e2e` preferred, CI workflow dispatch fallback), and closed a `.gitignore` gap so `.env.e2e` can never be committed.
 
 ## Testing Strategy
 
@@ -68,7 +68,7 @@ The `minimal` scenario is intentionally permission-free so it is self-contained 
 
 ## Impact
 
-- **Users**: can model RBAC roles alongside resource servers and clients in OpenMCF.
+- **Users**: can model RBAC roles alongside resource servers and clients in Planton.
 - **Catalog**: Auth0 provider grows from 5 to 6 components; sibling catalog pages cross-link the new kind.
 - **Future forge sessions**: inherit a documented, do-first protocol for running live E2E with provider credentials.
 

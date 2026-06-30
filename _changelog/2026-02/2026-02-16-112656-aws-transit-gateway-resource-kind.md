@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added AwsTransitGateway (R25) as a new cloud resource kind in OpenMCF, providing a complete deployment component for AWS Transit Gateway with bundled VPC attachments. This is the final Phase 2 component in the AWS resource expansion project, bringing the total to 29 AWS resource kinds.
+Added AwsTransitGateway (R25) as a new cloud resource kind in Planton, providing a complete deployment component for AWS Transit Gateway with bundled VPC attachments. This is the final Phase 2 component in the AWS resource expansion project, bringing the total to 29 AWS resource kinds.
 
 ## Problem Statement / Motivation
 
@@ -17,7 +17,7 @@ Organizations with multiple VPCs need a centralized networking hub to replace co
 - VPC peering scales as N*(N-1)/2 connections -- impractical beyond 5-10 VPCs
 - Transit Gateway configuration requires coordinating multiple AWS resources with correct enable/disable toggles
 - Appliance mode for firewall inspection VPCs is easy to misconfigure, leading to asymmetric routing
-- No existing OpenMCF abstraction for multi-VPC hub networking
+- No existing Planton abstraction for multi-VPC hub networking
 
 ## Solution / What's New
 
@@ -36,7 +36,7 @@ A complete AwsTransitGateway deployment component that bundles the Transit Gatew
 
 - `spec.proto` -- 11 spec fields + nested `AwsTransitGatewayVpcAttachment` message with 8 fields
 - `stack_outputs.proto` -- 6 outputs including `vpc_attachment_ids` map
-- `api.proto` -- KRM envelope with `aws.openmcf.org/v1` API version
+- `api.proto` -- KRM envelope with `aws.planton.dev/v1` API version
 - `stack_input.proto` -- Standard AWS stack input with provider config
 
 ### Validations
@@ -82,7 +82,7 @@ A complete AwsTransitGateway deployment component that bundles the Transit Gatew
 
 ## Related Work
 
-- Part of `20260215.02.sp.aws-resource-expansion` (parent: `20260212.01.openmcf-cloud-provider-expansion`)
+- Part of `20260215.02.sp.aws-resource-expansion` (parent: `20260212.01.planton-cloud-provider-expansion`)
 - Phase 3 (7 specialized components) and existing component fixes (7) remain
 - Reference patterns: AwsNetworkLoadBalancer (bundled listeners), AwsElasticIp (simple networking)
 

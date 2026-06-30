@@ -12,7 +12,7 @@ Deploys a Google Cloud Memorystore for Redis instance with configurable tier, re
 
 ## What Gets Created
 
-When you deploy a GcpRedisInstance resource, OpenMCF provisions:
+When you deploy a GcpRedisInstance resource, Planton provisions:
 
 - **Memorystore Redis Instance** — a fully managed Redis instance in the specified project and region, tagged with organization, environment, and resource labels
 - **Primary Endpoint** — a host and port for read/write operations, available immediately after creation
@@ -22,7 +22,7 @@ When you deploy a GcpRedisInstance resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **A GCP project** where the Redis instance will be created
 - **A VPC network** if connecting to a non-default network (referenced via `authorizedNetwork`)
 - **A Cloud KMS key** if using customer-managed encryption at rest (CMEK)
@@ -32,15 +32,15 @@ When you deploy a GcpRedisInstance resource, OpenMCF provisions:
 Create a file `redis.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpRedisInstance
 metadata:
   name: my-redis
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpRedisInstance.my-redis
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpRedisInstance.my-redis
 spec:
   projectId:
     value: my-gcp-project
@@ -53,7 +53,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f redis.yaml
+planton apply -f redis.yaml
 ```
 
 This creates a standalone 1 GiB Redis instance in `us-central1` using the default VPC network and the latest supported Redis version.
@@ -99,15 +99,15 @@ This creates a standalone 1 GiB Redis instance in `us-central1` using the defaul
 A `STANDARD_HA` instance with Redis AUTH enabled for production workloads:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpRedisInstance
 metadata:
   name: prod-cache
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpRedisInstance.prod-cache
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpRedisInstance.prod-cache
 spec:
   projectId:
     value: my-gcp-project
@@ -128,15 +128,15 @@ spec:
 A `STANDARD_HA` instance with read replicas and RDB snapshots for high-throughput, durable workloads:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpRedisInstance
 metadata:
   name: analytics-redis
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpRedisInstance.analytics-redis
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpRedisInstance.analytics-redis
 spec:
   projectId:
     value: my-gcp-project
@@ -160,15 +160,15 @@ spec:
 A locked-down instance using Private Service Access, transit encryption, and customer-managed encryption keys:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpRedisInstance
 metadata:
   name: secure-redis
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpRedisInstance.secure-redis
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpRedisInstance.secure-redis
 spec:
   projectId: my-gcp-project
   instanceName: secure-redis

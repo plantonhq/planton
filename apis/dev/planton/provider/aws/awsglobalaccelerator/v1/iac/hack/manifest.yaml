@@ -1,0 +1,30 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsGlobalAccelerator
+metadata:
+  name: test-ga
+  labels:
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: test-org
+    pulumi.planton.dev/project: test-project
+    pulumi.planton.dev/stack.name: dev.AwsGlobalAccelerator.test-ga
+spec:
+  region: us-west-2
+  enabled: true
+  ipAddressType: IPV4
+  listeners:
+    - name: tcp-443
+      protocol: TCP
+      clientAffinity: NONE
+      portRanges:
+        - fromPort: 443
+          toPort: 443
+      endpointGroups:
+        - name: us-east-1
+          endpointGroupRegion: us-east-1
+          healthCheckProtocol: TCP
+          healthCheckIntervalSeconds: 30
+          thresholdCount: 3
+          trafficDialPercentage: 100.0
+          endpoints:
+            - endpointId: arn:aws:elasticloadbalancing:us-east-1:123456789012:loadbalancer/app/my-alb/1234567890abcdef
+              weight: 128

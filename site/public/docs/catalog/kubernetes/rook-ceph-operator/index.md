@@ -12,7 +12,7 @@ Deploys the Rook Ceph Operator on Kubernetes using the official Rook Helm chart 
 
 ## What Gets Created
 
-When you deploy a KubernetesRookCephOperator resource, OpenMCF provisions:
+When you deploy a KubernetesRookCephOperator resource, Planton provisions:
 
 - **Namespace** — created only when `createNamespace` is `true`
 - **Helm Release (rook-ceph)** — deploys the Rook Ceph Operator from the `rook-ceph` chart at `https://charts.rook.io/release`, pinned to version v1.16.6 by default, with CRDs installed, atomic rollback enabled, cleanup-on-fail, wait-for-jobs, and a 5-minute timeout
@@ -21,7 +21,7 @@ When you deploy a KubernetesRookCephOperator resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
 - **Cluster-level permissions** — the Rook operator requires RBAC privileges to manage CRDs, namespaces, pods, and storage resources across the cluster
 - **Storage-capable nodes** — at least one node with raw block devices or directories available for Ceph OSDs (required when deploying a CephCluster after the operator is installed)
@@ -31,15 +31,15 @@ When you deploy a KubernetesRookCephOperator resource, OpenMCF provisions:
 Create a file `rook-ceph-operator.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesRookCephOperator
 metadata:
   name: my-rook-ceph
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesRookCephOperator.my-rook-ceph
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesRookCephOperator.my-rook-ceph
 spec:
   namespace: rook-ceph
   createNamespace: true
@@ -56,7 +56,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f rook-ceph-operator.yaml
+planton apply -f rook-ceph-operator.yaml
 ```
 
 This creates the Rook Ceph Operator in the `rook-ceph` namespace with default CSI drivers enabled and CRDs installed.
@@ -88,7 +88,7 @@ This creates the Rook Ceph Operator in the `rook-ceph` namespace with default CS
 | `csi.enableCsiAddons` | `bool` | `false` | Enable CSI Addons for additional CSI functionality such as volume replication and reclaim space. |
 | `csi.enableNfsDriver` | `bool` | `false` | Enable the NFS CSI driver for NFS storage support via Ceph NFS gateways. |
 
-> **Note on `valueFrom`**: The `namespace` field is a `StringValueOrRef` type. You can provide a literal string value directly, or use `valueFrom` to reference the output of another OpenMCF resource. See the foreign key reference example below.
+> **Note on `valueFrom`**: The `namespace` field is a `StringValueOrRef` type. You can provide a literal string value directly, or use `valueFrom` to reference the output of another Planton resource. See the foreign key reference example below.
 
 ## Examples
 
@@ -97,15 +97,15 @@ This creates the Rook Ceph Operator in the `rook-ceph` namespace with default CS
 Deploy the Rook Ceph Operator with default settings, enabling both RBD and CephFS drivers:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesRookCephOperator
 metadata:
   name: rook-default
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesRookCephOperator.rook-default
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesRookCephOperator.rook-default
 spec:
   namespace: rook-ceph
   createNamespace: true
@@ -126,15 +126,15 @@ This deploys the operator at version v1.16.6 with CRDs installed, RBD and CephFS
 Deploy a production-grade Rook Ceph Operator with increased resource limits, NFS driver, and CSI Addons enabled:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesRookCephOperator
 metadata:
   name: rook-prod
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesRookCephOperator.rook-prod
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesRookCephOperator.rook-prod
 spec:
   namespace: rook-ceph
   createNamespace: true
@@ -163,15 +163,15 @@ This deploys the operator with higher CPU and memory allocations suitable for pr
 Deploy the operator with only the RBD (block storage) driver and manage CRDs externally:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesRookCephOperator
 metadata:
   name: rook-block-only
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.KubernetesRookCephOperator.rook-block-only
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.KubernetesRookCephOperator.rook-block-only
 spec:
   namespace: rook-ceph
   createNamespace: true
@@ -196,18 +196,18 @@ This deploys a minimal operator for environments that only need Ceph block stora
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed namespace instead of hardcoding values:
+Reference an Planton-managed namespace instead of hardcoding values:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesRookCephOperator
 metadata:
   name: rook-with-ref
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesRookCephOperator.rook-with-ref
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesRookCephOperator.rook-with-ref
 spec:
   namespace:
     valueFrom:
@@ -225,7 +225,7 @@ spec:
         memory: 512Mi
 ```
 
-This example references an OpenMCF-managed namespace rather than embedding a literal value. The `createNamespace` flag is set to `false` because the referenced KubernetesNamespace resource manages the namespace lifecycle.
+This example references an Planton-managed namespace rather than embedding a literal value. The `createNamespace` flag is set to `false` because the referenced KubernetesNamespace resource manages the namespace lifecycle.
 
 ## Stack Outputs
 

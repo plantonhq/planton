@@ -17,7 +17,7 @@ Deploys a Google Cloud Firestore database with configurable type (Native or Data
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **A GCP project** with the Firestore API enabled
 - **A KMS key** in the same location as the database if enabling CMEK encryption (nam5 requires KMS multi-region `us`; eur3 requires KMS multi-region `europe`)
 
@@ -26,15 +26,15 @@ Deploys a Google Cloud Firestore database with configurable type (Native or Data
 Create a file `firestore-database.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpFirestoreDatabase
 metadata:
   name: my-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpFirestoreDatabase.my-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpFirestoreDatabase.my-db
 spec:
   projectId:
     value: my-gcp-project-123
@@ -46,7 +46,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f firestore-database.yaml
+planton apply -f firestore-database.yaml
 ```
 
 This creates the project's default Firestore Native database in the US multi-region with Google-managed encryption and 1-hour version retention.
@@ -79,15 +79,15 @@ This creates the project's default Firestore Native database in the US multi-reg
 The simplest starting point -- creates the project's default database that client libraries connect to by default:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpFirestoreDatabase
 metadata:
   name: default-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpFirestoreDatabase.default-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpFirestoreDatabase.default-db
 spec:
   projectId:
     value: my-gcp-project-123
@@ -101,15 +101,15 @@ spec:
 A production database with 7-day point-in-time recovery and protection against accidental deletion:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpFirestoreDatabase
 metadata:
   name: orders-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpFirestoreDatabase.orders-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpFirestoreDatabase.orders-db
 spec:
   projectId:
     value: my-gcp-project-123
@@ -125,15 +125,15 @@ spec:
 Maximum security configuration with Enterprise SLA, customer-managed encryption, and delete protection:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpFirestoreDatabase
 metadata:
   name: secure-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpFirestoreDatabase.secure-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpFirestoreDatabase.secure-db
 spec:
   projectId:
     value: my-gcp-project-123
@@ -149,18 +149,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding values:
+Reference other Planton-managed resources instead of hardcoding values:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpFirestoreDatabase
 metadata:
   name: composed-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpFirestoreDatabase.composed-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpFirestoreDatabase.composed-db
 spec:
   projectId:
     valueFrom:

@@ -8,7 +8,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
-	kubernetesprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes"
+	kubernetesprovider "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes"
 )
 
 const (

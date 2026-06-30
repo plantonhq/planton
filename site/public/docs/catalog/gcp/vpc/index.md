@@ -12,7 +12,7 @@ Deploys a GCP VPC network in custom subnet mode by default, with configurable dy
 
 ## What Gets Created
 
-When you deploy a GcpVpc resource, OpenMCF provisions:
+When you deploy a GcpVpc resource, Planton provisions:
 
 - **Compute Engine API enablement** — a `google_project_service` resource that activates `compute.googleapis.com` on the target project
 - **VPC Network** — a `google_compute_network` resource with the specified name, subnet mode, and routing mode in the target project
@@ -21,7 +21,7 @@ When you deploy a GcpVpc resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **An existing GCP project** — referenced via `projectId`
 - **IAM permissions** to enable APIs and create VPC networks in the target project
 - **Service Networking API enabled** (`servicenetworking.googleapis.com`) on the project if using Private Services Access — this can be enabled via a GcpProject resource
@@ -31,15 +31,15 @@ When you deploy a GcpVpc resource, OpenMCF provisions:
 Create a file `vpc.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpVpc
 metadata:
   name: my-vpc
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpVpc.my-vpc
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpVpc.my-vpc
 spec:
   projectId:
     value: my-gcp-project-123
@@ -49,7 +49,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f vpc.yaml
+planton apply -f vpc.yaml
 ```
 
 This creates a custom-mode VPC named `dev-network` with regional routing in the specified GCP project.
@@ -79,15 +79,15 @@ This creates a custom-mode VPC named `dev-network` with regional routing in the 
 A basic VPC for a single-region deployment:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpVpc
 metadata:
   name: dev-vpc
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpVpc.dev-vpc
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpVpc.dev-vpc
 spec:
   projectId:
     value: my-dev-project-123
@@ -99,15 +99,15 @@ spec:
 A VPC with global dynamic routing for multi-region workloads or hybrid VPN/Interconnect setups:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpVpc
 metadata:
   name: prod-vpc
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpVpc.prod-vpc
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpVpc.prod-vpc
 spec:
   projectId:
     value: my-prod-project-456
@@ -120,15 +120,15 @@ spec:
 A VPC configured for private connectivity to Google managed services, using a GcpProject foreign key reference:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpVpc
 metadata:
   name: data-vpc
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpVpc.data-vpc
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpVpc.data-vpc
 spec:
   projectId:
     valueFrom:

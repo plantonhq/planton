@@ -12,7 +12,7 @@ Deploys a NATS messaging cluster on Kubernetes using the official NATS Helm char
 
 ## What Gets Created
 
-When you deploy a KubernetesNats resource, OpenMCF provisions:
+When you deploy a KubernetesNats resource, Planton provisions:
 
 - **Namespace** — created only when `createNamespace` is `true`
 - **Helm Release (NATS)** — deploys a NATS server cluster via the official NATS Helm chart with configurable replicas, JetStream file storage, resource limits, and disk size
@@ -27,7 +27,7 @@ When you deploy a KubernetesNats resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
 - **A StorageClass** available in the cluster if JetStream persistence is enabled (most managed Kubernetes clusters provide a default)
 - **external-dns** running in the cluster if enabling ingress with a hostname
@@ -37,15 +37,15 @@ When you deploy a KubernetesNats resource, OpenMCF provisions:
 Create a file `nats.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesNats
 metadata:
   name: my-nats
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesNats.my-nats
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesNats.my-nats
 spec:
   namespace: messaging
   createNamespace: true
@@ -54,7 +54,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f nats.yaml
+planton apply -f nats.yaml
 ```
 
 This creates a single-replica NATS server with JetStream enabled, a 10Gi PersistentVolumeClaim, default resource limits (1000m CPU, 2Gi memory), and the nats-box utility pod for debugging.
@@ -125,15 +125,15 @@ This creates a single-replica NATS server with JetStream enabled, a 10Gi Persist
 A single-replica NATS server for development with JetStream enabled and default settings:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesNats
 metadata:
   name: dev-nats
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesNats.dev-nats
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesNats.dev-nats
 spec:
   namespace: dev
   createNamespace: true
@@ -154,15 +154,15 @@ spec:
 A three-node NATS cluster with basic-auth, TLS encryption, and external access:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesNats
 metadata:
   name: prod-nats
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesNats.prod-nats
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesNats.prod-nats
 spec:
   namespace: messaging
   serverContainer:
@@ -189,15 +189,15 @@ spec:
 A NATS cluster with the NACK controller managing JetStream streams and consumers declaratively:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesNats
 metadata:
   name: event-bus
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesNats.event-bus
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesNats.event-bus
 spec:
   namespace: events
   createNamespace: true
@@ -256,18 +256,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed namespace instead of hardcoding the name:
+Reference an Planton-managed namespace instead of hardcoding the name:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesNats
 metadata:
   name: my-nats
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesNats.my-nats
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesNats.my-nats
 spec:
   namespace:
     valueFrom:

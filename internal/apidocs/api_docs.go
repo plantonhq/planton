@@ -4,14 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/internal/cli/version"
+	"github.com/plantonhq/planton/internal/cli/version"
 	"github.com/pseudomuto/protoc-gen-doc"
 	"io"
 	"net/http"
 )
 
-const downloadUrlFormatString = "https://github.com/plantonhq/openmcf/releases/download/%s/docs.json"
-const latestReleaseDownloadUrl = "https://github.com/plantonhq/openmcf/releases/latest/download/docs.json"
+const downloadUrlFormatString = "https://github.com/plantonhq/planton/releases/download/%s/docs.json"
+const latestReleaseDownloadUrl = "https://github.com/plantonhq/planton/releases/latest/download/docs.json"
 
 // GetApiDocsJson downloads the docs.json from GitHub, parses it into a gendoc.Template, and returns it.
 // If docsJsonPath is not empty, you could alternatively load from a local file instead,

@@ -17,7 +17,7 @@ With OpenFgaStore deployed, users needed a way to define the authorization schem
 - **Rewrites**: How relations are computed (direct, computed, union, intersection)
 - **Conditions**: Dynamic rules for access decisions
 
-Without this component, users would need to manually manage authorization models outside of the OpenMCF workflow.
+Without this component, users would need to manually manage authorization models outside of the Planton workflow.
 
 ## Solution / What's New
 
@@ -76,7 +76,7 @@ message OpenFgaAuthorizationModelStackOutputs {
 ```
 
 **api.proto** - KRM envelope:
-- apiVersion: `openfga.openmcf.org/v1`
+- apiVersion: `openfga.planton.dev/v1`
 - kind: `OpenFgaAuthorizationModel`
 - Standard metadata, spec, status structure
 
@@ -146,7 +146,7 @@ output "id" { value = openfga_authorization_model.this.id }
 
 ### Direct
 
-- Users can now manage OpenFGA authorization models through OpenMCF
+- Users can now manage OpenFGA authorization models through Planton
 - Complete OpenFGA workflow: Store → Model → (future: Tuples)
 - CLI supports OpenFgaAuthorizationModel manifests with `--openfga-provider-config` flag
 
@@ -166,7 +166,7 @@ output "id" { value = openfga_authorization_model.this.id }
 ### Create Authorization Model
 
 ```yaml
-apiVersion: openfga.openmcf.org/v1
+apiVersion: openfga.planton.dev/v1
 kind: OpenFgaAuthorizationModel
 metadata:
   name: document-authz-v1
@@ -202,7 +202,7 @@ spec:
 
 ```bash
 # Deploy using Terraform/Tofu (required - no Pulumi provider)
-openmcf apply --manifest authorization-model.yaml \
+planton apply --manifest authorization-model.yaml \
   --openfga-provider-config openfga-creds.yaml \
   --provisioner tofu
 ```

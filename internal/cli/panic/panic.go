@@ -2,7 +2,7 @@ package panic
 
 import (
 	"fmt"
-	"github.com/plantonhq/openmcf/internal/cli/version"
+	"github.com/plantonhq/planton/internal/cli/version"
 	"os"
 	"runtime"
 	"runtime/debug"
@@ -19,7 +19,7 @@ func Handle(finished *bool) {
 		stack := string(debug.Stack())
 		fmt.Fprintln(os.Stderr, "================================================================================")
 		fmt.Fprintln(os.Stderr, "The Pronect Planton CLI encountered a fatal error. This is a bug!")
-		fmt.Fprintln(os.Stderr, "We would appreciate a report: https://github.com/plantonhq/openmcf/issues/")
+		fmt.Fprintln(os.Stderr, "We would appreciate a report: https://github.com/plantonhq/planton/issues/")
 		fmt.Fprintln(os.Stderr, "Please provide all of the below text in your report.")
 		fmt.Fprintln(os.Stderr, "================================================================================")
 		fmt.Fprintf(os.Stderr, "CLI Version:   %s\n", version.Version)

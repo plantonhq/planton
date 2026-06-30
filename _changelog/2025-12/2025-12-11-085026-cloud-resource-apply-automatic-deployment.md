@@ -43,7 +43,7 @@ if s.stackUpdateService != nil {
 
 ### 2. Refactored CLI Command to Use ApplyCloudResource API
 
-**File**: `cmd/openmcf/root/cloud_resource_apply.go`
+**File**: `cmd/planton/root/cloud_resource_apply.go`
 
 **Before**: Manual implementation that:
 
@@ -83,12 +83,12 @@ Updated At: 2025-12-11 08:50:26
 
 🚀 Pulumi deployment has been triggered automatically.
    Deployment is running in the background.
-   Use 'openmcf stack-update:list' to check deployment status.
+   Use 'planton stack-update:list' to check deployment status.
 ```
 
 ### 3. Updated CLI Documentation
 
-**File**: `cmd/openmcf/CLI-HELP.md`
+**File**: `cmd/planton/CLI-HELP.md`
 
 Updated the `cloud-resource:apply` documentation to:
 
@@ -124,13 +124,13 @@ Updated the `cloud-resource:apply` documentation to:
 
    - Added deployment trigger to `ApplyCloudResource` method
 
-2. `cmd/openmcf/root/cloud_resource_apply.go` (+66 lines, -22 lines)
+2. `cmd/planton/root/cloud_resource_apply.go` (+66 lines, -22 lines)
 
    - Refactored to use `ApplyCloudResource` API
    - Added YAML validation
    - Improved user feedback
 
-3. `cmd/openmcf/CLI-HELP.md` (+50 lines modified)
+3. `cmd/planton/CLI-HELP.md` (+50 lines modified)
    - Updated documentation to match actual behavior
    - Added deployment status information
 

@@ -10,10 +10,10 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-	auth0e2e "github.com/plantonhq/openmcf/apis/org/openmcf/provider/auth0/aa_e2e"
-	"github.com/plantonhq/openmcf/e2e/framework/discovery"
-	"github.com/plantonhq/openmcf/e2e/framework/provider"
-	"github.com/plantonhq/openmcf/e2e/framework/runner"
+	auth0e2e "github.com/plantonhq/planton/apis/dev/planton/provider/auth0/aa_e2e"
+	"github.com/plantonhq/planton/e2e/framework/discovery"
+	"github.com/plantonhq/planton/e2e/framework/provider"
+	"github.com/plantonhq/planton/e2e/framework/runner"
 )
 
 var (
@@ -33,7 +33,7 @@ func TestMain(m *testing.M) {
 
 	runID = uuid.New().String()[:8]
 
-	backendDir, err := os.MkdirTemp("", "openmcf-e2e-auth0-pulumi-*")
+	backendDir, err := os.MkdirTemp("", "planton-e2e-auth0-pulumi-*")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to create temp backend dir: %v\n", err)
 		os.Exit(1)
@@ -99,9 +99,9 @@ func runAllScenariosForComponent(t *testing.T, component, engine string) {
 	var moduleDir string
 	switch engine {
 	case "pulumi":
-		moduleDir = filepath.Join(repoRoot, "apis", "org", "openmcf", "provider", "auth0", component, "v1", "iac", "pulumi")
+		moduleDir = filepath.Join(repoRoot, "apis", "org", "planton", "provider", "auth0", component, "v1", "iac", "pulumi")
 	case "terraform":
-		moduleDir = filepath.Join(repoRoot, "apis", "org", "openmcf", "provider", "auth0", component, "v1", "iac", "tf")
+		moduleDir = filepath.Join(repoRoot, "apis", "org", "planton", "provider", "auth0", component, "v1", "iac", "tf")
 	default:
 		t.Fatalf("unsupported engine: %s", engine)
 	}

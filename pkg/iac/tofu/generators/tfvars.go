@@ -7,13 +7,13 @@ import (
 	"path/filepath"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/pkg/crkreflect"
-	"github.com/plantonhq/openmcf/pkg/fileutil"
+	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/fileutil"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )
 
-// RenderTFVars converts an OpenMCF manifest proto into a Terraform
+// RenderTFVars converts an Planton manifest proto into a Terraform
 // tfvars-compatible string, choosing the emission shape from the kind's
 // metadata. This is the kind-aware entry point every runtime caller should use
 // so the converter and the shipped module always agree on the wire format:
@@ -51,7 +51,7 @@ func isManifestProjectionMessage(msg proto.Message) bool {
 }
 
 // ProtoToTFVars converts a protobuf message into a Terraform tfvars-compatible
-// string. The conversion applies OpenMCF type rules to flatten wrapper types
+// string. The conversion applies Planton type rules to flatten wrapper types
 // (like StringValueOrRef) to primitives and omit orchestrator-only fields
 // (like KubernetesClusterSelector), and renames keys to snake_case to match the
 // generated snake_case variables.tf.

@@ -12,7 +12,7 @@ Deploys an Oracle Cloud Infrastructure Database System — a managed Oracle Data
 
 ## What Gets Created
 
-When you deploy an OciDbSystem resource, OpenMCF provisions:
+When you deploy an OciDbSystem resource, Planton provisions:
 
 - **Database DB System** — an `oci_database_db_system` resource in the specified compartment and subnet. Configures the compute shape, CPU core count, storage layout, SSH access, and optional features like KMS encryption, NSG attachment, and maintenance windows.
 - **DB Home** — an Oracle Database Home containing the database software at a specific version (e.g., 19.0.0.0) or from a custom database software image. Created as a nested resource within the DB System.
@@ -21,7 +21,7 @@ When you deploy an OciDbSystem resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the DB System will be created — either a literal value or a reference to an OciCompartment resource
 - **A subnet OCID** for the DB System's primary VNIC — either a literal value or a reference to an OciSubnet resource
 - **An SSH public key** for administrative access to the DB System nodes
@@ -33,15 +33,15 @@ When you deploy an OciDbSystem resource, OpenMCF provisions:
 Create a file `db-system.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciDbSystem
 metadata:
   name: my-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciDbSystem.my-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciDbSystem.my-db
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -62,7 +62,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f db-system.yaml
+planton apply -f db-system.yaml
 ```
 
 This creates a single-node VM DB System running Oracle Database 19c with default settings. The DB System OCID, DB Home OCID, database OCID, and listener port are exported as stack outputs.
@@ -147,15 +147,15 @@ This creates a single-node VM DB System running Oracle Database 19c with default
 A single-node VM DB System with Oracle 19c and default settings:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciDbSystem
 metadata:
   name: dev-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciDbSystem.dev-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciDbSystem.dev-db
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -178,15 +178,15 @@ spec:
 An Enterprise Edition DB System with explicit storage sizing, BYOL licensing, and automatic daily backups:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciDbSystem
 metadata:
   name: staging-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.OciDbSystem.staging-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.OciDbSystem.staging-db
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -220,15 +220,15 @@ spec:
 A 2-node RAC cluster distributed across fault domains, with network security groups and a quarterly maintenance window:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciDbSystem
 metadata:
   name: prod-rac
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciDbSystem.prod-rac
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciDbSystem.prod-rac
   env: prod
   org: acme
 spec:
@@ -289,18 +289,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference OpenMCF-managed compartment and subnet resources instead of hardcoding OCIDs:
+Reference Planton-managed compartment and subnet resources instead of hardcoding OCIDs:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciDbSystem
 metadata:
   name: ref-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciDbSystem.ref-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciDbSystem.ref-db
 spec:
   compartmentId:
     valueFrom:

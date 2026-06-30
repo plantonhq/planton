@@ -12,14 +12,14 @@ Deploys an Oracle Cloud Infrastructure API Gateway with a bundled API deployment
 
 ## What Gets Created
 
-When you deploy an OciApiGateway resource, OpenMCF provisions:
+When you deploy an OciApiGateway resource, Planton provisions:
 
 - **API Gateway** — an `apigateway.Gateway` resource in the specified compartment and subnet with configurable endpoint type (public or private), optional TLS certificate, and optional NSG bindings.
 - **API Deployment** — an `apigateway.Deployment` resource on the gateway with a path prefix, route definitions, and optional request policies (JWT authentication, CORS, rate limiting). The deployment depends on the gateway and is always created.
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the gateway and deployment will be created — either a literal value or a reference to an OciCompartment resource
 - **A subnet OCID** — for public gateways, this must be a public subnet. Either a literal value or via `valueFrom` referencing an OciSubnet resource
 - **An OCI Certificates service certificate OCID** (optional) — if terminating TLS on the gateway
@@ -31,15 +31,15 @@ When you deploy an OciApiGateway resource, OpenMCF provisions:
 Create a file `api-gateway.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciApiGateway
 metadata:
   name: my-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciApiGateway.my-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciApiGateway.my-api
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -61,7 +61,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f api-gateway.yaml
+planton apply -f api-gateway.yaml
 ```
 
 This creates a public API gateway with a single health-check route that returns a stock response. The gateway OCID, hostname, and deployment endpoint URL are exported as stack outputs.
@@ -162,15 +162,15 @@ This creates a public API gateway with a single health-check route that returns 
 A public gateway proxying requests to an upstream service:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciApiGateway
 metadata:
   name: api-proxy
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciApiGateway.api-proxy
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciApiGateway.api-proxy
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -202,15 +202,15 @@ spec:
 A gateway routing to OCI Functions with JWT authentication via remote JWKS and CORS for a browser client:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciApiGateway
 metadata:
   name: serverless-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciApiGateway.serverless-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciApiGateway.serverless-api
 spec:
   compartmentId:
     valueFrom:
@@ -277,15 +277,15 @@ spec:
 A VCN-internal gateway with rate limiting for internal microservice communication:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciApiGateway
 metadata:
   name: internal-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciApiGateway.internal-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciApiGateway.internal-api
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"

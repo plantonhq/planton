@@ -1,4 +1,4 @@
-# OpenMCF Architecture
+# Planton Architecture
 
 **A multi-cloud deployment framework that brings Kubernetes-style consistency to infrastructure deployments across any cloud provider.**
 
@@ -6,7 +6,7 @@
 
 ## Table of Contents
 
-- [What is OpenMCF?](#what-is-openmcf)
+- [What is Planton?](#what-is-planton)
 - [Core Architecture](#core-architecture)
   - [The Three Pillars](#the-three-pillars)
   - [The Deployment Component Concept](#the-deployment-component-concept)
@@ -22,15 +22,15 @@
 
 ---
 
-## What is OpenMCF?
+## What is Planton?
 
-OpenMCF is an open-source framework that provides a unified, declarative approach to deploying infrastructure and applications across cloud providers. It solves a fundamental problem in modern cloud-native development: **the chaos of managing deployments across different clouds, each with their own tools, APIs, and mental models**.
+Planton is an open-source framework that provides a unified, declarative approach to deploying infrastructure and applications across cloud providers. It solves a fundamental problem in modern cloud-native development: **the chaos of managing deployments across different clouds, each with their own tools, APIs, and mental models**.
 
 ### The Core Promise
 
 **One structure. One workflow. Any cloud.**
 
-Whether you're deploying a PostgreSQL database to AWS RDS, Google Cloud SQL, or a Kubernetes cluster, OpenMCF provides the same consistent experience:
+Whether you're deploying a PostgreSQL database to AWS RDS, Google Cloud SQL, or a Kubernetes cluster, Planton provides the same consistent experience:
 - Write a YAML manifest following the Kubernetes Resource Model
 - Validate it before deployment
 - Deploy using a single CLI command
@@ -42,7 +42,7 @@ The **manifests are provider-specific** (AWS RDS has different configuration tha
 
 **Consistency Without Abstraction**
 
-OpenMCF does NOT abstract away cloud provider differences. Instead, it provides:
+Planton does NOT abstract away cloud provider differences. Instead, it provides:
 - ✅ **Consistent structure:** Every resource uses KRM (apiVersion, kind, metadata, spec)
 - ✅ **Consistent workflow:** Same CLI commands, same validation process
 - ✅ **Consistent developer experience:** Same documentation approach, same error patterns
@@ -54,7 +54,7 @@ Cloud providers are fundamentally different. AWS RDS has `instance_class` and `s
 1. Force a "lowest common denominator" approach (losing provider-specific capabilities)
 2. Create a leaky abstraction that's harder to understand than learning the providers directly
 
-**OpenMCF's philosophy:** Provide **consistency of experience** without **sacrificing provider-specific power**.
+**Planton's philosophy:** Provide **consistency of experience** without **sacrificing provider-specific power**.
 
 ---
 
@@ -62,11 +62,11 @@ Cloud providers are fundamentally different. AWS RDS has `instance_class` and `s
 
 ### The Three Pillars
 
-OpenMCF is built on three foundational components that work together seamlessly:
+Planton is built on three foundational components that work together seamlessly:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     OpenMCF CLI                         │
+│                     Planton CLI                         │
 │              (Orchestration & Validation Layer)                 │
 └───────────────────────┬─────────────────────────────────────────┘
                         │
@@ -92,7 +92,7 @@ OpenMCF is built on three foundational components that work together seamlessly:
 Every deployment component follows the same structure:
 
 ```yaml
-apiVersion: <provider>.openmcf.org/<version>
+apiVersion: <provider>.planton.dev/<version>
 kind: <ComponentType>
 metadata:
   name: <resource-name>
@@ -106,7 +106,7 @@ status:
 
 **Why Protocol Buffers?**
 
-Unlike Kubernetes (which uses Go structs), OpenMCF uses Protocol Buffers to enable:
+Unlike Kubernetes (which uses Go structs), Planton uses Protocol Buffers to enable:
 
 - **Language Neutrality:** Auto-generate SDKs in Go, Java, Python, TypeScript, and more
 - **Beautiful Documentation:** Publish to Buf Schema Registry for instant, navigable documentation
@@ -122,7 +122,7 @@ message PostgresKubernetesSpec {
 }
 ```
 
-The `openmcf validate` command checks these rules **before** calling any cloud APIs, providing instant feedback.
+The `planton validate` command checks these rules **before** calling any cloud APIs, providing instant feedback.
 
 #### 2. IaC Modules: The "Recipes"
 
@@ -138,7 +138,7 @@ Different teams have different preferences and investments:
 - **Pulumi:** Real programming languages (Go, Python, TypeScript), better for complex logic, type safety
 - **Terraform/OpenTofu:** Mature ecosystem, HashiCorp Configuration Language, familiar to many DevOps teams
 
-OpenMCF doesn't force a choice—it supports both, maintaining feature parity between them.
+Planton doesn't force a choice—it supports both, maintaining feature parity between them.
 
 **Design Philosophy: Deliberately Simple**
 
@@ -158,7 +158,7 @@ The default modules are intentionally designed to be **Terraform-like** even whe
 
 Installation:
 ```bash
-brew install plantonhq/tap/openmcf
+brew install plantonhq/tap/planton
 ```
 
 **What the CLI does:**
@@ -175,16 +175,16 @@ brew install plantonhq/tap/openmcf
 
 ```bash
 # Validate a manifest (optional but recommended)
-openmcf validate --manifest postgres.yaml
+planton validate --manifest postgres.yaml
 
 # Deploy with Pulumi
-openmcf pulumi up --manifest postgres.yaml --stack org/project/env
+planton pulumi up --manifest postgres.yaml --stack org/project/env
 
 # Deploy with Terraform/OpenTofu
-openmcf tofu apply --manifest postgres.yaml
+planton tofu apply --manifest postgres.yaml
 
 # Override specific values (useful for CI/CD)
-openmcf pulumi up \
+planton pulumi up \
   --manifest postgres.yaml \
   --set spec.container.cpu=500m \
   --stack org/project/env
@@ -256,10 +256,10 @@ Provision and manage third-party SaaS platforms:
 ## Repository Structure
 
 ```
-openmcf/
+planton/
 ├── apis/                        # Protocol Buffer definitions
 │   └── org/
-│       └── openmcf/
+│       └── planton/
 │           ├── shared/          # Shared types and enums
 │           │   └── cloudresourcekind/
 │           │       └── cloud_resource_kind.proto  # Registry of all components
@@ -383,9 +383,9 @@ YAML Manifest → Parse → Unmarshal to Proto → Validate Rules → Deploy or 
 
 **Implementation:**
 - **Language:** Go
-- **Binary Distribution:** Homebrew (`brew install plantonhq/tap/openmcf`)
+- **Binary Distribution:** Homebrew (`brew install plantonhq/tap/planton`)
 - **Configuration:** Environment variables and flags
-- **Module Caching:** `~/.openmcf/modules/` (Git-based)
+- **Module Caching:** `~/.planton/modules/` (Git-based)
 
 **Dependencies:**
 - Git (required for cloning modules)
@@ -411,7 +411,7 @@ make install       # Install CLI locally
 
 ## Deployment Component Lifecycle
 
-OpenMCF provides a sophisticated lifecycle management system for deployment components. This system ensures that all components are consistently high-quality, well-documented, and production-ready.
+Planton provides a sophisticated lifecycle management system for deployment components. This system ensures that all components are consistently high-quality, well-documented, and production-ready.
 
 ### The Six Operations
 
@@ -458,7 +458,7 @@ OpenMCF provides a sophisticated lifecycle management system for deployment comp
 
 **Example:**
 ```bash
-@forge-openmcf-component MongodbAtlas --provider atlas
+@forge-planton-component MongodbAtlas --provider atlas
 ```
 
 ### 2. Audit: Assess Component Completeness
@@ -493,7 +493,7 @@ OpenMCF provides a sophisticated lifecycle management system for deployment comp
 
 **Example:**
 ```bash
-@audit-openmcf-component MongodbAtlas
+@audit-planton-component MongodbAtlas
 ```
 
 ### 3. Update: Enhance Existing Components
@@ -517,7 +517,7 @@ OpenMCF provides a sophisticated lifecycle management system for deployment comp
 
 **Example:**
 ```bash
-@update-openmcf-component MongodbAtlas --scenario fill-gaps
+@update-planton-component MongodbAtlas --scenario fill-gaps
 ```
 
 ### 4. Complete: Auto-Improve Workflow
@@ -544,7 +544,7 @@ OpenMCF provides a sophisticated lifecycle management system for deployment comp
 
 **Example:**
 ```bash
-@complete-openmcf-component MongodbAtlas
+@complete-planton-component MongodbAtlas
 ```
 
 ### 5. Fix: Targeted Fixes with Cascading Updates
@@ -570,7 +570,7 @@ OpenMCF provides a sophisticated lifecycle management system for deployment comp
 
 **Example:**
 ```bash
-@fix-openmcf-component GcpCertManagerCert \
+@fix-planton-component GcpCertManagerCert \
   --explain "primaryDomainName validation should allow wildcards like *.example.com"
 ```
 
@@ -593,10 +593,10 @@ OpenMCF provides a sophisticated lifecycle management system for deployment comp
 **Example:**
 ```bash
 # Preview
-@delete-openmcf-component ObsoleteComponent --dry-run
+@delete-planton-component ObsoleteComponent --dry-run
 
 # Delete with backup
-@delete-openmcf-component ObsoleteComponent --backup
+@delete-planton-component ObsoleteComponent --backup
 ```
 
 ### Ideal State Definition
@@ -618,10 +618,10 @@ This document defines:
 
 ### Kubernetes Resource Model (KRM)
 
-OpenMCF adopts the Kubernetes Resource Model as its API structure:
+Planton adopts the Kubernetes Resource Model as its API structure:
 
 ```yaml
-apiVersion: <provider>.openmcf.org/<version>
+apiVersion: <provider>.planton.dev/<version>
 kind: <ComponentType>
 metadata:
   name: <resource-name>
@@ -643,7 +643,7 @@ status:
 
 ### Protocol Buffers Over Go Structs
 
-**Kubernetes uses Go structs.** OpenMCF uses Protocol Buffers. Why?
+**Kubernetes uses Go structs.** Planton uses Protocol Buffers. Why?
 
 **Language Neutrality:**
 ```
@@ -675,7 +675,7 @@ message PostgresKubernetesSpec {
 
 2. **Pre-deployment validation** (CLI):
 ```bash
-openmcf validate --manifest config.yaml
+planton validate --manifest config.yaml
 # Catches errors before calling cloud APIs
 ```
 
@@ -689,7 +689,7 @@ openmcf validate --manifest config.yaml
 
 **Coverage is benchmarked against the provider, not trimmed below it.**
 
-For every cloud resource, OpenMCF covers the broad majority of what real users need -- the ~90% of the provider's surface that production deployments actually reach -- using the provider's own API as the floor for completeness, never the ceiling.
+For every cloud resource, Planton covers the broad majority of what real users need -- the ~90% of the provider's surface that production deployments actually reach -- using the provider's own API as the floor for completeness, never the ceiling.
 
 **Example: PostgreSQL on Kubernetes**
 
@@ -704,14 +704,14 @@ For every cloud resource, OpenMCF covers the broad majority of what real users n
 - Replication topologies
 - Fine-grained operator settings
 
-**OpenMCF's approach:**
+**Planton's approach:**
 - Default modules cover the real surface to the provider floor
 - Sensible defaults keep the common path simple
 - Genuinely beta/niche knobs are skipped with a recorded reason (or left to an escape hatch)
 
 ### Provider-Specific vs. Generic
 
-**OpenMCF is intentionally NOT a cloud abstraction layer.**
+**Planton is intentionally NOT a cloud abstraction layer.**
 
 **Example: Postgres Deployment**
 
@@ -728,7 +728,7 @@ Each has provider-specific configuration:
 **What's consistent:**
 - YAML structure (KRM)
 - Validation approach (proto-validate)
-- CLI commands (`openmcf pulumi up`)
+- CLI commands (`planton pulumi up`)
 - Deployment workflow (validate → deploy → outputs)
 
 **What's different:**
@@ -830,14 +830,14 @@ This reduces cognitive friction for engineers familiar with Terraform.
 
 The CLI exports the manifest as an environment variable:
 ```bash
-export OPENMCF_MANIFEST="$(cat manifest.yaml)"
+export PLANTON_MANIFEST="$(cat manifest.yaml)"
 ```
 
 Modules read this variable:
 
 **Pulumi (Go):**
 ```go
-manifestYaml := os.Getenv("OPENMCF_MANIFEST")
+manifestYaml := os.Getenv("PLANTON_MANIFEST")
 config := &PostgresKubernetes{}
 yaml.Unmarshal([]byte(manifestYaml), config)
 ```
@@ -879,7 +879,7 @@ Users override only what they need to customize.
 ### Command Structure
 
 ```
-openmcf
+planton
 ├── validate           # Validate manifest (proto-validate)
 ├── pulumi            # Pulumi commands
 │   ├── up            # Deploy/update
@@ -898,7 +898,7 @@ openmcf
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                   User runs CLI command                     │
-│     openmcf pulumi up --manifest config.yaml        │
+│     planton pulumi up --manifest config.yaml        │
 └────────────────────────┬────────────────────────────────────┘
                          │
                          ▼
@@ -926,7 +926,7 @@ openmcf
                          ▼
 ┌─────────────────────────────────────────────────────────────┐
 │ 4. Clone/Pull Module                                        │
-│    - Check cache: ~/.openmcf/modules/               │
+│    - Check cache: ~/.planton/modules/               │
 │    - Git clone (if not cached)                              │
 │    - Git pull (if cached)                                   │
 └────────────────────────┬────────────────────────────────────┘
@@ -934,7 +934,7 @@ openmcf
                          ▼
 ┌─────────────────────────────────────────────────────────────┐
 │ 5. Setup Environment                                        │
-│    - Export OPENMCF_MANIFEST=<yaml>                 │
+│    - Export PLANTON_MANIFEST=<yaml>                 │
 │    - CD to module directory                                 │
 └────────────────────────┬────────────────────────────────────┘
                          │
@@ -961,23 +961,23 @@ openmcf
 ```go
 // Internal registry
 var moduleRegistry = map[string]string{
-  "PostgresKubernetes": "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/postgreskubernetes/v1/iac",
-  "MongodbAtlas": "github.com/plantonhq/openmcf/apis/org/openmcf/provider/atlas/mongodbatlas/v1/iac",
-  "AwsRdsInstance": "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsrdsinstance/v1/iac",
+  "PostgresKubernetes": "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/postgreskubernetes/v1/iac",
+  "MongodbAtlas": "github.com/plantonhq/planton/apis/dev/planton/provider/atlas/mongodbatlas/v1/iac",
+  "AwsRdsInstance": "github.com/plantonhq/planton/apis/dev/planton/provider/aws/awsrdsinstance/v1/iac",
   // ... 100+ components
 }
 ```
 
 **Override with custom modules:**
 ```bash
-openmcf pulumi up \
+planton pulumi up \
   --manifest config.yaml \
   --module-url github.com/myorg/custom-postgres-module
 ```
 
 ### Module Caching
 
-**Location:** `~/.openmcf/modules/<kind>/`
+**Location:** `~/.planton/modules/<kind>/`
 
 **Flow:**
 1. CLI checks if module cached
@@ -997,7 +997,7 @@ openmcf pulumi up \
 ```go
 import (
   "github.com/bufbuild/protovalidate-go"
-  pb "github.com/plantonhq/openmcf/apis/..."
+  pb "github.com/plantonhq/planton/apis/..."
 )
 
 func validateManifest(manifestYaml string) error {
@@ -1040,7 +1040,7 @@ Research → Forge → Audit → (Complete) → Deploy & Test → Commit
 
 2. **Forge Phase**
    ```bash
-   @forge-openmcf-component MongodbAtlas --provider atlas
+   @forge-planton-component MongodbAtlas --provider atlas
    ```
    - Creates complete component (95-100% complete)
    - Proto definitions with validations
@@ -1050,7 +1050,7 @@ Research → Forge → Audit → (Complete) → Deploy & Test → Commit
 
 3. **Audit Phase**
    ```bash
-   @audit-openmcf-component MongodbAtlas
+   @audit-planton-component MongodbAtlas
    ```
    - Verify forge created everything
    - Check completion score (should be 95-100%)
@@ -1058,15 +1058,15 @@ Research → Forge → Audit → (Complete) → Deploy & Test → Commit
 
 4. **Complete Phase (if needed)**
    ```bash
-   @complete-openmcf-component MongodbAtlas
+   @complete-planton-component MongodbAtlas
    ```
    - Fill any remaining gaps
    - Re-audit to verify 100%
 
 5. **Local Testing**
    ```bash
-   cd apis/org/openmcf/provider/atlas/mongodbatlas/v1/iac/pulumi
-   export OPENMCF_MANIFEST="$(cat ../hack/manifest.yaml)"
+   cd apis/dev/planton/provider/atlas/mongodbatlas/v1/iac/pulumi
+   export PLANTON_MANIFEST="$(cat ../hack/manifest.yaml)"
    pulumi up
    ```
    - Test Pulumi module locally
@@ -1092,7 +1092,7 @@ Research → Forge → Audit → (Complete) → Deploy & Test → Commit
 
 ```bash
 # 1. Edit spec.proto
-vim apis/org/openmcf/provider/atlas/mongodbatlas/v1/spec.proto
+vim apis/dev/planton/provider/atlas/mongodbatlas/v1/spec.proto
 
 # 2. Add field with validation
 # message Spec {
@@ -1100,7 +1100,7 @@ vim apis/org/openmcf/provider/atlas/mongodbatlas/v1/spec.proto
 # }
 
 # 3. Propagate changes
-@update-openmcf-component MongodbAtlas --scenario proto-changed
+@update-planton-component MongodbAtlas --scenario proto-changed
 
 # This will:
 # - Regenerate proto stubs
@@ -1110,13 +1110,13 @@ vim apis/org/openmcf/provider/atlas/mongodbatlas/v1/spec.proto
 # - Add test for new validation rule
 
 # 4. Verify
-@audit-openmcf-component MongodbAtlas
+@audit-planton-component MongodbAtlas
 ```
 
 **Scenario 2: Fixing a Bug**
 
 ```bash
-@fix-openmcf-component GcpCertManagerCert \
+@fix-planton-component GcpCertManagerCert \
   --explain "primaryDomainName validation should allow wildcards like *.example.com"
 
 # This will:
@@ -1130,7 +1130,7 @@ vim apis/org/openmcf/provider/atlas/mongodbatlas/v1/spec.proto
 **Scenario 3: Refreshing Outdated Docs**
 
 ```bash
-@update-openmcf-component PostgresKubernetes --scenario refresh-docs
+@update-planton-component PostgresKubernetes --scenario refresh-docs
 
 # This will:
 # - Read current source code (proto, IaC)
@@ -1145,7 +1145,7 @@ vim apis/org/openmcf/provider/atlas/mongodbatlas/v1/spec.proto
 
 ```bash
 # 1. Audit modified components
-@audit-openmcf-component <ComponentName>
+@audit-planton-component <ComponentName>
 
 # 2. Ensure score ≥ 95%
 # If score dropped, investigate and fix
@@ -1176,10 +1176,10 @@ for component in "${components[@]}"; do
   echo "Processing $component..."
   
   # Auto-improve to 95%
-  @complete-openmcf-component "$component"
+  @complete-planton-component "$component"
   
   # Verify
-  @audit-openmcf-component "$component"
+  @audit-planton-component "$component"
 done
 
 # Commit all improvements
@@ -1205,8 +1205,8 @@ git push origin main
 
 ```bash
 # Fork
-git clone https://github.com/plantonhq/openmcf
-cd openmcf/apis/org/openmcf/provider/aws/awsrdsinstance/v1/iac/pulumi
+git clone https://github.com/plantonhq/planton
+cd planton/apis/dev/planton/provider/aws/awsrdsinstance/v1/iac/pulumi
 # Edit main.go to add organizational defaults
 
 # Push to your private repo
@@ -1214,7 +1214,7 @@ git remote add myorg git@github.com:myorg/custom-aws-rds-module.git
 git push myorg main
 
 # Use custom module
-openmcf pulumi up \
+planton pulumi up \
   --manifest rds.yaml \
   --module-url github.com/myorg/custom-aws-rds-module
 ```
@@ -1224,22 +1224,22 @@ openmcf pulumi up \
 **Scenario:** You're building an internal self-service portal where developers request databases.
 
 **Approach:**
-1. Import OpenMCF proto SDKs
+1. Import Planton proto SDKs
 2. Use strongly-typed APIs in your tool
 3. Generate manifests from user input
-4. Call OpenMCF CLI programmatically
+4. Call Planton CLI programmatically
 
 **Example (Python):**
 
 ```python
-from openmcf.apis.org.openmcf.provider.kubernetes.workload.postgreskubernetes.v1 import api_pb2
+from planton.apis.dev.planton.provider.kubernetes.workload.postgreskubernetes.v1 import api_pb2
 import yaml
 import subprocess
 
 def create_database_from_ui(user_input):
     # Create strongly-typed config
     config = api_pb2.PostgresKubernetes()
-    config.api_version = "kubernetes.openmcf.org/v1"
+    config.api_version = "kubernetes.planton.dev/v1"
     config.kind = "PostgresKubernetes"
     config.metadata.name = user_input["name"]
     config.metadata.org = user_input["org"]
@@ -1257,7 +1257,7 @@ def create_database_from_ui(user_input):
     
     # Call CLI
     subprocess.run([
-        "openmcf", "pulumi", "up",
+        "planton", "pulumi", "up",
         "--manifest", "manifest.yaml",
         "--stack", f"{user_input['org']}/{user_input['project']}/{user_input['env']}"
     ])
@@ -1267,7 +1267,7 @@ def create_database_from_ui(user_input):
 - Don't reinvent schemas
 - Get validation for free
 - Type safety in your language
-- Reuse OpenMCF deployment logic
+- Reuse Planton deployment logic
 
 ### Pattern 3: CI/CD Integration
 
@@ -1295,20 +1295,20 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       
-      - name: Install OpenMCF
+      - name: Install Planton
         run: |
-          brew install plantonhq/tap/openmcf
+          brew install plantonhq/tap/planton
       
       - name: Validate Manifests
         run: |
           for manifest in infrastructure/*.yaml; do
-            openmcf validate --manifest $manifest
+            planton validate --manifest $manifest
           done
       
       - name: Deploy
         run: |
           for manifest in infrastructure/*.yaml; do
-            openmcf pulumi up \
+            planton pulumi up \
               --manifest $manifest \
               --stack prod \
               --yes  # Non-interactive
@@ -1336,10 +1336,10 @@ import os
 import yaml
 import pulumi
 import pulumi_kubernetes as k8s
-from openmcf.apis.org.openmcf.provider.kubernetes.workload.postgreskubernetes.v1 import api_pb2
+from planton.apis.dev.planton.provider.kubernetes.workload.postgreskubernetes.v1 import api_pb2
 
 # Read manifest from environment
-manifest_yaml = os.getenv("OPENMCF_MANIFEST")
+manifest_yaml = os.getenv("PLANTON_MANIFEST")
 manifest_dict = yaml.safe_load(manifest_yaml)
 
 # Parse into proto
@@ -1383,7 +1383,7 @@ postgres = k8s.helm.v3.Release(
 
 Use the Forge workflow to create new cloud resources:
 ```bash
-@forge-openmcf-component <ComponentName> --provider <provider>
+@forge-planton-component <ComponentName> --provider <provider>
 ```
 
 Submit PRs with:
@@ -1396,7 +1396,7 @@ Submit PRs with:
 
 Use the Complete workflow to bring components to 100%:
 ```bash
-@complete-openmcf-component <ComponentName>
+@complete-planton-component <ComponentName>
 ```
 
 Submit PRs with:
@@ -1409,7 +1409,7 @@ Submit PRs with:
 
 Use the Fix workflow for targeted improvements:
 ```bash
-@fix-openmcf-component <ComponentName> --explain "<fix description>"
+@fix-planton-component <ComponentName> --explain "<fix description>"
 ```
 
 Submit PRs with:
@@ -1466,8 +1466,8 @@ brew install opentofu
 brew install make
 
 # Clone repository
-git clone https://github.com/plantonhq/openmcf.git
-cd openmcf
+git clone https://github.com/plantonhq/planton.git
+cd planton
 ```
 
 **Build and Test:**
@@ -1487,7 +1487,7 @@ make install
 
 **Verify Installation:**
 ```bash
-openmcf version
+planton version
 ```
 
 ### Testing Your Changes
@@ -1496,7 +1496,7 @@ openmcf version
 
 Test validation rules:
 ```bash
-cd apis/org/openmcf/provider/atlas/mongodbatlas/v1
+cd apis/dev/planton/provider/atlas/mongodbatlas/v1
 go test -v
 ```
 
@@ -1504,8 +1504,8 @@ go test -v
 
 Test IaC modules locally:
 ```bash
-cd apis/org/openmcf/provider/atlas/mongodbatlas/v1/iac/pulumi
-export OPENMCF_MANIFEST="$(cat ../hack/manifest.yaml)"
+cd apis/dev/planton/provider/atlas/mongodbatlas/v1/iac/pulumi
+export PLANTON_MANIFEST="$(cat ../hack/manifest.yaml)"
 pulumi preview
 ```
 
@@ -1513,9 +1513,9 @@ pulumi preview
 
 Test full deployment workflow:
 ```bash
-openmcf validate --manifest test.yaml
-openmcf pulumi up --manifest test.yaml --stack test
-openmcf pulumi destroy --manifest test.yaml --stack test
+planton validate --manifest test.yaml
+planton pulumi up --manifest test.yaml --stack test
+planton pulumi destroy --manifest test.yaml --stack test
 ```
 
 ### Getting Help
@@ -1526,7 +1526,7 @@ openmcf pulumi destroy --manifest test.yaml --stack test
 - Lifecycle operation READMEs (`_rules/deployment-component/*/README.md`)
 
 **Examples:**
-- Browse complete components (`apis/org/openmcf/provider/`)
+- Browse complete components (`apis/dev/planton/provider/`)
 - Run audit on gold-standard components
 - Compare incomplete vs complete components
 
@@ -1539,12 +1539,12 @@ openmcf pulumi destroy --manifest test.yaml --stack test
 
 ## Summary
 
-OpenMCF is a multi-cloud deployment framework that provides **consistency without abstraction**. It brings the Kubernetes Resource Model philosophy to the entire cloud infrastructure landscape, offering:
+Planton is a multi-cloud deployment framework that provides **consistency without abstraction**. It brings the Kubernetes Resource Model philosophy to the entire cloud infrastructure landscape, offering:
 
 **Core Value:**
 - ✅ Standardized YAML manifests (KRM structure)
 - ✅ Pre-deployment validation (proto-validate)
-- ✅ Single CLI for all clouds (`openmcf`)
+- ✅ Single CLI for all clouds (`planton`)
 - ✅ Provider-specific power (no artificial abstraction)
 - ✅ Dual IaC support (Pulumi and Terraform)
 - ✅ Language-neutral APIs (Protocol Buffers)
@@ -1578,12 +1578,12 @@ OpenMCF is a multi-cloud deployment framework that provides **consistency withou
 
 **Getting Started:**
 ```bash
-brew install plantonhq/tap/openmcf
-openmcf version
+brew install plantonhq/tap/planton
+planton version
 ```
 
 **Next Steps:**
-- Browse deployment components in `apis/org/openmcf/provider/`
+- Browse deployment components in `apis/dev/planton/provider/`
 - Read lifecycle management guides in `_rules/deployment-component/`
 - Try deploying a component locally
 - Contribute new components or improvements

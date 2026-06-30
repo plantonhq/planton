@@ -12,7 +12,7 @@ Deploys an Apache Kafka cluster on Kubernetes using the Strimzi operator, with Z
 
 ## What Gets Created
 
-When you deploy a KubernetesKafka resource, OpenMCF provisions:
+When you deploy a KubernetesKafka resource, Planton provisions:
 
 - **Namespace** — created only when `createNamespace` is `true`
 - **Strimzi Kafka Cluster** — a `Kafka` custom resource with configurable broker replicas, resource limits, JBOD persistent storage, simple authorization, and SCRAM-SHA-512 authentication on all listeners
@@ -28,7 +28,7 @@ When you deploy a KubernetesKafka resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
 - **Strimzi Kafka Operator** installed in the cluster (provides `Kafka`, `KafkaTopic`, and `KafkaUser` CRDs)
 - **cert-manager** installed with a `ClusterIssuer` matching the ingress domain, required when ingress is enabled
@@ -41,15 +41,15 @@ When you deploy a KubernetesKafka resource, OpenMCF provisions:
 Create a file `kafka.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesKafka
 metadata:
   name: my-kafka
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesKafka.my-kafka
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesKafka.my-kafka
 spec:
   namespace: kafka
   createNamespace: true
@@ -58,7 +58,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f kafka.yaml
+planton apply -f kafka.yaml
 ```
 
 This creates a single-broker Kafka cluster with a single Zookeeper node, 1Gi persistent storage for each, SCRAM-SHA-512 authentication, an admin super-user, and the Kowl UI enabled by default.
@@ -112,15 +112,15 @@ This creates a single-broker Kafka cluster with a single Zookeeper node, 1Gi per
 A minimal single-broker Kafka cluster for development with reduced resources and no external access:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesKafka
 metadata:
   name: dev-kafka
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesKafka.dev-kafka
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesKafka.dev-kafka
 spec:
   namespace: dev-kafka
   createNamespace: true
@@ -154,15 +154,15 @@ spec:
 A multi-broker production cluster with Schema Registry, Kafka UI, TLS ingress, and increased storage:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesKafka
 metadata:
   name: prod-kafka
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesKafka.prod-kafka
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesKafka.prod-kafka
 spec:
   namespace: kafka-prod
   kafkaTopics:
@@ -218,18 +218,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed namespace instead of hardcoding the name:
+Reference an Planton-managed namespace instead of hardcoding the name:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesKafka
 metadata:
   name: shared-kafka
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.KubernetesKafka.shared-kafka
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.KubernetesKafka.shared-kafka
 spec:
   namespace:
     valueFrom:

@@ -7,15 +7,15 @@ order: 40
 
 # Pulumi Commands
 
-The `openmcf pulumi` command group runs infrastructure operations using Pulumi as the IaC engine. Each deployment component in OpenMCF ships with a Pulumi module written in Go that translates the manifest spec into cloud resources.
+The `planton pulumi` command group runs infrastructure operations using Pulumi as the IaC engine. Each deployment component in Planton ships with a Pulumi module written in Go that translates the manifest spec into cloud resources.
 
 ## Prerequisites
 
 Pulumi commands require one of these execution modes:
 
 - **Pre-built binary** (default): The CLI downloads pre-built Pulumi module binaries from GitHub releases. No local toolchain required.
-- **Staging area**: If no pre-built binary is available, the CLI uses the cloned OpenMCF repository at `~/.openmcf/staging/openmcf/` and builds the module. Requires Go installed.
-- **Local module** (`--local-module`): Points to a local checkout of the OpenMCF repository for development.
+- **Staging area**: If no pre-built binary is available, the CLI uses the cloned Planton repository at `~/.planton/staging/planton/` and builds the module. Requires Go installed.
+- **Local module** (`--local-module`): Points to a local checkout of the Planton repository for development.
 
 Pulumi state must be stored in a Pulumi backend. Configure your backend with `PULUMI_BACKEND_URL` or `pulumi login` before running commands.
 
@@ -26,8 +26,8 @@ Pulumi state must be stored in a Pulumi backend. Configure your backend with `PU
 Create a new Pulumi stack for the resource defined in the manifest. Extracts the stack FQDN from the manifest labels and creates the stack in your configured Pulumi backend.
 
 ```bash
-openmcf pulumi init --manifest database.yaml
-openmcf pulumi init --manifest database.yaml --stack my-org/my-project/dev
+planton pulumi init --manifest database.yaml
+planton pulumi init --manifest database.yaml --stack my-org/my-project/dev
 ```
 
 If `--stack` is not provided, the stack FQDN is derived from the manifest's metadata labels.
@@ -37,9 +37,9 @@ If `--stack` is not provided, the stack FQDN is derived from the manifest's meta
 Preview infrastructure changes without applying them. Shows what resources would be created, updated, or deleted.
 
 ```bash
-openmcf pulumi preview --manifest database.yaml
-openmcf pulumi preview --manifest database.yaml --diff
-openmcf pulumi preview --manifest api.yaml --set spec.container.replicas=5
+planton pulumi preview --manifest database.yaml
+planton pulumi preview --manifest database.yaml --diff
+planton pulumi preview --manifest api.yaml --set spec.container.replicas=5
 ```
 
 The `--diff` flag shows detailed property-level diffs for each resource change.
@@ -49,10 +49,10 @@ The `--diff` flag shows detailed property-level diffs for each resource change.
 Deploy infrastructure by creating, updating, or replacing resources to match the manifest spec.
 
 ```bash
-openmcf pulumi update --manifest database.yaml
-openmcf pulumi up --manifest database.yaml                    # alias
-openmcf pulumi up --manifest database.yaml --yes              # skip confirmation
-openmcf pulumi up --manifest api.yaml --set spec.version=v2
+planton pulumi update --manifest database.yaml
+planton pulumi up --manifest database.yaml                    # alias
+planton pulumi up --manifest database.yaml --yes              # skip confirmation
+planton pulumi up --manifest api.yaml --set spec.version=v2
 ```
 
 **Alias**: `up`
@@ -64,8 +64,8 @@ By default, `update` shows a preview and prompts for confirmation before proceed
 Tear down all resources managed by the stack. The resources defined in the manifest are deleted from the cloud provider.
 
 ```bash
-openmcf pulumi destroy --manifest database.yaml
-openmcf pulumi destroy --manifest database.yaml --yes
+planton pulumi destroy --manifest database.yaml
+planton pulumi destroy --manifest database.yaml --yes
 ```
 
 This removes cloud resources but preserves the stack metadata. To also remove the stack, run `delete` after `destroy`.
@@ -75,9 +75,9 @@ This removes cloud resources but preserves the stack metadata. To also remove th
 Remove the Pulumi stack metadata from the backend. This permanently deletes the stack's configuration and state.
 
 ```bash
-openmcf pulumi delete --manifest database.yaml
-openmcf pulumi rm --manifest database.yaml                    # alias
-openmcf pulumi delete --manifest database.yaml --force
+planton pulumi delete --manifest database.yaml
+planton pulumi rm --manifest database.yaml                    # alias
+planton pulumi delete --manifest database.yaml --force
 ```
 
 **Alias**: `rm`
@@ -89,8 +89,8 @@ This command does NOT destroy cloud resources. If the stack still has deployed r
 Cancel an in-progress Pulumi stack operation. Use this when a stack is locked due to a crashed or interrupted operation.
 
 ```bash
-openmcf pulumi cancel --manifest database.yaml
-openmcf pulumi cancel --manifest database.yaml --stack my-org/my-project/dev
+planton pulumi cancel --manifest database.yaml
+planton pulumi cancel --manifest database.yaml --stack my-org/my-project/dev
 ```
 
 This unlocks the stack so you can run other operations. It does not roll back any changes that were partially applied.
@@ -100,15 +100,15 @@ This unlocks the stack so you can run other operations. It does not roll back an
 Sync the Pulumi state with the actual cloud state without modifying any resources.
 
 ```bash
-openmcf pulumi refresh --manifest database.yaml
-openmcf pulumi refresh --manifest database.yaml --diff
+planton pulumi refresh --manifest database.yaml
+planton pulumi refresh --manifest database.yaml --diff
 ```
 
 This queries the cloud provider for the current state of all managed resources and updates the state file to match reality. No resources are created, modified, or deleted.
 
 ## Flags
 
-All `openmcf pulumi` subcommands inherit persistent flags from the parent command. Unlike [unified commands](./unified-commands), direct Pulumi commands register `--manifest` without the `-f` shorthand. Use `--manifest` for the full flag name.
+All `planton pulumi` subcommands inherit persistent flags from the parent command. Unlike [unified commands](./unified-commands), direct Pulumi commands register `--manifest` without the `-f` shorthand. Use `--manifest` for the full flag name.
 
 ### Manifest and Input
 
@@ -142,27 +142,27 @@ All `openmcf pulumi` subcommands inherit persistent flags from the parent comman
 
 ## Typical Workflow
 
-A standard Pulumi deployment lifecycle with OpenMCF:
+A standard Pulumi deployment lifecycle with Planton:
 
 ```bash
 # 1. Initialize the stack
-openmcf pulumi init --manifest database.yaml
+planton pulumi init --manifest database.yaml
 
 # 2. Preview what will be created
-openmcf pulumi preview --manifest database.yaml
+planton pulumi preview --manifest database.yaml
 
 # 3. Deploy
-openmcf pulumi up --manifest database.yaml --yes
+planton pulumi up --manifest database.yaml --yes
 
 # 4. Make changes to the manifest, then preview and update
-openmcf pulumi preview --manifest database.yaml --diff
-openmcf pulumi up --manifest database.yaml --yes
+planton pulumi preview --manifest database.yaml --diff
+planton pulumi up --manifest database.yaml --yes
 
 # 5. When done, tear down resources
-openmcf pulumi destroy --manifest database.yaml --yes
+planton pulumi destroy --manifest database.yaml --yes
 
 # 6. Remove the stack metadata
-openmcf pulumi delete --manifest database.yaml
+planton pulumi delete --manifest database.yaml
 ```
 
 ## What's Next

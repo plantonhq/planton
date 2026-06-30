@@ -12,7 +12,7 @@ Provisions an SSL/TLS certificate on DigitalOcean using either a fully-managed L
 
 ## What Gets Created
 
-When you deploy a DigitalOceanCertificate resource, OpenMCF provisions:
+When you deploy a DigitalOceanCertificate resource, Planton provisions:
 
 - **SSL/TLS Certificate** -- a `digitalocean_certificate` resource of type `lets_encrypt` or `custom`, depending on which branch of the `certificateSource` oneof is populated
 - **Automatic DNS-01 Validation** (Let's Encrypt only) -- DigitalOcean creates the required `_acme-challenge` TXT records and handles renewal every 90 days; this path requires DNS to be managed by DigitalOcean
@@ -20,7 +20,7 @@ When you deploy a DigitalOceanCertificate resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **DigitalOcean credentials** configured via environment variables (`DIGITALOCEAN_TOKEN`) or OpenMCF provider config
+- **DigitalOcean credentials** configured via environment variables (`DIGITALOCEAN_TOKEN`) or Planton provider config
 - **DigitalOcean-managed DNS** for the target domain(s) if using the `letsEncrypt` path (required for the DNS-01 challenge)
 - **Valid PEM-encoded certificate materials** if using the `custom` path: leaf certificate, private key, and (recommended) the intermediate certificate chain
 
@@ -29,15 +29,15 @@ When you deploy a DigitalOceanCertificate resource, OpenMCF provisions:
 Create a file `cert.yaml`:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanCertificate
 metadata:
   name: my-cert
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.DigitalOceanCertificate.my-cert
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.DigitalOceanCertificate.my-cert
 spec:
   certificateName: my-cert
   type: letsEncrypt
@@ -49,7 +49,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f cert.yaml
+planton apply -f cert.yaml
 ```
 
 This requests a free, auto-renewing Let's Encrypt certificate for `example.com`. DigitalOcean performs DNS-01 validation automatically, and the certificate is ready to attach to a Load Balancer within seconds.
@@ -93,15 +93,15 @@ This requests a free, auto-renewing Let's Encrypt certificate for `example.com`.
 The minimal Let's Encrypt configuration for a single domain:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanCertificate
 metadata:
   name: app-cert
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.DigitalOceanCertificate.app-cert
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.DigitalOceanCertificate.app-cert
 spec:
   certificateName: app-cert
   type: letsEncrypt
@@ -117,15 +117,15 @@ spec:
 A certificate covering the apex domain, a `www` subdomain, and a wildcard for all subdomains under `staging`:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanCertificate
 metadata:
   name: multi-domain-cert
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.DigitalOceanCertificate.multi-domain-cert
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.DigitalOceanCertificate.multi-domain-cert
 spec:
   certificateName: multi-domain-cert
   type: letsEncrypt
@@ -147,15 +147,15 @@ All listed domains must have their DNS managed by DigitalOcean. Wildcard entries
 Uploading a commercially-issued certificate (e.g., an EV certificate from DigiCert) for a domain whose DNS is hosted externally:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanCertificate
 metadata:
   name: ev-cert
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.DigitalOceanCertificate.ev-cert
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.DigitalOceanCertificate.ev-cert
 spec:
   certificateName: ev-cert-2026
   type: custom

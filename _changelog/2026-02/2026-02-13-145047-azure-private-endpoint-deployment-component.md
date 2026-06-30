@@ -71,7 +71,7 @@ azureprivateendpoint/v1/
 The `private_connection_resource_id` field is the second polymorphic StringValueOrRef in the Azure provider (after AzureUserAssignedIdentity's `scope`). It has no `default_kind` because a private endpoint can connect to any Azure service:
 
 ```protobuf
-org.openmcf.shared.foreignkey.v1.StringValueOrRef private_connection_resource_id = 5 [
+dev.planton.shared.foreignkey.v1.StringValueOrRef private_connection_resource_id = 5 [
   (buf.validate.field).required = true
 ];
 ```

@@ -12,7 +12,7 @@ Added the AliCloudFunction deployment component -- manages Function Compute v3 f
 ## What Was Created
 
 ### API Definition
-- `apis/org/openmcf/provider/alicloud/alicloudfunction/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
+- `apis/dev/planton/provider/alicloud/alicloudfunction/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
 - Registered `AliCloudFunction = 3110` in `CloudResourceKind` enum under a new Serverless category
 - 12 protobuf message types covering the function spec and all nested configurations (code, VPC, logging, custom container, custom runtime, health check, lifecycle hooks, NAS, GPU)
 
@@ -33,7 +33,7 @@ Added the AliCloudFunction deployment component -- manages Function Compute v3 f
 - **Renamed to AliCloudFunction**: T02 used `AliCloudFcFunction`; simplified to `AliCloudFunction` since FC is an internal service abbreviation. ID prefix `acfc` retained.
 - **FC v3 confirmed**: DD04 fallback to v2 was not needed -- both TF (`alicloud_fcv3_function`) and Pulumi (`fc.V3Function`) fully support v3.
 - **Significantly expanded spec vs T02**: T02 had ~10 fields; actual spec has 24 top-level fields and 12 message types covering FC v3's full capability surface (custom containers, custom runtimes, GPU, NAS, lifecycle hooks).
-- **Removed options.proto import**: FC v3 defaults are provider-computed (dynamic based on memory/cpu ratio), not static -- no `(org.openmcf.shared.options.default)` annotations.
+- **Removed options.proto import**: FC v3 defaults are provider-computed (dynamic based on memory/cpu ratio), not static -- no `(dev.planton.shared.options.default)` annotations.
 - **Triggers not bundled**: Per DD07, triggers have independent lifecycles and varied event sources. They are not bundled with the function.
 - **Excluded niche fields**: `oss_mount_config`, `custom_dns`, `session_affinity`, `idle_timeout`, `invocation_restriction`, `tracing_config`, `instance_isolation_mode` -- can be added later without breaking changes.
 - **Shared AliCloudFunctionHealthCheckConfig**: Both custom container and custom runtime use the same health check proto message; Pulumi SDK has separate types but the fields are identical.

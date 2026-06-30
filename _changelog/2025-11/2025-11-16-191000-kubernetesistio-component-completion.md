@@ -27,7 +27,7 @@ The KubernetesIstio component was at 68.86% completion with several critical gap
 
 ## Solution / What's New
 
-Completed all missing components following OpenMCF standards, with emphasis on proper documentation and full IaC implementation for both tools.
+Completed all missing components following Planton standards, with emphasis on proper documentation and full IaC implementation for both tools.
 
 ### Key Changes
 
@@ -240,7 +240,7 @@ output "ingress_endpoint" { value = local.ingress_endpoint }
 
 ### API Changes ⚠️ **Requires Upstream Action**
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesistio/v1/spec.proto`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesistio/v1/spec.proto`
 
 **Changed Lines**: 10-13, 20-23
 
@@ -253,7 +253,7 @@ message KubernetesIstioSpec {
 
 message KubernetesIstioSpecContainer {
   // The CPU and memory resources allocated to the GitLab container.
-  org.openmcf.shared.kubernetes.ContainerResources resources = 1 [...]
+  dev.planton.shared.kubernetes.ContainerResources resources = 1 [...]
 }
 ```
 
@@ -266,7 +266,7 @@ message KubernetesIstioSpec {
 
 message KubernetesIstioSpecContainer {
   // The CPU and memory resources allocated to the Istio control plane (istiod) container.
-  org.openmcf.shared.kubernetes.ContainerResources resources = 1 [...]
+  dev.planton.shared.kubernetes.ContainerResources resources = 1 [...]
 }
 ```
 
@@ -332,7 +332,7 @@ gomega.Expect(err).NotTo(gomega.BeNil())
 
 **Execution**:
 ```bash
-$ cd apis/org/openmcf/provider/kubernetes/kubernetesistio/v1
+$ cd apis/dev/planton/provider/kubernetes/kubernetesistio/v1
 $ go test -v
 
 Running Suite: KubernetesIstioSpec Validation Suite
@@ -348,7 +348,7 @@ Component can be tested with:
 
 **File**: `iac/hack/manifest.yaml`
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesIstio
 metadata:
   name: test-istio
@@ -400,7 +400,7 @@ Potential improvements for future iterations:
 ### Basic Deployment
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesIstio
 metadata:
   name: main-istio

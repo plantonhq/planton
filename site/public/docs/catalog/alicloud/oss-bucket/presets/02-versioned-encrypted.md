@@ -35,7 +35,7 @@ This preset creates a production-grade OSS bucket with zone-redundant storage (Z
 |-------------|-------------|---------------|
 | `<alibaba-cloud-region>` | Alibaba Cloud region code (e.g., `cn-hangzhou`, `cn-shanghai`) | Your deployment region strategy |
 | `<globally-unique-bucket-name>` | Bucket name (3-63 chars, globally unique) | Choose a name with your org prefix (e.g., `myorg-prod-platform-data`) |
-| `<your-org>` | Organization identifier | Your OpenMCF organization name |
+| `<your-org>` | Organization identifier | Your Planton organization name |
 | `<your-team>` | Team or business unit | Your organizational structure |
 | `<your-cost-center>` | Cost center code | Your finance team |
 

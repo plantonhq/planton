@@ -10,11 +10,11 @@ Added AwsKinesisFirehose (R17) -- a Kinesis Data Firehose delivery stream compon
 
 ## Problem Statement / Motivation
 
-Kinesis Data Firehose is the standard AWS service for loading streaming data into storage and analytics destinations without writing custom consumer code. The OpenMCF AWS provider lacked this component, leaving a gap in data pipeline coverage. With AwsKinesisStream (R16) and AwsKinesisStreamConsumer (R16a) already implemented, Firehose completes the Kinesis service family and enables end-to-end streaming data pipelines via infra charts.
+Kinesis Data Firehose is the standard AWS service for loading streaming data into storage and analytics destinations without writing custom consumer code. The Planton AWS provider lacked this component, leaving a gap in data pipeline coverage. With AwsKinesisStream (R16) and AwsKinesisStreamConsumer (R16a) already implemented, Firehose completes the Kinesis service family and enables end-to-end streaming data pipelines via infra charts.
 
 ### Pain Points
 
-- No way to deploy managed streaming ETL pipelines through OpenMCF
+- No way to deploy managed streaming ETL pipelines through Planton
 - Users had to manually configure complex Firehose delivery streams with 9 possible destination types
 - Missing the bridge between Kinesis Data Streams (source) and storage/analytics destinations (S3, OpenSearch, Redshift)
 
@@ -70,7 +70,7 @@ Extended S3 has additional sub-messages for dynamic partitioning, data format co
 
 ### File Metrics
 
-- **43 files** in `apis/org/openmcf/provider/aws/awskinesisfirehose/v1/`
+- **43 files** in `apis/dev/planton/provider/aws/awskinesisfirehose/v1/`
 - **51 validation tests** (21 happy path + 26 failure scenarios + 4 API envelope)
 - **8 Pulumi Go files** (main, locals, outputs, delivery_stream, extended_s3, opensearch, http_endpoint, redshift, processing)
 - **5 Terraform files** (main, locals, outputs, variables, provider)

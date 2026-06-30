@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsserverlesselasticache.v1;
+
+import "dev/planton/provider/aws/awsserverlesselasticache/v1/api.proto";
+import "dev/planton/provider/aws/provider.proto";
+
+// aws-serverless-elasticache stack-input
+message AwsServerlessElasticacheStackInput {
+  // target cloud-resource
+  AwsServerlessElasticache target = 1;
+  // provider-credential
+  dev.planton.provider.aws.AwsProviderConfig provider_config = 2;
+}

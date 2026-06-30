@@ -6,7 +6,7 @@ go_library(
         "backend.go",
         "provisioner.go",
     ],
-    importpath = "github.com/plantonhq/openmcf/internal/cli/prompt",
+    importpath = "github.com/plantonhq/planton/internal/cli/prompt",
     visibility = ["//:__subpackages__"],
     deps = [
         "//internal/cli/ui",

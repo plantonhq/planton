@@ -12,7 +12,7 @@ Deploys an Azure Key Vault with configurable SKU tier, RBAC authorization, purge
 
 ## What Gets Created
 
-When you deploy an AzureKeyVault resource, OpenMCF provisions:
+When you deploy an AzureKeyVault resource, Planton provisions:
 
 - **Key Vault** — a `keyvault.KeyVault` resource in the specified region and resource group, configured with the chosen SKU tier, RBAC authorization, purge protection, and soft delete retention
 - **Network ACLs** — default-deny network rules with optional IP allowlists, VNet subnet rules, and Azure trusted services bypass
@@ -21,7 +21,7 @@ When you deploy an AzureKeyVault resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Resource Group** where the vault will be created (can reference an AzureResourceGroup resource)
 - **Network planning** — know which IP ranges and/or VNet subnets need vault access if restricting with network ACLs
 
@@ -30,15 +30,15 @@ When you deploy an AzureKeyVault resource, OpenMCF provisions:
 Create a file `keyvault.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureKeyVault
 metadata:
   name: my-vault
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureKeyVault.my-vault
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureKeyVault.my-vault
 spec:
   region: eastus
   resourceGroup: my-rg
@@ -47,7 +47,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f keyvault.yaml
+planton apply -f keyvault.yaml
 ```
 
 This creates a Standard-tier Key Vault with RBAC authorization enabled, purge protection on, 90-day soft delete retention, and default-deny network ACLs that bypass Azure trusted services.
@@ -82,15 +82,15 @@ This creates a Standard-tier Key Vault with RBAC authorization enabled, purge pr
 A vault for development with network ACLs set to allow all traffic:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureKeyVault
 metadata:
   name: dev-vault
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureKeyVault.dev-vault
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureKeyVault.dev-vault
 spec:
   region: eastus
   resourceGroup: dev-rg
@@ -106,15 +106,15 @@ spec:
 A production vault with purge protection, restricted network access from office IPs and CI/CD runners, and pre-created secret placeholders:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureKeyVault
 metadata:
   name: prod-vault
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureKeyVault.prod-vault
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureKeyVault.prod-vault
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -139,15 +139,15 @@ spec:
 A Premium-tier vault with HSM-backed keys for compliance workloads, restricted to specific VNet subnets:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureKeyVault
 metadata:
   name: compliance-vault
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureKeyVault.compliance-vault
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureKeyVault.compliance-vault
 spec:
   region: westeurope
   resourceGroup: compliance-rg
@@ -169,18 +169,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed resource group instead of hardcoding the name:
+Reference an Planton-managed resource group instead of hardcoding the name:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureKeyVault
 metadata:
   name: ref-vault
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureKeyVault.ref-vault
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureKeyVault.ref-vault
 spec:
   region: eastus
   resourceGroup:

@@ -12,7 +12,7 @@ Deploys a DNS zone (domain) on DigitalOcean with optional inline DNS records. Th
 
 ## What Gets Created
 
-When you deploy a DigitalOceanDnsZone resource, OpenMCF provisions:
+When you deploy a DigitalOceanDnsZone resource, Planton provisions:
 
 - **DNS Zone (Domain)** -- a `digitalocean_domain` resource registered under the specified `domainName`
 - **DNS Records** -- one `digitalocean_record` resource for each value in each entry of the `records` list; records with multiple values (e.g., round-robin A records) expand into separate DigitalOcean record resources
@@ -20,7 +20,7 @@ When you deploy a DigitalOceanDnsZone resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **DigitalOcean credentials** configured via environment variables or OpenMCF provider config
+- **DigitalOcean credentials** configured via environment variables or Planton provider config
 - **A registered domain** at a third-party registrar (Namecheap, Google Domains, Cloudflare Registrar, etc.) with nameservers pointed to `ns1.digitalocean.com`, `ns2.digitalocean.com`, and `ns3.digitalocean.com`
 - **DNSSEC disabled** at the registrar before delegating to DigitalOcean nameservers (DigitalOcean does not support DNSSEC; leaving it enabled will cause resolution failures)
 
@@ -29,15 +29,15 @@ When you deploy a DigitalOceanDnsZone resource, OpenMCF provisions:
 Create a file `dns-zone.yaml`:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanDnsZone
 metadata:
   name: my-zone
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.DigitalOceanDnsZone.my-zone
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.DigitalOceanDnsZone.my-zone
 spec:
   domainName: example.com
 ```
@@ -45,7 +45,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f dns-zone.yaml
+planton apply -f dns-zone.yaml
 ```
 
 This creates a DNS zone for `example.com` on DigitalOcean with no inline records. DigitalOcean automatically provisions default NS and SOA records for the zone.
@@ -80,15 +80,15 @@ This creates a DNS zone for `example.com` on DigitalOcean with no inline records
 Register a domain on DigitalOcean DNS with no inline records. DigitalOcean creates default NS and SOA records automatically.
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanDnsZone
 metadata:
   name: bare-zone
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.DigitalOceanDnsZone.bare-zone
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.DigitalOceanDnsZone.bare-zone
 spec:
   domainName: bare-zone.dev
 ```
@@ -98,15 +98,15 @@ spec:
 A zone with apex and `www` A records pointing to the same IP address, plus a CNAME for the `api` subdomain:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanDnsZone
 metadata:
   name: web-app
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.DigitalOceanDnsZone.web-app
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.DigitalOceanDnsZone.web-app
 spec:
   domainName: web-app.io
   records:
@@ -132,15 +132,15 @@ spec:
 A production zone with web records, Google Workspace MX, SPF/DMARC TXT records, and a CAA policy restricting certificate issuance to Let's Encrypt:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanDnsZone
 metadata:
   name: prod-zone
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.DigitalOceanDnsZone.prod-zone
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.DigitalOceanDnsZone.prod-zone
 spec:
   domainName: prod-app.com
   records:

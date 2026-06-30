@@ -2,7 +2,7 @@
 
 **Date**: 2026-02-20
 **Type**: New Feature
-**Components**: `apis/org/openmcf/provider/oci/ociapigateway/v1/`
+**Components**: `apis/dev/planton/provider/oci/ociapigateway/v1/`
 
 ## Summary
 
@@ -10,7 +10,7 @@ Added the OciApiGateway deployment component -- OCI's managed API endpoint bundl
 
 ## Problem Statement / Motivation
 
-OpenMCF's OCI provider had 28 resources covering networking, compute, containers, databases, storage, security, and one serverless resource (OciFunctionsApplication), but no way to expose OCI Functions or HTTP backends through a managed API endpoint. OCI API Gateway provides managed REST API endpoints with built-in authentication, CORS, and rate limiting -- critical for production serverless architectures. Without this component, platform teams cannot declaratively provision the API layer that sits in front of their functions, blocking the Serverless Stack infra chart.
+Planton's OCI provider had 28 resources covering networking, compute, containers, databases, storage, security, and one serverless resource (OciFunctionsApplication), but no way to expose OCI Functions or HTTP backends through a managed API endpoint. OCI API Gateway provides managed REST API endpoints with built-in authentication, CORS, and rate limiting -- critical for production serverless architectures. Without this component, platform teams cannot declaratively provision the API layer that sits in front of their functions, blocking the Serverless Stack infra chart.
 
 ## Solution / What's New
 
@@ -34,8 +34,8 @@ A complete OciApiGateway deployment component with both Pulumi (Go) and Terrafor
 - **3 of 5 backend types**: HTTP, Oracle Functions, and Stock Response cover the core use cases. Dynamic Routing and OAuth2 Logout backends excluded (advanced patterns with disproportionate proto complexity).
 - **Deployment-level authentication, route-level authorization**: Authentication is configured once at the deployment level (common for all routes). Individual routes then control authorization (anonymous, authentication_only, any_of with scopes).
 - **path_prefix as required string with prefix validation**: Must start with "/" and be non-empty. ForceNew in provider.
-- **certificate_id as plain string**: OCI API Gateway certificates are not modeled as OpenMCF components; plain string reference.
-- **function_id as plain string**: Individual OCI functions are code artifacts deployed via fn CLI, not OpenMCF components (consistent with R28 OciFunctionsApplication design).
+- **certificate_id as plain string**: OCI API Gateway certificates are not modeled as Planton components; plain string reference.
+- **function_id as plain string**: Individual OCI functions are code artifacts deployed via fn CLI, not Planton components (consistent with R28 OciFunctionsApplication design).
 - **Directory name**: `ociapigateway` (per WA02 convention -- lowercased kind name).
 
 ### Excluded from v1

@@ -12,7 +12,7 @@ Deploys an Amazon Aurora DB cluster (MySQL or PostgreSQL) with automatic subnet 
 
 ## What Gets Created
 
-When you deploy an AwsRdsCluster resource, OpenMCF provisions:
+When you deploy an AwsRdsCluster resource, Planton provisions:
 
 - **RDS Aurora Cluster** — an `rds.Cluster` with the specified engine (`aurora-mysql` or `aurora-postgresql`), encryption settings, backup configuration, and optional Serverless v2 scaling
 - **DB Subnet Group** — an `rds.SubnetGroup` created automatically when `subnetIds` are provided and `dbSubnetGroupName` is not set, placing the cluster across the specified subnets
@@ -23,7 +23,7 @@ When you deploy an AwsRdsCluster resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **At least two subnets** in different Availability Zones, or an existing DB subnet group name
 - **An Aurora-compatible engine** identifier (`aurora-mysql` or `aurora-postgresql`) and a valid engine version
 - **A VPC ID** if creating a managed security group with `securityGroupIds` or `allowedCidrBlocks`
@@ -35,15 +35,15 @@ When you deploy an AwsRdsCluster resource, OpenMCF provisions:
 Create a file `rds-cluster.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRdsCluster
 metadata:
   name: my-aurora-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsRdsCluster.my-aurora-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsRdsCluster.my-aurora-cluster
 spec:
   region: us-west-2
   engine: aurora-mysql
@@ -58,7 +58,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f rds-cluster.yaml
+planton apply -f rds-cluster.yaml
 ```
 
 This creates an Aurora MySQL cluster across two subnets with RDS-managed master password stored in AWS Secrets Manager.
@@ -117,15 +117,15 @@ This creates an Aurora MySQL cluster across two subnets with RDS-managed master 
 A basic Aurora MySQL cluster that delegates password management to AWS Secrets Manager:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRdsCluster
 metadata:
   name: app-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsRdsCluster.app-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsRdsCluster.app-db
 spec:
   region: us-west-2
   engine: aurora-mysql
@@ -143,15 +143,15 @@ spec:
 A production-oriented Aurora PostgreSQL cluster with storage encryption, backup retention, and deletion protection:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRdsCluster
 metadata:
   name: analytics-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsRdsCluster.analytics-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsRdsCluster.analytics-db
 spec:
   region: us-west-2
   engine: aurora-postgresql
@@ -181,15 +181,15 @@ spec:
 An Aurora MySQL cluster using Serverless v2 auto-scaling capacity:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRdsCluster
 metadata:
   name: serverless-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsRdsCluster.serverless-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsRdsCluster.serverless-db
 spec:
   region: us-west-2
   engine: aurora-mysql
@@ -210,15 +210,15 @@ spec:
 A cluster with a managed security group allowing access from specific CIDRs and existing security groups:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRdsCluster
 metadata:
   name: secured-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsRdsCluster.secured-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsRdsCluster.secured-db
 spec:
   region: us-west-2
   engine: aurora-postgresql
@@ -245,18 +245,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding IDs:
+Reference other Planton-managed resources instead of hardcoding IDs:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRdsCluster
 metadata:
   name: ref-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsRdsCluster.ref-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsRdsCluster.ref-db
 spec:
   region: us-west-2
   engine: aurora-mysql

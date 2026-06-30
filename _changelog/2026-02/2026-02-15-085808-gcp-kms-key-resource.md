@@ -10,11 +10,11 @@ Added GcpKmsKey (R04 in the GCP resource expansion project) -- a Cloud KMS crypt
 
 ## Problem Statement / Motivation
 
-OpenMCF's GCP provider lacked the ability to provision KMS cryptographic keys -- the actual encryption resources that downstream services reference for CMEK. While GcpKmsKeyRing (R03) was already available as the container, users could not create the keys themselves through OpenMCF.
+Planton's GCP provider lacked the ability to provision KMS cryptographic keys -- the actual encryption resources that downstream services reference for CMEK. While GcpKmsKeyRing (R03) was already available as the container, users could not create the keys themselves through Planton.
 
 ### Pain Points
 
-- No way to provision CMEK encryption keys through OpenMCF
+- No way to provision CMEK encryption keys through Planton
 - Downstream resources (BigQuery, Spanner, CloudSQL) couldn't reference KMS keys via `StringValueOrRef`
 - HSM-protected keys for compliance environments required manual GCP console/gcloud work
 - Asymmetric signing keys for CI/CD pipelines couldn't be managed as code
@@ -34,7 +34,7 @@ A complete deployment component with:
 
 ### Naming Decision
 
-Renamed from `GcpKmsCryptoKey` (GCP API name) to `GcpKmsKey` for user-friendliness. "Crypto" is redundant in the KMS context, and OpenMCF already abbreviates (GcpGcsBucket, GcpGkeCluster).
+Renamed from `GcpKmsCryptoKey` (GCP API name) to `GcpKmsKey` for user-friendliness. "Crypto" is redundant in the KMS context, and Planton already abbreviates (GcpGcsBucket, GcpGkeCluster).
 
 ## Implementation Details
 

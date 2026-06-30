@@ -86,13 +86,13 @@ spec:
 
 ### 1. Proto Schema Changes
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesstatefulset/v1/spec.proto`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesstatefulset/v1/spec.proto`
 
 **Changes Required**:
 
 1. Add import for `kubernetes_secret.proto`:
 ```protobuf
-import "org/openmcf/provider/kubernetes/kubernetes_secret.proto";
+import "dev/planton/provider/kubernetes/kubernetes_secret.proto";
 ```
 
 2. Change the `secrets` field type in `KubernetesStatefulSetContainerAppEnv`:
@@ -117,12 +117,12 @@ message KubernetesStatefulSetContainerAppEnv {
    *
    * Using secret references is recommended for production deployments.
    */
-  map<string, org.openmcf.provider.kubernetes.KubernetesSensitiveValue> secrets = 2;
+  map<string, dev.planton.provider.kubernetes.KubernetesSensitiveValue> secrets = 2;
 }
 ```
 
 **Note**: The `KubernetesSensitiveValue` type already exists at:
-`apis/org/openmcf/provider/kubernetes/kubernetes_secret.proto`
+`apis/dev/planton/provider/kubernetes/kubernetes_secret.proto`
 
 ```protobuf
 message KubernetesSensitiveValue {
@@ -143,7 +143,7 @@ message KubernetesSecretKeyRef {
 
 #### 2a. secret.go - Only Create Secret for String Values
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesstatefulset/v1/iac/pulumi/module/secret.go`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesstatefulset/v1/iac/pulumi/module/secret.go`
 
 **Key Logic**:
 - Only add secrets with `GetValue() != ""` to the Kubernetes Secret
@@ -222,7 +222,7 @@ func secret(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Provi
 
 #### 2b. statefulset.go - Handle Both Types in Env Var Creation
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesstatefulset/v1/iac/pulumi/module/statefulset.go`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesstatefulset/v1/iac/pulumi/module/statefulset.go`
 
 **Key Changes**:
 
@@ -305,7 +305,7 @@ if target.Spec.Container.App.Env.Secrets != nil {
 
 #### 3a. variables.tf - Update Secrets Type
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesstatefulset/v1/iac/tf/variables.tf`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesstatefulset/v1/iac/tf/variables.tf`
 
 **Change the `env.secrets` type from**:
 ```hcl
@@ -332,7 +332,7 @@ env = optional(object({
 
 #### 3b. secret.tf - Only Create Secret for String Values
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesstatefulset/v1/iac/tf/secret.tf`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesstatefulset/v1/iac/tf/secret.tf`
 
 **Full Implementation**:
 ```hcl
@@ -367,7 +367,7 @@ resource "kubernetes_secret" "env_secrets" {
 
 #### 3c. statefulset.tf - Handle Both Types
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesstatefulset/v1/iac/tf/statefulset.tf`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesstatefulset/v1/iac/tf/statefulset.tf`
 
 **Replace the single secrets dynamic block with two**:
 
@@ -429,7 +429,7 @@ dynamic "env" {
 
 ### 4. Test Updates
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesstatefulset/v1/spec_test.go`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesstatefulset/v1/spec_test.go`
 
 **Add test cases for**:
 1. Secrets with direct string values - should pass
@@ -540,7 +540,7 @@ ginkgo.Describe("Environment secrets validation", func() {
 
 ### 5. Documentation Updates
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesstatefulset/v1/examples.md`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesstatefulset/v1/examples.md`
 
 Updated to show three example patterns:
 1. Direct string values
@@ -569,7 +569,7 @@ After making changes, run:
 make protos
 
 # 2. Run component-specific tests
-go test ./apis/org/openmcf/provider/kubernetes/kubernetesstatefulset/v1/...
+go test ./apis/dev/planton/provider/kubernetes/kubernetesstatefulset/v1/...
 
 # 3. Full build
 make build
@@ -643,12 +643,12 @@ After `make update-deps` in web console:
 This same change should be applied to these additional components that have the same `env.secrets` pattern:
 
 ### Components Already Updated
-1. **KubernetesDeployment** - `apis/org/openmcf/provider/kubernetes/kubernetesdeployment/v1/` (see prior changelog)
-2. **KubernetesStatefulset** - `apis/org/openmcf/provider/kubernetes/kubernetesstatefulset/v1/` (this changelog)
+1. **KubernetesDeployment** - `apis/dev/planton/provider/kubernetes/kubernetesdeployment/v1/` (see prior changelog)
+2. **KubernetesStatefulset** - `apis/dev/planton/provider/kubernetes/kubernetesstatefulset/v1/` (this changelog)
 
 ### Components Still Pending
-1. **KubernetesDaemonset** - `apis/org/openmcf/provider/kubernetes/kubernetesdaemonset/v1/`
-2. **KubernetesCronjob** - `apis/org/openmcf/provider/kubernetes/kubernetescronjob/v1/`
+1. **KubernetesDaemonset** - `apis/dev/planton/provider/kubernetes/kubernetesdaemonset/v1/`
+2. **KubernetesCronjob** - `apis/dev/planton/provider/kubernetes/kubernetescronjob/v1/`
 
 **For each component**:
 1. Check if `spec.proto` has the same `Container.App.Env.Secrets` pattern
@@ -663,7 +663,7 @@ This same change should be applied to these additional components that have the 
 - **Prior art**: `KubernetesTemporal` password secret reference support (2025-12-22)
 - **Prior art**: `KubernetesOpenfga` password secret reference support (2025-12-22)
 - **Shared type**: Uses `KubernetesSecretKeyRef` and `KubernetesSensitiveValue` from `kubernetes_secret.proto`
-- **Pattern reference**: Similar to `ValueOrRef` in `apis/org/openmcf/shared/foreignkey/v1/foreign_key.proto`
+- **Pattern reference**: Similar to `ValueOrRef` in `apis/dev/planton/shared/foreignkey/v1/foreign_key.proto`
 
 ## Scope Clarification
 
@@ -686,7 +686,7 @@ This iteration **only** supports secret refs for `spec.container.app.env.secrets
 
 ### Proto Import
 ```protobuf
-import "org/openmcf/provider/kubernetes/kubernetes_secret.proto";
+import "dev/planton/provider/kubernetes/kubernetes_secret.proto";
 ```
 
 ### Go GetSecretRef/GetValue

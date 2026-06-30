@@ -10,7 +10,7 @@ Added AwsCloudwatchLogGroup as the seventeenth new AWS resource kind in the reso
 
 ## Problem Statement / Motivation
 
-CloudWatch Log Groups are referenced by at least 5 already-completed AWS components (Step Functions, OpenSearch, HTTP API Gateway, WAF, ElastiCache), but until now there was no OpenMCF component representing the log group itself. This created a gap: users could not use `valueFrom` references to wire log groups into their infrastructure compositions.
+CloudWatch Log Groups are referenced by at least 5 already-completed AWS components (Step Functions, OpenSearch, HTTP API Gateway, WAF, ElastiCache), but until now there was no Planton component representing the log group itself. This created a gap: users could not use `valueFrom` references to wire log groups into their infrastructure compositions.
 
 ### Pain Points
 

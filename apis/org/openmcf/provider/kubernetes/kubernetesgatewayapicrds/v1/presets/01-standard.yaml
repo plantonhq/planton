@@ -1,8 +1,0 @@
-apiVersion: kubernetes.openmcf.org/v1
-kind: KubernetesGatewayApiCrds
-metadata:
-  name: my-gateway-api-crds
-spec:
-  version: v1.2.1  # default from spec
-  installChannel:
-    channel: standard

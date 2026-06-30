@@ -1,0 +1,117 @@
+syntax = "proto3";
+
+package dev.planton.provider.openstack.openstacknetworkport.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// OpenStackNetworkPortSpec defines the configuration for an OpenStack Neutron port.
+//
+// A port represents a virtual switch port on a network. It provides stable
+// network identity (MAC address, fixed IPs, security groups) that can be
+// attached to instances, load balancers, or other network-consuming resources.
+// Explicit port creation is preferred over instance-inline networking when you
+// need stable IP addresses, multiple security groups, or pre-provisioned
+// network identities.
+//
+// The port name is derived from metadata.name.
+//
+// Terraform resource: openstack_networking_port_v2
+// Pulumi resource: openstack.networking.Port
+message OpenStackNetworkPortSpec {
+  // no_security_groups and security_group_ids are mutually exclusive.
+  // Setting no_security_groups = true means the port has zero security groups
+  // (bypassing the OpenStack default SG). If you want specific SGs, use
+  // security_group_ids instead.
+  option (buf.validate.message).cel = {
+    id: "security_groups.mutual_exclusion"
+    message: "no_security_groups and security_group_ids are mutually exclusive -- use one or neither"
+    expression: "!(this.no_security_groups && this.security_group_ids.size() > 0)"
+  };
+
+  // network_id is the ID of the network to create this port on.
+  // This is the defining relationship -- every port belongs to exactly one network.
+  // ForceNew: changing the network recreates the port.
+  // Can reference an OpenStackNetwork resource's output or be a literal network UUID.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef network_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OpenStackNetwork,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_id"
+  ];
+
+  // fixed_ips defines the IP address allocations for this port.
+  // Each entry assigns an IP from a subnet on the port's network.
+  // If omitted, OpenStack auto-assigns one IP from any subnet on the network.
+  // Multiple entries create a multi-homed port (one IP per subnet).
+  repeated FixedIp fixed_ips = 2;
+
+  // security_group_ids is the list of security groups to apply to this port.
+  // Each entry can reference an OpenStackSecurityGroup resource's output
+  // (via value_from) or be a literal security group UUID.
+  // If omitted and no_security_groups is false, OpenStack applies the default
+  // security group for the project.
+  // Mutually exclusive with no_security_groups.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef security_group_ids = 3 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = OpenStackSecurityGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
+  ];
+
+  // no_security_groups explicitly removes all security groups from this port,
+  // including the default security group that OpenStack normally applies.
+  // Set to true for ports that should have unrestricted traffic (e.g., load
+  // balancer VIPs, network appliance ports).
+  // Mutually exclusive with security_group_ids.
+  bool no_security_groups = 4;
+
+  // admin_state_up controls the administrative state of the port.
+  // When false, the port is administratively down and will not forward traffic.
+  // Default: true
+  optional bool admin_state_up = 5 [(dev.planton.shared.options.default) = "true"];
+
+  // mac_address specifies a specific MAC address for this port.
+  // If omitted, OpenStack auto-assigns a MAC from the network's allocation pool.
+  // ForceNew: changing the MAC recreates the port.
+  // Use case: network bonding, DPDK, or license-tied MAC addresses.
+  string mac_address = 6;
+
+  // port_security_enabled controls whether port security is enforced on this port.
+  // When enabled, only traffic matching the port's security groups and allowed
+  // address pairs is permitted. When disabled, all traffic passes regardless of
+  // security groups.
+  // If omitted, inherits from the network's port_security_enabled setting.
+  optional bool port_security_enabled = 7;
+
+  // description is a human-readable description of the port.
+  // Stored on the OpenStack resource and visible in Horizon and API responses.
+  string description = 8;
+
+  // tags are string tags to associate with the port in OpenStack.
+  // Tags are stored on the OpenStack resource and can be used for filtering
+  // and organization in the OpenStack API and Horizon dashboard.
+  repeated string tags = 9 [(buf.validate.field).repeated.unique = true];
+
+  // region overrides the region from the provider config for this port.
+  // If omitted, the region from the OpenStack provider config is used.
+  // Example: "RegionOne"
+  string region = 10;
+}
+
+// FixedIp defines an IP address allocation for a port.
+// Each fixed IP binds the port to a subnet and optionally requests a specific
+// IP address from that subnet's allocation pool.
+message FixedIp {
+  // subnet_id is the ID of the subnet to allocate an IP address from.
+  // Can reference an OpenStackSubnet resource's output (via value_from for
+  // InfraChart DAG wiring) or be a literal subnet UUID.
+  // If omitted, OpenStack auto-selects a subnet on the port's network.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef subnet_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = OpenStackSubnet,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  ];
+
+  // ip_address requests a specific IP address from the subnet.
+  // If omitted, an available IP from the subnet's allocation pool is assigned.
+  // The IP must belong to the subnet's CIDR and be within an allocation pool.
+  string ip_address = 2;
+}

@@ -39,6 +39,6 @@ A privileged role that aggregates permissions across more than one resource serv
 
 | Placeholder | Description |
 |---|---|
-| `metadata.org` | Your OpenMCF organization |
+| `metadata.org` | Your Planton organization |
 | `spec.permissions[].resource_server_identifier` | The identifiers (audiences) of your APIs |
 | `spec.permissions[].name` | The scope names defined on those APIs |

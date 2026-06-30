@@ -1,0 +1,307 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcpcloudschedulerjob.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// GcpCloudSchedulerJobOAuthToken configures OAuth2 access token generation for
+// authenticating HTTP target requests. Use this when calling Google APIs
+// hosted on *.googleapis.com.
+//
+// Mutually exclusive with GcpCloudSchedulerJobOidcToken.
+message GcpCloudSchedulerJobOAuthToken {
+  // Service account email to generate the OAuth token.
+  // The service account must be within the same project as the job.
+  // The caller must have iam.serviceAccounts.actAs on this service account.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef service_account_email = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpServiceAccount,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.email"
+  ];
+
+  // OAuth scope for the generated access token.
+  // If not specified, defaults to "https://www.googleapis.com/auth/cloud-platform".
+  string scope = 2;
+}
+
+// GcpCloudSchedulerJobOidcToken configures OIDC token generation for
+// authenticating HTTP target requests. Use this for calling Cloud Run,
+// Cloud Functions, or any endpoint where you validate the token yourself.
+//
+// Mutually exclusive with GcpCloudSchedulerJobOAuthToken.
+message GcpCloudSchedulerJobOidcToken {
+  // Service account email to generate the OIDC token.
+  // The service account must be within the same project as the job.
+  // The caller must have iam.serviceAccounts.actAs on this service account.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef service_account_email = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpServiceAccount,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.email"
+  ];
+
+  // Audience for the generated OIDC token.
+  // If not specified, the URI of the HTTP target will be used.
+  string audience = 2;
+}
+
+// GcpCloudSchedulerJobHttpTarget defines an HTTP endpoint as the target
+// for scheduled job execution. This is the most common target type,
+// used for triggering Cloud Run services, Cloud Functions, or any HTTP endpoint.
+message GcpCloudSchedulerJobHttpTarget {
+  option (buf.validate.message).cel = {
+    id: "oauth_oidc_mutual_exclusion"
+    expression: "!has(this.oauth_token) || !has(this.oidc_token)"
+    message: "only one of oauth_token or oidc_token can be set, not both"
+  };
+
+  // The full URI of the HTTP target.
+  // Required. Must be a valid HTTP or HTTPS URL.
+  string uri = 1 [(buf.validate.field).required = true];
+
+  // HTTP request method.
+  // If not specified, defaults to POST.
+  // Valid values: "POST", "GET", "HEAD", "PUT", "DELETE", "PATCH", "OPTIONS".
+  string http_method = 2 [(buf.validate.field).cel = {
+    id: "valid_http_method"
+    expression: "this == '' || this in ['POST', 'GET', 'HEAD', 'PUT', 'DELETE', 'PATCH', 'OPTIONS']"
+    message: "http_method must be one of: POST, GET, HEAD, PUT, DELETE, PATCH, OPTIONS"
+  }];
+
+  // HTTP request body.
+  // A request body is allowed only if the HTTP method is POST, PUT, or PATCH.
+  // Must be base64-encoded.
+  string body = 3;
+
+  // HTTP request headers.
+  // The following headers cannot be set: Content-Length, User-Agent,
+  // and headers matching X-Google-* or X-AppEngine-*.
+  map<string, string> headers = 4;
+
+  // OAuth2 access token configuration for authenticating requests.
+  // Use for calling Google APIs on *.googleapis.com.
+  // Mutually exclusive with oidc_token.
+  GcpCloudSchedulerJobOAuthToken oauth_token = 5;
+
+  // OIDC token configuration for authenticating requests.
+  // Use for calling Cloud Run, Cloud Functions, or custom endpoints.
+  // Mutually exclusive with oauth_token.
+  GcpCloudSchedulerJobOidcToken oidc_token = 6;
+}
+
+// GcpCloudSchedulerJobPubsubTarget defines a Pub/Sub topic as the target
+// for scheduled job execution. When the job runs, a message is published
+// to the specified topic.
+message GcpCloudSchedulerJobPubsubTarget {
+  // The fully qualified Pub/Sub topic name to publish to.
+  // Format: projects/{project}/topics/{topic}
+  dev.planton.shared.foreignkey.v1.StringValueOrRef topic_name = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpPubSubTopic,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.topic_id"
+  ];
+
+  // The message payload for the Pub/Sub message.
+  // Must be base64-encoded.
+  // The message must contain either non-empty data OR at least one attribute.
+  string data = 2;
+
+  // Attributes for the Pub/Sub message.
+  // Key-value pairs attached to the message as metadata.
+  // The message must contain either non-empty data OR at least one attribute.
+  map<string, string> attributes = 3;
+}
+
+// GcpCloudSchedulerJobAppEngineRouting defines routing configuration for
+// App Engine HTTP target requests. Specifies which App Engine service,
+// version, and instance handles the request.
+message GcpCloudSchedulerJobAppEngineRouting {
+  // The App Engine service to route the request to.
+  // If not specified, the default service is used.
+  string service = 1;
+
+  // The App Engine version to route the request to.
+  // If not specified, the default version is used.
+  string version = 2;
+
+  // The App Engine instance to route the request to.
+  // If not specified, the request is routed according to the service/version
+  // traffic splitting configuration.
+  string instance = 3;
+}
+
+// GcpCloudSchedulerJobAppEngineHttpTarget defines an App Engine endpoint as
+// the target for scheduled job execution. Use this when the target handler
+// runs on App Engine within the same project.
+message GcpCloudSchedulerJobAppEngineHttpTarget {
+  // The relative URI of the App Engine handler.
+  // Must begin with "/" and have a maximum length of 2083 characters.
+  string relative_uri = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "relative_uri_starts_with_slash"
+      expression: "this.startsWith('/')"
+      message: "relative_uri must begin with '/'"
+    }
+  ];
+
+  // HTTP request method.
+  // If not specified, defaults to POST.
+  // Valid values: "POST", "GET", "HEAD", "PUT", "DELETE", "PATCH", "OPTIONS".
+  string http_method = 2 [(buf.validate.field).cel = {
+    id: "valid_http_method"
+    expression: "this == '' || this in ['POST', 'GET', 'HEAD', 'PUT', 'DELETE', 'PATCH', 'OPTIONS']"
+    message: "http_method must be one of: POST, GET, HEAD, PUT, DELETE, PATCH, OPTIONS"
+  }];
+
+  // HTTP request body.
+  // A request body is allowed only if the HTTP method is POST or PUT.
+  // Must be base64-encoded.
+  string body = 3;
+
+  // HTTP request headers.
+  // The following headers cannot be set: Content-Length, Host, User-Agent,
+  // and headers matching X-Google-* or X-AppEngine-*.
+  map<string, string> headers = 4;
+
+  // App Engine routing configuration.
+  // Controls which App Engine service, version, and instance handles
+  // the request. If not set, the default service and version are used.
+  GcpCloudSchedulerJobAppEngineRouting app_engine_routing = 5;
+}
+
+// GcpCloudSchedulerJobRetryConfig controls retry behavior for failed job
+// execution attempts. A job attempt is retried between min_backoff_duration
+// and max_backoff_duration after it fails, with exponential backoff that
+// doubles max_doublings times before becoming linear.
+message GcpCloudSchedulerJobRetryConfig {
+  // The number of attempts that the system will make to run a job using
+  // the exponential backoff procedure. Values greater than 5 and negative
+  // values are not allowed.
+  int32 retry_count = 1;
+
+  // The time limit for retrying a failed job, measured from when the job
+  // was first attempted. Once elapsed, no further attempts are made.
+  // Format: duration string (e.g., "3600s" for 1 hour).
+  // Set to "0s" for unlimited retry duration.
+  string max_retry_duration = 2;
+
+  // The minimum amount of time to wait before retrying a job after it fails.
+  // Format: duration string (e.g., "5s" for 5 seconds).
+  string min_backoff_duration = 3;
+
+  // The maximum amount of time to wait before retrying a job after it fails.
+  // Format: duration string (e.g., "3600s" for 1 hour).
+  string max_backoff_duration = 4;
+
+  // The number of times that the retry interval doubles before becoming
+  // constant. The retry interval starts at min_backoff_duration, then
+  // doubles max_doublings times, and increases linearly thereafter.
+  int32 max_doublings = 5;
+}
+
+// GcpCloudSchedulerJobSpec defines the configuration for a GCP Cloud Scheduler job.
+//
+// Cloud Scheduler is a fully managed cron job scheduler. It allows you to
+// schedule virtually any job, including batch, big data, cloud infrastructure
+// operations, and other recurring workloads. Each job runs on a user-defined
+// schedule (unix-cron format) and dispatches to one of three target types:
+// HTTP endpoints, Pub/Sub topics, or App Engine handlers.
+//
+// Important behavioral notes:
+//
+//   - The job_name and location fields are immutable after creation.
+//     Changing them requires destroying and recreating the job.
+//
+//   - Cloud Scheduler jobs do NOT support GCP labels.
+//
+//   - Exactly one target type must be specified: http_target, pubsub_target,
+//     or app_engine_http_target. Multiple targets are not supported.
+//
+//   - The schedule field uses unix-cron format (e.g., "0 9 * * 1" for
+//     every Monday at 9:00 AM). The time_zone field controls which time
+//     zone the schedule is interpreted in.
+//
+//   - For HTTP targets, authentication via OAuth or OIDC tokens ensures
+//     secure invocation of Cloud Run, Cloud Functions, and other endpoints.
+message GcpCloudSchedulerJobSpec {
+  option (buf.validate.message).cel = {
+    id: "exactly_one_target"
+    expression: "(has(this.http_target) ? 1 : 0) + (has(this.pubsub_target) ? 1 : 0) + (has(this.app_engine_http_target) ? 1 : 0) == 1"
+    message: "exactly one of http_target, pubsub_target, or app_engine_http_target must be set"
+  };
+
+  // GCP project where the scheduler job will be created.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // Name of the Cloud Scheduler job.
+  // If not specified, defaults to metadata.name.
+  // Immutable after creation.
+  string job_name = 2 [(buf.validate.field).cel = {
+    id: "valid_job_name"
+    expression: "this == '' || this.matches('^[a-zA-Z][a-zA-Z0-9_-]*$')"
+    message: "job_name must start with a letter and contain only letters, numbers, hyphens, and underscores"
+  }];
+
+  // GCP region where the scheduler job will be created (e.g., "us-central1").
+  // Immutable after creation.
+  string location = 3 [(buf.validate.field).required = true];
+
+  // Cron schedule on which the job will be executed.
+  // Uses unix-cron format (e.g., "*/5 * * * *" for every 5 minutes,
+  // "0 9 * * 1" for every Monday at 9:00 AM).
+  // The schedule is interpreted in the time zone specified by time_zone.
+  string schedule = 4 [(buf.validate.field).required = true];
+
+  // Time zone name from the tz database (e.g., "America/New_York", "Europe/London").
+  // If not specified, defaults to "Etc/UTC".
+  // See: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  string time_zone = 5;
+
+  // Human-readable description of the job.
+  // Maximum 500 characters.
+  string description = 6 [(buf.validate.field).string.max_len = 500];
+
+  // The deadline for job attempts. If the request handler does not respond
+  // by this deadline, the request is cancelled and the attempt is marked
+  // as a DEADLINE_EXCEEDED failure.
+  //
+  // For HTTP targets: between 15 seconds and 30 minutes.
+  // For App Engine targets: between 15 seconds and 24 hours 15 seconds.
+  // For Pub/Sub targets: this field is ignored.
+  //
+  // Format: duration string (e.g., "180s", "30m").
+  // If not specified, defaults to "180s" (3 minutes).
+  string attempt_deadline = 7;
+
+  // If true, the job will be created in a paused state (will not execute
+  // on schedule until resumed). Defaults to false (job starts enabled).
+  bool paused = 8;
+
+  // HTTP target configuration. Dispatches the job to an HTTP endpoint.
+  // This is the most common target type, used for triggering Cloud Run
+  // services, Cloud Functions, webhooks, or any HTTP-accessible endpoint.
+  // Exactly one target must be specified.
+  GcpCloudSchedulerJobHttpTarget http_target = 9;
+
+  // Pub/Sub target configuration. Publishes a message to a Pub/Sub topic
+  // when the job executes. Use this for event-driven architectures where
+  // downstream consumers process messages asynchronously.
+  // Exactly one target must be specified.
+  GcpCloudSchedulerJobPubsubTarget pubsub_target = 10;
+
+  // App Engine HTTP target configuration. Dispatches the job to an
+  // App Engine handler within the same project. Use this when the
+  // target handler runs on App Engine.
+  // Exactly one target must be specified.
+  GcpCloudSchedulerJobAppEngineHttpTarget app_engine_http_target = 11;
+
+  // Retry configuration for failed job attempts.
+  // Controls exponential backoff behavior, maximum attempts, and
+  // retry duration limits.
+  GcpCloudSchedulerJobRetryConfig retry_config = 12;
+}

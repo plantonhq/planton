@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcpcertmanagercert.v1;
+
+import "dev/planton/provider/gcp/gcpcertmanagercert/v1/api.proto";
+import "dev/planton/provider/gcp/provider.proto";
+
+//gcp-cert-manager-cert stack-input
+message GcpCertManagerCertStackInput {
+  //target cloud-resource
+  GcpCertManagerCert target = 1;
+  //provider-config
+  dev.planton.provider.gcp.GcpProviderConfig provider_config = 2;
+}

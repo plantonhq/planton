@@ -1,0 +1,16 @@
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareZeroTrustAccessGroup
+metadata:
+  name: test-access-group
+spec:
+  accountId: "0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"
+  name: engineering
+  include:
+    - emailDomain:
+        domain: example.com
+  require:
+    - geo:
+        countryCode: US
+  exclude:
+    - email:
+        email: contractor@example.com

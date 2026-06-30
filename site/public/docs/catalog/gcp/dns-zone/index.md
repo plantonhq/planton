@@ -12,7 +12,7 @@ Deploys a Google Cloud DNS Managed Zone with optional DNS record creation and IA
 
 ## What Gets Created
 
-When you deploy a GcpDnsZone resource, OpenMCF provisions:
+When you deploy a GcpDnsZone resource, Planton provisions:
 
 - **Cloud DNS Managed Zone** — a public managed zone in the specified GCP project, with the DNS name set to `metadata.name` (a trailing dot is appended automatically)
 - **DNS Record Sets** — one `google_dns_record_set` per entry in `records`, each created as a child of the managed zone
@@ -20,7 +20,7 @@ When you deploy a GcpDnsZone resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **A GCP project** where the managed zone will be created
 - **A domain name** you own or control, used as `metadata.name` (e.g., `example.com`)
 - **Service account emails** if you need automated tools like cert-manager to manage DNS records
@@ -30,15 +30,15 @@ When you deploy a GcpDnsZone resource, OpenMCF provisions:
 Create a file `dns-zone.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpDnsZone
 metadata:
   name: example.com
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpDnsZone.example-com
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpDnsZone.example-com
 spec:
   projectId: my-gcp-project-123
 ```
@@ -46,7 +46,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f dns-zone.yaml
+planton apply -f dns-zone.yaml
 ```
 
 This creates a public Cloud DNS managed zone for `example.com.` in the specified GCP project.
@@ -77,15 +77,15 @@ This creates a public Cloud DNS managed zone for `example.com.` in the specified
 A DNS zone with one A record pointing a subdomain to an IP address:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpDnsZone
 metadata:
   name: example.com
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpDnsZone.example-com
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpDnsZone.example-com
 spec:
   projectId: my-gcp-project-123
   records:
@@ -101,15 +101,15 @@ spec:
 Grant a Kubernetes workload identity service account permission to manage DNS records, commonly used for DNS-01 ACME challenges:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpDnsZone
 metadata:
   name: example.com
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpDnsZone.example-com
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpDnsZone.example-com
 spec:
   projectId: my-gcp-project-123
   iamServiceAccounts:
@@ -121,15 +121,15 @@ spec:
 Production zone with multiple record types and service account bindings:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpDnsZone
 metadata:
   name: example.com
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpDnsZone.example-com
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpDnsZone.example-com
 spec:
   projectId: my-gcp-project-123
   iamServiceAccounts:
@@ -162,18 +162,18 @@ spec:
 
 ### Using a Foreign Key Reference for Project ID
 
-Reference an OpenMCF-managed GcpProject instead of hardcoding the project ID:
+Reference an Planton-managed GcpProject instead of hardcoding the project ID:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpDnsZone
 metadata:
   name: example.com
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpDnsZone.example-com
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpDnsZone.example-com
 spec:
   projectId:
     valueFrom:

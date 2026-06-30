@@ -6,7 +6,7 @@
 
 ## Summary
 
-The AzureAksCluster component has been completed from 78% to 97% production-readiness, making it the third fully-implemented managed Kubernetes provider in OpenMCF (alongside AWS EKS and GCP GKE). Both Pulumi and Terraform IaC modules now provision complete AKS clusters with VNet integration, managed identities, Azure AD RBAC, monitoring, and security controls. Comprehensive documentation with six usage scenarios and detailed Terraform module docs enable users to deploy production-grade Kubernetes clusters on Azure.
+The AzureAksCluster component has been completed from 78% to 97% production-readiness, making it the third fully-implemented managed Kubernetes provider in Planton (alongside AWS EKS and GCP GKE). Both Pulumi and Terraform IaC modules now provision complete AKS clusters with VNet integration, managed identities, Azure AD RBAC, monitoring, and security controls. Comprehensive documentation with six usage scenarios and detailed Terraform module docs enable users to deploy production-grade Kubernetes clusters on Azure.
 
 ## Problem Statement / Motivation
 
@@ -196,10 +196,10 @@ Each example includes:
 
 ### For Users
 
-**Immediate capability**: Users can now deploy production-grade AKS clusters using either Pulumi or Terraform through the unified OpenMCF API:
+**Immediate capability**: Users can now deploy production-grade AKS clusters using either Pulumi or Terraform through the unified Planton API:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureAksCluster
 metadata:
   name: prod-aks-cluster
@@ -224,7 +224,7 @@ planton apply -f prod-aks-cluster.yaml
 
 ### For Developers
 
-**Reference implementation**: The 627-line research document combined with working code provides the definitive guide for AKS deployment patterns in OpenMCF. Future Azure components can reference this implementation.
+**Reference implementation**: The 627-line research document combined with working code provides the definitive guide for AKS deployment patterns in Planton. Future Azure components can reference this implementation.
 
 **Test harness**: `iac/hack/manifest.yaml` provides an immediately usable test manifest for development and CI/CD verification.
 
@@ -243,9 +243,9 @@ planton apply -f prod-aks-cluster.yaml
 
 ### Who's Affected
 
-**Azure users**: Can now deploy AKS clusters through OpenMCF. Previously, the API existed but was non-functional.
+**Azure users**: Can now deploy AKS clusters through Planton. Previously, the API existed but was non-functional.
 
-**Multi-cloud teams**: Organizations using OpenMCF for EKS (AWS) or GKE (GCP) can now extend to Azure with zero workflow changes—same manifest format, same CLI commands.
+**Multi-cloud teams**: Organizations using Planton for EKS (AWS) or GKE (GCP) can now extend to Azure with zero workflow changes—same manifest format, same CLI commands.
 
 **Documentation consumers**: The combination of comprehensive research docs (deployment landscape analysis) and practical examples (6 scenarios) makes AzureAksCluster one of the best-documented components in the repository.
 
@@ -277,7 +277,7 @@ The component is now production-ready (97% completion score):
 Deploying a private AKS cluster with monitoring:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureAksCluster
 metadata:
   name: private-prod-aks
@@ -385,11 +385,11 @@ Users needing custom system pools can modify the IaC code directly or create add
 
 ### Why Both Pulumi and Terraform?
 
-OpenMCF supports both IaC backends to accommodate different organizational preferences:
+Planton supports both IaC backends to accommodate different organizational preferences:
 
 - **Pulumi users**: Organizations preferring general-purpose languages (Go, TypeScript, Python)
 - **Terraform users**: Organizations standardized on HCL and Terraform workflows
-- **Choice preservation**: Users choose their IaC tool; OpenMCF abstracts the difference
+- **Choice preservation**: Users choose their IaC tool; Planton abstracts the difference
 
 Both implementations are feature-equivalent and provision identical clusters from the same YAML manifest.
 
@@ -421,7 +421,7 @@ These enhancements would increase spec complexity but provide more control. The 
 
 **Component tests passed**:
 ```bash
-$ go test ./apis/org/openmcf/provider/azure/azureakscluster/v1/ -v
+$ go test ./apis/dev/planton/provider/azure/azureakscluster/v1/ -v
 === RUN   TestAzureAksClusterSpec
 Running Suite: AzureAksClusterSpec Custom Validation Tests
 Will run 1 of 1 specs
@@ -433,7 +433,7 @@ PASS
 
 **Linting validation**:
 ```bash
-$ read_lints apis/org/openmcf/provider/azure/azureakscluster/v1/iac/
+$ read_lints apis/dev/planton/provider/azure/azureakscluster/v1/iac/
 No linter errors found.
 ```
 

@@ -12,14 +12,14 @@ Deploys an Auth0 Connection that bridges Auth0 with an identity source, enabling
 
 ## What Gets Created
 
-When you deploy an Auth0Connection resource, OpenMCF provisions:
+When you deploy an Auth0Connection resource, Planton provisions:
 
 - **Auth0 Connection** — an `auth0_connection` resource configured with the specified strategy, display name, and provider-specific options (database, social, SAML, OIDC, or Azure AD)
 - **Connection Clients** — when `enabledClients` is configured, an `auth0_connection_clients` resource that links the connection to the specified Auth0 applications
 
 ## Prerequisites
 
-- **Auth0 credentials** configured via environment variables (`AUTH0_DOMAIN`, `AUTH0_CLIENT_ID`, `AUTH0_CLIENT_SECRET`) or OpenMCF provider config
+- **Auth0 credentials** configured via environment variables (`AUTH0_DOMAIN`, `AUTH0_CLIENT_ID`, `AUTH0_CLIENT_SECRET`) or Planton provider config
 - **An Auth0 tenant** with connection quota available
 - **OAuth credentials from the social provider** if using a social strategy (Google, Facebook, GitHub, etc.)
 - **Identity Provider metadata** if using an enterprise strategy (SAML sign-in endpoint and certificate, OIDC issuer, or Azure AD app registration)
@@ -30,15 +30,15 @@ When you deploy an Auth0Connection resource, OpenMCF provisions:
 Create a file `auth0-connection.yaml`:
 
 ```yaml
-apiVersion: auth0.openmcf.org/v1
+apiVersion: auth0.planton.dev/v1
 kind: Auth0Connection
 metadata:
   name: user-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.Auth0Connection.user-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.Auth0Connection.user-db
 spec:
   strategy: auth0
   databaseOptions:
@@ -49,7 +49,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f auth0-connection.yaml
+planton apply -f auth0-connection.yaml
 ```
 
 This creates an Auth0 hosted database connection with a "good" password policy and brute-force protection enabled.
@@ -163,15 +163,15 @@ Applicable when `strategy` is `waad`.
 A hosted database connection with password policy, brute-force protection, and MFA:
 
 ```yaml
-apiVersion: auth0.openmcf.org/v1
+apiVersion: auth0.planton.dev/v1
 kind: Auth0Connection
 metadata:
   name: app-users
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.Auth0Connection.app-users
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.Auth0Connection.app-users
 spec:
   strategy: auth0
   displayName: Sign up with Email
@@ -192,15 +192,15 @@ spec:
 A Google OAuth 2.0 connection linked to an application managed by an Auth0Client resource:
 
 ```yaml
-apiVersion: auth0.openmcf.org/v1
+apiVersion: auth0.planton.dev/v1
 kind: Auth0Connection
 metadata:
   name: google-social
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.Auth0Connection.google-social
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.Auth0Connection.google-social
 spec:
   strategy: google-oauth2
   displayName: Sign in with Google
@@ -222,15 +222,15 @@ spec:
 A SAML connection for enterprise single sign-on with signed requests and attribute mappings:
 
 ```yaml
-apiVersion: auth0.openmcf.org/v1
+apiVersion: auth0.planton.dev/v1
 kind: Auth0Connection
 metadata:
   name: corporate-sso
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.Auth0Connection.corporate-sso
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.Auth0Connection.corporate-sso
 spec:
   strategy: samlp
   displayName: Company SSO
@@ -261,15 +261,15 @@ spec:
 An Azure AD (Entra ID) connection restricted to a single tenant with group retrieval:
 
 ```yaml
-apiVersion: auth0.openmcf.org/v1
+apiVersion: auth0.planton.dev/v1
 kind: Auth0Connection
 metadata:
   name: azure-ad-sso
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.Auth0Connection.azure-ad-sso
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.Auth0Connection.azure-ad-sso
 spec:
   strategy: waad
   displayName: Microsoft Work Account

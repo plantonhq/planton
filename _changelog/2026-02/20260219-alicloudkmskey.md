@@ -12,7 +12,7 @@ Added the AliCloudKmsKey deployment component -- a standalone KMS customer-manag
 ## What Was Created
 
 ### API Definition
-- `apis/org/openmcf/provider/alicloud/alicloudkmskey/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
+- `apis/dev/planton/provider/alicloud/alicloudkmskey/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
 - Registered `AliCloudKmsKey = 3060` in `CloudResourceKind` enum under a new Security category
 
 ### IaC Modules

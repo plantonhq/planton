@@ -12,7 +12,7 @@ Deploys an Amazon OpenSearch Service domain with configurable cluster topology, 
 
 ## What Gets Created
 
-When you deploy an AwsOpenSearchDomain resource, OpenMCF provisions:
+When you deploy an AwsOpenSearchDomain resource, Planton provisions:
 
 - **OpenSearch Domain** — an `opensearch.Domain` with the specified engine version, cluster configuration, and tags derived from metadata (organization, environment, resource kind, resource ID)
 - **EBS Volumes** — attached to each data node for index storage, with configurable volume type, size, IOPS, and throughput
@@ -25,7 +25,7 @@ When you deploy an AwsOpenSearchDomain resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **An OpenSearch or Elasticsearch engine version** string (e.g., `OpenSearch_2.11` or `Elasticsearch_7.10`)
 - **(Optional) VPC subnets and security groups** for VPC-based deployment
 - **(Optional) A KMS key ARN** for customer-managed encryption at rest
@@ -37,15 +37,15 @@ When you deploy an AwsOpenSearchDomain resource, OpenMCF provisions:
 Create a file `opensearch-domain.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsOpenSearchDomain
 metadata:
   name: my-search
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsOpenSearchDomain.my-search
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsOpenSearchDomain.my-search
 spec:
   region: us-west-2
   engineVersion: "OpenSearch_2.11"
@@ -62,7 +62,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f opensearch-domain.yaml
+planton apply -f opensearch-domain.yaml
 ```
 
 This creates a single-node OpenSearch 2.11 domain with 20 GB gp3 storage, encryption at rest, and node-to-node encryption.
@@ -131,15 +131,15 @@ This creates a single-node OpenSearch 2.11 domain with 20 GB gp3 storage, encryp
 A multi-AZ domain deployed into a VPC with dedicated master nodes, zone awareness across 3 AZs, and encryption enabled:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsOpenSearchDomain
 metadata:
   name: prod-search
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsOpenSearchDomain.prod-search
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsOpenSearchDomain.prod-search
 spec:
   region: us-east-1
   engineVersion: "OpenSearch_2.11"
@@ -177,15 +177,15 @@ spec:
 A domain with FGAC enabled using the internal user database for authentication:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsOpenSearchDomain
 metadata:
   name: fgac-search
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.AwsOpenSearchDomain.fgac-search
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.AwsOpenSearchDomain.fgac-search
 spec:
   region: us-east-1
   engineVersion: "OpenSearch_2.11"
@@ -212,15 +212,15 @@ spec:
 A domain with hot, warm, and cold storage tiers for cost-effective log analytics:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsOpenSearchDomain
 metadata:
   name: analytics-search
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsOpenSearchDomain.analytics-search
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsOpenSearchDomain.analytics-search
 spec:
   region: us-east-1
   engineVersion: "OpenSearch_2.11"
@@ -251,18 +251,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding IDs:
+Reference other Planton-managed resources instead of hardcoding IDs:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsOpenSearchDomain
 metadata:
   name: ref-search
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsOpenSearchDomain.ref-search
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsOpenSearchDomain.ref-search
 spec:
   region: us-west-2
   engineVersion: "OpenSearch_2.11"

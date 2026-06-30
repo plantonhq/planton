@@ -3,7 +3,7 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "reporter",
     srcs = ["reporter.go"],
-    importpath = "github.com/plantonhq/openmcf/e2e/framework/reporter",
+    importpath = "github.com/plantonhq/planton/e2e/framework/reporter",
     visibility = ["//visibility:public"],
     deps = [
         "//e2e/framework/runner",

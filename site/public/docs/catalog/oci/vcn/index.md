@@ -12,7 +12,7 @@ Deploys an Oracle Cloud Infrastructure Virtual Cloud Network (VCN) with optional
 
 ## What Gets Created
 
-When you deploy an OciVcn resource, OpenMCF provisions:
+When you deploy an OciVcn resource, Planton provisions:
 
 - **Virtual Cloud Network** — an `oci_core_vcn` resource in the specified compartment with one or more CIDR blocks, optional DNS label, and optional IPv6 prefix. OCI automatically creates a default route table, default security list, and default DHCP options alongside the VCN.
 - **Internet Gateway** — created only when `isInternetGatewayEnabled` is `true`. Provides direct inbound and outbound internet access for resources in public subnets.
@@ -21,7 +21,7 @@ When you deploy an OciVcn resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the VCN and gateways will be created — either a literal value or a reference to an OciCompartment resource
 - **A CIDR plan** — at least one IPv4 CIDR block between /16 and /30
 
@@ -30,15 +30,15 @@ When you deploy an OciVcn resource, OpenMCF provisions:
 Create a file `vcn.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciVcn
 metadata:
   name: my-vcn
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciVcn.my-vcn
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciVcn.my-vcn
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -49,7 +49,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f vcn.yaml
+planton apply -f vcn.yaml
 ```
 
 This creates a VCN with a single 10.0.0.0/16 CIDR block and no gateways. The VCN ID, default route table, default security list, and default DHCP options are exported as stack outputs for use by downstream resources such as OciSubnet.
@@ -81,15 +81,15 @@ This creates a VCN with a single 10.0.0.0/16 CIDR block and no gateways. The VCN
 A VCN with a single CIDR block and no gateways — suitable for development or isolated workloads:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciVcn
 metadata:
   name: dev-vcn
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciVcn.dev-vcn
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciVcn.dev-vcn
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -102,15 +102,15 @@ spec:
 A VCN for workloads that need both public-facing and private subnets. The Internet Gateway serves public subnets; the NAT Gateway gives private subnets outbound internet access:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciVcn
 metadata:
   name: web-vcn
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.OciVcn.web-vcn
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.OciVcn.web-vcn
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -127,15 +127,15 @@ spec:
 All gateways enabled, IPv6 for dual-stack workloads, multiple CIDRs for address segmentation, and DNS resolution for hostname-based communication:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciVcn
 metadata:
   name: prod-vcn
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciVcn.prod-vcn
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciVcn.prod-vcn
   env: prod
   org: acme
 spec:
@@ -154,18 +154,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed compartment instead of hardcoding the OCID:
+Reference an Planton-managed compartment instead of hardcoding the OCID:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciVcn
 metadata:
   name: ref-vcn
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciVcn.ref-vcn
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciVcn.ref-vcn
 spec:
   compartmentId:
     valueFrom:

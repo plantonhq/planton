@@ -12,7 +12,7 @@ Deploys a Google Cloud Storage bucket with full control over storage class, acce
 
 ## What Gets Created
 
-When you deploy a GcpGcsBucket resource, OpenMCF provisions:
+When you deploy a GcpGcsBucket resource, Planton provisions:
 
 - **GCS Bucket** — a Cloud Storage bucket in the specified project and location, with labels, storage class, and access settings applied
 - **Versioning Configuration** — enabled on the bucket when `versioningEnabled` is `true`
@@ -26,7 +26,7 @@ When you deploy a GcpGcsBucket resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **A GCP project** where the bucket will be created
 - **A globally unique bucket name** — must be 3-63 characters, lowercase letters, numbers, hyphens, or dots
 - **A Cloud KMS key** if using customer-managed encryption (optional)
@@ -36,15 +36,15 @@ When you deploy a GcpGcsBucket resource, OpenMCF provisions:
 Create a file `gcs-bucket.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpGcsBucket
 metadata:
   name: my-app-data
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpGcsBucket.my-app-data
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpGcsBucket.my-app-data
 spec:
   gcpProjectId: my-gcp-project-123
   bucketName: my-app-data-dev
@@ -54,7 +54,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f gcs-bucket.yaml
+planton apply -f gcs-bucket.yaml
 ```
 
 This creates a standard-class GCS bucket with Uniform Bucket-Level Access in `us-east1`.
@@ -115,15 +115,15 @@ This creates a standard-class GCS bucket with Uniform Bucket-Level Access in `us
 A bucket with versioning enabled and a lifecycle rule that deletes noncurrent object versions older than 30 days:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpGcsBucket
 metadata:
   name: app-backups
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpGcsBucket.app-backups
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpGcsBucket.app-backups
 spec:
   gcpProjectId: my-gcp-project-123
   bucketName: my-app-backups-dev
@@ -144,15 +144,15 @@ spec:
 A bucket configured to serve a static website with CORS rules for browser-based access:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpGcsBucket
 metadata:
   name: marketing-site
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpGcsBucket.marketing-site
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpGcsBucket.marketing-site
 spec:
   gcpProjectId: my-gcp-project-123
   bucketName: marketing-site-prod
@@ -181,15 +181,15 @@ spec:
 A production bucket with CMEK encryption, tiered lifecycle transitions, versioning, retention, custom labels, and service account access:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpGcsBucket
 metadata:
   name: prod-data-lake
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpGcsBucket.prod-data-lake
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpGcsBucket.prod-data-lake
 spec:
   gcpProjectId: my-gcp-project-123
   bucketName: prod-data-lake
@@ -241,18 +241,18 @@ spec:
 
 ### Using a Foreign Key Reference for Project ID
 
-Reference an OpenMCF-managed GcpProject instead of hardcoding the project ID:
+Reference an Planton-managed GcpProject instead of hardcoding the project ID:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpGcsBucket
 metadata:
   name: shared-assets
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpGcsBucket.shared-assets
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpGcsBucket.shared-assets
 spec:
   gcpProjectId:
     valueFrom:

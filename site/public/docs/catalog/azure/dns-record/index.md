@@ -12,14 +12,14 @@ Deploys an individual DNS record (A, AAAA, CNAME, MX, TXT, SRV, NS, PTR, or CAA)
 
 ## What Gets Created
 
-When you deploy an AzureDnsRecord resource, OpenMCF provisions:
+When you deploy an AzureDnsRecord resource, Planton provisions:
 
 - **DNS Record** -- one of the following Pulumi Azure DNS resources based on the specified `type`: `dns.ARecord`, `dns.AaaaRecord`, `dns.CNameRecord`, `dns.MxRecord`, `dns.TxtRecord`, `dns.SrvRecord`, `dns.NsRecord`, `dns.PtrRecord`, or `dns.CaaRecord`
 - **Azure Tags** -- resource metadata tags applied to the record for tracking and governance, including resource name, kind, organization, and environment
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Resource Group** containing the DNS Zone (can reference an AzureResourceGroup resource)
 - **An Azure DNS Zone** where the record will be created (can reference an AzureDnsZone resource)
 
@@ -28,15 +28,15 @@ When you deploy an AzureDnsRecord resource, OpenMCF provisions:
 Create a file `dns-record.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureDnsRecord
 metadata:
   name: my-a-record
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureDnsRecord.my-a-record
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureDnsRecord.my-a-record
 spec:
   resourceGroup: my-rg
   zoneName: example.com
@@ -49,7 +49,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f dns-record.yaml
+planton apply -f dns-record.yaml
 ```
 
 This creates an A record for `www.example.com` pointing to `192.0.2.1` with a default TTL of 300 seconds (5 minutes).
@@ -80,15 +80,15 @@ This creates an A record for `www.example.com` pointing to `192.0.2.1` with a de
 Point a subdomain to one or more IPv4 addresses with round-robin behavior:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureDnsRecord
 metadata:
   name: web-a-record
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureDnsRecord.web-a-record
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureDnsRecord.web-a-record
 spec:
   resourceGroup: prod-rg
   zoneName: example.com
@@ -105,15 +105,15 @@ spec:
 Create an alias from one hostname to another:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureDnsRecord
 metadata:
   name: app-cname
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureDnsRecord.app-cname
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureDnsRecord.app-cname
 spec:
   resourceGroup: prod-rg
   zoneName: example.com
@@ -129,15 +129,15 @@ spec:
 Configure mail exchange records with priority for primary and secondary mail servers:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureDnsRecord
 metadata:
   name: mail-mx-record
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureDnsRecord.mail-mx-record
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureDnsRecord.mail-mx-record
 spec:
   resourceGroup: prod-rg
   zoneName: example.com
@@ -155,15 +155,15 @@ spec:
 Add SPF or domain-verification TXT records at the zone apex:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureDnsRecord
 metadata:
   name: spf-txt-record
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureDnsRecord.spf-txt-record
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureDnsRecord.spf-txt-record
 spec:
   resourceGroup: prod-rg
   zoneName: example.com
@@ -176,18 +176,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference OpenMCF-managed resources instead of hardcoding the resource group and zone name. The `resourceGroup` field defaults to kind `AzureResourceGroup` with field path `status.outputs.resource_group_name`. The `zoneName` field defaults to kind `AzureDnsZone` with field path `status.outputs.zone_name`.
+Reference Planton-managed resources instead of hardcoding the resource group and zone name. The `resourceGroup` field defaults to kind `AzureResourceGroup` with field path `status.outputs.resource_group_name`. The `zoneName` field defaults to kind `AzureDnsZone` with field path `status.outputs.zone_name`.
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureDnsRecord
 metadata:
   name: ref-a-record
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureDnsRecord.ref-a-record
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureDnsRecord.ref-a-record
 spec:
   resourceGroup:
     valueFrom:

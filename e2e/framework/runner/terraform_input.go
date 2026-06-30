@@ -5,12 +5,12 @@ import (
 	"path/filepath"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/iac/terraform"
-	"github.com/plantonhq/openmcf/internal/manifest"
-	"github.com/plantonhq/openmcf/pkg/iac/stackinput"
-	"github.com/plantonhq/openmcf/pkg/iac/stackinput/providerenvvars"
-	"github.com/plantonhq/openmcf/pkg/iac/tofu/generators"
-	"github.com/plantonhq/openmcf/pkg/iac/tofu/tfbackend"
+	"github.com/plantonhq/planton/apis/dev/planton/shared/iac/terraform"
+	"github.com/plantonhq/planton/internal/manifest"
+	"github.com/plantonhq/planton/pkg/iac/stackinput"
+	"github.com/plantonhq/planton/pkg/iac/stackinput/providerenvvars"
+	"github.com/plantonhq/planton/pkg/iac/tofu/generators"
+	"github.com/plantonhq/planton/pkg/iac/tofu/tfbackend"
 )
 
 // TerraformInput holds the prepared inputs for a Terraform E2E test run.
@@ -82,7 +82,7 @@ func BuildTerraformInput(manifestPath, workDir string) (*TerraformInput, error) 
 //
 // Returns the working directory path and a cleanup function.
 func PrepareWorkDir(sourceModuleDir string) (string, func(), error) {
-	workDir, err := os.MkdirTemp("", "openmcf-e2e-tf-*")
+	workDir, err := os.MkdirTemp("", "planton-e2e-tf-*")
 	if err != nil {
 		return "", nil, errors.Wrap(err, "failed to create temp directory for TF module")
 	}

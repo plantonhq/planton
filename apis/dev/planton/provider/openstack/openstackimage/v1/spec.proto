@@ -1,0 +1,131 @@
+syntax = "proto3";
+
+package dev.planton.provider.openstack.openstackimage.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/options/options.proto";
+
+// OpenStackImageSpec defines the configuration for an OpenStack Glance image.
+//
+// A Glance image is a virtual disk template used to boot compute instances or
+// initialize bootable Cinder volumes. Images contain the operating system,
+// pre-installed software, and any customizations needed for workloads.
+//
+// Images can be uploaded from a URL (image_source_url) or created as metadata
+// entries for images already present in Glance. The most common 80/20 use case
+// is uploading a cloud image from an HTTP URL.
+//
+// The image name is derived from metadata.name.
+//
+// Terraform resource: openstack_images_image_v2
+// Pulumi resource: openstack.images.Image
+message OpenStackImageSpec {
+  // container_format describes the container or envelope format of the image.
+  // Required. ForceNew: cannot be changed after creation.
+  //
+  // Common values:
+  //   "bare"   - no container (most common for cloud images)
+  //   "ovf"    - Open Virtualization Format
+  //   "docker" - Docker container image
+  string container_format = 1 [(buf.validate.field).string = {
+    min_len: 1
+    in: [
+      "bare",
+      "ovf",
+      "aki",
+      "ari",
+      "ami",
+      "ova",
+      "docker",
+      "compressed"
+    ]
+  }];
+
+  // disk_format describes the format of the disk image data.
+  // Required. ForceNew: cannot be changed after creation.
+  //
+  // Common values:
+  //   "qcow2" - QEMU Copy On Write 2 (most common for KVM/libvirt)
+  //   "raw"   - unstructured disk image
+  //   "vmdk"  - VMware disk format
+  //   "iso"   - optical disc image
+  string disk_format = 2 [(buf.validate.field).string = {
+    min_len: 1
+    in: [
+      "raw",
+      "vhd",
+      "vhdx",
+      "vmdk",
+      "vdi",
+      "iso",
+      "ploop",
+      "qcow2",
+      "aki",
+      "ari",
+      "ami"
+    ]
+  }];
+
+  // image_source_url is the HTTP or HTTPS URL from which Glance downloads the
+  // image data. This is the primary mechanism for uploading images in
+  // pipeline-based IaC workflows.
+  // ForceNew: the source cannot be changed after creation.
+  //
+  // Example: "https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img"
+  //
+  // If omitted, the image is created as a metadata entry only -- the actual
+  // image data must be uploaded separately (e.g., via glance CLI).
+  string image_source_url = 3;
+
+  // min_disk_gb is the minimum disk size in GB required to boot this image.
+  // Set this to prevent users from booting the image on a flavor with
+  // insufficient disk. Zero means no minimum.
+  int32 min_disk_gb = 4 [(buf.validate.field).int32.gte = 0];
+
+  // min_ram_mb is the minimum RAM in MB required to boot this image.
+  // Set this to prevent users from booting the image on a flavor with
+  // insufficient memory. Zero means no minimum.
+  int32 min_ram_mb = 5 [(buf.validate.field).int32.gte = 0];
+
+  // protected prevents the image from being deleted.
+  // Set to true for production images that should not be accidentally removed.
+  // Default: false
+  optional bool protected = 6 [(dev.planton.shared.options.default) = "false"];
+
+  // hidden hides the image from default listing queries.
+  // Hidden images are still accessible by UUID but do not appear in
+  // `openstack image list` output.
+  // Default: false
+  optional bool hidden = 7 [(dev.planton.shared.options.default) = "false"];
+
+  // tags is a set of tags to associate with the image.
+  // Tags are simple strings used for filtering images in Glance.
+  // Example: ["ubuntu", "22.04", "cloud-init"]
+  repeated string tags = 8;
+
+  // visibility controls who can see and use this image.
+  // Default: "private"
+  //
+  // Values:
+  //   "private"   - only the image owner (project) can see it
+  //   "shared"    - owner can share with specific projects via member API
+  //   "community" - visible to all projects but not in default listings
+  //   "public"    - visible and usable by all projects (requires admin)
+  optional string visibility = 9 [
+    (dev.planton.shared.options.default) = "private",
+    (buf.validate.field).string = {
+      in: [
+        "",
+        "public",
+        "private",
+        "shared",
+        "community"
+      ]
+    }
+  ];
+
+  // region overrides the region from the provider config for this image.
+  // If omitted, the region from the OpenStack provider config is used.
+  // Example: "RegionOne"
+  string region = 10;
+}

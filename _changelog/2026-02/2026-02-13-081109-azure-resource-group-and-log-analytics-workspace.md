@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added two new Azure deployment components to OpenMCF: `AzureResourceGroup` (enum 400) and `AzureLogAnalyticsWorkspace` (enum 450). AzureResourceGroup is a new foundational resource that makes resource groups a first-class citizen in the composability model, and AzureLogAnalyticsWorkspace is the first Azure resource to use `StringValueOrRef resource_group` for proper infra-chart DAG wiring.
+Added two new Azure deployment components to Planton: `AzureResourceGroup` (enum 400) and `AzureLogAnalyticsWorkspace` (enum 450). AzureResourceGroup is a new foundational resource that makes resource groups a first-class citizen in the composability model, and AzureLogAnalyticsWorkspace is the first Azure resource to use `StringValueOrRef resource_group` for proper infra-chart DAG wiring.
 
 ## Problem Statement / Motivation
 
@@ -25,7 +25,7 @@ Azure resource expansion from 10 to 33 resource kinds requires foundational comp
 A deliberately minimal component with 2 spec fields and 3 outputs:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureResourceGroup
 metadata:
   name: platform-rg
@@ -39,7 +39,7 @@ spec:
 The first Azure resource to use `StringValueOrRef resource_group`, demonstrating the new composability pattern:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureLogAnalyticsWorkspace
 metadata:
   name: platform-law

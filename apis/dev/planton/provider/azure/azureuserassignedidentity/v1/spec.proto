@@ -1,0 +1,103 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azureuserassignedidentity.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// **AzureUserAssignedIdentitySpec** defines the configuration for creating an
+// Azure User-Assigned Managed Identity with optional RBAC role assignments.
+//
+// User-Assigned Managed Identities are Azure AD identities that exist independently
+// of the resources they are assigned to. They can be shared across multiple Azure
+// resources (AKS clusters, Function Apps, Web Apps, Container Apps, VMs) and have
+// a lifecycle independent of those resources. This makes them ideal for scenarios
+// where the same identity needs to access multiple Azure services.
+//
+// This component bundles the identity itself (`azurerm_user_assigned_identity`) with
+// its role assignments (`azurerm_role_assignment`) because an identity without
+// permissions has no practical value. The bundling follows DD03 (Composite Bundling
+// Rules): role assignments are the substance of the identity resource.
+//
+// This spec follows the AwsIamRole / GcpServiceAccount pattern adapted for Azure's
+// scope-based RBAC model. Unlike AWS (trust policies) or GCP (project/org-level
+// bindings), Azure role assignments are scoped to specific resource IDs, making
+// each assignment a targeted permission grant.
+message AzureUserAssignedIdentitySpec {
+  // The Azure region where the Managed Identity will be created.
+  // Must match the region of the resource group.
+  // Examples: "eastus", "westus2", "westeurope", "southeastasia".
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The Azure Resource Group where the Managed Identity will be created.
+  // Can be a literal string or a reference to an AzureResourceGroup output.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef resource_group = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AzureResourceGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.resource_group_name"
+  ];
+
+  // The name of the User-Assigned Managed Identity.
+  // Must be unique within the resource group.
+  // Azure allows 3-128 characters: alphanumeric, hyphens, and underscores.
+  string name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 3,
+    (buf.validate.field).string.max_len = 128
+  ];
+
+  // RBAC role assignments to grant this identity permissions on Azure resources.
+  // Each assignment binds a role definition to a specific Azure resource scope.
+  // An identity without role assignments has no permissions and cannot access
+  // any Azure resources.
+  //
+  // Common patterns:
+  // - Key Vault access: scope = Key Vault ID, role = "Key Vault Secrets User"
+  // - Storage access: scope = Storage Account ID, role = "Storage Blob Data Contributor"
+  // - Network access: scope = VNet ID, role = "Network Contributor"
+  // - Container registry: scope = ACR ID, role = "AcrPull"
+  repeated RoleAssignment role_assignments = 4;
+}
+
+// RoleAssignment defines a single Azure RBAC role binding for the managed identity.
+// Each assignment grants the identity a specific role on a specific Azure resource.
+message RoleAssignment {
+  // The Azure resource ID to scope this role assignment to.
+  // Can be a subscription, resource group, or individual resource ID.
+  // Can be a literal Azure resource ID or a reference to another resource's output.
+  //
+  // Examples of literal scopes:
+  // - Subscription: "/subscriptions/00000000-0000-0000-0000-000000000000"
+  // - Resource group: "/subscriptions/.../resourceGroups/my-rg"
+  // - Resource: "/subscriptions/.../providers/Microsoft.KeyVault/vaults/my-kv"
+  //
+  // In infra charts, use valueFrom to reference dynamically created resources:
+  //   scope:
+  //     valueFrom:
+  //       kind: AzureKeyVault
+  //       name: platform-kv
+  //       fieldPath: status.outputs.key_vault_id
+  //
+  // Note: No default_kind annotation because scope is polymorphic -- it can
+  // reference any Azure resource type.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef scope = 1 [(buf.validate.field).required = true];
+
+  // The name of a built-in or custom Azure RBAC role to assign.
+  // Uses Azure's exact role definition names for clarity and direct API mapping.
+  //
+  // Common built-in roles:
+  // - "Contributor" -- full resource management except RBAC
+  // - "Reader" -- read-only access
+  // - "Key Vault Secrets User" -- read Key Vault secrets
+  // - "Storage Blob Data Contributor" -- read/write/delete blob data
+  // - "AcrPull" -- pull container images from ACR
+  // - "Network Contributor" -- manage networking resources
+  // - "Monitoring Metrics Publisher" -- publish metrics
+  string role_definition_name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+}

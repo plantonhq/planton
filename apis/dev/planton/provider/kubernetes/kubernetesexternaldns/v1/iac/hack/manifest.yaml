@@ -1,0 +1,14 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesExternalDns
+metadata:
+  name: test-external-dns
+spec:
+  target_cluster:
+    kubernetes_cluster_id:
+      value: test-cluster
+  gke:
+    project_id:
+      value: test-gcp-project
+    dns_zone_id:
+      value: test-dns-zone-id
+

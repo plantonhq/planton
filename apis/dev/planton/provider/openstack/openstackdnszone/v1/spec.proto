@@ -1,0 +1,162 @@
+syntax = "proto3";
+
+package dev.planton.provider.openstack.openstackdnszone.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/options/options.proto";
+
+// OpenStackDnsZoneSpec defines the configuration for an OpenStack Designate DNS zone
+// with optional inline DNS records.
+//
+// A DNS zone represents an authoritative domain (e.g., "example.com") managed by
+// the OpenStack Designate service. The zone can be PRIMARY (Designate is authoritative)
+// or SECONDARY (replicated from upstream master nameservers).
+//
+// This component supports two modes for managing DNS records:
+//   - **Inline records** (via the `records` field): Convenient for self-contained
+//     zones where all records are defined in one place.
+//   - **Standalone records** (via the separate OpenStackDnsRecord component):
+//     For DAG-visible, independently managed records in InfraCharts.
+//
+// Terraform resource: openstack_dns_zone_v2 + openstack_dns_recordset_v2 (for inline records)
+// Pulumi resource:    dns.Zone + dns.RecordSet (for inline records)
+message OpenStackDnsZoneSpec {
+  // SECONDARY zones require at least one master nameserver.
+  option (buf.validate.message).cel = {
+    id: "secondary.requires_masters"
+    message: "SECONDARY zones require at least one master nameserver in the masters field"
+    expression: "this.type != 'SECONDARY' || size(this.masters) > 0"
+  };
+
+  // Zone type must be PRIMARY or SECONDARY when specified.
+  option (buf.validate.message).cel = {
+    id: "type.valid_values"
+    message: "type must be 'PRIMARY' or 'SECONDARY' when specified"
+    expression: "this.type == '' || this.type in ['PRIMARY', 'SECONDARY']"
+  };
+
+  // (Required) The DNS domain name for the zone (e.g., "example.com").
+  // This is the authoritative domain managed by Designate.
+  // Must be a valid domain name (lowercase labels separated by dots, ending with a TLD).
+  // Note: Designate may auto-append a trailing dot internally.
+  // ForceNew: changing this requires recreating the zone.
+  string domain_name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "domain_name.valid_domain"
+      message: "domain_name must be a valid DNS domain (e.g., example.com)"
+      expression: "this.matches('^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?[.])+[a-z]{2,}$')"
+    }
+  ];
+
+  // (Optional) Email address of the zone administrator.
+  // Used in the SOA record for the zone.
+  // Example: "admin@example.com"
+  string email = 2;
+
+  // (Optional) Human-readable description of the DNS zone.
+  string description = 3;
+
+  // (Optional) Default Time To Live (in seconds) for records in this zone.
+  // Determines how long resolvers cache records from this zone.
+  // If omitted, Designate uses its deployment default.
+  optional int32 ttl = 4;
+
+  // (Optional) The zone type.
+  // "PRIMARY" for zones where Designate is the authoritative source.
+  // "SECONDARY" for zones replicated from upstream master nameservers.
+  // If omitted, Designate defaults to PRIMARY.
+  // ForceNew: changing this requires recreating the zone.
+  string type = 5;
+
+  // (Optional) List of master nameserver addresses for SECONDARY zones.
+  // Required when type is "SECONDARY". Ignored for PRIMARY zones.
+  // Example: ["ns1.upstream.com", "ns2.upstream.com"]
+  repeated string masters = 6;
+
+  // (Optional) Inline DNS records to create alongside the zone.
+  // Each record is provisioned as a separate openstack_dns_recordset_v2 resource,
+  // keyed by record_type + record_name for stable IaC state management.
+  // For DAG-visible, independently managed records in InfraCharts, use the
+  // standalone OpenStackDnsRecord component instead.
+  repeated OpenStackDnsRecord records = 7;
+
+  // (Optional) Override the region from the provider config for this zone.
+  // If omitted, the region from the OpenStack provider config is used.
+  // ForceNew: changing this requires recreating the zone.
+  string region = 8;
+}
+
+// OpenStackDnsRecord defines an inline DNS record within a zone.
+// Each record creates a Designate recordset (one name + one type + one or more values).
+message OpenStackDnsRecord {
+  // Supported DNS record types for OpenStack Designate.
+  enum RecordType {
+    // Unspecified record type (invalid).
+    record_type_unspecified = 0;
+    // IPv4 address record.
+    A = 1;
+    // IPv6 address record.
+    AAAA = 2;
+    // Canonical name (alias) record.
+    CNAME = 3;
+    // Mail exchange record.
+    MX = 4;
+    // Text record (SPF, DKIM, verification, etc.).
+    TXT = 5;
+    // Service locator record.
+    SRV = 6;
+    // Nameserver record.
+    NS = 7;
+    // Pointer record (reverse DNS).
+    PTR = 8;
+    // Certificate Authority Authorization record.
+    CAA = 9;
+    // Start of Authority record.
+    SOA = 10;
+    // Sender Policy Framework record (deprecated in favor of TXT).
+    SPF = 11;
+    // SSH Public Key Fingerprint record.
+    SSHFP = 12;
+    // Naming Authority Pointer record.
+    NAPTR = 13;
+  }
+
+  // (Required) The DNS record type.
+  // Supported types: A, AAAA, CNAME, MX, TXT, SRV, NS, PTR, CAA, SOA, SPF, SSHFP, NAPTR.
+  RecordType record_type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).enum.defined_only = true,
+    (buf.validate.field).cel = {
+      id: "record_type.not_unspecified"
+      message: "record_type must be specified (cannot be record_type_unspecified)"
+      expression: "this != 0"
+    }
+  ];
+
+  // (Required) The fully qualified domain name for this record.
+  // Must end with a trailing dot to indicate FQDN.
+  // Example: "www.example.com." or "api.example.com."
+  string record_name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "record_name.valid_fqdn"
+      message: "record_name must be a valid DNS domain name ending with a trailing dot (e.g., www.example.com.)"
+      expression: "this.endsWith('.') && this.matches('^(?:[*][.])?(?:[_a-z0-9](?:[_a-z0-9-]{0,61}[a-z0-9])?[.])+$')"
+    }
+  ];
+
+  // (Required) The DNS record values.
+  // For A records: IPv4 addresses (e.g., "192.0.2.1")
+  // For AAAA records: IPv6 addresses (e.g., "2001:db8::1")
+  // For CNAME records: target hostname with trailing dot (e.g., "target.example.com.")
+  // For MX records: priority and mail server (e.g., "10 mail.example.com.")
+  // For TXT records: text values (e.g., "v=spf1 include:_spf.google.com ~all")
+  // Multiple values create a round-robin record set.
+  repeated string values = 3 [(buf.validate.field).repeated.min_items = 1];
+
+  // (Optional) Time To Live (in seconds) for this specific record.
+  // Overrides the zone-level TTL for this record.
+  // Default: 60 seconds.
+  optional int32 ttl = 4 [(dev.planton.shared.options.default) = "60"];
+}

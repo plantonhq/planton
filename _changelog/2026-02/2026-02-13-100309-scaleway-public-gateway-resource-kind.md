@@ -6,11 +6,11 @@
 
 ## Summary
 
-Implemented ScalewayPublicGateway as the first composite Scaleway resource kind in OpenMCF. This resource bundles a Flexible IP, Public Gateway appliance, and GatewayNetwork attachment into a single declarative unit, providing NAT masquerade, SSH bastion, and port forwarding capabilities for Scaleway Private Networks. Includes full Pulumi (Go) and Terraform (HCL) implementations with comprehensive documentation.
+Implemented ScalewayPublicGateway as the first composite Scaleway resource kind in Planton. This resource bundles a Flexible IP, Public Gateway appliance, and GatewayNetwork attachment into a single declarative unit, providing NAT masquerade, SSH bastion, and port forwarding capabilities for Scaleway Private Networks. Includes full Pulumi (Go) and Terraform (HCL) implementations with comprehensive documentation.
 
 ## Problem Statement / Motivation
 
-Scaleway resources attached to a Private Network have no direct internet access by default. A Public Gateway is required to provide NAT for outbound traffic, SSH bastion for secure access, and port forwarding for selective inbound access. In Scaleway's Terraform provider, this requires managing three separate resources (IP, Gateway, GatewayNetwork) with correct dependency wiring. OpenMCF needs to bundle these into a single, composable resource kind.
+Scaleway resources attached to a Private Network have no direct internet access by default. A Public Gateway is required to provide NAT for outbound traffic, SSH bastion for secure access, and port forwarding for selective inbound access. In Scaleway's Terraform provider, this requires managing three separate resources (IP, Gateway, GatewayNetwork) with correct dependency wiring. Planton needs to bundle these into a single, composable resource kind.
 
 ### Pain Points
 
@@ -36,7 +36,7 @@ flowchart TB
 ### Key Design Decisions
 
 1. **DHCP resources skipped** -- Scaleway deprecated gateway DHCP in favor of Private Network IPAM. The `scaleway_vpc_public_gateway_dhcp` and `_dhcp_reservation` resources are not included.
-2. **Zone instead of region** -- Public Gateways are the first zonal Scaleway resource in OpenMCF (unlike VPCs and Private Networks which are regional).
+2. **Zone instead of region** -- Public Gateways are the first zonal Scaleway resource in Planton (unlike VPCs and Private Networks which are regional).
 3. **Single network attachment** -- The 80% use case is one gateway per Private Network. Multi-attachment support can be added later if needed.
 4. **Reverse DNS on IP directly** -- Set via the IP resource's `reverse` field rather than a separate `ip_reverse_dns` resource, simplifying the composite.
 5. **PAT rules included** -- Port forwarding rules bundled as optional `repeated` field, following the AwsAlb pattern of bundling listeners.
@@ -59,7 +59,7 @@ privateNetworkId:
 
 - `spec.proto` -- ScalewayPublicGatewaySpec with nested `Bastion` and `PatRule` messages
 - `stack_outputs.proto` -- Exports `gateway_id`, `public_ip_address`, `public_ip_id`, `gateway_network_id`
-- `api.proto` -- Standard OpenMCF resource envelope
+- `api.proto` -- Standard Planton resource envelope
 - `stack_input.proto` -- Stack input with target and provider config
 
 ### Pulumi Go Module (5 files)
@@ -87,7 +87,7 @@ privateNetworkId:
 - **Single declaration** creates 3+ correctly-wired cloud resources
 - **Infra-chart ready** -- `StringValueOrRef` on `private_network_id` enables DAG-based composition
 - **Composite pattern established** -- Sets the template for LoadBalancer, Instance, RdbInstance, and other composite Scaleway kinds
-- **Zonal resource handling** -- First resource to use `zone` instead of `region`, extending OpenMCF's Scaleway coverage model
+- **Zonal resource handling** -- First resource to use `zone` instead of `region`, extending Planton's Scaleway coverage model
 - **Production features** -- NAT masquerade, SSH bastion with IP allowlisting, SMTP control, reverse DNS, port forwarding
 
 ## Impact

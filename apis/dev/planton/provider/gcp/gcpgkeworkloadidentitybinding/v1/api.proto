@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcpgkeworkloadidentitybinding.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/gcp/gcpgkeworkloadidentitybinding/v1/spec.proto";
+import "dev/planton/provider/gcp/gcpgkeworkloadidentitybinding/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+//gcp-gke-workload-identity-binding
+message GcpGkeWorkloadIdentityBinding {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'GcpGkeWorkloadIdentityBinding'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  GcpGkeWorkloadIdentityBindingSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  GcpGkeWorkloadIdentityBindingStatus status = 5;
+}
+
+//gcp-gke-workload-identity-binding status
+message GcpGkeWorkloadIdentityBindingStatus {
+  //stack-outputs
+  //  stack outputs
+  GcpGkeWorkloadIdentityBindingStackOutputs outputs = 1;
+}

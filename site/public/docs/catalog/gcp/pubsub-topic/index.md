@@ -12,7 +12,7 @@ Deploys a Google Cloud Pub/Sub topic with optional CMEK encryption, message rete
 
 ## What Gets Created
 
-When you deploy a GcpPubSubTopic resource, OpenMCF provisions:
+When you deploy a GcpPubSubTopic resource, Planton provisions:
 
 - **Pub/Sub Topic** — a `google_pubsub_topic` resource in the specified GCP project, with GCP labels derived from `metadata.org`, `metadata.env`, and `metadata.id`
 - **CMEK Encryption** — configured only when `kmsKeyName` is provided, encrypts messages at rest using a customer-managed Cloud KMS key
@@ -22,7 +22,7 @@ When you deploy a GcpPubSubTopic resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **A GCP project** with the Pub/Sub API enabled
 - **A Cloud KMS key** if enabling CMEK encryption (the Pub/Sub service account needs `roles/cloudkms.cryptoKeyEncrypterDecrypter` on the key)
 - **A Pub/Sub schema** if enabling schema validation
@@ -33,15 +33,15 @@ When you deploy a GcpPubSubTopic resource, OpenMCF provisions:
 Create a file `pubsub-topic.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpPubSubTopic
 metadata:
   name: my-topic
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpPubSubTopic.my-topic
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpPubSubTopic.my-topic
 spec:
   projectId:
     value: my-gcp-project
@@ -51,7 +51,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f pubsub-topic.yaml
+planton apply -f pubsub-topic.yaml
 ```
 
 This creates a Pub/Sub topic named `my-topic` in the specified GCP project with Google-managed encryption and no retention policy.
@@ -89,15 +89,15 @@ This creates a Pub/Sub topic named `my-topic` in the specified GCP project with 
 Retain messages for 7 days so any subscription can seek back within the retention window:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpPubSubTopic
 metadata:
   name: orders-topic
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpPubSubTopic.orders-topic
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpPubSubTopic.orders-topic
 spec:
   projectId:
     value: my-gcp-project
@@ -114,15 +114,15 @@ spec:
 Encrypt messages with a customer-managed key and enforce JSON schema validation:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpPubSubTopic
 metadata:
   name: events-topic
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpPubSubTopic.events-topic
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpPubSubTopic.events-topic
 spec:
   projectId:
     value: my-gcp-project
@@ -139,15 +139,15 @@ spec:
 Ingest objects from a GCS bucket in text format:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpPubSubTopic
 metadata:
   name: logs-ingest-topic
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpPubSubTopic.logs-ingest-topic
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpPubSubTopic.logs-ingest-topic
 spec:
   projectId:
     value: my-gcp-project
@@ -165,18 +165,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding IDs:
+Reference other Planton-managed resources instead of hardcoding IDs:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpPubSubTopic
 metadata:
   name: ref-topic
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpPubSubTopic.ref-topic
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpPubSubTopic.ref-topic
 spec:
   projectId:
     valueFrom:

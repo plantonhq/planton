@@ -10,7 +10,7 @@ componentName: "auth0action"
 title: Auth0Action
 kind: Auth0Action
 provider: auth0
-api_version: auth0.openmcf.org/v1
+api_version: auth0.planton.dev/v1
 id_prefix: a0act
 description: Manage Auth0 Actions — custom Node.js functions that execute at specific points in the Auth0 authentication and authorization pipeline.
 ---

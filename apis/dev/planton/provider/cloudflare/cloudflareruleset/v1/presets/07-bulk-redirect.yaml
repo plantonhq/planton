@@ -1,0 +1,28 @@
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareRuleset
+metadata:
+  name: bulk-redirects
+spec:
+  account_id: "<cloudflare-account-id>"
+  ruleset_kind: root
+  phase: http_request_redirect
+  name: "Bulk redirects"
+  rules:
+    - ref: "apply-bulk-redirect-list"
+      expression: 'http.request.full_uri ne ""'
+      action: redirect
+      description: "Redirect matching requests using the Bulk Redirect list"
+      enabled: true
+      action_parameters:
+        from_list:
+          # The list is referenced by name. Point at the CloudflareList that
+          # holds the redirect entries; the platform resolves the reference to
+          # that list's name output before deployment.
+          name:
+            valueFrom:
+              kind: CloudflareList
+              name: my-redirects
+              fieldPath: status.outputs.name
+          # Expression evaluated per request to produce the lookup key into the
+          # list (the source URL to match against the list's entries).
+          key: "http.request.full_uri"

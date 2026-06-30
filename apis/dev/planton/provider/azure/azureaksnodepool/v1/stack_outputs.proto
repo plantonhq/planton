@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azureaksnodepool.v1;
+
+// AzureAksNodePoolStackOutputs describes the info retrieved after provisioning an AKS node pool.
+message AzureAksNodePoolStackOutputs {
+  // Name of the node pool in AKS. Typically matches the AzureAksNodePool metadata.name.
+  string node_pool_name = 1;
+
+  // Azure Resource Manager ID of the created node pool (Agent Pool resource).
+  string agent_pool_resource_id = 2;
+
+  // The maximum number of pods that can run on each node of this pool.
+  // (Determined by AKS based on network configuration and VM size.)
+  uint32 max_pods_per_node = 3;
+}

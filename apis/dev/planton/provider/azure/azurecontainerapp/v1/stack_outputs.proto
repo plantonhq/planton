@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azurecontainerapp.v1;
+
+// **AzureContainerAppStackOutputs** captures the outputs of provisioning
+// an Azure Container App.
+//
+// The primary user-facing outputs are `ingress_fqdn` (the app's endpoint)
+// and `container_app_id` (the ARM resource ID for programmatic access).
+//
+// `latest_revision_name` and `latest_revision_fqdn` are useful for CD
+// pipelines and debugging revision deployments.
+//
+// `outbound_ip_addresses` is useful for firewall allowlists when the
+// Container App connects to external services that require IP whitelisting.
+//
+// This is a leaf resource -- no downstream Planton resources reference
+// these outputs. They are consumed directly by users and external systems.
+message AzureContainerAppStackOutputs {
+  // The Azure Resource Manager ID of the Container App.
+  // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.App/containerApps/{name}
+  string container_app_id = 1;
+
+  // The name of the latest revision.
+  // Format: {app-name}--{suffix}
+  //
+  // Useful for CD pipelines to verify which revision is active after deployment.
+  string latest_revision_name = 2;
+
+  // The FQDN of the latest revision.
+  // This FQDN points directly to the latest revision, bypassing traffic splitting.
+  string latest_revision_fqdn = 3;
+
+  // Outbound IP addresses used by the Container App for egress traffic.
+  // Use these to configure firewall allowlists on external services
+  // (databases, APIs, etc.) that the app connects to.
+  repeated string outbound_ip_addresses = 4;
+
+  // The ingress FQDN of the Container App.
+  // This is the primary user-facing endpoint. Only populated when ingress
+  // is configured.
+  //
+  // In Single revision mode, this is the same as latest_revision_fqdn.
+  // In Multiple revision mode, this is the app's main FQDN that distributes
+  // traffic according to the configured traffic weights.
+  string ingress_fqdn = 5;
+}

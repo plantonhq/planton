@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsrdscluster.v1;
+
+import "dev/planton/provider/aws/awsrdscluster/v1/api.proto";
+import "dev/planton/provider/aws/provider.proto";
+
+// aws-rds-cluster stack-input
+message AwsRdsClusterStackInput {
+  // target cloud-resource
+  AwsRdsCluster target = 1;
+  // provider-credential
+  dev.planton.provider.aws.AwsProviderConfig provider_config = 2;
+}

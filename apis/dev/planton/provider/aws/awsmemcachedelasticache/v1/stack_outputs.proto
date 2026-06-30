@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsmemcachedelasticache.v1;
+
+// AwsMemcachedElasticacheStackOutputs captures observable identifiers and
+// endpoints from a provisioned ElastiCache Memcached cluster. These outputs
+// are used by downstream resources to wire dependencies via StringValueOrRef.
+message AwsMemcachedElasticacheStackOutputs {
+  // The identifier of the ElastiCache cluster.
+  string cluster_id = 1;
+
+  // The DNS name of the Memcached auto-discovery endpoint (without port).
+  // Clients that support auto-discovery connect here to automatically discover
+  // all nodes in the cluster. Empty for single-node clusters.
+  string cluster_address = 2;
+
+  // The full configuration endpoint in "address:port" format. Memcached
+  // clients use this for auto-discovery of cluster topology. This is the
+  // recommended connection endpoint for multi-node clusters.
+  string configuration_endpoint = 3;
+
+  // The Amazon Resource Name of the ElastiCache cluster. Used in IAM policies
+  // and cross-service permissions.
+  string arn = 4;
+
+  // The port on which the cluster accepts connections.
+  int32 port = 5;
+
+  // The name of the ElastiCache subnet group associated with this cluster.
+  // Only populated when `subnet_ids` were provided and a subnet group was
+  // created by the module.
+  string subnet_group_name = 6;
+
+  // The name of the custom parameter group associated with this cluster.
+  // Only populated when `parameters` were provided and a parameter group
+  // was created by the module.
+  string parameter_group_name = 7;
+}

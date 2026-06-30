@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added the `HetznerCloudPrimaryIp` deployment component (R05, enum 3511, id_prefix: `hcpip`) to OpenMCF. This component manages Hetzner Cloud Primary IPs -- persistent public IPv4 addresses or IPv6 /64 blocks that survive server deletion and can be reassigned. It bundles optional reverse DNS (rDNS) as a conditional child resource. Five provider fields are intentionally hardcoded or omitted to enforce safe-by-default behavior in OpenMCF's independent component model.
+Added the `HetznerCloudPrimaryIp` deployment component (R05, enum 3511, id_prefix: `hcpip`) to Planton. This component manages Hetzner Cloud Primary IPs -- persistent public IPv4 addresses or IPv6 /64 blocks that survive server deletion and can be reassigned. It bundles optional reverse DNS (rDNS) as a conditional child resource. Five provider fields are intentionally hardcoded or omitted to enforce safe-by-default behavior in Planton's independent component model.
 
 ## Problem Statement / Motivation
 
@@ -14,7 +14,7 @@ Hetzner Cloud servers need stable public IP addresses for production use cases l
 
 ### Pain Points
 
-- No way to manage persistent public IPs through OpenMCF independently of servers
+- No way to manage persistent public IPs through Planton independently of servers
 - HetznerCloudServer (R07) needs primary_ip_id references via StringValueOrRef to assign stable IPs
 - Mail servers and identity-verified services require reverse DNS, which is tightly coupled to the IP resource
 - The planned hetzner-load-balanced-app and hetzner-ha-server-cluster infra charts need pre-allocated IPs
@@ -25,7 +25,7 @@ Implemented `HetznerCloudPrimaryIp` as a standalone IP allocation component with
 
 ### Design Decisions
 
-**D1: `auto_delete` hardcoded to `false`** -- In OpenMCF's component model, resources are managed independently. If `auto_delete` were `true`, deleting the assigned server would silently destroy the Primary IP, breaking OpenMCF state management. This is a safety-critical default.
+**D1: `auto_delete` hardcoded to `false`** -- In Planton's component model, resources are managed independently. If `auto_delete` were `true`, deleting the assigned server would silently destroy the Primary IP, breaking Planton state management. This is a safety-critical default.
 
 **D2: No `assignee_id` in spec** -- Server assignment is the HetznerCloudServer component's responsibility, not the IP component's. This maintains clean separation of concerns and composability.
 

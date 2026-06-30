@@ -2,8 +2,8 @@ package providerdetect
 
 import (
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
-	"github.com/plantonhq/openmcf/pkg/crkreflect"
+	"github.com/plantonhq/planton/apis/dev/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/crkreflect"
 )
 
 // DetectionResult contains the results of provider detection from a manifest.

@@ -70,7 +70,7 @@ Each preset follows the conventions defined in `architecture/presets.md`:
 
 - All 25 AWS components now have presets, completing T02 of the presets project
 - Sets the pattern and confidence level for T03-T08 (remaining 188 components across GCP, Azure, Kubernetes, OpenStack, Scaleway, and others)
-- Presets rules (`create-openmcf-preset`, `audit-openmcf-presets`, `validate-openmcf-presets`) are now proven against real content
+- Presets rules (`create-planton-preset`, `audit-planton-presets`, `validate-planton-presets`) are now proven against real content
 
 ## Related Work
 

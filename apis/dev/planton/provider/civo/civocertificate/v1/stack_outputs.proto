@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package dev.planton.provider.civo.civocertificate.v1;
+
+// CivoCertificateStackOutputs captures the relevant outputs after provisioning a Civo certificate.
+message CivoCertificateStackOutputs {
+  // certificate_id is the unique identifier of the certificate in Civo.
+  string certificate_id = 1;
+  // expiry_rfc3339 is the expiration timestamp of the certificate in RFC 3339 format.
+  string expiry_rfc3339 = 2;
+}

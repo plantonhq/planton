@@ -1,7 +1,7 @@
 # =============================================================================
 # CLI Release via GoReleaser (Reusable Workflow)
 # =============================================================================
-# Builds and releases the openmcf CLI using GoReleaser.
+# Builds and releases the planton CLI using GoReleaser.
 # This creates the GitHub Release that other workflows attach artifacts to.
 #
 # Called by: .github/workflows/release.yaml

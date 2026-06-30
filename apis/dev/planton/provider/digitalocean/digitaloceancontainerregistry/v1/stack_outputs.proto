@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package dev.planton.provider.digitalocean.digitaloceancontainerregistry.v1;
+
+// **DigitalOceanContainerRegistryStackOutputs** captures outputs after provisioning.
+message DigitalOceanContainerRegistryStackOutputs {
+  // The registry name.
+  string registry_name = 1;
+
+  // Full server URL, e.g. "registry.digitalocean.com/<registry_name>".
+  string server_url = 2;
+
+  // Region slug where the registry is hosted.
+  string region = 3;
+}

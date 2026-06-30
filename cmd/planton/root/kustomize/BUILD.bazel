@@ -1,0 +1,17 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "kustomize",
+    srcs = [
+        "init_cmd.go",
+        "schema.go",
+    ],
+    importpath = "github.com/plantonhq/planton/cmd/planton/root/kustomize",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//internal/cli/cliprint",
+        "//pkg/kustomize/initializer",
+        "//pkg/kustomize/schema",
+        "@com_github_spf13_cobra//:cobra",
+    ],
+)

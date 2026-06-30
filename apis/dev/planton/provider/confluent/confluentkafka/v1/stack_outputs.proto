@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package dev.planton.provider.confluent.confluentkafka.v1;
+
+//confluent-kafka stack outputs
+//https://www.pulumi.com/registry/packages/confluentcloud/api-docs/kafkacluster/#outputs
+message ConfluentKafkaStackOutputs {
+  //The provider-assigned unique ID for this managed resource.
+  //https://www.pulumi.com/registry/packages/confluentcloud/api-docs/kafkacluster/#id_yaml
+  string id = 1;
+  // The bootstrap endpoint used by Kafka clients to connect to the Kafka cluster. (e.g., SASL_SSL://pkc-00000.us-central1.gcp.confluent.cloud:9092).
+  //https://www.pulumi.com/registry/packages/confluentcloud/api-docs/kafkacluster/#bootstrapendpoint_yaml
+  string bootstrap_endpoint = 2;
+  //The Confluent Resource Name of the Kafka cluster,
+  // for example, crn://confluent.cloud/organization=1111aaaa-11aa-11aa-11aa-111111aaaaaa/environment=env-abc123/cloud-cluster=lkc-abc123.
+  //https://www.pulumi.com/registry/packages/confluentcloud/api-docs/kafkacluster/#rbaccrn_yaml
+  string crn = 3;
+  //The REST endpoint of the Kafka cluster (e.g., https://pkc-00000.us-central1.gcp.confluent.cloud:443).
+  //https://www.pulumi.com/registry/packages/confluentcloud/api-docs/kafkacluster/#restendpoint_yaml
+  string rest_endpoint = 4;
+}

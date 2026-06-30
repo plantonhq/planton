@@ -6,11 +6,11 @@
 
 ## Summary
 
-Created an entirely new tutorials section for the OpenMCF documentation site with 5 pages (1,015 lines) covering end-to-end deployment walkthroughs across AWS, Kubernetes, multi-environment Kustomize workflows, and cross-provider comparisons. All manifests verified against protobuf definitions, all CLI commands verified against source, zero Planton references.
+Created an entirely new tutorials section for the Planton documentation site with 5 pages (1,015 lines) covering end-to-end deployment walkthroughs across AWS, Kubernetes, multi-environment Kustomize workflows, and cross-provider comparisons. All manifests verified against protobuf definitions, all CLI commands verified against source, zero Planton references.
 
 ## Problem Statement / Motivation
 
-The OpenMCF documentation had conceptual reference material (concepts section), command documentation (CLI section), and how-to guides (guides section), but lacked step-by-step tutorials that walk users through complete deployment workflows from start to finish.
+The Planton documentation had conceptual reference material (concepts section), command documentation (CLI section), and how-to guides (guides section), but lacked step-by-step tutorials that walk users through complete deployment workflows from start to finish.
 
 ### Pain Points
 
@@ -18,7 +18,7 @@ The OpenMCF documentation had conceptual reference material (concepts section), 
 - The getting-started page covered a minimal hello-world deployment but not production-oriented configurations
 - No documentation showed the cross-provider consistency pattern — the core value proposition
 - No documentation demonstrated Kustomize overlays for multi-environment workflows
-- Evaluators comparing OpenMCF to other tools had no concrete end-to-end examples to assess
+- Evaluators comparing Planton to other tools had no concrete end-to-end examples to assess
 
 ## Solution / What's New
 
@@ -36,14 +36,14 @@ flowchart LR
 
 End-to-end S3 bucket deployment covering manifest writing, plan/apply/destroy lifecycle, and idempotent updates via lifecycle rule addition.
 
-**Component**: `AwsS3Bucket` (`aws.openmcf.org/v1`)
+**Component**: `AwsS3Bucket` (`aws.planton.dev/v1`)
 **Proto-verified fields**: `awsRegion`, `versioningEnabled`, `encryptionType`, `tags`, `lifecycleRules`
 
 ### Tutorial 2: Deploy Your First Kubernetes Resource
 
 Production-oriented PostgreSQL on Kubernetes with custom databases, named users, resource tuning, port-forwarding for local access, and `--set` runtime overrides.
 
-**Component**: `KubernetesPostgres` (`kubernetes.openmcf.org/v1`)
+**Component**: `KubernetesPostgres` (`kubernetes.planton.dev/v1`)
 **Proto-verified fields**: `namespace` (StringValueOrRef), `createNamespace`, `container` (replicas, resources, diskSize), `databases`, `users`, `ingress`
 
 ### Tutorial 3: Multi-Environment Deployments
@@ -77,7 +77,7 @@ Tutorials link to existing docs for theory rather than duplicating content:
 
 Every YAML manifest was cross-referenced against the component's protobuf definition:
 
-- Field names use camelCase (proto JSON serialization), matching existing examples in `openmcf/examples/`
+- Field names use camelCase (proto JSON serialization), matching existing examples in `planton/examples/`
 - Enum values use exact proto names (e.g., `ENCRYPTION_TYPE_SSE_S3`, `STORAGE_CLASS_STANDARD_IA`)
 - Required fields verified: `AwsS3BucketSpec.aws_region`, `GcpGcsBucketSpec.gcp_project_id/location/bucket_name`, `KubernetesPostgresSpec.namespace`
 - Validation rules documented: `bucketName` regex pattern, `diskSize` CEL expression, `ingress.hostname` conditional requirement
@@ -85,9 +85,9 @@ Every YAML manifest was cross-referenced against the component's protobuf defini
 
 ### CLI Commands Verified
 
-All commands verified against `cmd/openmcf/root/` and `internal/cli/iacflags/manifest_source_flags.go`:
+All commands verified against `cmd/planton/root/` and `internal/cli/iacflags/manifest_source_flags.go`:
 
-- `openmcf plan -f`, `openmcf apply -f`, `openmcf destroy -f` (unified commands)
+- `planton plan -f`, `planton apply -f`, `planton destroy -f` (unified commands)
 - `--set spec.container.replicas=2` (runtime overrides)
 - `--kustomize-dir` + `--overlay` (Kustomize integration, both required together)
 
@@ -100,7 +100,7 @@ All commands verified against `cmd/openmcf/root/` and `internal/cli/iacflags/man
 ## Benefits
 
 - New users have a clear path from installation to production-oriented deployments
-- Evaluators can see concrete, working examples of OpenMCF's cross-provider consistency
+- Evaluators can see concrete, working examples of Planton's cross-provider consistency
 - Multi-environment tutorial shows real-world CI/CD-ready Kustomize workflows
 - All content source-verified — no broken manifests, no incorrect commands
 

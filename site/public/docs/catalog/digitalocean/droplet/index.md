@@ -12,7 +12,7 @@ Deploys a DigitalOcean Droplet (Linux virtual machine) with configurable size, b
 
 ## What Gets Created
 
-When you deploy a DigitalOceanDroplet resource, OpenMCF provisions:
+When you deploy a DigitalOceanDroplet resource, Planton provisions:
 
 - **Droplet** — a `digitalocean_droplet` resource with the specified region, size slug, base image, VPC assignment, and optional features (IPv6, backups, monitoring agent)
 - **Volume Attachments** — existing block storage volumes are attached to the Droplet when `volumeIds` is specified
@@ -20,7 +20,7 @@ When you deploy a DigitalOceanDroplet resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **DigitalOcean credentials** configured via environment variables or OpenMCF provider config
+- **DigitalOcean credentials** configured via environment variables or Planton provider config
 - **A DigitalOcean VPC** in the target region (can reference a DigitalOceanVpc resource via `valueFrom`)
 - **A valid size slug** accepted by the DigitalOcean `/v2/sizes` API (e.g., `s-1vcpu-1gb`, `s-2vcpu-4gb`)
 - **A valid image slug or snapshot ID** for the base OS (e.g., `ubuntu-22-04-x64`, `debian-12-x64`)
@@ -30,15 +30,15 @@ When you deploy a DigitalOceanDroplet resource, OpenMCF provisions:
 Create a file `droplet.yaml`:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanDroplet
 metadata:
   name: my-droplet
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.DigitalOceanDroplet.my-droplet
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.DigitalOceanDroplet.my-droplet
 spec:
   dropletName: my-droplet
   region: nyc3
@@ -51,7 +51,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f droplet.yaml
+planton apply -f droplet.yaml
 ```
 
 This creates a single-vCPU Droplet running Ubuntu 22.04 in NYC3 with monitoring enabled by default.
@@ -87,15 +87,15 @@ This creates a single-vCPU Droplet running Ubuntu 22.04 in NYC3 with monitoring 
 A minimal Droplet for development and testing:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanDroplet
 metadata:
   name: dev-server
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.DigitalOceanDroplet.dev-server
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.DigitalOceanDroplet.dev-server
 spec:
   dropletName: dev-server
   region: sfo3
@@ -112,15 +112,15 @@ spec:
 A staging web server that installs nginx on first boot, enables backups, and uses tags for Cloud Firewall integration:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanDroplet
 metadata:
   name: staging-web
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.DigitalOceanDroplet.staging-web
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.DigitalOceanDroplet.staging-web
 spec:
   dropletName: staging-web
   region: fra1
@@ -150,15 +150,15 @@ spec:
 A production Droplet with an attached block storage volume for persistent data, referencing a DigitalOceanVpc and DigitalOceanVolume by name:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanDroplet
 metadata:
   name: prod-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.DigitalOceanDroplet.prod-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.DigitalOceanDroplet.prod-db
 spec:
   dropletName: prod-db
   region: nyc3

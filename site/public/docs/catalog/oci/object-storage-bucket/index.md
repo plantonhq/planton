@@ -12,7 +12,7 @@ Deploys an Oracle Cloud Infrastructure Object Storage bucket with optional reten
 
 ## What Gets Created
 
-When you deploy an OciObjectStorageBucket resource, OpenMCF provisions:
+When you deploy an OciObjectStorageBucket resource, Planton provisions:
 
 - **Object Storage Bucket** — an `oci_objectstorage_bucket` resource in the specified compartment and namespace with configurable access type, storage tier, versioning, auto-tiering, and optional KMS encryption. Retention rules are managed inline on the bucket (max 100).
 - **Lifecycle Policy** — created only when `lifecycleRules` is non-empty. A single `oci_objectstorage_object_lifecycle_policy` resource containing all lifecycle rules. Rules automate object archival, tiering transitions, deletion, and multipart upload cleanup based on age and name patterns.
@@ -20,7 +20,7 @@ When you deploy an OciObjectStorageBucket resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the bucket will be created — either a literal value or a reference to an OciCompartment resource
 - **Object Storage namespace** — the tenancy-unique namespace string (retrieve via `oci os ns get` or from the OCI Console)
 - **Destination buckets** (for replication) — must already exist in the target region before creating replication policies
@@ -30,15 +30,15 @@ When you deploy an OciObjectStorageBucket resource, OpenMCF provisions:
 Create a file `bucket.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciObjectStorageBucket
 metadata:
   name: my-bucket
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciObjectStorageBucket.my-bucket
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciObjectStorageBucket.my-bucket
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -49,7 +49,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f bucket.yaml
+planton apply -f bucket.yaml
 ```
 
 This creates a private bucket with Standard storage tier, no versioning, and Oracle-managed encryption. The bucket OCID is exported as a stack output.
@@ -129,15 +129,15 @@ This creates a private bucket with Standard storage tier, no versioning, and Ora
 A bucket with default settings — suitable for development or application data:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciObjectStorageBucket
 metadata:
   name: dev-data
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciObjectStorageBucket.dev-data
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciObjectStorageBucket.dev-data
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -150,15 +150,15 @@ spec:
 A bucket with versioning enabled and a 90-day retention rule for compliance:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciObjectStorageBucket
 metadata:
   name: compliance-store
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.OciObjectStorageBucket.compliance-store
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.OciObjectStorageBucket.compliance-store
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -178,15 +178,15 @@ spec:
 A bucket with auto-tiering for cost optimization and lifecycle rules to archive old data and clean up incomplete multipart uploads:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciObjectStorageBucket
 metadata:
   name: data-lake
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciObjectStorageBucket.data-lake
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciObjectStorageBucket.data-lake
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -219,15 +219,15 @@ spec:
 A production bucket with customer-managed encryption and cross-region disaster recovery:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciObjectStorageBucket
 metadata:
   name: prod-artifacts
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciObjectStorageBucket.prod-artifacts
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciObjectStorageBucket.prod-artifacts
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"

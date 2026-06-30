@@ -12,7 +12,7 @@ Deploys the Istio service mesh on Kubernetes using three official Istio Helm cha
 
 ## What Gets Created
 
-When you deploy a KubernetesIstio resource, OpenMCF provisions:
+When you deploy a KubernetesIstio resource, Planton provisions:
 
 - **Namespaces** — `istio-system` and `istio-ingress` are created only when `createNamespace` is `true`; if your cluster already has these namespaces, leave the flag as `false`
 - **Helm Release (istio/base)** — installs Istio CRDs and cluster-scoped resources from the `base` chart at `https://istio-release.storage.googleapis.com/charts`, pinned to version 1.22.3, with atomic rollback and a 3-minute timeout
@@ -23,7 +23,7 @@ All Helm release names are prefixed with `metadata.name` (e.g., `my-mesh-base`, 
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A Kubernetes namespace** that already exists (`istio-system` and `istio-ingress`), or set `createNamespace` to `true`
 - **Sufficient cluster RBAC** for creating CRDs, MutatingWebhookConfigurations, and LoadBalancer services
 
@@ -32,15 +32,15 @@ All Helm release names are prefixed with `metadata.name` (e.g., `my-mesh-base`, 
 Create a file `istio.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesIstio
 metadata:
   name: my-mesh
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesIstio.my-mesh
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesIstio.my-mesh
 spec:
   namespace: istio-system
   createNamespace: true
@@ -50,7 +50,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f istio.yaml
+planton apply -f istio.yaml
 ```
 
 This creates an Istio service mesh with three Helm releases (base, istiod, ingress gateway) using default resource limits (1000m CPU / 1Gi memory limits, 50m CPU / 100Mi memory requests for istiod). The ingress gateway is exposed as a LoadBalancer in the `istio-ingress` namespace.
@@ -83,15 +83,15 @@ This creates an Istio service mesh with three Helm releases (base, istiod, ingre
 A lightweight Istio mesh for development or testing with reduced control plane resource allocations:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesIstio
 metadata:
   name: dev-mesh
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesIstio.dev-mesh
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesIstio.dev-mesh
 spec:
   namespace: istio-system
   createNamespace: true
@@ -110,15 +110,15 @@ spec:
 A production Istio deployment with increased CPU and memory for the Istiod control plane to handle a larger number of sidecars and configuration updates:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesIstio
 metadata:
   name: prod-mesh
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesIstio.prod-mesh
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesIstio.prod-mesh
 spec:
   namespace: istio-system
   createNamespace: true
@@ -134,18 +134,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed namespace instead of hardcoding the name. The `namespace` field supports `valueFrom` to resolve the namespace name from another resource at deploy time:
+Reference an Planton-managed namespace instead of hardcoding the name. The `namespace` field supports `valueFrom` to resolve the namespace name from another resource at deploy time:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesIstio
 metadata:
   name: platform-mesh
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesIstio.platform-mesh
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesIstio.platform-mesh
 spec:
   namespace:
     valueFrom:

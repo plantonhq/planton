@@ -16,7 +16,7 @@ The KubernetesPerconaPostgresOperator component was at 88.85% completion with se
 
 1. **Missing Unit Tests (5.55% impact)**: No `spec_test.go` existed to validate buf.validate rules, creating untested validation logic that could fail silently in production
 2. **Non-Standard Pulumi Module (1.66% impact)**: Used custom file names (`percona_operator.go`, `vars.go`) instead of standard conventions (`main.go`, `locals.go`), breaking consistency with other components
-3. **Incomplete Terraform Module (2.22% impact)**: Missing standard `locals.tf` and `outputs.tf` files with logic inline in `main.tf`, deviating from OpenMCF module structure
+3. **Incomplete Terraform Module (2.22% impact)**: Missing standard `locals.tf` and `outputs.tf` files with logic inline in `main.tf`, deviating from Planton module structure
 4. **Missing Architecture Documentation (2.23% impact)**: No `overview.md` file documenting Pulumi module design decisions and workflow
 
 ### Pain Points
@@ -45,7 +45,7 @@ var _ = ginkgo.Describe("KubernetesPerconaPostgresOperator Validation Tests", fu
 
     ginkgo.BeforeEach(func() {
         input = &KubernetesPerconaPostgresOperator{
-            ApiVersion: "kubernetes.openmcf.org/v1",
+            ApiVersion: "kubernetes.planton.dev/v1",
             Kind:       "KubernetesPerconaPostgresOperator",
             Metadata:   &shared.CloudResourceMetadata{
                 Name: "test-percona-postgres-operator",
@@ -73,7 +73,7 @@ var _ = ginkgo.Describe("KubernetesPerconaPostgresOperator Validation Tests", fu
 
 ### 2. Standardized Pulumi Module Structure
 
-Renamed files to follow OpenMCF conventions:
+Renamed files to follow Planton conventions:
 - `percona_operator.go` → `main.go` (resource creation logic)
 - `vars.go` → `locals.go` (configuration constants)
 - Updated all internal references: `vars.*` → `locals.*`
@@ -129,7 +129,7 @@ locals {
     var.metadata.labels != null ? var.metadata.labels : {},
     {
       "app.kubernetes.io/name"       = "percona-postgres-operator"
-      "app.kubernetes.io/managed-by" = "openmcf"
+      "app.kubernetes.io/managed-by" = "planton"
       "app.kubernetes.io/component"  = "database-operator"
     }
   )
@@ -258,7 +258,7 @@ ok   0.540s
 - **Standard Naming**: Pulumi modules use `main.go`/`locals.go` like all components
 - **Terraform Best Practices**: Separated locals, outputs, and resources
 - **Maintainability**: Clear separation of concerns by file type
-- **Consistency**: Both IaC tools follow OpenMCF patterns
+- **Consistency**: Both IaC tools follow Planton patterns
 
 ### Developer Experience
 - **Predictable Structure**: Standard file names enable quick navigation
@@ -335,7 +335,7 @@ The Percona Distribution for PostgreSQL Operator (`pg-operator`) manages Postgre
 ### Deployment Architecture
 
 ```
-User → openmcf CLI
+User → planton CLI
   ↓
 Stack Input (spec.proto)
   ↓
@@ -385,7 +385,7 @@ Component completion tracked via:
 
 ### Unit Test Execution
 ```bash
-cd apis/org/openmcf/provider/kubernetes/kubernetesperconapostgresoperator/v1
+cd apis/dev/planton/provider/kubernetes/kubernetesperconapostgresoperator/v1
 go test -v
 ```
 
@@ -446,7 +446,7 @@ As the pg-operator evolves:
 ## File Locations
 
 **Component Root**:
-- `apis/org/openmcf/provider/kubernetes/kubernetesperconapostgresoperator/v1/`
+- `apis/dev/planton/provider/kubernetes/kubernetesperconapostgresoperator/v1/`
 
 **Key Files**:
 - `spec_test.go`: Validation test suite (92 lines)

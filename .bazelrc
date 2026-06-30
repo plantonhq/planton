@@ -1,25 +1,25 @@
 # BuildBuddy remote cache: opt-in with --config=bb
-build:bb --bes_results_url=https://openmcf.buildbuddy.io/invocation/
-build:bb --bes_backend=grpcs://openmcf.buildbuddy.io
-build:bb --remote_cache=grpcs://openmcf.buildbuddy.io
+build:bb --bes_results_url=https://planton.buildbuddy.io/invocation/
+build:bb --bes_backend=grpcs://planton.buildbuddy.io
+build:bb --remote_cache=grpcs://planton.buildbuddy.io
 build:bb --remote_timeout=10m
 build:bb --remote_download_minimal
 build:bb --remote_cache_compression
 build:bb --incompatible_strict_action_env
 build:bb --noremote_upload_local_results
 
-test:bb --bes_results_url=https://openmcf.buildbuddy.io/invocation/
-test:bb --bes_backend=grpcs://openmcf.buildbuddy.io
-test:bb --remote_cache=grpcs://openmcf.buildbuddy.io
+test:bb --bes_results_url=https://planton.buildbuddy.io/invocation/
+test:bb --bes_backend=grpcs://planton.buildbuddy.io
+test:bb --remote_cache=grpcs://planton.buildbuddy.io
 test:bb --remote_timeout=10m
 test:bb --remote_download_minimal
 test:bb --remote_cache_compression
 test:bb --incompatible_strict_action_env
 test:bb --noremote_upload_local_results
 
-run:bb --bes_results_url=https://openmcf.buildbuddy.io/invocation/
-run:bb --bes_backend=grpcs://openmcf.buildbuddy.io
-run:bb --remote_cache=grpcs://openmcf.buildbuddy.io
+run:bb --bes_results_url=https://planton.buildbuddy.io/invocation/
+run:bb --bes_backend=grpcs://planton.buildbuddy.io
+run:bb --remote_cache=grpcs://planton.buildbuddy.io
 run:bb --remote_timeout=10m
 run:bb --remote_download_minimal
 run:bb --remote_cache_compression
@@ -27,15 +27,15 @@ run:bb --incompatible_strict_action_env
 run:bb --noremote_upload_local_results
 
 # Optional: a CI profile that also enables Remote Build Execution
-# build:ci --bes_results_url=https://openmcf.buildbuddy.io/invocation/
-# build:ci --bes_backend=grpcs://openmcf.buildbuddy.io
-# build:ci --remote_cache=grpcs://openmcf.buildbuddy.io
-# build:ci --remote_executor=grpcs://openmcf.buildbuddy.io
+# build:ci --bes_results_url=https://planton.buildbuddy.io/invocation/
+# build:ci --bes_backend=grpcs://planton.buildbuddy.io
+# build:ci --remote_cache=grpcs://planton.buildbuddy.io
+# build:ci --remote_executor=grpcs://planton.buildbuddy.io
 # build:ci --remote_upload_local_results
 # build:ci --remote_timeout=10m
-# test:ci  --bes_results_url=https://openmcf.buildbuddy.io/invocation/
-# test:ci  --bes_backend=grpcs://openmcf.buildbuddy.io
-# test:ci  --remote_cache=grpcs://openmcf.buildbuddy.io
-# test:ci  --remote_executor=grpcs://openmcf.buildbuddy.io
+# test:ci  --bes_results_url=https://planton.buildbuddy.io/invocation/
+# test:ci  --bes_backend=grpcs://planton.buildbuddy.io
+# test:ci  --remote_cache=grpcs://planton.buildbuddy.io
+# test:ci  --remote_executor=grpcs://planton.buildbuddy.io
 # test:ci  --remote_upload_local_results
 # test:ci  --remote_timeout=10m

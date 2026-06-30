@@ -1,4 +1,4 @@
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareR2Bucket
 metadata:
   name: my-public-cdn-bucket

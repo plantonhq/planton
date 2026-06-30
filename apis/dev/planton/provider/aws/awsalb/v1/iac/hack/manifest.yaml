@@ -1,0 +1,9 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsAlb
+metadata:
+  name: awsalb-demo
+spec:
+  region: us-west-2
+  subnets:
+    - value: subnet-12345678
+    - value: subnet-12345679

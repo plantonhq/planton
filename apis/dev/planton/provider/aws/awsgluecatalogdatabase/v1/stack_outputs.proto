@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsgluecatalogdatabase.v1;
+
+// AwsGlueCatalogDatabaseStackOutputs captures observable identifiers from a
+// provisioned Glue Data Catalog database. These outputs are used by downstream
+// resources (Athena workgroups, Glue crawlers, Glue ETL jobs, Redshift Spectrum
+// queries) and for operational visibility via StringValueOrRef.
+message AwsGlueCatalogDatabaseStackOutputs {
+  // The name of the Glue Data Catalog database. Used in Athena queries
+  // (FROM database.table), Glue crawler configurations, Glue ETL job scripts,
+  // and Redshift Spectrum external schema definitions.
+  //
+  // The database name is unique within a catalog (AWS account + region).
+  string database_name = 1;
+
+  // The Amazon Resource Name (ARN) of the Glue Data Catalog database. Used for
+  // IAM policies, Lake Formation permissions, and cross-service authorization.
+  //
+  // Format: arn:aws:glue:{region}:{account-id}:database/{database-name}
+  string database_arn = 2;
+
+  // The ID of the AWS Glue Data Catalog that contains this database. In most
+  // cases this is the AWS Account ID. Useful for downstream resources that
+  // require the catalog context (e.g., Glue crawlers, cross-account references).
+  string catalog_id = 3;
+}

@@ -1,0 +1,23 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsSecurityGroup
+metadata:
+  name: awssecuritygroup-demo
+spec:
+  region: us-west-2
+  vpcId: vpc-0123456789abcdef0
+  description: Demo security group
+  ingress:
+    - protocol: tcp
+      fromPort: 80
+      toPort: 80
+      ipv4Cidrs:
+        - 0.0.0.0/0
+      description: Allow HTTP inbound
+  egress:
+    - protocol: tcp
+      fromPort: 443
+      toPort: 443
+      ipv4Cidrs:
+        - 0.0.0.0/0
+      description: Allow HTTPS outbound
+

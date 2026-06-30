@@ -14,7 +14,7 @@ This component allocates a static, public IPv4 address that persists independent
 ## What Was Created
 
 ### API Definition
-- `apis/org/openmcf/provider/alicloud/alicloudeipaddress/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
+- `apis/dev/planton/provider/alicloud/alicloudeipaddress/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
 - Registered `AliCloudEipAddress = 3023` in `CloudResourceKind` enum under the Networking category
 
 ### IaC Modules

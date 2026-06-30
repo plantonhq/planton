@@ -10,11 +10,11 @@ Implemented ScalewayObjectBucket (R12) -- the twelfth Scaleway resource kind and
 
 ## Problem Statement / Motivation
 
-The Scaleway cloud provider expansion in OpenMCF needs object storage support. S3-compatible storage is foundational infrastructure that downstream resources (serverless functions, containers, applications) need for file storage, backups, media hosting, and log archival.
+The Scaleway cloud provider expansion in Planton needs object storage support. S3-compatible storage is foundational infrastructure that downstream resources (serverless functions, containers, applications) need for file storage, backups, media hosting, and log archival.
 
 ### Pain Points
 
-- No Scaleway object storage resource kind existed in OpenMCF
+- No Scaleway object storage resource kind existed in Planton
 - Teams managing Scaleway infrastructure couldn't declaratively provision buckets
 - Missing piece for infra chart compositions that need storage (serverless-environment, database-stack backup targets)
 
@@ -61,13 +61,13 @@ flowchart TB
 
 ## Implementation Details
 
-### Files Created (18 new files in openmcf)
+### Files Created (18 new files in planton)
 
 **Proto schemas (4)**:
-- `apis/org/openmcf/provider/scaleway/scalewayobjectbucket/v1/api.proto`
-- `apis/org/openmcf/provider/scaleway/scalewayobjectbucket/v1/spec.proto`
-- `apis/org/openmcf/provider/scaleway/scalewayobjectbucket/v1/stack_outputs.proto`
-- `apis/org/openmcf/provider/scaleway/scalewayobjectbucket/v1/stack_input.proto`
+- `apis/dev/planton/provider/scaleway/scalewayobjectbucket/v1/api.proto`
+- `apis/dev/planton/provider/scaleway/scalewayobjectbucket/v1/spec.proto`
+- `apis/dev/planton/provider/scaleway/scalewayobjectbucket/v1/stack_outputs.proto`
+- `apis/dev/planton/provider/scaleway/scalewayobjectbucket/v1/stack_input.proto`
 
 **Pulumi Go module (6)**:
 - `iac/pulumi/Pulumi.yaml`

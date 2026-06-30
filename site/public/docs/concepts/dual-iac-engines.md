@@ -1,15 +1,15 @@
 ---
 title: "Dual IaC Engines"
-description: "How OpenMCF supports both Pulumi and OpenTofu/Terraform as deployment engines, giving teams the freedom to choose their provisioner without sacrificing component coverage"
+description: "How Planton supports both Pulumi and OpenTofu/Terraform as deployment engines, giving teams the freedom to choose their provisioner without sacrificing component coverage"
 icon: "gear"
 order: 40
 ---
 
 # Dual IaC Engines
 
-Every deployment component in OpenMCF ships with two IaC module implementations: a Pulumi module written in Go and an OpenTofu/Terraform module written in HCL. Both implementations receive the same input (the manifest's metadata, spec, and provider credentials), create the same cloud resources, and produce the same outputs.
+Every deployment component in Planton ships with two IaC module implementations: a Pulumi module written in Go and an OpenTofu/Terraform module written in HCL. Both implementations receive the same input (the manifest's metadata, spec, and provider credentials), create the same cloud resources, and produce the same outputs.
 
-This is not an abstraction layer that wraps one engine with another. These are independent, native implementations for each engine. The Pulumi module uses the Pulumi Go SDK directly. The Terraform module uses standard HCL configuration. You choose which engine to use, and OpenMCF handles the rest.
+This is not an abstraction layer that wraps one engine with another. These are independent, native implementations for each engine. The Pulumi module uses the Pulumi Go SDK directly. The Terraform module uses standard HCL configuration. You choose which engine to use, and Planton handles the rest.
 
 ## How Each Engine Works
 
@@ -18,7 +18,7 @@ This is not an abstraction layer that wraps one engine with another. These are i
 When you run a Pulumi deployment:
 
 ```bash
-openmcf pulumi up -f postgres.yaml --stack my-org/my-project/production
+planton pulumi up -f postgres.yaml --stack my-org/my-project/production
 ```
 
 The CLI:
@@ -52,7 +52,7 @@ The `module.Resources` function is where the actual resource creation happens --
 When you run an OpenTofu or Terraform deployment:
 
 ```bash
-openmcf tofu apply -f postgres.yaml
+planton tofu apply -f postgres.yaml
 ```
 
 The CLI:
@@ -105,10 +105,10 @@ The main.tf file uses these variables to create the same resources that the Pulu
 
 ### Terraform Support
 
-OpenMCF also supports HashiCorp Terraform directly:
+Planton also supports HashiCorp Terraform directly:
 
 ```bash
-openmcf terraform apply -f postgres.yaml
+planton terraform apply -f postgres.yaml
 ```
 
 The Terraform path works identically to the OpenTofu path. The same HCL modules are used -- OpenTofu and Terraform are compatible at the module level.
@@ -133,7 +133,7 @@ Both engines produce the same outputs. A `KubernetesPostgres` deployment produce
 Every component's IaC directory contains both implementations side by side:
 
 ```text
-apis/org/openmcf/provider/kubernetes/kubernetespostgres/v1/iac/
+apis/dev/planton/provider/kubernetes/kubernetespostgres/v1/iac/
 |-- pulumi/
 |   |-- main.go                  # Entry point: load stack input, call module
 |   |-- Pulumi.yaml              # Pulumi project definition
@@ -168,24 +168,24 @@ Both engines are fully supported. Your choice depends on your team's preferences
 
 ### Unified Commands
 
-If you do not want to specify the engine on every command, set the `openmcf.org/provisioner` label in your manifest's metadata:
+If you do not want to specify the engine on every command, set the `planton.dev/provisioner` label in your manifest's metadata:
 
 ```yaml
 metadata:
   labels:
-    openmcf.org/provisioner: pulumi  # or: tofu, terraform
+    planton.dev/provisioner: pulumi  # or: tofu, terraform
 ```
 
 Then use the unified commands, which delegate to the correct engine automatically:
 
 ```bash
 # These read the provisioner label and call the right engine
-openmcf apply -f postgres.yaml
-openmcf plan -f postgres.yaml
-openmcf destroy -f postgres.yaml
+planton apply -f postgres.yaml
+planton plan -f postgres.yaml
+planton destroy -f postgres.yaml
 ```
 
-This is equivalent to running `openmcf pulumi up`, `openmcf pulumi preview`, or `openmcf pulumi destroy` -- but the engine selection comes from the manifest rather than the command.
+This is equivalent to running `planton pulumi up`, `planton pulumi preview`, or `planton pulumi destroy` -- but the engine selection comes from the manifest rather than the command.
 
 ## What's Next
 

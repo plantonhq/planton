@@ -6,17 +6,17 @@
 
 ## Summary
 
-Added `GcpGlobalAddress` as a new deployment component to OpenMCF, covering static IP address reservations at global scope in Google Cloud Platform. The component supports external static IPs for HTTP(S) load balancers, internal IP ranges for VPC peering (Cloud SQL, Redis, AlloyDB private networking), and Private Service Connect addresses. Includes proto API with CEL cross-field validation, dual IaC backends (Pulumi + Terraform), 20 passing validation tests, 3 presets, and production-quality documentation.
+Added `GcpGlobalAddress` as a new deployment component to Planton, covering static IP address reservations at global scope in Google Cloud Platform. The component supports external static IPs for HTTP(S) load balancers, internal IP ranges for VPC peering (Cloud SQL, Redis, AlloyDB private networking), and Private Service Connect addresses. Includes proto API with CEL cross-field validation, dual IaC backends (Pulumi + Terraform), 20 passing validation tests, 3 presets, and production-quality documentation.
 
 ## Problem Statement / Motivation
 
-Platform engineers provisioning GCP infrastructure through OpenMCF could create VPCs, firewall rules, GKE clusters, and DNS records, but had no way to reserve static global IP addresses. This gap meant:
+Platform engineers provisioning GCP infrastructure through Planton could create VPCs, firewall rules, GKE clusters, and DNS records, but had no way to reserve static global IP addresses. This gap meant:
 
 ### Pain Points
 
-- No way to reserve static IPs for HTTP(S) load balancers through OpenMCF
-- VPC peering for managed services (Cloud SQL, Redis, AlloyDB) required manual address range reservation outside OpenMCF
-- Private Service Connect endpoints couldn't be provisioned as part of an OpenMCF-managed environment
+- No way to reserve static IPs for HTTP(S) load balancers through Planton
+- VPC peering for managed services (Cloud SQL, Redis, AlloyDB) required manual address range reservation outside Planton
+- Private Service Connect endpoints couldn't be provisioned as part of an Planton-managed environment
 - Infra charts composing load-balanced environments had no `GcpGlobalAddress` to reference via `StringValueOrRef`
 
 ## Solution / What's New
@@ -26,7 +26,7 @@ A complete `GcpGlobalAddress` deployment component covering the `google_compute_
 ### Component Structure
 
 ```
-apis/org/openmcf/provider/gcp/gcpglobaladdress/v1/
+apis/dev/planton/provider/gcp/gcpglobaladdress/v1/
 ├── spec.proto              # 9 fields, 3 CEL cross-field rules
 ├── stack_outputs.proto     # address, self_link, creation_timestamp
 ├── api.proto               # KRM envelope (GcpGlobalAddress + Status)
@@ -112,7 +112,7 @@ Registered as `GcpGlobalAddress = 621` with id_prefix `gcpgip` in `cloud_resourc
 
 - **R01 GcpFirewallRule** (completed 2026-02-15): First resource in the GCP expansion project; established forge patterns used here
 - **GCP Resource Expansion sub-project** (20260215.01.sp.gcp-resource-expansion): This is R02 of 21 planned GCP resource kinds
-- **Parent project** (20260212.01.openmcf-cloud-provider-expansion): Cross-provider expansion initiative
+- **Parent project** (20260212.01.planton-cloud-provider-expansion): Cross-provider expansion initiative
 
 ---
 

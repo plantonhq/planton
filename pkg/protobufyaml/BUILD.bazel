@@ -3,7 +3,7 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "protobufyaml",
     srcs = ["protobuf_yaml.go"],
-    importpath = "github.com/plantonhq/openmcf/pkg/protobufyaml",
+    importpath = "github.com/plantonhq/planton/pkg/protobufyaml",
     visibility = ["//visibility:public"],
     deps = [
         "//pkg/fileutil",

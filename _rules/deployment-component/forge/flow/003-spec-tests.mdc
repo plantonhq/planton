@@ -8,17 +8,17 @@ TITLE
 Forge: Add and run spec-level validation tests (protovalidate + Ginkgo/Gomega)
 
 ROLE
-You are the OpenMCF Code Partner working inside the developer’s local workspace in Cursor. This rule creates and executes Go tests focused on validating `spec.proto` rules for a resource kind.
+You are the Planton Code Partner working inside the developer’s local workspace in Cursor. This rule creates and executes Go tests focused on validating `spec.proto` rules for a resource kind.
 
 SCOPE
-- Target directory: `apis/org/openmcf/provider/<provider>/<kindfolder>/v1/`.
+- Target directory: `apis/dev/planton/provider/<provider>/<kindfolder>/v1/`.
 - Create `spec_test.go` covering field-level and CEL validations.
 - Do not change schema; only tests are created/updated.
 
 TOOLS
 - Reader: `_rules/deployment-component/_scripts/spec_proto_reader.py`
 - Test Writer+Run: `_rules/deployment-component/_scripts/spec_tests_write_and_run.py`
-- Reference components (live ground truth): `apis/org/openmcf/provider/aws/awsvpc/v1/spec_test.go`
+- Reference components (live ground truth): `apis/dev/planton/provider/aws/awsvpc/v1/spec_test.go`
   and `aws/awsalb/v1/spec_test.go` -- the canonical test-suite skeleton and positive/negative cases.
 
 SEQUENTIAL STEPS
@@ -44,7 +44,7 @@ SUCCESS CRITERIA
   `002-spec-validate` ("VALIDATION MESSAGE QUALITY"). If you find a terse or generic message during test authoring (e.g., "required", "invalid", raw regex), fix the message in `spec.proto` via the validate rule before proceeding. Tests are the last line of defense for message quality.
 
 TESTING OPTIONAL FIELDS
-- Fields with `(org.openmcf.shared.options.default)` are marked `optional`
+- Fields with `(dev.planton.shared.options.default)` are marked `optional`
 - Generated Go code uses pointer types (`*string` vs `string`)
 - Tests must assign via pointers:
   ```go

@@ -1,0 +1,218 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcpbigtableinstance.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// GcpBigtableInstanceClusterAutoscalingConfig defines the autoscaling
+// parameters for a Bigtable cluster. When configured, Bigtable dynamically
+// adjusts the number of nodes based on CPU and storage utilization.
+//
+// Autoscaling is mutually exclusive with fixed num_nodes on the parent
+// cluster message. When autoscaling is configured, any num_nodes value
+// on the cluster is ignored.
+message GcpBigtableInstanceClusterAutoscalingConfig {
+  // Minimum number of nodes for autoscaling. Must be at least 1.
+  int32 min_nodes = 1 [(buf.validate.field) = {
+    required: true
+    int32: {gte: 1}
+  }];
+
+  // Maximum number of nodes for autoscaling. Must be at least 1 and
+  // greater than or equal to min_nodes.
+  int32 max_nodes = 2 [(buf.validate.field) = {
+    required: true
+    int32: {gte: 1}
+  }];
+
+  // Target CPU utilization percentage for autoscaling. Bigtable adds nodes
+  // when average CPU utilization exceeds this target and removes nodes
+  // when utilization drops sufficiently below it. Must be between 10 and 80.
+  int32 cpu_target = 3 [(buf.validate.field) = {
+    required: true
+    int32: {
+      gte: 10
+      lte: 80
+    }
+  }];
+
+  // Target storage utilization per node in GB. When total storage per node
+  // exceeds this target, Bigtable adds nodes. The valid range depends on
+  // the cluster's storage_type:
+  //   - SSD: 2560 to 5120 (2.5 TiB to 5 TiB per node)
+  //   - HDD: 8192 to 16384 (8 TiB to 16 TiB per node)
+  // If not set, Bigtable uses the default for the storage type
+  // (2560 for SSD, 8192 for HDD).
+  int32 storage_target = 4;
+
+  // max_nodes must be >= min_nodes.
+  option (buf.validate.message).cel = {
+    id: "autoscaling_max_gte_min"
+    expression: "this.max_nodes >= this.min_nodes"
+    message: "max_nodes must be greater than or equal to min_nodes"
+  };
+}
+
+// GcpBigtableInstanceCluster defines the configuration for a single
+// Bigtable cluster within the instance. Each cluster serves as an
+// independent replica of the instance's data and must be placed in
+// a different zone.
+//
+// Bigtable supports two scaling modes per cluster:
+//
+//   - Fixed: Set num_nodes to a specific value (e.g., 3 nodes).
+//   - Autoscaling: Configure autoscaling_config with CPU/storage targets
+//     and min/max node bounds.
+//
+// These are mutually exclusive. If neither is set, Bigtable automatically
+// allocates nodes based on the data footprint, optimized for 50% storage
+// utilization.
+//
+// Important: zone, storage_type, kms_key_name, and node_scaling_factor
+// are immutable after creation. Changing them requires deleting and
+// recreating the cluster, which recreates the entire instance.
+message GcpBigtableInstanceCluster {
+  // Unique identifier for this cluster within the instance.
+  // Must be 6-30 characters: lowercase letters, numbers, and hyphens only.
+  // Must start with a lowercase letter and end with a letter or number.
+  string cluster_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z][a-z0-9-]{4,28}[a-z0-9]$",
+    (buf.validate.field).string.min_len = 6,
+    (buf.validate.field).string.max_len = 30
+  ];
+
+  // Zone where this cluster will be deployed (e.g., "us-central1-a").
+  // Each cluster in the instance must be in a different zone.
+  // Zones must be Bigtable-capable (see GCP Bigtable locations).
+  // Immutable after creation.
+  string zone = 2 [(buf.validate.field).required = true];
+
+  // Fixed number of nodes in this cluster. Mutually exclusive with
+  // autoscaling_config. If neither is set, Bigtable auto-allocates
+  // nodes based on the data footprint.
+  int32 num_nodes = 3;
+
+  // Storage type for this cluster.
+  // SSD: lower latency, recommended for most workloads.
+  // HDD: lower cost, suitable for large batch-analytics workloads
+  // where latency is less critical.
+  // Default: SSD.
+  // Immutable after creation.
+  optional string storage_type = 4 [
+    (dev.planton.shared.options.default) = "SSD",
+    (buf.validate.field).cel = {
+      id: "storage_type_valid_value"
+      expression: "this == '' || this in ['SSD', 'HDD']"
+      message: "storage_type must be SSD or HDD"
+    }
+  ];
+
+  // Cloud KMS encryption key to protect data in this cluster (CMEK).
+  // Format: projects/{project}/locations/{location}/keyRings/{keyring}/cryptoKeys/{key}
+  // The key region must match the cluster zone's region. All clusters
+  // within an instance should use the same CMEK key.
+  // Immutable after creation.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_name = 5 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+  ];
+
+  // Node scaling factor for this cluster. Controls the granularity of
+  // node scaling: 1X scales in increments of 1 node, 2X scales in
+  // increments of 2 nodes (for larger workloads that benefit from
+  // coarser scaling steps). When using 2X, num_nodes, min_nodes, and
+  // max_nodes must all be specified in increments of 2.
+  // If not set, GCP defaults to NodeScalingFactor1X.
+  // Immutable after creation.
+  string node_scaling_factor = 6 [(buf.validate.field).cel = {
+    id: "node_scaling_factor_valid_value"
+    expression: "this == '' || this in ['NodeScalingFactor1X', 'NodeScalingFactor2X']"
+    message: "node_scaling_factor must be NodeScalingFactor1X or NodeScalingFactor2X"
+  }];
+
+  // Autoscaling configuration for this cluster. Mutually exclusive with
+  // num_nodes. When set, Bigtable dynamically adjusts the number of
+  // nodes based on CPU and storage utilization targets.
+  GcpBigtableInstanceClusterAutoscalingConfig autoscaling_config = 7;
+
+  // num_nodes and autoscaling_config are mutually exclusive.
+  option (buf.validate.message).cel = {
+    id: "scaling_mutual_exclusion"
+    expression: "this.num_nodes == 0 || !has(this.autoscaling_config)"
+    message: "only one of num_nodes or autoscaling_config may be set"
+  };
+}
+
+// GcpBigtableInstanceSpec defines the configuration for a Cloud Bigtable
+// instance with one or more clusters.
+//
+// Cloud Bigtable is a fully managed, wide-column NoSQL database designed
+// for large analytical and operational workloads. It provides consistent
+// sub-10ms latency, scales to billions of rows and thousands of columns,
+// and is ideal for time-series data, IoT, ad-tech, fintech, and
+// machine-learning feature stores.
+//
+// This component bundles the instance (the logical container for data)
+// with one or more clusters (the physical replicas serving the data).
+// An instance without at least one cluster cannot store or serve data.
+// Bigtable tables and app profiles are application-level concerns
+// managed separately, not included here.
+//
+// Multi-cluster instances provide automatic replication and failover.
+// Each cluster must be in a different zone. The Bigtable client library
+// handles routing and failover between clusters transparently.
+//
+// Important behavioral notes:
+//
+//   - instance_name is immutable after creation (6-33 characters).
+//   - Each cluster's zone, storage_type, kms_key_name, and
+//     node_scaling_factor are immutable after creation.
+//   - GCP labels are supported at the instance level (not per cluster).
+//   - The GCP distinction between DEVELOPMENT and PRODUCTION instance
+//     types is deprecated and being removed. All instances are effectively
+//     PRODUCTION. Use a single small cluster for development workloads.
+message GcpBigtableInstanceSpec {
+  // GCP project where the Bigtable instance will be created.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // Name of the Bigtable instance (also called Instance ID in GCP Console).
+  // This becomes the GCP resource name and is used by Bigtable client
+  // libraries to connect. Must be 6-33 characters: lowercase letters,
+  // numbers, and hyphens only. Must start with a lowercase letter and
+  // end with a letter or number.
+  // Immutable after creation.
+  string instance_name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z][a-z0-9-]{4,31}[a-z0-9]$",
+    (buf.validate.field).string.min_len = 6,
+    (buf.validate.field).string.max_len = 33
+  ];
+
+  // Human-readable display name for the instance.
+  // If not specified, defaults to the instance_name value.
+  string display_name = 3;
+
+  // Whether deletion protection is enabled. When true, the instance
+  // cannot be destroyed without first setting this to false.
+  // Strongly recommended for production instances.
+  // Default: true.
+  optional bool deletion_protection = 4 [(dev.planton.shared.options.default) = "true"];
+
+  // Whether to delete all backups in the instance when destroying it.
+  // Bigtable blocks instance deletion if backups exist unless this is
+  // set to true. Only relevant during destroy operations.
+  bool force_destroy = 5;
+
+  // One or more clusters that serve as physical replicas for this instance.
+  // Each cluster must be in a different zone within the same or different
+  // regions. At least one cluster is required. Up to 8 clusters can be
+  // configured across cloud regions for multi-region replication.
+  repeated GcpBigtableInstanceCluster clusters = 6 [(buf.validate.field).repeated.min_items = 1];
+}

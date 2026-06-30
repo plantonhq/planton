@@ -8,7 +8,7 @@ TITLE
 Forge: Build Validation (component-scoped go build)
 
 ROLE
-You are the OpenMCF Code Partner working inside the developer's local workspace in Cursor. This rule validates that the component's Go code compiles correctly by running `go build` scoped to the component directory.
+You are the Planton Code Partner working inside the developer's local workspace in Cursor. This rule validates that the component's Go code compiles correctly by running `go build` scoped to the component directory.
 
 SCOPE
 - Run `go build` scoped to the component's directory tree
@@ -28,7 +28,7 @@ reports success. The release pipeline does NOT use the wildcard. It builds the e
 directory directly and non-recursively:
 
 ```
-go build -o <bin> ./apis/org/openmcf/provider/<provider>/<component>/v1/iac/pulumi
+go build -o <bin> ./apis/dev/planton/provider/<provider>/<component>/v1/iac/pulumi
 ```
 
 That form REQUIRES a `package main` file at the `iac/pulumi/` root and fails with
@@ -62,9 +62,9 @@ SEQUENTIAL STEPS
 
 2) Execute Build Commands (BOTH are required):
    a) Recursive component build (catches module/proto/stub compile errors):
-      - Run: `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...`
+      - Run: `go build ./apis/dev/planton/provider/<provider>/<component>/v1/...`
    b) Release-equivalent entrypoint build (catches a missing/misplaced root `main`):
-      - Run: `go build -o /dev/null ./apis/org/openmcf/provider/<provider>/<component>/v1/iac/pulumi`
+      - Run: `go build -o /dev/null ./apis/dev/planton/provider/<provider>/<component>/v1/iac/pulumi`
       - This is the EXACT contract the release pipeline uses. It is non-recursive and
         requires a `package main` at the entrypoint root. Do not substitute the `...` form.
    - Each should complete in a few seconds (single component, not entire monorepo)
@@ -91,8 +91,8 @@ SEQUENTIAL STEPS
 SUCCESS CRITERIA
 - The Pulumi entrypoint is at the canonical root: `iac/pulumi/main.go` is `package main`,
   with no `iac/pulumi/main/` or `iac/pulumi/entrypoint/` subdir
-- `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...` exits with code 0
-- `go build -o /dev/null ./apis/org/openmcf/provider/<provider>/<component>/v1/iac/pulumi`
+- `go build ./apis/dev/planton/provider/<provider>/<component>/v1/...` exits with code 0
+- `go build -o /dev/null ./apis/dev/planton/provider/<provider>/<component>/v1/iac/pulumi`
   (the release-equivalent, non-recursive entrypoint build) exits with code 0
 - No compilation errors
 - All Go files in the component compile successfully
@@ -161,8 +161,8 @@ Show results clearly:
    - Pulumi module files exist
    - Pulumi entrypoint at root: iac/pulumi/main.go (package main), no main//entrypoint/ subdir
 
-🔨 Running: go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...
-🔨 Running: go build -o /dev/null ./apis/org/openmcf/provider/<provider>/<component>/v1/iac/pulumi
+🔨 Running: go build ./apis/dev/planton/provider/<provider>/<component>/v1/...
+🔨 Running: go build -o /dev/null ./apis/dev/planton/provider/<provider>/<component>/v1/iac/pulumi
 
 ⏱️  Duration: 4s
 
@@ -192,8 +192,8 @@ Compilation failed with X errors:
 Next steps:
 1. Fix the errors listed above
 2. Re-run BOTH builds:
-   - go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...
-   - go build -o /dev/null ./apis/org/openmcf/provider/<provider>/<component>/v1/iac/pulumi
+   - go build ./apis/dev/planton/provider/<provider>/<component>/v1/...
+   - go build -o /dev/null ./apis/dev/planton/provider/<provider>/<component>/v1/iac/pulumi
 3. Proceed to next rule only after BOTH builds succeed
 ```
 

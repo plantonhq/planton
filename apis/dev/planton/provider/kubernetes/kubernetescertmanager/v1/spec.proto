@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetescertmanager.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/target_cluster.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// KubernetesCertManagerSpec defines configuration for installing cert-manager
+// on any Kubernetes cluster. This component handles the controller lifecycle
+// (Helm chart, CRDs, ServiceAccount with optional workload identity).
+//
+// ClusterIssuer management is handled separately by the KubernetesClusterIssuer
+// component, which creates individual ClusterIssuers per DNS domain.
+message KubernetesCertManagerSpec {
+  // Target Kubernetes Cluster
+  dev.planton.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  // Kubernetes Namespace
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // flag to indicate if the namespace should be created
+  bool create_namespace = 3;
+
+  // cert-manager version such as "v1.19.1". Used to set the controller image tag.
+  optional string kubernetes_cert_manager_version = 4 [(dev.planton.shared.options.default) = "v1.19.1"];
+
+  // Helm chart version to deploy. If not specified, uses the default version.
+  optional string helm_chart_version = 5 [(dev.planton.shared.options.default) = "v1.19.1"];
+
+  // Skip installation of the self-signed issuer that cert-manager creates by default.
+  bool skip_install_self_signed_issuer = 6;
+
+  // Workload identity configuration for the cert-manager controller ServiceAccount.
+  // Required when using GCP Cloud DNS, AWS Route53, or Azure DNS solvers in
+  // KubernetesClusterIssuer resources. Not needed for Cloudflare (uses API token secrets).
+  WorkloadIdentityConfig workload_identity = 7;
+}
+
+// WorkloadIdentityConfig binds the cert-manager controller's Kubernetes
+// ServiceAccount to a cloud identity, enabling keyless authentication
+// for DNS-01 challenges.
+message WorkloadIdentityConfig {
+  oneof provider {
+    GkeWorkloadIdentity gke = 1;
+    EksIrsa eks = 2;
+    AksWorkloadIdentity aks = 3;
+  }
+}
+
+// GkeWorkloadIdentity configures GKE Workload Identity for cert-manager.
+message GkeWorkloadIdentity {
+  // GCP Service Account email for Workload Identity.
+  // Must have dns.admin role on the project containing the DNS zones.
+  string service_account_email = 1 [(buf.validate.field).required = true];
+}
+
+// EksIrsa configures IAM Roles for Service Accounts (IRSA) for cert-manager on EKS.
+message EksIrsa {
+  // IAM Role ARN for IRSA.
+  // Must have permissions to modify Route53 records.
+  string role_arn = 1 [(buf.validate.field).required = true];
+}
+
+// AksWorkloadIdentity configures Azure Workload Identity for cert-manager on AKS.
+message AksWorkloadIdentity {
+  // Managed Identity Client ID.
+  // Must have DNS Zone Contributor role.
+  string client_id = 1 [(buf.validate.field).required = true];
+}

@@ -1,0 +1,284 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcppubsubtopic.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// GcpPubSubTopicMessageStoragePolicy constrains the set of Google Cloud Platform
+// regions where messages published to the topic may be persisted in storage.
+message GcpPubSubTopicMessageStoragePolicy {
+  // A list of GCP region IDs where messages may be persisted in storage.
+  // Messages published by publishers running in non-allowed regions will be
+  // routed for storage in one of the allowed regions.
+  // Must contain at least one region when the policy is specified.
+  repeated string allowed_persistence_regions = 1 [(buf.validate.field).repeated.min_items = 1];
+
+  // When true, allowed_persistence_regions is also used to enforce in-transit
+  // guarantees for messages. Pub/Sub will fail publish operations on this topic
+  // and subscribe operations on any subscription attached to this topic in any
+  // region not listed in allowed_persistence_regions.
+  bool enforce_in_transit = 2;
+}
+
+// GcpPubSubTopicSchemaSettings defines schema validation settings for messages
+// published to the topic.
+message GcpPubSubTopicSchemaSettings {
+  // The fully qualified name of the Pub/Sub schema that messages must conform to.
+  // Format: projects/{project}/schemas/{schema}
+  string schema = 1 [(buf.validate.field).required = true];
+
+  // The encoding of messages validated against the schema.
+  // Valid values: "JSON" or "BINARY".
+  string encoding = 2 [(buf.validate.field).cel = {
+    id: "valid_encoding"
+    expression: "this == '' || this in ['JSON', 'BINARY']"
+    message: "encoding must be JSON or BINARY"
+  }];
+}
+
+// GcpPubSubTopicIngestionAwsKinesis defines settings for ingesting data from
+// Amazon Kinesis Data Streams into this Pub/Sub topic.
+message GcpPubSubTopicIngestionAwsKinesis {
+  // The ARN of the Kinesis data stream to ingest from.
+  string stream_arn = 1 [(buf.validate.field).required = true];
+
+  // The ARN of the Kinesis consumer to use for Enhanced Fan-Out delivery.
+  string consumer_arn = 2 [(buf.validate.field).required = true];
+
+  // The ARN of the AWS IAM role used for cross-account access to the Kinesis stream.
+  string aws_role_arn = 3 [(buf.validate.field).required = true];
+
+  // The GCP service account used for Federated Identity authentication with AWS.
+  string gcp_service_account = 4 [(buf.validate.field).required = true];
+}
+
+// GcpPubSubTopicIngestionAwsMsk defines settings for ingesting data from
+// Amazon Managed Streaming for Apache Kafka (MSK) into this Pub/Sub topic.
+message GcpPubSubTopicIngestionAwsMsk {
+  // The ARN of the MSK cluster to ingest from.
+  string cluster_arn = 1 [(buf.validate.field).required = true];
+
+  // The name of the Kafka topic in MSK to ingest from.
+  string topic = 2 [(buf.validate.field).required = true];
+
+  // The ARN of the AWS IAM role used for cross-account access to the MSK cluster.
+  string aws_role_arn = 3 [(buf.validate.field).required = true];
+
+  // The GCP service account used for Federated Identity authentication with AWS.
+  string gcp_service_account = 4 [(buf.validate.field).required = true];
+}
+
+// GcpPubSubTopicIngestionAzureEventHubs defines settings for ingesting data from
+// Azure Event Hubs into this Pub/Sub topic.
+message GcpPubSubTopicIngestionAzureEventHubs {
+  // The Azure resource group containing the Event Hubs namespace.
+  string resource_group = 1;
+
+  // The Azure Event Hubs namespace.
+  string namespace = 2;
+
+  // The name of the Event Hub to ingest from.
+  string event_hub = 3;
+
+  // The Azure AD application client ID for authentication.
+  string client_id = 4;
+
+  // The Azure AD tenant ID.
+  string tenant_id = 5;
+
+  // The Azure subscription ID.
+  string subscription_id = 6;
+
+  // The GCP service account used for Federated Identity authentication with Azure.
+  string gcp_service_account = 7;
+}
+
+// GcpPubSubTopicIngestionCloudStorageTextFormat defines the text format
+// configuration for Cloud Storage ingestion. Each line of text (delimited
+// by the specified delimiter) becomes the data field of a Pub/Sub message.
+message GcpPubSubTopicIngestionCloudStorageTextFormat {
+  // The line delimiter. Defaults to newline ("\n") when not set.
+  string delimiter = 1;
+}
+
+// GcpPubSubTopicIngestionCloudStorageAvroFormat selects Avro binary format
+// for Cloud Storage ingestion. The bytes of each object are set to the
+// data field of a Pub/Sub message. No additional configuration is needed.
+message GcpPubSubTopicIngestionCloudStorageAvroFormat {}
+
+// GcpPubSubTopicIngestionCloudStoragePubsubAvroFormat selects the Pub/Sub Avro
+// format for Cloud Storage ingestion. This format restores the data and attributes
+// fields of originally exported Pub/Sub messages.
+message GcpPubSubTopicIngestionCloudStoragePubsubAvroFormat {}
+
+// GcpPubSubTopicIngestionCloudStorage defines settings for ingesting data from
+// a Google Cloud Storage bucket into this Pub/Sub topic.
+message GcpPubSubTopicIngestionCloudStorage {
+  // The name of the Cloud Storage bucket to ingest from (without "gs://" prefix).
+  // See: https://cloud.google.com/storage/docs/buckets#naming
+  dev.planton.shared.foreignkey.v1.StringValueOrRef bucket = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpGcsBucket,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_id"
+  ];
+
+  // Glob pattern used to match objects that will be ingested.
+  // If unset, all objects in the bucket will be ingested.
+  string match_glob = 2;
+
+  // Only ingest objects with a creation timestamp equal to or later than this value.
+  // Format: RFC 3339 (e.g., "2024-01-01T00:00:00Z").
+  // If unset, all objects are eligible for ingestion regardless of creation time.
+  string minimum_object_create_time = 3;
+
+  // Read Cloud Storage data in Avro binary format. The bytes of each object
+  // are set to the data field of a Pub/Sub message.
+  // Set this field (as an empty message) to select Avro format.
+  GcpPubSubTopicIngestionCloudStorageAvroFormat avro_format = 4;
+
+  // Read Cloud Storage data written via Cloud Storage subscriptions.
+  // Restores the data and attributes of the originally exported Pub/Sub messages.
+  // Set this field (as an empty message) to select Pub/Sub Avro format.
+  GcpPubSubTopicIngestionCloudStoragePubsubAvroFormat pubsub_avro_format = 5;
+
+  // Read Cloud Storage data in text format. Each line of text (as defined by
+  // the delimiter) becomes the data field of a Pub/Sub message.
+  GcpPubSubTopicIngestionCloudStorageTextFormat text_format = 6;
+}
+
+// GcpPubSubTopicIngestionConfluentCloud defines settings for ingesting data from
+// Confluent Cloud into this Pub/Sub topic.
+message GcpPubSubTopicIngestionConfluentCloud {
+  // The Confluent Cloud bootstrap server address. Format: host:port.
+  string bootstrap_server = 1 [(buf.validate.field).required = true];
+
+  // The name of the Confluent Cloud topic to ingest from.
+  string topic = 2 [(buf.validate.field).required = true];
+
+  // The Workload Identity Pool ID used for Federated Identity authentication
+  // with Confluent Cloud.
+  string identity_pool_id = 3 [(buf.validate.field).required = true];
+
+  // The GCP service account used for Federated Identity authentication
+  // with Confluent Cloud.
+  string gcp_service_account = 4 [(buf.validate.field).required = true];
+
+  // The Confluent Cloud cluster ID. Optional.
+  string cluster_id = 5;
+}
+
+// GcpPubSubTopicIngestionPlatformLogsSettings configures platform logging for
+// the ingestion pipeline. Controls the minimum severity level of logs generated
+// during data ingestion.
+message GcpPubSubTopicIngestionPlatformLogsSettings {
+  // The minimum severity level of platform logs that will be written.
+  // Valid values: "DISABLED", "DEBUG", "INFO", "WARNING", "ERROR".
+  // If unset, no platform logs will be generated.
+  string severity = 1 [(buf.validate.field).cel = {
+    id: "valid_severity"
+    expression: "this == '' || this in ['DISABLED', 'DEBUG', 'INFO', 'WARNING', 'ERROR']"
+    message: "severity must be one of: DISABLED, DEBUG, INFO, WARNING, ERROR"
+  }];
+}
+
+// GcpPubSubTopicIngestionDataSourceSettings configures data ingestion from
+// external sources into this Pub/Sub topic. Typically one data source is
+// configured per topic.
+//
+// Supported sources:
+//   - AWS Kinesis Data Streams
+//   - AWS Managed Streaming for Apache Kafka (MSK)
+//   - Azure Event Hubs
+//   - Google Cloud Storage
+//   - Confluent Cloud
+message GcpPubSubTopicIngestionDataSourceSettings {
+  // Ingest from Amazon Kinesis Data Streams.
+  GcpPubSubTopicIngestionAwsKinesis aws_kinesis = 1;
+
+  // Ingest from Amazon Managed Streaming for Apache Kafka (MSK).
+  GcpPubSubTopicIngestionAwsMsk aws_msk = 2;
+
+  // Ingest from Azure Event Hubs.
+  GcpPubSubTopicIngestionAzureEventHubs azure_event_hubs = 3;
+
+  // Ingest from Google Cloud Storage.
+  GcpPubSubTopicIngestionCloudStorage cloud_storage = 4;
+
+  // Ingest from Confluent Cloud.
+  GcpPubSubTopicIngestionConfluentCloud confluent_cloud = 5;
+
+  // Platform logging settings for the ingestion pipeline.
+  GcpPubSubTopicIngestionPlatformLogsSettings platform_logs_settings = 6;
+}
+
+// GcpPubSubTopicSpec defines the configuration for a GCP Pub/Sub topic.
+//
+// A topic is a named resource to which messages are sent by publishers and
+// from which messages are pulled by subscribers via subscriptions. Topics
+// are the foundation of event-driven architectures in GCP -- they decouple
+// message producers from consumers and support one-to-many message distribution.
+//
+// Important behavioral notes:
+//
+//   - The topic_name field is immutable after creation. Changing it requires
+//     destroying and recreating the topic (and all its subscriptions).
+//
+//   - Message retention (message_retention_duration) is independent of
+//     subscription-level retention. When set, any subscription can seek to
+//     a timestamp within the retention window.
+//
+//   - Message storage policy regions are enforced at publish time. Publishers
+//     in non-allowed regions have their messages routed to an allowed region.
+//     When enforce_in_transit is true, publish calls from non-allowed regions
+//     are rejected entirely.
+message GcpPubSubTopicSpec {
+  // GCP project where the topic will be created.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // Name of the Pub/Sub topic.
+  // Must be 3-255 characters, start with a letter, and contain only letters,
+  // numbers, hyphens, underscores, periods, tildes, plus signs, and percent signs.
+  // Immutable after creation.
+  string topic_name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 3,
+    (buf.validate.field).string.max_len = 255,
+    (buf.validate.field).string.pattern = "^[a-zA-Z][a-zA-Z0-9\\-_\\.~+%]*$"
+  ];
+
+  // Cloud KMS key for encrypting messages at rest (CMEK).
+  // Format: projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{key}
+  // The Pub/Sub service account must have roles/cloudkms.cryptoKeyEncrypterDecrypter
+  // on this key. If not set, messages are encrypted with Google-managed keys.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_name = 3 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+  ];
+
+  // Minimum duration to retain a message after it is published to the topic.
+  // When set, messages published in the last message_retention_duration are always
+  // available to subscribers, and any attached subscription can seek to a timestamp
+  // within the retention window.
+  // Format: duration string (e.g., "604800s" for 7 days).
+  // Range: 600s (10 minutes) to 2678400s (31 days).
+  // If not set, message retention is controlled by individual subscriptions.
+  string message_retention_duration = 4;
+
+  // Policy constraining the set of GCP regions where messages may be stored.
+  // When not set, no regional constraints are applied.
+  GcpPubSubTopicMessageStoragePolicy message_storage_policy = 5;
+
+  // Schema validation settings for messages published to the topic.
+  // When set, all published messages are validated against the specified schema.
+  GcpPubSubTopicSchemaSettings schema_settings = 6;
+
+  // Settings for ingesting data from external sources into this topic.
+  // Supports AWS Kinesis, AWS MSK, Azure Event Hubs, Cloud Storage, and
+  // Confluent Cloud. Typically one data source is configured per topic.
+  GcpPubSubTopicIngestionDataSourceSettings ingestion_data_source_settings = 7;
+}

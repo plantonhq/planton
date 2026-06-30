@@ -1,0 +1,150 @@
+syntax = "proto3";
+
+package dev.planton.provider.digitalocean.digitaloceandnsrecord.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// DigitalOceanDnsRecordSpec defines the configuration for creating a DNS record in a DigitalOcean DNS zone (domain).
+// This component supports creating individual DNS records with common record types including A, AAAA, CNAME, MX, TXT, SRV, NS, and CAA.
+// DNS records are created within an existing DigitalOcean DNS zone (domain) managed by DigitalOcean's DNS service.
+message DigitalOceanDnsRecordSpec {
+  // Supported DNS record types for DigitalOcean.
+  enum RecordType {
+    // Unspecified record type (invalid).
+    record_type_unspecified = 0;
+    // IPv4 address record.
+    A = 1;
+    // IPv6 address record.
+    AAAA = 2;
+    // Canonical name (alias) record.
+    CNAME = 3;
+    // Mail exchange record.
+    MX = 4;
+    // Text record (SPF, DKIM, verification, etc.).
+    TXT = 5;
+    // Service locator record.
+    SRV = 6;
+    // Nameserver record.
+    NS = 7;
+    // Certificate Authority Authorization record.
+    CAA = 8;
+  }
+
+  // The DigitalOcean domain name (DNS zone) where this DNS record will be created.
+  // This can be a direct value or a reference to a DigitalOceanDnsZone resource's output.
+  // Example: "example.com"
+  dev.planton.shared.foreignkey.v1.StringValueOrRef domain = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = DigitalOceanDnsZone,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_name"
+  ];
+
+  // The name of the DNS record (hostname/subdomain).
+  // Use "@" for root domain records, or specify the subdomain name.
+  // Examples:
+  //   - "@" for root domain (example.com)
+  //   - "www" for subdomain (www.example.com)
+  //   - "api.v1" for nested subdomain (api.v1.example.com)
+  string name = 2 [(buf.validate.field).required = true];
+
+  // The type of DNS record to create.
+  // Supported types: A, AAAA, CNAME, MX, TXT, SRV, NS, CAA.
+  RecordType type = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).enum.defined_only = true,
+    (buf.validate.field).cel = {
+      id: "type.not_unspecified"
+      message: "type must be specified (cannot be record_type_unspecified)"
+      expression: "this != 0"
+    }
+  ];
+
+  // The value/target of the DNS record.
+  // This can be a direct value or a reference to another resource's output.
+  // Format depends on record type:
+  //   - A record: IPv4 address (e.g., "192.0.2.1")
+  //   - AAAA record: IPv6 address (e.g., "2001:db8::1")
+  //   - CNAME record: Target hostname (e.g., "target.example.com")
+  //   - MX record: Mail server hostname (e.g., "mail.example.com")
+  //   - TXT record: Text value (e.g., "v=spf1 include:_spf.google.com ~all")
+  //   - NS record: Nameserver hostname
+  //   - SRV record: Target hostname
+  //   - CAA record: CA domain (e.g., "letsencrypt.org")
+  dev.planton.shared.foreignkey.v1.StringValueOrRef value = 4 [(buf.validate.field).required = true];
+
+  // Time to live (TTL) for the DNS record in seconds.
+  // Determines how long DNS resolvers should cache this record.
+  // Common values: 60 (1 min), 300 (5 min), 1800 (30 min), 3600 (1 hour), 86400 (1 day).
+  // Default: 1800 seconds (30 minutes).
+  // Valid range: 30-86400 seconds.
+  optional int32 ttl_seconds = 5 [
+    (dev.planton.shared.options.default) = "1800",
+    (buf.validate.field).int32 = {
+      gte: 30
+      lte: 86400
+    }
+  ];
+
+  // Priority for MX and SRV records.
+  // Lower values indicate higher priority.
+  // For MX records: Typically 10, 20, 30 for primary, secondary, tertiary mail servers.
+  // For SRV records: Used with weight for load distribution.
+  // Range: 0-65535. Defaults to 0 if not specified.
+  int32 priority = 6 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 65535
+  }];
+
+  // Weight for SRV records.
+  // Specifies the relative weight for records with the same priority.
+  // Higher weights receive proportionally more traffic.
+  // Range: 0-65535. Defaults to 0 if not specified.
+  // Ignored for non-SRV record types.
+  int32 weight = 7 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 65535
+  }];
+
+  // Port for SRV records.
+  // Specifies the TCP or UDP port on which the service is available.
+  // Range: 0-65535.
+  // Required for SRV records, ignored for other types.
+  int32 port = 8 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 65535
+  }];
+
+  // Flags for CAA records.
+  // Values:
+  //   - 0: Non-critical (default) - CA may ignore unknown tags
+  //   - 128: Critical - CA must refuse if tag is not understood
+  // Ignored for non-CAA record types.
+  int32 flags = 9 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 255
+  }];
+
+  // Tag for CAA records.
+  // Specifies the property being authorized:
+  //   - "issue": Authorizes a CA to issue certificates for the domain
+  //   - "issuewild": Authorizes a CA to issue wildcard certificates
+  //   - "iodef": URL to report policy violations
+  // Required for CAA records, ignored for other types.
+  string tag = 10;
+
+  // Cross-field validation: port is required for SRV records
+  option (buf.validate.message).cel = {
+    id: "spec.port_required_for_srv"
+    message: "port must be specified for SRV records"
+    expression: "this.type != 6 || this.port > 0"
+  };
+
+  // Cross-field validation: tag is required for CAA records
+  option (buf.validate.message).cel = {
+    id: "spec.tag_required_for_caa"
+    message: "tag must be specified for CAA records (issue, issuewild, or iodef)"
+    expression: "this.type != 8 || this.tag != ''"
+  };
+}

@@ -12,7 +12,7 @@ Deploys the Tekton Operator on Kubernetes to manage the lifecycle of Tekton comp
 
 ## What Gets Created
 
-When you deploy a KubernetesTektonOperator resource, OpenMCF provisions:
+When you deploy a KubernetesTektonOperator resource, Planton provisions:
 
 - **Tekton Operator** — all resources from the official Tekton Operator release manifest installed into the fixed `tekton-operator` namespace, including the operator deployment, CRDs (`TektonConfig`, `TektonPipeline`, `TektonTrigger`, `TektonDashboard`, etc.), RBAC roles, and webhook configurations
 - **TektonConfig Custom Resource** — a `TektonConfig` resource named `config` that tells the operator which components to install; the operator selects the `all` profile when Pipelines, Triggers, and Dashboard are all enabled, the `basic` profile when Pipelines and Triggers are enabled, or the `lite` profile otherwise
@@ -26,7 +26,7 @@ When you deploy a KubernetesTektonOperator resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **Cluster admin access** because the Tekton Operator installs cluster-scoped CRDs and RBAC resources
 - **Istio** with Gateway API support installed if enabling dashboard ingress
 - **cert-manager** with a ClusterIssuer matching the ingress domain if enabling dashboard ingress with TLS
@@ -36,15 +36,15 @@ When you deploy a KubernetesTektonOperator resource, OpenMCF provisions:
 Create a file `tekton-operator.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesTektonOperator
 metadata:
   name: my-tekton-operator
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesTektonOperator.my-tekton-operator
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesTektonOperator.my-tekton-operator
 spec:
   container:
     resources:
@@ -61,7 +61,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f tekton-operator.yaml
+planton apply -f tekton-operator.yaml
 ```
 
 This installs the Tekton Operator (default version v0.78.0), which in turn deploys Tekton Pipelines into the fixed `tekton-pipelines` namespace.
@@ -96,15 +96,15 @@ This installs the Tekton Operator (default version v0.78.0), which in turn deplo
 A minimal deployment that installs Tekton Pipelines through the operator with a pinned version:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesTektonOperator
 metadata:
   name: ci-tekton-operator
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesTektonOperator.ci-tekton-operator
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesTektonOperator.ci-tekton-operator
 spec:
   operatorVersion: v0.78.0
   container:
@@ -126,15 +126,15 @@ The operator installs with the `lite` profile and deploys only Tekton Pipelines 
 A full Tekton stack with all three components, suitable for teams that need event-driven pipeline triggers and a web UI:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesTektonOperator
 metadata:
   name: team-tekton-operator
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.KubernetesTektonOperator.team-tekton-operator
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.KubernetesTektonOperator.team-tekton-operator
 spec:
   operatorVersion: v0.78.0
   container:
@@ -162,15 +162,15 @@ kubectl port-forward svc/tekton-dashboard -n tekton-pipelines 9097:9097
 A production setup with the dashboard exposed externally via TLS-terminated Istio Gateway ingress and CloudEvents integration for pipeline notifications:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesTektonOperator
 metadata:
   name: prod-tekton-operator
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesTektonOperator.prod-tekton-operator
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesTektonOperator.prod-tekton-operator
 spec:
   operatorVersion: v0.78.0
   container:

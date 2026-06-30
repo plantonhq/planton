@@ -1,0 +1,11 @@
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareWorkersKvPair
+metadata:
+  name: test-kv-pair
+spec:
+  accountId: "0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"
+  namespaceId:
+    value: "0f1e2d3c4b5a69788796a5b4c3d2e1f0"
+  keyName: feature.new-dashboard
+  value: "true"
+  metadata: '{"owner":"platform"}'

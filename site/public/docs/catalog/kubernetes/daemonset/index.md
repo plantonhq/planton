@@ -12,7 +12,7 @@ Deploys a containerized application to Kubernetes as a DaemonSet with support fo
 
 ## What Gets Created
 
-When you deploy a KubernetesDaemonSet resource, OpenMCF provisions:
+When you deploy a KubernetesDaemonSet resource, Planton provisions:
 
 - **Namespace** — created only when `createNamespace` is `true`
 - **ServiceAccount** — a dedicated service account for the DaemonSet pods, created only when `createServiceAccount` is `true`
@@ -25,7 +25,7 @@ When you deploy a KubernetesDaemonSet resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
 - **A container image** accessible from the cluster (public registry or with a configured image pull secret)
 
@@ -34,15 +34,15 @@ When you deploy a KubernetesDaemonSet resource, OpenMCF provisions:
 Create a file `daemonset.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDaemonSet
 metadata:
   name: my-agent
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesDaemonSet.my-agent
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesDaemonSet.my-agent
 spec:
   namespace: monitoring
   createNamespace: true
@@ -56,7 +56,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f daemonset.yaml
+planton apply -f daemonset.yaml
 ```
 
 This creates a Fluent Bit DaemonSet running on every node in the `monitoring` namespace, using default resource limits (1000m CPU, 1Gi memory).
@@ -119,15 +119,15 @@ This creates a Fluent Bit DaemonSet running on every node in the `monitoring` na
 A Fluent Bit DaemonSet that mounts host log directories to collect and forward container logs from every node:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDaemonSet
 metadata:
   name: log-collector
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesDaemonSet.log-collector
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesDaemonSet.log-collector
 spec:
   namespace: logging
   createNamespace: true
@@ -171,15 +171,15 @@ spec:
 A Prometheus Node Exporter DaemonSet that runs on all nodes (including control-plane nodes via tolerations), with a dedicated ServiceAccount and cluster-wide read permissions:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDaemonSet
 metadata:
   name: node-exporter
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.KubernetesDaemonSet.node-exporter
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.KubernetesDaemonSet.node-exporter
 spec:
   namespace: monitoring
   createServiceAccount: true
@@ -257,15 +257,15 @@ spec:
 A Vector log agent with a custom configuration file loaded from a ConfigMap, environment-referenced pipeline endpoints, secret credentials from an existing Kubernetes Secret, and a controlled rolling update strategy:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDaemonSet
 metadata:
   name: vector-agent
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesDaemonSet.vector-agent
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesDaemonSet.vector-agent
 spec:
   namespace:
     valueFrom:

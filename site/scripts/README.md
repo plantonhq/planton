@@ -1,6 +1,6 @@
 # Documentation Build System
 
-This directory contains the build scripts that power OpenMCF's documentation site. If you're wondering how deployment component documentation magically appears on the website, you're in the right place.
+This directory contains the build scripts that power Planton's documentation site. If you're wondering how deployment component documentation magically appears on the website, you're in the right place.
 
 ## The Problem We're Solving
 
@@ -27,7 +27,7 @@ All of this happens automatically before every build, ensuring your documentatio
 ### The Single Source of Truth
 
 ```
-apis/org/openmcf/provider/
+apis/dev/planton/provider/
 ├── aws/
 │   ├── awsalb/v1/docs/README.md           ← Source of truth
 │   └── awsroute53zone/v1/docs/README.md   ← Source of truth
@@ -37,7 +37,7 @@ apis/org/openmcf/provider/
     └── argocdkubernetes/v1/docs/README.md ← Source of truth
 ```
 
-These README files live alongside the protobuf definitions for each deployment component. They're created using OpenMCF's research-driven documentation workflow and contain comprehensive deployment guides.
+These README files live alongside the protobuf definitions for each deployment component. They're created using Planton's research-driven documentation workflow and contain comprehensive deployment guides.
 
 ### The Build-Time Transformation
 
@@ -149,14 +149,14 @@ For each provider with components, the script generates an index page:
 ```markdown
 ---
 title: "AWS"
-description: "Deploy AWS resources using OpenMCF"
+description: "Deploy AWS resources using Planton"
 icon: "cloud"
 order: 10
 ---
 
 # AWS
 
-The following AWS resources can be deployed using OpenMCF:
+The following AWS resources can be deployed using Planton:
 
 - [ALB](/docs/catalog/aws/awsalb)
 - [Route53 Zone](/docs/catalog/aws/awsroute53zone)
@@ -200,8 +200,8 @@ The beauty of this system is how little you need to do:
 
 ```bash
 # 1. Create your component docs
-mkdir -p apis/org/openmcf/provider/aws/awsnewservice/v1/docs/
-cat > apis/org/openmcf/provider/aws/awsnewservice/v1/docs/README.md << 'EOF'
+mkdir -p apis/dev/planton/provider/aws/awsnewservice/v1/docs/
+cat > apis/dev/planton/provider/aws/awsnewservice/v1/docs/README.md << 'EOF'
 # AWS New Service
 
 Comprehensive deployment guide for AWS New Service...
@@ -222,7 +222,7 @@ The documentation is now available at `/docs/catalog/aws/awsnewservice`.
 Just edit the source README:
 
 ```bash
-vim apis/org/openmcf/provider/gcp/gcpcloudrun/v1/docs/README.md
+vim apis/dev/planton/provider/gcp/gcpcloudrun/v1/docs/README.md
 cd site && yarn build
 ```
 
@@ -353,7 +353,7 @@ When you add a new provider with components, update this list so the script clea
 ```typescript
 const scriptDir = __dirname;
 const projectRoot = path.join(scriptDir, '../..');
-const apisRoot = path.join(projectRoot, 'apis/org/openmcf/provider');
+const apisRoot = path.join(projectRoot, 'apis/dev/planton/provider');
 const siteDocsRoot = path.join(scriptDir, '../public/docs/catalog');
 ```
 
@@ -405,7 +405,7 @@ When you add documentation for a new cloud provider:
 
 1. Create the provider directory structure:
    ```bash
-   mkdir -p apis/org/openmcf/provider/newprovider/newcomponent/v1/docs/
+   mkdir -p apis/dev/planton/provider/newprovider/newcomponent/v1/docs/
    ```
 
 2. Add the provider to the clearing list in `copy-component-docs.ts`:
@@ -457,7 +457,7 @@ Run `yarn copy-docs` to verify the output.
 **Symptom**: Component README exists but doesn't show up in catalog.
 
 **Checklist**:
-1. Verify path structure: `apis/org/openmcf/provider/{provider}/{component}/v1/docs/README.md`
+1. Verify path structure: `apis/dev/planton/provider/{provider}/{component}/v1/docs/README.md`
 2. Check file isn't empty
 3. Run `yarn copy-docs` and look for errors
 4. Verify provider is in `providerDirs` list if it's a new provider

@@ -12,14 +12,14 @@ Deploys one or more objects into an existing AWS S3 bucket, supporting inline te
 
 ## What Gets Created
 
-When you deploy an AwsS3ObjectSet resource, OpenMCF provisions:
+When you deploy an AwsS3ObjectSet resource, Planton provisions:
 
 - **S3 Object (one per entry)** — an `aws_s3_bucket_object_v2` resource for each item in the `objects` list, uploaded to the target bucket with the specified key, content, content type, caching headers, and tags
 - **Merged Tags** — each object receives tags merged from three sources in increasing precedence: resource labels, set-level `tags`, and per-object `tags`
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **An existing S3 bucket** — either a literal bucket name or a deployed AwsS3Bucket resource to reference via `valueFrom`
 - **The bucket's AWS region** — must match the region specified in `region`
 
@@ -28,15 +28,15 @@ When you deploy an AwsS3ObjectSet resource, OpenMCF provisions:
 Create a file `s3-objects.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsS3ObjectSet
 metadata:
   name: my-objects
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsS3ObjectSet.my-objects
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsS3ObjectSet.my-objects
 spec:
   region: us-east-1
   bucket: my-app-bucket
@@ -48,7 +48,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f s3-objects.yaml
+planton apply -f s3-objects.yaml
 ```
 
 This uploads a single JSON configuration file to the `config/app.json` key in the target bucket.
@@ -84,15 +84,15 @@ This uploads a single JSON configuration file to the `config/app.json` key in th
 Upload several configuration files to a shared bucket:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsS3ObjectSet
 metadata:
   name: app-config
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsS3ObjectSet.app-config
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsS3ObjectSet.app-config
 spec:
   region: us-east-1
   bucket: my-app-bucket
@@ -115,21 +115,21 @@ spec:
 Upload pre-compressed static assets with cache headers and public read access:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsS3ObjectSet
 metadata:
   name: website-assets
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsS3ObjectSet.website-assets
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsS3ObjectSet.website-assets
 spec:
   region: us-west-2
   bucket: my-website-bucket
   tags:
     project: website
-    managed-by: openmcf
+    managed-by: planton
   objects:
     - key: index.html
       content: |
@@ -151,15 +151,15 @@ spec:
 Upload binary assets using base64-encoded content:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsS3ObjectSet
 metadata:
   name: binary-assets
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.AwsS3ObjectSet.binary-assets
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.AwsS3ObjectSet.binary-assets
 spec:
   region: eu-west-1
   bucket: my-assets-bucket
@@ -178,18 +178,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed AwsS3Bucket instead of hardcoding the bucket name:
+Reference an Planton-managed AwsS3Bucket instead of hardcoding the bucket name:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsS3ObjectSet
 metadata:
   name: ref-objects
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsS3ObjectSet.ref-objects
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsS3ObjectSet.ref-objects
 spec:
   region: us-east-1
   bucket:
@@ -208,15 +208,15 @@ spec:
 Apply different tags and access controls per object within a single set:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsS3ObjectSet
 metadata:
   name: mixed-access
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsS3ObjectSet.mixed-access
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsS3ObjectSet.mixed-access
 spec:
   region: us-east-1
   bucket: shared-bucket

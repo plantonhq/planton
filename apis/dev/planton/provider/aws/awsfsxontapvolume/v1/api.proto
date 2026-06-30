@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsfsxontapvolume.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/aws/awsfsxontapvolume/v1/spec.proto";
+import "dev/planton/provider/aws/awsfsxontapvolume/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// aws-fsx-ontap-volume
+message AwsFsxOntapVolume {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'aws.planton.dev/v1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'AwsFsxOntapVolume'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  AwsFsxOntapVolumeSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  AwsFsxOntapVolumeStatus status = 5;
+}
+
+// aws-fsx-ontap-volume status
+message AwsFsxOntapVolumeStatus {
+  //stack-outputs
+  AwsFsxOntapVolumeStackOutputs outputs = 1;
+}

@@ -1,6 +1,0 @@
-name: gcp-kms-key-ring
-runtime:
-  name: go
-  options:
-    binary: ./pulumi
-description: OpenMCF GcpKmsKeyRing Pulumi module

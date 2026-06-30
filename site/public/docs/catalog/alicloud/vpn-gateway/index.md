@@ -12,7 +12,7 @@ Deploys an Alibaba Cloud VPN Gateway with bundled customer gateways and IPsec VP
 
 ## What Gets Created
 
-When you deploy an AliCloudVpnGateway resource, OpenMCF provisions:
+When you deploy an AliCloudVpnGateway resource, Planton provisions:
 
 - **VPN Gateway** -- an `alicloud_vpn_gateway` resource in the specified VPC and VSwitch, with configurable bandwidth and optional SSL VPN
 - **Customer Gateways** -- one `alicloud_vpn_customer_gateway` per connection, representing the remote device's public IP and optional BGP ASN
@@ -20,7 +20,7 @@ When you deploy an AliCloudVpnGateway resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Alibaba Cloud credentials** configured via environment variables or OpenMCF provider config
+- **Alibaba Cloud credentials** configured via environment variables or Planton provider config
 - **An Alibaba Cloud VPC** -- the VPN Gateway must belong to a VPC (create one with AliCloudVpc)
 - **A VSwitch** -- the VPN Gateway requires placement in a VSwitch (create with AliCloudVswitch)
 - **Remote device public IP** -- the on-premises router, firewall, or peer cloud gateway's public IP address
@@ -31,7 +31,7 @@ When you deploy an AliCloudVpnGateway resource, OpenMCF provisions:
 Create a file `vpn-gateway.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudVpnGateway
 metadata:
   name: my-vpn
@@ -55,7 +55,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f vpn-gateway.yaml
+planton apply -f vpn-gateway.yaml
 ```
 
 This creates a 10 Mbps VPN Gateway with a single IPsec tunnel to a remote network at `203.0.113.1`.
@@ -138,7 +138,7 @@ This creates a 10 Mbps VPN Gateway with a single IPsec tunnel to a remote networ
 The simplest VPN setup: one gateway with a single IPsec connection to a remote office.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudVpnGateway
 metadata:
   name: office-vpn
@@ -164,7 +164,7 @@ spec:
 VPN Gateway connecting to two remote sites with AES-256, SHA-256 authentication, DH group14, and health checks for failover.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudVpnGateway
 metadata:
   name: prod-vpn
@@ -236,7 +236,7 @@ spec:
 VPN Gateway with SSL VPN enabled for remote client access alongside a site-to-site connection.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudVpnGateway
 metadata:
   name: hybrid-vpn

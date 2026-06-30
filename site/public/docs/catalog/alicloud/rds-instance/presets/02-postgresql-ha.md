@@ -43,7 +43,7 @@ This preset creates a production-grade PostgreSQL 16 instance with high availabi
 | `<standby-zone-id>` | Standby AZ (e.g., `cn-shanghai-b`) | Must differ from primary |
 | `<your-vpc-cidr>` | VPC CIDR for IP whitelist (e.g., `10.0.0.0/8`) | `AliCloudVpc` stack outputs |
 | `<your-instance-name>` | Instance name (2-256 chars) | Choose a descriptive name |
-| `<your-org>` | Organization name | Your OpenMCF org |
+| `<your-org>` | Organization name | Your Planton org |
 | `<your-team>` | Team tag value | Your team name |
 | `<your-database-name>` | Database name | Choose a name |
 | `<your-account-name>` | Login account name | Choose a username |

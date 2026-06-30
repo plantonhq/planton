@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesnamespace.v1;
+
+/**
+ * **KubernetesNamespaceStackOutputs** captures observable outputs from a Kubernetes namespace deployment.
+ * These outputs provide essential information for referencing the namespace and understanding its configuration.
+ */
+message KubernetesNamespaceStackOutputs {
+  /**
+   * The name of the created Kubernetes namespace.
+   * This is the primary identifier for referencing the namespace in other resources.
+   */
+  string namespace = 1;
+
+  /**
+   * The fully qualified namespace identifier.
+   * Format: <namespace>
+   * This is the same as namespace but provided for consistency with other components.
+   */
+  string namespace_id = 2;
+
+  /**
+   * Indicates whether resource quotas were applied to the namespace.
+   * "true" if ResourceQuota objects were created, "false" otherwise.
+   */
+  string resource_quotas_applied = 3;
+
+  /**
+   * Indicates whether LimitRanges were applied to the namespace.
+   * "true" if LimitRange objects were created, "false" otherwise.
+   */
+  string limit_ranges_applied = 4;
+
+  /**
+   * Indicates whether network policies were applied to the namespace.
+   * "true" if NetworkPolicy objects were created, "false" otherwise.
+   */
+  string network_policies_applied = 5;
+
+  /**
+   * Indicates whether service mesh sidecar injection is enabled.
+   * "true" if the namespace is configured for automatic sidecar injection, "false" otherwise.
+   */
+  string service_mesh_enabled = 6;
+
+  /**
+   * The service mesh type that is configured for this namespace.
+   * Empty string if no service mesh is configured.
+   * Possible values: "istio", "linkerd", "consul", ""
+   */
+  string service_mesh_type = 7;
+
+  /**
+   * The pod security standard enforcement level applied to this namespace.
+   * Possible values: "privileged", "baseline", "restricted", ""
+   */
+  string pod_security_standard = 8;
+
+  /**
+   * List of Kubernetes labels applied to the namespace.
+   * This is a JSON string representation of the labels map for easy reference.
+   */
+  string labels_json = 9;
+
+  /**
+   * List of Kubernetes annotations applied to the namespace.
+   * This is a JSON string representation of the annotations map for easy reference.
+   */
+  string annotations_json = 10;
+}

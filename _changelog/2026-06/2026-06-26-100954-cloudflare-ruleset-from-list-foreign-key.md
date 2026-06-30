@@ -49,10 +49,10 @@ in rule expressions."
 
 ```proto
 message CloudflareRulesetFromList {
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef name = 1 [
+  dev.planton.shared.foreignkey.v1.StringValueOrRef name = 1 [
     (buf.validate.field).required = true,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = CloudflareList,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareList,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
   ];
   string key = 2 [(buf.validate.field).string.min_len = 1];
 }
@@ -71,7 +71,7 @@ the ruleset that applies it references it by name.
 
 ## Implementation Details
 
-- **Proto** — `apis/org/openmcf/provider/cloudflare/cloudflareruleset/v1/spec.proto`:
+- **Proto** — `apis/dev/planton/provider/cloudflare/cloudflareruleset/v1/spec.proto`:
   `CloudflareRulesetFromList.name` changed from `string` to `StringValueOrRef`
   with `default_kind = CloudflareList` and `default_kind_field_path =
   "status.outputs.name"`. The `foreignkey` import and BUILD dep were already
@@ -132,7 +132,7 @@ from_list:
 - `make protos`, `go test` (ruleset spec/CEL suite incl. the new from_list
   cases), `go build` of the package + Pulumi entrypoint, `go vet`, `gofmt` — all
   green.
-- The converter flattening was confirmed with `openmcf tofu load-tfvars` on a
+- The converter flattening was confirmed with `planton tofu load-tfvars` on a
   bulk-redirect manifest: `from_list.name` (a `StringValueOrRef` nested under
   `rules[].action_parameters`) emitted as the plain string the module consumes.
 - **Live `tofu apply`/`destroy` on a real account**: created a redirect

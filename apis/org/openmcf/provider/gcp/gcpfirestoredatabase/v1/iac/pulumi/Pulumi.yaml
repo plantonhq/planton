@@ -1,6 +1,0 @@
-name: gcp-firestore-database
-runtime:
-  name: go
-  options:
-    binary: ./pulumi
-description: OpenMCF GcpFirestoreDatabase Pulumi module

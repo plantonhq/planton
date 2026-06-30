@@ -10,10 +10,10 @@ Fixed an architectural bug where CLI backend flags (`--backend-type`, `--backend
 
 ## Problem Statement
 
-When running unified commands like `openmcf preview` with CLI backend flags:
+When running unified commands like `planton preview` with CLI backend flags:
 
 ```bash
-openmcf preview -i manifest.yaml --backend-type=s3 --local-module
+planton preview -i manifest.yaml --backend-type=s3 --local-module
 ```
 
 The CLI would:
@@ -29,7 +29,7 @@ There was an architectural disconnect in how backend configuration flowed throug
 2. The merged config was displayed via `ui.BackendConfigSummary()` 
 3. But `tofumodule.RunCommand()` did NOT receive this config
 4. Instead, `RunCommand` independently extracted from manifest labels
-5. The manifest had `terraform.openmcf.org/backend.key` but NO `backend.type`
+5. The manifest had `terraform.planton.dev/backend.key` but NO `backend.type`
 6. This created a non-nil config with empty `BackendType`, triggering the error
 
 ## Solution
@@ -59,18 +59,18 @@ func RunCommand(
 |------|--------|
 | `pkg/iac/tofu/tofumodule/run_command.go` | Added `backendConfig` parameter, use if non-nil |
 | `internal/cli/iacrunner/run_tofu.go` | Pass `backendCfg` to RunCommand |
-| `cmd/openmcf/root/tofu/apply.go` | Pass `nil` for backendConfig |
-| `cmd/openmcf/root/tofu/destroy.go` | Pass `nil` for backendConfig |
-| `cmd/openmcf/root/tofu/plan.go` | Pass `nil` for backendConfig |
-| `cmd/openmcf/root/tofu/refresh.go` | Pass `nil` for backendConfig |
-| `cmd/openmcf/root/terraform/apply.go` | Pass `nil` for backendConfig |
-| `cmd/openmcf/root/terraform/destroy.go` | Pass `nil` for backendConfig |
-| `cmd/openmcf/root/terraform/plan.go` | Pass `nil` for backendConfig |
-| `cmd/openmcf/root/terraform/refresh.go` | Pass `nil` for backendConfig |
+| `cmd/planton/root/tofu/apply.go` | Pass `nil` for backendConfig |
+| `cmd/planton/root/tofu/destroy.go` | Pass `nil` for backendConfig |
+| `cmd/planton/root/tofu/plan.go` | Pass `nil` for backendConfig |
+| `cmd/planton/root/tofu/refresh.go` | Pass `nil` for backendConfig |
+| `cmd/planton/root/terraform/apply.go` | Pass `nil` for backendConfig |
+| `cmd/planton/root/terraform/destroy.go` | Pass `nil` for backendConfig |
+| `cmd/planton/root/terraform/plan.go` | Pass `nil` for backendConfig |
+| `cmd/planton/root/terraform/refresh.go` | Pass `nil` for backendConfig |
 
 ## Expected Behavior After Fix
 
-1. User runs: `openmcf preview -i manifest.yaml --backend-type=s3 --local-module`
+1. User runs: `planton preview -i manifest.yaml --backend-type=s3 --local-module`
 2. `run_tofu.go` builds backend config merging CLI flags with manifest labels
 3. Config with `BackendType: "s3"` is passed to `RunCommand`
 4. `RunCommand` uses the provided config instead of extracting from manifest

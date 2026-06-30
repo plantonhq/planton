@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package dev.planton.provider.openstack.openstacksubnet.v1;
+
+// OpenStackSubnetStackOutputs captures the observable outputs after provisioning
+// an OpenStack Neutron subnet.
+//
+// The subnet_id is the primary output referenced by downstream components:
+// - OpenStackRouterInterface (subnet_id)
+// - OpenStackLoadBalancer (vip_subnet_id)
+// - OpenStackLoadBalancerMember (subnet_id)
+message OpenStackSubnetStackOutputs {
+  // subnet_id is the unique identifier (UUID) of the subnet in OpenStack.
+  // This is the primary output used as a foreign key by downstream components.
+  string subnet_id = 1;
+
+  // name is the name of the subnet (derived from metadata.name).
+  string name = 2;
+
+  // cidr is the CIDR block of the subnet.
+  string cidr = 3;
+
+  // gateway_ip is the gateway IP address of the subnet.
+  // This may be empty if no_gateway was set to true.
+  string gateway_ip = 4;
+
+  // network_id is the ID of the parent network.
+  // Included for convenience -- downstream components can reference this
+  // without needing a separate lookup to the OpenStackNetwork resource.
+  string network_id = 5;
+
+  // region is the OpenStack region where the subnet was created.
+  string region = 6;
+}

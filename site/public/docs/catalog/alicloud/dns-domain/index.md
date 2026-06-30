@@ -12,7 +12,7 @@ Registers and manages an Alibaba Cloud DNS domain in the Alidns service with opt
 
 ## What Gets Created
 
-When you deploy an AliCloudDnsZone resource, OpenMCF provisions:
+When you deploy an AliCloudDnsZone resource, Planton provisions:
 
 - **Alidns Domain** -- an `alicloud_alidns_domain` resource (Pulumi: `dns.AlidnsDomain`) that registers the domain in the Alidns hosted zone
 - **DNS Servers** -- Alibaba Cloud assigns a set of authoritative nameservers; point your domain registrar's NS records to these servers for Alidns to serve queries
@@ -20,24 +20,24 @@ When you deploy an AliCloudDnsZone resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Alibaba Cloud credentials** configured via environment variables (`ALICLOUD_ACCESS_KEY`, `ALICLOUD_SECRET_KEY`) or OpenMCF provider config
+- **Alibaba Cloud credentials** configured via environment variables (`ALICLOUD_ACCESS_KEY`, `ALICLOUD_SECRET_KEY`) or Planton provider config
 - **Domain ownership** -- you must own or control the domain at your registrar to point NS records to the Alibaba Cloud DNS servers
-- **OpenMCF CLI** installed with either Pulumi or Terraform (OpenTofu) backend
+- **Planton CLI** installed with either Pulumi or Terraform (OpenTofu) backend
 
 ## Quick Start
 
 Create a file `dns-zone.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudDnsZone
 metadata:
   name: my-domain
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudDnsZone.my-domain
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudDnsZone.my-domain
 spec:
   region: cn-hangzhou
   domainName: example.com
@@ -46,7 +46,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f dns-zone.yaml
+planton apply -f dns-zone.yaml
 ```
 
 This registers the domain in Alidns. After deployment, retrieve the `dns_servers` output and update your domain registrar's NS records.
@@ -76,15 +76,15 @@ This registers the domain in Alidns. After deployment, retrieve the `dns_servers
 Register a domain with only the required fields. Suitable for development or simple DNS hosting.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudDnsZone
 metadata:
   name: dev-domain
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudDnsZone.dev-domain
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudDnsZone.dev-domain
 spec:
   region: cn-hangzhou
   domainName: dev.example.com
@@ -95,17 +95,17 @@ spec:
 A production domain with resource group placement and organizational tags for governance.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudDnsZone
 metadata:
   name: prod-domain
   org: my-org
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AliCloudDnsZone.prod-domain
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AliCloudDnsZone.prod-domain
 spec:
   region: cn-shanghai
   domainName: platform.example.com

@@ -1,0 +1,17 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsEcsService
+metadata:
+  name: awsecsservice-demo
+spec:
+  region: us-east-1
+  clusterArn:
+    value: arn:aws:ecs:us-east-1:123456789012:cluster/my-cluster
+  container:
+    image:
+      repo: nginx
+      tag: latest
+    cpu: 256
+    memory: 512
+  network:
+    subnets:
+      - value: subnet-abc123

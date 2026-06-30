@@ -1,7 +1,7 @@
 # =============================================================================
 # AWS E2E Tests
 # =============================================================================
-# Provisions real AWS resources via OpenMCF IaC modules (Pulumi + Terraform) and
+# Provisions real AWS resources via Planton IaC modules (Pulumi + Terraform) and
 # verifies them through the AWS SDK.
 #
 # Authentication is KEYLESS: the job assumes an IAM role via GitHub Actions OIDC
@@ -9,7 +9,7 @@
 # `id-token: write` lets GitHub mint a short-lived OIDC token, which AWS exchanges
 # for temporary credentials. The role ARN (not a secret) is a repository variable.
 #
-# This is OpenMCF's first OIDC-based E2E workflow; e2e-auth0.yaml / e2e-kubernetes
+# This is Planton's first OIDC-based E2E workflow; e2e-auth0.yaml / e2e-kubernetes
 # still use stored secrets and should be retrofitted onto OIDC (tracked).
 #
 # Test selection uses direct package invocation (`go test ./e2e/aws/...`), NOT the
@@ -31,7 +31,7 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - 'apis/org/openmcf/provider/aws/**'
+      - 'apis/dev/planton/provider/aws/**'
       - 'e2e/aws/**'
       - 'e2e/framework/**'
       - 'pkg/iac/**'
@@ -95,7 +95,7 @@ jobs:
         with:
           role-to-assume: ${{ vars.PLANTON_OSS_GITHUB_ACTIONS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
-          role-session-name: openmcf-e2e-aws-${{ github.run_id }}
+          role-session-name: planton-e2e-aws-${{ github.run_id }}
 
       - name: Verify AWS identity
         run: aws sts get-caller-identity

@@ -1,7 +1,0 @@
-apiVersion: alicloud.openmcf.org/v1
-kind: AliCloudDnsZone
-metadata:
-  name: aliclouddnszone-demo
-spec:
-  region: cn-hangzhou
-  domainName: demo.example.com

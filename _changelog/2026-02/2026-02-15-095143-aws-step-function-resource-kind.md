@@ -58,6 +58,6 @@ Added AwsStepFunction as the sixth new AWS resource kind in the cloud provider e
 
 ## Files Created/Changed
 
-- 37 files in `apis/org/openmcf/provider/aws/awsstepfunction/v1/`
-- `apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto` (enum addition)
+- 37 files in `apis/dev/planton/provider/aws/awsstepfunction/v1/`
+- `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto` (enum addition)
 - `_changelog/2026-02/2026-02-15-095143-aws-step-function-resource-kind.md`

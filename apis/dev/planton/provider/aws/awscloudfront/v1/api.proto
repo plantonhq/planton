@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awscloudfront.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/aws/awscloudfront/v1/spec.proto";
+import "dev/planton/provider/aws/awscloudfront/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// AwsCloudFront is the top-level API resource envelope.
+message AwsCloudFront {
+  string api_version = 1 [(buf.validate.field).string.const = "aws.planton.dev/v1"];
+  string kind = 2 [(buf.validate.field).string.const = "AwsCloudFront"];
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  AwsCloudFrontSpec spec = 4 [(buf.validate.field).required = true];
+  AwsCloudFrontStatus status = 5;
+}
+
+// AwsCloudFrontStatus captures lifecycle, audit and stack outputs.
+message AwsCloudFrontStatus {
+  //stack-outputs
+  AwsCloudFrontStackOutputs outputs = 1;
+}

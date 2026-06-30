@@ -1,8 +1,0 @@
-apiVersion: azure.openmcf.org/v1
-kind: AzureDnsZone
-metadata:
-  name: my-dns-zone
-spec:
-  zoneName: <your-domain.com>
-  resourceGroup:
-    value: "<your-resource-group-name>"

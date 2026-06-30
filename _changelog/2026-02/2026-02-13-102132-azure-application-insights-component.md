@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added `AzureApplicationInsights` (enum 451, id_prefix `azai`) as a new OpenMCF deployment component. This is the third Azure resource forged in the Azure resource expansion project (R02), following AzureResourceGroup (R00) and AzureLogAnalyticsWorkspace (R01). It provides workspace-based APM monitoring with full Pulumi and Terraform IaC parity.
+Added `AzureApplicationInsights` (enum 451, id_prefix `azai`) as a new Planton deployment component. This is the third Azure resource forged in the Azure resource expansion project (R02), following AzureResourceGroup (R00) and AzureLogAnalyticsWorkspace (R01). It provides workspace-based APM monitoring with full Pulumi and Terraform IaC parity.
 
 ## Problem Statement / Motivation
 
@@ -14,7 +14,7 @@ Azure Application Insights is the standard APM layer in Azure, consumed by Funct
 
 ### Pain Points
 
-- No OpenMCF component existed for Azure APM telemetry
+- No Planton component existed for Azure APM telemetry
 - Infra chart observability layers were blocked on this resource
 - Downstream resources (AzureFunctionApp, AzureLinuxWebApp, AzureContainerApp) need `connection_string` for APM integration
 

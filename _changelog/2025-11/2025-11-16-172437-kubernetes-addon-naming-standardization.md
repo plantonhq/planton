@@ -10,7 +10,7 @@ Systematically renamed 12 Kubernetes addon components to include the `Kubernetes
 
 ## Problem Statement / Motivation
 
-The OpenMCF codebase had inconsistent naming for Kubernetes addon components. While workload components (like `KubernetesPostgres`, `KubernetesArgocd`) followed the `Kubernetes*` prefix pattern, addon operators and infrastructure components had mixed naming:
+The Planton codebase had inconsistent naming for Kubernetes addon components. While workload components (like `KubernetesPostgres`, `KubernetesArgocd`) followed the `Kubernetes*` prefix pattern, addon operators and infrastructure components had mixed naming:
 
 - Some had no prefix: `CertManager`, `ExternalDns`, `IngressNginx`
 - Others had vendor prefixes: `StrimziKafkaOperator`, `ZalandoPostgresOperator`
@@ -49,7 +49,7 @@ if not component_info:
 
 # New approach - direct directory search
 old_folder = to_lowercase(args.old_name)
-test_path = os.path.join(repo_root, "apis/org/openmcf/provider/kubernetes", old_folder)
+test_path = os.path.join(repo_root, "apis/dev/planton/provider/kubernetes", old_folder)
 if os.path.exists(test_path):
     old_dir = test_path
 ```
@@ -147,7 +147,7 @@ Average impact per component:
 **Before**:
 
 ```
-apis/org/openmcf/provider/kubernetes/
+apis/dev/planton/provider/kubernetes/
 ├── certmanager/
 ├── elasticoperator/
 ├── externaldns/
@@ -158,7 +158,7 @@ apis/org/openmcf/provider/kubernetes/
 **After**:
 
 ```
-apis/org/openmcf/provider/kubernetes/
+apis/dev/planton/provider/kubernetes/
 ├── kubernetescertmanager/
 ├── kuberneteselasticoperator/
 ├── kubernetesexternaldns/
@@ -172,10 +172,10 @@ Package declarations in proto files were updated to reflect new naming:
 
 ```protobuf
 // Before
-package org.openmcf.provider.kubernetes.addon.certmanager.v1;
+package dev.planton.provider.kubernetes.addon.certmanager.v1;
 
 // After
-package org.openmcf.provider.kubernetes.addon.kubernetescertmanager.v1;
+package dev.planton.provider.kubernetes.addon.kubernetescertmanager.v1;
 ```
 
 ### Go Package and Import Updates
@@ -184,10 +184,10 @@ Go packages and imports were automatically updated:
 
 ```go
 // Before
-import certmanagerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/certmanager/v1"
+import certmanagerv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/certmanager/v1"
 
 // After
-import kubernetescertmanagerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetescertmanager/v1"
+import kubernetescertmanagerv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/kubernetescertmanager/v1"
 ```
 
 ### Build Verification
@@ -204,9 +204,9 @@ make build
 # ✅ Success: darwin-arm64 and linux-amd64 binaries built
 
 # Build output showing new package imports
-github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetescertmanager/v1
-github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kuberneteselasticoperator/v1
-github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesexternaldns/v1
+github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/kubernetescertmanager/v1
+github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/kuberneteselasticoperator/v1
+github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/kubernetesexternaldns/v1
 # ... all 12 components successfully compiled
 ```
 

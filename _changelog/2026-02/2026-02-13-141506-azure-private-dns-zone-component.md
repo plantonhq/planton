@@ -14,14 +14,14 @@ Azure Private Endpoints require properly configured private DNS zones to functio
 
 ### Pain Points
 
-- No way to provision private DNS zones through OpenMCF before this component
+- No way to provision private DNS zones through Planton before this component
 - Database servers (PostgreSQL, MySQL) requiring VNet integration need a corresponding privatelink zone
 - Manual DNS zone creation is error-prone (zone names must exactly match Azure's predefined patterns)
 - Missing infrastructure-as-code support for private DNS in the Azure resource collection
 
 ## Solution / What's New
 
-A complete deployment component following the OpenMCF forge pattern:
+A complete deployment component following the Planton forge pattern:
 
 - **4 proto files** with buf.validate rules and CEL validation for DNS zone name format
 - **Pulumi module** using `privatedns.NewZone` and `privatedns.NewZoneVirtualNetworkLink`

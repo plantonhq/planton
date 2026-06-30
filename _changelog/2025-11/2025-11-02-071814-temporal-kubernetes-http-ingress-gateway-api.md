@@ -393,10 +393,10 @@ This creates:
 
 ```bash
 # Preview changes
-openmcf pulumi preview --manifest temporal.yaml --module-dir ${MODULE}
+planton pulumi preview --manifest temporal.yaml --module-dir ${MODULE}
 
 # Apply configuration
-openmcf pulumi up --manifest temporal.yaml
+planton pulumi up --manifest temporal.yaml
 
 # Verify gRPC access
 temporal --address temporal-grpc.planton.live:7233 workflow list
@@ -592,7 +592,7 @@ spec:
 
 1. **Deploy Temporal with HTTP ingress enabled**:
 ```bash
-openmcf pulumi up --manifest temporal.yaml
+planton pulumi up --manifest temporal.yaml
 ```
 
 2. **Verify gRPC connectivity**:

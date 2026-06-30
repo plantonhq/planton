@@ -13,9 +13,9 @@ func TestDefaultRules_ContainsExpectedEntries(t *testing.T) {
 		wantSkip bool
 		wantFlat string
 	}{
-		{"org.openmcf.shared.foreignkey.v1.StringValueOrRef", false, "string"},
-		{"org.openmcf.shared.foreignkey.v1.ValueFromRef", true, ""},
-		{"org.openmcf.provider.kubernetes.KubernetesClusterSelector", true, ""},
+		{"dev.planton.shared.foreignkey.v1.StringValueOrRef", false, "string"},
+		{"dev.planton.shared.foreignkey.v1.ValueFromRef", true, ""},
+		{"dev.planton.provider.kubernetes.KubernetesClusterSelector", true, ""},
 		{"google.protobuf.Struct", false, "any"},
 		{"google.protobuf.Value", false, "any"},
 		{"google.protobuf.ListValue", false, "any"},

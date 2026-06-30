@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package dev.planton.provider.digitalocean.digitaloceancontainerregistry.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/digitalocean/region.proto";
+
+// **DigitalOceanContainerRegistrySpec** defines the configuration for creating a DigitalOcean
+// Container Registry (DOCR). It exposes only the essential fields needed for the common 80 % use case.
+message DigitalOceanContainerRegistrySpec {
+  // Registry name (must be unique within your DigitalOcean account).
+  // 1-63 characters, lowercase letters, numbers, and hyphens; must start and end with an alphanumeric.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 63,
+    (buf.validate.field).string.pattern = "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+  ];
+
+  // Subscription tier slug (defines storage limits and pricing).
+  DigitalOceanContainerRegistryTier subscription_tier = 2 [(buf.validate.field).required = true];
+
+  // Required region slug where registry data is stored (e.g., "nyc3", "sfo3").
+  // DigitalOcean container registries are single-region and the region cannot
+  // be changed after creation, so a region must be specified explicitly.
+  DigitalOceanRegion region = 3 [(buf.validate.field).required = true];
+
+  // Enable garbage collection of untagged images.
+  // Default is false (no automatic GC).
+  bool garbage_collection_enabled = 4;
+}
+
+// Supported subscription tiers for a DigitalOcean Container Registry.
+// Values match DigitalOcean API expected tier slugs.
+enum DigitalOceanContainerRegistryTier {
+  digitalocean_container_registry_tier_unspecified = 0;
+  starter = 1; // Free tier, limited storage.
+  basic = 2; // Paid tier, moderate storage.
+  professional = 3; // Paid tier, highest storage, production ready.
+}

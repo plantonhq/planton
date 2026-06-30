@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added `AwsAthenaWorkgroup` as a new deployment component in OpenMCF, enabling
+Added `AwsAthenaWorkgroup` as a new deployment component in Planton, enabling
 declarative management of Amazon Athena workgroups with query result storage
 isolation, cost controls, encryption, engine version pinning, and Apache Spark
 execution support. This is the 22nd new AWS resource kind in the cloud provider
@@ -22,7 +22,7 @@ inconsistent governance across environments.
 
 ### Pain Points
 
-- No OpenMCF abstraction for Athena workgroup lifecycle management
+- No Planton abstraction for Athena workgroup lifecycle management
 - Cost runaway risk from uncontrolled per-query data scanning
 - Inconsistent encryption policies across analytics teams
 - Manual engine version management across dev/staging/prod workgroups
@@ -30,14 +30,14 @@ inconsistent governance across environments.
 
 ## Solution / What's New
 
-A complete deployment component following the OpenMCF standard:
+A complete deployment component following the Planton standard:
 
 ### Proto API
 
 - `spec.proto` with 9 top-level fields and 1 nested message (`AwsAthenaWorkgroupResultConfig` with 5 fields)
 - 3 CEL validations: bytes cutoff range, encryption option values, ACL option values
 - `StringValueOrRef` for `kms_key_arn` (→ AwsKmsKey) and `execution_role` (→ AwsIamRole)
-- Two `optional` fields with `(org.openmcf.shared.options.default)` annotations for `enforce_workgroup_configuration` (true) and `publish_cloudwatch_metrics_enabled` (true)
+- Two `optional` fields with `(dev.planton.shared.options.default)` annotations for `enforce_workgroup_configuration` (true) and `publish_cloudwatch_metrics_enabled` (true)
 
 ### IaC Modules
 

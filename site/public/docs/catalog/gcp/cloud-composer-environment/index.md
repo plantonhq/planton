@@ -12,7 +12,7 @@ Deploys a Google Cloud Composer environment — a managed Apache Airflow service
 
 ## What Gets Created
 
-When you deploy a GcpCloudComposerEnvironment resource, OpenMCF provisions:
+When you deploy a GcpCloudComposerEnvironment resource, Planton provisions:
 
 - **Cloud Composer Environment** — a `google_composer_environment` resource that manages the full Airflow stack (scheduler, workers, web server, triggerer, metadata database, DAG storage)
 - **GKE Cluster** — automatically created and managed by Composer to run Airflow workloads as Kubernetes pods
@@ -24,7 +24,7 @@ All infrastructure is managed by Cloud Composer. You configure the environment; 
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **A GCP project** with the Cloud Composer API enabled
 - **A VPC network and subnetwork** if configuring VPC peering networking (Composer 2.x)
 - **A PSC Network Attachment** if using Composer 3 networking
@@ -36,15 +36,15 @@ All infrastructure is managed by Cloud Composer. You configure the environment; 
 Create a file `composer.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudComposerEnvironment
 metadata:
   name: my-airflow
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpCloudComposerEnvironment.my-airflow
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpCloudComposerEnvironment.my-airflow
 spec:
   projectId:
     value: my-gcp-project
@@ -54,7 +54,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f composer.yaml
+planton apply -f composer.yaml
 ```
 
 This creates a Composer environment with default settings (Composer 2.x, ENVIRONMENT_SIZE_SMALL, public endpoint) in us-central1. The `airflow_uri` output provides the web UI URL.
@@ -117,15 +117,15 @@ This creates a Composer environment with default settings (Composer 2.x, ENVIRON
 An environment with a pinned Composer version and custom Python packages:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudComposerEnvironment
 metadata:
   name: my-data-pipelines
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: data-platform
-    pulumi.openmcf.org/stack.name: dev.GcpCloudComposerEnvironment.my-data-pipelines
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: data-platform
+    pulumi.planton.dev/stack.name: dev.GcpCloudComposerEnvironment.my-data-pipelines
 spec:
   projectId:
     value: my-gcp-project
@@ -145,15 +145,15 @@ spec:
 A medium-sized environment with VPC peering, private endpoint, scaled workloads, and a maintenance window:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudComposerEnvironment
 metadata:
   name: prod-airflow
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: production
-    pulumi.openmcf.org/stack.name: prod.GcpCloudComposerEnvironment.prod-airflow
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: production
+    pulumi.planton.dev/stack.name: prod.GcpCloudComposerEnvironment.prod-airflow
 spec:
   projectId:
     value: my-gcp-project
@@ -205,15 +205,15 @@ spec:
 A large environment with encryption, access control, and disaster recovery:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudComposerEnvironment
 metadata:
   name: enterprise-airflow
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: enterprise
-    pulumi.openmcf.org/stack.name: prod.GcpCloudComposerEnvironment.enterprise-airflow
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: enterprise
+    pulumi.planton.dev/stack.name: prod.GcpCloudComposerEnvironment.enterprise-airflow
 spec:
   projectId:
     value: my-gcp-project

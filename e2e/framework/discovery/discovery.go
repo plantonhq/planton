@@ -1,4 +1,4 @@
-// Package discovery scans the openmcf repository to find testable components
+// Package discovery scans the planton repository to find testable components
 // and their associated IaC modules and hack manifests.
 package discovery
 
@@ -10,7 +10,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-// Component represents a discovered OpenMCF component that can be E2E tested.
+// Component represents a discovered Planton component that can be E2E tested.
 type Component struct {
 	// Name is the component name in lowercase (e.g., "kubernetesnamespace").
 	Name string
@@ -31,7 +31,7 @@ type Component struct {
 // DiscoverComponents scans the apis directory tree to find all components
 // that have an iac/hack/manifest.yaml file (meaning they're testable).
 func DiscoverComponents(repoRoot string) ([]Component, error) {
-	apisDir := filepath.Join(repoRoot, "apis", "org", "openmcf", "provider")
+	apisDir := filepath.Join(repoRoot, "apis", "org", "planton", "provider")
 
 	var components []Component
 
@@ -136,9 +136,9 @@ type TestScenario struct {
 }
 
 // DiscoverTestScenarios scans the component's colocated e2e/scenarios/ directory for YAML manifests.
-// Path: apis/org/openmcf/provider/{provider}/{component}/v1/e2e/scenarios/
+// Path: apis/dev/planton/provider/{provider}/{component}/v1/e2e/scenarios/
 func DiscoverTestScenarios(repoRoot, provider, component string) ([]TestScenario, error) {
-	scenarioDir := filepath.Join(repoRoot, "apis", "org", "openmcf", "provider", provider, component, "v1", "e2e", "scenarios")
+	scenarioDir := filepath.Join(repoRoot, "apis", "org", "planton", "provider", provider, component, "v1", "e2e", "scenarios")
 
 	entries, err := os.ReadDir(scenarioDir)
 	if err != nil {
@@ -172,7 +172,7 @@ func DiscoverTestScenarios(repoRoot, provider, component string) ([]TestScenario
 
 // DiscoverAllTestScenarios scans all components under a provider for colocated e2e/ directories.
 func DiscoverAllTestScenarios(repoRoot, provider string) (map[string][]TestScenario, error) {
-	providerDir := filepath.Join(repoRoot, "apis", "org", "openmcf", "provider", provider)
+	providerDir := filepath.Join(repoRoot, "apis", "org", "planton", "provider", provider)
 
 	entries, err := os.ReadDir(providerDir)
 	if err != nil {

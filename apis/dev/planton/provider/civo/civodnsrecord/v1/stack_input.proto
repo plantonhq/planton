@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package dev.planton.provider.civo.civodnsrecord.v1;
+
+import "dev/planton/provider/civo/civodnsrecord/v1/api.proto";
+import "dev/planton/provider/civo/provider.proto";
+
+// CivoDnsRecordStackInput is the input to the IaC module.
+// It contains the target resource and provider configuration.
+message CivoDnsRecordStackInput {
+  // target cloud-resource to be deployed
+  CivoDnsRecord target = 1;
+  // provider-config for Civo authentication
+  dev.planton.provider.civo.CivoProviderConfig provider_config = 2;
+}

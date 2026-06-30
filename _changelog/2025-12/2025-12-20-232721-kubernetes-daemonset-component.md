@@ -20,10 +20,10 @@ DaemonSets are a critical Kubernetes workload type for node-level services that 
 
 ### Pain Points
 
-- No existing component for DaemonSet deployments in OpenMCF
+- No existing component for DaemonSet deployments in Planton
 - Node-level workloads require specialized configuration (host paths, tolerations, privileged mode)
 - Manual DaemonSet YAML is verbose and error-prone
-- No unified way to deploy system daemons across infrastructure managed by OpenMCF
+- No unified way to deploy system daemons across infrastructure managed by Planton
 
 ## Solution / What's New
 
@@ -84,7 +84,7 @@ message KubernetesDaemonSetSpec {
 }
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesdaemonset/v1/spec.proto`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesdaemonset/v1/spec.proto`
 
 ### Validation Rules
 
@@ -124,7 +124,7 @@ for _, t := range target.Spec.Tolerations {
 podSpecArgs.Tolerations = tolerations
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesdaemonset/v1/iac/pulumi/module/daemonset.go`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesdaemonset/v1/iac/pulumi/module/daemonset.go`
 
 ### Resource Registration
 
@@ -143,7 +143,7 @@ KubernetesDaemonSet = 841 [(kind_meta) = {
 ### Log Collector (Fluentd)
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDaemonSet
 metadata:
   name: fluentd-logger
@@ -170,7 +170,7 @@ spec:
 ### Node Exporter (Prometheus)
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDaemonSet
 metadata:
   name: node-exporter

@@ -1,6 +1,0 @@
-apiVersion: openstack.openmcf.org/v1
-kind: OpenStackNetwork
-metadata:
-  name: test-network
-spec:
-  description: "Test network for local development"

@@ -1,0 +1,8 @@
+apiVersion: azure.planton.dev/v1
+kind: AzureContainerAppEnvironment
+metadata:
+  name: test-env
+spec:
+  region: eastus
+  resource_group: test-rg
+  name: test-container-env

@@ -12,7 +12,7 @@ Deploys a node pool into an existing GKE cluster on Google Cloud with configurab
 
 ## What Gets Created
 
-When you deploy a GcpGkeNodePool resource, OpenMCF provisions:
+When you deploy a GcpGkeNodePool resource, Planton provisions:
 
 - **GKE Node Pool** — a `google_container_node_pool` resource with:
   - Node configuration (machine type, disk size and type, OS image)
@@ -27,7 +27,7 @@ When you deploy a GcpGkeNodePool resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **An existing GKE cluster** — deployed via a [GcpGkeCluster](/docs/catalog/gcp/gke-cluster) resource or created externally
 - **IAM permissions** to create node pools in the target GCP project and GKE cluster
 
@@ -36,15 +36,15 @@ When you deploy a GcpGkeNodePool resource, OpenMCF provisions:
 Create a file `node-pool.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpGkeNodePool
 metadata:
   name: my-node-pool
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpGkeNodePool.my-node-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpGkeNodePool.my-node-pool
 spec:
   nodePoolName: default-pool
   clusterProjectId:
@@ -59,7 +59,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f node-pool.yaml
+planton apply -f node-pool.yaml
 ```
 
 This creates a 3-node pool named `default-pool` using `e2-medium` instances with 100 GB `pd-standard` disks and Container-Optimized OS.
@@ -85,7 +85,7 @@ This creates a 3-node pool named `default-pool` using `e2-medium` instances with
 | `imageType` | `string` | `COS_CONTAINERD` | Node OS image. Common values: `COS_CONTAINERD`, `COS`, `UBUNTU`, `UBUNTU_CONTAINERD`. |
 | `serviceAccount` | `string` | GKE default | GCP service account email for nodes. If omitted, GKE assigns the default node service account. |
 | `spot` | `bool` | `false` | Use Spot (preemptible) VMs. Reduces cost but nodes may be reclaimed at any time. |
-| `nodeLabels` | `map<string, string>` | — | Kubernetes labels applied to every node in this pool. Merged with OpenMCF-managed resource labels. |
+| `nodeLabels` | `map<string, string>` | — | Kubernetes labels applied to every node in this pool. Merged with Planton-managed resource labels. |
 | `nodeCount` | `uint32` | — | Fixed number of nodes (no autoscaling). Mutually exclusive with `autoscaling`. |
 | `autoscaling.minNodes` | `uint32` | — | Minimum nodes per zone when autoscaling is enabled. Set to `0` for scale-to-zero. |
 | `autoscaling.maxNodes` | `uint32` | — | Maximum nodes per zone when autoscaling is enabled. |
@@ -102,15 +102,15 @@ One of `nodeCount` or `autoscaling` must be provided. If neither is set, the mod
 A simple 3-node pool using all defaults — suitable for development:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpGkeNodePool
 metadata:
   name: dev-pool
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpGkeNodePool.dev-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpGkeNodePool.dev-pool
 spec:
   nodePoolName: dev-pool
   clusterProjectId:
@@ -127,15 +127,15 @@ spec:
 A cost-optimized pool that scales between 1 and 10 nodes using Spot VMs and SSD disks:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpGkeNodePool
 metadata:
   name: spot-pool
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.GcpGkeNodePool.spot-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.GcpGkeNodePool.spot-pool
 spec:
   nodePoolName: spot-workers
   clusterProjectId:
@@ -162,15 +162,15 @@ spec:
 A production-grade pool referencing a GcpGkeCluster resource, with auto-upgrade disabled for controlled rollouts:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpGkeNodePool
 metadata:
   name: prod-pool
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpGkeNodePool.prod-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpGkeNodePool.prod-pool
 spec:
   nodePoolName: prod-workers
   clusterProjectId:

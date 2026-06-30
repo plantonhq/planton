@@ -1,0 +1,3 @@
+name: aws-sqs-queue
+runtime: go
+description: Deploy an AWS SQS Queue using Planton

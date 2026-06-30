@@ -12,13 +12,13 @@ Deploys an OpenStack Neutron router interface, attaching a router to a subnet by
 
 ## What Gets Created
 
-When you deploy an OpenStackRouterInterface resource, OpenMCF provisions:
+When you deploy an OpenStackRouterInterface resource, Planton provisions:
 
 - **Neutron Router Interface** — an `openstack_networking_router_interface_v2` resource that creates a port on the specified subnet and attaches it to the specified router, establishing L3 connectivity for the subnet
 
 ## Prerequisites
 
-- **OpenStack credentials** configured via environment variables or OpenMCF provider config
+- **OpenStack credentials** configured via environment variables or Planton provider config
 - **An existing router** — either an OpenStackRouter resource or a pre-existing router UUID
 - **An existing subnet** — either an OpenStackSubnet resource or a pre-existing subnet UUID
 
@@ -27,15 +27,15 @@ When you deploy an OpenStackRouterInterface resource, OpenMCF provisions:
 Create a file `router-interface.yaml`:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackRouterInterface
 metadata:
   name: my-router-interface
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OpenStackRouterInterface.my-router-interface
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OpenStackRouterInterface.my-router-interface
 spec:
   routerId:
     value: <router-uuid>
@@ -46,7 +46,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f router-interface.yaml
+planton apply -f router-interface.yaml
 ```
 
 This attaches the specified router to the specified subnet, enabling L3 routing for instances on that subnet.
@@ -73,15 +73,15 @@ This attaches the specified router to the specified subnet, enabling L3 routing 
 Attach a pre-existing router to a pre-existing subnet using their UUIDs directly:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackRouterInterface
 metadata:
   name: web-subnet-attachment
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OpenStackRouterInterface.web-subnet-attachment
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OpenStackRouterInterface.web-subnet-attachment
 spec:
   routerId:
     value: 3a1f2b4c-5d6e-7f8a-9b0c-1d2e3f4a5b6c
@@ -94,15 +94,15 @@ spec:
 Wire the router interface to OpenStackRouter and OpenStackSubnet resources in the same deployment using `valueFrom`, so the IDs are resolved automatically:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackRouterInterface
 metadata:
   name: app-subnet-to-edge
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.OpenStackRouterInterface.app-subnet-to-edge
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.OpenStackRouterInterface.app-subnet-to-edge
 spec:
   routerId:
     valueFrom:
@@ -121,15 +121,15 @@ spec:
 Attach a router to a subnet in a specific OpenStack region, overriding the provider default:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackRouterInterface
 metadata:
   name: region2-db-subnet
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OpenStackRouterInterface.region2-db-subnet
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OpenStackRouterInterface.region2-db-subnet
 spec:
   routerId:
     valueFrom:

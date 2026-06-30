@@ -3,7 +3,7 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "awstagkeys",
     srcs = ["aws_tag_keys.go"],
-    importpath = "github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys",
+    importpath = "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys",
     visibility = ["//visibility:public"],
     deps = ["//pkg/iac/pulumi/pulumimodule/labels/labelkeys"],
 )

@@ -23,7 +23,7 @@ Creates a cert-manager Certificate for requesting signed TLS certificates from a
 ## Quick Start
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesCertificate
 metadata:
   name: my-app-cert

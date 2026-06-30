@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awscodepipeline.v1;
+
+import "dev/planton/provider/aws/awscodepipeline/v1/api.proto";
+import "dev/planton/provider/aws/provider.proto";
+
+// AwsCodePipelineStackInput is the input for the IaC modules that
+// deploy the CodePipeline pipeline, stages, and actions.
+message AwsCodePipelineStackInput {
+  // target is the AwsCodePipeline resource to deploy.
+  AwsCodePipeline target = 1;
+  // provider_config contains the AWS provider credentials and configuration.
+  dev.planton.provider.aws.AwsProviderConfig provider_config = 2;
+}

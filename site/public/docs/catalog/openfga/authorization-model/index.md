@@ -12,7 +12,7 @@ Deploys an authorization model into an existing OpenFGA store. The model defines
 
 ## What Gets Created
 
-When you deploy an OpenFgaAuthorizationModel resource, OpenMCF provisions:
+When you deploy an OpenFgaAuthorizationModel resource, Planton provisions:
 
 - **Authorization Model Document** — an `openfga_authorization_model_document` data source that converts DSL to JSON, created only when `modelDsl` is provided
 - **Authorization Model** — an `openfga_authorization_model` resource containing the type definitions, relations, and conditions for fine-grained access control
@@ -29,12 +29,12 @@ When you deploy an OpenFgaAuthorizationModel resource, OpenMCF provisions:
 Create a file `authz-model.yaml`:
 
 ```yaml
-apiVersion: openfga.openmcf.org/v1
+apiVersion: openfga.planton.dev/v1
 kind: OpenFgaAuthorizationModel
 metadata:
   name: my-model
   labels:
-    openmcf.org/provisioner: tofu
+    planton.dev/provisioner: tofu
 spec:
   storeId: "01HXYZ..."
   modelDsl: |
@@ -51,7 +51,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f authz-model.yaml
+planton apply -f authz-model.yaml
 ```
 
 This creates an authorization model with a `user` type and a `document` type that has a `viewer` relation.
@@ -78,12 +78,12 @@ This creates an authorization model with a `user` type and a `document` type tha
 A minimal model defining users and documents with viewer, editor, and owner relations, using the recommended DSL format:
 
 ```yaml
-apiVersion: openfga.openmcf.org/v1
+apiVersion: openfga.planton.dev/v1
 kind: OpenFgaAuthorizationModel
 metadata:
   name: basic-model
   labels:
-    openmcf.org/provisioner: tofu
+    planton.dev/provisioner: tofu
 spec:
   storeId: "01HXYZ..."
   modelDsl: |
@@ -104,12 +104,12 @@ spec:
 The same model defined in JSON, for teams that prefer structured data or are migrating existing JSON definitions:
 
 ```yaml
-apiVersion: openfga.openmcf.org/v1
+apiVersion: openfga.planton.dev/v1
 kind: OpenFgaAuthorizationModel
 metadata:
   name: json-model
   labels:
-    openmcf.org/provisioner: tofu
+    planton.dev/provisioner: tofu
 spec:
   storeId: "01HXYZ..."
   modelJson: |
@@ -144,12 +144,12 @@ spec:
 A role-based model with groups, folders, and documents using a foreign key reference to resolve the store ID from an OpenFgaStore resource:
 
 ```yaml
-apiVersion: openfga.openmcf.org/v1
+apiVersion: openfga.planton.dev/v1
 kind: OpenFgaAuthorizationModel
 metadata:
   name: rbac-model
   labels:
-    openmcf.org/provisioner: tofu
+    planton.dev/provisioner: tofu
 spec:
   storeId:
     valueFrom:

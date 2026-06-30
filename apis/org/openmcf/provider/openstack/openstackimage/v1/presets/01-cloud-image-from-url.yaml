@@ -1,8 +1,0 @@
-apiVersion: openstack.openmcf.org/v1
-kind: OpenStackImage
-metadata:
-  name: my-cloud-image
-spec:
-  containerFormat: bare
-  diskFormat: qcow2
-  imageSourceUrl: <image-download-url>

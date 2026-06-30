@@ -1,17 +1,17 @@
 version: 2
 
-project_name: openmcf
+project_name: planton
 
 before:
   hooks:
     - go mod tidy
 
 builds:
-  - id: openmcf
+  - id: planton
     main: .
-    binary: openmcf
+    binary: planton
     ldflags:
-      - -s -w -X github.com/plantonhq/openmcf/internal/cli/version.Version={{.Tag}}
+      - -s -w -X github.com/plantonhq/planton/internal/cli/version.Version={{.Tag}}
     env:
       - CGO_ENABLED=0
     goos:
@@ -38,13 +38,13 @@ checksum:
 release:
   github:
     owner: plantonhq
-    name: openmcf
+    name: planton
   header: |
-    ## OpenMCF {{ .Tag }}
+    ## Planton {{ .Tag }}
 
     This release includes the CLI and website deployment.
 
-    Pre-built Pulumi binaries and Terraform module zips are hosted on [downloads.openmcf.org](https://downloads.openmcf.org/releases/{{ .Tag }}/).
+    Pre-built Pulumi binaries and Terraform module zips are hosted on [downloads.planton.dev](https://downloads.planton.dev/releases/{{ .Tag }}/).
 
   footer: |
     ---
@@ -55,58 +55,58 @@ release:
 
     ```bash
     brew tap plantonhq/tap
-    brew install openmcf
+    brew install planton
     ```
 
     To upgrade:
 
     ```bash
-    brew upgrade openmcf
+    brew upgrade planton
     ```
 
     ### macOS (Manual)
 
     ```bash
     # Apple Silicon (M1/M2/M3)
-    curl -LO https://github.com/plantonhq/openmcf/releases/download/{{ .Tag }}/cli_{{ .Version }}_darwin_arm64.tar.gz
+    curl -LO https://github.com/plantonhq/planton/releases/download/{{ .Tag }}/cli_{{ .Version }}_darwin_arm64.tar.gz
     tar -xzf cli_{{ .Version }}_darwin_arm64.tar.gz
-    chmod +x openmcf
-    sudo mv openmcf /usr/local/bin/
+    chmod +x planton
+    sudo mv planton /usr/local/bin/
 
     # Intel
-    curl -LO https://github.com/plantonhq/openmcf/releases/download/{{ .Tag }}/cli_{{ .Version }}_darwin_amd64.tar.gz
+    curl -LO https://github.com/plantonhq/planton/releases/download/{{ .Tag }}/cli_{{ .Version }}_darwin_amd64.tar.gz
     tar -xzf cli_{{ .Version }}_darwin_amd64.tar.gz
-    chmod +x openmcf
-    sudo mv openmcf /usr/local/bin/
+    chmod +x planton
+    sudo mv planton /usr/local/bin/
     ```
 
     ### Linux
 
     ```bash
     # x86_64
-    curl -LO https://github.com/plantonhq/openmcf/releases/download/{{ .Tag }}/cli_{{ .Version }}_linux_amd64.tar.gz
+    curl -LO https://github.com/plantonhq/planton/releases/download/{{ .Tag }}/cli_{{ .Version }}_linux_amd64.tar.gz
     tar -xzf cli_{{ .Version }}_linux_amd64.tar.gz
-    chmod +x openmcf
-    sudo mv openmcf /usr/local/bin/
+    chmod +x planton
+    sudo mv planton /usr/local/bin/
 
     # ARM64
-    curl -LO https://github.com/plantonhq/openmcf/releases/download/{{ .Tag }}/cli_{{ .Version }}_linux_arm64.tar.gz
+    curl -LO https://github.com/plantonhq/planton/releases/download/{{ .Tag }}/cli_{{ .Version }}_linux_arm64.tar.gz
     tar -xzf cli_{{ .Version }}_linux_arm64.tar.gz
-    chmod +x openmcf
-    sudo mv openmcf /usr/local/bin/
+    chmod +x planton
+    sudo mv planton /usr/local/bin/
     ```
 
     ### Windows
 
     ```powershell
     # Download the ZIP file
-    Invoke-WebRequest -Uri "https://github.com/plantonhq/openmcf/releases/download/{{ .Tag }}/cli_{{ .Version }}_windows_amd64.zip" -OutFile "cli.zip"
+    Invoke-WebRequest -Uri "https://github.com/plantonhq/planton/releases/download/{{ .Tag }}/cli_{{ .Version }}_windows_amd64.zip" -OutFile "cli.zip"
 
     # Extract
     Expand-Archive -Path "cli.zip" -DestinationPath "."
 
     # Add to PATH or move to a directory in PATH
-    Move-Item -Path "openmcf.exe" -Destination "C:\Windows\System32\"
+    Move-Item -Path "planton.exe" -Destination "C:\Windows\System32\"
     ```
 
     ---
@@ -115,15 +115,15 @@ release:
 
     The updated documentation website is available at:
 
-    **https://openmcf.org**
+    **https://planton.dev**
 
     ---
 
     ## Pulumi Module Binaries
 
-    Pre-built Pulumi module binaries are hosted on **downloads.openmcf.org** for all platforms. Each binary is gzip-compressed.
+    Pre-built Pulumi module binaries are hosted on **downloads.planton.dev** for all platforms. Each binary is gzip-compressed.
 
-    **Browse all binaries:** [downloads.openmcf.org/releases/{{ .Tag }}/modules/pulumi/](https://downloads.openmcf.org/releases/{{ .Tag }}/modules/pulumi/)
+    **Browse all binaries:** [downloads.planton.dev/releases/{{ .Tag }}/modules/pulumi/](https://downloads.planton.dev/releases/{{ .Tag }}/modules/pulumi/)
 
     ### Available Platforms
 
@@ -140,12 +140,12 @@ release:
     # Example: Download the AWS ECS Service module for your platform
 
     # Linux x86-64
-    curl -LO https://downloads.openmcf.org/releases/{{ .Tag }}/modules/pulumi/awsecsservice_linux_amd64.gz
+    curl -LO https://downloads.planton.dev/releases/{{ .Tag }}/modules/pulumi/awsecsservice_linux_amd64.gz
     gunzip awsecsservice_linux_amd64.gz
     chmod +x awsecsservice_linux_amd64
 
     # macOS Apple Silicon (M1/M2/M3)
-    curl -LO https://downloads.openmcf.org/releases/{{ .Tag }}/modules/pulumi/awsecsservice_darwin_arm64.gz
+    curl -LO https://downloads.planton.dev/releases/{{ .Tag }}/modules/pulumi/awsecsservice_darwin_arm64.gz
     gunzip awsecsservice_darwin_arm64.gz
     chmod +x awsecsservice_darwin_arm64
     ```
@@ -154,15 +154,15 @@ release:
 
     ## Terraform Modules
 
-    Terraform module zips are hosted on **downloads.openmcf.org** for all deployment components across all providers.
+    Terraform module zips are hosted on **downloads.planton.dev** for all deployment components across all providers.
 
-    **Browse all modules:** [downloads.openmcf.org/releases/{{ .Tag }}/modules/terraform/](https://downloads.openmcf.org/releases/{{ .Tag }}/modules/terraform/)
+    **Browse all modules:** [downloads.planton.dev/releases/{{ .Tag }}/modules/terraform/](https://downloads.planton.dev/releases/{{ .Tag }}/modules/terraform/)
 
     ### Download Zip (Recommended)
 
     ```bash
     # Example: AWS ECS Service
-    curl -LO https://downloads.openmcf.org/releases/{{ .Tag }}/modules/terraform/awsecsservice.zip
+    curl -LO https://downloads.planton.dev/releases/{{ .Tag }}/modules/terraform/awsecsservice.zip
     unzip awsecsservice.zip -d awsecsservice
     cd awsecsservice
     terraform init && terraform plan
@@ -174,13 +174,13 @@ release:
 
     ```hcl
     module "awsecsservice" {
-      source = "git::https://github.com/plantonhq/openmcf.git//apis/org/openmcf/provider/aws/awsecsservice/v1/iac/tf?ref={{ .Tag }}"
+      source = "git::https://github.com/plantonhq/planton.git//apis/dev/planton/provider/aws/awsecsservice/v1/iac/tf?ref={{ .Tag }}"
     }
     ```
 
     ---
 
-    **Full Changelog**: https://github.com/plantonhq/openmcf/compare/{{ .PreviousTag }}...{{ .Tag }}
+    **Full Changelog**: https://github.com/plantonhq/planton/compare/{{ .PreviousTag }}...{{ .Tag }}
 
 changelog:
   use: github
@@ -194,32 +194,32 @@ changelog:
       - Merge branch
 
 homebrew_casks:
-  - name: openmcf
+  - name: planton
     repository:
       owner: plantonhq
       name: homebrew-tap
       token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
-    homepage: https://github.com/plantonhq/openmcf
-    description: "OpenMCF CLI - Infrastructure as Code made simple"
+    homepage: https://github.com/plantonhq/planton
+    description: "Planton CLI - Infrastructure as Code made simple"
     binaries:
-      - openmcf
+      - planton
     hooks:
       post:
         install: |
           if OS.mac?
-            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/openmcf"]
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/planton"]
           end
     caveats: |
       Installation Complete!
 
-      OpenMCF CLI helps you manage infrastructure deployments.
+      Planton CLI helps you manage infrastructure deployments.
 
       Quick Start
 
       1. Check the version:
-         openmcf version
+         planton version
 
       2. Get help:
-         openmcf --help
+         planton --help
 
-      Documentation: https://github.com/plantonhq/openmcf
+      Documentation: https://github.com/plantonhq/planton

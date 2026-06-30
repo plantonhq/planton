@@ -12,7 +12,7 @@ Deploys an Amazon SageMaker Domain with VPC networking, default user settings in
 
 ## What Gets Created
 
-When you deploy an AwsSagemakerDomain resource, OpenMCF provisions:
+When you deploy an AwsSagemakerDomain resource, Planton provisions:
 
 - **SageMaker Domain** — a `sagemaker.Domain` resource placed in the specified VPC and subnets, with the configured authentication mode (IAM or SSO), default user settings, and optional domain-level settings (Docker, security groups)
 - **Dedicated EFS File System** — automatically created by AWS for user home directories (the `home_efs_file_system_id` is exposed as a stack output)
@@ -21,7 +21,7 @@ When you deploy an AwsSagemakerDomain resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **A VPC** with DNS resolution and DNS hostnames enabled
 - **At least one subnet** in the VPC for SageMaker network interfaces (private subnets recommended for production)
 - **An IAM execution role** with a trust policy for `sagemaker.amazonaws.com`, granting access to S3, ECR, and other services the ML workloads need
@@ -33,15 +33,15 @@ When you deploy an AwsSagemakerDomain resource, OpenMCF provisions:
 Create a file `sagemaker-domain.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsSagemakerDomain
 metadata:
   name: my-domain
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsSagemakerDomain.my-domain
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsSagemakerDomain.my-domain
 spec:
   region: us-east-1
   authMode: IAM
@@ -56,7 +56,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f sagemaker-domain.yaml
+planton apply -f sagemaker-domain.yaml
 ```
 
 This creates a SageMaker Domain with IAM authentication, public internet access for notebooks, and the SageMaker-provided default JupyterLab environment.
@@ -114,15 +114,15 @@ This creates a SageMaker Domain with IAM authentication, public internet access 
 Cost-optimized domain with automatic shutdown of idle JupyterLab instances after 2 hours:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsSagemakerDomain
 metadata:
   name: ml-team
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsSagemakerDomain.ml-team
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsSagemakerDomain.ml-team
 spec:
   region: us-east-1
   authMode: IAM
@@ -146,15 +146,15 @@ spec:
 Enterprise domain using IAM Identity Center and VPC-only access for compliance:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsSagemakerDomain
 metadata:
   name: enterprise-ml
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsSagemakerDomain.enterprise-ml
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsSagemakerDomain.enterprise-ml
 spec:
   region: us-east-1
   authMode: SSO
@@ -186,15 +186,15 @@ spec:
 Production domain with Docker access, custom KernelGateway images, auto-cloned repositories, notebook sharing, and space storage limits:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsSagemakerDomain
 metadata:
   name: data-science
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsSagemakerDomain.data-science
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsSagemakerDomain.data-science
 spec:
   region: us-east-1
   authMode: SSO
@@ -242,18 +242,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference OpenMCF-managed VPC, IAM role, security groups, and KMS key instead of hardcoding ARNs:
+Reference Planton-managed VPC, IAM role, security groups, and KMS key instead of hardcoding ARNs:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsSagemakerDomain
 metadata:
   name: ref-domain
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsSagemakerDomain.ref-domain
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsSagemakerDomain.ref-domain
 spec:
   region: us-east-1
   authMode: IAM

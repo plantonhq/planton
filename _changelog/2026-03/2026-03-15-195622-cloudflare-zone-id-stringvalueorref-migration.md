@@ -10,7 +10,7 @@ Migrated the `zone_id` field from plain `string` to `StringValueOrRef` in two Cl
 
 ## Problem Statement / Motivation
 
-Cloudflare's `zone_id` is a 32-character hexadecimal identifier that scopes most Cloudflare operations. Five OpenMCF components use it, but they were inconsistent in how they modeled it.
+Cloudflare's `zone_id` is a 32-character hexadecimal identifier that scopes most Cloudflare operations. Five Planton components use it, but they were inconsistent in how they modeled it.
 
 ### Pain Points
 
@@ -20,7 +20,7 @@ Cloudflare's `zone_id` is a 32-character hexadecimal identifier that scopes most
 
 ## Solution / What's New
 
-Changed the `zone_id` field type from `string` to `org.openmcf.shared.foreignkey.v1.StringValueOrRef` in both components, propagated the change through all six layers (proto, Pulumi IaC, Terraform IaC, tests, presets, documentation), and validated with full build and test suite.
+Changed the `zone_id` field type from `string` to `dev.planton.shared.foreignkey.v1.StringValueOrRef` in both components, propagated the change through all six layers (proto, Pulumi IaC, Terraform IaC, tests, presets, documentation), and validated with full build and test suite.
 
 ### Consistency Achieved
 
@@ -69,9 +69,9 @@ zoneId:
 string zone_id = 2 [(buf.validate.field).string.min_len = 1];
 
 // After
-org.openmcf.shared.foreignkey.v1.StringValueOrRef zone_id = 2 [
-  (org.openmcf.shared.foreignkey.v1.default_kind) = CloudflareDnsZone,
-  (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
+dev.planton.shared.foreignkey.v1.StringValueOrRef zone_id = 2 [
+  (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareDnsZone,
+  (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
 ];
 ```
 
@@ -80,15 +80,15 @@ org.openmcf.shared.foreignkey.v1.StringValueOrRef zone_id = 2 [
 // Before
 string zone_id = 2 [
   (buf.validate.field).required = true,
-  (org.openmcf.shared.foreignkey.v1.default_kind) = CloudflareDnsZone,
-  (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
+  (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareDnsZone,
+  (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
 ];
 
 // After
-org.openmcf.shared.foreignkey.v1.StringValueOrRef zone_id = 2 [
+dev.planton.shared.foreignkey.v1.StringValueOrRef zone_id = 2 [
   (buf.validate.field).required = true,
-  (org.openmcf.shared.foreignkey.v1.default_kind) = CloudflareDnsZone,
-  (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
+  (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareDnsZone,
+  (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
 ];
 ```
 

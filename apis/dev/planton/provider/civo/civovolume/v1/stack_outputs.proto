@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package dev.planton.provider.civo.civovolume.v1;
+
+// CivoVolumeStackOutputs captures the resulting volume information after provisioning.
+message CivoVolumeStackOutputs {
+  // The unique identifier (ID) of the created Civo volume.
+  string volume_id = 1;
+  // The ID of the Civo instance the volume is attached to (if any).
+  string attached_instance_id = 2;
+  // The device path of the volume on the attached instance (if any).
+  string device_path = 3;
+}

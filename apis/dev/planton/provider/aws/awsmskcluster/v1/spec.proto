@@ -1,0 +1,353 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsmskcluster.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// AwsMskClusterSpec defines the desired state of an Amazon MSK (Managed Streaming for Apache Kafka) cluster.
+// MSK is a fully managed service that provisions, configures, and maintains Apache Kafka clusters,
+// handling broker infrastructure, ZooKeeper coordination, and storage so teams can focus on producing
+// and consuming streaming data rather than operating Kafka infrastructure.
+message AwsMskClusterSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  // --- Core ---
+
+  // kafka_version is the Apache Kafka version for all brokers in the cluster.
+  // Examples: "3.6.0", "3.5.1", "3.4.0", "2.8.1".
+  // Upgrades are applied via rolling restart; downgrades force cluster replacement.
+  string kafka_version = 2 [(buf.validate.field).required = true];
+
+  // number_of_broker_nodes is the total number of Kafka broker nodes in the cluster.
+  // Must be a multiple of the number of subnets provided in subnet_ids so that
+  // brokers are evenly distributed across Availability Zones.
+  int32 number_of_broker_nodes = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).int32.gte = 1
+  ];
+
+  // instance_type determines the compute and memory capacity of each broker node.
+  // Standard types: kafka.m5.large, kafka.m5.xlarge, kafka.m5.2xlarge, kafka.m5.4xlarge.
+  // Graviton types: kafka.m7g.large, kafka.m7g.xlarge (better price-performance).
+  // Small/dev types: kafka.t3.small.
+  string instance_type = 4 [(buf.validate.field).required = true];
+
+  // --- Networking ---
+  // All networking fields in broker_node_group_info are ForceNew in the AWS provider.
+  // Changing subnets or the security group list after creation forces cluster replacement.
+
+  // subnet_ids are the VPC subnets where broker nodes are placed.
+  // Brokers are distributed round-robin across subnets. The number of broker nodes
+  // must be a multiple of the number of subnets for even AZ distribution.
+  // ForceNew: changing subnets forces cluster replacement.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef subnet_ids = 5 [
+    (buf.validate.field).repeated.min_items = 1,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  ];
+
+  // security_group_ids are source security groups allowed to reach brokers on Kafka and ZooKeeper ports.
+  // When provided (along with vpc_id), a managed security group is created with ingress rules
+  // permitting TCP traffic from these source security groups on ports 9092-9098 (Kafka) and 2181-2182 (ZooKeeper).
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef security_group_ids = 6 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
+  ];
+
+  // allowed_cidr_blocks are IPv4 CIDR ranges allowed to reach brokers.
+  // When provided (along with vpc_id), a managed security group is created with ingress rules
+  // permitting TCP traffic from these CIDRs on ports 9092-9098 (Kafka) and 2181-2182 (ZooKeeper).
+  repeated string allowed_cidr_blocks = 7 [
+    (buf.validate.field).repeated.items.string.pattern = "^(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}/(?:[0-9]|[12]\\d|3[0-2])$",
+    (buf.validate.field).repeated.unique = true
+  ];
+
+  // associate_security_group_ids are existing security groups attached directly to the cluster
+  // alongside the managed security group (if one is created from security_group_ids/allowed_cidr_blocks).
+  // IMPORTANT: The broker_node_group_info.security_groups field in AWS is ForceNew.
+  // Adding or removing entries here after cluster creation forces cluster replacement.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef associate_security_group_ids = 8 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
+  ];
+
+  // vpc_id is the VPC in which to create the managed security group.
+  // Required when security_group_ids or allowed_cidr_blocks are provided.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef vpc_id = 9 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsVpc,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
+  ];
+
+  // --- Storage ---
+
+  // ebs_volume_size_gib is the size of the EBS volume per broker, in GiB.
+  // Range: 1-16384. If omitted, AWS uses the instance-type-specific default.
+  optional int32 ebs_volume_size_gib = 10 [
+    (buf.validate.field).int32.gte = 1,
+    (buf.validate.field).int32.lte = 16384
+  ];
+
+  // provisioned_throughput_enabled enables provisioned EBS throughput for higher streaming performance.
+  // Only supported on kafka.m5.4xlarge and larger instance types with ebs_volume_size_gib >= 10 GiB.
+  bool provisioned_throughput_enabled = 11;
+
+  // provisioned_throughput_mbs is the provisioned EBS throughput in MiB/s per broker.
+  // Range: 250-2375. Required when provisioned_throughput_enabled is true.
+  int32 provisioned_throughput_mbs = 12 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).int32.gte = 250,
+    (buf.validate.field).int32.lte = 2375
+  ];
+
+  // storage_mode controls data storage strategy.
+  // "LOCAL" (default): all data on broker EBS volumes.
+  // "TIERED": hot data on EBS, warm data automatically offloaded to S3 for cost optimization.
+  // Tiered storage requires Kafka 2.8.2.tiered+ and supported instance types.
+  string storage_mode = 13 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "LOCAL",
+        "TIERED"
+      ]
+    }
+  ];
+
+  // --- Encryption ---
+
+  // kms_key_arn is the KMS key ARN for encrypting data at rest on broker EBS volumes.
+  // If omitted, AWS uses the default aws/msk service key.
+  // ForceNew: changing the KMS key forces cluster replacement.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_arn = 14 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
+  ];
+
+  // client_broker_encryption controls encryption for data in transit between clients and brokers.
+  // "TLS" (default, recommended): all client-broker traffic is TLS-encrypted (port 9094).
+  // "TLS_PLAINTEXT": both TLS (9094) and plaintext (9092) are available.
+  // "PLAINTEXT": all client-broker traffic is unencrypted (port 9092).
+  optional string client_broker_encryption = 15 [
+    (buf.validate.field).string = {
+      in: [
+        "TLS",
+        "TLS_PLAINTEXT",
+        "PLAINTEXT"
+      ]
+    },
+    (dev.planton.shared.options.default) = "TLS"
+  ];
+
+  // in_cluster_encryption enables TLS encryption for data in transit between brokers.
+  // Strongly recommended for production. ForceNew: changing this forces cluster replacement.
+  optional bool in_cluster_encryption = 16 [(dev.planton.shared.options.default) = "true"];
+
+  // --- Authentication ---
+
+  // authentication configures client authentication methods for the cluster.
+  // Multiple methods can be enabled simultaneously (e.g., SASL/IAM + TLS).
+  // If no authentication is configured, the cluster accepts unauthenticated connections.
+  AwsMskClusterAuthentication authentication = 17;
+
+  // --- Configuration ---
+
+  // configuration_arn is the ARN of an externally managed MSK Configuration resource.
+  // MSK Configurations hold Apache Kafka server.properties overrides (e.g., replication factor,
+  // min ISR, log retention). Mutually exclusive with server_properties.
+  string configuration_arn = 18;
+
+  // configuration_revision is the revision number of the external MSK Configuration.
+  // Required when configuration_arn is set. Must be >= 1.
+  int32 configuration_revision = 19 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).int32.gte = 1
+  ];
+
+  // server_properties defines Apache Kafka server.properties overrides as key-value pairs.
+  // When provided, an inline MSK Configuration resource is created and associated with the cluster.
+  // Common properties: auto.create.topics.enable, default.replication.factor, min.insync.replicas,
+  // num.partitions, log.retention.hours, log.retention.bytes.
+  // Mutually exclusive with configuration_arn.
+  map<string, string> server_properties = 20;
+
+  // --- Logging ---
+
+  // logging configures broker log delivery to one or more destinations.
+  // All three destinations (CloudWatch Logs, Kinesis Data Firehose, S3) can be
+  // enabled simultaneously for different operational workflows.
+  AwsMskClusterLogging logging = 21;
+
+  // --- Monitoring ---
+
+  // enhanced_monitoring sets the level of CloudWatch metrics published by the cluster.
+  // "DEFAULT": cluster-level and topic-level metrics.
+  // "PER_BROKER": adds per-broker metrics.
+  // "PER_TOPIC_PER_BROKER": adds per-topic-per-broker metrics.
+  // "PER_TOPIC_PER_PARTITION": most granular, adds per-partition metrics.
+  string enhanced_monitoring = 22 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "DEFAULT",
+        "PER_BROKER",
+        "PER_TOPIC_PER_BROKER",
+        "PER_TOPIC_PER_PARTITION"
+      ]
+    }
+  ];
+
+  // jmx_exporter_enabled enables the Prometheus JMX Exporter on all brokers.
+  // When enabled, JMX metrics are available on port 11001 for Prometheus scraping.
+  // Provides detailed JVM and Kafka broker metrics.
+  bool jmx_exporter_enabled = 23;
+
+  // node_exporter_enabled enables the Prometheus Node Exporter on all brokers.
+  // When enabled, host-level metrics (CPU, memory, disk, network) are available
+  // on port 11002 for Prometheus scraping.
+  bool node_exporter_enabled = 24;
+
+  // --- Connectivity ---
+
+  // public_access_type controls whether the cluster is reachable from the public internet.
+  // "DISABLED" (default): brokers are only reachable within the VPC.
+  // "SERVICE_PROVIDED_EIPS": AWS assigns Elastic IPs to brokers for public access.
+  // Public access requires specific authentication (SASL/IAM or SASL/SCRAM) and TLS encryption.
+  string public_access_type = 25 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "DISABLED",
+        "SERVICE_PROVIDED_EIPS"
+      ]
+    }
+  ];
+
+  // --- Cross-field validations ---
+
+  option (buf.validate.message).cel = {
+    id: "provisioned_throughput_requires_mbs"
+    message: "provisioned_throughput_mbs must be set (250-2375) when provisioned_throughput_enabled is true"
+    expression: "this.provisioned_throughput_enabled ? (this.provisioned_throughput_mbs >= 250 && this.provisioned_throughput_mbs <= 2375) : true"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "configuration_mutual_exclusion"
+    message: "configuration_arn and server_properties are mutually exclusive"
+    expression: "this.configuration_arn != '' ? this.server_properties.size() == 0 : true"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "configuration_revision_required"
+    message: "configuration_revision is required (>= 1) when configuration_arn is set"
+    expression: "this.configuration_arn != '' ? this.configuration_revision >= 1 : true"
+  };
+}
+
+// AwsMskClusterAuthentication configures client authentication methods for the MSK cluster.
+// Multiple methods can be enabled simultaneously to support diverse client populations.
+message AwsMskClusterAuthentication {
+  // sasl_iam_enabled enables SASL/IAM authentication.
+  // Recommended for most workloads. Clients authenticate using AWS IAM credentials
+  // (access key, role assumption, or instance profiles). No password management required.
+  // Brokers listen on port 9098 for SASL/IAM connections.
+  bool sasl_iam_enabled = 1;
+
+  // sasl_scram_enabled enables SASL/SCRAM-SHA-512 authentication.
+  // Clients authenticate with username/password stored in AWS Secrets Manager.
+  // Useful for non-AWS clients that cannot use IAM. Brokers listen on port 9096.
+  // Secrets must be associated with the cluster via aws_msk_scram_secret_association.
+  bool sasl_scram_enabled = 2;
+
+  // tls_enabled enables mutual TLS (mTLS) authentication.
+  // Clients present X.509 certificates signed by a private Certificate Authority.
+  // Requires tls_certificate_authority_arns to specify trusted CAs.
+  // Brokers listen on port 9094 for TLS connections.
+  bool tls_enabled = 3;
+
+  // tls_certificate_authority_arns are the ARNs of ACM Private Certificate Authority resources
+  // trusted for client certificate validation. Required when tls_enabled is true.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef tls_certificate_authority_arns = 4;
+
+  // unauthenticated allows clients to connect without any authentication.
+  // Not recommended for production. Useful for development or when network-level
+  // security (VPC + security groups) provides sufficient access control.
+  bool unauthenticated = 5;
+}
+
+// AwsMskClusterLogging configures broker log delivery destinations.
+// All three destinations can be enabled simultaneously.
+message AwsMskClusterLogging {
+  // cloudwatch_logs configures delivery of broker logs to CloudWatch Logs.
+  AwsMskClusterCloudwatchLogging cloudwatch_logs = 1;
+
+  // firehose configures delivery of broker logs to a Kinesis Data Firehose stream.
+  AwsMskClusterFirehoseLogging firehose = 2;
+
+  // s3 configures delivery of broker logs to an S3 bucket.
+  AwsMskClusterS3Logging s3 = 3;
+}
+
+// AwsMskClusterCloudwatchLogging configures CloudWatch Logs delivery for broker logs.
+message AwsMskClusterCloudwatchLogging {
+  // enabled controls whether broker logs are delivered to CloudWatch Logs.
+  bool enabled = 1;
+
+  // log_group is the CloudWatch Logs group that receives broker logs.
+  // Required when enabled is true.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef log_group = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsCloudwatchLogGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.log_group_name"
+  ];
+
+  option (buf.validate.message).cel = {
+    id: "log_group_required_when_enabled"
+    message: "log_group is required when CloudWatch logging is enabled"
+    expression: "this.enabled ? has(this.log_group) : true"
+  };
+}
+
+// AwsMskClusterFirehoseLogging configures Kinesis Data Firehose delivery for broker logs.
+message AwsMskClusterFirehoseLogging {
+  // enabled controls whether broker logs are delivered to Kinesis Data Firehose.
+  bool enabled = 1;
+
+  // delivery_stream is the Firehose delivery stream that receives broker logs.
+  // Required when enabled is true.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef delivery_stream = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsKinesisFirehose,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.delivery_stream_name"
+  ];
+
+  option (buf.validate.message).cel = {
+    id: "delivery_stream_required_when_enabled"
+    message: "delivery_stream is required when Firehose logging is enabled"
+    expression: "this.enabled ? has(this.delivery_stream) : true"
+  };
+}
+
+// AwsMskClusterS3Logging configures S3 delivery for broker logs.
+message AwsMskClusterS3Logging {
+  // enabled controls whether broker logs are delivered to S3.
+  bool enabled = 1;
+
+  // bucket is the S3 bucket that receives broker logs.
+  // Required when enabled is true.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef bucket = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsS3Bucket,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_id"
+  ];
+
+  // prefix is an optional S3 key prefix for log objects.
+  // Example: "msk-logs/my-cluster/" produces keys like "msk-logs/my-cluster/broker-1/...".
+  string prefix = 3;
+
+  option (buf.validate.message).cel = {
+    id: "bucket_required_when_enabled"
+    message: "bucket is required when S3 logging is enabled"
+    expression: "this.enabled ? has(this.bucket) : true"
+  };
+}

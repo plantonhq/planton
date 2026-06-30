@@ -1,0 +1,43 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KafkaKubernetes
+metadata:
+  name: test-kafka-cluster
+spec:
+  kafkaTopics:
+    - name: identity-account-auth0-webhook-state
+      partitions: 1
+      replicas: 1
+  brokerContainer:
+    replicas: 1
+    resources:
+      limits:
+        cpu: 2000m
+        memory: 2Gi
+      requests:
+        cpu: 250m
+        memory: 250Mi
+    diskSize: 1Gi
+  zookeeperContainer:
+    replicas: 1
+    resources:
+      limits:
+        cpu: "1"
+        memory: 1Gi
+      requests:
+        cpu: 50m
+        memory: 100Mi
+    diskSize: 1Gi
+  schemaRegistryContainer:
+    isEnabled: true
+    replicas: 1
+    resources:
+      limits:
+        cpu: "2"
+        memory: 2Gi
+      requests:
+        cpu: 50m
+        memory: 100Mi
+  ingress:
+    isEnabled: true
+    dnsDomain: example.com
+  isDeployKafkaUi: true

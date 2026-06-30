@@ -22,7 +22,7 @@ These gaps, while not blocking production use, represented polish opportunities 
 
 ### Enhanced main.tf with Comprehensive Documentation
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetessolr/v1/iac/tf/main.tf`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetessolr/v1/iac/tf/main.tf`
 
 Expanded from 131 bytes to 2,675 bytes by adding:
 
@@ -55,7 +55,7 @@ Expanded from 131 bytes to 2,675 bytes by adding:
 
 ### Created Terraform-Specific Examples
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetessolr/v1/iac/tf/examples.md`  
+**File**: `apis/dev/planton/provider/kubernetes/kubernetessolr/v1/iac/tf/examples.md`  
 **Size**: 10,404 bytes
 
 Comprehensive Terraform examples including:

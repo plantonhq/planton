@@ -3,10 +3,10 @@ load("@rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "awswebidentity",
     srcs = ["exchange.go"],
-    importpath = "github.com/plantonhq/openmcf/pkg/iac/provider/aws/awswebidentity",
+    importpath = "github.com/plantonhq/planton/pkg/iac/provider/aws/awswebidentity",
     visibility = ["//visibility:public"],
     deps = [
-        "//apis/org/openmcf/provider/aws",
+        "//apis/dev/planton/provider/aws",
         "@com_github_aws_aws_sdk_go_v2//aws",
         "@com_github_aws_aws_sdk_go_v2_config//:config",
         "@com_github_aws_aws_sdk_go_v2_credentials//stscreds",
@@ -19,5 +19,5 @@ go_test(
     name = "awswebidentity_test",
     srcs = ["exchange_test.go"],
     embed = [":awswebidentity"],
-    deps = ["//apis/org/openmcf/provider/aws"],
+    deps = ["//apis/dev/planton/provider/aws"],
 )

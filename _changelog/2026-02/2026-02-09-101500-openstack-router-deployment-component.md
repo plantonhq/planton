@@ -69,7 +69,7 @@ flowchart TB
   - `external_fixed_ips` (repeated ExternalFixedIp, CEL-guarded: requires external_network_id)
   - `description`, `tags` (unique), `region`
 - `stack_outputs.proto` -- 5 outputs: router_id, name, external_network_id, external_gateway_ip, region
-- `api.proto` -- KRM envelope with `openstack.openmcf.org/v1` + `OpenStackRouter`
+- `api.proto` -- KRM envelope with `openstack.planton.dev/v1` + `OpenStackRouter`
 - `stack_input.proto` -- target + provider_config
 - `spec_test.go` -- 24 tests (16 positive, 8 negative)
 
@@ -91,9 +91,9 @@ flowchart TB
 The `external_network_id` field uses optional `StringValueOrRef` (no `required = true`):
 
 ```protobuf
-org.openmcf.shared.foreignkey.v1.StringValueOrRef external_network_id = 1 [
-  (org.openmcf.shared.foreignkey.v1.default_kind) = OpenStackNetwork,
-  (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_id"
+dev.planton.shared.foreignkey.v1.StringValueOrRef external_network_id = 1 [
+  (dev.planton.shared.foreignkey.v1.default_kind) = OpenStackNetwork,
+  (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_id"
 ];
 ```
 
@@ -156,7 +156,7 @@ Both IaC modules extract the primary external IP as a convenience output:
 - OpenStackKeypair component: `_changelog/2026-02/2026-02-08-223027-openstackcomputekeypair-deployment-component.md`
 - OpenStackNetwork component: `_changelog/2026-02/2026-02-09-082447-openstack-network-component-and-forge-pipeline-cleanup.md`
 - OpenStackSubnet component: `_changelog/2026-02/2026-02-09-032227-openstack-subnet-deployment-component.md`
-- Parent project: `planton/_projects/20260209.01.openstack-openmcf-components/`
+- Parent project: `planton/_projects/20260209.01.openstack-planton-components/`
 
 ---
 

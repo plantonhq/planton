@@ -1,9 +1,0 @@
-apiVersion: azure.openmcf.org/v1
-kind: AzureServicePlan
-metadata:
-  name: test-plan
-spec:
-  region: eastus
-  resource_group: test-rg
-  name: test-service-plan
-  sku_name: P1v3

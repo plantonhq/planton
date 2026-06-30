@@ -12,7 +12,7 @@ Registers an OpenID Connect (OIDC) identity provider in AWS IAM. This is the tru
 
 ## What Gets Created
 
-When you deploy an AwsIamOidcProvider resource, OpenMCF provisions:
+When you deploy an AwsIamOidcProvider resource, Planton provisions:
 
 - **IAM OIDC Provider** — an `iam.OpenIdConnectProvider` (`aws_iam_openid_connect_provider`) registered under the issuer `url`, scoped to the supplied `clientIdList`, optionally pinned to `thumbprintList`
 
@@ -20,7 +20,7 @@ That single resource is the trust anchor. Access itself is granted by a separate
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **An OIDC issuer URL** — for EKS this is the cluster's OIDC issuer; for CI it is the platform issuer (e.g. `https://token.actions.githubusercontent.com`)
 - **The audience(s)** the issuer's tokens carry in the `aud` claim (commonly `sts.amazonaws.com`)
 
@@ -29,15 +29,15 @@ That single resource is the trust anchor. Access itself is granted by a separate
 Create a file `oidc-provider.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsIamOidcProvider
 metadata:
   name: github-actions-oidc
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsIamOidcProvider.github-actions-oidc
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsIamOidcProvider.github-actions-oidc
 spec:
   region: us-east-1
   url:
@@ -49,7 +49,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f oidc-provider.yaml
+planton apply -f oidc-provider.yaml
 ```
 
 This registers GitHub Actions as a trusted OIDC issuer. Next, create an `AwsIamRole` whose trust policy references the exported `provider_arn`.
@@ -77,15 +77,15 @@ This registers GitHub Actions as a trusted OIDC issuer. Next, create an `AwsIamR
 Wire the OIDC provider directly onto an EKS cluster so IRSA works without copying the issuer URL by hand:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsIamOidcProvider
 metadata:
   name: eks-irsa
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsIamOidcProvider.eks-irsa
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsIamOidcProvider.eks-irsa
 spec:
   region: us-west-2
   url:
@@ -102,15 +102,15 @@ spec:
 For an issuer whose root CA is not publicly trusted, pin the thumbprint:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsIamOidcProvider
 metadata:
   name: partner-oidc
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsIamOidcProvider.partner-oidc
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsIamOidcProvider.partner-oidc
 spec:
   region: eu-west-1
   url:

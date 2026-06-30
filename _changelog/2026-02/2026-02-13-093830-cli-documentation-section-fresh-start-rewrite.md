@@ -18,7 +18,7 @@ The existing 5 CLI documentation pages (2,958 lines) had structural quality prob
 - **Factual errors**: `-f, -f` typo appeared in flag tables across multiple pages (should be `-f, --manifest`). Duplicate usage lines in `unified-commands.md`.
 - **Stale content**: "NEW!" and "New in this release" labels throughout — meaningless to new visitors.
 - **Emoji in prose**: Trailing rocket emoji, bullet-style emoji in examples — violated style conventions.
-- **Missing coverage**: Terraform commands fully implemented in source (5 subcommands in `cmd/openmcf/root/terraform/`) but had no documentation page.
+- **Missing coverage**: Terraform commands fully implemented in source (5 subcommands in `cmd/planton/root/terraform/`) but had no documentation page.
 - **No structural integrity**: No clear "single source of truth" for any piece of information.
 
 ## Solution / What's New
@@ -44,7 +44,7 @@ cli/
 Every fact appears in exactly one authoritative location:
 
 - **cli-reference.md** owns: complete command tree, all flag reference tables organized by group, exit codes, file system paths
-- **unified-commands.md** owns: provisioner routing concept, the `openmcf.org/provisioner` label, unified vs. direct comparison
+- **unified-commands.md** owns: provisioner routing concept, the `planton.dev/provisioner` label, unified vs. direct comparison
 - **Engine pages** own: engine-specific subcommands, engine-specific flags, engine-specific workflows
 - **module-management.md** owns: module resolution chains, staging area, version pinning
 - **configuration.md** owns: config, validate, load-manifest, manifest source resolution priority
@@ -57,7 +57,7 @@ Other pages link to the authoritative location rather than duplicating content.
 
 Every claim was cross-referenced against source code:
 
-- **Command registration**: `cmd/openmcf/root.go` — verified the complete command tree
+- **Command registration**: `cmd/planton/root.go` — verified the complete command tree
 - **Flag definitions**: `internal/cli/iacflags/*.go` — verified every flag name, shorthand, and default value
 - **Flag constants**: `internal/cli/flag/flag.go` — verified constant names match registration
 - **Manifest resolution**: `internal/cli/manifest/resolver.go` — verified priority order

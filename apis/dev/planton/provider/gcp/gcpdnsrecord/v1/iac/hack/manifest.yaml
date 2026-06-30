@@ -1,0 +1,12 @@
+apiVersion: gcp.planton.dev/v1
+kind: GcpDnsRecord
+metadata:
+  name: test-dns-record
+spec:
+  projectId: test-gcp-project
+  managedZone: test-zone
+  recordType: A
+  name: test.example.com.
+  values:
+    - 192.0.2.1
+  ttlSeconds: 300

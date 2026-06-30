@@ -1,4 +1,4 @@
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesZalandoPostgresOperator
 metadata:
   name: my-zalando-postgres-operator

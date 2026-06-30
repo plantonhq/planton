@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesreferencegrant.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/kubernetesreferencegrant/v1/spec.proto";
+import "dev/planton/provider/kubernetes/kubernetesreferencegrant/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// KubernetesReferenceGrant is a Kubernetes Gateway API ReferenceGrant: a
+// namespaced authorization that permits resources in other namespaces to
+// reference specified kinds of resources in this grant's namespace.
+message KubernetesReferenceGrant {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'KubernetesReferenceGrant'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  KubernetesReferenceGrantSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  KubernetesReferenceGrantStatus status = 5;
+}
+
+// KubernetesReferenceGrantStatus holds the deployment status and outputs.
+message KubernetesReferenceGrantStatus {
+  // stack-outputs
+  KubernetesReferenceGrantStackOutputs outputs = 1;
+}

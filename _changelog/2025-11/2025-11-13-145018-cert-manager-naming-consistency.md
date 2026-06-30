@@ -6,7 +6,7 @@
 
 ## Summary
 
-Completed a comprehensive rename of the cert-manager Kubernetes addon component, removing the redundant "Kubernetes" suffix from `CertManagerKubernetes` to `CertManager` across all layers: proto message types, cloud resource registry enum, implementation code, tests, and documentation. This refactoring aligns with OpenMCF's naming conventions where the `provider/kubernetes/addon/` path context already makes the Kubernetes association clear, eliminating unnecessary verbosity throughout the codebase and in user-facing manifests.
+Completed a comprehensive rename of the cert-manager Kubernetes addon component, removing the redundant "Kubernetes" suffix from `CertManagerKubernetes` to `CertManager` across all layers: proto message types, cloud resource registry enum, implementation code, tests, and documentation. This refactoring aligns with Planton's naming conventions where the `provider/kubernetes/addon/` path context already makes the Kubernetes association clear, eliminating unnecessary verbosity throughout the codebase and in user-facing manifests.
 
 ## Problem Statement / Motivation
 
@@ -84,19 +84,19 @@ message CertManagerStackOutputs { ... }
 
 ### Proto File Changes
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/certmanager/v1/api.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/certmanager/v1/api.proto`
 
 ```protobuf
 //cert-manager
 message CertManager {
   //api-version
-  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.openmcf.org/v1'];
+  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.planton.dev/v1'];
 
   //resource-kind
   string kind = 2 [(buf.validate.field).string.const = 'CertManager'];
 
   //metadata
-  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   CertManagerSpec spec = 4 [(buf.validate.field).required = true];
@@ -112,12 +112,12 @@ message CertManagerStatus {
 }
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/certmanager/v1/spec.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/certmanager/v1/spec.proto`
 
 ```protobuf
 // CertManagerSpec defines configuration for cert-manager on any cluster.
 message CertManagerSpec {
-  org.openmcf.shared.kubernetes.KubernetesAddonTargetCluster target_cluster = 1;
+  dev.planton.shared.kubernetes.KubernetesAddonTargetCluster target_cluster = 1;
   optional string namespace = 2;
   optional string cert_manager_version = 3;
   optional string helm_chart_version = 4;
@@ -127,7 +127,7 @@ message CertManagerSpec {
 }
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/certmanager/v1/stack_input.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/certmanager/v1/stack_input.proto`
 
 ```protobuf
 //input for cert-manager stack
@@ -135,11 +135,11 @@ message CertManagerStackInput {
   //target cloud-resource
   CertManager target = 1;
   //provider-config
-  org.openmcf.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+  dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
 }
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/certmanager/v1/stack_outputs.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/certmanager/v1/stack_outputs.proto`
 
 ```protobuf
 // Outputs emitted after cert‑manager installation.
@@ -153,7 +153,7 @@ message CertManagerStackOutputs {
 
 ### Cloud Resource Registry Update
 
-**File**: `apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto`
+**File**: `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto`
 
 ```protobuf
 // Before
@@ -175,7 +175,7 @@ CertManager = 821 [(kind_meta) = {
 
 ### Go Implementation Updates
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/certmanager/v1/iac/pulumi/main.go`
+**File**: `apis/dev/planton/provider/kubernetes/addon/certmanager/v1/iac/pulumi/main.go`
 
 ```go
 func main() {
@@ -191,7 +191,7 @@ func main() {
 }
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/certmanager/v1/iac/pulumi/module/main.go`
+**File**: `apis/dev/planton/provider/kubernetes/addon/certmanager/v1/iac/pulumi/module/main.go`
 
 ```go
 // Resources create all Pulumi resources for the Cert‑Manager Kubernetes add‑on.
@@ -214,7 +214,7 @@ func createClusterIssuerForDomain(
 
 ### Test Updates
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/certmanager/v1/api_test.go`
+**File**: `apis/dev/planton/provider/kubernetes/addon/certmanager/v1/api_test.go`
 
 ```go
 func TestCertManager(t *testing.T) {
@@ -227,7 +227,7 @@ var _ = ginkgo.Describe("CertManager Custom Validation Tests", func() {
 
 	ginkgo.BeforeEach(func() {
 		input = &CertManager{
-			ApiVersion: "kubernetes.openmcf.org/v1",
+			ApiVersion: "kubernetes.planton.dev/v1",
 			Kind:       "CertManager",
 			Metadata: &shared.CloudResourceMetadata{
 				Name: "test-cert-manager",
@@ -264,7 +264,7 @@ var _ = ginkgo.Describe("CertManager Custom Validation Tests", func() {
 
 ### Documentation Updates
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/certmanager/v1/README.md`
+**File**: `apis/dev/planton/provider/kubernetes/addon/certmanager/v1/README.md`
 
 Updated all references from `CertManagerKubernetes` to `CertManager`, including:
 
@@ -277,7 +277,7 @@ Updated all references from `CertManagerKubernetes` to `CertManager`, including:
 
 ```yaml
 # Before
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: CertManagerKubernetes
 metadata:
   name: cert-manager
@@ -294,7 +294,7 @@ spec:
         apiToken: "your-token"
 
 # After
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: CertManager
 metadata:
   name: cert-manager
@@ -315,7 +315,7 @@ spec:
 
 **Proto Generation**:
 ```bash
-cd ~/scm/github.com/plantonhq/openmcf
+cd ~/scm/github.com/plantonhq/planton
 make protos
 ```
 
@@ -326,14 +326,14 @@ Output:
 
 **Test Execution**:
 ```bash
-go test ./apis/org/openmcf/provider/kubernetes/addon/certmanager/v1/...
+go test ./apis/dev/planton/provider/kubernetes/addon/certmanager/v1/...
 ```
 
 Result: ✅ All tests passed
 
 **Build Verification**:
 ```bash
-go build ./apis/org/openmcf/provider/kubernetes/addon/certmanager/v1/...
+go build ./apis/dev/planton/provider/kubernetes/addon/certmanager/v1/...
 ```
 
 Result: ✅ Build successful with no errors
@@ -368,13 +368,13 @@ spec := stackInput.Target.Spec  // type: *CertManagerSpec
 
 ### Naming Consistency
 
-Now aligns with OpenMCF's established pattern where provider namespace provides context:
+Now aligns with Planton's established pattern where provider namespace provides context:
 
 ```
-✅ org.openmcf.provider.kubernetes.addon.certmanager.v1      → CertManager
-✅ org.openmcf.provider.kubernetes.addon.externaldns.v1      → ExternalDns
-✅ org.openmcf.provider.kubernetes.addon.altinityoperator.v1 → AltinityOperator
-✅ org.openmcf.provider.kubernetes.addon.elasticoperator.v1  → ElasticOperator
+✅ dev.planton.provider.kubernetes.addon.certmanager.v1      → CertManager
+✅ dev.planton.provider.kubernetes.addon.externaldns.v1      → ExternalDns
+✅ dev.planton.provider.kubernetes.addon.altinityoperator.v1 → AltinityOperator
+✅ dev.planton.provider.kubernetes.addon.elasticoperator.v1  → ElasticOperator
 ```
 
 The "kubernetes" context is clear from the provider path, not from redundant suffixes.
@@ -398,7 +398,7 @@ This is a **major breaking change** affecting multiple layers:
 **Required Change**:
 ```yaml
 # Before
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: CertManagerKubernetes
 metadata:
   name: my-cert-manager
@@ -406,7 +406,7 @@ spec:
   # ... configuration
 
 # After
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: CertManager
 metadata:
   name: my-cert-manager
@@ -417,8 +417,8 @@ spec:
 **Migration Steps**:
 1. Find all manifests: `find . -name "*.yaml" -exec grep -l "kind: CertManagerKubernetes" {} \;`
 2. Update kind field: `sed -i 's/kind: CertManagerKubernetes/kind: CertManager/g' *.yaml`
-3. Validate: `openmcf validate --manifest cert-manager.yaml`
-4. Deploy: `openmcf pulumi up --manifest cert-manager.yaml`
+3. Validate: `planton validate --manifest cert-manager.yaml`
+4. Deploy: `planton pulumi up --manifest cert-manager.yaml`
 
 #### 2. SDK Users (Go)
 
@@ -426,7 +426,7 @@ spec:
 ```go
 // No change needed - package path remains the same
 import (
-  certmanagerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/addon/certmanager/v1"
+  certmanagerv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/addon/certmanager/v1"
 )
 ```
 
@@ -450,7 +450,7 @@ var outputs *certmanagerv1.CertManagerStackOutputs
 **Proto Import Paths** (unchanged):
 ```protobuf
 // No change needed - package path remains the same
-import "org/openmcf/provider/kubernetes/addon/certmanager/v1/api.proto";
+import "dev/planton/provider/kubernetes/addon/certmanager/v1/api.proto";
 ```
 
 **Message Type References**:
@@ -468,9 +468,9 @@ CertManagerSpec spec = 2;
 
 - **Enum Value**: Still `821` in `cloud_resource_kind.proto`
 - **ID Prefix**: Still `cmk8s` for resource ID generation
-- **API Version**: Still `kubernetes.openmcf.org/v1`
+- **API Version**: Still `kubernetes.planton.dev/v1`
 - **Provider**: Still `kubernetes`
-- **Package Path**: Still `org.openmcf.provider.kubernetes.addon.certmanager.v1`
+- **Package Path**: Still `dev.planton.provider.kubernetes.addon.certmanager.v1`
 - **Functionality**: Zero behavioral changes to cert-manager deployment or operation
 
 ### Scope of Changes
@@ -493,12 +493,12 @@ This refactoring follows the same pattern as the AltinityOperator rename (comple
 
 **Reference**: `_changelog/2025-11/2025-11-13-143427-altinity-operator-complete-rename.md`
 
-Both refactorings are part of a broader initiative to improve naming consistency across OpenMCF's Kubernetes addon operators:
+Both refactorings are part of a broader initiative to improve naming consistency across Planton's Kubernetes addon operators:
 
 ### Pattern for Addon Operators
 
 - ✅ **Directory**: `provider/kubernetes/addon/{operatorname}/`
-- ✅ **Package**: `org.openmcf.provider.kubernetes.addon.{operatorname}.v1`
+- ✅ **Package**: `dev.planton.provider.kubernetes.addon.{operatorname}.v1`
 - ✅ **Kind**: `{OperatorName}` (no "Kubernetes" suffix)
 - ✅ **Message**: `{OperatorName}`, `{OperatorName}Spec`, etc.
 
@@ -540,17 +540,17 @@ find . -name "*.yaml" -exec sed -i '' 's/kind: CertManagerKubernetes/kind: CertM
 **Step 3**: Validate manifests
 
 ```bash
-openmcf validate --manifest cert-manager.yaml
+planton validate --manifest cert-manager.yaml
 ```
 
 **Step 4**: Deploy with new kind
 
 ```bash
 # Preview first
-openmcf pulumi preview --manifest cert-manager.yaml
+planton pulumi preview --manifest cert-manager.yaml
 
 # Apply
-openmcf pulumi up --manifest cert-manager.yaml
+planton pulumi up --manifest cert-manager.yaml
 ```
 
 ### For SDK Users (Go Code Updates)
@@ -560,7 +560,7 @@ openmcf pulumi up --manifest cert-manager.yaml
 ```go
 // Replace in all Go files
 import (
-  certmanagerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/addon/certmanager/v1"
+  certmanagerv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/addon/certmanager/v1"
 )
 
 // Update type references
@@ -623,7 +623,7 @@ The redundant "Kubernetes" suffix emerged from early design decisions before nam
 
 ### Import Path Stability
 
-One advantage of this refactoring: **Go import paths remain unchanged**. The package path `org.openmcf.provider.kubernetes.addon.certmanager.v1` stays the same, only the exported type names change. This minimizes disruption for SDK users.
+One advantage of this refactoring: **Go import paths remain unchanged**. The package path `dev.planton.provider.kubernetes.addon.certmanager.v1` stays the same, only the exported type names change. This minimizes disruption for SDK users.
 
 ### Git History Preservation
 

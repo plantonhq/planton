@@ -16,29 +16,29 @@ Creates a placement group in Hetzner Cloud that controls the physical distributi
 
 ## Prerequisites
 
-- **Hetzner Cloud API token** configured via environment variable (`HCLOUD_TOKEN`) or OpenMCF provider config
+- **Hetzner Cloud API token** configured via environment variable (`HCLOUD_TOKEN`) or Planton provider config
 
 ## Quick Start
 
 Create a file `placement-group.yaml`:
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudPlacementGroup
 metadata:
   name: ha-group
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.HetznerCloudPlacementGroup.ha-group
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.HetznerCloudPlacementGroup.ha-group
 spec: {}
 ```
 
 Deploy:
 
 ```shell
-openmcf apply -f placement-group.yaml
+planton apply -f placement-group.yaml
 ```
 
 This creates a spread placement group named `ha-group`. Servers assigned to this group are guaranteed to run on separate physical hosts.
@@ -62,15 +62,15 @@ This component has no required spec fields. An empty `spec` block (or `spec: {}`
 The simplest deployment: an empty spec defaults to the `spread` strategy.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudPlacementGroup
 metadata:
   name: ha-group
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.HetznerCloudPlacementGroup.ha-group
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.HetznerCloudPlacementGroup.ha-group
 spec: {}
 ```
 
@@ -79,17 +79,17 @@ spec: {}
 A placement group for database replicas scoped to a specific organization and environment. The metadata drives label generation for resource tracking.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudPlacementGroup
 metadata:
   name: ha-db-group
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: infrastructure
-    pulumi.openmcf.org/stack.name: production.HetznerCloudPlacementGroup.ha-db-group
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: infrastructure
+    pulumi.planton.dev/stack.name: production.HetznerCloudPlacementGroup.ha-db-group
     role: database
 spec:
   type: spread
@@ -100,17 +100,17 @@ spec:
 A placement group referenced by a HetznerCloudServer using `valueFrom`. The server receives the group's numeric ID from the placement group's stack outputs, establishing a dependency edge in the deployment DAG.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudPlacementGroup
 metadata:
   name: ha-db-group
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: infrastructure
-    pulumi.openmcf.org/stack.name: production.HetznerCloudPlacementGroup.ha-db-group
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: infrastructure
+    pulumi.planton.dev/stack.name: production.HetznerCloudPlacementGroup.ha-db-group
 spec:
   type: spread
 ```
@@ -118,17 +118,17 @@ spec:
 The server references this placement group:
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudServer
 metadata:
   name: db-01
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: infrastructure
-    pulumi.openmcf.org/stack.name: production.HetznerCloudServer.db-01
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: infrastructure
+    pulumi.planton.dev/stack.name: production.HetznerCloudServer.db-01
 spec:
   serverType: cx22
   image: ubuntu-24.04

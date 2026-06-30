@@ -12,14 +12,14 @@ Deploys an OpenStack Neutron security group with optional inline firewall rules 
 
 ## What Gets Created
 
-When you deploy an OpenStackSecurityGroup resource, OpenMCF provisions:
+When you deploy an OpenStackSecurityGroup resource, Planton provisions:
 
 - **Security Group** — an `openstack_networking_secgroup_v2` resource with the configured description, stateful/stateless mode, default-rule deletion policy, and tags. The name is derived from `metadata.name`.
 - **Inline Security Group Rules** — one `openstack_networking_secgroup_rule_v2` resource per entry in the `rules` array, each keyed by the rule's `key` field for stable IaC state management. Rules control traffic direction, protocol, port range, and source/destination restrictions.
 
 ## Prerequisites
 
-- **OpenStack credentials** configured via environment variables or OpenMCF provider config
+- **OpenStack credentials** configured via environment variables or Planton provider config
 - **An OpenStack project** with Neutron networking enabled
 - **Existing security group UUIDs** if using `remoteGroupId` in inline rules to reference other security groups
 
@@ -28,15 +28,15 @@ When you deploy an OpenStackSecurityGroup resource, OpenMCF provisions:
 Create a file `security-group.yaml`:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackSecurityGroup
 metadata:
   name: web-sg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OpenStackSecurityGroup.web-sg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OpenStackSecurityGroup.web-sg
 spec:
   description: Security group for web servers
   rules:
@@ -59,7 +59,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f security-group.yaml
+planton apply -f security-group.yaml
 ```
 
 This creates a security group named `web-sg` with two ingress rules allowing HTTP and HTTPS traffic from any source. OpenStack's default egress rules (allow all IPv4/IPv6 outbound) are kept.
@@ -109,15 +109,15 @@ The spec has no strictly required fields. A security group can be created with j
 A security group allowing HTTP, HTTPS, and SSH access from any source:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackSecurityGroup
 metadata:
   name: web-sg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OpenStackSecurityGroup.web-sg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OpenStackSecurityGroup.web-sg
 spec:
   description: Web server security group
   rules:
@@ -150,15 +150,15 @@ spec:
 A locked-down security group that deletes the default egress rules and explicitly allows only the required outbound traffic:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackSecurityGroup
 metadata:
   name: db-sg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OpenStackSecurityGroup.db-sg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OpenStackSecurityGroup.db-sg
 spec:
   description: Zero-trust database security group
   deleteDefaultRules: true
@@ -197,15 +197,15 @@ spec:
 A production security group with inter-group references, ICMP rules, a port range, stateful mode, tags, and a region override:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackSecurityGroup
 metadata:
   name: app-sg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OpenStackSecurityGroup.app-sg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OpenStackSecurityGroup.app-sg
 spec:
   description: Application tier security group with mixed rule types
   stateful: true

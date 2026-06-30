@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/plantonhq/openmcf/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/crkreflect"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -45,11 +45,11 @@ var migratedKinds = []string{
 // TestVariablesTFDrift asserts that every migrated module's committed
 // variables.tf is byte-identical to the generator output. This makes the
 // generator the single source of truth: a hand-edit or a legacy schema can never
-// silently ship. Run with OPENMCF_REGEN_VARIABLES=1 to (re)write the files from
+// silently ship. Run with PLANTON_REGEN_VARIABLES=1 to (re)write the files from
 // the generator instead of comparing.
 func TestVariablesTFDrift(t *testing.T) {
 	root := repoRoot(t)
-	regenerate := os.Getenv("OPENMCF_REGEN_VARIABLES") == "1"
+	regenerate := os.Getenv("PLANTON_REGEN_VARIABLES") == "1"
 
 	for _, kindName := range migratedKinds {
 		kindName := kindName
@@ -78,11 +78,11 @@ func TestVariablesTFDrift(t *testing.T) {
 
 			gotBytes, err := os.ReadFile(path)
 			if err != nil {
-				t.Fatalf("read %s (did you run OPENMCF_REGEN_VARIABLES=1?): %v", path, err)
+				t.Fatalf("read %s (did you run PLANTON_REGEN_VARIABLES=1?): %v", path, err)
 			}
 			if strings.TrimRight(string(gotBytes), "\n")+"\n" != want {
 				t.Errorf("variables.tf for %s is out of sync with the generator.\n"+
-					"Run: OPENMCF_REGEN_VARIABLES=1 go test ./pkg/iac/tofu/generators/ -run TestVariablesTFDrift\n"+
+					"Run: PLANTON_REGEN_VARIABLES=1 go test ./pkg/iac/tofu/generators/ -run TestVariablesTFDrift\n"+
 					"path: %s", kindName, path)
 			}
 		})
@@ -90,8 +90,8 @@ func TestVariablesTFDrift(t *testing.T) {
 }
 
 // moduleVariablesPath derives a kind's module variables.tf path from its proto
-// descriptor's source file: org/openmcf/provider/<p>/<kind>/v1/api.proto ->
-// <repo>/apis/org/openmcf/provider/<p>/<kind>/v1/iac/tf/variables.tf.
+// descriptor's source file: dev/planton/provider/<p>/<kind>/v1/api.proto ->
+// <repo>/apis/dev/planton/provider/<p>/<kind>/v1/iac/tf/variables.tf.
 func moduleVariablesPath(root string, msg proto.Message) string {
 	protoPath := msg.ProtoReflect().Descriptor().ParentFile().Path()
 	dir := filepath.Dir(protoPath)

@@ -1,0 +1,52 @@
+apiVersion: azure.planton.dev/v1
+kind: AzureDnsZone
+metadata:
+  name: test-example.com
+  org: test-org
+  env: dev
+spec:
+  zone_name: test-example.com
+  resource_group: test-network-rg
+  records:
+    # Root domain A record
+    - record_type: A
+      name: test-example.com.
+      values:
+        - 203.0.113.10
+      ttl_seconds: 300
+    
+    # WWW subdomain
+    - record_type: CNAME
+      name: www.test-example.com.
+      values:
+        - test-example.com.
+      ttl_seconds: 300
+    
+    # API endpoint
+    - record_type: A
+      name: api.test-example.com.
+      values:
+        - 203.0.113.20
+      ttl_seconds: 300
+    
+    # MX records for email
+    - record_type: MX
+      name: test-example.com.
+      values:
+        - mail.test-example.com.
+      ttl_seconds: 3600
+    
+    # SPF record
+    - record_type: TXT
+      name: test-example.com.
+      values:
+        - v=spf1 include:_spf.example.com ~all
+      ttl_seconds: 3600
+    
+    # CAA record
+    - record_type: CAA
+      name: test-example.com.
+      values:
+        - letsencrypt.org
+      ttl_seconds: 86400
+

@@ -1,0 +1,224 @@
+syntax = "proto3";
+
+package dev.planton.provider.scaleway.scalewayrediscluster.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// ScalewayRedisClusterSpec defines the specification for a Scaleway Managed
+// Redis cluster.
+//
+// Scaleway Redis provides fully managed, in-memory data stores ideal for
+// caching, session management, real-time analytics, and message brokering.
+//
+// This is a **standalone resource** wrapping a single `scaleway_redis_cluster`
+// Terraform resource. Unlike ScalewayRdbInstance (which bundles 5 sub-resources),
+// Redis clusters are self-contained: ACL rules and Private Network configuration
+// are inline properties of the cluster resource itself.
+//
+// Redis clusters are **zonal** resources (e.g., "fr-par-1", "nl-ams-1"),
+// unlike RDB instances which are regional.
+//
+// **Cluster sizing determines deployment mode:**
+//   - cluster_size = 1: Standalone (single node, no redundancy).
+//   - cluster_size = 2: High Availability (1 main + 1 standby, automatic failover).
+//   - cluster_size >= 3: Cluster mode (sharding across multiple nodes).
+//
+// **Networking constraint:** ACL rules and Private Network are mutually
+// exclusive. Scaleway does not support ACL when the cluster is attached to
+// a Private Network. This constraint is enforced via CEL validation below
+// and by the Terraform/Pulumi providers at apply time.
+//
+// **Composition pattern:** The cluster accepts a Private Network reference
+// via `StringValueOrRef`, enabling private connectivity from applications
+// and other resources on the same network. Downstream resources can
+// reference `status.outputs.cluster_id` for monitoring or dependent services.
+message ScalewayRedisClusterSpec {
+  // ── Core Configuration ─────────────────────────────────────────────
+
+  // The Scaleway availability zone where the cluster will be created.
+  //
+  // Examples: "fr-par-1", "nl-ams-1", "pl-waw-1"
+  //
+  // Redis is a ZONAL resource (unlike RDB which is regional). The zone
+  // determines which data center hosts the cluster nodes.
+  //
+  // Cannot be changed after creation.
+  string zone = 1 [(buf.validate.field).required = true];
+
+  // Redis engine version.
+  //
+  // Format: semantic version (e.g., "7.2.5", "6.2.7").
+  //
+  // Can be upgraded (triggers an online migration) but never downgraded.
+  // Check Scaleway documentation for currently supported versions.
+  string version = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+  ];
+
+  // Node type determining CPU, RAM, and performance characteristics.
+  //
+  // Common types:
+  //   - "RED1-MICRO"  -- Smallest, for development and testing.
+  //   - "RED1-S"      -- Small production workloads.
+  //   - "RED1-M"      -- Medium production workloads.
+  //   - "RED1-L"      -- Large production workloads.
+  //   - "RED1-XL"     -- High-traffic production.
+  //
+  // Can be upgraded (triggers an online migration) but never downgraded.
+  string node_type = 3 [(buf.validate.field).required = true];
+
+  // ── Cluster Sizing ────────────────────────────────────────────────
+
+  // Number of nodes in the cluster. Determines the deployment mode:
+  //
+  //   - 1: Standalone mode (single node, no redundancy).
+  //   - 2: High Availability (1 main + 1 standby with automatic failover).
+  //   - 3+: Cluster mode (data sharded across nodes, minimum 3).
+  //
+  // IMPORTANT lifecycle constraints:
+  //   - Standalone (1) to Cluster (3+): DESTROYS and recreates the cluster.
+  //   - Cluster to smaller Cluster: DESTROYS and recreates the cluster.
+  //   - Cluster to larger Cluster: online migration (safe scale-out).
+  //   - HA adjustments (1 to 2, 2 to 1): migration-based.
+  //
+  // Default: 1 (standalone).
+  uint32 cluster_size = 4 [(dev.planton.shared.options.recommended_default) = "1"];
+
+  // ── Security ──────────────────────────────────────────────────────
+
+  // Whether to enable TLS encryption for client connections.
+  //
+  // When enabled, all client connections must use TLS. The cluster's
+  // TLS certificate is exported in `status.outputs.certificate`.
+  //
+  // IMPORTANT: Changing this value DESTROYS and RECREATES the cluster.
+  // Plan TLS requirements before initial deployment.
+  //
+  // Default: false.
+  bool tls_enabled = 5;
+
+  // ── Authentication ────────────────────────────────────────────────
+
+  // Username for the Redis cluster's initial user.
+  //
+  // This is the only user created with the cluster. Redis on Scaleway
+  // supports a single authentication principal (unlike RDB which has
+  // multi-user support).
+  string user_name = 6 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.max_len = 63
+  ];
+
+  // Password for the Redis cluster user.
+  //
+  // Must meet minimum complexity requirements. For production, use a
+  // strong, randomly generated password and manage it through your
+  // organization's secrets workflow.
+  string password = 7 [
+    (dev.planton.shared.options.sensitive) = true,
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 8
+  ];
+
+  // ── Networking (ACL and Private Network are MUTUALLY EXCLUSIVE) ──
+
+  // Network ACL rules restricting which IPs can connect to the cluster.
+  //
+  // Each rule allows a CIDR range to connect. The complete set of rules
+  // defines who can reach the cluster over its public endpoint.
+  //
+  // IMPORTANT: ACL rules CONFLICT with Private Network attachment.
+  // Scaleway does not support both simultaneously. If `private_network_id`
+  // is set, this field MUST be empty. This constraint is enforced by
+  // CEL validation below and by the Scaleway API at apply time.
+  //
+  // If neither ACL nor Private Network is configured, Scaleway creates
+  // a public endpoint with no restrictions (all IPs allowed).
+  repeated ScalewayRedisAclRule acl_rules = 8;
+
+  // Private Network to attach the cluster to.
+  //
+  // When set, the cluster receives a private endpoint reachable only
+  // from resources on the same Private Network. No public endpoint is
+  // created.
+  //
+  // IMPORTANT: Private Network CONFLICTS with ACL rules. If this
+  // field is set, `acl_rules` MUST be empty. This constraint is
+  // enforced by CEL validation below and by the Scaleway API.
+  //
+  // IPAM is used automatically to assign IP addresses. Static IP
+  // assignment is not exposed in this version.
+  //
+  // In Cluster mode (3+ nodes), the Private Network is set at creation
+  // time and CANNOT be changed afterward without destroying and
+  // recreating the cluster.
+  //
+  // In infra charts, this is typically wired via valueFrom:
+  //
+  //   privateNetworkId:
+  //     valueFrom:
+  //       kind: ScalewayPrivateNetwork
+  //       name: app-network
+  //       fieldPath: status.outputs.private_network_id
+  dev.planton.shared.foreignkey.v1.StringValueOrRef private_network_id = 9 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = ScalewayPrivateNetwork,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.private_network_id"
+  ];
+
+  // ── Redis Settings ────────────────────────────────────────────────
+
+  // Redis-specific configuration settings.
+  //
+  // Key-value pairs passed to the Redis engine configuration. Applied
+  // on both creation and updates.
+  //
+  // Common settings:
+  //   - "maxclients" = "1000"        -- Maximum concurrent client connections
+  //   - "tcp-keepalive" = "120"      -- TCP keepalive interval in seconds
+  //   - "maxmemory-policy" = "allkeys-lru" -- Eviction policy when memory is full
+  //   - "timeout" = "300"            -- Client idle timeout in seconds
+  //
+  // Available settings depend on the Redis version. Use the Scaleway
+  // API or CLI to list available settings for a given version.
+  //
+  // Optional. If empty, Scaleway uses Redis defaults optimized for
+  // the node type.
+  map<string, string> settings = 10;
+
+  // ── Cross-Field Validation ────────────────────────────────────────
+
+  // Validation: acl_rules and private_network_id are mutually exclusive.
+  // Scaleway does not support ACL when the cluster is on a Private Network.
+  option (buf.validate.message).cel = {
+    id: "acl_private_network_mutual_exclusivity"
+    message: "acl_rules and private_network_id are mutually exclusive -- Scaleway does not support ACL when the cluster is on a Private Network"
+    expression: "size(this.acl_rules) == 0 || !has(this.private_network_id)"
+  };
+}
+
+// ScalewayRedisAclRule defines a network access control rule for the
+// Redis cluster's public endpoint.
+//
+// Each rule allows connections from a specific CIDR range. The complete
+// set of rules defines who can reach the cluster over the public network.
+//
+// ACL rules are only applicable when the cluster is NOT attached to a
+// Private Network (they are mutually exclusive).
+message ScalewayRedisAclRule {
+  // CIDR range to allow.
+  //
+  // Examples:
+  //   - "10.0.0.0/24" -- Allow a /24 subnet
+  //   - "1.2.3.4/32"  -- Allow a single IP
+  //   - "0.0.0.0/0"   -- Allow all IPs (NOT recommended for production)
+  string ip = 1 [(buf.validate.field).required = true];
+
+  // Human-readable description for this rule.
+  //
+  // Helps operators understand the purpose of each ACL entry.
+  // Examples: "Office IP", "VPN egress", "CI/CD pipeline"
+  string description = 2;
+}

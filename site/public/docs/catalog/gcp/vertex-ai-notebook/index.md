@@ -12,17 +12,17 @@ Deploys a managed Vertex AI Workbench instance (JupyterLab notebook) on a Comput
 
 ## What Gets Created
 
-When you deploy a GcpVertexAiNotebook resource, OpenMCF provisions:
+When you deploy a GcpVertexAiNotebook resource, Planton provisions:
 
 - **Workbench Instance** — a `google_workbench_instance` resource configured with the specified machine type, disks, networking, and image
 - **Boot Disk** (optional configuration) — persistent disk for the OS and JupyterLab runtime, with optional CMEK encryption via a KMS key
 - **Data Disk** (optional configuration) — persistent disk for user notebooks and datasets, with optional CMEK encryption
 - **GPU Accelerator** (created only when `acceleratorConfig` is set) — an NVIDIA GPU attached to the VM for ML training workloads
-- **Framework Labels** — OpenMCF resource labels applied automatically to the instance for tracking and governance
+- **Framework Labels** — Planton resource labels applied automatically to the instance for tracking and governance
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **A GCP project** with the Notebooks API enabled (`notebooks.googleapis.com`)
 - **A zone** in a region that supports Workbench instances (most GCP zones)
 - **A VPC network and subnet** if deploying with `disablePublicIp: true` (private networking)
@@ -35,15 +35,15 @@ When you deploy a GcpVertexAiNotebook resource, OpenMCF provisions:
 Create a file `notebook.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpVertexAiNotebook
 metadata:
   name: my-notebook
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpVertexAiNotebook.my-notebook
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpVertexAiNotebook.my-notebook
 spec:
   projectId:
     value: my-gcp-project
@@ -54,7 +54,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f notebook.yaml
+planton apply -f notebook.yaml
 ```
 
 This creates a CPU-only Workbench instance with a default deep learning VM image, 150 GB boot disk, and JupyterLab accessible via the proxy URI in the stack outputs.
@@ -109,15 +109,15 @@ This creates a CPU-only Workbench instance with a default deep learning VM image
 A minimal notebook for data exploration and light ML work.
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpVertexAiNotebook
 metadata:
   name: data-explorer
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpVertexAiNotebook.data-explorer
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpVertexAiNotebook.data-explorer
 spec:
   projectId:
     value: my-gcp-project
@@ -133,15 +133,15 @@ spec:
 A GPU-equipped notebook for training deep learning models.
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpVertexAiNotebook
 metadata:
   name: ml-training
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpVertexAiNotebook.ml-training
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpVertexAiNotebook.ml-training
 spec:
   projectId:
     value: my-gcp-project
@@ -166,15 +166,15 @@ spec:
 A security-hardened notebook inside a VPC with CMEK encryption, using `valueFrom` references for infra chart composition.
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpVertexAiNotebook
 metadata:
   name: secure-notebook
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpVertexAiNotebook.secure-notebook
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpVertexAiNotebook.secure-notebook
 spec:
   projectId:
     valueFrom:

@@ -3,7 +3,7 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "stackinput",
     srcs = ["load_stack_input.go"],
-    importpath = "github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/stackinput",
+    importpath = "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/stackinput",
     visibility = ["//visibility:public"],
     deps = [
         "//pkg/iac/pulumi/pulumimodule/stackinput/fieldsextractor",

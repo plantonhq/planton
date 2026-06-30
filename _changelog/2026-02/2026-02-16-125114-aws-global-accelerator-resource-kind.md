@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added AwsGlobalAccelerator as a new deployment component (R30, enum 283) — a Layer 4 networking service that provides static anycast IP addresses and routes traffic through the AWS global network to healthy endpoints across multiple regions. This is the deepest nested spec in the OpenMCF AWS provider, bundling the full accelerator-listener-endpoint group-endpoint hierarchy into a single resource.
+Added AwsGlobalAccelerator as a new deployment component (R30, enum 283) — a Layer 4 networking service that provides static anycast IP addresses and routes traffic through the AWS global network to healthy endpoints across multiple regions. This is the deepest nested spec in the Planton AWS provider, bundling the full accelerator-listener-endpoint group-endpoint hierarchy into a single resource.
 
 ## Problem Statement / Motivation
 
@@ -14,7 +14,7 @@ The AWS resource expansion project targets ~57 resource kinds for comprehensive 
 
 ### Pain Points
 
-- No way to provision AWS Global Accelerator through OpenMCF
+- No way to provision AWS Global Accelerator through Planton
 - Multi-region failover required separate manual configuration of accelerator, listeners, and endpoint groups
 - No infra-chart composability for global anycast networking patterns
 

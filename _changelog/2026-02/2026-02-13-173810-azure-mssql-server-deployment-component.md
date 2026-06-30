@@ -14,7 +14,7 @@ The Azure resource expansion project (20260212.05.sp.azure-resource-expansion) r
 
 ### Pain Points
 
-- No Azure SQL Database resource kind existed in OpenMCF
+- No Azure SQL Database resource kind existed in Planton
 - The database-stack infra chart needs MSSQL alongside PostgreSQL and MySQL
 - Enterprise customers with existing SQL Server licenses need Azure Hybrid Benefit support
 - The T02 planning spec had 14 inaccuracies discovered during deep Terraform provider research
@@ -59,7 +59,7 @@ Deep Terraform provider research revealed 14 corrections to the original plannin
 
 - **spec.proto**: 11 server fields + AzureMssqlDatabase (7 fields) + AzureMssqlFirewallRule (3 fields)
 - **stack_outputs.proto**: 5 outputs (server_id, server_name, fqdn, administrator_login, database_ids map)
-- **api.proto**: KRM wiring with `azure.openmcf.org/v1` API version
+- **api.proto**: KRM wiring with `azure.planton.dev/v1` API version
 - **stack_input.proto**: Azure provider config input
 
 ### Pulumi Module

@@ -1,0 +1,6 @@
+name: gcp-cloud-scheduler-job
+runtime:
+  name: go
+  options:
+    binary: ./pulumi
+description: Planton GcpCloudSchedulerJob Pulumi module

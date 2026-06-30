@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package dev.planton.provider.alicloud.alicloudrocketmqinstance.v1;
+
+// AliCloudRocketmqInstanceStackOutputs captures the outputs from deploying an
+// Alibaba Cloud RocketMQ 5.x instance with its topics and consumer groups.
+message AliCloudRocketmqInstanceStackOutputs {
+  // The RocketMQ instance ID assigned by Alibaba Cloud.
+  string instance_id = 1;
+
+  // TCP endpoint for VPC-internal access. Applications within the same VPC
+  // use this endpoint to produce and consume messages.
+  string tcp_endpoint = 2;
+
+  // TCP endpoint for public internet access. Empty when internet access is
+  // disabled on the instance.
+  string internet_endpoint = 3;
+
+  // Map of topic names to their resource IDs.
+  // Keys are the topic_name values specified in spec.topics[].
+  map<string, string> topic_ids = 4;
+
+  // Map of consumer group IDs to their resource IDs.
+  // Keys are the consumer_group_id values specified in spec.consumer_groups[].
+  map<string, string> consumer_group_ids = 5;
+}

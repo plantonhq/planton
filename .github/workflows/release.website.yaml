@@ -1,7 +1,7 @@
 # =============================================================================
 # Website Release (Reusable Workflow)
 # =============================================================================
-# Builds and deploys openmcf.org to GitHub Pages.
+# Builds and deploys planton.dev to GitHub Pages.
 #
 # Called by: .github/workflows/release.yaml
 # =============================================================================

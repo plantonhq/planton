@@ -109,7 +109,7 @@ flowchart TB
 
 ## Impact
 
-- **Users**: Can deploy production-grade network firewalls with security rules in a single OpenMCF manifest
+- **Users**: Can deploy production-grade network firewalls with security rules in a single Planton manifest
 - **Platform**: OCI provider now has 36 of 37 planned resource kinds (97% complete)
 - **Infra Charts**: Enables firewall integration in future OCI infra charts
 

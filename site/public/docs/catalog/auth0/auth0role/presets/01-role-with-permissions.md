@@ -39,6 +39,6 @@ A role that grants a focused set of API permissions (scopes). This is the most c
 
 | Placeholder | Description |
 |---|---|
-| `metadata.org` | Your OpenMCF organization |
+| `metadata.org` | Your Planton organization |
 | `spec.permissions[].resource_server_identifier` | The identifier (audience) of your API |
 | `spec.permissions[].name` | The scope names defined on that API |

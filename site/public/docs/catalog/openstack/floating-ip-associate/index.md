@@ -12,13 +12,13 @@ Associates an existing OpenStack Neutron floating IP with a port, providing exte
 
 ## What Gets Created
 
-When you deploy an OpenStackFloatingIpAssociate resource, OpenMCF provisions:
+When you deploy an OpenStackFloatingIpAssociate resource, Planton provisions:
 
 - **Floating IP Association** — an `openstack_networking_floatingip_associate_v2` resource that binds the specified floating IP address to the target port
 
 ## Prerequisites
 
-- **OpenStack credentials** configured via environment variables or OpenMCF provider config
+- **OpenStack credentials** configured via environment variables or Planton provider config
 - **An allocated floating IP** — either the IP address or UUID of an existing floating IP (typically from an OpenStackFloatingIp resource)
 - **A port with at least one fixed IP** — the target port must exist and have at least one fixed IP address (typically from an OpenStackNetworkPort resource)
 
@@ -27,14 +27,14 @@ When you deploy an OpenStackFloatingIpAssociate resource, OpenMCF provisions:
 Create a file `fip-associate.yaml`:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackFloatingIpAssociate
 metadata:
   name: my-fip-associate
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: dev.OpenstackFloatingIpAssociate.my-fip-associate
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackfloatingipassociate/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: dev.OpenstackFloatingIpAssociate.my-fip-associate
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackfloatingipassociate/v1/iac/pulumi/module
 spec:
   floatingIp:
     value: "203.0.113.42"
@@ -45,7 +45,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f fip-associate.yaml
+planton apply -f fip-associate.yaml
 ```
 
 This associates the floating IP `203.0.113.42` with the specified port, enabling external connectivity through that floating IP.
@@ -70,17 +70,17 @@ This associates the floating IP `203.0.113.42` with the specified port, enabling
 
 ### Basic Association with Literal Values
 
-Associates a floating IP with a port using literal IP address and port UUID values. Suitable when both resources are managed outside of OpenMCF or when you already know the values:
+Associates a floating IP with a port using literal IP address and port UUID values. Suitable when both resources are managed outside of Planton or when you already know the values:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackFloatingIpAssociate
 metadata:
   name: web-fip-associate
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: dev.OpenstackFloatingIpAssociate.web-fip-associate
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackfloatingipassociate/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: dev.OpenstackFloatingIpAssociate.web-fip-associate
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackfloatingipassociate/v1/iac/pulumi/module
 spec:
   floatingIp:
     value: "203.0.113.42"
@@ -93,14 +93,14 @@ spec:
 Uses `valueFrom` to reference an OpenStackFloatingIp and an OpenStackNetworkPort managed in the same InfraChart. The FK resolver automatically retrieves the floating IP address and port UUID at deploy time. Since `kind` and `fieldPath` default to the annotated values, only `name` is required in each reference:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackFloatingIpAssociate
 metadata:
   name: app-fip-associate
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: staging.OpenstackFloatingIpAssociate.app-fip-associate
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackfloatingipassociate/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: staging.OpenstackFloatingIpAssociate.app-fip-associate
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackfloatingipassociate/v1/iac/pulumi/module
 spec:
   floatingIp:
     valueFrom:
@@ -115,14 +115,14 @@ spec:
 When the target port has multiple fixed IP addresses, use `fixedIp` to specify which one the floating IP should map to. Without this field, OpenStack picks the first fixed IP on the port:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackFloatingIpAssociate
 metadata:
   name: multi-ip-fip-associate
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: prod.OpenstackFloatingIpAssociate.multi-ip-fip-associate
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackfloatingipassociate/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: prod.OpenstackFloatingIpAssociate.multi-ip-fip-associate
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackfloatingipassociate/v1/iac/pulumi/module
 spec:
   floatingIp:
     valueFrom:
@@ -138,14 +138,14 @@ spec:
 Overrides the provider-level region for deployments that span multiple OpenStack regions:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackFloatingIpAssociate
 metadata:
   name: region2-fip-associate
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: prod.OpenstackFloatingIpAssociate.region2-fip-associate
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackfloatingipassociate/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: prod.OpenstackFloatingIpAssociate.region2-fip-associate
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackfloatingipassociate/v1/iac/pulumi/module
 spec:
   floatingIp:
     value: "198.51.100.10"

@@ -1,8 +1,0 @@
-syntax = "proto3";
-
-package org.openmcf.provider.digitalocean.digitaloceanfirewall.v1;
-
-// DigitalOceanFirewallStackOutputs captures the resulting Droplet info after provisioning.
-message DigitalOceanFirewallStackOutputs {
-  string firewall_id = 1; // The unique ID of the firewall (UUID string from DigitalOcean).
-}

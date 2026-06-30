@@ -55,7 +55,7 @@ export PULUMI_CONFIG_PASSPHRASE=""
 pulumi login --local
 
 # Set environment variables
-export MONGODB_URI=mongodb://localhost:27017/openmcf
+export MONGODB_URI=mongodb://localhost:27017/planton
 export SERVER_PORT=50051
 export PULUMI_SKIP_UPDATE_CHECK=true
 export PULUMI_AUTOMATION_API_SKIP_VERSION_CHECK=true

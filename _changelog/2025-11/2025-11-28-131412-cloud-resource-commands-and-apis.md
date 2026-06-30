@@ -4,11 +4,11 @@
 
 ## Summary
 
-Added CLI commands and Connect-RPC APIs for cloud resource management in OpenMCF, enabling developers to create and list cloud resources from the command line. This extends the CLI-backend integration pattern established with deployment components, providing a complete interface for managing cloud infrastructure resources through the OpenMCF backend service.
+Added CLI commands and Connect-RPC APIs for cloud resource management in Planton, enabling developers to create and list cloud resources from the command line. This extends the CLI-backend integration pattern established with deployment components, providing a complete interface for managing cloud infrastructure resources through the Planton backend service.
 
 ## Problem Statement
 
-The OpenMCF CLI and backend service lacked cloud resource management capabilities. While deployment components could be listed and queried, there was no way to:
+The Planton CLI and backend service lacked cloud resource management capabilities. While deployment components could be listed and queried, there was no way to:
 
 - Create cloud resources from YAML manifests via CLI
 - List existing cloud resources with filtering
@@ -29,7 +29,7 @@ Implemented comprehensive cloud resource management through two CLI commands and
 
 **Usage**:
 ```bash
-openmcf cloud-resource:create --arg=path/to/manifest.yaml
+planton cloud-resource:create --arg=path/to/manifest.yaml
 ```
 
 **Features**:
@@ -55,7 +55,7 @@ openmcf cloud-resource:create --arg=path/to/manifest.yaml
 
 **Example**:
 ```bash
-$ openmcf cloud-resource:create --arg=my-vpc.yaml
+$ planton cloud-resource:create --arg=my-vpc.yaml
 ✅ Cloud resource created successfully!
 
 ID: 507f1f77bcf86cd799439011
@@ -71,11 +71,11 @@ Created At: 2025-11-28 13:14:12
 **Usage**:
 ```bash
 # List all cloud resources
-openmcf cloud-resource:list
+planton cloud-resource:list
 
 # Filter by kind
-openmcf cloud-resource:list --kind CivoVpc
-openmcf cloud-resource:list -k AwsRdsInstance
+planton cloud-resource:list --kind CivoVpc
+planton cloud-resource:list -k AwsRdsInstance
 ```
 
 **Features**:
@@ -110,7 +110,7 @@ Total: 2 cloud resource(s)
 
 **Example with filtering**:
 ```bash
-$ openmcf cloud-resource:list --kind CivoVpc
+$ planton cloud-resource:list --kind CivoVpc
 ID                     NAME      KIND     CREATED
 507f1f77bcf86cd799439011  my-vpc   CivoVpc  2025-11-28 13:14:12
 
@@ -225,9 +225,9 @@ message CloudResource {
 ### File Structure
 
 **CLI Commands**:
-- `cmd/openmcf/root/cloud_resource_create.go` - Create command (95 lines)
-- `cmd/openmcf/root/cloud_resource_list.go` - List command (110 lines)
-- `cmd/openmcf/root.go` - Command registration
+- `cmd/planton/root/cloud_resource_create.go` - Create command (95 lines)
+- `cmd/planton/root/cloud_resource_list.go` - List command (110 lines)
+- `cmd/planton/root.go` - Command registration
 
 **Backend Service**:
 - `app/backend/apis/proto/cloud_resource_service.proto` - Service definition
@@ -346,7 +346,7 @@ spec:
 EOF
 
 # Create resource
-openmcf cloud-resource:create --arg=my-vpc.yaml
+planton cloud-resource:create --arg=my-vpc.yaml
 ✅ Cloud resource created successfully!
 
 ID: 507f1f77bcf86cd799439011
@@ -359,7 +359,7 @@ Created At: 2025-11-28 13:14:12
 
 ```bash
 # List all resources
-$ openmcf cloud-resource:list
+$ planton cloud-resource:list
 ID                     NAME      KIND            CREATED
 507f1f77bcf86cd799439011  my-vpc   CivoVpc        2025-11-28 13:14:12
 507f1f77bcf86cd799439012  my-db    AwsRdsInstance  2025-11-28 13:15:00
@@ -367,7 +367,7 @@ ID                     NAME      KIND            CREATED
 Total: 2 cloud resource(s)
 
 # Filter by kind
-$ openmcf cloud-resource:list --kind CivoVpc
+$ planton cloud-resource:list --kind CivoVpc
 ID                     NAME      KIND     CREATED
 507f1f77bcf86cd799439011  my-vpc   CivoVpc  2025-11-28 13:14:12
 
@@ -378,11 +378,11 @@ Total: 1 cloud resource(s) (filtered by kind: CivoVpc)
 
 ```bash
 # Set backend URL (if not already configured)
-openmcf config set backend-url http://localhost:50051
+planton config set backend-url http://localhost:50051
 
 # Use cloud resource commands
-openmcf cloud-resource:create --arg=resource.yaml
-openmcf cloud-resource:list
+planton cloud-resource:create --arg=resource.yaml
+planton cloud-resource:list
 ```
 
 ## Impact
@@ -422,7 +422,7 @@ This work builds on:
 This work complements:
 - **Deployment Component Management** - Provides resource management alongside component management
 - **Web Frontend** - Backend service serves both CLI and web clients
-- **OpenMCF CLI** - Extends CLI capabilities for infrastructure management
+- **Planton CLI** - Extends CLI capabilities for infrastructure management
 
 ### Future Extensions
 
@@ -436,9 +436,9 @@ This work enables:
 
 ### CLI Commands
 
-- `cmd/openmcf/root/cloud_resource_create.go` - Create command implementation
-- `cmd/openmcf/root/cloud_resource_list.go` - List command implementation
-- `cmd/openmcf/root.go` - Command registration
+- `cmd/planton/root/cloud_resource_create.go` - Create command implementation
+- `cmd/planton/root/cloud_resource_list.go` - List command implementation
+- `cmd/planton/root.go` - Command registration
 
 ### Backend Service
 
@@ -465,7 +465,7 @@ This work enables:
 - Add JSON output format option for scripting
 
 **Long-term**:
-- Integrate with OpenMCF IaC operations
+- Integrate with Planton IaC operations
 - Add resource diff and preview capabilities
 - Support resource templates and parameterization
 
@@ -475,5 +475,5 @@ This work enables:
 **Component**: CLI Commands and Backend APIs  
 **Commands Added**: 2 commands (`cloud-resource:create`, `cloud-resource:list`)  
 **APIs Added**: 2 RPCs (`CreateCloudResource`, `ListCloudResources`)  
-**Location**: `cmd/openmcf/root/` and `app/backend/`
+**Location**: `cmd/planton/root/` and `app/backend/`
 

@@ -1,8 +1,0 @@
-apiVersion: scaleway.openmcf.org/v1
-kind: ScalewayVpc
-metadata:
-  name: my-vpc
-spec:
-  region: fr-par
-  enableRouting: false  # recommended_default from spec
-  enableCustomRoutesPropagation: false  # recommended_default from spec

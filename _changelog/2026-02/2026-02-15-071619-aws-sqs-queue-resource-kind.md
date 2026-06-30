@@ -10,7 +10,7 @@ Added the AwsSqsQueue resource kind (enum 225) as the first new AWS component in
 
 ## Problem Statement / Motivation
 
-OpenMCF's AWS coverage stood at 25 resource kinds, lacking foundational messaging services. SQS is the most fundamental building block for event-driven architectures, microservice decoupling, and serverless workflows on AWS. Without it, infra charts for serverless-api, event-driven, and microservices patterns couldn't express the message queuing layer.
+Planton's AWS coverage stood at 25 resource kinds, lacking foundational messaging services. SQS is the most fundamental building block for event-driven architectures, microservice decoupling, and serverless workflows on AWS. Without it, infra charts for serverless-api, event-driven, and microservices patterns couldn't express the message queuing layer.
 
 ### Pain Points
 
@@ -20,7 +20,7 @@ OpenMCF's AWS coverage stood at 25 resource kinds, lacking foundational messagin
 
 ## Solution / What's New
 
-A complete deployment component following OpenMCF's ideal state checklist:
+A complete deployment component following Planton's ideal state checklist:
 
 ### Proto API (4 files + tests)
 
@@ -30,7 +30,7 @@ A complete deployment component following OpenMCF's ideal state checklist:
 
 ### Key Design Decisions
 
-- **`google.protobuf.Struct` for IAM policy**: First usage in OpenMCF. Enables native YAML authoring of IAM policy documents instead of JSON-in-YAML. The middleware serialization path will be built to support this going forward.
+- **`google.protobuf.Struct` for IAM policy**: First usage in Planton. Enables native YAML authoring of IAM policy documents instead of JSON-in-YAML. The middleware serialization path will be built to support this going forward.
 - **String + CEL for FIFO fields**: `deduplication_scope` and `fifo_throughput_limit` use plain strings with CEL `in` validation instead of proto enums, keeping values provider-authentic (`"messageGroup"` not `DEDUPLICATION_SCOPE_MESSAGE_GROUP`).
 - **`max_message_size` up to 1 MB**: The Terraform provider now validates up to 1,048,576 bytes (matching AWS's expanded limit), while the AWS default remains 256 KB.
 - **Self-referential StringValueOrRef**: `dead_letter_config.target_arn` references `AwsSqsQueue` → `status.outputs.queue_arn`, enabling infra-chart DLQ patterns where both queues are defined in the same chart.
@@ -54,7 +54,7 @@ A complete deployment component following OpenMCF's ideal state checklist:
 ### Component File Tree
 
 ```
-apis/org/openmcf/provider/aws/awssqsqueue/v1/
+apis/dev/planton/provider/aws/awssqsqueue/v1/
 ├── spec.proto, api.proto, stack_input.proto, stack_outputs.proto
 ├── spec_test.go (25 tests)
 ├── README.md, examples.md, catalog-page.md
@@ -89,7 +89,7 @@ apis/org/openmcf/provider/aws/awssqsqueue/v1/
 
 ## Related Work
 
-- Parent project: `20260212.01.openmcf-cloud-provider-expansion`
+- Parent project: `20260212.01.planton-cloud-provider-expansion`
 - Sub-project: `20260215.02.sp.aws-resource-expansion` (R01 of 32)
 - Next in queue: R02 AwsSnsTopic (messaging fan-out), R03-R04 EventBridge (event routing)
 

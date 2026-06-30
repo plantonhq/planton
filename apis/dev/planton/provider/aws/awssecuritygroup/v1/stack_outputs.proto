@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awssecuritygroup.v1;
+
+//aws-security-group stack outputs
+message AwsSecurityGroupStackOutputs {
+  // the unique ID of the security group
+  string security_group_id = 1;
+}

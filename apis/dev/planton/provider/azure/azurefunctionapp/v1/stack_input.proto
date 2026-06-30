@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azurefunctionapp.v1;
+
+import "dev/planton/provider/azure/azurefunctionapp/v1/api.proto";
+import "dev/planton/provider/azure/provider.proto";
+
+// AzureFunctionAppStackInput is the input to the IaC module.
+// It contains the target resource and provider configuration.
+message AzureFunctionAppStackInput {
+  // target cloud-resource to be deployed
+  AzureFunctionApp target = 1;
+  // provider-config for Azure authentication
+  dev.planton.provider.azure.AzureProviderConfig provider_config = 2;
+}

@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package dev.planton.shared.iac.pulumi;
+
+// pulumi operation type
+// the recommended best practice to prefix the entry with enum name has been intentionally ignored
+// to allow users to specify a user-friendly name in the input.
+enum PulumiOperationType {
+  pulumi_operation_type_unspecified = 0;
+  refresh = 1;
+  update = 2;
+  destroy = 3;
+}
+
+//https://www.pulumi.com/docs/concepts/state
+// PulumiBackendType enum represents the various backends supported for storing Pulumi state.
+// Each backend type has its own use cases and advantages depending on the project requirements.
+// - local_file_system: Suitable for small projects or local development/testing environments.
+// - http: A centralized backend provided by Pulumi for managing state across distributed teams.
+// - aws_s3: AWS S3 can be used for scalable and reliable state storage, commonly used in AWS environments.
+// - google_cloud_storage: GCP's storage solution for state files, ideal for projects hosted on Google Cloud.
+// - azure_blob_storage: Azure Blob Storage for state storage, typically used for projects hosted on Microsoft Azure.
+enum PulumiBackendType {
+  type_unspecified = 0;
+  http = 1;
+  s3 = 2;
+  gcs = 3;
+  azurerm = 4;
+}

@@ -12,9 +12,9 @@ Deploys an Oracle Cloud Infrastructure Dynamic Routing Gateway (DRG) with VCN at
 
 ## What Gets Created
 
-When you deploy an OciDynamicRoutingGateway resource, OpenMCF provisions:
+When you deploy an OciDynamicRoutingGateway resource, Planton provisions:
 
-- **Dynamic Routing Gateway** — an `oci_core_drg` resource in the specified compartment. OCI automatically creates default route tables (one per network type) and a default export route distribution. Standard OpenMCF freeform tags are applied.
+- **Dynamic Routing Gateway** — an `oci_core_drg` resource in the specified compartment. OCI automatically creates default route tables (one per network type) and a default export route distribution. Standard Planton freeform tags are applied.
 - **Route Distributions** — one `oci_core_drg_route_distribution` per entry in `routeDistributions`. Controls which routes are advertised to route tables (import) or to attachments (export).
 - **Distribution Statements** — one `oci_core_drg_route_distribution_statement` per entry in each distribution's `statements` list. Prioritized rules that match routes by attachment type or specific attachment.
 - **Route Tables** — one `oci_core_drg_route_table` per entry in `routeTables`. Controls traffic forwarding between DRG attachments. May import routes from a distribution and contain static route rules.
@@ -23,7 +23,7 @@ When you deploy an OciDynamicRoutingGateway resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the DRG will be created — literal value or reference to an OciCompartment resource
 - **VCN OCIDs** for each VCN being attached — literal values or references to OciVcn resources
 - **IPSec connection or virtual circuit OCIDs** if attaching on-premises networks (these are created outside this component)
@@ -33,15 +33,15 @@ When you deploy an OciDynamicRoutingGateway resource, OpenMCF provisions:
 Create a file `drg.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciDynamicRoutingGateway
 metadata:
   name: my-drg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciDynamicRoutingGateway.my-drg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciDynamicRoutingGateway.my-drg
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -56,7 +56,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f drg.yaml
+planton apply -f drg.yaml
 ```
 
 This creates a DRG with a single VCN attachment. The DRG uses its default route tables and default export distribution. The DRG OCID and default export distribution OCID are exported as stack outputs.
@@ -142,15 +142,15 @@ This creates a DRG with a single VCN attachment. The DRG uses its default route 
 Two VCNs attached to a DRG for local peering within the same region. Traffic between VCNs routes through the DRG using the default route tables:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciDynamicRoutingGateway
 metadata:
   name: peering-drg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciDynamicRoutingGateway.peering-drg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciDynamicRoutingGateway.peering-drg
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -172,15 +172,15 @@ spec:
 A hub VCN routing traffic between spoke VCNs through the DRG. Custom route tables and an import distribution control which routes are visible to each spoke:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciDynamicRoutingGateway
 metadata:
   name: hub-drg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme
-    pulumi.openmcf.org/project: networking
-    pulumi.openmcf.org/stack.name: prod.OciDynamicRoutingGateway.hub-drg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme
+    pulumi.planton.dev/project: networking
+    pulumi.planton.dev/stack.name: prod.OciDynamicRoutingGateway.hub-drg
 spec:
   compartmentId:
     valueFrom:
@@ -233,17 +233,17 @@ spec:
 A DRG connecting a VCN to an on-premises network via IPSec VPN. A static route in a custom route table directs on-premises traffic (10.100.0.0/16) to the IPSec tunnel attachment, with ECMP enabled across multiple tunnels:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciDynamicRoutingGateway
 metadata:
   name: transit-drg
   org: acme
   env: prod
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme
-    pulumi.openmcf.org/project: networking
-    pulumi.openmcf.org/stack.name: prod.OciDynamicRoutingGateway.transit-drg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme
+    pulumi.planton.dev/project: networking
+    pulumi.planton.dev/stack.name: prod.OciDynamicRoutingGateway.transit-drg
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"

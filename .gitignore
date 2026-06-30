@@ -21,11 +21,11 @@ site/!.yarn/cache
 *.tfstate.*
 terraform.tfplan
 *.tfplan
-bazel-openmcf-clone
+bazel-planton-clone
 bazel-bin
 bazel-out
 bazel-testlogs
-bazel-openmcf
+bazel-planton
 Pulumi.*.yaml
 !Pulumi.yaml
 test-*.log
@@ -56,12 +56,12 @@ web-app/src/gen/
 _aacursor/
 backend.tf
 /pulumi
-bazel-openmcf-oracle-cloud
-bazel-openmcf-oracle-cloud/
-bazel-openmcf-alibaba-cloud
-bazel-openmcf-alibaba-cloud/
-bazel-openmcf-hetzner-cloud
-bazel-openmcf-hetzner-cloud/
+bazel-planton-oracle-cloud
+bazel-planton-oracle-cloud/
+bazel-planton-alibaba-cloud
+bazel-planton-alibaba-cloud/
+bazel-planton-hetzner-cloud
+bazel-planton-hetzner-cloud/
 
 # E2E test artifacts (generated during pulumi runs)
 **/iac/pulumi/stack-input.yaml

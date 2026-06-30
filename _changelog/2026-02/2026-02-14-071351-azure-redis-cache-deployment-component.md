@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added AzureRedisCache (enum 431, id_prefix: azred) as a complete OpenMCF deployment component with both Pulumi and Terraform IaC modules. This is the 16th Azure resource forged in the azure-resource-expansion sub-project (R15 in the queue), completing the database/cache category alongside PostgreSQL, MySQL, MSSQL, and CosmosDB.
+Added AzureRedisCache (enum 431, id_prefix: azred) as a complete Planton deployment component with both Pulumi and Terraform IaC modules. This is the 16th Azure resource forged in the azure-resource-expansion sub-project (R15 in the queue), completing the database/cache category alongside PostgreSQL, MySQL, MSSQL, and CosmosDB.
 
 ## Problem Statement / Motivation
 
@@ -14,7 +14,7 @@ Azure Cache for Redis is a critical piece of enterprise Azure architectures, ser
 
 ### Pain Points
 
-- No OpenMCF component for Azure's managed Redis service
+- No Planton component for Azure's managed Redis service
 - Infra charts couldn't include an optional caching layer
 - Users deploying Azure workloads had to manage Redis separately
 
@@ -80,7 +80,7 @@ A complete AzureRedisCache deployment component covering all three SKU tiers (Ba
 
 ## Impact
 
-- **Users**: Can deploy Azure Cache for Redis through OpenMCF with the same declarative YAML pattern as all other resources
+- **Users**: Can deploy Azure Cache for Redis through Planton with the same declarative YAML pattern as all other resources
 - **Infra charts**: Database-stack and app-environment charts can now include optional caching layers
 - **Downstream**: AzurePrivateEndpoint can reference `redis_id` for private connectivity
 

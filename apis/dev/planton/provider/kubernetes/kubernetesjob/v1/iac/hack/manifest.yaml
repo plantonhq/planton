@@ -1,0 +1,43 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesJob
+metadata:
+  name: test-batch-job
+spec:
+  namespace:
+    value: test-jobs
+  createNamespace: true
+  image:
+    repo: busybox
+    tag: latest
+  resources:
+    limits:
+      cpu: 500m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 64Mi
+  env:
+    variables:
+      - name: BATCH_SIZE
+        value: "100"
+      - name: LOG_LEVEL
+        value: info
+    secrets:
+      - name: API_KEY
+        value: test-api-key-value
+  parallelism: 1
+  completions: 1
+  backoffLimit: 3
+  activeDeadlineSeconds: 300
+  ttlSecondsAfterFinished: 600
+  completionMode: NonIndexed
+  restartPolicy: Never
+  command:
+    - /bin/sh
+    - -c
+    - |
+      echo "Starting batch job..."
+      echo "Batch size: $BATCH_SIZE"
+      echo "Log level: $LOG_LEVEL"
+      sleep 5
+      echo "Batch job completed successfully!"

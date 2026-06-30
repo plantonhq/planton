@@ -1,9 +1,0 @@
-apiVersion: hetzner-cloud.openmcf.org/v1
-kind: HetznerCloudVolume
-metadata:
-  name: my-reserved-volume
-spec:
-  size: 50
-  location: fsn1
-  format: ext4
-  deleteProtection: true

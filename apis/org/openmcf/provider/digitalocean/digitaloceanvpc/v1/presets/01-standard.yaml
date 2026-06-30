@@ -1,8 +1,0 @@
-apiVersion: digital-ocean.openmcf.org/v1
-kind: DigitalOceanVpc
-metadata:
-  name: my-vpc
-spec:
-  description: Standard VPC for isolating cloud resources
-  region: nyc1
-  ipRangeCidr: 10.10.0.0/16  # /16 gives 65,536 IPs; use /20 (4,096) for smaller environments

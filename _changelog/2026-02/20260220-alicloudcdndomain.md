@@ -12,7 +12,7 @@ Added the AliCloudCdnDomain deployment component -- manages CDN accelerated doma
 ## What Was Created
 
 ### API Definition
-- `apis/org/openmcf/provider/alicloud/alicloudcdndomain/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
+- `apis/dev/planton/provider/alicloud/alicloudcdndomain/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
 - Registered `AliCloudCdnDomain = 3100` in `CloudResourceKind` enum under a new CDN category
 
 ### IaC Modules

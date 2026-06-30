@@ -10,7 +10,7 @@ Fixed a critical bug where Terraform/OpenTofu execution errors were being silent
 
 ## Problem Statement
 
-When running `openmcf preview/apply` with a Terraform module that failed, the terminal output showed:
+When running `planton preview/apply` with a Terraform module that failed, the terminal output showed:
 
 ```
 🤝 Handing off to Terraform...
@@ -86,16 +86,16 @@ Users will now see beautiful, actionable error output:
 | File | Change |
 |------|--------|
 | `internal/cli/iacrunner/run_tofu.go` | Added `printHclExecutionError()`, updated `runHcl()` error handling |
-| `cmd/openmcf/root/tofu/apply.go` | Added ui import, display error before failure message |
-| `cmd/openmcf/root/tofu/destroy.go` | Added ui import, display error before failure message |
-| `cmd/openmcf/root/tofu/plan.go` | Added ui import, display error before failure message |
-| `cmd/openmcf/root/tofu/refresh.go` | Added ui import, display error before failure message |
-| `cmd/openmcf/root/tofu/init.go` | Added ui import, display error before failure message |
-| `cmd/openmcf/root/terraform/apply.go` | Added ui import, display error before failure message |
-| `cmd/openmcf/root/terraform/destroy.go` | Added ui import, display error before failure message |
-| `cmd/openmcf/root/terraform/plan.go` | Added ui import, display error before failure message |
-| `cmd/openmcf/root/terraform/refresh.go` | Added ui import, display error before failure message |
-| `cmd/openmcf/root/terraform/init.go` | Added ui import, display error before failure message |
+| `cmd/planton/root/tofu/apply.go` | Added ui import, display error before failure message |
+| `cmd/planton/root/tofu/destroy.go` | Added ui import, display error before failure message |
+| `cmd/planton/root/tofu/plan.go` | Added ui import, display error before failure message |
+| `cmd/planton/root/tofu/refresh.go` | Added ui import, display error before failure message |
+| `cmd/planton/root/tofu/init.go` | Added ui import, display error before failure message |
+| `cmd/planton/root/terraform/apply.go` | Added ui import, display error before failure message |
+| `cmd/planton/root/terraform/destroy.go` | Added ui import, display error before failure message |
+| `cmd/planton/root/terraform/plan.go` | Added ui import, display error before failure message |
+| `cmd/planton/root/terraform/refresh.go` | Added ui import, display error before failure message |
+| `cmd/planton/root/terraform/init.go` | Added ui import, display error before failure message |
 
 ## Benefits
 

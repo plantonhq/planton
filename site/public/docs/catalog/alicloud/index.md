@@ -1,13 +1,13 @@
 ---
 title: "ALIBABA CLOUD"
-description: "Deploy ALIBABA CLOUD resources using OpenMCF"
+description: "Deploy ALIBABA CLOUD resources using Planton"
 icon: "cloud"
 order: 10
 ---
 
 # ALIBABA CLOUD
 
-The following ALIBABA CLOUD resources can be deployed using OpenMCF:
+The following ALIBABA CLOUD resources can be deployed using Planton:
 
 - [ALB Load Balancer](/docs/catalog/alicloud/alb-load-balancer)
 - [CdnDomain](/docs/catalog/alicloud/cdndomain)

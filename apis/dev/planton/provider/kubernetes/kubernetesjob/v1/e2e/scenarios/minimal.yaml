@@ -1,0 +1,24 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesJob
+metadata:
+  name: e2e-job-minimal
+spec:
+  namespace:
+    value: e2e-job-minimal-ns
+  create_namespace: true
+  image:
+    repo: busybox
+    tag: "1.36"
+  resources:
+    requests:
+      cpu: "10m"
+      memory: "32Mi"
+    limits:
+      cpu: "50m"
+      memory: "64Mi"
+  backoff_limit: 3
+  restart_policy: Never
+  command:
+    - /bin/sh
+    - -c
+    - echo "e2e-job-test"

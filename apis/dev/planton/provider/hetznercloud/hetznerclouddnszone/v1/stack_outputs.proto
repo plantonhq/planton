@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package dev.planton.provider.hetznercloud.hetznerclouddnszone.v1;
+
+// HetznerCloudDnsZoneStackOutputs captures the resulting zone identifiers
+// and nameserver assignments after provisioning.
+message HetznerCloudDnsZoneStackOutputs {
+  // The Hetzner Cloud numeric ID of the created zone (as a string).
+  // Can be referenced by other components via StringValueOrRef.
+  string zone_id = 1;
+
+  // The authoritative Hetzner nameservers assigned to the zone.
+  // Configure these NS records at your domain registrar to activate
+  // the zone.
+  //
+  // Example: ["helium.ns.hetzner.de", "hydrogen.ns.hetzner.com", "oxygen.ns.hetzner.com"]
+  repeated string nameservers = 2;
+}

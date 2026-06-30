@@ -27,7 +27,7 @@ span tags, metric dimensions and toggles, and access-log providers and filters.
 ## Quick Start
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesTelemetry
 metadata:
   name: mesh-default
@@ -39,7 +39,7 @@ spec:
 ```
 
 ```bash
-openmcf apply -f telemetry.yaml
+planton apply -f telemetry.yaml
 ```
 
 ## Configuration Reference

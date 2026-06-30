@@ -1,0 +1,83 @@
+syntax = "proto3";
+
+package dev.planton.provider.cloudflare.cloudflarecertificatepack.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// CloudflareCertificatePackSpec orders an advanced edge certificate for a zone:
+// a publicly-trusted TLS certificate, provisioned and auto-renewed by Cloudflare,
+// that covers the hostnames you list (beyond the free Universal SSL certificate).
+// Use it when you need a specific certificate authority, multiple/longer-lived
+// certs, or coverage for hostnames Universal SSL does not include.
+//
+// Most attributes are immutable: changing them re-orders (replaces) the pack.
+// Allowed-value sets are validated with CEL using the provider's exact strings so
+// the modules pass them through verbatim with no lossy enum mapping.
+message CloudflareCertificatePackSpec {
+  // The Cloudflare Zone ID the certificate is ordered for. A literal value or a
+  // reference to a CloudflareDnsZone resource (its status.outputs.zone_id).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef zone_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareDnsZone,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
+  ];
+
+  // The certificate authority that issues the certificate: "google",
+  // "lets_encrypt", or "ssl_com". CA-specific restrictions apply (see Cloudflare's
+  // certificate-authorities reference).
+  string certificate_authority = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "certificate_pack.certificate_authority_valid"
+      message: "certificate_authority must be one of google, lets_encrypt, ssl_com"
+      expression: "this in ['google', 'lets_encrypt', 'ssl_com']"
+    }
+  ];
+
+  // The certificate pack type. Only "advanced" is supported. Defaults to
+  // "advanced".
+  optional string type = 3 [
+    (dev.planton.shared.options.default) = "advanced",
+    (buf.validate.field).cel = {
+      id: "certificate_pack.type_valid"
+      message: "type must be advanced"
+      expression: "this == '' || this == 'advanced'"
+    }
+  ];
+
+  // The domain control validation (DCV) method: "txt", "http", or "email". For a
+  // zone using Cloudflare's nameservers, "txt" validation is completed
+  // automatically.
+  string validation_method = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "certificate_pack.validation_method_valid"
+      message: "validation_method must be one of txt, http, email"
+      expression: "this in ['txt', 'http', 'email']"
+    }
+  ];
+
+  // How long the certificate is valid, in days: 14, 30, 90, or 365.
+  int64 validity_days = 5 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "certificate_pack.validity_days_valid"
+      message: "validity_days must be one of 14, 30, 90, 365"
+      expression: "this in [14, 30, 90, 365]"
+    }
+  ];
+
+  // The hostnames the certificate covers. Must include the zone apex, may not
+  // exceed 50 hosts, and may not be empty (e.g. "example.com" and "*.example.com").
+  repeated string hosts = 6 [
+    (buf.validate.field).repeated.min_items = 1,
+    (buf.validate.field).repeated.max_items = 50,
+    (buf.validate.field).repeated.items.string.min_len = 1
+  ];
+
+  // Add Cloudflare branding to the order, which uses a subdomain of
+  // sni.cloudflaressl.com as the Common Name. Defaults to false.
+  bool cloudflare_branding = 7;
+}

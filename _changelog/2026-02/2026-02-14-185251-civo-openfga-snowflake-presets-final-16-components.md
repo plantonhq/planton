@@ -6,7 +6,7 @@
 
 ## Summary
 
-Created production-quality presets for the final 16 OpenMCF deployment components (Civo 12, OpenFGA 3, Snowflake 1), bringing the presets system to 100% coverage across all 213 components and 11 providers. Also fixed two CivoVpc proto issues and updated the OpenFGA RelationshipTuple hack manifest to use the structured proto-correct form.
+Created production-quality presets for the final 16 Planton deployment components (Civo 12, OpenFGA 3, Snowflake 1), bringing the presets system to 100% coverage across all 213 components and 11 providers. Also fixed two CivoVpc proto issues and updated the OpenFGA RelationshipTuple hack manifest to use the structured proto-correct form.
 
 ## Problem Statement / Motivation
 
@@ -67,14 +67,14 @@ Key design decisions:
 
 ## Benefits
 
-- **100% preset coverage** -- all 213 OpenMCF components across 11 providers now have at least one preset
+- **100% preset coverage** -- all 213 Planton components across 11 providers now have at least one preset
 - **375 total presets** -- up from 345, providing ready-to-deploy configurations for every cloud resource kind
 - **Proto consistency** -- CivoVpc now uses the same `CivoRegion` enum as all other Civo components
 - **Proto hygiene** -- removed the only credential ID field found in any spec across the entire framework
 
 ## Impact
 
-- **Users**: Every OpenMCF component now has a "30-second starting point" -- no component is left without a preset
+- **Users**: Every Planton component now has a "30-second starting point" -- no component is left without a preset
 - **Developers**: The presets system is complete; future work focuses on quality improvements and additional presets for high-variety components
 - **Platform**: The `civo_credential_id` removal and `region` type fix in CivoVpc are breaking changes for the IaC module (to be fixed separately)
 

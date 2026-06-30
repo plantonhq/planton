@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetestektonoperator.v1;
+
+// KubernetesTektonOperatorStackOutputs captures observable outputs from the Tekton Operator deployment.
+message KubernetesTektonOperatorStackOutputs {
+  // Kubernetes namespace where the Tekton Operator is installed.
+  string namespace = 1;
+
+  // Name of the TektonConfig custom resource created by the operator.
+  string tekton_config_name = 2;
+
+  // Kubernetes service name for the Tekton Pipelines controller.
+  // Example: tekton-pipelines-controller
+  string pipelines_controller_service = 3;
+
+  // Kubernetes service name for the Tekton Triggers controller.
+  // Example: tekton-triggers-controller
+  // Empty if triggers component is not enabled.
+  string triggers_controller_service = 4;
+
+  // Kubernetes service name for the Tekton Dashboard.
+  // Example: tekton-dashboard
+  // Empty if dashboard component is not enabled.
+  string dashboard_service = 5;
+
+  // Command to setup port-forwarding to access the Tekton Dashboard from a developer's laptop.
+  // Example: kubectl port-forward svc/tekton-dashboard -n tekton-pipelines 9097:9097
+  string dashboard_port_forward_command = 6;
+}

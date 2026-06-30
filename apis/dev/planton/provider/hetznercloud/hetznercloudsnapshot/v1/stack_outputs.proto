@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.hetznercloud.hetznercloudsnapshot.v1;
+
+// HetznerCloudSnapshotStackOutputs captures the resulting snapshot identifier
+// after provisioning.
+message HetznerCloudSnapshotStackOutputs {
+  // The Hetzner Cloud image ID of the created snapshot (as a string).
+  //
+  // Snapshots are stored as Images in the Hetzner Cloud API. This ID can
+  // be used as the `image` parameter when creating a new HetznerCloudServer
+  // to boot from this snapshot.
+  string snapshot_id = 1;
+}

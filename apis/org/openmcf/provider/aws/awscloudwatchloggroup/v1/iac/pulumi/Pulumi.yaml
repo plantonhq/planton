@@ -1,3 +1,0 @@
-name: aws-cloudwatch-log-group
-runtime: go
-description: Deploy an AWS CloudWatch Log Group using OpenMCF

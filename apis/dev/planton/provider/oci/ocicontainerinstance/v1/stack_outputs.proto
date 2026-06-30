@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocicontainerinstance.v1;
+
+// OciContainerInstanceStackOutputs contains the outputs produced after
+// deploying an OciContainerInstance.
+// These values are used by downstream components and infra charts for
+// composability via StringValueOrRef.
+message OciContainerInstanceStackOutputs {
+  // OCID of the container instance.
+  string container_instance_id = 1;
+
+  // Comma-separated OCIDs of the individual containers within the instance.
+  // Useful for operational tasks (viewing logs, exec into container).
+  string container_ids = 2;
+}

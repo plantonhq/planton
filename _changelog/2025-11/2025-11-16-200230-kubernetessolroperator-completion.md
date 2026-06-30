@@ -144,7 +144,7 @@ Clear documentation that:
 Basic example manifest for local testing:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesSolrOperator
 metadata:
   name: solr-operator-example
@@ -174,8 +174,8 @@ The spec.proto already defined proper defaults:
 
 ```protobuf
 message KubernetesSolrOperatorSpecContainer {
-  org.openmcf.shared.kubernetes.ContainerResources resources = 1 
-    [(org.openmcf.shared.kubernetes.default_container_resources) = {
+  dev.planton.shared.kubernetes.ContainerResources resources = 1 
+    [(dev.planton.shared.kubernetes.default_container_resources) = {
       limits: {
         cpu: "1000m"
         memory: "1Gi"
@@ -192,7 +192,7 @@ message KubernetesSolrOperatorSpecContainer {
 
 Tests verify:
 
-1. **API Version Validation** - Must be exactly "kubernetes.openmcf.org/v1"
+1. **API Version Validation** - Must be exactly "kubernetes.planton.dev/v1"
 2. **Kind Validation** - Must be exactly "KubernetesSolrOperator"
 3. **Required Fields** - metadata, spec, spec.container must be present
 4. **Resource Configuration** - Custom CPU/memory limits properly validated
@@ -286,7 +286,7 @@ ginkgo.Describe("When invalid input is passed", func() {
 ### Validation Tests (spec_test.go)
 
 ```bash
-cd apis/org/openmcf/provider/kubernetes/kubernetessolroperator/v1
+cd apis/dev/planton/provider/kubernetes/kubernetessolroperator/v1
 go test -v
 ```
 

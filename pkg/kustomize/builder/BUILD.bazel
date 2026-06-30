@@ -3,7 +3,7 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "builder",
     srcs = ["builder.go"],
-    importpath = "github.com/plantonhq/openmcf/pkg/kustomize/builder",
+    importpath = "github.com/plantonhq/planton/pkg/kustomize/builder",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_pkg_errors//:errors",

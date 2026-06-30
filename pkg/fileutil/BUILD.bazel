@@ -3,7 +3,7 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "fileutil",
     srcs = ["file_util.go"],
-    importpath = "github.com/plantonhq/openmcf/pkg/fileutil",
+    importpath = "github.com/plantonhq/planton/pkg/fileutil",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_masterminds_sprig//:sprig",

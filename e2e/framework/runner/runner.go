@@ -8,9 +8,9 @@ import (
 
 	tt "github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
-	"github.com/plantonhq/openmcf/e2e/framework/provider"
-	"github.com/plantonhq/openmcf/pkg/crkreflect"
+	"github.com/plantonhq/planton/apis/dev/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/e2e/framework/provider"
+	"github.com/plantonhq/planton/pkg/crkreflect"
 )
 
 // Phase represents a stage in the E2E test lifecycle.

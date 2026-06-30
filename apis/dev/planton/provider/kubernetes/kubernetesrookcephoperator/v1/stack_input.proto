@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesrookcephoperator.v1;
+
+import "dev/planton/provider/kubernetes/kubernetesrookcephoperator/v1/api.proto";
+import "dev/planton/provider/kubernetes/provider.proto";
+
+// KubernetesRookCephOperatorStackInput defines the inputs for the IaC modules that deploy the Rook Ceph Operator.
+message KubernetesRookCephOperatorStackInput {
+  // The target resource to deploy.
+  KubernetesRookCephOperator target = 1;
+  // Kubernetes provider configuration including credentials.
+  dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+}

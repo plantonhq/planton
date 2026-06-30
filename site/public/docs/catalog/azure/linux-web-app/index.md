@@ -12,7 +12,7 @@ Deploys an Azure Linux Web App -- a managed web hosting platform for running lon
 
 ## What Gets Created
 
-When you deploy an AzureLinuxWebApp resource, OpenMCF provisions:
+When you deploy an AzureLinuxWebApp resource, Planton provisions:
 
 - **Linux Web App** -- an `appservice.LinuxWebApp` resource in the specified region and resource group, configured with the chosen application stack, operational settings, logging, and security configuration
 - **Managed Identity** -- created only when `identity` is configured, provides credential-free authentication to Azure services
@@ -21,7 +21,7 @@ When you deploy an AzureLinuxWebApp resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Resource Group** where the web app will be created (can reference an AzureResourceGroup resource)
 - **An Azure Service Plan** providing compute resources -- Basic (`B1`-`B3`) for dedicated compute, Standard (`S1`-`S3`) for autoscale and deployment slots, or Premium (`P1v3`-`P3v3`) for enhanced performance and zone redundancy
 - **A globally unique app name** -- the name becomes the hostname `{name}.azurewebsites.net`
@@ -31,15 +31,15 @@ When you deploy an AzureLinuxWebApp resource, OpenMCF provisions:
 Create a file `webapp.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureLinuxWebApp
 metadata:
   name: my-web
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureLinuxWebApp.my-web
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureLinuxWebApp.my-web
 spec:
   region: eastus
   resourceGroup: my-rg
@@ -53,7 +53,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f webapp.yaml
+planton apply -f webapp.yaml
 ```
 
 This creates a Node.js 20 LTS Web App with HTTPS-only access, TLS 1.2, and 64-bit worker processes.
@@ -101,15 +101,15 @@ This creates a Node.js 20 LTS Web App with HTTPS-only access, TLS 1.2, and 64-bi
 A Node.js 20 LTS Web App with Application Insights and health checks:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureLinuxWebApp
 metadata:
   name: node-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureLinuxWebApp.node-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureLinuxWebApp.node-api
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -138,15 +138,15 @@ spec:
 A containerized Web App with VNet integration and managed identity:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureLinuxWebApp
 metadata:
   name: docker-web
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureLinuxWebApp.docker-web
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureLinuxWebApp.docker-web
 spec:
   region: westeurope
   resourceGroup: prod-rg
@@ -172,15 +172,15 @@ spec:
 A Premium-tier Web App with private-only access, client certificate authentication, and comprehensive logging:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureLinuxWebApp
 metadata:
   name: private-web
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureLinuxWebApp.private-web
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureLinuxWebApp.private-web
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -208,18 +208,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference OpenMCF-managed resources:
+Reference Planton-managed resources:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureLinuxWebApp
 metadata:
   name: ref-web
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureLinuxWebApp.ref-web
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureLinuxWebApp.ref-web
 spec:
   region: eastus
   resourceGroup:

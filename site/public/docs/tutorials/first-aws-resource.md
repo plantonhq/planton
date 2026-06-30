@@ -1,15 +1,15 @@
 ---
 title: "Deploy Your First AWS Resource"
-description: "Deploy an S3 bucket to AWS with OpenMCF — from manifest to deployed resource in minutes"
+description: "Deploy an S3 bucket to AWS with Planton — from manifest to deployed resource in minutes"
 icon: "tutorial"
 order: 20
 ---
 
 # Deploy Your First AWS Resource
 
-In this tutorial, you will deploy an S3 bucket to AWS using OpenMCF. You will write a manifest, preview the deployment plan, apply it, modify the bucket configuration, and tear it down — experiencing the full lifecycle of an OpenMCF-managed resource.
+In this tutorial, you will deploy an S3 bucket to AWS using Planton. You will write a manifest, preview the deployment plan, apply it, modify the bucket configuration, and tear it down — experiencing the full lifecycle of an Planton-managed resource.
 
-By the end, you will have a working understanding of how OpenMCF deploys cloud resources and how the manifest-driven workflow operates end to end.
+By the end, you will have a working understanding of how Planton deploys cloud resources and how the manifest-driven workflow operates end to end.
 
 ## What You Will Build
 
@@ -24,8 +24,8 @@ An S3 bucket with:
 
 Before starting, ensure you have:
 
-- **OpenMCF CLI** installed (`openmcf version` should print a version). See [Getting Started](../getting-started) for installation.
-- **AWS credentials** configured. OpenMCF needs permission to create S3 buckets in your AWS account. See [AWS Provider Setup](../guides/aws-provider-setup) for detailed instructions.
+- **Planton CLI** installed (`planton version` should print a version). See [Getting Started](../getting-started) for installation.
+- **AWS credentials** configured. Planton needs permission to create S3 buckets in your AWS account. See [AWS Provider Setup](../guides/aws-provider-setup) for detailed instructions.
 - **Pulumi CLI** installed (`brew install pulumi`) with a backend configured (`pulumi login --local` for local state), **or** **OpenTofu CLI** installed (`brew install opentofu`). This tutorial uses Pulumi, but you can substitute OpenTofu by changing the provisioner label.
 
 ## Step 1: Write the Manifest
@@ -33,31 +33,31 @@ Before starting, ensure you have:
 Create a file named `s3-bucket.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsS3Bucket
 metadata:
   name: my-first-bucket
   labels:
-    openmcf.org/provisioner: pulumi
+    planton.dev/provisioner: pulumi
 spec:
   awsRegion: us-east-1
   versioningEnabled: true
   encryptionType: ENCRYPTION_TYPE_SSE_S3
   tags:
     environment: tutorial
-    managed-by: openmcf
+    managed-by: planton
 ```
 
-Every OpenMCF manifest follows the [Kubernetes Resource Model](../concepts/manifests): `apiVersion`, `kind`, `metadata`, and `spec`. The `spec` fields are defined by the component's Protocol Buffer schema — in this case, `AwsS3BucketSpec`.
+Every Planton manifest follows the [Kubernetes Resource Model](../concepts/manifests): `apiVersion`, `kind`, `metadata`, and `spec`. The `spec` fields are defined by the component's Protocol Buffer schema — in this case, `AwsS3BucketSpec`.
 
 Here is what each field does:
 
 | Field | Purpose |
 |-------|---------|
-| `apiVersion` | Identifies the provider and API version (`aws.openmcf.org/v1`) |
+| `apiVersion` | Identifies the provider and API version (`aws.planton.dev/v1`) |
 | `kind` | The deployment component type (`AwsS3Bucket`) |
 | `metadata.name` | A unique name for this resource instance |
-| `metadata.labels` | The `openmcf.org/provisioner` label tells OpenMCF which IaC engine to use |
+| `metadata.labels` | The `planton.dev/provisioner` label tells Planton which IaC engine to use |
 | `spec.awsRegion` | AWS region where the bucket will be created (required) |
 | `spec.versioningEnabled` | Keeps all versions of objects, protecting against accidental deletes |
 | `spec.encryptionType` | Server-side encryption method. `ENCRYPTION_TYPE_SSE_S3` uses AWS-managed AES-256 keys |
@@ -65,13 +65,13 @@ Here is what each field does:
 
 ## Step 2: Preview the Deployment
 
-Before deploying, preview what OpenMCF will create:
+Before deploying, preview what Planton will create:
 
 ```bash
-openmcf plan -f s3-bucket.yaml
+planton plan -f s3-bucket.yaml
 ```
 
-OpenMCF reads the manifest, resolves the `AwsS3Bucket` deployment component module, and delegates to Pulumi to generate an execution plan. You will see output describing the resources that will be created — an S3 bucket with the configuration you specified.
+Planton reads the manifest, resolves the `AwsS3Bucket` deployment component module, and delegates to Pulumi to generate an execution plan. You will see output describing the resources that will be created — an S3 bucket with the configuration you specified.
 
 Review the plan to confirm it matches your expectations before proceeding.
 
@@ -80,10 +80,10 @@ Review the plan to confirm it matches your expectations before proceeding.
 Apply the manifest to create the bucket:
 
 ```bash
-openmcf apply -f s3-bucket.yaml
+planton apply -f s3-bucket.yaml
 ```
 
-OpenMCF performs the same steps as `plan`, then executes the deployment. Pulumi provisions the S3 bucket in your AWS account with versioning, encryption, and tags configured.
+Planton performs the same steps as `plan`, then executes the deployment. Pulumi provisions the S3 bucket in your AWS account with versioning, encryption, and tags configured.
 
 The deployment outputs include:
 
@@ -120,24 +120,24 @@ The output should show `AES256` as the SSE algorithm.
 
 ## Step 5: Modify the Resource
 
-One of OpenMCF's strengths is idempotent updates. You can modify your manifest and re-apply — OpenMCF will compute the diff and apply only the changes.
+One of Planton's strengths is idempotent updates. You can modify your manifest and re-apply — Planton will compute the diff and apply only the changes.
 
 Add a lifecycle rule that transitions objects older than 30 days to Infrequent Access storage. Update `s3-bucket.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsS3Bucket
 metadata:
   name: my-first-bucket
   labels:
-    openmcf.org/provisioner: pulumi
+    planton.dev/provisioner: pulumi
 spec:
   awsRegion: us-east-1
   versioningEnabled: true
   encryptionType: ENCRYPTION_TYPE_SSE_S3
   tags:
     environment: tutorial
-    managed-by: openmcf
+    managed-by: planton
   lifecycleRules:
     - id: move-to-ia
       enabled: true
@@ -150,33 +150,33 @@ spec:
 Preview the change:
 
 ```bash
-openmcf plan -f s3-bucket.yaml
+planton plan -f s3-bucket.yaml
 ```
 
 The plan will show that the bucket is being updated (not replaced) — only the lifecycle rule is being added. Apply it:
 
 ```bash
-openmcf apply -f s3-bucket.yaml
+planton apply -f s3-bucket.yaml
 ```
 
-This demonstrates the declarative workflow: you describe the desired state, and OpenMCF computes and applies the delta.
+This demonstrates the declarative workflow: you describe the desired state, and Planton computes and applies the delta.
 
 ## Step 6: Clean Up
 
 Destroy the resource when you are done:
 
 ```bash
-openmcf destroy -f s3-bucket.yaml
+planton destroy -f s3-bucket.yaml
 ```
 
-OpenMCF reads the manifest, identifies the managed resources, and removes them from AWS. The bucket and its configuration are deleted.
+Planton reads the manifest, identifies the managed resources, and removes them from AWS. The bucket and its configuration are deleted.
 
 ## What You Learned
 
-- How to write an OpenMCF manifest for an AWS resource, with fields defined by the component's Protocol Buffer schema
-- The `plan` -> `apply` -> `destroy` lifecycle that applies to every OpenMCF deployment
+- How to write an Planton manifest for an AWS resource, with fields defined by the component's Protocol Buffer schema
+- The `plan` -> `apply` -> `destroy` lifecycle that applies to every Planton deployment
 - How to modify a deployed resource by updating the manifest and re-applying
-- How manifest labels (`openmcf.org/provisioner`) control which IaC engine OpenMCF uses
+- How manifest labels (`planton.dev/provisioner`) control which IaC engine Planton uses
 
 ## What's Next
 

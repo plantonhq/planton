@@ -1,0 +1,865 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azurefunctionapp.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// **AzureFunctionAppSpec** defines the configuration for creating an Azure
+// Linux Function App (Microsoft.Web/sites kind=functionapp,linux), a
+// serverless compute platform for event-driven workloads.
+//
+// A Function App is the Azure equivalent of AWS Lambda or GCP Cloud Functions --
+// it hosts functions triggered by HTTP requests, queue messages, timer schedules,
+// blob storage events, and other Azure service events. Unlike Lambda, Azure
+// Functions run on an App Service Plan, giving users control over the compute
+// tier (Consumption for pay-per-execution, Elastic Premium for pre-warmed
+// instances, or Dedicated for reserved capacity).
+//
+// **Relationship to AzureServicePlan**:
+//
+// Every Function App requires a Service Plan. The plan determines cost model,
+// scale behavior, and available features:
+//
+// Consumption (Y1):
+//   - Pay-per-execution, scales to 0 when idle
+//   - Auto-scales up to 200 instances
+//   - 5-minute default timeout (configurable to 10 min)
+//   - Cold start latency on first request
+//
+// Elastic Premium (EP1-EP3):
+//   - Pre-warmed instances eliminate cold starts
+//   - Scales up to 100 instances (configurable via app_scale_limit)
+//   - VNet integration and private endpoints supported
+//   - Unlimited execution duration
+//
+// Dedicated (B1-P3v3):
+//   - Fixed instance count (manual or auto-scale)
+//   - `always_on` should be true to prevent idle shutdown
+//   - Full App Service features (custom domains, SSL, etc.)
+//
+// **Storage requirement**:
+//
+// Every Function App requires an Azure Storage Account for runtime state
+// (function triggers, logs, queue management). The storage_account_name and
+// storage_account_access_key fields (or storage_uses_managed_identity) provide
+// this binding. The storage account must exist before the Function App is created.
+//
+// **Application stack**:
+//
+// The application_stack within site_config selects the runtime. Exactly one
+// runtime must be chosen: .NET, Node.js, Python, Java, PowerShell, Docker
+// container, or custom handler. Docker enables running custom container images
+// as Azure Functions.
+//
+// **Design decision**: DD04 -- Linux-only. Windows Function Apps
+// (`azurerm_windows_function_app`) are excluded from this expansion. The
+// `AzureServicePlan` resource supports both OS types, so the compute tier
+// is ready if Windows app-level resources are added later.
+//
+// **ForceNew fields** (changing these destroys and recreates the function app):
+// `name`, `region`, `resource_group`.
+message AzureFunctionAppSpec {
+  // The Azure region where the Function App will be created.
+  // Examples: "eastus", "westus2", "westeurope", "southeastasia".
+  //
+  // **ForceNew**: Changing this destroys and recreates the function app.
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The Azure Resource Group where the Function App will be created.
+  // Can be a literal string or a reference to an AzureResourceGroup output.
+  //
+  // **ForceNew**: Changing this destroys and recreates the function app.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef resource_group = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AzureResourceGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.resource_group_name"
+  ];
+
+  // The name of the Function App.
+  // Must be globally unique across Azure (it forms the default hostname:
+  // `{name}.azurewebsites.net`).
+  //
+  // Allowed characters: alphanumeric and hyphens.
+  // Must start and end with an alphanumeric character.
+  // Length: 2 to 60 characters.
+  //
+  // **ForceNew**: Changing this destroys and recreates the function app.
+  string name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 2,
+    (buf.validate.field).string.max_len = 60,
+    (buf.validate.field).cel = {
+      id: "function_app_name_format"
+      message: "name must contain only alphanumeric characters and hyphens, and must start and end with an alphanumeric character"
+      expression: "this.matches('^[a-zA-Z0-9][a-zA-Z0-9-]{0,58}[a-zA-Z0-9]$')"
+    }
+  ];
+
+  // The App Service Plan that provides compute resources for this Function App.
+  // Determines the pricing tier, scale behavior, and available features.
+  //
+  // Consumption (Y1): pay-per-execution, auto-scale to 200 instances
+  // Elastic Premium (EP*): pre-warmed instances, up to 100
+  // Dedicated (B*/S*/P*): fixed or auto-scaled instances
+  //
+  // **Conditional ForceNew**: Changing between Dynamic tiers (Consumption to/from
+  // any other tier) forces recreation.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef service_plan_id = 4 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AzureServicePlan,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.plan_id"
+  ];
+
+  // The name of the Azure Storage Account used for Function App runtime state.
+  // Azure Functions use storage for trigger management, execution logs, and
+  // internal coordination. The storage account must already exist.
+  //
+  // Mutually exclusive with storage_key_vault_secret_id (not exposed in v1).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef storage_account_name = 5 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AzureStorageAccount,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.storage_account_name"
+  ];
+
+  // The access key for the storage account.
+  // This is a sensitive credential. Provide it directly as a literal value
+  // or reference it from a secrets manager via StringValueOrRef.
+  //
+  // Note: AzureStorageAccount does not export access keys in its status outputs
+  // (by design -- exporting secrets through status is an anti-pattern). Provide
+  // the key directly or use storage_uses_managed_identity instead.
+  //
+  // Conflicts with storage_uses_managed_identity.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef storage_account_access_key = 6 [(dev.planton.shared.options.sensitive) = true];
+
+  // Use the Function App's managed identity to access the storage account
+  // instead of an access key. This is the modern, credential-free approach.
+  //
+  // When true, the Function App's system-assigned or user-assigned identity
+  // must have Storage Blob Data Owner and Storage Queue Data Contributor
+  // roles on the storage account.
+  //
+  // Conflicts with storage_account_access_key.
+  //
+  // Default: false
+  optional bool storage_uses_managed_identity = 7 [(dev.planton.shared.options.default) = "false"];
+
+  // The Azure Functions runtime version.
+  // Controls which version of the Azure Functions host runs the app.
+  //
+  // Common values: "~4" (current LTS), "~3" (legacy, EOL).
+  // The "~" prefix enables automatic minor version updates.
+  //
+  // Default: "~4"
+  optional string functions_extension_version = 8 [(dev.planton.shared.options.default) = "~4"];
+
+  // Site configuration for the Function App.
+  // Contains the application stack (runtime), scaling settings, security
+  // settings, and operational configuration.
+  AzureFunctionAppSiteConfig site_config = 9 [(buf.validate.field).required = true];
+
+  // Application settings (environment variables) for the Function App.
+  // Key-value pairs that are available to functions at runtime via
+  // environment variables.
+  //
+  // Azure automatically manages several settings (AzureWebJobsStorage,
+  // FUNCTIONS_WORKER_RUNTIME, etc.). User-provided settings are merged
+  // with these system settings.
+  //
+  // Common use cases: database connection strings, API keys, feature flags,
+  // third-party service configuration.
+  map<string, string> app_settings = 10;
+
+  // Named connection strings for database and service connections.
+  // Each connection string has a name, type, and value. The type determines
+  // how Azure exposes the connection in the runtime environment.
+  //
+  // For most use cases, app_settings is simpler. Use connection_strings when
+  // you need Azure's native connection string management (e.g., for Entity
+  // Framework, Azure Service Bus SDK auto-discovery).
+  repeated AzureFunctionAppConnectionString connection_strings = 11;
+
+  // Application Insights connection string for APM telemetry.
+  // When provided, Azure automatically configures the Function App to send
+  // telemetry (requests, dependencies, exceptions, traces) to Application
+  // Insights. This is the recommended way to monitor Function Apps.
+  //
+  // Uses the connection_string format (not the legacy instrumentation_key).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef application_insights_connection_string = 12 [
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Foreign-key reference to an AzureApplicationInsights output (the connection string is sourced from the referenced resource, not a user-supplied secret literal).",
+    (dev.planton.shared.foreignkey.v1.default_kind) = AzureApplicationInsights,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.connection_string"
+  ];
+
+  // Enforce HTTPS-only access to the Function App.
+  // When true, all HTTP requests are redirected to HTTPS.
+  //
+  // Default: true (secure by default, unlike the Azure API default of false)
+  optional bool https_only = 13 [(dev.planton.shared.options.default) = "true"];
+
+  // Enable or disable public network access to the Function App.
+  // When false, the Function App is only accessible via VNet integration
+  // or Private Endpoints.
+  //
+  // Default: true
+  optional bool public_network_access_enabled = 14 [(dev.planton.shared.options.default) = "true"];
+
+  // Enable built-in logging via AzureWebJobsDashboard.
+  // When true, Azure configures the AzureWebJobsDashboard storage connection
+  // for the legacy Functions dashboard. When Application Insights is configured,
+  // you may want to disable this to avoid duplicate logging and storage costs.
+  //
+  // Default: true
+  optional bool builtin_logging_enabled = 15 [(dev.planton.shared.options.default) = "true"];
+
+  // The subnet ID for VNet integration. When provided, the Function App's
+  // outbound traffic routes through this subnet, enabling access to
+  // VNet-connected resources (databases, Redis, etc.) without public endpoints.
+  //
+  // The subnet must be delegated to Microsoft.Web/serverFarms.
+  // Not supported on Consumption plans (Y1).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef virtual_network_subnet_id = 16 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AzureSubnet,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  ];
+
+  // Managed identity configuration for the Function App.
+  // Enables the app to authenticate with Azure services (Key Vault, Storage,
+  // ACR, etc.) without managing credentials.
+  //
+  // When identity is configured with SystemAssigned, the function app gets
+  // a system-assigned identity whose principal_id and tenant_id are exported
+  // as stack outputs.
+  AzureFunctionAppIdentity identity = 17;
+
+  // User Assigned Identity ID for accessing Key Vault references.
+  // When the Function App uses Key Vault references in app_settings
+  // (e.g., `@Microsoft.KeyVault(SecretUri=...)`), this identity is used
+  // to authenticate with Key Vault.
+  //
+  // If not specified, the system-assigned identity is used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef key_vault_reference_identity_id = 18 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AzureUserAssignedIdentity,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.identity_id"
+  ];
+
+  // Enable client certificate authentication (mutual TLS).
+  // When true, clients must present a valid certificate to access the app.
+  //
+  // Default: false
+  optional bool client_certificate_enabled = 19 [(dev.planton.shared.options.default) = "false"];
+
+  // Client certificate mode when client_certificate_enabled is true.
+  //
+  // Valid values:
+  // - "Required": All requests must have a valid client certificate
+  // - "Optional": Certificate is requested but not required
+  // - "OptionalInteractiveUser": Certificate is optional for browser users
+  //
+  // Default: "Optional"
+  optional string client_certificate_mode = 20 [
+    (dev.planton.shared.options.default) = "Optional",
+    (buf.validate.field).cel = {
+      id: "client_certificate_mode_valid"
+      message: "client_certificate_mode must be one of: Required, Optional, OptionalInteractiveUser"
+      expression: "this in ['Required', 'Optional', 'OptionalInteractiveUser']"
+    }
+  ];
+
+  // Paths excluded from client certificate validation.
+  // Semicolon-separated list of paths where client certificates are not required.
+  // Example: "/api/health;/api/status"
+  string client_certificate_exclusion_paths = 21;
+
+  // Force disable the Azure Files content share that Azure Functions
+  // automatically creates. Set to true when using a custom deployment
+  // method and the content share is not needed.
+  //
+  // Default: false
+  optional bool content_share_force_disabled = 22 [(dev.planton.shared.options.default) = "false"];
+
+  // Azure Storage Account mounts for the Function App.
+  // Mounts Azure File Shares or Blob containers as directories accessible
+  // to the function code at runtime.
+  repeated AzureFunctionAppStorageMount storage_mounts = 23;
+}
+
+// AzureFunctionAppSiteConfig defines the site-level configuration for a
+// Linux Function App. This maps to the `site_config` block in the
+// Terraform azurerm_linux_function_app resource.
+//
+// Contains the application stack (runtime selection), scaling settings,
+// security configuration, networking behavior, and operational controls.
+message AzureFunctionAppSiteConfig {
+  // The application stack defines the runtime for the Function App.
+  // Exactly one runtime must be specified: dotnet_version, node_version,
+  // python_version, java_version, powershell_core_version, docker, or
+  // use_custom_runtime.
+  AzureFunctionAppApplicationStack application_stack = 1;
+
+  // Keep the Function App always loaded in memory.
+  // When true, the app is never unloaded due to inactivity.
+  //
+  // Critical for Dedicated plans (B*/S*/P*) -- without this, the app
+  // may be unloaded after idle periods, causing cold start latency.
+  //
+  // Automatically managed on Consumption and Elastic Premium plans.
+  // Not supported on Free (F1) tier.
+  optional bool always_on = 2;
+
+  // Custom startup command for the Function App.
+  // Overrides the default startup behavior. Useful for custom Docker
+  // containers or runtimes that need specific initialization.
+  string app_command_line = 3;
+
+  // Health check endpoint path.
+  // Azure periodically sends requests to this path and marks the instance
+  // as unhealthy if it doesn't respond with a 200-299 status code.
+  // Unhealthy instances are removed from the load balancer rotation.
+  //
+  // Recommended for production deployments. Common paths: "/api/health",
+  // "/healthz".
+  string health_check_path = 4;
+
+  // Minimum TLS version for incoming HTTPS requests.
+  //
+  // Valid values: "1.0", "1.1", "1.2", "1.3"
+  //
+  // Default: "1.2" (industry standard; "1.3" for maximum security)
+  optional string minimum_tls_version = 5 [
+    (dev.planton.shared.options.default) = "1.2",
+    (buf.validate.field).cel = {
+      id: "minimum_tls_version_valid"
+      message: "minimum_tls_version must be one of: 1.0, 1.1, 1.2, 1.3"
+      expression: "this in ['1.0', '1.1', '1.2', '1.3']"
+    }
+  ];
+
+  // Minimum TLS version for SCM (Kudu) site.
+  //
+  // Default: "1.2"
+  optional string scm_minimum_tls_version = 6 [
+    (dev.planton.shared.options.default) = "1.2",
+    (buf.validate.field).cel = {
+      id: "scm_minimum_tls_version_valid"
+      message: "scm_minimum_tls_version must be one of: 1.0, 1.1, 1.2, 1.3"
+      expression: "this in ['1.0', '1.1', '1.2', '1.3']"
+    }
+  ];
+
+  // Maximum number of workers for scale-out.
+  // Only applicable to Consumption and Elastic Premium plans.
+  //
+  // Consumption (Y1): Azure auto-scales up to 200, but this field caps
+  // the maximum to control costs.
+  // Elastic Premium (EP*): Caps the elastic scale-out range.
+  //
+  // Ignored on Dedicated plans (use worker_count on the Service Plan instead).
+  optional int32 app_scale_limit = 7;
+
+  // Minimum number of pre-warmed instances for Elastic Premium plans.
+  // These instances are always running and ready to handle requests,
+  // eliminating cold start latency.
+  //
+  // Only applicable to Elastic Premium (EP*) plans. Ignored on other tiers.
+  optional int32 elastic_instance_minimum = 8;
+
+  // Number of pre-warmed instances beyond the minimum.
+  // Pre-warmed instances sit in a "warm" state and can handle requests
+  // faster than cold-starting new instances.
+  //
+  // Only applicable to Elastic Premium (EP*) plans.
+  optional int32 pre_warmed_instance_count = 9;
+
+  // Number of worker instances for the Function App.
+  // Controls how many instances are allocated on Dedicated plans.
+  //
+  // Range: 1-100.
+  optional int32 worker_count = 10 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 100
+  }];
+
+  // Enable HTTP/2 protocol for the Function App.
+  // HTTP/2 provides multiplexing, header compression, and server push
+  // for improved performance.
+  //
+  // Default: false
+  optional bool http2_enabled = 11 [(dev.planton.shared.options.default) = "false"];
+
+  // Enable WebSocket connections for the Function App.
+  //
+  // Default: false
+  optional bool websockets_enabled = 12 [(dev.planton.shared.options.default) = "false"];
+
+  // Use a 32-bit worker process instead of 64-bit.
+  // Reduces memory footprint but limits addressable memory to ~2 GB.
+  //
+  // Default: false
+  optional bool use_32_bit_worker = 13 [(dev.planton.shared.options.default) = "false"];
+
+  // Route all outbound traffic from the Function App through the VNet.
+  // Requires virtual_network_subnet_id to be set on the spec.
+  //
+  // When false (default), only RFC1918 traffic routes through the VNet.
+  // When true, all outbound traffic (including public internet) routes
+  // through the VNet, enabling inspection via NSG rules or a firewall.
+  //
+  // Not supported on Consumption plans (Y1).
+  //
+  // Default: false
+  optional bool vnet_route_all_enabled = 14 [(dev.planton.shared.options.default) = "false"];
+
+  // FTPS state for the Function App.
+  // Controls whether FTP/FTPS file deployment is allowed.
+  //
+  // Valid values:
+  // - "AllAllowed": Both FTP and FTPS are enabled
+  // - "FtpsOnly": Only FTPS (encrypted) is enabled
+  // - "Disabled": FTP/FTPS is completely disabled (recommended)
+  //
+  // Default: "Disabled" (secure by default)
+  optional string ftps_state = 15 [
+    (dev.planton.shared.options.default) = "Disabled",
+    (buf.validate.field).cel = {
+      id: "ftps_state_valid"
+      message: "ftps_state must be one of: AllAllowed, FtpsOnly, Disabled"
+      expression: "this in ['AllAllowed', 'FtpsOnly', 'Disabled']"
+    }
+  ];
+
+  // Load balancing mode for distributing requests across instances.
+  //
+  // Valid values: LeastRequests, WeightedRoundRobin, LeastResponseTime,
+  // WeightedTotalTraffic, RequestHash, PerSiteRoundRobin
+  //
+  // Default: "LeastRequests"
+  optional string load_balancing_mode = 16 [
+    (dev.planton.shared.options.default) = "LeastRequests",
+    (buf.validate.field).cel = {
+      id: "load_balancing_mode_valid"
+      message: "load_balancing_mode must be one of: LeastRequests, WeightedRoundRobin, LeastResponseTime, WeightedTotalTraffic, RequestHash, PerSiteRoundRobin"
+      expression: "this in ['LeastRequests', 'WeightedRoundRobin', 'LeastResponseTime', 'WeightedTotalTraffic', 'RequestHash', 'PerSiteRoundRobin']"
+    }
+  ];
+
+  // Enable runtime scale monitoring for KEDA-based triggers.
+  // When enabled, the Functions runtime can directly monitor event sources
+  // to make more accurate scaling decisions.
+  //
+  // Supported on Elastic Premium and Dedicated plans with Functions v4+.
+  optional bool runtime_scale_monitoring_enabled = 17;
+
+  // CORS (Cross-Origin Resource Sharing) configuration.
+  // Controls which origins are allowed to make cross-origin requests to
+  // the Function App's HTTP endpoints.
+  AzureFunctionAppCorsSettings cors = 18;
+
+  // IP restriction rules for the main site.
+  // Controls which IP addresses, service tags, or subnets can access
+  // the Function App.
+  repeated AzureFunctionAppIpRestriction ip_restrictions = 19;
+
+  // Default action for IP restrictions on the main site.
+  // When "Allow", unlisted IPs are allowed (rules are deny-list).
+  // When "Deny", unlisted IPs are denied (rules are allow-list).
+  //
+  // Default: "Allow"
+  optional string ip_restriction_default_action = 20 [
+    (dev.planton.shared.options.default) = "Allow",
+    (buf.validate.field).cel = {
+      id: "ip_restriction_default_action_valid"
+      message: "ip_restriction_default_action must be one of: Allow, Deny"
+      expression: "this in ['Allow', 'Deny']"
+    }
+  ];
+
+  // Use the main site's IP restrictions for the SCM (Kudu) site.
+  // When true, scm_ip_restrictions are ignored.
+  //
+  // Default: false
+  optional bool scm_use_main_ip_restriction = 21 [(dev.planton.shared.options.default) = "false"];
+
+  // IP restriction rules for the SCM (Kudu) site.
+  // Only used when scm_use_main_ip_restriction is false.
+  repeated AzureFunctionAppIpRestriction scm_ip_restrictions = 22;
+
+  // Default action for IP restrictions on the SCM site.
+  //
+  // Default: "Allow"
+  optional string scm_ip_restriction_default_action = 23 [
+    (dev.planton.shared.options.default) = "Allow",
+    (buf.validate.field).cel = {
+      id: "scm_ip_restriction_default_action_valid"
+      message: "scm_ip_restriction_default_action must be one of: Allow, Deny"
+      expression: "this in ['Allow', 'Deny']"
+    }
+  ];
+
+  // App Service logging configuration.
+  AzureFunctionAppAppServiceLogs app_service_logs = 24;
+
+  // Default documents list for the web server.
+  // Defines which files are served when a request hits the root path.
+  repeated string default_documents = 25;
+
+  // Use managed identity for pulling container images from Azure Container Registry.
+  // Requires the Function App's identity to have AcrPull role on the registry.
+  //
+  // Default: false
+  optional bool container_registry_use_managed_identity = 26 [(dev.planton.shared.options.default) = "false"];
+
+  // Client ID of the managed identity used for ACR image pulls.
+  // Only used when container_registry_use_managed_identity is true and
+  // a user-assigned identity (not system-assigned) should be used.
+  string container_registry_managed_identity_client_id = 27;
+
+  // Application Insights instrumentation key (classic).
+  // Prefer application_insights_connection_string on the parent spec
+  // for new deployments. This field is for backward compatibility with
+  // apps already using the instrumentation key.
+  string application_insights_key = 28;
+}
+
+// AzureFunctionAppApplicationStack defines the runtime for the Function App.
+//
+// Exactly one runtime must be specified. This maps to the `application_stack`
+// block within `site_config` in the Terraform provider. The constraint is
+// documented (not enforced via proto) because protobuf lacks native oneOf-with-
+// optional semantics for this pattern.
+//
+// Runtime options:
+// - .NET: dotnet_version (+ optional use_dotnet_isolated_runtime)
+// - Node.js: node_version
+// - Python: python_version
+// - Java: java_version
+// - PowerShell: powershell_core_version
+// - Container: docker (registry_url + image_name + image_tag)
+// - Custom: use_custom_runtime
+message AzureFunctionAppApplicationStack {
+  // .NET runtime version.
+  // Uses the dotnet-isolated worker model by default in Functions v4+.
+  //
+  // Valid values: "3.1", "6.0", "7.0", "8.0", "9.0", "10.0"
+  //
+  // Note: .NET 6+ uses isolated worker by default. Set
+  // use_dotnet_isolated_runtime = false only for legacy in-process apps.
+  string dotnet_version = 1 [(buf.validate.field).cel = {
+    id: "dotnet_version_valid"
+    message: "dotnet_version must be one of: 3.1, 6.0, 7.0, 8.0, 9.0, 10.0"
+    expression: "this == '' || this in ['3.1', '6.0', '7.0', '8.0', '9.0', '10.0']"
+  }];
+
+  // Use the .NET isolated worker runtime model.
+  // The isolated model runs functions in a separate process from the host,
+  // enabling different .NET versions and full dependency control.
+  //
+  // Default: false (in-process model for backward compatibility, though
+  // Microsoft recommends isolated for new apps)
+  optional bool use_dotnet_isolated_runtime = 2 [(dev.planton.shared.options.default) = "false"];
+
+  // Node.js runtime version.
+  //
+  // Valid values: "12", "14", "16", "18", "20", "22", "24"
+  string node_version = 3 [(buf.validate.field).cel = {
+    id: "node_version_valid"
+    message: "node_version must be one of: 12, 14, 16, 18, 20, 22, 24"
+    expression: "this == '' || this in ['12', '14', '16', '18', '20', '22', '24']"
+  }];
+
+  // Python runtime version.
+  //
+  // Valid values: "3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14"
+  string python_version = 4 [(buf.validate.field).cel = {
+    id: "python_version_valid"
+    message: "python_version must be one of: 3.8, 3.9, 3.10, 3.11, 3.12, 3.13, 3.14"
+    expression: "this == '' || this in ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13', '3.14']"
+  }];
+
+  // Java runtime version.
+  //
+  // Valid values: "8", "11", "17", "21"
+  string java_version = 5 [(buf.validate.field).cel = {
+    id: "java_version_valid"
+    message: "java_version must be one of: 8, 11, 17, 21"
+    expression: "this == '' || this in ['8', '11', '17', '21']"
+  }];
+
+  // PowerShell Core runtime version.
+  //
+  // Valid values: "7", "7.2", "7.4"
+  string powershell_core_version = 6 [(buf.validate.field).cel = {
+    id: "powershell_core_version_valid"
+    message: "powershell_core_version must be one of: 7, 7.2, 7.4"
+    expression: "this == '' || this in ['7', '7.2', '7.4']"
+  }];
+
+  // Docker container configuration.
+  // Runs a custom container image as the Function App runtime.
+  // The image must include the Azure Functions runtime.
+  AzureFunctionAppDockerConfig docker = 7;
+
+  // Use a custom handler runtime.
+  // Custom handlers allow any language/runtime to work with Azure Functions
+  // by implementing a lightweight HTTP server that communicates with the
+  // Functions host process.
+  optional bool use_custom_runtime = 8;
+}
+
+// AzureFunctionAppDockerConfig defines the container configuration for
+// running the Function App as a custom Docker container.
+//
+// The container image must include the Azure Functions runtime base image
+// or implement the Functions custom handler protocol.
+message AzureFunctionAppDockerConfig {
+  // The URL of the container registry.
+  // Examples: "https://myregistry.azurecr.io", "https://ghcr.io"
+  string registry_url = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The container image name (without tag).
+  // Example: "myorg/my-function-app"
+  string image_name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The container image tag.
+  // Example: "latest", "v1.2.3", "sha-abc123"
+  string image_tag = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Username for authenticating with the container registry.
+  // Not needed when using managed identity for ACR authentication
+  // (set container_registry_use_managed_identity in site_config).
+  string registry_username = 4;
+
+  // Password for authenticating with the container registry.
+  // This is a sensitive credential. Provide directly or via StringValueOrRef.
+  //
+  // Not needed when using managed identity for ACR authentication.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef registry_password = 5 [(dev.planton.shared.options.sensitive) = true];
+}
+
+// AzureFunctionAppIdentity configures managed identity for the Function App.
+//
+// Managed identities eliminate the need to manage credentials for
+// authenticating with Azure services. The identity is automatically managed
+// by Azure AD and can be assigned RBAC roles on Azure resources.
+//
+// Follows the same pattern as AzureContainerAppIdentity.
+message AzureFunctionAppIdentity {
+  // Identity type.
+  // "SystemAssigned": Azure-managed identity tied to the Function App lifecycle.
+  // "UserAssigned": Pre-created identity with independent lifecycle.
+  // "SystemAssigned,UserAssigned": Both identity types.
+  string type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "identity_type_valid"
+      message: "type must be 'SystemAssigned', 'UserAssigned', or 'SystemAssigned,UserAssigned'"
+      expression: "this in ['SystemAssigned', 'UserAssigned', 'SystemAssigned,UserAssigned']"
+    }
+  ];
+
+  // User Assigned Identity Azure resource IDs.
+  // Required when type includes "UserAssigned".
+  //
+  // Can be literal ARM resource IDs or references to AzureUserAssignedIdentity outputs.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef identity_ids = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AzureUserAssignedIdentity,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.identity_id"
+  ];
+}
+
+// AzureFunctionAppConnectionString defines a named connection string
+// for the Function App. Connection strings are exposed to functions via
+// environment variables with a prefix based on the type.
+message AzureFunctionAppConnectionString {
+  // The name of the connection string.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The type of connection string. Determines the environment variable prefix.
+  //
+  // Valid values: MySQL, SQLServer, SQLAzure, Custom, NotificationHub,
+  // ServiceBus, EventHub, APIHub, DocDb, RedisCache, PostgreSQL
+  string type = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "connection_string_type_valid"
+      message: "type must be one of: MySQL, SQLServer, SQLAzure, Custom, NotificationHub, ServiceBus, EventHub, APIHub, DocDb, RedisCache, PostgreSQL"
+      expression: "this in ['MySQL', 'SQLServer', 'SQLAzure', 'Custom', 'NotificationHub', 'ServiceBus', 'EventHub', 'APIHub', 'DocDb', 'RedisCache', 'PostgreSQL']"
+    }
+  ];
+
+  // The connection string value. This is a sensitive credential.
+  // Can be a literal value or a reference to a secrets manager.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef value = 3 [(buf.validate.field).required = true];
+}
+
+// AzureFunctionAppIpRestriction defines an IP-based access restriction rule.
+// Rules are evaluated in priority order (lower number = higher priority).
+//
+// Exactly one of ip_address, service_tag, or virtual_network_subnet_id
+// must be specified per rule.
+message AzureFunctionAppIpRestriction {
+  // Rule name for identification.
+  string name = 1;
+
+  // Rule priority. Lower numbers are evaluated first.
+  // Range: 1 to 65000.
+  optional int32 priority = 2 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 65000
+  }];
+
+  // Action to take when the rule matches.
+  //
+  // Valid values: "Allow", "Deny"
+  //
+  // Default: "Allow"
+  optional string action = 3 [
+    (dev.planton.shared.options.default) = "Allow",
+    (buf.validate.field).cel = {
+      id: "ip_restriction_action_valid"
+      message: "action must be one of: Allow, Deny"
+      expression: "this in ['Allow', 'Deny']"
+    }
+  ];
+
+  // IP address or CIDR range.
+  // Example: "10.0.0.0/24", "203.0.113.50/32"
+  string ip_address = 4;
+
+  // Azure service tag.
+  // Example: "AzureFrontDoor.Backend", "AzureCloud.WestUS"
+  string service_tag = 5;
+
+  // Subnet ID for VNet-based access control.
+  // Traffic from this subnet is allowed/denied based on the action.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef virtual_network_subnet_id = 6 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AzureSubnet,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  ];
+
+  // Human-readable description of the rule.
+  string description = 7;
+
+  // HTTP header filters for the rule.
+  // Used with Azure Front Door or other reverse proxies to restrict
+  // access based on request headers.
+  AzureFunctionAppIpRestrictionHeaders headers = 8;
+}
+
+// AzureFunctionAppIpRestrictionHeaders defines header-based filters for
+// IP restriction rules. Used primarily with Azure Front Door to ensure
+// traffic comes through the CDN rather than directly to the Function App.
+message AzureFunctionAppIpRestrictionHeaders {
+  // X-Forwarded-For header values to match.
+  // Up to 8 entries. CIDR ranges are supported.
+  repeated string x_forwarded_for = 1;
+
+  // X-Forwarded-Host header values to match.
+  // Up to 8 entries.
+  repeated string x_forwarded_host = 2;
+
+  // X-Azure-FDID (Front Door ID) header values to match.
+  // Up to 8 entries. Used to ensure traffic comes from your specific
+  // Front Door instance.
+  repeated string x_azure_fdid = 3;
+
+  // X-FD-HealthProbe header values to match.
+  // Used to allow Front Door health probe traffic.
+  repeated string x_fd_health_probe = 4;
+}
+
+// AzureFunctionAppCorsSettings configures Cross-Origin Resource Sharing
+// for the Function App's HTTP endpoints.
+message AzureFunctionAppCorsSettings {
+  // List of origins allowed to make cross-origin requests.
+  // Use "*" to allow all origins (not recommended for production).
+  // Example: ["https://myapp.example.com", "https://admin.example.com"]
+  repeated string allowed_origins = 1 [(buf.validate.field).repeated.min_items = 1];
+
+  // Allow credentials (cookies, authorization headers) in cross-origin requests.
+  // Cannot be used with allowed_origins = ["*"].
+  //
+  // Default: false
+  optional bool support_credentials = 2 [(dev.planton.shared.options.default) = "false"];
+}
+
+// AzureFunctionAppAppServiceLogs configures the App Service logging
+// for the Function App.
+message AzureFunctionAppAppServiceLogs {
+  // Disk quota for app service logs in megabytes.
+  // Range: 25 to 100.
+  //
+  // Default: 35
+  optional int32 disk_quota_mb = 1 [
+    (dev.planton.shared.options.default) = "35",
+    (buf.validate.field).int32 = {
+      gte: 25
+      lte: 100
+    }
+  ];
+
+  // Log retention in days. Set to 0 for indefinite retention.
+  optional int32 retention_period_days = 2 [(buf.validate.field).int32 = {gte: 0}];
+}
+
+// AzureFunctionAppStorageMount defines an Azure Storage mount for
+// the Function App. Mounts Azure File Shares or Blob containers as
+// directories accessible to function code at runtime.
+message AzureFunctionAppStorageMount {
+  // Unique name for this mount within the Function App.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Storage type.
+  //
+  // Valid values:
+  // - "AzureBlob": Mount an Azure Blob container (read-only)
+  // - "AzureFiles": Mount an Azure File Share (read-write)
+  string type = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "storage_mount_type_valid"
+      message: "type must be one of: AzureBlob, AzureFiles"
+      expression: "this in ['AzureBlob', 'AzureFiles']"
+    }
+  ];
+
+  // Name of the Azure Storage Account that contains the share or container.
+  string account_name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Name of the file share or blob container to mount.
+  string share_name = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Access key for the storage account.
+  // This is a sensitive credential.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef access_key = 5 [(buf.validate.field).required = true];
+
+  // Path inside the container where the share is mounted.
+  // Example: "/mnt/data"
+  string mount_path = 6;
+}

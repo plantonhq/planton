@@ -1,0 +1,22 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "module",
+    srcs = [
+        "dns_record.go",
+        "locals.go",
+        "main.go",
+        "outputs.go",
+    ],
+    importpath = "github.com/plantonhq/planton/apis/dev/planton/provider/scaleway/scalewaydnsrecord/v1/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/dev/planton/provider/scaleway",
+        "//apis/dev/planton/provider/scaleway/scalewaydnsrecord/v1:scalewaydnsrecord",
+        "//pkg/iac/pulumi/pulumimodule/provider/scaleway/pulumiscalewayprovider",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+        "@com_github_pulumiverse_pulumi_scaleway_sdk//go/scaleway",
+        "@com_github_pulumiverse_pulumi_scaleway_sdk//go/scaleway/domain",
+    ],
+)

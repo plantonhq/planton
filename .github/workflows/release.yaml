@@ -10,13 +10,13 @@
 #   1. CLI job runs first (GoReleaser creates the GitHub Release)
 #   2. Website job runs in parallel
 #   3. Pulumi modules, Terraform modules, and Content jobs upload to
-#      Cloudflare R2 (downloads.openmcf.org) after CLI completes
+#      Cloudflare R2 (downloads.planton.dev) after CLI completes
 #
 # Artifact hosting:
 #   - CLI binaries   -> GitHub Release (via GoReleaser)
-#   - Pulumi modules -> Cloudflare R2 (downloads.openmcf.org/releases/{tag}/modules/pulumi/)
-#   - Terraform zips -> Cloudflare R2 (downloads.openmcf.org/releases/{tag}/modules/terraform/)
-#   - Content zips   -> Cloudflare R2 (downloads.openmcf.org/releases/{tag}/content/)
+#   - Pulumi modules -> Cloudflare R2 (downloads.planton.dev/releases/{tag}/modules/pulumi/)
+#   - Terraform zips -> Cloudflare R2 (downloads.planton.dev/releases/{tag}/modules/terraform/)
+#   - Content zips   -> Cloudflare R2 (downloads.planton.dev/releases/{tag}/content/)
 #
 # Trigger: git tag v0.1.0 && git push origin v0.1.0
 # Note: Only triggers on strict semver tags (v1.2.3), not auto-release tags (v1.2.3+cli.*)

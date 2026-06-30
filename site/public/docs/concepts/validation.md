@@ -1,13 +1,13 @@
 ---
 title: "Validation"
-description: "How OpenMCF validates manifests at three layers -- protobuf schema rules, CLI-side validation, and cloud provider APIs -- catching configuration errors before they reach production"
+description: "How Planton validates manifests at three layers -- protobuf schema rules, CLI-side validation, and cloud provider APIs -- catching configuration errors before they reach production"
 icon: "security"
 order: 35
 ---
 
 # Validation
 
-Infrastructure misconfigurations that reach cloud provider APIs are expensive -- in time, in partial deployments that need cleanup, and sometimes in real cost. OpenMCF validates your manifests at multiple layers before any cloud API call is made, catching the vast majority of errors locally in milliseconds.
+Infrastructure misconfigurations that reach cloud provider APIs are expensive -- in time, in partial deployments that need cleanup, and sometimes in real cost. Planton validates your manifests at multiple layers before any cloud API call is made, catching the vast majority of errors locally in milliseconds.
 
 ## Three Layers of Validation
 
@@ -18,16 +18,16 @@ Every deployment component's API is defined in Protocol Buffers with validation 
 **Constant enforcement** on `apiVersion` and `kind`:
 
 ```protobuf
-string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.openmcf.org/v1'];
+string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.planton.dev/v1'];
 string kind = 2 [(buf.validate.field).string.const = 'KubernetesPostgres'];
 ```
 
-If your manifest has `apiVersion: kubernetes.openmcf.org/v2` or `kind: PostgresKubernetes`, validation fails immediately with a clear error. These are not runtime checks -- they are schema constraints.
+If your manifest has `apiVersion: kubernetes.planton.dev/v2` or `kind: PostgresKubernetes`, validation fails immediately with a clear error. These are not runtime checks -- they are schema constraints.
 
 **Required fields:**
 
 ```protobuf
-org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
 KubernetesPostgresSpec spec = 4 [(buf.validate.field).required = true];
 ```
 
@@ -78,7 +78,7 @@ Validation rules propagate through nested messages. If `AwsS3BucketSpec` contain
 The CLI validation layer loads your YAML manifest, deserializes it into the protobuf message type, and runs the `protovalidate` library against it. This is what happens when you run:
 
 ```bash
-openmcf validate -f my-resource.yaml
+planton validate -f my-resource.yaml
 ```
 
 The internal flow:
@@ -88,7 +88,7 @@ The internal flow:
 3. **Run protovalidate** -- apply all schema-level validation rules (constants, required fields, patterns, CEL expressions)
 4. **Format errors** -- present validation failures with clear field paths and error messages
 
-Validation also runs automatically before any deployment command. When you execute `openmcf pulumi up -f my-resource.yaml`, the manifest is validated before the IaC module is ever invoked. If validation fails, the command exits with an error -- no cloud resources are touched.
+Validation also runs automatically before any deployment command. When you execute `planton pulumi up -f my-resource.yaml`, the manifest is validated before the IaC module is ever invoked. If validation fails, the command exits with an error -- no cloud resources are touched.
 
 ### Layer 3: Cloud Provider Validation
 
@@ -104,7 +104,7 @@ Layers 1 and 2 catch structural and type errors. Layer 3 catches environmental e
 
 Some spec fields need to reference other resources. For example, the `namespace` field in `KubernetesPostgresSpec` can either be a literal string value or a reference to a `KubernetesNamespace` resource.
 
-OpenMCF handles this through the `StringValueOrRef` type:
+Planton handles this through the `StringValueOrRef` type:
 
 ```protobuf
 message StringValueOrRef {
@@ -159,27 +159,27 @@ Running validation explicitly:
 
 ```bash
 # Validate from a file
-openmcf validate -f postgres.yaml
+planton validate -f postgres.yaml
 
 # Validate from clipboard
-openmcf validate --clipboard
+planton validate --clipboard
 
 # Validate from Kustomize output
-openmcf validate --kustomize-dir ./k8s --overlay production
+planton validate --kustomize-dir ./k8s --overlay production
 ```
 
 Validation runs automatically before deployment:
 
 ```bash
 # Validation happens before the IaC module runs
-openmcf pulumi up -f postgres.yaml --stack my-org/my-project/prod
+planton pulumi up -f postgres.yaml --stack my-org/my-project/prod
 ```
 
 When validation fails, the CLI outputs a formatted error with the field path and the rule that was violated, so you know exactly what to fix in your manifest.
 
 ## Why This Matters
 
-Without layered validation, a misconfigured manifest would travel all the way to the cloud provider API before failing -- potentially creating partial resources, incurring costs, or failing midway through a multi-resource deployment. With OpenMCF's validation:
+Without layered validation, a misconfigured manifest would travel all the way to the cloud provider API before failing -- potentially creating partial resources, incurring costs, or failing midway through a multi-resource deployment. With Planton's validation:
 
 - **Wrong `apiVersion` or `kind`?** Caught at layer 1, instantly.
 - **Missing required field?** Caught at layer 1, before any module runs.

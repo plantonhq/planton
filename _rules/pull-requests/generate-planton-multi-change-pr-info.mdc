@@ -1,0 +1,322 @@
+---
+description: Generate a PR title and Markdown description for PRs containing multiple unrelated changes from parallel work sessions. Outputs exactly two copyable code blocks with consolidated summary and per-change sections.
+globs:
+alwaysApply: false
+---
+
+# Rule: Multi-Change Pull Request Title and Description (ask-only)
+
+Purpose: When a feature branch contains multiple unrelated streams of work (common in parallel agent sessions), generate a consolidated PR title and a structured description with dedicated sections for each change.
+
+This rule is designed for ask mode only. Do not modify files, run commands, or propose edits. Output only the two fenced code blocks described below.
+
+Usage: In Ask mode, invoke explicitly as `@multi-change-pr-info` and supply the set of changelogs or change descriptions.
+
+## When to use this rule vs `@pr-info`
+
+| Scenario | Use |
+|----------|-----|
+| Single focused change or closely related changes | `@pr-info` |
+| Multiple unrelated changes from parallel work sessions | `@multi-change-pr-info` (this rule) |
+| Large refactor touching many files but with single purpose | `@pr-info` |
+| Feature branch with 2+ distinct, independently mergeable work streams | `@multi-change-pr-info` (this rule) |
+
+## Input format
+
+You will receive one or more changelogs or change descriptions. These may be:
+- Changelog files from `_changelog/` directory
+- Inline descriptions of completed work streams
+- Git commit summaries grouped by area
+- Session summaries from parallel agent conversations
+
+Each change should be treated as a distinct, reviewable unit of work.
+
+## How to respond (strict)
+
+1) **First block: PR Title**
+   - Fenced code block with language: `text`
+   - Single line only
+   - Format: `chore(repo): <consolidated summary of all major changes>`
+   - Use `chore(repo)` prefix since multi-change PRs are inherently cross-cutting
+   - Summarize the 2-3 most significant changes; use "and N more" if >3 changes
+   - Imperative mood, ≤ 100 characters (extended from 72 for multi-change)
+   - No trailing period
+
+2) **Second block: PR Description**
+   - Fenced code block with language: `markdown`
+   - Structure:
+     1. **Overview section**: High-level summary of what this PR accomplishes
+     2. **Per-change sections**: One H2 section for each distinct change
+     3. **Consolidated sections**: Test plan, risks, and checklist covering all changes
+
+## Title format (exactly)
+
+```text
+chore(repo): <change1>, <change2>, and <N> more changes
+```
+
+Or if only 2-3 changes:
+```text
+chore(repo): <change1>, <change2>, and <change3>
+```
+
+### Title examples
+
+```text
+chore(repo): add AWS DNS records component, refactor CLI manifest loading, and 3 more changes
+```
+
+```text
+chore(repo): implement GCP Cloud Function chart, update Kubernetes types, and fix validation
+```
+
+```text
+chore(repo): migrate to new Pulumi SDK and add Azure DNS records support
+```
+
+## Description structure (exactly)
+
+```markdown
+## Overview
+
+This PR consolidates N independent work streams completed in parallel:
+
+1. **<Change 1 short title>** - <one-line summary>
+2. **<Change 2 short title>** - <one-line summary>
+3. **<Change 3 short title>** - <one-line summary>
+...
+
+Each change is independently complete and could have been its own PR.
+
+---
+
+## 1. <Change 1 Title>
+
+**Scope:** `<scope-path>` | **Type:** `<feat|fix|refactor|...>`
+
+### Summary
+<2-4 sentences describing this change>
+
+### Context
+<Why this change was needed>
+
+### Changes
+- <key change 1>
+- <key change 2>
+- <key change 3>
+
+### Implementation notes
+- <notable decision or trade-off>
+
+<Include Mermaid diagrams if this change involves workflow/architecture changes>
+
+---
+
+## 2. <Change 2 Title>
+
+**Scope:** `<scope-path>` | **Type:** `<feat|fix|refactor|...>`
+
+### Summary
+<2-4 sentences describing this change>
+
+### Context
+<Why this change was needed>
+
+### Changes
+- <key change 1>
+- <key change 2>
+
+### Implementation notes
+- <notable decision or trade-off>
+
+---
+
+## 3. <Change 3 Title>
+...
+
+---
+
+## Breaking Changes
+
+<!-- Consolidate all breaking changes across all work streams -->
+- <breaking change from change 1, if any>
+- <breaking change from change 2, if any>
+- None (if no breaking changes)
+
+## Test Plan
+
+<!-- Consolidated verification for all changes -->
+| Change | Verification |
+|--------|--------------|
+| <Change 1> | <how verified> |
+| <Change 2> | <how verified> |
+| <Change 3> | <how verified> |
+
+## Risks
+
+- <consolidated risks and rollback considerations>
+
+## Checklist
+
+- [ ] All changes build successfully
+- [ ] Tests pass for all affected areas
+- [ ] Each change is independently reviewable
+- [ ] Breaking changes documented (if any)
+- [ ] Docs updated where needed
+```
+
+## Per-change section guidelines
+
+Each change section should:
+- Use the appropriate Conventional Commit type (`feat`, `fix`, `refactor`, etc.)
+- Include the repository-aware scope path (see scope rules from `@pr-info`)
+- Be self-contained and reviewable independently
+- Include Mermaid diagrams when the change involves workflow or architecture modifications
+
+### Scope inference for each change (Planton)
+
+Use the same scope heuristics as `@pr-info`:
+
+- APIs
+  - `apis/project/planton/**` → `apis/project/planton`
+  - Other files under `apis/**` (e.g., `generated`) → `apis`
+
+- Charts (multi-cloud Lego blocks)
+  - `charts/<provider>/<chart>/**` → `charts/<provider>/<chart>`
+    - Examples: `charts/aws/eks-environment`, `charts/gcp/gke-environment`, `charts/azure/aks-environment`, `charts/digital-ocean/doks-environment`
+  - Multiple charts under the same provider → `charts/<provider>`
+  - Charts across multiple providers → `charts`
+
+- CLI
+  - `cmd/planton/**` → `cmd/planton`
+
+- Internal packages
+  - `internal/<pkg>/**` → `internal/<pkg>` (e.g., `internal/manifest`, `internal/cli/panic`)
+
+- Go libraries
+  - `pkg/<lib>/**` → `pkg/<lib>` (e.g., `pkg/protobufyaml`, `pkg/ulidgen`, `pkg/kubernetes/kubernetestypes`)
+
+- Documentation and website
+  - `docs/**` or root docs content → `docs`
+
+- Gists and examples
+  - `gists/**` → `gists` or a more specific subpath like `gists/provider/kubernetes`
+
+- Tooling and developer scripts
+  - `hack/**` → `hack` (e.g., `hack/guards`)
+
+- Project configuration
+  - Root build/workspace config (e.g., `BUILD.bazel`, `go.mod`, `go.sum`, `Makefile`, `.editorconfig`) → `repo`
+  - `.cursor/**` or `_rules/**` → `.cursor`
+
+### Type inference for each change
+
+- `feat`: Adds new capability, CLI command/flag, chart, or module
+- `fix`: Corrects a bug or regression
+- `refactor`: Code restructuring without behavior change
+- `docs`: Documentation-only changes
+- `test`: Tests only
+- `perf`: Performance improvements
+- `ci`: CI pipeline/config changes
+- `build`: Build system or dependency changes
+- `chore`: Routine maintenance
+
+## Mermaid Diagrams (IMPORTANT)
+
+Include Mermaid diagrams within individual change sections when they clarify:
+- Workflow or process changes (before/after flows)
+- Architecture modifications
+- State machine or status transitions
+- Multi-component interactions
+- Data flow changes
+
+### Example: Change section with diagram
+
+```markdown
+## 2. Implement CLI Manifest Streaming
+
+**Scope:** `internal/manifest` | **Type:** `feat`
+
+### Summary
+Added streaming support for loading large manifest files with progress reporting.
+
+### Context
+Large manifests caused memory issues and poor UX with no progress feedback.
+
+### Changes
+- Added streaming reader with chunk-based processing
+- Implemented progress callback interface
+- Added memory-efficient YAML parsing
+
+### Architecture
+
+```mermaid
+flowchart TB
+    A[Manifest File] --> B{Size Check}
+    B -->|< 10MB| C[Load Directly]
+    B -->|>= 10MB| D[Stream Chunks]
+    D --> E[Parse Chunk]
+    E --> F{More Chunks?}
+    F -->|Yes| D
+    F -->|No| G[Merge Results]
+    C --> H[Parse Complete]
+    G --> H
+```
+```
+
+## Ordering changes
+
+Order the changes by significance:
+1. New features (`feat`) first
+2. Bug fixes (`fix`) second
+3. Refactors and improvements third
+4. Documentation and maintenance last
+
+If multiple changes have the same type, order by scope breadth (broader scope first).
+
+## Handling changelog files
+
+When supplied with changelog files from `_changelog/`:
+1. Parse each changelog file to extract the change summary
+2. Group changes by their scope/area
+3. Preserve the original changelog content in the corresponding section
+4. Add cross-references if changes are related
+
+## Output blocks (exactly two, nothing else)
+
+First block:
+```text
+chore(repo): <consolidated summary of major changes>
+```
+
+Second block:
+```markdown
+## Overview
+<consolidated summary with numbered list>
+
+---
+
+## 1. <Change 1 Title>
+<full change section>
+
+---
+
+## 2. <Change 2 Title>
+<full change section>
+
+---
+
+## Breaking Changes
+<consolidated>
+
+## Test Plan
+<consolidated table>
+
+## Risks
+<consolidated>
+
+## Checklist
+<consolidated>
+```
+
+@README.md

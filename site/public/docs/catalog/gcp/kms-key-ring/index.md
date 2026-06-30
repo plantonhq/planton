@@ -12,13 +12,13 @@ Creates an organizational container for cryptographic keys in Google Cloud KMS. 
 
 ## What Gets Created
 
-When you deploy a GcpKmsKeyRing resource, OpenMCF provisions:
+When you deploy a GcpKmsKeyRing resource, Planton provisions:
 
 - **KMS Key Ring** — a `google_kms_key_ring` resource in the specified project and location, serving as the parent container for CryptoKeys
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **An existing GCP project** — referenced via `projectId`
 - **Cloud KMS API enabled** (`cloudkms.googleapis.com`) on the target project
 - **IAM permissions** — `roles/cloudkms.admin` or `roles/cloudkms.keyRingCreator` on the target project
@@ -28,15 +28,15 @@ When you deploy a GcpKmsKeyRing resource, OpenMCF provisions:
 Create a file `key-ring.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpKmsKeyRing
 metadata:
   name: prod-encryption
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpKmsKeyRing.prod-encryption
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpKmsKeyRing.prod-encryption
 spec:
   projectId:
     value: my-gcp-project-123
@@ -47,7 +47,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f key-ring.yaml
+planton apply -f key-ring.yaml
 ```
 
 This creates a KMS key ring named `prod-encryption` in the `us-central1` region, ready to hold CryptoKeys for encryption, signing, or MAC operations.
@@ -73,15 +73,15 @@ This component has no optional fields. All three fields are required and immutab
 A key ring scoped to a single GCP region, suitable for most production workloads:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpKmsKeyRing
 metadata:
   name: prod-keys
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpKmsKeyRing.prod-keys
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpKmsKeyRing.prod-keys
 spec:
   projectId:
     value: my-prod-project-123
@@ -94,15 +94,15 @@ spec:
 A key ring available in all GCP regions, useful for cross-region encryption or when data residency is not a constraint:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpKmsKeyRing
 metadata:
   name: shared-keys
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpKmsKeyRing.shared-keys
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpKmsKeyRing.shared-keys
 spec:
   projectId:
     value: my-security-project-456
@@ -115,15 +115,15 @@ spec:
 A key ring scoped to the `europe` multi-region for data residency compliance:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpKmsKeyRing
 metadata:
   name: eu-compliance-keys
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpKmsKeyRing.eu-compliance-keys
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpKmsKeyRing.eu-compliance-keys
 spec:
   projectId:
     value: my-eu-project-789
@@ -136,15 +136,15 @@ spec:
 Reference a project ID from a GcpProject resource instead of hardcoding:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpKmsKeyRing
 metadata:
   name: data-encryption
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpKmsKeyRing.data-encryption
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpKmsKeyRing.data-encryption
 spec:
   projectId:
     valueFrom:

@@ -1,0 +1,9 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "verify",
+    srcs = ["verifier.go"],
+    importpath = "github.com/plantonhq/planton/apis/dev/planton/provider/auth0/aa_e2e/verify",
+    visibility = ["//visibility:public"],
+    deps = ["@com_github_pkg_errors//:errors"],
+)

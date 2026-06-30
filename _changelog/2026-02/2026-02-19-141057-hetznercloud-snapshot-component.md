@@ -6,15 +6,15 @@
 
 ## Summary
 
-Added the `HetznerCloudSnapshot` deployment component (R09, enum 3522, id_prefix: `hcsnp`) to OpenMCF. This is the simplest compute component -- a single `hcloud_snapshot` resource that captures a point-in-time disk image from a server. The snapshot is stored as a Hetzner Cloud Image and can be used to create new servers from the captured state.
+Added the `HetznerCloudSnapshot` deployment component (R09, enum 3522, id_prefix: `hcsnp`) to Planton. This is the simplest compute component -- a single `hcloud_snapshot` resource that captures a point-in-time disk image from a server. The snapshot is stored as a Hetzner Cloud Image and can be used to create new servers from the captured state.
 
 ## Problem Statement / Motivation
 
-Server snapshots are essential for golden image pipelines, pre-upgrade backups, and server cloning workflows. Until now, OpenMCF had no declarative way to manage Hetzner Cloud snapshots.
+Server snapshots are essential for golden image pipelines, pre-upgrade backups, and server cloning workflows. Until now, Planton had no declarative way to manage Hetzner Cloud snapshots.
 
 ### Pain Points
 
-- No way to declaratively capture and manage server snapshots through OpenMCF
+- No way to declaratively capture and manage server snapshots through Planton
 - Snapshot creation is inherently imperative ("take a snapshot now"), but IaC semantics make it declarative and idempotent ("ensure this snapshot exists")
 
 ## Solution / What's New

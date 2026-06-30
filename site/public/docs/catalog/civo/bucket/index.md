@@ -12,7 +12,7 @@ Deploys an S3-compatible object storage bucket on Civo Cloud with auto-generated
 
 ## What Gets Created
 
-When you deploy a CivoBucket resource, OpenMCF provisions:
+When you deploy a CivoBucket resource, Planton provisions:
 
 - **Object Store Credential** — a `civo_object_store_credential` resource that generates an access key and secret key pair for authenticating against the bucket
 - **Object Store Bucket** — a `civo_object_store` resource in the specified region, linked to the generated credential
@@ -23,7 +23,7 @@ When you deploy a CivoBucket resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Civo credentials** configured via environment variables or OpenMCF provider config
+- **Civo credentials** configured via environment variables or Planton provider config
 - **A Civo account** with Object Store access enabled in the target region
 
 ## Quick Start
@@ -31,15 +31,15 @@ When you deploy a CivoBucket resource, OpenMCF provisions:
 Create a file `civo-bucket.yaml`:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoBucket
 metadata:
   name: my-bucket
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CivoBucket.my-bucket
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CivoBucket.my-bucket
 spec:
   bucketName: my-bucket
   region: nyc1
@@ -48,7 +48,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f civo-bucket.yaml
+planton apply -f civo-bucket.yaml
 ```
 
 This creates an object storage bucket named `my-bucket` in the New York region with auto-generated credentials.
@@ -76,15 +76,15 @@ This creates an object storage bucket named `my-bucket` in the New York region w
 A minimal bucket for development or scratch storage:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoBucket
 metadata:
   name: dev-assets
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CivoBucket.dev-assets
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CivoBucket.dev-assets
 spec:
   bucketName: dev-assets
   region: fra1
@@ -95,15 +95,15 @@ spec:
 A production bucket that records the intent to enable versioning and applies organizational tags:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoBucket
 metadata:
   name: prod-uploads
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CivoBucket.prod-uploads
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CivoBucket.prod-uploads
 spec:
   bucketName: prod-uploads
   region: lon1
@@ -127,15 +127,15 @@ aws s3api put-bucket-versioning \
 Separate buckets across regions for geo-distributed backups:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoBucket
 metadata:
   name: backup-us
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CivoBucket.backup-us
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CivoBucket.backup-us
 spec:
   bucketName: backup-us
   region: nyc1
@@ -143,15 +143,15 @@ spec:
     - purpose:backup
     - region:us
 ---
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoBucket
 metadata:
   name: backup-eu
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CivoBucket.backup-eu
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CivoBucket.backup-eu
 spec:
   bucketName: backup-eu
   region: fra1

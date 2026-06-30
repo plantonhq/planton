@@ -10,25 +10,25 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/internal/cli/cliprint"
-	"github.com/plantonhq/openmcf/internal/cli/version"
-	"github.com/plantonhq/openmcf/internal/cli/workspace"
-	"github.com/plantonhq/openmcf/pkg/downloads"
-	"github.com/plantonhq/openmcf/pkg/fileutil"
+	"github.com/plantonhq/planton/internal/cli/cliprint"
+	"github.com/plantonhq/planton/internal/cli/version"
+	"github.com/plantonhq/planton/internal/cli/workspace"
+	"github.com/plantonhq/planton/pkg/downloads"
+	"github.com/plantonhq/planton/pkg/fileutil"
 )
 
 const (
 	// TerraformDirName is the base directory name for all Terraform-related files
-	// All Terraform files are stored under ~/.openmcf/terraform/
+	// All Terraform files are stored under ~/.planton/terraform/
 	TerraformDirName = "terraform"
 
 	// ModulesSubDir is the subdirectory for cached modules
-	// Full path: ~/.openmcf/terraform/modules/{version}/
+	// Full path: ~/.planton/terraform/modules/{version}/
 	ModulesSubDir = "modules"
 )
 
 // GetTerraformBaseDir returns the base directory for all Terraform-related files
-// (~/.openmcf/terraform/)
+// (~/.planton/terraform/)
 func GetTerraformBaseDir() (string, error) {
 	workspaceDir, err := workspace.GetWorkspaceDir()
 	if err != nil {
@@ -38,7 +38,7 @@ func GetTerraformBaseDir() (string, error) {
 }
 
 // GetModuleCacheDir returns the path to the module cache directory
-// (~/.openmcf/terraform/modules/{version}/)
+// (~/.planton/terraform/modules/{version}/)
 func GetModuleCacheDir(releaseVersion string) (string, error) {
 	terraformBaseDir, err := GetTerraformBaseDir()
 	if err != nil {
@@ -55,7 +55,7 @@ func GetModuleCacheDir(releaseVersion string) (string, error) {
 }
 
 // GetModulePath returns the expected path for a cached module folder
-// (~/.openmcf/terraform/modules/{version}/{component}/)
+// (~/.planton/terraform/modules/{version}/{component}/)
 func GetModulePath(componentName, releaseVersion string) (string, error) {
 	cacheDir, err := GetModuleCacheDir(releaseVersion)
 	if err != nil {
@@ -72,7 +72,7 @@ func GetModulePath(componentName, releaseVersion string) (string, error) {
 // Examples:
 //
 //	BuildDownloadURL("AwsEcsService", "v0.3.50")
-//	  -> https://downloads.openmcf.org/releases/v0.3.50/modules/terraform/awsecsservice.zip
+//	  -> https://downloads.planton.dev/releases/v0.3.50/modules/terraform/awsecsservice.zip
 func BuildDownloadURL(componentName, releaseVersion string) string {
 	return downloads.BuildTerraformDownloadURL(componentName, releaseVersion)
 }
@@ -106,7 +106,7 @@ func IsModuleCached(componentName, releaseVersion string) (bool, error) {
 
 // EnsureModule ensures the module for a component is downloaded and cached.
 // The releaseVersion can be:
-// - CLI version like "v0.3.2" (uses main openmcf release)
+// - CLI version like "v0.3.2" (uses main planton release)
 // - Module version like "v0.3.2+terraform.awsecsservice.20260108.0" (uses component-specific release)
 // Returns the path to the module folder.
 func EnsureModule(componentName, releaseVersion string) (string, error) {

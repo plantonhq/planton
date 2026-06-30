@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awswafwebacl.v1;
+
+// AwsWafWebAclStackOutputs captures observable identifiers from a provisioned
+// WAFv2 Web ACL.
+//
+// The primary output is `web_acl_arn`, which downstream resources use to
+// associate the Web ACL with protected resources via StringValueOrRef. For
+// example, an AwsAlb or AwsHttpApiGateway references the Web ACL ARN to
+// enable WAF protection.
+message AwsWafWebAclStackOutputs {
+  // The Amazon Resource Name (ARN) of the Web ACL. This is the primary
+  // output used to associate the Web ACL with ALB, API Gateway, CloudFront,
+  // AppSync, Cognito, or App Runner resources.
+  string web_acl_arn = 1;
+
+  // The unique identifier of the Web ACL.
+  string web_acl_id = 2;
+
+  // The name of the Web ACL as specified in metadata.
+  string web_acl_name = 3;
+
+  // The Web ACL Capacity Units (WCUs) consumed by all rules in this Web ACL.
+  // Maximum is 5,000 WCUs per Web ACL. Use this output to monitor capacity
+  // usage and plan rule additions.
+  int32 capacity = 4;
+}

@@ -6,7 +6,7 @@
 
 ## Summary
 
-Seven UX issues in the OpenMCF documentation site were fixed in a single session: broken sidebar labels, ugly URL slugs, white flash on page navigation, sidebar scroll position loss, broken icon fallbacks, missing code block copy button, and overly bright inline code styling. The build pipeline, sidebar component, page layout, and markdown renderer were all updated.
+Seven UX issues in the Planton documentation site were fixed in a single session: broken sidebar labels, ugly URL slugs, white flash on page navigation, sidebar scroll position loss, broken icon fallbacks, missing code block copy button, and overly bright inline code styling. The build pipeline, sidebar component, page layout, and markdown renderer were all updated.
 
 ## Problem Statement / Motivation
 

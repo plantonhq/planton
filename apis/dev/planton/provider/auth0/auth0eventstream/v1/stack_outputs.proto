@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package dev.planton.provider.auth0.auth0eventstream.v1;
+
+// Auth0EventStreamStackOutputs contains the outputs from an Auth0 Event Stream deployment.
+// These outputs provide essential identifiers and status information for monitoring
+// and integrating the event stream with downstream systems.
+//
+// https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/event_stream#attributes-reference
+// https://www.pulumi.com/registry/packages/auth0/api-docs/eventstream/#outputs
+message Auth0EventStreamStackOutputs {
+  // id is the unique identifier of the Auth0 event stream.
+  // This is used internally by Auth0 to identify the event stream.
+  // Format: "est_XXXXXXXXXXXXXXXX"
+  string id = 1;
+
+  // name is the name of the event stream.
+  // Derived from metadata.name in the Auth0EventStream resource.
+  string name = 2;
+
+  // status is the current status of the event stream.
+  // Possible values:
+  // - "active": The stream is operational and delivering events
+  // - "suspended": The stream is temporarily paused
+  // - "disabled": The stream is disabled and not delivering events
+  string status = 3;
+
+  // destination_type is the type of event stream destination.
+  // Either "eventbridge" or "webhook".
+  string destination_type = 4;
+
+  // created_at is the ISO 8601 timestamp when the stream was created.
+  // Example: "2024-01-15T10:30:00.000Z"
+  string created_at = 5;
+
+  // updated_at is the ISO 8601 timestamp when the stream was last updated.
+  // Example: "2024-01-16T14:45:30.000Z"
+  string updated_at = 6;
+
+  // subscriptions is the list of event types this stream is subscribed to.
+  // Reflects the subscriptions configured in the spec.
+  repeated string subscriptions = 7;
+
+  // aws_partner_event_source is the AWS partner event source name.
+  // Only populated when destination_type is "eventbridge".
+  // This is the event source that must be associated with an EventBridge event bus.
+  // Format: "aws.partner/auth0.com/<tenant-id>/<stream-name>"
+  string aws_partner_event_source = 8;
+}

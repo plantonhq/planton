@@ -1,6 +1,0 @@
-name: gcp-dataproc-virtual-cluster
-runtime:
-  name: go
-  options:
-    binary: ./pulumi
-description: OpenMCF GcpDataprocVirtualCluster Pulumi module

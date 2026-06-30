@@ -6,31 +6,31 @@
 
 ## Summary
 
-Implemented provisioner-aware state backend labels that allow Terraform and OpenTofu to use their own label prefixes (`terraform.openmcf.org/*` and `tofu.openmcf.org/*` respectively) for backend configuration. The system maintains backward compatibility by falling back to legacy `terraform.*` labels when provisioner-specific labels are not found. Added comprehensive documentation for state backend configuration across all provisioners.
+Implemented provisioner-aware state backend labels that allow Terraform and OpenTofu to use their own label prefixes (`terraform.planton.dev/*` and `tofu.planton.dev/*` respectively) for backend configuration. The system maintains backward compatibility by falling back to legacy `terraform.*` labels when provisioner-specific labels are not found. Added comprehensive documentation for state backend configuration across all provisioners.
 
 ## Problem Statement / Motivation
 
-The existing backend configuration system was hardcoded to only look for `terraform.openmcf.org/*` labels, regardless of whether the user was using Terraform or OpenTofu as their provisioner.
+The existing backend configuration system was hardcoded to only look for `terraform.planton.dev/*` labels, regardless of whether the user was using Terraform or OpenTofu as their provisioner.
 
 ### Pain Points
 
-- **Label confusion**: Users expected `tofu.openmcf.org/*` labels when using OpenTofu
+- **Label confusion**: Users expected `tofu.planton.dev/*` labels when using OpenTofu
 - **No provisioner distinction**: Both Terraform and Tofu shared the same label namespace
 - **Documentation gap**: No comprehensive guide for state backend configuration
-- **Inconsistent with provisioner label**: The provisioner is selected via `openmcf.org/provisioner`, but backend used a fixed `terraform.*` prefix
+- **Inconsistent with provisioner label**: The provisioner is selected via `planton.dev/provisioner`, but backend used a fixed `terraform.*` prefix
 
 ### Expected Behavior
 
 ```yaml
 # When using Terraform
-openmcf.org/provisioner: terraform
-terraform.openmcf.org/backend.type: s3
-terraform.openmcf.org/backend.object: bucket/path/state.tfstate
+planton.dev/provisioner: terraform
+terraform.planton.dev/backend.type: s3
+terraform.planton.dev/backend.object: bucket/path/state.tfstate
 
 # When using OpenTofu
-openmcf.org/provisioner: tofu
-tofu.openmcf.org/backend.type: gcs
-tofu.openmcf.org/backend.object: bucket/path/state.tfstate
+planton.dev/provisioner: tofu
+tofu.planton.dev/backend.type: gcs
+tofu.planton.dev/backend.object: bucket/path/state.tfstate
 ```
 
 ## Solution / What's New
@@ -60,9 +60,9 @@ flowchart TB
 
 | Provisioner | Backend Type Label | Backend Object Label |
 |-------------|-------------------|---------------------|
-| **Terraform** | `terraform.openmcf.org/backend.type` | `terraform.openmcf.org/backend.object` |
-| **OpenTofu** | `tofu.openmcf.org/backend.type` | `tofu.openmcf.org/backend.object` |
-| **Pulumi** | N/A | `pulumi.openmcf.org/stack.name` |
+| **Terraform** | `terraform.planton.dev/backend.type` | `terraform.planton.dev/backend.object` |
+| **OpenTofu** | `tofu.planton.dev/backend.type` | `tofu.planton.dev/backend.object` |
+| **Pulumi** | N/A | `pulumi.planton.dev/stack.name` |
 
 ## Implementation Details
 
@@ -75,18 +75,18 @@ Replaced static constants with dynamic functions:
 ```go
 // BackendTypeLabelKey returns the backend type label for the given provisioner
 func BackendTypeLabelKey(provisioner string) string {
-    return fmt.Sprintf("%s.openmcf.org/backend.type", provisioner)
+    return fmt.Sprintf("%s.planton.dev/backend.type", provisioner)
 }
 
 // BackendObjectLabelKey returns the backend object label for the given provisioner
 func BackendObjectLabelKey(provisioner string) string {
-    return fmt.Sprintf("%s.openmcf.org/backend.object", provisioner)
+    return fmt.Sprintf("%s.planton.dev/backend.object", provisioner)
 }
 
 // Legacy constants for backward compatibility
 const (
-    LegacyBackendTypeLabelKey   = "terraform.openmcf.org/backend.type"
-    LegacyBackendObjectLabelKey = "terraform.openmcf.org/backend.object"
+    LegacyBackendTypeLabelKey   = "terraform.planton.dev/backend.type"
+    LegacyBackendObjectLabelKey = "terraform.planton.dev/backend.object"
 )
 ```
 
@@ -218,14 +218,14 @@ flowchart LR
 ### Terraform with S3 Backend
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsVpc
 metadata:
   name: production-vpc
   labels:
-    openmcf.org/provisioner: terraform
-    terraform.openmcf.org/backend.type: s3
-    terraform.openmcf.org/backend.object: terraform-state/vpc/production.tfstate
+    planton.dev/provisioner: terraform
+    terraform.planton.dev/backend.type: s3
+    terraform.planton.dev/backend.object: terraform-state/vpc/production.tfstate
 spec:
   cidrBlock: 10.0.0.0/16
 ```
@@ -233,14 +233,14 @@ spec:
 ### OpenTofu with GCS Backend
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GkeCluster
 metadata:
   name: staging-cluster
   labels:
-    openmcf.org/provisioner: tofu
-    tofu.openmcf.org/backend.type: gcs
-    tofu.openmcf.org/backend.object: tofu-state/gke/staging-cluster
+    planton.dev/provisioner: tofu
+    tofu.planton.dev/backend.type: gcs
+    tofu.planton.dev/backend.object: tofu-state/gke/staging-cluster
 spec:
   projectId: my-project
   region: us-central1
@@ -249,15 +249,15 @@ spec:
 ### Legacy Support (Still Works)
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRdsInstance
 metadata:
   name: database
   labels:
-    openmcf.org/provisioner: tofu  # Using Tofu...
+    planton.dev/provisioner: tofu  # Using Tofu...
     # ...but with terraform.* labels (legacy)
-    terraform.openmcf.org/backend.type: s3
-    terraform.openmcf.org/backend.object: legacy-bucket/rds/state.tfstate
+    terraform.planton.dev/backend.type: s3
+    terraform.planton.dev/backend.object: legacy-bucket/rds/state.tfstate
 spec:
   engine: postgres
 ```

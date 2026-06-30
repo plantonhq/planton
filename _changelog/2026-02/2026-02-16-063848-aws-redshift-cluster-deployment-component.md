@@ -10,11 +10,11 @@ Added AwsRedshiftCluster as a new deployment component (R20, enum 265) to the AW
 
 ## Problem Statement / Motivation
 
-Amazon Redshift is a core AWS analytics service used in data warehousing, ETL pipelines, and business intelligence workloads. Before this component, OpenMCF users had no declarative way to provision Redshift clusters with the framework's cross-resource reference system (StringValueOrRef), tag management, and dual IaC engine support.
+Amazon Redshift is a core AWS analytics service used in data warehousing, ETL pipelines, and business intelligence workloads. Before this component, Planton users had no declarative way to provision Redshift clusters with the framework's cross-resource reference system (StringValueOrRef), tag management, and dual IaC engine support.
 
 ### Pain Points
 
-- No standardized way to deploy Redshift clusters through OpenMCF
+- No standardized way to deploy Redshift clusters through Planton
 - Manual Redshift provisioning requires coordinating multiple resources: cluster, subnet group, security group, parameter group, and logging configuration
 - Credential management (master password) requires separate Secrets Manager setup
 - No cross-resource reference support for VPC subnets, security groups, KMS keys, and IAM roles
@@ -56,7 +56,7 @@ flowchart TB
 
 ### Key Design Decisions
 - **No engine field** -- Unlike RDS, Redshift has a single engine. Omitted to avoid unnecessary complexity.
-- **`encrypted` defaults to true** -- Uses `optional bool` with `(org.openmcf.shared.options.default) = "true"` to match AWS behavior and avoid accidentally disabling encryption.
+- **`encrypted` defaults to true** -- Uses `optional bool` with `(dev.planton.shared.options.default) = "true"` to match AWS behavior and avoid accidentally disabling encryption.
 - **Logging as separate Pulumi resource** -- Terraform's `aws_redshift_logging` is a separate resource, so the Pulumi module creates `redshift.NewLogging` with `pulumi.DependsOn` on the cluster.
 - **Fixed parameter group family** -- Always "redshift-1.0" (unlike RDS where it depends on engine/version).
 - **Security group pattern from AwsRdsCluster** -- Reused the `securityGroupIds` (creates ingress rules) + `associateSecurityGroupIds` (directly attached) pattern for consistency.
@@ -85,7 +85,7 @@ flowchart TB
 ## Benefits
 
 - **One manifest, many resources** -- A single AwsRedshiftCluster manifest provisions up to 5 coordinated AWS resources
-- **Cross-resource references** -- StringValueOrRef enables declarative references to VPC subnets, security groups, KMS keys, and IAM roles from other OpenMCF components
+- **Cross-resource references** -- StringValueOrRef enables declarative references to VPC subnets, security groups, KMS keys, and IAM roles from other Planton components
 - **Secure defaults** -- Encryption on by default, managed password recommended, SSL enforceable via parameter group
 - **Dual IaC support** -- Both Pulumi and Terraform modules with feature parity
 

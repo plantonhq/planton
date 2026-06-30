@@ -56,7 +56,7 @@ message GcpProjectSpec {
   }];
 
   // NEW: Optional suffix control
-  optional bool add_suffix = 2 [(org.openmcf.shared.options.default) = "false"];
+  optional bool add_suffix = 2 [(dev.planton.shared.options.default) = "false"];
 
   // Existing fields renumbered to 3-9
   GcpProjectParentType parent_type = 3;
@@ -98,7 +98,7 @@ The `add_suffix` field provides flexibility:
 
 ### Proto Definition Updates
 
-**File**: `apis/org/openmcf/provider/gcp/gcpproject/v1/spec.proto`
+**File**: `apis/dev/planton/provider/gcp/gcpproject/v1/spec.proto`
 
 Added required `project_id` field as field number 1, making it the primary specification field. Added optional `add_suffix` boolean as field number 2 with default value `false`. Renumbered all existing fields (3-9) to accommodate the new fields without conflicts.
 
@@ -117,7 +117,7 @@ string project_id = 1 [(buf.validate.field) = {
 
 ### Pulumi Module Changes
 
-**File**: `apis/org/openmcf/provider/gcp/gcpproject/v1/iac/pulumi/module/project.go`
+**File**: `apis/dev/planton/provider/gcp/gcpproject/v1/iac/pulumi/module/project.go`
 
 Completely refactored the project creation logic:
 
@@ -177,7 +177,7 @@ if locals.GcpProject.Spec.GetAddSuffix() {
 
 ### Terraform Module Changes
 
-**File**: `apis/org/openmcf/provider/gcp/gcpproject/v1/iac/tf/locals.tf`
+**File**: `apis/dev/planton/provider/gcp/gcpproject/v1/iac/tf/locals.tf`
 
 Simplified locals significantly:
 
@@ -211,7 +211,7 @@ locals {
 }
 ```
 
-**File**: `apis/org/openmcf/provider/gcp/gcpproject/v1/iac/tf/main.tf`
+**File**: `apis/dev/planton/provider/gcp/gcpproject/v1/iac/tf/main.tf`
 
 Made random suffix resource conditional:
 
@@ -228,7 +228,7 @@ resource "random_string" "project_suffix" {
 }
 ```
 
-**File**: `apis/org/openmcf/provider/gcp/gcpproject/v1/iac/tf/variables.tf`
+**File**: `apis/dev/planton/provider/gcp/gcpproject/v1/iac/tf/variables.tf`
 
 Added new fields to spec variable:
 
@@ -245,7 +245,7 @@ variable "spec" {
 
 ### Comprehensive Test Suite
 
-**File**: `apis/org/openmcf/provider/gcp/gcpproject/v1/spec_test.go`
+**File**: `apis/dev/planton/provider/gcp/gcpproject/v1/spec_test.go`
 
 Created 20 test cases covering all validation scenarios:
 
@@ -301,7 +301,7 @@ SUCCESS! -- 20 Passed | 0 Failed | 0 Pending | 0 Skipped
 Users now specify the exact GCP project ID they want:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpProject
 metadata:
   name: my-resource-name  # For internal tracking
@@ -320,7 +320,7 @@ Proto validation catches errors before infrastructure apply:
 
 ```bash
 # Invalid project_id rejected immediately
-$ openmcf pulumi preview --manifest invalid.yaml
+$ planton pulumi preview --manifest invalid.yaml
 
 Error: validation error:
  - spec.project_id: value must match pattern ^[a-z][a-z0-9-]*[a-z0-9]$
@@ -387,7 +387,7 @@ Validation failures are specific and actionable:
 ### Before (Old Format)
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpProject
 metadata:
   name: my-gcp-project
@@ -400,7 +400,7 @@ spec:
 ### After (New Format)
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpProject
 metadata:
   name: my-gcp-project
@@ -444,7 +444,7 @@ Replace old field names with new ones:
 **Step 4**: Validate manifest
 
 ```bash
-openmcf pulumi preview --manifest updated-manifest.yaml
+planton pulumi preview --manifest updated-manifest.yaml
 ```
 
 Resolve any validation errors before proceeding.
@@ -464,7 +464,7 @@ spec:
 If you attempt to use an old manifest:
 
 ```bash
-$ openmcf pulumi up --manifest old-format.yaml
+$ planton pulumi up --manifest old-format.yaml
 
 Error: validation failed:
   - spec.project_id: field is required but not provided
@@ -539,7 +539,7 @@ go test ./... # All tests pass: ✓
 Potential follow-up work:
 
 1. **Auto-Migration Tool**: CLI command to analyze existing deployments and generate updated manifests
-2. **Validation Helper**: `openmcf validate-project-id` command for manual validation
+2. **Validation Helper**: `planton validate-project-id` command for manual validation
 3. **Other GCP Resources**: Apply similar pattern to GcpVpc, GcpSubnetwork for consistency
 4. **Project ID Templates**: Support for templated project IDs with variable substitution
 

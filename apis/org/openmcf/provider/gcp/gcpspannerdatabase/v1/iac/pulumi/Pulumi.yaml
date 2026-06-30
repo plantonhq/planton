@@ -1,6 +1,0 @@
-name: gcp-spanner-database
-runtime:
-  name: go
-  options:
-    binary: ./pulumi
-description: OpenMCF GcpSpannerDatabase Pulumi module

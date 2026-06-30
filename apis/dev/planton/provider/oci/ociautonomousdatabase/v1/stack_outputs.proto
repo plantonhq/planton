@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ociautonomousdatabase.v1;
+
+// OciAutonomousDatabaseStackOutputs contains the outputs produced after
+// deploying an OciAutonomousDatabase.
+// These values are used by downstream components for composability via
+// StringValueOrRef.
+message OciAutonomousDatabaseStackOutputs {
+  // OCID of the autonomous database.
+  string autonomous_database_id = 1;
+
+  // High-priority connection string for latency-sensitive workloads.
+  // Provides the highest level of service with the most resources.
+  string connection_string_high = 2;
+
+  // Medium-priority connection string for typical application workloads.
+  string connection_string_medium = 3;
+
+  // Low-priority connection string for batch and background workloads.
+  // Uses fewer resources and may queue requests when the database is busy.
+  string connection_string_low = 4;
+
+  // URL of the OCI Service Console for this database.
+  string service_console_url = 5;
+
+  // Private endpoint IP address. Empty when the database is not configured
+  // with a private endpoint (subnet_id not set).
+  string private_endpoint = 6;
+}

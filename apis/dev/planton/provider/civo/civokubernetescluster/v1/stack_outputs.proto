@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package dev.planton.provider.civo.civokubernetescluster.v1;
+
+// CivoKubernetesClusterStackOutputs captures the outputs after provisioning a Civo Kubernetes cluster.
+message CivoKubernetesClusterStackOutputs {
+  // The unique identifier (ID) of the created Kubernetes cluster.
+  string cluster_id = 1;
+
+  // A base64-encoded Kubernetes config (kubeconfig) for accessing the cluster.
+  string kubeconfig_b64 = 2;
+
+  // The endpoint URL of the Kubernetes API server for the cluster.
+  string api_server_endpoint = 3;
+
+  // The timestamp when the cluster was created, in RFC 3339 format.
+  string created_at_rfc3339 = 4;
+}

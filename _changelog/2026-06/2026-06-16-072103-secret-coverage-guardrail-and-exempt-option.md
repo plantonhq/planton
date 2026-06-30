@@ -9,7 +9,7 @@
 Added a reflective "secret coverage" analyzer that walks every production cloud-resource
 kind and reports which string-bearing `spec` fields are annotated `sensitive`, which are
 intentionally exempted, and which are gaps (look like a secret by name but are not
-annotated). A new `openmcf secret-coverage` command surfaces the report and a ratcheting
+annotated). A new `planton secret-coverage` command surfaces the report and a ratcheting
 CI guardrail (`go test ./pkg/secretcoverage/...`) fails when a new unannotated
 secret-looking field ships. A co-located proto option, `sensitive_exempt_reason`, is the
 escape hatch for intentional non-secrets, documented with an auditable justification.
@@ -77,8 +77,8 @@ sweep proceeds.
   annotation contradictions: `sensitive` + exempt, and exemption on a non-heuristic name).
 - `pkg/secretcoverage/baseline.go` -- baseline load/write + `Gate`, the single comparison
   used by both the CLI `--check` and the CI test, so they cannot disagree.
-- `cmd/openmcf/root/secret_coverage.go` -- `openmcf secret-coverage` (report / `--check` /
-  `--write-baseline`), modeled on `openmcf kustomize schema`.
+- `cmd/planton/root/secret_coverage.go` -- `planton secret-coverage` (report / `--check` /
+  `--write-baseline`), modeled on `planton kustomize schema`.
 - `.github/workflows/lint.secret-coverage.yaml` -- a `pull_request` gate running
   `go test ./pkg/secretcoverage/...` (no general `go test` PR gate existed before).
 
@@ -94,13 +94,13 @@ sweep proceeds.
 
 ```bash
 # See coverage and the gap backlog
-openmcf secret-coverage
+planton secret-coverage
 
 # CI gate (fails on a new gap, stale baseline entry, or contradictory annotation)
-openmcf secret-coverage --check
+planton secret-coverage --check
 
 # After an annotation pass, record the remaining accepted gaps
-openmcf secret-coverage --write-baseline
+planton secret-coverage --write-baseline
 ```
 
 ## Benefits

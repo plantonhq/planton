@@ -12,7 +12,7 @@ Deploys an Alibaba Cloud PolarDB cluster with bundled databases, accounts, and a
 
 ## What Gets Created
 
-When you deploy an AliCloudPolardbCluster resource, OpenMCF provisions:
+When you deploy an AliCloudPolardbCluster resource, Planton provisions:
 
 - **PolarDB Cluster** -- an `alicloud_polardb_cluster` with the selected engine, node class, and node count
 - **Databases** -- one `alicloud_polardb_database` per entry in the databases list
@@ -21,7 +21,7 @@ When you deploy an AliCloudPolardbCluster resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Alibaba Cloud credentials** configured via environment variables or OpenMCF provider config
+- **Alibaba Cloud credentials** configured via environment variables or Planton provider config
 - **A VSwitch** -- the PolarDB cluster is placed in a VSwitch (create one with AliCloudVswitch)
 - The VSwitch's VPC and availability zone determine the cluster's network placement
 
@@ -30,7 +30,7 @@ When you deploy an AliCloudPolardbCluster resource, OpenMCF provisions:
 Create a file `polardb-cluster.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudPolardbCluster
 metadata:
   name: my-polardb
@@ -55,7 +55,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f polardb-cluster.yaml
+planton apply -f polardb-cluster.yaml
 ```
 
 This creates a MySQL 8.0 PolarDB cluster with 2 nodes (1 primary + 1 read replica), one database, one account, and ReadWrite access.

@@ -14,7 +14,7 @@ Private zones resolve domain names only within attached VPCs. They are invisible
 ## What Was Created
 
 ### API Definition
-- `apis/org/openmcf/provider/alicloud/alicloudprivatednszone/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
+- `apis/dev/planton/provider/alicloud/alicloudprivatednszone/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
 - Registered `AliCloudPrivateDnsZone = 3042` in `CloudResourceKind` enum under the DNS category
 - Nested messages: `AliCloudPrivateDnsZoneVpcAttachment` (with StringValueOrRef for vpc_id), `AliCloudPrivateDnsZoneRecord` (with CEL validation for record types)
 

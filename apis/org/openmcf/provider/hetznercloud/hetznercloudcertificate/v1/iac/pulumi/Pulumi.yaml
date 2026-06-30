@@ -1,3 +1,0 @@
-name: openmcf-hetznercloud-certificate
-runtime:
-  name: go

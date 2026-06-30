@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package dev.planton.provider.openstack.openstacksubnet.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/openstack/openstacksubnet/v1/spec.proto";
+import "dev/planton/provider/openstack/openstacksubnet/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// OpenStackSubnet is a Kubernetes Resource Model (KRM) style resource for managing
+// Neutron subnets in OpenStack.
+//
+// A subnet provides IP address allocation within a network. It defines the CIDR block,
+// gateway, DHCP settings, and DNS configuration for network connectivity.
+// Subnets are referenced by router interfaces, load balancers, and container cluster templates.
+message OpenStackSubnet {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'openstack.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OpenStackSubnet'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OpenStackSubnetSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OpenStackSubnetStatus status = 5;
+}
+
+// OpenStackSubnetStatus represents the observed state of an OpenStack Neutron subnet.
+message OpenStackSubnetStatus {
+  // stack-outputs from the IaC deployment
+  OpenStackSubnetStackOutputs outputs = 1;
+}

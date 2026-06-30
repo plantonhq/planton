@@ -12,7 +12,7 @@ Deploys the Percona Operator for MySQL (Percona XtraDB Cluster) on a Kubernetes 
 
 ## What Gets Created
 
-When you deploy a KubernetesPerconaMysqlOperator resource, OpenMCF provisions:
+When you deploy a KubernetesPerconaMysqlOperator resource, Planton provisions:
 
 - **Namespace** — created only when `createNamespace` is `true`
 - **Helm Release** — installs the `pxc-operator` Helm chart (v1.18.0) from the Percona Helm repository, deploying the operator pod with configurable CPU and memory resources; the Helm release is named `{metadata.name}-pxc-operator`
@@ -21,7 +21,7 @@ When you deploy a KubernetesPerconaMysqlOperator resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
 - **Helm-capable cluster** — the cluster must support Helm chart installations (standard for all managed Kubernetes offerings)
 
@@ -30,15 +30,15 @@ When you deploy a KubernetesPerconaMysqlOperator resource, OpenMCF provisions:
 Create a file `percona-mysql-operator.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPerconaMysqlOperator
 metadata:
   name: my-pxc-operator
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesPerconaMysqlOperator.my-pxc-operator
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesPerconaMysqlOperator.my-pxc-operator
 spec:
   namespace: percona-system
   createNamespace: true
@@ -47,7 +47,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f percona-mysql-operator.yaml
+planton apply -f percona-mysql-operator.yaml
 ```
 
 This installs the Percona MySQL Operator into the `percona-system` namespace with default resource limits (1000m CPU / 1Gi memory) and requests (100m CPU / 256Mi memory).
@@ -73,7 +73,7 @@ This installs the Percona MySQL Operator into the `percona-system` namespace wit
 | `container.resources.requests.cpu` | `string` | `100m` | Minimum guaranteed CPU for the operator pod. |
 | `container.resources.requests.memory` | `string` | `256Mi` | Minimum guaranteed memory for the operator pod. |
 
-> **Note on `valueFrom`**: The `namespace` field is a `StringValueOrRef` type. You can provide a literal string value directly, or use `valueFrom` to reference the output of another OpenMCF resource. See the foreign key reference example below.
+> **Note on `valueFrom`**: The `namespace` field is a `StringValueOrRef` type. You can provide a literal string value directly, or use `valueFrom` to reference the output of another Planton resource. See the foreign key reference example below.
 
 ## Examples
 
@@ -82,15 +82,15 @@ This installs the Percona MySQL Operator into the `percona-system` namespace wit
 Install the Percona MySQL Operator with default resource allocations, creating the target namespace automatically:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPerconaMysqlOperator
 metadata:
   name: pxc-operator
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesPerconaMysqlOperator.pxc-operator
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesPerconaMysqlOperator.pxc-operator
 spec:
   namespace: percona-system
   createNamespace: true
@@ -109,15 +109,15 @@ spec:
 For production clusters managing many PXC instances, increase the operator's resource allocation to handle the additional reconciliation workload:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPerconaMysqlOperator
 metadata:
   name: prod-pxc-operator
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesPerconaMysqlOperator.prod-pxc-operator
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesPerconaMysqlOperator.prod-pxc-operator
 spec:
   namespace: percona-system
   container:
@@ -132,18 +132,18 @@ spec:
 
 ### Operator with Foreign Key Namespace Reference
 
-Reference an OpenMCF-managed namespace instead of hardcoding the name. The `valueFrom` syntax resolves the namespace name from a KubernetesNamespace resource at deploy time:
+Reference an Planton-managed namespace instead of hardcoding the name. The `valueFrom` syntax resolves the namespace name from a KubernetesNamespace resource at deploy time:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPerconaMysqlOperator
 metadata:
   name: shared-pxc-operator
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.KubernetesPerconaMysqlOperator.shared-pxc-operator
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.KubernetesPerconaMysqlOperator.shared-pxc-operator
 spec:
   namespace:
     valueFrom:

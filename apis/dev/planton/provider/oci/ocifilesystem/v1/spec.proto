@@ -1,0 +1,182 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocifilesystem.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// OciFileSystemSpec defines the specification for an OCI File Storage
+// file system -- an NFS-compatible, fully managed network file system
+// bundled with a dedicated mount target and one or more NFS exports.
+//
+// The mount target provides the NFS endpoint (IP address) in a subnet,
+// and exports define the paths at which the file system is accessible.
+// Export options control per-client NFS access (read/write, identity
+// squashing, privileged port requirements).
+//
+// The auto-created export set on the mount target can optionally be
+// configured to control NFS capacity reporting via statfs.
+//
+// Excluded from v1:
+//   - oci_file_storage_snapshot -- operational concern, independent lifecycle
+//   - oci_file_storage_replication -- cross-region, separate lifecycle
+//   - oci_file_storage_filesystem_snapshot_policy -- reusable across file systems
+//   - oci_file_storage_file_system_quota_rule -- advanced admin feature
+//   - oci_file_storage_outbound_connector -- specialized LDAP integration
+//   - Kerberos / LDAP ID mapping on mount target -- very low adoption
+//   - source_snapshot_id -- clone/restore scenario
+//   - defined_tags, system_tags -- managed by platform
+//   - freeform_tags -- auto-populated from metadata labels
+//   - locks -- platform-managed
+message OciFileSystemSpec {
+  // OCID of the compartment where the file system and mount target
+  // will be created.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OciCompartment,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartment_id"
+  ];
+
+  // Availability domain where the file system and mount target are created.
+  // Both must reside in the same AD. Example: "Uocm:US-ASHBURN-AD-1".
+  // Changing this forces recreation of all resources.
+  string availability_domain = 2 [(buf.validate.field).string.min_len = 1];
+
+  // Display name for the file system. When omitted, OCI generates one.
+  string display_name = 3;
+
+  // OCID of a KMS master encryption key for server-side encryption.
+  // When unset, Oracle-managed keys are used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_id = 4;
+
+  // OCID of a filesystem snapshot policy to attach for automated snapshots.
+  // The policy must exist in the same availability domain.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef filesystem_snapshot_policy_id = 5;
+
+  // Configuration for the dedicated NFS mount target. The mount target
+  // provides the network endpoint (IP address) that clients use to
+  // mount the file system via NFS.
+  //
+  // Note: OCI's default service limit is 2 mount targets per availability
+  // domain. Request a limit increase if deploying more than 2 file systems
+  // in the same AD.
+  MountTarget mount_target = 6 [(buf.validate.field).required = true];
+
+  // NFS export paths. Each export makes the file system accessible at
+  // a specific path on the mount target. At least one export is required.
+  repeated Export exports = 7 [(buf.validate.field).repeated.min_items = 1];
+
+  // MountTarget configures the NFS endpoint that provides network access
+  // to the file system. Created in the specified subnet with an assigned
+  // or auto-allocated private IP address.
+  message MountTarget {
+    // OCID of the subnet where the mount target will be created.
+    // The subnet determines the VCN and availability domain for
+    // NFS access. Changing this forces recreation.
+    dev.planton.shared.foreignkey.v1.StringValueOrRef subnet_id = 1 [
+      (buf.validate.field).required = true,
+      (dev.planton.shared.foreignkey.v1.default_kind) = OciSubnet,
+      (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+    ];
+
+    // Display name for the mount target. When omitted, OCI generates one.
+    string display_name = 2;
+
+    // DNS hostname label for the mount target within the VCN's DNS.
+    // When combined with the subnet and VCN DNS labels, produces an
+    // FQDN like <hostname>.<subnet>.<vcn>.oraclevcn.com.
+    // Changing this forces recreation.
+    string hostname_label = 3;
+
+    // Specific private IP address to assign. Must be available in the
+    // subnet's CIDR. When omitted, OCI auto-assigns from the subnet.
+    // Changing this forces recreation.
+    string ip_address = 4;
+
+    // OCIDs of network security groups to associate with the mount target.
+    // Controls NFS traffic (port 2049/TCP, 111/TCP for portmapper).
+    repeated dev.planton.shared.foreignkey.v1.StringValueOrRef nsg_ids = 5 [
+      (dev.planton.shared.foreignkey.v1.default_kind) = OciSecurityGroup,
+      (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_security_group_id"
+    ];
+
+    // Requested throughput in Mbps for the mount target. When omitted,
+    // OCI uses the default throughput tier.
+    int64 requested_throughput = 6;
+
+    // Maximum NFS capacity in bytes reported to clients via statfs.
+    // Configures the auto-created export set. When omitted, the actual
+    // file system metered size is reported.
+    int64 max_fs_stat_bytes = 7;
+
+    // Maximum file count reported to clients via statfs.
+    // Configures the auto-created export set. When omitted, the actual
+    // count is reported.
+    int64 max_fs_stat_files = 8;
+  }
+
+  // Export defines an NFS export path that connects the file system to
+  // the mount target. Clients mount the file system using:
+  //   mount -t nfs <mount_target_ip>:<path> /local/mount/point
+  message Export {
+    option (buf.validate.message).cel = {
+      id: "export_path_starts_with_slash"
+      message: "export path must start with '/'"
+      expression: "this.path.startsWith('/')"
+    };
+
+    // NFS export path. Must start with '/' and be unique within the
+    // mount target's export set. Example: "/shared-data".
+    // Changing this forces recreation.
+    string path = 1 [(buf.validate.field).string.min_len = 1];
+
+    // NFS access control rules. Each rule specifies a source CIDR
+    // and its permissions. When omitted, OCI applies default access.
+    repeated ExportOption export_options = 2;
+  }
+
+  // ExportOption defines NFS access control for a source CIDR range.
+  message ExportOption {
+    // Source IP address or CIDR block allowed to access this export.
+    // Use "0.0.0.0/0" for unrestricted access within the network.
+    string source = 1 [(buf.validate.field).string.min_len = 1];
+
+    // NFS access level for this source.
+    Access access = 2;
+
+    // Identity squashing mode for NFS requests from this source.
+    IdentitySquash identity_squash = 3;
+
+    // When true, only connections from privileged source ports
+    // (< 1024) are allowed. Standard for UNIX NFS clients.
+    bool require_privileged_source_port = 4;
+
+    // When true, anonymous (unauthenticated) access is allowed.
+    bool is_anonymous_access_allowed = 5;
+
+    // UNIX UID to map anonymous or squashed users to.
+    // Typically 65534 (nobody). Stored as Int64 string in OCI API.
+    int64 anonymous_uid = 6;
+
+    // UNIX GID to map anonymous or squashed users to.
+    // Typically 65534 (nogroup). Stored as Int64 string in OCI API.
+    int64 anonymous_gid = 7;
+  }
+
+  // Access controls the NFS read/write permission level.
+  enum Access {
+    access_unspecified = 0;
+    read_write = 1;
+    read_only = 2;
+  }
+
+  // IdentitySquash controls NFS identity mapping for requests.
+  // Squashing remaps client UIDs/GIDs to anonymous_uid/anonymous_gid,
+  // limiting the privileges of NFS clients on the server.
+  enum IdentitySquash {
+    identity_squash_unspecified = 0;
+    no_squash = 1;
+    root_squash = 2;
+    all_squash = 3;
+  }
+}

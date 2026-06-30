@@ -12,7 +12,7 @@ Deploys an Alibaba Cloud Simple Log Service (SLS) project with bundled log store
 
 ## What Gets Created
 
-When you deploy an AliCloudLogProject resource, OpenMCF provisions:
+When you deploy an AliCloudLogProject resource, Planton provisions:
 
 - **SLS Project** — the regional container for log data, created with the specified name, description, resource group, and tags
 - **Log Stores** — one `alicloud_log_store` per entry in `logStores`, each with configurable retention, shard count, auto-split, and metadata enrichment
@@ -20,7 +20,7 @@ When you deploy an AliCloudLogProject resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Alibaba Cloud credentials** configured via environment variables (`ALIBABA_CLOUD_ACCESS_KEY_ID`, `ALIBABA_CLOUD_ACCESS_KEY_SECRET`) or OpenMCF provider config
+- **Alibaba Cloud credentials** configured via environment variables (`ALIBABA_CLOUD_ACCESS_KEY_ID`, `ALIBABA_CLOUD_ACCESS_KEY_SECRET`) or Planton provider config
 - **A globally unique project name** — SLS project names are unique across all Alibaba Cloud accounts within a region
 
 ## Quick Start
@@ -28,15 +28,15 @@ When you deploy an AliCloudLogProject resource, OpenMCF provisions:
 Create a file `log-project.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudLogProject
 metadata:
   name: my-log-project
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudLogProject.my-log-project
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudLogProject.my-log-project
 spec:
   region: cn-hangzhou
   projectName: my-app-logs
@@ -47,7 +47,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f log-project.yaml
+planton apply -f log-project.yaml
 ```
 
 This creates an SLS project named `my-app-logs` in `cn-hangzhou` with one log store (`app-logs`) and a full-text search index on that store.
@@ -67,7 +67,7 @@ This creates an SLS project named `my-app-logs` in `cn-hangzhou` with one log st
 |-------|------|---------|-------------|
 | `description` | `string` | `""` | Human-readable description of the project. |
 | `resourceGroupId` | `string` | `""` | Alibaba Cloud resource group ID for organizational grouping. If omitted, the default resource group is used. |
-| `tags` | `map<string, string>` | `{}` | Key-value tags applied to the SLS project. Merged with standard OpenMCF tags. |
+| `tags` | `map<string, string>` | `{}` | Key-value tags applied to the SLS project. Merged with standard Planton tags. |
 | `logStores` | `AliCloudLogStore[]` | `[]` | Log stores to create within this project. See fields below. |
 | `logStores[].name` | `string` | — | Log store name. Must be unique within the project. (Required per store; 3-63 characters) |
 | `logStores[].retentionDays` | `int` | `30` | Data retention period in days. Range: 1-3650. Set to 3650 for permanent retention. |
@@ -84,15 +84,15 @@ This creates an SLS project named `my-app-logs` in `cn-hangzhou` with one log st
 An empty SLS project with no log stores. Stores can be added by updating the manifest.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudLogProject
 metadata:
   name: empty-project
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudLogProject.empty-project
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudLogProject.empty-project
 spec:
   region: cn-hangzhou
   projectName: my-empty-project
@@ -103,15 +103,15 @@ spec:
 A project for a development environment with one log store using short retention and minimal shards.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudLogProject
 metadata:
   name: dev-logging
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudLogProject.dev-logging
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudLogProject.dev-logging
 spec:
   region: cn-hangzhou
   projectName: dev-app-logs
@@ -127,15 +127,15 @@ spec:
 Separate stores for application logs, audit trails, and access logs with distinct retention and shard configurations. Tags enable cost attribution and organizational filtering.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudLogProject
 metadata:
   name: prod-logging
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AliCloudLogProject.prod-logging
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AliCloudLogProject.prod-logging
 spec:
   region: cn-shanghai
   projectName: prod-platform-logs
@@ -167,15 +167,15 @@ spec:
 A project for compliance archival where query capability is not needed. Disabling indexing eliminates index storage costs.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudLogProject
 metadata:
   name: archive-project
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AliCloudLogProject.archive-project
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AliCloudLogProject.archive-project
 spec:
   region: cn-hangzhou
   projectName: compliance-archive

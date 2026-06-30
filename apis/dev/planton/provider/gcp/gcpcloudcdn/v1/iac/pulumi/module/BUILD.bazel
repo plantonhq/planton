@@ -1,0 +1,21 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "module",
+    srcs = [
+        "locals.go",
+        "outputs.go",
+        "resources.go",
+    ],
+    importpath = "github.com/plantonhq/planton/apis/dev/planton/provider/gcp/gcpcloudcdn/v1/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/dev/planton/provider/gcp/gcpcloudcdn/v1:gcpcloudcdn",
+        "//apis/dev/planton/shared/cloudresourcekind",
+        "//pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys",
+        "//pkg/iac/pulumi/pulumimodule/provider/gcp/pulumigoogleprovider",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp/compute",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)

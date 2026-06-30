@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.alicloud.alicloudrocketmqinstance.v1;
+
+import "dev/planton/provider/alicloud/alicloudrocketmqinstance/v1/api.proto";
+import "dev/planton/provider/alicloud/provider.proto";
+
+// alicloud-rocketmq-instance stack-input
+message AliCloudRocketmqInstanceStackInput {
+  // target cloud-resource
+  AliCloudRocketmqInstance target = 1;
+  // provider-config
+  dev.planton.provider.alicloud.AliCloudProviderConfig provider_config = 2;
+}

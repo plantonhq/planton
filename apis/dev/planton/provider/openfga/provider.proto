@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package dev.planton.provider.openfga;
+
+import "buf/validate/validate.proto";
+
+// OpenFgaProviderConfig represents the configuration required to connect to an OpenFGA server.
+//
+// IMPORTANT: OpenFGA only has a Terraform provider - there is no Pulumi provider available.
+// All OpenFGA deployment components must use Terraform/Tofu as the provisioner.
+// Pulumi modules for OpenFGA resources will be empty placeholder modules.
+//
+// OpenFGA supports two authentication methods:
+// 1. API Token: Set api_token only (uses FGA_API_TOKEN environment variable)
+// 2. Client Credentials: Set client_id, client_secret, and api_token_issuer
+//    (optionally with api_scopes and api_audience)
+//
+// For more information, see: https://openfga.dev/docs
+// Terraform provider GitHub: https://github.com/openfga/terraform-provider-openfga
+// Terraform provider docs: https://registry.terraform.io/providers/openfga/openfga/latest/docs
+message OpenFgaProviderConfig {
+  // API URL of the OpenFGA server (required).
+  // Example: https://api.us1.fga.dev or http://localhost:8080
+  // Environment variable: FGA_API_URL
+  string api_url = 1 [(buf.validate.field).required = true];
+
+  // API token for token-based authentication.
+  // Use this for simple token-based auth. Mutually exclusive with client credentials authentication.
+  // Environment variable: FGA_API_TOKEN
+  string api_token = 2;
+
+  // Client ID for client credentials authentication.
+  // Required when using OAuth2 client credentials flow.
+  // Environment variable: FGA_CLIENT_ID
+  string client_id = 3;
+
+  // Client secret for client credentials authentication.
+  // Required when using OAuth2 client credentials flow. Should be kept secure.
+  // Environment variable: FGA_CLIENT_SECRET
+  string client_secret = 4;
+
+  // Token issuer URL for client credentials authentication.
+  // If only the issuer URL is provided, the /oauth/token path is appended automatically.
+  // Required when using OAuth2 client credentials flow.
+  // Environment variable: FGA_API_TOKEN_ISSUER
+  string api_token_issuer = 5;
+
+  // Scopes for client credentials authentication (optional).
+  // Space-separated list of OAuth2 scopes to request.
+  // Environment variable: FGA_API_SCOPES
+  string api_scopes = 6;
+
+  // Audience for client credentials authentication (optional).
+  // The intended audience for the access token.
+  // Environment variable: FGA_API_AUDIENCE
+  string api_audience = 7;
+}

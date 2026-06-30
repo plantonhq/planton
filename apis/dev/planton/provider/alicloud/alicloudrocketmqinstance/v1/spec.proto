@@ -1,0 +1,328 @@
+syntax = "proto3";
+
+package dev.planton.provider.alicloud.alicloudrocketmqinstance.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// AliCloudRocketmqInstanceSpec defines the configuration for an Alibaba Cloud
+// RocketMQ 5.x instance with bundled topics and consumer groups.
+//
+// RocketMQ is Alibaba Cloud's distributed messaging and streaming platform,
+// supporting normal, FIFO, delayed, and transactional messages. This component
+// targets the RocketMQ 5.x API (2022-08-01), which provides VPC-integrated
+// instances with configurable throughput tiers, billing modes, and internet
+// access -- a significant upgrade over the legacy ONS API.
+//
+// The instance edition is controlled by series_code (standard, professional,
+// ultimate) and sub_series_code (cluster_ha, single_node, serverless). These
+// are ForceNew in the provider, meaning edition changes require instance
+// replacement.
+//
+// This component bundles topics and consumer groups (per DD07 composite
+// bundling) because they are meaningless without a parent instance. ACL
+// accounts and permission rules are intentionally excluded -- security
+// configuration has an independent lifecycle.
+//
+// The provider's deeply nested network_info block is partially flattened for
+// better YAML authoring experience: vpc_id and vswitch_id are promoted to the
+// spec root (consistent with all other AliCloud components), while internet
+// access settings remain in an optional nested message since their fields are
+// conditionally relevant.
+//
+// Provider resources:
+//   Terraform: alicloud_rocketmq_instance + alicloud_rocketmq_topic + alicloud_rocketmq_consumer_group
+//   Pulumi:    rocketmq.RocketMQInstance + rocketmq.RocketMQTopic + rocketmq.ConsumerGroup
+message AliCloudRocketmqInstanceSpec {
+  // Alibaba Cloud region where the RocketMQ instance will be created.
+  // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Instance edition series. Determines feature set and throughput ceiling.
+  // "standard" -- cost-effective for light workloads (dev/test).
+  // "professional" -- production workloads with higher throughput.
+  // "ultimate" -- mission-critical workloads with the highest throughput.
+  // ForceNew: changing this replaces the instance.
+  string series_code = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "series_code_valid"
+      message: "series_code must be one of: standard, professional, ultimate"
+      expression: "this in ['standard', 'professional', 'ultimate']"
+    }
+  ];
+
+  // Instance deployment architecture within the chosen series.
+  // "cluster_ha" -- multi-node cluster with high availability.
+  // "single_node" -- single node for development and testing.
+  // "serverless" -- auto-scaling serverless deployment.
+  // ForceNew: changing this replaces the instance.
+  string sub_series_code = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "sub_series_code_valid"
+      message: "sub_series_code must be one of: cluster_ha, single_node, serverless"
+      expression: "this in ['cluster_ha', 'single_node', 'serverless']"
+    }
+  ];
+
+  // VPC ID where the RocketMQ instance is deployed.
+  // ForceNew: changing this replaces the instance.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef vpc_id = 4 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AliCloudVpc,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
+  ];
+
+  // Human-readable instance name. 2-64 characters.
+  // If omitted, defaults to metadata.name.
+  string instance_name = 5 [(buf.validate.field).cel = {
+    id: "instance_name_length"
+    message: "instance_name must be between 2 and 64 characters when set"
+    expression: "this == '' || (this.size() >= 2 && this.size() <= 64)"
+  }];
+
+  // Instance description or remark.
+  string remark = 6;
+
+  // Billing method.
+  // "PayAsYouGo" -- pay-as-you-go (post-paid).
+  // "Subscription" -- prepaid with commitment period.
+  // Default: "PayAsYouGo"
+  optional string payment_type = 7 [
+    (buf.validate.field).cel = {
+      id: "payment_type_valid"
+      message: "payment_type must be one of: PayAsYouGo, Subscription"
+      expression: "this == '' || this in ['PayAsYouGo', 'Subscription']"
+    },
+    (dev.planton.shared.options.default) = "PayAsYouGo"
+  ];
+
+  // Subscription period length. Only applicable when payment_type is
+  // "Subscription". Used together with period_unit.
+  optional int32 period = 8 [(buf.validate.field).cel = {
+    id: "period_positive"
+    message: "period must be positive when set"
+    expression: "this > 0"
+  }];
+
+  // Subscription period unit.
+  // "Month" or "Year". Only applicable when payment_type is "Subscription".
+  optional string period_unit = 9 [(buf.validate.field).cel = {
+    id: "period_unit_valid"
+    message: "period_unit must be one of: Month, Year"
+    expression: "this == '' || this in ['Month', 'Year']"
+  }];
+
+  // Enable auto-renewal for Subscription instances.
+  optional bool auto_renew = 10;
+
+  // Auto-renewal period. Valid values: 1, 2, 3, 6, 12.
+  // Only applicable when auto_renew is true.
+  optional int32 auto_renew_period = 11 [(buf.validate.field).cel = {
+    id: "auto_renew_period_valid"
+    message: "auto_renew_period must be one of: 1, 2, 3, 6, 12"
+    expression: "this in [1, 2, 3, 6, 12]"
+  }];
+
+  // VSwitch ID for the instance's VPC endpoint. When provided, the instance
+  // is placed in this VSwitch's availability zone within the VPC.
+  // For serverless instances, at least two VSwitches are recommended.
+  // ForceNew: changing this replaces the instance.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef vswitch_id = 12 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AliCloudVswitch,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vswitch_id"
+  ];
+
+  // Security group ID to associate with the instance's VPC endpoint.
+  // ForceNew: changing this replaces the instance.
+  string security_group_id = 13;
+
+  // Internet access configuration. When omitted, internet access is disabled
+  // and the instance is only accessible within the VPC.
+  AliCloudRocketmqInternetInfo internet_info = 14;
+
+  // Message processing specification that determines the instance's
+  // throughput capacity. Examples: "rmq.s1.micro", "rmq.p2.4xlarge",
+  // "rmq.u2.4xlarge". Required when product_info is set.
+  // The valid values depend on the selected series_code.
+  string msg_process_spec = 15;
+
+  // Advanced product configuration for message retention, auto-scaling,
+  // tracing, and encryption at rest. When omitted, provider defaults apply.
+  AliCloudRocketmqProductInfo product_info = 16;
+
+  // IP addresses or CIDR blocks allowed to access the instance.
+  repeated string ip_whitelists = 17;
+
+  // Alibaba Cloud resource group ID (per DD05).
+  string resource_group_id = 18;
+
+  // Tags to apply to the RocketMQ instance.
+  map<string, string> tags = 19;
+
+  // Topics to create within the instance.
+  repeated AliCloudRocketmqTopic topics = 20;
+
+  // Consumer groups to create within the instance.
+  repeated AliCloudRocketmqConsumerGroup consumer_groups = 21;
+}
+
+// AliCloudRocketmqInternetInfo configures public internet access for the
+// RocketMQ instance. All fields in this message are ForceNew in the provider.
+message AliCloudRocketmqInternetInfo {
+  // Enable public internet access. When true, the instance gets a public
+  // endpoint in addition to the VPC endpoint.
+  // Default: false (internet disabled)
+  optional bool enabled = 1;
+
+  // Billing type for public network outbound traffic. Only relevant when
+  // enabled is true.
+  // "payByBandwidth" -- fixed bandwidth billing (set flow_out_bandwidth).
+  // "payByTraffic" -- usage-based traffic billing.
+  // Default: "payByTraffic"
+  optional string flow_out_type = 2 [
+    (buf.validate.field).cel = {
+      id: "flow_out_type_valid"
+      message: "flow_out_type must be one of: payByBandwidth, payByTraffic"
+      expression: "this == '' || this in ['payByBandwidth', 'payByTraffic']"
+    },
+    (dev.planton.shared.options.default) = "payByTraffic"
+  ];
+
+  // Public network bandwidth in Mb/s. Range: 1-1000.
+  // Only applicable when flow_out_type is "payByBandwidth".
+  optional int32 flow_out_bandwidth = 3 [(buf.validate.field).cel = {
+    id: "flow_out_bandwidth_range"
+    message: "flow_out_bandwidth must be between 1 and 1000"
+    expression: "this >= 1 && this <= 1000"
+  }];
+}
+
+// AliCloudRocketmqProductInfo contains advanced product configuration for
+// message retention, scaling, tracing, and encryption.
+message AliCloudRocketmqProductInfo {
+  // Duration of message retention in hours. Controls how long messages are
+  // stored before expiration. Longer retention increases storage costs.
+  optional int32 message_retention_time = 1 [(buf.validate.field).cel = {
+    id: "message_retention_time_positive"
+    message: "message_retention_time must be positive when set"
+    expression: "this > 0"
+  }];
+
+  // Ratio of message send to receive capacity. Range: 0.2-0.5.
+  optional double send_receive_ratio = 2 [(buf.validate.field).cel = {
+    id: "send_receive_ratio_range"
+    message: "send_receive_ratio must be between 0.2 and 0.5"
+    expression: "this >= 0.2 && this <= 0.5"
+  }];
+
+  // Enable auto-scaling of throughput capacity.
+  optional bool auto_scaling = 3;
+
+  // Enable message trace functionality for debugging and monitoring
+  // message flows.
+  optional bool trace_on = 4;
+
+  // Enable encryption at rest for stored messages.
+  // ForceNew: changing this replaces the instance.
+  optional bool storage_encryption = 5;
+
+  // KMS key for encryption at rest. Only applicable when
+  // storage_encryption is true.
+  // ForceNew: changing this replaces the instance.
+  string storage_secret_key = 6 [(dev.planton.shared.options.sensitive_exempt_reason) = "Customer-managed KMS key identifier for encryption at rest (a reference), not secret key material."];
+}
+
+// AliCloudRocketmqTopic defines a topic to create within the instance.
+message AliCloudRocketmqTopic {
+  // Topic name. Must match ^[%a-zA-Z0-9_-]+$ and be unique within the
+  // instance. ForceNew: changing this replaces the topic.
+  string topic_name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Message type determines how messages in this topic are processed.
+  // "NORMAL" -- standard messages with no ordering guarantee.
+  // "FIFO" -- messages delivered in strict FIFO order.
+  // "DELAY" -- messages delivered after a configurable delay.
+  // "TRANSACTION" -- messages with two-phase commit semantics.
+  // Default: "NORMAL"
+  // ForceNew: changing this replaces the topic.
+  optional string message_type = 2 [
+    (buf.validate.field).cel = {
+      id: "message_type_valid"
+      message: "message_type must be one of: NORMAL, FIFO, DELAY, TRANSACTION"
+      expression: "this == '' || this in ['NORMAL', 'FIFO', 'DELAY', 'TRANSACTION']"
+    },
+    (dev.planton.shared.options.default) = "NORMAL"
+  ];
+
+  // Human-readable description of the topic's purpose.
+  string remark = 3;
+
+  // Maximum send TPS (transactions per second) for the topic.
+  optional int32 max_send_tps = 4;
+}
+
+// AliCloudRocketmqConsumerGroup defines a consumer group within the instance.
+message AliCloudRocketmqConsumerGroup {
+  // Consumer group ID. Must be unique within the instance.
+  // ForceNew: changing this replaces the consumer group.
+  string consumer_group_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Message delivery order type.
+  // "Concurrently" -- messages delivered in parallel (higher throughput).
+  // "Orderly" -- messages delivered in order per message group.
+  optional string delivery_order_type = 2 [(buf.validate.field).cel = {
+    id: "delivery_order_type_valid"
+    message: "delivery_order_type must be one of: Concurrently, Orderly"
+    expression: "this == '' || this in ['Concurrently', 'Orderly']"
+  }];
+
+  // Human-readable description of the consumer group's purpose.
+  string remark = 3;
+
+  // Maximum receive TPS for the consumer group.
+  optional int32 max_receive_tps = 4;
+
+  // Retry policy for failed message consumption. When omitted, defaults to
+  // DefaultRetryPolicy with 16 retries.
+  AliCloudRocketmqConsumeRetryPolicy consume_retry_policy = 5;
+}
+
+// AliCloudRocketmqConsumeRetryPolicy configures how failed messages are
+// retried before being sent to the dead-letter topic.
+message AliCloudRocketmqConsumeRetryPolicy {
+  // Retry strategy.
+  // "DefaultRetryPolicy" -- exponential backoff (recommended).
+  // "FixedRetryPolicy" -- fixed interval between retries.
+  // Default: "DefaultRetryPolicy"
+  optional string retry_policy = 1 [
+    (buf.validate.field).cel = {
+      id: "retry_policy_valid"
+      message: "retry_policy must be one of: DefaultRetryPolicy, FixedRetryPolicy"
+      expression: "this == '' || this in ['DefaultRetryPolicy', 'FixedRetryPolicy']"
+    },
+    (dev.planton.shared.options.default) = "DefaultRetryPolicy"
+  ];
+
+  // Maximum number of retry attempts. Range: 0-1000.
+  // Default: 16 (provider default).
+  optional int32 max_retry_times = 2 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 1000
+  }];
+
+  // Dead-letter topic name. When a message exhausts all retries, it is
+  // delivered to this topic for manual investigation.
+  string dead_letter_target_topic = 3;
+}

@@ -1,0 +1,345 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesgharunnerscaleset.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/kubernetes.proto";
+import "dev/planton/provider/kubernetes/options.proto";
+import "dev/planton/provider/kubernetes/target_cluster.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// KubernetesGhaRunnerScaleSetSpec defines configuration for deploying a GitHub Actions
+// Runner Scale Set on a Kubernetes cluster. Each scale set represents a pool of self-hosted
+// runners that can execute GitHub Actions workflows.
+//
+// Prerequisites:
+// - The GitHub Actions Runner Scale Set Controller must be installed in the cluster
+//   (use KubernetesGhaRunnerScaleSetController component)
+// - A GitHub PAT token or GitHub App credentials for authentication
+//
+// The runners scale dynamically based on workflow demand:
+// - Scale up when jobs are queued
+// - Scale down to minRunners when idle
+message KubernetesGhaRunnerScaleSetSpec {
+  // Target Kubernetes Cluster where the runner scale set will be deployed.
+  dev.planton.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  // Kubernetes Namespace where the runner scale set will be installed.
+  // Multiple scale sets can be installed in different namespaces.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // Flag to indicate if the namespace should be created.
+  bool create_namespace = 3;
+
+  // Version of the Helm chart to deploy.
+  // Chart versions match the runner image versions.
+  // https://github.com/actions/actions-runner-controller/releases
+  optional string helm_chart_version = 4 [(dev.planton.shared.options.default) = "0.13.1"];
+
+  // GitHub configuration for connecting runners to GitHub.
+  KubernetesGhaRunnerScaleSetGitHubConfig github = 5 [(buf.validate.field).required = true];
+
+  // Scaling configuration for the runner pool.
+  KubernetesGhaRunnerScaleSetScaling scaling = 6;
+
+  // Runner group name in GitHub (organization or enterprise level).
+  // Defaults to "default" if not specified.
+  optional string runner_group = 7 [(dev.planton.shared.options.default) = "default"];
+
+  // Name of the runner scale set as it appears in GitHub.
+  // Defaults to the Helm release name (metadata.name) if not specified.
+  // This name is used as the runs-on label in workflow YAML.
+  string runner_scale_set_name = 8;
+
+  // Container mode for running workflows.
+  KubernetesGhaRunnerScaleSetContainerMode container_mode = 9 [(buf.validate.field).required = true];
+
+  // Runner container configuration.
+  KubernetesGhaRunnerScaleSetRunner runner = 10;
+
+  // Persistent volumes to attach to runner pods.
+  // Use this to persist build caches, dependencies, or workspace data across job runs.
+  // Each volume creates a PVC and mounts it to the specified path in runner pods.
+  repeated KubernetesGhaRunnerScaleSetPersistentVolume persistent_volumes = 11;
+
+  // Controller service account configuration.
+  // Required when the controller is installed with watchSingleNamespace flag
+  // or when automatic controller discovery doesn't work.
+  KubernetesGhaRunnerScaleSetControllerServiceAccount controller_service_account = 12;
+
+  // Image pull secrets for private container registries.
+  repeated string image_pull_secrets = 13 [(dev.planton.shared.options.sensitive_exempt_reason) = "Names of existing Kubernetes imagePullSecrets, not secret values."];
+
+  // Labels to apply to all resources created by the scale set.
+  map<string, string> labels = 14;
+
+  // Annotations to apply to all resources created by the scale set.
+  map<string, string> annotations = 15;
+}
+
+// KubernetesGhaRunnerScaleSetGitHubConfig defines GitHub connection settings.
+message KubernetesGhaRunnerScaleSetGitHubConfig {
+  // GitHub URL for where to configure runners.
+  // Examples:
+  // - Repository: https://github.com/myorg/myrepo
+  // - Organization: https://github.com/myorg
+  // - Enterprise: https://github.com/enterprises/myenterprise
+  string config_url = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "spec.github.config_url"
+      message: "Config URL must be a valid GitHub URL"
+      expression: "this.startsWith('https://github.com/') || this.startsWith('https://github.')"
+    }
+  ];
+
+  // Authentication method for GitHub.
+  // Use either pat_token or github_app, not both.
+  oneof auth {
+    // Personal Access Token for authentication.
+    // The token must have appropriate permissions:
+    // - For repositories: repo scope
+    // - For organizations: admin:org scope
+    KubernetesGhaRunnerScaleSetPatToken pat_token = 2;
+
+    // GitHub App for authentication (recommended for organizations).
+    KubernetesGhaRunnerScaleSetGitHubApp github_app = 3;
+
+    // Name of a pre-existing Kubernetes secret containing GitHub credentials.
+    // The secret must be in the same namespace as the runner scale set.
+    // For PAT: must have 'github_token' key
+    // For GitHub App: must have 'github_app_id', 'github_app_installation_id', 'github_app_private_key' keys
+    string existing_secret_name = 4;
+  }
+}
+
+// KubernetesGhaRunnerScaleSetPatToken configures Personal Access Token authentication.
+message KubernetesGhaRunnerScaleSetPatToken {
+  // The GitHub Personal Access Token.
+  // Must have appropriate permissions for the scope (repo, org, or enterprise).
+  string token = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.sensitive) = true
+  ];
+}
+
+// KubernetesGhaRunnerScaleSetGitHubApp configures GitHub App authentication.
+message KubernetesGhaRunnerScaleSetGitHubApp {
+  // The GitHub App ID or Client ID.
+  string app_id = 1 [(buf.validate.field).required = true];
+
+  // The GitHub App Installation ID.
+  string installation_id = 2 [(buf.validate.field).required = true];
+
+  // The private key for the GitHub App (base64 encoded PEM format).
+  // The PEM file contents must be base64 encoded before providing here.
+  // Example: cat private-key.pem | base64
+  string private_key_base64 = 3 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.sensitive) = true
+  ];
+}
+
+// KubernetesGhaRunnerScaleSetScaling defines autoscaling behavior.
+message KubernetesGhaRunnerScaleSetScaling {
+  // Minimum number of idle runners to maintain.
+  // Set to 0 for scale-to-zero behavior (most cost-effective).
+  // Set higher for faster job startup at the cost of idle resources.
+  optional int32 min_runners = 1 [
+    (dev.planton.shared.options.default) = "0",
+    (buf.validate.field).int32.gte = 0
+  ];
+
+  // Maximum number of runners the scale set can scale up to.
+  // Limits concurrent job execution to prevent resource exhaustion.
+  optional int32 max_runners = 2 [
+    (dev.planton.shared.options.default) = "5",
+    (buf.validate.field).int32.gte = 1
+  ];
+}
+
+// KubernetesGhaRunnerScaleSetContainerMode defines how workflows are executed.
+message KubernetesGhaRunnerScaleSetContainerMode {
+  // The container mode type.
+  ContainerModeType type = 1 [(buf.validate.field).required = true];
+
+  // Work volume claim configuration for kubernetes mode.
+  // Required when type is KUBERNETES.
+  // This volume is used for the workspace where jobs run.
+  KubernetesGhaRunnerScaleSetWorkVolumeClaim work_volume_claim = 2;
+
+  // Container mode types.
+  enum ContainerModeType {
+    container_mode_type_unspecified = 0;
+
+    // Docker-in-Docker mode.
+    // Runners use a privileged DinD sidecar for Docker operations.
+    // Suitable for workflows that build/push Docker images.
+    // Requires privileged containers (may not be allowed in some clusters).
+    DIND = 1;
+
+    // Kubernetes mode.
+    // Each job step runs as a separate Kubernetes pod.
+    // Uses container hooks for orchestration.
+    // Requires a work volume claim for the workspace.
+    KUBERNETES = 2;
+
+    // Kubernetes mode without persistent volumes.
+    // Similar to KUBERNETES but doesn't use ephemeral volume claims.
+    // Use when the cluster doesn't support ephemeral volumes.
+    KUBERNETES_NO_VOLUME = 3;
+
+    // Default mode.
+    // Runners execute workflows directly without special container features.
+    // Suitable for simple workflows that don't need Docker.
+    DEFAULT = 4;
+  }
+}
+
+// KubernetesGhaRunnerScaleSetWorkVolumeClaim configures the ephemeral work volume
+// for kubernetes container mode.
+message KubernetesGhaRunnerScaleSetWorkVolumeClaim {
+  // Storage class for the work volume.
+  // If not specified, uses the cluster's default storage class.
+  string storage_class = 1;
+
+  // Size of the work volume (e.g., "10Gi", "100Gi").
+  // Should be large enough to hold the repository and build artifacts.
+  string size = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "spec.container_mode.work_volume_claim.size"
+      message: "Size must be a valid Kubernetes quantity (e.g., 10Gi, 100Mi)"
+      expression: "this.matches('^[0-9]+[EPTGMK]i?$')"
+    }
+  ];
+
+  // Access modes for the volume.
+  // Default: ["ReadWriteOnce"]
+  repeated string access_modes = 3 [(buf.validate.field).cel = {
+    id: "spec.container_mode.work_volume_claim.access_modes"
+    message: 'Access modes must be one of "ReadWriteOnce", "ReadOnlyMany", "ReadWriteMany", or "ReadWriteOncePod"'
+    expression: 'size(this) == 0 || this.all(m, m in ["ReadWriteOnce", "ReadOnlyMany", "ReadWriteMany", "ReadWriteOncePod"])'
+  }];
+}
+
+// KubernetesGhaRunnerScaleSetRunner configures the runner container.
+message KubernetesGhaRunnerScaleSetRunner {
+  // Custom runner image configuration.
+  // When not specified, uses the default ghcr.io/actions/actions-runner image.
+  KubernetesGhaRunnerScaleSetRunnerImage image = 1;
+
+  // CPU and memory resources for the runner container.
+  dev.planton.provider.kubernetes.ContainerResources resources = 2 [(dev.planton.provider.kubernetes.default_container_resources) = {
+    limits: {
+      cpu: "2"
+      memory: "4Gi"
+    }
+    requests: {
+      cpu: "500m"
+      memory: "1Gi"
+    }
+  }];
+
+  // Environment variables to set in the runner container.
+  repeated KubernetesGhaRunnerScaleSetEnvVar env = 3;
+
+  // Volume mounts for the runner container.
+  // Used to mount persistent volumes to specific paths.
+  repeated KubernetesGhaRunnerScaleSetVolumeMount volume_mounts = 4;
+}
+
+// KubernetesGhaRunnerScaleSetRunnerImage configures a custom runner image.
+message KubernetesGhaRunnerScaleSetRunnerImage {
+  // Container image repository.
+  // Default: ghcr.io/actions/actions-runner
+  optional string repository = 1 [(dev.planton.shared.options.default) = "ghcr.io/actions/actions-runner"];
+
+  // Image tag.
+  // When not specified, uses the chart appVersion (matches controller version).
+  // Default tag aligns with helm_chart_version default.
+  // https://github.com/actions/runner/pkgs/container/actions-runner
+  optional string tag = 2 [(dev.planton.shared.options.default) = "2.331.0"];
+
+  // Image pull policy: Always, IfNotPresent, or Never.
+  // Default: IfNotPresent
+  optional string pull_policy = 3 [(dev.planton.shared.options.default) = "IfNotPresent"];
+}
+
+// KubernetesGhaRunnerScaleSetEnvVar defines an environment variable.
+message KubernetesGhaRunnerScaleSetEnvVar {
+  // Name of the environment variable.
+  string name = 1 [(buf.validate.field).required = true];
+
+  // Value of the environment variable.
+  string value = 2;
+}
+
+// KubernetesGhaRunnerScaleSetVolumeMount defines how to mount a volume in the runner.
+message KubernetesGhaRunnerScaleSetVolumeMount {
+  // Name of the volume to mount (must match a persistent_volume name).
+  string name = 1 [(buf.validate.field).required = true];
+
+  // Path within the container where the volume should be mounted.
+  string mount_path = 2 [(buf.validate.field).required = true];
+
+  // Whether the volume should be mounted read-only.
+  bool read_only = 3;
+
+  // Path within the volume to mount (subdirectory).
+  string sub_path = 4;
+}
+
+// KubernetesGhaRunnerScaleSetPersistentVolume defines a PVC to create and mount.
+// These volumes persist across runner pod restarts and job executions,
+// making them ideal for caching build dependencies.
+message KubernetesGhaRunnerScaleSetPersistentVolume {
+  // Name of the volume.
+  // Used to reference this volume in volume_mounts.
+  string name = 1 [(buf.validate.field).required = true];
+
+  // Storage class for the PVC.
+  // If not specified, uses the cluster's default storage class.
+  string storage_class = 2;
+
+  // Size of the volume (e.g., "10Gi", "100Gi").
+  string size = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "spec.persistent_volumes.size"
+      message: "Size must be a valid Kubernetes quantity (e.g., 10Gi, 100Mi)"
+      expression: "this.matches('^[0-9]+[EPTGMK]i?$')"
+    }
+  ];
+
+  // Access modes for the PVC.
+  // Common values: "ReadWriteOnce", "ReadOnlyMany", "ReadWriteMany"
+  // Default: ["ReadWriteOnce"]
+  repeated string access_modes = 4 [(buf.validate.field).cel = {
+    id: "spec.persistent_volumes.access_modes"
+    message: 'Access modes must be one of "ReadWriteOnce", "ReadOnlyMany", "ReadWriteMany", or "ReadWriteOncePod"'
+    expression: 'size(this) == 0 || this.all(m, m in ["ReadWriteOnce", "ReadOnlyMany", "ReadWriteMany", "ReadWriteOncePod"])'
+  }];
+
+  // Mount path in the runner container.
+  // Where the volume will be mounted (e.g., "/home/runner/.cache").
+  string mount_path = 5 [(buf.validate.field).required = true];
+
+  // Whether to mount the volume as read-only.
+  bool read_only = 6;
+}
+
+// KubernetesGhaRunnerScaleSetControllerServiceAccount specifies the controller's
+// service account for creating RBAC bindings.
+message KubernetesGhaRunnerScaleSetControllerServiceAccount {
+  // Namespace where the controller is installed.
+  string namespace = 1;
+
+  // Name of the controller's service account.
+  string name = 2;
+}

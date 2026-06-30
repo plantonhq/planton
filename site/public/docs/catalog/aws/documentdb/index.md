@@ -12,7 +12,7 @@ Deploys an AWS DocumentDB cluster (MongoDB-compatible) with automatic subnet gro
 
 ## What Gets Created
 
-When you deploy an AwsDocumentDb resource, OpenMCF provisions:
+When you deploy an AwsDocumentDb resource, Planton provisions:
 
 - **DocumentDB Cluster** — a `docdb.Cluster` with the `docdb` engine at the specified version, encryption settings, backup configuration, and CloudWatch log exports
 - **Cluster Instances** — one `docdb.ClusterInstance` per `instanceCount` (default 1), each using the specified `instanceClass` with auto minor version upgrade support
@@ -24,7 +24,7 @@ When you deploy an AwsDocumentDb resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **At least two subnets** in different Availability Zones, or an existing DB subnet group name
 - **A master password** for the cluster administrator
 - **A VPC ID** if creating a managed security group with `securityGroups` or `allowedCidrs`
@@ -35,15 +35,15 @@ When you deploy an AwsDocumentDb resource, OpenMCF provisions:
 Create a file `documentdb.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsDocumentDb
 metadata:
   name: my-docdb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsDocumentDb.my-docdb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsDocumentDb.my-docdb
 spec:
   region: us-east-1
   subnets:
@@ -56,7 +56,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f documentdb.yaml
+planton apply -f documentdb.yaml
 ```
 
 This creates a single-instance DocumentDB 5.0 cluster with encrypted storage, a `docdbadmin` master user, and a `db.r6g.large` instance in the specified subnets.
@@ -105,15 +105,15 @@ This creates a single-instance DocumentDB 5.0 cluster with encrypted storage, a 
 A minimal DocumentDB cluster for development with final snapshot skipped:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsDocumentDb
 metadata:
   name: dev-docdb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsDocumentDb.dev-docdb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsDocumentDb.dev-docdb
 spec:
   region: us-east-1
   subnets:
@@ -129,15 +129,15 @@ spec:
 A three-instance cluster with encryption, backup retention, deletion protection, and audit logging:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsDocumentDb
 metadata:
   name: prod-docdb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsDocumentDb.prod-docdb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsDocumentDb.prod-docdb
 spec:
   region: us-east-1
   subnets:
@@ -166,15 +166,15 @@ spec:
 A cluster with a managed security group allowing access from a VPC CIDR and specific application security groups:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsDocumentDb
 metadata:
   name: secured-docdb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsDocumentDb.secured-docdb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsDocumentDb.secured-docdb
 spec:
   region: us-east-1
   subnets:
@@ -198,15 +198,15 @@ spec:
 A cluster using DocumentDB 5.0 with custom parameter group settings for profiler and TLS:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsDocumentDb
 metadata:
   name: custom-docdb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.AwsDocumentDb.custom-docdb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.AwsDocumentDb.custom-docdb
 spec:
   region: us-east-1
   subnets:
@@ -233,18 +233,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding IDs:
+Reference other Planton-managed resources instead of hardcoding IDs:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsDocumentDb
 metadata:
   name: ref-docdb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsDocumentDb.ref-docdb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsDocumentDb.ref-docdb
 spec:
   region: us-east-1
   subnets:

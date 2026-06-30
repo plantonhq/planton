@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcpvpc.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// Allowed values for VPC dynamic routing mode.
+enum GcpVpcRoutingMode {
+  REGIONAL = 0;
+  GLOBAL = 1;
+}
+
+// Private Services Access configuration for Google managed services (Cloud SQL, Memorystore, etc.).
+// This creates VPC peering with Google's service network, enabling private IP connectivity.
+// PREREQUISITE: servicenetworking.googleapis.com must be enabled on the project via GcpProject.
+message GcpVpcPrivateServicesAccess {
+  // Enable Private Services Access (VPC peering with Google's service network).
+  // When enabled, Google managed services can be assigned private IPs from this VPC.
+  bool enabled = 1;
+
+  // IP range prefix length for private services allocation.
+  // Determines how many IPs are reserved for Google managed services.
+  // Default: 16 (/16 = 65,536 IPs). Valid range: 8-24.
+  // Use smaller prefix (more IPs) if running many managed service instances.
+  int32 ip_range_prefix_length = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).int32 = {
+      gte: 8
+      lte: 24
+    },
+    (dev.planton.shared.options.default) = "16"
+  ];
+}
+
+// GcpVpcSpec defines the essential configuration for a Google Cloud VPC (Virtual Private Cloud).
+message GcpVpcSpec {
+  // The GCP project ID in which to create this VPC network.
+  // Example: "my-prod-project-123"
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // Whether to use auto subnet mode (true) or custom subnet mode (false).
+  // **Default:** false (custom mode). Auto mode is not recommended for production:contentReference[oaicite:4]{index=4}.
+  bool auto_create_subnetworks = 2;
+
+  // Dynamic routing mode for the VPC's Cloud Routers: REGIONAL or GLOBAL.
+  // **Default:** REGIONAL (Cloud Router adverts routes only in one region):contentReference[oaicite:5]{index=5}.
+  // Use GLOBAL only for multi-region routing needs.
+  optional GcpVpcRoutingMode routing_mode = 3 [(dev.planton.shared.options.default) = "REGIONAL"];
+
+  // Name of the VPC network to create in GCP.
+  // Must be 1-63 characters, lowercase letters, numbers, or hyphens.
+  // Must start with a lowercase letter and end with a lowercase letter or number.
+  // Example: "my-vpc-network", "prod-network"
+  string network_name = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$"
+  ];
+
+  // Private Services Access configuration for connecting to Google managed services
+  // (Cloud SQL, Memorystore, Filestore, etc.) via private IP.
+  // PREREQUISITE: Enable servicenetworking.googleapis.com via GcpProject before using this.
+  GcpVpcPrivateServicesAccess private_services_access = 5;
+}

@@ -10,11 +10,11 @@ Added GcpAlloydbCluster as a new deployment component, covering Google Cloud's f
 
 ## Problem Statement / Motivation
 
-AlloyDB is Google Cloud's enterprise-grade PostgreSQL-compatible database, designed for demanding transactional and analytical workloads. It fills a gap between Cloud SQL (simpler managed PostgreSQL) and Cloud Spanner (globally distributed). Prior to this change, OpenMCF had no way to provision AlloyDB infrastructure, leaving users to manage it manually or through custom IaC.
+AlloyDB is Google Cloud's enterprise-grade PostgreSQL-compatible database, designed for demanding transactional and analytical workloads. It fills a gap between Cloud SQL (simpler managed PostgreSQL) and Cloud Spanner (globally distributed). Prior to this change, Planton had no way to provision AlloyDB infrastructure, leaving users to manage it manually or through custom IaC.
 
 ### Pain Points
 
-- No declarative way to provision AlloyDB clusters through OpenMCF
+- No declarative way to provision AlloyDB clusters through Planton
 - AlloyDB has a cluster+instance model that requires careful bundling to be useful
 - Three separate CMEK encryption scopes (data, automated backups, continuous backups) need clear modeling
 - Backup policies have two retention strategies (quantity-based vs time-based) that are mutually exclusive
@@ -90,7 +90,7 @@ AlloyDB is Google Cloud's enterprise-grade PostgreSQL-compatible database, desig
 
 ## Impact
 
-- **GCP users**: Can now provision AlloyDB clusters through OpenMCF with a single manifest
+- **GCP users**: Can now provision AlloyDB clusters through Planton with a single manifest
 - **Infra charts**: GcpAlloydbCluster can be composed into `gcp-alloydb-environment` and `gcp-spanner-application` charts
 - **GCP expansion**: 11 of 22 resources now complete (50% milestone)
 

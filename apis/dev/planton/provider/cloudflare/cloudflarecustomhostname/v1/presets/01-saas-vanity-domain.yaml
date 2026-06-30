@@ -1,0 +1,13 @@
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareCustomHostname
+metadata:
+  name: saas-vanity-domain
+spec:
+  zoneId:
+    value: <saas-zone-id>
+  hostname: <customer-hostname>
+  ssl:
+    method: txt
+    type: dv
+    settings:
+      minTlsVersion: "1.2"

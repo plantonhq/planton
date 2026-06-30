@@ -10,11 +10,11 @@ Added AwsRedisElasticache (enum 250) — a managed Redis/Valkey in-memory data s
 
 ## Problem Statement / Motivation
 
-ElastiCache is the most common managed caching layer on AWS, used for session stores, application caches, real-time leaderboards, and message brokers. The OpenMCF catalog had no ElastiCache coverage, forcing users to manage Redis infrastructure outside the declarative framework.
+ElastiCache is the most common managed caching layer on AWS, used for session stores, application caches, real-time leaderboards, and message brokers. The Planton catalog had no ElastiCache coverage, forcing users to manage Redis infrastructure outside the declarative framework.
 
 ### Pain Points
 
-- No managed caching resource in OpenMCF's AWS provider catalog
+- No managed caching resource in Planton's AWS provider catalog
 - Users had to provision ElastiCache manually, losing dependency wiring and infra-chart composability
 - The original planning (T02) designed a single `AwsElasticacheCluster` component, but deep research revealed that Redis/Valkey and Memcached use completely different Terraform resources with ~15 unique fields each
 
@@ -80,14 +80,14 @@ During deep research into the Terraform/Pulumi providers, 10 capabilities were d
 
 ## Benefits
 
-- Complete managed caching coverage for Redis/Valkey workloads in OpenMCF
+- Complete managed caching coverage for Redis/Valkey workloads in Planton
 - Full infra-chart composability: accepts VPC, SG, KMS, SNS references; exports endpoints, ARN, port
 - Production-ready with encryption, HA, multi-AZ, snapshots, logging, and custom parameters
 - Clear component boundaries: Redis/Valkey, Memcached, and Serverless are separate, focused components
 
 ## Impact
 
-- **End users**: Can now deploy Redis/Valkey caches declaratively with `openmcf apply`
+- **End users**: Can now deploy Redis/Valkey caches declaratively with `planton apply`
 - **Infra chart authors**: Can compose Redis into microservices, serverless-api, and data-pipeline charts
 - **Platform**: 7 of ~32 new AWS resource kinds completed (Phase 1 progress: 47%)
 
@@ -95,7 +95,7 @@ During deep research into the Terraform/Pulumi providers, 10 capabilities were d
 
 - Previous: R06 AwsStepFunction (2026-02-15)
 - Next: R07a AwsMemcachedElasticache, R07b AwsServerlessElasticache
-- Parent project: 20260212.01.openmcf-cloud-provider-expansion
+- Parent project: 20260212.01.planton-cloud-provider-expansion
 
 ---
 

@@ -6,11 +6,11 @@
 
 ## Summary
 
-Created production-quality presets for all 15 DigitalOcean and all 8 Cloudflare deployment components, adding 43 presets (86 files) to the OpenMCF presets system. This brings the total presets coverage from 169/213 components (79%) to 192/213 components (90%), with only 21 components remaining across Civo, Snowflake, and OpenFGA.
+Created production-quality presets for all 15 DigitalOcean and all 8 Cloudflare deployment components, adding 43 presets (86 files) to the Planton presets system. This brings the total presets coverage from 169/213 components (79%) to 192/213 components (90%), with only 21 components remaining across Civo, Snowflake, and OpenFGA.
 
 ## Problem Statement / Motivation
 
-DigitalOcean and Cloudflare were the two largest remaining providers without presets. Together they represent 23 components (11% of the total 213) and cover a significant portion of the "small cloud" deployment patterns that OpenMCF users encounter.
+DigitalOcean and Cloudflare were the two largest remaining providers without presets. Together they represent 23 components (11% of the total 213) and cover a significant portion of the "small cloud" deployment patterns that Planton users encounter.
 
 ### Pain Points
 
@@ -40,7 +40,7 @@ Organized into 2 functional groups:
 
 ### Key Conventions Applied
 
-- **apiVersion**: `digital-ocean.openmcf.org/v1` (all 15 DO components), `cloudflare.openmcf.org/v1` (all 8 CF components) -- verified from `api.proto`
+- **apiVersion**: `digital-ocean.planton.dev/v1` (all 15 DO components), `cloudflare.planton.dev/v1` (all 8 CF components) -- verified from `api.proto`
 - **camelCase field names**: consistent with all prior providers (AWS, GCP, Azure, Kubernetes, OpenStack, Scaleway)
 - **StringValueOrRef `value:` wrapper**: correctly applied to VPC, cluster, domain, zone ID, droplet ID, and KV binding references
 - **Plain string foreign keys**: `zone_id` in CloudflareWorker DNS config and CloudflareZeroTrustAccessApplication are plain `string` (not `StringValueOrRef`), correctly rendered without `value:` wrapper

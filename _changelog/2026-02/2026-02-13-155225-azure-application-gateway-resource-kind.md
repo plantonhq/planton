@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added AzureApplicationGateway (enum 416, id_prefix: azagw) as a new OpenMCF cloud resource kind, providing Layer 7 (HTTP/HTTPS) load balancing with SSL termination, host-based routing, custom health probes, cookie-based session affinity, and optional WAF protection. This is R10 in the Azure resource expansion project, completing the networking tier alongside the previously implemented AzureLoadBalancer (L4).
+Added AzureApplicationGateway (enum 416, id_prefix: azagw) as a new Planton cloud resource kind, providing Layer 7 (HTTP/HTTPS) load balancing with SSL termination, host-based routing, custom health probes, cookie-based session affinity, and optional WAF protection. This is R10 in the Azure resource expansion project, completing the networking tier alongside the previously implemented AzureLoadBalancer (L4).
 
 ## Problem Statement / Motivation
 

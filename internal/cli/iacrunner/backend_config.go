@@ -1,7 +1,7 @@
 package iacrunner
 
 import (
-	"github.com/plantonhq/openmcf/pkg/iac/tofu/backendconfig"
+	"github.com/plantonhq/planton/pkg/iac/tofu/backendconfig"
 	"google.golang.org/protobuf/proto"
 )
 

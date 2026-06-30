@@ -16,7 +16,7 @@ Additionally, floating IPs are the bridge between private tenant networks and th
 
 ### Pain Points
 
-- No way to allocate public IPs through the OpenMCF platform
+- No way to allocate public IPs through the Planton platform
 - Cannot associate public IPs with instance ports for external access
 - The `openstack/developer-environment` InfraChart is blocked without this component
 
@@ -71,7 +71,7 @@ flowchart TB
   - `address` (specific IP request, ForceNew)
   - `description`, `tags`, `region`
 - `stack_outputs.proto` -- 6 outputs: floating_ip_id, address, floating_network_id, port_id, fixed_ip, region
-- `api.proto` -- KRM envelope with `openstack.openmcf.org/v1` + `OpenStackFloatingIp`
+- `api.proto` -- KRM envelope with `openstack.planton.dev/v1` + `OpenStackFloatingIp`
 - `stack_input.proto` -- target + provider_config
 - `spec_test.go` -- 18 tests (11 positive, 7 negative)
 
@@ -104,7 +104,7 @@ The original plan suggested creating `floatingip_v2 + optional floatingip_associ
 
 ### `pool` vs `floating_network_id` Mapping
 
-The Terraform/Pulumi field is named `pool` (accepts network name or UUID). Our FK field is `floating_network_id` (more descriptive, follows OpenMCF conventions). The IaC modules bridge this:
+The Terraform/Pulumi field is named `pool` (accepts network name or UUID). Our FK field is `floating_network_id` (more descriptive, follows Planton conventions). The IaC modules bridge this:
 
 ```go
 // Pulumi: Pool maps to floating_network_id
@@ -156,7 +156,7 @@ Excluded: `subnet_ids` (retry-loop, niche), `tenant_id` (admin-only), `value_spe
 - OpenStackRouterInterface component: `_changelog/2026-02/2026-02-09-094647-openstack-router-interface-deployment-component.md`
 - OpenStackSecurityGroup component: `_changelog/2026-02/2026-02-09-100841-openstack-security-group-deployment-component.md`
 - OpenStackSecurityGroupRule component: `_changelog/2026-02/2026-02-09-104004-openstack-security-group-rule-deployment-component.md`
-- Parent project: `planton/_projects/20260209.01.openstack-openmcf-components/`
+- Parent project: `planton/_projects/20260209.01.openstack-planton-components/`
 
 ---
 

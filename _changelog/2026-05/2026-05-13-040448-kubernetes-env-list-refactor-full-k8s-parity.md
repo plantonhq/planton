@@ -21,14 +21,14 @@ The original env modeling used `map<string, T>` for both variables and secrets. 
 
 ## Solution / What's New
 
-A single shared `ContainerEnv` proto message replaces all 5 per-workload env messages. Environment variables use a list structure that mirrors Kubernetes `EnvVar` semantics while maintaining OpenMCF's separation of variables (non-sensitive) and secrets (sensitive).
+A single shared `ContainerEnv` proto message replaces all 5 per-workload env messages. Environment variables use a list structure that mirrors Kubernetes `EnvVar` semantics while maintaining Planton's separation of variables (non-sensitive) and secrets (sensitive).
 
 ### Value Source Matrix
 
 | Source Type | Variables | Secrets |
 |---|---|---|
 | Direct literal value | `value` | `value` (auto-creates K8s Secret) |
-| OpenMCF cross-resource ref | `valueFrom` | `valueFrom` |
+| Planton cross-resource ref | `valueFrom` | `valueFrom` |
 | ConfigMap key | `configMapKeyRef` | -- |
 | Pod field | `fieldRef` | -- |
 | Container resource | `resourceFieldRef` | -- |

@@ -20,9 +20,9 @@ type MissingField struct {
 	Name string
 	// FlagName is the CLI flag to provide this value (e.g., "--backend-endpoint")
 	FlagName string
-	// EnvVarName is the environment variable to provide this value (e.g., "OPENMCF_BACKEND_ENDPOINT")
+	// EnvVarName is the environment variable to provide this value (e.g., "PLANTON_BACKEND_ENDPOINT")
 	EnvVarName string
-	// LabelName is the manifest label (e.g., "terraform.openmcf.org/backend.endpoint")
+	// LabelName is the manifest label (e.g., "terraform.planton.dev/backend.endpoint")
 	LabelName string
 	// Description is a human-readable description of the field
 	Description string
@@ -69,7 +69,7 @@ func validateS3Backend(config *TofuBackendConfig) *ValidationResult {
 			Name:        "bucket",
 			FlagName:    "--backend-bucket",
 			EnvVarName:  EnvBackendBucket,
-			LabelName:   "terraform.openmcf.org/backend.bucket",
+			LabelName:   "terraform.planton.dev/backend.bucket",
 			Description: "S3 bucket name for state storage",
 			Example:     "my-terraform-state-bucket",
 			Required:    true,
@@ -83,7 +83,7 @@ func validateS3Backend(config *TofuBackendConfig) *ValidationResult {
 			Name:        "key",
 			FlagName:    "--backend-key",
 			EnvVarName:  "", // Key is intentionally not read from env vars
-			LabelName:   "terraform.openmcf.org/backend.key",
+			LabelName:   "terraform.planton.dev/backend.key",
 			Description: "Path to state file within bucket",
 			Example:     "env/prod/terraform.tfstate",
 			Required:    true,
@@ -97,7 +97,7 @@ func validateS3Backend(config *TofuBackendConfig) *ValidationResult {
 			Name:        "region",
 			FlagName:    "--backend-region",
 			EnvVarName:  EnvBackendRegion,
-			LabelName:   "terraform.openmcf.org/backend.region",
+			LabelName:   "terraform.planton.dev/backend.region",
 			Description: "AWS region (use 'auto' for S3-compatible backends like R2)",
 			Example:     "us-west-2 (or 'auto' for R2/MinIO)",
 			Required:    true,
@@ -111,7 +111,7 @@ func validateS3Backend(config *TofuBackendConfig) *ValidationResult {
 			Name:        "endpoint",
 			FlagName:    "--backend-endpoint",
 			EnvVarName:  EnvBackendEndpoint,
-			LabelName:   "terraform.openmcf.org/backend.endpoint",
+			LabelName:   "terraform.planton.dev/backend.endpoint",
 			Description: "Custom S3-compatible endpoint (required when region is 'auto')",
 			Example:     "https://<account-id>.r2.cloudflarestorage.com",
 			Required:    true,
@@ -134,7 +134,7 @@ func validateGCSBackend(config *TofuBackendConfig) *ValidationResult {
 			Name:        "bucket",
 			FlagName:    "--backend-bucket",
 			EnvVarName:  EnvBackendBucket,
-			LabelName:   "terraform.openmcf.org/backend.bucket",
+			LabelName:   "terraform.planton.dev/backend.bucket",
 			Description: "GCS bucket name for state storage",
 			Example:     "my-terraform-state",
 			Required:    true,
@@ -148,7 +148,7 @@ func validateGCSBackend(config *TofuBackendConfig) *ValidationResult {
 			Name:        "key",
 			FlagName:    "--backend-key",
 			EnvVarName:  "", // Key is intentionally not read from env vars
-			LabelName:   "terraform.openmcf.org/backend.key",
+			LabelName:   "terraform.planton.dev/backend.key",
 			Description: "Prefix path for state file within bucket",
 			Example:     "terraform/state",
 			Required:    true,
@@ -169,7 +169,7 @@ func validateAzureBackend(config *TofuBackendConfig) *ValidationResult {
 			Name:        "bucket",
 			FlagName:    "--backend-bucket",
 			EnvVarName:  EnvBackendBucket,
-			LabelName:   "terraform.openmcf.org/backend.bucket",
+			LabelName:   "terraform.planton.dev/backend.bucket",
 			Description: "Azure Storage container name for state storage",
 			Example:     "tfstate",
 			Required:    true,
@@ -183,7 +183,7 @@ func validateAzureBackend(config *TofuBackendConfig) *ValidationResult {
 			Name:        "key",
 			FlagName:    "--backend-key",
 			EnvVarName:  "", // Key is intentionally not read from env vars
-			LabelName:   "terraform.openmcf.org/backend.key",
+			LabelName:   "terraform.planton.dev/backend.key",
 			Description: "State file blob name",
 			Example:     "prod.terraform.tfstate",
 			Required:    true,

@@ -1,19 +1,19 @@
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudSql
 metadata:
   name: gcp-postgres-example
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: organization
-    pulumi.openmcf.org/project: openmcf-examples
-    pulumi.openmcf.org/stack.name: example-env.GcpCloudSql.gcp-postgres-example
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: organization
+    pulumi.planton.dev/project: planton-examples
+    pulumi.planton.dev/stack.name: example-env.GcpCloudSql.gcp-postgres-example
 spec:
   databaseEngine: POSTGRESQL
   databaseVersion: POSTGRES_15
   network:
     authorizedNetworks:
     - 0.0.0.0/0
-  projectId: openmcf-demo
+  projectId: planton-demo
   region: asia-south1
   rootPassword: my-secure-password
   storageGb: 10

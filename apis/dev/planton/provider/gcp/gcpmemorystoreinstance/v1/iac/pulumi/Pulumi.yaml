@@ -1,0 +1,6 @@
+name: gcp-memorystore-instance
+runtime:
+  name: go
+  options:
+    binary: ./pulumi
+description: Planton GcpMemorystoreInstance Pulumi module

@@ -14,7 +14,7 @@ AWS ElastiCache Serverless is a fundamentally different deployment model from pr
 
 ### Pain Points
 
-- Users who want zero-management caching had no serverless option in OpenMCF
+- Users who want zero-management caching had no serverless option in Planton
 - The ElastiCache Serverless resource uses completely different AWS APIs than provisioned clusters
 - The ECPU-based scaling model requires different spec fields than node-based provisioned clusters
 
@@ -26,7 +26,7 @@ A single deployment component supporting all three ElastiCache engines with engi
 
 ### Flattened Scaling Limits
 
-The AWS resource nests scaling limits three levels deep (`cache_usage_limits > data_storage > {min, max, unit}` and `cache_usage_limits > ecpu_per_second > {min, max}`). The OpenMCF spec flattens these to four top-level fields (`data_storage_min_gb`, `data_storage_max_gb`, `ecpu_min`, `ecpu_max`) for clean YAML authoring. The `unit` field (always "GB") is hardcoded in IaC modules.
+The AWS resource nests scaling limits three levels deep (`cache_usage_limits > data_storage > {min, max, unit}` and `cache_usage_limits > ecpu_per_second > {min, max}`). The Planton spec flattens these to four top-level fields (`data_storage_min_gb`, `data_storage_max_gb`, `ecpu_min`, `ecpu_max`) for clean YAML authoring. The `unit` field (always "GB") is hardcoded in IaC modules.
 
 ## Implementation Details
 
@@ -78,14 +78,14 @@ Uses dynamic blocks for `cache_usage_limits`, `data_storage`, and `ecpu_per_seco
 
 ### New Capabilities
 
-- Serverless Redis, Valkey, and Memcached deployment via OpenMCF
+- Serverless Redis, Valkey, and Memcached deployment via Planton
 - ECPU-based auto-scaling within configurable bounds
 - Completes the ElastiCache family (3 of 3 components)
 
 ### Files Changed
 
 - 41 files, ~3,097 lines added
-- New component: `apis/org/openmcf/provider/aws/awsserverlesselasticache/v1/`
+- New component: `apis/dev/planton/provider/aws/awsserverlesselasticache/v1/`
 - Enum registration: `AwsServerlessElasticache = 253` in `cloud_resource_kind.proto`
 - Catalog page: `site/public/docs/catalog/aws/serverless-elasticache.md`
 - 3 presets: redis-minimal, memcached-with-limits, redis-production

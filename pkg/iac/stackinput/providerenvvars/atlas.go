@@ -2,7 +2,7 @@ package providerenvvars
 
 import (
 	"github.com/pkg/errors"
-	atlasprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/atlas"
+	atlasprovider "github.com/plantonhq/planton/apis/dev/planton/provider/atlas"
 )
 
 // loadAtlasEnvVars loads MongoDB Atlas provider config and returns environment variables.

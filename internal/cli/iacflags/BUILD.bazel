@@ -9,10 +9,10 @@ go_library(
         "pulumi_flags.go",
         "tofu_flags.go",
     ],
-    importpath = "github.com/plantonhq/openmcf/internal/cli/iacflags",
+    importpath = "github.com/plantonhq/planton/internal/cli/iacflags",
     visibility = ["//:__subpackages__"],
     deps = [
-        "//apis/org/openmcf/shared/iac/terraform",
+        "//apis/dev/planton/shared/iac/terraform",
         "//internal/cli/flag",
         "@com_github_sirupsen_logrus//:logrus",
         "@com_github_spf13_cobra//:cobra",

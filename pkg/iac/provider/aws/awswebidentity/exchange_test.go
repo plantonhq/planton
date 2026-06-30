@@ -3,7 +3,7 @@ package awswebidentity
 import (
 	"testing"
 
-	awsprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws"
+	awsprovider "github.com/plantonhq/planton/apis/dev/planton/provider/aws"
 )
 
 func TestValidate(t *testing.T) {

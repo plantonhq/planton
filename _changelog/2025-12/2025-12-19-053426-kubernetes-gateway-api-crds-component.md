@@ -22,12 +22,12 @@ The Kubernetes Gateway API is the next-generation API for managing ingress and s
 
 ## Solution / What's New
 
-Created `KubernetesGatewayApiCrds` as a OpenMCF deployment component that provides declarative CRD installation.
+Created `KubernetesGatewayApiCrds` as a Planton deployment component that provides declarative CRD installation.
 
 ### Component Capabilities
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesGatewayApiCrds
 metadata:
   name: gateway-api-crds
@@ -56,7 +56,7 @@ spec:
 message KubernetesGatewayApiCrdsSpec {
   KubernetesClusterSelector target_cluster = 1;
   optional string version = 2 [
-    (org.openmcf.shared.options.default) = "v1.2.1",
+    (dev.planton.shared.options.default) = "v1.2.1",
     (buf.validate.field).string = {
       min_len: 1
       pattern: "^v[0-9]+\\.[0-9]+\\.[0-9]+(-[a-zA-Z0-9]+)?$"
@@ -171,12 +171,12 @@ iac/tf/
 ## Impact
 
 ### Users
-- Can now deploy Gateway API CRDs via `openmcf pulumi up`
+- Can now deploy Gateway API CRDs via `planton pulumi up`
 - Version and channel selection via simple YAML configuration
 - Works with any Kubernetes cluster (GKE, EKS, AKS, DOKS, Civo)
 
 ### Ecosystem
-- Enables adoption of Gateway API in OpenMCF workflows
+- Enables adoption of Gateway API in Planton workflows
 - Foundation for future Gateway implementations (Istio, Envoy Gateway integrations)
 - Consistent with existing Kubernetes addon components
 

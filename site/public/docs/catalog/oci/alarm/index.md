@@ -12,13 +12,13 @@ Deploys an Oracle Cloud Infrastructure Monitoring Alarm — a rule that evaluate
 
 ## What Gets Created
 
-When you deploy an OciAlarm resource, OpenMCF provisions:
+When you deploy an OciAlarm resource, Planton provisions:
 
 - **Monitoring Alarm** — a `monitoring.Alarm` resource in the specified compartment with an MQL query, severity, notification destinations, optional overrides for multi-threshold evaluation, configurable pending and evaluation slack durations, and optional notification formatting.
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the alarm will be created — either a literal value or a reference to an OciCompartment resource
 - **A metric compartment OCID** — the compartment containing the metric being evaluated (often the same compartment)
 - **At least one notification destination** — OCID of an ONS Notification Topic or a Streaming stream
@@ -28,15 +28,15 @@ When you deploy an OciAlarm resource, OpenMCF provisions:
 Create a file `alarm.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciAlarm
 metadata:
   name: high-cpu
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciAlarm.high-cpu
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciAlarm.high-cpu
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -53,7 +53,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f alarm.yaml
+planton apply -f alarm.yaml
 ```
 
 This creates an alarm that fires when average CPU utilization exceeds 80% over a 5-minute window, sending a notification to the specified ONS topic. The alarm OCID is exported as a stack output.
@@ -107,15 +107,15 @@ This creates an alarm that fires when average CPU utilization exceeds 80% over a
 A basic alarm monitoring compute instance CPU utilization:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciAlarm
 metadata:
   name: high-cpu
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciAlarm.high-cpu
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciAlarm.high-cpu
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -136,15 +136,15 @@ spec:
 An alarm with warning at 70% and critical at 90%, using overrides for tiered alerting:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciAlarm
 metadata:
   name: tiered-cpu
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciAlarm.tiered-cpu
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciAlarm.tiered-cpu
 spec:
   compartmentId:
     valueFrom:
@@ -177,15 +177,15 @@ spec:
 An alarm monitoring Autonomous Database storage utilization:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciAlarm
 metadata:
   name: adb-storage
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciAlarm.adb-storage
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciAlarm.adb-storage
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -207,15 +207,15 @@ spec:
 An alarm that sends separate notifications per VCN resource when traffic spikes:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciAlarm
 metadata:
   name: vcn-traffic-spike
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciAlarm.vcn-traffic-spike
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciAlarm.vcn-traffic-spike
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"

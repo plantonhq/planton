@@ -12,7 +12,7 @@ Deploys a Scaleway Instance Security Group — a zonal stateful firewall that co
 
 ## What Gets Created
 
-When you deploy a ScalewayInstanceSecurityGroup resource, OpenMCF provisions:
+When you deploy a ScalewayInstanceSecurityGroup resource, Planton provisions:
 
 - **Instance Security Group** — an `instance.SecurityGroup` resource in the specified zone with configurable default policies for inbound/outbound traffic, stateful connection tracking, SMTP security settings, and ordered firewall rules
 - **Inbound Rules** — inline `SecurityGroupInboundRule` entries that match traffic by protocol, port range, and source IP, applying accept or drop actions in evaluation order
@@ -20,7 +20,7 @@ When you deploy a ScalewayInstanceSecurityGroup resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Scaleway credentials** configured via environment variables or OpenMCF provider config
+- **Scaleway credentials** configured via environment variables or Planton provider config
 - **A target zone** where the security group will be created (e.g., `fr-par-1`, `nl-ams-1`). The zone must match the zone of the Instances that will use this security group.
 
 ## Quick Start
@@ -28,15 +28,15 @@ When you deploy a ScalewayInstanceSecurityGroup resource, OpenMCF provisions:
 Create a file `security-group.yaml`:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayInstanceSecurityGroup
 metadata:
   name: web-sg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayInstanceSecurityGroup.web-sg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayInstanceSecurityGroup.web-sg
 spec:
   zone: fr-par-1
   stateful: true
@@ -56,7 +56,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f security-group.yaml
+planton apply -f security-group.yaml
 ```
 
 This creates a stateful security group in `fr-par-1` that drops all inbound traffic except HTTP and HTTPS from any source, while allowing all outbound traffic.
@@ -96,15 +96,15 @@ This creates a stateful security group in `fr-par-1` that drops all inbound traf
 A security group for a web-facing Instance that drops all inbound traffic except SSH from a bastion IP, plus HTTP and HTTPS from any source:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayInstanceSecurityGroup
 metadata:
   name: web-allowlist
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.ScalewayInstanceSecurityGroup.web-allowlist
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.ScalewayInstanceSecurityGroup.web-allowlist
 spec:
   zone: fr-par-1
   stateful: true
@@ -131,15 +131,15 @@ spec:
 A security group that allows all traffic by default but drops inbound connections from specific CIDR blocks and blocks outbound access to a known bad range:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayInstanceSecurityGroup
 metadata:
   name: denylist-sg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.ScalewayInstanceSecurityGroup.denylist-sg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.ScalewayInstanceSecurityGroup.denylist-sg
 spec:
   zone: nl-ams-1
   stateful: true
@@ -163,15 +163,15 @@ spec:
 A locked-down security group for a database Instance that only permits inbound PostgreSQL connections from a private subnet and restricts outbound traffic to DNS and NTP:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayInstanceSecurityGroup
 metadata:
   name: db-strict
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.ScalewayInstanceSecurityGroup.db-strict
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.ScalewayInstanceSecurityGroup.db-strict
 spec:
   zone: fr-par-1
   description: "Database tier -- PostgreSQL inbound from app subnet, restricted egress"

@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package dev.planton.provider.cloudflare.cloudflarecustomhostnamefallbackorigin.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// CloudflareCustomHostnameFallbackOriginSpec sets the default origin for a
+// Cloudflare for SaaS zone: the backend that all of the zone's custom hostnames
+// route to unless a hostname overrides it. It is a zone-level singleton (one per
+// zone) and a prerequisite for serving traffic to any custom hostname in the zone.
+message CloudflareCustomHostnameFallbackOriginSpec {
+  // The Cloudflare Zone ID of the SaaS zone. A literal value or a reference to a
+  // CloudflareDnsZone resource (its status.outputs.zone_id).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef zone_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareDnsZone,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
+  ];
+
+  // The fallback origin hostname — a record within the SaaS zone that points at the
+  // backend (e.g. "origin.helpdesk.io"). A literal hostname or a reference to
+  // another resource's output (a backend endpoint).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef origin = 2 [(buf.validate.field).required = true];
+}

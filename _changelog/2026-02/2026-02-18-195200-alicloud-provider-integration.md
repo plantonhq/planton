@@ -6,11 +6,11 @@
 
 ## Summary
 
-Added Alibaba Cloud (alicloud) as provider #25 to OpenMCF, enabling users to manage Alibaba Cloud credentials through the platform. The integration spans all 6 system layers -- proto definitions, CLI guidance, stack input / env var processing, provider detection, backend credential CRUD, and frontend credential forms. This integration introduces a **new proto pattern** (enum discriminator + separate messages, no protobuf oneof) to support all 7 upstream authentication methods with clean per-method typing.
+Added Alibaba Cloud (alicloud) as provider #25 to Planton, enabling users to manage Alibaba Cloud credentials through the platform. The integration spans all 6 system layers -- proto definitions, CLI guidance, stack input / env var processing, provider detection, backend credential CRUD, and frontend credential forms. This integration introduces a **new proto pattern** (enum discriminator + separate messages, no protobuf oneof) to support all 7 upstream authentication methods with clean per-method typing.
 
 ## Problem Statement / Motivation
 
-OpenMCF had no Alibaba Cloud support. Organizations using Alibaba Cloud infrastructure could not store credentials, use the unified `--provider-config` flag, or leverage credential auto-resolution for Alibaba Cloud deployments.
+Planton had no Alibaba Cloud support. Organizations using Alibaba Cloud infrastructure could not store credentials, use the unified `--provider-config` flag, or leverage credential auto-resolution for Alibaba Cloud deployments.
 
 ### Pain Points
 

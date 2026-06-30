@@ -42,8 +42,8 @@ func DetectUpgradeMethod() UpgradeMethod {
 		return MethodDirectDownload
 	}
 
-	// Check if openmcf was installed via Homebrew cask
-	cmd := exec.Command("brew", "list", "--cask", "openmcf")
+	// Check if planton was installed via Homebrew cask
+	cmd := exec.Command("brew", "list", "--cask", "planton")
 	if err := cmd.Run(); err != nil {
 		return MethodDirectDownload
 	}
@@ -71,7 +71,7 @@ func BuildDownloadURL(version, goos, goarch string) string {
 		archiveName = fmt.Sprintf("cli_%s_%s_%s.tar.gz", versionNum, goos, goarch)
 	}
 
-	return fmt.Sprintf("https://github.com/plantonhq/openmcf/releases/download/%s/%s", version, archiveName)
+	return fmt.Sprintf("https://github.com/plantonhq/planton/releases/download/%s/%s", version, archiveName)
 }
 
 // BuildChecksumURL constructs the checksum file URL for a specific version
@@ -80,5 +80,5 @@ func BuildChecksumURL(version string) string {
 	// Strip 'v' prefix from version for the checksum filename
 	versionNum := strings.TrimPrefix(version, "v")
 	checksumFile := fmt.Sprintf("cli_%s_checksums.txt", versionNum)
-	return fmt.Sprintf("https://github.com/plantonhq/openmcf/releases/download/%s/%s", version, checksumFile)
+	return fmt.Sprintf("https://github.com/plantonhq/planton/releases/download/%s/%s", version, checksumFile)
 }

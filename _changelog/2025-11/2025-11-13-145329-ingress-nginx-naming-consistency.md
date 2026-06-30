@@ -6,11 +6,11 @@
 
 ## Summary
 
-Completed a comprehensive rename of the Ingress NGINX controller component, removing the redundant "Kubernetes" suffix from all layers: package namespace, proto message types (`IngressNginxKubernetes` → `IngressNginx`), and API kind name. This refactoring improves naming consistency across OpenMCF's Kubernetes addon operators and reduces unnecessary verbosity in user manifests and code.
+Completed a comprehensive rename of the Ingress NGINX controller component, removing the redundant "Kubernetes" suffix from all layers: package namespace, proto message types (`IngressNginxKubernetes` → `IngressNginx`), and API kind name. This refactoring improves naming consistency across Planton's Kubernetes addon operators and reduces unnecessary verbosity in user manifests and code.
 
 ## Problem Statement / Motivation
 
-The Ingress NGINX controller component had "kubernetes" appearing redundantly in multiple places, creating unnecessary verbosity and inconsistency with OpenMCF's naming conventions.
+The Ingress NGINX controller component had "kubernetes" appearing redundantly in multiple places, creating unnecessary verbosity and inconsistency with Planton's naming conventions.
 
 ### Pain Points
 
@@ -20,7 +20,7 @@ The Ingress NGINX controller component had "kubernetes" appearing redundantly in
 - **Package Context**: The component's location under `provider/kubernetes/addon/` already indicates it's Kubernetes-specific
 - **Inconsistency**: Other addon operators like `CertManager`, `ExternalDns`, `ExternalSecrets` don't have the suffix
 
-The "kubernetes" suffix added no semantic value since the component's namespace path (`org.openmcf.provider.kubernetes.addon.ingressnginx.v1`) already provides complete context.
+The "kubernetes" suffix added no semantic value since the component's namespace path (`dev.planton.provider.kubernetes.addon.ingressnginx.v1`) already provides complete context.
 
 ## Solution / What's New
 
@@ -68,18 +68,18 @@ IngressNginx = 824 [(kind_meta) = {
 
 ### Proto Files Updated
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/ingressnginx/v1/api.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/ingressnginx/v1/api.proto`
 
 ```protobuf
 syntax = "proto3";
 
-package org.openmcf.provider.kubernetes.addon.ingressnginx.v1;
+package dev.planton.provider.kubernetes.addon.ingressnginx.v1;
 
 //ingress-nginx
 message IngressNginx {
-  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.openmcf.org/v1'];
+  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.planton.dev/v1'];
   string kind = 2 [(buf.validate.field).string.const = 'IngressNginx'];
-  org.openmcf.shared.CloudResourceMetadata metadata = 3;
+  dev.planton.shared.CloudResourceMetadata metadata = 3;
   IngressNginxSpec spec = 4;
   IngressNginxStatus status = 5;
 }
@@ -90,12 +90,12 @@ message IngressNginxStatus {
 }
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/ingressnginx/v1/spec.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/ingressnginx/v1/spec.proto`
 
 ```protobuf
 // IngressNginxSpec defines configuration for ingress‑nginx on any cluster.
 message IngressNginxSpec {
-  org.openmcf.shared.kubernetes.KubernetesAddonTargetCluster target_cluster = 1;
+  dev.planton.shared.kubernetes.KubernetesAddonTargetCluster target_cluster = 1;
   string chart_version = 2;
   bool internal = 3;
   oneof provider_config {
@@ -106,17 +106,17 @@ message IngressNginxSpec {
 }
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/ingressnginx/v1/stack_input.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/ingressnginx/v1/stack_input.proto`
 
 ```protobuf
 //input for ingress-nginx stack
 message IngressNginxStackInput {
   IngressNginx target = 1;
-  org.openmcf.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+  dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
 }
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/ingressnginx/v1/stack_outputs.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/ingressnginx/v1/stack_outputs.proto`
 
 ```protobuf
 // IngressNginxStackOutputs defines the outputs for the Ingress Nginx stack.
@@ -130,16 +130,16 @@ message IngressNginxStackOutputs {
 
 ### Go Implementation Changes
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/ingressnginx/v1/iac/pulumi/main.go`
+**File**: `apis/dev/planton/provider/kubernetes/addon/ingressnginx/v1/iac/pulumi/main.go`
 
 ```go
 package main
 
 import (
 	"github.com/pkg/errors"
-	ingressnginxv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/addon/ingressnginx/v1"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/addon/ingressnginx/v1/iac/pulumi/module"
-	"github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/stackinput"
+	ingressnginxv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/addon/ingressnginx/v1"
+	"github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/addon/ingressnginx/v1/iac/pulumi/module"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/stackinput"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -154,7 +154,7 @@ func main() {
 }
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/ingressnginx/v1/iac/pulumi/module/main.go`
+**File**: `apis/dev/planton/provider/kubernetes/addon/ingressnginx/v1/iac/pulumi/module/main.go`
 
 ```go
 // Resources creates all Pulumi resources for the Ingress‑Nginx add‑on.
@@ -214,13 +214,13 @@ kind: IngressNginx
 
 ### Improved Naming Consistency
 
-Now aligns with OpenMCF's pattern where provider namespace provides context:
+Now aligns with Planton's pattern where provider namespace provides context:
 
 ```
-✅ org.openmcf.provider.kubernetes.addon.certmanager.v1     → CertManager
-✅ org.openmcf.provider.kubernetes.addon.externaldns.v1     → ExternalDns
-✅ org.openmcf.provider.kubernetes.addon.ingressnginx.v1    → IngressNginx
-✅ org.openmcf.provider.kubernetes.addon.externalsecrets.v1 → ExternalSecrets
+✅ dev.planton.provider.kubernetes.addon.certmanager.v1     → CertManager
+✅ dev.planton.provider.kubernetes.addon.externaldns.v1     → ExternalDns
+✅ dev.planton.provider.kubernetes.addon.ingressnginx.v1    → IngressNginx
+✅ dev.planton.provider.kubernetes.addon.externalsecrets.v1 → ExternalSecrets
 ```
 
 The "kubernetes" context is clear from the provider path, not from redundant suffixes.
@@ -249,7 +249,7 @@ This is a **breaking change** affecting multiple layers:
 **Required Change**:
 ```yaml
 # Before
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: IngressNginxKubernetes
 metadata:
   name: my-ingress
@@ -261,7 +261,7 @@ spec:
     staticIpName: ingress-ip
 
 # After
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: IngressNginx
 metadata:
   name: my-ingress
@@ -279,14 +279,14 @@ Users must update the `kind` field in all IngressNginx manifest files.
 
 **Before**:
 ```go
-import ingressnginxv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/addon/ingressnginx/v1"
+import ingressnginxv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/addon/ingressnginx/v1"
 
 stackInput := &ingressnginxv1.IngressNginxKubernetesStackInput{}
 ```
 
 **After**:
 ```go
-import ingressnginxv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/addon/ingressnginx/v1"
+import ingressnginxv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/addon/ingressnginx/v1"
 
 stackInput := &ingressnginxv1.IngressNginxStackInput{}
 ```
@@ -305,9 +305,9 @@ Any custom proto files importing these definitions must update type names (thoug
 
 - **Enum Value**: Still `824` in cloud_resource_kind.proto
 - **ID Prefix**: Still `ngxk8s` for resource ID generation
-- **API Version**: Still `kubernetes.openmcf.org/v1`
+- **API Version**: Still `kubernetes.planton.dev/v1`
 - **Provider**: Still `kubernetes`
-- **Package Path**: Still `org.openmcf.provider.kubernetes.addon.ingressnginx.v1`
+- **Package Path**: Still `dev.planton.provider.kubernetes.addon.ingressnginx.v1`
 - **Functionality**: Zero behavioral changes to Ingress NGINX deployment
 
 ### Scope of Changes
@@ -353,7 +353,7 @@ find . -name "*.yaml" -type f -exec sed -i 's/kind: IngressNginxKubernetes/kind:
 **Step 2**: Deploy with new kind
 
 ```bash
-openmcf pulumi up --manifest ingress-nginx.yaml
+planton pulumi up --manifest ingress-nginx.yaml
 ```
 
 ### For SDK Users (Go Code Updates)
@@ -382,7 +382,7 @@ go test ./...
 
 ## Related Work
 
-This refactoring is part of a broader initiative to improve naming consistency across OpenMCF's Kubernetes addon operators:
+This refactoring is part of a broader initiative to improve naming consistency across Planton's Kubernetes addon operators:
 
 ### Recent Similar Refactorings
 
@@ -397,7 +397,7 @@ This refactoring is part of a broader initiative to improve naming consistency a
 ### Established Pattern
 
 This change reinforces the pattern for addon operators:
-- ✅ **Package**: `org.openmcf.provider.kubernetes.addon.{operatorname}.v1`
+- ✅ **Package**: `dev.planton.provider.kubernetes.addon.{operatorname}.v1`
 - ✅ **Kind**: `{OperatorName}` (no "Kubernetes" suffix)
 - ✅ **Message**: `{OperatorName}`, `{OperatorName}Spec`, `{OperatorName}StackInput`, etc.
 
@@ -422,7 +422,7 @@ The IngressNginx component supports cloud-specific configuration for GKE, EKS, a
 ### Import Path Resolution
 
 Go module resolution automatically handles the type name changes because:
-1. The import path (`github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/addon/ingressnginx/v1`) remains unchanged
+1. The import path (`github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/addon/ingressnginx/v1`) remains unchanged
 2. Only the exported type names within the package changed
 3. Proto generation updates all cross-references automatically
 4. Gazelle updates BUILD.bazel files to reflect new type names

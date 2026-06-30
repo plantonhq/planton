@@ -1,0 +1,19 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesHttpRoute
+metadata:
+  name: test-route
+spec:
+  namespace:
+    value: test-namespace
+  parentRefs:
+    - name: test-gateway
+  hostnames:
+    - app.example.com
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: web
+          port: 80

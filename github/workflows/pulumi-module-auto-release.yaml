@@ -21,7 +21,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'apis/org/openmcf/provider/**/iac/pulumi/**'
+      - 'apis/dev/planton/provider/**/iac/pulumi/**'
 
   workflow_dispatch:
     inputs:
@@ -76,13 +76,13 @@ jobs:
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             if [ "${{ inputs.force_all }}" = "true" ]; then
               echo "Manual dispatch: releasing all components"
-              PULUMI_DIRS=$(find apis/org/openmcf/provider -type d -name "pulumi" -path "*/iac/pulumi" | sort)
+              PULUMI_DIRS=$(find apis/dev/planton/provider -type d -name "pulumi" -path "*/iac/pulumi" | sort)
             elif [ -n "${{ inputs.component }}" ]; then
               echo "Manual dispatch: releasing specific component ${{ inputs.component }}"
-              PULUMI_DIRS=$(find apis/org/openmcf/provider -type d -name "pulumi" -path "*/${{ inputs.component }}/*/iac/pulumi" | head -1)
+              PULUMI_DIRS=$(find apis/dev/planton/provider -type d -name "pulumi" -path "*/${{ inputs.component }}/*/iac/pulumi" | head -1)
             elif [ -n "${{ inputs.provider }}" ]; then
               echo "Manual dispatch: releasing all ${{ inputs.provider }} components"
-              PULUMI_DIRS=$(find apis/org/openmcf/provider/${{ inputs.provider }} -type d -name "pulumi" -path "*/iac/pulumi" | sort)
+              PULUMI_DIRS=$(find apis/dev/planton/provider/${{ inputs.provider }} -type d -name "pulumi" -path "*/iac/pulumi" | sort)
             else
               echo "No components specified for manual dispatch"
               echo "has_changes=false" >> $GITHUB_OUTPUT
@@ -99,8 +99,8 @@ jobs:
             
             # Extract Pulumi directories from changed files
             PULUMI_DIRS=$(echo "$CHANGED_FILES" | \
-              grep -E '^apis/org/openmcf/provider/[^/]+/[^/]+/v[0-9]+/iac/pulumi/' | \
-              sed 's|\(apis/org/openmcf/provider/[^/]*/[^/]*/v[0-9]*/iac/pulumi\)/.*|\1|' | \
+              grep -E '^apis/dev/planton/provider/[^/]+/[^/]+/v[0-9]+/iac/pulumi/' | \
+              sed 's|\(apis/dev/planton/provider/[^/]*/[^/]*/v[0-9]*/iac/pulumi\)/.*|\1|' | \
               sort -u)
           fi
           
@@ -121,9 +121,9 @@ jobs:
           
           for dir in $PULUMI_DIRS; do
             # Extract provider and component from path
-            # Pattern: apis/org/openmcf/provider/{provider}/{component}/v1/iac/pulumi
-            PROVIDER=$(echo "$dir" | sed 's|apis/org/openmcf/provider/\([^/]*\)/.*|\1|')
-            COMPONENT=$(echo "$dir" | sed 's|apis/org/openmcf/provider/[^/]*/\([^/]*\)/.*|\1|')
+            # Pattern: apis/dev/planton/provider/{provider}/{component}/v1/iac/pulumi
+            PROVIDER=$(echo "$dir" | sed 's|apis/dev/planton/provider/\([^/]*\)/.*|\1|')
+            COMPONENT=$(echo "$dir" | sed 's|apis/dev/planton/provider/[^/]*/\([^/]*\)/.*|\1|')
             
             # Skip test providers
             if [ "$PROVIDER" = "_test" ]; then

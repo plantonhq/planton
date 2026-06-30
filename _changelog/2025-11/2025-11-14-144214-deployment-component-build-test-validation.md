@@ -32,14 +32,14 @@ We've updated all deployment component rules to include explicit, mandatory comm
 **After Proto File Changes:**
 ```bash
 make protos  # Regenerate Go stubs from proto definitions
-go test ./apis/org/openmcf/provider/<provider>/<component>/v1/  # Validate buf.validate rules
+go test ./apis/dev/planton/provider/<provider>/<component>/v1/  # Validate buf.validate rules
 make build   # Ensure complete build succeeds
 ```
 
 **After Pulumi/Go Code Changes:**
 ```bash
 make build   # Validate complete build
-go test ./apis/org/openmcf/provider/<provider>/<component>/v1/  # Validate component tests
+go test ./apis/dev/planton/provider/<provider>/<component>/v1/  # Validate component tests
 ```
 
 **Always (Final Validation):**
@@ -49,19 +49,19 @@ make test    # Run full test suite to catch regressions
 
 ### Updated Rules
 
-1. **update-openmcf-component.mdc**
+1. **update-planton-component.mdc**
    - Proto Changed scenario now explicitly calls out `make protos`, component tests, `make build`, and `make test`
    - Update IaC scenario includes `make build` requirement
    - Validation checkpoints table expanded with command column
    - Examples updated to show exact command sequences
 
-2. **fix-openmcf-component.mdc**
+2. **fix-planton-component.mdc**
    - Source code fix sections now mandate specific commands based on change type
    - Step 5 (Comprehensive Validation) rewritten with conditional command execution
    - All scenario examples updated with complete command sequences
    - Validation section emphasizes sequential execution
 
-3. **complete-openmcf-component.mdc**
+3. **complete-planton-component.mdc**
    - Validation subsection enhanced with sequential command execution
    - Progress tracking examples updated to show all validation steps
    - Success criteria expanded to include all validation commands
@@ -75,19 +75,19 @@ make test    # Run full test suite to catch regressions
 
 ### Key Changes by Rule File
 
-#### update-openmcf-component.mdc (Primary Rule)
+#### update-planton-component.mdc (Primary Rule)
 
 **Step 2: Determine Update Scope - Proto Changed**
 ```markdown
 - **Must execute**: `make protos` to regenerate Go stubs
-- **Must execute**: `go test ./apis/org/openmcf/provider/<provider>/<component>/v1/` to validate spec tests
+- **Must execute**: `go test ./apis/dev/planton/provider/<provider>/<component>/v1/` to validate spec tests
 - **Must execute**: `make build` for complete build validation
 ```
 
 **Step 4: Final Validation**
 ```markdown
 1. **If proto files changed**: Run `make protos` to regenerate Go stubs
-2. **Always run component tests**: `go test ./apis/org/openmcf/provider/<provider>/<component>/v1/`
+2. **Always run component tests**: `go test ./apis/dev/planton/provider/<provider>/<component>/v1/`
    - This validates buf.validate rules in spec.proto
    - Ensures spec_test.go passes with current validation logic
 3. **If Pulumi/Go code changed**: Run `make build` to validate complete build (rule 018)
@@ -100,13 +100,13 @@ Completely rewritten to include:
 - Specific commands with purpose explained
 - Critical note about component tests validating buf.validate rules
 
-#### fix-openmcf-component.mdc
+#### fix-planton-component.mdc
 
 **Step 2: Make the Fix in Source Code**
 ```markdown
 1. **Fix Proto Schema** (if proto change needed)
    - **Must execute**: `make protos` from project root to regenerate Go stubs
-   - **Must execute**: `go test ./apis/org/openmcf/provider/<provider>/<component>/v1/` to validate spec tests
+   - **Must execute**: `go test ./apis/dev/planton/provider/<provider>/<component>/v1/` to validate spec tests
 
 2. **Fix IaC Modules** (if deployment logic change needed)
    - **Must execute**: `make build` from project root to validate complete build
@@ -120,7 +120,7 @@ Completely rewritten to include:
 make protos
 
 # 2. Component-specific tests (validates buf.validate rules)
-go test ./apis/org/openmcf/provider/<provider>/<component>/v1/
+go test ./apis/dev/planton/provider/<provider>/<component>/v1/
 
 # 3. If Pulumi/Go code changed: Build validation
 make build
@@ -131,14 +131,14 @@ make test
 
 All six scenario examples updated with 8-10 step sequences including specific commands.
 
-#### complete-openmcf-component.mdc
+#### complete-planton-component.mdc
 
 **Validation Section**
 ```markdown
 **Validation (Execute in Sequence):**
 - After proto file creation/changes: Run `make protos` to regenerate Go stubs
 - After each creation: Validate builds and tests pass
-- Run component-specific tests: `go test ./apis/org/openmcf/provider/<provider>/<component>/v1/`
+- Run component-specific tests: `go test ./apis/dev/planton/provider/<provider>/<component>/v1/`
   - Validates buf.validate rules in spec.proto are correct
   - Validates spec_test.go tests pass with current validation logic
 - After Pulumi/Go code changes: Run `make build` to validate complete build
@@ -223,17 +223,17 @@ vi spec.proto  # Add field
 **After this enhancement** (explicit):
 ```bash
 # 1. Make proto change
-vi apis/org/openmcf/provider/gcp/gcpcloudrun/v1/spec.proto
+vi apis/dev/planton/provider/gcp/gcpcloudrun/v1/spec.proto
 
 # 2. Execute mandatory validation sequence
 make protos  # Regenerate Go stubs
 
 # 3. Validate component tests
-go test ./apis/org/openmcf/provider/gcp/gcpcloudrun/v1/
+go test ./apis/dev/planton/provider/gcp/gcpcloudrun/v1/
 
 # 4. Update related files (Terraform, examples)
-vi apis/org/openmcf/provider/gcp/gcpcloudrun/v1/iac/tf/variables.tf
-vi apis/org/openmcf/provider/gcp/gcpcloudrun/v1/examples.md
+vi apis/dev/planton/provider/gcp/gcpcloudrun/v1/iac/tf/variables.tf
+vi apis/dev/planton/provider/gcp/gcpcloudrun/v1/examples.md
 
 # 5. Validate complete build
 make build
@@ -246,16 +246,16 @@ make test
 
 ```bash
 # 1. Make code change
-vi apis/org/openmcf/provider/gcp/gcpcloudrun/v1/iac/pulumi/module/service.go
+vi apis/dev/planton/provider/gcp/gcpcloudrun/v1/iac/pulumi/module/service.go
 
 # 2. Validate build immediately
 make build
 
 # 3. Run component tests
-go test ./apis/org/openmcf/provider/gcp/gcpcloudrun/v1/
+go test ./apis/dev/planton/provider/gcp/gcpcloudrun/v1/
 
 # 4. Update documentation
-vi apis/org/openmcf/provider/gcp/gcpcloudrun/v1/iac/pulumi/README.md
+vi apis/dev/planton/provider/gcp/gcpcloudrun/v1/iac/pulumi/README.md
 
 # 5. Final validation
 make test
@@ -270,22 +270,22 @@ This enhancement builds on existing infrastructure:
 - **Component spec_test.go files**: Now explicitly tied to buf.validate rule validation
 
 Complements:
-- **forge-openmcf-component**: Flow rules already include these commands; update/fix/complete now consistent
-- **audit-openmcf-component**: Audit can verify these validation steps were followed
+- **forge-planton-component**: Flow rules already include these commands; update/fix/complete now consistent
+- **audit-planton-component**: Audit can verify these validation steps were followed
 
 ## Code Metrics
 
 **Files Modified**: 4
-- `_rules/deployment-component/update/update-openmcf-component.mdc` (+108 lines)
-- `_rules/deployment-component/fix/fix-openmcf-component.mdc` (+95 lines)
-- `_rules/deployment-component/complete/complete-openmcf-component.mdc` (+42 lines)
+- `_rules/deployment-component/update/update-planton-component.mdc` (+108 lines)
+- `_rules/deployment-component/fix/fix-planton-component.mdc` (+95 lines)
+- `_rules/deployment-component/complete/complete-planton-component.mdc` (+42 lines)
 - `_rules/deployment-component/update/README.md` (+35 lines)
 
 **Total Enhancement**: +280 lines of documentation and guidance
 
 **Commands Standardized**: 4 core commands now explicitly documented
 - `make protos`
-- `go test ./apis/org/openmcf/provider/<provider>/<component>/v1/`
+- `go test ./apis/dev/planton/provider/<provider>/<component>/v1/`
 - `make build`
 - `make test`
 

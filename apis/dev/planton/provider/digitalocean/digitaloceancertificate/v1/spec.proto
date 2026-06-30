@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package dev.planton.provider.digitalocean.digitaloceancertificate.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/options/options.proto";
+
+// DigitalOceanCertificateSpec defines the fields required to create an SSL certificate in DigitalOcean.
+message DigitalOceanCertificateSpec {
+  // certificate_name is a unique, human‑readable identifier (≤ 64 chars).
+  string certificate_name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 64
+  ];
+
+  // type must align with the branch chosen in certificate_source.
+  DigitalOceanCertificateType type = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).enum.defined_only = true
+  ];
+
+  // Mutually exclusive parameter sets.
+  oneof certificate_source {
+    option (buf.validate.oneof).required = true;
+
+    DigitalOceanCertificateLetsEncryptParams lets_encrypt = 3;
+    DigitalOceanCertificateCustomParams custom = 4;
+  }
+
+  // Optional free‑form description (≤ 128 chars).
+  string description = 5 [(buf.validate.field).string.max_len = 128];
+
+  // Optional tags; must be unique and lowercase kebab.
+  repeated string tags = 6 [(buf.validate.field).repeated.unique = true];
+}
+
+// DigitalOceanCertificateType represents the certificate source.
+enum DigitalOceanCertificateType {
+  // Unspecified certificate type (invalid, used for validation).
+  unspecified = 0;
+  // A free, auto‑managed Let's Encrypt certificate.
+  lets_encrypt = 1;
+  // A user‑provided custom certificate.
+  custom = 2;
+}
+
+// Parameters specific to a Let's Encrypt certificate request.
+message DigitalOceanCertificateLetsEncryptParams {
+  // domains is the list of FQDNs (or wildcard domains) to include.
+  // At least one domain is required.
+  repeated string domains = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).repeated.unique = true,
+    (buf.validate.field).repeated.items.string = {pattern: "^(?:\\*\\.[A-Za-z0-9\\-\\.]+|[A-Za-z0-9\\-\\.]+\\.[A-Za-z]{2,})$"}
+  ];
+
+  // disable auto_renew controls automatic renewal of the Let's Encrypt certificate.
+  bool disable_auto_renew = 2;
+}
+
+// Parameters specific to a custom (user‑supplied) certificate.
+message DigitalOceanCertificateCustomParams {
+  // leaf_certificate is the PEM‑encoded public certificate.
+  string leaf_certificate = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // private_key is the PEM‑encoded private key.
+  string private_key = 2 [
+    (dev.planton.shared.options.sensitive) = true,
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // certificate_chain is an optional PEM‑encoded intermediate chain.
+  string certificate_chain = 3;
+}

@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcpsecretsmanager.v1;
+
+//gcp-secrets-manager stack outputs
+message GcpSecretsManagerStackOutputs {
+  //map containing secret-name and its corresponding secret-id on secrets-manager
+  map<string, string> secret_id_map = 1;
+}

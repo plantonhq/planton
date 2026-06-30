@@ -1,0 +1,17 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesPerconaMongoOperator
+metadata:
+  name: percona-operator-test
+spec:
+  targetCluster:
+    credentialId: local-kind-cluster
+  namespace: percona-operator
+  container:
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+

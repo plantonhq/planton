@@ -12,13 +12,13 @@ Deploys an Oracle Cloud Infrastructure Queue — a fully managed, serverless mes
 
 ## What Gets Created
 
-When you deploy an OciQueue resource, OpenMCF provisions:
+When you deploy an OciQueue resource, Planton provisions:
 
 - **Queue** — a `queue.Queue` resource in the specified compartment with configurable retention, visibility timeout, polling timeout, optional KMS encryption, optional dead-letter queue, and optional capabilities (large messages, consumer groups).
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the queue will be created — either a literal value or a reference to an OciCompartment resource
 - **A KMS key OCID** (optional) — if using customer-managed encryption
 
@@ -27,15 +27,15 @@ When you deploy an OciQueue resource, OpenMCF provisions:
 Create a file `queue.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciQueue
 metadata:
   name: my-queue
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciQueue.my-queue
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciQueue.my-queue
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -44,7 +44,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f queue.yaml
+planton apply -f queue.yaml
 ```
 
 This creates a queue with Oracle-managed encryption, 7-day default retention, and standard message size limits. The queue OCID and messages endpoint are exported as stack outputs.
@@ -85,15 +85,15 @@ This creates a queue with Oracle-managed encryption, 7-day default retention, an
 A queue with default settings for development:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciQueue
 metadata:
   name: dev-queue
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciQueue.dev-queue
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciQueue.dev-queue
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -104,15 +104,15 @@ spec:
 A production queue with dead-letter queue enabled, extended visibility timeout, and KMS encryption:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciQueue
 metadata:
   name: order-processing
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciQueue.order-processing
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciQueue.order-processing
 spec:
   compartmentId:
     valueFrom:
@@ -135,15 +135,15 @@ spec:
 A queue supporting 512 KB messages with partitioned consumption via consumer groups:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciQueue
 metadata:
   name: event-bus
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciQueue.event-bus
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciQueue.event-bus
 spec:
   compartmentId:
     valueFrom:

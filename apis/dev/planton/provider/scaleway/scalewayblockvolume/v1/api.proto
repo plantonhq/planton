@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package dev.planton.provider.scaleway.scalewayblockvolume.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/scaleway/scalewayblockvolume/v1/spec.proto";
+import "dev/planton/provider/scaleway/scalewayblockvolume/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// scaleway-block-volume
+message ScalewayBlockVolume {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = "scaleway.planton.dev/v1"];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = "ScalewayBlockVolume"];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  ScalewayBlockVolumeSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  ScalewayBlockVolumeStatus status = 5;
+}
+
+// scaleway-block-volume status
+message ScalewayBlockVolumeStatus {
+  //stack-outputs
+  //  scaleway-block-volume stack-outputs
+  ScalewayBlockVolumeStackOutputs outputs = 1;
+}

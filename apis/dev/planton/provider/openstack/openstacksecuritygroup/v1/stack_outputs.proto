@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package dev.planton.provider.openstack.openstacksecuritygroup.v1;
+
+// OpenStackSecurityGroupStackOutputs captures the observable outputs after
+// provisioning an OpenStack Neutron security group.
+//
+// The security_group_id is the primary output referenced by downstream components:
+// - OpenStackSecurityGroupRule (security_group_id, remote_group_id)
+// - OpenStackNetworkPort (security_group_ids)
+// - OpenStackInstance (security_groups)
+message OpenStackSecurityGroupStackOutputs {
+  // security_group_id is the unique identifier (UUID) of the security group in OpenStack.
+  // This is the primary output used as a foreign key by downstream components.
+  string security_group_id = 1;
+
+  // name is the name of the security group (derived from metadata.name).
+  string name = 2;
+
+  // region is the OpenStack region where the security group was created.
+  string region = 3;
+}

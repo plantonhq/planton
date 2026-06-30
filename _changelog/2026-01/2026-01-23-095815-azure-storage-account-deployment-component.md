@@ -21,7 +21,7 @@ Organizations deploying to Azure frequently need to provision Storage Accounts f
 
 ## Solution / What's New
 
-Created a production-ready `AzureStorageAccount` deployment component following the OpenMCF deployment component architecture.
+Created a production-ready `AzureStorageAccount` deployment component following the Planton deployment component architecture.
 
 ### Component Architecture
 
@@ -98,7 +98,7 @@ Comprehensive buf.validate rules ensure configuration correctness:
 ```mermaid
 sequenceDiagram
     participant User
-    participant CLI as OpenMCF CLI
+    participant CLI as Planton CLI
     participant Module as Pulumi/Terraform Module
     participant Azure as Azure API
     
@@ -119,11 +119,11 @@ sequenceDiagram
 ### Files Created
 
 **Proto Definitions** (4 files + tests):
-- `apis/org/openmcf/provider/azure/azurestorageaccount/v1/spec.proto`
-- `apis/org/openmcf/provider/azure/azurestorageaccount/v1/api.proto`
-- `apis/org/openmcf/provider/azure/azurestorageaccount/v1/stack_input.proto`
-- `apis/org/openmcf/provider/azure/azurestorageaccount/v1/stack_outputs.proto`
-- `apis/org/openmcf/provider/azure/azurestorageaccount/v1/spec_test.go`
+- `apis/dev/planton/provider/azure/azurestorageaccount/v1/spec.proto`
+- `apis/dev/planton/provider/azure/azurestorageaccount/v1/api.proto`
+- `apis/dev/planton/provider/azure/azurestorageaccount/v1/stack_input.proto`
+- `apis/dev/planton/provider/azure/azurestorageaccount/v1/stack_outputs.proto`
+- `apis/dev/planton/provider/azure/azurestorageaccount/v1/spec_test.go`
 
 **Pulumi Module** (6 files):
 - `iac/pulumi/main.go` - Entrypoint
@@ -177,7 +177,7 @@ sequenceDiagram
 Azure users can now deploy Storage Accounts with:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureStorageAccount
 metadata:
   name: myapp-storage

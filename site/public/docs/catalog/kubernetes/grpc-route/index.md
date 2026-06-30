@@ -31,7 +31,7 @@ split traffic across weighted backends.
 ## Quick Start
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesGrpcRoute
 metadata:
   name: greeter-route
@@ -52,7 +52,7 @@ spec:
 ```
 
 ```bash
-openmcf apply -f grpcroute.yaml
+planton apply -f grpcroute.yaml
 ```
 
 ## Configuration Reference

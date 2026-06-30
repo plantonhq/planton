@@ -1,0 +1,27 @@
+# Minimal AwsS3Bucket scenario -- the AWS harness walking skeleton.
+# The bucket name is the resource metadata.name (S3 module derives the bucket
+# from it). It must be globally unique; a fixed name is fine for a single
+# sequential smoke (pulumi then terraform, each deploy+destroy). Per-run
+# uniqueness across parallel/CI runs is a tracked E2E-framework follow-up
+# (E2E_RUN_ID substitution). forceDestroy lets the DESTROY phase remove a
+# non-empty bucket cleanly.
+apiVersion: aws.planton.dev/v1
+kind: AwsS3Bucket
+metadata:
+  name: planton-oss-e2e-awss3bucket-smoke
+  id: planton-oss-e2e-awss3bucket-smoke
+  org: planton-oss
+  env: e2e
+  # The AWS Terraform module declares all metadata attributes as required (unlike
+  # the newer auth0 modules, which mark them optional), so a scenario must supply
+  # the full set. The managed-by label also tags the bucket for orphan cleanup.
+  labels:
+    managed-by: planton-e2e
+    e2e-component: awss3bucket
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  region: us-west-2
+  forceDestroy: true

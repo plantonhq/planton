@@ -1,0 +1,131 @@
+syntax = "proto3";
+
+package dev.planton.provider.digitalocean.digitaloceanappplatformservice.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/digitalocean/region.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// DigitalOceanAppPlatformServiceSpec defines the specification required to deploy a containerized service or application on DigitalOcean App Platform.
+// It focuses on essential fields (following the 80/20 principle) such as the service's source (either a git repository or a container image from DigitalOcean Container Registry), resource sizing, scaling, and optional custom domain configuration.
+message DigitalOceanAppPlatformServiceSpec {
+  // name of the app (must be unique within the user's DigitalOcean account).
+  // Constraints: should be DNS-friendly (e.g., lowercase alphanumeric and hyphens), maximum 63 characters.
+  string service_name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
+    (buf.validate.field).string.max_len = 63
+  ];
+
+  // region in which to deploy the app (DigitalOcean data center region slug).
+  DigitalOceanRegion region = 2 [(buf.validate.field).required = true];
+
+  // type of service being deployed (e.g., a web service that receives HTTP traffic, a background worker, or a one-off job).
+  DigitalOceanAppPlatformServiceType service_type = 3 [(buf.validate.field).required = true];
+
+  // source configuration for the app. Choose exactly one: either build from a git repository or deploy an existing container image from a registry.
+  oneof source {
+    // git repository source configuration (for App Platform to build and deploy from source code).
+    DigitalOceanAppPlatformGitSource git_source = 4;
+
+    // container image source configuration (deploy a pre-built image, typically from DigitalOcean Container Registry).
+    DigitalOceanAppPlatformRegistrySource image_source = 5;
+  }
+
+  // instance_size_slug specifies the instance size (plan) for this service.
+  // Determines the CPU/memory allocated per instance. Common options include "basic-xxs", "basic-xs", "basic-s", "basic-m", and professional tiers.
+  // Default (if not specified by user): "basic-xxs".
+  DigitalOceanAppPlatformInstanceSize instance_size_slug = 6 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.recommended_default) = "basic-xxs"
+  ];
+
+  // instance_count is the number of instances (containers) to run for this service.
+  // Default: 1.
+  uint32 instance_count = 7 [(dev.planton.shared.options.recommended_default) = "1"];
+
+  // enable_autoscale controls whether to use auto-scaling for this service.
+  // If true, the service will automatically scale between the specified min and max instance counts based on load.
+  // Default: false (manual scaling).
+  bool enable_autoscale = 8;
+
+  // min_instance_count specifies the minimum number of instances to run when auto-scaling is enabled.
+  // Required if enable_autoscale = true.
+  uint32 min_instance_count = 9;
+
+  // max_instance_count specifies the maximum number of instances to run when auto-scaling is enabled.
+  // Required if enable_autoscale = true.
+  uint32 max_instance_count = 10;
+
+  // env is a map of environment variables to set in the app's runtime environment.
+  // Keys are variable names and values are their corresponding values.
+  map<string, string> env = 11;
+
+  // custom_domain is an optional custom domain to use for the app, in addition to the default ondigitalocean.app hostname.
+  // Provide a reference to a DigitalOceanDnsZone resource (typically its domain name). The system will create the necessary DNS records.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef custom_domain = 12 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = DigitalOceanDnsZone,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.domain_name"
+  ];
+}
+
+// DigitalOceanAppPlatformServiceType enumerates the types of services supported on DigitalOcean App Platform.
+enum DigitalOceanAppPlatformServiceType {
+  digital_ocean_app_platform_service_type_unspecified = 0;
+  web_service = 1; // a web service accessible via http (receives external web traffic).
+  worker = 2; // a worker service (background processing, not exposed via http).
+  job = 3; // a one-off job or periodic task.
+}
+
+// DigitalOceanAppPlatformInstanceSize enumerates the available instance size plans for App Platform services.
+// These define resource tiers for the service instances (CPU, RAM, etc.).
+enum DigitalOceanAppPlatformInstanceSize {
+  digital_ocean_app_platform_instance_size_unspecified = 0;
+  basic_xxs = 1;
+  basic_xs = 2;
+  basic_s = 3;
+  basic_m = 4;
+  basic_l = 5;
+  professional_xs = 6;
+  professional_s = 7;
+  professional_m = 8;
+  professional_l = 9;
+  professional_xl = 10;
+}
+
+// DigitalOceanAppPlatformGitSource describes a git repository source for building and deploying the app.
+message DigitalOceanAppPlatformGitSource {
+  // repo_url is the URL of the git repository (HTTPS or git) containing the source code.
+  string repo_url = 1 [(buf.validate.field).required = true];
+
+  // branch specifies the git branch to deploy from.
+  string branch = 2 [(buf.validate.field).required = true];
+
+  // build_command optionally overrides the default build command for the app.
+  // Example: "npm run build". If not provided, DigitalOcean will auto-detect build steps or use defaults.
+  string build_command = 3;
+
+  // run_command optionally overrides the start command for the app.
+  // Example: "npm start". If not provided, defaults are inferred from the build or Dockerfile.
+  string run_command = 4;
+}
+
+// DigitalOceanAppPlatformRegistrySource describes a container image source from DigitalOcean Container Registry (DOCR).
+message DigitalOceanAppPlatformRegistrySource {
+  // registry is a reference to a DigitalOceanContainerRegistry resource that hosts the image.
+  // This typically provides the registry URL and ensures credentials are available for pulling the image.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef registry = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = DigitalOceanContainerRegistry,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.server_url"
+  ];
+
+  // repository is the name of the repository in the registry containing the image.
+  // For example, "myapp/backend".
+  string repository = 2 [(buf.validate.field).required = true];
+
+  // tag is the image tag to deploy.
+  // For example, "latest" or a specific version like "v1.0.0".
+  string tag = 3 [(buf.validate.field).required = true];
+}

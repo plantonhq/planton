@@ -25,7 +25,7 @@ Deploying two Redis instances to the same namespace:
 
 ```yaml
 # redis-1 deployed to planton-dev-data-infra namespace
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesRedis
 metadata:
   name: redis-dev-tekton-logs
@@ -35,7 +35,7 @@ spec:
   # ...
 
 # redis-2 deployed to same namespace - FAILS
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesRedis
 metadata:
   name: redis-dev-central-cache
@@ -86,7 +86,7 @@ Users can include the component type in their `metadata.name` if they want to di
 
 ```yaml
 # Instance 1 - creates my-cache-password secret
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesRedis
 metadata:
   name: my-cache
@@ -97,7 +97,7 @@ spec:
 
 ---
 # Instance 2 - creates session-store-password secret (no conflict!)
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesRedis
 metadata:
   name: session-store
@@ -378,7 +378,7 @@ metadata:
 
 ### Documentation Created
 
-**`apis/org/openmcf/provider/kubernetes/_cursor/ensure-no-name-conflicts.instructions.md`**:
+**`apis/dev/planton/provider/kubernetes/_cursor/ensure-no-name-conflicts.instructions.md`**:
 - Comprehensive standalone instructions for coding agents
 - Step-by-step guide for auditing and fixing components
 - Checklists for Pulumi and Terraform changes
@@ -398,11 +398,11 @@ All components were verified with:
 
 ```bash
 # Pulumi
-cd apis/org/openmcf/provider/kubernetes/<component>/v1/iac/pulumi
+cd apis/dev/planton/provider/kubernetes/<component>/v1/iac/pulumi
 go build ./...
 
 # Terraform
-cd apis/org/openmcf/provider/kubernetes/<component>/v1/iac/tf
+cd apis/dev/planton/provider/kubernetes/<component>/v1/iac/tf
 terraform init -backend=false
 terraform validate
 ```

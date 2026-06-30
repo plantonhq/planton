@@ -12,13 +12,13 @@ Deploys an Oracle Cloud Infrastructure Container Engine for Kubernetes (OKE) clu
 
 ## What Gets Created
 
-When you deploy an OciContainerEngineCluster resource, OpenMCF provisions:
+When you deploy an OciContainerEngineCluster resource, Planton provisions:
 
-- **OKE Cluster** — an `oci_containerengine_cluster` resource in the specified compartment and VCN. The cluster runs a managed Kubernetes control plane at the requested version. Standard OpenMCF freeform tags are applied for resource tracking.
+- **OKE Cluster** — an `oci_containerengine_cluster` resource in the specified compartment and VCN. The cluster runs a managed Kubernetes control plane at the requested version. Standard Planton freeform tags are applied for resource tracking.
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the cluster will be created — literal value or reference to an OciCompartment resource
 - **A VCN OCID** where the cluster will be deployed — literal value or reference to an OciVcn resource
 - **A Kubernetes version string** supported by OKE (e.g., `v1.28.2`) — run `oci ce cluster-options list` to see available versions
@@ -29,15 +29,15 @@ When you deploy an OciContainerEngineCluster resource, OpenMCF provisions:
 Create a file `cluster.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciContainerEngineCluster
 metadata:
   name: my-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciContainerEngineCluster.my-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciContainerEngineCluster.my-cluster
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -49,7 +49,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f cluster.yaml
+planton apply -f cluster.yaml
 ```
 
 This creates a basic OKE cluster with the default flannel overlay CNI in the specified VCN. OKE provisions the control plane with an API server, etcd, scheduler, and controller manager. The cluster ID, Kubernetes version, and API endpoint URLs are exported as stack outputs. Add OciContainerEngineNodePool resources to create worker nodes.
@@ -150,15 +150,15 @@ Two configuration modes are supported: **inline** (set individual fields) and **
 A basic OKE cluster with only the required fields — the simplest path to a running Kubernetes control plane:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciContainerEngineCluster
 metadata:
   name: dev-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciContainerEngineCluster.dev-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciContainerEngineCluster.dev-cluster
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -172,17 +172,17 @@ spec:
 An enhanced cluster with VCN-native pod networking, a private API endpoint protected by NSGs, dedicated service load balancer subnets, and custom pod/service CIDRs. All infrastructure references use `valueFrom` for declarative composition:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciContainerEngineCluster
 metadata:
   name: prod-cluster
   org: acme
   env: prod
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme
-    pulumi.openmcf.org/project: oke-platform
-    pulumi.openmcf.org/stack.name: prod.OciContainerEngineCluster.prod-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme
+    pulumi.planton.dev/project: oke-platform
+    pulumi.planton.dev/stack.name: prod.OciContainerEngineCluster.prod-cluster
 spec:
   compartmentId:
     valueFrom:
@@ -231,17 +231,17 @@ spec:
 An enhanced cluster integrated with an external OIDC identity provider for `kubectl` and API access. Inline OIDC fields configure the issuer, client, and claim mappings directly:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciContainerEngineCluster
 metadata:
   name: sso-cluster
   org: acme
   env: prod
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme
-    pulumi.openmcf.org/project: oke-platform
-    pulumi.openmcf.org/stack.name: prod.OciContainerEngineCluster.sso-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme
+    pulumi.planton.dev/project: oke-platform
+    pulumi.planton.dev/stack.name: prod.OciContainerEngineCluster.sso-cluster
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -276,17 +276,17 @@ spec:
 A cluster with KMS-encrypted Kubernetes secrets and container image signature verification — all images deployed to the cluster must be signed with an approved KMS key:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciContainerEngineCluster
 metadata:
   name: secure-cluster
   org: acme
   env: prod
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme
-    pulumi.openmcf.org/project: oke-platform
-    pulumi.openmcf.org/stack.name: prod.OciContainerEngineCluster.secure-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme
+    pulumi.planton.dev/project: oke-platform
+    pulumi.planton.dev/stack.name: prod.OciContainerEngineCluster.secure-cluster
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"

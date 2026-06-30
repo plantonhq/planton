@@ -1,0 +1,10 @@
+apiVersion: openstack.planton.dev/v1
+kind: OpenStackProject
+metadata:
+  name: test-project
+spec:
+  description: Test project for local development
+  enabled: true
+  tags:
+    - test
+    - hack
