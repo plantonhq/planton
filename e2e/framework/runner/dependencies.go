@@ -82,7 +82,7 @@ func ResolveDependencies(repoRoot, componentProvider, component string) ([]Depen
 // neither exists, so a missing install profile fails loudly rather than silently
 // skipping a required dependency.
 func prerequisiteManifestPath(repoRoot, componentProvider, slug string) (string, error) {
-	base := filepath.Join(repoRoot, "apis", "org", "planton", "provider", componentProvider, slug, "v1", "e2e")
+	base := filepath.Join(repoRoot, "apis", "dev", "planton", "provider", componentProvider, slug, "v1", "e2e")
 	prereq := filepath.Join(base, "prerequisite.yaml")
 	if pathExists(prereq) {
 		return prereq, nil
@@ -144,7 +144,7 @@ func DeployDependencies(ctx context.Context, repoRoot, componentProvider, compon
 // (dependencies deploy via Pulumi even when the component under test uses
 // Terraform).
 func deployDependency(ctx context.Context, repoRoot, componentProvider string, dep Dependency, backendURL, runID string, harness provider.Harness) (DependencyState, error) {
-	moduleDir := filepath.Join(repoRoot, "apis", "org", "planton", "provider", componentProvider, dep.KindSlug, "v1", "iac", "pulumi")
+	moduleDir := filepath.Join(repoRoot, "apis", "dev", "planton", "provider", componentProvider, dep.KindSlug, "v1", "iac", "pulumi")
 	if !pathExists(moduleDir) {
 		return DependencyState{}, errors.Errorf("dependency %q pulumi module not found at %s", dep.KindSlug, moduleDir)
 	}

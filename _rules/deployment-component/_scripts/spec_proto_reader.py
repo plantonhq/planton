@@ -37,7 +37,7 @@ def find_repo_root(start_dir: str) -> str:
 def build_spec_proto_path(repo_root: str, provider: str, kind_folder: str) -> Tuple[str, str]:
     relative_path = os.path.join(
         "apis",
-        "org",
+        "dev",
         "planton",
         "provider",
         provider,

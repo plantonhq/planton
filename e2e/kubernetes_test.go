@@ -273,9 +273,9 @@ func runAllScenariosForComponent(t *testing.T, component, engine string) {
 	var moduleDir string
 	switch engine {
 	case "pulumi":
-		moduleDir = filepath.Join(repoRoot, "apis", "org", "planton", "provider", "kubernetes", component, "v1", "iac", "pulumi")
+		moduleDir = filepath.Join(repoRoot, "apis", "dev", "planton", "provider", "kubernetes", component, "v1", "iac", "pulumi")
 	case "terraform":
-		moduleDir = filepath.Join(repoRoot, "apis", "org", "planton", "provider", "kubernetes", component, "v1", "iac", "tf")
+		moduleDir = filepath.Join(repoRoot, "apis", "dev", "planton", "provider", "kubernetes", component, "v1", "iac", "tf")
 	default:
 		t.Fatalf("unsupported engine: %s", engine)
 	}

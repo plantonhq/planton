@@ -36,7 +36,7 @@ def find_repo_root(start_dir: str) -> str:
 
 
 def outputs_path(repo_root: str, provider: str, kind_folder: str) -> Tuple[str, str]:
-    rel = os.path.join("apis", "org", "planton", "provider", provider, kind_folder, "v1", "stack_outputs.proto")
+    rel = os.path.join("apis", "dev", "planton", "provider", provider, kind_folder, "v1", "stack_outputs.proto")
     return os.path.join(repo_root, rel), rel
 
 

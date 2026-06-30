@@ -56,7 +56,7 @@ def find_repo_root(start_dir: str) -> str:
 def module_base_paths(repo_root: str, provider: str, kind_folder: str) -> Tuple[str, str]:
     rel = os.path.join(
         "apis",
-        "org",
+        "dev",
         "planton",
         "provider",
         provider,

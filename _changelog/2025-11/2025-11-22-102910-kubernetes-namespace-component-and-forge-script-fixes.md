@@ -134,7 +134,7 @@ Updated 8 Python scripts to use correct base paths:
 os.path.join("apis", "project", "planton", "provider", ...)
 
 # After (CORRECT)
-os.path.join("apis", "org", "planton", "provider", ...)
+os.path.join("apis", "dev", "planton", "provider", ...)
 ```
 
 ## Implementation Details
@@ -630,7 +630,7 @@ spec:
 - Clear separation of deterministic steps (Python) from LLM drafting
 
 **Path Fix Impact**: 
-- Single pattern: `"project", "planton"` → `"org", "planton"`
+- Single pattern: `"project", "planton"` → `"dev", "planton"`
 - Applied consistently across all 11 scripts
 - No behavioral changes, only path corrections
 

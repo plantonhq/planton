@@ -33,7 +33,7 @@ The Scaleway provider had scaffolding (enum values, provider helper, label keys)
 Added a directory existence check in `pkg/crkreflect/codegen/main.go` that skips resource kinds whose API packages don't exist on disk yet. This is a 7-line guard clause between the import path computation and the `uniqueAlias()` call:
 
 ```go
-pkgDir := filepath.Join("apis", "org", "planton", "provider", provSlug, lowerKind, "v1")
+pkgDir := filepath.Join("apis", "dev", "planton", "provider", provSlug, lowerKind, "v1")
 if _, err := os.Stat(pkgDir); os.IsNotExist(err) {
     fmt.Fprintf(os.Stderr, "skipping %s: package dir %s not found\n", kindName, pkgDir)
     continue

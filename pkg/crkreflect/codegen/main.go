@@ -131,7 +131,7 @@ func run() error {
 		// buf generate produces the corresponding .pb.go files. Until then,
 		// including the import would break both Gazelle resolution and Go
 		// compilation.
-		pkgDir := filepath.Join("apis", "org", "planton", "provider", provSlug, lowerKind, "v1")
+		pkgDir := filepath.Join("apis", "dev", "planton", "provider", provSlug, lowerKind, "v1")
 		if _, err := os.Stat(pkgDir); os.IsNotExist(err) {
 			fmt.Fprintf(os.Stderr, "skipping %s: package dir %s not found\n", kindName, pkgDir)
 			continue
