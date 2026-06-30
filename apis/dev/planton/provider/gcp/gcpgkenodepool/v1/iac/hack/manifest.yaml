@@ -1,0 +1,69 @@
+###############################################################################
+# Test Manifest for GcpGkeNodePool
+#
+# This is a sample manifest for local development and testing.
+# It demonstrates a production-ready configuration with autoscaling.
+#
+# Prerequisites:
+# - An existing GcpGkeCluster named "test-cluster" in project "test-gcp-project"
+# - Authenticated gcloud CLI: gcloud auth application-default login
+#
+# Usage:
+# - Pulumi: cd iac/pulumi && ./debug.sh
+# - Terraform: cd iac/tf && terraform apply -var-file=../../hack/terraform.tfvars
+# - Planton CLI: planton apply -f iac/hack/manifest.yaml
+###############################################################################
+
+apiVersion: gcp.planton.dev/v1
+kind: GcpGkeNodePool
+metadata:
+  name: test-pool
+  id: gkenp-test-001
+  org: test-org
+  env: dev
+  labels:
+    purpose: testing
+    cost-center: engineering
+  tags:
+    - test
+    - development
+spec:
+  # Reference to parent GKE cluster
+  # Update these values to match your test cluster
+  cluster_project_id:
+    value: test-gcp-project
+  
+  cluster_name:
+    value: test-cluster
+  
+  # Machine configuration
+  machine_type: e2-medium      # 2 vCPU, 4 GB RAM (cost-effective for testing)
+  disk_size_gb: 50             # Smaller disk for testing
+  disk_type: pd-standard       # Standard disk (lower cost)
+  image_type: COS_CONTAINERD   # Container-Optimized OS with containerd
+  
+  # Use default GKE service account (for testing)
+  # In production, use a custom service account with minimal permissions
+  service_account: ""
+  
+  # Enable Spot VMs for cost savings (acceptable for test workloads)
+  spot: true
+  
+  # Autoscaling configuration with scale-to-zero
+  autoscaling:
+    min_nodes: 0               # Scale to zero when idle (cost savings)
+    max_nodes: 3               # Maximum 3 nodes (sufficient for testing)
+    location_policy: ANY       # Hunt for Spot capacity across all zones
+  
+  # Node labels for workload scheduling
+  node_labels:
+    environment: dev
+    purpose: testing
+    spot: "true"
+    cost-tier: low
+  
+  # Management settings (keep auto-upgrade/repair enabled)
+  management:
+    disable_auto_upgrade: false  # Keep nodes up-to-date
+    disable_auto_repair: false   # Auto-fix unhealthy nodes
+

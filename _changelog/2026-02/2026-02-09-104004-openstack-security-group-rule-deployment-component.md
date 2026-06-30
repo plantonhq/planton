@@ -67,7 +67,7 @@ flowchart TB
   - `remote_ip_prefix` (mutually exclusive with remote_group_id, CEL-enforced)
   - `description`, `region`
 - `stack_outputs.proto` -- 7 outputs: rule_id, security_group_id, direction, protocol, port_range_min, port_range_max, region
-- `api.proto` -- KRM envelope with `openstack.openmcf.org/v1` + `OpenStackSecurityGroupRule`
+- `api.proto` -- KRM envelope with `openstack.planton.dev/v1` + `OpenStackSecurityGroupRule`
 - `stack_input.proto` -- target + provider_config
 - `spec_test.go` -- 29 tests (16 positive, 13 negative)
 
@@ -90,16 +90,16 @@ Both FKs resolve to `OpenStackSecurityGroup.status.outputs.security_group_id`:
 
 ```protobuf
 // Required: which security group owns this rule
-org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_id = 1 [
+dev.planton.shared.foreignkey.v1.StringValueOrRef security_group_id = 1 [
   (buf.validate.field).required = true,
-  (org.openmcf.shared.foreignkey.v1.default_kind) = OpenStackSecurityGroup,
-  (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
+  (dev.planton.shared.foreignkey.v1.default_kind) = OpenStackSecurityGroup,
+  (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
 ];
 
 // Optional: traffic filter by another security group
-org.openmcf.shared.foreignkey.v1.StringValueOrRef remote_group_id = 8 [
-  (org.openmcf.shared.foreignkey.v1.default_kind) = OpenStackSecurityGroup,
-  (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
+dev.planton.shared.foreignkey.v1.StringValueOrRef remote_group_id = 8 [
+  (dev.planton.shared.foreignkey.v1.default_kind) = OpenStackSecurityGroup,
+  (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
 ];
 ```
 
@@ -153,7 +153,7 @@ Excluded: `remote_address_group_id` (niche, address groups rarely used), `tenant
 - OpenStack provider integration: `_changelog/2026-02/2026-02-08-215116-openstack-provider-integration.md`
 - OpenStackSecurityGroup component: `_changelog/2026-02/2026-02-09-114030-openstack-security-group-deployment-component.md`
 - OpenStackRouterInterface component (dual-FK pattern): `_changelog/2026-02/2026-02-09-094647-openstack-router-interface-deployment-component.md`
-- Parent project: `planton/_projects/20260209.01.openstack-openmcf-components/`
+- Parent project: `planton/_projects/20260209.01.openstack-planton-components/`
 
 ---
 

@@ -12,7 +12,7 @@ Deploys a Cloud Bigtable instance with one or more clusters, supporting SSD and 
 
 ## What Gets Created
 
-When you deploy a GcpBigtableInstance resource, OpenMCF provisions:
+When you deploy a GcpBigtableInstance resource, Planton provisions:
 
 - **Bigtable Instance** — a `google_bigtable_instance` resource that serves as the logical container for data, with GCP labels applied automatically
 - **One or more Clusters** — inline cluster configurations within the instance, each placed in a specific zone with independent scaling (fixed or autoscaling) and storage type settings
@@ -20,7 +20,7 @@ When you deploy a GcpBigtableInstance resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **A GCP project** where the Bigtable instance will be created
 - **Zones** that support Bigtable instances (see [GCP Bigtable locations](https://cloud.google.com/bigtable/docs/locations))
 - **A Cloud KMS key** if enabling CMEK encryption (key region must match cluster zone region)
@@ -30,15 +30,15 @@ When you deploy a GcpBigtableInstance resource, OpenMCF provisions:
 Create a file `bigtable.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpBigtableInstance
 metadata:
   name: my-bigtable
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpBigtableInstance.my-bigtable
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpBigtableInstance.my-bigtable
 spec:
   projectId:
     value: my-gcp-project
@@ -51,7 +51,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f bigtable.yaml
+planton apply -f bigtable.yaml
 ```
 
 This creates a Bigtable instance with a single SSD cluster in `us-central1-a`. Bigtable auto-allocates nodes based on data footprint since neither `numNodes` nor `autoscalingConfig` is specified.
@@ -91,15 +91,15 @@ This creates a Bigtable instance with a single SSD cluster in `us-central1-a`. B
 A Bigtable instance with a fixed 3-node SSD cluster for predictable workloads:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpBigtableInstance
 metadata:
   name: analytics-bt
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpBigtableInstance.analytics-bt
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpBigtableInstance.analytics-bt
 spec:
   projectId:
     value: my-gcp-project
@@ -115,15 +115,15 @@ spec:
 A Bigtable instance that scales between 2 and 20 nodes based on CPU utilization:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpBigtableInstance
 metadata:
   name: timeseries-bt
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpBigtableInstance.timeseries-bt
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpBigtableInstance.timeseries-bt
 spec:
   projectId:
     value: my-gcp-project
@@ -144,15 +144,15 @@ spec:
 Two clusters in different zones for automatic replication and failover:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpBigtableInstance
 metadata:
   name: ha-bigtable
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpBigtableInstance.ha-bigtable
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpBigtableInstance.ha-bigtable
 spec:
   projectId:
     value: my-gcp-project
@@ -179,15 +179,15 @@ spec:
 Clusters encrypted with a Cloud KMS key, referenced from a GcpKmsKey resource:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpBigtableInstance
 metadata:
   name: encrypted-bt
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpBigtableInstance.encrypted-bt
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpBigtableInstance.encrypted-bt
 spec:
   projectId:
     valueFrom:
@@ -217,15 +217,15 @@ spec:
 All optional fields configured for an enterprise deployment:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpBigtableInstance
 metadata:
   name: enterprise-bt
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: data-platform
-    pulumi.openmcf.org/stack.name: prod.GcpBigtableInstance.enterprise-bt
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: data-platform
+    pulumi.planton.dev/stack.name: prod.GcpBigtableInstance.enterprise-bt
 spec:
   projectId:
     value: acme-data-prod

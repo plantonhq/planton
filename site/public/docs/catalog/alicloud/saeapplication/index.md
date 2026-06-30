@@ -12,13 +12,13 @@ Deploys an Alibaba Cloud SAE application. The component provisions a container-b
 
 ## What Gets Created
 
-When you deploy an AliCloudSaeApplication resource, OpenMCF provisions:
+When you deploy an AliCloudSaeApplication resource, Planton provisions:
 
 - **SAE Application** -- an `alicloud_sae_application` resource with the specified compute tier, replica count, deployment source, health probes, update strategy, and metadata tags
 
 ## Prerequisites
 
-- **Alibaba Cloud credentials** configured via environment variables or OpenMCF provider config
+- **Alibaba Cloud credentials** configured via environment variables or Planton provider config
 - **VPC, VSwitch, and Security Group** if the application needs private network access to databases, caches, or other VPC-resident services
 - **Container image** accessible from the deployment region (ACR Personal/Enterprise Edition or any Docker-compatible registry) when using `Image` package type
 - **OSS bucket or HTTP endpoint** hosting the deployment package when using `FatJar`, `War`, `PythonZip`, or `PhpZip` package types
@@ -29,15 +29,15 @@ When you deploy an AliCloudSaeApplication resource, OpenMCF provisions:
 Create a file `sae-app.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudSaeApplication
 metadata:
   name: my-sae-app
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudSaeApplication.my-sae-app
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudSaeApplication.my-sae-app
 spec:
   region: cn-hangzhou
   appName: my-sae-app
@@ -51,7 +51,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f sae-app.yaml
+planton apply -f sae-app.yaml
 ```
 
 This creates a single-instance SAE application running a container image with 1 vCPU and 2 GB memory.
@@ -97,7 +97,7 @@ This creates a single-instance SAE application running a container image with 1 
 | `customHostAliases` | `list<object>` | `[]` | Custom `/etc/hosts` entries: `{hostName, ip}`. |
 | `updateStrategy` | `object` | | Rolling update configuration (see below). |
 | `slsConfigs` | `string` | `""` | SLS log collection JSON config. |
-| `tags` | `map<string, string>` | `{}` | Resource tags (merged with OpenMCF metadata tags). |
+| `tags` | `map<string, string>` | `{}` | Resource tags (merged with Planton metadata tags). |
 
 **Health Check Fields** (for `liveness` and `readiness`):
 
@@ -127,12 +127,12 @@ This creates a single-instance SAE application running a container image with 1 
 ### Minimal Image Deployment
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudSaeApplication
 metadata:
   name: hello-sae
   labels:
-    openmcf.org/provisioner: pulumi
+    planton.dev/provisioner: pulumi
 spec:
   region: cn-hangzhou
   appName: hello-sae
@@ -148,12 +148,12 @@ spec:
 ### Java FatJar with VPC and Health Checks
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudSaeApplication
 metadata:
   name: order-service
   labels:
-    openmcf.org/provisioner: pulumi
+    planton.dev/provisioner: pulumi
   org: acme-corp
   env: production
 spec:
@@ -198,12 +198,12 @@ spec:
 ### Production Container with Canary Releases
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudSaeApplication
 metadata:
   name: payment-gateway
   labels:
-    openmcf.org/provisioner: pulumi
+    planton.dev/provisioner: pulumi
   org: fintech-corp
   env: production
 spec:

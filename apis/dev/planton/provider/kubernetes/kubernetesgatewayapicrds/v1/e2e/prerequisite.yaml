@@ -1,0 +1,25 @@
+# Dependency-install profile for the Gateway API CRDs.
+#
+# The E2E harness deploys this manifest (via the registry prerequisite graph --
+# every Gateway API kind declares `prerequisites: [KubernetesGatewayApiCrds]`)
+# before applying any GatewayClass/Gateway/HTTPRoute/GRPCRoute/TCPRoute/TLSRoute/
+# ReferenceGrant scenario.
+#
+# Why experimental + v1.5.1 (and not the standalone scenarios/minimal.yaml):
+#   - experimental is a SUPERSET of standard at v1.5.1: it installs every standard
+#     CRD plus tcproutes/udproutes, so this single install satisfies all seven
+#     consuming kinds, including KubernetesTcpRoute (served at v1alpha2).
+#   - v1.5.1 matches the crd2pulumi-generated typed SDK the route IaC modules use,
+#     so CR fields are validated against -- not silently pruned by -- the cluster
+#     schema (e.g. TcpRoute use_default_gateways).
+#   - experimental-install.yaml @ v1.5.1 ships only CRDs + a ValidatingAdmissionPolicy
+#     (no webhook Deployment), so there is no pod to wait on and applies exercise
+#     real server-side CEL validation.
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesGatewayApiCrds
+metadata:
+  name: e2e-gwapi-prereq
+spec:
+  version: "v1.5.1"
+  install_channel:
+    channel: experimental

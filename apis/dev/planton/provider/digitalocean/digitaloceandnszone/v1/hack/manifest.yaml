@@ -1,0 +1,25 @@
+apiVersion: digital-ocean.planton.dev/v1
+kind: DigitalOceanDnsZone
+metadata:
+  name: first-dns-zone
+spec:
+  domainName: planton.com                # fully‑qualified domain
+  records:
+    # Root A record – points the zone apex to an IP address
+    - name: "@"
+      type: A
+      values:
+        - value: "203.0.113.10"
+      ttlSeconds: 3600                   # optional; defaults to 3600
+
+    # www CNAME record – redirects www.example.com to the apex
+    - name: www
+      type: CNAME
+      values:
+        - value: "@"
+
+    # TXT record – typical SPF configuration (quotes required in YAML)
+    - name: "@"
+      type: TXT
+      values:
+        - value: "v=spf1 include:mail.example.com ~all"

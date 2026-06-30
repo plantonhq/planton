@@ -4,7 +4,7 @@ A custom [Buf](https://buf.build) lint plugin that validates scalar proto fields
 
 ## Overview
 
-This plugin validates that scalar fields with `(org.openmcf.shared.options.default)` are marked as `optional` to enable proper field presence tracking in Protocol Buffer definitions.
+This plugin validates that scalar fields with `(dev.planton.shared.options.default)` are marked as `optional` to enable proper field presence tracking in Protocol Buffer definitions.
 
 ## Rules
 
@@ -20,8 +20,8 @@ syntax = "proto3";
 
 message Example {
   // VIOLATION: Has default but not optional
-  string namespace = 1 [(org.openmcf.shared.options.default) = "external-dns"];
-  int32 port = 2 [(org.openmcf.shared.options.default) = "443"];
+  string namespace = 1 [(dev.planton.shared.options.default) = "external-dns"];
+  int32 port = 2 [(dev.planton.shared.options.default) = "443"];
 }
 ```
 
@@ -31,13 +31,13 @@ syntax = "proto3";
 
 message Example {
   // CORRECT: Has default and is optional
-  optional string namespace = 1 [(org.openmcf.shared.options.default) = "external-dns"];
-  optional int32 port = 2 [(org.openmcf.shared.options.default) = "443"];
+  optional string namespace = 1 [(dev.planton.shared.options.default) = "external-dns"];
+  optional int32 port = 2 [(dev.planton.shared.options.default) = "443"];
 }
 ```
 
 **What is checked**:
-- ✅ Scalar fields with `(org.openmcf.shared.options.default)` must be `optional`
+- ✅ Scalar fields with `(dev.planton.shared.options.default)` must be `optional`
 - ✅ Fields without defaults can be optional or non-optional (no validation)
 - ✅ Message fields are always implicitly optional (skip validation)
 - ✅ Repeated fields (lists) cannot have defaults (skip validation)
@@ -68,7 +68,7 @@ lint:
     - STANDARD
     - DEFAULT_REQUIRES_OPTIONAL  # Custom rule from this plugin
 plugins:
-  - plugin: buf.build/openmcf/optional-linter:v0.1.0
+  - plugin: buf.build/planton/optional-linter:v0.1.0
 ```
 
 ### Running Lint
@@ -151,7 +151,7 @@ To add a new custom lint rule:
 The plugin uses:
 - `buf.build/go/bufplugin` v0.9.0 - Buf plugin framework
 - `google.golang.org/protobuf` - Protobuf reflection APIs
-- Local `openmcf` module for accessing custom options
+- Local `planton` module for accessing custom options
 
 ### Building
 

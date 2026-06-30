@@ -10,11 +10,11 @@ Added `AzureUserAssignedIdentity` as a new Azure deployment component (R03 in th
 
 ## Problem Statement / Motivation
 
-Azure enterprise workloads (AKS, Function Apps, Web Apps, Container Apps) need secure, credential-free access to Azure services like Key Vault, Storage, and Container Registry. While Azure provides managed identities natively, there was no OpenMCF component to declaratively define an identity with its role assignments in a composable, infra-chart-ready format.
+Azure enterprise workloads (AKS, Function Apps, Web Apps, Container Apps) need secure, credential-free access to Azure services like Key Vault, Storage, and Container Registry. While Azure provides managed identities natively, there was no Planton component to declaratively define an identity with its role assignments in a composable, infra-chart-ready format.
 
 ### Pain Points
 
-- No way to declare an Azure managed identity in an OpenMCF manifest
+- No way to declare an Azure managed identity in an Planton manifest
 - Role assignments had to be managed separately from identity creation
 - Infra charts couldn't wire identity permissions to dynamically created resources (e.g., "give this identity Key Vault Secrets User on the Key Vault created in this chart")
 - The aks-environment, function-app-environment, and web-app-environment infra charts couldn't define identity layers
@@ -23,7 +23,7 @@ Azure enterprise workloads (AKS, Function Apps, Web Apps, Container Apps) need s
 
 ### AzureUserAssignedIdentity Component
 
-A complete deployment component at `apis/org/openmcf/provider/azure/azureuserassignedidentity/v1/` with:
+A complete deployment component at `apis/dev/planton/provider/azure/azureuserassignedidentity/v1/` with:
 
 - **4 proto files**: spec, stack_outputs, api, stack_input
 - **Validation tests**: 15 test cases covering all valid and invalid input scenarios

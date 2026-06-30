@@ -1,7 +1,0 @@
-apiVersion: aws.openmcf.org/v1
-kind: AwsSnsTopic
-metadata:
-  name: my-topic
-spec:
-  region: <aws-region>
-  signatureVersion: 2

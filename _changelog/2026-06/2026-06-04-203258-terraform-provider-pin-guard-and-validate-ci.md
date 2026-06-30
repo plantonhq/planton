@@ -25,7 +25,7 @@ skips the DNS-dependent components entirely.
 - **PRs never run Terraform statically.** `e2e-kubernetes.yaml` only *compiles* e2e tests on
   PRs; the real init/apply runs weekly. No `tofu validate` runs on any PR.
 - **No repo-wide `tofu validate`.** `terraform validate` exists only as a manual agent step
-  in `complete-openmcf-component.mdc`, never in CI.
+  in `complete-planton-component.mdc`, never in CI.
 - **`.terraform.lock.hcl` is gitignored**, so every CI/runner `tofu init` resolves providers
   fresh -- an unpinned module floats to the latest major (exactly the helm v3 path).
 - **The failing component was an e2e `skip`.** `KubernetesExternalDns` / `KubernetesCertManager`

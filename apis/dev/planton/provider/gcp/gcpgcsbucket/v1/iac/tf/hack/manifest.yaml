@@ -1,0 +1,10 @@
+apiVersion: gcp.planton.dev/v1
+kind: GcpGcsBucket
+metadata:
+  name: planton-test-gcp-gcs-bucket
+spec:
+  gcp_project_id:
+    value: planton-public-downloads
+  location: asia-south1
+  bucket_name: planton-test-bucket
+  uniform_bucket_level_access_enabled: true

@@ -2,7 +2,7 @@
 
 **Date**: 2026-02-20
 **Type**: New Feature
-**Components**: `apis/org/openmcf/provider/oci/ocikmsvault/v1/`
+**Components**: `apis/dev/planton/provider/oci/ocikmsvault/v1/`
 
 ## Summary
 
@@ -10,7 +10,7 @@ Added the OciKmsVault deployment component -- OCI's Key Management Service vault
 
 ## Problem Statement / Motivation
 
-OpenMCF's OCI provider had no key management component. OCI KMS Vaults are the foundational resource for encryption key management -- every service that uses customer-managed encryption keys (Compute, Block Volume, Object Storage, Database, etc.) requires a vault. Without a declarative vault component, users could not provision encryption infrastructure as part of their infra charts, and downstream components like OciKmsKey and OciVaultSecret cannot be implemented.
+Planton's OCI provider had no key management component. OCI KMS Vaults are the foundational resource for encryption key management -- every service that uses customer-managed encryption keys (Compute, Block Volume, Object Storage, Database, etc.) requires a vault. Without a declarative vault component, users could not provision encryption infrastructure as part of their infra charts, and downstream components like OciKmsKey and OciVaultSecret cannot be implemented.
 
 ## Solution / What's New
 
@@ -65,7 +65,7 @@ A complete OciKmsVault deployment component with both Pulumi (Go) and Terraform 
 - **`default_vault` enum value**: Uses `default_vault` instead of `default` because `default` is a reserved keyword in Go, Java, C++, and other target languages.
 - **ExternalKeyManagerMetadata included in v1**: Despite being niche, including it ensures the VaultType enum is complete and functional. The conditional CEL pattern prevents misconfiguration.
 - **client_app_secret as plain string**: Follows the admin_password precedent from OciAutonomousDatabase, OciDbSystem, and OciPostgresqlDbSystem.
-- **private_endpoint_id as plain string**: Not StringValueOrRef because the referenced resource (oci_kms_ekms_private_endpoint) is not modeled as an OpenMCF component.
+- **private_endpoint_id as plain string**: Not StringValueOrRef because the referenced resource (oci_kms_ekms_private_endpoint) is not modeled as an Planton component.
 - **3 outputs**: vault_id for composability, crypto_endpoint and management_endpoint for downstream OciKmsKey consumption.
 - **No vault replication**: oci_kms_vault_replication is a separate resource with an independent lifecycle.
 - **Directory name**: `ocikmsvault` (per WA02 -- lowercased kind name, not id_prefix `ocivlt`).

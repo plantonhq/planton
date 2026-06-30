@@ -10,9 +10,9 @@ Created a complete `CloudflareRuleset` deployment component (enum 1808, id_prefi
 
 ## Problem Statement / Motivation
 
-Planton's unified domain migration project (`planton.ai` consolidation) requires a Cloudflare Origin Rule to route non-marketing paths to Kubernetes while letting GitHub Pages serve static content. Rather than creating ad-hoc Terraform, the Origin Rule should be managed as a proper OpenMCF deployment component through Planton's InfraHub — consistent with how all other infrastructure is managed.
+Planton's unified domain migration project (`planton.ai` consolidation) requires a Cloudflare Origin Rule to route non-marketing paths to Kubernetes while letting GitHub Pages serve static content. Rather than creating ad-hoc Terraform, the Origin Rule should be managed as a proper Planton deployment component through Planton's InfraHub — consistent with how all other infrastructure is managed.
 
-No `CloudflareRuleset` component existed in OpenMCF. The `cloudflare_ruleset` resource is one of the most complex in the Cloudflare provider, with 60+ action parameter fields across all action types.
+No `CloudflareRuleset` component existed in Planton. The `cloudflare_ruleset` resource is one of the most complex in the Cloudflare provider, with 60+ action parameter fields across all action types.
 
 ### Pain Points
 
@@ -22,7 +22,7 @@ No `CloudflareRuleset` component existed in OpenMCF. The `cloudflare_ruleset` re
 
 ## Solution / What's New
 
-A full OpenMCF deployment component following the 20-step forge workflow, producing 36 files across proto definitions, IaC modules (Pulumi + Terraform), documentation, and presets.
+A full Planton deployment component following the 20-step forge workflow, producing 36 files across proto definitions, IaC modules (Pulumi + Terraform), documentation, and presets.
 
 ### Architecture
 
@@ -70,14 +70,14 @@ flowchart TB
 
 4. **`zone_id` as `StringValueOrRef`**: Enables DAG wiring from `CloudflareDnsZone` outputs, consistent with `CloudflareDnsRecord`.
 
-5. **`enabled` default `true`**: Rules default to active via `optional bool` with `(org.openmcf.shared.options.default) = "true"`, matching Cloudflare API behavior.
+5. **`enabled` default `true`**: Rules default to active via `optional bool` with `(dev.planton.shared.options.default) = "true"`, matching Cloudflare API behavior.
 
 ## Implementation Details
 
 ### Proto API (4 files)
 
 - **`spec.proto`** (456 lines) — `CloudflareRulesetSpec` with nested `Phase` enum (24 values), `RulesetKind` enum (4 values), `CloudflareRulesetRule` with nested `Action` enum (13 values), and `CloudflareRulesetActionParameters` with 15 sub-messages
-- **`api.proto`** — Standard KRM envelope with `api_version = "cloudflare.openmcf.org/v1"`, `kind = "CloudflareRuleset"`
+- **`api.proto`** — Standard KRM envelope with `api_version = "cloudflare.planton.dev/v1"`, `kind = "CloudflareRuleset"`
 - **`stack_outputs.proto`** — `ruleset_id`, `version`, `zone_id`, `phase`
 - **`stack_input.proto`** — `target` + `CloudflareProviderConfig`
 
@@ -105,7 +105,7 @@ flowchart TB
 
 ## Benefits
 
-- **Unified IaC**: Cloudflare Rulesets managed through the same `planton apply` workflow as all other OpenMCF resources
+- **Unified IaC**: Cloudflare Rulesets managed through the same `planton apply` workflow as all other Planton resources
 - **Type-safe**: Proto validations catch configuration errors before deployment
 - **Composable**: `zone_id` as `StringValueOrRef` enables infra-chart DAG wiring from `CloudflareDnsZone`
 - **Multi-purpose**: Single component covers Origin Rules, WAF, Cache, Redirects, Transforms — 5+ Cloudflare features in one

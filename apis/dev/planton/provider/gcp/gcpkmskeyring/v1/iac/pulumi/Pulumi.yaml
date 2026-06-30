@@ -1,0 +1,6 @@
+name: gcp-kms-key-ring
+runtime:
+  name: go
+  options:
+    binary: ./pulumi
+description: Planton GcpKmsKeyRing Pulumi module

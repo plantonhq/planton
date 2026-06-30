@@ -3,8 +3,8 @@ package backendconfig
 import (
 	"fmt"
 
-	"github.com/plantonhq/openmcf/pkg/iac/tofu/tofulabels"
-	"github.com/plantonhq/openmcf/pkg/reflection/metadatareflect"
+	"github.com/plantonhq/planton/pkg/iac/tofu/tofulabels"
+	"github.com/plantonhq/planton/pkg/reflection/metadatareflect"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -32,7 +32,7 @@ func (c *TofuBackendConfig) IsS3Compatible() bool {
 
 // ExtractFromManifest extracts Terraform/Tofu backend configuration from manifest labels.
 // The provisionerType should be "terraform" or "tofu" to determine which label prefix to use.
-// It first checks for provisioner-specific labels (e.g., tofu.openmcf.org/backend.type),
+// It first checks for provisioner-specific labels (e.g., tofu.planton.dev/backend.type),
 // then falls back to legacy terraform.* labels for backward compatibility.
 func ExtractFromManifest(manifest proto.Message, provisionerType string) (*TofuBackendConfig, error) {
 	labels := metadatareflect.ExtractLabels(manifest)

@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocidevopsproject.v1;
+
+import "dev/planton/provider/oci/ocidevopsproject/v1/api.proto";
+import "dev/planton/provider/oci/provider.proto";
+
+// OciDevopsProjectStackInput is the input to the IaC modules
+// (Pulumi / Terraform) that deploy an OciDevopsProject resource.
+message OciDevopsProjectStackInput {
+  // target cloud-resource
+  OciDevopsProject target = 1;
+  // provider-config
+  dev.planton.provider.oci.OciProviderConfig provider_config = 2;
+}

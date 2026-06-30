@@ -1,0 +1,23 @@
+apiVersion: azure.planton.dev/v1
+kind: AzureLoadBalancer
+metadata:
+  name: test-lb
+spec:
+  region: eastus
+  resource_group: test-rg
+  name: test-lb
+  public_ip_id: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-rg/providers/Microsoft.Network/publicIPAddresses/test-pip
+  backend_pools:
+    - name: default
+  health_probes:
+    - name: http-probe
+      protocol: Http
+      port: 80
+      request_path: /health
+  rules:
+    - name: http-rule
+      protocol: Tcp
+      frontend_port: 80
+      backend_port: 80
+      backend_pool_name: default
+      probe_name: http-probe

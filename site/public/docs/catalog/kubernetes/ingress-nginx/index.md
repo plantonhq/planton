@@ -12,7 +12,7 @@ Deploys the ingress-nginx controller on Kubernetes using the upstream Helm chart
 
 ## What Gets Created
 
-When you deploy a KubernetesIngressNginx resource, OpenMCF provisions:
+When you deploy a KubernetesIngressNginx resource, Planton provisions:
 
 - **Namespace** — created only when `createNamespace` is `true`
 - **Helm Release (ingress-nginx)** — deploys the ingress-nginx controller from `https://kubernetes.github.io/kubernetes-ingress-nginx`, pinned to the specified `chartVersion` (default 4.11.1), with atomic rollback enabled, cleanup on failure, wait-for-jobs, and a 180-second timeout; the controller service is set to type `LoadBalancer` with the default ingress class enabled and `watchIngressWithoutClass` turned on
@@ -20,7 +20,7 @@ When you deploy a KubernetesIngressNginx resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
 - **Cloud provider load balancer support** — the target cluster must support `LoadBalancer`-type services (GKE, EKS, AKS, or equivalent)
 - **Static IP / subnet resources** pre-created if referencing them in provider-specific configuration (e.g., GKE static IP, EKS subnets)
@@ -30,15 +30,15 @@ When you deploy a KubernetesIngressNginx resource, OpenMCF provisions:
 Create a file `ingress-nginx.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesIngressNginx
 metadata:
   name: my-ingress
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesIngressNginx.my-ingress
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesIngressNginx.my-ingress
 spec:
   namespace: ingress-nginx
   createNamespace: true
@@ -47,7 +47,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f ingress-nginx.yaml
+planton apply -f ingress-nginx.yaml
 ```
 
 This creates an ingress-nginx controller in the `ingress-nginx` namespace with the default chart version (4.11.1), an external `LoadBalancer` service, the default ingress class enabled, and no provider-specific annotations.
@@ -77,7 +77,7 @@ This creates an ingress-nginx controller in the `ingress-nginx` namespace with t
 | `aks.managedIdentityClientId` | `string` | — | Client ID of a user-assigned managed identity for Azure Workload Identity binding on the controller ServiceAccount. |
 | `aks.publicIpName` | `string` | — | Name of a pre-existing Azure public IP resource to reuse for the load balancer. |
 
-> **Note on `valueFrom`:** Fields of type `StringValueOrRef` (such as `namespace`, `eks.additionalSecurityGroupIds`, and `eks.subnetIds`) accept either a literal string value or a `valueFrom` block that references another OpenMCF resource's output field. See the [Foreign Key References](#using-foreign-key-references) example below.
+> **Note on `valueFrom`:** Fields of type `StringValueOrRef` (such as `namespace`, `eks.additionalSecurityGroupIds`, and `eks.subnetIds`) accept either a literal string value or a `valueFrom` block that references another Planton resource's output field. See the [Foreign Key References](#using-foreign-key-references) example below.
 
 ## Examples
 
@@ -86,15 +86,15 @@ This creates an ingress-nginx controller in the `ingress-nginx` namespace with t
 Deploy ingress-nginx on a GKE cluster using a reserved static IP for the external load balancer:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesIngressNginx
 metadata:
   name: gke-external
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesIngressNginx.gke-external
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesIngressNginx.gke-external
 spec:
   namespace: ingress-nginx
   createNamespace: true
@@ -108,15 +108,15 @@ spec:
 Deploy an internal-only ingress-nginx controller on EKS, pinned to specific subnets and with additional security groups:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesIngressNginx
 metadata:
   name: eks-internal
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesIngressNginx.eks-internal
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesIngressNginx.eks-internal
 spec:
   namespace: ingress-system
   createNamespace: true
@@ -135,15 +135,15 @@ spec:
 Deploy ingress-nginx on AKS with Azure Workload Identity and a pre-existing public IP:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesIngressNginx
 metadata:
   name: aks-ingress
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesIngressNginx.aks-ingress
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesIngressNginx.aks-ingress
 spec:
   namespace: ingress-nginx
   createNamespace: true
@@ -154,18 +154,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed namespace and EKS security groups from other resources instead of hardcoding values:
+Reference an Planton-managed namespace and EKS security groups from other resources instead of hardcoding values:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesIngressNginx
 metadata:
   name: platform-ingress
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesIngressNginx.platform-ingress
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesIngressNginx.platform-ingress
 spec:
   namespace:
     valueFrom:

@@ -12,7 +12,7 @@ Deploys an Azure Cosmos DB account supporting both SQL/NoSQL and MongoDB APIs, w
 
 ## What Gets Created
 
-When you deploy an AzureCosmosdbAccount resource, OpenMCF provisions:
+When you deploy an AzureCosmosdbAccount resource, Planton provisions:
 
 - **Cosmos DB Account** -- a `cosmosdb.Account` resource in the specified region and resource group, configured with the chosen API kind, consistency policy, geo-locations, capabilities, and network access rules
 - **SQL Databases** -- a `cosmosdb.SqlDatabase` for each entry in `sqlDatabases` (when `kind` is `GlobalDocumentDB`), with optional shared throughput
@@ -23,7 +23,7 @@ When you deploy an AzureCosmosdbAccount resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Resource Group** where the account will be created (can reference an AzureResourceGroup resource)
 - **A globally unique account name** -- the name becomes the endpoint `https://{name}.documents.azure.com:443/`
 - **Partition key design** -- determine the partition key (SQL) or shard key (MongoDB) for each container/collection before deployment; this cannot be changed after creation
@@ -33,15 +33,15 @@ When you deploy an AzureCosmosdbAccount resource, OpenMCF provisions:
 Create a file `cosmosdb.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureCosmosdbAccount
 metadata:
   name: my-cosmos
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureCosmosdbAccount.my-cosmos
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureCosmosdbAccount.my-cosmos
 spec:
   region: eastus
   resourceGroup: my-rg
@@ -60,7 +60,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f cosmosdb.yaml
+planton apply -f cosmosdb.yaml
 ```
 
 This creates a GlobalDocumentDB (SQL API) Cosmos DB account with Session consistency, a single `myapp` database, and an `items` container partitioned by `/tenantId`.
@@ -138,15 +138,15 @@ This creates a GlobalDocumentDB (SQL API) Cosmos DB account with Session consist
 A SQL API account with autoscale throughput and multiple containers:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureCosmosdbAccount
 metadata:
   name: app-cosmos
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureCosmosdbAccount.app-cosmos
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureCosmosdbAccount.app-cosmos
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -178,15 +178,15 @@ spec:
 A MongoDB account with MongoDB 7.0 wire protocol, a sharded collection, and indexes:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureCosmosdbAccount
 metadata:
   name: mongo-cosmos
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureCosmosdbAccount.mongo-cosmos
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureCosmosdbAccount.mongo-cosmos
 spec:
   region: westeurope
   resourceGroup: prod-rg
@@ -220,15 +220,15 @@ spec:
 A globally distributed SQL API account with BoundedStaleness consistency, zone-redundant regions, and continuous backup:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureCosmosdbAccount
 metadata:
   name: global-cosmos
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureCosmosdbAccount.global-cosmos
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureCosmosdbAccount.global-cosmos
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -263,18 +263,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference OpenMCF-managed resources for the resource group and VNet rules:
+Reference Planton-managed resources for the resource group and VNet rules:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureCosmosdbAccount
 metadata:
   name: ref-cosmos
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureCosmosdbAccount.ref-cosmos
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureCosmosdbAccount.ref-cosmos
 spec:
   region: eastus
   resourceGroup:

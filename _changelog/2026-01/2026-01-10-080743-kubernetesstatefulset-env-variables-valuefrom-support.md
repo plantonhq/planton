@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added support for environment variables in `KubernetesStatefulSet` to be provided either as direct string values or as references to other OpenMCF resource fields using the `StringValueOrRef` type. This enables dynamic configuration where environment variables can be derived from outputs of other deployed resources.
+Added support for environment variables in `KubernetesStatefulSet` to be provided either as direct string values or as references to other Planton resource fields using the `StringValueOrRef` type. This enables dynamic configuration where environment variables can be derived from outputs of other deployed resources.
 
 ## Problem Statement / Motivation
 
@@ -15,7 +15,7 @@ When deploying stateful applications to Kubernetes via `KubernetesStatefulSet`, 
 ### Pain Points
 
 - **Static configuration**: Environment variables had to be hardcoded, requiring manual updates when dependent resources changed
-- **No cross-resource references**: Could not reference outputs from other OpenMCF resources (e.g., database host from another cluster)
+- **No cross-resource references**: Could not reference outputs from other Planton resources (e.g., database host from another cluster)
 - **Manual coordination**: When deploying interconnected stateful services, users had to manually copy outputs and update configurations
 - **Error-prone**: Typos or stale values could lead to runtime failures
 - **Inconsistent with KubernetesDeployment**: The pattern didn't match the enhanced `valueFrom` pattern added to KubernetesDeployment
@@ -88,27 +88,27 @@ spec:
 
 ### 1. Proto Schema Changes
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesstatefulset/v1/spec.proto`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesstatefulset/v1/spec.proto`
 
 **Before**:
 ```protobuf
 message KubernetesStatefulSetContainerAppEnv {
   map<string, string> variables = 1;
-  map<string, org.openmcf.provider.kubernetes.KubernetesSensitiveValue> secrets = 2;
+  map<string, dev.planton.provider.kubernetes.KubernetesSensitiveValue> secrets = 2;
 }
 ```
 
 **After**:
 ```protobuf
 message KubernetesStatefulSetContainerAppEnv {
-  map<string, org.openmcf.shared.foreignkey.v1.StringValueOrRef> variables = 1;
-  map<string, org.openmcf.provider.kubernetes.KubernetesSensitiveValue> secrets = 2;
+  map<string, dev.planton.shared.foreignkey.v1.StringValueOrRef> variables = 1;
+  map<string, dev.planton.provider.kubernetes.KubernetesSensitiveValue> secrets = 2;
 }
 ```
 
 ### 2. Pulumi Module Updates
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesstatefulset/v1/iac/pulumi/module/statefulset.go`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesstatefulset/v1/iac/pulumi/module/statefulset.go`
 
 **Key Logic**:
 - The orchestrator resolves all `valueFrom` references and populates the `.value` field before invoking the Pulumi module
@@ -116,7 +116,7 @@ message KubernetesStatefulSetContainerAppEnv {
 
 ### 3. Terraform Module Updates
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesstatefulset/v1/iac/tf/variables.tf`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesstatefulset/v1/iac/tf/variables.tf`
 
 Updated the `variables` type definition to match `StringValueOrRef`:
 ```hcl
@@ -131,13 +131,13 @@ variables = optional(map(object({
 })))
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesstatefulset/v1/iac/tf/statefulset.tf`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesstatefulset/v1/iac/tf/statefulset.tf`
 
 Updated the dynamic env block to read from `.value`.
 
 ### 4. Test Updates
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesstatefulset/v1/spec_test.go`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesstatefulset/v1/spec_test.go`
 
 Added test cases for:
 - Variables with direct string values - should pass
@@ -157,7 +157,7 @@ Added test cases for:
 
 ## Key Implementation Notes
 
-- **Orchestrator resolves `valueFrom`**: The OpenMCF CLI/orchestrator resolves all `valueFrom` references and places the derived values into the `.value` field before invoking IaC modules
+- **Orchestrator resolves `valueFrom`**: The Planton CLI/orchestrator resolves all `valueFrom` references and places the derived values into the `.value` field before invoking IaC modules
 - **IaC modules only read `.value`**: Pulumi and Terraform modules always expect `.value` to be populated - they never handle `valueFrom` resolution
 - **Consistent with KubernetesDeployment**: This change maintains feature parity with `KubernetesDeployment` which received the same enhancement
 
@@ -170,7 +170,7 @@ After making changes, run:
 make protos
 
 # 2. Run component-specific tests
-go test ./apis/org/openmcf/provider/kubernetes/kubernetesstatefulset/v1/...
+go test ./apis/dev/planton/provider/kubernetes/kubernetesstatefulset/v1/...
 
 # 3. Full build
 make build
@@ -181,7 +181,7 @@ make test
 
 ## Benefits
 
-- **Dynamic configuration**: Environment variables can reference outputs from other OpenMCF resources
+- **Dynamic configuration**: Environment variables can reference outputs from other Planton resources
 - **Feature parity**: Consistent with `KubernetesDeployment` which has the same capability
 - **Reduced manual coordination**: No need to copy-paste values between resource configurations
 - **Type-safe references**: Protobuf validation ensures `valueFrom` references have required fields
@@ -200,7 +200,7 @@ make test
 ## Related Work
 
 - **KubernetesDeployment**: Same change applied (2026-01-10)
-- **Shared type**: Uses `StringValueOrRef` from `apis/org/openmcf/shared/foreignkey/v1/foreign_key.proto`
+- **Shared type**: Uses `StringValueOrRef` from `apis/dev/planton/shared/foreignkey/v1/foreign_key.proto`
 - **AWS components**: Pattern already used in `AwsAlb`, `AwsEcsService`, etc.
 
 ---

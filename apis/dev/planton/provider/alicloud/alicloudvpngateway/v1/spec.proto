@@ -1,0 +1,338 @@
+syntax = "proto3";
+
+package dev.planton.provider.alicloud.alicloudvpngateway.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// AliCloudVpnGatewaySpec defines the configuration for an Alibaba Cloud VPN
+// Gateway with bundled customer gateways and IPsec VPN connections.
+//
+// A VPN Gateway provides encrypted site-to-site connectivity between an
+// Alibaba Cloud VPC and remote networks (on-premises data centers, branch
+// offices, or other cloud environments) over the public internet using IPsec.
+//
+// This component bundles the VPN Gateway, customer gateways, and VPN
+// connections into a single deployable unit (per DD07 composite bundling)
+// because a VPN Gateway without at least one connection is non-functional.
+//
+// The bundled flow:
+//   1. Create the VPN Gateway in the specified VPC/VSwitch.
+//   2. For each connection entry, create a Customer Gateway from the
+//      remote device's public IP.
+//   3. For each connection entry, create a VPN Connection linking the
+//      VPN Gateway to the Customer Gateway with IKE/IPsec negotiation
+//      parameters.
+//
+// The gateway optionally supports SSL VPN for remote client access when
+// enable_ssl is true.
+//
+// Provider resources:
+//   Terraform: alicloud_vpn_gateway + alicloud_vpn_customer_gateway + alicloud_vpn_connection
+//   Pulumi:    vpn.Gateway + vpn.CustomerGateway + vpn.Connection
+message AliCloudVpnGatewaySpec {
+  // Alibaba Cloud region where the VPN Gateway will be created.
+  // Must match the region of the VPC and VSwitch.
+  // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // VPC ID that the VPN Gateway belongs to.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef vpc_id = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AliCloudVpc,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
+  ];
+
+  // VSwitch ID where the VPN Gateway is placed. Must be in the same VPC as
+  // vpc_id. The VPN Gateway consumes a private IP from this VSwitch.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef vswitch_id = 3 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AliCloudVswitch,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vswitch_id"
+  ];
+
+  // VPN Gateway name. 2-128 characters; must start with a letter or Chinese
+  // character; can contain digits, underscores, periods, and hyphens.
+  string vpn_gateway_name = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 2,
+    (buf.validate.field).string.max_len = 128
+  ];
+
+  // Human-readable description of the VPN Gateway's purpose.
+  string description = 5;
+
+  // Maximum public network bandwidth for the VPN Gateway in Mbps.
+  // This is immutable after creation (ForceNew in the provider).
+  int32 bandwidth = 6 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "bandwidth_valid"
+      message: "bandwidth must be one of: 5, 10, 20, 50, 100, 200, 500, 1000 (Mbps)"
+      expression: "this in [5, 10, 20, 50, 100, 200, 500, 1000]"
+    }
+  ];
+
+  // Billing method for the VPN Gateway.
+  // "PayAsYouGo" for on-demand billing, "Subscription" for reserved pricing.
+  // Default: "PayAsYouGo"
+  optional string payment_type = 7 [
+    (buf.validate.field).cel = {
+      id: "payment_type_valid"
+      message: "payment_type must be one of: PayAsYouGo, Subscription"
+      expression: "this == '' || this in ['PayAsYouGo', 'Subscription']"
+    },
+    (dev.planton.shared.options.default) = "PayAsYouGo"
+  ];
+
+  // Enable SSL VPN on the gateway for remote client access.
+  // When true, the gateway allocates a dedicated SSL VPN IP and supports
+  // SSL VPN server/client configuration. Default: false
+  optional bool enable_ssl = 8 [(dev.planton.shared.options.default) = "false"];
+
+  // Maximum number of concurrent SSL VPN client connections.
+  // Only relevant when enable_ssl is true. The value determines
+  // the SSL VPN license tier on the gateway.
+  optional int32 ssl_connections = 9;
+
+  // Tags to apply to the VPN Gateway resource.
+  map<string, string> tags = 10;
+
+  // Resource group ID for access control. Leave empty to use the default
+  // resource group.
+  string resource_group_id = 11;
+
+  // IPsec VPN connections bundled with this gateway. Each entry creates a
+  // Customer Gateway (from the remote device's public IP) and a VPN
+  // Connection with the specified IKE/IPsec negotiation parameters.
+  repeated AliCloudVpnConnection connections = 12;
+}
+
+// AliCloudVpnConnection defines a single IPsec VPN connection between the
+// Alibaba Cloud VPN Gateway and a remote network device (on-premises router,
+// firewall, or another cloud VPN endpoint).
+//
+// Each connection creates two provider resources:
+//   - A Customer Gateway representing the remote device's identity (IP + ASN)
+//   - A VPN Connection with IPsec tunnel configuration
+message AliCloudVpnConnection {
+  // Connection name. Used as both the customer_gateway_name and
+  // vpn_connection_name in the provider. 2-128 characters.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 2,
+    (buf.validate.field).string.max_len = 128
+  ];
+
+  // Public IP address of the remote VPN device (on-premises router, firewall,
+  // or other cloud gateway). This is immutable after the customer gateway is
+  // created.
+  string customer_gateway_ip = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // BGP Autonomous System Number of the remote device. Used when the remote
+  // gateway participates in BGP routing. Format: plain 32-bit ASN (e.g.
+  // "65001") or dot notation (e.g. "4200000001").
+  string customer_gateway_asn = 3;
+
+  // VPC-side CIDR blocks that should be reachable through this tunnel.
+  // The VPN connection routes traffic for these CIDRs through the tunnel.
+  // At least 1, at most 10 CIDR blocks.
+  // Example: ["10.0.0.0/8", "172.16.0.0/12"]
+  repeated string local_subnets = 4 [
+    (buf.validate.field).repeated.min_items = 1,
+    (buf.validate.field).repeated.max_items = 10
+  ];
+
+  // Remote-site CIDR blocks reachable on the other end of the tunnel.
+  // At least 1, at most 10 CIDR blocks.
+  // Example: ["192.168.0.0/16"]
+  repeated string remote_subnets = 5 [
+    (buf.validate.field).repeated.min_items = 1,
+    (buf.validate.field).repeated.max_items = 10
+  ];
+
+  // Enable Dead Peer Detection (DPD). When enabled, the VPN gateway sends
+  // DPD packets to verify the remote peer is alive and re-negotiates if the
+  // peer becomes unreachable. Default: true
+  optional bool enable_dpd = 6 [(dev.planton.shared.options.default) = "true"];
+
+  // Enable NAT traversal (NAT-T). Required when the remote VPN device is
+  // behind a NAT device. Encapsulates IPsec ESP packets in UDP to traverse
+  // NAT. Default: true
+  optional bool enable_nat_traversal = 7 [(dev.planton.shared.options.default) = "true"];
+
+  // Initiate IPsec negotiation immediately after creation rather than waiting
+  // for traffic to trigger the tunnel. Default: true
+  optional bool effect_immediately = 8 [(dev.planton.shared.options.default) = "true"];
+
+  // IKE (Phase 1) negotiation parameters. When omitted, the provider uses
+  // sensible defaults (IKEv2, main mode, AES encryption, SHA1 auth, DH group2,
+  // auto-generated pre-shared key, 86400s lifetime).
+  AliCloudIkeConfig ike_config = 9;
+
+  // IPsec (Phase 2) negotiation parameters. When omitted, the provider uses
+  // sensible defaults (AES encryption, MD5 auth, DH group2, 86400s lifetime).
+  AliCloudIpsecConfig ipsec_config = 10;
+
+  // Health check configuration for monitoring tunnel connectivity. When
+  // enabled, the VPN gateway periodically probes the remote endpoint and
+  // can trigger failover if the tunnel becomes unhealthy.
+  AliCloudVpnHealthCheckConfig health_check_config = 11;
+}
+
+// AliCloudIkeConfig defines the IKE (Internet Key Exchange) Phase 1
+// negotiation parameters for establishing the IPsec security association.
+message AliCloudIkeConfig {
+  // Pre-shared key (PSK) for IKE authentication. 1-100 characters.
+  // If omitted, the provider auto-generates a random PSK.
+  string psk = 1 [
+    (buf.validate.field).string.max_len = 100,
+    (dev.planton.shared.options.sensitive) = true
+  ];
+
+  // IKE protocol version. IKEv2 is recommended for better performance and
+  // security. Default: "ikev2"
+  optional string ike_version = 2 [
+    (buf.validate.field).cel = {
+      id: "ike_version_valid"
+      message: "ike_version must be one of: ikev1, ikev2"
+      expression: "this == '' || this in ['ikev1', 'ikev2']"
+    },
+    (dev.planton.shared.options.default) = "ikev2"
+  ];
+
+  // IKE negotiation mode. "main" provides identity protection (6 messages);
+  // "aggressive" is faster (3 messages) but exposes identities.
+  // Default: "main"
+  optional string ike_mode = 3 [
+    (buf.validate.field).cel = {
+      id: "ike_mode_valid"
+      message: "ike_mode must be one of: main, aggressive"
+      expression: "this == '' || this in ['main', 'aggressive']"
+    },
+    (dev.planton.shared.options.default) = "main"
+  ];
+
+  // IKE encryption algorithm for Phase 1.
+  // Default: "aes"
+  optional string ike_enc_alg = 4 [
+    (buf.validate.field).cel = {
+      id: "ike_enc_alg_valid"
+      message: "ike_enc_alg must be one of: aes, aes192, aes256, des, 3des"
+      expression: "this == '' || this in ['aes', 'aes192', 'aes256', 'des', '3des']"
+    },
+    (dev.planton.shared.options.default) = "aes"
+  ];
+
+  // IKE authentication algorithm for Phase 1.
+  // Default: "sha1"
+  optional string ike_auth_alg = 5 [
+    (buf.validate.field).cel = {
+      id: "ike_auth_alg_valid"
+      message: "ike_auth_alg must be one of: md5, sha1, sha256, sha384, sha512"
+      expression: "this == '' || this in ['md5', 'sha1', 'sha256', 'sha384', 'sha512']"
+    },
+    (dev.planton.shared.options.default) = "sha1"
+  ];
+
+  // Diffie-Hellman key exchange group for Perfect Forward Secrecy in Phase 1.
+  // Higher groups provide stronger security at the cost of performance.
+  // Default: "group2" (1024-bit MODP)
+  optional string ike_pfs = 6 [
+    (buf.validate.field).cel = {
+      id: "ike_pfs_valid"
+      message: "ike_pfs must be one of: group1, group2, group5, group14"
+      expression: "this == '' || this in ['group1', 'group2', 'group5', 'group14']"
+    },
+    (dev.planton.shared.options.default) = "group2"
+  ];
+
+  // IKE SA (Security Association) lifetime in seconds. When this expires, the
+  // SA is re-negotiated. Range: 0-86400. Default: 86400 (24 hours)
+  optional int32 ike_lifetime = 7 [
+    (buf.validate.field).cel = {
+      id: "ike_lifetime_valid"
+      message: "ike_lifetime must be between 0 and 86400 seconds"
+      expression: "this >= 0 && this <= 86400"
+    },
+    (dev.planton.shared.options.default) = "86400"
+  ];
+}
+
+// AliCloudIpsecConfig defines the IPsec (Phase 2) negotiation parameters
+// that control how data traffic is encrypted through the tunnel.
+message AliCloudIpsecConfig {
+  // IPsec encryption algorithm for Phase 2 data traffic.
+  // Default: "aes"
+  optional string ipsec_enc_alg = 1 [
+    (buf.validate.field).cel = {
+      id: "ipsec_enc_alg_valid"
+      message: "ipsec_enc_alg must be one of: aes, aes192, aes256, des, 3des"
+      expression: "this == '' || this in ['aes', 'aes192', 'aes256', 'des', '3des']"
+    },
+    (dev.planton.shared.options.default) = "aes"
+  ];
+
+  // IPsec authentication algorithm for Phase 2 data traffic.
+  // Default: "md5"
+  optional string ipsec_auth_alg = 2 [
+    (buf.validate.field).cel = {
+      id: "ipsec_auth_alg_valid"
+      message: "ipsec_auth_alg must be one of: md5, sha1, sha256, sha384, sha512"
+      expression: "this == '' || this in ['md5', 'sha1', 'sha256', 'sha384', 'sha512']"
+    },
+    (dev.planton.shared.options.default) = "md5"
+  ];
+
+  // Diffie-Hellman key exchange group for Perfect Forward Secrecy in Phase 2.
+  // "disabled" turns off PFS (the Phase 1 key is reused).
+  // Default: "group2"
+  optional string ipsec_pfs = 3 [
+    (buf.validate.field).cel = {
+      id: "ipsec_pfs_valid"
+      message: "ipsec_pfs must be one of: disabled, group1, group2, group5, group14"
+      expression: "this == '' || this in ['disabled', 'group1', 'group2', 'group5', 'group14']"
+    },
+    (dev.planton.shared.options.default) = "group2"
+  ];
+
+  // IPsec SA lifetime in seconds. Range: 0-86400. Default: 86400 (24 hours)
+  optional int32 ipsec_lifetime = 4 [
+    (buf.validate.field).cel = {
+      id: "ipsec_lifetime_valid"
+      message: "ipsec_lifetime must be between 0 and 86400 seconds"
+      expression: "this >= 0 && this <= 86400"
+    },
+    (dev.planton.shared.options.default) = "86400"
+  ];
+}
+
+// AliCloudVpnHealthCheckConfig defines health monitoring for a VPN connection.
+// When enabled, the VPN gateway periodically sends probes to detect tunnel
+// failures and can trigger route failover in active-standby setups.
+message AliCloudVpnHealthCheckConfig {
+  // Enable health checks for this connection. Default: false
+  optional bool enable = 1 [(dev.planton.shared.options.default) = "false"];
+
+  // Source IP address for health check probes. Should be a private IP
+  // within the local VPC that is routable through the tunnel.
+  string sip = 2;
+
+  // Destination IP address for health check probes. Should be an IP on the
+  // remote network reachable through the tunnel.
+  string dip = 3;
+
+  // Interval between health check probes in seconds. Default: 3
+  optional int32 interval = 4 [(dev.planton.shared.options.default) = "3"];
+
+  // Maximum number of consecutive probe failures before the tunnel is
+  // declared unhealthy. Default: 3
+  optional int32 retry = 5 [(dev.planton.shared.options.default) = "3"];
+}

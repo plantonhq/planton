@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsroute53zone.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/aws/awsroute53zone/v1/spec.proto";
+import "dev/planton/provider/aws/awsroute53zone/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+//aws-route53-zone
+message AwsRoute53Zone {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'aws.planton.dev/v1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'AwsRoute53Zone'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //aws-route53-zone spec
+  AwsRoute53ZoneSpec spec = 4 [(buf.validate.field).required = true];
+
+  //aws-route53-zone status
+  AwsRoute53ZoneStatus status = 5;
+}
+
+// Status for the AWS Route53 Zone
+message AwsRoute53ZoneStatus {
+  //stack-outputs
+  //  stack outputs
+  AwsRoute53ZoneStackOutputs outputs = 1;
+}

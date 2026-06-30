@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added AwsMemcachedElasticache as a new AWS resource kind in OpenMCF, providing declarative management of ElastiCache Memcached clusters. This is the eighth new AWS resource kind in the expansion project and the sibling component to AwsRedisElasticache (R07), created after deep research revealed that Memcached and Redis use fundamentally different AWS resources with ~15+ unique fields each.
+Added AwsMemcachedElasticache as a new AWS resource kind in Planton, providing declarative management of ElastiCache Memcached clusters. This is the eighth new AWS resource kind in the expansion project and the sibling component to AwsRedisElasticache (R07), created after deep research revealed that Memcached and Redis use fundamentally different AWS resources with ~15+ unique fields each.
 
 ## Problem Statement / Motivation
 
@@ -19,7 +19,7 @@ The original planning phase designed a single `AwsElasticacheCluster` component 
 
 ### Pain Points
 
-- No Memcached caching support in OpenMCF prior to this component
+- No Memcached caching support in Planton prior to this component
 - Users needing simple, high-throughput distributed caches had no declarative option
 - Session caching, query result caching, and API response caching patterns were not covered
 

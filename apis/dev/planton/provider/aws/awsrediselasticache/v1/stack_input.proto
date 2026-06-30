@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsrediselasticache.v1;
+
+import "dev/planton/provider/aws/awsrediselasticache/v1/api.proto";
+import "dev/planton/provider/aws/provider.proto";
+
+// aws-redis-elasticache stack-input
+message AwsRedisElasticacheStackInput {
+  // target cloud-resource
+  AwsRedisElasticache target = 1;
+  // provider-credential
+  dev.planton.provider.aws.AwsProviderConfig provider_config = 2;
+}

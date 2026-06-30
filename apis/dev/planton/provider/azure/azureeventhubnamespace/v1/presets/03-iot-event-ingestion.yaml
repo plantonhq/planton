@@ -1,0 +1,26 @@
+apiVersion: azure.planton.dev/v1
+kind: AzureEventHubNamespace
+metadata:
+  name: my-iot-ingestion
+spec:
+  region: <azure-region>
+  resourceGroup:
+    value: "<your-resource-group-name>"
+  name: <your-namespace-name>
+  sku: Standard  # default from spec
+  capacity: 2
+  autoInflateEnabled: true
+  maximumThroughputUnits: 20
+  minimumTlsVersion: "1.2"  # default from spec
+  publicNetworkAccessEnabled: true  # default from spec
+  eventHubs:
+    - name: device-telemetry
+      partitionCount: 32
+      messageRetention: 7
+      consumerGroups:
+        - name: hot-path
+          userMetadata: "Real-time Stream Analytics for alerting"
+        - name: warm-path
+          userMetadata: "Spark Structured Streaming for aggregation"
+        - name: cold-path
+          userMetadata: "Batch export to Data Lake for historical analysis"

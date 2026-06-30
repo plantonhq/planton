@@ -1,16 +1,16 @@
 # Pulumi Labels Package
 
-This package defines standardized Kubernetes labels for configuring Pulumi backend state management directly within OpenMCF resource manifests.
+This package defines standardized Kubernetes labels for configuring Pulumi backend state management directly within Planton resource manifests.
 
 ## Overview
 
-The `pulumilabels` package provides constant definitions for labels that can be applied to any OpenMCF resource manifest to specify where and how Pulumi should store its state. This enables infrastructure-as-code deployments to be fully self-contained, with backend configuration embedded in the manifest itself.
+The `pulumilabels` package provides constant definitions for labels that can be applied to any Planton resource manifest to specify where and how Pulumi should store its state. This enables infrastructure-as-code deployments to be fully self-contained, with backend configuration embedded in the manifest itself.
 
 ## Label Constants
 
 ### Primary Label
 
-- **`StackFqdnLabelKey`** (`pulumi.openmcf.org/stack.fqdn`)
+- **`StackFqdnLabelKey`** (`pulumi.planton.dev/stack.fqdn`)
   - Takes precedence over individual component labels
   - Format: `organization/project/stack`
   - Example: `demo-org/aws-infrastructure/production`
@@ -19,15 +19,15 @@ The `pulumilabels` package provides constant definitions for labels that can be 
 
 When `stack.fqdn` is not specified, the following three labels must all be present:
 
-- **`OrganizationLabelKey`** (`pulumi.openmcf.org/organization`)
+- **`OrganizationLabelKey`** (`pulumi.planton.dev/organization`)
   - The Pulumi organization name
   - Example: `demo-org`
 
-- **`ProjectLabelKey`** (`pulumi.openmcf.org/project`)
+- **`ProjectLabelKey`** (`pulumi.planton.dev/project`)
   - The Pulumi project name
   - Example: `aws-infrastructure`
 
-- **`StackNameLabelKey`** (`pulumi.openmcf.org/stack.name`)
+- **`StackNameLabelKey`** (`pulumi.planton.dev/stack.name`)
   - The Pulumi stack name
   - Example: `production`
 
@@ -36,12 +36,12 @@ When `stack.fqdn` is not specified, the following three labels must all be prese
 ### Using Stack FQDN (Recommended)
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsVpc
 metadata:
   name: production-vpc
   labels:
-    pulumi.openmcf.org/stack.fqdn: "acme-corp/network-infrastructure/prod"
+    pulumi.planton.dev/stack.fqdn: "acme-corp/network-infrastructure/prod"
 spec:
   cidrBlock: "10.0.0.0/16"
 ```
@@ -49,14 +49,14 @@ spec:
 ### Using Individual Components
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpGkeCluster
 metadata:
   name: app-cluster
   labels:
-    pulumi.openmcf.org/organization: "acme-corp"
-    pulumi.openmcf.org/project: "kubernetes-clusters"
-    pulumi.openmcf.org/stack.name: "production"
+    pulumi.planton.dev/organization: "acme-corp"
+    pulumi.planton.dev/project: "kubernetes-clusters"
+    pulumi.planton.dev/stack.name: "production"
 spec:
   region: "us-central1"
 ```
@@ -70,7 +70,7 @@ spec:
 
 ## Integration with CLI
 
-When these labels are present in a manifest, the OpenMCF CLI will:
+When these labels are present in a manifest, the Planton CLI will:
 1. First check for backend configuration in manifest labels
 2. Fall back to command-line flags if labels are not present
 3. Use defaults if neither labels nor flags are provided
@@ -78,10 +78,10 @@ When these labels are present in a manifest, the OpenMCF CLI will:
 This allows for flexible deployment scenarios:
 ```bash
 # Backend config from manifest labels
-openmcf pulumi update --manifest https://example.com/manifests/vpc.yaml
+planton pulumi update --manifest https://example.com/manifests/vpc.yaml
 
 # Override with CLI flags
-openmcf pulumi update --manifest vpc.yaml --stack my-org/my-project/dev
+planton pulumi update --manifest vpc.yaml --stack my-org/my-project/dev
 ```
 
 ## Best Practices

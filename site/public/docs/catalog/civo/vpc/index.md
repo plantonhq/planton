@@ -12,14 +12,14 @@ Deploys an isolated private network (VPC) on Civo Cloud within a specified regio
 
 ## What Gets Created
 
-When you deploy a CivoVpc resource, OpenMCF provisions:
+When you deploy a CivoVpc resource, Planton provisions:
 
 - **Civo Network** -- a `civo_network` resource in the target region with the specified label and optional CIDR block
-- **Resource Labels** -- standard OpenMCF labels applied to track the resource name, kind, organization, and environment
+- **Resource Labels** -- standard Planton labels applied to track the resource name, kind, organization, and environment
 
 ## Prerequisites
 
-- **Civo credentials** configured via environment variables or OpenMCF provider config (the `civoCredentialId` field in the spec must reference a valid credential)
+- **Civo credentials** configured via environment variables or Planton provider config (the `civoCredentialId` field in the spec must reference a valid credential)
 - **A target Civo region** -- the region must exist and be available on the Civo account (e.g., `lon1`, `fra1`, `nyc1`)
 
 ## Quick Start
@@ -27,15 +27,15 @@ When you deploy a CivoVpc resource, OpenMCF provisions:
 Create a file `civo-vpc.yaml`:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoVpc
 metadata:
   name: my-network
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CivoVpc.my-network
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CivoVpc.my-network
 spec:
   civoCredentialId: my-civo-cred
   networkName: my-network
@@ -45,7 +45,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f civo-vpc.yaml
+planton apply -f civo-vpc.yaml
 ```
 
 This creates a private network named `my-network` in the London region with an auto-allocated CIDR block.
@@ -66,7 +66,7 @@ This creates a private network named `my-network` in the London region with an a
 |-------|------|---------|-------------|
 | `ipRangeCidr` | `string` | auto-allocated | IPv4 CIDR range for the network (max `/24`). When omitted, Civo allocates an available range automatically. |
 | `isDefaultForRegion` | `bool` | `false` | Whether the network should be the default for the region. Only one default network is allowed per region. Note: not currently supported by the Pulumi Civo provider; a warning is logged and the flag is skipped during provisioning. Use the Civo CLI (`civo network default <network-id>`) to set a network as default after creation. |
-| `description` | `string` | `""` | Human-readable description for the network (max 100 characters). Recorded in OpenMCF metadata only; the Civo network provider does not expose a description field. |
+| `description` | `string` | `""` | Human-readable description for the network (max 100 characters). Recorded in Planton metadata only; the Civo network provider does not expose a description field. |
 
 ## Examples
 
@@ -75,15 +75,15 @@ This creates a private network named `my-network` in the London region with an a
 A minimal private network with Civo handling address allocation:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoVpc
 metadata:
   name: dev-network
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CivoVpc.dev-network
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CivoVpc.dev-network
 spec:
   civoCredentialId: my-civo-cred
   networkName: dev-network
@@ -95,15 +95,15 @@ spec:
 A network with an explicit address range for predictable IP planning:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoVpc
 metadata:
   name: staging-network
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.CivoVpc.staging-network
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.CivoVpc.staging-network
 spec:
   civoCredentialId: my-civo-cred
   networkName: staging-network
@@ -117,15 +117,15 @@ spec:
 A fully specified network intended for production workloads:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoVpc
 metadata:
   name: prod-network
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: infra
-    pulumi.openmcf.org/stack.name: prod.CivoVpc.prod-network
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: infra
+    pulumi.planton.dev/stack.name: prod.CivoVpc.prod-network
 spec:
   civoCredentialId: prod-civo-cred
   networkName: prod-network

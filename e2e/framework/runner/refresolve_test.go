@@ -5,12 +5,12 @@ import (
 	"path/filepath"
 	"testing"
 
-	awssubnetv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awssubnet/v1"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
-	"github.com/plantonhq/openmcf/internal/manifest"
+	awssubnetv1 "github.com/plantonhq/planton/apis/dev/planton/provider/aws/awssubnet/v1"
+	"github.com/plantonhq/planton/apis/dev/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/internal/manifest"
 )
 
-const subnetManifestWithRef = `apiVersion: aws.openmcf.org/v1
+const subnetManifestWithRef = `apiVersion: aws.planton.dev/v1
 kind: AwsSubnet
 metadata:
   name: ref-subnet

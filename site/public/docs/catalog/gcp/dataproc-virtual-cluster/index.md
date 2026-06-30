@@ -12,7 +12,7 @@ Deploys a Dataproc on GKE virtual cluster that schedules Spark, PySpark, and Spa
 
 ## What Gets Created
 
-When you deploy a GcpDataprocVirtualCluster resource, OpenMCF provisions:
+When you deploy a GcpDataprocVirtualCluster resource, Planton provisions:
 
 - **Dataproc Cluster** — a `google_dataproc_cluster` resource with `virtual_cluster_config` pointing to the specified GKE cluster and namespace
 - **Node Pool Target Bindings** — one or more GKE node pool assignments with Dataproc roles (DEFAULT, CONTROLLER, SPARK_DRIVER, SPARK_EXECUTOR) controlling where workloads are scheduled
@@ -20,7 +20,7 @@ When you deploy a GcpDataprocVirtualCluster resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **A GCP project** with the Dataproc API enabled (`dataproc.googleapis.com`)
 - **A GKE cluster** in the same project and region, referenced via `gkeClusterTarget`
 - **At least one GKE node pool** assigned the DEFAULT role
@@ -32,15 +32,15 @@ When you deploy a GcpDataprocVirtualCluster resource, OpenMCF provisions:
 Create a file `dataproc-virtual-cluster.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpDataprocVirtualCluster
 metadata:
   name: my-spark-on-gke
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpDataprocVirtualCluster.my-spark-on-gke
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpDataprocVirtualCluster.my-spark-on-gke
 spec:
   projectId:
     value: my-gcp-project
@@ -60,7 +60,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f dataproc-virtual-cluster.yaml
+planton apply -f dataproc-virtual-cluster.yaml
 ```
 
 This creates a Dataproc virtual cluster on an existing GKE cluster, scheduling Spark workloads on the default node pool.
@@ -105,15 +105,15 @@ This creates a Dataproc virtual cluster on an existing GKE cluster, scheduling S
 Separate Spark drivers and executors onto different node pools for resource isolation:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpDataprocVirtualCluster
 metadata:
   name: multi-pool-spark
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpDataprocVirtualCluster.multi-pool-spark
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpDataprocVirtualCluster.multi-pool-spark
 spec:
   projectId:
     value: my-gcp-project
@@ -146,15 +146,15 @@ spec:
 A virtual cluster connected to an existing Dataproc Metastore for shared Hive table access:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpDataprocVirtualCluster
 metadata:
   name: metastore-spark
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpDataprocVirtualCluster.metastore-spark
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpDataprocVirtualCluster.metastore-spark
 spec:
   projectId:
     value: my-gcp-project
@@ -177,18 +177,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources for fully composable infrastructure:
+Reference other Planton-managed resources for fully composable infrastructure:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpDataprocVirtualCluster
 metadata:
   name: composed-spark
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpDataprocVirtualCluster.composed-spark
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpDataprocVirtualCluster.composed-spark
 spec:
   projectId:
     valueFrom:

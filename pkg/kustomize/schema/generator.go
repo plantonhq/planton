@@ -11,13 +11,13 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/plantonhq/openmcf/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/crkreflect"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 // SchemaFileName is the conventional name for the generated schema file.
-const SchemaFileName = "openmcf-schema.json"
+const SchemaFileName = "planton-schema.json"
 
 // mergeField represents a repeated list field that should merge by key during
 // kustomize strategic merge patch instead of being replaced wholesale.

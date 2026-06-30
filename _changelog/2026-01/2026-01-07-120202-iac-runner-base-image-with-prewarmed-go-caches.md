@@ -6,7 +6,7 @@
 
 ## Summary
 
-Built and published the first production-ready IaC Runner base image (`ghcr.io/plantonhq/openmcf/base-images/iac-runner:latest`) with pre-warmed Go caches for all Pulumi provider SDKs. This dramatically reduces cold start times for Go-based Pulumi programs by including pre-compiled dependencies in the Docker image. The solution uses self-hosted GitHub Actions runners on Kubernetes with persistent volume storage for incremental cache builds.
+Built and published the first production-ready IaC Runner base image (`ghcr.io/plantonhq/planton/base-images/iac-runner:latest`) with pre-warmed Go caches for all Pulumi provider SDKs. This dramatically reduces cold start times for Go-based Pulumi programs by including pre-compiled dependencies in the Docker image. The solution uses self-hosted GitHub Actions runners on Kubernetes with persistent volume storage for incremental cache builds.
 
 ## Problem Statement
 
@@ -198,7 +198,7 @@ COPY merged-cache/go-build ${GOCACHE}
 ## Image Specifications
 
 ```
-ghcr.io/plantonhq/openmcf/base-images/iac-runner:latest
+ghcr.io/plantonhq/planton/base-images/iac-runner:latest
 
 Size: 15.7GB
 Components:
@@ -213,13 +213,13 @@ Components:
 ### Pulling the Image
 
 ```bash
-docker pull ghcr.io/plantonhq/openmcf/base-images/iac-runner:latest
+docker pull ghcr.io/plantonhq/planton/base-images/iac-runner:latest
 ```
 
 ### Using in IaC Runner
 
 ```dockerfile
-FROM ghcr.io/plantonhq/openmcf/base-images/iac-runner:v0.0.1
+FROM ghcr.io/plantonhq/planton/base-images/iac-runner:v0.0.1
 
 # Your IaC Runner binary
 COPY --from=builder /app /app
@@ -228,7 +228,7 @@ ENTRYPOINT ["/app"]
 
 ## Files Changed
 
-### New Files (openmcf)
+### New Files (planton)
 
 | File | Purpose |
 |------|---------|
@@ -256,7 +256,7 @@ ENTRYPOINT ["/app"]
 ### Triggering a New Build
 
 ```bash
-cd openmcf
+cd planton
 git tag iac-runner-base-v1.0.0
 git push origin iac-runner-base-v1.0.0
 ```
@@ -298,5 +298,5 @@ cd planton/tools/ci/github-runners/_cleanup
 
 **Status**: ✅ Production Ready
 **Timeline**: ~6 hours of iterative development and testing
-**Image Published**: `ghcr.io/plantonhq/openmcf/base-images/iac-runner:v0.0.1-test.15`
+**Image Published**: `ghcr.io/plantonhq/planton/base-images/iac-runner:v0.0.1-test.15`
 

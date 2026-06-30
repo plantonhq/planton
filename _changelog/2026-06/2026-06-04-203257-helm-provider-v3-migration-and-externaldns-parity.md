@@ -72,7 +72,7 @@ flowchart LR
 
 ### 2. KubernetesExternalDns brought to full parity (exemplar)
 
-`apis/org/openmcf/provider/kubernetes/kubernetesexternaldns/v1/iac/tf/`:
+`apis/dev/planton/provider/kubernetes/kubernetesexternaldns/v1/iac/tf/`:
 
 - `provider.tf` — added `required_providers` (kubernetes `~> 2.35`, helm `~> 3.0`) and
   `provider "helm" {}`.
@@ -114,14 +114,14 @@ with zero unmapped, locking in the `solver_sa` rename.
 - `tofu console` rendered `local.helm_values` for representative inputs (ExternalDNS
   Cloudflare = the failing manifest; Temporal external-postgres and embedded-cassandra),
   confirming the YAML matches the prior `--set` keys and the Pulumi values map.
-- `openmcf validate-outputs --kind KubernetesExternalDns`: 3/3 proto fields populated,
+- `planton validate-outputs --kind KubernetesExternalDns`: 3/3 proto fields populated,
   zero unmapped.
 - `go test ./pkg/outputs/` passes including the new conformance case.
 
 ## Parity divergences flagged for the sweep (not changed here)
 
 These tofu↔Pulumi divergences were observed while migrating the helm-values surface and
-are recorded for the per-component `@audit-openmcf-component --parity` sweep rather than
+are recorded for the per-component `@audit-planton-component --parity` sweep rather than
 changed in this (cross-cutting) pass:
 
 - `altinityoperator` — tofu sets `watchNamespaces`; Pulumi sets

@@ -73,7 +73,7 @@ done
 
 **Benefits:**
 - No hardcoded paths - works with any new component automatically
-- Path pattern: `apis/org/openmcf/provider/{provider}/{component}/v1/iac/pulumi`
+- Path pattern: `apis/dev/planton/provider/{provider}/{component}/v1/iac/pulumi`
 - Adding/removing components requires zero workflow changes
 
 ### 4. Per-Provider Concurrency Control
@@ -114,7 +114,7 @@ Components to build:
 BUILDING: awsekscluster
 Progress: 10/22 (12 remaining)
 Provider: aws
-Path: apis/org/openmcf/provider/aws/awsekscluster/v1/iac/pulumi
+Path: apis/dev/planton/provider/aws/awsekscluster/v1/iac/pulumi
 ========================================
 ...
 ========================================
@@ -217,7 +217,7 @@ The orchestrator triggers:
 
 Just create the directory structure:
 ```bash
-mkdir -p apis/org/openmcf/provider/aws/awsnewservice/v1/iac/pulumi
+mkdir -p apis/dev/planton/provider/aws/awsnewservice/v1/iac/pulumi
 # Add main.go
 # Done - next release will include it
 ```

@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package dev.planton.provider.digitalocean.digitaloceanvolume.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/digitalocean/digitaloceanvolume/v1/spec.proto";
+import "dev/planton/provider/digitalocean/digitaloceanvolume/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// digital-ocean-volume
+message DigitalOceanVolume {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'digital-ocean.planton.dev/v1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'DigitalOceanVolume'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  DigitalOceanVolumeSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  DigitalOceanVolumeStatus status = 5;
+}
+
+// digital-ocean-volume status
+message DigitalOceanVolumeStatus {
+  //stack-outputs
+  //  digital-ocean-volume stack-outputs
+  DigitalOceanVolumeStackOutputs outputs = 1;
+}

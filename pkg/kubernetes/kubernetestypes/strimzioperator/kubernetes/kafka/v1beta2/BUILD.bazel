@@ -41,7 +41,7 @@ go_library(
         "pulumiTypes4.go",
         "pulumiTypes5.go",
     ],
-    importpath = "github.com/plantonhq/openmcf/pkg/kubernetes/kubernetestypes/strimzioperator/kubernetes/kafka/v1beta2",
+    importpath = "github.com/plantonhq/planton/pkg/kubernetes/kubernetestypes/strimzioperator/kubernetes/kafka/v1beta2",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_blang_semver//:semver",

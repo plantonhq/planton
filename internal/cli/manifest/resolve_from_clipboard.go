@@ -6,11 +6,11 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/internal/cli/iacflags"
-	"github.com/plantonhq/openmcf/internal/cli/workspace"
-	"github.com/plantonhq/openmcf/pkg/clipboard"
-	"github.com/plantonhq/openmcf/pkg/iac/stackinput"
-	"github.com/plantonhq/openmcf/pkg/ulidgen"
+	"github.com/plantonhq/planton/internal/cli/iacflags"
+	"github.com/plantonhq/planton/internal/cli/workspace"
+	"github.com/plantonhq/planton/pkg/clipboard"
+	"github.com/plantonhq/planton/pkg/iac/stackinput"
+	"github.com/plantonhq/planton/pkg/ulidgen"
 	"github.com/spf13/cobra"
 )
 

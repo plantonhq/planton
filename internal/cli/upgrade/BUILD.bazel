@@ -9,7 +9,7 @@ go_library(
         "upgrade.go",
         "version.go",
     ],
-    importpath = "github.com/plantonhq/openmcf/internal/cli/upgrade",
+    importpath = "github.com/plantonhq/planton/internal/cli/upgrade",
     visibility = ["//:__subpackages__"],
     deps = [
         "//internal/cli/cliprint",

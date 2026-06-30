@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package dev.planton.provider.cloudflare.cloudflareemailroutingrule.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/cloudflare/cloudflareemailroutingrule/v1/spec.proto";
+import "dev/planton/provider/cloudflare/cloudflareemailroutingrule/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// cloudflare-email-routing-rule
+message CloudflareEmailRoutingRule {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'cloudflare.planton.dev/v1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'CloudflareEmailRoutingRule'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  CloudflareEmailRoutingRuleSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  CloudflareEmailRoutingRuleStatus status = 5;
+}
+
+// cloudflare-email-routing-rule status
+message CloudflareEmailRoutingRuleStatus {
+  //stack-outputs
+  //  cloudflare-email-routing-rule stack-outputs
+  CloudflareEmailRoutingRuleStackOutputs outputs = 1;
+}

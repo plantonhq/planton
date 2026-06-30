@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.scaleway.scalewayblockvolume.v1;
+
+import "dev/planton/provider/scaleway/provider.proto";
+import "dev/planton/provider/scaleway/scalewayblockvolume/v1/api.proto";
+
+//scaleway-block-volume stack-input
+message ScalewayBlockVolumeStackInput {
+  //target cloud-resource
+  ScalewayBlockVolume target = 1;
+  //provider-config
+  dev.planton.provider.scaleway.ScalewayProviderConfig provider_config = 2;
+}

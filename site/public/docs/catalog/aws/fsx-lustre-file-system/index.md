@@ -12,13 +12,13 @@ Deploys an Amazon FSx for Lustre file system with configurable deployment type, 
 
 ## What Gets Created
 
-When you deploy an AwsFsxLustreFileSystem resource, OpenMCF provisions:
+When you deploy an AwsFsxLustreFileSystem resource, Planton provisions:
 
 - **FSx for Lustre File System** — an `aws_fsx_lustre_file_system` resource placed in the specified subnet with the configured deployment type, storage capacity, encryption settings, and optional S3 import/export, CloudWatch log configuration, backup schedule, and metadata performance tuning
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **A subnet** in the target Availability Zone — Lustre file systems are single-AZ, exactly one subnet is required
 - **A security group** allowing Lustre traffic between the file system and its clients: TCP port 988 (Lustre protocol) and TCP ports 1018-1023 (data channels)
 - **A KMS key ARN** if using customer-managed encryption at rest (all Lustre file systems are encrypted by default with an AWS-managed key)
@@ -30,15 +30,15 @@ When you deploy an AwsFsxLustreFileSystem resource, OpenMCF provisions:
 Create a file `fsx-lustre.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsFsxLustreFileSystem
 metadata:
   name: my-fsx-lustre
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsFsxLustreFileSystem.my-fsx-lustre
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsFsxLustreFileSystem.my-fsx-lustre
 spec:
   storageCapacityGib: 1200
   subnetId: subnet-0a1b2c3d4e5f00001
@@ -47,7 +47,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f fsx-lustre.yaml
+planton apply -f fsx-lustre.yaml
 ```
 
 This creates a SCRATCH_2 SSD file system with 1200 GiB in the specified subnet. No data replication, no backups — suitable for temporary processing workloads.
@@ -94,15 +94,15 @@ This creates a SCRATCH_2 SSD file system with 1200 GiB in the specified subnet. 
 A temporary file system that imports data from S3 for batch processing jobs:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsFsxLustreFileSystem
 metadata:
   name: batch-fsx
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsFsxLustreFileSystem.batch-fsx
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsFsxLustreFileSystem.batch-fsx
 spec:
   region: us-west-2
   storageCapacityGib: 3600
@@ -119,15 +119,15 @@ spec:
 PERSISTENT_2 with maximum throughput tier, LZ4 compression, automatic backups, and metadata IOPS scaling for production ML workloads:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsFsxLustreFileSystem
 metadata:
   name: ml-training-fsx
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsFsxLustreFileSystem.ml-training-fsx
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsFsxLustreFileSystem.ml-training-fsx
 spec:
   region: us-east-1
   deploymentType: PERSISTENT_2
@@ -152,15 +152,15 @@ spec:
 PERSISTENT_1 HDD for large-capacity, sequential-throughput workloads where cost per GiB is the primary concern:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsFsxLustreFileSystem
 metadata:
   name: datalake-fsx
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsFsxLustreFileSystem.datalake-fsx
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsFsxLustreFileSystem.datalake-fsx
 spec:
   deploymentType: PERSISTENT_1
   storageCapacityGib: 6000
@@ -184,15 +184,15 @@ spec:
 Production PERSISTENT_2 deployment with CloudWatch audit logging, customer-managed KMS encryption, explicit metadata IOPS, and final backup on deletion:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsFsxLustreFileSystem
 metadata:
   name: prod-fsx
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsFsxLustreFileSystem.prod-fsx
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsFsxLustreFileSystem.prod-fsx
 spec:
   region: us-east-1
   deploymentType: PERSISTENT_2
@@ -221,18 +221,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding IDs:
+Reference other Planton-managed resources instead of hardcoding IDs:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsFsxLustreFileSystem
 metadata:
   name: ref-fsx
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsFsxLustreFileSystem.ref-fsx
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsFsxLustreFileSystem.ref-fsx
 spec:
   region: us-west-2
   deploymentType: PERSISTENT_2
@@ -265,7 +265,7 @@ spec:
 
 ## Presets
 
-OpenMCF includes preset configurations for common FSx Lustre deployment patterns. Each preset is a ready-to-customize manifest with placeholder values for subnet and security group IDs.
+Planton includes preset configurations for common FSx Lustre deployment patterns. Each preset is a ready-to-customize manifest with placeholder values for subnet and security group IDs.
 
 ### Scratch Development
 

@@ -10,13 +10,13 @@ Implemented the OciNetworkLoadBalancer deployment component (R12, enum 3321) -- 
 
 ## Problem Statement / Motivation
 
-OpenMCF's OCI provider had an L7 application load balancer (OciApplicationLoadBalancer) but lacked L4 network load balancing capabilities. OCI Network Load Balancer is critical for:
+Planton's OCI provider had an L7 application load balancer (OciApplicationLoadBalancer) but lacked L4 network load balancing capabilities. OCI Network Load Balancer is critical for:
 
 ### Pain Points
 
-- No way to deploy L4 TCP/UDP load balancers through OpenMCF for OCI
+- No way to deploy L4 TCP/UDP load balancers through Planton for OCI
 - Workloads requiring source IP preservation (firewalls, security appliances, logging) had no NLB option
-- OKE clusters using Network Load Balancer for Kubernetes service type LoadBalancer had no OpenMCF component
+- OKE clusters using Network Load Balancer for Kubernetes service type LoadBalancer had no Planton component
 - Mixed TCP/UDP workloads (DNS servers, gaming backends) needed a single NLB with multi-protocol support
 
 ## Solution / What's New
@@ -78,7 +78,7 @@ The NLB is architecturally distinct from the L7 LB:
 
 ## Benefits
 
-- **L4 load balancing** for TCP/UDP workloads in OpenMCF's OCI provider
+- **L4 load balancing** for TCP/UDP workloads in Planton's OCI provider
 - **Source IP preservation** for security appliances and logging
 - **DNS health checking** -- unique to NLB, supports DNS-based backend health verification
 - **Instant failover** -- NLB-exclusive feature for minimal disruption during backend failures
@@ -88,7 +88,7 @@ The NLB is architecturally distinct from the L7 LB:
 
 - **OCI Provider**: 12th resource kind implemented (12/37 total)
 - **Phase 3 Progress**: 2 of 4 Advanced Networking components complete (OciApplicationLoadBalancer + OciNetworkLoadBalancer)
-- **Users**: Can now deploy both L4 and L7 load balancers for OCI workloads through OpenMCF
+- **Users**: Can now deploy both L4 and L7 load balancers for OCI workloads through Planton
 
 ## Validation Results
 

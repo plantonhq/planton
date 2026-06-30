@@ -17,11 +17,11 @@ With the GitHub Actions Runner Scale Set Controller deployed (see previous chang
 - **Manual Helm Configuration**: Installing runner scale sets required manually crafting Helm values with complex nested structures
 - **No PVC Management**: Persistent caching for npm, gradle, maven, or Docker layers required separate PVC provisioning
 - **Authentication Complexity**: GitHub PAT tokens and GitHub App credentials had to be managed outside the deployment
-- **Inconsistent Interface**: Runner scale sets didn't follow the OpenMCF declarative pattern
+- **Inconsistent Interface**: Runner scale sets didn't follow the Planton declarative pattern
 
 ## Solution / What's New
 
-Created a complete deployment component following the OpenMCF standard structure:
+Created a complete deployment component following the Planton standard structure:
 
 ### Component Structure
 
@@ -184,7 +184,7 @@ KubernetesGhaRunnerScaleSet = 844 [(kind_meta) = {
 ## Usage Example
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesGhaRunnerScaleSet
 metadata:
   name: build-runners
@@ -217,7 +217,7 @@ spec:
 Deploy:
 
 ```bash
-openmcf pulumi up --manifest runners.yaml --stack org/project/env
+planton pulumi up --manifest runners.yaml --stack org/project/env
 ```
 
 Use in workflow:

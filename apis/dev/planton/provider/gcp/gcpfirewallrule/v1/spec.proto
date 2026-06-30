@@ -1,0 +1,165 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcpfirewallrule.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// A protocol and optional port range for firewall rule traffic matching.
+// Each entry defines an IP protocol and, for TCP/UDP, a set of ports or port ranges.
+message GcpFirewallProtocolPort {
+  // IP protocol to match. Accepted values: "tcp", "udp", "icmp", "esp", "ah", "sctp", "ipip", "all",
+  // or an IANA protocol number (e.g., "6" for TCP).
+  string protocol = 1 [(buf.validate.field).required = true];
+
+  // Ports or port ranges to match. Only applicable when protocol is "tcp" or "udp".
+  // Each entry is a single port (e.g., "80") or a range (e.g., "8000-9000").
+  // Omit for protocols that do not use ports (icmp, esp, ah, etc.).
+  repeated string ports = 2;
+}
+
+// Logging configuration for the firewall rule.
+// When this message is present on the spec, logging is enabled for matched traffic.
+message GcpFirewallLogConfig {
+  // Metadata inclusion mode for firewall logs.
+  string metadata = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "log_config_metadata_valid"
+      message: "metadata must be EXCLUDE_ALL_METADATA or INCLUDE_ALL_METADATA"
+      expression: "this in ['EXCLUDE_ALL_METADATA', 'INCLUDE_ALL_METADATA']"
+    }
+  ];
+}
+
+// GcpFirewallRuleSpec defines the configuration for a Google Compute Engine firewall rule.
+//
+// A firewall rule controls traffic to and from VM instances in a VPC network.
+// Each rule either allows or denies traffic matching a set of protocol/port combinations,
+// filtered by source/destination ranges and instance tags or service accounts.
+//
+// GCP constraint: tag-based targeting (source_tags, target_tags) and service-account-based
+// targeting (source_service_accounts, target_service_accounts) are mutually exclusive.
+// You cannot use both in the same rule.
+message GcpFirewallRuleSpec {
+  option (buf.validate.message).cel = {
+    id: "ingress_requires_source"
+    message: "INGRESS rules must specify at least one of source_ranges, source_tags, or source_service_accounts"
+    expression: "this.direction != 'INGRESS' || this.source_ranges.size() > 0 || this.source_tags.size() > 0 || this.source_service_accounts.size() > 0"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "tags_and_service_accounts_mutually_exclusive"
+    message: "tag-based targeting (source_tags, target_tags) and service-account-based targeting (source_service_accounts, target_service_accounts) cannot be used together"
+    expression: "(this.source_tags.size() == 0 && this.target_tags.size() == 0) || (this.source_service_accounts.size() == 0 && this.target_service_accounts.size() == 0)"
+  };
+
+  // The GCP project ID in which to create this firewall rule.
+  // Example: "my-prod-project-123"
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // VPC network to which this firewall rule applies.
+  // Accepts a network name (e.g., "default") or a full self-link URL.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef network = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpVpc,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_self_link"
+  ];
+
+  // Name of the firewall rule in GCP.
+  // Must be 1-63 characters, lowercase letters, numbers, or hyphens.
+  // Must start with a lowercase letter and end with a letter or number.
+  // Example: "allow-http-ingress", "deny-all-egress"
+  string rule_name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$"
+  ];
+
+  // Traffic direction this rule applies to.
+  // "INGRESS" matches inbound traffic to instances; "EGRESS" matches outbound traffic.
+  string direction = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "direction_valid"
+      message: "direction must be INGRESS or EGRESS"
+      expression: "this in ['INGRESS', 'EGRESS']"
+    }
+  ];
+
+  // Action to take when the rule matches traffic.
+  // "ALLOW" permits the matched traffic; "DENY" blocks it.
+  string action = 5 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "action_valid"
+      message: "action must be ALLOW or DENY"
+      expression: "this in ['ALLOW', 'DENY']"
+    }
+  ];
+
+  // Protocol and port combinations this rule matches.
+  // At least one rule must be specified.
+  repeated GcpFirewallProtocolPort rules = 6 [(buf.validate.field).repeated.min_items = 1];
+
+  // Rule priority. Range: 0-65535. Lower values indicate higher priority.
+  // At the same priority, DENY rules take precedence over ALLOW rules.
+  // Default: 1000
+  optional int32 priority = 7 [
+    (dev.planton.shared.options.default) = "1000",
+    (buf.validate.field).int32 = {
+      gte: 0
+      lte: 65535
+    }
+  ];
+
+  // Human-readable description for the firewall rule.
+  // Example: "Allow HTTP/HTTPS traffic from the internet"
+  string description = 8;
+
+  // Source IPv4 or IPv6 CIDR ranges for INGRESS rules.
+  // Traffic is only matched when the source IP falls within one of these ranges.
+  // For INGRESS rules, at least one of source_ranges, source_tags, or source_service_accounts is required.
+  // Example: ["0.0.0.0/0"] to match all IPv4 traffic, ["10.0.0.0/8"] for internal.
+  repeated string source_ranges = 9;
+
+  // Destination IPv4 or IPv6 CIDR ranges for EGRESS rules.
+  // Traffic is only matched when the destination IP falls within one of these ranges.
+  // If omitted on EGRESS rules, GCP defaults to ["0.0.0.0/0"] (all destinations).
+  repeated string destination_ranges = 10;
+
+  // Source instance network tags for INGRESS rules.
+  // Traffic from instances with any of these tags is matched.
+  // Cannot be combined with source_service_accounts or target_service_accounts.
+  repeated string source_tags = 11;
+
+  // Target instance network tags.
+  // The rule applies only to instances that have one of these tags.
+  // If omitted, the rule applies to all instances in the network.
+  // Cannot be combined with source_service_accounts or target_service_accounts.
+  repeated string target_tags = 12;
+
+  // Source service accounts for INGRESS rules. Max 10.
+  // Traffic from instances running as any of these service accounts is matched.
+  // Cannot be combined with source_tags or target_tags.
+  repeated string source_service_accounts = 13 [(buf.validate.field).repeated.max_items = 10];
+
+  // Target service accounts. Max 10.
+  // The rule applies only to instances running as one of these service accounts.
+  // If omitted, the rule applies to all instances in the network.
+  // Cannot be combined with source_tags or target_tags.
+  repeated string target_service_accounts = 14 [(buf.validate.field).repeated.max_items = 10];
+
+  // Whether the firewall rule is disabled.
+  // A disabled rule exists in the configuration but is not enforced.
+  // Useful for temporarily suspending a rule without deleting it.
+  bool disabled = 15;
+
+  // Logging configuration. When present, firewall logging is enabled.
+  // Omit this field to disable logging (the default).
+  GcpFirewallLogConfig log_config = 16;
+}

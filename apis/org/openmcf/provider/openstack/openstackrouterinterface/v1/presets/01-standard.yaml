@@ -1,9 +1,0 @@
-apiVersion: openstack.openmcf.org/v1
-kind: OpenStackRouterInterface
-metadata:
-  name: my-router-interface
-spec:
-  routerId:
-    value: <router-id>
-  subnetId:
-    value: <subnet-id>

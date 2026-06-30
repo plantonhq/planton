@@ -108,7 +108,7 @@ This approach:
 message ElasticsearchKubernetesSpec {
   ElasticsearchKubernetesElasticsearchContainer elasticsearch_container = 1;
   ElasticsearchKubernetesKibanaContainer kibana_container = 2;
-  org.openmcf.shared.kubernetes.IngressSpec ingress = 3;
+  dev.planton.shared.kubernetes.IngressSpec ingress = 3;
 }
 
 message ElasticsearchKubernetesKibanaContainer {
@@ -616,13 +616,13 @@ spec:
 
 ```bash
 # Update CLI
-brew update && brew upgrade openmcf
+brew update && brew upgrade planton
 
 # Or fresh install
-brew install plantonhq/tap/openmcf
+brew install plantonhq/tap/planton
 
 # Verify version
-openmcf version
+planton version
 
 # For developers: regenerate protobuf stubs
 cd apis
@@ -645,10 +645,10 @@ If you chose different hostnames than the auto-constructed ones:
 
 ```bash
 # Preview changes
-openmcf pulumi preview --manifest elasticsearch.yaml
+planton pulumi preview --manifest elasticsearch.yaml
 
 # Apply
-openmcf pulumi up --manifest elasticsearch.yaml
+planton pulumi up --manifest elasticsearch.yaml
 ```
 
 ### Automated Migration Script
@@ -730,8 +730,8 @@ echo "✅ Migration complete!"
 echo ""
 echo "Next steps:"
 echo "1. Review the changes with: git diff"
-echo "2. Test with: openmcf pulumi preview --manifest <file>"
-echo "3. Apply with: openmcf pulumi up --manifest <file>"
+echo "2. Test with: planton pulumi preview --manifest <file>"
+echo "3. Apply with: planton pulumi up --manifest <file>"
 ```
 
 **Usage**:
@@ -745,7 +745,7 @@ chmod +x migrate-elasticsearch-ingress.sh
 ### Basic Configuration Without Ingress
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: ElasticsearchKubernetes
 metadata:
   name: internal-search
@@ -779,7 +779,7 @@ spec:
 ### Production with Separate Ingress Hostnames
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: ElasticsearchKubernetes
 metadata:
   name: production-search
@@ -819,7 +819,7 @@ spec:
 ### Elasticsearch Only (No Kibana)
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: ElasticsearchKubernetes
 metadata:
   name: logs-cluster
@@ -964,7 +964,7 @@ Renamed all `is_enabled` and `is_persistence_enabled` to `enabled` and `persiste
 - More idiomatic
 - Matches modern Go/protobuf conventions
 - Cleaner generated code in all languages
-- Consistent with other OpenMCF resources
+- Consistent with other Planton resources
 
 ## Validation
 
@@ -1019,7 +1019,7 @@ elasticsearch:
 ```bash
 # Create manifest with new syntax
 cat > elasticsearch-test.yaml <<EOF
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: ElasticsearchKubernetes
 metadata:
   name: test-search
@@ -1042,7 +1042,7 @@ spec:
 EOF
 
 # Deploy
-openmcf pulumi up --manifest elasticsearch-test.yaml
+planton pulumi up --manifest elasticsearch-test.yaml
 
 # Verify Gateway resources created with correct hostnames
 kubectl get gateway -n istio-ingress
@@ -1053,7 +1053,7 @@ kubectl get httproute -n test-search
 ```bash
 # Kibana disabled
 cat > elasticsearch-no-kibana.yaml <<EOF
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: ElasticsearchKubernetes
 metadata:
   name: logs-only
@@ -1071,7 +1071,7 @@ spec:
 EOF
 
 # Deploy
-openmcf pulumi up --manifest elasticsearch-no-kibana.yaml
+planton pulumi up --manifest elasticsearch-no-kibana.yaml
 
 # Verify only Elasticsearch Gateway created
 kubectl get gateway -n istio-ingress | grep logs-only
@@ -1081,7 +1081,7 @@ kubectl get gateway -n istio-ingress | grep logs-only
 ```bash
 # Try invalid configuration
 cat > elasticsearch-invalid.yaml <<EOF
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: ElasticsearchKubernetes
 metadata:
   name: invalid-search
@@ -1093,7 +1093,7 @@ spec:
 EOF
 
 # Attempt deploy
-openmcf pulumi up --manifest elasticsearch-invalid.yaml
+planton pulumi up --manifest elasticsearch-invalid.yaml
 # Expected error: hostname is required when ingress is enabled
 ```
 
@@ -1208,7 +1208,7 @@ For questions or issues with migration:
 2. Use the [automated migration script](#automated-migration-script)
 3. Check [examples](#examples) for reference configurations
 4. Verify [validation rules](#validation) are met
-5. Contact OpenMCF support if issues persist
+5. Contact Planton support if issues persist
 
 ---
 

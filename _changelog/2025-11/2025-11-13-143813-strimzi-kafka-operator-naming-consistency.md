@@ -6,11 +6,11 @@
 
 ## Summary
 
-Renamed the `KafkaOperatorKubernetes` resource to `StrimziKafkaOperator` across all proto definitions, documentation, and implementation code to align with OpenMCF's naming conventions for Kubernetes addon operators. This change eliminates redundant "Kubernetes" suffixes, explicitly identifies the Strimzi operator, and improves consistency with other addon resources that are already scoped to Kubernetes via their provider namespace.
+Renamed the `KafkaOperatorKubernetes` resource to `StrimziKafkaOperator` across all proto definitions, documentation, and implementation code to align with Planton's naming conventions for Kubernetes addon operators. This change eliminates redundant "Kubernetes" suffixes, explicitly identifies the Strimzi operator, and improves consistency with other addon resources that are already scoped to Kubernetes via their provider namespace.
 
 ## Problem Statement / Motivation
 
-The Kafka operator resource was originally named `KafkaOperatorKubernetes`, which included a redundant "Kubernetes" suffix and lacked specificity about which Kafka operator was being deployed. This naming pattern was inconsistent with OpenMCF's design philosophy where:
+The Kafka operator resource was originally named `KafkaOperatorKubernetes`, which included a redundant "Kubernetes" suffix and lacked specificity about which Kafka operator was being deployed. This naming pattern was inconsistent with Planton's design philosophy where:
 
 ### Pain Points
 
@@ -21,7 +21,7 @@ The Kafka operator resource was originally named `KafkaOperatorKubernetes`, whic
 - **Code Verbosity**: Proto message types like `KafkaOperatorKubernetesSpec` and `KafkaOperatorKubernetesStackInput` were excessively long
 - **Poor Developer Experience**: The redundancy and lack of clarity made code harder to read and type
 
-The provider namespace (`org.openmcf.provider.kubernetes.addon.strimzikafkaoperator.v1`) already clearly indicates this is a Kubernetes component, so including "Kubernetes" in every message name adds noise without value. More importantly, the generic "Kafka Operator" name doesn't convey that this is **Strimzi specifically**—a critical detail for users choosing between Strimzi, Confluent for Kubernetes, or Banzai Cloud Koperator.
+The provider namespace (`dev.planton.provider.kubernetes.addon.strimzikafkaoperator.v1`) already clearly indicates this is a Kubernetes component, so including "Kubernetes" in every message name adds noise without value. More importantly, the generic "Kafka Operator" name doesn't convey that this is **Strimzi specifically**—a critical detail for users choosing between Strimzi, Confluent for Kubernetes, or Banzai Cloud Koperator.
 
 ## Solution / What's New
 
@@ -34,15 +34,15 @@ Performed a comprehensive rename from `KafkaOperatorKubernetes` to `StrimziKafka
 
 ### Naming Convention
 
-The new naming follows OpenMCF's established pattern while adding specificity:
+The new naming follows Planton's established pattern while adding specificity:
 
 ```yaml
 # Before
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KafkaOperatorKubernetes
 
 # After
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: StrimziKafkaOperator
 ```
 
@@ -55,7 +55,7 @@ The provider path remains unchanged (`provider/kubernetes/addon/strimzikafkaoper
 
 ### Proto File Changes
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/strimzikafkaoperator/v1/api.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/strimzikafkaoperator/v1/api.proto`
 
 ```protobuf
 // Before
@@ -73,7 +73,7 @@ message StrimziKafkaOperator {
 }
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/strimzikafkaoperator/v1/spec.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/strimzikafkaoperator/v1/spec.proto`
 
 ```protobuf
 // Before
@@ -87,7 +87,7 @@ message StrimziKafkaOperatorSpecContainer { ... }
 
 Updated documentation in spec messages to clarify this is the **Strimzi Kafka Operator** specifically.
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/strimzikafkaoperator/v1/stack_input.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/strimzikafkaoperator/v1/stack_input.proto`
 
 ```protobuf
 // Before
@@ -101,7 +101,7 @@ message StrimziKafkaOperatorStackInput {
 }
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/strimzikafkaoperator/v1/stack_outputs.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/strimzikafkaoperator/v1/stack_outputs.proto`
 
 ```protobuf
 // Before
@@ -113,7 +113,7 @@ message StrimziKafkaOperatorStackOutputs { ... }
 
 ### Registry Update
 
-**File**: `apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto`
+**File**: `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto`
 
 ```protobuf
 // Before
@@ -135,7 +135,7 @@ StrimziKafkaOperator = 826 [(kind_meta) = {
 
 ### Implementation Code Changes
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/strimzikafkaoperator/v1/iac/pulumi/main.go`
+**File**: `apis/dev/planton/provider/kubernetes/addon/strimzikafkaoperator/v1/iac/pulumi/main.go`
 
 ```go
 // Before
@@ -145,7 +145,7 @@ stackInput := &strimzikafkaoperatorv1.KafkaOperatorKubernetesStackInput{}
 stackInput := &strimzikafkaoperatorv1.StrimziKafkaOperatorStackInput{}
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/strimzikafkaoperator/v1/iac/pulumi/module/main.go`
+**File**: `apis/dev/planton/provider/kubernetes/addon/strimzikafkaoperator/v1/iac/pulumi/module/main.go`
 
 ```go
 // Before
@@ -155,7 +155,7 @@ func Resources(ctx *pulumi.Context, stackInput *strimzikafkaoperatorv1.KafkaOper
 func Resources(ctx *pulumi.Context, stackInput *strimzikafkaoperatorv1.StrimziKafkaOperatorStackInput) error
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/strimzikafkaoperator/v1/iac/pulumi/module/kafka_operator.go`
+**File**: `apis/dev/planton/provider/kubernetes/addon/strimzikafkaoperator/v1/iac/pulumi/module/kafka_operator.go`
 
 ```go
 // Before
@@ -198,7 +198,7 @@ Proto message names are now more concise and specific:
 ### Naming Consistency
 
 Aligns with the pattern where the provider namespace provides sufficient context:
-- Package: `org.openmcf.provider.kubernetes.addon.strimzikafkaoperator.v1`
+- Package: `dev.planton.provider.kubernetes.addon.strimzikafkaoperator.v1`
 - Kind: `StrimziKafkaOperator` (context is already clear from package, name identifies the specific operator)
 
 ### Developer Experience
@@ -223,7 +223,7 @@ Users must update their YAML manifests:
 
 ```yaml
 # Update required
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: StrimziKafkaOperator  # Changed from: KafkaOperatorKubernetes
 metadata:
   name: kafka-operator-prod
@@ -234,7 +234,7 @@ spec:
 ### Non-Breaking Aspects
 
 - **Directory structure**: Already renamed to `strimzikafkaoperator`
-- **Package namespace**: Unchanged (`org.openmcf.provider.kubernetes.addon.strimzikafkaoperator.v1`)
+- **Package namespace**: Unchanged (`dev.planton.provider.kubernetes.addon.strimzikafkaoperator.v1`)
 - **Import paths**: Unchanged in Go code
 - **Functionality**: Zero behavioral changes—still deploys Strimzi via Helm
 - **ID prefix**: Unchanged (`kfkopk8s`)
@@ -274,7 +274,7 @@ spec:
 
 ## Related Work
 
-This refactoring is part of an ongoing effort to improve naming consistency across OpenMCF's Kubernetes addon operators. Recent similar work includes:
+This refactoring is part of an ongoing effort to improve naming consistency across Planton's Kubernetes addon operators. Recent similar work includes:
 
 - `AltinityOperatorKubernetes` → `AltinityOperator` (2025-11-13)
 - `CertManagerKubernetes` → `CertManager` (previous)
@@ -294,7 +294,7 @@ For users with existing manifests:
    find . -name "*.yaml" -type f -exec sed -i '' 's/kind: KafkaOperatorKubernetes/kind: StrimziKafkaOperator/g' {} +
    ```
 
-2. **No CLI changes required** - The `openmcf` CLI will work with the new kind name automatically after updating to the version with this change
+2. **No CLI changes required** - The `planton` CLI will work with the new kind name automatically after updating to the version with this change
 
 3. **No infrastructure impact** - Existing deployed operators are unaffected; this only affects new deployments
 

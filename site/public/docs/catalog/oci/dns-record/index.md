@@ -12,13 +12,13 @@ Deploys an OCI DNS Record Set (RRSet) — a set of DNS resource records sharing 
 
 ## What Gets Created
 
-When you deploy an OciDnsRecord resource, OpenMCF provisions:
+When you deploy an OciDnsRecord resource, Planton provisions:
 
 - **DNS Record Set** — a `dns.Rrset` resource within the target zone. Each record item carries its own rdata and TTL. The set is managed atomically — updates replace all records for the (domain, rtype) tuple.
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **An OCI DNS zone** — either a zone OCID or zone name, either a literal value or a reference to an OciDnsZone resource
 - **A DNS view OCID** (for private zones only) — required when referencing a private zone by name
 
@@ -27,15 +27,15 @@ When you deploy an OciDnsRecord resource, OpenMCF provisions:
 Create a file `dns-record.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciDnsRecord
 metadata:
   name: app-a-record
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciDnsRecord.app-a-record
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciDnsRecord.app-a-record
 spec:
   zoneNameOrId:
     value: "example.com"
@@ -49,7 +49,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f dns-record.yaml
+planton apply -f dns-record.yaml
 ```
 
 This creates an A record for `app.example.com` pointing to `192.0.2.1` with a 5-minute TTL.
@@ -85,15 +85,15 @@ This creates an A record for `app.example.com` pointing to `192.0.2.1` with a 5-
 An A record pointing a subdomain to a single IP address:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciDnsRecord
 metadata:
   name: app-a-record
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciDnsRecord.app-a-record
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciDnsRecord.app-a-record
 spec:
   zoneNameOrId:
     value: "example.com"
@@ -109,15 +109,15 @@ spec:
 Round-robin A records using `valueFrom` to reference an OciDnsZone:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciDnsRecord
 metadata:
   name: web-a-records
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciDnsRecord.web-a-records
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciDnsRecord.web-a-records
 spec:
   zoneNameOrId:
     valueFrom:
@@ -140,15 +140,15 @@ spec:
 Mail exchange records with priority values embedded in rdata:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciDnsRecord
 metadata:
   name: mail-mx-records
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciDnsRecord.mail-mx-records
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciDnsRecord.mail-mx-records
 spec:
   zoneNameOrId:
     value: "example.com"
@@ -166,15 +166,15 @@ spec:
 A CNAME alias pointing a subdomain to another hostname:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciDnsRecord
 metadata:
   name: api-cname
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciDnsRecord.api-cname
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciDnsRecord.api-cname
 spec:
   zoneNameOrId:
     value: "example.com"
@@ -190,15 +190,15 @@ spec:
 A TXT record for email sender policy:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciDnsRecord
 metadata:
   name: spf-txt
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciDnsRecord.spf-txt
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciDnsRecord.spf-txt
 spec:
   zoneNameOrId:
     value: "example.com"

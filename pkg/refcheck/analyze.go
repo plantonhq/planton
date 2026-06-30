@@ -20,16 +20,16 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
-	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
-	"github.com/plantonhq/openmcf/pkg/crkreflect"
+	"github.com/plantonhq/planton/apis/dev/planton/shared/cloudresourcekind"
+	foreignkeyv1 "github.com/plantonhq/planton/apis/dev/planton/shared/foreignkey/v1"
+	"github.com/plantonhq/planton/pkg/crkreflect"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 // StringValueOrRef is a reference leaf, not a message to recurse into: the FK annotation
 // lives on the outer field, never inside the oneof.
-const stringValueOrRefFullName = "org.openmcf.shared.foreignkey.v1.StringValueOrRef"
+const stringValueOrRefFullName = "dev.planton.shared.foreignkey.v1.StringValueOrRef"
 
 // Finding is one foreign-key annotation whose default_kind_field_path does not resolve
 // against the referenced kind. Each is a hard gate failure.

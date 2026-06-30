@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azuresubnet.v1;
+
+// **AzureSubnetStackOutputs** captures the outputs of provisioning an Azure Subnet.
+//
+// These outputs are critical for infra chart composition. The `subnet_id` output is
+// the single most referenced Azure output in Planton -- it is consumed by 11 downstream
+// resource types including AzureAksCluster, AzureContainerAppEnvironment,
+// AzurePostgresqlFlexibleServer, AzureMysqlFlexibleServer, AzureRedisCache,
+// AzurePrivateEndpoint, AzureApplicationGateway, AzureLoadBalancer,
+// AzureVirtualMachine, AzureFunctionApp, and AzureLinuxWebApp.
+message AzureSubnetStackOutputs {
+  // The Azure Resource Manager ID of the subnet.
+  // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetworks/{vnet}/subnets/{name}
+  // This is the primary output referenced by downstream resources via StringValueOrRef.
+  string subnet_id = 1;
+
+  // The name of the subnet within the VNet.
+  string subnet_name = 2;
+
+  // The IPv4 CIDR block assigned to this subnet.
+  // Echoed from the spec for convenience -- useful in NSG rules, firewall rules,
+  // and network planning where downstream resources need to know the subnet's address range.
+  string address_prefix = 3;
+}

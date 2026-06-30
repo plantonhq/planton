@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package dev.planton.provider.auth0.auth0eventstream.v1;
+
+import "dev/planton/provider/auth0/auth0eventstream/v1/api.proto";
+import "dev/planton/provider/auth0/provider.proto";
+
+// Auth0EventStreamStackInput is the input to the Auth0EventStream IaC module.
+// It contains the target resource and the Auth0 provider configuration.
+message Auth0EventStreamStackInput {
+  // target is the Auth0EventStream resource to be deployed.
+  Auth0EventStream target = 1;
+
+  // auth0_provider_config contains the Auth0 credentials for authentication.
+  // Includes domain, client_id, and client_secret.
+  dev.planton.provider.auth0.Auth0ProviderConfig provider_config = 2;
+}

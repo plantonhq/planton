@@ -15,7 +15,7 @@ go_library(
         "postgresqlPatch.go",
         "pulumiTypes.go",
     ],
-    importpath = "github.com/plantonhq/openmcf/pkg/kubernetes/kubernetestypes/zalandooperator/kubernetes/acid/v1",
+    importpath = "github.com/plantonhq/planton/pkg/kubernetes/kubernetestypes/zalandooperator/kubernetes/acid/v1",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_blang_semver//:semver",

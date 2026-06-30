@@ -10,7 +10,7 @@ Forged a complete Azure Virtual Machine deployment component with cross-referenc
 
 ## Problem Statement / Motivation
 
-OpenMCF needed an Azure Virtual Machine component to complete its Azure compute offering. Unlike simple VM provisioning, users needed:
+Planton needed an Azure Virtual Machine component to complete its Azure compute offering. Unlike simple VM provisioning, users needed:
 
 1. **Cross-resource wiring** - Reference subnets from AzureVpc resources without hardcoding Azure resource IDs
 2. **Secure credential management** - Reference passwords from AzureKeyVault instead of storing them in manifests
@@ -18,7 +18,7 @@ OpenMCF needed an Azure Virtual Machine component to complete its Azure compute 
 
 ### Pain Points
 
-- No declarative way to deploy Azure VMs through OpenMCF
+- No declarative way to deploy Azure VMs through Planton
 - Manual subnet ID lookup required when connecting VMs to VNets
 - No integration with Azure Key Vault for secure password storage
 - Missing alignment with existing AWS and GCP compute components
@@ -69,7 +69,7 @@ flowchart LR
 ### Proto API Structure
 
 ```
-apis/org/openmcf/provider/azure/azurevirtualmachine/v1/
+apis/dev/planton/provider/azure/azurevirtualmachine/v1/
 ├── api.proto          # KRM envelope (AzureVirtualMachine, Status)
 ├── spec.proto         # Configuration with validations
 ├── stack_outputs.proto # Deployment outputs
@@ -83,16 +83,16 @@ The spec uses `StringValueOrRef` from the foreign key proto for three fields:
 
 ```protobuf
 // Subnet from AzureVpc
-org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_id = 4 [
+dev.planton.shared.foreignkey.v1.StringValueOrRef subnet_id = 4 [
   (buf.validate.field).required = true,
-  (org.openmcf.shared.foreignkey.v1.default_kind) = AzureVpc,
-  (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.nodes_subnet_id"
+  (dev.planton.shared.foreignkey.v1.default_kind) = AzureVpc,
+  (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.nodes_subnet_id"
 ];
 
 // Password from AzureKeyVault
-org.openmcf.shared.foreignkey.v1.StringValueOrRef admin_password = 10 [
-  (org.openmcf.shared.foreignkey.v1.default_kind) = AzureKeyVault,
-  (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vault_uri"
+dev.planton.shared.foreignkey.v1.StringValueOrRef admin_password = 10 [
+  (dev.planton.shared.foreignkey.v1.default_kind) = AzureKeyVault,
+  (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vault_uri"
 ];
 ```
 

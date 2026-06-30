@@ -1,0 +1,10 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsSecretsManager
+metadata:
+  name: awssecretsmanager-demo
+spec:
+  region: us-west-2
+  secretNames:
+    - example-secret-1
+    - example-secret-2
+

@@ -12,7 +12,7 @@ Deploys a Scaleway Managed Redis cluster with configurable cluster sizing (stand
 
 ## What Gets Created
 
-When you deploy a ScalewayRedisCluster resource, OpenMCF provisions:
+When you deploy a ScalewayRedisCluster resource, Planton provisions:
 
 - **Redis Cluster** — a single `redis.Cluster` resource providing a fully managed Redis instance with the specified node type, engine version, cluster size, and initial user credentials
 - **ACL Rules** — inline access control rules on the cluster's public endpoint, created only when `aclRules` is non-empty and `privateNetworkId` is not set
@@ -22,7 +22,7 @@ ACL rules and Private Network are mutually exclusive. Scaleway does not support 
 
 ## Prerequisites
 
-- **Scaleway credentials** configured via environment variables or OpenMCF provider config
+- **Scaleway credentials** configured via environment variables or Planton provider config
 - **A valid Redis engine version** in semantic version format (e.g., `"7.2.5"`, `"6.2.7"`)
 - **A Private Network** in the target zone if using private connectivity (can be created via a ScalewayPrivateNetwork resource)
 
@@ -31,15 +31,15 @@ ACL rules and Private Network are mutually exclusive. Scaleway does not support 
 Create a file `redis-cluster.yaml`:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayRedisCluster
 metadata:
   name: my-cache
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayRedisCluster.my-cache
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayRedisCluster.my-cache
 spec:
   zone: fr-par-1
   version: "7.2.5"
@@ -51,7 +51,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f redis-cluster.yaml
+planton apply -f redis-cluster.yaml
 ```
 
 This creates a single-node Redis 7.2.5 cluster with a public endpoint accessible to all IPs (no ACL rules configured) and TLS disabled.
@@ -87,15 +87,15 @@ This creates a single-node Redis 7.2.5 cluster with a public endpoint accessible
 A minimal standalone Redis cluster for development and testing:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayRedisCluster
 metadata:
   name: dev-cache
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayRedisCluster.dev-cache
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayRedisCluster.dev-cache
 spec:
   zone: fr-par-1
   version: "7.2.5"
@@ -112,15 +112,15 @@ spec:
 A high-availability Redis cluster with TLS encryption, network ACL rules, and tuned settings for a production session store:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayRedisCluster
 metadata:
   name: prod-sessions
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.ScalewayRedisCluster.prod-sessions
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.ScalewayRedisCluster.prod-sessions
 spec:
   zone: fr-par-1
   version: "7.2.5"
@@ -143,18 +143,18 @@ spec:
 
 ### Sharded Cluster on Private Network
 
-A three-node sharded Redis cluster attached to an OpenMCF-managed Private Network for high-throughput workloads:
+A three-node sharded Redis cluster attached to an Planton-managed Private Network for high-throughput workloads:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayRedisCluster
 metadata:
   name: analytics-cache
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.ScalewayRedisCluster.analytics-cache
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.ScalewayRedisCluster.analytics-cache
 spec:
   zone: nl-ams-1
   version: "7.2.5"

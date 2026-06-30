@@ -1,0 +1,23 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "module",
+    srcs = [
+        "locals.go",
+        "main.go",
+        "outputs.go",
+        "volume.go",
+    ],
+    importpath = "github.com/plantonhq/planton/apis/dev/planton/provider/digitalocean/digitaloceanvolume/v1/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/dev/planton/provider/digitalocean",
+        "//apis/dev/planton/provider/digitalocean/digitaloceanvolume/v1:digitaloceanvolume",
+        "//apis/dev/planton/shared/cloudresourcekind",
+        "//pkg/iac/pulumi/pulumimodule/provider/digitalocean/digitaloceanlabelkeys",
+        "//pkg/iac/pulumi/pulumimodule/provider/digitalocean/pulumidigitaloceanprovider",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_digitalocean_sdk_v4//go/digitalocean",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)

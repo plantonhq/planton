@@ -64,11 +64,11 @@ func TerraformOutputs(t testing.TB, opts *terraform.Options) (map[string]interfa
 // BuildTerratestOptions constructs Terratest Options from the prepared working
 // directory, tfvars path, and provider environment variables.
 //
-// The binary defaults to "tofu" (matching OpenMCF's CLI preference for OpenTofu).
-// Set OPENMCF_E2E_TF_BINARY="terraform" to use HashiCorp Terraform instead.
+// The binary defaults to "tofu" (matching Planton's CLI preference for OpenTofu).
+// Set PLANTON_E2E_TF_BINARY="terraform" to use HashiCorp Terraform instead.
 func BuildTerratestOptions(t testing.TB, workDir, tfvarsPath string, envVars map[string]string) *terraform.Options {
 	binary := "tofu"
-	if override := os.Getenv("OPENMCF_E2E_TF_BINARY"); override != "" {
+	if override := os.Getenv("PLANTON_E2E_TF_BINARY"); override != "" {
 		binary = override
 	}
 

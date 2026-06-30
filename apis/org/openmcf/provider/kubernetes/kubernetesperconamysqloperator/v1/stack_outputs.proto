@@ -1,9 +1,0 @@
-syntax = "proto3";
-
-package org.openmcf.provider.kubernetes.kubernetesperconamysqloperator.v1;
-
-// kubernetes-percona-mysql-operator-kubernetes stack outputs
-message KubernetesPerconaMysqlOperatorStackOutputs {
-  // Namespace where the operator is installed
-  string namespace = 1;
-}

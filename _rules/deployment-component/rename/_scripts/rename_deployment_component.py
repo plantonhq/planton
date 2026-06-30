@@ -128,7 +128,7 @@ def find_component_in_registry(repo_root: str, component_name: str) -> Optional[
     """
     registry_path = os.path.join(
         repo_root,
-        "apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto"
+        "apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto"
     )
     
     if not os.path.isfile(registry_path):
@@ -170,7 +170,7 @@ def get_component_directory(repo_root: str, provider: str, component_folder: str
     """Get path to component directory"""
     return os.path.join(
         repo_root,
-        "apis/org/openmcf/provider",
+        "apis/dev/planton/provider",
         provider,
         component_folder
     )
@@ -446,7 +446,7 @@ def main() -> int:
     parser.add_argument(
         '--provider',
         help='Provider name (e.g., openstack, aws, gcp). If provided, the component '
-             'directory is resolved directly as apis/org/openmcf/provider/{provider}/{component}. '
+             'directory is resolved directly as apis/dev/planton/provider/{provider}/{component}. '
              'If not provided, all provider directories are searched.'
     )
     
@@ -495,7 +495,7 @@ def main() -> int:
         
         provider = args.provider
         old_dir = None
-        providers_base = os.path.join(repo_root, "apis/org/openmcf/provider")
+        providers_base = os.path.join(repo_root, "apis/dev/planton/provider")
         
         if provider:
             # --provider was given: resolve the path directly, no searching

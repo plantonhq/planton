@@ -1,0 +1,14 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsElasticIp
+metadata:
+  name: test-eip
+  org: test-org
+  env: dev
+  id: test-eip-dev
+  labels:
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: test-org
+    pulumi.planton.dev/project: test-project
+    pulumi.planton.dev/stack.name: dev.AwsElasticIp.test-eip
+spec:
+  region: us-east-1

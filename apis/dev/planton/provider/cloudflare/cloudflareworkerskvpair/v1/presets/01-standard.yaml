@@ -1,0 +1,14 @@
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareWorkersKvPair
+metadata:
+  name: app-config-entry
+spec:
+  accountId: <cloudflare-account-id>
+  namespaceId:
+    valueFrom:
+      kind: CloudflareKvNamespace
+      name: <kv-namespace-name>
+      fieldPath: status.outputs.namespace_id
+  keyName: <key-name>
+  value: <value>
+  metadata: '{}'

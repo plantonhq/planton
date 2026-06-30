@@ -1,0 +1,379 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesdaemonset.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/container_env.proto";
+import "dev/planton/provider/kubernetes/kubernetes.proto";
+import "dev/planton/provider/kubernetes/options.proto";
+import "dev/planton/provider/kubernetes/probe.proto";
+import "dev/planton/provider/kubernetes/target_cluster.proto";
+import "dev/planton/provider/kubernetes/volume_mount.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+/**
+ * **KubernetesDaemonSetSpec** defines the configuration for deploying a DaemonSet on a Kubernetes cluster.
+ * A DaemonSet ensures that all (or some) nodes run a copy of a pod. As nodes are added to the cluster,
+ * pods are added to them. As nodes are removed from the cluster, those pods are garbage collected.
+ * Common use cases include: cluster storage daemons, log collection daemons, and node monitoring daemons.
+ */
+message KubernetesDaemonSetSpec {
+  // Target Kubernetes Cluster
+  dev.planton.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  // Kubernetes Namespace
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // Flag to indicate if the namespace should be created
+  bool create_namespace = 3;
+
+  // The container specifications for the DaemonSet.
+  // This includes configurations for the main application container and any sidecar containers.
+  KubernetesDaemonSetContainer container = 4 [(buf.validate.field).required = true];
+
+  // Node selector for constraining the DaemonSet pods to run on specific nodes.
+  // Key-value pairs that must match labels on nodes for the pod to be scheduled.
+  map<string, string> node_selector = 5;
+
+  // Tolerations allow the DaemonSet pods to be scheduled on nodes with matching taints.
+  // This is essential for running pods on master nodes or nodes with specific taints.
+  repeated KubernetesDaemonSetToleration tolerations = 6;
+
+  // The update strategy for the DaemonSet.
+  // Controls how pods are updated when the DaemonSet specification changes.
+  KubernetesDaemonSetUpdateStrategy update_strategy = 7;
+
+  // Minimum number of seconds for which a newly created DaemonSet pod should be ready
+  // without any of its container crashing, for it to be considered available.
+  // Defaults to 0 (pod will be considered available as soon as it is ready).
+  int32 min_ready_seconds = 8;
+
+  /**
+   * Flag to indicate if a ServiceAccount should be created for this DaemonSet.
+   * If true, a ServiceAccount with the name specified in service_account_name
+   * (or the DaemonSet name if not specified) will be created.
+   * The DaemonSet pods will use this ServiceAccount.
+   */
+  bool create_service_account = 9;
+
+  /**
+   * Name of the ServiceAccount to use for the DaemonSet pods.
+   * If create_service_account is true, a ServiceAccount with this name will be created.
+   * If create_service_account is false, this references an existing ServiceAccount.
+   * If not specified and create_service_account is true, uses the DaemonSet name.
+   */
+  string service_account_name = 10;
+
+  /**
+   * ConfigMaps to create alongside the DaemonSet.
+   * Key is the ConfigMap name, value is the content.
+   * These ConfigMaps can be referenced in volume mounts.
+   *
+   * Example:
+   *   config_maps:
+   *     vector-config: |
+   *       data_dir: /var/lib/vector
+   *       sources:
+   *         kubernetes_logs:
+   *           type: kubernetes_logs
+   */
+  map<string, string> config_maps = 11;
+
+  /**
+   * RBAC configuration for the DaemonSet ServiceAccount.
+   * Allows defining ClusterRole and Role permissions.
+   * Only used if create_service_account is true.
+   */
+  KubernetesDaemonSetRbac rbac = 12;
+}
+
+/**
+ * **KubernetesDaemonSetContainer** specifies the container configuration for the DaemonSet.
+ * It includes the main application container and any sidecar containers that need to run alongside it.
+ */
+message KubernetesDaemonSetContainer {
+  // The main application container specifications.
+  KubernetesDaemonSetContainerApp app = 1 [(buf.validate.field).required = true];
+
+  // A list of sidecar containers to be deployed alongside the main application container.
+  repeated dev.planton.provider.kubernetes.Container sidecars = 2;
+}
+
+/**
+ * **KubernetesDaemonSetContainerApp** specifies the configuration for the main application container.
+ * It includes the container image, resource allocations, environment variables, and health probes.
+ */
+message KubernetesDaemonSetContainerApp {
+  /**
+   * The container image to be used for the application.
+   * The `pull_secret_name` is the name of the image pull secret to be configured in the Kubernetes DaemonSet resource.
+   */
+  dev.planton.provider.kubernetes.ContainerImage image = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "spec.container.app.image.repo"
+      message: "Image repo is required"
+      expression: "has(this.repo) && this.repo != ''"
+    },
+    (buf.validate.field).cel = {
+      id: "spec.container.app.image.tag"
+      message: "Image tag is required"
+      expression: "has(this.tag) && this.tag != ''"
+    }
+  ];
+
+  // The CPU and memory resources allocated to the application container.
+  dev.planton.provider.kubernetes.ContainerResources resources = 2 [(dev.planton.provider.kubernetes.default_container_resources) = {
+    limits: {
+      cpu: "1000m"
+      memory: "1Gi"
+    }
+    requests: {
+      cpu: "50m"
+      memory: "100Mi"
+    }
+  }];
+
+  /**
+   * The environment variables and secrets for the application container.
+   */
+  dev.planton.provider.kubernetes.ContainerEnv env = 3;
+
+  /**
+   * A list of ports to be configured for the application container.
+   */
+  repeated KubernetesDaemonSetContainerAppPort ports = 4;
+
+  /**
+   * Volume mounts for the container.
+   * Supports ConfigMap, Secret, HostPath, EmptyDir, and PVC volumes.
+   * DaemonSets commonly need HostPath mounts for log collection, node monitoring, etc.
+   */
+  repeated dev.planton.provider.kubernetes.VolumeMount volume_mounts = 5;
+
+  /**
+   * Liveness probe configuration.
+   * Periodic probe of container liveness. Container will be restarted if the probe fails.
+   */
+  dev.planton.provider.kubernetes.Probe liveness_probe = 6;
+
+  /**
+   * Readiness probe configuration.
+   * Periodic probe of container service readiness.
+   */
+  dev.planton.provider.kubernetes.Probe readiness_probe = 7;
+
+  /**
+   * Startup probe configuration.
+   * Indicates whether the application within the container is started.
+   */
+  dev.planton.provider.kubernetes.Probe startup_probe = 8;
+
+  /**
+   * Command to run in the container (overrides the container image's ENTRYPOINT).
+   */
+  repeated string command = 9;
+
+  /**
+   * Arguments to pass to the command (overrides the container image's CMD).
+   */
+  repeated string args = 10;
+
+  /**
+   * Security context for the container.
+   * DaemonSets often need privileged access for node-level operations.
+   */
+  KubernetesDaemonSetSecurityContext security_context = 11;
+}
+
+/**
+ * **KubernetesDaemonSetContainerAppPort** specifies the port configuration for the application container.
+ */
+message KubernetesDaemonSetContainerAppPort {
+  // The name of the port (e.g., "metrics", "health").
+  // The name must only contain lowercase alphanumeric characters and hyphens.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "spec.container.app.ports.name"
+      message: "Name for ports must only contain lowercase alphanumeric characters and hyphens. Port names must also start and end with an alphanumeric character."
+      // https://regex101.com/r/dugcdl/1
+      expression: "this.matches('^[a-z0-9][a-z0-9-]*[a-z0-9]$')"
+    }
+  ];
+
+  // The port number on the container.
+  int32 container_port = 2 [(buf.validate.field).required = true];
+
+  // The network protocol used by the port (e.g., "TCP", "UDP", "SCTP").
+  string network_protocol = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "spec.container.app.ports.network_protocol"
+      message: 'The network protocol must be one of "SCTP", "TCP", or "UDP".'
+      expression: 'this in ["SCTP", "TCP", "UDP"]'
+    }
+  ];
+
+  // Host port to expose the container port on.
+  // Use with caution as it limits where pods can be scheduled.
+  int32 host_port = 4;
+}
+
+/**
+ * **KubernetesDaemonSetToleration** defines a toleration for the DaemonSet pods.
+ */
+message KubernetesDaemonSetToleration {
+  // Key is the taint key that the toleration applies to.
+  string key = 1;
+
+  // Operator represents a key's relationship to the value.
+  // Valid operators are Exists and Equal. Defaults to Equal.
+  string operator = 2 [(buf.validate.field).cel = {
+    id: "spec.tolerations.operator"
+    message: 'The operator must be one of "Exists" or "Equal".'
+    expression: 'this == "" || this in ["Exists", "Equal"]'
+  }];
+
+  // Value is the taint value the toleration matches to.
+  string value = 3;
+
+  // Effect indicates the taint effect to match.
+  // Valid effects are NoSchedule, PreferNoSchedule and NoExecute.
+  string effect = 4 [(buf.validate.field).cel = {
+    id: "spec.tolerations.effect"
+    message: 'The effect must be one of "NoSchedule", "PreferNoSchedule", or "NoExecute".'
+    expression: 'this == "" || this in ["NoSchedule", "PreferNoSchedule", "NoExecute"]'
+  }];
+
+  // TolerationSeconds represents the period of time the toleration tolerates the taint.
+  // Only applicable when effect is NoExecute.
+  int64 toleration_seconds = 5;
+}
+
+/**
+ * **KubernetesDaemonSetUpdateStrategy** defines the update strategy for the DaemonSet.
+ */
+message KubernetesDaemonSetUpdateStrategy {
+  // Type of update strategy.
+  // Can be "RollingUpdate" or "OnDelete".
+  // RollingUpdate: The DaemonSet controller creates new pods and deletes old ones progressively.
+  // OnDelete: Pods are only updated when they are manually deleted.
+  string type = 1 [(buf.validate.field).cel = {
+    id: "spec.update_strategy.type"
+    message: 'The update strategy type must be one of "RollingUpdate" or "OnDelete".'
+    expression: 'this == "" || this in ["RollingUpdate", "OnDelete"]'
+  }];
+
+  // Rolling update config params. Present only if type = "RollingUpdate".
+  KubernetesDaemonSetRollingUpdate rolling_update = 2;
+}
+
+/**
+ * **KubernetesDaemonSetRollingUpdate** defines the parameters for rolling update strategy.
+ */
+message KubernetesDaemonSetRollingUpdate {
+  // The maximum number of DaemonSet pods that can be unavailable during the update.
+  // Can be an absolute number or a percentage (e.g., "1" or "10%").
+  // This cannot be 0 if maxSurge is 0.
+  // Defaults to 1.
+  string max_unavailable = 1;
+
+  // The maximum number of nodes with an existing available DaemonSet pod that can have
+  // an updated DaemonSet pod during an update.
+  // Can be an absolute number or a percentage (e.g., "1" or "10%").
+  // Defaults to 0.
+  string max_surge = 2;
+}
+
+/**
+ * **KubernetesDaemonSetSecurityContext** defines the security context for the container.
+ */
+message KubernetesDaemonSetSecurityContext {
+  // Run as privileged container.
+  // DaemonSets often need privileged access for node-level operations.
+  bool privileged = 1;
+
+  // Run as a specific user ID.
+  int64 run_as_user = 2;
+
+  // Run as a specific group ID.
+  int64 run_as_group = 3;
+
+  // Run as non-root user.
+  bool run_as_non_root = 4;
+
+  // Make the root filesystem read-only.
+  bool read_only_root_filesystem = 5;
+
+  // Capabilities to add or drop.
+  KubernetesDaemonSetCapabilities capabilities = 6;
+}
+
+/**
+ * **KubernetesDaemonSetCapabilities** defines Linux capabilities to add or drop.
+ */
+message KubernetesDaemonSetCapabilities {
+  // List of capabilities to add.
+  repeated string add = 1;
+
+  // List of capabilities to drop.
+  repeated string drop = 2;
+}
+
+/**
+ * KubernetesDaemonSetRbac defines RBAC permissions for the DaemonSet ServiceAccount.
+ * Creates ClusterRole/ClusterRoleBinding for cluster-wide permissions
+ * and Role/RoleBinding for namespace-scoped permissions.
+ */
+message KubernetesDaemonSetRbac {
+  /**
+   * Cluster-wide RBAC rules.
+   * Creates a ClusterRole and ClusterRoleBinding.
+   * Use for permissions that span across namespaces (e.g., reading all pods).
+   */
+  repeated KubernetesDaemonSetRbacRule cluster_rules = 1;
+
+  /**
+   * Namespace-scoped RBAC rules.
+   * Creates a Role and RoleBinding in the DaemonSet's namespace.
+   * Use for permissions limited to the deployment namespace.
+   */
+  repeated KubernetesDaemonSetRbacRule namespace_rules = 2;
+}
+
+/**
+ * KubernetesDaemonSetRbacRule defines a single RBAC policy rule.
+ * Maps directly to Kubernetes RBAC PolicyRule.
+ */
+message KubernetesDaemonSetRbacRule {
+  /**
+   * API groups containing the resources.
+   * Use "" for core API group.
+   * Example: [""], ["apps"], ["batch"]
+   */
+  repeated string api_groups = 1 [(buf.validate.field).repeated.min_items = 1];
+
+  /**
+   * Resources this rule applies to.
+   * Example: ["pods", "services"], ["deployments"], ["configmaps", "secrets"]
+   */
+  repeated string resources = 2 [(buf.validate.field).repeated.min_items = 1];
+
+  /**
+   * Verbs specifying the actions allowed.
+   * Example: ["get", "list", "watch"], ["create", "update", "delete"]
+   */
+  repeated string verbs = 3 [(buf.validate.field).repeated.min_items = 1];
+
+  /**
+   * Resource names to limit the rule to specific resources.
+   * If empty, the rule applies to all resources of the specified type.
+   * Example: ["my-configmap", "my-secret"]
+   */
+  repeated string resource_names = 4;
+}

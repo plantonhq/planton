@@ -6,7 +6,7 @@
 
 ## Summary
 
-Removed OpenStackContainerClusterTemplate (enum 2523) and OpenStackContainerCluster (enum 2524) from the OpenMCF catalog. OpenStack Magnum uses legacy Heat templating for Kubernetes cluster provisioning, and the community is migrating to Ansible-driven Kubernetes deployments. Keeping these components would misalign the platform with industry direction.
+Removed OpenStackContainerClusterTemplate (enum 2523) and OpenStackContainerCluster (enum 2524) from the Planton catalog. OpenStack Magnum uses legacy Heat templating for Kubernetes cluster provisioning, and the community is migrating to Ansible-driven Kubernetes deployments. Keeping these components would misalign the platform with industry direction.
 
 ## Problem Statement / Motivation
 
@@ -93,7 +93,7 @@ After deleting source component directories, the site build pipeline was re-run:
 
 ## Related Work
 
-- Part of the OpenStack OpenMCF Components project (20260209.01)
+- Part of the OpenStack Planton Components project (20260209.01)
 - Components were originally created in Session 14 (Phase 6c/6d, 2026-02-09)
 - The `openstack/kubernetes-environment` InfraChart in the infra-charts repo was also deleted (it depended entirely on these Magnum components)
 

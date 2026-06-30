@@ -6,11 +6,11 @@
 
 ## Summary
 
-Renamed the `ExternalSecretsKubernetes` resource to `ExternalSecrets` across all proto definitions, documentation, and implementation code to align with OpenMCF's naming conventions for Kubernetes addon operators. This change eliminates redundant "Kubernetes" suffixes and improves consistency with other recently refactored addon resources like `AltinityOperator`, `ElasticOperator`, and `ExternalDns`.
+Renamed the `ExternalSecretsKubernetes` resource to `ExternalSecrets` across all proto definitions, documentation, and implementation code to align with Planton's naming conventions for Kubernetes addon operators. This change eliminates redundant "Kubernetes" suffixes and improves consistency with other recently refactored addon resources like `AltinityOperator`, `ElasticOperator`, and `ExternalDns`.
 
 ## Problem Statement / Motivation
 
-The External Secrets Operator resource was originally named `ExternalSecretsKubernetes`, which included a redundant "Kubernetes" suffix. This naming pattern was inconsistent with OpenMCF's design philosophy where:
+The External Secrets Operator resource was originally named `ExternalSecretsKubernetes`, which included a redundant "Kubernetes" suffix. This naming pattern was inconsistent with Planton's design philosophy where:
 
 ### Pain Points
 
@@ -20,7 +20,7 @@ The External Secrets Operator resource was originally named `ExternalSecretsKube
 - **Code Verbosity**: Proto message types like `ExternalSecretsKubernetesSpec` and `ExternalSecretsKubernetesStackInput` were excessively long
 - **Poor Developer Experience**: The redundancy made code harder to read and type
 
-The provider namespace (`org.openmcf.provider.kubernetes.addon.externalsecrets.v1`) already clearly indicates this is a Kubernetes component, so including "Kubernetes" in every message name adds noise without value.
+The provider namespace (`dev.planton.provider.kubernetes.addon.externalsecrets.v1`) already clearly indicates this is a Kubernetes component, so including "Kubernetes" in every message name adds noise without value.
 
 ## Solution / What's New
 
@@ -35,15 +35,15 @@ Performed a comprehensive rename from `ExternalSecretsKubernetes` to `ExternalSe
 
 ### Naming Convention
 
-The new naming follows OpenMCF's established pattern:
+The new naming follows Planton's established pattern:
 
 ```yaml
 # Before
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: ExternalSecretsKubernetes
 
 # After
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: ExternalSecrets
 ```
 
@@ -53,7 +53,7 @@ The directory path is now `provider/kubernetes/addon/externalsecrets/` (renamed 
 
 ### Proto File Changes
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/externalsecrets/v1/api.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/externalsecrets/v1/api.proto`
 
 ```protobuf
 // Before
@@ -71,7 +71,7 @@ message ExternalSecrets {
 }
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/externalsecrets/v1/spec.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/externalsecrets/v1/spec.proto`
 
 ```protobuf
 // Before
@@ -83,7 +83,7 @@ message ExternalSecretsSpec { ... }
 message ExternalSecretsSpecContainer { ... }
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/externalsecrets/v1/stack_input.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/externalsecrets/v1/stack_input.proto`
 
 ```protobuf
 // Before
@@ -97,7 +97,7 @@ message ExternalSecretsStackInput {
 }
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/externalsecrets/v1/stack_outputs.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/externalsecrets/v1/stack_outputs.proto`
 
 ```protobuf
 // Before
@@ -109,7 +109,7 @@ message ExternalSecretsStackOutputs { ... }
 
 ### Registry Update
 
-**File**: `apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto`
+**File**: `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto`
 
 ```protobuf
 // Before
@@ -131,7 +131,7 @@ ExternalSecrets = 829 [(kind_meta) = {
 
 ### Implementation Code Changes
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/externalsecrets/v1/iac/pulumi/main.go`
+**File**: `apis/dev/planton/provider/kubernetes/addon/externalsecrets/v1/iac/pulumi/main.go`
 
 ```go
 // Before
@@ -141,7 +141,7 @@ stackInput := &externalsecretskubernetesv1.ExternalSecretsKubernetesStackInput{}
 stackInput := &externalsecretsv1.ExternalSecretsStackInput{}
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/externalsecrets/v1/iac/pulumi/module/main.go`
+**File**: `apis/dev/planton/provider/kubernetes/addon/externalsecrets/v1/iac/pulumi/module/main.go`
 
 ```go
 // Before
@@ -216,7 +216,7 @@ Proto message names are now more concise:
 ### Naming Consistency
 
 Aligns with the pattern where the provider namespace provides sufficient context:
-- Package: `org.openmcf.provider.kubernetes.addon.externalsecrets.v1` (updated from `externalsecretskubernetes`)
+- Package: `dev.planton.provider.kubernetes.addon.externalsecrets.v1` (updated from `externalsecretskubernetes`)
 - Directory: `provider/kubernetes/addon/externalsecrets/` (renamed from `externalsecretskubernetes/`)
 - Kind: `ExternalSecrets` (context is already clear from package and directory)
 
@@ -244,7 +244,7 @@ Users must update their YAML manifests:
 
 ```yaml
 # Update required
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: ExternalSecrets  # Changed from: ExternalSecretsKubernetes
 metadata:
   name: external-secrets-prod
@@ -255,7 +255,7 @@ spec:
 ### Non-Breaking Aspects
 
 - **Import paths**: Import path base changed from `externalsecretskubernetes` to `externalsecrets` (follows directory rename)
-- **Package namespace**: Updated to `org.openmcf.provider.kubernetes.addon.externalsecrets.v1`
+- **Package namespace**: Updated to `dev.planton.provider.kubernetes.addon.externalsecrets.v1`
 - **Functionality**: Zero behavioral changes
 - **ID prefix**: Unchanged (`extseck8s`)
 - **Enum value**: Unchanged (829)
@@ -271,7 +271,7 @@ spec:
 
 ## Related Work
 
-This refactoring continues the naming consistency initiative across OpenMCF's Kubernetes addon operators:
+This refactoring continues the naming consistency initiative across Planton's Kubernetes addon operators:
 
 - **2025-11-13**: AltinityOperator naming consistency (completed)
 - **2025-11-13**: ExternalSecrets naming consistency (this change)
@@ -327,7 +327,7 @@ For users with existing manifests:
    find . -name "*.yaml" -type f -exec sed -i '' 's/kind: ExternalSecretsKubernetes/kind: ExternalSecrets/g' {} +
    ```
 
-2. **No CLI changes required** - The `openmcf` CLI will work with the new kind name automatically after updating to the version with this change
+2. **No CLI changes required** - The `planton` CLI will work with the new kind name automatically after updating to the version with this change
 
 3. **No infrastructure impact** - Existing deployed resources are unaffected; this only affects new deployments
 

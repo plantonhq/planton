@@ -12,7 +12,7 @@ Deploys an Alibaba Cloud Enhanced NAT Gateway with bundled EIP association and S
 
 ## What Gets Created
 
-When you deploy an AliCloudNatGateway resource, OpenMCF provisions:
+When you deploy an AliCloudNatGateway resource, Planton provisions:
 
 - **NAT Gateway** -- an `alicloud_nat_gateway` resource placed in the specified VPC and VSwitch
 - **EIP Association** -- an `alicloud_eip_association` binding the provided Elastic IP to the NAT Gateway
@@ -20,7 +20,7 @@ When you deploy an AliCloudNatGateway resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Alibaba Cloud credentials** configured via environment variables or OpenMCF provider config
+- **Alibaba Cloud credentials** configured via environment variables or Planton provider config
 - **An Alibaba Cloud VPC** -- the NAT Gateway must belong to a VPC (create one with AliCloudVpc)
 - **A VSwitch** -- the Enhanced NAT Gateway requires placement in a VSwitch (create with AliCloudVswitch)
 - **An Elastic IP** -- the NAT Gateway needs an EIP for outbound traffic (create with AliCloudEipAddress)
@@ -30,7 +30,7 @@ When you deploy an AliCloudNatGateway resource, OpenMCF provisions:
 Create a file `nat-gateway.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudNatGateway
 metadata:
   name: my-nat
@@ -56,7 +56,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f nat-gateway.yaml
+planton apply -f nat-gateway.yaml
 ```
 
 This creates an Enhanced NAT Gateway with one SNAT entry, enabling the specified VSwitch's traffic to reach the internet through the associated EIP.
@@ -101,7 +101,7 @@ This creates an Enhanced NAT Gateway with one SNAT entry, enabling the specified
 The simplest NAT configuration: one gateway, one EIP, one SNAT entry.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudNatGateway
 metadata:
   name: simple-nat
@@ -125,7 +125,7 @@ spec:
 Production NAT Gateway with deletion protection, VSwitch-based and CIDR-based SNAT entries, and foreign key references.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudNatGateway
 metadata:
   name: prod-nat
@@ -166,7 +166,7 @@ spec:
 NAT Gateway with fixed specification tier for predictable performance billing.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudNatGateway
 metadata:
   name: fixed-spec-nat
@@ -195,8 +195,8 @@ After deployment, the following outputs are available in `status.outputs`:
 |--------|------|-------------|
 | `nat_gateway_id` | string | NAT Gateway resource ID (e.g., `ngw-xxxxx`) |
 | `nat_gateway_name` | string | NAT Gateway name as created |
-| `snat_table_id` | string | SNAT table ID, for adding SNAT entries outside OpenMCF |
-| `forward_table_id` | string | Forward (DNAT) table ID, for adding DNAT entries outside OpenMCF |
+| `snat_table_id` | string | SNAT table ID, for adding SNAT entries outside Planton |
+| `forward_table_id` | string | Forward (DNAT) table ID, for adding DNAT entries outside Planton |
 
 ## Related Components
 

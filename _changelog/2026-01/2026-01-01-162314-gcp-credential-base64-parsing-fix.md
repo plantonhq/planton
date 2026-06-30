@@ -16,7 +16,7 @@ GCP Cloud SQL deployments were consistently failing with a cryptic proto syntax 
 error: an unhandled error occurred: program failed:
 1 error occurred:
   * failed to load stack-input: failed to load json into proto message:
-    proto: syntax error (line 1:3754): unexpected token "openmcf-testing"
+    proto: syntax error (line 1:3754): unexpected token "planton-testing"
 ```
 
 This error occurred during the Pulumi module execution phase, specifically when unmarshalling the stack input YAML into proto messages. The deployment worked correctly when running the backend locally but failed consistently in Docker containers.
@@ -75,7 +75,7 @@ Added support for testing Pulumi module changes without pushing to main:
 **File**: `pkg/iac/gitrepo/git_repo.go`
 
 ```go
-const CloneUrl = "https://github.com/plantonhq/openmcf.git"
+const CloneUrl = "https://github.com/plantonhq/planton.git"
 
 // Branch to checkout after cloning (set to empty string to use default behavior)
 const Branch = "ghcr_installable"
@@ -118,7 +118,7 @@ Backend (LOCAL CODE - has fixes)
   ↓ Triggers Pulumi deployment
 
 Git Clone from GitHub (RUNTIME)
-  ↓ Clones openmcf repo
+  ↓ Clones planton repo
   ↓ Gets Pulumi module code from GitHub
   ↓ NO FIXES (old code)
 
@@ -283,7 +283,7 @@ To test Pulumi module changes in a different branch:
 ### If GCP deployments still fail:
 
 1. **Check credential format**: Ensure base64 string ends with `==` or `=` (no newlines)
-2. **Clear Pulumi cache**: `rm -rf ~/.openmcf/pulumi`
+2. **Clear Pulumi cache**: `rm -rf ~/.planton/pulumi`
 3. **Verify branch**: Check logs for "Switched to a new branch" message
 4. **Check MongoDB**: Query database to verify credential has no trailing whitespace
 

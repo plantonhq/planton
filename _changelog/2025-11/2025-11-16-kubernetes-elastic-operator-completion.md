@@ -291,7 +291,7 @@ ok  	0.216s
 ### Created Files (13 new files)
 
 ```
-apis/org/openmcf/provider/kubernetes/kuberneteselasticoperator/v1/
+apis/dev/planton/provider/kubernetes/kuberneteselasticoperator/v1/
 ├── spec_test.go (NEW - 107 lines, 3.1 KB)
 ├── README.md (NEW - 9.3 KB)
 ├── examples.md (NEW - 8.3 KB)
@@ -316,7 +316,7 @@ apis/org/openmcf/provider/kubernetes/kuberneteselasticoperator/v1/
 ### Modified Files (2 files)
 
 ```
-apis/org/openmcf/provider/kubernetes/kuberneteselasticoperator/v1/iac/tf/
+apis/dev/planton/provider/kubernetes/kuberneteselasticoperator/v1/iac/tf/
 ├── variables.tf (FIXED - removed GitLab/ingress references)
 └── main.tf (CREATED - was empty 0 bytes)
 ```

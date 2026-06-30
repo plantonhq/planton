@@ -1,8 +1,0 @@
-apiVersion: alicloud.openmcf.org/v1
-kind: AliCloudVpc
-metadata:
-  name: alicloudvpc-demo
-spec:
-  region: cn-hangzhou
-  vpcName: alicloudvpc-demo
-  cidrBlock: "10.0.0.0/16"

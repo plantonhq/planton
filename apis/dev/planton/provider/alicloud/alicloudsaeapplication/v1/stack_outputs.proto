@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package dev.planton.provider.alicloud.alicloudsaeapplication.v1;
+
+// AliCloudSaeApplicationStackOutputs captures the outputs from deploying
+// an Alibaba Cloud SAE application.
+message AliCloudSaeApplicationStackOutputs {
+  // The SAE application ID assigned by Alibaba Cloud.
+  string app_id = 1;
+
+  // The application name (mirrors the spec input for downstream reference).
+  string app_name = 2;
+}

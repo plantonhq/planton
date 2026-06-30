@@ -14,8 +14,8 @@ The AWS resource expansion project targets comprehensive AWS coverage across mes
 
 ### Pain Points
 
-- No managed Kafka component in the OpenMCF catalog
-- Teams deploying MSK clusters manually or via raw Terraform/Pulumi without the benefits of OpenMCF's cross-resource composition, preset system, and declarative KRM API
+- No managed Kafka component in the Planton catalog
+- Teams deploying MSK clusters manually or via raw Terraform/Pulumi without the benefits of Planton's cross-resource composition, preset system, and declarative KRM API
 - Kafka configuration management (server.properties) typically requires a separate resource and workflow
 
 ## Solution / What's New
@@ -100,14 +100,14 @@ flowchart TB
 
 ## Impact
 
-- Developers and DevOps engineers can deploy managed Kafka clusters through OpenMCF's declarative API
+- Developers and DevOps engineers can deploy managed Kafka clusters through Planton's declarative API
 - Infra chart authors can compose MSK with VPC, security groups, KMS keys, log groups, Firehose streams, and S3 buckets using `valueFrom` references
 - The AWS catalog grows to 50 resource kinds (25 original + 25 new from expansion)
 
 ## Related Work
 
 - Part of the `20260215.02.sp.aws-resource-expansion` sub-project (R21)
-- Parent project: `20260212.01.openmcf-cloud-provider-expansion`
+- Parent project: `20260212.01.planton-cloud-provider-expansion`
 - Follows the managed SG pattern established by AwsRdsCluster and AwsRedshiftCluster, adapted for MSK's multi-port model
 - Next: R22 AwsSagemakerDomain
 

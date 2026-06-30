@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added OciCompartment (R04) as the fourth OCI resource kind in OpenMCF, wrapping `oci_identity_compartment`. Compartments are OCI's fundamental resource isolation primitive -- every other OCI resource lives within a compartment. This component is referenced by virtually every other OCI kind via `StringValueOrRef`, making it a critical foundation for the entire OCI catalog.
+Added OciCompartment (R04) as the fourth OCI resource kind in Planton, wrapping `oci_identity_compartment`. Compartments are OCI's fundamental resource isolation primitive -- every other OCI resource lives within a compartment. This component is referenced by virtually every other OCI kind via `StringValueOrRef`, making it a critical foundation for the entire OCI catalog.
 
 ## Problem Statement / Motivation
 
@@ -15,7 +15,7 @@ After completing the networking foundation (VCN, Subnet, NSG), the next gap was 
 ### Pain Points
 
 - Every OCI component's `compartmentId` field already had `default_kind = OciCompartment`, but the component did not yet exist
-- No way to manage compartment lifecycles (creation, tagging, deletion policy) through OpenMCF
+- No way to manage compartment lifecycles (creation, tagging, deletion policy) through Planton
 - Nested compartment hierarchies could not be expressed declaratively
 
 ## Solution / What's New
@@ -39,7 +39,7 @@ OciCompartmentSpec
 ### Component Structure
 
 ```
-apis/org/openmcf/provider/oci/ocicompartment/v1/
+apis/dev/planton/provider/oci/ocicompartment/v1/
 ├── spec.proto              # 4 fields
 ├── api.proto               # KRM wiring (OciCompartment, OciCompartmentStatus)
 ├── stack_input.proto       # OciCompartmentStackInput

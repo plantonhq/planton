@@ -6,13 +6,13 @@
 
 ## Summary
 
-Implemented a comprehensive build-time automation system that copies deployment component documentation from `apis/project/planton/provider/` to the Next.js documentation site, making 69 component docs from 8 providers automatically available at `https://openmcf.org/docs/catalog/{provider}/{component}`. The system generates frontmatter metadata, creates provider index pages organized under a "Catalog" section, and integrates seamlessly with the Next.js static export for GitHub Pages deployment—all while maintaining a single source of truth in the APIs directory and preserving manually created documentation.
+Implemented a comprehensive build-time automation system that copies deployment component documentation from `apis/project/planton/provider/` to the Next.js documentation site, making 69 component docs from 8 providers automatically available at `https://planton.dev/docs/catalog/{provider}/{component}`. The system generates frontmatter metadata, creates provider index pages organized under a "Catalog" section, and integrates seamlessly with the Next.js static export for GitHub Pages deployment—all while maintaining a single source of truth in the APIs directory and preserving manually created documentation.
 
 ## Problem Statement / Motivation
 
-The openmcf repository contains comprehensive deployment component documentation in `apis/project/planton/provider/{provider}/{component}/v1/docs/README.md` files. These docs are created using the research-driven workflow (`@generate-deployment-component-research-prompt` → deep research → `@write-docs-slash-readme-from-research-report`), resulting in high-quality, detailed documentation for each deployment component.
+The planton repository contains comprehensive deployment component documentation in `apis/project/planton/provider/{provider}/{component}/v1/docs/README.md` files. These docs are created using the research-driven workflow (`@generate-deployment-component-research-prompt` → deep research → `@write-docs-slash-readme-from-research-report`), resulting in high-quality, detailed documentation for each deployment component.
 
-However, these docs were isolated in the APIs directory and not accessible via the openmcf.org documentation site. Users visiting the site couldn't browse available deployment components or read comprehensive deployment guides.
+However, these docs were isolated in the APIs directory and not accessible via the planton.dev documentation site. Users visiting the site couldn't browse available deployment components or read comprehensive deployment guides.
 
 ### Pain Points
 
@@ -118,14 +118,14 @@ componentName: "${component}"
 ```markdown
 ---
 title: "AWS"
-description: "Deploy AWS resources using OpenMCF"
+description: "Deploy AWS resources using Planton"
 icon: "cloud"
 order: 10
 ---
 
 # AWS
 
-The following AWS resources can be deployed using OpenMCF:
+The following AWS resources can be deployed using Planton:
 
 - [AWS ALB](/docs/catalog/aws/awsalb)
 - [AWS Route53 Zone](/docs/catalog/aws/awsroute53zone)
@@ -413,7 +413,7 @@ cd site && yarn build
 ```
 
 3. Documentation available at:
-- `https://openmcf.org/docs/catalog/aws/awsnewservice`
+- `https://planton.dev/docs/catalog/aws/awsnewservice`
 
 ### Local Development Workflow
 
@@ -631,7 +631,7 @@ These iterations demonstrate the importance of:
 This implementation follows patterns established in:
 - **planton.ai**: Git-as-CMS documentation approach
 - **Next.js Documentation**: Static site generation with file-based routing
-- **OpenMCF CLI**: Build-time code generation philosophy
+- **Planton CLI**: Build-time code generation philosophy
 
 ### Prior Changelogs
 

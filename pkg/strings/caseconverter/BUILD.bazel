@@ -3,6 +3,6 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "caseconverter",
     srcs = ["case_converter.go"],
-    importpath = "github.com/plantonhq/openmcf/pkg/strings/caseconverter",
+    importpath = "github.com/plantonhq/planton/pkg/strings/caseconverter",
     visibility = ["//visibility:public"],
 )

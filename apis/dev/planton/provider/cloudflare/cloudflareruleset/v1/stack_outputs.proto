@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package dev.planton.provider.cloudflare.cloudflareruleset.v1;
+
+// CloudflareRulesetStackOutputs captures the observable outputs after provisioning a Cloudflare Ruleset.
+message CloudflareRulesetStackOutputs {
+  // The Cloudflare-assigned unique identifier of the ruleset.
+  string ruleset_id = 1;
+
+  // The current version of the ruleset (increments on each update).
+  string version = 2;
+
+  // The zone ID the ruleset belongs to (pass-through for downstream resource references).
+  string zone_id = 3;
+
+  // The phase the ruleset executes in (pass-through for infra-chart conditionals).
+  string phase = 4;
+
+  // RFC3339 timestamp of the ruleset's last update.
+  string last_updated = 5;
+}

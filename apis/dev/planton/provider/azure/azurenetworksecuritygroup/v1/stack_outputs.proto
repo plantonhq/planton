@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azurenetworksecuritygroup.v1;
+
+// **AzureNetworkSecurityGroupStackOutputs** captures the outputs of provisioning
+// an Azure Network Security Group.
+//
+// The primary output is `nsg_id`, which is referenced by infra charts that create
+// subnet-to-NSG associations. In the enterprise-network-foundation infra chart,
+// each tier (web, app, data, management) gets its own NSG, and the chart wires
+// each NSG to its corresponding subnet via `azurerm_subnet_network_security_group_association`.
+message AzureNetworkSecurityGroupStackOutputs {
+  // The Azure Resource Manager ID of the Network Security Group.
+  // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkSecurityGroups/{name}
+  // This is the primary output used by infra charts for subnet-NSG association.
+  string nsg_id = 1;
+
+  // The name of the Network Security Group.
+  string nsg_name = 2;
+}

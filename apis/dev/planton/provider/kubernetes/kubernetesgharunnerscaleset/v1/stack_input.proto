@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesgharunnerscaleset.v1;
+
+import "dev/planton/provider/kubernetes/kubernetesgharunnerscaleset/v1/api.proto";
+import "dev/planton/provider/kubernetes/provider.proto";
+
+// KubernetesGhaRunnerScaleSetStackInput defines the inputs required for the IaC modules.
+message KubernetesGhaRunnerScaleSetStackInput {
+  // target cloud-resource
+  KubernetesGhaRunnerScaleSet target = 1;
+  // provider-config for Kubernetes
+  dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+}

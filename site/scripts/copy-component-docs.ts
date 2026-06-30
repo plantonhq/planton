@@ -6,8 +6,8 @@ import * as path from 'path';
 /**
  * Build script to copy deployment component documentation from apis/ to site/public/docs/catalog/
  *
- * Scans: apis/org/openmcf/provider/{provider}/{component}/v1/catalog-page.md (or docs/README.md)
- * Also:  apis/org/openmcf/provider/{provider}/{component}/v1/presets/*.yaml + *.md
+ * Scans: apis/dev/planton/provider/{provider}/{component}/v1/catalog-page.md (or docs/README.md)
+ * Also:  apis/dev/planton/provider/{provider}/{component}/v1/presets/*.yaml + *.md
  *
  * Outputs:
  *   site/public/docs/catalog/{provider}/{slug}/index.md          (catalog page)
@@ -660,14 +660,14 @@ function generateProviderIndex(
 
   const indexContent = `---
 title: "${providerTitle}"
-description: "Deploy ${providerTitle} resources using OpenMCF"
+description: "Deploy ${providerTitle} resources using Planton"
 icon: "cloud"
 order: 10
 ---
 
 # ${providerTitle}
 
-The following ${providerTitle} resources can be deployed using OpenMCF:
+The following ${providerTitle} resources can be deployed using Planton:
 
 ${componentList}
 `;
@@ -736,7 +736,7 @@ async function copyComponentDocs(): Promise<void> {
   // Paths
   const scriptDir = __dirname;
   const projectRoot = path.join(scriptDir, '../..');
-  const apisRoot = path.join(projectRoot, 'apis/org/openmcf/provider');
+  const apisRoot = path.join(projectRoot, 'apis/dev/planton/provider');
   const siteDocsRoot = path.join(scriptDir, '../public/docs/catalog');
 
   // Dynamically discover provider directories to clear (prevents stale files from previous builds)

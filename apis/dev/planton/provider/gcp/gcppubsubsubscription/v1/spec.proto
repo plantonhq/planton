@@ -1,0 +1,319 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcppubsubsubscription.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// GcpPubSubSubscriptionExpirationPolicy configures when an inactive subscription
+// expires and is automatically deleted. A subscription is considered active when
+// any connected subscriber is successfully consuming messages or issuing operations.
+//
+// If not set, GCP applies a default TTL of 31 days. Set ttl to an empty string
+// ("") to create a subscription that never expires.
+message GcpPubSubSubscriptionExpirationPolicy {
+  // Duration after which the subscription expires if inactive.
+  // Format: duration string (e.g., "2592000s" for 30 days).
+  // Minimum: 86400s (1 day). Set to "" for a subscription that never expires.
+  string ttl = 1;
+}
+
+// GcpPubSubSubscriptionDeadLetterPolicy configures dead-letter handling for
+// messages that cannot be processed after repeated delivery attempts. Messages
+// exceeding the maximum delivery attempts are forwarded to the dead-letter topic.
+//
+// The Pub/Sub service account (service-{project_number}@gcp-sa-pubsub.iam.gserviceaccount.com)
+// must have Subscriber permissions on this subscription and Publisher permissions
+// on the dead-letter topic.
+message GcpPubSubSubscriptionDeadLetterPolicy {
+  // The topic to which dead-letter messages are published.
+  // Format: projects/{project}/topics/{topic}
+  dev.planton.shared.foreignkey.v1.StringValueOrRef dead_letter_topic = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpPubSubTopic,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.topic_id"
+  ];
+
+  // Maximum number of delivery attempts before a message is dead-lettered.
+  // A delivery attempt is counted as 1 + (NACKs + ack deadline exceeded events).
+  // Range: 5 to 100. Defaults to 5 when set to 0.
+  int32 max_delivery_attempts = 2 [(buf.validate.field).cel = {
+    id: "max_delivery_attempts_range"
+    expression: "this == 0 || (this >= 5 && this <= 100)"
+    message: "max_delivery_attempts must be between 5 and 100, or 0 for default (5)"
+  }];
+}
+
+// GcpPubSubSubscriptionRetryPolicy configures how Pub/Sub retries message
+// delivery after a NACK or acknowledgement deadline exceeded event. If not set,
+// messages are retried as soon as possible.
+message GcpPubSubSubscriptionRetryPolicy {
+  // Minimum delay between consecutive delivery attempts of a given message.
+  // Format: duration string (e.g., "10s").
+  // Range: 0s to 600s. Defaults to 10s.
+  string minimum_backoff = 1;
+
+  // Maximum delay between consecutive delivery attempts of a given message.
+  // Format: duration string (e.g., "600s").
+  // Range: 0s to 600s. Defaults to 600s.
+  string maximum_backoff = 2;
+}
+
+// GcpPubSubSubscriptionPushConfigOidcToken configures OIDC-based authentication
+// for push deliveries. Pub/Sub generates a signed JWT and attaches it as an
+// Authorization header in each HTTP request to the push endpoint.
+message GcpPubSubSubscriptionPushConfigOidcToken {
+  // Service account email used to generate the OIDC token.
+  // The caller must have iam.serviceAccounts.actAs permission on this account.
+  string service_account_email = 1 [(buf.validate.field).required = true];
+
+  // Audience claim for the OIDC token. Identifies the intended recipient.
+  // Defaults to the push endpoint URL if not specified.
+  string audience = 2;
+}
+
+// GcpPubSubSubscriptionPushConfigNoWrapper configures unwrapped payload delivery.
+// When set, the raw message data is sent as the HTTP body without the standard
+// Pub/Sub message envelope. Useful for webhook integrations that expect
+// application-specific payloads.
+message GcpPubSubSubscriptionPushConfigNoWrapper {
+  // When true, Pub/Sub message metadata is written as HTTP headers
+  // (x-goog-pubsub-<key>:<value>) and message attributes as plain headers.
+  bool write_metadata = 1;
+}
+
+// GcpPubSubSubscriptionPushConfig configures push delivery to an HTTPS endpoint.
+// Pub/Sub sends each message as an HTTP POST request to the configured endpoint.
+//
+// Mutually exclusive with bigquery_config and cloud_storage_config.
+// If none of the three delivery configs are set, the subscription uses pull delivery.
+message GcpPubSubSubscriptionPushConfig {
+  // URL to which Pub/Sub pushes messages. Must use HTTPS.
+  string push_endpoint = 1 [(buf.validate.field).required = true];
+
+  // Endpoint configuration attributes. The supported attribute is "x-goog-version"
+  // which controls the push message format ("v1beta1" or "v1").
+  map<string, string> attributes = 2;
+
+  // OIDC token configuration for authenticating push requests.
+  GcpPubSubSubscriptionPushConfigOidcToken oidc_token = 3;
+
+  // When set, the message payload is sent unwrapped (no Pub/Sub envelope).
+  GcpPubSubSubscriptionPushConfigNoWrapper no_wrapper = 4;
+}
+
+// GcpPubSubSubscriptionBigQueryConfig configures delivery to a BigQuery table.
+// Each message is written as a row. Pub/Sub handles batching and streaming inserts.
+//
+// Mutually exclusive with push_config and cloud_storage_config.
+message GcpPubSubSubscriptionBigQueryConfig {
+  // The BigQuery table to write messages to.
+  // Format: {project_id}.{dataset_id}.{table_id}
+  string table = 1 [(buf.validate.field).required = true];
+
+  // When true, use the Pub/Sub topic's schema to map message fields to BigQuery columns.
+  // Only one of use_topic_schema and use_table_schema can be true.
+  bool use_topic_schema = 2;
+
+  // When true, use the BigQuery table's schema to determine which message fields
+  // to write. Only one of use_topic_schema and use_table_schema can be true.
+  bool use_table_schema = 3;
+
+  // When true (and use_topic_schema or use_table_schema is true), message fields
+  // not present in the BigQuery table schema are silently dropped. When false,
+  // messages with extra fields are not written and remain in the backlog.
+  bool drop_unknown_fields = 4;
+
+  // When true, the subscription name, messageId, publishTime, attributes, and
+  // orderingKey are written to additional columns in the BigQuery table.
+  bool write_metadata = 5;
+
+  // Service account to use for writing to BigQuery. Defaults to the Pub/Sub
+  // service agent if not specified.
+  string service_account_email = 6;
+}
+
+// GcpPubSubSubscriptionCloudStorageConfigAvroConfig configures Avro format
+// for Cloud Storage delivery.
+message GcpPubSubSubscriptionCloudStorageConfigAvroConfig {
+  // When true, serialize output using the topic schema.
+  bool use_topic_schema = 1;
+
+  // When true, include subscription name, messageId, publishTime, attributes,
+  // and orderingKey as additional fields in the Avro output.
+  bool write_metadata = 2;
+}
+
+// GcpPubSubSubscriptionCloudStorageConfig configures delivery to a Cloud Storage
+// bucket. Messages are batched and written as objects based on size, duration,
+// or message count thresholds.
+//
+// Mutually exclusive with push_config and bigquery_config.
+message GcpPubSubSubscriptionCloudStorageConfig {
+  // The Cloud Storage bucket to write messages to (without "gs://" prefix).
+  // The bucket must already exist.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef bucket = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpGcsBucket,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_id"
+  ];
+
+  // Prefix for Cloud Storage filenames.
+  string filename_prefix = 2;
+
+  // Suffix for Cloud Storage filenames. Must not end in "/".
+  string filename_suffix = 3;
+
+  // Format string for datetime in Cloud Storage filenames.
+  string filename_datetime_format = 4;
+
+  // Maximum bytes per Cloud Storage file before a new file is created.
+  // Range: 1024 (1 KB) to 10737418240 (10 GiB).
+  int64 max_bytes = 5;
+
+  // Maximum duration before a new Cloud Storage file is created.
+  // Format: duration string (e.g., "300s").
+  // Range: 60s (1 minute) to 600s (10 minutes). Default: 300s (5 minutes).
+  // Must not exceed the subscription's ack_deadline_seconds.
+  string max_duration = 6;
+
+  // Maximum number of messages per Cloud Storage file. Minimum: 1000.
+  int64 max_messages = 7;
+
+  // Avro format configuration. When set, messages are written in Avro format.
+  // If not set, messages are written in their raw format.
+  GcpPubSubSubscriptionCloudStorageConfigAvroConfig avro_config = 8;
+
+  // Service account to use for writing to Cloud Storage. Defaults to the Pub/Sub
+  // service agent if not specified.
+  string service_account_email = 9;
+}
+
+// GcpPubSubSubscriptionSpec defines the configuration for a GCP Pub/Sub subscription.
+//
+// A subscription is a named resource representing the stream of messages from a
+// single, specific topic, to be delivered to the subscribing application. Pub/Sub
+// supports four delivery methods:
+//
+//   - **Pull** (default): The subscriber pulls messages using the API.
+//   - **Push**: Pub/Sub sends messages as HTTP POST requests to an endpoint.
+//   - **BigQuery**: Pub/Sub writes messages directly to a BigQuery table.
+//   - **Cloud Storage**: Pub/Sub writes messages to Cloud Storage objects.
+//
+// Only one delivery method can be active. If none of push_config, bigquery_config,
+// or cloud_storage_config is set, the subscription defaults to pull delivery.
+//
+// Important behavioral notes:
+//
+//   - The subscription_name and filter fields are immutable after creation.
+//     Changing either requires destroying and recreating the subscription.
+//
+//   - enable_message_ordering is immutable after creation. Once enabled,
+//     messages with the same ordering key are delivered in publish order.
+//
+//   - enable_exactly_once_delivery guarantees each message is delivered exactly
+//     once within the acknowledgement deadline window. Does not prevent duplicate
+//     delivery if the publisher sends the same message multiple times.
+message GcpPubSubSubscriptionSpec {
+  option (buf.validate.message).cel = {
+    id: "delivery_method_mutual_exclusion"
+    expression: "(!has(this.push_config) || !has(this.bigquery_config)) && (!has(this.push_config) || !has(this.cloud_storage_config)) && (!has(this.bigquery_config) || !has(this.cloud_storage_config))"
+    message: "only one of push_config, bigquery_config, or cloud_storage_config can be set; if none is set, the subscription uses pull delivery"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "bigquery_schema_mutual_exclusion"
+    expression: "!has(this.bigquery_config) || !(this.bigquery_config.use_topic_schema && this.bigquery_config.use_table_schema)"
+    message: "only one of use_topic_schema and use_table_schema can be true in bigquery_config"
+  };
+
+  // GCP project where the subscription will be created.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // Name of the Pub/Sub subscription.
+  // Must be 3-255 characters, start with a letter, and contain only letters,
+  // numbers, hyphens, underscores, periods, tildes, plus signs, and percent signs.
+  // Immutable after creation.
+  string subscription_name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 3,
+    (buf.validate.field).string.max_len = 255,
+    (buf.validate.field).string.pattern = "^[a-zA-Z][a-zA-Z0-9\\-_\\.~+%]*$"
+  ];
+
+  // The topic from which this subscription receives messages.
+  // Format: projects/{project}/topics/{name} or just the topic name if
+  // the topic is in the same project as the subscription.
+  // Immutable after creation.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef topic = 3 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpPubSubTopic,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.topic_id"
+  ];
+
+  // Maximum time (in seconds) after a subscriber receives a message before the
+  // subscriber should acknowledge the message. After the deadline expires,
+  // the message is redelivered.
+  // Range: 10 to 600 seconds. Defaults to 10 seconds.
+  int32 ack_deadline_seconds = 4 [(buf.validate.field).cel = {
+    id: "ack_deadline_range"
+    expression: "this == 0 || (this >= 10 && this <= 600)"
+    message: "ack_deadline_seconds must be between 10 and 600, or 0 for default (10)"
+  }];
+
+  // How long to retain unacknowledged messages in the subscription's backlog.
+  // If retain_acked_messages is true, this also controls retention of acknowledged
+  // messages and determines how far back a seek operation can go.
+  // Format: duration string (e.g., "604800s" for 7 days).
+  // Range: 600s (10 minutes) to 2678400s (31 days). Default: 604800s (7 days).
+  string message_retention_duration = 5;
+
+  // When true, acknowledged messages are retained in the backlog until they
+  // fall out of the message_retention_duration window. Enables replay via seek.
+  bool retain_acked_messages = 6;
+
+  // Expiration policy for the subscription. Controls automatic deletion of
+  // inactive subscriptions. If not set, GCP defaults to 31 days TTL.
+  GcpPubSubSubscriptionExpirationPolicy expiration_policy = 7;
+
+  // Message attribute filter expression. Only messages matching the filter are
+  // delivered; non-matching messages are automatically acknowledged.
+  // Maximum length: 256 bytes. Immutable after creation.
+  string filter = 8 [(buf.validate.field).string.max_len = 256];
+
+  // When true, messages with the same ordering key are delivered to subscribers
+  // in the order they were published. Immutable after creation.
+  bool enable_message_ordering = 9;
+
+  // When true, Pub/Sub guarantees that a message is not resent before its
+  // acknowledgement deadline expires. An acknowledged message will not be
+  // resent. Note: subscribers may still receive duplicates if the publisher
+  // sends the same message multiple times.
+  bool enable_exactly_once_delivery = 10;
+
+  // Dead-letter policy. Messages that cannot be processed after repeated
+  // delivery attempts are forwarded to the configured dead-letter topic.
+  GcpPubSubSubscriptionDeadLetterPolicy dead_letter_policy = 11;
+
+  // Retry policy. Controls the backoff between consecutive delivery attempts
+  // after a NACK or ack deadline exceeded event.
+  GcpPubSubSubscriptionRetryPolicy retry_policy = 12;
+
+  // Push delivery configuration. When set, Pub/Sub sends messages as HTTP POST
+  // requests to the configured endpoint. Mutually exclusive with bigquery_config
+  // and cloud_storage_config.
+  GcpPubSubSubscriptionPushConfig push_config = 13;
+
+  // BigQuery delivery configuration. When set, Pub/Sub writes messages directly
+  // to a BigQuery table. Mutually exclusive with push_config and
+  // cloud_storage_config.
+  GcpPubSubSubscriptionBigQueryConfig bigquery_config = 14;
+
+  // Cloud Storage delivery configuration. When set, Pub/Sub writes messages to
+  // Cloud Storage objects in batches. Mutually exclusive with push_config and
+  // bigquery_config.
+  GcpPubSubSubscriptionCloudStorageConfig cloud_storage_config = 15;
+}

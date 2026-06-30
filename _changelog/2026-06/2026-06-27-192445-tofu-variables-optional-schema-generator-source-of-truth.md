@@ -84,7 +84,7 @@ instead of being derived per kind — which also stops orchestrator-only envelop
 
 `ProtoToVariablesTF` no longer downloads `docs.json` over HTTP for descriptions; output depends only on
 the compiled proto descriptor, so it is reproducible. `TestVariablesTFDrift` asserts each migrated
-module's committed `variables.tf` equals the generator output (`OPENMCF_REGEN_VARIABLES=1` rewrites),
+module's committed `variables.tf` equals the generator output (`PLANTON_REGEN_VARIABLES=1` rewrites),
 making the generator the single source of truth — a module can never silently regress to a hand-edited
 or legacy schema.
 
@@ -124,7 +124,7 @@ used the wrong AWS provider argument: `s3_encryption_enabled` -> `s3_bucket_encr
 
 - The 12 migrated AWS kinds (notably the `aws-ecs-environment` chart members) deploy/destroy without
   the variable-validation failure.
-- Module authors regenerate `variables.tf` with `OPENMCF_REGEN_VARIABLES=1 go test ./pkg/iac/tofu/generators/ -run TestVariablesTFDrift`
+- Module authors regenerate `variables.tf` with `PLANTON_REGEN_VARIABLES=1 go test ./pkg/iac/tofu/generators/ -run TestVariablesTFDrift`
   and rely on the drift guard to keep modules honest.
 
 ## Known Limitations / Future Enhancements
@@ -139,7 +139,7 @@ used the wrong AWS provider argument: `s3_encryption_enabled` -> `s3_bucket_encr
 
 ## Related Work
 
-- OpenMCF — IaC Modules (provider-abstraction vs CRD-projection archetypes; the converter/generator).
+- Planton — IaC Modules (provider-abstraction vs CRD-projection archetypes; the converter/generator).
 
 ---
 

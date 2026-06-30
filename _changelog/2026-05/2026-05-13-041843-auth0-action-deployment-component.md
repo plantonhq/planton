@@ -6,11 +6,11 @@
 
 ## Summary
 
-Added `Auth0Action` as the fifth Auth0 deployment component in OpenMCF, covering the full forge lifecycle: protobuf API definitions with CEL validations, dual IaC modules (Pulumi Go + Terraform HCL) with optional trigger binding, comprehensive documentation, 3 ready-to-deploy presets, and 22 passing validation tests. Registered as `CloudResourceKind = 2104` with prefix `a0act`.
+Added `Auth0Action` as the fifth Auth0 deployment component in Planton, covering the full forge lifecycle: protobuf API definitions with CEL validations, dual IaC modules (Pulumi Go + Terraform HCL) with optional trigger binding, comprehensive documentation, 3 ready-to-deploy presets, and 22 passing validation tests. Registered as `CloudResourceKind = 2104` with prefix `a0act`.
 
 ## Problem Statement / Motivation
 
-Auth0 Actions are the primary extensibility mechanism for customizing Auth0 authentication pipelines — token enrichment, registration gating, MFA enforcement, custom providers. OpenMCF already supported 4 Auth0 resource types (`Auth0Client`, `Auth0Connection`, `Auth0EventStream`, `Auth0ResourceServer`) but had no way to manage Actions as infrastructure.
+Auth0 Actions are the primary extensibility mechanism for customizing Auth0 authentication pipelines — token enrichment, registration gating, MFA enforcement, custom providers. Planton already supported 4 Auth0 resource types (`Auth0Client`, `Auth0Connection`, `Auth0EventStream`, `Auth0ResourceServer`) but had no way to manage Actions as infrastructure.
 
 ### Pain Points
 
@@ -20,7 +20,7 @@ Auth0 Actions are the primary extensibility mechanism for customizing Auth0 auth
 
 ## Solution / What's New
 
-A complete `Auth0Action` deployment component following the OpenMCF forge pattern — same structure, same workflow, any Auth0 tenant.
+A complete `Auth0Action` deployment component following the Planton forge pattern — same structure, same workflow, any Auth0 tenant.
 
 ### Resource Creation Flow
 
@@ -40,7 +40,7 @@ flowchart TB
 
 ### Key Design Decision: Inline Trigger Binding
 
-The Terraform provider models `auth0_action` and `auth0_trigger_action` as separate resources. The OpenMCF spec embeds an optional `trigger_binding` field inline — matching the `Auth0Client.api_grants` pattern — because:
+The Terraform provider models `auth0_action` and `auth0_trigger_action` as separate resources. The Planton spec embeds an optional `trigger_binding` field inline — matching the `Auth0Client.api_grants` pattern — because:
 
 1. Auth0 limits actions to exactly one trigger (no fan-out)
 2. The 80/20 case is always "create + deploy + bind" in one manifest
@@ -98,15 +98,15 @@ The Terraform provider models `auth0_action` and `auth0_trigger_action` as separ
 
 ## Impact
 
-- OpenMCF Auth0 provider grows from 4 → 5 kinds
+- Planton Auth0 provider grows from 4 → 5 kinds
 - `CloudResourceKind` enum: `Auth0Action = 2104`, prefix `a0act`
 - Planton users gain declarative Auth0 Action management through the same Cloud Object workflow
-- Standalone CLI users get `openmcf apply -f action.yaml` for Actions
+- Standalone CLI users get `planton apply -f action.yaml` for Actions
 
 ## Files Changed
 
 ```
-apis/org/openmcf/provider/auth0/auth0action/v1/    (new — 40 files)
+apis/dev/planton/provider/auth0/auth0action/v1/    (new — 40 files)
   spec.proto, api.proto, stack_outputs.proto, stack_input.proto
   spec_test.go, *.pb.go (generated), BUILD.bazel (generated)
   README.md, examples.md, catalog-page.md, docs/README.md
@@ -116,13 +116,13 @@ apis/org/openmcf/provider/auth0/auth0action/v1/    (new — 40 files)
   iac/tf/{provider.tf, variables.tf, locals.tf, main.tf, outputs.tf, README.md}
   presets/{01-*.yaml, 01-*.md, 02-*.yaml, 02-*.md, 03-*.yaml, 03-*.md}
 
-apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto  (modified — +4 lines)
+apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto  (modified — +4 lines)
 ```
 
 ## Related Work
 
 - Sibling Auth0 components: `auth0client`, `auth0connection`, `auth0eventstream`, `auth0resourceserver`
-- Forge rule: `_rules/deployment-component/forge/forge-openmcf-component.mdc`
+- Forge rule: `_rules/deployment-component/forge/forge-planton-component.mdc`
 - Reference implementation studied: `terraform-provider-auth0/internal/auth0/action/`
 
 ---

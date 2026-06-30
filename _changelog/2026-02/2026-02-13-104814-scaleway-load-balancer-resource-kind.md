@@ -6,7 +6,7 @@
 
 ## Summary
 
-Implemented ScalewayLoadBalancer (R05), the most complex Scaleway composite resource kind. It bundles a Flexible IP, Load Balancer appliance, backend server pools, frontend listeners, and TLS certificates into a single declarative resource with named backend/frontend linking -- a pattern new to OpenMCF. This is the 5th of 19 Scaleway resource kinds.
+Implemented ScalewayLoadBalancer (R05), the most complex Scaleway composite resource kind. It bundles a Flexible IP, Load Balancer appliance, backend server pools, frontend listeners, and TLS certificates into a single declarative resource with named backend/frontend linking -- a pattern new to Planton. This is the 5th of 19 Scaleway resource kinds.
 
 ## Problem Statement / Motivation
 
@@ -16,7 +16,7 @@ Scaleway's Load Balancer service requires 5 separate Terraform resources to func
 
 - A Load Balancer without backends, frontends, and an IP is useless
 - Users must manually wire Terraform resource IDs between LB sub-resources
-- No existing OpenMCF resource exposes the Scaleway LB service
+- No existing Planton resource exposes the Scaleway LB service
 - The LB is a critical building block for production traffic management
 
 ## Solution / What's New
@@ -142,7 +142,7 @@ Consciously excluded from v1 (can be added without breaking changes):
 
 ## Files Created
 
-- `apis/org/openmcf/provider/scaleway/scalewayloadbalancer/v1/` -- 18 files
+- `apis/dev/planton/provider/scaleway/scalewayloadbalancer/v1/` -- 18 files
   - 4 proto schemas
   - 7 Pulumi Go module files (+ Pulumi.yaml)
   - 5 Terraform HCL module files

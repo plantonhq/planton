@@ -12,7 +12,7 @@ Deploys a one-shot batch workload to Kubernetes as a Job with configurable paral
 
 ## What Gets Created
 
-When you deploy a KubernetesJob resource, OpenMCF provisions:
+When you deploy a KubernetesJob resource, Planton provisions:
 
 - **Namespace** — created only when `createNamespace` is `true`
 - **Job** — a Kubernetes batch/v1 Job with the specified container image, resource limits, parallelism, completion requirements, retry policy, and optional deadline
@@ -22,7 +22,7 @@ When you deploy a KubernetesJob resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
 - **A container image** accessible from the cluster (public registry or with a configured image pull secret)
 
@@ -31,15 +31,15 @@ When you deploy a KubernetesJob resource, OpenMCF provisions:
 Create a file `job.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesJob
 metadata:
   name: db-migrate
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesJob.db-migrate
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesJob.db-migrate
 spec:
   namespace: my-namespace
   createNamespace: true
@@ -51,7 +51,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f job.yaml
+planton apply -f job.yaml
 ```
 
 This creates a Job that runs one pod to completion in the `my-namespace` namespace, using default resource limits (1000m CPU, 1Gi memory), a backoff limit of 6, and a restart policy of `Never`.
@@ -99,15 +99,15 @@ This creates a Job that runs one pod to completion in the `my-namespace` namespa
 A one-shot migration job that connects to a database using a referenced host and a secret password:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesJob
 metadata:
   name: db-migrate
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesJob.db-migrate
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesJob.db-migrate
 spec:
   namespace: backend
   image:
@@ -140,15 +140,15 @@ spec:
 An indexed parallel job that processes partitioned data across multiple pods, each receiving its own index via the `JOB_COMPLETION_INDEX` environment variable:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesJob
 metadata:
   name: batch-processor
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.KubernetesJob.batch-processor
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.KubernetesJob.batch-processor
 spec:
   namespace: data-pipeline
   createNamespace: true
@@ -186,15 +186,15 @@ spec:
 A job that mounts a user-defined script from a ConfigMap and executes it, with an emptyDir volume for scratch space:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesJob
 metadata:
   name: etl-pipeline
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesJob.etl-pipeline
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesJob.etl-pipeline
 spec:
   namespace: data-ops
   image:

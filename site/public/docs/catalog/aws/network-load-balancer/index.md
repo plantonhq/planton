@@ -12,7 +12,7 @@ Deploys an AWS Network Load Balancer with bundled listeners and target groups, o
 
 ## What Gets Created
 
-When you deploy an AwsNetworkLoadBalancer resource, OpenMCF provisions:
+When you deploy an AwsNetworkLoadBalancer resource, Planton provisions:
 
 - **Network Load Balancer** — an `aws_lb` resource of type `network`, placed in the specified subnets via subnet mappings with attached security groups (optional), cross-zone load balancing configuration, and DNS client routing policy
 - **Target Groups** — one `aws_lb_target_group` per listener, configured with the specified protocol, port, target type, health check, deregistration delay, and connection settings (preserve client IP, Proxy Protocol v2, connection termination, source IP stickiness)
@@ -21,7 +21,7 @@ When you deploy an AwsNetworkLoadBalancer resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **At least one subnet** in a VPC (public subnets for internet-facing, private for internal). AWS recommends two or more across Availability Zones for high availability
 - **An Elastic IP allocation ID** per subnet if you need static public IP addresses (internet-facing NLBs only)
 - **An ACM certificate ARN** if enabling TLS termination on a listener
@@ -33,15 +33,15 @@ When you deploy an AwsNetworkLoadBalancer resource, OpenMCF provisions:
 Create a file `nlb.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsNetworkLoadBalancer
 metadata:
   name: my-nlb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsNetworkLoadBalancer.my-nlb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsNetworkLoadBalancer.my-nlb
 spec:
   region: us-west-2
   subnetMappings:
@@ -59,7 +59,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f nlb.yaml
+planton apply -f nlb.yaml
 ```
 
 This creates an internet-facing NLB with a TCP listener on port 80 forwarding to a target group on port 80, deployed across two subnets.
@@ -124,15 +124,15 @@ This creates an internet-facing NLB with a TCP listener on port 80 forwarding to
 An NLB accessible only within the VPC for internal microservice communication:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsNetworkLoadBalancer
 metadata:
   name: internal-tcp-nlb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsNetworkLoadBalancer.internal-tcp-nlb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsNetworkLoadBalancer.internal-tcp-nlb
 spec:
   region: us-west-2
   subnetMappings:
@@ -154,14 +154,14 @@ spec:
 Internet-facing NLB that terminates TLS and forwards plaintext TCP to application servers:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsNetworkLoadBalancer
 metadata:
   name: tls-nlb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsNetworkLoadBalancer.tls-nlb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsNetworkLoadBalancer.tls-nlb
 spec:
   region: us-east-1
   subnetMappings:
@@ -190,14 +190,14 @@ spec:
 Internet-facing NLB with static public IPs for firewall allowlisting:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsNetworkLoadBalancer
 metadata:
   name: static-ip-nlb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsNetworkLoadBalancer.static-ip-nlb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsNetworkLoadBalancer.static-ip-nlb
 spec:
   region: us-west-2
   subnetMappings:
@@ -218,18 +218,18 @@ spec:
 
 ### Full-Featured with Foreign Key References
 
-Production NLB referencing other OpenMCF-managed resources:
+Production NLB referencing other Planton-managed resources:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsNetworkLoadBalancer
 metadata:
   name: prod-nlb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsNetworkLoadBalancer.prod-nlb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsNetworkLoadBalancer.prod-nlb
 spec:
   region: us-west-2
   subnetMappings:

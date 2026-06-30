@@ -1,6 +1,0 @@
-name: gcp-cloud-tasks-queue
-runtime:
-  name: go
-  options:
-    binary: ./pulumi
-description: OpenMCF GcpCloudTasksQueue Pulumi module

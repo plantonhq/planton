@@ -12,14 +12,14 @@ Deploys an Octavia load balancer in OpenStack, provisioning a Virtual IP (VIP) e
 
 ## What Gets Created
 
-When you deploy an OpenStackLoadBalancer resource, OpenMCF provisions:
+When you deploy an OpenStackLoadBalancer resource, Planton provisions:
 
 - **Octavia Load Balancer** -- a `loadbalancer.LoadBalancer` Pulumi resource (equivalent to `openstack_lb_loadbalancer_v2` in Terraform) with the configured VIP subnet, optional fixed VIP address, description, administrative state, flavor, tags, and region override. The load balancer allocates a VIP address on the target subnet and exposes the VIP port ID for floating IP or security group attachment.
 
 ## Prerequisites
 
-- **OpenStack credentials** configured via environment variables or OpenMCF provider config
-- **An existing subnet** where the VIP address will be allocated (can be an OpenMCF-managed OpenStackSubnet)
+- **OpenStack credentials** configured via environment variables or Planton provider config
+- **An existing subnet** where the VIP address will be allocated (can be an Planton-managed OpenStackSubnet)
 - **Octavia service** enabled in the target OpenStack project
 - **An Octavia flavor** (optional) if you need specific resource limits for the load balancer
 
@@ -28,15 +28,15 @@ When you deploy an OpenStackLoadBalancer resource, OpenMCF provisions:
 Create a file `loadbalancer.yaml`:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackLoadBalancer
 metadata:
   name: my-lb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OpenStackLoadBalancer.my-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OpenStackLoadBalancer.my-lb
 spec:
   vipSubnetId: e0a1f622-9aab-4a48-8c8c-3b0c7e2a9b1d
 ```
@@ -44,7 +44,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f loadbalancer.yaml
+planton apply -f loadbalancer.yaml
 ```
 
 This creates an Octavia load balancer with a VIP auto-allocated from the specified subnet.
@@ -75,15 +75,15 @@ This creates an Octavia load balancer with a VIP auto-allocated from the specifi
 A minimal load balancer with a VIP auto-allocated from a subnet:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackLoadBalancer
 metadata:
   name: web-lb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OpenStackLoadBalancer.web-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OpenStackLoadBalancer.web-lb
 spec:
   vipSubnetId: e0a1f622-9aab-4a48-8c8c-3b0c7e2a9b1d
   description: Web tier load balancer
@@ -94,15 +94,15 @@ spec:
 Pin the VIP to a known IP address on the subnet, useful when DNS records or firewall rules reference a stable address:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackLoadBalancer
 metadata:
   name: api-lb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OpenStackLoadBalancer.api-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OpenStackLoadBalancer.api-lb
 spec:
   vipSubnetId: e0a1f622-9aab-4a48-8c8c-3b0c7e2a9b1d
   vipAddress: "10.0.1.100"
@@ -117,15 +117,15 @@ spec:
 Use an Octavia flavor to control the load balancer's resource allocation (amphora size, topology, provider):
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackLoadBalancer
 metadata:
   name: premium-lb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OpenStackLoadBalancer.premium-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OpenStackLoadBalancer.premium-lb
 spec:
   vipSubnetId: e0a1f622-9aab-4a48-8c8c-3b0c7e2a9b1d
   vipAddress: "10.0.1.200"
@@ -140,18 +140,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed subnet instead of hardcoding its UUID:
+Reference an Planton-managed subnet instead of hardcoding its UUID:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackLoadBalancer
 metadata:
   name: ref-lb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OpenStackLoadBalancer.ref-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OpenStackLoadBalancer.ref-lb
 spec:
   vipSubnetId:
     valueFrom:

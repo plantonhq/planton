@@ -109,7 +109,7 @@ Scope: 2 proto files, 7 Go files, 3 TypeScript files, plus auto-regenerated stub
 
 **stack_outputs.proto**: Observable outputs only: `name`, `fingerprint`, `public_key`, `region`. No `private_key` (secret).
 
-**api.proto**: KRM envelope with `apiVersion: "openstack.openmcf.org/v1"`, `kind: "OpenStackComputeKeypair"`, standard metadata/spec/status structure.
+**api.proto**: KRM envelope with `apiVersion: "openstack.planton.dev/v1"`, `kind: "OpenStackComputeKeypair"`, standard metadata/spec/status structure.
 
 **stack_input.proto**: Aggregates `OpenStackComputeKeypair` target with `OpenStackProviderConfig` credentials.
 
@@ -209,7 +209,7 @@ Fixed pre-existing TypeScript type errors in the OpenStack credential form that 
 
 ### Direct
 
-- Users can manage OpenStack SSH keypairs through OpenMCF
+- Users can manage OpenStack SSH keypairs through Planton
 - CLI supports `OpenStackComputeKeypair` manifests
 - OpenStack provider now has its first deployment component
 

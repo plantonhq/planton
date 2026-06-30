@@ -1,0 +1,10 @@
+apiVersion: gcp.planton.dev/v1
+kind: GcpPubSubSubscription
+metadata:
+  name: test-subscription
+spec:
+  projectId:
+    value: "test-project"
+  subscriptionName: test-subscription
+  topic:
+    value: "projects/test-project/topics/test-topic"

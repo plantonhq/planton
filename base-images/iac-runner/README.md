@@ -10,7 +10,7 @@ Base Docker images for running infrastructure-as-code programs. Two variants are
 All variants use a single repository with descriptive tags:
 
 ```
-ghcr.io/plantonhq/openmcf/base-images/iac-runner
+ghcr.io/plantonhq/planton/base-images/iac-runner
 ```
 
 ## Variants
@@ -24,7 +24,7 @@ Lightweight image for running OpenTofu/Terraform programs. No Go or Pulumi.
 | `terraform-v0.0.1` | OpenTofu 1.9.1 | ~500MB |
 
 ```dockerfile
-FROM ghcr.io/plantonhq/openmcf/base-images/iac-runner:terraform-v0.0.1
+FROM ghcr.io/plantonhq/planton/base-images/iac-runner:terraform-v0.0.1
 ```
 
 ### Pulumi Variants (Per-Provider)
@@ -46,7 +46,7 @@ Per-provider images with pre-warmed Go caches for fast cold starts.
 | `pulumi-snowflake-v0.0.1` | Snowflake | Go 1.25 + Pulumi + Snowflake SDK cache |
 
 ```dockerfile
-FROM ghcr.io/plantonhq/openmcf/base-images/iac-runner:pulumi-aws-v0.0.1
+FROM ghcr.io/plantonhq/planton/base-images/iac-runner:pulumi-aws-v0.0.1
 ```
 
 ## Why Per-Provider Images?

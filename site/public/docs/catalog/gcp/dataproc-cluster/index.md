@@ -12,7 +12,7 @@ Deploys a standard (GCE-based) Google Cloud Dataproc cluster for running Apache 
 
 ## What Gets Created
 
-When you deploy a GcpDataprocCluster resource, OpenMCF provisions:
+When you deploy a GcpDataprocCluster resource, Planton provisions:
 
 - **Dataproc Cluster** — a `google_dataproc_cluster` resource with master nodes, primary workers, and optional secondary (spot/preemptible) workers
 - **GCS Staging Bucket** — auto-created by GCP if not specified; stores job dependencies and intermediate data
@@ -21,7 +21,7 @@ When you deploy a GcpDataprocCluster resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **A GCP project** with the Dataproc API enabled (`dataproc.googleapis.com`)
 - **VPC network or subnetwork** if specifying custom networking (otherwise GCP uses the default network)
 - **A service account** with Dataproc Worker role if using a custom service account
@@ -33,15 +33,15 @@ When you deploy a GcpDataprocCluster resource, OpenMCF provisions:
 Create a file `dataproc.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpDataprocCluster
 metadata:
   name: my-spark-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpDataprocCluster.my-spark-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpDataprocCluster.my-spark-cluster
 spec:
   projectId:
     value: "my-gcp-project"
@@ -64,7 +64,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f dataproc.yaml
+planton apply -f dataproc.yaml
 ```
 
 This creates a Dataproc cluster with 1 master, 2 workers, Spark 3.5, Component Gateway enabled, and auto-delete after 30 minutes idle.
@@ -124,15 +124,15 @@ This creates a Dataproc cluster with 1 master, 2 workers, Spark 3.5, Component G
 ### Development Cluster with Jupyter
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpDataprocCluster
 metadata:
   name: dev-jupyter
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpDataprocCluster.dev-jupyter
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpDataprocCluster.dev-jupyter
 spec:
   projectId:
     value: "my-gcp-project"
@@ -157,15 +157,15 @@ spec:
 ### HA Production Cluster
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpDataprocCluster
 metadata:
   name: prod-spark
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpDataprocCluster.prod-spark
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpDataprocCluster.prod-spark
 spec:
   projectId:
     value: "my-gcp-project"
@@ -203,15 +203,15 @@ spec:
 ### Cost-Optimized Batch with Spot Workers
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpDataprocCluster
 metadata:
   name: batch-spark
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpDataprocCluster.batch-spark
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpDataprocCluster.batch-spark
 spec:
   projectId:
     value: "my-gcp-project"
@@ -235,15 +235,15 @@ spec:
 ### Foreign Key References
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpDataprocCluster
 metadata:
   name: composed-spark
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpDataprocCluster.composed-spark
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpDataprocCluster.composed-spark
 spec:
   projectId:
     valueFrom:

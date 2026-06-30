@@ -31,7 +31,7 @@ flowchart TB
         Manifest[YAML Manifest]
     end
     
-    subgraph "OpenMCF"
+    subgraph "Planton"
         CLI[CLI]
         Validate[Validation]
     end
@@ -140,7 +140,7 @@ flowchart LR
 ## Files Created
 
 ```
-apis/org/openmcf/provider/gcp/gcpdnsrecord/v1/
+apis/dev/planton/provider/gcp/gcpdnsrecord/v1/
 ├── api.proto                    # KRM-style resource definition
 ├── spec.proto                   # Configuration schema with validations
 ├── spec_test.go                 # 14 validation tests
@@ -184,7 +184,7 @@ apis/org/openmcf/provider/gcp/gcpdnsrecord/v1/
 ### For Platform Engineers
 - **Dual IaC Support**: Both Pulumi and Terraform with feature parity
 - **Type Safety**: Strong validation prevents invalid configurations
-- **Familiar Patterns**: Follows established OpenMCF conventions
+- **Familiar Patterns**: Follows established Planton conventions
 
 ## Impact
 
@@ -193,13 +193,13 @@ apis/org/openmcf/provider/gcp/gcpdnsrecord/v1/
 - ID prefix: `gcpdrec`
 
 ### CLI Integration
-- Works with existing `openmcf pulumi up/down` commands
-- Works with existing `openmcf terraform apply/destroy` commands
+- Works with existing `planton pulumi up/down` commands
+- Works with existing `planton terraform apply/destroy` commands
 
 ### Example Usage
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpDnsRecord
 metadata:
   name: www-example-com
@@ -215,10 +215,10 @@ spec:
 
 ```bash
 # Deploy with Pulumi
-openmcf pulumi up --manifest dns-record.yaml
+planton pulumi up --manifest dns-record.yaml
 
 # Deploy with Terraform
-openmcf terraform apply --manifest dns-record.yaml
+planton terraform apply --manifest dns-record.yaml
 ```
 
 ## Related Work

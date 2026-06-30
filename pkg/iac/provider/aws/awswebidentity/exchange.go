@@ -32,7 +32,7 @@ import (
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials/stscreds"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
-	awsprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws"
+	awsprovider "github.com/plantonhq/planton/apis/dev/planton/provider/aws"
 
 	"github.com/pkg/errors"
 )

@@ -46,27 +46,27 @@ spec:
 
 ### Proto Schema Changes
 
-**File**: `apis/org/openmcf/provider/gcp/gcpsecretsmanager/v1/spec.proto`
+**File**: `apis/dev/planton/provider/gcp/gcpsecretsmanager/v1/spec.proto`
 
 ```protobuf
 // Before
 string project_id = 1 [(buf.validate.field).required = true];
 
 // After
-org.openmcf.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
   (buf.validate.field).required = true,
-  (org.openmcf.shared.foreignkey.v1.default_kind) = GcpProject,
-  (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+  (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
 ];
 ```
 
 Key additions:
-- Import for `org/openmcf/shared/foreignkey/v1/foreign_key.proto`
+- Import for `dev/planton/shared/foreignkey/v1/foreign_key.proto`
 - Field options specifying default reference kind (`GcpProject`) and field path
 
 ### Pulumi Module Changes
 
-**File**: `apis/org/openmcf/provider/gcp/gcpsecretsmanager/v1/iac/pulumi/module/main.go`
+**File**: `apis/dev/planton/provider/gcp/gcpsecretsmanager/v1/iac/pulumi/module/main.go`
 
 Updated to use the `GetValue()` method on the `StringValueOrRef` type:
 
@@ -80,7 +80,7 @@ Project: pulumi.String(locals.GcpSecretsManager.Spec.ProjectId.GetValue()),
 
 ### Terraform Module Changes
 
-**File**: `apis/org/openmcf/provider/gcp/gcpsecretsmanager/v1/iac/tf/variables.tf`
+**File**: `apis/dev/planton/provider/gcp/gcpsecretsmanager/v1/iac/tf/variables.tf`
 
 Updated variable type to object structure:
 
@@ -96,7 +96,7 @@ project_id = object({
 })
 ```
 
-**File**: `apis/org/openmcf/provider/gcp/gcpsecretsmanager/v1/iac/tf/main.tf`
+**File**: `apis/dev/planton/provider/gcp/gcpsecretsmanager/v1/iac/tf/main.tf`
 
 Updated to use `.value` accessor:
 
@@ -106,7 +106,7 @@ project = var.spec.project_id.value
 
 ### Test Updates
 
-**File**: `apis/org/openmcf/provider/gcp/gcpsecretsmanager/v1/spec_test.go`
+**File**: `apis/dev/planton/provider/gcp/gcpsecretsmanager/v1/spec_test.go`
 
 - Added imports for `foreignkeyv1` and `cloudresourcekind`
 - Updated all test cases to use `StringValueOrRef` type
@@ -115,13 +115,13 @@ project = var.spec.project_id.value
 
 ### Documentation Updates
 
-**File**: `apis/org/openmcf/provider/gcp/gcpsecretsmanager/v1/examples.md`
+**File**: `apis/dev/planton/provider/gcp/gcpsecretsmanager/v1/examples.md`
 
 - Updated all 8 examples to use new object format
 - Added new Example 2 demonstrating cross-resource reference pattern
 - Renumbered subsequent examples
 
-**File**: `apis/org/openmcf/provider/gcp/gcpsecretsmanager/v1/iac/pulumi/overview.md`
+**File**: `apis/dev/planton/provider/gcp/gcpsecretsmanager/v1/iac/pulumi/overview.md`
 
 - Added documentation for cross-resource references
 - Documented current limitation (reference resolution not yet implemented)

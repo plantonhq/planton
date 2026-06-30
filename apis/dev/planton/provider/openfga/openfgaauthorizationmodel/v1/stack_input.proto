@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package dev.planton.provider.openfga.openfgaauthorizationmodel.v1;
+
+import "dev/planton/provider/openfga/openfgaauthorizationmodel/v1/api.proto";
+import "dev/planton/provider/openfga/provider.proto";
+
+// OpenFgaAuthorizationModelStackInput is the input message for the OpenFGA Authorization Model IaC modules.
+//
+// This message aggregates all information needed to deploy an OpenFGA Authorization Model:
+// - The target OpenFgaAuthorizationModel resource specification
+// - The OpenFGA provider configuration (credentials for API access)
+//
+// IMPORTANT: OpenFGA only has a Terraform provider. The Pulumi module is a
+// pass-through placeholder that does not create resources.
+//
+// The Terraform module receives this as input and uses it to create
+// the authorization model via the OpenFGA API.
+message OpenFgaAuthorizationModelStackInput {
+  // target is the OpenFgaAuthorizationModel resource to deploy.
+  // Contains the complete specification of the desired model configuration.
+  OpenFgaAuthorizationModel target = 1;
+
+  // provider_config contains OpenFGA API credentials for authentication.
+  // These credentials are used to authenticate with the OpenFGA server.
+  //
+  // The provider supports two authentication methods:
+  // 1. API Token: Set api_url and api_token
+  // 2. Client Credentials: Set api_url, client_id, client_secret, and api_token_issuer
+  //
+  // Environment variables are automatically configured:
+  // - FGA_API_URL (required)
+  // - FGA_API_TOKEN (for token auth)
+  // - FGA_CLIENT_ID, FGA_CLIENT_SECRET, FGA_API_TOKEN_ISSUER (for client credentials)
+  dev.planton.provider.openfga.OpenFgaProviderConfig provider_config = 2;
+}

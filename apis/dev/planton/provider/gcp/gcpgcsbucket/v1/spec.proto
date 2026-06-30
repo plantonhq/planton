@@ -1,0 +1,231 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcpgcsbucket.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// **GcpGcsBucketSpec** defines the configuration for creating a Google Cloud Storage (GCS) bucket.
+// This message specifies the parameters required to create and manage a GCS bucket within a specified GCP project
+// and location, with comprehensive support for access control, lifecycle management, encryption, and compliance features.
+//
+// Following the 80/20 configuration principle, essential settings (project, location, access model) are required,
+// while advanced features (versioning, lifecycle, encryption, CORS) are optional for specific use cases.
+message GcpGcsBucketSpec {
+  // The ID of the GCP project where the storage bucket will be created.
+  // Can be a literal value or a reference to another resource (e.g., GcpProject).
+  // Required field.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef gcp_project_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The location for the bucket. Can be a region (e.g., "us-east1"), dual-region (e.g., "NAM4"),
+  // or multi-region (e.g., "US", "EU", "ASIA").
+  // This field is immutable after bucket creation.
+  // Required field.
+  string location = 2 [(buf.validate.field).required = true];
+
+  // Enable Uniform Bucket-Level Access (UBLA) for simplified IAM-only access control.
+  // When enabled, all access is controlled via IAM policies (no object ACLs).
+  // Recommended: true (modern security model).
+  // Defaults to true if not specified.
+  bool uniform_bucket_level_access_enabled = 3;
+
+  // Storage class for the bucket. Determines pricing and availability.
+  // Optional. Defaults to STANDARD if not specified.
+  optional GcpGcsStorageClass storage_class = 4 [(buf.validate.field).enum.defined_only = true];
+
+  // Enable object versioning to protect against accidental deletion/overwrite.
+  // Versioning should be combined with lifecycle rules to prevent unbounded storage growth.
+  // Optional. Defaults to false.
+  bool versioning_enabled = 5;
+
+  // Lifecycle rules for automatic object management (deletion, storage class transitions).
+  // Essential for cost optimization when versioning is enabled.
+  // Optional.
+  repeated GcpGcsLifecycleRule lifecycle_rules = 6;
+
+  // IAM bindings for bucket-level access control.
+  // Each binding grants a specific role to a set of members.
+  // Required when UBLA is enabled for any public or service account access.
+  // Optional.
+  repeated GcpGcsIamBinding iam_bindings = 7;
+
+  // Encryption configuration using Customer-Managed Encryption Keys (CMEK).
+  // Optional. If not specified, Google-managed encryption is used (default).
+  optional GcpGcsEncryption encryption = 8;
+
+  // CORS rules for cross-origin browser access.
+  // Required for buckets accessed directly from web browsers (e.g., font hosting, direct uploads).
+  // Optional.
+  repeated GcpGcsCorsRule cors_rules = 9;
+
+  // Website configuration for static website hosting.
+  // Note: For production websites, use Cloud CDN + Load Balancer instead for HTTPS support.
+  // Optional.
+  optional GcpGcsWebsite website = 10;
+
+  // Retention policy for WORM (Write Once, Read Many) compliance.
+  // Once locked, objects cannot be deleted until retention period expires.
+  // Optional.
+  optional GcpGcsRetentionPolicy retention_policy = 11;
+
+  // Enable requester pays mode. Requesters pay for data access and egress charges.
+  // Useful for public datasets where the bucket owner doesn't want to pay for all access costs.
+  // Optional. Defaults to false.
+  bool requester_pays = 12;
+
+  // Logging configuration for legacy access logs.
+  // Note: Modern deployments should use Cloud Logging instead.
+  // Optional.
+  optional GcpGcsLogging logging = 13;
+
+  // Public access prevention policy.
+  // Values: "inherited" (default), "enforced" (prevent all public access).
+  // Recommended: "enforced" for private buckets to prevent accidental public exposure.
+  // Optional.
+  string public_access_prevention = 14;
+
+  // Custom labels for the bucket (cost tracking, governance, compliance).
+  // These are merged with auto-generated labels (planton-resource-*).
+  // Optional.
+  map<string, string> gcp_labels = 15;
+
+  // Name of the GCS bucket to create in GCP.
+  // Must be globally unique across all GCP projects.
+  // Must be 3-63 characters, lowercase letters, numbers, hyphens, or dots.
+  // Must start and end with a lowercase letter or number.
+  // Cannot contain consecutive dots or be formatted as an IP address.
+  // Example: "my-bucket-prod", "company-data-archive"
+  string bucket_name = 16 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z0-9]([a-z0-9-._]*[a-z0-9])?$",
+    (buf.validate.field).string.min_len = 3,
+    (buf.validate.field).string.max_len = 63
+  ];
+}
+
+// Storage class options for GCS buckets
+enum GcpGcsStorageClass {
+  // Unspecified (defaults to STANDARD)
+  GCP_GCS_STORAGE_CLASS_UNSPECIFIED = 0;
+
+  // Standard storage for frequently accessed data (hot data)
+  // Cost: $0.020/GB/month in us-east1
+  STANDARD = 1;
+
+  // Nearline storage for infrequently accessed data (once per month)
+  // Cost: $0.010/GB/month + $0.01/GB retrieval
+  NEARLINE = 2;
+
+  // Coldline storage for rarely accessed data (once per quarter)
+  // Cost: $0.004/GB/month + $0.02/GB retrieval
+  COLDLINE = 3;
+
+  // Archive storage for long-term archival (once per year)
+  // Cost: $0.0012/GB/month + $0.05/GB retrieval
+  ARCHIVE = 4;
+}
+
+// Lifecycle rule for automatic object management
+message GcpGcsLifecycleRule {
+  // Action to take when conditions are met
+  GcpGcsLifecycleAction action = 1 [(buf.validate.field).required = true];
+
+  // Condition that triggers the action
+  GcpGcsLifecycleCondition condition = 2 [(buf.validate.field).required = true];
+}
+
+// Lifecycle action (Delete or SetStorageClass)
+message GcpGcsLifecycleAction {
+  // Action type: "Delete" or "SetStorageClass"
+  string type = 1 [(buf.validate.field).required = true];
+
+  // Storage class to transition to (only for SetStorageClass action)
+  optional GcpGcsStorageClass storage_class = 2 [(buf.validate.field).enum.defined_only = true];
+}
+
+// Lifecycle condition (when to trigger the action)
+message GcpGcsLifecycleCondition {
+  // Age in days since object creation
+  int32 age_days = 1;
+
+  // RFC 3339 date before which objects should match
+  string created_before = 2;
+
+  // Match objects that are live (current version) or noncurrent
+  bool is_live = 3;
+
+  // Number of newer versions to keep (for version cleanup)
+  int32 num_newer_versions = 4;
+
+  // Match only objects in these storage classes
+  repeated GcpGcsStorageClass matches_storage_class = 5 [(buf.validate.field).repeated.items.enum.defined_only = true];
+}
+
+// IAM binding for bucket-level access control
+message GcpGcsIamBinding {
+  // IAM role to grant (e.g., "roles/storage.objectViewer", "roles/storage.objectAdmin")
+  string role = 1 [(buf.validate.field).required = true];
+
+  // List of members to grant the role to
+  // Format: "user:email", "group:email", "serviceAccount:email", "allUsers", "allAuthenticatedUsers"
+  repeated string members = 2 [(buf.validate.field).required = true];
+
+  // IAM condition expression (CEL syntax) for conditional access
+  // Optional. If not specified, binding applies unconditionally.
+  string condition = 3;
+}
+
+// Customer-Managed Encryption Keys (CMEK) configuration
+message GcpGcsEncryption {
+  // Cloud KMS key name for encryption
+  // Format: projects/PROJECT_ID/locations/LOCATION/keyRings/KEY_RING/cryptoKeys/KEY
+  string kms_key_name = 1 [(buf.validate.field).required = true];
+}
+
+// CORS rule for cross-origin browser access
+message GcpGcsCorsRule {
+  // HTTP methods allowed for CORS requests
+  repeated string methods = 1 [(buf.validate.field).required = true];
+
+  // Origins allowed for CORS requests (e.g., "https://example.com")
+  repeated string origins = 2 [(buf.validate.field).required = true];
+
+  // Response headers that browsers can access
+  repeated string response_headers = 3;
+
+  // Maximum time (seconds) browsers can cache preflight responses
+  int32 max_age_seconds = 4;
+}
+
+// Static website hosting configuration
+message GcpGcsWebsite {
+  // Main page suffix (e.g., "index.html")
+  string main_page_suffix = 1;
+
+  // Custom 404 page (e.g., "404.html")
+  string not_found_page = 2;
+}
+
+// Retention policy for WORM compliance
+message GcpGcsRetentionPolicy {
+  // Minimum retention period in seconds
+  int64 retention_period_seconds = 1 [(buf.validate.field).required = true];
+
+  // Lock the retention policy (irreversible operation!)
+  // Once locked, objects cannot be deleted until retention period expires.
+  // WARNING: This cannot be undone. Test thoroughly before locking.
+  bool is_locked = 2;
+}
+
+// Legacy access logging configuration
+message GcpGcsLogging {
+  // Destination bucket for access logs
+  string log_bucket = 1 [(buf.validate.field).required = true];
+
+  // Prefix for log object names
+  string log_object_prefix = 2;
+}

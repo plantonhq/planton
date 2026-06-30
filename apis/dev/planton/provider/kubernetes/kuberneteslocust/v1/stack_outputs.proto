@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kuberneteslocust.v1;
+
+//locust-kubernetes stack outputs.
+message KubernetesLocustStackOutputs {
+  //kubernetes namespace in which locust-kubernetes is created.
+  string namespace = 1;
+
+  //kubernetes service name for locust-kubernetes.
+  //ex: main-locust-kubernetes
+  //in the above example, "main" is the name of the locust-kubernetes
+  string service = 2;
+
+  //command to setup port-forwarding to open locust-kubernetes from developers laptop.
+  //this might come handy when locust-kubernetes ingress is disabled for security reasons.
+  //this is rendered by combining locust_kubernetes_kubernetes_service and kubernetes_namespace
+  //ex: kubectl port-forward svc/locust_kubernetes_kubernetes_service -n kubernetes_namespace 6379:6379
+  //running the command from this attribute makes it possible to access locust-kubernetes using http://localhost:8080/locust
+  string port_forward_command = 3;
+
+  //kubernetes endpoint to connect to locust-kubernetes from the web browser.
+  //ex: main-locust-kubernetes.namespace.svc.cluster.local:6379
+  string kube_endpoint = 4;
+
+  //public endpoint to open locust-kubernetes from clients outside kubernetes.
+  //ex: https://lock8s-planton-pcs-dev-main.dev.planton.live
+  string external_hostname = 5;
+
+  //internal endpoint to open locust-kubernetes from clients inside kubernetes.
+  //ex: https://lock8s-planton-pcs-dev-main-internal.dev.planton.live
+  string internal_hostname = 6;
+}

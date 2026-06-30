@@ -1,0 +1,17 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "cloudresourcekind",
+    srcs = [
+        "cloud_resource_kind.pb.go",
+        "cloud_resource_provider.pb.go",
+        "kubernetes.pb.go",
+    ],
+    importpath = "github.com/plantonhq/planton/apis/dev/planton/shared/cloudresourcekind",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@org_golang_google_protobuf//reflect/protoreflect",
+        "@org_golang_google_protobuf//runtime/protoimpl",
+        "@org_golang_google_protobuf//types/descriptorpb",
+    ],
+)

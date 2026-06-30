@@ -1,0 +1,44 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsKinesisFirehose
+metadata:
+  name: analytics-parquet-firehose
+  org: my-org
+  env: prod
+  id: analytics-parquet-firehose-prod
+spec:
+  # Kinesis stream source — Firehose consumes from an existing stream
+  kinesisStreamSource:
+    streamArn:
+      valueFrom:
+        kind: AwsKinesisStream
+        name: my-events-stream
+        fieldPath: status.outputs.stream_arn
+    roleArn:
+      valueFrom:
+        kind: AwsIamRole
+        name: firehose-kinesis-consumer-role
+        fieldPath: status.outputs.role_arn
+  extendedS3:
+    bucketArn:
+      value: arn:aws:s3:::my-analytics-data-lake
+    roleArn:
+      value: arn:aws:iam::123456789012:role/firehose-glue-s3-role
+    prefix: analytics/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/
+    compressionFormat: UNCOMPRESSED
+    fileExtension: .parquet
+    buffering:
+      intervalInSeconds: 60
+      sizeInMbs: 64
+    dynamicPartitioning:
+      enabled: true
+      retryDurationInSeconds: 300
+    dataFormatConversion:
+      enabled: true
+      inputFormat: OPENX_JSON
+      outputFormat: PARQUET
+      parquetCompression: SNAPPY
+      schema:
+        databaseName: analytics_db
+        tableName: events
+        roleArn:
+          value: arn:aws:iam::123456789012:role/firehose-glue-access-role

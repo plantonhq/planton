@@ -12,7 +12,7 @@ Refactored the Postgres Kubernetes ingress configuration from a shared `IngressS
 
 ### The Problem
 
-The previous implementation used the shared `IngressSpec` from `org.openmcf.shared.kubernetes`:
+The previous implementation used the shared `IngressSpec` from `dev.planton.shared.kubernetes`:
 
 ```yaml
 ingress:
@@ -63,7 +63,7 @@ message IngressSpec {
 }
 
 message PostgresKubernetesSpec {
-  org.openmcf.shared.kubernetes.IngressSpec ingress = 2;
+  dev.planton.shared.kubernetes.IngressSpec ingress = 2;
 }
 ```
 
@@ -95,7 +95,7 @@ message PostgresKubernetesSpec {
 
 **Before**:
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: PostgresKubernetes
 metadata:
   name: production-db
@@ -111,7 +111,7 @@ spec:
 
 **After**:
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: PostgresKubernetes
 metadata:
   name: production-db
@@ -262,7 +262,7 @@ output "external_hostname" {
 **File**: `apis/project/planton/provider/kubernetes/workload/postgreskubernetes/v1/spec.proto`
 
 **Changes Made**:
-1. **Updated Field Type**: Line 68 changed from `org.openmcf.shared.kubernetes.IngressSpec` to `PostgresKubernetesIngress`
+1. **Updated Field Type**: Line 68 changed from `dev.planton.shared.kubernetes.IngressSpec` to `PostgresKubernetesIngress`
 2. **Added Message**: New `PostgresKubernetesIngress` message with CEL validation
 
 **Validation Strategy**: Uses CEL (Common Expression Language) to validate that `hostname` is required when `enabled` is true, providing clear error messages and type safety.
@@ -332,7 +332,7 @@ Added deprecation comment to `internal_hostname` field (line 30) for backward co
 ### Basic Ingress Configuration
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: PostgresKubernetes
 metadata:
   name: basic-postgres
@@ -355,7 +355,7 @@ spec:
 ### Production with Custom Hostname
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: PostgresKubernetes
 metadata:
   name: prod-postgres
@@ -520,7 +520,7 @@ ingress:
 ```bash
 # Create manifest with new syntax
 cat > postgres-test.yaml <<EOF
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: PostgresKubernetes
 metadata:
   name: test-postgres
@@ -541,7 +541,7 @@ spec:
 EOF
 
 # Deploy
-openmcf pulumi up --manifest postgres-test.yaml
+planton pulumi up --manifest postgres-test.yaml
 
 # Verify LoadBalancer service created with correct annotation
 kubectl get svc -n test-postgres ingress-external-lb -o yaml | \
@@ -556,7 +556,7 @@ kubectl get svc -n test-postgres ingress-external-lb -o yaml | \
 # After: ingress.hostname = "existing-postgres.example.com"
 
 # Apply update
-openmcf pulumi up --manifest postgres-existing.yaml
+planton pulumi up --manifest postgres-existing.yaml
 
 # Verify hostname annotation updated
 kubectl get svc -n existing-postgres ingress-external-lb -o yaml | \
@@ -568,7 +568,7 @@ kubectl get svc -n existing-postgres ingress-external-lb -o yaml | \
 ```bash
 # Try invalid configuration
 cat > postgres-invalid.yaml <<EOF
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: PostgresKubernetes
 metadata:
   name: invalid-postgres
@@ -579,7 +579,7 @@ spec:
 EOF
 
 # Attempt deploy
-openmcf pulumi up --manifest postgres-invalid.yaml
+planton pulumi up --manifest postgres-invalid.yaml
 # Expected error: hostname is required when ingress is enabled
 ```
 

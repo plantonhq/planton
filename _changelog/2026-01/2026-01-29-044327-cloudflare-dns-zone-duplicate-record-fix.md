@@ -13,8 +13,8 @@ Fixed a critical bug in the Cloudflare DNS Zone component where multiple DNS rec
 When deploying a Cloudflare DNS Zone with multiple records sharing the same name and type, Pulumi would fail with a duplicate resource URN error:
 
 ```
-error: urn:pulumi:shared.CloudflareDnsZone.openmcf-org::planton::cloudflare:index/record:Record::@-A: 
-Duplicate resource URN 'urn:pulumi:shared.CloudflareDnsZone.openmcf-org::planton::cloudflare:index/record:Record::@-A'; 
+error: urn:pulumi:shared.CloudflareDnsZone.planton-org::planton::cloudflare:index/record:Record::@-A: 
+Duplicate resource URN 'urn:pulumi:shared.CloudflareDnsZone.planton-org::planton::cloudflare:index/record:Record::@-A'; 
 try giving it a unique name
 ```
 
@@ -28,7 +28,7 @@ try giving it a unique name
 
 ```yaml
 spec:
-  zone_name: openmcf.org
+  zone_name: planton.dev
   records:
     - name: "@"
       type: A
@@ -102,8 +102,8 @@ for_each = { for idx, record in var.spec.records : "${record.name}-${record.type
 
 | File | Change |
 |------|--------|
-| `apis/org/openmcf/provider/cloudflare/cloudflarednszone/v1/iac/pulumi/module/records.go` | Added index to resource name |
-| `apis/org/openmcf/provider/cloudflare/cloudflarednszone/v1/iac/tf/records.tf` | Added index to for_each key |
+| `apis/dev/planton/provider/cloudflare/cloudflarednszone/v1/iac/pulumi/module/records.go` | Added index to resource name |
+| `apis/dev/planton/provider/cloudflare/cloudflarednszone/v1/iac/tf/records.tf` | Added index to for_each key |
 
 ### Who Is Affected
 

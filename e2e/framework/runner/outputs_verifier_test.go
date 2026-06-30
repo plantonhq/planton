@@ -3,7 +3,7 @@ package runner
 import (
 	"testing"
 
-	auth0resourceserverv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/auth0/auth0resourceserver/v1"
+	auth0resourceserverv1 "github.com/plantonhq/planton/apis/dev/planton/provider/auth0/auth0resourceserver/v1"
 )
 
 func TestVerifyOutputTransformation_Auth0ResourceServer(t *testing.T) {

@@ -37,7 +37,7 @@ def build_outputs_path(repo_root: str, provider: str, kind_folder: str) -> Tuple
     relative_path = os.path.join(
         "apis",
         "org",
-        "openmcf",
+        "planton",
         "provider",
         provider,
         kind_folder,

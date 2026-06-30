@@ -12,13 +12,13 @@ Deploys an Octavia pool member in OpenStack, representing a backend server that 
 
 ## What Gets Created
 
-When you deploy an OpenStackLoadBalancerMember resource, OpenMCF provisions:
+When you deploy an OpenStackLoadBalancerMember resource, Planton provisions:
 
 - **Octavia Pool Member** — a `loadbalancer.Member` (Pulumi) / `openstack_lb_member_v2` (Terraform) resource that registers a backend server in the specified pool. The member is identified by its address and port, and participates in the pool's load-balancing algorithm. When `weight` is set, the member receives a proportional share of traffic. When `subnetId` is set, Octavia performs L3 routing to reach the backend on a different subnet.
 
 ## Prerequisites
 
-- **OpenStack credentials** configured via environment variables or OpenMCF provider config
+- **OpenStack credentials** configured via environment variables or Planton provider config
 - **An Octavia pool** to add the member to (provide the pool UUID or reference an OpenStackLoadBalancerPool resource)
 - **A backend server** with a reachable IP address and listening port
 - **A subnet** (optional) if the backend server is on a different subnet than the load balancer VIP
@@ -28,16 +28,16 @@ When you deploy an OpenStackLoadBalancerMember resource, OpenMCF provisions:
 Create a file `member.yaml`:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackLoadBalancerMember
 metadata:
   name: web-backend-1
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    openmcf.org/stack.jobId: dev.OpenstackLoadBalancerMember.web-backend-1
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackloadbalancermember/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    planton.dev/stack.jobId: dev.OpenstackLoadBalancerMember.web-backend-1
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackloadbalancermember/v1/iac/pulumi/module
 spec:
   poolId: 4a0e3c5b-2f1d-4e6a-8b9c-0d1e2f3a4b5c
   address: "10.0.0.10"
@@ -47,7 +47,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f member.yaml
+planton apply -f member.yaml
 ```
 
 This registers a backend server at `10.0.0.10:8080` in the specified Octavia pool with default weight (1).
@@ -79,16 +79,16 @@ This registers a backend server at `10.0.0.10:8080` in the specified Octavia poo
 A minimal member that registers a single backend server in an Octavia pool:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackLoadBalancerMember
 metadata:
   name: web-backend-1
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    openmcf.org/stack.jobId: dev.OpenstackLoadBalancerMember.web-backend-1
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackloadbalancermember/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    planton.dev/stack.jobId: dev.OpenstackLoadBalancerMember.web-backend-1
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackloadbalancermember/v1/iac/pulumi/module
 spec:
   poolId: 4a0e3c5b-2f1d-4e6a-8b9c-0d1e2f3a4b5c
   address: "10.0.0.10"
@@ -100,16 +100,16 @@ spec:
 Two members with different weights on a backend subnet separate from the VIP subnet. The higher-weighted member receives proportionally more traffic:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackLoadBalancerMember
 metadata:
   name: app-backend-primary
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    openmcf.org/stack.jobId: prod.OpenstackLoadBalancerMember.app-backend-primary
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackloadbalancermember/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    planton.dev/stack.jobId: prod.OpenstackLoadBalancerMember.app-backend-primary
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackloadbalancermember/v1/iac/pulumi/module
 spec:
   poolId: 4a0e3c5b-2f1d-4e6a-8b9c-0d1e2f3a4b5c
   address: "10.1.0.10"
@@ -120,16 +120,16 @@ spec:
     - production
     - primary
 ---
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackLoadBalancerMember
 metadata:
   name: app-backend-secondary
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    openmcf.org/stack.jobId: prod.OpenstackLoadBalancerMember.app-backend-secondary
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackloadbalancermember/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    planton.dev/stack.jobId: prod.OpenstackLoadBalancerMember.app-backend-secondary
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackloadbalancermember/v1/iac/pulumi/module
 spec:
   poolId: 4a0e3c5b-2f1d-4e6a-8b9c-0d1e2f3a4b5c
   address: "10.1.0.11"
@@ -148,16 +148,16 @@ With these weights, `app-backend-primary` receives approximately twice the traff
 Set `weight` to 0 to stop sending new traffic to a member while allowing existing connections to complete. Set `adminStateUp` to `false` to fully remove the member from rotation:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackLoadBalancerMember
 metadata:
   name: maintenance-backend
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    openmcf.org/stack.jobId: prod.OpenstackLoadBalancerMember.maintenance-backend
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackloadbalancermember/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    planton.dev/stack.jobId: prod.OpenstackLoadBalancerMember.maintenance-backend
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackloadbalancermember/v1/iac/pulumi/module
 spec:
   poolId: 4a0e3c5b-2f1d-4e6a-8b9c-0d1e2f3a4b5c
   address: "10.0.0.12"
@@ -170,19 +170,19 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding UUIDs:
+Reference other Planton-managed resources instead of hardcoding UUIDs:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackLoadBalancerMember
 metadata:
   name: ref-backend
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    openmcf.org/stack.jobId: prod.OpenstackLoadBalancerMember.ref-backend
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackloadbalancermember/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    planton.dev/stack.jobId: prod.OpenstackLoadBalancerMember.ref-backend
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackloadbalancermember/v1/iac/pulumi/module
 spec:
   poolId:
     valueFrom:

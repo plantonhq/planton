@@ -1,8 +1,0 @@
-apiVersion: openstack.openmcf.org/v1
-kind: OpenStackLoadBalancer
-metadata:
-  name: test-lb
-spec:
-  vip_subnet_id:
-    value: "e0a1f622-9aab-4a48-8c8c-3b0c7e2a9b1d"
-  description: "Test load balancer for local development"

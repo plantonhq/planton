@@ -6,11 +6,11 @@
 
 ## Summary
 
-Fixed clipboard functionality for `openmcf apply --clipboard` by switching from CGO-dependent `golang.design/x/clipboard` to pure-Go `github.com/zyedidia/clipboard`. This resolves the "cannot use when CGO_ENABLED=0" error that prevented clipboard operations in the release builds. Also updated Makefile to install CLI to the correct `~/.local/bin/` location.
+Fixed clipboard functionality for `planton apply --clipboard` by switching from CGO-dependent `golang.design/x/clipboard` to pure-Go `github.com/zyedidia/clipboard`. This resolves the "cannot use when CGO_ENABLED=0" error that prevented clipboard operations in the release builds. Also updated Makefile to install CLI to the correct `~/.local/bin/` location.
 
 ## Problem Statement
 
-The `openmcf apply --clipboard` feature was failing in release builds with:
+The `planton apply --clipboard` feature was failing in release builds with:
 
 ```
 ● Loading manifest...
@@ -191,7 +191,7 @@ local: build_darwin
 
 1. **Build with CGO disabled**:
    ```bash
-   cd /Users/swarup/scm/github.com/plantonhq/openmcf
+   cd /Users/swarup/scm/github.com/plantonhq/planton
    make build-go
    ```
    ✅ Builds successfully with `CGO_ENABLED=0`
@@ -200,18 +200,18 @@ local: build_darwin
    ```bash
    make local
    ```
-   ✅ Installs to `~/.local/bin/openmcf`
+   ✅ Installs to `~/.local/bin/planton`
 
 3. **Test clipboard functionality**:
    ```bash
    # Copy YAML manifest to clipboard
-   openmcf apply --clipboard
+   planton apply --clipboard
    ```
    ✅ Reads from clipboard successfully
 
 4. **Verify version**:
    ```bash
-   openmcf version
+   planton version
    ```
    ✅ Shows v0.3.23 (with the fix)
 

@@ -44,7 +44,7 @@ Introduced `KubernetesTekton` as a new deployment component that:
 The spec uses a clean nested structure for dashboard configuration:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesTekton
 metadata:
   name: my-tekton
@@ -64,7 +64,7 @@ spec:
 
 ### Proto Schema
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetestekton/v1/spec.proto`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetestekton/v1/spec.proto`
 
 ```protobuf
 message KubernetesTektonSpec {
@@ -138,7 +138,7 @@ _, err := corev1.NewConfigMapPatch(ctx, "tekton-config-defaults-patch", &corev1.
 
 **Ingress Pattern** (`iac/pulumi/module/ingress.go`):
 
-Follows the established OpenMCF pattern (same as Solr, Temporal):
+Follows the established Planton pattern (same as Solr, Temporal):
 
 ```
 Certificate (cert-manager)
@@ -166,7 +166,7 @@ Feature parity with Pulumi implementation:
 
 ### Registry Entry
 
-**File**: `apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto`
+**File**: `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto`
 
 ```protobuf
 KubernetesTekton = 839 [(kind_meta) = {
@@ -179,7 +179,7 @@ KubernetesTekton = 839 [(kind_meta) = {
 ## Files Created/Modified
 
 ```
-apis/org/openmcf/provider/kubernetes/kubernetestekton/
+apis/dev/planton/provider/kubernetes/kubernetestekton/
 └── v1/
     ├── api.proto                    # KRM wrapper (KubernetesTekton message)
     ├── spec.proto                   # Spec with nested dashboard config
@@ -233,7 +233,7 @@ apis/org/openmcf/provider/kubernetes/kubernetestekton/
 ### For Developers
 
 - **Clean API Design**: Nested dashboard configuration is intuitive
-- **Consistent Patterns**: Follows established OpenMCF component structure
+- **Consistent Patterns**: Follows established Planton component structure
 - **Full IaC Parity**: Both Pulumi and Terraform implementations
 
 ## Stack Outputs
@@ -253,7 +253,7 @@ apis/org/openmcf/provider/kubernetes/kubernetestekton/
 ### Minimal Deployment
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesTekton
 metadata:
   name: tekton-minimal
@@ -264,7 +264,7 @@ spec:
 ### Production Setup
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesTekton
 metadata:
   name: tekton-prod
@@ -315,7 +315,7 @@ Users can now choose based on their needs:
 - Invalid URL scheme rejection
 
 ```bash
-go test ./apis/org/openmcf/provider/kubernetes/kubernetestekton/v1/... -v
+go test ./apis/dev/planton/provider/kubernetes/kubernetestekton/v1/... -v
 # 8/8 tests passing
 ```
 

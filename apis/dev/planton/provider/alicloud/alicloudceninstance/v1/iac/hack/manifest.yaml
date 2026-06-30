@@ -1,0 +1,12 @@
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudCenInstance
+metadata:
+  name: test-cen
+spec:
+  region: cn-hangzhou
+  cenInstanceName: test-cen
+  description: Test CEN instance for development
+  attachments:
+    - childInstanceId:
+        value: vpc-test-hangzhou
+      childInstanceRegionId: cn-hangzhou

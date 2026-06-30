@@ -19,7 +19,7 @@ The cx22 server type (2 shared vCPU, 4 GB RAM, 40 GB NVMe) is Hetzner's cheapest
 
 ## When to Use
 
-- Getting started with Hetzner Cloud and OpenMCF for the first time
+- Getting started with Hetzner Cloud and Planton for the first time
 - Development, experimentation, or throwaway environments where speed matters more than security
 - Learning how HetznerCloudServer manifests work before layering on production features
 

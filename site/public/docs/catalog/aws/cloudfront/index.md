@@ -12,7 +12,7 @@ Deploys an AWS CloudFront distribution with one or more origins, a default cache
 
 ## What Gets Created
 
-When you deploy an AwsCloudFront resource, OpenMCF provisions:
+When you deploy an AwsCloudFront resource, Planton provisions:
 
 - **CloudFront Distribution** — a `cloudfront.Distribution` with the specified origins, a default cache behavior (GET/HEAD, redirect-to-https, query-string forwarding disabled, cookie forwarding disabled, default TTL 3600s, max TTL 86400s), and geo-restrictions set to `none`
 - **Custom Origin Configuration** — each origin is configured with `https-only` protocol policy, ports 80/443, and `TLSv1.2` SSL protocol
@@ -20,7 +20,7 @@ When you deploy an AwsCloudFront resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **An origin endpoint** (e.g., an S3 bucket website endpoint, an ALB DNS name, or any HTTPS-capable domain)
 - **An ACM certificate ARN in us-east-1** if using custom domain aliases (CloudFront requires certificates in us-east-1 regardless of origin region)
 
@@ -29,15 +29,15 @@ When you deploy an AwsCloudFront resource, OpenMCF provisions:
 Create a file `cloudfront.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCloudFront
 metadata:
   name: my-cdn
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsCloudFront.my-cdn
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsCloudFront.my-cdn
 spec:
   region: us-east-1
   enabled: true
@@ -49,7 +49,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f cloudfront.yaml
+planton apply -f cloudfront.yaml
 ```
 
 This creates a CloudFront distribution with a single origin, using the default CloudFront certificate and `PriceClass_All` edge locations.
@@ -83,15 +83,15 @@ This creates a CloudFront distribution with a single origin, using the default C
 A distribution serving a static site from an S3 bucket with `index.html` as the root object:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCloudFront
 metadata:
   name: static-site-cdn
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsCloudFront.static-site-cdn
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsCloudFront.static-site-cdn
 spec:
   region: us-east-1
   enabled: true
@@ -106,15 +106,15 @@ spec:
 A distribution with a custom domain name and ACM certificate for HTTPS:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCloudFront
 metadata:
   name: branded-cdn
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsCloudFront.branded-cdn
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsCloudFront.branded-cdn
 spec:
   region: us-east-1
   enabled: true
@@ -133,15 +133,15 @@ spec:
 A distribution restricted to US, Canada, and Europe edge locations to reduce costs:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCloudFront
 metadata:
   name: regional-cdn
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsCloudFront.regional-cdn
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsCloudFront.regional-cdn
 spec:
   region: us-east-1
   enabled: true
@@ -156,15 +156,15 @@ spec:
 A distribution with multiple origins, routing to different backends. The default origin serves the main site, while a second origin serves content from a subdirectory:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCloudFront
 metadata:
   name: multi-origin-cdn
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsCloudFront.multi-origin-cdn
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsCloudFront.multi-origin-cdn
 spec:
   region: us-east-1
   enabled: true

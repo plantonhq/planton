@@ -9,7 +9,7 @@ go_library(
         "wasmPluginList.go",
         "wasmPluginPatch.go",
     ],
-    importpath = "github.com/plantonhq/openmcf/pkg/kubernetes/kubernetestypes/istio/kubernetes/extensions/v1alpha1",
+    importpath = "github.com/plantonhq/planton/pkg/kubernetes/kubernetestypes/istio/kubernetes/extensions/v1alpha1",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_blang_semver//:semver",

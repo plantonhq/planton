@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.cloudflare.cloudflarezerotrustaccesspolicy.v1;
+
+import "dev/planton/provider/cloudflare/cloudflarezerotrustaccesspolicy/v1/api.proto";
+import "dev/planton/provider/cloudflare/provider.proto";
+
+//cloudflare-zero-trust-access-policy stack-input
+message CloudflareZeroTrustAccessPolicyStackInput {
+  //target cloud-resource
+  CloudflareZeroTrustAccessPolicy target = 1;
+  //provider-config
+  dev.planton.provider.cloudflare.CloudflareProviderConfig provider_config = 2;
+}

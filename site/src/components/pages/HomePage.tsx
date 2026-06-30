@@ -24,8 +24,8 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-2">
-              <Image src="/icon.png" alt="OpenMCF logo" width={36} height={36} className="h-9 w-auto object-contain" priority />
-              <Image src="/text-logo.svg" alt="OpenMCF" width={155} height={32} className="h-8 w-auto object-contain hidden sm:block" />
+              <Image src="/icon.png" alt="Planton logo" width={36} height={36} className="h-9 w-auto object-contain" priority />
+              <Image src="/text-logo.svg" alt="Planton" width={155} height={32} className="h-8 w-auto object-contain hidden sm:block" />
             </div>
             <div className="flex items-center gap-4 sm:gap-6">
                 <Link
@@ -34,7 +34,7 @@ export default function HomePage() {
                 >
                   Docs
                 </Link>
-              <GitHubStarBadge repo="plantonhq/openmcf" />
+              <GitHubStarBadge repo="plantonhq/planton" />
             </div>
           </div>
         </div>

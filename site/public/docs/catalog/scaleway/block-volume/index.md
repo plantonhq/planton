@@ -12,14 +12,14 @@ Deploys a Scaleway Block Storage volume as a standalone, network-attached SSD bl
 
 ## What Gets Created
 
-When you deploy a ScalewayBlockVolume resource, OpenMCF provisions:
+When you deploy a ScalewayBlockVolume resource, Planton provisions:
 
 - **Block Volume** — a `block.Volume` resource providing a raw, network-attached NVMe-backed block device with the specified size and IOPS tier
-- **Scaleway Tags** — standard OpenMCF resource tags applied to the volume for organization, environment, and resource identification
+- **Scaleway Tags** — standard Planton resource tags applied to the volume for organization, environment, and resource identification
 
 ## Prerequisites
 
-- **Scaleway credentials** configured via environment variables or OpenMCF provider config
+- **Scaleway credentials** configured via environment variables or Planton provider config
 - **An Availability Zone** that matches the zone of the Instance to which the volume will be attached (block volumes are zonal resources)
 - **OS-level formatting** — Scaleway block volumes are raw block devices; after attaching to an Instance you must format (`mkfs.ext4`, `mkfs.xfs`, etc.) and mount the volume
 
@@ -28,15 +28,15 @@ When you deploy a ScalewayBlockVolume resource, OpenMCF provisions:
 Create a file `block-volume.yaml`:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayBlockVolume
 metadata:
   name: my-volume
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayBlockVolume.my-volume
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayBlockVolume.my-volume
 spec:
   zone: fr-par-1
   sizeGb: 20
@@ -46,7 +46,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f block-volume.yaml
+planton apply -f block-volume.yaml
 ```
 
 This creates a 20 GB block volume with standard performance (5,000 IOPS) in the `fr-par-1` Availability Zone.
@@ -74,15 +74,15 @@ This creates a 20 GB block volume with standard performance (5,000 IOPS) in the 
 A minimal 10 GB volume for a development Instance in Paris:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayBlockVolume
 metadata:
   name: dev-data
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayBlockVolume.dev-data
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayBlockVolume.dev-data
 spec:
   zone: fr-par-1
   sizeGb: 10
@@ -94,15 +94,15 @@ spec:
 A 500 GB volume with the high-performance tier for a database workload in Amsterdam. The `sbs_15k` tier provides 15,000 IOPS suitable for PostgreSQL, MySQL, or MongoDB data directories:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayBlockVolume
 metadata:
   name: prod-db-data
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.ScalewayBlockVolume.prod-db-data
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.ScalewayBlockVolume.prod-db-data
 spec:
   zone: nl-ams-1
   sizeGb: 500
@@ -114,15 +114,15 @@ spec:
 A volume restored from an existing Block Storage snapshot. The size must be at least as large as the snapshot's source volume:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayBlockVolume
 metadata:
   name: restored-volume
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.ScalewayBlockVolume.restored-volume
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.ScalewayBlockVolume.restored-volume
 spec:
   zone: fr-par-1
   sizeGb: 100

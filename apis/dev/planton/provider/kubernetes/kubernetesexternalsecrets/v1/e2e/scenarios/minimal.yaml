@@ -1,0 +1,16 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesExternalSecrets
+metadata:
+  name: e2e-eso
+spec:
+  namespace:
+    value: external-secrets
+  create_namespace: true
+  container:
+    resources:
+      requests:
+        cpu: "50m"
+        memory: "64Mi"
+      limits:
+        cpu: "250m"
+        memory: "256Mi"

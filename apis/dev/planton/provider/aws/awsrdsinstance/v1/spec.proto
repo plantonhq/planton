@@ -1,0 +1,89 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsrdsinstance.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// AwsRdsInstanceSpec defines the minimal configuration to create a single AWS RDS DB instance
+// (engines like postgres, mysql, mariadb, oracle, sqlserver). It focuses on essential 80/20 fields
+// for networking, engine selection, instance sizing, and credentials. Validations are intentionally
+// omitted in this rule; a later rule will add them.
+message AwsRdsInstanceSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  // Subnets for the DB subnet group. Provide at least two private subnets for high availability.
+  // Alternatively, provide an existing DB subnet group name via db_subnet_group_name.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef subnet_ids = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  ];
+
+  // Name of an existing DB subnet group to use instead of specifying subnet_ids.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef db_subnet_group_name = 3;
+
+  // Security groups to associate with the instance's network interface.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef security_group_ids = 4 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
+  ];
+
+  // Database engine (e.g., "postgres", "mysql", "mariadb", "oracle-se2", "sqlserver-ex").
+  string engine = 5 [(buf.validate.field).string.min_len = 1];
+
+  // Desired engine version (e.g., "14.10" for Postgres, or a version string appropriate to the engine).
+  string engine_version = 6 [(buf.validate.field).string.min_len = 1];
+
+  // Instance class (size), e.g., "db.t3.micro", "db.m6g.large".
+  string instance_class = 7 [
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.pattern = "^db\\."
+  ];
+
+  // Allocated storage size in GiB for the primary storage.
+  int32 allocated_storage_gb = 8 [(buf.validate.field).int32.gt = 0];
+
+  // Enable storage encryption for the instance.
+  bool storage_encrypted = 9;
+
+  // Customer-managed KMS key ARN/alias for storage encryption when enabled.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_id = 10 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
+  ];
+
+  // Master user credentials. When using platform-managed secrets, a later rule will define validations.
+  string username = 11 [(buf.validate.field).string.min_len = 1];
+  string password = 12 [
+    (buf.validate.field).string.min_len = 1,
+    (dev.planton.shared.options.sensitive) = true
+  ];
+
+  // Database port.
+  int32 port = 13 [
+    (buf.validate.field).int32.gte = 0,
+    (buf.validate.field).int32.lte = 65535
+  ];
+
+  // Whether the instance has a public IP address.
+  bool publicly_accessible = 14;
+
+  // Whether to deploy the instance in Multi-AZ mode.
+  bool multi_az = 15;
+
+  // Optional parameter group name to associate with the instance.
+  string parameter_group_name = 16;
+
+  // Optional option group name to associate with the instance (for certain engines).
+  string option_group_name = 17;
+
+  // Require either >=2 subnet_ids or an existing DB subnet group name.
+  option (buf.validate.message).cel = {
+    id: "subnets_or_group"
+    message: "Provide either subnet_ids (>=2) or db_subnet_group_name"
+    expression: "(this.subnet_ids.size() >= 2) || has(this.db_subnet_group_name)"
+  };
+}

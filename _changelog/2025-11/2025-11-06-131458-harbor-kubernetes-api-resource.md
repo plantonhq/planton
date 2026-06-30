@@ -22,7 +22,7 @@ Based on deep research into modern Harbor deployment architectures, the key insi
 
 ### Pain Points
 
-- No standardized API for deploying Harbor on Kubernetes within OpenMCF ecosystem
+- No standardized API for deploying Harbor on Kubernetes within Planton ecosystem
 - Complex configuration matrix: 4 PostgreSQL databases (core, clair, notary_server, notary_signer)
 - Critical HA requirement: External object storage (S3/GCS/Azure) mandatory for production multi-replica deployments
 - Ingress complexity: Separate endpoints for Core/Portal UI, Registry API, and Notary signing service
@@ -48,9 +48,9 @@ Created a complete, production-ready API resource following established patterns
 Standard API resource structure:
 ```proto
 message HarborKubernetes {
-  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.openmcf.org/v1'];
+  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.planton.dev/v1'];
   string kind = 2 [(buf.validate.field).string.const = 'HarborKubernetes'];
-  org.openmcf.shared.CloudResourceMetadata metadata = 3;
+  dev.planton.shared.CloudResourceMetadata metadata = 3;
   HarborKubernetesSpec spec = 4;
   HarborKubernetesStatus status = 5;
 }
@@ -199,7 +199,7 @@ This enables:
 Created 4 asset files in `planton/apis/ai/planton/infrahub/cloudresource/v1/assets/provider/kubernetes/workload/harborkubernetes/v1/`:
 
 1. **deployment-component.yaml**: Deployment metadata with tags (container-registry, artifact-registry, security, vulnerability-scanning)
-2. **iac-modules.yaml**: References to both Pulumi and Terraform modules in openmcf repo
+2. **iac-modules.yaml**: References to both Pulumi and Terraform modules in planton repo
 3. **quick-actions.yaml**: Quick action for "Deploy Harbor on Kubernetes"
 4. **logo.svg**: Custom Harbor logo with ship/container icon design
 
@@ -469,7 +469,7 @@ certmanagerv1.NewCertificate(ctx, "ingress-certificate", &certmanagerv1.Certific
 
 ### Users
 
-- Can now deploy Harbor registries using standardized OpenMCF API
+- Can now deploy Harbor registries using standardized Planton API
 - Choose appropriate architecture based on environment (dev vs production)
 - Leverage pre-configured examples for common scenarios
 - Deploy with confidence knowing HA requirements are properly modeled
@@ -488,7 +488,7 @@ certmanagerv1.NewCertificate(ctx, "ingress-certificate", &certmanagerv1.Certific
 
 ## Files Created/Modified
 
-### OpenMCF Repository
+### Planton Repository
 
 **HarborKubernetes - Proto API (8 files)**:
 - `apis/project/planton/provider/kubernetes/workload/harborkubernetes/v1/api.proto`
@@ -586,7 +586,7 @@ read_lints on api.proto, spec.proto, stack_outputs.proto, stack_input.proto
 
 ```yaml
 # dev-harbor.yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: HarborKubernetes
 metadata:
   name: harbor-dev
@@ -637,7 +637,7 @@ planton apply -f dev-harbor.yaml
 
 ```yaml
 # prod-harbor.yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: HarborKubernetes
 metadata:
   name: harbor-prod
@@ -743,7 +743,7 @@ planton apply -f prod-harbor.yaml
 **Decision**: Used Kubernetes Gateway API for ingress instead of Ingress resources.
 
 **Rationale**:
-- OpenMCF standard pattern (SignozKubernetes, TemporalKubernetes use it)
+- Planton standard pattern (SignozKubernetes, TemporalKubernetes use it)
 - Gateway API is Kubernetes SIG's next-gen ingress standard
 - Better TLS and multi-protocol support
 - cert-manager integration is cleaner
@@ -776,12 +776,12 @@ Potential follow-up work (not blocking production use):
 
 ```bash
 # Verify proto compilation
-cd ~/scm/github.com/plantonhq/openmcf/apis
+cd ~/scm/github.com/plantonhq/planton/apis
 buf lint --path project/planton/provider/kubernetes/workload/harborkubernetes/v1/
 buf generate --path project/planton/provider/kubernetes/workload/harborkubernetes/v1/
 
 # Verify Go builds
-cd ~/scm/github.com/plantonhq/openmcf
+cd ~/scm/github.com/plantonhq/planton
 ./bazelw build //apis/project/planton/provider/kubernetes/workload/harborkubernetes/v1:harborkubernetes
 ./bazelw build //apis/project/planton/provider/kubernetes/workload/harborkubernetes/v1/iac/pulumi/module:module
 
@@ -794,7 +794,7 @@ grep -A 8 "HarborKubernetes = 837" apis/project/planton/shared/cloudresourcekind
 
 ## Code Metrics
 
-**OpenMCF Repository**:
+**Planton Repository**:
 - Proto files: 4 (445 total lines)
 - Generated Go: 4 files (auto-generated)
 - Documentation: 3 files (799 total lines)

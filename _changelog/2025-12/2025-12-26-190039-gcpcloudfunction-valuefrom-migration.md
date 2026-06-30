@@ -14,7 +14,7 @@ The GcpCloudFunction component previously used a plain `string` for `project_id`
 
 ### Pain Points
 
-- **Tight coupling**: Users had to know and specify project IDs explicitly, even when deploying to projects managed by other OpenMCF resources
+- **Tight coupling**: Users had to know and specify project IDs explicitly, even when deploying to projects managed by other Planton resources
 - **Error-prone**: Copy-pasting project IDs across manifests led to typos and configuration drift
 - **No dynamic dependencies**: Impossible to reference the output of a GcpProject resource, breaking the "infrastructure as code" dependency chain
 - **Inconsistent with other components**: GcpVpc, GcpGkeCluster, and other GCP components already supported `StringValueOrRef` for project references
@@ -25,7 +25,7 @@ Updated the GcpCloudFunction API to use `StringValueOrRef` for the `project_id` 
 
 ### Key Changes
 
-1. **Proto Schema Update**: Changed `project_id` from `string` to `org.openmcf.shared.foreignkey.v1.StringValueOrRef`
+1. **Proto Schema Update**: Changed `project_id` from `string` to `dev.planton.shared.foreignkey.v1.StringValueOrRef`
 2. **Default Kind Metadata**: Added `default_kind = GcpProject` and `default_kind_field_path = "status.outputs.project_id"` options
 3. **Pulumi Module Update**: Updated all usages to call `GetValue()` for value resolution
 4. **Test Updates**: Migrated all test cases to use the new type structure
@@ -45,10 +45,10 @@ string project_id = 1 [
 
 **After:**
 ```protobuf
-org.openmcf.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
   (buf.validate.field).required = true,
-  (org.openmcf.shared.foreignkey.v1.default_kind) = GcpProject,
-  (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+  (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
 ];
 ```
 
@@ -98,7 +98,7 @@ ginkgo.Context("valid project_id using value_from reference", func() {
 ### Literal Value (Direct Project ID)
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudFunction
 metadata:
   name: hello-http-dev
@@ -117,7 +117,7 @@ spec:
 ### Value From Reference (Dynamic Resolution)
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudFunction
 metadata:
   name: hello-http-with-ref

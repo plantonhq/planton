@@ -1,0 +1,9 @@
+---
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesIstioBaseCrds
+metadata:
+  name: istio-base-crds-test
+spec:
+  target_cluster:
+    cluster_kind: GcpGkeCluster
+    cluster_name: test-cluster

@@ -1,13 +1,13 @@
 ---
 title: "Troubleshooting"
-description: "Solutions to common OpenMCF issues - manifest validation, authentication, state management, and deployment problems"
+description: "Solutions to common Planton issues - manifest validation, authentication, state management, and deployment problems"
 icon: "gear"
 order: 100
 ---
 
 # Troubleshooting Guide
 
-Solutions to common problems you might encounter using OpenMCF.
+Solutions to common problems you might encounter using Planton.
 
 ---
 
@@ -19,7 +19,7 @@ Solutions to common problems you might encounter using OpenMCF.
 
 **Common Causes**:
 - Typo in `kind` field (case-sensitive)
-- Kind doesn't exist in OpenMCF
+- Kind doesn't exist in Planton
 - Wrong `apiVersion` for the kind
 
 **Solutions**:
@@ -30,7 +30,7 @@ Solutions to common problems you might encounter using OpenMCF.
 # Right: AwsS3Bucket
 
 # 2. Verify kind exists in catalog
-# Browse: https://openmcf.org/docs/catalog
+# Browse: https://planton.dev/docs/catalog
 
 # 3. Check available kinds in your CLI version
 # (List is shown in error message)
@@ -145,11 +145,11 @@ aws iam list-attached-user-policies --user-name your-username
 ```bash
 # Option 1: Use service account key
 export GOOGLE_APPLICATION_CREDENTIALS=~/gcp-key.json
-openmcf pulumi up -f resource.yaml
+planton pulumi up -f resource.yaml
 
 # Option 2: Use application default credentials (local dev)
 gcloud auth application-default login
-openmcf pulumi up -f resource.yaml
+planton pulumi up -f resource.yaml
 
 # Verify credentials
 gcloud auth list
@@ -240,17 +240,17 @@ curl -X GET "https://api.cloudflare.com/client/v4/user/tokens/verify" \
 
 ```bash
 # Option 1: Initialize the stack first
-openmcf pulumi init -f resource.yaml
-openmcf pulumi preview -f resource.yaml
+planton pulumi init -f resource.yaml
+planton pulumi preview -f resource.yaml
 
 # Option 2: Use 'up' which auto-creates stack
-openmcf pulumi up -f resource.yaml
+planton pulumi up -f resource.yaml
 
 # Option 3: Check stack label in manifest
 # Ensure manifest has:
 metadata:
   labels:
-    pulumi.openmcf.org/stack.name: "org/project/stack"
+    pulumi.planton.dev/stack.name: "org/project/stack"
 ```
 
 ### "another update is currently in progress"
@@ -267,7 +267,7 @@ pulumi stack --stack <stack-fqdn>
 pulumi cancel --stack <stack-fqdn>
 
 # Then retry
-openmcf pulumi up -f resource.yaml
+planton pulumi up -f resource.yaml
 ```
 
 ### "Stack still has resources" (during delete)
@@ -278,17 +278,17 @@ openmcf pulumi up -f resource.yaml
 
 ```bash
 # Destroy resources first
-openmcf pulumi destroy -f resource.yaml
+planton pulumi destroy -f resource.yaml
 
 # Then delete stack
-openmcf pulumi delete -f resource.yaml
+planton pulumi delete -f resource.yaml
 
 # Or if resources are actually gone (state is wrong):
-openmcf pulumi refresh -f resource.yaml
-openmcf pulumi delete -f resource.yaml
+planton pulumi refresh -f resource.yaml
+planton pulumi delete -f resource.yaml
 
 # Or force delete (use with caution)
-openmcf pulumi delete -f resource.yaml --force
+planton pulumi delete -f resource.yaml --force
 ```
 
 ---
@@ -303,10 +303,10 @@ openmcf pulumi delete -f resource.yaml --force
 
 ```bash
 # Run init first
-openmcf tofu init -f resource.yaml
+planton tofu init -f resource.yaml
 
 # Then try command again
-openmcf tofu plan -f resource.yaml
+planton tofu plan -f resource.yaml
 ```
 
 ### "state locked"
@@ -426,11 +426,11 @@ vim manifest.yaml  # Change metadata.name
 
 ```bash
 # For Pulumi: State automatically updated, can re-run 'up'
-openmcf pulumi up -f resource.yaml
+planton pulumi up -f resource.yaml
 # Will continue from where it failed
 
 # For OpenTofu: State updated, can re-run 'apply'
-openmcf tofu apply -f resource.yaml
+planton tofu apply -f resource.yaml
 # Will attempt to create failed resources
 
 # If repeatedly failing:
@@ -482,13 +482,13 @@ ls -la <module-dir>
 # - OpenTofu: *.tf files
 
 # Verify --module-dir path
-openmcf pulumi up \
+planton pulumi up \
   -f resource.yaml \
   --module-dir /full/path/to/module  # Use absolute path
 
 # Or cd to module directory
 cd /path/to/module
-openmcf pulumi up -f ~/manifests/resource.yaml
+planton pulumi up -f ~/manifests/resource.yaml
 ```
 
 ### Module Compilation Errors
@@ -535,14 +535,14 @@ go vet ./...
 
 ```bash
 # For Pulumi: refresh state
-openmcf pulumi refresh -f resource.yaml
+planton pulumi refresh -f resource.yaml
 
 # For OpenTofu: refresh state
-openmcf tofu refresh -f resource.yaml
+planton tofu refresh -f resource.yaml
 
 # Then plan again to see if changes persist
-openmcf pulumi preview -f resource.yaml
-openmcf tofu plan -f resource.yaml
+planton pulumi preview -f resource.yaml
+planton tofu plan -f resource.yaml
 
 # If unexpected changes remain:
 # - Investigate who made manual changes
@@ -635,22 +635,22 @@ brew install opentofu
 tofu version
 ```
 
-### "openmcf: command not found"
+### "planton: command not found"
 
-**Symptom**: OpenMCF CLI not installed.
+**Symptom**: Planton CLI not installed.
 
 **Solutions**:
 
 ```bash
 # Install via Homebrew
-brew install plantonhq/tap/openmcf
+brew install plantonhq/tap/planton
 
 # Verify installation
-openmcf version
+planton version
 
 # If Homebrew tap not added:
 brew tap plantonhq/tap
-brew install openmcf
+brew install planton
 ```
 
 ---
@@ -697,7 +697,7 @@ secretAccessKey: ...
 region: us-west-2
 EOF
 
-openmcf pulumi up -f resource.yaml -p aws-cred.yaml
+planton pulumi up -f resource.yaml -p aws-cred.yaml
 ```
 
 ### GCP: "API not enabled"
@@ -755,11 +755,11 @@ gcloud services list --enabled
 ```bash
 # Pulumi verbose logging
 export PULUMI_LOG_LEVEL=3
-openmcf pulumi up -f resource.yaml
+planton pulumi up -f resource.yaml
 
 # OpenTofu debug logging
 export TF_LOG=DEBUG
-openmcf tofu apply -f resource.yaml
+planton tofu apply -f resource.yaml
 
 # Or trace level for maximum verbosity
 export TF_LOG=TRACE
@@ -774,12 +774,12 @@ export TF_LOG=TRACE
 
 ### Community Support
 
-**GitHub Issues**: [openmcf/issues](https://github.com/plantonhq/openmcf/issues)
+**GitHub Issues**: [planton/issues](https://github.com/plantonhq/planton/issues)
 
-**GitHub Discussions**: [openmcf/discussions](https://github.com/plantonhq/openmcf/discussions)
+**GitHub Discussions**: [planton/discussions](https://github.com/plantonhq/planton/discussions)
 
 **When reporting issues**:
-- Include OpenMCF version (`openmcf version`)
+- Include Planton version (`planton version`)
 - Include relevant error messages (sanitize credentials!)
 - Include manifest structure (sanitize sensitive data)
 - Describe what you expected vs. what happened
@@ -791,8 +791,8 @@ export TF_LOG=TRACE
 
 ### Before Deploying to Production
 
-- [ ] Validate manifest: `openmcf validate -f prod.yaml`
-- [ ] Preview changes: `openmcf pulumi preview -f prod.yaml`
+- [ ] Validate manifest: `planton validate -f prod.yaml`
+- [ ] Preview changes: `planton pulumi preview -f prod.yaml`
 - [ ] Test in lower environment first
 - [ ] Verify credentials are correct (not dev/staging credentials)
 - [ ] Check region/zone is correct
@@ -807,7 +807,7 @@ export TF_LOG=TRACE
 - [ ] Clean up unused stacks/state files
 - [ ] Review and update manifests for best practices
 - [ ] Monitor cloud provider quotas/limits
-- [ ] Keep OpenMCF CLI updated
+- [ ] Keep Planton CLI updated
 
 ---
 
@@ -820,5 +820,5 @@ export TF_LOG=TRACE
 
 ---
 
-**Still stuck?** [Open an issue](https://github.com/plantonhq/openmcf/issues) with details, and we'll help you out!
+**Still stuck?** [Open an issue](https://github.com/plantonhq/planton/issues) with details, and we'll help you out!
 

@@ -12,7 +12,7 @@ Adds an additional node pool to an existing DigitalOcean Kubernetes (DOKS) clust
 
 ## What Gets Created
 
-When you deploy a DigitalOceanKubernetesNodePool resource, OpenMCF provisions:
+When you deploy a DigitalOceanKubernetesNodePool resource, Planton provisions:
 
 - **Kubernetes Node Pool** -- a `digitalocean_kubernetes_node_pool` resource attached to the specified DOKS cluster, with the configured Droplet size and node count
 - **Auto-Scaling Policy** -- configured only when `autoScale` is `true`, allows the cluster autoscaler to manage node count between `minNodes` and `maxNodes`
@@ -22,7 +22,7 @@ When you deploy a DigitalOceanKubernetesNodePool resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **DigitalOcean credentials** configured via environment variables or OpenMCF provider config
+- **DigitalOcean credentials** configured via environment variables or Planton provider config
 - **An existing DOKS cluster** -- either a cluster UUID or a reference to a DigitalOceanKubernetesCluster resource via `valueFrom`
 - **A valid Droplet size slug** available in the cluster's region (e.g., `s-4vcpu-8gb`, `g-8vcpu-32gb`)
 
@@ -31,15 +31,15 @@ When you deploy a DigitalOceanKubernetesNodePool resource, OpenMCF provisions:
 Create a file `node-pool.yaml`:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanKubernetesNodePool
 metadata:
   name: worker-pool
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.DigitalOceanKubernetesNodePool.worker-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.DigitalOceanKubernetesNodePool.worker-pool
 spec:
   nodePoolName: worker-pool
   cluster:
@@ -51,7 +51,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f node-pool.yaml
+planton apply -f node-pool.yaml
 ```
 
 This creates a three-node pool of `s-4vcpu-8gb` Droplets in the specified DOKS cluster.
@@ -85,15 +85,15 @@ This creates a three-node pool of `s-4vcpu-8gb` Droplets in the specified DOKS c
 A simple, fixed-size pool for general-purpose workloads:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanKubernetesNodePool
 metadata:
   name: web-workers
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.DigitalOceanKubernetesNodePool.web-workers
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.DigitalOceanKubernetesNodePool.web-workers
 spec:
   nodePoolName: web-workers
   cluster:
@@ -110,15 +110,15 @@ spec:
 A production pool that scales between 2 and 10 nodes, with Kubernetes labels for workload targeting:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanKubernetesNodePool
 metadata:
   name: api-pool
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.DigitalOceanKubernetesNodePool.api-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.DigitalOceanKubernetesNodePool.api-pool
 spec:
   nodePoolName: api-pool
   cluster:
@@ -141,15 +141,15 @@ spec:
 A dedicated high-memory pool that uses taints to isolate workloads and references the parent cluster via `valueFrom`:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanKubernetesNodePool
 metadata:
   name: ml-pool
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.DigitalOceanKubernetesNodePool.ml-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.DigitalOceanKubernetesNodePool.ml-pool
 spec:
   nodePoolName: ml-pool
   cluster:

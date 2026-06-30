@@ -4,7 +4,7 @@
 // Package outputs transforms flat IaC output maps into typed StackOutputs protos.
 //
 // IaC engines (Terraform and Pulumi) produce outputs as flat map[string]string.
-// Each CloudResourceKind in OpenMCF has a typed StackOutputs proto that defines
+// Each CloudResourceKind in Planton has a typed StackOutputs proto that defines
 // the expected output fields with their concrete types. This package bridges the
 // two representations using proto reflection, so it works for all 365+ component
 // kinds without per-component code.
@@ -16,7 +16,7 @@ package outputs
 
 import (
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/apis/dev/planton/shared/cloudresourcekind"
 	"google.golang.org/protobuf/proto"
 )
 

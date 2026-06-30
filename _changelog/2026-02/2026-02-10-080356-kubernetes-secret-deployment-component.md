@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added the **KubernetesSecret** deployment component to OpenMCF, implementing a "Secret-as-a-Service" pattern with type-safe protobuf variants for all five common Kubernetes secret types: Opaque, TLS, DockerConfigJson, BasicAuth, and SSHAuth. The component includes complete proto API definitions, 27 validation tests, dual IaC implementations (Pulumi + Terraform), and comprehensive documentation. Registered as `KubernetesSecret = 850` in the Kubernetes provider range.
+Added the **KubernetesSecret** deployment component to Planton, implementing a "Secret-as-a-Service" pattern with type-safe protobuf variants for all five common Kubernetes secret types: Opaque, TLS, DockerConfigJson, BasicAuth, and SSHAuth. The component includes complete proto API definitions, 27 validation tests, dual IaC implementations (Pulumi + Terraform), and comprehensive documentation. Registered as `KubernetesSecret = 850` in the Kubernetes provider range.
 
 ## Problem Statement / Motivation
 
@@ -18,11 +18,11 @@ Kubernetes Secrets are foundational to every cluster, yet managing them declarat
 - **No schema validation**: A TLS secret missing its private key only fails at pod startup, not at plan/preview time
 - **DockerConfigJson construction**: Users must manually construct the nested JSON structure for registry credentials
 - **No declarative lifecycle**: Many teams resort to `kubectl create secret` which is imperative and has no state tracking
-- **Complementary to KubernetesExternalSecrets**: ESO handles secrets from external stores; there was no OpenMCF component for secrets created directly from literal values
+- **Complementary to KubernetesExternalSecrets**: ESO handles secrets from external stores; there was no Planton component for secrets created directly from literal values
 
 ## Solution / What's New
 
-A complete deployment component at `apis/org/openmcf/provider/kubernetes/kubernetessecret/v1/` following the full forge workflow (19 steps).
+A complete deployment component at `apis/dev/planton/provider/kubernetes/kubernetessecret/v1/` following the full forge workflow (19 steps).
 
 ### Type-Safe Secret Data via Protobuf `oneof`
 
@@ -75,9 +75,9 @@ flowchart LR
 
 ### Proto API Definitions
 
-- **`spec.proto`**: 188 lines defining `KubernetesSecretSpec` with `oneof secret_data` and 5 type-safe sub-messages. Includes `buf.validate` rules (DNS name validation, required fields per type) and a message-level CEL validation enforcing that at least one variant is set. The `namespace` field defaults to `"default"` via `(org.openmcf.shared.options.default)`.
+- **`spec.proto`**: 188 lines defining `KubernetesSecretSpec` with `oneof secret_data` and 5 type-safe sub-messages. Includes `buf.validate` rules (DNS name validation, required fields per type) and a message-level CEL validation enforcing that at least one variant is set. The `namespace` field defaults to `"default"` via `(dev.planton.shared.options.default)`.
 
-- **`api.proto`**: KRM envelope with `api_version = "kubernetes.openmcf.org/v1"` and `kind = "KubernetesSecret"`.
+- **`api.proto`**: KRM envelope with `api_version = "kubernetes.planton.dev/v1"` and `kind = "KubernetesSecret"`.
 
 - **`stack_outputs.proto`**: Three outputs: `secret_name`, `secret_namespace`, `secret_type`.
 
@@ -123,9 +123,9 @@ flowchart LR
 
 ## Impact
 
-- **Platform engineers**: Can now manage Kubernetes Secrets declaratively with proper typing through OpenMCF
+- **Platform engineers**: Can now manage Kubernetes Secrets declaratively with proper typing through Planton
 - **End users**: Get IDE autocompletion and validation for secret data fields instead of raw string maps
-- **CI/CD pipelines**: Can validate secret manifests before deployment via `openmcf validate`
+- **CI/CD pipelines**: Can validate secret manifests before deployment via `planton validate`
 - **Complements KubernetesExternalSecrets (enum 829)**: ExternalSecrets syncs from external stores; KubernetesSecret creates from literal values
 
 ## Related Work

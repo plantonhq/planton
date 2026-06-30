@@ -1,0 +1,6 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesTekton
+metadata:
+  name: e2e-tekton
+spec:
+  pipeline_version: "latest"

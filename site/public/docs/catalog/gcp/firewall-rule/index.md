@@ -12,13 +12,13 @@ Deploys a GCP compute firewall rule (`google_compute_firewall`) with an `action`
 
 ## What Gets Created
 
-When you deploy a GcpFirewallRule resource, OpenMCF provisions:
+When you deploy a GcpFirewallRule resource, Planton provisions:
 
 - **Firewall Rule** — a `google_compute_firewall` resource in the specified VPC network with allow or deny blocks generated from the `action` and `rules` fields
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **An existing GCP project** — referenced via `projectId`
 - **An existing VPC network** — referenced via `network` (name or self-link)
 - **Compute Engine API enabled** (`compute.googleapis.com`) on the target project
@@ -29,15 +29,15 @@ When you deploy a GcpFirewallRule resource, OpenMCF provisions:
 Create a file `firewall.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpFirewallRule
 metadata:
   name: allow-web
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpFirewallRule.allow-web
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpFirewallRule.allow-web
 spec:
   projectId:
     value: my-gcp-project-123
@@ -60,7 +60,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f firewall.yaml
+planton apply -f firewall.yaml
 ```
 
 This creates an INGRESS firewall rule that allows HTTP and HTTPS traffic from any source to instances tagged `web-server` in the `my-vpc` network.
@@ -100,15 +100,15 @@ This creates an INGRESS firewall rule that allows HTTP and HTTPS traffic from an
 ### Basic INGRESS ALLOW for Web Traffic
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpFirewallRule
 metadata:
   name: allow-web
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpFirewallRule.allow-web
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpFirewallRule.allow-web
 spec:
   projectId:
     value: my-gcp-project-123
@@ -131,15 +131,15 @@ spec:
 ### INGRESS ALLOW for SSH via IAP
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpFirewallRule
 metadata:
   name: allow-iap-ssh
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpFirewallRule.allow-iap-ssh
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpFirewallRule.allow-iap-ssh
 spec:
   projectId:
     value: my-gcp-project-123
@@ -160,15 +160,15 @@ spec:
 ### EGRESS DENY All (Restrictive Baseline)
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpFirewallRule
 metadata:
   name: deny-all-egress
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpFirewallRule.deny-all-egress
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpFirewallRule.deny-all-egress
 spec:
   projectId:
     value: my-prod-project-456

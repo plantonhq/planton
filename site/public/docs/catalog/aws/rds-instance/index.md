@@ -12,14 +12,14 @@ Deploys a single AWS RDS database instance supporting engines such as PostgreSQL
 
 ## What Gets Created
 
-When you deploy an AwsRdsInstance resource, OpenMCF provisions:
+When you deploy an AwsRdsInstance resource, Planton provisions:
 
 - **DB Subnet Group** — created only when `subnetIds` are provided and `dbSubnetGroupName` is not set; groups the specified subnets for RDS networking
 - **RDS DB Instance** — an `aws:rds:Instance` with the configured engine, version, instance class, storage, and networking settings, placed in the specified subnets with attached security groups
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **At least two private subnets** in different Availability Zones, or an existing DB subnet group name
 - **Security groups** allowing inbound traffic on the database port (e.g., 5432 for PostgreSQL, 3306 for MySQL)
 - **A KMS key ARN** if enabling customer-managed storage encryption
@@ -30,15 +30,15 @@ When you deploy an AwsRdsInstance resource, OpenMCF provisions:
 Create a file `rds-instance.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRdsInstance
 metadata:
   name: my-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsRdsInstance.my-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsRdsInstance.my-db
 spec:
   region: us-west-2
   subnetIds:
@@ -55,7 +55,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f rds-instance.yaml
+planton apply -f rds-instance.yaml
 ```
 
 This creates a single PostgreSQL 14.10 instance on a `db.t3.micro` with 20 GiB of storage, placed in two private subnets.
@@ -98,15 +98,15 @@ This creates a single PostgreSQL 14.10 instance on a `db.t3.micro` with 20 GiB o
 A PostgreSQL instance with storage encryption and a security group for controlled access:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRdsInstance
 metadata:
   name: app-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.AwsRdsInstance.app-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.AwsRdsInstance.app-db
 spec:
   region: us-west-2
   subnetIds:
@@ -129,15 +129,15 @@ spec:
 A MySQL instance using an existing DB subnet group and Multi-AZ deployment for high availability:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRdsInstance
 metadata:
   name: ha-mysql
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsRdsInstance.ha-mysql
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsRdsInstance.ha-mysql
 spec:
   region: us-west-2
   dbSubnetGroupName: existing-db-subnet-group
@@ -160,15 +160,15 @@ spec:
 Production configuration with KMS encryption, Multi-AZ, parameter group, and security groups:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRdsInstance
 metadata:
   name: prod-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsRdsInstance.prod-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsRdsInstance.prod-db
 spec:
   region: us-west-2
   subnetIds:
@@ -192,18 +192,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding IDs:
+Reference other Planton-managed resources instead of hardcoding IDs:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRdsInstance
 metadata:
   name: ref-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsRdsInstance.ref-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsRdsInstance.ref-db
 spec:
   region: us-west-2
   subnetIds:

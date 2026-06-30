@@ -34,7 +34,7 @@ Organizations deploying applications on GCP need SSL/TLS certificates for secure
 
 ### New Cloud Resource: GcpCertManagerCert
 
-A fully-featured cloud resource that provisions SSL/TLS certificates on GCP with automatic DNS validation, following OpenMCF's uniform resource model.
+A fully-featured cloud resource that provisions SSL/TLS certificates on GCP with automatic DNS validation, following Planton's uniform resource model.
 
 **Key Capabilities**:
 - ✅ Dual certificate type support (Certificate Manager + Load Balancer)
@@ -58,7 +58,7 @@ Defines the main resource structure:
 
 ```proto
 message GcpCertManagerCert {
-  string api_version = 1 [(buf.validate.field).string.const = 'gcp.openmcf.org/v1'];
+  string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1'];
   string kind = 2 [(buf.validate.field).string.const = 'GcpCertManagerCert'];
   CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
   GcpCertManagerCertSpec spec = 4 [(buf.validate.field).required = true];
@@ -393,7 +393,7 @@ Nine complete examples:
 ### Basic Certificate (Certificate Manager)
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCertManagerCert
 metadata:
   name: my-cert
@@ -410,7 +410,7 @@ spec:
 ### Wildcard Certificate with SANs
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCertManagerCert
 metadata:
   name: wildcard-cert
@@ -430,7 +430,7 @@ spec:
 ### Load Balancer Certificate
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCertManagerCert
 metadata:
   name: lb-cert
@@ -450,10 +450,10 @@ spec:
 
 ```bash
 # Using Pulumi
-openmcf pulumi up --manifest cert.yaml --stack org/project/production
+planton pulumi up --manifest cert.yaml --stack org/project/production
 
 # Using Terraform
-openmcf terraform apply --manifest cert.yaml --stack org/project/production
+planton terraform apply --manifest cert.yaml --stack org/project/production
 ```
 
 ## Benefits
@@ -595,7 +595,7 @@ Follows established patterns from other GCP resources:
 **GcpDnsZone Integration**:
 ```yaml
 # DNS Zone
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpDnsZone
 metadata:
   name: my-dns-zone
@@ -604,7 +604,7 @@ spec:
 
 ---
 # Certificate references DNS Zone
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCertManagerCert
 metadata:
   name: my-cert
@@ -623,12 +623,12 @@ Registered as enum value 619 in the GCP range, enabling:
 - Integration with resource management systems
 - Consistent resource type handling
 
-### With OpenMCF CLI
+### With Planton CLI
 
 Deploys seamlessly through standard CLI commands:
 ```bash
-openmcf pulumi up --manifest cert.yaml
-openmcf terraform apply --manifest cert.yaml
+planton pulumi up --manifest cert.yaml
+planton terraform apply --manifest cert.yaml
 ```
 
 ## Comparison with Manual Approach
@@ -649,7 +649,7 @@ openmcf terraform apply --manifest cert.yaml
 ### After (GcpCertManagerCert)
 
 1. Write YAML manifest
-2. Run `openmcf pulumi up`
+2. Run `planton pulumi up`
 3. DNS records created automatically
 4. Validation happens automatically
 5. Version controlled in Git
@@ -737,7 +737,7 @@ gcloud certificate-manager certificates list --project=my-project
 ### Step 2: Create Manifest
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCertManagerCert
 metadata:
   name: existing-cert
@@ -758,7 +758,7 @@ For existing certificates, consider:
 ### Step 4: Deploy
 
 ```bash
-openmcf pulumi up --manifest cert.yaml
+planton pulumi up --manifest cert.yaml
 ```
 
 ## Related Work
@@ -831,7 +831,7 @@ Tested certificate creation:
 **Status**: ✅ Production Ready  
 **Cloud Resource Kind**: 619 (GCP range)  
 **ID Prefix**: gcpcert  
-**API Version**: gcp.openmcf.org/v1  
+**API Version**: gcp.planton.dev/v1  
 **Deployment**: Available via Pulumi and Terraform
 
 

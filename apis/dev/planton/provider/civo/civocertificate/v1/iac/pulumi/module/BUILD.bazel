@@ -1,0 +1,18 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "module",
+    srcs = [
+        "certificate.go",
+        "locals.go",
+        "main.go",
+        "outputs.go",
+    ],
+    importpath = "github.com/plantonhq/planton/apis/dev/planton/provider/civo/civocertificate/v1/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/dev/planton/provider/civo/civocertificate/v1:civocertificate",
+        "//apis/dev/planton/shared",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)

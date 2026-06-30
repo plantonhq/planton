@@ -1,0 +1,8 @@
+apiVersion: openstack.planton.dev/v1
+kind: OpenStackRoleAssignment
+metadata:
+  name: test-role-assignment
+spec:
+  role_id: "test-role-uuid"
+  project_id: "test-project-uuid"
+  user_id: "test-user-uuid"

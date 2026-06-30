@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsiamrole.v1;
+
+// AwsIamRoleStackOutputs describes values returned by Pulumi/Terraform for an IAM role deployment.
+message AwsIamRoleStackOutputs {
+  // role_arn is the Amazon Resource Name (ARN) of the created IAM role.
+  string role_arn = 1;
+
+  // role_name is the name of the IAM role in AWS.
+  string role_name = 2;
+
+  // instance_profile_arn is the ARN of the IAM instance profile that wraps this
+  // role. EC2 requires an instance profile (not a bare role) to assume a role,
+  // so this is what an AwsEc2Instance.iam_instance_profile_arn should reference.
+  string instance_profile_arn = 3;
+
+  // instance_profile_name is the name of the IAM instance profile wrapping this role.
+  string instance_profile_name = 4;
+}

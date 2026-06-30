@@ -29,7 +29,7 @@ const (
 	OutputDir       Flag = "output-dir"
 	OutputFile      Flag = "output-file"
 	Overlay         Flag = "overlay"
-	OpenMCFGitRepo  Flag = "openmcf-git-repo"
+	PlantonGitRepo  Flag = "planton-git-repo"
 	ProviderConfig  Flag = "provider-config"
 	Reconfigure     Flag = "reconfigure"
 	Set             Flag = "set"

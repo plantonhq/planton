@@ -1,0 +1,131 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azurednsrecord.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// AzureDnsRecordSpec defines the configuration for creating a DNS record in an Azure DNS Zone.
+// This component creates individual DNS records (A, AAAA, CNAME, MX, TXT, etc.) within an existing zone.
+//
+// Azure DNS records enable mapping domain names to IP addresses, other domains, or services.
+// Records are created within a DNS Zone that must already exist in an Azure Resource Group.
+message AzureDnsRecordSpec {
+  // Supported DNS record types for Azure DNS.
+  enum RecordType {
+    // Unspecified record type (invalid).
+    record_type_unspecified = 0;
+    // IPv4 address record.
+    A = 1;
+    // IPv6 address record.
+    AAAA = 2;
+    // Canonical name (alias) record.
+    CNAME = 3;
+    // Mail exchange record.
+    MX = 4;
+    // Text record (SPF, DKIM, verification, etc.).
+    TXT = 5;
+    // Service locator record.
+    SRV = 6;
+    // Nameserver record.
+    NS = 7;
+    // Pointer record (reverse DNS).
+    PTR = 8;
+    // Certificate Authority Authorization record.
+    CAA = 9;
+  }
+
+  // The Azure Resource Group where the DNS Record will be created.
+  // Can be a literal string or a reference to an AzureResourceGroup output.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef resource_group = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AzureResourceGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.resource_group_name"
+  ];
+
+  // The name of the DNS Zone where this record will be created.
+  // Can be provided as a literal value or referenced from an AzureDnsZone resource.
+  //
+  // When using value_from, the default kind is AzureDnsZone and the default field path
+  // is "status.outputs.zone_name", allowing you to wire this directly to a zone resource.
+  //
+  // Example literal: "example.com"
+  // Example value_from:
+  //   value_from:
+  //     name: my-azure-zone
+  dev.planton.shared.foreignkey.v1.StringValueOrRef zone_name = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AzureDnsZone,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_name"
+  ];
+
+  // The DNS record type to create.
+  // Supported types: A, AAAA, CNAME, MX, TXT, SRV, NS, PTR, CAA.
+  RecordType type = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).enum.defined_only = true,
+    (buf.validate.field).cel = {
+      id: "type.not_unspecified"
+      message: "type must be specified (cannot be record_type_unspecified)"
+      expression: "this != 0"
+    }
+  ];
+
+  // The name of the DNS record (relative to the zone).
+  // Use "@" for zone apex (root domain) or specify a subdomain name.
+  // Examples:
+  //   - "@" for zone apex (example.com)
+  //   - "www" for subdomain (www.example.com)
+  //   - "api.v1" for nested subdomain (api.v1.example.com)
+  //   - "*" for wildcard (*.example.com)
+  string name = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "name.valid_dns_label"
+      message: "name must be '@' for apex, '*' for wildcard, or a valid DNS label (lowercase alphanumeric with hyphens, dots allowed for nesting)"
+      expression: "this == '@' || this == '*' || this.matches('^[a-z0-9]([a-z0-9-\\\\.]*[a-z0-9])?$')"
+    }
+  ];
+
+  // The values/targets for the DNS record.
+  // Format depends on record type:
+  //   - A record: IPv4 addresses (e.g., ["192.0.2.1", "192.0.2.2"])
+  //   - AAAA record: IPv6 addresses (e.g., ["2001:db8::1"])
+  //   - CNAME record: Target hostname (e.g., ["target.example.com"])
+  //   - MX record: Mail server hostname (e.g., ["mail1.example.com", "mail2.example.com"])
+  //   - TXT record: Text values (e.g., ["v=spf1 include:_spf.google.com ~all"])
+  //   - NS record: Name server hostnames
+  //   - SRV record: Format "priority weight port target" (e.g., ["10 5 5060 sip.example.com"])
+  //   - CAA record: Format "flags tag value" (e.g., ["0 issue letsencrypt.org"])
+  // Multiple values create round-robin behavior for supported record types.
+  repeated string values = 5 [(buf.validate.field).repeated.min_items = 1];
+
+  // Time to live (TTL) for the DNS record in seconds.
+  // Determines how long resolvers should cache this record.
+  // Common values: 60 (1 min), 300 (5 min), 3600 (1 hour), 86400 (1 day).
+  // Default: 300 seconds (5 minutes).
+  optional int32 ttl_seconds = 6 [
+    (dev.planton.shared.options.default) = "300",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 2147483647
+    }
+  ];
+
+  // MX record specific: Priority value for mail exchange records.
+  // Lower values indicate higher priority. Required for MX records.
+  // Common values: 10 (primary), 20 (secondary), 30 (tertiary).
+  // Only applicable when type is MX.
+  optional int32 mx_priority = 7 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 65535
+  }];
+
+  // Cross-field validation: mx_priority should only be set for MX records
+  option (buf.validate.message).cel = {
+    id: "spec.mx_priority_for_mx_records"
+    message: "mx_priority is only applicable for MX record type"
+    expression: "!has(this.mx_priority) || this.type == 4"
+  };
+}

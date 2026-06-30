@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package dev.planton.provider.hetznercloud.hetznercloudplacementgroup.v1;
+
+// HetznerCloudPlacementGroupStackOutputs captures the resulting placement group
+// identifiers after provisioning.
+message HetznerCloudPlacementGroupStackOutputs {
+  // The Hetzner Cloud numeric ID of the created placement group (as a string).
+  // Referenced by HetznerCloudServer.placement_group_id via StringValueOrRef.
+  string placement_group_id = 1;
+}

@@ -6,11 +6,11 @@
 
 ## Summary
 
-Implemented `OpenFgaStore` as the first deployment component for the OpenFGA provider. This component enables declarative management of OpenFGA stores (authorization data containers) through Terraform/Tofu. Notably, this is the first component in OpenMCF where the Pulumi module is a pass-through placeholder because **OpenFGA has no Pulumi provider**.
+Implemented `OpenFgaStore` as the first deployment component for the OpenFGA provider. This component enables declarative management of OpenFGA stores (authorization data containers) through Terraform/Tofu. Notably, this is the first component in Planton where the Pulumi module is a pass-through placeholder because **OpenFGA has no Pulumi provider**.
 
 ## Problem Statement / Motivation
 
-With the OpenFGA provider recently integrated into OpenMCF, there was no way to manage OpenFGA resources. Users needed a deployment component to:
+With the OpenFGA provider recently integrated into Planton, there was no way to manage OpenFGA resources. Users needed a deployment component to:
 
 - Create and manage OpenFGA stores declaratively via YAML manifests
 - Enable infrastructure-as-code workflows for authorization infrastructure
@@ -83,7 +83,7 @@ message OpenFgaStoreStackOutputs {
 ```
 
 **api.proto** - KRM envelope:
-- apiVersion: `openfga.openmcf.org/v1`
+- apiVersion: `openfga.planton.dev/v1`
 - kind: `OpenFgaStore`
 - Standard metadata, spec, status structure
 
@@ -171,7 +171,7 @@ Added OpenFGA to the credential provider configuration to fix build:
 
 ### Direct
 
-- Users can now manage OpenFGA stores through OpenMCF
+- Users can now manage OpenFGA stores through Planton
 - CLI supports OpenFgaStore manifests with `--openfga-provider-config` flag
 - OpenFGA provider now has its first deployment component
 
@@ -191,7 +191,7 @@ Added OpenFGA to the credential provider configuration to fix build:
 ### Create Store
 
 ```yaml
-apiVersion: openfga.openmcf.org/v1
+apiVersion: openfga.planton.dev/v1
 kind: OpenFgaStore
 metadata:
   name: production-authz
@@ -211,7 +211,7 @@ apiToken: your-api-token
 EOF
 
 # Deploy using Terraform/Tofu (required - no Pulumi provider)
-openmcf apply --manifest openfga-store.yaml \
+planton apply --manifest openfga-store.yaml \
   --openfga-provider-config openfga-creds.yaml \
   --provisioner tofu
 ```

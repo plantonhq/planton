@@ -1,0 +1,446 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awscloudwatchalarm.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// AwsCloudwatchAlarmSpec defines the desired configuration for an AWS
+// CloudWatch metric alarm.
+//
+// A CloudWatch alarm watches a single metric or the result of a metric math
+// expression and performs one or more actions when the metric value crosses a
+// threshold for a sustained number of evaluation periods.
+//
+// Two metric definition modes are supported (mutually exclusive):
+//
+// 1. **Simple metric mode** — Set `metric_name`, `namespace`, `period`, and
+//    one of `statistic` or `extended_statistic`. Suitable for alarms on a
+//    single metric like CPUUtilization or RequestCount.
+//
+// 2. **Metric query mode** — Use `metric_queries` for metric math expressions,
+//    anomaly detection, or multi-metric alarms. Up to 20 metric queries can
+//    be combined. Exactly one query must set `return_data = true` to serve as
+//    the alarm's evaluation signal.
+//
+// Actions are specified as repeated StringValueOrRef fields for alarm, OK, and
+// insufficient-data state transitions. The most common action target is an SNS
+// topic, so `default_kind = AwsSnsTopic` is set for convenience.
+//
+// Credentials, region, and deployment workflow live outside this spec in stack
+// inputs.
+message AwsCloudwatchAlarmSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  // ===========================================================================
+  // Alarm evaluation
+  // ===========================================================================
+
+  // Arithmetic operation to compare the statistic against the threshold.
+  //
+  // Standard comparison operators:
+  // - "GreaterThanOrEqualToThreshold"
+  // - "GreaterThanThreshold"
+  // - "LessThanThreshold"
+  // - "LessThanOrEqualToThreshold"
+  //
+  // Anomaly detection operators (use with metric_queries and threshold_metric_id):
+  // - "LessThanLowerOrGreaterThanUpperThreshold"
+  // - "LessThanLowerThreshold"
+  // - "GreaterThanUpperThreshold"
+  string comparison_operator = 2 [(buf.validate.field).required = true];
+
+  // Number of consecutive periods over which the metric is compared to the
+  // threshold. Must be at least 1.
+  //
+  // Combined with `datapoints_to_alarm` this creates an M-of-N evaluation
+  // window. For example, evaluation_periods=5 with datapoints_to_alarm=3
+  // means "3 out of the last 5 periods must breach to trigger the alarm."
+  int32 evaluation_periods = 3 [(buf.validate.field).int32.gte = 1];
+
+  // Number of data points within the evaluation window that must breach the
+  // threshold to trigger the alarm. Must be less than or equal to
+  // `evaluation_periods`. When omitted, defaults to `evaluation_periods`
+  // (every period must breach).
+  //
+  // Use a value lower than `evaluation_periods` for M-of-N evaluation to
+  // reduce false positives caused by transient spikes.
+  int32 datapoints_to_alarm = 4;
+
+  // Static threshold value. The statistic (or metric math result) is compared
+  // against this value using `comparison_operator`.
+  //
+  // Required for static threshold alarms. Must not be set for anomaly
+  // detection alarms (use `threshold_metric_id` instead).
+  double threshold = 5;
+
+  // For anomaly detection alarms, set this to the ID of the
+  // ANOMALY_DETECTION_BAND function defined in `metric_queries`. The anomaly
+  // band serves as a dynamic threshold instead of a static `threshold` value.
+  //
+  // Mutually exclusive with `threshold`.
+  string threshold_metric_id = 6 [(buf.validate.field).string.max_len = 255];
+
+  // How the alarm treats missing data points during evaluation.
+  //
+  // Valid values:
+  // - "missing"      — (Default) Missing data is treated as missing; the alarm
+  //                     state does not change. Can cause delayed transitions.
+  // - "notBreaching" — Missing data is within the threshold. Best for alarms
+  //                     on intermittent metrics (e.g., error count on low-traffic
+  //                     services) to avoid false alarms during idle periods.
+  // - "breaching"    — Missing data is treated as breaching. Use for metrics
+  //                     that must always report (e.g., heartbeat checks).
+  // - "ignore"       — The current alarm state is maintained regardless of
+  //                     missing data.
+  string treat_missing_data = 7;
+
+  // Whether actions execute during alarm state transitions. Defaults to true
+  // in the IaC module when not set. Set to false to suppress actions during
+  // maintenance windows or alarm tuning.
+  bool actions_enabled = 8;
+
+  // ===========================================================================
+  // Simple metric mode (mutually exclusive with metric_queries)
+  // ===========================================================================
+
+  // Name of the CloudWatch metric to alarm on (e.g., "CPUUtilization",
+  // "4xxErrorRate", "ApproximateNumberOfMessagesVisible").
+  //
+  // When set, `namespace`, `period`, and one of `statistic` or
+  // `extended_statistic` must also be set.
+  //
+  // Mutually exclusive with `metric_queries`.
+  string metric_name = 9 [(buf.validate.field).string.max_len = 255];
+
+  // Namespace of the metric (e.g., "AWS/EC2", "AWS/ECS", "AWS/SQS",
+  // "AWS/ApplicationELB"). Custom namespaces are also supported.
+  //
+  // Required when `metric_name` is set. Must not start with a colon.
+  string namespace = 10 [(buf.validate.field).string.max_len = 255];
+
+  // Period in seconds over which the statistic is applied. Defines the
+  // granularity of the alarm evaluation.
+  //
+  // Valid values: 10, 20, 30, or any multiple of 60.
+  // High-resolution metrics support 10/20/30-second periods.
+  // Standard-resolution metrics require multiples of 60.
+  //
+  // Required when `metric_name` is set.
+  int32 period = 11;
+
+  // Standard statistic to apply to the metric.
+  //
+  // Valid values: "SampleCount", "Average", "Sum", "Minimum", "Maximum".
+  //
+  // Mutually exclusive with `extended_statistic`. Exactly one must be set
+  // when using simple metric mode.
+  string statistic = 12;
+
+  // Percentile or extended statistic to apply to the metric. Used for
+  // percentile-based alarms (e.g., p95 latency, p99 error rate).
+  //
+  // Examples: "p95", "p99", "p99.9", "IQM", "TM(10%:90%)"
+  //
+  // Mutually exclusive with `statistic`. Exactly one must be set when
+  // using simple metric mode.
+  string extended_statistic = 13;
+
+  // Dimensions that identify the specific metric stream to alarm on.
+  // Dimensions narrow the metric to a specific resource or subset.
+  //
+  // Example for EC2 CPU: {"InstanceId": "i-1234567890abcdef0"}
+  // Example for ECS service: {"ClusterName": "prod", "ServiceName": "api"}
+  //
+  // Mutually exclusive with `metric_queries`.
+  map<string, string> dimensions = 14;
+
+  // Unit for the metric. When specified, only data points with a matching unit
+  // are used for evaluation. Most alarms omit this and use the metric's
+  // published unit.
+  string unit = 15;
+
+  // ===========================================================================
+  // Metric query mode (mutually exclusive with simple metric fields)
+  // ===========================================================================
+
+  // Metric math expressions or multi-metric queries. Use this mode for:
+  // - Metric math (e.g., error rate = errors / total * 100)
+  // - Anomaly detection (ANOMALY_DETECTION_BAND function)
+  // - Cross-account metric monitoring
+  // - Multi-metric composite evaluations
+  //
+  // Up to 20 queries are supported. Exactly one query must set
+  // `return_data = true` to serve as the alarm's evaluation signal.
+  //
+  // Mutually exclusive with simple metric fields (`metric_name`,
+  // `namespace`, `period`, `statistic`, `extended_statistic`, `dimensions`).
+  repeated AwsCloudwatchAlarmMetricQuery metric_queries = 16;
+
+  // ===========================================================================
+  // Actions
+  // ===========================================================================
+
+  // Actions to execute when the alarm transitions to ALARM state. Each action
+  // is an ARN — typically an SNS topic ARN, but can also be an Auto Scaling
+  // policy, EC2 automation action, Lambda function, or SSM OpsItem.
+  //
+  // Maximum 5 actions.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef alarm_actions = 17 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSnsTopic,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.topic_arn"
+  ];
+
+  // Actions to execute when the alarm transitions to OK state.
+  // Maximum 5 actions.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef ok_actions = 18 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSnsTopic,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.topic_arn"
+  ];
+
+  // Actions to execute when the alarm transitions to INSUFFICIENT_DATA state.
+  // Maximum 5 actions.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef insufficient_data_actions = 19 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSnsTopic,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.topic_arn"
+  ];
+
+  // ===========================================================================
+  // Description
+  // ===========================================================================
+
+  // Human-readable description of the alarm's purpose. Include details about
+  // what the alarm monitors, expected thresholds, and remediation steps.
+  // Maximum 1024 characters.
+  string alarm_description = 20 [(buf.validate.field).string.max_len = 1024];
+
+  // ===========================================================================
+  // Percentile handling
+  // ===========================================================================
+
+  // Controls alarm behavior during periods with too few data points for
+  // statistically significant percentile calculations.
+  //
+  // Valid values:
+  // - "evaluate" — Always evaluate the alarm regardless of sample count.
+  // - "ignore"   — Do not change alarm state during low-sample-count periods.
+  //
+  // Only meaningful when using percentile statistics (extended_statistic or
+  // a percentile stat in metric_queries).
+  string evaluate_low_sample_count_percentiles = 21;
+
+  // ===========================================================================
+  // CEL validations
+  // ===========================================================================
+
+  // comparison_operator must be a valid AWS CloudWatch comparison operator.
+  option (buf.validate.message).cel = {
+    id: "comparison_operator_valid"
+    message: "comparison_operator must be one of: GreaterThanOrEqualToThreshold, GreaterThanThreshold, LessThanThreshold, LessThanOrEqualToThreshold, LessThanLowerOrGreaterThanUpperThreshold, LessThanLowerThreshold, GreaterThanUpperThreshold"
+    expression: "this.comparison_operator in ['GreaterThanOrEqualToThreshold', 'GreaterThanThreshold', 'LessThanThreshold', 'LessThanOrEqualToThreshold', 'LessThanLowerOrGreaterThanUpperThreshold', 'LessThanLowerThreshold', 'GreaterThanUpperThreshold']"
+  };
+
+  // statistic must be a valid AWS CloudWatch statistic when set.
+  option (buf.validate.message).cel = {
+    id: "statistic_valid"
+    message: "statistic must be one of: SampleCount, Average, Sum, Minimum, Maximum when set"
+    expression: "this.statistic == '' || this.statistic in ['SampleCount', 'Average', 'Sum', 'Minimum', 'Maximum']"
+  };
+
+  // treat_missing_data must be a valid value when set.
+  option (buf.validate.message).cel = {
+    id: "treat_missing_data_valid"
+    message: "treat_missing_data must be one of: missing, ignore, breaching, notBreaching when set"
+    expression: "this.treat_missing_data == '' || this.treat_missing_data in ['missing', 'ignore', 'breaching', 'notBreaching']"
+  };
+
+  // evaluate_low_sample_count_percentiles must be a valid value when set.
+  option (buf.validate.message).cel = {
+    id: "evaluate_low_sample_count_percentiles_valid"
+    message: "evaluate_low_sample_count_percentiles must be 'evaluate' or 'ignore' when set"
+    expression: "this.evaluate_low_sample_count_percentiles == '' || this.evaluate_low_sample_count_percentiles in ['evaluate', 'ignore']"
+  };
+
+  // statistic and extended_statistic are mutually exclusive.
+  option (buf.validate.message).cel = {
+    id: "statistic_extended_statistic_exclusive"
+    message: "only one of statistic or extended_statistic may be set"
+    expression: "this.statistic == '' || this.extended_statistic == ''"
+  };
+
+  // Simple metric mode and metric_queries are mutually exclusive.
+  // When metric_name is set, metric_queries must be empty.
+  option (buf.validate.message).cel = {
+    id: "simple_metric_or_metric_queries"
+    message: "metric_name and metric_queries are mutually exclusive — use one mode or the other"
+    expression: "this.metric_name == '' || size(this.metric_queries) == 0"
+  };
+
+  // At least one metric source must be provided.
+  option (buf.validate.message).cel = {
+    id: "metric_source_required"
+    message: "either metric_name or metric_queries must be set"
+    expression: "this.metric_name != '' || size(this.metric_queries) > 0"
+  };
+
+  // When metric_name is set, namespace is required.
+  option (buf.validate.message).cel = {
+    id: "namespace_required_with_metric_name"
+    message: "namespace is required when metric_name is set"
+    expression: "this.metric_name == '' || this.namespace != ''"
+  };
+
+  // When metric_name is set, period is required (must be > 0).
+  option (buf.validate.message).cel = {
+    id: "period_required_with_metric_name"
+    message: "period is required when metric_name is set"
+    expression: "this.metric_name == '' || this.period > 0"
+  };
+
+  // When metric_name is set, exactly one of statistic or extended_statistic
+  // must be set (not neither).
+  option (buf.validate.message).cel = {
+    id: "statistic_required_with_metric_name"
+    message: "one of statistic or extended_statistic is required when metric_name is set"
+    expression: "this.metric_name == '' || this.statistic != '' || this.extended_statistic != ''"
+  };
+
+  // period must be 10, 20, 30, or a positive multiple of 60 when set.
+  option (buf.validate.message).cel = {
+    id: "period_valid_values"
+    message: "period must be 10, 20, 30, or a multiple of 60 when set"
+    expression: "this.period == 0 || this.period in [10, 20, 30] || (this.period >= 60 && this.period % 60 == 0)"
+  };
+
+  // datapoints_to_alarm must be <= evaluation_periods when set.
+  option (buf.validate.message).cel = {
+    id: "datapoints_to_alarm_lte_evaluation_periods"
+    message: "datapoints_to_alarm must be less than or equal to evaluation_periods"
+    expression: "this.datapoints_to_alarm == 0 || this.datapoints_to_alarm <= this.evaluation_periods"
+  };
+
+  // Maximum 20 metric queries.
+  option (buf.validate.message).cel = {
+    id: "metric_queries_max_20"
+    message: "maximum 20 metric_queries allowed"
+    expression: "size(this.metric_queries) <= 20"
+  };
+
+  // Maximum 5 alarm actions.
+  option (buf.validate.message).cel = {
+    id: "alarm_actions_max_5"
+    message: "maximum 5 alarm_actions allowed"
+    expression: "size(this.alarm_actions) <= 5"
+  };
+
+  // Maximum 5 ok actions.
+  option (buf.validate.message).cel = {
+    id: "ok_actions_max_5"
+    message: "maximum 5 ok_actions allowed"
+    expression: "size(this.ok_actions) <= 5"
+  };
+
+  // Maximum 5 insufficient data actions.
+  option (buf.validate.message).cel = {
+    id: "insufficient_data_actions_max_5"
+    message: "maximum 5 insufficient_data_actions allowed"
+    expression: "size(this.insufficient_data_actions) <= 5"
+  };
+}
+
+// AwsCloudwatchAlarmMetricQuery defines a single metric query within a metric
+// math alarm. Queries can reference raw metrics or define expressions that
+// combine other queries using metric math functions.
+//
+// Exactly one of `expression` or `metric` must be set (not both, not neither).
+//
+// The query `id` serves as a variable name in metric math expressions. For
+// example, two queries with id "m1" (raw 5xx errors) and "m2" (raw request
+// count) can be combined by a third query with expression "m1/m2*100" to
+// compute an error rate percentage.
+message AwsCloudwatchAlarmMetricQuery {
+  // Unique identifier for this query. Used as a variable name in metric math
+  // expressions. Must start with a lowercase letter; valid characters are
+  // lowercase letters, digits, and underscores.
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.max_len = 255
+  ];
+
+  // Metric math expression or Metrics Insights query. References other
+  // queries by their `id` field.
+  //
+  // Examples:
+  //   "m1/m2*100"                           — error rate percentage
+  //   "ANOMALY_DETECTION_BAND(m1, 2)"       — anomaly detection with 2 std devs
+  //   "METRICS('AWS/EC2')"                   — Metrics Insights query
+  //
+  // Mutually exclusive with `metric`.
+  string expression = 2 [(buf.validate.field).string.max_len = 1024];
+
+  // Raw metric definition. Use when this query retrieves a metric from
+  // CloudWatch rather than computing a value from other queries.
+  //
+  // Mutually exclusive with `expression`.
+  AwsCloudwatchAlarmMetricQueryMetric metric = 3;
+
+  // Human-readable label for this query. Displayed in the CloudWatch console
+  // and alarm history. Especially useful for expressions to describe what the
+  // computed value represents.
+  string label = 4;
+
+  // Override period (in seconds) for this query. When omitted, uses the period
+  // from the `metric` definition (if present) or inherits the alarm's period.
+  //
+  // Valid values: 1, 5, 10, 20, 30, or any multiple of 60.
+  int32 period = 5;
+
+  // Whether this query's result is used as the alarm's evaluation signal.
+  // Exactly one query in the `metric_queries` list must set this to true.
+  // Queries with `return_data = false` are intermediate values used by
+  // expressions but not directly evaluated by the alarm.
+  bool return_data = 6;
+
+  // AWS account ID where the metric is located. Use for cross-account alarms
+  // that monitor metrics from a different account.
+  string account_id = 7 [(buf.validate.field).string.max_len = 255];
+}
+
+// AwsCloudwatchAlarmMetricQueryMetric defines a raw CloudWatch metric to
+// retrieve for use in a metric query. This is the data source for the query —
+// it specifies which metric, from which namespace, with what statistic and
+// period.
+message AwsCloudwatchAlarmMetricQueryMetric {
+  // Name of the CloudWatch metric (e.g., "CPUUtilization", "5XXError").
+  string metric_name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.max_len = 255
+  ];
+
+  // Namespace of the metric (e.g., "AWS/EC2", "AWS/ApplicationELB").
+  string namespace = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.max_len = 255
+  ];
+
+  // Period in seconds for the metric data points. Determines the granularity
+  // of the data used in expressions.
+  //
+  // Valid values: 1, 5, 10, 20, 30, or any multiple of 60.
+  // High-resolution metrics support sub-minute periods (1, 5, 10, 20, 30).
+  int32 period = 3 [(buf.validate.field).int32.gte = 1];
+
+  // Statistic to apply — either a standard statistic (SampleCount, Average,
+  // Sum, Minimum, Maximum) or a percentile/extended statistic (p95, p99.9,
+  // IQM, TM(10%:90%), etc.).
+  string stat = 4 [(buf.validate.field).required = true];
+
+  // Dimensions that identify the specific metric stream.
+  map<string, string> dimensions = 5;
+
+  // Unit for the metric. Optional; filters data points to those matching
+  // the specified unit.
+  string unit = 6;
+}

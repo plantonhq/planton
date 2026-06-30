@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.cloudflare.cloudflareturnstilewidget.v1;
+
+import "dev/planton/provider/cloudflare/cloudflareturnstilewidget/v1/api.proto";
+import "dev/planton/provider/cloudflare/provider.proto";
+
+//cloudflare-turnstile-widget stack-input
+message CloudflareTurnstileWidgetStackInput {
+  //target cloud-resource
+  CloudflareTurnstileWidget target = 1;
+  //provider-config
+  dev.planton.provider.cloudflare.CloudflareProviderConfig provider_config = 2;
+}

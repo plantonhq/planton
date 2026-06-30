@@ -1,9 +1,0 @@
-apiVersion: oci.openmcf.org/v1
-kind: OciCompartment
-metadata:
-  name: my-sandbox-compartment
-spec:
-  compartmentId:
-    value: <parent-compartment-or-tenancy-ocid>
-  description: Ephemeral sandbox compartment for development and testing
-  enableDelete: true

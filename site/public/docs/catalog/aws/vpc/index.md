@@ -15,7 +15,7 @@ composable components that reference this VPC.
 
 ## What Gets Created
 
-When you deploy an AwsVpc resource, OpenMCF provisions:
+When you deploy an AwsVpc resource, Planton provisions:
 
 - **VPC** — an `aws_vpc` / `ec2.Vpc` with the primary IPv4 CIDR (specified
   directly or allocated from an IPAM pool), tenancy, DNS, and optional IPv6.
@@ -30,7 +30,7 @@ that reference this VPC's `vpc_id` output.
 
 ## Prerequisites
 
-- **AWS credentials** configured via the OpenMCF provider config (keyless SSO/OIDC).
+- **AWS credentials** configured via the Planton provider config (keyless SSO/OIDC).
 - **A primary IPv4 source**: either a `cidrBlock` (e.g. `10.0.0.0/16`) or an
   `ipv4IpamPoolId`.
 
@@ -39,7 +39,7 @@ that reference this VPC's `vpc_id` output.
 Create a file `vpc.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsVpc
 metadata:
   name: my-vpc
@@ -52,7 +52,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f vpc.yaml
+planton apply -f vpc.yaml
 ```
 
 ## Configuration Reference
@@ -85,7 +85,7 @@ openmcf apply -f vpc.yaml
 ### Dual-stack VPC with a secondary CIDR
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsVpc
 metadata:
   name: dual-stack-vpc
@@ -101,7 +101,7 @@ spec:
 ### IPAM-allocated VPC
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsVpc
 metadata:
   name: ipam-vpc

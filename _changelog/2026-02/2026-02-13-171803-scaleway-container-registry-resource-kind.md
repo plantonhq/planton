@@ -18,7 +18,7 @@ The Scaleway provider expansion requires container registry support for teams to
 
 ### Pain Points
 
-- No existing OpenMCF resource for Scaleway container image storage
+- No existing Planton resource for Scaleway container image storage
 - Future serverless resource kinds (R17, R18) need registry endpoint outputs for `valueFrom` references
 - Kapsule cluster deployments need registry endpoints for `imagePullSecrets` configuration
 
@@ -37,7 +37,7 @@ A standalone resource kind following the established Scaleway pattern (closest t
 
 ### File Structure
 
-17 new files under `apis/org/openmcf/provider/scaleway/scalewaycontainerregistry/v1/`:
+17 new files under `apis/dev/planton/provider/scaleway/scalewaycontainerregistry/v1/`:
 
 | Category | Files | Description |
 |---|---|---|

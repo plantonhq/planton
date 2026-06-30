@@ -10,7 +10,7 @@ Eliminated the addon/workload categorization for Kubernetes deployment component
 
 ## Problem Statement / Motivation
 
-When OpenMCF was first designed, Kubernetes components were segregated into two categories:
+When Planton was first designed, Kubernetes components were segregated into two categories:
 
 - **addon/** - Cluster-level operators and add-ons (13 components: CertManager, ExternalDNS, Istio, various operators)
 - **workload/** - Application workloads (23 components: PostgresKubernetes, RedisKubernetes, KafkaKubernetes, etc.)
@@ -43,13 +43,13 @@ This categorization seemed logical initially—separating infrastructure add-ons
 
 ## Solution / What's New
 
-Unified all Kubernetes components under a flat directory structure, treating Kubernetes exactly like every other provider in OpenMCF.
+Unified all Kubernetes components under a flat directory structure, treating Kubernetes exactly like every other provider in Planton.
 
 ### Architectural Change
 
 **Before:**
 ```
-apis/org/openmcf/provider/kubernetes/
+apis/dev/planton/provider/kubernetes/
 ├── addon/
 │   ├── altinityoperator/v1/
 │   ├── certmanager/v1/
@@ -91,7 +91,7 @@ apis/org/openmcf/provider/kubernetes/
 
 **After:**
 ```
-apis/org/openmcf/provider/kubernetes/
+apis/dev/planton/provider/kubernetes/
 ├── altinityoperator/v1/
 ├── apachesolroperator/v1/
 ├── certmanager/v1/
@@ -199,7 +199,7 @@ CertManager = 821 [(kind_meta) = {
 
 Decision: Kubernetes components follow the same directory pattern as AWS, GCP, etc.
 
-Pattern: `apis/org/openmcf/provider/{provider}/{component}/v1/`
+Pattern: `apis/dev/planton/provider/{provider}/{component}/v1/`
 
 This means:
 - `kubernetes/kubernetespostgres/v1/` (same as `aws/awsrdsinstance/v1/`)
@@ -209,7 +209,7 @@ This means:
 
 ### 1. Proto Schema Changes
 
-**File**: `apis/org/openmcf/shared/cloudresourcekind/kubernetes.proto`
+**File**: `apis/dev/planton/shared/cloudresourcekind/kubernetes.proto`
 
 Removed the category enum entirely:
 
@@ -222,7 +222,7 @@ enum KubernetesCloudResourceCategory {
 }
 ```
 
-**File**: `apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto`
+**File**: `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto`
 
 Updated `KubernetesCloudResourceKindMeta` message:
 
@@ -411,19 +411,19 @@ Updated all import paths across the codebase to remove category subdirectories:
 **Example Build.bazel change:**
 ```python
 # Before
-"//apis/org/openmcf/provider/kubernetes/workload/kubernetespostgres/v1:kubernetespostgres"
+"//apis/dev/planton/provider/kubernetes/workload/kubernetespostgres/v1:kubernetespostgres"
 
 # After
-"//apis/org/openmcf/provider/kubernetes/kubernetespostgres/v1:kubernetespostgres"
+"//apis/dev/planton/provider/kubernetes/kubernetespostgres/v1:kubernetespostgres"
 ```
 
 **Example Go import change:**
 ```go
 // Before
-import kubernetespostgresv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/workload/kubernetespostgres/v1"
+import kubernetespostgresv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/workload/kubernetespostgres/v1"
 
 // After
-import kubernetespostgresv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetespostgres/v1"
+import kubernetespostgresv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/kubernetespostgres/v1"
 ```
 
 ### 6. Documentation Updates
@@ -435,17 +435,17 @@ Updated folder structure requirements:
 **Before:**
 ```markdown
 - [ ] **Kubernetes Category Segregation (if applicable)** - For Kubernetes provider, component is under correct category:
-  - `apis/org/openmcf/provider/kubernetes/addon/<component>/v1/` - For cluster add-ons
-  - `apis/org/openmcf/provider/kubernetes/workload/<component>/v1/` - For workload resources
-  - `apis/org/openmcf/provider/kubernetes/config/<component>/v1/` - For configuration resources
+  - `apis/dev/planton/provider/kubernetes/addon/<component>/v1/` - For cluster add-ons
+  - `apis/dev/planton/provider/kubernetes/workload/<component>/v1/` - For workload resources
+  - `apis/dev/planton/provider/kubernetes/config/<component>/v1/` - For configuration resources
 ```
 
 **After:**
 ```markdown
 - [ ] **Correct Provider Hierarchy** - Component folder is under the correct provider:
-  - `apis/org/openmcf/provider/aws/<component>/v1/`
-  - `apis/org/openmcf/provider/gcp/<component>/v1/`
-  - `apis/org/openmcf/provider/kubernetes/<component>/v1/`
+  - `apis/dev/planton/provider/aws/<component>/v1/`
+  - `apis/dev/planton/provider/gcp/<component>/v1/`
+  - `apis/dev/planton/provider/kubernetes/<component>/v1/`
   - etc.
 ```
 
@@ -653,10 +653,10 @@ make generate-cloud-resource-kind-map
 ### Component Tests
 
 ```bash
-go test ./apis/org/openmcf/provider/kubernetes/kubernetesredis/v1
+go test ./apis/dev/planton/provider/kubernetes/kubernetesredis/v1
 # PASS (former workload component)
 
-go test ./apis/org/openmcf/provider/kubernetes/certmanager/v1
+go test ./apis/dev/planton/provider/kubernetes/certmanager/v1
 # PASS (former addon component)
 
 go test ./pkg/crkreflect
@@ -701,7 +701,7 @@ git status --short | grep "^D "
 - Generated code reflects new structure
 - No manual updates needed in deployment workflows
 
-### For OpenMCF Maintainers
+### For Planton Maintainers
 
 **Adding new Kubernetes components**:
 - Use flat structure: `kubernetes/{component}/v1/`
@@ -717,14 +717,14 @@ git status --short | grep "^D "
 
 **Next Phase**: Apply these changes to planton monorepo
 
-The planton monorepo imports OpenMCF APIs via Buf Schema Registry. Once OpenMCF publishes updated proto schemas, planton will:
+The planton monorepo imports Planton APIs via Buf Schema Registry. Once Planton publishes updated proto schemas, planton will:
 
-1. Update dependency to latest OpenMCF version
+1. Update dependency to latest Planton version
 2. Regenerate proto stubs (import paths update automatically)
 3. Update any monorepo-specific code that referenced addon/workload paths
 4. Update web console UI if it displayed categories
 
-**Scope separation**: This iteration focused solely on openmcf (open source). The monorepo work is deliberately separate to keep changes isolated and testable.
+**Scope separation**: This iteration focused solely on planton (open source). The monorepo work is deliberately separate to keep changes isolated and testable.
 
 ## Technical Decisions
 
@@ -804,7 +804,7 @@ The planton monorepo imports OpenMCF APIs via Buf Schema Registry. Once OpenMCF 
 
 ### Ecosystem Alignment
 
-This change brings OpenMCF into alignment with industry-standard provider structures:
+This change brings Planton into alignment with industry-standard provider structures:
 
 **Terraform AWS Provider**:
 ```
@@ -827,7 +827,7 @@ kubernetes/
 ```
 (Organized by API group, not addon/workload)
 
-**OpenMCF After This Change**:
+**Planton After This Change**:
 ```
 kubernetes/
 ├── certmanager/
@@ -871,7 +871,7 @@ The planton monorepo has its own references to addon/workload structure:
 - Documentation may reference the categories
 
 Next iteration will:
-1. Update buf dependency to consume latest OpenMCF APIs
+1. Update buf dependency to consume latest Planton APIs
 2. Regenerate all proto stubs in monorepo
 3. Update any monorepo-specific code referencing categories
 4. Update web console UI components
@@ -899,7 +899,7 @@ If the infra-charts repository references Kubernetes component paths, update tho
 
 ## Design Philosophy Reinforced
 
-This refactoring reinforces OpenMCF's core design principles:
+This refactoring reinforces Planton's core design principles:
 
 **Consistency Without Abstraction**:
 - Kubernetes components are provider-specific (not abstracted)
@@ -923,16 +923,16 @@ This refactoring reinforces OpenMCF's core design principles:
 **Deploying a component** (unchanged):
 ```bash
 # Redis (former workload)
-openmcf pulumi up --manifest redis.yaml --stack dev
+planton pulumi up --manifest redis.yaml --stack dev
 
 # CertManager (former addon)
-openmcf pulumi up --manifest certmanager.yaml --stack dev
+planton pulumi up --manifest certmanager.yaml --stack dev
 ```
 
 **Manifest structure** (unchanged):
 ```yaml
 # Former workload component
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPostgres
 metadata:
   name: my-database
@@ -940,7 +940,7 @@ spec:
   # ... configuration
 
 # Former addon component
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: CertManager
 metadata:
   name: cert-manager
@@ -1050,7 +1050,7 @@ All criteria met ✅:
 
 ## Next Steps
 
-### For This Repository (openmcf)
+### For This Repository (planton)
 
 ✅ **Complete** - All changes implemented and verified
 
@@ -1063,7 +1063,7 @@ Tasks remaining:
 
 The monorepo will need updates:
 
-1. **Update buf dependency**: Bump to latest openmcf version
+1. **Update buf dependency**: Bump to latest planton version
 2. **Regenerate stubs**: Run proto generation to get new import paths
 3. **Update code**: Fix any references to addon/workload categories
 4. **Update UI**: Web console components that may display categories
@@ -1073,10 +1073,10 @@ Estimated effort: 2-4 hours (mostly verification and testing)
 
 ---
 
-**Status**: ✅ Complete (openmcf repository)  
+**Status**: ✅ Complete (planton repository)  
 **Next Phase**: planton monorepo updates  
 **Timeline**: Single session (November 16, 2025)  
 **Impact**: Architectural simplification affecting all Kubernetes components  
 
-The Kubernetes provider is now structurally consistent with all other providers in OpenMCF, eliminating unnecessary categorization and creating a simpler, more maintainable foundation for future development.
+The Kubernetes provider is now structurally consistent with all other providers in Planton, eliminating unnecessary categorization and creating a simpler, more maintainable foundation for future development.
 

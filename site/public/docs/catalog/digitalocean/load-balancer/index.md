@@ -12,7 +12,7 @@ Deploys a managed regional load balancer on DigitalOcean with configurable forwa
 
 ## What Gets Created
 
-When you deploy a DigitalOceanLoadBalancer resource, OpenMCF provisions:
+When you deploy a DigitalOceanLoadBalancer resource, Planton provisions:
 
 - **Load Balancer** -- a `digitalocean_loadbalancer` resource in the specified region and VPC, with one or more forwarding rules that define how traffic is routed from the load balancer to backend Droplets
 - **Forwarding Rules** -- each rule maps an entry port/protocol on the load balancer to a target port/protocol on the backend, with optional TLS certificate for HTTPS termination
@@ -21,7 +21,7 @@ When you deploy a DigitalOceanLoadBalancer resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **DigitalOcean credentials** configured via environment variables or OpenMCF provider config
+- **DigitalOcean credentials** configured via environment variables or Planton provider config
 - **A DigitalOcean VPC** in the target region (can reference a DigitalOceanVpc resource via `valueFrom`)
 - **At least one backend target** -- either a list of Droplet IDs or a Droplet tag that matches running Droplets
 
@@ -30,15 +30,15 @@ When you deploy a DigitalOceanLoadBalancer resource, OpenMCF provisions:
 Create a file `lb.yaml`:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanLoadBalancer
 metadata:
   name: my-lb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.DigitalOceanLoadBalancer.my-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.DigitalOceanLoadBalancer.my-lb
 spec:
   loadBalancerName: my-lb
   region: nyc3
@@ -55,7 +55,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f lb.yaml
+planton apply -f lb.yaml
 ```
 
 This creates an HTTP load balancer in the NYC3 region that routes port 80 traffic to all Droplets tagged `web-dev` within the specified VPC.
@@ -110,15 +110,15 @@ When `healthCheck` is specified:
 A basic HTTP load balancer for development or testing, using tag-based backend targeting:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanLoadBalancer
 metadata:
   name: dev-lb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.DigitalOceanLoadBalancer.dev-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.DigitalOceanLoadBalancer.dev-lb
 spec:
   loadBalancerName: dev-lb
   region: nyc3
@@ -137,15 +137,15 @@ spec:
 A production load balancer that terminates TLS at the load balancer and forwards HTTP to backend Droplets. The `certificateName` field references a TLS certificate already uploaded to DigitalOcean (use the certificate name, not its ID):
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanLoadBalancer
 metadata:
   name: prod-web-lb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.DigitalOceanLoadBalancer.prod-web-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.DigitalOceanLoadBalancer.prod-web-lb
 spec:
   loadBalancerName: prod-web-lb
   region: sfo3
@@ -169,15 +169,15 @@ spec:
 Production configuration using a VPC foreign key reference, explicit health check tuning, sticky sessions, and multiple forwarding rules:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanLoadBalancer
 metadata:
   name: full-lb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.DigitalOceanLoadBalancer.full-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.DigitalOceanLoadBalancer.full-lb
 spec:
   loadBalancerName: full-lb
   region: fra1

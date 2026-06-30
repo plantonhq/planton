@@ -78,7 +78,7 @@ the ruleset Pulumi `README.md`.
 `make protos` (incl. Java compile gate) · spec/CEL tests for ruleset (new actions,
 ratelimit/logging/exposed_credential_check, enum value sets) and queue (settings ranges,
 worker/http_pull CEL) · `pkg/outputs` conformance extended with `CloudflareQueue` ·
-`openmcf secret-coverage --check` green (`exposed_credential_check.password_expression`
+`planton secret-coverage --check` green (`exposed_credential_check.password_expression`
 exempted as a wirefilter expression, not a secret) · `make generate-cloud-resource-kind-map`
 · `make build-go` · `tofu validate` of the ruleset, queue, and r2 modules against the real
 v5 provider · **live `tofu apply`/`destroy`** of a queue (with settings) + worker consumer

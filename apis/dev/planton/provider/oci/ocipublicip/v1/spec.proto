@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocipublicip.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// OciPublicIpSpec defines the specification for an Oracle Cloud Infrastructure
+// public IP address.
+//
+// A public IP is an Oracle-assigned IPv4 address that enables internet
+// connectivity for OCI resources. Two lifetime modes exist:
+//
+//   - **RESERVED**: A persistent, region-scoped IP with a user-controlled
+//     lifecycle. It survives instance termination and can be reassigned to
+//     different private IPs over time. Use reserved IPs for production workloads
+//     that need a stable, well-known address (DNS records, firewall allowlists).
+//
+//   - **EPHEMERAL**: An IP whose lifecycle is tied to the assigned entity.
+//     It is automatically released when the instance, VNIC, or NAT gateway it
+//     is attached to is terminated. Always scoped to an availability domain
+//     when assigned to a private IP.
+//
+// This component manages a single public IP. Reserved IPs can optionally be
+// drawn from a Bring-Your-Own-IP (BYOIP) pool via public_ip_pool_id.
+message OciPublicIpSpec {
+  option (buf.validate.message).cel = {
+    id: "ephemeral_requires_private_ip"
+    message: "private_ip_id is required when lifetime is EPHEMERAL"
+    expression: "this.lifetime != 'EPHEMERAL' || has(this.private_ip_id)"
+  };
+
+  // OCID of the compartment where this public IP will reside.
+  // For ephemeral IPs, must match the compartment of the private IP.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OciCompartment,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartment_id"
+  ];
+
+  // Lifetime controls when the public IP is deleted and released back to the
+  // OCI public IP pool. Cannot be changed after creation.
+  // Valid values: "RESERVED", "EPHEMERAL".
+  string lifetime = 2 [(buf.validate.field).string = {
+    in: [
+      "RESERVED",
+      "EPHEMERAL"
+    ]
+  }];
+
+  // User-friendly display name for the public IP.
+  // Falls back to metadata.name if not provided.
+  string display_name = 3;
+
+  // OCID of the private IP to assign this public IP to.
+  //
+  // Required for ephemeral IPs (must be a primary private IP on a VNIC).
+  // Optional for reserved IPs -- when omitted the IP is created unassigned
+  // and can be attached later via the OCI Console or API.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef private_ip_id = 4;
+
+  // OCID of a public IP pool for BYOIP (Bring Your Own IP) scenarios.
+  // When set, the public IP is allocated from the specified pool instead
+  // of Oracle's pool. Cannot be changed after creation.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef public_ip_pool_id = 5;
+}

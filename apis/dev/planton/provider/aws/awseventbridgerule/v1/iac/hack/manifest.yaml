@@ -1,0 +1,20 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsEventBridgeRule
+metadata:
+  name: test-rule
+  org: test-org
+  env: dev
+  id: test-rule-dev
+  labels:
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: test-org
+    pulumi.planton.dev/project: test-project
+    pulumi.planton.dev/stack.name: dev.AwsEventBridgeRule.test-rule
+spec:
+  region: us-east-1
+  description: Test rule for local development
+  scheduleExpression: "rate(1 hour)"
+  targets:
+    - name: test-target
+      arn:
+        value: arn:aws:lambda:us-east-1:123456789012:function:test-function

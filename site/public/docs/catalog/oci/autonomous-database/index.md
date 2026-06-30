@@ -12,7 +12,7 @@ Deploys an Oracle Cloud Infrastructure Autonomous Database — a fully managed, 
 
 ## What Gets Created
 
-When you deploy an OciAutonomousDatabase resource, OpenMCF provisions:
+When you deploy an OciAutonomousDatabase resource, Planton provisions:
 
 - **Autonomous Database** — an `oci_database_autonomous_database` resource in the specified compartment. The database type is determined by `dbWorkload` (OLTP, DW, AJD, APEX, or LH). Freeform tags are applied automatically from metadata labels, environment, and organization.
 - **Connection Strings** — three prioritized connection strings (high, medium, low) are exported as stack outputs for use by application workloads.
@@ -21,7 +21,7 @@ When you deploy an OciAutonomousDatabase resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the autonomous database will be created — either a literal value or a reference to an OciCompartment resource
 - **An admin password** or a **Vault secret OCID** containing the password — one of the two is required for the database administrator account
 
@@ -30,15 +30,15 @@ When you deploy an OciAutonomousDatabase resource, OpenMCF provisions:
 Create a file `adb.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciAutonomousDatabase
 metadata:
   name: my-adb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciAutonomousDatabase.my-adb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciAutonomousDatabase.my-adb
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -53,7 +53,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f adb.yaml
+planton apply -f adb.yaml
 ```
 
 This creates a serverless Autonomous Transaction Processing database with 2 ECPUs and 1 TB of storage. The database OCID, connection strings, and service console URL are exported as stack outputs.
@@ -112,15 +112,15 @@ This creates a serverless Autonomous Transaction Processing database with 2 ECPU
 A serverless Autonomous Transaction Processing database for a development workload:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciAutonomousDatabase
 metadata:
   name: dev-atp
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciAutonomousDatabase.dev-atp
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciAutonomousDatabase.dev-atp
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -137,15 +137,15 @@ spec:
 An Autonomous Data Warehouse with BYOL licensing and auto-scaling for analytic workloads:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciAutonomousDatabase
 metadata:
   name: analytics-adw
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.OciAutonomousDatabase.analytics-adw
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.OciAutonomousDatabase.analytics-adw
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -164,15 +164,15 @@ spec:
 A production-grade ATP database with private networking, Vault-managed credentials, customer-managed encryption, Data Guard, and maintenance scheduling:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciAutonomousDatabase
 metadata:
   name: prod-atp
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: prod-databases
-    pulumi.openmcf.org/stack.name: prod.OciAutonomousDatabase.prod-atp
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: prod-databases
+    pulumi.planton.dev/stack.name: prod.OciAutonomousDatabase.prod-atp
   env: prod
   org: acme
 spec:
@@ -223,15 +223,15 @@ spec:
 An Always Free ATP database for experimentation — no cost, limited resources:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciAutonomousDatabase
 metadata:
   name: free-atp
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciAutonomousDatabase.free-atp
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciAutonomousDatabase.free-atp
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"

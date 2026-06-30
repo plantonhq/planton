@@ -1,4 +1,4 @@
-# Comprehensive Documentation Expansion for OpenMCF
+# Comprehensive Documentation Expansion for Planton
 
 **Date**: November 11, 2025  
 **Type**: Feature  
@@ -6,15 +6,15 @@
 
 ## Summary
 
-Expanded OpenMCF documentation from 6 pages to 20+ comprehensive guides, creating a complete documentation system that covers CLI commands (Pulumi and OpenTofu), manifest structure, credential management, kustomize integration, advanced usage patterns, and troubleshooting. The documentation follows a dual-format approach with engaging user-facing guides on the website and concise technical references in code directories, making OpenMCF accessible to developers at all skill levels while maintaining thorough technical documentation for contributors.
+Expanded Planton documentation from 6 pages to 20+ comprehensive guides, creating a complete documentation system that covers CLI commands (Pulumi and OpenTofu), manifest structure, credential management, kustomize integration, advanced usage patterns, and troubleshooting. The documentation follows a dual-format approach with engaging user-facing guides on the website and concise technical references in code directories, making Planton accessible to developers at all skill levels while maintaining thorough technical documentation for contributors.
 
 ## Problem Statement / Motivation
 
-OpenMCF had minimal documentation coverage. While the main README provided an excellent philosophical overview, critical operational documentation was missing or inaccessible:
+Planton had minimal documentation coverage. While the main README provided an excellent philosophical overview, critical operational documentation was missing or inaccessible:
 
 ### Pain Points
 
-- **Pulumi commands documented but hidden**: Excellent Pulumi commands reference existed in `cmd/openmcf/root/pulumi/README.md` but wasn't accessible via the website—users had to browse the code repository to find it
+- **Pulumi commands documented but hidden**: Excellent Pulumi commands reference existed in `cmd/planton/root/pulumi/README.md` but wasn't accessible via the website—users had to browse the code repository to find it
 - **No OpenTofu/Terraform documentation**: Despite full OpenTofu support, there was zero user-facing documentation for `tofu` commands
 - **No manifest guide**: Users had to infer manifest structure from examples without understanding KRM patterns, validation, or defaults
 - **No credential guide**: Setting up cloud provider authentication was tribal knowledge—no comprehensive guide across all 10+ providers
@@ -29,7 +29,7 @@ Implemented a comprehensive documentation system with three strategic layers:
 
 ### 1. User-Facing Guides (Website)
 
-Created engaging, example-rich documentation accessible at `https://openmcf.org/docs/`:
+Created engaging, example-rich documentation accessible at `https://planton.dev/docs/`:
 
 **CLI Reference Section** (`/docs/cli/`):
 - Complete CLI command reference
@@ -55,8 +55,8 @@ Created engaging, example-rich documentation accessible at `https://openmcf.org/
 Created concise technical documentation for developers:
 
 **Command Documentation**:
-- `cmd/openmcf/root/tofu/README.md` - OpenTofu command implementation reference
-- `cmd/openmcf/README.md` - CLI architecture and development guide
+- `cmd/planton/root/tofu/README.md` - OpenTofu command implementation reference
+- `cmd/planton/README.md` - CLI architecture and development guide
 
 **Package Documentation**:
 - `internal/manifest/README.md` - Manifest loading, validation, and manipulation
@@ -162,14 +162,14 @@ Created concise technical documentation for developers:
 
 #### Code Reference Documentation (5 files):
 
-1. `cmd/openmcf/root/tofu/README.md` - OpenTofu commands technical reference (228 lines)
+1. `cmd/planton/root/tofu/README.md` - OpenTofu commands technical reference (228 lines)
    - Command architecture and request flow
    - Handler implementations (init, plan, apply, refresh, destroy)
    - Manifest to tfvars conversion
    - Integration points with internal packages
    - Development notes
 
-2. `cmd/openmcf/README.md` - CLI architecture reference (446 lines)
+2. `cmd/planton/README.md` - CLI architecture reference (446 lines)
    - High-level architecture diagram
    - Directory structure breakdown
    - Command implementation patterns
@@ -196,7 +196,7 @@ Created concise technical documentation for developers:
    - Temporary file management
    - Error handling
 
-5. `cmd/openmcf/root/pulumi/README.md` - Updated with website link
+5. `cmd/planton/root/pulumi/README.md` - Updated with website link
    - Added header note linking to website version for better reading experience
 
 ### Writing Approach
@@ -536,7 +536,7 @@ The existing Pulumi documentation was excellent but invisible to users. Copying 
 
 ### Why Comprehensive OpenTofu Documentation?
 
-OpenMCF supports both Pulumi and OpenTofu equally. Having comprehensive docs only for Pulumi would signal second-class OpenTofu support. Created parallel documentation structure to show both are first-class citizens.
+Planton supports both Pulumi and OpenTofu equally. Having comprehensive docs only for Pulumi would signal second-class OpenTofu support. Created parallel documentation structure to show both are first-class citizens.
 
 ### Why Separate Troubleshooting Guide?
 
@@ -566,13 +566,13 @@ Makes documentation enjoyable to read while maintaining technical accuracy.
 
 **Before**:
 ```bash
-# Users asked: "How do I use OpenTofu with OpenMCF?"
+# Users asked: "How do I use OpenTofu with Planton?"
 # Answer: Browse code or GitHub issues
 ```
 
 **After**:
 ```bash
-# Users visit: https://openmcf.org/docs
+# Users visit: https://planton.dev/docs
 # Click: CLI Reference → OpenTofu Commands
 # Find: Complete guide with examples
 ```
@@ -671,7 +671,7 @@ Makes documentation enjoyable to read while maintaining technical accuracy.
 ### Documentation Ecosystem
 
 This expansion creates a complete documentation ecosystem:
-1. **README**: Why OpenMCF exists (philosophy)
+1. **README**: Why Planton exists (philosophy)
 2. **Getting Started**: Install and deploy your first resource
 3. **CLI Reference**: How to use commands
 4. **Guides**: Deep dives on specific topics
@@ -746,7 +746,7 @@ With this documentation in place, users can:
 **Documentation Pages**: 20+ (6 original + 14 new)  
 **Lines Written**: ~6,700 lines of developer-friendly documentation
 
-The OpenMCF documentation is now comprehensive, accessible, and ready to support users from first installation through advanced deployment patterns. Every major CLI feature, every provider, and every common workflow is now documented with real examples and clear explanations.
+The Planton documentation is now comprehensive, accessible, and ready to support users from first installation through advanced deployment patterns. Every major CLI feature, every provider, and every common workflow is now documented with real examples and clear explanations.
 
 
 

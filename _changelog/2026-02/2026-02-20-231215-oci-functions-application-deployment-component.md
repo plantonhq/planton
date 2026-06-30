@@ -2,7 +2,7 @@
 
 **Date**: 2026-02-20
 **Type**: New Feature
-**Components**: `apis/org/openmcf/provider/oci/ocifunctionsapplication/v1/`
+**Components**: `apis/dev/planton/provider/oci/ocifunctionsapplication/v1/`
 
 ## Summary
 
@@ -10,7 +10,7 @@ Added the OciFunctionsApplication deployment component -- OCI's organizational c
 
 ## Problem Statement / Motivation
 
-OpenMCF's OCI provider had comprehensive infrastructure coverage across networking, compute, containers, databases, storage, and security (Phases 1-6, 27 resources), but no serverless function support. OCI Functions is Oracle's managed serverless platform (similar to AWS Lambda) where functions run in user-specified subnets with optional NSG controls. Without a declarative Functions Application component, platform teams cannot provision the execution environment that functions are deployed into, blocking the Serverless Stack infra chart.
+Planton's OCI provider had comprehensive infrastructure coverage across networking, compute, containers, databases, storage, and security (Phases 1-6, 27 resources), but no serverless function support. OCI Functions is Oracle's managed serverless platform (similar to AWS Lambda) where functions run in user-specified subnets with optional NSG controls. Without a declarative Functions Application component, platform teams cannot provision the execution environment that functions are deployed into, blocking the Serverless Stack infra chart.
 
 ## Solution / What's New
 
@@ -29,7 +29,7 @@ A complete OciFunctionsApplication deployment component with both Pulumi (Go) an
 - **Shape as proto enum**: Three values (generic_x86, generic_arm, generic_x86_arm) mapping to GENERIC_X86/GENERIC_ARM/GENERIC_X86_ARM via IaC maps. Enum provides type safety and clean YAML UX (`shape: generic_arm`). ForceNew in provider.
 - **subnet_ids as repeated StringValueOrRef**: Follows OciApplicationLoadBalancer pattern for infra-chart composability. At least one subnet required (min_items=1). ForceNew in provider.
 - **image_policy_config with CEL enforcement**: Enabling verification without any KMS keys is a config error. CEL catches it at validation time rather than at deployment time.
-- **trace_config.domain_id as plain string**: APM domains are not modeled as OpenMCF components, so StringValueOrRef with default_kind would be misleading.
+- **trace_config.domain_id as plain string**: APM domains are not modeled as Planton components, so StringValueOrRef with default_kind would be misleading.
 - **config map pass-through**: OCI enforces the 4KB limit and key format constraints server-side. No proto-level validation needed for key/value format.
 - **Single output (application_id)**: The application OCID is the primary composability value for downstream `fn deploy` and CI/CD pipelines.
 - **Directory name**: `ocifunctionsapplication` (per WA02 -- lowercased kind name, not id_prefix `ocifnapp`).

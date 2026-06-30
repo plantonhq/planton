@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package dev.planton.provider.openstack.openstackdnszone.v1;
+
+// OpenStackDnsZoneStackOutputs captures the observable outputs after provisioning
+// a Designate DNS zone in OpenStack.
+//
+// The zone_id is the primary output referenced by downstream components:
+// - OpenStackDnsRecord (zone_id)
+message OpenStackDnsZoneStackOutputs {
+  // zone_id is the unique identifier (UUID) of the DNS zone.
+  // This is the primary output used as a foreign key by DNS record components.
+  string zone_id = 1;
+
+  // zone_name is the DNS zone name (derived from domain_name in spec).
+  // This is the authoritative domain managed by this zone.
+  string zone_name = 2;
+
+  // region is the OpenStack region where the DNS zone was created.
+  string region = 3;
+}

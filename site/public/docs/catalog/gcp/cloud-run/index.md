@@ -12,7 +12,7 @@ Deploys a Google Cloud Run v2 service with configurable container resources, aut
 
 ## What Gets Created
 
-When you deploy a GcpCloudRun resource, OpenMCF provisions:
+When you deploy a GcpCloudRun resource, Planton provisions:
 
 - **Cloud Run v2 Service** — a `google_cloud_run_v2_service` with the specified container image, resource limits, scaling configuration, and ingress settings
 - **Domain Mapping** — created only when DNS is enabled, binds the first hostname in `dns.hostnames` to the Cloud Run service
@@ -20,7 +20,7 @@ When you deploy a GcpCloudRun resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **A GCP project** with the Cloud Run API enabled
 - **A container image** pushed to a registry accessible from the project (e.g., Artifact Registry, Container Registry)
 - **A Cloud DNS managed zone** if enabling custom domain mapping
@@ -31,15 +31,15 @@ When you deploy a GcpCloudRun resource, OpenMCF provisions:
 Create a file `cloudrun.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudRun
 metadata:
   name: my-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpCloudRun.my-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpCloudRun.my-api
 spec:
   projectId: my-gcp-project
   region: us-central1
@@ -57,7 +57,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f cloudrun.yaml
+planton apply -f cloudrun.yaml
 ```
 
 This creates a publicly accessible Cloud Run service with 1 vCPU, 512 MiB memory, scaling from 0 to 3 instances, serving on port 8080.
@@ -107,15 +107,15 @@ This creates a publicly accessible Cloud Run service with 1 vCPU, 512 MiB memory
 A service accessible only from within GCP, with scale-to-zero disabled for low latency:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudRun
 metadata:
   name: order-svc
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpCloudRun.order-svc
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpCloudRun.order-svc
 spec:
   projectId: my-gcp-project
   region: us-central1
@@ -138,15 +138,15 @@ spec:
 A service that connects to a database using environment variables and Secret Manager references:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudRun
 metadata:
   name: web-app
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.GcpCloudRun.web-app
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.GcpCloudRun.web-app
 spec:
   projectId: my-gcp-project
   region: us-east1
@@ -175,15 +175,15 @@ spec:
 Full-featured production deployment with VPC connectivity, custom DNS, and deletion protection:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudRun
 metadata:
   name: prod-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpCloudRun.prod-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpCloudRun.prod-api
 spec:
   projectId: my-gcp-project
   region: us-central1
@@ -221,18 +221,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding values:
+Reference other Planton-managed resources instead of hardcoding values:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudRun
 metadata:
   name: ref-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpCloudRun.ref-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpCloudRun.ref-api
 spec:
   projectId:
     valueFrom:

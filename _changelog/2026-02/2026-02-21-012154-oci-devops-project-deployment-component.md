@@ -10,13 +10,13 @@ Implemented the OciDevopsProject deployment component -- OCI's organizational co
 
 ## Problem Statement / Motivation
 
-The OpenMCF OCI provider expansion requires coverage of the DevOps Project resource to support teams adopting OCI's managed CI/CD service. A DevOps Project is the top-level organizational unit that all other DevOps resources (build pipelines, deploy pipelines, repositories, connections, triggers) reference by OCID.
+The Planton OCI provider expansion requires coverage of the DevOps Project resource to support teams adopting OCI's managed CI/CD service. A DevOps Project is the top-level organizational unit that all other DevOps resources (build pipelines, deploy pipelines, repositories, connections, triggers) reference by OCID.
 
 ### Pain Points
 
-- No declarative way to provision OCI DevOps Projects through OpenMCF
+- No declarative way to provision OCI DevOps Projects through Planton
 - Teams manually creating DevOps Projects through the OCI Console or ad-hoc Terraform
-- No composability with other OpenMCF OCI components for project_id references
+- No composability with other Planton OCI components for project_id references
 
 ## Solution / What's New
 
@@ -61,7 +61,7 @@ Added `OciDevopsProject` (enum 3396, id_prefix `ocidev`) as a deployment compone
 
 ## Benefits
 
-- Declarative DevOps Project provisioning through OpenMCF manifests
+- Declarative DevOps Project provisioning through Planton manifests
 - Composability via `project_id` output -- downstream DevOps resources can reference the project using StringValueOrRef valueFrom
 - Namespace output enables container registry path construction
 - Clean YAML UX with flattened notification topic (no unnecessary nesting)

@@ -12,7 +12,7 @@ Deploys an AWS Elastic File System with automatic mount target creation across s
 
 ## What Gets Created
 
-When you deploy an AwsElasticFileSystem resource, OpenMCF provisions:
+When you deploy an AwsElasticFileSystem resource, Planton provisions:
 
 - **EFS File System** — an `efs.FileSystem` resource with the configured encryption, performance mode, throughput mode, and lifecycle policies
 - **Mount Targets** — one `efs.MountTarget` per subnet, placing an elastic network interface in each Availability Zone for NFS client access on TCP port 2049
@@ -22,7 +22,7 @@ When you deploy an AwsElasticFileSystem resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **At least one subnet** where mount targets will be created (one subnet per AZ for multi-AZ availability)
 - **A security group** allowing inbound NFS traffic (TCP port 2049) from the clients that will mount the file system
 - **A KMS key ARN** if using customer-managed encryption (otherwise EFS uses the AWS-managed `aws/elasticfilesystem` key)
@@ -32,15 +32,15 @@ When you deploy an AwsElasticFileSystem resource, OpenMCF provisions:
 Create a file `efs.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsElasticFileSystem
 metadata:
   name: my-efs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsElasticFileSystem.my-efs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsElasticFileSystem.my-efs
 spec:
   region: us-east-1
   subnetIds:
@@ -53,7 +53,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f efs.yaml
+planton apply -f efs.yaml
 ```
 
 This creates an unencrypted, bursting-throughput EFS file system with mount targets in two subnets and no access points.
@@ -100,15 +100,15 @@ This creates an unencrypted, bursting-throughput EFS file system with mount targ
 Production-ready file system with encryption and mount targets across two Availability Zones:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsElasticFileSystem
 metadata:
   name: prod-efs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsElasticFileSystem.prod-efs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsElasticFileSystem.prod-efs
 spec:
   region: us-east-1
   encrypted: true
@@ -124,15 +124,15 @@ spec:
 Cost-optimized single-AZ file system with automatic tiering to Infrequent Access and Archive storage:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsElasticFileSystem
 metadata:
   name: dev-efs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsElasticFileSystem.dev-efs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsElasticFileSystem.dev-efs
 spec:
   region: us-east-1
   availabilityZoneName: us-east-1a
@@ -151,15 +151,15 @@ spec:
 Multi-tenant file system with application-specific access points that enforce POSIX identities and root directories:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsElasticFileSystem
 metadata:
   name: shared-efs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsElasticFileSystem.shared-efs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsElasticFileSystem.shared-efs
 spec:
   region: us-east-1
   encrypted: true
@@ -195,18 +195,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference OpenMCF-managed VPC subnets, security groups, and KMS keys instead of hardcoding IDs:
+Reference Planton-managed VPC subnets, security groups, and KMS keys instead of hardcoding IDs:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsElasticFileSystem
 metadata:
   name: ref-efs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsElasticFileSystem.ref-efs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsElasticFileSystem.ref-efs
 spec:
   region: us-east-1
   encrypted: true

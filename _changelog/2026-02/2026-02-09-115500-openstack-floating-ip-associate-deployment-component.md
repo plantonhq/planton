@@ -51,13 +51,13 @@ flowchart TB
 
 ### FK to Non-UUID Output (`address`)
 
-The `floating_ip` FK annotation targets `OpenStackFloatingIp.status.outputs.address` (an IP address like "203.0.113.42"), not a UUID. This is the first FK in OpenMCF that targets a non-UUID output. The TF provider's `floating_ip` attribute accepts either an IP address or a floating IP UUID, so both work.
+The `floating_ip` FK annotation targets `OpenStackFloatingIp.status.outputs.address` (an IP address like "203.0.113.42"), not a UUID. This is the first FK in Planton that targets a non-UUID output. The TF provider's `floating_ip` attribute accepts either an IP address or a floating IP UUID, so both work.
 
 ```protobuf
-org.openmcf.shared.foreignkey.v1.StringValueOrRef floating_ip = 1 [
+dev.planton.shared.foreignkey.v1.StringValueOrRef floating_ip = 1 [
   (buf.validate.field).required = true,
-  (org.openmcf.shared.foreignkey.v1.default_kind) = OpenStackFloatingIp,
-  (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.address"
+  (dev.planton.shared.foreignkey.v1.default_kind) = OpenStackFloatingIp,
+  (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.address"
 ];
 ```
 
@@ -95,7 +95,7 @@ Enum 2526 follows the companion numbering:
 - OpenStackFloatingIp (built-in association): `_changelog/2026-02/2026-02-09-114030-openstack-floating-ip-deployment-component.md`
 - OpenStackNetworkPort (port_id FK target): created in this session
 - OpenStackRouterInterface (dual-FK pattern reference): `_changelog/2026-02/2026-02-09-094647-openstack-router-interface-deployment-component.md`
-- Parent project: `planton/_projects/20260209.01.openstack-openmcf-components/`
+- Parent project: `planton/_projects/20260209.01.openstack-planton-components/`
 
 ---
 

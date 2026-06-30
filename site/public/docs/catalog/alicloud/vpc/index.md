@@ -12,7 +12,7 @@ Deploys an Alibaba Cloud Virtual Private Cloud with a configurable IPv4 CIDR blo
 
 ## What Gets Created
 
-When you deploy an AliCloudVpc resource, OpenMCF provisions:
+When you deploy an AliCloudVpc resource, Planton provisions:
 
 - **VPC** — an `alicloud_vpc` resource (Pulumi: `vpc.Network`) with the specified CIDR block, name, and optional IPv6 configuration
 - **VRouter** — automatically created by Alibaba Cloud as part of VPC creation, responsible for routing traffic between VSwitches and managing route tables
@@ -21,24 +21,24 @@ When you deploy an AliCloudVpc resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Alibaba Cloud credentials** configured via environment variables (`ALICLOUD_ACCESS_KEY`, `ALICLOUD_SECRET_KEY`) or OpenMCF provider config
+- **Alibaba Cloud credentials** configured via environment variables (`ALICLOUD_ACCESS_KEY`, `ALICLOUD_SECRET_KEY`) or Planton provider config
 - **CIDR block planning** — the primary IPv4 CIDR cannot be changed after creation; choose a range that accommodates future growth and avoids overlap with other VPCs if using VPC peering or CEN
-- **OpenMCF CLI** installed with either Pulumi or Terraform (OpenTofu) backend
+- **Planton CLI** installed with either Pulumi or Terraform (OpenTofu) backend
 
 ## Quick Start
 
 Create a file `vpc.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudVpc
 metadata:
   name: my-vpc
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudVpc.my-vpc
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudVpc.my-vpc
 spec:
   region: cn-hangzhou
   vpcName: my-vpc
@@ -48,7 +48,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f vpc.yaml
+planton apply -f vpc.yaml
 ```
 
 This creates a VPC with a `/16` CIDR block in the `cn-hangzhou` region. Alibaba Cloud auto-creates a VRouter and system route table as part of the VPC.
@@ -79,15 +79,15 @@ This creates a VPC with a `/16` CIDR block in the `cn-hangzhou` region. Alibaba 
 A minimal VPC for non-production workloads with the smallest standard private CIDR range.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudVpc
 metadata:
   name: dev-vpc
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudVpc.dev-vpc
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudVpc.dev-vpc
 spec:
   region: cn-hangzhou
   vpcName: dev-vpc
@@ -99,17 +99,17 @@ spec:
 A production VPC with a large address space, resource group assignment for access control and billing, and organizational tags.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudVpc
 metadata:
   name: prod-vpc
   org: my-org
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AliCloudVpc.prod-vpc
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AliCloudVpc.prod-vpc
 spec:
   region: cn-shanghai
   vpcName: prod-platform-vpc
@@ -126,16 +126,16 @@ spec:
 A dual-stack VPC with IPv6 support enabled at creation time. Alibaba Cloud allocates a `/56` IPv6 CIDR block automatically.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudVpc
 metadata:
   name: ipv6-vpc
   env: staging
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.AliCloudVpc.ipv6-vpc
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.AliCloudVpc.ipv6-vpc
 spec:
   region: us-west-1
   vpcName: ipv6-enabled-vpc

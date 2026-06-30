@@ -10,7 +10,7 @@ Migrated all 10 existing Azure resources to use `StringValueOrRef resource_group
 
 ## Problem Statement / Motivation
 
-Per design decision DD05, `AzureResourceGroup` (enum 400) was added as a first-class OpenMCF resource. However, the 10 existing Azure resources handled resource groups inconsistently:
+Per design decision DD05, `AzureResourceGroup` (enum 400) was added as a first-class Planton resource. However, the 10 existing Azure resources handled resource groups inconsistently:
 
 ### Pain Points
 
@@ -26,10 +26,10 @@ Per design decision DD05, `AzureResourceGroup` (enum 400) was added as a first-c
 Every Azure resource now has a `StringValueOrRef resource_group` field with consistent annotations:
 
 ```protobuf
-org.openmcf.shared.foreignkey.v1.StringValueOrRef resource_group = N [
+dev.planton.shared.foreignkey.v1.StringValueOrRef resource_group = N [
   (buf.validate.field).required = true,
-  (org.openmcf.shared.foreignkey.v1.default_kind) = AzureResourceGroup,
-  (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.resource_group_name"
+  (dev.planton.shared.foreignkey.v1.default_kind) = AzureResourceGroup,
+  (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.resource_group_name"
 ];
 ```
 
@@ -108,7 +108,7 @@ Removed `resolveStringValueOrRef` from 2 files across the codebase:
 
 ## Related Work
 
-- **DD05**: AzureResourceGroup as a first-class OpenMCF resource (approved 2026-02-13)
+- **DD05**: AzureResourceGroup as a first-class Planton resource (approved 2026-02-13)
 - **R00**: AzureResourceGroup forged (2026-02-13)
 - **R01**: AzureLogAnalyticsWorkspace forged with StringValueOrRef resource_group (2026-02-13)
 - **Next**: Continue forging remaining 22 Azure resources (R02-R23) in the expansion project

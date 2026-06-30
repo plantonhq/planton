@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes;
+
+import "buf/validate/validate.proto";
+
+// KubernetesProvider enum represents the various Kubernetes providers.
+// This enumeration allows specifying the type of Kubernetes cluster being used, such as GKE, EKS, or AKS, with additional context on each.
+enum KubernetesProvider {
+  kubernetes_provider_unspecified = 0; // Unspecified Kubernetes provider.
+  gcp_gke = 1; // Google Kubernetes Engine (GKE) - A managed Kubernetes service by Google Cloud that provides automated cluster management and scaling.
+  aws_eks = 2; // Amazon Elastic Kubernetes Service (EKS) - A managed Kubernetes service by AWS that simplifies the deployment and management of Kubernetes clusters.
+  azure_aks = 3; // Azure Kubernetes Service (AKS) - A managed Kubernetes service by Microsoft Azure that provides Kubernetes cluster orchestration and management.
+  digital_ocean_doks = 4; // DigitalOcean Kubernetes Service (DOKS) - A managed Kubernetes service by DigitalOcean that simplifies the deployment and management of Kubernetes clusters.
+}
+
+// KubernetesProviderConfig message represents the specification required to create or connect a Kubernetes Cluster.
+// This message consolidates all necessary input parameters to establish a connection with a Kubernetes cluster, ensuring accurate configuration and validation of credentials.
+// Fields include environment information, Kubernetes provider details, and credentials for GKE clusters.
+message KubernetesProviderConfig {
+  // The Kubernetes provider, specifying the type of cluster (e.g., gcp_gke, aws_eks, azure_aks).
+  // For more detailed information, refer to the official documentation of each provider.
+  KubernetesProvider provider = 1 [(buf.validate.field).required = true];
+
+  // Credential specification for GCP GKE provider.
+  // This field contains detailed information for connecting to a Google Kubernetes Engine (GKE) cluster.
+  KubernetesProviderConfigGcpGke gcp_gke = 2;
+
+  // Credential specification for AWS EKS provider.
+  // This field contains detailed information for connecting to a Elastic Kubernetes Engine(EKS) cluster.
+  KubernetesProviderConfigAwsEks aws_eks = 3;
+
+  // Credential specification for Azure AKS provider.
+  // This field contains detailed information for connecting to a Azure Kubernetes Service(AKS) cluster.
+  KubernetesProviderConfigAzureAks azure_aks = 4;
+
+  KubernetesProviderConfigDigitalOceanDoks digital_ocean_doks = 5;
+}
+
+// KubernetesProviderConfigGcpGke contains the connection parameters for a Google Kubernetes Engine (GKE) cluster.
+message KubernetesProviderConfigGcpGke {
+  // The cluster API server endpoint URL.
+  string cluster_endpoint = 1 [(buf.validate.field).required = true];
+
+  // Base64-encoded cluster Certificate Authority (CA) certificate.
+  // This is the standard kubeconfig CA data format.
+  string cluster_ca_data = 2 [(buf.validate.field).required = true];
+
+  // JSON content of a Google Service Account key file used to authenticate to the GKE cluster.
+  //
+  // This is the raw JSON downloaded from the GCP Console or generated via
+  // `gcloud iam service-accounts keys create`.
+  string service_account_key = 3 [(buf.validate.field).required = true];
+}
+
+// KubernetesProviderConfigAwsEks message represents the specification required to connect to a Elastic Kubernetes Service (EKS) cluster.
+// This message consolidates the necessary input parameters for establishing a secure connection with a EKS cluster.
+message KubernetesProviderConfigAwsEks {}
+
+// KubernetesProviderConfigAzureEks message represents the specification required to connect to a Azure Kubernetes Service (AKS) cluster.
+// This message consolidates the necessary input parameters for establishing a secure connection with a AKS cluster.
+message KubernetesProviderConfigAzureAks {}
+
+// KubernetesProviderConfigDigitalOceanDoks message represents the specification required to connect to a DigitalOcean Kubernetes Service (DOKS) cluster.
+message KubernetesProviderConfigDigitalOceanDoks {
+  string kube_config = 1 [(buf.validate.field).required = true];
+}

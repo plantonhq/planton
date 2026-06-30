@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesnamespace.v1;
+
+import "dev/planton/provider/kubernetes/kubernetesnamespace/v1/api.proto";
+import "dev/planton/provider/kubernetes/provider.proto";
+
+/**
+ * **KubernetesNamespaceStackInput** defines the input structure for deploying a Kubernetes namespace.
+ * This message contains the target namespace specification and the Kubernetes cluster configuration
+ * required by the IaC modules (Pulumi and Terraform) to create and configure the namespace.
+ */
+message KubernetesNamespaceStackInput {
+  /**
+   * The target Kubernetes namespace resource to be created.
+   * Contains the complete specification including metadata, desired configuration,
+   * resource quotas, network policies, and security settings.
+   */
+  KubernetesNamespace target = 1;
+
+  /**
+   * Kubernetes cluster configuration.
+   * Contains connection details and credentials for the target Kubernetes cluster
+   * where the namespace will be created.
+   */
+  dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+}

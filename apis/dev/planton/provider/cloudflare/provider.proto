@@ -1,0 +1,88 @@
+syntax = "proto3";
+
+package dev.planton.provider.cloudflare;
+
+import "buf/validate/validate.proto";
+
+// CloudflareAuthScheme defines the authentication schemes supported by
+enum CloudflareAuthScheme {
+  cloudflare_auth_scheme_unspecified = 0; // Must not be used.
+  api_token = 1; // Recommended: single scoped token.
+  legacy_api_key = 2; // Global API key + account email.
+}
+
+// CloudflareProviderConfig defines the specification for a Cloudflare
+message CloudflareProviderConfig {
+  // Which authentication scheme this credential will use.
+  CloudflareAuthScheme auth_scheme = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).enum.defined_only = true
+  ];
+
+  // Scoped API Token (used when auth_scheme = api_token).
+  string api_token = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.min_len = 20
+  ];
+
+  // Global API Key (used when auth_scheme = legacy_api_key).
+  string api_key = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.min_len = 20
+  ];
+
+  // Account email (paired with api_key for legacy scheme).
+  string email = 4 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.email = true
+  ];
+
+  // R2 Storage credentials (S3-compatible object storage).
+  // Optional: only required if you need to access R2 buckets.
+  CloudflareCredentialsR2Spec r2 = 5;
+
+  // -------------------------------------------------------------------------
+  // Cross‑field validation
+  // -------------------------------------------------------------------------
+  option (buf.validate.message).cel = {
+    id: "spec.cloudflare.auth_scheme_selected"
+    message: "auth_scheme must not be UNSPECIFIED"
+    expression: "this.auth_scheme != 0"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.cloudflare.api_token_requirement"
+    message: "api_token must be provided and api_key/email must be empty when auth_scheme is API_TOKEN."
+    expression: "this.auth_scheme != 1 || (size(this.api_token) > 0 && size(this.api_key) == 0 && size(this.email) == 0)"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.cloudflare.legacy_key_requirement"
+    message: "api_key and email must be provided and api_token must be empty when auth_scheme is LEGACY_API_KEY."
+    expression: "this.auth_scheme != 2 || (size(this.api_token) == 0 && size(this.api_key) > 0 && size(this.email) > 0)"
+  };
+}
+
+// CloudflareCredentialsR2Spec defines credentials for Cloudflare R2 object storage.
+// R2 is Cloudflare's S3-compatible object storage service.
+message CloudflareCredentialsR2Spec {
+  // R2 Access Key ID for S3-compatible API access.
+  string access_key_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 20
+  ];
+
+  // R2 Secret Access Key for S3-compatible API access.
+  string secret_access_key = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 20
+  ];
+
+  // R2 endpoint URL for S3-compatible API access.
+  // Optional: defaults to https://<account_id>.r2.cloudflarestorage.com if not specified.
+  // Use this to override with custom domains or region-specific endpoints.
+  string endpoint = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.uri = true
+  ];
+}

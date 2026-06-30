@@ -12,7 +12,7 @@ Deploys a Google Cloud Armor security policy with inline rules for WAF protectio
 
 ## What Gets Created
 
-When you deploy a GcpCloudArmorPolicy resource, OpenMCF provisions:
+When you deploy a GcpCloudArmorPolicy resource, Planton provisions:
 
 - **Security Policy** — a `google_compute_security_policy` with the specified type (CLOUD_ARMOR, CLOUD_ARMOR_EDGE, or CLOUD_ARMOR_INTERNAL_SERVICE)
 - **Inline Security Rules** — each rule in the spec becomes an inline rule on the policy, evaluated in priority order (lowest number first)
@@ -23,7 +23,7 @@ If no rule with priority 2147483647 is specified, the IaC modules auto-add a def
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **A GCP project** where the security policy will be created
 - **A backend service or load balancer** to attach the policy to (the policy is created independently; attachment is configured on the backend service)
 
@@ -32,15 +32,15 @@ If no rule with priority 2147483647 is specified, the IaC modules auto-add a def
 Create a file `cloud-armor.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudArmorPolicy
 metadata:
   name: my-waf-policy
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpCloudArmorPolicy.my-waf-policy
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpCloudArmorPolicy.my-waf-policy
 spec:
   projectId:
     value: my-gcp-project
@@ -64,7 +64,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f cloud-armor.yaml
+planton apply -f cloud-armor.yaml
 ```
 
 This creates a Cloud Armor policy that allows traffic from the `10.0.0.0/8` range and denies everything else.
@@ -133,15 +133,15 @@ This creates a Cloud Armor policy that allows traffic from the `10.0.0.0/8` rang
 Block traffic from specific countries:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudArmorPolicy
 metadata:
   name: geo-blocking
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpCloudArmorPolicy.geo-blocking
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpCloudArmorPolicy.geo-blocking
 spec:
   projectId:
     value: my-gcp-project
@@ -165,15 +165,15 @@ spec:
 Protect APIs from abuse with per-IP request throttling:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudArmorPolicy
 metadata:
   name: api-rate-limit
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpCloudArmorPolicy.api-rate-limit
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpCloudArmorPolicy.api-rate-limit
 spec:
   projectId:
     value: my-gcp-project
@@ -205,15 +205,15 @@ spec:
 Full-featured OWASP protection with DDoS defense and rate limiting:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudArmorPolicy
 metadata:
   name: prod-waf
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpCloudArmorPolicy.prod-waf
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpCloudArmorPolicy.prod-waf
 spec:
   projectId:
     value: my-gcp-project

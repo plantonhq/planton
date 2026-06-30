@@ -13,45 +13,45 @@
 ### New Files (25 catalog pages)
 
 Networking Foundation:
-- `apis/org/openmcf/provider/openstack/openstacksubnet/v1/catalog-page.md`
-- `apis/org/openmcf/provider/openstack/openstacknetworkport/v1/catalog-page.md`
-- `apis/org/openmcf/provider/openstack/openstackrouter/v1/catalog-page.md`
-- `apis/org/openmcf/provider/openstack/openstackrouterinterface/v1/catalog-page.md`
+- `apis/dev/planton/provider/openstack/openstacksubnet/v1/catalog-page.md`
+- `apis/dev/planton/provider/openstack/openstacknetworkport/v1/catalog-page.md`
+- `apis/dev/planton/provider/openstack/openstackrouter/v1/catalog-page.md`
+- `apis/dev/planton/provider/openstack/openstackrouterinterface/v1/catalog-page.md`
 
 Security and Floating IPs:
-- `apis/org/openmcf/provider/openstack/openstacksecuritygroup/v1/catalog-page.md`
-- `apis/org/openmcf/provider/openstack/openstacksecuritygrouprule/v1/catalog-page.md`
-- `apis/org/openmcf/provider/openstack/openstackfloatingip/v1/catalog-page.md`
-- `apis/org/openmcf/provider/openstack/openstackfloatingipassociate/v1/catalog-page.md`
+- `apis/dev/planton/provider/openstack/openstacksecuritygroup/v1/catalog-page.md`
+- `apis/dev/planton/provider/openstack/openstacksecuritygrouprule/v1/catalog-page.md`
+- `apis/dev/planton/provider/openstack/openstackfloatingip/v1/catalog-page.md`
+- `apis/dev/planton/provider/openstack/openstackfloatingipassociate/v1/catalog-page.md`
 
 Load Balancing (Octavia):
-- `apis/org/openmcf/provider/openstack/openstackloadbalancer/v1/catalog-page.md`
-- `apis/org/openmcf/provider/openstack/openstackloadbalancerlistener/v1/catalog-page.md`
-- `apis/org/openmcf/provider/openstack/openstackloadbalancerpool/v1/catalog-page.md`
-- `apis/org/openmcf/provider/openstack/openstackloadbalancermember/v1/catalog-page.md`
-- `apis/org/openmcf/provider/openstack/openstackloadbalancermonitor/v1/catalog-page.md`
+- `apis/dev/planton/provider/openstack/openstackloadbalancer/v1/catalog-page.md`
+- `apis/dev/planton/provider/openstack/openstackloadbalancerlistener/v1/catalog-page.md`
+- `apis/dev/planton/provider/openstack/openstackloadbalancerpool/v1/catalog-page.md`
+- `apis/dev/planton/provider/openstack/openstackloadbalancermember/v1/catalog-page.md`
+- `apis/dev/planton/provider/openstack/openstackloadbalancermonitor/v1/catalog-page.md`
 
 Storage:
-- `apis/org/openmcf/provider/openstack/openstackvolume/v1/catalog-page.md`
-- `apis/org/openmcf/provider/openstack/openstackvolumeattach/v1/catalog-page.md`
-- `apis/org/openmcf/provider/openstack/openstackimage/v1/catalog-page.md`
+- `apis/dev/planton/provider/openstack/openstackvolume/v1/catalog-page.md`
+- `apis/dev/planton/provider/openstack/openstackvolumeattach/v1/catalog-page.md`
+- `apis/dev/planton/provider/openstack/openstackimage/v1/catalog-page.md`
 
 DNS (Designate):
-- `apis/org/openmcf/provider/openstack/openstackdnszone/v1/catalog-page.md`
-- `apis/org/openmcf/provider/openstack/openstackdnsrecord/v1/catalog-page.md`
+- `apis/dev/planton/provider/openstack/openstackdnszone/v1/catalog-page.md`
+- `apis/dev/planton/provider/openstack/openstackdnsrecord/v1/catalog-page.md`
 
 Identity (Keystone):
-- `apis/org/openmcf/provider/openstack/openstackproject/v1/catalog-page.md`
-- `apis/org/openmcf/provider/openstack/openstackroleassignment/v1/catalog-page.md`
-- `apis/org/openmcf/provider/openstack/openstackapplicationcredential/v1/catalog-page.md`
+- `apis/dev/planton/provider/openstack/openstackproject/v1/catalog-page.md`
+- `apis/dev/planton/provider/openstack/openstackroleassignment/v1/catalog-page.md`
+- `apis/dev/planton/provider/openstack/openstackapplicationcredential/v1/catalog-page.md`
 
 Compute Support:
-- `apis/org/openmcf/provider/openstack/openstackkeypair/v1/catalog-page.md`
-- `apis/org/openmcf/provider/openstack/openstackservergroup/v1/catalog-page.md`
+- `apis/dev/planton/provider/openstack/openstackkeypair/v1/catalog-page.md`
+- `apis/dev/planton/provider/openstack/openstackservergroup/v1/catalog-page.md`
 
 Container Orchestration (Magnum):
-- `apis/org/openmcf/provider/openstack/openstackcontainercluster/v1/catalog-page.md`
-- `apis/org/openmcf/provider/openstack/openstackcontainerclustertemplate/v1/catalog-page.md`
+- `apis/dev/planton/provider/openstack/openstackcontainercluster/v1/catalog-page.md`
+- `apis/dev/planton/provider/openstack/openstackcontainerclustertemplate/v1/catalog-page.md`
 
 ### Net-New Entries (no legacy docs existed)
 

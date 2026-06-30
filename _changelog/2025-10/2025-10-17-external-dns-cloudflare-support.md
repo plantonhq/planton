@@ -26,7 +26,7 @@ Previously, ExternalDNS supported only cloud provider DNS services (Google Cloud
 Added `ExternalDnsCloudflareConfig` to the ExternalDNS specification:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: ExternalDnsKubernetes
 metadata:
   name: external-dns-planton
@@ -249,7 +249,7 @@ var vars = struct {
 ### Basic Cloudflare Configuration
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: ExternalDnsKubernetes
 metadata:
   name: external-dns-example
@@ -267,7 +267,7 @@ spec:
 ```yaml
 ---
 # Domain 1: example.com
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: ExternalDnsKubernetes
 metadata:
   name: external-dns-example-com
@@ -281,7 +281,7 @@ spec:
 
 ---
 # Domain 2: example.org
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: ExternalDnsKubernetes
 metadata:
   name: external-dns-example-org
@@ -676,7 +676,7 @@ kubectl get clusterrole -l app.kubernetes.io/name=external-dns -o yaml | grep ga
 
 2. **Create Manifest**:
    ```yaml
-   apiVersion: kubernetes.openmcf.org/v1
+   apiVersion: kubernetes.planton.dev/v1
    kind: ExternalDnsKubernetes
    metadata:
      name: external-dns-my-domain
@@ -691,9 +691,9 @@ kubectl get clusterrole -l app.kubernetes.io/name=external-dns -o yaml | grep ga
 
 3. **Deploy**:
    ```bash
-   export EXTERNAL_DNS_MODULE=~/scm/github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/addon/externaldns/v1/iac/pulumi
+   export EXTERNAL_DNS_MODULE=~/scm/github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/addon/externaldns/v1/iac/pulumi
    
-   openmcf pulumi up \
+   planton pulumi up \
      --manifest external-dns.yaml \
      --module-dir ${EXTERNAL_DNS_MODULE}
    ```

@@ -3,7 +3,7 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "flag",
     srcs = ["flag.go"],
-    importpath = "github.com/plantonhq/openmcf/internal/cli/flag",
+    importpath = "github.com/plantonhq/planton/internal/cli/flag",
     visibility = ["//:__subpackages__"],
     deps = ["@com_github_sirupsen_logrus//:logrus"],
 )

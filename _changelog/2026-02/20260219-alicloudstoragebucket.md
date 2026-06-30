@@ -12,7 +12,7 @@ Added the AliCloudStorageBucket deployment component -- the first Storage-tier r
 ## What Was Created
 
 ### API Definition
-- `apis/org/openmcf/provider/alicloud/alicloudstoragebucket/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
+- `apis/dev/planton/provider/alicloud/alicloudstoragebucket/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
 - Registered `AliCloudStorageBucket = 3050` in `CloudResourceKind` enum under the Storage category
 - 5 nested messages: `AliCloudStorageBucketEncryption`, `AliCloudStorageBucketLifecycleRule`, `AliCloudStorageBucketLifecycleTransition`, `AliCloudStorageBucketCorsRule`, `AliCloudStorageBucketLogging`
 

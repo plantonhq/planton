@@ -1,0 +1,24 @@
+# Test manifest for KubernetesTekton
+# Used for local development and testing
+#
+# Usage:
+#   pulumi up --stack dev --config-file manifest.yaml
+#   OR
+#   terraform apply -var-file=manifest.tfvars
+
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesTekton
+metadata:
+  name: test-tekton
+  org: test-org
+  env: dev
+spec:
+  pipeline_version: "latest"
+  dashboard:
+    enabled: true
+    version: "latest"
+    ingress:
+      enabled: true
+      hostname: "tekton-dashboard-test.example.com"
+  cloud_events:
+    sink_url: "http://event-receiver.test-namespace.svc.cluster.local/tekton/events"

@@ -12,14 +12,14 @@ Deploys an AWS ECS cluster configured for Fargate workloads with optional capaci
 
 ## What Gets Created
 
-When you deploy an AwsEcsCluster resource, OpenMCF provisions:
+When you deploy an AwsEcsCluster resource, Planton provisions:
 
 - **ECS Cluster** — an `ecs.Cluster` resource with the specified name, optional Container Insights setting, and optional ECS Exec configuration
 - **Cluster Capacity Providers** — an `ecs.ClusterCapacityProviders` resource (created only when `capacityProviders` is specified) that attaches FARGATE and/or FARGATE_SPOT providers with an optional default strategy defining base/weight distribution
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **An existing VPC and subnets** if you plan to deploy ECS services into this cluster (the cluster itself does not require networking)
 - **A KMS key** if enabling encrypted ECS Exec sessions
 - **A CloudWatch log group** or **S3 bucket** if using OVERRIDE logging for ECS Exec
@@ -29,15 +29,15 @@ When you deploy an AwsEcsCluster resource, OpenMCF provisions:
 Create a file `ecs-cluster.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEcsCluster
 metadata:
   name: my-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsEcsCluster.my-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsEcsCluster.my-cluster
 spec:
   region: us-east-1
 ```
@@ -45,7 +45,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f ecs-cluster.yaml
+planton apply -f ecs-cluster.yaml
 ```
 
 This creates a basic ECS cluster with no capacity providers attached and Container Insights disabled. Services deployed into this cluster will need to specify their own launch type.
@@ -83,15 +83,15 @@ This creates a basic ECS cluster with no capacity providers attached and Contain
 A production cluster using only on-demand Fargate capacity with monitoring enabled:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEcsCluster
 metadata:
   name: prod-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsEcsCluster.prod-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsEcsCluster.prod-cluster
 spec:
   region: us-east-1
   enableContainerInsights: true
@@ -104,15 +104,15 @@ spec:
 A cluster that uses 20% on-demand Fargate for baseline stability and 80% Fargate Spot for cost savings on scaled tasks:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEcsCluster
 metadata:
   name: cost-optimized-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsEcsCluster.cost-optimized-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsEcsCluster.cost-optimized-cluster
 spec:
   region: us-east-1
   enableContainerInsights: true
@@ -133,15 +133,15 @@ spec:
 Enables ECS Exec for debugging containers with AWS-managed logging:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEcsCluster
 metadata:
   name: debug-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsEcsCluster.debug-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsEcsCluster.debug-cluster
 spec:
   region: us-east-1
   enableContainerInsights: true
@@ -156,15 +156,15 @@ spec:
 Production cluster with Spot capacity, Container Insights, and ECS Exec audit logs sent to both CloudWatch and S3 with KMS encryption:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEcsCluster
 metadata:
   name: full-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsEcsCluster.full-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsEcsCluster.full-cluster
 spec:
   region: us-east-1
   enableContainerInsights: true

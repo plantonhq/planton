@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ociblockvolume.v1;
+
+// OciBlockVolumeStackOutputs contains the outputs produced after
+// deploying an OciBlockVolume.
+// The volume_id is used by downstream components (e.g., compute instance
+// volume attachments) for composability via StringValueOrRef.
+message OciBlockVolumeStackOutputs {
+  // OCID of the block volume.
+  string volume_id = 1;
+}

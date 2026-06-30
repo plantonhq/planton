@@ -29,9 +29,9 @@ Components evolve over time:
 
 ### ❌ Don't Use Update When
 
-- Component doesn't exist → Use `@forge-openmcf-component`
-- Want to remove component → Use `@delete-openmcf-component`
-- Just checking status → Use `@audit-openmcf-component`
+- Component doesn't exist → Use `@forge-planton-component`
+- Want to remove component → Use `@delete-planton-component`
+- Just checking status → Use `@audit-planton-component`
 - Component is perfect → No update needed!
 
 ## The Six Update Scenarios
@@ -43,7 +43,7 @@ Update handles six distinct scenarios, each with its own workflow:
 **Trigger:** Audit shows <100% completion
 
 ```bash
-@update-openmcf-component MongodbAtlas --scenario fill-gaps
+@update-planton-component MongodbAtlas --scenario fill-gaps
 ```
 
 **Process:**
@@ -62,12 +62,12 @@ Update handles six distinct scenarios, each with its own workflow:
 **Trigger:** You modified spec.proto, need to propagate changes
 
 ```bash
-@update-openmcf-component GcpCertManagerCert --scenario proto-changed
+@update-planton-component GcpCertManagerCert --scenario proto-changed
 ```
 
 **Process:**
 1. Regenerates proto stubs: `make protos` (.pb.go files)
-2. Validates component tests: `go test ./apis/org/openmcf/provider/<provider>/<component>/v1/`
+2. Validates component tests: `go test ./apis/dev/planton/provider/<provider>/<component>/v1/`
 3. Updates Terraform variables.tf to match spec.proto
 4. Updates examples.md to use new fields
 5. Runs build validation: `go build ./apis/.../v1/...`
@@ -86,7 +86,7 @@ Update handles six distinct scenarios, each with its own workflow:
 **Trigger:** Documentation is outdated or incomplete
 
 ```bash
-@update-openmcf-component PostgresKubernetes --scenario refresh-docs
+@update-planton-component PostgresKubernetes --scenario refresh-docs
 ```
 
 **Process:**
@@ -106,7 +106,7 @@ Update handles six distinct scenarios, each with its own workflow:
 **Trigger:** Need to modify Pulumi or Terraform deployment logic
 
 ```bash
-@update-openmcf-component AwsRdsInstance --scenario update-iac --explain "add multi-AZ support"
+@update-planton-component AwsRdsInstance --scenario update-iac --explain "add multi-AZ support"
 ```
 
 **Process:**
@@ -131,7 +131,7 @@ Update handles six distinct scenarios, each with its own workflow:
 **Trigger:** Targeted fix needed
 
 ```bash
-@update-openmcf-component GcpCertManagerCert --explain "examples.md uses deprecated field names"
+@update-planton-component GcpCertManagerCert --explain "examples.md uses deprecated field names"
 ```
 
 **Process:**
@@ -151,7 +151,7 @@ Update handles six distinct scenarios, each with its own workflow:
 **Trigger:** Not sure which scenario applies
 
 ```bash
-@update-openmcf-component MongodbAtlas
+@update-planton-component MongodbAtlas
 ```
 
 **Process:**
@@ -172,15 +172,15 @@ Update handles six distinct scenarios, each with its own workflow:
 
 ```bash
 # 1. Check current state
-@audit-openmcf-component MongodbAtlas
+@audit-planton-component MongodbAtlas
 # Result: 65% complete (missing Terraform, docs)
 
 # 2. Fill gaps
-@update-openmcf-component MongodbAtlas --scenario fill-gaps
+@update-planton-component MongodbAtlas --scenario fill-gaps
 # Runs rules 013-015, 020, validation
 
 # 3. Verify improvement
-@audit-openmcf-component MongodbAtlas
+@audit-planton-component MongodbAtlas
 # Result: 98% complete
 ```
 
@@ -191,7 +191,7 @@ Update handles six distinct scenarios, each with its own workflow:
 # Added: bool enable_monitoring = 15;
 
 # 2. Propagate changes
-@update-openmcf-component GcpCloudSql --scenario proto-changed
+@update-planton-component GcpCloudSql --scenario proto-changed
 
 # 3. Test changes
 # Deploy with hack manifest to verify
@@ -204,7 +204,7 @@ Update handles six distinct scenarios, each with its own workflow:
 # Your docs mention old approach
 
 # 2. Refresh documentation
-@update-openmcf-component AwsRdsInstance --scenario refresh-docs
+@update-planton-component AwsRdsInstance --scenario refresh-docs
 
 # 3. Review generated docs
 # Check v1/docs/README.md reflects current best practices
@@ -214,7 +214,7 @@ Update handles six distinct scenarios, each with its own workflow:
 
 ```bash
 # 1. Need to add custom VPC support
-@update-openmcf-component GcpGkeCluster --scenario update-iac --explain "add support for custom VPC with private IP ranges"
+@update-planton-component GcpGkeCluster --scenario update-iac --explain "add support for custom VPC with private IP ranges"
 
 # 2. Review generated code
 # Check both Pulumi and Terraform modules
@@ -247,13 +247,13 @@ Update handles six distinct scenarios, each with its own workflow:
 
 ```bash
 # Preview gap-filling
-@update-openmcf-component MongodbAtlas --scenario fill-gaps --dry-run
+@update-planton-component MongodbAtlas --scenario fill-gaps --dry-run
 
 # Update IaC with backup
-@update-openmcf-component GcpCertManagerCert --scenario update-iac --explain "add DNS validation" --backup
+@update-planton-component GcpCertManagerCert --scenario update-iac --explain "add DNS validation" --backup
 
 # Auto-determine with explanation
-@update-openmcf-component PostgresKubernetes --explain "examples need updating to show volume configuration"
+@update-planton-component PostgresKubernetes --explain "examples need updating to show volume configuration"
 ```
 
 ## Safety Features
@@ -263,7 +263,7 @@ Update handles six distinct scenarios, each with its own workflow:
 Preview changes before applying:
 
 ```bash
-@update-openmcf-component MongodbAtlas --scenario fill-gaps --dry-run
+@update-planton-component MongodbAtlas --scenario fill-gaps --dry-run
 ```
 
 **Output:**
@@ -292,12 +292,12 @@ Run without --dry-run to apply changes.
 Create timestamped backup:
 
 ```bash
-@update-openmcf-component GcpCertManagerCert --scenario proto-changed --backup
+@update-planton-component GcpCertManagerCert --scenario proto-changed --backup
 ```
 
 **Creates:**
 ```
-apis/org/openmcf/provider/gcp/gcpcertmanagercert/v1/.backup-2025-11-13-143022/
+apis/dev/planton/provider/gcp/gcpcertmanagercert/v1/.backup-2025-11-13-143022/
 ├── spec.proto
 ├── api.proto
 ├── iac/
@@ -328,7 +328,7 @@ Update always runs these commands in sequence:
 make protos
 
 # 2. Always: Validate component tests (validates buf.validate rules)
-go test ./apis/org/openmcf/provider/<provider>/<component>/v1/
+go test ./apis/dev/planton/provider/<provider>/<component>/v1/
 
 # 3. If Go/Pulumi code changed: Verify complete build
 go build ./apis/.../v1/...
@@ -404,7 +404,7 @@ Summary:
 
 Next Steps:
   1. Review generated files
-  2. Run: @audit-openmcf-component MongodbAtlas
+  2. Run: @audit-planton-component MongodbAtlas
   3. Test with: iac/hack/manifest.yaml
   4. Commit changes
 ```
@@ -422,7 +422,7 @@ Did you mean:
   - MongodbAtlas (check spelling)
 
 Or create new:
-  @forge-openmcf-component MongodbAtlas --provider atlas
+  @forge-planton-component MongodbAtlas --provider atlas
 ```
 
 **Error: Nothing to update**
@@ -449,7 +449,7 @@ Fix:
   1. Check spec.proto syntax
   2. Ensure all message types are defined
   3. Run: make protos
-  4. Resume: @update-openmcf-component MongodbAtlas --resume-from 017
+  4. Resume: @update-planton-component MongodbAtlas --resume-from 017
 ```
 
 ### Recovery
@@ -459,7 +459,7 @@ If update fails:
 2. Suggestion for fix provided
 3. Resume from failure point:
    ```bash
-   @update-openmcf-component MongodbAtlas --resume-from <rule-number>
+   @update-planton-component MongodbAtlas --resume-from <rule-number>
    ```
 
 ## Integration Examples
@@ -468,20 +468,20 @@ If update fails:
 
 ```bash
 # Daily workflow
-@audit-openmcf-component MyComponent    # Check status
-@update-openmcf-component MyComponent --scenario fill-gaps  # Fill gaps
-@audit-openmcf-component MyComponent    # Verify improvement
+@audit-planton-component MyComponent    # Check status
+@update-planton-component MyComponent --scenario fill-gaps  # Fill gaps
+@audit-planton-component MyComponent    # Verify improvement
 ```
 
 ### With Forge
 
 ```bash
 # Initial creation might be incomplete
-@forge-openmcf-component NewComponent --provider aws
+@forge-planton-component NewComponent --provider aws
 # Result: 70% (documentation might be minimal)
 
 # Fill remaining gaps
-@update-openmcf-component NewComponent --scenario fill-gaps
+@update-planton-component NewComponent --scenario fill-gaps
 # Result: 98% (full documentation generated)
 ```
 
@@ -489,17 +489,17 @@ If update fails:
 
 ```bash
 # Week 1: Create component
-@forge-openmcf-component MyComponent --provider gcp
+@forge-planton-component MyComponent --provider gcp
 
 # Week 2: Add features
-@update-openmcf-component MyComponent --scenario proto-changed
+@update-planton-component MyComponent --scenario proto-changed
 # (after adding fields to spec.proto)
 
 # Week 3: Provider releases new features
-@update-openmcf-component MyComponent --scenario refresh-docs
+@update-planton-component MyComponent --scenario refresh-docs
 
 # Week 4: Enhance deployment
-@update-openmcf-component MyComponent --scenario update-iac --explain "add auto-scaling"
+@update-planton-component MyComponent --scenario update-iac --explain "add auto-scaling"
 ```
 
 ## Best Practices
@@ -585,7 +585,7 @@ If you've customized generated code:
 
 **Debug:**
 ```bash
-cd apis/org/openmcf/provider/<provider>/<component>/v1
+cd apis/dev/planton/provider/<provider>/<component>/v1
 make protos    # Regenerate stubs
 go build       # Check Go errors
 go test -v ./apis/.../v1/      # Run tests
@@ -597,7 +597,7 @@ go test -v ./apis/.../v1/      # Run tests
 1. Check examples.md uses current field names
 2. Validate examples against schema:
    ```bash
-   openmcf validate --manifest examples.yaml
+   planton validate --manifest examples.yaml
    ```
 3. Update examples manually if needed
 
@@ -608,7 +608,7 @@ go test -v ./apis/.../v1/      # Run tests
 2. Which gaps were addressed?
 3. Run audit with verbose:
    ```bash
-   @audit-openmcf-component MyComponent --verbose
+   @audit-planton-component MyComponent --verbose
    ```
 
 ## Success Metrics
@@ -625,11 +625,11 @@ Good update outcomes:
 
 ## Related Commands
 
-- `@forge-openmcf-component` - Create new component
-- `@audit-openmcf-component` - Check completion status
-- `@complete-openmcf-component` - Auto-improve to 95%+ (audit + update + audit)
-- `@fix-openmcf-component` - Targeted fixes with cascading updates
-- `@delete-openmcf-component` - Remove component
+- `@forge-planton-component` - Create new component
+- `@audit-planton-component` - Check completion status
+- `@complete-planton-component` - Auto-improve to 95%+ (audit + update + audit)
+- `@fix-planton-component` - Targeted fixes with cascading updates
+- `@delete-planton-component` - Remove component
 
 ## Questions?
 
@@ -639,5 +639,5 @@ Good update outcomes:
 
 ---
 
-**Ready to update?** Run `@update-openmcf-component <ComponentName>` to get started!
+**Ready to update?** Run `@update-planton-component <ComponentName>` to get started!
 

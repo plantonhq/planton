@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/iac/terraform"
-	"github.com/plantonhq/openmcf/internal/cli/cliprint"
-	"github.com/plantonhq/openmcf/internal/cli/flag"
-	"github.com/plantonhq/openmcf/internal/cli/prompt"
-	"github.com/plantonhq/openmcf/internal/cli/ui"
-	"github.com/plantonhq/openmcf/pkg/iac/provisioner"
-	"github.com/plantonhq/openmcf/pkg/iac/tofu/backendconfig"
-	"github.com/plantonhq/openmcf/pkg/iac/tofu/tofumodule"
+	"github.com/plantonhq/planton/apis/dev/planton/shared/iac/terraform"
+	"github.com/plantonhq/planton/internal/cli/cliprint"
+	"github.com/plantonhq/planton/internal/cli/flag"
+	"github.com/plantonhq/planton/internal/cli/prompt"
+	"github.com/plantonhq/planton/internal/cli/ui"
+	"github.com/plantonhq/planton/pkg/iac/provisioner"
+	"github.com/plantonhq/planton/pkg/iac/tofu/backendconfig"
+	"github.com/plantonhq/planton/pkg/iac/tofu/tofumodule"
 	"github.com/spf13/cobra"
 )
 

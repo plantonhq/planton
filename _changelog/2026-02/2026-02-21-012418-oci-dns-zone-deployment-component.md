@@ -10,7 +10,7 @@ Implemented the OciDnsZone deployment component -- OCI's managed authoritative D
 
 ## Problem Statement / Motivation
 
-The OpenMCF Oracle Cloud provider needs DNS infrastructure components to enable domain management for OCI workloads. DNS zones are the foundational building block -- without them, users have no declarative way to provision public or private DNS resolution for their OCI services.
+The Planton Oracle Cloud provider needs DNS infrastructure components to enable domain management for OCI workloads. DNS zones are the foundational building block -- without them, users have no declarative way to provision public or private DNS resolution for their OCI services.
 
 ### Pain Points
 
@@ -31,9 +31,9 @@ A complete deployment component (`OciDnsZone`) with proto API definitions, Pulum
 
 **DNSSEC as optional bool**: `is_dnssec_enabled: true` is cleaner YAML than `dnssecState: enabled`. The underlying ENABLED/DISABLED string conversion is hidden in IaC modules. Nil means OCI default (disabled).
 
-**view_id without default_kind**: OCI DNS Views are VCN-internal constructs, not standalone deployable resources in the OpenMCF catalog. Using StringValueOrRef without `default_kind` allows passing OCIDs directly.
+**view_id without default_kind**: OCI DNS Views are VCN-internal constructs, not standalone deployable resources in the Planton catalog. Using StringValueOrRef without `default_kind` allows passing OCIDs directly.
 
-**tsig_key_id as plain string**: TSIG keys are not modeled as OpenMCF components. They are pre-existing DNS infrastructure typically managed outside IaC.
+**tsig_key_id as plain string**: TSIG keys are not modeled as Planton components. They are pre-existing DNS infrastructure typically managed outside IaC.
 
 **4 CEL validation rules**: zone_type required, private requires view_id, no private+secondary (OCI limitation), secondary requires external_masters. These catch invalid configurations at schema validation time rather than at provider API call time.
 

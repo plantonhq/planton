@@ -10,7 +10,7 @@ Completed a comprehensive refactoring to eliminate the shared `IngressSpec` mess
 
 ## Problem Statement / Motivation
 
-The shared `IngressSpec` in `org/openmcf/provider/kubernetes/kubernetes.proto` created several architectural and usability problems that became increasingly apparent as the platform evolved:
+The shared `IngressSpec` in `dev/planton/provider/kubernetes/kubernetes.proto` created several architectural and usability problems that became increasingly apparent as the platform evolved:
 
 ### Pain Points
 
@@ -86,17 +86,17 @@ message KubernetesArgocdIngress {
 
 Each component's `spec.proto` was updated:
 
-**File Pattern**: `apis/org/openmcf/provider/kubernetes/kubernetes{component}/v1/spec.proto`
+**File Pattern**: `apis/dev/planton/provider/kubernetes/kubernetes{component}/v1/spec.proto`
 
 **Changes**:
-1. Replaced `org.openmcf.shared.kubernetes.IngressSpec` with `Kubernetes{Component}Ingress`
+1. Replaced `dev.planton.shared.kubernetes.IngressSpec` with `Kubernetes{Component}Ingress`
 2. Added component-specific ingress message definition with CEL validation
 3. Ensured `buf/validate/validate.proto` import was present
 
 **Example** (KubernetesArgocd):
 ```protobuf
 // Before
-org.openmcf.shared.kubernetes.IngressSpec ingress = 3;
+dev.planton.shared.kubernetes.IngressSpec ingress = 3;
 
 // After
 KubernetesArgocdIngress ingress = 3;
@@ -218,7 +218,7 @@ After initially deleting 5 outdated test files that referenced the old shared `I
 
 ```go
 input := &KubernetesPrometheus{
-    ApiVersion: "kubernetes.openmcf.org/v1",
+    ApiVersion: "kubernetes.planton.dev/v1",
     Kind:       "KubernetesPrometheus",
     Metadata: &shared.CloudResourceMetadata{
         Name: "test-prometheus",
@@ -243,7 +243,7 @@ input := &KubernetesPrometheus{
 
 ### Final Cleanup
 
-**Removed from `org/openmcf/provider/kubernetes/kubernetes.proto`**:
+**Removed from `dev/planton/provider/kubernetes/kubernetes.proto`**:
 
 ```protobuf
 // Deleted (lines 83-99)
@@ -263,17 +263,17 @@ message IngressSpec {
 
 **Also removed**: Unused `buf/validate/validate.proto` import from `kubernetes.proto`
 
-**Verification**: Confirmed zero references to `org.openmcf.shared.kubernetes.IngressSpec` remain in the codebase
+**Verification**: Confirmed zero references to `dev.planton.shared.kubernetes.IngressSpec` remain in the codebase
 
 ### Build Verification
 
 After each component migration:
 
 ```bash
-cd ~/scm/github.com/plantonhq/openmcf/apis
+cd ~/scm/github.com/plantonhq/planton/apis
 make build  # Regenerated all proto stubs
 
-cd apis/org/openmcf/provider/kubernetes/kubernetes{component}/v1/iac/pulumi/module
+cd apis/dev/planton/provider/kubernetes/kubernetes{component}/v1/iac/pulumi/module
 go build  # Verified Pulumi module compilation
 ```
 
@@ -471,7 +471,7 @@ cd apis && make build
 # Result: 0 errors across all 10 components
 
 # Pulumi compilation verified per component  
-cd apis/org/openmcf/provider/kubernetes/kubernetes*/v1/iac/pulumi/module
+cd apis/dev/planton/provider/kubernetes/kubernetes*/v1/iac/pulumi/module
 go build
 # Result: 10/10 modules compiled successfully
 

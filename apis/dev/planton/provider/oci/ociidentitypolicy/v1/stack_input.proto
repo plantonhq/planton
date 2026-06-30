@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ociidentitypolicy.v1;
+
+import "dev/planton/provider/oci/ociidentitypolicy/v1/api.proto";
+import "dev/planton/provider/oci/provider.proto";
+
+// OciIdentityPolicyStackInput is the input to the IaC modules (Pulumi / Terraform)
+// that deploy an OciIdentityPolicy resource.
+message OciIdentityPolicyStackInput {
+  // target cloud-resource
+  OciIdentityPolicy target = 1;
+  // provider-config
+  dev.planton.provider.oci.OciProviderConfig provider_config = 2;
+}

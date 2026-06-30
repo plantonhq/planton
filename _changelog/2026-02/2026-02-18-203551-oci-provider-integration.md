@@ -6,11 +6,11 @@
 
 ## Summary
 
-Added Oracle Cloud Infrastructure (OCI) as provider #26 to OpenMCF, enabling users to manage OCI credentials through the platform. The integration spans all 6 system layers -- proto definitions, CLI guidance, stack input / env var processing, provider detection, backend credential CRUD, and frontend credential forms. OCI's multi-method authentication model (API Key, Instance Principal, Security Token, Resource Principal, OKE Workload Identity) is handled via the enum-discriminator pattern introduced by AliCloud, with sub-messages only for methods that carry credential fields.
+Added Oracle Cloud Infrastructure (OCI) as provider #26 to Planton, enabling users to manage OCI credentials through the platform. The integration spans all 6 system layers -- proto definitions, CLI guidance, stack input / env var processing, provider detection, backend credential CRUD, and frontend credential forms. OCI's multi-method authentication model (API Key, Instance Principal, Security Token, Resource Principal, OKE Workload Identity) is handled via the enum-discriminator pattern introduced by AliCloud, with sub-messages only for methods that carry credential fields.
 
 ## Problem Statement / Motivation
 
-OpenMCF had no Oracle Cloud Infrastructure support. Organizations using OCI could not store credentials, use the unified `--provider-config` flag, or leverage credential auto-resolution for OCI deployments.
+Planton had no Oracle Cloud Infrastructure support. Organizations using OCI could not store credentials, use the unified `--provider-config` flag, or leverage credential auto-resolution for OCI deployments.
 
 ### Pain Points
 

@@ -1,0 +1,17 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsMemcachedElasticache
+metadata:
+  name: test-memcached
+  org: test-org
+  env: dev
+  id: test-memcached-dev
+  labels:
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: test-org
+    pulumi.planton.dev/project: test-project
+    pulumi.planton.dev/stack.name: dev.AwsMemcachedElasticache.test-memcached
+spec:
+  region: us-west-2
+  engineVersion: "1.6.22"
+  nodeType: cache.t3.micro
+  numCacheNodes: 1

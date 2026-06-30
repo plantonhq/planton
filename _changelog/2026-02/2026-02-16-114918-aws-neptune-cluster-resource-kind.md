@@ -6,16 +6,16 @@
 
 ## Summary
 
-Added `AwsNeptuneCluster` (R26) as a new deployment component in OpenMCF, enabling fully managed graph database provisioning on AWS. Neptune supports property-graph (Gremlin) and RDF (SPARQL) query languages. The component bundles cluster, instances, subnet group, security group, and parameter group into a single resource definition, following the established DocumentDB/RDS Cluster pattern.
+Added `AwsNeptuneCluster` (R26) as a new deployment component in Planton, enabling fully managed graph database provisioning on AWS. Neptune supports property-graph (Gremlin) and RDF (SPARQL) query languages. The component bundles cluster, instances, subnet group, security group, and parameter group into a single resource definition, following the established DocumentDB/RDS Cluster pattern.
 
 ## Problem Statement / Motivation
 
-OpenMCF's AWS provider lacked graph database support. Users building knowledge graphs, fraud detection systems, recommendation engines, social networks, or IT operations graphs had no declarative way to provision Neptune through OpenMCF.
+Planton's AWS provider lacked graph database support. Users building knowledge graphs, fraud detection systems, recommendation engines, social networks, or IT operations graphs had no declarative way to provision Neptune through Planton.
 
 ### Pain Points
 
 - No graph database resource kind in the AWS provider catalog
-- Users had to manually provision Neptune clusters outside of OpenMCF's IaC workflow
+- Users had to manually provision Neptune clusters outside of Planton's IaC workflow
 - No cross-resource reference support (`StringValueOrRef`) for Neptune dependencies (VPC, security groups, KMS, IAM roles)
 
 ## Solution / What's New
@@ -64,7 +64,7 @@ flowchart TB
 ### File Structure
 
 ```
-apis/org/openmcf/provider/aws/awsneptunecluster/v1/
+apis/dev/planton/provider/aws/awsneptunecluster/v1/
 ├── spec.proto                    # 27 fields, 4 CEL validations
 ├── stack_outputs.proto           # 10 outputs
 ├── api.proto                     # KRM wiring
@@ -108,7 +108,7 @@ apis/org/openmcf/provider/aws/awsneptunecluster/v1/
 
 ## Benefits
 
-- **Graph database coverage** — Neptune is now a first-class resource kind in OpenMCF
+- **Graph database coverage** — Neptune is now a first-class resource kind in Planton
 - **Cross-resource references** — `StringValueOrRef` for VPC subnets, security groups, KMS keys, and IAM roles
 - **Serverless support** — cost-efficient for variable workloads without capacity planning
 - **22 validation tests** — comprehensive spec validation preventing misconfiguration

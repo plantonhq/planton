@@ -1,0 +1,293 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awseventbridgerule.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "google/protobuf/struct.proto";
+
+// AwsEventBridgeRuleSpec defines the desired configuration for an AWS
+// EventBridge rule with bundled targets.
+//
+// An EventBridge rule matches incoming events on an event bus and routes them
+// to one or more targets for processing. Rules can match events by pattern
+// (JSON event matching) or by schedule (cron/rate expressions).
+//
+// Targets are bundled with the rule because a rule without targets is
+// functionally useless — it matches events but does nothing with them.
+// Each target can independently configure input transformation, retry
+// policies, and dead letter queues.
+//
+// Notes:
+// - The rule name is derived from `metadata.name`.
+// - Exactly one of `event_pattern` or `schedule_expression` must be set.
+// - Targets are created as separate Terraform/Pulumi resources but are
+//   managed as a single unit with the rule.
+// - Credentials, region, and deployment workflow live outside this spec in
+//   stack inputs.
+message AwsEventBridgeRuleSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  // ---------------------------------------------------------------------------
+  // Event bus reference
+  // ---------------------------------------------------------------------------
+
+  // Name of the event bus to attach this rule to. Defaults to "default" (the
+  // built-in AWS event bus) when not specified. Can reference an
+  // AwsEventBridgeBus resource via `valueFrom`.
+  //
+  // Changing this field forces rule replacement (delete + recreate).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef event_bus_name = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsEventBridgeBus,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bus_name"
+  ];
+
+  // ---------------------------------------------------------------------------
+  // Rule definition
+  // ---------------------------------------------------------------------------
+
+  // Human-readable description of the rule. Maximum 512 characters.
+  string description = 3 [(buf.validate.field).string.max_len = 512];
+
+  // JSON event pattern that this rule matches against. Events that match the
+  // pattern are routed to the rule's targets. Expressed as a structured object
+  // in YAML — the IaC module serializes it to JSON.
+  //
+  // Mutually exclusive with `schedule_expression`.
+  //
+  // Example patterns:
+  //   source: ["aws.ec2"]
+  //   detail-type: ["EC2 Instance State-change Notification"]
+  //   detail:
+  //     state: ["running", "stopped"]
+  google.protobuf.Struct event_pattern = 4;
+
+  // Schedule expression for time-based rule triggering. Supports cron and rate
+  // expressions.
+  //
+  // Mutually exclusive with `event_pattern`.
+  //
+  // Examples:
+  //   "rate(5 minutes)"        — fire every 5 minutes
+  //   "rate(1 hour)"           — fire every hour
+  //   "cron(0 12 * * ? *)"     — fire at noon UTC every day
+  //   "cron(0/15 * * * ? *)"   — fire every 15 minutes
+  string schedule_expression = 5 [(buf.validate.field).string.max_len = 256];
+
+  // Rule state. Controls whether the rule is actively matching events.
+  // Valid values: "ENABLED", "DISABLED". Defaults to "ENABLED" in the IaC
+  // module when not set.
+  string state = 6;
+
+  // ---------------------------------------------------------------------------
+  // Targets
+  // ---------------------------------------------------------------------------
+
+  // Targets to invoke when the rule matches an event. At least one target is
+  // required. Each target specifies a destination (Lambda, SQS, SNS, Step
+  // Functions, etc.) and optional input transformation, retry policy, and
+  // dead letter queue configuration.
+  //
+  // AWS limits: maximum 5 targets per rule.
+  repeated AwsEventBridgeTarget targets = 7;
+
+  // ---------------------------------------------------------------------------
+  // CEL validations
+  // ---------------------------------------------------------------------------
+
+  // At least one of event_pattern or schedule_expression must be set.
+  option (buf.validate.message).cel = {
+    id: "event_pattern_or_schedule_required"
+    message: "exactly one of event_pattern or schedule_expression must be set"
+    expression: "(has(this.event_pattern) && this.schedule_expression == '') || (!has(this.event_pattern) && this.schedule_expression != '')"
+  };
+
+  // State must be a valid value when set.
+  option (buf.validate.message).cel = {
+    id: "state_valid_values"
+    message: "state must be 'ENABLED' or 'DISABLED' when set"
+    expression: "this.state == '' || this.state in ['ENABLED', 'DISABLED']"
+  };
+
+  // At least one target is required.
+  option (buf.validate.message).cel = {
+    id: "targets_not_empty"
+    message: "at least one target is required"
+    expression: "size(this.targets) > 0"
+  };
+}
+
+// AwsEventBridgeTarget defines a target to invoke when the rule matches an
+// event. Targets are the downstream consumers of matched events — Lambda
+// functions, SQS queues, SNS topics, Step Functions state machines, and more.
+//
+// Each target can independently configure:
+// - Input transformation (constant input, JSONPath extraction, or template)
+// - Retry policy (max age and retry attempts)
+// - Dead letter queue (for events that fail delivery)
+message AwsEventBridgeTarget {
+  // User-assigned name for this target. Used as the Pulumi resource name
+  // and as the `target_id` in EventBridge. Must be unique within the rule's
+  // targets. Maximum 64 characters, alphanumeric plus hyphen, underscore,
+  // and period.
+  string name = 1 [(buf.validate.field) = {
+    required: true
+    string: {
+      max_len: 64
+      pattern: "^[0-9A-Za-z_.-]+$"
+    }
+  }];
+
+  // ARN of the target resource. This is the AWS resource that processes
+  // matched events. Common targets include Lambda functions, SQS queues,
+  // SNS topics, Step Functions state machines, and CloudWatch Log Groups.
+  //
+  // No `default_kind` is set because the target resource type varies
+  // (Lambda, SQS, SNS, etc.). Use `valueFrom` to reference specific
+  // Planton resources.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef arn = 2 [(buf.validate.field).required = true];
+
+  // IAM role ARN for EventBridge to assume when invoking this target.
+  // Required for targets where EventBridge needs to assume a role:
+  // Step Functions, ECS, Kinesis, Batch, CodeBuild, CodePipeline, and
+  // cross-account event buses.
+  //
+  // Not needed for targets that use resource-based policies:
+  // Lambda (function policy), SQS (queue policy), SNS (topic policy).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef role_arn = 3 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsIamRole,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.role_arn"
+  ];
+
+  // ---------------------------------------------------------------------------
+  // Input transformation (mutually exclusive)
+  // ---------------------------------------------------------------------------
+
+  // Constant JSON input to pass to the target instead of the matched event.
+  // Maximum 8192 characters. Mutually exclusive with `input_path` and
+  // `input_transformer`.
+  string input = 4 [(buf.validate.field).string.max_len = 8192];
+
+  // JSONPath expression to extract a portion of the matched event and pass
+  // to the target. Maximum 256 characters. Mutually exclusive with `input`
+  // and `input_transformer`.
+  //
+  // Example: "$.detail" extracts the detail object from the event.
+  string input_path = 5 [(buf.validate.field).string.max_len = 256];
+
+  // Input transformer to reshape the matched event before passing to the
+  // target. Mutually exclusive with `input` and `input_path`.
+  AwsEventBridgeInputTransformer input_transformer = 6;
+
+  // ---------------------------------------------------------------------------
+  // Reliability
+  // ---------------------------------------------------------------------------
+
+  // Dead letter queue for events that fail delivery to this target. When
+  // EventBridge cannot deliver an event after all retry attempts, the event
+  // is routed to the specified SQS queue for investigation.
+  AwsEventBridgeTargetDeadLetterConfig dead_letter_config = 7;
+
+  // Retry policy controlling how EventBridge retries failed deliveries to
+  // this target. When not set, EventBridge uses the default policy: retry
+  // for 24 hours with up to 185 attempts using exponential backoff.
+  AwsEventBridgeTargetRetryPolicy retry_policy = 8;
+
+  // ---------------------------------------------------------------------------
+  // Target-specific configuration
+  // ---------------------------------------------------------------------------
+
+  // SQS-specific configuration. Required when targeting a FIFO SQS queue
+  // to specify the message group ID.
+  AwsEventBridgeTargetSqsConfig sqs_config = 9;
+
+  // ---------------------------------------------------------------------------
+  // CEL validations
+  // ---------------------------------------------------------------------------
+
+  // input, input_path, and input_transformer are mutually exclusive.
+  option (buf.validate.message).cel = {
+    id: "input_mutual_exclusion"
+    message: "only one of input, input_path, or input_transformer may be set"
+    expression: "(this.input == '' ? 0 : 1) + (this.input_path == '' ? 0 : 1) + (has(this.input_transformer) ? 1 : 0) <= 1"
+  };
+}
+
+// AwsEventBridgeInputTransformer reshapes event data before delivering it to
+// the target. Useful for extracting specific fields, reformatting event data,
+// or adding static context.
+//
+// The transformer works in two steps:
+// 1. `input_paths` extracts values from the event using JSONPath expressions
+// 2. `input_template` assembles the final input using the extracted values
+message AwsEventBridgeInputTransformer {
+  // Map of variable names to JSONPath expressions that extract values from
+  // the matched event. Keys become variables available in `input_template`.
+  // Maximum 100 entries. Keys must not start with "AWS".
+  //
+  // Example:
+  //   instance: "$.detail.instance-id"
+  //   state: "$.detail.state"
+  map<string, string> input_paths = 1;
+
+  // Template that produces the final input for the target. References
+  // variables from `input_paths` using angle brackets: <variable>.
+  // Maximum 8192 characters.
+  //
+  // Example: "Instance <instance> transitioned to <state>"
+  string input_template = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.max_len = 8192
+  ];
+}
+
+// AwsEventBridgeTargetDeadLetterConfig configures a dead letter queue for
+// events that fail delivery to the target after all retry attempts.
+message AwsEventBridgeTargetDeadLetterConfig {
+  // ARN of the SQS queue to use as the dead letter queue. The queue must
+  // exist in the same AWS account and region as the rule.
+  //
+  // Accepts a direct ARN or a reference to an AwsSqsQueue resource.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef arn = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSqsQueue,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.queue_arn"
+  ];
+}
+
+// AwsEventBridgeTargetRetryPolicy controls how EventBridge retries failed
+// event deliveries to a target.
+message AwsEventBridgeTargetRetryPolicy {
+  // Maximum time in seconds that EventBridge keeps retrying delivery.
+  // Range: 60 to 86400 (1 minute to 24 hours). Default: 86400 (24 hours).
+  int32 maximum_event_age_in_seconds = 1;
+
+  // Maximum number of retry attempts. Range: 0 to 185. Default: 185.
+  // Set to 0 to disable retries (event goes to DLQ immediately on failure).
+  int32 maximum_retry_attempts = 2;
+
+  // maximum_event_age_in_seconds must be in the valid range when set.
+  option (buf.validate.message).cel = {
+    id: "max_event_age_range"
+    message: "maximum_event_age_in_seconds must be between 60 and 86400 when set"
+    expression: "this.maximum_event_age_in_seconds == 0 || (this.maximum_event_age_in_seconds >= 60 && this.maximum_event_age_in_seconds <= 86400)"
+  };
+
+  // maximum_retry_attempts must be in the valid range.
+  option (buf.validate.message).cel = {
+    id: "max_retry_attempts_range"
+    message: "maximum_retry_attempts must be between 0 and 185"
+    expression: "this.maximum_retry_attempts >= 0 && this.maximum_retry_attempts <= 185"
+  };
+}
+
+// AwsEventBridgeTargetSqsConfig provides SQS-specific configuration for
+// targets pointing to SQS queues.
+message AwsEventBridgeTargetSqsConfig {
+  // Message group ID for FIFO SQS queues. Required when the target is a
+  // FIFO queue to ensure proper message ordering and deduplication.
+  // Ignored for standard queues.
+  string message_group_id = 1;
+}

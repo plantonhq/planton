@@ -92,7 +92,7 @@ message CloudResourceRelationship {
 
 ### Proto Changes
 
-**File**: `apis/org/openmcf/shared/metadata.proto`
+**File**: `apis/dev/planton/shared/metadata.proto`
 
 Added group field as the 10th field in `CloudResourceMetadata`:
 
@@ -106,12 +106,12 @@ message CloudResourceMetadata {
   map<string, string> labels = 6;
   map<string, string> annotations = 7;
   repeated string tags = 8;
-  repeated org.openmcf.shared.relationship.v1.CloudResourceRelationship relationships = 9;
+  repeated dev.planton.shared.relationship.v1.CloudResourceRelationship relationships = 9;
   string group = 10;  // NEW: Group for visual organization in DAG
 }
 ```
 
-**File**: `apis/org/openmcf/shared/relationship/v1/relationship.proto`
+**File**: `apis/dev/planton/shared/relationship/v1/relationship.proto`
 
 Removed field 5 (group) from `CloudResourceRelationship`:
 
@@ -140,14 +140,14 @@ Each resource now declares its own group membership. This is semantically correc
 
 ```yaml
 # bucket declares its own group
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareR2Bucket
 metadata:
   name: planton-pipeline-logs
   group: app/dependencies/data/storage-buckets  # ← Resource owns this
 
 # service just declares that it uses the bucket
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDeployment
 metadata:
   name: service-hub
@@ -182,22 +182,22 @@ This is a **breaking change** for any code that:
 
 ### Migration Required
 
-**For OpenMCF consumers**:
-1. Upgrade to OpenMCF v0.2.237+ (this release)
+**For Planton consumers**:
+1. Upgrade to Planton v0.2.237+ (this release)
 2. Update code that reads grouping information to use `metadata.group`
 3. Update YAML manifests to declare groups in `metadata.group` instead of in each relationship
 
 **For Planton monorepo**:
-1. Upgrade openmcf dependency to v0.2.237
+1. Upgrade planton dependency to v0.2.237
 2. Update `CloudResourceDagMapper` to read from `metadata.group`
 3. Update all infra-chart manifests to use the new structure
 
 ### Code Locations
 
-**OpenMCF**:
-- `apis/org/openmcf/shared/metadata.proto` - Added group field
-- `apis/org/openmcf/shared/relationship/v1/relationship.proto` - Removed group field
-- `apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto` - Commented out KubernetesNamespace
+**Planton**:
+- `apis/dev/planton/shared/metadata.proto` - Added group field
+- `apis/dev/planton/shared/relationship/v1/relationship.proto` - Removed group field
+- `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto` - Commented out KubernetesNamespace
 
 **Planton (pending)**:
 - `backend/libs/java/domain/infra-hub-commons/src/main/java/ai/planton/infrahubcommons/cloudresource/dag/mapper/CloudResourceDagMapper.java` - Will read from `metadata.group`
@@ -235,7 +235,7 @@ Not all resources need grouping. Resources that stand alone (like a GCP project 
 
 ## Next Steps
 
-1. ✅ Release OpenMCF v0.2.237 with updated protos
+1. ✅ Release Planton v0.2.237 with updated protos
 2. ⏳ Update Planton monorepo to consume new version
 3. ⏳ Update CloudResourceDagMapper to read `metadata.group`
 4. ⏳ Migrate all infra-chart YAML manifests to new structure
@@ -244,7 +244,7 @@ Not all resources need grouping. Resources that stand alone (like a GCP project 
 
 ---
 
-**Status**: ✅ Released in OpenMCF
+**Status**: ✅ Released in Planton
 **Pending**: Planton monorepo integration
 **Timeline**: Proto changes completed November 22, 2025
 

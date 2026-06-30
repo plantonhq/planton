@@ -1,7 +1,0 @@
-apiVersion: cloudflare.openmcf.org/v1
-kind: CloudflareKvNamespace
-metadata:
-  name: example-kv-namespace
-spec:
-  namespaceName: myapp-config-prod
-  accountId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d

@@ -1,0 +1,9 @@
+apiVersion: digital-ocean.planton.dev/v1
+kind: DigitalOceanContainerRegistry
+metadata:
+  name: first-container-registry          # K8s resource name (must be unique in the namespace)
+spec:
+  name: first-container-registry-planton          # Registry name, 1‑63 chars, lowercase, numbers, hyphens
+  subscriptionTier: BASIC      # STARTER | BASIC | PROFESSIONAL
+  region: blr1                 # Any valid DigitalOceanRegion enum slug (e.g., nyc3, sfo3)
+  garbageCollectionEnabled: false   # Enable automated GC of untagged images

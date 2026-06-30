@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesmongodb.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/kubernetesmongodb/v1/spec.proto";
+import "dev/planton/provider/kubernetes/kubernetesmongodb/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+//mongodb-kubernetes
+message KubernetesMongodb {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.planton.dev/v1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'KubernetesMongodb'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  KubernetesMongodbSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  KubernetesMongodbStatus status = 5;
+}
+
+//mongodb-kubernetes status.
+message KubernetesMongodbStatus {
+  //stack-outputs
+  KubernetesMongodbStackOutputs outputs = 1;
+}

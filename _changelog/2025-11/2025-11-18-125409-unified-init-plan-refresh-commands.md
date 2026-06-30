@@ -12,17 +12,17 @@ Following the introduction of unified `apply` and `destroy` commands, users stil
 
 ```bash
 # Unified commands (existing)
-openmcf apply -f manifest.yaml
-openmcf destroy -f manifest.yaml
+planton apply -f manifest.yaml
+planton destroy -f manifest.yaml
 
 # But still needed provisioner-specific commands
-openmcf pulumi init --manifest manifest.yaml
-openmcf pulumi preview --manifest manifest.yaml
-openmcf pulumi refresh --manifest manifest.yaml
+planton pulumi init --manifest manifest.yaml
+planton pulumi preview --manifest manifest.yaml
+planton pulumi refresh --manifest manifest.yaml
 
-openmcf tofu init --manifest manifest.yaml
-openmcf tofu plan --manifest manifest.yaml
-openmcf tofu refresh --manifest manifest.yaml
+planton tofu init --manifest manifest.yaml
+planton tofu plan --manifest manifest.yaml
+planton tofu refresh --manifest manifest.yaml
 ```
 
 ### Pain Points
@@ -42,7 +42,7 @@ Extended the unified command pattern to cover the complete infrastructure lifecy
 3. **`refresh`** - Sync state with cloud reality
 
 All three commands:
-- Read the `openmcf.org/provisioner` label from manifests
+- Read the `planton.dev/provisioner` label from manifests
 - Auto-route to the appropriate provisioner implementation
 - Support interactive provisioner selection when label is missing
 - Maintain full backward compatibility with existing provisioner-specific commands
@@ -52,11 +52,11 @@ All three commands:
 Users can now manage their entire infrastructure lifecycle with consistent commands:
 
 ```bash
-openmcf init -f manifest.yaml       # Initialize
-openmcf plan -f manifest.yaml       # Preview (or 'preview')
-openmcf apply -f manifest.yaml      # Deploy
-openmcf refresh -f manifest.yaml    # Sync state
-openmcf destroy -f manifest.yaml    # Teardown (or 'delete')
+planton init -f manifest.yaml       # Initialize
+planton plan -f manifest.yaml       # Preview (or 'preview')
+planton apply -f manifest.yaml      # Deploy
+planton refresh -f manifest.yaml    # Sync state
+planton destroy -f manifest.yaml    # Teardown (or 'delete')
 ```
 
 ## Implementation Details
@@ -65,7 +65,7 @@ openmcf destroy -f manifest.yaml    # Teardown (or 'delete')
 
 Created three new command files following the established pattern from `apply.go` and `destroy.go`:
 
-**1. `cmd/openmcf/root/init.go`**
+**1. `cmd/planton/root/init.go`**
 
 Initializes infrastructure backend or stack:
 
@@ -88,7 +88,7 @@ func initHandler(cmd *cobra.Command, args []string) {
 - Tofu: Initializes backend, downloads provider plugins
 - Supports Tofu-specific flags: `--backend-type`, `--backend-config`
 
-**2. `cmd/openmcf/root/plan.go`**
+**2. `cmd/planton/root/plan.go`**
 
 Previews infrastructure changes without applying them:
 
@@ -116,7 +116,7 @@ func planWithTofu(...) {
 - Supports `--destroy` flag for destroy preview (Tofu)
 - Supports `--diff` flag for detailed diffs (Pulumi)
 
-**3. `cmd/openmcf/root/refresh.go`**
+**3. `cmd/planton/root/refresh.go`**
 
 Syncs state with cloud reality without modifying resources:
 
@@ -142,7 +142,7 @@ func refreshWithTofu(...) {
 
 ### Command Registration
 
-Updated `cmd/openmcf/root.go` to register the three new commands:
+Updated `cmd/planton/root.go` to register the three new commands:
 
 ```go
 rootCmd.AddCommand(
@@ -174,7 +174,7 @@ All five unified commands follow the same execution flow:
 3. Validate manifest
 
 4. Detect provisioner
-   ├─ Read openmcf.org/provisioner label
+   ├─ Read planton.dev/provisioner label
    ├─ If missing: prompt user interactively
    └─ Default to Pulumi if no input
 
@@ -245,14 +245,14 @@ stages:
 preview:
   stage: preview
   script:
-    - openmcf plan -f deployment.yaml
+    - planton plan -f deployment.yaml
   only:
     - merge_requests
 
 deploy:
   stage: deploy
   script:
-    - openmcf apply -f deployment.yaml --yes
+    - planton apply -f deployment.yaml --yes
   only:
     - main
 ```
@@ -263,9 +263,9 @@ Documentation can focus on unified commands without provisioner-specific branche
 
 ```bash
 # Getting Started - One Pattern for All
-openmcf init -f app.yaml
-openmcf plan -f app.yaml
-openmcf apply -f app.yaml
+planton init -f app.yaml
+planton plan -f app.yaml
+planton apply -f app.yaml
 ```
 
 ### 4. Better Developer Experience
@@ -275,14 +275,14 @@ Developers can focus on infrastructure intent rather than tool syntax:
 ```bash
 # Before: Need to remember provisioner
 cd pulumi-resources/
-openmcf pulumi preview --manifest db.yaml --stack org/proj/env
+planton pulumi preview --manifest db.yaml --stack org/proj/env
 
 cd ../tofu-resources/
-openmcf tofu plan --manifest vpc.yaml
+planton tofu plan --manifest vpc.yaml
 
 # After: Same commands everywhere
-openmcf plan -f db.yaml
-openmcf plan -f vpc.yaml
+planton plan -f db.yaml
+planton plan -f vpc.yaml
 ```
 
 ### 5. Aliasing for Different Backgrounds
@@ -291,13 +291,13 @@ Command aliases support different user preferences:
 
 ```bash
 # Terraform/Tofu users
-openmcf plan -f app.yaml
+planton plan -f app.yaml
 
 # Pulumi users
-openmcf preview -f app.yaml
+planton preview -f app.yaml
 
 # kubectl users
-openmcf delete -f app.yaml
+planton delete -f app.yaml
 ```
 
 ## Usage Examples
@@ -309,22 +309,22 @@ openmcf delete -f app.yaml
 cd my-service/
 
 # 1. Initialize backend/stack (first time or after cache cleanup)
-openmcf init -f database.yaml
+planton init -f database.yaml
 
 # 2. Preview changes before applying
-openmcf plan -f database.yaml
+planton plan -f database.yaml
 
 # 3. Deploy infrastructure
-openmcf apply -f database.yaml --yes
+planton apply -f database.yaml --yes
 
 # 4. After manual console changes, sync state
-openmcf refresh -f database.yaml
+planton refresh -f database.yaml
 
 # 5. Preview changes again
-openmcf plan -f database.yaml
+planton plan -f database.yaml
 
 # 6. Destroy when done
-openmcf destroy -f database.yaml
+planton destroy -f database.yaml
 ```
 
 ### Example 2: Multi-Environment Deployment
@@ -333,9 +333,9 @@ openmcf destroy -f database.yaml
 # Deploy across environments with unified commands
 for env in dev staging prod; do
     echo "Deploying to $env..."
-    openmcf init --kustomize-dir services/api --overlay $env
-    openmcf plan --kustomize-dir services/api --overlay $env
-    openmcf apply --kustomize-dir services/api --overlay $env --yes
+    planton init --kustomize-dir services/api --overlay $env
+    planton plan --kustomize-dir services/api --overlay $env
+    planton apply --kustomize-dir services/api --overlay $env --yes
 done
 ```
 
@@ -348,19 +348,19 @@ done
 set -e
 
 # Initialize (idempotent - safe to run every time)
-openmcf init -f deployment.yaml
+planton init -f deployment.yaml
 
 # In pull requests: preview only
 if [ "$CI_PIPELINE_SOURCE" = "merge_request_event" ]; then
     echo "Previewing changes for PR..."
-    openmcf plan -f deployment.yaml \
+    planton plan -f deployment.yaml \
         --set spec.image.tag="$CI_COMMIT_SHA"
     exit 0
 fi
 
 # In main branch: deploy
 echo "Deploying to $CI_ENVIRONMENT_NAME..."
-openmcf apply -f deployment.yaml \
+planton apply -f deployment.yaml \
     --set spec.image.tag="$CI_COMMIT_SHA" \
     --set metadata.labels.environment="$CI_ENVIRONMENT_NAME" \
     --yes
@@ -370,41 +370,41 @@ openmcf apply -f deployment.yaml \
 
 ```yaml
 # manifest.yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsVpc
 metadata:
   name: production-vpc
   labels:
-    openmcf.org/provisioner: tofu
-    terraform.openmcf.org/backend.type: s3
-    terraform.openmcf.org/backend.object: vpc/prod.tfstate
+    planton.dev/provisioner: tofu
+    terraform.planton.dev/backend.type: s3
+    terraform.planton.dev/backend.object: vpc/prod.tfstate
 spec:
   cidrBlock: 10.0.0.0/16
 ```
 
 ```bash
 # Initialize with S3 backend
-openmcf init -f manifest.yaml \
+planton init -f manifest.yaml \
     --backend-type s3 \
     --backend-config bucket=my-terraform-state \
     --backend-config key=vpc/prod.tfstate \
     --backend-config region=us-west-2
 
 # Plan changes
-openmcf plan -f manifest.yaml
+planton plan -f manifest.yaml
 
 # Apply
-openmcf apply -f manifest.yaml --auto-approve
+planton apply -f manifest.yaml --auto-approve
 ```
 
 ### Example 5: Destroy Preview (Tofu)
 
 ```bash
 # Preview what would be destroyed without actually destroying
-openmcf plan -f app.yaml --destroy
+planton plan -f app.yaml --destroy
 
 # Review the output, then destroy if acceptable
-openmcf destroy -f app.yaml --auto-approve
+planton destroy -f app.yaml --auto-approve
 ```
 
 ## Documentation Updates
@@ -455,21 +455,21 @@ openmcf destroy -f app.yaml --auto-approve
 **Before**: Mixed command patterns
 ```bash
 # Pulumi workflow
-openmcf pulumi init --manifest app.yaml --stack org/proj/dev
-openmcf pulumi preview --manifest app.yaml --stack org/proj/dev
-openmcf apply -f app.yaml  # Unified
-openmcf pulumi refresh --manifest app.yaml --stack org/proj/dev
-openmcf destroy -f app.yaml  # Unified
+planton pulumi init --manifest app.yaml --stack org/proj/dev
+planton pulumi preview --manifest app.yaml --stack org/proj/dev
+planton apply -f app.yaml  # Unified
+planton pulumi refresh --manifest app.yaml --stack org/proj/dev
+planton destroy -f app.yaml  # Unified
 ```
 
 **After**: Consistent unified commands
 ```bash
 # Works for any provisioner
-openmcf init -f app.yaml
-openmcf plan -f app.yaml
-openmcf apply -f app.yaml
-openmcf refresh -f app.yaml
-openmcf destroy -f app.yaml
+planton init -f app.yaml
+planton plan -f app.yaml
+planton apply -f app.yaml
+planton refresh -f app.yaml
+planton destroy -f app.yaml
 ```
 
 ### CI/CD Pipelines
@@ -505,19 +505,19 @@ openmcf destroy -f app.yaml
 
 ```bash
 # Verify all commands registered
-$ openmcf --help | grep -E "(init|plan|refresh)"
+$ planton --help | grep -E "(init|plan|refresh)"
   init              initialize backend/stack using the provisioner...
   plan              preview infrastructure changes using the provisioner...
   refresh           sync state with cloud reality using the provisioner...
 
 # Verify aliases
-$ openmcf preview --help | head -1
+$ planton preview --help | head -1
 Preview infrastructure changes by automatically routing...
 
 # Verify plan command
-$ openmcf plan --help
+$ planton plan --help
 Usage:
-  openmcf plan [flags]
+  planton plan [flags]
 
 Aliases:
   plan, preview
@@ -564,7 +564,7 @@ Commands delegate to existing provisioner implementations:
 1. **Terraform Support**: Currently shows "not yet implemented" - add full Terraform support
 2. **Auto-detection Fallback**: Detect provisioner from resource Kind when label is missing
 3. **Watch Mode**: Add `--watch` flag for continuous reconciliation
-4. **Unified Diff Command**: Add standalone `openmcf diff` command
+4. **Unified Diff Command**: Add standalone `planton diff` command
 5. **State Management**: Add unified commands for state operations (export, import, etc.)
 
 ### Potential Additions
@@ -586,14 +586,14 @@ Commands delegate to existing provisioner implementations:
    ```yaml
    metadata:
      labels:
-       openmcf.org/provisioner: pulumi  # or tofu
+       planton.dev/provisioner: pulumi  # or tofu
    ```
 
 2. **Update CI/CD Pipelines** gradually:
    ```yaml
    # Update one stage at a time
-   - openmcf plan -f app.yaml              # New
-   - openmcf pulumi up --manifest app.yaml # Old (still works)
+   - planton plan -f app.yaml              # New
+   - planton pulumi up --manifest app.yaml # Old (still works)
    ```
 
 3. **Update Documentation** and runbooks to reference unified commands

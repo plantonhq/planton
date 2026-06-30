@@ -74,10 +74,10 @@ orchestrator resolves `value_from` before the module runs), and `locals.tf` is r
 
 ## Implementation Details
 
-**`apis/org/openmcf/provider/aws/awsecsservice/v1/iac/tf`**
+**`apis/dev/planton/provider/aws/awsecsservice/v1/iac/tf`**
 
 - `main.tf`: `lifecycle { ignore_changes = [desired_count] }` (was the conditional).
-- `variables.tf`: regenerated via `OPENMCF_REGEN_VARIABLES=1`. Foreign keys are now primitives —
+- `variables.tf`: regenerated via `PLANTON_REGEN_VARIABLES=1`. Foreign keys are now primitives —
   `cluster_arn = string`, `network.subnets = list(string)`, `iam.task_execution_role_arn`,
   `alb.arn`, etc. — and `autoscaling` / `health_check_grace_period_seconds` / `alb.health_check`
   appear with `optional()` defaults.

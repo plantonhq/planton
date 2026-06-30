@@ -6,22 +6,22 @@
 
 ## Summary
 
-Added the OciContainerEngineCluster deployment component (R08, enum 3311) to the OCI provider in OpenMCF. This is the first Phase 2 container resource and wraps the OKE managed Kubernetes control plane (`oci_containerengine_cluster`). The spec covers cluster type selection (basic/enhanced), CNI configuration (VCN-native or flannel), API server endpoint networking, Kubernetes network CIDRs, service load balancer subnet placement, OIDC authentication, image verification policies, and KMS secret encryption. Both Pulumi (Go) and Terraform (HCL) modules are implemented with full feature parity.
+Added the OciContainerEngineCluster deployment component (R08, enum 3311) to the OCI provider in Planton. This is the first Phase 2 container resource and wraps the OKE managed Kubernetes control plane (`oci_containerengine_cluster`). The spec covers cluster type selection (basic/enhanced), CNI configuration (VCN-native or flannel), API server endpoint networking, Kubernetes network CIDRs, service load balancer subnet placement, OIDC authentication, image verification policies, and KMS secret encryption. Both Pulumi (Go) and Terraform (HCL) modules are implemented with full feature parity.
 
 ## Problem Statement / Motivation
 
-OKE is OCI's managed Kubernetes service and the highest-demand OCI service after networking. Without this component, OpenMCF users cannot provision Kubernetes clusters on OCI, blocking the OKE Environment infra chart and the entire container workload story.
+OKE is OCI's managed Kubernetes service and the highest-demand OCI service after networking. Without this component, Planton users cannot provision Kubernetes clusters on OCI, blocking the OKE Environment infra chart and the entire container workload story.
 
 ### Pain Points
 
-- No way to provision OKE clusters through OpenMCF
+- No way to provision OKE clusters through Planton
 - The OKE Terraform resource has deeply nested options blocks (endpoint config, OIDC auth, service LB config, image policy) requiring significant boilerplate
 - CNI selection is wrapped in a list structure in the provider despite being a single-value choice
 - Deprecated Kubernetes features (Dashboard add-on, Tiller, PSP) are still present in the provider API, creating confusion for new users
 
 ## Solution / What's New
 
-Deployment component wrapping `oci_containerengine_cluster` with the standard OpenMCF KRM pattern. The spec design intentionally omits deprecated Kubernetes features (add_ons, admission_controller_options) and flattens the CNI type from a list to a single enum field for cleaner UX.
+Deployment component wrapping `oci_containerengine_cluster` with the standard Planton KRM pattern. The spec design intentionally omits deprecated Kubernetes features (add_ons, admission_controller_options) and flattens the CNI type from a list to a single enum field for cleaner UX.
 
 ### Spec Fields (10 top-level)
 
@@ -68,7 +68,7 @@ Deployment component wrapping `oci_containerengine_cluster` with the standard Op
 
 ### Files Created
 
-**Proto API** (`apis/org/openmcf/provider/oci/ocicontainerenginecluster/v1/`):
+**Proto API** (`apis/dev/planton/provider/oci/ocicontainerenginecluster/v1/`):
 - `spec.proto` -- 10 top-level fields, 7 embedded messages, 3 enums, buf-validate rules
 - `api.proto` -- KRM wiring with api_version/kind const validation
 - `stack_input.proto` -- IaC module input (target + provider config)

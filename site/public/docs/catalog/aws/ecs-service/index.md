@@ -12,7 +12,7 @@ Deploys a Fargate-based ECS service with a task definition, optional ALB integra
 
 ## What Gets Created
 
-When you deploy an AwsEcsService resource, OpenMCF provisions:
+When you deploy an AwsEcsService resource, Planton provisions:
 
 - **CloudWatch Log Group** — a `cloudwatch.LogGroup` named `/ecs/<serviceName>` with 30-day retention (created when logging is enabled, which is the default)
 - **ECS Task Definition** — an `ecs.TaskDefinition` configured for Fargate with `awsvpc` networking, the specified CPU/memory, container image, environment variables, secrets, S3 environment files, and optional IAM roles
@@ -25,7 +25,7 @@ When you deploy an AwsEcsService resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **An existing ECS cluster** (deploy with [AwsEcsCluster](/docs/catalog/aws/ecs-cluster) or provide an ARN)
 - **At least one VPC subnet** for Fargate task placement
 - **A security group** allowing traffic to the container port
@@ -37,15 +37,15 @@ When you deploy an AwsEcsService resource, OpenMCF provisions:
 Create a file `ecs-service.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEcsService
 metadata:
   name: my-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsEcsService.my-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsEcsService.my-api
 spec:
   clusterArn: arn:aws:ecs:us-east-1:123456789012:cluster/my-cluster
   container:
@@ -64,7 +64,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f ecs-service.yaml
+planton apply -f ecs-service.yaml
 ```
 
 This creates a single-replica Fargate service running nginx with CloudWatch logging enabled by default.
@@ -125,15 +125,15 @@ This creates a single-replica Fargate service running nginx with CloudWatch logg
 A background processing service with no exposed port and no ALB:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEcsService
 metadata:
   name: queue-worker
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsEcsService.queue-worker
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsEcsService.queue-worker
 spec:
   clusterArn: arn:aws:ecs:us-east-1:123456789012:cluster/my-cluster
   container:
@@ -163,15 +163,15 @@ spec:
 An API service fronted by an ALB using path-based routing:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEcsService
 metadata:
   name: api-service
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsEcsService.api-service
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsEcsService.api-service
 spec:
   clusterArn: arn:aws:ecs:us-east-1:123456789012:cluster/prod-cluster
   container:
@@ -212,15 +212,15 @@ spec:
 A web application routed by hostname through an ALB:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEcsService
 metadata:
   name: web-app
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsEcsService.web-app
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsEcsService.web-app
 spec:
   clusterArn: arn:aws:ecs:us-east-1:123456789012:cluster/prod-cluster
   container:
@@ -250,15 +250,15 @@ spec:
 A service that scales between 2 and 10 replicas based on CPU utilization:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEcsService
 metadata:
   name: scalable-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsEcsService.scalable-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsEcsService.scalable-api
 spec:
   clusterArn: arn:aws:ecs:us-east-1:123456789012:cluster/prod-cluster
   container:
@@ -296,18 +296,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding ARNs and IDs:
+Reference other Planton-managed resources instead of hardcoding ARNs and IDs:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEcsService
 metadata:
   name: ref-service
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsEcsService.ref-service
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsEcsService.ref-service
 spec:
   clusterArn:
     valueFrom:

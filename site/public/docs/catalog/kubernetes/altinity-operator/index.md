@@ -12,7 +12,7 @@ Deploys the Altinity ClickHouse Operator on Kubernetes using the official `altin
 
 ## What Gets Created
 
-When you deploy a KubernetesAltinityOperator resource, OpenMCF provisions:
+When you deploy a KubernetesAltinityOperator resource, Planton provisions:
 
 - **Kubernetes Namespace** — created only when `createNamespace` is `true`
 - **Helm Release (Altinity ClickHouse Operator)** — deploys the `altinity-clickhouse-operator` chart (v0.25.4) from `https://docs.altinity.com/clickhouse-operator/`, with atomic rollback enabled, cleanup-on-fail, wait-for-jobs, and a 5-minute timeout; installs ClickHouse CRDs automatically (`createCRD: true`)
@@ -21,7 +21,7 @@ When you deploy a KubernetesAltinityOperator resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
 - **Helm 3** support in the target cluster (provided by the Pulumi Kubernetes provider)
 
@@ -30,15 +30,15 @@ When you deploy a KubernetesAltinityOperator resource, OpenMCF provisions:
 Create a file `altinity-operator.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesAltinityOperator
 metadata:
   name: my-altinity-operator
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesAltinityOperator.my-altinity-operator
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesAltinityOperator.my-altinity-operator
 spec:
   namespace:
     value: altinity-operator
@@ -49,7 +49,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f altinity-operator.yaml
+planton apply -f altinity-operator.yaml
 ```
 
 This creates the Altinity ClickHouse Operator in the `altinity-operator` namespace with default resources (1000m CPU / 1Gi memory limit, 100m CPU / 256Mi memory request). The operator watches all namespaces for ClickHouseInstallation custom resources.
@@ -82,15 +82,15 @@ This creates the Altinity ClickHouse Operator in the `altinity-operator` namespa
 A minimal operator deployment for development or testing:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesAltinityOperator
 metadata:
   name: dev-altinity
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesAltinityOperator.dev-altinity
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesAltinityOperator.dev-altinity
 spec:
   namespace:
     value: altinity-dev
@@ -110,15 +110,15 @@ spec:
 An operator deployment sized for production workloads managing multiple ClickHouse clusters:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesAltinityOperator
 metadata:
   name: prod-altinity
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesAltinityOperator.prod-altinity
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesAltinityOperator.prod-altinity
 spec:
   namespace:
     value: altinity-system
@@ -135,18 +135,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed namespace instead of hardcoding the name:
+Reference an Planton-managed namespace instead of hardcoding the name:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesAltinityOperator
 metadata:
   name: platform-altinity
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesAltinityOperator.platform-altinity
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesAltinityOperator.platform-altinity
 spec:
   namespace:
     valueFrom:

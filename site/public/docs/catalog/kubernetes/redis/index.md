@@ -12,7 +12,7 @@ Deploys a Redis instance on Kubernetes using the Bitnami Helm chart in standalon
 
 ## What Gets Created
 
-When you deploy a KubernetesRedis resource, OpenMCF provisions:
+When you deploy a KubernetesRedis resource, Planton provisions:
 
 - **Namespace** — created only when `createNamespace` is `true`
 - **Random Password** — a 12-character password with mixed case, numbers, and special characters, generated automatically
@@ -22,7 +22,7 @@ When you deploy a KubernetesRedis resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
 - **A StorageClass** available in the cluster if enabling persistence (most managed Kubernetes clusters provide a default)
 - **external-dns** running in the cluster if enabling ingress with a hostname
@@ -32,15 +32,15 @@ When you deploy a KubernetesRedis resource, OpenMCF provisions:
 Create a file `redis.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesRedis
 metadata:
   name: my-redis
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesRedis.my-redis
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesRedis.my-redis
 spec:
   namespace: cache
   createNamespace: true
@@ -49,7 +49,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f redis.yaml
+planton apply -f redis.yaml
 ```
 
 This creates a single-replica Redis instance with persistence enabled, a 1Gi PersistentVolumeClaim, default resource limits (1000m CPU, 1Gi memory), and a randomly generated password stored in a Kubernetes Secret.
@@ -86,15 +86,15 @@ This creates a single-replica Redis instance with persistence enabled, a 1Gi Per
 A lightweight Redis instance for development with persistence disabled and reduced resources:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesRedis
 metadata:
   name: dev-redis
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesRedis.dev-redis
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesRedis.dev-redis
 spec:
   namespace: dev
   createNamespace: true
@@ -114,15 +114,15 @@ spec:
 A production Redis instance with larger disk allocation and higher resource limits:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesRedis
 metadata:
   name: prod-redis
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesRedis.prod-redis
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesRedis.prod-redis
 spec:
   namespace: production
   container:
@@ -143,15 +143,15 @@ spec:
 Redis exposed outside the cluster via a LoadBalancer with automatic DNS management:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesRedis
 metadata:
   name: shared-redis
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesRedis.shared-redis
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesRedis.shared-redis
 spec:
   namespace: shared-services
   container:
@@ -172,18 +172,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed namespace instead of hardcoding the name:
+Reference an Planton-managed namespace instead of hardcoding the name:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesRedis
 metadata:
   name: cache
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesRedis.cache
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesRedis.cache
 spec:
   namespace:
     valueFrom:

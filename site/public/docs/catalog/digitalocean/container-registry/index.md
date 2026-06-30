@@ -12,7 +12,7 @@ Deploys a private, OCI-compliant container registry on DigitalOcean for storing 
 
 ## What Gets Created
 
-When you deploy a DigitalOceanContainerRegistry resource, OpenMCF provisions:
+When you deploy a DigitalOceanContainerRegistry resource, Planton provisions:
 
 - **Container Registry** — a `digitalocean_container_registry` resource with the specified name, subscription tier, and region
 - **Docker Credentials** (Terraform only) — a `digitalocean_container_registry_docker_credentials` resource that generates write-enabled credentials for pushing and pulling images
@@ -21,7 +21,7 @@ DigitalOcean restricts each account to a single container registry. Deploying a 
 
 ## Prerequisites
 
-- **DigitalOcean credentials** configured via environment variables or OpenMCF provider config
+- **DigitalOcean credentials** configured via environment variables or Planton provider config
 - **No existing container registry** on the target DigitalOcean account (one registry per account)
 
 ## Quick Start
@@ -29,15 +29,15 @@ DigitalOcean restricts each account to a single container registry. Deploying a 
 Create a file `registry.yaml`:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanContainerRegistry
 metadata:
   name: my-registry
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.DigitalOceanContainerRegistry.my-registry
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.DigitalOceanContainerRegistry.my-registry
 spec:
   name: my-registry
   subscriptionTier: starter
@@ -47,7 +47,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f registry.yaml
+planton apply -f registry.yaml
 ```
 
 This creates a container registry named `my-registry` on the free starter tier in the NYC3 region.
@@ -75,15 +75,15 @@ This creates a container registry named `my-registry` on the free starter tier i
 A free-tier registry for personal or development use:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanContainerRegistry
 metadata:
   name: dev-registry
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.DigitalOceanContainerRegistry.dev-registry
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.DigitalOceanContainerRegistry.dev-registry
 spec:
   name: dev-registry
   subscriptionTier: starter
@@ -95,15 +95,15 @@ spec:
 A paid-tier registry in Frankfurt for teams that need more storage than the starter tier provides:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanContainerRegistry
 metadata:
   name: team-registry
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.DigitalOceanContainerRegistry.team-registry
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.DigitalOceanContainerRegistry.team-registry
 spec:
   name: team-registry
   subscriptionTier: basic
@@ -115,15 +115,15 @@ spec:
 A production-grade registry with the highest storage allocation and garbage collection enabled:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanContainerRegistry
 metadata:
   name: prod-registry
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.DigitalOceanContainerRegistry.prod-registry
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.DigitalOceanContainerRegistry.prod-registry
 spec:
   name: prod-registry
   subscriptionTier: professional

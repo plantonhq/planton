@@ -1,5 +1,0 @@
-apiVersion: digital-ocean.openmcf.org/v1
-kind: DigitalOceanVolume
-metadata:
-  name: first-volume
-spec:

@@ -37,6 +37,6 @@ A bare role with only a name and description. Use this when you want the role to
 
 | Placeholder | Description |
 |---|---|
-| `metadata.org` | Your OpenMCF organization |
+| `metadata.org` | Your Planton organization |
 | `spec.name` | The display name of the role |
 | `spec.description` | What the role is for |

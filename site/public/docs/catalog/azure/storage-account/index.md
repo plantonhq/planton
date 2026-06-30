@@ -12,7 +12,7 @@ Deploys an Azure Storage Account with configurable account kind, performance tie
 
 ## What Gets Created
 
-When you deploy an AzureStorageAccount resource, OpenMCF provisions:
+When you deploy an AzureStorageAccount resource, Planton provisions:
 
 - **Storage Account** — an `storage.Account` resource in the specified region and resource group, configured with the chosen account kind, performance tier, replication type, access tier, HTTPS enforcement, minimum TLS version, and public nested-item access disabled
 - **Network Rules** — default-deny network ACLs with optional IP allowlists, VNet subnet rules, and Azure trusted services bypass
@@ -22,7 +22,7 @@ When you deploy an AzureStorageAccount resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Resource Group** where the storage account will be created (can reference an AzureResourceGroup resource)
 - **A globally unique name** — Azure Storage Account names must be 3-24 lowercase alphanumeric characters and must be globally unique; the component derives the name from `metadata.name` by stripping dots, underscores, and hyphens, lowercasing, and truncating to 24 characters
 - **Network planning** — know which IP ranges and/or VNet subnets need storage access if restricting with network ACLs
@@ -32,15 +32,15 @@ When you deploy an AzureStorageAccount resource, OpenMCF provisions:
 Create a file `storage-account.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureStorageAccount
 metadata:
   name: my-storage
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureStorageAccount.my-storage
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureStorageAccount.my-storage
 spec:
   region: eastus
   resourceGroup: my-rg
@@ -49,7 +49,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f storage-account.yaml
+planton apply -f storage-account.yaml
 ```
 
 This creates a StorageV2 storage account with Standard tier, LRS replication, Hot access tier, HTTPS-only traffic, TLS 1.2 minimum, default-deny network ACLs that bypass Azure trusted services, and 7-day soft delete retention for blobs and containers.
@@ -91,15 +91,15 @@ This creates a StorageV2 storage account with Standard tier, LRS replication, Ho
 A storage account for development with network ACLs set to allow all traffic and reduced soft delete retention:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureStorageAccount
 metadata:
   name: dev-storage
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureStorageAccount.dev-storage
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureStorageAccount.dev-storage
 spec:
   region: eastus
   resourceGroup: dev-rg
@@ -118,15 +118,15 @@ spec:
 A production storage account with geo-redundant replication, blob versioning, restricted network access from office IPs, and pre-created containers for application data:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureStorageAccount
 metadata:
   name: prod-storage
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureStorageAccount.prod-storage
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureStorageAccount.prod-storage
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -158,15 +158,15 @@ spec:
 A Premium-tier block blob storage account with zone-redundant replication for latency-sensitive workloads:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureStorageAccount
 metadata:
   name: perf-blobs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureStorageAccount.perf-blobs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureStorageAccount.perf-blobs
 spec:
   region: westeurope
   resourceGroup: perf-rg
@@ -192,15 +192,15 @@ spec:
 A storage account with Cool access tier for infrequently accessed data and extended soft delete retention:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureStorageAccount
 metadata:
   name: archive-storage
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureStorageAccount.archive-storage
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureStorageAccount.archive-storage
 spec:
   region: eastus
   resourceGroup: archive-rg
@@ -220,18 +220,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed resource group instead of hardcoding the name:
+Reference an Planton-managed resource group instead of hardcoding the name:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureStorageAccount
 metadata:
   name: ref-storage
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureStorageAccount.ref-storage
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureStorageAccount.ref-storage
 spec:
   region: eastus
   resourceGroup:

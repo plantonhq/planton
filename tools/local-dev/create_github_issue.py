@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Deterministic GitHub issue creation utility for OpenMCF.
+Deterministic GitHub issue creation utility for Planton.
 
 This script creates a GitHub issue using the GitHub CLI (gh) with the provided
 title, body, and optional metadata (labels, assignees, milestone, project).

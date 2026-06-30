@@ -7,12 +7,12 @@ metadata:
   name: Order Service
   labels:
     # Pulumi backend configuration using stack FQDN (preferred)
-    pulumi.openmcf.org/stack.fqdn: "myorg/order-service/production"
+    pulumi.planton.dev/stack.fqdn: "myorg/order-service/production"
     
     # Alternative: Individual components (used when stack.fqdn is not present)
-    # pulumi.openmcf.org/organization: "myorg"
-    # pulumi.openmcf.org/project: "order-service"
-    # pulumi.openmcf.org/stack.name: "production"
+    # pulumi.planton.dev/organization: "myorg"
+    # pulumi.planton.dev/project: "order-service"
+    # pulumi.planton.dev/stack.name: "production"
 spec:
   environmentInfo:
     envId: prod-env

@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocidnszone.v1;
+
+// OciDnsZoneStackOutputs contains the outputs produced after deploying
+// an OciDnsZone.
+// These values are used by downstream components for composability via
+// StringValueOrRef.
+message OciDnsZoneStackOutputs {
+  // OCID of the DNS zone.
+  string zone_id = 1;
+
+  // Comma-separated list of OCI-assigned authoritative nameserver
+  // hostnames. Users configure these as NS records at their domain
+  // registrar.
+  string nameservers = 2;
+}

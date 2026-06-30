@@ -1,6 +1,6 @@
 ---
 title: "Preset: Basic Consumer"
-description: "Register an enhanced fan-out consumer with an existing Kinesis stream using a direct ARN. Suitable for quick setup when the stream ARN is known and not managed by OpenMCF."
+description: "Register an enhanced fan-out consumer with an existing Kinesis stream using a direct ARN. Suitable for quick setup when the stream ARN is known and not managed by Planton."
 type: "preset"
 rank: "01"
 presetSlug: "01-basic-consumer"
@@ -15,7 +15,7 @@ order: 1
 
 ## Use Case
 
-Register an enhanced fan-out consumer with an existing Kinesis stream using a direct ARN. Suitable for quick setup when the stream ARN is known and not managed by OpenMCF.
+Register an enhanced fan-out consumer with an existing Kinesis stream using a direct ARN. Suitable for quick setup when the stream ARN is known and not managed by Planton.
 
 ## What You Get
 

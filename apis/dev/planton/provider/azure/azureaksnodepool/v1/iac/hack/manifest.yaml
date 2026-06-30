@@ -1,0 +1,38 @@
+apiVersion: azure.planton.dev/v1
+kind: AzureAksNodePool
+metadata:
+  name: production-app-pool
+  labels:
+    environment: production
+    team: platform
+spec:
+  # Reference to parent AKS cluster
+  clusterName:
+    value: production-aks-cluster
+  
+  # VM size for nodes
+  vmSize: Standard_D8s_v3  # 8 vCPU, 32 GB RAM
+  
+  # Initial node count
+  initialNodeCount: 2
+  
+  # Enable autoscaling
+  autoscaling:
+    minNodes: 2
+    maxNodes: 10
+  
+  # Spread across availability zones for HA
+  availabilityZones:
+    - "1"
+    - "2"
+    - "3"
+  
+  # OS type (default is Linux)
+  osType: LINUX
+  
+  # Node pool mode (default is USER)
+  mode: USER
+  
+  # Regular (non-Spot) instances for production
+  spotEnabled: false
+

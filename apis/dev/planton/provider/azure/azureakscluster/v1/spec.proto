@@ -1,0 +1,221 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azureakscluster.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// AzureAksClusterSpec defines the specification required to deploy an Azure Kubernetes Service (AKS) cluster.
+// This spec covers the 80/20 configurations needed for production-ready AKS clusters based on Microsoft's baseline architecture.
+message AzureAksClusterSpec {
+  // Azure region in which to create the AKS cluster (e.g., "eastus").
+  string region = 1 [(buf.validate.field).required = true];
+
+  // The Azure Resource Group where the AKS Cluster will be created.
+  // Can be a literal string or a reference to an AzureResourceGroup output.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef resource_group = 14 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AzureResourceGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.resource_group_name"
+  ];
+
+  // The Azure resource ID of the Virtual Network subnet to use for cluster nodes.
+  // This should reference the subnet created by an AzureVirtualNetwork resource.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef vnet_subnet_id = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AzureVpc,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.nodes_subnet_id"
+  ];
+
+  // Kubernetes version for the cluster control plane.
+  // It is recommended to explicitly set a version (e.g., "1.30") for production clusters to prevent unintended upgrades.
+  string kubernetes_version = 3 [(dev.planton.shared.options.recommended_default) = "1.30"];
+
+  // Control plane SKU tier. STANDARD provides financially-backed 99.95% uptime SLA (with AZs) and is required for production.
+  // FREE tier has no SLA and is only suitable for dev/test environments.
+  // Defaults to STANDARD for production-ready deployments.
+  AzureAksClusterControlPlaneSku control_plane_sku = 4;
+
+  // Networking plugin for the AKS cluster.
+  // AZURE_CNI provides advanced networking with full VNet integration. KUBENET is deprecated and will be retired in March 2028.
+  // Defaults to AZURE_CNI.
+  AzureAksClusterNetworkPlugin network_plugin = 5;
+
+  // Network plugin mode for Azure CNI. Only applicable when network_plugin is AZURE_CNI.
+  // OVERLAY mode (recommended) uses a private CIDR for pods (10.244.0.0/16) and solves VNet IP exhaustion.
+  // DYNAMIC mode assigns pods real VNet IPs dynamically from a dedicated pod subnet.
+  // Defaults to OVERLAY.
+  AzureAksClusterNetworkPluginMode network_plugin_mode = 6;
+
+  // Deploy the cluster as a private cluster (no public API server endpoint).
+  // When true, the API server endpoint will be private and accessible only from within the VNet.
+  // When false (default), a public endpoint is created (use authorized_ip_ranges to restrict access).
+  bool private_cluster_enabled = 7;
+
+  // Authorized IP address ranges (CIDR blocks) that are allowed to access the API server.
+  // This is applicable only if the cluster has a public endpoint.
+  // Leave empty to allow all (0.0.0.0/0) or for private clusters.
+  repeated string authorized_ip_ranges = 8 [(buf.validate.field).repeated.items.string.pattern = "^(?:25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])(?:\\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])){3}(?:\\/(?:3[0-2]|[12]?[0-9]))?$"];
+
+  // Disable Azure Active Directory integration for Kubernetes RBAC.
+  // By default, AKS clusters have Azure AD integration enabled (this field is false).
+  // Set to true to disable Azure AD RBAC integration.
+  bool disable_azure_ad_rbac = 9;
+
+  // System node pool configuration. Required for all clusters.
+  // System node pools run critical system pods (CoreDNS, metrics-server, etc.) and are tainted to prevent application workloads.
+  // For production, deploy across 3 availability zones with autoscaling enabled (min: 3, max: 5).
+  AzureAksClusterSystemNodePool system_node_pool = 10 [(buf.validate.field).required = true];
+
+  // User node pools for application workloads.
+  // Optional: if not specified, applications can run on system node pool (not recommended for production).
+  // For production, create dedicated user node pools with appropriate VM sizes and autoscaling configuration.
+  repeated AzureAksClusterUserNodePool user_node_pools = 11;
+
+  // Add-ons configuration for the AKS cluster.
+  // Enables Azure-managed add-ons like Container Insights, Key Vault CSI driver, Azure Policy, and Workload Identity.
+  AzureAksClusterAddonsConfig addons = 12;
+
+  // Advanced networking configuration.
+  // Optional: most users should rely on defaults. Use this only if you need custom CIDRs or DNS servers.
+  AzureAksClusterAdvancedNetworking advanced_networking = 13;
+}
+
+// Control plane SKU tier for the AKS cluster.
+enum AzureAksClusterControlPlaneSku {
+  // Standard tier with financially-backed 99.95% uptime SLA (with Availability Zones) or 99.9% SLA (single AZ).
+  // Recommended default for production. Costs approximately $73/month per cluster.
+  STANDARD = 0;
+
+  // Free tier with no uptime SLA. Suitable only for dev/test environments.
+  // Not recommended for production workloads.
+  FREE = 1;
+}
+
+// Network plugin options for the AKS cluster.
+enum AzureAksClusterNetworkPlugin {
+  // Azure CNI (Container Network Interface) provides advanced networking with full VNet integration.
+  // Recommended default. Supports both Overlay and Dynamic IP allocation modes.
+  AZURE_CNI = 0;
+
+  // Kubenet provides basic networking with NAT.
+  // DEPRECATED: Will be retired on March 31, 2028. Do not use for new clusters.
+  KUBENET = 1;
+}
+
+// Network plugin mode for Azure CNI.
+enum AzureAksClusterNetworkPluginMode {
+  // Overlay mode (recommended): Pods get IPs from a private, non-VNet CIDR (e.g., 10.244.0.0/16).
+  // Solves VNet IP exhaustion and allows massive cluster scaling. Supports all Azure Network Policy options.
+  OVERLAY = 0;
+
+  // Dynamic IP allocation: Pods get real VNet IPs dynamically from a dedicated pod subnet (no pre-allocation).
+  // Use this when pods need direct VNet addressability and VNet IP space is plentiful.
+  DYNAMIC = 1;
+}
+
+// Autoscaling configuration for node pools.
+message AzureAksClusterAutoscalingConfig {
+  // Minimum number of nodes. For system pools, minimum should be 3 for high availability.
+  int32 min_count = 1 [(buf.validate.field).int32.gte = 1];
+
+  // Maximum number of nodes. Autoscaler will not scale beyond this limit.
+  int32 max_count = 2 [(buf.validate.field).int32.gte = 1];
+}
+
+// System node pool configuration.
+// System node pools run critical AKS components and should be isolated from application workloads.
+message AzureAksClusterSystemNodePool {
+  // Azure VM size for system nodes (e.g., "Standard_D4s_v5").
+  // Minimum recommended: Standard_D2s_v3 for dev/test, Standard_D4s_v5 for production.
+  string vm_size = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.recommended_default) = "Standard_D4s_v5"
+  ];
+
+  // Autoscaling configuration.
+  // Production minimum: 3 nodes for high availability.
+  AzureAksClusterAutoscalingConfig autoscaling = 2 [(buf.validate.field).required = true];
+
+  // Availability zones for the node pool (e.g., ["1", "2", "3"]).
+  // For production, deploy across 3 zones for 99.95% SLA.
+  // For dev/test, single zone (["1"]) is acceptable.
+  repeated string availability_zones = 3 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// User node pool configuration for application workloads.
+message AzureAksClusterUserNodePool {
+  // Name of the user node pool (e.g., "general", "compute", "memory").
+  // Must be lowercase alphanumeric, max 12 characters.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {pattern: "^[a-z0-9]{1,12}$"}
+  ];
+
+  // Azure VM size for this node pool (e.g., "Standard_D8s_v5").
+  // Choose based on workload requirements (CPU vs memory intensive).
+  string vm_size = 2 [(buf.validate.field).required = true];
+
+  // Autoscaling configuration for the user node pool.
+  AzureAksClusterAutoscalingConfig autoscaling = 3 [(buf.validate.field).required = true];
+
+  // Availability zones for the node pool (e.g., ["1", "2", "3"]).
+  // For production workloads, deploy across multiple zones.
+  repeated string availability_zones = 4 [(buf.validate.field).repeated.min_items = 1];
+
+  // Enable Azure Spot instances for this node pool.
+  // Spot instances provide 30-90% cost savings but can be evicted when Azure needs capacity.
+  // Only suitable for fault-tolerant, stateless workloads.
+  bool spot_enabled = 5;
+}
+
+// Add-ons configuration for the AKS cluster.
+message AzureAksClusterAddonsConfig {
+  // Enable Azure Monitor Container Insights.
+  // Streams container logs, metrics, and Kubernetes events to Log Analytics.
+  // Requires log_analytics_workspace_id to be set in spec.
+  // Defaults to true if log_analytics_workspace_id is provided.
+  bool enable_container_insights = 1;
+
+  // Enable Azure Key Vault CSI driver.
+  // Allows pods to mount secrets from Azure Key Vault as volumes.
+  // Recommended for production. Defaults to true.
+  bool enable_key_vault_csi_driver = 2;
+
+  // Enable Azure Policy add-on.
+  // Enforces policy-based governance on the cluster (pod security standards, resource quotas, etc.).
+  // Recommended for production. Defaults to true.
+  bool enable_azure_policy = 3;
+
+  // Enable Azure AD Workload Identity.
+  // Allows pods to authenticate to Azure services using Kubernetes service accounts (secret-less authentication).
+  // Recommended for production. Defaults to true.
+  bool enable_workload_identity = 4;
+
+  // The Azure resource ID of a Log Analytics Workspace for Container Insights.
+  // Required if enable_container_insights is true.
+  string log_analytics_workspace_id = 5;
+}
+
+// Advanced networking configuration.
+// Optional: most users should rely on defaults.
+message AzureAksClusterAdvancedNetworking {
+  // Pod CIDR for Overlay mode (e.g., "10.244.0.0/16").
+  // Only applicable when network_plugin_mode is OVERLAY.
+  // Leave empty to use default (10.244.0.0/16).
+  string pod_cidr = 1 [(buf.validate.field).string.pattern = "^(?:25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])(?:\\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])){3}(?:\\/(?:3[0-2]|[12]?[0-9]))?$"];
+
+  // Service CIDR for Kubernetes services (e.g., "10.0.0.0/16").
+  // Must not overlap with VNet, pod CIDR, or other networks.
+  // Leave empty to use default (10.0.0.0/16).
+  string service_cidr = 2 [(buf.validate.field).string.pattern = "^(?:25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])(?:\\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])){3}(?:\\/(?:3[0-2]|[12]?[0-9]))?$"];
+
+  // DNS service IP address (must be within service_cidr range).
+  // Leave empty to use default (10.0.0.10).
+  string dns_service_ip = 3 [(buf.validate.field).string.pattern = "^(?:25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])(?:\\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])){3}$"];
+
+  // Custom DNS servers for the VNet.
+  // Leave empty to use Azure-provided DNS.
+  repeated string custom_dns_servers = 4 [(buf.validate.field).repeated.items.string.pattern = "^(?:25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])(?:\\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])){3}$"];
+}

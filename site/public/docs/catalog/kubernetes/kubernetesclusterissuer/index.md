@@ -23,7 +23,7 @@ Creates a cert-manager ClusterIssuer for automated ACME TLS certificate issuance
 ## Quick Start
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesClusterIssuer
 metadata:
   name: my-cluster-issuer

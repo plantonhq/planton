@@ -12,7 +12,7 @@ Forged a complete `DigitalOceanDnsRecord` deployment component enabling declarat
 
 Managing DNS records in DigitalOcean required either manual configuration through the console or writing custom Infrastructure-as-Code from scratch. There was no unified, declarative way to manage DNS records that:
 
-- Integrates with the OpenMCF ecosystem
+- Integrates with the Planton ecosystem
 - Provides strong validation and type safety
 - Enables referencing outputs from other deployed resources
 - Supports both Pulumi and Terraform as IaC backends
@@ -63,17 +63,17 @@ Both `domain` and `value` fields now accept either:
 ```protobuf
 message DigitalOceanDnsRecordSpec {
   // Domain supports direct value or reference to DigitalOceanDnsZone
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef domain = 1 [
+  dev.planton.shared.foreignkey.v1.StringValueOrRef domain = 1 [
     (buf.validate.field).required = true,
-    (org.openmcf.shared.foreignkey.v1.default_kind) = DigitalOceanDnsZone,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_name"
+    (dev.planton.shared.foreignkey.v1.default_kind) = DigitalOceanDnsZone,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_name"
   ];
   
   string name = 2;
   DnsRecordType type = 3;
   
   // Value also supports StringValueOrRef for dynamic composition
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef value = 4;
+  dev.planton.shared.foreignkey.v1.StringValueOrRef value = 4;
   
   optional int32 ttl_seconds = 5;  // Default: 1800
   int32 priority = 6;              // For MX/SRV
@@ -102,7 +102,7 @@ flowchart TB
 ### File Structure
 
 ```
-apis/org/openmcf/provider/digitalocean/digitaloceandnsrecord/v1/
+apis/dev/planton/provider/digitalocean/digitaloceandnsrecord/v1/
 ├── api.proto              # KRM envelope definition
 ├── spec.proto             # Configuration schema with validations
 ├── spec_test.go           # Validation unit tests
@@ -138,7 +138,7 @@ apis/org/openmcf/provider/digitalocean/digitaloceandnsrecord/v1/
 ### Direct Value
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: www-a-record
@@ -155,7 +155,7 @@ spec:
 ### Reference to DNS Zone
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanDnsRecord
 metadata:
   name: www-a-record

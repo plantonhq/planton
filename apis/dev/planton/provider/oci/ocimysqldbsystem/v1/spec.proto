@@ -1,0 +1,367 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocimysqldbsystem.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// OciMysqlDbSystemSpec defines the specification for an Oracle Cloud
+// Infrastructure MySQL HeatWave Database System -- a fully managed MySQL
+// database service with integrated HeatWave in-memory analytics acceleration.
+//
+// MySQL HeatWave runs on dedicated compute shapes in a chosen availability
+// domain and subnet. High Availability mode provisions three instances across
+// fault domains with automatic failover.
+//
+// This component manages the DB System resource itself. HeatWave cluster
+// and replication channels are separate OCI resources with independent
+// lifecycles and are not bundled here.
+//
+// Excluded from v1:
+//   - source block (BACKUP, PITR, IMPORTURL) -- only fresh creation supported
+//   - shutdown_type, state -- operational lifecycle controls
+//   - access_mode, database_mode -- runtime toggles
+//   - security_attributes -- ZPR artifacts
+//   - backup_policy.copy_policies -- cross-region backup copy
+//   - backup_policy.soft_delete -- newer feature
+//   - maintenance.maintenance_disabled_windows -- advanced scheduling
+message OciMysqlDbSystemSpec {
+  option (buf.validate.message).cel = {
+    id: "encrypt_data_key_required"
+    message: "encrypt_data.key_id is required when key_generation_type is byok"
+    expression: "!has(this.encrypt_data) || this.encrypt_data.key_generation_type != 2 || has(this.encrypt_data.key_id)"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "secure_connections_cert_required"
+    message: "secure_connections.certificate_id is required when certificate_generation_type is byoc"
+    expression: "!has(this.secure_connections) || this.secure_connections.certificate_generation_type != 2 || has(this.secure_connections.certificate_id)"
+  };
+
+  // OCID of the compartment where the MySQL DB System will be created.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OciCompartment,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartment_id"
+  ];
+
+  // Human-readable name shown in the OCI Console.
+  // Falls back to metadata.name if not provided.
+  string display_name = 2;
+
+  // Availability domain for the primary (read/write) endpoint.
+  // Example: "Uocm:PHX-AD-1". Changing this forces recreation.
+  string availability_domain = 3 [(buf.validate.field).string.min_len = 1];
+
+  // Compute shape for the DB System. Determines CPU, memory, and network
+  // bandwidth. Examples: "MySQL.VM.Standard.E4.1.8GB",
+  // "MySQL.VM.Standard.E4.4.64GB", "MySQL.HeatWave.VM.Standard".
+  string shape_name = 4 [(buf.validate.field).string.min_len = 1];
+
+  // OCID of the subnet where the DB System will be placed.
+  // Changing this forces recreation.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef subnet_id = 5 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OciSubnet,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  ];
+
+  // Administrative username for the database. Changing this forces recreation.
+  // When omitted, the provider default applies.
+  string admin_username = 6;
+
+  // Administrative password for the database. Must be 8-32 characters and
+  // contain at least one numeric, one lowercase, one uppercase, and one
+  // special character. Changing this forces recreation.
+  string admin_password = 7 [(dev.planton.shared.options.sensitive) = true];
+
+  // MySQL version identifier (e.g. "8.0.36", "9.1.0").
+  // When omitted, the latest available version is used.
+  // Changing this forces recreation.
+  string mysql_version = 8;
+
+  // OCID of a MySQL Configuration to apply to the DB System.
+  // Configurations define MySQL server variable settings (buffer pool size,
+  // max connections, etc.). When omitted, the default configuration for
+  // the selected shape is used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef configuration_id = 9;
+
+  // When true, enables High Availability. Three instances are provisioned
+  // across different fault domains with automatic failover. Standby
+  // instances are not directly accessible.
+  optional bool is_highly_available = 10;
+
+  // Hostname for the primary endpoint. Combined with the subnet's DNS
+  // domain to form the FQDN for database access.
+  string hostname_label = 11;
+
+  // Specific private IP address for the primary endpoint within the
+  // subnet. When omitted, OCI auto-assigns an available IP.
+  // Changing this forces recreation.
+  string ip_address = 12;
+
+  // Fault domain for the primary (read/write) endpoint.
+  // Example: "FAULT-DOMAIN-1". Changing this forces recreation.
+  string fault_domain = 13;
+
+  // TCP port for the MySQL protocol on the primary endpoint.
+  // Default: 3306. Changing this forces recreation.
+  int32 port = 14;
+
+  // TCP port for the X Protocol (MySQL Shell, connectors) on the
+  // primary endpoint. Default: 33060. Changing this forces recreation.
+  int32 port_x = 15;
+
+  // User-provided description of the DB System.
+  string description = 16;
+
+  // Controls InnoDB crash recovery mechanisms (Redo Logs, Double Write
+  // Buffer, Binary Log syncing). Disabling improves write performance
+  // but risks data loss on unexpected failure. Values: "ENABLED",
+  // "DISABLED".
+  string crash_recovery = 17;
+
+  // Enables monitoring via the OCI Database Management service.
+  // Values: "ENABLED", "DISABLED".
+  string database_management = 18;
+
+  // OCIDs of network security groups for the DB System VNIC.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef nsg_ids = 19 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = OciSecurityGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_security_group_id"
+  ];
+
+  // Data storage configuration. Uses the modern data_storage block
+  // (the legacy top-level data_storage_size_in_gb is deprecated).
+  DataStorage data_storage = 20;
+
+  // Automatic backup configuration.
+  BackupPolicy backup_policy = 21;
+
+  // Maintenance window configuration.
+  Maintenance maintenance = 22;
+
+  // Deletion safety configuration.
+  DeletionPolicy deletion_policy = 23;
+
+  // Data-at-rest encryption configuration.
+  EncryptData encrypt_data = 24;
+
+  // TLS certificate configuration for client connections.
+  SecureConnections secure_connections = 25;
+
+  // Customer contact email addresses for operational notifications
+  // (maintenance windows, critical alerts). Maximum 10 contacts.
+  repeated CustomerContact customer_contacts = 26 [(buf.validate.field).repeated.max_items = 10];
+
+  // Read-only endpoint configuration for read scaling.
+  ReadEndpoint read_endpoint = 27;
+
+  // MySQL Database Console (web-based management UI) configuration.
+  DatabaseConsole database_console = 28;
+
+  // MySQL REST API service configuration.
+  Rest rest = 29;
+
+  // ---------------------------------------------------------------------------
+  // Nested messages
+  // ---------------------------------------------------------------------------
+
+  // DataStorage configures the data volume for the DB System.
+  message DataStorage {
+    // Initial data volume size in gigabytes. Supported values depend on
+    // the shape (typically 50 GB minimum).
+    int32 data_storage_size_in_gb = 1;
+
+    // When true, storage automatically expands when usage nears the limit.
+    optional bool is_auto_expand_storage_enabled = 2;
+
+    // Maximum storage size in gigabytes for auto-expansion.
+    // Only effective when is_auto_expand_storage_enabled is true.
+    // Range: 32768-131072 depending on initial size.
+    int32 max_storage_size_in_gbs = 3;
+  }
+
+  // BackupPolicy configures automatic backups for the DB System.
+  message BackupPolicy {
+    // Whether automatic backups are enabled.
+    optional bool is_enabled = 1;
+
+    // Number of days to retain automatic backups.
+    int32 retention_in_days = 2;
+
+    // Start of the 30-minute daily backup window in RFC3339 time format
+    // (e.g. "03:00"). When omitted, OCI selects the window.
+    string window_start_time = 3;
+
+    // Point-in-time recovery configuration.
+    PitrPolicy pitr_policy = 4;
+  }
+
+  // PitrPolicy configures point-in-time recovery for the DB System.
+  message PitrPolicy {
+    // Whether point-in-time recovery is enabled. Requires automatic
+    // backups to be enabled.
+    optional bool is_enabled = 1;
+  }
+
+  // Maintenance configures the maintenance window for the DB System.
+  message Maintenance {
+    // Start of the maintenance window. Format: "{day-of-week} {time-of-day}"
+    // (e.g. "mon 10:00"). Required when maintenance is configured.
+    string window_start_time = 1 [(buf.validate.field).string.min_len = 1];
+
+    // Maintenance schedule type.
+    MaintenanceScheduleType maintenance_schedule_type = 2;
+
+    // Version preference for automatic upgrades.
+    VersionPreference version_preference = 3;
+
+    // Version track preference controlling which release stream to follow.
+    VersionTrackPreference version_track_preference = 4;
+  }
+
+  // DeletionPolicy controls behavior when the DB System is deleted.
+  message DeletionPolicy {
+    // What to do with automatic backups on deletion.
+    // Values: "DELETE", "RETAIN".
+    string automatic_backup_retention = 1;
+
+    // Whether to create a final backup before deletion.
+    // Values: "REQUIRE_FINAL_BACKUP", "SKIP_FINAL_BACKUP".
+    string final_backup = 2;
+
+    // When true, the DB System cannot be deleted. Must be set to false
+    // before deletion is possible.
+    optional bool is_delete_protected = 3;
+  }
+
+  // EncryptData configures data-at-rest encryption for the DB System.
+  message EncryptData {
+    // Key generation strategy. "system" uses Oracle-managed keys.
+    // "byok" (Bring Your Own Key) requires key_id to be set.
+    KeyGenerationType key_generation_type = 1;
+
+    // OCID of the customer-managed encryption key. Required when
+    // key_generation_type is byok.
+    dev.planton.shared.foreignkey.v1.StringValueOrRef key_id = 2;
+  }
+
+  // SecureConnections configures TLS certificates for client connections.
+  message SecureConnections {
+    // Certificate generation strategy. "system" uses Oracle-managed
+    // certificates. "byoc" (Bring Your Own Certificate) requires
+    // certificate_id to be set.
+    CertificateGenerationType certificate_generation_type = 1;
+
+    // OCID of the customer-managed certificate. Required when
+    // certificate_generation_type is byoc.
+    dev.planton.shared.foreignkey.v1.StringValueOrRef certificate_id = 2;
+  }
+
+  // CustomerContact holds a single customer contact email for notifications.
+  message CustomerContact {
+    // Email address for operational notifications.
+    string email = 1 [(buf.validate.field).string.min_len = 1];
+  }
+
+  // ReadEndpoint configures the read-only endpoint for read scaling.
+  // When enabled, a separate DNS endpoint is created that distributes
+  // read queries across HA replicas.
+  message ReadEndpoint {
+    // Whether the read endpoint is enabled.
+    optional bool is_enabled = 1;
+
+    // IP addresses to exclude from serving read requests.
+    repeated string exclude_ips = 2;
+
+    // Hostname for the read endpoint. Combined with the subnet's DNS
+    // domain to form the read endpoint FQDN.
+    string read_endpoint_hostname_label = 3;
+
+    // Specific private IP address for the read endpoint.
+    // When omitted, OCI auto-assigns an available IP.
+    string read_endpoint_ip_address = 4;
+  }
+
+  // DatabaseConsole configures the web-based MySQL management console.
+  message DatabaseConsole {
+    // Whether the database console is enabled or disabled.
+    DatabaseConsoleStatus status = 1;
+
+    // Port for the database console. Valid values: 443 or 1024-65535.
+    int32 port = 2;
+  }
+
+  // Rest configures the MySQL REST API service (MySQL Router REST API).
+  message Rest {
+    // REST API configuration mode.
+    string configuration = 1;
+
+    // Port for the REST API service. Valid values: 443 or 1024-65535.
+    int32 port = 2;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Enums
+  // ---------------------------------------------------------------------------
+
+  // KeyGenerationType selects the encryption key management strategy.
+  enum KeyGenerationType {
+    key_generation_type_unspecified = 0;
+    // Oracle-managed encryption keys.
+    system = 1;
+    // Customer-managed encryption keys (Bring Your Own Key).
+    byok = 2;
+  }
+
+  // CertificateGenerationType selects the TLS certificate management strategy.
+  enum CertificateGenerationType {
+    certificate_generation_type_unspecified = 0;
+    // Oracle-managed TLS certificates.
+    system_cert = 1;
+    // Customer-managed TLS certificates (Bring Your Own Certificate).
+    byoc = 2;
+  }
+
+  // MaintenanceScheduleType controls when maintenance patches are applied.
+  enum MaintenanceScheduleType {
+    maintenance_schedule_type_unspecified = 0;
+    // Receive patches earlier than the regular schedule.
+    early = 1;
+    // Receive patches on the standard Oracle schedule.
+    regular = 2;
+  }
+
+  // VersionPreference controls which version is selected during upgrades.
+  enum VersionPreference {
+    version_preference_unspecified = 0;
+    // Keep the oldest supported version as long as possible.
+    oldest = 1;
+    // Use the second-newest available version.
+    second_newest = 2;
+    // Always use the newest available version.
+    newest = 3;
+  }
+
+  // VersionTrackPreference controls which MySQL release stream to follow.
+  enum VersionTrackPreference {
+    version_track_preference_unspecified = 0;
+    // Long-Term Support releases only.
+    long_term_support = 1;
+    // Innovation releases (frequent, feature-rich).
+    innovation = 2;
+    // Follow the OCI-recommended track (default behavior).
+    follow = 3;
+  }
+
+  // DatabaseConsoleStatus controls the database console feature.
+  enum DatabaseConsoleStatus {
+    database_console_status_unspecified = 0;
+    // Database console is enabled.
+    enabled = 1;
+    // Database console is disabled.
+    disabled = 2;
+  }
+}

@@ -8,7 +8,7 @@
 
 ## Summary
 
-Systematically renamed the `KubernetesMicroservice` cloud resource to `KubernetesDeployment` across the entire OpenMCF codebase. This refactoring removes an unnecessary abstraction layer and accurately reflects that the resource creates a Kubernetes Deployment, not a generic "microservice." The rename applied 7 comprehensive naming pattern replacements across 45+ files, updated the cloud resource registry, fixed test references, and verified through the full build pipeline.
+Systematically renamed the `KubernetesMicroservice` cloud resource to `KubernetesDeployment` across the entire Planton codebase. This refactoring removes an unnecessary abstraction layer and accurately reflects that the resource creates a Kubernetes Deployment, not a generic "microservice." The rename applied 7 comprehensive naming pattern replacements across 45+ files, updated the cloud resource registry, fixed test references, and verified through the full build pipeline.
 
 ## Motivation
 
@@ -46,12 +46,12 @@ Used the automated rename script located at `_rules/deployment-component/rename/
 ### Changes Applied
 
 #### Component Directory
-- **Copied**: `apis/org/openmcf/provider/kubernetes/workload/kubernetesmicroservice/` → `kubernetesdeployment/`
+- **Copied**: `apis/dev/planton/provider/kubernetes/workload/kubernetesmicroservice/` → `kubernetesdeployment/`
 - **Updated**: All proto files, Go files, documentation, examples, IaC modules (Pulumi, Terraform)
 - **Deleted**: Old `kubernetesmicroservice/` directory after successful verification
 
 #### Cloud Resource Registry
-Updated `apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto`:
+Updated `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto`:
 
 ```proto
 // Before
@@ -142,7 +142,7 @@ vet: pkg/crkreflect/kind_by_id_prefix_test.go:37:32: undefined: cloudresourcekin
 
 ```yaml
 # Before
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesMicroservice
 metadata:
   name: my-service
@@ -152,7 +152,7 @@ spec:
     ...
 
 # After
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDeployment
 metadata:
   name: my-service
@@ -175,10 +175,10 @@ spec:
 **Import changes required**:
 ```go
 // Before
-import kubernetesmicroservicev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/workload/kubernetesmicroservice/v1"
+import kubernetesmicroservicev1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/workload/kubernetesmicroservice/v1"
 
 // After
-import kubernetesdeploymentv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/workload/kubernetesdeployment/v1"
+import kubernetesdeploymentv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/workload/kubernetesdeployment/v1"
 ```
 
 ### For Future Development
@@ -193,7 +193,7 @@ Each can now be named accurately without conflicting abstractions.
 ## Files Modified
 
 ### Component Directory (New)
-- `apis/org/openmcf/provider/kubernetes/workload/kubernetesdeployment/v1/`
+- `apis/dev/planton/provider/kubernetes/workload/kubernetesdeployment/v1/`
   - `api.proto`, `spec.proto`, `stack_input.proto`, `stack_outputs.proto`
   - `api.pb.go`, `spec.pb.go`, `stack_input.pb.go`, `stack_outputs.pb.go`
   - `README.md`, `examples.md`, `docs/README.md`
@@ -202,7 +202,7 @@ Each can now be named accurately without conflicting abstractions.
   - `BUILD.bazel` files
 
 ### Registry
-- `apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto`
+- `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto`
 
 ### Tests
 - `pkg/crkreflect/kind_by_id_prefix_test.go`
@@ -305,7 +305,7 @@ However, to use the new CLI version, you must:
 
 Simply use:
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDeployment
 ```
 

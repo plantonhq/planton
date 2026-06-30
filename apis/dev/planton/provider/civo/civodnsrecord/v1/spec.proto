@@ -1,0 +1,95 @@
+syntax = "proto3";
+package dev.planton.provider.civo.civodnsrecord.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// CivoDnsRecordSpec defines the configuration for creating a DNS record in a Civo DNS zone.
+// This component supports creating individual DNS records with common record types.
+message CivoDnsRecordSpec {
+  // Supported DNS record types for Civo.
+  enum RecordType {
+    // Unspecified record type (invalid).
+    record_type_unspecified = 0;
+    // IPv4 address record.
+    A = 1;
+    // IPv6 address record.
+    AAAA = 2;
+    // Canonical name (alias) record.
+    CNAME = 3;
+    // Mail exchange record.
+    MX = 4;
+    // Text record (SPF, DKIM, verification, etc.).
+    TXT = 5;
+    // Service locator record.
+    SRV = 6;
+    // Nameserver record.
+    NS = 7;
+  }
+
+  // The ID of the Civo DNS Zone where this record will be created.
+  // Can be provided as a literal value or referenced from a CivoDnsZone resource.
+  //
+  // When using value_from, the default kind is CivoDnsZone and the default field path
+  // is "status.outputs.zone_id", allowing you to wire this directly to a zone resource.
+  //
+  // Example value_from:
+  //   value_from:
+  //     name: my-zone
+  dev.planton.shared.foreignkey.v1.StringValueOrRef zone_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = CivoDnsZone,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
+  ];
+
+  // The name of the DNS record (e.g., "www", "api", "@" for root).
+  // Use "@" to create a record at the zone apex (root domain).
+  string name = 2 [(buf.validate.field).required = true];
+
+  // The type of DNS record to create.
+  RecordType type = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).enum.defined_only = true,
+    (buf.validate.field).cel = {
+      id: "type.not_unspecified"
+      message: "type must be specified (cannot be record_type_unspecified)"
+      expression: "this != 0"
+    }
+  ];
+
+  // The value/target of the DNS record.
+  // For A records: IPv4 address (e.g., "192.0.2.1")
+  // For AAAA records: IPv6 address (e.g., "2001:db8::1")
+  // For CNAME records: target hostname (e.g., "example.com")
+  // For MX records: mail server hostname (e.g., "mail.example.com")
+  // For TXT records: text value (e.g., "v=spf1 include:_spf.google.com ~all")
+  // For SRV records: target in format "priority weight port target"
+  string value = 4 [(buf.validate.field).required = true];
+
+  // Time to live (TTL) for the DNS record in seconds.
+  // Determines how long resolvers cache the record.
+  // Valid range: 60-86400 seconds (1 minute to 24 hours).
+  // Defaults to 3600 (1 hour) if not specified.
+  int32 ttl = 5 [(buf.validate.field).cel = {
+    id: "ttl.valid_range"
+    message: "ttl must be 0 (default) or between 60 and 86400 seconds"
+    expression: "this == 0 || (this >= 60 && this <= 86400)"
+  }];
+
+  // Priority for MX and SRV records.
+  // Lower values indicate higher priority.
+  // Required for MX records, optional for SRV records.
+  // Range: 0-65535.
+  int32 priority = 6 [(buf.validate.field).cel = {
+    id: "priority.valid_range"
+    message: "priority must be between 0 and 65535"
+    expression: "this >= 0 && this <= 65535"
+  }];
+
+  // Cross-field validation: priority required for MX records
+  option (buf.validate.message).cel = {
+    id: "spec.priority_required_for_mx"
+    message: "priority must be set (> 0) for MX records"
+    expression: "this.type != 4 || this.priority > 0"
+  };
+}

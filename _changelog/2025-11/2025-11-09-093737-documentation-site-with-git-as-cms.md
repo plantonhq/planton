@@ -6,11 +6,11 @@
 
 ## Summary
 
-Implemented a comprehensive documentation system for the openmcf repository using the git-as-CMS pattern adopted from planton.ai. The new `/docs` route provides a full-featured documentation experience with sidebar navigation, markdown rendering, table of contents, and purple-themed styling consistent with OpenMCF branding. This creates a unified documentation experience across the Planton ecosystem while keeping the openmcf documentation self-contained and version-controlled alongside the code.
+Implemented a comprehensive documentation system for the planton repository using the git-as-CMS pattern adopted from planton.ai. The new `/docs` route provides a full-featured documentation experience with sidebar navigation, markdown rendering, table of contents, and purple-themed styling consistent with Planton branding. This creates a unified documentation experience across the Planton ecosystem while keeping the planton documentation self-contained and version-controlled alongside the code.
 
 ## Problem Statement / Motivation
 
-The openmcf repository lacked a structured documentation site. While the README provided an overview, there was no organized way to:
+The planton repository lacked a structured documentation site. While the README provided an overview, there was no organized way to:
 - Present comprehensive guides for different user personas
 - Organize documentation hierarchically (Getting Started, Concepts, Components)
 - Provide interactive navigation with search capabilities
@@ -21,13 +21,13 @@ The openmcf repository lacked a structured documentation site. While the README 
 
 - **No structured docs**: Documentation scattered across README files without clear organization
 - **Poor discoverability**: Users couldn't easily browse available deployment components or guides
-- **Inconsistent experience**: planton.ai had a polished docs system, but openmcf's open-source docs were basic
+- **Inconsistent experience**: planton.ai had a polished docs system, but planton's open-source docs were basic
 - **Limited navigation**: No sidebar, no table of contents, no search
 - **Maintenance burden**: Documentation not following modern git-as-CMS patterns proven effective in planton.ai
 
 ## Solution / What's New
 
-Adopted the same documentation architecture from planton.ai, creating consistency across the Planton ecosystem while maintaining openmcf's independence. The solution implements:
+Adopted the same documentation architecture from planton.ai, creating consistency across the Planton ecosystem while maintaining planton's independence. The solution implements:
 
 ### Core Architecture
 
@@ -48,7 +48,7 @@ Markdown files with frontmatter metadata:
 ```yaml
 ---
 title: "Getting Started"
-description: "Install OpenMCF CLI and deploy your first resource"
+description: "Install Planton CLI and deploy your first resource"
 icon: "rocket"
 order: 2
 badge: "Popular"
@@ -74,7 +74,7 @@ badge: "Popular"
 
 1. **DocsHeader** (`site/src/app/docs/components/DocsHeader.tsx`)
    - Dedicated header matching landing page styling
-   - OpenMCF logo (icon + text)
+   - Planton logo (icon + text)
    - Search bar on the right
    - Responsive hamburger menu (mobile only)
 
@@ -145,7 +145,7 @@ createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#a855f7', // Purple-500 matching OpenMCF branding
+      main: '#a855f7', // Purple-500 matching Planton branding
     },
     background: {
       default: '#0f172a', // Slate-950
@@ -167,7 +167,7 @@ createTheme({
 Created sample documentation demonstrating the full feature set:
 
 **Welcome Page** (`public/docs/index.md`):
-- Overview of OpenMCF
+- Overview of Planton
 - Quick navigation to main sections
 - Quick example with Redis deployment
 - Key features list
@@ -216,7 +216,7 @@ function buildStructure(dirPath: string, relativePath: string = ''): DocItem[] {
 
 ### 3. Purple Theme Integration
 
-Ensured consistent branding with OpenMCF's purple identity:
+Ensured consistent branding with Planton's purple identity:
 
 **Color Palette**:
 - Primary: `#a855f7` (purple-500)
@@ -334,7 +334,7 @@ All routes pre-rendered at build time, no server required.
 - Deployable to GitHub Pages at zero cost
 
 ✅ **Strategic Alignment**
-- Maintains consistency between planton.ai and openmcf
+- Maintains consistency between planton.ai and planton
 - Supports the three-repository architecture strategy
 - Enables git-as-CMS for the open-source framework
 - Foundation for future doc scraping from repo
@@ -375,7 +375,7 @@ All routes pre-rendered at build time, no server required.
 - SEO-friendly structure for organic discovery
 
 **Product Strategy**:
-- Supports dual-funnel approach (planton.ai + openmcf)
+- Supports dual-funnel approach (planton.ai + planton)
 - Reinforces open-source credibility
 - Documentation transparency builds trust
 - Zero vendor lock-in messaging strengthened
@@ -389,7 +389,7 @@ Create a markdown file with frontmatter:
 ```markdown
 ---
 title: "AWS Deployments"
-description: "Deploy to AWS using OpenMCF"
+description: "Deploy to AWS using Planton"
 icon: "cloud"
 order: 5
 badge: "New"
@@ -526,7 +526,7 @@ Icons can be specified in frontmatter or auto-detected from filename/category.
 
 ### Purple Theme Styling
 
-Every UI element themed with OpenMCF purple:
+Every UI element themed with Planton purple:
 
 ```typescript
 // Sidebar active state
@@ -689,7 +689,7 @@ Features verified:
 This implementation aligns with:
 - **planton.ai docs** - Same architecture, components, and patterns
 - **Git Repository Topology** - Supports three-repo strategy with git-as-CMS
-- **OpenMCF Philosophy** - Transparency, consistency, developer experience
+- **Planton Philosophy** - Transparency, consistency, developer experience
 
 ### Prior Changelogs
 

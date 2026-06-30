@@ -10,7 +10,7 @@ Added the AwsCodeBuildProject deployment component (enum 330, id_prefix `awscb`)
 
 ## Problem Statement / Motivation
 
-AWS CodeBuild is a core CI/CD service used by teams building on AWS. Without an OpenMCF component, teams deploying CodeBuild projects alongside other managed infrastructure had to maintain separate Terraform or Pulumi code outside the declarative resource model.
+AWS CodeBuild is a core CI/CD service used by teams building on AWS. Without an Planton component, teams deploying CodeBuild projects alongside other managed infrastructure had to maintain separate Terraform or Pulumi code outside the declarative resource model.
 
 ### Pain Points
 
@@ -64,7 +64,7 @@ flowchart TB
 
 - `spec.proto` — 14 message types covering source, environment, artifacts, cache, logs, VPC, and webhook
 - `stack_outputs.proto` — 5 outputs: project_arn, project_name, service_role_arn, webhook_url, webhook_payload_url
-- `api.proto` — KRM wiring with `aws.openmcf.org/v1` API version
+- `api.proto` — KRM wiring with `aws.planton.dev/v1` API version
 - `stack_input.proto` — Stack input with target + provider config
 
 ### StringValueOrRef Cross-References (9 fields)

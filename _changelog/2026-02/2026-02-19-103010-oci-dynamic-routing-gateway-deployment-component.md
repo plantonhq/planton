@@ -10,11 +10,11 @@ Implemented the OciDynamicRoutingGateway deployment component (R13, enum 3322) -
 
 ## Problem Statement / Motivation
 
-OpenMCF's OCI provider had VCN-level networking (VCN, Subnet, NSG) and load balancing (L7 + L4) but lacked the inter-VCN and hybrid connectivity hub.
+Planton's OCI provider had VCN-level networking (VCN, Subnet, NSG) and load balancing (L7 + L4) but lacked the inter-VCN and hybrid connectivity hub.
 
 ### Pain Points
 
-- No way to set up VCN peering (hub-and-spoke topologies) through OpenMCF
+- No way to set up VCN peering (hub-and-spoke topologies) through Planton
 - No support for DRG route tables and route distributions for controlling inter-VCN traffic
 - No integration point for Site-to-Site VPN (IPSec tunnel) or FastConnect (virtual circuit) attachments
 - No cross-region peering via remote peering connections
@@ -108,7 +108,7 @@ All sub-resources reference each other by display_name rather than OCID. The IaC
 
 - **OCI Provider**: 13th resource kind implemented (13/37 total)
 - **Phase 3 Progress**: 3 of 4 Advanced Networking components complete
-- **Users**: Can now deploy hub-and-spoke VCN topologies and hybrid connectivity through OpenMCF
+- **Users**: Can now deploy hub-and-spoke VCN topologies and hybrid connectivity through Planton
 
 ## Validation Results
 

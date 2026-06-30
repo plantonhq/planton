@@ -1,0 +1,135 @@
+syntax = "proto3";
+
+package dev.planton.provider.cloudflare.cloudflareemailroutingrule.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// What a routing rule does with a matched message.
+enum CloudflareEmailRoutingRuleActionType {
+  rule_action_type_unspecified = 0; // Must not be used.
+  drop = 1; // Silently discard the message.
+  forward = 2; // Forward to one or more verified destinations.
+  worker = 3; // Hand the message to an Email Worker.
+}
+
+// How a routing rule selects messages.
+enum CloudflareEmailRoutingRuleMatcherType {
+  matcher_type_unspecified = 0; // Must not be used.
+  all = 1; // Match every message (a catch-all-style rule).
+  literal = 2; // Match a specific recipient address.
+}
+
+// CloudflareEmailRoutingRuleAction is the action a rule takes on a matched
+// message. The provider models this as a generic {type, value[]}; this typed
+// shape exposes real foreign keys (forward_to -> CloudflareEmailRoutingAddress,
+// worker -> CloudflareWorker) and the module maps it back to {type, value[]}.
+message CloudflareEmailRoutingRuleAction {
+  // The action type.
+  CloudflareEmailRoutingRuleActionType type = 1 [
+    (buf.validate.field).enum.defined_only = true,
+    (buf.validate.field).cel = {
+      id: "action.type_not_unspecified"
+      message: "action type must be one of drop, forward, worker"
+      expression: "this != 0"
+    }
+  ];
+
+  // Destination addresses to forward to (required when type is forward). Each is
+  // a verified destination email or a reference to a CloudflareEmailRoutingAddress.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef forward_to = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareEmailRoutingAddress,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.email"
+  ];
+
+  // The Email Worker script to invoke (required when type is worker). A script
+  // name or a reference to a CloudflareWorker.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef worker = 3 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareWorker,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.script_name"
+  ];
+
+  // forward requires forward_to; worker requires worker.
+  option (buf.validate.message).cel = {
+    id: "action.forward_requires_forward_to"
+    message: "forward_to is required when action type is forward"
+    expression: "this.type != 2 || size(this.forward_to) > 0"
+  };
+  option (buf.validate.message).cel = {
+    id: "action.worker_requires_worker"
+    message: "worker is required when action type is worker"
+    expression: "this.type != 3 || has(this.worker)"
+  };
+}
+
+// CloudflareEmailRoutingRuleMatcher selects which messages a rule applies to.
+message CloudflareEmailRoutingRuleMatcher {
+  // The matcher type.
+  CloudflareEmailRoutingRuleMatcherType type = 1 [
+    (buf.validate.field).enum.defined_only = true,
+    (buf.validate.field).cel = {
+      id: "matcher.type_not_unspecified"
+      message: "matcher type must be one of all, literal"
+      expression: "this != 0"
+    }
+  ];
+
+  // The message field to match. Only "to" is supported. Required for literal
+  // matchers; must be empty for all matchers.
+  string field = 2 [(buf.validate.field).cel = {
+    id: "matcher.field_valid"
+    message: "field must be empty or 'to'"
+    expression: "this == '' || this == 'to'"
+  }];
+
+  // The value to match (the recipient address for a literal "to" matcher).
+  // Required for literal matchers; must be empty for all matchers.
+  string value = 3;
+
+  // literal requires field and value; all requires neither.
+  option (buf.validate.message).cel = {
+    id: "matcher.literal_requires_field_value"
+    message: "a literal matcher requires both field and value"
+    expression: "this.type != 2 || (this.field != '' && this.value != '')"
+  };
+  option (buf.validate.message).cel = {
+    id: "matcher.all_forbids_field_value"
+    message: "an all matcher must not set field or value"
+    expression: "this.type != 1 || (this.field == '' && this.value == '')"
+  };
+}
+
+// CloudflareEmailRoutingRuleSpec declares a single Email Routing rule for a zone:
+// match incoming mail (by recipient or all) and drop it, forward it to verified
+// destinations, or hand it to an Email Worker. Requires Email Routing to be
+// enabled on the zone (CloudflareEmailRoutingZone).
+message CloudflareEmailRoutingRuleSpec {
+  // The zone this rule belongs to. A literal zone ID or a reference to a
+  // CloudflareDnsZone resource.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef zone_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareDnsZone,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
+  ];
+
+  // An optional descriptive name for the rule.
+  string name = 2;
+
+  // Whether the rule is active. Defaults to true.
+  optional bool enabled = 3 [(dev.planton.shared.options.default) = "true"];
+
+  // Evaluation priority; lower numbers are evaluated first. Leave 0 for the
+  // default.
+  int64 priority = 4 [(buf.validate.field).cel = {
+    id: "rule.priority_non_negative"
+    message: "priority must be zero or positive"
+    expression: "this >= 0"
+  }];
+
+  // The patterns that select which messages this rule applies to (at least one).
+  repeated CloudflareEmailRoutingRuleMatcher matchers = 5 [(buf.validate.field).repeated.min_items = 1];
+
+  // The action taken on matched messages.
+  CloudflareEmailRoutingRuleAction action = 6 [(buf.validate.field).required = true];
+}

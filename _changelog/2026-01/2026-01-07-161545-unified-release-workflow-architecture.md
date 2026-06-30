@@ -232,10 +232,10 @@ When you push changes to a Pulumi module on main, the auto-release creates:
 
 ```bash
 # Download from semantic version release
-curl -LO https://github.com/plantonhq/openmcf/releases/download/v0.1.0/pulumi-awsecsservice.gz
+curl -LO https://github.com/plantonhq/planton/releases/download/v0.1.0/pulumi-awsecsservice.gz
 
 # Download from auto-release
-curl -LO https://github.com/plantonhq/openmcf/releases/download/pulumi-awsecsservice-v0.1.0-20260107.0/pulumi-awsecsservice.gz
+curl -LO https://github.com/plantonhq/planton/releases/download/pulumi-awsecsservice-v0.1.0-20260107.0/pulumi-awsecsservice.gz
 
 # Both require gunzip
 gunzip pulumi-awsecsservice.gz

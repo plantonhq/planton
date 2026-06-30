@@ -1,0 +1,10 @@
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudRocketmqInstance
+metadata:
+  name: alicloudrocketmqinstance-demo
+spec:
+  region: cn-hangzhou
+  seriesCode: standard
+  subSeriesCode: single_node
+  vpcId:
+    value: vpc-demo123

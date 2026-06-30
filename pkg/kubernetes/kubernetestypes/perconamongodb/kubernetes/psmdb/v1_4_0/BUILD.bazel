@@ -9,7 +9,7 @@ go_library(
         "perconaServerMongoDBPatch.go",
         "pulumiTypes.go",
     ],
-    importpath = "github.com/plantonhq/openmcf/pkg/kubernetes/kubernetestypes/perconamongodb/kubernetes/psmdb/v1_4_0",
+    importpath = "github.com/plantonhq/planton/pkg/kubernetes/kubernetestypes/perconamongodb/kubernetes/psmdb/v1_4_0",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_blang_semver//:semver",

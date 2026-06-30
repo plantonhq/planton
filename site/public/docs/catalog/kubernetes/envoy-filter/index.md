@@ -30,7 +30,7 @@ what you need.
 ## Quick Start
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesEnvoyFilter
 metadata:
   name: outbound-timeout
@@ -53,7 +53,7 @@ spec:
 ```
 
 ```bash
-openmcf apply -f envoyfilter.yaml
+planton apply -f envoyfilter.yaml
 ```
 
 ## Configuration Reference

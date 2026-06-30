@@ -34,7 +34,7 @@ This preset creates a production-grade KMS key with annual automatic rotation an
 | Placeholder | Description | Where to Find |
 |-------------|-------------|---------------|
 | `<key-name>` | Unique key name (e.g., `prod-rds-encryption-key`) | Your naming convention |
-| `<your-org>` | Organization identifier | Your OpenMCF org |
+| `<your-org>` | Organization identifier | Your Planton org |
 | `<alibaba-cloud-region>` | Alibaba Cloud region code | Your deployment region strategy |
 | `<key-description>` | Description (e.g., `Production RDS TDE master key`) | Your key inventory |
 | `<reason-for-protection>` | Why deletion is protected (e.g., `Protects prod RDS and OSS data`) | Security rationale |

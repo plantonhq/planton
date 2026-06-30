@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package dev.planton.provider.alicloud.alicloudrampolicy.v1;
+
+// AliCloudRamPolicyStackOutputs captures the outputs from deploying an
+// Alibaba Cloud RAM custom policy.
+message AliCloudRamPolicyStackOutputs {
+  // The RAM policy name as created.
+  // Used by AliCloudRamRole policy_attachments to reference this policy.
+  string policy_name = 1;
+
+  // The policy type. Always "Custom" for user-created policies.
+  // Included as an output because AliCloudRamRole policy_attachments
+  // require both policy_name and policy_type for attachment.
+  string policy_type = 2;
+}

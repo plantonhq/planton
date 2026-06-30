@@ -2,7 +2,7 @@ package pulumiakskubernetesprovider
 
 import (
 	"github.com/pkg/errors"
-	azure "github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure"
+	azure "github.com/plantonhq/planton/apis/dev/planton/provider/azure"
 	"github.com/pulumi/pulumi-azure/sdk/v5/go/azure/containerservice"
 	"github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"

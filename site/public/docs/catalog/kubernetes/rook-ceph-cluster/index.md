@@ -12,7 +12,7 @@ Deploys a production-grade Ceph distributed storage cluster on Kubernetes using 
 
 ## What Gets Created
 
-When you deploy a KubernetesRookCephCluster resource, OpenMCF provisions:
+When you deploy a KubernetesRookCephCluster resource, Planton provisions:
 
 - **Kubernetes Namespace** — created if `createNamespace` is `true`
 - **Rook Ceph Cluster Helm Release** — deploys the `rook-ceph-cluster` chart from the official Rook repository, which creates:
@@ -37,15 +37,15 @@ When you deploy a KubernetesRookCephCluster resource, OpenMCF provisions:
 Create a file `ceph-cluster.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesRookCephCluster
 metadata:
   name: my-ceph
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesRookCephCluster.my-ceph
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesRookCephCluster.my-ceph
 spec:
   namespace:
     value: rook-ceph
@@ -55,7 +55,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f ceph-cluster.yaml
+planton apply -f ceph-cluster.yaml
 ```
 
 This creates a Ceph cluster using all nodes and all available devices with 3 MON daemons, 2 MGR daemons, the dashboard enabled, and no block pools, filesystems, or object stores (add them in the spec as needed).
@@ -143,15 +143,15 @@ This creates a Ceph cluster using all nodes and all available devices with 3 MON
 A Ceph cluster with a single replicated block pool and a default StorageClass, suitable for general-purpose persistent volumes:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesRookCephCluster
 metadata:
   name: block-ceph
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesRookCephCluster.block-ceph
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesRookCephCluster.block-ceph
 spec:
   namespace:
     value: rook-ceph
@@ -174,15 +174,15 @@ spec:
 A production deployment with block, file, and object storage, explicit daemon resources, and monitoring enabled:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesRookCephCluster
 metadata:
   name: prod-ceph
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesRookCephCluster.prod-ceph
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesRookCephCluster.prod-ceph
 spec:
   namespace:
     value: rook-ceph
@@ -276,15 +276,15 @@ spec:
 A deployment that targets specific nodes and devices rather than using all available storage:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesRookCephCluster
 metadata:
   name: targeted-ceph
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.KubernetesRookCephCluster.targeted-ceph
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.KubernetesRookCephCluster.targeted-ceph
 spec:
   namespace:
     value: rook-ceph

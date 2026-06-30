@@ -1,0 +1,12 @@
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareDnsRecord
+metadata:
+  name: my-proxied-a-record
+spec:
+  zoneId:
+    value: <cloudflare-zone-id>
+  name: www
+  type: A
+  content: <origin-ip-address>
+  proxied: true
+  ttl: 1

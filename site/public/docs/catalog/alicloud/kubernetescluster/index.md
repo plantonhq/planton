@@ -12,7 +12,7 @@ Deploys an Alibaba Cloud ACK Managed Kubernetes cluster with configurable CNI ne
 
 ## What Gets Created
 
-When you deploy an AliCloudKubernetesCluster resource, OpenMCF provisions:
+When you deploy an AliCloudKubernetesCluster resource, Planton provisions:
 
 - **ACK Managed Kubernetes Cluster** — an `alicloud_cs_managed_kubernetes` resource with a fully managed control plane (etcd, API server, controller manager, scheduler)
 - **Cluster Addons** — network CNI (Flannel or Terway), storage CSI drivers, and optional monitoring, logging, and ingress addons installed at creation time
@@ -22,7 +22,7 @@ When you deploy an AliCloudKubernetesCluster resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Alibaba Cloud credentials** configured via environment variables or OpenMCF provider config
+- **Alibaba Cloud credentials** configured via environment variables or Planton provider config
 - **At least two VSwitches** in different Availability Zones within the same VPC
 - **Non-overlapping CIDR ranges** for the VPC, pod network, and service network
 - **A NAT gateway** if setting `newNatGateway` to `false` (nodes in private VSwitches need outbound internet access)
@@ -33,15 +33,15 @@ When you deploy an AliCloudKubernetesCluster resource, OpenMCF provisions:
 Create a file `ack-cluster.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudKubernetesCluster
 metadata:
   name: my-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudKubernetesCluster.my-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudKubernetesCluster.my-cluster
 spec:
   region: cn-hangzhou
   vswitchIds:
@@ -58,7 +58,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f ack-cluster.yaml
+planton apply -f ack-cluster.yaml
 ```
 
 This creates a standard-tier ACK cluster with Flannel CNI across two Availability Zones.
@@ -125,15 +125,15 @@ This creates a standard-tier ACK cluster with Flannel CNI across two Availabilit
 A minimal cluster for development and testing.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudKubernetesCluster
 metadata:
   name: dev-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudKubernetesCluster.dev-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudKubernetesCluster.dev-cluster
 spec:
   region: cn-hangzhou
   vswitchIds:
@@ -152,15 +152,15 @@ spec:
 A staging cluster using ENI-based networking with RRSA and control plane logging.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudKubernetesCluster
 metadata:
   name: staging-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.AliCloudKubernetesCluster.staging-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.AliCloudKubernetesCluster.staging-cluster
 spec:
   region: cn-shanghai
   clusterSpec: ack.pro.small
@@ -198,17 +198,17 @@ spec:
 A production-grade cluster with Secrets encryption, maintenance windows, auto-upgrade, and deletion protection.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudKubernetesCluster
 metadata:
   name: prod-cluster
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: infrastructure
-    pulumi.openmcf.org/stack.name: production.AliCloudKubernetesCluster.prod-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: infrastructure
+    pulumi.planton.dev/stack.name: production.AliCloudKubernetesCluster.prod-cluster
 spec:
   region: cn-hangzhou
   name: acme-prod-ack
@@ -271,18 +271,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding IDs:
+Reference other Planton-managed resources instead of hardcoding IDs:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudKubernetesCluster
 metadata:
   name: ref-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudKubernetesCluster.ref-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudKubernetesCluster.ref-cluster
 spec:
   region: cn-hangzhou
   vswitchIds:

@@ -75,7 +75,7 @@ flowchart TB
   - `enable_dhcp` (optional, default true)
   - `dns_nameservers`, `allocation_pools`, `description`, `tags`, `region`
 - `stack_outputs.proto` -- 6 outputs: subnet_id, name, cidr, gateway_ip, network_id, region
-- `api.proto` -- KRM envelope with `openstack.openmcf.org/v1` + `OpenStackSubnet`
+- `api.proto` -- KRM envelope with `openstack.planton.dev/v1` + `OpenStackSubnet`
 - `stack_input.proto` -- target + provider_config
 - `spec_test.go` -- 27 tests (15 positive, 12 negative)
 
@@ -97,10 +97,10 @@ flowchart TB
 The `network_id` field uses `StringValueOrRef` with FK annotations:
 
 ```protobuf
-org.openmcf.shared.foreignkey.v1.StringValueOrRef network_id = 1 [
+dev.planton.shared.foreignkey.v1.StringValueOrRef network_id = 1 [
   (buf.validate.field).required = true,
-  (org.openmcf.shared.foreignkey.v1.default_kind) = OpenStackNetwork,
-  (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_id"
+  (dev.planton.shared.foreignkey.v1.default_kind) = OpenStackNetwork,
+  (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_id"
 ];
 ```
 
@@ -158,7 +158,7 @@ option (buf.validate.message).cel = {
 - OpenStack provider integration: `_changelog/2026-02/2026-02-08-215116-openstack-provider-integration.md`
 - OpenStackKeypair component: `_changelog/2026-02/2026-02-08-223027-openstackcomputekeypair-deployment-component.md`
 - OpenStackNetwork component: `_changelog/2026-02/2026-02-09-082447-openstack-network-component-and-forge-pipeline-cleanup.md`
-- Parent project: `planton/_projects/20260209.01.openstack-openmcf-components/`
+- Parent project: `planton/_projects/20260209.01.openstack-planton-components/`
 
 ---
 

@@ -12,7 +12,7 @@ Deploys an Alibaba Cloud Object Storage Service (OSS) bucket with configurable a
 
 ## What Gets Created
 
-When you deploy an AliCloudStorageBucket resource, OpenMCF provisions:
+When you deploy an AliCloudStorageBucket resource, Planton provisions:
 
 - **OSS Bucket** -- an `alicloud_oss_bucket` resource (Pulumi: `oss.Bucket`) with the specified storage class, redundancy type, and access control
 - **Versioning** -- optionally enabled to preserve all object versions for accidental deletion/overwrite recovery
@@ -24,24 +24,24 @@ When you deploy an AliCloudStorageBucket resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Alibaba Cloud credentials** configured via environment variables (`ALICLOUD_ACCESS_KEY`, `ALICLOUD_SECRET_KEY`) or OpenMCF provider config
+- **Alibaba Cloud credentials** configured via environment variables (`ALICLOUD_ACCESS_KEY`, `ALICLOUD_SECRET_KEY`) or Planton provider config
 - **Globally unique bucket name** -- OSS bucket names must be unique across all Alibaba Cloud accounts worldwide (3-63 characters, lowercase letters, digits, and hyphens)
-- **OpenMCF CLI** installed with either Pulumi or Terraform (OpenTofu) backend
+- **Planton CLI** installed with either Pulumi or Terraform (OpenTofu) backend
 
 ## Quick Start
 
 Create a file `oss-bucket.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudStorageBucket
 metadata:
   name: my-bucket
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudStorageBucket.my-bucket
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudStorageBucket.my-bucket
 spec:
   region: cn-hangzhou
   bucketName: my-app-assets-bucket
@@ -50,7 +50,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f oss-bucket.yaml
+planton apply -f oss-bucket.yaml
 ```
 
 This creates a private Standard-tier OSS bucket with LRS redundancy in the `cn-hangzhou` region.
@@ -85,7 +85,7 @@ This creates a private Standard-tier OSS bucket with LRS redundancy in the `cn-h
 ### Minimal Private Bucket
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudStorageBucket
 metadata:
   name: dev-bucket
@@ -97,7 +97,7 @@ spec:
 ### Production Bucket with Versioning and Encryption
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudStorageBucket
 metadata:
   name: prod-bucket
@@ -118,7 +118,7 @@ spec:
 ### Archive Bucket with Lifecycle Rules
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudStorageBucket
 metadata:
   name: log-archive

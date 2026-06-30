@@ -12,14 +12,14 @@ Deploys a managed K3s-based Kubernetes cluster on Civo Cloud with configurable n
 
 ## What Gets Created
 
-When you deploy a CivoKubernetesCluster resource, OpenMCF provisions:
+When you deploy a CivoKubernetesCluster resource, Planton provisions:
 
 - **Kubernetes Cluster (K3s)** — a `civo_kubernetes_cluster` resource in the specified region, attached to the given network, running the requested Kubernetes version
 - **Default Node Pool** — a node pool with the configured instance size and node count, created as part of the cluster
 
 ## Prerequisites
 
-- **Civo credentials** configured via environment variables or OpenMCF provider config
+- **Civo credentials** configured via environment variables or Planton provider config
 - **An existing Civo network** in the target region (can be created with CivoVpc)
 - **A supported Kubernetes version** string (e.g., `1.28.2`) — check Civo's available versions for your region
 
@@ -28,15 +28,15 @@ When you deploy a CivoKubernetesCluster resource, OpenMCF provisions:
 Create a file `civo-k8s.yaml`:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoKubernetesCluster
 metadata:
   name: my-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CivoKubernetesCluster.my-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CivoKubernetesCluster.my-cluster
 spec:
   clusterName: my-cluster
   region: nyc1
@@ -51,7 +51,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f civo-k8s.yaml
+planton apply -f civo-k8s.yaml
 ```
 
 This creates a two-node K3s cluster in New York running Kubernetes 1.28.2 on `g4s.kube.medium` instances.
@@ -85,15 +85,15 @@ This creates a two-node K3s cluster in New York running Kubernetes 1.28.2 on `g4
 A single-node cluster for development and testing:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoKubernetesCluster
 metadata:
   name: dev-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CivoKubernetesCluster.dev-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CivoKubernetesCluster.dev-cluster
 spec:
   clusterName: dev-cluster
   region: fra1
@@ -110,15 +110,15 @@ spec:
 A multi-node cluster with high availability and automatic patch upgrades:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoKubernetesCluster
 metadata:
   name: prod-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CivoKubernetesCluster.prod-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CivoKubernetesCluster.prod-cluster
 spec:
   clusterName: prod-cluster
   region: nyc1
@@ -137,18 +137,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed CivoVpc instead of hardcoding the network ID:
+Reference an Planton-managed CivoVpc instead of hardcoding the network ID:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoKubernetesCluster
 metadata:
   name: ref-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CivoKubernetesCluster.ref-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CivoKubernetesCluster.ref-cluster
 spec:
   clusterName: ref-cluster
   region: lon1
@@ -163,7 +163,7 @@ spec:
   disableSurgeUpgrade: false
   tags:
     - environment:production
-    - managed-by:openmcf
+    - managed-by:planton
   defaultNodePool:
     size: g4s.kube.xlarge
     nodeCount: 5

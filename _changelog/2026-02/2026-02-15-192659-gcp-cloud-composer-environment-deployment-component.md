@@ -10,11 +10,11 @@ Added GcpCloudComposerEnvironment (R15) as a new deployment component for provis
 
 ## Problem Statement / Motivation
 
-Cloud Composer is the standard orchestration layer for GCP data pipelines, ML workflows, and ETL processes. Before this component, OpenMCF users had no way to provision Composer environments declaratively -- they needed to fall back to raw Terraform or the GCP console.
+Cloud Composer is the standard orchestration layer for GCP data pipelines, ML workflows, and ETL processes. Before this component, Planton users had no way to provision Composer environments declaratively -- they needed to fall back to raw Terraform or the GCP console.
 
 ### Pain Points
 
-- No OpenMCF support for managed Airflow environments
+- No Planton support for managed Airflow environments
 - Cloud Composer is one of the most complex GCP resources with deep nesting and version-conditional fields
 - Composer 1.x, 2.x, and 3 have fundamentally different configuration paradigms (especially networking)
 
@@ -24,7 +24,7 @@ A complete deployment component following the forge workflow (20 phases), target
 
 ### Key Design Decisions
 
-- **Flattened `config` wrapper** -- The Terraform resource nests everything under `config`, but since the OpenMCF component IS the environment, the wrapper was removed to reduce YAML nesting depth
+- **Flattened `config` wrapper** -- The Terraform resource nests everything under `config`, but since the Planton component IS the environment, the wrapper was removed to reduce YAML nesting depth
 - **Composer 2.x and 3 only** -- All Composer 1.x-only fields excluded (node_count, machine_type, disk_size_gb, python_version, database_config, web_server_config, etc.) since Composer 1.x is deprecated
 - **5 StringValueOrRef fields** for infra-chart composability: project_id (GcpProject), network (GcpVpc), subnetwork (GcpSubnetwork), service_account (GcpServiceAccount), kms_key_name (GcpKmsKey)
 - **Triggerer support** -- Critical for Airflow 2.x deferrable operators, not in the original plan
@@ -74,7 +74,7 @@ A complete deployment component following the forge workflow (20 phases), target
 
 ## Benefits
 
-- OpenMCF users can now provision managed Airflow environments declaratively
+- Planton users can now provision managed Airflow environments declaratively
 - Full Composer 2.x and 3 coverage without Composer 1.x legacy complexity
 - 5 StringValueOrRef fields enable composing Composer environments with VPCs, KMS keys, and service accounts in infra charts
 - Production-ready configuration with private networking, CMEK, and disaster recovery out of the box

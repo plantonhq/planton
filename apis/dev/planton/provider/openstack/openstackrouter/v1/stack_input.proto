@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package dev.planton.provider.openstack.openstackrouter.v1;
+
+import "dev/planton/provider/openstack/openstackrouter/v1/api.proto";
+import "dev/planton/provider/openstack/provider.proto";
+
+// OpenStackRouterStackInput is the input to the IaC module.
+// It contains the target resource and provider configuration.
+message OpenStackRouterStackInput {
+  // target cloud-resource to be deployed
+  OpenStackRouter target = 1;
+  // provider-config for OpenStack authentication
+  dev.planton.provider.openstack.OpenStackProviderConfig provider_config = 2;
+}

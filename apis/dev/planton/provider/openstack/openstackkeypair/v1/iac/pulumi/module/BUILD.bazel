@@ -1,0 +1,22 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "module",
+    srcs = [
+        "keypair.go",
+        "locals.go",
+        "main.go",
+        "outputs.go",
+    ],
+    importpath = "github.com/plantonhq/planton/apis/dev/planton/provider/openstack/openstackkeypair/v1/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/dev/planton/provider/openstack",
+        "//apis/dev/planton/provider/openstack/openstackkeypair/v1:openstackkeypair",
+        "//pkg/iac/pulumi/pulumimodule/provider/openstack/pulumiopenstackprovider",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_openstack_sdk_v5//go/openstack",
+        "@com_github_pulumi_pulumi_openstack_sdk_v5//go/openstack/compute",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)

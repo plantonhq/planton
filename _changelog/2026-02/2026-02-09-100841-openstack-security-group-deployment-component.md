@@ -65,7 +65,7 @@ flowchart TB
   - SecurityGroupRule: `key` (required, unique), `direction` (in: ingress/egress), `ethertype` (in: IPv4/IPv6), `protocol`, `port_range_min` (optional int32), `port_range_max` (optional int32), `remote_ip_prefix`, `remote_group_id`, `description`
   - 5 CEL validations: unique rule keys, port pair both-or-neither, ports require protocol, remote source mutual exclusion, direction/ethertype string-in constraints
 - `stack_outputs.proto` -- 3 outputs: security_group_id, name, region
-- `api.proto` -- KRM envelope with `openstack.openmcf.org/v1` + `OpenStackSecurityGroup`
+- `api.proto` -- KRM envelope with `openstack.planton.dev/v1` + `OpenStackSecurityGroup`
 - `stack_input.proto` -- target + provider_config
 - `spec_test.go` -- 31 tests (19 positive, 12 negative)
 
@@ -167,7 +167,7 @@ Excluded: `remote_address_group_id` (niche extension), `tenant_id` (admin-only).
 - OpenStackSubnet component: `_changelog/2026-02/2026-02-09-032227-openstack-subnet-deployment-component.md`
 - OpenStackRouter component: `_changelog/2026-02/2026-02-09-101500-openstack-router-deployment-component.md`
 - OpenStackRouterInterface component: `_changelog/2026-02/2026-02-09-094647-openstack-router-interface-deployment-component.md`
-- Parent project: `planton/_projects/20260209.01.openstack-openmcf-components/`
+- Parent project: `planton/_projects/20260209.01.openstack-planton-components/`
 
 ---
 

@@ -1,5 +1,0 @@
-apiVersion: digital-ocean.openmcf.org/v1
-kind: DigitalOceanCertificate
-metadata:
-  name: first-certificate
-spec:

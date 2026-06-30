@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package dev.planton.provider.scaleway.scalewayserverlesscontainer.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/scaleway/scalewayserverlesscontainer/v1/spec.proto";
+import "dev/planton/provider/scaleway/scalewayserverlesscontainer/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// ScalewayServerlessContainer is a Kubernetes Resource Model (KRM) style
+// resource for deploying and managing serverless containers on Scaleway.
+//
+// This is a **composite** resource that bundles a container namespace,
+// the container itself, and optional cron triggers into a single
+// declarable unit. Under the hood it creates:
+//   - scaleway_container_namespace (1x) -- grouping container
+//   - scaleway_container (1x) -- the serverless container
+//   - scaleway_container_cron (0..Nx) -- optional scheduled triggers
+//
+// **Deployment model:** This resource deploys pre-built container images
+// from any OCI-compatible registry (Scaleway Container Registry, Docker
+// Hub, GHCR, etc.). Unlike ScalewayServerlessFunction which deploys
+// source code with a runtime, this resource deploys ready-to-run
+// container images.
+//
+// **Composition pattern:** This is a mid-tier resource (DAG Layer 2).
+// Upstream: `image.registry_endpoint` optionally references
+// ScalewayContainerRegistry for registry DAG edges.
+// `private_network_id` optionally references ScalewayPrivateNetwork
+// for VPC connectivity.
+// Downstream: `domain_name` output can be referenced by
+// ScalewayDnsRecord for custom domain routing.
+message ScalewayServerlessContainer {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'scaleway.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'ScalewayServerlessContainer'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  ScalewayServerlessContainerSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  ScalewayServerlessContainerStatus status = 5;
+}
+
+// ScalewayServerlessContainerStatus represents the observed state of a
+// Scaleway serverless container.
+message ScalewayServerlessContainerStatus {
+  // stack-outputs from the IaC deployment
+  ScalewayServerlessContainerStackOutputs outputs = 1;
+}

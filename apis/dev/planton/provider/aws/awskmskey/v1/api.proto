@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awskmskey.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/aws/awskmskey/v1/spec.proto";
+import "dev/planton/provider/aws/awskmskey/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// AwsKmsKey represents a customer-managed AWS KMS encryption key.
+// KMS keys provide cryptographic operations for data encryption, signing, and verification
+// with fine-grained access control and automatic key rotation capabilities.
+message AwsKmsKey {
+  // api-version must be set to "aws.planton.dev/v1".
+  string api_version = 1 [(buf.validate.field).string.const = "aws.planton.dev/v1"];
+
+  // resource-kind for this KMS key resource, typically "AwsKmsKey".
+  string kind = 2 [(buf.validate.field).string.const = 'AwsKmsKey'];
+
+  // metadata captures identifying information (name, org, version, etc.)
+  // and must pass standard validations for resource naming.
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec holds the core configuration data defining the KMS key's properties and behavior.
+  AwsKmsKeySpec spec = 4 [(buf.validate.field).required = true];
+
+  // status holds runtime or post-deployment information.
+  AwsKmsKeyStatus status = 5;
+}
+
+// AwsKmsKeyStatus describes the status fields for a KMS key resource.
+message AwsKmsKeyStatus {
+  // stack_outputs captures the outputs returned by Pulumi/Terraform after provisioning.
+  AwsKmsKeyStackOutputs outputs = 1;
+}

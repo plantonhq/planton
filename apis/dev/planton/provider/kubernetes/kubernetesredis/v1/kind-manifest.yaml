@@ -1,0 +1,14 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: RedisKubernetes
+metadata:
+  name: redis-in-kind
+spec:
+  container:
+    replicas: 1
+    resources:
+      requests:
+        cpu: 50m
+        memory: 256Mi
+      limits:
+        cpu: "1"
+        memory: 1Gi

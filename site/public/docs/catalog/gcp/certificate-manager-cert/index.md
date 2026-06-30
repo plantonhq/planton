@@ -12,7 +12,7 @@ Provisions a Google-managed SSL/TLS certificate with automatic DNS validation th
 
 ## What Gets Created
 
-When you deploy a GcpCertManagerCert resource, OpenMCF provisions:
+When you deploy a GcpCertManagerCert resource, Planton provisions:
 
 - **Certificate Manager DNS Authorizations** (MANAGED type) — one `google_certificate_manager_dns_authorization` per domain (primary + alternates), each proving domain ownership
 - **Cloud DNS Validation Records** (MANAGED type) — one `google_dns_record_set` per domain in the specified Cloud DNS zone, populated automatically from the DNS authorization challenge data
@@ -21,7 +21,7 @@ When you deploy a GcpCertManagerCert resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **A GCP project** where the certificate and DNS resources will be created
 - **A Cloud DNS managed zone** that is authoritative for the domain(s) you are requesting certificates for
 - **DNS configured** so the Cloud DNS zone is serving live DNS for the domain (nameservers delegated at the registrar)
@@ -32,15 +32,15 @@ When you deploy a GcpCertManagerCert resource, OpenMCF provisions:
 Create a file `cert.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCertManagerCert
 metadata:
   name: my-cert
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpCertManagerCert.my-cert
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpCertManagerCert.my-cert
 spec:
   gcpProjectId: my-gcp-project-123
   primaryDomainName: example.com
@@ -51,7 +51,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f cert.yaml
+planton apply -f cert.yaml
 ```
 
 This creates a Certificate Manager certificate for `example.com` with automatic DNS validation records in the `example-com` Cloud DNS zone.
@@ -81,15 +81,15 @@ This creates a Certificate Manager certificate for `example.com` with automatic 
 A basic certificate for a single apex domain:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCertManagerCert
 metadata:
   name: api-cert
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpCertManagerCert.api-cert
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpCertManagerCert.api-cert
 spec:
   gcpProjectId: my-prod-project
   primaryDomainName: api.example.com
@@ -102,15 +102,15 @@ spec:
 A wildcard certificate that also covers the apex domain and a subdomain:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCertManagerCert
 metadata:
   name: wildcard-cert
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpCertManagerCert.wildcard-cert
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpCertManagerCert.wildcard-cert
 spec:
   gcpProjectId: my-prod-project
   primaryDomainName: "*.example.com"
@@ -127,15 +127,15 @@ spec:
 A classic Google-managed SSL certificate for use with GCP load balancers:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCertManagerCert
 metadata:
   name: lb-cert
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpCertManagerCert.lb-cert
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpCertManagerCert.lb-cert
 spec:
   gcpProjectId: my-prod-project
   primaryDomainName: app.example.com
@@ -148,18 +148,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed GcpDnsZone instead of hardcoding the zone ID:
+Reference an Planton-managed GcpDnsZone instead of hardcoding the zone ID:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCertManagerCert
 metadata:
   name: ref-cert
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpCertManagerCert.ref-cert
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpCertManagerCert.ref-cert
 spec:
   gcpProjectId: my-prod-project
   primaryDomainName: "*.example.com"

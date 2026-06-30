@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added OciSubnet (R02) as the second OCI resource kind in OpenMCF, providing a complete deployment component for Oracle Cloud Infrastructure subnets with optional inline route table creation. The component covers all practical subnet attributes from the OCI provider and supports both public and private subnet configurations with full infra-chart composability via StringValueOrRef.
+Added OciSubnet (R02) as the second OCI resource kind in Planton, providing a complete deployment component for Oracle Cloud Infrastructure subnets with optional inline route table creation. The component covers all practical subnet attributes from the OCI provider and supports both public and private subnet configurations with full infra-chart composability via StringValueOrRef.
 
 ## Problem Statement / Motivation
 
@@ -14,7 +14,7 @@ After the OCI VCN (R01) was implemented, the next networking building block -- s
 
 ### Pain Points
 
-- No way to create OCI subnets through OpenMCF
+- No way to create OCI subnets through Planton
 - No custom route table creation capability anywhere in the OCI catalog
 - Downstream components (R07-R37) blocked waiting for subnet infrastructure
 
@@ -34,7 +34,7 @@ Implemented `OciSubnet` as a full deployment component following the established
 ### Component Structure
 
 ```
-apis/org/openmcf/provider/oci/ocisubnet/v1/
+apis/dev/planton/provider/oci/ocisubnet/v1/
 ├── spec.proto              # 13 fields + RouteRule nested message + CEL validation
 ├── api.proto               # KRM wiring (OciSubnet, OciSubnetStatus)
 ├── stack_input.proto        # OciSubnetStackInput

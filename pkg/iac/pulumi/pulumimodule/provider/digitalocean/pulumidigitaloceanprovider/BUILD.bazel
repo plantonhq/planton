@@ -3,10 +3,10 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "pulumidigitaloceanprovider",
     srcs = ["provider.go"],
-    importpath = "github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/provider/digitalocean/pulumidigitaloceanprovider",
+    importpath = "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/digitalocean/pulumidigitaloceanprovider",
     visibility = ["//visibility:public"],
     deps = [
-        "//apis/org/openmcf/provider/digitalocean",
+        "//apis/dev/planton/provider/digitalocean",
         "//pkg/iac/pulumi/pulumimodule/pulumi/pulumioutput",
         "@com_github_pkg_errors//:errors",
         "@com_github_pulumi_pulumi_digitalocean_sdk_v4//go/digitalocean",

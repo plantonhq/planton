@@ -21,7 +21,7 @@ and GCP so the release builds clean.
 The `release.pulumi-modules` workflow builds each component non-recursively:
 
 ```bash
-go build -o <bin> ./apis/org/openmcf/provider/<provider>/<component>/v1/iac/pulumi
+go build -o <bin> ./apis/dev/planton/provider/<provider>/<component>/v1/iac/pulumi
 ```
 
 That form requires a `package main` at the directory root and fails with
@@ -66,12 +66,12 @@ flowchart TB
   rationale so it is not regressed.
 - `_scripts/pulumi_entrypoint_write.py` `run_go_build` now builds the entrypoint
   non-recursively, so `--build` fails on a missing/misplaced root main.
-- `forge-openmcf-component.mdc` and `audit/audit-openmcf-component.mdc` enforce the same
+- `forge-planton-component.mdc` and `audit/audit-planton-component.mdc` enforce the same
   invariant in their success criteria and Category 4.2.
 
 ### Layer 2 — Stale generation paths corrected
 
-Replaced `apis/project/planton/provider` with `apis/org/openmcf/provider` in 7 flow rules and
+Replaced `apis/project/planton/provider` with `apis/dev/planton/provider` in 7 flow rules and
 5 writer scripts (`pulumi_entrypoint_write.py`, `pulumi_module_write.py`,
 `terraform_module_write.py`, `stack_outputs_reader.py`, `hack_manifest_write.py`).
 
@@ -138,7 +138,7 @@ the stale `main/` targets.
 ## Related Work
 
 - Companion analysis plans: `forge-workflow-hardening` and `aws-pulumi-release-fix`.
-- Builds on the migration from `apis/project/planton` to `apis/org/openmcf`.
+- Builds on the migration from `apis/project/planton` to `apis/dev/planton`.
 
 ---
 

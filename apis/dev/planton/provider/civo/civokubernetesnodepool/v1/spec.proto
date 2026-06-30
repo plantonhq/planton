@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package dev.planton.provider.civo.civokubernetesnodepool.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// CivoKubernetesNodePoolSpec defines the specification for creating a node pool in an existing Civo Kubernetes cluster.
+// It focuses on essential parameters, following the 80/20 principle to expose only the most commonly used settings.
+message CivoKubernetesNodePoolSpec {
+  // A name for the node pool. Must be unique within the Civo Kubernetes cluster.
+  string node_pool_name = 1 [(buf.validate.field).required = true];
+
+  // Reference to the Civo Kubernetes cluster in which to create this node pool.
+  // Accepts the cluster's name or a reference to the CivoKubernetesCluster resource.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef cluster = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = CivoKubernetesCluster,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "metadata.name"
+  ];
+
+  // The slug identifier for the size of each node in the pool (e.g., "g4s.kube.medium").
+  // Defines the CPU and memory of the nodes.
+  string size = 3 [(buf.validate.field).required = true];
+
+  // The number of nodes to provision in the pool. Must be at least 1.
+  uint32 node_count = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).uint32.gt = 0
+  ];
+
+  // Enable auto-scaling for this node pool. If true, the platform manages node count between min_nodes and max_nodes.
+  bool auto_scale = 5;
+
+  // Minimum number of nodes when auto-scaling is enabled. Required if auto_scale is true.
+  uint32 min_nodes = 6;
+
+  // Maximum number of nodes when auto-scaling is enabled. Required if auto_scale is true.
+  uint32 max_nodes = 7;
+
+  // A list of tags to apply to the node pool for organizational purposes.
+  repeated string tags = 8;
+}

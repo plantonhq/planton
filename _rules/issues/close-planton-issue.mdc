@@ -1,0 +1,744 @@
+---
+description: Action rule to close issue files by moving them to the closed directory with proper timestamp, image relocation, and optional resolution context.
+globs: []
+alwaysApply: false
+---
+
+# Rule: Close Planton Issue (action)
+
+Purpose: When invoked, close an issue file by moving it to `_issues/closed/` directory with a closing timestamp, relocating associated images, and optionally adding resolution context when the issue was fixed in the current conversation.
+
+Usage: Invoke explicitly as `@close-planton-issue` when an issue has been resolved or should be archived.
+
+References: `@create-planton-issue`, `@create-planton-changelog`, `@understand-cursor-rules`
+
+## ⚠️ CRITICAL: Explicit Invocation Only
+
+**DO NOT** close issues automatically or proactively. Issues must ONLY be closed when the user explicitly invokes this rule with `@close-planton-issue`.
+
+Never:
+- ❌ Suggest closing an issue without being asked
+- ❌ Close an issue at the end of a conversation automatically
+- ❌ Assume the user wants an issue closed
+- ❌ Close an issue "to be helpful" without explicit request
+
+Always:
+- ✅ Wait for explicit invocation
+- ✅ Confirm the issue to be closed
+- ✅ Let the user decide when/if an issue should be closed
+
+**This is a user-controlled action, not an automatic process.**
+
+## When to Close an Issue
+
+Close an issue when:
+- ✅ The issue has been completely resolved or implemented
+- ✅ The feature has been built and tested
+- ✅ The bug has been fixed and verified
+- ✅ The issue is no longer relevant or needed
+- ✅ Work is complete and should be archived
+
+**Do not close if**:
+- ✋ Issue is partially resolved (keep open until complete)
+- ✋ Fix needs more testing or validation
+- ✋ Issue is blocked or on hold (keep open with status update)
+
+## File Naming Convention for Closed Issues
+
+### Format
+
+```
+{original-timestamp}.{area}.{type}.{slug}.{closed-timestamp}.md
+```
+
+The closing timestamp is appended before the `.md` extension, preserving all original naming components.
+
+### Components
+
+**Original timestamp** (`YYYY-MM-DD-HHMMSS`):
+- Preserved from the original issue filename
+- Indicates when the issue was first created
+- Maintains chronological tracking
+
+**Area, type, slug**:
+- Preserved exactly as in original filename
+- No modifications to these components
+
+**Closing timestamp** (`YYYY-MM-DD-HHMMSS`):
+- Get actual current timestamp by running: `date +"%Y-%m-%d-%H%M%S"`
+- DO NOT make up or guess the timestamp
+- Added between slug and `.md` extension
+
+### Example Transformations
+
+```
+Open:   _issues/2025-12-26-143022.deployment-component.bug.postgres-spec-validation.md
+Closed: _issues/closed/2025-12-26-143022.deployment-component.bug.postgres-spec-validation.2025-12-28-073049.md
+
+Open:   _issues/2025-12-26.cli.feat.manifest-validation-command.md
+Closed: _issues/closed/2025-12-26.cli.feat.manifest-validation-command.2025-12-28-120000.md
+
+Open:   _issues/2025-12-26.forge.bug.pulumi-code-generation.md
+Closed: _issues/closed/2025-12-26.forge.bug.pulumi-code-generation.2025-12-28-153045.md
+```
+
+### Location
+
+All closed issues are moved to:
+```
+_issues/closed/
+```
+
+This keeps the main `_issues/` directory focused on open, actionable issues.
+
+## Context Detection: Two Scenarios
+
+The rule handles two different scenarios based on conversation context:
+
+### Scenario A: Issue Fixed in Current Conversation
+
+**Indicators**:
+- Recent changelog files created in this conversation
+- Code changes or file edits related to the issue
+- User references to fixing, implementing, or resolving the issue
+- Recent commits or PRs mentioned
+
+**Action**:
+1. Add "Resolution" section to issue file before moving
+2. Include brief explanation of how it was fixed
+3. Link to relevant changelog if it exists
+4. Note key changes or files modified
+5. Move issue with closing timestamp
+
+**Example detection**:
+```
+Conversation includes:
+- "I just fixed the Postgres validation issue"
+- Recent changelog: 2025-12-28-073049-postgres-spec-validation-fix.md
+- File edits to spec.proto
+→ Scenario A: Add resolution context
+```
+
+### Scenario B: Simple Close (New Conversation)
+
+**Indicators**:
+- Brand new conversation with no recent context
+- No changelogs or code changes in conversation
+- User simply wants to close an old issue
+- Issue was fixed in a previous session
+
+**Action**:
+1. Get closing timestamp
+2. Find and move associated images
+3. Move issue file with timestamp
+4. Confirm to user
+5. No additional content added
+
+**Example detection**:
+```
+Conversation:
+- User: "@close-planton-issue postgres-spec-validation"
+- No recent context or changes
+
+→ Scenario B: Simple close
+```
+
+### Context Detection Heuristics
+
+Check conversation for:
+- **Changelog files**: Created in last 5-10 messages
+- **Code edits**: File modifications related to the issue
+- **Fix keywords**: "fixed", "implemented", "resolved", "completed"
+- **User statements**: User mentions just completing the work
+
+**If ANY of these are true** → Scenario A (add resolution context)
+
+**Otherwise** → Scenario B (simple close)
+
+## Resolution Section Template
+
+When adding resolution context (Scenario A), append this section to the issue content before moving:
+
+### Basic Template
+
+```markdown
+---
+
+## Resolution
+
+**Closed**: {closing-date}
+
+This issue was fixed by {brief-description-of-solution}.
+
+### Changelog
+
+See [{changelog-title}](../../_changelog/{year-month}/{changelog-filename}.md) for detailed implementation.
+```
+
+### Extended Template (When More Context Available)
+
+```markdown
+---
+
+## Resolution
+
+**Closed**: {closing-date}
+
+This issue was fixed by {brief-description-of-solution}.
+
+### Changes Made
+
+{explanation-of-key-changes}
+
+### Files Modified
+
+- `{file-path-1}`
+- `{file-path-2}`
+
+### Changelog
+
+See [{changelog-title}](../../_changelog/{year-month}/{changelog-filename}.md) for detailed implementation.
+```
+
+### Template Guidelines
+
+**Keep it concise**:
+- 2-4 sentences explaining the fix
+- Link to changelog for full details
+- List key files only if helpful
+- Don't duplicate the entire changelog
+
+**Use relative paths**:
+- From `_issues/closed/` to `_changelog/`: `../../_changelog/{month}/{file}.md`
+- Ensures links work on GitHub and locally
+
+**Make links clickable**:
+- Use proper markdown link format
+- Include descriptive link text
+- Test that path is correct
+
+### Example Resolution Section
+
+```markdown
+---
+
+## Resolution
+
+**Closed**: December 28, 2025
+
+This issue was fixed by adding proto validation rules to the `spec.proto` file 
+that check for conflicting port configurations before deployment.
+
+### Changes Made
+
+Added buf-validate constraints to ensure default and custom ports don't conflict, 
+catching errors at validation time rather than during Pulumi deployment.
+
+### Changelog
+
+See [Postgres Spec Validation Fix](../../_changelog/2025-12/2025-12-28-073049-postgres-spec-validation-fix.md) for detailed implementation.
+```
+
+## Image Handling Workflow
+
+When closing issues, associated images must be moved to maintain the separation between open and closed issues.
+
+### Step 1: Identify Associated Images
+
+**Pattern**: `_issues/images/{issue-filename-without-md}.*.{ext}`
+
+Where:
+- `issue-filename-without-md`: The base filename without `.md` extension
+- `*`: Any additional slug or descriptor
+- `{ext}`: Image extension (png, jpg, jpeg, gif, etc.)
+
+**Example**:
+```bash
+Issue: 2025-12-26.deployment-component.bug.postgres-spec-validation.md
+
+Images to find:
+- 2025-12-26.deployment-component.bug.postgres-spec-validation.*.png
+- 2025-12-26.deployment-component.bug.postgres-spec-validation.*.jpg
+
+Matches:
+- 2025-12-26.deployment-component.bug.postgres-spec-validation.error-output.png
+- 2025-12-26.deployment-component.bug.postgres-spec-validation.cli-error.png
+```
+
+### Step 2: Move Images to Closed Directory
+
+**Command**: `mv _issues/images/{image-name} _issues/closed/images/{image-name}`
+
+**Important**:
+- Use `mv` not `cp` (move, don't copy)
+- Preserve original image filenames exactly
+- Don't rename images
+- Move all images matching the pattern
+
+**Example**:
+```bash
+mv _issues/images/2025-12-26.deployment-component.bug.postgres-spec-validation.error-output.png \
+   _issues/closed/images/2025-12-26.deployment-component.bug.postgres-spec-validation.error-output.png
+
+mv _issues/images/2025-12-26.deployment-component.bug.postgres-spec-validation.cli-error.png \
+   _issues/closed/images/2025-12-26.deployment-component.bug.postgres-spec-validation.cli-error.png
+```
+
+### Step 3: Image References Remain Valid
+
+**No updates needed**: Because the original issue files use relative paths (`images/{filename}`), the references remain valid after moving to the closed directory.
+
+**Original reference in issue**:
+```markdown
+![Pulumi error output](images/2025-12-26.deployment-component.bug.postgres-spec-validation.error-output.png)
+```
+
+**After move**: Same reference works from `_issues/closed/` because images are in `_issues/closed/images/`
+
+### Image Workflow Summary
+
+1. Find images matching issue filename pattern
+2. Move each image to `_issues/closed/images/`
+3. No reference updates needed (relative paths still work)
+4. Verify images exist in closed directory
+
+## Automation Process
+
+When this rule is invoked, follow these steps in order:
+
+**⚠️ CRITICAL WORKFLOW SUMMARY**:
+
+**Scenario A (with resolution):**
+1. Get timestamp
+2. Read original issue file
+3. Append resolution content to the content (in memory)
+4. Move images (if any)
+5. **Write updated content to closed location** with timestamp filename
+6. **Delete original file** from `_issues/`
+7. Verify both files exist in closed/ and original is gone
+
+**Scenario B (simple close):**
+1. Get timestamp
+2. Move images (if any)
+3. **Move issue file** to closed location with timestamp (mv handles deletion)
+4. Verify moved successfully
+
+**Common mistakes to avoid:**
+- ❌ Writing updated content to original path (creates duplicate file)
+- ❌ Moving file before writing updated content (content gets lost)
+- ❌ Forgetting to delete original file after writing to closed location
+- ❌ Not verifying original file is gone
+
+---
+
+### Detailed Steps:
+
+### 1. Get Closing Timestamp
+
+Run the command to get actual timestamp:
+
+```bash
+date +"%Y-%m-%d-%H%M%S"
+```
+
+Use this exact output for the closing timestamp. **Do not make up timestamps.**
+
+### 2. Identify Issue File
+
+**From user input**:
+- User provides full filename: `2025-12-26.deployment-component.bug.postgres-spec-validation.md`
+- User provides partial match: `postgres-spec-validation`
+- User provides slug or keyword
+
+**Search strategy**:
+```bash
+# If partial match, find the issue
+ls _issues/*{keyword}*.md
+
+# Confirm with user if multiple matches
+```
+
+### 3. Parse Filename Components
+
+Extract from the original filename:
+- Original timestamp (everything before first area identifier)
+- Area (deployment-component, cli, pkg, etc.)
+- Type (bug, feat, refactor, etc.)
+- Slug (descriptive identifier)
+
+**Example parsing**:
+```
+Filename: 2025-12-26-143022.deployment-component.bug.postgres-spec-validation.md
+
+Components:
+- Original timestamp: 2025-12-26-143022
+- Area: deployment-component
+- Type: bug
+- Slug: postgres-spec-validation
+```
+
+### 4. Detect Context (Scenario A or B)
+
+Check the conversation for:
+
+**Scenario A indicators**:
+- Recent changelog files created
+- Code edits in conversation
+- User mentions fixing/implementing
+- References to PRs or commits
+
+**Scenario B indicators**:
+- New conversation, no context
+- No recent changes
+- User just wants to close
+
+**Decision**: Choose scenario based on indicators.
+
+### 5. Add Resolution Context (Scenario A Only)
+
+If Scenario A detected:
+
+1. **Read current issue content**: Read the file from `_issues/{filename}.md`
+2. **Find recent changelog**: Look for changelog files in conversation or recent files
+3. **Generate resolution section**: Use template with actual details
+4. **Append to issue content IN MEMORY**: Add resolution section to the end of the content string
+5. **Store updated content**: Keep the updated content in memory for step 8
+
+**⚠️ CRITICAL**: Do NOT write the updated content back to the original file path at this stage. The updated content will be written to the closed location in step 8.
+
+**Skip this step entirely for Scenario B.**
+
+### 6. Find Associated Images
+
+Search for images matching the issue filename:
+
+```bash
+# Get base filename without .md
+BASE_NAME=$(echo "{filename}" | sed 's/\.md$//')
+
+# Find matching images
+ls _issues/images/${BASE_NAME}.* 2>/dev/null
+```
+
+**Result**:
+- List of image files to move
+- Empty list if no images (not an error)
+
+### 7. Move Images to Closed Directory
+
+For each image found:
+
+```bash
+mv _issues/images/{image-name} _issues/closed/images/{image-name}
+```
+
+**Handle errors**:
+- If `_issues/closed/images/` doesn't exist, create it
+- If mv fails, report error and stop
+
+### 8. Move Issue File with Closing Timestamp
+
+**⚠️ CRITICAL WORKFLOW**: The process differs based on whether resolution content was added (Scenario A vs B):
+
+#### Scenario A (With Resolution Content):
+
+```bash
+# 1. Write updated content (with resolution) directly to closed location
+write_file("_issues/closed/{new-filename-with-closing-timestamp}.md", updated_content)
+
+# 2. Delete the original file from _issues/
+delete_file("_issues/{old-filename}.md")
+```
+
+**Why this order?**
+- Writing to closed location first ensures resolution content is preserved
+- Then deleting original prevents having the file in both locations
+- Safer than moving first (if write fails, original still exists)
+
+#### Scenario B (No Resolution Content):
+
+```bash
+# Simple move - no content update needed
+mv _issues/{old-filename}.md _issues/closed/{new-filename-with-closing-timestamp}.md
+```
+
+**Why mv works here?**
+- No content changes, so mv is atomic
+- mv automatically removes source file
+
+#### New Filename Format:
+
+```
+{original-timestamp}.{area}.{type}.{slug}.{closing-timestamp}.md
+```
+
+**Example**:
+```
+Original: _issues/2025-12-26.deployment-component.bug.postgres-spec-validation.md
+Closed:   _issues/closed/2025-12-26.deployment-component.bug.postgres-spec-validation.2025-12-28-193249.md
+```
+
+### 9. Verify Move Success
+
+**⚠️ CRITICAL VERIFICATION**: Check BOTH that closed files exist AND original file is gone:
+
+```bash
+# 1. Confirm closed file exists
+ls -la _issues/closed/{new-filename}.md
+
+# 2. Confirm images moved (if any)
+ls -la _issues/closed/images/{image-name}*
+
+# 3. Confirm original file is GONE
+ls _issues/{old-filename}.md 2>&1
+# Expected: "No such file or directory"
+```
+
+**If verification fails**:
+- If closed file missing: Report error, don't confirm
+- If original file still exists: Delete it and report the issue
+- If images still in _issues/images/: Move them and report the issue
+
+### 10. Confirm to User
+
+Provide summary of what was done:
+
+```
+✅ Issue closed: {slug}
+
+Moved to: _issues/closed/{new-filename}.md
+Created: {original-date}
+Closed: {closing-date}
+
+[If Scenario A]
+Resolution context added with link to changelog.
+
+[If images moved]
+Images: {count} images moved to closed/images/
+
+[If Scenario B]
+Simple close - no resolution context added.
+```
+
+## Quality Checklist
+
+Before confirming completion, verify:
+
+- [ ] **Closing timestamp obtained** from actual `date` command (not made up)
+- [ ] **Issue file identified** correctly (exact match or user confirmed)
+- [ ] **Filename components parsed** accurately
+- [ ] **Context detected** (Scenario A or B determined correctly)
+- [ ] **Resolution section added** (if Scenario A)
+- [ ] **Changelog link works** (relative path is correct)
+- [ ] **Images found** (search pattern matched correctly)
+- [ ] **Images moved** successfully to `_issues/closed/images/`
+- [ ] **Issue file in closed directory** with correct new filename
+- [ ] **Original timestamp preserved** in new filename
+- [ ] **Closing timestamp added** before `.md` extension
+- [ ] **Verification passed** (closed files exist)
+- [ ] **⚠️ CRITICAL: Original issue file DELETED** from `_issues/` directory
+- [ ] **⚠️ CRITICAL: Original images DELETED** from `_issues/images/` directory
+- [ ] **User confirmation provided** with summary
+
+## Example Invocations
+
+### Example 1: Close Issue Fixed in Current Conversation
+
+```
+[Context: User just fixed Postgres validation bug, created changelog]
+
+User: "@close-planton-issue postgres-spec-validation"
+
+Agent:
+1. Gets timestamp: 2025-12-28-073049
+2. Finds issue: 2025-12-26-143022.deployment-component.bug.postgres-spec-validation.md
+3. Detects Scenario A (recent changelog exists)
+4. Reads issue content
+5. Finds changelog: 2025-12-28-073049-postgres-spec-validation-fix.md
+6. Adds resolution section:
+   ---
+   
+   ## Resolution
+   
+   **Closed**: December 28, 2025
+   
+   This issue was fixed by adding proto validation rules...
+   
+   ### Changelog
+   
+   See [Postgres Spec Validation Fix](../../_changelog/2025-12/2025-12-28-073049-postgres-spec-validation-fix.md)...
+
+7. Finds images: postgres-spec-validation.error-output.png
+8. Moves images to closed/
+9. Writes to: _issues/closed/2025-12-26-143022.deployment-component.bug.postgres-spec-validation.2025-12-28-073049.md
+10. Deletes original from _issues/
+11. Verifies move successful
+12. Confirms to user:
+
+    ✅ Issue closed: postgres-spec-validation
+    
+    Moved to: _issues/closed/2025-12-26-143022.deployment-component.bug.postgres-spec-validation.2025-12-28-073049.md
+    Created: December 26, 2025
+    Closed: December 28, 2025
+    
+    Resolution context added with link to changelog.
+    Images: 1 image moved to closed/images/
+```
+
+### Example 2: Simple Close in New Conversation
+
+```
+[Context: Brand new conversation, no recent changes]
+
+User: "@close-planton-issue manifest-validation-command"
+
+Agent:
+1. Gets timestamp: 2025-12-28-120000
+2. Finds issue: 2025-12-26.cli.feat.manifest-validation-command.md
+3. Detects Scenario B (no recent context)
+4. No resolution section added
+5. No images found
+6. Moves to: _issues/closed/2025-12-26.cli.feat.manifest-validation-command.2025-12-28-120000.md
+7. Verifies move successful
+8. Confirms to user:
+
+    ✅ Issue closed: manifest-validation-command
+    
+    Moved to: _issues/closed/2025-12-26.cli.feat.manifest-validation-command.2025-12-28-120000.md
+    Created: December 26, 2025
+    Closed: December 28, 2025
+    
+    Simple close - no resolution context added.
+```
+
+### Example 3: Close Issue with Multiple Images
+
+```
+User: "@close-planton-issue pulumi-code-generation"
+
+Agent:
+1. Gets timestamp: 2025-12-28-140530
+2. Finds issue: 2025-12-26.forge.bug.pulumi-code-generation.md
+3. Detects Scenario B
+4. Finds images:
+   - pulumi-code-generation.broken-imports.png
+   - pulumi-code-generation.ide-error.png
+5. Moves images to _issues/closed/images/
+6. Moves to: _issues/closed/2025-12-26.forge.bug.pulumi-code-generation.2025-12-28-140530.md
+7. Confirms to user:
+
+    ✅ Issue closed: pulumi-code-generation
+    
+    Moved to: _issues/closed/2025-12-26.forge.bug.pulumi-code-generation.2025-12-28-140530.md
+    Created: December 26, 2025
+    Closed: December 28, 2025
+    
+    Images: 2 images moved to closed/images/
+    
+    Simple close - no resolution context added.
+```
+
+## Edge Cases and Error Handling
+
+### Edge Case: Issue Already in Closed Directory
+
+**Detection**: Issue file already exists in `_issues/closed/`
+
+**Action**:
+```
+⚠️ Issue already closed: {filename}
+
+The issue is already in the closed directory:
+_issues/closed/{filename}
+
+No action taken.
+```
+
+### Edge Case: Multiple Issues Match Keyword
+
+**Detection**: Multiple files match the search pattern
+
+**Action**:
+```
+Multiple issues match "{keyword}":
+
+1. 2025-12-26.deployment-component.bug.postgres-spec-validation.md
+2. 2025-12-27.deployment-component.bug.postgres-port-config.md
+
+Which issue should I close? (provide number or full filename)
+```
+
+### Edge Case: Issue File Not Found
+
+**Detection**: No files match the search pattern
+
+**Action**:
+```
+❌ Issue not found: {keyword}
+
+No issue files match "{keyword}" in _issues/ directory.
+
+Please check the filename and try again.
+```
+
+### Edge Case: Image Move Fails
+
+**Detection**: `mv` command fails for images
+
+**Action**:
+1. Report which image failed to move
+2. Stop the process (don't move issue file)
+3. User can fix and retry
+
+```
+❌ Failed to move image: {image-name}
+
+Error: {error-message}
+
+Issue file not moved. Please resolve the error and try again.
+```
+
+### Edge Case: No Changelog Found (Scenario A)
+
+**Detection**: Scenario A detected but no changelog exists
+
+**Action**:
+- Still add resolution section
+- Omit changelog link
+- Include brief explanation if possible
+
+```markdown
+---
+
+## Resolution
+
+**Closed**: {closing-date}
+
+This issue was fixed in this session.
+```
+
+## Remember
+
+**Closing issues is about archival and organization**:
+- Preserves the original creation date
+- Adds closing date for timeline tracking
+- Moves to closed directory to declutter
+- Optionally captures resolution context
+- Maintains image associations
+
+**Write for the person who searches closed issues later**:
+- **Context**: Why was this closed? What was the fix?
+- **Links**: Where can I find more details?
+- **Timeline**: When was it opened? When was it closed?
+
+**When in doubt**:
+- Scenario B (simple close) is safer than adding incorrect context
+- Moving images is always safe (relative paths work)
+- Preserve all original filename components
+- Use actual timestamps from `date` command
+
+---
+
+**Status**: ✅ Production Ready
+
+*"Documentation is a love letter to your future self."* - Damian Conway

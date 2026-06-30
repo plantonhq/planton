@@ -100,7 +100,7 @@ whether the provider has fixed them — without any spec change.
 The Cloudflare provider family gains list/redirect primitives, bot protection, and
 the full Email Routing surface as composable nodes. Adopters can wire WAF lists,
 Turnstile-protected Workers, and email forwarding into infra charts. These kinds
-are committed but unreleased; cutting an OpenMCF release and integrating into
+are committed but unreleased; cutting an Planton release and integrating into
 Planton (catalog/wizard/search wiring) is the follow-up.
 
 ---

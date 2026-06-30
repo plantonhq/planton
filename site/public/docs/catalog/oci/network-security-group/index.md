@@ -12,14 +12,14 @@ Deploys an Oracle Cloud Infrastructure Network Security Group (NSG) with inline 
 
 ## What Gets Created
 
-When you deploy an OciSecurityGroup resource, OpenMCF provisions:
+When you deploy an OciSecurityGroup resource, Planton provisions:
 
 - **Network Security Group** — an `oci_core_network_security_group` resource in the specified compartment and VCN with a display name and freeform tags.
 - **Security Rules** — one `oci_core_network_security_group_security_rule` for each entry in `ingressRules` and `egressRules`. Each rule specifies the direction, protocol, source or destination, and optional port or ICMP constraints.
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the NSG will be created — either a literal value or a reference to an OciCompartment resource
 - **A VCN OCID** that the NSG belongs to — either a literal value or a reference to an OciVcn resource
 
@@ -28,15 +28,15 @@ When you deploy an OciSecurityGroup resource, OpenMCF provisions:
 Create a file `nsg.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciSecurityGroup
 metadata:
   name: my-nsg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciSecurityGroup.my-nsg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciSecurityGroup.my-nsg
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -47,7 +47,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f nsg.yaml
+planton apply -f nsg.yaml
 ```
 
 This creates an empty NSG with no security rules in the specified VCN. An empty NSG blocks all traffic — add `ingressRules` and `egressRules` to define traffic policies. The NSG ID is exported as a stack output for use by downstream resources such as OciComputeInstance and OciContainerEngineCluster.
@@ -133,15 +133,15 @@ Set `min` equal to `max` to specify a single port (e.g., `min: 443, max: 443`).
 An NSG for internet-facing resources such as load balancers and web servers. Allows HTTPS and HTTP inbound from anywhere, ICMP Path MTU Discovery from the VCN, and all outbound traffic:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciSecurityGroup
 metadata:
   name: web-tier-nsg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.OciSecurityGroup.web-tier-nsg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.OciSecurityGroup.web-tier-nsg
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -184,15 +184,15 @@ spec:
 An NSG for resources that should only accept traffic from within the VCN. Suitable for databases, application servers, and OKE worker nodes:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciSecurityGroup
 metadata:
   name: backend-nsg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciSecurityGroup.backend-nsg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciSecurityGroup.backend-nsg
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -216,15 +216,15 @@ spec:
 An NSG that restricts ingress to traffic from a specific NSG rather than a CIDR block. This enables zero-trust micro-segmentation where only resources attached to the web-tier NSG can reach the application tier:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciSecurityGroup
 metadata:
   name: app-tier-nsg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciSecurityGroup.app-tier-nsg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciSecurityGroup.app-tier-nsg
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -256,18 +256,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference OpenMCF-managed resources instead of hardcoding OCIDs. The compartment and VCN are resolved from deployed resources:
+Reference Planton-managed resources instead of hardcoding OCIDs. The compartment and VCN are resolved from deployed resources:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciSecurityGroup
 metadata:
   name: ref-nsg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciSecurityGroup.ref-nsg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciSecurityGroup.ref-nsg
 spec:
   compartmentId:
     valueFrom:

@@ -1,0 +1,11 @@
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudVswitch
+metadata:
+  name: alicloudvswitch-demo
+spec:
+  region: cn-hangzhou
+  vpcId: vpc-replace-me
+  zoneId: cn-hangzhou-a
+  cidrBlock: "10.0.0.0/24"
+  vswitchName: planton-demo-vswitch
+  description: Demo VSwitch for local testing

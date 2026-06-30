@@ -8,18 +8,18 @@ componentName: "scalewaydnszone"
 
 # Scaleway DNS Zone
 
-Deploys a Scaleway DNS zone with optional inline DNS records. The zone represents a delegated portion of the DNS namespace for a domain you own, managed through Scaleway Domains and DNS. OpenMCF provisions the zone and any inline records as a composite resource, exporting the zone name and nameservers for downstream resource references and domain registrar delegation.
+Deploys a Scaleway DNS zone with optional inline DNS records. The zone represents a delegated portion of the DNS namespace for a domain you own, managed through Scaleway Domains and DNS. Planton provisions the zone and any inline records as a composite resource, exporting the zone name and nameservers for downstream resource references and domain registrar delegation.
 
 ## What Gets Created
 
-When you deploy a ScalewayDnsZone resource, OpenMCF provisions:
+When you deploy a ScalewayDnsZone resource, Planton provisions:
 
 - **DNS Zone** — a `domain.Zone` resource for the specified domain and optional subdomain prefix (e.g., `example.com` or `staging.example.com`)
 - **DNS Records** (0..N) — one `domain.Record` resource per entry in the `records` list, each linked to the created zone. Records default to a 3600-second TTL if not specified.
 
 ## Prerequisites
 
-- **Scaleway credentials** configured via environment variables or OpenMCF provider config
+- **Scaleway credentials** configured via environment variables or Planton provider config
 - **A registered domain** — Scaleway does not perform domain registration; the domain must already exist at a registrar (Namecheap, Google Domains, etc.)
 - **Registrar access** — after zone creation, you must configure the nameservers returned in `status.outputs.nameServers` at your domain registrar to delegate DNS resolution to Scaleway
 
@@ -28,15 +28,15 @@ When you deploy a ScalewayDnsZone resource, OpenMCF provisions:
 Create a file `dns-zone.yaml`:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayDnsZone
 metadata:
   name: my-dns-zone
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayDnsZone.my-dns-zone
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayDnsZone.my-dns-zone
 spec:
   domain: example.com
 ```
@@ -44,7 +44,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f dns-zone.yaml
+planton apply -f dns-zone.yaml
 ```
 
 This creates a root DNS zone for `example.com` with no inline records. The zone name and nameservers are exported as stack outputs. Configure the nameservers at your domain registrar to activate DNS resolution through Scaleway.
@@ -81,15 +81,15 @@ This creates a root DNS zone for `example.com` with no inline records. The zone 
 A bare DNS zone for a domain, with all records managed as standalone ScalewayDnsRecord resources or by external systems:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayDnsZone
 metadata:
   name: example-root
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayDnsZone.example-root
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayDnsZone.example-root
 spec:
   domain: example.com
 ```
@@ -99,15 +99,15 @@ spec:
 A subdomain zone for `staging.example.com` with email routing (MX) and an SPF policy (TXT):
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayDnsZone
 metadata:
   name: staging-zone
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.ScalewayDnsZone.staging-zone
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.ScalewayDnsZone.staging-zone
   env: staging
   org: acme
 spec:
@@ -138,15 +138,15 @@ spec:
 A root zone for a production domain with A records, CNAME, CAA, DMARC, and mail routing:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayDnsZone
 metadata:
   name: prod-zone
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.ScalewayDnsZone.prod-zone
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.ScalewayDnsZone.prod-zone
   env: prod
   org: acme
 spec:

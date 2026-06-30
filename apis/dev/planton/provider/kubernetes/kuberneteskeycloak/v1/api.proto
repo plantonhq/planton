@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kuberneteskeycloak.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/kuberneteskeycloak/v1/spec.proto";
+import "dev/planton/provider/kubernetes/kuberneteskeycloak/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+//keycloak-kubernetes
+message KubernetesKeycloak {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.planton.dev/v1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'KubernetesKeycloak'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  KubernetesKeycloakSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  KubernetesKeycloakStatus status = 5;
+}
+
+//keycloak-kubernetes status.
+message KubernetesKeycloakStatus {
+  //stack-outputs
+  KubernetesKeycloakStackOutputs outputs = 1;
+}

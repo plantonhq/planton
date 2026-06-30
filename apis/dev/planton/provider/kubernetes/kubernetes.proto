@@ -1,0 +1,89 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes;
+
+// **Container** defines the specifications for a container within a microservice deployment configuration.
+// This message mirrors the Kubernetes container spec (https://pkg.go.dev/k8s.io/api/core/v1#Container),
+// allowing you to specify container attributes such as the image, ports, resources, and environment variables.
+// **Warning:** The sidecar feature currently does not support all features of a Kubernetes container spec.
+message Container {
+  // The name of the container.
+  string name = 1;
+
+  // The container image to be used.
+  string image = 2;
+
+  // A list of ports exposed by the container.
+  repeated ContainerPort ports = 3;
+
+  // Resource specifications for the container, including CPU and memory limits and requests.
+  ContainerResources resources = 4;
+
+  // A list of environment variables to be set in the container.
+  repeated ContainerEnvVar env = 5;
+}
+
+// **ContainerResources** specifies the CPU and memory resources for a container.
+// It allows you to define resource limits and requests to manage resource allocation and ensure optimal performance.
+message ContainerResources {
+  // The resource limits for the container.
+  // Specify the maximum amount of CPU and memory that the container can use.
+  CpuMemory limits = 1;
+
+  // The resource requests for the container.
+  // Specify the minimum amount of CPU and memory that the container is guaranteed.
+  CpuMemory requests = 2;
+}
+
+// **ContainerEnvVar** represents an environment variable to be set in the container.
+// It allows you to pass configuration or sensitive information to the container at runtime.
+message ContainerEnvVar {
+  // The name of the environment variable.
+  string name = 1;
+
+  // The value of the environment variable.
+  string value = 2;
+}
+
+// **ContainerPort** specifies a network port in a single container.
+// It allows you to expose ports for communication with other services or the external network.
+message ContainerPort {
+  // The name of the port.
+  string name = 1;
+
+  // The port number on the container.
+  int32 container_port = 2;
+
+  // The protocol used by the port (e.g., "TCP" or "UDP").
+  string protocol = 3;
+}
+
+// **CpuMemory** defines CPU and memory resource quantities for a container.
+// It is used to specify the limits and requests for CPU and memory resources.
+message CpuMemory {
+  string cpu = 1;
+  string memory = 2;
+}
+
+// **ContainerImage** represents the container image information.
+// It includes the repository, tag, and optional image pull secret for private registries.
+message ContainerImage {
+  // The repository of the image (e.g., "gcr.io/project/image").
+  string repo = 1;
+
+  // The tag of the image (e.g., "latest" or "1.0.0").
+  string tag = 2;
+
+  // The name of the image pull secret for private image repositories.
+  string pull_secret_name = 3;
+}
+
+// **KubernetesSecretKey** is a wrapper for referencing a specific key within a Kubernetes Secret.
+// It is used to access sensitive data stored in secrets, such as passwords or API keys.
+message KubernetesSecretKey {
+  // The name of the Kubernetes Secret.
+  string name = 1;
+
+  // The key within the Kubernetes Secret.
+  string key = 2;
+}

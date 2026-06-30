@@ -1,0 +1,29 @@
+apiVersion: gcp.planton.dev/v1
+kind: GcpCloudSql
+metadata:
+  name: test-mysql-db
+spec:
+  projectId:
+    value: planton-testing
+  region: us-central1
+  database_engine: MYSQL
+  database_version: MYSQL_8_0
+  tier: db-n1-standard-1
+  storage_gb: 10
+  root_password: TestPassword123!
+#  network:
+#    vpc_id:
+#      value: projects/planton-testing/global/networks/my-vpc
+#    private_ip_enabled: true
+#    authorized_networks:
+#      - 203.0.113.0/24
+#  high_availability:
+#    enabled: true
+#    zone: us-central1-b
+#  backup:
+#    enabled: true
+#    start_time: "03:00"
+#    retention_days: 7
+#  database_flags:
+#    max_connections: "150"
+

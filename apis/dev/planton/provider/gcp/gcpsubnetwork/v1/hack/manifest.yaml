@@ -1,0 +1,10 @@
+apiVersion: gcp.planton.dev/v1
+kind: GcpSubnetwork
+metadata:
+  name: test-subnetwork
+spec:
+  project_id: test-project-123
+  vpc_self_link: projects/test-project-123/global/networks/test-vpc
+  subnetwork_name: test-subnetwork
+  region: us-central1
+  ip_cidr_range: 10.0.0.0/24

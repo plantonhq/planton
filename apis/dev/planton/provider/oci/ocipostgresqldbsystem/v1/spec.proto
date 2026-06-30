@@ -1,0 +1,257 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocipostgresqldbsystem.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// OciPostgresqlDbSystemSpec defines the specification for an Oracle Cloud
+// Infrastructure PostgreSQL Database System -- a fully managed PostgreSQL
+// service running on dedicated compute shapes with configurable storage
+// durability, flexible OCPU/memory sizing, and built-in backup policies.
+//
+// PostgreSQL DB Systems support read replicas via instance_count (2+ nodes),
+// regional or AD-local storage durability, and IOPS performance tiers.
+//
+// This component manages the DB System resource itself. Backups and
+// configurations are separate OCI resources with independent lifecycles
+// and are not bundled here.
+//
+// Excluded from v1:
+//   - source block (BACKUP restore) -- only fresh creation supported
+//   - patch_operations -- operational concern for replica management
+//   - apply_config -- operational concern for config change behavior
+//   - backup_policy.copy_policy -- cross-region backup copy
+//   - system_type (top-level) -- computed, rarely user-specified
+//   - defined_tags, system_tags -- managed by platform via freeform_tags
+message OciPostgresqlDbSystemSpec {
+  option (buf.validate.message).cel = {
+    id: "plain_text_password_required"
+    message: "credentials.password_details.password is required when password_type is plain_text"
+    expression: "!has(this.credentials) || !has(this.credentials.password_details) || this.credentials.password_details.password_type != 1 || this.credentials.password_details.password != ''"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "vault_secret_id_required"
+    message: "credentials.password_details.secret_id is required when password_type is vault_secret"
+    expression: "!has(this.credentials) || !has(this.credentials.password_details) || this.credentials.password_details.password_type != 2 || has(this.credentials.password_details.secret_id)"
+  };
+
+  // OCID of the compartment where the PostgreSQL DB System will be created.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OciCompartment,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartment_id"
+  ];
+
+  // Human-readable name shown in the OCI Console.
+  // Falls back to metadata.name if not provided.
+  string display_name = 2;
+
+  // PostgreSQL major version (e.g. "14", "15", "16").
+  // Only the major version is stored; minor versions are managed by OCI.
+  // Changing this forces recreation.
+  string db_version = 3 [(buf.validate.field).string.min_len = 1];
+
+  // Compute shape for the DB System instances. The provider automatically
+  // prefixes "PostgreSQL." if not present. For flexible shapes, set
+  // instance_ocpu_count and instance_memory_size_in_gbs separately.
+  // Example: "VM.Standard.E4.Flex".
+  string shape = 4 [(buf.validate.field).string.min_len = 1];
+
+  // Number of OCPUs allocated to each database instance. Used with
+  // flexible shapes (e.g. VM.Standard.E4.Flex). Updatable.
+  int32 instance_ocpu_count = 5;
+
+  // Amount of memory in gigabytes allocated to each database instance.
+  // Used with flexible shapes. Updatable.
+  int32 instance_memory_size_in_gbs = 6;
+
+  // Number of database instances (nodes). 1 creates a standalone system;
+  // 2 or more creates read replicas for read scaling and availability.
+  int32 instance_count = 7;
+
+  // Network configuration for the DB System. Required.
+  NetworkDetails network_details = 8 [(buf.validate.field).required = true];
+
+  // Storage configuration for the DB System. Required.
+  StorageDetails storage_details = 9 [(buf.validate.field).required = true];
+
+  // Initial database credentials. When omitted, the provider applies
+  // defaults. The entire credentials block is immutable after creation
+  // (changing it forces recreation).
+  Credentials credentials = 10;
+
+  // Management policy controlling backup schedule and maintenance window.
+  ManagementPolicy management_policy = 11;
+
+  // OCID of a PostgreSQL configuration to apply. Configurations define
+  // server parameter settings (shared_buffers, max_connections, etc.).
+  // When omitted, the default configuration for the shape is used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef config_id = 12;
+
+  // User-provided description of the DB System.
+  string description = 13;
+
+  // Per-instance configuration details. When specified, the list size
+  // must match instance_count. Allows pinning display names, descriptions,
+  // and private IP addresses per instance. Changing this forces recreation.
+  repeated InstanceDetails instances_details = 14;
+
+  // ---------------------------------------------------------------------------
+  // Nested messages
+  // ---------------------------------------------------------------------------
+
+  // NetworkDetails configures the network placement for the DB System.
+  message NetworkDetails {
+    // OCID of the subnet where the DB System will be placed.
+    // Changing this forces recreation.
+    dev.planton.shared.foreignkey.v1.StringValueOrRef subnet_id = 1 [
+      (buf.validate.field).required = true,
+      (dev.planton.shared.foreignkey.v1.default_kind) = OciSubnet,
+      (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+    ];
+
+    // OCIDs of network security groups for the DB System instances.
+    repeated dev.planton.shared.foreignkey.v1.StringValueOrRef nsg_ids = 2 [
+      (dev.planton.shared.foreignkey.v1.default_kind) = OciSecurityGroup,
+      (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_security_group_id"
+    ];
+
+    // When true, a reader endpoint is created for distributing read
+    // queries across replica instances.
+    optional bool is_reader_endpoint_enabled = 3;
+
+    // Specific private IP address for the primary (read-write) endpoint.
+    // When omitted, OCI auto-assigns an available IP from the subnet.
+    // Changing this forces recreation.
+    string primary_db_endpoint_private_ip = 4;
+  }
+
+  // StorageDetails configures the storage backend for the DB System.
+  // The storage system_type is hardcoded to OCI_OPTIMIZED_STORAGE in IaC
+  // modules (the only valid value today).
+  message StorageDetails {
+    // When true, data is replicated across multiple availability domains
+    // for regional durability. When false, data resides in a single AD
+    // and availability_domain must be specified. Changing this forces
+    // recreation.
+    bool is_regionally_durable = 1;
+
+    // Availability domain for AD-local storage. Required when
+    // is_regionally_durable is false. Ignored when is_regionally_durable
+    // is true. Example: "Uocm:PHX-AD-1". Changing this forces recreation.
+    string availability_domain = 2;
+
+    // Guaranteed input/output storage requests per second (IOPS).
+    // Determines the performance tier. See OCI documentation for
+    // supported values per shape. Updatable.
+    int64 iops = 3;
+  }
+
+  // Credentials configures the initial database administrator account.
+  // The entire block is immutable after creation.
+  message Credentials {
+    // Administrator username. Changing this forces recreation.
+    string username = 1 [(buf.validate.field).string.min_len = 1];
+
+    // Password configuration using either a plain-text password or
+    // an OCI Vault secret reference.
+    PasswordDetails password_details = 2 [(buf.validate.field).required = true];
+  }
+
+  // PasswordDetails configures the database administrator password.
+  // Uses a discriminator pattern: set password_type to select between
+  // plain-text and Vault secret approaches.
+  message PasswordDetails {
+    // Password type discriminator.
+    PasswordType password_type = 1;
+
+    // Database password in plain text. Required when password_type
+    // is plain_text. Not returned by the API after creation.
+    string password = 2 [(dev.planton.shared.options.sensitive) = true];
+
+    // OCID of the OCI Vault secret containing the password.
+    // Required when password_type is vault_secret.
+    dev.planton.shared.foreignkey.v1.StringValueOrRef secret_id = 3;
+
+    // Version of the Vault secret to use. When omitted, the latest
+    // version is used.
+    string secret_version = 4;
+  }
+
+  // ManagementPolicy configures backup scheduling and maintenance windows.
+  message ManagementPolicy {
+    // Backup policy for the DB System.
+    BackupPolicy backup_policy = 1;
+
+    // Start of the maintenance window in UTC. Format:
+    // "{day-of-week} {time-of-day}" (e.g. "tue 02:00:00").
+    string maintenance_window_start = 2;
+  }
+
+  // BackupPolicy configures automatic backups for the DB System.
+  // The kind field determines which schedule fields are relevant:
+  // daily requires backup_start; weekly adds days_of_the_week;
+  // monthly adds days_of_the_month; none disables backups.
+  message BackupPolicy {
+    // Backup schedule kind.
+    BackupKind kind = 1;
+
+    // Hour of the day (UTC) when the backup starts.
+    // Required for daily, weekly, and monthly kinds.
+    string backup_start = 2;
+
+    // Number of days to retain backups after the DB System is deleted.
+    int32 retention_days = 3;
+
+    // Days of the month when backups run (1-28). Required for monthly.
+    repeated int32 days_of_the_month = 4 [(buf.validate.field).repeated.max_items = 28];
+
+    // Days of the week when backups run (e.g. "MONDAY", "FRIDAY").
+    // Required for weekly.
+    repeated string days_of_the_week = 5;
+  }
+
+  // InstanceDetails configures per-instance properties. When provided,
+  // the list size should match instance_count. All fields in this message
+  // are immutable after creation.
+  message InstanceDetails {
+    // Display name for this database instance node.
+    string display_name = 1;
+
+    // Description of this database instance node.
+    string description = 2;
+
+    // Specific private IP address for this instance within the subnet.
+    // When omitted, OCI auto-assigns an available IP.
+    string private_ip = 3;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Enums
+  // ---------------------------------------------------------------------------
+
+  // PasswordType selects the credential management strategy.
+  enum PasswordType {
+    password_type_unspecified = 0;
+    // Plain-text password provided directly.
+    plain_text = 1;
+    // Password stored in an OCI Vault secret.
+    vault_secret = 2;
+  }
+
+  // BackupKind selects the backup schedule frequency.
+  enum BackupKind {
+    backup_kind_unspecified = 0;
+    // Daily backups at the specified backup_start time.
+    daily = 1;
+    // Weekly backups on specified days_of_the_week.
+    weekly = 2;
+    // Monthly backups on specified days_of_the_month.
+    monthly = 3;
+    // Backups disabled.
+    none = 4;
+  }
+}

@@ -22,7 +22,7 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - 'apis/org/openmcf/provider/auth0/**'
+      - 'apis/dev/planton/provider/auth0/**'
       - 'e2e/auth0/**'
       - 'e2e/framework/**'
       - 'pkg/iac/**'

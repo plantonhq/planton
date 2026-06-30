@@ -6,9 +6,9 @@
 
 ## Summary
 
-Implemented a complete **KubernetesNamespace** deployment component following the "Namespace-as-a-Service" pattern, enabling declarative creation of production-ready Kubernetes namespaces with resource quotas, network policies, service mesh integration, and pod security standards. Additionally, fixed critical path issues in 8 forge Python scripts that were creating files in the wrong directory structure (`apis/project/planton/` instead of `apis/org/openmcf/`), ensuring all future component generation works correctly.
+Implemented a complete **KubernetesNamespace** deployment component following the "Namespace-as-a-Service" pattern, enabling declarative creation of production-ready Kubernetes namespaces with resource quotas, network policies, service mesh integration, and pod security standards. Additionally, fixed critical path issues in 8 forge Python scripts that were creating files in the wrong directory structure (`apis/project/planton/` instead of `apis/dev/planton/`), ensuring all future component generation works correctly.
 
-This represents the first Kubernetes "platform primitive" component in OpenMCF that doesn't deploy an application but rather provisions the multi-tenant environment that applications run in.
+This represents the first Kubernetes "platform primitive" component in Planton that doesn't deploy an application but rather provisions the multi-tenant environment that applications run in.
 
 ## Problem Statement / Motivation
 
@@ -35,12 +35,12 @@ Manually configuring these 7+ Kubernetes resources for each namespace is:
 During component development, discovered that all 8 forge Python scripts in `_rules/deployment-component/_scripts/` were using incorrect paths:
 
 **Incorrect**: `apis/project/planton/provider/<provider>/<component>/v1/`  
-**Correct**: `apis/org/openmcf/provider/<provider>/<component>/v1/`
+**Correct**: `apis/dev/planton/provider/<provider>/<component>/v1/`
 
 This meant any component created with the forge system would:
 - ✗ Be created in the wrong directory
 - ✗ Fail to compile with the rest of the codebase
-- ✗ Not follow OpenMCF conventions
+- ✗ Not follow Planton conventions
 - ✗ Require manual file moving and import path fixes
 
 ## Solution / What's New
@@ -134,14 +134,14 @@ Updated 8 Python scripts to use correct base paths:
 os.path.join("apis", "project", "planton", "provider", ...)
 
 # After (CORRECT)
-os.path.join("apis", "org", "openmcf", "provider", ...)
+os.path.join("apis", "org", "planton", "provider", ...)
 ```
 
 ## Implementation Details
 
 ### Proto API Definitions
 
-**Location**: `apis/org/openmcf/provider/kubernetes/kubernetesnamespace/v1/`
+**Location**: `apis/dev/planton/provider/kubernetes/kubernetesnamespace/v1/`
 
 Created 4 proto files totaling 1,400+ lines:
 
@@ -192,9 +192,9 @@ KRM wiring with metadata, spec, and status:
 
 ```proto
 message KubernetesNamespace {
-  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.openmcf.org/v1'];
+  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.planton.dev/v1'];
   string kind = 2 [(buf.validate.field).string.const = 'KubernetesNamespace'];
-  org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
   KubernetesNamespaceSpec spec = 4 [(buf.validate.field).required = true];
   KubernetesNamespaceStatus status = 5;
 }
@@ -226,7 +226,7 @@ IaC module inputs:
 ```proto
 message KubernetesNamespaceStackInput {
   KubernetesNamespace target = 1;
-  org.openmcf.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+  dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
 }
 ```
 
@@ -527,7 +527,7 @@ Comprehensive research documentation covering:
 
 ### Cloud Resource Kind Registration
 
-**File**: `apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto`
+**File**: `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto`
 
 Added enum entry:
 
@@ -549,7 +549,7 @@ KubernetesNamespace = 836 [(kind_meta) = {
 Test manifest with realistic configuration:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesNamespace
 metadata:
   name: test-namespace
@@ -630,7 +630,7 @@ spec:
 - Clear separation of deterministic steps (Python) from LLM drafting
 
 **Path Fix Impact**: 
-- Single pattern: `"project", "planton"` → `"org", "openmcf"`
+- Single pattern: `"project", "planton"` → `"org", "planton"`
 - Applied consistently across all 11 scripts
 - No behavioral changes, only path corrections
 
@@ -686,7 +686,7 @@ spec:
 ### System Impact
 
 **New Capabilities**:
-1. Declarative namespace management via OpenMCF CLI
+1. Declarative namespace management via Planton CLI
 2. Multi-tenancy abstraction for Kubernetes clusters
 3. Network isolation enforcement without manual NetworkPolicy writing
 4. Service mesh integration without mesh-specific knowledge
@@ -700,11 +700,11 @@ spec:
 ### Forge Script Impact
 
 **All Future Components**: The path fix ensures that every component created with:
-- `@forge-openmcf-component`
-- `@update-openmcf-component`
-- `@complete-openmcf-component`
+- `@forge-planton-component`
+- `@update-planton-component`
+- `@complete-planton-component`
 
-...will now be created in the correct directory structure (`apis/org/openmcf/...`).
+...will now be created in the correct directory structure (`apis/dev/planton/...`).
 
 **Scripts Fixed** (11 total):
 ```
@@ -729,7 +729,7 @@ _scripts/
 ```bash
 # Create manifest
 cat > dev-namespace.yaml <<EOF
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesNamespace
 metadata:
   name: team-frontend-dev
@@ -744,23 +744,23 @@ spec:
 EOF
 
 # Validate
-openmcf validate --manifest dev-namespace.yaml
+planton validate --manifest dev-namespace.yaml
 
 # Deploy with Pulumi
-openmcf pulumi up --manifest dev-namespace.yaml --stack myorg/proj/dev
+planton pulumi up --manifest dev-namespace.yaml --stack myorg/proj/dev
 ```
 
 **What Gets Created**:
 - Namespace: `team-frontend-dev`
 - ResourceQuota: 2-4 CPU, 4-8Gi memory, 20 pods, 10 services
-- Labels: `team=frontend`, `environment=dev`, `managed-by=openmcf`
+- Labels: `team=frontend`, `environment=dev`, `managed-by=planton`
 - Pod Security: Baseline enforcement
 
 ### Example 2: Production Namespace with Maximum Security
 
 ```bash
 cat > prod-secure-namespace.yaml <<EOF
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesNamespace
 metadata:
   name: prod-api
@@ -786,7 +786,7 @@ spec:
   pod_security_standard: POD_SECURITY_STANDARD_RESTRICTED
 EOF
 
-openmcf pulumi up --manifest prod-secure-namespace.yaml
+planton pulumi up --manifest prod-secure-namespace.yaml
 ```
 
 **What Gets Created**:
@@ -840,11 +840,11 @@ make protos
 # ✅ Success: All .pb.go files generated
 
 # Component tests
-go test ./apis/org/openmcf/provider/kubernetes/kubernetesnamespace/v1
+go test ./apis/dev/planton/provider/kubernetes/kubernetesnamespace/v1
 # ✅ Success: 24/24 specs passed in 0.016s
 
 # Pulumi module compilation
-go build ./apis/org/openmcf/provider/kubernetes/kubernetesnamespace/v1/iac/pulumi/...
+go build ./apis/dev/planton/provider/kubernetes/kubernetesnamespace/v1/iac/pulumi/...
 # ✅ Success: No compilation errors
 ```
 
@@ -852,7 +852,7 @@ go build ./apis/org/openmcf/provider/kubernetes/kubernetesnamespace/v1/iac/pulum
 
 ```bash
 # Deploy to test cluster
-cd apis/org/openmcf/provider/kubernetes/kubernetesnamespace/v1/iac/pulumi
+cd apis/dev/planton/provider/kubernetes/kubernetesnamespace/v1/iac/pulumi
 make up manifest=../hack/manifest.yaml
 
 # Verify resources created
@@ -947,7 +947,7 @@ Aligns with `architecture/deployment-component.md` ideal state:
 **Created** (27 new files):
 
 ```
-apis/org/openmcf/provider/kubernetes/kubernetesnamespace/v1/
+apis/dev/planton/provider/kubernetes/kubernetesnamespace/v1/
 ├── spec.proto
 ├── api.proto
 ├── stack_input.proto
@@ -999,7 +999,7 @@ _rules/deployment-component/_scripts/
 ├── terraform_docs_write.py
 └── spec_tests_write_and_run.py
 
-apis/org/openmcf/shared/cloudresourcekind/
+apis/dev/planton/shared/cloudresourcekind/
 └── cloud_resource_kind.proto (added enum entry 836)
 ```
 
@@ -1009,23 +1009,23 @@ apis/org/openmcf/shared/cloudresourcekind/
 
 ```bash
 # Validate manifest
-openmcf validate --manifest namespace.yaml
+planton validate --manifest namespace.yaml
 
 # Deploy with Pulumi
-openmcf pulumi up --manifest namespace.yaml --stack org/project/env
+planton pulumi up --manifest namespace.yaml --stack org/project/env
 
 # Deploy with Terraform
-openmcf tofu apply --manifest namespace.yaml --auto-approve
+planton tofu apply --manifest namespace.yaml --auto-approve
 
 # Check outputs
-openmcf pulumi stack output --manifest namespace.yaml --stack org/project/env
+planton pulumi stack output --manifest namespace.yaml --stack org/project/env
 ```
 
 ### Verification
 
 ```bash
 # List all namespaces with our labels
-kubectl get namespaces -l managed-by=openmcf
+kubectl get namespaces -l managed-by=planton
 
 # Describe namespace to see labels/annotations
 kubectl describe namespace <name>
@@ -1285,17 +1285,17 @@ All namespace configurations are:
 
 **Considered**: Using Capsule instead of building our own component
 
-**Decision**: Build native OpenMCF component
+**Decision**: Build native Planton component
 
 **Rationale**:
-1. **Declarative IaC**: OpenMCF is IaC-first, Capsule is operator-first
+1. **Declarative IaC**: Planton is IaC-first, Capsule is operator-first
 2. **No Operator Dependency**: Works on any Kubernetes cluster, no install required
 3. **GitOps Native**: Manifests are self-contained, no cluster-level Tenant CRD
 4. **Multi-Cloud Consistency**: Same pattern as AWS, GCP, Azure resources
 5. **Type Safety**: Protobuf validation vs. CRD validation
 6. **Explicit**: Policy is in the manifest, not inferred by operator
 
-**Trade-off**: Capsule provides runtime policy enforcement (tenant can't create namespace without quota). OpenMCF provides IaC safety (invalid manifests rejected before deployment).
+**Trade-off**: Capsule provides runtime policy enforcement (tenant can't create namespace without quota). Planton provides IaC safety (invalid manifests rejected before deployment).
 
 ### Why Both Pulumi AND Terraform?
 
@@ -1303,7 +1303,7 @@ All namespace configurations are:
 
 **Rationale**:
 1. **User Choice**: Some teams use Pulumi (programming language), others use Terraform (HCL)
-2. **Consistency**: OpenMCF abstracts the choice - same manifest works with both
+2. **Consistency**: Planton abstracts the choice - same manifest works with both
 3. **Testing**: Implementing both validates the proto API design
 4. **Migration**: Users can switch between engines without manifest changes
 

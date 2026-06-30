@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package dev.planton.provider.openstack.openstackvolumeattach.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/openstack/openstackvolumeattach/v1/spec.proto";
+import "dev/planton/provider/openstack/openstackvolumeattach/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// OpenStackVolumeAttach is a Kubernetes Resource Model (KRM) style resource
+// for attaching an OpenStack Cinder volume to a compute instance.
+//
+// This is a "join" resource that connects two independently managed resources:
+//   - A volume (created via OpenStackVolume)
+//   - An instance (created via OpenStackInstance)
+//
+// In InfraCharts, this component appears as a visible DAG node with dependency
+// edges to both the volume and the instance, making the attachment relationship
+// explicit and transparent. The volume must be in "available" state and the
+// instance must be running before attachment can succeed.
+//
+// Volume attachments are the standard way to add persistent storage to instances.
+// Unlike ephemeral storage, attached volumes persist after instance termination
+// and can be detached and reattached to different instances.
+message OpenStackVolumeAttach {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'openstack.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OpenStackVolumeAttach'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OpenStackVolumeAttachSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OpenStackVolumeAttachStatus status = 5;
+}
+
+// OpenStackVolumeAttachStatus represents the observed state of an OpenStack
+// volume attachment.
+message OpenStackVolumeAttachStatus {
+  // stack-outputs from the IaC deployment
+  OpenStackVolumeAttachStackOutputs outputs = 1;
+}

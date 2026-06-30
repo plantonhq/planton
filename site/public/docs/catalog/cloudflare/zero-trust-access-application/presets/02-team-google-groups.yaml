@@ -1,4 +1,4 @@
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareZeroTrustAccessApplication
 metadata:
   name: my-team-google-groups

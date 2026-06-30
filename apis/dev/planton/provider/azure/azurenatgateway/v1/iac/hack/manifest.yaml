@@ -1,0 +1,14 @@
+apiVersion: azure.planton.dev/v1
+kind: AzureNatGateway
+metadata:
+  name: test-nat
+  org: test-org
+  env: dev
+spec:
+  subnet_id:
+    value: "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/test-rg/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/test-subnet"
+  idle_timeout_minutes: 4
+  public_ip_prefix_length: 28
+  tags:
+    test: "true"
+

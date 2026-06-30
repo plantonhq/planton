@@ -1,0 +1,178 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azureserviceplan.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// **AzureServicePlanSpec** defines the configuration for creating an Azure
+// App Service Plan (Microsoft.Web/serverfarms), the compute tier that hosts
+// Azure Web Apps, Function Apps, and Logic Apps.
+//
+// An App Service Plan defines a set of compute resources for a web application
+// to run. One or more apps can be configured to run on the same computing
+// resources (or in the same App Service Plan). The plan determines the region,
+// number of VM instances, size of VM instances, and pricing tier.
+//
+// **OS type**: Each plan is either Linux or Windows. The OS type is immutable
+// after creation (ForceNew). Linux plans set `reserved = true` in the Azure
+// API. All apps within a plan must share the same OS type.
+//
+// **SKU tiers** (grouped by category):
+//
+// Shared compute (apps share VMs with other customers):
+//   - Free: `F1` (60 CPU min/day, no scale-out, no SLA)
+//   - Shared: `D1` (240 CPU min/day, no scale-out, no SLA, Windows only)
+//
+// Dedicated compute (apps run on dedicated VMs):
+//   - Basic: `B1`, `B2`, `B3` (manual scale to 3 instances)
+//   - Standard: `S1`, `S2`, `S3` (auto-scale to 10 instances, staging slots)
+//   - Premium v2: `P1v2`, `P2v2`, `P3v2` (30 instances, zone redundancy)
+//   - Premium v3: `P0v3`, `P1v3`, `P2v3`, `P3v3` (30 instances, zone redundancy)
+//   - Premium v3 memory-optimized: `P1mv3`-`P5mv3` (double RAM per core)
+//
+// Dynamic compute (event-driven auto-scaling for Functions):
+//   - Consumption: `Y1` (pay-per-execution, auto-scales to 200 instances)
+//   - Elastic Premium: `EP1`, `EP2`, `EP3` (pre-warmed instances, up to 100)
+//
+// Isolated compute (runs in App Service Environment v3):
+//   - Isolated v2: `I1v2`-`I6v2`, `I1mv2`-`I5mv2` (ASE required, up to 100)
+//
+// Workflow (Logic Apps Standard):
+//   - `WS1`, `WS2`, `WS3`
+//
+// **Zone redundancy**: Supported on Premium (v2/v3), Elastic Premium,
+// Isolated v2, and Workflow SKUs. Not supported on Free, Shared, Basic,
+// or Standard SKUs. Requires `worker_count >= 2` (ideally a multiple of
+// the number of availability zones in the region).
+//
+// **Per-site scaling**: Supported on Standard and above. Allows individual
+// apps within the plan to scale independently of the plan's instance count.
+//
+// **ForceNew fields** (changing these destroys and recreates the plan):
+// `name`, `os_type`, `region`, `resource_group`.
+message AzureServicePlanSpec {
+  // The Azure region where the Service Plan will be created.
+  // Examples: "eastus", "westus2", "westeurope", "southeastasia".
+  //
+  // **ForceNew**: Changing this destroys and recreates the plan.
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The Azure Resource Group where the Service Plan will be created.
+  // Can be a literal string or a reference to an AzureResourceGroup output.
+  //
+  // **ForceNew**: Changing this destroys and recreates the plan.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef resource_group = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AzureResourceGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.resource_group_name"
+  ];
+
+  // The name of the Service Plan.
+  // Allowed characters: alphanumeric, hyphens, and underscores.
+  // Length: 1 to 60 characters.
+  //
+  // This name appears in the Azure portal and CLI. It does not need to be
+  // globally unique (uniqueness is scoped to the resource group).
+  //
+  // **ForceNew**: Changing this destroys and recreates the plan.
+  string name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 60,
+    (buf.validate.field).cel = {
+      id: "plan_name_format"
+      message: "Plan name must contain only alphanumeric characters, hyphens, and underscores"
+      expression: "this.matches('^[0-9a-zA-Z-_]{1,60}$')"
+    }
+  ];
+
+  // The operating system type for the plan.
+  // Uses Azure's exact API values for provider authenticity.
+  //
+  // Valid values:
+  // - "Linux" (default): Runs Linux-based web apps and function apps.
+  //   Sets `reserved = true` in the Azure API.
+  // - "Windows": Runs Windows-based web apps and function apps.
+  //   Sets `reserved = false` in the Azure API.
+  //
+  // All apps within a plan must share the same OS type. The D1 (Shared)
+  // SKU is Windows-only.
+  //
+  // **ForceNew**: Changing this destroys and recreates the plan.
+  optional string os_type = 4 [
+    (dev.planton.shared.options.default) = "Linux",
+    (buf.validate.field).cel = {
+      id: "os_type_valid"
+      message: "os_type must be one of: Linux, Windows"
+      expression: "this in ['Linux', 'Windows']"
+    }
+  ];
+
+  // The SKU name that determines the pricing tier and compute capacity.
+  //
+  // Common SKUs by category:
+  //   Free/Shared: "F1", "D1"
+  //   Basic:       "B1", "B2", "B3"
+  //   Standard:    "S1", "S2", "S3"
+  //   Premium v3:  "P1v3", "P2v3", "P3v3"
+  //   Consumption: "Y1" (for Azure Functions pay-per-execution)
+  //   Elastic:     "EP1", "EP2", "EP3" (for Azure Functions pre-warmed)
+  //
+  // SKU names are case-insensitive in the Azure API. The full list of valid
+  // values is documented above in the message-level comment. Validation is
+  // deferred to the Azure API to avoid maintaining a 50+ entry whitelist.
+  string sku_name = 5 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Number of VM instances (workers) allocated to the plan.
+  // Minimum: 1.
+  //
+  // If not specified, Azure defaults to the SKU's default capacity (typically 1).
+  // When `zone_balancing_enabled` is true, set this to a multiple of the
+  // number of availability zones in the region (typically 3) for even distribution.
+  //
+  // Maximum varies by SKU: Basic=3, Standard=10, Premium=30, Isolated=100.
+  // Consumption (Y1) and Elastic Premium (EP*) manage instance count automatically.
+  optional int32 worker_count = 6 [(buf.validate.field).int32 = {gte: 1}];
+
+  // Enable availability zone balancing for the plan.
+  // Distributes instances across availability zones for higher resilience.
+  //
+  // Only supported on: Premium (v2/v3), Elastic Premium (EP*), Isolated v2,
+  // and Workflow (WS*) SKUs.
+  // **Not supported on**: Free (F1), Shared (D1), Basic (B*), Standard (S*).
+  //
+  // When enabling on an existing plan with `worker_count < 2`, Azure
+  // forces the plan to be recreated (ForceNew).
+  //
+  // Default: false
+  optional bool zone_balancing_enabled = 7 [(dev.planton.shared.options.default) = "false"];
+
+  // Enable per-site scaling, allowing individual apps within the plan
+  // to scale independently of the plan's overall instance count.
+  //
+  // Supported on Standard and above SKUs. Not supported on Free, Shared,
+  // Basic, Consumption (Y1), or Elastic Premium (EP*) SKUs.
+  //
+  // Default: false
+  optional bool per_site_scaling_enabled = 8 [(dev.planton.shared.options.default) = "false"];
+
+  // Maximum number of elastic workers for the plan.
+  //
+  // Only applicable to:
+  // - Elastic Premium SKUs (EP1, EP2, EP3): Controls the upper bound on
+  //   how many workers the plan can scale to when handling events. This is
+  //   the primary cost control lever for serverless Function App workloads.
+  //   Default: 20, maximum: 100.
+  //
+  // Ignored for all other SKU tiers. Set this when using EP* plans to
+  // prevent runaway scaling costs.
+  optional int32 maximum_elastic_worker_count = 9 [(buf.validate.field).int32 = {gte: 0}];
+}

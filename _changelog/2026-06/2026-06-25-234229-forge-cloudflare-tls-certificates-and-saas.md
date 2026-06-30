@@ -102,7 +102,7 @@ precedent). Certificate SAN/host lists and the customer hostname are plain strin
 
 The Cloudflare provider family gains origin TLS, advanced edge certificates, and the
 full Cloudflare for SaaS surface (white-label customer domains) as composable nodes.
-These kinds are committed but unreleased; cutting an OpenMCF release and integrating
+These kinds are committed but unreleased; cutting an Planton release and integrating
 into Planton (catalog/wizard/search wiring) is the follow-up.
 
 ---

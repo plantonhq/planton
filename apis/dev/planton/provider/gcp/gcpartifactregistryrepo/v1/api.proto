@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcpartifactregistryrepo.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/gcp/gcpartifactregistryrepo/v1/spec.proto";
+import "dev/planton/provider/gcp/gcpartifactregistryrepo/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+//gcp-artifact-registry-repo
+message GcpArtifactRegistryRepo {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'GcpArtifactRegistryRepo'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //resource spec
+  GcpArtifactRegistryRepoSpec spec = 4 [(buf.validate.field).required = true];
+
+  //resource status
+  GcpArtifactRegistryRepoStatus status = 5;
+}
+
+//gcp-artifact-registry-repo status
+message GcpArtifactRegistryRepoStatus {
+  //stack-outputs for gcp-artifact-registry-repo
+  GcpArtifactRegistryRepoStackOutputs outputs = 1;
+}

@@ -11,14 +11,14 @@ This page covers the utility commands that support the deployment workflow: conf
 
 ## config
 
-Manage CLI configuration stored at `~/.openmcf/config.yaml`.
+Manage CLI configuration stored at `~/.planton/config.yaml`.
 
 ### config set
 
 Set a configuration value.
 
 ```bash
-openmcf config set backend-url https://api.example.com
+planton config set backend-url https://api.example.com
 ```
 
 | Argument | Description |
@@ -37,7 +37,7 @@ Available keys:
 Retrieve a configuration value.
 
 ```bash
-openmcf config get backend-url
+planton config get backend-url
 ```
 
 Prints the value to stdout. Exits with code 1 if the key is not set.
@@ -47,7 +47,7 @@ Prints the value to stdout. Exits with code 1 if the key is not set.
 List all configuration values.
 
 ```bash
-openmcf config list
+planton config list
 ```
 
 Prints all set configuration values in `key=value` format. If no values are set, prints "No configuration values set".
@@ -59,10 +59,10 @@ Validate a manifest against its Protocol Buffer schema without deploying. This r
 **Aliases**: `validate`
 
 ```bash
-openmcf validate -f database.yaml
-openmcf validate database.yaml                                # positional arg
-openmcf validate --clipboard                                  # from clipboard
-openmcf validate --kustomize-dir services/api --overlay prod  # from kustomize
+planton validate -f database.yaml
+planton validate database.yaml                                # positional arg
+planton validate --clipboard                                  # from clipboard
+planton validate --kustomize-dir services/api --overlay prod  # from kustomize
 ```
 
 The command accepts a manifest from any source: file path (as a flag or positional argument), clipboard, or kustomize build. See [Manifest Source Flags](./cli-reference#manifest-source-flags) in the CLI Reference for all input options.
@@ -83,11 +83,11 @@ Load a manifest, apply defaults and overrides, and print the resolved result. Th
 **Aliases**: `load`
 
 ```bash
-openmcf load -f database.yaml
-openmcf load database.yaml                                    # positional arg
-openmcf load --clipboard                                      # from clipboard
-openmcf load -f api.yaml --set spec.container.replicas=5      # with overrides
-openmcf load --kustomize-dir services/api --overlay prod      # from kustomize
+planton load -f database.yaml
+planton load database.yaml                                    # positional arg
+planton load --clipboard                                      # from clipboard
+planton load -f api.yaml --set spec.container.replicas=5      # with overrides
+planton load --kustomize-dir services/api --overlay prod      # from kustomize
 ```
 
 The command:
@@ -119,21 +119,21 @@ Both `validate-manifest` and `load-manifest` use the same manifest resolution lo
 | 4 | `--input-dir` | Use `{dir}/target.yaml` as the manifest |
 | 5 | `--kustomize-dir` + `--overlay` | Build manifest from kustomize configuration (both flags required) |
 
-A positional argument (e.g., `openmcf validate database.yaml`) is also accepted for backward compatibility. When a positional argument is provided, it takes precedence over all flags.
+A positional argument (e.g., `planton validate database.yaml`) is also accepted for backward compatibility. When a positional argument is provided, it takes precedence over all flags.
 
-URL manifests (paths starting with `http://` or `https://`) are downloaded to `~/.openmcf/downloads/` and cached locally.
+URL manifests (paths starting with `http://` or `https://`) are downloaded to `~/.planton/downloads/` and cached locally.
 
 ## version
 
 Display the current CLI version and check for available updates.
 
 ```bash
-openmcf version
-openmcf -v
-openmcf --version
+planton version
+planton -v
+planton --version
 ```
 
-The command prints the current version, fetches the latest available version from GitHub releases, and indicates whether an update is available. If a newer version exists, it suggests running `openmcf upgrade`.
+The command prints the current version, fetches the latest available version from GitHub releases, and indicates whether an update is available. If a newer version exists, it suggests running `planton upgrade`.
 
 ## What's Next
 

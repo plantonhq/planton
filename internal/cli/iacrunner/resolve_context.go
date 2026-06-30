@@ -5,17 +5,17 @@ import (
 	"os"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared"
-	"github.com/plantonhq/openmcf/internal/cli/cliprint"
-	"github.com/plantonhq/openmcf/internal/cli/flag"
-	climanifest "github.com/plantonhq/openmcf/internal/cli/manifest"
-	"github.com/plantonhq/openmcf/internal/cli/prompt"
-	"github.com/plantonhq/openmcf/internal/manifest"
-	"github.com/plantonhq/openmcf/pkg/iac/localmodule"
-	"github.com/plantonhq/openmcf/pkg/iac/provisioner"
-	"github.com/plantonhq/openmcf/pkg/iac/stackinput/providerdetect"
-	"github.com/plantonhq/openmcf/pkg/iac/stackinput/stackinputproviderconfig"
-	"github.com/plantonhq/openmcf/pkg/kubernetes/kubecontext"
+	"github.com/plantonhq/planton/apis/dev/planton/shared"
+	"github.com/plantonhq/planton/internal/cli/cliprint"
+	"github.com/plantonhq/planton/internal/cli/flag"
+	climanifest "github.com/plantonhq/planton/internal/cli/manifest"
+	"github.com/plantonhq/planton/internal/cli/prompt"
+	"github.com/plantonhq/planton/internal/manifest"
+	"github.com/plantonhq/planton/pkg/iac/localmodule"
+	"github.com/plantonhq/planton/pkg/iac/provisioner"
+	"github.com/plantonhq/planton/pkg/iac/stackinput/providerdetect"
+	"github.com/plantonhq/planton/pkg/iac/stackinput/stackinputproviderconfig"
+	"github.com/plantonhq/planton/pkg/kubernetes/kubecontext"
 	"github.com/spf13/cobra"
 )
 
@@ -134,7 +134,7 @@ func ResolveContext(cmd *cobra.Command) (*Context, error) {
 	}
 	ctx.KubeContext = kubeCtx
 
-	// Handle --local-module flag: derive module directory from local openmcf repo
+	// Handle --local-module flag: derive module directory from local planton repo
 	localModule, _ := cmd.Flags().GetBool(string(flag.LocalModule))
 	if localModule {
 		var iacProv shared.IacProvisioner

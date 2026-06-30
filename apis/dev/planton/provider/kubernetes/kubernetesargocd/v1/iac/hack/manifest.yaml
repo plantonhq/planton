@@ -1,0 +1,14 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesArgocd
+metadata:
+  name: test-argocd
+spec:
+  container:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 100Mi
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+

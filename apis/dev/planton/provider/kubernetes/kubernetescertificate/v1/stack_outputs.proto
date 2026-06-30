@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetescertificate.v1;
+
+// KubernetesCertificateStackOutputs captures observable outputs after
+// the Certificate is created.
+message KubernetesCertificateStackOutputs {
+  // Namespace where the Certificate resource was created.
+  string namespace = 1;
+
+  // Name of the created Certificate resource.
+  string certificate_name = 2;
+
+  // TLS Secret name. Consumers use this for Gateway certificateRefs,
+  // Ingress tls.secretName, or as ca_secret_name for a CA Issuer.
+  string secret_name = 3;
+}

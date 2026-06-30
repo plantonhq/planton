@@ -1,0 +1,21 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsRedisElasticache
+metadata:
+  name: test-redis
+  org: test-org
+  env: dev
+  id: test-redis-dev
+  labels:
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: test-org
+    pulumi.planton.dev/project: test-project
+    pulumi.planton.dev/stack.name: dev.AwsRedisElasticache.test-redis
+spec:
+  region: us-west-2
+  engine: redis
+  engineVersion: "7.1"
+  description: Test Redis cluster for development
+  nodeType: cache.t3.micro
+  numCacheClusters: 1
+  atRestEncryptionEnabled: true
+  transitEncryptionEnabled: true

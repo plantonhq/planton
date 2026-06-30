@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azuremssqlserver.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/azure/azuremssqlserver/v1/spec.proto";
+import "dev/planton/provider/azure/azuremssqlserver/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// AzureMssqlServer is the top-level API resource for an Azure SQL Database
+// logical server.
+// Azure SQL Database is a fully managed PaaS database engine that runs on the
+// latest stable SQL Server engine. The logical server is an administrative
+// container for databases, firewall rules, and connection policies.
+message AzureMssqlServer {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'azure.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'AzureMssqlServer'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  AzureMssqlServerSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  AzureMssqlServerStatus status = 5;
+}
+
+// AzureMssqlServerStatus holds the deployment status and outputs.
+message AzureMssqlServerStatus {
+  // stack-outputs
+  AzureMssqlServerStackOutputs outputs = 1;
+}

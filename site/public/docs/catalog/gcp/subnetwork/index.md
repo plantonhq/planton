@@ -12,14 +12,14 @@ Deploys a GCP VPC subnetwork in a specified region with a primary CIDR range, op
 
 ## What Gets Created
 
-When you deploy a GcpSubnetwork resource, OpenMCF provisions:
+When you deploy a GcpSubnetwork resource, Planton provisions:
 
 - **Compute Engine API enablement** — a `google_project_service` resource that ensures `compute.googleapis.com` is active in the target project
 - **Subnetwork** — a `google_compute_subnetwork` resource in the specified region and VPC, configured with the primary CIDR, secondary ranges, and Private Google Access setting
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **An existing GCP project** where the subnetwork will be created
 - **An existing VPC network** in custom subnet mode (the VPC's self-link is required)
 - **A non-overlapping primary CIDR range** that does not conflict with other subnets in the same VPC
@@ -29,15 +29,15 @@ When you deploy a GcpSubnetwork resource, OpenMCF provisions:
 Create a file `subnet.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpSubnetwork
 metadata:
   name: my-subnet
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpSubnetwork.my-subnet
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpSubnetwork.my-subnet
 spec:
   projectId: my-gcp-project
   vpcSelfLink: https://www.googleapis.com/compute/v1/projects/my-gcp-project/global/networks/my-vpc
@@ -49,7 +49,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f subnet.yaml
+planton apply -f subnet.yaml
 ```
 
 This creates a subnetwork named `my-subnet` in `us-central1` with a `/24` primary CIDR range.
@@ -82,15 +82,15 @@ This creates a subnetwork named `my-subnet` in `us-central1` with a `/24` primar
 A subnetwork that allows VMs without external IPs to access Google APIs:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpSubnetwork
 metadata:
   name: private-subnet
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpSubnetwork.private-subnet
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpSubnetwork.private-subnet
 spec:
   projectId: my-gcp-project
   vpcSelfLink: https://www.googleapis.com/compute/v1/projects/my-gcp-project/global/networks/my-vpc
@@ -105,15 +105,15 @@ spec:
 A subnetwork configured with secondary IP ranges for GKE Pod and Service CIDRs:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpSubnetwork
 metadata:
   name: gke-subnet
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpSubnetwork.gke-subnet
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpSubnetwork.gke-subnet
 spec:
   projectId: my-gcp-project
   vpcSelfLink: https://www.googleapis.com/compute/v1/projects/my-gcp-project/global/networks/prod-vpc
@@ -130,18 +130,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding IDs:
+Reference other Planton-managed resources instead of hardcoding IDs:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpSubnetwork
 metadata:
   name: ref-subnet
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpSubnetwork.ref-subnet
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpSubnetwork.ref-subnet
 spec:
   projectId:
     valueFrom:

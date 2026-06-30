@@ -12,14 +12,14 @@ Deploys an AWS SNS topic — Standard or FIFO — with inline subscriptions, opt
 
 ## What Gets Created
 
-When you deploy an AwsSnsTopic resource, OpenMCF provisions:
+When you deploy an AwsSnsTopic resource, Planton provisions:
 
 - **SNS Topic** — an `aws_sns_topic` resource configured as Standard or FIFO, with the specified encryption, access policy, delivery policy, tracing, and signature settings
 - **SNS Subscriptions** — one `aws_sns_topic_subscription` per entry in `subscriptions`, each with its protocol, endpoint, optional filter policy, raw message delivery flag, optional dead letter queue, and optional Firehose role
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **Target endpoints** must exist before subscribing (SQS queues, Lambda functions, HTTP endpoints, etc.) — use `valueFrom` references to ensure correct deployment ordering
 - **KMS key** if encryption is desired — SNS has no managed SSE option, encryption requires an explicit customer-managed KMS key
 
@@ -28,15 +28,15 @@ When you deploy an AwsSnsTopic resource, OpenMCF provisions:
 Create a file `topic.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsSnsTopic
 metadata:
   name: my-notifications
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsSnsTopic.my-notifications
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsSnsTopic.my-notifications
 spec:
   region: us-east-1
   signatureVersion: 2
@@ -45,7 +45,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f topic.yaml
+planton apply -f topic.yaml
 ```
 
 This creates a Standard SNS topic with SHA256 message signatures and all other AWS defaults.
@@ -95,15 +95,15 @@ When entries are added to `subscriptions`, each entry requires:
 Route order events to separate queues based on message attributes:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsSnsTopic
 metadata:
   name: order-events
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsSnsTopic.order-events
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsSnsTopic.order-events
 spec:
   region: us-east-1
   signatureVersion: 2
@@ -134,15 +134,15 @@ spec:
 Ordered, exactly-once delivery for payment processing:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsSnsTopic
 metadata:
   name: payment-events
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsSnsTopic.payment-events
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsSnsTopic.payment-events
 spec:
   region: us-east-1
   fifoTopic: true
@@ -165,15 +165,15 @@ spec:
 KMS-encrypted topic with a Lambda subscriber and a dead letter queue for failed deliveries:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsSnsTopic
 metadata:
   name: audit-events
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsSnsTopic.audit-events
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsSnsTopic.audit-events
 spec:
   region: us-east-1
   displayName: Audit Events

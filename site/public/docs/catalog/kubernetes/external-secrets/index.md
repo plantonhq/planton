@@ -12,7 +12,7 @@ Deploys the [External Secrets Operator](https://external-secrets.io/) (ESO) onto
 
 ## What Gets Created
 
-When you deploy a KubernetesExternalSecrets resource, OpenMCF provisions:
+When you deploy a KubernetesExternalSecrets resource, Planton provisions:
 
 - **Kubernetes Namespace** — created if `createNamespace` is `true`
 - **ServiceAccount** — a Kubernetes ServiceAccount annotated with the appropriate cloud identity binding (`iam.gke.io/gcp-service-account` for GKE, `eks.amazonaws.com/role-arn` for EKS, or `azure.workload.identity/client-id` for AKS)
@@ -36,15 +36,15 @@ When you deploy a KubernetesExternalSecrets resource, OpenMCF provisions:
 Create a file `external-secrets.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesExternalSecrets
 metadata:
   name: eso
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesExternalSecrets.eso
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesExternalSecrets.eso
 spec:
   namespace:
     value: external-secrets
@@ -66,7 +66,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f external-secrets.yaml
+planton apply -f external-secrets.yaml
 ```
 
 This installs the External Secrets Operator into the `external-secrets` namespace with GKE Workload Identity configured. The controller begins polling Google Cloud Secret Manager every 10 seconds by default.
@@ -102,7 +102,7 @@ This installs the External Secrets Operator into the `external-secrets` namespac
 | `aks.keyVaultResourceId` | `string` | Azure Key Vault resource ID that stores the secrets. |
 | `aks.managedIdentityClientId` | `string` | Client ID of an existing User-Assigned Managed Identity to bind to ESO. |
 
-> **Note on `StringValueOrRef` fields:** Fields typed as `StringValueOrRef` accept either a direct `value` string or a `valueFrom` block that references the output of another OpenMCF resource.
+> **Note on `StringValueOrRef` fields:** Fields typed as `StringValueOrRef` accept either a direct `value` string or a `valueFrom` block that references the output of another Planton resource.
 
 ## Examples
 
@@ -111,15 +111,15 @@ This installs the External Secrets Operator into the `external-secrets` namespac
 Deploy ESO on a GKE cluster with Workload Identity for Google Cloud Secret Manager access:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesExternalSecrets
 metadata:
   name: eso-gke
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesExternalSecrets.eso-gke
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesExternalSecrets.eso-gke
 spec:
   namespace:
     value: external-secrets
@@ -144,15 +144,15 @@ spec:
 Deploy ESO on an EKS cluster with IRSA for AWS Secrets Manager access. The `irsaRoleArnOverride` field lets you point to a pre-existing IAM role:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesExternalSecrets
 metadata:
   name: eso-eks
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.KubernetesExternalSecrets.eso-eks
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.KubernetesExternalSecrets.eso-eks
 spec:
   namespace:
     value: external-secrets
@@ -176,15 +176,15 @@ spec:
 Deploy ESO on an AKS cluster with Azure Workload Identity for Key Vault secret synchronization. Increase resource limits for a production workload with many ExternalSecret objects:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesExternalSecrets
 metadata:
   name: eso-aks
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesExternalSecrets.eso-aks
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesExternalSecrets.eso-aks
 spec:
   namespace:
     value: external-secrets
@@ -208,15 +208,15 @@ spec:
 Use `valueFrom` on the `namespace` field to reference a namespace managed by a separate KubernetesNamespace resource instead of hard-coding the name:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesExternalSecrets
 metadata:
   name: eso-ref
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesExternalSecrets.eso-ref
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesExternalSecrets.eso-ref
 spec:
   namespace:
     valueFrom:

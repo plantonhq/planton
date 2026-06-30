@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"testing"
 
-	testkubernetesv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/_test/testcloudresourcekubernetes/v1"
-	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
+	testkubernetesv1 "github.com/plantonhq/planton/apis/dev/planton/provider/_test/testcloudresourcekubernetes/v1"
+	foreignkeyv1 "github.com/plantonhq/planton/apis/dev/planton/shared/foreignkey/v1"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
@@ -18,7 +18,7 @@ func buildTestK8sJSON(t *testing.T) map[string]interface{} {
 	t.Helper()
 
 	msg := &testkubernetesv1.TestCloudResourceKubernetes{
-		ApiVersion: "_test.openmcf.org/v1",
+		ApiVersion: "_test.planton.dev/v1",
 		Kind:       "TestCloudResourceKubernetes",
 		Spec: &testkubernetesv1.TestCloudResourceKubernetesSpec{
 			Namespace: &foreignkeyv1.StringValueOrRef{

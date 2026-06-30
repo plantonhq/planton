@@ -12,7 +12,7 @@ Deploys a standalone DNS record in a Scaleway DNS zone. Designed as a DAG-friend
 
 ## What Gets Created
 
-When you deploy a ScalewayDnsRecord resource, OpenMCF provisions:
+When you deploy a ScalewayDnsRecord resource, Planton provisions:
 
 - **DNS Record** — a single `domain.Record` resource in the specified Scaleway DNS zone with the configured name, type, data, TTL, and optional priority
 
@@ -20,24 +20,24 @@ No tags are applied to the record because the Scaleway DNS API does not support 
 
 ## Prerequisites
 
-- **Scaleway credentials** configured via environment variables or OpenMCF provider config
+- **Scaleway credentials** configured via environment variables or Planton provider config
 - **An existing DNS zone** in Scaleway where the record will be created (can be provisioned via a ScalewayDnsZone resource or managed externally)
-- **Record data** available as a literal value or as a stack output from another OpenMCF resource (e.g., a Load Balancer IP, an Instance public IP)
+- **Record data** available as a literal value or as a stack output from another Planton resource (e.g., a Load Balancer IP, an Instance public IP)
 
 ## Quick Start
 
 Create a file `dns-record.yaml`:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayDnsRecord
 metadata:
   name: www-record
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayDnsRecord.www-record
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayDnsRecord.www-record
 spec:
   zoneName:
     value: example.com
@@ -51,7 +51,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f dns-record.yaml
+planton apply -f dns-record.yaml
 ```
 
 This creates an A record `www.example.com` pointing to `192.0.2.1` with a 1-hour TTL.
@@ -99,15 +99,15 @@ This creates an A record `www.example.com` pointing to `192.0.2.1` with a 1-hour
 A basic A record pointing a subdomain to a static IP address:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayDnsRecord
 metadata:
   name: api-record
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayDnsRecord.api-record
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayDnsRecord.api-record
 spec:
   zoneName:
     value: example.com
@@ -125,15 +125,15 @@ Two MX records for a domain with primary and backup mail servers. Each record is
 Primary mail server (`mx-primary.yaml`):
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayDnsRecord
 metadata:
   name: mx-primary
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.ScalewayDnsRecord.mx-primary
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.ScalewayDnsRecord.mx-primary
 spec:
   zoneName:
     value: example.com
@@ -149,15 +149,15 @@ spec:
 Backup mail server (`mx-backup.yaml`):
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayDnsRecord
 metadata:
   name: mx-backup
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.ScalewayDnsRecord.mx-backup
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.ScalewayDnsRecord.mx-backup
 spec:
   zoneName:
     value: example.com
@@ -175,15 +175,15 @@ spec:
 An A record whose value is dynamically resolved from a ScalewayLoadBalancer output, and whose zone comes from a ScalewayDnsZone resource. This is the primary use case for standalone DNS records -- creating explicit dependency edges in infra charts:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayDnsRecord
 metadata:
   name: lb-record
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.ScalewayDnsRecord.lb-record
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.ScalewayDnsRecord.lb-record
 spec:
   zoneName:
     valueFrom:
@@ -204,15 +204,15 @@ spec:
 A CNAME record pointing to a Kapsule cluster endpoint:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayDnsRecord
 metadata:
   name: k8s-ingress
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.ScalewayDnsRecord.k8s-ingress
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.ScalewayDnsRecord.k8s-ingress
 spec:
   zoneName:
     value: example.com

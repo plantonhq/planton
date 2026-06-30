@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kuberneteskafka.v1;
+
+import "dev/planton/provider/kubernetes/kubernetes.proto";
+
+//kafka-kubernetes stack outputs
+message KubernetesKafkaStackOutputs {
+  //name of the kubernetes namespace in which the kafka-kubernetes is created.
+  string namespace = 1;
+
+  //sasl user name of kafka-kubernetes.
+  string username = 2;
+
+  //kubernetes secret key for the password.
+  dev.planton.provider.kubernetes.KubernetesSecretKey password_secret = 3;
+
+  //external hostname of kafka bootstrap server.
+  string bootstrap_server_external_hostname = 4;
+
+  //internal hostname of kafka bootstrap server.
+  string bootstrap_server_internal_hostname = 5;
+
+  //external url of schema registry.
+  //this is set to empty when schema registry is not enabled.
+  string schema_registry_external_url = 6;
+
+  //internal url of schema registry.
+  //this is set to empty when schema registry is not enabled.
+  string schema_registry_internal_url = 7;
+
+  //external url to access kafka ui.
+  string kafka_ui_external_url = 8;
+}

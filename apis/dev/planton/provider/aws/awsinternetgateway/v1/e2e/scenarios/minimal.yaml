@@ -1,0 +1,27 @@
+# Minimal AwsInternetGateway scenario. vpcId is a value_from reference to the
+# AwsVpc prerequisite (declared via prerequisites: [AwsVpc] in the kind registry);
+# the E2E harness deploys that VPC first and resolves this reference to the created
+# vpc-id before the gateway is applied. The prerequisite VPC carries no internet
+# gateway of its own, so this standalone gateway attaches cleanly. Full metadata
+# is supplied for tagging/orphan cleanup.
+apiVersion: aws.planton.dev/v1
+kind: AwsInternetGateway
+metadata:
+  name: planton-oss-e2e-awsinternetgateway-smoke
+  id: planton-oss-e2e-awsinternetgateway-smoke
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: awsinternetgateway
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  region: us-west-2
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: planton-oss-e2e-awsvpc-prereq
+      fieldPath: status.outputs.vpc_id

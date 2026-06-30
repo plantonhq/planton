@@ -12,7 +12,7 @@ Deploys a Scaleway Public Gateway with a dedicated Flexible IP, GatewayNetwork a
 
 ## What Gets Created
 
-When you deploy a ScalewayPublicGateway resource, OpenMCF provisions:
+When you deploy a ScalewayPublicGateway resource, Planton provisions:
 
 - **Flexible IP** — a `network.PublicGatewayIp` resource providing a dedicated public IPv4 address for the gateway, managed independently so it survives gateway replacements
 - **Public Gateway** — a `network.PublicGateway` resource, the managed network appliance that performs NAT, SSH bastion proxying, and port forwarding
@@ -21,7 +21,7 @@ When you deploy a ScalewayPublicGateway resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Scaleway credentials** configured via environment variables or OpenMCF provider config
+- **Scaleway credentials** configured via environment variables or Planton provider config
 - **A Private Network** in the target region (can be created via a ScalewayPrivateNetwork resource or referenced by UUID)
 - **Zone within the Private Network's region** — Public Gateways are zonal; the zone must belong to the same region as the target Private Network (e.g., `fr-par-1` for a network in `fr-par`)
 
@@ -30,15 +30,15 @@ When you deploy a ScalewayPublicGateway resource, OpenMCF provisions:
 Create a file `public-gateway.yaml`:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayPublicGateway
 metadata:
   name: my-gateway
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayPublicGateway.my-gateway
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayPublicGateway.my-gateway
 spec:
   privateNetworkId: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
   zone: fr-par-1
@@ -49,7 +49,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f public-gateway.yaml
+planton apply -f public-gateway.yaml
 ```
 
 This creates a standard Public Gateway with NAT masquerade enabled, giving all resources in the attached Private Network outbound internet access through a single public IP.
@@ -85,18 +85,18 @@ This creates a standard Public Gateway with NAT masquerade enabled, giving all r
 
 ### NAT Gateway for a Private Network
 
-A standard gateway providing outbound internet access for private resources, referencing an OpenMCF-managed Private Network:
+A standard gateway providing outbound internet access for private resources, referencing an Planton-managed Private Network:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayPublicGateway
 metadata:
   name: nat-gateway
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayPublicGateway.nat-gateway
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayPublicGateway.nat-gateway
 spec:
   privateNetworkId:
     valueFrom:
@@ -113,15 +113,15 @@ spec:
 A gateway configured as an SSH jump host with bastion access restricted to specific CIDR ranges:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayPublicGateway
 metadata:
   name: bastion-gateway
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.ScalewayPublicGateway.bastion-gateway
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.ScalewayPublicGateway.bastion-gateway
 spec:
   privateNetworkId: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
   zone: nl-ams-1
@@ -140,15 +140,15 @@ spec:
 A production gateway with NAT, SSH bastion, PAT rules exposing internal services, SMTP enabled for an email relay, and reverse DNS configured:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayPublicGateway
 metadata:
   name: prod-gateway
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.ScalewayPublicGateway.prod-gateway
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.ScalewayPublicGateway.prod-gateway
 spec:
   privateNetworkId:
     valueFrom:

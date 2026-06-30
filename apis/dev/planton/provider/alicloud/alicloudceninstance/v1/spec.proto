@@ -1,0 +1,106 @@
+syntax = "proto3";
+
+package dev.planton.provider.alicloud.alicloudceninstance.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// AliCloudCenInstanceSpec defines the configuration for an Alibaba Cloud
+// Cloud Enterprise Network (CEN) instance with bundled child-instance
+// attachments.
+//
+// CEN is a global networking service that provides high-quality, low-latency
+// private connectivity between VPCs in different regions or between VPCs and
+// on-premises data centers (via VBR). Unlike most Alibaba Cloud resources,
+// CEN is region-agnostic -- the instance itself is not bound to a single
+// region. The region field below is used only for Alibaba Cloud API routing.
+//
+// This component bundles the CEN instance and its child-instance attachments
+// into a single deployable unit (per DD07 composite bundling) because a CEN
+// instance without attachments connects nothing.
+//
+// The bundled flow:
+//   1. Create the CEN instance.
+//   2. For each attachment entry, attach the specified VPC, VBR, or CCN
+//      to the CEN instance.
+//
+// Provider resources:
+//   Terraform: alicloud_cen_instance + alicloud_cen_instance_attachment
+//   Pulumi:    cen.Instance + cen.InstanceAttachment
+message AliCloudCenInstanceSpec {
+  // Alibaba Cloud region used for API routing. CEN is a global service so
+  // this does not restrict where attached networks reside -- each attachment
+  // declares its own region via child_instance_region_id.
+  // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // CEN instance name. 2-128 characters; must start with a letter or Chinese
+  // character; can contain digits, underscores, periods, and hyphens.
+  string cen_instance_name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 2,
+    (buf.validate.field).string.max_len = 128
+  ];
+
+  // Human-readable description of the CEN instance's purpose.
+  string description = 3;
+
+  // CIDR block overlap protection level for attached networks. When set to
+  // "REDUCED", CEN allows overlapping CIDR blocks between attached VPCs
+  // (routing is controlled by route maps). Leave empty for the default
+  // strict mode that rejects CIDR overlaps.
+  optional string protection_level = 4 [(buf.validate.field).cel = {
+    id: "protection_level_valid"
+    message: "protection_level must be empty or 'REDUCED'"
+    expression: "this == '' || this == 'REDUCED'"
+  }];
+
+  // Resource group ID for organizational access control. Leave empty to use
+  // the account's default resource group.
+  string resource_group_id = 5;
+
+  // Tags to apply to the CEN instance resource.
+  map<string, string> tags = 6;
+
+  // Child-instance attachments bundled with this CEN. Each entry attaches a
+  // VPC, VBR (Virtual Border Router), or CCN (Cloud Connect Network) to the
+  // CEN instance, enabling private connectivity between the attached networks.
+  repeated AliCloudCenAttachment attachments = 7;
+}
+
+// AliCloudCenAttachment attaches a single child instance (VPC, VBR, or CCN)
+// to the parent CEN instance. Each attachment creates an
+// alicloud_cen_instance_attachment resource in the provider.
+message AliCloudCenAttachment {
+  // ID of the child instance to attach. For VPCs this is the vpc_id; for VBRs
+  // the vbr_id; for CCNs the ccn_id. When the child is a VPC managed by
+  // Planton, use valueFrom to reference its output.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef child_instance_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AliCloudVpc,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
+  ];
+
+  // Type of the child instance being attached.
+  // Default: "VPC"
+  optional string child_instance_type = 2 [
+    (buf.validate.field).cel = {
+      id: "child_instance_type_valid"
+      message: "child_instance_type must be one of: VPC, VBR, CCN"
+      expression: "this == '' || this in ['VPC', 'VBR', 'CCN']"
+    },
+    (dev.planton.shared.options.default) = "VPC"
+  ];
+
+  // Region of the child instance. Required because CEN is global and the
+  // attached child instance can reside in any region.
+  // Examples: "cn-hangzhou", "us-west-1", "eu-central-1".
+  string child_instance_region_id = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+}

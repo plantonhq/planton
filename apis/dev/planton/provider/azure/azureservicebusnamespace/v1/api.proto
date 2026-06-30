@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azureservicebusnamespace.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/azure/azureservicebusnamespace/v1/spec.proto";
+import "dev/planton/provider/azure/azureservicebusnamespace/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// AzureServiceBusNamespace is the top-level API resource for an Azure Service
+// Bus namespace. Azure Service Bus provides fully managed enterprise message
+// brokering with message queues and publish-subscribe topics for decoupling
+// applications and services.
+message AzureServiceBusNamespace {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'azure.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'AzureServiceBusNamespace'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  AzureServiceBusNamespaceSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  AzureServiceBusNamespaceStatus status = 5;
+}
+
+// AzureServiceBusNamespaceStatus holds the deployment status and outputs.
+message AzureServiceBusNamespaceStatus {
+  // stack-outputs
+  AzureServiceBusNamespaceStackOutputs outputs = 1;
+}

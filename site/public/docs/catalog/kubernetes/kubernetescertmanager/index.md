@@ -23,7 +23,7 @@ Installs the cert-manager controller on a Kubernetes cluster for automated TLS c
 ## Quick Start
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesCertManager
 metadata:
   name: my-cert-manager

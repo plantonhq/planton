@@ -166,17 +166,17 @@ For existing deployments, users should:
 ## Files Changed
 
 **Pulumi Module (Go):**
-- `apis/org/openmcf/provider/kubernetes/kubernetesdeployment/v1/iac/pulumi/module/locals.go`
-- `apis/org/openmcf/provider/kubernetes/kubernetesdeployment/v1/iac/pulumi/module/service.go`
-- `apis/org/openmcf/provider/kubernetes/kubernetesdeployment/v1/iac/pulumi/module/deployment.go`
-- `apis/org/openmcf/provider/kubernetes/kubernetesdeployment/v1/iac/pulumi/module/configmap.go`
-- `apis/org/openmcf/provider/kubernetes/kubernetesdeployment/v1/iac/pulumi/module/pdb.go`
+- `apis/dev/planton/provider/kubernetes/kubernetesdeployment/v1/iac/pulumi/module/locals.go`
+- `apis/dev/planton/provider/kubernetes/kubernetesdeployment/v1/iac/pulumi/module/service.go`
+- `apis/dev/planton/provider/kubernetes/kubernetesdeployment/v1/iac/pulumi/module/deployment.go`
+- `apis/dev/planton/provider/kubernetes/kubernetesdeployment/v1/iac/pulumi/module/configmap.go`
+- `apis/dev/planton/provider/kubernetes/kubernetesdeployment/v1/iac/pulumi/module/pdb.go`
 
 **Terraform Module:**
-- `apis/org/openmcf/provider/kubernetes/kubernetesdeployment/v1/iac/tf/locals.tf`
-- `apis/org/openmcf/provider/kubernetes/kubernetesdeployment/v1/iac/tf/service.tf`
-- `apis/org/openmcf/provider/kubernetes/kubernetesdeployment/v1/iac/tf/deployment.tf`
-- `apis/org/openmcf/provider/kubernetes/kubernetesdeployment/v1/iac/tf/configmap.tf`
+- `apis/dev/planton/provider/kubernetes/kubernetesdeployment/v1/iac/tf/locals.tf`
+- `apis/dev/planton/provider/kubernetes/kubernetesdeployment/v1/iac/tf/service.tf`
+- `apis/dev/planton/provider/kubernetes/kubernetesdeployment/v1/iac/tf/deployment.tf`
+- `apis/dev/planton/provider/kubernetes/kubernetesdeployment/v1/iac/tf/configmap.tf`
 
 ## Related Work
 

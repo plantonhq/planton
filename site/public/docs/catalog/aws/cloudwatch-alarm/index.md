@@ -12,7 +12,7 @@ Deploys an AWS CloudWatch metric alarm that monitors a single metric or metric m
 
 ## What Gets Created
 
-When you deploy an AwsCloudwatchAlarm resource, OpenMCF provisions:
+When you deploy an AwsCloudwatchAlarm resource, Planton provisions:
 
 - **CloudWatch Metric Alarm** — an `aws_cloudwatch_metric_alarm` resource configured with the specified metric source (single metric or metric math queries), threshold, evaluation window, and actions
 
@@ -20,7 +20,7 @@ No additional sub-resources are created. The alarm is a standalone monitoring re
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **A metric to monitor** — the metric must exist in CloudWatch (published by an AWS service or custom application)
 - **An SNS topic** if configuring alarm actions (the most common action target)
 - **IAM permissions** — `cloudwatch:PutMetricAlarm`, `cloudwatch:DeleteAlarms`, `cloudwatch:DescribeAlarms`, `cloudwatch:TagResource`
@@ -30,15 +30,15 @@ No additional sub-resources are created. The alarm is a standalone monitoring re
 Create a file `alarm.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCloudwatchAlarm
 metadata:
   name: cpu-high
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsCloudwatchAlarm.cpu-high
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsCloudwatchAlarm.cpu-high
 spec:
   region: us-west-2
   comparisonOperator: GreaterThanThreshold
@@ -53,7 +53,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f alarm.yaml
+planton apply -f alarm.yaml
 ```
 
 This creates an alarm that triggers when EC2 CPU utilization exceeds 80% for 3 consecutive 5-minute periods.
@@ -128,15 +128,15 @@ Each item in `metricQueries`:
 An EC2 CPU alarm that sends to an SNS topic when CPU exceeds 80%:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCloudwatchAlarm
 metadata:
   name: ec2-cpu-alarm
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsCloudwatchAlarm.ec2-cpu-alarm
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsCloudwatchAlarm.ec2-cpu-alarm
 spec:
   region: us-west-2
   comparisonOperator: GreaterThanThreshold
@@ -160,15 +160,15 @@ spec:
 Computes ALB 5xx error rate as a percentage and alerts when it exceeds 5%:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCloudwatchAlarm
 metadata:
   name: error-rate-alarm
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsCloudwatchAlarm.error-rate-alarm
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsCloudwatchAlarm.error-rate-alarm
 spec:
   region: us-west-2
   comparisonOperator: GreaterThanThreshold
@@ -204,18 +204,18 @@ spec:
 
 ### Production Multi-Action with Foreign Key References
 
-A production SQS depth alarm using `valueFrom` to reference an OpenMCF-managed SNS topic, with actions on all three state transitions:
+A production SQS depth alarm using `valueFrom` to reference an Planton-managed SNS topic, with actions on all three state transitions:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCloudwatchAlarm
 metadata:
   name: sqs-depth-alarm
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsCloudwatchAlarm.sqs-depth-alarm
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsCloudwatchAlarm.sqs-depth-alarm
 spec:
   region: us-west-2
   comparisonOperator: GreaterThanOrEqualToThreshold

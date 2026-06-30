@@ -102,7 +102,7 @@ Reality: Supports 11-15, docs are wrong!
 
 ### 1. New Fix Operation
 
-**Created:** `fix/fix-openmcf-component.mdc` and comprehensive README
+**Created:** `fix/fix-planton-component.mdc` and comprehensive README
 
 **Purpose:** Targeted fixes with intelligent cascading updates to all related artifacts.
 
@@ -131,22 +131,22 @@ Reality: Supports 11-15, docs are wrong!
 
 **Usage:**
 ```bash
-@fix-openmcf-component <ComponentName> --explain "<detailed fix description>"
+@fix-planton-component <ComponentName> --explain "<detailed fix description>"
 ```
 
 **Examples:**
 ```bash
 # Fix validation logic
-@fix-openmcf-component GcpCertManagerCert --explain "primaryDomainName should allow wildcards *.example.com"
+@fix-planton-component GcpCertManagerCert --explain "primaryDomainName should allow wildcards *.example.com"
 
 # Fix IaC hardcoded value
-@fix-openmcf-component AwsRdsInstance --explain "backup_retention_period hardcoded to 7, should use spec field"
+@fix-planton-component AwsRdsInstance --explain "backup_retention_period hardcoded to 7, should use spec field"
 
 # Fix documentation drift
-@fix-openmcf-component PostgresKubernetes --explain "examples use deprecated 'database_name', should be 'db_identifier'"
+@fix-planton-component PostgresKubernetes --explain "examples use deprecated 'database_name', should be 'db_identifier'"
 
 # Fix test failures
-@fix-openmcf-component MongodbAtlas --explain "test expects validation on cluster_tier but spec.proto has no validation rule"
+@fix-planton-component MongodbAtlas --explain "test expects validation on cluster_tier but spec.proto has no validation rule"
 ```
 
 ### 2. Test Execution as Explicit Requirement
@@ -165,7 +165,7 @@ Reality: Supports 11-15, docs are wrong!
 **Test Execution Requirements:**
 ```bash
 # Must execute successfully
-go test ./apis/org/openmcf/provider/<provider>/<component>/v1/
+go test ./apis/dev/planton/provider/<provider>/<component>/v1/
 
 # All tests must pass
 # Validates buf.validate rules are syntactically and semantically correct
@@ -180,13 +180,13 @@ go test ./apis/org/openmcf/provider/<provider>/<component>/v1/
 
 **Where Updated:**
 - `architecture/deployment-component.md` - Ideal state definition
-- `audit/audit-openmcf-component.mdc` - Scoring logic
+- `audit/audit-planton-component.mdc` - Scoring logic
 - `audit/README.md` - Category explanations
-- `complete/complete-openmcf-component.mdc` - Validation workflow
+- `complete/complete-planton-component.mdc` - Validation workflow
 - `complete/README.md` - Success criteria
-- `update/update-openmcf-component.mdc` - Validation checkpoints
+- `update/update-planton-component.mdc` - Validation checkpoints
 - `update/README.md` - Checkpoint explanations
-- `forge/forge-openmcf-component.mdc` - Success criteria
+- `forge/forge-planton-component.mdc` - Success criteria
 - `forge/README.md` - What forge creates
 
 ### 3. Source Code Truth Principle
@@ -257,7 +257,7 @@ Component exists and has issue?
 
 ### Fix Operation Implementation
 
-**File:** `fix/fix-openmcf-component.mdc` (685 lines)
+**File:** `fix/fix-planton-component.mdc` (685 lines)
 
 **Key Features:**
 
@@ -334,7 +334,7 @@ Phase 3: Validation (ALWAYS)
 **4. Comprehensive Validation**
 ```bash
 # Component-specific tests (validates buf.validate rules work)
-go test ./apis/org/openmcf/provider/<provider>/<component>/v1/
+go test ./apis/dev/planton/provider/<provider>/<component>/v1/
 
 # Build validation (all Go code compiles)
 make build
@@ -343,7 +343,7 @@ make build
 make test
 
 # Example validation (examples work with current schema)
-openmcf validate --manifest examples.yaml
+planton validate --manifest examples.yaml
 ```
 
 ### Test Execution Integration
@@ -404,7 +404,7 @@ Category 3: Protobuf API Definitions (22.20%)
    - Updated scoring weights (Critical: 48.64%, Important: 36.36%, Nice: 15%)
    - Added explicit requirement: Tests must execute and pass
 
-2. `audit/audit-openmcf-component.mdc`
+2. `audit/audit-planton-component.mdc`
    - Split Category 3 into sub-categories with test execution
    - Updated scoring formula with new weights
    - Added validation steps for test execution
@@ -606,7 +606,7 @@ Success Criteria:
 ### Example 1: Fix Validation Bug
 
 ```bash
-@fix-openmcf-component GcpCertManagerCert --explain "primaryDomainName validation rejects *.example.com wildcards, should accept them"
+@fix-planton-component GcpCertManagerCert --explain "primaryDomainName validation rejects *.example.com wildcards, should accept them"
 ```
 
 **Execution:**
@@ -646,7 +646,7 @@ Result: Fixed in 8 minutes, all artifacts consistent
 ### Example 2: Fix Documentation Drift
 
 ```bash
-@fix-openmcf-component PostgresKubernetes --explain "examples.md uses deprecated 'database_name' field, should be 'db_identifier' from current spec"
+@fix-planton-component PostgresKubernetes --explain "examples.md uses deprecated 'database_name' field, should be 'db_identifier' from current spec"
 ```
 
 **Execution:**
@@ -676,7 +676,7 @@ Result: Fixed in 3 minutes, docs now accurate
 ### Example 3: Fix IaC Hardcoded Value
 
 ```bash
-@fix-openmcf-component AwsRdsInstance --explain "backup_retention_period hardcoded to 7 days, should use spec.backupRetentionDays field"
+@fix-planton-component AwsRdsInstance --explain "backup_retention_period hardcoded to 7 days, should use spec.backupRetentionDays field"
 ```
 
 **Execution:**
@@ -917,7 +917,7 @@ None. All changes are additive:
 **Immediate Use:**
 ```bash
 # No migration needed, start using immediately
-@fix-openmcf-component <Component> --explain "<fix description>"
+@fix-planton-component <Component> --explain "<fix description>"
 ```
 
 **When to Use Fix vs Update:**
@@ -933,11 +933,11 @@ None. All changes are additive:
 
 **Components With Failing Tests:**
 - Audit will score 2.78% lower
-- Fix tests with: `@fix-openmcf-component <Component> --explain "fix failing tests"`
+- Fix tests with: `@fix-planton-component <Component> --explain "fix failing tests"`
 - Or manual fix, then re-audit
 
 **Components Without Tests:**
-- Use: `@update-openmcf-component <Component> --scenario fill-gaps`
+- Use: `@update-planton-component <Component> --scenario fill-gaps`
 - Creates spec_test.go with validation tests
 - Validates tests pass
 

@@ -47,7 +47,7 @@ This preset creates a production MySQL 8.0 instance with high availability, TDE 
 | `<your-kms-key-id>` | KMS key ID for encryption | `AliCloudKmsKey` stack outputs |
 | `<your-resource-group-id>` | Resource group ID | Alibaba Cloud console |
 | `<your-instance-name>` | Instance name | Choose a descriptive name |
-| `<your-org>` | Organization name | Your OpenMCF org |
+| `<your-org>` | Organization name | Your Planton org |
 | `<your-team>` | Team tag value | Your team name |
 | `<compliance-standard>` | Compliance standard tag | e.g., `pci-dss`, `soc2` |
 | `<primary-database-name>` | Primary database name | e.g., `transactions` |

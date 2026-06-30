@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package dev.planton.provider.civo.civocomputeinstance.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/civo/region.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// CivoComputeInstanceSpec defines the user configuration for a Civo compute instance.
+message CivoComputeInstanceSpec {
+  // instance hostname (letters, numbers, dashes, dots; <=63 chars, no trailing dash/dot)
+  string instance_name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$",
+    (buf.validate.field).string.max_len = 63
+  ];
+
+  // region code for the instance location
+  CivoRegion region = 2 [(buf.validate.field).required = true];
+
+  // instance size (flavor) slug, e.g. "g3.small"
+  string size = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
+  ];
+
+  // base OS image slug for the instance (e.g. "ubuntu-focal")
+  string image = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+  ];
+
+  // target network for the instance (must exist in the same region)
+  dev.planton.shared.foreignkey.v1.StringValueOrRef network = 5 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = CivoVpc,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_id"
+  ];
+
+  // SSH public key(s) to enable passwordless login (optional; if empty, a password will be set)
+  repeated string ssh_key_ids = 6;
+
+  // firewall(s) to attach to the instance (must belong to the same network)
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef firewall_ids = 7 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = CivoFirewall,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.firewall_id"
+  ];
+
+  // existing storage volumes to attach to this instance (must reside in same region)
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef volume_ids = 8 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = CivoVolume,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.volume_id"
+  ];
+
+  // reserved IP to assign to this instance (optional static public IP address)
+  dev.planton.shared.foreignkey.v1.StringValueOrRef reserved_ip_id = 9 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = CivoIpAddress,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.reserved_ip_id"
+  ];
+
+  // tags for the instance (for organization, optional)
+  repeated string tags = 10 [(buf.validate.field).repeated.unique = true];
+
+  // cloud-init user data script to run on instance boot (<=32 KiB, optional)
+  string user_data = 11 [(buf.validate.field).string.max_bytes = 32768];
+}

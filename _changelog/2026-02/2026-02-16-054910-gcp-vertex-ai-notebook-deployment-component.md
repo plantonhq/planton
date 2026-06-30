@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added the GcpVertexAiNotebook deployment component (R19) to OpenMCF, enabling declarative provisioning of Vertex AI Workbench instances with GPU accelerators, CMEK encryption, private VPC networking, and pre-built or custom container images. This is the 20th GCP resource kind in the expansion project, entering the AI/ML category.
+Added the GcpVertexAiNotebook deployment component (R19) to Planton, enabling declarative provisioning of Vertex AI Workbench instances with GPU accelerators, CMEK encryption, private VPC networking, and pre-built or custom container images. This is the 20th GCP resource kind in the expansion project, entering the AI/ML category.
 
 ## Problem Statement / Motivation
 
@@ -14,9 +14,9 @@ Data scientists and ML engineers need managed JupyterLab notebook environments f
 
 ### Pain Points
 
-- No declarative YAML-based way to provision Workbench instances in OpenMCF
+- No declarative YAML-based way to provision Workbench instances in Planton
 - GPU configuration, disk encryption, and VPC networking require deep GCP knowledge
-- No integration with OpenMCF's foreign key system for composing notebooks with VPCs, service accounts, and KMS keys
+- No integration with Planton's foreign key system for composing notebooks with VPCs, service accounts, and KMS keys
 
 ## Solution / What's New
 
@@ -85,7 +85,7 @@ A complete deployment component following the Terraform `google_workbench_instan
 
 ## Impact
 
-- Adds the first AI/ML resource kind to OpenMCF's GCP provider
+- Adds the first AI/ML resource kind to Planton's GCP provider
 - Enables the planned `gcp-ml-notebook-environment` infra chart (BigQuery + Notebook + GCS + SA + VPC)
 - Total GCP resource kinds: 39 (20 new + 19 existing)
 

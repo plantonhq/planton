@@ -12,7 +12,7 @@ Deploys an Amazon FSx for Windows File Server with Active Directory integration,
 
 ## What Gets Created
 
-When you deploy an AwsFsxWindowsFileSystem resource, OpenMCF provisions:
+When you deploy an AwsFsxWindowsFileSystem resource, Planton provisions:
 
 - **Windows File System** — an `aws_fsx_windows_file_system` resource with the specified deployment type (SINGLE_AZ_1, SINGLE_AZ_2, or MULTI_AZ_1), storage capacity, and throughput
 - **Active Directory Join** — the file system joins either an AWS Managed Microsoft AD (via `activeDirectoryId`) or a self-managed AD domain (via `selfManagedActiveDirectory` with domain credentials)
@@ -22,7 +22,7 @@ When you deploy an AwsFsxWindowsFileSystem resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **At least one subnet** in a VPC (two subnets in different AZs for MULTI_AZ_1)
 - **An Active Directory domain** — either an AWS Managed Microsoft AD instance or a self-managed AD with DNS connectivity from the file system's subnets
 - **A security group** allowing SMB traffic (TCP 445) and AD communication (TCP/UDP 53, 88, 389, 636)
@@ -34,15 +34,15 @@ When you deploy an AwsFsxWindowsFileSystem resource, OpenMCF provisions:
 Create a file `windows-fs.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsFsxWindowsFileSystem
 metadata:
   name: my-windows-fs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsFsxWindowsFileSystem.my-windows-fs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsFsxWindowsFileSystem.my-windows-fs
 spec:
   region: us-west-2
   storageCapacityGib: 32
@@ -56,7 +56,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f windows-fs.yaml
+planton apply -f windows-fs.yaml
 ```
 
 This creates a SINGLE_AZ_2 Windows file system with 32 GiB SSD storage, 32 MB/s throughput, joined to an AWS Managed Microsoft AD domain, with 7-day automatic backup retention.
@@ -115,15 +115,15 @@ When using `selfManagedActiveDirectory` instead of `activeDirectoryId`:
 Minimal configuration using an existing AWS Directory Service managed AD:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsFsxWindowsFileSystem
 metadata:
   name: dev-windows-fs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsFsxWindowsFileSystem.dev-windows-fs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsFsxWindowsFileSystem.dev-windows-fs
 spec:
   region: us-west-2
   storageCapacityGib: 32
@@ -142,15 +142,15 @@ spec:
 Production file system joined to an on-premises AD with compliance audit logging:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsFsxWindowsFileSystem
 metadata:
   name: prod-windows-fs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsFsxWindowsFileSystem.prod-windows-fs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsFsxWindowsFileSystem.prod-windows-fs
 spec:
   region: us-east-1
   storageCapacityGib: 500
@@ -183,15 +183,15 @@ spec:
 Mission-critical deployment with automatic failover, DNS aliases, and provisioned IOPS:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsFsxWindowsFileSystem
 metadata:
   name: ha-windows-fs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsFsxWindowsFileSystem.ha-windows-fs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsFsxWindowsFileSystem.ha-windows-fs
 spec:
   region: us-east-1
   deploymentType: MULTI_AZ_1
@@ -225,18 +225,18 @@ spec:
 
 ### Cross-Resource References
 
-Wire the file system to other OpenMCF-managed resources using `valueFrom`:
+Wire the file system to other Planton-managed resources using `valueFrom`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsFsxWindowsFileSystem
 metadata:
   name: wired-windows-fs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsFsxWindowsFileSystem.wired-windows-fs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsFsxWindowsFileSystem.wired-windows-fs
 spec:
   region: us-east-1
   storageCapacityGib: 200

@@ -10,7 +10,7 @@ Implemented the OciAlarm deployment component -- OCI's Monitoring alarm that eva
 
 ## Problem Statement / Motivation
 
-The OpenMCF Oracle Cloud provider needs observability infrastructure to enable proactive monitoring of OCI resources. Monitoring alarms are the foundational building block for alerting -- without them, users have no declarative way to define threshold-based notifications for their OCI workloads.
+The Planton Oracle Cloud provider needs observability infrastructure to enable proactive monitoring of OCI resources. Monitoring alarms are the foundational building block for alerting -- without them, users have no declarative way to define threshold-based notifications for their OCI workloads.
 
 ### Pain Points
 
@@ -32,7 +32,7 @@ A complete deployment component (`OciAlarm`) with proto API definitions, Pulumi 
 
 **`is_enabled` as plain bool**: Proto3 default of `false` means alarms start disabled unless explicitly set to `true`. This is the safe default -- users opt-in to active alarms rather than accidentally creating firing alarms.
 
-**`destinations` as plain strings**: ONS topics (the primary alarm destination) are not OpenMCF components. Using `repeated string` instead of `repeated StringValueOrRef` keeps the spec honest about composability boundaries.
+**`destinations` as plain strings**: ONS topics (the primary alarm destination) are not Planton components. Using `repeated string` instead of `repeated StringValueOrRef` keeps the spec honest about composability boundaries.
 
 ## Implementation Details
 

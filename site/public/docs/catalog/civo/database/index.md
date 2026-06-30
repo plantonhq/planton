@@ -12,7 +12,7 @@ Deploys a managed MySQL or PostgreSQL database instance on Civo Cloud with confi
 
 ## What Gets Created
 
-When you deploy a CivoDatabase resource, OpenMCF provisions:
+When you deploy a CivoDatabase resource, Planton provisions:
 
 - **Managed Database Instance** — a `civo_database` resource running the specified engine (MySQL or PostgreSQL) at the chosen version and size, attached to the target private network
 - **Replica Nodes** — created only when `replicas` is greater than 0, adding read replicas to the database cluster (total nodes = 1 primary + replica count)
@@ -20,7 +20,7 @@ When you deploy a CivoDatabase resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Civo credentials** configured via environment variables or OpenMCF provider config
+- **Civo credentials** configured via environment variables or Planton provider config
 - **An existing Civo network** in the target region for private connectivity (can be created with CivoVpc)
 - **A Civo firewall** if restricting access to the database (can be created with CivoFirewall)
 
@@ -29,15 +29,15 @@ When you deploy a CivoDatabase resource, OpenMCF provisions:
 Create a file `civo-db.yaml`:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoDatabase
 metadata:
   name: my-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CivoDatabase.my-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CivoDatabase.my-db
 spec:
   dbInstanceName: my-db
   engine: postgres
@@ -51,7 +51,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f civo-db.yaml
+planton apply -f civo-db.yaml
 ```
 
 This creates a single-node PostgreSQL 14 instance on a `g3.db.small` plan in New York, attached to the specified private network.
@@ -85,15 +85,15 @@ This creates a single-node PostgreSQL 14 instance on a `g3.db.small` plan in New
 A minimal MySQL database for development:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoDatabase
 metadata:
   name: dev-mysql
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CivoDatabase.dev-mysql
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CivoDatabase.dev-mysql
 spec:
   dbInstanceName: dev-mysql
   engine: mysql
@@ -109,15 +109,15 @@ spec:
 A PostgreSQL cluster with two read replicas and firewall-controlled access:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoDatabase
 metadata:
   name: prod-postgres
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CivoDatabase.prod-postgres
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CivoDatabase.prod-postgres
 spec:
   dbInstanceName: prod-postgres
   engine: postgres
@@ -136,18 +136,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference OpenMCF-managed CivoVpc and CivoFirewall resources instead of hardcoding IDs:
+Reference Planton-managed CivoVpc and CivoFirewall resources instead of hardcoding IDs:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoDatabase
 metadata:
   name: ref-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CivoDatabase.ref-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CivoDatabase.ref-db
 spec:
   dbInstanceName: ref-db
   engine: postgres
@@ -167,7 +167,7 @@ spec:
         field: status.outputs.firewall_id
   tags:
     - environment:production
-    - managed-by:openmcf
+    - managed-by:planton
 ```
 
 ## Stack Outputs

@@ -5,7 +5,7 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/plantonhq/openmcf/internal/cli/cliprint"
+	"github.com/plantonhq/planton/internal/cli/cliprint"
 )
 
 // UpgradeViaHomebrew upgrades the CLI using Homebrew cask
@@ -21,16 +21,16 @@ func UpgradeViaHomebrew() error {
 		return fmt.Errorf("failed to update Homebrew: %w", err)
 	}
 
-	// Step 2: Upgrade openmcf cask
+	// Step 2: Upgrade planton cask
 	fmt.Println()
-	cliprint.PrintStep("Upgrading openmcf...")
+	cliprint.PrintStep("Upgrading planton...")
 
-	upgradeCmd := exec.Command("brew", "upgrade", "--cask", "openmcf")
+	upgradeCmd := exec.Command("brew", "upgrade", "--cask", "planton")
 	upgradeCmd.Stdout = os.Stdout
 	upgradeCmd.Stderr = os.Stderr
 	if err := upgradeCmd.Run(); err != nil {
 		// brew upgrade returns non-zero if already up to date, which is fine
-		// Check if openmcf is actually installed and at latest
+		// Check if planton is actually installed and at latest
 		return fmt.Errorf("Homebrew upgrade failed: %w", err)
 	}
 
@@ -44,7 +44,7 @@ func UninstallHomebrew() error {
 	fmt.Println()
 	cliprint.PrintStep("Uninstalling via Homebrew...")
 
-	cmd := exec.Command("brew", "uninstall", "--cask", "openmcf")
+	cmd := exec.Command("brew", "uninstall", "--cask", "planton")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 

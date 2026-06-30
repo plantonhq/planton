@@ -1,0 +1,108 @@
+syntax = "proto3";
+
+package dev.planton.provider.confluent.confluentkafka.v1;
+
+import "buf/validate/validate.proto";
+
+//confluent-kafka spec
+message ConfluentKafkaSpec {
+  //cloud provider
+  //https://www.pulumi.com/registry/packages/confluentcloud/api-docs/kafkacluster/#cloud_yaml
+  string cloud = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "AWS",
+        "AZURE",
+        "GCP"
+      ]
+    }
+  ];
+
+  //region is the cloud-specific region where the cluster will be deployed (e.g., us-east-2, us-central1, eastus)
+  //https://www.pulumi.com/registry/packages/confluentcloud/api-docs/kafkacluster/#region_yaml
+  string region = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  //availability determines high availability configuration
+  //SINGLE_ZONE: Development/testing, no SLA
+  //MULTI_ZONE: Production, 99.99% SLA (required for Standard/Dedicated)
+  //LOW and HIGH are legacy values for Basic clusters
+  //https://www.pulumi.com/registry/packages/confluentcloud/api-docs/kafkacluster/#availability_yaml
+  string availability = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "SINGLE_ZONE",
+        "MULTI_ZONE",
+        "LOW",
+        "HIGH"
+      ]
+    }
+  ];
+
+  //environment_id is the ID of the Confluent Cloud environment (parent container for clusters)
+  //https://www.pulumi.com/registry/packages/confluentcloud/api-docs/kafkacluster/#environment_yaml
+  string environment_id = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  //cluster_type determines the deployment type and capabilities
+  //BASIC: Multi-tenant, development/testing, single-zone only, public internet only
+  //STANDARD: Multi-tenant, production, elastic scaling, public internet only
+  //ENTERPRISE: Multi-tenant, production, elastic scaling, supports private networking
+  //DEDICATED: Single-tenant, production, provisioned capacity (CKU), supports private networking
+  //Default: STANDARD (if not specified)
+  string cluster_type = 5 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "BASIC",
+        "STANDARD",
+        "ENTERPRISE",
+        "DEDICATED"
+      ]
+    }
+  ];
+
+  //dedicated_config is required only when cluster_type is DEDICATED
+  //configures provisioned capacity (CKU) for dedicated clusters
+  ConfluentKafkaDedicatedConfig dedicated_config = 6;
+
+  //network_config configures private networking (PrivateLink, VNet Peering, Private Service Connect)
+  //Only available for ENTERPRISE and DEDICATED cluster types
+  //Optional: If not specified, cluster uses public internet access
+  ConfluentKafkaNetworkConfig network_config = 7;
+
+  //display_name is the human-readable name shown in Confluent Cloud UI
+  //Optional: If not specified, defaults to metadata.name
+  string display_name = 8;
+}
+
+//confluent-kafka dedicated cluster configuration
+//Required when cluster_type is DEDICATED
+message ConfluentKafkaDedicatedConfig {
+  //cku (Confluent Kafka Units) is the provisioned capacity for dedicated clusters
+  //Minimum: 1 CKU, can be scaled up/down but not to zero
+  //https://www.pulumi.com/registry/packages/confluentcloud/api-docs/kafkacluster/#cku_yaml
+  int32 cku = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).int32 = {gte: 1}
+  ];
+}
+
+//confluent-kafka network configuration for private networking
+//Enables PrivateLink (AWS), Private Link (Azure), or Private Service Connect (GCP)
+//Only available for ENTERPRISE and DEDICATED cluster types
+message ConfluentKafkaNetworkConfig {
+  //network_id is the ID of the Confluent Cloud network resource
+  //Must be pre-created in the same environment
+  //https://docs.confluent.io/cloud/current/networking/overview.html
+  string network_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+}

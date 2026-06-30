@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kuberneteselasticoperator.v1;
+
+//kubernetes-elastic-operator stack outputs
+message KubernetesElasticOperatorStackOutputs {
+  //kubernetes namespace in which kubernetes-elastic-operator is created.
+  string namespace = 1;
+
+  //kubernetes service name for kubernetes-elastic-operator.
+  //ex: main-kubernetes-elastic-operator
+  //in the above example, "main" is the name of the kubernetes-elastic-operator
+  string service = 2;
+
+  //command to setup port-forwarding to open kubernetes-elastic-operator from developers laptop.
+  //this might come handy when kubernetes-elastic-operator ingress is disabled for security reasons.
+  //this is rendered by combining kubernetes_elastic_operator_kubernetes_service and kubernetes_namespace
+  //ex: kubectl port-forward svc/kubernetes_elastic_operator_kubernetes_service -n kubernetes_namespace 6379:6379
+  //running the command from this attribute makes it possible to access kubernetes-elastic-operator using http://localhost:8080
+  string port_forward_command = 3;
+
+  //kubernetes endpoint to connect to kubernetes-elastic-operator from the web browser.
+  //ex: main-kubernetes-elastic-operator.namespace.svc.cluster.local:6379
+  string kube_endpoint = 4;
+
+  //public endpoint to open kubernetes-elastic-operator from clients outside kubernetes.
+  //ex: https://gls-planton-pcs-dev-main.data.dev.planton.live:6379
+  string ingress_endpoint = 5;
+}

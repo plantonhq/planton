@@ -1,0 +1,47 @@
+apiVersion: hetzner-cloud.planton.dev/v1
+kind: HetznerCloudDnsZone
+metadata:
+  name: hetznerclouddnszone-demo
+  org: demo-org
+  env: dev
+  labels:
+    team: platform
+spec:
+  domainName: example.com
+  mode: primary
+  ttl: 3600
+  deleteProtection: false
+  recordSets:
+    - name: "@"
+      type: A
+      records:
+        - value: "93.184.216.34"
+          comment: "primary web server"
+        - value: "93.184.216.35"
+          comment: "secondary web server"
+    - name: "@"
+      type: AAAA
+      records:
+        - value: "2606:2800:220:1:248:1893:25c8:1946"
+    - name: www
+      type: CNAME
+      ttl: 3600
+      records:
+        - value: "example.com."
+    - name: "@"
+      type: MX
+      records:
+        - value: "10 mail.example.com."
+        - value: "20 mail2.example.com."
+    - name: "@"
+      type: TXT
+      records:
+        - value: "\"v=spf1 include:_spf.google.com ~all\""
+    - name: _dmarc
+      type: TXT
+      records:
+        - value: "\"v=DMARC1; p=reject; rua=mailto:dmarc@example.com\""
+    - name: "@"
+      type: CAA
+      records:
+        - value: "0 issue \"letsencrypt.org\""

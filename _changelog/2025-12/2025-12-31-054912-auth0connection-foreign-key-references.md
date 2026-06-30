@@ -21,7 +21,7 @@ Auth0 connections require a list of client IDs to specify which applications can
 
 ## Solution / What's New
 
-Changed the `enabled_clients` field from `repeated string` to `repeated StringValueOrRef`, leveraging OpenMCF's foreign key reference system. This allows users to either:
+Changed the `enabled_clients` field from `repeated string` to `repeated StringValueOrRef`, leveraging Planton's foreign key reference system. This allows users to either:
 
 1. **Direct Value**: Specify client IDs directly using `{value: "client-id"}`
 2. **Foreign Key Reference**: Reference an Auth0Client component using `{value_from: {kind: Auth0Client, name: "my-app"}}`
@@ -50,15 +50,15 @@ enabled_clients:
 
 ### Proto Schema Changes
 
-**File**: `apis/org/openmcf/provider/auth0/auth0connection/v1/spec.proto`
+**File**: `apis/dev/planton/provider/auth0/auth0connection/v1/spec.proto`
 
 ```protobuf
-import "org/openmcf/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
 
 // enabled_clients changed from repeated string to:
-repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef enabled_clients = 3 [
-  (org.openmcf.shared.foreignkey.v1.default_kind) = Auth0Client,
-  (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.client_id"
+repeated dev.planton.shared.foreignkey.v1.StringValueOrRef enabled_clients = 3 [
+  (dev.planton.shared.foreignkey.v1.default_kind) = Auth0Client,
+  (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.client_id"
 ];
 ```
 
@@ -68,7 +68,7 @@ The field options specify:
 
 ### Pulumi Module Updates
 
-**File**: `apis/org/openmcf/provider/auth0/auth0connection/v1/iac/pulumi/module/locals.go`
+**File**: `apis/dev/planton/provider/auth0/auth0connection/v1/iac/pulumi/module/locals.go`
 
 ```go
 // Extract values from StringValueOrRef
@@ -81,7 +81,7 @@ for _, client := range spec.EnabledClients {
 
 ### Terraform Module Updates
 
-**File**: `apis/org/openmcf/provider/auth0/auth0connection/v1/iac/tf/variables.tf`
+**File**: `apis/dev/planton/provider/auth0/auth0connection/v1/iac/tf/variables.tf`
 
 ```hcl
 enabled_clients = optional(list(object({
@@ -89,7 +89,7 @@ enabled_clients = optional(list(object({
 })))
 ```
 
-**File**: `apis/org/openmcf/provider/auth0/auth0connection/v1/iac/tf/locals.tf`
+**File**: `apis/dev/planton/provider/auth0/auth0connection/v1/iac/tf/locals.tf`
 
 ```hcl
 enabled_clients = var.spec.enabled_clients != null ? [
@@ -180,7 +180,7 @@ The migration is straightforward - wrap each client ID in a `value:` object.
 
 ```yaml
 # 1. Create the Auth0Client
-apiVersion: auth0.openmcf.org/v1
+apiVersion: auth0.planton.dev/v1
 kind: Auth0Client
 metadata:
   name: my-web-app
@@ -194,7 +194,7 @@ spec:
 
 ---
 # 2. Create Auth0Connection referencing the client
-apiVersion: auth0.openmcf.org/v1
+apiVersion: auth0.planton.dev/v1
 kind: Auth0Connection
 metadata:
   name: user-database

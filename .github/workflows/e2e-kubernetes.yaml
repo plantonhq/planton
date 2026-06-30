@@ -36,7 +36,7 @@ on:
         type: string
   pull_request:
     paths:
-      - 'apis/org/openmcf/provider/kubernetes/**'
+      - 'apis/dev/planton/provider/kubernetes/**'
       - 'e2e/**'
       - 'pkg/iac/**'
       - 'pkg/e2e/**'

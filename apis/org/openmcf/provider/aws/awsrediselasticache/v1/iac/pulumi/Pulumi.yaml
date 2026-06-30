@@ -1,3 +1,0 @@
-name: aws-redis-elasticache
-runtime: go
-description: Deploy an AWS ElastiCache Redis/Valkey replication group using OpenMCF

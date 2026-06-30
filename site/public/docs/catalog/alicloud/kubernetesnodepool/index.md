@@ -12,7 +12,7 @@ Deploys a worker node pool in an Alibaba Cloud ACK Managed Kubernetes cluster wi
 
 ## What Gets Created
 
-When you deploy an AliCloudKubernetesNodePool resource, OpenMCF provisions:
+When you deploy an AliCloudKubernetesNodePool resource, Planton provisions:
 
 - **ACK Node Pool** — an `alicloud_cs_kubernetes_node_pool` resource containing a group of ECS worker nodes with shared instance configuration, scaling policy, and Kubernetes properties
 - **ECS Instances** — worker nodes provisioned within the pool based on `desiredSize` or auto-scaler decisions
@@ -20,7 +20,7 @@ When you deploy an AliCloudKubernetesNodePool resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Alibaba Cloud credentials** configured via environment variables or OpenMCF provider config
+- **Alibaba Cloud credentials** configured via environment variables or Planton provider config
 - **An existing ACK cluster** (AliCloudKubernetesCluster) to attach the node pool to
 - **At least one VSwitch** in the same VPC as the parent cluster
 - **An SSH key pair** or password for node access
@@ -30,15 +30,15 @@ When you deploy an AliCloudKubernetesNodePool resource, OpenMCF provisions:
 Create a file `node-pool.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudKubernetesNodePool
 metadata:
   name: my-pool
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudKubernetesNodePool.my-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudKubernetesNodePool.my-pool
 spec:
   region: cn-hangzhou
   clusterId:
@@ -56,7 +56,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f node-pool.yaml
+planton apply -f node-pool.yaml
 ```
 
 This creates a two-node pool with AliyunLinux3, 120 GiB cloud_essd system disks, across two Availability Zones.
@@ -128,15 +128,15 @@ This creates a two-node pool with AliyunLinux3, 120 GiB cloud_essd system disks,
 A minimal fixed-size pool for development workloads.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudKubernetesNodePool
 metadata:
   name: dev-pool
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudKubernetesNodePool.dev-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudKubernetesNodePool.dev-pool
 spec:
   region: cn-hangzhou
   clusterId:
@@ -156,17 +156,17 @@ spec:
 A production pool with auto-scaling, managed lifecycle, and multiple instance types.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudKubernetesNodePool
 metadata:
   name: prod-compute
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: infrastructure
-    pulumi.openmcf.org/stack.name: production.AliCloudKubernetesNodePool.prod-compute
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: infrastructure
+    pulumi.planton.dev/stack.name: production.AliCloudKubernetesNodePool.prod-compute
 spec:
   region: cn-hangzhou
   clusterId:
@@ -216,15 +216,15 @@ spec:
 A cost-optimized pool using spot instances with taints for batch workload isolation.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudKubernetesNodePool
 metadata:
   name: batch-spot
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AliCloudKubernetesNodePool.batch-spot
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AliCloudKubernetesNodePool.batch-spot
 spec:
   region: cn-hangzhou
   clusterId:

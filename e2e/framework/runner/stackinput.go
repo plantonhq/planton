@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/internal/manifest"
-	"github.com/plantonhq/openmcf/pkg/iac/stackinput"
+	"github.com/plantonhq/planton/internal/manifest"
+	"github.com/plantonhq/planton/pkg/iac/stackinput"
 )
 
 // BuildStackInput loads a component's hack manifest and constructs the stack-input

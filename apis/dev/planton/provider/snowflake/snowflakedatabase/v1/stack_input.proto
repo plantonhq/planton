@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.snowflake.snowflakedatabase.v1;
+
+import "dev/planton/provider/snowflake/provider.proto";
+import "dev/planton/provider/snowflake/snowflakedatabase/v1/api.proto";
+
+//snowflake-database stack-input
+message SnowflakeDatabaseStackInput {
+  //target cloud-resource
+  SnowflakeDatabase target = 1;
+  //provider-config
+  dev.planton.provider.snowflake.SnowflakeProviderConfig provider_config = 2;
+}

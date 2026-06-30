@@ -12,14 +12,14 @@ Reserves a static IP address at global scope — either a public IPv4/IPv6 addre
 
 ## What Gets Created
 
-When you deploy a GcpGlobalAddress resource, OpenMCF provisions:
+When you deploy a GcpGlobalAddress resource, Planton provisions:
 
 - **Compute Engine API enablement** — a `google_project_service` resource that activates `compute.googleapis.com` on the target project
 - **Global Address** — a `google_compute_global_address` resource with the specified name, address type, purpose, and network configuration
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **An existing GCP project** — referenced via `projectId`
 - **An existing VPC network** — required only for INTERNAL addresses, referenced via `network`
 - **IAM permissions** — `roles/compute.networkAdmin` or equivalent on the target project
@@ -29,15 +29,15 @@ When you deploy a GcpGlobalAddress resource, OpenMCF provisions:
 Create a file `global-address.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpGlobalAddress
 metadata:
   name: prod-lb-ip
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpGlobalAddress.prod-lb-ip
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpGlobalAddress.prod-lb-ip
 spec:
   projectId:
     value: my-gcp-project-123
@@ -47,7 +47,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f global-address.yaml
+planton apply -f global-address.yaml
 ```
 
 This reserves a public IPv4 address that you can reference in global forwarding rules, HTTP(S) load balancers, or DNS A records.
@@ -80,15 +80,15 @@ This reserves a public IPv4 address that you can reference in global forwarding 
 The simplest use case — reserve a public IPv4 address:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpGlobalAddress
 metadata:
   name: web-lb-ip
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpGlobalAddress.web-lb-ip
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpGlobalAddress.web-lb-ip
 spec:
   projectId:
     value: my-prod-project-123
@@ -101,15 +101,15 @@ spec:
 Reserve a `/20` private CIDR block for Cloud SQL, Redis, AlloyDB, and Filestore private networking:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpGlobalAddress
 metadata:
   name: managed-services-range
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpGlobalAddress.managed-services-range
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpGlobalAddress.managed-services-range
 spec:
   projectId:
     value: my-prod-project-123
@@ -127,15 +127,15 @@ spec:
 Reserve an internal IP for private connectivity to Google APIs or third-party services:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpGlobalAddress
 metadata:
   name: psc-google-apis
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpGlobalAddress.psc-google-apis
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpGlobalAddress.psc-google-apis
 spec:
   projectId:
     value: my-prod-project-123
@@ -152,15 +152,15 @@ spec:
 Reference a project ID from a GcpProject resource instead of hardcoding:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpGlobalAddress
 metadata:
   name: lb-ip-with-ref
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpGlobalAddress.lb-ip-with-ref
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpGlobalAddress.lb-ip-with-ref
 spec:
   projectId:
     valueFrom:

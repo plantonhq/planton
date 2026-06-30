@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.scaleway.scalewayobjectbucket.v1;
+
+import "dev/planton/provider/scaleway/provider.proto";
+import "dev/planton/provider/scaleway/scalewayobjectbucket/v1/api.proto";
+
+//scaleway-object-bucket stack-input
+message ScalewayObjectBucketStackInput {
+  //target cloud-resource
+  ScalewayObjectBucket target = 1;
+  //provider-config
+  dev.planton.provider.scaleway.ScalewayProviderConfig provider_config = 2;
+}

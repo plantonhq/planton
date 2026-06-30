@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesdaemonset.v1;
+
+import "dev/planton/provider/kubernetes/kubernetesdaemonset/v1/api.proto";
+import "dev/planton/provider/kubernetes/provider.proto";
+
+// KubernetesDaemonSetStackInput is the input for the Kubernetes DaemonSet IaC module.
+message KubernetesDaemonSetStackInput {
+  // Target cloud-resource
+  KubernetesDaemonSet target = 1;
+
+  // Provider configuration for Kubernetes
+  dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+
+  // Docker-config-json to be used for setting up image-pull-secret
+  //
+  // Why is this field important?
+  // Kubernetes needs authentication credentials to pull images from private container registries.
+  // An image pull secret is a Kubernetes secret that stores Docker registry credentials,
+  // allowing the kubelet to pull private images for your pods.
+  //
+  // When is an image pull secret needed?
+  // - Standard Kubernetes clusters: required for all private registries (GCR, ECR, Docker Hub, etc.)
+  // - Self-hosted registries: required for any private container registry
+  // - Multi-cloud deployments: needed when pulling images across cloud boundaries
+  //
+  // When is an image pull secret NOT needed?
+  // - GKE with Workload Identity: uses IAM bindings instead of explicit credentials
+  // - EKS with IRSA (IAM Roles for Service Accounts): uses AWS IAM roles for authentication
+  // - AKS with Workload Identity: uses Azure Managed Identities
+  // - Public images: no authentication required for public registries
+  //
+  // Priority order:
+  // 1. If this field is set, it takes precedence (used by Planton)
+  // 2. If not set, check metadata.labels["kubernetes.planton.io/docker-config-json-file"] for file path
+  // 3. If neither set, no image pull secret is created (assumes Workload Identity or public images)
+  //
+  // Example docker-config-json:
+  // {"auths":{"registry.example.com":{"username":"user","password":"pass","auth":"dXNlcjpwYXNz"}}}
+  //
+  // For more details on image pull secrets, see:
+  // https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  string docker_config_json = 3;
+}

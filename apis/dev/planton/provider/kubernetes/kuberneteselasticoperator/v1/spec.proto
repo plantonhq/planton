@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kuberneteselasticoperator.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/kubernetes.proto";
+import "dev/planton/provider/kubernetes/options.proto";
+import "dev/planton/provider/kubernetes/target_cluster.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// **KubernetesElasticOperatorSpec** defines the configuration for deploying Elastic Operator on a Kubernetes cluster.
+// This message specifies the parameters needed to create and manage an Elastic Operator deployment within a Kubernetes environment.
+// It includes container specifications to control resource allocation.
+message KubernetesElasticOperatorSpec {
+  // Target Kubernetes Cluster
+  dev.planton.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  // Kubernetes Namespace
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // flag to indicate if the namespace should be created
+  bool create_namespace = 3;
+
+  // The container specifications for the Elastic Operator deployment.
+  KubernetesElasticOperatorSpecContainer container = 4 [(buf.validate.field).required = true];
+}
+
+// **KubernetesElasticOperatorSpecContainer** specifies the container configuration for the Elastic Operator application.
+// It includes resource allocations for CPU and memory to ensure the application runs efficiently.
+message KubernetesElasticOperatorSpecContainer {
+  // The CPU and memory resources allocated to the Elastic Operator container.
+  dev.planton.provider.kubernetes.ContainerResources resources = 1 [(dev.planton.provider.kubernetes.default_container_resources) = {
+    limits: {
+      cpu: "1000m"
+      memory: "1Gi"
+    }
+    requests: {
+      cpu: "50m"
+      memory: "100Mi"
+    }
+  }];
+}

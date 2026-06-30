@@ -7,13 +7,13 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
-	"github.com/plantonhq/openmcf/internal/cli/cliprint"
-	"github.com/plantonhq/openmcf/internal/cli/staging"
-	"github.com/plantonhq/openmcf/internal/cli/version"
-	"github.com/plantonhq/openmcf/pkg/crkreflect"
-	"github.com/plantonhq/openmcf/pkg/fileutil"
-	"github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumibinary"
+	"github.com/plantonhq/planton/apis/dev/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/internal/cli/cliprint"
+	"github.com/plantonhq/planton/internal/cli/staging"
+	"github.com/plantonhq/planton/internal/cli/version"
+	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/fileutil"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumibinary"
 )
 
 // GetPathResult contains the module path and a cleanup function
@@ -80,7 +80,7 @@ func GetPath(moduleDir string, stackFqdn, kindName string, moduleVersion string,
 
 // tryBinaryApproach attempts to use pre-built binary for execution.
 // releaseVersion can be:
-// - CLI version like "v0.3.2" (downloads from main openmcf release)
+// - CLI version like "v0.3.2" (downloads from main planton release)
 // - Module version like "v0.3.1-pulumi-awsecsservice-20260107.01" (downloads from component-specific release)
 // Returns an error if binary is not available or download fails.
 func tryBinaryApproach(stackFqdn, kindName, releaseVersion string, noCleanup bool) (*GetPathResult, error) {
@@ -180,7 +180,7 @@ func GetPathLegacy(moduleDir string, stackFqdn, kindName string) (string, error)
 	return result.ModulePath, nil
 }
 
-// GetLocalModulePath constructs the Pulumi module path from a local openmcf git repository.
+// GetLocalModulePath constructs the Pulumi module path from a local planton git repository.
 // It takes the local repo path and kindName, and returns the path to the Pulumi module.
 // This is used when --local-module flag is specified.
 func GetLocalModulePath(localRepoPath, kindName string) (string, error) {
@@ -207,7 +207,7 @@ func getPulumiModulePath(moduleRepoDir, kindName string) (string, error) {
 
 	kindDirPath := filepath.Join(
 		moduleRepoDir,
-		"apis/org/openmcf/provider",
+		"apis/dev/planton/provider",
 		strings.ReplaceAll(kindProvider.String(), "_", ""))
 
 	pulumiModulePath := filepath.Join(
@@ -224,7 +224,7 @@ func getPulumiModulePath(moduleRepoDir, kindName string) (string, error) {
 }
 
 // getWorkspaceDir returns the path of the workspace directory to be used while initializing stack using automation api.
-// For source mode (staging/clone), workspaces are under: ~/.openmcf/pulumi/staging-workspaces/{stack-fqdn}
+// For source mode (staging/clone), workspaces are under: ~/.planton/pulumi/staging-workspaces/{stack-fqdn}
 func getWorkspaceDir(stackFqdn string) (string, error) {
 	pulumiBaseDir, err := pulumibinary.GetPulumiBaseDir()
 	if err != nil {

@@ -5,7 +5,7 @@
 # No Go or Pulumi - just the essentials for Terraform-based IaC.
 #
 # Usage:
-#   FROM ghcr.io/plantonhq/openmcf/base-images/iac-runner:terraform-v0.0.1
+#   FROM ghcr.io/plantonhq/planton/base-images/iac-runner:terraform-v0.0.1
 #
 # Build: Triggered by .github/workflows/iac-runner-terraform.yml
 # =============================================================================
@@ -18,7 +18,7 @@ ARG OPENTOFU_VERSION=1.9.1
 ENV DEBIAN_FRONTEND=noninteractive
 
 # OCI labels
-LABEL org.opencontainers.image.source="https://github.com/plantonhq/openmcf"
+LABEL org.opencontainers.image.source="https://github.com/plantonhq/planton"
 LABEL org.opencontainers.image.description="IaC Runner Terraform variant with OpenTofu"
 LABEL org.opencontainers.image.licenses="Apache-2.0"
 

@@ -12,7 +12,7 @@ Deploys ExternalDNS on Kubernetes using the official Helm chart (external-dns v1
 
 ## What Gets Created
 
-When you deploy a KubernetesExternalDns resource, OpenMCF provisions:
+When you deploy a KubernetesExternalDns resource, Planton provisions:
 
 - **Namespace** — created only when `createNamespace` is `true`
 - **ServiceAccount** — a dedicated Kubernetes ServiceAccount annotated with workload-identity bindings for the selected DNS provider (GKE Workload Identity, EKS IRSA, AKS Workload Identity, or no annotation for Cloudflare)
@@ -21,7 +21,7 @@ When you deploy a KubernetesExternalDns resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
 - **DNS provider access** — one of the following depending on your provider:
   - **GKE**: a GCP project with Cloud DNS enabled and a Google Service Account with `dns.admin` role; Workload Identity must be configured on the GKE cluster
@@ -34,15 +34,15 @@ When you deploy a KubernetesExternalDns resource, OpenMCF provisions:
 Create a file `external-dns.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesExternalDns
 metadata:
   name: my-external-dns
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesExternalDns.my-external-dns
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesExternalDns.my-external-dns
 spec:
   namespace: external-dns
   createNamespace: true
@@ -54,7 +54,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f external-dns.yaml
+planton apply -f external-dns.yaml
 ```
 
 This creates an ExternalDNS instance in the `external-dns` namespace configured to manage DNS records in Cloudflare, using ExternalDNS v0.19.0 and Helm chart version 1.19.0.
@@ -107,7 +107,7 @@ This creates an ExternalDNS instance in the `external-dns` namespace configured 
 | `cloudflare.dnsZoneId` | `string` | Cloudflare DNS zone ID to manage. Can reference a CloudflareDnsZone resource via `valueFrom`. | Required |
 | `cloudflare.isProxied` | `bool` | Enable Cloudflare proxy (orange cloud) for managed DNS records, routing traffic through Cloudflare's edge network for DDoS protection, WAF, and CDN. Default: `false`. | Optional |
 
-> **Note on `valueFrom`**: Fields marked "Can reference ... via `valueFrom`" are `StringValueOrRef` types. You can provide a literal string value directly, or use `valueFrom` to reference the output of another OpenMCF resource. See the foreign key reference example below.
+> **Note on `valueFrom`**: Fields marked "Can reference ... via `valueFrom`" are `StringValueOrRef` types. You can provide a literal string value directly, or use `valueFrom` to reference the output of another Planton resource. See the foreign key reference example below.
 
 ## Examples
 
@@ -116,15 +116,15 @@ This creates an ExternalDNS instance in the `external-dns` namespace configured 
 Deploy ExternalDNS on a GKE cluster to manage records in a Google Cloud DNS zone:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesExternalDns
 metadata:
   name: gke-external-dns
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesExternalDns.gke-external-dns
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesExternalDns.gke-external-dns
 spec:
   namespace: external-dns
   createNamespace: true
@@ -140,15 +140,15 @@ The module creates a ServiceAccount annotated with `iam.gke.io/gcp-service-accou
 Deploy ExternalDNS on an EKS cluster with an existing IRSA role:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesExternalDns
 metadata:
   name: eks-external-dns
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesExternalDns.eks-external-dns
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesExternalDns.eks-external-dns
 spec:
   namespace: external-dns
   createNamespace: true
@@ -166,15 +166,15 @@ This pins ExternalDNS to v0.15.1 and the Helm chart to 1.15.0. The ServiceAccoun
 Deploy ExternalDNS to manage Cloudflare DNS records with the proxy (orange cloud) enabled:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesExternalDns
 metadata:
   name: cf-external-dns
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesExternalDns.cf-external-dns
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesExternalDns.cf-external-dns
 spec:
   namespace: external-dns
   createNamespace: true
@@ -188,18 +188,18 @@ The module creates a Kubernetes Secret for the API token, configures ExternalDNS
 
 ### Using Foreign Key References
 
-Reference OpenMCF-managed resources instead of hardcoding values:
+Reference Planton-managed resources instead of hardcoding values:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesExternalDns
 metadata:
   name: platform-external-dns
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesExternalDns.platform-external-dns
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesExternalDns.platform-external-dns
 spec:
   namespace:
     valueFrom:
@@ -220,7 +220,7 @@ spec:
         field: status.outputs.zone_id
 ```
 
-This example references an OpenMCF-managed namespace, GCP project, and DNS zone rather than embedding literal values.
+This example references an Planton-managed namespace, GCP project, and DNS zone rather than embedding literal values.
 
 ## Stack Outputs
 

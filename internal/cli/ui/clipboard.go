@@ -32,7 +32,7 @@ func ClipboardEmpty() {
 	fmt.Println()
 
 	fmt.Printf("%s %s\n", infoIcon.Render(iconTip),
-		infoMessage.Render("Tip: You can also copy a file path - openmcf will read the file automatically."))
+		infoMessage.Render("Tip: You can also copy a file path - planton will read the file automatically."))
 
 	fmt.Println(sep)
 }
@@ -58,7 +58,7 @@ func ClipboardInvalidYAML(content []byte, parseErr error) {
 	// Show expected format
 	fmt.Println(infoTitle.Render("Expected format:"))
 	fmt.Println()
-	fmt.Printf("    %s\n", Cmd("apiVersion: kubernetes.openmcf.com/v1"))
+	fmt.Printf("    %s\n", Cmd("apiVersion: kubernetes.planton.com/v1"))
 	fmt.Printf("    %s\n", Cmd("kind: PostgresKubernetes"))
 	fmt.Printf("    %s\n", Cmd("metadata:"))
 	fmt.Printf("    %s\n", Cmd("  name: my-postgres"))
@@ -128,7 +128,7 @@ func ClipboardNotStackInput(content []byte) {
 	fmt.Println(infoTitle.Render("Expected stack input format:"))
 	fmt.Println()
 	fmt.Printf("    %s\n", Cmd("target:"))
-	fmt.Printf("    %s\n", Cmd("  apiVersion: kubernetes.openmcf.com/v1"))
+	fmt.Printf("    %s\n", Cmd("  apiVersion: kubernetes.planton.com/v1"))
 	fmt.Printf("    %s\n", Cmd("  kind: PostgresKubernetes"))
 	fmt.Printf("    %s\n", Cmd("  metadata:"))
 	fmt.Printf("    %s\n", Cmd("    name: my-postgres"))

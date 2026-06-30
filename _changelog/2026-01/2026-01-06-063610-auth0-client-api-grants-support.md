@@ -10,7 +10,7 @@ Added `api_grants` support to the Auth0Client deployment component, enabling Mac
 
 ## Problem Statement / Motivation
 
-The Auth0Client component allowed creating M2M applications with OAuth grant types, but did not support authorizing clients for specific APIs. This meant that after deploying an M2M client via OpenMCF, operators had to manually log into the Auth0 Dashboard to authorize the client and grant API scopes.
+The Auth0Client component allowed creating M2M applications with OAuth grant types, but did not support authorizing clients for specific APIs. This meant that after deploying an M2M client via Planton, operators had to manually log into the Auth0 Dashboard to authorize the client and grant API scopes.
 
 ### Pain Points
 
@@ -46,7 +46,7 @@ message Auth0ClientApiGrant {
 ### Usage Example
 
 ```yaml
-apiVersion: auth0.openmcf.org/v1
+apiVersion: auth0.planton.dev/v1
 kind: Auth0Client
 metadata:
   name: user-manager
@@ -65,7 +65,7 @@ spec:
 
 ### Proto Schema Changes
 
-**File**: `apis/org/openmcf/provider/auth0/auth0client/v1/spec.proto`
+**File**: `apis/dev/planton/provider/auth0/auth0client/v1/spec.proto`
 
 - Added `Auth0ClientApiGrant` message with:
   - `audience` (required): API identifier (Resource Server identifier)

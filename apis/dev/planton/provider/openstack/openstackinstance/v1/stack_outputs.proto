@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package dev.planton.provider.openstack.openstackinstance.v1;
+
+// OpenStackInstanceStackOutputs captures the observable outputs after
+// provisioning an OpenStack Compute instance.
+//
+// The instance_id is the primary output referenced by downstream components:
+// - OpenStackVolumeAttach (instance_id)
+message OpenStackInstanceStackOutputs {
+  // instance_id is the unique identifier (UUID) of the instance in OpenStack.
+  // This is the primary output used as a foreign key by downstream components.
+  string instance_id = 1;
+
+  // name is the name of the instance (derived from metadata.name).
+  string name = 2;
+
+  // access_ip_v4 is the best IPv4 address for accessing the instance.
+  // OpenStack computes this from the instance's network interfaces,
+  // prioritizing the access_network if one is marked.
+  string access_ip_v4 = 3;
+
+  // access_ip_v6 is the best IPv6 address for accessing the instance.
+  // Empty if the instance has no IPv6 connectivity.
+  string access_ip_v6 = 4;
+
+  // region is the OpenStack region where the instance was created.
+  string region = 5;
+}

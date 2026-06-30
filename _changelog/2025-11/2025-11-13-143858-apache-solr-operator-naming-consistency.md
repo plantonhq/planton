@@ -6,11 +6,11 @@
 
 ## Summary
 
-Renamed the `SolrOperatorKubernetes` resource to `ApacheSolrOperator` across all proto definitions, documentation, and implementation code to align with OpenMCF's naming conventions for Kubernetes addon operators. This change eliminates redundant "Kubernetes" suffixes and improves consistency with other addon resources while properly identifying the operator by its official Apache project name.
+Renamed the `SolrOperatorKubernetes` resource to `ApacheSolrOperator` across all proto definitions, documentation, and implementation code to align with Planton's naming conventions for Kubernetes addon operators. This change eliminates redundant "Kubernetes" suffixes and improves consistency with other addon resources while properly identifying the operator by its official Apache project name.
 
 ## Problem Statement / Motivation
 
-The Apache Solr Operator resource was originally named `SolrOperatorKubernetes`, which included a redundant "Kubernetes" suffix and lacked the "Apache" prefix that properly identifies this as an official Apache Software Foundation project. This naming pattern was inconsistent with OpenMCF's design philosophy and didn't adequately distinguish this operator from other potential Solr deployment methods.
+The Apache Solr Operator resource was originally named `SolrOperatorKubernetes`, which included a redundant "Kubernetes" suffix and lacked the "Apache" prefix that properly identifies this as an official Apache Software Foundation project. This naming pattern was inconsistent with Planton's design philosophy and didn't adequately distinguish this operator from other potential Solr deployment methods.
 
 ### Pain Points
 
@@ -22,7 +22,7 @@ The Apache Solr Operator resource was originally named `SolrOperatorKubernetes`,
 - **Poor Developer Experience**: The redundancy made code harder to read and type
 - **Lack of Clarity**: The name didn't clearly indicate this is the operator-based deployment approach (vs. direct StatefulSet deployments or Helm charts)
 
-The provider namespace (`org.openmcf.provider.kubernetes.addon.apachesolroperator.v1`) already clearly indicates this is a Kubernetes component, so including "Kubernetes" in every message name adds noise without value. More importantly, adding "Apache" properly attributes the operator to its upstream project.
+The provider namespace (`dev.planton.provider.kubernetes.addon.apachesolroperator.v1`) already clearly indicates this is a Kubernetes component, so including "Kubernetes" in every message name adds noise without value. More importantly, adding "Apache" properly attributes the operator to its upstream project.
 
 ## Solution / What's New
 
@@ -36,15 +36,15 @@ Performed a comprehensive rename from `SolrOperatorKubernetes` to `ApacheSolrOpe
 
 ### Naming Convention
 
-The new naming follows OpenMCF's established pattern while properly identifying the upstream project:
+The new naming follows Planton's established pattern while properly identifying the upstream project:
 
 ```yaml
 # Before
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: SolrOperatorKubernetes
 
 # After
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: ApacheSolrOperator
 ```
 
@@ -53,13 +53,13 @@ The name "ApacheSolrOperator" clearly communicates:
 - **Solr**: The search platform being operated
 - **Operator**: Kubernetes operator-based deployment (not raw StatefulSets or standalone Helm)
 
-The directory was renamed from `solroperatorkubernetes` to `apachesolroperator` to match the new naming, with package namespace updated to `org.openmcf.provider.kubernetes.addon.apachesolroperator.v1`.
+The directory was renamed from `solroperatorkubernetes` to `apachesolroperator` to match the new naming, with package namespace updated to `dev.planton.provider.kubernetes.addon.apachesolroperator.v1`.
 
 ## Implementation Details
 
 ### Proto File Changes
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/apachesolroperator/v1/api.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/apachesolroperator/v1/api.proto`
 
 ```protobuf
 // Before
@@ -77,41 +77,41 @@ message ApacheSolrOperator {
 }
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/apachesolroperator/v1/spec.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/apachesolroperator/v1/spec.proto`
 
 ```protobuf
 // Before
 message SolrOperatorKubernetesSpec {
-  org.openmcf.shared.kubernetes.KubernetesAddonTargetCluster target_cluster = 1;
+  dev.planton.shared.kubernetes.KubernetesAddonTargetCluster target_cluster = 1;
   SolrOperatorKubernetesSpecContainer container = 2;
 }
 
 // After
 message ApacheSolrOperatorSpec {
-  org.openmcf.shared.kubernetes.KubernetesAddonTargetCluster target_cluster = 1;
+  dev.planton.shared.kubernetes.KubernetesAddonTargetCluster target_cluster = 1;
   ApacheSolrOperatorSpecContainer container = 2;
 }
 ```
 
 Updated comments to properly reflect Apache Solr Operator instead of copy-pasted references.
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/apachesolroperator/v1/stack_input.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/apachesolroperator/v1/stack_input.proto`
 
 ```protobuf
 // Before
 message SolrOperatorKubernetesStackInput {
   SolrOperatorKubernetes target = 1;
-  org.openmcf.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+  dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
 }
 
 // After
 message ApacheSolrOperatorStackInput {
   ApacheSolrOperator target = 1;
-  org.openmcf.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+  dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
 }
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/apachesolroperator/v1/stack_outputs.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/apachesolroperator/v1/stack_outputs.proto`
 
 ```protobuf
 // Before
@@ -133,7 +133,7 @@ Updated all comments throughout to reference `apache-solr-operator` consistently
 
 ### Registry Update
 
-**File**: `apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto`
+**File**: `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto`
 
 ```protobuf
 // Before
@@ -155,7 +155,7 @@ ApacheSolrOperator = 828 [(kind_meta) = {
 
 ### Implementation Code Changes
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/apachesolroperator/v1/iac/pulumi/main.go`
+**File**: `apis/dev/planton/provider/kubernetes/addon/apachesolroperator/v1/iac/pulumi/main.go`
 
 ```go
 // Before
@@ -167,7 +167,7 @@ stackInput := &apachesolroperatorv1.ApacheSolrOperatorStackInput{}
 
 Package imports were also updated to reference `apachesolroperator` instead of `solroperatorkubernetes`.
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/apachesolroperator/v1/iac/pulumi/module/main.go`
+**File**: `apis/dev/planton/provider/kubernetes/addon/apachesolroperator/v1/iac/pulumi/module/main.go`
 
 ```go
 // Before
@@ -181,7 +181,7 @@ Updated function comment to reference "Apache Solr Operator Kubernetes add-on".
 
 ### Documentation Updates
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/apachesolroperator/v1/docs/README.md`
+**File**: `apis/dev/planton/provider/kubernetes/addon/apachesolroperator/v1/docs/README.md`
 
 Updated title and all references throughout the comprehensive deployment guide:
 - Title: "Deploying Apache Solr Operator on Kubernetes: From Anti-Patterns to Production-Ready Operators"
@@ -221,14 +221,14 @@ Proto message names are now more concise and properly attributed:
 ### Naming Consistency
 
 Aligns with the pattern where the provider namespace provides sufficient context:
-- Package: `org.openmcf.provider.kubernetes.addon.apachesolroperator.v1`
+- Package: `dev.planton.provider.kubernetes.addon.apachesolroperator.v1`
 - Directory: `apachesolroperator`
 - Kind: `ApacheSolrOperator` (context is already clear from package)
 - Follows the same pattern as `AltinityOperator` refactoring
 
 ### Proper Attribution
 
-The "Apache" prefix properly credits the upstream Apache Software Foundation project, making it clear this is not a OpenMCF custom implementation but integration with the official Apache Solr Operator.
+The "Apache" prefix properly credits the upstream Apache Software Foundation project, making it clear this is not a Planton custom implementation but integration with the official Apache Solr Operator.
 
 ### Developer Experience
 
@@ -248,7 +248,7 @@ Users must update their YAML manifests:
 
 ```yaml
 # Update required
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: ApacheSolrOperator  # Changed from: SolrOperatorKubernetes
 metadata:
   name: solr-operator-prod
@@ -300,7 +300,7 @@ spec:
 This refactoring follows the pattern established in:
 - **AltinityOperator Naming Consistency** (`2025-11-13-120651-altinity-operator-naming-consistency.md`) - Same refactoring approach for the Altinity ClickHouse Operator
 
-This is part of an ongoing effort to improve naming consistency across OpenMCF's Kubernetes addon operators. The refactoring also included renaming the directory from `solroperatorkubernetes` to `apachesolroperator` to maintain consistency between the directory name, package name, and resource kind.
+This is part of an ongoing effort to improve naming consistency across Planton's Kubernetes addon operators. The refactoring also included renaming the directory from `solroperatorkubernetes` to `apachesolroperator` to maintain consistency between the directory name, package name, and resource kind.
 
 ## Migration Notes
 
@@ -311,7 +311,7 @@ For users with existing manifests:
    find . -name "*.yaml" -type f -exec sed -i '' 's/kind: SolrOperatorKubernetes/kind: ApacheSolrOperator/g' {} +
    ```
 
-2. **No CLI changes required** - The `openmcf` CLI will work with the new kind name automatically after updating to the version with this change
+2. **No CLI changes required** - The `planton` CLI will work with the new kind name automatically after updating to the version with this change
 
 3. **No infrastructure impact** - Existing deployed resources are unaffected; this only affects new deployments
 

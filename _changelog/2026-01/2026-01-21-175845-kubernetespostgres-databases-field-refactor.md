@@ -55,7 +55,7 @@ flowchart LR
 
 ### Proto Schema Change
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetespostgres/v1/spec.proto`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetespostgres/v1/spec.proto`
 
 Added new message type:
 

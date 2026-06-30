@@ -1,7 +1,7 @@
 package iacflags
 
 import (
-	"github.com/plantonhq/openmcf/internal/cli/flag"
+	"github.com/plantonhq/planton/internal/cli/flag"
 	"github.com/spf13/cobra"
 )
 

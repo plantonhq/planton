@@ -6,7 +6,7 @@
 
 ## Summary
 
-Annotates 8 more cloud-resource secret fields with `(org.openmcf.shared.options.sensitive) = true`, closing two of the four deferral buckets from the big-bang annotation sweep: **R** (secrets nested in repeated rows, 7 fields) and **FK** (a secret that is also a foreign-key reference, 1 field). With these, a sensitive field can never hold a plaintext literal — only a managed-secret reference resolved just-in-time on the runner. The secret-coverage baseline shrinks from 20 deferred gaps to **12** (only the C env-secret-maps and D secret-holder-kind buckets remain).
+Annotates 8 more cloud-resource secret fields with `(dev.planton.shared.options.sensitive) = true`, closing two of the four deferral buckets from the big-bang annotation sweep: **R** (secrets nested in repeated rows, 7 fields) and **FK** (a secret that is also a foreign-key reference, 1 field). With these, a sensitive field can never hold a plaintext literal — only a managed-secret reference resolved just-in-time on the runner. The secret-coverage baseline shrinks from 20 deferred gaps to **12** (only the C env-secret-maps and D secret-holder-kind buckets remain).
 
 ## Problem Statement / Motivation
 
@@ -39,7 +39,7 @@ flowchart LR
 - `oci/ocicontainerinstance` — `image_pull_secrets[].password` (R)
 - `azure/azurevirtualmachine` — `admin_password` (FK — a `StringValueOrRef` with `default_kind = AzureKeyVault`; the annotation forbids only a plaintext literal, leaving the cross-resource `value_from` reference intact)
 
-The two OCI specs gained the `org/openmcf/shared/options/options.proto` import.
+The two OCI specs gained the `dev/planton/shared/options/options.proto` import.
 
 ### Decision: annotate the 4 "no console UI" R fields too
 
@@ -47,7 +47,7 @@ Four of the seven R fields (AliCloud PolarDB/RDS accounts, OCI ALB certificates,
 
 ## Implementation Details
 
-- **Field options**: appended `(org.openmcf.shared.options.sensitive) = true` to each field's option list (combined with existing `buf.validate` / `foreignkey` options where present).
+- **Field options**: appended `(dev.planton.shared.options.sensitive) = true` to each field's option list (combined with existing `buf.validate` / `foreignkey` options where present).
 - **Baseline**: `pkg/secretcoverage/baseline.yaml` reduced to the 12 remaining deferred gaps (C + D), with the header updated to record that R and FK are closed.
 - **No enforcement-layer change needed**: `SensitiveFieldWalker` already recurses through singular, nested-message, `repeated`-of-message, map, and `StringValueOrRef` at any depth, so annotating a leaf inside a repeated row is enforced with no walker change. (The consumer repo added a hermetic repeated-message test that proves the walk descends `repeated <Message>` rows to their sensitive leaf — previously asserted only in docs.)
 

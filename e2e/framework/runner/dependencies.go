@@ -9,9 +9,9 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
-	"github.com/plantonhq/openmcf/e2e/framework/provider"
-	"github.com/plantonhq/openmcf/pkg/crkreflect"
+	"github.com/plantonhq/planton/apis/dev/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/e2e/framework/provider"
+	"github.com/plantonhq/planton/pkg/crkreflect"
 )
 
 // Dependency is a single prerequisite deployment that must exist before a
@@ -82,7 +82,7 @@ func ResolveDependencies(repoRoot, componentProvider, component string) ([]Depen
 // neither exists, so a missing install profile fails loudly rather than silently
 // skipping a required dependency.
 func prerequisiteManifestPath(repoRoot, componentProvider, slug string) (string, error) {
-	base := filepath.Join(repoRoot, "apis", "org", "openmcf", "provider", componentProvider, slug, "v1", "e2e")
+	base := filepath.Join(repoRoot, "apis", "org", "planton", "provider", componentProvider, slug, "v1", "e2e")
 	prereq := filepath.Join(base, "prerequisite.yaml")
 	if pathExists(prereq) {
 		return prereq, nil
@@ -144,7 +144,7 @@ func DeployDependencies(ctx context.Context, repoRoot, componentProvider, compon
 // (dependencies deploy via Pulumi even when the component under test uses
 // Terraform).
 func deployDependency(ctx context.Context, repoRoot, componentProvider string, dep Dependency, backendURL, runID string, harness provider.Harness) (DependencyState, error) {
-	moduleDir := filepath.Join(repoRoot, "apis", "org", "openmcf", "provider", componentProvider, dep.KindSlug, "v1", "iac", "pulumi")
+	moduleDir := filepath.Join(repoRoot, "apis", "org", "planton", "provider", componentProvider, dep.KindSlug, "v1", "iac", "pulumi")
 	if !pathExists(moduleDir) {
 		return DependencyState{}, errors.Errorf("dependency %q pulumi module not found at %s", dep.KindSlug, moduleDir)
 	}

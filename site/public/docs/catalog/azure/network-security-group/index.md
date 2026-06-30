@@ -12,7 +12,7 @@ Deploys an Azure Network Security Group (NSG) with priority-ordered security rul
 
 ## What Gets Created
 
-When you deploy an AzureNetworkSecurityGroup resource, OpenMCF provisions:
+When you deploy an AzureNetworkSecurityGroup resource, Planton provisions:
 
 - **Network Security Group** — a `network.NetworkSecurityGroup` resource in the specified region and resource group, acting as a stateful firewall for associated subnets or NICs
 - **Security Rules** — a separate `network.NetworkSecurityRule` resource for each entry in `securityRules`, providing per-rule lifecycle management and explicit state tracking
@@ -24,7 +24,7 @@ Azure automatically creates implicit default rules in every NSG (priorities 6500
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Resource Group** where the NSG will be created (can reference an AzureResourceGroup resource)
 - **Network planning** — understand the traffic flows to allow or deny before defining security rules
 
@@ -33,15 +33,15 @@ Azure automatically creates implicit default rules in every NSG (priorities 6500
 Create a file `nsg.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureNetworkSecurityGroup
 metadata:
   name: my-nsg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureNetworkSecurityGroup.my-nsg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureNetworkSecurityGroup.my-nsg
 spec:
   region: eastus
   resourceGroup: my-rg
@@ -58,7 +58,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f nsg.yaml
+planton apply -f nsg.yaml
 ```
 
 This creates an NSG with a single rule allowing inbound HTTPS traffic from any source. All other inbound traffic is handled by Azure's implicit default rules (VNet-to-VNet allowed, everything else denied).
@@ -105,15 +105,15 @@ Each entry in `securityRules` supports the following fields:
 A minimal NSG that allows inbound HTTPS and denies everything else (via Azure defaults):
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureNetworkSecurityGroup
 metadata:
   name: web-nsg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureNetworkSecurityGroup.web-nsg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureNetworkSecurityGroup.web-nsg
 spec:
   region: eastus
   resourceGroup: dev-rg
@@ -132,15 +132,15 @@ spec:
 An NSG for a web tier that allows both HTTP and HTTPS inbound from the internet:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureNetworkSecurityGroup
 metadata:
   name: web-tier-nsg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureNetworkSecurityGroup.web-tier-nsg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureNetworkSecurityGroup.web-tier-nsg
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -174,15 +174,15 @@ spec:
 An NSG for an application tier that only accepts traffic from the web tier subnet and allows SSH from a bastion host:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureNetworkSecurityGroup
 metadata:
   name: app-tier-nsg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureNetworkSecurityGroup.app-tier-nsg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureNetworkSecurityGroup.app-tier-nsg
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -217,15 +217,15 @@ spec:
 An NSG for a data tier that allows database traffic from multiple application subnets using plural address prefixes:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureNetworkSecurityGroup
 metadata:
   name: data-tier-nsg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureNetworkSecurityGroup.data-tier-nsg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureNetworkSecurityGroup.data-tier-nsg
 spec:
   region: westeurope
   resourceGroup: prod-rg
@@ -260,18 +260,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed resource group instead of hardcoding the name:
+Reference an Planton-managed resource group instead of hardcoding the name:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureNetworkSecurityGroup
 metadata:
   name: ref-nsg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureNetworkSecurityGroup.ref-nsg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureNetworkSecurityGroup.ref-nsg
 spec:
   region: eastus
   resourceGroup:

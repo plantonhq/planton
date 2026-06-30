@@ -336,7 +336,7 @@ spec:
 
 3. **Redeploy addon**:
 ```bash
-openmcf pulumi up --manifest cert-manager.yaml --module-dir ${MODULE}
+planton pulumi up --manifest cert-manager.yaml --module-dir ${MODULE}
 ```
 
 4. **Update Certificate resources**:
@@ -439,7 +439,7 @@ kubectl describe clusterissuer planton.ai
 1. **Multi-Provider Configuration**:
 ```bash
 # Deploy with Cloudflare and GCP providers
-openmcf pulumi up --manifest cert-manager-multi.yaml
+planton pulumi up --manifest cert-manager-multi.yaml
 
 # Verify ClusterIssuers created
 kubectl get clusterissuer

@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetestekton.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/kubernetestekton/v1/spec.proto";
+import "dev/planton/provider/kubernetes/kubernetestekton/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// KubernetesTekton deploys Tekton Pipelines and Dashboard on Kubernetes using official release manifests.
+//
+// This is the manifest-based deployment approach (as opposed to the operator-based KubernetesTektonOperator).
+// It's simpler to understand and debug, and gives direct control over configuration.
+message KubernetesTekton {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'KubernetesTekton'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  KubernetesTektonSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  KubernetesTektonStatus status = 5;
+}
+
+// KubernetesTektonStatus represents the deployment status of the Tekton components.
+message KubernetesTektonStatus {
+  // stack-outputs from the IaC deployment
+  KubernetesTektonStackOutputs outputs = 1;
+}

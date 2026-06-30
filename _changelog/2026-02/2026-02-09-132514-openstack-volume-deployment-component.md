@@ -66,7 +66,7 @@ flowchart TB
   - `metadata` (map), `region`
   - 1 CEL validation: mutual exclusion of snapshot_id, source_vol_id, image_id
 - `stack_outputs.proto` -- 6 outputs: volume_id, name, size, volume_type, availability_zone, region
-- `api.proto` -- KRM envelope with `openstack.openmcf.org/v1` + `OpenStackVolume`
+- `api.proto` -- KRM envelope with `openstack.planton.dev/v1` + `OpenStackVolume`
 - `stack_input.proto` -- target + provider_config
 - `spec_test.go` -- 22 tests (12 positive, 10 negative)
 
@@ -125,7 +125,7 @@ The Pulumi OpenStack SDK v5 names the blockstorage volume resource as `blockstor
 
 - OpenStackVolumeAttach: `_changelog/2026-02/2026-02-09-132514-openstack-volume-attach-deployment-component.md`
 - OpenStack compute components: `_changelog/2026-02/2026-02-09-123024-*`
-- Parent project: `planton/_projects/20260209.01.openstack-openmcf-components/`
+- Parent project: `planton/_projects/20260209.01.openstack-planton-components/`
 
 ---
 

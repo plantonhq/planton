@@ -12,7 +12,7 @@ Deploys the GitHub Actions Runner Scale Set Controller on Kubernetes using the o
 
 ## What Gets Created
 
-When you deploy a KubernetesGhaRunnerScaleSetController resource, OpenMCF provisions:
+When you deploy a KubernetesGhaRunnerScaleSetController resource, Planton provisions:
 
 - **Kubernetes Namespace** — created if `createNamespace` is `true`
 - **Helm Release** — the `gha-runner-scale-set-controller` OCI chart (default version 0.13.1) from `ghcr.io/actions/actions-runner-controller-charts`, which creates:
@@ -33,15 +33,15 @@ When you deploy a KubernetesGhaRunnerScaleSetController resource, OpenMCF provis
 Create a file `gha-controller.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesGhaRunnerScaleSetController
 metadata:
   name: arc-controller
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesGhaRunnerScaleSetController.arc-controller
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesGhaRunnerScaleSetController.arc-controller
 spec:
   namespace:
     value: arc-system
@@ -59,7 +59,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f gha-controller.yaml
+planton apply -f gha-controller.yaml
 ```
 
 This installs the controller in the `arc-system` namespace with default resource limits. Once running, you can deploy `AutoScalingRunnerSet` resources in any namespace to register self-hosted GitHub Actions runners.
@@ -108,15 +108,15 @@ This installs the controller in the `arc-system` namespace with default resource
 Deploy the controller with default settings in a dedicated namespace:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesGhaRunnerScaleSetController
 metadata:
   name: arc-controller
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesGhaRunnerScaleSetController.arc-controller
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesGhaRunnerScaleSetController.arc-controller
 spec:
   namespace:
     value: arc-system
@@ -136,15 +136,15 @@ spec:
 Run multiple replicas for high availability and configure JSON logging for structured log aggregation:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesGhaRunnerScaleSetController
 metadata:
   name: arc-controller-ha
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.KubernetesGhaRunnerScaleSetController.arc-controller-ha
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.KubernetesGhaRunnerScaleSetController.arc-controller-ha
 spec:
   namespace:
     value: arc-system
@@ -172,15 +172,15 @@ spec:
 Full production configuration with metrics enabled, a private container registry, and the controller scoped to a single namespace:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesGhaRunnerScaleSetController
 metadata:
   name: arc-controller-prod
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesGhaRunnerScaleSetController.arc-controller-prod
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesGhaRunnerScaleSetController.arc-controller-prod
 spec:
   namespace:
     valueFrom:

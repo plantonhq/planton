@@ -6,13 +6,13 @@
 
 ## Summary
 
-Implemented zip-based distribution for Terraform modules, eliminating the need to clone the entire openmcf monorepo. The CLI now downloads lightweight zip files (~5-50KB) from GitHub releases instead of cloning ~500MB+ of source code, dramatically improving startup time and reducing disk usage.
+Implemented zip-based distribution for Terraform modules, eliminating the need to clone the entire planton monorepo. The CLI now downloads lightweight zip files (~5-50KB) from GitHub releases instead of cloning ~500MB+ of source code, dramatically improving startup time and reducing disk usage.
 
 ## Problem Statement / Motivation
 
 After implementing pre-built Pulumi binaries, we identified the same inefficiency in the Terraform workflow:
 
-1. Cloning the entire openmcf monorepo to a staging area
+1. Cloning the entire planton monorepo to a staging area
 2. Copying the repo to a workspace directory
 3. Navigating to the specific `tf/` folder
 4. Running terraform commands
@@ -35,7 +35,7 @@ flowchart TB
     B -->|No| D{Release version available?}
     D -->|Yes| E[Download terraform-component.zip]
     D -->|No/dev| F[Fallback: clone repo]
-    E --> G["Cache in ~/.openmcf/terraform/modules/"]
+    E --> G["Cache in ~/.planton/terraform/modules/"]
     E -->|Fail| H["⚠️ Warning + Fallback"]
     H --> F
     G --> I[Run terraform]
@@ -46,7 +46,7 @@ flowchart TB
 ### Key Features
 
 1. **Automatic zip download**: Downloads component-specific zips from GitHub releases
-2. **Smart caching**: Modules cached at `~/.openmcf/terraform/modules/{version}/`
+2. **Smart caching**: Modules cached at `~/.planton/terraform/modules/{version}/`
 3. **Graceful fallback**: Falls back to staging/clone if zip unavailable
 4. **Module version support**: Works with `--module-version` for specific releases
 5. **No git required**: Zip mode doesn't need git on the system
@@ -68,10 +68,10 @@ Created a new package to handle zip distribution, mirroring the Pulumi binary pa
 
 ### Directory Structure
 
-All Terraform modules cached under `~/.openmcf/terraform/`:
+All Terraform modules cached under `~/.planton/terraform/`:
 
 ```
-~/.openmcf/terraform/
+~/.planton/terraform/
 └── modules/                          # Cached module zips
     └── v0.3.2/                       # Per-version cache
         ├── awsecsservice/            # Extracted module
@@ -88,10 +88,10 @@ Zips are downloaded directly from GitHub releases:
 
 ```bash
 # CLI version v0.3.2 -> downloads from main release
-https://github.com/plantonhq/openmcf/releases/download/v0.3.2/terraform-kubernetesdeployment.zip
+https://github.com/plantonhq/planton/releases/download/v0.3.2/terraform-kubernetesdeployment.zip
 
 # Module version override -> downloads from that specific tag
-https://github.com/plantonhq/openmcf/releases/download/v0.3.2+terraform.awsecsservice.20260108.0/terraform-awsecsservice.zip
+https://github.com/plantonhq/planton/releases/download/v0.3.2+terraform.awsecsservice.20260108.0/terraform-awsecsservice.zip
 ```
 
 ### No Platform Suffix Needed
@@ -155,7 +155,7 @@ func PrintWarning(msg string) {
 
 ### CLI Users
 
-- Dramatically faster `openmcf tofu apply` execution
+- Dramatically faster `planton tofu apply` execution
 - No need to wait for large repo clones
 - Reduced disk space requirements
 - Works in minimal environments without git

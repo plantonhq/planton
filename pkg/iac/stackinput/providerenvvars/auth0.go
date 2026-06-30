@@ -2,7 +2,7 @@ package providerenvvars
 
 import (
 	"github.com/pkg/errors"
-	auth0provider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/auth0"
+	auth0provider "github.com/plantonhq/planton/apis/dev/planton/provider/auth0"
 )
 
 // loadAuth0EnvVars loads Auth0 provider config and returns environment variables.

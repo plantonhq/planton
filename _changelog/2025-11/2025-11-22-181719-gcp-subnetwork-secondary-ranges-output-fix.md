@@ -67,7 +67,7 @@ Updated the GCP Subnetwork Pulumi module to export individual fields using the s
 
 ### Implementation
 
-**File**: `apis/org/openmcf/provider/gcp/gcpsubnetwork/v1/iac/pulumi/module/subnetwork.go`
+**File**: `apis/dev/planton/provider/gcp/gcpsubnetwork/v1/iac/pulumi/module/subnetwork.go`
 
 **Added import**:
 ```go
@@ -212,8 +212,8 @@ ctx.Export("nameservers", stringArray)  // Works fine
 ## Related Work
 
 ### Similar Patterns in Codebase
-- **AWS VPC**: `apis/org/openmcf/provider/aws/awsvpc/v1/iac/pulumi/module/subnets.go` (lines 49-51, 126-128)
-- **AWS Route53**: `apis/org/openmcf/provider/aws/awsroute53zone/v1/iac/pulumi/module/main.go` (line 147)
+- **AWS VPC**: `apis/dev/planton/provider/aws/awsvpc/v1/iac/pulumi/module/subnets.go` (lines 49-51, 126-128)
+- **AWS Route53**: `apis/dev/planton/provider/aws/awsroute53zone/v1/iac/pulumi/module/main.go` (line 147)
 
 ### Future Applications
 This pattern should be applied to any GCP or other provider resources that export:

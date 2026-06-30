@@ -1,35 +1,35 @@
 ---
 title: "Manifest Gallery"
-description: "Curated, proto-verified manifest examples organized by cloud provider for deploying infrastructure with OpenMCF"
+description: "Curated, proto-verified manifest examples organized by cloud provider for deploying infrastructure with Planton"
 icon: "package"
 order: 20
 ---
 
 # Manifest Gallery
 
-Copy-paste-ready manifests for deploying infrastructure with OpenMCF. Every example on this page has been verified against the component's Protocol Buffer schema — field names, nesting, value types, and enum values are accurate.
+Copy-paste-ready manifests for deploying infrastructure with Planton. Every example on this page has been verified against the component's Protocol Buffer schema — field names, nesting, value types, and enum values are accurate.
 
 ## How to Use These Manifests
 
 1. Copy the YAML into a file (e.g., `my-resource.yaml`)
 2. Replace placeholder values (`my-org`, `my-project`, subnet IDs, credentials, etc.) with your actual values
 3. Adjust the provisioner labels for your IaC engine and state backend
-4. Run `openmcf plan -f my-resource.yaml` to preview, then `openmcf apply -f my-resource.yaml` to deploy
+4. Run `planton plan -f my-resource.yaml` to preview, then `planton apply -f my-resource.yaml` to deploy
 
 ## Metadata Pattern
 
-Every OpenMCF manifest follows the Kubernetes Resource Model. The `metadata` block is the same structure across all components:
+Every Planton manifest follows the Kubernetes Resource Model. The `metadata` block is the same structure across all components:
 
 ```yaml
 metadata:
   name: my-resource-name
   labels:
     # Choose your provisioner: "pulumi" or "tofu"
-    openmcf.org/provisioner: pulumi
+    planton.dev/provisioner: pulumi
     # Pulumi state backend labels
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsS3Bucket.my-resource-name
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsS3Bucket.my-resource-name
 ```
 
 For OpenTofu, replace the provisioner and backend labels:
@@ -38,11 +38,11 @@ For OpenTofu, replace the provisioner and backend labels:
 metadata:
   name: my-resource-name
   labels:
-    openmcf.org/provisioner: tofu
+    planton.dev/provisioner: tofu
     # OpenTofu state backend labels (example: S3 backend)
-    tf.openmcf.org/backend.type: s3
-    tf.openmcf.org/backend.s3.bucket: my-tf-state-bucket
-    tf.openmcf.org/backend.s3.region: us-east-1
+    tf.planton.dev/backend.type: s3
+    tf.planton.dev/backend.s3.bucket: my-tf-state-bucket
+    tf.planton.dev/backend.s3.region: us-east-1
 ```
 
 See [State Management](/docs/concepts/state-management) for all backend options.
@@ -58,15 +58,15 @@ The examples below use Pulumi labels. Swap the metadata labels to use OpenTofu i
 Object storage with versioning, encryption, and lifecycle management.
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsS3Bucket
 metadata:
   name: my-app-assets
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsS3Bucket.my-app-assets
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsS3Bucket.my-app-assets
 spec:
   awsRegion: us-east-1
   isPublic: false
@@ -91,15 +91,15 @@ spec:
 Managed relational database (PostgreSQL, MySQL, MariaDB, Oracle, SQL Server).
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRdsInstance
 metadata:
   name: my-app-database
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsRdsInstance.my-app-database
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsRdsInstance.my-app-database
 spec:
   subnetIds:
     - value: subnet-abc123    # Private subnet in AZ-a
@@ -125,15 +125,15 @@ spec:
 Virtual Private Cloud with subnets across availability zones.
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsVpc
 metadata:
   name: my-network
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsVpc.my-network
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsVpc.my-network
 spec:
   vpcCidr: "10.0.0.0/16"
   availabilityZones:
@@ -157,15 +157,15 @@ spec:
 Managed relational database (PostgreSQL or MySQL) on Google Cloud.
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudSql
 metadata:
   name: my-gcp-database
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpCloudSql.my-gcp-database
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpCloudSql.my-gcp-database
 spec:
   projectId:
     value: my-gcp-project-id
@@ -188,15 +188,15 @@ spec:
 Google Kubernetes Engine cluster with private nodes and VPC-native networking.
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpGkeCluster
 metadata:
   name: my-gke-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpGkeCluster.my-gke-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpGkeCluster.my-gke-cluster
 spec:
   projectId:
     value: my-gcp-project-id
@@ -226,15 +226,15 @@ spec:
 Azure Kubernetes Service cluster with system and user node pools.
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureAksCluster
 metadata:
   name: my-aks-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureAksCluster.my-aks-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureAksCluster.my-aks-cluster
 spec:
   region: eastus
   resourceGroup:
@@ -275,15 +275,15 @@ spec:
 Microservice deployment with container configuration, ingress, and autoscaling.
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDeployment
 metadata:
   name: my-api-service
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesDeployment.my-api-service
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesDeployment.my-api-service
 spec:
   namespace:
     value: my-app-namespace
@@ -328,15 +328,15 @@ spec:
 PostgreSQL database on Kubernetes with custom databases, users, and resource tuning.
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPostgres
 metadata:
   name: my-postgres
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesPostgres.my-postgres
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesPostgres.my-postgres
 spec:
   namespace:
     value: my-postgres-namespace
@@ -373,15 +373,15 @@ spec:
 Serverless function deployed to Cloudflare's edge network.
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareWorker
 metadata:
   name: my-edge-function
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CloudflareWorker.my-edge-function
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CloudflareWorker.my-edge-function
 spec:
   accountId: a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4
   workerName: my-edge-function
@@ -406,15 +406,15 @@ spec:
 Private network on the Civo cloud platform.
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoVpc
 metadata:
   name: my-civo-network
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CivoVpc.my-civo-network
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CivoVpc.my-civo-network
 spec:
   civoCredentialId: your-civo-credential-id
   networkName: my-civo-network

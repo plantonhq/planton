@@ -6,10 +6,10 @@ go_library(
         "backend_options.go",
         "unified_options.go",
     ],
-    importpath = "github.com/plantonhq/openmcf/pkg/iac/stackinput/stackinputproviderconfig",
+    importpath = "github.com/plantonhq/planton/pkg/iac/stackinput/stackinputproviderconfig",
     visibility = ["//visibility:public"],
     deps = [
-        "//apis/org/openmcf/shared/cloudresourcekind",
+        "//apis/dev/planton/shared/cloudresourcekind",
         "//internal/cli/flag",
         "//pkg/iac/stackinput/providerdetect",
         "@com_github_pkg_errors//:errors",

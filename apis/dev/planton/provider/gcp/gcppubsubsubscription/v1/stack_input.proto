@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcppubsubsubscription.v1;
+
+import "dev/planton/provider/gcp/gcppubsubsubscription/v1/api.proto";
+import "dev/planton/provider/gcp/provider.proto";
+
+message GcpPubSubSubscriptionStackInput {
+  GcpPubSubSubscription target = 1;
+  dev.planton.provider.gcp.GcpProviderConfig provider_config = 2;
+}

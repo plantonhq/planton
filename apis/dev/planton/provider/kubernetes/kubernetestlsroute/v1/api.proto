@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetestlsroute.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/kubernetestlsroute/v1/spec.proto";
+import "dev/planton/provider/kubernetes/kubernetestlsroute/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// KubernetesTlsRoute is a Kubernetes Gateway API TLSRoute: a namespaced set of
+// TLS passthrough rules that attach to a Gateway and forward matching connections
+// (by SNI hostname) to backend Services.
+message KubernetesTlsRoute {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'KubernetesTlsRoute'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  KubernetesTlsRouteSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  KubernetesTlsRouteStatus status = 5;
+}
+
+// KubernetesTlsRouteStatus holds the deployment status and outputs.
+message KubernetesTlsRouteStatus {
+  // stack-outputs
+  KubernetesTlsRouteStackOutputs outputs = 1;
+}

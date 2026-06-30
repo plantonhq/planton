@@ -1,0 +1,19 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsClientVpn
+metadata:
+  name: awsclientvpn-demo
+spec:
+  region: us-east-1
+  vpcId:
+    value: vpc-0123456789abcdef0
+  subnets:
+    - value: subnet-aaa111
+  clientCidrBlock: 10.0.0.0/22
+  authenticationType: certificate
+  serverCertificateArn:
+    value: arn:aws:acm:us-east-1:123456789012:certificate/abc
+  vpnPort: 443
+  transportProtocol: tcp
+  cidrAuthorizationRules:
+    - 10.0.0.0/16
+

@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awscognitouserpool.v1;
+
+import "dev/planton/provider/aws/awscognitouserpool/v1/api.proto";
+import "dev/planton/provider/aws/provider.proto";
+
+// aws-cognito-user-pool stack-input
+message AwsCognitoUserPoolStackInput {
+  // target cloud-resource
+  AwsCognitoUserPool target = 1;
+  // provider-credential
+  dev.planton.provider.aws.AwsProviderConfig provider_config = 2;
+}

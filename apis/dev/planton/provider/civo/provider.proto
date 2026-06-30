@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package dev.planton.provider.civo;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/civo/region.proto";
+
+// CivoProviderConfig defines the authentication parameters required
+// for interacting with Civo Cloud via infrastructure‑as‑code tools.
+// Typical use‑cases include provisioning Kubernetes clusters, compute
+// instances, and object stores with Terraform or Pulumi.
+message CivoProviderConfig {
+  // The personal access token (PAT) used to authenticate all Civo API
+  // requests. Create and manage it at https://dashboard.civo.com/security.
+  string api_token = 1 [(buf.validate.field).required = true];
+
+  // The default region in which resources will be provisioned
+  // unless explicitly overridden (e.g. LON1, FRA1, NYC1, PHX1, MUM1).
+  dev.planton.provider.civo.CivoRegion default_region = 2 [(buf.validate.field).required = true];
+
+  // Optional Access Key ID for Civo Object Store (S3‑compatible).
+  // Required only if your IaC workflow interacts with object storage.
+  string object_store_access_id = 3;
+
+  // Optional Secret Key for Civo Object Store.
+  string object_store_secret_key = 4;
+}

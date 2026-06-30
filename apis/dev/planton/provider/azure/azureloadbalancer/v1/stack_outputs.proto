@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azureloadbalancer.v1;
+
+// **AzureLoadBalancerStackOutputs** captures the outputs of provisioning
+// an Azure Load Balancer.
+//
+// The primary outputs are `lb_id` for resource identification and
+// `frontend_ip_address` for DNS record association. The `backend_pool_id`
+// output provides the ID of the first (default) backend pool, which is
+// used by VMSS, AKS, and NIC associations to register backend members.
+//
+// In the enterprise-network-foundation infra chart, the frontend IP is
+// referenced by AzureDnsRecord to create A-records pointing to the LB.
+message AzureLoadBalancerStackOutputs {
+  // The Azure Resource Manager ID of the Load Balancer.
+  // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/loadBalancers/{name}
+  string lb_id = 1;
+
+  // The name of the Load Balancer.
+  string lb_name = 2;
+
+  // The frontend IP address of the Load Balancer.
+  // For public LBs, this is the public IP address.
+  // For internal LBs, this is the private IP address from the subnet.
+  string frontend_ip_address = 3;
+
+  // The Azure Resource Manager ID of the frontend IP configuration.
+  // Useful for creating NAT rules or additional routing configurations
+  // that reference this frontend.
+  // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/loadBalancers/{name}/frontendIPConfigurations/{config}
+  string frontend_ip_configuration_id = 4;
+
+  // The Azure Resource Manager ID of the first (default) backend address pool.
+  // This is the primary output for backend membership -- VMSS instances, AKS
+  // node pools, or NICs are associated with this pool to receive traffic.
+  string backend_pool_id = 5;
+}

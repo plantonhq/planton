@@ -1,0 +1,5 @@
+apiVersion: hetzner-cloud.planton.dev/v1
+kind: HetznerCloudPlacementGroup
+metadata:
+  name: hetznercloudplacementgroup-demo
+spec: {}

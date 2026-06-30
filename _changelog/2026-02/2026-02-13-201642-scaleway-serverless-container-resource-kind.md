@@ -14,7 +14,7 @@ Scaleway Serverless Containers provides a Container-as-a-Service (CaaS) platform
 
 ### Pain Points
 
-- No OpenMCF kind existed for deploying container images to Scaleway's serverless platform
+- No Planton kind existed for deploying container images to Scaleway's serverless platform
 - Container image references needed to compose with ScalewayContainerRegistry for infra-chart DAG edges
 - gRPC services and HTTP/2 backends required h2c protocol support (not available in ServerlessFunction)
 - Production containers needed health check and autoscaling threshold configuration
@@ -58,7 +58,7 @@ This works with any OCI registry (Scaleway, Docker Hub, GHCR) -- Scaleway regist
 
 - `spec.proto` -- 23 spec fields + 3 enums + 7 nested messages (Image, Env, EnvVar, CronTrigger, HealthCheck, ScalingOption)
 - `stack_outputs.proto` -- 3 outputs (container_id, namespace_id, domain_name)
-- `api.proto` -- KRM wrapper with api_version `scaleway.openmcf.org/v1`
+- `api.proto` -- KRM wrapper with api_version `scaleway.planton.dev/v1`
 - `stack_input.proto` -- target + provider config
 
 ### Pulumi Go Module (6 files)
@@ -93,7 +93,7 @@ Image URL composed in locals: `"${var.spec.image.registry_endpoint}/${var.spec.i
 ## Benefits
 
 - **18 of 19 Scaleway resource kinds complete** (95% of resource tier)
-- **CaaS support** -- first OpenMCF kind for container image deployment on Scaleway
+- **CaaS support** -- first Planton kind for container image deployment on Scaleway
 - **Infra-chart composable** -- StringValueOrRef on registry endpoint creates DAG edges
 - **gRPC-ready** -- h2c protocol support for modern service architectures
 - **Production-grade** -- health checks and scaling thresholds for reliable operations

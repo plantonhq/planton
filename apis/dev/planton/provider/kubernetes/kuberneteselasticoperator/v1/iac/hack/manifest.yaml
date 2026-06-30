@@ -1,0 +1,22 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesElasticOperator
+metadata:
+  name: eck-operator-test
+  labels:
+    app: elastic
+    environment: development
+spec:
+  target_cluster:
+    kubernetes_credential_id: "test-k8s-cluster-cred"
+  namespace:
+    value: "elastic-system"
+  create_namespace: true
+  container:
+    resources:
+      requests:
+        cpu: "50m"
+        memory: "100Mi"
+      limits:
+        cpu: "1000m"
+        memory: "1Gi"
+

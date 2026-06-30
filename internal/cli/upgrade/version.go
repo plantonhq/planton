@@ -13,7 +13,7 @@ import (
 
 const (
 	// githubReleasesURL is the GitHub API endpoint for releases
-	githubReleasesURL = "https://api.github.com/repos/plantonhq/openmcf/releases"
+	githubReleasesURL = "https://api.github.com/repos/plantonhq/planton/releases"
 	// httpTimeout is the timeout for HTTP requests
 	httpTimeout = 10 * time.Second
 )

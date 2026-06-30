@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package dev.planton.provider.digitalocean.digitaloceanloadbalancer.v1;
+
+// DigitalOceanLoadBalancerStackOutputs captures the outputs after provisioning a DigitalOcean Load Balancer.
+message DigitalOceanLoadBalancerStackOutputs {
+  // The unique identifier (UUID) of the created DigitalOcean Load Balancer.
+  string load_balancer_id = 1;
+
+  // The public IP address assigned to the Load Balancer.
+  string ip = 2;
+
+  // The DNS name for the Load Balancer (if applicable).
+  string dns_name = 3;
+}

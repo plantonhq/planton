@@ -108,8 +108,8 @@ Same dependency ordering as the Pulumi module -- the public access block must be
 ### Files Changed
 
 **Modified (2):**
-- `apis/org/openmcf/provider/aws/awss3bucket/v1/iac/pulumi/module/main.go` -- added `encoding/json` import, captured `publicAccessBlock` variable, added conditional `s3.NewBucketPolicy`
-- `apis/org/openmcf/provider/aws/awss3bucket/v1/iac/tf/main.tf` -- added conditional `aws_s3_bucket_policy.public_read` resource
+- `apis/dev/planton/provider/aws/awss3bucket/v1/iac/pulumi/module/main.go` -- added `encoding/json` import, captured `publicAccessBlock` variable, added conditional `s3.NewBucketPolicy`
+- `apis/dev/planton/provider/aws/awss3bucket/v1/iac/tf/main.tf` -- added conditional `aws_s3_bucket_policy.public_read` resource
 
 ## Benefits
 

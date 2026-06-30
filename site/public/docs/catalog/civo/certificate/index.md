@@ -14,14 +14,14 @@ Manages TLS certificates on Civo Cloud, supporting both automated Let's Encrypt 
 
 ## What Gets Created
 
-When you deploy a CivoCertificate resource, OpenMCF processes the manifest and (once the upstream provider adds support) provisions:
+When you deploy a CivoCertificate resource, Planton processes the manifest and (once the upstream provider adds support) provisions:
 
 - **Civo Certificate** --- a TLS certificate registered in your Civo account, either auto-managed via Let's Encrypt or uploaded as a custom PEM bundle
 - **Labels** --- key-value metadata derived from `metadata.labels` and `spec.tags`, applied to the certificate for filtering and organization
 
 ## Prerequisites
 
-- **Civo credentials** configured via environment variables or OpenMCF provider config
+- **Civo credentials** configured via environment variables or Planton provider config
 - **A registered domain** (for Let's Encrypt certificates) with DNS pointing to Civo infrastructure
 - **PEM-encoded certificate files** (for custom certificates) including the leaf certificate and private key
 
@@ -30,15 +30,15 @@ When you deploy a CivoCertificate resource, OpenMCF processes the manifest and (
 Create a file `civo-certificate.yaml`:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoCertificate
 metadata:
   name: my-cert
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CivoCertificate.my-cert
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CivoCertificate.my-cert
 spec:
   certificateName: my-cert
   type: letsEncrypt
@@ -51,7 +51,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f civo-certificate.yaml
+planton apply -f civo-certificate.yaml
 ```
 
 This requests a Let's Encrypt certificate covering `example.com` and `www.example.com` with automatic renewal enabled by default.
@@ -95,15 +95,15 @@ This requests a Let's Encrypt certificate covering `example.com` and `www.exampl
 A minimal Let's Encrypt certificate for a single domain:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoCertificate
 metadata:
   name: api-cert
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CivoCertificate.api-cert
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CivoCertificate.api-cert
 spec:
   certificateName: api-cert
   type: letsEncrypt
@@ -121,15 +121,15 @@ spec:
 A wildcard certificate covering all subdomains, with automatic renewal turned off for manual control:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoCertificate
 metadata:
   name: wildcard-cert
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.CivoCertificate.wildcard-cert
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.CivoCertificate.wildcard-cert
 spec:
   certificateName: wildcard-cert
   type: letsEncrypt
@@ -146,15 +146,15 @@ spec:
 Upload an existing certificate and private key, including the intermediate chain:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoCertificate
 metadata:
   name: custom-cert
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CivoCertificate.custom-cert
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CivoCertificate.custom-cert
 spec:
   certificateName: custom-cert
   type: custom

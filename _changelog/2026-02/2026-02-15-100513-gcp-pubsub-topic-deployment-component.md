@@ -6,15 +6,15 @@
 
 ## Summary
 
-Added GcpPubSubTopic as a new deployment component in OpenMCF, providing full Pub/Sub topic management with CMEK encryption, message retention, regional storage policies, schema validation, and ingestion from 5 external data sources (AWS Kinesis, AWS MSK, Azure Event Hubs, Cloud Storage, Confluent Cloud). This is the first messaging resource in the GCP provider expansion and a foundation dependency for subscriptions, schedulers, and event pipeline compositions.
+Added GcpPubSubTopic as a new deployment component in Planton, providing full Pub/Sub topic management with CMEK encryption, message retention, regional storage policies, schema validation, and ingestion from 5 external data sources (AWS Kinesis, AWS MSK, Azure Event Hubs, Cloud Storage, Confluent Cloud). This is the first messaging resource in the GCP provider expansion and a foundation dependency for subscriptions, schedulers, and event pipeline compositions.
 
 ## Problem Statement / Motivation
 
-OpenMCF's GCP provider covered compute, storage, networking, databases, and security -- but had zero messaging resources. Pub/Sub is the backbone of event-driven architectures in GCP, and its absence meant users couldn't declaratively provision the most fundamental messaging primitive.
+Planton's GCP provider covered compute, storage, networking, databases, and security -- but had zero messaging resources. Pub/Sub is the backbone of event-driven architectures in GCP, and its absence meant users couldn't declaratively provision the most fundamental messaging primitive.
 
 ### Pain Points
 
-- No way to provision Pub/Sub topics through OpenMCF
+- No way to provision Pub/Sub topics through Planton
 - No cross-resource composability for event pipelines (topic -> subscription -> function)
 - No CMEK or regional compliance controls for messaging infrastructure
 - No support for Pub/Sub's data ingestion capabilities (cross-cloud data pipelines)
@@ -107,14 +107,14 @@ The ingestion helper maps each non-nil source from proto to Pulumi args, with Cl
 
 ## Benefits
 
-- **First messaging primitive** in OpenMCF's GCP provider -- unlocks event-driven architecture patterns
+- **First messaging primitive** in Planton's GCP provider -- unlocks event-driven architecture patterns
 - **Cross-cloud ingestion** -- users can set up data pipelines from AWS/Azure/Confluent to GCP declaratively
 - **Full compliance support** -- CMEK encryption + regional storage with in-transit enforcement
 - **Foundation for composition** -- `topic_id` output enables GcpPubSubSubscription, GcpCloudSchedulerJob, and event pipeline charts
 
 ## Impact
 
-- **Users**: Can now provision Pub/Sub topics with all configuration options through OpenMCF
+- **Users**: Can now provision Pub/Sub topics with all configuration options through Planton
 - **Downstream resources**: R07 (GcpPubSubSubscription) and R18 (GcpCloudSchedulerJob) can reference this component's outputs
 - **GCP catalog**: Expanded from 22 to 23 resource kinds
 - **Terraform users**: Note the `~> 6.0` provider requirement for ingestion features

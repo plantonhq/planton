@@ -12,7 +12,7 @@ Refactored the OpenFGA Kubernetes ingress configuration from a shared `IngressSp
 
 ### The Problem
 
-The previous implementation used the shared `IngressSpec` from `org.openmcf.shared.kubernetes`:
+The previous implementation used the shared `IngressSpec` from `dev.planton.shared.kubernetes`:
 
 ```yaml
 ingress:
@@ -64,7 +64,7 @@ message IngressSpec {
 }
 
 message OpenFgaKubernetesSpec {
-  org.openmcf.shared.kubernetes.IngressSpec ingress = 2;
+  dev.planton.shared.kubernetes.IngressSpec ingress = 2;
 }
 ```
 
@@ -94,7 +94,7 @@ message OpenFgaKubernetesSpec {
 
 **Before**:
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: OpenFgaKubernetes
 metadata:
   name: public-openfga
@@ -107,7 +107,7 @@ spec:
 
 **After**:
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: OpenFgaKubernetes
 metadata:
   name: public-openfga
@@ -307,7 +307,7 @@ output "external_hostname" {
 **File**: `apis/project/planton/provider/kubernetes/workload/openfgakubernetes/v1/spec.proto`
 
 **Changes Made**:
-1. **Updated Field Type**: Line 39 changed from `org.openmcf.shared.kubernetes.IngressSpec` to `OpenFgaKubernetesIngress`
+1. **Updated Field Type**: Line 39 changed from `dev.planton.shared.kubernetes.IngressSpec` to `OpenFgaKubernetesIngress`
 2. **Added Message**: New `OpenFgaKubernetesIngress` message with CEL validation (lines 88-104)
 
 **Validation Strategy**: Uses CEL (Common Expression Language) to validate that `hostname` is required when `enabled` is true, providing clear error messages and type safety.
@@ -453,13 +453,13 @@ spec:
 
 ```bash
 # Update CLI
-brew update && brew upgrade openmcf
+brew update && brew upgrade planton
 
 # Or fresh install
-brew install plantonhq/tap/openmcf
+brew install plantonhq/tap/planton
 
 # Verify version
-openmcf version
+planton version
 
 # For developers: regenerate protobuf stubs
 cd apis
@@ -482,10 +482,10 @@ If you chose a different hostname than the auto-constructed one:
 
 ```bash
 # Preview changes
-openmcf pulumi preview --manifest openfga.yaml
+planton pulumi preview --manifest openfga.yaml
 
 # Apply
-openmcf pulumi up --manifest openfga.yaml
+planton pulumi up --manifest openfga.yaml
 ```
 
 ### Automated Migration Script
@@ -550,8 +550,8 @@ echo "✅ Migration complete!"
 echo ""
 echo "Next steps:"
 echo "1. Review the changes with: git diff"
-echo "2. Test with: openmcf pulumi preview --manifest <file>"
-echo "3. Apply with: openmcf pulumi up --manifest <file>"
+echo "2. Test with: planton pulumi preview --manifest <file>"
+echo "3. Apply with: planton pulumi up --manifest <file>"
 ```
 
 **Usage**:
@@ -565,7 +565,7 @@ chmod +x migrate-openfga-ingress.sh
 ### Basic Ingress Configuration
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: OpenFgaKubernetes
 metadata:
   name: auth-openfga
@@ -590,7 +590,7 @@ spec:
 ### Production with Custom Hostname
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: OpenFgaKubernetes
 metadata:
   name: prod-auth
@@ -768,7 +768,7 @@ ingress:
 ```bash
 # Create manifest with new syntax
 cat > openfga-test.yaml <<EOF
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: OpenFgaKubernetes
 metadata:
   name: test-openfga
@@ -791,7 +791,7 @@ spec:
 EOF
 
 # Deploy
-openmcf pulumi up --manifest openfga-test.yaml
+planton pulumi up --manifest openfga-test.yaml
 
 # Verify Gateway created with correct hostname
 kubectl get gateway -n istio-ingress | grep test-openfga
@@ -805,7 +805,7 @@ kubectl get httproute -n test-openfga
 # After: ingress.hostname = "existing-openfga.example.com"
 
 # Apply update
-openmcf pulumi up --manifest openfga-existing.yaml
+planton pulumi up --manifest openfga-existing.yaml
 
 # Verify hostname updated in Gateway
 kubectl get gateway -n istio-ingress existing-openfga-external -o yaml | grep hostname
@@ -815,7 +815,7 @@ kubectl get gateway -n istio-ingress existing-openfga-external -o yaml | grep ho
 ```bash
 # Try invalid configuration
 cat > openfga-invalid.yaml <<EOF
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: OpenFgaKubernetes
 metadata:
   name: invalid-openfga
@@ -829,7 +829,7 @@ spec:
 EOF
 
 # Attempt deploy
-openmcf pulumi up --manifest openfga-invalid.yaml
+planton pulumi up --manifest openfga-invalid.yaml
 # Expected error: hostname is required when ingress is enabled
 ```
 
@@ -932,7 +932,7 @@ For questions or issues with migration:
 2. Use the [automated migration script](#automated-migration-script)
 3. Check [examples](#examples) for reference configurations
 4. Verify [validation rules](#validation) are met
-5. Contact OpenMCF support if issues persist
+5. Contact Planton support if issues persist
 
 ---
 

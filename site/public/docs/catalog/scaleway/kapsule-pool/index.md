@@ -12,13 +12,13 @@ Deploys an additional node pool into an existing Scaleway Kapsule Kubernetes clu
 
 ## What Gets Created
 
-When you deploy a ScalewayKapsulePool resource, OpenMCF provisions:
+When you deploy a ScalewayKapsulePool resource, Planton provisions:
 
 - **Kapsule Node Pool** — a `kubernetes.Pool` resource providing a group of identically configured worker nodes (same instance type, root volume, container runtime) in the referenced Kapsule cluster. Kubernetes labels and taints are applied via Scaleway's Cloud Controller Manager tag convention.
 
 ## Prerequisites
 
-- **Scaleway credentials** configured via environment variables or OpenMCF provider config
+- **Scaleway credentials** configured via environment variables or Planton provider config
 - **An existing Kapsule cluster** — the pool attaches to a cluster referenced by `clusterId`. Can be created via a ScalewayKapsuleCluster resource.
 - **A valid instance type** eligible for Kapsule (instances with insufficient memory such as DEV1-S, PLAY2-PICO, STARDUST are not eligible)
 
@@ -27,15 +27,15 @@ When you deploy a ScalewayKapsulePool resource, OpenMCF provisions:
 Create a file `kapsule-pool.yaml`:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayKapsulePool
 metadata:
   name: my-pool
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayKapsulePool.my-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayKapsulePool.my-pool
 spec:
   region: fr-par
   clusterId:
@@ -50,7 +50,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f kapsule-pool.yaml
+planton apply -f kapsule-pool.yaml
 ```
 
 This creates a two-node pool of `DEV1-M` instances in the `fr-par` region, attached to the `my-cluster` Kapsule cluster.
@@ -93,15 +93,15 @@ This creates a two-node pool of `DEV1-M` instances in the `fr-par` region, attac
 A minimal additional pool for development workloads:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayKapsulePool
 metadata:
   name: dev-workers
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayKapsulePool.dev-workers
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayKapsulePool.dev-workers
 spec:
   region: fr-par
   clusterId:
@@ -120,15 +120,15 @@ spec:
 A production pool with autoscaling, private nodes, Kubernetes labels for workload scheduling, and a safe upgrade policy:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayKapsulePool
 metadata:
   name: app-pool
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.ScalewayKapsulePool.app-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.ScalewayKapsulePool.app-pool
 spec:
   region: fr-par
   clusterId:
@@ -158,15 +158,15 @@ spec:
 A dedicated pool for GPU workloads using taints to prevent non-GPU pods from being scheduled, pinned to a specific zone:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayKapsulePool
 metadata:
   name: gpu-pool
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.ScalewayKapsulePool.gpu-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.ScalewayKapsulePool.gpu-pool
 spec:
   region: fr-par
   zone: fr-par-2

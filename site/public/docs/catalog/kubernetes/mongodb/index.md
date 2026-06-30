@@ -12,7 +12,7 @@ Deploys a MongoDB instance on Kubernetes using the Percona Server for MongoDB op
 
 ## What Gets Created
 
-When you deploy a KubernetesMongodb resource, OpenMCF provisions:
+When you deploy a KubernetesMongodb resource, Planton provisions:
 
 - **Namespace** — created only when `createNamespace` is `true`
 - **Random Password** — a 12-character password with mixed case, numbers, and special characters, generated automatically
@@ -22,7 +22,7 @@ When you deploy a KubernetesMongodb resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
 - **Percona Server for MongoDB operator** installed in the cluster (the operator manages the PerconaServerMongoDB custom resource)
 - **A StorageClass** available in the cluster if enabling persistence (most managed Kubernetes clusters provide a default)
@@ -33,15 +33,15 @@ When you deploy a KubernetesMongodb resource, OpenMCF provisions:
 Create a file `mongodb.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesMongodb
 metadata:
   name: my-mongodb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesMongodb.my-mongodb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesMongodb.my-mongodb
 spec:
   namespace: database
   createNamespace: true
@@ -50,7 +50,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f mongodb.yaml
+planton apply -f mongodb.yaml
 ```
 
 This creates a single-replica MongoDB instance with persistence enabled, a 1Gi PersistentVolumeClaim, default resource limits (1000m CPU, 1Gi memory), and a randomly generated password stored in a Kubernetes Secret.
@@ -88,15 +88,15 @@ This creates a single-replica MongoDB instance with persistence enabled, a 1Gi P
 A lightweight MongoDB instance for development with persistence disabled and reduced resources:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesMongodb
 metadata:
   name: dev-mongodb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesMongodb.dev-mongodb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesMongodb.dev-mongodb
 spec:
   namespace: dev
   createNamespace: true
@@ -116,15 +116,15 @@ spec:
 A production MongoDB instance with a larger replica set, more disk, and higher resource limits:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesMongodb
 metadata:
   name: prod-mongodb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesMongodb.prod-mongodb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesMongodb.prod-mongodb
 spec:
   namespace: production
   container:
@@ -145,15 +145,15 @@ spec:
 MongoDB exposed outside the cluster via a LoadBalancer with automatic DNS management:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesMongodb
 metadata:
   name: shared-mongodb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesMongodb.shared-mongodb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesMongodb.shared-mongodb
 spec:
   namespace: shared-services
   container:
@@ -174,18 +174,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed namespace instead of hardcoding the name:
+Reference an Planton-managed namespace instead of hardcoding the name:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesMongodb
 metadata:
   name: app-mongodb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesMongodb.app-mongodb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesMongodb.app-mongodb
 spec:
   namespace:
     valueFrom:

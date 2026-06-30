@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesaltinityoperator.v1;
+
+import "dev/planton/provider/kubernetes/kubernetesaltinityoperator/v1/api.proto";
+import "dev/planton/provider/kubernetes/provider.proto";
+
+//kubernetes-altinity-operator stack-input
+message KubernetesAltinityOperatorStackInput {
+  //target cloud-resource
+  KubernetesAltinityOperator target = 1;
+  //provider-config
+  dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+}

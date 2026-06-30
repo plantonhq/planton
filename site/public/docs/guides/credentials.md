@@ -1,13 +1,13 @@
 ---
 title: "Credentials"
-description: "How OpenMCF loads cloud provider credentials and a quick reference for all supported providers"
+description: "How Planton loads cloud provider credentials and a quick reference for all supported providers"
 icon: "security"
 order: 30
 ---
 
 # Credentials
 
-OpenMCF needs credentials to create and manage resources in your cloud accounts. This page explains how credentials are loaded and provides a quick reference for all supported providers. For detailed setup instructions for the three major clouds, see the dedicated provider guides:
+Planton needs credentials to create and manage resources in your cloud accounts. This page explains how credentials are loaded and provides a quick reference for all supported providers. For detailed setup instructions for the three major clouds, see the dedicated provider guides:
 
 - [AWS Provider Setup](./aws-provider-setup)
 - [GCP Provider Setup](./gcp-provider-setup)
@@ -15,11 +15,11 @@ OpenMCF needs credentials to create and manage resources in your cloud accounts.
 
 ## How Credentials Are Loaded
 
-OpenMCF supports two methods for providing credentials. Both methods work with all IaC engines (Pulumi, OpenTofu, Terraform).
+Planton supports two methods for providing credentials. Both methods work with all IaC engines (Pulumi, OpenTofu, Terraform).
 
 ### Method 1: Environment Variables
 
-Set standard environment variables for your cloud provider. OpenMCF and the underlying IaC engines (Pulumi, Terraform, OpenTofu) read them automatically:
+Set standard environment variables for your cloud provider. Planton and the underlying IaC engines (Pulumi, Terraform, OpenTofu) read them automatically:
 
 ```bash
 # Example: AWS
@@ -27,7 +27,7 @@ export AWS_ACCESS_KEY_ID="AKIAIOSFODNN7EXAMPLE"
 export AWS_SECRET_ACCESS_KEY="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 export AWS_REGION="us-west-2"
 
-openmcf pulumi up -f ops/aws/database.yaml
+planton pulumi up -f ops/aws/database.yaml
 ```
 
 This is the simplest approach and works out of the box if you already have your cloud provider CLI configured (`aws`, `gcloud`, `az`).
@@ -37,7 +37,7 @@ This is the simplest approach and works out of the box if you already have your 
 Pass a YAML file containing credentials using the `-p` (or `--provider-config`) flag:
 
 ```bash
-openmcf pulumi up -f ops/aws/database.yaml -p aws-credential.yaml
+planton pulumi up -f ops/aws/database.yaml -p aws-credential.yaml
 ```
 
 The CLI auto-detects which provider is needed from your manifest's `apiVersion` and `kind`. You do not need to specify the provider type separately.
@@ -52,7 +52,7 @@ secret_access_key: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 region: "us-west-2"
 ```
 
-When a `-p` file is provided, OpenMCF parses it, validates it against the provider's proto definition, and converts the fields to the standard environment variables that the IaC engine expects.
+When a `-p` file is provided, Planton parses it, validates it against the provider's proto definition, and converts the fields to the standard environment variables that the IaC engine expects.
 
 ### When to Use Each Method
 
@@ -63,7 +63,7 @@ When a `-p` file is provided, OpenMCF parses it, validates it against the provid
 
 ## Quick Reference: Environment Variables by Provider
 
-These are the environment variables that OpenMCF and the underlying IaC engines read for each provider.
+These are the environment variables that Planton and the underlying IaC engines read for each provider.
 
 ### AWS
 
@@ -104,7 +104,7 @@ See [Azure Provider Setup](./azure-provider-setup) for service principal setup a
 KUBECONFIG                 # Path to kubeconfig file (default: ~/.kube/config)
 ```
 
-OpenMCF uses the default kubeconfig at `~/.kube/config` if no `KUBECONFIG` variable is set. For managed clusters, use your cloud provider's CLI to generate the kubeconfig:
+Planton uses the default kubeconfig at `~/.kube/config` if no `KUBECONFIG` variable is set. For managed clusters, use your cloud provider's CLI to generate the kubeconfig:
 
 ```bash
 # GKE

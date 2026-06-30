@@ -6,7 +6,7 @@
 
 ## Summary
 
-Fixed broken icons on the OpenMCF website by renaming all Kubernetes resource icon directories to match the new naming conventions established in the comprehensive Kubernetes naming refactoring completed in November 2025. This change updates 33 icon directories under `site/public/images/providers/kubernetes/` to align with the renamed API resources.
+Fixed broken icons on the Planton website by renaming all Kubernetes resource icon directories to match the new naming conventions established in the comprehensive Kubernetes naming refactoring completed in November 2025. This change updates 33 icon directories under `site/public/images/providers/kubernetes/` to align with the renamed API resources.
 
 ## Problem Statement
 

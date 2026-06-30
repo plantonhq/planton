@@ -3,7 +3,7 @@
 package crkreflect
 
 import (
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/apis/dev/planton/shared/cloudresourcekind"
 )
 
 // Prerequisites returns the direct prerequisites for the given kind.

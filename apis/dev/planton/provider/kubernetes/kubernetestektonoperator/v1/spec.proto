@@ -1,0 +1,96 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetestektonoperator.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/kubernetes.proto";
+import "dev/planton/provider/kubernetes/options.proto";
+import "dev/planton/provider/kubernetes/target_cluster.proto";
+import "dev/planton/shared/options/options.proto";
+
+// KubernetesTektonOperatorSpec defines the configuration for deploying the Tekton Operator on a Kubernetes cluster.
+// Tekton Operator manages the lifecycle of Tekton components including Pipelines, Triggers, and Dashboard.
+// This message specifies the parameters needed to install and configure the Tekton Operator.
+//
+// IMPORTANT: Namespace Behavior
+// Unlike other Kubernetes components in Planton, the Tekton Operator uses fixed namespaces
+// that are managed by the operator itself:
+// - The Tekton Operator is installed in the 'tekton-operator' namespace
+// - Tekton components (Pipelines, Triggers, Dashboard) are installed in the 'tekton-pipelines' namespace
+// These namespaces are automatically created and managed by the Tekton Operator and cannot be customized.
+// See: https://tekton.dev/docs/operator/tektonconfig/
+message KubernetesTektonOperatorSpec {
+  // Target Kubernetes Cluster where the Tekton Operator will be deployed.
+  dev.planton.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  // The container specifications for the Tekton Operator deployment.
+  KubernetesTektonOperatorSpecContainer container = 2 [(buf.validate.field).required = true];
+
+  // Configuration for which Tekton components to install.
+  KubernetesTektonOperatorComponents components = 3 [(buf.validate.field).required = true];
+
+  // The version of the Tekton Operator to deploy.
+  // https://github.com/tektoncd/operator/releases
+  // https://operatorhub.io/operator/tektoncd-operator
+  string operator_version = 4 [(dev.planton.shared.options.default) = "v0.78.0"];
+
+  // Dashboard ingress configuration for exposing the dashboard via Gateway API.
+  // When enabled, creates Certificate, Gateway, and HTTPRoute resources.
+  KubernetesTektonOperatorDashboardIngress dashboard_ingress = 5;
+
+  // CloudEvents sink URL for pipeline notifications.
+  // When configured, Tekton sends CloudEvents for TaskRun and PipelineRun lifecycle events.
+  // Example: "http://my-receiver.my-namespace.svc.cluster.local/tekton/events"
+  string cloud_events_sink_url = 6;
+}
+
+// KubernetesTektonOperatorSpecContainer specifies the container configuration for the Tekton Operator.
+// It includes resource allocations for CPU and memory to ensure the operator runs efficiently.
+message KubernetesTektonOperatorSpecContainer {
+  // The CPU and memory resources allocated to the Tekton Operator container.
+  dev.planton.provider.kubernetes.ContainerResources resources = 1 [(dev.planton.provider.kubernetes.default_container_resources) = {
+    limits: {
+      cpu: "500m"
+      memory: "512Mi"
+    }
+    requests: {
+      cpu: "100m"
+      memory: "128Mi"
+    }
+  }];
+}
+
+// KubernetesTektonOperatorComponents specifies which Tekton components should be installed by the operator.
+// At least one component must be enabled.
+message KubernetesTektonOperatorComponents {
+  // Enable Tekton Pipelines component for running CI/CD pipelines.
+  // Pipelines is the core component and is typically always enabled.
+  bool pipelines = 1;
+
+  // Enable Tekton Triggers component for event-driven pipeline execution.
+  // Triggers allows pipelines to be started by external events like webhooks.
+  bool triggers = 2;
+
+  // Enable Tekton Dashboard for a web-based UI to view and manage pipelines.
+  bool dashboard = 3;
+
+  // Ensure at least one component is enabled.
+  option (buf.validate.message).cel = {
+    id: "components.at_least_one"
+    expression: "this.pipelines || this.triggers || this.dashboard"
+    message: "at least one Tekton component (pipelines, triggers, or dashboard) must be enabled"
+  };
+}
+
+// KubernetesTektonOperatorDashboardIngress configures ingress for the Tekton Dashboard.
+// When enabled, exposes the dashboard via Kubernetes Gateway API with TLS termination.
+message KubernetesTektonOperatorDashboardIngress {
+  // Enable dashboard ingress.
+  // When true, creates Certificate, Gateway, and HTTPRoute resources.
+  bool enabled = 1;
+
+  // Hostname for the dashboard ingress.
+  // Example: "tekton-dashboard.example.com"
+  // The ClusterIssuer name is derived from the domain portion of the hostname.
+  string hostname = 2;
+}

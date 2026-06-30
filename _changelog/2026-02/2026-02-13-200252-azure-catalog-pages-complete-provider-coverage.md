@@ -85,7 +85,7 @@ The build pipeline at `site/scripts/copy-component-docs.ts` already prefers `cat
 
 ## Impact
 
-- Developers evaluating OpenMCF for Azure infrastructure now have consistent, source-verified documentation for all 24 components
+- Developers evaluating Planton for Azure infrastructure now have consistent, source-verified documentation for all 24 components
 - The Azure provider catalog is at feature parity with AWS (25/25), GCP (19/19), and Kubernetes (51/51)
 - Remaining providers for future coverage: DigitalOcean (13), Civo (10), Cloudflare (5), Auth0 (2), Atlas (1)
 

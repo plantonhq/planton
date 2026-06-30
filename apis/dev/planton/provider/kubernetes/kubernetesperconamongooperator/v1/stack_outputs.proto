@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesperconamongooperator.v1;
+
+// percona-operator-kubernetes stack outputs
+message KubernetesPerconaMongoOperatorStackOutputs {
+  // Namespace where the operator is installed
+  string namespace = 1;
+}

@@ -6,13 +6,13 @@
 
 ## Summary
 
-Refactored 6 GCP deployment components to eliminate dependency on `metadata.name` for actual GCP resource naming. Each component now has explicit name fields in `spec.proto` (e.g., `network_name`, `bucket_name`, `cluster_name`) that directly control the GCP resource names, while `metadata.name` remains for OpenMCF organizational labels. This provides better clarity, portability, and alignment with GCP's explicit naming requirements.
+Refactored 6 GCP deployment components to eliminate dependency on `metadata.name` for actual GCP resource naming. Each component now has explicit name fields in `spec.proto` (e.g., `network_name`, `bucket_name`, `cluster_name`) that directly control the GCP resource names, while `metadata.name` remains for Planton organizational labels. This provides better clarity, portability, and alignment with GCP's explicit naming requirements.
 
 ## Problem Statement
 
 Previously, GCP components used `metadata.name` for dual purposes:
 
-1. **OpenMCF organizational identifier** - Resource tracking, labels, references
+1. **Planton organizational identifier** - Resource tracking, labels, references
 2. **Actual GCP resource name** - The name of the VPC network, GCS bucket, GKE cluster, etc.
 
 This coupling created several issues:
@@ -29,7 +29,7 @@ This coupling created several issues:
 ### Example of the Old Pattern
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpVpc
 metadata:
   name: my-vpc  # Used for BOTH Planton tracking AND GCP network name
@@ -66,7 +66,7 @@ We systematically added explicit name fields to the `spec` section of 6 GCP comp
 ### New Pattern
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpVpc
 metadata:
   name: prod-vpc-resource  # Planton organizational identifier
@@ -126,7 +126,7 @@ message GcpVpcSpec {
 
 ### Phase 2: Pulumi Code Updates
 
-**File**: `apis/org/openmcf/provider/gcp/<component>/v1/iac/pulumi/module/*.go`
+**File**: `apis/dev/planton/provider/gcp/<component>/v1/iac/pulumi/module/*.go`
 
 Updated resource creation to use spec name fields:
 
@@ -150,7 +150,7 @@ locals.GcpLabels = map[string]string{
 
 ### Phase 3: Terraform Code Updates
 
-**File**: `apis/org/openmcf/provider/gcp/<component>/v1/iac/tf/variables.tf`
+**File**: `apis/dev/planton/provider/gcp/<component>/v1/iac/tf/variables.tf`
 
 Added name fields with validation:
 
@@ -363,7 +363,7 @@ All GCP components now follow the same pattern:
 
 **Before**:
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpVpc
 metadata:
   name: prod-network
@@ -374,7 +374,7 @@ spec:
 
 **After**:
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpVpc
 metadata:
   name: prod-network
@@ -546,7 +546,7 @@ NetworkName: "valid-network-name",
 
 **Before**:
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpVpc
 metadata:
   name: prod-network  # Dual purpose - confusing
@@ -558,7 +558,7 @@ spec:
 
 **After**:
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpVpc
 metadata:
   name: prod-network  # Planton tracking identifier
@@ -573,7 +573,7 @@ spec:
 
 **After**:
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpRouterNat
 metadata:
   name: prod-nat-gateway
@@ -641,7 +641,7 @@ validation error:
 
 ### Architecture Alignment
 
-This refactoring aligns with OpenMCF's design principles from `architecture/deployment-component.md`:
+This refactoring aligns with Planton's design principles from `architecture/deployment-component.md`:
 
 > **80/20 Scoping**: Fields reflect research findings (not every possible provider option)
 

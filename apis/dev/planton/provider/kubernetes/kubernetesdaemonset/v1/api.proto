@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesdaemonset.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/kubernetesdaemonset/v1/spec.proto";
+import "dev/planton/provider/kubernetes/kubernetesdaemonset/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// KubernetesDaemonSet is a Kubernetes resource that ensures all (or some) nodes run a copy of a pod.
+// Common use cases include cluster storage daemons, log collection daemons, and node monitoring daemons.
+message KubernetesDaemonSet {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'KubernetesDaemonSet'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  KubernetesDaemonSetSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  KubernetesDaemonSetStatus status = 5;
+}
+
+// KubernetesDaemonSetStatus represents the status of the KubernetesDaemonSet resource.
+message KubernetesDaemonSetStatus {
+  // stack-outputs
+  KubernetesDaemonSetStackOutputs outputs = 1;
+}

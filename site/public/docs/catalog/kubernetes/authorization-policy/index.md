@@ -27,7 +27,7 @@ operation, and conditions, or delegate the decision to an external authorizer.
 ## Quick Start
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesAuthorizationPolicy
 metadata:
   name: require-jwt
@@ -43,7 +43,7 @@ spec:
 ```
 
 ```bash
-openmcf apply -f authorizationpolicy.yaml
+planton apply -f authorizationpolicy.yaml
 ```
 
 ## Configuration Reference

@@ -12,7 +12,7 @@ Deploys OpenBao on Kubernetes using the official OpenBao Helm chart. OpenBao is 
 
 ## What Gets Created
 
-When you deploy a KubernetesOpenBao resource, OpenMCF provisions:
+When you deploy a KubernetesOpenBao resource, Planton provisions:
 
 - **Kubernetes Namespace** — created if `createNamespace` is `true`
 - **OpenBao Helm Release** — the `openbao` chart from `openbao.github.io/openbao-helm`, which creates:
@@ -39,15 +39,15 @@ When you deploy a KubernetesOpenBao resource, OpenMCF provisions:
 Create a file `openbao.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesOpenBao
 metadata:
   name: my-openbao
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesOpenBao.my-openbao
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesOpenBao.my-openbao
 spec:
   namespace:
     value: openbao-dev
@@ -57,7 +57,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f openbao.yaml
+planton apply -f openbao.yaml
 ```
 
 This creates a single-replica OpenBao instance in standalone mode with 10Gi storage, the web UI enabled, and TLS disabled, running in the `openbao-dev` namespace.
@@ -105,15 +105,15 @@ This creates a single-replica OpenBao instance in standalone mode with 10Gi stor
 A single-replica deployment with tuned CPU/memory and larger storage:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesOpenBao
 metadata:
   name: dev-openbao
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesOpenBao.dev-openbao
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesOpenBao.dev-openbao
 spec:
   namespace:
     value: secrets
@@ -135,15 +135,15 @@ spec:
 A production HA deployment with 5 Raft replicas and the agent injector enabled:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesOpenBao
 metadata:
   name: prod-openbao
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesOpenBao.prod-openbao
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesOpenBao.prod-openbao
 spec:
   namespace:
     value: openbao-prod
@@ -171,15 +171,15 @@ spec:
 External access with TLS termination at the ingress, the web UI enabled, and the agent injector running:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesOpenBao
 metadata:
   name: full-openbao
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesOpenBao.full-openbao
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesOpenBao.full-openbao
 spec:
   namespace:
     value: openbao-production
@@ -215,15 +215,15 @@ spec:
 A production HA deployment with GCP Cloud KMS auto-unseal and Workload Identity for zero-downtime recovery:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesOpenBao
 metadata:
   name: prod-openbao
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesOpenBao.prod-openbao
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesOpenBao.prod-openbao
 spec:
   namespace:
     value: openbao-prod

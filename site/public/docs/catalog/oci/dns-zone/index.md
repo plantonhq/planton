@@ -12,13 +12,13 @@ Deploys an Oracle Cloud Infrastructure DNS zone — a managed authoritative DNS 
 
 ## What Gets Created
 
-When you deploy an OciDnsZone resource, OpenMCF provisions:
+When you deploy an OciDnsZone resource, Planton provisions:
 
 - **DNS Zone** — a `dns.Zone` resource in the specified compartment. The zone name is derived from `metadata.name`. Supports GLOBAL (public) and PRIVATE scopes, PRIMARY and SECONDARY types, optional DNSSEC signing, and optional zone transfer configuration with external DNS servers.
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the zone will be created — either a literal value or a reference to an OciCompartment resource
 - **A DNS view OCID** (for private zones only) — required when scope is `private`
 - **External master DNS server addresses** (for secondary zones only) — servers from which the zone will replicate
@@ -29,15 +29,15 @@ When you deploy an OciDnsZone resource, OpenMCF provisions:
 Create a file `dns-zone.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciDnsZone
 metadata:
   name: example.com
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciDnsZone.example-com
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciDnsZone.example-com
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -47,7 +47,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f dns-zone.yaml
+planton apply -f dns-zone.yaml
 ```
 
 This creates a public PRIMARY DNS zone for `example.com`. The zone OCID and OCI-assigned nameservers are exported as stack outputs. Configure these nameservers as NS records at your domain registrar.
@@ -93,15 +93,15 @@ This creates a public PRIMARY DNS zone for `example.com`. The zone OCID and OCI-
 A standard public DNS zone:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciDnsZone
 metadata:
   name: example.com
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciDnsZone.example-com
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciDnsZone.example-com
 spec:
   compartmentId:
     valueFrom:
@@ -116,15 +116,15 @@ spec:
 A DNSSEC-signed public zone for enhanced security:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciDnsZone
 metadata:
   name: secure.example.com
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciDnsZone.secure-example-com
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciDnsZone.secure-example-com
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -137,15 +137,15 @@ spec:
 A private DNS zone resolvable only within VCNs via a DNS view:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciDnsZone
 metadata:
   name: internal.example.local
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciDnsZone.internal-example-local
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciDnsZone.internal-example-local
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -160,15 +160,15 @@ spec:
 A secondary zone that replicates from on-premises DNS servers with TSIG authentication:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciDnsZone
 metadata:
   name: corp.example.com
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciDnsZone.corp-example-com
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciDnsZone.corp-example-com
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -185,15 +185,15 @@ spec:
 A primary zone that pushes zone transfers to external DNS servers:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciDnsZone
 metadata:
   name: distributed.example.com
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciDnsZone.distributed-example-com
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciDnsZone.distributed-example-com
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"

@@ -70,7 +70,7 @@ type ComponentTestContext struct {
 	// The runner package type-asserts to proto.Message when needed.
 	TransformedOutputs interface{}
 
-	// RepoRoot is the absolute path to the openmcf repository root.
+	// RepoRoot is the absolute path to the planton repository root.
 	// Used by the fixture system to discover fixture YAML files.
 	RepoRoot string
 

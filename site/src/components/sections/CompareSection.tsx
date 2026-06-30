@@ -7,14 +7,14 @@ import { Check, X, Minus } from "lucide-react";
 export default function CompareSection() {
 
   const features = [
-    { name: "Declarative YAML", openmcf: true, crossplane: true, terraform: false, pulumi: false },
-    { name: "Multi-cloud consistency", openmcf: true, crossplane: true, terraform: false, pulumi: false },
-    { name: "Strong validation", openmcf: true, crossplane: false, terraform: false, pulumi: false },
-    { name: "Multiple backends", openmcf: true, crossplane: false, terraform: true, pulumi: true },
-    { name: "CLI workflow", openmcf: true, crossplane: false, terraform: true, pulumi: true },
-    { name: "Kubernetes native", openmcf: false, crossplane: true, terraform: false, pulumi: false },
-    { name: "Programming languages", openmcf: false, crossplane: false, terraform: false, pulumi: true },
-    { name: "Curated modules", openmcf: true, crossplane: false, terraform: false, pulumi: false },
+    { name: "Declarative YAML", planton: true, crossplane: true, terraform: false, pulumi: false },
+    { name: "Multi-cloud consistency", planton: true, crossplane: true, terraform: false, pulumi: false },
+    { name: "Strong validation", planton: true, crossplane: false, terraform: false, pulumi: false },
+    { name: "Multiple backends", planton: true, crossplane: false, terraform: true, pulumi: true },
+    { name: "CLI workflow", planton: true, crossplane: false, terraform: true, pulumi: true },
+    { name: "Kubernetes native", planton: false, crossplane: true, terraform: false, pulumi: false },
+    { name: "Programming languages", planton: false, crossplane: false, terraform: false, pulumi: true },
+    { name: "Curated modules", planton: true, crossplane: false, terraform: false, pulumi: false },
   ];
 
   const FeatureIcon = ({ enabled }: { enabled: boolean | null | undefined }) => {
@@ -27,7 +27,7 @@ export default function CompareSection() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="text-center mb-16">
         <h2 className="text-4xl font-bold mb-6">
-          <span className="bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">How OpenMCF Compares</span>
+          <span className="bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">How Planton Compares</span>
         </h2>
         <p className="text-xl text-slate-400 max-w-3xl mx-auto">Short, factual comparison with other infrastructure tools</p>
       </div>
@@ -42,7 +42,7 @@ export default function CompareSection() {
               <strong className="text-red-400">Their way:</strong> Learn AWS, GCP, Azure CLIs separately. Different syntax, mental models, and workflows for every cloud.
             </p>
             <p className="text-slate-400 mt-4">
-              <strong className="text-emerald-400">OpenMCF:</strong> One consistent YAML structure and CLI across all clouds. Same workflow everywhere.
+              <strong className="text-emerald-400">Planton:</strong> One consistent YAML structure and CLI across all clouds. Same workflow everywhere.
             </p>
           </CardContent>
         </Card>
@@ -55,7 +55,7 @@ export default function CompareSection() {
               <strong className="text-red-400">Crossplane:</strong> Requires running Kubernetes cluster to manage infrastructure. Controller-based reconciliation.
             </p>
             <p className="text-slate-400 mt-4">
-              <strong className="text-emerald-400">OpenMCF:</strong> CLI-driven, runs anywhere. No cluster required. You control when deployments happen.
+              <strong className="text-emerald-400">Planton:</strong> CLI-driven, runs anywhere. No cluster required. You control when deployments happen.
             </p>
           </CardContent>
         </Card>
@@ -68,7 +68,7 @@ export default function CompareSection() {
               <strong className="text-red-400">Terraform/Pulumi:</strong> Write imperative code or HCL. Learn provider-specific resource syntax for every service.
             </p>
             <p className="text-slate-400 mt-4">
-              <strong className="text-emerald-400">OpenMCF:</strong> Write declarative YAML. The framework maintains battle-tested Pulumi and Terraform modules for you.
+              <strong className="text-emerald-400">Planton:</strong> Write declarative YAML. The framework maintains battle-tested Pulumi and Terraform modules for you.
             </p>
           </CardContent>
         </Card>
@@ -84,7 +84,7 @@ export default function CompareSection() {
               <TableHeader>
                 <TableRow className="border-slate-800">
                   <TableHead className="text-slate-300">Feature</TableHead>
-                  <TableHead className="text-slate-300">OpenMCF</TableHead>
+                  <TableHead className="text-slate-300">Planton</TableHead>
                   <TableHead className="text-slate-300">Crossplane</TableHead>
                   <TableHead className="text-slate-300">Terraform</TableHead>
                   <TableHead className="text-slate-300">Pulumi</TableHead>
@@ -96,8 +96,8 @@ export default function CompareSection() {
                     <TableCell className="font-medium text-white">{feature.name}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <FeatureIcon enabled={feature.openmcf} />
-                        {feature.openmcf && (
+                        <FeatureIcon enabled={feature.planton} />
+                        {feature.planton && (
                           <Badge className="bg-emerald-900 text-emerald-200">Yes</Badge>
                         )}
                       </div>

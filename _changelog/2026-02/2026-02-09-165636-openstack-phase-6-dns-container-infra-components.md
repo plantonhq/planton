@@ -136,7 +136,7 @@ The DNS components follow the established cross-provider pattern:
 
 - OpenStack Phase 1-5 components: `_changelog/2026-02/2026-02-09-*`
 - Provider repos: terraform-provider-openstack, pulumi-openstack (cloned locally)
-- Parent project: `planton/_projects/20260209.01.openstack-openmcf-components/`
+- Parent project: `planton/_projects/20260209.01.openstack-planton-components/`
 
 ---
 

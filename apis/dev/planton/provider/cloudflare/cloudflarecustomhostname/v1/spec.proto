@@ -1,0 +1,176 @@
+syntax = "proto3";
+
+package dev.planton.provider.cloudflare.cloudflarecustomhostname.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// CloudflareCustomHostnameSpec attaches a customer's own domain to a Cloudflare
+// for SaaS zone (the "SaaS zone"). It extends Cloudflare's edge — TLS termination,
+// caching, WAF — onto a hostname your customer owns (e.g. "support.acme.com"),
+// with a per-customer certificate that Cloudflare provisions and auto-renews. The
+// customer points their hostname at the SaaS zone via CNAME and proves control via
+// the ownership-verification records exported in the stack outputs.
+//
+// Traffic for the custom hostname is routed to the zone's default origin (the
+// CloudflareCustomHostnameFallbackOrigin) unless `custom_origin_server` overrides
+// it for this hostname.
+message CloudflareCustomHostnameSpec {
+  // The Cloudflare Zone ID of the SaaS zone this custom hostname is added to. A
+  // literal value or a reference to a CloudflareDnsZone resource (its
+  // status.outputs.zone_id).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef zone_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareDnsZone,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
+  ];
+
+  // The customer's hostname to onboard, e.g. "support.acme.com". This is the
+  // customer's own (external) domain, so it is a literal value, not a reference.
+  string hostname = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 255
+  ];
+
+  // Override the origin this specific custom hostname routes to. A backend
+  // endpoint — a literal hostname or a reference to another resource's output
+  // (e.g. a load balancer hostname). When omitted, the zone's fallback origin is
+  // used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef custom_origin_server = 3;
+
+  // The SNI hostname sent to the custom origin during the TLS handshake. Can be a
+  // valid subdomain of the SaaS zone, the custom origin server name, or the literal
+  // ":request_host_header:" to forward the request Host. Not configurable with a
+  // default/fallback origin.
+  string custom_origin_sni = 4;
+
+  // Arbitrary key/value metadata stored with the custom hostname (e.g. a tenant id),
+  // available to Workers and rules.
+  map<string, string> custom_metadata = 5;
+
+  // SSL/TLS settings for the custom hostname's certificate. When omitted, Cloudflare
+  // provisions a DV certificate with sensible defaults.
+  CloudflareCustomHostnameSsl ssl = 6;
+}
+
+// CloudflareCustomHostnameSsl controls how the per-hostname certificate is issued
+// and how TLS is terminated for the custom hostname.
+message CloudflareCustomHostnameSsl {
+  // Certificate bundling strategy: "ubiquitous" (the default; widest client
+  // compatibility), "optimal" (shortest chain), or "force" (verify but do not
+  // modify the chain).
+  optional string bundle_method = 1 [
+    (dev.planton.shared.options.default) = "ubiquitous",
+    (buf.validate.field).cel = {
+      id: "custom_hostname_ssl.bundle_method_valid"
+      message: "bundle_method must be one of ubiquitous, optimal, force"
+      expression: "this == '' || this in ['ubiquitous', 'optimal', 'force']"
+    }
+  ];
+
+  // The certificate authority that issues the certificate: "digicert", "google",
+  // "lets_encrypt", or "ssl_com". Selectable CA is an Enterprise feature; leave
+  // empty to use the account default.
+  string certificate_authority = 2 [(buf.validate.field).cel = {
+    id: "custom_hostname_ssl.certificate_authority_valid"
+    message: "certificate_authority must be empty or one of digicert, google, lets_encrypt, ssl_com"
+    expression: "this == '' || this in ['digicert', 'google', 'lets_encrypt', 'ssl_com']"
+  }];
+
+  // Add Cloudflare branding (a sni.cloudflaressl.com subdomain as the Common Name).
+  bool cloudflare_branding = 3;
+
+  // The domain control validation method used to prove control of the hostname:
+  // "http", "txt", or "email". Leave empty to use the provider default.
+  string method = 4 [(buf.validate.field).cel = {
+    id: "custom_hostname_ssl.method_valid"
+    message: "method must be empty or one of http, txt, email"
+    expression: "this == '' || this in ['http', 'txt', 'email']"
+  }];
+
+  // The level of validation: only "dv" (domain validation) is supported. Defaults
+  // to "dv".
+  optional string type = 5 [
+    (dev.planton.shared.options.default) = "dv",
+    (buf.validate.field).cel = {
+      id: "custom_hostname_ssl.type_valid"
+      message: "type must be dv"
+      expression: "this == '' || this == 'dv'"
+    }
+  ];
+
+  // Issue a wildcard certificate that also covers a one-level subdomain of the
+  // hostname (Enterprise feature).
+  bool wildcard = 6;
+
+  // A user-uploaded certificate (PEM) to use instead of a Cloudflare-issued one
+  // (Enterprise feature). Public certificate material, not a secret; the private
+  // key is custom_key.
+  string custom_certificate = 7;
+
+  // The identifier of a previously-uploaded custom CSR to use (Enterprise feature).
+  // An identifier, not a secret.
+  string custom_csr_id = 8;
+
+  // The private key (PEM) for `custom_certificate` (Enterprise feature). Sensitive.
+  string custom_key = 9 [(dev.planton.shared.options.sensitive) = true];
+
+  // One or two custom certificate/key pairs to upload (Enterprise feature),
+  // supporting mixed RSA/ECDSA serving.
+  repeated CloudflareCustomHostnameSslCustomCertBundle custom_cert_bundle = 10 [(buf.validate.field).repeated.max_items = 2];
+
+  // Fine-grained TLS termination settings for the custom hostname.
+  CloudflareCustomHostnameSslSettings settings = 11;
+}
+
+// CloudflareCustomHostnameSslCustomCertBundle is a single uploaded certificate/key
+// pair for a custom hostname.
+message CloudflareCustomHostnameSslCustomCertBundle {
+  // The certificate (PEM). Public material, not a secret; the private key is
+  // custom_key.
+  string custom_certificate = 1 [(buf.validate.field).required = true];
+
+  // The private key (PEM) for the certificate. Sensitive.
+  string custom_key = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.sensitive) = true
+  ];
+}
+
+// CloudflareCustomHostnameSslSettings holds fine-grained TLS termination settings.
+message CloudflareCustomHostnameSslSettings {
+  // An allowlist of ciphers for TLS termination, in BoringSSL format. Leave empty
+  // to use Cloudflare's defaults.
+  repeated string ciphers = 1;
+
+  // Whether Early Hints is enabled: "on" or "off". Leave empty for the default.
+  string early_hints = 2 [(buf.validate.field).cel = {
+    id: "custom_hostname_ssl_settings.early_hints_valid"
+    message: "early_hints must be empty or one of on, off"
+    expression: "this == '' || this in ['on', 'off']"
+  }];
+
+  // Whether HTTP/2 is enabled: "on" or "off". Leave empty for the default.
+  string http2 = 3 [(buf.validate.field).cel = {
+    id: "custom_hostname_ssl_settings.http2_valid"
+    message: "http2 must be empty or one of on, off"
+    expression: "this == '' || this in ['on', 'off']"
+  }];
+
+  // The minimum TLS version: "1.0", "1.1", "1.2", or "1.3". Leave empty for the
+  // default.
+  string min_tls_version = 4 [(buf.validate.field).cel = {
+    id: "custom_hostname_ssl_settings.min_tls_version_valid"
+    message: "min_tls_version must be empty or one of 1.0, 1.1, 1.2, 1.3"
+    expression: "this == '' || this in ['1.0', '1.1', '1.2', '1.3']"
+  }];
+
+  // Whether TLS 1.3 is enabled: "on" or "off". Leave empty for the default.
+  string tls_1_3 = 5 [(buf.validate.field).cel = {
+    id: "custom_hostname_ssl_settings.tls_1_3_valid"
+    message: "tls_1_3 must be empty or one of on, off"
+    expression: "this == '' || this in ['on', 'off']"
+  }];
+}

@@ -2,8 +2,8 @@ package manifest
 
 import (
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/internal/cli/flag"
-	"github.com/plantonhq/openmcf/pkg/kustomize/builder"
+	"github.com/plantonhq/planton/internal/cli/flag"
+	"github.com/plantonhq/planton/pkg/kustomize/builder"
 	"github.com/spf13/cobra"
 )
 

@@ -398,7 +398,7 @@ Each example includes:
 
 **Created `iac/hack/manifest.yaml`**:
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesCertManager
 metadata:
   name: test-cert-manager
@@ -663,7 +663,7 @@ read_lints apis/.../kubernetescertmanager/v1
 
 ```bash
 cat > cert-manager.yaml <<EOF
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesCertManager
 metadata:
   name: cert-manager
@@ -678,14 +678,14 @@ spec:
 EOF
 
 # Deploy with Terraform
-openmcf tofu apply --manifest cert-manager.yaml
+planton tofu apply --manifest cert-manager.yaml
 ```
 
 ### Multi-Provider Setup
 
 ```bash
 cat > cert-manager-hybrid.yaml <<EOF
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesCertManager
 metadata:
   name: cert-manager-multi
@@ -707,7 +707,7 @@ EOF
 
 # Deploy with Pulumi
 export MODULE=/path/to/kubernetescertmanager/v1/iac/pulumi
-openmcf pulumi up --manifest cert-manager-hybrid.yaml --module-dir ${MODULE}
+planton pulumi up --manifest cert-manager-hybrid.yaml --module-dir ${MODULE}
 
 # Verify ClusterIssuers created
 kubectl get clusterissuers

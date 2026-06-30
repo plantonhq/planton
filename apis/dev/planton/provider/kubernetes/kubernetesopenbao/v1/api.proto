@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesopenbao.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/kubernetesopenbao/v1/spec.proto";
+import "dev/planton/provider/kubernetes/kubernetesopenbao/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// KubernetesOpenBao is a Kubernetes-based deployment of OpenBao, an open-source secrets management solution.
+// OpenBao is a fork of HashiCorp Vault, providing secure secret storage, dynamic secrets, data encryption,
+// leasing/renewal, and revocation capabilities.
+message KubernetesOpenBao {
+  // API version for KubernetesOpenBao resources.
+  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.planton.dev/v1'];
+
+  // Resource kind identifier.
+  string kind = 2 [(buf.validate.field).string.const = 'KubernetesOpenBao'];
+
+  // Standard cloud resource metadata.
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // OpenBao deployment specification.
+  KubernetesOpenBaoSpec spec = 4 [(buf.validate.field).required = true];
+
+  // Deployment status and outputs.
+  KubernetesOpenBaoStatus status = 5;
+}
+
+// KubernetesOpenBaoStatus represents the deployment status.
+message KubernetesOpenBaoStatus {
+  // Stack outputs from the deployment.
+  KubernetesOpenBaoStackOutputs outputs = 1;
+}

@@ -3,6 +3,6 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "kuberneteslabels",
     srcs = ["labels.go"],
-    importpath = "github.com/plantonhq/openmcf/pkg/kubernetes/kuberneteslabels",
+    importpath = "github.com/plantonhq/planton/pkg/kubernetes/kuberneteslabels",
     visibility = ["//visibility:public"],
 )

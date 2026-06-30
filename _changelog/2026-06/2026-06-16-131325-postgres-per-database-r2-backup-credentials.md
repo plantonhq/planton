@@ -83,7 +83,7 @@ flowchart TD
 ## Validation
 
 - `make protos` (regenerated stubs), `make build` (CLI + e2e matrix) — both green.
-- `go test ./apis/org/openmcf/provider/kubernetes/kubernetespostgres/v1/` — pass.
+- `go test ./apis/dev/planton/provider/kubernetes/kubernetespostgres/v1/` — pass.
 - `go test ./pkg/secretcoverage/...` — pass (baseline updated; `access_key_id` correctly
   not exempt-annotated).
 - `terraform validate` + `terraform fmt` on the tofu module — clean.

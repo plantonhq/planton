@@ -48,7 +48,7 @@ flowchart LR
 
 ### Thin AwsVpc
 
-- **Spec** (`apis/org/openmcf/provider/aws/awsvpc/v1/spec.proto`): `region`;
+- **Spec** (`apis/dev/planton/provider/aws/awsvpc/v1/spec.proto`): `region`;
   `cidr_block` (primary IPv4, immutable); `secondary_ipv4_cidr_blocks`; IPv4 IPAM
   (`ipv4_ipam_pool_id`, `ipv4_netmask_length`); `instance_tenancy`;
   `enable_dns_support` (proto3 `optional bool`), `enable_dns_hostnames`,

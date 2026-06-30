@@ -1,9 +1,0 @@
-apiVersion: aws.openmcf.org/v1
-kind: AwsSqsQueue
-metadata:
-  name: my-queue
-spec:
-  region: <aws-region>
-  sqsManagedSseEnabled: true
-  receiveWaitTimeSeconds: 20
-  visibilityTimeoutSeconds: 30

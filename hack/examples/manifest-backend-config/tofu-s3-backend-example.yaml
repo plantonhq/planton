@@ -7,8 +7,8 @@ metadata:
   name: Main EKS Cluster
   labels:
     # Terraform/Tofu backend configuration for S3
-    terraform.openmcf.org/backend.type: "s3"
-    terraform.openmcf.org/backend.object: "my-terraform-state-bucket/eks/main-cluster/terraform.tfstate"
+    terraform.planton.dev/backend.type: "s3"
+    terraform.planton.dev/backend.object: "my-terraform-state-bucket/eks/main-cluster/terraform.tfstate"
 spec:
   awsProviderConfigId: aws-prod-creds
   region: us-west-2

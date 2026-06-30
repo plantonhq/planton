@@ -36,7 +36,7 @@ This preset creates a production-grade EventBridge custom event bus with custome
 | `<kms-key-arn>` | ARN of a KMS key for event encryption | `arn:aws:kms:us-east-1:123456789012:key/mrk-abc123` |
 | `<dlq-queue-arn>` | ARN of an SQS queue for the dead letter queue | `arn:aws:sqs:us-east-1:123456789012:my-events-dlq` |
 
-Alternatively, replace the literal values with `valueFrom` references to other OpenMCF resources:
+Alternatively, replace the literal values with `valueFrom` references to other Planton resources:
 
 ```yaml
 kmsKeyIdentifier:

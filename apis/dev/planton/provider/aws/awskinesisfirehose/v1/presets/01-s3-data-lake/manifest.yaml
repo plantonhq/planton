@@ -1,0 +1,20 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsKinesisFirehose
+metadata:
+  name: data-lake-firehose
+  org: my-org
+  env: prod
+  id: data-lake-firehose-prod
+spec:
+  # Direct PUT source (default) — applications send data via PutRecord/PutRecordBatch
+  extendedS3:
+    bucketArn:
+      value: arn:aws:s3:::my-data-lake-bucket
+    roleArn:
+      value: arn:aws:iam::123456789012:role/firehose-s3-delivery-role
+    prefix: events/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/
+    compressionFormat: GZIP
+    buffering:
+      intervalInSeconds: 120
+      sizeInMbs: 64
+    fileExtension: .json.gz

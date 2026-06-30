@@ -11,7 +11,7 @@ presets:
   - slug: "01-standard"
     rank: "01"
     title: "Standard Helm Release"
-    excerpt: "This preset deploys a Helm chart using the generic KubernetesHelmRelease component. Use this as an escape hatch for deploying any Helm chart that does not have a dedicated OpenMCF component."
+    excerpt: "This preset deploys a Helm chart using the generic KubernetesHelmRelease component. Use this as an escape hatch for deploying any Helm chart that does not have a dedicated Planton component."
 ---
 
 # Helm Release Presets

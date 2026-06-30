@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package dev.planton.provider.cloudflare.cloudflarelist.v1;
+
+import "buf/validate/validate.proto";
+
+// The type of a list. Each type accepts only items of the matching shape (an IP
+// address/CIDR, an ASN, a hostname, or a redirect). The type is fixed at
+// creation: changing it replaces the list. Value names match the strings the
+// Cloudflare API expects exactly, so the generated enum is used directly
+// (.String()) when calling the provider.
+enum CloudflareListKind {
+  list_kind_unspecified = 0; // Must not be used.
+  ip = 1; // IP addresses / CIDRs (the most common list type).
+  redirect = 2; // Bulk Redirect entries (source -> target URL rules).
+  hostname = 3; // Hostnames (optionally wildcarded).
+  asn = 4; // Autonomous System Numbers.
+}
+
+// CloudflareListSpec provisions an account-scoped Cloudflare List: a reusable,
+// named collection referenced from rule expressions (e.g. a WAF/custom rule's
+// `ip.src in $my_list`, or a Bulk Redirect ruleset's `from_list`). The list is
+// the container; its entries are managed as CloudflareListItem resources, so a
+// single list can hold anything from a handful of curated IPs to a large,
+// independently-managed set. (The list's `kind` and `name` are fixed at
+// creation; changing either replaces the list.)
+message CloudflareListSpec {
+  // The Cloudflare account ID that owns this list.
+  string account_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.len = 32,
+    (buf.validate.field).string.pattern = "^[0-9a-fA-F]{32}$"
+  ];
+
+  // The list type, fixing which kind of item the list accepts. Immutable —
+  // changing it replaces the list.
+  CloudflareListKind kind = 2 [
+    (buf.validate.field).enum.defined_only = true,
+    (buf.validate.field).cel = {
+      id: "list_kind.not_unspecified"
+      message: "kind must be one of ip, redirect, hostname, asn"
+      expression: "this != 0"
+    }
+  ];
+
+  // An informative name for the list, unique within the account. This is the
+  // identifier used in filter and rule expressions (e.g. `$name`), so prefer a
+  // short, lowercase, expression-friendly name. Immutable — changing it
+  // replaces the list.
+  string name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 50,
+    (buf.validate.field).string.pattern = "^[a-zA-Z][a-zA-Z0-9_]*$"
+  ];
+
+  // An optional human-readable summary of the list's purpose.
+  string description = 4 [(buf.validate.field).string.max_len = 500];
+}

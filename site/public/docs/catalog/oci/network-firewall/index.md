@@ -12,7 +12,7 @@ Deploys an Oracle Cloud Infrastructure Network Firewall with an inline firewall 
 
 ## What Gets Created
 
-When you deploy an OciNetworkFirewall resource, OpenMCF provisions:
+When you deploy an OciNetworkFirewall resource, Planton provisions:
 
 - **Firewall Policy** — a `networkfirewall.NetworkFirewallPolicy` resource in the specified compartment. Created first as the container for all policy sub-resources.
 - **Address Lists** — one `networkfirewall.NetworkFirewallPolicyAddressList` per entry in `policy.addressLists`. Each list contains IP CIDRs or FQDNs referenced by security rules.
@@ -24,7 +24,7 @@ When you deploy an OciNetworkFirewall resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the firewall and policy will be created — either a literal value or a reference to an OciCompartment resource
 - **A subnet OCID** where the firewall appliance will be deployed — either a literal value or a reference to an OciSubnet resource
 - **At least one security rule** defined in the policy
@@ -34,15 +34,15 @@ When you deploy an OciNetworkFirewall resource, OpenMCF provisions:
 Create a file `network-firewall.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciNetworkFirewall
 metadata:
   name: my-firewall
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciNetworkFirewall.my-firewall
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciNetworkFirewall.my-firewall
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -66,7 +66,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f network-firewall.yaml
+planton apply -f network-firewall.yaml
 ```
 
 This creates a network firewall with a policy that allows traffic from internal RFC 1918 networks. The firewall OCID, IPv4 address, and policy OCID are exported as stack outputs.
@@ -186,15 +186,15 @@ All non-empty fields are AND-ed together. Within each field, values are OR-ed.
 A firewall allowing internal traffic and dropping everything else:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciNetworkFirewall
 metadata:
   name: basic-fw
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciNetworkFirewall.basic-fw
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciNetworkFirewall.basic-fw
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -224,15 +224,15 @@ spec:
 A firewall allowing HTTPS traffic to specific destinations and blocking known malicious URLs:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciNetworkFirewall
 metadata:
   name: web-fw
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciNetworkFirewall.web-fw
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciNetworkFirewall.web-fw
 spec:
   compartmentId:
     valueFrom:
@@ -299,15 +299,15 @@ spec:
 A firewall with intrusion detection on inbound traffic and private NAT:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciNetworkFirewall
 metadata:
   name: ids-fw
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciNetworkFirewall.ids-fw
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciNetworkFirewall.ids-fw
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"

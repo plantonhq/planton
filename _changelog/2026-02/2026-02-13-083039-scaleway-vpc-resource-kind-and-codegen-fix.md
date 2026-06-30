@@ -33,7 +33,7 @@ The Scaleway provider had scaffolding (enum values, provider helper, label keys)
 Added a directory existence check in `pkg/crkreflect/codegen/main.go` that skips resource kinds whose API packages don't exist on disk yet. This is a 7-line guard clause between the import path computation and the `uniqueAlias()` call:
 
 ```go
-pkgDir := filepath.Join("apis", "org", "openmcf", "provider", provSlug, lowerKind, "v1")
+pkgDir := filepath.Join("apis", "org", "planton", "provider", provSlug, lowerKind, "v1")
 if _, err := os.Stat(pkgDir); os.IsNotExist(err) {
     fmt.Fprintf(os.Stderr, "skipping %s: package dir %s not found\n", kindName, pkgDir)
     continue
@@ -47,7 +47,7 @@ Skipped kinds are logged to stderr for visibility. As each resource kind is impl
 Implemented the complete ScalewayVpc resource kind following the DigitalOcean VPC reference pattern:
 
 ```
-apis/org/openmcf/provider/scaleway/scalewayvpc/v1/
+apis/dev/planton/provider/scaleway/scalewayvpc/v1/
 ├── spec.proto              # ScalewayVpcSpec: region, enable_routing, enable_custom_routes_propagation
 ├── api.proto               # ScalewayVpc resource + ScalewayVpcStatus
 ├── stack_input.proto        # ScalewayVpcStackInput: target + provider_config
@@ -76,7 +76,7 @@ apis/org/openmcf/provider/scaleway/scalewayvpc/v1/
 
 - **Spec is minimal**: Scaleway VPCs have no CIDR blocks or IP ranges (unlike DigitalOcean/AWS). The spec has only `region`, `enable_routing`, and `enable_custom_routes_propagation`. IP planning happens at the Private Network level (R02).
 - **One-way routing flags**: Both `enable_routing` and `enable_custom_routes_propagation` are irreversible toggles -- once enabled, they cannot be disabled. This constraint is documented in proto comments, README, and enforced via Terraform lifecycle `ignore_changes`.
-- **Tags from metadata**: Standard OpenMCF labels are automatically applied as Scaleway tags (formatted as `"key=value"` strings). No user-facing `tags` field in the spec -- follows the DigitalOcean VPC pattern.
+- **Tags from metadata**: Standard Planton labels are automatically applied as Scaleway tags (formatted as `"key=value"` strings). No user-facing `tags` field in the spec -- follows the DigitalOcean VPC pattern.
 - **Single output**: `vpc_id` is the only stack output, matching what downstream resources (ScalewayPrivateNetwork) need as a `StringValueOrRef` reference.
 
 ## Implementation Details
@@ -132,7 +132,7 @@ Auto-generated files updated by `make protos` and Gazelle:
 
 - Previous session: `_changelog/2026-02/2026-02-12-232409-scaleway-resource-kinds-scaffolding.md` -- P0 scaffolding (enums, provider helper, label keys)
 - Previous session: `_changelog/2026-02/2026-02-12-181851-scaleway-provider-integration.md` -- Provider config and credential management
-- Parent project: `20260212.01.openmcf-cloud-provider-expansion` in plantonhq/planton
+- Parent project: `20260212.01.planton-cloud-provider-expansion` in plantonhq/planton
 - Sub-project: `20260212.04.sp.scaleway-resource-kinds` -- R01 was the first resource kind task
 - Next: R02 (ScalewayPrivateNetwork) -- first resource with `StringValueOrRef` dependency on ScalewayVpc
 

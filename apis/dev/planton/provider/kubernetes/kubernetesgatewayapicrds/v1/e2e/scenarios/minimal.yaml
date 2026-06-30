@@ -1,0 +1,8 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesGatewayApiCrds
+metadata:
+  name: e2e-gwapi
+spec:
+  version: "v1.2.1"
+  install_channel:
+    channel: standard

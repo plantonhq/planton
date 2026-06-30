@@ -12,14 +12,14 @@ Deploys a Google Cloud Scheduler job that executes on a unix-cron schedule, disp
 
 ## What Gets Created
 
-When you deploy a GcpCloudSchedulerJob resource, OpenMCF provisions:
+When you deploy a GcpCloudSchedulerJob resource, Planton provisions:
 
 - **Cloud Scheduler Job** — a `google_cloud_scheduler_job` resource configured with the specified schedule, target, and retry policy
 - **Authentication Token** (optional) — OIDC or OAuth2 token generation for secure HTTP target invocation, using the specified service account
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **A GCP project** with the Cloud Scheduler API enabled
 - **A target endpoint** — an HTTP URL, a Pub/Sub topic, or an App Engine handler
 - **A service account** with `iam.serviceAccounts.actAs` permission if using OIDC/OAuth authentication
@@ -30,15 +30,15 @@ When you deploy a GcpCloudSchedulerJob resource, OpenMCF provisions:
 Create a file `scheduler-job.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudSchedulerJob
 metadata:
   name: my-cron-job
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpCloudSchedulerJob.my-cron-job
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpCloudSchedulerJob.my-cron-job
 spec:
   projectId:
     value: my-gcp-project
@@ -52,7 +52,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f scheduler-job.yaml
+planton apply -f scheduler-job.yaml
 ```
 
 This creates a Cloud Scheduler job that sends an HTTP GET to `https://example.com/api/trigger` every weekday at 9:00 AM UTC.
@@ -127,15 +127,15 @@ This creates a Cloud Scheduler job that sends an HTTP GET to `https://example.co
 Securely invoke a Cloud Run service every weekday at 9am Eastern:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudSchedulerJob
 metadata:
   name: daily-report
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpCloudSchedulerJob.daily-report
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpCloudSchedulerJob.daily-report
 spec:
   projectId:
     value: my-gcp-project
@@ -167,15 +167,15 @@ spec:
 Publish a message to a Pub/Sub topic every 5 minutes:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudSchedulerJob
 metadata:
   name: pipeline-trigger
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpCloudSchedulerJob.pipeline-trigger
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpCloudSchedulerJob.pipeline-trigger
 spec:
   projectId:
     value: my-gcp-project
@@ -196,18 +196,18 @@ spec:
 
 ### Using Foreign Key References
 
-Wire dependencies from other OpenMCF-managed resources:
+Wire dependencies from other Planton-managed resources:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudSchedulerJob
 metadata:
   name: composed-scheduler
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpCloudSchedulerJob.composed-scheduler
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpCloudSchedulerJob.composed-scheduler
 spec:
   projectId:
     valueFrom:

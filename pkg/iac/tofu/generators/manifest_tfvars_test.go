@@ -6,11 +6,11 @@ import (
 
 	"github.com/hashicorp/hcl/v2/hclparse"
 
-	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes"
-	peerauthv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetespeerauthentication/v1"
-	kubernetesredisv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/kubernetesredis/v1"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared"
-	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
+	"github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes"
+	peerauthv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/kubernetespeerauthentication/v1"
+	kubernetesredisv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/kubernetesredis/v1"
+	"github.com/plantonhq/planton/apis/dev/planton/shared"
+	foreignkeyv1 "github.com/plantonhq/planton/apis/dev/planton/shared/foreignkey/v1"
 )
 
 // newPeerAuthManifest builds a KubernetesPeerAuthentication (a manifest-projection
@@ -19,7 +19,7 @@ import (
 // skipped orchestrator field (target_cluster).
 func newPeerAuthManifest() *peerauthv1.KubernetesPeerAuthentication {
 	return &peerauthv1.KubernetesPeerAuthentication{
-		ApiVersion: "kubernetes.openmcf.org/v1",
+		ApiVersion: "kubernetes.planton.dev/v1",
 		Kind:       "KubernetesPeerAuthentication",
 		Metadata:   &shared.CloudResourceMetadata{Name: "pa-one"},
 		Spec: &peerauthv1.KubernetesPeerAuthenticationSpec{
@@ -93,7 +93,7 @@ func TestRenderTFVars_DispatchesByKind(t *testing.T) {
 	// Provider-abstraction kind -> snake_case path (the converter must not be
 	// flipped globally; only annotated kinds switch).
 	redis := &kubernetesredisv1.KubernetesRedis{
-		ApiVersion: "kubernetes.openmcf.org/v1",
+		ApiVersion: "kubernetes.planton.dev/v1",
 		Kind:       "KubernetesRedis",
 		Metadata:   &shared.CloudResourceMetadata{Name: "red-one"},
 		Spec: &kubernetesredisv1.KubernetesRedisSpec{

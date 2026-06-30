@@ -1,0 +1,14 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesTcpRoute
+metadata:
+  name: e2e-tcp-route
+spec:
+  namespace:
+    value: default
+  parent_refs:
+    - name: e2e-gateway
+      section_name: tcp
+  rules:
+    - backend_refs:
+        - name: tcp-backend
+          port: 5432

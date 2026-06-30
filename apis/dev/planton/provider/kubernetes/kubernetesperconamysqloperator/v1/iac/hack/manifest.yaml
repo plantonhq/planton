@@ -1,0 +1,17 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesPerconaMysqlOperator
+metadata:
+  name: percona-mysql-operator-test
+spec:
+  targetCluster:
+    credentialId: local-kind-cluster
+  namespace: percona-mysql-operator
+  container:
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+

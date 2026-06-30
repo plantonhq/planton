@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awskinesisstreamconsumer.v1;
+
+// AwsKinesisStreamConsumerStackOutputs captures observable identifiers from a
+// registered Kinesis enhanced fan-out consumer. These outputs are used by
+// downstream configurations (e.g., Lambda event source mappings with enhanced
+// fan-out) to wire dependencies via StringValueOrRef.
+message AwsKinesisStreamConsumerStackOutputs {
+  // The Amazon Resource Name (ARN) of the registered stream consumer. This is
+  // the primary identifier used for Lambda event source mappings configured
+  // with enhanced fan-out (StartingPosition + ConsumerARN), IAM policies, and
+  // API calls (SubscribeToShard, DescribeStreamConsumer).
+  //
+  // Format: arn:aws:kinesis:{region}:{account}:stream/{stream-name}/consumer/{consumer-name}:{creation-timestamp}
+  string consumer_arn = 1;
+
+  // The name of the registered stream consumer. Matches metadata.name from the
+  // resource spec. Used for human-readable identification and as the consumer
+  // name in Kinesis API calls (ListStreamConsumers filtering).
+  string consumer_name = 2;
+
+  // The ARN of the parent Kinesis Data Stream this consumer is registered with.
+  // Echoed back for convenience — enables downstream resources to discover the
+  // stream without a separate lookup.
+  string stream_arn = 3;
+
+  // RFC3339 timestamp of when the consumer was registered with the stream.
+  // Useful for operational visibility and debugging registration order.
+  string creation_timestamp = 4;
+}

@@ -1,7 +1,0 @@
-apiVersion: cloudflare.openmcf.org/v1
-kind: CloudflareKvNamespace
-metadata:
-  name: my-kv-namespace
-spec:
-  namespaceName: <namespace-name>
-  accountId: <cloudflare-account-id>

@@ -57,13 +57,13 @@ Deep Terraform provider research (`cdn_frontdoor_*.go`) identified 16 correction
 ### Spec Design
 
 - **9 message types**: Spec, Endpoint, OriginGroup, Origin, LoadBalancing, HealthProbe, PrivateLink, Route, RouteCache
-- **16 fields with defaults** via `optional` + `(org.openmcf.shared.options.default)`
+- **16 fields with defaults** via `optional` + `(dev.planton.shared.options.default)`
 - **CEL validations** for SKU, protocols, forwarding protocol, query string caching behavior
 - **StringValueOrRef** for `resource_group` (references AzureResourceGroup)
 
 ### 80/20 Omissions
 
-Custom domains, WAF policies, rule sets, security policies, secrets, and identity on profile were deliberately omitted. These are separate Terraform resources with independent lifecycles and can be added as standalone OpenMCF resources in the future.
+Custom domains, WAF policies, rule sets, security policies, secrets, and identity on profile were deliberately omitted. These are separate Terraform resources with independent lifecycles and can be added as standalone Planton resources in the future.
 
 ## Implementation Details
 
@@ -89,7 +89,7 @@ Custom domains, WAF policies, rule sets, security policies, secrets, and identit
 
 ## Benefits
 
-- Completes the Azure CDN category in OpenMCF
+- Completes the Azure CDN category in Planton
 - Enables global application acceleration and SSL offloading
 - Private Link support (Premium) for secure backend connectivity
 - Cache configuration for reducing origin load and improving latency

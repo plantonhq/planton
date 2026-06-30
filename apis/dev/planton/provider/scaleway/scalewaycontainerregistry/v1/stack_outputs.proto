@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package dev.planton.provider.scaleway.scalewaycontainerregistry.v1;
+
+// ScalewayContainerRegistryStackOutputs captures the provisioned registry
+// namespace details needed by downstream resources, CI/CD pipelines, and
+// Kubernetes workloads.
+//
+// The primary outputs are `endpoint` (the Docker registry URL for
+// push/pull operations) and `namespace_id` (for Terraform state and
+// API references).
+//
+// Downstream consumers use these outputs to:
+//   - Configure CI/CD pipelines with the correct Docker push target
+//   - Create Kubernetes imagePullSecrets for private registry access
+//   - Wire ScalewayServerlessFunction and ScalewayServerlessContainer
+//     image source configuration via infra chart `valueFrom` references
+message ScalewayContainerRegistryStackOutputs {
+  // The unique identifier of the created registry namespace.
+  //
+  // Format: "{region}/{uuid}" (e.g., "fr-par/11111111-1111-1111-1111-111111111111").
+  // This is the regional ID used by the Scaleway API and Terraform state.
+  //
+  // This is the primary output for downstream cross-resource references.
+  string namespace_id = 1;
+
+  // The Docker endpoint URL for this registry namespace.
+  //
+  // Format: "rg.<region>.scw.cloud/<namespace-name>"
+  //
+  // This is the URL used for Docker login, push, and pull operations:
+  //   docker login <endpoint> -u nologin -p <SCW_SECRET_KEY>
+  //   docker push <endpoint>/myapp:latest
+  //
+  // Also used by Kubernetes imagePullSecrets and serverless function/
+  // container image source configuration.
+  string endpoint = 2;
+
+  // The name of the registry namespace as it exists in Scaleway.
+  //
+  // Typically matches `metadata.name`. Exported for observability,
+  // downstream reference convenience (e.g., dashboards, CI/CD
+  // pipeline variables), and infra chart templates.
+  string namespace_name = 3;
+
+  // The region where the registry namespace is deployed.
+  //
+  // Exported for downstream resources that need region-aware
+  // configuration (e.g., co-locating serverless functions with their
+  // image registry for fastest cold-start pulls).
+  string region = 4;
+}

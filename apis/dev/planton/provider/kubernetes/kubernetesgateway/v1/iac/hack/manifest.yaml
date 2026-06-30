@@ -1,0 +1,13 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesGateway
+metadata:
+  name: test-gateway
+spec:
+  namespace:
+    value: test-namespace
+  gatewayClassName:
+    value: istio
+  listeners:
+    - name: http
+      port: 80
+      protocol: HTTP

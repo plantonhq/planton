@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsecscluster.v1;
+
+// AwsEcsClusterStackOutputs describes values returned by Pulumi/Terraform for an ECS cluster.
+message AwsEcsClusterStackOutputs {
+  // cluster_name is the final name of the ECS cluster.
+  string cluster_name = 1;
+
+  // cluster_arn is the ARN of the ECS cluster.
+  string cluster_arn = 2;
+
+  // cluster_capacity_providers lists capacity providers associated with the cluster.
+  repeated string cluster_capacity_providers = 3;
+}

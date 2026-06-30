@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package dev.planton.provider.civo.civokubernetesnodepool.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/civo/civokubernetesnodepool/v1/spec.proto";
+import "dev/planton/provider/civo/civokubernetesnodepool/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// civo-kubernetes-node-pool
+message CivoKubernetesNodePool {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'civo.planton.dev/v1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'CivoKubernetesNodePool'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  CivoKubernetesNodePoolSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  CivoKubernetesNodePoolStatus status = 5;
+}
+
+// civo-kubernetes-node-pool status
+message CivoKubernetesNodePoolStatus {
+  //stack-outputs
+  //  civo-kubernetes-node-pool stack-outputs
+  CivoKubernetesNodePoolStackOutputs outputs = 1;
+}

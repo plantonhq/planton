@@ -29,7 +29,7 @@ specific ports as needed.
 ## Quick Start
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPeerAuthentication
 metadata:
   name: default
@@ -41,7 +41,7 @@ spec:
 ```
 
 ```bash
-openmcf apply -f peerauthentication.yaml
+planton apply -f peerauthentication.yaml
 ```
 
 ## Configuration Reference

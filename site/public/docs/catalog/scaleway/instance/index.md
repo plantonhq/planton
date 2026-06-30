@@ -12,7 +12,7 @@ Deploys a Scaleway compute Instance as a composite resource that bundles the ser
 
 ## What Gets Created
 
-When you deploy a ScalewayInstance resource, OpenMCF provisions:
+When you deploy a ScalewayInstance resource, Planton provisions:
 
 - **Instance Server** — an `instance.Server` resource in the specified zone with the chosen commercial type, base image, root volume configuration, optional cloud-init script, instance state control, and deletion protection
 - **Flexible IP** (optional) — a dedicated `instance.Ip` resource providing a public IPv4 address that has an independent lifecycle, surviving instance replacement to preserve DNS records and firewall rules. Created only when `publicIp` is set.
@@ -21,7 +21,7 @@ When you deploy a ScalewayInstance resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Scaleway credentials** configured via environment variables or OpenMCF provider config
+- **Scaleway credentials** configured via environment variables or Planton provider config
 - **A target zone** where the instance will be created (e.g., `fr-par-1`, `nl-ams-1`, `pl-waw-1`). The zone must match the zone of any referenced Private Network or security group.
 - **A base image** — either a UUID or a human-friendly label (e.g., `ubuntu_jammy`, `debian_bullseye`) available in the target zone
 - **(Optional) A ScalewayPrivateNetwork** if you want the instance on an internal network
@@ -32,15 +32,15 @@ When you deploy a ScalewayInstance resource, OpenMCF provisions:
 Create a file `instance.yaml`:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayInstance
 metadata:
   name: web-01
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayInstance.web-01
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayInstance.web-01
 spec:
   zone: fr-par-1
   type: DEV1-S
@@ -52,7 +52,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f instance.yaml
+planton apply -f instance.yaml
 ```
 
 This creates a `DEV1-S` instance running Ubuntu Jammy in `fr-par-1` with a dedicated public IP address.
@@ -95,15 +95,15 @@ This creates a `DEV1-S` instance running Ubuntu Jammy in `fr-par-1` with a dedic
 A small development instance with a public IP and the default root volume:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayInstance
 metadata:
   name: dev-box
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayInstance.dev-box
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayInstance.dev-box
 spec:
   zone: fr-par-1
   type: DEV1-S
@@ -114,18 +114,18 @@ spec:
 
 ### Production Instance with Private Network and Security Group
 
-A production instance on a Private Network, behind a custom security group, with a larger SBS root volume, cloud-init bootstrapping, and deletion protection enabled. The security group and Private Network are referenced from other OpenMCF resources:
+A production instance on a Private Network, behind a custom security group, with a larger SBS root volume, cloud-init bootstrapping, and deletion protection enabled. The security group and Private Network are referenced from other Planton resources:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayInstance
 metadata:
   name: app-server
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.ScalewayInstance.app-server
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.ScalewayInstance.app-server
 spec:
   zone: fr-par-1
   type: PRO2-S
@@ -159,15 +159,15 @@ spec:
 A general-purpose instance with a larger local SSD root volume and two additional volumes — one for application data and one for temporary processing:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayInstance
 metadata:
   name: data-processor
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.ScalewayInstance.data-processor
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.ScalewayInstance.data-processor
 spec:
   zone: nl-ams-1
   type: GP1-S

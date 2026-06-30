@@ -14,7 +14,7 @@ Scaleway Block Storage provides network-attached NVMe SSD volumes that persist i
 
 ### Pain Points
 
-- No OpenMCF kind existed for Scaleway block storage, forcing users to manage volumes outside the declarative framework
+- No Planton kind existed for Scaleway block storage, forcing users to manage volumes outside the declarative framework
 - The Scaleway API uses raw IOPS integers (5000/15000) which are opaque without documentation context
 - Block volumes are required for production deployments that need persistent, high-performance storage attached to Instances
 
@@ -28,7 +28,7 @@ A standalone resource kind that provisions a Scaleway Block Storage volume with:
 - **Size validation** -- 5 GB to 10 TB with buf-validate constraints
 - **Snapshot restore** -- Optional `snapshot_id` for cloning and disaster recovery
 - **Zonal placement** -- Explicit zone field ensuring co-location awareness
-- **Auto-tagging** -- Standard OpenMCF metadata labels applied as flat Scaleway tags
+- **Auto-tagging** -- Standard Planton metadata labels applied as flat Scaleway tags
 
 ```mermaid
 flowchart LR
@@ -57,7 +57,7 @@ The IaC modules (both Pulumi and Terraform) contain a mapping table that resolve
 ### File Structure
 
 ```
-apis/org/openmcf/provider/scaleway/scalewayblockvolume/v1/
+apis/dev/planton/provider/scaleway/scalewayblockvolume/v1/
 ├── spec.proto                    # Spec with performance tier enum
 ├── stack_outputs.proto           # volume_id, volume_name, zone
 ├── api.proto                     # Resource definition

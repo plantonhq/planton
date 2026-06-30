@@ -14,7 +14,7 @@ RS256 when a `jwt_configuration` block is present but `alg` is omitted.
 
 ## Problem Statement / Motivation
 
-`apis/org/openmcf/provider/auth0/auth0client/v1/spec.proto` documents the field default:
+`apis/dev/planton/provider/auth0/auth0client/v1/spec.proto` documents the field default:
 
 ```proto
 // alg is the algorithm used to sign the JWT.
@@ -52,7 +52,7 @@ Encode the documented default in both modules, using each engine's idiomatic mec
 
 This is deliberately a **module-level** default rather than a proto `(options.default)`
 annotation. The proto-option path is applied only by `internal/manifest/protodefaults`
-`ApplyDefaults`, which runs in the OpenMCF CLI manifest loader (`internal/manifest/load_manifest.go`).
+`ApplyDefaults`, which runs in the Planton CLI manifest loader (`internal/manifest/load_manifest.go`).
 The orchestrated deploy path renders tfvars via `pkg/iac/tofu/generators/tfvars.go`
 (`protojson` with `EmitUnpopulated:false`, which prunes unset fields) and never calls
 `ApplyDefaults`, so a proto-option default would not take effect there. Putting the default in

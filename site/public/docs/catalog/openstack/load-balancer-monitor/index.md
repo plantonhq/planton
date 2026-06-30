@@ -12,13 +12,13 @@ Deploys an Octavia health monitor that periodically probes pool members to deter
 
 ## What Gets Created
 
-When you deploy an OpenStackLoadBalancerMonitor resource, OpenMCF provisions:
+When you deploy an OpenStackLoadBalancerMonitor resource, Planton provisions:
 
 - **Octavia Health Monitor** — a `loadbalancer.Monitor` resource attached to the specified pool. The monitor sends periodic probes to each pool member at the configured interval. After the required number of consecutive failures, a member is removed from rotation. After the required number of consecutive successes, it is restored. HTTP and HTTPS monitors validate response codes against configurable expectations; PING, TCP, TLS-HELLO, and UDP-CONNECT monitors check connectivity only.
 
 ## Prerequisites
 
-- **OpenStack credentials** configured via environment variables or OpenMCF provider config
+- **OpenStack credentials** configured via environment variables or Planton provider config
 - **An Octavia pool** to attach the monitor to (each pool supports at most one monitor)
 
 ## Quick Start
@@ -26,15 +26,15 @@ When you deploy an OpenStackLoadBalancerMonitor resource, OpenMCF provisions:
 Create a file `monitor.yaml`:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackLoadBalancerMonitor
 metadata:
   name: http-health
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OpenStackLoadBalancerMonitor.http-health
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OpenStackLoadBalancerMonitor.http-health
 spec:
   poolId: 4a0e3c5b-2f1d-4e6a-8b9c-0d1e2f3a4b5c
   type: HTTP
@@ -48,7 +48,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f monitor.yaml
+planton apply -f monitor.yaml
 ```
 
 This creates an HTTP health monitor that checks `/healthz` on each pool member every 5 seconds, expects a 200 response within 3 seconds, and requires 3 consecutive successes to mark a member healthy.
@@ -83,15 +83,15 @@ This creates an HTTP health monitor that checks `/healthz` on each pool member e
 An HTTP monitor that checks a health endpoint on each pool member, suitable for web application pools:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackLoadBalancerMonitor
 metadata:
   name: web-http-health
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OpenStackLoadBalancerMonitor.web-http-health
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OpenStackLoadBalancerMonitor.web-http-health
 spec:
   poolId: 4a0e3c5b-2f1d-4e6a-8b9c-0d1e2f3a4b5c
   type: HTTP
@@ -108,15 +108,15 @@ spec:
 A TCP monitor for non-HTTP services. The monitor attempts a TCP connection to each member and marks it healthy if the connection succeeds:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackLoadBalancerMonitor
 metadata:
   name: db-tcp-check
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OpenStackLoadBalancerMonitor.db-tcp-check
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OpenStackLoadBalancerMonitor.db-tcp-check
 spec:
   poolId: 7d8e9f0a-1b2c-3d4e-5f6a-7b8c9d0e1f2a
   type: TCP
@@ -130,15 +130,15 @@ spec:
 An HTTP monitor with different thresholds for failure detection and recovery. Members are removed after 2 consecutive failures (fast detection) but require 5 consecutive successes to return to rotation (cautious recovery):
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackLoadBalancerMonitor
 metadata:
   name: api-health
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OpenStackLoadBalancerMonitor.api-health
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OpenStackLoadBalancerMonitor.api-health
 spec:
   poolId: 12345678-abcd-efgh-ijkl-123456789abc
   type: HTTPS
@@ -153,18 +153,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed pool instead of hardcoding UUIDs:
+Reference an Planton-managed pool instead of hardcoding UUIDs:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackLoadBalancerMonitor
 metadata:
   name: ref-monitor
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OpenStackLoadBalancerMonitor.ref-monitor
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OpenStackLoadBalancerMonitor.ref-monitor
 spec:
   poolId:
     valueFrom:

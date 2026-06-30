@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added preset pages to the OpenMCF documentation site. Every component's presets (488 across 253 components) are now accessible as rendered pages with accordion-style browsing, dedicated detail pages, raw YAML/Markdown file access, and a right-sidebar discovery link on each catalog page. The sidebar and reading-order navigation remain unchanged — presets are a secondary content layer accessed through the right-sidebar TOC.
+Added preset pages to the Planton documentation site. Every component's presets (488 across 253 components) are now accessible as rendered pages with accordion-style browsing, dedicated detail pages, raw YAML/Markdown file access, and a right-sidebar discovery link on each catalog page. The sidebar and reading-order navigation remain unchanged — presets are a secondary content layer accessed through the right-sidebar TOC.
 
 ## Problem Statement / Motivation
 

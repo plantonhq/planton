@@ -24,7 +24,7 @@ set -euo pipefail
 repo_root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$repo_root_dir"
 
-provider_base="apis/org/openmcf/provider"
+provider_base="apis/dev/planton/provider"
 
 violations=()
 

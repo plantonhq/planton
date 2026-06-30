@@ -2,7 +2,7 @@ package providerenvvars
 
 import (
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/pkg/protobufyaml"
+	"github.com/plantonhq/planton/pkg/protobufyaml"
 	"google.golang.org/protobuf/proto"
 )
 

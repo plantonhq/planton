@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package dev.planton.provider.digitalocean;
+
+import "dev/planton/shared/options/options.proto";
+
+// digitalocean datacenter regions
+enum DigitalOceanRegion {
+  // 0: default / unspecified region
+  digital_ocean_region_unspecified = 0;
+
+  // new york 3
+  nyc3 = 1 [(dev.planton.shared.options.display_label) = "New York"];
+
+  // san francisco 3
+  sfo3 = 2 [(dev.planton.shared.options.display_label) = "San Francisco"];
+
+  // frankfurt 1
+  fra1 = 3 [(dev.planton.shared.options.display_label) = "Frankfurt"];
+
+  // singapore 1
+  sgp1 = 4 [(dev.planton.shared.options.display_label) = "Singapore"];
+
+  // london 1
+  lon1 = 5 [(dev.planton.shared.options.display_label) = "London"];
+
+  // toronto 1
+  tor1 = 6 [(dev.planton.shared.options.display_label) = "Toronto"];
+
+  // bangalore 1
+  blr1 = 7 [(dev.planton.shared.options.display_label) = "Bangalore"];
+
+  // amsterdam 3
+  ams3 = 8 [(dev.planton.shared.options.display_label) = "Amsterdam"];
+}

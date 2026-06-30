@@ -14,7 +14,7 @@ The parent domain must already exist in Alidns, either managed by the AliCloudDn
 ## What Was Created
 
 ### API Definition
-- `apis/org/openmcf/provider/alicloud/aliclouddnsrecord/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
+- `apis/dev/planton/provider/alicloud/aliclouddnsrecord/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
 - Registered `AliCloudDnsRecord = 3041` in `CloudResourceKind` enum under the DNS category
 
 ### IaC Modules

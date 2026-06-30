@@ -2,15 +2,15 @@
 
 ## Publication Summary
 
-The `optional-linter` plugin has been successfully published to the Buf Schema Registry (BSR) under the `openmcf` organization.
+The `optional-linter` plugin has been successfully published to the Buf Schema Registry (BSR) under the `planton` organization.
 
 ### Plugin Details
 
-- **Name**: `buf.build/openmcf/optional-linter`
+- **Name**: `buf.build/planton/optional-linter`
 - **Version**: v0.1.0
 - **Type**: check (linting plugin)
 - **Visibility**: public
-- **URL**: https://buf.build/openmcf/optional-linter
+- **URL**: https://buf.build/planton/optional-linter
 - **Commit**: 9c8ab12a043245c08a92d7657c0da20a
 
 ### Published Labels
@@ -28,7 +28,7 @@ The plugin was published with the following labels:
 ```yaml
 version: v2
 plugins:
-  - plugin: buf.build/openmcf/optional-linter:v0.1.0
+  - plugin: buf.build/planton/optional-linter:v0.1.0
 lint:
   use:
     - STANDARD
@@ -84,7 +84,7 @@ To verify the published plugin:
 
 ```bash
 # Check plugin info
-buf registry plugin info buf.build/openmcf/optional-linter
+buf registry plugin info buf.build/planton/optional-linter
 
 # Test linting with the plugin
 cd apis

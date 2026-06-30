@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsapprunnerservice.v1;
+
+// AwsAppRunnerServiceStackOutputs captures observable identifiers produced after
+// provisioning an AWS App Runner Service. These outputs are used for:
+//   - Cross-resource references via StringValueOrRef (e.g., service_arn in IAM policies)
+//   - Infra chart wiring (e.g., service_url as an API endpoint)
+//   - Operational visibility (e.g., service_status for monitoring)
+message AwsAppRunnerServiceStackOutputs {
+  // service_arn is the full ARN of the App Runner Service.
+  // Format: arn:aws:apprunner:REGION:ACCOUNT:service/SERVICE_NAME/SERVICE_ID
+  string service_arn = 1;
+
+  // service_id is the unique identifier assigned by App Runner (e.g., "8fe1e10b7ffa4d...").
+  string service_id = 2;
+
+  // service_url is the public HTTPS URL for the service
+  // (e.g., "abc123.us-east-1.awsapprunner.com"). Requests to this URL are
+  // automatically load-balanced across running instances.
+  string service_url = 3;
+
+  // service_name is the computed name of the App Runner Service (derived from metadata).
+  string service_name = 4;
+
+  // service_status is the current operational status of the service
+  // (e.g., "RUNNING", "CREATE_FAILED", "OPERATION_IN_PROGRESS").
+  string service_status = 5;
+
+  // vpc_connector_arn is the ARN of the VPC Connector, if VPC egress was configured
+  // (either via inline subnet_ids or an existing vpc_connector_arn). Empty when
+  // the service uses default internet egress.
+  string vpc_connector_arn = 6;
+
+  // auto_scaling_configuration_arn is the ARN of the Auto Scaling Configuration
+  // Version created for this service.
+  string auto_scaling_configuration_arn = 7;
+}

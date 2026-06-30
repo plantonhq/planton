@@ -1,0 +1,10 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesSecret
+metadata:
+  name: e2e-sec-customns
+spec:
+  name: e2e-sec-customns
+  namespace: kube-system
+  opaque:
+    data:
+      config-key: "value-in-kube-system"

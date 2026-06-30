@@ -1,7 +1,7 @@
 //go:build e2e
 
 // Package e2e contains end-to-end tests that deploy real infrastructure
-// using OpenMCF IaC modules and verify the results.
+// using Planton IaC modules and verify the results.
 //
 // These tests require:
 //   - kind CLI installed
@@ -20,15 +20,15 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-	kubernetese2e "github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/aa_e2e"
-	"github.com/plantonhq/openmcf/e2e/framework/runner"
+	kubernetese2e "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/aa_e2e"
+	"github.com/plantonhq/planton/e2e/framework/runner"
 )
 
 var (
 	// testHarness is the shared kind cluster harness for all Kubernetes tests.
 	testHarness *kubernetese2e.Harness
 
-	// repoRoot is the absolute path to the openmcf repository root.
+	// repoRoot is the absolute path to the planton repository root.
 	repoRoot string
 
 	// runID is a unique identifier for this test run.
@@ -51,7 +51,7 @@ func TestMain(m *testing.M) {
 	runID = uuid.New().String()[:8]
 
 	// Set up local Pulumi backend
-	backendDir, err := os.MkdirTemp("", "openmcf-e2e-pulumi-*")
+	backendDir, err := os.MkdirTemp("", "planton-e2e-pulumi-*")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to create temp backend dir: %v\n", err)
 		os.Exit(1)
@@ -66,7 +66,7 @@ func TestMain(m *testing.M) {
 	}
 
 	// Create kind cluster
-	clusterName := fmt.Sprintf("openmcf-e2e-%s", runID)
+	clusterName := fmt.Sprintf("planton-e2e-%s", runID)
 	testHarness = kubernetese2e.NewHarness(clusterName)
 
 	ctx := context.Background()

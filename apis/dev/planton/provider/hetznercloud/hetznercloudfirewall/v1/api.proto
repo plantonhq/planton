@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package dev.planton.provider.hetznercloud.hetznercloudfirewall.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/hetznercloud/hetznercloudfirewall/v1/spec.proto";
+import "dev/planton/provider/hetznercloud/hetznercloudfirewall/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// hetznercloud-firewall
+message HetznerCloudFirewall {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = "hetzner-cloud.planton.dev/v1"];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = "HetznerCloudFirewall"];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  HetznerCloudFirewallSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  HetznerCloudFirewallStatus status = 5;
+}
+
+// hetznercloud-firewall status
+message HetznerCloudFirewallStatus {
+  //stack-outputs
+  //  hetznercloud-firewall stack-outputs
+  HetznerCloudFirewallStackOutputs outputs = 1;
+}

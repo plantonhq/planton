@@ -6,7 +6,7 @@ go_library(
         "kubeconfig.go",
         "provider.go",
     ],
-    importpath = "github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/provider/gcp/pulumigkekubernetesprovider",
+    importpath = "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/pulumigkekubernetesprovider",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_pkg_errors//:errors",

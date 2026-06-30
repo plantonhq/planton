@@ -1,0 +1,124 @@
+syntax = "proto3";
+
+package dev.planton.provider.cloudflare.cloudflarelistitem.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// A hostname entry for a hostname-kind list.
+message CloudflareListItemHostname {
+  // The hostname. Valid characters are a-z, 0-9, the hyphen, and a leading
+  // wildcard (e.g. "*.example.com").
+  string url_hostname = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Only meaningful for wildcard hostnames (e.g. "*.example.com"): when true
+  // (the wildcard default), only subdomains match; when false, the apex domain
+  // matches too. Required for wildcard hostnames and must be omitted for
+  // non-wildcard hostnames.
+  optional bool exclude_exact_hostname = 2;
+
+  // exclude_exact_hostname is required for wildcard hostnames.
+  option (buf.validate.message).cel = {
+    id: "hostname.exclude_exact_required_for_wildcard"
+    message: "exclude_exact_hostname is required for wildcard hostnames (those starting with '*')"
+    expression: "!this.url_hostname.startsWith('*') || has(this.exclude_exact_hostname)"
+  };
+
+  // exclude_exact_hostname is only allowed for wildcard hostnames.
+  option (buf.validate.message).cel = {
+    id: "hostname.exclude_exact_only_for_wildcard"
+    message: "exclude_exact_hostname is only allowed for wildcard hostnames (those starting with '*')"
+    expression: "this.url_hostname.startsWith('*') || !has(this.exclude_exact_hostname)"
+  };
+}
+
+// A redirect entry for a redirect-kind (Bulk Redirect) list.
+message CloudflareListItemRedirect {
+  // The source URL to match (e.g. "example.com/old"). A trailing path is
+  // required; append "/" if redirecting the apex.
+  string source_url = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The destination URL to redirect to.
+  string target_url = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // HTTP redirect status code. Leave 0 for the provider default (301); otherwise
+  // one of 301, 302, 307, 308.
+  int64 status_code = 3 [(buf.validate.field).cel = {
+    id: "redirect.status_code_valid"
+    message: "status_code must be 0 (default 301) or one of 301, 302, 307, 308"
+    expression: "this == 0 || this in [301, 302, 307, 308]"
+  }];
+
+  // Also redirect subdomains of source_url.
+  bool include_subdomains = 4;
+
+  // Append the matched path suffix from source_url onto target_url.
+  bool preserve_path_suffix = 5;
+
+  // Preserve the original query string on the redirect.
+  bool preserve_query_string = 6;
+
+  // Match source_url as a path prefix (subpath matching).
+  bool subpath_matching = 7;
+}
+
+// CloudflareListItemSpec declares a single entry inside a Cloudflare List. The
+// entry's shape must match the parent list's kind (an ip/CIDR, an ASN, a
+// hostname, or a redirect). Items have independent lifecycles, so a list can be
+// grown or trimmed one entry at a time without rewriting the whole set. (Item
+// values are immutable in the provider: changing an entry replaces it.)
+message CloudflareListItemSpec {
+  // The Cloudflare account ID that owns the parent list.
+  string account_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.len = 32,
+    (buf.validate.field).string.pattern = "^[0-9a-fA-F]{32}$"
+  ];
+
+  // The list this entry is written to. A literal list ID or a reference to a
+  // CloudflareList resource (defaulting to that list's status.outputs.list_id).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef list_id = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareList,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.list_id"
+  ];
+
+  // Exactly one entry value, matching the parent list's kind.
+  oneof item {
+    // An IPv4 address, IPv4 CIDR, IPv6 address, or IPv6 CIDR (ip-kind lists).
+    string ip = 3 [(buf.validate.field).string.min_len = 1];
+
+    // A non-negative 32-bit Autonomous System Number (asn-kind lists).
+    int64 asn = 4 [(buf.validate.field).cel = {
+      id: "item.asn_valid"
+      message: "asn must be a non-negative 32-bit integer"
+      expression: "this >= 0 && this <= 4294967295"
+    }];
+
+    // A hostname (hostname-kind lists).
+    CloudflareListItemHostname hostname = 5;
+
+    // A redirect rule (redirect-kind lists).
+    CloudflareListItemRedirect redirect = 6;
+  }
+
+  // An optional informative summary of this entry.
+  string comment = 7 [(buf.validate.field).string.max_len = 500];
+
+  // Exactly one of ip, asn, hostname, or redirect must be set, matching the
+  // parent list's kind.
+  option (buf.validate.message).cel = {
+    id: "item.exactly_one_value"
+    message: "exactly one of ip, asn, hostname, or redirect must be set (matching the list's kind)"
+    expression: "has(this.ip) || has(this.asn) || has(this.hostname) || has(this.redirect)"
+  };
+}

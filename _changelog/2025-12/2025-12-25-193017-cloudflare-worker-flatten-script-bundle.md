@@ -86,7 +86,7 @@ spec:
 
 ### 1. Protocol Buffer Changes
 
-**File**: `apis/org/openmcf/provider/cloudflare/cloudflareworker/v1/spec.proto`
+**File**: `apis/dev/planton/provider/cloudflare/cloudflareworker/v1/spec.proto`
 
 - Replaced `CloudflareWorkerScript script = 3` with `CloudflareWorkerScriptBundle script_bundle = 3`
 - Removed `CloudflareWorkerScript` message entirely
@@ -95,7 +95,7 @@ spec:
 
 ### 2. Pulumi Module Updates
 
-**File**: `apis/org/openmcf/provider/cloudflare/cloudflareworker/v1/iac/pulumi/module/worker_script.go`
+**File**: `apis/dev/planton/provider/cloudflare/cloudflareworker/v1/iac/pulumi/module/worker_script.go`
 
 Changed from:
 ```go
@@ -110,7 +110,7 @@ bundle := locals.CloudflareWorker.Spec.ScriptBundle
 
 ### 3. Terraform Module Updates
 
-**File**: `apis/org/openmcf/provider/cloudflare/cloudflareworker/v1/iac/tf/locals.tf`
+**File**: `apis/dev/planton/provider/cloudflare/cloudflareworker/v1/iac/tf/locals.tf`
 
 Changed from:
 ```hcl
@@ -124,7 +124,7 @@ r2_bucket = var.spec.script_bundle.bucket
 r2_path   = var.spec.script_bundle.path
 ```
 
-**File**: `apis/org/openmcf/provider/cloudflare/cloudflareworker/v1/iac/tf/variables.tf`
+**File**: `apis/dev/planton/provider/cloudflare/cloudflareworker/v1/iac/tf/variables.tf`
 
 Changed from:
 ```hcl
@@ -146,7 +146,7 @@ script_bundle = object({
 
 ### 4. Test Updates
 
-**File**: `apis/org/openmcf/provider/cloudflare/cloudflareworker/v1/spec_test.go`
+**File**: `apis/dev/planton/provider/cloudflare/cloudflareworker/v1/spec_test.go`
 
 Updated all 9 test cases to use the new field structure:
 
@@ -170,7 +170,7 @@ ScriptBundle: &CloudflareWorkerScriptBundle{
 
 ### 5. Documentation Updates
 
-**File**: `apis/org/openmcf/provider/cloudflare/cloudflareworker/v1/examples.md`
+**File**: `apis/dev/planton/provider/cloudflare/cloudflareworker/v1/examples.md`
 
 Updated all 8 example manifests plus the bundle creation section to use the new field structure.
 
@@ -231,7 +231,7 @@ All changes verified with:
 make protos
 
 # Run component-specific tests
-go test ./apis/org/openmcf/provider/cloudflare/cloudflareworker/v1/
+go test ./apis/dev/planton/provider/cloudflare/cloudflareworker/v1/
 
 # Full project build
 make build
@@ -266,20 +266,20 @@ Renamed `CloudflareWorkerScriptBundleR2Object` to `CloudflareWorkerScriptBundle`
 ## Files Changed
 
 **Protocol Buffers** (1 file):
-- `apis/org/openmcf/provider/cloudflare/cloudflareworker/v1/spec.proto`
+- `apis/dev/planton/provider/cloudflare/cloudflareworker/v1/spec.proto`
 
 **Tests** (1 file):
-- `apis/org/openmcf/provider/cloudflare/cloudflareworker/v1/spec_test.go`
+- `apis/dev/planton/provider/cloudflare/cloudflareworker/v1/spec_test.go`
 
 **Pulumi** (1 file):
-- `apis/org/openmcf/provider/cloudflare/cloudflareworker/v1/iac/pulumi/module/worker_script.go`
+- `apis/dev/planton/provider/cloudflare/cloudflareworker/v1/iac/pulumi/module/worker_script.go`
 
 **Terraform** (2 files):
-- `apis/org/openmcf/provider/cloudflare/cloudflareworker/v1/iac/tf/locals.tf`
-- `apis/org/openmcf/provider/cloudflare/cloudflareworker/v1/iac/tf/variables.tf`
+- `apis/dev/planton/provider/cloudflare/cloudflareworker/v1/iac/tf/locals.tf`
+- `apis/dev/planton/provider/cloudflare/cloudflareworker/v1/iac/tf/variables.tf`
 
 **Documentation** (1 file):
-- `apis/org/openmcf/provider/cloudflare/cloudflareworker/v1/examples.md`
+- `apis/dev/planton/provider/cloudflare/cloudflareworker/v1/examples.md`
 
 **Total**: 6 files changed
 

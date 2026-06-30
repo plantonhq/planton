@@ -1,0 +1,9 @@
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareOriginCaCertificate
+metadata:
+  name: byo-csr-origin-cert
+spec:
+  hostnames:
+    - <domain>
+  requestType: origin-ecc
+  csr: <pem-encoded-csr>

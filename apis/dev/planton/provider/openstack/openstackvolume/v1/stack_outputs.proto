@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package dev.planton.provider.openstack.openstackvolume.v1;
+
+// OpenStackVolumeStackOutputs captures the observable outputs after provisioning
+// an OpenStack Cinder block storage volume.
+//
+// The volume_id is the primary output referenced by downstream components:
+// - OpenStackVolumeAttach (volume_id)
+message OpenStackVolumeStackOutputs {
+  // volume_id is the unique identifier (UUID) of the volume in OpenStack.
+  // This is the primary output used as a foreign key by OpenStackVolumeAttach.
+  string volume_id = 1;
+
+  // name is the name of the volume (derived from metadata.name).
+  string name = 2;
+
+  // size is the actual provisioned size of the volume in gigabytes.
+  int32 size = 3;
+
+  // volume_type is the Cinder volume type (backend storage class) of the volume.
+  // Computed by Cinder if not explicitly specified in the spec.
+  string volume_type = 4;
+
+  // availability_zone is the availability zone where the volume was created.
+  // Computed by Cinder if not explicitly specified in the spec.
+  string availability_zone = 5;
+
+  // region is the OpenStack region where the volume was created.
+  string region = 6;
+}

@@ -12,7 +12,7 @@ Deploys a Kubernetes namespace with optional resource quotas, LimitRanges, netwo
 
 ## What Gets Created
 
-When you deploy a KubernetesNamespace resource, OpenMCF provisions:
+When you deploy a KubernetesNamespace resource, Planton provisions:
 
 - **Namespace** — a Kubernetes Namespace with merged labels (user-specified plus standard management labels) and annotations (user-specified plus service-mesh annotations when enabled)
 - **ResourceQuota** — enforces CPU, memory, and object-count limits for the namespace, created only when a `resourceProfile` preset or custom quota is configured
@@ -22,7 +22,7 @@ When you deploy a KubernetesNamespace resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A running Kubernetes cluster** reachable from the deployment environment
 - **A CNI plugin that supports NetworkPolicy** (e.g., Calico, Cilium) if using ingress isolation or egress restriction
 - **A service mesh control plane** (Istio, Linkerd, or Consul Connect) already installed on the cluster if enabling service mesh injection
@@ -32,15 +32,15 @@ When you deploy a KubernetesNamespace resource, OpenMCF provisions:
 Create a file `namespace.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesNamespace
 metadata:
   name: my-namespace
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesNamespace.my-namespace
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesNamespace.my-namespace
 spec:
   name: my-namespace
 ```
@@ -48,10 +48,10 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f namespace.yaml
+planton apply -f namespace.yaml
 ```
 
-This creates a bare namespace named `my-namespace` with standard OpenMCF management labels. No quotas, network policies, or service mesh injection are applied.
+This creates a bare namespace named `my-namespace` with standard Planton management labels. No quotas, network policies, or service mesh injection are applied.
 
 ## Configuration Reference
 
@@ -110,15 +110,15 @@ This creates a bare namespace named `my-namespace` with standard OpenMCF managem
 A development namespace with the `small` resource profile to set guardrails on resource consumption:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesNamespace
 metadata:
   name: dev-team-alpha
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesNamespace.dev-team-alpha
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesNamespace.dev-team-alpha
 spec:
   name: dev-team-alpha
   labels:
@@ -133,15 +133,15 @@ spec:
 A staging namespace that locks down both ingress and egress, allows traffic from a shared `monitoring` namespace, permits outbound access to an internal subnet, and enforces the `baseline` Pod Security Standard:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesNamespace
 metadata:
   name: staging-backend
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.KubernetesNamespace.staging-backend
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.KubernetesNamespace.staging-backend
 spec:
   name: staging-backend
   labels:
@@ -165,15 +165,15 @@ spec:
 A production namespace with Istio sidecar injection pinned to a specific revision, custom resource quotas and default container limits, full network isolation, and the `restricted` Pod Security Standard:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesNamespace
 metadata:
   name: prod-payments
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesNamespace.prod-payments
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesNamespace.prod-payments
 spec:
   name: prod-payments
   labels:

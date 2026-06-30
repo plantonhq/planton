@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package dev.planton.provider.alicloud.alicloudceninstance.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/alicloud/alicloudceninstance/v1/spec.proto";
+import "dev/planton/provider/alicloud/alicloudceninstance/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// alicloud-cen-instance
+message AliCloudCenInstance {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'alicloud.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'AliCloudCenInstance'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  AliCloudCenInstanceSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  AliCloudCenInstanceStatus status = 5;
+}
+
+// alicloud-cen-instance status
+message AliCloudCenInstanceStatus {
+  // stack-outputs
+  AliCloudCenInstanceStackOutputs outputs = 1;
+}

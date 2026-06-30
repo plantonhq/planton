@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added the complete Kubernetes Gateway API family as seven new OpenMCF deployment
+Added the complete Kubernetes Gateway API family as seven new Planton deployment
 components (`CloudResourceKind` 854–860), translated field-by-field from upstream
 Gateway API **v1.5.1** at 100% standard-channel fidelity. This delivers a
 first-class, declarative ingress layer — `GatewayClass`, `Gateway`, and the five
@@ -19,17 +19,17 @@ live-validated `green` state.
 
 ## Problem Statement / Motivation
 
-OpenMCF could provision Kubernetes clusters and the cert-manager family, but had
+Planton could provision Kubernetes clusters and the cert-manager family, but had
 no first-class way to declare the ingress topology that sits on top: the Gateway
 API is the upstream-standard, vendor-neutral successor to Ingress, and customers
 building real-world ingress (the leftbin ingress infrastructure project being the
 driving use case) needed to express `GatewayClass` → `Gateway` → route attachment
-as managed OpenMCF resources rather than raw manifests.
+as managed Planton resources rather than raw manifests.
 
 ### Pain Points
 
 - No managed Gateway API resources: users had to hand-write and apply raw CRDs,
-  losing OpenMCF's typed spec, validation, FK wiring, and IaC execution.
+  losing Planton's typed spec, validation, FK wiring, and IaC execution.
 - The Gateway API is large and nuanced (87 upstream structs, 50 enums across 9
   type files) with channel splits (standard vs experimental) that are easy to get
   wrong — modeling it by hand per project is error-prone and inconsistent.
@@ -86,7 +86,7 @@ flowchart TB
 
 ### Component anatomy (uniform across all seven)
 
-Each `<kind>/v1/` directory carries the standard OpenMCF deployment-component
+Each `<kind>/v1/` directory carries the standard Planton deployment-component
 shape:
 
 ```
@@ -117,14 +117,14 @@ shape:
   ReferenceGrant. 17 consuming packages verified.
 - **Shared `gateway_api.proto`** at the Kubernetes provider root: cross-component
   reference messages (parent/backend/secret/object/parameters refs) translated
-  field-by-field. Status types excluded by design (OpenMCF uses
+  field-by-field. Status types excluded by design (Planton uses
   `stack_outputs.proto`).
 - **Registry**: 7 `CloudResourceKind` entries (854–860), each declaring
   `prerequisites: [KubernetesGatewayApiCrds]`.
 
 ### 2. Spec modeling decisions
 
-- **Flatten, don't nest** (DD-002): upstream specs are flattened into the OpenMCF
+- **Flatten, don't nest** (DD-002): upstream specs are flattened into the Planton
   spec envelope rather than mirrored as deep nested messages.
 - **Value fields are `string`, not proto enums** (DD-008): open-set fields use the
   upstream regex; closed enums use a CEL `in [...]` constraint. This avoids the
@@ -147,7 +147,7 @@ server-side CEL still apply.
 
 ```mermaid
 flowchart LR
-    M[OpenMCF manifest] --> R{IaC engine}
+    M[Planton manifest] --> R{IaC engine}
     R -->|Pulumi| P[typed gatewayv1.New<Kind>]
     R -->|Terraform| T[kubernetes_manifest - null-pruned]
     P --> K[Gateway API CRD on cluster]
@@ -212,7 +212,7 @@ server:
 | DD | Decision |
 |----|----------|
 | DD-001 | 100% upstream spec fidelity (standard channel) |
-| DD-002 | Flatten upstream spec into the OpenMCF spec envelope |
+| DD-002 | Flatten upstream spec into the Planton spec envelope |
 | DD-005 | crd2pulumi typed resources for the Pulumi modules |
 | DD-007 | All 7 kinds declare the `KubernetesGatewayApiCrds` prerequisite |
 | DD-008 | Value fields are `string` (open-set regex / closed-enum CEL `in`), not proto enums |
@@ -232,7 +232,7 @@ server:
 
 ## Benefits
 
-- **Complete declarative ingress stack**: combined with cert-manager, OpenMCF now
+- **Complete declarative ingress stack**: combined with cert-manager, Planton now
   covers issuer → certificate → gateway class → gateway → routes end-to-end.
 - **Upstream-faithful**: field-by-field v1.5.1 translation with the exact upstream
   validation rules, so behavior matches the Gateway API spec and controllers.
@@ -246,7 +246,7 @@ server:
 ## Impact
 
 - **CLI users / infra-chart authors**: can declare Gateway API topology as typed,
-  validated OpenMCF resources via either Pulumi or Terraform.
+  validated Planton resources via either Pulumi or Terraform.
 - **Developers**: a uniform shared-reference family and a registry-driven E2E
   dependency engine that the existing operator components can now migrate onto.
 - **Platform**: closes the ingress gap in the Kubernetes provider's resource
@@ -266,7 +266,7 @@ server:
 
 - Builds on the cert-manager family (851–853) to complete the ingress stack.
 - Reuses the `KubernetesGatewayApiCrds` prerequisite component.
-- Follows the OpenMCF deployment-component forge workflow and the
+- Follows the Planton deployment-component forge workflow and the
   `StringValueOrRef` / `metadata.relationships` composability conventions.
 
 ---

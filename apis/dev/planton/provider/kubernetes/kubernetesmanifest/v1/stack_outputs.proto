@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesmanifest.v1;
+
+// KubernetesManifestStackOutputs contains the outputs from the Kubernetes manifest deployment.
+message KubernetesManifestStackOutputs {
+  // The Kubernetes namespace where the manifest resources were deployed.
+  string namespace = 1;
+}

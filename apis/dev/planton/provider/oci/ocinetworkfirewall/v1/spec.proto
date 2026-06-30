@@ -1,0 +1,293 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocinetworkfirewall.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// OciNetworkFirewallSpec defines the specification for an OCI Network
+// Firewall bundled with an inline firewall policy and its core
+// sub-resources (address lists, services, service lists, URL lists,
+// security rules).
+//
+// The firewall appliance is deployed into a subnet and inspects traffic
+// according to the security rules defined in the policy. Traffic
+// matching is based on source/destination IP addresses, TCP/UDP ports,
+// and URL patterns. Rules are evaluated in order; priority is derived
+// from the list position of each security rule.
+//
+// Key behaviors:
+//   - subnet_id is immutable after creation (ForceNew)
+//   - ipv4_address and ipv6_address are immutable (ForceNew)
+//   - availability_domain is immutable (ForceNew)
+//   - Policy sub-resource names are immutable (ForceNew)
+//   - Security rules are evaluated in list order (priority_order = index + 1)
+//   - Sub-resources reference each other by name within the YAML manifest
+//
+// Excluded from v1:
+//   - Applications / Application Groups (ICMP type/code matching)
+//   - Decryption Profiles / Rules / Mapped Secrets (TLS inspection)
+//   - NAT Rules (specialized NAT handling)
+//   - Tunnel Inspection Rules (VXLAN inspection)
+//   - defined_tags, system_tags, freeform_tags (auto from labels)
+message OciNetworkFirewallSpec {
+  // OCID of the compartment where the firewall and policy will be created.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OciCompartment,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartment_id"
+  ];
+
+  // OCID of the subnet where the firewall appliance will be deployed.
+  // Immutable after creation.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef subnet_id = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OciSubnet,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  ];
+
+  // Display name for the firewall. When omitted, the metadata name is used.
+  string display_name = 3;
+
+  // Static IPv4 address for the firewall. When omitted, OCI auto-assigns
+  // from the subnet. Immutable after creation.
+  string ipv4_address = 4;
+
+  // Static IPv6 address for the firewall. When omitted, OCI auto-assigns
+  // if the subnet supports IPv6. Immutable after creation.
+  string ipv6_address = 5;
+
+  // Availability domain for the firewall placement.
+  // When omitted, OCI selects automatically. Immutable after creation.
+  string availability_domain = 6;
+
+  // OCIDs of network security groups applied to the firewall.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef network_security_group_ids = 7 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = OciSecurityGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_security_group_id"
+  ];
+
+  // NAT configuration for the firewall. Controls whether private NAT
+  // is used for egress traffic inspection.
+  NatConfiguration nat_configuration = 8;
+
+  // Firewall shape determining throughput capacity.
+  // When omitted, OCI applies the default shape.
+  string shape = 9;
+
+  // Inline firewall policy defining security rules and their supporting
+  // objects (address lists, services, URL lists). The policy is always
+  // created as part of this component.
+  Policy policy = 10 [(buf.validate.field).required = true];
+
+  // ─── Nested Messages ────────────────────────────────────────────────
+
+  // NatConfiguration controls NAT behavior for the firewall.
+  message NatConfiguration {
+    // Whether to enable private NAT for the firewall.
+    // When true, the firewall uses a private IP for NAT operations
+    // instead of a public IP.
+    bool must_enable_private_nat = 1;
+  }
+
+  // Policy defines the firewall policy and all of its sub-resources.
+  // The policy is the container for address lists, services, URL lists,
+  // and security rules that determine how the firewall inspects traffic.
+  message Policy {
+    // Display name for the policy. When omitted, defaults to
+    // "{firewall_display_name}-policy".
+    string display_name = 1;
+
+    // Description of the policy.
+    string description = 2;
+
+    // IP and FQDN address lists referenced by security rules.
+    repeated AddressList address_lists = 3;
+
+    // TCP/UDP port definitions referenced by security rules.
+    repeated Service services = 4;
+
+    // Groups of services for reuse across multiple security rules.
+    repeated ServiceList service_lists = 5;
+
+    // URL pattern lists for L7 HTTP(S) traffic inspection.
+    repeated UrlList url_lists = 6;
+
+    // Security rules evaluated in list order. Priority is derived from
+    // the position in this list (first rule = highest priority).
+    repeated SecurityRule security_rules = 7;
+  }
+
+  // AddressList defines a named collection of IP addresses/CIDRs or
+  // FQDNs that can be referenced in security rule conditions.
+  message AddressList {
+    // Unique name within the policy. Immutable after creation.
+    // Referenced by security rules via source_addresses and
+    // destination_addresses.
+    string name = 1 [(buf.validate.field).string.min_len = 1];
+
+    // Whether this list contains IP addresses/CIDRs or FQDNs.
+    AddressListType type = 2 [(buf.validate.field).enum = {
+      not_in: [0]
+    }];
+
+    // Addresses in the list. IP lists accept CIDRs (e.g., "10.0.0.0/8")
+    // and individual IPs. FQDN lists accept domain names
+    // (e.g., "example.com").
+    repeated string addresses = 3 [(buf.validate.field).repeated.min_items = 1];
+
+    // Optional description.
+    string description = 4;
+
+    enum AddressListType {
+      unspecified = 0;
+      ip = 1;
+      fqdn = 2;
+    }
+  }
+
+  // Service defines a named TCP or UDP port range definition that can
+  // be referenced in security rule conditions.
+  message Service {
+    // Unique name within the policy. Immutable after creation.
+    // Referenced by security rules and service lists.
+    string name = 1 [(buf.validate.field).string.min_len = 1];
+
+    // Protocol for this service definition.
+    ServiceType type = 2 [(buf.validate.field).enum = {
+      not_in: [0]
+    }];
+
+    // Port ranges for this service. At least one port range is required.
+    repeated PortRange port_ranges = 3 [(buf.validate.field).repeated.min_items = 1];
+
+    // Optional description.
+    string description = 4;
+
+    enum ServiceType {
+      service_type_unspecified = 0;
+      tcp_service = 1;
+      udp_service = 2;
+    }
+  }
+
+  // PortRange defines a range of ports (or a single port when maximum
+  // is omitted).
+  message PortRange {
+    option (buf.validate.message).cel = {
+      id: "maximum_port_gte_minimum"
+      message: "maximum_port must be >= minimum_port when set"
+      expression: "!has(this.maximum_port) || this.maximum_port >= this.minimum_port"
+    };
+
+    // Start of the port range (inclusive). Must be 1-65535.
+    int32 minimum_port = 1 [(buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }];
+
+    // End of the port range (inclusive). When omitted, equals
+    // minimum_port (single port). Must be >= minimum_port when set.
+    optional int32 maximum_port = 2 [(buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }];
+  }
+
+  // ServiceList defines a named group of services for reuse across
+  // multiple security rules.
+  message ServiceList {
+    // Unique name within the policy. Immutable after creation.
+    // Referenced by security rules via the services condition field.
+    string name = 1 [(buf.validate.field).string.min_len = 1];
+
+    // Names of services to include in this list. Each name must match
+    // a Service defined in the policy's services field.
+    repeated string services = 2;
+
+    // Optional description.
+    string description = 3;
+  }
+
+  // UrlList defines a named collection of URL patterns for L7 HTTP(S)
+  // traffic inspection.
+  message UrlList {
+    // Unique name within the policy. Immutable after creation.
+    // Referenced by security rules via the urls condition field.
+    string name = 1 [(buf.validate.field).string.min_len = 1];
+
+    // URL patterns in the list. At least one pattern is required.
+    repeated UrlPattern urls = 2 [(buf.validate.field).repeated.min_items = 1];
+
+    // Optional description.
+    string description = 3;
+  }
+
+  // UrlPattern defines a single URL matching pattern.
+  // OCI evaluates patterns using simple string matching.
+  message UrlPattern {
+    // URL pattern string (e.g., "*.example.com",
+    // "malware.example.com/path").
+    string pattern = 1 [(buf.validate.field).string.min_len = 1];
+  }
+
+  // SecurityRule defines a traffic inspection rule. Rules are evaluated
+  // in the order they appear in the policy's security_rules list.
+  // Priority is derived from list position (1-based).
+  message SecurityRule {
+    option (buf.validate.message).cel = {
+      id: "inspect_requires_inspection_type"
+      message: "inspection must be set when action is inspect"
+      expression: "this.action != 4 || this.inspection != 0"
+    };
+
+    // Unique name within the policy. Immutable after creation.
+    string name = 1 [(buf.validate.field).string.min_len = 1];
+
+    // Action to take when traffic matches the condition.
+    Action action = 2 [(buf.validate.field).enum = {
+      not_in: [0]
+    }];
+
+    // Traffic matching condition. References address lists, services,
+    // and URL lists by name.
+    SecurityRuleCondition condition = 3 [(buf.validate.field).required = true];
+
+    // Inspection type. Required when action is inspect.
+    Inspection inspection = 4;
+
+    // Optional description.
+    string description = 5;
+
+    enum Action {
+      action_unspecified = 0;
+      allow = 1;
+      drop = 2;
+      reject = 3;
+      inspect = 4;
+    }
+
+    enum Inspection {
+      inspection_unspecified = 0;
+      intrusion_detection = 1;
+      intrusion_prevention = 2;
+    }
+  }
+
+  // SecurityRuleCondition defines the traffic matching criteria for a
+  // security rule. All non-empty fields are AND-ed together. Within
+  // each field, values are OR-ed.
+  message SecurityRuleCondition {
+    // Names of address lists matching source IP addresses.
+    repeated string source_addresses = 1;
+
+    // Names of address lists matching destination IP addresses.
+    repeated string destination_addresses = 2;
+
+    // Names of services or service lists matching traffic ports.
+    repeated string services = 3;
+
+    // Names of URL lists matching HTTP(S) request URLs.
+    repeated string urls = 4;
+  }
+}

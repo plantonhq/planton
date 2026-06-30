@@ -1,0 +1,31 @@
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudPrivateDnsZone
+metadata:
+  name: test-private-zone
+  org: test-org
+  env: development
+  labels:
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: test-org
+    pulumi.planton.dev/project: test-project
+    pulumi.planton.dev/stack.name: dev.AliCloudPrivateDnsZone.test-private-zone
+spec:
+  region: cn-hangzhou
+  zoneName: test.internal
+  remark: Test private zone for development
+  vpcAttachments:
+    - vpcId: vpc-test123
+  records:
+    - rr: api
+      type: A
+      value: "10.0.1.50"
+      ttl: 120
+    - rr: db
+      type: A
+      value: "10.0.2.100"
+    - rr: cache
+      type: CNAME
+      value: redis.test.internal
+  tags:
+    team: platform
+    purpose: testing

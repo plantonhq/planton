@@ -12,7 +12,7 @@ Added the AliCloudSaeApplication deployment component -- manages Serverless App 
 ## What Was Created
 
 ### API Definition
-- `apis/org/openmcf/provider/alicloud/alicloudsaeapplication/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
+- `apis/dev/planton/provider/alicloud/alicloudsaeapplication/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
 - Registered `AliCloudSaeApplication = 3111` in `CloudResourceKind` enum under the Serverless category
 - 8 protobuf message types: spec, health check (with HttpGet/TcpSocket/Exec sub-types), custom host alias, update strategy (with batch update config)
 

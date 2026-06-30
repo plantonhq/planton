@@ -6,11 +6,11 @@
 
 ## Summary
 
-Established the complete foundation for the OpenMCF presets system -- production-quality, directly deployable YAML configuration templates for all 213 deployment components. Created the authoritative convention document, AI reference, three Cursor rules for preset lifecycle management (create, audit, validate), a forge flow rule for automatic preset generation during component creation, and a pilot preset for AwsAlb to validate the convention.
+Established the complete foundation for the Planton presets system -- production-quality, directly deployable YAML configuration templates for all 213 deployment components. Created the authoritative convention document, AI reference, three Cursor rules for preset lifecycle management (create, audit, validate), a forge flow rule for automatic preset generation during component creation, and a pilot preset for AwsAlb to validate the convention.
 
 ## Problem Statement / Motivation
 
-OpenMCF provides a consistent KRM-style structure for deploying infrastructure across any cloud provider, but early adopters report a recurring gap: knowing *what configuration to actually deploy* for a given component. Each component's `spec.proto` defines many fields, and users must synthesize provider documentation, `examples.md`, and `docs/README.md` to determine the right combination for their use case.
+Planton provides a consistent KRM-style structure for deploying infrastructure across any cloud provider, but early adopters report a recurring gap: knowing *what configuration to actually deploy* for a given component. Each component's `spec.proto` defines many fields, and users must synthesize provider documentation, `examples.md`, and `docs/README.md` to determine the right combination for their use case.
 
 ### Pain Points
 
@@ -22,7 +22,7 @@ OpenMCF provides a consistent KRM-style structure for deploying infrastructure a
 
 ## Solution / What's New
 
-A presets system that provides ranked, deployable YAML manifests paired with companion markdown documentation for every OpenMCF deployment component. The foundation includes convention documents, Cursor rules, and integration into the existing forge workflow.
+A presets system that provides ranked, deployable YAML manifests paired with companion markdown documentation for every Planton deployment component. The foundation includes convention documents, Cursor rules, and integration into the existing forge workflow.
 
 ### Architecture
 
@@ -31,11 +31,11 @@ flowchart TB
     subgraph Foundation["Foundation (T01 -- this session)"]
         Conv["architecture/presets.md\n(Convention)"]
         AIRef[".cursor/info/presets.md\n(AI Reference)"]
-        RCreate["create-openmcf-preset.mdc"]
-        RAudit["audit-openmcf-presets.mdc"]
-        RValidate["validate-openmcf-presets.mdc"]
+        RCreate["create-planton-preset.mdc"]
+        RAudit["audit-planton-presets.mdc"]
+        RValidate["validate-planton-presets.mdc"]
         ForgeFlow["022-presets.mdc\n(Forge Flow Rule)"]
-        ForgeOrch["forge-openmcf-component.mdc\n(Updated Orchestrator)"]
+        ForgeOrch["forge-planton-component.mdc\n(Updated Orchestrator)"]
     end
 
     subgraph Presets["Preset Files (T02-T08 -- future sessions)"]
@@ -63,11 +63,11 @@ flowchart TB
 
 - **`.cursor/info/presets.md`** (~116 lines) -- Concise AI reference for Cursor agents. Follows the directive, no-philosophy style of existing `.cursor/info/` docs. Includes YAML/MD skeletons, CORRECT vs WRONG patterns for StringValueOrRef fields, and ranking guidelines.
 
-- **`_rules/deployment-component/presets/create-openmcf-preset.mdc`** -- Action rule for creating new presets. Reads spec.proto, api.proto, examples.md, and docs/README.md to craft production-quality presets with proper StringValueOrRef handling.
+- **`_rules/deployment-component/presets/create-planton-preset.mdc`** -- Action rule for creating new presets. Reads spec.proto, api.proto, examples.md, and docs/README.md to craft production-quality presets with proper StringValueOrRef handling.
 
-- **`_rules/deployment-component/presets/audit-openmcf-presets.mdc`** -- Action rule for scanning components and generating a coverage report identifying missing presets with prioritized recommendations.
+- **`_rules/deployment-component/presets/audit-planton-presets.mdc`** -- Action rule for scanning components and generating a coverage report identifying missing presets with prioritized recommendations.
 
-- **`_rules/deployment-component/presets/validate-openmcf-presets.mdc`** -- Action rule for validating preset files against conventions (naming, KRM envelope, StringValueOrRef usage, companion files, required sections).
+- **`_rules/deployment-component/presets/validate-planton-presets.mdc`** -- Action rule for validating preset files against conventions (naming, KRM envelope, StringValueOrRef usage, companion files, required sections).
 
 - **`_rules/deployment-component/forge/flow/022-presets.mdc`** -- Forge flow rule that generates 2-3 initial presets during component creation. Follows the uppercase section header format of existing flow rules (001-021).
 
@@ -77,7 +77,7 @@ flowchart TB
 
 ### Files Modified (1 existing)
 
-- **`_rules/deployment-component/forge/forge-openmcf-component.mdc`** -- Added Phase 7 (Presets/Rule 022) between Terraform implementation and final validation. Renumbered validation to Phase 8 (steps 19-20). Updated total from 19 to 20 rules. Added presets to "What Forge Creates" and "Success Criteria" sections.
+- **`_rules/deployment-component/forge/forge-planton-component.mdc`** -- Added Phase 7 (Presets/Rule 022) between Terraform implementation and final validation. Renumbered validation to Phase 8 (steps 19-20). Updated total from 19 to 20 rules. Added presets to "What Forge Creates" and "Success Criteria" sections.
 
 ### Key Design Decisions
 
@@ -98,7 +98,7 @@ flowchart TB
 
 ## Impact
 
-- **End users**: Will get ready-to-deploy configuration templates for every OpenMCF component (starting T02)
+- **End users**: Will get ready-to-deploy configuration templates for every Planton component (starting T02)
 - **AI agents**: Have clear authoring guides and rules for creating consistent presets
 - **Component authors**: Forge now generates presets as step 18 of the 20-step sequence
 - **Platform maintainers**: Convention document serves as the single source of truth for the presets system

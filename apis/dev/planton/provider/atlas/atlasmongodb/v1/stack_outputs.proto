@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package dev.planton.provider.atlas.atlasmongodb.v1;
+
+//atlas-mongodb stack outputs
+//https://www.pulumi.com/registry/packages/atlasmongodb/api-docs/advancedcluster/
+//https://registry.terraform.io/providers/mongodb/atlasmongodb/latest/docs/resources/advanced_cluster#attributes-reference
+message AtlasMongodbStackOutputs {
+  //The provider-assigned unique ID for the Atlas MongoDB cluster (cluster_id).
+  //https://registry.terraform.io/providers/mongodb/atlasmongodb/latest/docs/resources/advanced_cluster#cluster_id
+  string id = 1;
+  //Atlas MongoDB standard connection string in SRV format (recommended for MongoDB drivers).
+  //Format: mongodb+srv://<username>:<password>@<cluster>.mongodb.net/<database>
+  //https://registry.terraform.io/providers/mongodb/atlasmongodb/latest/docs/resources/advanced_cluster#connection_strings
+  string bootstrap_endpoint = 2;
+  //The cluster identifier, same as id field. Used for resource identification and API operations.
+  //https://registry.terraform.io/providers/mongodb/atlasmongodb/latest/docs/resources/advanced_cluster#cluster_id
+  string crn = 3;
+  //Atlas MongoDB standard connection string in legacy format.
+  //Format: mongodb://<host1>:<port1>,<host2>:<port2>/<database>
+  //https://registry.terraform.io/providers/mongodb/atlasmongodb/latest/docs/resources/advanced_cluster#connection_strings
+  string rest_endpoint = 4;
+}

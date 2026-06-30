@@ -1,0 +1,177 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcpfirestoredatabase.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// GcpFirestoreDatabaseSpec defines the configuration for a Google Cloud
+// Firestore database.
+//
+// Firestore is a fully managed, serverless, NoSQL document database. Each
+// GCP project can have multiple named databases in addition to the default
+// "(default)" database. Databases are the top-level container for
+// collections, documents, and indexes.
+//
+// Important behavioral notes:
+//
+//   - The database_name, location_id, database_edition, and kms_key_name
+//     fields are immutable after creation. Changing them requires recreating
+//     the database.
+//
+//   - The type field can be changed between FIRESTORE_NATIVE and DATASTORE_MODE
+//     after creation, but this is a significant operational change.
+//
+//   - Firestore databases do not support GCP labels. Resource Manager tags are
+//     available but are an advanced organizational feature excluded from v1.
+//
+//   - The "(default)" database name is special -- it is the primary database
+//     that Firestore client libraries connect to when no database ID is
+//     specified. Only one "(default)" database can exist per project.
+message GcpFirestoreDatabaseSpec {
+  // enterprise_requires_firestore_native validates that ENTERPRISE edition
+  // databases use the FIRESTORE_NATIVE type. DATASTORE_MODE is not supported
+  // with ENTERPRISE edition.
+  option (buf.validate.message).cel = {
+    id: "enterprise_requires_firestore_native"
+    expression: "this.database_edition == '' || this.database_edition != 'ENTERPRISE' || this.type == 'FIRESTORE_NATIVE'"
+    message: "database_edition ENTERPRISE requires type to be FIRESTORE_NATIVE"
+  };
+
+  // GCP project where the Firestore database will be created.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // Location of the Firestore database. This determines where data is stored
+  // and affects latency and availability. Immutable after creation.
+  //
+  // Multi-region locations: "nam5" (United States), "eur3" (Europe).
+  // Single-region locations: any supported GCP region (e.g., "us-east1",
+  // "europe-west1").
+  //
+  // Multi-region locations provide higher availability but at higher cost
+  // and with slightly higher write latency.
+  string location_id = 2 [(buf.validate.field).required = true];
+
+  // Name for the Firestore database. Must be 4-63 characters, start with a
+  // lowercase letter, contain only lowercase letters, digits, and hyphens,
+  // and end with a letter or digit.
+  //
+  // The special value "(default)" creates the project's default database.
+  // Only one default database can exist per project. Client libraries connect
+  // to the default database when no database ID is specified.
+  //
+  // Immutable after creation.
+  string database_name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "database_name_valid"
+      expression: "this == '(default)' || this.matches('^[a-z][a-z0-9-]{2,61}[a-z0-9]$')"
+      message: "database_name must be '(default)' or 4-63 characters: start with a letter, contain only lowercase letters, digits, and hyphens, end with a letter or digit"
+    }
+  ];
+
+  // Firestore database type. Determines the data model and API surface.
+  //
+  // FIRESTORE_NATIVE: Modern Firestore with real-time listeners, offline
+  // support, and the Firestore client library API. Recommended for new
+  // applications.
+  //
+  // DATASTORE_MODE: Legacy Datastore-compatible mode with the Datastore
+  // client library API. Use for existing Datastore applications or workloads
+  // that need Datastore's entity-group transactions.
+  string type = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "type_valid_value"
+      expression: "this in ['FIRESTORE_NATIVE', 'DATASTORE_MODE']"
+      message: "type must be FIRESTORE_NATIVE or DATASTORE_MODE"
+    }
+  ];
+
+  // Concurrency control mode for the database. Determines how conflicts
+  // between concurrent reads and writes are resolved.
+  //
+  // OPTIMISTIC: Uses optimistic concurrency control. Reads do not block
+  // writes, and writes are validated at commit time. Default for
+  // FIRESTORE_NATIVE databases.
+  //
+  // PESSIMISTIC: Uses pessimistic concurrency control. Reads block
+  // concurrent writes to the same data. Default for DATASTORE_MODE
+  // databases.
+  //
+  // OPTIMISTIC_WITH_ENTITY_GROUPS: Legacy Datastore mode using entity
+  // group-based transactions. Only valid for DATASTORE_MODE databases.
+  //
+  // If not set, GCP applies the default for the chosen database type.
+  string concurrency_mode = 5 [(buf.validate.field).cel = {
+    id: "concurrency_mode_valid_value"
+    expression: "this == '' || this in ['OPTIMISTIC', 'PESSIMISTIC', 'OPTIMISTIC_WITH_ENTITY_GROUPS']"
+    message: "concurrency_mode must be OPTIMISTIC, PESSIMISTIC, or OPTIMISTIC_WITH_ENTITY_GROUPS"
+  }];
+
+  // Whether to enable point-in-time recovery (PITR) for this database.
+  //
+  // POINT_IN_TIME_RECOVERY_ENABLED: Retains 7 days of version history.
+  // Reads can target any timestamp within the past hour or any 1-minute
+  // snapshot within the past 7 days.
+  //
+  // POINT_IN_TIME_RECOVERY_DISABLED: Retains 1 hour of version history.
+  // Reads can target any timestamp within the past hour.
+  //
+  // If not set, defaults to POINT_IN_TIME_RECOVERY_DISABLED.
+  string point_in_time_recovery_enablement = 6 [(buf.validate.field).cel = {
+    id: "pitr_valid_value"
+    expression: "this == '' || this in ['POINT_IN_TIME_RECOVERY_ENABLED', 'POINT_IN_TIME_RECOVERY_DISABLED']"
+    message: "point_in_time_recovery_enablement must be POINT_IN_TIME_RECOVERY_ENABLED or POINT_IN_TIME_RECOVERY_DISABLED"
+  }];
+
+  // Delete protection for the database. When enabled, the database cannot
+  // be deleted through any interface (Console, gcloud, API, IaC tools)
+  // until protection is disabled.
+  //
+  // Defaults to DELETE_PROTECTION_DISABLED.
+  optional string delete_protection_state = 7 [
+    (dev.planton.shared.options.default) = "DELETE_PROTECTION_DISABLED",
+    (buf.validate.field).cel = {
+      id: "delete_protection_state_valid_value"
+      expression: "this == '' || this in ['DELETE_PROTECTION_ENABLED', 'DELETE_PROTECTION_DISABLED']"
+      message: "delete_protection_state must be DELETE_PROTECTION_ENABLED or DELETE_PROTECTION_DISABLED"
+    }
+  ];
+
+  // Database edition. Determines the feature set and SLA tier.
+  //
+  // STANDARD: Default edition suitable for most workloads. Provides
+  // standard Firestore features and SLA.
+  //
+  // ENTERPRISE: Enhanced edition with higher availability SLA, advanced
+  // security features, and support for additional data access modes.
+  // Requires type to be FIRESTORE_NATIVE.
+  //
+  // Immutable after creation. If not set, defaults to STANDARD.
+  string database_edition = 8 [(buf.validate.field).cel = {
+    id: "database_edition_valid_value"
+    expression: "this == '' || this in ['STANDARD', 'ENTERPRISE']"
+    message: "database_edition must be STANDARD or ENTERPRISE"
+  }];
+
+  // Fully qualified name of the KMS key to use for customer-managed
+  // encryption (CMEK). The key must exist in the same location as the
+  // database. Immutable after creation.
+  //
+  // For multi-region databases: nam5 requires a Cloud KMS key in the
+  // "us" multi-region; eur3 requires a key in the "europe" multi-region.
+  //
+  // Format: projects/{project}/locations/{location}/keyRings/{ring}/cryptoKeys/{key}
+  //
+  // If not set, Google-managed encryption is used (default).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_name = 9 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+  ];
+}

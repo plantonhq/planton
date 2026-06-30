@@ -12,28 +12,28 @@ Deploys an Alibaba Cloud Key Management Service (KMS) customer-managed key (CMK)
 
 ## What Gets Created
 
-When you deploy an AliCloudKmsKey resource, OpenMCF provisions:
+When you deploy an AliCloudKmsKey resource, Planton provisions:
 
 - **KMS Key** -- an `alicloud_kms_key` resource in the specified region with configurable algorithm, rotation policy, and deletion protection
 
 ## Prerequisites
 
-- **Alibaba Cloud credentials** configured via environment variables or OpenMCF provider config
+- **Alibaba Cloud credentials** configured via environment variables or Planton provider config
 
 ## Quick Start
 
 Create a file `kms-key.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudKmsKey
 metadata:
   name: my-key
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudKmsKey.my-key
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudKmsKey.my-key
 spec:
   region: cn-hangzhou
   description: Encryption key for development resources
@@ -42,7 +42,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f kms-key.yaml
+planton apply -f kms-key.yaml
 ```
 
 This creates an AES-256 symmetric encryption key with software-based protection.
@@ -68,14 +68,14 @@ This creates an AES-256 symmetric encryption key with software-based protection.
 | `pendingWindowInDays` | `int32` | `30` | Deletion grace period in days (7-366). |
 | `deletionProtection` | `bool` | `false` | Prevent accidental key deletion. Recommended for production. |
 | `deletionProtectionDescription` | `string` | `""` | Reason for deletion protection. |
-| `tags` | `map<string, string>` | `{}` | Tags applied to the key. Merged with standard OpenMCF tags. |
+| `tags` | `map<string, string>` | `{}` | Tags applied to the key. Merged with standard Planton tags. |
 
 ## Examples
 
 ### Minimal KMS Key
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudKmsKey
 metadata:
   name: my-key
@@ -86,7 +86,7 @@ spec:
 ### Production Encryption Key with Rotation
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudKmsKey
 metadata:
   name: prod-encryption-key
@@ -109,7 +109,7 @@ spec:
 ### Asymmetric Signing Key
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudKmsKey
 metadata:
   name: signing-key

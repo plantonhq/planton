@@ -38,7 +38,7 @@ flowchart LR
 
 ### 1. GcpCloudRun — `dns.managed_zone` promotion (breaking)
 
-- **Proto**: `dns.managed_zone` changed from `string` to `org.openmcf.shared.foreignkey.v1.StringValueOrRef` with `default_kind = GcpDnsZone` and `default_kind_field_path = "status.outputs.zone_name"`. The `GcpCloudRunDns` CEL was updated from `this.managed_zone != ''` to the value/value_from form `((has(this.managed_zone.value) && this.managed_zone.value != '') || has(this.managed_zone.value_from))`, mirroring the established pattern used by `AwsEc2Instance`.
+- **Proto**: `dns.managed_zone` changed from `string` to `dev.planton.shared.foreignkey.v1.StringValueOrRef` with `default_kind = GcpDnsZone` and `default_kind_field_path = "status.outputs.zone_name"`. The `GcpCloudRunDns` CEL was updated from `this.managed_zone != ''` to the value/value_from form `((has(this.managed_zone.value) && this.managed_zone.value != '') || has(this.managed_zone.value_from))`, mirroring the established pattern used by `AwsEc2Instance`.
 - **Terraform**: `variables.tf` `dns.managed_zone` type changed `string` -> `object({ value = string })` (the platform resolves any `value_from` to a literal before apply, so only `value` arrives — identical to `gcpdnsrecord`). `locals.tf` reads `.value`.
 - **Pulumi**: `custom_dns.go` reads `Spec.Dns.ManagedZone.GetValue()`.
 - **Docs/manifest/test**: Terraform README example, catalog-page row, `hack/manifest.yaml`, and `spec_test.go` (DNS CEL cases) updated to the `StringValueOrRef` shape.

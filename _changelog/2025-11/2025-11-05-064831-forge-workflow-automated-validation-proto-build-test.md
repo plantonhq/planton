@@ -555,7 +555,7 @@ ls apis/project/planton/provider/gcp/gcpcertmanagercert/v1/*.pb.go
 **Rule 018**:
 ```bash
 # Verified build succeeds
-cd ~/scm/github.com/plantonhq/openmcf
+cd ~/scm/github.com/plantonhq/planton
 make build
 # Result: Exit code 0, no compilation errors
 ```

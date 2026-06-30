@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package dev.planton.provider.digitalocean.digitaloceanvpc.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/digitalocean/region.proto";
+import "dev/planton/shared/options/options.proto";
+
+// DigitalOceanVpcSpec defines the specification required to deploy a DigitalOcean Virtual Private Cloud (VPC).
+// A DigitalOcean VPC allows you to create a private, isolated network for your Droplets and other resources,
+// enabling secure communication within your infrastructure.
+// This specification focuses on the essential parameters for creating a VPC, adhering to the 80/20 principle.
+message DigitalOceanVpcSpec {
+  // A human-readable description for the VPC.
+  // Constraints: Maximum 100 characters.
+  string description = 1 [(buf.validate.field).string.max_len = 100];
+
+  // The DigitalOcean region where the VPC will be created.
+  // This determines the geographical location of the VPC.
+  DigitalOceanRegion region = 2 [(buf.validate.field).required = true];
+
+  // The IP range for the VPC in CIDR notation (optional).
+  // Only /16, /20, or /24 CIDR blocks are supported for VPCs on DigitalOcean.
+  // Example: "10.10.0.0/16"
+  //
+  // 80/20 Principle: When omitted, DigitalOcean auto-generates a non-conflicting /20 CIDR block (4,096 IPs).
+  // This is the recommended approach for dev/test environments and when explicit IP planning is not required.
+  // For production environments with specific IPAM requirements, explicitly specify the CIDR block.
+  string ip_range_cidr = 3 [(buf.validate.field).string.pattern = "^([0-9]{1,3}\\.){3}[0-9]{1,3}/(16|20|24)$"];
+
+  // A boolean indicating whether this VPC should be set as the default for the specified region.
+  // Only one VPC can be the default for a given region.
+  // Default: false
+  bool is_default_for_region = 4 [(dev.planton.shared.options.recommended_default) = "false"];
+}

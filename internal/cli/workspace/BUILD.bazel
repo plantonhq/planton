@@ -3,7 +3,7 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "workspace",
     srcs = ["workspace.go"],
-    importpath = "github.com/plantonhq/openmcf/internal/cli/workspace",
+    importpath = "github.com/plantonhq/planton/internal/cli/workspace",
     visibility = ["//:__subpackages__"],
     deps = [
         "//pkg/fileutil",

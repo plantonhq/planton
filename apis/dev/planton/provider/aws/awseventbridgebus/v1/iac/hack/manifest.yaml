@@ -1,0 +1,15 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsEventBridgeBus
+metadata:
+  name: test-bus
+  org: test-org
+  env: dev
+  id: test-bus-dev
+  labels:
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: test-org
+    pulumi.planton.dev/project: test-project
+    pulumi.planton.dev/stack.name: dev.AwsEventBridgeBus.test-bus
+spec:
+  region: us-east-1
+  description: Test event bus for local development

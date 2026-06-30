@@ -30,7 +30,7 @@ Updated both `KubernetesTemporalExternalDatabase` and `KubernetesTemporalExterna
 **Using Kubernetes Secret (Recommended for Production):**
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesTemporal
 metadata:
   name: temporal-prod
@@ -60,7 +60,7 @@ spec:
 **Using Plain String (Dev/Test Only):**
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesTemporal
 metadata:
   name: temporal-dev
@@ -83,27 +83,27 @@ spec:
 
 Updated `KubernetesTemporalExternalDatabase` and `KubernetesTemporalExternalElasticsearch` to use the `KubernetesSensitiveValue` type:
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetestemporal/v1/spec.proto`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetestemporal/v1/spec.proto`
 
 ```protobuf
 message KubernetesTemporalExternalDatabase {
   // ... existing fields ...
   
   // Changed from: string password = 4;
-  org.openmcf.provider.kubernetes.KubernetesSensitiveValue password = 4;
+  dev.planton.provider.kubernetes.KubernetesSensitiveValue password = 4;
 }
 
 message KubernetesTemporalExternalElasticsearch {
   // ... existing fields ...
   
   // Changed from: string password = 4;
-  org.openmcf.provider.kubernetes.KubernetesSensitiveValue password = 4;
+  dev.planton.provider.kubernetes.KubernetesSensitiveValue password = 4;
 }
 ```
 
 ### Pulumi Module Update
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetestemporal/v1/iac/pulumi/module/db_password_secret.go`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetestemporal/v1/iac/pulumi/module/db_password_secret.go`
 
 The Pulumi module now only creates a secret when `string_value` is provided. When `secret_ref` is used, no new secret is created:
 
@@ -114,7 +114,7 @@ if ext.Password.GetSecretRef() != nil {
 }
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetestemporal/v1/iac/pulumi/module/helm_chart.go`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetestemporal/v1/iac/pulumi/module/helm_chart.go`
 
 The Helm chart configuration now uses the appropriate secret name and key based on whether `secret_ref` is provided:
 
@@ -131,7 +131,7 @@ if ext.Password != nil && ext.Password.GetSecretRef() != nil {
 
 ### Terraform Module Update
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetestemporal/v1/iac/tf/variables.tf`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetestemporal/v1/iac/tf/variables.tf`
 
 ```hcl
 password = object({
@@ -144,7 +144,7 @@ password = object({
 })
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetestemporal/v1/iac/tf/locals.tf`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetestemporal/v1/iac/tf/locals.tf`
 
 ```hcl
 # Password handling - check if using secret_ref or string_value

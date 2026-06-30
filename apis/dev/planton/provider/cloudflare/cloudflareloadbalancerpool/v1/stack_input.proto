@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.cloudflare.cloudflareloadbalancerpool.v1;
+
+import "dev/planton/provider/cloudflare/cloudflareloadbalancerpool/v1/api.proto";
+import "dev/planton/provider/cloudflare/provider.proto";
+
+//cloudflare-load-balancer-pool stack-input
+message CloudflareLoadBalancerPoolStackInput {
+  //target cloud-resource
+  CloudflareLoadBalancerPool target = 1;
+  //provider-config
+  dev.planton.provider.cloudflare.CloudflareProviderConfig provider_config = 2;
+}

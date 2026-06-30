@@ -1,0 +1,117 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azurekeyvault.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// **AzureKeyVaultSpec** defines the configuration for creating an Azure Key Vault.
+// This follows the 80/20 principle: exposing the 20% of configurations that 80% of users need.
+message AzureKeyVaultSpec {
+  // The Azure region where the Key Vault will be deployed (e.g., "eastus", "westus2", "westeurope").
+  // This is required as Key Vault is a regional service.
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The Azure Resource Group where the Key Vault will be created.
+  // Can be a literal string or a reference to an AzureResourceGroup output.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef resource_group = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AzureResourceGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.resource_group_name"
+  ];
+
+  // The SKU tier for the Key Vault.
+  // - STANDARD: Software-protected keys, suitable for most applications
+  // - PREMIUM: HSM-backed keys, required for compliance (PCI-DSS, FIPS 140-2 Level 3)
+  // Default: STANDARD
+  optional AzureKeyVaultSku sku = 3 [(dev.planton.shared.options.default) = "STANDARD"];
+
+  // Enable Azure RBAC for authorization instead of vault access policies.
+  // RBAC is the modern, recommended approach that integrates with Azure AD and PIM.
+  // Default: true (strongly recommended for new deployments)
+  optional bool enable_rbac_authorization = 4 [(dev.planton.shared.options.default) = "true"];
+
+  // Enable purge protection to prevent permanent deletion of the vault and its contents.
+  // When enabled, deleted vaults are retained for the soft delete retention period and cannot be purged.
+  // CRITICAL: Should always be true for production environments.
+  // Default: true
+  optional bool enable_purge_protection = 5 [(dev.planton.shared.options.default) = "true"];
+
+  // Soft delete retention period in days (7-90 days).
+  // Deleted secrets, keys, and certificates are retained for this period and can be recovered.
+  // Default: 90 days (maximum retention)
+  optional int32 soft_delete_retention_days = 6 [
+    (buf.validate.field).int32 = {
+      gte: 7
+      lte: 90
+    },
+    (dev.planton.shared.options.default) = "90"
+  ];
+
+  // Network access control configuration for the Key Vault.
+  // Controls who can access the vault from where (public internet, specific IPs, VNets).
+  optional AzureKeyVaultNetworkAcls network_acls = 7;
+
+  // List of secret names to create in the Key Vault.
+  // The actual secret values should be set separately after vault creation using Azure SDK,
+  // Azure CLI, or the Key Vault API (never hardcoded in IaC).
+  repeated string secret_names = 8 [
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Names of secrets to create in the Key Vault, not secret values (the values are set separately after creation).",
+    (buf.validate.field).repeated.min_items = 0,
+    (buf.validate.field).repeated.max_items = 100
+  ];
+}
+
+// **AzureKeyVaultSku** defines the SKU tier for Azure Key Vault.
+enum AzureKeyVaultSku {
+  // Unspecified SKU (will default to STANDARD)
+  SKU_UNSPECIFIED = 0;
+
+  // Standard SKU: Software-protected keys and secrets
+  // Suitable for most applications, development, and non-regulated production workloads
+  STANDARD = 1;
+
+  // Premium SKU: HSM-backed keys (FIPS 140-2 Level 3 validated)
+  // Required for compliance scenarios (PCI-DSS, HIPAA, FedRAMP, financial services)
+  PREMIUM = 2;
+}
+
+// **AzureKeyVaultNetworkAcls** defines network access control rules for the Key Vault.
+message AzureKeyVaultNetworkAcls {
+  // Default action when no explicit rule matches.
+  // - ALLOW: Permit all traffic (not recommended for production)
+  // - DENY: Block all traffic unless explicitly allowed (recommended)
+  // Default: DENY
+  optional AzureKeyVaultNetworkAction default_action = 1 [(dev.planton.shared.options.default) = "DENY"];
+
+  // Allow traffic from trusted Azure services even when default_action is DENY.
+  // This includes services like Azure Backup, Azure Site Recovery, Azure Monitor, etc.
+  // Default: true (recommended to allow Azure service integrations)
+  optional bool bypass_azure_services = 2 [(dev.planton.shared.options.default) = "true"];
+
+  // List of IP addresses or CIDR ranges allowed to access the vault.
+  // Example: ["203.0.113.0/24", "198.51.100.42"]
+  // Used for office IPs, VPN gateways, CI/CD runners, etc.
+  repeated string ip_rules = 3 [(buf.validate.field).repeated.max_items = 200];
+
+  // List of Azure Virtual Network subnet resource IDs allowed to access the vault.
+  // Example: ["/subscriptions/{sub-id}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetworks/{vnet}/subnets/{subnet}"]
+  // Used to restrict access to specific VNets/subnets.
+  repeated string virtual_network_subnet_ids = 4 [(buf.validate.field).repeated.max_items = 100];
+}
+
+// **AzureKeyVaultNetworkAction** defines the default network action for Key Vault.
+enum AzureKeyVaultNetworkAction {
+  // Unspecified action (will default to DENY)
+  ACTION_UNSPECIFIED = 0;
+
+  // Allow all network traffic (not recommended for production)
+  ALLOW = 1;
+
+  // Deny all network traffic unless explicitly allowed (recommended for production)
+  DENY = 2;
+}

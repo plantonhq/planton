@@ -1,0 +1,16 @@
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudKubernetesNodePool
+metadata:
+  name: alicloudkubernetesnodepool-demo
+spec:
+  region: cn-hangzhou
+  clusterId:
+    value: c-test-cluster
+  name: demo-pool
+  vswitchIds:
+    - value: vsw-aaa111
+    - value: vsw-bbb222
+  instanceTypes:
+    - ecs.g7.xlarge
+  desiredSize: 2
+  keyName: test-keypair

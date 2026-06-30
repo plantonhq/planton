@@ -25,7 +25,7 @@ Deploy a single subnet into an AWS VPC, with its routing folded in. A subnet is 
 ## Quick Start
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsSubnet
 metadata:
   name: app-private-usw2a
@@ -78,7 +78,7 @@ spec:
 Public subnet (default route to an internet gateway):
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsSubnet
 metadata:
   name: public-usw2a
@@ -99,7 +99,7 @@ spec:
 Private subnet (outbound via NAT gateway):
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsSubnet
 metadata:
   name: private-usw2a

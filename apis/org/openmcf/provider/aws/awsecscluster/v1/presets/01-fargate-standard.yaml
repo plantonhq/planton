@@ -1,9 +1,0 @@
-apiVersion: aws.openmcf.org/v1
-kind: AwsEcsCluster
-metadata:
-  name: my-fargate-cluster
-spec:
-  region: <aws-region>
-  enableContainerInsights: true  # recommended_default from spec
-  capacityProviders:
-    - FARGATE

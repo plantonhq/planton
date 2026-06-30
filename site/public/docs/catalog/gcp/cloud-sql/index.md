@@ -12,7 +12,7 @@ Deploys a Google Cloud SQL instance with configurable database engine (MySQL or 
 
 ## What Gets Created
 
-When you deploy a GcpCloudSql resource, OpenMCF provisions:
+When you deploy a GcpCloudSql resource, Planton provisions:
 
 - **Cloud SQL Database Instance** — a `google_sql_database_instance` with SSD storage, the specified machine tier, and database version, placed in the target GCP project and region
 - **IP Configuration** — public IPv4 connectivity by default, or private IP within a VPC when `network.privateIpEnabled` is `true`
@@ -23,7 +23,7 @@ When you deploy a GcpCloudSql resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **A GCP project** where the Cloud SQL instance will be created
 - **A VPC network** with Private Services Access configured if enabling private IP connectivity
 - **Service Networking API** enabled in the project if using private IP
@@ -33,15 +33,15 @@ When you deploy a GcpCloudSql resource, OpenMCF provisions:
 Create a file `cloudsql.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudSql
 metadata:
   name: my-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpCloudSql.my-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpCloudSql.my-db
 spec:
   projectId: my-gcp-project
   region: us-central1
@@ -54,7 +54,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f cloudsql.yaml
+planton apply -f cloudsql.yaml
 ```
 
 This creates a PostgreSQL 15 instance on a `db-n1-standard-1` machine with 10 GB SSD storage, public IP enabled, and no high availability.
@@ -103,15 +103,15 @@ This creates a PostgreSQL 15 instance on a `db-n1-standard-1` machine with 10 GB
 A MySQL 8.0 instance with public IP access restricted to a single office CIDR:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudSql
 metadata:
   name: app-mysql
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpCloudSql.app-mysql
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpCloudSql.app-mysql
 spec:
   projectId: my-gcp-project
   region: us-central1
@@ -130,15 +130,15 @@ spec:
 A PostgreSQL instance accessible only within a VPC, with daily backups and point-in-time recovery:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudSql
 metadata:
   name: api-postgres
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.GcpCloudSql.api-postgres
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.GcpCloudSql.api-postgres
 spec:
   projectId: my-gcp-project
   region: us-central1
@@ -161,15 +161,15 @@ spec:
 A production-grade PostgreSQL instance with high availability, Enterprise Plus edition, backups, scheduled maintenance, and custom database flags:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudSql
 metadata:
   name: prod-postgres
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpCloudSql.prod-postgres
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpCloudSql.prod-postgres
 spec:
   projectId: my-gcp-project
   region: us-central1
@@ -204,18 +204,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding IDs:
+Reference other Planton-managed resources instead of hardcoding IDs:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudSql
 metadata:
   name: ref-postgres
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpCloudSql.ref-postgres
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpCloudSql.ref-postgres
 spec:
   projectId:
     valueFrom:

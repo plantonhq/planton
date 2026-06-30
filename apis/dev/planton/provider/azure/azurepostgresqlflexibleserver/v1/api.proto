@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azurepostgresqlflexibleserver.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/azure/azurepostgresqlflexibleserver/v1/spec.proto";
+import "dev/planton/provider/azure/azurepostgresqlflexibleserver/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// AzurePostgresqlFlexibleServer is the top-level API resource for an Azure
+// Database for PostgreSQL Flexible Server.
+// Azure Database for PostgreSQL Flexible Server is a fully managed relational
+// database service with granular control over compute, storage, high availability,
+// and networking. Supports PostgreSQL 12 through 17.
+message AzurePostgresqlFlexibleServer {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'azure.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'AzurePostgresqlFlexibleServer'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  AzurePostgresqlFlexibleServerSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  AzurePostgresqlFlexibleServerStatus status = 5;
+}
+
+// AzurePostgresqlFlexibleServerStatus holds the deployment status and outputs.
+message AzurePostgresqlFlexibleServerStatus {
+  // stack-outputs
+  AzurePostgresqlFlexibleServerStackOutputs outputs = 1;
+}

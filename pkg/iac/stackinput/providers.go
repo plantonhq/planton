@@ -4,8 +4,8 @@ import (
 	"os"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/pkg/iac/stackinput/stackinputproviderconfig"
-	"github.com/plantonhq/openmcf/pkg/protobufyaml"
+	"github.com/plantonhq/planton/pkg/iac/stackinput/stackinputproviderconfig"
+	"github.com/plantonhq/planton/pkg/protobufyaml"
 	"google.golang.org/protobuf/proto"
 	"gopkg.in/yaml.v3"
 	sigsyaml "sigs.k8s.io/yaml"

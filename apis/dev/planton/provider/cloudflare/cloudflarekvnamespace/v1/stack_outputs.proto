@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package dev.planton.provider.cloudflare.cloudflarekvnamespace.v1;
+
+// CloudflareKvNamespaceStackOutputs captures the key outputs after provisioning a Cloudflare KV namespace.
+message CloudflareKvNamespaceStackOutputs {
+  // The unique identifier (ID) of the created KV namespace. A Worker's
+  // `kv_namespace` binding and a CloudflareWorkersKvPair both reference this.
+  string namespace_id = 1;
+
+  // Whether keys in this namespace support URL encoding (reported by Cloudflare).
+  bool supports_url_encoding = 2;
+}

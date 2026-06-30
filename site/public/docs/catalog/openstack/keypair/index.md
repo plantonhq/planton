@@ -12,7 +12,7 @@ Deploys an OpenStack Nova compute keypair for SSH authentication to instances. S
 
 ## What Gets Created
 
-When you deploy an OpenStackKeypair resource, OpenMCF provisions:
+When you deploy an OpenStackKeypair resource, Planton provisions:
 
 - **Compute Keypair** — an `openstack_compute_keypair_v2` resource that registers an SSH public key with Nova for injection into instances at launch time via cloud-init
 
@@ -20,7 +20,7 @@ When no `publicKey` is provided in the spec, OpenStack generates a new keypair. 
 
 ## Prerequisites
 
-- **OpenStack credentials** configured via environment variables or OpenMCF provider config
+- **OpenStack credentials** configured via environment variables or Planton provider config
 - **Nova (Compute) API access** for the authenticated user or application credential
 - **ssh-keygen** or equivalent tool if importing an externally generated public key (recommended for production)
 
@@ -29,14 +29,14 @@ When no `publicKey` is provided in the spec, OpenStack generates a new keypair. 
 Create a file `keypair.yaml`:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackKeypair
 metadata:
   name: my-keypair
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: dev.OpenstackKeypair.my-keypair
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackkeypair/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: dev.OpenstackKeypair.my-keypair
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackkeypair/v1/iac/pulumi/module
 spec:
   publicKey: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQ... user@host"
 ```
@@ -44,7 +44,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f keypair.yaml
+planton apply -f keypair.yaml
 ```
 
 This imports the provided SSH public key into OpenStack as a keypair named `my-keypair`. The keypair can then be referenced by name when launching compute instances.
@@ -69,14 +69,14 @@ All spec fields are optional. The keypair name is derived from `metadata.name`.
 The most common and recommended approach. Generate a key pair locally with `ssh-keygen` and import the public key:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackKeypair
 metadata:
   name: dev-keypair
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: dev.OpenstackKeypair.dev-keypair
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackkeypair/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: dev.OpenstackKeypair.dev-keypair
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackkeypair/v1/iac/pulumi/module
 spec:
   publicKey: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIExampleKeyData developer@workstation"
 ```
@@ -86,14 +86,14 @@ spec:
 When no `publicKey` is provided, OpenStack generates a new keypair. The private key is stored encrypted in IaC state and must be retrieved immediately after creation. This approach is suitable for ephemeral environments where long-term key management is not required:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackKeypair
 metadata:
   name: ephemeral-keypair
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: staging.OpenstackKeypair.ephemeral-keypair
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackkeypair/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: staging.OpenstackKeypair.ephemeral-keypair
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackkeypair/v1/iac/pulumi/module
 spec: {}
 ```
 
@@ -108,14 +108,14 @@ pulumi stack output private_key --show-secrets
 Deploy a keypair to a specific region, overriding the default region from the provider config. Useful in multi-region deployments where keypairs need to exist in each region:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackKeypair
 metadata:
   name: us-west-keypair
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: prod.OpenstackKeypair.us-west-keypair
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackkeypair/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: prod.OpenstackKeypair.us-west-keypair
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackkeypair/v1/iac/pulumi/module
 spec:
   publicKey: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC7ExampleProdKeyData ops-team@corp"
   region: us-west-1

@@ -1,0 +1,99 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcpgkecluster.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// GcpGkeClusterSpec defines the key configuration for a GKE control-plane (private cluster).
+message GcpGkeClusterSpec {
+  // GCP project in which to create the cluster (reference to GcpProject resource).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // VPC Network to use for this cluster (must exist).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef network_self_link = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpVpc,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_self_link"
+  ];
+
+  // Location for the cluster: region (for regional) or zone (for zonal).
+  string location = 3 [
+    (buf.validate.field).required = true,
+    // e.g. "us-central1" or "us-central1-a"
+    (buf.validate.field).string.pattern = "^[a-z]+-[a-z]+[0-9](-[a-z])?$"
+  ];
+
+  // VPC Subnetwork to attach this cluster (must exist; carries primary & secondary IP ranges).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef subnetwork_self_link = 4 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpSubnetwork,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnetwork_self_link"
+  ];
+
+  // Name of the secondary range on the subnetwork for Pod IPs (VPC-native aliasing).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef cluster_secondary_range_name = 5 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpSubnetwork,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.secondary_ranges.[*].range_name"
+  ];
+
+  // Name of the secondary range on the subnetwork for Service IPs.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef services_secondary_range_name = 6 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpSubnetwork,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.secondary_ranges.[*].range_name"
+  ];
+
+  // RFC1918 /28 CIDR block for the Kubernetes control-plane masters (private endpoint range).
+  string master_ipv4_cidr_block = 7 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^\\d+\\.\\d+\\.\\d+\\.\\d+\\/28$"
+    // e.g. "172.16.0.16/28"; must be /28 and non-overlapping.
+  ];
+
+  // Whether nodes should be created with public IPs
+  bool enable_public_nodes = 8;
+
+  // Kubernetes release channel for auto-upgrades (Rapid, Regular, Stable, or NONE).
+  optional GkeReleaseChannel release_channel = 9 [(dev.planton.shared.options.default) = "REGULAR"];
+
+  // Disable network policy enforcement (Calico)
+  bool disable_network_policy = 10;
+
+  // Disable Workload Identity for pods (mapping KSA to GCP service accounts).
+  bool disable_workload_identity = 11;
+
+  // Optionally, could add a field to specify a non-default Workload Identity Pool:
+  // string workload_pool = 12 [(buf.validate.field).string.pattern = ".+\\.svc\\.id\\.goog$"];
+
+  // Reference to a Cloud NAT configuration to allow outbound internet for private nodes.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef router_nat_name = 13 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpRouterNat,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "metadata.name"
+  ];
+
+  // Name of the GKE cluster to create in GCP.
+  // Must be 1-40 characters, lowercase letters, numbers, or hyphens.
+  // Must start with a lowercase letter and end with a lowercase letter or number.
+  // Example: "my-gke-cluster", "prod-cluster"
+  string cluster_name = 14 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z]([a-z0-9-]{0,38}[a-z0-9])?$"
+  ];
+}
+
+// Enum for available GKE release channels.
+enum GkeReleaseChannel {
+  gke_release_channel_unspecified = 0;
+  RAPID = 1;
+  REGULAR = 2;
+  STABLE = 3;
+  NONE = 4;
+}

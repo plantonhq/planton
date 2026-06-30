@@ -1,0 +1,6 @@
+apiVersion: hetzner-cloud.planton.dev/v1
+kind: HetznerCloudSshKey
+metadata:
+  name: hetznercloudsshkey-demo
+spec:
+  publicKey: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAEXAMPLE demo@example.com"

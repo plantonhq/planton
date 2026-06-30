@@ -10,11 +10,11 @@ Implemented the OciAutonomousDatabase deployment component (R15, enum 3330) -- t
 
 ## Problem Statement / Motivation
 
-The OCI provider in OpenMCF had 14 completed resource kinds covering networking, identity, compute, containers, and advanced networking (load balancers, DRG, public IP). However, zero database resources existed, leaving a critical gap for enterprise OCI deployments where Autonomous Database is the most commonly provisioned managed service.
+The OCI provider in Planton had 14 completed resource kinds covering networking, identity, compute, containers, and advanced networking (load balancers, DRG, public IP). However, zero database resources existed, leaving a critical gap for enterprise OCI deployments where Autonomous Database is the most commonly provisioned managed service.
 
 ### Pain Points
 
-- No way to provision Oracle's flagship managed database through OpenMCF
+- No way to provision Oracle's flagship managed database through Planton
 - Enterprise teams deploying on OCI need ATP/ADW databases alongside their OKE clusters and networking infrastructure
 - The underlying Terraform resource has 163 attributes -- users need a curated, opinionated interface that covers real-world use cases without overwhelming complexity
 
@@ -78,7 +78,7 @@ flowchart TB
 ### Proto API (4 files)
 
 - **spec.proto**: 35 fields, 5 embedded enums (DbWorkload, ComputeModel, DatabaseEdition, LicenseModel, MaintenanceScheduleType), 1 nested message (CustomerContact), 2 CEL mutual-exclusivity rules (storage size, admin credential)
-- **api.proto**: Standard wrapper with `oci.openmcf.org/v1` api-version and `OciAutonomousDatabase` kind
+- **api.proto**: Standard wrapper with `oci.planton.dev/v1` api-version and `OciAutonomousDatabase` kind
 - **stack_input.proto**: Target + OciProviderConfig
 - **stack_outputs.proto**: 6 outputs (database OCID, 3 connection strings, service console URL, private endpoint)
 
@@ -124,7 +124,7 @@ Added `OciAutonomousDatabase = 3330` under new "OCI: Databases (3330-3339)" sect
 
 ## Impact
 
-- **Platform users**: Can now provision OCI Autonomous Databases through OpenMCF manifests
+- **Platform users**: Can now provision OCI Autonomous Databases through Planton manifests
 - **Infra chart authors**: Foundation for the `oci/autonomous-db-stack` and `oci/data-platform` charts
 - **Downstream components**: 6 outputs enable composability via StringValueOrRef for future OCI database-dependent resources
 

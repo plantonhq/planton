@@ -1,0 +1,9 @@
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareList
+metadata:
+  name: bulk-redirects
+spec:
+  accountId: <cloudflare-account-id>
+  kind: redirect
+  name: marketing_redirects
+  description: Source-to-target URL redirects resolved by a redirect ruleset

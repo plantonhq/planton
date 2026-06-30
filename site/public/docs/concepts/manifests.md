@@ -1,22 +1,22 @@
 ---
 title: "Manifests"
-description: "How OpenMCF uses the Kubernetes Resource Model (KRM) to declare infrastructure as structured YAML manifests with typed fields, validation, and provider-specific configuration"
+description: "How Planton uses the Kubernetes Resource Model (KRM) to declare infrastructure as structured YAML manifests with typed fields, validation, and provider-specific configuration"
 icon: "book"
 order: 25
 ---
 
 # Manifests
 
-Every interaction with OpenMCF starts with a manifest -- a YAML file that declares what you want to deploy. OpenMCF manifests follow the Kubernetes Resource Model (KRM), which means if you have written a Kubernetes YAML file before, the structure will be immediately familiar: `apiVersion`, `kind`, `metadata`, `spec`.
+Every interaction with Planton starts with a manifest -- a YAML file that declares what you want to deploy. Planton manifests follow the Kubernetes Resource Model (KRM), which means if you have written a Kubernetes YAML file before, the structure will be immediately familiar: `apiVersion`, `kind`, `metadata`, `spec`.
 
-The difference is what backs the manifest. In Kubernetes, the schema is defined by Go structs and validated by the API server at admission time. In OpenMCF, the schema is defined by Protocol Buffer definitions with field-level validation rules that are enforced before any cloud API is ever called.
+The difference is what backs the manifest. In Kubernetes, the schema is defined by Go structs and validated by the API server at admission time. In Planton, the schema is defined by Protocol Buffer definitions with field-level validation rules that are enforced before any cloud API is ever called.
 
 ## Manifest Structure
 
-Every OpenMCF manifest has five top-level fields:
+Every Planton manifest has five top-level fields:
 
 ```yaml
-apiVersion: <provider>.openmcf.org/v1
+apiVersion: <provider>.planton.dev/v1
 kind: <ComponentKind>
 metadata:
   name: <resource-name>
@@ -31,18 +31,18 @@ status:
 
 ### apiVersion
 
-The `apiVersion` identifies which provider and API version this manifest targets. It follows the pattern `{provider}.openmcf.org/v1`:
+The `apiVersion` identifies which provider and API version this manifest targets. It follows the pattern `{provider}.planton.dev/v1`:
 
 | Provider | apiVersion |
 |----------|-----------|
-| AWS | `aws.openmcf.org/v1` |
-| GCP | `gcp.openmcf.org/v1` |
-| Azure | `azure.openmcf.org/v1` |
-| Kubernetes | `kubernetes.openmcf.org/v1` |
-| DigitalOcean | `digital-ocean.openmcf.org/v1` |
-| Civo | `civo.openmcf.org/v1` |
-| Cloudflare | `cloudflare.openmcf.org/v1` |
-| OpenStack | `openstack.openmcf.org/v1` |
+| AWS | `aws.planton.dev/v1` |
+| GCP | `gcp.planton.dev/v1` |
+| Azure | `azure.planton.dev/v1` |
+| Kubernetes | `kubernetes.planton.dev/v1` |
+| DigitalOcean | `digital-ocean.planton.dev/v1` |
+| Civo | `civo.planton.dev/v1` |
+| Cloudflare | `cloudflare.planton.dev/v1` |
+| OpenStack | `openstack.planton.dev/v1` |
 
 The `apiVersion` value is enforced as a constant in the component's Protocol Buffer definition. If you set the wrong `apiVersion`, validation fails immediately -- not after a network call to a cloud provider.
 
@@ -68,10 +68,10 @@ metadata:
   org: acme
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme
-    pulumi.openmcf.org/project: platform
-    pulumi.openmcf.org/stack.name: production.KubernetesPostgres.session-store
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme
+    pulumi.planton.dev/project: platform
+    pulumi.planton.dev/stack.name: production.KubernetesPostgres.session-store
   tags:
     - database
     - backend
@@ -98,25 +98,25 @@ Certain label keys are read by the CLI to configure IaC engine behavior. These l
 
 | Label | Values | Purpose |
 |-------|--------|---------|
-| `openmcf.org/provisioner` | `pulumi`, `tofu`, `terraform` | Tells unified commands (`apply`, `plan`, `destroy`) which engine to use |
+| `planton.dev/provisioner` | `pulumi`, `tofu`, `terraform` | Tells unified commands (`apply`, `plan`, `destroy`) which engine to use |
 
 **Pulumi state configuration:**
 
 | Label | Example | Purpose |
 |-------|---------|---------|
-| `pulumi.openmcf.org/organization` | `acme` | Pulumi Cloud organization or backend namespace |
-| `pulumi.openmcf.org/project` | `platform` | Pulumi project name |
-| `pulumi.openmcf.org/stack.name` | `prod.KubernetesPostgres.db` | Pulumi stack name |
+| `pulumi.planton.dev/organization` | `acme` | Pulumi Cloud organization or backend namespace |
+| `pulumi.planton.dev/project` | `platform` | Pulumi project name |
+| `pulumi.planton.dev/stack.name` | `prod.KubernetesPostgres.db` | Pulumi stack name |
 
 **OpenTofu/Terraform state configuration:**
 
 | Label | Example | Purpose |
 |-------|---------|---------|
-| `tofu.openmcf.org/backend.type` | `s3`, `gcs`, `azurerm`, `local` | State backend type |
-| `tofu.openmcf.org/backend.bucket` | `my-tfstate-bucket` | Bucket name for remote state |
-| `tofu.openmcf.org/backend.key` | `prod/postgres/terraform.tfstate` | State file path within the bucket |
-| `tofu.openmcf.org/backend.region` | `us-east-1` | AWS region for S3 backend |
-| `tofu.openmcf.org/backend.endpoint` | `https://acct.r2.cloudflarestorage.com` | Custom endpoint for S3-compatible backends (R2, MinIO) |
+| `tofu.planton.dev/backend.type` | `s3`, `gcs`, `azurerm`, `local` | State backend type |
+| `tofu.planton.dev/backend.bucket` | `my-tfstate-bucket` | Bucket name for remote state |
+| `tofu.planton.dev/backend.key` | `prod/postgres/terraform.tfstate` | State file path within the bucket |
+| `tofu.planton.dev/backend.region` | `us-east-1` | AWS region for S3 backend |
+| `tofu.planton.dev/backend.endpoint` | `https://acct.r2.cloudflarestorage.com` | Custom endpoint for S3-compatible backends (R2, MinIO) |
 
 See [State Management](state-management) for the full list of backend labels and their validation rules.
 
@@ -139,15 +139,15 @@ You do not set `status` in your manifest. It exists so that after deployment, th
 ### PostgreSQL on Kubernetes
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPostgres
 metadata:
   name: kubernetes-postgres-example
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: organization
-    pulumi.openmcf.org/project: openmcf-examples
-    pulumi.openmcf.org/stack.name: example-env.KubernetesPostgres.kubernetes-postgres-example
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: organization
+    pulumi.planton.dev/project: planton-examples
+    pulumi.planton.dev/stack.name: example-env.KubernetesPostgres.kubernetes-postgres-example
 spec:
   namespace:
     value: kubernetes-postgres-example
@@ -168,15 +168,15 @@ spec:
 ### PostgreSQL on AWS RDS
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRdsInstance
 metadata:
   name: aws-postgres-example
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: organization
-    pulumi.openmcf.org/project: openmcf-examples
-    pulumi.openmcf.org/stack.name: example-env.AwsRdsInstance.aws-postgres-example
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: organization
+    pulumi.planton.dev/project: planton-examples
+    pulumi.planton.dev/stack.name: example-env.AwsRdsInstance.aws-postgres-example
 spec:
   subnetIds:
     - value: subnet-abc123
@@ -198,22 +198,22 @@ spec:
 ### PostgreSQL on GCP Cloud SQL
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudSql
 metadata:
   name: gcp-postgres-example
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: organization
-    pulumi.openmcf.org/project: openmcf-examples
-    pulumi.openmcf.org/stack.name: example-env.GcpCloudSql.gcp-postgres-example
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: organization
+    pulumi.planton.dev/project: planton-examples
+    pulumi.planton.dev/stack.name: example-env.GcpCloudSql.gcp-postgres-example
 spec:
   databaseEngine: POSTGRESQL
   databaseVersion: POSTGRES_15
   network:
     authorizedNetworks:
     - 0.0.0.0/0
-  projectId: openmcf-demo
+  projectId: planton-demo
   region: asia-south1
   rootPassword: my-secure-password
   storageGb: 10
@@ -240,20 +240,20 @@ When multiple sources are provided, the CLI follows a priority order: `--clipboa
 The most common usage is `--manifest` / `-f`:
 
 ```bash
-openmcf pulumi up -f postgres.yaml --stack my-org/my-project/production
+planton pulumi up -f postgres.yaml --stack my-org/my-project/production
 ```
 
 The clipboard source is useful during development when iterating on a manifest:
 
 ```bash
 # Copy manifest to clipboard, then:
-openmcf validate --clipboard
+planton validate --clipboard
 ```
 
 The Kustomize source enables multi-environment workflows with overlays:
 
 ```bash
-openmcf pulumi up --kustomize-dir ./k8s --overlay production
+planton pulumi up --kustomize-dir ./k8s --overlay production
 ```
 
 ## Runtime Overrides
@@ -261,7 +261,7 @@ openmcf pulumi up --kustomize-dir ./k8s --overlay production
 The `--set` flag allows overriding individual manifest values at execution time without modifying the YAML file. It accepts `key=value` pairs where the key is a dot-delimited path into the manifest:
 
 ```bash
-openmcf pulumi up -f postgres.yaml \
+planton pulumi up -f postgres.yaml \
   --set spec.container.replicas=3 \
   --set spec.container.diskSize=10Gi \
   --stack my-org/my-project/production

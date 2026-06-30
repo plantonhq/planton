@@ -12,28 +12,28 @@ Deploys an Alibaba Cloud Elastic IP Address (EIP). The component provisions a st
 
 ## What Gets Created
 
-When you deploy an AliCloudEipAddress resource, OpenMCF provisions:
+When you deploy an AliCloudEipAddress resource, Planton provisions:
 
 - **EIP** -- an `alicloud_eip_address` resource in the specified region with configurable bandwidth, ISP, and metering settings
 
 ## Prerequisites
 
-- **Alibaba Cloud credentials** configured via environment variables or OpenMCF provider config
+- **Alibaba Cloud credentials** configured via environment variables or Planton provider config
 
 ## Quick Start
 
 Create a file `eip.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudEipAddress
 metadata:
   name: my-eip
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudEipAddress.my-eip
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudEipAddress.my-eip
 spec:
   region: cn-hangzhou
   addressName: my-nat-eip
@@ -44,7 +44,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f eip.yaml
+planton apply -f eip.yaml
 ```
 
 This allocates a 10 Mbps EIP using BGP multi-line and PayByTraffic metering.
@@ -67,14 +67,14 @@ This allocates a 10 Mbps EIP using BGP multi-line and PayByTraffic metering.
 | `internetChargeType` | `string` | `"PayByTraffic"` | Metering method. `PayByTraffic` bills per GB. `PayByBandwidth` bills for reserved bandwidth. Immutable after creation. |
 | `isp` | `string` | `"BGP"` | ISP line type. `BGP` (default), `BGP_PRO`, `ChinaTelecom`, `ChinaUnicom`, `ChinaMobile`, and L2/FinanceCloud/International variants. Immutable after creation. |
 | `resourceGroupId` | `string` | `""` | Resource group ID for organizational grouping. |
-| `tags` | `map<string, string>` | `{}` | Tags applied to the EIP. Merged with standard OpenMCF tags. |
+| `tags` | `map<string, string>` | `{}` | Tags applied to the EIP. Merged with standard Planton tags. |
 
 ## Examples
 
 ### Minimal EIP
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudEipAddress
 metadata:
   name: my-eip
@@ -87,15 +87,15 @@ spec:
 A named EIP intended for association with a NAT gateway. Uses default 5 Mbps bandwidth and PayByTraffic metering:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudEipAddress
 metadata:
   name: nat-eip
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AliCloudEipAddress.nat-eip
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AliCloudEipAddress.nat-eip
 spec:
   region: cn-shanghai
   addressName: prod-nat-eip
@@ -108,7 +108,7 @@ spec:
 ### High-Bandwidth Production EIP
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudEipAddress
 metadata:
   name: prod-lb-eip

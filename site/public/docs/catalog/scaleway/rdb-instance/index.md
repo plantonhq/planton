@@ -12,7 +12,7 @@ Deploys a Scaleway Managed Database instance with bundled logical databases, use
 
 ## What Gets Created
 
-When you deploy a ScalewayRdbInstance resource, OpenMCF provisions:
+When you deploy a ScalewayRdbInstance resource, Planton provisions:
 
 - **RDB Instance** — a `databases.Instance` resource providing a fully managed database engine (PostgreSQL or MySQL) with the specified node type, volume configuration, and admin user
 - **Private Network Endpoint** — created only when `privateNetworkId` is set, attaches the instance to a Private Network with IPAM-based IP assignment
@@ -23,7 +23,7 @@ When you deploy a ScalewayRdbInstance resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Scaleway credentials** configured via environment variables or OpenMCF provider config
+- **Scaleway credentials** configured via environment variables or Planton provider config
 - **A valid engine string** in the format `"{Engine}-{MajorVersion}"` (e.g., `"PostgreSQL-16"`, `"MySQL-8"`)
 - **A Private Network** in the target region if using private connectivity (can be created via a ScalewayPrivateNetwork resource)
 
@@ -32,15 +32,15 @@ When you deploy a ScalewayRdbInstance resource, OpenMCF provisions:
 Create a file `rdb-instance.yaml`:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayRdbInstance
 metadata:
   name: my-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayRdbInstance.my-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayRdbInstance.my-db
 spec:
   region: fr-par
   engine: PostgreSQL-16
@@ -52,7 +52,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f rdb-instance.yaml
+planton apply -f rdb-instance.yaml
 ```
 
 This creates a single-node PostgreSQL 16 instance with local SSD storage, automated backups enabled, and a public endpoint accessible to all IPs (no ACL rules configured).
@@ -103,15 +103,15 @@ This creates a single-node PostgreSQL 16 instance with local SSD storage, automa
 A minimal PostgreSQL instance for development with a single application database and user:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayRdbInstance
 metadata:
   name: dev-postgres
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayRdbInstance.dev-postgres
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayRdbInstance.dev-postgres
 spec:
   region: fr-par
   engine: PostgreSQL-16
@@ -133,15 +133,15 @@ spec:
 A production-grade HA PostgreSQL instance with Private Network connectivity, encryption, ACL rules, and tuned engine settings:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayRdbInstance
 metadata:
   name: prod-postgres
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.ScalewayRdbInstance.prod-postgres
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.ScalewayRdbInstance.prod-postgres
 spec:
   region: fr-par
   engine: PostgreSQL-16
@@ -184,18 +184,18 @@ spec:
 
 ### MySQL with Private Network Reference
 
-A MySQL instance referencing an OpenMCF-managed Private Network:
+A MySQL instance referencing an Planton-managed Private Network:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayRdbInstance
 metadata:
   name: mysql-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.ScalewayRdbInstance.mysql-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.ScalewayRdbInstance.mysql-db
 spec:
   region: nl-ams
   engine: MySQL-8

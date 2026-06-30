@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package dev.planton.provider.alicloud.alicloudnetworkloadbalancer.v1;
+
+// AliCloudNetworkLoadBalancerStackOutputs captures the outputs from deploying
+// an Alibaba Cloud Network Load Balancer with its server groups and
+// listeners.
+message AliCloudNetworkLoadBalancerStackOutputs {
+  // The NLB instance ID assigned by Alibaba Cloud (e.g., "nlb-xxxxx").
+  string load_balancer_id = 1;
+
+  // The DNS name automatically assigned to the NLB.
+  // For internet-facing NLBs, this resolves to the NLB's public address.
+  // For intranet NLBs, it resolves to the private VPC address.
+  // Use this as a CNAME target for custom domain DNS records.
+  string dns_name = 2;
+
+  // Map of server group names to their IDs.
+  // Keys are the names specified in spec.server_groups[].name.
+  // Values are the Alibaba Cloud server group IDs (e.g., "sgp-xxxxx").
+  // Useful for downstream components that need to attach backends or
+  // reference specific server groups.
+  map<string, string> server_group_ids = 3;
+}

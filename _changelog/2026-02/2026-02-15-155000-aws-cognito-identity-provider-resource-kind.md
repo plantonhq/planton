@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added AwsCognitoIdentityProvider (R12a) as a new AWS resource kind for managing external identity providers (Google, Facebook, Login with Amazon, Sign in with Apple, OIDC, SAML) federated into Amazon Cognito User Pools. This is the fifteenth new AWS resource kind in the cloud provider expansion project, and the first OpenMCF component to use a proto enum for provider-specific type safety and strongly typed oneof configuration messages.
+Added AwsCognitoIdentityProvider (R12a) as a new AWS resource kind for managing external identity providers (Google, Facebook, Login with Amazon, Sign in with Apple, OIDC, SAML) federated into Amazon Cognito User Pools. This is the fifteenth new AWS resource kind in the cloud provider expansion project, and the first Planton component to use a proto enum for provider-specific type safety and strongly typed oneof configuration messages.
 
 ## Problem Statement / Motivation
 
@@ -14,7 +14,7 @@ The AwsCognitoUserPool (R12) was completed earlier in this session, but identity
 
 ### Pain Points
 
-- No way to configure social login (Google, Facebook) or enterprise SSO (OIDC, SAML) through OpenMCF
+- No way to configure social login (Google, Facebook) or enterprise SSO (OIDC, SAML) through Planton
 - The Terraform `provider_details` map is untyped -- keys vary by provider type with no compile-time validation
 - SAML keys use PascalCase (MetadataFile) while OAuth keys use snake_case (client_id), creating confusion
 - No guidance on which fields are required vs optional for each provider type
@@ -73,7 +73,7 @@ The Pulumi module's `buildProviderDetails()` function converts each typed messag
 
 ## Impact
 
-- **Users**: Can now configure social login and enterprise SSO through OpenMCF with type-safe manifests
+- **Users**: Can now configure social login and enterprise SSO through Planton with type-safe manifests
 - **Infra charts**: Identity providers can be composed with User Pools using StringValueOrRef for the user_pool_id
 - **Pattern**: First component to use a proto enum for provider-specific values, establishing a precedent for future typed-config patterns
 

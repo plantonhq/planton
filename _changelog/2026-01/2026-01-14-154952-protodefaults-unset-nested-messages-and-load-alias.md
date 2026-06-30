@@ -79,11 +79,11 @@ Added `Aliases: []string{"load"}` to the `load-manifest` command for quicker CLI
 
 ```bash
 # Before: only this worked
-openmcf load-manifest manifest.yaml
+planton load-manifest manifest.yaml
 
 # After: both work
-openmcf load-manifest manifest.yaml
-openmcf load manifest.yaml
+planton load-manifest manifest.yaml
+planton load manifest.yaml
 ```
 
 ## Implementation Details
@@ -149,14 +149,14 @@ Added new test function `TestApplyDefaults_UnsetNestedMessageWithDefaults` with 
 |------|--------|
 | `internal/manifest/protodefaults/applier.go` | Added `hasFieldsWithDefaults()` helper and modified message processing |
 | `internal/manifest/protodefaults/applier_test.go` | Added tests for unset nested message initialization |
-| `cmd/openmcf/root/load_manifest.go` | Added "load" alias |
+| `cmd/planton/root/load_manifest.go` | Added "load" alias |
 
 ## Benefits
 
 ### For CLI Users
 
 - **Cleaner manifests**: No need to include empty nested objects to trigger defaults
-- **Shorter command**: `openmcf load` instead of `openmcf load-manifest`
+- **Shorter command**: `planton load` instead of `planton load-manifest`
 - **Consistent behavior**: All fields with defaults are populated, regardless of nesting depth
 
 ### For Developers

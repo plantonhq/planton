@@ -3,7 +3,7 @@ load("@rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "manifestprotobuf",
     srcs = ["field_setter.go"],
-    importpath = "github.com/plantonhq/openmcf/internal/manifest/manifestprotobuf",
+    importpath = "github.com/plantonhq/planton/internal/manifest/manifestprotobuf",
     visibility = ["//:__subpackages__"],
     deps = [
         "@com_github_iancoleman_strcase//:strcase",
@@ -18,7 +18,7 @@ go_test(
     srcs = ["field_setter_test.go"],
     embed = [":manifestprotobuf"],
     deps = [
-        "//apis/org/openmcf/provider/kubernetes/kubernetesredis/v1:kubernetesredis",
+        "//apis/dev/planton/provider/kubernetes/kubernetesredis/v1:kubernetesredis",
         "@com_github_stretchr_testify//assert",
         "@org_golang_google_protobuf//proto",
     ],

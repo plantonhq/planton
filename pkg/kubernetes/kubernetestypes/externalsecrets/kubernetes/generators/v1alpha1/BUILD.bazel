@@ -30,7 +30,7 @@ go_library(
         "webhookList.go",
         "webhookPatch.go",
     ],
-    importpath = "github.com/plantonhq/openmcf/pkg/kubernetes/kubernetestypes/externalsecrets/kubernetes/generators/v1alpha1",
+    importpath = "github.com/plantonhq/planton/pkg/kubernetes/kubernetestypes/externalsecrets/kubernetes/generators/v1alpha1",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_blang_semver//:semver",

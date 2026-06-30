@@ -1,0 +1,21 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsSnsTopic
+metadata:
+  name: test-topic
+  org: test-org
+  env: dev
+  id: test-topic-dev
+  labels:
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: test-org
+    pulumi.planton.dev/project: test-project
+    pulumi.planton.dev/stack.name: dev.AwsSnsTopic.test-topic
+spec:
+  region: us-west-2
+  signatureVersion: 2
+  subscriptions:
+    - name: test-queue
+      protocol: sqs
+      endpoint:
+        value: arn:aws:sqs:us-east-1:123456789012:test-queue
+      rawMessageDelivery: true

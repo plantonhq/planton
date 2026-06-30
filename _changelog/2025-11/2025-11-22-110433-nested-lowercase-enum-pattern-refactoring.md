@@ -6,7 +6,7 @@
 
 ## Summary
 
-Refactored all enums in the KubernetesNamespace component to use nested enums with lowercase values, significantly improving user experience with cleaner YAML manifests. Updated the forge system and specification guidelines to enforce this pattern for all future components, establishing a consistent enum design standard across OpenMCF.
+Refactored all enums in the KubernetesNamespace component to use nested enums with lowercase values, significantly improving user experience with cleaner YAML manifests. Updated the forge system and specification guidelines to enforce this pattern for all future components, establishing a consistent enum design standard across Planton.
 
 ## Problem Statement / Motivation
 
@@ -84,7 +84,7 @@ service_mesh_config:
 
 ### Proto Schema Changes
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesnamespace/v1/spec.proto`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesnamespace/v1/spec.proto`
 
 Changed from:
 ```proto
@@ -120,7 +120,7 @@ To:
 
 ### Pulumi Module Updates
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesnamespace/v1/iac/pulumi/module/locals.go`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesnamespace/v1/iac/pulumi/module/locals.go`
 
 Updated switch statements across the module:
 
@@ -142,7 +142,7 @@ case kubernetesnamespacev1.KubernetesNamespaceResourceProfile_small:
 
 ### Terraform Module Updates
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesnamespace/v1/iac/tf/locals.tf`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesnamespace/v1/iac/tf/locals.tf`
 
 Updated map lookups to use lowercase keys:
 
@@ -172,7 +172,7 @@ service_mesh_type = var.spec.service_mesh_config.mesh_type
 
 ### Test Suite Updates
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesnamespace/v1/spec_test.go`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesnamespace/v1/spec_test.go`
 
 Updated all 24 test cases with new enum references:
 
@@ -269,7 +269,7 @@ All future components will automatically follow this pattern thanks to:
 
 **Future**: All component users
 - Every new component will have cleaner enum values
-- Consistent pattern across all of OpenMCF
+- Consistent pattern across all of Planton
 
 ### Components Affected
 
@@ -354,7 +354,7 @@ make test    # ✅ 24/24 passing
 
 Test manifest deploys successfully:
 ```bash
-cd apis/org/openmcf/provider/kubernetes/kubernetesnamespace/v1/iac/pulumi
+cd apis/dev/planton/provider/kubernetes/kubernetesnamespace/v1/iac/pulumi
 make up manifest=../hack/manifest.yaml
 # ✅ Namespace created with lowercase enum values
 ```
@@ -381,7 +381,7 @@ sed -i '' 's/POD_SECURITY_STANDARD_RESTRICTED/restricted/g' *.yaml
 
 ### For Component Developers
 
-When creating new components with `@forge-openmcf-component`:
+When creating new components with `@forge-planton-component`:
 1. Nest enums inside their containing messages
 2. Use lowercase values (except `{enum_name}_unspecified`)
 3. Refer to `.cursor/info/spec_proto.md` for examples
@@ -459,7 +459,7 @@ Consider refactoring enums in other components:
 
 Could create a CLI tool to migrate existing manifests:
 ```bash
-openmcf migrate enums --manifest old.yaml --output new.yaml
+planton migrate enums --manifest old.yaml --output new.yaml
 ```
 
 ### Linter Rule

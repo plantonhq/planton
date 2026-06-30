@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azurekeyvault.v1;
+
+import "dev/planton/provider/azure/azurekeyvault/v1/api.proto";
+import "dev/planton/provider/azure/provider.proto";
+
+//azure-key-vault stack-input
+message AzureKeyVaultStackInput {
+  //target cloud-resource
+  AzureKeyVault target = 1;
+  //provider-config
+  dev.planton.provider.azure.AzureProviderConfig provider_config = 2;
+}

@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocicontainerinstance.v1;
+
+import "dev/planton/provider/oci/ocicontainerinstance/v1/api.proto";
+import "dev/planton/provider/oci/provider.proto";
+
+// OciContainerInstanceStackInput is the input to the IaC modules
+// (Pulumi / Terraform) that deploy an OciContainerInstance resource.
+message OciContainerInstanceStackInput {
+  // target cloud-resource
+  OciContainerInstance target = 1;
+  // provider-config
+  dev.planton.provider.oci.OciProviderConfig provider_config = 2;
+}

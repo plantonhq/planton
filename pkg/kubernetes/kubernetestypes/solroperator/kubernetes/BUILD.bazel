@@ -7,7 +7,7 @@ go_library(
         "init.go",
         "provider.go",
     ],
-    importpath = "github.com/plantonhq/openmcf/pkg/kubernetes/kubernetestypes/solroperator/kubernetes",
+    importpath = "github.com/plantonhq/planton/pkg/kubernetes/kubernetestypes/solroperator/kubernetes",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_blang_semver//:semver",

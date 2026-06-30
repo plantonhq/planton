@@ -1,0 +1,225 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awstransitgateway.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// AwsTransitGatewaySpec defines the desired configuration for an AWS Transit
+// Gateway -- a regional networking hub that interconnects VPCs, VPN connections,
+// and Direct Connect gateways through a central point.
+//
+// Transit Gateway replaces complex VPC peering meshes with a hub-and-spoke
+// topology. Attach multiple VPCs to a single TGW and they can communicate
+// through its built-in route tables without individual peering connections.
+//
+// Key characteristics:
+// - Regional resource: all attached VPCs must be in the same region
+// - Default full-mesh routing: auto-association and auto-propagation give
+//   every attachment reachability to every other attachment out of the box
+// - BGP ASN: configurable for hybrid connectivity (VPN, Direct Connect)
+// - Static IPs: TGW CIDR blocks enable advanced features (TGW Connect)
+//
+// This component bundles VPC attachments inline because a Transit Gateway
+// without at least one attachment is functionally useless. Each attachment
+// is a separate underlying AWS resource, so modifying one does not affect
+// others. Advanced scenarios (cross-region peering, custom route tables,
+// static routes) are deliberately excluded from v1 to keep the abstraction
+// clean and focused on the 80% use case.
+//
+// Credentials, region, and deployment workflow live outside this spec in
+// stack inputs.
+message AwsTransitGatewaySpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  // ---------------------------------------------------------------------------
+  // Core configuration
+  // ---------------------------------------------------------------------------
+
+  // Human-readable description for the Transit Gateway. Appears in the AWS
+  // console and CLI output.
+  string description = 2;
+
+  // Private Autonomous System Number (ASN) for the Amazon side of BGP
+  // sessions. Used when connecting VPNs or Direct Connect gateways.
+  //
+  // Valid ranges: 64512-65534 (16-bit private) or 4200000000-4294967294
+  // (32-bit private). Default: 64512.
+  int64 amazon_side_asn = 3 [(dev.planton.shared.options.recommended_default) = "64512"];
+
+  // ---------------------------------------------------------------------------
+  // Routing behavior
+  // ---------------------------------------------------------------------------
+
+  // Automatically associate new attachments with the default route table.
+  // When enabled (default), every new VPC attachment is associated with the
+  // TGW's default route table without manual intervention.
+  //
+  // Disable this for hub-and-spoke topologies where you manage route table
+  // associations explicitly via separate resources.
+  bool default_route_table_association = 4 [(dev.planton.shared.options.recommended_default) = "true"];
+
+  // Automatically propagate routes from new attachments to the default route
+  // table. When enabled (default), every attached VPC's CIDR blocks are
+  // propagated, creating a full-mesh connectivity pattern.
+  //
+  // Disable this for isolated routing domains where not all VPCs should
+  // reach each other.
+  bool default_route_table_propagation = 5 [(dev.planton.shared.options.recommended_default) = "true"];
+
+  // ---------------------------------------------------------------------------
+  // Feature toggles
+  // ---------------------------------------------------------------------------
+
+  // Enable DNS resolution for instances in attached VPCs. When enabled,
+  // queries to public DNS hostnames of instances in other attached VPCs
+  // resolve to their private IP addresses.
+  bool dns_support = 6 [(dev.planton.shared.options.recommended_default) = "true"];
+
+  // Enable Equal Cost Multi-Path (ECMP) routing for VPN connections. When
+  // enabled and multiple VPN tunnels advertise the same routes, traffic is
+  // distributed across all tunnels for higher aggregate throughput.
+  bool vpn_ecmp_support = 7 [(dev.planton.shared.options.recommended_default) = "true"];
+
+  // Automatically accept cross-account attachment requests shared via AWS
+  // Resource Access Manager (RAM). When disabled (default), shared
+  // attachments require manual acceptance.
+  bool auto_accept_shared_attachments = 8;
+
+  // Enable cross-VPC security group referencing. When enabled, security
+  // group rules in one VPC can reference security groups in another VPC
+  // connected through this Transit Gateway, simplifying firewall management
+  // across VPCs.
+  bool security_group_referencing_support = 9;
+
+  // Enable multicast traffic routing through the Transit Gateway. This is
+  // a ForceNew field in the underlying provider -- changing it requires
+  // replacing the entire Transit Gateway. Only enable if you have a clear
+  // multicast use case (e.g., financial market data, media streaming).
+  bool multicast_support = 10;
+
+  // ---------------------------------------------------------------------------
+  // CIDR blocks
+  // ---------------------------------------------------------------------------
+
+  // CIDR blocks to associate with the Transit Gateway. Used for advanced
+  // features like TGW Connect (SD-WAN/third-party appliance integration)
+  // and GRE-based attachments.
+  //
+  // Most deployments do not need TGW CIDR blocks. Leave empty unless you
+  // are using TGW Connect or need the TGW itself to have routable addresses.
+  //
+  // Maximum 5 blocks. Supports both IPv4 (/24 or larger) and IPv6 (/64 or
+  // larger).
+  repeated string transit_gateway_cidr_blocks = 11;
+
+  // ---------------------------------------------------------------------------
+  // VPC attachments
+  // ---------------------------------------------------------------------------
+
+  // VPC attachments that connect VPCs to this Transit Gateway. At least one
+  // attachment is required -- a Transit Gateway without attachments serves
+  // no purpose.
+  //
+  // Each attachment corresponds to one `aws_ec2_transit_gateway_vpc_attachment`
+  // resource. Modifications to one attachment do not affect others.
+  repeated AwsTransitGatewayVpcAttachment vpc_attachments = 12 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).repeated.min_items = 1
+  ];
+
+  // ---------------------------------------------------------------------------
+  // Spec-level CEL validations
+  // ---------------------------------------------------------------------------
+
+  // TGW CIDR blocks: maximum 5 (AWS hard limit).
+  option (buf.validate.message).cel = {
+    id: "transit_gateway_cidr_blocks_max_5"
+    message: "transit_gateway_cidr_blocks supports a maximum of 5 CIDR blocks"
+    expression: "size(this.transit_gateway_cidr_blocks) <= 5"
+  };
+
+  // amazon_side_asn range when set (non-zero).
+  option (buf.validate.message).cel = {
+    id: "amazon_side_asn_valid_range"
+    message: "amazon_side_asn must be in range 64512-65534 (16-bit) or 4200000000-4294967294 (32-bit) when set"
+    expression: "this.amazon_side_asn == 0 || (this.amazon_side_asn >= 64512 && this.amazon_side_asn <= 65534) || (this.amazon_side_asn >= 4200000000 && this.amazon_side_asn <= 4294967294)"
+  };
+}
+
+// AwsTransitGatewayVpcAttachment defines a VPC attachment to the Transit
+// Gateway. Each attachment connects one VPC to the TGW through one or more
+// subnets (one per Availability Zone recommended).
+//
+// Underlying resource: `aws_ec2_transit_gateway_vpc_attachment`. Both
+// `vpc_id` and the TGW ID are ForceNew -- changing the VPC requires
+// replacing the attachment. Subnets can be updated in place.
+message AwsTransitGatewayVpcAttachment {
+  // User-assigned name for this attachment. Used as the key in the
+  // vpc_attachment_ids output map, allowing downstream resources to
+  // reference specific attachment IDs via valueFrom.
+  //
+  // Must be unique within the TGW's attachments. Lowercase alphanumeric
+  // and hyphens only, starting with a letter (max 63 characters).
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "attachment_name_format"
+      message: "name must start with a lowercase letter and contain only lowercase letters, numbers, and hyphens (max 63 chars)"
+      expression: "this.matches('^[a-z][a-z0-9-]{0,62}$')"
+    }
+  ];
+
+  // VPC ID to attach to the Transit Gateway. References an AwsVpc resource's
+  // vpc_id output. This field is ForceNew: changing it replaces the
+  // attachment.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef vpc_id = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsVpc,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
+  ];
+
+  // Subnet IDs in the VPC to use for the attachment. The TGW creates an
+  // elastic network interface in each specified subnet. Provide one subnet
+  // per Availability Zone for high availability.
+  //
+  // At least one subnet is required. All subnets must belong to the VPC
+  // specified in vpc_id.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef subnet_ids = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).repeated.min_items = 1,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  ];
+
+  // Enable DNS resolution for this attachment. When enabled, DNS queries
+  // from the attached VPC to public hostnames of instances in other
+  // attached VPCs resolve to private IPs. Overrides the TGW-level setting.
+  bool dns_support = 4 [(dev.planton.shared.options.recommended_default) = "true"];
+
+  // Enable IPv6 support for this attachment. When enabled, the TGW routes
+  // IPv6 traffic between this VPC and other attached VPCs/connections.
+  bool ipv6_support = 5;
+
+  // Enable appliance mode for this attachment. Required when routing
+  // traffic through a virtual appliance (firewall, IDS/IPS) hosted in
+  // the attached VPC. Appliance mode ensures return traffic is routed
+  // to the same Availability Zone as the original flow, maintaining
+  // symmetric routing for stateful inspection.
+  //
+  // Only enable for shared-services VPCs running inspection appliances.
+  bool appliance_mode_support = 6;
+
+  // Associate this attachment with the TGW's default route table. When
+  // true (default), the attachment is automatically associated. Set to
+  // false for custom route table management.
+  bool default_route_table_association = 7 [(dev.planton.shared.options.recommended_default) = "true"];
+
+  // Propagate this attachment's routes to the TGW's default route table.
+  // When true (default), the VPC's CIDR blocks are automatically
+  // propagated. Set to false for isolated routing.
+  bool default_route_table_propagation = 8 [(dev.planton.shared.options.recommended_default) = "true"];
+}

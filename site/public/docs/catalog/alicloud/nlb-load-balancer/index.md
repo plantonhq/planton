@@ -12,7 +12,7 @@ Deploys an Alibaba Cloud Network Load Balancer (NLB) with bundled server groups 
 
 ## What Gets Created
 
-When you deploy an AliCloudNetworkLoadBalancer resource, OpenMCF provisions:
+When you deploy an AliCloudNetworkLoadBalancer resource, Planton provisions:
 
 - **NLB Load Balancer** -- an `alicloud_nlb_load_balancer` spanning multiple availability zones, with optional per-zone EIP binding for stable public addresses
 - **Server Groups** -- one `alicloud_nlb_server_group` per entry in `serverGroups`, each with health check, scheduling algorithm, and optional connection draining
@@ -22,7 +22,7 @@ Server groups are created empty. Backend membership (ECS instances, ENI IPs, etc
 
 ## Prerequisites
 
-- **Alibaba Cloud credentials** configured via environment variables or OpenMCF provider config
+- **Alibaba Cloud credentials** configured via environment variables or Planton provider config
 - **An Alibaba Cloud VPC** -- the NLB must belong to a VPC (create one with AliCloudVpc)
 - **At least 2 VSwitches in different availability zones** -- NLB requires multi-AZ deployment (create with AliCloudVswitch)
 - **Server certificates** (for TCPSSL listeners) -- obtain from Alibaba Cloud Certificate Management Service (CAS)
@@ -33,7 +33,7 @@ Server groups are created empty. Backend membership (ECS instances, ENI IPs, etc
 Create a file `nlb.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudNetworkLoadBalancer
 metadata:
   name: my-nlb
@@ -61,7 +61,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f nlb.yaml
+planton apply -f nlb.yaml
 ```
 
 This creates an internet-facing NLB with a TCP listener on port 80 across two availability zones.
@@ -144,7 +144,7 @@ This creates an internet-facing NLB with a TCP listener on port 80 across two av
 The simplest NLB: one server group, one TCP listener, two availability zones.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudNetworkLoadBalancer
 metadata:
   name: dev-nlb
@@ -174,7 +174,7 @@ spec:
 Production NLB with TLS termination, client certificate verification, fixed public IPs per zone, and connection draining for graceful deployments.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudNetworkLoadBalancer
 metadata:
   name: prod-nlb
@@ -237,7 +237,7 @@ spec:
 An internal NLB for service-to-service traffic with source-IP consistent hashing for session affinity, connection draining for graceful deployments, and Proxy Protocol for real client IP visibility.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudNetworkLoadBalancer
 metadata:
   name: internal-nlb

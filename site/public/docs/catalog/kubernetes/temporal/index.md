@@ -12,7 +12,7 @@ Deploys a Temporal server cluster on Kubernetes using the official Temporal Helm
 
 ## What Gets Created
 
-When you deploy a KubernetesTemporal resource, OpenMCF provisions:
+When you deploy a KubernetesTemporal resource, Planton provisions:
 
 - **Namespace** — created only when `createNamespace` is `true`
 - **Temporal Helm Release** — installs the Temporal server (frontend, history, matching, worker services) from the official `go.temporal.io/helm-charts` repository with configurable chart version, database backend, dynamic config, history shards, and per-service replica/resource settings
@@ -28,7 +28,7 @@ When you deploy a KubernetesTemporal resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
 - **An external database** accessible from the cluster when using PostgreSQL or MySQL backends without embedded mode (Cassandra can run in-cluster)
 - **Istio** with Gateway API support installed if enabling frontend HTTP or web UI ingress
@@ -40,15 +40,15 @@ When you deploy a KubernetesTemporal resource, OpenMCF provisions:
 Create a file `temporal.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesTemporal
 metadata:
   name: my-temporal
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesTemporal.my-temporal
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesTemporal.my-temporal
 spec:
   namespace: temporal
   createNamespace: true
@@ -59,7 +59,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f temporal.yaml
+planton apply -f temporal.yaml
 ```
 
 This creates a single-replica Temporal cluster backed by an in-cluster Cassandra node, with the Web UI enabled and default schema auto-setup.
@@ -136,15 +136,15 @@ This creates a single-replica Temporal cluster backed by an in-cluster Cassandra
 A lightweight single-node Temporal instance backed by embedded Cassandra for local development and testing:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesTemporal
 metadata:
   name: dev-temporal
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesTemporal.dev-temporal
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesTemporal.dev-temporal
 spec:
   namespace: temporal-dev
   createNamespace: true
@@ -158,15 +158,15 @@ spec:
 A production-grade Temporal cluster using an external PostgreSQL database, increased history limits for large workflows, and tuned service replicas:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesTemporal
 metadata:
   name: prod-temporal
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesTemporal.prod-temporal
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesTemporal.prod-temporal
 spec:
   namespace: temporal
   database:
@@ -225,15 +225,15 @@ spec:
 Temporal exposed externally via gRPC LoadBalancer and Istio Gateway API for both the frontend HTTP API and Web UI, with monitoring and external Elasticsearch for advanced visibility:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesTemporal
 metadata:
   name: platform-temporal
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesTemporal.platform-temporal
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesTemporal.platform-temporal
 spec:
   namespace: temporal
   database:
@@ -290,18 +290,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed namespace instead of hardcoding the name:
+Reference an Planton-managed namespace instead of hardcoding the name:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesTemporal
 metadata:
   name: my-temporal
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesTemporal.my-temporal
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesTemporal.my-temporal
 spec:
   namespace:
     valueFrom:

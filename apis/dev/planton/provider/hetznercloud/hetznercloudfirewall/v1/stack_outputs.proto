@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package dev.planton.provider.hetznercloud.hetznercloudfirewall.v1;
+
+// HetznerCloudFirewallStackOutputs captures the resulting firewall identifiers
+// after provisioning.
+message HetznerCloudFirewallStackOutputs {
+  // The Hetzner Cloud numeric ID of the created firewall (as a string).
+  // Referenced by HetznerCloudServer.firewall_ids via StringValueOrRef.
+  string firewall_id = 1;
+}

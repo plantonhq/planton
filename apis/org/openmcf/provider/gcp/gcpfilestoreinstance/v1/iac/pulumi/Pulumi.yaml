@@ -1,6 +1,0 @@
-name: gcp-filestore-instance
-runtime:
-  name: go
-  options:
-    binary: ./pulumi
-description: OpenMCF GcpFilestoreInstance Pulumi module

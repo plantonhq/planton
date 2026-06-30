@@ -31,7 +31,7 @@ Use this preset when your organization has registered a Bring-Your-Own-IP (BYOIP
 
 ## Prerequisites
 
-- A BYOIP address range registered with AWS (done outside OpenMCF)
+- A BYOIP address range registered with AWS (done outside Planton)
 - The pool ID from the registered range (format: `ipv4pool-ec2-xxx`)
 
 ## Customization

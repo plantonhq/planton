@@ -12,7 +12,7 @@ Deploys a Locust distributed load testing cluster on Kubernetes using the Delive
 
 ## What Gets Created
 
-When you deploy a KubernetesLocust resource, OpenMCF provisions:
+When you deploy a KubernetesLocust resource, Planton provisions:
 
 - **Kubernetes Namespace** — created if `createNamespace` is `true`
 - **Main Script ConfigMap** — a ConfigMap containing your `main.py` Locust test file
@@ -39,15 +39,15 @@ When you deploy a KubernetesLocust resource, OpenMCF provisions:
 Create a file `locust.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesLocust
 metadata:
   name: my-locust
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesLocust.my-locust
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesLocust.my-locust
 spec:
   namespace:
     value: locust-dev
@@ -69,7 +69,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f locust.yaml
+planton apply -f locust.yaml
 ```
 
 This creates a Locust cluster with one master and one worker using default resources (1 CPU / 1Gi memory limit, 50m CPU / 100Mi memory request each) in the `locust-dev` namespace.
@@ -112,15 +112,15 @@ This creates a Locust cluster with one master and one worker using default resou
 Scale workers up and allocate more resources for higher throughput testing:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesLocust
 metadata:
   name: load-test
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesLocust.load-test
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesLocust.load-test
 spec:
   namespace:
     value: load-testing
@@ -166,15 +166,15 @@ spec:
 Supply helper modules and install additional Python packages for complex test scenarios:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesLocust
 metadata:
   name: advanced-test
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.KubernetesLocust.advanced-test
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.KubernetesLocust.advanced-test
 spec:
   namespace:
     value: perf-testing
@@ -222,15 +222,15 @@ spec:
 Expose the Locust web UI over HTTPS with automatic TLS and HTTP redirect:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesLocust
 metadata:
   name: prod-loadtest
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesLocust.prod-loadtest
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesLocust.prod-loadtest
 spec:
   namespace:
     value: loadtest-prod

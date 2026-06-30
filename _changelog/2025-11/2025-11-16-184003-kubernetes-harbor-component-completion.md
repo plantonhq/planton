@@ -323,7 +323,7 @@ Random Seed: 1763297058
 Will run 36 of 36 specs
 SUCCESS! -- 36 Passed | 0 Failed | 0 Pending | 0 Skipped
 PASS
-ok  	github.com/plantonhq/openmcf/apis/.../kubernetesharbor/v1	0.426s
+ok  	github.com/plantonhq/planton/apis/.../kubernetesharbor/v1	0.426s
 ```
 
 ## Impact

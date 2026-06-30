@@ -12,13 +12,13 @@ Registers an SSH public key in a Hetzner Cloud account for injection into server
 
 ## What Gets Created
 
-When you deploy a HetznerCloudSshKey resource, OpenMCF provisions:
+When you deploy a HetznerCloudSshKey resource, Planton provisions:
 
 - **SSH Key** — an `hcloud_ssh_key` resource containing the public key material, a display name derived from `metadata.name`, and standard labels computed from resource metadata. The key is registered at the account level and referenced by servers via its numeric ID.
 
 ## Prerequisites
 
-- **Hetzner Cloud API token** configured via environment variable (`HCLOUD_TOKEN`) or OpenMCF provider config
+- **Hetzner Cloud API token** configured via environment variable (`HCLOUD_TOKEN`) or Planton provider config
 - **An SSH key pair** generated locally (e.g., `ssh-keygen -t ed25519`). Only the public key is needed.
 
 ## Quick Start
@@ -26,15 +26,15 @@ When you deploy a HetznerCloudSshKey resource, OpenMCF provisions:
 Create a file `ssh-key.yaml`:
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudSshKey
 metadata:
   name: deploy-key
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.HetznerCloudSshKey.deploy-key
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.HetznerCloudSshKey.deploy-key
 spec:
   publicKey: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIExampleKeyData deploy@ci"
 ```
@@ -42,7 +42,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f ssh-key.yaml
+planton apply -f ssh-key.yaml
 ```
 
 This registers an ED25519 SSH public key named `deploy-key` in your Hetzner Cloud account.
@@ -66,15 +66,15 @@ This component has no optional spec fields. The SSH key name is derived from `me
 The simplest deployment: a single ED25519 key with no organizational context.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudSshKey
 metadata:
   name: my-key
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.HetznerCloudSshKey.my-key
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.HetznerCloudSshKey.my-key
 spec:
   publicKey: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIExampleKeyData user@host"
 ```
@@ -84,17 +84,17 @@ spec:
 A key scoped to a specific organization and environment. The metadata drives label generation for resource tracking.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudSshKey
 metadata:
   name: prod-deploy-key
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: infrastructure
-    pulumi.openmcf.org/stack.name: production.HetznerCloudSshKey.prod-deploy-key
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: infrastructure
+    pulumi.planton.dev/stack.name: production.HetznerCloudSshKey.prod-deploy-key
     team: platform
 spec:
   publicKey: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIProdDeployKeyData deploy@acme-ci"
@@ -105,17 +105,17 @@ spec:
 An SSH key referenced by a HetznerCloudServer using `valueFrom`. The server receives the key's numeric ID from the SSH key's stack outputs, establishing a dependency edge in the deployment DAG.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudSshKey
 metadata:
   name: web-key
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: infrastructure
-    pulumi.openmcf.org/stack.name: production.HetznerCloudSshKey.web-key
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: infrastructure
+    pulumi.planton.dev/stack.name: production.HetznerCloudSshKey.web-key
 spec:
   publicKey: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIWebKeyData web-deploy@acme"
 ```
@@ -123,17 +123,17 @@ spec:
 The server references this key:
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudServer
 metadata:
   name: web-01
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: infrastructure
-    pulumi.openmcf.org/stack.name: production.HetznerCloudServer.web-01
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: infrastructure
+    pulumi.planton.dev/stack.name: production.HetznerCloudServer.web-01
 spec:
   serverType: cx22
   image: ubuntu-24.04

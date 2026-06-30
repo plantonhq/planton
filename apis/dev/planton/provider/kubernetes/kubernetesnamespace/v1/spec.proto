@@ -1,0 +1,318 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesnamespace.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/target_cluster.proto";
+
+/**
+ * **KubernetesNamespaceSpec** defines the configuration for creating and managing a Kubernetes namespace.
+ * This spec implements a "Namespace-as-a-Service" pattern, abstracting the complexity of namespace
+ * configuration, resource quotas, network policies, and access control into a batteries-included,
+ * production-ready primitive.
+ *
+ * Based on extensive research into namespace deployment patterns, this spec focuses on the 80/20 rule:
+ * exposing the 20% of configuration options that deliver 80% of the value while maintaining
+ * flexibility for advanced use cases.
+ */
+message KubernetesNamespaceSpec {
+  // The Kubernetes cluster in which the namespace should be created
+  dev.planton.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  /**
+   * **KubernetesNamespacePodSecurityStandard** defines Pod Security Standards enforcement.
+   * These are Kubernetes-native policies that enforce security best practices.
+   */
+  enum KubernetesNamespacePodSecurityStandard {
+    // No enforcement (permissive)
+    pod_security_standard_unspecified = 0;
+
+    // Privileged: Unrestricted policy, allows known privilege escalations.
+    // Use only for system-level workloads (monitoring, logging, CNI).
+    privileged = 1;
+
+    // Baseline: Minimally restrictive, prevents known privilege escalations.
+    // Suitable for most applications that don't need special permissions.
+    baseline = 2;
+
+    // Restricted: Heavily restricted, follows pod hardening best practices.
+    // Use for security-sensitive workloads. May require significant configuration.
+    restricted = 3;
+  }
+
+  /**
+   * The unique name of the namespace.
+   * This will be used as the Kubernetes namespace metadata.name.
+   * Must be a valid DNS label (lowercase alphanumeric and hyphens).
+   */
+  string name = 2 [
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 63,
+    (buf.validate.field).cel = {
+      id: "name.dns_label"
+      message: "Name must be a valid DNS label (lowercase alphanumeric and hyphens, no leading/trailing hyphens)"
+      expression: "this.matches('^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$')"
+    }
+  ];
+
+  /**
+   * Additional labels to be applied to the namespace.
+   * These are merged with standard labels (environment, team, cost-center) for
+   * cost allocation, monitoring, and governance.
+   */
+  map<string, string> labels = 3;
+
+  /**
+   * Additional annotations to be applied to the namespace.
+   * Common use cases:
+   * - linkerd.io/inject: "enabled" for service mesh injection
+   * - janitor/ttl: "24h" for ephemeral namespace cleanup
+   * - scheduler.alpha.kubernetes.io/node-selector: for node affinity
+   */
+  map<string, string> annotations = 4;
+
+  /**
+   * Resource allocation profile for the namespace.
+   * This abstracts ResourceQuota and LimitRange configuration into T-shirt sizes
+   * or allows custom specifications for advanced users.
+   */
+  KubernetesNamespaceResourceProfile resource_profile = 5;
+
+  /**
+   * Network isolation and security configuration.
+   * Controls ingress/egress network policies to enforce zero-trust networking.
+   */
+  KubernetesNamespaceNetworkConfig network_config = 6;
+
+  /**
+   * Service mesh integration configuration.
+   * Enables automatic sidecar injection and mesh-specific features.
+   */
+  KubernetesNamespaceServiceMeshConfig service_mesh_config = 7;
+
+  /**
+   * Pod security standards enforcement level.
+   * Defines the security posture for pods running in the namespace.
+   */
+  KubernetesNamespacePodSecurityStandard pod_security_standard = 8 [(buf.validate.field).enum.defined_only = true];
+
+  // Message-level validations
+  option (buf.validate.message).cel = {
+    id: "service_mesh_requires_mesh_type"
+    message: "mesh_type must be set when service mesh is enabled"
+    expression: "!this.service_mesh_config.enabled || this.service_mesh_config.mesh_type != 0"
+  };
+}
+
+/**
+ * **KubernetesNamespaceResourceProfile** defines resource limits and quotas for the namespace.
+ * This abstracts the complexity of ResourceQuota and LimitRange into intuitive profiles.
+ */
+message KubernetesNamespaceResourceProfile {
+  /**
+   * **KubernetesNamespaceBuiltInProfile** provides pre-configured resource profiles.
+   * These implement best practices for CPU, memory, and object count quotas.
+   */
+  enum KubernetesNamespaceBuiltInProfile {
+    // Unspecified profile. System will apply a default minimal profile.
+    built_in_profile_unspecified = 0;
+
+    // Small profile for development and testing.
+    // CPU: 2 cores request / 4 cores limit
+    // Memory: 4Gi request / 8Gi limit
+    // Pods: 20, Services: 10, ConfigMaps: 50, Secrets: 50
+    small = 1;
+
+    // Medium profile for staging and small production workloads.
+    // CPU: 4 cores request / 8 cores limit
+    // Memory: 8Gi request / 16Gi limit
+    // Pods: 50, Services: 20, ConfigMaps: 100, Secrets: 100
+    medium = 2;
+
+    // Large profile for production workloads.
+    // CPU: 8 cores request / 16 cores limit
+    // Memory: 16Gi request / 32Gi limit
+    // Pods: 100, Services: 40, ConfigMaps: 200, Secrets: 200
+    large = 3;
+
+    // Extra large profile for high-scale production workloads.
+    // CPU: 16 cores request / 32 cores limit
+    // Memory: 32Gi request / 64Gi limit
+    // Pods: 200, Services: 80, ConfigMaps: 400, Secrets: 400
+    xlarge = 4;
+  }
+
+  oneof profile_config {
+    // Pre-defined T-shirt size profiles (small, medium, large, xlarge).
+    // These provide opinionated defaults for different namespace sizes.
+    KubernetesNamespaceBuiltInProfile preset = 1 [(buf.validate.field).enum.defined_only = true];
+
+    // Custom resource limits for advanced users who need precise control.
+    KubernetesNamespaceCustomQuotas custom = 2;
+  }
+}
+
+/**
+ * **KubernetesNamespaceCustomQuotas** allows explicit specification of resource limits.
+ * This is for advanced users who need precise control over quotas.
+ */
+message KubernetesNamespaceCustomQuotas {
+  // CPU resource limits
+  KubernetesNamespaceCpuQuota cpu = 1;
+
+  // Memory resource limits
+  KubernetesNamespaceMemoryQuota memory = 2;
+
+  // Object count limits (pods, services, configmaps, secrets)
+  KubernetesNamespaceObjectCountQuotas object_counts = 3;
+
+  // Default resource requests/limits for containers without explicit values
+  KubernetesNamespaceDefaultLimits default_limits = 4;
+}
+
+/**
+ * **KubernetesNamespaceCpuQuota** defines CPU resource quotas.
+ */
+message KubernetesNamespaceCpuQuota {
+  // Total CPU requests allowed (e.g., "4", "4000m")
+  string requests = 1 [(buf.validate.field).string.min_len = 1];
+
+  // Total CPU limits allowed (e.g., "8", "8000m")
+  string limits = 2 [(buf.validate.field).string.min_len = 1];
+}
+
+/**
+ * **KubernetesNamespaceMemoryQuota** defines memory resource quotas.
+ */
+message KubernetesNamespaceMemoryQuota {
+  // Total memory requests allowed (e.g., "8Gi", "8192Mi")
+  string requests = 1 [(buf.validate.field).string.min_len = 1];
+
+  // Total memory limits allowed (e.g., "16Gi", "16384Mi")
+  string limits = 2 [(buf.validate.field).string.min_len = 1];
+}
+
+/**
+ * **KubernetesNamespaceObjectCountQuotas** defines limits on Kubernetes object counts.
+ * This prevents control plane exhaustion from excessive object creation.
+ */
+message KubernetesNamespaceObjectCountQuotas {
+  // Maximum number of pods
+  int32 pods = 1 [(buf.validate.field).int32.gte = 1];
+
+  // Maximum number of services
+  int32 services = 2 [(buf.validate.field).int32.gte = 1];
+
+  // Maximum number of configmaps
+  int32 configmaps = 3 [(buf.validate.field).int32.gte = 1];
+
+  // Maximum number of secrets
+  int32 secrets = 4 [(buf.validate.field).int32.gte = 1];
+
+  // Maximum number of persistent volume claims
+  int32 persistent_volume_claims = 5 [(buf.validate.field).int32.gte = 0];
+
+  // Maximum number of load balancers
+  int32 load_balancers = 6 [(buf.validate.field).int32.gte = 0];
+}
+
+/**
+ * **KubernetesNamespaceDefaultLimits** defines default resource requests/limits.
+ * These are automatically injected into containers that don't specify their own values.
+ * This is implemented via LimitRange in Kubernetes.
+ */
+message KubernetesNamespaceDefaultLimits {
+  // Default CPU request (e.g., "100m")
+  string default_cpu_request = 1 [(buf.validate.field).string.min_len = 1];
+
+  // Default CPU limit (e.g., "1000m")
+  string default_cpu_limit = 2 [(buf.validate.field).string.min_len = 1];
+
+  // Default memory request (e.g., "128Mi")
+  string default_memory_request = 3 [(buf.validate.field).string.min_len = 1];
+
+  // Default memory limit (e.g., "512Mi")
+  string default_memory_limit = 4 [(buf.validate.field).string.min_len = 1];
+}
+
+/**
+ * **KubernetesNamespaceNetworkConfig** defines network isolation and security policies.
+ * This implements the "Default Deny" security pattern with explicit allow rules.
+ */
+message KubernetesNamespaceNetworkConfig {
+  /**
+   * Enable ingress network isolation.
+   * When true, creates a NetworkPolicy that denies all ingress traffic by default.
+   * Traffic must be explicitly allowed.
+   */
+  bool isolate_ingress = 1;
+
+  /**
+   * Enable egress network restriction.
+   * When true, blocks all egress except to kube-system (DNS) and Kubernetes API.
+   * This prevents pods from accessing external networks without explicit rules.
+   */
+  bool restrict_egress = 2;
+
+  /**
+   * Allow ingress from specific namespaces.
+   * List of namespace names that are allowed to send traffic to this namespace.
+   */
+  repeated string allowed_ingress_namespaces = 3;
+
+  /**
+   * Allow egress to specific external CIDR blocks.
+   * List of CIDR blocks (e.g., "10.0.0.0/8", "192.168.1.0/24") that pods can access.
+   */
+  repeated string allowed_egress_cidrs = 4;
+
+  /**
+   * Allow egress to specific DNS domains.
+   * List of domains (e.g., "api.stripe.com", "*.github.com") that pods can access.
+   * Requires a CNI that supports DNS-based policies (like Calico or Cilium).
+   */
+  repeated string allowed_egress_domains = 5;
+}
+
+/**
+ * **KubernetesNamespaceServiceMeshConfig** defines service mesh integration.
+ * This supports automatic sidecar injection and mesh lifecycle management.
+ */
+message KubernetesNamespaceServiceMeshConfig {
+  /**
+   * **KubernetesNamespaceServiceMeshType** defines supported service mesh types.
+   */
+  enum KubernetesNamespaceServiceMeshType {
+    // No service mesh
+    service_mesh_type_unspecified = 0;
+
+    // Istio service mesh
+    istio = 1;
+
+    // Linkerd service mesh
+    linkerd = 2;
+
+    // Consul Connect service mesh
+    consul = 3;
+  }
+
+  /**
+   * Enable service mesh sidecar injection.
+   * When true, service mesh proxies are automatically injected into pods.
+   */
+  bool enabled = 1;
+
+  /**
+   * Service mesh type.
+   * Determines which mesh to use (Istio, Linkerd, etc.).
+   */
+  KubernetesNamespaceServiceMeshType mesh_type = 2 [(buf.validate.field).enum.defined_only = true];
+
+  /**
+   * Mesh revision tag (Istio-specific).
+   * Allows pointing to a specific control plane version without hardcoding the version.
+   * Example: "prod-stable", "canary", "1-19-5"
+   * This enables safe, granular mesh upgrades.
+   */
+  string revision_tag = 3 [(buf.validate.field).string.max_len = 63];
+}

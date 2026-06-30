@@ -1,0 +1,22 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsMwaaEnvironment
+metadata:
+  name: test-mwaa-environment
+spec:
+  region: us-west-2
+  airflowVersion: "2.10.1"
+  sourceBucketArn:
+    value: "<s3-bucket-arn>"
+  dagS3Path: "dags/"
+  executionRoleArn:
+    value: "<execution-role-arn>"
+  subnetIds:
+    - value: "<private-subnet-id-az1>"
+    - value: "<private-subnet-id-az2>"
+  associateSecurityGroupIds:
+    - value: "<security-group-id>"
+  environmentClass: mw1.small
+  minWorkers: 1
+  maxWorkers: 5
+  schedulers: 2
+  webserverAccessMode: PRIVATE_ONLY

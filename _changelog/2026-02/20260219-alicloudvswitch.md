@@ -12,7 +12,7 @@ Added the AliCloudVswitch deployment component -- the subnet-equivalent resource
 ## What Was Created
 
 ### API Definition
-- `apis/org/openmcf/provider/alicloud/alicloudvswitch/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
+- `apis/dev/planton/provider/alicloud/alicloudvswitch/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
 - Registered `AliCloudVswitch = 3021` in `CloudResourceKind` enum under the Networking category
 
 ### IaC Modules

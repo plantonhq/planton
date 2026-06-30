@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocidevopsproject.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/oci/ocidevopsproject/v1/spec.proto";
+import "dev/planton/provider/oci/ocidevopsproject/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// OciDevopsProject is the top-level resource representing an OCI
+// DevOps Project -- the organizational container for CI/CD pipelines,
+// code repositories, artifacts, and triggers.
+message OciDevopsProject {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'oci.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OciDevopsProject'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OciDevopsProjectSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OciDevopsProjectStatus status = 5;
+}
+
+// OciDevopsProjectStatus holds the outputs produced by deploying an
+// OciDevopsProject.
+message OciDevopsProjectStatus {
+  // stack-outputs
+  OciDevopsProjectStackOutputs outputs = 1;
+}

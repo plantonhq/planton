@@ -6,11 +6,11 @@
 
 ## Summary
 
-Renamed the `ExternalDnsKubernetes` resource to `ExternalDns` across all proto definitions, documentation, and implementation code to align with OpenMCF's naming conventions for Kubernetes addon operators. This change eliminates redundant "Kubernetes" suffixes and improves consistency with other addon resources that are already scoped to Kubernetes via their provider namespace.
+Renamed the `ExternalDnsKubernetes` resource to `ExternalDns` across all proto definitions, documentation, and implementation code to align with Planton's naming conventions for Kubernetes addon operators. This change eliminates redundant "Kubernetes" suffixes and improves consistency with other addon resources that are already scoped to Kubernetes via their provider namespace.
 
 ## Problem Statement / Motivation
 
-The ExternalDNS addon resource was originally named `ExternalDnsKubernetes`, which included a redundant "Kubernetes" suffix. This naming pattern was inconsistent with OpenMCF's design philosophy where:
+The ExternalDNS addon resource was originally named `ExternalDnsKubernetes`, which included a redundant "Kubernetes" suffix. This naming pattern was inconsistent with Planton's design philosophy where:
 
 ### Pain Points
 
@@ -20,7 +20,7 @@ The ExternalDNS addon resource was originally named `ExternalDnsKubernetes`, whi
 - **Code Verbosity**: Proto message types like `ExternalDnsKubernetesSpec` and `ExternalDnsKubernetesStackInput` were excessively long
 - **Poor Developer Experience**: The redundancy made code harder to read and type
 
-The provider namespace (`org.openmcf.provider.kubernetes.addon.externaldns.v1`) already clearly indicates this is a Kubernetes component, so including "Kubernetes" in every message name adds noise without value.
+The provider namespace (`dev.planton.provider.kubernetes.addon.externaldns.v1`) already clearly indicates this is a Kubernetes component, so including "Kubernetes" in every message name adds noise without value.
 
 ## Solution / What's New
 
@@ -33,15 +33,15 @@ Performed a comprehensive rename from `ExternalDnsKubernetes` to `ExternalDns` a
 
 ### Naming Convention
 
-The new naming follows OpenMCF's established pattern:
+The new naming follows Planton's established pattern:
 
 ```yaml
 # Before
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: ExternalDnsKubernetes
 
 # After
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: ExternalDns
 ```
 
@@ -51,7 +51,7 @@ The provider path remains unchanged (`provider/kubernetes/addon/externaldns/`) t
 
 ### Proto File Changes
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/externaldns/v1/api.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/externaldns/v1/api.proto`
 
 ```protobuf
 // Before
@@ -69,7 +69,7 @@ message ExternalDns {
 }
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/externaldns/v1/spec.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/externaldns/v1/spec.proto`
 
 ```protobuf
 // Before
@@ -79,7 +79,7 @@ message ExternalDnsKubernetesSpec { ... }
 message ExternalDnsSpec { ... }
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/externaldns/v1/stack_input.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/externaldns/v1/stack_input.proto`
 
 ```protobuf
 // Before
@@ -93,7 +93,7 @@ message ExternalDnsStackInput {
 }
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/externaldns/v1/stack_outputs.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/externaldns/v1/stack_outputs.proto`
 
 ```protobuf
 // Before
@@ -105,7 +105,7 @@ message ExternalDnsStackOutputs { ... }
 
 ### Registry Update
 
-**File**: `apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto`
+**File**: `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto`
 
 ```protobuf
 // Before
@@ -127,7 +127,7 @@ ExternalDns = 823 [(kind_meta) = {
 
 ### Implementation Code Changes
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/externaldns/v1/iac/pulumi/main.go`
+**File**: `apis/dev/planton/provider/kubernetes/addon/externaldns/v1/iac/pulumi/main.go`
 
 ```go
 // Before
@@ -137,7 +137,7 @@ stackInput := &externaldnsv1.ExternalDnsKubernetesStackInput{}
 stackInput := &externaldnsv1.ExternalDnsStackInput{}
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/addon/externaldns/v1/iac/pulumi/module/main.go`
+**File**: `apis/dev/planton/provider/kubernetes/addon/externaldns/v1/iac/pulumi/module/main.go`
 
 ```go
 // Before
@@ -171,7 +171,7 @@ Proto message names are now more concise:
 ### Naming Consistency
 
 Aligns with the pattern where the provider namespace provides sufficient context:
-- Package: `org.openmcf.provider.kubernetes.addon.externaldns.v1`
+- Package: `dev.planton.provider.kubernetes.addon.externaldns.v1`
 - Kind: `ExternalDns` (context is already clear from package)
 
 ### Developer Experience
@@ -191,7 +191,7 @@ Users must update their YAML manifests:
 
 ```yaml
 # Update required
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: ExternalDns  # Changed from: ExternalDnsKubernetes
 metadata:
   name: external-dns-cloudflare
@@ -202,7 +202,7 @@ spec:
 ### Non-Breaking Aspects
 
 - **Directory structure**: Unchanged (`provider/kubernetes/addon/externaldns/`)
-- **Package namespace**: Unchanged (`org.openmcf.provider.kubernetes.addon.externaldns.v1`)
+- **Package namespace**: Unchanged (`dev.planton.provider.kubernetes.addon.externaldns.v1`)
 - **Import paths**: Unchanged in Go code
 - **Functionality**: Zero behavioral changes
 - **ID prefix**: Unchanged (`extdnsk8s`)
@@ -245,7 +245,7 @@ This refactoring follows the pattern established by:
 - **AltinityOperator** (2025-11-13): Already follows the cleaner naming pattern without Kubernetes suffix
 - **ElasticOperator** (enum value 822): Already follows the cleaner naming pattern without Kubernetes suffix
 
-This is part of an ongoing effort to improve naming consistency across OpenMCF's Kubernetes addon operators. Similar patterns should be evaluated for:
+This is part of an ongoing effort to improve naming consistency across Planton's Kubernetes addon operators. Similar patterns should be evaluated for:
 - Other addon operators that may have redundant suffixes
 - Future addon components to follow this cleaner naming convention
 - Documentation guidelines to establish naming patterns for new resources
@@ -259,7 +259,7 @@ For users with existing manifests:
    find . -name "*.yaml" -type f -exec sed -i 's/kind: ExternalDnsKubernetes/kind: ExternalDns/g' {} +
    ```
 
-2. **No CLI changes required** - The `openmcf` CLI will work with the new kind name automatically after updating to the version with this change
+2. **No CLI changes required** - The `planton` CLI will work with the new kind name automatically after updating to the version with this change
 
 3. **No infrastructure impact** - Existing deployed resources are unaffected; this only affects new deployments
 

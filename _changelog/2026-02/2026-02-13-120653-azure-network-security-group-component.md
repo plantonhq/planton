@@ -14,7 +14,7 @@ Enterprise Azure deployments require per-tier network security controls. NSGs ar
 
 ### Pain Points
 
-- No way to declare network security policies as code in OpenMCF for Azure
+- No way to declare network security policies as code in Planton for Azure
 - Enterprise architectures need per-subnet firewall rules that are version-controlled
 - The enterprise-network-foundation infra chart requires NSGs as a core building block
 
@@ -65,13 +65,13 @@ All enum-like fields use Azure's exact API values as strings with CEL validation
 
 ### Files Created
 
-- `apis/org/openmcf/provider/azure/azurenetworksecuritygroup/v1/spec.proto` -- Spec with 12 fields per rule
-- `apis/org/openmcf/provider/azure/azurenetworksecuritygroup/v1/stack_outputs.proto` -- 2 outputs (nsg_id, nsg_name)
-- `apis/org/openmcf/provider/azure/azurenetworksecuritygroup/v1/api.proto` -- KRM wiring
-- `apis/org/openmcf/provider/azure/azurenetworksecuritygroup/v1/stack_input.proto` -- Stack input
-- `apis/org/openmcf/provider/azure/azurenetworksecuritygroup/v1/spec_test.go` -- 30 validation tests
-- `apis/org/openmcf/provider/azure/azurenetworksecuritygroup/v1/iac/pulumi/module/` -- Pulumi module (main, locals, outputs)
-- `apis/org/openmcf/provider/azure/azurenetworksecuritygroup/v1/iac/tf/` -- Terraform module (main, variables, outputs, locals, provider)
+- `apis/dev/planton/provider/azure/azurenetworksecuritygroup/v1/spec.proto` -- Spec with 12 fields per rule
+- `apis/dev/planton/provider/azure/azurenetworksecuritygroup/v1/stack_outputs.proto` -- 2 outputs (nsg_id, nsg_name)
+- `apis/dev/planton/provider/azure/azurenetworksecuritygroup/v1/api.proto` -- KRM wiring
+- `apis/dev/planton/provider/azure/azurenetworksecuritygroup/v1/stack_input.proto` -- Stack input
+- `apis/dev/planton/provider/azure/azurenetworksecuritygroup/v1/spec_test.go` -- 30 validation tests
+- `apis/dev/planton/provider/azure/azurenetworksecuritygroup/v1/iac/pulumi/module/` -- Pulumi module (main, locals, outputs)
+- `apis/dev/planton/provider/azure/azurenetworksecuritygroup/v1/iac/tf/` -- Terraform module (main, variables, outputs, locals, provider)
 - Documentation: README.md, examples.md, docs/README.md
 
 ### Enum Registration

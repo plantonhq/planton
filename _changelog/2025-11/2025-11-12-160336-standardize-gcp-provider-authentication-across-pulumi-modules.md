@@ -16,7 +16,7 @@ During deployment testing of a GCP service account resource, we encountered a 40
 Error creating service account: googleapi: Error 403: Permission 'iam.serviceAccounts.create' denied on resource (or it may not exist).
 ```
 
-Investigation revealed that the service account being used in both scenarios was the same (`odwen-iam-testing@openmcf-testing.iam.gserviceaccount.com`), yet Pulumi failed while gcloud succeeded.
+Investigation revealed that the service account being used in both scenarios was the same (`odwen-iam-testing@planton-testing.iam.gserviceaccount.com`), yet Pulumi failed while gcloud succeeded.
 
 ### Pain Points
 
@@ -99,7 +99,7 @@ createdServiceAccount, err := serviceaccount.NewAccount(
 ```go
 // Added import
 import (
-    "github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/provider/gcp/pulumigoogleprovider"
+    "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/pulumigoogleprovider"
 )
 
 // Added provider setup
@@ -355,7 +355,7 @@ func iam(ctx *pulumi.Context, locals *Locals, createdProject *organizations.Proj
 
 ### gcpserviceaccount
 ```
-apis/org/openmcf/provider/gcp/gcpserviceaccount/v1/iac/pulumi/module/
+apis/dev/planton/provider/gcp/gcpserviceaccount/v1/iac/pulumi/module/
   ├── main.go              (+6 lines: import, provider setup, threading)
   ├── service_account.go   (+2 imports, refactored args, +provider parameter)
   └── iam.go              (+1 import, +provider parameter, provider to all IAM calls)
@@ -363,13 +363,13 @@ apis/org/openmcf/provider/gcp/gcpserviceaccount/v1/iac/pulumi/module/
 
 ### gcpcertmanagercert
 ```
-apis/org/openmcf/provider/gcp/gcpcertmanagercert/v1/iac/pulumi/module/
+apis/dev/planton/provider/gcp/gcpcertmanagercert/v1/iac/pulumi/module/
   └── main.go              (-24 lines custom logic, +4 lines standard pattern)
 ```
 
 ### gcpproject
 ```
-apis/org/openmcf/provider/gcp/gcpproject/v1/iac/pulumi/module/
+apis/dev/planton/provider/gcp/gcpproject/v1/iac/pulumi/module/
   ├── main.go              (+6 lines: import, provider setup, threading)
   ├── project.go           (+1 import, +provider parameter, provider to NewProject)
   ├── apis.go              (+1 import, +provider parameter, provider to NewService)
@@ -411,16 +411,16 @@ All 17 GCP Pulumi modules now share the same authentication approach.
 ### Test Case from Issue
 ```yaml
 # This input previously failed with 403
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpServiceAccount
 metadata:
   env: gcp
   name: odwen-test-1
-  org: openmcf
+  org: planton
 spec:
   createKey: false
   orgId: "205794526674"
-  projectId: openmcf-testing
+  projectId: planton-testing
   serviceAccountId: odwen-test-1
 ```
 

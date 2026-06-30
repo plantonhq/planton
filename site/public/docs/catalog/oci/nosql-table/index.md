@@ -12,14 +12,14 @@ Deploys an Oracle Cloud Infrastructure NoSQL table with DDL-defined schema, conf
 
 ## What Gets Created
 
-When you deploy an OciNosqlTable resource, OpenMCF provisions:
+When you deploy an OciNosqlTable resource, Planton provisions:
 
 - **NoSQL Table** — an `oci_nosql_table` resource in the specified compartment. The table schema is defined entirely through a DDL statement (`CREATE TABLE` or `ALTER TABLE`), which is OCI NoSQL's native schema mechanism. Freeform tags are automatically derived from metadata labels.
 - **Secondary Indexes** — zero or more `oci_nosql_index` resources, one per entry in the `indexes` list. Each index is immutable; any change to an existing index forces its recreation. Indexes support plain columns and JSON field paths within JSON-typed columns.
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the NoSQL table will be created — either a literal value or a reference to an OciCompartment resource
 - **A valid DDL statement** — `CREATE TABLE` for new tables; `ALTER TABLE` for schema evolution. The table name in the DDL must match the `name` field.
 
@@ -28,15 +28,15 @@ When you deploy an OciNosqlTable resource, OpenMCF provisions:
 Create a file `nosql-table.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciNosqlTable
 metadata:
   name: my-nosql-table
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciNosqlTable.my-nosql-table
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciNosqlTable.my-nosql-table
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -56,7 +56,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f nosql-table.yaml
+planton apply -f nosql-table.yaml
 ```
 
 This creates a NoSQL table with provisioned throughput (50 read units, 50 write units) and 10 GB of storage. The table OCID is exported as a stack output.
@@ -112,15 +112,15 @@ This creates a NoSQL table with provisioned throughput (50 read units, 50 write 
 A simple key-value table with provisioned throughput — suitable for development or low-traffic workloads:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciNosqlTable
 metadata:
   name: dev-kv
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciNosqlTable.dev-kv
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciNosqlTable.dev-kv
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -142,15 +142,15 @@ spec:
 A table with on-demand capacity and secondary indexes for query flexibility:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciNosqlTable
 metadata:
   name: events-table
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.OciNosqlTable.events-table
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.OciNosqlTable.events-table
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -180,15 +180,15 @@ spec:
 A table that indexes specific fields within a JSON column:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciNosqlTable
 metadata:
   name: orders-table
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciNosqlTable.orders-table
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciNosqlTable.orders-table
   env: prod
   org: acme
 spec:
@@ -222,18 +222,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed compartment instead of hardcoding the OCID:
+Reference an Planton-managed compartment instead of hardcoding the OCID:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciNosqlTable
 metadata:
   name: ref-nosql
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciNosqlTable.ref-nosql
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciNosqlTable.ref-nosql
 spec:
   compartmentId:
     valueFrom:

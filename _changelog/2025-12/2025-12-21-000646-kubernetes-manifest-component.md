@@ -10,7 +10,7 @@ Implemented a new `KubernetesManifest` deployment component that enables deployi
 
 ## Problem Statement / Motivation
 
-While OpenMCF provides specialized deployment components (KubernetesDeployment, KubernetesStatefulSet, KubernetesDaemonSet, KubernetesHelmRelease), there's a gap for scenarios requiring raw manifest deployment:
+While Planton provides specialized deployment components (KubernetesDeployment, KubernetesStatefulSet, KubernetesDaemonSet, KubernetesHelmRelease), there's a gap for scenarios requiring raw manifest deployment:
 
 ### Pain Points
 
@@ -83,7 +83,7 @@ The yamlv2 module ensures the CRD is fully registered before creating the Custom
 ### Files Created
 
 ```
-apis/org/openmcf/provider/kubernetes/kubernetesmanifest/v1/
+apis/dev/planton/provider/kubernetes/kubernetesmanifest/v1/
 ├── Proto Files
 │   ├── api.proto              # KRM wiring (metadata/spec/status)
 │   ├── spec.proto             # Spec with manifest_yaml field
@@ -171,7 +171,7 @@ Outputs (namespace)
 - **Zero Transformation**: Manifest YAML is applied exactly as written
 - **State Management**: Full Pulumi state tracking and drift detection
 - **CRD Safety**: Automatic ordering prevents timing issues
-- **Unified Experience**: Same patterns as all other OpenMCF components
+- **Unified Experience**: Same patterns as all other Planton components
 
 ### For Developers
 
@@ -190,7 +190,7 @@ Outputs (namespace)
 ### Basic ConfigMap
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesManifest
 metadata:
   name: my-config
@@ -209,7 +209,7 @@ spec:
 ### Multi-Resource Application
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesManifest
 metadata:
   name: complete-app
@@ -254,7 +254,7 @@ planton pulumi up --stack-input manifest.yaml
 
 ### Component Ecosystem
 
-- Fills the gap for "raw" deployments in OpenMCF
+- Fills the gap for "raw" deployments in Planton
 - Complements specialized components (Deployment, StatefulSet, DaemonSet, Helm)
 - Provides consistent patterns with other Kubernetes components
 

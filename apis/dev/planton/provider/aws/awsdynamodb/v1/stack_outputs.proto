@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsdynamodb.v1;
+
+// AwsDynamodbStackOutputs captures observable identifiers from a DynamoDB table.
+message AwsDynamodbStackOutputs {
+  // Table name
+  string table_name = 1;
+
+  // Table ARN
+  string table_arn = 2;
+
+  // Provider-assigned table ID (if available)
+  string table_id = 3;
+
+  // Stream ARN when streams are enabled
+  string stream_arn = 4;
+
+  // Stream label when streams are enabled
+  string stream_label = 5;
+}

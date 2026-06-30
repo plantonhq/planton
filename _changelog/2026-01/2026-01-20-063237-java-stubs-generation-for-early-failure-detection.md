@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added Java protobuf stubs generation to the openmcf build pipeline to catch Java reserved keyword violations early, before they propagate to downstream consumers. This prevents broken builds in the planton monorepo by detecting issues like using `static` or `class` as enum values during local development.
+Added Java protobuf stubs generation to the planton build pipeline to catch Java reserved keyword violations early, before they propagate to downstream consumers. This prevents broken builds in the planton monorepo by detecting issues like using `static` or `class` as enum values during local development.
 
 ## Problem Statement / Motivation
 
@@ -35,7 +35,7 @@ This worked fine for Go and TypeScript generation but failed when the planton mo
 
 ## Solution / What's New
 
-Added Java stubs generation to the openmcf build pipeline as an early warning system.
+Added Java stubs generation to the planton build pipeline as an early warning system.
 
 ```mermaid
 flowchart TB
@@ -104,7 +104,7 @@ flowchart TB
 rm -rf generated/stubs/go generated/stubs/ts
 ```
 
-**`apis/_rules/avoid-reserved-words-in-openmcf-apis.mdc`** - New cursor rule:
+**`apis/_rules/avoid-reserved-words-in-planton-apis.mdc`** - New cursor rule:
 
 - Comprehensive list of all Java reserved keywords
 - Before/after examples for common violations

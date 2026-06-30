@@ -1,0 +1,281 @@
+---
+description: Action rule to audit and fix the Planton docs catalog system infrastructure -- build pipeline, provider configuration, sidebar rendering, slug generation, and all supporting components.
+globs: []
+alwaysApply: false
+---
+
+# Rule: Audit and Fix Planton Catalog System
+
+**Purpose**: Guide an AI agent through auditing and fixing the docs catalog system infrastructure. This covers the build pipeline, provider display configuration, sidebar rendering, icon resolution, slug generation, link rewriting, and preset handling -- everything between source `catalog-page.md` files and the rendered docs site.
+
+**Trigger**: User references this rule, reports a display issue in the docs catalog sidebar or catalog pages, asks to add a new provider to the catalog, or asks to fix catalog rendering problems.
+
+**Scope boundary**: This rule covers the catalog **system infrastructure** (build scripts, React components, configuration maps). For auditing individual **catalog page content** (the markdown files), use the `audit-planton-component-catalog-page` rule in `_rules/docs/`.
+
+---
+
+## Source of Truth
+
+The canonical authority for provider definitions is `cloud_resource_provider.proto`:
+
+```
+apis/dev/planton/shared/cloudresourcekind/cloud_resource_provider.proto
+```
+
+Every provider enum value has a `provider_meta` annotation with `group` and `display_name`. The catalog system must reflect these values. When auditing, always read this proto first.
+
+---
+
+## System File Inventory
+
+Read these files during any catalog system audit:
+
+### Build Scripts (run at build time, produce static output)
+
+| File | Role |
+|------|------|
+| `site/scripts/copy-component-docs.ts` | Main build script. Scans `apis/dev/planton/provider/` for catalog pages, extracts titles, strips provider prefixes, generates slugs, rewrites internal links, copies presets, generates provider index pages. Contains `PROVIDER_DISPLAY_NAMES` and `PROVIDER_PREFIXES` maps. |
+| `site/scripts/generate-docs-structure.ts` | Scans `site/public/docs/` after copy-docs runs. Reads frontmatter from all markdown files and produces `site/public/docs-structure.json`, which drives the sidebar and catalog grid at runtime. |
+
+### React Components (render at runtime from docs-structure.json)
+
+| File | Role |
+|------|------|
+| `site/src/app/docs/components/DocsSidebar.tsx` | Sidebar component. Loads `docs-structure.json`, renders provider directories with `ProviderIcon`, renders component items with per-component icons (letter-badge fallback). Uses `item.title` from the structure for display labels. |
+| `site/src/app/docs/components/CatalogProviderGrid.tsx` | Catalog index grid. Renders provider cards with icon, display title, and component count. Uses `provider.title` from the `CatalogProvider` interface. |
+| `site/src/app/docs/components/ProviderIcon.tsx` | Provider icon component. Resolves SVG path via `getProviderIconPath()`, falls back to a letter badge on load error. |
+| `site/src/app/docs/utils/providerIcons.ts` | Icon path resolution. Convention: `/images/providers/{provider}.svg`. Override map (`PROVIDER_ICON_OVERRIDES`) for non-standard filenames. |
+| `site/src/app/docs/[[...slug]]/page.tsx` | Page component. Contains `extractCatalogProviders()` which reads provider metadata from docs-structure.json and passes it to `CatalogProviderGrid`. |
+
+### Static Assets
+
+| Path | Role |
+|------|------|
+| `site/public/images/providers/*.svg` | Provider icon SVGs. Not all providers have icons; `ProviderIcon` falls back to a letter badge. |
+| `site/public/images/providers/{provider}/{component}/logo.svg` | Per-component icons. Used by sidebar for component-level items. |
+
+---
+
+## Configuration Maps That Must Stay in Sync
+
+When a provider is added, renamed, or removed, all four maps below must be updated. A mismatch causes display bugs.
+
+### 1. `PROVIDER_DISPLAY_NAMES` in `copy-component-docs.ts`
+
+Maps provider directory name to uppercase display name used in provider index pages, sidebar, and catalog grid.
+
+```
+directory name -> "DISPLAY NAME"
+```
+
+Source of truth: `display_name` in `cloud_resource_provider.proto`, uppercased.
+
+### 2. `PROVIDER_PREFIXES` in `copy-component-docs.ts`
+
+Maps provider directory name to prefix strings that `stripProviderPrefix()` removes from catalog page H1 headings to produce sidebar labels.
+
+```
+directory name -> ["Prefix1 ", "Prefix2 "]
+```
+
+Each prefix must end with a trailing space. The function tries each prefix in order and strips the first match.
+
+### 3. `PROVIDER_ICON_OVERRIDES` in `providerIcons.ts`
+
+Maps provider directory name to icon SVG path when the filename does not follow the `{provider}.svg` convention.
+
+Only providers with non-standard icon filenames need entries. Providers without an SVG at all do not need an entry -- `ProviderIcon` falls back to a letter badge automatically.
+
+### 4. `CatalogProvider` interface in `CatalogProviderGrid.tsx`
+
+The interface shape must include `name`, `title`, `path`, and `componentCount`. The `extractCatalogProviders()` function in `page.tsx` populates these from docs-structure.json.
+
+---
+
+## Data Flow
+
+```
+Source:
+  apis/dev/planton/provider/{provider}/{component}/v1/catalog-page.md
+  apis/dev/planton/provider/{provider}/{component}/v1/presets/*.yaml + *.md
+
+  |  yarn copy-docs  (copy-component-docs.ts)
+  v
+
+Intermediate:
+  site/public/docs/catalog/{provider}/{slug}/index.md        (with frontmatter)
+  site/public/docs/catalog/{provider}/{slug}/presets/*.md
+  site/public/docs/catalog/{provider}/{slug}/presets/*.yaml
+  site/public/docs/catalog/{provider}/index.md               (provider index)
+  site/public/docs/catalog/index.md                          (catalog index)
+
+  |  yarn generate-structure  (generate-docs-structure.ts)
+  v
+
+Runtime data:
+  site/public/docs-structure.json
+
+  |  loaded by DocsSidebar.tsx and page.tsx at runtime
+  v
+
+Rendered:
+  Sidebar (DocsSidebar.tsx)           -- uses item.title for labels
+  Catalog grid (CatalogProviderGrid)  -- uses provider.title for display
+  Provider index pages                -- uses PROVIDER_DISPLAY_NAMES for heading
+  Component pages                     -- rendered from copied markdown
+```
+
+---
+
+## Audit Checklist
+
+Run through each section in order. For each check, read the relevant source file and verify against `cloud_resource_provider.proto`.
+
+### Check 1: Provider Display Names
+
+Read `PROVIDER_DISPLAY_NAMES` in `copy-component-docs.ts`. For every provider enum in `cloud_resource_provider.proto`:
+
+- [ ] An entry exists in the map
+- [ ] The display name matches `display_name` from the proto, uppercased
+- [ ] Multi-word names have proper spaces (e.g., "HETZNER CLOUD", not "HETZNERCLOUD")
+
+**Common issue**: New provider added to proto but not to the map. The fallback `provider.toUpperCase()` concatenates multi-word names without spaces.
+
+### Check 2: Provider Prefix Stripping
+
+Read `PROVIDER_PREFIXES` in `copy-component-docs.ts`. For every provider:
+
+- [ ] An entry exists with at least one prefix string
+- [ ] Each prefix ends with a trailing space
+- [ ] The prefix matches the convention used in catalog-page.md H1 headings for that provider
+
+Verify by running the build and checking generated component frontmatter:
+```
+head -6 site/public/docs/catalog/{provider}/{slug}/index.md
+```
+
+The `title` field in frontmatter should show the component name without the provider prefix.
+
+**Common issue**: New provider's catalog pages have H1 headings like `# Hetzner Cloud Certificate` but the prefix `'Hetzner Cloud '` is missing from the map, so the sidebar shows "Hetzner Cloud Certificate" instead of "Certificate".
+
+### Check 3: Provider Icons
+
+Read `PROVIDER_ICON_OVERRIDES` in `providerIcons.ts`. For every provider:
+
+- [ ] If an SVG exists at `site/public/images/providers/{provider}.svg`, no override is needed
+- [ ] If the SVG filename differs from the directory name, an override entry exists
+- [ ] If no SVG exists at all, the `ProviderIcon` component will show a letter badge (acceptable but should be flagged)
+
+### Check 4: Sidebar Labels
+
+After running `yarn copy-docs` and `yarn generate-structure`, verify sidebar labels:
+
+```shell
+# Check provider titles in structure
+python3 -c "
+import json
+with open('site/public/docs-structure.json') as f:
+    data = json.load(f)
+catalog = [x for x in data if x['name'] == 'catalog'][0]
+for child in catalog.get('children', []):
+    count = len(child.get('children', []))
+    print(f\"{child['name']}: title='{child['title']}', components={count}\")
+"
+```
+
+For each provider, the title should match `PROVIDER_DISPLAY_NAMES`.
+
+For each component under a provider, the title should NOT contain the provider prefix.
+
+### Check 5: Slug Generation
+
+Verify slug generation produces URL-friendly paths:
+
+- [ ] Slugs are lowercase, hyphen-separated (e.g., "route53-dns-record")
+- [ ] No duplicate slugs within a provider
+- [ ] Links in provider index pages use the correct slug
+
+### Check 6: Internal Link Rewriting
+
+The build script rewrites internal catalog links from directory-name-based to slug-based. Verify:
+
+- [ ] Links like `/docs/catalog/aws/awsvpc` are rewritten to `/docs/catalog/aws/vpc`
+- [ ] Cross-provider links are also rewritten correctly
+
+### Check 7: Preset Handling
+
+For components with presets at `v1/presets/`:
+
+- [ ] YAML and MD pairs are copied correctly
+- [ ] Preset index page is generated with correct metadata
+- [ ] Preset detail pages have frontmatter with correct component references
+- [ ] Presets directory is excluded from sidebar (check `generate-docs-structure.ts` skip logic)
+
+---
+
+## Fix Procedures
+
+### Adding a New Provider
+
+When a new provider is added to `cloud_resource_provider.proto` and its component directories exist under `apis/dev/planton/provider/{newprovider}/`:
+
+1. Add entry to `PROVIDER_DISPLAY_NAMES` in `copy-component-docs.ts`
+   - Key: provider directory name (e.g., `'hetznercloud'`)
+   - Value: `display_name` from proto, uppercased (e.g., `'HETZNER CLOUD'`)
+
+2. Add entry to `PROVIDER_PREFIXES` in `copy-component-docs.ts`
+   - Key: provider directory name
+   - Value: array of prefix strings that appear in catalog-page.md H1 headings, each ending with a trailing space
+
+3. If a provider SVG icon exists with a non-standard filename, add entry to `PROVIDER_ICON_OVERRIDES` in `providerIcons.ts`
+
+4. Rebuild and verify:
+   ```shell
+   cd site
+   yarn copy-docs
+   yarn generate-structure
+   ```
+
+5. Inspect output:
+   - Check provider index: `head -12 site/public/docs/catalog/{provider}/index.md`
+   - Check a component frontmatter: `head -6 site/public/docs/catalog/{provider}/{slug}/index.md`
+   - Check docs-structure.json for correct title
+
+### Fixing Provider Display Name
+
+If a provider shows as "HETZNERCLOUD" instead of "HETZNER CLOUD":
+
+1. Read the `display_name` from `cloud_resource_provider.proto`
+2. Update `PROVIDER_DISPLAY_NAMES` in `copy-component-docs.ts` with the correct uppercase value
+3. Rebuild: `cd site && yarn copy-docs && yarn generate-structure`
+
+### Fixing Component Prefix Not Stripped
+
+If sidebar shows "Hetzner Cloud Certificate" instead of "Certificate":
+
+1. Check what prefix the catalog-page.md H1 uses: `head -1 apis/dev/planton/provider/{provider}/{component}/v1/catalog-page.md`
+2. Add or fix the entry in `PROVIDER_PREFIXES` in `copy-component-docs.ts`
+3. Ensure the prefix string ends with a trailing space
+4. Rebuild: `cd site && yarn copy-docs && yarn generate-structure`
+
+### Renaming a Provider
+
+If a provider enum value is renamed in the proto (e.g., `open_fga` to `openfga`):
+
+1. Rename the directory under `apis/dev/planton/provider/`
+2. Update the key in all four maps: `PROVIDER_DISPLAY_NAMES`, `PROVIDER_PREFIXES`, `PROVIDER_ICON_OVERRIDES` (if present), and any icon SVG filename
+3. Rebuild: `cd site && yarn copy-docs && yarn generate-structure`
+
+---
+
+## Build Commands
+
+Run from the `site/` directory:
+
+| Command | What it does |
+|---------|-------------|
+| `yarn copy-docs` | Runs `copy-component-docs.ts`. Copies catalog pages, generates frontmatter, strips prefixes, generates slugs, rewrites links, copies presets, generates provider and catalog index pages. |
+| `yarn generate-structure` | Runs `generate-docs-structure.ts`. Scans built docs, reads frontmatter, produces `docs-structure.json` for sidebar and catalog grid. |
+| `yarn dev` | Starts Next.js dev server. The sidebar loads `docs-structure.json` at runtime. |
+
+Always run `copy-docs` before `generate-structure`. The structure script reads the output of the copy script.

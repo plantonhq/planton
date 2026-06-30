@@ -12,7 +12,7 @@ Deploys an Azure Public IP Address with Standard SKU and static allocation in a 
 
 ## What Gets Created
 
-When you deploy an AzurePublicIp resource, OpenMCF provisions:
+When you deploy an AzurePublicIp resource, Planton provisions:
 
 - **Public IP Address** — a `network.PublicIp` resource in the specified region and resource group, configured with Standard SKU and static allocation (Basic SKU was retired September 2025; Standard SKU requires static allocation)
 - **DNS A Record** — when `domainNameLabel` is set, Azure creates an A record at `{label}.{region}.cloudapp.azure.com` pointing to the allocated IP
@@ -20,7 +20,7 @@ When you deploy an AzurePublicIp resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Resource Group** where the Public IP will be created (can reference an AzureResourceGroup resource)
 - **Region selection** — the Public IP must be in the same region as the resource it will be attached to (load balancer, application gateway, NAT gateway, etc.)
 
@@ -29,15 +29,15 @@ When you deploy an AzurePublicIp resource, OpenMCF provisions:
 Create a file `publicip.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzurePublicIp
 metadata:
   name: my-pip
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzurePublicIp.my-pip
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzurePublicIp.my-pip
 spec:
   region: eastus
   resourceGroup: my-rg
@@ -47,7 +47,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f publicip.yaml
+planton apply -f publicip.yaml
 ```
 
 This creates a Standard SKU Public IP with static allocation, a 4-minute idle timeout, and no DNS label or zone preference.
@@ -77,15 +77,15 @@ This creates a Standard SKU Public IP with static allocation, a 4-minute idle ti
 A minimal Public IP for development or testing:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzurePublicIp
 metadata:
   name: dev-pip
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzurePublicIp.dev-pip
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzurePublicIp.dev-pip
 spec:
   region: eastus
   resourceGroup: dev-rg
@@ -97,15 +97,15 @@ spec:
 A Public IP with a DNS label for a stable domain name, useful when external clients need a human-readable endpoint:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzurePublicIp
 metadata:
   name: api-pip
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.AzurePublicIp.api-pip
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.AzurePublicIp.api-pip
 spec:
   region: westeurope
   resourceGroup: staging-rg
@@ -120,15 +120,15 @@ After deployment, the Public IP is reachable at `my-api-staging.westeurope.cloud
 A production Public IP spread across all three availability zones with an extended idle timeout for long-lived connections:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzurePublicIp
 metadata:
   name: prod-lb-pip
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzurePublicIp.prod-lb-pip
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzurePublicIp.prod-lb-pip
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -143,18 +143,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed resource group instead of hardcoding the name:
+Reference an Planton-managed resource group instead of hardcoding the name:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzurePublicIp
 metadata:
   name: ref-pip
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzurePublicIp.ref-pip
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzurePublicIp.ref-pip
 spec:
   region: eastus
   resourceGroup:

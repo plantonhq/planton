@@ -7,14 +7,14 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
-	"github.com/plantonhq/openmcf/internal/cli/cliprint"
-	"github.com/plantonhq/openmcf/internal/cli/staging"
-	"github.com/plantonhq/openmcf/internal/cli/version"
-	"github.com/plantonhq/openmcf/internal/cli/workspace"
-	"github.com/plantonhq/openmcf/pkg/crkreflect"
-	"github.com/plantonhq/openmcf/pkg/fileutil"
-	"github.com/plantonhq/openmcf/pkg/iac/tofu/tofuzip"
+	"github.com/plantonhq/planton/apis/dev/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/internal/cli/cliprint"
+	"github.com/plantonhq/planton/internal/cli/staging"
+	"github.com/plantonhq/planton/internal/cli/version"
+	"github.com/plantonhq/planton/internal/cli/workspace"
+	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/fileutil"
+	"github.com/plantonhq/planton/pkg/iac/tofu/tofuzip"
 )
 
 // GetModulePathResult contains the module path and a cleanup function
@@ -182,7 +182,7 @@ func GetModulePathLegacy(moduleDir, kindName string) (string, error) {
 	return result.ModulePath, nil
 }
 
-// GetLocalModulePath constructs the Terraform module path from a local openmcf git repository.
+// GetLocalModulePath constructs the Terraform module path from a local planton git repository.
 // It takes the local repo path and kindName, and returns the path to the Terraform module.
 // This is used when --local-module flag is specified.
 func GetLocalModulePath(localRepoPath, kindName string) (string, error) {
@@ -214,7 +214,7 @@ func getTerraformModulePath(moduleRepoDir, kindName string) (string, error) {
 
 	kindDirPath := filepath.Join(
 		moduleRepoDir,
-		"apis/org/openmcf/provider",
+		"apis/dev/planton/provider",
 		strings.ReplaceAll(kindProvider.String(), "_", ""))
 
 	terraformModulePath := filepath.Join(
@@ -236,7 +236,7 @@ func getWorkspaceDir() (string, error) {
 	if err != nil {
 		return "", errors.Wrapf(err, "failed to get cli workspace directory")
 	}
-	//base directory will always be ${HOME}/.openmcf/tofu
+	//base directory will always be ${HOME}/.planton/tofu
 	tofuModuleWorkspaceDir := filepath.Join(cliWorkspaceDir, "tofu")
 	if !fileutil.IsDirExists(tofuModuleWorkspaceDir) {
 		if err := os.MkdirAll(tofuModuleWorkspaceDir, os.ModePerm); err != nil {

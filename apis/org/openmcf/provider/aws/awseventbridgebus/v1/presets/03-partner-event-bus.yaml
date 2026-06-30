@@ -1,7 +1,0 @@
-apiVersion: aws.openmcf.org/v1
-kind: AwsEventBridgeBus
-metadata:
-  name: aws.partner/example.com/tenant123/orders
-spec:
-  region: <aws-region>
-  eventSourceName: aws.partner/example.com/tenant123/orders

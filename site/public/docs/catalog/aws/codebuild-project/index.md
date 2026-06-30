@@ -12,7 +12,7 @@ Deploys an AWS CodeBuild project with configurable source providers, build envir
 
 ## What Gets Created
 
-When you deploy an AwsCodeBuildProject resource, OpenMCF provisions:
+When you deploy an AwsCodeBuildProject resource, Planton provisions:
 
 - **CodeBuild Project** — an `aws_codebuild_project` resource with the specified source, environment, artifacts, and logging configuration
 - **Webhook** — created only when `webhook` is configured, registers a webhook with the source provider for automatic build triggers on push and pull request events
@@ -20,7 +20,7 @@ When you deploy an AwsCodeBuildProject resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **An IAM service role** granting CodeBuild permission to access source code, write artifacts, and publish logs
 - **A source repository** accessible to CodeBuild (GitHub via CodeStar Connections, CodeCommit, Bitbucket, GitLab, or S3)
 - **An S3 bucket** if using S3 artifacts or S3 cache
@@ -32,15 +32,15 @@ When you deploy an AwsCodeBuildProject resource, OpenMCF provisions:
 Create a file `codebuild.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCodeBuildProject
 metadata:
   name: my-build
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsCodeBuildProject.my-build
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsCodeBuildProject.my-build
 spec:
   region: us-west-2
   source:
@@ -59,7 +59,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f codebuild.yaml
+planton apply -f codebuild.yaml
 ```
 
 This creates a CodeBuild project that pulls from a GitHub repository, runs builds in a standard Linux container, and produces no stored artifacts (CI-only).
@@ -125,15 +125,15 @@ This creates a CodeBuild project that pulls from a GitHub repository, runs build
 A standard CI project triggered by pushes and pull requests on the main branch:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCodeBuildProject
 metadata:
   name: app-ci
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsCodeBuildProject.app-ci
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsCodeBuildProject.app-ci
 spec:
   region: us-west-2
   source:
@@ -162,15 +162,15 @@ spec:
 A privileged build project for Docker image builds with local layer caching:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCodeBuildProject
 metadata:
   name: docker-builder
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsCodeBuildProject.docker-builder
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsCodeBuildProject.docker-builder
 spec:
   region: us-west-2
   source:
@@ -212,15 +212,15 @@ spec:
 A build project designed as a stage in AWS CodePipeline with Secrets Manager variables:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCodeBuildProject
 metadata:
   name: pipeline-build
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsCodeBuildProject.pipeline-build
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsCodeBuildProject.pipeline-build
 spec:
   region: us-west-2
   source:
@@ -246,18 +246,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding IDs:
+Reference other Planton-managed resources instead of hardcoding IDs:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCodeBuildProject
 metadata:
   name: connected-build
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsCodeBuildProject.connected-build
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsCodeBuildProject.connected-build
 spec:
   region: us-west-2
   source:

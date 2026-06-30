@@ -3,7 +3,7 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "staging",
     srcs = ["staging.go"],
-    importpath = "github.com/plantonhq/openmcf/internal/cli/staging",
+    importpath = "github.com/plantonhq/planton/internal/cli/staging",
     visibility = ["//:__subpackages__"],
     deps = [
         "//internal/cli/cliprint",

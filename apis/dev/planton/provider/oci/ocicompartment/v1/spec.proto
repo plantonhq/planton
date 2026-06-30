@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocicompartment.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// OciCompartmentSpec defines the specification for an Oracle Cloud Infrastructure
+// compartment.
+//
+// Compartments are the fundamental building block of OCI's resource isolation
+// model, analogous to GCP folders or AWS Organizational Units. Every OCI
+// resource exists within exactly one compartment, forming a hierarchy rooted
+// at the tenancy. Compartments enable fine-grained access control via IAM
+// policies, cost tracking, and logical grouping of resources.
+//
+// This component creates a single compartment within a parent compartment.
+// Nested hierarchies are built by chaining OciCompartment resources -- each
+// child references its parent via compartment_id.
+message OciCompartmentSpec {
+  // OCID of the parent compartment where this compartment will be created.
+  // For top-level compartments, this should be the tenancy OCID.
+  // For nested compartments, this is the OCID of the parent compartment.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OciCompartment,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartment_id"
+  ];
+
+  // Name assigned to the compartment. Must be unique across all compartments
+  // within the parent. This is the identifier shown in the OCI Console and
+  // used in IAM policy statements.
+  // Falls back to metadata.name if not provided.
+  string name = 2;
+
+  // Description of the compartment's purpose.
+  // Required by the OCI API. Use this to document what resources or teams
+  // the compartment is intended for.
+  string description = 3 [(buf.validate.field).string.min_len = 1];
+
+  // When true, the compartment will be deleted on resource destruction.
+  // When false (the default), the compartment is retained even after the
+  // IaC resource is destroyed -- this is OCI's safety mechanism to prevent
+  // accidental deletion of compartments containing active resources.
+  // Set to true only for ephemeral or development compartments.
+  bool enable_delete = 4;
+}

@@ -12,7 +12,7 @@ Deploys a Google Cloud Filestore instance with a single NFS file share, VPC netw
 
 ## What Gets Created
 
-When you deploy a GcpFilestoreInstance resource, OpenMCF provisions:
+When you deploy a GcpFilestoreInstance resource, Planton provisions:
 
 - **Filestore Instance** — a fully managed NFS file server in the specified project and location, tagged with organization, environment, and resource labels
 - **File Share** — a single NFS export on the instance with configurable capacity and access controls, mountable at `<ip>:/<share_name>`
@@ -21,7 +21,7 @@ When you deploy a GcpFilestoreInstance resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **A GCP project** where the Filestore instance will be created
 - **A VPC network** for the instance to connect to (referenced via `networkConfig.network`)
 - **A Cloud KMS key** if using customer-managed encryption at rest (CMEK)
@@ -31,15 +31,15 @@ When you deploy a GcpFilestoreInstance resource, OpenMCF provisions:
 Create a file `filestore.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpFilestoreInstance
 metadata:
   name: my-nfs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpFilestoreInstance.my-nfs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpFilestoreInstance.my-nfs
 spec:
   projectId:
     value: my-gcp-project
@@ -57,7 +57,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f filestore.yaml
+planton apply -f filestore.yaml
 ```
 
 This creates a 2.5 TiB SSD-backed NFS instance in `us-central1-a` connected to the default VPC network.
@@ -103,15 +103,15 @@ This creates a 2.5 TiB SSD-backed NFS instance in `us-central1-a` connected to t
 A production-grade Filestore instance with regional high availability, private network connectivity, and deletion protection:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpFilestoreInstance
 metadata:
   name: prod-nfs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpFilestoreInstance.prod-nfs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpFilestoreInstance.prod-nfs
 spec:
   projectId:
     value: my-prod-project
@@ -140,15 +140,15 @@ spec:
 A zonal instance with customer-managed encryption and fixed IOPS for demanding workloads:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpFilestoreInstance
 metadata:
   name: perf-nfs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpFilestoreInstance.perf-nfs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpFilestoreInstance.perf-nfs
 spec:
   projectId:
     value: my-project
@@ -178,15 +178,15 @@ spec:
 An instance using NFSv4.1 protocol with IP-based access restrictions:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpFilestoreInstance
 metadata:
   name: secure-nfs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpFilestoreInstance.secure-nfs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpFilestoreInstance.secure-nfs
 spec:
   projectId:
     value: my-project
@@ -216,15 +216,15 @@ spec:
 A budget-friendly HDD-backed instance for infrequently accessed data:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpFilestoreInstance
 metadata:
   name: archive-nfs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpFilestoreInstance.archive-nfs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpFilestoreInstance.archive-nfs
 spec:
   projectId:
     value: my-project
@@ -241,18 +241,18 @@ spec:
 
 ### Infra-Chart Composition with valueFrom
 
-An instance composing with other OpenMCF resources via foreign key references:
+An instance composing with other Planton resources via foreign key references:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpFilestoreInstance
 metadata:
   name: shared-nfs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpFilestoreInstance.shared-nfs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpFilestoreInstance.shared-nfs
 spec:
   projectId:
     valueFrom:

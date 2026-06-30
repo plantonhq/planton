@@ -12,7 +12,7 @@ Deploys an AWS Global Accelerator with bundled listeners and regional endpoint g
 
 ## What Gets Created
 
-When you deploy an AwsGlobalAccelerator resource, OpenMCF provisions:
+When you deploy an AwsGlobalAccelerator resource, Planton provisions:
 
 - **Global Accelerator** — an `aws_globalaccelerator_accelerator` with static anycast IPs, optional flow log delivery to S3, and support for both IPv4 and dual-stack addressing
 - **Listeners** — one `aws_globalaccelerator_listener` per entry in `spec.listeners`, each defining the protocol (TCP or UDP), port ranges, and client affinity setting
@@ -21,7 +21,7 @@ When you deploy an AwsGlobalAccelerator resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **At least one endpoint** (ALB, NLB, Elastic IP, or EC2 instance) deployed in the target region, or plan to register endpoints after the accelerator is created
 - **An S3 bucket** if enabling flow logs
 
@@ -30,15 +30,15 @@ When you deploy an AwsGlobalAccelerator resource, OpenMCF provisions:
 Create a file `global-accelerator.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsGlobalAccelerator
 metadata:
   name: my-ga
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsGlobalAccelerator.my-ga
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsGlobalAccelerator.my-ga
 spec:
   region: us-east-1
   listeners:
@@ -54,7 +54,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f global-accelerator.yaml
+planton apply -f global-accelerator.yaml
 ```
 
 This creates a Global Accelerator with a TCP listener on port 443 and one endpoint group in the provider's default region. No endpoints are registered yet — add them to the `endpoints` array or register them after deployment.
@@ -108,15 +108,15 @@ This creates a Global Accelerator with a TCP listener on port 443 and one endpoi
 Route HTTPS traffic to an ALB through the AWS global network:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsGlobalAccelerator
 metadata:
   name: web-ga
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsGlobalAccelerator.web-ga
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsGlobalAccelerator.web-ga
 spec:
   region: us-east-1
   listeners:
@@ -141,15 +141,15 @@ spec:
 Route traffic across two regions with a 70/30 split for gradual regional migration:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsGlobalAccelerator
 metadata:
   name: global-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsGlobalAccelerator.global-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsGlobalAccelerator.global-api
 spec:
   region: us-east-1
   ipAddressType: DUAL_STACK
@@ -193,15 +193,15 @@ spec:
 UDP accelerator for a real-time multiplayer game with source IP stickiness:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsGlobalAccelerator
 metadata:
   name: game-server
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsGlobalAccelerator.game-server
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsGlobalAccelerator.game-server
 spec:
   region: us-west-2
   listeners:
@@ -223,18 +223,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding ARNs:
+Reference other Planton-managed resources instead of hardcoding ARNs:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsGlobalAccelerator
 metadata:
   name: ref-ga
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsGlobalAccelerator.ref-ga
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsGlobalAccelerator.ref-ga
 spec:
   region: us-east-1
   flowLogs:

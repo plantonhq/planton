@@ -6,7 +6,7 @@ go_library(
         "pulumiUtilities.go",
         "pulumiVersion.go",
     ],
-    importpath = "github.com/plantonhq/openmcf/pkg/kubernetes/kubernetestypes/externalsecrets/kubernetes/utilities",
+    importpath = "github.com/plantonhq/planton/pkg/kubernetes/kubernetestypes/externalsecrets/kubernetes/utilities",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_blang_semver//:semver",

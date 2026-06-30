@@ -12,7 +12,7 @@ Deploys a ClickHouse database on Kubernetes using the Altinity ClickHouse Operat
 
 ## What Gets Created
 
-When you deploy a KubernetesClickHouse resource, OpenMCF provisions:
+When you deploy a KubernetesClickHouse resource, Planton provisions:
 
 - **Namespace** — created only when `createNamespace` is `true`
 - **Random Password** — a 20-character password with mixed case, numbers, and URL-safe special characters, generated automatically
@@ -23,7 +23,7 @@ When you deploy a KubernetesClickHouse resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **Altinity ClickHouse Operator** installed in the `clickhouse-operator` namespace on the target cluster
 - **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
 - **A StorageClass** available in the cluster if enabling persistence (most managed Kubernetes clusters provide a default)
@@ -34,15 +34,15 @@ When you deploy a KubernetesClickHouse resource, OpenMCF provisions:
 Create a file `clickhouse.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesClickHouse
 metadata:
   name: my-clickhouse
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesClickHouse.my-clickhouse
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesClickHouse.my-clickhouse
 spec:
   namespace: analytics
   createNamespace: true
@@ -53,7 +53,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f clickhouse.yaml
+planton apply -f clickhouse.yaml
 ```
 
 This creates a single-replica ClickHouse instance with version 24.8, persistence enabled, a 50Gi PersistentVolumeClaim, default resource limits (2000m CPU / 4Gi memory), requests (500m CPU / 1Gi memory), and a randomly generated password stored in a Kubernetes Secret.
@@ -104,15 +104,15 @@ This creates a single-replica ClickHouse instance with version 24.8, persistence
 A lightweight ClickHouse instance for development with smaller resource allocations:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesClickHouse
 metadata:
   name: dev-clickhouse
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesClickHouse.dev-clickhouse
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesClickHouse.dev-clickhouse
 spec:
   namespace: dev
   createNamespace: true
@@ -137,15 +137,15 @@ spec:
 A distributed ClickHouse cluster with 2 shards and 2 replicas per shard for high availability and horizontal scaling, using auto-managed ClickHouse Keeper with 3 replicas:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesClickHouse
 metadata:
   name: prod-clickhouse
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesClickHouse.prod-clickhouse
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesClickHouse.prod-clickhouse
 spec:
   namespace: analytics
   version: "24.8"
@@ -177,15 +177,15 @@ spec:
 ClickHouse exposed outside the cluster via a LoadBalancer with automatic DNS management:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesClickHouse
 metadata:
   name: shared-clickhouse
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesClickHouse.shared-clickhouse
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesClickHouse.shared-clickhouse
 spec:
   namespace: shared-services
   container:
@@ -211,15 +211,15 @@ spec:
 A clustered deployment using an existing ZooKeeper ensemble shared with other services:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesClickHouse
 metadata:
   name: analytics-clickhouse
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesClickHouse.analytics-clickhouse
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesClickHouse.analytics-clickhouse
 spec:
   namespace: analytics
   version: "24.8"
@@ -250,18 +250,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed namespace instead of hardcoding the name:
+Reference an Planton-managed namespace instead of hardcoding the name:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesClickHouse
 metadata:
   name: events-clickhouse
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesClickHouse.events-clickhouse
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesClickHouse.events-clickhouse
 spec:
   namespace:
     valueFrom:

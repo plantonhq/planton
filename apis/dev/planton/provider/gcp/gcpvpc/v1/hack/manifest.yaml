@@ -1,0 +1,8 @@
+apiVersion: gcp.planton.dev/v1
+kind: GcpVpc
+metadata:
+  name: test-vpc
+spec:
+  project_id:
+    value: test-project-123
+  network_name: test-vpc

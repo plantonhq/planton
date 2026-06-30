@@ -9,7 +9,7 @@ go_library(
         "resolve_from_stack_input.go",
         "resolver.go",
     ],
-    importpath = "github.com/plantonhq/openmcf/internal/cli/manifest",
+    importpath = "github.com/plantonhq/planton/internal/cli/manifest",
     visibility = ["//:__subpackages__"],
     deps = [
         "//internal/cli/flag",

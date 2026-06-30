@@ -1,0 +1,24 @@
+apiVersion: digital-ocean.planton.dev/v1
+kind: DigitalOceanDroplet
+metadata:
+  name: first-droplet                        # Kubernetes object name
+spec:
+  dropletName: first-droplet                         # droplet hostname
+  region: blr1                             # NYC3 | SFO3 | FRA1 etc.
+  size: s-2vcpu-4gb                        # enum value
+  image: ubuntu-22-04-x64                  # official Ubuntu image slug
+  vpc:
+    value: b5648f9e-a28a-4760-bb87-b2fad07ae295                           # UUID or ref to DigitalOceanVpc
+  enableIpv6: false                         # optional
+  enableBackups: false                     # optional
+  disableMonitoring: false                 # keep DO monitoring agent
+#  volumeIds:                               # optional block‑volume attachment(s)
+#    - value: 93a7a5b4-62ce-11f0-b9db-0a58ac1466b2                      # UUID or ref to DigitalOceanVolume
+  tags:                                    # unique,  ≤ .64 .chars each
+    - planton
+  userData: |                              # cloud‑init (≤32 .KiB)
+    #cloud-config
+    package_update: true
+    runcmd:
+      - apt-get install -y nginx
+  timezone: utc                            # utc (default) | local

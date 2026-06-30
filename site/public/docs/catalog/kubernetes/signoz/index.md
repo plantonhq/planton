@@ -12,7 +12,7 @@ Deploys the SigNoz observability platform on Kubernetes using the official SigNo
 
 ## What Gets Created
 
-When you deploy a KubernetesSignoz resource, OpenMCF provisions:
+When you deploy a KubernetesSignoz resource, Planton provisions:
 
 - **Namespace** — created only when `createNamespace` is `true`
 - **SigNoz Helm Release** — the full SigNoz stack (UI, API server, Ruler, Alertmanager, and Frontend) deployed via the `signoz` Helm chart from `https://charts.signoz.io` (chart version 0.52.0)
@@ -24,7 +24,7 @@ When you deploy a KubernetesSignoz resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
 - **A StorageClass** available in the cluster if enabling ClickHouse persistence (most managed Kubernetes clusters provide a default)
 - **Istio ingress gateway** installed in the `istio-ingress` namespace if enabling ingress for the UI or OTel Collector
@@ -36,15 +36,15 @@ When you deploy a KubernetesSignoz resource, OpenMCF provisions:
 Create a file `signoz.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesSignoz
 metadata:
   name: my-signoz
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesSignoz.my-signoz
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesSignoz.my-signoz
 spec:
   namespace: observability
   createNamespace: true
@@ -55,7 +55,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f signoz.yaml
+planton apply -f signoz.yaml
 ```
 
 This creates a SigNoz instance with a single SigNoz replica (1000m CPU / 2Gi memory limits), two OTel Collector replicas (2000m CPU / 4Gi memory limits), and a self-managed single-node ClickHouse with 20Gi persistent storage. No ingress is configured; access the UI via port-forward using the `portForwardCommand` stack output.
@@ -125,7 +125,7 @@ This creates a SigNoz instance with a single SigNoz replica (1000m CPU / 2Gi mem
 | `ingress.otelCollector.hostname` | `string` | — | Hostname for external OTel Collector HTTP endpoint (e.g., `otel-ingest.example.com`). Required when `ingress.otelCollector.enabled` is `true`. |
 | `helmValues` | `map<string, string>` | — | Additional key-value pairs passed to the SigNoz Helm chart for advanced customization. See [SigNoz Helm chart documentation](https://github.com/SigNoz/charts) for available options. |
 
-> **Note on `namespace`:** The `namespace` field is a `StringValueOrRef`. You can provide a plain string value directly, or use `valueFrom` to reference the output of another OpenMCF resource (e.g., a KubernetesNamespace).
+> **Note on `namespace`:** The `namespace` field is a `StringValueOrRef`. You can provide a plain string value directly, or use `valueFrom` to reference the output of another Planton resource (e.g., a KubernetesNamespace).
 
 ## Examples
 
@@ -134,15 +134,15 @@ This creates a SigNoz instance with a single SigNoz replica (1000m CPU / 2Gi mem
 A lightweight SigNoz instance for development and testing with smaller resource allocations and a single OTel Collector replica:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesSignoz
 metadata:
   name: dev-signoz
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesSignoz.dev-signoz
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesSignoz.dev-signoz
 spec:
   namespace: dev-observability
   createNamespace: true
@@ -185,15 +185,15 @@ spec:
 A production-grade deployment with ClickHouse clustering (2 shards, 2 replicas), Zookeeper quorum, and external access for both the UI and OTel Collector:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesSignoz
 metadata:
   name: prod-signoz
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesSignoz.prod-signoz
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesSignoz.prod-signoz
 spec:
   namespace: observability
   signozContainer:
@@ -258,15 +258,15 @@ spec:
 Connect SigNoz to an existing external ClickHouse instance instead of deploying one in-cluster. The password is referenced from a pre-existing Kubernetes Secret:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesSignoz
 metadata:
   name: shared-signoz
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesSignoz.shared-signoz
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesSignoz.shared-signoz
 spec:
   namespace: observability
   signozContainer:
@@ -308,18 +308,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed namespace instead of hardcoding the name:
+Reference an Planton-managed namespace instead of hardcoding the name:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesSignoz
 metadata:
   name: team-signoz
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesSignoz.team-signoz
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesSignoz.team-signoz
 spec:
   namespace:
     valueFrom:
@@ -339,15 +339,15 @@ spec:
 Override additional Helm chart values for advanced customization, such as configuring retention policies:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesSignoz
 metadata:
   name: custom-signoz
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.KubernetesSignoz.custom-signoz
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.KubernetesSignoz.custom-signoz
 spec:
   namespace: observability
   createNamespace: true

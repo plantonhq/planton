@@ -75,7 +75,7 @@ flowchart TB
   - `BlockDevice`: `source_type` (validated), `uuid`, `destination_type`, `boot_index`, `volume_size`, `delete_on_termination`, `volume_type`
   - 4 CEL validations: flavor XOR, networks min 1, network uuid XOR port, block_device source_type in-list + tags unique
 - `stack_outputs.proto` -- 5 outputs: instance_id, name, access_ip_v4, access_ip_v6, region
-- `api.proto` -- KRM envelope with `openstack.openmcf.org/v1` + `OpenStackInstance`
+- `api.proto` -- KRM envelope with `openstack.planton.dev/v1` + `OpenStackInstance`
 - `stack_input.proto` -- target + provider_config
 - `spec_test.go` -- 32 tests (20 positive, 12 negative)
 
@@ -92,15 +92,15 @@ Two FK fields resolve to `status.outputs.name` instead of the usual UUID:
 
 ```protobuf
 // key_pair -> keypair name (Nova API uses names)
-org.openmcf.shared.foreignkey.v1.StringValueOrRef key_pair = 5 [
-  (org.openmcf.shared.foreignkey.v1.default_kind) = OpenStackKeypair,
-  (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+dev.planton.shared.foreignkey.v1.StringValueOrRef key_pair = 5 [
+  (dev.planton.shared.foreignkey.v1.default_kind) = OpenStackKeypair,
+  (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
 ];
 
 // security_groups -> SG names (Compute API uses names, unlike Neutron which uses UUIDs)
-repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_groups = 7 [
-  (org.openmcf.shared.foreignkey.v1.default_kind) = OpenStackSecurityGroup,
-  (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+repeated dev.planton.shared.foreignkey.v1.StringValueOrRef security_groups = 7 [
+  (dev.planton.shared.foreignkey.v1.default_kind) = OpenStackSecurityGroup,
+  (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
 ];
 ```
 
@@ -166,7 +166,7 @@ The original plan said `image_id (FK -> Image, optional)`. We use plain strings 
 
 - OpenStackServerGroup: `_changelog/2026-02/2026-02-09-123024-openstack-server-group-deployment-component.md`
 - OpenStack networking components: `_changelog/2026-02/2026-02-09-*`
-- Parent project: `planton/_projects/20260209.01.openstack-openmcf-components/`
+- Parent project: `planton/_projects/20260209.01.openstack-planton-components/`
 
 ---
 

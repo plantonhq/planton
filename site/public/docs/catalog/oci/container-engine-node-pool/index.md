@@ -12,13 +12,13 @@ Deploys an Oracle Cloud Infrastructure Container Engine for Kubernetes (OKE) nod
 
 ## What Gets Created
 
-When you deploy an OciContainerEngineNodePool resource, OpenMCF provisions:
+When you deploy an OciContainerEngineNodePool resource, Planton provisions:
 
-- **OKE Node Pool** — an `oci_containerengine_node_pool` resource in the specified compartment, attached to the target OKE cluster. The node pool manages a set of compute instances running as Kubernetes worker nodes with the specified shape, OS image, and placement configuration. OKE distributes nodes across the configured availability domains and fault domains. Standard OpenMCF freeform tags are applied to both the node pool and its node config for resource tracking.
+- **OKE Node Pool** — an `oci_containerengine_node_pool` resource in the specified compartment, attached to the target OKE cluster. The node pool manages a set of compute instances running as Kubernetes worker nodes with the specified shape, OS image, and placement configuration. OKE distributes nodes across the configured availability domains and fault domains. Standard Planton freeform tags are applied to both the node pool and its node config for resource tracking.
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the node pool will be created — literal value or reference to an OciCompartment resource
 - **An OKE cluster OCID** to attach the node pool to — literal value or reference to an OciContainerEngineCluster resource
 - **A compute shape name** for the worker nodes (e.g., `VM.Standard.E4.Flex`) — run `oci compute shape list` to see available shapes in your compartment
@@ -31,15 +31,15 @@ When you deploy an OciContainerEngineNodePool resource, OpenMCF provisions:
 Create a file `node-pool.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciContainerEngineNodePool
 metadata:
   name: general-pool
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciContainerEngineNodePool.general-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciContainerEngineNodePool.general-pool
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -60,7 +60,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f node-pool.yaml
+planton apply -f node-pool.yaml
 ```
 
 This creates a 3-node pool using E4 Flex instances with 2 OCPUs and 32 GB of memory each, placed in a single availability domain. OKE launches the compute instances, installs the Kubernetes kubelet, and joins the nodes to the cluster. The node pool ID and Kubernetes version are exported as stack outputs. Add more entries to `placementConfigs` to distribute nodes across multiple availability domains.
@@ -170,15 +170,15 @@ This creates a 3-node pool using E4 Flex instances with 2 OCPUs and 32 GB of mem
 A basic node pool with a single placement config — the simplest path to running worker nodes:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciContainerEngineNodePool
 metadata:
   name: dev-pool
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciContainerEngineNodePool.dev-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciContainerEngineNodePool.dev-pool
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -201,17 +201,17 @@ spec:
 A production node pool distributed across three availability domains with VCN-native pod networking, NSGs on nodes and pods, KMS boot volume encryption, and in-transit encryption. All infrastructure references use `valueFrom` for declarative composition:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciContainerEngineNodePool
 metadata:
   name: prod-pool
   org: acme
   env: prod
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme
-    pulumi.openmcf.org/project: oke-platform
-    pulumi.openmcf.org/stack.name: prod.OciContainerEngineNodePool.prod-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme
+    pulumi.planton.dev/project: oke-platform
+    pulumi.planton.dev/stack.name: prod.OciContainerEngineNodePool.prod-pool
 spec:
   compartmentId:
     valueFrom:
@@ -293,17 +293,17 @@ spec:
 A GPU-accelerated node pool for ML/AI workloads using preemptible instances for cost savings. Kubernetes labels enable workload scheduling via `nodeSelector`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciContainerEngineNodePool
 metadata:
   name: gpu-pool
   org: acme
   env: prod
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme
-    pulumi.openmcf.org/project: oke-platform
-    pulumi.openmcf.org/stack.name: prod.OciContainerEngineNodePool.gpu-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme
+    pulumi.planton.dev/project: oke-platform
+    pulumi.planton.dev/stack.name: prod.OciContainerEngineNodePool.gpu-pool
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -340,17 +340,17 @@ spec:
 An Ampere A1 Flex node pool for cost-optimized workloads with a capacity reservation guarantee and fault domain constraints:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciContainerEngineNodePool
 metadata:
   name: arm-pool
   org: acme
   env: prod
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme
-    pulumi.openmcf.org/project: oke-platform
-    pulumi.openmcf.org/stack.name: prod.OciContainerEngineNodePool.arm-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme
+    pulumi.planton.dev/project: oke-platform
+    pulumi.planton.dev/stack.name: prod.OciContainerEngineNodePool.arm-pool
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"

@@ -12,13 +12,13 @@ Creates an IAM policy binding that allows a Kubernetes ServiceAccount (KSA) in a
 
 ## What Gets Created
 
-When you deploy a GcpGkeWorkloadIdentityBinding resource, OpenMCF provisions:
+When you deploy a GcpGkeWorkloadIdentityBinding resource, Planton provisions:
 
 - **IAM Member Binding** — a `google_service_account_iam_member` resource that grants the `roles/iam.workloadIdentityUser` role on the target GSA to the Workload Identity member principal (`serviceAccount:<project>.svc.id.goog[<namespace>/<ksa-name>]`)
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **A GCP project** with a GKE cluster that has Workload Identity enabled
 - **A Google Service Account** (GSA) that the Kubernetes workload should impersonate
 - **A Kubernetes ServiceAccount** (KSA) already created (or planned) in the target namespace and cluster
@@ -28,15 +28,15 @@ When you deploy a GcpGkeWorkloadIdentityBinding resource, OpenMCF provisions:
 Create a file `workload-identity-binding.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpGkeWorkloadIdentityBinding
 metadata:
   name: cert-manager-binding
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpGkeWorkloadIdentityBinding.cert-manager-binding
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpGkeWorkloadIdentityBinding.cert-manager-binding
 spec:
   projectId: my-gcp-project-123
   serviceAccountEmail: cert-manager@my-gcp-project-123.iam.gserviceaccount.com
@@ -47,7 +47,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f workload-identity-binding.yaml
+planton apply -f workload-identity-binding.yaml
 ```
 
 This grants the `cert-manager` Kubernetes ServiceAccount in the `cert-manager` namespace permission to impersonate the `cert-manager` GSA.
@@ -74,15 +74,15 @@ This component has no optional fields. All spec fields are required.
 Allow the cert-manager controller to use a GSA for DNS-01 ACME challenges:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpGkeWorkloadIdentityBinding
 metadata:
   name: cert-manager-binding
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpGkeWorkloadIdentityBinding.cert-manager-binding
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpGkeWorkloadIdentityBinding.cert-manager-binding
 spec:
   projectId: my-gcp-project-123
   serviceAccountEmail: cert-manager@my-gcp-project-123.iam.gserviceaccount.com
@@ -95,15 +95,15 @@ spec:
 Grant a backend service running in the `payments` namespace access to a GSA with Cloud SQL and Pub/Sub permissions:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpGkeWorkloadIdentityBinding
 metadata:
   name: payments-api-binding
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpGkeWorkloadIdentityBinding.payments-api-binding
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpGkeWorkloadIdentityBinding.payments-api-binding
 spec:
   projectId: my-gcp-project-123
   serviceAccountEmail: payments-api@my-gcp-project-123.iam.gserviceaccount.com
@@ -113,18 +113,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference OpenMCF-managed resources instead of hardcoding the project ID and service account email:
+Reference Planton-managed resources instead of hardcoding the project ID and service account email:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpGkeWorkloadIdentityBinding
 metadata:
   name: external-dns-binding
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpGkeWorkloadIdentityBinding.external-dns-binding
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpGkeWorkloadIdentityBinding.external-dns-binding
 spec:
   projectId:
     valueFrom:

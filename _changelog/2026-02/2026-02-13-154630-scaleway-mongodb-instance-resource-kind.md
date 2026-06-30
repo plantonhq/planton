@@ -10,11 +10,11 @@ Implemented the eleventh Scaleway resource kind: `ScalewayMongodbInstance`. This
 
 ## Problem Statement / Motivation
 
-The Scaleway provider in OpenMCF needed managed MongoDB support to complete the database tier. MongoDB is a widely-used document database that complements the existing relational (RDB) and in-memory (Redis) offerings. The `database-stack` infra chart needs all three database types to provide comprehensive data platform coverage.
+The Scaleway provider in Planton needed managed MongoDB support to complete the database tier. MongoDB is a widely-used document database that complements the existing relational (RDB) and in-memory (Redis) offerings. The `database-stack` infra chart needs all three database types to provide comprehensive data platform coverage.
 
 ### Pain Points
 
-- No managed MongoDB option in OpenMCF for Scaleway
+- No managed MongoDB option in Planton for Scaleway
 - Users deploying MongoDB on Scaleway must manually create instances and configure users
 - No infra-chart composability for MongoDB in the dependency DAG
 
@@ -64,7 +64,7 @@ This results in a 2-type composite (vs RDB's 5 types).
 ### Files Created
 
 **Proto schemas** (4 files):
-- `api.proto` -- Standard OpenMCF API wrapper
+- `api.proto` -- Standard Planton API wrapper
 - `spec.proto` -- ScalewayMongodbInstanceSpec with users, roles, and CEL validations
 - `stack_outputs.proto` -- 7 outputs (instance_id, public/private endpoints, TLS cert)
 - `stack_input.proto` -- Standard stack input

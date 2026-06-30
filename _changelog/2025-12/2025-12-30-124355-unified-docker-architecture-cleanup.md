@@ -48,7 +48,7 @@ Added missing Pulumi login logic to the unified entrypoint:
 # Configure Pulumi backend (required for backend service)
 echo "🔧 Configuring Pulumi backend..."
 export PULUMI_HOME=/home/appuser/.pulumi
-export PULUMI_CONFIG_PASSPHRASE=${PULUMI_CONFIG_PASSPHRASE:-openmcf-default-passphrase}
+export PULUMI_CONFIG_PASSPHRASE=${PULUMI_CONFIG_PASSPHRASE:-planton-default-passphrase}
 
 # Automatically choose backend based on environment variables
 if [ -n "$PULUMI_ACCESS_TOKEN" ]; then
@@ -123,7 +123,7 @@ This logic was previously in the unused `app/backend/entrypoint.sh` but never ma
 #### 4. `docker-compose.yml`
 
 **No changes** - File was already correctly configured to use unified container
-- Already referenced `ghcr.io/plantonhq/openmcf:latest` (unified image)
+- Already referenced `ghcr.io/plantonhq/planton:latest` (unified image)
 - Already had correct volume mounts and environment variables
 - This confirmed that the separate Dockerfiles were never used
 

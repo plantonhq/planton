@@ -12,7 +12,7 @@ Deploys a stateful application to Kubernetes as a StatefulSet with a headless se
 
 ## What Gets Created
 
-When you deploy a KubernetesStatefulSet resource, OpenMCF provisions:
+When you deploy a KubernetesStatefulSet resource, Planton provisions:
 
 - **Namespace** — created only when `createNamespace` is `true`
 - **ServiceAccount** — a dedicated service account for the StatefulSet's pods
@@ -30,7 +30,7 @@ When you deploy a KubernetesStatefulSet resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
 - **A container image** accessible from the cluster (public registry or with a configured image pull secret)
 - **cert-manager with a ClusterIssuer** if enabling ingress — the ClusterIssuer name must match the domain extracted from the ingress hostname
@@ -41,15 +41,15 @@ When you deploy a KubernetesStatefulSet resource, OpenMCF provisions:
 Create a file `statefulset.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesStatefulSet
 metadata:
   name: my-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesStatefulSet.my-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesStatefulSet.my-db
 spec:
   namespace: my-namespace
   createNamespace: true
@@ -72,7 +72,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f statefulset.yaml
+planton apply -f statefulset.yaml
 ```
 
 This creates a single-replica PostgreSQL StatefulSet with a headless service, a client service on port 5432, and a 10Gi persistent volume per pod in the `my-namespace` namespace, using default resource limits (1000m CPU, 1Gi memory).
@@ -131,15 +131,15 @@ This creates a single-replica PostgreSQL StatefulSet with a headless service, a 
 A single-replica PostgreSQL instance with a 20Gi persistent volume and health check:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesStatefulSet
 metadata:
   name: postgres
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesStatefulSet.postgres
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesStatefulSet.postgres
 spec:
   namespace: databases
   createNamespace: true
@@ -181,18 +181,18 @@ spec:
 
 ### Distributed Cache with Environment References and ConfigMap
 
-A three-replica Redis cluster referencing configuration from a ConfigMap and receiving connection details from another OpenMCF resource:
+A three-replica Redis cluster referencing configuration from a ConfigMap and receiving connection details from another Planton resource:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesStatefulSet
 metadata:
   name: redis-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.KubernetesStatefulSet.redis-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.KubernetesStatefulSet.redis-cluster
 spec:
   namespace: caching
   container:
@@ -274,15 +274,15 @@ spec:
 A production-grade application with Gateway API ingress, multiple replicas, a pod disruption budget, startup probe, secret references, and multiple volume claim templates:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesStatefulSet
 metadata:
   name: event-store
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesStatefulSet.event-store
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesStatefulSet.event-store
 spec:
   namespace: production
   container:

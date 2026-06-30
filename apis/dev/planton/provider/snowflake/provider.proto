@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package dev.planton.provider.snowflake;
+
+import "buf/validate/validate.proto";
+
+//SnowflakeProviderConfig used for setting up Snowflake Pulumi provider
+//These credentials are used to authenticate and configure integration with Snowflake, enabling automated infrastructure management and deployment.
+//Typical use cases include creating and managing Snowflake databases, warehouses, and roles using Pulumi scripts.
+//For more information on configuring Snowflake credentials with Pulumi, visit:
+//https://www.pulumi.com/registry/packages/snowflake/installation-configuration/#configuring-credentials
+message SnowflakeProviderConfig {
+  //snowflake account
+  // The Snowflake account identifier, which may include the full account URL or just the account name.
+  string account = 1 [(buf.validate.field).required = true];
+
+  //snowflake region
+  // The Snowflake region, which specifies the location of the Snowflake instance.
+  // Example values include 'us-west' or 'eu-central'.
+  string region = 2 [(buf.validate.field).required = true];
+
+  //snowflake username
+  // The username used to authenticate with Snowflake.
+  // Ensure the username follows Snowflake's naming conventions.
+  string username = 3 [(buf.validate.field).required = true];
+
+  //snowflake password
+  // The password used to authenticate with Snowflake.
+  // It is important to store this password securely and avoid hard-coding it in source code.
+  string password = 4 [(buf.validate.field).required = true];
+}

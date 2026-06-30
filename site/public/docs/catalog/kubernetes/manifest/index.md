@@ -8,18 +8,18 @@ componentName: "kubernetesmanifest"
 
 # Kubernetes Manifest
 
-Deploys arbitrary Kubernetes YAML manifests -- single or multi-document -- through OpenMCF's lifecycle management, giving raw Kubernetes resources the same declarative apply/update/destroy workflow as any other OpenMCF component. The module handles namespace creation, multi-document ordering, and CRD dependency resolution automatically.
+Deploys arbitrary Kubernetes YAML manifests -- single or multi-document -- through Planton's lifecycle management, giving raw Kubernetes resources the same declarative apply/update/destroy workflow as any other Planton component. The module handles namespace creation, multi-document ordering, and CRD dependency resolution automatically.
 
 ## What Gets Created
 
-When you deploy a KubernetesManifest resource, OpenMCF provisions:
+When you deploy a KubernetesManifest resource, Planton provisions:
 
 - **Namespace** — created only when `createNamespace` is `true`
 - **All resources defined in `manifestYaml`** — every Kubernetes resource in the provided YAML (single or multi-document) is applied through Pulumi's `yaml/v2.ConfigGroup`, which handles CRD ordering, multi-document splitting, and dependency tracking automatically
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
 - **Valid Kubernetes manifest YAML** containing one or more resource definitions separated by `---`
 - **CRD definitions available on the cluster** if the manifest references custom resource types
@@ -29,15 +29,15 @@ When you deploy a KubernetesManifest resource, OpenMCF provisions:
 Create a file `manifest.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesManifest
 metadata:
   name: my-manifest
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesManifest.my-manifest
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesManifest.my-manifest
 spec:
   namespace:
     value: my-namespace
@@ -53,7 +53,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f manifest.yaml
+planton apply -f manifest.yaml
 ```
 
 This applies the ConfigMap to the `my-namespace` namespace. Resources in the manifest that specify their own namespace use that namespace; resources without one use the namespace from `spec.namespace`.
@@ -79,18 +79,18 @@ This applies the ConfigMap to the `my-namespace` namespace. Resources in the man
 
 ### Basic ConfigMap
 
-A single ConfigMap deployed through OpenMCF lifecycle management:
+A single ConfigMap deployed through Planton lifecycle management:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesManifest
 metadata:
   name: app-config
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesManifest.app-config
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesManifest.app-config
 spec:
   namespace:
     value: default
@@ -109,15 +109,15 @@ spec:
 A RBAC setup deploying a ServiceAccount, Role, and RoleBinding in a newly created namespace:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesManifest
 metadata:
   name: rbac-setup
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.KubernetesManifest.rbac-setup
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.KubernetesManifest.rbac-setup
 spec:
   namespace:
     value: monitoring
@@ -156,18 +156,18 @@ spec:
 
 ### Full Application Stack with CRDs and Cross-Namespace Resources
 
-A complete application manifest deploying a CronJob, a NetworkPolicy, and a PriorityClass (cluster-scoped), referencing a namespace managed by another OpenMCF resource:
+A complete application manifest deploying a CronJob, a NetworkPolicy, and a PriorityClass (cluster-scoped), referencing a namespace managed by another Planton resource:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesManifest
 metadata:
   name: batch-stack
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesManifest.batch-stack
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesManifest.batch-stack
 spec:
   targetCluster:
     clusterKind: GcpGkeCluster

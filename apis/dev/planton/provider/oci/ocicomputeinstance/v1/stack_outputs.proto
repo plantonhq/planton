@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocicomputeinstance.v1;
+
+// OciComputeInstanceStackOutputs contains the outputs produced after
+// deploying an OciComputeInstance.
+// These values are used by downstream components for composability via
+// StringValueOrRef.
+message OciComputeInstanceStackOutputs {
+  // OCID of the compute instance.
+  string instance_id = 1;
+
+  // Private IP address of the primary VNIC.
+  string private_ip = 2;
+
+  // Public IP address of the primary VNIC. Empty when no public IP is assigned.
+  string public_ip = 3;
+
+  // OCID of the boot volume attached to the instance.
+  string boot_volume_id = 4;
+
+  // Availability domain where the instance was placed.
+  string availability_domain = 5;
+}

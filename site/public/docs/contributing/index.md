@@ -1,13 +1,13 @@
 ---
 title: "Contributing"
-description: "How to set up a development environment, build from source, run tests, and contribute to OpenMCF"
+description: "How to set up a development environment, build from source, run tests, and contribute to Planton"
 icon: "users"
 order: 60
 ---
 
-# Contributing to OpenMCF
+# Contributing to Planton
 
-OpenMCF is an open-source project and welcomes contributions from the community. This guide covers everything you need to set up a development environment, build the project, run tests, and submit changes.
+Planton is an open-source project and welcomes contributions from the community. This guide covers everything you need to set up a development environment, build the project, run tests, and submit changes.
 
 ## Prerequisites
 
@@ -35,8 +35,8 @@ Optional but recommended:
 Fork the repository on GitHub, then clone your fork:
 
 ```bash
-git clone https://github.com/<your-username>/openmcf.git
-cd openmcf
+git clone https://github.com/<your-username>/planton.git
+cd planton
 ```
 
 Verify the build works:
@@ -105,16 +105,16 @@ For faster iteration when working on a single component, run tests directly in t
 
 ```bash
 # Run proto validation tests for a specific component
-go test -v ./apis/org/openmcf/provider/aws/awss3bucket/v1/...
+go test -v ./apis/dev/planton/provider/aws/awss3bucket/v1/...
 
 # Build check for a Pulumi module
-go build ./apis/org/openmcf/provider/aws/awss3bucket/v1/iac/pulumi/...
+go build ./apis/dev/planton/provider/aws/awss3bucket/v1/iac/pulumi/...
 
 # Vet check
-go vet ./apis/org/openmcf/provider/aws/awss3bucket/v1/iac/pulumi/...
+go vet ./apis/dev/planton/provider/aws/awss3bucket/v1/iac/pulumi/...
 
 # Validate a Terraform module
-cd apis/org/openmcf/provider/aws/awss3bucket/v1/iac/tf
+cd apis/dev/planton/provider/aws/awss3bucket/v1/iac/tf
 terraform init && terraform validate
 ```
 
@@ -147,13 +147,13 @@ Proto linting includes a custom Buf plugin (`buf/lint/optional-linter/`) that va
 
 - Run `buf format` and `buf lint` before committing proto changes
 - Do not use Java reserved words (`static`, `class`, `default`, `switch`, etc.) as enum values or field names — Java stub generation will fail
-- Scalar fields with defaults must be marked `optional` and annotated with `(org.openmcf.shared.options.default)`
+- Scalar fields with defaults must be marked `optional` and annotated with `(dev.planton.shared.options.default)`
 
 ### Naming Conventions
 
 - Component folders: `<provider><resource>` in lowercase (e.g., `awss3bucket`, `gcpgkecluster`)
 - Component kinds: `<Provider><Resource>` in PascalCase (e.g., `AwsS3Bucket`, `GcpGkeCluster`)
-- API versions: `<provider>.openmcf.org/v1`
+- API versions: `<provider>.planton.dev/v1`
 
 ## Submitting Changes
 

@@ -24,7 +24,7 @@ PostgreSQL databases deployed on Kubernetes lacked automated backup capabilities
 PostgresOperatorKubernetes now supports default backup settings that apply to all managed databases:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: PostgresOperatorKubernetes
 metadata:
   name: postgres-operator
@@ -53,7 +53,7 @@ spec:
 PostgresKubernetes resources can override operator-level backup settings:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: PostgresKubernetes
 metadata:
   name: my-database
@@ -220,7 +220,7 @@ S3-Compatible Storage
 ### Basic Operator Setup
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: PostgresOperatorKubernetes
 metadata:
   name: postgres-operator
@@ -244,7 +244,7 @@ spec:
 ### Database with Inherited Backup
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: PostgresKubernetes
 metadata:
   name: production-db
@@ -258,7 +258,7 @@ spec:
 ### Database with Custom Backup Path
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: PostgresKubernetes
 metadata:
   name: critical-db
@@ -276,7 +276,7 @@ spec:
 ### Database with Backups Disabled
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: PostgresKubernetes
 metadata:
   name: temporary-db

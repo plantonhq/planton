@@ -1,5 +1,5 @@
 ---
-description: Proto Validation coding guidelines for OpenMCF
+description: Proto Validation coding guidelines for Planton
 globs:
   - apis/**/*.proto
 alwaysApply: false
@@ -65,21 +65,21 @@ option (buf.validate.message).cel = {
 
 ## Default Field Options
 
-When a field should have a default value that OpenMCF applies automatically:
+When a field should have a default value that Planton applies automatically:
 
 ### Requirements
 1. Mark the field as `optional`
-2. Add `(org.openmcf.shared.options.default)` field option
+2. Add `(dev.planton.shared.options.default)` field option
 
 ### Import
 ```protobuf
-import "org/openmcf/shared/options/options.proto";
+import "dev/planton/shared/options/options.proto";
 ```
 
 ### Syntax
 ```protobuf
 // ✅ Correct: Both optional keyword AND default option
-optional string namespace = 1 [(org.openmcf.shared.options.default) = "external-dns"];
+optional string namespace = 1 [(dev.planton.shared.options.default) = "external-dns"];
 
 // ❌ Wrong: Default only in comment, no enforcement
 string namespace = 1;  // Missing optional + field option!
@@ -96,7 +96,7 @@ The `DEFAULT_REQUIRES_OPTIONAL` linter (`buf/lint/optional-linter`) fails builds
 
 ## Removing Fields and Enum Values (no `reserved`)
 
-OpenMCF is pre-1.0 with no external wire-compatibility obligations, so do **not** use protobuf `reserved`. Removals are clean.
+Planton is pre-1.0 with no external wire-compatibility obligations, so do **not** use protobuf `reserved`. Removals are clean.
 
 ### Message fields
 - Delete the field and **renumber the remaining fields so they stay sequential** (`1..N`, no gaps). Do not leave a hole or add `reserved`.

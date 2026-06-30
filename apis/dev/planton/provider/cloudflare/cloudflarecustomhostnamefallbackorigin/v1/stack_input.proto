@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.cloudflare.cloudflarecustomhostnamefallbackorigin.v1;
+
+import "dev/planton/provider/cloudflare/cloudflarecustomhostnamefallbackorigin/v1/api.proto";
+import "dev/planton/provider/cloudflare/provider.proto";
+
+//cloudflare-custom-hostname-fallback-origin stack-input
+message CloudflareCustomHostnameFallbackOriginStackInput {
+  //target cloud-resource
+  CloudflareCustomHostnameFallbackOrigin target = 1;
+  //provider-config
+  dev.planton.provider.cloudflare.CloudflareProviderConfig provider_config = 2;
+}

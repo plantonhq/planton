@@ -10,11 +10,11 @@ Added GcpBigtableInstance as a new deployment component for provisioning Cloud B
 
 ## Problem Statement / Motivation
 
-Cloud Bigtable is a critical GCP service for time-series data, IoT telemetry, ad-tech, fintech analytics, and ML feature stores. Without a dedicated deployment component, users had to manually provision Bigtable infrastructure outside of OpenMCF, breaking the declarative, multi-cloud workflow.
+Cloud Bigtable is a critical GCP service for time-series data, IoT telemetry, ad-tech, fintech analytics, and ML feature stores. Without a dedicated deployment component, users had to manually provision Bigtable infrastructure outside of Planton, breaking the declarative, multi-cloud workflow.
 
 ### Pain Points
 
-- No declarative way to provision Bigtable instances through OpenMCF
+- No declarative way to provision Bigtable instances through Planton
 - Multi-cluster replication configuration is complex and error-prone when done manually
 - Autoscaling setup requires understanding Bigtable-specific parameters (CPU target, storage target ranges differ by storage type)
 - CMEK encryption per cluster needs careful key-region alignment
@@ -40,7 +40,7 @@ flowchart TB
 
 1. **Excluded `instance_type`** — GCP has deprecated the DEVELOPMENT/PRODUCTION distinction. All instances are effectively PRODUCTION. A 1-node cluster serves the same purpose as a former "DEVELOPMENT" instance.
 
-2. **Proactive defaults** — `deletion_protection` defaults to `true` and `storage_type` defaults to `SSD` via `optional` + `(org.openmcf.shared.options.default)`, following the mandatory default identification pattern.
+2. **Proactive defaults** — `deletion_protection` defaults to `true` and `storage_type` defaults to `SSD` via `optional` + `(dev.planton.shared.options.default)`, following the mandatory default identification pattern.
 
 3. **Simplified outputs** — Only `instance_id` (fully qualified path) and `instance_name` (short name) since Bigtable clients connect using project ID + instance name. Cluster IDs are deterministic (user-specified).
 
@@ -75,7 +75,7 @@ flowchart TB
 
 ## Benefits
 
-- Declarative Bigtable provisioning through OpenMCF with both Pulumi and Terraform
+- Declarative Bigtable provisioning through Planton with both Pulumi and Terraform
 - Multi-cluster replication configured in a single manifest
 - Autoscaling and CMEK integrated as first-class spec fields
 - Foreign key references enable composition with GcpProject and GcpKmsKey in infra charts
@@ -83,7 +83,7 @@ flowchart TB
 
 ## Impact
 
-- **Users**: Can now provision Bigtable instances declaratively through `openmcf apply`
+- **Users**: Can now provision Bigtable instances declaratively through `planton apply`
 - **Infra chart authors**: Can compose Bigtable into data platform environments using `valueFrom` references
 - **Coverage**: GCP provider now has 20 resource kinds (was 19 + 12 from expansion = 32 total counting previous batches)
 

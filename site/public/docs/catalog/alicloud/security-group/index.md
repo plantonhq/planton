@@ -12,14 +12,14 @@ Deploys an Alibaba Cloud Security Group with bundled security rules in a VPC. Th
 
 ## What Gets Created
 
-When you deploy an AliCloudSecurityGroup resource, OpenMCF provisions:
+When you deploy an AliCloudSecurityGroup resource, Planton provisions:
 
 - **Security Group** -- an `alicloud_security_group` resource bound to the specified VPC with configurable inner access policy and tags
 - **Security Group Rules** -- one `alicloud_security_group_rule` per entry in `rules`, defining ingress and egress traffic policies
 
 ## Prerequisites
 
-- **Alibaba Cloud credentials** configured via environment variables or OpenMCF provider config
+- **Alibaba Cloud credentials** configured via environment variables or Planton provider config
 - **An Alibaba Cloud VPC** -- the security group must belong to a VPC (create one with AliCloudVpc)
 
 ## Quick Start
@@ -27,15 +27,15 @@ When you deploy an AliCloudSecurityGroup resource, OpenMCF provisions:
 Create a file `security-group.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudSecurityGroup
 metadata:
   name: my-web-sg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudSecurityGroup.my-web-sg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudSecurityGroup.my-web-sg
 spec:
   region: cn-hangzhou
   vpcId:
@@ -59,7 +59,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f security-group.yaml
+planton apply -f security-group.yaml
 ```
 
 This creates a security group that allows HTTPS inbound and all outbound traffic.
@@ -81,7 +81,7 @@ This creates a security group that allows HTTPS inbound and all outbound traffic
 | `description` | `string` | `""` | Human-readable description of the security group's purpose. |
 | `innerAccessPolicy` | `string` | `"Accept"` | Controls intra-group traffic. `Accept` allows free communication between instances in the same SG. `Drop` requires explicit rules for intra-group traffic. |
 | `resourceGroupId` | `string` | `""` | Resource group ID for organizational grouping. |
-| `tags` | `map<string, string>` | `{}` | Tags applied to the security group. Merged with standard OpenMCF tags. |
+| `tags` | `map<string, string>` | `{}` | Tags applied to the security group. Merged with standard Planton tags. |
 | `rules` | `list` | `[]` | Security group rules. Each rule creates a separate rule resource. |
 | `rules[].type` | `string` | -- | `ingress` for inbound, `egress` for outbound. Required. |
 | `rules[].ipProtocol` | `string` | -- | Protocol: `tcp`, `udp`, `icmp`, `gre`, `all`. Required. |
@@ -97,15 +97,15 @@ This creates a security group that allows HTTPS inbound and all outbound traffic
 ### Web Tier with HTTP/HTTPS Ingress
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudSecurityGroup
 metadata:
   name: web-tier-sg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AliCloudSecurityGroup.web-tier-sg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AliCloudSecurityGroup.web-tier-sg
 spec:
   region: cn-hangzhou
   vpcId:
@@ -136,15 +136,15 @@ spec:
 ### Database Tier Restricted to VPC
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudSecurityGroup
 metadata:
   name: db-tier-sg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AliCloudSecurityGroup.db-tier-sg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AliCloudSecurityGroup.db-tier-sg
 spec:
   region: cn-hangzhou
   vpcId:

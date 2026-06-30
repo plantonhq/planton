@@ -12,7 +12,7 @@ Deploys an AWS EKS cluster control plane with configurable public/private API en
 
 ## What Gets Created
 
-When you deploy an AwsEksCluster resource, OpenMCF provisions:
+When you deploy an AwsEksCluster resource, Planton provisions:
 
 - **EKS Cluster** — an `aws:eks:Cluster` control plane placed in the specified subnets, using the provided IAM role for AWS API interactions, with configurable public and private endpoint access
 - **Control Plane Log Streams** — created only when `enableControlPlaneLogs` is `true`; enables all five log types (API server, audit, authenticator, controller manager, scheduler) to CloudWatch Logs
@@ -20,7 +20,7 @@ When you deploy an AwsEksCluster resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **At least two subnets** in different Availability Zones within the target VPC (private subnets recommended)
 - **An IAM role** with the `AmazonEKSClusterPolicy` attached, for the EKS service to manage cluster resources
 - **A KMS key ARN** if enabling envelope encryption of Kubernetes secrets
@@ -30,15 +30,15 @@ When you deploy an AwsEksCluster resource, OpenMCF provisions:
 Create a file `eks-cluster.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEksCluster
 metadata:
   name: my-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsEksCluster.my-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsEksCluster.my-cluster
 spec:
   region: us-west-2
   subnetIds:
@@ -50,7 +50,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f eks-cluster.yaml
+planton apply -f eks-cluster.yaml
 ```
 
 This creates an EKS cluster with a public API endpoint across two subnets, using the default Kubernetes version.
@@ -86,15 +86,15 @@ This creates an EKS cluster with a public API endpoint across two subnets, using
 An EKS cluster with the public endpoint disabled, accessible only from within the VPC:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEksCluster
 metadata:
   name: private-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsEksCluster.private-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsEksCluster.private-cluster
 spec:
   region: us-west-2
   subnetIds:
@@ -110,15 +110,15 @@ spec:
 A cluster with control plane logging enabled and public access restricted to specific CIDR blocks:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEksCluster
 metadata:
   name: monitored-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.AwsEksCluster.monitored-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.AwsEksCluster.monitored-cluster
 spec:
   region: us-west-2
   subnetIds:
@@ -138,15 +138,15 @@ spec:
 Production configuration with KMS encryption, control plane logging, and private endpoint:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEksCluster
 metadata:
   name: prod-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsEksCluster.prod-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsEksCluster.prod-cluster
 spec:
   region: us-east-1
   subnetIds:
@@ -162,18 +162,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding ARNs and IDs:
+Reference other Planton-managed resources instead of hardcoding ARNs and IDs:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEksCluster
 metadata:
   name: ref-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsEksCluster.ref-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsEksCluster.ref-cluster
 spec:
   region: us-west-2
   subnetIds:

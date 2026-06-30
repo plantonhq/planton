@@ -1,9 +1,0 @@
-apiVersion: digital-ocean.openmcf.org/v1
-kind: DigitalOceanVpc
-metadata:
-  name: first-vpc
-spec:
-  description: "Primary VPC for OpenMCF staging environment"
-  region: blr1
-  ipRangeCidr: "10.10.0.0/16"
-  isDefaultForRegion: false

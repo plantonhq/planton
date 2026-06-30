@@ -12,13 +12,13 @@ Deploys an OpenStack Cinder block storage volume with configurable size, volume 
 
 ## What Gets Created
 
-When you deploy an OpenStackVolume resource, OpenMCF provisions:
+When you deploy an OpenStackVolume resource, Planton provisions:
 
 - **Cinder Block Storage Volume** — an `openstack_blockstorage_volume_v3` resource with the specified size and optional volume type. The volume can be created blank, initialized from a Glance image (bootable volume), restored from a snapshot, or cloned from an existing volume. These source options are mutually exclusive.
 
 ## Prerequisites
 
-- **OpenStack credentials** configured via environment variables or OpenMCF provider config
+- **OpenStack credentials** configured via environment variables or Planton provider config
 - **A Cinder volume type** available in the target project if specifying `volumeType` (otherwise the project default is used)
 - **A Glance image UUID** if creating a bootable volume via `imageId`
 - **A snapshot UUID** if restoring from a snapshot via `snapshotId`
@@ -29,14 +29,14 @@ When you deploy an OpenStackVolume resource, OpenMCF provisions:
 Create a file `volume.yaml`:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackVolume
 metadata:
   name: my-volume
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: dev.OpenstackVolume.my-volume
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackvolume/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: dev.OpenstackVolume.my-volume
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackvolume/v1/iac/pulumi/module
 spec:
   size: 20
 ```
@@ -44,7 +44,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f volume.yaml
+planton apply -f volume.yaml
 ```
 
 This creates a blank 20 GB Cinder volume using the project's default volume type and availability zone.
@@ -77,14 +77,14 @@ This creates a blank 20 GB Cinder volume using the project's default volume type
 A minimal blank volume suitable for attaching to a compute instance as additional storage:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackVolume
 metadata:
   name: app-data
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: dev.OpenstackVolume.app-data
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackvolume/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: dev.OpenstackVolume.app-data
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackvolume/v1/iac/pulumi/module
 spec:
   size: 50
   volumeType: SSD
@@ -97,14 +97,14 @@ spec:
 A volume initialized from a Glance image, creating a persistent boot disk that can be attached to an instance via OpenStackVolumeAttach:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackVolume
 metadata:
   name: boot-disk
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: prod.OpenstackVolume.boot-disk
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackvolume/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: prod.OpenstackVolume.boot-disk
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackvolume/v1/iac/pulumi/module
 spec:
   size: 40
   volumeType: SSD
@@ -121,14 +121,14 @@ spec:
 Restore a volume from an existing Cinder snapshot, useful for disaster recovery or creating test environments from production data:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackVolume
 metadata:
   name: db-restore
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: staging.OpenstackVolume.db-restore
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackvolume/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: staging.OpenstackVolume.db-restore
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackvolume/v1/iac/pulumi/module
 spec:
   size: 100
   volumeType: SSD
@@ -141,17 +141,17 @@ spec:
 
 ### Bootable Volume with Foreign Key Reference
 
-Reference an OpenMCF-managed Glance image instead of hardcoding a UUID. The `valueFrom` reference creates a DAG dependency so the image is provisioned before the volume:
+Reference an Planton-managed Glance image instead of hardcoding a UUID. The `valueFrom` reference creates a DAG dependency so the image is provisioned before the volume:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackVolume
 metadata:
   name: managed-boot
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: prod.OpenstackVolume.managed-boot
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackvolume/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: prod.OpenstackVolume.managed-boot
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackvolume/v1/iac/pulumi/module
 spec:
   size: 50
   volumeType: SSD

@@ -6,13 +6,13 @@
 
 ## Summary
 
-Built a comprehensive lifecycle management system for OpenMCF deployment components, introducing four atomic operations (Forge, Audit, Update, Delete) that ensure components consistently reach 95-100% of the ideal state. This system transforms component creation from an 8-16 hour manual process into a 30-minute automated workflow, while providing continuous quality assurance through timestamped audit reports and systematic improvement paths through intelligent update scenarios.
+Built a comprehensive lifecycle management system for Planton deployment components, introducing four atomic operations (Forge, Audit, Update, Delete) that ensure components consistently reach 95-100% of the ideal state. This system transforms component creation from an 8-16 hour manual process into a 30-minute automated workflow, while providing continuous quality assurance through timestamped audit reports and systematic improvement paths through intelligent update scenarios.
 
 ## Problem Statement / Motivation
 
 ### The Chaos Before Structure
 
-OpenMCF had a forge system for bootstrapping deployment components, but it suffered from fundamental gaps that led to inconsistent quality and maintenance challenges:
+Planton had a forge system for bootstrapping deployment components, but it suffered from fundamental gaps that led to inconsistent quality and maintenance challenges:
 
 **1. No Definition of "Complete"**
 - Developers had no clear standard for what a production-ready component should include
@@ -176,7 +176,7 @@ Created comprehensive definition of what "complete" means for a deployment compo
 **Files:**
 - `forge/flow/020-research-docs.mdc` - New rule for research documentation
 - `forge/flow/021-pulumi-overview.mdc` - New rule for architecture overview
-- `forge/forge-openmcf-component.mdc` - Updated orchestrator (21 rules)
+- `forge/forge-planton-component.mdc` - Updated orchestrator (21 rules)
 - `forge/README.md` - Comprehensive documentation (368 lines)
 - `forge/FORGE_ANALYSIS.md` - Gap analysis
 
@@ -224,7 +224,7 @@ Phase 7: Validation (2 rules)
 ### 3. Audit System (New)
 
 **Files:**
-- `audit/audit-openmcf-component.mdc` - Complete audit rule (526 lines)
+- `audit/audit-planton-component.mdc` - Complete audit rule (526 lines)
 - `audit/README.md` - Comprehensive documentation (699 lines)
 
 **What It Does:**
@@ -284,7 +284,7 @@ Quick Win: Run update --fill-gaps → 98% complete
 ### 4. Update System (New)
 
 **Files:**
-- `update/update-openmcf-component.mdc` - Complete update rule (531 lines)
+- `update/update-planton-component.mdc` - Complete update rule (531 lines)
 - `update/README.md` - Comprehensive documentation (617 lines)
 
 **What It Does:**
@@ -332,7 +332,7 @@ Intelligently updates existing components based on scenario or explicit instruct
 **Example Workflow:**
 ```bash
 # Fill gaps
-@update-openmcf-component MongodbAtlas --scenario fill-gaps
+@update-planton-component MongodbAtlas --scenario fill-gaps
 
 # Output:
 # [1/8] ✅ Generated Terraform variables.tf
@@ -346,7 +346,7 @@ Intelligently updates existing components based on scenario or explicit instruct
 ### 5. Delete System (New)
 
 **Files:**
-- `delete/delete-openmcf-component.mdc` - Complete delete rule (586 lines)
+- `delete/delete-planton-component.mdc` - Complete delete rule (586 lines)
 - `delete/README.md` - Comprehensive documentation (695 lines)
 
 **What It Does:**
@@ -357,7 +357,7 @@ Safely removes deployment components with comprehensive safety features:
 
 **1. Dry-Run Preview**
 ```bash
-@delete-openmcf-component MongodbAtlas --dry-run
+@delete-planton-component MongodbAtlas --dry-run
 
 # Shows:
 # - What would be deleted (23 files, 450 KB)
@@ -374,7 +374,7 @@ Safely removes deployment components with comprehensive safety features:
 
 **3. Automatic Backup**
 ```bash
-@delete-openmcf-component MongodbAtlas --backup
+@delete-planton-component MongodbAtlas --backup
 
 # Creates:
 # mongodbatlas-backup-2025-11-13-094208/
@@ -435,10 +435,10 @@ Need to work with a component?
 
 | Operation | Purpose | Command |
 |-----------|---------|---------|
-| Forge | Create new | `@forge-openmcf-component <Name> --provider <provider>` |
-| Audit | Assess completeness | `@audit-openmcf-component <Name>` |
-| Update | Enhance existing | `@update-openmcf-component <Name> [--scenario]` |
-| Delete | Remove safely | `@delete-openmcf-component <Name> --backup` |
+| Forge | Create new | `@forge-planton-component <Name> --provider <provider>` |
+| Audit | Assess completeness | `@audit-planton-component <Name>` |
+| Update | Enhance existing | `@update-planton-component <Name> [--scenario]` |
+| Delete | Remove safely | `@delete-planton-component <Name> --backup` |
 
 **3. Common Workflows**
 - Create and validate
@@ -644,19 +644,19 @@ Each operation has a detailed README (368-699 lines each):
 2. `forge/FORGE_ANALYSIS.md`
 3. `forge/flow/020-research-docs.mdc`
 4. `forge/flow/021-pulumi-overview.mdc`
-5. `forge/forge-openmcf-component.mdc` (updated)
+5. `forge/forge-planton-component.mdc` (updated)
 6. `forge/README.md` (368 lines)
 
 **Audit System (2 files):**
-7. `audit/audit-openmcf-component.mdc` (526 lines)
+7. `audit/audit-planton-component.mdc` (526 lines)
 8. `audit/README.md` (699 lines)
 
 **Update System (2 files):**
-9. `update/update-openmcf-component.mdc` (531 lines)
+9. `update/update-planton-component.mdc` (531 lines)
 10. `update/README.md` (617 lines)
 
 **Delete System (2 files):**
-11. `delete/delete-openmcf-component.mdc` (586 lines)
+11. `delete/delete-planton-component.mdc` (586 lines)
 12. `delete/README.md` (695 lines)
 
 **Master Documentation (1 file):**
@@ -765,7 +765,7 @@ Each operation has a detailed README (368-699 lines each):
 
 ```bash
 # Bootstrap new component
-@forge-openmcf-component MongodbAtlas --provider atlas
+@forge-planton-component MongodbAtlas --provider atlas
 
 # Forge executes 21 rules in 7 phases:
 # Phase 1: Proto API ✅
@@ -779,7 +779,7 @@ Each operation has a detailed README (368-699 lines each):
 # Result: 98% complete (95-100% target achieved)
 
 # Verify completeness
-@audit-openmcf-component MongodbAtlas
+@audit-planton-component MongodbAtlas
 
 # Output:
 # Score: 98%
@@ -791,7 +791,7 @@ Each operation has a detailed README (368-699 lines each):
 
 ```bash
 # Check current state
-@audit-openmcf-component OldComponent
+@audit-planton-component OldComponent
 
 # Output:
 # Score: 60%
@@ -803,7 +803,7 @@ Each operation has a detailed README (368-699 lines each):
 #   ⚠️ Examples incomplete (3%)
 
 # Fill identified gaps
-@update-openmcf-component OldComponent --scenario fill-gaps
+@update-planton-component OldComponent --scenario fill-gaps
 
 # Update executes:
 # [1/12] ✅ Generate Terraform module
@@ -814,7 +814,7 @@ Each operation has a detailed README (368-699 lines each):
 # [12/12] ✅ Validation complete
 
 # Verify improvement
-@audit-openmcf-component OldComponent
+@audit-planton-component OldComponent
 
 # Output:
 # Score: 95%
@@ -829,7 +829,7 @@ Each operation has a detailed README (368-699 lines each):
 # Added: bool enable_monitoring = 15;
 
 # Propagate changes
-@update-openmcf-component MyComponent --scenario proto-changed
+@update-planton-component MyComponent --scenario proto-changed
 
 # Update executes:
 # ✅ Regenerate proto stubs (.pb.go files)
@@ -845,7 +845,7 @@ Each operation has a detailed README (368-699 lines each):
 
 ```bash
 # Preview deletion
-@delete-openmcf-component ObsoleteComponent --dry-run
+@delete-planton-component ObsoleteComponent --dry-run
 
 # Output:
 # Would delete:
@@ -857,7 +857,7 @@ Each operation has a detailed README (368-699 lines each):
 #   ℹ️  changelog/2024-03-15.md (historical)
 
 # Delete with backup
-@delete-openmcf-component ObsoleteComponent --backup
+@delete-planton-component ObsoleteComponent --backup
 
 # Confirmation prompt:
 # Type 'DELETE ObsoleteComponent' to confirm: DELETE ObsoleteComponent
@@ -872,7 +872,7 @@ Each operation has a detailed README (368-699 lines each):
 
 ```bash
 # Before committing changes
-@audit-openmcf-component ModifiedComponent
+@audit-planton-component ModifiedComponent
 
 # Score: 85% (was 90% before changes)
 # ⚠️ Score decreased!
@@ -884,7 +884,7 @@ Each operation has a detailed README (368-699 lines each):
 git restore examples.md
 
 # Re-audit:
-@audit-openmcf-component ModifiedComponent
+@audit-planton-component ModifiedComponent
 # Score: 90% ✅
 
 # Safe to commit
@@ -1082,7 +1082,7 @@ During development, manually tested:
 ```bash
 # Audit each component to establish baseline
 for component in AwsRdsInstance GcpCloudSql PostgresKubernetes ...; do
-  @audit-openmcf-component $component
+  @audit-planton-component $component
 done
 
 # Review reports in <component>/v1/docs/audit/
@@ -1100,10 +1100,10 @@ done
 **Step 3: Systematic Updates**
 ```bash
 # For each component in priority order:
-@update-openmcf-component <ComponentName> --scenario fill-gaps
+@update-planton-component <ComponentName> --scenario fill-gaps
 
 # Verify improvement:
-@audit-openmcf-component <ComponentName>
+@audit-planton-component <ComponentName>
 
 # Commit:
 git add -A
@@ -1123,10 +1123,10 @@ git commit -m "improve: bring <ComponentName> to 95%+ completion"
 **Creating Components:**
 ```bash
 # Always use forge (never create manually)
-@forge-openmcf-component NewComponent --provider <provider>
+@forge-planton-component NewComponent --provider <provider>
 
 # Always audit after forge
-@audit-openmcf-component NewComponent
+@audit-planton-component NewComponent
 
 # Expected: 95-100% score
 ```
@@ -1134,12 +1134,12 @@ git commit -m "improve: bring <ComponentName> to 95%+ completion"
 **Modifying Components:**
 ```bash
 # Before changes: Audit baseline
-@audit-openmcf-component ExistingComponent
+@audit-planton-component ExistingComponent
 
 # Make changes...
 
 # After changes: Verify no regression
-@audit-openmcf-component ExistingComponent
+@audit-planton-component ExistingComponent
 
 # Score should maintain or improve
 ```
@@ -1190,7 +1190,7 @@ git commit -m "improve: bring <ComponentName> to 95%+ completion"
 - Testing framework (E2E, unit tests)
 
 **Future Integration:**
-- CLI commands (openmcf forge/audit/update/delete)
+- CLI commands (planton forge/audit/update/delete)
 - Web UI dashboard (visual component health)
 - API endpoints (programmatic access)
 - Webhooks (automated audits on PR)
@@ -1261,7 +1261,7 @@ git commit -m "improve: bring <ComponentName> to 95%+ completion"
 
 ## Conclusion
 
-This implementation delivers a **production-ready, comprehensive lifecycle management system** for OpenMCF deployment components that ensures consistent quality through:
+This implementation delivers a **production-ready, comprehensive lifecycle management system** for Planton deployment components that ensures consistent quality through:
 
 **Systematic Creation** - Forge creates 95-100% complete components in 30 minutes
 

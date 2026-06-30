@@ -12,7 +12,7 @@ Deploys a node pool into an existing Azure Kubernetes Service (AKS) cluster with
 
 ## What Gets Created
 
-When you deploy an AzureAksNodePool resource, OpenMCF provisions:
+When you deploy an AzureAksNodePool resource, Planton provisions:
 
 - **Agent Pool** — a `containerservice.AgentPool` resource in the specified resource group and parent AKS cluster, configured with the chosen VM size, initial node count, OS type, and pool mode
 - **Autoscaling** — cluster autoscaler configuration on the pool when `autoscaling` is provided, with configurable minimum and maximum node counts
@@ -21,7 +21,7 @@ When you deploy an AzureAksNodePool resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An AKS cluster** that the node pool will be added to (can reference an AzureAksCluster resource)
 - **An Azure Resource Group** where the parent cluster resides (can reference an AzureResourceGroup resource)
 
@@ -30,15 +30,15 @@ When you deploy an AzureAksNodePool resource, OpenMCF provisions:
 Create a file `nodepool.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureAksNodePool
 metadata:
   name: worker-pool
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureAksNodePool.worker-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureAksNodePool.worker-pool
 spec:
   clusterName: my-aks-cluster
   vmSize: Standard_D4s_v3
@@ -49,7 +49,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f nodepool.yaml
+planton apply -f nodepool.yaml
 ```
 
 This creates a 3-node User-mode Linux node pool using Standard_D4s_v3 VMs with no autoscaling and no availability zone pinning.
@@ -82,15 +82,15 @@ This creates a 3-node User-mode Linux node pool using Standard_D4s_v3 VMs with n
 A simple application workload pool with a fixed node count:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureAksNodePool
 metadata:
   name: app-pool
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureAksNodePool.app-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureAksNodePool.app-pool
 spec:
   clusterName: my-aks-cluster
   vmSize: Standard_D2s_v3
@@ -103,15 +103,15 @@ spec:
 A production pool that scales between 2 and 10 nodes across three availability zones:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureAksNodePool
 metadata:
   name: prod-pool
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureAksNodePool.prod-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureAksNodePool.prod-pool
 spec:
   clusterName: prod-cluster
   vmSize: Standard_D4s_v3
@@ -131,15 +131,15 @@ spec:
 A cost-optimized pool using Spot VMs that can scale to zero when idle:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureAksNodePool
 metadata:
   name: batch-pool
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureAksNodePool.batch-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureAksNodePool.batch-pool
 spec:
   clusterName: prod-cluster
   vmSize: Standard_D8s_v3
@@ -160,15 +160,15 @@ spec:
 A System-mode pool to host critical cluster components. System pools must be Linux and cannot scale to zero:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureAksNodePool
 metadata:
   name: system-pool
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureAksNodePool.system-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureAksNodePool.system-pool
 spec:
   clusterName: prod-cluster
   vmSize: Standard_D2s_v3
@@ -186,18 +186,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference OpenMCF-managed resources instead of hardcoding names:
+Reference Planton-managed resources instead of hardcoding names:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureAksNodePool
 metadata:
   name: ref-pool
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureAksNodePool.ref-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureAksNodePool.ref-pool
 spec:
   clusterName:
     valueFrom:

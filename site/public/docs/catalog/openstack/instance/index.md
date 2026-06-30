@@ -12,13 +12,13 @@ Deploys an OpenStack Compute instance with configurable flavor, image or boot-fr
 
 ## What Gets Created
 
-When you deploy an OpenStackInstance resource, OpenMCF provisions:
+When you deploy an OpenStackInstance resource, Planton provisions:
 
 - **Compute Instance** — an `openstack_compute_instance_v2` resource with the specified flavor and image (or block device boot source), placed in the configured networks with attached security groups. When `blockDevice` entries are provided, the instance boots from persistent Cinder volumes instead of ephemeral image-based storage. When `serverGroupId` is set, scheduler hints control placement within the server group.
 
 ## Prerequisites
 
-- **OpenStack credentials** configured via environment variables or OpenMCF provider config
+- **OpenStack credentials** configured via environment variables or Planton provider config
 - **At least one network** (a network UUID or a pre-provisioned port UUID) for the instance to attach to
 - **A flavor** (by name or UUID) available in the target OpenStack project
 - **A Glance image** (by name or UUID) if not booting from a block device volume
@@ -30,15 +30,15 @@ When you deploy an OpenStackInstance resource, OpenMCF provisions:
 Create a file `instance.yaml`:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackInstance
 metadata:
   name: my-instance
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OpenStackInstance.my-instance
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OpenStackInstance.my-instance
 spec:
   flavorName: m1.medium
   imageName: ubuntu-22.04
@@ -49,7 +49,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f instance.yaml
+planton apply -f instance.yaml
 ```
 
 This creates a compute instance with the `m1.medium` flavor, booted from the `ubuntu-22.04` Glance image, attached to the specified network.
@@ -99,15 +99,15 @@ This creates a compute instance with the `m1.medium` flavor, booted from the `ub
 A minimal instance booted from a Glance image on a single network with an SSH keypair:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackInstance
 metadata:
   name: web-server
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OpenStackInstance.web-server
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OpenStackInstance.web-server
 spec:
   flavorName: m1.small
   imageName: ubuntu-22.04
@@ -123,15 +123,15 @@ spec:
 An instance with a persistent 50 GB root disk created from a Glance image, recommended for production workloads where the root disk must survive instance rebuilds:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackInstance
 metadata:
   name: db-server
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OpenStackInstance.db-server
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OpenStackInstance.db-server
 spec:
   flavorName: m1.large
   keyPair: ops-keypair
@@ -154,15 +154,15 @@ spec:
 Production instance with server group placement, cloud-init configuration, metadata, multiple networks, and a specific availability zone:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackInstance
 metadata:
   name: app-server-01
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OpenStackInstance.app-server-01
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OpenStackInstance.app-server-01
 spec:
   flavorName: m1.xlarge
   imageName: ubuntu-22.04
@@ -195,18 +195,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding UUIDs:
+Reference other Planton-managed resources instead of hardcoding UUIDs:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackInstance
 metadata:
   name: ref-instance
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OpenStackInstance.ref-instance
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OpenStackInstance.ref-instance
 spec:
   flavorName: m1.medium
   imageName: ubuntu-22.04

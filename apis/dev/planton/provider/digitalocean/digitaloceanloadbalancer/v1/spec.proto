@@ -1,0 +1,125 @@
+syntax = "proto3";
+
+package dev.planton.provider.digitalocean.digitaloceanloadbalancer.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/digitalocean/region.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// DigitalOceanLoadBalancerSpec defines the specification for creating a DigitalOcean Load Balancer.
+// It focuses on essential parameters following the 80/20 principle, including region, VPC placement,
+// target Droplets (by IDs or tag), forwarding rules for traffic, and health checks for backend service health.
+// Note: Either `droplet_ids` or `droplet_tag` may be provided (mutually exclusive). The load balancer must be associated with a VPC.
+message DigitalOceanLoadBalancerSpec {
+  // The name of the Load Balancer. Must be unique per account.
+  // Constraints: 1-64 characters, lowercase alphanumeric and hyphens.
+  string load_balancer_name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 64,
+    (buf.validate.field).string.pattern = "^[a-z0-9-]+$"
+  ];
+
+  // The DigitalOcean region where the Load Balancer will be created.
+  // Determines the geographical location of the load balancer.
+  DigitalOceanRegion region = 2 [(buf.validate.field).required = true];
+
+  // Reference to the DigitalOcean VPC in which to create the Load Balancer.
+  // This should be a foreign key reference to an existing DigitalOceanVpc resource.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef vpc = 3 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = DigitalOceanVpc,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
+  ];
+
+  // A list of forwarding rules that define how traffic is routed from the load balancer to backend Droplets.
+  // Each forwarding rule specifies an incoming port/protocol and a corresponding target port/protocol.
+  repeated DigitalOceanLoadBalancerForwardingRule forwarding_rules = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).repeated.min_items = 1
+  ];
+
+  // Health check configuration for the load balancer’s backend Droplets.
+  // This defines how the load balancer will probe the Droplets to check their health.
+  DigitalOceanLoadBalancerHealthCheck health_check = 5;
+
+  // A list of specific Droplet IDs to attach to the Load Balancer.
+  // Mutually exclusive with `droplet_tag`. These can be literal IDs or references to Droplet resources.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef droplet_ids = 6 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = DigitalOceanDroplet,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.droplet_id"
+  ];
+
+  // A Droplet tag name. All Droplets with this tag in the specified VPC will be attached to the Load Balancer.
+  // Mutually exclusive with `droplet_ids`.
+  string droplet_tag = 7 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 255
+  ];
+
+  // Enables sticky sessions if true (disabled by default).
+  // When enabled, the load balancer will attempt to direct repeated requests from the same client to the same Droplet.
+  bool enable_sticky_sessions = 8;
+}
+
+// LoadBalancerProtocol enumerates the supported protocols for load balancer forwarding and health checks.
+enum DigitalOceanLoadBalancerProtocol {
+  digitalocean_load_balancer_protocol_unspecified = 0; // Default value, should not be used.
+  http = 1;
+  https = 2;
+  tcp = 3;
+}
+
+// ForwardingRule represents a single rule for routing traffic from the load balancer to the backend.
+message DigitalOceanLoadBalancerForwardingRule {
+  // Port on the load balancer that will listen for incoming traffic.
+  uint32 entry_port = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).uint32.gte = 1,
+    (buf.validate.field).uint32.lte = 65535
+  ];
+
+  // Protocol for incoming traffic on the load balancer's entry port (e.g., HTTP, HTTPS, TCP).
+  DigitalOceanLoadBalancerProtocol entry_protocol = 2 [(buf.validate.field).required = true];
+
+  // Port on the Droplet that will receive forwarded traffic.
+  uint32 target_port = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).uint32.gte = 1,
+    (buf.validate.field).uint32.lte = 65535
+  ];
+
+  // Protocol for traffic between the load balancer and the Droplet (e.g., HTTP, HTTPS, TCP).
+  DigitalOceanLoadBalancerProtocol target_protocol = 4 [(buf.validate.field).required = true];
+
+  // The name of a TLS certificate resource uploaded to DigitalOcean.
+  // Required when entry_protocol is HTTPS. The certificate is used for SSL termination.
+  // Use certificate name (not ID) to avoid breaking IaC state when Let's Encrypt auto-renews certificates.
+  string certificate_name = 5 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 255
+  ];
+}
+
+// HealthCheck defines how the load balancer checks the health of attached Droplets.
+message DigitalOceanLoadBalancerHealthCheck {
+  // The port on the Droplet to which the health check will be performed.
+  uint32 port = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).uint32.gte = 1,
+    (buf.validate.field).uint32.lte = 65535
+  ];
+
+  // Protocol to use for health checking (HTTP, HTTPS, or TCP).
+  DigitalOceanLoadBalancerProtocol protocol = 2 [(buf.validate.field).required = true];
+
+  // If using HTTP/HTTPS for health checks, the request path to probe (e.g., "/health").
+  // Ignored for TCP health checks.
+  string path = 3;
+
+  // Interval (in seconds) between health check probes.
+  uint32 check_interval_sec = 4 [(dev.planton.shared.options.recommended_default) = "10"];
+}

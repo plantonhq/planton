@@ -10,11 +10,11 @@ Added AwsCloudwatchAlarm (R15) — the eighteenth new AWS resource kind and the 
 
 ## Problem Statement / Motivation
 
-CloudWatch metric alarms are the primary mechanism for automated monitoring and alerting on AWS. Without this component, OpenMCF users could not define metric-based alarms declaratively or compose them into infra charts alongside the resources they monitor (ECS services, SQS queues, ALBs, etc.).
+CloudWatch metric alarms are the primary mechanism for automated monitoring and alerting on AWS. Without this component, Planton users could not define metric-based alarms declaratively or compose them into infra charts alongside the resources they monitor (ECS services, SQS queues, ALBs, etc.).
 
 ### Pain Points
 
-- No declarative alarm definition in OpenMCF — users had to manage alarms outside the IaC workflow
+- No declarative alarm definition in Planton — users had to manage alarms outside the IaC workflow
 - Metric math alarms (error rates, latency percentiles) are common in production (~35% of alarms) but were not addressable
 - Alarm actions (SNS notifications) could not participate in the infra chart DAG via `valueFrom` references
 - Phase 1 of the AWS expansion had one remaining component blocking completion

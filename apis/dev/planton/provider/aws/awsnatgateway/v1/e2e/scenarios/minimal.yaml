@@ -1,0 +1,34 @@
+# Minimal AwsNatGateway scenario: a public NAT gateway composed from two
+# prerequisites. subnetId is a value_from reference to the AwsSubnet prerequisite
+# and allocationId to the AwsElasticIp prerequisite (both declared via
+# prerequisites: [AwsSubnet, AwsElasticIp] in the kind registry). The harness
+# deploys AwsVpc -> AwsSubnet -> AwsElasticIp first (the subnet resolves its own
+# vpcId against the VPC), then resolves these references to the created ids before
+# the NAT gateway is applied. Full metadata is supplied for tagging/orphan cleanup.
+apiVersion: aws.planton.dev/v1
+kind: AwsNatGateway
+metadata:
+  name: planton-oss-e2e-awsnatgateway-smoke
+  id: planton-oss-e2e-awsnatgateway-smoke
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: awsnatgateway
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  region: us-west-2
+  connectivityType: public
+  subnetId:
+    valueFrom:
+      kind: AwsSubnet
+      name: planton-oss-e2e-awssubnet-smoke
+      fieldPath: status.outputs.subnet_id
+  allocationId:
+    valueFrom:
+      kind: AwsElasticIp
+      name: planton-oss-e2e-awselasticip-prereq
+      fieldPath: status.outputs.allocation_id

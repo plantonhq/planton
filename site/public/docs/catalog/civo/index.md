@@ -1,13 +1,13 @@
 ---
 title: "CIVO"
-description: "Deploy CIVO resources using OpenMCF"
+description: "Deploy CIVO resources using Planton"
 icon: "cloud"
 order: 10
 ---
 
 # CIVO
 
-The following CIVO resources can be deployed using OpenMCF:
+The following CIVO resources can be deployed using Planton:
 
 - [Bucket](/docs/catalog/civo/bucket)
 - [Certificate](/docs/catalog/civo/certificate)

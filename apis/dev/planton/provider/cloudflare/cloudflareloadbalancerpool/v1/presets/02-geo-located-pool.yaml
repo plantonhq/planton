@@ -1,0 +1,23 @@
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareLoadBalancerPool
+metadata:
+  name: us-west-pool
+spec:
+  accountId: <cloudflare-account-id>
+  name: us-west-pool
+  origins:
+    - name: us-west-1
+      address:
+        value: <origin-address>
+      weight: 1
+  monitor:
+    valueFrom:
+      kind: CloudflareLoadBalancerMonitor
+      name: web-https
+      fieldPath: status.outputs.monitor_id
+  latitude: 37.77
+  longitude: -122.42
+  checkRegions:
+    - WNAM
+  originSteering:
+    policy: least_connections

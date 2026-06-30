@@ -6,10 +6,10 @@ go_library(
         "kubeconfig.go",
         "provider.go",
     ],
-    importpath = "github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/provider/aws/pulumiekskubernetesprovider",
+    importpath = "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/pulumiekskubernetesprovider",
     visibility = ["//visibility:public"],
     deps = [
-        "//apis/org/openmcf/provider/aws",
+        "//apis/dev/planton/provider/aws",
         "@com_github_pkg_errors//:errors",
         "@com_github_pulumi_pulumi_aws_sdk_v7//go/aws/eks",
         "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes",

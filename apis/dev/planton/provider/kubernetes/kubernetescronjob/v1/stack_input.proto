@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetescronjob.v1;
+
+import "dev/planton/provider/kubernetes/kubernetescronjob/v1/api.proto";
+import "dev/planton/provider/kubernetes/provider.proto";
+
+//cron-job-kubernetes stack-input
+message KubernetesCronJobStackInput {
+  //target cloud-resource
+  KubernetesCronJob target = 1;
+  //provider-config
+  dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+  //kubernetes namespace
+  string kubernetes_namespace = 3;
+  //docker-config-json to be used for setting up image-pull-secret
+  string docker_config_json = 4;
+}

@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package dev.planton.provider.cloudflare.cloudflareemailroutingrule.v1;
+
+// CloudflareEmailRoutingRuleStackOutputs captures the outputs after creating a
+// routing rule.
+message CloudflareEmailRoutingRuleStackOutputs {
+  // The Cloudflare-assigned identifier of the routing rule.
+  string rule_id = 1;
+
+  // The zone ID the rule belongs to.
+  string zone_id = 2;
+}

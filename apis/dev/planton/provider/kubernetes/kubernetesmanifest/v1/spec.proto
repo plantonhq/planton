@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesmanifest.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/target_cluster.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+/**
+ * **KubernetesManifestSpec** defines the configuration for deploying raw Kubernetes manifests.
+ * This is a generic deployment component that can deploy any valid Kubernetes manifest YAML,
+ * including multi-document manifests containing multiple resources.
+ */
+message KubernetesManifestSpec {
+  // Target Kubernetes Cluster
+  dev.planton.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  // Kubernetes Namespace
+  // The namespace where the manifest resources will be deployed.
+  // Note: Resources in the manifest that specify their own namespace will use their specified namespace.
+  // Resources without a namespace specified will use this namespace.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // Flag to indicate if the namespace should be created.
+  // When true, the namespace will be created before applying the manifest.
+  // When false, the namespace must already exist.
+  bool create_namespace = 3;
+
+  // The raw Kubernetes manifest YAML to deploy.
+  // This can be a single manifest or multiple manifests separated by "---".
+  // All valid Kubernetes resources are supported: Deployments, Services, ConfigMaps,
+  // Secrets, CRDs, Custom Resources, and any other Kubernetes resource types.
+  //
+  // Example single manifest:
+  // ```yaml
+  // apiVersion: v1
+  // kind: ConfigMap
+  // metadata:
+  //   name: my-config
+  // data:
+  //   key: value
+  // ```
+  //
+  // Example multi-manifest:
+  // ```yaml
+  // apiVersion: v1
+  // kind: ConfigMap
+  // metadata:
+  //   name: my-config
+  // data:
+  //   key: value
+  // ---
+  // apiVersion: apps/v1
+  // kind: Deployment
+  // metadata:
+  //   name: my-app
+  // spec:
+  //   ...
+  // ```
+  string manifest_yaml = 4 [(buf.validate.field).required = true];
+}

@@ -1,0 +1,15 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: awsvpc
+spec:
+  # The thin VPC under live E2E: the harness runs deploy -> DescribeVpcs verify ->
+  # destroy -> verify-destroyed on both provisioners against the AWS test account
+  # via keyless SSO/OIDC credentials. AwsVpc has no prerequisites -- it is the root
+  # of the networking graph.
+  tier: 1
+  status: green
+  validated_provisioners:
+    - pulumi
+    - terraform
+  timeout_minutes: 10

@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsrdsinstance.v1;
+
+// AwsRdsInstanceStackOutputs captures observable identifiers for a single RDS DB instance.
+message AwsRdsInstanceStackOutputs {
+  // DB instance identifier (RDS resource ID)
+  string rds_instance_id = 1;
+  // DB instance ARN
+  string rds_instance_arn = 2;
+  // The instance endpoint hostname
+  string rds_instance_endpoint = 3;
+  // The port on which the instance accepts connections
+  int32 rds_instance_port = 4;
+  // The associated DB subnet group name
+  string rds_subnet_group = 5;
+  // A security group ID associated with the instance (if created/managed)
+  string rds_security_group = 6;
+  // The parameter group associated with the instance
+  string rds_parameter_group = 7;
+}

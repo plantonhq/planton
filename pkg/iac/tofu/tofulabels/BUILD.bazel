@@ -3,6 +3,6 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "tofulabels",
     srcs = ["labels.go"],
-    importpath = "github.com/plantonhq/openmcf/pkg/iac/tofu/tofulabels",
+    importpath = "github.com/plantonhq/planton/pkg/iac/tofu/tofulabels",
     visibility = ["//visibility:public"],
 )

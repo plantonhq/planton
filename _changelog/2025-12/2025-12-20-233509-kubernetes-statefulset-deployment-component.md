@@ -6,11 +6,11 @@
 
 ## Summary
 
-Created a new `KubernetesStatefulSet` deployment component for deploying stateful applications on Kubernetes. This component provides stable network identity, persistent storage via volume claim templates, ordered pod management, and integrates with the existing OpenMCF infrastructure patterns. The implementation includes complete Pulumi and Terraform modules with feature parity.
+Created a new `KubernetesStatefulSet` deployment component for deploying stateful applications on Kubernetes. This component provides stable network identity, persistent storage via volume claim templates, ordered pod management, and integrates with the existing Planton infrastructure patterns. The implementation includes complete Pulumi and Terraform modules with feature parity.
 
 ## Problem Statement / Motivation
 
-OpenMCF already had `KubernetesDeployment` for stateless workloads and `KubernetesCronJob` for scheduled tasks, but lacked a dedicated component for **stateful applications** that require:
+Planton already had `KubernetesDeployment` for stateless workloads and `KubernetesCronJob` for scheduled tasks, but lacked a dedicated component for **stateful applications** that require:
 
 - Stable, unique network identifiers (predictable pod DNS names)
 - Stable, persistent storage that survives pod rescheduling
@@ -26,7 +26,7 @@ OpenMCF already had `KubernetesDeployment` for stateless workloads and `Kubernet
 
 ## Solution / What's New
 
-A complete `KubernetesStatefulSet` deployment component following the established OpenMCF patterns, with:
+A complete `KubernetesStatefulSet` deployment component following the established Planton patterns, with:
 
 ### Core Features
 
@@ -58,7 +58,7 @@ A complete `KubernetesStatefulSet` deployment component following the establishe
 Created four proto files following the established patterns:
 
 ```
-apis/org/openmcf/provider/kubernetes/kubernetesstatefulset/v1/
+apis/dev/planton/provider/kubernetes/kubernetesstatefulset/v1/
 ├── api.proto           # KRM resource definition
 ├── spec.proto          # StatefulSet-specific configuration
 ├── stack_input.proto   # IaC module inputs
@@ -214,7 +214,7 @@ ginkgo.Describe("Volume claim template validation", func() {
 
 ### For Developers
 
-- **Consistent patterns**: Follows established OpenMCF conventions
+- **Consistent patterns**: Follows established Planton conventions
 - **Dual IaC support**: Both Pulumi and Terraform with feature parity
 - **Comprehensive validation**: CEL expressions prevent invalid configurations
 - **Well-documented**: README, examples, and technical docs included
@@ -222,7 +222,7 @@ ginkgo.Describe("Volume claim template validation", func() {
 ### Example Usage
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesStatefulSet
 metadata:
   name: postgres-db

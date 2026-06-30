@@ -1,0 +1,12 @@
+---
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesGatewayApiCrds
+metadata:
+  name: gateway-api-crds-test
+spec:
+  target_cluster:
+    cluster_kind: GcpGkeCluster
+    cluster_name: test-cluster
+  version: v1.2.1
+  install_channel:
+    channel: standard

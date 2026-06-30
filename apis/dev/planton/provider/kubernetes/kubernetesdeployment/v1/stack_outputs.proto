@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesdeployment.v1;
+
+//microservice-kubernetes-stack outputs
+message KubernetesDeploymentStackOutputs {
+  //kubernetes namespace in which microservice-kubernetes is created.
+  string namespace = 1;
+
+  //kubernetes service name for microservice-kubernetes.
+  //ex: main-microservice-kubernetes
+  //in the above example, "main" is the name of the microservice-kubernetes
+  string service = 2;
+
+  //command to setup port-forwarding to open microservice-kubernetes from developers laptop.
+  //this might come handy when microservice-kubernetes ingress is disabled for security reasons.
+  //this is rendered by combining microservice_kubernetes_kubernetes_service and kubernetes_namespace
+  //ex: kubectl port-forward svc/microservice_kubernetes_kubernetes_service -n kubernetes_namespace 8080:8080
+  //running the command from this attribute makes it possible to access microservice-kubernetes using http://localhost:8080
+  string port_forward_command = 3;
+
+  //kubernetes endpoint to connect to microservice-kubernetes from the web browser.
+  //ex: main-microservice-kubernetes.namespace.svc.instance.local:8080
+  string kube_endpoint = 4;
+
+  //public endpoint to open microservice-kubernetes from clients outside kubernetes.
+  //ex: https://k8sms-planton-pcs-dev-account.dev.planton.live:8080
+  string external_hostname = 5;
+
+  //internal endpoint to open microservice-kubernetes from clients inside kubernetes.
+  //ex: https://k8sms-planton-pcs-dev-account-internal.dev.planton.live:8080
+  string internal_hostname = 6;
+}

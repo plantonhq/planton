@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsredshiftcluster.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/aws/awsredshiftcluster/v1/spec.proto";
+import "dev/planton/provider/aws/awsredshiftcluster/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// aws-redshift-cluster
+message AwsRedshiftCluster {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'aws.planton.dev/v1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'AwsRedshiftCluster'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  AwsRedshiftClusterSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  AwsRedshiftClusterStatus status = 5;
+}
+
+// aws-redshift-cluster status
+message AwsRedshiftClusterStatus {
+  //stack-outputs
+  AwsRedshiftClusterStackOutputs outputs = 1;
+}

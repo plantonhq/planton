@@ -1,0 +1,25 @@
+apiVersion: azure.planton.dev/v1
+kind: AzureContainerRegistry
+metadata:
+  name: test-acr
+  labels:
+    environment: production
+    team: platform
+spec:
+  # Primary region
+  region: eastus
+  
+  # Globally unique registry name (5-50 lowercase alphanumeric)
+  registryName: testcompanyacr
+  
+  # SKU: BASIC, STANDARD, or PREMIUM
+  sku: PREMIUM
+  
+  # Disable admin user for production (use Azure AD)
+  adminUserEnabled: false
+  
+  # Geo-replication regions (Premium SKU only)
+  geoReplicationRegions:
+    - westeurope
+    - southeastasia
+

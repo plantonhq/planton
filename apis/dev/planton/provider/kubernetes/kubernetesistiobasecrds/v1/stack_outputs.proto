@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesistiobasecrds.v1;
+
+// KubernetesIstioBaseCrdsStackOutputs captures observable outputs from the Istio CRDs
+// installation.
+message KubernetesIstioBaseCrdsStackOutputs {
+  // Istio release the CRDs were installed from (the pinned SDK ref, e.g. "release-1.26").
+  string installed_release = 1;
+
+  // Full URL of the istio/base CRD bundle that was applied -- the authoritative record
+  // of exactly what landed on the cluster.
+  string installed_manifest_url = 2;
+}

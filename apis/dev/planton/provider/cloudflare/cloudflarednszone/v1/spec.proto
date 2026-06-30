@@ -1,0 +1,280 @@
+syntax = "proto3";
+package dev.planton.provider.cloudflare.cloudflarednszone.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// **CloudflareDnsZoneSpec** defines a Cloudflare DNS zone: the domain, its
+// account, common zone-level options, optional zone-wide DNS settings and DNSSEC,
+// and an optional set of DNS records managed alongside the zone. Records may also
+// be managed independently as first-class CloudflareDnsRecord resources; the
+// embedded list is a convenience for records whose lifecycle tracks the zone.
+message CloudflareDnsZoneSpec {
+  // The zone's deployment type. A full zone hosts DNS entirely with Cloudflare;
+  // a partial (CNAME setup) zone is partner-hosted; secondary mirrors an
+  // external primary; internal is for internal-only resolution.
+  enum ZoneType {
+    zone_type_unspecified = 0; // Defaults to "full".
+    full = 1;
+    partial = 2;
+    secondary = 3;
+    internal = 4;
+  }
+
+  // Whether the zone behaves as a standard zone or a CDN/DNS-only zone.
+  enum ZoneMode {
+    zone_mode_unspecified = 0; // The provider applies its default ("standard").
+    standard = 1;
+    cdn_only = 2;
+    dns_only = 3;
+  }
+
+  // The fully qualified domain name of the DNS zone (e.g., "example.com").
+  string zone_name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "zone_name"
+      message: "zone_name must be a valid fully qualified domain name"
+      expression: "this.matches('^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?[.])+(?:[a-z](?:[a-z0-9-]{0,61}[a-z0-9])?)$')"
+    }
+  ];
+
+  // The Cloudflare account identifier under which to create the zone.
+  string account_id = 2 [(buf.validate.field).required = true];
+
+  // Whether the zone is created paused. A paused zone uses Cloudflare DNS only
+  // and receives no security or performance (proxy/CDN/WAF) benefits.
+  bool paused = 3;
+
+  // DNS records managed alongside this zone. For records with independent
+  // lifecycles (or that need the full record feature set), prefer standalone
+  // CloudflareDnsRecord resources instead.
+  repeated CloudflareDnsZoneRecord records = 4;
+
+  // The zone's deployment type. Defaults to "full".
+  ZoneType type = 5;
+
+  // Custom (vanity) name servers for the zone. Only available on Business and
+  // Enterprise plans; leave empty to use Cloudflare's assigned name servers.
+  repeated string vanity_name_servers = 6;
+
+  // Optional zone-wide DNS settings (CNAME flattening, zone mode, SOA, etc.).
+  // Omit to leave Cloudflare's defaults in place.
+  CloudflareDnsZoneDnsSettings dns_settings = 7;
+
+  // Optional DNSSEC configuration. Enable to have Cloudflare sign the zone; the
+  // DS record material to hand to your registrar is published as stack outputs.
+  CloudflareDnsZoneDnssec dnssec = 8;
+}
+
+// CloudflareDnsZoneRecord is a DNS record managed inline with the zone. It
+// covers the common record types; for the full v5 record surface (structured
+// data, tags, settings, the long-tail types) use a standalone CloudflareDnsRecord.
+message CloudflareDnsZoneRecord {
+  // Cross-field validation: proxied only valid for A, AAAA, CNAME records.
+  option (buf.validate.message).cel = {
+    id: "record.proxied_only_for_supported_types"
+    message: "proxied can only be true for A, AAAA, or CNAME records"
+    expression: "!this.proxied || this.type == 1 || this.type == 2 || this.type == 3"
+  };
+
+  // Cross-field validation: priority required for MX records.
+  option (buf.validate.message).cel = {
+    id: "record.priority_required_for_mx"
+    message: "priority is required for MX records"
+    expression: "this.type != 4 || this.priority > 0"
+  };
+
+  // Common DNS record types for inline records.
+  enum RecordType {
+    // Unspecified record type (invalid).
+    record_type_unspecified = 0;
+    // IPv4 address record.
+    A = 1;
+    // IPv6 address record.
+    AAAA = 2;
+    // Canonical name (alias) record.
+    CNAME = 3;
+    // Mail exchange record.
+    MX = 4;
+    // Text record (SPF, DKIM, verification, etc.).
+    TXT = 5;
+    // Service locator record.
+    SRV = 6;
+    // Nameserver record.
+    NS = 7;
+    // Certification Authority Authorization record.
+    CAA = 8;
+  }
+
+  // The record name (or "@" for the zone apex).
+  string name = 1 [(buf.validate.field).required = true];
+
+  // The DNS record type.
+  RecordType type = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).enum.defined_only = true,
+    (buf.validate.field).cel = {
+      id: "type.not_unspecified"
+      message: "type must be specified (cannot be record_type_unspecified)"
+      expression: "this != 0"
+    }
+  ];
+
+  // The record's value/target in presentation format. For A: an IPv4 address.
+  // For AAAA: an IPv6 address. For CNAME/MX/NS: a hostname. For TXT: text.
+  string content = 3 [(buf.validate.field).required = true];
+
+  // Whether the record is proxied through Cloudflare (orange cloud). Only valid
+  // for A, AAAA, and CNAME records.
+  bool proxied = 4;
+
+  // Time to live (TTL) in seconds. Leave 0 or set 1 for automatic; otherwise
+  // 30-86400.
+  int32 ttl = 5 [(buf.validate.field).cel = {
+    id: "ttl.valid_range"
+    message: "ttl must be 0 or 1 (automatic) or between 30 and 86400 seconds"
+    expression: "this == 0 || this == 1 || (this >= 30 && this <= 86400)"
+  }];
+
+  // Priority for MX records (lower is preferred). Required for MX.
+  int32 priority = 6 [(buf.validate.field).cel = {
+    id: "priority.valid_range"
+    message: "priority must be between 0 and 65535"
+    expression: "this >= 0 && this <= 65535"
+  }];
+
+  // Optional comment/note for the record. Has no effect on DNS responses.
+  string comment = 7;
+}
+
+// CloudflareDnsZoneDnsSettings holds zone-wide DNS settings. All fields are
+// optional; an omitted field leaves Cloudflare's default in place.
+message CloudflareDnsZoneDnsSettings {
+  // Flatten all CNAME records in the zone (a CNAME at the apex is always flattened).
+  bool flatten_all_cnames = 1;
+
+  // Enable Foundation DNS Advanced Nameservers on the zone.
+  bool foundation_dns = 2;
+
+  // Enable multi-provider DNS (activates the zone even with non-Cloudflare NS
+  // records and respects apex NS records during outbound transfers).
+  bool multi_provider = 3;
+
+  // Allow a secondary zone to use proxied override records and apex CNAME
+  // flattening.
+  bool secondary_overrides = 4;
+
+  // Time to live (TTL), in seconds, for the zone's nameserver (NS) records.
+  // Leave 0 to use the default; otherwise 30-86400.
+  uint32 ns_ttl = 5 [(buf.validate.field).cel = {
+    id: "ns_ttl.valid_range"
+    message: "ns_ttl must be 0 (default) or between 30 and 86400 seconds"
+    expression: "this == 0u || (this >= 30u && this <= 86400u)"
+  }];
+
+  // Whether the zone is a standard zone or a CDN/DNS-only zone.
+  CloudflareDnsZoneSpec.ZoneMode zone_mode = 6;
+
+  // Components of the zone's SOA record.
+  CloudflareDnsZoneSoa soa = 7;
+
+  // Settings determining the nameservers through which the zone is available.
+  CloudflareDnsZoneNameservers nameservers = 8;
+
+  // Settings for an internal zone (only relevant when type is "internal").
+  CloudflareDnsZoneInternalDns internal_dns = 9;
+}
+
+// CloudflareDnsZoneSoa configures the zone's SOA record.
+message CloudflareDnsZoneSoa {
+  // Seconds a secondary will keep serving the zone after losing contact with the
+  // primary (86400-2419200).
+  uint32 expire = 1 [(buf.validate.field).cel = {
+    id: "soa_expire.valid_range"
+    message: "expire must be 0 (default) or between 86400 and 2419200 seconds"
+    expression: "this == 0u || (this >= 86400u && this <= 2419200u)"
+  }];
+
+  // TTL for negative caching of records within the zone (60-86400).
+  uint32 min_ttl = 2 [(buf.validate.field).cel = {
+    id: "soa_min_ttl.valid_range"
+    message: "min_ttl must be 0 (default) or between 60 and 86400 seconds"
+    expression: "this == 0u || (this >= 60u && this <= 86400u)"
+  }];
+
+  // The primary nameserver (MNAME). Leave empty for a Cloudflare-assigned value.
+  string mname = 3;
+
+  // Seconds after which a secondary re-checks the SOA for updates (600-86400).
+  uint32 refresh = 4 [(buf.validate.field).cel = {
+    id: "soa_refresh.valid_range"
+    message: "refresh must be 0 (default) or between 600 and 86400 seconds"
+    expression: "this == 0u || (this >= 600u && this <= 86400u)"
+  }];
+
+  // Seconds a secondary waits before retrying after an unresponsive primary
+  // (600-86400).
+  uint32 retry = 5 [(buf.validate.field).cel = {
+    id: "soa_retry.valid_range"
+    message: "retry must be 0 (default) or between 600 and 86400 seconds"
+    expression: "this == 0u || (this >= 600u && this <= 86400u)"
+  }];
+
+  // The zone administrator's email (RNAME), first label being the local part.
+  string rname = 6;
+
+  // TTL of the SOA record itself (300-86400).
+  uint32 ttl = 7 [(buf.validate.field).cel = {
+    id: "soa_ttl.valid_range"
+    message: "ttl must be 0 (default) or between 300 and 86400 seconds"
+    expression: "this == 0u || (this >= 300u && this <= 86400u)"
+  }];
+}
+
+// CloudflareDnsZoneNameservers selects the nameserver set for the zone.
+message CloudflareDnsZoneNameservers {
+  // Configured nameserver set to use for this zone (1-5).
+  uint32 ns_set = 1 [(buf.validate.field).cel = {
+    id: "ns_set.valid_range"
+    message: "ns_set must be 0 (default) or between 1 and 5"
+    expression: "this == 0u || (this >= 1u && this <= 5u)"
+  }];
+
+  // Nameserver type: one of "cloudflare.standard", "custom.account",
+  // "custom.tenant", "custom.zone".
+  string type = 2 [(buf.validate.field).cel = {
+    id: "nameserver_type.valid"
+    message: "type must be one of \"cloudflare.standard\", \"custom.account\", \"custom.tenant\", \"custom.zone\""
+    expression: "this == '' || this in ['cloudflare.standard', 'custom.account', 'custom.tenant', 'custom.zone']"
+  }];
+}
+
+// CloudflareDnsZoneInternalDns configures an internal zone's fallback.
+message CloudflareDnsZoneInternalDns {
+  // The zone to fall back to for resolution. Can be a literal zone ID or a
+  // reference to another CloudflareDnsZone.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef reference_zone_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareDnsZone,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
+  ];
+}
+
+// CloudflareDnsZoneDnssec configures DNSSEC for the zone. Enabling DNSSEC has
+// Cloudflare sign the zone; the resulting DS record material is published as
+// stack outputs for you to enter at your domain registrar.
+message CloudflareDnsZoneDnssec {
+  // Whether DNSSEC is active for the zone.
+  bool enabled = 1;
+
+  // Enable multi-signer DNSSEC, allowing multiple providers to serve a
+  // DNSSEC-signed zone simultaneously (required to add external DNSKEY records).
+  bool multi_signer = 2;
+
+  // Allow transferring in an externally-signed (presigned) DNSSEC zone without
+  // Cloudflare signing records on the fly (for Cloudflare-as-secondary setups).
+  bool presigned = 3;
+
+  // Use NSEC3 rather than NSEC for authenticated denial of existence.
+  bool use_nsec3 = 4;
+}

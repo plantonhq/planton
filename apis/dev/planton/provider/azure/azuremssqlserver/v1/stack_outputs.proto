@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azuremssqlserver.v1;
+
+// **AzureMssqlServerStackOutputs** captures the outputs of provisioning
+// an Azure SQL Database logical server with its databases.
+//
+// The primary outputs are `server_id` for resource identification, `fqdn`
+// for constructing connection strings, and `administrator_login` for
+// authentication. The `database_ids` map provides individual database
+// resource IDs for downstream references.
+//
+// In the database-stack infra chart, the `fqdn` and `administrator_login`
+// outputs are used by applications to construct SQL connection strings:
+//   Server={fqdn};Database={db};User ID={admin};Password={password};Encrypt=True;
+//
+// The `server_id` is referenced by AzurePrivateEndpoint for private connectivity
+// (subresource_names: ["sqlServer"]).
+message AzureMssqlServerStackOutputs {
+  // The Azure Resource Manager ID of the SQL Server.
+  // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Sql/servers/{name}
+  //
+  // Referenced by AzurePrivateEndpoint (private_connection_resource_id)
+  // for establishing private connectivity to the SQL server.
+  string server_id = 1;
+
+  // The name of the SQL Server.
+  string server_name = 2;
+
+  // The fully qualified domain name of the SQL Server.
+  // Format: {name}.database.windows.net
+  //
+  // Used to construct connection strings for SQL clients:
+  //   Server={fqdn},1433;Database={db};User ID={admin};Password={password};
+  string fqdn = 3;
+
+  // The administrator login name.
+  // Exported so downstream resources and applications can construct
+  // connection strings without needing to duplicate this value.
+  string administrator_login = 4;
+
+  // Map of database names to their Azure Resource Manager IDs.
+  // Only populated for databases defined in the spec's `databases` field.
+  // Format: { "myapp": "/subscriptions/.../databases/myapp" }
+  map<string, string> database_ids = 5;
+}

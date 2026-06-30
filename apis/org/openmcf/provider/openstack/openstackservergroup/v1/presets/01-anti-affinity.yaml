@@ -1,6 +1,0 @@
-apiVersion: openstack.openmcf.org/v1
-kind: OpenStackServerGroup
-metadata:
-  name: my-anti-affinity-group
-spec:
-  policy: anti-affinity

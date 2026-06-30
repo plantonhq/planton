@@ -6,11 +6,11 @@
 
 ## Summary
 
-Added Scaleway as provider #24 to OpenMCF, enabling users to manage Scaleway cloud credentials through the platform. The integration spans all 6 system layers -- proto definitions, CLI guidance, stack input / env var processing, provider detection, backend credential CRUD, and frontend credential forms. Scaleway's flat access key / secret key authentication model maps cleanly to 6 `SCW_*` environment variables without the oneof complexity required by OpenStack.
+Added Scaleway as provider #24 to Planton, enabling users to manage Scaleway cloud credentials through the platform. The integration spans all 6 system layers -- proto definitions, CLI guidance, stack input / env var processing, provider detection, backend credential CRUD, and frontend credential forms. Scaleway's flat access key / secret key authentication model maps cleanly to 6 `SCW_*` environment variables without the oneof complexity required by OpenStack.
 
 ## Problem Statement / Motivation
 
-OpenMCF supports 13 cloud providers but had no Scaleway support. Organizations using Scaleway's European cloud infrastructure could not store credentials, use the unified `--provider-config` flag, or leverage credential auto-resolution for Scaleway deployments.
+Planton supports 13 cloud providers but had no Scaleway support. Organizations using Scaleway's European cloud infrastructure could not store credentials, use the unified `--provider-config` flag, or leverage credential auto-resolution for Scaleway deployments.
 
 ### Pain Points
 
@@ -100,7 +100,7 @@ flowchart LR
 
 ```protobuf
 scaleway = 24 [(provider_meta) = {
-  group: "scaleway.openmcf.org"
+  group: "scaleway.planton.dev"
   display_name: "Scaleway"
 }];
 ```

@@ -27,7 +27,7 @@ flowchart LR
   subnet -->|"route 0.0.0.0/0 target_type=internet_gateway target_id=internet_gateway_id"| igw
 ```
 
-- **Spec** (`apis/org/openmcf/provider/aws/awsinternetgateway/v1/spec.proto`): a deliberately minimal surface matching the authoritative `aws_internet_gateway` resource — `region` and a required, **updatable** `vpc_id` (`StringValueOrRef` with `default_kind = AwsVpc`). No CEL rule (no cross-field constraints), no secret-bearing fields.
+- **Spec** (`apis/dev/planton/provider/aws/awsinternetgateway/v1/spec.proto`): a deliberately minimal surface matching the authoritative `aws_internet_gateway` resource — `region` and a required, **updatable** `vpc_id` (`StringValueOrRef` with `default_kind = AwsVpc`). No CEL rule (no cross-field constraints), no secret-bearing fields.
 - **Stack outputs**: `internet_gateway_id`, `internet_gateway_arn`, `vpc_id`, `region` — `internet_gateway_id` is the value an `AwsSubnet` route consumes as its `target_id`.
 - **Registration**: `AwsInternetGateway = 285` in `cloud_resource_kind.proto` (id_prefix `awsigw`, `prerequisites: [AwsVpc]`), wired into `pkg/crkreflect`.
 - **IaC at parity**: Pulumi (`ec2.NewInternetGateway`) and Terraform (`aws_internet_gateway`) produce identical attachments, identity tags, and stack outputs.

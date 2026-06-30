@@ -6,21 +6,21 @@
 
 ## Summary
 
-Forged the GcpKmsKeyRing deployment component — a complete production-ready resource for managing GCP Cloud KMS key rings through OpenMCF. This is the foundation security resource that enables customer-managed encryption keys (CMEK) across the entire GCP resource catalog. The component includes protobuf API definitions, Pulumi Go module, Terraform HCL module, 18 validation tests, 3 presets, and comprehensive documentation.
+Forged the GcpKmsKeyRing deployment component — a complete production-ready resource for managing GCP Cloud KMS key rings through Planton. This is the foundation security resource that enables customer-managed encryption keys (CMEK) across the entire GCP resource catalog. The component includes protobuf API definitions, Pulumi Go module, Terraform HCL module, 18 validation tests, 3 presets, and comprehensive documentation.
 
 ## Problem Statement / Motivation
 
-Cloud KMS key rings are the organizational prerequisite for all CMEK encryption in GCP. Without a GcpKmsKeyRing resource in OpenMCF, users cannot declaratively manage the container that holds their encryption keys. This blocks the entire CMEK dependency chain: KeyRing → CryptoKey → CMEK consumers (BigQuery, Spanner, GKE, CloudSQL, etc.).
+Cloud KMS key rings are the organizational prerequisite for all CMEK encryption in GCP. Without a GcpKmsKeyRing resource in Planton, users cannot declaratively manage the container that holds their encryption keys. This blocks the entire CMEK dependency chain: KeyRing → CryptoKey → CMEK consumers (BigQuery, Spanner, GKE, CloudSQL, etc.).
 
 ### Pain Points
 
-- No way to declaratively create KMS key rings through OpenMCF
+- No way to declaratively create KMS key rings through Planton
 - Infra charts requiring CMEK cannot compose encryption resources
 - Manual key ring creation breaks IaC reproducibility and auditability
 
 ## Solution / What's New
 
-A complete deployment component following the OpenMCF forge workflow (20 steps), covering:
+A complete deployment component following the Planton forge workflow (20 steps), covering:
 
 ### Proto API (4 files)
 
@@ -86,7 +86,7 @@ flowchart LR
 
 ## Impact
 
-- **Resource count**: GCP resources in OpenMCF: 19 existing + 3 new (R01 FirewallRule + R02 GlobalAddress + R03 KmsKeyRing) = 22
+- **Resource count**: GCP resources in Planton: 19 existing + 3 new (R01 FirewallRule + R02 GlobalAddress + R03 KmsKeyRing) = 22
 - **Files created**: 37 files across proto, Go, Terraform, YAML, and Markdown
 - **Tests**: 18 (9 positive, 9 negative) — all passing
 

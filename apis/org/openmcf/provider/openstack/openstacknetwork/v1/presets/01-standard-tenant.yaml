@@ -1,6 +1,0 @@
-apiVersion: openstack.openmcf.org/v1
-kind: OpenStackNetwork
-metadata:
-  name: my-tenant-network
-spec:
-  description: Standard tenant network for workload connectivity

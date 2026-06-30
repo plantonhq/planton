@@ -68,7 +68,7 @@ The aws-native `ProviderArgs` exposes only `AccessKey`/`SecretKey`/`Token`/`Regi
 `AssumeRole` — no `AssumeRoleWithWebIdentity`. Rather than the destructive alternative (converting
 `awsroute53zone` to the classic `route53.Zone` resource, which would replace live hosted zones), the
 builder resolves credentials itself and hands the provider static temporary keys. The token stays an
-opaque OIDC JWT, so OpenMCF remains issuer-agnostic.
+opaque OIDC JWT, so Planton remains issuer-agnostic.
 
 ```mermaid
 sequenceDiagram
@@ -93,11 +93,11 @@ sequenceDiagram
   codemod (handles nested braces; extracts each module's region expression), then compiler-validated.
   `awseventbridgerule` retains the classic `aws` import (a helper in its `main.go` takes
   `*aws.Provider`, the builder's return type).
-- **`apis/org/openmcf/provider/aws/provider.proto`** — `AwsWebIdentityProviderConfig` doc comments
+- **`apis/dev/planton/provider/aws/provider.proto`** — `AwsWebIdentityProviderConfig` doc comments
   generalized to be issuer-agnostic and to document the classic-vs-native exchange-site difference;
   stubs regenerated.
 - **Dependencies** — promoted `aws-sdk-go-v2` (config/credentials/sts) from indirect to direct (the
-  first in-process AWS SDK usage in OpenMCF); `go.mod`/`go.sum`/`MODULE.bazel`/BUILD.bazel updated.
+  first in-process AWS SDK usage in Planton); `go.mod`/`go.sum`/`MODULE.bazel`/BUILD.bazel updated.
 
 ## Benefits
 
@@ -120,7 +120,7 @@ sequenceDiagram
 
 ## Testing Strategy
 
-- `go build ./apis/org/openmcf/provider/aws/...` and `go build ./pkg/...` — green across all modules.
+- `go build ./apis/dev/planton/provider/aws/...` and `go build ./pkg/...` — green across all modules.
 - `go test ./pkg/iac/pulumi/pulumimodule/provider/aws/pulumiawsprovider/... .../pulumiawsnativeprovider/...`
   — both builder suites pass (dispatch arms, validation errors, resolver error propagation).
 - `go mod tidy` clean; `grep` confirms zero remaining inline `aws.NewProvider`/`awsclassic.NewProvider`

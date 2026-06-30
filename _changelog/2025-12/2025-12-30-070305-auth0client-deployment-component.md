@@ -14,7 +14,7 @@ Following the Auth0Connection component, users needed a way to manage Auth0 Appl
 
 ### Pain Points
 
-- No way to manage Auth0 Applications through OpenMCF
+- No way to manage Auth0 Applications through Planton
 - Manual dashboard configuration lacks version control and reproducibility
 - Complex OAuth settings (callbacks, grant types, tokens) require expertise
 - Mobile app configuration (iOS/Android) is error-prone without proper structure
@@ -65,7 +65,7 @@ Auth0Client = 2101 [(kind_meta) = {
 - Signing keys for token verification
 
 **api.proto** - KRM envelope:
-- apiVersion: `auth0.openmcf.org/v1`
+- apiVersion: `auth0.planton.dev/v1`
 - kind: `Auth0Client`
 
 **stack_input.proto** - IaC module inputs
@@ -121,7 +121,7 @@ spec_test.go covers:
 ## Impact
 
 ### Direct
-- Users can now manage Auth0 Applications through OpenMCF
+- Users can now manage Auth0 Applications through Planton
 - CLI supports Auth0Client manifests with `--auth0-provider-config` flag
 - Auth0 provider now has two deployment components
 
@@ -155,7 +155,7 @@ spec_test.go covers:
 ### Single Page Application
 
 ```yaml
-apiVersion: auth0.openmcf.org/v1
+apiVersion: auth0.planton.dev/v1
 kind: Auth0Client
 metadata:
   name: my-spa-app
@@ -177,7 +177,7 @@ spec:
 ### Machine-to-Machine Application
 
 ```yaml
-apiVersion: auth0.openmcf.org/v1
+apiVersion: auth0.planton.dev/v1
 kind: Auth0Client
 metadata:
   name: backend-api-client
@@ -193,7 +193,7 @@ spec:
 ### Native Mobile App
 
 ```yaml
-apiVersion: auth0.openmcf.org/v1
+apiVersion: auth0.planton.dev/v1
 kind: Auth0Client
 metadata:
   name: mobile-app

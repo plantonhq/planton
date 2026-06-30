@@ -1,13 +1,13 @@
 ---
 title: "OPENFGA"
-description: "Deploy OPENFGA resources using OpenMCF"
+description: "Deploy OPENFGA resources using Planton"
 icon: "cloud"
 order: 10
 ---
 
 # OPENFGA
 
-The following OPENFGA resources can be deployed using OpenMCF:
+The following OPENFGA resources can be deployed using Planton:
 
 - [Authorization Model](/docs/catalog/openfga/authorization-model)
 - [Relationship Tuple](/docs/catalog/openfga/relationship-tuple)

@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsroute53zone.v1;
+
+// Status for the AWS Route53 Zone
+message AwsRoute53ZoneStackOutputs {
+  // hosted-zone id
+  string zone_id = 1;
+  // hosted-zone name
+  string zone_name = 2;
+  // The list of nameservers for the Managed Zone created for the DNS Domain.
+  repeated string nameservers = 3;
+
+  // caller_reference is the unique string that identifies the request to create the hosted zone.
+  string caller_reference = 4;
+}

@@ -54,13 +54,13 @@ flowchart TB
 **1. Version-Specific Installation**
 ```bash
 # Upgrade to specific version
-openmcf upgrade v0.3.15-cli.20260113.1
+planton upgrade v0.3.15-cli.20260113.1
 
 # Downgrade to previous version
-openmcf downgrade v0.3.10-cli.20260110.0
+planton downgrade v0.3.10-cli.20260110.0
 
 # Force reinstall even if already on version
-openmcf upgrade v0.3.15-cli.20260113.1 --force
+planton upgrade v0.3.15-cli.20260113.1 --force
 ```
 
 **2. Enhanced Version Output**
@@ -70,7 +70,7 @@ Latest version:  v0.3.16
 
 ⚡ A new version is available!
 
-Run openmcf upgrade to update.
+Run planton upgrade to update.
 ```
 
 **3. Homebrew Transition Flow**
@@ -80,21 +80,21 @@ Run openmcf upgrade to update.
 Installing a specific version requires switching to direct-download management.
 
 This will:
-  1. Run: brew uninstall --cask openmcf
+  1. Run: brew uninstall --cask planton
   2. Download and install v0.3.10-cli.20260110.0
 
-Future 'openmcf upgrade' commands will use direct download.
+Future 'planton upgrade' commands will use direct download.
 
 Proceed? [y/N]
 ```
 
 **4. Transparent Download Info**
 ```
-● Downloading openmcf v0.3.15-cli.20260113.1...
-  https://github.com/plantonhq/openmcf/releases/download/v0.3.15-cli.20260113.1/cli_0.3.15-cli.20260113.1_darwin_arm64.tar.gz
-✔ Downloaded openmcf v0.3.15-cli.20260113.1
+● Downloading planton v0.3.15-cli.20260113.1...
+  https://github.com/plantonhq/planton/releases/download/v0.3.15-cli.20260113.1/cli_0.3.15-cli.20260113.1_darwin_arm64.tar.gz
+✔ Downloaded planton v0.3.15-cli.20260113.1
 ● Installing...
-  /Users/username/.local/bin/openmcf
+  /Users/username/.local/bin/planton
 ✔ Installed new binary
 ```
 
@@ -102,12 +102,12 @@ Proceed? [y/N]
 
 ### New Commands
 
-**File**: `cmd/openmcf/root/upgrade.go`
+**File**: `cmd/planton/root/upgrade.go`
 - Changed `--version` flag to positional `VERSION` argument
 - Added `cobra.MaximumNArgs(1)` for optional version
 - Updated help text with clear argument documentation
 
-**File**: `cmd/openmcf/root/downgrade.go` (new)
+**File**: `cmd/planton/root/downgrade.go` (new)
 - Created `downgrade VERSION` command with required argument
 - Uses `cobra.ExactArgs(1)` to enforce version requirement
 - Reuses `upgrade.Run()` internally (same logic, different UX)
@@ -168,7 +168,7 @@ func getInstallPath(goos string) (string, string) {
 ```
 
 For macOS/Linux:
-- Default: `~/.local/bin/openmcf`
+- Default: `~/.local/bin/planton`
 - Creates directory if needed
 - Shows PATH setup instructions if not configured
 
@@ -179,7 +179,7 @@ For macOS/Linux:
 Added `UninstallHomebrew()` for clean transition:
 ```go
 func UninstallHomebrew() error {
-    // Runs: brew uninstall --cask openmcf
+    // Runs: brew uninstall --cask planton
     // Shows progress output
 }
 ```
@@ -194,7 +194,7 @@ Added `confirmHomebrewTransition()` for user consent:
 
 ### Root Version Flag
 
-**File**: `cmd/openmcf/root.go`
+**File**: `cmd/planton/root.go`
 
 Added `-v`/`--version` flag at root level:
 ```go
@@ -207,10 +207,10 @@ Handled in custom `Run` function to show colorful output.
 
 | File | Change |
 |------|--------|
-| `cmd/openmcf/root/upgrade.go` | VERSION arg, updated help |
-| `cmd/openmcf/root/downgrade.go` | New command |
-| `cmd/openmcf/root/version.go` | Colorful output with update check |
-| `cmd/openmcf/root.go` | -v flag, downgrade registration |
+| `cmd/planton/root/upgrade.go` | VERSION arg, updated help |
+| `cmd/planton/root/downgrade.go` | New command |
+| `cmd/planton/root/version.go` | Colorful output with update check |
+| `cmd/planton/root.go` | -v flag, downgrade registration |
 | `internal/cli/upgrade/upgrade.go` | Target version flow, Homebrew transition |
 | `internal/cli/upgrade/version.go` | ValidateVersion, isCliRelease, semver comparison |
 | `internal/cli/upgrade/version_test.go` | New test file |
@@ -239,24 +239,24 @@ Handled in custom `Run` function to show colorful output.
 
 ```bash
 # Check current version and update availability
-openmcf version
-openmcf -v
-openmcf --version
+planton version
+planton -v
+planton --version
 
 # Upgrade to latest
-openmcf upgrade
+planton upgrade
 
 # Upgrade to specific version
-openmcf upgrade v0.3.15-cli.20260113.1
+planton upgrade v0.3.15-cli.20260113.1
 
 # Downgrade to previous version
-openmcf downgrade v0.3.10-cli.20260110.0
+planton downgrade v0.3.10-cli.20260110.0
 
 # Check for updates without installing
-openmcf upgrade --check
+planton upgrade --check
 
 # Force reinstall
-openmcf upgrade v0.3.15-cli.20260113.1 --force
+planton upgrade v0.3.15-cli.20260113.1 --force
 ```
 
 ## Impact

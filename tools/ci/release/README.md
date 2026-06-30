@@ -1,6 +1,6 @@
 # Release Tooling
 
-Scripts and utilities for managing OpenMCF CLI releases.
+Scripts and utilities for managing Planton CLI releases.
 
 ## Quick Start
 
@@ -37,7 +37,7 @@ When you run `make release`, here's what happens:
 │  │   ├── linux-amd64, linux-arm64                                           │
 │  │   └── windows-amd64, windows-arm64                                       │
 │  ├── Create GitHub Release with auto-generated notes                        │
-│  └── Update Homebrew Cask (openmcf/homebrew-tap)                    │
+│  └── Update Homebrew Cask (planton/homebrew-tap)                    │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -46,31 +46,31 @@ When you run `make release`, here's what happens:
 ### Install via Homebrew (macOS)
 
 ```bash
-brew install --cask plantonhq/tap/openmcf
+brew install --cask plantonhq/tap/planton
 ```
 
 ### Install via Direct Download
 
-Download binaries from the [GitHub Releases](https://github.com/plantonhq/openmcf/releases) page.
+Download binaries from the [GitHub Releases](https://github.com/plantonhq/planton/releases) page.
 
 ```bash
 # macOS (Apple Silicon)
-curl -Lo openmcf https://github.com/plantonhq/openmcf/releases/latest/download/openmcf_VERSION_darwin_arm64.tar.gz
-tar -xzf openmcf_VERSION_darwin_arm64.tar.gz
-chmod +x openmcf
-sudo mv openmcf /usr/local/bin/
+curl -Lo planton https://github.com/plantonhq/planton/releases/latest/download/planton_VERSION_darwin_arm64.tar.gz
+tar -xzf planton_VERSION_darwin_arm64.tar.gz
+chmod +x planton
+sudo mv planton /usr/local/bin/
 
 # macOS (Intel)
-curl -Lo openmcf https://github.com/plantonhq/openmcf/releases/latest/download/openmcf_VERSION_darwin_amd64.tar.gz
-tar -xzf openmcf_VERSION_darwin_amd64.tar.gz
-chmod +x openmcf
-sudo mv openmcf /usr/local/bin/
+curl -Lo planton https://github.com/plantonhq/planton/releases/latest/download/planton_VERSION_darwin_amd64.tar.gz
+tar -xzf planton_VERSION_darwin_amd64.tar.gz
+chmod +x planton
+sudo mv planton /usr/local/bin/
 
 # Linux (x86_64)
-curl -Lo openmcf https://github.com/plantonhq/openmcf/releases/latest/download/openmcf_VERSION_linux_amd64.tar.gz
-tar -xzf openmcf_VERSION_linux_amd64.tar.gz
-chmod +x openmcf
-sudo mv openmcf /usr/local/bin/
+curl -Lo planton https://github.com/plantonhq/planton/releases/latest/download/planton_VERSION_linux_amd64.tar.gz
+tar -xzf planton_VERSION_linux_amd64.tar.gz
+chmod +x planton
+sudo mv planton /usr/local/bin/
 ```
 
 ## Scripts
@@ -108,7 +108,7 @@ Note: `GITHUB_TOKEN` is automatically provided by GitHub Actions.
 
 1. Go to GitHub → Settings → Developer Settings → Personal Access Tokens
 2. Create a new token (classic) with `repo` scope
-3. The token needs write access to `openmcf/homebrew-tap`
+3. The token needs write access to `planton/homebrew-tap`
 4. Add it as a repository secret named `HOMEBREW_TAP_GITHUB_TOKEN`
 
 ## Troubleshooting
@@ -116,7 +116,7 @@ Note: `GITHUB_TOKEN` is automatically provided by GitHub Actions.
 ### Release workflow failed
 
 Check the GitHub Actions logs at:
-https://github.com/plantonhq/openmcf/actions
+https://github.com/plantonhq/planton/actions
 
 Common issues:
 - Missing or expired `HOMEBREW_TAP_GITHUB_TOKEN` secret

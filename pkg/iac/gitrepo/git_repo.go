@@ -1,3 +1,3 @@
 package gitrepo
 
-const CloneUrl = "https://github.com/plantonhq/openmcf.git"
+const CloneUrl = "https://github.com/plantonhq/planton.git"

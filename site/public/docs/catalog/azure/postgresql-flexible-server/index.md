@@ -12,7 +12,7 @@ Deploys an Azure Database for PostgreSQL Flexible Server with configurable compu
 
 ## What Gets Created
 
-When you deploy an AzurePostgresqlFlexibleServer resource, OpenMCF provisions:
+When you deploy an AzurePostgresqlFlexibleServer resource, Planton provisions:
 
 - **PostgreSQL Flexible Server** -- a `postgresql.FlexibleServer` resource in the specified region and resource group, configured with the chosen SKU, PostgreSQL version, storage size, backup retention, and authentication settings (password authentication enabled by default)
 - **Network Access** -- either private VNet access (when `delegatedSubnetId` is set, public access is automatically disabled) or public access with firewall rules controlling connectivity
@@ -23,7 +23,7 @@ When you deploy an AzurePostgresqlFlexibleServer resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Resource Group** where the server will be created (can reference an AzureResourceGroup resource)
 - **A globally unique server name** -- the name becomes the hostname `{name}.postgres.database.azure.com`
 - **Network planning** -- decide between public access with firewall rules or private VNet access with a delegated subnet before deployment, as changing `delegatedSubnetId` after creation destroys and recreates the server
@@ -33,15 +33,15 @@ When you deploy an AzurePostgresqlFlexibleServer resource, OpenMCF provisions:
 Create a file `postgresql.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzurePostgresqlFlexibleServer
 metadata:
   name: my-pg-server
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzurePostgresqlFlexibleServer.my-pg-server
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzurePostgresqlFlexibleServer.my-pg-server
 spec:
   region: eastus
   resourceGroup: my-rg
@@ -57,7 +57,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f postgresql.yaml
+planton apply -f postgresql.yaml
 ```
 
 This creates a Burstable-tier PostgreSQL 16 Flexible Server with 32 GB storage, public network access, and a single application database named `myapp`.
@@ -105,15 +105,15 @@ This creates a Burstable-tier PostgreSQL 16 Flexible Server with 32 GB storage, 
 A minimal Burstable-tier server for development with a single database and a firewall rule allowing the developer machine:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzurePostgresqlFlexibleServer
 metadata:
   name: dev-pg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzurePostgresqlFlexibleServer.dev-pg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzurePostgresqlFlexibleServer.dev-pg
 spec:
   region: eastus
   resourceGroup: dev-rg
@@ -139,15 +139,15 @@ spec:
 A General Purpose server with zone-redundant HA, geo-redundant backups, 35-day retention, storage auto-grow, and multiple databases:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzurePostgresqlFlexibleServer
 metadata:
   name: prod-pg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzurePostgresqlFlexibleServer.prod-pg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzurePostgresqlFlexibleServer.prod-pg
 spec:
   region: westeurope
   resourceGroup: prod-rg
@@ -184,15 +184,15 @@ spec:
 A server deployed into a VNet with private access, a private DNS zone for name resolution, and no public connectivity:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzurePostgresqlFlexibleServer
 metadata:
   name: private-pg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzurePostgresqlFlexibleServer.private-pg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzurePostgresqlFlexibleServer.private-pg
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -212,18 +212,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference OpenMCF-managed resources instead of hardcoding IDs. The resource group, subnet, and private DNS zone are resolved from their respective stack outputs:
+Reference Planton-managed resources instead of hardcoding IDs. The resource group, subnet, and private DNS zone are resolved from their respective stack outputs:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzurePostgresqlFlexibleServer
 metadata:
   name: ref-pg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzurePostgresqlFlexibleServer.ref-pg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzurePostgresqlFlexibleServer.ref-pg
 spec:
   region: eastus
   resourceGroup:
@@ -255,15 +255,15 @@ spec:
 A Memory Optimized server with PostgreSQL 17 for analytics workloads, large storage, and extended backup retention:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzurePostgresqlFlexibleServer
 metadata:
   name: analytics-pg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzurePostgresqlFlexibleServer.analytics-pg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzurePostgresqlFlexibleServer.analytics-pg
 spec:
   region: southeastasia
   resourceGroup: analytics-rg

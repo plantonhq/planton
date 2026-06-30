@@ -1,9 +1,0 @@
-apiVersion: azure.openmcf.org/v1
-kind: AzureResourceGroup
-metadata:
-  name: test-rg
-  org: test-org
-  env: dev
-spec:
-  name: test-platform-rg
-  region: eastus

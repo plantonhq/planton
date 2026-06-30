@@ -1,0 +1,33 @@
+apiVersion: gcp.planton.dev/v1
+kind: GcpComputeInstance
+metadata:
+  name: test-vm
+spec:
+  projectId:
+    value: planton-testing
+  zone: us-central1-a
+  machineType: e2-micro
+  bootDisk:
+    image: debian-cloud/debian-11
+    sizeGb: 10
+    type: pd-standard
+    autoDelete: true
+  networkInterfaces:
+    - network:
+        value: default
+      accessConfigs:
+        - networkTier: PREMIUM
+  labels:
+    env: testing
+    component: gcp-compute-instance
+  tags:
+    - http-server
+  metadata:
+    enable-oslogin: "TRUE"
+#  serviceAccount:
+#    email: test-sa@planton-testing.iam.gserviceaccount.com
+#    scopes:
+#      - https://www.googleapis.com/auth/cloud-platform
+#  startupScript: |
+#    #!/bin/bash
+#    echo "Hello from test VM"

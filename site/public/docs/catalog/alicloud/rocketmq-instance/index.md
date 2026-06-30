@@ -12,7 +12,7 @@ Deploys an Alibaba Cloud RocketMQ 5.x managed message broker with bundled topics
 
 ## What Gets Created
 
-When you deploy an AliCloudRocketmqInstance resource, OpenMCF provisions:
+When you deploy an AliCloudRocketmqInstance resource, Planton provisions:
 
 - **RocketMQ 5.x Instance** — a managed message broker placed in the specified VPC with configurable edition, billing, and optional internet access
 - **Topics** — one `alicloud_rocketmq_topic` per entry in `spec.topics[]`, each with a message type (NORMAL, FIFO, DELAY, or TRANSACTION) and optional throughput limits
@@ -20,7 +20,7 @@ When you deploy an AliCloudRocketmqInstance resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Alibaba Cloud credentials** configured via environment variables or OpenMCF provider config
+- **Alibaba Cloud credentials** configured via environment variables or Planton provider config
 - **A VPC** where the instance will be deployed (referenced via `vpcId`)
 - **A VSwitch** (optional but recommended) for placement in a specific availability zone
 - **A security group** (optional) to control network-level access to the instance's VPC endpoint
@@ -30,15 +30,15 @@ When you deploy an AliCloudRocketmqInstance resource, OpenMCF provisions:
 Create a file `rocketmq.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudRocketmqInstance
 metadata:
   name: my-mq
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudRocketmqInstance.my-mq
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudRocketmqInstance.my-mq
 spec:
   region: cn-hangzhou
   seriesCode: standard
@@ -50,7 +50,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f rocketmq.yaml
+planton apply -f rocketmq.yaml
 ```
 
 This creates a standard-edition single-node RocketMQ instance in the specified VPC with pay-as-you-go billing and no internet access.
@@ -123,15 +123,15 @@ This creates a standard-edition single-node RocketMQ instance in the specified V
 A minimal standard-edition instance for development and testing:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudRocketmqInstance
 metadata:
   name: dev-mq
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudRocketmqInstance.dev-mq
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudRocketmqInstance.dev-mq
 spec:
   region: cn-hangzhou
   seriesCode: standard
@@ -145,15 +145,15 @@ spec:
 A professional-edition cluster with FIFO and normal topics, consumer groups with custom retry policies, and VSwitch placement:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudRocketmqInstance
 metadata:
   name: prod-mq
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: messaging
-    pulumi.openmcf.org/stack.name: prod.AliCloudRocketmqInstance.prod-mq
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: messaging
+    pulumi.planton.dev/stack.name: prod.AliCloudRocketmqInstance.prod-mq
 spec:
   region: cn-shanghai
   seriesCode: professional
@@ -199,15 +199,15 @@ spec:
 A mission-critical ultimate-edition instance with subscription billing, public internet access, encryption at rest, and auto-scaling:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudRocketmqInstance
 metadata:
   name: enterprise-mq
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: fintech-corp
-    pulumi.openmcf.org/project: messaging
-    pulumi.openmcf.org/stack.name: prod.AliCloudRocketmqInstance.enterprise-mq
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: fintech-corp
+    pulumi.planton.dev/project: messaging
+    pulumi.planton.dev/stack.name: prod.AliCloudRocketmqInstance.enterprise-mq
 spec:
   region: cn-hangzhou
   seriesCode: ultimate

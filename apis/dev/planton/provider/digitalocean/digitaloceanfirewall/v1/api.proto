@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package dev.planton.provider.digitalocean.digitaloceanfirewall.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/digitalocean/digitaloceanfirewall/v1/spec.proto";
+import "dev/planton/provider/digitalocean/digitaloceanfirewall/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// digital-ocean-firewall
+message DigitalOceanFirewall {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'digital-ocean.planton.dev/v1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'DigitalOceanFirewall'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  DigitalOceanFirewallSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  DigitalOceanFirewallStatus status = 5;
+}
+
+// digital-ocean-firewall status
+message DigitalOceanFirewallStatus {
+  //stack-outputs
+  //  digital-ocean-firewall stack-outputs
+  DigitalOceanFirewallStackOutputs outputs = 1;
+}

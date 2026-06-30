@@ -3,7 +3,7 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "initializer",
     srcs = ["init.go"],
-    importpath = "github.com/plantonhq/openmcf/pkg/kustomize/initializer",
+    importpath = "github.com/plantonhq/planton/pkg/kustomize/initializer",
     visibility = ["//visibility:public"],
     deps = [
         "//pkg/kustomize/schema",

@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetestektonoperator.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/kubernetestektonoperator/v1/spec.proto";
+import "dev/planton/provider/kubernetes/kubernetestektonoperator/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// KubernetesTektonOperator is the top-level resource for deploying Tekton Operator on a Kubernetes cluster.
+// Tekton Operator manages the lifecycle of Tekton components including Pipelines, Triggers, and Dashboard.
+message KubernetesTektonOperator {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'KubernetesTektonOperator'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  KubernetesTektonOperatorSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  KubernetesTektonOperatorStatus status = 5;
+}
+
+// KubernetesTektonOperatorStatus describes the observed state of KubernetesTektonOperator.
+message KubernetesTektonOperatorStatus {
+  // stack-outputs
+  KubernetesTektonOperatorStackOutputs outputs = 1;
+}

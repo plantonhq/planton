@@ -55,12 +55,12 @@ flowchart TB
 
 ### New Pattern 1: Repeated StringValueOrRef (`security_group_ids`)
 
-First use of a repeated FK field in the entire OpenMCF codebase. Each element independently resolves as literal UUID or `value_from` reference:
+First use of a repeated FK field in the entire Planton codebase. Each element independently resolves as literal UUID or `value_from` reference:
 
 ```protobuf
-repeated org.openmcf.shared.foreignkey.v1.StringValueOrRef security_group_ids = 3 [
-  (org.openmcf.shared.foreignkey.v1.default_kind) = OpenStackSecurityGroup,
-  (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
+repeated dev.planton.shared.foreignkey.v1.StringValueOrRef security_group_ids = 3 [
+  (dev.planton.shared.foreignkey.v1.default_kind) = OpenStackSecurityGroup,
+  (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
 ];
 ```
 
@@ -82,9 +82,9 @@ First FK annotation inside a nested/repeated message:
 
 ```protobuf
 message FixedIp {
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_id = 1 [
-    (org.openmcf.shared.foreignkey.v1.default_kind) = OpenStackSubnet,
-    (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  dev.planton.shared.foreignkey.v1.StringValueOrRef subnet_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = OpenStackSubnet,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
   ];
   string ip_address = 2;
 }
@@ -129,7 +129,7 @@ Not in the original plan but critical for correctness. Without it, an empty `sec
 
 - OpenStackFloatingIp component (pre-registered 2507 enum): `_changelog/2026-02/2026-02-09-114030-openstack-floating-ip-deployment-component.md`
 - OpenStackSecurityGroup (inline rules, multi-resource IaC): `_changelog/2026-02/2026-02-09-100841-openstack-security-group-deployment-component.md`
-- Parent project: `planton/_projects/20260209.01.openstack-openmcf-components/`
+- Parent project: `planton/_projects/20260209.01.openstack-planton-components/`
 
 ---
 

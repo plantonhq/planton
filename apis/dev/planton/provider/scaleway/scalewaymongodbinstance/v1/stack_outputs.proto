@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+package dev.planton.provider.scaleway.scalewaymongodbinstance.v1;
+
+// ScalewayMongodbInstanceStackOutputs captures the provisioned MongoDB
+// instance details needed by downstream resources and applications.
+//
+// The primary output is `instance_id` (for downstream monitoring,
+// snapshot tooling, and management references).
+//
+// Two endpoint types are provided, depending on the networking mode:
+//   - Public network: DNS record and port (when public endpoint exists).
+//   - Private network: DNS records, IPs, and port (when PN is attached).
+//
+// The endpoint populated depends on the networking mode:
+//   - Private Network attached, enable_public_network=false: private only.
+//   - Private Network attached, enable_public_network=true: both.
+//   - No Private Network: public only.
+//
+// Passwords are NOT exported as outputs. They are user-specified in the
+// spec and should be managed through your organization's secrets workflow.
+message ScalewayMongodbInstanceStackOutputs {
+  // The unique identifier of the created MongoDB instance.
+  //
+  // Format: regional ID (e.g., "fr-par/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx").
+  // This is the primary output referenced by downstream resources:
+  //   - Snapshot tooling
+  //   - Monitoring integrations
+  //   - Management automation
+  string instance_id = 1;
+
+  // Public endpoint DNS record.
+  //
+  // The DNS hostname for connecting to the database over the public
+  // network. Format: "{id}.mgdb.{region}.scw.cloud"
+  //
+  // Empty if the instance has no public endpoint (private-only mode).
+  string public_dns_record = 2;
+
+  // Public endpoint port number.
+  //
+  // The TCP port for public connections (typically 27017).
+  //
+  // Zero if the instance has no public endpoint.
+  uint32 public_port = 3;
+
+  // Private Network endpoint DNS records.
+  //
+  // DNS hostnames for connecting to the database from resources on
+  // the same Private Network.
+  //
+  // Empty if no Private Network is attached.
+  repeated string private_dns_records = 4;
+
+  // Private Network endpoint IP addresses.
+  //
+  // IPv4 addresses assigned via IPAM for connecting to the database
+  // from the Private Network. This is the recommended connection path
+  // for application workloads.
+  //
+  // Empty if no Private Network is attached.
+  repeated string private_ips = 5;
+
+  // Private Network endpoint port number.
+  //
+  // The TCP port for private connections (typically 27017).
+  //
+  // Zero if no Private Network is attached.
+  uint32 private_port = 6;
+
+  // TLS certificate in PEM format for verifying the database server.
+  //
+  // Clients should use this CA certificate to establish encrypted
+  // connections and verify the database server's identity. MongoDB
+  // drivers accept this via the `tlsCAFile` connection option or
+  // the `--tlsCAFile` flag for the mongo shell.
+  //
+  // Always available (Scaleway issues a TLS certificate for every
+  // MongoDB instance regardless of endpoint type).
+  string tls_certificate = 7;
+}

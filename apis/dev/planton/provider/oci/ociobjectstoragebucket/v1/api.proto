@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ociobjectstoragebucket.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/oci/ociobjectstoragebucket/v1/spec.proto";
+import "dev/planton/provider/oci/ociobjectstoragebucket/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// OciObjectStorageBucket is the top-level resource representing an OCI
+// Object Storage bucket with optional retention rules, lifecycle policies,
+// and cross-region replication.
+message OciObjectStorageBucket {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'oci.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OciObjectStorageBucket'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OciObjectStorageBucketSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OciObjectStorageBucketStatus status = 5;
+}
+
+// OciObjectStorageBucketStatus holds the outputs produced by deploying
+// an OciObjectStorageBucket.
+message OciObjectStorageBucketStatus {
+  // stack-outputs
+  OciObjectStorageBucketStackOutputs outputs = 1;
+}

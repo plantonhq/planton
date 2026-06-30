@@ -12,7 +12,7 @@ Deploys the Percona Operator for MongoDB on a Kubernetes cluster using its offic
 
 ## What Gets Created
 
-When you deploy a KubernetesPerconaMongoOperator resource, OpenMCF provisions:
+When you deploy a KubernetesPerconaMongoOperator resource, Planton provisions:
 
 - **Namespace** — created only when `createNamespace` is `true`
 - **Helm Release** — installs the `psmdb-operator` Helm chart (v1.20.1) from the Percona Helm repository, deploying the operator pod with configurable CPU and memory resources
@@ -21,7 +21,7 @@ When you deploy a KubernetesPerconaMongoOperator resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
 - **Helm-capable cluster** — the cluster must support Helm chart installations (standard for all managed Kubernetes offerings)
 
@@ -30,15 +30,15 @@ When you deploy a KubernetesPerconaMongoOperator resource, OpenMCF provisions:
 Create a file `percona-mongo-operator.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPerconaMongoOperator
 metadata:
   name: my-percona-operator
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesPerconaMongoOperator.my-percona-operator
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesPerconaMongoOperator.my-percona-operator
 spec:
   namespace: percona-system
   createNamespace: true
@@ -47,7 +47,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f percona-mongo-operator.yaml
+planton apply -f percona-mongo-operator.yaml
 ```
 
 This installs the Percona MongoDB Operator into the `percona-system` namespace with default resource limits (1000m CPU / 1Gi memory) and requests (100m CPU / 256Mi memory), watching all namespaces for PerconaServerMongoDB custom resources.
@@ -80,15 +80,15 @@ This installs the Percona MongoDB Operator into the `percona-system` namespace w
 Install the Percona MongoDB Operator with default resource allocations, creating the target namespace automatically:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPerconaMongoOperator
 metadata:
   name: percona-operator
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesPerconaMongoOperator.percona-operator
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesPerconaMongoOperator.percona-operator
 spec:
   namespace: percona-system
   createNamespace: true
@@ -107,15 +107,15 @@ spec:
 For production clusters managing many MongoDB instances, increase the operator's resource allocation to handle the additional reconciliation workload:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPerconaMongoOperator
 metadata:
   name: prod-percona-operator
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesPerconaMongoOperator.prod-percona-operator
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesPerconaMongoOperator.prod-percona-operator
 spec:
   namespace: percona-system
   container:
@@ -130,18 +130,18 @@ spec:
 
 ### Operator with Foreign Key Namespace Reference
 
-Reference an OpenMCF-managed namespace instead of hardcoding the name. The `valueFrom` syntax resolves the namespace name from a KubernetesNamespace resource at deploy time:
+Reference an Planton-managed namespace instead of hardcoding the name. The `valueFrom` syntax resolves the namespace name from a KubernetesNamespace resource at deploy time:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPerconaMongoOperator
 metadata:
   name: shared-percona-operator
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.KubernetesPerconaMongoOperator.shared-percona-operator
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.KubernetesPerconaMongoOperator.shared-percona-operator
 spec:
   namespace:
     valueFrom:

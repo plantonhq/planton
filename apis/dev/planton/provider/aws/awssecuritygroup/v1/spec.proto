@@ -1,0 +1,98 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awssecuritygroup.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// AwsSecurityGroupSpec defines the primary configuration for creating an AWS EC2 Security Group in a specified VPC.
+message AwsSecurityGroupSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  // vpc_id is the ID of the VPC where this Security Group will be created.
+  // Example: "vpc-12345abcde"
+  // This field is required because every Security Group must belong to one VPC.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef vpc_id = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsVpc,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
+  ];
+
+  // description provides a short explanation of this Security Group’s purpose.
+  // This field is required by AWS and cannot be modified once created without a replacement.
+  // Example: "Allows inbound HTTP and SSH for web tier"
+  string description = 3 [
+    (buf.validate.field).required = true,
+    // AWS max 255 chars for description.
+    (buf.validate.field).cel = {
+      id: "description_length_check"
+      expression: "size(this) <= 255"
+      message: "Description must not exceed 255 characters"
+    }
+  ];
+
+  // ingress_rules define the inbound traffic rules for this Security Group.
+  // If empty, inbound traffic is fully restricted (deny all).
+  repeated SecurityGroupRule ingress = 4;
+
+  // egress_rules define the outbound traffic rules for this Security Group.
+  // If empty, AWS defaults to allow all outbound traffic unless configured otherwise.
+  repeated SecurityGroupRule egress = 5;
+}
+
+// SecurityGroupRule represents a single inbound or outbound rule in the Security Group.
+// For ingress, fill in sources (cidrs or source_security_group_ids).
+// For egress, fill in destinations (cidrs or destination_security_group_ids).
+message SecurityGroupRule {
+  // protocol indicates the protocol for the rule.
+  // Common values: "tcp", "udp", "icmp", or "-1" (all protocols).
+  string protocol = 1 [(buf.validate.field).required = true];
+
+  // from_port is the starting port in the range.
+  // For single-port rules, from_port == to_port.
+  // Use 0 when specifying all ports (with protocol = -1) or for ICMP types.
+  int32 from_port = 2;
+
+  // to_port is the ending port in the range.
+  // For single-port rules, to_port == from_port.
+  // Use 0 when specifying all ports (with protocol = -1) or for ICMP codes.
+  int32 to_port = 3;
+
+  // ipv4_cidrs is the list of IPv4 CIDR blocks allowed (ingress) or targeted (egress).
+  // Examples: "10.0.0.0/16", "0.0.0.0/0"
+  // If empty, no IPv4 CIDRs are included in this rule.
+  repeated string ipv4_cidrs = 4;
+
+  // ipv6_cidrs is the list of IPv6 CIDR blocks allowed or targeted.
+  // Example: "::/0"
+  // If empty, no IPv6 CIDRs are included in this rule.
+  repeated string ipv6_cidrs = 5;
+
+  // source_security_group_ids is the list of Security Group IDs that can send traffic (for ingress).
+  // Typically used for internal traffic between resources. Can reference other AwsSecurityGroup resources.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef source_security_group_ids = 6 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
+  ];
+
+  // destination_security_group_ids is the list of Security Group IDs that receive traffic (for egress).
+  // Useful for restricting outbound traffic to specific groups. Can reference other AwsSecurityGroup resources.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef destination_security_group_ids = 7 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
+  ];
+
+  // self_reference indicates whether to allow traffic from/to the same Security Group.
+  // This is equivalent to referencing the group’s own ID.
+  bool self_reference = 8;
+
+  // rule_description is an optional explanation of this specific rule,
+  // aiding in clarity and maintenance. Max 255 chars recommended.
+  string description = 9 [(buf.validate.field).cel = {
+    id: "rule_description_length_check"
+    expression: "size(this) <= 255"
+    message: "Rule description must not exceed 255 characters"
+  }];
+}

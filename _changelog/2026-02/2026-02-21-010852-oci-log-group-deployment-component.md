@@ -10,7 +10,7 @@ Implemented the OciLogGroup deployment component -- OCI's Logging service organi
 
 ## Problem Statement / Motivation
 
-The OpenMCF Oracle Cloud provider needs logging infrastructure to enable centralized log collection for OCI resources. Log groups are the organizational container for OCI's Logging service -- without them, users cannot declaratively configure log collection from VCN flow logs, Object Storage audit trails, API Gateway access logs, or any other OCI service.
+The Planton Oracle Cloud provider needs logging infrastructure to enable centralized log collection for OCI resources. Log groups are the organizational container for OCI's Logging service -- without them, users cannot declaratively configure log collection from VCN flow logs, Object Storage audit trails, API Gateway access logs, or any other OCI service.
 
 ### Pain Points
 
@@ -113,7 +113,7 @@ logs:
 - Enables declarative log collection from any OCI service via service logs
 - Bundles log group + logs for atomic deployment of logging infrastructure
 - Flattened source configuration reduces YAML verbosity while maintaining full functionality
-- StringValueOrRef on resource field enables composability with any OpenMCF OCI component
+- StringValueOrRef on resource field enables composability with any Planton OCI component
 - Completes Phase 9 (Monitoring and Logging), providing both alerting (OciAlarm) and logging (OciLogGroup)
 
 ## Impact

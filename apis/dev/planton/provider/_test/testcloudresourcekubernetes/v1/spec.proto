@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+package dev.planton.provider._test.testcloudresourcekubernetes.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/container_env.proto";
+import "dev/planton/provider/kubernetes/kubernetes.proto";
+import "dev/planton/provider/kubernetes/options.proto";
+import "dev/planton/provider/kubernetes/target_cluster.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// TestCloudResourceKubernetesSpec is permanent test infrastructure for
+// Kubernetes-specific proto processing tests: ContainerResources defaults,
+// KubernetesClusterSelector skip rules, ContainerEnv handling, and
+// Flatten/HCL generation for Terraform modules.
+//
+// For generic (non-Kubernetes) test fields, use TestCloudResourceGeneric instead.
+//
+// Field coverage:
+//   - KubernetesClusterSelector (Flatten skip-rule testing)
+//   - StringValueOrRef namespace (singular flatten testing)
+//   - ContainerResources with default_container_resources (default strategy testing)
+//   - ContainerEnv with list-based variables/secrets
+//   - map<string, StringValueOrRef> (Flatten map-value rule testing)
+//   - repeated string command (plain repeated field)
+//   - Scalar with default (schedule-like field for mixed testing)
+message TestCloudResourceKubernetesSpec {
+  // ─── Kubernetes target cluster (Flatten skip-rule testing) ────────────────────
+
+  dev.planton.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  // ─── Namespace as StringValueOrRef ────────────────────────────────────────────
+
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  bool create_namespace = 3;
+
+  // ─── Container resources with default ─────────────────────────────────────────
+
+  dev.planton.provider.kubernetes.ContainerResources resources = 4 [(dev.planton.provider.kubernetes.default_container_resources) = {
+    limits: {
+      cpu: "1000m"
+      memory: "1Gi"
+    }
+    requests: {
+      cpu: "50m"
+      memory: "100Mi"
+    }
+  }];
+
+  // ─── Container environment (list-based) ───────────────────────────────────────
+
+  dev.planton.provider.kubernetes.ContainerEnv env = 5;
+
+  // ─── Map with StringValueOrRef values (Flatten map-value rule testing) ────────
+
+  map<string, dev.planton.shared.foreignkey.v1.StringValueOrRef> ref_map = 6;
+
+  // ─── Plain repeated field ─────────────────────────────────────────────────────
+
+  repeated string command = 7;
+
+  // ─── Scalar with default ──────────────────────────────────────────────────────
+
+  optional string schedule = 8 [(dev.planton.shared.options.default) = "0 0 * * *"];
+}

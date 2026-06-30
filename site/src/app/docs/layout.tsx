@@ -45,12 +45,12 @@ export default function DocsPageLayout({ children }: { children: React.ReactNode
             <Link href="/" className="flex items-center gap-2">
               <Image
                 src="/icon.png"
-                alt="OpenMCF logo"
+                alt="Planton logo"
                 width={32}
                 height={32}
                 className="h-8 w-auto object-contain"
               />
-              <Image src="/text-logo.svg" alt="OpenMCF" width={136} height={28} className="h-7 w-auto object-contain" />
+              <Image src="/text-logo.svg" alt="Planton" width={136} height={28} className="h-7 w-auto object-contain" />
             </Link>
             <IconButton onClick={handleSidebarToggle} className="text-white">
               <CloseIcon />

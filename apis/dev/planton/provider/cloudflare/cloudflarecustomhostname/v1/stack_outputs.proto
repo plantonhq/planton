@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package dev.planton.provider.cloudflare.cloudflarecustomhostname.v1;
+
+// CloudflareCustomHostnameStackOutputs captures the outputs after onboarding a
+// custom hostname. The ownership-verification fields are what the customer adds to
+// their DNS (or serves over HTTP) to prove control and activate the hostname.
+message CloudflareCustomHostnameStackOutputs {
+  // The custom hostname identifier.
+  string custom_hostname_id = 1;
+
+  // The activation status (e.g. "pending", "pending_validation", "active").
+  string status = 2;
+
+  // The DNS record NAME the customer must create for ownership verification.
+  string ownership_verification_name = 3;
+
+  // The DNS record TYPE for ownership verification (typically "txt").
+  string ownership_verification_type = 4;
+
+  // The DNS record VALUE for ownership verification.
+  string ownership_verification_value = 5;
+
+  // The URL the customer can serve for HTTP-based ownership verification.
+  string ownership_verification_http_url = 6;
+
+  // The body the customer must serve at the HTTP verification URL.
+  string ownership_verification_http_body = 7;
+
+  // Any verification errors reported by Cloudflare.
+  repeated string verification_errors = 8;
+
+  // RFC3339 timestamp of when the custom hostname was created.
+  string created_at = 9;
+}

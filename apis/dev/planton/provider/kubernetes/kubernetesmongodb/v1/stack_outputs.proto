@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesmongodb.v1;
+
+import "dev/planton/provider/kubernetes/kubernetes.proto";
+
+//mongodb-kubernetes stack outputs.
+message KubernetesMongodbStackOutputs {
+  // namespace specifies the Kubernetes namespace in which the MongoDB cluster is created.
+  // Namespaces are a way to divide cluster resources between multiple users.
+  string namespace = 1;
+
+  //kubernetes service name for mongodb-kubernetes
+  //ex: main-mongodb-kubernetes
+  //in the above example, "main" is the name of the mongodb-kubernetes
+  string service = 2;
+
+  //command to setup port-forwarding to open mongodb-kubernetes from developers laptop.
+  //this might come handy when mongodb-kubernetes ingress is disabled for security reasons.
+  //this is rendered by combining mongodb-kubernetes kubernetes service and namespace
+  //ex: kubectl port-forward svc/mongodb-kubernetes -n kubernetes_namespace 27017:27017
+  //running the command from this attribute makes it possible to access mongodb-kubernetes using http://localhost:8080
+  string port_forward_command = 3;
+
+  //kubernetes endpoint to connect to mongodb-kubernetes locally
+  //ex: main-mongodb-kubernetes.namespace.svc.cluster.local:27017
+  string kube_endpoint = 4;
+
+  //public endpoint to open mongodb-kubernetes from clients outside kubernetes.
+  //ex: https://mdc-planton-pcs-dev-main.data.dev.planton.live:27017
+  string external_hostname = 5;
+
+  //endpoint to open mongodb-kubernetes from clients inside kubernetes.
+  //ex: https://mdc-planton-pcs-dev-main.data-internal.dev.planton.live:27017
+  string internal_hostname = 6;
+
+  //mongodb username
+  string username = 7;
+
+  //kubernetes secret key for the password.
+  dev.planton.provider.kubernetes.KubernetesSecretKey password_secret = 8;
+}

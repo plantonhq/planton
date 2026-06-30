@@ -1,9 +1,0 @@
-apiVersion: cloudflare.openmcf.org/v1
-kind: CloudflareCustomHostnameFallbackOrigin
-metadata:
-  name: saas-fallback-origin
-spec:
-  zoneId:
-    value: <saas-zone-id>
-  origin:
-    value: <origin-hostname>

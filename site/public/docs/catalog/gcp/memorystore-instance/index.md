@@ -12,7 +12,7 @@ Deploys a fully managed GCP Memorystore instance supporting the Valkey protocol 
 
 ## What Gets Created
 
-When you deploy a GcpMemorystoreInstance resource, OpenMCF provisions:
+When you deploy a GcpMemorystoreInstance resource, Planton provisions:
 
 - **Memorystore Instance** — a `memorystore.Instance` resource with the specified shard count, node type, and engine version
 - **PSC Auto-Created Endpoints** — one per entry in `pscAutoConnections`, each creating a Private Service Connect endpoint in the specified consumer VPC network for application connectivity
@@ -22,7 +22,7 @@ When you deploy a GcpMemorystoreInstance resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **A GCP project** where the Memorystore instance will be created
 - **A VPC network** in the consumer project for PSC endpoint creation (format: `projects/{project_id}/global/networks/{network_id}`)
 - **A Cloud KMS key** if using customer-managed encryption at rest (CMEK)
@@ -32,15 +32,15 @@ When you deploy a GcpMemorystoreInstance resource, OpenMCF provisions:
 Create a file `memorystore-instance.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpMemorystoreInstance
 metadata:
   name: my-cache
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpMemorystoreInstance.my-cache
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpMemorystoreInstance.my-cache
 spec:
   projectId:
     value: my-gcp-project
@@ -57,7 +57,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f memorystore-instance.yaml
+planton apply -f memorystore-instance.yaml
 ```
 
 This creates a single-shard Memorystore instance in `us-central1` with a PSC endpoint in the default VPC network.
@@ -107,15 +107,15 @@ This creates a single-shard Memorystore instance in `us-central1` with a PSC end
 A single-shard standalone instance with periodic RDB snapshots and deletion protection:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpMemorystoreInstance
 metadata:
   name: session-cache
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpMemorystoreInstance.session-cache
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpMemorystoreInstance.session-cache
 spec:
   projectId:
     value: my-gcp-project
@@ -142,15 +142,15 @@ spec:
 A multi-shard cluster with AOF persistence, automated daily backups, and a maintenance window:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpMemorystoreInstance
 metadata:
   name: realtime-store
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpMemorystoreInstance.realtime-store
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpMemorystoreInstance.realtime-store
 spec:
   projectId:
     value: my-gcp-project
@@ -184,18 +184,18 @@ spec:
 
 ### Encrypted Instance with IAM Auth and Foreign Key References
 
-A production instance using CMEK encryption, IAM authentication, TLS, and foreign key references to other OpenMCF-managed resources:
+A production instance using CMEK encryption, IAM authentication, TLS, and foreign key references to other Planton-managed resources:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpMemorystoreInstance
 metadata:
   name: secure-cache
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpMemorystoreInstance.secure-cache
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpMemorystoreInstance.secure-cache
 spec:
   projectId:
     valueFrom:

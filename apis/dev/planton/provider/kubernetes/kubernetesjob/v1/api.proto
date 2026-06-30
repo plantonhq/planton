@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesjob.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/kubernetesjob/v1/spec.proto";
+import "dev/planton/provider/kubernetes/kubernetesjob/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// KubernetesJob is a Kubernetes resource that creates a one-shot Job workload.
+// Unlike Deployments which run continuously, or CronJobs which run on a schedule,
+// a Job runs pods to completion and then stops. Jobs are ideal for batch processing,
+// data migrations, one-time tasks, and any workflow that needs to run to completion.
+//
+// Example use cases:
+// - Database migrations
+// - Data processing pipelines
+// - Backup and restore operations
+// - ETL (Extract, Transform, Load) jobs
+// - One-time setup or cleanup tasks
+message KubernetesJob {
+  // API version - must be "kubernetes.planton.dev/v1"
+  string api_version = 1 [(buf.validate.field).string.const = "kubernetes.planton.dev/v1"];
+
+  // Resource kind - must be "KubernetesJob"
+  string kind = 2 [(buf.validate.field).string.const = "KubernetesJob"];
+
+  // Standard object metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // Spec defines the desired state of the KubernetesJob
+  KubernetesJobSpec spec = 4 [(buf.validate.field).required = true];
+
+  // Status represents the current state of the KubernetesJob
+  KubernetesJobStatus status = 5;
+}
+
+// KubernetesJobStatus defines the observed state of KubernetesJob
+message KubernetesJobStatus {
+  // Outputs from the stack deployment
+  KubernetesJobStackOutputs outputs = 1;
+}

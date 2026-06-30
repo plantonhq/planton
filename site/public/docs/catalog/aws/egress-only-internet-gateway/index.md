@@ -22,7 +22,7 @@ Create an egress-only internet gateway and attach it to an AWS VPC. An egress-on
 ## Quick Start
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEgressOnlyInternetGateway
 metadata:
   name: main-eigw
@@ -40,7 +40,7 @@ spec:
 An egress-only gateway only provides connectivity once a subnet routes to it. Pair this gateway with an `AwsSubnet` whose IPv6 default route targets it:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsSubnet
 metadata:
   name: private-usw2a

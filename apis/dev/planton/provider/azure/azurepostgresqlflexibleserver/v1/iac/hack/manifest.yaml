@@ -1,0 +1,18 @@
+apiVersion: azure.planton.dev/v1
+kind: AzurePostgresqlFlexibleServer
+metadata:
+  name: test-pg
+spec:
+  region: eastus
+  resource_group: test-rg
+  name: test-pg-server
+  administrator_login: pgadmin
+  administrator_password: P@ssw0rd1234!
+  sku_name: B_Standard_B1ms
+  storage_mb: 32768
+  databases:
+    - name: myapp
+  firewall_rules:
+    - name: allow-azure-services
+      start_ip_address: "0.0.0.0"
+      end_ip_address: "0.0.0.0"

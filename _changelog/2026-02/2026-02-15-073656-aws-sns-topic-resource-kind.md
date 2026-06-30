@@ -6,15 +6,15 @@
 
 ## Summary
 
-Added the AwsSnsTopic resource kind (R02, enum 226) to OpenMCF, providing a standardized way to provision AWS SNS topics with bundled subscriptions, KMS encryption, IAM access policies, message filtering, and subscription dead letter queues. This is the second AWS resource kind forged in the cloud provider expansion project, establishing the pub/sub messaging pattern alongside the AwsSqsQueue (R01) completed earlier.
+Added the AwsSnsTopic resource kind (R02, enum 226) to Planton, providing a standardized way to provision AWS SNS topics with bundled subscriptions, KMS encryption, IAM access policies, message filtering, and subscription dead letter queues. This is the second AWS resource kind forged in the cloud provider expansion project, establishing the pub/sub messaging pattern alongside the AwsSqsQueue (R01) completed earlier.
 
 ## Problem Statement / Motivation
 
-OpenMCF's AWS coverage lacked a native pub/sub messaging resource. SNS is foundational to event-driven architectures on AWS — it powers fan-out notifications, cross-service event distribution, alarm routing, and serverless event pipelines. Without AwsSnsTopic, infra charts could not express the common pattern of "publish to one topic, deliver to many subscribers."
+Planton's AWS coverage lacked a native pub/sub messaging resource. SNS is foundational to event-driven architectures on AWS — it powers fan-out notifications, cross-service event distribution, alarm routing, and serverless event pipelines. Without AwsSnsTopic, infra charts could not express the common pattern of "publish to one topic, deliver to many subscribers."
 
 ### Pain Points
 
-- No way to declare SNS topics in OpenMCF manifests
+- No way to declare SNS topics in Planton manifests
 - No infra-chart composability for fan-out patterns (SNS → multiple SQS queues)
 - No cross-resource dependency wiring for subscription endpoints (SQS queue ARNs, Lambda function ARNs)
 - Missing the second half of the messaging pair (SQS queue → consumer, SNS topic → fan-out)

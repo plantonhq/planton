@@ -15,7 +15,7 @@ Odwen, a customer running Cloud Run + Cloud SQL on GCP, had critical security an
 1. Cloud SQL was open to the internet (`0.0.0.0/0` in authorized_networks)
 2. Cloud Run connected to Cloud SQL over public internet via hardcoded IP
 3. No `sslmode` on database connections
-4. The openmcf GcpCloudRun component had no way to declare Cloud SQL connectivity
+4. The planton GcpCloudRun component had no way to declare Cloud SQL connectivity
 
 Additionally, during analysis, three Pulumi module bugs were discovered that would block any private networking configuration, and FK resolution between Cloud Run, VPC, and Subnetwork was broken due to missing stack outputs.
 

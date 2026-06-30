@@ -8,7 +8,7 @@ TITLE
 Forge: Generate spec.proto for a new or existing cloud resource (no validations)
 
 ROLE
-You are the OpenMCF Code Partner working inside the developer’s local workspace in Cursor. This rule focuses ONLY on creating the `spec.proto` for a Planton resource.
+You are the Planton Code Partner working inside the developer’s local workspace in Cursor. This rule focuses ONLY on creating the `spec.proto` for a Planton resource.
 
 This rule separates deterministic steps (Python tools) from LLM drafting.
 
@@ -20,7 +20,7 @@ SCOPE
 TOOLS
 - Reader: `_rules/deployment-component/_scripts/spec_proto_reader.py`
 - Writer+Build: `_rules/deployment-component/_scripts/spec_proto_write_and_build.py`
-- Reference components (live ground truth): `apis/org/openmcf/provider/aws/awsvpc/v1/spec.proto`
+- Reference components (live ground truth): `apis/dev/planton/provider/aws/awsvpc/v1/spec.proto`
   and `aws/awsalb/v1/spec.proto` -- canonical examples of schema shape, enums, and default options.
 
 SEQUENTIAL STEPS
@@ -49,15 +49,15 @@ NOTES
 DEFAULT FIELD OPTIONS
 - When fields should have default values, use BOTH:
   1. `optional` keyword: Enables field presence tracking in Go
-  2. `(org.openmcf.shared.options.default)` field option: Specifies the default
-- Import: `import "org/openmcf/shared/options/options.proto";`
-- Example: `optional string namespace = 1 [(org.openmcf.shared.options.default) = "external-dns"];`
+  2. `(dev.planton.shared.options.default)` field option: Specifies the default
+- Import: `import "dev/planton/shared/options/options.proto";`
+- Example: `optional string namespace = 1 [(dev.planton.shared.options.default) = "external-dns"];`
 - The `DEFAULT_REQUIRES_OPTIONAL` linter enforces this pattern at build time
 - See the reference component `spec.proto` files named in TOOLS for worked examples
 
 PROACTIVE DEFAULT IDENTIFICATION (MANDATORY STEP)
 - During spec authoring, you MUST review EVERY field and ask: "Does this field have a well-known sensible default from the provider's documentation?"
-- If the provider docs say "if not specified, defaults to X", add `optional` + `(org.openmcf.shared.options.default)`.
+- If the provider docs say "if not specified, defaults to X", add `optional` + `(dev.planton.shared.options.default)`.
 - Do NOT leave defaults as comments only. If a default exists, it MUST use the formal pattern.
 - Common categories of fields that typically have defaults:
   - **MIME/content types**: `application/octet-stream`, `text/html`, `application/json`
@@ -71,7 +71,7 @@ PROACTIVE DEFAULT IDENTIFICATION (MANDATORY STEP)
   - **Regions**: Only if the component is region-scoped with an obvious default
 - The heuristic: if the large majority of users would use the same value, it deserves a default.
 - This step prevents IaC modules from needing defensive default logic and ensures
-  OpenMCF middleware handles defaults centrally.
+  Planton middleware handles defaults centrally.
 
 PROACTIVE SENSITIVE-FIELD IDENTIFICATION (MANDATORY STEP)
 - While authoring the schema, review EVERY string field and the literal of EVERY
@@ -93,4 +93,4 @@ PROACTIVE SENSITIVE-FIELD IDENTIFICATION (MANDATORY STEP)
   and resolves the reference just-in-time at deploy. Getting the annotation right here
   is what makes that secure-by-default behavior automatic for every consumer.
 - Authority for the option semantics: the `sensitive` / `sensitive_exempt_reason` field
-  comments in `org/openmcf/shared/options/options.proto`.
+  comments in `dev/planton/shared/options/options.proto`.

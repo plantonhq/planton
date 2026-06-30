@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.alicloud.aliclouddnsrecord.v1;
+
+import "dev/planton/provider/alicloud/aliclouddnsrecord/v1/api.proto";
+import "dev/planton/provider/alicloud/provider.proto";
+
+// alicloud-dns-record stack-input
+message AliCloudDnsRecordStackInput {
+  // target cloud-resource
+  AliCloudDnsRecord target = 1;
+  // provider-config
+  dev.planton.provider.alicloud.AliCloudProviderConfig provider_config = 2;
+}

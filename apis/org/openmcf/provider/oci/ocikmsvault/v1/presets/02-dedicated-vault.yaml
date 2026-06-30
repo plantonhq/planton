@@ -1,9 +1,0 @@
-apiVersion: oci.openmcf.org/v1
-kind: OciKmsVault
-metadata:
-  name: my-dedicated-vault
-spec:
-  compartmentId:
-    value: <compartment-ocid>
-  displayName: dedicated-vault
-  vaultType: virtual_private # Dedicated HSM partition; higher throughput limits

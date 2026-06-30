@@ -12,14 +12,14 @@ Deploys an Alibaba Cloud Function Compute v3 function. The component provisions 
 
 ## What Gets Created
 
-When you deploy an AliCloudFunction resource, OpenMCF provisions:
+When you deploy an AliCloudFunction resource, Planton provisions:
 
 - **FC v3 Function** — a single function in the specified region with the configured runtime, handler, compute sizing, and optional networking/logging/storage settings
 - **Standard tags** — `resource`, `resource_name`, `resource_kind`, plus optional `organization` and `environment` tags, merged with user-provided `tags`
 
 ## Prerequisites
 
-- **Alibaba Cloud credentials** configured via environment variables (`ALIBABA_CLOUD_ACCESS_KEY_ID`, `ALIBABA_CLOUD_ACCESS_KEY_SECRET`) or OpenMCF provider config
+- **Alibaba Cloud credentials** configured via environment variables (`ALIBABA_CLOUD_ACCESS_KEY_ID`, `ALIBABA_CLOUD_ACCESS_KEY_SECRET`) or Planton provider config
 - **A code package** — either an OSS bucket/object containing a ZIP file, an inline base64-encoded ZIP, or (for `custom-container` runtime) a container image accessible from FC
 - **RAM role** (if the function accesses other Alibaba Cloud services) — the role must trust the FC service principal (`fc.aliyuncs.com`)
 - **VPC resources** (if the function needs private network access) — VPC, VSwitch(es), and security group must exist
@@ -30,15 +30,15 @@ When you deploy an AliCloudFunction resource, OpenMCF provisions:
 Create a file `function.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudFunction
 metadata:
   name: hello-world
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudFunction.hello-world
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudFunction.hello-world
 spec:
   region: cn-hangzhou
   functionName: hello-world
@@ -52,7 +52,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f function.yaml
+planton apply -f function.yaml
 ```
 
 This creates an FC v3 function named `hello-world` in `cn-hangzhou` running `python3.12` with code from the specified OSS location.
@@ -90,7 +90,7 @@ This creates an FC v3 function named `hello-world` in `cn-hangzhou` running `pyt
 | `gpuConfig` | `object` | — | GPU acceleration. Fields: `gpuMemorySize` (int, >0), `gpuType` (one of: `fc.gpu.tesla.1`, `fc.gpu.ampere.1`, `fc.gpu.ada.1`, `g1`). |
 | `layers` | `list<string>` | `[]` | Layer ARNs to attach (max 5). |
 | `environmentVariables` | `map<string, string>` | `{}` | Environment variables passed to the function at runtime. |
-| `tags` | `map<string, string>` | `{}` | Tags merged with standard OpenMCF tags. User tags take precedence on conflicts. |
+| `tags` | `map<string, string>` | `{}` | Tags merged with standard Planton tags. User tags take precedence on conflicts. |
 | `resourceGroupId` | `string` | `""` | Alibaba Cloud resource group ID for organizational grouping. |
 
 ## Examples
@@ -98,15 +98,15 @@ This creates an FC v3 function named `hello-world` in `cn-hangzhou` running `pyt
 ### Minimal Python Function
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudFunction
 metadata:
   name: hello-world
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudFunction.hello-world
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudFunction.hello-world
 spec:
   region: cn-hangzhou
   functionName: hello-world
@@ -120,15 +120,15 @@ spec:
 ### VPC-Connected API Function with Logging
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudFunction
 metadata:
   name: api-handler
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.AliCloudFunction.api-handler
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.AliCloudFunction.api-handler
 spec:
   region: cn-shanghai
   functionName: api-handler
@@ -171,15 +171,15 @@ spec:
 ### GPU-Accelerated Container Function
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudFunction
 metadata:
   name: ml-inference
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AliCloudFunction.ml-inference
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AliCloudFunction.ml-inference
 spec:
   region: cn-hangzhou
   functionName: ml-inference

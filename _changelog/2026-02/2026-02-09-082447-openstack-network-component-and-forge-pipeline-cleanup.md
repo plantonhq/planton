@@ -108,8 +108,8 @@ Excluded fields: `tenant_id`, `segments`, `value_specs`, `availability_zone_hint
 - `.cursor/info/pulumi_e2e.md`
 
 **Command replacements across 16 rule files:**
-- `make build` --> `go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...`
-- `make test` --> `go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/`
+- `make build` --> `go build ./apis/dev/planton/provider/<provider>/<component>/v1/...`
+- `make test` --> `go test -v ./apis/dev/planton/provider/<provider>/<component>/v1/`
 
 These replacements were applied to: forge orchestrator, 5 lifecycle rules (update, fix, rename, delete, complete), 7 README files, and 1 authoring guide.
 
@@ -130,7 +130,7 @@ These replacements were applied to: forge orchestrator, 5 lifecycle rules (updat
 
 - OpenStack provider integration: `_changelog/2026-02/2026-02-08-215116-openstack-provider-integration.md`
 - OpenStackKeypair component: `_changelog/2026-02/2026-02-08-223027-openstackcomputekeypair-deployment-component.md`
-- Parent project: `planton/_projects/20260209.01.openstack-openmcf-components/`
+- Parent project: `planton/_projects/20260209.01.openstack-planton-components/`
 
 ---
 

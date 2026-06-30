@@ -12,13 +12,13 @@ Deploys an Octavia backend pool in OpenStack that groups members behind a listen
 
 ## What Gets Created
 
-When you deploy an OpenStackLoadBalancerPool resource, OpenMCF provisions:
+When you deploy an OpenStackLoadBalancerPool resource, Planton provisions:
 
 - **Octavia Pool** — a `loadbalancer.Pool` resource attached to the specified listener, configured with the chosen protocol, load-balancing algorithm, and optional session persistence. Members and health monitors attach to this pool to complete the backend configuration.
 
 ## Prerequisites
 
-- **OpenStack credentials** configured via environment variables or OpenMCF provider config
+- **OpenStack credentials** configured via environment variables or Planton provider config
 - **An existing listener** — the pool requires a listener UUID (from an OpenStackLoadBalancerListener resource or provisioned externally)
 - **Octavia service** enabled in the target OpenStack project
 
@@ -27,15 +27,15 @@ When you deploy an OpenStackLoadBalancerPool resource, OpenMCF provisions:
 Create a file `pool.yaml`:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackLoadBalancerPool
 metadata:
   name: web-pool
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OpenStackLoadBalancerPool.web-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OpenStackLoadBalancerPool.web-pool
 spec:
   listenerId: 4a0e3c5b-2f1d-4e6a-8b9c-0d1e2f3a4b5c
   protocol: HTTP
@@ -45,7 +45,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f pool.yaml
+planton apply -f pool.yaml
 ```
 
 This creates an Octavia pool using round-robin distribution for HTTP traffic, attached to the specified listener.
@@ -79,15 +79,15 @@ This creates an Octavia pool using round-robin distribution for HTTP traffic, at
 A minimal pool distributing HTTP traffic evenly across members:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackLoadBalancerPool
 metadata:
   name: web-pool
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OpenStackLoadBalancerPool.web-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OpenStackLoadBalancerPool.web-pool
 spec:
   listenerId: 4a0e3c5b-2f1d-4e6a-8b9c-0d1e2f3a4b5c
   protocol: HTTP
@@ -103,15 +103,15 @@ spec:
 A pool with `APP_COOKIE` session persistence, routing clients with the same `JSESSIONID` cookie to the same backend member. Useful for Java-based applications with server-side sessions:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackLoadBalancerPool
 metadata:
   name: app-pool
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OpenStackLoadBalancerPool.app-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OpenStackLoadBalancerPool.app-pool
 spec:
   listenerId: 7d8e9f0a-1b2c-3d4e-5f6a-7b8c9d0e1f2a
   protocol: HTTP
@@ -129,15 +129,15 @@ spec:
 A TCP pool using `SOURCE_IP` load balancing to route all connections from a given client IP to the same backend. Suitable for non-HTTP protocols or stateful TCP services:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackLoadBalancerPool
 metadata:
   name: tcp-pool
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.OpenStackLoadBalancerPool.tcp-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.OpenStackLoadBalancerPool.tcp-pool
 spec:
   listenerId: a1b2c3d4-e5f6-7890-abcd-ef1234567890
   protocol: TCP
@@ -150,18 +150,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed listener instead of hardcoding the UUID:
+Reference an Planton-managed listener instead of hardcoding the UUID:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackLoadBalancerPool
 metadata:
   name: ref-pool
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OpenStackLoadBalancerPool.ref-pool
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OpenStackLoadBalancerPool.ref-pool
 spec:
   listenerId:
     valueFrom:

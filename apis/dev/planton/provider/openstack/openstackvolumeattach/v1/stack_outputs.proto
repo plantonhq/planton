@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package dev.planton.provider.openstack.openstackvolumeattach.v1;
+
+// OpenStackVolumeAttachStackOutputs captures the observable outputs after
+// attaching an OpenStack Cinder volume to a compute instance.
+//
+// No downstream components currently reference these outputs, but they
+// provide operational visibility and debugging context.
+message OpenStackVolumeAttachStackOutputs {
+  // id is the Terraform resource identifier for the attachment.
+  // Format: "{instance_id}/{volume_id}"
+  string id = 1;
+
+  // instance_id is the UUID of the compute instance the volume is attached to.
+  string instance_id = 2;
+
+  // volume_id is the UUID of the Cinder volume that was attached.
+  string volume_id = 3;
+
+  // device is the device path where the volume appears inside the instance.
+  // Example: "/dev/vdb"
+  // Computed by OpenStack if not explicitly specified in the spec.
+  string device = 4;
+
+  // region is the OpenStack region where the attachment was created.
+  string region = 5;
+}

@@ -1,0 +1,376 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsrediselasticache.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// AwsRedisElasticacheSpec defines the desired configuration for an AWS ElastiCache
+// replication group running Redis or Valkey.
+//
+// This component provisions a fully managed, in-memory data store optimized for
+// sub-millisecond latency. It supports two topology modes:
+//
+// - **Non-clustered** (Cluster Mode Disabled): one primary node with up to 5 read
+//   replicas. Use `num_cache_clusters` to set the total node count (primary + replicas).
+//   Suitable for workloads under ~113 GB that benefit from read scaling.
+//
+// - **Clustered** (Cluster Mode Enabled): data is partitioned across multiple shards,
+//   each with a primary and optional replicas. Use `num_node_groups` (shard count) and
+//   `replicas_per_node_group`. Suitable for multi-terabyte datasets and write scaling.
+//
+// Specify exactly one of `num_cache_clusters` or `num_node_groups` to select the mode.
+//
+// Notes:
+// - `at_rest_encryption_enabled` and `kms_key_id` are ForceNew in AWS — changing them
+//   destroys and recreates the cluster. Design encryption choices carefully upfront.
+// - `port` is also ForceNew. Default: 6379.
+// - `auth_token` and `user_group_ids` are mutually exclusive authentication methods.
+// - Credentials, region, and deployment workflow live outside this spec in stack inputs.
+message AwsRedisElasticacheSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  // ---------------------------------------------------------------------------
+  // Engine
+  // ---------------------------------------------------------------------------
+
+  // Cache engine to use. Redis is the dominant choice; Valkey is the open-source
+  // Redis-compatible alternative. Values: "redis", "valkey".
+  string engine = 2 [(buf.validate.field).required = true];
+
+  // Engine version to deploy. Examples: "7.1", "7.0", "6.2" for Redis;
+  // "7.2" for Valkey. Leave empty to use the provider default.
+  string engine_version = 3;
+
+  // Human-readable description for the replication group. Required by AWS.
+  string description = 4 [(buf.validate.field).required = true];
+
+  // ---------------------------------------------------------------------------
+  // Node configuration
+  // ---------------------------------------------------------------------------
+
+  // ElastiCache node type. Determines CPU, memory, and network capacity.
+  // Examples: "cache.t3.micro" (dev), "cache.r7g.large" (production),
+  // "cache.r6gd.xlarge" (data tiering).
+  string node_type = 5 [(buf.validate.field).required = true];
+
+  // Port on which the cluster accepts connections. Default: 6379.
+  // This is a ForceNew attribute — changing it destroys and recreates the cluster.
+  optional int32 port = 6 [
+    (dev.planton.shared.options.default) = "6379",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }
+  ];
+
+  // ---------------------------------------------------------------------------
+  // Topology — Non-Clustered Mode (Cluster Mode Disabled)
+  // ---------------------------------------------------------------------------
+
+  // Total number of cache clusters (nodes) in the replication group. This includes
+  // the primary and all read replicas. For example, 3 means 1 primary + 2 replicas.
+  // Range: 1–6. Mutually exclusive with `num_node_groups`.
+  int32 num_cache_clusters = 7;
+
+  // ---------------------------------------------------------------------------
+  // Topology — Clustered Mode (Cluster Mode Enabled)
+  // ---------------------------------------------------------------------------
+
+  // Number of node groups (shards) for Cluster Mode Enabled. Each shard holds a
+  // partition of the keyspace. Mutually exclusive with `num_cache_clusters`.
+  int32 num_node_groups = 8;
+
+  // Number of read replicas per shard. Range: 0–5. Only valid when
+  // `num_node_groups` is set.
+  int32 replicas_per_node_group = 9 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 5
+  }];
+
+  // ---------------------------------------------------------------------------
+  // High availability
+  // ---------------------------------------------------------------------------
+
+  // Enable automatic failover to a read replica if the primary fails.
+  // Requires `num_cache_clusters >= 2` (non-clustered) or `num_node_groups > 0`
+  // (clustered mode, where failover is always on).
+  bool automatic_failover_enabled = 10;
+
+  // Deploy replicas across multiple Availability Zones for resilience against
+  // AZ-level failures. Requires `automatic_failover_enabled` to be true.
+  bool multi_az_enabled = 11;
+
+  // ---------------------------------------------------------------------------
+  // Networking
+  // ---------------------------------------------------------------------------
+
+  // Subnet IDs for the ElastiCache subnet group. Provide subnets in at least two
+  // AZs for multi-AZ deployments. A subnet group is created automatically from
+  // these subnets.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef subnet_ids = 12 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  ];
+
+  // VPC security groups to attach to the cluster nodes. Controls network-level
+  // access to the Redis/Valkey endpoint.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef security_group_ids = 13 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
+  ];
+
+  // ---------------------------------------------------------------------------
+  // Encryption
+  // ---------------------------------------------------------------------------
+
+  // Enable encryption at rest for data stored on disk and in snapshots.
+  // ForceNew — changing this destroys and recreates the cluster.
+  bool at_rest_encryption_enabled = 14 [(dev.planton.shared.options.recommended_default) = "true"];
+
+  // Enable encryption in transit (TLS) for all client connections and
+  // replication traffic. Strongly recommended for production.
+  bool transit_encryption_enabled = 15 [(dev.planton.shared.options.recommended_default) = "true"];
+
+  // TLS enforcement mode. "preferred" allows both TLS and non-TLS connections
+  // (useful during migration); "required" enforces TLS for all connections.
+  // Only valid when `transit_encryption_enabled` is true.
+  string transit_encryption_mode = 16;
+
+  // Customer-managed KMS key for at-rest encryption. When set, ElastiCache uses
+  // this key instead of the AWS-managed key. ForceNew — changing this destroys
+  // and recreates the cluster.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_id = 17 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
+  ];
+
+  // ---------------------------------------------------------------------------
+  // Authentication (mutually exclusive)
+  // ---------------------------------------------------------------------------
+
+  // Redis AUTH token (password) for client authentication. Requires
+  // `transit_encryption_enabled` to be true. 16–128 printable characters.
+  // Mutually exclusive with `user_group_ids`.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef auth_token = 18 [(dev.planton.shared.options.sensitive) = true];
+
+  // Redis ACL user group IDs for fine-grained access control. Each user group
+  // defines users with specific command and key permissions. Mutually exclusive
+  // with `auth_token`.
+  repeated string user_group_ids = 19;
+
+  // ---------------------------------------------------------------------------
+  // Maintenance and snapshots
+  // ---------------------------------------------------------------------------
+
+  // Weekly maintenance window in UTC. Format: "ddd:hh24:mi-ddd:hh24:mi".
+  // Example: "sun:05:00-sun:06:00". Leave empty for AWS-assigned default.
+  string maintenance_window = 20 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]-(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]$"
+  ];
+
+  // Number of days to retain automatic snapshots before deletion. 0 disables
+  // automatic snapshots. Range: 0–35.
+  int32 snapshot_retention_limit = 21 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 35
+  }];
+
+  // Daily snapshot window in UTC. Format: "hh24:mi-hh24:mi".
+  // Example: "03:00-04:00". Leave empty for AWS-assigned default.
+  string snapshot_window = 22 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^([01][0-9]|2[0-3]):[0-5][0-9]-([01][0-9]|2[0-3]):[0-5][0-9]$"
+  ];
+
+  // Identifier for the final snapshot taken when the cluster is deleted. If not
+  // provided, no final snapshot is created.
+  string final_snapshot_identifier = 23;
+
+  // Apply changes immediately instead of waiting for the next maintenance window.
+  // May cause brief downtime for some operations.
+  bool apply_immediately = 24;
+
+  // ---------------------------------------------------------------------------
+  // Parameter group (bundled)
+  // ---------------------------------------------------------------------------
+
+  // Parameter group family for custom parameters. Required when `parameters` is
+  // provided. Examples: "redis7", "redis6.x", "valkey7".
+  string parameter_group_family = 25;
+
+  // Custom cache parameters to apply via a managed parameter group. Common
+  // examples: maxmemory-policy, timeout, tcp-keepalive.
+  repeated AwsRedisElasticacheParameter parameters = 26;
+
+  // ---------------------------------------------------------------------------
+  // Logging
+  // ---------------------------------------------------------------------------
+
+  // Log delivery configurations for slow-log and/or engine-log. At most 2
+  // entries — one per log type. Logs can be delivered to CloudWatch Logs or
+  // Kinesis Data Firehose.
+  repeated AwsRedisElasticacheLogDeliveryConfig log_delivery_configurations = 27;
+
+  // ---------------------------------------------------------------------------
+  // Advanced
+  // ---------------------------------------------------------------------------
+
+  // SNS topic ARN for cluster event notifications (failover, maintenance,
+  // configuration changes, etc.).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef notification_topic_arn = 28 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSnsTopic,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.topic_arn"
+  ];
+
+  // Automatically apply minor engine version upgrades during maintenance windows.
+  bool auto_minor_version_upgrade = 29;
+
+  // Enable data tiering — automatically moves less-frequently-accessed data to
+  // SSD storage for up to 5x more data per node. Only available on r6gd node
+  // types. ForceNew — cannot be changed after creation.
+  bool data_tiering_enabled = 30;
+
+  // ---------------------------------------------------------------------------
+  // CEL validations
+  // ---------------------------------------------------------------------------
+
+  // Engine must be redis or valkey.
+  option (buf.validate.message).cel = {
+    id: "engine_valid_values"
+    message: "engine must be 'redis' or 'valkey'"
+    expression: "this.engine in ['redis', 'valkey']"
+  };
+
+  // Topology: exactly one of num_cache_clusters or num_node_groups must be set.
+  option (buf.validate.message).cel = {
+    id: "topology_mode_selection"
+    message: "specify either num_cache_clusters (non-clustered) or num_node_groups (clustered), not both and not neither"
+    expression: "(this.num_cache_clusters > 0) != (this.num_node_groups > 0)"
+  };
+
+  // Non-clustered mode: num_cache_clusters range 1-6.
+  option (buf.validate.message).cel = {
+    id: "num_cache_clusters_range"
+    message: "num_cache_clusters must be between 1 and 6 when set"
+    expression: "this.num_cache_clusters == 0 || (this.num_cache_clusters >= 1 && this.num_cache_clusters <= 6)"
+  };
+
+  // Clustered mode: replicas_per_node_group requires num_node_groups.
+  option (buf.validate.message).cel = {
+    id: "replicas_requires_node_groups"
+    message: "replicas_per_node_group requires num_node_groups to be set"
+    expression: "this.replicas_per_node_group == 0 || this.num_node_groups > 0"
+  };
+
+  // automatic_failover_enabled requires multi-node topology.
+  option (buf.validate.message).cel = {
+    id: "failover_requires_multi_node"
+    message: "automatic_failover_enabled requires num_cache_clusters >= 2 or clustered mode (num_node_groups > 0)"
+    expression: "!this.automatic_failover_enabled || (this.num_cache_clusters >= 2 || this.num_node_groups > 0)"
+  };
+
+  // multi_az_enabled requires automatic_failover_enabled.
+  option (buf.validate.message).cel = {
+    id: "multi_az_requires_failover"
+    message: "multi_az_enabled requires automatic_failover_enabled to be true"
+    expression: "!this.multi_az_enabled || this.automatic_failover_enabled"
+  };
+
+  // auth_token and user_group_ids are mutually exclusive.
+  option (buf.validate.message).cel = {
+    id: "auth_mutual_exclusion"
+    message: "auth_token and user_group_ids are mutually exclusive; choose one authentication method"
+    expression: "!(has(this.auth_token) && this.user_group_ids.size() > 0)"
+  };
+
+  // transit_encryption_mode requires transit_encryption_enabled.
+  option (buf.validate.message).cel = {
+    id: "transit_mode_requires_encryption"
+    message: "transit_encryption_mode requires transit_encryption_enabled to be true"
+    expression: "this.transit_encryption_mode == '' || this.transit_encryption_enabled"
+  };
+
+  // transit_encryption_mode valid values.
+  option (buf.validate.message).cel = {
+    id: "transit_mode_valid_values"
+    message: "transit_encryption_mode must be 'preferred' or 'required' when set"
+    expression: "this.transit_encryption_mode == '' || this.transit_encryption_mode in ['preferred', 'required']"
+  };
+
+  // parameters require parameter_group_family.
+  option (buf.validate.message).cel = {
+    id: "parameters_require_family"
+    message: "parameter_group_family is required when parameters are provided"
+    expression: "this.parameters.size() == 0 || this.parameter_group_family != ''"
+  };
+
+  // log_delivery_configurations: at most 2.
+  option (buf.validate.message).cel = {
+    id: "log_delivery_max_two"
+    message: "at most 2 log delivery configurations are allowed (one per log_type)"
+    expression: "this.log_delivery_configurations.size() <= 2"
+  };
+
+  // log_delivery_configurations: unique log_type values.
+  option (buf.validate.message).cel = {
+    id: "log_delivery_unique_types"
+    message: "each log_type (slow-log, engine-log) can only appear once in log_delivery_configurations"
+    expression: "this.log_delivery_configurations.size() <= 1 || this.log_delivery_configurations[0].log_type != this.log_delivery_configurations[1].log_type"
+  };
+}
+
+// AwsRedisElasticacheParameter defines a single cache parameter override for
+// the managed parameter group. Parameters tune Redis/Valkey engine behavior
+// (e.g., maxmemory-policy, timeout, tcp-keepalive).
+message AwsRedisElasticacheParameter {
+  // Parameter name (e.g., "maxmemory-policy", "timeout").
+  string name = 1 [(buf.validate.field).required = true];
+
+  // Parameter value (e.g., "volatile-lru", "300").
+  string value = 2 [(buf.validate.field).required = true];
+}
+
+// AwsRedisElasticacheLogDeliveryConfig configures delivery of Redis/Valkey engine
+// logs to an external destination. Each replication group supports at most two
+// configurations — one for slow-log and one for engine-log.
+message AwsRedisElasticacheLogDeliveryConfig {
+  // Type of destination. Values: "cloudwatch-logs", "kinesis-firehose".
+  string destination_type = 1 [(buf.validate.field).required = true];
+
+  // Destination identifier. For CloudWatch Logs: the log group name.
+  // For Kinesis Firehose: the delivery stream name.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef destination = 2 [(buf.validate.field).required = true];
+
+  // Log serialization format. Values: "text", "json".
+  string log_format = 3 [(buf.validate.field).required = true];
+
+  // Type of log to deliver. Values: "slow-log" (commands exceeding slowlog
+  // threshold), "engine-log" (engine-level diagnostic output).
+  string log_type = 4 [(buf.validate.field).required = true];
+
+  // destination_type valid values.
+  option (buf.validate.message).cel = {
+    id: "destination_type_valid"
+    message: "destination_type must be 'cloudwatch-logs' or 'kinesis-firehose'"
+    expression: "this.destination_type in ['cloudwatch-logs', 'kinesis-firehose']"
+  };
+
+  // log_format valid values.
+  option (buf.validate.message).cel = {
+    id: "log_format_valid"
+    message: "log_format must be 'text' or 'json'"
+    expression: "this.log_format in ['text', 'json']"
+  };
+
+  // log_type valid values.
+  option (buf.validate.message).cel = {
+    id: "log_type_valid"
+    message: "log_type must be 'slow-log' or 'engine-log'"
+    expression: "this.log_type in ['slow-log', 'engine-log']"
+  };
+}

@@ -50,7 +50,7 @@ Optional fields cover autoscaling, autohealing, container runtime, root volume, 
 
 ### Files Created (18 files)
 
-**Proto schemas** (`apis/org/openmcf/provider/scaleway/scalewaykapsulepool/v1/`):
+**Proto schemas** (`apis/dev/planton/provider/scaleway/scalewaykapsulepool/v1/`):
 - `api.proto` -- Resource wrapper with api_version and kind constants
 - `spec.proto` -- Full spec with labels, taints, and comprehensive documentation
 - `stack_input.proto` -- StackInput (target + ScalewayProviderConfig)
@@ -82,7 +82,7 @@ Optional fields cover autoscaling, autohealing, container runtime, root volume, 
 
 Both Pulumi and Terraform modules implement the same three-category tag merge:
 
-1. **Standard OpenMCF tags**: `planton-ai_resource=true`, `planton-ai_name=...`, etc.
+1. **Standard Planton tags**: `planton-ai_resource=true`, `planton-ai_name=...`, etc.
 2. **Label tags**: `noprefix={key}={value}` for each entry in `kubernetes_labels`
 3. **Taint tags**: `taint=noprefix={key}={value}:{Effect}` for each entry in `taints`
 

@@ -10,11 +10,11 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/internal/cli/cliprint"
-	"github.com/plantonhq/openmcf/internal/manifest"
-	"github.com/plantonhq/openmcf/pkg/crkreflect"
-	"github.com/plantonhq/openmcf/pkg/iac/pulumi/backendconfig"
-	"github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule"
+	"github.com/plantonhq/planton/internal/cli/cliprint"
+	"github.com/plantonhq/planton/internal/manifest"
+	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/backendconfig"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule"
 )
 
 // Init initializes a new Pulumi stack for the given manifest.
@@ -39,7 +39,7 @@ func Init(moduleDir, stackFqdn, targetManifestPath string, valueOverrides map[st
 
 	// Validate that we have a stack FQDN
 	if finalStackFqdn == "" {
-		return errors.New("Pulumi stack FQDN is required. Provide it via --stack flag or set pulumi.openmcf.org/stack.fqdn label in manifest")
+		return errors.New("Pulumi stack FQDN is required. Provide it via --stack flag or set pulumi.planton.dev/stack.fqdn label in manifest")
 	}
 
 	kindName, err := crkreflect.ExtractKindFromProto(manifestObject)

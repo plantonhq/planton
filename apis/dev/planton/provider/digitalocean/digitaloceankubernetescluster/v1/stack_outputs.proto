@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package dev.planton.provider.digitalocean.digitaloceankubernetescluster.v1;
+
+// DigitalOceanKubernetesClusterStackOutputs captures the outputs after provisioning a DigitalOcean Kubernetes cluster.
+message DigitalOceanKubernetesClusterStackOutputs {
+  // The unique identifier (UUID) of the created Kubernetes cluster.
+  string cluster_id = 1;
+
+  // A base64-encoded Kubernetes config (kubeconfig) for accessing the cluster.
+  string kubeconfig = 2;
+
+  // The endpoint URL of the Kubernetes API server for the cluster.
+  string api_server_endpoint = 3;
+}

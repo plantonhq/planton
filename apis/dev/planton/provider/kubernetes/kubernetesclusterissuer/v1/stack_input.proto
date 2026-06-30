@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesclusterissuer.v1;
+
+import "dev/planton/provider/kubernetes/kubernetesclusterissuer/v1/api.proto";
+import "dev/planton/provider/kubernetes/provider.proto";
+
+// Input for the KubernetesClusterIssuer IaC stack.
+message KubernetesClusterIssuerStackInput {
+  // Target cloud-resource.
+  KubernetesClusterIssuer target = 1;
+  // Kubernetes provider configuration (cluster credentials).
+  dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+}

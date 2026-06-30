@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.scaleway.scalewaydnszone.v1;
+
+import "dev/planton/provider/scaleway/provider.proto";
+import "dev/planton/provider/scaleway/scalewaydnszone/v1/api.proto";
+
+//scaleway-dns-zone stack-input
+message ScalewayDnsZoneStackInput {
+  //target cloud-resource
+  ScalewayDnsZone target = 1;
+  //provider-config
+  dev.planton.provider.scaleway.ScalewayProviderConfig provider_config = 2;
+}

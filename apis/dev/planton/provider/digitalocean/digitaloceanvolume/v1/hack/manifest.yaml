@@ -1,0 +1,14 @@
+apiVersion: digital-ocean.planton.dev/v1
+kind: DigitalOceanVolume
+metadata:
+  name: first-volume
+spec:
+  volumeName: data-volume-01          # lowercase letters, numbers, hyphens
+  description: "Block storage for PostgreSQL"
+  region: nyc3                        # any valid DigitalOceanRegion enum value
+  sizeGib: 100                        # 1 – 16000 GiB
+  filesystemType: EXT4                # EXT4 | XFS | NONE
+  snapshotId: ""                      # leave blank if not using a snapshot
+  tags:
+    - planton
+    - env-staging

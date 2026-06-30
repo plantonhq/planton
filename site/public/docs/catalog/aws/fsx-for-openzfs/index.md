@@ -12,16 +12,16 @@ Deploys an Amazon FSx for OpenZFS file system with configurable NFS exports, ZST
 
 ## What Gets Created
 
-When you deploy an AwsFsxOpenzfsFileSystem resource, OpenMCF provisions:
+When you deploy an AwsFsxOpenzfsFileSystem resource, Planton provisions:
 
-- **OpenZFS File System** — an `aws_fsx_openzfs_file_system` resource placed in the specified subnets with encryption at rest, tagged with OpenMCF resource metadata
+- **OpenZFS File System** — an `aws_fsx_openzfs_file_system` resource placed in the specified subnets with encryption at rest, tagged with Planton resource metadata
 - **Root Volume** — configured inline with data compression, NFS export rules, record size tuning, and user/group quotas as specified
 - **Disk IOPS Configuration** — created only when `diskIopsConfiguration` is specified; controls SSD IOPS in AUTOMATIC or USER_PROVISIONED mode
 - **Multi-AZ Route Entries** — created only for MULTI_AZ_1 deployments; AWS manages routes in the specified route tables for seamless failover
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **At least one subnet** for SINGLE_AZ deployments, or **two subnets in different AZs** for MULTI_AZ_1
 - **A security group** allowing NFS traffic: TCP 111 (portmapper), TCP 2049 (NFS), TCP 20001-20003 (NFS mount)
 - **A KMS key ARN** if using customer-managed encryption at rest (optional — AWS-managed key used by default)
@@ -32,15 +32,15 @@ When you deploy an AwsFsxOpenzfsFileSystem resource, OpenMCF provisions:
 Create a file `openzfs.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsFsxOpenzfsFileSystem
 metadata:
   name: my-openzfs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsFsxOpenzfsFileSystem.my-openzfs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsFsxOpenzfsFileSystem.my-openzfs
 spec:
   region: us-east-1
   storageCapacityGib: 256
@@ -52,7 +52,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f openzfs.yaml
+planton apply -f openzfs.yaml
 ```
 
 This creates a SINGLE_AZ_2 OpenZFS file system with 256 GiB SSD storage, 160 MB/s throughput, no compression, and default NFS settings.
@@ -100,15 +100,15 @@ This creates a SINGLE_AZ_2 OpenZFS file system with 256 GiB SSD storage, 160 MB/
 A SINGLE_AZ_2 file system with ZSTD compression, NFS exports open to the VPC, encryption, and daily backups:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsFsxOpenzfsFileSystem
 metadata:
   name: app-storage
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsFsxOpenzfsFileSystem.app-storage
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsFsxOpenzfsFileSystem.app-storage
 spec:
   region: us-east-1
   deploymentType: SINGLE_AZ_2
@@ -138,15 +138,15 @@ spec:
 A MULTI_AZ_1 deployment with provisioned IOPS, user quotas, and two subnets across availability zones:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsFsxOpenzfsFileSystem
 metadata:
   name: ha-nfs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsFsxOpenzfsFileSystem.ha-nfs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsFsxOpenzfsFileSystem.ha-nfs
 spec:
   region: us-east-1
   deploymentType: MULTI_AZ_1
@@ -189,18 +189,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference subnets, security groups, and KMS key from other OpenMCF-managed resources:
+Reference subnets, security groups, and KMS key from other Planton-managed resources:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsFsxOpenzfsFileSystem
 metadata:
   name: ref-nfs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsFsxOpenzfsFileSystem.ref-nfs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsFsxOpenzfsFileSystem.ref-nfs
 spec:
   region: us-east-1
   storageCapacityGib: 512

@@ -10,14 +10,14 @@ Converted 10 plain `string` fields across 6 existing AWS components to `StringVa
 
 ## Problem Statement / Motivation
 
-When the AWS resource expansion project began, 7 existing AWS components were identified as having plain `string` fields for values that should support cross-resource references (KMS keys, IAM roles, VPC IDs, security groups, ACM certificates). Without `StringValueOrRef`, users deploying these components in infra charts or multi-resource compositions had to hard-code IDs and ARNs -- defeating the purpose of OpenMCF's declarative dependency system.
+When the AWS resource expansion project began, 7 existing AWS components were identified as having plain `string` fields for values that should support cross-resource references (KMS keys, IAM roles, VPC IDs, security groups, ACM certificates). Without `StringValueOrRef`, users deploying these components in infra charts or multi-resource compositions had to hard-code IDs and ARNs -- defeating the purpose of Planton's declarative dependency system.
 
 ### Pain Points
 
 - Users could not use `valueFrom` references to wire a KMS key provisioned by one component into an S3 bucket or ECR repo managed by another
-- Security group rules couldn't reference other OpenMCF-managed security groups, forcing manual ID copying
-- Private Route53 zones couldn't reference VPCs from OpenMCF's AwsVpc component
-- CloudFront distributions couldn't reference ACM certificates managed by OpenMCF
+- Security group rules couldn't reference other Planton-managed security groups, forcing manual ID copying
+- Private Route53 zones couldn't reference VPCs from Planton's AwsVpc component
+- CloudFront distributions couldn't reference ACM certificates managed by Planton
 - The inconsistency between old and new components made the platform feel unfinished
 
 ## Solution / What's New
@@ -43,9 +43,9 @@ string kms_key_id = N;
 ```
 to:
 ```protobuf
-org.openmcf.shared.foreignkey.v1.StringValueOrRef kms_key_id = N [
-  (org.openmcf.shared.foreignkey.v1.default_kind) = AwsKmsKey,
-  (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
+dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_id = N [
+  (dev.planton.shared.foreignkey.v1.default_kind) = AwsKmsKey,
+  (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
 ];
 ```
 

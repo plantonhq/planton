@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetestekton.v1;
+
+// KubernetesTektonStackOutputs describes the outputs from a Tekton deployment.
+message KubernetesTektonStackOutputs {
+  // The namespace where Tekton components are installed.
+  // This is always 'tekton-pipelines' for manifest-based deployments.
+  string namespace = 1;
+
+  // The version of Tekton Pipelines that was deployed.
+  string pipeline_version = 2;
+
+  // The version of Tekton Dashboard that was deployed (empty if dashboard is disabled).
+  string dashboard_version = 3;
+
+  // The internal cluster endpoint for the Tekton Dashboard service.
+  // Format: tekton-dashboard.tekton-pipelines.svc.cluster.local:9097
+  // Empty if dashboard is not enabled.
+  string dashboard_internal_endpoint = 4;
+
+  // The external hostname for the Tekton Dashboard (if ingress is enabled).
+  // This is the hostname configured in the Gateway/HTTPRoute resources.
+  string dashboard_external_hostname = 5;
+
+  // kubectl port-forward command to access the dashboard locally.
+  // Example: kubectl port-forward -n tekton-pipelines service/tekton-dashboard 9097:9097
+  string port_forward_dashboard_command = 6;
+
+  // The CloudEvents sink URL configured for pipeline notifications (if configured).
+  string cloud_events_sink_url = 7;
+}

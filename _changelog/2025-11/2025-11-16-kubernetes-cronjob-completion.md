@@ -13,7 +13,7 @@ Completed the KubernetesCronJob component by addressing all remaining gaps ident
 
 ### 1. Created Terraform Examples Documentation (+5%)
 
-**File:** `apis/org/openmcf/provider/kubernetes/kubernetescronjob/v1/iac/tf/examples.md`  
+**File:** `apis/dev/planton/provider/kubernetes/kubernetescronjob/v1/iac/tf/examples.md`  
 **Size:** 13,286 bytes (~13 KB)
 
 Created comprehensive Terraform examples documentation with:
@@ -35,7 +35,7 @@ This provides parity with the existing Pulumi examples documentation and helps u
 
 ### 2. Enhanced Terraform main.tf (+0.89%)
 
-**File:** `apis/org/openmcf/provider/kubernetes/kubernetescronjob/v1/iac/tf/main.tf`  
+**File:** `apis/dev/planton/provider/kubernetes/kubernetescronjob/v1/iac/tf/main.tf`  
 **Size:** 1,727 bytes (was 121 bytes)
 
 Enhanced with:
@@ -50,7 +50,7 @@ The file now exceeds the 1KB threshold while maintaining the clean architectural
 
 ### 3. Fixed Terraform locals.tf
 
-**File:** `apis/org/openmcf/provider/kubernetes/kubernetescronjob/v1/iac/tf/locals.tf`  
+**File:** `apis/dev/planton/provider/kubernetes/kubernetescronjob/v1/iac/tf/locals.tf`  
 **Size:** 1,114 bytes (cleaned up from 2,400 bytes)
 
 Removed microservice-specific fields that were incorrectly copied from template:
@@ -63,7 +63,7 @@ Removed microservice-specific fields that were incorrectly copied from template:
 
 ### 4. Fixed Terraform secret.tf
 
-**File:** `apis/org/openmcf/provider/kubernetes/kubernetescronjob/v1/iac/tf/secret.tf`  
+**File:** `apis/dev/planton/provider/kubernetes/kubernetescronjob/v1/iac/tf/secret.tf`  
 **Size:** 721 bytes (was 783 bytes)
 
 Fixed critical bug:
@@ -74,7 +74,7 @@ Fixed critical bug:
 
 ### 5. Enhanced Terraform outputs.tf
 
-**File:** `apis/org/openmcf/provider/kubernetes/kubernetescronjob/v1/iac/tf/outputs.tf`  
+**File:** `apis/dev/planton/provider/kubernetes/kubernetescronjob/v1/iac/tf/outputs.tf`  
 **Size:** 649 bytes (was 131 bytes)
 
 Added useful outputs:
@@ -132,7 +132,7 @@ Test execution time: 0.360s
 ## Files Modified
 
 ```
-apis/org/openmcf/provider/kubernetes/kubernetescronjob/v1/iac/tf/
+apis/dev/planton/provider/kubernetes/kubernetescronjob/v1/iac/tf/
 ├── examples.md (new, 13 KB)
 ├── main.tf (enhanced, 1.7 KB)
 ├── locals.tf (cleaned, 1.1 KB)
@@ -142,9 +142,9 @@ apis/org/openmcf/provider/kubernetes/kubernetescronjob/v1/iac/tf/
 
 ## References
 
-- Audit Report: `apis/org/openmcf/provider/kubernetes/kubernetescronjob/v1/docs/audit/2025-11-15-114105.md`
-- Component README: `apis/org/openmcf/provider/kubernetes/kubernetescronjob/v1/README.md`
-- Research Documentation: `apis/org/openmcf/provider/kubernetes/kubernetescronjob/v1/docs/README.md`
+- Audit Report: `apis/dev/planton/provider/kubernetes/kubernetescronjob/v1/docs/audit/2025-11-15-114105.md`
+- Component README: `apis/dev/planton/provider/kubernetes/kubernetescronjob/v1/README.md`
+- Research Documentation: `apis/dev/planton/provider/kubernetes/kubernetescronjob/v1/docs/README.md`
 
 ## Next Steps
 

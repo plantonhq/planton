@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added foundational scaffolding for 19 Scaleway cloud resource kinds in OpenMCF. This includes registering all enum values in `cloud_resource_kind.proto`, creating the Pulumi provider helper and label keys packages, and adding the first community (pulumiverse) Pulumi SDK dependency. All builds pass -- proto compilation, Go compilation, and Gazelle-managed BUILD.bazel generation.
+Added foundational scaffolding for 19 Scaleway cloud resource kinds in Planton. This includes registering all enum values in `cloud_resource_kind.proto`, creating the Pulumi provider helper and label keys packages, and adding the first community (pulumiverse) Pulumi SDK dependency. All builds pass -- proto compilation, Go compilation, and Gazelle-managed BUILD.bazel generation.
 
 ## Problem Statement / Motivation
 
@@ -70,7 +70,7 @@ Added `github.com/pulumiverse/pulumi-scaleway/sdk v1.43.0` to `go.mod`. This is 
 
 | File | Change |
 |------|--------|
-| `apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto` | +124 lines: 19 enum values with `kind_meta` |
+| `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto` | +124 lines: 19 enum values with `kind_meta` |
 | `go.mod` / `go.sum` | Added `pulumiverse/pulumi-scaleway/sdk v1.43.0` |
 | `pkg/iac/pulumi/pulumimodule/provider/scaleway/pulumiscalewayprovider/provider.go` | New: Pulumi provider helper |
 | `pkg/iac/pulumi/pulumimodule/provider/scaleway/scalewaylabelkeys/scaleway_label_keys.go` | New: Label keys package |
@@ -97,7 +97,7 @@ Auto-generated files updated by `make protos` and `make reset-gazelle`:
 ## Related Work
 
 - Previous session: `_changelog/2026-02/2026-02-12-181851-scaleway-provider-integration.md` -- Scaleway provider config and credential management
-- Parent project: `20260212.01.openmcf-cloud-provider-expansion` in plantonhq/planton
+- Parent project: `20260212.01.planton-cloud-provider-expansion` in plantonhq/planton
 - Sub-project: `20260212.04.sp.scaleway-resource-kinds` -- this P0 was the first implementation task
 - Next: R01 (ScalewayVpc) -- foundation resource, first actual deployment component
 

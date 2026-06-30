@@ -11,7 +11,7 @@ Cloudflare Workers VPC Service. A new `origin.service_id` field tells Hyperdrive
 egress over the named VPC Service instead of dialing a public host. The field is
 honored by both IaC engines and is mutually exclusive with the `mtls` block (TLS is
 managed on the VPC Service), enforced by a spec-level validation rule. Resolves
-plantonhq/openmcf#448.
+plantonhq/planton#448.
 
 ## Problem Statement / Motivation
 
@@ -100,7 +100,7 @@ manifests and presets are unaffected; only a config that set both `service_id` a
 
 `make protos`, `go test` / `go test -v` (15 specs incl. the new CEL cases),
 `go build` of the package + Pulumi module, `gofmt`, `go vet`, and
-`openmcf secret-coverage --check` — all green. `service_id` is not a stack output,
+`planton secret-coverage --check` — all green. `service_id` is not a stack output,
 so the cross-engine outputs conformance guard is unaffected. Live `tofu apply`
 against a real VPC Service was not run (requires a provisioned Workers VPC Service);
 the proto + both engines are validated statically.

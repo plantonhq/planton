@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package dev.planton.provider.openstack.openstackloadbalancer.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// OpenStackLoadBalancerSpec defines the configuration for an Octavia load balancer
+// in OpenStack. This provisions the VIP (Virtual IP) endpoint on a specified subnet,
+// which listeners and pools attach to for traffic distribution.
+//
+// Terraform resource: openstack_lb_loadbalancer_v2
+// Pulumi resource:    loadbalancer.LoadBalancer
+message OpenStackLoadBalancerSpec {
+  // (Required) The subnet on which to allocate the VIP address.
+  // This determines the network segment where the load balancer's virtual IP lives.
+  // The subnet must already exist and have available IP addresses.
+  //
+  // FK: OpenStackSubnet.status.outputs.subnet_id
+  dev.planton.shared.foreignkey.v1.StringValueOrRef vip_subnet_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OpenStackSubnet,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  ];
+
+  // (Optional) A specific IP address to request for the VIP.
+  // Must be within the CIDR range of the specified subnet.
+  // If omitted, Octavia auto-allocates an available IP from the subnet.
+  // ForceNew: changing this requires recreating the load balancer.
+  string vip_address = 2;
+
+  // (Optional) Human-readable description of the load balancer.
+  string description = 3;
+
+  // (Optional) Administrative state of the load balancer.
+  // When false, the LB stops accepting traffic. Default: true.
+  optional bool admin_state_up = 4 [(dev.planton.shared.options.default) = "true"];
+
+  // (Optional) The ID of an Octavia flavor to use for the load balancer.
+  // Flavors define resource limits (bandwidth, connections, etc.).
+  // ForceNew: changing this requires recreating the load balancer.
+  string flavor_id = 5;
+
+  // (Optional) Tags applied to the load balancer in OpenStack.
+  // Must be unique within this resource.
+  repeated string tags = 6 [(buf.validate.field).repeated.unique = true];
+
+  // (Optional) Override the region from the provider configuration.
+  // Use this when the load balancer must be created in a specific region
+  // that differs from the provider's default.
+  string region = 7;
+}

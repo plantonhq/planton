@@ -1,0 +1,22 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesClickHouse
+metadata:
+  name: e2e-ch-minimal
+spec:
+  namespace:
+    value: e2e-ch-minimal
+  create_namespace: true
+  cluster_name: e2e-ch
+  container:
+    replicas: 1
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 50m
+        memory: 128Mi
+    persistence_enabled: true
+    disk_size: 1Gi
+  logging:
+    level: information

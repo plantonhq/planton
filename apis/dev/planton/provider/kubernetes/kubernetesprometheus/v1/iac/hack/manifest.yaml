@@ -1,0 +1,20 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesPrometheus
+metadata:
+  name: test-prometheus
+spec:
+  container:
+    replicas: 1
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "256Mi"
+      limits:
+        cpu: "1000m"
+        memory: "1Gi"
+    persistence_enabled: false
+    disk_size: ""
+  ingress:
+    is_enabled: false
+    dns_domain: ""
+

@@ -6,7 +6,7 @@
 
 ## Summary
 
-Completed the KubernetesPerconaMongoOperator deployment component from 90.40% to 100% by addressing critical gaps in testing, standardizing Pulumi and Terraform module structures, and adding missing documentation. This work ensures the component follows all OpenMCF conventions and is production-ready for managing Percona Server for MongoDB Operator (PSMDB) deployments on Kubernetes with comprehensive validation coverage.
+Completed the KubernetesPerconaMongoOperator deployment component from 90.40% to 100% by addressing critical gaps in testing, standardizing Pulumi and Terraform module structures, and adding missing documentation. This work ensures the component follows all Planton conventions and is production-ready for managing Percona Server for MongoDB Operator (PSMDB) deployments on Kubernetes with comprehensive validation coverage.
 
 ## Problem Statement / Motivation
 
@@ -16,7 +16,7 @@ The KubernetesPerconaMongoOperator component was at 90.40% completion with sever
 
 1. **Missing Unit Tests (5.55% impact)**: No `spec_test.go` file existed to validate buf.validate rules, making it impossible to verify that validation logic works correctly
 2. **Non-Standard Pulumi Module (4.44% impact)**: Module used custom file names (`percona_operator.go`, `vars.go`) instead of standard names (`main.go`, `locals.go`), breaking consistency with other components
-3. **Incomplete Terraform Module (1.78% impact)**: Missing standard files (`locals.tf`, `outputs.tf`) with logic inline in `main.tf`, deviating from OpenMCF's module structure conventions
+3. **Incomplete Terraform Module (1.78% impact)**: Missing standard files (`locals.tf`, `outputs.tf`) with logic inline in `main.tf`, deviating from Planton's module structure conventions
 4. **Missing Pulumi Documentation (3.34% impact)**: No `overview.md` file to explain module architecture and design decisions
 
 ### Impact
@@ -51,7 +51,7 @@ func TestKubernetesPerconaMongoOperator(t *testing.T) {
 
 ### 2. Standardized Pulumi Module Structure
 
-Renamed files to follow OpenMCF conventions:
+Renamed files to follow Planton conventions:
 - `percona_operator.go` → `main.go` (resource creation logic)
 - `vars.go` → `locals.go` (configuration constants)
 - Updated all references from `vars.*` to `locals.*`
@@ -90,7 +90,7 @@ locals {
     var.metadata.labels != null ? var.metadata.labels : {},
     {
       "app.kubernetes.io/name"       = "percona-mongo-operator"
-      "app.kubernetes.io/managed-by" = "openmcf"
+      "app.kubernetes.io/managed-by" = "planton"
       "app.kubernetes.io/component"  = "database-operator"
     }
   )
@@ -264,7 +264,7 @@ The Percona Server for MongoDB Operator manages MongoDB deployments with:
 ### Deployment Architecture
 
 ```
-User → openmcf CLI
+User → planton CLI
   ↓
 Stack Input (spec.proto)
   ↓
@@ -307,7 +307,7 @@ Component completion tracked via:
 
 ### Unit Test Execution
 ```bash
-cd apis/org/openmcf/provider/kubernetes/kubernetesperconamongooperator/v1
+cd apis/dev/planton/provider/kubernetes/kubernetesperconamongooperator/v1
 go test -v
 ```
 
@@ -368,7 +368,7 @@ As the PSMDB operator evolves:
 ## File Locations
 
 **Component Root**:
-- `apis/org/openmcf/provider/kubernetes/kubernetesperconamongooperator/v1/`
+- `apis/dev/planton/provider/kubernetes/kubernetesperconamongooperator/v1/`
 
 **Key Files**:
 - `spec_test.go`: Validation test suite

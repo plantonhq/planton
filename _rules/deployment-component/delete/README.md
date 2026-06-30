@@ -2,7 +2,7 @@
 
 ## Overview
 
-**Delete** is the rule for safely removing deployment components from the OpenMCF codebase. It provides multiple safety features to prevent accidental deletion and ensure clean removal of all artifacts.
+**Delete** is the rule for safely removing deployment components from the Planton codebase. It provides multiple safety features to prevent accidental deletion and ensure clean removal of all artifacts.
 
 ## Why Delete Exists
 
@@ -39,10 +39,10 @@ Deletion is **irreversible** without backups. Delete prioritizes safety:
 
 ### ❌ Don't Use Delete When
 
-- Component needs updates → Use `@update-openmcf-component`
-- Component has bugs → Use `@update-openmcf-component`
-- Documentation needs fixing → Use `@update-openmcf-component`
-- Unsure if needed → Run `@audit-openmcf-component` first
+- Component needs updates → Use `@update-planton-component`
+- Component has bugs → Use `@update-planton-component`
+- Documentation needs fixing → Use `@update-planton-component`
+- Unsure if needed → Run `@audit-planton-component` first
 - Component doesn't exist → Nothing to delete
 
 ## The Safe Deletion Workflow
@@ -51,15 +51,15 @@ Deletion is **irreversible** without backups. Delete prioritizes safety:
 
 ```bash
 # Step 1: Understand current state
-@audit-openmcf-component ObsoleteComponent
+@audit-planton-component ObsoleteComponent
 
 # Step 2: Preview deletion (dry-run)
-@delete-openmcf-component ObsoleteComponent --dry-run
+@delete-planton-component ObsoleteComponent --dry-run
 
 # Step 3: Review what would be deleted
 
 # Step 4: Delete with backup
-@delete-openmcf-component ObsoleteComponent --backup
+@delete-planton-component ObsoleteComponent --backup
 
 # Step 5: Confirm deletion
 # (Type: DELETE ObsoleteComponent)
@@ -80,7 +80,7 @@ Delete removes **everything** related to a component:
 ### 1. Component Folder (All Files)
 
 ```
-apis/org/openmcf/provider/<provider>/<component>/v1/
+apis/dev/planton/provider/<provider>/<component>/v1/
 ├── api.proto                    ❌ Deleted
 ├── spec.proto                   ❌ Deleted
 ├── stack_input.proto            ❌ Deleted
@@ -160,7 +160,7 @@ After deletion, running `make protos` removes stale .pb.go files for deleted com
 **Preview without deleting:**
 
 ```bash
-@delete-openmcf-component MongodbAtlas --dry-run
+@delete-planton-component MongodbAtlas --dry-run
 ```
 
 **Output:**
@@ -171,7 +171,7 @@ Component Info:
   Provider: atlas
   Enum Value: 51
   ID Prefix: mdbatl
-  Path: apis/org/openmcf/provider/atlas/mongodbatlas/v1/
+  Path: apis/dev/planton/provider/atlas/mongodbatlas/v1/
 
 Would Delete:
   📁 Component folder
@@ -199,7 +199,7 @@ Summary:
 No files will be modified (dry-run mode)
 
 To proceed:
-  @delete-openmcf-component MongodbAtlas --backup
+  @delete-planton-component MongodbAtlas --backup
 ```
 
 ### --backup (Strongly Recommended)
@@ -207,12 +207,12 @@ To proceed:
 **Create backup before deleting:**
 
 ```bash
-@delete-openmcf-component MongodbAtlas --backup
+@delete-planton-component MongodbAtlas --backup
 ```
 
 **Creates:**
 ```
-apis/org/openmcf/provider/atlas/
+apis/dev/planton/provider/atlas/
 ├── mongodbatlas/                         # Original (will be deleted)
 └── mongodbatlas-backup-2025-11-13-143022/  # Backup (preserved)
     ├── v1/
@@ -238,7 +238,7 @@ make protos
 **Skip confirmation prompt:**
 
 ```bash
-@delete-openmcf-component TestComponent --force --backup
+@delete-planton-component TestComponent --force --backup
 ```
 
 **When to use:**
@@ -256,7 +256,7 @@ make protos
 **Skip reference checking (faster but risky):**
 
 ```bash
-@delete-openmcf-component TestComponent --skip-references --force
+@delete-planton-component TestComponent --skip-references --force
 ```
 
 **Warning:** May break builds if component is used elsewhere.
@@ -269,12 +269,12 @@ Delete automatically searches for references:
 
 **Go Code:**
 ```go
-import "org/openmcf/provider/atlas/mongodbatlas/v1"  // ⚠️ Reference found
+import "dev/planton/provider/atlas/mongodbatlas/v1"  // ⚠️ Reference found
 ```
 
 **Proto Files:**
 ```protobuf
-import "org/openmcf/provider/atlas/mongodbatlas/v1/api.proto";  // ⚠️ Reference found
+import "dev/planton/provider/atlas/mongodbatlas/v1/api.proto";  // ⚠️ Reference found
 ```
 
 **Documentation:**
@@ -293,8 +293,8 @@ kind: MongodbAtlas  // ⚠️ Reference found
 ⚠️  Warning: MongodbAtlas is referenced in 3 files
 
 Critical References (will break build):
-  1. apis/org/openmcf/provider/atlas/backup/v1/spec.proto:15
-     import "org/openmcf/provider/atlas/mongodbatlas/v1/api.proto";
+  1. apis/dev/planton/provider/atlas/backup/v1/spec.proto:15
+     import "dev/planton/provider/atlas/mongodbatlas/v1/api.proto";
      → Must remove or update import
      
   2. docs/examples/database-comparison.md:45
@@ -360,7 +360,7 @@ After successful deletion:
 
 What Was Deleted:
   ✅ Component folder
-     Path: apis/org/openmcf/provider/atlas/mongodbatlas/v1/
+     Path: apis/dev/planton/provider/atlas/mongodbatlas/v1/
      Files: 23 deleted
      Size: 450 KB freed
      
@@ -412,7 +412,7 @@ Status: ✅ Complete
 
 ```bash
 # Test component with no references
-@delete-openmcf-component TestCloudResourceGeneric --force --backup
+@delete-planton-component TestCloudResourceGeneric --force --backup
 
 # Output:
 # ✅ No references found
@@ -426,14 +426,14 @@ go build ./apis/.../v1/... && go test -v ./apis/.../v1/  # ✅ All pass
 
 ```bash
 # Old implementation being replaced
-@delete-openmcf-component OldPostgresKubernetes --dry-run
+@delete-planton-component OldPostgresKubernetes --dry-run
 
 # Review references (find 5 references)
 # Update references to new component
 # ...edit files...
 
 # Delete after fixing references
-@delete-openmcf-component OldPostgresKubernetes --backup
+@delete-planton-component OldPostgresKubernetes --backup
 
 # Verify
 go build ./apis/.../v1/... && go test -v ./apis/.../v1/  # ✅ All pass
@@ -443,7 +443,7 @@ go build ./apis/.../v1/... && go test -v ./apis/.../v1/  # ✅ All pass
 
 ```bash
 # Provider shut down service
-@delete-openmcf-component DiscontinuedService --backup
+@delete-planton-component DiscontinuedService --backup
 
 # References found in docs (historical)
 # Decision: Keep historical references
@@ -469,7 +469,7 @@ git commit -m "Remove DiscontinuedService (provider shut down service)"
 grep -r "OldComponentName" .  # Find any usage
 
 # Second: Delete old component
-@delete-openmcf-component OldComponentName --backup
+@delete-planton-component OldComponentName --backup
 
 # Third: Update documentation
 # Add migration guide explaining the consolidation
@@ -506,14 +506,14 @@ Did you mean one of these?
 ```
 ❌ Error: Permission denied
 
-Cannot delete: apis/org/openmcf/provider/atlas/mongodbatlas/v1/
+Cannot delete: apis/dev/planton/provider/atlas/mongodbatlas/v1/
 Reason: Directory not writable
 
 Fix:
-  chmod -R u+w apis/org/openmcf/provider/atlas/mongodbatlas/
+  chmod -R u+w apis/dev/planton/provider/atlas/mongodbatlas/
   
 Then retry:
-  @delete-openmcf-component MongodbAtlas --backup
+  @delete-planton-component MongodbAtlas --backup
 ```
 
 ### References Block Deletion
@@ -532,7 +532,7 @@ Recommended action:
   2. Then delete safely
 
 Or force delete (may break build):
-  @delete-openmcf-component MongodbAtlas --force --backup
+  @delete-planton-component MongodbAtlas --force --backup
 ```
 
 ## Restoring Deleted Components
@@ -541,7 +541,7 @@ Or force delete (may break build):
 
 ```bash
 # List available backups
-ls apis/org/openmcf/provider/<provider>/*-backup-*/
+ls apis/dev/planton/provider/<provider>/*-backup-*/
 
 # Restore component folder
 cp -r mongodbatlas-backup-2025-11-13-143022/v1 mongodbatlas/
@@ -549,7 +549,7 @@ cp -r mongodbatlas-backup-2025-11-13-143022/v1 mongodbatlas/
 # Restore enum entry
 cat mongodbatlas-backup-2025-11-13-143022/enum_entry.txt
 # Copy the enum entry text
-vim apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto
+vim apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto
 # Paste enum entry in correct location (numeric order)
 
 # Regenerate proto stubs
@@ -563,7 +563,7 @@ go build ./apis/.../v1/... && go test -v ./apis/.../v1/
 
 ```bash
 # Find when component was deleted
-git log --all --oneline -- apis/org/openmcf/provider/atlas/mongodbatlas/
+git log --all --oneline -- apis/dev/planton/provider/atlas/mongodbatlas/
 
 # Example output:
 # abc1234 Remove MongodbAtlas component
@@ -571,10 +571,10 @@ git log --all --oneline -- apis/org/openmcf/provider/atlas/mongodbatlas/
 # ...
 
 # Restore from commit before deletion
-git checkout def5678 -- apis/org/openmcf/provider/atlas/mongodbatlas/
+git checkout def5678 -- apis/dev/planton/provider/atlas/mongodbatlas/
 
 # Restore enum entry
-git show def5678:apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto | grep -A 5 "MongodbAtlas"
+git show def5678:apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto | grep -A 5 "MongodbAtlas"
 # Manually add to current cloud_resource_kind.proto
 
 # Regenerate and verify
@@ -627,10 +627,10 @@ Before confirming deletion:
 
 ```bash
 # Force remove if needed
-rm -rf apis/org/openmcf/provider/<provider>/<component>/
+rm -rf apis/dev/planton/provider/<provider>/<component>/
 
 # Or fix permissions first
-chmod -R u+w apis/org/openmcf/provider/<provider>/<component>/
+chmod -R u+w apis/dev/planton/provider/<provider>/<component>/
 ```
 
 ### "Build fails after deletion"
@@ -678,16 +678,16 @@ Successful deletion:
 
 ## Related Commands
 
-- `@audit-openmcf-component` - Check component status before deletion
-- `@complete-openmcf-component` - Auto-improve to 95%+ (consider before deleting)
-- `@fix-openmcf-component` - Fix specific issues (consider before deleting)
-- `@forge-openmcf-component` - Create new component
-- `@update-openmcf-component` - Update existing component
+- `@audit-planton-component` - Check component status before deletion
+- `@complete-planton-component` - Auto-improve to 95%+ (consider before deleting)
+- `@fix-planton-component` - Fix specific issues (consider before deleting)
+- `@forge-planton-component` - Create new component
+- `@update-planton-component` - Update existing component
 
 ## Questions?
 
 - Check ideal state: `architecture/deployment-component.md`
-- Review delete rule: `_rules/deployment-component/delete/delete-openmcf-component.mdc`
+- Review delete rule: `_rules/deployment-component/delete/delete-planton-component.mdc`
 - See examples: Run `--dry-run` on any component
 
 ---

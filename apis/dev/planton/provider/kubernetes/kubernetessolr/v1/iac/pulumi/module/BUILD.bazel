@@ -1,0 +1,29 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "module",
+    srcs = [
+        "ingress.go",
+        "locals.go",
+        "main.go",
+        "namespace.go",
+        "outputs.go",
+        "solr_cloud.go",
+        "vars.go",
+    ],
+    importpath = "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/kubernetessolr/v1/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/dev/planton/provider/kubernetes/kubernetessolr/v1:kubernetessolr",
+        "//apis/dev/planton/shared/cloudresourcekind",
+        "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/kuberneteslabelkeys",
+        "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider",
+        "//pkg/kubernetes/kubernetestypes/certmanager/kubernetes/cert_manager/v1:cert_manager",
+        "//pkg/kubernetes/kubernetestypes/gatewayapis/kubernetes/gateway/v1:gateway",
+        "//pkg/kubernetes/kubernetestypes/solroperator/kubernetes/solr/v1beta1",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/core/v1:core",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/meta/v1:meta",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)

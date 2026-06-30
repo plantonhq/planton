@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package dev.planton.provider.cloudflare.cloudflarer2bucket.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/cloudflare/cloudflarer2bucket/v1/spec.proto";
+import "dev/planton/provider/cloudflare/cloudflarer2bucket/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// cloudflare-r2-bucket
+message CloudflareR2Bucket {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'cloudflare.planton.dev/v1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'CloudflareR2Bucket'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  CloudflareR2BucketSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  CloudflareR2BucketStatus status = 5;
+}
+
+// cloudflare-r2-bucket status
+message CloudflareR2BucketStatus {
+  //stack-outputs
+  //  cloudflare-r2-bucket stack-outputs
+  CloudflareR2BucketStackOutputs outputs = 1;
+}

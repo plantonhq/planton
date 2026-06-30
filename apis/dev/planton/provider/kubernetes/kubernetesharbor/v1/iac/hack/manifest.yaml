@@ -1,0 +1,74 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesHarbor
+metadata:
+  name: harborkubernetes-demo
+spec:
+  coreContainer:
+    replicas: 1
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+  portalContainer:
+    replicas: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+  registryContainer:
+    replicas: 1
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+  jobserviceContainer:
+    replicas: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+  database:
+    isExternal: false
+    managedDatabase:
+      container:
+        replicas: 1
+        isPersistenceEnabled: true
+        diskSize: 20Gi
+        resources:
+          requests:
+            cpu: 200m
+            memory: 512Mi
+          limits:
+            cpu: 1000m
+            memory: 2Gi
+  cache:
+    isExternal: false
+    managedCache:
+      container:
+        replicas: 1
+        isPersistenceEnabled: true
+        diskSize: 8Gi
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+  storage:
+    type: filesystem
+    filesystem:
+      diskSize: 100Gi
+

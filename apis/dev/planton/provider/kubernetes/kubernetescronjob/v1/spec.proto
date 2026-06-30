@@ -1,0 +1,173 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetescronjob.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/container_env.proto";
+import "dev/planton/provider/kubernetes/kubernetes.proto";
+import "dev/planton/provider/kubernetes/options.proto";
+import "dev/planton/provider/kubernetes/target_cluster.proto";
+import "dev/planton/provider/kubernetes/volume_mount.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+/**
+ * KubernetesCronJobSpec defines the configuration for deploying a cron-job on a Kubernetes cluster.
+ * This message includes specifications for the container image, resources, environment variables,
+ * and the cron-job schedule/policy fields. By setting these parameters, you manage how the
+ * cron-job is deployed, executed, and how concurrency and retries are handled.
+ */
+message KubernetesCronJobSpec {
+  // Target Kubernetes Cluster
+  dev.planton.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  // Kubernetes Namespace
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // flag to indicate if the namespace should be created
+  bool create_namespace = 3;
+
+  /**
+   * The container image to be used for the application.
+   * The `pull_secret_name` is determined by looking up the
+   * `container_image_artifact_store_id` from the environment where the cron-job is deployed.
+   */
+  dev.planton.provider.kubernetes.ContainerImage image = 4;
+
+  /**
+   * The CPU and memory resources allocated to the cron-job container.
+   * If not specified, default container resources (limits.cpu=1000m, limits.memory=1Gi,
+   * requests.cpu=50m, requests.memory=100Mi) are applied.
+   */
+  dev.planton.provider.kubernetes.ContainerResources resources = 5 [(dev.planton.provider.kubernetes.default_container_resources) = {
+    limits: {
+      cpu: "1000m"
+      memory: "1Gi"
+    }
+    requests: {
+      cpu: "50m"
+      memory: "100Mi"
+    }
+  }];
+
+  /**
+   * Environment variables and secrets for the cron-job container.
+   */
+  dev.planton.provider.kubernetes.ContainerEnv env = 6;
+
+  /**
+   * A cron schedule expression in standard Cron format, e.g. "0 0 * * *".
+   * This field is required.
+   */
+  string schedule = 7 [(buf.validate.field).required = true];
+
+  /**
+   * Optional deadline in seconds for starting the job if it misses its scheduled time.
+   * If set to 0, no deadline is enforced.
+   */
+  optional uint64 starting_deadline_seconds = 8 [(dev.planton.shared.options.default) = "0"];
+
+  /**
+   * Concurrency policy specifies how concurrent job runs are handled.
+   * Allowed values are: "Allow", "Forbid", "Replace".
+   * Default is "Forbid".
+   */
+  optional string concurrency_policy = 9 [
+    (dev.planton.shared.options.default) = "Forbid",
+    (buf.validate.field).string = {
+      in: [
+        "Allow",
+        "Forbid",
+        "Replace"
+      ]
+    }
+  ];
+
+  /**
+   * If true, no subsequent runs are scheduled.
+   * Default is false.
+   */
+  optional bool suspend = 10 [(dev.planton.shared.options.default) = "false"];
+
+  /**
+   * Number of successful finished jobs to retain.
+   * Default is 3.
+   */
+  optional uint32 successful_jobs_history_limit = 11 [(dev.planton.shared.options.default) = "3"];
+
+  /**
+   * Number of failed finished jobs to retain.
+   * Default is 1.
+   */
+  optional uint32 failed_jobs_history_limit = 12 [(dev.planton.shared.options.default) = "1"];
+
+  /**
+   * Number of retries before marking this job as failed.
+   * Default is 6.
+   */
+  optional uint32 backoff_limit = 13 [(dev.planton.shared.options.default) = "6"];
+
+  /**
+   * Pod restart policy.
+   * Allowed values: "Always", "OnFailure", "Never".
+   * Default is "Never".
+   */
+  optional string restart_policy = 14 [
+    (dev.planton.shared.options.default) = "Never",
+    (buf.validate.field).string = {
+      in: [
+        "Always",
+        "OnFailure",
+        "Never"
+      ]
+    }
+  ];
+
+  /**
+   * An optional list of commands (equivalent to an ENTRYPOINT override) for the cron-job container.
+   * If omitted, the default ENTRYPOINT in the image will be used.
+   * Example: ["sh","-c","echo Hello from Cron"]
+   */
+  repeated string command = 15;
+
+  /**
+   * An optional list of arguments passed to the container command or the image's default ENTRYPOINT.
+   * If omitted, the default CMD in the image will be used.
+   * Example: ["-f","/path/to/config.yaml"]
+   */
+  repeated string args = 16;
+
+  /**
+   * ConfigMaps to create alongside the CronJob.
+   * Key is the ConfigMap name, value is the content.
+   * These ConfigMaps can be referenced in volume mounts.
+   *
+   * Example:
+   *   config_maps:
+   *     backup-script: |
+   *       #!/bin/bash
+   *       echo "Running backup..."
+   *       pg_dump $DATABASE_URL > /backup/dump.sql
+   */
+  map<string, string> config_maps = 17;
+
+  /**
+   * Volume mounts for the CronJob container.
+   * Supports mounting ConfigMaps, Secrets, HostPaths, EmptyDirs, and PVCs.
+   * ConfigMaps defined in spec.config_maps can be referenced here.
+   *
+   * Example:
+   *   volume_mounts:
+   *     - name: backup-script
+   *       mountPath: /scripts/backup.sh
+   *       configMap:
+   *         name: backup-script
+   *         key: backup-script
+   *         path: backup.sh
+   */
+  repeated dev.planton.provider.kubernetes.VolumeMount volume_mounts = 18;
+}

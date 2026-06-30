@@ -3,10 +3,10 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "tfbackend",
     srcs = ["tf_backend.go"],
-    importpath = "github.com/plantonhq/openmcf/pkg/iac/tofu/tfbackend",
+    importpath = "github.com/plantonhq/planton/pkg/iac/tofu/tfbackend",
     visibility = ["//visibility:public"],
     deps = [
-        "//apis/org/openmcf/shared/iac/terraform",
+        "//apis/dev/planton/shared/iac/terraform",
         "@com_github_pkg_errors//:errors",
     ],
 )

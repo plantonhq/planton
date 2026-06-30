@@ -12,7 +12,7 @@ Deploys an Amazon Kinesis Data Firehose delivery stream that captures, transform
 
 ## What Gets Created
 
-When you deploy an AwsKinesisFirehose resource, OpenMCF provisions:
+When you deploy an AwsKinesisFirehose resource, Planton provisions:
 
 - **Kinesis Firehose Delivery Stream** — the core `aws_kinesis_firehose_delivery_stream` resource configured with the selected destination type
 - **Kinesis source configuration** — created only when `kinesisStreamSource` is set, configures Firehose to consume from an existing Kinesis Data Stream with automatic checkpointing and retry
@@ -24,7 +24,7 @@ When you deploy an AwsKinesisFirehose resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **A destination resource** — an S3 bucket, OpenSearch domain, HTTPS endpoint, or Redshift cluster depending on the chosen destination type
 - **An IAM role** with permissions appropriate for the destination (S3 write, OpenSearch index, Redshift COPY, etc.)
 - **A Kinesis Data Stream** if using Kinesis source mode instead of Direct PUT
@@ -36,15 +36,15 @@ When you deploy an AwsKinesisFirehose resource, OpenMCF provisions:
 Create a file `firehose.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsKinesisFirehose
 metadata:
   name: my-firehose
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsKinesisFirehose.my-firehose
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsKinesisFirehose.my-firehose
 spec:
   region: us-east-1
   extendedS3:
@@ -55,7 +55,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f firehose.yaml
+planton apply -f firehose.yaml
 ```
 
 This creates a Direct PUT delivery stream that writes raw records to S3 with no compression or transformation.
@@ -166,15 +166,15 @@ Exactly one destination must be configured. The destination type is ForceNew —
 GZIP-compressed delivery to S3 with timestamp-based prefixes and buffering tuned for throughput:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsKinesisFirehose
 metadata:
   name: data-lake-firehose
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsKinesisFirehose.data-lake-firehose
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsKinesisFirehose.data-lake-firehose
 spec:
   region: us-east-1
   extendedS3:
@@ -193,15 +193,15 @@ spec:
 Indexes application logs into an OpenSearch domain with daily index rotation and S3 backup for failed documents. References the OpenSearch domain via `valueFrom`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsKinesisFirehose
 metadata:
   name: log-analytics-firehose
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsKinesisFirehose.log-analytics-firehose
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsKinesisFirehose.log-analytics-firehose
 spec:
   region: us-east-1
   opensearch:
@@ -229,15 +229,15 @@ spec:
 Consumes from an existing Kinesis Data Stream, converts JSON to Parquet via AWS Glue Data Catalog, and writes columnar files to a partitioned S3 data lake:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsKinesisFirehose
 metadata:
   name: analytics-parquet-firehose
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsKinesisFirehose.analytics-parquet-firehose
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsKinesisFirehose.analytics-parquet-firehose
 spec:
   region: us-east-1
   kinesisStreamSource:

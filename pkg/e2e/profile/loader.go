@@ -8,8 +8,8 @@ import (
 	"google.golang.org/protobuf/proto"
 	"sigs.k8s.io/yaml"
 
-	componentv1 "github.com/plantonhq/openmcf/apis/org/openmcf/qa/componente2eprofile/v1"
-	providerv1 "github.com/plantonhq/openmcf/apis/org/openmcf/qa/providere2eprofile/v1"
+	componentv1 "github.com/plantonhq/planton/apis/dev/planton/qa/componente2eprofile/v1"
+	providerv1 "github.com/plantonhq/planton/apis/dev/planton/qa/providere2eprofile/v1"
 )
 
 var unmarshalOpts = protojson.UnmarshalOptions{

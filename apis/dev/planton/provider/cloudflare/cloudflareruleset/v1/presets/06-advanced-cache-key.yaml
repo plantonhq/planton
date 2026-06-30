@@ -1,0 +1,42 @@
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareRuleset
+metadata:
+  name: my-advanced-cache-rules
+spec:
+  zone_id:
+    value: "<cloudflare-zone-id>"
+  ruleset_kind: zone
+  phase: http_request_cache_settings
+  name: "Advanced cache key + reserve"
+  rules:
+    - ref: "cache-by-device-and-locale"
+      expression: 'http.request.uri.path starts_with "/shop"'
+      action: set_cache_settings
+      description: "Cache product pages keyed on device type and selected locale, with Cache Reserve"
+      enabled: true
+      action_parameters:
+        cache: true
+        edge_ttl:
+          mode: override_origin
+          default_ttl: 7200
+          status_code_ttls:
+            - status_code: 404
+              value: 30
+        cache_key:
+          cache_by_device_type: true
+          ignore_query_strings_order: true
+          custom_key:
+            query_string:
+              include:
+                list:
+                  - "locale"
+                  - "currency"
+            cookie:
+              include:
+                - "cart_id"
+            user:
+              geo: true
+        cache_reserve:
+          eligible: true
+          minimum_file_size: 1024
+        respect_strong_etags: true

@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package dev.planton.provider.openstack.openstackloadbalancermember.v1;
+
+// OpenStackLoadBalancerMemberStackOutputs captures the observable outputs after
+// provisioning an Octavia pool member in OpenStack.
+message OpenStackLoadBalancerMemberStackOutputs {
+  // member_id is the unique identifier (UUID) of the member.
+  string member_id = 1;
+
+  // name is the name of the member (derived from metadata.name).
+  string name = 2;
+
+  // address is the IP address of the backend server.
+  string address = 3;
+
+  // protocol_port is the port on the backend server.
+  int32 protocol_port = 4;
+
+  // weight is the member's weight in the load-balancing algorithm.
+  int32 weight = 5;
+
+  // region is the OpenStack region where the member was created.
+  string region = 6;
+}

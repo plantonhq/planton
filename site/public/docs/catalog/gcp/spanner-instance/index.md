@@ -12,14 +12,14 @@ Deploys a Google Cloud Spanner instance with configurable compute capacity via f
 
 ## What Gets Created
 
-When you deploy a GcpSpannerInstance resource, OpenMCF provisions:
+When you deploy a GcpSpannerInstance resource, Planton provisions:
 
 - **Spanner Instance** — a `google_spanner_instance` resource with the specified instance configuration, compute capacity, and edition
-- **Framework Labels** — OpenMCF metadata labels applied to the instance (resource kind, name, organization, environment)
+- **Framework Labels** — Planton metadata labels applied to the instance (resource kind, name, organization, environment)
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **A GCP project** where the Spanner instance will be created
 - **Spanner API enabled** in the target project (`spanner.googleapis.com`)
 - **Billing account** attached to the project (required even for FREE_INSTANCE — limited to one per billing account)
@@ -29,15 +29,15 @@ When you deploy a GcpSpannerInstance resource, OpenMCF provisions:
 Create a file `spanner-instance.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpSpannerInstance
 metadata:
   name: my-spanner
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpSpannerInstance.my-spanner
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpSpannerInstance.my-spanner
 spec:
   projectId:
     value: my-gcp-project-123
@@ -50,7 +50,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f spanner-instance.yaml
+planton apply -f spanner-instance.yaml
 ```
 
 This creates a single-node Spanner instance in the `us-central1` region.
@@ -91,15 +91,15 @@ This creates a single-node Spanner instance in the `us-central1` region.
 Zero-cost instance for development and testing:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpSpannerInstance
 metadata:
   name: dev-spanner
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpSpannerInstance.dev-spanner
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpSpannerInstance.dev-spanner
 spec:
   projectId:
     value: my-gcp-project-123
@@ -114,15 +114,15 @@ spec:
 Production instance that scales automatically between 1 and 5 nodes:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpSpannerInstance
 metadata:
   name: prod-spanner
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpSpannerInstance.prod-spanner
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpSpannerInstance.prod-spanner
 spec:
   projectId:
     value: my-gcp-project-123
@@ -145,15 +145,15 @@ spec:
 Globally distributed instance with 99.999% availability SLA:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpSpannerInstance
 metadata:
   name: global-spanner
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpSpannerInstance.global-spanner
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpSpannerInstance.global-spanner
 spec:
   projectId:
     value: my-gcp-project-123
@@ -167,18 +167,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference a GcpProject managed by OpenMCF instead of hardcoding the project ID:
+Reference a GcpProject managed by Planton instead of hardcoding the project ID:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpSpannerInstance
 metadata:
   name: ref-spanner
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpSpannerInstance.ref-spanner
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpSpannerInstance.ref-spanner
 spec:
   projectId:
     valueFrom:

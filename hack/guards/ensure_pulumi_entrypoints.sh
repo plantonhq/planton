@@ -7,7 +7,7 @@ set -euo pipefail
 #
 # WHY THIS EXISTS
 # The release pipeline (.github/workflows/release.pulumi-modules.yaml) builds each component
-# NON-RECURSIVELY: `go build -o <bin> ./apis/org/openmcf/provider/<p>/<c>/v1/iac/pulumi`.
+# NON-RECURSIVELY: `go build -o <bin> ./apis/dev/planton/provider/<p>/<c>/v1/iac/pulumi`.
 # That command REQUIRES a `package main` at the directory root and fails with
 # `no Go files in .../iac/pulumi` when the entrypoint is missing or misplaced. A recursive
 # `go build ./.../v1/...` would mask this by compiling only the `module/` library. This guard
@@ -16,7 +16,7 @@ set -euo pipefail
 repo_root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$repo_root_dir"
 
-provider_base="apis/org/openmcf/provider"
+provider_base="apis/dev/planton/provider"
 
 missing_root_main=()
 misplaced_subdir=()

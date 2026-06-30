@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package dev.planton.provider.scaleway.scalewayvpc.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/options/options.proto";
+
+// ScalewayVpcSpec defines the specification for a Scaleway Virtual Private Cloud (VPC).
+//
+// A Scaleway VPC is a regional, logical container that groups Private Networks.
+// Unlike VPCs in some other cloud providers, Scaleway VPCs do not define IP ranges
+// or CIDR blocks -- IP planning happens at the Private Network level.
+//
+// The VPC's primary purpose is to provide network isolation and, when routing is enabled,
+// allow communication between Private Networks attached to the same VPC.
+message ScalewayVpcSpec {
+  // The Scaleway region where the VPC will be created.
+  // Examples: "fr-par", "nl-ams", "pl-waw"
+  //
+  // This field is required and cannot be changed after creation.
+  string region = 1 [(buf.validate.field).required = true];
+
+  // Whether to enable routing between Private Networks in this VPC.
+  //
+  // When enabled, resources in different Private Networks attached to this VPC
+  // can communicate with each other. This is essential for multi-tier architectures
+  // (e.g., a Kapsule cluster in one Private Network talking to an RDB instance
+  // in another).
+  //
+  // IMPORTANT: Once enabled, routing cannot be disabled. Plan accordingly.
+  //
+  // Default: false
+  bool enable_routing = 2 [(dev.planton.shared.options.recommended_default) = "false"];
+
+  // Whether to enable custom routes propagation between Private Networks in this VPC.
+  //
+  // When enabled, custom routes from one Private Network are advertised to other
+  // Private Networks in the same VPC. This is useful for advanced networking
+  // scenarios such as VPN gateways or network appliances.
+  //
+  // IMPORTANT: Once enabled, custom routes propagation cannot be disabled. Plan accordingly.
+  //
+  // Default: false
+  bool enable_custom_routes_propagation = 3 [(dev.planton.shared.options.recommended_default) = "false"];
+}

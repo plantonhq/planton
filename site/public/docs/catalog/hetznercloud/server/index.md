@@ -17,7 +17,7 @@ Provisions a Hetzner Cloud virtual machine running a chosen OS image on a specif
 
 ## Prerequisites
 
-- **Hetzner Cloud API token** configured via environment variable (`HCLOUD_TOKEN`) or OpenMCF provider config
+- **Hetzner Cloud API token** configured via environment variable (`HCLOUD_TOKEN`) or Planton provider config
 - **SSH keys** if using `sshKeys` for server access — either pre-existing in the Hetzner Cloud project or managed as `HetznerCloudSshKey` components
 - **A network with at least one subnet** if attaching to a private network via `networks`
 - **Primary IPs in the same location** if attaching existing IPs via `publicNet.ipv4` or `publicNet.ipv6`
@@ -27,15 +27,15 @@ Provisions a Hetzner Cloud virtual machine running a chosen OS image on a specif
 Create a file `server.yaml`:
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudServer
 metadata:
   name: my-server
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.HetznerCloudServer.my-server
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.HetznerCloudServer.my-server
 spec:
   serverType: cx22
   image: ubuntu-24.04
@@ -45,7 +45,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f server.yaml
+planton apply -f server.yaml
 ```
 
 This provisions a shared x86 server (2 vCPU, 4 GB RAM) running Ubuntu 24.04 in Falkenstein with auto-assigned public IPv4 and IPv6 addresses.
@@ -91,15 +91,15 @@ This provisions a shared x86 server (2 vCPU, 4 GB RAM) running Ubuntu 24.04 in F
 A shared x86 server running Ubuntu 24.04 in Falkenstein with auto-assigned public IPs.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudServer
 metadata:
   name: dev-box
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.HetznerCloudServer.dev-box
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.HetznerCloudServer.dev-box
 spec:
   serverType: cx22
   image: ubuntu-24.04
@@ -111,17 +111,17 @@ spec:
 A server with SSH key access and a cloud-init script that installs Nginx on first boot.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudServer
 metadata:
   name: web-01
   org: acme-corp
   env: staging
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: web-platform
-    pulumi.openmcf.org/stack.name: staging.HetznerCloudServer.web-01
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: web-platform
+    pulumi.planton.dev/stack.name: staging.HetznerCloudServer.web-01
 spec:
   serverType: cx22
   image: ubuntu-24.04
@@ -136,20 +136,20 @@ spec:
 
 ### Production Server with Firewall and Private Network
 
-A server composed with other OpenMCF components via `valueFrom` references, with backups and protections enabled.
+A server composed with other Planton components via `valueFrom` references, with backups and protections enabled.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudServer
 metadata:
   name: app-01
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: infrastructure
-    pulumi.openmcf.org/stack.name: production.HetznerCloudServer.app-01
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: infrastructure
+    pulumi.planton.dev/stack.name: production.HetznerCloudServer.app-01
 spec:
   serverType: cpx21
   image: debian-12
@@ -182,17 +182,17 @@ spec:
 An anti-affinity server in a spread placement group for high availability. Uses a dedicated server type for guaranteed CPU performance.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudServer
 metadata:
   name: db-primary
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: databases
-    pulumi.openmcf.org/stack.name: production.HetznerCloudServer.db-primary
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: databases
+    pulumi.planton.dev/stack.name: production.HetznerCloudServer.db-primary
     role: database
 spec:
   serverType: ccx13
@@ -231,17 +231,17 @@ spec:
 A server with a stable IPv6 Primary IP, private networking, all protections, and reverse DNS for the auto-assigned IPv4.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudServer
 metadata:
   name: web-prod-01
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: infrastructure
-    pulumi.openmcf.org/stack.name: production.HetznerCloudServer.web-prod-01
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: infrastructure
+    pulumi.planton.dev/stack.name: production.HetznerCloudServer.web-prod-01
 spec:
   serverType: cpx31
   image: ubuntu-24.04

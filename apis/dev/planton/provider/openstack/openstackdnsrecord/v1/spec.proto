@@ -1,0 +1,110 @@
+syntax = "proto3";
+
+package dev.planton.provider.openstack.openstackdnsrecord.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// OpenStackDnsRecordSpec defines the configuration for a standalone DNS record
+// in an OpenStack Designate DNS zone.
+//
+// This component creates a single DNS recordset (one name + one type + one or more values)
+// within an existing zone. It is the DAG-visible counterpart to the inline records
+// supported by OpenStackDnsZone -- use this component when records need to be
+// independently managed or wired as explicit dependencies in InfraCharts.
+//
+// Terraform resource: openstack_dns_recordset_v2
+// Pulumi resource:    dns.RecordSet
+message OpenStackDnsRecordSpec {
+  // Supported DNS record types for OpenStack Designate.
+  enum RecordType {
+    // Unspecified record type (invalid).
+    record_type_unspecified = 0;
+    // IPv4 address record.
+    A = 1;
+    // IPv6 address record.
+    AAAA = 2;
+    // Canonical name (alias) record.
+    CNAME = 3;
+    // Mail exchange record.
+    MX = 4;
+    // Text record (SPF, DKIM, verification, etc.).
+    TXT = 5;
+    // Service locator record.
+    SRV = 6;
+    // Nameserver record.
+    NS = 7;
+    // Pointer record (reverse DNS).
+    PTR = 8;
+    // Certificate Authority Authorization record.
+    CAA = 9;
+    // Start of Authority record.
+    SOA = 10;
+    // Sender Policy Framework record (deprecated in favor of TXT).
+    SPF = 11;
+    // SSH Public Key Fingerprint record.
+    SSHFP = 12;
+    // Naming Authority Pointer record.
+    NAPTR = 13;
+  }
+
+  // (Required) The ID of the Designate zone where this record will be created.
+  // Can be a literal UUID or a reference to an OpenStackDnsZone resource's output.
+  //
+  // FK: OpenStackDnsZone.status.outputs.zone_id
+  // ForceNew: changing this requires recreating the record.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef zone_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OpenStackDnsZone,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
+  ];
+
+  // (Required) The fully qualified domain name for this record.
+  // Must end with a trailing dot to indicate FQDN.
+  // Example: "www.example.com." or "api.example.com."
+  // ForceNew: changing this requires recreating the record.
+  string record_name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "record_name.valid_fqdn"
+      message: "record_name must be a valid DNS domain name ending with a trailing dot (e.g., www.example.com.)"
+      expression: "this.endsWith('.') && this.matches('^(?:[*][.])?(?:[_a-z0-9](?:[_a-z0-9-]{0,61}[a-z0-9])?[.])+$')"
+    }
+  ];
+
+  // (Required) The DNS record type.
+  // Supported types: A, AAAA, CNAME, MX, TXT, SRV, NS, PTR, CAA, SOA, SPF, SSHFP, NAPTR.
+  // ForceNew: changing this requires recreating the record.
+  RecordType type = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).enum.defined_only = true,
+    (buf.validate.field).cel = {
+      id: "type.not_unspecified"
+      message: "type must be specified (cannot be record_type_unspecified)"
+      expression: "this != 0"
+    }
+  ];
+
+  // (Required) The DNS record values.
+  // Format depends on record type:
+  //   - A record: IPv4 addresses (e.g., ["192.0.2.1", "192.0.2.2"])
+  //   - AAAA record: IPv6 addresses (e.g., ["2001:db8::1"])
+  //   - CNAME record: target hostname with trailing dot (e.g., ["target.example.com."])
+  //   - MX record: priority and mail server (e.g., ["10 mail1.example.com.", "20 mail2.example.com."])
+  //   - TXT record: text values (e.g., ["v=spf1 include:_spf.google.com ~all"])
+  // Multiple values create a round-robin record set.
+  repeated string values = 4 [(buf.validate.field).repeated.min_items = 1];
+
+  // (Optional) Time To Live (in seconds) for this DNS record.
+  // Determines how long resolvers cache this record.
+  // If omitted, the zone's default TTL is used.
+  optional int32 ttl = 5;
+
+  // (Optional) Human-readable description of the DNS record.
+  string description = 6;
+
+  // (Optional) Override the region from the provider config for this record.
+  // If omitted, the region from the OpenStack provider config is used.
+  // ForceNew: changing this requires recreating the record.
+  string region = 7;
+}

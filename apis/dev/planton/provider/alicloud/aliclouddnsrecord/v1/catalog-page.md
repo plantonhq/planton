@@ -1,0 +1,143 @@
+# AliCloud DNS Record
+
+Creates and manages DNS records within an Alibaba Cloud Alidns-hosted domain. Supports all standard record types (A, AAAA, CNAME, MX, TXT, NS, SRV, CAA) with configurable TTL, priority, resolution lines, and record status.
+
+## What Gets Created
+
+When you deploy an AliCloudDnsRecord resource, Planton provisions:
+
+- **Alidns Record** -- an `alicloud_alidns_record` resource (Pulumi: `dns.AlidnsRecord`) that creates a DNS record within the specified parent domain
+
+## Prerequisites
+
+- **Alibaba Cloud credentials** configured via environment variables (`ALICLOUD_ACCESS_KEY`, `ALICLOUD_SECRET_KEY`) or Planton provider config
+- **Parent domain** registered in Alidns -- either via the AliCloudDnsZone component or manually in the console
+- **Planton CLI** installed with either Pulumi or Terraform (OpenTofu) backend
+
+## Quick Start
+
+Create a file `dns-record.yaml`:
+
+```yaml
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudDnsRecord
+metadata:
+  name: my-record
+  labels:
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudDnsRecord.my-record
+spec:
+  region: cn-hangzhou
+  domainName: example.com
+  rr: www
+  type: A
+  value: "203.0.113.10"
+```
+
+Deploy:
+
+```shell
+planton apply -f dns-record.yaml
+```
+
+## Configuration Reference
+
+### Required Fields
+
+| Field | Type | Description | Validation |
+|-------|------|-------------|------------|
+| `region` | `string` | Alibaba Cloud region for provider initialization (e.g., `cn-hangzhou`). Alidns is global, but the provider requires a region. | Required; non-empty |
+| `domainName` | `string` | The parent domain name (e.g., `example.com`). Must already exist in Alidns. Cannot be changed after creation. | Required; 1-253 characters |
+| `rr` | `string` | Host record (subdomain part). `@` for apex, `*` for wildcard, or any valid subdomain label. | Required; 1-253 characters |
+| `type` | `string` | DNS record type. | Required; one of `A`, `AAAA`, `CNAME`, `MX`, `TXT`, `NS`, `SRV`, `CAA`, `REDIRECT_URL`, `FORWORD_URL` |
+| `value` | `string` | Record value. Interpretation depends on `type` (IP for A/AAAA, domain for CNAME/MX/NS, text for TXT). | Required; non-empty |
+
+### Optional Fields
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `ttl` | `int32` | `600` | Time-to-live in seconds. Range depends on the Alidns plan (Free: 600-86400). |
+| `priority` | `int32` | - | MX record priority, range 1 (highest) to 10 (lowest). Required when `type` is `MX`, ignored for other types. |
+| `line` | `string` | `"default"` | DNS resolution line for ISP/geo-based routing. Use `"default"` for standard resolution. Must be `"default"` when `type` is `FORWORD_URL`. |
+| `status` | `string` | `"ENABLE"` | Record status: `ENABLE` (active) or `DISABLE` (record exists but is not served). |
+| `remark` | `string` | `""` | Description or notes for the record. Visible in the Alidns console. |
+
+## Examples
+
+### A Record
+
+```yaml
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudDnsRecord
+metadata:
+  name: web-server
+  labels:
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudDnsRecord.web-server
+spec:
+  region: cn-hangzhou
+  domainName: example.com
+  rr: www
+  type: A
+  value: "203.0.113.10"
+  ttl: 600
+```
+
+### CNAME Record
+
+```yaml
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudDnsRecord
+metadata:
+  name: cdn-alias
+  labels:
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudDnsRecord.cdn-alias
+spec:
+  region: cn-hangzhou
+  domainName: example.com
+  rr: cdn
+  type: CNAME
+  value: example.com.cdn-provider.com
+```
+
+### MX Record with Priority
+
+```yaml
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudDnsRecord
+metadata:
+  name: mail-primary
+  labels:
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AliCloudDnsRecord.mail-primary
+spec:
+  region: cn-hangzhou
+  domainName: example.com
+  rr: "@"
+  type: MX
+  value: mx1.example.com
+  priority: 5
+  ttl: 3600
+```
+
+## Stack Outputs
+
+After deployment, the following outputs are available in `status.outputs`:
+
+| Output | Type | Description |
+|--------|------|-------------|
+| `record_id` | `string` | The record ID assigned by Alibaba Cloud. |
+
+## Related Components
+
+- [AliCloudDnsZone](/docs/catalog/alicloud/aliclouddnszone) -- registers the parent domain in Alidns (prerequisite for creating records)
+- [AliCloudPrivateDnsZone](/docs/catalog/alicloud/alicloudprivatednszone) -- manages private DNS zones for VPC-internal resolution (separate from public Alidns)

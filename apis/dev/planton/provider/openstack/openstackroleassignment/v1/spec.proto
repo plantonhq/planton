@@ -1,0 +1,82 @@
+syntax = "proto3";
+
+package dev.planton.provider.openstack.openstackroleassignment.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// OpenStackRoleAssignmentSpec defines the configuration for an OpenStack
+// Identity (Keystone) role assignment.
+//
+// A role assignment binds a role to a principal (user or group) on a scope
+// (project or domain). This is the fundamental authorization mechanism in
+// OpenStack -- it determines what actions a user or group can perform on
+// a specific project or domain.
+//
+// Constraints:
+//   - Exactly one of project_id or domain_id must be set (scope)
+//   - Exactly one of user_id or group_id must be set (principal)
+//   - All fields are ForceNew -- changing any field recreates the assignment
+//
+// This is an admin-level operation. The OpenStack credentials must have
+// sufficient permissions to assign roles.
+//
+// Role assignments do not have a natural "name" -- metadata.name provides
+// KRM identity only and is not sent to the OpenStack API.
+//
+// Terraform resource: openstack_identity_role_assignment_v3
+// Pulumi resource: openstack.identity.RoleAssignment
+message OpenStackRoleAssignmentSpec {
+  // CEL: Exactly one of project_id or domain_id must be set.
+  // Mixed-type check: has() for StringValueOrRef, != '' for plain string.
+  option (buf.validate.message).cel = {
+    id: "scope.exactly_one"
+    message: "exactly one of project_id or domain_id must be set -- they define the scope of the role assignment"
+    expression: "(has(this.project_id) ? 1 : 0) + (this.domain_id != '' ? 1 : 0) == 1"
+  };
+
+  // CEL: Exactly one of user_id or group_id must be set.
+  option (buf.validate.message).cel = {
+    id: "principal.exactly_one"
+    message: "exactly one of user_id or group_id must be set -- they define who receives the role"
+    expression: "(this.user_id != '' ? 1 : 0) + (this.group_id != '' ? 1 : 0) == 1"
+  };
+
+  // role_id is the UUID of the role to assign.
+  // Required. ForceNew: changing the role recreates the assignment.
+  // Roles are admin-managed Keystone objects (e.g., "admin", "member", "reader").
+  // Use `openstack role list` to find available role UUIDs.
+  string role_id = 1 [(buf.validate.field).string.min_len = 1];
+
+  // project_id is the project to assign the role on.
+  // Mutually exclusive with domain_id (exactly one must be set).
+  // ForceNew: changing the scope recreates the assignment.
+  // Can reference an OpenStackProject resource's output or be a literal UUID.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = OpenStackProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // domain_id is the domain to assign the role on.
+  // Mutually exclusive with project_id (exactly one must be set).
+  // ForceNew: changing the scope recreates the assignment.
+  // Domains are admin-managed Keystone objects -- this is a plain UUID string.
+  string domain_id = 3;
+
+  // user_id is the UUID of the user to assign the role to.
+  // Mutually exclusive with group_id (exactly one must be set).
+  // ForceNew: changing the principal recreates the assignment.
+  // Users are admin-managed Keystone objects -- this is a plain UUID string.
+  string user_id = 4;
+
+  // group_id is the UUID of the group to assign the role to.
+  // Mutually exclusive with user_id (exactly one must be set).
+  // ForceNew: changing the principal recreates the assignment.
+  // Groups are admin-managed Keystone objects -- this is a plain UUID string.
+  string group_id = 5;
+
+  // region overrides the region from the provider config.
+  // If omitted, the region from the OpenStack provider config is used.
+  // Example: "RegionOne"
+  string region = 6;
+}

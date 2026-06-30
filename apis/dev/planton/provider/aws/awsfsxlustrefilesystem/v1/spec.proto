@@ -1,0 +1,333 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsfsxlustrefilesystem.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// AwsFsxLustreFileSystemSpec defines the desired configuration for an Amazon FSx
+// for Lustre file system — a fully managed, high-performance file system optimized
+// for fast processing of workloads such as machine learning training, high
+// performance computing (HPC), video processing, and financial modeling.
+//
+// Lustre delivers sub-millisecond latencies, hundreds of GB/s throughput, and
+// millions of IOPS, making it the standard for compute-intensive workloads that
+// need to process massive datasets quickly. It integrates natively with Amazon S3,
+// allowing transparent access to S3 objects as files on the file system.
+//
+// Key design notes:
+// - `deployment_type`, `storage_type`, `subnet_id`, `security_group_ids`, and
+//   `kms_key_id` are ForceNew — changing them requires replacing the file system.
+//   Plan these upfront.
+// - Lustre file systems are single-AZ only — exactly one subnet is required.
+// - Scratch file systems are ephemeral (no replication, no backups). Use for
+//   temporary processing. Persistent file systems replicate data within the AZ
+//   and support automatic backups.
+// - S3 import/export paths (legacy) are ForceNew. For more flexible S3 integration,
+//   use a separate data repository association resource.
+// - Credentials, region, and deployment workflow live outside this spec in stack inputs.
+message AwsFsxLustreFileSystemSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  // ---------------------------------------------------------------------------
+  // File System Core
+  // ---------------------------------------------------------------------------
+
+  // Deployment type controlling data durability and performance characteristics.
+  // ForceNew — cannot be changed after creation.
+  //
+  // - "SCRATCH_1": temporary storage, no data replication. Lowest cost. Legacy.
+  // - "SCRATCH_2": temporary storage, no data replication. Higher burst throughput
+  //   than SCRATCH_1. Recommended for short-lived processing jobs.
+  // - "PERSISTENT_1": persistent storage with data replicated within a single AZ.
+  //   Supports automatic backups. Suitable for long-running workloads.
+  // - "PERSISTENT_2": latest persistent option with higher throughput tiers,
+  //   metadata IOPS configuration, and SSD storage. Recommended for new production
+  //   workloads requiring persistent storage.
+  //
+  // Default: SCRATCH_2
+  optional string deployment_type = 2 [(dev.planton.shared.options.default) = "SCRATCH_2"];
+
+  // Storage capacity in GiB. Minimum 1200 GiB. Exact valid values depend on
+  // deployment type and storage type:
+  //
+  // - SCRATCH_2 and PERSISTENT_2 (SSD): 1200, then increments of 2400.
+  // - PERSISTENT_1 (SSD): 1200, then increments of 2400.
+  // - PERSISTENT_1 (HDD): 6000, then increments of 6000.
+  // - SCRATCH_1: 1200, 2400, 3600, then increments of 3600.
+  //
+  // Can be increased after creation but never decreased. Increasing storage on
+  // SCRATCH_1 forces replacement.
+  int32 storage_capacity_gib = 3 [(buf.validate.field).int32.gte = 1200];
+
+  // Storage media type. ForceNew — cannot be changed after creation.
+  //
+  // - "SSD": solid-state drives. Sub-millisecond latency. Required for SCRATCH_2,
+  //   PERSISTENT_2, and recommended for most workloads.
+  // - "HDD": hard disk drives. Lower cost, higher latency. Only available for
+  //   PERSISTENT_1 deployments. Requires `per_unit_storage_throughput` of 12 or 40.
+  //
+  // Default: SSD
+  optional string storage_type = 4 [(dev.planton.shared.options.default) = "SSD"];
+
+  // Throughput per unit of storage in MB/s/TiB. Required for PERSISTENT_1 and
+  // PERSISTENT_2 deployments. Invalid for SCRATCH types.
+  //
+  // Valid values depend on deployment type and storage type:
+  // - PERSISTENT_1 + SSD: 50, 100, 200
+  // - PERSISTENT_1 + HDD: 12, 40
+  // - PERSISTENT_2 + SSD: 125, 250, 500, 1000
+  int32 per_unit_storage_throughput = 5;
+
+  // Enable LZ4 data compression for all data on the file system. Reduces storage
+  // consumption and can improve throughput for compressible data. Can be changed
+  // after creation. Compression does not affect file system performance for
+  // Lustre operations.
+  //
+  // Default: NONE
+  optional string data_compression_type = 6 [(dev.planton.shared.options.default) = "NONE"];
+
+  // Lustre file system type version. ForceNew — cannot be changed after creation.
+  // Format: "x.y" (e.g., "2.12", "2.15").
+  //
+  // Leave empty to use the latest version supported by the deployment type.
+  // Explicitly set only if workload compatibility requires a specific version.
+  string file_system_type_version = 7;
+
+  // ---------------------------------------------------------------------------
+  // Networking (ForceNew)
+  // ---------------------------------------------------------------------------
+
+  // Subnet ID for the file system's network interface. Required. ForceNew.
+  //
+  // Lustre file systems are single-AZ — exactly one subnet is supported. The
+  // file system's ENI is created in this subnet. All compute resources mounting
+  // this file system must have network connectivity to this subnet.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef subnet_id = 8 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  ];
+
+  // Security groups for the file system's network interface. ForceNew.
+  //
+  // Must allow Lustre traffic between the file system and its clients:
+  // - TCP port 988 (Lustre protocol)
+  // - TCP ports 1018-1023 (Lustre data channels)
+  //
+  // Up to 50 security groups.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef security_group_ids = 9 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
+  ];
+
+  // ---------------------------------------------------------------------------
+  // Encryption
+  // ---------------------------------------------------------------------------
+
+  // Customer-managed KMS key ARN for encryption at rest. ForceNew — the KMS key
+  // cannot be changed after creation. When omitted, the file system uses the
+  // AWS-managed FSx key. All Lustre file systems are encrypted at rest by default
+  // using AWS-managed keys; this field upgrades to a customer-managed key.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_id = 10 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
+  ];
+
+  // ---------------------------------------------------------------------------
+  // S3 Data Repository (Legacy — ForceNew)
+  // ---------------------------------------------------------------------------
+
+  // S3 URI to import data from (e.g., "s3://my-bucket" or "s3://my-bucket/prefix").
+  // ForceNew. Only supported on SCRATCH_1 and SCRATCH_2 deployments.
+  //
+  // When set, the file system automatically imports file metadata from S3. File
+  // data is lazy-loaded on first access. For more flexible S3 integration on
+  // PERSISTENT deployments, use a separate data repository association.
+  string import_path = 11;
+
+  // S3 URI for exporting data back to S3 (e.g., "s3://my-bucket/output/").
+  // ForceNew. Requires `import_path` to be set.
+  //
+  // When set, changes made on the file system are automatically exported to S3.
+  string export_path = 12;
+
+  // ---------------------------------------------------------------------------
+  // Logging
+  // ---------------------------------------------------------------------------
+
+  // CloudWatch logging configuration for Lustre audit events (file access,
+  // file creation, deletion). Useful for compliance and debugging.
+  AwsFsxLustreFileSystemLogConfiguration log_configuration = 13;
+
+  // ---------------------------------------------------------------------------
+  // Backup (PERSISTENT deployments only)
+  // ---------------------------------------------------------------------------
+
+  // Automatic backup configuration. Backups are only supported on PERSISTENT_1
+  // and PERSISTENT_2 deployments. Scratch file systems cannot have backups.
+
+  // Number of days to retain automatic backups. Range: 0-90. Set to 0 to disable
+  // automatic backups.
+  //
+  // Default: 0 (no automatic backups)
+  optional int32 automatic_backup_retention_days = 14 [(dev.planton.shared.options.default) = "0"];
+
+  // Daily UTC time to start automatic backups, in HH:MM format (e.g., "05:00").
+  // If not specified and backups are enabled, AWS chooses a default window.
+  string daily_automatic_backup_start_time = 15;
+
+  // Copy tags from the file system to backups. ForceNew.
+  bool copy_tags_to_backups = 16;
+
+  // Skip creating a final backup when the file system is deleted. Applies only to
+  // PERSISTENT deployments with backup support.
+  //
+  // Default: true
+  optional bool skip_final_backup = 17 [(dev.planton.shared.options.default) = "true"];
+
+  // ---------------------------------------------------------------------------
+  // Maintenance
+  // ---------------------------------------------------------------------------
+
+  // Weekly UTC maintenance window in the format "d:HH:MM" where d is the day of
+  // the week (1=Monday, 7=Sunday). Example: "1:05:00" for Monday at 05:00 UTC.
+  string weekly_maintenance_start_time = 18;
+
+  // ---------------------------------------------------------------------------
+  // Metadata Configuration (PERSISTENT_2 only)
+  // ---------------------------------------------------------------------------
+
+  // Metadata performance configuration. Only supported on PERSISTENT_2 deployments.
+  // Controls the metadata IOPS available for file creation, listing, and similar
+  // operations. Most workloads perform well with AUTOMATIC mode.
+  AwsFsxLustreFileSystemMetadataConfiguration metadata_configuration = 19;
+
+  // ---------------------------------------------------------------------------
+  // CEL Validations
+  // ---------------------------------------------------------------------------
+
+  // deployment_type valid values.
+  option (buf.validate.message).cel = {
+    id: "deployment_type_valid"
+    message: "deployment_type must be 'SCRATCH_1', 'SCRATCH_2', 'PERSISTENT_1', or 'PERSISTENT_2'"
+    expression: "this.deployment_type == '' || this.deployment_type in ['SCRATCH_1', 'SCRATCH_2', 'PERSISTENT_1', 'PERSISTENT_2']"
+  };
+
+  // storage_type valid values.
+  option (buf.validate.message).cel = {
+    id: "storage_type_valid"
+    message: "storage_type must be 'SSD' or 'HDD'"
+    expression: "this.storage_type == '' || this.storage_type in ['SSD', 'HDD']"
+  };
+
+  // HDD requires PERSISTENT_1.
+  option (buf.validate.message).cel = {
+    id: "hdd_requires_persistent_1"
+    message: "storage_type 'HDD' is only supported with deployment_type 'PERSISTENT_1'"
+    expression: "this.storage_type != 'HDD' || this.deployment_type == 'PERSISTENT_1'"
+  };
+
+  // per_unit_storage_throughput requires PERSISTENT deployment types.
+  option (buf.validate.message).cel = {
+    id: "throughput_requires_persistent"
+    message: "per_unit_storage_throughput can only be set for PERSISTENT_1 or PERSISTENT_2 deployment types"
+    expression: "this.per_unit_storage_throughput == 0 || this.deployment_type in ['PERSISTENT_1', 'PERSISTENT_2']"
+  };
+
+  // data_compression_type valid values.
+  option (buf.validate.message).cel = {
+    id: "data_compression_type_valid"
+    message: "data_compression_type must be 'NONE' or 'LZ4'"
+    expression: "this.data_compression_type == '' || this.data_compression_type in ['NONE', 'LZ4']"
+  };
+
+  // import_path requires SCRATCH deployment type.
+  option (buf.validate.message).cel = {
+    id: "import_path_requires_scratch"
+    message: "import_path is only supported on SCRATCH_1 and SCRATCH_2 deployment types (use data repository associations for PERSISTENT)"
+    expression: "this.import_path == '' || this.deployment_type in ['SCRATCH_1', 'SCRATCH_2']"
+  };
+
+  // export_path requires import_path.
+  option (buf.validate.message).cel = {
+    id: "export_requires_import"
+    message: "export_path requires import_path to be set"
+    expression: "this.export_path == '' || this.import_path != ''"
+  };
+
+  // metadata_configuration requires PERSISTENT_2.
+  option (buf.validate.message).cel = {
+    id: "metadata_config_requires_persistent_2"
+    message: "metadata_configuration is only supported on PERSISTENT_2 deployment type"
+    expression: "!has(this.metadata_configuration) || this.deployment_type == 'PERSISTENT_2'"
+  };
+}
+
+// AwsFsxLustreFileSystemLogConfiguration configures CloudWatch logging for Lustre
+// file system audit events. Events include file access, creation, deletion, and
+// permission changes.
+message AwsFsxLustreFileSystemLogConfiguration {
+  // CloudWatch Logs log group ARN to receive audit events. The log group must
+  // exist and have a resource policy allowing FSx to write to it. If not set,
+  // logging is disabled regardless of the level setting.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef destination = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsCloudwatchLogGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.log_group_arn"
+  ];
+
+  // Audit log level controlling which events are logged.
+  //
+  // - "DISABLED": no logging (default when log_configuration is omitted).
+  // - "WARN_ONLY": log warning-level events only.
+  // - "ERROR_ONLY": log error-level events only.
+  // - "WARN_ERROR": log both warning and error events.
+  //
+  // Default: WARN_ERROR
+  optional string level = 2 [(dev.planton.shared.options.default) = "WARN_ERROR"];
+
+  // level valid values.
+  option (buf.validate.message).cel = {
+    id: "log_level_valid"
+    message: "level must be 'DISABLED', 'WARN_ONLY', 'ERROR_ONLY', or 'WARN_ERROR'"
+    expression: "this.level == '' || this.level in ['DISABLED', 'WARN_ONLY', 'ERROR_ONLY', 'WARN_ERROR']"
+  };
+}
+
+// AwsFsxLustreFileSystemMetadataConfiguration controls the metadata performance
+// of PERSISTENT_2 Lustre file systems. Metadata operations include file creation,
+// listing, stat, rename, and deletion.
+message AwsFsxLustreFileSystemMetadataConfiguration {
+  // Metadata IOPS mode.
+  //
+  // - "AUTOMATIC": FSx scales metadata IOPS based on file system storage capacity.
+  //   Provides 1500-192000 IOPS depending on provisioned storage.
+  // - "USER_PROVISIONED": you specify the exact metadata IOPS. Allows higher
+  //   performance independent of storage size but at additional cost.
+  //
+  // Default: AUTOMATIC
+  optional string mode = 1 [(dev.planton.shared.options.default) = "AUTOMATIC"];
+
+  // Metadata IOPS when mode is "USER_PROVISIONED". Ignored in AUTOMATIC mode.
+  //
+  // Valid values: 1500, 3000, 6000, 12000, 24000, 36000, 48000, 60000, 72000,
+  // 84000, 96000, 108000, 120000, 132000, 144000, 156000, 168000, 180000, 192000.
+  int32 iops = 2;
+
+  // mode valid values.
+  option (buf.validate.message).cel = {
+    id: "metadata_mode_valid"
+    message: "mode must be 'AUTOMATIC' or 'USER_PROVISIONED'"
+    expression: "this.mode == '' || this.mode in ['AUTOMATIC', 'USER_PROVISIONED']"
+  };
+
+  // iops requires USER_PROVISIONED mode.
+  option (buf.validate.message).cel = {
+    id: "iops_requires_user_provisioned"
+    message: "iops can only be set when mode is 'USER_PROVISIONED'"
+    expression: "this.iops == 0 || this.mode == 'USER_PROVISIONED'"
+  };
+}

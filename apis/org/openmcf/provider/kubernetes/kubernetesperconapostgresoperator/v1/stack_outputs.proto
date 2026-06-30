@@ -1,9 +1,0 @@
-syntax = "proto3";
-
-package org.openmcf.provider.kubernetes.kubernetesperconapostgresoperator.v1;
-
-// kubernetes-percona-postgres-operator-kubernetes stack outputs
-message KubernetesPerconaPostgresOperatorStackOutputs {
-  // Namespace where the operator is installed
-  string namespace = 1;
-}

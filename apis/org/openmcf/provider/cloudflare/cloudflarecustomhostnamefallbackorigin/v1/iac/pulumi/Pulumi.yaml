@@ -1,6 +1,0 @@
-#name should be updated based on the choice of 'project' name in pulumi backend
-name: openmcf-cloudflare-custom-hostname-fallback-origin-module
-runtime:
-  name: go
-#  options:
-#    binary: ./debug.sh

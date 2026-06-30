@@ -3,7 +3,7 @@ build: lint fmt
 	rm -rf generated/stubs
 	mkdir -p generated/stubs
 	buf generate
-	cp -R generated/stubs/go/github.com/plantonhq/openmcf/apis/. .
+	cp -R generated/stubs/go/github.com/plantonhq/planton/apis/. .
 	rm -rf generated/stubs/go
 	# Generate a BUILD.bazel for the Java stubs so Bazel can compile them.
 	# This serves as a build-time gate: if any proto generates invalid Java

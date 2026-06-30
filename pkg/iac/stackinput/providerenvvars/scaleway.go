@@ -2,7 +2,7 @@ package providerenvvars
 
 import (
 	"github.com/pkg/errors"
-	scalewayprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway"
+	scalewayprovider "github.com/plantonhq/planton/apis/dev/planton/provider/scaleway"
 )
 
 // loadScalewayEnvVars loads Scaleway provider config and returns environment variables.

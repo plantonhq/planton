@@ -12,14 +12,14 @@ Deploys a Cloudflare DNS zone with optional inline DNS record management. The co
 
 ## What Gets Created
 
-When you deploy a CloudflareDnsZone resource, OpenMCF provisions:
+When you deploy a CloudflareDnsZone resource, Planton provisions:
 
 - **DNS Zone** — a `cloudflare_zone` resource attached to the specified Cloudflare account, with configurable pause state
 - **DNS Records** — one `cloudflare_record` resource per entry in the `records` list, created within the zone with support for proxied mode, custom TTL, priority, and comments
 
 ## Prerequisites
 
-- **Cloudflare credentials** configured via environment variables or OpenMCF provider config
+- **Cloudflare credentials** configured via environment variables or Planton provider config
 - **A Cloudflare account ID** with permission to create zones
 - **Domain ownership** — you must own or control the domain being added as a zone, and update its registrar nameservers to the values returned in stack outputs
 
@@ -28,15 +28,15 @@ When you deploy a CloudflareDnsZone resource, OpenMCF provisions:
 Create a file `dns-zone.yaml`:
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareDnsZone
 metadata:
   name: my-zone
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CloudflareDnsZone.my-zone
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CloudflareDnsZone.my-zone
 spec:
   zoneName: example.com
   accountId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
@@ -45,7 +45,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f dns-zone.yaml
+planton apply -f dns-zone.yaml
 ```
 
 This creates a DNS zone for `example.com` on the Free plan. Update your domain registrar's nameservers to the values in `status.outputs.nameservers` to activate the zone.
@@ -82,15 +82,15 @@ This creates a DNS zone for `example.com` on the Free plan. Update your domain r
 A DNS zone with no records, useful when records are managed separately or via CloudflareDnsRecord resources:
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareDnsZone
 metadata:
   name: example-zone
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CloudflareDnsZone.example-zone
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CloudflareDnsZone.example-zone
 spec:
   zoneName: example.com
   accountId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
@@ -101,15 +101,15 @@ spec:
 A zone with A, CNAME, and MX records for a typical web application:
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareDnsZone
 metadata:
   name: app-zone
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CloudflareDnsZone.app-zone
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CloudflareDnsZone.app-zone
 spec:
   zoneName: myapp.com
   accountId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
@@ -136,15 +136,15 @@ spec:
 Production zone with proxied web records, mail configuration, SPF, and a paused initial state:
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareDnsZone
 metadata:
   name: prod-zone
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CloudflareDnsZone.prod-zone
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CloudflareDnsZone.prod-zone
 spec:
   zoneName: production.com
   accountId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d

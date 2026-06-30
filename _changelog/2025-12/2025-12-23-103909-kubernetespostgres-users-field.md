@@ -34,7 +34,7 @@ The Pulumi/Terraform modules convert this list to the Zalando operator's expecte
 ### Configuration Example
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: PostgresKubernetes
 metadata:
   name: my-postgres
@@ -170,7 +170,7 @@ The Zalando operator creates users first, then databases with the specified owne
 ## Validation
 
 - ✅ `make protos` - Proto stubs regenerated successfully
-- ✅ `go test ./apis/org/openmcf/provider/kubernetes/kubernetespostgres/v1/...` - Tests pass
+- ✅ `go test ./apis/dev/planton/provider/kubernetes/kubernetespostgres/v1/...` - Tests pass
 - ✅ `make build` - Full build passes including Bazel, Go, and frontend builds
 
 ---

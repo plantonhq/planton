@@ -1,0 +1,345 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocicomputeinstance.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// OciComputeInstanceSpec defines the specification for an Oracle Cloud
+// Infrastructure compute instance.
+//
+// A compute instance is a virtual machine or bare metal host running on OCI
+// infrastructure. Flex shapes allow configuring the exact number of OCPUs and
+// memory; standard shapes use fixed configurations. The instance's primary
+// VNIC is configured inline via create_vnic_details, which determines the
+// subnet, network security groups, and public IP assignment.
+//
+// Cloud-init scripts and SSH keys are passed through the metadata map using
+// the well-known keys "user_data" (base64-encoded) and "ssh_authorized_keys".
+message OciComputeInstanceSpec {
+  // OCID of the compartment where the instance will be created.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OciCompartment,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartment_id"
+  ];
+
+  // Availability domain where the instance will be placed
+  // (e.g. "Ixxj:US-ASHBURN-AD-1"). Changing this forces recreation.
+  string availability_domain = 2 [(buf.validate.field).string.min_len = 1];
+
+  // Compute shape that determines the base hardware profile
+  // (e.g. "VM.Standard.E4.Flex", "VM.Standard.A1.Flex", "BM.Standard3.64").
+  // Flex shapes require shape_config to specify OCPUs and memory.
+  string shape = 3 [(buf.validate.field).string.min_len = 1];
+
+  // Human-readable name shown in the OCI Console.
+  // Falls back to metadata.name if not provided.
+  string display_name = 4;
+
+  // Shape configuration for flexible shapes. Required when the chosen shape
+  // name contains "Flex". Ignored for fixed shapes.
+  ShapeConfig shape_config = 5;
+
+  // Boot source for the instance: either an image OCID or a boot volume OCID.
+  SourceDetails source_details = 6 [(buf.validate.field).required = true];
+
+  // Primary VNIC configuration that determines the instance's network placement.
+  CreateVnicDetails create_vnic_details = 7 [(buf.validate.field).required = true];
+
+  // Instance metadata key-value pairs. Common keys:
+  //   - "ssh_authorized_keys": newline-separated public SSH keys
+  //   - "user_data": base64-encoded cloud-init script
+  map<string, string> metadata = 8;
+
+  // Fault domain within the availability domain (e.g. "FAULT-DOMAIN-1").
+  // OCI distributes instances across fault domains for HA when unspecified.
+  string fault_domain = 9;
+
+  // When true, enables in-transit encryption for the paravirtualized boot
+  // and data volume attachments. Changing this forces recreation.
+  optional bool is_pv_encryption_in_transit_enabled = 10;
+
+  // Oracle Cloud Agent configuration controlling monitoring, management,
+  // and plugin behavior on the instance.
+  AgentConfig agent_config = 11;
+
+  // Availability and recovery behavior for infrastructure maintenance events.
+  AvailabilityConfig availability_config = 12;
+
+  // Low-level launch options for boot volume type, network type, and firmware.
+  // Most users can omit this; the defaults chosen by OCI based on the image
+  // and shape are appropriate for the vast majority of workloads.
+  LaunchOptions launch_options = 13;
+
+  // Instance Metadata Service (IMDS) endpoint configuration.
+  InstanceOptions instance_options = 14;
+
+  // Configures the instance as preemptible (spot-like), allowing OCI to
+  // reclaim it when capacity is needed. Significantly reduces cost for
+  // fault-tolerant workloads.
+  PreemptibleInstanceConfig preemptible_instance_config = 15;
+
+  // OCID of a capacity reservation to launch this instance against.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef capacity_reservation_id = 16;
+
+  // OCID of a dedicated VM host to place this instance on.
+  // Used for workloads requiring physical isolation for compliance or licensing.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef dedicated_vm_host_id = 17;
+
+  // Platform-level security and hardware configuration. The applicable fields
+  // depend on the platform type: VM shapes (amd_vm, intel_vm) support secure
+  // boot, measured boot, TPM, and memory encryption; bare metal shapes support
+  // additional hardware tuning (NUMA, core percentage, SMT, etc.).
+  PlatformConfig platform_config = 18;
+
+  // ---------------------------------------------------------------------------
+  // Nested messages
+  // ---------------------------------------------------------------------------
+
+  // ShapeConfig specifies the exact resource allocation for flexible shapes.
+  message ShapeConfig {
+    // Number of OCPUs (Oracle CPUs). Each OCPU maps to a physical core
+    // with simultaneous multi-threading.
+    optional float ocpus = 1;
+
+    // Amount of memory in GiB. Flex shapes allow a range per OCPU; consult
+    // the shape documentation for valid ratios.
+    optional float memory_in_gbs = 2;
+
+    // Baseline OCPU utilization for burstable instances.
+    // Valid values: "BASELINE_1_8", "BASELINE_1_2", "BASELINE_1_1".
+    // Only applicable to burstable shapes.
+    string baseline_ocpu_utilization = 3;
+
+    // Number of NVMe drives for dense-IO shapes.
+    optional int32 nvmes = 4;
+  }
+
+  // SourceDetails defines the boot source -- either a platform/custom image
+  // or an existing boot volume to clone.
+  message SourceDetails {
+    // Whether the instance boots from an image or an existing boot volume.
+    SourceType source_type = 1 [(buf.validate.field).enum = {
+      not_in: [0]
+    }];
+
+    // OCID of the image or boot volume to launch from.
+    string source_id = 2 [(buf.validate.field).string.min_len = 1];
+
+    // Size of the boot volume in GiB. When launching from an image, defaults
+    // to the image's minimum size. Must be >= the image minimum.
+    optional int64 boot_volume_size_in_gbs = 3;
+
+    // VPUs per GB for the boot volume (10=Balanced, 20=Higher Performance,
+    // 30-120=Ultra High Performance). Defaults to 10.
+    optional int64 boot_volume_vpus_per_gb = 4;
+
+    // OCID of a KMS key to encrypt the boot volume at rest.
+    dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_id = 5 [
+      (dev.planton.shared.foreignkey.v1.default_kind) = OciKmsKey,
+      (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+    ];
+
+    enum SourceType {
+      source_type_unspecified = 0;
+      image = 1;
+      boot_volume = 2;
+    }
+  }
+
+  // CreateVnicDetails configures the primary virtual network interface card
+  // (VNIC) attached to the instance. This determines the subnet, security
+  // groups, IP addressing, and DNS registration.
+  message CreateVnicDetails {
+    // OCID of the subnet for the primary VNIC.
+    dev.planton.shared.foreignkey.v1.StringValueOrRef subnet_id = 1 [
+      (buf.validate.field).required = true,
+      (dev.planton.shared.foreignkey.v1.default_kind) = OciSubnet,
+      (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+    ];
+
+    // OCIDs of network security groups to associate with the VNIC.
+    repeated dev.planton.shared.foreignkey.v1.StringValueOrRef nsg_ids = 2 [
+      (buf.validate.field).repeated.max_items = 5,
+      (dev.planton.shared.foreignkey.v1.default_kind) = OciSecurityGroup,
+      (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_security_group_id"
+    ];
+
+    // Whether to assign a public IP. When unset, uses the subnet default
+    // (public subnets assign; private subnets do not).
+    optional bool assign_public_ip = 3;
+
+    // Display name for the VNIC in the OCI Console.
+    string display_name = 4;
+
+    // Hostname label for DNS within the subnet's DNS domain.
+    // Must be alphanumeric, start with a letter, max 63 chars.
+    string hostname_label = 5;
+
+    // Specific private IP address to assign. Must be available within the
+    // subnet's CIDR. When omitted, OCI auto-assigns.
+    string private_ip = 6;
+
+    // When true, disables source/destination checking on the VNIC.
+    // Required for NAT instances or virtual routers.
+    optional bool skip_source_dest_check = 7;
+
+    // Whether to register a private DNS record for the VNIC.
+    optional bool assign_private_dns_record = 8;
+  }
+
+  // AgentConfig controls the Oracle Cloud Agent software that runs inside the
+  // instance for monitoring, management, and OS patching.
+  message AgentConfig {
+    // When true, disables all Oracle Cloud Agent plugins.
+    optional bool are_all_plugins_disabled = 1;
+
+    // When true, disables the management agent (OS Management, etc.).
+    optional bool is_management_disabled = 2;
+
+    // When true, disables the monitoring agent (Compute Instance Monitoring).
+    optional bool is_monitoring_disabled = 3;
+
+    // Per-plugin overrides.
+    repeated PluginConfig plugins_config = 4;
+
+    message PluginConfig {
+      // Plugin name (e.g. "Vulnerability Scanning", "OS Management Service Agent").
+      string name = 1 [(buf.validate.field).string.min_len = 1];
+
+      // Whether the plugin should be enabled or disabled.
+      DesiredState desired_state = 2 [(buf.validate.field).enum = {
+        not_in: [0]
+      }];
+
+      enum DesiredState {
+        desired_state_unspecified = 0;
+        enabled = 1;
+        disabled = 2;
+      }
+    }
+  }
+
+  // AvailabilityConfig controls how the instance behaves during infrastructure
+  // maintenance events.
+  message AvailabilityConfig {
+    // When true, OCI prefers live migration over reboot during maintenance.
+    optional bool is_live_migration_preferred = 1;
+
+    // Action to take when the underlying host has an unplanned failure.
+    RecoveryAction recovery_action = 2;
+
+    enum RecoveryAction {
+      recovery_action_unspecified = 0;
+      restore_instance = 1;
+      stop_instance = 2;
+    }
+  }
+
+  // LaunchOptions configure low-level boot and network settings. These are
+  // usually set automatically based on the image and shape; only override
+  // when you have specific requirements (e.g., paravirtualized networking
+  // for higher throughput).
+  //
+  // boot_volume_type and network_type use strings instead of enums because
+  // both sets share values ("VFIO", "PARAVIRTUALIZED") and protobuf's C++
+  // scoping rules prevent duplicate enum values in the same enclosing message.
+  message LaunchOptions {
+    // Emulation type for the boot volume attachment.
+    // Valid values: "ISCSI", "SCSI", "IDE", "VFIO", "PARAVIRTUALIZED".
+    string boot_volume_type = 1;
+
+    // Emulation type for the primary network interface.
+    // Valid values: "E1000", "VFIO", "PARAVIRTUALIZED".
+    string network_type = 2;
+
+    // Firmware type for the instance.
+    Firmware firmware = 3;
+
+    // In-transit encryption for the boot volume attachment (within launch options).
+    optional bool is_pv_encryption_in_transit_enabled = 4;
+
+    // Consistent naming for attached volumes (e.g. /dev/oracleoci/...).
+    optional bool is_consistent_volume_naming_enabled = 5;
+
+    enum Firmware {
+      firmware_unspecified = 0;
+      bios = 1;
+      uefi_64 = 2;
+    }
+  }
+
+  // InstanceOptions controls the Instance Metadata Service (IMDS) endpoint
+  // behavior.
+  message InstanceOptions {
+    // When true, disables the legacy IMDSv1 endpoints. Recommended for
+    // security: use only the IMDSv2 token-based endpoint.
+    optional bool are_legacy_imds_endpoints_disabled = 1;
+  }
+
+  // PreemptibleInstanceConfig configures the instance as preemptible.
+  // Preemptible instances can be reclaimed by OCI at any time when capacity
+  // is needed, in exchange for significantly lower pricing.
+  message PreemptibleInstanceConfig {
+    // When true, the boot volume is preserved when the instance is preempted.
+    // When false, both instance and boot volume are terminated.
+    optional bool preserve_boot_volume = 1;
+  }
+
+  // PlatformConfig provides hardware-level security and performance settings.
+  // The available settings vary by shape family:
+  //   - VM shapes (amd_vm, intel_vm): secure boot, measured boot, TPM, memory encryption
+  //   - Bare metal shapes: all VM options plus NUMA, core percentage, SMT, etc.
+  // Fields that don't apply to the chosen type are ignored by the OCI API.
+  message PlatformConfig {
+    // Platform type. Must match the instance shape family.
+    PlatformType type = 1 [(buf.validate.field).enum = {
+      not_in: [0]
+    }];
+
+    // Enable Secure Boot to verify boot software signatures (VM + BM).
+    optional bool is_secure_boot_enabled = 2;
+
+    // Enable Measured Boot for integrity measurements stored in the TPM (VM + BM).
+    optional bool is_measured_boot_enabled = 3;
+
+    // Enable the Trusted Platform Module for secure key storage (VM + BM).
+    optional bool is_trusted_platform_module_enabled = 4;
+
+    // Enable AMD SEV or Intel TME memory encryption (VM + BM).
+    optional bool is_memory_encryption_enabled = 5;
+
+    // Enable Symmetric Multi-Threading (SMT/Hyperthreading). BM shapes only.
+    optional bool is_symmetric_multi_threading_enabled = 6;
+
+    // Enable nested virtualization (AMD-V or VT-x). BM shapes only.
+    optional bool are_virtual_instructions_enabled = 7;
+
+    // Enable Access Control Service for PCI passthrough isolation. BM shapes only.
+    optional bool is_access_control_service_enabled = 8;
+
+    // Enable IOMMU for device memory protection. BM shapes only.
+    optional bool is_input_output_memory_management_unit_enabled = 9;
+
+    // NUMA nodes per socket configuration. BM shapes only.
+    // Valid values: "NPS0", "NPS1", "NPS2", "NPS4".
+    string numa_nodes_per_socket = 10;
+
+    // Percentage of cores enabled on the instance. BM shapes only.
+    optional int32 percentage_of_cores_enabled = 11;
+
+    enum PlatformType {
+      platform_type_unspecified = 0;
+      amd_milan_bm = 1;
+      amd_milan_bm_gpu = 2;
+      amd_rome_bm = 3;
+      amd_rome_bm_gpu = 4;
+      amd_vm = 5;
+      generic_bm = 6;
+      intel_icelake_bm = 7;
+      intel_skylake_bm = 8;
+      intel_vm = 9;
+    }
+  }
+}

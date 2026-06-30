@@ -6,22 +6,22 @@
 
 ## Summary
 
-Added the GcpCloudTasksQueue deployment component to OpenMCF, enabling provisioning and management of GCP Cloud Tasks queues with configurable dispatch rate limits, retry policies, and queue-level HTTP target configuration with OIDC or OAuth authentication. This is the 18th GCP resource added in the cloud provider expansion initiative (R17 in the queue).
+Added the GcpCloudTasksQueue deployment component to Planton, enabling provisioning and management of GCP Cloud Tasks queues with configurable dispatch rate limits, retry policies, and queue-level HTTP target configuration with OIDC or OAuth authentication. This is the 18th GCP resource added in the cloud provider expansion initiative (R17 in the queue).
 
 ## Problem Statement / Motivation
 
-Cloud Tasks is a core GCP service for asynchronous task dispatch, used extensively in microservices architectures for background processing, rate-limited API calls, and reliable HTTP delivery. Without this component, OpenMCF users managing GCP infrastructure had to configure task queues outside the framework, breaking the declarative, composable infrastructure model.
+Cloud Tasks is a core GCP service for asynchronous task dispatch, used extensively in microservices architectures for background processing, rate-limited API calls, and reliable HTTP delivery. Without this component, Planton users managing GCP infrastructure had to configure task queues outside the framework, breaking the declarative, composable infrastructure model.
 
 ### Pain Points
 
-- No way to declare Cloud Tasks queues alongside other GCP infrastructure in OpenMCF
+- No way to declare Cloud Tasks queues alongside other GCP infrastructure in Planton
 - Queue-level OIDC/OAuth authentication for Cloud Run dispatch required manual configuration
 - Rate limits and retry policies could not be versioned and composed in infra charts
 - No cross-resource dependency wiring (e.g., queue -> service account -> Cloud Run service)
 
 ## Solution / What's New
 
-A complete deployment component following the OpenMCF forge standard:
+A complete deployment component following the Planton forge standard:
 
 ### Proto API (4 proto files, 10 message types)
 

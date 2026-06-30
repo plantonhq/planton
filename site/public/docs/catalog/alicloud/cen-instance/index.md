@@ -12,14 +12,14 @@ Deploys an Alibaba Cloud Cloud Enterprise Network (CEN) instance with bundled ch
 
 ## What Gets Created
 
-When you deploy an AliCloudCenInstance resource, OpenMCF provisions:
+When you deploy an AliCloudCenInstance resource, Planton provisions:
 
 - **CEN Instance** — an `alicloud_cen_instance` resource serving as the global networking hub with optional CIDR overlap protection and resource group assignment
 - **CEN Instance Attachments** — one `alicloud_cen_instance_attachment` per entry in `spec.attachments[]`, connecting a VPC, VBR (Virtual Border Router), or CCN (Cloud Connect Network) to the CEN hub
 
 ## Prerequisites
 
-- **Alibaba Cloud credentials** configured via environment variables or OpenMCF provider config
+- **Alibaba Cloud credentials** configured via environment variables or Planton provider config
 - **At least one VPC** (or VBR/CCN) to attach to the CEN instance
 - **VPC IDs and their regions** for each network to attach — the VPCs can be in any Alibaba Cloud region
 - **Non-overlapping CIDR blocks** across attached VPCs (unless `protectionLevel` is set to `REDUCED`)
@@ -29,15 +29,15 @@ When you deploy an AliCloudCenInstance resource, OpenMCF provisions:
 Create a file `cen.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudCenInstance
 metadata:
   name: my-cen
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudCenInstance.my-cen
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudCenInstance.my-cen
 spec:
   region: cn-hangzhou
   cenInstanceName: my-cen
@@ -50,7 +50,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f cen.yaml
+planton apply -f cen.yaml
 ```
 
 This creates a CEN instance and attaches one VPC in cn-hangzhou. Additional VPCs in any region can be added to the `attachments` list.
@@ -89,15 +89,15 @@ This creates a CEN instance and attaches one VPC in cn-hangzhou. Additional VPCs
 Connect multiple VPCs in the same region for private inter-VPC communication without VPC peering:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudCenInstance
 metadata:
   name: intra-region-cen
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: networking
-    pulumi.openmcf.org/stack.name: dev.AliCloudCenInstance.intra-region-cen
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: networking
+    pulumi.planton.dev/stack.name: dev.AliCloudCenInstance.intra-region-cen
 spec:
   region: cn-hangzhou
   cenInstanceName: intra-region-backbone
@@ -116,15 +116,15 @@ spec:
 Connect VPCs across multiple regions with REDUCED protection for overlapping CIDRs:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudCenInstance
 metadata:
   name: global-cen
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: networking
-    pulumi.openmcf.org/stack.name: prod.AliCloudCenInstance.global-cen
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: networking
+    pulumi.planton.dev/stack.name: prod.AliCloudCenInstance.global-cen
 spec:
   region: cn-hangzhou
   cenInstanceName: global-backbone
@@ -148,22 +148,22 @@ spec:
 
 ### Managed VPC References with valueFrom
 
-Connect VPCs managed as OpenMCF resources, automatically resolving VPC IDs from their stack outputs:
+Connect VPCs managed as Planton resources, automatically resolving VPC IDs from their stack outputs:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudCenInstance
 metadata:
   name: managed-cen
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: networking
-    pulumi.openmcf.org/stack.name: prod.AliCloudCenInstance.managed-cen
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: networking
+    pulumi.planton.dev/stack.name: prod.AliCloudCenInstance.managed-cen
 spec:
   region: cn-hangzhou
   cenInstanceName: managed-backbone
-  description: CEN connecting OpenMCF-managed VPCs
+  description: CEN connecting Planton-managed VPCs
   attachments:
     - childInstanceId:
         valueFrom:

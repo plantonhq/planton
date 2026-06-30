@@ -12,13 +12,13 @@ Deploys a Civo block storage volume that can be attached to compute instances fo
 
 ## What Gets Created
 
-When you deploy a CivoVolume resource, OpenMCF provisions:
+When you deploy a CivoVolume resource, Planton provisions:
 
 - **Block Storage Volume** — a `civo_volume` resource created in the target region with the requested capacity in GiB
 
 ## Prerequisites
 
-- **Civo credentials** configured via environment variables or OpenMCF provider config
+- **Civo credentials** configured via environment variables or Planton provider config
 - **A target region** — the volume must be created in the same region as any instance that will attach to it
 
 ## Quick Start
@@ -26,15 +26,15 @@ When you deploy a CivoVolume resource, OpenMCF provisions:
 Create a file `civo-volume.yaml`:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoVolume
 metadata:
   name: my-volume
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CivoVolume.my-volume
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CivoVolume.my-volume
 spec:
   volumeName: my-volume
   region: nyc1
@@ -44,7 +44,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f civo-volume.yaml
+planton apply -f civo-volume.yaml
 ```
 
 This creates a 50 GiB unformatted block storage volume in the New York region.
@@ -65,7 +65,7 @@ This creates a 50 GiB unformatted block storage volume in the New York region.
 |-------|------|---------|-------------|
 | `filesystemType` | `enum` | `unformatted` | Initial filesystem to format the volume with. Valid values: `unformatted`, `ext4`, `xfs`. **Note:** the upstream Civo provider does not currently expose filesystem formatting. The volume is created unformatted regardless of this setting. Use cloud-init or configuration management to format the volume after attachment. |
 | `snapshotId` | `string` | `""` | Snapshot ID to create the volume from. **Note:** snapshot-based creation is not currently supported on public Civo cloud. This field is reserved for CivoStack (private cloud) deployments or future provider support. The volume is created empty when this field is set. |
-| `tags` | `string[]` | `[]` | Tags for organizational purposes. Each tag must be unique, at most 64 characters, and match `^[A-Za-z0-9:_-]+$`. **Note:** the upstream Civo Volume provider does not currently apply tags to the cloud resource. Tags are recorded in OpenMCF metadata only. |
+| `tags` | `string[]` | `[]` | Tags for organizational purposes. Each tag must be unique, at most 64 characters, and match `^[A-Za-z0-9:_-]+$`. **Note:** the upstream Civo Volume provider does not currently apply tags to the cloud resource. Tags are recorded in Planton metadata only. |
 
 ## Examples
 
@@ -74,15 +74,15 @@ This creates a 50 GiB unformatted block storage volume in the New York region.
 A minimal 10 GiB volume for development use:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoVolume
 metadata:
   name: dev-data
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CivoVolume.dev-data
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CivoVolume.dev-data
 spec:
   volumeName: dev-data
   region: fra1
@@ -94,15 +94,15 @@ spec:
 A larger volume in the London region with tags and a requested filesystem type:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoVolume
 metadata:
   name: app-storage
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.CivoVolume.app-storage
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.CivoVolume.app-storage
 spec:
   volumeName: app-storage
   region: lon1
@@ -118,15 +118,15 @@ spec:
 A high-capacity volume for production workloads:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoVolume
 metadata:
   name: prod-db-vol
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CivoVolume.prod-db-vol
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CivoVolume.prod-db-vol
 spec:
   volumeName: prod-db-vol
   region: nyc1
@@ -135,7 +135,7 @@ spec:
   tags:
     - environment:production
     - service:database
-    - managed-by:openmcf
+    - managed-by:planton
 ```
 
 ## Stack Outputs

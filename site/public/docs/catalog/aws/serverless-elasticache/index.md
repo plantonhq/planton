@@ -12,7 +12,7 @@ Deploys an AWS ElastiCache Serverless cache with consumption-based pricing and a
 
 ## What Gets Created
 
-When you deploy an AwsServerlessElasticache resource, OpenMCF provisions:
+When you deploy an AwsServerlessElasticache resource, Planton provisions:
 
 - **Serverless Cache** — an `aws_elasticache_serverless_cache` resource using the specified engine (Redis, Valkey, or Memcached), with AWS managing all node scaling, replication, and patching automatically
 - **Cache Usage Limits** — optional minimum and maximum bounds for data storage (GB) and compute (ECPU/s) that constrain the auto-scaling range
@@ -23,7 +23,7 @@ When you deploy an AwsServerlessElasticache resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **A VPC with subnets** where the serverless cache endpoints will be placed
 - **A security group** allowing inbound traffic on the cache port (default 6379 for Redis/Valkey, 11211 for Memcached)
 - **A KMS key** if using customer-managed at-rest encryption
@@ -34,15 +34,15 @@ When you deploy an AwsServerlessElasticache resource, OpenMCF provisions:
 Create a file `serverless-cache.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsServerlessElasticache
 metadata:
   name: my-cache
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsServerlessElasticache.my-cache
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsServerlessElasticache.my-cache
 spec:
   region: us-west-2
   engine: redis
@@ -56,7 +56,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f serverless-cache.yaml
+planton apply -f serverless-cache.yaml
 ```
 
 This creates a Redis Serverless cache with AWS-managed scaling defaults, placed in two subnets.
@@ -94,15 +94,15 @@ This creates a Redis Serverless cache with AWS-managed scaling defaults, placed 
 A Redis serverless cache with explicit storage and compute boundaries:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsServerlessElasticache
 metadata:
   name: session-cache
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsServerlessElasticache.session-cache
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsServerlessElasticache.session-cache
 spec:
   region: us-west-2
   engine: redis
@@ -124,15 +124,15 @@ spec:
 A Valkey serverless cache with daily snapshots, customer-managed encryption, and Redis ACL authentication:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsServerlessElasticache
 metadata:
   name: prod-kv-store
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsServerlessElasticache.prod-kv-store
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsServerlessElasticache.prod-kv-store
 spec:
   region: us-east-1
   engine: valkey
@@ -159,15 +159,15 @@ spec:
 A Memcached serverless cache for ephemeral data with no persistence or authentication:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsServerlessElasticache
 metadata:
   name: html-fragment-cache
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsServerlessElasticache.html-fragment-cache
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsServerlessElasticache.html-fragment-cache
 spec:
   region: us-west-2
   engine: memcached
@@ -184,18 +184,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding IDs:
+Reference other Planton-managed resources instead of hardcoding IDs:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsServerlessElasticache
 metadata:
   name: ref-cache
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsServerlessElasticache.ref-cache
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsServerlessElasticache.ref-cache
 spec:
   region: us-east-1
   engine: redis

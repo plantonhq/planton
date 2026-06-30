@@ -12,9 +12,9 @@ Deploys an OCI Application Load Balancer (Layer 7) with backend sets, listeners,
 
 ## What Gets Created
 
-When you deploy an OciApplicationLoadBalancer resource, OpenMCF provisions:
+When you deploy an OciApplicationLoadBalancer resource, Planton provisions:
 
-- **Application Load Balancer** — an `oci_load_balancer_load_balancer` resource in the specified compartment with the configured shape, bandwidth, and subnet placement. Standard OpenMCF freeform tags are applied for resource tracking.
+- **Application Load Balancer** — an `oci_load_balancer_load_balancer` resource in the specified compartment with the configured shape, bandwidth, and subnet placement. Standard Planton freeform tags are applied for resource tracking.
 - **Backend Sets** — one or more `oci_load_balancer_backend_set` resources defining load balancing policy, health checking, and optional SSL and session persistence configuration for each group of backends.
 - **Backends** — `oci_load_balancer_backend` resources for each backend server defined within a backend set. Created only when backends are specified in the backend set configuration.
 - **Listeners** — one or more `oci_load_balancer_listener` resources defining the ports, protocols, and routing to backend sets. Listeners are created after all other sub-resources to ensure correct dependency ordering.
@@ -24,7 +24,7 @@ When you deploy an OciApplicationLoadBalancer resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the load balancer will be created — literal value or reference to an OciCompartment resource
 - **At least one subnet OCID** for load balancer placement — literal value or reference to an OciSubnet resource. For high availability, provide subnets in two different availability domains
 - **Backend server IP addresses and ports** for at least one backend set (backends can be added later, but a load balancer without backends does not route traffic)
@@ -35,15 +35,15 @@ When you deploy an OciApplicationLoadBalancer resource, OpenMCF provisions:
 Create a file `load-balancer.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciApplicationLoadBalancer
 metadata:
   name: web-lb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciApplicationLoadBalancer.web-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciApplicationLoadBalancer.web-lb
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -75,7 +75,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f load-balancer.yaml
+planton apply -f load-balancer.yaml
 ```
 
 This creates a public flexible-shape load balancer with 10–100 Mbps bandwidth, one backend set using round-robin distribution with HTTP health checks on `/health`, two backend servers on port 8080, and one HTTP listener on port 80. The load balancer OCID and assigned IP addresses are exported as stack outputs.
@@ -309,15 +309,15 @@ The `action` field determines which other fields are relevant for each rule:
 A public HTTP load balancer distributing traffic across two backends with round-robin policy and HTTP health checking:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciApplicationLoadBalancer
 metadata:
   name: web-lb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciApplicationLoadBalancer.web-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciApplicationLoadBalancer.web-lb
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -351,17 +351,17 @@ spec:
 An HTTPS load balancer with a certificate for SSL termination. The HTTP listener on port 80 redirects all traffic to HTTPS using a rule set:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciApplicationLoadBalancer
 metadata:
   name: secure-web
   org: acme
   env: staging
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme
-    pulumi.openmcf.org/project: platform
-    pulumi.openmcf.org/stack.name: staging.OciApplicationLoadBalancer.secure-web
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme
+    pulumi.planton.dev/project: platform
+    pulumi.planton.dev/stack.name: staging.OciApplicationLoadBalancer.secure-web
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -427,17 +427,17 @@ spec:
 A load balancer serving two applications on the same IP address using virtual hostname routing. Each hostname routes to a different backend set:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciApplicationLoadBalancer
 metadata:
   name: multi-domain-lb
   org: acme
   env: prod
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme
-    pulumi.openmcf.org/project: platform
-    pulumi.openmcf.org/stack.name: prod.OciApplicationLoadBalancer.multi-domain-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme
+    pulumi.planton.dev/project: platform
+    pulumi.planton.dev/stack.name: prod.OciApplicationLoadBalancer.multi-domain-lb
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -496,17 +496,17 @@ spec:
 A production load balancer with HTTPS, HTTP-to-HTTPS redirect, security headers, LB-managed session persistence, delete protection, request tracing, NSGs, and infrastructure references via `valueFrom`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciApplicationLoadBalancer
 metadata:
   name: prod-lb
   org: acme
   env: prod
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme
-    pulumi.openmcf.org/project: platform
-    pulumi.openmcf.org/stack.name: prod.OciApplicationLoadBalancer.prod-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme
+    pulumi.planton.dev/project: platform
+    pulumi.planton.dev/stack.name: prod.OciApplicationLoadBalancer.prod-lb
 spec:
   compartmentId:
     valueFrom:

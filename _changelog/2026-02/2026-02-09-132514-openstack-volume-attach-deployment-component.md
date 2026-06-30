@@ -62,7 +62,7 @@ flowchart TB
   - `device` (optional, e.g., "/dev/vdb")
   - `region` (optional override)
 - `stack_outputs.proto` -- 5 outputs: id, instance_id, volume_id, device, region
-- `api.proto` -- KRM envelope with `openstack.openmcf.org/v1` + `OpenStackVolumeAttach`
+- `api.proto` -- KRM envelope with `openstack.planton.dev/v1` + `OpenStackVolumeAttach`
 - `stack_input.proto` -- target + provider_config
 - `spec_test.go` -- 14 tests (7 positive, 7 negative)
 
@@ -117,7 +117,7 @@ VolumeAttach follows the established join-resource pattern:
 
 - OpenStackVolume: `_changelog/2026-02/2026-02-09-132514-openstack-volume-deployment-component.md`
 - Join resource patterns: RouterInterface, FloatingIpAssociate
-- Parent project: `planton/_projects/20260209.01.openstack-openmcf-components/`
+- Parent project: `planton/_projects/20260209.01.openstack-planton-components/`
 
 ---
 

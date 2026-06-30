@@ -12,7 +12,7 @@ Deploys a managed Scaleway Load Balancer that bundles a Flexible IP, the LB appl
 
 ## What Gets Created
 
-When you deploy a ScalewayLoadBalancer resource, OpenMCF provisions:
+When you deploy a ScalewayLoadBalancer resource, Planton provisions:
 
 - **Flexible IP** — a dedicated `loadbalancers.Ip` public IPv4 address with independent lifecycle that survives LB replacement
 - **Load Balancer** — a `loadbalancers.LoadBalancer` appliance of the specified type, with optional Private Network attachment
@@ -23,25 +23,25 @@ When you deploy a ScalewayLoadBalancer resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Scaleway credentials** configured via environment variables or OpenMCF provider config
+- **Scaleway credentials** configured via environment variables or Planton provider config
 - **A target zone** — Load Balancers are zonal resources (e.g., `fr-par-1`, `nl-ams-1`, `pl-waw-1`)
 - **Backend server IPs** — at least one server IP per backend, reachable from the LB (public IPs or private IPs if attached to a Private Network)
-- **(Optional) A Private Network** — either a literal Private Network UUID or an OpenMCF-managed ScalewayPrivateNetwork resource whose output can be referenced via `valueFrom`
+- **(Optional) A Private Network** — either a literal Private Network UUID or an Planton-managed ScalewayPrivateNetwork resource whose output can be referenced via `valueFrom`
 
 ## Quick Start
 
 Create a file `load-balancer.yaml`:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayLoadBalancer
 metadata:
   name: my-lb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayLoadBalancer.my-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayLoadBalancer.my-lb
 spec:
   zone: fr-par-1
   type: LB-S
@@ -60,7 +60,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f load-balancer.yaml
+planton apply -f load-balancer.yaml
 ```
 
 This creates a small Load Balancer in `fr-par-1` with a single HTTP backend and frontend on port 80. The public IP is available in stack outputs as `lb_ip_address`.
@@ -121,15 +121,15 @@ This creates a small Load Balancer in `fr-par-1` with a single HTTP backend and 
 A single-backend, single-frontend Load Balancer for development or internal services:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayLoadBalancer
 metadata:
   name: dev-lb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayLoadBalancer.dev-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayLoadBalancer.dev-lb
 spec:
   zone: fr-par-1
   type: LB-S
@@ -154,15 +154,15 @@ spec:
 A production-grade Load Balancer with automatic TLS, HTTP-to-HTTPS frontend pairing, a Private Network attachment, and HTTP health checks:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayLoadBalancer
 metadata:
   name: prod-lb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.ScalewayLoadBalancer.prod-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.ScalewayLoadBalancer.prod-lb
 spec:
   zone: fr-par-1
   type: LB-GP-M
@@ -217,15 +217,15 @@ spec:
 A Load Balancer routing traffic to separate backend pools (API and gRPC), using TCP forwarding and PROXY protocol to preserve client IPs:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayLoadBalancer
 metadata:
   name: gateway-lb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.ScalewayLoadBalancer.gateway-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.ScalewayLoadBalancer.gateway-lb
 spec:
   zone: nl-ams-1
   type: LB-GP-L

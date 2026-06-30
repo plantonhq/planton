@@ -1,0 +1,465 @@
+syntax = "proto3";
+
+package dev.planton.provider.alicloud.alicloudkubernetesnodepool.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// AliCloudKubernetesNodePoolSpec defines the configuration for an ACK node pool.
+//
+// A node pool is a group of worker nodes within an ACK Managed Kubernetes
+// cluster that share the same instance type, scaling policy, and node
+// configuration. Each node pool has its own lifecycle and can be scaled
+// independently of the cluster.
+//
+// This component wraps a single provider resource:
+//   Terraform: alicloud_cs_kubernetes_node_pool
+//   Pulumi:    cs.NodePool
+//
+// Node pools inherit the VPC and Kubernetes version from the parent cluster.
+// The region is determined by the VSwitches; no region field is needed on the
+// node pool itself (the provider region comes from the parent cluster's
+// provider configuration).
+//
+// For cost-optimized workloads, use spot_strategy with multiple instance_types
+// to spread across spot instance pools.
+message AliCloudKubernetesNodePoolSpec {
+  // ──────────────────────────────────────────────────────────────────────────
+  // Core Identity (fields 1–9)
+  // ──────────────────────────────────────────────────────────────────────────
+
+  // Alibaba Cloud region. Must match the parent cluster's region.
+  // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // ACK cluster ID that this node pool belongs to.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef cluster_id = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AliCloudKubernetesCluster,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.cluster_id"
+  ];
+
+  // Node pool name. 1-63 characters.
+  // Maps to provider field `node_pool_name`.
+  string name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 63
+  ];
+
+  // VSwitch IDs for worker node placement. 1-5 VSwitches, preferably in
+  // distinct availability zones for high availability.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef vswitch_ids = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).repeated.min_items = 1,
+    (buf.validate.field).repeated.max_items = 5,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AliCloudVswitch,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vswitch_id"
+  ];
+
+  // ECS instance types for worker nodes. At least one type is required.
+  // Specifying multiple types improves availability, especially for spot
+  // instances where a single type may be unavailable.
+  // Examples: "ecs.g7.xlarge", "ecs.g7.2xlarge", "ecs.c7.xlarge"
+  repeated string instance_types = 5 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).repeated.min_items = 1
+  ];
+
+  // Desired number of nodes in the node pool.
+  // For auto-scaling pools (scaling_config.enable = true), this sets the
+  // initial count; the auto-scaler may adjust between min_size and max_size.
+  // For fixed-size pools, this is the exact count.
+  // Range: 0-1000.
+  optional int32 desired_size = 6 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 1000
+  }];
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // Image (field 10)
+  // ──────────────────────────────────────────────────────────────────────────
+
+  // OS image type for the worker nodes.
+  // Default: "AliyunLinux3"
+  optional string image_type = 10 [
+    (buf.validate.field).cel = {
+      id: "image_type_valid"
+      message: "image_type must be one of: AliyunLinux, AliyunLinux3, AliyunLinux3Arm64, AliyunLinuxUEFI, CentOS, Windows, WindowsCore, ContainerOS, Ubuntu, AliyunLinux3ContainerOptimized, Custom"
+      expression: "this == '' || this in ['AliyunLinux', 'AliyunLinux3', 'AliyunLinux3Arm64', 'AliyunLinuxUEFI', 'CentOS', 'Windows', 'WindowsCore', 'ContainerOS', 'Ubuntu', 'AliyunLinux3ContainerOptimized', 'Custom']"
+    },
+    (dev.planton.shared.options.default) = "AliyunLinux3"
+  ];
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // Disk Configuration (fields 11–12)
+  // ──────────────────────────────────────────────────────────────────────────
+
+  // System disk configuration for the worker nodes.
+  AliCloudKubernetesNodePoolSystemDisk system_disk = 11;
+
+  // Additional data disks attached to each worker node.
+  repeated AliCloudKubernetesNodePoolDataDisk data_disks = 12;
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // Network & Security (fields 20–22)
+  // ──────────────────────────────────────────────────────────────────────────
+
+  // Security group IDs for the worker nodes.
+  // Immutable after creation.
+  // If omitted, the cluster's default security group is used.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef security_group_ids = 20 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AliCloudSecurityGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
+  ];
+
+  // Maximum outbound internet bandwidth in Mbps.
+  // 0 means no public IP is allocated (default). 1-100 allocates a public IP.
+  optional int32 internet_max_bandwidth_out = 21 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 100
+  }];
+
+  // Billing method for public internet access.
+  // Only relevant when internet_max_bandwidth_out > 0.
+  // Default: "PayByTraffic"
+  optional string internet_charge_type = 22 [(buf.validate.field).cel = {
+    id: "internet_charge_type_valid"
+    message: "internet_charge_type must be one of: PayByBandwidth, PayByTraffic"
+    expression: "this == '' || this in ['PayByBandwidth', 'PayByTraffic']"
+  }];
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // Authentication (fields 25–26)
+  // ──────────────────────────────────────────────────────────────────────────
+
+  // SSH key pair name for node access.
+  // Mutually exclusive with password.
+  // Recommended over password for managed node pools.
+  string key_name = 25;
+
+  // SSH password for node access. 8-30 characters.
+  // Mutually exclusive with key_name. Sensitive value.
+  string password = 26 [(dev.planton.shared.options.sensitive) = true];
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // Kubernetes Configuration (fields 30–39)
+  // ──────────────────────────────────────────────────────────────────────────
+
+  // Kubernetes labels applied to all nodes in the pool.
+  // Used for pod scheduling affinity and node selectors.
+  // Example: {"workload-type": "compute", "team": "platform"}
+  map<string, string> labels = 30;
+
+  // Kubernetes taints applied to all nodes in the pool.
+  // Taints repel pods unless the pod has a matching toleration.
+  repeated AliCloudKubernetesNodePoolTaint taints = 31;
+
+  // CPU management policy for nodes.
+  // "none" (default) -- standard CFS scheduling.
+  // "static" -- pin exclusive containers to specific CPUs; improves
+  //   determinism for latency-sensitive workloads.
+  optional string cpu_policy = 32 [(buf.validate.field).cel = {
+    id: "cpu_policy_valid"
+    message: "cpu_policy must be one of: none, static"
+    expression: "this == '' || this in ['none', 'static']"
+  }];
+
+  // Container runtime name (e.g., "containerd", "Sandboxed-Container.runv").
+  // If omitted, the provider default for the selected image_type is used.
+  string runtime_name = 33;
+
+  // Container runtime version.
+  // If omitted, the latest version supported by the cluster is used.
+  string runtime_version = 34;
+
+  // Whether newly added nodes are marked unschedulable.
+  // When true, pods cannot be scheduled on new nodes until the taint is
+  // manually removed. Useful for pre-configuration before accepting workloads.
+  optional bool unschedulable = 35;
+
+  // Custom user data script to execute on each node at boot time.
+  // Must be base64-encoded. Maximum 16 KB before encoding.
+  string user_data = 36;
+
+  // Whether to install Alibaba Cloud CloudMonitor agent on nodes.
+  // Default: true
+  optional bool install_cloud_monitor = 37 [(dev.planton.shared.options.default) = "true"];
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // Scaling (fields 40–42)
+  // ──────────────────────────────────────────────────────────────────────────
+
+  // Auto-scaling configuration. When enabled, the cluster auto-scaler
+  // adjusts the number of nodes between min_size and max_size based on
+  // pending pod resource requests.
+  AliCloudKubernetesNodePoolScalingConfig scaling_config = 40;
+
+  // Multi-AZ scheduling policy when vswitch_ids spans multiple zones.
+  // "PRIORITY" -- allocate in the first AZ with available capacity.
+  // "COST_OPTIMIZED" -- allocate in the cheapest AZ.
+  // "BALANCE" -- evenly distribute across AZs.
+  optional string multi_az_policy = 41 [(buf.validate.field).cel = {
+    id: "multi_az_policy_valid"
+    message: "multi_az_policy must be one of: PRIORITY, COST_OPTIMIZED, BALANCE"
+    expression: "this == '' || this in ['PRIORITY', 'COST_OPTIMIZED', 'BALANCE']"
+  }];
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // Management (field 45)
+  // ──────────────────────────────────────────────────────────────────────────
+
+  // Managed node pool lifecycle management settings.
+  // When enabled, ACK automatically repairs unhealthy nodes, upgrades
+  // kubelet versions, and patches vulnerabilities.
+  AliCloudKubernetesNodePoolManagement management = 45;
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // Spot Instance Configuration (fields 50–51)
+  // ──────────────────────────────────────────────────────────────────────────
+
+  // Spot instance strategy for cost optimization.
+  // "NoSpot" (default) -- only on-demand instances.
+  // "SpotWithPriceLimit" -- spot instances with a price cap.
+  // "SpotAsPriceGo" -- spot instances at market price (cheapest).
+  optional string spot_strategy = 50 [(buf.validate.field).cel = {
+    id: "spot_strategy_valid"
+    message: "spot_strategy must be one of: NoSpot, SpotWithPriceLimit, SpotAsPriceGo"
+    expression: "this == '' || this in ['NoSpot', 'SpotWithPriceLimit', 'SpotAsPriceGo']"
+  }];
+
+  // Per-instance-type price caps for spot instances.
+  // Only relevant when spot_strategy is "SpotWithPriceLimit".
+  repeated AliCloudKubernetesNodePoolSpotPriceLimit spot_price_limits = 51;
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // Billing (fields 55–58)
+  // ──────────────────────────────────────────────────────────────────────────
+
+  // Billing method for worker node instances.
+  // "PostPaid" (default) -- pay-as-you-go.
+  // "PrePaid" -- subscription; requires period and optionally auto_renew.
+  optional string instance_charge_type = 55 [
+    (buf.validate.field).cel = {
+      id: "instance_charge_type_valid"
+      message: "instance_charge_type must be one of: PostPaid, PrePaid"
+      expression: "this == '' || this in ['PostPaid', 'PrePaid']"
+    },
+    (dev.planton.shared.options.default) = "PostPaid"
+  ];
+
+  // Subscription period in months. Required when instance_charge_type is PrePaid.
+  // Valid values: 1, 2, 3, 6, 12.
+  optional int32 period = 56 [(buf.validate.field).cel = {
+    id: "period_valid"
+    message: "period must be one of: 1, 2, 3, 6, 12"
+    expression: "this == 0 || this in [1, 2, 3, 6, 12]"
+  }];
+
+  // Whether to automatically renew the subscription.
+  // Only relevant when instance_charge_type is PrePaid.
+  optional bool auto_renew = 57;
+
+  // Auto-renewal period in months.
+  // Valid values: 1, 2, 3, 6, 12.
+  optional int32 auto_renew_period = 58 [(buf.validate.field).cel = {
+    id: "auto_renew_period_valid"
+    message: "auto_renew_period must be one of: 1, 2, 3, 6, 12"
+    expression: "this == 0 || this in [1, 2, 3, 6, 12]"
+  }];
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // Resource Management (fields 60–62)
+  // ──────────────────────────────────────────────────────────────────────────
+
+  // Tags applied to the ECS instances in the node pool.
+  map<string, string> tags = 60;
+
+  // Alibaba Cloud resource group ID for organizational grouping.
+  string resource_group_id = 61;
+
+  // RAM role name for worker nodes.
+  // Determines what Alibaba Cloud APIs the node can call (e.g., pulling
+  // images from ACR, writing to SLS). If omitted, the cluster's default
+  // worker RAM role is used.
+  // Immutable after creation.
+  string ram_role_name = 62;
+}
+
+// AliCloudKubernetesNodePoolSystemDisk configures the system (OS) disk
+// for each worker node.
+message AliCloudKubernetesNodePoolSystemDisk {
+  // Disk category.
+  // Default: "cloud_essd"
+  optional string category = 1 [
+    (buf.validate.field).cel = {
+      id: "system_disk_category_valid"
+      message: "category must be one of: cloud_efficiency, cloud_ssd, cloud_essd, cloud_auto"
+      expression: "this == '' || this in ['cloud_efficiency', 'cloud_ssd', 'cloud_essd', 'cloud_auto']"
+    },
+    (dev.planton.shared.options.default) = "cloud_essd"
+  ];
+
+  // Disk size in GiB.
+  // Minimum: 40 GiB. Default: 120 GiB.
+  optional int32 size = 2 [
+    (buf.validate.field).int32 = {
+      gte: 40
+      lte: 500
+    },
+    (dev.planton.shared.options.default) = "120"
+  ];
+
+  // ESSD performance level. Only applies when category is "cloud_essd".
+  // Valid values: "PL0", "PL1", "PL2", "PL3".
+  // Higher levels provide more IOPS and throughput.
+  string performance_level = 3 [(buf.validate.field).cel = {
+    id: "system_disk_perf_level_valid"
+    message: "performance_level must be one of: PL0, PL1, PL2, PL3"
+    expression: "this == '' || this in ['PL0', 'PL1', 'PL2', 'PL3']"
+  }];
+
+  // Whether to encrypt the system disk.
+  optional bool encrypted = 4;
+
+  // KMS key ID for disk encryption.
+  // Only relevant when encrypted is true.
+  string kms_key_id = 5;
+}
+
+// AliCloudKubernetesNodePoolDataDisk configures an additional data disk
+// attached to each worker node.
+message AliCloudKubernetesNodePoolDataDisk {
+  // Disk category.
+  // Default: "cloud_essd"
+  optional string category = 1 [
+    (buf.validate.field).cel = {
+      id: "data_disk_category_valid"
+      message: "category must be one of: cloud_efficiency, cloud_ssd, cloud_essd, cloud_auto"
+      expression: "this == '' || this in ['cloud_efficiency', 'cloud_ssd', 'cloud_essd', 'cloud_auto']"
+    },
+    (dev.planton.shared.options.default) = "cloud_essd"
+  ];
+
+  // Disk size in GiB. Range: 40-32767.
+  int32 size = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).int32 = {
+      gte: 40
+      lte: 32767
+    }
+  ];
+
+  // Disk name.
+  string name = 3;
+
+  // ESSD performance level. Only applies when category is "cloud_essd".
+  // Valid values: "PL0", "PL1", "PL2", "PL3".
+  string performance_level = 4 [(buf.validate.field).cel = {
+    id: "data_disk_perf_level_valid"
+    message: "performance_level must be one of: PL0, PL1, PL2, PL3"
+    expression: "this == '' || this in ['PL0', 'PL1', 'PL2', 'PL3']"
+  }];
+
+  // Whether to encrypt the data disk. "true" or "false".
+  string encrypted = 5;
+
+  // KMS key ID for disk encryption.
+  string kms_key_id = 6;
+}
+
+// AliCloudKubernetesNodePoolTaint defines a Kubernetes taint applied to
+// all nodes in the pool.
+message AliCloudKubernetesNodePoolTaint {
+  // Taint key. Must be a valid Kubernetes label key.
+  string key = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Taint value.
+  string value = 2;
+
+  // Taint effect that determines the scheduling behavior.
+  // "NoSchedule" -- pods without a toleration are not scheduled.
+  // "PreferNoSchedule" -- soft version; scheduler tries to avoid.
+  // "NoExecute" -- existing pods without a toleration are evicted.
+  string effect = 3 [(buf.validate.field).cel = {
+    id: "taint_effect_valid"
+    message: "effect must be one of: NoSchedule, PreferNoSchedule, NoExecute"
+    expression: "this == '' || this in ['NoSchedule', 'PreferNoSchedule', 'NoExecute']"
+  }];
+}
+
+// AliCloudKubernetesNodePoolScalingConfig configures the cluster auto-scaler
+// for this node pool.
+message AliCloudKubernetesNodePoolScalingConfig {
+  // Whether auto-scaling is enabled.
+  // Default: true (when scaling_config is present).
+  optional bool enable = 1 [(dev.planton.shared.options.default) = "true"];
+
+  // Minimum number of nodes the auto-scaler will maintain.
+  // Range: 0-1000.
+  int32 min_size = 2 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 1000
+  }];
+
+  // Maximum number of nodes the auto-scaler can scale to.
+  // Range: 0-2000. Must be >= min_size.
+  int32 max_size = 3 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 2000
+  }];
+
+  // Instance classification for the auto-scaler.
+  // "cpu" (default) -- general-purpose CPU instances.
+  // "gpu" -- GPU instances.
+  // "gpushare" -- shared GPU instances.
+  // "spot" -- spot/preemptible instances.
+  optional string type = 4 [(buf.validate.field).cel = {
+    id: "scaling_type_valid"
+    message: "type must be one of: cpu, gpu, gpushare, spot"
+    expression: "this == '' || this in ['cpu', 'gpu', 'gpushare', 'spot']"
+  }];
+}
+
+// AliCloudKubernetesNodePoolManagement configures automatic lifecycle
+// management for a managed node pool.
+message AliCloudKubernetesNodePoolManagement {
+  // Whether managed node pool features are enabled.
+  // Default: true
+  optional bool enable = 1 [(dev.planton.shared.options.default) = "true"];
+
+  // Whether ACK automatically repairs unhealthy nodes.
+  // Unhealthy nodes are detected via node conditions (Ready, DiskPressure, etc.).
+  optional bool auto_repair = 2;
+
+  // Whether ACK automatically upgrades kubelet on nodes when the cluster
+  // version is upgraded.
+  optional bool auto_upgrade = 3;
+
+  // Maximum number of nodes that can be unavailable during managed
+  // operations (repair, upgrade, patching).
+  // Range: 0-1000. Default: 1.
+  optional int32 max_unavailable = 4 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 1000
+  }];
+}
+
+// AliCloudKubernetesNodePoolSpotPriceLimit defines a price cap for a
+// specific spot instance type.
+message AliCloudKubernetesNodePoolSpotPriceLimit {
+  // ECS instance type (e.g., "ecs.g7.xlarge").
+  // Must be one of the types listed in instance_types.
+  string instance_type = 1;
+
+  // Maximum hourly price in CNY (e.g., "0.98").
+  // When the spot market price exceeds this, the instance is not created.
+  string price_limit = 2;
+}

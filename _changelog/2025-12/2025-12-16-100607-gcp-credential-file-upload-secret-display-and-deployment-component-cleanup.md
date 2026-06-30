@@ -108,7 +108,7 @@ Created secure secret display component with masking and download:
 
 ### CLI Improvements
 
-**File Modified:** `cmd/openmcf/root/credential_get.go`
+**File Modified:** `cmd/planton/root/credential_get.go`
 
 **Changes:**
 
@@ -125,11 +125,11 @@ Created secure secret display component with masking and download:
 - `app/backend/internal/database/deployment_component_repo.go` - Repository (61 lines)
 - `app/backend/internal/service/deployment_component_service.go` - Service (79 lines)
 - `app/backend/pkg/models/deployment_component.go` - Model (21 lines)
-- `cmd/openmcf/root/list_deployment_component.go` - CLI command (19 lines)
+- `cmd/planton/root/list_deployment_component.go` - CLI command (19 lines)
 
 **Files Modified:**
 
-- `cmd/openmcf/root.go` - Removed deployment component command registration
+- `cmd/planton/root.go` - Removed deployment component command registration
 - `docker/mongo-init.js` - Removed deployment component collection initialization
 
 **Impact:**
@@ -302,22 +302,22 @@ const { selectedFile, clearFile, error, triggerFileClick, inputFileRef, handleFi
 ### Files Modified (10)
 
 - `app/backend/internal/service/credential_service.go` - GCP credential handling improvements
-- `cmd/openmcf/root/credential_get.go` - Display label fix
+- `cmd/planton/root/credential_get.go` - Display label fix
 - `app/frontend/src/app/credentials/_components/forms/gcp.tsx` - File upload integration
 - `app/frontend/src/app/credentials/_components/forms/credential-drawer.tsx` - Component updates
 - `app/frontend/src/components/shared/credentials-list/credentials-list.tsx` - Secret property integration
 - `app/frontend/src/lib/utils.ts` - Base64 file reading utility
-- `cmd/openmcf/root.go` - Removed deployment component command
+- `cmd/planton/root.go` - Removed deployment component command
 - `docker/mongo-init.js` - Removed deployment component collection
-- `_projects/20251127-openmcf-web-app/docs/cli-commands.md` - Documentation updates
-- `_projects/20251127-openmcf-web-app/tasks/T07_4_completion.md` - Task documentation
+- `_projects/20251127-planton-web-app/docs/cli-commands.md` - Documentation updates
+- `_projects/20251127-planton-web-app/tasks/T07_4_completion.md` - Task documentation
 
 ### Files Deleted (4)
 
 - `app/backend/internal/database/deployment_component_repo.go` (61 lines)
 - `app/backend/internal/service/deployment_component_service.go` (79 lines)
 - `app/backend/pkg/models/deployment_component.go` (21 lines)
-- `cmd/openmcf/root/list_deployment_component.go` (19 lines)
+- `cmd/planton/root/list_deployment_component.go` (19 lines)
 
 **Total:** +762 insertions, -224 deletions
 

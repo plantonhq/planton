@@ -2,7 +2,7 @@ package tofumodule
 
 import (
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/pkg/iac/stackinput/providerenvvars"
+	"github.com/plantonhq/planton/pkg/iac/stackinput/providerenvvars"
 )
 
 // GetProviderConfigEnvVars returns provider-specific environment variables for the stack.

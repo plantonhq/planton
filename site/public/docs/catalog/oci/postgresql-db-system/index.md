@@ -12,7 +12,7 @@ Deploys an Oracle Cloud Infrastructure PostgreSQL Database System — a fully ma
 
 ## What Gets Created
 
-When you deploy an OciPostgresqlDbSystem resource, OpenMCF provisions:
+When you deploy an OciPostgresqlDbSystem resource, Planton provisions:
 
 - **PostgreSQL DB System** — an `oci_psql_db_system` resource in the specified compartment running the chosen PostgreSQL major version on dedicated compute shapes. The system includes a primary (read-write) endpoint and optional read replicas when `instanceCount` is 2 or more.
 - **Storage Backend** — OCI-optimized storage with a choice between regionally durable (multi-AD replication) or AD-local placement. IOPS performance tier is configurable.
@@ -21,7 +21,7 @@ When you deploy an OciPostgresqlDbSystem resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the DB System will be created — either a literal value or a reference to an OciCompartment resource
 - **A subnet OCID** in a VCN where the DB System instances will be placed — either a literal value or a reference to an OciSubnet resource
 - **A PostgreSQL major version** supported in OCI (e.g. "14", "15", "16")
@@ -32,15 +32,15 @@ When you deploy an OciPostgresqlDbSystem resource, OpenMCF provisions:
 Create a file `postgresql.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciPostgresqlDbSystem
 metadata:
   name: my-postgres
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciPostgresqlDbSystem.my-postgres
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciPostgresqlDbSystem.my-postgres
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -64,7 +64,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f postgresql.yaml
+planton apply -f postgresql.yaml
 ```
 
 This creates a single-node PostgreSQL 16 DB System on a flexible shape with 2 OCPUs and 16 GB memory, regionally durable storage, and a plain-text admin password. The DB System ID, primary endpoint IP, and admin username are exported as stack outputs.
@@ -160,15 +160,15 @@ This creates a single-node PostgreSQL 16 DB System on a flexible shape with 2 OC
 A single-node PostgreSQL 16 instance with regionally durable storage — suitable for development:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciPostgresqlDbSystem
 metadata:
   name: dev-postgres
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciPostgresqlDbSystem.dev-postgres
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciPostgresqlDbSystem.dev-postgres
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -194,15 +194,15 @@ spec:
 A multi-node PostgreSQL system with Vault-managed credentials, NSG-secured networking, a reader endpoint, and daily backups retained for 30 days:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciPostgresqlDbSystem
 metadata:
   name: prod-postgres
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-org
-    pulumi.openmcf.org/project: acme-data
-    pulumi.openmcf.org/stack.name: prod.OciPostgresqlDbSystem.prod-postgres
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-org
+    pulumi.planton.dev/project: acme-data
+    pulumi.planton.dev/stack.name: prod.OciPostgresqlDbSystem.prod-postgres
   env: prod
   org: acme
 spec:
@@ -240,15 +240,15 @@ spec:
 A cost-optimized single-AD setup with plain-text password and weekly backups — suitable for development or testing environments:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciPostgresqlDbSystem
 metadata:
   name: test-postgres
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: test.OciPostgresqlDbSystem.test-postgres
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: test.OciPostgresqlDbSystem.test-postgres
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -279,18 +279,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference OpenMCF-managed compartment and subnet resources instead of hardcoding OCIDs:
+Reference Planton-managed compartment and subnet resources instead of hardcoding OCIDs:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciPostgresqlDbSystem
 metadata:
   name: ref-postgres
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciPostgresqlDbSystem.ref-postgres
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciPostgresqlDbSystem.ref-postgres
 spec:
   compartmentId:
     valueFrom:

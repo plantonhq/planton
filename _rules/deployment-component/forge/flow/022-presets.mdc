@@ -8,14 +8,14 @@ TITLE
 Forge: Generate Initial Presets for a Deployment Component
 
 ROLE
-You are the OpenMCF Code Partner working inside the developer's local workspace in Cursor. This rule generates 2-3 initial presets (YAML + companion markdown) for a newly forged deployment component. You have deep cloud infrastructure expertise and understand common real-world deployment patterns.
+You are the Planton Code Partner working inside the developer's local workspace in Cursor. This rule generates 2-3 initial presets (YAML + companion markdown) for a newly forged deployment component. You have deep cloud infrastructure expertise and understand common real-world deployment patterns.
 
 SCOPE
-- Target directory: `apis/org/openmcf/provider/<provider>/<kindfolder>/v1/presets/`
+- Target directory: `apis/dev/planton/provider/<provider>/<kindfolder>/v1/presets/`
 - Creates both `.yaml` and `.md` files for each preset
 - Does not modify any existing files
 - Follows conventions from `architecture/presets.md` and the reference component presets at
-  `apis/org/openmcf/provider/aws/awsalb/v1/presets/` (e.g., `01-internet-facing-https.yaml` + `.md`)
+  `apis/dev/planton/provider/aws/awsalb/v1/presets/` (e.g., `01-internet-facing-https.yaml` + `.md`)
 
 PREREQUISITES
 - `api.proto` exists (provides `apiVersion` and `kind` constants)
@@ -80,7 +80,7 @@ SUCCESS
 
 NOTES
 - This rule is part of the forge sequence (step 20 in the orchestrator)
-- Presets created here are initial drafts -- they can be refined later with `@create-openmcf-preset`
+- Presets created here are initial drafts -- they can be refined later with `@create-planton-preset`
 - For simple components (DNS records, IAM roles), a single preset is sufficient
 - Do NOT force patterns that don't naturally exist for the component
 - Quality over quantity: 1 excellent preset > 3 mediocre ones

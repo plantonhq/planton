@@ -98,8 +98,8 @@ Per component (typical):
 
 ## Validation
 
-- All 49 Kubernetes component packages build: `go build ./apis/org/openmcf/provider/kubernetes/...`
-- All 49 Kubernetes component packages pass tests: `go test ./apis/org/openmcf/provider/kubernetes/...`
+- All 49 Kubernetes component packages build: `go build ./apis/dev/planton/provider/kubernetes/...`
+- All 49 Kubernetes component packages pass tests: `go test ./apis/dev/planton/provider/kubernetes/...`
 - Zero compilation errors, zero test failures
 
 ## Breaking Changes

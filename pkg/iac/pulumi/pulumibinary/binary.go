@@ -11,24 +11,24 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/internal/cli/cliprint"
-	"github.com/plantonhq/openmcf/internal/cli/version"
-	"github.com/plantonhq/openmcf/internal/cli/workspace"
-	"github.com/plantonhq/openmcf/pkg/downloads"
-	"github.com/plantonhq/openmcf/pkg/fileutil"
+	"github.com/plantonhq/planton/internal/cli/cliprint"
+	"github.com/plantonhq/planton/internal/cli/version"
+	"github.com/plantonhq/planton/internal/cli/workspace"
+	"github.com/plantonhq/planton/pkg/downloads"
+	"github.com/plantonhq/planton/pkg/fileutil"
 )
 
 const (
 	// PulumiDirName is the base directory name for all Pulumi-related files
-	// All Pulumi files are stored under ~/.openmcf/pulumi/
+	// All Pulumi files are stored under ~/.planton/pulumi/
 	PulumiDirName = "pulumi"
 
 	// BinariesSubDir is the subdirectory for cached binaries
-	// Full path: ~/.openmcf/pulumi/binaries/{version}/
+	// Full path: ~/.planton/pulumi/binaries/{version}/
 	BinariesSubDir = "binaries"
 
 	// WorkspacesSubDir is the subdirectory for Pulumi workspaces
-	// Full path: ~/.openmcf/pulumi/workspaces/{stack-fqdn}/
+	// Full path: ~/.planton/pulumi/workspaces/{stack-fqdn}/
 	WorkspacesSubDir = "workspaces"
 
 	// BinaryPrefix is the prefix for locally cached Pulumi component binaries.
@@ -42,7 +42,7 @@ func GetPlatformSuffix() string {
 }
 
 // GetPulumiBaseDir returns the base directory for all Pulumi-related files
-// (~/.openmcf/pulumi/)
+// (~/.planton/pulumi/)
 func GetPulumiBaseDir() (string, error) {
 	workspaceDir, err := workspace.GetWorkspaceDir()
 	if err != nil {
@@ -52,7 +52,7 @@ func GetPulumiBaseDir() (string, error) {
 }
 
 // GetBinaryCacheDir returns the path to the binary cache directory
-// (~/.openmcf/pulumi/binaries/{version}/)
+// (~/.planton/pulumi/binaries/{version}/)
 func GetBinaryCacheDir(releaseVersion string) (string, error) {
 	pulumiBaseDir, err := GetPulumiBaseDir()
 	if err != nil {
@@ -100,7 +100,7 @@ func BuildBinaryName(componentName string) string {
 // Examples (on darwin/arm64):
 //
 //	BuildDownloadURL("AwsEcsService", "v0.3.50")
-//	  -> https://downloads.openmcf.org/releases/v0.3.50/modules/pulumi/awsecsservice_darwin_arm64.gz
+//	  -> https://downloads.planton.dev/releases/v0.3.50/modules/pulumi/awsecsservice_darwin_arm64.gz
 func BuildDownloadURL(componentName, releaseVersion string) string {
 	return downloads.BuildPulumiDownloadURL(componentName, releaseVersion, GetPlatformSuffix())
 }
@@ -133,7 +133,7 @@ func IsBinaryCached(componentName, releaseVersion string) (bool, error) {
 
 // EnsureBinary ensures the binary for a component is downloaded and cached.
 // The releaseVersion can be:
-// - CLI version like "v0.3.2" (uses main openmcf release)
+// - CLI version like "v0.3.2" (uses main planton release)
 // - Module version like "v0.3.1-pulumi-awsecsservice-20260107.01" (uses component-specific release)
 // Returns the path to the binary.
 func EnsureBinary(componentName, releaseVersion string) (string, error) {

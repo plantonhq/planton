@@ -8,7 +8,7 @@ import { Check as CheckIcon } from "lucide-react";
 export default function CICDSection() {
   const [copied, setCopied] = useState(false);
 
-  const workflowCode = `name: Deploy with OpenMCF
+  const workflowCode = `name: Deploy with Planton
 on:
   push:
     branches: [ main ]
@@ -18,8 +18,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install OpenMCF CLI
-        run: brew install plantonhq/tap/openmcf
+      - name: Install Planton CLI
+        run: brew install plantonhq/tap/planton
 
       - name: Install Pulumi & OpenTofu
         run: |
@@ -29,10 +29,10 @@ jobs:
           sudo unzip -o tofu.zip -d /usr/local/bin
 
       - name: Plan
-        run: openmcf plan -f infra/manifest.yaml
+        run: planton plan -f infra/manifest.yaml
 
       - name: Apply
-        run: openmcf apply -f infra/manifest.yaml --stack myorg/myproj/prod`;
+        run: planton apply -f infra/manifest.yaml --stack myorg/myproj/prod`;
 
   const copyWorkflow = () => {
     navigator.clipboard.writeText(workflowCode);

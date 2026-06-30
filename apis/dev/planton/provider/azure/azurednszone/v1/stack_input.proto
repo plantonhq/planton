@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azurednszone.v1;
+
+import "dev/planton/provider/azure/azurednszone/v1/api.proto";
+import "dev/planton/provider/azure/provider.proto";
+
+//azure-dns-zone stack-input
+message AzureDnsZoneStackInput {
+  //target cloud-resource
+  AzureDnsZone target = 1;
+  //provider-config
+  dev.planton.provider.azure.AzureProviderConfig provider_config = 2;
+}

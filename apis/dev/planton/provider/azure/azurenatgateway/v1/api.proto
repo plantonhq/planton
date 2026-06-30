@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azurenatgateway.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/azure/azurenatgateway/v1/spec.proto";
+import "dev/planton/provider/azure/azurenatgateway/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// azure-nat-gateway
+message AzureNatGateway {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'azure.planton.dev/v1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'AzureNatGateway'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  AzureNatGatewaySpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  AzureNatGatewayStatus status = 5;
+}
+
+// azure-nat-gateway status
+message AzureNatGatewayStatus {
+  //stack-outputs
+  //  azure-nat-gateway stack-outputs
+  AzureNatGatewayStackOutputs outputs = 1;
+}

@@ -12,7 +12,7 @@ Deploys a MANAGED AWS Batch compute environment with bundled job queues and an o
 
 ## What Gets Created
 
-When you deploy an AwsBatchComputeEnvironment resource, OpenMCF provisions:
+When you deploy an AwsBatchComputeEnvironment resource, Planton provisions:
 
 - **Compute Environment** — a `batch.ComputeEnvironment` of type `MANAGED` with the specified resource type (EC2/SPOT/FARGATE/FARGATE_SPOT), vCPU limits, VPC subnets, security groups, and optional update policy
 - **Job Queues** — one `batch.JobQueue` per entry in `jobQueues`, each referencing the compute environment with configurable priority, state, and optional job-state time-limit actions for automatic cancellation of stuck jobs
@@ -20,7 +20,7 @@ When you deploy an AwsBatchComputeEnvironment resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **At least one VPC subnet** (private subnets recommended) — use `AwsVpc` to provision
 - **A security group** allowing outbound access for containers — use `AwsSecurityGroup` to provision
 - **For EC2/SPOT types**: an ECS instance profile IAM role with `AmazonEC2ContainerServiceforEC2Role` policy
@@ -31,15 +31,15 @@ When you deploy an AwsBatchComputeEnvironment resource, OpenMCF provisions:
 Create a file `batch.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsBatchComputeEnvironment
 metadata:
   name: my-batch
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsBatchComputeEnvironment.my-batch
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsBatchComputeEnvironment.my-batch
 spec:
   region: us-west-2
   computeResources:
@@ -58,7 +58,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f batch.yaml
+planton apply -f batch.yaml
 ```
 
 This creates a serverless Fargate compute environment with up to 256 vCPUs of capacity and a single `default` job queue. AWS manages all compute infrastructure — no EC2 instances, patching, or AMI management required.
@@ -153,4 +153,4 @@ This creates a serverless Fargate compute environment with up to 256 vCPUs of ca
 
 **Scheduling policy as top-level.** The scheduling policy is defined at the spec level and attached to all bundled queues. Per-queue scheduling policies with external references are deferred to v2.
 
-**State defaults.** Both compute environment and job queue states default to `ENABLED` via the OpenMCF middleware default mechanism. State validation is delegated to the AWS API to keep the proto schema simple and forward-compatible.
+**State defaults.** Both compute environment and job queue states default to `ENABLED` via the Planton middleware default mechanism. State validation is delegated to the AWS API to keep the proto schema simple and forward-compatible.

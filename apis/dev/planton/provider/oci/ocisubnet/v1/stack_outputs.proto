@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocisubnet.v1;
+
+// OciSubnetStackOutputs contains the outputs produced after deploying an OciSubnet.
+// These values are used by downstream components (OciComputeInstance,
+// OciContainerEngineCluster, OciApplicationLoadBalancer, etc.) for composability via
+// StringValueOrRef.
+message OciSubnetStackOutputs {
+  // OCID of the subnet.
+  string subnet_id = 1;
+
+  // Fully qualified domain name of the subnet
+  // (e.g. "subnet1.vcn1.oraclevcn.com").
+  string subnet_domain_name = 2;
+
+  // IP address of the virtual router in this subnet.
+  string virtual_router_ip = 3;
+
+  // MAC address of the virtual router in this subnet.
+  string virtual_router_mac = 4;
+
+  // OCID of the route table associated with this subnet.
+  // This is either the custom route table created from route_rules,
+  // the externally referenced route_table_id, or the VCN's default.
+  string route_table_id = 5;
+}

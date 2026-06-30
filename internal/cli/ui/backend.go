@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/plantonhq/openmcf/pkg/iac/tofu/backendconfig"
+	"github.com/plantonhq/planton/pkg/iac/tofu/backendconfig"
 )
 
 // S3CompatibleDetected displays a helpful message when S3-compatible backend is detected.

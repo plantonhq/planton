@@ -12,30 +12,30 @@ Creates and manages DNS records within an Alibaba Cloud Alidns-hosted domain. Su
 
 ## What Gets Created
 
-When you deploy an AliCloudDnsRecord resource, OpenMCF provisions:
+When you deploy an AliCloudDnsRecord resource, Planton provisions:
 
 - **Alidns Record** -- an `alicloud_alidns_record` resource (Pulumi: `dns.AlidnsRecord`) that creates a DNS record within the specified parent domain
 
 ## Prerequisites
 
-- **Alibaba Cloud credentials** configured via environment variables (`ALICLOUD_ACCESS_KEY`, `ALICLOUD_SECRET_KEY`) or OpenMCF provider config
+- **Alibaba Cloud credentials** configured via environment variables (`ALICLOUD_ACCESS_KEY`, `ALICLOUD_SECRET_KEY`) or Planton provider config
 - **Parent domain** registered in Alidns -- either via the AliCloudDnsZone component or manually in the console
-- **OpenMCF CLI** installed with either Pulumi or Terraform (OpenTofu) backend
+- **Planton CLI** installed with either Pulumi or Terraform (OpenTofu) backend
 
 ## Quick Start
 
 Create a file `dns-record.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudDnsRecord
 metadata:
   name: my-record
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudDnsRecord.my-record
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudDnsRecord.my-record
 spec:
   region: cn-hangzhou
   domainName: example.com
@@ -47,7 +47,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f dns-record.yaml
+planton apply -f dns-record.yaml
 ```
 
 ## Configuration Reference
@@ -77,15 +77,15 @@ openmcf apply -f dns-record.yaml
 ### A Record
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudDnsRecord
 metadata:
   name: web-server
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudDnsRecord.web-server
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudDnsRecord.web-server
 spec:
   region: cn-hangzhou
   domainName: example.com
@@ -98,15 +98,15 @@ spec:
 ### CNAME Record
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudDnsRecord
 metadata:
   name: cdn-alias
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudDnsRecord.cdn-alias
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudDnsRecord.cdn-alias
 spec:
   region: cn-hangzhou
   domainName: example.com
@@ -118,15 +118,15 @@ spec:
 ### MX Record with Priority
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudDnsRecord
 metadata:
   name: mail-primary
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AliCloudDnsRecord.mail-primary
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AliCloudDnsRecord.mail-primary
 spec:
   region: cn-hangzhou
   domainName: example.com

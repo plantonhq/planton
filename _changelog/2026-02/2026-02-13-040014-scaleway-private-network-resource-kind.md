@@ -2,11 +2,11 @@
 
 ## Summary
 
-Implemented `ScalewayPrivateNetwork` as the second Scaleway resource kind in OpenMCF. This is the first Scaleway resource to use `StringValueOrRef` for cross-resource dependency wiring, establishing the pattern that all subsequent Scaleway resources will follow.
+Implemented `ScalewayPrivateNetwork` as the second Scaleway resource kind in Planton. This is the first Scaleway resource to use `StringValueOrRef` for cross-resource dependency wiring, establishing the pattern that all subsequent Scaleway resources will follow.
 
 ## What Changed
 
-### New Files (in `apis/org/openmcf/provider/scaleway/scalewayprivatenetwork/v1/`)
+### New Files (in `apis/dev/planton/provider/scaleway/scalewayprivatenetwork/v1/`)
 
 **Proto schemas (4):**
 - `spec.proto` -- Spec with `StringValueOrRef vpc_id` referencing ScalewayVpc, region, optional ipv4_subnet/ipv6_subnets, enable_default_route_propagation

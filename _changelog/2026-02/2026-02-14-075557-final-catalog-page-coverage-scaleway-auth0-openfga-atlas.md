@@ -87,7 +87,7 @@ The MongodbAtlas fix removed outputs that were exported in Go code but not defin
 ### Key Findings
 
 - **Scaleway has no legacy docs**: All 16 pages are net-new content, not replacements
-- **OpenfgaRelationshipTuple is Terraform-only**: The Pulumi module is a pass-through placeholder. Documented with `openmcf.org/provisioner: tofu` label
+- **OpenfgaRelationshipTuple is Terraform-only**: The Pulumi module is a pass-through placeholder. Documented with `planton.dev/provisioner: tofu` label
 - **Auth0Connection has 5 strategy-specific option groups**: Database, Social, SAML, OIDC, and Azure AD — each with distinct field sets
 - **ScalewayRedisCluster has mutual-exclusivity constraint**: `aclRules` and `privateNetworkId` cannot be set simultaneously (CEL validation)
 
@@ -114,16 +114,16 @@ All 14 providers are now at 100% catalog page coverage.
 
 ### Files Created
 
-- 16 `catalog-page.md` files at `apis/org/openmcf/provider/scaleway/*/v1/catalog-page.md`
-- 2 `catalog-page.md` files at `apis/org/openmcf/provider/auth0/*/v1/catalog-page.md`
-- 1 `catalog-page.md` at `apis/org/openmcf/provider/openfga/openfgarelationshiptuple/v1/catalog-page.md`
-- 1 `catalog-page.md` at `apis/org/openmcf/provider/atlas/mongodbatlas/v1/catalog-page.md`
+- 16 `catalog-page.md` files at `apis/dev/planton/provider/scaleway/*/v1/catalog-page.md`
+- 2 `catalog-page.md` files at `apis/dev/planton/provider/auth0/*/v1/catalog-page.md`
+- 1 `catalog-page.md` at `apis/dev/planton/provider/openfga/openfgarelationshiptuple/v1/catalog-page.md`
+- 1 `catalog-page.md` at `apis/dev/planton/provider/atlas/mongodbatlas/v1/catalog-page.md`
 
 ## Related Work
 
-- Catalog page rewrite system: `_rules/docs/write-openmcf-component-catalog-page.mdc` and `_rules/docs/audit-openmcf-component-catalog-page.mdc`
+- Catalog page rewrite system: `_rules/docs/write-planton-component-catalog-page.mdc` and `_rules/docs/audit-planton-component-catalog-page.mdc`
 - Previous coverage rounds: AWS (25/25), GCP (19/19), Kubernetes (51/51), Azure (24/24), OpenStack (27/27), DigitalOcean (15/15), Civo (12/12), Cloudflare (8/8)
-- Documentation feature parity project: `planton/_projects/20260212.03.openmcf-docs-feature-parity/`
+- Documentation feature parity project: `planton/_projects/20260212.03.planton-docs-feature-parity/`
 
 ---
 

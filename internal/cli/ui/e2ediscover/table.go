@@ -5,9 +5,9 @@ import (
 	"io"
 	"strings"
 
-	componentv1 "github.com/plantonhq/openmcf/apis/org/openmcf/qa/componente2eprofile/v1"
-	sharedpb "github.com/plantonhq/openmcf/apis/org/openmcf/shared"
-	"github.com/plantonhq/openmcf/pkg/e2e/profile"
+	componentv1 "github.com/plantonhq/planton/apis/dev/planton/qa/componente2eprofile/v1"
+	sharedpb "github.com/plantonhq/planton/apis/dev/planton/shared"
+	"github.com/plantonhq/planton/pkg/e2e/profile"
 )
 
 // RenderTable writes a plain-text table to w. No ANSI codes, suitable for piping.

@@ -1,0 +1,6 @@
+name: gcp-firewall-rule
+runtime:
+  name: go
+  options:
+    binary: ./pulumi
+description: Planton GcpFirewallRule Pulumi module

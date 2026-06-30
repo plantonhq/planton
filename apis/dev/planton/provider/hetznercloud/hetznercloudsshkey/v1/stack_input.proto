@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.hetznercloud.hetznercloudsshkey.v1;
+
+import "dev/planton/provider/hetznercloud/hetznercloudsshkey/v1/api.proto";
+import "dev/planton/provider/hetznercloud/provider.proto";
+
+//hetznercloud-ssh-key stack-input
+message HetznerCloudSshKeyStackInput {
+  //target cloud-resource
+  HetznerCloudSshKey target = 1;
+  //provider-config
+  dev.planton.provider.hetznercloud.HetznerCloudProviderConfig provider_config = 2;
+}

@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azurenatgateway.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// Azure NAT Gateway spec defines configuration for an Azure NAT Gateway resource.
+message AzureNatGatewaySpec {
+  // Reference to the subnet to attach this NAT Gateway to (usually an existing Azure Subnet).
+  // Defaults to referencing an AzureSubnet resource’s ID output.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef subnet_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AzureSubnet,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  ];
+
+  // Idle timeout in minutes for TCP connections through the NAT Gateway.
+  // Defaults to 4 if not set. Valid range: 4 to 120 (inclusive).
+  optional int32 idle_timeout_minutes = 2 [
+    (buf.validate.field).int32.gte = 4,
+    (buf.validate.field).int32.lte = 120
+  ];
+
+  // Optional prefix length for allocating a Public IP Prefix for this NAT Gateway.
+  // If set (allowed values 28–31), a Public IP Prefix of /<prefix_length> is created instead of a single IP.
+  optional int32 public_ip_prefix_length = 3 [
+    (buf.validate.field).int32.gte = 28,
+    (buf.validate.field).int32.lte = 31
+  ];
+
+  // Optional tags to assign to the NAT Gateway resource.
+  map<string, string> tags = 4;
+
+  // The Azure region where the NAT Gateway will be deployed.
+  // Examples: "eastus", "westus2", "westeurope".
+  string region = 5 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The Azure Resource Group where the NAT Gateway will be created.
+  // Can be a literal string or a reference to an AzureResourceGroup output.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef resource_group = 6 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AzureResourceGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.resource_group_name"
+  ];
+}

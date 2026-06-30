@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kuberneteshelmrelease.v1;
+
+//kubernetes-helm-release status on kubernetes cluster.
+message KubernetesHelmReleaseStackOutputs {
+  //namespace in which the helm release has been created.
+  string namespace = 1;
+}

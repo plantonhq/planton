@@ -3,7 +3,7 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "kubecontext",
     srcs = ["context.go"],
-    importpath = "github.com/plantonhq/openmcf/pkg/kubernetes/kubecontext",
+    importpath = "github.com/plantonhq/planton/pkg/kubernetes/kubecontext",
     visibility = ["//visibility:public"],
     deps = [
         "//pkg/kubernetes/kuberneteslabels",

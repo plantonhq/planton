@@ -10,7 +10,7 @@ Added a required `region` field as the first field in every AWS component's prot
 
 ## Problem Statement / Motivation
 
-OpenMCF's design philosophy requires that a component's YAML manifest is the single source of truth for provisioning. The manifest should express everything needed to deploy a resource without relying on ambient configuration.
+Planton's design philosophy requires that a component's YAML manifest is the single source of truth for provisioning. The manifest should express everything needed to deploy a resource without relying on ambient configuration.
 
 ### Pain Points
 

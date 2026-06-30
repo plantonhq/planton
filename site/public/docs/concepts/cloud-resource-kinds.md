@@ -1,16 +1,16 @@
 ---
 title: "Cloud Resource Kinds"
-description: "The taxonomy of deployment components in OpenMCF: 360+ resource kinds across 17 cloud providers, each with a unique kind name, provider mapping, and API version"
+description: "The taxonomy of deployment components in Planton: 360+ resource kinds across 17 cloud providers, each with a unique kind name, provider mapping, and API version"
 icon: "database"
 order: 30
 ---
 
 # Cloud Resource Kinds
 
-Every deployment component in OpenMCF has a unique kind name -- `AwsS3Bucket`, `KubernetesPostgres`, `GcpCloudSql`. These kind names are not arbitrary strings. They are entries in the `CloudResourceKind` enum, a Protocol Buffer enum that serves as the canonical registry of everything OpenMCF can deploy.
+Every deployment component in Planton has a unique kind name -- `AwsS3Bucket`, `KubernetesPostgres`, `GcpCloudSql`. These kind names are not arbitrary strings. They are entries in the `CloudResourceKind` enum, a Protocol Buffer enum that serves as the canonical registry of everything Planton can deploy.
 
 <!-- AI-AGENT NOTE: The deployment component count below MUST be verified against the authoritative source:
-     apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto
+     apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto
      Count only non-test, non-unspecified enum values in the CloudResourceKind enum. -->
 
 The enum currently contains 360+ resource kinds spanning 17 cloud providers.
@@ -42,36 +42,36 @@ Each provider is registered in a separate `CloudResourceProvider` enum with a gr
 ```protobuf
 enum CloudResourceProvider {
     aws = 12 [(provider_meta) = {
-        group: "aws.openmcf.org"
+        group: "aws.planton.dev"
         display_name: "AWS"
     }];
     kubernetes = 19 [(provider_meta) = {
-        group: "kubernetes.openmcf.org"
+        group: "kubernetes.planton.dev"
         display_name: "Kubernetes"
     }];
 }
 ```
 
-The `group` value directly maps to the `apiVersion` in manifests. A resource with `provider: aws` uses `apiVersion: aws.openmcf.org/v1`. A resource with `provider: kubernetes` uses `apiVersion: kubernetes.openmcf.org/v1`.
+The `group` value directly maps to the `apiVersion` in manifests. A resource with `provider: aws` uses `apiVersion: aws.planton.dev/v1`. A resource with `provider: kubernetes` uses `apiVersion: kubernetes.planton.dev/v1`.
 
 ## Provider Breakdown
 
 | Provider | Components | apiVersion Domain | Example Kinds |
 |----------|-----------|-------------------|---------------|
-| **Kubernetes** | 51 | `kubernetes.openmcf.org` | KubernetesPostgres, KubernetesRedis, KubernetesDeployment, KubernetesHelmRelease |
-| **OpenStack** | 27 | `openstack.openmcf.org` | OpenStackInstance, OpenStackNetwork, OpenStackLoadBalancer, OpenStackVolume |
-| **AWS** | 25 | `aws.openmcf.org` | AwsS3Bucket, AwsEksCluster, AwsRdsInstance, AwsLambda, AwsVpc |
-| **GCP** | 19 | `gcp.openmcf.org` | GcpCloudSql, GcpGkeCluster, GcpGcsBucket, GcpCloudRun, GcpVpc |
-| **Scaleway** | 19 | `scaleway.openmcf.org` | ScalewayInstance, ScalewayKapsuleCluster, ScalewayRdbInstance, ScalewayVpc |
-| **DigitalOcean** | 15 | `digital-ocean.openmcf.org` | DigitalOceanDroplet, DigitalOceanKubernetesCluster, DigitalOceanDatabaseCluster |
-| **Azure** | 10 | `azure.openmcf.org` | AzureAksCluster, AzureKeyVault, AzureStorageAccount, AzureVpc |
-| **Civo** | 12 | `civo.openmcf.org` | CivoKubernetesCluster, CivoDatabase, CivoComputeInstance, CivoVpc |
-| **Cloudflare** | 8 | `cloudflare.openmcf.org` | CloudflareDnsZone, CloudflareWorker, CloudflareR2Bucket, CloudflareD1Database |
-| **Auth0** | 4 | `auth0.openmcf.org` | Auth0Client, Auth0Connection, Auth0EventStream, Auth0ResourceServer |
-| **OpenFGA** | 3 | `openfga.openmcf.org` | OpenFgaStore, OpenFgaAuthorizationModel, OpenFgaRelationshipTuple |
-| **Confluent** | 1 | `confluent.openmcf.org` | ConfluentKafka |
-| **MongoDB Atlas** | 1 | `atlas.openmcf.org` | MongodbAtlas |
-| **Snowflake** | 1 | `snowflake.openmcf.org` | SnowflakeDatabase |
+| **Kubernetes** | 51 | `kubernetes.planton.dev` | KubernetesPostgres, KubernetesRedis, KubernetesDeployment, KubernetesHelmRelease |
+| **OpenStack** | 27 | `openstack.planton.dev` | OpenStackInstance, OpenStackNetwork, OpenStackLoadBalancer, OpenStackVolume |
+| **AWS** | 25 | `aws.planton.dev` | AwsS3Bucket, AwsEksCluster, AwsRdsInstance, AwsLambda, AwsVpc |
+| **GCP** | 19 | `gcp.planton.dev` | GcpCloudSql, GcpGkeCluster, GcpGcsBucket, GcpCloudRun, GcpVpc |
+| **Scaleway** | 19 | `scaleway.planton.dev` | ScalewayInstance, ScalewayKapsuleCluster, ScalewayRdbInstance, ScalewayVpc |
+| **DigitalOcean** | 15 | `digital-ocean.planton.dev` | DigitalOceanDroplet, DigitalOceanKubernetesCluster, DigitalOceanDatabaseCluster |
+| **Azure** | 10 | `azure.planton.dev` | AzureAksCluster, AzureKeyVault, AzureStorageAccount, AzureVpc |
+| **Civo** | 12 | `civo.planton.dev` | CivoKubernetesCluster, CivoDatabase, CivoComputeInstance, CivoVpc |
+| **Cloudflare** | 8 | `cloudflare.planton.dev` | CloudflareDnsZone, CloudflareWorker, CloudflareR2Bucket, CloudflareD1Database |
+| **Auth0** | 4 | `auth0.planton.dev` | Auth0Client, Auth0Connection, Auth0EventStream, Auth0ResourceServer |
+| **OpenFGA** | 3 | `openfga.planton.dev` | OpenFgaStore, OpenFgaAuthorizationModel, OpenFgaRelationshipTuple |
+| **Confluent** | 1 | `confluent.planton.dev` | ConfluentKafka |
+| **MongoDB Atlas** | 1 | `atlas.planton.dev` | MongodbAtlas |
+| **Snowflake** | 1 | `snowflake.planton.dev` | SnowflakeDatabase |
 
 ## Naming Convention
 
@@ -109,13 +109,13 @@ Each range has room for growth. New resources for an existing provider are added
 The kind name is the key that unlocks the entire deployment pipeline. When you run:
 
 ```bash
-openmcf pulumi up -f my-resource.yaml
+planton pulumi up -f my-resource.yaml
 ```
 
 The CLI reads the `kind` field from your manifest and uses the `CloudResourceKind` enum to:
 
 1. **Resolve the provider** -- determines which `ProviderConfig` type to use for credentials
-2. **Locate the IaC module** -- maps to `apis/org/openmcf/provider/{provider}/{kind}/v1/iac/pulumi/` or `iac/tf/`
+2. **Locate the IaC module** -- maps to `apis/dev/planton/provider/{provider}/{kind}/v1/iac/pulumi/` or `iac/tf/`
 3. **Load the protobuf schema** -- determines which message type to use for validation
 4. **Construct the stack input** -- wraps your manifest and provider config into the IaC input contract
 

@@ -1,9 +1,0 @@
-apiVersion: alicloud.openmcf.org/v1
-kind: AliCloudKmsKey
-metadata:
-  name: alicloudkmskey-demo
-spec:
-  region: cn-hangzhou
-  description: Demo KMS key for local testing
-  tags:
-    purpose: demo

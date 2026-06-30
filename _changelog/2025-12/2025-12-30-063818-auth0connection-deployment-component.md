@@ -10,7 +10,7 @@ Implemented `Auth0Connection` as the first deployment component for the newly ad
 
 ## Problem Statement / Motivation
 
-With Auth0 recently integrated as a cloud provider in OpenMCF, there was no way to manage Auth0 resources. Users needed a deployment component to:
+With Auth0 recently integrated as a cloud provider in Planton, there was no way to manage Auth0 resources. Users needed a deployment component to:
 
 - Configure identity connections declaratively via YAML manifests
 - Support multiple authentication strategies in a unified API
@@ -72,7 +72,7 @@ Auth0Connection = 2100 [(kind_meta) = {
 - Realms and metadata URLs (for enterprise connections)
 
 **api.proto** - KRM envelope:
-- apiVersion: `auth0.openmcf.org/v1`
+- apiVersion: `auth0.planton.dev/v1`
 - kind: `Auth0Connection`
 - Standard metadata, spec, status structure
 
@@ -145,7 +145,7 @@ spec_test.go covers:
 ## Impact
 
 ### Direct
-- Users can now manage Auth0 connections through OpenMCF
+- Users can now manage Auth0 connections through Planton
 - CLI supports Auth0Connection manifests with `--auth0-provider-config` flag
 - Auth0 provider now has its first deployment component
 
@@ -178,7 +178,7 @@ spec_test.go covers:
 
 ### Database Connection
 ```yaml
-apiVersion: auth0.openmcf.org/v1
+apiVersion: auth0.planton.dev/v1
 kind: Auth0Connection
 metadata:
   name: user-database
@@ -193,7 +193,7 @@ spec:
 
 ### Google OAuth
 ```yaml
-apiVersion: auth0.openmcf.org/v1
+apiVersion: auth0.planton.dev/v1
 kind: Auth0Connection
 metadata:
   name: google-login
@@ -207,7 +207,7 @@ spec:
 
 ### Enterprise SAML SSO
 ```yaml
-apiVersion: auth0.openmcf.org/v1
+apiVersion: auth0.planton.dev/v1
 kind: Auth0Connection
 metadata:
   name: okta-sso

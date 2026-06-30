@@ -1,13 +1,13 @@
 ---
 title: "Kustomize Integration"
-description: "Using Kustomize with OpenMCF for multi-environment deployments — directory structure, overlays, and workflows"
+description: "Using Kustomize with Planton for multi-environment deployments — directory structure, overlays, and workflows"
 icon: "guide"
 order: 40
 ---
 
 # Kustomize Integration
 
-Kustomize lets you manage variations of OpenMCF manifests without duplication. Instead of maintaining separate manifest files for dev, staging, and production, you maintain one **base** manifest and environment-specific **overlays** that patch the base.
+Kustomize lets you manage variations of Planton manifests without duplication. Instead of maintaining separate manifest files for dev, staging, and production, you maintain one **base** manifest and environment-specific **overlays** that patch the base.
 
 For the conceptual overview of manifest sources (including Kustomize), see [Manifests](../concepts/manifests). For flag details, see [CLI Reference](/docs/cli/cli-reference).
 
@@ -21,7 +21,7 @@ manifests/database/
     \-- prod/               # Environment-specific patches
 ```
 
-OpenMCF integrates Kustomize as a Go library (`sigs.k8s.io/kustomize`), not as an external binary. The `--kustomize-dir` and `--overlay` flags trigger Kustomize to build the final manifest at deployment time.
+Planton integrates Kustomize as a Go library (`sigs.k8s.io/kustomize`), not as an external binary. The `--kustomize-dir` and `--overlay` flags trigger Kustomize to build the final manifest at deployment time.
 
 ---
 
@@ -36,7 +36,7 @@ mkdir -p services/api/kustomize/base
 **`services/api/kustomize/base/deployment.yaml`**:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDeployment
 metadata:
   name: api
@@ -80,7 +80,7 @@ patches:
 **`services/api/kustomize/overlays/prod/patch.yaml`**:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDeployment
 metadata:
   name: api
@@ -95,22 +95,22 @@ spec:
         memory: 4Gi
 ```
 
-### 3. Deploy with OpenMCF
+### 3. Deploy with Planton
 
 ```bash
 # Deploy to production
-openmcf pulumi up \
+planton pulumi up \
   --kustomize-dir services/api/kustomize \
   --overlay prod
 
 # Deploy to dev
-openmcf pulumi up \
+planton pulumi up \
   --kustomize-dir services/api/kustomize \
   --overlay dev
 ```
 
 **What happens**:
-1. OpenMCF runs `kustomize build services/api/kustomize/overlays/prod`
+1. Planton runs `kustomize build services/api/kustomize/overlays/prod`
 2. Merges base + prod overlay into final manifest
 3. Validates the result
 4. Deploys using Pulumi or OpenTofu
@@ -172,7 +172,7 @@ The most common approach - specify only the fields you want to change:
 **Base**:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPostgres
 metadata:
   name: app-database
@@ -189,7 +189,7 @@ spec:
 **Prod Patch** (`overlays/prod/patch.yaml`):
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPostgres
 metadata:
   name: app-database
@@ -328,7 +328,7 @@ kind: Kustomization
 
 commonLabels:
   app: api
-  managed-by: openmcf
+  managed-by: planton
 
 resources:
   - deployment.yaml
@@ -346,7 +346,7 @@ Each resource in base defines shared configuration, overlays patch for environme
 
 ```bash
 # Deploy to dev
-openmcf pulumi up \
+planton pulumi up \
   --kustomize-dir services/api/kustomize \
   --overlay dev \
   --yes
@@ -354,7 +354,7 @@ openmcf pulumi up \
 # Test in dev...
 
 # Deploy to staging
-openmcf pulumi up \
+planton pulumi up \
   --kustomize-dir services/api/kustomize \
   --overlay staging \
   --yes
@@ -362,13 +362,13 @@ openmcf pulumi up \
 # Test in staging...
 
 # Deploy to production (with review)
-openmcf pulumi preview \
+planton pulumi preview \
   --kustomize-dir services/api/kustomize \
   --overlay prod
 
 # Review changes...
 
-openmcf pulumi up \
+planton pulumi up \
   --kustomize-dir services/api/kustomize \
   --overlay prod
 ```
@@ -377,7 +377,7 @@ openmcf pulumi up \
 
 ```bash
 # Kustomize overlay + runtime override
-openmcf pulumi up \
+planton pulumi up \
   --kustomize-dir services/api/kustomize \
   --overlay prod \
   --set spec.container.image.tag=v1.2.4
@@ -395,8 +395,8 @@ openmcf pulumi up \
 cd services/api/kustomize
 kustomize build overlays/prod
 
-# Or let OpenMCF build and show it
-openmcf load-manifest \
+# Or let Planton build and show it
+planton load-manifest \
   --kustomize-dir services/api/kustomize \
   --overlay prod
 ```
@@ -512,9 +512,9 @@ EOF
 
 **Problem**: Your overlay adds entries to a list field (e.g., `env.variables`, `ports`), but the overlay's list replaces the base list entirely instead of merging.
 
-**Cause**: Kustomize only knows how to merge lists by key for built-in Kubernetes types. For OpenMCF custom resource types (`KubernetesDeployment`, `KubernetesCronJob`, etc.), it has no schema and falls back to replacing lists wholesale.
+**Cause**: Kustomize only knows how to merge lists by key for built-in Kubernetes types. For Planton custom resource types (`KubernetesDeployment`, `KubernetesCronJob`, etc.), it has no schema and falls back to replacing lists wholesale.
 
-**Solution**: Use `openmcf kustomize init` to generate and wire up the OpenAPI schema that teaches kustomize how to merge OpenMCF lists correctly. See [OpenAPI Schema for List Merging](#openapi-schema-for-list-merging) below.
+**Solution**: Use `planton kustomize init` to generate and wire up the OpenAPI schema that teaches kustomize how to merge Planton lists correctly. See [OpenAPI Schema for List Merging](#openapi-schema-for-list-merging) below.
 
 ### Patch Not Applied
 
@@ -542,17 +542,17 @@ kustomize build overlays/prod
 **Solution**:
 ```bash
 # Always verify overlay before deploying
-openmcf pulumi preview \
+planton pulumi preview \
   --kustomize-dir services/api/kustomize \
   --overlay prod  # Double-check this!
 
 # Use explicit confirmation in CI/CD
 if [ "$OVERLAY" != "prod" ]; then
   echo "Deploying to $OVERLAY"
-  openmcf pulumi up --kustomize-dir ... --overlay $OVERLAY --yes
+  planton pulumi up --kustomize-dir ... --overlay $OVERLAY --yes
 else
   echo "Production deployment - manual approval required"
-  openmcf pulumi up --kustomize-dir ... --overlay $OVERLAY
+  planton pulumi up --kustomize-dir ... --overlay $OVERLAY
 fi
 ```
 
@@ -560,38 +560,38 @@ fi
 
 ## OpenAPI Schema for List Merging
 
-Kustomize uses **strategic merge patch** for overlays. For built-in Kubernetes types, it knows to merge list fields by key (e.g., `containers` by `name`, `env` by `name`). For OpenMCF custom resource types, kustomize has no schema and falls back to **replacing lists entirely**.
+Kustomize uses **strategic merge patch** for overlays. For built-in Kubernetes types, it knows to merge list fields by key (e.g., `containers` by `name`, `env` by `name`). For Planton custom resource types, kustomize has no schema and falls back to **replacing lists entirely**.
 
 This means an overlay that adds one environment variable will replace the entire `variables` list from the base, losing all base entries.
 
-OpenMCF solves this with a built-in schema generator that uses proto reflection to discover all list fields with merge keys across all 360+ cloud resource kinds.
+Planton solves this with a built-in schema generator that uses proto reflection to discover all list fields with merge keys across all 360+ cloud resource kinds.
 
 ### Generating the Schema
 
 ```bash
 # Print the universal schema to stdout
-openmcf kustomize schema
+planton kustomize schema
 
 # Write to a file
-openmcf kustomize schema -o openmcf-schema.json
+planton kustomize schema -o planton-schema.json
 ```
 
-The schema covers every OpenMCF kind that has list fields which should merge by name — environment variables, secrets, ports, volume mounts, sidecars, and more. Kinds without merge-worthy fields are excluded automatically.
+The schema covers every Planton kind that has list fields which should merge by name — environment variables, secrets, ports, volume mounts, sidecars, and more. Kinds without merge-worthy fields are excluded automatically.
 
 ### Initializing a Kustomize Directory
 
 ```bash
 # Initialize a single service's _kustomize directory
-openmcf kustomize init --dir ./services/api/_kustomize
+planton kustomize init --dir ./services/api/_kustomize
 
 # Scan a directory tree and initialize ALL _kustomize directories
-openmcf kustomize init --scan ./services
+planton kustomize init --scan ./services
 ```
 
 The `init` command:
 
 1. Generates the universal schema
-2. Writes `openmcf-schema.json` at the `_kustomize/` root
+2. Writes `planton-schema.json` at the `_kustomize/` root
 3. Adds the `openapi:` reference to every overlay `kustomization.yaml`
 
 After initialization, overlay kustomization files look like:
@@ -601,7 +601,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 openapi:
-  path: ../../openmcf-schema.json
+  path: ../../planton-schema.json
 
 resources:
   - ../../base
@@ -612,7 +612,7 @@ patches:
 
 ### When to Re-run
 
-Re-run `openmcf kustomize init` after upgrading OpenMCF to pick up schema changes from new or modified cloud resource kinds. The command is idempotent — it regenerates the schema file and skips overlays that already have the `openapi:` reference.
+Re-run `planton kustomize init` after upgrading Planton to pick up schema changes from new or modified cloud resource kinds. The command is idempotent — it regenerates the schema file and skips overlays that already have the `openapi:` reference.
 
 ### What Gets Merged
 
@@ -705,10 +705,10 @@ git add services/api/kustomize/overlays/prod/output.yaml  # Generated
 ```bash
 # ✅ Good: Preview before applying
 kustomize build overlays/prod | less  # Review output
-openmcf pulumi preview --kustomize-dir ... --overlay prod
+planton pulumi preview --kustomize-dir ... --overlay prod
 
 # ⚠️ Risky: Deploy without review
-openmcf pulumi up --kustomize-dir ... --overlay prod --yes
+planton pulumi up --kustomize-dir ... --overlay prod --yes
 ```
 
 ---
@@ -749,7 +749,7 @@ kind: Kustomization
 
 commonLabels:
   app: api
-  managed-by: openmcf
+  managed-by: planton
 
 resources:
   - deployment.yaml
@@ -760,7 +760,7 @@ resources:
 **`base/deployment.yaml`**:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDeployment
 metadata:
   name: api
@@ -801,7 +801,7 @@ patches:
 **`overlays/prod/deployment-patch.yaml`**:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDeployment
 metadata:
   name: api
@@ -818,7 +818,7 @@ spec:
 
 ```bash
 # Deploy to production
-openmcf pulumi up \
+planton pulumi up \
   --kustomize-dir backend/services/api/kustomize \
   --overlay prod
 ```
@@ -831,6 +831,6 @@ openmcf pulumi up \
 - [CI/CD Integration](./cicd-integration) — Kustomize with GitHub Actions and GitLab CI
 - [Advanced Usage](./advanced-usage) — Combining Kustomize with `--set` overrides
 - [State Backends](./state-backends) — Per-environment state configuration
-- [CLI Reference](/docs/cli/cli-reference) — Full `openmcf kustomize schema` and `openmcf kustomize init` usage
+- [CLI Reference](/docs/cli/cli-reference) — Full `planton kustomize schema` and `planton kustomize init` usage
 - [Official Kustomize Docs](https://kustomize.io/) — Kustomize reference documentation
 

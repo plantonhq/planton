@@ -10,13 +10,13 @@ Added AwsFsxOntapVolume (R29f) — the final component in the FSx ONTAP hierarch
 
 ## Problem Statement / Motivation
 
-The FSx ONTAP hierarchy in OpenMCF was incomplete. File systems (R29d) and SVMs (R29e) were already implemented, but there was no way to create the actual data containers — volumes — that users interact with. Without volumes, the ONTAP stack was like having a database server with no databases.
+The FSx ONTAP hierarchy in Planton was incomplete. File systems (R29d) and SVMs (R29e) were already implemented, but there was no way to create the actual data containers — volumes — that users interact with. Without volumes, the ONTAP stack was like having a database server with no databases.
 
 ### Pain Points
 
-- Users could create ONTAP infrastructure (file systems, SVMs) but couldn't provision volumes through OpenMCF
+- Users could create ONTAP infrastructure (file systems, SVMs) but couldn't provision volumes through Planton
 - No declarative way to configure SnapLock WORM compliance for regulatory workloads
-- No OpenMCF support for tiering policies that optimize storage costs
+- No Planton support for tiering policies that optimize storage costs
 - FlexGroup volumes for high-throughput workloads required manual CLI operations
 
 ## Solution / What's New
@@ -74,7 +74,7 @@ flowchart TB
 ### Key Design Decisions
 
 - **`size_in_megabytes` only** — excluded `size_in_bytes` (for >2 PB volumes). Int32 max covers ~2.1 PB, which is sufficient for 99.9% of use cases
-- **Explicit `name` field** — ONTAP volume names (alphanumeric + underscore) are incompatible with OpenMCF metadata names (hyphens), same pattern as the SVM sibling
+- **Explicit `name` field** — ONTAP volume names (alphanumeric + underscore) are incompatible with Planton metadata names (hyphens), same pattern as the SVM sibling
 - **`volume_type` excluded** — always "ONTAP" in this context, implicit from component name
 - **`final_backup_tags` excluded** — deletion-time tag configuration, very niche
 - **SnapLock included** — despite 3-level nesting, this is ONTAP's flagship compliance feature. Excluding it would make the component incomplete for its primary enterprise use case

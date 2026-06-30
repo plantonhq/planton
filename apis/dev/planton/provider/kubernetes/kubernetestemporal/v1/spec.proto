@@ -1,0 +1,360 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetestemporal.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/kubernetes.proto";
+import "dev/planton/provider/kubernetes/kubernetes_secret.proto";
+import "dev/planton/provider/kubernetes/target_cluster.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// temporal kubernetes database backend enumerates the supported databases.
+enum KubernetesTemporalDatabaseBackend {
+  // unspecified should not be used
+  kubernetes_temporal_database_backend_unspecified = 0;
+
+  // uses cassandra
+  cassandra = 1;
+
+  // uses postgresql
+  postgresql = 2;
+
+  // uses mysql
+  mysql = 3;
+}
+
+// temporal kubernetes spec defines minimal fields for deploying temporal on kubernetes.
+message KubernetesTemporalSpec {
+  // Target Kubernetes Cluster
+  dev.planton.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  // Kubernetes Namespace
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // flag to indicate if the namespace should be created
+  bool create_namespace = 3;
+
+  // database configuration
+  KubernetesTemporalDatabaseConfig database = 4 [(buf.validate.field).required = true];
+  // disables temporal web ui
+  bool disable_web_ui = 5;
+  // enables embedded elasticsearch for temporal
+  // this is ignored if external elasticsearch is set
+  bool enable_embedded_elasticsearch = 6;
+  // enables monitoring stack for temporal
+  // enabling this will deploy prometheus and grafana
+  bool enable_monitoring_stack = 7;
+  //number of cassandra nodes to be deployed
+  //this is only honored when the backend is cassandra, and no external database is provided.
+  optional int32 cassandra_replicas = 8 [(dev.planton.shared.options.default) = "1"];
+  //The ingress configuration for the temporal deployment.
+  //if enabled, the frontend will be exposed using a load-balancer
+  // and also if web ui is enabled it will be exposed using the kubernetes ingress controller.
+  KubernetesTemporalIngress ingress = 9;
+  // external elasticsearch configuration to be used by temporal for configuring observability.
+  KubernetesTemporalExternalElasticsearch external_elasticsearch = 10;
+  // version of the Temporal Helm chart to deploy (e.g., "0.62.0")
+  // if not specified, the default version configured in the Pulumi module will be used
+  string version = 11;
+
+  // Dynamic configuration values for Temporal server runtime behavior.
+  // These settings control workflow execution limits and can be adjusted without server restart.
+  KubernetesTemporalDynamicConfig dynamic_config = 12;
+
+  /**
+   * Number of history shards for the Temporal cluster.
+   * This is an IMMUTABLE setting that must be decided at cluster creation time.
+   * Higher values enable better parallelism and throughput but require more resources.
+   * Default: 512 (safe for most production workloads).
+   * WARNING: Cannot be changed after initial deployment without data migration.
+   */
+  optional int32 num_history_shards = 13 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 16384
+  }];
+
+  // Per-service replica and resource configuration for Temporal services.
+  // Allows fine-tuning resources for frontend, history, matching, and worker services.
+  KubernetesTemporalServices services = 14;
+}
+
+// groups database configuration settings.
+message KubernetesTemporalDatabaseConfig {
+  // selected database backend
+  KubernetesTemporalDatabaseBackend backend = 1 [(buf.validate.field).required = true];
+
+  // external database configuration, if this is not set, in-cluster cassandra would be created
+  KubernetesTemporalExternalDatabase external_database = 2;
+
+  // primary database or keyspace name
+  optional string database_name = 6 [(dev.planton.shared.options.default) = "temporal"];
+
+  // visibility database or keyspace name
+  optional string visibility_name = 7 [(dev.planton.shared.options.default) = "temporal_visibility"];
+
+  // disables automatic schema creation
+  bool disable_auto_schema_setup = 8;
+}
+
+// describes an external database that temporal can use
+message KubernetesTemporalExternalDatabase {
+  // hostname for external database
+  string host = 1;
+
+  // port for external database
+  int32 port = 2;
+
+  // username for database
+  string username = 3;
+
+  /**
+   * The password for authenticating to the database.
+   * Can be provided either as a plain string value or as a reference to an existing Kubernetes Secret.
+   *
+   * Using a secret reference is recommended for production deployments:
+   * ```yaml
+   * password:
+   *   secretRef:
+   *     name: db-credentials
+   *     key: password
+   * ```
+   *
+   * For development/testing, a plain string value can be used:
+   * ```yaml
+   * password:
+   *   stringValue: my-password
+   * ```
+   */
+  dev.planton.provider.kubernetes.KubernetesSensitiveValue password = 4;
+}
+
+// describes an external elasticsearch cluster that temporal can use
+// for advanced visibility instead of deploying an in-cluster es chart.
+message KubernetesTemporalExternalElasticsearch {
+  // the host address of the existing elasticsearch cluster
+  string host = 1;
+
+  // the port for the existing elasticsearch cluster
+  int32 port = 2;
+
+  // optional username, if the external cluster requires auth
+  string user = 3;
+
+  /**
+   * Optional password for authenticating to the external Elasticsearch cluster.
+   * Can be provided either as a plain string value or as a reference to an existing Kubernetes Secret.
+   *
+   * Using a secret reference is recommended for production deployments:
+   * ```yaml
+   * password:
+   *   secretRef:
+   *     name: es-credentials
+   *     key: password
+   * ```
+   *
+   * For development/testing, a plain string value can be used:
+   * ```yaml
+   * password:
+   *   stringValue: my-password
+   * ```
+   */
+  dev.planton.provider.kubernetes.KubernetesSensitiveValue password = 4;
+}
+
+// ingress configuration for temporal deployment with separate frontend and web ui endpoints
+message KubernetesTemporalIngress {
+  // frontend (gRPC + HTTP) ingress configuration
+  KubernetesTemporalFrontendIngressEndpoint frontend = 1;
+
+  // web ui ingress configuration
+  KubernetesTemporalWebUiIngressEndpoint web_ui = 2;
+}
+
+// frontend ingress endpoint configuration supporting both gRPC and HTTP protocols
+message KubernetesTemporalFrontendIngressEndpoint {
+  // flag to enable or disable frontend ingress
+  bool enabled = 1;
+
+  // the full hostname for gRPC access via LoadBalancer (e.g., "temporal-frontend-grpc.example.com")
+  // required when enabled is true
+  string grpc_hostname = 2;
+
+  // the full hostname for HTTP access via Gateway API (e.g., "temporal-frontend-http.example.com")
+  // optional - only creates Gateway/HTTPRoute resources if provided
+  string http_hostname = 3;
+
+  option (buf.validate.message).cel = {
+    id: "spec.ingress.frontend.grpc_hostname.required"
+    expression: "!this.enabled || size(this.grpc_hostname) > 0"
+    message: "frontend.grpc_hostname is required when frontend ingress is enabled"
+  };
+}
+
+// web ui ingress endpoint configuration for HTTP-only access
+message KubernetesTemporalWebUiIngressEndpoint {
+  // flag to enable or disable web ui ingress
+  bool enabled = 1;
+
+  // the full hostname for HTTP access via Gateway API (e.g., "temporal-ui.example.com")
+  // required when enabled is true
+  string hostname = 2;
+
+  option (buf.validate.message).cel = {
+    id: "spec.ingress.web_ui.hostname.required"
+    expression: "!this.enabled || size(this.hostname) > 0"
+    message: "web_ui.hostname is required when web ui ingress is enabled"
+  };
+}
+
+/**
+ * Dynamic configuration values for Temporal server runtime behavior.
+ * These settings control workflow execution limits without requiring server restart.
+ * When not specified, Temporal uses its default values.
+ *
+ * Two types of limits:
+ * - **History limits**: Control total workflow history size and event count
+ * - **Blob limits**: Control individual payload sizes (markers, signals, activity I/O)
+ *
+ * Example:
+ * ```yaml
+ * dynamic_config:
+ *   history_size_limit_error: 104857600  # 100 MB total history
+ *   history_count_limit_error: 102400    # 100K events
+ *   blob_size_limit_error: 10485760      # 10 MB per payload (for large IaC diffs)
+ *   blob_size_limit_warn: 5242880        # 5 MB warning threshold
+ * ```
+ */
+message KubernetesTemporalDynamicConfig {
+  /**
+   * Maximum size in bytes for workflow execution history.
+   * When a workflow exceeds this limit, Temporal terminates it with reason "Workflow history size exceeds limit."
+   * Default: 52428800 (50 MB). Increase for workflows with large payloads.
+   */
+  optional int64 history_size_limit_error = 1 [(buf.validate.field).int64 = {gte: 1048576} /* Minimum 1 MB */];
+
+  /**
+   * Maximum number of events in workflow execution history.
+   * When a workflow exceeds this limit, Temporal terminates it with reason "Workflow history size exceeds limit."
+   * Default: 51200 events. Increase for workflows with many activities/signals.
+   * Consider using ContinueAsNew pattern as an alternative.
+   */
+  optional int64 history_count_limit_error = 2 [(buf.validate.field).int64 = {gte: 1000} /* Minimum 1000 events */];
+
+  /**
+   * Warning threshold for history size in bytes.
+   * Temporal logs warnings when workflows approach this limit.
+   * Default: 10485760 (10 MB, ~20% of error limit).
+   */
+  optional int64 history_size_limit_warn = 3 [(buf.validate.field).int64 = {gte: 524288} /* Minimum 512 KB */];
+
+  /**
+   * Warning threshold for history event count.
+   * Temporal logs warnings when workflows approach this limit.
+   * Default: 10240 (~20% of error limit).
+   */
+  optional int64 history_count_limit_warn = 4 [(buf.validate.field).int64 = {gte: 500} /* Minimum 500 events */];
+
+  /**
+   * Maximum size in bytes for a single blob/payload (marker details, signal data, activity I/O).
+   * When a payload exceeds this limit, Temporal rejects it with "exceeds size limit" error.
+   * This is different from history_size_limit which controls total workflow history size.
+   * Default: 2097152 (2 MB). Increase for workflows that send large payloads like IaC diffs.
+   *
+   * Example: Set to 10485760 (10 MB) to support large Pulumi diffs.
+   */
+  optional int64 blob_size_limit_error = 5 [(buf.validate.field).int64 = {gte: 1048576} /* Minimum 1 MB */];
+
+  /**
+   * Warning threshold for blob/payload size in bytes.
+   * Temporal logs warnings when payloads approach this limit.
+   * Default: 524288 (512 KB, ~25% of error limit).
+   */
+  optional int64 blob_size_limit_warn = 6 [(buf.validate.field).int64 = {gte: 262144} /* Minimum 256 KB */];
+}
+
+/**
+ * Per-service replica and resource configuration for a Temporal service.
+ * Allows configuring replicas and CPU/memory resources independently for each service.
+ *
+ * Example:
+ * ```yaml
+ * replicas: 3
+ * resources:
+ *   limits:
+ *     cpu: "2000m"
+ *     memory: "4Gi"
+ *   requests:
+ *     cpu: "500m"
+ *     memory: "1Gi"
+ * ```
+ */
+message KubernetesTemporalServiceConfig {
+  /**
+   * Number of replicas for this service.
+   * Higher replica counts provide better availability and throughput.
+   * Default: 1 for development, recommend 3+ for production.
+   */
+  optional int32 replicas = 1 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 100
+  }];
+
+  /**
+   * Container resources (CPU and memory) for this service.
+   * Resource requirements vary by service type:
+   * - history: Most resource-intensive, handles workflow state
+   * - matching: Task dispatch, moderate resources
+   * - frontend: API gateway, moderate resources
+   * - worker: Internal workflows, light resources
+   */
+  dev.planton.provider.kubernetes.ContainerResources resources = 2;
+}
+
+/**
+ * Service-level configuration for all Temporal services.
+ * Allows fine-tuning replica counts and resources for each Temporal service independently.
+ *
+ * Temporal consists of four core services:
+ * - **frontend**: API gateway for client requests (gRPC/HTTP)
+ * - **history**: Manages workflow state and execution (most resource-intensive)
+ * - **matching**: Task queue management and worker dispatch
+ * - **worker**: Runs internal Temporal system workflows
+ *
+ * Example:
+ * ```yaml
+ * services:
+ *   frontend:
+ *     replicas: 2
+ *     resources:
+ *       requests:
+ *         cpu: "200m"
+ *         memory: "512Mi"
+ *   history:
+ *     replicas: 3
+ *     resources:
+ *       requests:
+ *         cpu: "500m"
+ *         memory: "1Gi"
+ *       limits:
+ *         cpu: "2000m"
+ *         memory: "4Gi"
+ * ```
+ */
+message KubernetesTemporalServices {
+  // Frontend service configuration (API gateway for gRPC/HTTP requests)
+  KubernetesTemporalServiceConfig frontend = 1;
+
+  // History service configuration (manages workflow state, most resource-intensive)
+  KubernetesTemporalServiceConfig history = 2;
+
+  // Matching service configuration (task queue management and dispatch)
+  KubernetesTemporalServiceConfig matching = 3;
+
+  // Worker service configuration (internal Temporal system workflows)
+  KubernetesTemporalServiceConfig worker = 4;
+}

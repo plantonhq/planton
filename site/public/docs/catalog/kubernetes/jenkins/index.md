@@ -12,7 +12,7 @@ Deploys Jenkins on Kubernetes using the official Jenkins Helm chart. Provisions 
 
 ## What Gets Created
 
-When you deploy a KubernetesJenkins resource, OpenMCF provisions:
+When you deploy a KubernetesJenkins resource, Planton provisions:
 
 - **Kubernetes Namespace** — created if `createNamespace` is `true`
 - **Admin Credentials Secret** — a Kubernetes Secret containing a randomly generated 12-character admin password (includes uppercase, lowercase, numeric, and special characters)
@@ -38,15 +38,15 @@ When you deploy a KubernetesJenkins resource, OpenMCF provisions:
 Create a file `jenkins.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesJenkins
 metadata:
   name: my-jenkins
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesJenkins.my-jenkins
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesJenkins.my-jenkins
 spec:
   namespace:
     value: jenkins-dev
@@ -56,7 +56,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f jenkins.yaml
+planton apply -f jenkins.yaml
 ```
 
 This creates a Jenkins instance with default resources (1 CPU / 1Gi memory limit, 50m CPU / 100Mi memory request) in the `jenkins-dev` namespace. An admin user is created automatically with a generated password stored in a Kubernetes Secret.
@@ -89,15 +89,15 @@ This creates a Jenkins instance with default resources (1 CPU / 1Gi memory limit
 Increase CPU and memory allocations for a busier Jenkins instance:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesJenkins
 metadata:
   name: ci-jenkins
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesJenkins.ci-jenkins
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesJenkins.ci-jenkins
 spec:
   namespace:
     value: ci-tools
@@ -116,15 +116,15 @@ spec:
 Use `helmValues` to configure plugins, JVM options, or any chart setting:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesJenkins
 metadata:
   name: custom-jenkins
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.KubernetesJenkins.custom-jenkins
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.KubernetesJenkins.custom-jenkins
 spec:
   namespace:
     value: jenkins-staging
@@ -147,15 +147,15 @@ spec:
 External access over HTTPS with automatic TLS and HTTP redirect:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesJenkins
 metadata:
   name: prod-jenkins
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesJenkins.prod-jenkins
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesJenkins.prod-jenkins
 spec:
   namespace:
     value: production

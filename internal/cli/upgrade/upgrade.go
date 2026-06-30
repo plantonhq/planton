@@ -9,8 +9,8 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
-	"github.com/plantonhq/openmcf/internal/cli/cliprint"
-	"github.com/plantonhq/openmcf/internal/cli/version"
+	"github.com/plantonhq/planton/internal/cli/cliprint"
+	"github.com/plantonhq/planton/internal/cli/version"
 )
 
 // Run executes the upgrade command
@@ -42,7 +42,7 @@ func runUpgradeToLatest(currentVersion string, checkOnly bool, force bool) {
 		cliprint.PrintError(fmt.Sprintf("Failed to check for updates: %v", err))
 		fmt.Println()
 		fmt.Println("You can manually download the latest version from:")
-		fmt.Println("  https://github.com/plantonhq/openmcf/releases")
+		fmt.Println("  https://github.com/plantonhq/planton/releases")
 		os.Exit(1)
 	}
 
@@ -65,7 +65,7 @@ func runUpgradeToLatest(currentVersion string, checkOnly bool, force bool) {
 
 	if !needsUpgrade && !force {
 		fmt.Println()
-		cliprint.PrintSuccess(fmt.Sprintf("openmcf is already up to date (%s)", currentVersion))
+		cliprint.PrintSuccess(fmt.Sprintf("planton is already up to date (%s)", currentVersion))
 		return
 	}
 
@@ -76,7 +76,7 @@ func runUpgradeToLatest(currentVersion string, checkOnly bool, force bool) {
 			fmt.Printf("%s A new version is available!\n", orange("⚡"))
 			fmt.Println()
 			blue := color.New(color.FgCyan, color.Bold).SprintFunc()
-			fmt.Printf("Run %s to update.\n", blue("openmcf upgrade"))
+			fmt.Printf("Run %s to update.\n", blue("planton upgrade"))
 		}
 		return
 	}
@@ -127,7 +127,7 @@ func runWithTargetVersion(currentVersion, targetVersion string, force bool) {
 		cliprint.PrintError(fmt.Sprintf("Failed to validate version: %v", err))
 		fmt.Println()
 		fmt.Println("You can view available versions at:")
-		fmt.Println("  https://github.com/plantonhq/openmcf/releases")
+		fmt.Println("  https://github.com/plantonhq/planton/releases")
 		os.Exit(1)
 	}
 
@@ -141,7 +141,7 @@ func runWithTargetVersion(currentVersion, targetVersion string, force bool) {
 	// Step 3: Check if already on target version
 	if currentVersion == normalizedVersion && !force {
 		fmt.Println()
-		cliprint.PrintSuccess(fmt.Sprintf("openmcf is already at version %s", normalizedVersion))
+		cliprint.PrintSuccess(fmt.Sprintf("planton is already at version %s", normalizedVersion))
 		return
 	}
 
@@ -165,7 +165,7 @@ func runWithTargetVersion(currentVersion, targetVersion string, force bool) {
 			cliprint.PrintError(fmt.Sprintf("Failed to uninstall via Homebrew: %v", err))
 			fmt.Println()
 			fmt.Println("You can manually uninstall via Homebrew:")
-			fmt.Println("  brew uninstall --cask openmcf")
+			fmt.Println("  brew uninstall --cask planton")
 			os.Exit(1)
 		}
 	}
@@ -198,10 +198,10 @@ func confirmHomebrewTransition(targetVersion string) bool {
 	fmt.Println("Installing a specific version requires switching to direct-download management.")
 	fmt.Println()
 	fmt.Println("This will:")
-	fmt.Printf("  1. Run: %s\n", cyan("brew uninstall --cask openmcf"))
+	fmt.Printf("  1. Run: %s\n", cyan("brew uninstall --cask planton"))
 	fmt.Printf("  2. Download and install %s\n", cyan(targetVersion))
 	fmt.Println()
-	fmt.Println("Future 'openmcf upgrade' commands will use direct download.")
+	fmt.Println("Future 'planton upgrade' commands will use direct download.")
 	fmt.Println()
 
 	reader := bufio.NewReader(os.Stdin)
@@ -222,18 +222,18 @@ func handleUpgradeError(err error, latestVersion string) {
 		cliprint.PrintError(permErr.Error())
 		fmt.Println()
 		fmt.Println("Try running with sudo:")
-		fmt.Println("  sudo openmcf upgrade")
+		fmt.Println("  sudo planton upgrade")
 		fmt.Println()
 		fmt.Println("Or download manually to a user directory:")
 		goos, goarch := GetPlatformInfo()
 		downloadURL := BuildDownloadURL(latestVersion, goos, goarch)
 		fmt.Printf("  curl -LO %s\n", downloadURL)
 		if goos == "windows" {
-			fmt.Println("  # Extract the zip file and move openmcf.exe to your PATH")
+			fmt.Println("  # Extract the zip file and move planton.exe to your PATH")
 		} else {
 			fmt.Println("  tar -xzf cli_*.tar.gz")
-			fmt.Println("  chmod +x openmcf")
-			fmt.Println("  mv openmcf ~/.local/bin/")
+			fmt.Println("  chmod +x planton")
+			fmt.Println("  mv planton ~/.local/bin/")
 		}
 		return
 	}
@@ -242,7 +242,7 @@ func handleUpgradeError(err error, latestVersion string) {
 	cliprint.PrintError(fmt.Sprintf("Upgrade failed: %v", err))
 	fmt.Println()
 	fmt.Println("You can manually download the latest version from:")
-	fmt.Println("  https://github.com/plantonhq/openmcf/releases")
+	fmt.Println("  https://github.com/plantonhq/planton/releases")
 
 	// Show platform-specific instructions
 	goos, goarch := GetPlatformInfo()
@@ -253,14 +253,14 @@ func handleUpgradeError(err error, latestVersion string) {
 	if runtime.GOOS == "windows" {
 		fmt.Printf("  Invoke-WebRequest -Uri \"%s\" -OutFile \"cli.zip\"\n", downloadURL)
 		fmt.Println("  Expand-Archive -Path \"cli.zip\" -DestinationPath \".\"")
-		fmt.Println("  Move-Item -Path \"openmcf.exe\" -Destination \"C:\\Windows\\System32\\\"")
+		fmt.Println("  Move-Item -Path \"planton.exe\" -Destination \"C:\\Windows\\System32\\\"")
 	} else {
 		fmt.Printf("  curl -LO %s\n", downloadURL)
 		fmt.Println("  tar -xzf cli_*.tar.gz")
-		fmt.Println("  chmod +x openmcf")
+		fmt.Println("  chmod +x planton")
 		if runtime.GOOS == "darwin" {
-			fmt.Println("  xattr -dr com.apple.quarantine openmcf  # Remove macOS quarantine")
+			fmt.Println("  xattr -dr com.apple.quarantine planton  # Remove macOS quarantine")
 		}
-		fmt.Println("  sudo mv openmcf /usr/local/bin/")
+		fmt.Println("  sudo mv planton /usr/local/bin/")
 	}
 }

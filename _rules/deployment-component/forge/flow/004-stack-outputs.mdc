@@ -8,7 +8,7 @@ TITLE
 Forge: Generate stack_outputs.proto for a resource (observable outputs only)
 
 ROLE
-You are the OpenMCF Code Partner working inside the developer’s local workspace in Cursor. This rule creates `stack_outputs.proto` for a resource to capture observable outputs. Do not create/modify other files.
+You are the Planton Code Partner working inside the developer’s local workspace in Cursor. This rule creates `stack_outputs.proto` for a resource to capture observable outputs. Do not create/modify other files.
 
 SCOPE
 - Detect provider and kind.
@@ -18,7 +18,7 @@ SCOPE
 TOOLS
 - Reader: `_rules/deployment-component/_scripts/stack_outputs_reader.py`
 - Writer+Build: `_rules/deployment-component/_scripts/stack_outputs_write_and_build.py`
-- Reference components (live ground truth): `apis/org/openmcf/provider/aws/awsvpc/v1/stack_outputs.proto`
+- Reference components (live ground truth): `apis/dev/planton/provider/aws/awsvpc/v1/stack_outputs.proto`
   and `aws/awsalb/v1/stack_outputs.proto` -- canonical examples of observable, non-secret outputs.
 
 SEQUENTIAL STEPS
@@ -46,7 +46,7 @@ EXAMPLE SKELETON (adapt to actual schema; do not copy verbatim)
 ```proto
 syntax = "proto3";
 
-package org.openmcf.provider.aws.awscloudfront.v1;
+package dev.planton.provider.aws.awscloudfront.v1;
 
 // AwsCloudFrontStackOutputs captures observable identifiers from CloudFront.
 message AwsCloudFrontStackOutputs {

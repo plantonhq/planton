@@ -12,7 +12,7 @@ Creates and configures a Google Cloud project within your resource hierarchy. Th
 
 ## What Gets Created
 
-When you deploy a GcpProject resource, OpenMCF provisions:
+When you deploy a GcpProject resource, Planton provisions:
 
 - **GCP Project** — a `google_project` resource placed under the specified organization or folder, with billing account attached and GCP labels applied
 - **Random Suffix** (conditional) — a 3-character lowercase alphabetic suffix appended to `projectId` when `addSuffix` is `true`, ensuring uniqueness across deployments
@@ -23,7 +23,7 @@ When you deploy a GcpProject resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **An existing GCP organization or folder** — referenced via `parentType` and `parentId`
 - **IAM permissions** to create projects under the target organization or folder (`roles/resourcemanager.projectCreator`)
 - **A billing account** — referenced via `billingAccountId` if the project will consume billable services
@@ -33,15 +33,15 @@ When you deploy a GcpProject resource, OpenMCF provisions:
 Create a file `project.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpProject
 metadata:
   name: my-project
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpProject.my-project
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpProject.my-project
 spec:
   projectId: my-dev-project-01
   parentType: organization
@@ -52,7 +52,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f project.yaml
+planton apply -f project.yaml
 ```
 
 This creates a GCP project named `my-project` with project ID `my-dev-project-01` under the specified organization, with the default VPC network removed and billing linked.
@@ -86,15 +86,15 @@ This creates a GCP project named `my-project` with project ID `my-dev-project-01
 A basic project with billing and default security hardening (no default VPC):
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpProject
 metadata:
   name: sandbox
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpProject.sandbox
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpProject.sandbox
 spec:
   projectId: acme-sandbox-dev
   parentType: organization
@@ -107,15 +107,15 @@ spec:
 A staging project placed under a folder, with Compute Engine, Cloud Run, and Artifact Registry APIs pre-enabled:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpProject
 metadata:
   name: staging-project
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.GcpProject.staging-project
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.GcpProject.staging-project
 spec:
   projectId: acme-staging-web
   parentType: folder
@@ -135,15 +135,15 @@ spec:
 A production project with all optional features: a designated owner, deletion protection to prevent accidental removal, a random suffix for uniqueness, and a full set of enabled APIs:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpProject
 metadata:
   name: prod-data
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpProject.prod-data
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpProject.prod-data
 spec:
   projectId: acme-prod-data
   addSuffix: true

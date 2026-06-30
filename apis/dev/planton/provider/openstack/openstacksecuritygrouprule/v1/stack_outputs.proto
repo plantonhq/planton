@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package dev.planton.provider.openstack.openstacksecuritygrouprule.v1;
+
+// OpenStackSecurityGroupRuleStackOutputs captures the observable outputs after
+// provisioning a standalone OpenStack Neutron security group rule.
+//
+// No downstream components currently reference security group rule outputs.
+// The rule_id is primarily useful for debugging, import, and audit purposes.
+message OpenStackSecurityGroupRuleStackOutputs {
+  // rule_id is the unique identifier (UUID) of the security group rule in OpenStack.
+  // This is the Terraform resource ID.
+  string rule_id = 1;
+
+  // security_group_id is the UUID of the security group this rule belongs to.
+  string security_group_id = 2;
+
+  // direction is the direction of the rule ("ingress" or "egress").
+  string direction = 3;
+
+  // protocol is the IP protocol of the rule (e.g., "tcp", "udp", "icmp").
+  // Empty string means the rule applies to all protocols.
+  string protocol = 4;
+
+  // port_range_min is the lower bound of the port range (or ICMP type).
+  int32 port_range_min = 5;
+
+  // port_range_max is the upper bound of the port range (or ICMP code).
+  int32 port_range_max = 6;
+
+  // region is the OpenStack region where the rule was created.
+  string region = 7;
+}

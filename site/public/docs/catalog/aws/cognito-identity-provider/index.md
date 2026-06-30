@@ -12,7 +12,7 @@ Deploys an external identity provider federated into an Amazon Cognito User Pool
 
 ## What Gets Created
 
-When you deploy an AwsCognitoIdentityProvider resource, OpenMCF provisions:
+When you deploy an AwsCognitoIdentityProvider resource, Planton provisions:
 
 - **Cognito Identity Provider** — an `aws_cognito_identity_provider` resource attached to the specified User Pool, with provider-specific configuration (OAuth credentials, OIDC issuer, or SAML metadata) and attribute mapping
 
@@ -20,22 +20,22 @@ When you deploy an AwsCognitoIdentityProvider resource, OpenMCF provisions:
 
 - **AwsCognitoUserPool** (or equivalent) must exist; `userPoolId` references its `status.outputs.user_pool_id`
 - **Provider credentials** — OAuth client ID/secret from the IdP, or SAML metadata URL/file
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 
 ## Quick Start
 
 Create a file `google-idp.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCognitoIdentityProvider
 metadata:
   name: google-idp
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsCognitoIdentityProvider.google-idp
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsCognitoIdentityProvider.google-idp
 spec:
   region: us-west-2
   userPoolId:
@@ -57,7 +57,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f google-idp.yaml
+planton apply -f google-idp.yaml
 ```
 
 Then add `Google` to the User Pool Client's `supportedIdentityProviders` list.
@@ -100,15 +100,15 @@ Then add `Google` to the User Pool Client's `supportedIdentityProviders` list.
 ### Google OAuth
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCognitoIdentityProvider
 metadata:
   name: google-idp
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme
-    pulumi.openmcf.org/project: auth
-    pulumi.openmcf.org/stack.name: prod.AwsCognitoIdentityProvider.google-idp
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme
+    pulumi.planton.dev/project: auth
+    pulumi.planton.dev/stack.name: prod.AwsCognitoIdentityProvider.google-idp
 spec:
   region: us-west-2
   userPoolId:
@@ -132,15 +132,15 @@ spec:
 ### Enterprise OIDC
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCognitoIdentityProvider
 metadata:
   name: corp-oidc-idp
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme
-    pulumi.openmcf.org/project: auth
-    pulumi.openmcf.org/stack.name: prod.AwsCognitoIdentityProvider.corp-oidc-idp
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme
+    pulumi.planton.dev/project: auth
+    pulumi.planton.dev/stack.name: prod.AwsCognitoIdentityProvider.corp-oidc-idp
 spec:
   region: us-west-2
   userPoolId:
@@ -165,15 +165,15 @@ spec:
 ### SAML Federation
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCognitoIdentityProvider
 metadata:
   name: corp-saml-idp
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme
-    pulumi.openmcf.org/project: auth
-    pulumi.openmcf.org/stack.name: prod.AwsCognitoIdentityProvider.corp-saml-idp
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme
+    pulumi.planton.dev/project: auth
+    pulumi.planton.dev/stack.name: prod.AwsCognitoIdentityProvider.corp-saml-idp
 spec:
   region: us-west-2
   userPoolId:

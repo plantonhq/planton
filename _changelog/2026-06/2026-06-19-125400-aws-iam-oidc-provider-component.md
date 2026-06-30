@@ -14,13 +14,13 @@ AWS IRSA (IAM Roles for Service Accounts) and keyless CI/CD both depend on an IA
 
 ### Pain Points
 
-- **No catalog primitive**: There was no component to register an OIDC provider, so the EKS -> IRSA -> role chain could not be expressed in OpenMCF at all.
-- **Manual issuer wiring**: Even outside OpenMCF, the most error-prone IRSA step is hand-copying the cluster's issuer URL into the provider definition.
+- **No catalog primitive**: There was no component to register an OIDC provider, so the EKS -> IRSA -> role chain could not be expressed in Planton at all.
+- **Manual issuer wiring**: Even outside Planton, the most error-prone IRSA step is hand-copying the cluster's issuer URL into the provider definition.
 - **Long-lived keys in CI**: Without OIDC federation, pipelines fall back to static `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY` secrets -- the exact failure mode this primitive eliminates.
 
 ## Solution / What's New
 
-A new component at `apis/org/openmcf/provider/aws/awsiamoidcprovider/v1/` with the standard anatomy: four protos, spec test, registry entry, docs, hack manifest, presets, and both IaC modules. It deliberately models the issuer URL as a composable reference.
+A new component at `apis/dev/planton/provider/aws/awsiamoidcprovider/v1/` with the standard anatomy: four protos, spec test, registry entry, docs, hack manifest, presets, and both IaC modules. It deliberately models the issuer URL as a composable reference.
 
 ### The federation triangle
 
@@ -72,8 +72,8 @@ An OIDC provider's inputs -- an issuer URL, audiences, public CA fingerprints --
 - `go build` (recursive + release-equivalent `iac/pulumi` entrypoint) -- pass
 - `bazel build` of all new targets + `pkg/crkreflect` + `cloudresourcekind` -- pass (10 targets)
 - `go test ./...awsiamoidcprovider/v1/` -- pass (valid + 5 negative cases)
-- `openmcf secret-coverage --check` -- gate passed
-- `openmcf validate-outputs` on both engines -- 2/2 proto fields populated, zero unmapped
+- `planton secret-coverage --check` -- gate passed
+- `planton validate-outputs` on both engines -- 2/2 proto fields populated, zero unmapped
 - `terraform validate` + `terraform fmt` -- valid and formatted
 
 ## Benefits
@@ -84,7 +84,7 @@ An OIDC provider's inputs -- an issuer URL, audiences, public CA fingerprints --
 
 ## Impact
 
-Platform users can now express the full keyless-federation chain in OpenMCF manifests. AWS provider coverage gains the missing primitive that makes the existing `AwsEksCluster` IRSA output actually usable.
+Platform users can now express the full keyless-federation chain in Planton manifests. AWS provider coverage gains the missing primitive that makes the existing `AwsEksCluster` IRSA output actually usable.
 
 ## Related Work
 

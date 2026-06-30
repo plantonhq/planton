@@ -1,6 +1,6 @@
 # Kustomize Builder Package - Technical Reference
 
-Technical reference for the `pkg/kustomize/builder` package, which handles building kustomize manifests for OpenMCF CLI.
+Technical reference for the `pkg/kustomize/builder` package, which handles building kustomize manifests for Planton CLI.
 
 ---
 
@@ -45,7 +45,7 @@ The `builder` package provides a simple wrapper around kustomize's API to build 
 **Usage**:
 
 ```go
-import "github.com/plantonhq/openmcf/pkg/kustomize/builder"
+import "github.com/plantonhq/planton/pkg/kustomize/builder"
 
 // Build manifest
 tempFile, err := builder.BuildManifest("services/api/kustomize", "prod")
@@ -82,7 +82,7 @@ defer builder.Cleanup(tempFile)
 
 ```go
 // internal/cli/manifest/resolve.go
-import "github.com/plantonhq/openmcf/pkg/kustomize/builder"
+import "github.com/plantonhq/planton/pkg/kustomize/builder"
 
 func ResolveManifestPath(cmd *cobra.Command) (string, bool, error) {
     kustomizeDir, _ := cmd.Flags().GetString("kustomize-dir")
@@ -261,7 +261,7 @@ resources:
 EOF
 
 cat > testdata/kustomize/base/deployment.yaml <<EOF
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: MicroserviceKubernetes
 metadata:
   name: test
@@ -320,8 +320,8 @@ konfig.BuiltinPluginLoadingOptions = konfig.BuiltinPluginLoadingOptions.Debug()
 cd services/api/kustomize
 kustomize build overlays/prod
 
-# Or use OpenMCF's load-manifest command
-openmcf load-manifest \
+# Or use Planton's load-manifest command
+planton load-manifest \
   --kustomize-dir services/api/kustomize \
   --overlay prod
 ```

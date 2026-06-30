@@ -1,0 +1,92 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azurepublicip.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// **AzurePublicIpSpec** defines the configuration for creating an Azure Public IP Address.
+//
+// A Public IP Address is a static, routable IPv4 address in Azure that can be attached
+// to load balancers, application gateways, NAT gateways, virtual machines, and other
+// resources that need inbound connectivity from the internet. Public IPs are a
+// foundational networking primitive -- they sit at Layer 0/1 of most Azure architectures
+// and are referenced by higher-level resources via their resource ID.
+//
+// This component provisions Standard SKU public IPs with static allocation only.
+// Azure retired the Basic SKU on September 30, 2025, and Standard SKU requires
+// static allocation. These values are hardcoded in the IaC modules to keep the
+// spec clean and avoid exposing deprecated or impossible configurations.
+//
+// This spec follows the 80/20 principle: exposing the essential fields that cover
+// the vast majority of deployment scenarios while keeping the configuration minimal.
+message AzurePublicIpSpec {
+  // The Azure region where the Public IP will be created.
+  // Examples: "eastus", "westus2", "westeurope", "southeastasia".
+  // The Public IP must be in the same region as the resource it will be attached to
+  // (load balancer, application gateway, NAT gateway, etc.).
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The Azure Resource Group where the Public IP will be created.
+  // Can be a literal string or a reference to an AzureResourceGroup output.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef resource_group = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AzureResourceGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.resource_group_name"
+  ];
+
+  // The name of the Public IP resource.
+  // Must be unique within the resource group.
+  // Allowed characters: alphanumeric, underscores, hyphens, and periods.
+  // Must start with alphanumeric. Length: 1 to 80 characters.
+  string name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 80
+  ];
+
+  // An optional DNS label that creates a domain name mapping for this Public IP.
+  // When set, Azure creates an A record at: {label}.{region}.cloudapp.azure.com
+  // pointing to this IP address. This provides a stable DNS name even if the IP
+  // changes (though with Standard SKU + static allocation, IPs are persistent).
+  //
+  // Constraints:
+  // - Must start with a lowercase letter
+  // - Must end with a lowercase letter or digit
+  // - May contain only lowercase letters, digits, and hyphens
+  // - Length: 3 to 63 characters
+  // - Must be unique within the Azure region
+  string domain_name_label = 4 [(buf.validate.field).cel = {
+    id: "domain_name_label_format"
+    message: "domain_name_label must start with a lowercase letter, end with a letter or digit, contain only lowercase letters, digits, and hyphens, and be 3-63 characters"
+    expression: "this == '' || this.matches('^[a-z][a-z0-9-]{1,61}[a-z0-9]$')"
+  }];
+
+  // Availability zones for the Public IP.
+  // Standard SKU public IPs can be zone-redundant (multiple zones) or zonal (single zone).
+  // Valid values: "1", "2", "3" (availability zone numbers).
+  // Examples:
+  // - ["1", "2", "3"] for zone-redundant (recommended for production)
+  // - ["1"] for zonal (pinned to zone 1)
+  // - [] or omitted for no zone preference (Azure chooses)
+  // Note: Zone support depends on the Azure region. Not all regions have 3 zones.
+  repeated string zones = 5;
+
+  // The idle timeout in minutes for the Public IP.
+  // Controls how long Azure keeps idle TCP/UDP connections open before recycling them.
+  // Higher values are better for long-lived connections (WebSocket, gRPC streaming,
+  // database connections). Lower values free resources faster for short-lived traffic.
+  // Range: 4 to 30 minutes.
+  // Default: 4
+  optional int32 idle_timeout_in_minutes = 6 [
+    (buf.validate.field).int32 = {
+      gte: 4
+      lte: 30
+    },
+    (dev.planton.shared.options.default) = "4"
+  ];
+}

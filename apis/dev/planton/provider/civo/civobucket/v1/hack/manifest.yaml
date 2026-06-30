@@ -1,0 +1,5 @@
+apiVersion: civo.planton.dev/v1
+kind: CivoBucket
+metadata:
+  name: first-certificate
+spec:

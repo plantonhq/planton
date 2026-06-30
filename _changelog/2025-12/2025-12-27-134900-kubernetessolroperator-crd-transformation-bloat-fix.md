@@ -73,13 +73,13 @@ crds, err := pulumiyaml.NewConfigFile(ctx, locals.CrdsResourceName,
 
 ### File Changed
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetessolroperator/v1/iac/pulumi/module/main.go`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetessolroperator/v1/iac/pulumi/module/main.go`
 
 Removed the `Transformations` field from `ConfigFileArgs`. Added documentation explaining why we rely on namespace background deletion instead of CRD-level transformations.
 
 ### Updated Documentation
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetessolroperator/v1/iac/pulumi/README.md`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetessolroperator/v1/iac/pulumi/README.md`
 
 Updated the "Deletion Behavior" section to clarify that CRDs use default deletion behavior, with a note explaining the cascade through namespace deletion.
 

@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcpcomputeinstance.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/gcp/gcpcomputeinstance/v1/spec.proto";
+import "dev/planton/provider/gcp/gcpcomputeinstance/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+//gcp-compute-instance
+message GcpComputeInstance {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'GcpComputeInstance'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  GcpComputeInstanceSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  GcpComputeInstanceStatus status = 5;
+}
+
+//gcp-compute-instance status
+message GcpComputeInstanceStatus {
+  //stack-outputs
+  GcpComputeInstanceStackOutputs outputs = 1;
+}

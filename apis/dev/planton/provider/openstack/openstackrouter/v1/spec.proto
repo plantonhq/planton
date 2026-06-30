@@ -1,0 +1,93 @@
+syntax = "proto3";
+
+package dev.planton.provider.openstack.openstackrouter.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// OpenStackRouterSpec defines the configuration for an OpenStack Neutron router.
+//
+// A router provides L3 routing between subnets and, optionally, external network
+// connectivity via a gateway. Routers are the backbone of OpenStack networking --
+// they connect tenant subnets to each other and to the outside world via SNAT/DNAT.
+//
+// The router name is derived from metadata.name.
+//
+// Terraform resource: openstack_networking_router_v2
+// Pulumi resource: openstack.networking.Router
+message OpenStackRouterSpec {
+  // enable_snat is only valid when external_network_id is configured.
+  option (buf.validate.message).cel = {
+    id: "enable_snat.requires_external_network"
+    message: "enable_snat can only be set when external_network_id is configured"
+    expression: "!has(this.enable_snat) || has(this.external_network_id)"
+  };
+
+  // external_fixed_ips is only valid when external_network_id is configured.
+  option (buf.validate.message).cel = {
+    id: "external_fixed_ips.requires_external_network"
+    message: "external_fixed_ips can only be specified when external_network_id is configured"
+    expression: "this.external_fixed_ips.size() == 0 || has(this.external_network_id)"
+  };
+
+  // external_network_id is the ID of the external (provider) network used as
+  // the router's gateway. When set, the router gains external connectivity and
+  // can perform SNAT for tenant traffic.
+  // Optional: routers without an external gateway provide internal routing only.
+  // Can reference an OpenStackNetwork resource's output or be a literal network UUID.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef external_network_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = OpenStackNetwork,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_id"
+  ];
+
+  // admin_state_up controls the administrative state of the router.
+  // When false, the router is administratively disabled and does not forward traffic.
+  // Default: true
+  optional bool admin_state_up = 2 [(dev.planton.shared.options.default) = "true"];
+
+  // enable_snat controls whether Source NAT is enabled on the router's external gateway.
+  // When enabled, traffic from tenant subnets is NATed to the router's external IP.
+  // Only valid when external_network_id is configured.
+  // If omitted, OpenStack uses its deployment default (typically true).
+  optional bool enable_snat = 3;
+
+  // distributed controls whether the router uses Distributed Virtual Router (DVR) mode.
+  // DVR eliminates the centralized L3 agent bottleneck by distributing routing to
+  // each compute node. This is a create-time setting and cannot be changed after creation.
+  // If omitted, OpenStack uses its deployment default.
+  optional bool distributed = 4;
+
+  // external_fixed_ips specifies fixed IP addresses to allocate on the external network
+  // for the router's gateway. Each entry can request a specific subnet and/or IP address.
+  // Only valid when external_network_id is configured.
+  // If omitted, OpenStack automatically allocates an IP from the external network.
+  repeated ExternalFixedIp external_fixed_ips = 5;
+
+  // description is a human-readable description of the router.
+  // This is stored on the OpenStack resource and visible in Horizon and API responses.
+  string description = 6;
+
+  // tags are string tags to associate with the router in OpenStack.
+  // Tags are stored on the OpenStack resource and can be used for filtering
+  // and organization in the OpenStack API and Horizon dashboard.
+  repeated string tags = 7 [(buf.validate.field).repeated.unique = true];
+
+  // region overrides the region from the provider config for this router.
+  // If omitted, the region from the OpenStack provider config is used.
+  // Example: "RegionOne"
+  string region = 8;
+}
+
+// ExternalFixedIp specifies a fixed IP allocation on the router's external network.
+// Both fields are optional: you can request a specific subnet, a specific IP, both, or neither.
+// When neither is specified, OpenStack allocates from any available subnet on the external network.
+message ExternalFixedIp {
+  // subnet_id is the UUID of a subnet on the external network from which to allocate the IP.
+  // This references a subnet managed by the cloud administrator on the provider network.
+  string subnet_id = 1;
+
+  // ip_address is the specific IP address to allocate on the external network.
+  // Must be within the range of the specified subnet (or any external subnet if subnet_id is omitted).
+  string ip_address = 2;
+}

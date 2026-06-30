@@ -12,13 +12,13 @@ Deploys an individual DNS record set within an existing Google Cloud DNS Managed
 
 ## What Gets Created
 
-When you deploy a GcpDnsRecord resource, OpenMCF provisions:
+When you deploy a GcpDnsRecord resource, Planton provisions:
 
 - **DNS Record Set** — a `google_dns_record_set` resource in the specified managed zone, with the given type, FQDN, values, and TTL
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **An existing GCP project** — referenced via `projectId`
 - **An existing Cloud DNS Managed Zone** — referenced via `managedZone`, either by direct name or as a foreign key to a GcpDnsZone resource
 - **IAM permissions** to create and manage DNS record sets in the target managed zone
@@ -28,15 +28,15 @@ When you deploy a GcpDnsRecord resource, OpenMCF provisions:
 Create a file `dns-record.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpDnsRecord
 metadata:
   name: app-a-record
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpDnsRecord.app-a-record
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpDnsRecord.app-a-record
 spec:
   projectId: my-gcp-project-123
   managedZone: example-zone
@@ -49,7 +49,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f dns-record.yaml
+planton apply -f dns-record.yaml
 ```
 
 This creates an A record for `app.example.com.` pointing to `203.0.113.10` with the default TTL of 300 seconds.
@@ -79,15 +79,15 @@ This creates an A record for `app.example.com.` pointing to `203.0.113.10` with 
 An A record pointing a subdomain to a single IP address:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpDnsRecord
 metadata:
   name: web-a-record
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpDnsRecord.web-a-record
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpDnsRecord.web-a-record
 spec:
   projectId: my-gcp-project-123
   managedZone: example-zone
@@ -100,18 +100,18 @@ spec:
 
 ### CNAME Record with Foreign Key References
 
-A CNAME record that references OpenMCF-managed GcpProject and GcpDnsZone resources instead of hardcoding identifiers:
+A CNAME record that references Planton-managed GcpProject and GcpDnsZone resources instead of hardcoding identifiers:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpDnsRecord
 metadata:
   name: docs-cname
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpDnsRecord.docs-cname
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpDnsRecord.docs-cname
 spec:
   projectId:
     valueFrom:
@@ -135,15 +135,15 @@ spec:
 An A record with multiple values for basic load distribution across servers:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpDnsRecord
 metadata:
   name: api-round-robin
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpDnsRecord.api-round-robin
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpDnsRecord.api-round-robin
 spec:
   projectId: my-prod-project-456
   managedZone: example-zone
@@ -161,15 +161,15 @@ spec:
 An MX record configuring mail delivery with primary and backup mail servers:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpDnsRecord
 metadata:
   name: mail-mx
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpDnsRecord.mail-mx
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpDnsRecord.mail-mx
 spec:
   projectId: my-prod-project-456
   managedZone: example-zone
@@ -186,15 +186,15 @@ spec:
 A TXT record used for email sender policy and domain ownership verification:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpDnsRecord
 metadata:
   name: spf-txt
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpDnsRecord.spf-txt
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpDnsRecord.spf-txt
 spec:
   projectId: my-prod-project-456
   managedZone: example-zone

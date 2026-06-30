@@ -1,0 +1,161 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azuresubnet.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// **AzureSubnetSpec** defines the configuration for creating an Azure Subnet within
+// an existing Virtual Network (VNet).
+//
+// Subnets partition a VNet's address space into segments for different workloads,
+// network tiers, or service delegations. Unlike the built-in `nodes_subnet` on
+// AzureVpc (which is purpose-built for AKS), this resource creates standalone subnets
+// with full control over service endpoints, delegations, and private endpoint policies.
+//
+// This is the most widely referenced Azure resource in Planton. Downstream consumers
+// include AzureAksCluster, AzureContainerAppEnvironment, AzurePostgresqlFlexibleServer,
+// AzureMysqlFlexibleServer, AzureRedisCache, AzurePrivateEndpoint, AzureApplicationGateway,
+// AzureLoadBalancer, AzureVirtualMachine, AzureFunctionApp, and AzureLinuxWebApp.
+//
+// **Note:** Subnets do not have their own region -- they inherit the region from
+// their parent VNet. This is why this spec omits the `region` field that other
+// Azure resources include.
+//
+// This spec follows the 80/20 principle: exposing the essential fields that cover
+// the vast majority of deployment scenarios while keeping the configuration minimal.
+message AzureSubnetSpec {
+  // The Azure Resource Group where the parent VNet exists.
+  // Must be the same resource group as the VNet.
+  // Can be a literal string or a reference to an AzureResourceGroup output.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef resource_group = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AzureResourceGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.resource_group_name"
+  ];
+
+  // The Azure Resource Manager ID of the parent Virtual Network.
+  // The subnet will be created inside this VNet and must use an address prefix
+  // that falls within the VNet's address space.
+  // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetworks/{name}
+  dev.planton.shared.foreignkey.v1.StringValueOrRef vnet_id = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AzureVpc,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vnet_id"
+  ];
+
+  // The name of the subnet.
+  // Must be unique within the VNet.
+  // Allowed characters: alphanumeric, underscores, hyphens, and periods.
+  // Must start with alphanumeric. Length: 1 to 80 characters.
+  string name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 80
+  ];
+
+  // The IPv4 CIDR block for the subnet (e.g., "10.0.1.0/24").
+  // Must be a subset of the parent VNet's address space and must not overlap
+  // with other subnets in the same VNet.
+  // Typical sizing: /24 for general workloads (254 usable IPs), /27 for Application
+  // Gateway (min 32 IPs), /28 for small delegated subnets (14 usable IPs).
+  // Note: Azure reserves 5 IPs per subnet (first 4 + last) for internal use.
+  string address_prefix = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Azure service endpoints to enable on this subnet.
+  // Service endpoints create an optimized route over the Azure backbone network
+  // to the specified Azure services, bypassing the public internet.
+  //
+  // Common values:
+  // - "Microsoft.Storage" -- secure access to Azure Storage Accounts
+  // - "Microsoft.Sql" -- secure access to Azure SQL Database and PostgreSQL/MySQL Flexible Server
+  // - "Microsoft.KeyVault" -- secure access to Azure Key Vault
+  // - "Microsoft.AzureCosmosDB" -- secure access to Cosmos DB
+  // - "Microsoft.ServiceBus" -- secure access to Service Bus
+  // - "Microsoft.EventHub" -- secure access to Event Hubs
+  // - "Microsoft.Web" -- secure access to App Services
+  // - "Microsoft.ContainerRegistry" -- secure access to Container Registry
+  repeated string service_endpoints = 5;
+
+  // Optional service delegation for this subnet.
+  // Delegation grants an Azure service permission to create service-specific
+  // network rules and inject resources into the subnet. A subnet can have at
+  // most one delegation.
+  //
+  // Common delegations:
+  // - PostgreSQL Flexible Server: "Microsoft.DBforPostgreSQL/flexibleServers"
+  // - MySQL Flexible Server: "Microsoft.DBforMySQL/flexibleServers"
+  // - Container App Environment: "Microsoft.App/environments"
+  // - App Service / Function App (VNet integration): "Microsoft.Web/serverFarms"
+  //
+  // Note: Delegated subnets are typically dedicated to a single service and cannot
+  // be shared with other resource types.
+  AzureSubnetDelegation delegation = 6;
+
+  // Controls whether network policies (NSG rules, route tables) are applied to
+  // private endpoints in this subnet.
+  //
+  // Valid values:
+  // - "Disabled" -- network policies are NOT applied to private endpoints (Azure default)
+  // - "Enabled" -- both NSG and route table policies apply to private endpoints
+  // - "NetworkSecurityGroupEnabled" -- only NSG policies apply
+  // - "RouteTableEnabled" -- only route table policies apply
+  //
+  // Most private endpoint subnets use "Disabled" (the Azure default) to allow
+  // private endpoints to receive traffic without NSG interference. Set to "Enabled"
+  // or one of the granular options only in zero-trust architectures that require
+  // explicit security rules on private endpoint traffic.
+  //
+  // Default: Disabled
+  optional string private_endpoint_network_policies = 7 [
+    (buf.validate.field).cel = {
+      id: "private_endpoint_network_policies_valid"
+      message: "private_endpoint_network_policies must be one of: Disabled, Enabled, NetworkSecurityGroupEnabled, RouteTableEnabled"
+      expression: "this == '' || this in ['Disabled', 'Enabled', 'NetworkSecurityGroupEnabled', 'RouteTableEnabled']"
+    },
+    (dev.planton.shared.options.default) = "Disabled"
+  ];
+
+  // Controls whether network policies are applied to Private Link Service
+  // resources in this subnet.
+  //
+  // When true (default), standard network policies (NSGs, UDRs) apply to Private
+  // Link Services. Set to false only when creating a Private Link Service that
+  // needs to bypass network policies.
+  //
+  // Default: true
+  optional bool private_link_service_network_policies_enabled = 8 [(dev.planton.shared.options.default) = "true"];
+}
+
+// AzureSubnetDelegation defines a service delegation for the subnet.
+// Delegation grants an Azure PaaS service permission to inject service-specific
+// resources and network rules into the subnet.
+message AzureSubnetDelegation {
+  // A user-chosen label for this delegation.
+  // This is a logical name used in the Terraform/Pulumi configuration, not an
+  // Azure resource name. Use a descriptive name like "postgresql" or "container-apps".
+  string name = 1 [(buf.validate.field).required = true];
+
+  // The Azure service to delegate to.
+  // This must be an exact match for one of Azure's supported delegation service names.
+  //
+  // Common values:
+  // - "Microsoft.DBforPostgreSQL/flexibleServers"
+  // - "Microsoft.DBforMySQL/flexibleServers"
+  // - "Microsoft.App/environments"
+  // - "Microsoft.Web/serverFarms"
+  // - "Microsoft.ContainerInstance/containerGroups"
+  // - "Microsoft.Netapp/volumes"
+  string service_name = 2 [(buf.validate.field).required = true];
+
+  // Optional list of actions that the delegated service is permitted to perform.
+  // If omitted, Azure uses the default actions for the service.
+  //
+  // Common action: "Microsoft.Network/virtualNetworks/subnets/action"
+  // Most delegations only need this single action, and Azure infers it if omitted.
+  repeated string actions = 3;
+}

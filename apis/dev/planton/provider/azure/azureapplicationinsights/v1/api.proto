@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azureapplicationinsights.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/azure/azureapplicationinsights/v1/spec.proto";
+import "dev/planton/provider/azure/azureapplicationinsights/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// AzureApplicationInsights is the top-level resource definition for an Azure
+// Application Insights instance. It follows the KRM (Kubernetes Resource Model)
+// pattern with apiVersion, kind, metadata, spec, and status.
+message AzureApplicationInsights {
+  // API version identifier. Must be "azure.planton.dev/v1".
+  string api_version = 1 [(buf.validate.field).string.const = 'azure.planton.dev/v1'];
+
+  // Resource kind. Must be "AzureApplicationInsights".
+  string kind = 2 [(buf.validate.field).string.const = 'AzureApplicationInsights'];
+
+  // Standard Planton metadata (name, org, env, labels, tags).
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // Application Insights specification.
+  AzureApplicationInsightsSpec spec = 4 [(buf.validate.field).required = true];
+
+  // Deployment status containing stack outputs. Populated after deployment.
+  AzureApplicationInsightsStatus status = 5;
+}
+
+// AzureApplicationInsightsStatus holds the deployment outputs.
+message AzureApplicationInsightsStatus {
+  // Stack outputs from the IaC deployment.
+  AzureApplicationInsightsStackOutputs outputs = 1;
+}

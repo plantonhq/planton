@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Deterministic PR creation utility for OpenMCF repository.
+Deterministic PR creation utility for Planton repository.
 
 This script creates or switches to the given branch, stages and commits any
 changes with the provided commit message (if there are changes), pushes the

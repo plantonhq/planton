@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ociblockvolume.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/oci/ociblockvolume/v1/spec.proto";
+import "dev/planton/provider/oci/ociblockvolume/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// OciBlockVolume is the top-level resource representing an OCI Block Volume
+// with optional backup policy assignment and cross-region replicas.
+message OciBlockVolume {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'oci.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OciBlockVolume'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OciBlockVolumeSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OciBlockVolumeStatus status = 5;
+}
+
+// OciBlockVolumeStatus holds the outputs produced by deploying
+// an OciBlockVolume.
+message OciBlockVolumeStatus {
+  // stack-outputs
+  OciBlockVolumeStackOutputs outputs = 1;
+}

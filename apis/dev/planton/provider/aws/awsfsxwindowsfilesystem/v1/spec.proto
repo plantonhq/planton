@@ -1,0 +1,453 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsfsxwindowsfilesystem.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// AwsFsxWindowsFileSystemSpec defines the desired configuration for an Amazon FSx
+// for Windows File Server — a fully managed, enterprise-grade Windows file system
+// accessible over the industry-standard SMB (Server Message Block) protocol. It is
+// built on Windows Server and integrates with Microsoft Active Directory for
+// identity-based access control, Windows ACLs, DFS namespaces, and shadow copies.
+//
+// FSx for Windows delivers up to 12 GB/s throughput and millions of IOPS on SSD
+// storage, making it suitable for Windows-native workloads including .NET
+// applications, SQL Server databases, home directories, media processing, and
+// enterprise content management systems.
+//
+// Key design notes:
+// - Every Windows file system MUST join an Active Directory domain. Specify
+//   exactly one of `active_directory_id` (AWS Managed Microsoft AD) or
+//   `self_managed_active_directory` (self-managed / on-premises AD).
+// - `deployment_type`, `storage_type`, `subnet_ids`, `preferred_subnet_id`,
+//   `security_group_ids`, `kms_key_id`, and `copy_tags_to_backups` are ForceNew —
+//   changing them requires replacing the file system.
+// - SINGLE_AZ_2 is the recommended deployment type for new workloads (latest
+//   generation, higher throughput ceiling). MULTI_AZ_1 provides automatic failover
+//   across AZs for high availability.
+// - HDD storage is only supported on SINGLE_AZ_2 and MULTI_AZ_1. HDD requires a
+//   minimum of 2000 GiB storage capacity.
+// - Throughput capacity is an absolute MB/s value from a fixed set of valid tiers.
+// - DNS aliases allow the file system to be accessed via custom DNS names
+//   (e.g., for DFS namespace integration or migration from on-premises filers).
+// - Audit logging tracks file access and file share access events to CloudWatch
+//   Logs for compliance and security monitoring.
+// - Credentials, region, and deployment workflow live outside this spec in stack inputs.
+message AwsFsxWindowsFileSystemSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  // ---------------------------------------------------------------------------
+  // File System Core
+  // ---------------------------------------------------------------------------
+
+  // Deployment type controlling availability and performance characteristics.
+  // ForceNew — cannot be changed after creation.
+  //
+  // - "SINGLE_AZ_1": first-generation single-AZ. Limited throughput tiers.
+  // - "SINGLE_AZ_2": latest single-AZ with higher throughput ceiling and HDD
+  //   support. Recommended for most workloads.
+  // - "MULTI_AZ_1": multi-AZ with automatic failover across two AZs. Requires
+  //   two subnets and a preferred_subnet_id. Supports HDD storage.
+  //
+  // Default: SINGLE_AZ_2
+  optional string deployment_type = 2 [(dev.planton.shared.options.default) = "SINGLE_AZ_2"];
+
+  // Storage capacity in GiB. Required.
+  //
+  // Valid ranges depend on storage type:
+  // - SSD: 32–65536 GiB
+  // - HDD: 2000–65536 GiB
+  //
+  // Storage can be increased after creation but never decreased.
+  int32 storage_capacity_gib = 3 [(buf.validate.field).int32.gte = 32];
+
+  // Storage media type. ForceNew — cannot be changed after creation.
+  //
+  // - "SSD": solid-state drives. Sub-millisecond latency. Required for
+  //   SINGLE_AZ_1. Recommended for most workloads.
+  // - "HDD": hard disk drives. Lower cost, higher latency. Only available for
+  //   SINGLE_AZ_2 and MULTI_AZ_1 deployment types. Requires minimum 2000 GiB
+  //   storage capacity.
+  //
+  // Default: SSD
+  optional string storage_type = 4 [(dev.planton.shared.options.default) = "SSD"];
+
+  // Throughput capacity in MB/s. Required.
+  //
+  // Valid values: 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4608, 6144, 9216, 12288.
+  // The maximum available throughput depends on the deployment type.
+  //
+  // Throughput can be changed after creation to scale performance up or down.
+  int32 throughput_capacity = 5 [(buf.validate.field).int32.gt = 0];
+
+  // ---------------------------------------------------------------------------
+  // Networking (ForceNew)
+  // ---------------------------------------------------------------------------
+
+  // Subnet IDs for the file system's network interfaces. Required. ForceNew.
+  //
+  // - SINGLE_AZ_1 / SINGLE_AZ_2: exactly one subnet.
+  // - MULTI_AZ_1: exactly two subnets in different availability zones.
+  //
+  // All compute resources mounting this file system must have SMB network
+  // connectivity to these subnets (TCP port 445).
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef subnet_ids = 6 [
+    (buf.validate.field).repeated.min_items = 1,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  ];
+
+  // Preferred subnet for the active file server in a MULTI_AZ_1 deployment.
+  // ForceNew. Required when deployment_type is MULTI_AZ_1. Must be one of the
+  // subnets specified in subnet_ids.
+  //
+  // In a failover event, the standby file server in the other subnet takes over.
+  // Ignored for SINGLE_AZ deployments.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef preferred_subnet_id = 7 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  ];
+
+  // Security groups for the file system's network interfaces. ForceNew.
+  //
+  // Must allow SMB traffic between the file system and its clients:
+  // - TCP port 445 (SMB)
+  // - TCP port 5985 (WinRM for PowerShell remote administration)
+  //
+  // Additionally, for Active Directory communication:
+  // - TCP/UDP port 53 (DNS), TCP/UDP port 88 (Kerberos),
+  //   TCP port 389 (LDAP), TCP port 636 (LDAPS)
+  //
+  // Up to 50 security groups.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef security_group_ids = 8 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
+  ];
+
+  // ---------------------------------------------------------------------------
+  // Encryption
+  // ---------------------------------------------------------------------------
+
+  // Customer-managed KMS key ARN for encryption at rest. ForceNew — the KMS key
+  // cannot be changed after creation. When omitted, the file system uses the
+  // AWS-managed FSx key. All Windows file systems are encrypted at rest by
+  // default; this field upgrades to a customer-managed key.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_id = 9 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
+  ];
+
+  // ---------------------------------------------------------------------------
+  // Active Directory (exactly one MUST be specified)
+  // ---------------------------------------------------------------------------
+
+  // ID of an existing AWS Managed Microsoft AD (Directory Service) to join.
+  // ForceNew. Mutually exclusive with `self_managed_active_directory`.
+  //
+  // Use this when you have an AWS Directory Service managed AD already
+  // provisioned. The file system joins the domain automatically.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef active_directory_id = 10;
+
+  // Self-managed Active Directory configuration for joining an on-premises or
+  // EC2-hosted AD domain. Mutually exclusive with `active_directory_id`.
+  //
+  // Use this when your AD domain controller runs outside AWS Directory Service
+  // (e.g., on-premises AD, AD on EC2, or Azure AD DS).
+  AwsFsxWindowsFileSystemSelfManagedActiveDirectory self_managed_active_directory = 11;
+
+  // ---------------------------------------------------------------------------
+  // DNS Aliases
+  // ---------------------------------------------------------------------------
+
+  // DNS alias names to associate with the file system. Up to 50 aliases.
+  //
+  // Aliases allow the file system to be accessed via custom DNS names
+  // (e.g., "finance.corp.example.com") in addition to the default DNS name.
+  // Useful for DFS namespace integration, migration from on-premises filers,
+  // or providing user-friendly mount points.
+  //
+  // Each alias must be a valid DNS name (4-253 characters). You must create a
+  // DNS CNAME record pointing each alias to the file system's DNS name.
+  repeated string aliases = 12 [(buf.validate.field).repeated.max_items = 50];
+
+  // ---------------------------------------------------------------------------
+  // Audit Logging
+  // ---------------------------------------------------------------------------
+
+  // Audit log configuration for tracking file access and file share access
+  // events. Logs are sent to CloudWatch Logs for compliance and security
+  // monitoring. When omitted, audit logging is disabled.
+  AwsFsxWindowsFileSystemAuditLogConfiguration audit_log_configuration = 13;
+
+  // ---------------------------------------------------------------------------
+  // Disk IOPS Configuration
+  // ---------------------------------------------------------------------------
+
+  // SSD IOPS configuration for the file system. Controls the total provisioned
+  // IOPS. When omitted, AWS uses AUTOMATIC mode which scales IOPS with storage.
+  // Only applicable to SSD storage type.
+  AwsFsxWindowsFileSystemDiskIopsConfiguration disk_iops_configuration = 14;
+
+  // ---------------------------------------------------------------------------
+  // Backup
+  // ---------------------------------------------------------------------------
+
+  // Number of days to retain automatic backups. Range: 0-90. Set to 0 to
+  // disable automatic backups.
+  //
+  // Default: 7
+  optional int32 automatic_backup_retention_days = 15 [(dev.planton.shared.options.default) = "7"];
+
+  // Daily UTC time to start automatic backups, in HH:MM format (e.g., "01:00").
+  // If not specified and backups are enabled, AWS chooses a default window.
+  string daily_automatic_backup_start_time = 16;
+
+  // Copy tags from the file system to backups. ForceNew.
+  bool copy_tags_to_backups = 17;
+
+  // Skip creating a final backup when the file system is deleted.
+  //
+  // Default: true
+  optional bool skip_final_backup = 18 [(dev.planton.shared.options.default) = "true"];
+
+  // ---------------------------------------------------------------------------
+  // Maintenance
+  // ---------------------------------------------------------------------------
+
+  // Weekly UTC maintenance window in the format "d:HH:MM" where d is the day of
+  // the week (1=Monday, 7=Sunday). Example: "7:02:00" for Sunday at 02:00 UTC.
+  // If not specified, AWS chooses a default window.
+  string weekly_maintenance_start_time = 19;
+
+  // ---------------------------------------------------------------------------
+  // CEL Validations
+  // ---------------------------------------------------------------------------
+
+  // deployment_type valid values.
+  option (buf.validate.message).cel = {
+    id: "deployment_type_valid"
+    message: "deployment_type must be 'SINGLE_AZ_1', 'SINGLE_AZ_2', or 'MULTI_AZ_1'"
+    expression: "this.deployment_type == '' || this.deployment_type in ['SINGLE_AZ_1', 'SINGLE_AZ_2', 'MULTI_AZ_1']"
+  };
+
+  // storage_type valid values.
+  option (buf.validate.message).cel = {
+    id: "storage_type_valid"
+    message: "storage_type must be 'SSD' or 'HDD'"
+    expression: "this.storage_type == '' || this.storage_type in ['SSD', 'HDD']"
+  };
+
+  // HDD requires SINGLE_AZ_2 or MULTI_AZ_1.
+  option (buf.validate.message).cel = {
+    id: "hdd_requires_compatible_deployment"
+    message: "storage_type 'HDD' is only supported with deployment_type 'SINGLE_AZ_2' or 'MULTI_AZ_1'"
+    expression: "this.storage_type != 'HDD' || this.deployment_type in ['SINGLE_AZ_2', 'MULTI_AZ_1']"
+  };
+
+  // HDD requires minimum 2000 GiB storage.
+  option (buf.validate.message).cel = {
+    id: "hdd_minimum_storage"
+    message: "storage_type 'HDD' requires storage_capacity_gib >= 2000"
+    expression: "this.storage_type != 'HDD' || this.storage_capacity_gib >= 2000"
+  };
+
+  // throughput_capacity valid values.
+  option (buf.validate.message).cel = {
+    id: "throughput_capacity_valid"
+    message: "throughput_capacity must be one of: 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4608, 6144, 9216, 12288"
+    expression: "this.throughput_capacity in [8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4608, 6144, 9216, 12288]"
+  };
+
+  // preferred_subnet_id requires MULTI_AZ_1.
+  option (buf.validate.message).cel = {
+    id: "preferred_subnet_requires_multi_az"
+    message: "preferred_subnet_id can only be set for MULTI_AZ_1 deployment type"
+    expression: "!has(this.preferred_subnet_id) || this.deployment_type == 'MULTI_AZ_1'"
+  };
+
+  // Active Directory: exactly one must be specified.
+  option (buf.validate.message).cel = {
+    id: "ad_required"
+    message: "exactly one of active_directory_id or self_managed_active_directory must be specified (Active Directory is mandatory for Windows File Server)"
+    expression: "(has(this.active_directory_id) && !has(this.self_managed_active_directory)) || (!has(this.active_directory_id) && has(this.self_managed_active_directory))"
+  };
+
+  // audit_log_destination requires at least one log level not DISABLED.
+  option (buf.validate.message).cel = {
+    id: "audit_destination_requires_enabled_level"
+    message: "audit_log_configuration.audit_log_destination cannot be set when both log levels are DISABLED"
+    expression: "!has(this.audit_log_configuration) || !has(this.audit_log_configuration.audit_log_destination) || this.audit_log_configuration.file_access_audit_log_level != 'DISABLED' || this.audit_log_configuration.file_share_access_audit_log_level != 'DISABLED'"
+  };
+
+  // daily_automatic_backup_start_time requires backups enabled.
+  option (buf.validate.message).cel = {
+    id: "backup_time_requires_retention"
+    message: "daily_automatic_backup_start_time requires automatic_backup_retention_days > 0"
+    expression: "this.daily_automatic_backup_start_time == '' || this.automatic_backup_retention_days > 0"
+  };
+}
+
+// AwsFsxWindowsFileSystemSelfManagedActiveDirectory configures the file system
+// to join a self-managed Active Directory domain. Use this when your AD domain
+// controller runs outside AWS Directory Service (e.g., on-premises, on EC2,
+// or Azure AD DS).
+//
+// Two authentication methods are supported (mutually exclusive):
+// 1. Direct credentials: `username` + `password`
+// 2. AWS Secrets Manager: `domain_join_service_account_secret_arn`
+//
+// The Secrets Manager approach is recommended for production as it avoids
+// storing credentials in the resource manifest.
+message AwsFsxWindowsFileSystemSelfManagedActiveDirectory {
+  // Fully qualified domain name of the self-managed AD directory.
+  // Example: "corp.example.com"
+  string domain_name = 1 [(buf.validate.field).string.min_len = 1];
+
+  // IP addresses of the DNS servers for the AD domain. Required.
+  // Must be reachable from the file system's subnets (same VPC CIDR or
+  // RFC 1918 private ranges). Minimum 1, maximum 2 IP addresses.
+  repeated string dns_ips = 2 [
+    (buf.validate.field).repeated.min_items = 1,
+    (buf.validate.field).repeated.max_items = 2
+  ];
+
+  // Service account username for domain join operations. Mutually exclusive
+  // with `domain_join_service_account_secret_arn`. Length: 1-256 characters.
+  string username = 3;
+
+  // Service account password for domain join operations. Mutually exclusive
+  // with `domain_join_service_account_secret_arn`. Length: 1-256 characters.
+  //
+  // For production workloads, prefer `domain_join_service_account_secret_arn`
+  // to avoid storing credentials in the resource manifest.
+  string password = 4 [(dev.planton.shared.options.sensitive) = true];
+
+  // ARN of an AWS Secrets Manager secret containing the service account
+  // credentials for domain join. Mutually exclusive with `username`/`password`.
+  //
+  // The secret must contain a JSON object with "username" and "password" keys.
+  // This is the recommended approach for production deployments.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef domain_join_service_account_secret_arn = 5;
+
+  // Name of the AD group whose members are granted administrative privileges
+  // on the file system. Members can administer the file system from a remote
+  // PowerShell endpoint using the FSx Remote PowerShell.
+  //
+  // Default: Domain Admins
+  optional string file_system_administrators_group = 6 [(dev.planton.shared.options.default) = "Domain Admins"];
+
+  // Organizational Unit (OU) distinguished name within the AD directory where
+  // the file system's computer object is created.
+  //
+  // Example: "OU=FSx,DC=corp,DC=example,DC=com"
+  //
+  // Only the OU immediately above the computer object can be specified.
+  // If not provided, the computer object is created in the default "Computers"
+  // container in the AD domain.
+  string organizational_unit_distinguished_name = 7;
+
+  // Credentials mutual exclusion: either (username + password) or secret ARN.
+  option (buf.validate.message).cel = {
+    id: "credentials_mutual_exclusion"
+    message: "specify either username/password or domain_join_service_account_secret_arn, not both"
+    expression: "(this.username == '' && this.password == '' && has(this.domain_join_service_account_secret_arn)) || ((this.username != '' || this.password != '') && !has(this.domain_join_service_account_secret_arn))"
+  };
+
+  // When using direct credentials, both username and password are required.
+  option (buf.validate.message).cel = {
+    id: "direct_credentials_complete"
+    message: "when using direct credentials, both username and password must be provided"
+    expression: "(this.username == '' && this.password == '') || (this.username != '' && this.password != '')"
+  };
+}
+
+// AwsFsxWindowsFileSystemAuditLogConfiguration configures Windows audit logging
+// for the file system. Two independent audit levels can be set: one for file
+// access events (open, read, write, delete) and one for file share access events
+// (connect, disconnect, change permissions). Logs are sent to CloudWatch Logs.
+message AwsFsxWindowsFileSystemAuditLogConfiguration {
+  // Logging level for individual file access events (open, read, write, delete,
+  // rename, change permissions on files and folders).
+  //
+  // - "DISABLED": no file access logging.
+  // - "SUCCESS_ONLY": log successful access events only.
+  // - "FAILURE_ONLY": log failed access attempts only (e.g., access denied).
+  // - "SUCCESS_AND_FAILURE": log all access events.
+  //
+  // Default: DISABLED
+  optional string file_access_audit_log_level = 1 [(dev.planton.shared.options.default) = "DISABLED"];
+
+  // Logging level for file share access events (connect to share, disconnect,
+  // change share permissions).
+  //
+  // - "DISABLED": no file share access logging.
+  // - "SUCCESS_ONLY": log successful share access events only.
+  // - "FAILURE_ONLY": log failed share access attempts only.
+  // - "SUCCESS_AND_FAILURE": log all share access events.
+  //
+  // Default: DISABLED
+  optional string file_share_access_audit_log_level = 2 [(dev.planton.shared.options.default) = "DISABLED"];
+
+  // CloudWatch Logs log group ARN to receive audit events. The log group must
+  // start with "/aws/fsx/" as required by AWS. If not set when audit levels are
+  // enabled, FSx creates a default log stream in the "/aws/fsx/windows" group.
+  //
+  // Only valid when at least one audit log level is not DISABLED.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef audit_log_destination = 3 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsCloudwatchLogGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.log_group_arn"
+  ];
+
+  // file_access_audit_log_level valid values.
+  option (buf.validate.message).cel = {
+    id: "file_access_level_valid"
+    message: "file_access_audit_log_level must be 'DISABLED', 'SUCCESS_ONLY', 'FAILURE_ONLY', or 'SUCCESS_AND_FAILURE'"
+    expression: "this.file_access_audit_log_level == '' || this.file_access_audit_log_level in ['DISABLED', 'SUCCESS_ONLY', 'FAILURE_ONLY', 'SUCCESS_AND_FAILURE']"
+  };
+
+  // file_share_access_audit_log_level valid values.
+  option (buf.validate.message).cel = {
+    id: "file_share_access_level_valid"
+    message: "file_share_access_audit_log_level must be 'DISABLED', 'SUCCESS_ONLY', 'FAILURE_ONLY', or 'SUCCESS_AND_FAILURE'"
+    expression: "this.file_share_access_audit_log_level == '' || this.file_share_access_audit_log_level in ['DISABLED', 'SUCCESS_ONLY', 'FAILURE_ONLY', 'SUCCESS_AND_FAILURE']"
+  };
+}
+
+// AwsFsxWindowsFileSystemDiskIopsConfiguration controls the SSD IOPS provisioned
+// for the file system. In AUTOMATIC mode, IOPS scale with storage capacity. In
+// USER_PROVISIONED mode, you specify the exact IOPS independently of storage.
+// Only applicable to SSD storage type.
+message AwsFsxWindowsFileSystemDiskIopsConfiguration {
+  // IOPS provisioning mode.
+  //
+  // - "AUTOMATIC": IOPS scale automatically based on storage capacity.
+  //   Provides 3 IOPS per GiB of storage.
+  // - "USER_PROVISIONED": you specify the exact IOPS via the `iops` field.
+  //   Allows higher performance independent of storage size but at extra cost.
+  //
+  // Default: AUTOMATIC
+  optional string mode = 1 [(dev.planton.shared.options.default) = "AUTOMATIC"];
+
+  // Total SSD IOPS provisioned. Only valid when mode is "USER_PROVISIONED".
+  //
+  // Valid range: 0–350000.
+  int32 iops = 2;
+
+  // mode valid values.
+  option (buf.validate.message).cel = {
+    id: "iops_mode_valid"
+    message: "mode must be 'AUTOMATIC' or 'USER_PROVISIONED'"
+    expression: "this.mode == '' || this.mode in ['AUTOMATIC', 'USER_PROVISIONED']"
+  };
+
+  // iops requires USER_PROVISIONED mode.
+  option (buf.validate.message).cel = {
+    id: "iops_requires_user_provisioned"
+    message: "iops can only be set when mode is 'USER_PROVISIONED'"
+    expression: "this.iops == 0 || this.mode == 'USER_PROVISIONED'"
+  };
+}

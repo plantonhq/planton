@@ -1,0 +1,7 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesGatewayClass
+metadata:
+  name: test-gateway-class
+spec:
+  controllerName: istio.io/gateway-controller
+  description: "Test gateway class for local hacking"

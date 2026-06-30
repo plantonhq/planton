@@ -7,8 +7,8 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 
-	componentv1 "github.com/plantonhq/openmcf/apis/org/openmcf/qa/componente2eprofile/v1"
-	"github.com/plantonhq/openmcf/pkg/e2e/profile"
+	componentv1 "github.com/plantonhq/planton/apis/dev/planton/qa/componente2eprofile/v1"
+	"github.com/plantonhq/planton/pkg/e2e/profile"
 )
 
 var (
@@ -192,7 +192,7 @@ func (m model) View() string {
 		provName = m.result.Provider.Metadata.Name
 	}
 
-	b.WriteString(titleStyle.Render(fmt.Sprintf("  OpenMCF E2E Discovery — %s", provName)))
+	b.WriteString(titleStyle.Render(fmt.Sprintf("  Planton E2E Discovery — %s", provName)))
 	b.WriteString("\n\n")
 
 	if m.result.Provider != nil && m.result.Provider.Spec != nil {

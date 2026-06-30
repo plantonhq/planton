@@ -1,0 +1,33 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "terraform",
+    srcs = [
+        "apply.go",
+        "destroy.go",
+        "init.go",
+        "plan.go",
+        "refresh.go",
+    ],
+    importpath = "github.com/plantonhq/planton/cmd/planton/root/terraform",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/dev/planton/shared",
+        "//apis/dev/planton/shared/iac/terraform",
+        "//internal/cli/cliprint",
+        "//internal/cli/flag",
+        "//internal/cli/manifest",
+        "//internal/cli/ui",
+        "//internal/cli/workspace",
+        "//internal/manifest",
+        "//pkg/crkreflect",
+        "//pkg/iac/localmodule",
+        "//pkg/iac/provisioner",
+        "//pkg/iac/stackinput",
+        "//pkg/iac/stackinput/stackinputproviderconfig",
+        "//pkg/iac/tofu/tfbackend",
+        "//pkg/iac/tofu/tofumodule",
+        "//pkg/kubernetes/kubecontext",
+        "@com_github_spf13_cobra//:cobra",
+    ],
+)

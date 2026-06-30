@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package dev.planton.provider.civo.civodatabase.v1;
+
+// CivoDatabaseStackOutputs captures the key outputs after provisioning a Civo managed database instance.
+message CivoDatabaseStackOutputs {
+  // The unique identifier of the created database instance (UUID).
+  string database_id = 1;
+
+  // The host name or IP address of the primary database endpoint.
+  string host = 2;
+
+  // The network port on which the database is listening.
+  uint32 port = 3;
+
+  // The username for the default database user.
+  string username = 4;
+
+  // A reference to a secret containing the default user's password.
+  string password_secret_ref = 5;
+
+  // The host addresses of replica nodes, if any (empty if no replicas were configured).
+  repeated string replica_endpoints = 6;
+}

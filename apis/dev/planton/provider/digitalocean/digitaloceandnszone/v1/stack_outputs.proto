@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package dev.planton.provider.digitalocean.digitaloceandnszone.v1;
+
+// DigitalOceanDnsZoneStackOutputs captures the output information after provisioning a DNS zone on DigitalOcean.
+message DigitalOceanDnsZoneStackOutputs {
+  // name of the DNS zone (domain) created on DigitalOcean.
+  string zone_name = 1;
+
+  // The unique identifier of the created DNS zone (typically the domain name or ID assigned by DigitalOcean).
+  string zone_id = 2;
+
+  // The list of nameserver addresses for the DNS zone.
+  // These are the nameservers that need to be set at the domain registrar for this zone.
+  repeated string name_servers = 3;
+}

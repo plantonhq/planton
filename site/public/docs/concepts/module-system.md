@@ -1,13 +1,13 @@
 ---
 title: "Module System"
-description: "How OpenMCF resolves, downloads, caches, and versions IaC modules -- from the staging repository to workspace isolation and version pinning"
+description: "How Planton resolves, downloads, caches, and versions IaC modules -- from the staging repository to workspace isolation and version pinning"
 icon: "package"
 order: 45
 ---
 
 # Module System
 
-When you run a deployment command, the CLI needs to find the correct IaC module for the component you are deploying. OpenMCF's module system handles this automatically -- cloning the module repository, caching it locally, creating isolated workspace copies for each deployment, and supporting version pinning for reproducible builds.
+When you run a deployment command, the CLI needs to find the correct IaC module for the component you are deploying. Planton's module system handles this automatically -- cloning the module repository, caching it locally, creating isolated workspace copies for each deployment, and supporting version pinning for reproducible builds.
 
 ## Module Resolution Chain
 
@@ -18,7 +18,7 @@ The CLI resolves module paths through a priority chain. The first method that su
 If you provide `--module-dir` pointing to a directory that contains a valid module (a `Pulumi.yaml` for Pulumi, or `.tf` files for Terraform), the CLI uses that directory directly. No cloning, no caching.
 
 ```bash
-openmcf pulumi up -f postgres.yaml \
+planton pulumi up -f postgres.yaml \
   --module-dir ./my-custom-module \
   --stack my-org/my-project/prod
 ```
@@ -27,7 +27,7 @@ This is primarily used for local module development -- when you are editing a mo
 
 ### 2. Local Module (--local-module)
 
-The `--local-module` flag tells the CLI to use the local OpenMCF repository checkout to derive the module directory. This is useful when developing within the OpenMCF repository itself.
+The `--local-module` flag tells the CLI to use the local Planton repository checkout to derive the module directory. This is useful when developing within the Planton repository itself.
 
 ### 3. Pre-Built Binary (Pulumi only)
 
@@ -43,22 +43,22 @@ If none of the above methods work, the CLI falls back to the staging system.
 
 ## The Staging System
 
-The staging repository is a local clone of the OpenMCF repository at `~/.openmcf/staging/`. It serves as the source for IaC modules when pre-built artifacts are not available.
+The staging repository is a local clone of the Planton repository at `~/.planton/staging/`. It serves as the source for IaC modules when pre-built artifacts are not available.
 
 ### How Staging Works
 
-1. **First run**: The CLI clones the OpenMCF repository to `~/.openmcf/staging/`
+1. **First run**: The CLI clones the Planton repository to `~/.planton/staging/`
 2. **Subsequent runs**: The CLI verifies the staging repo exists and is at the correct version
 3. **Version mismatch**: If the CLI version does not match the staging version, the CLI fetches and checks out the correct version
 
-The staging version is tracked in `~/.openmcf/staging/.version`.
+The staging version is tracked in `~/.planton/staging/.version`.
 
 ### Workspace Isolation
 
 The staging repository is never used directly for deployments. Instead, the CLI copies the staging repo into an isolated workspace directory for each deployment:
 
-- **Pulumi workspaces**: `~/.openmcf/pulumi/staging-workspaces/{stack-fqdn}/`
-- **OpenTofu workspaces**: `~/.openmcf/tofu/`
+- **Pulumi workspaces**: `~/.planton/pulumi/staging-workspaces/{stack-fqdn}/`
+- **OpenTofu workspaces**: `~/.planton/tofu/`
 
 Each deployment operates on its own copy of the module, which means concurrent deployments of different components (or different versions of the same component) never interfere with each other.
 
@@ -67,14 +67,14 @@ Each deployment operates on its own copy of the module, which means concurrent d
 Within the staging workspace, the CLI locates modules using a deterministic path:
 
 ```
-{workspace}/apis/org/openmcf/provider/{provider}/{kind}/v1/iac/{engine}/
+{workspace}/apis/dev/planton/provider/{provider}/{kind}/v1/iac/{engine}/
 ```
 
 For example, the Pulumi module for `KubernetesPostgres`:
 
 ```
-~/.openmcf/pulumi/staging-workspaces/my-org-my-project-prod/
-  apis/org/openmcf/provider/kubernetes/kubernetespostgres/v1/iac/pulumi/
+~/.planton/pulumi/staging-workspaces/my-org-my-project-prod/
+  apis/dev/planton/provider/kubernetes/kubernetespostgres/v1/iac/pulumi/
 ```
 
 The provider name is derived from the `CloudResourceKind` enum metadata. The kind name is the lowercase version of the enum entry. The engine is either `pulumi` or `tf`.
@@ -84,7 +84,7 @@ The provider name is derived from the `CloudResourceKind` enum metadata. The kin
 ### Checking the Current Version
 
 ```bash
-openmcf modules-version
+planton modules-version
 ```
 
 This shows the version of the IaC modules currently checked out in the staging area.
@@ -92,21 +92,21 @@ This shows the version of the IaC modules currently checked out in the staging a
 ### Updating to Latest
 
 ```bash
-openmcf pull
+planton pull
 ```
 
-This fetches the latest changes from the upstream OpenMCF repository and pulls them into the staging area. If the staging repo was on a specific version tag, it first checks out the `main` branch, pulls, and then optionally restores the previous version.
+This fetches the latest changes from the upstream Planton repository and pulls them into the staging area. If the staging repo was on a specific version tag, it first checks out the `main` branch, pulls, and then optionally restores the previous version.
 
 ### Switching Versions
 
 ```bash
-openmcf checkout v0.3.9
+planton checkout v0.3.9
 ```
 
 This checks out a specific version tag, branch name, or commit SHA in the staging area. The special value `latest` checks out the most recent release tag:
 
 ```bash
-openmcf checkout latest
+planton checkout latest
 ```
 
 ### Per-Deployment Version Override
@@ -114,7 +114,7 @@ openmcf checkout latest
 You can override the module version for a specific deployment without changing the staging area:
 
 ```bash
-openmcf pulumi up -f postgres.yaml \
+planton pulumi up -f postgres.yaml \
   --module-version v0.3.8 \
   --stack my-org/my-project/prod
 ```
@@ -126,7 +126,7 @@ The `--module-version` flag checks out the specified version in the workspace co
 By default, the CLI cleans up workspace copies after each deployment. If you want to inspect the workspace after a run (for debugging), use the `--no-cleanup` flag:
 
 ```bash
-openmcf pulumi up -f postgres.yaml \
+planton pulumi up -f postgres.yaml \
   --no-cleanup \
   --stack my-org/my-project/prod
 ```
@@ -139,10 +139,10 @@ When developing or customizing a module, use `--module-dir` to point at your loc
 
 ```bash
 # Edit the module locally
-cd ~/my-openmcf-fork/apis/org/openmcf/provider/kubernetes/kubernetespostgres/v1/iac/pulumi/
+cd ~/my-planton-fork/apis/dev/planton/provider/kubernetes/kubernetespostgres/v1/iac/pulumi/
 
 # Test with the local module
-openmcf pulumi up -f postgres.yaml \
+planton pulumi up -f postgres.yaml \
   --module-dir . \
   --stack my-org/my-project/dev
 ```

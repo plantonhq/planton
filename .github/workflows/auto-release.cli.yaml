@@ -1,7 +1,7 @@
 # =============================================================================
 # CLI Auto-Release
 # =============================================================================
-# Builds and releases the openmcf CLI using GoReleaser for auto-releases.
+# Builds and releases the planton CLI using GoReleaser for auto-releases.
 # Updates Homebrew tap so users can get the latest CLI via `brew upgrade`.
 #
 # Tag Format: v{semver}-cli.{YYYYMMDD}.{N}
@@ -66,7 +66,7 @@ jobs:
           echo "### Install/Upgrade" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
-          echo "brew upgrade openmcf" >> $GITHUB_STEP_SUMMARY
+          echo "brew upgrade planton" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "[View Release](https://github.com/${{ github.repository }}/releases/tag/${TAG})" >> $GITHUB_STEP_SUMMARY

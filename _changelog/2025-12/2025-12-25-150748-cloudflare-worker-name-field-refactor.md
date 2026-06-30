@@ -14,7 +14,7 @@ The CloudflareWorker component had an inconsistent API design where the worker n
 
 ### Pain Points
 
-- **Inconsistent API**: Unlike other deployment components in OpenMCF, the worker name was not a top-level spec field
+- **Inconsistent API**: Unlike other deployment components in Planton, the worker name was not a top-level spec field
 - **Poor Discoverability**: Users had to navigate to `spec.script.name` to set the worker name, which was not intuitive
 - **Semantic Confusion**: The `script` object was meant to represent the worker script bundle configuration, not the worker's identity
 - **Redundancy**: The worker name was conflated with script configuration, even though they serve different purposes
@@ -65,7 +65,7 @@ message CloudflareWorkerScript {
 
 ### 1. Protocol Buffer Changes
 
-**File**: `apis/org/openmcf/provider/cloudflare/cloudflareworker/v1/spec.proto`
+**File**: `apis/dev/planton/provider/cloudflare/cloudflareworker/v1/spec.proto`
 
 - Added `worker_name` as field #2 in `CloudflareWorkerSpec`
 - Made it required with `buf.validate.field` options:
@@ -78,7 +78,7 @@ message CloudflareWorkerScript {
 
 ### 2. Test Updates
 
-**File**: `apis/org/openmcf/provider/cloudflare/cloudflareworker/v1/spec_test.go`
+**File**: `apis/dev/planton/provider/cloudflare/cloudflareworker/v1/spec_test.go`
 
 - Updated all test cases to include `WorkerName` field in `CloudflareWorkerSpec`
 - Removed `Name` field from all `CloudflareWorkerScript` struct literals
@@ -106,7 +106,7 @@ All 8 existing tests updated, 1 new test added (9 tests total, all passing).
 
 ### 3. Pulumi Module Updates
 
-**File**: `apis/org/openmcf/provider/cloudflare/cloudflareworker/v1/iac/pulumi/module/worker_script.go`
+**File**: `apis/dev/planton/provider/cloudflare/cloudflareworker/v1/iac/pulumi/module/worker_script.go`
 
 Changed from:
 ```go
@@ -118,7 +118,7 @@ To:
 ScriptName: pulumi.String(locals.CloudflareWorker.Spec.WorkerName),
 ```
 
-**File**: `apis/org/openmcf/provider/cloudflare/cloudflareworker/v1/iac/pulumi/module/route.go`
+**File**: `apis/dev/planton/provider/cloudflare/cloudflareworker/v1/iac/pulumi/module/route.go`
 
 Changed from:
 ```go
@@ -132,7 +132,7 @@ Script: pulumi.String(locals.CloudflareWorker.Spec.WorkerName),
 
 ### 4. Terraform Module Updates
 
-**File**: `apis/org/openmcf/provider/cloudflare/cloudflareworker/v1/iac/tf/locals.tf`
+**File**: `apis/dev/planton/provider/cloudflare/cloudflareworker/v1/iac/tf/locals.tf`
 
 Changed from:
 ```hcl
@@ -146,7 +146,7 @@ script_name = var.spec.worker_name
 
 ### 5. Documentation Updates
 
-**File**: `apis/org/openmcf/provider/cloudflare/cloudflareworker/v1/examples.md`
+**File**: `apis/dev/planton/provider/cloudflare/cloudflareworker/v1/examples.md`
 
 Updated all 8 example manifests to use the new field structure:
 
@@ -236,7 +236,7 @@ All changes verified with:
 make protos
 
 # Run component-specific tests
-go test ./apis/org/openmcf/provider/cloudflare/cloudflareworker/v1/
+go test ./apis/dev/planton/provider/cloudflare/cloudflareworker/v1/
 
 # Full project build
 make build
@@ -320,26 +320,26 @@ This ensures the `buf.validate` rules are correctly enforced.
 ## Files Changed
 
 **Protocol Buffers** (1 file):
-- `apis/org/openmcf/provider/cloudflare/cloudflareworker/v1/spec.proto`
+- `apis/dev/planton/provider/cloudflare/cloudflareworker/v1/spec.proto`
 
 **Tests** (1 file):
-- `apis/org/openmcf/provider/cloudflare/cloudflareworker/v1/spec_test.go`
+- `apis/dev/planton/provider/cloudflare/cloudflareworker/v1/spec_test.go`
 
 **Pulumi** (2 files):
-- `apis/org/openmcf/provider/cloudflare/cloudflareworker/v1/iac/pulumi/module/worker_script.go`
-- `apis/org/openmcf/provider/cloudflare/cloudflareworker/v1/iac/pulumi/module/route.go`
+- `apis/dev/planton/provider/cloudflare/cloudflareworker/v1/iac/pulumi/module/worker_script.go`
+- `apis/dev/planton/provider/cloudflare/cloudflareworker/v1/iac/pulumi/module/route.go`
 
 **Terraform** (1 file):
-- `apis/org/openmcf/provider/cloudflare/cloudflareworker/v1/iac/tf/locals.tf`
+- `apis/dev/planton/provider/cloudflare/cloudflareworker/v1/iac/tf/locals.tf`
 
 **Documentation** (1 file):
-- `apis/org/openmcf/provider/cloudflare/cloudflareworker/v1/examples.md`
+- `apis/dev/planton/provider/cloudflare/cloudflareworker/v1/examples.md`
 
 **Total**: 6 files changed
 
 ## Related Work
 
-This change is part of ongoing API refinement efforts to improve consistency across deployment components in OpenMCF. Similar patterns should be considered for other providers where critical fields are nested unnecessarily.
+This change is part of ongoing API refinement efforts to improve consistency across deployment components in Planton. Similar patterns should be considered for other providers where critical fields are nested unnecessarily.
 
 **Future Considerations**:
 - Audit other deployment components for similar API inconsistencies

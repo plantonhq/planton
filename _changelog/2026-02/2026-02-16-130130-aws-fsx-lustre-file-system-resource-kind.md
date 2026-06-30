@@ -6,15 +6,15 @@
 
 ## Summary
 
-Added `AwsFsxLustreFileSystem` as a new cloud resource kind in OpenMCF, providing declarative management of Amazon FSx for Lustre file systems — high-performance storage optimized for HPC, ML training, and batch processing workloads. This is the first of a planned family of FSx components, following a key design decision to model each FSx type as a separate resource kind.
+Added `AwsFsxLustreFileSystem` as a new cloud resource kind in Planton, providing declarative management of Amazon FSx for Lustre file systems — high-performance storage optimized for HPC, ML training, and batch processing workloads. This is the first of a planned family of FSx components, following a key design decision to model each FSx type as a separate resource kind.
 
 ## Problem Statement / Motivation
 
-FSx for Lustre is a critical AWS service for compute-intensive workloads, but it was missing from OpenMCF's resource catalog. The original plan treated all FSx types (Lustre, Windows, OpenZFS, ONTAP) as a single component, which would have produced a confusing, unmaintainable abstraction.
+FSx for Lustre is a critical AWS service for compute-intensive workloads, but it was missing from Planton's resource catalog. The original plan treated all FSx types (Lustre, Windows, OpenZFS, ONTAP) as a single component, which would have produced a confusing, unmaintainable abstraction.
 
 ### Pain Points
 
-- No declarative way to provision Lustre file systems through OpenMCF
+- No declarative way to provision Lustre file systems through Planton
 - The original single-component design would have created a massive spec where ~80% of fields are irrelevant for any given FSx type
 - Each FSx type is a fundamentally different Terraform resource with distinct schemas, sub-resources, and use cases
 
@@ -80,7 +80,7 @@ flowchart TB
 
 ## Benefits
 
-- Declarative provisioning of Lustre file systems through OpenMCF CLI
+- Declarative provisioning of Lustre file systems through Planton CLI
 - Clean separation of FSx types prevents spec pollution and confusion
 - Rich cross-field validations catch misconfigurations before deployment
 - StringValueOrRef integration enables infra chart wiring (VPC, SG, KMS, CloudWatch)
@@ -88,7 +88,7 @@ flowchart TB
 
 ## Impact
 
-- **Users**: Can now deploy FSx Lustre via `openmcf pulumi up --manifest lustre.yaml`
+- **Users**: Can now deploy FSx Lustre via `planton pulumi up --manifest lustre.yaml`
 - **Platform**: FSx family expansion path is clear (5 more components planned)
 - **Infra Charts**: Enables ML notebook and HPC cluster infra charts with Lustre backing storage
 

@@ -12,14 +12,14 @@ Deploys an Azure Application Insights resource backed by a Log Analytics Workspa
 
 ## What Gets Created
 
-When you deploy an AzureApplicationInsights resource, OpenMCF provisions:
+When you deploy an AzureApplicationInsights resource, Planton provisions:
 
 - **Application Insights** — an `appinsights.Insights` resource in the specified region and resource group, configured with the chosen application type, retention period, daily data cap, and sampling percentage, linked to a Log Analytics Workspace
 - **Azure Tags** — resource metadata tags applied to the Application Insights resource for tracking and governance (resource name, kind, organization, environment)
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Resource Group** where the Application Insights resource will be created (can reference an AzureResourceGroup resource)
 - **A Log Analytics Workspace** for storing telemetry data (can reference an AzureLogAnalyticsWorkspace resource). Classic (non-workspace) Application Insights is deprecated by Microsoft and is not supported.
 
@@ -28,15 +28,15 @@ When you deploy an AzureApplicationInsights resource, OpenMCF provisions:
 Create a file `app-insights.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureApplicationInsights
 metadata:
   name: my-app-insights
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureApplicationInsights.my-app-insights
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureApplicationInsights.my-app-insights
 spec:
   region: eastus
   resourceGroup: my-rg
@@ -47,7 +47,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f app-insights.yaml
+planton apply -f app-insights.yaml
 ```
 
 This creates a workspace-based Application Insights resource with the default application type (`web`), 90-day retention, 100 GB daily data cap, and 100% sampling (full fidelity).
@@ -79,15 +79,15 @@ This creates a workspace-based Application Insights resource with the default ap
 A minimal Application Insights resource for monitoring a web application in development:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureApplicationInsights
 metadata:
   name: dev-web-insights
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureApplicationInsights.dev-web-insights
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureApplicationInsights.dev-web-insights
 spec:
   region: eastus
   resourceGroup: dev-rg
@@ -100,15 +100,15 @@ spec:
 An Application Insights resource with a low daily data cap and reduced retention for a staging environment:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureApplicationInsights
 metadata:
   name: staging-insights
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.AzureApplicationInsights.staging-insights
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.AzureApplicationInsights.staging-insights
 spec:
   region: westeurope
   resourceGroup: staging-rg
@@ -125,15 +125,15 @@ spec:
 A production Application Insights resource with extended retention and full-fidelity telemetry:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureApplicationInsights
 metadata:
   name: prod-insights
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureApplicationInsights.prod-insights
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureApplicationInsights.prod-insights
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -150,15 +150,15 @@ spec:
 An Application Insights resource configured for a Node.js application with 25% sampling to reduce costs at scale:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureApplicationInsights
 metadata:
   name: nodejs-insights
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureApplicationInsights.nodejs-insights
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureApplicationInsights.nodejs-insights
 spec:
   region: southeastasia
   resourceGroup: api-rg
@@ -172,18 +172,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference OpenMCF-managed resources for the resource group and Log Analytics Workspace instead of hardcoding values:
+Reference Planton-managed resources for the resource group and Log Analytics Workspace instead of hardcoding values:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureApplicationInsights
 metadata:
   name: ref-insights
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureApplicationInsights.ref-insights
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureApplicationInsights.ref-insights
 spec:
   region: eastus
   resourceGroup:

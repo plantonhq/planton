@@ -5,23 +5,23 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
-	foreignkeyv1 "github.com/plantonhq/openmcf/apis/org/openmcf/shared/foreignkey/v1"
-	"github.com/plantonhq/openmcf/internal/manifest"
-	"github.com/plantonhq/openmcf/pkg/outputs"
+	"github.com/plantonhq/planton/apis/dev/planton/shared/cloudresourcekind"
+	foreignkeyv1 "github.com/plantonhq/planton/apis/dev/planton/shared/foreignkey/v1"
+	"github.com/plantonhq/planton/internal/manifest"
+	"github.com/plantonhq/planton/pkg/outputs"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"sigs.k8s.io/yaml"
 )
 
-const stringValueOrRefFullName = "org.openmcf.shared.foreignkey.v1.StringValueOrRef"
+const stringValueOrRefFullName = "dev.planton.shared.foreignkey.v1.StringValueOrRef"
 
 // ResolveManifestRefs implements, for the standalone E2E harness, the foreign-key
 // resolution the Planton orchestrator performs in production: it replaces each
 // value_from reference in the component manifest whose default_kind matches a
 // deployed prerequisite with the literal value read from that prerequisite's
-// outputs (via the field's default_kind_field_path). Standalone OpenMCF otherwise
+// outputs (via the field's default_kind_field_path). Standalone Planton otherwise
 // requires literal values -- the tofu generator errors on an unresolved ref and
 // the pulumi modules drop it -- so this is the step that makes a composed
 // (e.g. subnet -> vpc) topology testable end to end.
@@ -74,7 +74,7 @@ func ResolveManifestRefs(manifestPath string, depOutputs map[cloudresourcekind.C
 	}
 
 	// A temp file (not next to the scenario) so scenario discovery never picks it up.
-	tmpFile, err := os.CreateTemp("", "openmcf-e2e-resolved-*.yaml")
+	tmpFile, err := os.CreateTemp("", "planton-e2e-resolved-*.yaml")
 	if err != nil {
 		return "", errors.Wrap(err, "failed to create temp file for resolved manifest")
 	}

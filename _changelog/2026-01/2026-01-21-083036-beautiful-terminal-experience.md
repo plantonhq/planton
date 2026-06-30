@@ -6,7 +6,7 @@
 
 ## Summary
 
-Transformed the OpenMCF CLI error display from plain, unformatted error messages into a beautiful, structured terminal experience using the `charmbracelet/lipgloss` library. The new error handling provides actionable, visually distinct error messages with color-coded banners, icons, contextual tips, and intelligent suggestions for common mistakes.
+Transformed the Planton CLI error display from plain, unformatted error messages into a beautiful, structured terminal experience using the `charmbracelet/lipgloss` library. The new error handling provides actionable, visually distinct error messages with color-coded banners, icons, contextual tips, and intelligent suggestions for common mistakes.
 
 ## Problem Statement / Motivation
 
@@ -254,7 +254,7 @@ flowchart LR
 | `internal/cli/ui` | 4 files (NEW) | Core UI components |
 | `internal/cli/manifest` | 3 files | Clipboard error handling |
 | `internal/manifest` | 3 files | Manifest load errors |
-| `cmd/openmcf/root` | 6 files | Error handler integration |
+| `cmd/planton/root` | 6 files | Error handler integration |
 
 ### User Experience
 

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"reflect"
 
-	scalewayprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway"
-	"github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/pulumi/pulumioutput"
+	scalewayprovider "github.com/plantonhq/planton/apis/dev/planton/provider/scaleway"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/pulumi/pulumioutput"
 
 	"github.com/pkg/errors"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"

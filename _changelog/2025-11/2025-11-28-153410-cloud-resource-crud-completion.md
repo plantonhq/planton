@@ -241,11 +241,11 @@ func (s *CloudResourceService) UpdateCloudResource(
 
 Created three new CLI command files following the established pattern:
 
-**cloud-resource:get** (`cmd/openmcf/root/cloud_resource_get.go`):
+**cloud-resource:get** (`cmd/planton/root/cloud_resource_get.go`):
 
 ```bash
 # Usage
-openmcf cloud-resource:get --id=<resource-id>
+planton cloud-resource:get --id=<resource-id>
 
 # Output format
 Cloud Resource Details:
@@ -266,11 +266,11 @@ spec:
   cidr: 10.0.0.0/16
 ```
 
-**cloud-resource:update** (`cmd/openmcf/root/cloud_resource_update.go`):
+**cloud-resource:update** (`cmd/planton/root/cloud_resource_update.go`):
 
 ```bash
 # Usage
-openmcf cloud-resource:update --id=<resource-id> --arg=<yaml-file>
+planton cloud-resource:update --id=<resource-id> --arg=<yaml-file>
 
 # Success output
 ✅ Cloud resource updated successfully!
@@ -285,11 +285,11 @@ Error: Invalid manifest - manifest name 'different-name' does not match existing
 Error: Invalid manifest - manifest kind 'AwsVpc' does not match existing resource kind 'CivoVpc'
 ```
 
-**cloud-resource:delete** (`cmd/openmcf/root/cloud_resource_delete.go`):
+**cloud-resource:delete** (`cmd/planton/root/cloud_resource_delete.go`):
 
 ```bash
 # Usage
-openmcf cloud-resource:delete --id=<resource-id>
+planton cloud-resource:delete --id=<resource-id>
 
 # Success output
 ✅ Cloud resource 'my-vpc' deleted successfully
@@ -303,7 +303,7 @@ All commands include:
 
 ### 5. Command Registration
 
-**File**: `cmd/openmcf/root.go`
+**File**: `cmd/planton/root.go`
 
 Registered all three commands alphabetically:
 
@@ -350,7 +350,7 @@ app/backend/apis/gen/go/proto/    ← Everyone imports from here
 **Architecture rationale**:
 - `app/backend` - Backend service (defines and generates protos)
 - `app/frontend` - Web frontend (RPC client using TypeScript protos)
-- `cmd/openmcf` - CLI frontend (RPC client using Go protos)
+- `cmd/planton` - CLI frontend (RPC client using Go protos)
 
 Both "frontends" import from the same backend-generated proto location, ensuring consistency.
 
@@ -487,7 +487,7 @@ MONGODB_URI="mongodb://localhost:27017" make dev
 
 ```bash
 # 1. Configure backend
-openmcf config set backend-url http://localhost:50051
+planton config set backend-url http://localhost:50051
 
 # 2. Create resource
 cat > vpc.yaml <<EOF
@@ -499,15 +499,15 @@ spec:
   cidr: 10.0.0.0/16
 EOF
 
-openmcf cloud-resource:create --arg=vpc.yaml
+planton cloud-resource:create --arg=vpc.yaml
 # Output: ID: 507f1f77bcf86cd799439011
 
 # 3. List resources
-openmcf cloud-resource:list
-openmcf cloud-resource:list --kind CivoVpc
+planton cloud-resource:list
+planton cloud-resource:list --kind CivoVpc
 
 # 4. Get resource details
-openmcf cloud-resource:get --id=507f1f77bcf86cd799439011
+planton cloud-resource:get --id=507f1f77bcf86cd799439011
 
 # 5. Update resource
 cat > vpc-updated.yaml <<EOF
@@ -523,10 +523,10 @@ spec:
     - networking
 EOF
 
-openmcf cloud-resource:update --id=507f1f77bcf86cd799439011 --arg=vpc-updated.yaml
+planton cloud-resource:update --id=507f1f77bcf86cd799439011 --arg=vpc-updated.yaml
 
 # 6. Delete resource
-openmcf cloud-resource:delete --id=507f1f77bcf86cd799439011
+planton cloud-resource:delete --id=507f1f77bcf86cd799439011
 ```
 
 ### Update Validation in Action
@@ -541,7 +541,7 @@ spec:
   region: NYC1
 EOF
 
-openmcf cloud-resource:update --id=507f... --arg=wrong-name.yaml
+planton cloud-resource:update --id=507f... --arg=wrong-name.yaml
 # Error: manifest name 'different-vpc-name' does not match existing resource name 'production-vpc'
 
 # Attempt to update with wrong kind (fails)
@@ -553,7 +553,7 @@ spec:
   region: us-east-1
 EOF
 
-openmcf cloud-resource:update --id=507f... --arg=wrong-kind.yaml
+planton cloud-resource:update --id=507f... --arg=wrong-kind.yaml
 # Error: manifest kind 'AwsVpc' does not match existing resource kind 'CivoVpc'
 ```
 
@@ -573,12 +573,12 @@ openmcf cloud-resource:update --id=507f... --arg=wrong-kind.yaml
 ### CLI Commands
 
 **Created**:
-- `cmd/openmcf/root/cloud_resource_get.go` - Get command (98 lines)
-- `cmd/openmcf/root/cloud_resource_update.go` - Update command (109 lines)
-- `cmd/openmcf/root/cloud_resource_delete.go` - Delete command (79 lines)
+- `cmd/planton/root/cloud_resource_get.go` - Get command (98 lines)
+- `cmd/planton/root/cloud_resource_update.go` - Update command (109 lines)
+- `cmd/planton/root/cloud_resource_delete.go` - Delete command (79 lines)
 
 **Modified**:
-- `cmd/openmcf/root.go` - Registered 3 new commands
+- `cmd/planton/root.go` - Registered 3 new commands
 
 ### Testing
 
@@ -692,5 +692,5 @@ No migration or data changes required.
 **Operations Added**: 3 operations (Get, Update, Delete)
 **Commands Added**: 3 CLI commands
 **APIs Added**: 3 RPC methods
-**Location**: `cmd/openmcf/root/` and `app/backend/`
+**Location**: `cmd/planton/root/` and `app/backend/`
 

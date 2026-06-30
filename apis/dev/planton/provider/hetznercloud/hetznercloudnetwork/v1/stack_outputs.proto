@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package dev.planton.provider.hetznercloud.hetznercloudnetwork.v1;
+
+// HetznerCloudNetworkStackOutputs captures the resulting network identifiers
+// after provisioning.
+message HetznerCloudNetworkStackOutputs {
+  // The Hetzner Cloud numeric ID of the created network (as a string).
+  // Referenced by HetznerCloudServer, HetznerCloudLoadBalancer, and other
+  // networking components via StringValueOrRef.
+  string network_id = 1;
+}

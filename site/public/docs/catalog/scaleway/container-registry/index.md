@@ -12,7 +12,7 @@ Deploys a Scaleway Container Registry namespace, providing a fully managed, OCI-
 
 ## What Gets Created
 
-When you deploy a ScalewayContainerRegistry resource, OpenMCF provisions:
+When you deploy a ScalewayContainerRegistry resource, Planton provisions:
 
 - **Registry Namespace** — a `registry.Namespace` resource providing a dedicated OCI container image registry with a Docker endpoint at `rg.<region>.scw.cloud/<namespace-name>`
 
@@ -20,7 +20,7 @@ Container Registry namespaces are regional resources. The namespace name becomes
 
 ## Prerequisites
 
-- **Scaleway credentials** configured via environment variables or OpenMCF provider config
+- **Scaleway credentials** configured via environment variables or Planton provider config
 - **A unique namespace name** that is 4-63 characters, lowercase alphanumeric with hyphens, and DNS-compatible (it appears in the endpoint URL)
 
 ## Quick Start
@@ -28,15 +28,15 @@ Container Registry namespaces are regional resources. The namespace name becomes
 Create a file `container-registry.yaml`:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayContainerRegistry
 metadata:
   name: my-registry
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayContainerRegistry.my-registry
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayContainerRegistry.my-registry
 spec:
   region: fr-par
 ```
@@ -44,7 +44,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f container-registry.yaml
+planton apply -f container-registry.yaml
 ```
 
 This creates a private container registry namespace in the Paris region. After deployment, authenticate and push images:
@@ -77,15 +77,15 @@ docker push rg.fr-par.scw.cloud/my-registry/myapp:latest
 A minimal private registry namespace for storing development container images:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayContainerRegistry
 metadata:
   name: dev-images
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayContainerRegistry.dev-images
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayContainerRegistry.dev-images
 spec:
   region: fr-par
   description: Development environment container images
@@ -96,15 +96,15 @@ spec:
 A public registry namespace for distributing open-source container images and base images that external consumers can pull without credentials:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayContainerRegistry
 metadata:
   name: oss-images
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.ScalewayContainerRegistry.oss-images
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.ScalewayContainerRegistry.oss-images
 spec:
   region: nl-ams
   description: Public base images and community tools
@@ -116,15 +116,15 @@ spec:
 A private production registry in the same region as a Kapsule cluster for lowest image pull latency during deployments and pod scaling:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayContainerRegistry
 metadata:
   name: prod-services
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.ScalewayContainerRegistry.prod-services
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.ScalewayContainerRegistry.prod-services
 spec:
   region: pl-waw
   description: Production microservices images for Warsaw Kapsule cluster

@@ -1,0 +1,13 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesSecret
+metadata:
+  name: e2e-sec-ssh
+spec:
+  name: e2e-sec-ssh
+  namespace: default
+  ssh_auth:
+    ssh_private_key: |
+      -----BEGIN OPENSSH PRIVATE KEY-----
+      b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+      QyNTUxOQAAACBSoENqZ3kxOFJ5cjYxTHFLcUE3VW5EMkVKVVFnYWJXcAAAAJg+e2e-test
+      -----END OPENSSH PRIVATE KEY-----

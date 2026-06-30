@@ -29,7 +29,7 @@ The SigNoz Helm chart already supports `existingSecret` and `existingSecretPassw
 
 ### New Proto Types
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetes_secret.proto`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetes_secret.proto`
 
 ```protobuf
 message KubernetesSecretKeyRef {
@@ -51,7 +51,7 @@ message KubernetesSensitiveValue {
 **Using Kubernetes Secret (Recommended for Production):**
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: SignozKubernetes
 metadata:
   name: signoz-prod
@@ -70,7 +70,7 @@ spec:
 **Using Plain String (Dev/Test Only):**
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: SignozKubernetes
 metadata:
   name: signoz-dev
@@ -90,20 +90,20 @@ spec:
 
 Updated `KubernetesSignozExternalClickhouse` to use the new `KubernetesSensitiveValue` type:
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetessignoz/v1/spec.proto`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetessignoz/v1/spec.proto`
 
 ```protobuf
 message KubernetesSignozExternalClickhouse {
   // ... existing fields ...
   
   // Changed from: string password = 7;
-  org.openmcf.provider.kubernetes.KubernetesSensitiveValue password = 7;
+  dev.planton.provider.kubernetes.KubernetesSensitiveValue password = 7;
 }
 ```
 
 ### Pulumi Module Update
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetessignoz/v1/iac/pulumi/module/signoz.go`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetessignoz/v1/iac/pulumi/module/signoz.go`
 
 The Pulumi module now checks which variant of the password is provided and sets the appropriate Helm values:
 
@@ -123,7 +123,7 @@ if ext.Password != nil {
 
 ### Terraform Module Update
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetessignoz/v1/iac/tf/variables.tf`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetessignoz/v1/iac/tf/variables.tf`
 
 ```hcl
 password = object({
@@ -136,7 +136,7 @@ password = object({
 })
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetessignoz/v1/iac/tf/signoz.tf`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetessignoz/v1/iac/tf/signoz.tf`
 
 ```hcl
 externalClickhouse = var.spec.database.is_external ? merge(
@@ -199,7 +199,7 @@ Password: &kubernetes.KubernetesSensitiveValue{
 
 ## Related Work
 
-- Follows the pattern established by `StringValueOrRef` in `apis/org/openmcf/shared/foreignkey/v1/foreign_key.proto`
+- Follows the pattern established by `StringValueOrRef` in `apis/dev/planton/shared/foreignkey/v1/foreign_key.proto`
 - Uses SigNoz Helm chart's built-in `existingSecret` and `existingSecretPasswordKey` support
 - Can be extended to other components needing sensitive value handling (e.g., database passwords, API keys)
 

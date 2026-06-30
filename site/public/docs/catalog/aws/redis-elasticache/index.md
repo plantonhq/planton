@@ -12,7 +12,7 @@ Deploys an AWS ElastiCache replication group running Redis or Valkey, supporting
 
 ## What Gets Created
 
-When you deploy an AwsRedisElasticache resource, OpenMCF provisions:
+When you deploy an AwsRedisElasticache resource, Planton provisions:
 
 - **ElastiCache Replication Group** — an `aws_elasticache_replication_group` running Redis or Valkey with the specified topology, node type, and engine version
 - **Subnet Group** — created only when `subnetIds` are provided, places cluster nodes in the specified VPC subnets
@@ -20,7 +20,7 @@ When you deploy an AwsRedisElasticache resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **VPC subnets** for in-VPC deployments — provide at least two subnets in different Availability Zones for multi-AZ
 - **A security group** allowing inbound traffic on the Redis port (default 6379)
 - **A KMS key** if using customer-managed encryption at rest
@@ -31,15 +31,15 @@ When you deploy an AwsRedisElasticache resource, OpenMCF provisions:
 Create a file `redis.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRedisElasticache
 metadata:
   name: my-redis
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsRedisElasticache.my-redis
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsRedisElasticache.my-redis
 spec:
   region: us-west-2
   engine: redis
@@ -57,7 +57,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f redis.yaml
+planton apply -f redis.yaml
 ```
 
 This creates a single-node Redis 7.1 cluster (non-clustered mode) in the specified subnets.
@@ -119,15 +119,15 @@ Exactly one of `numCacheClusters` or `numNodeGroups` must be provided to select 
 A 3-node Redis cluster (1 primary + 2 replicas) with encryption and automatic failover across multiple AZs:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRedisElasticache
 metadata:
   name: session-cache
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsRedisElasticache.session-cache
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsRedisElasticache.session-cache
 spec:
   region: us-west-2
   engine: redis
@@ -156,15 +156,15 @@ spec:
 A sharded Redis cluster with 3 shards and 2 replicas per shard, custom parameter overrides, and slow-log delivery to CloudWatch:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRedisElasticache
 metadata:
   name: analytics-cache
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsRedisElasticache.analytics-cache
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsRedisElasticache.analytics-cache
 spec:
   region: us-west-2
   engine: redis
@@ -199,18 +199,18 @@ spec:
 
 ### Valkey with Data Tiering and Foreign Key References
 
-A Valkey cluster using `r6gd` nodes for data tiering, referencing other OpenMCF-managed resources:
+A Valkey cluster using `r6gd` nodes for data tiering, referencing other Planton-managed resources:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRedisElasticache
 metadata:
   name: tiered-cache
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsRedisElasticache.tiered-cache
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsRedisElasticache.tiered-cache
 spec:
   region: us-west-2
   engine: valkey

@@ -63,7 +63,7 @@ flowchart TB
   - `subnet_id` (required StringValueOrRef FK to OpenStackSubnet)
   - `region` (optional string override)
 - `stack_outputs.proto` -- 4 outputs: port_id, router_id, subnet_id, region
-- `api.proto` -- KRM envelope with `openstack.openmcf.org/v1` + `OpenStackRouterInterface`
+- `api.proto` -- KRM envelope with `openstack.planton.dev/v1` + `OpenStackRouterInterface`
 - `stack_input.proto` -- target + provider_config
 - `spec_test.go` -- 12 tests (6 positive, 6 negative)
 
@@ -85,16 +85,16 @@ flowchart TB
 Both `router_id` and `subnet_id` use required `StringValueOrRef` with FK annotations:
 
 ```protobuf
-org.openmcf.shared.foreignkey.v1.StringValueOrRef router_id = 1 [
+dev.planton.shared.foreignkey.v1.StringValueOrRef router_id = 1 [
   (buf.validate.field).required = true,
-  (org.openmcf.shared.foreignkey.v1.default_kind) = OpenStackRouter,
-  (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.router_id"
+  (dev.planton.shared.foreignkey.v1.default_kind) = OpenStackRouter,
+  (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.router_id"
 ];
 
-org.openmcf.shared.foreignkey.v1.StringValueOrRef subnet_id = 2 [
+dev.planton.shared.foreignkey.v1.StringValueOrRef subnet_id = 2 [
   (buf.validate.field).required = true,
-  (org.openmcf.shared.foreignkey.v1.default_kind) = OpenStackSubnet,
-  (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  (dev.planton.shared.foreignkey.v1.default_kind) = OpenStackSubnet,
+  (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
 ];
 ```
 
@@ -134,7 +134,7 @@ Unlike most OpenStack resources, a router interface has no "name" attribute. The
 - OpenStackNetwork component: `_changelog/2026-02/2026-02-09-082447-openstack-network-component-and-forge-pipeline-cleanup.md`
 - OpenStackSubnet component: `_changelog/2026-02/2026-02-09-032227-openstack-subnet-deployment-component.md`
 - OpenStackRouter component: `_changelog/2026-02/2026-02-09-101500-openstack-router-deployment-component.md`
-- Parent project: `planton/_projects/20260209.01.openstack-openmcf-components/`
+- Parent project: `planton/_projects/20260209.01.openstack-planton-components/`
 
 ---
 

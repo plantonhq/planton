@@ -3,10 +3,10 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "pulumiociprovider",
     srcs = ["provider.go"],
-    importpath = "github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule/provider/oci/pulumiociprovider",
+    importpath = "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/oci/pulumiociprovider",
     visibility = ["//visibility:public"],
     deps = [
-        "//apis/org/openmcf/provider/oci",
+        "//apis/dev/planton/provider/oci",
         "@com_github_pkg_errors//:errors",
         "@com_github_pulumi_pulumi_oci_sdk_v4//go/oci",
         "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",

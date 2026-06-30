@@ -12,7 +12,7 @@ Deploys an AWS Lambda function with automatic CloudWatch log group creation, sup
 
 ## What Gets Created
 
-When you deploy an AwsLambda resource, OpenMCF provisions:
+When you deploy an AwsLambda resource, Planton provisions:
 
 - **Lambda Function** — an `aws_lambda_function` resource configured with the specified runtime, handler, memory, timeout, and code source (S3 zip or ECR container image)
 - **CloudWatch Log Group** — a `/aws/lambda/<function_name>` log group with 30-day retention for capturing function execution logs
@@ -20,7 +20,7 @@ When you deploy an AwsLambda resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **An IAM execution role** with the `AWSLambdaBasicExecutionRole` policy (add `AWSLambdaVPCAccessExecutionRole` if using VPC configuration)
 - **A deployment artifact** — either a zip archive uploaded to an S3 bucket, or a container image pushed to ECR
 - **VPC subnets and security groups** if the function needs access to private resources (e.g., RDS, ElastiCache)
@@ -30,15 +30,15 @@ When you deploy an AwsLambda resource, OpenMCF provisions:
 Create a file `lambda.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsLambda
 metadata:
   name: my-function
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsLambda.my-function
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsLambda.my-function
 spec:
   region: us-east-1
   functionName: my-function
@@ -54,7 +54,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f lambda.yaml
+planton apply -f lambda.yaml
 ```
 
 This creates a Node.js Lambda function using code from the specified S3 bucket, along with a CloudWatch log group for its output.
@@ -99,15 +99,15 @@ This creates a Node.js Lambda function using code from the specified S3 bucket, 
 Deploy a Lambda function from a container image stored in ECR:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsLambda
 metadata:
   name: image-function
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsLambda.image-function
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsLambda.image-function
 spec:
   region: us-east-1
   functionName: image-function
@@ -124,15 +124,15 @@ spec:
 A function that accesses private VPC resources such as an RDS database:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsLambda
 metadata:
   name: vpc-function
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.AwsLambda.vpc-function
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.AwsLambda.vpc-function
 spec:
   region: us-east-1
   functionName: vpc-function
@@ -160,15 +160,15 @@ spec:
 Full-featured configuration with encrypted environment variables, layers, reserved concurrency, and pinned S3 artifact version:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsLambda
 metadata:
   name: prod-function
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsLambda.prod-function
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsLambda.prod-function
 spec:
   region: us-east-1
   functionName: prod-function
@@ -201,18 +201,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding ARNs and IDs:
+Reference other Planton-managed resources instead of hardcoding ARNs and IDs:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsLambda
 metadata:
   name: ref-function
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsLambda.ref-function
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsLambda.ref-function
 spec:
   region: us-east-1
   functionName: ref-function

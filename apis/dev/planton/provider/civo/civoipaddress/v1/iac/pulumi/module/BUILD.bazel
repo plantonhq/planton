@@ -1,0 +1,21 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "module",
+    srcs = [
+        "ip_address.go",
+        "locals.go",
+        "main.go",
+        "outputs.go",
+    ],
+    importpath = "github.com/plantonhq/planton/apis/dev/planton/provider/civo/civoipaddress/v1/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/dev/planton/provider/civo",
+        "//apis/dev/planton/provider/civo/civoipaddress/v1:civoipaddress",
+        "//pkg/iac/pulumi/pulumimodule/provider/civo/pulumicivoprovider",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_civo_sdk_v2//go/civo",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)

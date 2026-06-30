@@ -12,14 +12,14 @@ Deploys an Azure Container Registry with a configurable SKU tier, optional admin
 
 ## What Gets Created
 
-When you deploy an AzureContainerRegistry resource, OpenMCF provisions:
+When you deploy an AzureContainerRegistry resource, Planton provisions:
 
 - **Container Registry** — a `containerregistry.Registry` resource in the specified region and resource group, configured with the chosen SKU tier, admin user setting, and network rule bypass for Azure services
 - **Geo-Replications** — for Premium SKU only, a `containerregistry.Replication` resource for each entry in `geoReplicationRegions`, enabling multi-region image pull performance
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Resource Group** where the registry will be created (can reference an AzureResourceGroup resource)
 - **A globally unique registry name** — must be 5-50 characters of lowercase letters or numbers, unique across all of Azure
 
@@ -28,15 +28,15 @@ When you deploy an AzureContainerRegistry resource, OpenMCF provisions:
 Create a file `acr.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureContainerRegistry
 metadata:
   name: my-registry
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureContainerRegistry.my-registry
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureContainerRegistry.my-registry
 spec:
   region: eastus
   resourceGroup: my-rg
@@ -46,7 +46,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f acr.yaml
+planton apply -f acr.yaml
 ```
 
 This creates a Standard-tier container registry with admin user disabled and network rule bypass configured for Azure trusted services.
@@ -76,15 +76,15 @@ This creates a Standard-tier container registry with admin user disabled and net
 A minimal registry for development with the lowest-cost SKU:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureContainerRegistry
 metadata:
   name: dev-registry
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureContainerRegistry.dev-registry
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureContainerRegistry.dev-registry
 spec:
   region: eastus
   resourceGroup: dev-rg
@@ -98,15 +98,15 @@ spec:
 A production registry using the Standard tier with admin user disabled:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureContainerRegistry
 metadata:
   name: prod-registry
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureContainerRegistry.prod-registry
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureContainerRegistry.prod-registry
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -119,15 +119,15 @@ spec:
 A Premium-tier registry replicated across multiple regions for low-latency image pulls in a globally distributed deployment:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureContainerRegistry
 metadata:
   name: global-registry
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureContainerRegistry.global-registry
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureContainerRegistry.global-registry
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -141,18 +141,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed resource group instead of hardcoding the name:
+Reference an Planton-managed resource group instead of hardcoding the name:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureContainerRegistry
 metadata:
   name: ref-registry
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureContainerRegistry.ref-registry
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureContainerRegistry.ref-registry
 spec:
   region: eastus
   resourceGroup:

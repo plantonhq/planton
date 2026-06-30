@@ -30,7 +30,7 @@ go_library(
         "workloadGroupList.go",
         "workloadGroupPatch.go",
     ],
-    importpath = "github.com/plantonhq/openmcf/pkg/kubernetes/kubernetestypes/istio/kubernetes/networking/v1beta1",
+    importpath = "github.com/plantonhq/planton/pkg/kubernetes/kubernetestypes/istio/kubernetes/networking/v1beta1",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_blang_semver//:semver",

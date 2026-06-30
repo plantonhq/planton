@@ -12,7 +12,7 @@ Deploys a Google Cloud Function (Gen 2) from source code stored in a GCS bucket,
 
 ## What Gets Created
 
-When you deploy a GcpCloudFunction resource, OpenMCF provisions:
+When you deploy a GcpCloudFunction resource, Planton provisions:
 
 - **Cloud Function (Gen 2)** — a `cloudfunctionsv2.Function` in the specified project and region, built from a source archive in GCS, with the configured runtime, entry point, service config, and labels applied
 - **Service Configuration** — compute resources (memory, timeout, concurrency), environment variables, secret references, VPC connector, ingress/egress settings, and scaling limits applied to the underlying Cloud Run service
@@ -21,7 +21,7 @@ When you deploy a GcpCloudFunction resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **A GCP project** where the Cloud Function will be created
 - **A GCS bucket** containing the source code archive (`.zip` file with function code and dependencies)
 - **Cloud Functions API and Cloud Build API** enabled in the target project
@@ -33,15 +33,15 @@ When you deploy a GcpCloudFunction resource, OpenMCF provisions:
 Create a file `cloud-function.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudFunction
 metadata:
   name: my-http-handler
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpCloudFunction.my-http-handler
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpCloudFunction.my-http-handler
 spec:
   projectId: my-gcp-project-123
   region: us-central1
@@ -56,7 +56,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f cloud-function.yaml
+planton apply -f cloud-function.yaml
 ```
 
 This creates a Gen 2 Cloud Function with an HTTP trigger, 256 MB memory, 60-second timeout, and default scaling (0-100 instances).
@@ -117,15 +117,15 @@ This creates a Gen 2 Cloud Function with an HTTP trigger, 256 MB memory, 60-seco
 A Python function with increased memory, a longer timeout, and a dedicated service account:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudFunction
 metadata:
   name: image-resizer
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpCloudFunction.image-resizer
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpCloudFunction.image-resizer
 spec:
   projectId: my-gcp-project-123
   region: us-central1
@@ -153,15 +153,15 @@ spec:
 A Node.js function triggered by messages published to a Pub/Sub topic, with retry enabled:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudFunction
 metadata:
   name: order-processor
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpCloudFunction.order-processor
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpCloudFunction.order-processor
 spec:
   projectId: my-gcp-project-123
   region: us-central1
@@ -195,15 +195,15 @@ spec:
 A Go function triggered when objects are created in a GCS bucket, connected to a VPC for private database access, with secrets from Secret Manager:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudFunction
 metadata:
   name: file-indexer
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpCloudFunction.file-indexer
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpCloudFunction.file-indexer
 spec:
   projectId: my-gcp-project-123
   region: us-central1
@@ -248,18 +248,18 @@ spec:
 
 ### Public HTTP Function with Foreign Key Reference
 
-A publicly accessible function that references an OpenMCF-managed GcpProject for the project ID:
+A publicly accessible function that references an Planton-managed GcpProject for the project ID:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudFunction
 metadata:
   name: webhook-receiver
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpCloudFunction.webhook-receiver
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpCloudFunction.webhook-receiver
 spec:
   projectId:
     valueFrom:

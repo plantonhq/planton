@@ -12,7 +12,7 @@ Deploys an Amazon Managed Workflows for Apache Airflow environment with DAGs sou
 
 ## What Gets Created
 
-When you deploy an AwsMwaaEnvironment resource, OpenMCF provisions:
+When you deploy an AwsMwaaEnvironment resource, Planton provisions:
 
 - **MWAA Environment** — an `aws_mwaa_environment` with DAGs loaded from an S3 bucket, an execution role for AWS service access, and VPC endpoints in private subnets across two Availability Zones
 - **Managed Security Group** — created only when `vpcId` is provided together with `securityGroupIds` or `allowedCidrBlocks`. Includes a self-referencing inbound rule (all traffic) for MWAA component intercommunication, HTTPS (port 443) ingress from each specified source security group and CIDR block, and full egress
@@ -20,7 +20,7 @@ When you deploy an AwsMwaaEnvironment resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **An S3 bucket** with versioning enabled, containing your DAG files (and optionally plugins.zip, requirements.txt, startup script)
 - **An IAM execution role** with permissions for S3, CloudWatch Logs, SQS, and any AWS services your DAGs interact with
 - **Two private subnets** in different Availability Zones (no direct route to an internet gateway)
@@ -32,15 +32,15 @@ When you deploy an AwsMwaaEnvironment resource, OpenMCF provisions:
 Create a file `mwaa.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsMwaaEnvironment
 metadata:
   name: my-airflow
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsMwaaEnvironment.my-airflow
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsMwaaEnvironment.my-airflow
 spec:
   region: us-west-2
   sourceBucketArn:
@@ -58,7 +58,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f mwaa.yaml
+planton apply -f mwaa.yaml
 ```
 
 This creates a private Airflow environment with the default `mw1.small` instance class, DAGs loaded from S3, and an existing security group attached directly.
@@ -129,15 +129,15 @@ At least one of `vpcId` (for managed SG) or `associateSecurityGroupIds` must be 
 A minimal environment using an existing security group attached directly. No managed SG is created:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsMwaaEnvironment
 metadata:
   name: dev-airflow
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsMwaaEnvironment.dev-airflow
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsMwaaEnvironment.dev-airflow
 spec:
   region: us-west-2
   sourceBucketArn:
@@ -157,15 +157,15 @@ spec:
 Encrypted environment with all five log modules enabled, a weekly maintenance window, and graceful worker replacement:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsMwaaEnvironment
 metadata:
   name: prod-airflow
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsMwaaEnvironment.prod-airflow
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsMwaaEnvironment.prod-airflow
 spec:
   region: us-east-1
   airflowVersion: "2.10.1"
@@ -219,15 +219,15 @@ spec:
 Creates a managed security group with source SGs and CIDR-based ingress. Use this pattern when MWAA endpoints need to accept connections from multiple known sources:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsMwaaEnvironment
 metadata:
   name: team-airflow
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.AwsMwaaEnvironment.team-airflow
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.AwsMwaaEnvironment.team-airflow
 spec:
   region: us-west-2
   sourceBucketArn:

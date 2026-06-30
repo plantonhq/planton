@@ -4,24 +4,24 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/alicloud"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/atlas"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/auth0"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/azure"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/civo"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/confluent"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/digitalocean"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/hetznercloud"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/openfga"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/scaleway"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/provider/snowflake"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/apis/dev/planton/provider/alicloud"
+	"github.com/plantonhq/planton/apis/dev/planton/provider/atlas"
+	"github.com/plantonhq/planton/apis/dev/planton/provider/auth0"
+	"github.com/plantonhq/planton/apis/dev/planton/provider/aws"
+	"github.com/plantonhq/planton/apis/dev/planton/provider/azure"
+	"github.com/plantonhq/planton/apis/dev/planton/provider/civo"
+	"github.com/plantonhq/planton/apis/dev/planton/provider/cloudflare"
+	"github.com/plantonhq/planton/apis/dev/planton/provider/confluent"
+	"github.com/plantonhq/planton/apis/dev/planton/provider/digitalocean"
+	"github.com/plantonhq/planton/apis/dev/planton/provider/gcp"
+	"github.com/plantonhq/planton/apis/dev/planton/provider/hetznercloud"
+	"github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes"
+	"github.com/plantonhq/planton/apis/dev/planton/provider/oci"
+	"github.com/plantonhq/planton/apis/dev/planton/provider/openfga"
+	"github.com/plantonhq/planton/apis/dev/planton/provider/openstack"
+	"github.com/plantonhq/planton/apis/dev/planton/provider/scaleway"
+	"github.com/plantonhq/planton/apis/dev/planton/provider/snowflake"
+	"github.com/plantonhq/planton/apis/dev/planton/shared/cloudresourcekind"
 )
 
 // ProviderConfigExample returns an example YAML configuration for the given provider.
@@ -218,7 +218,7 @@ func MissingProviderConfigGuidance(result *DetectionResult) string {
 	}
 
 	sb.WriteString("\n  Then run:\n\n")
-	sb.WriteString(fmt.Sprintf("    openmcf plan -f manifest.yaml -p %s\n",
+	sb.WriteString(fmt.Sprintf("    planton plan -f manifest.yaml -p %s\n",
 		ProviderConfigFilename(result.Provider)))
 
 	// Add documentation link if available
@@ -234,7 +234,7 @@ func MissingProviderConfigGuidance(result *DetectionResult) string {
 func KindDetectionErrorGuidance() string {
 	return `The manifest must contain valid 'apiVersion' and 'kind' fields:
 
-  apiVersion: gcp.openmcf.org/v1
+  apiVersion: gcp.planton.dev/v1
   kind: GkeCluster
   metadata:
     name: my-cluster
@@ -246,7 +246,7 @@ Check your manifest file for:
   - Missing or misspelled 'kind'
   - Invalid YAML syntax
 
-For supported resource kinds, see: https://openmcf.org/docs/resources`
+For supported resource kinds, see: https://planton.dev/docs/resources`
 }
 
 // InvalidProviderConfigGuidance returns a helpful message when provider config is invalid.

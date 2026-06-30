@@ -8,7 +8,7 @@ go_library(
         "providers.go",
         "stack_input.go",
     ],
-    importpath = "github.com/plantonhq/openmcf/pkg/iac/stackinput",
+    importpath = "github.com/plantonhq/planton/pkg/iac/stackinput",
     visibility = ["//visibility:public"],
     deps = [
         "//internal/cli/workspace",

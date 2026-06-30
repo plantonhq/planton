@@ -6,7 +6,7 @@
 
 ## Summary
 
-Extended the Pulumi module release system to build binaries for 4 platforms (linux*amd64, darwin_arm64, darwin_amd64, windows_amd64) instead of just linux_amd64. Additionally, renamed CLI release archives from `openmcf*\_`to`cli\_\_` for cleaner, more consistent naming across all release artifacts.
+Extended the Pulumi module release system to build binaries for 4 platforms (linux*amd64, darwin_arm64, darwin_amd64, windows_amd64) instead of just linux_amd64. Additionally, renamed CLI release archives from `planton*\_`to`cli\_\_` for cleaner, more consistent naming across all release artifacts.
 
 ## Problem Statement / Motivation
 
@@ -15,16 +15,16 @@ Extended the Pulumi module release system to build binaries for 4 platforms (lin
 The initial binary distribution implementation only built for `linux_amd64`, which worked for CI/CD and Docker environments but failed when developers ran the CLI locally:
 
 ```
-error: an unhandled error occurred: fork/exec /Users/user/.openmcf/pulumi/binaries/v0.3.2/pulumi-kubernetesdeployment: exec format error
+error: an unhandled error occurred: fork/exec /Users/user/.planton/pulumi/binaries/v0.3.2/pulumi-kubernetesdeployment: exec format error
 ```
 
 macOS users (both Apple Silicon and Intel) and Windows users couldn't use pre-built binaries.
 
 ### CLI Naming Consistency
 
-The CLI archives used the verbose `openmcf_` prefix:
+The CLI archives used the verbose `planton_` prefix:
 
-- `openmcf_v0.3.2_darwin_arm64.tar.gz`
+- `planton_v0.3.2_darwin_arm64.tar.gz`
 
 This was inconsistent with the shorter, cleaner naming used for Pulumi modules (`pulumi-*`).
 
@@ -45,14 +45,14 @@ Both release workflows now build for 4 platforms in priority order:
 
 ### 2. CLI Archive Rename
 
-Changed CLI archive naming from `openmcf_*` to `cli_*`:
+Changed CLI archive naming from `planton_*` to `cli_*`:
 
 | Before                                       | After                            |
 | -------------------------------------------- | -------------------------------- |
-| `openmcf_v0.3.3_darwin_arm64.tar.gz` | `cli_v0.3.3_darwin_arm64.tar.gz` |
-| `openmcf_v0.3.3_linux_amd64.tar.gz`  | `cli_v0.3.3_linux_amd64.tar.gz`  |
-| `openmcf_v0.3.3_windows_amd64.zip`   | `cli_v0.3.3_windows_amd64.zip`   |
-| `openmcf_v0.3.3_checksums.txt`       | `cli_v0.3.3_checksums.txt`       |
+| `planton_v0.3.3_darwin_arm64.tar.gz` | `cli_v0.3.3_darwin_arm64.tar.gz` |
+| `planton_v0.3.3_linux_amd64.tar.gz`  | `cli_v0.3.3_linux_amd64.tar.gz`  |
+| `planton_v0.3.3_windows_amd64.zip`   | `cli_v0.3.3_windows_amd64.zip`   |
+| `planton_v0.3.3_checksums.txt`       | `cli_v0.3.3_checksums.txt`       |
 
 ### 3. Pulumi Module Naming Convention
 
@@ -100,7 +100,7 @@ All 44 jobs (11 providers × 4 platforms) run in parallel. Each job builds all c
 
 | File                                                 | Changes                                                                                                                           |
 | ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `.goreleaser.yaml`                                   | Changed `name_template` from `openmcf_*` to `cli_*`; updated release notes with new naming and multi-platform Pulumi docs |
+| `.goreleaser.yaml`                                   | Changed `name_template` from `planton_*` to `cli_*`; updated release notes with new naming and multi-platform Pulumi docs |
 | `.github/workflows/release.pulumi-modules.yaml`      | Added provider × platform matrix (44 jobs); builds all platforms in parallel                                                      |
 | `.github/workflows/auto-release.pulumi-modules.yaml` | Restructured with expand-matrix, create-releases, and build jobs; component × platform matrix for parallel builds                |
 
@@ -155,28 +155,28 @@ v0.3.3/
 
 ```bash
 # macOS Apple Silicon
-curl -LO https://github.com/plantonhq/openmcf/releases/download/v0.3.3/cli_v0.3.3_darwin_arm64.tar.gz
+curl -LO https://github.com/plantonhq/planton/releases/download/v0.3.3/cli_v0.3.3_darwin_arm64.tar.gz
 tar -xzf cli_v0.3.3_darwin_arm64.tar.gz
-chmod +x openmcf
-sudo mv openmcf /usr/local/bin/
+chmod +x planton
+sudo mv planton /usr/local/bin/
 
 # Linux x86-64
-curl -LO https://github.com/plantonhq/openmcf/releases/download/v0.3.3/cli_v0.3.3_linux_amd64.tar.gz
+curl -LO https://github.com/plantonhq/planton/releases/download/v0.3.3/cli_v0.3.3_linux_amd64.tar.gz
 tar -xzf cli_v0.3.3_linux_amd64.tar.gz
-chmod +x openmcf
-sudo mv openmcf /usr/local/bin/
+chmod +x planton
+sudo mv planton /usr/local/bin/
 ```
 
 ### Pulumi Module Download (Platform-Specific)
 
 ```bash
 # Linux
-curl -LO https://github.com/plantonhq/openmcf/releases/download/v0.3.3/pulumi-awsecsservice_linux_amd64.gz
+curl -LO https://github.com/plantonhq/planton/releases/download/v0.3.3/pulumi-awsecsservice_linux_amd64.gz
 gunzip pulumi-awsecsservice_linux_amd64.gz
 chmod +x pulumi-awsecsservice_linux_amd64
 
 # macOS Apple Silicon
-curl -LO https://github.com/plantonhq/openmcf/releases/download/v0.3.3/pulumi-awsecsservice_darwin_arm64.gz
+curl -LO https://github.com/plantonhq/planton/releases/download/v0.3.3/pulumi-awsecsservice_darwin_arm64.gz
 gunzip pulumi-awsecsservice_darwin_arm64.gz
 chmod +x pulumi-awsecsservice_darwin_arm64
 ```

@@ -1,0 +1,28 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "module",
+    srcs = [
+        "backup_config.go",
+        "load_balancer_ingress.go",
+        "locals.go",
+        "main.go",
+        "namespace.go",
+        "outputs.go",
+        "restore_config.go",
+        "variables.go",
+    ],
+    importpath = "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/kubernetespostgres/v1/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/dev/planton/provider/kubernetes/kubernetespostgres/v1:kubernetespostgres",
+        "//apis/dev/planton/shared/cloudresourcekind",
+        "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/kuberneteslabelkeys",
+        "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider",
+        "//pkg/kubernetes/kubernetestypes/zalandooperator/kubernetes/acid/v1:acid",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/core/v1:core",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/meta/v1:meta",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)

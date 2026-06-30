@@ -18,7 +18,7 @@ type CLIBackendFlags struct {
 // Priority order: CLI flags > Manifest labels > Environment variables
 //
 // This allows users to:
-// - Set defaults via environment variables (OPENMCF_BACKEND_*)
+// - Set defaults via environment variables (PLANTON_BACKEND_*)
 // - Override with manifest labels for resource-specific settings
 // - Override with CLI flags for CI/CD or local testing
 func BuildBackendConfig(

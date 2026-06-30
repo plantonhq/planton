@@ -6,18 +6,18 @@
 
 ## Summary
 
-Added GcpDataprocCluster as a new deployment component in OpenMCF, enabling provisioning of standard (GCE-based) Google Cloud Dataproc clusters for Apache Spark, Hadoop, and related data processing frameworks. This is the 15th GCP resource in the expansion project (R14), and the most complex resource forged to date with 11 sub-message types and 8 StringValueOrRef cross-resource references.
+Added GcpDataprocCluster as a new deployment component in Planton, enabling provisioning of standard (GCE-based) Google Cloud Dataproc clusters for Apache Spark, Hadoop, and related data processing frameworks. This is the 15th GCP resource in the expansion project (R14), and the most complex resource forged to date with 11 sub-message types and 8 StringValueOrRef cross-resource references.
 
 ## Problem Statement / Motivation
 
-Organizations running Spark/Hadoop workloads on GCP needed a declarative, composable way to provision Dataproc clusters through OpenMCF. Without this component, teams had to manage cluster infrastructure outside the OpenMCF framework, losing the benefits of cross-resource composition (e.g., referencing GCS buckets, VPC networks, KMS keys via `valueFrom`).
+Organizations running Spark/Hadoop workloads on GCP needed a declarative, composable way to provision Dataproc clusters through Planton. Without this component, teams had to manage cluster infrastructure outside the Planton framework, losing the benefits of cross-resource composition (e.g., referencing GCS buckets, VPC networks, KMS keys via `valueFrom`).
 
 ### Pain Points
 
-- No declarative Dataproc cluster provisioning in OpenMCF
+- No declarative Dataproc cluster provisioning in Planton
 - Manual GCP Console or ad-hoc Terraform scripts for Spark cluster setup
 - No lifecycle management (auto-delete) leading to runaway cloud costs from forgotten clusters
-- No integration with OpenMCF's cross-resource reference system for infra-chart composition
+- No integration with Planton's cross-resource reference system for infra-chart composition
 
 ## Solution / What's New
 
@@ -99,7 +99,7 @@ flowchart TB
 
 ## Related Work
 
-- Part of project 20260215.01.sp.gcp-resource-expansion (parent: 20260212.01.openmcf-cloud-provider-expansion)
+- Part of project 20260215.01.sp.gcp-resource-expansion (parent: 20260212.01.planton-cloud-provider-expansion)
 - Builds on patterns established by R11 GcpAlloydbCluster (most complex previous component)
 - GcpDataprocVirtualCluster queued as R14b for Dataproc-on-GKE support
 

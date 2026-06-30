@@ -39,7 +39,7 @@ The KubernetesGrafana component had a solid foundation with complete protobuf de
 
 ## Solution
 
-Implemented complete Pulumi and Terraform modules following OpenMCF patterns, with full ingress support and comprehensive documentation.
+Implemented complete Pulumi and Terraform modules following Planton patterns, with full ingress support and comprehensive documentation.
 
 ### Architecture
 
@@ -239,7 +239,7 @@ terraform {
 
 Test manifest for validation:
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesGrafana
 metadata:
   name: test-grafana
@@ -287,7 +287,7 @@ The component's protobuf definitions (`spec.proto`, `api.proto`, `stack_outputs.
 ### For Developers
 
 1. **Maintainable Code**: Locals extracted from main logic
-2. **Clear Patterns**: Follows OpenMCF component structure
+2. **Clear Patterns**: Follows Planton component structure
 3. **Test Coverage**: Validated with existing API tests
 4. **Build Verification**: Passes Bazel build and linter checks
 
@@ -364,7 +364,7 @@ cd iac/tf
 terraform init
 terraform apply
 
-# OpenMCF CLI
+# Planton CLI
 planton apply -f grafana.yaml
 ```
 
@@ -395,7 +395,7 @@ kubectl port-forward -n test-grafana service/test-grafana-grafana 8080:80
 Created `iac/hack/manifest.yaml` with realistic configuration:
 - Container resources matching spec defaults
 - Ingress disabled for simple testing
-- Ready for `openmcf pulumi preview`
+- Ready for `planton pulumi preview`
 
 ## Files Created
 

@@ -12,7 +12,7 @@ Deploys a single-node Neo4j Community instance on Kubernetes using the official 
 
 ## What Gets Created
 
-When you deploy a KubernetesNeo4j resource, OpenMCF provisions:
+When you deploy a KubernetesNeo4j resource, Planton provisions:
 
 - **Namespace** — created only when `createNamespace` is `true`
 - **Helm Release (Neo4j)** — deploys a single-node Neo4j Community instance via the official Neo4j Helm chart (version 2025.03.0), with configurable resource limits, persistence, and memory tuning
@@ -23,7 +23,7 @@ When you deploy a KubernetesNeo4j resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
 - **A StorageClass** available in the cluster for persistent storage (most managed Kubernetes clusters provide a default)
 - **external-dns** running in the cluster if enabling ingress with a hostname
@@ -33,15 +33,15 @@ When you deploy a KubernetesNeo4j resource, OpenMCF provisions:
 Create a file `neo4j.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesNeo4j
 metadata:
   name: my-graph-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesNeo4j.my-graph-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesNeo4j.my-graph-db
 spec:
   namespace: graph
   createNamespace: true
@@ -50,7 +50,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f neo4j.yaml
+planton apply -f neo4j.yaml
 ```
 
 This creates a single-node Neo4j instance with default resource limits (1000m CPU, 1Gi memory), a 1Gi PersistentVolumeClaim, and an auto-generated admin password stored in a Kubernetes Secret.
@@ -88,15 +88,15 @@ This creates a single-node Neo4j instance with default resource limits (1000m CP
 A lightweight Neo4j instance for local development and testing with reduced resources and no persistent storage:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesNeo4j
 metadata:
   name: dev-graph
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesNeo4j.dev-graph
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesNeo4j.dev-graph
 spec:
   namespace: dev
   createNamespace: true
@@ -116,15 +116,15 @@ spec:
 A production-grade Neo4j instance with larger disk, increased resource limits, and explicit heap and page-cache configuration:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesNeo4j
 metadata:
   name: prod-graph
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesNeo4j.prod-graph
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesNeo4j.prod-graph
 spec:
   namespace: production
   container:
@@ -147,15 +147,15 @@ spec:
 Neo4j exposed outside the cluster via a LoadBalancer with automatic DNS management:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesNeo4j
 metadata:
   name: shared-graph
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesNeo4j.shared-graph
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesNeo4j.shared-graph
 spec:
   namespace: shared-services
   container:
@@ -178,18 +178,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed namespace instead of hardcoding the name:
+Reference an Planton-managed namespace instead of hardcoding the name:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesNeo4j
 metadata:
   name: graph-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesNeo4j.graph-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesNeo4j.graph-db
 spec:
   namespace:
     valueFrom:

@@ -29,7 +29,7 @@ Added platform detection using Go's `runtime` package to automatically download 
 
 ```mermaid
 flowchart TB
-    A["openmcf apply"] --> B["runtime.GOOS / runtime.GOARCH"]
+    A["planton apply"] --> B["runtime.GOOS / runtime.GOARCH"]
     B --> C["GetPlatformSuffix()"]
     C --> D["darwin_arm64"]
     D --> E["BuildBinaryName()"]
@@ -48,7 +48,7 @@ flowchart TB
    - Windows: `pulumi-awsecsservice_windows_amd64.exe`
 
 3. **Download URL**: Automatically constructed with platform suffix:
-   - `https://github.com/plantonhq/openmcf/releases/download/v0.3.2/pulumi-kubernetesdeployment_darwin_arm64.gz`
+   - `https://github.com/plantonhq/planton/releases/download/v0.3.2/pulumi-kubernetesdeployment_darwin_arm64.gz`
 
 ## Implementation Details
 
@@ -99,14 +99,14 @@ The `BuildDownloadURL()` and `GetBinaryPath()` functions automatically inherit t
 
 - macOS users (Apple Silicon and Intel) can now use pre-built binaries
 - Windows users have native binary support
-- No more `exec format error` when running `openmcf apply`
+- No more `exec format error` when running `planton apply`
 
 ### Cache Structure
 
 Binaries now cached with platform-specific names:
 
 ```
-~/.openmcf/pulumi/binaries/v0.3.2/
+~/.planton/pulumi/binaries/v0.3.2/
 ├── pulumi-kubernetesdeployment_darwin_arm64
 ├── pulumi-awsecsservice_darwin_arm64
 └── ... (other components)

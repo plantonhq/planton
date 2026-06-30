@@ -12,13 +12,13 @@ Deploys an OpenStack Glance image from a URL or as a metadata entry, with config
 
 ## What Gets Created
 
-When you deploy an OpenStackImage resource, OpenMCF provisions:
+When you deploy an OpenStackImage resource, Planton provisions:
 
 - **Glance Image** — an `openstack_images_image_v2` resource registered in the OpenStack Image (Glance) service. When `imageSourceUrl` is provided, Glance downloads the image data from the specified URL. The image name is derived from `metadata.name`. Visibility, deletion protection, and minimum hardware requirements are applied as configured.
 
 ## Prerequisites
 
-- **OpenStack credentials** configured via environment variables or OpenMCF provider config
+- **OpenStack credentials** configured via environment variables or Planton provider config
 - **A publicly accessible URL** for the image data if using `imageSourceUrl` (Glance must be able to reach it)
 - **Admin role** if setting `visibility` to `public`
 
@@ -27,15 +27,15 @@ When you deploy an OpenStackImage resource, OpenMCF provisions:
 Create a file `image.yaml`:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackImage
 metadata:
   name: ubuntu-2204
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OpenstackImage.ubuntu-2204
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OpenstackImage.ubuntu-2204
 spec:
   containerFormat: bare
   diskFormat: qcow2
@@ -45,7 +45,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f image.yaml
+planton apply -f image.yaml
 ```
 
 This uploads an Ubuntu 22.04 cloud image to Glance with `bare` container format and `qcow2` disk format. The image is private by default.
@@ -79,15 +79,15 @@ This uploads an Ubuntu 22.04 cloud image to Glance with `bare` container format 
 Upload an Ubuntu 22.04 cloud image from the official Canonical repository:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackImage
 metadata:
   name: ubuntu-2204
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OpenstackImage.ubuntu-2204
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OpenstackImage.ubuntu-2204
 spec:
   containerFormat: bare
   diskFormat: qcow2
@@ -103,15 +103,15 @@ spec:
 A production golden image with deletion protection, minimum hardware requirements, and shared visibility so it can be distributed to specific projects:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackImage
 metadata:
   name: golden-rhel9
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OpenstackImage.golden-rhel9
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OpenstackImage.golden-rhel9
 spec:
   containerFormat: bare
   diskFormat: qcow2
@@ -132,15 +132,15 @@ spec:
 Register an ISO image for use as installation media, hidden from default listings:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackImage
 metadata:
   name: debian-12-netinst
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OpenstackImage.debian-12-netinst
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OpenstackImage.debian-12-netinst
 spec:
   containerFormat: bare
   diskFormat: iso

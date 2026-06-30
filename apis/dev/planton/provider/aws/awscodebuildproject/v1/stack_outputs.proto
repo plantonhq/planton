@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awscodebuildproject.v1;
+
+// AwsCodeBuildProjectStackOutputs captures observable identifiers and
+// endpoints from the AWS CodeBuild project deployment.
+message AwsCodeBuildProjectStackOutputs {
+  // The Amazon Resource Name (ARN) of the CodeBuild project.
+  // Use this for IAM policies, EventBridge targets, and cross-resource references.
+  string project_arn = 1;
+
+  // The name of the CodeBuild project.
+  string project_name = 2;
+
+  // The IAM service role ARN used by the project. Echoed back for
+  // downstream reference in job definitions or policies.
+  string service_role_arn = 3;
+
+  // The webhook URL for the source provider, if a webhook was created.
+  // Empty when no webhook is configured.
+  string webhook_url = 4;
+
+  // The webhook payload URL, if a webhook was created.
+  // This is the URL that receives webhook payloads from the source provider.
+  // Empty when no webhook is configured.
+  string webhook_payload_url = 5;
+}

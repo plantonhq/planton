@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# Package OpenMCF content for distribution via Cloudflare R2.
+# Package Planton content for distribution via Cloudflare R2.
 #
 # Creates four zip files, each scoped to a single concern:
 #
@@ -10,8 +10,8 @@
 #   proto-source.zip  -- Raw proto source (spec, api, stack_input, stack_outputs)
 #
 # All zips preserve repo-relative paths so they can be extracted into a single
-# directory and overlay into a virtual OpenMCF root. Consumers like the Planton
-# upgrade scripts use this merged directory as --openmcf-path or OPENMCF_ROOT.
+# directory and overlay into a virtual Planton root. Consumers like the Planton
+# upgrade scripts use this merged directory as --planton-path or PLANTON_ROOT.
 #
 # The version tag is accepted as an argument for logging purposes only; zip
 # filenames are version-free because the version is encoded in the R2 path
@@ -30,14 +30,14 @@ DRY_RUN="${2:-}"
 REPO_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 cd "$REPO_ROOT"
 
-PROVIDER_BASE="apis/org/openmcf/provider"
+PROVIDER_BASE="apis/dev/planton/provider"
 
 if [ ! -d "$PROVIDER_BASE" ]; then
   echo "ERROR: Provider base directory not found: $PROVIDER_BASE"
   exit 1
 fi
 
-echo "=== Packaging OpenMCF content for ${VERSION} ==="
+echo "=== Packaging Planton content for ${VERSION} ==="
 echo ""
 
 create_zip() {
@@ -78,7 +78,7 @@ create_zip() {
 echo "1/4  Presets..."
 {
   find "$PROVIDER_BASE" \( -path '*/v1/presets/*.yaml' -o -path '*/v1/presets/*.md' \)
-  echo "apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto"
+  echo "apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto"
 } | create_zip "presets.zip" "presets"
 
 # ─── 2. IaC Source ────────────────────────────────────────────────────────────

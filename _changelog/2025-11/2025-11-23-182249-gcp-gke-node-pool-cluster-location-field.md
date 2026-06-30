@@ -57,10 +57,10 @@ Added `cluster_location` as a required foreign key field in the `GcpGkeNodePoolS
 // Location of the parent GKE cluster (region or zone).
 // Must refer to an existing GcpGkeCluster resource in the same environment.
 // Example: "us-central1" (regional) or "us-central1-a" (zonal)
-org.openmcf.shared.foreignkey.v1.StringValueOrRef cluster_location = 3 [
+dev.planton.shared.foreignkey.v1.StringValueOrRef cluster_location = 3 [
   (buf.validate.field).required = true,
-  (org.openmcf.shared.foreignkey.v1.default_kind) = GcpGkeCluster,
-  (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "spec.location"
+  (dev.planton.shared.foreignkey.v1.default_kind) = GcpGkeCluster,
+  (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.location"
 ];
 ```
 
@@ -105,17 +105,17 @@ spec:
 
 ### Files Modified
 
-**Proto Schema** (`apis/org/openmcf/provider/gcp/gcpgkenodepool/v1/spec.proto`):
+**Proto Schema** (`apis/dev/planton/provider/gcp/gcpgkenodepool/v1/spec.proto`):
 - Added `cluster_location` field as field number 3
 - Renumbered existing fields from 3-11 to 4-12 (oneof fields remain at 100, 101)
 - Configured as required with foreign key annotations
 
-**Pulumi Module** (`apis/org/openmcf/provider/gcp/gcpgkenodepool/v1/iac/pulumi/module/`):
+**Pulumi Module** (`apis/dev/planton/provider/gcp/gcpgkenodepool/v1/iac/pulumi/module/`):
 - `main.go`: Removed entire cluster lookup block and unused `container` import
 - `locals.go`: Added `ClusterLocation` field to `Locals` struct with initialization
 - `node_pool.go`: Updated function signature to remove `clusterInfo` parameter, use locals values directly
 
-**Tests** (`apis/org/openmcf/provider/gcp/gcpgkenodepool/v1/spec_test.go`):
+**Tests** (`apis/dev/planton/provider/gcp/gcpgkenodepool/v1/spec_test.go`):
 - Added `cluster_location` to test fixtures to satisfy validation
 
 **Documentation**:
@@ -142,8 +142,8 @@ All validation steps passed successfully:
 
 ```bash
 # Component tests
-go test ./apis/org/openmcf/provider/gcp/gcpgkenodepool/v1/
-# ok  	github.com/plantonhq/openmcf/apis/org/.../gcpgkenodepool/v1	0.372s
+go test ./apis/dev/planton/provider/gcp/gcpgkenodepool/v1/
+# ok  	github.com/plantonhq/planton/apis/org/.../gcpgkenodepool/v1	0.372s
 
 # Full build
 make build
@@ -235,7 +235,7 @@ Updated test manifest (`_cursor/node-pool.yaml`) with correct location from pare
 
 ## Related Work
 
-- **Foreign Key Pattern**: This change aligns with the foreign key reference system used throughout OpenMCF, where resource dependencies are explicitly declared in proto specs
+- **Foreign Key Pattern**: This change aligns with the foreign key reference system used throughout Planton, where resource dependencies are explicitly declared in proto specs
 - **GCP Provider**: Similar pattern should be applied to other GCP resources that reference parent resources
 - **Proto Validation**: Demonstrates the value of comprehensive proto validation before cloud API interactions
 

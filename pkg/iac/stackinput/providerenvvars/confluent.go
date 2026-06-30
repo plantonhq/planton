@@ -2,7 +2,7 @@ package providerenvvars
 
 import (
 	"github.com/pkg/errors"
-	confluentprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/confluent"
+	confluentprovider "github.com/plantonhq/planton/apis/dev/planton/provider/confluent"
 )
 
 // loadConfluentEnvVars loads Confluent provider config and returns environment variables.

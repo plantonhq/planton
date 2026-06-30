@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added the `GcpFirewallRule` deployment component to OpenMCF, enabling declarative provisioning of GCP compute firewall rules. This is the first resource in the GCP expansion effort, bringing the total GCP resource count from 19 to 20. The component features a clean `action` + `rules` abstraction over Terraform's raw `allow`/`deny` blocks, cross-field CEL validation for GCP's tag/service-account mutual exclusion constraint, and full infra-chart composability via `StringValueOrRef` on project and network fields.
+Added the `GcpFirewallRule` deployment component to Planton, enabling declarative provisioning of GCP compute firewall rules. This is the first resource in the GCP expansion effort, bringing the total GCP resource count from 19 to 20. The component features a clean `action` + `rules` abstraction over Terraform's raw `allow`/`deny` blocks, cross-field CEL validation for GCP's tag/service-account mutual exclusion constraint, and full infra-chart composability via `StringValueOrRef` on project and network fields.
 
 ## Problem Statement / Motivation
 
@@ -14,7 +14,7 @@ GCP VPC firewall rules are a foundational networking primitive required by virtu
 
 ### Pain Points
 
-- No way to provision GCP firewall rules through OpenMCF
+- No way to provision GCP firewall rules through Planton
 - Infra charts needing network security had to rely on external processes
 - Missing a Layer 1 networking building block that sits between VPC and higher-level services
 
@@ -78,7 +78,7 @@ Uses `dynamic` blocks to conditionally create `allow` or `deny` blocks based on 
 
 ## Benefits
 
-- GCP users can now provision firewall rules declaratively through OpenMCF
+- GCP users can now provision firewall rules declaratively through Planton
 - Infra charts can compose firewall rules with VPCs and other networking resources
 - Schema-level validation catches misconfigurations before deployment
 - Clean abstraction reduces cognitive load vs raw Terraform/Pulumi

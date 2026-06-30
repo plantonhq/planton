@@ -3,7 +3,7 @@ load("@rules_go//go:def.bzl", "go_binary", "go_library")
 go_library(
     name = "optional-linter_lib",
     srcs = ["main.go"],
-    importpath = "github.com/plantonhq/openmcf/buf/lint/optional-linter/cmd/optional-linter",
+    importpath = "github.com/plantonhq/planton/buf/lint/optional-linter/cmd/optional-linter",
     visibility = ["//visibility:private"],
     deps = [
         "//buf/lint/optional-linter/rules",

@@ -13,7 +13,7 @@ go_library(
         "pulumiTypes.go",
         "pulumiTypes1.go",
     ],
-    importpath = "github.com/plantonhq/openmcf/pkg/kubernetes/kubernetestypes/keycloak/kubernetes/k8s/v2alpha1",
+    importpath = "github.com/plantonhq/planton/pkg/kubernetes/kubernetestypes/keycloak/kubernetes/k8s/v2alpha1",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_blang_semver//:semver",

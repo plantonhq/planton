@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azurecosmosdbaccount.v1;
+
+// **AzureCosmosdbAccountStackOutputs** captures the outputs of provisioning
+// an Azure Cosmos DB account with its databases and containers/collections.
+//
+// The primary outputs are `account_id` for resource identification, `endpoint`
+// for SDK connectivity, and `primary_key`/`primary_connection_string` for
+// authentication. The `database_ids` map provides individual database resource
+// IDs for downstream references.
+//
+// Unlike relational databases (PostgreSQL, MySQL, MSSQL) which use login/password
+// authentication, Cosmos DB uses auto-generated access keys. Applications connect
+// using the `endpoint` + `primary_key` or the `primary_connection_string`.
+//
+// In the database-stack infra chart, the `account_id` output is referenced by
+// AzurePrivateEndpoint for establishing private connectivity. The
+// `primary_connection_string` or `primary_mongodb_connection_string` is consumed
+// by applications for database access.
+message AzureCosmosdbAccountStackOutputs {
+  // The Azure Resource Manager ID of the Cosmos DB account.
+  // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.DocumentDB/databaseAccounts/{name}
+  //
+  // Referenced by AzurePrivateEndpoint (private_connection_resource_id)
+  // for establishing private connectivity.
+  // Subresource names for private endpoint: ["Sql"] for SQL API, ["MongoDB"] for Mongo API.
+  string account_id = 1;
+
+  // The name of the Cosmos DB account.
+  string account_name = 2;
+
+  // The document endpoint URI.
+  // Format: https://{name}.documents.azure.com:443/
+  //
+  // Used by Cosmos DB SDKs to connect to the account.
+  // Combined with `primary_key` for authentication.
+  string endpoint = 3;
+
+  // The primary access key for the account.
+  // Used for key-based authentication with the Cosmos DB SDK.
+  //
+  // For production workloads, consider using RBAC-based authentication
+  // (Azure AD) instead of access keys.
+  string primary_key = 4;
+
+  // The primary connection string for the SQL/NoSQL API.
+  // Format: AccountEndpoint={endpoint};AccountKey={key};
+  //
+  // Ready-to-use connection string for SQL API SDKs.
+  // Always populated regardless of account kind.
+  string primary_connection_string = 5;
+
+  // The primary connection string for the MongoDB API.
+  // Format: mongodb://{name}:{key}@{name}.mongo.cosmos.azure.com:10255/?ssl=true&...
+  //
+  // Only populated when `kind` is "MongoDB".
+  // Empty string for GlobalDocumentDB accounts.
+  string primary_mongodb_connection_string = 6;
+
+  // Map of database names to their Azure Resource Manager IDs.
+  // Includes both SQL databases and MongoDB databases, depending on the
+  // account kind.
+  // Format: { "mydb": "/subscriptions/.../sqlDatabases/mydb" }
+  map<string, string> database_ids = 7;
+}

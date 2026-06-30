@@ -1,9 +1,0 @@
-apiVersion: gcp.openmcf.org/v1
-kind: GcpKmsKey
-metadata:
-  name: test-kms-key
-spec:
-  keyRingId:
-    value: "projects/test-project/locations/us-central1/keyRings/test-key-ring"
-  keyName: test-encrypt-key
-  rotationPeriod: "7776000s"

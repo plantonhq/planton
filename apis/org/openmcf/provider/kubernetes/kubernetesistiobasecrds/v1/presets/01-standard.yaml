@@ -1,5 +1,0 @@
-apiVersion: kubernetes.openmcf.org/v1
-kind: KubernetesIstioBaseCrds
-metadata:
-  name: my-istio-base-crds
-spec: {}

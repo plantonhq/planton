@@ -12,7 +12,7 @@ Deploys an Azure Virtual Network with a configurable address space, a dedicated 
 
 ## What Gets Created
 
-When you deploy an AzureVpc resource, OpenMCF provisions:
+When you deploy an AzureVpc resource, Planton provisions:
 
 - **Virtual Network** — a `network.VirtualNetwork` resource in the specified region and resource group with the configured address space CIDR
 - **Nodes Subnet** — a `network.Subnet` carved from the VNet address space for AKS cluster nodes
@@ -22,7 +22,7 @@ When you deploy an AzureVpc resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Resource Group** where the VNet and related resources will be created (can reference an AzureResourceGroup resource)
 - **Network planning** — determine the address space CIDR and nodes subnet CIDR before deployment; the nodes subnet must be a subset of the address space
 
@@ -31,15 +31,15 @@ When you deploy an AzureVpc resource, OpenMCF provisions:
 Create a file `vpc.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureVpc
 metadata:
   name: my-vpc
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureVpc.my-vpc
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureVpc.my-vpc
 spec:
   region: eastus
   resourceGroup: my-rg
@@ -50,7 +50,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f vpc.yaml
+planton apply -f vpc.yaml
 ```
 
 This creates a Virtual Network with a `/16` address space and a `/18` nodes subnet in the specified resource group. No NAT Gateway or DNS zone links are created by default.
@@ -81,15 +81,15 @@ This creates a Virtual Network with a `/16` address space and a `/18` nodes subn
 A minimal Virtual Network for non-production workloads with no NAT Gateway or DNS links:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureVpc
 metadata:
   name: dev-vpc
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureVpc.dev-vpc
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureVpc.dev-vpc
 spec:
   region: eastus
   resourceGroup: dev-rg
@@ -102,15 +102,15 @@ spec:
 A Virtual Network with a NAT Gateway for outbound internet access, suitable for AKS clusters that require a stable egress IP:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureVpc
 metadata:
   name: staging-vpc
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.AzureVpc.staging-vpc
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.AzureVpc.staging-vpc
 spec:
   region: westeurope
   resourceGroup: staging-rg
@@ -124,18 +124,18 @@ spec:
 
 ### Full-Featured VNet with DNS Links and Foreign Key Reference
 
-A production Virtual Network with NAT Gateway, Private DNS zone links for internal service resolution, custom tags, and a foreign key reference to an OpenMCF-managed resource group:
+A production Virtual Network with NAT Gateway, Private DNS zone links for internal service resolution, custom tags, and a foreign key reference to an Planton-managed resource group:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureVpc
 metadata:
   name: prod-vpc
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureVpc.prod-vpc
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureVpc.prod-vpc
 spec:
   region: eastus
   resourceGroup:

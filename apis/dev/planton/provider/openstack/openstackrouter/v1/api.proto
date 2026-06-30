@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package dev.planton.provider.openstack.openstackrouter.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/openstack/openstackrouter/v1/spec.proto";
+import "dev/planton/provider/openstack/openstackrouter/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// OpenStackRouter is a Kubernetes Resource Model (KRM) style resource for managing
+// Neutron routers in OpenStack.
+//
+// A router provides L3 routing between subnets and, optionally, external network
+// connectivity. Routers connect tenant subnets to each other and to external networks
+// via SNAT/DNAT. They are referenced by router interfaces that attach subnets.
+message OpenStackRouter {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'openstack.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OpenStackRouter'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OpenStackRouterSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OpenStackRouterStatus status = 5;
+}
+
+// OpenStackRouterStatus represents the observed state of an OpenStack Neutron router.
+message OpenStackRouterStatus {
+  // stack-outputs from the IaC deployment
+  OpenStackRouterStackOutputs outputs = 1;
+}

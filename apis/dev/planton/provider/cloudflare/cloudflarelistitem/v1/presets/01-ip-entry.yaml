@@ -1,0 +1,13 @@
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareListItem
+metadata:
+  name: ip-entry
+spec:
+  accountId: <cloudflare-account-id>
+  listId:
+    valueFrom:
+      kind: CloudflareList
+      name: <list-name>
+      fieldPath: status.outputs.list_id
+  ip: <ip-or-cidr>
+  comment: <comment>

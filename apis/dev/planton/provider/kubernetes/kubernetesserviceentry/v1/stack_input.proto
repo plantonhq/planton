@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesserviceentry.v1;
+
+import "dev/planton/provider/kubernetes/kubernetesserviceentry/v1/api.proto";
+import "dev/planton/provider/kubernetes/provider.proto";
+
+// KubernetesServiceEntryStackInput provides the inputs for creating the ServiceEntry on a
+// Kubernetes cluster.
+message KubernetesServiceEntryStackInput {
+  // target cloud-resource
+  KubernetesServiceEntry target = 1;
+  // provider-config
+  dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+}

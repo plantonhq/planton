@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package dev.planton.provider.hetznercloud.hetznercloudplacementgroup.v1;
+
+import "dev/planton/shared/options/options.proto";
+
+// HetznerCloudPlacementGroupSpec defines the specification for a Hetzner Cloud
+// placement group.
+//
+// A placement group controls the physical distribution of servers across
+// Hetzner Cloud's infrastructure. Servers assigned to a spread placement group
+// are guaranteed to run on different physical hosts, providing fault tolerance
+// for high-availability workloads.
+//
+// Other components (e.g., HetznerCloudServer) reference the placement group
+// via its placement_group_id output through StringValueOrRef.
+message HetznerCloudPlacementGroupSpec {
+  // Placement group strategy type.
+  //
+  // Hetzner Cloud currently supports only "spread", which distributes
+  // servers across different physical hosts for fault tolerance.
+  //
+  // Default: spread
+  optional Type type = 1 [(dev.planton.shared.options.default) = "spread"];
+
+  // Placement group strategy type.
+  enum Type {
+    type_unspecified = 0;
+    spread = 1;
+  }
+}

@@ -1,0 +1,44 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesEnvoyFilter
+metadata:
+  name: test-envoy-filter
+spec:
+  namespace:
+    value: test-namespace
+  workload_selector:
+    labels:
+      app: test-app
+  priority: 10
+  config_patches:
+    - apply_to: HTTP_FILTER
+      match:
+        context: SIDECAR_INBOUND
+        proxy:
+          proxy_version: "^1\\.26.*"
+        listener:
+          port_number: 8080
+          filter_chain:
+            filter:
+              name: envoy.filters.network.http_connection_manager
+              sub_filter:
+                name: envoy.filters.http.router
+      patch:
+        operation: INSERT_BEFORE
+        filter_class: AUTHZ
+        value:
+          name: envoy.filters.http.lua
+          typed_config:
+            "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
+            inline_code: |
+              function envoy_on_request(handle)
+                handle:headers():add("x-planton", "test")
+              end
+    - apply_to: CLUSTER
+      match:
+        context: SIDECAR_OUTBOUND
+        cluster:
+          service: reviews.default.svc.cluster.local
+      patch:
+        operation: MERGE
+        value:
+          connect_timeout: 5s

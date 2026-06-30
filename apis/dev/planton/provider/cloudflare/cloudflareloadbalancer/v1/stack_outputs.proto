@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package dev.planton.provider.cloudflare.cloudflareloadbalancer.v1;
+
+// CloudflareLoadBalancerStackOutputs describes the outputs after provisioning a Cloudflare Load Balancer.
+message CloudflareLoadBalancerStackOutputs {
+  // Unique identifier of the Cloudflare load balancer.
+  string load_balancer_id = 1;
+  // The hostname DNS record associated with the load balancer.
+  string load_balancer_dns_record_name = 2;
+  // The canonical CNAME target that the hostname resolves to (Cloudflare endpoint).
+  string load_balancer_cname_target = 3;
+}

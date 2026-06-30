@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package dev.planton.provider.openstack.openstackfloatingipassociate.v1;
+
+// OpenStackFloatingIpAssociateStackOutputs captures the observable outputs
+// after associating an OpenStack Neutron floating IP with a port.
+//
+// No downstream components currently reference these outputs, but they
+// provide operational visibility and debugging context.
+message OpenStackFloatingIpAssociateStackOutputs {
+  // id is the Terraform resource identifier for the association.
+  // Format is typically the floating IP address itself.
+  string id = 1;
+
+  // floating_ip is the floating IP address that was associated.
+  string floating_ip = 2;
+
+  // port_id is the UUID of the port the floating IP was associated with.
+  string port_id = 3;
+
+  // fixed_ip is the fixed IP address on the port that the floating IP maps to.
+  // Computed by OpenStack if not explicitly specified in the spec.
+  string fixed_ip = 4;
+
+  // region is the OpenStack region where the association was created.
+  string region = 5;
+}

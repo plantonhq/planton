@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package dev.planton.provider.cloudflare.cloudflarekvnamespace.v1;
+
+import "buf/validate/validate.proto";
+
+// CloudflareKvNamespaceSpec provisions a Workers KV namespace: a low-latency,
+// eventually-consistent key-value store readable from Workers at the edge. The
+// namespace is the container; individual entries are seeded as
+// CloudflareWorkersKvPair resources (or written by the application at runtime).
+message CloudflareKvNamespaceSpec {
+  // A human-readable title for the KV namespace, unique within the account. This
+  // maps to the namespace's `title` in the Cloudflare API.
+  string namespace_name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.max_len = 64
+  ];
+
+  // The Cloudflare account ID that owns this KV namespace.
+  string account_id = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.len = 32,
+    (buf.validate.field).string.pattern = "^[0-9a-fA-F]{32}$"
+  ];
+}

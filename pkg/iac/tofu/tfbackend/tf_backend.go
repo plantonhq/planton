@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/iac/terraform"
+	"github.com/plantonhq/planton/apis/dev/planton/shared/iac/terraform"
 )
 
 // WriteBackendFile creates a `backend.tf` file in projectDir using the backend type specified by tofuBackendType.

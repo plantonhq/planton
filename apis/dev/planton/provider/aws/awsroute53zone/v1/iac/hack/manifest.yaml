@@ -1,0 +1,13 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsRoute53Zone
+metadata:
+  name: awsroute53zone-demo
+spec:
+  region: us-east-1
+  records:
+    - recordType: A
+      name: example.com
+      values:
+        - 1.2.3.4
+      ttlSeconds: 300
+

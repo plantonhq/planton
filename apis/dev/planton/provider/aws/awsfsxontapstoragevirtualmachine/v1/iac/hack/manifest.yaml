@@ -1,0 +1,13 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsFsxOntapStorageVirtualMachine
+metadata:
+  name: test-svm
+  id: awsfxosvm-test-svm
+  org: test-org
+  env: dev
+spec:
+  region: us-west-2
+  file_system_id:
+    value: fs-0123456789abcdef0
+  name: svm_test
+  root_volume_security_style: UNIX

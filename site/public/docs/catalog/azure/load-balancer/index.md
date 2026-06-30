@@ -12,7 +12,7 @@ Deploys an Azure Standard Load Balancer with configurable frontend (public or in
 
 ## What Gets Created
 
-When you deploy an AzureLoadBalancer resource, OpenMCF provisions:
+When you deploy an AzureLoadBalancer resource, Planton provisions:
 
 - **Load Balancer** — a `lb.LoadBalancer` resource using Standard SKU in the specified region and resource group, with a single frontend IP configuration that is either public (using a public IP address) or internal (using a VNet subnet)
 - **Backend Address Pools** — one `lb.BackendAddressPool` resource per entry in `backendPools`; actual pool membership (VMs, VMSS instances, NICs) is managed externally via AKS node pools, VMSS configurations, or NIC-to-pool associations
@@ -22,7 +22,7 @@ When you deploy an AzureLoadBalancer resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Resource Group** where the load balancer will be created (can reference an AzureResourceGroup resource)
 - **A Public IP or Subnet** — for a public load balancer, a Standard SKU public IP address; for an internal load balancer, a VNet subnet ID (can reference AzurePublicIp or AzureSubnet resources)
 - **Backend infrastructure** — VMs, VMSS instances, or AKS node pools that will be associated with the backend pools after deployment
@@ -32,15 +32,15 @@ When you deploy an AzureLoadBalancer resource, OpenMCF provisions:
 Create a file `loadbalancer.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureLoadBalancer
 metadata:
   name: my-lb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureLoadBalancer.my-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureLoadBalancer.my-lb
 spec:
   region: eastus
   resourceGroup: my-rg
@@ -65,7 +65,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f loadbalancer.yaml
+planton apply -f loadbalancer.yaml
 ```
 
 This creates a public-facing Standard Load Balancer with one backend pool, an HTTP health probe on port 80, and a TCP rule forwarding port 80 traffic to the backend pool.
@@ -114,15 +114,15 @@ This creates a public-facing Standard Load Balancer with one backend pool, an HT
 A simple internet-facing load balancer forwarding HTTP traffic to a single backend pool:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureLoadBalancer
 metadata:
   name: web-lb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureLoadBalancer.web-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureLoadBalancer.web-lb
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -149,15 +149,15 @@ spec:
 A private VNet load balancer with a static IP address for stable DNS resolution and firewall rules:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureLoadBalancer
 metadata:
   name: internal-lb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureLoadBalancer.internal-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureLoadBalancer.internal-lb
 spec:
   region: westeurope
   resourceGroup: prod-rg
@@ -185,15 +185,15 @@ spec:
 A public load balancer serving both HTTPS web traffic and a TCP database proxy, each with dedicated backend pools and health probes:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureLoadBalancer
 metadata:
   name: multi-lb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureLoadBalancer.multi-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureLoadBalancer.multi-lb
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -235,15 +235,15 @@ spec:
 An internal load balancer for SQL Server AlwaysOn availability groups, using floating IP (Direct Server Return) so backends receive the original frontend IP:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureLoadBalancer
 metadata:
   name: sql-lb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureLoadBalancer.sql-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureLoadBalancer.sql-lb
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -272,18 +272,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference OpenMCF-managed resources instead of hardcoding Azure resource IDs:
+Reference Planton-managed resources instead of hardcoding Azure resource IDs:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureLoadBalancer
 metadata:
   name: ref-lb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureLoadBalancer.ref-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureLoadBalancer.ref-lb
 spec:
   region: eastus
   resourceGroup:

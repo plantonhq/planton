@@ -1,6 +1,0 @@
-name: gcp-cloud-armor-policy
-runtime:
-  name: go
-  options:
-    binary: ./pulumi
-description: OpenMCF GcpCloudArmorPolicy Pulumi module

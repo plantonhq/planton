@@ -12,7 +12,7 @@ Deploys a Scaleway Object Storage bucket with optional versioning, S3 Object Loc
 
 ## What Gets Created
 
-When you deploy a ScalewayObjectBucket resource, OpenMCF provisions:
+When you deploy a ScalewayObjectBucket resource, Planton provisions:
 
 - **Object Storage Bucket** — an `object.Bucket` resource providing an S3-compatible storage container in the specified region, with tags derived from metadata labels
 - **Versioning Configuration** — enabled inline on the bucket when `versioningEnabled` is `true`, retaining all previous versions of objects
@@ -21,7 +21,7 @@ When you deploy a ScalewayObjectBucket resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Scaleway credentials** configured via environment variables or OpenMCF provider config
+- **Scaleway credentials** configured via environment variables or Planton provider config
 - **A globally unique bucket name** — `metadata.name` must be DNS-compatible and unique across all Scaleway Object Storage (similar to AWS S3 naming constraints)
 - **Region selection** — one of `"fr-par"`, `"nl-ams"`, or `"pl-waw"`
 
@@ -30,15 +30,15 @@ When you deploy a ScalewayObjectBucket resource, OpenMCF provisions:
 Create a file `object-bucket.yaml`:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayObjectBucket
 metadata:
   name: my-app-assets
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayObjectBucket.my-app-assets
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayObjectBucket.my-app-assets
 spec:
   region: fr-par
 ```
@@ -46,7 +46,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f object-bucket.yaml
+planton apply -f object-bucket.yaml
 ```
 
 This creates a single Object Storage bucket in Paris with no versioning, no lifecycle rules, and no CORS rules. Objects are accessible via the S3-compatible endpoint at `my-app-assets.s3.fr-par.scw.cloud`.
@@ -90,15 +90,15 @@ This creates a single Object Storage bucket in Paris with no versioning, no life
 A simple bucket in Paris with force-destroy enabled for clean teardown:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayObjectBucket
 metadata:
   name: dev-scratch-bucket
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayObjectBucket.dev-scratch-bucket
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayObjectBucket.dev-scratch-bucket
 spec:
   region: fr-par
   forceDestroy: true
@@ -109,15 +109,15 @@ spec:
 A media storage bucket with versioning enabled and lifecycle rules that transition old objects to cold storage and expire them after one year:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayObjectBucket
 metadata:
   name: media-archive
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.ScalewayObjectBucket.media-archive
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.ScalewayObjectBucket.media-archive
 spec:
   region: nl-ams
   versioningEnabled: true
@@ -143,15 +143,15 @@ spec:
 A production bucket hosting user-uploaded content for a web application, with CORS rules for browser uploads, versioning, Object Lock for compliance, and lifecycle cleanup:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayObjectBucket
 metadata:
   name: prod-user-content
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.ScalewayObjectBucket.prod-user-content
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.ScalewayObjectBucket.prod-user-content
 spec:
   region: fr-par
   versioningEnabled: true

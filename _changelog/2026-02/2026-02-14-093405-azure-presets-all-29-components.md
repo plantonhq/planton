@@ -6,11 +6,11 @@
 
 ## Summary
 
-Created production-quality presets for all 29 Azure deployment components, adding 55 presets (110 YAML + MD files, ~2,800 lines) across 5 logical batches. This completes the Azure provider's preset coverage as part of the OpenMCF presets initiative (T04). Existing AzureContainerApp presets were rewritten from snake_case to camelCase for consistency with the AWS and GCP providers.
+Created production-quality presets for all 29 Azure deployment components, adding 55 presets (110 YAML + MD files, ~2,800 lines) across 5 logical batches. This completes the Azure provider's preset coverage as part of the Planton presets initiative (T04). Existing AzureContainerApp presets were rewritten from snake_case to camelCase for consistency with the AWS and GCP providers.
 
 ## Problem Statement / Motivation
 
-Azure users face the same challenge as AWS and GCP users: OpenMCF's consistent KRM structure is valuable, but configuring a resource still requires understanding all available fields and making judgment calls about common configurations. Azure's 29 components span foundation infrastructure, Kubernetes, databases, networking, and identity -- a broad surface area where opinionated starting points significantly reduce time-to-deploy.
+Azure users face the same challenge as AWS and GCP users: Planton's consistent KRM structure is valuable, but configuring a resource still requires understanding all available fields and making judgment calls about common configurations. Azure's 29 components span foundation infrastructure, Kubernetes, databases, networking, and identity -- a broad surface area where opinionated starting points significantly reduce time-to-deploy.
 
 ### Pain Points
 
@@ -121,10 +121,10 @@ flowchart TB
 
 ## Benefits
 
-- **Immediate productivity** -- Azure users can now deploy any of 29 resource types by picking a preset, replacing placeholders, and running `openmcf pulumi up`
+- **Immediate productivity** -- Azure users can now deploy any of 29 resource types by picking a preset, replacing placeholders, and running `planton pulumi up`
 - **Consistency** -- All Azure presets follow the same camelCase convention as AWS and GCP, creating a uniform experience across providers
 - **Quality reference** -- Each preset's companion markdown documents the configuration rationale, teaching users *why* these values were chosen
-- **Cross-reference** -- Placeholder tables include "Where to Find" columns pointing to related OpenMCF components, helping users wire resources together
+- **Cross-reference** -- Placeholder tables include "Where to Find" columns pointing to related Planton components, helping users wire resources together
 
 ## Impact
 

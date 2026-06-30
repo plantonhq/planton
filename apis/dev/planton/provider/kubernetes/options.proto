@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes;
+
+import "dev/planton/provider/kubernetes/kubernetes.proto";
+import "google/protobuf/descriptor.proto";
+
+extend google.protobuf.FieldOptions {
+  dev.planton.provider.kubernetes.ContainerResources default_container_resources = 599991;
+}

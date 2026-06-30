@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsnetworkloadbalancer.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/aws/awsnetworkloadbalancer/v1/spec.proto";
+import "dev/planton/provider/aws/awsnetworkloadbalancer/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// AwsNetworkLoadBalancer represents a managed AWS Network Load Balancer
+// deployed via Planton. This resource provisions a Layer 4 load balancer
+// with listeners, target groups, and optional Route53 DNS records.
+message AwsNetworkLoadBalancer {
+  // api-version must be set to "aws.planton.dev/v1".
+  string api_version = 1 [(buf.validate.field).string.const = "aws.planton.dev/v1"];
+
+  // resource-kind for this NLB resource.
+  string kind = 2 [(buf.validate.field).string.const = "AwsNetworkLoadBalancer"];
+
+  // metadata captures identifying information (name, org, version, etc.)
+  // and must pass standard validations for resource naming.
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec holds the core configuration defining how the NLB is provisioned.
+  AwsNetworkLoadBalancerSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status holds runtime or post-deployment information.
+  AwsNetworkLoadBalancerStatus status = 5;
+}
+
+// AwsNetworkLoadBalancerStatus describes the status fields for an NLB resource.
+message AwsNetworkLoadBalancerStatus {
+  // stack_outputs captures the outputs returned by Pulumi/Terraform after provisioning.
+  AwsNetworkLoadBalancerStackOutputs outputs = 1;
+}

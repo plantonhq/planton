@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesneo4j.v1;
+
+// Neo4jKubernetes Stack Outputs
+message KubernetesNeo4jStackOutputs {
+  // The Kubernetes namespace where the Neo4j instance is deployed.
+  string namespace = 1;
+
+  // The in-cluster Service name for connecting via Bolt/HTTP.
+  // Example: "my-graph-db.default.svc.cluster.local"
+  string service = 2;
+
+  // Bolt URI (internal). For example: "bolt://my-graph-db:7687".
+  // If connecting externally, you might port-forward or set up an Ingress outside this spec.
+  string bolt_uri_kube_endpoint = 3;
+
+  // HTTP URL for the Neo4j browser if enabled. Ex: "http://my-graph-db:7474".
+  // Also typically internal unless you manually expose it.
+  string http_uri_kube_endpoint = 4;
+}

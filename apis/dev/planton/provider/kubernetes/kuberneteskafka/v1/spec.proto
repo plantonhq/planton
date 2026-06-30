@@ -1,0 +1,261 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kuberneteskafka.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/kubernetes.proto";
+import "dev/planton/provider/kubernetes/options.proto";
+import "dev/planton/provider/kubernetes/target_cluster.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+import "google/protobuf/descriptor.proto";
+
+extend google.protobuf.FieldOptions {
+  KubernetesKafkaBrokerContainer default_broker_container = 524001;
+  KubernetesKafkaZookeeperContainer default_zookeeper_container = 524002;
+}
+
+// **KubernetesKafkaSpec** defines the configuration for deploying Apache Kafka on a Kubernetes cluster.
+// This message includes specifications for Kafka topics, broker containers, Zookeeper containers, schema registry,
+// ingress settings, and the option to deploy a Kafka UI.
+// By configuring these parameters, you can set up a Kafka cluster tailored to your application's needs, including
+// resource allocation, data persistence, and external access.
+message KubernetesKafkaSpec {
+  // Target Kubernetes Cluster
+  dev.planton.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  // Kubernetes Namespace
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // flag to indicate if the namespace should be created
+  bool create_namespace = 3;
+
+  // A list of Kafka topics to be created in the Kafka cluster.
+  repeated KafkaTopic kafka_topics = 4;
+
+  // The specifications for the Kafka broker containers.
+  KubernetesKafkaBrokerContainer broker_container = 5 [(default_broker_container) = {
+    replicas: 1
+    resources: {
+      limits: {
+        cpu: "1000m"
+        memory: "1Gi"
+      }
+      requests: {
+        cpu: "50m"
+        memory: "100Mi"
+      }
+    }
+    disk_size: "1Gi"
+  }];
+
+  // The specifications for the Zookeeper containers.
+  KubernetesKafkaZookeeperContainer zookeeper_container = 6 [(default_zookeeper_container) = {
+    replicas: 1
+    resources: {
+      limits: {
+        cpu: "1000m"
+        memory: "1Gi"
+      }
+      requests: {
+        cpu: "50m"
+        memory: "100Mi"
+      }
+    }
+    disk_size: "1Gi"
+  }];
+
+  // The specifications for the Schema Registry containers.
+  KubernetesKafkaSchemaRegistryContainer schema_registry_container = 7;
+
+  // The ingress configuration for the Kafka deployment.
+  KubernetesKafkaIngress ingress = 8;
+
+  // A flag to toggle the deployment of the Kafka UI component.
+  bool is_deploy_kafka_ui = 9 [(dev.planton.shared.options.recommended_default) = "true"];
+}
+
+/**
+ * KubernetesKafkaIngress defines ingress configuration for Kafka.
+ */
+message KubernetesKafkaIngress {
+  // Flag to enable or disable ingress.
+  bool enabled = 1;
+
+  // The full hostname for external access (e.g., "kafka.example.com").
+  // Required when enabled is true.
+  string hostname = 2;
+
+  option (buf.validate.message).cel = {
+    id: "spec.ingress.hostname.required"
+    expression: "!this.enabled || size(this.hostname) > 0"
+    message: "hostname is required when ingress is enabled"
+  };
+}
+
+// **KubernetesKafkaBrokerContainer** specifies the configuration for the Kafka broker containers.
+// It includes settings such as the number of replicas, resource allocations, and disk size.
+// Proper configuration ensures optimal performance and data reliability for your Kafka brokers.
+message KubernetesKafkaBrokerContainer {
+  // The number of Kafka brokers to deploy.
+  // Defaults to 1 if the client sets the value to 0.
+  // Recommended default value is 1.
+  int32 replicas = 1;
+
+  // The CPU and memory resources allocated to the Kafka broker containers.
+  dev.planton.provider.kubernetes.ContainerResources resources = 2;
+
+  // The size of the disk to be attached to each broker instance (e.g., "30Gi").
+  // A default value is set if not provided by the client.
+  string disk_size = 3 [(buf.validate.field).cel = {
+    id: "spec.broker_container.disk_size.format"
+    message: "Disk size value is invalid"
+    // Validation regex for disk size.
+    expression: "this.matches('^\\\\d+(\\\\.\\\\d+)?\\\\s?(Ki|Mi|Gi|Ti|Pi|Ei|K|M|G|T|P|E)$') && size(this) > 0"
+  }];
+}
+
+// **KubernetesKafkaZookeeperContainer** specifies the configuration for the Zookeeper containers.
+// Zookeeper is required for Kafka cluster management and coordination.
+// Proper configuration ensures high availability and reliability of your Kafka cluster.
+message KubernetesKafkaZookeeperContainer {
+  // The number of Zookeeper container replicas.
+  // Zookeeper requires at least 3 replicas for high availability (HA) mode.
+  // Zookeeper uses the Raft consensus algorithm; refer to https://raft.github.io/ for more information on how replica
+  // count affects availability.
+  int32 replicas = 1;
+
+  // The CPU and memory resources allocated to the Zookeeper containers.
+  dev.planton.provider.kubernetes.ContainerResources resources = 2;
+
+  // The size of the disk to be attached to each Zookeeper instance (e.g., "30Gi").
+  // A default value is set if not provided by the client.
+  string disk_size = 3 [(buf.validate.field).cel = {
+    id: "spec.broker_container.disk_size.format"
+    message: "Disk size value is invalid"
+    // Validation regex for disk size.
+    expression: "this.matches('^\\\\d+(\\\\.\\\\d+)?\\\\s?(Ki|Mi|Gi|Ti|Pi|Ei|K|M|G|T|P|E)$') && size(this) > 0"
+  }];
+}
+
+// **KubernetesKafkaSchemaRegistryContainer** specifies the configuration for the Schema Registry containers.
+// The Schema Registry provides a serving layer for your metadata, allowing data producers and consumers to evolve independently.
+message KubernetesKafkaSchemaRegistryContainer {
+  // A flag to control whether the Schema Registry is created for the Kafka deployment.
+  // Defaults to `false`.
+  bool is_enabled = 1;
+
+  // The number of Schema Registry replicas.
+  // Recommended default value is "1".
+  // This value has no effect if `is_enabled` is set to `false`.
+  int32 replicas = 2 [(dev.planton.shared.options.recommended_default) = "1"];
+
+  // The CPU and memory resources allocated to the Schema Registry containers.
+  dev.planton.provider.kubernetes.ContainerResources resources = 3 [(dev.planton.provider.kubernetes.default_container_resources) = {
+    limits: {
+      cpu: "1000m"
+      memory: "1Gi"
+    }
+    requests: {
+      cpu: "50m"
+      memory: "100Mi"
+    }
+  }];
+}
+
+// **KafkaTopic** represents a Kafka topic to be created in the Kafka cluster.
+// It includes configurations such as the topic name, number of partitions, replicas, and additional configurations.
+message KafkaTopic {
+  // The name of the Kafka topic.
+  // Must be between 1 and 249 characters in length.
+  // The name must start and end with an alphanumeric character, can contain alphanumeric characters, '.', '_', and '-'.
+  // Must not contain '..' or non-ASCII characters.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 249,
+    (buf.validate.field).cel = {
+      id: "topic.name.startswith"
+      message: "Should start with an alphanumeric character"
+      expression: "this.matches('^[a-zA-Z0-9].*$')"
+    },
+    (buf.validate.field).cel = {
+      id: "topic.name.chars"
+      message: "Only alphanumeric and ('.', '_' and '-') characters are allowed"
+      expression: "this.matches('^[a-zA-Z0-9._-]+$')"
+    },
+    (buf.validate.field).cel = {
+      id: "topic.name.no_double_dots"
+      message: "Must not contain '..'"
+      expression: "!this.contains('..')"
+    },
+    (buf.validate.field).cel = {
+      id: "topic.name.ascii_only"
+      message: "Must not contain non-ASCII characters"
+      expression: "this.matches('^[\\x00-\\x7F]+$')"
+    },
+    (buf.validate.field).cel = {
+      id: "topic.name.endswith"
+      message: "Should end with an alphanumeric character"
+      expression: "this.matches('.*[a-zA-Z0-9]$')"
+    }
+  ];
+
+  // The number of partitions for the topic.
+  // Recommended default is 1.
+  optional int32 partitions = 2 [(dev.planton.shared.options.default) = "1"];
+
+  // The number of replicas for the topic.
+  // Recommended default is 1.
+  optional int32 replicas = 3 [(dev.planton.shared.options.default) = "1"];
+
+  // Additional configuration for the Kafka topic.
+  // If not provided, default values will be set.
+  // For example, the default `delete.policy` is `delete`, but it can be set to `compact`.
+  map<string, string> config = 4 [
+    (dev.planton.shared.options.recommended_default_map) = {
+      key: "cleanup.policy"
+      value: "delete"
+    },
+    (dev.planton.shared.options.recommended_default_map) = {
+      key: "delete.retention.ms"
+      value: "86400000"
+    },
+    (dev.planton.shared.options.recommended_default_map) = {
+      key: "max.message.bytes"
+      value: "2097164"
+    },
+    (dev.planton.shared.options.recommended_default_map) = {
+      key: "message.timestamp.difference.max.ms"
+      value: "9223372036854775807"
+    },
+    (dev.planton.shared.options.recommended_default_map) = {
+      key: "message.timestamp.type"
+      value: "CreateTime"
+    },
+    (dev.planton.shared.options.recommended_default_map) = {
+      key: "min.insync.replicas"
+      value: "1"
+    },
+    (dev.planton.shared.options.recommended_default_map) = {
+      key: "retention.bytes"
+      value: "-1"
+    },
+    (dev.planton.shared.options.recommended_default_map) = {
+      key: "retention.ms"
+      value: "604800000"
+    },
+    (dev.planton.shared.options.recommended_default_map) = {
+      key: "segment.bytes"
+      value: "1073741824"
+    },
+    (dev.planton.shared.options.recommended_default_map) = {
+      key: "segment.ms"
+      value: "604800000"
+    }
+  ];
+}

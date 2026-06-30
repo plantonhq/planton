@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package dev.planton.provider.alicloud.alicloudlogproject.v1;
+
+// AliCloudLogProjectStackOutputs captures the outputs from deploying an
+// Alibaba Cloud SLS project and its bundled log stores.
+message AliCloudLogProjectStackOutputs {
+  // The SLS project name (also serves as the project identifier in SLS APIs).
+  string project_name = 1;
+
+  // The SLS project ID.
+  string project_id = 2;
+
+  // Map of log store names created within the project.
+  // Key: the log store name as specified in spec. Value: the log store name (identical).
+  // This output exists so downstream components can reference specific log store names
+  // via StringValueOrRef (e.g., AckManagedCluster referencing a log store for audit logs).
+  map<string, string> log_store_names = 3;
+}

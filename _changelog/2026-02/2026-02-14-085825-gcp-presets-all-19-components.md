@@ -10,7 +10,7 @@ Created 36 production-quality presets across all 19 GCP deployment components, p
 
 ## Problem Statement / Motivation
 
-After completing T02 (49 presets for 25 AWS components), the 19 GCP components had zero presets. GCP is the second most-used provider in OpenMCF and needed the same "opinionated starting point" treatment to reduce the time from understanding a component's API to deploying it in production.
+After completing T02 (49 presets for 25 AWS components), the 19 GCP components had zero presets. GCP is the second most-used provider in Planton and needed the same "opinionated starting point" treatment to reduce the time from understanding a component's API to deploying it in production.
 
 ### Pain Points
 
@@ -58,7 +58,7 @@ All `StringValueOrRef` fields use the mandatory `value:` wrapper. GcpGkeCluster 
 
 ## Impact
 
-- **Platform engineers** can deploy any GCP resource by copying a preset, replacing placeholders, and running `openmcf pulumi up`
+- **Platform engineers** can deploy any GCP resource by copying a preset, replacing placeholders, and running `planton pulumi up`
 - **Documentation** -- each preset's companion MD serves as focused configuration guidance
 - **Total presets to date**: 86 (1 pilot + 49 AWS + 36 GCP) across 45 components
 

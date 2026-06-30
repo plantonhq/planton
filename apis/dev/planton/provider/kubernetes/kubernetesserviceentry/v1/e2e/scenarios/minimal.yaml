@@ -1,0 +1,15 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesServiceEntry
+metadata:
+  name: e2e-service-entry
+spec:
+  namespace:
+    value: default
+  hosts:
+    - api.external-example.com
+  location: MESH_EXTERNAL
+  resolution: DNS
+  ports:
+    - number: 443
+      name: https
+      protocol: TLS

@@ -12,7 +12,7 @@ Deploys an Azure Service Bus namespace with optional queues and topics for enter
 
 ## What Gets Created
 
-When you deploy an AzureServiceBusNamespace resource, OpenMCF provisions:
+When you deploy an AzureServiceBusNamespace resource, Planton provisions:
 
 - **Service Bus Namespace** -- a `servicebus.Namespace` resource in the specified region and resource group, configured with the chosen SKU tier, TLS version, and optional Premium capacity settings
 - **Queues** -- a `servicebus.Queue` for each entry in `queues`, supporting point-to-point messaging with configurable lock duration, sessions, duplicate detection, dead-lettering, and message forwarding
@@ -21,7 +21,7 @@ When you deploy an AzureServiceBusNamespace resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Resource Group** where the namespace will be created (can reference an AzureResourceGroup resource)
 - **A globally unique namespace name** -- the name becomes the endpoint `{name}.servicebus.windows.net`
 - **SKU selection** -- Basic for simple queues only, Standard for queues + topics, Premium for dedicated capacity, VNet integration, and zone redundancy
@@ -31,15 +31,15 @@ When you deploy an AzureServiceBusNamespace resource, OpenMCF provisions:
 Create a file `servicebus.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureServiceBusNamespace
 metadata:
   name: my-sb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureServiceBusNamespace.my-sb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureServiceBusNamespace.my-sb
 spec:
   region: eastus
   resourceGroup: my-rg
@@ -51,7 +51,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f servicebus.yaml
+planton apply -f servicebus.yaml
 ```
 
 This creates a Standard-tier Service Bus namespace with a single `orders` queue, TLS 1.2 enforcement, and public network access enabled.
@@ -113,15 +113,15 @@ This creates a Standard-tier Service Bus namespace with a single `orders` queue,
 A Standard-tier namespace with a work queue and an events topic for a typical microservices architecture:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureServiceBusNamespace
 metadata:
   name: app-messaging
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureServiceBusNamespace.app-messaging
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureServiceBusNamespace.app-messaging
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -144,15 +144,15 @@ spec:
 A Premium-tier namespace with dedicated capacity, zone redundancy, and private-only access:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureServiceBusNamespace
 metadata:
   name: enterprise-sb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureServiceBusNamespace.enterprise-sb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureServiceBusNamespace.enterprise-sb
 spec:
   region: westeurope
   resourceGroup: prod-rg
@@ -178,15 +178,15 @@ spec:
 A namespace with message forwarding chains for routing patterns:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureServiceBusNamespace
 metadata:
   name: routing-sb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureServiceBusNamespace.routing-sb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureServiceBusNamespace.routing-sb
 spec:
   region: eastus
   resourceGroup: prod-rg
@@ -203,18 +203,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed resource group:
+Reference an Planton-managed resource group:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureServiceBusNamespace
 metadata:
   name: ref-sb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureServiceBusNamespace.ref-sb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureServiceBusNamespace.ref-sb
 spec:
   region: eastus
   resourceGroup:

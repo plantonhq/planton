@@ -1,0 +1,91 @@
+syntax = "proto3";
+
+package dev.planton.provider.auth0.auth0client.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/auth0/auth0client/v1/spec.proto";
+import "dev/planton/provider/auth0/auth0client/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// Auth0Client is a deployment component that configures an Application in Auth0.
+// In the Auth0 dashboard, these are shown as "Applications" - they represent clients
+// that can authenticate users and request access to APIs.
+//
+// This component supports all Auth0 application types:
+// - Native applications (mobile, desktop, CLI)
+// - Single Page Applications (SPAs)
+// - Regular web applications (server-side rendered)
+// - Machine-to-Machine (M2M) applications
+//
+// Example manifest for a SPA:
+// ```yaml
+// apiVersion: auth0.planton.dev/v1
+// kind: Auth0Client
+// metadata:
+//   name: my-spa-app
+//   org: my-organization
+//   env: production
+// spec:
+//   application_type: spa
+//   description: My React SPA
+//   callbacks:
+//     - https://myapp.com/callback
+//     - http://localhost:3000/callback
+//   allowed_logout_urls:
+//     - https://myapp.com
+//     - http://localhost:3000
+//   web_origins:
+//     - https://myapp.com
+//     - http://localhost:3000
+//   grant_types:
+//     - authorization_code
+//     - refresh_token
+// ```
+//
+// Example manifest for M2M application:
+// ```yaml
+// apiVersion: auth0.planton.dev/v1
+// kind: Auth0Client
+// metadata:
+//   name: backend-api-client
+//   org: my-organization
+// spec:
+//   application_type: non_interactive
+//   description: Backend API service client
+//   grant_types:
+//     - client_credentials
+// ```
+message Auth0Client {
+  // api_version is the version of the Auth0 API resource.
+  // Must be "auth0.planton.dev/v1" for this version.
+  string api_version = 1 [(buf.validate.field).string.const = 'auth0.planton.dev/v1'];
+
+  // kind is the Kubernetes Resource Model (KRM) kind.
+  // Must be "Auth0Client" for this resource type.
+  string kind = 2 [(buf.validate.field).string.const = 'Auth0Client'];
+
+  // metadata contains standard cloud resource metadata.
+  // - name: Unique identifier for the application within Planton (becomes client name)
+  // - org: Organization that owns this application
+  // - env: Environment (development, staging, production)
+  // - labels: Key-value pairs for filtering and organization
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec contains the desired configuration for the Auth0 application.
+  // This includes application type, OAuth settings, and security configuration.
+  Auth0ClientSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status contains the current state of the Auth0 application.
+  // This is populated by the system after deployment and includes
+  // client credentials, identifiers, and other runtime information.
+  Auth0ClientStatus status = 5;
+}
+
+// Auth0ClientStatus represents the current state of an Auth0 Client resource.
+// This is populated by the deployment system and contains read-only outputs.
+message Auth0ClientStatus {
+  // outputs contains the stack outputs from the Auth0 client deployment.
+  // These values are populated after successful deployment and include
+  // client credentials, identifiers, and configuration URLs.
+  Auth0ClientStackOutputs outputs = 1;
+}

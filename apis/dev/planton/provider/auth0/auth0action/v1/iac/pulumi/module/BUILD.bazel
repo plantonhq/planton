@@ -1,0 +1,20 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "module",
+    srcs = [
+        "action.go",
+        "locals.go",
+        "main.go",
+        "outputs.go",
+        "trigger_binding.go",
+    ],
+    importpath = "github.com/plantonhq/planton/apis/dev/planton/provider/auth0/auth0action/v1/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/dev/planton/provider/auth0/auth0action/v1:auth0action",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_auth0_sdk_v3//go/auth0",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)

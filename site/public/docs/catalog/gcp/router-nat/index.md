@@ -12,7 +12,7 @@ Deploys a GCP Cloud Router with a Cloud NAT gateway to provide outbound internet
 
 ## What Gets Created
 
-When you deploy a GcpRouterNat resource, OpenMCF provisions:
+When you deploy a GcpRouterNat resource, Planton provisions:
 
 - **Cloud Router** — a regional `google_compute_router` attached to the specified VPC network
 - **Cloud NAT Gateway** — a `google_compute_router_nat` on the router, configured with the chosen IP allocation strategy, subnet coverage, and log settings
@@ -20,7 +20,7 @@ When you deploy a GcpRouterNat resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **A GCP project** where the Cloud Router and NAT will be created
 - **An existing VPC network** (self-link or name) in the target project
 - **A target region** where private instances need outbound internet access
@@ -32,15 +32,15 @@ When you deploy a GcpRouterNat resource, OpenMCF provisions:
 Create a file `router-nat.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpRouterNat
 metadata:
   name: my-nat
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpRouterNat.my-nat
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpRouterNat.my-nat
 spec:
   projectId: my-gcp-project-123
   vpcSelfLink: https://www.googleapis.com/compute/v1/projects/my-gcp-project-123/global/networks/my-vpc
@@ -52,7 +52,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f router-nat.yaml
+planton apply -f router-nat.yaml
 ```
 
 This creates a Cloud Router and NAT gateway covering all subnets in `us-central1` with auto-allocated IPs and `ERRORS_ONLY` logging enabled by default.
@@ -84,15 +84,15 @@ This creates a Cloud Router and NAT gateway covering all subnets in `us-central1
 The most common configuration — provides outbound internet access for every subnet in the region with automatic IP management:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpRouterNat
 metadata:
   name: uscentral1-nat
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpRouterNat.uscentral1-nat
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpRouterNat.uscentral1-nat
 spec:
   projectId: my-gcp-project-123
   vpcSelfLink: https://www.googleapis.com/compute/v1/projects/my-gcp-project-123/global/networks/my-vpc
@@ -107,15 +107,15 @@ spec:
 Use manual IP allocation when external partners need to allowlist your egress IPs:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpRouterNat
 metadata:
   name: prod-nat
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpRouterNat.prod-nat
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpRouterNat.prod-nat
 spec:
   projectId: my-gcp-project-123
   vpcSelfLink: https://www.googleapis.com/compute/v1/projects/my-gcp-project-123/global/networks/prod-vpc
@@ -133,15 +133,15 @@ spec:
 Restrict NAT to specific subnets and enable full translation logging for security auditing:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpRouterNat
 metadata:
   name: audit-nat
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpRouterNat.audit-nat
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpRouterNat.audit-nat
 spec:
   projectId: my-gcp-project-123
   vpcSelfLink: https://www.googleapis.com/compute/v1/projects/my-gcp-project-123/global/networks/prod-vpc
@@ -158,18 +158,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding values:
+Reference other Planton-managed resources instead of hardcoding values:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpRouterNat
 metadata:
   name: ref-nat
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpRouterNat.ref-nat
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpRouterNat.ref-nat
 spec:
   projectId:
     valueFrom:

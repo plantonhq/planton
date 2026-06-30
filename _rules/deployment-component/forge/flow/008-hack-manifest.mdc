@@ -8,16 +8,16 @@ TITLE
 Forge: Generate top-level hack/manifest.yaml for the resource
 
 ROLE
-You are the OpenMCF Code Partner working inside the developer’s local workspace in Cursor. This rule generates a minimal `iac/hack/manifest.yaml` for quick testing.
+You are the Planton Code Partner working inside the developer’s local workspace in Cursor. This rule generates a minimal `iac/hack/manifest.yaml` for quick testing.
 
 TOOLS
 - Proto Readers: reuse `_rules/deployment-component/_scripts/spec_proto_reader.py` and `_rules/deployment-component/_scripts/api_reader.py`.
 - Writer: `_rules/deployment-component/_scripts/hack_manifest_write.py` writes the manifest deterministically.
-- Reference components (live ground truth): `apis/org/openmcf/provider/aws/awsvpc/v1/iac/hack/manifest.yaml`
+- Reference components (live ground truth): `apis/dev/planton/provider/aws/awsvpc/v1/iac/hack/manifest.yaml`
   and `aws/awsalb/v1/iac/hack/manifest.yaml` -- canonical minimal test manifests.
 
 SCOPE
-- Target: `apis/org/openmcf/provider/<provider>/<kindfolder>/v1/iac/hack/manifest.yaml`
+- Target: `apis/dev/planton/provider/<provider>/<kindfolder>/v1/iac/hack/manifest.yaml`
 - Create/update a minimal YAML manifest with safe defaults.
 
 SEQUENTIAL STEPS

@@ -1,0 +1,15 @@
+apiVersion: azure.planton.dev/v1
+kind: AzureApplicationInsights
+metadata:
+  name: test-ai
+  org: test-org
+  env: dev
+spec:
+  region: eastus
+  resource_group: test-rg
+  name: test-app-insights
+  application_type: web
+  workspace_id: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-rg/providers/Microsoft.OperationalInsights/workspaces/test-law
+  retention_in_days: 90
+  daily_data_cap_in_gb: 100
+  sampling_percentage: 100

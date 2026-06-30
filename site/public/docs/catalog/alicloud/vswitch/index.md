@@ -12,32 +12,32 @@ Deploys an Alibaba Cloud VSwitch (subnet) within an existing VPC, bound to a sin
 
 ## What Gets Created
 
-When you deploy an AliCloudVswitch resource, OpenMCF provisions:
+When you deploy an AliCloudVswitch resource, Planton provisions:
 
 - **VSwitch** — an `alicloud_vswitch` resource (Pulumi: `vpc.Switch`) with the specified VPC, Availability Zone, CIDR block, name, and optional IPv6 configuration
 - **Tags** — system metadata tags (`resource`, `resource_name`, `resource_kind`, `organization`, `environment`) merged with user-defined `spec.tags`, with user values taking precedence on key conflict
 
 ## Prerequisites
 
-- **Alibaba Cloud credentials** configured via environment variables (`ALICLOUD_ACCESS_KEY`, `ALICLOUD_SECRET_KEY`) or OpenMCF provider config
+- **Alibaba Cloud credentials** configured via environment variables (`ALICLOUD_ACCESS_KEY`, `ALICLOUD_SECRET_KEY`) or Planton provider config
 - **An existing VPC** — the VSwitch's `vpcId` must reference a valid Alibaba Cloud VPC; can be a literal ID or a `valueFrom` reference to an AliCloudVpc component
 - **CIDR block planning** — the VSwitch CIDR must be a subset of the parent VPC's CIDR block, with a mask length of 16-29, and must not overlap with other VSwitches in the same VPC
-- **OpenMCF CLI** installed with either Pulumi or Terraform (OpenTofu) backend
+- **Planton CLI** installed with either Pulumi or Terraform (OpenTofu) backend
 
 ## Quick Start
 
 Create a file `vswitch.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudVswitch
 metadata:
   name: my-vswitch
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudVswitch.my-vswitch
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudVswitch.my-vswitch
 spec:
   region: cn-hangzhou
   vpcId: vpc-bp1234567890abcdef
@@ -49,7 +49,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f vswitch.yaml
+planton apply -f vswitch.yaml
 ```
 
 This creates a VSwitch with a `/24` CIDR block in the `cn-hangzhou-a` Availability Zone within the specified VPC.
@@ -82,15 +82,15 @@ This creates a VSwitch with a `/24` CIDR block in the `cn-hangzhou-a` Availabili
 A minimal VSwitch for non-production workloads with a standard `/24` CIDR block.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudVswitch
 metadata:
   name: dev-vswitch
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudVswitch.dev-vswitch
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudVswitch.dev-vswitch
 spec:
   region: cn-hangzhou
   vpcId: vpc-abc123def456
@@ -104,17 +104,17 @@ spec:
 A production VSwitch with a large address space for Kubernetes node pools, organizational metadata, and cost-tracking tags.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudVswitch
 metadata:
   name: prod-app-vswitch
   org: my-org
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AliCloudVswitch.prod-app-vswitch
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AliCloudVswitch.prod-app-vswitch
 spec:
   region: cn-shanghai
   vpcId: vpc-prod-001
@@ -133,16 +133,16 @@ spec:
 References an AliCloudVpc component instead of hardcoding the VPC ID, establishing a declarative dependency between the VSwitch and its parent VPC.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudVswitch
 metadata:
   name: db-vswitch
   env: staging
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.AliCloudVswitch.db-vswitch
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.AliCloudVswitch.db-vswitch
 spec:
   region: cn-hangzhou
   vpcId:
@@ -159,15 +159,15 @@ spec:
 A VSwitch with IPv6 support. The parent VPC must have IPv6 enabled for the IPv6 CIDR allocation to succeed.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudVswitch
 metadata:
   name: ipv6-vswitch
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.AliCloudVswitch.ipv6-vswitch
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.AliCloudVswitch.ipv6-vswitch
 spec:
   region: us-west-1
   vpcId: vpc-ipv6-enabled

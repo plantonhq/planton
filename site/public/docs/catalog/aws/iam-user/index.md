@@ -12,7 +12,7 @@ Deploys an AWS IAM User with optional managed policy attachments, inline policy 
 
 ## What Gets Created
 
-When you deploy an AwsIamUser resource, OpenMCF provisions:
+When you deploy an AwsIamUser resource, Planton provisions:
 
 - **IAM User** — an `iam.User` resource with the specified username and tags
 - **Managed Policy Attachments** — one `iam.UserPolicyAttachment` per entry in `managedPolicyArns`, linking the user to existing AWS-managed or customer-managed policies
@@ -21,7 +21,7 @@ When you deploy an AwsIamUser resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **Policy ARNs** for any managed policies you want to attach (ARNs must start with `arn:aws:iam::`)
 
 ## Quick Start
@@ -29,15 +29,15 @@ When you deploy an AwsIamUser resource, OpenMCF provisions:
 Create a file `iam-user.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsIamUser
 metadata:
   name: my-ci-user
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsIamUser.my-ci-user
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsIamUser.my-ci-user
 spec:
   region: us-east-1
   userName: my-ci-user
@@ -46,7 +46,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f iam-user.yaml
+planton apply -f iam-user.yaml
 ```
 
 This creates an IAM user named `my-ci-user` with one active access key pair and no policies attached.
@@ -75,15 +75,15 @@ This creates an IAM user named `my-ci-user` with one active access key pair and 
 A user for a CI pipeline that needs to push artifacts to an S3 bucket:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsIamUser
 metadata:
   name: ci-deploy-user
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsIamUser.ci-deploy-user
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsIamUser.ci-deploy-user
 spec:
   region: us-east-1
   userName: ci-deploy-user
@@ -96,15 +96,15 @@ spec:
 A user for a third-party integration with a scoped inline policy granting read access to a specific DynamoDB table:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsIamUser
 metadata:
   name: analytics-service
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsIamUser.analytics-service
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsIamUser.analytics-service
 spec:
   region: us-east-1
   userName: analytics-service
@@ -125,15 +125,15 @@ spec:
 A user intended for AWS Management Console access only, with no programmatic access keys:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsIamUser
 metadata:
   name: audit-viewer
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsIamUser.audit-viewer
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsIamUser.audit-viewer
 spec:
   region: us-east-1
   userName: audit-viewer
@@ -147,15 +147,15 @@ spec:
 A production service account with both managed and inline policies for SQS and CloudWatch access:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsIamUser
 metadata:
   name: worker-service
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsIamUser.worker-service
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsIamUser.worker-service
 spec:
   region: us-east-1
   userName: worker-service

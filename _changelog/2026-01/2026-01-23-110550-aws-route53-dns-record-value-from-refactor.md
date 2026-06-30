@@ -140,7 +140,7 @@ spec:
 ## Files Changed
 
 ```
-apis/org/openmcf/provider/aws/awsroute53dnsrecord/v1/
+apis/dev/planton/provider/aws/awsroute53dnsrecord/v1/
 ├── spec.proto              # StringValueOrRef fields, updated validations
 ├── spec.pb.go              # Generated Go code
 ├── stack_outputs.proto     # Renamed hosted_zone_id → zone_id

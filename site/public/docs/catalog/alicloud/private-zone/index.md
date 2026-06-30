@@ -12,7 +12,7 @@ Provisions and manages an Alibaba Cloud Private Zone (PVTZ) for VPC-internal DNS
 
 ## What Gets Created
 
-When you deploy an AliCloudPrivateDnsZone resource, OpenMCF provisions:
+When you deploy an AliCloudPrivateDnsZone resource, Planton provisions:
 
 - **Private Zone** -- an `alicloud_pvtz_zone` resource (Pulumi: `pvtz.Zone`) that creates the private DNS hosted zone
 - **VPC Attachment** -- an `alicloud_pvtz_zone_attachment` resource (Pulumi: `pvtz.ZoneAttachment`) that binds the zone to one or more VPCs, enabling DNS resolution within those VPCs. Cross-region attachments are supported.
@@ -21,24 +21,24 @@ When you deploy an AliCloudPrivateDnsZone resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Alibaba Cloud credentials** configured via environment variables (`ALICLOUD_ACCESS_KEY`, `ALICLOUD_SECRET_KEY`) or OpenMCF provider config
+- **Alibaba Cloud credentials** configured via environment variables (`ALICLOUD_ACCESS_KEY`, `ALICLOUD_SECRET_KEY`) or Planton provider config
 - **At least one VPC** to attach the zone to -- the zone is useless without a VPC attachment since records are only resolvable within attached VPCs
-- **OpenMCF CLI** installed with either Pulumi or Terraform (OpenTofu) backend
+- **Planton CLI** installed with either Pulumi or Terraform (OpenTofu) backend
 
 ## Quick Start
 
 Create a file `private-zone.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudPrivateDnsZone
 metadata:
   name: my-private-zone
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudPrivateDnsZone.my-private-zone
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AliCloudPrivateDnsZone.my-private-zone
 spec:
   region: cn-hangzhou
   zoneName: internal.example.com
@@ -53,7 +53,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f private-zone.yaml
+planton apply -f private-zone.yaml
 ```
 
 After deployment, resources within the attached VPC can resolve `api.internal.example.com` to `10.0.1.50`.
@@ -102,15 +102,15 @@ After deployment, resources within the attached VPC can resolve `api.internal.ex
 A common pattern: create a private zone for service discovery within a VPC, with A records for each service endpoint.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudPrivateDnsZone
 metadata:
   name: svc-zone
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AliCloudPrivateDnsZone.svc-zone
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AliCloudPrivateDnsZone.svc-zone
 spec:
   region: cn-hangzhou
   zoneName: svc.internal
@@ -133,17 +133,17 @@ spec:
 Share database endpoints across multiple VPCs, including cross-region.
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudPrivateDnsZone
 metadata:
   name: db-zone
   org: my-org
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AliCloudPrivateDnsZone.db-zone
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AliCloudPrivateDnsZone.db-zone
 spec:
   region: cn-hangzhou
   zoneName: db.corp

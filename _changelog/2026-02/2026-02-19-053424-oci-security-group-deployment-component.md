@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added OciSecurityGroup (R03) as the third OCI resource kind in OpenMCF, providing a complete deployment component for Oracle Cloud Infrastructure Network Security Groups with inline ingress and egress security rules. The component introduces user-friendly protocol and target type enums, supports all five OCI protocol types (all, TCP, UDP, ICMP, ICMPv6), and enforces OCI's 120-rule limit via CEL validation.
+Added OciSecurityGroup (R03) as the third OCI resource kind in Planton, providing a complete deployment component for Oracle Cloud Infrastructure Network Security Groups with inline ingress and egress security rules. The component introduces user-friendly protocol and target type enums, supports all five OCI protocol types (all, TCP, UDP, ICMP, ICMPv6), and enforces OCI's 120-rule limit via CEL validation.
 
 ## Problem Statement / Motivation
 
@@ -14,7 +14,7 @@ After OciVcn (R01) and OciSubnet (R02), network security groups were the next cr
 
 ### Pain Points
 
-- No way to manage OCI network security groups through OpenMCF
+- No way to manage OCI network security groups through Planton
 - Downstream components (R07 OciComputeInstance, R08 OciContainerEngineCluster, R11 OciApplicationLoadBalancer) blocked waiting for NSG infrastructure
 - OCI's raw security rule API uses numeric protocol strings and conditional source/destination fields based on direction, creating a confusing user experience
 
@@ -37,7 +37,7 @@ Implemented `OciSecurityGroup` as a full deployment component with a thoughtful 
 ### Component Structure
 
 ```
-apis/org/openmcf/provider/oci/ocisecuritygroup/v1/
+apis/dev/planton/provider/oci/ocisecuritygroup/v1/
 ├── spec.proto              # 5 top-level fields + 8 nested messages/enums + 2 CEL validations
 ├── api.proto               # KRM wiring (OciSecurityGroup, OciSecurityGroupStatus)
 ├── stack_input.proto        # OciSecurityGroupStackInput

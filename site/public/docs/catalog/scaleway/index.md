@@ -1,13 +1,13 @@
 ---
 title: "SCALEWAY"
-description: "Deploy SCALEWAY resources using OpenMCF"
+description: "Deploy SCALEWAY resources using Planton"
 icon: "cloud"
 order: 10
 ---
 
 # SCALEWAY
 
-The following SCALEWAY resources can be deployed using OpenMCF:
+The following SCALEWAY resources can be deployed using Planton:
 
 - [Block Volume](/docs/catalog/scaleway/block-volume)
 - [Container Registry](/docs/catalog/scaleway/container-registry)

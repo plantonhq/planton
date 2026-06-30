@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-	awsprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws"
-	"github.com/plantonhq/openmcf/pkg/iac/provider/aws/awswebidentity"
+	awsprovider "github.com/plantonhq/planton/apis/dev/planton/provider/aws"
+	"github.com/plantonhq/planton/pkg/iac/provider/aws/awswebidentity"
 )
 
 // awsWebIdentityExchangeTimeout bounds the synchronous STS exchange done on the tofu path.
@@ -14,7 +14,7 @@ import (
 // before any tofu command; this ceiling protects the stack job from a hung STS endpoint. We use
 // a fresh context.Background() rather than threading a caller context so the public
 // providerenvvars/tofumodule signatures stay stable (keeping this change wholly within
-// openmcf); the minted JWT's own short TTL bounds credential validity independently.
+// planton); the minted JWT's own short TTL bounds credential validity independently.
 const awsWebIdentityExchangeTimeout = 60 * time.Second
 
 // loadAwsEnvVars builds the AWS provider environment variables from the resolved provider config.

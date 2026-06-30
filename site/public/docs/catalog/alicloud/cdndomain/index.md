@@ -12,7 +12,7 @@ Deploys an Alibaba Cloud CDN accelerated domain. The component registers a domai
 
 ## What Gets Created
 
-When you deploy an AliCloudCdnDomain resource, OpenMCF provisions:
+When you deploy an AliCloudCdnDomain resource, Planton provisions:
 
 - **CDN Domain** -- an `alicloud_cdn_domain_new` resource registered in the Alibaba Cloud CDN service with the specified content type and geographic scope
 - **Origin Sources** -- one or more origin server configurations with type, address, port, priority, and weight for failover and load distribution
@@ -21,7 +21,7 @@ When you deploy an AliCloudCdnDomain resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Alibaba Cloud credentials** configured via environment variables or OpenMCF provider config
+- **Alibaba Cloud credentials** configured via environment variables or Planton provider config
 - **Domain name** with DNS access to create the required CNAME record after deployment
 - **ICP filing** if the domain uses `domestic` or `global` scope (mainland China requirement)
 - **CAS certificate** if using `certType: cas` for HTTPS (certificate must exist in Certificate Management Service)
@@ -31,15 +31,15 @@ When you deploy an AliCloudCdnDomain resource, OpenMCF provisions:
 Create a file `cdn-domain.yaml`:
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudCdnDomain
 metadata:
   name: my-cdn
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: cdn-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudCdnDomain.my-cdn
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: cdn-project
+    pulumi.planton.dev/stack.name: dev.AliCloudCdnDomain.my-cdn
 spec:
   region: cn-hangzhou
   domainName: cdn.example.com
@@ -52,7 +52,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f cdn-domain.yaml
+planton apply -f cdn-domain.yaml
 ```
 
 This creates a CDN domain accelerating web content from a single IP origin in the `cn-hangzhou` region.
@@ -95,15 +95,15 @@ This creates a CDN domain accelerating web content from a single IP origin in th
 ### Minimal Web CDN
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudCdnDomain
 metadata:
   name: my-cdn
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: cdn-project
-    pulumi.openmcf.org/stack.name: dev.AliCloudCdnDomain.my-cdn
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: cdn-project
+    pulumi.planton.dev/stack.name: dev.AliCloudCdnDomain.my-cdn
 spec:
   region: cn-hangzhou
   domainName: cdn.example.com
@@ -116,17 +116,17 @@ spec:
 ### OSS Static Assets with Failover
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudCdnDomain
 metadata:
   name: assets-cdn
   org: platform-team
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: platform-team
-    pulumi.openmcf.org/project: cdn-project
-    pulumi.openmcf.org/stack.name: prod.AliCloudCdnDomain.assets-cdn
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: platform-team
+    pulumi.planton.dev/project: cdn-project
+    pulumi.planton.dev/stack.name: prod.AliCloudCdnDomain.assets-cdn
 spec:
   region: cn-shanghai
   domainName: assets.example.com
@@ -150,17 +150,17 @@ spec:
 ### HTTPS with CAS Certificate
 
 ```yaml
-apiVersion: alicloud.openmcf.org/v1
+apiVersion: alicloud.planton.dev/v1
 kind: AliCloudCdnDomain
 metadata:
   name: secure-cdn
   org: my-org
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: cdn-project
-    pulumi.openmcf.org/stack.name: prod.AliCloudCdnDomain.secure-cdn
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: cdn-project
+    pulumi.planton.dev/stack.name: prod.AliCloudCdnDomain.secure-cdn
 spec:
   region: cn-hangzhou
   domainName: secure.example.com

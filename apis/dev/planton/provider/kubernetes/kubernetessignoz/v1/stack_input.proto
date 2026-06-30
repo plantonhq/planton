@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetessignoz.v1;
+
+import "dev/planton/provider/kubernetes/kubernetessignoz/v1/api.proto";
+import "dev/planton/provider/kubernetes/provider.proto";
+
+// signoz-kubernetes stack-input
+message KubernetesSignozStackInput {
+  // target cloud-resource
+  KubernetesSignoz target = 1;
+  // provider-credential
+  dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+  // kubernetes namespace
+  string kubernetes_namespace = 3;
+}

@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awss3objectset.v1;
+
+// AwsS3ObjectSetStackOutputs captures observable outputs from the S3 object upload operations.
+message AwsS3ObjectSetStackOutputs {
+  // Map of object key to its ETag (content hash).
+  // The ETag changes when the object content changes, useful for cache invalidation.
+  map<string, string> object_etags = 1;
+
+  // Map of object key to its version ID.
+  // Only populated when the target bucket has versioning enabled.
+  map<string, string> object_version_ids = 2;
+}

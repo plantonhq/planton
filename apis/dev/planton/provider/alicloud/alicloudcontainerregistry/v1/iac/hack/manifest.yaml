@@ -1,0 +1,17 @@
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudContainerRegistry
+metadata:
+  name: test-registry
+spec:
+  region: cn-hangzhou
+  instanceName: test-acr-registry
+  instanceType: Basic
+  paymentType: Subscription
+  period: 1
+  namespaces:
+    - name: platform
+      autoCreate: true
+      defaultVisibility: PRIVATE
+    - name: frontend
+      autoCreate: false
+      defaultVisibility: PRIVATE

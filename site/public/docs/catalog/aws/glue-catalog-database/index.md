@@ -12,13 +12,13 @@ Deploys an AWS Glue Data Catalog database — a metadata namespace that organize
 
 ## What Gets Created
 
-When you deploy an AwsGlueCatalogDatabase resource, OpenMCF provisions:
+When you deploy an AwsGlueCatalogDatabase resource, Planton provisions:
 
 - **Glue Catalog Database** — an `aws_glue_catalog_database` resource registered in the AWS Glue Data Catalog with the specified name, description, and optional default storage location
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **An S3 bucket** if setting `locationUri` for default table storage (the bucket must exist before deploying)
 
 ## Quick Start
@@ -26,15 +26,15 @@ When you deploy an AwsGlueCatalogDatabase resource, OpenMCF provisions:
 Create a file `glue-catalog-database.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsGlueCatalogDatabase
 metadata:
   name: analytics
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsGlueCatalogDatabase.analytics
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsGlueCatalogDatabase.analytics
 spec:
   region: us-east-1
   description: "Analytics data catalog for ad-hoc queries and BI dashboards"
@@ -43,7 +43,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f glue-catalog-database.yaml
+planton apply -f glue-catalog-database.yaml
 ```
 
 This creates a Glue Data Catalog database named `analytics` that Athena workgroups, Glue crawlers, and ETL jobs can use as a namespace for table definitions.
@@ -74,15 +74,15 @@ This creates a Glue Data Catalog database named `analytics` that Athena workgrou
 An empty database for quick experimentation. Tables are added later via Glue Crawlers or DDL statements.
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsGlueCatalogDatabase
 metadata:
   name: experiments
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: data
-    pulumi.openmcf.org/stack.name: dev.AwsGlueCatalogDatabase.experiments
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: data
+    pulumi.planton.dev/stack.name: dev.AwsGlueCatalogDatabase.experiments
 spec:
   region: us-east-1
 ```
@@ -92,15 +92,15 @@ spec:
 A database with a description documenting its purpose and contents.
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsGlueCatalogDatabase
 metadata:
   name: sales_analytics
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme
-    pulumi.openmcf.org/project: analytics
-    pulumi.openmcf.org/stack.name: prod.AwsGlueCatalogDatabase.sales_analytics
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme
+    pulumi.planton.dev/project: analytics
+    pulumi.planton.dev/stack.name: prod.AwsGlueCatalogDatabase.sales_analytics
 spec:
   region: us-east-1
   description: >-
@@ -113,15 +113,15 @@ spec:
 A production database with a default S3 storage location so all tables inherit a consistent base path. Recommended for organized data lakes.
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsGlueCatalogDatabase
 metadata:
   name: prod_warehouse
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme
-    pulumi.openmcf.org/project: data-platform
-    pulumi.openmcf.org/stack.name: prod.AwsGlueCatalogDatabase.prod_warehouse
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme
+    pulumi.planton.dev/project: data-platform
+    pulumi.planton.dev/stack.name: prod.AwsGlueCatalogDatabase.prod_warehouse
 spec:
   region: us-east-1
   description: >-

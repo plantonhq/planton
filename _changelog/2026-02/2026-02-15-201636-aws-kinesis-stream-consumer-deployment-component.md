@@ -42,7 +42,7 @@ Each consumer gets a dedicated 2 MB/s per shard throughput channel, enabling ind
 
 - **spec.proto**: Single field -- `stream_arn` (StringValueOrRef with `default_kind = AwsKinesisStream`, `default_kind_field_path = "status.outputs.stream_arn"`)
 - **stack_outputs.proto**: 4 outputs -- `consumer_arn`, `consumer_name`, `stream_arn` (echo), `creation_timestamp`
-- **api.proto**: Standard KRM envelope with `api_version = "aws.openmcf.org/v1"`, `kind = "AwsKinesisStreamConsumer"`
+- **api.proto**: Standard KRM envelope with `api_version = "aws.planton.dev/v1"`, `kind = "AwsKinesisStreamConsumer"`
 - **stack_input.proto**: Standard input envelope with target + provider config
 - **No CEL validations needed** -- only 1 field, already validated by `buf.validate.field.required`
 
@@ -92,7 +92,7 @@ Each consumer gets a dedicated 2 MB/s per shard throughput channel, enabling ind
 
 ## Impact
 
-- **New resource kind**: AwsKinesisStreamConsumer (enum 262) added to OpenMCF AWS provider
+- **New resource kind**: AwsKinesisStreamConsumer (enum 262) added to Planton AWS provider
 - **Files**: 42 files, ~2,350 lines
 - **Test coverage**: 8 validation tests covering all spec constraints and API envelope
 - **Cross-component**: Complements AwsKinesisStream (R16) -- the `enforce_consumer_deletion` field in the parent stream anticipates this component

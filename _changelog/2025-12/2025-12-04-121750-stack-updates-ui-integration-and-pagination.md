@@ -20,7 +20,7 @@ The stack-updates feature existed in the backend but lacked a user interface for
 - **No pagination support**: Backend API didn't support pagination, which would cause performance issues with large numbers of stack-updates
 - **No navigation flow**: No intuitive way to navigate from cloud resources to their associated stack-updates
 - **No user-provided credentials**: DeployCloudResource API only supported environment variables, requiring credentials to be pre-configured on the server
-- **Incorrect module paths**: Module directory resolution used incorrect API path structure (`apis/org/openmcf/provider` instead of `apis/project/planton/provider`)
+- **Incorrect module paths**: Module directory resolution used incorrect API path structure (`apis/dev/planton/provider` instead of `apis/project/planton/provider`)
 
 ### User Impact
 
@@ -135,8 +135,8 @@ Response (jobs + totalPages)
 
 **6. Module Path Fixes**
 
-- Fixed Pulumi module directory path from `apis/org/openmcf/provider` to `apis/project/planton/provider`
-- Fixed OpenTofu module directory path from `apis/org/openmcf/provider` to `apis/project/planton/provider`
+- Fixed Pulumi module directory path from `apis/dev/planton/provider` to `apis/project/planton/provider`
+- Fixed OpenTofu module directory path from `apis/dev/planton/provider` to `apis/project/planton/provider`
 - Fixed version check logic in Pulumi module directory (removed unnecessary empty string check)
 
 ## Implementation Details
@@ -460,7 +460,7 @@ Fixed module path resolution:
 
 **Changes**:
 
-- Fixed path from `apis/org/openmcf/provider` to `apis/project/planton/provider`
+- Fixed path from `apis/dev/planton/provider` to `apis/project/planton/provider`
 - Fixed version check: removed unnecessary `version.Version != ""` check
 
 **File**: `pkg/iac/tofu/tofumodule/module_directory.go`
@@ -476,7 +476,7 @@ Fixed module path resolution:
 
 **Changes**:
 
-- Fixed path from `apis/org/openmcf/provider` to `apis/project/planton/provider`
+- Fixed path from `apis/dev/planton/provider` to `apis/project/planton/provider`
 
 ### 4. Frontend Stack Updates Integration
 
@@ -1080,8 +1080,8 @@ DeployCloudResourceRequest {
 
 **Modified**:
 
-- `pkg/iac/pulumi/pulumimodule/module_directory.go` - Fixed version check logic (removed empty string check); Corrected API path from `apis/org/openmcf/provider` to `apis/project/planton/provider`
-- `pkg/iac/tofu/tofumodule/module_directory.go` - Corrected API path from `apis/org/openmcf/provider` to `apis/project/planton/provider`
+- `pkg/iac/pulumi/pulumimodule/module_directory.go` - Fixed version check logic (removed empty string check); Corrected API path from `apis/dev/planton/provider` to `apis/project/planton/provider`
+- `pkg/iac/tofu/tofumodule/module_directory.go` - Corrected API path from `apis/dev/planton/provider` to `apis/project/planton/provider`
 
 **Deleted**:
 
@@ -1261,7 +1261,7 @@ These limitations are intentional for the initial implementation and can be addr
 
 ### Module Path Correction
 
-**Decision**: Fix module directory paths from `apis/org/openmcf/provider` to `apis/project/planton/provider`
+**Decision**: Fix module directory paths from `apis/dev/planton/provider` to `apis/project/planton/provider`
 
 **Rationale**:
 

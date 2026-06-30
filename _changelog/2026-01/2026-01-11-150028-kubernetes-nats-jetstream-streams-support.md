@@ -254,7 +254,7 @@ flowchart TB
 ## YAML Example
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesNats
 metadata:
   name: nats-gcp-dev

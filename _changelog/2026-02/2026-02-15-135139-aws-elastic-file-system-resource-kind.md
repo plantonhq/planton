@@ -6,11 +6,11 @@
 
 ## Summary
 
-Added AwsElasticFileSystem as a new AWS resource kind in OpenMCF, providing managed NFS file storage that bundles the file system with mount targets, access points, backup policy, and resource policy into a single deployable component. This is the thirteenth new AWS resource kind in the expansion project (R11).
+Added AwsElasticFileSystem as a new AWS resource kind in Planton, providing managed NFS file storage that bundles the file system with mount targets, access points, backup policy, and resource policy into a single deployable component. This is the thirteenth new AWS resource kind in the expansion project (R11).
 
 ## Problem Statement / Motivation
 
-AWS Elastic File System (EFS) is the standard solution for shared persistent storage across EKS pods, ECS tasks, Lambda functions, and EC2 instances. Without an EFS component in OpenMCF, users had no declarative way to provision shared file storage that multiple compute resources could mount simultaneously.
+AWS Elastic File System (EFS) is the standard solution for shared persistent storage across EKS pods, ECS tasks, Lambda functions, and EC2 instances. Without an EFS component in Planton, users had no declarative way to provision shared file storage that multiple compute resources could mount simultaneously.
 
 ### Pain Points
 

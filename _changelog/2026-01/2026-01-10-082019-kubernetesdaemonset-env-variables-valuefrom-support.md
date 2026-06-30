@@ -9,7 +9,7 @@
 
 ## Summary
 
-Enhanced the `KubernetesDaemonSet` environment variables (`env.variables`) to support both direct string values and `valueFrom` references to other OpenMCF resources. This enables dynamic configuration where environment variable values can be derived from outputs of other resources (e.g., cluster names, database hosts) without hardcoding values.
+Enhanced the `KubernetesDaemonSet` environment variables (`env.variables`) to support both direct string values and `valueFrom` references to other Planton resources. This enables dynamic configuration where environment variable values can be derived from outputs of other resources (e.g., cluster names, database hosts) without hardcoding values.
 
 ---
 
@@ -41,7 +41,7 @@ The `variables` field now uses the `StringValueOrRef` type, allowing each variab
 
 **Option 1: Direct string value**
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDaemonSet
 metadata:
   name: log-collector
@@ -58,7 +58,7 @@ spec:
 
 **Option 2: Reference to another resource's field**
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDaemonSet
 metadata:
   name: log-collector
@@ -109,8 +109,8 @@ Updated `KubernetesDaemonSetContainerAppEnv.variables` from `map<string, string>
 
 ```protobuf
 message KubernetesDaemonSetContainerAppEnv {
-  map<string, org.openmcf.shared.foreignkey.v1.StringValueOrRef> variables = 1;
-  map<string, org.openmcf.provider.kubernetes.KubernetesSensitiveValue> secrets = 2;
+  map<string, dev.planton.shared.foreignkey.v1.StringValueOrRef> variables = 1;
+  map<string, dev.planton.provider.kubernetes.KubernetesSensitiveValue> secrets = 2;
 }
 ```
 
@@ -185,11 +185,11 @@ Added test cases in `spec_test.go`:
 
 ## Files Changed
 
-- `apis/org/openmcf/provider/kubernetes/kubernetesdaemonset/v1/spec.proto`
-- `apis/org/openmcf/provider/kubernetes/kubernetesdaemonset/v1/iac/pulumi/module/daemonset.go`
-- `apis/org/openmcf/provider/kubernetes/kubernetesdaemonset/v1/iac/tf/variables.tf`
-- `apis/org/openmcf/provider/kubernetes/kubernetesdaemonset/v1/iac/tf/daemonset.tf`
-- `apis/org/openmcf/provider/kubernetes/kubernetesdaemonset/v1/spec_test.go`
+- `apis/dev/planton/provider/kubernetes/kubernetesdaemonset/v1/spec.proto`
+- `apis/dev/planton/provider/kubernetes/kubernetesdaemonset/v1/iac/pulumi/module/daemonset.go`
+- `apis/dev/planton/provider/kubernetes/kubernetesdaemonset/v1/iac/tf/variables.tf`
+- `apis/dev/planton/provider/kubernetes/kubernetesdaemonset/v1/iac/tf/daemonset.tf`
+- `apis/dev/planton/provider/kubernetes/kubernetesdaemonset/v1/spec_test.go`
 
 ---
 
@@ -200,7 +200,7 @@ Added test cases in `spec_test.go`:
 make protos
 
 # Run component tests
-go test ./apis/org/openmcf/provider/kubernetes/kubernetesdaemonset/v1/... -v
+go test ./apis/dev/planton/provider/kubernetes/kubernetesdaemonset/v1/... -v
 
 # Full build
 make build
@@ -216,7 +216,7 @@ make test
 1. **Dynamic Configuration**: Environment variables can now reference outputs from other resources
 2. **Reduced Configuration Drift**: Values stay in sync with source resources
 3. **Cleaner Manifests**: No need to hardcode values that come from other resources
-4. **Consistency**: Same pattern as other OpenMCF components using `StringValueOrRef`
+4. **Consistency**: Same pattern as other Planton components using `StringValueOrRef`
 
 ---
 

@@ -12,7 +12,7 @@ Deploys a static reserved (public) IPv4 address on Civo Cloud. Reserved IPs pers
 
 ## What Gets Created
 
-When you deploy a CivoIpAddress resource, OpenMCF provisions:
+When you deploy a CivoIpAddress resource, Planton provisions:
 
 - **Reserved IP** — a `civo_reserved_ip` resource that allocates a persistent public IPv4 address in the specified Civo region
 
@@ -20,7 +20,7 @@ The IP is created in an unattached state. You can later associate it with a Civo
 
 ## Prerequisites
 
-- **Civo credentials** configured via environment variables or OpenMCF provider config
+- **Civo credentials** configured via environment variables or Planton provider config
 - **A target Civo region** — reserved IPs are region-scoped and can only be attached to resources in the same region
 
 ## Quick Start
@@ -28,15 +28,15 @@ The IP is created in an unattached state. You can later associate it with a Civo
 Create a file `civo-ip.yaml`:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoIpAddress
 metadata:
   name: my-ip
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CivoIpAddress.my-ip
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CivoIpAddress.my-ip
 spec:
   region: nyc1
 ```
@@ -44,7 +44,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f civo-ip.yaml
+planton apply -f civo-ip.yaml
 ```
 
 This allocates a reserved IPv4 address in the New York region.
@@ -70,15 +70,15 @@ This allocates a reserved IPv4 address in the New York region.
 A minimal manifest that allocates a reserved IP in Frankfurt:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoIpAddress
 metadata:
   name: basic-ip
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CivoIpAddress.basic-ip
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CivoIpAddress.basic-ip
 spec:
   region: fra1
 ```
@@ -88,15 +88,15 @@ spec:
 Adding a description makes the IP easier to identify in the Civo dashboard and in IaC state:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoIpAddress
 metadata:
   name: api-gateway-ip
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.CivoIpAddress.api-gateway-ip
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.CivoIpAddress.api-gateway-ip
 spec:
   region: lon1
   description: "API gateway public endpoint"
@@ -107,15 +107,15 @@ spec:
 A reserved IP intended for a production load balancer, paired with a DNS record:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoIpAddress
 metadata:
   name: prod-lb-ip
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CivoIpAddress.prod-lb-ip
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CivoIpAddress.prod-lb-ip
 spec:
   region: nyc1
   description: "Production load balancer IP"

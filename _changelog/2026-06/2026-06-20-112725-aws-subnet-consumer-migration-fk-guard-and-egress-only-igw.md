@@ -8,7 +8,7 @@
 
 Two coordinated changes. First, every AWS consumer that referenced the now-removed
 thin-`AwsVpc` subnet outputs is migrated onto the standalone `AwsSubnet` — and a new
-permanent, registry-wide guard (`openmcf validate-refs --check`, analyzer
+permanent, registry-wide guard (`planton validate-refs --check`, analyzer
 `pkg/refcheck`) makes such drift impossible to ship silently. Second, the
 `AwsEgressOnlyInternetGateway` component is forged end to end — the IPv6
 outbound-only counterpart of a NAT gateway — completing the AWS networking primitive
@@ -33,7 +33,7 @@ recurrence) was to first build that validator.
   the referenced kind, dispatching on the path root: `status.outputs.` → the kind's
   `StackOutputs`, `spec.` → its spec, `metadata.` → its metadata. Index segments
   (`[*]`, `[0]`) are skipped; a finding is emitted for any unresolved path.
-- `openmcf validate-refs [--check]` exposes it as a CLI gate, mirroring
+- `planton validate-refs [--check]` exposes it as a CLI gate, mirroring
   `secret-coverage --check`; `pkg/refcheck/analyze_test.go` enforces zero findings in
   `go test`.
 - The first run surfaced 45 dangling references — the 34 expected `private_subnets`

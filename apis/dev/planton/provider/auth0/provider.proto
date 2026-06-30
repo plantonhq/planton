@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package dev.planton.provider.auth0;
+
+import "buf/validate/validate.proto";
+
+// Auth0ProviderConfig message represents the specification required to connect to an Auth0 tenant.
+// This message consolidates all necessary input parameters to establish a connection with Auth0,
+// ensuring accurate configuration and validation of credentials.
+// These credentials are used for Pulumi/Terraform provider setup and other integration scenarios with Auth0.
+// Auth0 is an identity platform for application builders, and these credentials facilitate automated infrastructure
+// provisioning and integration for managing Auth0 resources like connections, clients, and APIs.
+// For more information, visit: https://auth0.com/docs
+// Documentation on setting up Pulumi credentials: https://www.pulumi.com/registry/packages/auth0/installation-configuration/#configuring-credentials
+message Auth0ProviderConfig {
+  // The Auth0 tenant domain.
+  // This is the domain of your Auth0 tenant, typically in the format 'your-tenant.auth0.com' or a custom domain.
+  // This is a required field and must be a valid domain string.
+  string domain = 1 [(buf.validate.field).required = true];
+
+  // The Auth0 client ID for a Machine-to-Machine application.
+  // This is used to authenticate API requests to Auth0 Management API.
+  // The application must have the necessary permissions/scopes granted.
+  // This is a required field.
+  string client_id = 2 [(buf.validate.field).required = true];
+
+  // The Auth0 client secret for the Machine-to-Machine application.
+  // This is used in combination with the client ID to authenticate API requests.
+  // This is a required field and should be kept secure.
+  string client_secret = 3 [(buf.validate.field).required = true];
+}

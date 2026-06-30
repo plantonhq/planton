@@ -1,8 +1,0 @@
-apiVersion: scaleway.openmcf.org/v1
-kind: ScalewayObjectBucket
-metadata:
-  name: my-bucket
-spec:
-  region: fr-par
-  versioningEnabled: false  # recommended_default from spec
-  forceDestroy: false  # recommended_default from spec

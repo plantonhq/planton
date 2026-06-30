@@ -12,7 +12,7 @@ Deploys an Auth0 Event Stream that delivers real-time Auth0 events to an externa
 
 ## What Gets Created
 
-When you deploy an Auth0EventStream resource, OpenMCF provisions:
+When you deploy an Auth0EventStream resource, Planton provisions:
 
 - **Auth0 Event Stream** — an `auth0_event_stream` resource configured with the specified destination type, event subscriptions, and destination-specific settings (EventBridge or webhook)
 
@@ -20,7 +20,7 @@ For EventBridge destinations, Auth0 creates a partner event source in the target
 
 ## Prerequisites
 
-- **Auth0 credentials** configured via environment variables (`AUTH0_DOMAIN`, `AUTH0_CLIENT_ID`, `AUTH0_CLIENT_SECRET`) or OpenMCF provider config
+- **Auth0 credentials** configured via environment variables (`AUTH0_DOMAIN`, `AUTH0_CLIENT_ID`, `AUTH0_CLIENT_SECRET`) or Planton provider config
 - **An Auth0 tenant** with Event Streams enabled
 - **An AWS account** (if using EventBridge) with permissions to accept partner event sources
 - **A publicly accessible HTTPS endpoint** (if using webhooks) that can respond to POST requests within 10 seconds
@@ -30,15 +30,15 @@ For EventBridge destinations, Auth0 creates a partner event source in the target
 Create a file `auth0-event-stream.yaml`:
 
 ```yaml
-apiVersion: auth0.openmcf.org/v1
+apiVersion: auth0.planton.dev/v1
 kind: Auth0EventStream
 metadata:
   name: login-events
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.Auth0EventStream.login-events
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.Auth0EventStream.login-events
 spec:
   destinationType: webhook
   subscriptions:
@@ -54,7 +54,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f auth0-event-stream.yaml
+planton apply -f auth0-event-stream.yaml
 ```
 
 This creates an event stream that delivers authentication success and failure events to the specified webhook endpoint using bearer token authorization.
@@ -98,15 +98,15 @@ Required when `destinationType` is `webhook`. Webhook configurations can be upda
 Stream authentication events to AWS EventBridge for processing by Lambda functions or a SIEM integration:
 
 ```yaml
-apiVersion: auth0.openmcf.org/v1
+apiVersion: auth0.planton.dev/v1
 kind: Auth0EventStream
 metadata:
   name: security-events
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.Auth0EventStream.security-events
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.Auth0EventStream.security-events
 spec:
   destinationType: eventbridge
   subscriptions:
@@ -126,15 +126,15 @@ After deployment, associate the partner event source (available in `status.outpu
 Deliver user lifecycle events to an HTTPS endpoint, authenticated with a bearer token:
 
 ```yaml
-apiVersion: auth0.openmcf.org/v1
+apiVersion: auth0.planton.dev/v1
 kind: Auth0EventStream
 metadata:
   name: user-lifecycle
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.Auth0EventStream.user-lifecycle
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.Auth0EventStream.user-lifecycle
 spec:
   destinationType: webhook
   subscriptions:
@@ -159,15 +159,15 @@ openssl rand -base64 32
 Deliver API authorization events to an internal endpoint using HTTP Basic authentication:
 
 ```yaml
-apiVersion: auth0.openmcf.org/v1
+apiVersion: auth0.planton.dev/v1
 kind: Auth0EventStream
 metadata:
   name: api-audit
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.Auth0EventStream.api-audit
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.Auth0EventStream.api-audit
 spec:
   destinationType: webhook
   subscriptions:

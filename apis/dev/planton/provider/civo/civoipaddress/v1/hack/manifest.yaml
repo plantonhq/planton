@@ -1,0 +1,5 @@
+apiVersion: civo.planton.dev/v1
+kind: CivoIpAddress
+metadata:
+  name: first-certificate
+spec:

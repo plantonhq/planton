@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package dev.planton.provider.cloudflare.cloudflareworkerskvpair.v1;
+
+// CloudflareWorkersKvPairStackOutputs captures the outputs after writing a
+// Workers KV entry.
+message CloudflareWorkersKvPairStackOutputs {
+  // The entry's key name.
+  string key_name = 1;
+
+  // The namespace ID the entry was written to.
+  string namespace_id = 2;
+}

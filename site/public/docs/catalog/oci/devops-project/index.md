@@ -12,13 +12,13 @@ Deploys an Oracle Cloud Infrastructure DevOps project — the organizational con
 
 ## What Gets Created
 
-When you deploy an OciDevopsProject resource, OpenMCF provisions:
+When you deploy an OciDevopsProject resource, Planton provisions:
 
 - **DevOps Project** — a `devops.Project` resource in the specified compartment with a notification topic for pipeline events (build completions, deployment successes, failures). The project name is derived from `metadata.name`.
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the project will be created — either a literal value or a reference to an OciCompartment resource
 - **An ONS topic OCID** for receiving DevOps pipeline events — the topic must already exist in OCI Notifications
 
@@ -27,15 +27,15 @@ When you deploy an OciDevopsProject resource, OpenMCF provisions:
 Create a file `devops-project.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciDevopsProject
 metadata:
   name: my-project
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciDevopsProject.my-project
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciDevopsProject.my-project
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -46,7 +46,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f devops-project.yaml
+planton apply -f devops-project.yaml
 ```
 
 This creates a DevOps project in the specified compartment with pipeline events routed to the ONS topic. The project OCID and namespace are exported as stack outputs.
@@ -73,15 +73,15 @@ This creates a DevOps project in the specified compartment with pipeline events 
 A DevOps project with direct OCID values:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciDevopsProject
 metadata:
   name: my-project
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciDevopsProject.my-project
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciDevopsProject.my-project
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -94,15 +94,15 @@ spec:
 A project referencing an OciCompartment for composability in infra charts:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciDevopsProject
 metadata:
   name: platform-cicd
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciDevopsProject.platform-cicd
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciDevopsProject.platform-cicd
 spec:
   compartmentId:
     valueFrom:
@@ -119,15 +119,15 @@ spec:
 A production project with a descriptive purpose:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciDevopsProject
 metadata:
   name: backend-services
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: backend
-    pulumi.openmcf.org/stack.name: prod.OciDevopsProject.backend-services
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: backend
+    pulumi.planton.dev/stack.name: prod.OciDevopsProject.backend-services
 spec:
   compartmentId:
     valueFrom:

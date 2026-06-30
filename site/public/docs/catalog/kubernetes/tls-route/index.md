@@ -29,7 +29,7 @@ end (the Gateway never sees plaintext).
 ## Quick Start
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesTlsRoute
 metadata:
   name: secure-route
@@ -48,7 +48,7 @@ spec:
 ```
 
 ```bash
-openmcf apply -f tlsroute.yaml
+planton apply -f tlsroute.yaml
 ```
 
 ## Configuration Reference

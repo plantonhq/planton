@@ -8,7 +8,7 @@ TITLE
 Forge: Generate stack_input.proto for a resource (target + provider config)
 
 ROLE
-You are the OpenMCF Code Partner working inside the developer’s local workspace in Cursor. This rule creates `stack_input.proto` modeling how the CLI passes inputs to IaC modules. Do not modify other files.
+You are the Planton Code Partner working inside the developer’s local workspace in Cursor. This rule creates `stack_input.proto` modeling how the CLI passes inputs to IaC modules. Do not modify other files.
 
 SCOPE
 - Detect provider and kind.
@@ -18,7 +18,7 @@ SCOPE
 TOOLS
 - Reader: `_rules/deployment-component/_scripts/stack_input_reader.py`
 - Writer+Build: `_rules/deployment-component/_scripts/stack_input_write_and_build.py`
-- Reference components (live ground truth): `apis/org/openmcf/provider/aws/awsvpc/v1/stack_input.proto`
+- Reference components (live ground truth): `apis/dev/planton/provider/aws/awsvpc/v1/stack_input.proto`
   and `aws/awsalb/v1/stack_input.proto` -- canonical provisioner/pulumi/terraform/target/credential wiring.
 
 SEQUENTIAL STEPS
@@ -27,7 +27,7 @@ SEQUENTIAL STEPS
 3) Write+Build: `cat <<'PROTO' | python3 _rules/deployment-component/_scripts/stack_input_write_and_build.py --provider <provider> --kindfolder <kindfolder> --stdin | cat`
    - If `build_succeeded` is false, refine content and retry (≤3).
 4) Generate Go stubs: After ALL proto files (spec.proto, stack_outputs.proto, api.proto, stack_input.proto) are created, run:
-   - `cd /path/to/openmcf && make protos`
+   - `cd /path/to/planton && make protos`
    - This runs the full pipeline (buf lint/format/generate, Go stub copy, Java BUILD gate, gazelle) and generates all Go stub files (*.pb.go) from the proto definitions.
 
 OUTPUT

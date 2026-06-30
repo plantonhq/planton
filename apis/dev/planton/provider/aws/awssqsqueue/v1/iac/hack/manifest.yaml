@@ -1,0 +1,17 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsSqsQueue
+metadata:
+  name: test-queue
+  org: test-org
+  env: dev
+  id: test-queue-dev
+  labels:
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: test-org
+    pulumi.planton.dev/project: test-project
+    pulumi.planton.dev/stack.name: dev.AwsSqsQueue.test-queue
+spec:
+  region: us-west-2
+  sqsManagedSseEnabled: true
+  messageRetentionSeconds: 345600
+  visibilityTimeoutSeconds: 30

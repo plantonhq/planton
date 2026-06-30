@@ -1,0 +1,24 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesNamespace
+metadata:
+  name: test-namespace
+spec:
+  name: test-namespace
+  labels:
+    team: platform-engineering
+    environment: test
+    cost-center: engineering
+    created-by: planton
+  annotations:
+    description: "Test namespace created by Planton"
+  resource_profile:
+    preset: small
+  network_config:
+    isolate_ingress: true
+    restrict_egress: true
+    allowed_ingress_namespaces:
+      - "kube-system"
+      - "istio-system"
+    allowed_egress_cidrs:
+      - "10.0.0.0/8"
+  pod_security_standard: baseline

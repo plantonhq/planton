@@ -1,0 +1,46 @@
+---
+# Example ConfluentKafka manifest for testing deployments
+# This file demonstrates a Standard production cluster configuration
+
+apiVersion: confluent.planton.dev/v1
+kind: ConfluentKafka
+metadata:
+  name: test-kafka-cluster
+  labels:
+    environment: test
+    team: platform
+    purpose: testing
+spec:
+  # Cloud provider (AWS, AZURE, or GCP)
+  cloud: AWS
+  
+  # Cloud-specific region
+  region: us-east-2
+  
+  # Availability configuration
+  # SINGLE_ZONE: Development/testing, no SLA
+  # MULTI_ZONE: Production, 99.99% SLA
+  availability: MULTI_ZONE
+  
+  # Confluent Cloud environment ID
+  # Replace with your actual environment ID
+  environment_id: env-test-abc123
+  
+  # Cluster type (BASIC, STANDARD, ENTERPRISE, DEDICATED)
+  # Default: STANDARD if not specified
+  cluster_type: STANDARD
+  
+  # Optional: Custom display name for Confluent Cloud UI
+  # If not specified, defaults to metadata.name
+  display_name: Test Kafka Cluster
+  
+  # Optional: Dedicated cluster configuration
+  # Required when cluster_type is DEDICATED
+  # dedicated_config:
+  #   cku: 2  # Minimum 1 CKU
+  
+  # Optional: Network configuration for private networking
+  # Only available for ENTERPRISE and DEDICATED cluster types
+  # network_config:
+  #   network_id: n-abc123  # Pre-created network resource ID
+

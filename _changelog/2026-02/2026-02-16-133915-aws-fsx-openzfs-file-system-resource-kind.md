@@ -6,15 +6,15 @@
 
 ## Summary
 
-Added the AwsFsxOpenzfsFileSystem resource kind (enum 292, id_prefix `awsfxz`) to OpenMCF, enabling fully managed NFS file system deployments built on the OpenZFS file system. The component supports SINGLE_AZ_1, SINGLE_AZ_2, and MULTI_AZ_1 deployment types with configurable NFS exports, ZSTD/LZ4 compression, per-user/group quotas, provisioned IOPS, and automatic backups.
+Added the AwsFsxOpenzfsFileSystem resource kind (enum 292, id_prefix `awsfxz`) to Planton, enabling fully managed NFS file system deployments built on the OpenZFS file system. The component supports SINGLE_AZ_1, SINGLE_AZ_2, and MULTI_AZ_1 deployment types with configurable NFS exports, ZSTD/LZ4 compression, per-user/group quotas, provisioned IOPS, and automatic backups.
 
 ## Problem Statement / Motivation
 
-FSx for OpenZFS is AWS's general-purpose NFS file system service, positioned between EFS (simpler, serverless) and FSx for Lustre (HPC-optimized). It fills a gap in OpenMCF's AWS storage coverage for workloads needing standard NFS with advanced ZFS features like snapshots, cloning, and compression.
+FSx for OpenZFS is AWS's general-purpose NFS file system service, positioned between EFS (simpler, serverless) and FSx for Lustre (HPC-optimized). It fills a gap in Planton's AWS storage coverage for workloads needing standard NFS with advanced ZFS features like snapshots, cloning, and compression.
 
 ### Pain Points
 
-- No OpenMCF component for deploying managed NFS with ZFS features
+- No Planton component for deploying managed NFS with ZFS features
 - Teams needing NFS storage with compression, quotas, or Multi-AZ HA had no declarative option
 - FSx OpenZFS is a fundamentally different service from FSx Lustre — separate Terraform resource, distinct schema, unique sub-resource hierarchy
 
@@ -64,7 +64,7 @@ Feature parity with Pulumi module. Dynamic blocks for `disk_iops_configuration`,
 ## Impact
 
 - **New resource kind**: AwsFsxOpenzfsFileSystem registered as enum 292
-- **39 files, 4,244 lines** added to OpenMCF
+- **39 files, 4,244 lines** added to Planton
 - **52 validation tests** all passing
 - Continues the FSx family (R29a Lustre done, R29b OpenZFS done, R29c-f pending)
 

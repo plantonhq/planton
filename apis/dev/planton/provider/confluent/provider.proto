@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package dev.planton.provider.confluent;
+
+import "buf/validate/validate.proto";
+
+// ConfluentProviderConfig message represents the specification required to connect to a Confluent Cloud Account.
+// This message consolidates all necessary input parameters to establish a connection with a Confluent Cloud account,
+// ensuring accurate configuration and validation of credentials.
+// Fields include environment information, API key, and API secret, providing a complete set of information for
+// securely connecting to Confluent Cloud.
+message ConfluentProviderConfig {
+  // The Confluent Cloud API Key, which is used to authenticate API requests to Confluent services.
+  // This is a required field, and it must be a valid non-empty string.
+  string api_key = 1 [(buf.validate.field).required = true];
+
+  // The Confluent Cloud API Secret, which is used in combination with the API key to authenticate API requests to Confluent services.
+  // This is a required field, and it must be a valid non-empty string.
+  string api_secret = 2 [(buf.validate.field).required = true];
+}

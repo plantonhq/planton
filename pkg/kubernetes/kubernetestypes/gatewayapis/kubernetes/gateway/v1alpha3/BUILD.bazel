@@ -9,7 +9,7 @@ go_library(
         "tlsrouteList.go",
         "tlsroutePatch.go",
     ],
-    importpath = "github.com/plantonhq/openmcf/pkg/kubernetes/kubernetestypes/gatewayapis/kubernetes/gateway/v1alpha3",
+    importpath = "github.com/plantonhq/planton/pkg/kubernetes/kubernetestypes/gatewayapis/kubernetes/gateway/v1alpha3",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_blang_semver//:semver",

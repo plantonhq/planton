@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azureeventhubnamespace.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/azure/azureeventhubnamespace/v1/spec.proto";
+import "dev/planton/provider/azure/azureeventhubnamespace/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// AzureEventHubNamespace is the top-level API resource for an Azure Event
+// Hubs namespace. Azure Event Hubs provides fully managed, real-time data
+// ingestion capable of receiving and processing millions of events per second
+// for telemetry, log aggregation, IoT, and real-time analytics.
+message AzureEventHubNamespace {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'azure.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'AzureEventHubNamespace'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  AzureEventHubNamespaceSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  AzureEventHubNamespaceStatus status = 5;
+}
+
+// AzureEventHubNamespaceStatus holds the deployment status and outputs.
+message AzureEventHubNamespaceStatus {
+  // stack-outputs
+  AzureEventHubNamespaceStackOutputs outputs = 1;
+}

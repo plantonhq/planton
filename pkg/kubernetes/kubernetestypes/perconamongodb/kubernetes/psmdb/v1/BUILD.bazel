@@ -20,7 +20,7 @@ go_library(
         "pulumiTypes4.go",
         "pulumiTypes5.go",
     ],
-    importpath = "github.com/plantonhq/openmcf/pkg/kubernetes/kubernetestypes/perconamongodb/kubernetes/psmdb/v1",
+    importpath = "github.com/plantonhq/planton/pkg/kubernetes/kubernetestypes/perconamongodb/kubernetes/psmdb/v1",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_blang_semver//:semver",

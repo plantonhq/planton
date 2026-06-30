@@ -1,0 +1,790 @@
+---
+alwaysApply: false
+---
+
+# Forge: Add Complete Cloud Provider to Planton
+
+## Purpose
+
+This orchestrator rule integrates a **new cloud provider** into Planton across all 6 system layers -- proto definitions, CLI guidance, stack input / env var processing, provider detection, backend credential CRUD, and frontend credential forms -- plus catalog documentation, proto generation, build validation, and changelog.
+
+## Role
+
+You are the Planton Code Partner. You add a new provider by following established patterns from existing providers (Auth0, OpenStack, Scaleway, AWS, GCP, Azure, etc.). You do NOT guess. When uncertain about authentication models, field mappings, or naming, you pause and ask the user.
+
+## What Forge Creates
+
+A complete provider integration includes:
+
+- **Proto API Definitions** -- provider config message, enum registrations, credential oneof
+- **Provider Package** -- CLI help constants, Bazel build file
+- **Generated Stubs** -- Go and TypeScript protobuf stubs via `make protos`
+- **Stack Input / Env Vars** -- provider-specific environment variable loader
+- **Provider Detection** -- guidance and validation switch cases
+- **Backend Credential CRUD** -- model, repository, service, resolver
+- **Frontend Credential UI** -- form component, types, drawer integration, provider config
+- **Catalog Documentation** -- provider page, icon, catalog index entry
+- **Changelog** -- structured changelog entry
+
+**Result:** The provider appears in the credential dropdown, credentials can be stored and resolved, the CLI provides rich guidance, and IaC modules can receive provider credentials as environment variables.
+
+## Usage
+
+```
+@forge-planton-provider <ProviderDisplayName> --terraform-provider <workspace-path>
+```
+
+**Examples:**
+```
+@forge-planton-provider Scaleway --terraform-provider terraform-provider-scaleway
+@forge-planton-provider OpenStack --terraform-provider terraform-provider-openstack
+@forge-planton-provider Hetzner --terraform-provider terraform-provider-hcloud
+```
+
+**Arguments:**
+
+- `<ProviderDisplayName>`: Human-readable name (e.g., "Scaleway", "Hetzner Cloud"). Used for display_name in proto metadata and UI labels.
+- `--terraform-provider <workspace-path>`: Path to the Terraform provider repository in the workspace. Used to research authentication model, environment variables, and provider docs URL.
+
+---
+
+## Execution Sequence
+
+11 phases with 3 interactive checkpoints. Each phase retries up to 3 times on fixable errors.
+
+---
+
+### Phase 0: Research and Discovery (CHECKPOINT)
+
+**Goal:** Understand the provider's authentication model by studying the Terraform provider source, then confirm findings with the user before writing any code.
+
+**Step 0.1 -- Study Terraform provider authentication**
+
+Read the Terraform provider source in the workspace to determine:
+
+1. **Provider configuration block**: Find the provider schema definition (typically in `internal/provider/` or the root). Look for the `Schema` map in the provider's `Configure` function to identify all accepted arguments.
+2. **Environment variables**: Identify every `XXXX_*` environment variable the provider reads. These are typically declared via `DefaultFunc: schema.EnvDefaultFrom("VARIABLE_NAME")` or similar patterns in the provider source.
+3. **Authentication model classification**:
+   - **Flat**: Single set of credential fields, all at the top level (like Scaleway's access_key/secret_key or Auth0's domain/client_id/client_secret). Most providers fall here.
+   - **Multi-method (oneof)**: Multiple distinct authentication methods where only one is active at a time (like OpenStack's password/application_credential/token). This is rare -- only use when the provider genuinely supports mutually exclusive auth strategies with different field sets.
+4. **Required vs. optional fields**: Which fields are mandatory for authentication vs. optional configuration (region, zone, project scope, etc.).
+5. **Provider docs URL**: The Terraform registry URL, typically `https://registry.terraform.io/providers/<org>/<name>/latest/docs`.
+
+**Step 0.2 -- Determine enum numbers**
+
+Read the following files and identify the next available numbers:
+
+- `apis/dev/planton/shared/cloudresourcekind/cloud_resource_provider.proto` -- find the highest `CloudResourceProvider` enum value and add 1.
+- `apis/dev/planton/app/credential/v1/api.proto` -- find the highest `CredentialProvider` enum value and add 1. Also find the highest field number in the `CredentialProviderConfig` oneof and add 1.
+
+**Step 0.3 -- Derive naming conventions**
+
+From the display name, derive:
+
+- `provider_id`: lowercase snake_case for proto enum (e.g., `scaleway`, `digital_ocean`, `open_fga`)
+- `provider_package`: lowercase for Go package and proto package (e.g., `scaleway`, `openstack`, `auth0`)
+- `provider_group`: `<provider_package>.planton.dev` (e.g., `scaleway.planton.dev`)
+- `ProtoConfigName`: PascalCase + `ProviderConfig` (e.g., `ScalewayProviderConfig`, `OpenStackProviderConfig`)
+- `config_filename`: `<provider_package>-provider-config.yaml`
+
+**CHECKPOINT -- Present findings and ask for confirmation:**
+
+Present the following to the user in a clear table and ask for explicit confirmation before proceeding:
+
+1. **Auth model**: Flat or multi-method? If multi-method, list the methods.
+2. **Credential fields table**: For each field, show: field name, proto type, required/optional, mapped environment variable, description.
+3. **Enum assignments**: `CloudResourceProvider` enum value, `CredentialProvider` enum value, `CredentialProviderConfig` oneof field number.
+4. **Naming**: provider_id, provider_package, provider_group, ProtoConfigName, display_name, config_filename, docs URL.
+
+**Do NOT proceed until the user confirms.** If the user corrects any finding, update before continuing.
+
+---
+
+### Phase 1: Proto Definitions (3 files)
+
+**Goal:** Define the provider config proto and register the provider in the two shared proto files.
+
+**Step 1.1 -- CREATE `apis/dev/planton/provider/<provider_package>/provider.proto`**
+
+Follow the pattern from existing providers. The proto file MUST include:
+
+- `syntax = "proto3";`
+- `package dev.planton.provider.<provider_package>;`
+- `import "buf/validate/validate.proto";`
+- A top-level doc comment explaining the provider, auth model, field-to-env-var mapping, and docs links
+- The `<ProtoConfigName>` message with:
+  - Each field documented with its purpose and mapped environment variable
+  - Required fields annotated with `[(buf.validate.field).required = true]`
+  - For **flat** providers: all fields at the top level (see `provider/scaleway/provider.proto`)
+  - For **multi-method** providers: a `oneof credentials` block with sub-messages per method, plus common fields outside the oneof (see `provider/openstack/provider.proto`)
+
+**Pattern reference (flat):** `apis/dev/planton/provider/scaleway/provider.proto`
+**Pattern reference (multi-method):** `apis/dev/planton/provider/openstack/provider.proto`
+
+**Step 1.2 -- MODIFY `apis/dev/planton/shared/cloudresourcekind/cloud_resource_provider.proto`**
+
+Add the new enum entry at the end of the `CloudResourceProvider` enum (before the closing brace), following the exact format:
+
+```protobuf
+<provider_id> = <N> [(provider_meta) = {
+  group: "<provider_group>"
+  display_name: "<ProviderDisplayName>"
+}];
+```
+
+**Step 1.3 -- MODIFY `apis/dev/planton/app/credential/v1/api.proto`**
+
+Two changes:
+
+1. Add to the `CredentialProvider` enum: `<PROVIDER_UPPER> = <N>;`
+2. Add to the `CredentialProviderConfig` oneof: `dev.planton.provider.<provider_package>.<ProtoConfigName> <provider_package> = <N>;`
+3. Add the import: `import "dev/planton/provider/<provider_package>/provider.proto";`
+
+**Validation:** Verify no duplicate enum values or field numbers.
+
+---
+
+### Phase 2: Provider Package (2 files)
+
+**Goal:** Create the CLI help constants and Bazel build file for the provider package.
+
+**Step 2.1 -- CREATE `apis/dev/planton/provider/<provider_package>/cli_help.go`**
+
+This file defines 6 constants that drive the terminal experience when users encounter credential errors. Quality here directly impacts UX.
+
+```go
+package <provider_package>
+
+// EnvironmentVariables lists all environment variables supported by the <ProviderDisplayName> provider.
+var EnvironmentVariables = []string{
+    // List all env vars from Phase 0 research
+}
+
+// EnvironmentVariablesHelp provides export commands for the supported environment variables.
+const EnvironmentVariablesHelp = `export <ENV_VAR_1>="<placeholder>"
+export <ENV_VAR_2>="<placeholder>"
+...`
+
+// ConfigFileExample provides an example YAML configuration file.
+const ConfigFileExample = `<field_1>: "<placeholder>"
+<field_2>: "<placeholder>"
+...`
+
+// ConfigFileName is the suggested filename for the provider config.
+const ConfigFileName = "<provider_package>-provider-config.yaml"
+
+// ProviderDisplayName is the human-readable name for this provider.
+const ProviderDisplayName = "<ProviderDisplayName>"
+
+// ProviderDocsURL points to the Terraform provider documentation.
+const ProviderDocsURL = "<terraform_registry_url>"
+```
+
+**Pattern reference:** `apis/dev/planton/provider/scaleway/cli_help.go`
+
+Guidelines:
+- Group required fields first, then optional with a `# Optional` separator
+- Use realistic placeholder values (not just `<value>`) where conventions exist (e.g., region examples)
+- Comment out optional fields in `ConfigFileExample`
+- Include a package-level doc comment explaining the auth model and what drives these constants
+
+**Step 2.2 -- CREATE `apis/dev/planton/provider/<provider_package>/BUILD.bazel`**
+
+```starlark
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "<provider_package>",
+    srcs = [
+        "cli_help.go",
+        "provider.pb.go",
+    ],
+    importpath = "github.com/plantonhq/planton/apis/dev/planton/provider/<provider_package>",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@build_buf_gen_go_bufbuild_protovalidate_protocolbuffers_go//buf/validate",
+        "@org_golang_google_protobuf//reflect/protoreflect",
+        "@org_golang_google_protobuf//runtime/protoimpl",
+    ],
+)
+```
+
+**Pattern reference:** `apis/dev/planton/provider/scaleway/BUILD.bazel`
+
+Note: If the provider proto uses `oneof` with sub-messages, the deps may need additional entries. Check the generated `provider.pb.go` after Phase 3 and update if needed.
+
+---
+
+### Phase 3: Proto Generation
+
+**Goal:** Generate Go and TypeScript protobuf stubs.
+
+Run from the repo root:
+
+```bash
+make protos
+```
+
+This executes: `buf generate` (in `apis/`), copies Go stubs into `apis/`, copies TypeScript stubs into `app/frontend/src/gen/`, and runs gazelle.
+
+**Verify:**
+
+1. `apis/dev/planton/provider/<provider_package>/provider.pb.go` exists and contains the generated Go types.
+2. `app/frontend/src/gen/dev/planton/provider/<provider_package>/provider_pb.ts` exists and contains the generated TypeScript types.
+3. `apis/dev/planton/shared/cloudresourcekind/cloud_resource_provider.pb.go` is regenerated with the new enum entry.
+4. `apis/dev/planton/app/credential/v1/api.pb.go` is regenerated with the new credential entries.
+
+If `make protos` fails, fix proto syntax errors (wrong import paths, missing semicolons, duplicate field numbers) and retry (up to 3 attempts).
+
+---
+
+### Phase 4: Stack Input / Env Vars (2 files)
+
+**Goal:** Create the provider-specific environment variable loader and register it in the main loader.
+
+**Step 4.1 -- CREATE `pkg/iac/stackinput/providerenvvars/<provider_package>.go`**
+
+```go
+package providerenvvars
+
+import (
+    "github.com/pkg/errors"
+    <provider_alias> "github.com/plantonhq/planton/apis/dev/planton/provider/<provider_package>"
+)
+
+// load<ProviderPascal>EnvVars loads <ProviderDisplayName> provider config and returns environment variables.
+func load<ProviderPascal>EnvVars(providerConfigYaml []byte) (map[string]string, error) {
+    config := new(<provider_alias>.<ProtoConfigName>)
+    if err := loadProviderConfigProto(providerConfigYaml, config); err != nil {
+        return nil, errors.Wrap(err, "failed to load <ProviderDisplayName> provider config")
+    }
+
+    envVars := map[string]string{}
+
+    // Map each proto field to its corresponding environment variable.
+    // For flat providers: straightforward field-to-env-var mapping.
+    // For multi-method providers: switch on the oneof and emit method-specific vars,
+    // then emit common vars.
+    ...
+
+    return envVars, nil
+}
+```
+
+**Pattern reference (flat):** `pkg/iac/stackinput/providerenvvars/scaleway.go`
+**Pattern reference (multi-method):** `pkg/iac/stackinput/providerenvvars/openstack.go`
+
+For flat providers, map each non-empty string field. For multi-method providers, switch on the `credentials` oneof case first, then handle common fields.
+
+**Step 4.2 -- MODIFY `pkg/iac/stackinput/providerenvvars/loader.go`**
+
+1. Add the provider import.
+2. Add a case in the `loadProviderEnvVars()` switch:
+
+```go
+case cloudresourcekind.CloudResourceProvider_<provider_id>:
+    return load<ProviderPascal>EnvVars(providerConfigYaml)
+```
+
+Insert the case in the existing switch statement, maintaining alphabetical order within the switch is NOT required -- just add at the end before the `default` case, following the pattern of recent additions.
+
+---
+
+### Phase 5: Provider Detection (2 files)
+
+**Goal:** Wire the provider into CLI guidance and config validation.
+
+**Step 5.1 -- MODIFY `pkg/iac/stackinput/providerdetect/guidance.go`**
+
+1. Add the import: `<provider_alias> "github.com/plantonhq/planton/apis/dev/planton/provider/<provider_package>"`
+2. Add a case in ALL 4 switch functions:
+   - `ProviderConfigExample()`: return `<provider_alias>.ConfigFileExample`
+   - `ProviderConfigFilename()`: return `<provider_alias>.ConfigFileName`
+   - `ProviderEnvironmentVariablesHelp()`: return `<provider_alias>.EnvironmentVariablesHelp`
+   - `ProviderDocsURL()`: return `<provider_alias>.ProviderDocsURL`
+
+Each case follows this format:
+```go
+case cloudresourcekind.CloudResourceProvider_<provider_id>:
+    return <provider_alias>.ConfigFileExample
+```
+
+**Step 5.2 -- MODIFY `pkg/iac/stackinput/providerdetect/validate.go`**
+
+1. Add the import: `<provider_alias> "github.com/plantonhq/planton/apis/dev/planton/provider/<provider_package>"`
+2. Add a case in `getProviderConfigProto()`:
+
+```go
+case cloudresourcekind.CloudResourceProvider_<provider_id>:
+    return new(<provider_alias>.<ProtoConfigName>), nil
+```
+
+---
+
+### Phase 6: Backend Credential CRUD (4 files) (CHECKPOINT)
+
+**Goal:** Add backend credential storage and resolution for the new provider.
+
+**CHECKPOINT -- Before writing backend code, present to the user:**
+
+1. The credential model struct fields (name, Go type, BSON tag, JSON tag) derived from the proto config.
+2. Whether an auth method discriminator field is needed (only for multi-method providers).
+3. The required-field validation that will be enforced in the service layer.
+
+**Ask for confirmation.** If the user corrects anything, update before proceeding.
+
+**Step 6.1 -- MODIFY `app/backend/pkg/models/credential.go`**
+
+Add the credential struct at the end of the file:
+
+```go
+// <ProviderDisplayName>Credential represents <ProviderDisplayName> credentials.
+type <ProviderPascal>Credential struct {
+    ID        primitive.ObjectID `bson:"_id,omitempty" json:"id"`
+    Name      string             `bson:"name" json:"name"`
+    // ... provider-specific fields with bson/json tags ...
+    CreatedAt time.Time          `bson:"created_at" json:"created_at"`
+    UpdatedAt time.Time          `bson:"updated_at" json:"updated_at"`
+}
+```
+
+For multi-method providers, add an `AuthMethod string` field (see `OpenStackCredential`).
+
+**Pattern reference:** `ScalewayCredential` struct in `app/backend/pkg/models/credential.go`
+
+**Step 6.2 -- MODIFY `app/backend/internal/database/credential_repo.go`**
+
+Add 3 methods and 1 switch case:
+
+1. `Create<ProviderPascal>()` -- creates a new credential document with provider-specific fields
+2. `Update<ProviderPascal>()` -- updates an existing credential document
+3. `convertTo<ProviderPascal>Credential()` -- converts a BSON document to the credential model
+4. In `FindFirstByProvider()` switch, add: `case "<provider_package>": return convertTo<ProviderPascal>Credential(result)`
+
+**Pattern reference:** `CreateScaleway`, `UpdateScaleway`, `convertToScalewayCredential` in `credential_repo.go`
+
+**Step 6.3 -- MODIFY `app/backend/internal/service/credential_service.go`**
+
+Add switch cases and helper functions:
+
+1. **Create switch** (in `Create` method): add `case credentialv1.Credential_<PROVIDER_UPPER>: return s.create<ProviderPascal>Credential(ctx, req.Msg.Name, req.Msg.ProviderConfig, now)`
+2. **Update switch** (in `Update` method): add `case credentialv1.Credential_<PROVIDER_UPPER>: return s.update<ProviderPascal>Credential(ctx, req.Msg.Id, req.Msg.Name, req.Msg.ProviderConfig)`
+3. **List switch** (both the provider-to-string and string-to-provider mappings)
+4. **Get switch** (converts BSON to proto credential)
+5. **Helper functions:**
+   - `create<ProviderPascal>Credential()` -- validates required fields, converts proto to model, calls repo
+   - `update<ProviderPascal>Credential()` -- validates required fields, converts proto to model, calls repo
+   - `<provider_package>ProtoToModel()` -- converts proto config to database model
+   - `<provider_package>ModelToProtoConfig()` -- converts database model back to proto config
+   - `convertBsonTo<ProviderPascal>Credential()` -- converts raw BSON to credential model
+
+Add the provider proto import: `<provider_alias> "github.com/plantonhq/planton/apis/dev/planton/provider/<provider_package>"`
+
+**Pattern reference:** Search for `scaleway` (case-insensitive) in `credential_service.go` to see all touch points.
+
+**Step 6.4 -- MODIFY `app/backend/internal/service/credential_resolver.go`**
+
+Add a case in the `ResolveProviderConfig` switch:
+
+```go
+case cloudresourcekind.CloudResourceProvider_<provider_id>:
+    cred := credInterface.(*models.<ProviderPascal>Credential)
+    return &credentialv1.CredentialProviderConfig{
+        Data: &credentialv1.CredentialProviderConfig_<ProviderPascal>{
+            <ProviderPascal>: &<provider_alias>.<ProtoConfigName>{
+                // Map all model fields to proto fields
+            },
+        },
+    }, nil
+```
+
+For multi-method providers, reconstruct the oneof from the stored auth method discriminator (see the OpenStack case).
+
+Add the provider proto import.
+
+**Pattern reference:** The Scaleway case in `credential_resolver.go`
+
+---
+
+### Phase 7: Frontend Credential UI (5 files)
+
+**Goal:** Add the credential form component and wire it into the credential drawer.
+
+**Step 7.1 -- CREATE `app/frontend/src/app/credentials/_components/forms/<provider_package>.tsx`**
+
+For **flat** providers:
+
+```tsx
+'use client';
+
+import { SimpleInput } from '@/components/shared/simple-input';
+import { CredentialFormData } from '@/app/credentials/_components/forms/types';
+import { UseFormRegister } from 'react-hook-form';
+
+interface <ProviderPascal>CredentialFormProps {
+  register: UseFormRegister<CredentialFormData>;
+  disabled?: boolean;
+}
+
+export function <ProviderPascal>CredentialForm({
+  register,
+  disabled,
+}: <ProviderPascal>CredentialFormProps) {
+  return (
+    <>
+      {/* Required fields */}
+      <SimpleInput
+        register={register}
+        path="<provider_package>.<fieldName>"
+        name="<Field Display Name>"
+        registerOptions={{ required: true }}
+        disabled={disabled}
+      />
+      {/* ... more required fields ... */}
+
+      {/* Optional fields */}
+      <SimpleInput
+        register={register}
+        path="<provider_package>.<fieldName>"
+        name="<Field Display Name>"
+        disabled={disabled}
+      />
+      {/* ... more optional fields ... */}
+    </>
+  );
+}
+```
+
+For **multi-method** providers, include a `SimpleSelect` for auth method selection and conditionally render field groups (see `openstack.tsx`).
+
+Mark password/secret fields with `type="password"`.
+
+**Pattern reference (flat):** `app/frontend/src/app/credentials/_components/forms/scaleway.tsx`
+**Pattern reference (multi-method):** `app/frontend/src/app/credentials/_components/forms/openstack.tsx`
+
+**Step 7.2 -- MODIFY `app/frontend/src/app/credentials/_components/forms/types.ts`**
+
+1. For **flat** providers, add a form data interface:
+
+```typescript
+export interface <ProviderPascal>FormData {
+  <field1>?: string;
+  <field2>?: string;
+  // ... all fields as optional strings (or appropriate types)
+}
+```
+
+2. Add the field to `CredentialFormData`:
+
+```typescript
+export type CredentialFormData = {
+  // ... existing fields ...
+  <provider_package>?: <ProviderPascal>FormData;
+};
+```
+
+For multi-method providers, flatten the oneof fields into a single interface (see `OpenStackFormData`) and add an auth method discriminator field to `CredentialFormData` (see `openstackAuthMethod`).
+
+**Step 7.3 -- MODIFY `app/frontend/src/app/credentials/_components/forms/credential-drawer.tsx`**
+
+This is the most complex frontend file. Make these changes:
+
+1. **Import** the new form component and proto schema types:
+   ```typescript
+   import { <ProviderPascal>CredentialForm } from '@/app/credentials/_components/forms';
+   import { <ProtoConfigName>Schema } from '@/gen/dev/planton/provider/<provider_package>/provider_pb';
+   ```
+   For multi-method providers, also import the sub-message schemas.
+
+2. **Import** the form data type if using a custom one:
+   ```typescript
+   import type { <ProviderPascal>FormData } from '@/app/credentials/_components/forms/types';
+   ```
+
+3. **Default values** in `useForm`: Add `<provider_package>: {}` to the defaultValues object.
+
+4. **Form population `useEffect`**: Add an `else if` branch for `providerConfigData?.data?.case === '<provider_package>'` that maps proto fields to form data fields.
+
+5. **`handleSave`**: Add an `else if` branch for `formData.provider == Credential_CredentialProvider.<PROVIDER_UPPER>` that constructs the proto config using `create()` and the provider schema.
+
+6. **`handleClose`/`reset`**: Add `<provider_package>: {}` to all reset calls.
+
+7. **`onProviderChange`**: Add `setValue('<provider_package>', {});` to the reset logic.
+
+8. **Conditional rendering**: Add the form component rendering:
+   ```tsx
+   {formProvider == Credential_CredentialProvider.<PROVIDER_UPPER> && (
+     <<ProviderPascal>CredentialForm register={register} disabled={isView} />
+   )}
+   ```
+
+**Step 7.4 -- MODIFY `app/frontend/src/app/credentials/_components/forms/index.ts`**
+
+Add: `export * from './<provider_package>';`
+
+**Step 7.5 -- MODIFY `app/frontend/src/app/credentials/_components/utils.ts`**
+
+Add an entry to the `providerConfig` record:
+
+```typescript
+[Credential_CredentialProvider.<PROVIDER_UPPER>]: {
+  label: '<ProviderDisplayName>',
+  description: 'Link your <ProviderDisplayName> account to deploy cloud infrastructure',
+  icon: undefined,
+},
+```
+
+---
+
+### Phase 8: Catalog Documentation (2-3 files) (CHECKPOINT)
+
+**Goal:** Add the provider to the public documentation catalog.
+
+**CHECKPOINT -- Ask the user:**
+
+1. "Do you have an SVG icon for <ProviderDisplayName>? If so, please provide the file path. Otherwise, I will reference `default.svg` in the catalog."
+2. "Any specific description or resource list you want on the provider catalog page, or should I create a minimal placeholder indicating resources are coming soon?"
+
+**Step 8.1 -- CREATE `site/public/docs/catalog/<provider_package>/index.md`**
+
+```markdown
+---
+title: "<PROVIDER_UPPER>"
+description: "Deploy <PROVIDER_UPPER> resources using Planton"
+icon: "cloud"
+order: <next_order_number>
+---
+
+# <PROVIDER_UPPER>
+
+<ProviderDisplayName> provider registered. Deployment components coming soon.
+
+For more information about <ProviderDisplayName>, see the [<ProviderDisplayName> Documentation](<provider_docs_url>).
+```
+
+If the user provides a list of planned resources, include them as a bullet list instead of the placeholder text.
+
+**Step 8.2 -- CREATE or PLACE `site/public/images/providers/<provider_package>.svg`**
+
+If the user provides an SVG, place it here. Otherwise, note that `default.svg` will be used in the catalog index.
+
+**Step 8.3 -- MODIFY `site/public/docs/catalog/index.md`**
+
+Add a provider card to the grid in **alphabetical order** among existing entries:
+
+```html
+<a href="/docs/catalog/<provider_package>" class="flex items-center gap-3 p-4 rounded-lg border border-purple-900/30 bg-slate-900/30 hover:bg-slate-800/50 transition-colors">
+  <img src="/images/providers/<icon_filename>.svg" alt="<PROVIDER_UPPER>" class="w-8 h-8 object-contain" />
+  <div>
+    <div class="font-semibold text-white"><PROVIDER_UPPER></div>
+    <div class="text-sm text-slate-400">0 components</div>
+  </div>
+</a>
+```
+
+Use `default.svg` for `<icon_filename>` if no provider-specific icon was provided.
+
+---
+
+### Phase 9: Build Validation
+
+**Goal:** Verify the entire integration compiles.
+
+Run the following build commands and fix any errors (retry up to 3 times per command):
+
+1. **Proto stubs compile:**
+   ```bash
+   cd apis && go build ./dev/planton/provider/<provider_package>/...
+   ```
+
+2. **Stack input compiles:**
+   ```bash
+   go build ./pkg/iac/stackinput/...
+   ```
+
+3. **Backend compiles:**
+   ```bash
+   cd app/backend && go build ./...
+   ```
+
+4. **Frontend proto stubs exist:**
+   Verify `app/frontend/src/gen/dev/planton/provider/<provider_package>/provider_pb.ts` exists.
+
+If any build fails, identify the error, fix it, and retry. Common issues:
+- Missing imports in Go files
+- Wrong proto field names in Go code (proto uses `snake_case`, Go uses `PascalCase`)
+- Missing case in switch statements causing exhaustiveness warnings
+- Wrong oneof case names in TypeScript (proto uses `snake_case`, TS uses `camelCase`)
+
+---
+
+### Phase 10: Changelog
+
+**Goal:** Document the integration with a structured changelog entry.
+
+**CREATE `_changelog/<YYYY-MM>/<YYYY-MM-DD-HHMMSS>-<provider_package>-provider-integration.md`**
+
+Use the current date and time for the timestamp. Follow the established changelog format:
+
+```markdown
+# <ProviderDisplayName> Provider Integration
+
+**Date**: <Month Day, Year>
+**Type**: Feature
+**Components**: Provider Framework, API Definitions, CLI Integration, Backend Services, Frontend Credentials
+
+## Summary
+
+Added <ProviderDisplayName> as provider #<N> to Planton...
+
+## Problem Statement / Motivation
+
+...
+
+## Solution / What's New
+
+### Architecture
+
+(Include a mermaid flowchart showing the 6 layers)
+
+### Authentication Model
+
+(Include a mermaid diagram showing field-to-env-var mapping)
+
+## Implementation Details
+
+### 1. Proto Definitions
+### 2. CLI Guidance
+### 3. Env Var Mapping
+### 4. Backend Credential Management
+### 5. Frontend Credential Form
+### 6. Catalog Documentation
+
+## Files Changed
+
+| Layer | New Files | Modified Files |
+|-------|-----------|----------------|
+| Proto | ... | ... |
+| ... | ... | ... |
+
+**Total**: <N> files, ~<N> insertions
+
+## Benefits
+
+### For Users
+### For Developers
+
+## Impact
+
+### Direct
+### Future Work Enabled
+
+---
+
+**Status**: Production Ready
+**Build**: CLI, Backend, Frontend proto stubs all pass
+```
+
+**Pattern reference:** `_changelog/2026-02/2026-02-12-181851-scaleway-provider-integration.md`
+
+---
+
+## Error Handling
+
+- Each phase retries up to 3 times on fixable errors (build failures, syntax errors).
+- If a phase fails after 3 attempts, STOP and report the error clearly. Do not proceed to the next phase.
+- Proto generation errors (Phase 3) block all subsequent phases.
+- Build validation errors (Phase 9) should be traced back to the originating phase and fixed there.
+
+## Progress Tracking
+
+Provide progress updates after each phase:
+
+```
+[0/10]  Research and discovery complete -- awaiting confirmation
+[1/10]  Proto definitions created
+[2/10]  Provider package created (cli_help.go, BUILD.bazel)
+[3/10]  Proto stubs generated (make protos)
+[4/10]  Stack input / env vars wired
+[5/10]  Provider detection wired
+[6/10]  Backend credential CRUD complete -- awaiting confirmation
+[7/10]  Frontend credential UI complete
+[8/10]  Catalog documentation added -- awaiting confirmation
+[9/10]  Build validation passed
+[10/10] Changelog written
+
+Provider integration complete!
+```
+
+## Reference Files
+
+These files serve as the canonical patterns. When in doubt, read the Scaleway implementation (flat model) or OpenStack implementation (multi-method model) and follow exactly.
+
+### Proto Layer
+- `apis/dev/planton/provider/scaleway/provider.proto` -- flat provider config
+- `apis/dev/planton/provider/openstack/provider.proto` -- multi-method provider config
+- `apis/dev/planton/shared/cloudresourcekind/cloud_resource_provider.proto` -- provider enum
+- `apis/dev/planton/app/credential/v1/api.proto` -- credential enum and oneof
+
+### Provider Package
+- `apis/dev/planton/provider/scaleway/cli_help.go` -- CLI constants
+- `apis/dev/planton/provider/scaleway/BUILD.bazel` -- Bazel build
+
+### Stack Input / Env Vars
+- `pkg/iac/stackinput/providerenvvars/scaleway.go` -- flat env var loader
+- `pkg/iac/stackinput/providerenvvars/openstack.go` -- multi-method env var loader
+- `pkg/iac/stackinput/providerenvvars/loader.go` -- main loader switch
+
+### Provider Detection
+- `pkg/iac/stackinput/providerdetect/guidance.go` -- guidance switch functions
+- `pkg/iac/stackinput/providerdetect/validate.go` -- validation switch
+
+### Backend
+- `app/backend/pkg/models/credential.go` -- credential models
+- `app/backend/internal/database/credential_repo.go` -- repository methods
+- `app/backend/internal/service/credential_service.go` -- service layer
+- `app/backend/internal/service/credential_resolver.go` -- credential resolver
+
+### Frontend
+- `app/frontend/src/app/credentials/_components/forms/scaleway.tsx` -- flat form
+- `app/frontend/src/app/credentials/_components/forms/openstack.tsx` -- multi-method form
+- `app/frontend/src/app/credentials/_components/forms/types.ts` -- form types
+- `app/frontend/src/app/credentials/_components/forms/credential-drawer.tsx` -- drawer integration
+- `app/frontend/src/app/credentials/_components/forms/index.ts` -- exports
+- `app/frontend/src/app/credentials/_components/utils.ts` -- provider config
+
+### Catalog
+- `site/public/docs/catalog/scaleway/index.md` -- provider catalog page
+- `site/public/docs/catalog/index.md` -- catalog index with provider cards
+- `site/public/images/providers/scaleway.svg` -- provider icon
+
+### Changelog
+- `_changelog/2026-02/2026-02-12-181851-scaleway-provider-integration.md` -- Scaleway (flat, recent)
+- `_changelog/2026-02/2026-02-08-215116-openstack-provider-integration.md` -- OpenStack (multi-method)
+- `_changelog/2025-12/2025-12-30-054629-auth0-provider-integration.md` -- Auth0 (flat, earliest)
+
+## Authentication Model Decision Guide
+
+Use this guide during Phase 0 to classify the provider:
+
+**Use FLAT model when:**
+- The provider has a single authentication method (API key, access key pair, client credentials, etc.)
+- All credential fields coexist without conflict
+- Examples: AWS (access key + secret), Auth0 (domain + client_id + client_secret), Scaleway (access key + secret key), Cloudflare (API token or API key + email), GCP (service account key)
+
+**Use MULTI-METHOD (oneof) model when:**
+- The provider explicitly supports 2+ mutually exclusive authentication strategies
+- Each strategy requires different fields that would be confusing if presented together
+- The Terraform provider source has distinct code paths per auth method
+- Examples: OpenStack (password vs. application credentials vs. token)
+
+**When in doubt, prefer FLAT.** Most providers use a single auth method. The oneof model adds complexity across all layers (proto, backend model with discriminator, frontend with auth selector). Only use it when the provider genuinely supports fundamentally different auth strategies.
+
+## Notes
+
+- This rule is interactive -- it pauses at 3 checkpoints to confirm decisions with the user.
+- The Terraform provider workspace path is used for research only; no files in it are modified.
+- Proto generation (`make protos`) must succeed before any Go code that imports the generated stubs.
+- The `CredentialProvider` enum in `credential/v1/api.proto` is separate from the `CloudResourceProvider` enum in `cloud_resource_provider.proto`. They have independent numbering.
+- Frontend proto stubs are generated into `app/frontend/src/gen/` and should NOT be manually edited.
+- The `BUILD.bazel` file may need gazelle updates after proto generation. Running `make protos` handles this via the `${BAZEL} run //:gazelle` step.

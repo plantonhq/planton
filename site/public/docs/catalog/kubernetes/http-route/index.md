@@ -30,7 +30,7 @@ filters; and split traffic across weighted backends.
 ## Quick Start
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesHttpRoute
 metadata:
   name: web-route
@@ -52,7 +52,7 @@ spec:
 ```
 
 ```bash
-openmcf apply -f httproute.yaml
+planton apply -f httproute.yaml
 ```
 
 ## Configuration Reference

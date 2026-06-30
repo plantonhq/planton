@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcpdnszone.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/networking/enums/dnsrecordtype/dns_record_type.proto";
+import "dev/planton/shared/options/options.proto";
+
+// **GcpDnsZoneSpec** defines the configuration for creating a Google Cloud DNS Managed Zone.
+// This message specifies the parameters needed to create and manage a DNS zone within a specified GCP project.
+// It includes the project ID, optional service accounts for IAM permissions, and DNS records to be added to the zone.
+message GcpDnsZoneSpec {
+  // The ID of the GCP project where the Managed Zone is created.
+  // This can be a direct value or a reference to another resource's output.
+  // Example: "my-gcp-project-123" or a reference to a GcpProject resource.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // An optional list of GCP service accounts that are granted permissions to manage DNS records in the Managed Zone.
+  // These accounts are typically workload identities, such as those used by cert-manager,
+  // and are added when new environments are created or updated.
+  repeated string iam_service_accounts = 2;
+
+  // The DNS records to be added to the Managed Zone.
+  repeated GcpDnsRecord records = 3;
+}
+
+// **GcpDnsRecord** represents a DNS record to be added to the Managed Zone.
+// It includes the record type, name, values, and TTL (Time To Live) settings.
+message GcpDnsRecord {
+  // The DNS record type (e.g., A, AAAA, CNAME).
+  dev.planton.shared.networking.enums.dnsrecordtype.DnsRecordType record_type = 1 [(buf.validate.field).required = true];
+
+  // The name of the DNS record (e.g., "example.com." or "dev.example.com.").
+  // This value should always end with a dot to signify a fully qualified domain name.
+  string name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "name"
+      message: "Name should be any valid DNS Domain Name"
+      expression: "this.matches('^(?:[*][.])?(?:[_a-z0-9](?:[_a-z0-9-]{0,61}[a-z0-9])?[.])+(?:[a-z](?:[a-z0-9-]{0,61}[a-z0-9])?)?$')"
+    }
+  ];
+
+  // The list of values for the DNS record.
+  // If the record type is CNAME, each value in the list should end with a dot.
+  repeated string values = 3 [(buf.validate.field).repeated.min_items = 1];
+
+  // The Time To Live (TTL) for the DNS record, in seconds.
+  optional int32 ttl_seconds = 4 [(dev.planton.shared.options.default) = "60"];
+}

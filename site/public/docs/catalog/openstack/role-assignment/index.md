@@ -12,7 +12,7 @@ Deploys an OpenStack Identity (Keystone) role assignment, binding a role to a pr
 
 ## What Gets Created
 
-When you deploy an OpenStackRoleAssignment resource, OpenMCF provisions:
+When you deploy an OpenStackRoleAssignment resource, Planton provisions:
 
 - **Identity Role Assignment** — an `openstack_identity_role_assignment_v3` resource that binds the specified role to either a user or group on either a project or domain scope
 
@@ -20,7 +20,7 @@ All fields are ForceNew — changing any field causes the assignment to be destr
 
 ## Prerequisites
 
-- **OpenStack credentials** configured via environment variables or OpenMCF provider config
+- **OpenStack credentials** configured via environment variables or Planton provider config
 - **Admin privileges** — role assignments are an admin-level Keystone operation
 - **Existing role** — the role UUID must reference a role already created in Keystone (use `openstack role list` to find available roles)
 - **Existing principal** — the user or group UUID must reference an existing Keystone user or group
@@ -31,15 +31,15 @@ All fields are ForceNew — changing any field causes the assignment to be destr
 Create a file `role-assignment.yaml`:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackRoleAssignment
 metadata:
   name: my-role-assignment
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OpenStackRoleAssignment.my-role-assignment
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OpenStackRoleAssignment.my-role-assignment
 spec:
   roleId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
   projectId:
@@ -50,7 +50,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f role-assignment.yaml
+planton apply -f role-assignment.yaml
 ```
 
 This assigns the specified role to the user on the given project.
@@ -99,15 +99,15 @@ This resource enforces two mutual exclusion constraints validated at submission 
 Assigns the "member" role to a user on a specific project using literal UUIDs:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackRoleAssignment
 metadata:
   name: alice-member-on-webteam
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OpenStackRoleAssignment.alice-member-on-webteam
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OpenStackRoleAssignment.alice-member-on-webteam
 spec:
   roleId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
   projectId:
@@ -120,15 +120,15 @@ spec:
 Assigns a role to a user on a project managed by an OpenStackProject resource, using `valueFrom` to reference the project ID output:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackRoleAssignment
 metadata:
   name: bob-admin-on-dataplatform
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OpenStackRoleAssignment.bob-admin-on-dataplatform
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OpenStackRoleAssignment.bob-admin-on-dataplatform
 spec:
   roleId: "deadbeef-1234-5678-9abc-def012345678"
   projectId:
@@ -144,15 +144,15 @@ spec:
 Assigns the "reader" role to a group on a domain, granting read access across the entire domain:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackRoleAssignment
 metadata:
   name: auditors-reader-on-corp
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OpenStackRoleAssignment.auditors-reader-on-corp
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OpenStackRoleAssignment.auditors-reader-on-corp
 spec:
   roleId: "12345678-abcd-ef01-2345-6789abcdef01"
   domainId: "99887766-5544-3322-1100-ffeeddccbbaa"
@@ -164,15 +164,15 @@ spec:
 Assigns a role to a group on a project in a specific region:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackRoleAssignment
 metadata:
   name: devs-member-on-staging
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.OpenStackRoleAssignment.devs-member-on-staging
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.OpenStackRoleAssignment.devs-member-on-staging
 spec:
   roleId: "a1a2a3a4-b1b2-c1c2-d1d2-e1e2e3e4e5e6"
   projectId:

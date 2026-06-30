@@ -1,0 +1,256 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsecsservice.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// AwsEcsServiceSpec captures the minimal fields needed to deploy a Fargate-based ECS service
+// into an existing ECS cluster. It focuses on an 80/20 approach with an ALB-based ingress
+// that can be path-based or hostname-based.
+message AwsEcsServiceSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  // cluster_arn is the ARN of the ECS cluster where this service will run.
+  // This must already exist (created by a separate EcsCluster resource or otherwise).
+  // Example: "arn:aws:ecs:us-east-1:123456789012:cluster/my-mixed-cluster"
+  dev.planton.shared.foreignkey.v1.StringValueOrRef cluster_arn = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsEcsCluster,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.cluster_arn"
+  ];
+
+  // AWS ECS Service container configuration.
+  AwsEcsServiceContainer container = 3 [(buf.validate.field).required = true];
+
+  // ECS service network configuration.
+  AwsEcsServiceNetwork network = 4 [(buf.validate.field).required = true];
+
+  // IAM configuration for the ECS service.
+  AwsEcsServiceIam iam = 5;
+
+  // alb defines how an ALB fronts traffic to this ECS service, supporting path- or hostname-based routing.
+  AwsEcsServiceAlb alb = 6;
+
+  // health_check_grace_period_seconds is the number of seconds ECS will ignore ALB health check failures
+  // during container startup. This prevents a race condition where the ALB marks a task unhealthy
+  // before the application has finished booting. Recommended: 60-120 seconds for typical apps.
+  // Only valid when alb.enabled = true.
+  optional int32 health_check_grace_period_seconds = 7 [(dev.planton.shared.options.default) = "60"];
+
+  // autoscaling configuration for the ECS service using target tracking.
+  // When enabled, AWS Application Auto Scaling automatically adjusts the desired task count
+  // based on CPU or memory utilization.
+  AwsEcsServiceAutoscaling autoscaling = 8;
+}
+
+// AwsEcsServiceContainer is a wrapper for the container spec.
+message AwsEcsServiceContainer {
+  // container image
+  AwsEcsServiceContainerImage image = 1;
+
+  // container environment variables, secrets, and environment files
+  AwsEcsServiceContainerEnv env = 2;
+
+  // container_port is the port inside the container that should be exposed to receive traffic.
+  // This is optional if the service doesn't need inbound requests (e.g., a background worker).
+  // Example: 80 for HTTP
+  int32 port = 3;
+
+  // replicas is the number of task replicas to run for this service.
+  // higher values improve availability at increased cost.
+  int32 replicas = 4 [(dev.planton.shared.options.recommended_default) = "1"];
+
+  // cpu is the amount of vCPU (in CPU units) to allocate for the entire task.
+  // Valid Fargate values include 256, 512, 1024, 2048, etc., subject to ECS constraints.
+  // Example: 512
+  int32 cpu = 5 [(buf.validate.field).required = true];
+
+  // memory is the total MiB of RAM for the task.
+  // Valid values depend on CPU. For example, 512 CPU can pair with 1024–4096 MiB.
+  // Example: 1024
+  int32 memory = 6 [(buf.validate.field).required = true];
+
+  // logging controls whether CloudWatch log configuration is injected automatically.
+  AwsEcsServiceContainerLogging logging = 7;
+}
+
+// AwsEcsServiceContainerLogging controls CloudWatch logging for the container.
+message AwsEcsServiceContainerLogging {
+  // If true (default), the module auto-creates a CloudWatch Log Group
+  // named "/ecs/<serviceName>" with 30-day retention and configures
+  // the awslogs driver.
+  bool enabled = 1 [(dev.planton.shared.options.recommended_default) = "true"];
+}
+
+// AwsEcsServiceContainerImage represents the container image information.
+message AwsEcsServiceContainerImage {
+  // The repository of the image (e.g., "gcr.io/project/image").
+  string repo = 1;
+
+  // The tag of the image (e.g., "latest" or "1.0.0").
+  string tag = 2;
+}
+
+// AwsEcsServiceContainerEnv is a wrapper for environment variables, secrets, and files.
+message AwsEcsServiceContainerEnv {
+  // map of environment variables to be set in the container.
+  // The key is the name of the variable, and the value is the value to be set.
+  map<string, string> variables = 1;
+
+  // map of environment secrets to be set in the container.
+  // The key is the name of the variable, and the value is the value to be set.
+  // The value can be a plaintext value or a reference to a secret in AWS Secrets Manager or SSM Parameter Store.
+  map<string, string> secrets = 2;
+
+  // s3_files is a list of S3 URIs whose contents are loaded as environment variables
+  // via the ECS "environmentFiles" feature.
+  repeated string s3_files = 3 [(buf.validate.field).repeated = {unique: true}];
+}
+
+// AwsEcsServiceNetwork defines the networking configuration for the ECS service.
+message AwsEcsServiceNetwork {
+  // subnets is a list of VPC subnet IDs where the Fargate tasks will run.
+  // Typically private subnets for production, often at least two for high availability.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef subnets = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  ];
+
+  // security_groups is a list of security group IDs to apply to each task's ENI.
+  // If not provided, ECS may use the default VPC security group, which is not ideal for production.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef security_groups = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
+  ];
+}
+
+// AWS ECS Service IAM configuration
+message AwsEcsServiceIam {
+  // task_execution_role_arn is the IAM role used by ECS to pull private images and write logs.
+  // If omitted, a default "ecsTaskExecutionRole" may be assumed, but it must already exist.
+  // Example: "arn:aws:iam::123456789012:role/ecsTaskExecutionRole"
+  dev.planton.shared.foreignkey.v1.StringValueOrRef task_execution_role_arn = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsIamRole,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.role_arn"
+  ];
+
+  // task_role_arn is the IAM role your container uses if it needs AWS permissions.
+  // Omit if your container does not call AWS APIs.
+  // Example: "arn:aws:iam::123456789012:role/myAppTaskRole"
+  dev.planton.shared.foreignkey.v1.StringValueOrRef task_role_arn = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsIamRole,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.role_arn"
+  ];
+}
+
+// AwsEcsServiceAlb indicates how an ALB fronts this ECS service, supporting path- or hostname-based routing.
+message AwsEcsServiceAlb {
+  // enabled controls whether an ALB is used. If false, no ALB is attached.
+  bool enabled = 1;
+
+  // arn is the ARN of the ALB. Required if enabled = true.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef arn = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsAlb,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.load_balancer_arn"
+  ];
+
+  // routingType can be "path" or "hostname" if enabled.
+  // If "path", specify a path (e.g. "/my-service").
+  // If "hostname", specify a hostname (e.g. "api.example.com").
+  string routing_type = 3 [(buf.validate.field).string = {
+    in: [
+      "path",
+      "hostname"
+    ]
+  }];
+
+  // path is used if routingType = "path".
+  string path = 4;
+
+  // hostname is used if routingType = "hostname".
+  string hostname = 5;
+
+  // listener_port is the port on the ALB to forward traffic to.
+  int32 listener_port = 6 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.recommended_default) = "80"
+  ];
+
+  // listener_priority is the priority of the ALB listener rule.
+  // Lower numbers have higher priority. This value should be unique across all rules for this ALB.
+  optional int32 listener_priority = 7 [(dev.planton.shared.options.default) = "100"];
+
+  // health_check overrides the default target-group health check.
+  AwsEcsServiceHealthCheck health_check = 8;
+}
+
+// AwsEcsServiceHealthCheck defines ALB target-group health check settings.
+message AwsEcsServiceHealthCheck {
+  // protocol can be HTTP, HTTPS, or TCP.
+  string protocol = 1 [(buf.validate.field).string = {
+    in: [
+      "HTTP",
+      "HTTPS",
+      "TCP"
+    ]
+  }];
+
+  // path to ping (HTTP/HTTPS only), defaults to "/".
+  string path = 2;
+
+  // port may be "traffic-port" or an explicit port number as string.
+  string port = 3;
+
+  // interval between checks in seconds. AWS default is 30.
+  int32 interval = 4;
+
+  // timeout per check in seconds. AWS default is 5.
+  int32 timeout = 5;
+
+  // number of successes before a target is considered healthy. AWS default is 5.
+  int32 healthy_threshold = 6;
+
+  // number of failures before a target is considered unhealthy. AWS default is 2.
+  int32 unhealthy_threshold = 7;
+}
+
+// AwsEcsServiceAutoscaling defines target tracking auto scaling configuration for the ECS service.
+// AWS Application Auto Scaling automatically adjusts the desired task count to maintain
+// the target metric (CPU or memory utilization).
+message AwsEcsServiceAutoscaling {
+  // enabled controls whether autoscaling is configured for this service.
+  bool enabled = 1;
+
+  // min_tasks is the minimum number of tasks to maintain.
+  // Must be >= 1 and <= max_tasks.
+  int32 min_tasks = 2 [(buf.validate.field).int32 = {gte: 1}];
+
+  // max_tasks is the maximum number of tasks to scale to.
+  // Must be >= min_tasks.
+  int32 max_tasks = 3 [(buf.validate.field).int32 = {gte: 1}];
+
+  // target_cpu_percent is the target average CPU utilization (as a percentage) across all tasks.
+  // AWS will scale out when CPU exceeds this threshold and scale in when it drops below.
+  // Recommended: 70-75 for production workloads.
+  // Example: 75 means target 75% CPU utilization.
+  optional int32 target_cpu_percent = 4 [
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 100
+    },
+    (dev.planton.shared.options.default) = "75"
+  ];
+
+  // target_memory_percent is the target average memory utilization (as a percentage) across all tasks.
+  // Similar to target_cpu_percent but for memory.
+  // This is optional; most services scale on CPU alone.
+  optional int32 target_memory_percent = 5 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 100
+  }];
+}

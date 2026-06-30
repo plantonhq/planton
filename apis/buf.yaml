@@ -1,9 +1,9 @@
 version: v2
-name: buf.build/openmcf/openmcf
+name: buf.build/planton/planton
 deps:
   - buf.build/bufbuild/protovalidate
 # plugins:
-#   - plugin: buf.build/openmcf/optional-linter:v0.1.0
+#   - plugin: buf.build/planton/optional-linter:v0.1.0
 lint:
   use:
     - STANDARD

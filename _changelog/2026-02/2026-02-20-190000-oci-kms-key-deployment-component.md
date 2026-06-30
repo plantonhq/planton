@@ -2,7 +2,7 @@
 
 **Date**: 2026-02-20
 **Type**: New Feature
-**Components**: `apis/org/openmcf/provider/oci/ocikmskey/v1/`
+**Components**: `apis/dev/planton/provider/oci/ocikmskey/v1/`
 
 ## Summary
 
@@ -10,7 +10,7 @@ Added the OciKmsKey deployment component -- OCI's managed cryptographic key stor
 
 ## Problem Statement / Motivation
 
-OpenMCF's OCI provider had a KMS Vault component (R24) but no way to create encryption keys within those vaults. OCI KMS Keys are the resources that actually perform cryptographic operations -- without them, customer-managed encryption for Block Volumes, Object Storage, Autonomous Database, and other services is not possible. This component completes the vault-to-key relationship and enables end-to-end encryption infrastructure as code.
+Planton's OCI provider had a KMS Vault component (R24) but no way to create encryption keys within those vaults. OCI KMS Keys are the resources that actually perform cryptographic operations -- without them, customer-managed encryption for Block Volumes, Object Storage, Autonomous Database, and other services is not possible. This component completes the vault-to-key relationship and enables end-to-end encryption infrastructure as code.
 
 ## Solution / What's New
 

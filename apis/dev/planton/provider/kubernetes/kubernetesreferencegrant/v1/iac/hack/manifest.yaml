@@ -1,0 +1,14 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesReferenceGrant
+metadata:
+  name: test-reference-grant
+spec:
+  namespace:
+    value: backend-namespace
+  from:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      namespace: frontend-namespace
+  to:
+    - group: ""
+      kind: Service

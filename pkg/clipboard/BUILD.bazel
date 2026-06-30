@@ -3,7 +3,7 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "clipboard",
     srcs = ["reader.go"],
-    importpath = "github.com/plantonhq/openmcf/pkg/clipboard",
+    importpath = "github.com/plantonhq/planton/pkg/clipboard",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_pkg_errors//:errors",

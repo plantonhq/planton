@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesexternaldns.v1;
+
+//stack outputs for kubernetes-external-dns
+message KubernetesExternalDnsStackOutputs {
+  //kubernetes namespace where the kubernetes-external-dns is deployed
+  string namespace = 1;
+  //kubernetes release name
+  string release_name = 2;
+  //kubernetes service account name
+  string solver_sa = 3;
+}

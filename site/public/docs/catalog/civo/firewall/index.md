@@ -12,7 +12,7 @@ Deploys a stateful firewall on Civo Cloud within a specified network (VPC), with
 
 ## What Gets Created
 
-When you deploy a CivoFirewall resource, OpenMCF provisions:
+When you deploy a CivoFirewall resource, Planton provisions:
 
 - **Civo Firewall** — a `civo_firewall` resource attached to the target private network, configured with the specified ingress and egress rules
 - **Ingress Rules** — one rule entry per item in `inboundRules`, controlling traffic allowed to instances behind the firewall
@@ -20,7 +20,7 @@ When you deploy a CivoFirewall resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Civo credentials** configured via environment variables or OpenMCF provider config
+- **Civo credentials** configured via environment variables or Planton provider config
 - **An existing Civo network** in the target region (can be created with CivoVpc)
 
 ## Quick Start
@@ -28,15 +28,15 @@ When you deploy a CivoFirewall resource, OpenMCF provisions:
 Create a file `civo-firewall.yaml`:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoFirewall
 metadata:
   name: my-firewall
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CivoFirewall.my-firewall
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CivoFirewall.my-firewall
 spec:
   name: my-firewall
   networkId:
@@ -53,7 +53,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f civo-firewall.yaml
+planton apply -f civo-firewall.yaml
 ```
 
 This creates a firewall on the specified network that allows inbound HTTPS traffic from any source.
@@ -102,15 +102,15 @@ This creates a firewall on the specified network that allows inbound HTTPS traff
 A basic firewall that permits SSH and HTTPS inbound traffic:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoFirewall
 metadata:
   name: web-ssh-firewall
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CivoFirewall.web-ssh-firewall
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CivoFirewall.web-ssh-firewall
 spec:
   name: web-ssh-firewall
   networkId:
@@ -135,15 +135,15 @@ spec:
 A firewall that restricts both inbound and outbound traffic, auto-applied to instances tagged `backend`:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoFirewall
 metadata:
   name: backend-firewall
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CivoFirewall.backend-firewall
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CivoFirewall.backend-firewall
 spec:
   name: backend-firewall
   networkId:
@@ -174,18 +174,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed CivoVpc resource instead of hardcoding the network ID:
+Reference an Planton-managed CivoVpc resource instead of hardcoding the network ID:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoFirewall
 metadata:
   name: ref-firewall
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CivoFirewall.ref-firewall
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CivoFirewall.ref-firewall
 spec:
   name: ref-firewall
   networkId:

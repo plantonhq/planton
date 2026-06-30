@@ -12,7 +12,7 @@ Deploys an OpenStack Compute server group, which defines a placement policy that
 
 ## What Gets Created
 
-When you deploy an OpenStackServerGroup resource, OpenMCF provisions:
+When you deploy an OpenStackServerGroup resource, Planton provisions:
 
 - **Compute Server Group** — an `openstack_compute_servergroup_v2` resource with the specified placement policy (affinity, anti-affinity, soft-affinity, or soft-anti-affinity)
 
@@ -20,7 +20,7 @@ All fields on a server group are immutable. Changing any field recreates the ser
 
 ## Prerequisites
 
-- **OpenStack credentials** configured via environment variables or OpenMCF provider config
+- **OpenStack credentials** configured via environment variables or Planton provider config
 - **Nova Compute API 2.15+** if using `soft-affinity` or `soft-anti-affinity` policies
 - **Sufficient hypervisor hosts** when using hard `anti-affinity` (one host required per instance in the group)
 
@@ -29,15 +29,15 @@ All fields on a server group are immutable. Changing any field recreates the ser
 Create a file `server-group.yaml`:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackServerGroup
 metadata:
   name: my-server-group
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OpenstackServerGroup.my-server-group
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OpenstackServerGroup.my-server-group
 spec:
   policy: anti-affinity
 ```
@@ -45,7 +45,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f server-group.yaml
+planton apply -f server-group.yaml
 ```
 
 This creates a server group named `my-server-group` with an anti-affinity policy, ensuring that instances referencing this group are placed on different hypervisors.
@@ -80,17 +80,17 @@ This creates a server group named `my-server-group` with an anti-affinity policy
 Spread database replicas across different hypervisors for high availability. If a hypervisor fails, at most one replica is affected:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackServerGroup
 metadata:
   name: db-anti-affinity
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OpenstackServerGroup.db-anti-affinity
-    openmcf.org/stack.jobId: prod.OpenstackServerGroup.db-anti-affinity
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackservergroup/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OpenstackServerGroup.db-anti-affinity
+    planton.dev/stack.jobId: prod.OpenstackServerGroup.db-anti-affinity
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackservergroup/v1/iac/pulumi/module
 spec:
   policy: anti-affinity
 ```
@@ -100,17 +100,17 @@ spec:
 Co-locate application and cache instances on the same hypervisor to minimize network latency between them:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackServerGroup
 metadata:
   name: app-cache-affinity
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OpenstackServerGroup.app-cache-affinity
-    openmcf.org/stack.jobId: prod.OpenstackServerGroup.app-cache-affinity
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackservergroup/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OpenstackServerGroup.app-cache-affinity
+    planton.dev/stack.jobId: prod.OpenstackServerGroup.app-cache-affinity
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackservergroup/v1/iac/pulumi/module
 spec:
   policy: affinity
 ```
@@ -120,17 +120,17 @@ spec:
 Use a soft policy when the cluster may not have enough distinct hypervisors to satisfy a hard anti-affinity constraint. Instances are spread on a best-effort basis without scheduling failures:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackServerGroup
 metadata:
   name: worker-soft-spread
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.OpenstackServerGroup.worker-soft-spread
-    openmcf.org/stack.jobId: staging.OpenstackServerGroup.worker-soft-spread
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackservergroup/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.OpenstackServerGroup.worker-soft-spread
+    planton.dev/stack.jobId: staging.OpenstackServerGroup.worker-soft-spread
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackservergroup/v1/iac/pulumi/module
 spec:
   policy: soft-anti-affinity
 ```
@@ -140,17 +140,17 @@ spec:
 Override the provider region for a server group that must be created in a particular OpenStack region:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackServerGroup
 metadata:
   name: regional-anti-affinity
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OpenstackServerGroup.regional-anti-affinity
-    openmcf.org/stack.jobId: prod.OpenstackServerGroup.regional-anti-affinity
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackservergroup/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OpenstackServerGroup.regional-anti-affinity
+    planton.dev/stack.jobId: prod.OpenstackServerGroup.regional-anti-affinity
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackservergroup/v1/iac/pulumi/module
 spec:
   policy: anti-affinity
   region: RegionTwo

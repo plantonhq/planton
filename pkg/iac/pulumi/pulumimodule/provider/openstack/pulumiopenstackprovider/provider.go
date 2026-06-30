@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/pkg/errors"
-	openstackprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/openstack"
+	openstackprovider "github.com/plantonhq/planton/apis/dev/planton/provider/openstack"
 	"github.com/pulumi/pulumi-openstack/sdk/v5/go/openstack"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )

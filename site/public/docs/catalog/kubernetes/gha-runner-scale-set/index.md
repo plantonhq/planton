@@ -12,7 +12,7 @@ Deploys a GitHub Actions Runner Scale Set on a Kubernetes cluster, providing sel
 
 ## What Gets Created
 
-When you deploy a KubernetesGhaRunnerScaleSet resource, OpenMCF provisions:
+When you deploy a KubernetesGhaRunnerScaleSet resource, Planton provisions:
 
 - **Namespace** — created only when `createNamespace` is `true`
 - **Persistent Volume Claims** — one PVC per entry in `persistentVolumes`, used to persist build caches or dependencies across job runs
@@ -22,7 +22,7 @@ When you deploy a KubernetesGhaRunnerScaleSet resource, OpenMCF provisions:
 ## Prerequisites
 
 - **KubernetesGhaRunnerScaleSetController** must already be deployed in the cluster (use the [KubernetesGhaRunnerScaleSetController](/docs/catalog/kubernetes/gha-runner-scale-set-controller) component)
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
 - **GitHub authentication** — one of:
   - A Personal Access Token (PAT) with `repo` scope (repository-level) or `admin:org` scope (organization-level)
@@ -34,15 +34,15 @@ When you deploy a KubernetesGhaRunnerScaleSet resource, OpenMCF provisions:
 Create a file `gha-runner-scale-set.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesGhaRunnerScaleSet
 metadata:
   name: my-runners
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesGhaRunnerScaleSet.my-runners
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesGhaRunnerScaleSet.my-runners
 spec:
   namespace:
     value: gha-runners
@@ -58,7 +58,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f gha-runner-scale-set.yaml
+planton apply -f gha-runner-scale-set.yaml
 ```
 
 This registers a runner scale set named `my-runners` against the `my-org` GitHub organization using Docker-in-Docker mode. Workflows targeting `runs-on: [self-hosted, my-runners]` will be picked up by the ephemeral runner pods.
@@ -111,7 +111,7 @@ This registers a runner scale set named `my-runners` against the `my-org` GitHub
 | `annotations` | `map<string, string>` | — | Annotations applied to all resources created by the scale set. |
 | `github.existingSecretName` | `string` | — | Name of a pre-existing Secret containing GitHub credentials. Must be in the same namespace. Mutually exclusive with `patToken` and `githubApp`. |
 
-> **Note on `StringValueOrRef`:** The `namespace` field accepts either an inline `value` or a `valueFrom` reference that resolves the value from another OpenMCF resource's output at deploy time.
+> **Note on `StringValueOrRef`:** The `namespace` field accepts either an inline `value` or a `valueFrom` reference that resolves the value from another Planton resource's output at deploy time.
 
 ## Examples
 
@@ -120,15 +120,15 @@ This registers a runner scale set named `my-runners` against the `my-org` GitHub
 Registers a Docker-in-Docker runner scale set against a GitHub organization using a Personal Access Token:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesGhaRunnerScaleSet
 metadata:
   name: org-runners
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesGhaRunnerScaleSet.org-runners
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesGhaRunnerScaleSet.org-runners
 spec:
   namespace:
     value: gha-runners
@@ -154,15 +154,15 @@ jobs:
 Uses GitHub App authentication, Kubernetes container mode with an ephemeral work volume, and custom scaling limits suitable for a busy CI pipeline:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesGhaRunnerScaleSet
 metadata:
   name: ci-runners
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.KubernetesGhaRunnerScaleSet.ci-runners
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.KubernetesGhaRunnerScaleSet.ci-runners
 spec:
   namespace:
     value: gha-runners
@@ -199,15 +199,15 @@ spec:
 Deploys a runner scale set on a specific GKE cluster with a persistent build cache volume, a custom runner image, environment variables, an existing credentials secret, and resource annotations:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesGhaRunnerScaleSet
 metadata:
   name: build-runners
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesGhaRunnerScaleSet.build-runners
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesGhaRunnerScaleSet.build-runners
 spec:
   targetCluster:
     clusterKind: GcpGkeCluster

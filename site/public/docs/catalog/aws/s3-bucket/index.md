@@ -12,7 +12,7 @@ Deploys an S3 bucket with encryption, versioning, public access controls, lifecy
 
 ## What Gets Created
 
-When you deploy an AwsS3Bucket resource, OpenMCF provisions:
+When you deploy an AwsS3Bucket resource, Planton provisions:
 
 - **S3 Bucket** — the storage bucket itself, named from `metadata.name`
 - **Server-Side Encryption** — always configured; SSE-S3 (AES-256) by default, or SSE-KMS with a specified key
@@ -27,7 +27,7 @@ Note: Replication is defined in the spec but not yet implemented in the Pulumi m
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **A KMS key ARN** if using SSE-KMS encryption
 - **A target S3 bucket** in the same region if enabling access logging
 - **A destination bucket with versioning** if configuring replication (Terraform only)
@@ -37,15 +37,15 @@ Note: Replication is defined in the spec but not yet implemented in the Pulumi m
 Create a file `bucket.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsS3Bucket
 metadata:
   name: my-bucket
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsS3Bucket.my-bucket
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsS3Bucket.my-bucket
 spec:
   region: us-east-1
 ```
@@ -53,7 +53,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f bucket.yaml
+planton apply -f bucket.yaml
 ```
 
 This creates a private S3 bucket in `us-east-1` with SSE-S3 encryption, public access blocked, and ACLs disabled.
@@ -100,15 +100,15 @@ This creates a private S3 bucket in `us-east-1` with SSE-S3 encryption, public a
 ### Versioned Bucket with Tags
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsS3Bucket
 metadata:
   name: app-data
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsS3Bucket.app-data
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsS3Bucket.app-data
 spec:
   region: us-east-1
   versioningEnabled: true
@@ -123,15 +123,15 @@ spec:
 Transition logs to cheaper storage, then archive, then delete:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsS3Bucket
 metadata:
   name: app-logs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsS3Bucket.app-logs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsS3Bucket.app-logs
 spec:
   region: us-west-2
   versioningEnabled: true
@@ -156,15 +156,15 @@ spec:
 ### Full-Featured with KMS, Logging, and CORS
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsS3Bucket
 metadata:
   name: secure-bucket
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsS3Bucket.secure-bucket
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsS3Bucket.secure-bucket
 spec:
   region: us-east-1
   versioningEnabled: true

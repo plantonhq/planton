@@ -1,0 +1,6 @@
+name: gcp-kms-key
+runtime:
+  name: go
+  options:
+    binary: ./pulumi
+description: Planton GcpKmsKey Pulumi module

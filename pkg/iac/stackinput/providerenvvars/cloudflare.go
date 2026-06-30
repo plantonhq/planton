@@ -2,7 +2,7 @@ package providerenvvars
 
 import (
 	"github.com/pkg/errors"
-	cloudflareprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/cloudflare"
+	cloudflareprovider "github.com/plantonhq/planton/apis/dev/planton/provider/cloudflare"
 )
 
 // loadCloudflareEnvVars loads Cloudflare provider config and returns environment variables.

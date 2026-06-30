@@ -68,7 +68,7 @@ Not all actions are valid in all phases. Cloudflare enforces this at the API lev
 | `http_custom_errors` | `serve_error` |
 | `http_response_compression` | `compress_response` |
 
-## OpenMCF Design Decisions
+## Planton Design Decisions
 
 ### 80/20 Field Selection
 
@@ -107,7 +107,7 @@ We intentionally do not enforce phase → action compatibility in CEL validation
 
 ## Deployment Methods
 
-### OpenMCF CLI
+### Planton CLI
 
 ```bash
 # Preview changes
@@ -120,7 +120,7 @@ planton apply -f ruleset.yaml
 planton destroy -f ruleset.yaml
 ```
 
-### Pulumi (via OpenMCF)
+### Pulumi (via Planton)
 
 The Pulumi module at `iac/pulumi/` maps `CloudflareRulesetStackInput` to `cloudflare.NewRuleset()` from the `pulumi-cloudflare/sdk/v6` package. The module:
 
@@ -129,7 +129,7 @@ The Pulumi module at `iac/pulumi/` maps `CloudflareRulesetStackInput` to `cloudf
 3. Maps proto rules to `cloudflare.RulesetRuleArray`
 4. Creates the ruleset and exports outputs
 
-### Terraform (via OpenMCF)
+### Terraform (via Planton)
 
 The Terraform module at `iac/tf/` uses the `cloudflare_ruleset` resource. The `variables.tf` mirrors the spec structure, and `main.tf` uses dynamic blocks for rules.
 

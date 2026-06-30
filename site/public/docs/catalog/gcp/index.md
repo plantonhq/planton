@@ -1,13 +1,13 @@
 ---
 title: "GCP"
-description: "Deploy GCP resources using OpenMCF"
+description: "Deploy GCP resources using Planton"
 icon: "cloud"
 order: 10
 ---
 
 # GCP
 
-The following GCP resources can be deployed using OpenMCF:
+The following GCP resources can be deployed using Planton:
 
 - [AlloyDB Cluster](/docs/catalog/gcp/alloydb-cluster)
 - [Artifact Registry Repo](/docs/catalog/gcp/artifact-registry-repo)

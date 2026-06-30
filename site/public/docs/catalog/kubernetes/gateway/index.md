@@ -31,7 +31,7 @@ define host, path, and backend routing.
 ## Quick Start
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesGateway
 metadata:
   name: web-gateway
@@ -52,7 +52,7 @@ spec:
 ```
 
 ```bash
-openmcf apply -f gateway.yaml
+planton apply -f gateway.yaml
 ```
 
 ## Configuration Reference

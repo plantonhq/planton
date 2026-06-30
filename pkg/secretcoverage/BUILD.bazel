@@ -8,11 +8,11 @@ go_library(
         "heuristic.go",
         "report.go",
     ],
-    importpath = "github.com/plantonhq/openmcf/pkg/secretcoverage",
+    importpath = "github.com/plantonhq/planton/pkg/secretcoverage",
     visibility = ["//visibility:public"],
     deps = [
-        "//apis/org/openmcf/shared/cloudresourcekind",
-        "//apis/org/openmcf/shared/options",
+        "//apis/dev/planton/shared/cloudresourcekind",
+        "//apis/dev/planton/shared/options",
         "//pkg/crkreflect",
         "@in_gopkg_yaml_v3//:yaml_v3",
         "@org_golang_google_protobuf//proto",
@@ -29,7 +29,7 @@ go_test(
     ],
     embed = [":secretcoverage"],
     deps = [
-        "//apis/org/openmcf/shared/cloudresourcekind",
+        "//apis/dev/planton/shared/cloudresourcekind",
         "//pkg/crkreflect",
     ],
 )

@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package dev.planton.provider.cloudflare.cloudflarednsrecord.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/cloudflare/cloudflarednsrecord/v1/spec.proto";
+import "dev/planton/provider/cloudflare/cloudflarednsrecord/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// CloudflareDnsRecord is a Kubernetes Resource Model (KRM) style resource for managing
+// individual DNS records within a Cloudflare DNS zone.
+message CloudflareDnsRecord {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'cloudflare.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'CloudflareDnsRecord'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  CloudflareDnsRecordSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  CloudflareDnsRecordStatus status = 5;
+}
+
+// CloudflareDnsRecordStatus represents the observed state of a Cloudflare DNS record.
+message CloudflareDnsRecordStatus {
+  // stack-outputs from the IaC deployment
+  CloudflareDnsRecordStackOutputs outputs = 1;
+}

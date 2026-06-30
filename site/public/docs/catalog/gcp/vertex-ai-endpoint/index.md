@@ -12,14 +12,14 @@ Deploys a GCP Vertex AI Endpoint — a stable serving surface for machine learni
 
 ## What Gets Created
 
-When you deploy a GcpVertexAiEndpoint resource, OpenMCF provisions:
+When you deploy a GcpVertexAiEndpoint resource, Planton provisions:
 
 - **Vertex AI Endpoint** — a `google_vertex_ai_endpoint` resource in the specified region with framework GCP labels applied automatically
 - **Random Endpoint Name** (Terraform only) — a `random_integer` resource to generate the required numeric endpoint identifier, created only when `endpointName` is not specified
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **A GCP project** with the Vertex AI API enabled
 - **A VPC network with Private Services Access** if using VPC-peered networking (`network` field)
 - **A Cloud KMS key** in the same region as the endpoint if using CMEK encryption (`kmsKeyName` field)
@@ -30,15 +30,15 @@ When you deploy a GcpVertexAiEndpoint resource, OpenMCF provisions:
 Create a file `endpoint.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpVertexAiEndpoint
 metadata:
   name: my-endpoint
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpVertexAiEndpoint.my-endpoint
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpVertexAiEndpoint.my-endpoint
 spec:
   projectId:
     value: my-gcp-project
@@ -49,7 +49,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f endpoint.yaml
+planton apply -f endpoint.yaml
 ```
 
 This creates a public Vertex AI Endpoint accessible via the shared regional DNS with Google-managed encryption.
@@ -83,15 +83,15 @@ This creates a public Vertex AI Endpoint accessible via the shared regional DNS 
 A public endpoint for development or non-sensitive workloads:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpVertexAiEndpoint
 metadata:
   name: dev-recommendations
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: ml-platform
-    pulumi.openmcf.org/stack.name: dev.GcpVertexAiEndpoint.dev-recommendations
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: ml-platform
+    pulumi.planton.dev/stack.name: dev.GcpVertexAiEndpoint.dev-recommendations
 spec:
   projectId:
     value: my-gcp-project
@@ -105,15 +105,15 @@ spec:
 Production endpoint with network isolation and customer-managed encryption:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpVertexAiEndpoint
 metadata:
   name: prod-scoring
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: ml-platform
-    pulumi.openmcf.org/stack.name: prod.GcpVertexAiEndpoint.prod-scoring
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: ml-platform
+    pulumi.planton.dev/stack.name: prod.GcpVertexAiEndpoint.prod-scoring
 spec:
   projectId:
     value: my-gcp-project
@@ -131,15 +131,15 @@ spec:
 Strongest network isolation using PSC with an explicit project allowlist:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpVertexAiEndpoint
 metadata:
   name: psc-inference
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: ml-platform
-    pulumi.openmcf.org/stack.name: prod.GcpVertexAiEndpoint.psc-inference
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: ml-platform
+    pulumi.planton.dev/stack.name: prod.GcpVertexAiEndpoint.psc-inference
 spec:
   projectId:
     value: my-gcp-project
@@ -155,18 +155,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources for composable infrastructure:
+Reference other Planton-managed resources for composable infrastructure:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpVertexAiEndpoint
 metadata:
   name: composed-endpoint
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: ml-platform
-    pulumi.openmcf.org/stack.name: prod.GcpVertexAiEndpoint.composed-endpoint
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: ml-platform
+    pulumi.planton.dev/stack.name: prod.GcpVertexAiEndpoint.composed-endpoint
 spec:
   projectId:
     valueFrom:

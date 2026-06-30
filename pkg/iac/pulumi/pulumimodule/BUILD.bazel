@@ -3,10 +3,10 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "pulumimodule",
     srcs = ["module_directory.go"],
-    importpath = "github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumimodule",
+    importpath = "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule",
     visibility = ["//visibility:public"],
     deps = [
-        "//apis/org/openmcf/shared/cloudresourcekind",
+        "//apis/dev/planton/shared/cloudresourcekind",
         "//internal/cli/cliprint",
         "//internal/cli/staging",
         "//internal/cli/version",

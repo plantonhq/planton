@@ -16,7 +16,7 @@ OCI's Application Load Balancer is a critical networking component for any produ
 
 - An OCI load balancer requires at minimum: the LB itself, one backend set with health checker, and one listener
 - Backend sets, listeners, certificates, hostnames, and rule sets are all scoped to a specific load balancer
-- Creating these as separate OpenMCF components would require users to manage 5+ YAML manifests for a basic LB setup
+- Creating these as separate Planton components would require users to manage 5+ YAML manifests for a basic LB setup
 - Rule sets are essential for production (HTTP-to-HTTPS redirect) but have a complex polymorphic schema with 11 action types
 
 ## Solution / What's New
@@ -90,7 +90,7 @@ IP addresses are extracted from the load balancer's `IpAddressDetails` output vi
 ### Files Created
 
 ```
-apis/org/openmcf/provider/oci/ociapplicationloadbalancer/v1/
+apis/dev/planton/provider/oci/ociapplicationloadbalancer/v1/
   spec.proto                        # 17 messages, 3 enums, ~370 lines
   api.proto, stack_input.proto, stack_outputs.proto
   spec_test.go                      # 59 test cases

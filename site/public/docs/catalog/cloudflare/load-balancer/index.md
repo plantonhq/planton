@@ -12,7 +12,7 @@ Deploys a Cloudflare Load Balancer with an associated origin pool and health mon
 
 ## What Gets Created
 
-When you deploy a CloudflareLoadBalancer resource, OpenMCF provisions:
+When you deploy a CloudflareLoadBalancer resource, Planton provisions:
 
 - **Load Balancer Monitor** — an HTTP health check that probes each origin at the configured `healthProbePath`, expecting `2xx` responses, with 2 retries and a 5-second timeout
 - **Load Balancer Pool** — a pool named `{metadata.name}-pool` containing all declared origins with their respective weights, linked to the monitor
@@ -20,7 +20,7 @@ When you deploy a CloudflareLoadBalancer resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Cloudflare credentials** configured via environment variables or OpenMCF provider config
+- **Cloudflare credentials** configured via environment variables or Planton provider config
 - **An existing Cloudflare DNS zone** — either the zone ID as a literal string or a deployed CloudflareDnsZone resource to reference
 - **Appropriate permissions** — the API token must have Load Balancing edit access for the target zone
 - **Cloudflare Load Balancing add-on** — Load Balancing must be enabled on your Cloudflare account (it is a paid feature)
@@ -30,15 +30,15 @@ When you deploy a CloudflareLoadBalancer resource, OpenMCF provisions:
 Create a file `load-balancer.yaml`:
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareLoadBalancer
 metadata:
   name: my-lb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CloudflareLoadBalancer.my-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CloudflareLoadBalancer.my-lb
 spec:
   hostname: app.example.com
   zoneId:
@@ -54,7 +54,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f load-balancer.yaml
+planton apply -f load-balancer.yaml
 ```
 
 This creates a proxied load balancer for `app.example.com` with a single origin, health-checked at `/healthz`.
@@ -116,15 +116,15 @@ When using `valueFrom`, the `kind` defaults to `CloudflareDnsZone` and the `fiel
 A load balancer with a primary and secondary origin. The default steering policy (`off`) means Cloudflare tries origins in order, falling back to the secondary if the primary fails health checks:
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareLoadBalancer
 metadata:
   name: api-failover
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CloudflareLoadBalancer.api-failover
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CloudflareLoadBalancer.api-failover
 spec:
   hostname: api.example.com
   zoneId:
@@ -146,15 +146,15 @@ spec:
 A load balancer that distributes traffic randomly by weight across three origins, using cookie-based session affinity to keep returning users on the same origin:
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareLoadBalancer
 metadata:
   name: web-weighted
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CloudflareLoadBalancer.web-weighted
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CloudflareLoadBalancer.web-weighted
 spec:
   hostname: www.example.com
   zoneId:
@@ -180,15 +180,15 @@ spec:
 A load balancer that uses geo steering to route users to the nearest origin, referencing a CloudflareDnsZone resource for the zone ID:
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareLoadBalancer
 metadata:
   name: global-lb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CloudflareLoadBalancer.global-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CloudflareLoadBalancer.global-lb
 spec:
   hostname: app.example.com
   zoneId:

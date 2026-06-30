@@ -1,0 +1,30 @@
+# OpenFgaStore Test Manifest
+#
+# This manifest is used for testing the OpenFGA Store deployment component.
+#
+# Prerequisites:
+# - OpenFGA server running (locally or cloud-hosted)
+# - OpenFGA credentials configured
+#
+# Usage with Terraform/Tofu (required - no Pulumi provider available):
+#   planton apply --manifest manifest.yaml \
+#     --openfga-provider-config /path/to/openfga-creds.yaml \
+#     --provisioner tofu
+#
+# Example OpenFGA credentials file (openfga-creds.yaml):
+#   apiUrl: http://localhost:8080
+#   # For token auth:
+#   apiToken: your-api-token
+#   # Or for client credentials:
+#   # clientId: your-client-id
+#   # clientSecret: your-client-secret
+#   # apiTokenIssuer: https://your-issuer/oauth/token
+
+apiVersion: openfga.planton.dev/v1
+kind: OpenFgaStore
+metadata:
+  name: test-store
+  org: planton
+  env: development
+spec:
+  name: test-authorization-store

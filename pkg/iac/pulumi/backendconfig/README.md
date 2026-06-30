@@ -1,6 +1,6 @@
 # Pulumi Backend Config Package
 
-This package provides functionality to extract Pulumi backend configuration from OpenMCF resource manifests using standardized labels.
+This package provides functionality to extract Pulumi backend configuration from Planton resource manifests using standardized labels.
 
 ## Overview
 
@@ -38,7 +38,7 @@ Extracts Pulumi backend configuration from a manifest's metadata labels.
 
 ```go
 import (
-    "github.com/plantonhq/openmcf/pkg/iac/pulumi/backendconfig"
+    "github.com/plantonhq/planton/pkg/iac/pulumi/backendconfig"
 )
 
 // Extract backend config from a manifest
@@ -90,7 +90,7 @@ The package provides detailed error messages for common issues:
 "invalid stack.fqdn format: stack FQDN must be in format 'organization/project/stack'"
 
 // Missing required labels
-"missing required Pulumi backend labels: need either pulumi.openmcf.org/stack.fqdn or all of (organization, project, stack.name)"
+"missing required Pulumi backend labels: need either pulumi.planton.dev/stack.fqdn or all of (organization, project, stack.name)"
 
 // Empty values
 "Pulumi backend labels cannot be empty"

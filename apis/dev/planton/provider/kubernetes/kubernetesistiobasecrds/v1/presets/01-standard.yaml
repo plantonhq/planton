@@ -1,0 +1,5 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesIstioBaseCrds
+metadata:
+  name: my-istio-base-crds
+spec: {}

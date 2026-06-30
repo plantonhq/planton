@@ -1,0 +1,559 @@
+---
+description: SEARCH-ONLY (read-only) rule to find existing changelogs. Does NOT create changelogs. Lookup Planton changelogs by time references and keywords.
+globs: []
+alwaysApply: false
+---
+
+# Rule: Lookup Planton Changelog (ask-only)
+
+**THIS IS A SEARCH-ONLY RULE. DO NOT CREATE OR MODIFY ANYTHING.**
+
+Purpose: When invoked, help users quickly **FIND** existing changelogs from the Planton CLI repository without needing to specify directory paths. Parse temporal context (this month, last month, etc.), search appropriate directories, and present results in an easy-to-consume format with both clickable links and copyable paths.
+
+Usage: Invoke explicitly as `@find-planton-changelog` with contextual information about when the change was made and/or keywords describing the change.
+
+**User Intent**: When a user invokes this rule, they are asking you to **SEARCH FOR** and **PRESENT** existing changelogs. They are **NOT** asking you to create a new changelog.
+
+References: Changelogs in `_changelog/YYYY-MM/` directories
+
+## ⚠️ CRITICAL: Ask-Only Rule - NO File Creation or Modification
+
+**DO NOT** create, modify, or write any files. This is a **search and presentation only** rule.
+
+### EXACT WORKFLOW TO FOLLOW:
+
+**Step 1**: Run ONLY this command to get current date:
+```bash
+date +"%Y-%m-%d"
+```
+
+**Step 2**: Parse user's temporal context (this month, last month, etc.)
+
+**Step 3**: List changelog files in appropriate directories:
+```bash
+ls -1 /Users/swarup/scm/github.com/plantonhq/planton/_changelog/YYYY-MM/
+```
+
+**Step 4**: Filter by keywords using grep if needed
+
+**Step 5**: Read matching changelog files to extract summaries
+
+**Step 6**: Present results in the format specified below
+
+### NEVER DO THIS:
+- ❌ Run `git diff`
+- ❌ Run `git status`
+- ❌ Run `cd` and `git diff` together
+- ❌ Run ANY git commands
+- ❌ Create new changelog files
+- ❌ Modify existing changelogs
+- ❌ Make any changes to the filesystem
+- ❌ Invoke `@create-planton-changelog` or any other creation rules
+
+### ALWAYS DO THIS:
+- ✅ ONLY run `date` command first
+- ✅ ONLY use `ls` to list changelog files
+- ✅ ONLY use `grep` to search filenames/content
+- ✅ ONLY use Read tool to read matching changelogs
+- ✅ ONLY present search results
+
+**This is a read-only search rule. You are finding existing changelogs, NOT creating new ones.**
+
+## ⚠️ CRITICAL: Changelog Location
+
+**All changelogs are stored in**:
+```
+/Users/swarup/scm/github.com/plantonhq/planton/_changelog/YYYY-MM/
+```
+
+Where `YYYY-MM` is the year-month directory (e.g., `2026-01` for January 2026, `2025-12` for December 2025).
+
+**Filename pattern**:
+```
+YYYY-MM-DD-HHMMSS-descriptive-slug.md
+```
+
+Examples:
+- `2025-10-18-153045-pulumi-interactive-output-with-diff-support.md`
+- `2025-10-18-091230-proto-field-defaults-support.md`
+- `2025-10-17-164500-temporal-namespace-initialization-bug-fix.md`
+
+## Workflow
+
+### Step 1: Determine Current Date
+
+**ALWAYS** get the actual current date first by running:
+```bash
+date +"%Y-%m-%d"
+```
+
+Parse the output to determine current year and month.
+
+**DO NOT** run any other commands at this stage - no git commands, no git status, no git diff.
+
+### Step 2: Parse Temporal Context
+
+Listen for time references in the user's query:
+
+| User says... | Search directories |
+|--------------|-------------------|
+| "this month", "current month", "recently" | Current month only |
+| "last month", "previous month" | Previous month only |
+| "last 2 months", "past 2 months" | Current month + previous month |
+| "last 3 months", "past 3 months", "last quarter" | Current month + previous 2 months |
+| "October 2025", "Oct 2025" | Specific month (2025-10) |
+| "2026", "this year" | All months in current year |
+| No time context | Default to last 2 months |
+
+### Step 3: Extract Keywords
+
+Extract meaningful keywords from the user's query related to Planton:
+
+**CLI & Commands**:
+- CLI, command, flags, subcommand, handler
+- `pulumi`, `preview`, `up`, `destroy`, `stack-outputs`
+- `kubectl`, `apply`, `delete`
+
+**IAC & Execution**:
+- Pulumi, Terraform, IaC, stack, module
+- Interactive mode, TTY, output, diff
+- Stack runner, execution, deployment
+
+**Providers & Resources**:
+- Kubernetes, AWS, GCP, Azure
+- Provider, resource, workload
+- Postgres, Redis, MongoDB, etc.
+
+**Components**:
+- Manifest, YAML, proto, API
+- Framework, library, package
+- Build, Bazel, compilation
+
+**Operations**:
+- fix, add, improve, refactor, enhance
+- migrate, update, upgrade
+- deprecate, remove, breaking
+
+## Search Strategy
+
+### 1. List Relevant Directories
+
+Based on temporal parsing, list the changelog files in the appropriate directories:
+```bash
+ls -1 /Users/swarup/scm/github.com/plantonhq/planton/_changelog/2026-01/
+ls -1 /Users/swarup/scm/github.com/plantonhq/planton/_changelog/2025-12/
+# ... etc
+```
+
+**IMPORTANT**: Only use `ls` and `grep` commands. Do NOT run `git diff`, `git status`, or any other git commands.
+
+### 2. Search by Keywords
+
+Use `grep` to search changelog filenames and content:
+
+**Search filenames**:
+```bash
+# Case-insensitive search in filenames
+grep -i "keyword" /path/to/_changelog/YYYY-MM/*.md
+```
+
+**Search content** (if needed for better matches):
+```bash
+# Search inside changelog files for better relevance
+grep -i -l "keyword" /path/to/_changelog/YYYY-MM/*.md
+```
+
+### 3. Rank Results
+
+Prioritize changelogs that:
+1. Match multiple keywords
+2. Are more recent
+3. Have keywords in the filename (higher relevance)
+4. Match CLI/provider-specific terms
+
+## Response Format
+
+**CRITICAL**: Structure the response to make it easy for users to quickly grab changelog paths.
+
+### Format Template
+
+```markdown
+## Related Changelogs
+
+Here are the changelogs matching your search criteria:
+
+**Clickable links:**
+- [2025-10-18-153045-pulumi-interactive-output-with-diff-support.md](/Users/swarup/scm/github.com/plantonhq/planton/_changelog/2025-10/2025-10-18-153045-pulumi-interactive-output-with-diff-support.md)
+- [2025-10-18-091230-proto-field-defaults-support.md](/Users/swarup/scm/github.com/plantonhq/planton/_changelog/2025-10/2025-10-18-091230-proto-field-defaults-support.md)
+- [2025-10-17-164500-temporal-namespace-initialization-bug-fix.md](/Users/swarup/scm/github.com/plantonhq/planton/_changelog/2025-10/2025-10-17-164500-temporal-namespace-initialization-bug-fix.md)
+
+**Individual copyable filenames:**
+```
+2025-10-18-153045-pulumi-interactive-output-with-diff-support.md
+```
+```
+2025-10-18-091230-proto-field-defaults-support.md
+```
+```
+2025-10-17-164500-temporal-namespace-initialization-bug-fix.md
+```
+
+**All filenames (bulk copy):**
+```
+2025-10-18-153045-pulumi-interactive-output-with-diff-support.md
+2025-10-18-091230-proto-field-defaults-support.md
+2025-10-17-164500-temporal-namespace-initialization-bug-fix.md
+```
+
+---
+
+### Changelog Details
+
+#### 1. Pulumi Interactive Output with Diff Support
+**Date**: October 18, 2025  
+**Type**: Enhancement  
+**Components**: Pulumi CLI Integration, CLI Flags, User Experience  
+**Path**: `/Users/swarup/scm/github.com/plantonhq/planton/_changelog/2025-10/2025-10-18-153045-pulumi-interactive-output-with-diff-support.md`
+
+**Summary**: Added TTY detection and interactive mode support for Pulumi operations, enabling real-time diff output during `preview` and `up` commands. Includes new `--yes` flag for automated workflows.
+
+**Copyable filename**:
+```
+2025-10-18-153045-pulumi-interactive-output-with-diff-support.md
+```
+
+---
+
+#### 2. Proto Field Defaults Support
+**Date**: October 18, 2025  
+**Type**: Feature  
+**Components**: API Definitions, Manifest Processing  
+**Path**: `/Users/swarup/scm/github.com/plantonhq/planton/_changelog/2025-10/2025-10-18-091230-proto-field-defaults-support.md`
+
+**Summary**: Implemented protobuf field default value support, reducing manifest verbosity by automatically setting common defaults.
+
+**Copyable filename**:
+```
+2025-10-18-091230-proto-field-defaults-support.md
+```
+
+---
+
+*Use the clickable links above to open the changelog, copy individual filenames for specific references, or use the bulk copy block to copy all filenames at once.*
+```
+
+### Key Elements
+
+1. **Top Section**: 
+   - Bulleted list with clickable links for quick navigation
+   - Individual copyable code blocks for each filename
+   - Single bulk copy code block with all filenames
+2. **Details Section**: Numbered entries with:
+   - Changelog title
+   - Date, type, and components
+   - Full path (for clarity)
+   - Brief summary
+   - Copyable code block with full path
+3. **Footer**: Clear instructions on how to use the links vs code blocks
+
+## Best Practices
+
+### Do:
+- ✅ **Always get current date first** using `date` command
+- ✅ **Search broadly** if user query is vague
+- ✅ **Present most relevant first** (recent + keyword matches)
+- ✅ **Read changelog metadata** (Date, Type, Components) to provide accurate descriptions
+- ✅ **Include clickable links, individual copyable, and bulk copy** formats
+- ✅ **Show 3-7 results** (not too few, not overwhelming)
+- ✅ **Group by relevance** or chronology
+- ✅ **Extract actual summaries** from changelog Summary sections
+
+### Don't:
+- ❌ **Don't guess directories** - always verify with actual date
+- ❌ **Don't show all results** - filter to most relevant
+- ❌ **Don't provide just paths** - include context
+- ❌ **Don't forget the summary list** at the top
+- ❌ **Don't include non-matches** to pad results
+- ❌ **Don't make up summaries** - read from actual changelog
+
+## Planton Specific Context
+
+### Common Change Categories
+
+When searching, understand these common Planton change types:
+
+**CLI Enhancements**:
+- New commands or subcommands
+- Flag additions or improvements
+- Command handler refactorings
+- User experience improvements
+
+**Pulumi Integration**:
+- Stack execution improvements
+- Interactive mode enhancements
+- Output formatting changes
+- Error handling improvements
+
+**Provider Work**:
+- New provider implementations
+- Provider framework changes
+- Resource type additions
+- Provider-specific bug fixes
+
+**API Changes**:
+- Protobuf schema updates
+- Field additions or deprecations
+- Validation rule changes
+- Breaking changes
+
+**Build System**:
+- Bazel configuration changes
+- Dependency updates
+- Build performance improvements
+
+### Component Mapping
+
+Map user keywords to component categories:
+
+| User mentions... | Component category |
+|------------------|-------------------|
+| "pulumi", "stack", "preview", "up" | Pulumi CLI Integration |
+| "flag", "command", "CLI" | CLI Flags, Command Handlers |
+| "kubernetes", "k8s", "postgres" | Kubernetes Provider |
+| "manifest", "YAML" | Manifest Processing |
+| "proto", "API", "schema" | API Definitions |
+| "bazel", "build" | Build System |
+
+## Example Invocations
+
+### Example 1: Search for CLI Feature
+```
+User: "@find-planton-changelog We added interactive Pulumi output 
+       support last month"
+```
+
+**What the user wants**: FIND existing changelogs about interactive Pulumi output
+
+**Agent actions**:
+1. Run: `date +"%Y-%m-%d"` → January 10, 2026
+2. Parse temporal: "last month" → Search `2025-12/`
+3. Run: `ls -1 /Users/swarup/scm/github.com/plantonhq/planton/_changelog/2025-12/`
+4. Extract keywords: "interactive", "pulumi", "output"
+5. Filter with grep or by examining filenames
+6. Read matching changelogs to extract summaries
+7. Format response with clickable links + copyable filenames
+
+**DO NOT** run `git diff` or create a new changelog!
+
+### Example 2: Bug Fix
+```
+User: "@find-planton-changelog Find the fix for temporal namespace 
+       initialization from October"
+```
+
+**Agent actions**:
+1. Parse temporal: "October" → Determine year context, search `2025-10/`
+2. Extract keywords: "fix", "temporal", "namespace", "initialization"
+3. Search and rank results
+4. Format response
+
+### Example 3: Provider Work
+```
+User: "@find-planton-changelog What provider work did we do 
+       in the last 3 months?"
+```
+
+**Agent actions**:
+1. Get current date → January 10, 2026
+2. Parse temporal: "last 3 months" → Search `2026-01/`, `2025-12/`, `2025-11/`
+3. Extract keywords: "provider"
+4. Search and rank results (may return multiple)
+5. Format response
+
+### Example 4: Proto/API Changes
+```
+User: "@find-planton-changelog Show recent proto field defaults work"
+```
+
+**Agent actions**:
+1. Get current date → January 10, 2026
+2. Parse temporal: "recent" → Search `2026-01/` and `2025-12/`
+3. Extract keywords: "proto", "field", "defaults"
+4. Search and rank results
+5. Format response
+
+## Search Quality Tips
+
+### Filename Search is Primary
+
+Planton changelog filenames are descriptive slugs, so searching filenames first often gives best results:
+```bash
+# Good matches come from descriptive filenames
+2025-10-18-153045-pulumi-interactive-output-with-diff-support.md
+2025-10-18-091230-proto-field-defaults-support.md
+2025-10-17-164500-temporal-namespace-initialization-bug-fix.md
+```
+
+### Metadata Search for Refinement
+
+If you need to filter by component or type, read the metadata:
+```markdown
+**Type**: Enhancement
+**Components**: Pulumi CLI Integration, CLI Flags
+```
+
+### Content Search is Secondary
+
+If filename search doesn't yield enough results, search content:
+```bash
+grep -i -l "keyword" /path/to/_changelog/YYYY-MM/*.md
+```
+
+Then read the matched files to extract metadata and summaries.
+
+### Multiple Keywords
+
+For multi-keyword searches, combine grep:
+```bash
+# Files containing both "pulumi" and "interactive"
+grep -l "pulumi" /path/*.md | xargs grep -l "interactive"
+```
+
+## Response Quality Checklist
+
+Before finalizing response:
+
+- [ ] Got actual current date (not assumed)
+- [ ] Correctly parsed user's temporal context
+- [ ] Searched appropriate month directories
+- [ ] Found relevant changelogs (3-7 results ideal)
+- [ ] Top section has bulleted list with clickable links
+- [ ] Top section has individual copyable code blocks
+- [ ] Top section has bulk copy code block with all filenames
+- [ ] Each changelog has title, date, type, components, path, summary
+- [ ] Each changelog has copyable code block with full path
+- [ ] Results ordered by relevance or chronology
+- [ ] Summaries extracted from actual changelog content
+- [ ] Provided clear instructions on using links vs paths
+- [ ] Metadata (Type, Components) included in details
+
+## Edge Cases
+
+### No Results Found
+
+If no changelogs match:
+```markdown
+## No Changelogs Found
+
+I searched the following directories for changelogs matching your criteria:
+- `/Users/swarup/scm/github.com/plantonhq/planton/_changelog/2026-01/`
+- `/Users/swarup/scm/github.com/plantonhq/planton/_changelog/2025-12/`
+
+**Search keywords**: pulumi, interactive, output
+
+**Suggestions**:
+1. Try broader keywords (e.g., just "pulumi" instead of "pulumi interactive output")
+2. Expand time range (e.g., "last 3 months" instead of "this month")
+3. Check if the work was documented in a different month
+4. Use `ls` to browse available changelogs directly
+```
+
+### Ambiguous Time Reference
+
+If user's time reference is unclear:
+```markdown
+I'm not sure which time period you're referring to. Current date is January 10, 2026.
+
+Did you mean:
+- **This month** (January 2026) - Search `2026-01/`
+- **Last month** (December 2025) - Search `2025-12/`
+- **Last 2 months** (Dec 2025 + Jan 2026) - Search both
+
+Please clarify, or I can search the last 2 months by default.
+```
+
+### Too Many Results
+
+If search yields 15+ results:
+```markdown
+## Related Changelogs
+
+Found 18 changelogs matching your criteria. Showing the 7 most relevant:
+
+**Clickable links:**
+[... top 7 links ...]
+
+**Individual copyable filenames:**
+[... individual code blocks ...]
+
+**All filenames (bulk copy):**
+```
+[... all 7 filenames, one per line ...]
+```
+
+---
+
+**Note**: Found 11 additional changelogs. To narrow results:
+1. Add more specific keywords (e.g., "pulumi preview" instead of just "pulumi")
+2. Narrow the time range
+3. Specify a component (e.g., "CLI", "provider", "kubernetes")
+4. Specify a type (e.g., "bug fix", "enhancement")
+```
+
+### Metadata Extraction
+
+When reading changelogs, extract this metadata pattern:
+```markdown
+**Date**: October 18, 2025
+**Type**: Enhancement
+**Components**: Pulumi CLI Integration, CLI Flags, User Experience
+```
+
+Include this in the detailed response for better context.
+
+## Common Search Patterns
+
+### By Feature Area
+- "CLI flags" → Search for flag-related changes
+- "Pulumi integration" → Stack execution, interactive mode
+- "Kubernetes provider" → K8s resource implementations
+- "Proto API" → Schema changes, field additions
+
+### By Operation Type
+- "fix" → Type: Bug Fix
+- "add", "new" → Type: Feature
+- "improve", "enhance" → Type: Enhancement
+- "refactor", "migrate" → Type: Refactoring
+- "breaking" → Type: Breaking Change
+
+### By Component
+- "manifest" → Manifest Processing
+- "command" → Command Handlers
+- "build" → Build System
+- "error" → Error Handling
+
+## Remember
+
+**⚠️ THIS IS A READ-ONLY SEARCH RULE ⚠️**
+
+You are **ONLY** searching for and presenting existing changelogs. You are **NOT**:
+- Creating new changelog files
+- Modifying any files
+- Running git commands
+- Making any filesystem changes
+
+If the user wants to create a changelog, politely inform them to use `@create-planton-changelog` instead.
+
+**Goal**: Make it trivially easy for users to find and reference Planton CLI changelogs without memorizing directory paths or filename patterns.
+
+**Success criteria**: User can:
+1. Quickly scan the bulleted list to find the right changelog
+2. Click to read it immediately, OR
+3. Copy individual filenames to use in another conversation with `@` mentions, OR
+4. Copy all filenames at once for bulk operations
+
+**Context awareness**: Understand Planton terminology (CLI, Pulumi, providers, manifests, etc.) to improve search relevance.
+
+---
+
+*"The best search is the one that gets you the right result on the first try."*

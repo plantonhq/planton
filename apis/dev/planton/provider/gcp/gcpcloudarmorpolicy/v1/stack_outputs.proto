@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcpcloudarmorpolicy.v1;
+
+// Outputs produced after provisioning a GCP Cloud Armor security policy.
+message GcpCloudArmorPolicyStackOutputs {
+  // Fully qualified resource ID of the security policy.
+  // Format: projects/{project}/global/securityPolicies/{name}
+  string policy_id = 1;
+
+  // Name of the security policy as it exists in GCP.
+  string policy_name = 2;
+
+  // Self-link URI of the security policy. This is the value used when
+  // attaching the policy to backend services, load balancers, or CDN
+  // configurations.
+  // Format: https://www.googleapis.com/compute/v1/projects/{project}/global/securityPolicies/{name}
+  string policy_self_link = 3;
+
+  // Server-computed fingerprint of the policy. Used for optimistic
+  // concurrency control when updating the policy outside of IaC.
+  string fingerprint = 4;
+}

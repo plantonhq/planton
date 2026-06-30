@@ -12,13 +12,13 @@ Deploys a Virtual Private Cloud (VPC) on DigitalOcean, providing a private, isol
 
 ## What Gets Created
 
-When you deploy a DigitalOceanVpc resource, OpenMCF provisions:
+When you deploy a DigitalOceanVpc resource, Planton provisions:
 
 - **VPC** — a `digitalocean_vpc` resource in the specified region, with an optional user-defined CIDR block or an auto-generated `/20` range when no IP range is specified
 
 ## Prerequisites
 
-- **DigitalOcean credentials** configured via environment variables or OpenMCF provider config
+- **DigitalOcean credentials** configured via environment variables or Planton provider config
 - **A target region** selected from DigitalOcean's available datacenter regions
 - **CIDR planning** (optional) — if you need a specific IP range, ensure it does not overlap with existing VPCs or DigitalOcean's reserved ranges (`10.244.0.0/16`, `10.245.0.0/16`, `10.246.0.0/24`, `10.229.0.0/16`)
 
@@ -27,15 +27,15 @@ When you deploy a DigitalOceanVpc resource, OpenMCF provisions:
 Create a file `vpc.yaml`:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanVpc
 metadata:
   name: my-vpc
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.DigitalOceanVpc.my-vpc
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.DigitalOceanVpc.my-vpc
 spec:
   region: nyc3
 ```
@@ -43,7 +43,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f vpc.yaml
+planton apply -f vpc.yaml
 ```
 
 This creates a VPC in the NYC3 region with a DigitalOcean auto-generated `/20` CIDR block (4,096 IPs).
@@ -71,15 +71,15 @@ This creates a VPC in the NYC3 region with a DigitalOcean auto-generated `/20` C
 A minimal VPC for development, letting DigitalOcean auto-assign a `/20` CIDR block:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanVpc
 metadata:
   name: dev-vpc
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.DigitalOceanVpc.dev-vpc
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.DigitalOceanVpc.dev-vpc
 spec:
   region: sfo3
   description: "Development environment VPC"
@@ -90,15 +90,15 @@ spec:
 A staging VPC with a specific IP range to avoid conflicts when peering with other VPCs:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanVpc
 metadata:
   name: staging-vpc
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.DigitalOceanVpc.staging-vpc
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.DigitalOceanVpc.staging-vpc
 spec:
   region: fra1
   description: "Staging environment VPC"
@@ -110,15 +110,15 @@ spec:
 A production VPC with the maximum `/16` block (65,536 IPs) for workloads expected to scale, such as VPC-native Kubernetes clusters and managed databases:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanVpc
 metadata:
   name: prod-vpc
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.DigitalOceanVpc.prod-vpc
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.DigitalOceanVpc.prod-vpc
 spec:
   region: nyc3
   description: "Production VPC for all services"

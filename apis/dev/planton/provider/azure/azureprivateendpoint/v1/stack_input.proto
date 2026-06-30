@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azureprivateendpoint.v1;
+
+import "dev/planton/provider/azure/azureprivateendpoint/v1/api.proto";
+import "dev/planton/provider/azure/provider.proto";
+
+// AzurePrivateEndpointStackInput is the input to the IaC module.
+// It contains the target resource and provider configuration.
+message AzurePrivateEndpointStackInput {
+  // target cloud-resource to be deployed
+  AzurePrivateEndpoint target = 1;
+  // provider-config for Azure authentication
+  dev.planton.provider.azure.AzureProviderConfig provider_config = 2;
+}

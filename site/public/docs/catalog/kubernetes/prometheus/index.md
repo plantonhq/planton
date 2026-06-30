@@ -12,7 +12,7 @@ Deploys a Prometheus monitoring instance on Kubernetes with configurable resourc
 
 ## What Gets Created
 
-When you deploy a KubernetesPrometheus resource, OpenMCF provisions:
+When you deploy a KubernetesPrometheus resource, Planton provisions:
 
 - **Namespace** — created only when `createNamespace` is `true`
 - **Prometheus Deployment** — deploys Prometheus with configurable CPU, memory, replica count, and persistence settings
@@ -22,7 +22,7 @@ When you deploy a KubernetesPrometheus resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
 - **A StorageClass** available in the cluster if enabling persistence (most managed Kubernetes clusters provide a default)
 - **A DNS-managed domain** if enabling ingress with a hostname
@@ -32,15 +32,15 @@ When you deploy a KubernetesPrometheus resource, OpenMCF provisions:
 Create a file `prometheus.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPrometheus
 metadata:
   name: my-prometheus
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesPrometheus.my-prometheus
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesPrometheus.my-prometheus
 spec:
   namespace: monitoring
   createNamespace: true
@@ -51,7 +51,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f prometheus.yaml
+planton apply -f prometheus.yaml
 ```
 
 This creates a single-replica Prometheus instance in the `monitoring` namespace with default resource limits (1000m CPU, 1Gi memory) and persistence disabled.
@@ -89,15 +89,15 @@ This creates a single-replica Prometheus instance in the `monitoring` namespace 
 A lightweight Prometheus instance for development with reduced resources and no persistent storage:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPrometheus
 metadata:
   name: dev-prometheus
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesPrometheus.dev-prometheus
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesPrometheus.dev-prometheus
 spec:
   namespace: dev-monitoring
   createNamespace: true
@@ -117,15 +117,15 @@ spec:
 A production Prometheus instance with larger disk allocation, higher resource limits, and data persistence enabled to retain metrics across pod restarts:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPrometheus
 metadata:
   name: prod-prometheus
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesPrometheus.prod-prometheus
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesPrometheus.prod-prometheus
 spec:
   namespace: monitoring
   container:
@@ -146,15 +146,15 @@ spec:
 Prometheus exposed outside the cluster via ingress for access from a web browser:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPrometheus
 metadata:
   name: shared-prometheus
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesPrometheus.shared-prometheus
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesPrometheus.shared-prometheus
 spec:
   namespace: monitoring
   container:
@@ -175,18 +175,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed namespace instead of hardcoding the name:
+Reference an Planton-managed namespace instead of hardcoding the name:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPrometheus
 metadata:
   name: metrics
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesPrometheus.metrics
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesPrometheus.metrics
 spec:
   namespace:
     valueFrom:

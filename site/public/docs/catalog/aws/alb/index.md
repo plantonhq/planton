@@ -12,7 +12,7 @@ Deploys an AWS Application Load Balancer with automatic listener configuration, 
 
 ## What Gets Created
 
-When you deploy an AwsAlb resource, OpenMCF provisions:
+When you deploy an AwsAlb resource, Planton provisions:
 
 - **Application Load Balancer** — an `aws_lb` resource of type `application`, placed in the specified subnets with attached security groups
 - **HTTP Listener (port 80)** — if SSL is disabled, serves a fixed `200 OK` response; if SSL is enabled, redirects to HTTPS with a `301`
@@ -21,7 +21,7 @@ When you deploy an AwsAlb resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **At least two subnets** in different Availability Zones (public subnets for internet-facing, private for internal)
 - **A security group** allowing inbound traffic on port 80 and/or 443
 - **An ACM certificate ARN** if enabling SSL
@@ -32,15 +32,15 @@ When you deploy an AwsAlb resource, OpenMCF provisions:
 Create a file `alb.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsAlb
 metadata:
   name: my-alb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsAlb.my-alb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsAlb.my-alb
 spec:
   region: us-west-2
   subnets:
@@ -53,7 +53,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f alb.yaml
+planton apply -f alb.yaml
 ```
 
 This creates an internet-facing ALB with an HTTP listener on port 80 across two subnets.
@@ -90,15 +90,15 @@ This creates an internet-facing ALB with an HTTP listener on port 80 across two 
 An ALB accessible only within the VPC, useful for internal microservice routing:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsAlb
 metadata:
   name: internal-api-alb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsAlb.internal-api-alb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsAlb.internal-api-alb
 spec:
   region: us-west-2
   subnets:
@@ -114,15 +114,15 @@ spec:
 HTTPS-enabled ALB that redirects HTTP to HTTPS automatically:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsAlb
 metadata:
   name: web-alb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsAlb.web-alb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsAlb.web-alb
 spec:
   region: us-west-2
   subnets:
@@ -142,15 +142,15 @@ spec:
 Production configuration with SSL, DNS management, and deletion protection:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsAlb
 metadata:
   name: prod-alb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsAlb.prod-alb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsAlb.prod-alb
 spec:
   region: us-west-2
   subnets:
@@ -174,18 +174,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding IDs:
+Reference other Planton-managed resources instead of hardcoding IDs:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsAlb
 metadata:
   name: ref-alb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsAlb.ref-alb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsAlb.ref-alb
 spec:
   region: us-west-2
   subnets:

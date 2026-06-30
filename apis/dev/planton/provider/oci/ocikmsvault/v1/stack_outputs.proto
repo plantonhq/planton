@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocikmsvault.v1;
+
+// OciKmsVaultStackOutputs contains the outputs produced after
+// deploying an OciKmsVault.
+// The vault_id is consumed by OciKmsKey and OciVaultSecret for
+// composability via StringValueOrRef. The management_endpoint is
+// required by OciKmsKey as the API endpoint for key operations.
+message OciKmsVaultStackOutputs {
+  // OCID of the KMS vault.
+  string vault_id = 1;
+
+  // Service endpoint for cryptographic operations (encrypt, decrypt, sign, verify).
+  string crypto_endpoint = 2;
+
+  // Service endpoint for key management operations (create, import, rotate keys).
+  string management_endpoint = 3;
+}

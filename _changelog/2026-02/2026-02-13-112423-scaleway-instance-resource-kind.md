@@ -10,7 +10,7 @@ Implemented the ScalewayInstance resource kind (R06) -- a composite resource tha
 
 ## Problem Statement / Motivation
 
-Scaleway's Terraform provider exposes compute instances as 4+ separate resources (`scaleway_instance_server`, `scaleway_instance_ip`, `scaleway_instance_volume`, `scaleway_instance_private_nic`), requiring users to manually wire them together. OpenMCF needs a single declarative resource that bundles the common case while supporting infra-chart composition via `StringValueOrRef`.
+Scaleway's Terraform provider exposes compute instances as 4+ separate resources (`scaleway_instance_server`, `scaleway_instance_ip`, `scaleway_instance_volume`, `scaleway_instance_private_nic`), requiring users to manually wire them together. Planton needs a single declarative resource that bundles the common case while supporting infra-chart composition via `StringValueOrRef`.
 
 ### Pain Points
 
@@ -63,10 +63,10 @@ Additional volumes (`l_ssd`, `scratch`) are created as `scaleway_instance_volume
 ### Files Created
 
 **Proto schemas** (4 + 4 generated):
-- `apis/org/openmcf/provider/scaleway/scalewayinstance/v1/spec.proto`
-- `apis/org/openmcf/provider/scaleway/scalewayinstance/v1/stack_outputs.proto`
-- `apis/org/openmcf/provider/scaleway/scalewayinstance/v1/api.proto`
-- `apis/org/openmcf/provider/scaleway/scalewayinstance/v1/stack_input.proto`
+- `apis/dev/planton/provider/scaleway/scalewayinstance/v1/spec.proto`
+- `apis/dev/planton/provider/scaleway/scalewayinstance/v1/stack_outputs.proto`
+- `apis/dev/planton/provider/scaleway/scalewayinstance/v1/api.proto`
+- `apis/dev/planton/provider/scaleway/scalewayinstance/v1/stack_input.proto`
 
 **Pulumi Go module** (6 files):
 - `iac/pulumi/main.go` -- Entrypoint

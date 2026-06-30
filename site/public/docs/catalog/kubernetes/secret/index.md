@@ -12,15 +12,15 @@ Deploys a type-safe Kubernetes Secret to a target cluster, supporting Opaque, TL
 
 ## What Gets Created
 
-When you deploy a KubernetesSecret resource, OpenMCF provisions:
+When you deploy a KubernetesSecret resource, Planton provisions:
 
 - **Secret** — a Kubernetes Secret with the appropriate type (`Opaque`, `kubernetes.io/tls`, `kubernetes.io/dockerconfigjson`, `kubernetes.io/basic-auth`, or `kubernetes.io/ssh-auth`), populated via `stringData` so values can be supplied as plain strings
-- **Labels** — standard OpenMCF tracking labels (`managed-by`, `resource`, `resource-kind`) merged with any user-provided labels
+- **Labels** — standard Planton tracking labels (`managed-by`, `resource`, `resource-kind`) merged with any user-provided labels
 - **Annotations** — user-provided annotations applied to the Secret metadata
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A Kubernetes namespace** that already exists (the module does not create namespaces)
 - **Secret values** ready to supply — PEM-encoded certificates for TLS, registry credentials for Docker, SSH private keys for SSH auth, or plain key-value pairs for Opaque secrets
 
@@ -29,15 +29,15 @@ When you deploy a KubernetesSecret resource, OpenMCF provisions:
 Create a file `secret.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesSecret
 metadata:
   name: my-secret
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesSecret.my-secret
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesSecret.my-secret
 spec:
   name: my-secret
   opaque:
@@ -48,7 +48,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f secret.yaml
+planton apply -f secret.yaml
 ```
 
 This creates an Opaque Kubernetes Secret named `my-secret` in the `default` namespace with a single key `API_KEY`.
@@ -78,7 +78,7 @@ This creates an Opaque Kubernetes Secret named `my-secret` in the `default` name
 | `spec.targetCluster.clusterKind` | `enum` | — | Kubernetes cluster kind. Valid values: `AwsEksCluster`, `GcpGkeCluster`, `AzureAksCluster`, `DigitalOceanKubernetesCluster`, `CivoKubernetesCluster`. |
 | `spec.targetCluster.clusterName` | `string` | — | Name of the target Kubernetes cluster in the same environment. |
 | `spec.namespace` | `string` | `default` | Namespace where the secret will be created. Max 63 characters, valid DNS label. |
-| `spec.labels` | `map<string, string>` | `{}` | Additional labels merged with standard OpenMCF labels. |
+| `spec.labels` | `map<string, string>` | `{}` | Additional labels merged with standard Planton labels. |
 | `spec.annotations` | `map<string, string>` | `{}` | Additional annotations applied to the secret. |
 | `spec.immutable` | `bool` | `false` | When `true`, the secret data cannot be updated after creation. Immutable secrets reduce API server watch load. |
 | `spec.dockerConfigJson.email` | `string` | — | Optional email associated with the registry account. |
@@ -90,15 +90,15 @@ This creates an Opaque Kubernetes Secret named `my-secret` in the `default` name
 A simple key-value secret for storing application credentials:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesSecret
 metadata:
   name: app-credentials
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesSecret.app-credentials
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesSecret.app-credentials
 spec:
   name: app-credentials
   namespace: backend
@@ -113,15 +113,15 @@ spec:
 A TLS secret for use with Ingress controllers or services that terminate TLS:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesSecret
 metadata:
   name: api-tls
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.KubernetesSecret.api-tls
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.KubernetesSecret.api-tls
 spec:
   name: api-tls
   namespace: ingress
@@ -142,15 +142,15 @@ spec:
 A Docker registry pull secret for authenticating with a private container registry, with custom labels and annotations:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesSecret
 metadata:
   name: ghcr-pull-secret
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesSecret.ghcr-pull-secret
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesSecret.ghcr-pull-secret
 spec:
   name: ghcr-pull-secret
   namespace: production
@@ -174,15 +174,15 @@ The module constructs the `.dockerconfigjson` JSON automatically from the struct
 A basic authentication secret for services that require username/password credentials:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesSecret
 metadata:
   name: monitoring-auth
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesSecret.monitoring-auth
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesSecret.monitoring-auth
 spec:
   name: monitoring-auth
   namespace: monitoring
@@ -196,15 +196,15 @@ spec:
 An SSH authentication secret for Git operations or SSH-based access:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesSecret
 metadata:
   name: deploy-key
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesSecret.deploy-key
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesSecret.deploy-key
 spec:
   name: deploy-key
   namespace: flux-system

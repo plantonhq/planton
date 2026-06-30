@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocinetworkloadbalancer.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/oci/ocinetworkloadbalancer/v1/spec.proto";
+import "dev/planton/provider/oci/ocinetworkloadbalancer/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+message OciNetworkLoadBalancer {
+  string api_version = 1 [(buf.validate.field).string.const = 'oci.planton.dev/v1'];
+  string kind = 2 [(buf.validate.field).string.const = 'OciNetworkLoadBalancer'];
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  OciNetworkLoadBalancerSpec spec = 4 [(buf.validate.field).required = true];
+  OciNetworkLoadBalancerStatus status = 5;
+}
+
+message OciNetworkLoadBalancerStatus {
+  OciNetworkLoadBalancerStackOutputs outputs = 1;
+}

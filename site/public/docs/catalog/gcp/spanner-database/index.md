@@ -12,7 +12,7 @@ Deploys a Cloud Spanner database within an existing Spanner instance, with suppo
 
 ## What Gets Created
 
-When you deploy a GcpSpannerDatabase resource, OpenMCF provisions:
+When you deploy a GcpSpannerDatabase resource, Planton provisions:
 
 - **Spanner Database** — a `google_spanner_database` resource in the specified instance with the chosen SQL dialect and version retention period
 - **Initial Schema** — created only when `ddl` is provided, DDL statements execute atomically with database creation
@@ -20,7 +20,7 @@ When you deploy a GcpSpannerDatabase resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **An existing Spanner instance** (deploy via GcpSpannerInstance first)
 - **A KMS key** in the same location as the Spanner instance if enabling CMEK encryption
 
@@ -29,15 +29,15 @@ When you deploy a GcpSpannerDatabase resource, OpenMCF provisions:
 Create a file `spanner-database.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpSpannerDatabase
 metadata:
   name: my-database
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpSpannerDatabase.my-database
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpSpannerDatabase.my-database
 spec:
   projectId:
     value: my-gcp-project-123
@@ -49,7 +49,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f spanner-database.yaml
+planton apply -f spanner-database.yaml
 ```
 
 This creates an empty Spanner database with the default GoogleSQL dialect and 1-hour version retention in the specified instance.
@@ -82,15 +82,15 @@ This creates an empty Spanner database with the default GoogleSQL dialect and 1-
 A PostgreSQL-compatible database with a 7-day point-in-time recovery window:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpSpannerDatabase
 metadata:
   name: pg-analytics
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpSpannerDatabase.pg-analytics
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpSpannerDatabase.pg-analytics
 spec:
   projectId:
     value: my-gcp-project-123
@@ -106,15 +106,15 @@ spec:
 Create the database and its initial tables in a single atomic operation:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpSpannerDatabase
 metadata:
   name: users-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpSpannerDatabase.users-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpSpannerDatabase.users-db
 spec:
   projectId:
     value: my-gcp-project-123
@@ -138,15 +138,15 @@ spec:
 A protected database with customer-managed encryption and drop protection:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpSpannerDatabase
 metadata:
   name: secure-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpSpannerDatabase.secure-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpSpannerDatabase.secure-db
 spec:
   projectId:
     value: my-gcp-project-123
@@ -162,18 +162,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding values:
+Reference other Planton-managed resources instead of hardcoding values:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpSpannerDatabase
 metadata:
   name: composed-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpSpannerDatabase.composed-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpSpannerDatabase.composed-db
 spec:
   projectId:
     valueFrom:

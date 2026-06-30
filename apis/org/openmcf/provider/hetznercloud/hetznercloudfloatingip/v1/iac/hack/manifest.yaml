@@ -1,9 +1,0 @@
-apiVersion: hetzner-cloud.openmcf.org/v1
-kind: HetznerCloudFloatingIp
-metadata:
-  name: hetznercloudfloatingip-demo
-spec:
-  type: ipv4
-  homeLocation: fsn1
-  description: Demo floating IP for failover testing
-  dnsPtr: demo.example.com

@@ -12,15 +12,15 @@ Deploys secrets in Google Cloud Secret Manager with automatic replication and pl
 
 ## What Gets Created
 
-When you deploy a GcpSecretsManager resource, OpenMCF provisions:
+When you deploy a GcpSecretsManager resource, Planton provisions:
 
-- **Secret** — one `secretmanager.Secret` per entry in `secretNames`, created in the specified GCP project with automatic replication enabled and OpenMCF-managed labels (resource kind, name, organization, environment)
-- **Secret Version** (placeholder) — one `secretmanager.SecretVersion` per secret, initialized with a placeholder value and configured with `ignoreChanges` on `secretData` so that subsequent manual or programmatic updates to the secret value are never overwritten by OpenMCF
+- **Secret** — one `secretmanager.Secret` per entry in `secretNames`, created in the specified GCP project with automatic replication enabled and Planton-managed labels (resource kind, name, organization, environment)
+- **Secret Version** (placeholder) — one `secretmanager.SecretVersion` per secret, initialized with a placeholder value and configured with `ignoreChanges` on `secretData` so that subsequent manual or programmatic updates to the secret value are never overwritten by Planton
 - **Environment-Prefixed IDs** — when `metadata.env` is set, each secret ID is formatted as `{env}-{secretName}`; otherwise the secret ID matches the secret name exactly
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **A GCP project** where the secrets will be created
 - **Secret Manager API** enabled on the target GCP project (`secretmanager.googleapis.com`)
 - **IAM permissions** to create secrets and secret versions in the target project (e.g., `roles/secretmanager.admin`)
@@ -30,15 +30,15 @@ When you deploy a GcpSecretsManager resource, OpenMCF provisions:
 Create a file `secrets.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpSecretsManager
 metadata:
   name: my-app-secrets
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpSecretsManager.my-app-secrets
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpSecretsManager.my-app-secrets
 spec:
   projectId: my-gcp-project-123
   secretNames:
@@ -48,7 +48,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f secrets.yaml
+planton apply -f secrets.yaml
 ```
 
 This creates a single secret named `database-password` in Google Cloud Secret Manager with a placeholder version. Update the secret value through the GCP Console, `gcloud`, or application code after deployment.
@@ -74,15 +74,15 @@ This creates a single secret named `database-password` in Google Cloud Secret Ma
 A minimal deployment that creates one secret for storing a database credential:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpSecretsManager
 metadata:
   name: db-credentials
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.GcpSecretsManager.db-credentials
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.GcpSecretsManager.db-credentials
 spec:
   projectId: my-gcp-project-123
   secretNames:
@@ -94,15 +94,15 @@ spec:
 Create several secrets that a backend service needs at runtime:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpSecretsManager
 metadata:
   name: payment-service-secrets
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.GcpSecretsManager.payment-service-secrets
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.GcpSecretsManager.payment-service-secrets
   env: staging
 spec:
   projectId: my-gcp-project-123
@@ -117,18 +117,18 @@ Because `metadata.env` is `staging`, the resulting secret IDs in GCP will be `st
 
 ### Production Secrets with Foreign Key Reference
 
-Reference an OpenMCF-managed GcpProject instead of hardcoding the project ID, suitable for a production environment with full application secrets:
+Reference an Planton-managed GcpProject instead of hardcoding the project ID, suitable for a production environment with full application secrets:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpSecretsManager
 metadata:
   name: platform-secrets
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpSecretsManager.platform-secrets
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpSecretsManager.platform-secrets
   env: prod
 spec:
   projectId:

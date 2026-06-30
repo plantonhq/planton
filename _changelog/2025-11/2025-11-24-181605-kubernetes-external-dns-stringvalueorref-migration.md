@@ -15,7 +15,7 @@ The KubernetesExternalDns component had an inconsistency in how DNS zone IDs wer
 ### Pain Points
 
 - **Inconsistent API**: Different providers had different configuration patterns for the same conceptual field
-- **Limited flexibility**: AKS and Cloudflare users couldn't reference DNS zones from other OpenMCF resources
+- **Limited flexibility**: AKS and Cloudflare users couldn't reference DNS zones from other Planton resources
 - **Foreign key limitations**: No support for dynamic zone ID resolution at runtime
 - **Pattern divergence**: New providers had to choose between the old pattern (string) and new pattern (StringValueOrRef)
 
@@ -50,7 +50,7 @@ message KubernetesExternalDnsAksConfig {
 
 // AKS Config - AFTER
 message KubernetesExternalDnsAksConfig {
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef dns_zone_id = 1 
+  dev.planton.shared.foreignkey.v1.StringValueOrRef dns_zone_id = 1 
     [(buf.validate.field).required = true];
 }
 
@@ -63,7 +63,7 @@ message KubernetesExternalDnsCloudflareConfig {
 // Cloudflare Config - AFTER
 message KubernetesExternalDnsCloudflareConfig {
   string api_token = 1 [(buf.validate.field).required = true];
-  org.openmcf.shared.foreignkey.v1.StringValueOrRef dns_zone_id = 2 
+  dev.planton.shared.foreignkey.v1.StringValueOrRef dns_zone_id = 2 
     [(buf.validate.field).required = true];
 }
 ```
@@ -88,7 +88,7 @@ spec:
 
 ### 1. Pulumi Module Updates
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesexternaldns/v1/iac/pulumi/module/main.go`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesexternaldns/v1/iac/pulumi/module/main.go`
 
 Updated AKS configuration to use `.GetValue()` accessor and switched from `domainFilters` to `zoneIdFilters` for consistency:
 
@@ -130,7 +130,7 @@ extraArgs := pulumi.StringArray{
 
 ### 2. Terraform Module Updates
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesexternaldns/v1/iac/tf/locals.tf`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesexternaldns/v1/iac/tf/locals.tf`
 
 ```hcl
 # AKS - BEFORE
@@ -146,7 +146,7 @@ cf_dns_zone_id = local.is_cloudflare ? try(var.spec.cloudflare.dns_zone_id, "") 
 cf_dns_zone_id = local.is_cloudflare ? try(var.spec.cloudflare.dns_zone_id.value, "") : ""
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesexternaldns/v1/iac/tf/main.tf`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesexternaldns/v1/iac/tf/main.tf`
 
 ```hcl
 # AKS - BEFORE
@@ -170,7 +170,7 @@ dynamic "set" {
 
 ### 3. Test Suite Updates
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesexternaldns/v1/spec_test.go`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesexternaldns/v1/spec_test.go`
 
 Updated all AKS and Cloudflare test cases to use the new `StringValueOrRef` structure:
 
@@ -237,7 +237,7 @@ spec:
 ### For API Users
 
 1. **Consistent API surface**: All providers now use the same pattern for DNS zone IDs
-2. **Foreign key support**: Can reference DNS zones from other OpenMCF resources
+2. **Foreign key support**: Can reference DNS zones from other Planton resources
 3. **Flexibility**: Choose between literal values and references based on use case
 4. **Better composition**: Resources can reference each other, reducing duplication
 
@@ -321,7 +321,7 @@ All changes validated through:
 ## Related Work
 
 - **GKE and EKS configurations**: Already used `StringValueOrRef` for zone IDs
-- **Foreign key framework**: Part of broader foreign key support across OpenMCF
+- **Foreign key framework**: Part of broader foreign key support across Planton
 - **Provider consistency**: Aligns with ongoing effort to standardize provider APIs
 - **Previous changelog**: `2025-10-17-external-dns-cloudflare-support.md` added initial Cloudflare support
 
@@ -337,7 +337,7 @@ All changes validated through:
 
 ### Why StringValueOrRef for Zone IDs?
 
-DNS zone IDs are commonly managed as separate resources in OpenMCF. Using `StringValueOrRef` allows users to:
+DNS zone IDs are commonly managed as separate resources in Planton. Using `StringValueOrRef` allows users to:
 
 1. Reference centrally-managed DNS zones
 2. Avoid hardcoding zone IDs across multiple manifests
@@ -388,7 +388,7 @@ Since this is a **breaking change** to the proto schema:
 ### Test Results
 
 ```bash
-$ go test ./apis/org/openmcf/provider/kubernetes/kubernetesexternaldns/v1/ -v
+$ go test ./apis/dev/planton/provider/kubernetes/kubernetesexternaldns/v1/ -v
 
 Running Suite: KubernetesExternalDns Suite
 Random Seed: 1763988160

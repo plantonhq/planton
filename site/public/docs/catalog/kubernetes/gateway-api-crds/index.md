@@ -12,7 +12,7 @@ Installs the Kubernetes Gateway API Custom Resource Definitions (CRDs) on a targ
 
 ## What Gets Created
 
-When you deploy a KubernetesGatewayApiCrds resource, OpenMCF provisions:
+When you deploy a KubernetesGatewayApiCrds resource, Planton provisions:
 
 - **Standard Channel CRDs** — `GatewayClass`, `Gateway`, `HTTPRoute`, and `ReferenceGrant` custom resource definitions, enabling the core Gateway API surface
 - **Experimental Channel CRDs** (when `installChannel` is set to `experimental`) — all standard CRDs plus `TCPRoute`, `UDPRoute`, `TLSRoute`, and `GRPCRoute` experimental custom resource definitions
@@ -21,7 +21,7 @@ No namespaced workloads are created. The CRDs are cluster-scoped and make the Ga
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **Cluster-admin privileges** on the target cluster, because CRD installation requires cluster-wide write access
 - **Network access** from the deployment runner to `https://github.com/kubernetes-sigs/gateway-api/releases/download` to fetch CRD manifests
 
@@ -30,22 +30,22 @@ No namespaced workloads are created. The CRDs are cluster-scoped and make the Ga
 Create a file `gateway-api-crds.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesGatewayApiCrds
 metadata:
   name: gateway-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesGatewayApiCrds.gateway-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesGatewayApiCrds.gateway-api
 spec: {}
 ```
 
 Deploy:
 
 ```shell
-openmcf apply -f gateway-api-crds.yaml
+planton apply -f gateway-api-crds.yaml
 ```
 
 This installs the standard-channel Gateway API CRDs at the default version (v1.2.1) on the cluster configured in your environment.
@@ -72,15 +72,15 @@ This component has no strictly required spec fields. An empty `spec: {}` install
 Installs the stable Gateway API CRDs using all defaults:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesGatewayApiCrds
 metadata:
   name: gateway-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesGatewayApiCrds.gateway-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesGatewayApiCrds.gateway-api
 spec: {}
 ```
 
@@ -89,15 +89,15 @@ spec: {}
 Installs all Gateway API CRDs, including the experimental route types, at a pinned version:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesGatewayApiCrds
 metadata:
   name: gateway-api-experimental
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.KubernetesGatewayApiCrds.gateway-api-experimental
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.KubernetesGatewayApiCrds.gateway-api-experimental
 spec:
   version: "v1.3.0"
   installChannel:
@@ -109,15 +109,15 @@ spec:
 Installs the standard CRDs on a named GKE cluster in a production environment:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesGatewayApiCrds
 metadata:
   name: gateway-api-prod
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesGatewayApiCrds.gateway-api-prod
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesGatewayApiCrds.gateway-api-prod
 spec:
   targetCluster:
     clusterKind: GcpGkeCluster

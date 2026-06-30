@@ -27,7 +27,7 @@ The Percona Server for MongoDB Operator provides these capabilities through Kube
 New Kubernetes cloud resource kind for deploying the Percona operator:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: PerconaServerMongodbOperator
 metadata:
   name: mongodb-operator
@@ -163,20 +163,20 @@ perconaservermongodbrestores.psmdb.percona.com
 
 ```bash
 # Set local module path
-export PERCONA_SERVER_MONGODB_OPERATOR_MODULE=~/scm/github.com/plantonhq/openmcf/apis/org/openmcf/provider/kubernetes/addon/perconaservermongodboperator/v1/iac/pulumi
+export PERCONA_SERVER_MONGODB_OPERATOR_MODULE=~/scm/github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/addon/perconaservermongodboperator/v1/iac/pulumi
 
 # Initialize Pulumi stack
-openmcf pulumi init \
+planton pulumi init \
   --manifest mongodb-operator.yaml \
   --module-dir ${PERCONA_SERVER_MONGODB_OPERATOR_MODULE}
 
 # Preview changes
-openmcf pulumi preview \
+planton pulumi preview \
   --manifest mongodb-operator.yaml \
   --module-dir ${PERCONA_SERVER_MONGODB_OPERATOR_MODULE}
 
 # Deploy operator
-openmcf pulumi up \
+planton pulumi up \
   --manifest mongodb-operator.yaml \
   --module-dir ${PERCONA_SERVER_MONGODB_OPERATOR_MODULE}
 ```
@@ -216,7 +216,7 @@ spec:
 
 ```
 ┌─────────────────────────────────────────┐
-│  openmcf CLI                    │
+│  planton CLI                    │
 │  + PerconaServerMongodbOperator manifest│
 └────────────┬────────────────────────────┘
              │ Deploys via Pulumi

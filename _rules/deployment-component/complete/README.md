@@ -18,17 +18,17 @@ While audit and update are powerful when used separately, most of the time you w
 
 ```bash
 # 1. Check status
-@audit-openmcf-component MongodbAtlas
+@audit-planton-component MongodbAtlas
 # Output: 65% complete, missing Terraform, docs, examples
 
 # 2. Read report, decide what to do
 
 # 3. Fill gaps
-@update-openmcf-component MongodbAtlas --scenario fill-gaps
+@update-planton-component MongodbAtlas --scenario fill-gaps
 # Wait 15-20 minutes
 
 # 4. Verify
-@audit-openmcf-component MongodbAtlas
+@audit-planton-component MongodbAtlas
 # Output: 98% complete
 
 # Time: 20+ minutes + manual steps
@@ -37,7 +37,7 @@ While audit and update are powerful when used separately, most of the time you w
 ### Complete Workflow (1 Command)
 
 ```bash
-@complete-openmcf-component MongodbAtlas
+@complete-planton-component MongodbAtlas
 
 # Automatically:
 # - Audits (65% complete)
@@ -130,7 +130,7 @@ Complete is specifically for **filling gaps**, not other updates:
 ### Basic Usage
 
 ```bash
-@complete-openmcf-component <ComponentName>
+@complete-planton-component <ComponentName>
 ```
 
 **Behavior:**
@@ -142,7 +142,7 @@ Complete is specifically for **filling gaps**, not other updates:
 ### With Dry-Run
 
 ```bash
-@complete-openmcf-component MongodbAtlas --dry-run
+@complete-planton-component MongodbAtlas --dry-run
 ```
 
 **Shows:**
@@ -155,7 +155,7 @@ Complete is specifically for **filling gaps**, not other updates:
 ### With Custom Target
 
 ```bash
-@complete-openmcf-component PostgresKubernetes --target-score 90
+@complete-planton-component PostgresKubernetes --target-score 90
 ```
 
 **Behavior:**
@@ -167,7 +167,7 @@ Complete is specifically for **filling gaps**, not other updates:
 ### With Skip Validation
 
 ```bash
-@complete-openmcf-component QuickComponent --skip-validation
+@complete-planton-component QuickComponent --skip-validation
 ```
 
 **Warning:** Faster but riskier (skips final build/test validation)
@@ -179,7 +179,7 @@ Complete is specifically for **filling gaps**, not other updates:
 **Scenario:** Legacy component at 60% completion
 
 ```bash
-@complete-openmcf-component MongodbAtlas
+@complete-planton-component MongodbAtlas
 ```
 
 **Output:**
@@ -213,7 +213,7 @@ Files Created: 12
 **Scenario:** Component already at high score
 
 ```bash
-@complete-openmcf-component GcpCertManagerCert
+@complete-planton-component GcpCertManagerCert
 ```
 
 **Output:**
@@ -235,7 +235,7 @@ Duration: 30 seconds (audit only)
 **Scenario:** Want to see what would happen
 
 ```bash
-@complete-openmcf-component OldComponent --dry-run
+@complete-planton-component OldComponent --dry-run
 ```
 
 **Output:**
@@ -274,7 +274,7 @@ No changes made (dry-run mode)
 **Scenario:** Want absolute perfection
 
 ```bash
-@complete-openmcf-component MyComponent --target-score 100
+@complete-planton-component MyComponent --target-score 100
 ```
 
 **Output:**
@@ -299,7 +299,7 @@ Duration: 12 minutes (extra time for polish items)
 # Complete all SaaS platform components
 for component in MongodbAtlas ConfluentKafka SnowflakeDatabase; do
   echo "=== Completing $component ==="
-  @complete-openmcf-component $component
+  @complete-planton-component $component
   echo ""
 done
 ```
@@ -368,7 +368,7 @@ jobs:
           
           # Complete each
           for component in $COMPONENTS; do
-            @complete-openmcf-component $component --target-score 80
+            @complete-planton-component $component --target-score 80
           done
           
           # Fail if any <80%
@@ -382,9 +382,9 @@ jobs:
 git checkout -b feature/improve-components
 
 # Complete multiple components
-@complete-openmcf-component Component1
-@complete-openmcf-component Component2
-@complete-openmcf-component Component3
+@complete-planton-component Component1
+@complete-planton-component Component2
+@complete-planton-component Component3
 
 # Commit improvements
 git add -A
@@ -398,11 +398,11 @@ gh pr create --title "Improve component quality" --body "..."
 
 ```bash
 # Create new component
-@forge-openmcf-component NewComponent --provider aws
+@forge-planton-component NewComponent --provider aws
 
 # Forge might create at 90-95% if some optional items skipped
 # Complete to 100%
-@complete-openmcf-component NewComponent --target-score 100
+@complete-planton-component NewComponent --target-score 100
 
 # Result: Perfect component
 ```
@@ -450,7 +450,7 @@ gh pr create --title "Improve component quality" --body "..."
 
 ```bash
 # One command to production-ready
-@complete-openmcf-component AnyComponent
+@complete-planton-component AnyComponent
 
 # Typical results:
 # 40-60% → 95%+ (30-40 min)
@@ -466,8 +466,8 @@ gh pr create --title "Improve component quality" --body "..."
 # (manually or with script)
 
 # Complete only those <80%
-@complete-openmcf-component LowScoreComponent1
-@complete-openmcf-component LowScoreComponent2
+@complete-planton-component LowScoreComponent1
+@complete-planton-component LowScoreComponent2
 
 # Result: All components now ≥95%
 ```
@@ -496,7 +496,7 @@ Choose based on:
 **Debug:**
 ```bash
 # Run manual update to see detailed errors
-@update-openmcf-component ComponentName --scenario fill-gaps
+@update-planton-component ComponentName --scenario fill-gaps
 ```
 
 ### Complete Takes Too Long
@@ -547,7 +547,7 @@ Good complete outcomes:
 ```bash
 # Systematically complete all
 for component in $(list-legacy-components); do
-  @complete-openmcf-component $component
+  @complete-planton-component $component
 done
 
 # Result: All at 95%+ in 10-20 hours total
@@ -561,8 +561,8 @@ done
 **Solution:**
 ```bash
 # Week before release, complete all
-@complete-openmcf-component Component1
-@complete-openmcf-component Component2
+@complete-planton-component Component1
+@complete-planton-component Component2
 # ... etc
 
 # All components now meet release standards
@@ -575,7 +575,7 @@ done
 **Solution:**
 ```bash
 # After forge
-@complete-openmcf-component NewComponent
+@complete-planton-component NewComponent
 
 # Fills remaining 8%
 # Guaranteed 95%+ result
@@ -588,7 +588,7 @@ done
 **Solution:**
 ```bash
 # Quick complete
-@complete-openmcf-component UrgentComponent
+@complete-planton-component UrgentComponent
 
 # 15-20 minutes later: 95%+ complete
 # Ship to customer
@@ -635,13 +635,13 @@ Difference:
 
 ```bash
 # Production components (strict)
-@complete-openmcf-component ProdComponent --target-score 100
+@complete-planton-component ProdComponent --target-score 100
 
 # Development components (lenient)
-@complete-openmcf-component DevComponent --target-score 80
+@complete-planton-component DevComponent --target-score 80
 
 # Experimental (minimal)
-@complete-openmcf-component ExperimentalComponent --target-score 60
+@complete-planton-component ExperimentalComponent --target-score 60
 ```
 
 ### Scripted Batch Processing
@@ -657,7 +657,7 @@ for component in "${COMPONENTS[@]}"; do
   echo "Completing: $component"
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   
-  @complete-openmcf-component $component
+  @complete-planton-component $component
   
   if [ $? -eq 0 ]; then
     echo "✅ $component completed successfully"
@@ -675,11 +675,11 @@ echo "Batch completion finished!"
 
 ```bash
 # Complete and capture metrics
-BEFORE=$(@audit-openmcf-component MongodbAtlas --score-only)
+BEFORE=$(@audit-planton-component MongodbAtlas --score-only)
 
-@complete-openmcf-component MongodbAtlas
+@complete-planton-component MongodbAtlas
 
-AFTER=$(@audit-openmcf-component MongodbAtlas --score-only)
+AFTER=$(@audit-planton-component MongodbAtlas --score-only)
 
 echo "Improvement: $BEFORE% → $AFTER% (+$(($AFTER - $BEFORE))%)"
 ```
@@ -694,7 +694,7 @@ echo "Improvement: $BEFORE% → $AFTER% (+$(($AFTER - $BEFORE))%)"
 
 **If you want 100%:**
 ```bash
-@complete-openmcf-component ComponentName --target-score 100
+@complete-planton-component ComponentName --target-score 100
 ```
 
 ### "Partial completion"
@@ -707,7 +707,7 @@ echo "Improvement: $BEFORE% → $AFTER% (+$(($AFTER - $BEFORE))%)"
 ```bash
 # See audit report for remaining gaps
 # Use manual update for specific fixes
-@update-openmcf-component ComponentName --scenario <specific>
+@update-planton-component ComponentName --scenario <specific>
 ```
 
 ### "Build failed after completion"
@@ -717,11 +717,11 @@ echo "Improvement: $BEFORE% → $AFTER% (+$(($AFTER - $BEFORE))%)"
 **Action:**
 ```bash
 # Check build errors
-go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...
+go build ./apis/dev/planton/provider/<provider>/<component>/v1/...
 
 # Fix manually
 # Re-run complete (it's idempotent)
-@complete-openmcf-component ComponentName
+@complete-planton-component ComponentName
 ```
 
 ### "Takes too long"
@@ -745,8 +745,8 @@ After complete finishes:
 ✅ spec_test.go exists with validation tests
 ✅ Component tests execute successfully
 ✅ All tests pass (`go test ./apis/.../v1/`)
-✅ Build validation passed (`go build ./apis/org/openmcf/provider/<provider>/<component>/v1/...`)
-✅ Full test suite passed (`go test -v ./apis/org/openmcf/provider/<provider>/<component>/v1/`)
+✅ Build validation passed (`go build ./apis/dev/planton/provider/<provider>/<component>/v1/...`)
+✅ Full test suite passed (`go test -v ./apis/dev/planton/provider/<provider>/<component>/v1/`)
 ✅ Two audit reports (before/after)
 ✅ Summary shows improvement
 ✅ Ready to commit
@@ -763,7 +763,7 @@ After complete finishes:
 
 # Tuesday-Wednesday: Complete all
 for component in LowScoreComponents; do
-  @complete-openmcf-component $component
+  @complete-planton-component $component
 done
 
 # Thursday: Review and test
@@ -778,8 +778,8 @@ done
 # 1 week before release
 # Complete all components for release
 
-@complete-openmcf-component Component1
-@complete-openmcf-component Component2
+@complete-planton-component Component1
+@complete-planton-component Component2
 # ... etc
 
 # All components now meet quality standards
@@ -791,26 +791,26 @@ done
 # Weekly: Complete lowest-scoring component
 
 # Week 1
-@complete-openmcf-component LowestComponent1
+@complete-planton-component LowestComponent1
 
 # Week 2
-@complete-openmcf-component LowestComponent2
+@complete-planton-component LowestComponent2
 
 # Over time, all components reach 95%+
 ```
 
 ## Related Commands
 
-- `@forge-openmcf-component` - Create new component
-- `@audit-openmcf-component` - Check status only
-- `@update-openmcf-component` - Selective improvements
-- `@fix-openmcf-component` - Targeted fixes with cascading updates
-- `@delete-openmcf-component` - Remove component
+- `@forge-planton-component` - Create new component
+- `@audit-planton-component` - Check status only
+- `@update-planton-component` - Selective improvements
+- `@fix-planton-component` - Targeted fixes with cascading updates
+- `@delete-planton-component` - Remove component
 
 ## Reference
 
 - **Ideal State:** `architecture/deployment-component.md`
-- **Complete Rule:** `_rules/deployment-component/complete/complete-openmcf-component.mdc`
+- **Complete Rule:** `_rules/deployment-component/complete/complete-planton-component.mdc`
 - **Master README:** `_rules/deployment-component/README.md`
 
 ## FAQ
@@ -821,11 +821,11 @@ A: Complete = Audit + Update --fill-gaps + Audit. It adds the before/after audit
 
 **Q: Can I complete a component that doesn't exist?**
 
-A: No. Use `@forge-openmcf-component` to create new components.
+A: No. Use `@forge-planton-component` to create new components.
 
 **Q: What if I only want to fill some gaps, not all?**
 
-A: Use `@update-openmcf-component` with specific scenario instead.
+A: Use `@update-planton-component` with specific scenario instead.
 
 **Q: Is complete safe?**
 
@@ -841,5 +841,5 @@ A: 5-35 minutes depending on gaps. Dry-run shows estimate.
 
 ---
 
-**Ready to complete?** Run `@complete-openmcf-component <ComponentName>` for one-command quality improvement!
+**Ready to complete?** Run `@complete-planton-component <ComponentName>` for one-command quality improvement!
 

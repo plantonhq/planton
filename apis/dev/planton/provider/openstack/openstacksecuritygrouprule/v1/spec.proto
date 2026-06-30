@@ -1,0 +1,122 @@
+syntax = "proto3";
+
+package dev.planton.provider.openstack.openstacksecuritygrouprule.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// OpenStackSecurityGroupRuleSpec defines the configuration for a standalone
+// OpenStack Neutron security group rule.
+//
+// This is the standalone counterpart to inline rules defined in
+// OpenStackSecurityGroup.rules[]. Use this component when individual rules
+// need to be independently managed and visible as separate nodes in InfraChart
+// DAG visualizations. The key advantage over inline rules is that the
+// security_group_id and remote_group_id fields support StringValueOrRef,
+// enabling cross-resource references that the InfraChart engine can resolve.
+//
+// All fields on the underlying OpenStack resource are ForceNew: any change
+// recreates the rule. This is expected for declarative infrastructure.
+//
+// The resource name in Planton is derived from metadata.name.
+//
+// Terraform resource: openstack_networking_secgroup_rule_v2
+// Pulumi resource: openstack.networking.SecGroupRule
+message OpenStackSecurityGroupRuleSpec {
+  // port_range_min and port_range_max must both be set or both unset.
+  // You cannot specify a partial port range.
+  option (buf.validate.message).cel = {
+    id: "port_range.both_or_neither"
+    message: "port_range_min and port_range_max must both be set or both unset"
+    expression: "has(this.port_range_min) == has(this.port_range_max)"
+  };
+
+  // Port ranges require a protocol to be specified.
+  // Without a protocol, port numbers are meaningless.
+  option (buf.validate.message).cel = {
+    id: "port_range.requires_protocol"
+    message: "protocol is required when port ranges are specified"
+    expression: "!has(this.port_range_min) || this.protocol != ''"
+  };
+
+  // remote_group_id and remote_ip_prefix are mutually exclusive.
+  // A rule can restrict traffic by source/destination CIDR or by membership in
+  // another security group, but not both.
+  option (buf.validate.message).cel = {
+    id: "remote_source.mutual_exclusion"
+    message: "remote_group_id and remote_ip_prefix are mutually exclusive"
+    expression: "!has(this.remote_group_id) || this.remote_ip_prefix == ''"
+  };
+
+  // security_group_id is the ID of the security group this rule belongs to.
+  // This is a required foreign key -- every standalone rule must reference
+  // exactly one security group.
+  // Can reference an OpenStackSecurityGroup resource's output or be a literal UUID.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef security_group_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OpenStackSecurityGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
+  ];
+
+  // direction specifies whether the rule applies to incoming or outgoing traffic.
+  // Must be "ingress" or "egress".
+  string direction = 2 [(buf.validate.field).string = {
+    in: [
+      "ingress",
+      "egress"
+    ]
+  }];
+
+  // ethertype specifies the layer-3 protocol type for the rule.
+  // Must be "IPv4" or "IPv6".
+  string ethertype = 3 [(buf.validate.field).string = {
+    in: [
+      "IPv4",
+      "IPv6"
+    ]
+  }];
+
+  // protocol is the IP protocol for the rule.
+  // Common values: "tcp", "udp", "icmp", "icmpv6".
+  // Also accepts any IANA protocol name or number (0-255).
+  // If omitted, the rule applies to all protocols.
+  string protocol = 4;
+
+  // port_range_min is the minimum port number for the rule.
+  // For TCP/UDP: the start of the port range (0-65535).
+  // For ICMP: the ICMP type (0-255). Type 0 = Echo Reply, Type 8 = Echo Request.
+  // Must be set together with port_range_max. Requires protocol to be set.
+  optional int32 port_range_min = 5;
+
+  // port_range_max is the maximum port number for the rule.
+  // For TCP/UDP: the end of the port range (0-65535).
+  // For ICMP: the ICMP code (0-255). Code 0 is valid and commonly used.
+  // Must be set together with port_range_min. Requires protocol to be set.
+  optional int32 port_range_max = 6;
+
+  // remote_ip_prefix restricts the rule to traffic from/to a specific CIDR.
+  // For ingress: the source IP range. For egress: the destination IP range.
+  // Example: "0.0.0.0/0" (all IPv4), "10.0.0.0/8" (private range), "203.0.113.0/24".
+  // Mutually exclusive with remote_group_id.
+  string remote_ip_prefix = 7;
+
+  // remote_group_id restricts the rule to traffic from/to instances in another
+  // security group (or the same security group for self-referencing rules).
+  // This is an optional foreign key to OpenStackSecurityGroup -- the key advantage
+  // of standalone rules over inline rules, enabling InfraChart DAG wiring for
+  // cross-security-group references.
+  // Mutually exclusive with remote_ip_prefix.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef remote_group_id = 8 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = OpenStackSecurityGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
+  ];
+
+  // description is a human-readable description of the rule.
+  // Stored on the OpenStack rule resource and visible in Horizon and API responses.
+  string description = 9;
+
+  // region overrides the region from the provider config for this rule.
+  // If omitted, the region from the OpenStack provider config is used.
+  // Example: "RegionOne"
+  string region = 10;
+}

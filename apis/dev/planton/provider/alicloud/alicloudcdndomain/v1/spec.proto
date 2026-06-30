@@ -1,0 +1,178 @@
+syntax = "proto3";
+
+package dev.planton.provider.alicloud.alicloudcdndomain.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/options/options.proto";
+
+// AliCloudCdnDomainSpec defines the configuration for an Alibaba Cloud CDN
+// accelerated domain managed by the CDN service.
+//
+// A CDN domain maps a user-facing domain name (e.g., "cdn.example.com") to one
+// or more origin servers. Alibaba Cloud's globally distributed edge nodes cache
+// and serve content from the origins, reducing latency for end users. After
+// creating the CDN domain, point a CNAME record at your DNS provider to the
+// `cname` value returned in the stack outputs.
+//
+// This component creates a single CDN domain with origin sources and optional
+// HTTPS certificate configuration. Advanced CDN function configs (caching rules,
+// referer whitelists, HTTP headers) are outside the scope of this component and
+// should be managed via raw Terraform or Pulumi if needed.
+message AliCloudCdnDomainSpec {
+  // Alibaba Cloud region for provider initialization.
+  // CDN is a global service, but the provider requires a region for API calls.
+  // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The accelerated domain name (e.g., "cdn.example.com").
+  // Must be a valid domain name between 1 and 63 characters.
+  // Cannot be changed after creation (ForceNew).
+  string domain_name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 63
+  ];
+
+  // The type of content the CDN accelerates.
+  // Cannot be changed after creation (ForceNew).
+  //   - "web"      : images, small files, and web pages
+  //   - "download" : large file downloads (software, games)
+  //   - "video"    : on-demand and live video streaming
+  string cdn_type = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "cdn_type_valid"
+      message: "cdn_type must be one of: web, download, video"
+      expression: "this in ['web', 'download', 'video']"
+    }
+  ];
+
+  // Geographic scope for CDN acceleration.
+  //   - "domestic" : mainland China only
+  //   - "overseas" : outside mainland China
+  //   - "global"   : worldwide
+  // If omitted, the Alibaba Cloud API defaults to "domestic".
+  string scope = 4 [(buf.validate.field).cel = {
+    id: "scope_valid"
+    message: "scope must be one of: domestic, overseas, global"
+    expression: "this == '' || this in ['domestic', 'overseas', 'global']"
+  }];
+
+  // Origin server sources for the CDN domain. At least one source is required.
+  // Multiple sources enable failover and load distribution via priority and weight.
+  repeated AliCloudCdnDomainSource sources = 5 [(buf.validate.field).repeated.min_items = 1];
+
+  // HTTPS certificate configuration.
+  // If omitted, the CDN domain serves content over HTTP only.
+  AliCloudCdnDomainCertificateConfig certificate_config = 6;
+
+  // URL used by the CDN service to verify that the origin is reachable.
+  // Alibaba Cloud sends a request to this URL during domain creation.
+  // If omitted, no health check is performed during creation.
+  string check_url = 7;
+
+  // Alibaba Cloud resource group ID for access control and cost attribution.
+  // If omitted, the domain is placed in the account's default resource group.
+  string resource_group_id = 8;
+
+  // Tags to apply to the CDN domain.
+  map<string, string> tags = 9;
+}
+
+// AliCloudCdnDomainSource defines a single origin server for the CDN domain.
+message AliCloudCdnDomainSource {
+  // The type of origin source.
+  //   - "ipaddr"  : origin is an IP address
+  //   - "domain"  : origin is a domain name
+  //   - "oss"     : origin is an Alibaba Cloud OSS bucket
+  //   - "common"  : origin is a common source (L2 CDN)
+  string type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "source_type_valid"
+      message: "source type must be one of: ipaddr, domain, oss, common"
+      expression: "this in ['ipaddr', 'domain', 'oss', 'common']"
+    }
+  ];
+
+  // The address of the origin server.
+  // For "ipaddr": an IP address (e.g., "1.2.3.4").
+  // For "domain": a domain name (e.g., "origin.example.com").
+  // For "oss": the OSS bucket domain (e.g., "my-bucket.oss-cn-hangzhou.aliyuncs.com").
+  // Each source's content must be unique within the sources list.
+  string content = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The port number for origin requests.
+  // Typically 80 for HTTP or 443 for HTTPS.
+  // If omitted, defaults to 80.
+  int32 port = 3;
+
+  // Priority of this origin source. Lower values indicate higher priority.
+  // Valid range: 0-100. If omitted, defaults to 20.
+  // Use 20 for primary sources and 30 for standby sources.
+  int32 priority = 4 [(buf.validate.field).cel = {
+    id: "priority_range"
+    message: "priority must be between 0 and 100"
+    expression: "this >= 0 && this <= 100"
+  }];
+
+  // Weight of this origin source for load balancing across multiple origins.
+  // Valid range: 0-100. If omitted, defaults to 10.
+  // Only effective when multiple sources share the same priority.
+  int32 weight = 5 [(buf.validate.field).cel = {
+    id: "weight_range"
+    message: "weight must be between 0 and 100"
+    expression: "this >= 0 && this <= 100"
+  }];
+}
+
+// AliCloudCdnDomainCertificateConfig configures HTTPS for the CDN domain.
+// When provided, the CDN edge nodes serve content over HTTPS using the
+// specified certificate.
+message AliCloudCdnDomainCertificateConfig {
+  // Display name of the certificate.
+  string cert_name = 1;
+
+  // The type of certificate.
+  //   - "upload" : upload your own certificate and private key
+  //   - "cas"    : use a certificate from Alibaba Cloud Certificate Management Service
+  //   - "free"   : use a free DV certificate issued by Alibaba Cloud
+  string cert_type = 2 [(buf.validate.field).cel = {
+    id: "cert_type_valid"
+    message: "cert_type must be one of: upload, cas, free"
+    expression: "this == '' || this in ['upload', 'cas', 'free']"
+  }];
+
+  // Certificate ID from Alibaba Cloud Certificate Management Service.
+  // Required when cert_type is "cas".
+  string cert_id = 3;
+
+  // The region of the CAS certificate.
+  // Only relevant when cert_type is "cas".
+  // Supports "cn-hangzhou" (domestic) and "ap-southeast-1" (international).
+  // Defaults to "cn-hangzhou" in the provider.
+  string cert_region = 4;
+
+  // PEM-encoded certificate content.
+  // Required when cert_type is "upload".
+  string server_certificate = 5;
+
+  // PEM-encoded private key content.
+  // Required when cert_type is "upload".
+  string private_key = 6 [(dev.planton.shared.options.sensitive) = true];
+
+  // Whether HTTPS is enabled on the CDN domain.
+  //   - "on"  : HTTPS enabled (default when certificate_config is provided)
+  //   - "off" : HTTPS disabled
+  string server_certificate_status = 7 [(buf.validate.field).cel = {
+    id: "cert_status_valid"
+    message: "server_certificate_status must be one of: on, off"
+    expression: "this == '' || this in ['on', 'off']"
+  }];
+}

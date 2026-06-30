@@ -6,13 +6,13 @@
 
 ## Summary
 
-Added `openmcf apply` and `openmcf destroy` commands that provide a kubectl-like experience by automatically detecting the IaC provisioner (Pulumi, Tofu, or Terraform) from manifest labels and routing to the appropriate CLI. This eliminates the need to remember provisioner-specific commands and provides a unified interface for infrastructure management.
+Added `planton apply` and `planton destroy` commands that provide a kubectl-like experience by automatically detecting the IaC provisioner (Pulumi, Tofu, or Terraform) from manifest labels and routing to the appropriate CLI. This eliminates the need to remember provisioner-specific commands and provides a unified interface for infrastructure management.
 
 ## Motivation
 
 Previously, users had to use different commands based on the provisioner:
-- Pulumi: `openmcf pulumi update`
-- Tofu: `openmcf tofu apply`
+- Pulumi: `planton pulumi update`
+- Tofu: `planton tofu apply`
 - Terraform: Manual terraform commands
 
 This created several challenges:
@@ -32,7 +32,7 @@ Manifests can now specify which IaC provisioner to use via a label:
 ```yaml
 metadata:
   labels:
-    openmcf.org/provisioner: pulumi  # or tofu or terraform
+    planton.dev/provisioner: pulumi  # or tofu or terraform
 ```
 
 The label value is case-insensitive, so `pulumi`, `Pulumi`, and `PULUMI` are all valid.
@@ -43,16 +43,16 @@ Single command to apply infrastructure changes regardless of provisioner:
 
 ```bash
 # Using -f flag (kubectl-style)
-openmcf apply -f manifest.yaml
+planton apply -f manifest.yaml
 
 # Using --manifest flag (existing style)
-openmcf apply --manifest manifest.yaml
+planton apply --manifest manifest.yaml
 
 # With kustomize
-openmcf apply --kustomize-dir _kustomize --overlay prod
+planton apply --kustomize-dir _kustomize --overlay prod
 
 # With field overrides
-openmcf apply -f manifest.yaml --set spec.replicas=3
+planton apply -f manifest.yaml --set spec.replicas=3
 ```
 
 ### Unified Destroy Command
@@ -61,18 +61,18 @@ Single command to destroy infrastructure with alias support:
 
 ```bash
 # Using destroy command
-openmcf destroy -f manifest.yaml
+planton destroy -f manifest.yaml
 
 # Using delete alias (kubectl-style)
-openmcf delete -f manifest.yaml
+planton delete -f manifest.yaml
 
 # With kustomize
-openmcf destroy --kustomize-dir _kustomize --overlay prod
+planton destroy --kustomize-dir _kustomize --overlay prod
 ```
 
 ### Interactive Provisioner Selection
 
-If the `openmcf.org/provisioner` label is not present in the manifest, the CLI will prompt you to select a provisioner interactively:
+If the `planton.dev/provisioner` label is not present in the manifest, the CLI will prompt you to select a provisioner interactively:
 
 ```
 Select provisioner [Pulumi]/tofu/terraform: 
@@ -85,7 +85,7 @@ Simply press Enter to use the default (Pulumi), or type your choice.
 ### New Packages Created
 
 1. **`pkg/iac/provisionerlabels`** - Provisioner label constants
-   - `ProvisionerLabelKey = "openmcf.org/provisioner"`
+   - `ProvisionerLabelKey = "planton.dev/provisioner"`
 
 2. **`pkg/iac/provisioner`** - Provisioner detection and extraction logic
    - `ProvisionerType` enum (Pulumi, Tofu, Terraform)
@@ -97,20 +97,20 @@ Simply press Enter to use the default (Pulumi), or type your choice.
 
 ### New Commands
 
-- **`cmd/openmcf/root/apply.go`** - Unified apply command
+- **`cmd/planton/root/apply.go`** - Unified apply command
   - Supports `-f` shorthand for `--manifest`
   - Automatically detects provisioner from manifest
   - Routes to appropriate provisioner CLI
   - Falls back to interactive prompt if label missing
 
-- **`cmd/openmcf/root/destroy.go`** - Unified destroy command
+- **`cmd/planton/root/destroy.go`** - Unified destroy command
   - Has `delete` as an alias for kubectl compatibility
   - Same detection and routing logic as apply
   - Supports all provisioner-specific flags
 
 ### Modified Components
 
-- **`cmd/openmcf/root.go`** - Registered new commands
+- **`cmd/planton/root.go`** - Registered new commands
 - **`internal/cli/cliprint/print.go`** - Added Tofu/Terraform print helpers
   - `PrintTofuSuccess()` and `PrintTofuFailure()`
   - `PrintTerraformSuccess()` and `PrintTerraformFailure()`
@@ -169,52 +169,52 @@ Both commands support all standard flags from their respective provisioners:
 ### Example 1: Pulumi Resource with Label
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesExternalDns
 metadata:
   name: external-dns-prod
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/stack.name: prod.KubernetesExternalDns.external-dns
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/stack.name: prod.KubernetesExternalDns.external-dns
 spec:
   # ... resource spec
 ```
 
 ```bash
 # Apply
-openmcf apply -f external-dns.yaml
+planton apply -f external-dns.yaml
 
 # Destroy
-openmcf destroy -f external-dns.yaml
+planton destroy -f external-dns.yaml
 ```
 
 ### Example 2: Tofu Resource with Label
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsVpc
 metadata:
   name: app-vpc
   labels:
-    openmcf.org/provisioner: tofu
-    terraform.openmcf.org/backend.type: s3
-    terraform.openmcf.org/backend.object: terraform-state/vpc/prod.tfstate
+    planton.dev/provisioner: tofu
+    terraform.planton.dev/backend.type: s3
+    terraform.planton.dev/backend.object: terraform-state/vpc/prod.tfstate
 spec:
   # ... resource spec
 ```
 
 ```bash
 # Apply
-openmcf apply -f vpc.yaml --auto-approve
+planton apply -f vpc.yaml --auto-approve
 
 # Destroy (using delete alias)
-openmcf delete -f vpc.yaml --auto-approve
+planton delete -f vpc.yaml --auto-approve
 ```
 
 ### Example 3: No Label - Interactive Prompt
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudSql
 metadata:
   name: app-database
@@ -223,7 +223,7 @@ spec:
 ```
 
 ```bash
-openmcf apply -f database.yaml
+planton apply -f database.yaml
 # Output:
 # ✓ Manifest loaded
 # ✓ Manifest validated
@@ -238,14 +238,14 @@ openmcf apply -f database.yaml
 
 ```bash
 # Apply with kustomize and overrides
-openmcf apply \
+planton apply \
   --kustomize-dir _kustomize \
   --overlay production \
   --set spec.replicas=5 \
   --set spec.version=v2.0.0
 
 # Destroy using kustomize
-openmcf destroy \
+planton destroy \
   --kustomize-dir _kustomize \
   --overlay production
 ```
@@ -256,17 +256,17 @@ This is a **non-breaking change**. All existing commands continue to work:
 
 ```bash
 # Old way (still works)
-openmcf pulumi update --manifest manifest.yaml
-openmcf tofu apply --manifest manifest.yaml
+planton pulumi update --manifest manifest.yaml
+planton tofu apply --manifest manifest.yaml
 
 # New unified way (recommended)
-openmcf apply -f manifest.yaml
-openmcf destroy -f manifest.yaml
+planton apply -f manifest.yaml
+planton destroy -f manifest.yaml
 ```
 
 To adopt the new commands:
 
-1. **Optional**: Add `openmcf.org/provisioner` label to your manifests
+1. **Optional**: Add `planton.dev/provisioner` label to your manifests
 2. Use `apply` instead of `pulumi update` or `tofu apply`
 3. Use `destroy` or `delete` instead of `pulumi destroy` or `tofu destroy`
 
@@ -286,7 +286,7 @@ If you don't add the provisioner label, the CLI will prompt you to select one.
 - Add support for Terraform provisioner (currently shows helpful error)
 - Auto-detection of provisioner based on resource Kind (fallback if label missing)
 - Support for `--watch` flag to continuously reconcile state
-- Add `openmcf diff` command to preview changes without applying
+- Add `planton diff` command to preview changes without applying
 - Integration with CI/CD systems for automated provisioner detection
 
 ## Breaking Changes

@@ -1,0 +1,243 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocivaultsecret.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// OciVaultSecretSpec defines the specification for an OCI Vault Secret --
+// a named piece of sensitive data (credential, certificate, API key, etc.)
+// stored in an OCI KMS Vault and encrypted by a master encryption key.
+//
+// Secrets support two mutually exclusive content modes:
+//   - Explicit content via secret_content (user provides base64-encoded data)
+//   - Auto-generation via enable_auto_generation + secret_generation_context
+//     (OCI generates the content using a template)
+//
+// Lifecycle management is controlled through secret_rules (expiry and reuse
+// policies) and rotation_config (scheduled rotation against a target system).
+// Content updates create new secret versions automatically; the
+// current_version_number output tracks the active version.
+//
+// vault_id, key_id, and secret_name are immutable after creation (ForceNew).
+//
+// Excluded from v1:
+//   - replication_config -- cross-region secret replication is a separate
+//     infrastructure concern (consistent with OciKmsVault excluding vault
+//     replication); requires vault + key OCIDs from other regions
+//   - defined_tags, system_tags -- managed by platform
+//   - freeform_tags -- auto-populated from metadata labels
+message OciVaultSecretSpec {
+  option (buf.validate.message).cel = {
+    id: "content_excludes_auto_generation"
+    message: "secret_content must not be set when enable_auto_generation is true"
+    expression: "!this.enable_auto_generation || !has(this.secret_content)"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "auto_generation_requires_context"
+    message: "secret_generation_context is required when enable_auto_generation is true"
+    expression: "!this.enable_auto_generation || has(this.secret_generation_context)"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "no_context_without_auto_generation"
+    message: "secret_generation_context must not be set when enable_auto_generation is false"
+    expression: "this.enable_auto_generation || !has(this.secret_generation_context)"
+  };
+
+  // OCID of the compartment where the secret will be created.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OciCompartment,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartment_id"
+  ];
+
+  // User-friendly name for the secret. Must be unique within the vault.
+  // Immutable after creation.
+  string secret_name = 2 [(buf.validate.field).string.min_len = 1];
+
+  // OCID of the vault that will contain this secret.
+  // Immutable after creation.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef vault_id = 3 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OciKmsVault,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vault_id"
+  ];
+
+  // OCID of the master encryption key used to encrypt this secret.
+  // Must be a symmetric key within the specified vault.
+  // Immutable after creation.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef key_id = 4 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OciKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+  ];
+
+  // Brief description of the secret.
+  string description = 5;
+
+  // Explicit secret content (base64-encoded). Mutually exclusive with
+  // auto-generation (enable_auto_generation + secret_generation_context).
+  // Updating this field creates a new secret version.
+  SecretContent secret_content = 6;
+
+  // Enable automatic secret content generation. When true,
+  // secret_generation_context must be provided and secret_content
+  // must not be set.
+  bool enable_auto_generation = 7;
+
+  // Configuration for automatic secret content generation.
+  // Required when enable_auto_generation is true; must not be set otherwise.
+  SecretGenerationContext secret_generation_context = 8;
+
+  // Lifecycle rules controlling secret expiry and content reuse.
+  repeated SecretRule secret_rules = 9;
+
+  // Configuration for scheduled secret rotation against a target system.
+  RotationConfig rotation_config = 10;
+
+  // Additional metadata key-value pairs for administrative context
+  // (e.g., rotation notes, target system hints). Named secret_metadata
+  // to distinguish from Planton's CloudResourceMetadata.
+  map<string, string> secret_metadata = 11;
+
+  // SecretContent holds explicit secret data provided by the user.
+  // content_type is hardcoded to BASE64 in IaC modules (only valid
+  // value today) and not exposed in the spec.
+  message SecretContent {
+    // Base64-encoded secret data.
+    string content = 1;
+
+    // Optional version name. Must be unique across versions of this secret.
+    string name = 2;
+
+    // Rotation state of this content version.
+    // Valid values: "CURRENT" (default when omitted), "PENDING".
+    string stage = 3 [(buf.validate.field).string = {
+      in: [
+        "",
+        "CURRENT",
+        "PENDING"
+      ]
+    }];
+  }
+
+  // SecretGenerationContext configures OCI's automatic secret content
+  // generation. Used when enable_auto_generation is true.
+  message SecretGenerationContext {
+    option (buf.validate.message).cel = {
+      id: "passphrase_requires_length"
+      message: "passphrase_length must be greater than 0 when generation_type is passphrase"
+      expression: "this.generation_type != 2 || this.passphrase_length > 0"
+    };
+
+    // Type of secret content to generate.
+    GenerationType generation_type = 1 [(buf.validate.field).enum = {
+      defined_only: true
+      not_in: [0]
+    }];
+
+    // Name of the generation template. Template names are provider-defined
+    // and vary by generation_type.
+    string generation_template = 2 [(buf.validate.field).string.min_len = 1];
+
+    // Length of the passphrase to generate. Required when generation_type
+    // is passphrase.
+    int32 passphrase_length = 3;
+
+    // Optional template structure for storing the generated secret.
+    // Supports predefined placeholders for the generated values.
+    string secret_template = 4;
+
+    // GenerationType selects the category of secret content to generate.
+    enum GenerationType {
+      unspecified = 0;
+      bytes = 1;
+      passphrase = 2;
+      ssh_key = 3;
+    }
+  }
+
+  // SecretRule defines a lifecycle policy for secret versions.
+  // Uses a flat discriminated model: rule_type selects which fields apply.
+  message SecretRule {
+    // Discriminator selecting the rule type.
+    RuleType rule_type = 1 [(buf.validate.field).enum = {
+      defined_only: true
+      not_in: [0]
+    }];
+
+    // --- Fields for SECRET_EXPIRY_RULE ---
+
+    // Block retrieval of secret content after the version expires.
+    // Applies when rule_type is secret_expiry_rule.
+    bool is_secret_content_retrieval_blocked_on_expiry = 2;
+
+    // Duration after which each secret version expires, in ISO 8601
+    // format (e.g., "P30D" for 30 days). Range: 1-90 days.
+    // Applies when rule_type is secret_expiry_rule.
+    string secret_version_expiry_interval = 3;
+
+    // Absolute expiry timestamp in RFC 3339 format. Range: 1-365 days
+    // from creation. Applies when rule_type is secret_expiry_rule.
+    string time_of_absolute_expiry = 4;
+
+    // --- Fields for SECRET_REUSE_RULE ---
+
+    // Enforce the reuse rule even on deleted secret versions.
+    // Applies when rule_type is secret_reuse_rule.
+    bool is_enforced_on_deleted_secret_versions = 5;
+
+    // RuleType selects the kind of lifecycle rule.
+    enum RuleType {
+      unspecified = 0;
+      secret_expiry_rule = 1;
+      secret_reuse_rule = 2;
+    }
+  }
+
+  // RotationConfig configures scheduled rotation of secret content
+  // against a target system (Autonomous Database or OCI Functions).
+  message RotationConfig {
+    // Enable scheduled automatic rotation.
+    bool is_scheduled_rotation_enabled = 1;
+
+    // Rotation interval in ISO 8601 duration format (e.g., "P30D").
+    // Range: 1-360 days. Required when is_scheduled_rotation_enabled
+    // is true.
+    string rotation_interval = 2;
+
+    // Target system that will be updated during rotation.
+    TargetSystemDetails target_system_details = 3 [(buf.validate.field).required = true];
+
+    // TargetSystemDetails identifies the system whose credentials
+    // are rotated. Uses a discriminated model: target_system_type
+    // selects which ID field is required.
+    message TargetSystemDetails {
+      // Type of target system.
+      TargetSystemType target_system_type = 1 [(buf.validate.field).enum = {
+        defined_only: true
+        not_in: [0]
+      }];
+
+      // OCID of the Autonomous Database whose credentials are rotated.
+      // Required when target_system_type is adb.
+      dev.planton.shared.foreignkey.v1.StringValueOrRef adb_id = 2 [
+        (dev.planton.shared.foreignkey.v1.default_kind) = OciAutonomousDatabase,
+        (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.autonomous_database_id"
+      ];
+
+      // OCID of the OCI Functions function invoked during rotation.
+      // Required when target_system_type is function.
+      dev.planton.shared.foreignkey.v1.StringValueOrRef function_id = 3;
+
+      // TargetSystemType selects the category of target system.
+      enum TargetSystemType {
+        unspecified = 0;
+        adb = 1;
+        function = 2;
+      }
+    }
+  }
+}

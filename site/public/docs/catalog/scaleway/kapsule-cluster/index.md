@@ -12,14 +12,14 @@ Deploys a Scaleway Kapsule managed Kubernetes cluster with an embedded default n
 
 ## What Gets Created
 
-When you deploy a ScalewayKapsuleCluster resource, OpenMCF provisions:
+When you deploy a ScalewayKapsuleCluster resource, Planton provisions:
 
 - **Kapsule Cluster** — a `kubernetes.Cluster` resource providing a fully managed Kubernetes control plane (API server, etcd, scheduler, controller-manager) in the specified region, attached to a Private Network
 - **Default Node Pool** — a `kubernetes.Pool` resource created alongside the cluster with the specified instance type, size, and optional autoscaling, autohealing, and upgrade policy configuration
 
 ## Prerequisites
 
-- **Scaleway credentials** configured via environment variables or OpenMCF provider config
+- **Scaleway credentials** configured via environment variables or Planton provider config
 - **A Private Network** in the target region — required for all Kapsule clusters. Can be created via a ScalewayPrivateNetwork resource.
 - **A valid Kubernetes version** available in the target region (e.g., `"1.32"` or `"1.32.3"`)
 
@@ -28,15 +28,15 @@ When you deploy a ScalewayKapsuleCluster resource, OpenMCF provisions:
 Create a file `kapsule-cluster.yaml`:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayKapsuleCluster
 metadata:
   name: my-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayKapsuleCluster.my-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayKapsuleCluster.my-cluster
 spec:
   region: fr-par
   kubernetesVersion: "1.32"
@@ -50,7 +50,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f kapsule-cluster.yaml
+planton apply -f kapsule-cluster.yaml
 ```
 
 This creates a Kapsule cluster with Cilium CNI in `fr-par`, attached to the specified Private Network, with a two-node default pool using `DEV1-M` instances.
@@ -111,15 +111,15 @@ This creates a Kapsule cluster with Cilium CNI in `fr-par`, attached to the spec
 A minimal cluster for development with a small node pool:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayKapsuleCluster
 metadata:
   name: dev-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.ScalewayKapsuleCluster.dev-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.ScalewayKapsuleCluster.dev-cluster
 spec:
   region: fr-par
   kubernetesVersion: "1.32"
@@ -137,15 +137,15 @@ spec:
 A production-ready cluster with autoscaling, auto-upgrade, private nodes, and a dedicated control plane:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayKapsuleCluster
 metadata:
   name: prod-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.ScalewayKapsuleCluster.prod-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.ScalewayKapsuleCluster.prod-cluster
 spec:
   region: fr-par
   kubernetesVersion: "1.32"
@@ -180,18 +180,18 @@ spec:
 
 ### Cluster with Private Network Reference
 
-Reference an OpenMCF-managed Private Network instead of hardcoding the UUID:
+Reference an Planton-managed Private Network instead of hardcoding the UUID:
 
 ```yaml
-apiVersion: scaleway.openmcf.org/v1
+apiVersion: scaleway.planton.dev/v1
 kind: ScalewayKapsuleCluster
 metadata:
   name: ref-cluster
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.ScalewayKapsuleCluster.ref-cluster
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.ScalewayKapsuleCluster.ref-cluster
 spec:
   region: nl-ams
   kubernetesVersion: "1.31"

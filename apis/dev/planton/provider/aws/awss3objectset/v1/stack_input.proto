@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awss3objectset.v1;
+
+import "dev/planton/provider/aws/awss3objectset/v1/api.proto";
+import "dev/planton/provider/aws/provider.proto";
+
+//aws-s3-object-set stack-input
+message AwsS3ObjectSetStackInput {
+  //target cloud-resource
+  AwsS3ObjectSet target = 1;
+  //provider-config
+  dev.planton.provider.aws.AwsProviderConfig provider_config = 2;
+}

@@ -3,11 +3,11 @@ load("@rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "refcheck",
     srcs = ["analyze.go"],
-    importpath = "github.com/plantonhq/openmcf/pkg/refcheck",
+    importpath = "github.com/plantonhq/planton/pkg/refcheck",
     visibility = ["//visibility:public"],
     deps = [
-        "//apis/org/openmcf/shared/cloudresourcekind",
-        "//apis/org/openmcf/shared/foreignkey/v1:foreignkey",
+        "//apis/dev/planton/shared/cloudresourcekind",
+        "//apis/dev/planton/shared/foreignkey/v1:foreignkey",
         "//pkg/crkreflect",
         "@org_golang_google_protobuf//proto",
         "@org_golang_google_protobuf//reflect/protoreflect",

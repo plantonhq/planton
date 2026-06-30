@@ -1,0 +1,266 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsmemorydbcluster.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// AwsMemorydbClusterSpec defines the desired configuration for an Amazon MemoryDB
+// cluster — a fully managed, Redis-compatible, durable in-memory database.
+//
+// Unlike ElastiCache (which is an ephemeral cache), MemoryDB uses a Multi-AZ
+// distributed transaction log to provide data durability with microsecond reads
+// and single-digit millisecond writes. Use MemoryDB when you need a Redis-compatible
+// primary database, not just a caching layer.
+//
+// Topology is always sharded: `num_shards` controls partitions, and
+// `num_replicas_per_shard` controls read replicas within each shard. There is no
+// "clustered vs non-clustered" mode distinction.
+//
+// Authentication is ACL-based. Every cluster requires an `acl_name`. Use the
+// built-in "open-access" ACL for development or reference a custom ACL with
+// fine-grained user/command permissions for production.
+//
+// MemoryDB always encrypts data at rest. The `kms_key_id` field optionally
+// specifies a customer-managed KMS key; without it, the AWS-managed key is used.
+//
+// Notes:
+// - `tls_enabled` is ForceNew — changing it destroys and recreates the cluster.
+// - `kms_key_id` is ForceNew — choose the encryption key carefully upfront.
+// - `port` is ForceNew — default 6379.
+// - `data_tiering` is ForceNew — only available on specific node types (db.r6gd.*).
+// - Credentials, region, and deployment workflow live outside this spec in stack inputs.
+message AwsMemorydbClusterSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  // ---------------------------------------------------------------------------
+  // Engine
+  // ---------------------------------------------------------------------------
+
+  // Cache engine to use. Redis is the standard choice; Valkey is the
+  // open-source Redis-compatible alternative. Values: "redis", "valkey".
+  string engine = 2 [(buf.validate.field).required = true];
+
+  // Engine version to deploy. Examples: "7.1", "7.0", "6.2" for Redis;
+  // "7.2" for Valkey. Leave empty to use the provider default.
+  string engine_version = 3;
+
+  // Human-readable description for the cluster.
+  string description = 4;
+
+  // ---------------------------------------------------------------------------
+  // Node Configuration
+  // ---------------------------------------------------------------------------
+
+  // MemoryDB node type. Determines CPU, memory, and network capacity.
+  // Examples: "db.t4g.small" (dev), "db.r7g.large" (production),
+  // "db.r6gd.xlarge" (data tiering).
+  string node_type = 5 [(buf.validate.field).required = true];
+
+  // Port on which the cluster accepts connections. Default: 6379.
+  // ForceNew — changing it destroys and recreates the cluster.
+  optional int32 port = 6 [
+    (dev.planton.shared.options.default) = "6379",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }
+  ];
+
+  // ---------------------------------------------------------------------------
+  // Topology (always sharded)
+  // ---------------------------------------------------------------------------
+
+  // Number of shards (data partitions) in the cluster. Each shard holds a
+  // portion of the keyspace. Default: 1.
+  optional int32 num_shards = 7 [
+    (dev.planton.shared.options.default) = "1",
+    (buf.validate.field).int32.gte = 1
+  ];
+
+  // Number of read replicas per shard. Range: 0–5. Default: 1 (i.e., each
+  // shard has 1 primary + 1 replica = 2 nodes).
+  optional int32 num_replicas_per_shard = 8 [
+    (dev.planton.shared.options.default) = "1",
+    (buf.validate.field).int32 = {
+      gte: 0
+      lte: 5
+    }
+  ];
+
+  // ---------------------------------------------------------------------------
+  // Authentication
+  // ---------------------------------------------------------------------------
+
+  // Name of the MemoryDB Access Control List (ACL) to associate with the cluster.
+  // The ACL defines which users can access the cluster and what commands they can
+  // execute. Use "open-access" for development (no authentication required when
+  // TLS is enabled) or reference a custom ACL for production.
+  // When tls_enabled is false, this must be "open-access".
+  optional string acl_name = 9 [
+    (dev.planton.shared.options.default) = "open-access",
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // ---------------------------------------------------------------------------
+  // Networking
+  // ---------------------------------------------------------------------------
+
+  // Subnet IDs for the MemoryDB subnet group. Provide subnets in at least two
+  // AZs for multi-AZ resilience. A subnet group is created automatically from
+  // these subnets.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef subnet_ids = 10 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  ];
+
+  // VPC security groups to attach to the cluster nodes. Controls network-level
+  // access to the MemoryDB endpoint.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef security_group_ids = 11 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
+  ];
+
+  // ---------------------------------------------------------------------------
+  // Encryption
+  // ---------------------------------------------------------------------------
+
+  // Enable TLS for in-transit encryption on all client connections. When false,
+  // acl_name must be "open-access". ForceNew — changing it destroys and
+  // recreates the cluster.
+  optional bool tls_enabled = 12 [(dev.planton.shared.options.default) = "true"];
+
+  // Customer-managed KMS key ARN for at-rest encryption. MemoryDB always encrypts
+  // data at rest; this field optionally specifies your own key instead of the
+  // AWS-managed key. ForceNew — changing it destroys and recreates the cluster.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_id = 13 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
+  ];
+
+  // ---------------------------------------------------------------------------
+  // Maintenance and Snapshots
+  // ---------------------------------------------------------------------------
+
+  // Weekly maintenance window in UTC. Format: "ddd:hh24:mi-ddd:hh24:mi".
+  // Example: "sun:05:00-sun:06:00". Leave empty for AWS-assigned default.
+  string maintenance_window = 14 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]-(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]$"
+  ];
+
+  // Number of days to retain automatic snapshots. 0 disables automatic snapshots.
+  // Range: 0–35.
+  int32 snapshot_retention_limit = 15 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 35
+  }];
+
+  // Daily snapshot window in UTC. Format: "hh24:mi-hh24:mi".
+  // Example: "05:00-09:00". Leave empty for AWS-assigned default.
+  string snapshot_window = 16 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^([01][0-9]|2[0-3]):[0-5][0-9]-([01][0-9]|2[0-3]):[0-5][0-9]$"
+  ];
+
+  // Name of the final snapshot to create when the cluster is deleted. If not
+  // provided, no final snapshot is created.
+  string final_snapshot_name = 17;
+
+  // ---------------------------------------------------------------------------
+  // Restore from Snapshot (Disaster Recovery)
+  // ---------------------------------------------------------------------------
+
+  // ARN(s) of RDB snapshot files stored in S3 to restore data from.
+  // ForceNew — only used at cluster creation time. Mutually exclusive with
+  // snapshot_name.
+  repeated string snapshot_arns = 18;
+
+  // Name of a MemoryDB snapshot to restore from. ForceNew — only used at
+  // cluster creation time. Mutually exclusive with snapshot_arns.
+  string snapshot_name = 19;
+
+  // ---------------------------------------------------------------------------
+  // Parameter Group (bundled)
+  // ---------------------------------------------------------------------------
+
+  // Parameter group family. Required when `parameters` is provided.
+  // Examples: "memorydb_redis7", "memorydb_redis6".
+  string parameter_group_family = 20;
+
+  // Custom MemoryDB parameters to apply via a managed parameter group.
+  // Common examples: activedefrag, maxmemory-policy.
+  repeated AwsMemorydbClusterParameter parameters = 21;
+
+  // ---------------------------------------------------------------------------
+  // Notifications
+  // ---------------------------------------------------------------------------
+
+  // SNS topic ARN for cluster event notifications (failover, maintenance,
+  // configuration changes, etc.).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef sns_topic_arn = 22 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSnsTopic,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.topic_arn"
+  ];
+
+  // ---------------------------------------------------------------------------
+  // Advanced
+  // ---------------------------------------------------------------------------
+
+  // Automatically apply minor engine version upgrades during maintenance windows.
+  // Default: true.
+  optional bool auto_minor_version_upgrade = 23 [(dev.planton.shared.options.default) = "true"];
+
+  // Enable data tiering — automatically moves less-frequently-accessed data to
+  // SSD storage for cost efficiency with large datasets. Only available on
+  // specific node types (db.r6gd.*). ForceNew — cannot be changed after creation.
+  bool data_tiering = 24;
+
+  // ---------------------------------------------------------------------------
+  // CEL Validations
+  // ---------------------------------------------------------------------------
+
+  // Engine must be redis or valkey.
+  option (buf.validate.message).cel = {
+    id: "engine_valid_values"
+    message: "engine must be 'redis' or 'valkey'"
+    expression: "this.engine in ['redis', 'valkey']"
+  };
+
+  // tls_enabled=false requires acl_name="open-access" (AWS constraint).
+  // When tls_enabled is not explicitly set, the default (true) applies — pass.
+  // When acl_name is not explicitly set, the default ("open-access") applies — pass.
+  option (buf.validate.message).cel = {
+    id: "tls_disabled_requires_open_access"
+    message: "when tls_enabled is false, acl_name must be 'open-access'"
+    expression: "!has(this.tls_enabled) || this.tls_enabled == true || !has(this.acl_name) || this.acl_name == 'open-access'"
+  };
+
+  // parameters require parameter_group_family.
+  option (buf.validate.message).cel = {
+    id: "parameters_require_family"
+    message: "parameter_group_family is required when parameters are provided"
+    expression: "this.parameters.size() == 0 || this.parameter_group_family != ''"
+  };
+
+  // snapshot_arns and snapshot_name are mutually exclusive.
+  option (buf.validate.message).cel = {
+    id: "snapshot_restore_mutual_exclusion"
+    message: "snapshot_arns and snapshot_name are mutually exclusive; choose one restore source"
+    expression: "!(this.snapshot_arns.size() > 0 && this.snapshot_name != '')"
+  };
+}
+
+// AwsMemorydbClusterParameter defines a single parameter override for the
+// managed parameter group. Parameters tune Redis/Valkey engine behavior
+// (e.g., activedefrag, maxmemory-policy).
+message AwsMemorydbClusterParameter {
+  // Parameter name (e.g., "activedefrag", "maxmemory-policy").
+  string name = 1 [(buf.validate.field).required = true];
+
+  // Parameter value (e.g., "yes", "volatile-lru").
+  string value = 2 [(buf.validate.field).required = true];
+}

@@ -1,0 +1,45 @@
+# OpenFgaRelationshipTuple Test Manifest
+#
+# This manifest is used for testing the OpenFGA Relationship Tuple deployment component.
+#
+# Prerequisites:
+# - OpenFGA server running (locally or cloud-hosted)
+# - OpenFGA credentials configured
+# - An existing OpenFGA store (store_id from OpenFgaStore deployment)
+# - An existing authorization model in the store (from OpenFgaAuthorizationModel deployment)
+#
+# Usage with Terraform/Tofu (required - no Pulumi provider available):
+#   planton apply --manifest manifest.yaml \
+#     --openfga-provider-config /path/to/openfga-creds.yaml \
+#     --provisioner tofu
+#
+# Example OpenFGA credentials file (openfga-creds.yaml):
+#   apiUrl: http://localhost:8080
+#   # For token auth:
+#   apiToken: your-api-token
+#   # Or for client credentials:
+#   # clientId: your-client-id
+#   # clientSecret: your-client-secret
+#   # apiTokenIssuer: https://your-issuer/oauth/token
+
+apiVersion: openfga.planton.dev/v1
+kind: OpenFgaRelationshipTuple
+metadata:
+  name: test-tuple
+  org: planton
+  env: development
+spec:
+  # Replace with actual store ID from OpenFgaStore deployment
+  storeId: "01HXYZ_REPLACE_WITH_ACTUAL_STORE_ID"
+  # Optional: specify authorization model ID (uses latest if not specified)
+  # authorizationModelId: "01HXYZ_REPLACE_WITH_MODEL_ID"
+  # Grant user:anne viewer access to document:budget-2024
+  user:
+    type: user
+    id:
+      value: anne
+  relation: viewer
+  object:
+    type: document
+    id:
+      value: budget-2024

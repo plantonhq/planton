@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesopenbao.v1;
+
+import "dev/planton/provider/kubernetes/kubernetesopenbao/v1/api.proto";
+import "dev/planton/provider/kubernetes/provider.proto";
+
+// KubernetesOpenBaoStackInput represents the input to the IaC module for deploying OpenBao.
+message KubernetesOpenBaoStackInput {
+  // Target cloud resource to deploy.
+  KubernetesOpenBao target = 1;
+
+  // Kubernetes provider configuration.
+  dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+}

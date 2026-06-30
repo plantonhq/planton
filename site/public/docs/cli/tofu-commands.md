@@ -7,7 +7,7 @@ order: 50
 
 # OpenTofu Commands
 
-The `openmcf tofu` command group runs infrastructure operations using OpenTofu as the IaC engine. Each deployment component in OpenMCF ships with an HCL module in `iac/tf/` that translates the manifest spec into cloud resources.
+The `planton tofu` command group runs infrastructure operations using OpenTofu as the IaC engine. Each deployment component in Planton ships with an HCL module in `iac/tf/` that translates the manifest spec into cloud resources.
 
 ## Prerequisites
 
@@ -21,9 +21,9 @@ The `openmcf tofu` command group runs infrastructure operations using OpenTofu a
 Initialize the backend configuration and download required providers. This must be run before any other operation on a new component or after changing the backend configuration.
 
 ```bash
-openmcf tofu init --manifest database.yaml
-openmcf tofu init --manifest database.yaml --backend-type s3 --backend-config bucket=my-state
-openmcf tofu init --manifest database.yaml --backend-type gcs --backend-config bucket=my-state
+planton tofu init --manifest database.yaml
+planton tofu init --manifest database.yaml --backend-type s3 --backend-config bucket=my-state
+planton tofu init --manifest database.yaml --backend-type gcs --backend-config bucket=my-state
 ```
 
 The `--backend-type` defaults to `local`. To use remote state storage, pass `--backend-type` with one of the supported backend types (`s3`, `gcs`, `azurerm`, etc.) and provide additional configuration via `--backend-config` key-value pairs.
@@ -39,8 +39,8 @@ The `--backend-type` defaults to `local`. To use remote state storage, pass `--b
 Preview infrastructure changes without applying them. Shows what resources would be created, updated, or deleted.
 
 ```bash
-openmcf tofu plan --manifest database.yaml
-openmcf tofu plan --manifest database.yaml --destroy
+planton tofu plan --manifest database.yaml
+planton tofu plan --manifest database.yaml --destroy
 ```
 
 | Flag | Default | Description |
@@ -54,9 +54,9 @@ openmcf tofu plan --manifest database.yaml --destroy
 Deploy infrastructure by applying the planned changes. Creates, updates, or replaces resources to match the manifest spec.
 
 ```bash
-openmcf tofu apply --manifest database.yaml
-openmcf tofu apply --manifest database.yaml --auto-approve
-openmcf tofu apply --manifest api.yaml --set spec.container.replicas=5
+planton tofu apply --manifest database.yaml
+planton tofu apply --manifest database.yaml --auto-approve
+planton tofu apply --manifest api.yaml --set spec.container.replicas=5
 ```
 
 By default, `apply` shows a plan and prompts for confirmation. Pass `--auto-approve` to skip the prompt.
@@ -72,8 +72,8 @@ By default, `apply` shows a plan and prompts for confirmation. Pass `--auto-appr
 Tear down all resources managed by the current state. Removes the infrastructure defined in the manifest from the cloud provider.
 
 ```bash
-openmcf tofu destroy --manifest database.yaml
-openmcf tofu destroy --manifest database.yaml --auto-approve
+planton tofu destroy --manifest database.yaml
+planton tofu destroy --manifest database.yaml --auto-approve
 ```
 
 | Flag | Default | Description |
@@ -87,7 +87,7 @@ openmcf tofu destroy --manifest database.yaml --auto-approve
 Sync the OpenTofu state with actual cloud state without modifying any resources.
 
 ```bash
-openmcf tofu refresh --manifest database.yaml
+planton tofu refresh --manifest database.yaml
 ```
 
 Queries the cloud provider for the current state of all managed resources and updates the local state file to match. No resources are created, modified, or deleted.
@@ -99,11 +99,11 @@ Queries the cloud provider for the current state of all managed resources and up
 
 ### generate-variables
 
-Generate Terraform `variables.tf` content for a specified deployment component kind. This is useful when building custom HCL modules that need to accept OpenMCF manifests as input.
+Generate Terraform `variables.tf` content for a specified deployment component kind. This is useful when building custom HCL modules that need to accept Planton manifests as input.
 
 ```bash
-openmcf tofu generate-variables KubernetesPostgres
-openmcf tofu generate-variables AwsS3Bucket --output-file variables.tf
+planton tofu generate-variables KubernetesPostgres
+planton tofu generate-variables AwsS3Bucket --output-file variables.tf
 ```
 
 Takes exactly one argument: the deployment component kind name (e.g., `KubernetesPostgres`, `AwsS3Bucket`, `GcpCloudSqlPostgres`). The kind name matches the `CloudResourceKind` enum values from the protobuf definitions.
@@ -114,17 +114,17 @@ Takes exactly one argument: the deployment component kind name (e.g., `Kubernete
 
 ### load-tfvars
 
-Load an OpenMCF manifest and convert it to tfvars format. This is useful for integrating OpenMCF manifests with standard Terraform/OpenTofu workflows.
+Load an Planton manifest and convert it to tfvars format. This is useful for integrating Planton manifests with standard Terraform/OpenTofu workflows.
 
 ```bash
-openmcf tofu load-tfvars manifest.yaml
+planton tofu load-tfvars manifest.yaml
 ```
 
 Takes exactly one argument: the path to the manifest file. Outputs the manifest content in tfvars format to stdout.
 
 ## Flags
 
-All `openmcf tofu` subcommands inherit persistent flags from the parent command. Unlike [unified commands](./unified-commands), direct OpenTofu commands register `--manifest` without the `-f` shorthand.
+All `planton tofu` subcommands inherit persistent flags from the parent command. Unlike [unified commands](./unified-commands), direct OpenTofu commands register `--manifest` without the `-f` shorthand.
 
 ### Parent Persistent Flags (All Subcommands)
 
@@ -144,23 +144,23 @@ Direct OpenTofu commands do not support `--clipboard`, `--stack-input`, or the `
 
 ```bash
 # 1. Initialize backend and download providers
-openmcf tofu init --manifest database.yaml --backend-type s3 \
+planton tofu init --manifest database.yaml --backend-type s3 \
   --backend-config bucket=my-state \
   --backend-config key=database/terraform.tfstate \
   --backend-config region=us-east-1
 
 # 2. Preview what will be created
-openmcf tofu plan --manifest database.yaml
+planton tofu plan --manifest database.yaml
 
 # 3. Deploy
-openmcf tofu apply --manifest database.yaml --auto-approve
+planton tofu apply --manifest database.yaml --auto-approve
 
 # 4. After manifest changes, preview and apply
-openmcf tofu plan --manifest database.yaml
-openmcf tofu apply --manifest database.yaml --auto-approve
+planton tofu plan --manifest database.yaml
+planton tofu apply --manifest database.yaml --auto-approve
 
 # 5. When done, tear down resources
-openmcf tofu destroy --manifest database.yaml --auto-approve
+planton tofu destroy --manifest database.yaml --auto-approve
 ```
 
 ## What's Next

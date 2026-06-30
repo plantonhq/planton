@@ -138,7 +138,7 @@ func newLocals(stackInput *kubernetesstrimzikafkaoperatorv1.KubernetesStrimziKaf
 
     labels := pulumi.StringMap{
         "app.kubernetes.io/name":       pulumi.String("strimzi-kafka-operator"),
-        "app.kubernetes.io/managed-by": pulumi.String("openmcf"),
+        "app.kubernetes.io/managed-by": pulumi.String("planton"),
         "planton.ai/resource-kind":  pulumi.String("kubernetes-strimzi-kafka-operator"),
     }
     // ... metadata integration
@@ -147,9 +147,9 @@ func newLocals(stackInput *kubernetesstrimzikafkaoperatorv1.KubernetesStrimziKaf
 
 **Features**:
 - Computed namespace, operator name, chart version
-- Standardized label generation (Kubernetes + OpenMCF labels)
+- Standardized label generation (Kubernetes + Planton labels)
 - Metadata integration (org, env labels)
-- Follows OpenMCF pattern for Pulumi modules
+- Follows Planton pattern for Pulumi modules
 
 ### 4. Documented Terraform Status
 
@@ -181,7 +181,7 @@ Sets proper expectations rather than leaving users with broken stub.
 Example manifest for local testing:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesStrimziKafkaOperator
 metadata:
   name: kafka-operator-example
@@ -211,8 +211,8 @@ The spec.proto already defined sensible defaults:
 
 ```protobuf
 message KubernetesStrimziKafkaOperatorSpecContainer {
-  org.openmcf.shared.kubernetes.ContainerResources resources = 1 
-    [(org.openmcf.shared.kubernetes.default_container_resources) = {
+  dev.planton.shared.kubernetes.ContainerResources resources = 1 
+    [(dev.planton.shared.kubernetes.default_container_resources) = {
       limits: {
         cpu: "1000m"
         memory: "1Gi"
@@ -229,7 +229,7 @@ message KubernetesStrimziKafkaOperatorSpecContainer {
 
 Tests verify the complete validation rule set:
 
-1. **API Version Constraint**: Must match "kubernetes.openmcf.org/v1" exactly
+1. **API Version Constraint**: Must match "kubernetes.planton.dev/v1" exactly
 2. **Kind Constraint**: Must match "KubernetesStrimziKafkaOperator" exactly
 3. **Required Metadata**: CloudResourceMetadata must be present
 4. **Required Spec**: KubernetesStrimziKafkaOperatorSpec must be present
@@ -260,7 +260,7 @@ This architecture is documented in README.md for user understanding.
 1. **Testing Infrastructure**: Spec validation regression testing now possible
 2. **Onboarding Acceleration**: README + examples reduce time-to-first-deployment
 3. **Architectural Clarity**: Multi-tenant pattern (watchAnyNamespace) documented
-4. **Pulumi Best Practices**: locals.go follows OpenMCF module patterns
+4. **Pulumi Best Practices**: locals.go follows Planton module patterns
 
 ### Documentation Highlights
 
@@ -306,7 +306,7 @@ The combination of research docs + user docs creates complete picture:
 
 ### Kafka Ecosystem Context
 
-This component enables OpenMCF users to deploy the **Strimzi Kafka Operator**, which then allows them to create:
+This component enables Planton users to deploy the **Strimzi Kafka Operator**, which then allows them to create:
 
 - **Kafka Clusters**: Declarative Kafka deployments via `Kafka` CRD
 - **Kafka Topics**: Topic management via `KafkaTopic` CRD
@@ -321,7 +321,7 @@ The operator is the **enabler**, not the end state. Documentation makes this cle
 ### Validation Tests
 
 ```bash
-cd apis/org/openmcf/provider/kubernetes/kubernetesstrimzikafkaoperator/v1
+cd apis/dev/planton/provider/kubernetes/kubernetesstrimzikafkaoperator/v1
 go test -v
 ```
 

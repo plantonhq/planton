@@ -1,0 +1,15 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: awsinternetgateway
+spec:
+  # Composed AWS topology under live E2E: the harness deploys a (gateway-free)
+  # AwsVpc prerequisite, resolves the gateway's vpc_id from its outputs, then runs
+  # deploy -> DescribeInternetGateways verify -> destroy -> verify-destroyed on
+  # both provisioners against the AWS test account via keyless SSO/OIDC credentials.
+  tier: 1
+  status: green
+  validated_provisioners:
+    - pulumi
+    - terraform
+  timeout_minutes: 10

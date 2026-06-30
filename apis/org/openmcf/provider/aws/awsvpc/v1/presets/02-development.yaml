@@ -1,9 +1,0 @@
-apiVersion: aws.openmcf.org/v1
-kind: AwsVpc
-metadata:
-  name: my-development-vpc
-spec:
-  region: <aws-region>
-  cidrBlock: 10.0.0.0/16
-  enableDnsHostnames: true
-  enableDnsSupport: true

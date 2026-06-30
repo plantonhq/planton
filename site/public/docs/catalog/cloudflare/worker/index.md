@@ -12,7 +12,7 @@ Deploys a Cloudflare Worker from a pre-built script bundle stored in R2, with op
 
 ## What Gets Created
 
-When you deploy a CloudflareWorker resource, OpenMCF provisions:
+When you deploy a CloudflareWorker resource, Planton provisions:
 
 - **Workers Script** — the Worker script deployed to Cloudflare's edge network, loaded from an R2 bucket. Configured with `nodejs_compat` compatibility flag and observability enabled.
 - **Plain-text Bindings** — environment variables from `env.variables` are bound as plain-text values accessible in the Worker runtime
@@ -32,15 +32,15 @@ When you deploy a CloudflareWorker resource, OpenMCF provisions:
 Create a file `worker.yaml`:
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareWorker
 metadata:
   name: my-worker
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CloudflareWorker.my-worker
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CloudflareWorker.my-worker
 spec:
   accountId: "0123456789abcdef0123456789abcdef"
   workerName: my-worker
@@ -52,7 +52,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f worker.yaml
+planton apply -f worker.yaml
 ```
 
 This deploys a Worker script to Cloudflare's edge network from the specified R2 bundle. The Worker is accessible at `my-worker.<account>.workers.dev`.
@@ -89,15 +89,15 @@ This deploys a Worker script to Cloudflare's edge network from the specified R2 
 Deploy a Worker accessible at a custom hostname:
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareWorker
 metadata:
   name: api-worker
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CloudflareWorker.api-worker
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CloudflareWorker.api-worker
 spec:
   accountId: "0123456789abcdef0123456789abcdef"
   workerName: api-worker
@@ -114,15 +114,15 @@ spec:
 ### Full-Featured with KV, Environment, and Secrets
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareWorker
 metadata:
   name: webhook-handler
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CloudflareWorker.webhook-handler
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CloudflareWorker.webhook-handler
 spec:
   accountId: "0123456789abcdef0123456789abcdef"
   workerName: webhook-handler

@@ -6,11 +6,11 @@
 
 ## Summary
 
-Added the KubernetesJob deployment component to OpenMCF, enabling declarative deployment of one-shot batch workloads to Kubernetes clusters. This component provides a complete, production-ready solution for running Jobs with both Pulumi and Terraform IaC modules, comprehensive validation, and thorough documentation.
+Added the KubernetesJob deployment component to Planton, enabling declarative deployment of one-shot batch workloads to Kubernetes clusters. This component provides a complete, production-ready solution for running Jobs with both Pulumi and Terraform IaC modules, comprehensive validation, and thorough documentation.
 
 ## Problem Statement / Motivation
 
-OpenMCF already supports KubernetesCronJob for scheduled tasks and KubernetesDeployment for long-running services, but lacked support for one-shot batch workloads that run immediately to completion. Users needed a way to declaratively deploy:
+Planton already supports KubernetesCronJob for scheduled tasks and KubernetesDeployment for long-running services, but lacked support for one-shot batch workloads that run immediately to completion. Users needed a way to declaratively deploy:
 
 ### Pain Points
 
@@ -24,7 +24,7 @@ Without a dedicated Job component, users had to either manually create Kubernete
 
 ## Solution / What's New
 
-Implemented a complete `KubernetesJob` deployment component following the OpenMCF forge process. The component provides full lifecycle management for Kubernetes Jobs with support for parallelism, indexed execution, automatic cleanup, and deadline enforcement.
+Implemented a complete `KubernetesJob` deployment component following the Planton forge process. The component provides full lifecycle management for Kubernetes Jobs with support for parallelism, indexed execution, automatic cleanup, and deadline enforcement.
 
 ### Component Architecture
 
@@ -34,7 +34,7 @@ flowchart TB
         M[YAML Manifest]
     end
     
-    subgraph "OpenMCF"
+    subgraph "Planton"
         O[Orchestrator]
         subgraph "Proto API"
             API[api.proto]
@@ -115,7 +115,7 @@ message KubernetesJobSpec {
 **Validation rules include:**
 - `completion_mode` restricted to "NonIndexed" or "Indexed"
 - `restart_policy` restricted to "OnFailure" or "Never" (no "Always" for Jobs)
-- Proper default values with `(org.openmcf.shared.options.default)`
+- Proper default values with `(dev.planton.shared.options.default)`
 
 ### Registry Entry
 
@@ -230,7 +230,7 @@ Created comprehensive validation tests in `spec_test.go`:
 ## Usage Example
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesJob
 metadata:
   name: data-migration
@@ -267,7 +267,7 @@ spec:
 
 Deploy with:
 ```bash
-openmcf pulumi up --manifest job.yaml
+planton pulumi up --manifest job.yaml
 ```
 
 ---

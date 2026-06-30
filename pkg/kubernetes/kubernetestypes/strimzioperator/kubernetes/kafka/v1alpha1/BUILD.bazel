@@ -12,7 +12,7 @@ go_library(
         "kafkaUserPatch.go",
         "pulumiTypes.go",
     ],
-    importpath = "github.com/plantonhq/openmcf/pkg/kubernetes/kubernetestypes/strimzioperator/kubernetes/kafka/v1alpha1",
+    importpath = "github.com/plantonhq/planton/pkg/kubernetes/kubernetestypes/strimzioperator/kubernetes/kafka/v1alpha1",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_blang_semver//:semver",

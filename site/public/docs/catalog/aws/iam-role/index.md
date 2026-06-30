@@ -12,7 +12,7 @@ Deploys an AWS IAM Role with a configurable trust policy, optional managed polic
 
 ## What Gets Created
 
-When you deploy an AwsIamRole resource, OpenMCF provisions:
+When you deploy an AwsIamRole resource, Planton provisions:
 
 - **IAM Role** — an `iam.Role` resource with the specified name, trust (assume-role) policy, optional description, and IAM path
 - **Managed Policy Attachments** — one `iam.RolePolicyAttachment` per entry in `managedPolicyArns`, linking the role to existing AWS-managed or customer-managed policies
@@ -20,7 +20,7 @@ When you deploy an AwsIamRole resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **A trust policy document** defining which principals (services, accounts, or users) may assume this role
 - **Policy ARNs** for any managed policies you want to attach (AWS-managed or customer-managed)
 
@@ -29,15 +29,15 @@ When you deploy an AwsIamRole resource, OpenMCF provisions:
 Create a file `iam-role.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsIamRole
 metadata:
   name: my-ecs-task-role
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsIamRole.my-ecs-task-role
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsIamRole.my-ecs-task-role
 spec:
   region: us-east-1
   trustPolicy:
@@ -52,7 +52,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f iam-role.yaml
+planton apply -f iam-role.yaml
 ```
 
 This creates an IAM role that can be assumed by ECS tasks, with no additional policies attached.
@@ -82,15 +82,15 @@ This creates an IAM role that can be assumed by ECS tasks, with no additional po
 A role that EC2 instances can assume, with the SSM managed policy attached:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsIamRole
 metadata:
   name: ec2-instance-role
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsIamRole.ec2-instance-role
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsIamRole.ec2-instance-role
 spec:
   region: us-east-1
   description: Allows EC2 instances to call AWS services
@@ -110,15 +110,15 @@ spec:
 A role for Lambda functions with an inline policy granting DynamoDB access:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsIamRole
 metadata:
   name: lambda-exec-role
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsIamRole.lambda-exec-role
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsIamRole.lambda-exec-role
 spec:
   region: us-east-1
   description: Execution role for order-processing Lambda
@@ -149,15 +149,15 @@ spec:
 A role that allows a different AWS account to assume it, useful for cross-account resource access:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsIamRole
 metadata:
   name: cross-account-reader
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsIamRole.cross-account-reader
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsIamRole.cross-account-reader
 spec:
   region: us-east-1
   description: Allows account 111111111111 to read S3 buckets in this account
@@ -180,15 +180,15 @@ spec:
 A role combining managed and inline policies for fine-grained ECS task permissions:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsIamRole
 metadata:
   name: ecs-worker-role
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsIamRole.ecs-worker-role
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsIamRole.ecs-worker-role
 spec:
   region: us-east-1
   description: Worker task role with SQS and S3 permissions

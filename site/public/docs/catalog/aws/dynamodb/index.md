@@ -12,7 +12,7 @@ Deploys an AWS DynamoDB table with configurable key schema, billing mode, second
 
 ## What Gets Created
 
-When you deploy an AwsDynamodb resource, OpenMCF provisions:
+When you deploy an AwsDynamodb resource, Planton provisions:
 
 - **DynamoDB Table** — a `dynamodb.Table` resource with the specified key schema, billing mode, and attribute definitions
 - **Global Secondary Indexes** — created when `globalSecondaryIndexes` entries are defined, each with its own key schema, projection, and optional provisioned throughput
@@ -21,11 +21,11 @@ When you deploy an AwsDynamodb resource, OpenMCF provisions:
 - **Point-in-Time Recovery** — enabled when `pointInTimeRecoveryEnabled` is `true`
 - **DynamoDB Streams** — activated when `streamEnabled` is `true` with the specified `streamViewType`
 
-All resources are tagged with OpenMCF metadata (organization, environment, resource kind, resource ID).
+All resources are tagged with Planton metadata (organization, environment, resource kind, resource ID).
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **A billing mode decision** — choose between `PROVISIONED` (with explicit read/write capacity) or `PAY_PER_REQUEST` (on-demand)
 - **A KMS key ARN** if using customer-managed server-side encryption
 
@@ -34,15 +34,15 @@ All resources are tagged with OpenMCF metadata (organization, environment, resou
 Create a file `dynamodb.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsDynamodb
 metadata:
   name: my-table
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsDynamodb.my-table
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsDynamodb.my-table
 spec:
   region: us-east-1
   billingMode: PAY_PER_REQUEST
@@ -57,7 +57,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f dynamodb.yaml
+planton apply -f dynamodb.yaml
 ```
 
 This creates an on-demand DynamoDB table with a single string partition key.
@@ -114,15 +114,15 @@ This creates an on-demand DynamoDB table with a single string partition key.
 A table using pay-per-request billing with a partition key and sort key:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsDynamodb
 metadata:
   name: orders-table
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsDynamodb.orders-table
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsDynamodb.orders-table
 spec:
   region: us-east-1
   billingMode: PAY_PER_REQUEST
@@ -143,15 +143,15 @@ spec:
 A table with explicit read/write capacity and TTL expiration:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsDynamodb
 metadata:
   name: sessions-table
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsDynamodb.sessions-table
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsDynamodb.sessions-table
 spec:
   region: us-east-1
   billingMode: PROVISIONED
@@ -174,15 +174,15 @@ spec:
 An on-demand table with a GSI for querying by an alternate key:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsDynamodb
 metadata:
   name: users-table
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsDynamodb.users-table
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsDynamodb.users-table
 spec:
   region: us-east-1
   billingMode: PAY_PER_REQUEST
@@ -208,15 +208,15 @@ spec:
 A fully configured production table with DynamoDB Streams, customer-managed encryption, point-in-time recovery, and deletion protection:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsDynamodb
 metadata:
   name: audit-log
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsDynamodb.audit-log
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsDynamodb.audit-log
 spec:
   region: us-east-1
   billingMode: PAY_PER_REQUEST
@@ -262,15 +262,15 @@ spec:
 When using `PROVISIONED` billing, each GSI must also specify its own throughput:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsDynamodb
 metadata:
   name: products-table
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsDynamodb.products-table
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsDynamodb.products-table
 spec:
   region: us-east-1
   billingMode: PROVISIONED

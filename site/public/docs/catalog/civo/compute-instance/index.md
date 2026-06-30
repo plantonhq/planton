@@ -12,13 +12,13 @@ Deploys a virtual machine on Civo Cloud with a specified OS image, instance size
 
 ## What Gets Created
 
-When you deploy a CivoComputeInstance resource, OpenMCF provisions:
+When you deploy a CivoComputeInstance resource, Planton provisions:
 
 - **Compute Instance** — a `civo_instance` resource in the specified region, running the chosen OS image at the requested size, attached to the given network
 
 ## Prerequisites
 
-- **Civo credentials** configured via environment variables or OpenMCF provider config
+- **Civo credentials** configured via environment variables or Planton provider config
 - **An existing Civo network** in the target region (can be created with CivoVpc)
 - **A valid instance size slug** for the target region (e.g., `g3.small`) — check Civo's available sizes
 - **A valid OS image slug** for the target region (e.g., `ubuntu-focal`) — check Civo's available disk images
@@ -28,15 +28,15 @@ When you deploy a CivoComputeInstance resource, OpenMCF provisions:
 Create a file `civo-instance.yaml`:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoComputeInstance
 metadata:
   name: my-instance
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CivoComputeInstance.my-instance
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CivoComputeInstance.my-instance
 spec:
   instanceName: my-instance
   region: nyc1
@@ -49,7 +49,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f civo-instance.yaml
+planton apply -f civo-instance.yaml
 ```
 
 This creates a `g3.small` instance in New York running Ubuntu Focal, attached to the specified network.
@@ -84,15 +84,15 @@ This creates a `g3.small` instance in New York running Ubuntu Focal, attached to
 A minimal instance with no SSH keys or firewalls:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoComputeInstance
 metadata:
   name: basic-vm
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CivoComputeInstance.basic-vm
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CivoComputeInstance.basic-vm
 spec:
   instanceName: basic-vm
   region: fra1
@@ -107,15 +107,15 @@ spec:
 An instance configured with an SSH key for login and a firewall for network access control:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoComputeInstance
 metadata:
   name: ssh-vm
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.CivoComputeInstance.ssh-vm
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.CivoComputeInstance.ssh-vm
 spec:
   instanceName: ssh-vm
   region: nyc1
@@ -134,18 +134,18 @@ spec:
 
 ### Full-Featured Instance with Foreign Key References and Cloud-Init
 
-An instance referencing other OpenMCF-managed resources, with a reserved IP, attached volume, and a cloud-init script:
+An instance referencing other Planton-managed resources, with a reserved IP, attached volume, and a cloud-init script:
 
 ```yaml
-apiVersion: civo.openmcf.org/v1
+apiVersion: civo.planton.dev/v1
 kind: CivoComputeInstance
 metadata:
   name: prod-app
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CivoComputeInstance.prod-app
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CivoComputeInstance.prod-app
 spec:
   instanceName: prod-app
   region: lon1
@@ -175,7 +175,7 @@ spec:
       field: status.outputs.reserved_ip_id
   tags:
     - environment:production
-    - managed-by:openmcf
+    - managed-by:planton
   userData: |
     #!/bin/bash
     apt-get update && apt-get install -y nginx

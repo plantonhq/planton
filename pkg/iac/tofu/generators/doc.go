@@ -1,9 +1,9 @@
 // Package generators provides proto-aware Terraform artifact generation for
-// OpenMCF cloud components.
+// Planton cloud components.
 //
 // It replaces the earlier pkg/iac/tofu/tfvars and pkg/iac/tofu/variablestf
 // packages with a unified implementation that shares a single TypeRule registry
-// across both generators. This ensures that OpenMCF's domain types (such as
+// across both generators. This ensures that Planton's domain types (such as
 // StringValueOrRef and KubernetesClusterSelector) are handled consistently
 // whether generating terraform.tfvars or variables.tf.
 //
@@ -37,8 +37,8 @@
 //     kinds, emits the entire iac/tf/ module (any-typed spec passthrough), so
 //     no hand-written snake->camel/prune/oneOf locals.tf is needed.
 //
-// Note: despite the generic-sounding name, this package is openmcf-domain-aware
-// (it hardcodes openmcf type rules and reads kind metadata via crkreflect); it
+// Note: despite the generic-sounding name, this package is planton-domain-aware
+// (it hardcodes planton type rules and reads kind metadata via crkreflect); it
 // is not a standalone proto->HCL library.
 //
 // # The optional() contract (renderer and module must agree)
@@ -94,7 +94,7 @@
 //
 // # Extensibility
 //
-// To handle a new OpenMCF wrapper type, add one entry to DefaultRules() in
+// To handle a new Planton wrapper type, add one entry to DefaultRules() in
 // typerules.go. Both generators will immediately respect the new rule. No
 // other code changes are required.
 package generators

@@ -1,0 +1,14 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesCertificate
+metadata:
+  name: test-certificate
+spec:
+  namespace:
+    value: default
+  dnsNames:
+    - test.example.com
+  secretName: test-example-tls
+  issuerRef:
+    clusterIssuer:
+      name:
+        value: example.com

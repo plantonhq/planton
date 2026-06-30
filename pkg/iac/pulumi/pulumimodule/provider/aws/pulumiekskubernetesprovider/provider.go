@@ -2,7 +2,7 @@ package pulumiekskubernetesprovider
 
 import (
 	"github.com/pkg/errors"
-	aws "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws"
+	aws "github.com/plantonhq/planton/apis/dev/planton/provider/aws"
 	"github.com/pulumi/pulumi-aws/sdk/v7/go/aws/eks"
 	"github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"

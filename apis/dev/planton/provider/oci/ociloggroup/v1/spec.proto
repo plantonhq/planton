@@ -1,0 +1,130 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ociloggroup.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// OciLogGroupSpec defines the specification for an OCI Log Group --
+// the organizational container for OCI Logging service logs. A log
+// group holds zero or more individual logs, which can be either
+// service logs (auto-collected from OCI services) or custom logs
+// (ingested via the Logging Ingestion API).
+//
+// The component bundles log group + logs because logs cannot exist
+// outside a log group, and the common pattern is to create a group
+// with its constituent logs in a single deployment.
+//
+// Key behaviors:
+//   - Log group attributes (compartment_id, display_name, description)
+//     are all updatable
+//   - log_type and the entire configuration block on individual logs
+//     are ForceNew (changing them forces log recreation)
+//   - is_enabled and retention_duration on logs are updatable
+//   - display_name must be unique within the log group
+//
+// Excluded from v1:
+//   - defined_tags, system_tags -- managed by platform
+//   - freeform_tags -- auto-populated from metadata labels
+//   - configuration.source.source_type -- hardcoded to "OCISERVICE"
+//     (the only valid value)
+message OciLogGroupSpec {
+  // OCID of the compartment where the log group will be created.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef compartment_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OciCompartment,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartment_id"
+  ];
+
+  // Description for the log group.
+  string description = 2;
+
+  // Logs within this group. Each log is identified by its display_name,
+  // which is used as the resource key in IaC modules and must be unique
+  // within the log group.
+  repeated Log logs = 3;
+
+  // Log defines an individual log within the group.
+  // Service logs auto-collect from OCI services and require a
+  // configuration block specifying the source. Custom logs accept
+  // entries pushed via the Logging Ingestion API and do not require
+  // configuration.
+  message Log {
+    option (buf.validate.message).cel = {
+      id: "service_log_requires_configuration"
+      message: "configuration is required when log_type is 'service'"
+      expression: "this.log_type != 2 || has(this.configuration)"
+    };
+
+    // Type of log: custom or service.
+    enum LogType {
+      unspecified = 0;
+      custom = 1;
+      service = 2;
+    }
+
+    // Display name for the log. Must be unique within the log group.
+    // Used as the for_each key in IaC modules.
+    string display_name = 1 [(buf.validate.field).string.min_len = 1];
+
+    // Type of log. Must be explicitly set.
+    // custom: entries pushed via Logging Ingestion API.
+    // service: auto-collected from an OCI service.
+    LogType log_type = 2 [(buf.validate.field).cel = {
+      id: "log_type_required"
+      message: "log_type must be explicitly set (custom or service)"
+      expression: "this != 0"
+    }];
+
+    // Whether the log is enabled. When nil, OCI defaults to true.
+    optional bool is_enabled = 3;
+
+    // Retention period in days, in 30-day increments (30, 60, 90, 120,
+    // 150, 180). When nil, OCI defaults to 30 days.
+    optional int32 retention_duration = 4 [(buf.validate.field).cel = {
+      id: "retention_30_day_increments"
+      message: "retention_duration must be a 30-day increment between 30 and 180"
+      expression: "this >= 30 && this <= 180 && this % 30 == 0"
+    }];
+
+    // Source configuration for service logs. Required when log_type is
+    // service; ignored for custom logs.
+    //
+    // The provider nests this as configuration > source, but we flatten
+    // by removing the source wrapper (it is the only child alongside an
+    // optional compartment override). source_type is hardcoded to
+    // "OCISERVICE" in IaC modules (the only valid value).
+    ServiceLogConfiguration configuration = 5;
+
+    // ServiceLogConfiguration identifies which OCI service, resource,
+    // and log category to auto-collect logs from.
+    message ServiceLogConfiguration {
+      // OCI service generating the log.
+      // Examples: "objectstorage", "flowlogs", "apigateway",
+      // "loadbalancer", "functionsInvoke".
+      string service = 1 [(buf.validate.field).string.min_len = 1];
+
+      // OCID of the resource emitting logs. Polymorphic -- could be a
+      // VCN (for flow logs), a bucket (for object storage), an API
+      // gateway, etc. StringValueOrRef without default_kind because
+      // the resource type varies; valueFrom enables composability
+      // with any Planton component.
+      dev.planton.shared.foreignkey.v1.StringValueOrRef resource = 2 [(buf.validate.field).required = true];
+
+      // Log category within the service.
+      // Examples: "write", "read", "all" (object storage);
+      // "access" (API gateway); "invoke" (functions).
+      string category = 3 [(buf.validate.field).string.min_len = 1];
+
+      // Additional parameters for the log source. Pass-through to OCI.
+      map<string, string> parameters = 4;
+
+      // Optional compartment override for source resource lookup.
+      // When omitted, the log group's compartment is used.
+      dev.planton.shared.foreignkey.v1.StringValueOrRef compartment_id = 5 [
+        (dev.planton.shared.foreignkey.v1.default_kind) = OciCompartment,
+        (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.compartment_id"
+      ];
+    }
+  }
+}

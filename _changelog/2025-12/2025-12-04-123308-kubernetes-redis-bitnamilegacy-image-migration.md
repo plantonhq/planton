@@ -58,14 +58,14 @@ redis_image_tag         = "8.2.1-debian-12-r0"
 
 ### Pulumi Changes
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesredis/v1/iac/pulumi/module/variables.go`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesredis/v1/iac/pulumi/module/variables.go`
 
 Added three new configuration variables:
 - `RedisImageRegistry`: Docker registry hosting the image
 - `RedisImageRepository`: Repository path for Redis image
 - `RedisImageTag`: Specific image version tag
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesredis/v1/iac/pulumi/module/helm_chart.go`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesredis/v1/iac/pulumi/module/helm_chart.go`
 
 Updated Helm chart values to explicitly override the image:
 ```go
@@ -83,7 +83,7 @@ Values: pulumi.Map{
 
 ### Terraform Changes
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesredis/v1/iac/tf/locals.tf`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesredis/v1/iac/tf/locals.tf`
 
 Added Redis image locals matching Pulumi configuration:
 ```hcl
@@ -93,7 +93,7 @@ redis_image_repository  = "bitnamilegacy/redis"
 redis_image_tag         = "8.2.1-debian-12-r0"
 ```
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesredis/v1/iac/tf/helm_chart.tf`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesredis/v1/iac/tf/helm_chart.tf`
 
 Added image override in Helm values:
 ```hcl
@@ -159,13 +159,13 @@ Our configuration properly overrides these default values to use `bitnamilegacy/
 
 **Before**:
 ```bash
-$ openmcf pulumi up -f redis.yaml
+$ planton pulumi up -f redis.yaml
 # ❌ Failed: ImagePullBackOff - docker.io/bitnami/redis:7.0.11 not found
 ```
 
 **After**:
 ```bash
-$ openmcf pulumi up -f redis.yaml
+$ planton pulumi up -f redis.yaml
 # ✅ Success: Pods running with docker.io/bitnamilegacy/redis:8.2.1
 ```
 
@@ -175,7 +175,7 @@ $ openmcf pulumi up -f redis.yaml
 
 1. Deploy Redis with Pulumi:
    ```bash
-   openmcf pulumi up -f redis-central-cache.yaml --module-dir ${REDIS_MODULE}
+   planton pulumi up -f redis-central-cache.yaml --module-dir ${REDIS_MODULE}
    ```
 
 2. Verify image in running pods:

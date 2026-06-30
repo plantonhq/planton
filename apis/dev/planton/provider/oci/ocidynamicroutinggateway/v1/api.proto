@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocidynamicroutinggateway.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/oci/ocidynamicroutinggateway/v1/spec.proto";
+import "dev/planton/provider/oci/ocidynamicroutinggateway/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+// OciDynamicRoutingGateway is the top-level resource representing an Oracle
+// Cloud Infrastructure Dynamic Routing Gateway with attachments, route tables,
+// and route distributions.
+message OciDynamicRoutingGateway {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'oci.planton.dev/v1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'OciDynamicRoutingGateway'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  OciDynamicRoutingGatewaySpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  OciDynamicRoutingGatewayStatus status = 5;
+}
+
+// OciDynamicRoutingGatewayStatus holds the outputs produced by deploying an
+// OciDynamicRoutingGateway.
+message OciDynamicRoutingGatewayStatus {
+  // stack-outputs
+  OciDynamicRoutingGatewayStackOutputs outputs = 1;
+}

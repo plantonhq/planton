@@ -12,13 +12,13 @@ Deploys a stateful, network-edge Cloud Firewall on DigitalOcean that enforces a 
 
 ## What Gets Created
 
-When you deploy a DigitalOceanFirewall resource, OpenMCF provisions:
+When you deploy a DigitalOceanFirewall resource, Planton provisions:
 
 - **DigitalOcean Firewall** — a `digitalocean_firewall` resource with the specified name, inbound rules, outbound rules, and Droplet targeting (by ID or tag)
 
 ## Prerequisites
 
-- **DigitalOcean credentials** configured via environment variables or OpenMCF provider config
+- **DigitalOcean credentials** configured via environment variables or Planton provider config
 - **Existing Droplets or Droplet tags** to which the firewall will be applied
 - **Knowledge of the network ports and protocols** your services require
 
@@ -27,15 +27,15 @@ When you deploy a DigitalOceanFirewall resource, OpenMCF provisions:
 Create a file `firewall.yaml`:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanFirewall
 metadata:
   name: my-firewall
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.DigitalOceanFirewall.my-firewall
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.DigitalOceanFirewall.my-firewall
 spec:
   name: my-firewall
   tags:
@@ -62,7 +62,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f firewall.yaml
+planton apply -f firewall.yaml
 ```
 
 This creates a firewall that allows inbound HTTPS from any address and permits all outbound traffic, applied to every Droplet tagged `web`.
@@ -119,15 +119,15 @@ Each entry in `outboundRules` accepts the following fields:
 A firewall for a web server that accepts HTTP and HTTPS from any address and allows all outbound traffic:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanFirewall
 metadata:
   name: web-server-fw
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.DigitalOceanFirewall.web-server-fw
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.DigitalOceanFirewall.web-server-fw
 spec:
   name: web-server-firewall
   tags:
@@ -167,15 +167,15 @@ Separate firewalls for a web tier and a database tier. The web tier accepts HTTP
 **Web tier firewall:**
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanFirewall
 metadata:
   name: app-web-fw
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.DigitalOceanFirewall.app-web-fw
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.DigitalOceanFirewall.app-web-fw
 spec:
   name: app-web-firewall
   tags:
@@ -213,15 +213,15 @@ spec:
 **Database tier firewall:**
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanFirewall
 metadata:
   name: app-db-fw
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.DigitalOceanFirewall.app-db-fw
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.DigitalOceanFirewall.app-db-fw
 spec:
   name: app-db-firewall
   tags:
@@ -252,15 +252,15 @@ spec:
 A firewall that combines CIDR-based, tag-based, and Kubernetes cluster-based source rules, applied to specific Droplets by ID:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanFirewall
 metadata:
   name: mixed-sources-fw
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.DigitalOceanFirewall.mixed-sources-fw
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.DigitalOceanFirewall.mixed-sources-fw
 spec:
   name: mixed-sources-firewall
   dropletIds:

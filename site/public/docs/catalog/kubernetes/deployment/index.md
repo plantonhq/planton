@@ -12,7 +12,7 @@ Deploys a containerized application to Kubernetes as a Deployment with automatic
 
 ## What Gets Created
 
-When you deploy a KubernetesDeployment resource, OpenMCF provisions:
+When you deploy a KubernetesDeployment resource, Planton provisions:
 
 - **Namespace** — created only when `createNamespace` is `true`
 - **ServiceAccount** — a dedicated service account for the deployment's pods
@@ -29,7 +29,7 @@ When you deploy a KubernetesDeployment resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
 - **A container image** accessible from the cluster (public registry or with a configured image pull secret)
 - **cert-manager with a ClusterIssuer** if enabling ingress — the ClusterIssuer name must match the domain extracted from the ingress hostname
@@ -40,15 +40,15 @@ When you deploy a KubernetesDeployment resource, OpenMCF provisions:
 Create a file `deployment.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDeployment
 metadata:
   name: my-app
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesDeployment.my-app
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesDeployment.my-app
 spec:
   namespace: my-namespace
   createNamespace: true
@@ -68,7 +68,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f deployment.yaml
+planton apply -f deployment.yaml
 ```
 
 This creates a single-replica nginx Deployment with a ClusterIP Service on port 80 in the `my-namespace` namespace, using default resource limits (1000m CPU, 1Gi memory).
@@ -127,15 +127,15 @@ This creates a single-replica nginx Deployment with a ClusterIP Service on port 
 A single-replica web server with HTTP readiness and liveness probes:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDeployment
 metadata:
   name: web-server
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesDeployment.web-server
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesDeployment.web-server
 spec:
   namespace: web
   createNamespace: true
@@ -166,18 +166,18 @@ spec:
 
 ### Microservice with Environment Variables and Secrets
 
-A backend API service referencing other OpenMCF-managed resources for database and cache connections, with secrets stored in an external Kubernetes Secret:
+A backend API service referencing other Planton-managed resources for database and cache connections, with secrets stored in an external Kubernetes Secret:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDeployment
 metadata:
   name: api-server
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.KubernetesDeployment.api-server
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.KubernetesDeployment.api-server
 spec:
   namespace: backend
   version: main
@@ -235,15 +235,15 @@ spec:
 Full-featured production deployment with Gateway API ingress, autoscaling, zero-downtime rolling updates, and a pod disruption budget:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDeployment
 metadata:
   name: prod-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesDeployment.prod-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesDeployment.prod-api
 spec:
   namespace: production
   version: main
@@ -305,15 +305,15 @@ spec:
 A worker process with a custom command that mounts a ConfigMap as a configuration file:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDeployment
 metadata:
   name: worker
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesDeployment.worker
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesDeployment.worker
 spec:
   namespace: workers
   createNamespace: true

@@ -14,7 +14,7 @@ The AWS resource catalog lacked support for MemoryDB, a distinct service from El
 
 ### Pain Points
 
-- Teams needing durable Redis-compatible storage had no OpenMCF component to manage it
+- Teams needing durable Redis-compatible storage had no Planton component to manage it
 - MemoryDB has a different authentication model (ACL-based vs ElastiCache's auth_token/user_group_ids), different topology (always sharded), and different encryption model (always-on at-rest) — it could not be conflated with the existing ElastiCache component
 - No standardized way to manage MemoryDB subnet groups and parameter groups as part of the cluster lifecycle
 
@@ -66,7 +66,7 @@ Feature parity with Pulumi: `provider.tf`, `variables.tf`, `locals.tf`, `main.tf
 
 ## Benefits
 
-- Teams can now manage durable Redis-compatible databases through OpenMCF's declarative workflow
+- Teams can now manage durable Redis-compatible databases through Planton's declarative workflow
 - Subnet group and parameter group management is bundled, reducing boilerplate
 - Cross-resource references (`valueFrom`) enable wiring MemoryDB into larger infra charts
 - 3 presets provide immediate starting points for common deployment patterns
@@ -82,7 +82,7 @@ Feature parity with Pulumi: `provider.tf`, `variables.tf`, `locals.tf`, `main.tf
 
 - Part of 20260215.02.sp.aws-resource-expansion (R27 of ~32)
 - Pattern reference: AwsRedisElasticache component
-- Parent project: 20260212.01.openmcf-cloud-provider-expansion
+- Parent project: 20260212.01.planton-cloud-provider-expansion
 
 ---
 

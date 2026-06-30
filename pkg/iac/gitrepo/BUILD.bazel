@@ -7,7 +7,7 @@ go_library(
         "git_repo.go",
         "local_repo.go",
     ],
-    importpath = "github.com/plantonhq/openmcf/pkg/iac/gitrepo",
+    importpath = "github.com/plantonhq/planton/pkg/iac/gitrepo",
     visibility = ["//visibility:public"],
     deps = [
         "//internal/cli/flag",

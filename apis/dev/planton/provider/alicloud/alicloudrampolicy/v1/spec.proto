@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package dev.planton.provider.alicloud.alicloudrampolicy.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/options/options.proto";
+
+// AliCloudRamPolicySpec defines the configuration for an Alibaba Cloud
+// Resource Access Management (RAM) custom policy.
+//
+// A RAM policy is a JSON document that defines a set of permissions (actions
+// on resources with optional conditions). Custom policies are created when the
+// built-in system policies do not provide the exact permission boundaries you
+// need. Once created, a policy can be attached to RAM roles, users, or groups
+// via their respective components.
+//
+// Alibaba Cloud supports up to 5 versions per policy. When a policy is updated,
+// a new version is created and set as the default. The rotate_strategy field
+// controls what happens when the version limit is reached.
+message AliCloudRamPolicySpec {
+  // Alibaba Cloud region for provider endpoint configuration.
+  // RAM is a global service, but the provider requires a region for API routing.
+  // Examples: "cn-hangzhou", "cn-shanghai", "us-west-1", "ap-southeast-1".
+  string region = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // RAM policy name. Must be unique within the Alibaba Cloud account.
+  // 1-128 characters: English letters, digits, and hyphens (-).
+  string policy_name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 128
+  ];
+
+  // Human-readable description of what this policy allows or denies.
+  // Maximum 1024 characters.
+  string description = 3 [(buf.validate.field).string.max_len = 1024];
+
+  // JSON IAM policy document defining the permissions.
+  // Maximum 6144 bytes. Must be valid JSON conforming to the Alibaba Cloud
+  // RAM policy structure with Version, Statement, Effect, Action, and Resource.
+  //
+  // Example granting read-only access to a specific OSS bucket:
+  //   {"Version":"1","Statement":[{"Effect":"Allow",
+  //    "Action":["oss:GetObject","oss:ListObjects"],
+  //    "Resource":["acs:oss:*:*:my-bucket/*"]}]}
+  string policy_document = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Strategy for handling policy versions when the 5-version limit is reached.
+  // "None" (default): update fails if the limit is reached; you must manually
+  //   delete old versions.
+  // "DeleteOldestNonDefaultVersionWhenLimitExceeded": automatically deletes
+  //   the oldest non-default version to make room.
+  optional string rotate_strategy = 5 [(buf.validate.field).string = {
+    in: [
+      "None",
+      "DeleteOldestNonDefaultVersionWhenLimitExceeded"
+    ]
+  }];
+
+  // Tags applied to the RAM policy for organizational and cost-tracking purposes.
+  map<string, string> tags = 6;
+
+  // Force-delete the policy even if it is still attached to roles, users, or groups.
+  // When true, the policy is detached from all entities and all non-default versions
+  // are deleted before the policy itself is removed.
+  // When false (default), deletion fails if the policy is still attached.
+  // Default: false
+  optional bool force = 7 [(dev.planton.shared.options.default) = "false"];
+}

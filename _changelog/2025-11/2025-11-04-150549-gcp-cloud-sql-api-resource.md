@@ -10,11 +10,11 @@ Implemented a complete GCP Cloud SQL API resource enabling deployment and manage
 
 ## Problem Statement / Motivation
 
-OpenMCF needed the ability to provision and manage relational databases on Google Cloud Platform as part of its infrastructure automation capabilities. While the framework existed for other GCP resources, there was no standardized way to deploy Cloud SQL instances through our CLI and IaC tooling.
+Planton needed the ability to provision and manage relational databases on Google Cloud Platform as part of its infrastructure automation capabilities. While the framework existed for other GCP resources, there was no standardized way to deploy Cloud SQL instances through our CLI and IaC tooling.
 
 ### Pain Points
 
-- **No Cloud SQL Support**: Users couldn't deploy managed MySQL or PostgreSQL databases on GCP through OpenMCF
+- **No Cloud SQL Support**: Users couldn't deploy managed MySQL or PostgreSQL databases on GCP through Planton
 - **Manual Database Setup**: Teams had to manually create and configure Cloud SQL instances outside the IaC workflow
 - **Inconsistent Configurations**: Lack of standardized templates led to configuration drift across environments
 - **Missing Validation**: No validation for database configurations before deployment
@@ -24,7 +24,7 @@ OpenMCF needed the ability to provision and manage relational databases on Googl
 
 ## Solution / What's New
 
-Created a complete, production-ready GCP Cloud SQL API resource following OpenMCF's API resource patterns. The implementation provides a declarative YAML interface for Cloud SQL instances with full support for MySQL and PostgreSQL engines, backed by both Pulumi and Terraform execution engines.
+Created a complete, production-ready GCP Cloud SQL API resource following Planton's API resource patterns. The implementation provides a declarative YAML interface for Cloud SQL instances with full support for MySQL and PostgreSQL engines, backed by both Pulumi and Terraform execution engines.
 
 ### Key Features
 
@@ -102,9 +102,9 @@ message GcpCloudSqlSpec {
 
 ```protobuf
 message GcpCloudSql {
-  string api_version = 1 [(buf.validate.field).string.const = 'gcp.openmcf.org/v1'];
+  string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1'];
   string kind = 2 [(buf.validate.field).string.const = 'GcpCloudSql'];
-  org.openmcf.shared.CloudResourceMetadata metadata = 3;
+  dev.planton.shared.CloudResourceMetadata metadata = 3;
   GcpCloudSqlSpec spec = 4;
   GcpCloudSqlStatus status = 5;
 }
@@ -306,14 +306,14 @@ Created comprehensive documentation including:
 - **Automated Backups**: Guaranteed backup schedules with configurable retention
 - **High Availability**: Easy HA setup with automatic failover
 - **Resource Tracking**: Automatic labeling for cost allocation and resource management
-- **Consistent Patterns**: Same workflow as other OpenMCF resources
+- **Consistent Patterns**: Same workflow as other Planton resources
 
 ## Usage Examples
 
 ### Basic MySQL Instance
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudSql
 metadata:
   name: mysql-db
@@ -329,18 +329,18 @@ spec:
 
 Deploy with Pulumi:
 ```bash
-openmcf pulumi up --manifest mysql-db.yaml --stack myorg/platform/dev
+planton pulumi up --manifest mysql-db.yaml --stack myorg/platform/dev
 ```
 
 Deploy with Terraform:
 ```bash
-openmcf tofu apply --manifest mysql-db.yaml --auto-approve
+planton tofu apply --manifest mysql-db.yaml --auto-approve
 ```
 
 ### Production PostgreSQL with HA
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudSql
 metadata:
   name: postgres-production
@@ -380,7 +380,7 @@ After successful deployment, the CLI exports:
 
 ```bash
 # Get connection information
-openmcf stack-outputs --manifest postgres-production.yaml
+planton stack-outputs --manifest postgres-production.yaml
 
 # Outputs:
 # instance_name: postgres-production
@@ -463,7 +463,7 @@ Used map for maximum flexibility:
 
 ### User Impact
 
-- **New Capability**: GCP users can now deploy Cloud SQL instances via OpenMCF
+- **New Capability**: GCP users can now deploy Cloud SQL instances via Planton
 - **Consistent Experience**: Same YAML-based workflow as other cloud resources
 - **Faster Provisioning**: 5-10 minutes for basic instance vs 20-30 minutes manual setup
 - **Fewer Errors**: Validation catches 90%+ of common configuration mistakes

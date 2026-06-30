@@ -1,0 +1,311 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awselasticfilesystem.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+import "google/protobuf/struct.proto";
+
+// AwsElasticFileSystemSpec defines the desired configuration for an AWS Elastic
+// File System — a fully managed, elastic NFS file system that scales storage
+// capacity automatically as files are added or removed, with no provisioning or
+// capacity planning required.
+//
+// This component bundles the file system with its mount targets, optional access
+// points, backup policy, and resource policy. Mount targets are created
+// automatically from the provided subnet IDs — one per subnet (and thus per AZ).
+//
+// EFS is the foundation for shared persistent storage across:
+// - EKS pods via the EFS CSI driver (PersistentVolume backed by file_system_id)
+// - ECS tasks via EFS volumes in task definitions
+// - Lambda functions via access point ARNs
+// - EC2 instances via direct NFS mount at the dns_name
+//
+// Key design notes:
+// - `encrypted`, `performance_mode`, and `availability_zone_name` are ForceNew
+//   — changing them requires replacing the file system. Plan these upfront.
+// - `subnet_ids` is required because an EFS without mount targets cannot be
+//   mounted. One mount target per AZ is allowed; providing two subnets in the
+//   same AZ causes an AWS API error at deploy time.
+// - Security groups must allow NFS traffic (TCP port 2049) from the clients.
+// - Credentials, region, and deployment workflow live outside this spec in stack inputs.
+message AwsElasticFileSystemSpec {
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  // ---------------------------------------------------------------------------
+  // File System Core
+  // ---------------------------------------------------------------------------
+
+  // Enable encryption at rest for all data and metadata stored in the file system.
+  // ForceNew — cannot be added after creation. Production environments should
+  // always enable encryption.
+  bool encrypted = 2 [(dev.planton.shared.options.recommended_default) = "true"];
+
+  // Customer-managed KMS key for encryption at rest. When omitted, EFS uses the
+  // AWS-managed key `aws/elasticfilesystem`. ForceNew — the KMS key cannot be
+  // changed after creation. Requires `encrypted` to be true.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_id = 3 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
+  ];
+
+  // File system performance mode. ForceNew — cannot be changed after creation.
+  //
+  // - "generalPurpose" (default): lowest latency, suitable for most workloads.
+  //   Recommended for all new file systems, especially with "elastic" throughput.
+  // - "maxIO": higher aggregate throughput for highly parallelized workloads
+  //   (thousands of EC2 instances). Slightly higher per-operation latency.
+  //   Note: AWS recommends generalPurpose + elastic throughput as a replacement.
+  string performance_mode = 4;
+
+  // Throughput mode controlling how EFS delivers read/write bandwidth.
+  //
+  // - "bursting" (default): throughput scales with file system size. 50 MiB/s
+  //   per TiB of Standard storage, with bursts up to 100 MiB/s.
+  // - "provisioned": fixed throughput independent of storage size. Set
+  //   `provisioned_throughput_in_mibps` to specify the exact value.
+  // - "elastic": automatically scales throughput up/down based on workload.
+  //   Recommended for unpredictable or spiky access patterns. Requires
+  //   generalPurpose performance mode.
+  string throughput_mode = 5;
+
+  // Provisioned throughput in MiB/s. Only applicable when `throughput_mode` is
+  // "provisioned". Range: 1.0–3414.0 for generalPurpose; 1.0–1024.0 for maxIO.
+  double provisioned_throughput_in_mibps = 6;
+
+  // AWS Availability Zone name for One Zone storage classes (e.g., "us-east-1a").
+  // ForceNew — cannot be changed after creation. One Zone storage is ~47% cheaper
+  // than Standard (multi-AZ) but data is stored in a single AZ with no cross-AZ
+  // redundancy. Suitable for dev/test or workloads that tolerate AZ-level failure.
+  //
+  // When set, only a single mount target can be created (in a subnet belonging
+  // to this AZ).
+  string availability_zone_name = 7;
+
+  // ---------------------------------------------------------------------------
+  // Lifecycle Policies
+  // ---------------------------------------------------------------------------
+
+  // Transition files to Infrequent Access (IA) storage after the specified period
+  // of not being accessed. IA storage costs ~92% less than Standard but charges
+  // per-access fees.
+  //
+  // Valid values: AFTER_1_DAY, AFTER_7_DAYS, AFTER_14_DAYS, AFTER_30_DAYS,
+  // AFTER_60_DAYS, AFTER_90_DAYS, AFTER_180_DAYS, AFTER_270_DAYS, AFTER_365_DAYS.
+  string transition_to_ia = 8;
+
+  // Transition IA files to Archive storage after the specified period. Archive
+  // storage costs ~96% less than Standard. Requires `transition_to_ia` to be set
+  // (files must pass through IA before reaching Archive).
+  //
+  // Same valid values as transition_to_ia.
+  string transition_to_archive = 9;
+
+  // Transition files back to Standard storage when accessed from IA or Archive.
+  // This enables automatic "warming" of frequently accessed files.
+  //
+  // Only valid value: "AFTER_1_ACCESS". Leave empty to keep files in IA/Archive
+  // even after access.
+  string transition_to_primary_storage_class = 10;
+
+  // ---------------------------------------------------------------------------
+  // Backup
+  // ---------------------------------------------------------------------------
+
+  // Enable automatic daily backups via AWS Backup. AWS recommends enabling
+  // backups for all production file systems. Mutable — can be toggled at any time.
+  bool backup_enabled = 11;
+
+  // ---------------------------------------------------------------------------
+  // Mount Targets (Networking)
+  // ---------------------------------------------------------------------------
+
+  // Subnet IDs to create mount targets in. Required (min 1). One mount target is
+  // created per subnet. AWS allows at most one mount target per Availability Zone
+  // — providing two subnets in the same AZ will cause an API error at deploy time.
+  //
+  // For regional (multi-AZ) file systems, provide one subnet per AZ for maximum
+  // availability. For One Zone file systems, provide exactly one subnet in the
+  // AZ specified by `availability_zone_name`.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef subnet_ids = 12 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).repeated.min_items = 1,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
+  ];
+
+  // Security groups to apply to all mount targets. These must allow inbound NFS
+  // traffic (TCP port 2049) from the clients that will mount the file system.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef security_group_ids = 13 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsSecurityGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.security_group_id"
+  ];
+
+  // ---------------------------------------------------------------------------
+  // Access Points (optional)
+  // ---------------------------------------------------------------------------
+
+  // Access points provide application-specific entry points into the file system,
+  // each with its own POSIX user/group identity and root directory. Commonly used
+  // with ECS tasks and Lambda functions to enforce least-privilege file access.
+  //
+  // Each access point must have a unique `name` which serves as the map key in
+  // the `access_point_ids` and `access_point_arns` stack outputs.
+  repeated AwsElasticFileSystemAccessPoint access_points = 14;
+
+  // ---------------------------------------------------------------------------
+  // Resource Policy (optional)
+  // ---------------------------------------------------------------------------
+
+  // IAM resource policy for the file system. Common uses:
+  // - Enforce encryption in transit (deny unencrypted NFS connections)
+  // - Restrict access to specific IAM principals or VPCs
+  // - Prevent root access from NFS clients
+  //
+  // Provide as a JSON object structure. Serialized to JSON by IaC modules.
+  // Consistent with SQS policy, SNS policy, and EventBridge event_pattern.
+  google.protobuf.Struct policy = 15;
+
+  // ---------------------------------------------------------------------------
+  // CEL Validations
+  // ---------------------------------------------------------------------------
+
+  // performance_mode valid values.
+  option (buf.validate.message).cel = {
+    id: "performance_mode_valid"
+    message: "performance_mode must be 'generalPurpose' or 'maxIO' when set"
+    expression: "this.performance_mode == '' || this.performance_mode in ['generalPurpose', 'maxIO']"
+  };
+
+  // throughput_mode valid values.
+  option (buf.validate.message).cel = {
+    id: "throughput_mode_valid"
+    message: "throughput_mode must be 'bursting', 'provisioned', or 'elastic' when set"
+    expression: "this.throughput_mode == '' || this.throughput_mode in ['bursting', 'provisioned', 'elastic']"
+  };
+
+  // provisioned_throughput requires provisioned mode.
+  option (buf.validate.message).cel = {
+    id: "provisioned_throughput_requires_mode"
+    message: "provisioned_throughput_in_mibps can only be set when throughput_mode is 'provisioned'"
+    expression: "this.provisioned_throughput_in_mibps == 0.0 || this.throughput_mode == 'provisioned'"
+  };
+
+  // provisioned mode requires throughput value.
+  option (buf.validate.message).cel = {
+    id: "provisioned_mode_requires_throughput"
+    message: "provisioned_throughput_in_mibps must be greater than 0 when throughput_mode is 'provisioned'"
+    expression: "this.throughput_mode != 'provisioned' || this.provisioned_throughput_in_mibps > 0.0"
+  };
+
+  // kms_key_id requires encrypted.
+  option (buf.validate.message).cel = {
+    id: "kms_requires_encrypted"
+    message: "kms_key_id requires encrypted to be true (cannot use a custom KMS key without enabling encryption)"
+    expression: "!has(this.kms_key_id) || this.encrypted"
+  };
+
+  // transition_to_archive requires transition_to_ia.
+  option (buf.validate.message).cel = {
+    id: "archive_requires_ia"
+    message: "transition_to_archive requires transition_to_ia to be set (files must transition through IA before Archive)"
+    expression: "this.transition_to_archive == '' || this.transition_to_ia != ''"
+  };
+
+  // transition_to_ia valid values.
+  option (buf.validate.message).cel = {
+    id: "transition_to_ia_valid"
+    message: "transition_to_ia must be one of: AFTER_1_DAY, AFTER_7_DAYS, AFTER_14_DAYS, AFTER_30_DAYS, AFTER_60_DAYS, AFTER_90_DAYS, AFTER_180_DAYS, AFTER_270_DAYS, AFTER_365_DAYS"
+    expression: "this.transition_to_ia == '' || this.transition_to_ia in ['AFTER_1_DAY', 'AFTER_7_DAYS', 'AFTER_14_DAYS', 'AFTER_30_DAYS', 'AFTER_60_DAYS', 'AFTER_90_DAYS', 'AFTER_180_DAYS', 'AFTER_270_DAYS', 'AFTER_365_DAYS']"
+  };
+
+  // transition_to_archive valid values.
+  option (buf.validate.message).cel = {
+    id: "transition_to_archive_valid"
+    message: "transition_to_archive must be one of: AFTER_1_DAY, AFTER_7_DAYS, AFTER_14_DAYS, AFTER_30_DAYS, AFTER_60_DAYS, AFTER_90_DAYS, AFTER_180_DAYS, AFTER_270_DAYS, AFTER_365_DAYS"
+    expression: "this.transition_to_archive == '' || this.transition_to_archive in ['AFTER_1_DAY', 'AFTER_7_DAYS', 'AFTER_14_DAYS', 'AFTER_30_DAYS', 'AFTER_60_DAYS', 'AFTER_90_DAYS', 'AFTER_180_DAYS', 'AFTER_270_DAYS', 'AFTER_365_DAYS']"
+  };
+
+  // transition_to_primary_storage_class valid values.
+  option (buf.validate.message).cel = {
+    id: "transition_to_primary_valid"
+    message: "transition_to_primary_storage_class must be 'AFTER_1_ACCESS' when set"
+    expression: "this.transition_to_primary_storage_class == '' || this.transition_to_primary_storage_class == 'AFTER_1_ACCESS'"
+  };
+}
+
+// AwsElasticFileSystemAccessPoint defines an EFS access point — an application-
+// specific entry point into the file system that enforces a POSIX user/group
+// identity and optionally restricts the visible root directory.
+//
+// Access points are the recommended way to give ECS tasks and Lambda functions
+// file system access, as they enforce least-privilege without requiring the
+// application to manage POSIX permissions.
+message AwsElasticFileSystemAccessPoint {
+  // Unique name for this access point within the file system. Used as the map key
+  // in `access_point_ids` and `access_point_arns` stack outputs.
+  string name = 1 [(buf.validate.field).required = true];
+
+  // POSIX user and group identity enforced for all file operations through this
+  // access point. When set, the NFS client's identity is overridden — regardless
+  // of what UID/GID the client claims, all operations use these values.
+  AwsElasticFileSystemAccessPointPosixUser posix_user = 2;
+
+  // Root directory exposed as "/" when mounting through this access point. If the
+  // directory does not exist, provide `creation_info` to have EFS create it
+  // automatically with the specified ownership and permissions.
+  AwsElasticFileSystemAccessPointRootDirectory root_directory = 3;
+}
+
+// AwsElasticFileSystemAccessPointPosixUser defines the POSIX identity enforced
+// for all file operations through an access point.
+message AwsElasticFileSystemAccessPointPosixUser {
+  // POSIX user ID. All file system operations through this access point use
+  // this UID as the file owner.
+  int32 uid = 1 [(buf.validate.field).required = true];
+
+  // POSIX primary group ID. All file system operations through this access point
+  // use this GID as the file group.
+  int32 gid = 2 [(buf.validate.field).required = true];
+
+  // Secondary POSIX group IDs. These supplement the primary GID for group
+  // permission checks.
+  repeated int32 secondary_gids = 3;
+}
+
+// AwsElasticFileSystemAccessPointRootDirectory configures the directory on the
+// EFS file system that is exposed as the root when mounting through an access
+// point.
+message AwsElasticFileSystemAccessPointRootDirectory {
+  // Path on the EFS file system to expose as the root directory. Must be an
+  // absolute path (starts with "/"). Up to 4 subdirectories deep.
+  // Default: "/" (entire file system).
+  //
+  // If this path does not exist and `creation_info` is provided, EFS creates
+  // the directory with the specified POSIX ownership and permissions.
+  string path = 1 [(buf.validate.field).required = true];
+
+  // POSIX ownership and permissions to apply when creating the root directory.
+  // Required when the path does not already exist on the file system.
+  AwsElasticFileSystemAccessPointCreationInfo creation_info = 2;
+}
+
+// AwsElasticFileSystemAccessPointCreationInfo specifies the POSIX ownership and
+// permissions applied when EFS automatically creates the access point's root
+// directory.
+message AwsElasticFileSystemAccessPointCreationInfo {
+  // POSIX user ID for the directory owner.
+  int32 owner_uid = 1 [(buf.validate.field).required = true];
+
+  // POSIX group ID for the directory owner.
+  int32 owner_gid = 2 [(buf.validate.field).required = true];
+
+  // POSIX permissions for the directory, in octal notation (e.g., "0755", "0750").
+  string permissions = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^0[0-7]{3}$"
+  ];
+}

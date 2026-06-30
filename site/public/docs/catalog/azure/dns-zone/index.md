@@ -12,7 +12,7 @@ Deploys an Azure DNS Zone with an optional set of pre-populated DNS records. The
 
 ## What Gets Created
 
-When you deploy an AzureDnsZone resource, OpenMCF provisions:
+When you deploy an AzureDnsZone resource, Planton provisions:
 
 - **DNS Zone** -- a `dns.Zone` resource in the specified resource group, representing the authoritative zone for the given domain name
 - **DNS Records** -- one Azure DNS record resource per entry in `records`, created as the appropriate type (`dns.ARecord`, `dns.AaaaRecord`, `dns.CNameRecord`, `dns.MxRecord`, `dns.TxtRecord`, `dns.NsRecord`, `dns.CaaRecord`, `dns.SrvRecord`, `dns.PtrRecord`)
@@ -20,7 +20,7 @@ When you deploy an AzureDnsZone resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Resource Group** where the DNS zone will be created (can reference an AzureResourceGroup resource)
 - **Domain ownership** -- you must own or control the domain to point its NS records at the Azure-assigned name servers after deployment
 
@@ -29,15 +29,15 @@ When you deploy an AzureDnsZone resource, OpenMCF provisions:
 Create a file `dnszone.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureDnsZone
 metadata:
   name: my-zone
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureDnsZone.my-zone
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureDnsZone.my-zone
 spec:
   zoneName: example.com
   resourceGroup: my-rg
@@ -46,7 +46,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f dnszone.yaml
+planton apply -f dnszone.yaml
 ```
 
 This creates an empty DNS zone for `example.com`. After deployment, update your domain registrar to use the name servers returned in `status.outputs.nameservers`.
@@ -77,15 +77,15 @@ This creates an empty DNS zone for `example.com`. After deployment, update your 
 A minimal zone with no records, useful when DNS records are managed by an external system:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureDnsZone
 metadata:
   name: empty-zone
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureDnsZone.empty-zone
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureDnsZone.empty-zone
 spec:
   zoneName: example.com
   resourceGroup: dev-rg
@@ -96,15 +96,15 @@ spec:
 A zone that maps the apex domain and `www` subdomain to IP addresses and an alias:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureDnsZone
 metadata:
   name: web-zone
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureDnsZone.web-zone
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureDnsZone.web-zone
 spec:
   zoneName: example.com
   resourceGroup: prod-rg
@@ -127,15 +127,15 @@ spec:
 A zone configured for email delivery with MX records and an SPF TXT record:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureDnsZone
 metadata:
   name: mail-zone
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureDnsZone.mail-zone
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureDnsZone.mail-zone
 spec:
   zoneName: example.com
   resourceGroup: prod-rg
@@ -158,15 +158,15 @@ spec:
 A comprehensive zone with A, AAAA, CNAME, CAA, and NS records:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureDnsZone
 metadata:
   name: full-zone
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureDnsZone.full-zone
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureDnsZone.full-zone
 spec:
   zoneName: example.com
   resourceGroup: prod-rg
@@ -201,18 +201,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed resource group instead of hardcoding the name:
+Reference an Planton-managed resource group instead of hardcoding the name:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureDnsZone
 metadata:
   name: ref-zone
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureDnsZone.ref-zone
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureDnsZone.ref-zone
 spec:
   zoneName: example.com
   resourceGroup:

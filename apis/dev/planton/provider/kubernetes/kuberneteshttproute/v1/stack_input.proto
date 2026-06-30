@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kuberneteshttproute.v1;
+
+import "dev/planton/provider/kubernetes/kuberneteshttproute/v1/api.proto";
+import "dev/planton/provider/kubernetes/provider.proto";
+
+// Input for the KubernetesHttpRoute IaC stack. The platform resolves all
+// StringValueOrRef references (namespace) to literal strings before passing this
+// to the IaC engine.
+message KubernetesHttpRouteStackInput {
+  // Target cloud-resource.
+  KubernetesHttpRoute target = 1;
+  // Kubernetes provider configuration (cluster credentials).
+  dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+}

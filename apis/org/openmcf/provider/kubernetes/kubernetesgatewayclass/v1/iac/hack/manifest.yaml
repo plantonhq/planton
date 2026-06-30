@@ -1,7 +1,0 @@
-apiVersion: kubernetes.openmcf.org/v1
-kind: KubernetesGatewayClass
-metadata:
-  name: test-gateway-class
-spec:
-  controllerName: istio.io/gateway-controller
-  description: "Test gateway class for local hacking"

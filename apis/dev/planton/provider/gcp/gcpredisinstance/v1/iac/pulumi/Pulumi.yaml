@@ -1,0 +1,6 @@
+name: gcp-redis-instance
+runtime:
+  name: go
+  options:
+    binary: ./pulumi
+description: Planton GcpRedisInstance Pulumi module

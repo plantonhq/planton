@@ -1,0 +1,98 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesexternaldns.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/target_cluster.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// KubernetesExternalDnsSpec defines configuration for ExternalDNS on any cluster.
+message KubernetesExternalDnsSpec {
+  // Target Kubernetes Cluster
+  dev.planton.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  // Kubernetes Namespace
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // flag to indicate if the namespace should be created
+  bool create_namespace = 3;
+
+  // ExternalDNS version such as "v0.19.0". Used to set the image tag.
+  optional string external_dns_version = 4 [(dev.planton.shared.options.default) = "v0.19.0"];
+
+  // Helm chart version to deploy. If not specified, uses the default version.
+  optional string helm_chart_version = 5 [(dev.planton.shared.options.default) = "1.19.0"];
+
+  //provider-specific glue. Only one may be set.
+  oneof provider_config {
+    KubernetesExternalDnsGkeConfig gke = 200;
+    KubernetesExternalDnsEksConfig eks = 201;
+    KubernetesExternalDnsAksConfig aks = 202;
+    KubernetesExternalDnsCloudflareConfig cloudflare = 203;
+  }
+}
+
+// KubernetesExternalDnsGkeConfig defines configuration for ExternalDNS on GKE with Google Cloud DNS.
+message KubernetesExternalDnsGkeConfig {
+  // The GCP project that hosts the DNS zone and the GKE cluster.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+  // The GCP DNS zone ID to use for ExternalDNS.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef dns_zone_id = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpDnsZone,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
+  ];
+}
+
+// KubernetesExternalDnsEksConfig defines configuration for ExternalDNS on EKS with AWS Route53 .
+message KubernetesExternalDnsEksConfig {
+  dev.planton.shared.foreignkey.v1.StringValueOrRef route53_zone_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsRoute53Zone,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
+  ];
+  // Optional existing IAM role ARN for IRSA; auto-created if blank.
+  string irsa_role_arn_override = 2;
+}
+
+// KubernetesExternalDnsAksConfig defines configuration for ExternalDNS on AKS with Azure DNS.
+message KubernetesExternalDnsAksConfig {
+  // The Azure DNS zone ID to use for ExternalDNS.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef dns_zone_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AzureDnsZone,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
+  ];
+  // The Azure Managed Identity client ID to use for ExternalDNS.
+  string managed_identity_client_id = 2;
+}
+
+// KubernetesExternalDnsCloudflareConfig defines configuration for ExternalDNS with Cloudflare DNS.
+message KubernetesExternalDnsCloudflareConfig {
+  // Cloudflare API token for authentication (scoped with Zone:Zone:Read and Zone:DNS:Edit permissions).
+  string api_token = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.sensitive) = true
+  ];
+
+  // Cloudflare DNS zone ID to manage. ExternalDNS will only manage records in this zone.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef dns_zone_id = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareDnsZone,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
+  ];
+
+  // Enable Cloudflare proxy (orange cloud) for all managed DNS records.
+  // When enabled, traffic routes through Cloudflare's edge network for DDoS protection, WAF, and CDN.
+  // Default: false
+  bool is_proxied = 3;
+}

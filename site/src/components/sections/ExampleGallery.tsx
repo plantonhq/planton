@@ -23,7 +23,7 @@ export default function ExampleGallery() {
         id: "aws-rds",
         filename: "aws-rds-instance.yaml",
         title: "RDS PostgreSQL Instance",
-        manifest: `apiVersion: aws.openmcf.org/v1
+        manifest: `apiVersion: aws.planton.dev/v1
 kind: AwsRdsInstance
 metadata:
   name: payments-db
@@ -40,14 +40,14 @@ spec:
   password: <secret>
   port: 5432
   multiAz: true`,
-        deploy: `openmcf validate aws-rds-instance.yaml
-openmcf apply -f aws-rds-instance.yaml`,
+        deploy: `planton validate aws-rds-instance.yaml
+planton apply -f aws-rds-instance.yaml`,
       },
       {
         id: "aws-s3",
         filename: "aws-s3-bucket.yaml",
         title: "S3 Bucket",
-        manifest: `apiVersion: aws.openmcf.org/v1
+        manifest: `apiVersion: aws.planton.dev/v1
 kind: AwsS3Bucket
 metadata:
   name: app-assets
@@ -60,8 +60,8 @@ spec:
     blockPublicPolicy: true
     ignorePublicAcls: true
     restrictPublicBuckets: true`,
-        deploy: `openmcf validate aws-s3-bucket.yaml
-openmcf apply -f aws-s3-bucket.yaml`,
+        deploy: `planton validate aws-s3-bucket.yaml
+planton apply -f aws-s3-bucket.yaml`,
       },
     ],
     gcp: [
@@ -69,7 +69,7 @@ openmcf apply -f aws-s3-bucket.yaml`,
         id: "gcp-gke",
         filename: "gcp-gke-cluster.yaml",
         title: "GKE Cluster with Autoscaling",
-        manifest: `apiVersion: gcp.openmcf.org/v1
+        manifest: `apiVersion: gcp.planton.dev/v1
 kind: GcpGkeCluster
 metadata:
   name: main-gke
@@ -90,14 +90,14 @@ spec:
       minNodeCount: 1
       maxNodeCount: 5
       isSpotEnabled: false`,
-        deploy: `openmcf plan -f gcp-gke-cluster.yaml
-openmcf apply -f gcp-gke-cluster.yaml`,
+        deploy: `planton plan -f gcp-gke-cluster.yaml
+planton apply -f gcp-gke-cluster.yaml`,
       },
       {
         id: "gcp-cloudrun",
         filename: "gcp-cloud-run.yaml",
         title: "Cloud Run Service",
-        manifest: `apiVersion: gcp.openmcf.org/v1
+        manifest: `apiVersion: gcp.planton.dev/v1
 kind: GcpCloudRun
 metadata:
   name: hello-run
@@ -108,7 +108,7 @@ spec:
     name: hello
     image: us-docker.pkg.dev/cloudrun/container/hello
     allowUnauthenticated: true`,
-        deploy: `openmcf apply -f gcp-cloud-run.yaml --auto-approve`,
+        deploy: `planton apply -f gcp-cloud-run.yaml --auto-approve`,
       },
     ],
     azure: [
@@ -116,7 +116,7 @@ spec:
         id: "azure-aks",
         filename: "azure-aks.yaml",
         title: "AKS Cluster",
-        manifest: `apiVersion: azure.openmcf.org/v1
+        manifest: `apiVersion: azure.planton.dev/v1
 kind: AzureAksCluster
 metadata:
   name: ops-aks
@@ -129,13 +129,13 @@ spec:
       vmSize: Standard_DS2_v2
       minNodeCount: 1
       maxNodeCount: 3`,
-        deploy: `openmcf apply -f azure-aks.yaml`,
+        deploy: `planton apply -f azure-aks.yaml`,
       },
       {
         id: "azure-acr",
         filename: "azure-acr.yaml",
         title: "Container Registry",
-        manifest: `apiVersion: azure.openmcf.org/v1
+        manifest: `apiVersion: azure.planton.dev/v1
 kind: AzureContainerRegistry
 metadata:
   name: app-registry
@@ -144,7 +144,7 @@ spec:
   resourceGroupName: rg-ops
   region: eastus
   sku: Basic`,
-        deploy: `openmcf apply -f azure-acr.yaml --auto-approve`,
+        deploy: `planton apply -f azure-acr.yaml --auto-approve`,
       },
     ],
     kubernetes: [
@@ -152,7 +152,7 @@ spec:
         id: "redis-k8s",
         filename: "redis-kubernetes.yaml",
         title: "Redis on Kubernetes",
-        manifest: `apiVersion: kubernetes.openmcf.org/v1
+        manifest: `apiVersion: kubernetes.planton.dev/v1
 kind: RedisKubernetes
 metadata:
   name: session-cache
@@ -168,14 +168,14 @@ spec:
         memory: "100Mi"
     persistenceEnabled: true
     diskSize: "5Gi"`,
-        deploy: `openmcf plan -f redis-kubernetes.yaml
-openmcf apply -f redis-kubernetes.yaml`,
+        deploy: `planton plan -f redis-kubernetes.yaml
+planton apply -f redis-kubernetes.yaml`,
       },
       {
         id: "postgres-k8s",
         filename: "postgres-kubernetes.yaml",
         title: "PostgreSQL on Kubernetes",
-        manifest: `apiVersion: kubernetes.openmcf.org/v1
+        manifest: `apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPostgres
 metadata:
   name: app-db
@@ -193,8 +193,8 @@ spec:
   ingress:
     enabled: true
     hostname: db.example.com`,
-        deploy: `openmcf plan -f postgres-kubernetes.yaml
-openmcf apply -f postgres-kubernetes.yaml --auto-approve`,
+        deploy: `planton plan -f postgres-kubernetes.yaml
+planton apply -f postgres-kubernetes.yaml --auto-approve`,
       },
     ],
   } as const;

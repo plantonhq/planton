@@ -12,13 +12,13 @@ Deploys a Cloud KMS cryptographic key within an existing key ring for customer-m
 
 ## What Gets Created
 
-When you deploy a GcpKmsKey resource, OpenMCF provisions:
+When you deploy a GcpKmsKey resource, Planton provisions:
 
-- **CryptoKey** — a `google_kms_crypto_key` resource within the specified key ring, configured with the requested purpose, rotation policy, version template, and framework labels (`openmcf-resource`, `openmcf-resource-name`, `openmcf-resource-kind`, plus org/env/id when set)
+- **CryptoKey** — a `google_kms_crypto_key` resource within the specified key ring, configured with the requested purpose, rotation policy, version template, and framework labels (`planton-resource`, `planton-resource-name`, `planton-resource-kind`, plus org/env/id when set)
 
 ## Prerequisites
 
-- **GCP credentials** configured via environment variables or OpenMCF provider config
+- **GCP credentials** configured via environment variables or Planton provider config
 - **An existing KMS key ring** — referenced via `keyRingId` (fully qualified path from a GcpKmsKeyRing resource or a direct string)
 - **Cloud KMS API enabled** (`cloudkms.googleapis.com`) on the target project
 - **IAM permissions** — `roles/cloudkms.admin` on the key ring or project
@@ -28,15 +28,15 @@ When you deploy a GcpKmsKey resource, OpenMCF provisions:
 Create a file `kms-key.yaml`:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpKmsKey
 metadata:
   name: my-cmek-key
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpKmsKey.my-cmek-key
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpKmsKey.my-cmek-key
 spec:
   keyRingId:
     value: "projects/my-project/locations/us-central1/keyRings/prod-encryption"
@@ -47,7 +47,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f kms-key.yaml
+planton apply -f kms-key.yaml
 ```
 
 This creates a symmetric encryption key with automatic 90-day rotation, suitable for CMEK use across GCP services.
@@ -59,7 +59,7 @@ This creates a symmetric encryption key with automatic 90-day rotation, suitable
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
 | `keyRingId` | `StringValueOrRef` | Fully qualified key ring path (`projects/{p}/locations/{l}/keyRings/{name}`). Can reference GcpKmsKeyRing via `valueFrom`. Immutable after creation. | Required |
-| `keyName` | `string` | Name of the key in GCP. Distinct from the OpenMCF `metadata.name`. Immutable after creation. | 1-63 chars; pattern: `^[a-zA-Z0-9_-]{1,63}$` |
+| `keyName` | `string` | Name of the key in GCP. Distinct from the Planton `metadata.name`. Immutable after creation. | 1-63 chars; pattern: `^[a-zA-Z0-9_-]{1,63}$` |
 
 ### Optional Fields
 
@@ -79,15 +79,15 @@ This creates a symmetric encryption key with automatic 90-day rotation, suitable
 A Cloud HSM-backed symmetric key for regulated workloads requiring FIPS 140-2 Level 3 hardware protection:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpKmsKey
 metadata:
   name: compliance-cmek
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpKmsKey.compliance-cmek
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpKmsKey.compliance-cmek
 spec:
   keyRingId:
     value: "projects/my-project/locations/us-central1/keyRings/compliance-keys"
@@ -104,15 +104,15 @@ spec:
 An elliptic curve signing key for verifying build artifacts, container images, or JWTs:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpKmsKey
 metadata:
   name: artifact-signer
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpKmsKey.artifact-signer
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpKmsKey.artifact-signer
 spec:
   keyRingId:
     value: "projects/my-project/locations/us-central1/keyRings/signing-keys"
@@ -127,15 +127,15 @@ spec:
 Reference a key ring from a GcpKmsKeyRing resource instead of hardcoding the path:
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpKmsKey
 metadata:
   name: composed-cmek
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.GcpKmsKey.composed-cmek
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.GcpKmsKey.composed-cmek
 spec:
   keyRingId:
     valueFrom:

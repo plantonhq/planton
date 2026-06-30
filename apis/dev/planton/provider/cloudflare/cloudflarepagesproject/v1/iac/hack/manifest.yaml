@@ -1,0 +1,25 @@
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflarePagesProject
+metadata:
+  name: test-pages-project
+spec:
+  accountId: "0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"
+  name: test-pages-project
+  productionBranch: main
+  # Direct-upload project (no git source): deployments are pushed with
+  # `wrangler pages deploy`. For a git-connected project, add a `source` block
+  # (requires a one-time git authorization in the Cloudflare dashboard).
+  buildConfig:
+    buildCommand: npm run build
+    destinationDir: dist
+  deploymentConfigs:
+    production:
+      compatibilityDate: "2025-01-15"
+      compatibilityFlags:
+        - nodejs_compat
+      usageModel: standard
+      vars:
+        LOG_LEVEL: info
+      kvNamespaces:
+        - name: CONFIG
+          namespaceId: "0f1e2d3c4b5a69788796a5b4c3d2e1f0"

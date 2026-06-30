@@ -87,7 +87,7 @@ flowchart LR
 ### Configuration Model
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpVpc
 metadata:
   name: prod-vpc
@@ -132,7 +132,7 @@ Each managed service instance consumes IPs from this range:
 
 ### Proto Schema Changes
 
-**File**: `apis/org/openmcf/provider/gcp/gcpvpc/v1/spec.proto`
+**File**: `apis/dev/planton/provider/gcp/gcpvpc/v1/spec.proto`
 
 Added new message type and field:
 
@@ -150,7 +150,7 @@ message GcpVpcPrivateServicesAccess {
       gte: 8
       lte: 24
     },
-    (org.openmcf.shared.options.default) = "16"
+    (dev.planton.shared.options.default) = "16"
   ];
 }
 
@@ -162,7 +162,7 @@ message GcpVpcSpec {
 }
 ```
 
-**File**: `apis/org/openmcf/provider/gcp/gcpvpc/v1/stack_outputs.proto`
+**File**: `apis/dev/planton/provider/gcp/gcpvpc/v1/stack_outputs.proto`
 
 Added new outputs:
 
@@ -176,7 +176,7 @@ message GcpVpcStackOutputs {
 
 ### Pulumi Module Changes
 
-**File**: `apis/org/openmcf/provider/gcp/gcpvpc/v1/iac/pulumi/module/vpc.go`
+**File**: `apis/dev/planton/provider/gcp/gcpvpc/v1/iac/pulumi/module/vpc.go`
 
 Added `privateServicesAccess()` function that creates:
 
@@ -211,7 +211,7 @@ func privateServicesAccess(ctx *pulumi.Context, locals *Locals,
 
 ### Terraform Module Changes
 
-**File**: `apis/org/openmcf/provider/gcp/gcpvpc/v1/iac/tf/main.tf`
+**File**: `apis/dev/planton/provider/gcp/gcpvpc/v1/iac/tf/main.tf`
 
 Added equivalent Terraform resources:
 
@@ -358,7 +358,7 @@ sequenceDiagram
 
 ### Step 1: GcpProject (Enable API)
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpProject
 spec:
   enabledApis:
@@ -368,7 +368,7 @@ spec:
 
 ### Step 2: GcpVpc (Enable Private Services Access)
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpVpc
 metadata:
   name: prod-vpc
@@ -383,7 +383,7 @@ spec:
 
 ### Step 3: GcpCloudSql (Use Private IP)
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudSql
 spec:
   databaseEngine: POSTGRESQL

@@ -1,6 +1,0 @@
-name: gcp-spanner-instance
-runtime:
-  name: go
-  options:
-    binary: ./pulumi
-description: OpenMCF GcpSpannerInstance Pulumi module

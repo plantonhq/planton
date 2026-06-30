@@ -12,14 +12,14 @@ Deploys an Oracle Cloud Infrastructure subnet within a Virtual Cloud Network (VC
 
 ## What Gets Created
 
-When you deploy an OciSubnet resource, OpenMCF provisions:
+When you deploy an OciSubnet resource, Planton provisions:
 
 - **Subnet** — an `oci_core_subnet` resource in the specified compartment and VCN with the given CIDR block, optional DNS label, and configurable public/private access controls. The subnet is regional by default (spans all availability domains in the region) unless `availabilityDomain` is set.
 - **Route Table** — created only when `routeRules` are provided. A dedicated `oci_core_route_table` named `{displayName}-rt` is created in the same compartment and VCN, then automatically associated with the subnet. When `routeTableId` is provided instead, that existing route table is used. When neither is provided, the subnet inherits the VCN's default route table.
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the subnet will be created — either a literal value or a reference to an OciCompartment resource
 - **A VCN OCID** for the parent Virtual Cloud Network — either a literal value or a reference to an OciVcn resource
 - **A CIDR block** within one of the VCN's CIDR ranges that does not overlap with existing subnets in the same VCN
@@ -30,15 +30,15 @@ When you deploy an OciSubnet resource, OpenMCF provisions:
 Create a file `subnet.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciSubnet
 metadata:
   name: my-subnet
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciSubnet.my-subnet
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciSubnet.my-subnet
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -50,7 +50,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f subnet.yaml
+planton apply -f subnet.yaml
 ```
 
 This creates a regional subnet with the 10.0.1.0/24 CIDR block using the VCN's default route table. By default, public IP assignment is allowed on VNICs and internet ingress is not blocked. The subnet ID, domain name, virtual router IP, virtual router MAC, and associated route table ID are exported as stack outputs.
@@ -98,15 +98,15 @@ When `routeRules` are provided, a dedicated route table is created and associate
 A private subnet where VNICs cannot have public IPs and inbound internet traffic is blocked — suitable for databases, application backends, and OKE worker nodes:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciSubnet
 metadata:
   name: private-app
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciSubnet.private-app
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciSubnet.private-app
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -123,15 +123,15 @@ spec:
 A public subnet with DNS resolution enabled — suitable for load balancers, bastion hosts, and services that need direct internet-facing access:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciSubnet
 metadata:
   name: public-lb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.OciSubnet.public-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.OciSubnet.public-lb
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -147,15 +147,15 @@ spec:
 A private subnet with a dedicated route table that routes internet traffic through the VCN's NAT Gateway and OCI service traffic through the Service Gateway:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciSubnet
 metadata:
   name: app-tier
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciSubnet.app-tier
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciSubnet.app-tier
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -181,18 +181,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference OpenMCF-managed resources instead of hardcoding OCIDs. The compartment, VCN, and gateway IDs are resolved from other deployed resources:
+Reference Planton-managed resources instead of hardcoding OCIDs. The compartment, VCN, and gateway IDs are resolved from other deployed resources:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciSubnet
 metadata:
   name: ref-subnet
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciSubnet.ref-subnet
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciSubnet.ref-subnet
 spec:
   compartmentId:
     valueFrom:

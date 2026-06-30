@@ -12,7 +12,7 @@ Deploys an Azure Subnet within an existing Virtual Network, with configurable ad
 
 ## What Gets Created
 
-When you deploy an AzureSubnet resource, OpenMCF provisions:
+When you deploy an AzureSubnet resource, Planton provisions:
 
 - **Subnet** — a `network.Subnet` resource inside the specified Virtual Network, configured with the given address prefix, service endpoints, delegation, and network policies
 - **Service Endpoints** — optimized routes over the Azure backbone to specified Azure services, bypassing the public internet (when `serviceEndpoints` is provided)
@@ -21,7 +21,7 @@ When you deploy an AzureSubnet resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Resource Group** where the parent VNet exists (can reference an AzureResourceGroup resource)
 - **An Azure Virtual Network** with an address space that contains the desired subnet CIDR block (can reference an AzureVpc resource)
 - **Network planning** — the subnet address prefix must be a subset of the parent VNet's address space and must not overlap with other subnets in the same VNet. Azure reserves 5 IPs per subnet (first 4 + last) for internal use.
@@ -31,15 +31,15 @@ When you deploy an AzureSubnet resource, OpenMCF provisions:
 Create a file `subnet.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureSubnet
 metadata:
   name: my-subnet
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureSubnet.my-subnet
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureSubnet.my-subnet
 spec:
   resourceGroup: my-rg
   vnetId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.Network/virtualNetworks/my-vnet
@@ -50,7 +50,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f subnet.yaml
+planton apply -f subnet.yaml
 ```
 
 This creates a /24 subnet (254 usable IPs) with private endpoint network policies disabled, private link service network policies enabled, and no service endpoints or delegations.
@@ -85,15 +85,15 @@ This creates a /24 subnet (254 usable IPs) with private endpoint network policie
 A /24 subnet for general workloads with no special endpoints or delegations:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureSubnet
 metadata:
   name: workload-subnet
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureSubnet.workload-subnet
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureSubnet.workload-subnet
 spec:
   resourceGroup: dev-rg
   vnetId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dev-rg/providers/Microsoft.Network/virtualNetworks/dev-vnet
@@ -106,15 +106,15 @@ spec:
 A subnet delegated to PostgreSQL Flexible Server with service endpoints for secure access to Storage and Key Vault:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureSubnet
 metadata:
   name: postgres-subnet
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureSubnet.postgres-subnet
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureSubnet.postgres-subnet
 spec:
   resourceGroup: prod-rg
   vnetId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/prod-rg/providers/Microsoft.Network/virtualNetworks/prod-vnet
@@ -135,15 +135,15 @@ spec:
 A subnet for private endpoints with NSG policies enabled for zero-trust architectures:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureSubnet
 metadata:
   name: pe-subnet
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureSubnet.pe-subnet
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureSubnet.pe-subnet
 spec:
   resourceGroup: prod-rg
   vnetId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/prod-rg/providers/Microsoft.Network/virtualNetworks/prod-vnet
@@ -155,18 +155,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference OpenMCF-managed resources instead of hardcoding resource group name and VNet ID:
+Reference Planton-managed resources instead of hardcoding resource group name and VNet ID:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureSubnet
 metadata:
   name: app-subnet
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureSubnet.app-subnet
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureSubnet.app-subnet
 spec:
   resourceGroup:
     valueFrom:
@@ -192,15 +192,15 @@ spec:
 A subnet delegated to Azure Container App Environments with the minimum /23 sizing recommended by Azure:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureSubnet
 metadata:
   name: cae-subnet
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureSubnet.cae-subnet
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureSubnet.cae-subnet
 spec:
   resourceGroup: prod-rg
   vnetId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/prod-rg/providers/Microsoft.Network/virtualNetworks/prod-vnet
@@ -219,7 +219,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 | Output | Type | Description |
 |--------|------|-------------|
-| `subnet_id` | `string` | Azure Resource Manager ID of the subnet. This is the most referenced Azure output in OpenMCF, consumed by AzureAksCluster, AzureContainerAppEnvironment, AzurePostgresqlFlexibleServer, AzureMysqlFlexibleServer, AzureRedisCache, AzurePrivateEndpoint, AzureApplicationGateway, AzureLoadBalancer, AzureVirtualMachine, AzureFunctionApp, and AzureLinuxWebApp. |
+| `subnet_id` | `string` | Azure Resource Manager ID of the subnet. This is the most referenced Azure output in Planton, consumed by AzureAksCluster, AzureContainerAppEnvironment, AzurePostgresqlFlexibleServer, AzureMysqlFlexibleServer, AzureRedisCache, AzurePrivateEndpoint, AzureApplicationGateway, AzureLoadBalancer, AzureVirtualMachine, AzureFunctionApp, and AzureLinuxWebApp. |
 | `subnet_name` | `string` | Name of the subnet within the VNet |
 | `address_prefix` | `string` | IPv4 CIDR block assigned to this subnet. Useful in NSG rules, firewall rules, and network planning where downstream resources need to know the subnet's address range. |
 

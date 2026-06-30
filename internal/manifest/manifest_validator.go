@@ -69,11 +69,11 @@ func formatValidationError(err error) error {
 	msg.WriteString("   in your manifest before retrying.\n\n")
 
 	msg.WriteString(bold("📋 Helpful Commands:\n\n"))
-	msg.WriteString("   • View current manifest:  " + cyan("openmcf load-manifest --kustomize-dir _kustomize --overlay prod") + "\n")
-	msg.WriteString("   • Validate after fix:     " + cyan("openmcf validate-manifest --kustomize-dir _kustomize --overlay prod") + "\n")
+	msg.WriteString("   • View current manifest:  " + cyan("planton load-manifest --kustomize-dir _kustomize --overlay prod") + "\n")
+	msg.WriteString("   • Validate after fix:     " + cyan("planton validate-manifest --kustomize-dir _kustomize --overlay prod") + "\n")
 	msg.WriteString("\n")
 
-	msg.WriteString(bold("📚 Documentation: ") + cyan("https://github.com/plantonhq/openmcf/tree/main/apis\n"))
+	msg.WriteString(bold("📚 Documentation: ") + cyan("https://github.com/plantonhq/planton/tree/main/apis\n"))
 	msg.WriteString("\n")
 
 	return errors.New(msg.String())

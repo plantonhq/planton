@@ -12,7 +12,7 @@ Added the AliCloudRocketmqInstance deployment component -- manages a RocketMQ 5.
 ## What Was Created
 
 ### API Definition
-- `apis/org/openmcf/provider/alicloud/alicloudrocketmqinstance/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
+- `apis/dev/planton/provider/alicloud/alicloudrocketmqinstance/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
 - Registered `AliCloudRocketmqInstance = 3120` in `CloudResourceKind` enum under a new Messaging category
 - Nested messages: `AliCloudRocketmqTopic`, `AliCloudRocketmqConsumerGroup`, `AliCloudRocketmqConsumeRetryPolicy`, `AliCloudRocketmqInternetInfo`, `AliCloudRocketmqProductInfo`
 

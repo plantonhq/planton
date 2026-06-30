@@ -31,7 +31,7 @@ This preset creates a production-grade internet-facing Network Load Balancer wit
 - **HTTP health check** — Validates application readiness via HTTP path instead of TCP-only; `matcher` defines acceptable response codes
 - **Connection termination** (`connectionTermination: true`) — NLB closes connections to deregistered targets when the deregistration delay expires; important for long-lived connections (WebSocket, gRPC streams)
 - **Preserve client IP** (`preserveClientIp: true`) — Targets see the original client IP; useful for logging, rate limiting, and geo-aware logic
-- **Route53 DNS** — Creates alias A records for the specified hostnames; no DNS management outside OpenMCF
+- **Route53 DNS** — Creates alias A records for the specified hostnames; no DNS management outside Planton
 
 ## Placeholders to Replace
 
@@ -58,7 +58,7 @@ This preset creates a production-grade internet-facing Network Load Balancer wit
 
 - Add `securityGroups` to restrict inbound traffic
 - Add `dnsRecordClientRoutingPolicy: availability_zone_affinity` to reduce cross-zone traffic costs
-- Use `valueFrom` references to `AwsCertManagerCert`, `AwsRoute53Zone`, or other OpenMCF resources for portability
+- Use `valueFrom` references to `AwsCertManagerCert`, `AwsRoute53Zone`, or other Planton resources for portability
 
 ## Related Presets
 

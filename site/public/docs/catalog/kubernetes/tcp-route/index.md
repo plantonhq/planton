@@ -36,7 +36,7 @@ protocols) through a Gateway.
 ## Quick Start
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesTcpRoute
 metadata:
   name: postgres-route
@@ -53,7 +53,7 @@ spec:
 ```
 
 ```bash
-openmcf apply -f tcproute.yaml
+planton apply -f tcproute.yaml
 ```
 
 ## Configuration Reference

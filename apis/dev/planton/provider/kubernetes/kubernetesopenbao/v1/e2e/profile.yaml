@@ -1,0 +1,13 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: kubernetesopenbao
+spec:
+  tier: 2
+  status: deferred
+  deferred_reason: "sealed state on kind -- needs dev_mode spec field"
+  validated_provisioners:
+    - pulumi
+  timeout_minutes: 15
+  limitations:
+    - "OpenBao starts sealed; readiness probe fails without init/unseal"

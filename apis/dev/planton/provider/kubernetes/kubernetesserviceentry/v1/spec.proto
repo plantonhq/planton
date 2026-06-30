@@ -1,0 +1,280 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesserviceentry.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/istio_api.proto";
+import "dev/planton/provider/kubernetes/target_cluster.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// KubernetesServiceEntrySpec defines an Istio ServiceEntry: a namespaced resource that
+// adds entries into Istio's internal service registry, so that mesh workloads can route
+// to and apply policy against services that are not part of the platform's own service
+// discovery (e.g. external APIs reached over the public internet, or VMs/legacy services
+// brought into the mesh).
+//
+// 100% fidelity with the upstream istio.io/api ServiceEntry
+// (networking/v1alpha3/service_entry.proto, served as networking.istio.io/v1), pinned to
+// the 1.26 line (tag 1.26.8). Upstream spec fields are flattened directly after the
+// Planton namespaced envelope (target_cluster, namespace); there is no nested
+// `service_entry` sub-message.
+//
+// Attachment model (upstream): `endpoints` (static addresses) and `workload_selector`
+// (select in-mesh pods/VMs by label) are mutually exclusive — at most one may be set
+// (enforced below). Both omitted is valid (e.g. a `resolution: DNS` external host).
+message KubernetesServiceEntrySpec {
+  // selector vs endpoints exclusivity, and the resolution-dependent rules below, mirror
+  // the upstream CRD XValidation rules. The upstream rules use Kubernetes apiserver-CEL
+  // helpers (`oneof()`, `default()`) that are NOT available under protovalidate/cel-go,
+  // so each is re-expressed with portable primitives (`has()` guards) that preserve the
+  // validated outcome — unset `resolution` is treated as its upstream default `NONE`.
+  option (buf.validate.message).cel = {
+    id: "service_entry.workload_selector_xor_endpoints"
+    message: "at most one of workload_selector or endpoints may be set"
+    expression: "!(has(this.workload_selector) && size(this.endpoints) > 0)"
+  };
+  option (buf.validate.message).cel = {
+    id: "service_entry.cidr_addresses_require_none_or_static"
+    message: "CIDR addresses are allowed only for NONE or STATIC resolution"
+    expression: "(!has(this.resolution) || this.resolution == 'NONE' || this.resolution == 'STATIC') || !this.addresses.exists(a, a.contains('/'))"
+  };
+  option (buf.validate.message).cel = {
+    id: "service_entry.none_resolution_forbids_endpoints"
+    message: "endpoints cannot be set when resolution is NONE"
+    expression: "!((!has(this.resolution) || this.resolution == 'NONE') && size(this.endpoints) > 0)"
+  };
+  option (buf.validate.message).cel = {
+    id: "service_entry.dns_round_robin_single_endpoint"
+    message: "DNS_ROUND_ROBIN resolution allows at most one endpoint"
+    expression: "!(has(this.resolution) && this.resolution == 'DNS_ROUND_ROBIN' && size(this.endpoints) > 1)"
+  };
+  option (buf.validate.message).cel = {
+    id: "service_entry.port_numbers_unique"
+    message: "port number cannot be duplicated across ports"
+    expression: "this.ports.all(p1, this.ports.exists_one(p2, p1.number == p2.number))"
+  };
+  option (buf.validate.message).cel = {
+    id: "service_entry.port_names_unique"
+    message: "port name cannot be duplicated across ports"
+    expression: "this.ports.all(p1, this.ports.exists_one(p2, p1.name == p2.name))"
+  };
+
+  // Target Kubernetes cluster where this ServiceEntry is created. The Istio CRDs
+  // (KubernetesIstioBaseCrds) must already be present on the cluster; the registry entry
+  // is only honored where istiod (the Istio control plane) is running.
+  dev.planton.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  // Namespace in which the ServiceEntry is created. By default the service is visible to
+  // the whole mesh; `export_to` narrows the visibility scope.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // The hosts associated with the ServiceEntry. Used to match against the destination of
+  // requests (the HTTP Host/Authority header, the TLS SNI, or — with resolution DNS and no
+  // endpoints — the DNS name to resolve). Required, at least one. A bare wildcard `*` is
+  // not a valid host (partial wildcards such as `*.example.com` are allowed). Upstream
+  // allows up to 256.
+  repeated string hosts = 3 [(buf.validate.field).repeated = {
+    min_items: 1
+    max_items: 256
+    items: {
+      string: {min_len: 1}
+      cel: {
+        id: "service_entry_host.not_bare_wildcard"
+        message: "host cannot be a bare wildcard '*'"
+        expression: "this != '*'"
+      }
+    }
+  }];
+
+  // The virtual IP addresses (or CIDR prefixes) associated with the service. Used to match
+  // the destination IP of requests; if empty, requests are matched by port only. CIDR
+  // prefixes are honored only with NONE or STATIC resolution (enforced above). Upstream
+  // allows up to 256, each up to 64 characters.
+  repeated string addresses = 4 [(buf.validate.field).repeated = {
+    max_items: 256
+    items: {
+      string: {max_len: 64}
+    }
+  }];
+
+  // The ports exposed by the external service. Each port's `name` and `number` must be
+  // unique across the list (enforced above). Upstream allows up to 256.
+  repeated KubernetesServiceEntryPort ports = 5 [(buf.validate.field).repeated.max_items = 256];
+
+  // Whether the service should be considered external to the mesh (MESH_EXTERNAL) or part
+  // of the mesh (MESH_INTERNAL). Unset defaults to MESH_EXTERNAL upstream. MESH_INTERNAL is
+  // typically used together with `workload_selector` to bring unmanaged infrastructure
+  // (e.g. VMs) into the mesh.
+  optional string location = 6 [(buf.validate.field).string = {
+    in: [
+      "MESH_EXTERNAL",
+      "MESH_INTERNAL"
+    ]
+  }];
+
+  // How the sidecar/proxy resolves the service's endpoint IPs. Unset defaults to NONE
+  // upstream. NONE forwards to the original destination IP (no endpoints); STATIC uses the
+  // IPs in `endpoints`; DNS resolves the hosts (or endpoint addresses) asynchronously;
+  // DNS_ROUND_ROBIN is like DNS but pins to the first resolved IP per new connection.
+  optional string resolution = 7 [(buf.validate.field).string = {
+    in: [
+      "NONE",
+      "STATIC",
+      "DNS",
+      "DNS_ROUND_ROBIN"
+    ]
+  }];
+
+  // Static endpoints backing the service. Mutually exclusive with `workload_selector`
+  // (enforced above). Not permitted with NONE resolution; at most one with
+  // DNS_ROUND_ROBIN. Upstream allows up to 4096.
+  repeated KubernetesServiceEntryEndpoint endpoints = 8 [(buf.validate.field).repeated.max_items = 4096];
+
+  // The namespaces to which this service is exported (made visible). Default is all
+  // namespaces. `.` exports to the declaring namespace only; `*` exports to all.
+  repeated string export_to = 9;
+
+  // If set, the proxy verifies that the server certificate's subject alternate name
+  // matches one of these values. Applies when originating TLS to the external service.
+  repeated string subject_alt_names = 10;
+
+  // Selects in-mesh workloads (by pod/VM label) that back this service, instead of listing
+  // static `endpoints`. Mutually exclusive with `endpoints` (enforced above). Only
+  // meaningful with MESH_INTERNAL location.
+  //
+  // INFRA-CHART COMPOSABILITY: workload_selector is a PLAIN label match, not an
+  // Planton foreign key (StringValueOrRef). It is matched at runtime by istiod against pod
+  // labels and creates NO automatic DAG edge to any workload resource. To order this
+  // ServiceEntry after the workloads it fronts in an infra chart, an author MUST express
+  // the dependency via metadata.relationships, e.g.:
+  //   metadata:
+  //     relationships:
+  //       - kind: KubernetesDeployment
+  //         name: "{{ values.app }}"
+  //         type: depends_on
+  // See the component's "Composing in Infra Charts" docs for the full pattern.
+  dev.planton.provider.kubernetes.KubernetesIstioApiNetworkingWorkloadSelector workload_selector = 11;
+}
+
+// KubernetesServiceEntryPort describes a single port exposed by the external service.
+// Faithful to the upstream istio.io/api ServicePort message.
+message KubernetesServiceEntryPort {
+  // A valid port number (1-65535). Required.
+  uint32 number = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).uint32 = {
+      gte: 1
+      lte: 65535
+    }
+  ];
+
+  // The protocol exposed on the port. The upstream documentation requires one of
+  // HTTP, HTTPS, GRPC, HTTP2, MONGO, TCP, or TLS (TLS implies SNI-based routing without
+  // terminating the connection). Optional; when unset the proxy treats the port as TCP.
+  optional string protocol = 2 [(buf.validate.field).string = {
+    in: [
+      "HTTP",
+      "HTTPS",
+      "GRPC",
+      "HTTP2",
+      "MONGO",
+      "TCP",
+      "TLS"
+    ]
+  }];
+
+  // The label assigned to the port. Required and unique across the ServiceEntry's ports
+  // (uniqueness enforced at the spec level). Upstream allows up to 256 characters.
+  string name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1
+      max_len: 256
+    }
+  ];
+
+  // The port on the backing endpoint where traffic is received. When unset, defaults to
+  // `number`.
+  optional uint32 target_port = 4 [(buf.validate.field).uint32 = {
+    gte: 1
+    lte: 65535
+  }];
+}
+
+// KubernetesServiceEntryEndpoint is one static network endpoint backing the service.
+// Faithful to the upstream istio.io/api WorkloadEntry message (the subset used inline by
+// ServiceEntry.endpoints).
+message KubernetesServiceEntryEndpoint {
+  // address (or, for multi-network setups, network) is required; a Unix domain socket
+  // address (unix://...) must be an absolute path or abstract socket, may not be a
+  // directory, and may not carry ports. Mirrors the upstream WorkloadEntry XValidations.
+  option (buf.validate.message).cel = {
+    id: "service_entry_endpoint.address_or_network_required"
+    message: "endpoint requires an address or a network"
+    expression: "has(this.address) || has(this.network)"
+  };
+  option (buf.validate.message).cel = {
+    id: "service_entry_endpoint.uds_no_ports"
+    message: "a unix:// endpoint address may not include ports"
+    expression: "!(has(this.address) && this.address.startsWith('unix://') && size(this.ports) > 0)"
+  };
+
+  // The endpoint address without a port (an IP, or a hostname when resolution is DNS, or
+  // a `unix://` domain socket path). If empty, `network` is required. Upstream allows up
+  // to 256 characters.
+  optional string address = 1 [
+    (buf.validate.field).string = {max_len: 256},
+    (buf.validate.field).cel = {
+      id: "service_entry_endpoint.uds_absolute_or_abstract"
+      message: "a unix:// endpoint address must be an absolute path or an abstract socket (@)"
+      expression: "!this.startsWith('unix://') || this.substring(7, 8) == '/' || this.substring(7, 8) == '@'"
+    },
+    (buf.validate.field).cel = {
+      id: "service_entry_endpoint.uds_not_a_dir"
+      message: "a unix:// endpoint address may not be a directory (trailing '/')"
+      expression: "!this.startsWith('unix://') || !this.endsWith('/')"
+    }
+  ];
+
+  // The service-port-name -> endpoint-port mapping. Keys are port names (matching a
+  // ServiceEntry port `name`); values are the port on this endpoint. Do not use with a
+  // `unix://` address. Upstream allows up to 128 entries.
+  map<string, uint32> ports = 2 [(buf.validate.field).map = {
+    max_pairs: 128
+    keys: {
+      string: {
+        max_len: 63
+        pattern: "^[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?$"
+      }
+    }
+    values: {
+      uint32: {
+        gte: 1
+        lte: 65535
+      }
+    }
+  }];
+
+  // Labels associated with the endpoint. Upstream allows up to 256 entries.
+  map<string, string> labels = 3 [(buf.validate.field).map = {max_pairs: 256}];
+
+  // The L3 network the endpoint belongs to, used to group endpoints across clusters.
+  // Required when `address` is empty. Upstream allows up to 2048 characters.
+  optional string network = 4 [(buf.validate.field).string = {max_len: 2048}];
+
+  // The locality (region/zone/sub-zone) of the endpoint, used for locality-aware load
+  // balancing (e.g. `us-west2/us-west2-a`). Upstream allows up to 2048 characters.
+  optional string locality = 5 [(buf.validate.field).string = {max_len: 2048}];
+
+  // The load-balancing weight of the endpoint; higher values receive proportionally more
+  // traffic.
+  optional uint32 weight = 6;
+
+  // The service account associated with the workload when a sidecar is present. Must be in
+  // the same namespace as the ServiceEntry. Upstream allows up to 253 characters.
+  optional string service_account = 7 [(buf.validate.field).string = {max_len: 253}];
+}

@@ -48,7 +48,7 @@ flowchart TD
 
 - `spec.proto`: 18 fields covering core config, networking, HA, storage, backup, security, admin user, databases, users with inline privileges, and engine settings. Engine validation via regex pattern `^(PostgreSQL|MySQL)-[0-9]+$`. Permission validation via string enum `["readonly", "readwrite", "all", "none"]`.
 - `stack_outputs.proto`: 6 outputs -- instance_id, public endpoint (ip + port), private endpoint (ip + port), TLS certificate.
-- `api.proto`: Standard resource wrapper with `scaleway.openmcf.org/v1` API version.
+- `api.proto`: Standard resource wrapper with `scaleway.planton.dev/v1` API version.
 - `stack_input.proto`: Target + ScalewayProviderConfig.
 
 ### Pulumi Go Module (6 files)

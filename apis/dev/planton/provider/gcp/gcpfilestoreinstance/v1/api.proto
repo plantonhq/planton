@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcpfilestoreinstance.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/gcp/gcpfilestoreinstance/v1/spec.proto";
+import "dev/planton/provider/gcp/gcpfilestoreinstance/v1/stack_outputs.proto";
+import "dev/planton/shared/metadata.proto";
+
+//gcp-filestore-instance
+message GcpFilestoreInstance {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'GcpFilestoreInstance'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  GcpFilestoreInstanceSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  GcpFilestoreInstanceStatus status = 5;
+}
+
+//gcp-filestore-instance status
+message GcpFilestoreInstanceStatus {
+  //stack-outputs
+  GcpFilestoreInstanceStackOutputs outputs = 1;
+}

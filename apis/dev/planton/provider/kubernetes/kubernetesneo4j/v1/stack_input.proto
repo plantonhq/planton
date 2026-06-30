@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesneo4j.v1;
+
+import "dev/planton/provider/kubernetes/kubernetesneo4j/v1/api.proto";
+import "dev/planton/provider/kubernetes/provider.proto";
+
+//neo4j-kubernetes stack-input
+message KubernetesNeo4jStackInput {
+  //target cloud-resource
+  KubernetesNeo4j target = 1;
+  //provider-config
+  dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+}

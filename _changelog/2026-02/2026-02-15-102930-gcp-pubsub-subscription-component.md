@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added GcpPubSubSubscription as a new GCP deployment component in OpenMCF, completing the
+Added GcpPubSubSubscription as a new GCP deployment component in Planton, completing the
 Pub/Sub resource pair alongside GcpPubSubTopic. The component supports all four GCP delivery
 methods (pull, push, BigQuery, Cloud Storage) with dead-letter handling, retry policies,
 message ordering, exactly-once delivery, and attribute-based filtering. This is the 7th
@@ -14,14 +14,14 @@ new GCP resource kind forged as part of the GCP resource expansion initiative.
 
 ## Problem Statement / Motivation
 
-OpenMCF had GcpPubSubTopic for creating Pub/Sub topics but no corresponding subscription
+Planton had GcpPubSubTopic for creating Pub/Sub topics but no corresponding subscription
 resource. Users could create topics but had to fall back to raw Terraform/Pulumi to create
 subscriptions -- breaking the declarative workflow and making infra-chart composition
 impossible for event-driven architectures.
 
 ### Pain Points
 
-- No way to declare subscriptions in OpenMCF manifests
+- No way to declare subscriptions in Planton manifests
 - Event pipeline infra charts (topic -> subscription -> consumer) were incomplete
 - BigQuery and Cloud Storage delivery patterns required manual provisioning
 - Dead-letter and retry policies couldn't be expressed declaratively
@@ -56,7 +56,7 @@ A complete GcpPubSubSubscription deployment component with:
 
 - User-facing README, 8 YAML examples, comprehensive research docs
 - 4 presets: basic-pull, push-with-oidc, bigquery-delivery, dead-letter
-- Catalog page for the OpenMCF documentation site
+- Catalog page for the Planton documentation site
 
 ## Implementation Details
 
@@ -113,7 +113,7 @@ flowchart TB
 
 ## Benefits
 
-- **Complete Pub/Sub pair**: Topics and subscriptions can now be fully managed in OpenMCF
+- **Complete Pub/Sub pair**: Topics and subscriptions can now be fully managed in Planton
 - **Four delivery methods**: Pull, push, BigQuery, and Cloud Storage all supported
 - **Infra-chart ready**: 4 StringValueOrRef fields enable dependency-aware composition
 - **Production reliability**: Dead-letter, retry, exactly-once, and expiration policies
@@ -130,7 +130,7 @@ flowchart TB
 - GcpPubSubTopic (R06) -- Source topic, completed in the same expansion initiative
 - GcpBigQueryDataset (R05) -- Target for BigQuery delivery subscriptions
 - GcpGcsBucket -- Target for Cloud Storage delivery subscriptions
-- Parent project: 20260212.01.openmcf-cloud-provider-expansion
+- Parent project: 20260212.01.planton-cloud-provider-expansion
 
 ---
 

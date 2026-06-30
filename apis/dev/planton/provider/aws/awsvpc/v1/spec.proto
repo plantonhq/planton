@@ -1,0 +1,181 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsvpc.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/options/options.proto";
+
+// AwsVpcSpec defines an AWS Virtual Private Cloud (VPC): an isolated virtual
+// network in which other AWS resources are launched.
+//
+// A VPC is the networking foundation for nearly everything else on AWS, but it
+// is itself a thin construct: an IP address space (one primary IPv4 CIDR, plus
+// optional secondary IPv4 CIDRs and an IPv6 CIDR), a tenancy mode, and a few
+// DNS toggles. The things that make a network useful -- subnets, internet
+// gateways, NAT gateways, route tables -- are separate, independently ownable
+// components that reference this VPC. Keeping the VPC a clean building block is
+// what lets a topology be composed from first-class nodes rather than hidden
+// inside one opaque resource.
+//
+// The primary IPv4 CIDR can be specified explicitly (cidr_block) or allocated
+// from an IPAM pool (ipv4_ipam_pool_id [+ ipv4_netmask_length]). IPv6 is opt-in
+// and supports either an Amazon-provided /56 (assign_generated_ipv6_cidr_block)
+// or an IPAM-allocated block (ipv6_ipam_pool_id). The cross-field rules below
+// mirror what AWS itself enforces.
+message AwsVpcSpec {
+  // The AWS region where the VPC will be created.
+  // Example: "us-west-2", "eu-west-1", "ap-southeast-1".
+  // For the list of regions, see:
+  // https://aws.amazon.com/about-aws/global-infrastructure/regions_az/
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  // The primary IPv4 CIDR block for the VPC. This is the VPC's main address
+  // range and is immutable: changing it replaces the VPC. The mask must be
+  // between /16 and /28 (AWS limits), e.g. "10.0.0.0/16" yields 65,536
+  // addresses. Leave empty only when allocating the primary CIDR from IPAM
+  // (set ipv4_ipam_pool_id instead); exactly one of cidr_block or
+  // ipv4_ipam_pool_id must be provided.
+  string cidr_block = 2;
+
+  // Additional IPv4 CIDR blocks to associate with the VPC beyond the primary
+  // one (e.g. ["10.1.0.0/16", "100.64.0.0/16"]). Each is associated as its own
+  // resource and can be added or removed without recreating the VPC. Each block
+  // must be non-overlapping and within the AWS /16-/28 mask limits. Useful when
+  // a single /16 runs out of subnet space or when carving a distinct range
+  // (such as the 100.64.0.0/10 shared space) for specific workloads.
+  repeated string secondary_ipv4_cidr_blocks = 3;
+
+  // The IPAM (IP Address Manager) pool to allocate the primary IPv4 CIDR from,
+  // instead of specifying cidr_block directly. Pair with ipv4_netmask_length to
+  // let IPAM choose a block of the requested size, or with cidr_block to take a
+  // specific block from the pool. Immutable: changing it replaces the VPC.
+  string ipv4_ipam_pool_id = 4;
+
+  // The netmask length of the primary IPv4 CIDR to allocate from
+  // ipv4_ipam_pool_id (e.g. 16 for a /16). Must be between 16 and 28. Requires
+  // ipv4_ipam_pool_id and is mutually exclusive with cidr_block. Immutable:
+  // changing it replaces the VPC.
+  int32 ipv4_netmask_length = 5;
+
+  // The tenancy of instances launched into this VPC: "default" (instances may
+  // run on shared hardware) or "dedicated" (every instance runs on
+  // single-tenant hardware, at higher cost). Leave empty for the AWS default
+  // ("default"). Note that AWS only supports changing "dedicated" -> "default"
+  // in place; other tenancy changes are not permitted by the API.
+  string instance_tenancy = 6 [
+    (buf.validate.field).cel = {
+      id: "instance_tenancy_valid"
+      message: "instance_tenancy must be one of: default, dedicated"
+      expression: "this == '' || this in ['default', 'dedicated']"
+    },
+    (dev.planton.shared.options.recommended_default) = "default"
+  ];
+
+  // Whether the Amazon-provided DNS server (the .2 resolver) answers DNS
+  // queries from within the VPC. AWS enables this by default, and disabling it
+  // breaks name resolution for most workloads, so when this field is unset the
+  // VPC keeps DNS resolution ON. Set it explicitly to false only to deliberately
+  // turn the Amazon resolver off.
+  optional bool enable_dns_support = 7 [(dev.planton.shared.options.recommended_default) = "true"];
+
+  // Whether instances with public IP addresses receive public DNS hostnames.
+  // AWS leaves this off by default; turn it on for VPCs whose instances should
+  // be reachable by DNS name. See:
+  // https://docs.aws.amazon.com/vpc/latest/userguide/vpc-dns.html#vpc-dns-hostnames
+  bool enable_dns_hostnames = 8 [(dev.planton.shared.options.recommended_default) = "true"];
+
+  // Whether to enable Network Address Usage (NAU) metrics for the VPC. NAU is a
+  // CloudWatch metric that tracks how the VPC's IP address space is consumed,
+  // useful for capacity planning in large networks. Off by default.
+  bool enable_network_address_usage_metrics = 9;
+
+  // Request an Amazon-provided IPv6 /56 CIDR block for the VPC. This is the
+  // simplest way to make a VPC dual-stack. Mutually exclusive with the IPAM
+  // IPv6 fields (ipv6_ipam_pool_id / ipv6_cidr_block / ipv6_netmask_length).
+  bool assign_generated_ipv6_cidr_block = 10;
+
+  // An explicit IPv6 CIDR block to allocate from ipv6_ipam_pool_id (e.g.
+  // "2600:1f18:abcd:1200::/56"). Requires ipv6_ipam_pool_id (a bring-your-own
+  // IPv6 block without IPAM is not supported on the VPC resource) and is
+  // mutually exclusive with ipv6_netmask_length.
+  string ipv6_cidr_block = 11;
+
+  // The network border group from which to advertise an Amazon-provided IPv6
+  // CIDR (a Local Zone / Wavelength advertisement scope). Only valid together
+  // with assign_generated_ipv6_cidr_block.
+  string ipv6_cidr_block_network_border_group = 12;
+
+  // The IPAM pool to allocate the IPv6 CIDR from. Pair with ipv6_netmask_length
+  // (the size to allocate) or ipv6_cidr_block (a specific block). Mutually
+  // exclusive with assign_generated_ipv6_cidr_block.
+  string ipv6_ipam_pool_id = 13;
+
+  // The netmask length of the IPv6 CIDR to allocate from ipv6_ipam_pool_id.
+  // Must be one of 44, 48, 52, 56, or 60. Requires ipv6_ipam_pool_id and is
+  // mutually exclusive with ipv6_cidr_block.
+  int32 ipv6_netmask_length = 14;
+
+  // The VPC needs a primary IPv4 source: either an explicit CIDR or an IPAM pool.
+  option (buf.validate.message).cel = {
+    id: "ipv4_primary_source_required"
+    message: "set exactly one primary IPv4 source: cidr_block or ipv4_ipam_pool_id"
+    expression: "this.cidr_block != '' || this.ipv4_ipam_pool_id != ''"
+  };
+
+  // A literal primary CIDR and an IPAM netmask are two different allocation
+  // modes and cannot be combined.
+  option (buf.validate.message).cel = {
+    id: "ipv4_cidr_block_vs_netmask_exclusive"
+    message: "cidr_block and ipv4_netmask_length are mutually exclusive"
+    expression: "this.cidr_block == '' || this.ipv4_netmask_length == 0"
+  };
+
+  // cidr_block, when set, must be a valid IPv4 CIDR (mask /16-/28 is enforced by AWS).
+  option (buf.validate.message).cel = {
+    id: "ipv4_cidr_block_format"
+    message: "cidr_block must be a valid IPv4 CIDR, e.g. 10.0.0.0/16"
+    expression: "this.cidr_block == '' || this.cidr_block.matches('^([0-9]{1,3}\\\\.){3}[0-9]{1,3}/[0-9]{1,2}$')"
+  };
+
+  // An IPv4 IPAM netmask, when set, must be /16-/28 and requires an IPAM pool.
+  option (buf.validate.message).cel = {
+    id: "ipv4_netmask_length_valid"
+    message: "ipv4_netmask_length must be between 16 and 28 and requires ipv4_ipam_pool_id"
+    expression: "this.ipv4_netmask_length == 0 || (this.ipv4_netmask_length >= 16 && this.ipv4_netmask_length <= 28 && this.ipv4_ipam_pool_id != '')"
+  };
+
+  // Amazon-provided IPv6 and IPAM-allocated IPv6 are mutually exclusive modes.
+  option (buf.validate.message).cel = {
+    id: "ipv6_amazon_vs_ipam_exclusive"
+    message: "assign_generated_ipv6_cidr_block cannot be combined with the IPAM IPv6 fields (ipv6_ipam_pool_id/ipv6_cidr_block/ipv6_netmask_length)"
+    expression: "!this.assign_generated_ipv6_cidr_block || (this.ipv6_ipam_pool_id == '' && this.ipv6_cidr_block == '' && this.ipv6_netmask_length == 0)"
+  };
+
+  // An explicit IPv6 CIDR requires an IPAM pool to allocate it from.
+  option (buf.validate.message).cel = {
+    id: "ipv6_cidr_block_requires_ipam"
+    message: "ipv6_cidr_block requires ipv6_ipam_pool_id"
+    expression: "this.ipv6_cidr_block == '' || this.ipv6_ipam_pool_id != ''"
+  };
+
+  // An IPv6 IPAM netmask, when set, must be a valid size and requires an IPAM pool.
+  option (buf.validate.message).cel = {
+    id: "ipv6_netmask_length_valid"
+    message: "ipv6_netmask_length must be one of 44, 48, 52, 56, 60 and requires ipv6_ipam_pool_id"
+    expression: "this.ipv6_netmask_length == 0 || (this.ipv6_netmask_length in [44, 48, 52, 56, 60] && this.ipv6_ipam_pool_id != '')"
+  };
+
+  // The IPAM IPv6 block can be sized by netmask or pinned by CIDR, never both.
+  option (buf.validate.message).cel = {
+    id: "ipv6_cidr_block_vs_netmask_exclusive"
+    message: "ipv6_cidr_block and ipv6_netmask_length are mutually exclusive"
+    expression: "this.ipv6_cidr_block == '' || this.ipv6_netmask_length == 0"
+  };
+
+  // The IPv6 border group is only meaningful for an Amazon-provided IPv6 CIDR.
+  option (buf.validate.message).cel = {
+    id: "ipv6_border_group_requires_amazon"
+    message: "ipv6_cidr_block_network_border_group requires assign_generated_ipv6_cidr_block"
+    expression: "this.ipv6_cidr_block_network_border_group == '' || this.assign_generated_ipv6_cidr_block"
+  };
+}

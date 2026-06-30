@@ -1,10 +1,10 @@
-module github.com/plantonhq/openmcf/buf/lint/optional-linter
+module github.com/plantonhq/planton/buf/lint/optional-linter
 
 go 1.25.0
 
 require (
 	buf.build/go/bufplugin v0.9.0
-	github.com/plantonhq/openmcf v0.0.0
+	github.com/plantonhq/planton v0.0.0
 	google.golang.org/protobuf v1.36.10
 )
 
@@ -30,5 +30,5 @@ require (
 
 replace (
 	github.com/bufbuild/protovalidate-go => buf.build/go/protovalidate v1.0.0
-	github.com/plantonhq/openmcf => ../../..
+	github.com/plantonhq/planton => ../../..
 )

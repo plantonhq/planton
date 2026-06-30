@@ -10,18 +10,18 @@ Added a complete GcpVertexAiEndpoint deployment component for provisioning Verte
 
 ## Problem Statement / Motivation
 
-ML teams need infrastructure-as-code management for Vertex AI Endpoints -- the serving surfaces where trained models are deployed for prediction. Without this component, endpoint creation is either manual (console/gcloud), one-off Terraform, or custom Pulumi code -- none of which integrate with OpenMCF's composable infrastructure model.
+ML teams need infrastructure-as-code management for Vertex AI Endpoints -- the serving surfaces where trained models are deployed for prediction. Without this component, endpoint creation is either manual (console/gcloud), one-off Terraform, or custom Pulumi code -- none of which integrate with Planton's composable infrastructure model.
 
 ### Pain Points
 
-- No way to compose Vertex AI endpoints with other OpenMCF-managed resources (VPCs, KMS keys, projects) using `valueFrom` references
+- No way to compose Vertex AI endpoints with other Planton-managed resources (VPCs, KMS keys, projects) using `valueFrom` references
 - Manual endpoint creation doesn't benefit from framework labels, consistent naming, or infra-chart composition
 - Three networking modes (public, VPC-peered, PSC) need to be properly abstracted with mutual exclusion validation
 - Vertex AI's numeric-only endpoint name requirement is unusual and needs to be handled transparently
 
 ## Solution / What's New
 
-A full deployment component following the established OpenMCF forge pattern: 4 proto files, dual IaC modules (Pulumi Go + Terraform HCL), 31 validation tests, documentation, catalog page, and 3 presets.
+A full deployment component following the established Planton forge pattern: 4 proto files, dual IaC modules (Pulumi Go + Terraform HCL), 31 validation tests, documentation, catalog page, and 3 presets.
 
 ### Key Design Choices
 
@@ -36,7 +36,7 @@ A full deployment component following the established OpenMCF forge pattern: 4 p
 ### Proto API
 
 ```
-apis/org/openmcf/provider/gcp/gcpvertexaiendpoint/v1/
+apis/dev/planton/provider/gcp/gcpvertexaiendpoint/v1/
 ├── spec.proto          # 9 fields, 1 sub-message, 3 CEL validations
 ├── stack_outputs.proto # 4 outputs
 ├── api.proto           # KRM envelope
@@ -84,7 +84,7 @@ Notable: The Terraform module uses `random_integer` with keepers to auto-generat
 
 ## Benefits
 
-- ML teams can provision Vertex AI endpoints through the same OpenMCF workflow as all other infrastructure
+- ML teams can provision Vertex AI endpoints through the same Planton workflow as all other infrastructure
 - Three networking modes properly abstracted with proto-level validation preventing invalid combinations
 - `valueFrom` composition enables endpoint creation in infra charts alongside VPCs, KMS keys, and notebooks
 - Numeric endpoint name is auto-generated -- users never need to think about it unless importing existing endpoints

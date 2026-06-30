@@ -10,14 +10,14 @@ Implemented the OciPublicIp deployment component (R14, enum 3323) -- the fourth 
 
 ## Problem Statement / Motivation
 
-OpenMCF's OCI provider had load balancers and DRG connectivity but lacked direct public IP management.
+Planton's OCI provider had load balancers and DRG connectivity but lacked direct public IP management.
 
 ### Pain Points
 
-- No way to allocate and manage persistent public IP addresses through OpenMCF
+- No way to allocate and manage persistent public IP addresses through Planton
 - No support for reserved IPs that survive instance termination (critical for DNS records, firewall allowlists)
 - No BYOIP (Bring Your Own IP) pool integration for enterprise migration scenarios
-- Ephemeral IPs required manual assignment outside OpenMCF
+- Ephemeral IPs required manual assignment outside Planton
 
 ## Solution / What's New
 
@@ -37,7 +37,7 @@ A CEL expression enforces that ephemeral IPs must have a `private_ip_id` assigne
 
 - **5 fields**: compartment_id (StringValueOrRef, required), lifetime (string, required, in-list validated), display_name (optional, falls back to metadata.name), private_ip_id (StringValueOrRef, conditionally required for ephemeral), public_ip_pool_id (StringValueOrRef, optional for BYOIP)
 - **CEL validation**: `this.lifetime != 'EPHEMERAL' || has(this.private_ip_id)`
-- **No default_kind** on private_ip_id and public_ip_pool_id -- there are no corresponding OpenMCF components (private IPs are created implicitly with VNICs; IP pools are not in the 37-resource catalog)
+- **No default_kind** on private_ip_id and public_ip_pool_id -- there are no corresponding Planton components (private IPs are created implicitly with VNICs; IP pools are not in the 37-resource catalog)
 
 ### Stack Outputs
 
@@ -83,7 +83,7 @@ A CEL expression enforces that ephemeral IPs must have a `private_ip_id` assigne
 
 - **OCI Provider**: 14th resource kind implemented (14/37 total)
 - **Phase 3 Complete**: All 4 Advanced Networking components done (LoadBalancer, NetworkLoadBalancer, DynamicRoutingGateway, PublicIp)
-- **Users**: Can now allocate and manage public IP addresses through OpenMCF, enabling stable DNS records and firewall configurations
+- **Users**: Can now allocate and manage public IP addresses through Planton, enabling stable DNS records and firewall configurations
 
 ## Validation Results
 

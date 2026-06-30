@@ -1,0 +1,22 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "module",
+    srcs = [
+        "locals.go",
+        "main.go",
+        "outputs.go",
+        "zone.go",
+    ],
+    importpath = "github.com/plantonhq/planton/apis/dev/planton/provider/oci/ocidnszone/v1/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/dev/planton/provider/oci/ocidnszone/v1:ocidnszone",
+        "//apis/dev/planton/shared/cloudresourcekind",
+        "//pkg/iac/pulumi/pulumimodule/provider/oci/pulumiociprovider",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_oci_sdk_v4//go/oci",
+        "@com_github_pulumi_pulumi_oci_sdk_v4//go/oci/dns",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)

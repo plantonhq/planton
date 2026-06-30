@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added the `AzurePublicIp` deployment component (enum 413, id_prefix `azpip`) to OpenMCF, provisioning Standard SKU static Public IP Addresses in Azure. This is the 5th resource (R04) in the Azure resource expansion project, and the first networking resource in the queue. The component deliberately omits the retired Basic SKU and always-Dynamic allocation, hardcoding Standard/Static in IaC modules for a clean, modern spec.
+Added the `AzurePublicIp` deployment component (enum 413, id_prefix `azpip`) to Planton, provisioning Standard SKU static Public IP Addresses in Azure. This is the 5th resource (R04) in the Azure resource expansion project, and the first networking resource in the queue. The component deliberately omits the retired Basic SKU and always-Dynamic allocation, hardcoding Standard/Static in IaC modules for a clean, modern spec.
 
 ## Problem Statement / Motivation
 
@@ -14,13 +14,13 @@ The Azure resource expansion project requires 20 more networking, database, serv
 
 ### Pain Points
 
-- No standalone Public IP resource existed in OpenMCF for Azure
+- No standalone Public IP resource existed in Planton for Azure
 - The existing AzureNatGateway created inline Public IPs, preventing reuse across resources
 - Enterprise network architectures need explicit control over Public IP lifecycle, DNS labels, and zone placement
 
 ## Solution / What's New
 
-A complete deployment component at `apis/org/openmcf/provider/azure/azurepublicip/v1/` with:
+A complete deployment component at `apis/dev/planton/provider/azure/azurepublicip/v1/` with:
 
 - 4 proto files with buf-validate constraints (including CEL for domain_name_label format)
 - Pulumi module using `network.NewPublicIp` from `pulumi-azure/sdk/v6`
@@ -56,10 +56,10 @@ Azure retired the Basic SKU on September 30, 2025. Standard SKU requires static 
 
 ### Files Created
 
-- `apis/org/openmcf/provider/azure/azurepublicip/v1/` -- 4 proto files, spec_test.go, docs
-- `apis/org/openmcf/provider/azure/azurepublicip/v1/iac/pulumi/` -- Go module (main, locals, outputs)
-- `apis/org/openmcf/provider/azure/azurepublicip/v1/iac/tf/` -- Terraform module (5 files)
-- `apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto` -- enum 413 registered
+- `apis/dev/planton/provider/azure/azurepublicip/v1/` -- 4 proto files, spec_test.go, docs
+- `apis/dev/planton/provider/azure/azurepublicip/v1/iac/pulumi/` -- Go module (main, locals, outputs)
+- `apis/dev/planton/provider/azure/azurepublicip/v1/iac/tf/` -- Terraform module (5 files)
+- `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto` -- enum 413 registered
 
 ## Benefits
 

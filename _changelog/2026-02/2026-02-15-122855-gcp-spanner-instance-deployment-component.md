@@ -6,15 +6,15 @@
 
 ## Summary
 
-Added GcpSpannerInstance (R09) as a new deployment component in OpenMCF, enabling declarative provisioning of Google Cloud Spanner instances with support for three capacity models (fixed nodes, processing units, autoscaling), three editions (STANDARD, ENTERPRISE, ENTERPRISE_PLUS), free instances for development, and automatic backup scheduling. The component includes full Pulumi and Terraform implementations with feature parity, 55 validation tests, and production-quality documentation.
+Added GcpSpannerInstance (R09) as a new deployment component in Planton, enabling declarative provisioning of Google Cloud Spanner instances with support for three capacity models (fixed nodes, processing units, autoscaling), three editions (STANDARD, ENTERPRISE, ENTERPRISE_PLUS), free instances for development, and automatic backup scheduling. The component includes full Pulumi and Terraform implementations with feature parity, 55 validation tests, and production-quality documentation.
 
 ## Problem Statement / Motivation
 
-Cloud Spanner is Google's globally distributed, strongly consistent relational database -- a critical service for mission-critical applications that need horizontal scalability without manual sharding. OpenMCF's GCP provider coverage lacked Spanner support, leaving users without a declarative way to provision Spanner instances through the framework.
+Cloud Spanner is Google's globally distributed, strongly consistent relational database -- a critical service for mission-critical applications that need horizontal scalability without manual sharding. Planton's GCP provider coverage lacked Spanner support, leaving users without a declarative way to provision Spanner instances through the framework.
 
 ### Pain Points
 
-- No way to provision Spanner instances through OpenMCF manifests
+- No way to provision Spanner instances through Planton manifests
 - Spanner's complex capacity model (nodes vs processing units vs autoscaling) required careful validation to prevent misconfiguration
 - FREE_INSTANCE type (zero-cost development) needed special handling -- cannot set capacity, edition, or automatic backups
 - Edition field (STANDARD/ENTERPRISE/ENTERPRISE_PLUS) was missing from the T01 plan but is a significant pricing and feature lever
@@ -88,7 +88,7 @@ graph TB
 
 ## Benefits
 
-- GCP users can now provision Spanner instances declaratively through OpenMCF
+- GCP users can now provision Spanner instances declaratively through Planton
 - FREE_INSTANCE preset enables zero-cost development without modifying production configs
 - Autoscaling support eliminates manual capacity planning for variable workloads
 - 55 validation tests catch misconfigurations (mutual exclusion, FREE_INSTANCE restrictions) before any API calls
@@ -96,7 +96,7 @@ graph TB
 
 ## Impact
 
-- **Users**: Can deploy Spanner instances via `openmcf apply -f` with validation
+- **Users**: Can deploy Spanner instances via `planton apply -f` with validation
 - **Infra Charts**: `gcp-spanner-application` chart can compose Instance + Database
 - **R10 GcpSpannerDatabase**: Unblocked -- can reference `status.outputs.instance_name`
 - **Enum 633 registered**: `cloud_resource_kind.proto` updated

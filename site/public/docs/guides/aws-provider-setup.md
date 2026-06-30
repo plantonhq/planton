@@ -1,13 +1,13 @@
 ---
 title: "AWS Provider Setup"
-description: "Configure AWS credentials for OpenMCF deployments — IAM users, roles, environment variables, and provider config files"
+description: "Configure AWS credentials for Planton deployments — IAM users, roles, environment variables, and provider config files"
 icon: "cloud"
 order: 70
 ---
 
 # AWS Provider Setup
 
-This guide covers everything you need to authenticate OpenMCF with AWS. It applies to all AWS deployment components: `AwsRdsInstance`, `AwsS3Bucket`, `AwsEksCluster`, `AwsVpc`, and others.
+This guide covers everything you need to authenticate Planton with AWS. It applies to all AWS deployment components: `AwsRdsInstance`, `AwsS3Bucket`, `AwsEksCluster`, `AwsVpc`, and others.
 
 For a quick reference of all provider credentials, see [Credentials](./credentials).
 
@@ -20,14 +20,14 @@ For a quick reference of all provider credentials, see [Credentials](./credentia
 
 ### Method 1: Environment Variables
 
-Set the standard AWS environment variables. Both OpenMCF and the underlying IaC engines (Pulumi, Terraform, OpenTofu) read them automatically:
+Set the standard AWS environment variables. Both Planton and the underlying IaC engines (Pulumi, Terraform, OpenTofu) read them automatically:
 
 ```bash
 export AWS_ACCESS_KEY_ID="AKIAIOSFODNN7EXAMPLE"
 export AWS_SECRET_ACCESS_KEY="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 export AWS_REGION="us-west-2"
 
-openmcf pulumi up -f ops/aws/database.yaml
+planton pulumi up -f ops/aws/database.yaml
 ```
 
 | Variable | Required | Description |
@@ -47,9 +47,9 @@ If you manage multiple AWS accounts, use named profiles:
 aws configure --profile production
 # Enter access key, secret key, and region when prompted
 
-# Use the profile with OpenMCF
+# Use the profile with Planton
 export AWS_PROFILE=production
-openmcf pulumi up -f ops/aws/database.yaml
+planton pulumi up -f ops/aws/database.yaml
 ```
 
 ### Method 3: Provider Config File (`-p`)
@@ -67,7 +67,7 @@ region: "us-west-2"
 Deploy using the `-p` flag:
 
 ```bash
-openmcf pulumi up -f ops/aws/database.yaml -p aws-credential.yaml
+planton pulumi up -f ops/aws/database.yaml -p aws-credential.yaml
 ```
 
 The CLI validates the config file against the proto schema, then converts the fields to environment variables (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`) for the IaC engine subprocess.
@@ -82,7 +82,7 @@ The CLI validates the config file against the proto schema, then converts the fi
 | `region` | Yes | AWS region |
 | `session_token` | No | STS session token for temporary credentials |
 
-All field names use `snake_case`, matching the protobuf definition at `apis/org/openmcf/provider/aws/provider.proto`.
+All field names use `snake_case`, matching the protobuf definition at `apis/dev/planton/provider/aws/provider.proto`.
 
 ### Method 4: IAM Roles (EC2, ECS, Lambda)
 
@@ -91,7 +91,7 @@ When running on AWS compute, use IAM roles instead of access keys. The AWS SDK a
 ```bash
 # No credential configuration needed
 # Ensure the EC2 instance, ECS task, or Lambda function has an IAM role attached
-openmcf pulumi up -f ops/aws/database.yaml
+planton pulumi up -f ops/aws/database.yaml
 ```
 
 This is the most secure method for production workloads running on AWS.
@@ -102,10 +102,10 @@ This is the most secure method for production workloads running on AWS.
 
 ```bash
 # Create an IAM user
-aws iam create-user --user-name openmcf-deployer
+aws iam create-user --user-name planton-deployer
 
 # Create access keys
-aws iam create-access-key --user-name openmcf-deployer
+aws iam create-access-key --user-name planton-deployer
 
 # Output includes AccessKeyId and SecretAccessKey
 # Store these securely — the secret key is shown only once
@@ -117,15 +117,15 @@ For CI/CD pipelines, create a dedicated IAM user with programmatic access:
 
 ```bash
 # Create user
-aws iam create-user --user-name openmcf-ci
+aws iam create-user --user-name planton-ci
 
 # Create access keys
-aws iam create-access-key --user-name openmcf-ci
+aws iam create-access-key --user-name planton-ci
 
 # Attach a policy (see Least-Privilege Policies below)
 aws iam attach-user-policy \
-  --user-name openmcf-ci \
-  --policy-arn arn:aws:iam::123456789012:policy/OpenMCFDeployerPolicy
+  --user-name planton-ci \
+  --policy-arn arn:aws:iam::123456789012:policy/PlantonDeployerPolicy
 ```
 
 Store the access key and secret key in your CI/CD platform's secret management (GitHub Actions secrets, GitLab CI variables, etc.).
@@ -234,11 +234,11 @@ aws sts get-caller-identity
 # {
 #   "UserId": "AIDAIOSFODNN7EXAMPLE",
 #   "Account": "123456789012",
-#   "Arn": "arn:aws:iam::123456789012:user/openmcf-deployer"
+#   "Arn": "arn:aws:iam::123456789012:user/planton-deployer"
 # }
 ```
 
-If this command succeeds, OpenMCF can use the same credentials.
+If this command succeeds, Planton can use the same credentials.
 
 ## Troubleshooting
 
@@ -285,7 +285,7 @@ aws sso login --profile <profile-name>
 # Or re-assume the role
 aws sts assume-role \
   --role-arn arn:aws:iam::123456789012:role/DeployerRole \
-  --role-session-name openmcf-session
+  --role-session-name planton-session
 ```
 
 ### Provider Config File Validation Error

@@ -12,14 +12,14 @@ Deploys an Azure Resource Group in a specified region. Resource groups are the f
 
 ## What Gets Created
 
-When you deploy an AzureResourceGroup resource, OpenMCF provisions:
+When you deploy an AzureResourceGroup resource, Planton provisions:
 
 - **Resource Group** — a `core.ResourceGroup` resource in the specified Azure region, serving as the container for all downstream Azure resources
 - **Azure Tags** — metadata tags applied to the resource group including resource name, resource kind, organization, and environment for governance and cost tracking
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure subscription** where the resource group will be created
 - **A unique name** for the resource group within the target subscription
 
@@ -28,15 +28,15 @@ When you deploy an AzureResourceGroup resource, OpenMCF provisions:
 Create a file `resourcegroup.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureResourceGroup
 metadata:
   name: my-rg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureResourceGroup.my-rg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureResourceGroup.my-rg
 spec:
   name: my-rg
   region: eastus
@@ -45,7 +45,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f resourcegroup.yaml
+planton apply -f resourcegroup.yaml
 ```
 
 This creates a resource group named `my-rg` in the `eastus` region with standard metadata tags.
@@ -70,15 +70,15 @@ This component has no optional fields. Resource groups are intentionally minimal
 A resource group for a development environment in the US East region:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureResourceGroup
 metadata:
   name: dev-rg
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureResourceGroup.dev-rg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureResourceGroup.dev-rg
 spec:
   name: dev-rg
   region: eastus
@@ -89,17 +89,17 @@ spec:
 A resource group for production workloads with metadata indicating the production environment:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureResourceGroup
 metadata:
   name: prod-eu-rg
   env: prod
   org: acme-corp
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: acme-infra
-    pulumi.openmcf.org/stack.name: prod.AzureResourceGroup.prod-eu-rg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: acme-infra
+    pulumi.planton.dev/stack.name: prod.AzureResourceGroup.prod-eu-rg
 spec:
   name: prod-eu-rg
   region: westeurope
@@ -112,17 +112,17 @@ Multiple resource groups across regions, forming the basis of a disaster recover
 Primary region:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureResourceGroup
 metadata:
   name: app-primary-rg
   env: prod
   org: acme-corp
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: acme-infra
-    pulumi.openmcf.org/stack.name: prod.AzureResourceGroup.app-primary-rg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: acme-infra
+    pulumi.planton.dev/stack.name: prod.AzureResourceGroup.app-primary-rg
 spec:
   name: app-primary-rg
   region: eastus
@@ -131,17 +131,17 @@ spec:
 Secondary region:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureResourceGroup
 metadata:
   name: app-secondary-rg
   env: prod
   org: acme-corp
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: acme-infra
-    pulumi.openmcf.org/stack.name: prod.AzureResourceGroup.app-secondary-rg
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: acme-infra
+    pulumi.planton.dev/stack.name: prod.AzureResourceGroup.app-secondary-rg
 spec:
   name: app-secondary-rg
   region: westus2

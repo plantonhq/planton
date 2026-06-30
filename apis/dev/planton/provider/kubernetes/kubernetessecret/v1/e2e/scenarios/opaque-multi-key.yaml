@@ -1,0 +1,19 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesSecret
+metadata:
+  name: e2e-sec-multikey
+spec:
+  name: e2e-sec-multikey
+  namespace: default
+  labels:
+    team: platform
+  opaque:
+    data:
+      db-host: "postgres.svc.cluster.local"
+      db-port: "5432"
+      db-name: "myapp"
+      db-user: "admin"
+      db-password: "supersecret"
+      redis-url: "redis://redis.svc:6379"
+      api-key: "ak_test_123456789"
+      jwt-secret: "e2e-jwt-signing-key"

@@ -43,7 +43,7 @@ from the stack jobs' diagnostics):
 
 ## What Changed
 
-### AwsEcrRepo module (`apis/org/openmcf/provider/aws/awsecrrepo/v1/iac/tf`)
+### AwsEcrRepo module (`apis/dev/planton/provider/aws/awsecrrepo/v1/iac/tf`)
 
 - `locals.tf` assembles `lifecycle_rules` from `spec.lifecycle_policy`: an untagged expire-by-age rule
   (`sinceImagePushed`, `expire_untagged_after_days`) and an `any` keep-last-N rule

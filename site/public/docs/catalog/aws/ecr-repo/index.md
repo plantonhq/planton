@@ -8,18 +8,18 @@ componentName: "awsecrrepo"
 
 # AWS ECR Repo
 
-Deploys an AWS Elastic Container Registry repository with configurable tag immutability, image scanning, encryption, and optional lifecycle policies for automated image expiration. The component applies OpenMCF resource tags to the repository for traceability.
+Deploys an AWS Elastic Container Registry repository with configurable tag immutability, image scanning, encryption, and optional lifecycle policies for automated image expiration. The component applies Planton resource tags to the repository for traceability.
 
 ## What Gets Created
 
-When you deploy an AwsEcrRepo resource, OpenMCF provisions:
+When you deploy an AwsEcrRepo resource, Planton provisions:
 
-- **ECR Repository** — an `ecr.Repository` with the specified name, tag mutability setting, image scanning configuration, encryption configuration, force-delete behavior, and OpenMCF resource tags
+- **ECR Repository** — an `ecr.Repository` with the specified name, tag mutability setting, image scanning configuration, encryption configuration, force-delete behavior, and Planton resource tags
 - **Lifecycle Policy** (optional) — an `ecr.LifecyclePolicy` attached to the repository, containing up to two rules: one to expire untagged images after a specified number of days, and one to retain only the most recent N images
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **A KMS key ARN** if using `KMS` encryption (optional; the default `AES256` encryption requires no additional setup)
 
 ## Quick Start
@@ -27,15 +27,15 @@ When you deploy an AwsEcrRepo resource, OpenMCF provisions:
 Create a file `ecr-repo.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEcrRepo
 metadata:
   name: my-service
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsEcrRepo.my-service
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsEcrRepo.my-service
 spec:
   region: us-east-1
   repositoryName: my-org/my-service
@@ -44,7 +44,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f ecr-repo.yaml
+planton apply -f ecr-repo.yaml
 ```
 
 This creates an ECR repository with mutable tags, AES256 encryption, and scan-on-push enabled (the defaults).
@@ -78,15 +78,15 @@ This creates an ECR repository with mutable tags, AES256 encryption, and scan-on
 A repository where tags cannot be overwritten, preventing accidental overwrites of released images:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEcrRepo
 metadata:
   name: prod-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsEcrRepo.prod-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsEcrRepo.prod-api
 spec:
   region: us-east-1
   repositoryName: my-org/api-server
@@ -98,15 +98,15 @@ spec:
 A repository using a customer-managed KMS key for compliance requirements:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEcrRepo
 metadata:
   name: compliant-repo
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsEcrRepo.compliant-repo
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsEcrRepo.compliant-repo
 spec:
   region: us-east-1
   repositoryName: my-org/compliant-service
@@ -120,15 +120,15 @@ spec:
 A repository with lifecycle rules to expire untagged images after 7 days and keep only the last 50 tagged images:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEcrRepo
 metadata:
   name: ci-images
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsEcrRepo.ci-images
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsEcrRepo.ci-images
 spec:
   region: us-east-1
   repositoryName: my-org/ci-runner
@@ -142,15 +142,15 @@ spec:
 A repository with immutable tags, KMS encryption, scan-on-push, lifecycle management, and force-delete disabled:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEcrRepo
 metadata:
   name: prod-frontend
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsEcrRepo.prod-frontend
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsEcrRepo.prod-frontend
 spec:
   region: us-east-1
   repositoryName: my-org/frontend
@@ -169,15 +169,15 @@ spec:
 A disposable development repository that can be torn down even with images present:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsEcrRepo
 metadata:
   name: dev-scratch
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsEcrRepo.dev-scratch
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsEcrRepo.dev-scratch
 spec:
   region: us-west-2
   repositoryName: my-org/scratch

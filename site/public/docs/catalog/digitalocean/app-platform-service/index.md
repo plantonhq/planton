@@ -12,7 +12,7 @@ Deploys a containerized application on DigitalOcean App Platform as a web servic
 
 ## What Gets Created
 
-When you deploy a DigitalOceanAppPlatformService resource, OpenMCF provisions:
+When you deploy a DigitalOceanAppPlatformService resource, Planton provisions:
 
 - **App Platform Application** -- a `digitalocean_app` resource containing a single service component configured according to the chosen `serviceType`
 - **Web Service** -- created when `serviceType` is `web_service`; receives external HTTP traffic, supports autoscaling with CPU-based metrics (80% threshold), and accepts `buildCommand`/`runCommand` overrides for git sources
@@ -23,7 +23,7 @@ When you deploy a DigitalOceanAppPlatformService resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **DigitalOcean credentials** configured via environment variables or OpenMCF provider config
+- **DigitalOcean credentials** configured via environment variables or Planton provider config
 - **A git repository** accessible to DigitalOcean App Platform (for git source deployments), or **a DigitalOcean Container Registry** with a pushed image (for image source deployments)
 - **Exactly one source** must be provided per deployment: either `gitSource` or `imageSource`, never both
 
@@ -32,15 +32,15 @@ When you deploy a DigitalOceanAppPlatformService resource, OpenMCF provisions:
 Create a file `app-service.yaml`:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanAppPlatformService
 metadata:
   name: my-web-app
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.DigitalOceanAppPlatformService.my-web-app
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.DigitalOceanAppPlatformService.my-web-app
 spec:
   serviceName: my-web-app
   region: nyc3
@@ -55,7 +55,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f app-service.yaml
+planton apply -f app-service.yaml
 ```
 
 This creates a single-instance web service in the NYC3 region, built from the `main` branch of the specified git repository using the smallest available instance size.
@@ -96,15 +96,15 @@ This creates a single-instance web service in the NYC3 region, built from the `m
 A Node.js web application built from source with explicit build and run commands:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanAppPlatformService
 metadata:
   name: node-api
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.DigitalOceanAppPlatformService.node-api
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.DigitalOceanAppPlatformService.node-api
 spec:
   serviceName: node-api
   region: fra1
@@ -126,15 +126,15 @@ spec:
 A background worker deployed from a pre-built container image stored in DigitalOcean Container Registry:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanAppPlatformService
 metadata:
   name: queue-processor
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.DigitalOceanAppPlatformService.queue-processor
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.DigitalOceanAppPlatformService.queue-processor
 spec:
   serviceName: queue-processor
   region: sfo3
@@ -159,15 +159,15 @@ spec:
 A fully configured production web service with autoscaling, environment variables, and a custom domain backed by a DNS zone reference:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanAppPlatformService
 metadata:
   name: prod-frontend
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.DigitalOceanAppPlatformService.prod-frontend
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.DigitalOceanAppPlatformService.prod-frontend
 spec:
   serviceName: prod-frontend
   region: ams3

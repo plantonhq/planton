@@ -2,7 +2,7 @@
 
 **Date**: 2026-02-20
 **Type**: New Feature
-**Components**: `apis/org/openmcf/provider/oci/ociblockvolume/v1/`
+**Components**: `apis/dev/planton/provider/oci/ociblockvolume/v1/`
 
 ## Summary
 
@@ -10,7 +10,7 @@ Added the OciBlockVolume deployment component -- OCI's high-performance block st
 
 ## Problem Statement / Motivation
 
-OpenMCF's OCI provider had no block storage component. OCI Block Volumes are the fundamental persistent storage mechanism for compute instances -- every VM, bare-metal server, and container workload needs attached block storage for data, boot volumes, and application state. Without a declarative block volume component, users could not manage storage independently of compute instances.
+Planton's OCI provider had no block storage component. OCI Block Volumes are the fundamental persistent storage mechanism for compute instances -- every VM, bare-metal server, and container workload needs attached block storage for data, boot volumes, and application state. Without a declarative block volume component, users could not manage storage independently of compute instances.
 
 ## Solution / What's New
 

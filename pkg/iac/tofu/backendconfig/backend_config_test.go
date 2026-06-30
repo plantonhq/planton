@@ -3,9 +3,9 @@ package backendconfig
 import (
 	"testing"
 
-	awsvpcv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/aws/awsvpc/v1"
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared"
-	"github.com/plantonhq/openmcf/pkg/iac/tofu/tofulabels"
+	awsvpcv1 "github.com/plantonhq/planton/apis/dev/planton/provider/aws/awsvpc/v1"
+	"github.com/plantonhq/planton/apis/dev/planton/shared"
+	"github.com/plantonhq/planton/pkg/iac/tofu/tofulabels"
 	"github.com/stretchr/testify/assert"
 )
 

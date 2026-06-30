@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesjenkins.v1;
+
+import "dev/planton/provider/kubernetes/kubernetesjenkins/v1/api.proto";
+import "dev/planton/provider/kubernetes/provider.proto";
+
+//jenkins-kubernetes stack-input
+message KubernetesJenkinsStackInput {
+  //target cloud-resource
+  KubernetesJenkins target = 1;
+  //provider-config
+  dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
+}

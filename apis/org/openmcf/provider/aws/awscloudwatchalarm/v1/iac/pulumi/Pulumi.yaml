@@ -1,3 +1,0 @@
-name: aws-cloudwatch-alarm
-runtime: go
-description: Deploy an AWS CloudWatch Metric Alarm using OpenMCF

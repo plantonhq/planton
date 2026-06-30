@@ -12,13 +12,13 @@ Deploys a DigitalOcean Spaces bucket, providing S3-compatible object storage in 
 
 ## What Gets Created
 
-When you deploy a DigitalOceanBucket resource, OpenMCF provisions:
+When you deploy a DigitalOceanBucket resource, Planton provisions:
 
 - **Spaces Bucket** — a `digitalocean_spaces_bucket` resource with the specified name, region, ACL, and optional versioning configuration
 
 ## Prerequisites
 
-- **DigitalOcean credentials** configured via environment variables or OpenMCF provider config
+- **DigitalOcean credentials** configured via environment variables or Planton provider config
 - **Spaces API keys** (access key ID and secret key) if using S3-compatible access for uploading objects after provisioning
 - **A globally unique bucket name** that is DNS-compatible (lowercase alphanumeric and hyphens, 3--63 characters)
 
@@ -27,15 +27,15 @@ When you deploy a DigitalOceanBucket resource, OpenMCF provisions:
 Create a file `bucket.yaml`:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanBucket
 metadata:
   name: my-assets
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.DigitalOceanBucket.my-assets
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.DigitalOceanBucket.my-assets
 spec:
   bucketName: my-assets
   region: nyc3
@@ -44,7 +44,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f bucket.yaml
+planton apply -f bucket.yaml
 ```
 
 This creates a private Spaces bucket named `my-assets` in the NYC3 region with versioning disabled.
@@ -73,15 +73,15 @@ This creates a private Spaces bucket named `my-assets` in the NYC3 region with v
 A private bucket in Frankfurt tagged for a specific team and environment:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanBucket
 metadata:
   name: team-logs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.DigitalOceanBucket.team-logs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.DigitalOceanBucket.team-logs
 spec:
   bucketName: team-logs
   region: fra1
@@ -95,15 +95,15 @@ spec:
 A publicly readable bucket for hosting static website assets with versioning enabled:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanBucket
 metadata:
   name: static-assets
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.DigitalOceanBucket.static-assets
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.DigitalOceanBucket.static-assets
 spec:
   bucketName: static-assets
   region: sfo3
@@ -119,15 +119,15 @@ spec:
 A private bucket with versioning enabled for data backups in Singapore:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanBucket
 metadata:
   name: db-backups
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.DigitalOceanBucket.db-backups
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.DigitalOceanBucket.db-backups
 spec:
   bucketName: db-backups
   region: sgp1

@@ -9,10 +9,10 @@ go_library(
         "remove.go",
         "run.go",
     ],
-    importpath = "github.com/plantonhq/openmcf/pkg/iac/pulumi/pulumistack",
+    importpath = "github.com/plantonhq/planton/pkg/iac/pulumi/pulumistack",
     visibility = ["//visibility:public"],
     deps = [
-        "//apis/org/openmcf/shared/iac/pulumi",
+        "//apis/dev/planton/shared/iac/pulumi",
         "//internal/cli/cliprint",
         "//internal/manifest",
         "//pkg/crkreflect",

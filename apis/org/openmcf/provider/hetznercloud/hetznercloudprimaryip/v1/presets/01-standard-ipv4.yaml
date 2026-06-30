@@ -1,7 +1,0 @@
-apiVersion: hetzner-cloud.openmcf.org/v1
-kind: HetznerCloudPrimaryIp
-metadata:
-  name: my-server-ip
-spec:
-  type: ipv4
-  location: fsn1

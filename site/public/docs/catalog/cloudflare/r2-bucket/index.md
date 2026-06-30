@@ -12,14 +12,14 @@ Deploys a Cloudflare R2 object storage bucket with a configurable location hint 
 
 ## What Gets Created
 
-When you deploy a CloudflareR2Bucket resource, OpenMCF provisions:
+When you deploy a CloudflareR2Bucket resource, Planton provisions:
 
 - **R2 Bucket** — a `cloudflare_r2_bucket` resource in the specified Cloudflare account with the configured location hint
 - **R2 Custom Domain** — created only when `customDomain.enabled` is `true`, attaches a custom domain to the bucket via a `cloudflare_r2_custom_domain` resource so the bucket is accessible at the specified hostname
 
 ## Prerequisites
 
-- **Cloudflare credentials** configured via environment variables or OpenMCF provider config
+- **Cloudflare credentials** configured via environment variables or Planton provider config
 - **A Cloudflare account ID** (32-character hex string) with R2 enabled
 - **A Cloudflare DNS zone** if enabling custom domain access (the domain must be within that zone)
 
@@ -28,15 +28,15 @@ When you deploy a CloudflareR2Bucket resource, OpenMCF provisions:
 Create a file `r2-bucket.yaml`:
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareR2Bucket
 metadata:
   name: my-bucket
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CloudflareR2Bucket.my-bucket
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CloudflareR2Bucket.my-bucket
 spec:
   bucketName: my-app-assets
   accountId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
@@ -46,7 +46,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f r2-bucket.yaml
+planton apply -f r2-bucket.yaml
 ```
 
 This creates an R2 bucket named `my-app-assets` in Western North America with no public or custom domain access.
@@ -78,15 +78,15 @@ This creates an R2 bucket named `my-app-assets` in Western North America with no
 A minimal R2 bucket where Cloudflare selects the optimal storage location:
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareR2Bucket
 metadata:
   name: logs-bucket
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.CloudflareR2Bucket.logs-bucket
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.CloudflareR2Bucket.logs-bucket
 spec:
   bucketName: app-logs
   accountId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
@@ -98,15 +98,15 @@ spec:
 An R2 bucket accessible via a custom domain, useful for serving static assets:
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareR2Bucket
 metadata:
   name: media-bucket
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CloudflareR2Bucket.media-bucket
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CloudflareR2Bucket.media-bucket
 spec:
   bucketName: prod-media-assets
   accountId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
@@ -119,18 +119,18 @@ spec:
 
 ### Full-Featured Bucket with Foreign Key References
 
-Production configuration referencing an OpenMCF-managed DNS zone for custom domain setup:
+Production configuration referencing an Planton-managed DNS zone for custom domain setup:
 
 ```yaml
-apiVersion: cloudflare.openmcf.org/v1
+apiVersion: cloudflare.planton.dev/v1
 kind: CloudflareR2Bucket
 metadata:
   name: prod-assets
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.CloudflareR2Bucket.prod-assets
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.CloudflareR2Bucket.prod-assets
 spec:
   bucketName: prod-static-assets
   accountId: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d

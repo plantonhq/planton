@@ -1,0 +1,340 @@
+---
+description: Generate a GitHub issue title and detailed Markdown issue body as exactly two copyable code blocks (ask-only). Follows Planton issue conventions with deployment-component-aware labeling.
+globs:
+alwaysApply: false
+---
+
+# Rule: GitHub Issue Title and Description (ask-only)
+
+Purpose: When asked to write a GitHub issue title and description, respond with exactly two copyable code blocks — first the title, then the description — without making any repository changes.
+
+This rule is designed for ask mode only. Do not modify files, run commands, or propose edits. Output only the two fenced code blocks described below.
+
+Usage: In Ask mode, invoke explicitly as `@generate-planton-issue-info`.
+
+## How to respond (strict)
+1) First block: Issue Title
+   - Fenced code block with language: `text`
+   - Single line only
+   - Clear, descriptive, and specific
+   - Start with an action verb or problem statement
+   - Include key component/area if relevant
+   - ≤ 100 characters
+   - No trailing period
+
+2) Second block: Issue Description
+   - Fenced code block with language: `markdown`
+   - Use the following sections when applicable. Omit any that are not relevant.
+     - **Problem Summary**: 2-3 sentences describing the issue clearly
+     - **Steps to Reproduce**: Numbered steps to reproduce (for bugs)
+     - **Expected Behavior**: What should happen
+     - **Actual Behavior**: What actually happens
+     - **Root Cause Analysis**: Technical investigation findings (if known)
+     - **Affected Components**: List of impacted files/modules with GitHub links
+     - **Potential Solutions**: Proposed approaches to fix
+     - **Acceptance Criteria**: Clear conditions for closure
+     - **Priority/Severity**: P0-P3, Critical/High/Medium/Low
+     - **Additional Notes**: Any other relevant context
+     - **Testing Checklist**: Verification steps
+     - **Related Issues/PRs**: Links to related work
+
+## Title format (examples)
+
+```text
+Postgres deployment component spec validation broken for port conflicts
+```
+
+```text
+CLI manifest validate command missing validation rules
+```
+
+```text
+Forge system generates incorrect Pulumi import paths for nested packages
+```
+
+## Title guidelines
+- **For Bugs**: Start with the symptom or component: "Postgres component validation broken...", "CLI fails when..."
+- **For Features**: Start with action verb: "Add manifest validation command...", "Enable users to..."
+- **For Improvements**: Start with area: "Improve Pulumi code generation...", "Enhance deployment component validation..."
+- **For Tasks**: Be specific: "Migrate to Pulumi 4.x", "Update protobuf dependencies"
+
+## Description structure
+
+### For Bug Reports
+Use this template:
+```markdown
+## 🐛 Problem Summary
+<2-3 sentences describing the bug clearly>
+
+## 📸 Visual Evidence / Screenshots
+<If applicable, describe or reference screenshots>
+
+## 🔍 Steps to Reproduce
+1. Navigate to...
+2. Run command...
+3. Observe...
+
+## ✅ Expected Behavior
+<What should happen>
+
+## ❌ Actual Behavior
+<What actually happens>
+
+## 🔬 Root Cause Analysis
+<Technical investigation findings with data flow, affected code, etc.>
+
+### Data Flow
+<Sequence diagram or text description of data flow>
+
+### The Problem
+<Detailed explanation with numbered points>
+
+## 📂 Affected Files
+<List files with clickable GitHub links using format:>
+- **File**: [`path/to/file.go`](https://github.com/plantonhq/planton/blob/main/path/to/file.go#L10-L20)
+  - **Lines**: 10-20
+  - **Status**: ✅ Working / ❌ Broken / ⚠️ Issue Here
+
+## 🔧 Potential Solutions
+### Solution 1: <Name> (Recommended/Alternative)
+<Description with code examples>
+
+### Solution 2: <Name>
+<Description with code examples>
+
+## 🧪 Testing Checklist
+- [ ] Test case 1
+- [ ] Test case 2
+- [ ] Validation tests
+- [ ] Edge cases covered
+
+## 🎯 Acceptance Criteria
+1. ✅ Criterion 1
+2. ✅ Criterion 2
+3. ✅ Criterion 3
+
+## 📊 Data Structure Reference
+<If relevant, include expected data structures>
+
+## 📝 Additional Notes
+- Priority: P0 - Critical / P1 - High / P2 - Medium / P3 - Low
+- Severity: Blocks core functionality / Degraded experience / Minor issue
+- Affected Users: All users / Specific user segment
+- Environment: Production / Development
+
+## 🔗 Related Issues/PRs
+- Closes #123
+- Related to #456
+- Depends on #789
+
+---
+**Reporter**: <Name/Team>  
+**Priority**: P0-P3  
+**Severity**: Critical/High/Medium/Low  
+**Labels**: `bug`, `area/deployment-component`, `priority/high`
+```
+
+### For Feature Requests
+Use this template:
+```markdown
+## 🎯 Feature Summary
+<2-3 sentences describing the feature>
+
+## 🎨 User Story
+As a [user type], I want to [action] so that [benefit].
+
+## 💡 Context / Motivation
+<Why this feature is needed, business value, user pain points>
+
+## 📋 Requirements
+### Functional Requirements
+- Requirement 1
+- Requirement 2
+
+### Non-Functional Requirements
+- Performance: <criteria>
+- Security: <criteria>
+- Compatibility: <criteria>
+
+## 🎨 Proposed Design
+### CLI Interface
+<If applicable, show command syntax>
+
+### API Design
+<If applicable, show proto definitions or API signatures>
+
+### Data Model Changes
+<If applicable, show schema changes>
+
+## 🛠️ Implementation Plan
+1. **Phase 1**: <Description>
+   - Task 1
+   - Task 2
+2. **Phase 2**: <Description>
+   - Task 3
+   - Task 4
+
+## 📂 Files to Create/Modify
+- `path/to/file1.go` - <Purpose>
+- `path/to/file2.proto` - <Purpose>
+
+## 🧪 Testing Strategy
+- Unit tests for...
+- Integration tests for...
+- E2E tests for...
+
+## 🎯 Acceptance Criteria
+- [ ] Users can...
+- [ ] System performs...
+- [ ] Documentation updated
+- [ ] Tests added
+
+## 📝 Additional Notes
+- Priority: P0-P3
+- Estimated effort: <S/M/L/XL>
+- Dependencies: <List>
+
+## 🔗 Related Issues/PRs
+- Related to #123
+
+---
+**Requested by**: <Name/Team>  
+**Priority**: P1 - High  
+**Labels**: `enhancement`, `area/cli`, `needs-design`
+```
+
+### For Tasks/Chores
+Use this template:
+```markdown
+## 📋 Task Summary
+<Description of the task>
+
+## 🎯 Objective
+<Why this task is needed>
+
+## ✅ Task List
+- [ ] Subtask 1
+- [ ] Subtask 2
+- [ ] Subtask 3
+
+## 📂 Affected Areas
+- Component/file 1
+- Component/file 2
+
+## 🎯 Completion Criteria
+- [ ] All subtasks completed
+- [ ] Tests pass
+- [ ] Documentation updated
+
+## 📝 Notes
+<Any additional context>
+
+---
+**Priority**: P2 - Medium  
+**Labels**: `chore`, `area/tooling`
+```
+
+## How to infer sections to include
+- **For Bugs**: Always include Problem Summary, Steps to Reproduce, Expected/Actual Behavior, Acceptance Criteria
+- **For Features**: Always include Feature Summary, User Story, Requirements, Acceptance Criteria
+- **For Root Cause Issues**: Include detailed Root Cause Analysis with data flow diagrams, affected files with GitHub links, multiple solution approaches
+- **For Simple Tasks**: Keep it concise with just summary, task list, and completion criteria
+
+## Planton-aware label inference
+Infer appropriate labels based on affected files:
+
+### Area Labels
+- `apis/dev/planton/provider/**` → `area/deployment-component`, `area/<provider>`
+- `cmd/planton/**` → `area/cli`
+- `pkg/**` → `area/pkg`, `area/<package-name>`
+- `internal/**` → `area/cli`, `area/internal`
+- `apis/**` (general) → `area/apis`
+- `tools/**` → `area/tooling`
+- `_rules/deployment-component/forge/**` → `area/forge`
+- `site/**` → `area/site`
+- `docs/**` → `area/docs`
+
+### Type Labels
+- Bug reports → `bug`, `type/bug`
+- Feature requests → `enhancement`, `feature`, `type/feature`
+- Performance issues → `performance`, `type/perf`
+- Documentation → `docs`, `type/docs`
+- Infrastructure → `infrastructure`, `type/infra`
+- Security → `security`, `type/security`
+
+### Priority Labels
+- Blocks core functionality → `priority/critical`, `P0`
+- High impact → `priority/high`, `P1`
+- Medium impact → `priority/medium`, `P2`
+- Low impact → `priority/low`, `P3`
+
+### Status Labels
+- `needs-investigation` - Requires root cause analysis
+- `needs-design` - Requires design/specification
+- `needs-discussion` - Requires team discussion
+- `good-first-issue` - Suitable for new contributors
+- `help-wanted` - Looking for volunteers
+
+### Component-Specific Labels
+- Kubernetes providers → `kubernetes`
+- AWS providers → `aws`
+- GCP providers → `gcp`
+- Azure providers → `azure`
+- Pulumi-related → `pulumi`
+- Terraform-related → `terraform`
+
+## Inputs to use when generating
+- The conversation history and investigation context
+- File paths explored to infer area labels
+- Severity of the issue from user's description
+- Root cause analysis findings
+- Code snippets and data structures discussed
+
+If context is insufficient to infer details, choose the best effort labels and structure. Do not ask questions; still produce both blocks.
+
+## Output blocks (exactly two, nothing else)
+
+```text
+<Clear, descriptive issue title>
+```
+
+```markdown
+[Appropriate issue template filled with context from conversation]
+```
+
+## Best Practices
+
+### Title Crafting
+- Be specific: "Postgres component validation broken for port conflicts" not "Validation broken"
+- Include component: "CLI manifest validate command missing" not "Command missing"
+- State symptom clearly: "Forge generates incorrect import paths" not "Import issue"
+
+### Description Quality
+- **Show, Don't Tell**: Include actual commands, file paths, code snippets
+- **Link Everything**: Use GitHub file links with line numbers
+- **Provide Context**: Explain the user journey and impact
+- **Multiple Solutions**: Offer 2-3 potential approaches with trade-offs
+- **Clear Acceptance**: Make it obvious when issue is resolved
+
+### GitHub Link Format
+Always use this format for file references:
+```markdown
+[`path/to/file.go#L10-L20`](https://github.com/plantonhq/planton/blob/main/path/to/file.go#L10-L20)
+```
+
+### Visual Enhancements
+- Use emojis for section headers (🐛 🔍 ✅ ❌ 🔧 🧪 🎯)
+- Use checkboxes for actionable items
+- Use status indicators: ✅ ❌ ⚠️
+- Use code blocks for data structures and examples
+- Use markdown tables for comparison data
+
+## Remember
+- Keep language professional but accessible
+- Write for developers who will implement the fix
+- Include enough detail to be actionable
+- Link to relevant documentation or examples
+- Make priority and severity explicit
+- Provide clear success criteria
+
+@understand-cursor-rules

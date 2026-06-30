@@ -6,7 +6,7 @@
 
 ## Summary
 
-Implemented `openmcf upgrade` command that allows the CLI to update itself to the latest version. On macOS with Homebrew, it uses `brew upgrade --cask`. On all other platforms, it downloads the binary directly from GitHub releases. This eliminates the need for users to manually check for updates and run platform-specific commands.
+Implemented `planton upgrade` command that allows the CLI to update itself to the latest version. On macOS with Homebrew, it uses `brew upgrade --cask`. On all other platforms, it downloads the binary directly from GitHub releases. This eliminates the need for users to manually check for updates and run platform-specific commands.
 
 ## Problem Statement
 
@@ -27,7 +27,7 @@ This friction meant users often ran outdated versions and missed important updat
 
 ## Solution
 
-A single `openmcf upgrade` command that:
+A single `planton upgrade` command that:
 1. Fetches the latest CLI release from GitHub API
 2. Compares versions using the CLI-specific version format (`v{semver}-cli.{YYYYMMDD}.{N}`)
 3. Detects the appropriate upgrade method based on platform and installation
@@ -36,14 +36,14 @@ A single `openmcf upgrade` command that:
 
 ```mermaid
 flowchart TB
-    A[openmcf upgrade] --> B[Fetch releases from GitHub API]
+    A[planton upgrade] --> B[Fetch releases from GitHub API]
     B --> C[Find highest CLI version]
     C --> D{Up to date?}
     D -->|Yes| E[Already on latest]
     D -->|No| F{What OS?}
     
     F -->|macOS| G{Homebrew cask installed?}
-    G -->|Yes| H[brew upgrade --cask openmcf]
+    G -->|Yes| H[brew upgrade --cask planton]
     G -->|No| I[Direct download]
     
     F -->|Linux/Windows| I
@@ -61,10 +61,10 @@ flowchart TB
 
 ### Version Source: GitHub Releases API
 
-Unlike the closed-source planton CLI which uses R2 for version files, openmcf fetches releases directly from GitHub:
+Unlike the closed-source planton CLI which uses R2 for version files, planton fetches releases directly from GitHub:
 
 ```
-GET https://api.github.com/repos/plantonhq/openmcf/releases
+GET https://api.github.com/repos/plantonhq/planton/releases
 ```
 
 The version selection logic:
@@ -92,8 +92,8 @@ func DetectUpgradeMethod() UpgradeMethod {
         return MethodDirectDownload
     }
     
-    // Check if openmcf was installed via Homebrew cask
-    cmd := exec.Command("brew", "list", "--cask", "openmcf")
+    // Check if planton was installed via Homebrew cask
+    cmd := exec.Command("brew", "list", "--cask", "planton")
     if err := cmd.Run(); err != nil {
         return MethodDirectDownload
     }
@@ -120,29 +120,29 @@ For non-Homebrew installations:
 Permission errors provide actionable suggestions:
 
 ```
-✗ Permission denied: cannot write to /usr/local/bin/openmcf
+✗ Permission denied: cannot write to /usr/local/bin/planton
 
 Try running with sudo:
-  sudo openmcf upgrade
+  sudo planton upgrade
 
 Or download manually to a user directory:
-  curl -LO https://github.com/plantonhq/openmcf/releases/download/v0.3.15-cli.20260113.0/cli_0.3.15-cli.20260113.0_darwin_arm64.tar.gz
+  curl -LO https://github.com/plantonhq/planton/releases/download/v0.3.15-cli.20260113.0/cli_0.3.15-cli.20260113.0_darwin_arm64.tar.gz
   tar -xzf cli_*.tar.gz
-  chmod +x openmcf
-  mv openmcf ~/.local/bin/
+  chmod +x planton
+  mv planton ~/.local/bin/
 ```
 
 ## Usage
 
 ```bash
 # Upgrade to latest version
-openmcf upgrade
+planton upgrade
 
 # Check for updates without installing
-openmcf upgrade --check
+planton upgrade --check
 
 # Force upgrade even if already on latest
-openmcf upgrade --force
+planton upgrade --force
 ```
 
 ### Example Output: Check for Updates
@@ -155,7 +155,7 @@ Latest version:  v0.3.15-cli.20260113.0
 
 ⚡ A new version is available!
 
-Run openmcf upgrade to update.
+Run planton upgrade to update.
 ```
 
 ### Example Output: Upgrade via Homebrew
@@ -171,8 +171,8 @@ Latest version:  v0.3.15-cli.20260113.0
 ● Updating Homebrew...
 Already up-to-date.
 
-● Upgrading openmcf...
-🍺  openmcf was successfully upgraded!
+● Upgrading planton...
+🍺  planton was successfully upgraded!
 
 ✔ Successfully upgraded to v0.3.15-cli.20260113.0
 ```
@@ -183,7 +183,7 @@ Already up-to-date.
 
 | File | Purpose |
 |------|---------|
-| `cmd/openmcf/root/upgrade.go` | Cobra command definition with `--check` and `--force` flags |
+| `cmd/planton/root/upgrade.go` | Cobra command definition with `--check` and `--force` flags |
 | `internal/cli/upgrade/upgrade.go` | Main orchestration logic |
 | `internal/cli/upgrade/version.go` | GitHub API integration and CLI version parsing |
 | `internal/cli/upgrade/platform.go` | Platform detection and URL building |
@@ -194,11 +194,11 @@ Already up-to-date.
 
 | File | Change |
 |------|--------|
-| `cmd/openmcf/root.go` | Added `Upgrade` command to root |
+| `cmd/planton/root.go` | Added `Upgrade` command to root |
 
 ## Benefits
 
-- **One command**: `openmcf upgrade` works everywhere
+- **One command**: `planton upgrade` works everywhere
 - **Auto-detection**: Knows whether to use Homebrew cask or direct download
 - **Secure**: Verifies SHA256 checksums before installing
 - **Smart version detection**: Filters for CLI releases, ignores Pulumi module releases

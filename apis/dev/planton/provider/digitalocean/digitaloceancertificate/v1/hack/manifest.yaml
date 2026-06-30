@@ -1,0 +1,5 @@
+apiVersion: digital-ocean.planton.dev/v1
+kind: DigitalOceanCertificate
+metadata:
+  name: first-certificate
+spec:

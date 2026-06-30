@@ -12,7 +12,7 @@ Deploys an Amazon Neptune graph database cluster with automatic subnet group cre
 
 ## What Gets Created
 
-When you deploy an AwsNeptuneCluster resource, OpenMCF provisions:
+When you deploy an AwsNeptuneCluster resource, Planton provisions:
 
 - **Neptune Cluster** — a `neptune.Cluster` with the `neptune` engine at the specified version, encryption settings, backup configuration, IAM database authentication, optional Serverless v2 scaling, and CloudWatch log exports
 - **Cluster Instances** — one `neptune.ClusterInstance` per `instanceCount` (default 1), each using the specified `instanceClass` (default `db.r6g.large`) with promotion tier assignment (primary at tier 0, replicas at tier 1)
@@ -24,7 +24,7 @@ When you deploy an AwsNeptuneCluster resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **At least two subnets** in different Availability Zones, or an existing Neptune subnet group name
 - **A VPC ID** if creating a managed security group with `securityGroupIds` or `allowedCidrBlocks`
 - **A KMS key ARN** if using a customer-managed key for storage encryption
@@ -35,15 +35,15 @@ When you deploy an AwsNeptuneCluster resource, OpenMCF provisions:
 Create a file `neptune.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsNeptuneCluster
 metadata:
   name: my-neptune
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsNeptuneCluster.my-neptune
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsNeptuneCluster.my-neptune
 spec:
   region: us-west-2
   subnetIds:
@@ -56,7 +56,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f neptune.yaml
+planton apply -f neptune.yaml
 ```
 
 This creates a single-instance Neptune 1.3.0.0 cluster with encrypted storage, IAM-ready authentication, and a `db.r6g.large` instance in the specified subnets. Unlike relational databases, Neptune does not require a master username or password — access is controlled via IAM database authentication and VPC security groups.
@@ -109,15 +109,15 @@ This creates a single-instance Neptune 1.3.0.0 cluster with encrypted storage, I
 A Neptune cluster with two instances for high availability, IAM authentication, encrypted storage, and audit logging:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsNeptuneCluster
 metadata:
   name: knowledge-graph
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsNeptuneCluster.knowledge-graph
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsNeptuneCluster.knowledge-graph
 spec:
   region: us-west-2
   subnetIds:
@@ -150,15 +150,15 @@ spec:
 A Neptune Serverless cluster that auto-scales between 2.5 and 64 NCUs based on demand:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsNeptuneCluster
 metadata:
   name: serverless-graph
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsNeptuneCluster.serverless-graph
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsNeptuneCluster.serverless-graph
 spec:
   region: us-west-2
   subnetIds:
@@ -178,15 +178,15 @@ spec:
 A cluster with IAM roles for loading graph data from S3:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsNeptuneCluster
 metadata:
   name: data-loader
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsNeptuneCluster.data-loader
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsNeptuneCluster.data-loader
 spec:
   region: us-west-2
   subnetIds:
@@ -205,18 +205,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding IDs:
+Reference other Planton-managed resources instead of hardcoding IDs:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsNeptuneCluster
 metadata:
   name: ref-graph
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsNeptuneCluster.ref-graph
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsNeptuneCluster.ref-graph
 spec:
   region: us-west-2
   subnetIds:

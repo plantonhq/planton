@@ -1,0 +1,29 @@
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareZeroTrustAccessPolicy
+metadata:
+  name: admins-with-approval
+spec:
+  accountId: "REPLACE_WITH_ACCOUNT_ID"
+  name: admins-with-approval
+  decision: allow
+  sessionDuration: 1h
+  # Reference a reusable Access group instead of repeating its rules here.
+  include:
+    - group:
+        id:
+          valueFrom:
+            kind: CloudflareZeroTrustAccessGroup
+            name: platform-admins
+            fieldPath: status.outputs.group_id
+  # Require explicit approval and a purpose justification before granting access.
+  approvalRequired: true
+  purposeJustificationRequired: true
+  purposeJustificationPrompt: "Describe why you need admin access."
+  approvalGroups:
+    - approvalsNeeded: 1
+      emailAddresses:
+        - security-lead@example.com
+  # Layer on hardware-key MFA.
+  mfaConfig:
+    allowedAuthenticators:
+      - security_key

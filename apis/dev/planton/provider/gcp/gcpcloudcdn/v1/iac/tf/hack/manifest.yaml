@@ -1,0 +1,44 @@
+apiVersion: gcp.planton.dev/v1
+kind: GcpCloudCdn
+metadata:
+  name: my-static-site-cdn
+  labels:
+    environment: test
+    team: platform
+spec:
+  gcp_project_id:
+    value: my-test-project-123456
+  backend:
+    gcs_bucket:
+      bucket_name: my-static-website-bucket
+      enable_uniform_access: true
+  cache_mode: 1  # CACHE_ALL_STATIC
+  default_ttl_seconds: 3600   # 1 hour
+  max_ttl_seconds: 86400      # 1 day
+  client_ttl_seconds: 1800    # 30 minutes
+  enable_negative_caching: true
+  advanced_config:
+    cache_key_policy:
+      include_query_string: true
+      query_string_whitelist:
+        - version
+        - lang
+      include_protocol: true
+      include_host: true
+    negative_caching_policies:
+      - code: 404
+        ttl_seconds: 600  # 10 minutes
+      - code: 500
+        ttl_seconds: 10   # 10 seconds
+    serve_while_stale_seconds: 60
+    enable_request_coalescing: true
+  frontend_config:
+    custom_domains:
+      - www.example.com
+      - example.com
+    ssl_certificate:
+      google_managed:
+        domains:
+          - www.example.com
+          - example.com
+    enable_https_redirect: true

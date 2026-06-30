@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesgatewayclass.v1;
+
+// KubernetesGatewayClassStackOutputs captures observable outputs after the
+// GatewayClass is created on the target cluster.
+message KubernetesGatewayClassStackOutputs {
+  // Name of the created GatewayClass (equals metadata.name). Use this value in
+  // KubernetesGateway.spec.gateway_class_name to attach a Gateway to this
+  // class; in InfraCharts it is the foreign-key target
+  // (status.outputs.gateway_class_name) that orders GatewayClass before Gateway.
+  string gateway_class_name = 1;
+
+  // The controller managing this class (echoes spec.controller_name), exposed
+  // for observability and for confirming which implementation owns the class.
+  string controller_name = 2;
+}

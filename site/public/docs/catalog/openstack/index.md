@@ -1,13 +1,13 @@
 ---
 title: "OPENSTACK"
-description: "Deploy OPENSTACK resources using OpenMCF"
+description: "Deploy OPENSTACK resources using Planton"
 icon: "cloud"
 order: 10
 ---
 
 # OPENSTACK
 
-The following OPENSTACK resources can be deployed using OpenMCF:
+The following OPENSTACK resources can be deployed using Planton:
 
 - [Application Credential](/docs/catalog/openstack/application-credential)
 - [DNS Record](/docs/catalog/openstack/dns-record)

@@ -12,7 +12,7 @@ Deploys OpenFGA on Kubernetes using the official OpenFGA Helm chart. Supports co
 
 ## What Gets Created
 
-When you deploy a KubernetesOpenFga resource, OpenMCF provisions:
+When you deploy a KubernetesOpenFga resource, Planton provisions:
 
 - **Kubernetes Namespace** — created if `createNamespace` is `true`
 - **OpenFGA Helm Release** — installs the upstream [openfga/openfga](https://github.com/openfga/helm-charts) Helm chart (v0.2.12), which creates:
@@ -37,15 +37,15 @@ When you deploy a KubernetesOpenFga resource, OpenMCF provisions:
 Create a file `openfga.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesOpenFga
 metadata:
   name: my-openfga
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesOpenFga.my-openfga
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesOpenFga.my-openfga
 spec:
   namespace:
     value: openfga-dev
@@ -62,7 +62,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f openfga.yaml
+planton apply -f openfga.yaml
 ```
 
 This creates a single-replica OpenFGA instance connected to a PostgreSQL database in the `openfga-dev` namespace.
@@ -102,15 +102,15 @@ This creates a single-replica OpenFGA instance connected to a PostgreSQL databas
 A minimal deployment for local development using a plain-text password:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesOpenFga
 metadata:
   name: dev-openfga
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesOpenFga.dev-openfga
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesOpenFga.dev-openfga
 spec:
   namespace:
     value: openfga-dev
@@ -138,15 +138,15 @@ spec:
 A production deployment using MySQL with the password sourced from a Kubernetes Secret and SSL enabled:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesOpenFga
 metadata:
   name: prod-openfga
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesOpenFga.prod-openfga
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesOpenFga.prod-openfga
 spec:
   namespace:
     value: openfga-prod
@@ -178,15 +178,15 @@ spec:
 External access via Istio Gateway with TLS, backed by a secure PostgreSQL connection:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesOpenFga
 metadata:
   name: openfga-main
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesOpenFga.openfga-main
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesOpenFga.openfga-main
 spec:
   namespace:
     value: authorization

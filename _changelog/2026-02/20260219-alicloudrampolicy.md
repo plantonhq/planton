@@ -14,7 +14,7 @@ Custom policies fill the gap when Alibaba Cloud's system-managed policies don't 
 ## What Was Created
 
 ### API Definition
-- `apis/org/openmcf/provider/alicloud/alicloudrampolicy/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
+- `apis/dev/planton/provider/alicloud/alicloudrampolicy/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
 - Registered `AliCloudRamPolicy = 3011` in `CloudResourceKind` enum
 
 ### IaC Modules

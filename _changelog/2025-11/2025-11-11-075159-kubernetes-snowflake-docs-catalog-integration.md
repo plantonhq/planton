@@ -6,11 +6,11 @@
 
 ## Summary
 
-Integrated Kubernetes (36 components) and Snowflake (1 component) into the OpenMCF documentation site, removing "Coming soon" placeholders and making all components discoverable with proper icons and clean, readable titles. Enhanced the documentation build system to handle nested directory structures and improved title generation to remove redundant provider prefixes from component names across all providers.
+Integrated Kubernetes (36 components) and Snowflake (1 component) into the Planton documentation site, removing "Coming soon" placeholders and making all components discoverable with proper icons and clean, readable titles. Enhanced the documentation build system to handle nested directory structures and improved title generation to remove redundant provider prefixes from component names across all providers.
 
 ## Problem Statement / Motivation
 
-The OpenMCF documentation site was showing Kubernetes as "Coming soon" despite having 36 fully-documented components available (13 addons and 23 workloads). Snowflake database documentation was completely missing from the catalog. Additionally, all component titles were displaying with redundant provider prefixes (e.g., "KUBERNETES altinityoperator" instead of "Altinity Operator"), creating poor user experience in navigation.
+The Planton documentation site was showing Kubernetes as "Coming soon" despite having 36 fully-documented components available (13 addons and 23 workloads). Snowflake database documentation was completely missing from the catalog. Additionally, all component titles were displaying with redundant provider prefixes (e.g., "KUBERNETES altinityoperator" instead of "Altinity Operator"), creating poor user experience in navigation.
 
 ### Pain Points
 

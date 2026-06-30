@@ -12,7 +12,7 @@ Deploys an AWS Transit Gateway with inline VPC attachments, replacing complex VP
 
 ## What Gets Created
 
-When you deploy an AwsTransitGateway resource, OpenMCF provisions:
+When you deploy an AwsTransitGateway resource, Planton provisions:
 
 - **Transit Gateway** — an `ec2transitgateway.TransitGateway` resource with the configured ASN, routing behavior, DNS support, and feature toggles
 - **VPC Attachments** — one `ec2transitgateway.VpcAttachment` per entry in `vpcAttachments`, each connecting a VPC to the TGW through specified subnets with per-attachment DNS, IPv6, and appliance mode settings
@@ -20,7 +20,7 @@ When you deploy an AwsTransitGateway resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **At least one VPC** with subnets in the target Availability Zones
 - **Subnets** in each VPC to host the TGW elastic network interfaces (one per AZ recommended for high availability)
 
@@ -29,15 +29,15 @@ When you deploy an AwsTransitGateway resource, OpenMCF provisions:
 Create a file `tgw.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsTransitGateway
 metadata:
   name: my-tgw
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsTransitGateway.my-tgw
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsTransitGateway.my-tgw
 spec:
   region: us-east-1
   vpcAttachments:
@@ -51,7 +51,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f tgw.yaml
+planton apply -f tgw.yaml
 ```
 
 This creates a Transit Gateway with default full-mesh routing and DNS support, attaching a single VPC through two subnets.
@@ -95,15 +95,15 @@ This creates a Transit Gateway with default full-mesh routing and DNS support, a
 Connect application and database VPCs through a central Transit Gateway:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsTransitGateway
 metadata:
   name: hub-tgw
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsTransitGateway.hub-tgw
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsTransitGateway.hub-tgw
 spec:
   region: us-east-1
   description: Production hub connecting application and database VPCs
@@ -130,15 +130,15 @@ spec:
 Route all inter-VPC traffic through a centralized firewall/IDS VPC using appliance mode for symmetric routing:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsTransitGateway
 metadata:
   name: inspection-tgw
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsTransitGateway.inspection-tgw
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsTransitGateway.inspection-tgw
 spec:
   region: us-east-1
   description: Transit Gateway with centralized traffic inspection
@@ -162,15 +162,15 @@ spec:
 Production Transit Gateway with custom BGP ASN, TGW CIDR blocks for Connect integration, and cross-account attachment acceptance:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsTransitGateway
 metadata:
   name: enterprise-tgw
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsTransitGateway.enterprise-tgw
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsTransitGateway.enterprise-tgw
 spec:
   region: us-east-1
   description: Enterprise Transit Gateway with hybrid connectivity
@@ -196,18 +196,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference OpenMCF-managed VPCs instead of hardcoding IDs:
+Reference Planton-managed VPCs instead of hardcoding IDs:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsTransitGateway
 metadata:
   name: ref-tgw
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsTransitGateway.ref-tgw
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsTransitGateway.ref-tgw
 spec:
   region: us-east-1
   vpcAttachments:

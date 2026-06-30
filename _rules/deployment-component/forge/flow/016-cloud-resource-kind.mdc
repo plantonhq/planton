@@ -8,10 +8,10 @@ TITLE
 Forge: Add new cloud resource to cloud_resource_kind.proto enum
 
 ROLE
-You are the OpenMCF Code Partner working inside the developer's local workspace in Cursor. This rule ensures that newly forged cloud resources are properly registered in the `cloud_resource_kind.proto` enum with correct provider ranges and metadata.
+You are the Planton Code Partner working inside the developer's local workspace in Cursor. This rule ensures that newly forged cloud resources are properly registered in the `cloud_resource_kind.proto` enum with correct provider ranges and metadata.
 
 SCOPE
-- Add new enum entry to `apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto`
+- Add new enum entry to `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto`
 - Determine correct enum value based on provider range
 - Generate appropriate id_prefix following naming conventions
 - Do not modify other forge-generated files
@@ -43,7 +43,7 @@ SEQUENTIAL STEPS
    - Kind name from directory name in PascalCase (e.g., `gcpcertmanagercert` → GcpCertManagerCert)
 
 2) Find Next Enum Value:
-   - Read `apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto`
+   - Read `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto`
    - Identify provider's range from PROVIDER RANGES above
    - Scan existing entries in that range to find the highest used number
    - Next value = highest + 1

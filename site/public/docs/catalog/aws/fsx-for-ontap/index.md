@@ -12,15 +12,15 @@ Deploys an Amazon FSx for NetApp ONTAP file system — a fully managed shared st
 
 ## What Gets Created
 
-When you deploy an AwsFsxOntapFileSystem resource, OpenMCF provisions:
+When you deploy an AwsFsxOntapFileSystem resource, Planton provisions:
 
-- **FSx for ONTAP File System** — an `aws_fsx_ontap_file_system` resource placed in the specified subnets with encryption at rest, throughput and storage capacity as configured, tagged with OpenMCF resource metadata
+- **FSx for ONTAP File System** — an `aws_fsx_ontap_file_system` resource placed in the specified subnets with encryption at rest, throughput and storage capacity as configured, tagged with Planton resource metadata
 - **Disk IOPS Configuration** — created only when `diskIopsConfiguration` is specified; controls SSD IOPS in AUTOMATIC or USER_PROVISIONED mode
 - **Multi-AZ Route Entries** — created only for MULTI_AZ_1 or MULTI_AZ_2 deployments; AWS manages routes in the specified route tables for automatic failover
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **One subnet** for SINGLE_AZ deployments, or **two subnets in different AZs** for MULTI_AZ_1 or MULTI_AZ_2
 - **A security group** allowing traffic between clients and the file system: TCP 111 (portmapper), 635 (mountd), 2049 (NFS), 4045–4046 (NFS lock/status), 445 (SMB), 3260 (iSCSI), 443 (ONTAP REST API)
 - **A KMS key ARN** if using customer-managed encryption at rest (optional — AWS-managed key used by default)
@@ -32,15 +32,15 @@ When you deploy an AwsFsxOntapFileSystem resource, OpenMCF provisions:
 Create a file `ontap.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsFsxOntapFileSystem
 metadata:
   name: my-ontap
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsFsxOntapFileSystem.my-ontap
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsFsxOntapFileSystem.my-ontap
 spec:
   region: us-east-1
   storageCapacityGib: 1024
@@ -52,7 +52,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f ontap.yaml
+planton apply -f ontap.yaml
 ```
 
 This creates a SINGLE_AZ_2 ONTAP file system with 1024 GiB SSD storage, 128 MB/s throughput per HA pair, and one HA pair in the specified subnet.
@@ -96,15 +96,15 @@ This creates a SINGLE_AZ_2 ONTAP file system with 1024 GiB SSD storage, 128 MB/s
 A SINGLE_AZ_2 file system with USER_PROVISIONED IOPS, security groups, and daily backups:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsFsxOntapFileSystem
 metadata:
   name: app-storage
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsFsxOntapFileSystem.app-storage
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsFsxOntapFileSystem.app-storage
 spec:
   region: us-east-1
   deploymentType: SINGLE_AZ_2
@@ -130,15 +130,15 @@ spec:
 A SINGLE_AZ_2 deployment with four HA pairs for higher aggregate throughput:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsFsxOntapFileSystem
 metadata:
   name: throughput-tier
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsFsxOntapFileSystem.throughput-tier
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsFsxOntapFileSystem.throughput-tier
 spec:
   region: us-east-1
   deploymentType: SINGLE_AZ_2
@@ -158,15 +158,15 @@ spec:
 A MULTI_AZ_2 deployment with automatic failover across two availability zones:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsFsxOntapFileSystem
 metadata:
   name: ha-ontap
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsFsxOntapFileSystem.ha-ontap
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsFsxOntapFileSystem.ha-ontap
 spec:
   region: us-east-1
   deploymentType: MULTI_AZ_2
@@ -190,18 +190,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference subnets, security groups, and KMS key from other OpenMCF-managed resources:
+Reference subnets, security groups, and KMS key from other Planton-managed resources:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsFsxOntapFileSystem
 metadata:
   name: ref-ontap
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsFsxOntapFileSystem.ref-ontap
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsFsxOntapFileSystem.ref-ontap
 spec:
   region: us-east-1
   storageCapacityGib: 2048

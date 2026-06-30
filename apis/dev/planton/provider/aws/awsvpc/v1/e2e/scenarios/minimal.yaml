@@ -1,0 +1,21 @@
+# Minimal standalone AwsVpc scenario: a single thin VPC with a primary IPv4 CIDR.
+# AwsVpc has no prerequisites, so the harness applies this directly. Full metadata
+# is supplied for tagging/orphan cleanup.
+apiVersion: aws.planton.dev/v1
+kind: AwsVpc
+metadata:
+  name: planton-oss-e2e-awsvpc-smoke
+  id: planton-oss-e2e-awsvpc-smoke
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: awsvpc
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  region: us-west-2
+  cidrBlock: 10.0.0.0/16
+  enableDnsHostnames: true

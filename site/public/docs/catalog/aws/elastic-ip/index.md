@@ -12,13 +12,13 @@ Deploys a static public IPv4 address from Amazon's pool or a Bring-Your-Own-IP r
 
 ## What Gets Created
 
-When you deploy an AwsElasticIp resource, OpenMCF provisions:
+When you deploy an AwsElasticIp resource, Planton provisions:
 
 - **Elastic IP Address** — an `aws_eip` resource in the VPC domain, allocated from Amazon's default IPv4 pool or from a BYOIP pool when `publicIpv4Pool` is specified
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **A BYOIP address range** registered with AWS if using `publicIpv4Pool` (optional — most deployments use Amazon's default pool)
 
 ## Quick Start
@@ -26,15 +26,15 @@ When you deploy an AwsElasticIp resource, OpenMCF provisions:
 Create a file `eip.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsElasticIp
 metadata:
   name: my-eip
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsElasticIp.my-eip
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsElasticIp.my-eip
 spec:
   region: us-east-1
 ```
@@ -42,7 +42,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f eip.yaml
+planton apply -f eip.yaml
 ```
 
 This allocates a VPC Elastic IP from Amazon's default pool in `us-east-1`. The `allocation_id` and `public_ip` outputs are immediately available for downstream references.
@@ -70,15 +70,15 @@ This allocates a VPC Elastic IP from Amazon's default pool in `us-east-1`. The `
 Allocate Elastic IPs and bind them to a Network Load Balancer for static ingress IPs:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsElasticIp
 metadata:
   name: nlb-eip-az1
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsElasticIp.nlb-eip-az1
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsElasticIp.nlb-eip-az1
 spec:
   region: us-east-1
 ```
@@ -88,15 +88,15 @@ spec:
 Wire the Elastic IP into an NLB subnet mapping via `valueFrom`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsNetworkLoadBalancer
 metadata:
   name: api-nlb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsNetworkLoadBalancer.api-nlb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsNetworkLoadBalancer.api-nlb
 spec:
   subnetMappings:
     - subnetId:
@@ -130,15 +130,15 @@ spec:
 Allocate from your organization's registered IP address range:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsElasticIp
 metadata:
   name: byoip-eip
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsElasticIp.byoip-eip
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsElasticIp.byoip-eip
 spec:
   region: us-east-1
   publicIpv4Pool: ipv4pool-ec2-0123456789abcdef0

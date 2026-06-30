@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package dev.planton.provider.gcp.gcpcloudsql.v1;
+
+// GcpCloudSqlStackOutputs captures values returned after provisioning a Cloud SQL instance.
+message GcpCloudSqlStackOutputs {
+  // Name of the Cloud SQL instance.
+  string instance_name = 1;
+
+  // Full connection name in the format project:region:instance.
+  string connection_name = 2;
+
+  // Private IP address of the instance (if private IP is enabled).
+  string private_ip = 3;
+
+  // Public IP address of the instance.
+  string public_ip = 4;
+
+  // GCP resource self link for the Cloud SQL instance.
+  string self_link = 5;
+}

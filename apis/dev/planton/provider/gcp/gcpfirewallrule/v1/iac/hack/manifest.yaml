@@ -1,0 +1,28 @@
+apiVersion: gcp.planton.dev/v1
+kind: GcpFirewallRule
+metadata:
+  name: test-firewall
+  labels:
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: test-org
+    pulumi.planton.dev/project: test-project
+    pulumi.planton.dev/stack.name: dev.GcpFirewallRule.test-firewall
+spec:
+  projectId:
+    value: my-gcp-project-123
+  network:
+    value: default
+  ruleName: allow-http-ingress
+  direction: INGRESS
+  action: ALLOW
+  rules:
+    - protocol: tcp
+      ports:
+        - "80"
+        - "443"
+  priority: 1000
+  description: Allow HTTP and HTTPS traffic from the internet
+  sourceRanges:
+    - "0.0.0.0/0"
+  targetTags:
+    - web-server

@@ -6,8 +6,8 @@ package outputs
 import (
 	"testing"
 
-	"github.com/plantonhq/openmcf/apis/org/openmcf/shared/cloudresourcekind"
-	"github.com/plantonhq/openmcf/pkg/crkreflect"
+	"github.com/plantonhq/planton/apis/dev/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/crkreflect"
 )
 
 func TestResolve_ReturnsConcreteType(t *testing.T) {
@@ -21,7 +21,7 @@ func TestResolve_ReturnsConcreteType(t *testing.T) {
 	}
 
 	fullName := string(msg.ProtoReflect().Descriptor().FullName())
-	expected := "org.openmcf.provider.auth0.auth0resourceserver.v1.Auth0ResourceServerStackOutputs"
+	expected := "dev.planton.provider.auth0.auth0resourceserver.v1.Auth0ResourceServerStackOutputs"
 	if fullName != expected {
 		t.Errorf("expected message type %s, got %s", expected, fullName)
 	}

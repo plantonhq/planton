@@ -1,0 +1,23 @@
+apiVersion: gcp.planton.dev/v1
+kind: GcpPubSubSubscription
+metadata:
+  name: my-reliable-subscription
+spec:
+  projectId:
+    value: "<project-id>"
+  subscriptionName: <your-subscription-name>  # e.g., payment-processing-sub
+  topic:
+    value: "<topic-id>"  # e.g., projects/my-project/topics/payment-events
+  ackDeadlineSeconds: 60
+  messageRetentionDuration: "1209600s"  # 14 days
+  retainAckedMessages: true
+  enableExactlyOnceDelivery: true
+  deadLetterPolicy:
+    deadLetterTopic:
+      value: "<dead-letter-topic-id>"  # e.g., projects/my-project/topics/payments-dlq
+    maxDeliveryAttempts: 10
+  retryPolicy:
+    minimumBackoff: "30s"
+    maximumBackoff: "300s"
+  expirationPolicy:
+    ttl: ""  # Never expires

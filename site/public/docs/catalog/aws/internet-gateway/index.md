@@ -22,7 +22,7 @@ Create an internet gateway and attach it to an AWS VPC. An internet gateway is t
 ## Quick Start
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsInternetGateway
 metadata:
   name: main-igw
@@ -40,7 +40,7 @@ spec:
 An internet gateway only provides connectivity once a subnet routes to it. Pair this gateway with an `AwsSubnet` whose default route targets it:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsSubnet
 metadata:
   name: public-usw2a

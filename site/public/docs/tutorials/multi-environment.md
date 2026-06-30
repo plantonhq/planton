@@ -25,12 +25,12 @@ Three PostgreSQL deployments from one base manifest:
 
 Before starting, ensure you have:
 
-- **OpenMCF CLI** installed (`openmcf version`). See [Getting Started](../getting-started) for installation.
+- **Planton CLI** installed (`planton version`). See [Getting Started](../getting-started) for installation.
 - **A Kubernetes cluster** running and accessible via `kubectl`.
 - **Pulumi CLI** installed with a backend configured.
 - Familiarity with the [first Kubernetes resource tutorial](./first-kubernetes-resource) — this tutorial builds on that manifest.
 
-Kustomize itself does not need to be installed separately. OpenMCF embeds Kustomize as a Go library and runs it internally.
+Kustomize itself does not need to be installed separately. Planton embeds Kustomize as a Go library and runs it internally.
 
 ## Step 1: Create the Directory Structure
 
@@ -69,12 +69,12 @@ The base manifest defines the shared configuration that all environments inherit
 **`postgres-kustomize/base/postgres.yaml`**:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPostgres
 metadata:
   name: app-database
   labels:
-    openmcf.org/provisioner: pulumi
+    planton.dev/provisioner: pulumi
 spec:
   namespace:
     value: app-database
@@ -133,7 +133,7 @@ patches:
 **`postgres-kustomize/overlays/dev/patch.yaml`**:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPostgres
 metadata:
   name: app-database
@@ -163,7 +163,7 @@ patches:
 **`postgres-kustomize/overlays/staging/patch.yaml`**:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPostgres
 metadata:
   name: app-database
@@ -204,7 +204,7 @@ patches:
 **`postgres-kustomize/overlays/prod/patch.yaml`**:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPostgres
 metadata:
   name: app-database
@@ -233,15 +233,15 @@ The production patch enables ingress with a hostname. The ingress validation rul
 Preview the dev deployment:
 
 ```bash
-openmcf plan --kustomize-dir postgres-kustomize --overlay dev
+planton plan --kustomize-dir postgres-kustomize --overlay dev
 ```
 
-OpenMCF builds the Kustomize output by merging `base/postgres.yaml` with `overlays/dev/patch.yaml`, validates the result against the `KubernetesPostgres` schema, and generates the execution plan.
+Planton builds the Kustomize output by merging `base/postgres.yaml` with `overlays/dev/patch.yaml`, validates the result against the `KubernetesPostgres` schema, and generates the execution plan.
 
 Deploy:
 
 ```bash
-openmcf apply --kustomize-dir postgres-kustomize --overlay dev
+planton apply --kustomize-dir postgres-kustomize --overlay dev
 ```
 
 Verify:
@@ -255,13 +255,13 @@ You should see a single PostgreSQL pod running with the dev configuration.
 ## Step 7: Deploy to Staging
 
 ```bash
-openmcf plan --kustomize-dir postgres-kustomize --overlay staging
+planton plan --kustomize-dir postgres-kustomize --overlay staging
 ```
 
 Review the plan — you should see 2 replicas and larger resource allocations compared to dev.
 
 ```bash
-openmcf apply --kustomize-dir postgres-kustomize --overlay staging
+planton apply --kustomize-dir postgres-kustomize --overlay staging
 ```
 
 If deploying to the same cluster, note that both environments share the same namespace name (`app-database`). In a real setup, you would either use separate clusters per environment or customize the namespace in each overlay patch (e.g., `app-database-staging`).
@@ -288,8 +288,8 @@ Adding a new database or user in the base manifest automatically propagates to a
 Destroy each environment:
 
 ```bash
-openmcf destroy --kustomize-dir postgres-kustomize --overlay dev
-openmcf destroy --kustomize-dir postgres-kustomize --overlay staging
+planton destroy --kustomize-dir postgres-kustomize --overlay dev
+planton destroy --kustomize-dir postgres-kustomize --overlay staging
 ```
 
 Each destroy command uses the same Kustomize flags to resolve the correct manifest for teardown.

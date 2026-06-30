@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/pkg/errors"
-	ociprovider "github.com/plantonhq/openmcf/apis/org/openmcf/provider/oci"
+	ociprovider "github.com/plantonhq/planton/apis/dev/planton/provider/oci"
 	"github.com/pulumi/pulumi-oci/sdk/v4/go/oci"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )

@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added AwsFsxWindowsFileSystem as a new OpenMCF resource kind (enum 293, id prefix `awsfxw`), continuing the FSx family expansion alongside Lustre (R29a) and OpenZFS (R29b). This component deploys fully managed Windows file systems with mandatory Active Directory integration, SMB protocol access, audit logging, and multi-AZ failover support.
+Added AwsFsxWindowsFileSystem as a new Planton resource kind (enum 293, id prefix `awsfxw`), continuing the FSx family expansion alongside Lustre (R29a) and OpenZFS (R29b). This component deploys fully managed Windows file systems with mandatory Active Directory integration, SMB protocol access, audit logging, and multi-AZ failover support.
 
 ## Problem Statement / Motivation
 
@@ -14,7 +14,7 @@ The FSx family was split into separate components because each file system type 
 
 ### Pain Points
 
-- No OpenMCF component for managed Windows file shares
+- No Planton component for managed Windows file shares
 - Windows workloads on AWS require AD-integrated SMB storage
 - MULTI_AZ deployments need careful subnet and failover configuration
 - Audit logging for compliance requires non-trivial setup
@@ -47,7 +47,7 @@ flowchart TB
 
 - **spec.proto** — 18 fields across the main spec plus 3 nested messages (SelfManagedActiveDirectory, AuditLogConfiguration, DiskIopsConfiguration). 10 CEL cross-field validations covering AD mutual exclusion, HDD compatibility, throughput valid values, and more.
 - **stack_outputs.proto** — 8 outputs including Windows-specific `preferred_file_server_ip` and `remote_administration_endpoint`.
-- **api.proto** — KRM wiring with `aws.openmcf.org/v1` API version.
+- **api.proto** — KRM wiring with `aws.planton.dev/v1` API version.
 - **stack_input.proto** — Standard AWS provider config + target resource.
 
 ### Key Design Decisions
@@ -99,7 +99,7 @@ flowchart TB
 
 - Part of the FSx family expansion: R29a (Lustre), R29b (OpenZFS), R29c (Windows), with R29d-R29f (ONTAP) pending
 - Follows the ElastiCache split precedent (R7/R7a/R7b) for fundamentally different service types sharing a brand name
-- Parent project: 20260212.01.openmcf-cloud-provider-expansion
+- Parent project: 20260212.01.planton-cloud-provider-expansion
 
 ---
 

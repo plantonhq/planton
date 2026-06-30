@@ -1,0 +1,17 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "componente2eprofile",
+    srcs = [
+        "api.pb.go",
+        "spec.pb.go",
+    ],
+    importpath = "github.com/plantonhq/planton/apis/dev/planton/qa/componente2eprofile/v1",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/dev/planton/qa/shared",
+        "//apis/dev/planton/shared",
+        "@org_golang_google_protobuf//reflect/protoreflect",
+        "@org_golang_google_protobuf//runtime/protoimpl",
+    ],
+)

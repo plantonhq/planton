@@ -19,7 +19,7 @@ Exactly one of the two resources is created per deployment.
 
 ## Prerequisites
 
-- **Hetzner Cloud API token** configured via environment variable (`HCLOUD_TOKEN`) or OpenMCF provider config
+- **Hetzner Cloud API token** configured via environment variable (`HCLOUD_TOKEN`) or Planton provider config
 
 For **managed** certificates:
 - DNS A or AAAA records for each domain pointing to a Hetzner Cloud load balancer
@@ -34,15 +34,15 @@ For **uploaded** certificates:
 Create a file `certificate.yaml`:
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudCertificate
 metadata:
   name: my-cert
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.HetznerCloudCertificate.my-cert
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.HetznerCloudCertificate.my-cert
 spec:
   managed:
     domainNames:
@@ -52,7 +52,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f certificate.yaml
+planton apply -f certificate.yaml
 ```
 
 This creates a managed Let's Encrypt certificate for `example.com`. The certificate's ID and metadata are available in the stack outputs.
@@ -85,17 +85,17 @@ This component has no optional fields. All fields within the selected variant ar
 A SAN certificate covering a root domain and subdomains. All domains must resolve to a load balancer with an HTTPS service referencing this certificate.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudCertificate
 metadata:
   name: web-platform-cert
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: web-platform
-    pulumi.openmcf.org/stack.name: production.HetznerCloudCertificate.web-platform-cert
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: web-platform
+    pulumi.planton.dev/stack.name: production.HetznerCloudCertificate.web-platform-cert
 spec:
   managed:
     domainNames:
@@ -109,17 +109,17 @@ spec:
 A user-provided wildcard certificate and private key. Use when you need wildcard coverage, an EV/OV certificate, or a certificate from a specific CA.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudCertificate
 metadata:
   name: wildcard-cert
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: web-platform
-    pulumi.openmcf.org/stack.name: production.HetznerCloudCertificate.wildcard-cert
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: web-platform
+    pulumi.planton.dev/stack.name: production.HetznerCloudCertificate.wildcard-cert
 spec:
   uploaded:
     certificate: |
@@ -140,17 +140,17 @@ spec:
 A managed certificate deployed alongside a load balancer that references it for HTTPS termination. The load balancer uses `valueFrom` to resolve the certificate ID automatically.
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudCertificate
 metadata:
   name: api-cert
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: api-platform
-    pulumi.openmcf.org/stack.name: production.HetznerCloudCertificate.api-cert
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: api-platform
+    pulumi.planton.dev/stack.name: production.HetznerCloudCertificate.api-cert
 spec:
   managed:
     domainNames:
@@ -160,17 +160,17 @@ spec:
 The companion load balancer manifest references the certificate via `valueFrom`:
 
 ```yaml
-apiVersion: hetzner-cloud.openmcf.org/v1
+apiVersion: hetzner-cloud.planton.dev/v1
 kind: HetznerCloudLoadBalancer
 metadata:
   name: api-lb
   org: acme-corp
   env: production
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: acme-corp
-    pulumi.openmcf.org/project: api-platform
-    pulumi.openmcf.org/stack.name: production.HetznerCloudLoadBalancer.api-lb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: acme-corp
+    pulumi.planton.dev/project: api-platform
+    pulumi.planton.dev/stack.name: production.HetznerCloudLoadBalancer.api-lb
 spec:
   loadBalancerType: lb11
   location: fsn1

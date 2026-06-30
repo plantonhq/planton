@@ -6,7 +6,7 @@
 
 ## Summary
 
-Created a complete new deployment component `KubernetesTektonOperator` for deploying the Tekton CI/CD framework operator on Kubernetes clusters. The component follows the OpenMCF forge workflow, implementing all proto API definitions, validation rules, unit tests, Pulumi and Terraform IaC modules, and comprehensive documentation.
+Created a complete new deployment component `KubernetesTektonOperator` for deploying the Tekton CI/CD framework operator on Kubernetes clusters. The component follows the Planton forge workflow, implementing all proto API definitions, validation rules, unit tests, Pulumi and Terraform IaC modules, and comprehensive documentation.
 
 ## Problem Statement / Motivation
 
@@ -18,16 +18,16 @@ Organizations adopting Kubernetes-native CI/CD need a standardized, declarative 
 - No declarative way to specify which Tekton components to enable
 - Component lifecycle management (upgrades, configuration changes) is manual
 - Inconsistent deployment patterns across different environments
-- No integration with OpenMCF's unified infrastructure management
+- No integration with Planton's unified infrastructure management
 
 ## Solution / What's New
 
-Created the `KubernetesTektonOperator` deployment component using the OpenMCF forge workflow. The component deploys the Tekton Operator, which then manages Tekton components via the TektonConfig CRD.
+Created the `KubernetesTektonOperator` deployment component using the Planton forge workflow. The component deploys the Tekton Operator, which then manages Tekton components via the TektonConfig CRD.
 
 ### Component Architecture
 
 ```
-KubernetesTektonOperator (OpenMCF)
+KubernetesTektonOperator (Planton)
          │
          ▼
     Tekton Operator Deployment
@@ -90,7 +90,7 @@ message KubernetesTektonOperatorComponents {
 **api.proto** - KRM wiring:
 ```protobuf
 message KubernetesTektonOperator {
-  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.openmcf.org/v1'];
+  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.planton.dev/v1'];
   string kind = 2 [(buf.validate.field).string.const = 'KubernetesTektonOperator'];
   CloudResourceMetadata metadata = 3;
   KubernetesTektonOperatorSpec spec = 4;
@@ -186,7 +186,7 @@ ginkgo.Context("with no components enabled", func() {
 ## Files Created
 
 ```
-apis/org/openmcf/provider/kubernetes/kubernetestektonoperator/v1/
+apis/dev/planton/provider/kubernetes/kubernetestektonoperator/v1/
 ├── Proto Files
 │   ├── spec.proto              # Configuration schema
 │   ├── api.proto               # KRM wiring
@@ -228,7 +228,7 @@ apis/org/openmcf/provider/kubernetes/kubernetestektonoperator/v1/
 ## Usage Example
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesTektonOperator
 metadata:
   name: tekton-operator
@@ -261,7 +261,7 @@ planton apply -f tekton-operator.yaml
 - **Declarative Management**: Define Tekton deployments as code
 - **Consistent Deployments**: Same configuration across environments
 - **Component Flexibility**: Enable only needed components
-- **Unified Tooling**: Manage Tekton alongside other OpenMCF resources
+- **Unified Tooling**: Manage Tekton alongside other Planton resources
 
 ### For Developers
 
@@ -281,13 +281,13 @@ planton apply -f tekton-operator.yaml
 
 - Platform engineers deploying CI/CD infrastructure
 - DevOps teams standardizing on Tekton
-- Organizations using OpenMCF for infrastructure management
+- Organizations using Planton for infrastructure management
 
 ### Ecosystem Integration
 
 - Extends Kubernetes provider with CI/CD capability
 - Follows established patterns from other operator components (Elastic, Strimzi, Zalando)
-- Compatible with OpenMCF credential management
+- Compatible with Planton credential management
 
 ## Validation Results
 

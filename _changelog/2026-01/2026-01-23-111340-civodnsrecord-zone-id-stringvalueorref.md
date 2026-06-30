@@ -23,10 +23,10 @@ The CivoDnsRecord component was initially forged with `zone_id` as a plain strin
 Updated the `zone_id` field to use the `StringValueOrRef` type with proper default kind hints:
 
 ```protobuf
-org.openmcf.shared.foreignkey.v1.StringValueOrRef zone_id = 1 [
+dev.planton.shared.foreignkey.v1.StringValueOrRef zone_id = 1 [
   (buf.validate.field).required = true,
-  (org.openmcf.shared.foreignkey.v1.default_kind) = CivoDnsZone,
-  (org.openmcf.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
+  (dev.planton.shared.foreignkey.v1.default_kind) = CivoDnsZone,
+  (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
 ];
 ```
 

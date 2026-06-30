@@ -133,7 +133,7 @@ dynamic_config = optional(object({
 Existing deployments continue to work unchanged. To increase limits:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesTemporal
 metadata:
   name: temporal-prod
@@ -146,7 +146,7 @@ spec:
 ## Usage Example
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesTemporal
 metadata:
   name: temporal-large-payloads

@@ -10,11 +10,11 @@ Added AzureServiceBusNamespace as a new Azure deployment component, providing en
 
 ## Problem Statement / Motivation
 
-The Azure provider in OpenMCF lacked messaging infrastructure capabilities. Enterprise workloads need reliable async messaging for decoupling microservices, event-driven architectures, and ordered processing workflows. Without Service Bus, teams had to manage messaging infrastructure outside of OpenMCF's declarative model.
+The Azure provider in Planton lacked messaging infrastructure capabilities. Enterprise workloads need reliable async messaging for decoupling microservices, event-driven architectures, and ordered processing workflows. Without Service Bus, teams had to manage messaging infrastructure outside of Planton's declarative model.
 
 ### Pain Points
 
-- No declarative messaging infrastructure in OpenMCF for Azure
+- No declarative messaging infrastructure in Planton for Azure
 - Teams managing Service Bus manually or via separate Terraform configs outside the infra chart DAG
 - No ability to wire messaging connection strings into container apps or function apps via `valueFrom` references
 
@@ -58,7 +58,7 @@ The Pulumi Azure classic SDK v6.28.0 does not expose `zone_redundant` on `Namesp
 ### Component Structure
 
 ```
-apis/org/openmcf/provider/azure/azureservicebusnamespace/v1/
+apis/dev/planton/provider/azure/azureservicebusnamespace/v1/
 ├── spec.proto                  # 3 messages, 11+11+6 fields
 ├── stack_outputs.proto         # 7 outputs including maps
 ├── api.proto                   # KRM wiring
@@ -91,7 +91,7 @@ apis/org/openmcf/provider/azure/azureservicebusnamespace/v1/
 
 ## Benefits
 
-- Declarative messaging infrastructure within the OpenMCF ecosystem
+- Declarative messaging infrastructure within the Planton ecosystem
 - `valueFrom` connection string wiring into container apps, function apps, web apps
 - Dual IaC (Pulumi + Terraform) with feature parity
 - 37 validation tests ensuring spec correctness at build time

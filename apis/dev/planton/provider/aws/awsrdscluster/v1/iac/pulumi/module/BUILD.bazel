@@ -1,0 +1,25 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "module",
+    srcs = [
+        "cluster_param_group.go",
+        "locals.go",
+        "main.go",
+        "outputs.go",
+        "rds_cluster.go",
+        "security_group.go",
+        "subnet_group.go",
+    ],
+    importpath = "github.com/plantonhq/planton/apis/dev/planton/provider/aws/awsrdscluster/v1/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//apis/dev/planton/provider/aws/awsrdscluster/v1:awsrdscluster",
+        "//pkg/iac/pulumi/pulumimodule/provider/aws/pulumiawsprovider",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_aws_sdk_v7//go/aws",
+        "@com_github_pulumi_pulumi_aws_sdk_v7//go/aws/ec2",
+        "@com_github_pulumi_pulumi_aws_sdk_v7//go/aws/rds",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)

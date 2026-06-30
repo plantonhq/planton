@@ -201,7 +201,7 @@ _rules/deployment-component/
 │   ├── rename_deployment_component.py  ← Here
 │   └── ... (other scripts for forge, audit, etc.)
 └── rename/
-    ├── rename-openmcf-component.mdc
+    ├── rename-planton-component.mdc
     └── README.md
 
 After:
@@ -209,7 +209,7 @@ _rules/deployment-component/
 ├── _scripts/
 │   └── ... (other scripts for forge, audit, etc.)
 └── rename/
-    ├── rename-openmcf-component.mdc
+    ├── rename-planton-component.mdc
     ├── README.md
     └── _scripts/
         └── rename_deployment_component.py  ← Now here
@@ -222,7 +222,7 @@ _rules/deployment-component/
 Updated 6 references across the codebase:
 1. Script docstring (usage examples)
 2. `rename/README.md` (architecture diagram + reference section)
-3. `rename-openmcf-component.mdc` (cursor rule reference)
+3. `rename-planton-component.mdc` (cursor rule reference)
 4. `deployment-component/README.md` (main README)
 5. Changelog `2025-11-15-085240` (recent rename example)
 6. Changelog `2025-11-15-083839` (automation documentation)

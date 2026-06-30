@@ -1,0 +1,28 @@
+apiVersion: gcp.planton.dev/v1
+kind: GcpDnsZone
+metadata:
+  name: test.planton.dev
+spec:
+  projectId:
+    value: planton-dns
+  records:
+    - recordType: A
+      name: test-a.test.planton.dev.
+      values:
+        - 1.1.1.3
+    - recordType: CNAME
+      name: test-cname.test.planton.dev.
+      values:
+        - someother.test.planton.dev.
+    - recordType: MX
+      name: test.planton.dev.
+      values:
+        - 10 alt3.aspmx.l.google.com.
+        - 5 alt2.aspmx.l.google.com.
+        - 1 aspmx.l.google.com.
+        - 5 alt1.aspmx.l.google.com.
+        - 10 alt4.aspmx.l.google.com.
+    - recordType: TXT
+      name: test-txt.test.planton.dev.
+      values:
+        - someother.test.planton.dev.

@@ -1,0 +1,77 @@
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareLoadBalancerMonitor
+metadata:
+  name: geo-https
+spec:
+  accountId: <cloudflare-account-id>
+  type: https
+  path: /
+  expectedCodes: "2xx"
+---
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareLoadBalancerPool
+metadata:
+  name: us-pool
+spec:
+  accountId: <cloudflare-account-id>
+  name: us-pool
+  origins:
+    - name: us-east
+      address:
+        value: <us-east-origin-ip-or-hostname>
+  monitor:
+    valueFrom:
+      kind: CloudflareLoadBalancerMonitor
+      name: geo-https
+      fieldPath: status.outputs.monitor_id
+---
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareLoadBalancerPool
+metadata:
+  name: eu-pool
+spec:
+  accountId: <cloudflare-account-id>
+  name: eu-pool
+  origins:
+    - name: eu-west
+      address:
+        value: <eu-west-origin-ip-or-hostname>
+  monitor:
+    valueFrom:
+      kind: CloudflareLoadBalancerMonitor
+      name: geo-https
+      fieldPath: status.outputs.monitor_id
+---
+apiVersion: cloudflare.planton.dev/v1
+kind: CloudflareLoadBalancer
+metadata:
+  name: my-geographic-routing
+spec:
+  hostname: <www-subdomain>.<your-domain.com>
+  zoneId:
+    value: <cloudflare-zone-id>
+  defaultPools:
+    - valueFrom:
+        kind: CloudflareLoadBalancerPool
+        name: us-pool
+        fieldPath: status.outputs.pool_id
+  fallbackPool:
+    valueFrom:
+      kind: CloudflareLoadBalancerPool
+      name: us-pool
+      fieldPath: status.outputs.pool_id
+  proxied: true
+  steeringPolicy: geo
+  regionPools:
+    - code: WNAM
+      poolIds:
+        - valueFrom:
+            kind: CloudflareLoadBalancerPool
+            name: us-pool
+            fieldPath: status.outputs.pool_id
+    - code: WEU
+      poolIds:
+        - valueFrom:
+            kind: CloudflareLoadBalancerPool
+            name: eu-pool
+            fieldPath: status.outputs.pool_id

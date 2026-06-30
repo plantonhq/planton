@@ -12,14 +12,14 @@ Deploys an Oracle Cloud Infrastructure Log Group with bundled logs. The log grou
 
 ## What Gets Created
 
-When you deploy an OciLogGroup resource, OpenMCF provisions:
+When you deploy an OciLogGroup resource, Planton provisions:
 
 - **Log Group** — a `logging.LogGroup` resource in the specified compartment with an optional description.
 - **Logs** — one `logging.Log` per entry in the `logs` list. Each log is created within the group with a specified type (custom or service), optional enable flag, optional retention duration, and optional service log source configuration. Logs depend on the group for creation ordering.
 
 ## Prerequisites
 
-- **OCI credentials** configured via environment variables or OpenMCF provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
+- **OCI credentials** configured via environment variables or Planton provider config (API Key, Instance Principal, Security Token, Resource Principal, or OKE Workload Identity)
 - **A compartment OCID** where the log group will be created — either a literal value or a reference to an OciCompartment resource
 - **Source resource OCIDs** (for service logs) — the OCID of the OCI resource emitting logs (e.g., a VCN for flow logs, a bucket for Object Storage logs)
 
@@ -28,15 +28,15 @@ When you deploy an OciLogGroup resource, OpenMCF provisions:
 Create a file `log-group.yaml`:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciLogGroup
 metadata:
   name: my-logs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciLogGroup.my-logs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciLogGroup.my-logs
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -48,7 +48,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f log-group.yaml
+planton apply -f log-group.yaml
 ```
 
 This creates a log group with one custom log that accepts entries via the Logging Ingestion API. The log group OCID is exported as a stack output.
@@ -83,7 +83,7 @@ This creates a log group with one custom log that accepts entries via the Loggin
 | Field | Type | Description |
 |-------|------|-------------|
 | `service` | `string` | OCI service generating the log. Examples: `"objectstorage"`, `"flowlogs"`, `"apigateway"`, `"loadbalancer"`, `"functionsInvoke"`. Required. |
-| `resource` | `StringValueOrRef` | OCID of the resource emitting logs (e.g., a VCN, bucket, API gateway). Can reference any OpenMCF component via `valueFrom`. Required. |
+| `resource` | `StringValueOrRef` | OCID of the resource emitting logs (e.g., a VCN, bucket, API gateway). Can reference any Planton component via `valueFrom`. Required. |
 | `category` | `string` | Log category within the service. Examples: `"write"`, `"read"`, `"all"` (Object Storage); `"access"` (API Gateway); `"invoke"` (Functions). Required. |
 | `parameters` | `map<string, string>` | Additional parameters for the log source. Pass-through to OCI. |
 | `compartmentId` | `StringValueOrRef` | Optional compartment override for source resource lookup. When omitted, the log group's compartment is used. Can reference an OciCompartment via `valueFrom`. |
@@ -95,15 +95,15 @@ This creates a log group with one custom log that accepts entries via the Loggin
 A log group with a single custom log for application-level log ingestion:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciLogGroup
 metadata:
   name: app-logs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OciLogGroup.app-logs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OciLogGroup.app-logs
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"
@@ -118,15 +118,15 @@ spec:
 A log group collecting VCN flow logs from a subnet:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciLogGroup
 metadata:
   name: network-logs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciLogGroup.network-logs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciLogGroup.network-logs
 spec:
   compartmentId:
     valueFrom:
@@ -153,15 +153,15 @@ spec:
 A log group with both Object Storage write logs and a custom application log:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciLogGroup
 metadata:
   name: platform-logs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciLogGroup.platform-logs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciLogGroup.platform-logs
 spec:
   compartmentId:
     valueFrom:
@@ -192,15 +192,15 @@ spec:
 A log group collecting access logs from an API Gateway deployment:
 
 ```yaml
-apiVersion: oci.openmcf.org/v1
+apiVersion: oci.planton.dev/v1
 kind: OciLogGroup
 metadata:
   name: api-logs
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OciLogGroup.api-logs
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OciLogGroup.api-logs
 spec:
   compartmentId:
     value: "ocid1.compartment.oc1..example"

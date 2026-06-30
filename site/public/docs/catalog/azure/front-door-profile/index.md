@@ -12,7 +12,7 @@ Deploys an Azure Front Door profile with endpoints, origin groups, origins, and 
 
 ## What Gets Created
 
-When you deploy an AzureFrontDoorProfile resource, OpenMCF provisions:
+When you deploy an AzureFrontDoorProfile resource, Planton provisions:
 
 - **Front Door Profile** -- a `cdn.FrontDoorProfile` resource in the specified resource group (global, no region), configured with the chosen SKU tier and response timeout
 - **Endpoints** -- a `cdn.FrontDoorEndpoint` for each entry in `endpoints`, each assigned a public hostname (`*.azurefd.net`) for client traffic
@@ -23,7 +23,7 @@ When you deploy an AzureFrontDoorProfile resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **Azure credentials** configured via environment variables or OpenMCF provider config
+- **Azure credentials** configured via environment variables or Planton provider config
 - **An Azure Resource Group** for ARM organization (can reference an AzureResourceGroup resource)
 - **Backend origins** -- one or more backend servers with public hostnames (App Service, Container Apps, Storage Account, custom server, etc.)
 - **Premium SKU** if using Private Link to origins -- Standard SKU does not support private connectivity
@@ -33,15 +33,15 @@ When you deploy an AzureFrontDoorProfile resource, OpenMCF provisions:
 Create a file `frontdoor.yaml`:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureFrontDoorProfile
 metadata:
   name: my-cdn
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AzureFrontDoorProfile.my-cdn
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AzureFrontDoorProfile.my-cdn
 spec:
   resourceGroup: my-rg
   name: my-cdn
@@ -66,7 +66,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f frontdoor.yaml
+planton apply -f frontdoor.yaml
 ```
 
 This creates a Standard-tier Front Door profile with one endpoint, one origin group pointing to an App Service, and a catch-all route.
@@ -142,15 +142,15 @@ This creates a Standard-tier Front Door profile with one endpoint, one origin gr
 A Standard-tier profile accelerating a web application with compression and caching enabled:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureFrontDoorProfile
 metadata:
   name: web-cdn
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureFrontDoorProfile.web-cdn
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureFrontDoorProfile.web-cdn
 spec:
   resourceGroup: prod-rg
   name: web-cdn
@@ -192,15 +192,15 @@ spec:
 A profile with multiple origins across regions for active-passive failover:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureFrontDoorProfile
 metadata:
   name: api-gateway
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureFrontDoorProfile.api-gateway
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureFrontDoorProfile.api-gateway
 spec:
   resourceGroup: prod-rg
   name: api-gateway
@@ -252,15 +252,15 @@ spec:
 A Premium-tier profile connecting privately to an App Service backend:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureFrontDoorProfile
 metadata:
   name: enterprise-cdn
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureFrontDoorProfile.enterprise-cdn
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureFrontDoorProfile.enterprise-cdn
 spec:
   resourceGroup: prod-rg
   name: enterprise-cdn
@@ -295,18 +295,18 @@ spec:
 
 ### Using Foreign Key References
 
-Reference an OpenMCF-managed resource group:
+Reference an Planton-managed resource group:
 
 ```yaml
-apiVersion: azure.openmcf.org/v1
+apiVersion: azure.planton.dev/v1
 kind: AzureFrontDoorProfile
 metadata:
   name: ref-cdn
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AzureFrontDoorProfile.ref-cdn
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AzureFrontDoorProfile.ref-cdn
 spec:
   resourceGroup:
     valueFrom:

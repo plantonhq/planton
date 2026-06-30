@@ -1,0 +1,6 @@
+apiVersion: openstack.planton.dev/v1
+kind: OpenStackServerGroup
+metadata:
+  name: test-server-group
+spec:
+  policy: anti-affinity

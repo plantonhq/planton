@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package dev.planton.provider.oci.ocidnsrecord.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// OciDnsRecordSpec defines the specification for an OCI DNS Record Set
+// (RRSet) -- a set of DNS resource records sharing the same (domain,
+// rtype) tuple within an OCI DNS zone.
+//
+// The resource manages records atomically: updates replace the entire
+// set, not individual records.
+//
+// Key behaviors:
+//   - zone_name_or_id, domain, rtype, and view_id are ForceNew
+//     (changing them destroys and recreates the record set)
+//   - items are updatable (the full set is replaced on each update)
+//   - RDATA may be normalized by the OCI service (e.g., IPv6
+//     compression, trailing-dot appended to hostnames, TXT quote
+//     stripping) -- returned values may differ from input
+//
+// Notable deviation from standard OCI component pattern:
+//   - No compartment_id: the oci_dns_rrset resource infers the
+//     compartment from the target zone. compartment_id is deprecated
+//     on this resource in both the Terraform and Pulumi providers.
+//   - No freeform_tags: DNS record sets do not support OCI tagging.
+//
+// Items are simplified from the provider model: the provider requires
+// each item to carry its own domain and rtype (which must match the
+// top-level values). This spec removes that redundancy -- IaC modules
+// inject domain and rtype from the top-level fields.
+message OciDnsRecordSpec {
+  // A single DNS record within the record set.
+  message RecordItem {
+    // Record data in type-specific presentation format.
+    // Examples: "192.0.2.1" (A), "2001:db8::1" (AAAA),
+    // "mail.example.com." (MX with priority as part of rdata: "10 mail.example.com."),
+    // "\"v=spf1 include:example.com ~all\"" (TXT).
+    string rdata = 1 [(buf.validate.field).string.min_len = 1];
+
+    // Time to live in seconds. Controls how long resolvers cache
+    // this record. Values below 30 are not recommended by OCI.
+    int32 ttl = 2 [(buf.validate.field).int32.gte = 1];
+  }
+
+  // OCID or name of the target DNS zone. ForceNew.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef zone_name_or_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = OciDnsZone,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
+  ];
+
+  // Fully qualified domain name for the record set (e.g.,
+  // "app.example.com"). ForceNew.
+  string domain = 2 [(buf.validate.field).string.min_len = 1];
+
+  // DNS record type (e.g., A, AAAA, CNAME, MX, TXT, SRV, CAA, NS,
+  // PTR). Plain string because DNS types are IETF-standardized,
+  // numerous, and extensible. ForceNew.
+  string rtype = 3 [(buf.validate.field).string.min_len = 1];
+
+  // OCID of the private DNS view. Required when accessing a private
+  // zone by name. Not needed when zone_name_or_id is an OCID.
+  // No default_kind/default_kind_field_path: OCI private DNS views are not
+  // modeled as an Planton kind, so this stays literal-only with no
+  // cross-resource reference default.
+  // ForceNew.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef view_id = 4;
+
+  // DNS records in this record set. At least one record is required.
+  repeated RecordItem items = 5 [(buf.validate.field).repeated.min_items = 1];
+}

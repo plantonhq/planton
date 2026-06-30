@@ -10,12 +10,12 @@ Added AwsHttpApiGateway as a new cloud resource kind (R05, enum 240) in the AWS 
 
 ## Problem Statement / Motivation
 
-AWS API Gateway HTTP APIs are the front door for modern serverless and microservice architectures. The OpenMCF AWS provider lacked coverage for API Gateway, meaning users could deploy Lambda functions (AwsLambda) and event infrastructure (SQS, SNS, EventBridge) but had no declarative way to expose them as HTTP endpoints.
+AWS API Gateway HTTP APIs are the front door for modern serverless and microservice architectures. The Planton AWS provider lacked coverage for API Gateway, meaning users could deploy Lambda functions (AwsLambda) and event infrastructure (SQS, SNS, EventBridge) but had no declarative way to expose them as HTTP endpoints.
 
 ### Pain Points
 
-- No API Gateway component forced users to manage HTTP APIs outside OpenMCF
-- Lambda functions deployed via OpenMCF couldn't be wired to HTTP endpoints in infra charts
+- No API Gateway component forced users to manage HTTP APIs outside Planton
+- Lambda functions deployed via Planton couldn't be wired to HTTP endpoints in infra charts
 - The serverless-api infra chart pattern was blocked without this component
 
 ## Solution / What's New
@@ -28,7 +28,7 @@ A clean, declarative AwsHttpApiGateway component that bundles the API, stage, ro
 
 2. **Routes with inline integrations** -- Each route carries its own integration config. The IaC module automatically deduplicates: when multiple routes share the same backend (same type + URI + payload version), only one Integration resource is created.
 
-3. **Single stage model** -- Defaults to `$default` with `auto_deploy=true`. OpenMCF resources are already environment-scoped, so multi-stage within one API Gateway is unnecessary.
+3. **Single stage model** -- Defaults to `$default` with `auto_deploy=true`. Planton resources are already environment-scoped, so multi-stage within one API Gateway is unnecessary.
 
 4. **Named authorizers** -- Authorizers are defined once and referenced by name from routes, supporting both JWT (Cognito/Auth0/OIDC) and Lambda (REQUEST) authorizer types.
 
@@ -102,7 +102,7 @@ Uses `for_each` on deduplicated integration maps, authorizer maps, and route map
 
 ## Benefits
 
-- **Serverless API pattern unlocked** -- Users can now build complete serverless APIs (API Gateway + Lambda + DynamoDB) entirely in OpenMCF
+- **Serverless API pattern unlocked** -- Users can now build complete serverless APIs (API Gateway + Lambda + DynamoDB) entirely in Planton
 - **Infra chart composability** -- `execution_arn` and `api_endpoint` outputs enable downstream wiring in infra charts
 - **Clean UX** -- Routes with inline integrations hide the API Gateway resource complexity (12 TF resources) behind a simple declarative spec
 - **Integration deduplication** -- Multiple routes to the same Lambda don't create redundant Integration resources

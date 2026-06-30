@@ -6,17 +6,17 @@
 
 ## Summary
 
-Created the Examples and Contributing documentation sections for the OpenMCF docs site — 4 new pages across 2 entirely new sections. The Examples section provides a manifest gallery with 10 proto-verified manifests across 7 providers. The Contributing section covers development setup, build workflows, and a comprehensive guide for adding new deployment components.
+Created the Examples and Contributing documentation sections for the Planton docs site — 4 new pages across 2 entirely new sections. The Examples section provides a manifest gallery with 10 proto-verified manifests across 7 providers. The Contributing section covers development setup, build workflows, and a comprehensive guide for adding new deployment components.
 
 ## Problem Statement / Motivation
 
-The OpenMCF docs site had comprehensive Concepts, CLI, Guides, and Tutorials sections after Phases 1-4, but lacked two critical sections for a production open-source project:
+The Planton docs site had comprehensive Concepts, CLI, Guides, and Tutorials sections after Phases 1-4, but lacked two critical sections for a production open-source project:
 
 ### Pain Points
 
 - No curated, copy-paste-ready manifest examples for users who want to start deploying quickly without following a full tutorial
 - No contributor documentation explaining how to set up a development environment, build from source, or add new deployment components
-- The `openmcf/examples/` directory only contained 3 YAML files (all Postgres variants), providing minimal coverage of the 198 components across 14 providers
+- The `planton/examples/` directory only contained 3 YAML files (all Postgres variants), providing minimal coverage of the 198 components across 14 providers
 - The component creation workflow (19-step forge process) was documented only as internal Cursor AI rules, not as public contributor-facing documentation
 
 ## Solution / What's New
@@ -87,7 +87,7 @@ The contributing documentation was synthesized from multiple source locations:
 
 ## Impact
 
-- OpenMCF docs site now has 7 complete sections (Concepts, CLI, Guides, Tutorials, Examples, Contributing, Catalog)
+- Planton docs site now has 7 complete sections (Concepts, CLI, Guides, Tutorials, Examples, Contributing, Catalog)
 - Phase 5 of the documentation feature parity project is complete
 - Only Phase 6 (final audit and polish) remains
 
@@ -100,4 +100,4 @@ The contributing documentation was synthesized from multiple source locations:
 ---
 
 **Status**: Production Ready
-**Timeline**: Phase 5 of 6 in the OpenMCF docs feature parity project
+**Timeline**: Phase 5 of 6 in the Planton docs feature parity project

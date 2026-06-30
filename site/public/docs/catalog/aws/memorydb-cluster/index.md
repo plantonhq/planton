@@ -12,7 +12,7 @@ Deploys an Amazon MemoryDB cluster — a fully managed, Redis-compatible, durabl
 
 ## What Gets Created
 
-When you deploy an AwsMemorydbCluster resource, OpenMCF provisions:
+When you deploy an AwsMemorydbCluster resource, Planton provisions:
 
 - **MemoryDB Cluster** — a `memorydb.Cluster` resource with configurable shards and replicas per shard, TLS encryption, ACL-based authentication, and optional data tiering for cost-efficient large datasets
 - **Subnet Group** — created only when `subnetIds` are provided, placing cluster nodes in the specified VPC subnets
@@ -20,7 +20,7 @@ When you deploy an AwsMemorydbCluster resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **AWS credentials** configured via environment variables or OpenMCF provider config
+- **AWS credentials** configured via environment variables or Planton provider config
 - **VPC subnets** in at least two Availability Zones for production deployments
 - **A security group** allowing inbound traffic on port 6379 (default) from your application instances
 - **A MemoryDB ACL** — use the built-in `open-access` for development; create a custom ACL with users via AWS console/CLI for production authentication
@@ -30,15 +30,15 @@ When you deploy an AwsMemorydbCluster resource, OpenMCF provisions:
 Create a file `memorydb.yaml`:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsMemorydbCluster
 metadata:
   name: my-memorydb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsMemorydbCluster.my-memorydb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsMemorydbCluster.my-memorydb
 spec:
   region: us-east-1
   engine: redis
@@ -53,7 +53,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f memorydb.yaml
+planton apply -f memorydb.yaml
 ```
 
 This creates a single-shard, single-node MemoryDB cluster with Redis 7.1, TLS encryption, and no authentication.
@@ -101,15 +101,15 @@ This creates a single-shard, single-node MemoryDB cluster with Redis 7.1, TLS en
 A minimal single-node cluster for local development:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsMemorydbCluster
 metadata:
   name: dev-memorydb
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.AwsMemorydbCluster.dev-memorydb
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.AwsMemorydbCluster.dev-memorydb
 spec:
   region: us-east-1
   engine: redis
@@ -125,15 +125,15 @@ spec:
 Multi-shard cluster with replicas, custom ACL, VPC placement, and daily snapshots:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsMemorydbCluster
 metadata:
   name: session-store
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsMemorydbCluster.session-store
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsMemorydbCluster.session-store
 spec:
   region: us-east-1
   engine: redis
@@ -162,15 +162,15 @@ spec:
 Production cluster using cross-resource references for VPC, security group, KMS, and SNS:
 
 ```yaml
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsMemorydbCluster
 metadata:
   name: analytics-store
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.AwsMemorydbCluster.analytics-store
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.AwsMemorydbCluster.analytics-store
 spec:
   region: us-east-1
   engine: redis

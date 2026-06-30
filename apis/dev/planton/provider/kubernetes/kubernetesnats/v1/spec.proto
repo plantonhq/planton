@@ -1,0 +1,347 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesnats.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/kubernetes.proto";
+import "dev/planton/provider/kubernetes/target_cluster.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+import "google/protobuf/descriptor.proto";
+
+// custom option to store default values for the server container message
+extend google.protobuf.FieldOptions {
+  KubernetesNatsServerContainer default_server_container = 525001;
+}
+
+// NatsKubernetes spec holds the 80-20 configuration for a nats cluster on kubernetes.
+message KubernetesNatsSpec {
+  // Target Kubernetes Cluster
+  dev.planton.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  // Kubernetes Namespace
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // flag to indicate if the namespace should be created
+  bool create_namespace = 3;
+
+  // server container settings (replicas, resources, disk).
+  KubernetesNatsServerContainer server_container = 4 [(default_server_container) = {
+    replicas: 1
+    resources: {
+      limits: {
+        cpu: "1000m"
+        memory: "2Gi"
+      }
+      requests: {
+        cpu: "100m"
+        memory: "256Mi"
+      }
+    }
+    disk_size: "10Gi"
+  }];
+
+  // disable jet-stream persistence
+  bool disable_jet_stream = 5;
+  // authentication settings for the nats cluster.
+  KubernetesNatsAuth auth = 6;
+  // tls settings for the nats cluster.
+  bool tls_enabled = 7;
+  // optional ingress configuration for external access.
+  KubernetesNatsIngress ingress = 8;
+  // toggle to deploy the nats-box utility pod.
+  bool disable_nats_box = 9;
+
+  // NACK JetStream controller configuration (opt-in).
+  // When enabled, deploys the NACK controller alongside NATS for managing
+  // streams and consumers via Kubernetes CRDs.
+  KubernetesNatsNackController nack_controller = 10;
+
+  // JetStream streams to create.
+  // Requires nack_controller.enabled = true.
+  // Streams are created as Kubernetes custom resources managed by NACK.
+  repeated KubernetesNatsStream streams = 11;
+
+  // NATS Helm chart version.
+  // To check available versions: helm search repo nats/nats --versions
+  // Chart repository: https://nats-io.github.io/k8s/
+  optional string nats_helm_chart_version = 12 [(dev.planton.shared.options.default) = "2.12.3"];
+}
+
+// server container settings for the nats stateful-set.
+message KubernetesNatsServerContainer {
+  // number of nats replicas; use an odd value for quorum.
+  int32 replicas = 1 [(buf.validate.field).int32 = {gt: 0}];
+
+  // cpu and memory resources for each pod.
+  dev.planton.provider.kubernetes.ContainerResources resources = 2;
+
+  // pvc size for jet-stream file store (e.g. "10Gi").
+  string disk_size = 3 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.recommended_default) = "1Gi"
+  ];
+}
+
+// KubernetesNatsAuthScheme is the authentication scheme for the nats cluster.
+enum KubernetesNatsAuthScheme {
+  nats_kubernetes_auth_scheme_unspecified = 0;
+  // bearer token authentication
+  bearer_token = 1;
+  // basic auth authentication
+  basic_auth = 2;
+}
+
+// configuration for an unauthenticated ("no-auth") user.
+message KubernetesNatsNoAuthUser {
+  // enables the unauthenticated user when true.
+  bool enabled = 1;
+  // subjects on which the unauthenticated user may publish.
+  // at least one subject must be specified when enabled is true.
+  repeated string publish_subjects = 2;
+}
+
+// KubernetesNatsAuth holds the authentication configuration for the nats cluster.
+message KubernetesNatsAuth {
+  // toggle to enable authentication for the nats cluster.
+  bool enabled = 1;
+  // authentication scheme for the nats cluster.
+  KubernetesNatsAuthScheme scheme = 2;
+  // optional no-auth user configuration.
+  KubernetesNatsNoAuthUser no_auth_user = 3;
+}
+
+// KubernetesNatsIngress defines ingress configuration for NATS external access.
+message KubernetesNatsIngress {
+  // Flag to enable or disable ingress.
+  // When enabled, creates a LoadBalancer service for external access.
+  bool enabled = 1;
+
+  // The full hostname for external access (e.g., "nats.example.com").
+  // This hostname will be configured via external-dns annotations.
+  // Required when enabled is true.
+  string hostname = 2;
+
+  option (buf.validate.message).cel = {
+    id: "spec.ingress.hostname.required"
+    expression: "!this.enabled || size(this.hostname) > 0"
+    message: "hostname is required when ingress is enabled"
+  };
+}
+
+// KubernetesNatsNackController configures the NACK JetStream controller.
+// NACK (NATS Controllers for Kubernetes) is the official operator for managing
+// JetStream resources (Streams, Consumers, KeyValue, ObjectStore) via CRDs.
+message KubernetesNatsNackController {
+  // Enable the NACK JetStream controller.
+  // When enabled, NACK will be deployed alongside NATS and can manage
+  // Stream/Consumer resources declaratively via Kubernetes CRDs.
+  bool enabled = 1;
+
+  // Enable control-loop mode for the NACK controller.
+  // Required for KeyValue and ObjectStore support.
+  // Also provides more reliable state enforcement.
+  bool enable_control_loop = 2;
+
+  // NACK Helm chart version.
+  // To check available versions: helm search repo nats/nack --versions
+  // Chart repository: https://nats-io.github.io/k8s/
+  optional string helm_chart_version = 3 [(dev.planton.shared.options.default) = "0.31.1"];
+
+  // NACK app version (GitHub release tag).
+  // Used for fetching CRDs from: https://github.com/nats-io/nack/releases
+  // Note: App version differs from chart version. Check "APP VERSION" column in:
+  // helm search repo nats/nack --versions
+  optional string app_version = 4 [(dev.planton.shared.options.default) = "0.21.1"];
+}
+
+// ============================================================================
+// Stream Enum Wrappers
+// Wrapper messages scope enum values to avoid protobuf C++ scoping conflicts.
+// This allows using clean NATS-native values like "file", "memory", "limits".
+// ============================================================================
+
+// Wrapper for stream storage backend enum.
+message StreamStorageEnum {
+  enum Value {
+    unspecified = 0;
+    // File-based storage (persistent, survives restarts).
+    file = 1;
+    // Memory-based storage (ephemeral, faster).
+    memory = 2;
+  }
+}
+
+// Wrapper for stream retention policy enum.
+message StreamRetentionEnum {
+  enum Value {
+    unspecified = 0;
+    // Messages kept based on limits (max_age, max_bytes, max_msgs).
+    limits = 1;
+    // Messages removed when no consumers have interest.
+    interest = 2;
+    // Work queue: messages removed once acknowledged.
+    workqueue = 3;
+  }
+}
+
+// Wrapper for stream discard policy enum.
+message StreamDiscardEnum {
+  enum Value {
+    unspecified = 0;
+    // Discard old messages when limits reached.
+    old = 1;
+    // Reject new messages when limits reached.
+    // Note: Named "new_msgs" instead of "new" because "new" is a reserved keyword in Java.
+    // IaC modules convert this to "new" when sending to NACK CRDs.
+    new_msgs = 2;
+  }
+}
+
+// ============================================================================
+// Consumer Enum Wrappers
+// ============================================================================
+
+// Wrapper for consumer delivery policy enum.
+message ConsumerDeliverPolicyEnum {
+  enum Value {
+    unspecified = 0;
+    // Deliver all messages from the beginning.
+    all = 1;
+    // Deliver starting from the last message.
+    last = 2;
+    // Deliver only new messages (after consumer creation).
+    // Note: Named "new_msgs" instead of "new" because "new" is a reserved keyword in Java.
+    // IaC modules convert this to "new" when sending to NACK CRDs.
+    new_msgs = 3;
+  }
+}
+
+// Wrapper for consumer acknowledgment policy enum.
+message ConsumerAckPolicyEnum {
+  enum Value {
+    unspecified = 0;
+    // No acknowledgment required.
+    none = 1;
+    // Acknowledge all previous messages.
+    all = 2;
+    // Explicit acknowledgment required for each message.
+    explicit = 3;
+  }
+}
+
+// Wrapper for consumer replay policy enum.
+message ConsumerReplayPolicyEnum {
+  enum Value {
+    unspecified = 0;
+    // Replay messages at the original rate they were published.
+    original = 1;
+    // Replay messages as fast as possible.
+    instant = 2;
+  }
+}
+
+// ============================================================================
+// Stream and Consumer Messages
+// ============================================================================
+
+// KubernetesNatsStream configures a JetStream stream.
+// Streams are the core storage layer in JetStream, capturing and storing messages
+// published to specific subjects.
+message KubernetesNatsStream {
+  // A unique name for the stream.
+  // Must be between 1-255 characters, alphanumeric with allowed: - _ .
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 255
+  ];
+
+  // List of subjects to consume, supports wildcards (e.g., "orders.*", "events.>").
+  repeated string subjects = 2 [(buf.validate.field).repeated.min_items = 1];
+
+  // Storage backend for the stream (file or memory).
+  StreamStorageEnum.Value storage = 3;
+
+  // Number of replicas for the stream (odd number recommended for quorum).
+  int32 replicas = 4 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 5
+  }];
+
+  // Retention policy for the stream (limits, interest, or workqueue).
+  StreamRetentionEnum.Value retention = 5;
+
+  // Maximum age of messages in the stream (e.g., "24h", "7d").
+  // Empty string means unlimited.
+  string max_age = 6;
+
+  // Maximum size of the stream in bytes. -1 for unlimited.
+  int64 max_bytes = 7;
+
+  // Maximum number of messages in the stream. -1 for unlimited.
+  int64 max_msgs = 8;
+
+  // Maximum message size in bytes. -1 for unlimited.
+  int32 max_msg_size = 9;
+
+  // Maximum number of consumers allowed. -1 for unlimited.
+  int32 max_consumers = 10;
+
+  // Discard policy when limits are reached (old or new).
+  StreamDiscardEnum.Value discard = 11;
+
+  // Description of the stream.
+  string description = 12;
+
+  // Consumers for this stream.
+  repeated KubernetesNatsConsumer consumers = 13;
+}
+
+// KubernetesNatsConsumer configures a JetStream consumer.
+// Consumers define how messages are delivered and acknowledged from a stream.
+message KubernetesNatsConsumer {
+  // The durable name of the consumer.
+  // Must be unique within the stream.
+  string durable_name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 255
+  ];
+
+  // Delivery policy for the consumer (all, last, or new).
+  ConsumerDeliverPolicyEnum.Value deliver_policy = 2;
+
+  // Acknowledgment policy for the consumer (none, all, or explicit).
+  ConsumerAckPolicyEnum.Value ack_policy = 3;
+
+  // Filter subject for the consumer (supports wildcards).
+  // Only messages matching this subject will be delivered.
+  string filter_subject = 4;
+
+  // Deliver subject for push-based consumers.
+  // If empty, creates a pull-based consumer.
+  string deliver_subject = 5;
+
+  // Queue group name for load balancing across multiple consumers.
+  string deliver_group = 6;
+
+  // Maximum number of unacknowledged messages.
+  int32 max_ack_pending = 7;
+
+  // Maximum number of delivery attempts. -1 for unlimited.
+  int32 max_deliver = 8;
+
+  // Time to wait for acknowledgment (e.g., "30s", "1m").
+  string ack_wait = 9;
+
+  // Replay policy for the consumer (original or instant).
+  ConsumerReplayPolicyEnum.Value replay_policy = 10;
+
+  // Description of the consumer.
+  string description = 11;
+}

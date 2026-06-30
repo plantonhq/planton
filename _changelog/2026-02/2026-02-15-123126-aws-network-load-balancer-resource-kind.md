@@ -6,11 +6,11 @@
 
 ## Summary
 
-Added AwsNetworkLoadBalancer (R09) as a new deployment component to OpenMCF, providing Layer 4 load balancing with bundled listeners and target groups, static IP support via Elastic IP subnet mappings, TLS termination, and Route53 DNS management. This is the eleventh new AWS resource kind in the cloud provider expansion project.
+Added AwsNetworkLoadBalancer (R09) as a new deployment component to Planton, providing Layer 4 load balancing with bundled listeners and target groups, static IP support via Elastic IP subnet mappings, TLS termination, and Route53 DNS management. This is the eleventh new AWS resource kind in the cloud provider expansion project.
 
 ## Problem Statement / Motivation
 
-OpenMCF's AWS load balancing coverage was limited to the Application Load Balancer (Layer 7). Many production workloads require Layer 4 load balancing for:
+Planton's AWS load balancing coverage was limited to the Application Load Balancer (Layer 7). Many production workloads require Layer 4 load balancing for:
 
 - TCP/UDP protocol support (databases, gaming, IoT, DNS)
 - Static IP addresses for firewall allowlisting and DNS pinning
@@ -20,16 +20,16 @@ OpenMCF's AWS load balancing coverage was limited to the Application Load Balanc
 
 ### Pain Points
 
-- No Layer 4 load balancer component in OpenMCF
+- No Layer 4 load balancer component in Planton
 - Users needing static IPs had no standardized component
-- TCP/UDP workloads could not be load balanced through OpenMCF
-- No way to compose NLB with other OpenMCF resources via StringValueOrRef
+- TCP/UDP workloads could not be load balanced through Planton
+- No way to compose NLB with other Planton resources via StringValueOrRef
 
 ## Solution / What's New
 
 ### AwsNetworkLoadBalancer Component
 
-A complete deployment component at `apis/org/openmcf/provider/aws/awsnetworkloadbalancer/v1/` with:
+A complete deployment component at `apis/dev/planton/provider/aws/awsnetworkloadbalancer/v1/` with:
 
 ```mermaid
 flowchart TB
@@ -118,7 +118,7 @@ flowchart TB
 
 ## Impact
 
-- Adds the 36th AWS resource kind to OpenMCF (26th total, 11th new in the expansion project)
+- Adds the 36th AWS resource kind to Planton (26th total, 11th new in the expansion project)
 - Completes Layer 4 load balancing coverage alongside existing ALB (Layer 7)
 - Enables NLB-in-front-of-ALB pattern via `alb` target type
 - Unblocks infra charts requiring static IPs or TCP load balancing
@@ -127,7 +127,7 @@ flowchart TB
 
 - Previous session: AwsOpenSearchDomain (R08)
 - Next in queue: AwsElasticIp (R10) — will enable `default_kind` for allocation_id
-- Parent project: 20260212.01.openmcf-cloud-provider-expansion
+- Parent project: 20260212.01.planton-cloud-provider-expansion
 - Sub-project: 20260215.02.sp.aws-resource-expansion
 
 ---

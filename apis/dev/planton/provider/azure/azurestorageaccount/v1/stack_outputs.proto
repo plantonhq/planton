@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package dev.planton.provider.azure.azurestorageaccount.v1;
+
+// **AzureStorageAccountStackOutputs** captures the outputs of provisioning an Azure Storage Account.
+// These outputs provide essential information for applications to connect to and use the storage.
+message AzureStorageAccountStackOutputs {
+  // The Azure Resource Manager ID of the Storage Account.
+  // Format: /subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.Storage/storageAccounts/{storage-account-name}
+  string storage_account_id = 1;
+
+  // The name of the Storage Account.
+  string storage_account_name = 2;
+
+  // The primary blob endpoint URL.
+  // Format: https://{storage-account-name}.blob.core.windows.net/
+  string primary_blob_endpoint = 3;
+
+  // The primary queue endpoint URL.
+  // Format: https://{storage-account-name}.queue.core.windows.net/
+  string primary_queue_endpoint = 4;
+
+  // The primary table endpoint URL.
+  // Format: https://{storage-account-name}.table.core.windows.net/
+  string primary_table_endpoint = 5;
+
+  // The primary file endpoint URL.
+  // Format: https://{storage-account-name}.file.core.windows.net/
+  string primary_file_endpoint = 6;
+
+  // The primary DFS (Data Lake Storage Gen2) endpoint URL.
+  // Format: https://{storage-account-name}.dfs.core.windows.net/
+  string primary_dfs_endpoint = 7;
+
+  // The primary web endpoint URL (for static website hosting).
+  // Format: https://{storage-account-name}.z{zone}.web.core.windows.net/
+  string primary_web_endpoint = 8;
+
+  // Map containing container names and their corresponding URLs.
+  // Key: container name, Value: container URL (https://{storage-account}.blob.core.windows.net/{container})
+  map<string, string> container_url_map = 9;
+
+  // The Azure region where the Storage Account was deployed.
+  string region = 10;
+
+  // The resource group name where the Storage Account was created.
+  string resource_group = 11;
+}

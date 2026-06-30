@@ -10,11 +10,11 @@ Implemented the OciStreamPool deployment component -- OCI's Kafka-compatible man
 
 ## Problem Statement / Motivation
 
-OCI Streaming provides a fully managed, Kafka-compatible event-streaming service used for real-time data ingestion, log aggregation, and event-driven architectures. Stream pools are the organizational container that groups streams with shared configuration -- Kafka compatibility settings, encryption keys, and networking. Without this component, OpenMCF users would need to manage OCI Streaming resources outside the platform.
+OCI Streaming provides a fully managed, Kafka-compatible event-streaming service used for real-time data ingestion, log aggregation, and event-driven architectures. Stream pools are the organizational container that groups streams with shared configuration -- Kafka compatibility settings, encryption keys, and networking. Without this component, Planton users would need to manage OCI Streaming resources outside the platform.
 
 ### Pain Points
 
-- No managed way to provision OCI Streaming infrastructure through OpenMCF
+- No managed way to provision OCI Streaming infrastructure through Planton
 - Kafka-compatible streaming is a prerequisite for the planned OCI Data Platform infra chart
 - Stream pools and streams are tightly coupled (streams inherit pool settings) but must be provisioned separately through the provider
 
@@ -50,7 +50,7 @@ Renamed 4 pending resources to drop redundant service-name prefixes:
 ### Proto API (4 files)
 
 - `spec.proto`: OciStreamPoolSpec with 5 fields, 3 nested messages (KafkaSettings, PrivateEndpointSettings, Stream), 2 CEL validation rules (log_retention_hours range, retention_in_hours range)
-- `api.proto`: OciStreamPool top-level message with `oci.openmcf.org/v1` api-version
+- `api.proto`: OciStreamPool top-level message with `oci.planton.dev/v1` api-version
 - `stack_input.proto`: OciStreamPoolStackInput (target + provider_config)
 - `stack_outputs.proto`: 3 outputs (stream_pool_id, endpoint_fqdn, kafka_bootstrap_servers)
 
@@ -78,7 +78,7 @@ OciStreamPool=3370 under new "Messaging and Streaming" section in `cloud_resourc
 
 ## Benefits
 
-- OpenMCF users can now provision OCI Streaming infrastructure declaratively
+- Planton users can now provision OCI Streaming infrastructure declaratively
 - Kafka-compatible bootstrap servers exposed as output for direct Kafka client connectivity
 - Private endpoint support enables secure, VCN-scoped streaming
 - Streams bundled as sub-resources eliminate the need for separate stream management

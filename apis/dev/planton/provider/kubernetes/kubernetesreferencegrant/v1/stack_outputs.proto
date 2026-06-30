@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesreferencegrant.v1;
+
+// KubernetesReferenceGrantStackOutputs captures observable outputs after the
+// ReferenceGrant is created on the target cluster. ReferenceGrant has NO status
+// subresource upstream (the Gateway API project deliberately omitted it), so there
+// is no controller-managed status to reconcile or surface -- only the identifying
+// coordinates are exported.
+message KubernetesReferenceGrantStackOutputs {
+  // Name of the created ReferenceGrant (equals metadata.name). In InfraCharts this
+  // lets the grant be referenced as a low-dependency leaf that consumers
+  // (Gateways/Routes making the cross-namespace reference) order themselves after.
+  string reference_grant_name = 1;
+
+  // Namespace the ReferenceGrant was created in (the resolved spec.namespace). This
+  // is the "to" namespace -- the one whose resources the grant authorizes inbound
+  // references to.
+  string namespace = 2;
+}

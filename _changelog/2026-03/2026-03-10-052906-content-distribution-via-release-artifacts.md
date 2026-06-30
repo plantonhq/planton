@@ -6,16 +6,16 @@
 
 ## Summary
 
-OpenMCF releases now package four versioned content zips as GitHub Release artifacts: presets, IaC source, catalog pages, and proto source. This decouples the Planton upgrade-openmcf workflow from requiring a local OpenMCF checkout, enabling CI/CD automation and removing the developer-machine filesystem dependency. Additionally, 18 preset files across 6 components were renamed to follow the `{rank}-{description}` naming convention.
+Planton releases now package four versioned content zips as GitHub Release artifacts: presets, IaC source, catalog pages, and proto source. This decouples the Planton upgrade-planton workflow from requiring a local Planton checkout, enabling CI/CD automation and removing the developer-machine filesystem dependency. Additionally, 18 preset files across 6 components were renamed to follow the `{rank}-{description}` naming convention.
 
 ## Problem Statement / Motivation
 
-The Planton monorepo's `make upgrade-openmcf` reads five categories of content directly from a local OpenMCF checkout at `~/scm/github.com/plantonhq/openmcf`. This architecture has two problems:
+The Planton monorepo's `make upgrade-planton` reads five categories of content directly from a local Planton checkout at `~/scm/github.com/plantonhq/planton`. This architecture has two problems:
 
 ### Pain Points
 
 - **CI/CD incompatible**: Automated upgrade workflows cannot run because no local checkout exists in CI runners
-- **Developer coupling**: Every developer must have the OpenMCF repo cloned at a specific path before running the upgrade
+- **Developer coupling**: Every developer must have the Planton repo cloned at a specific path before running the upgrade
 - **Version mismatch risk**: The local checkout may be at a different version than the target upgrade version, producing silently incorrect output
 - **Preset naming violations**: 18 preset files across 6 newer components (alicloud, GCP Cloud Armor, Cloud Scheduler, Cloud Tasks, Vertex AI) were missing the required `{rank}-` numeric prefix, causing them to be silently skipped during CloudObjectPreset asset generation
 
@@ -32,7 +32,7 @@ A single packaging script creates four versioned zip files, each scoped to one c
 | `catalog-pages_{v}.zip` | Per-component catalog-page.md | 1.1 MB | 362 |
 | `proto-source_{v}.zip` | Raw proto source (spec, api, stack_input, stack_outputs) | 1.7 MB | 1,457 |
 
-All zips preserve repo-relative paths (`apis/org/openmcf/provider/...`). When extracted into a single directory, they overlay into a virtual OpenMCF root that downstream tools use without modification.
+All zips preserve repo-relative paths (`apis/dev/planton/provider/...`). When extracted into a single directory, they overlay into a virtual Planton root that downstream tools use without modification.
 
 ```mermaid
 flowchart LR
@@ -43,12 +43,12 @@ flowchart LR
         R["proto-source_0.3.50.zip"]
     end
 
-    subgraph consumer ["Planton upgrade-openmcf"]
-        D["download_openmcf_content()"]
+    subgraph consumer ["Planton upgrade-planton"]
+        D["download_planton_content()"]
         T["Merged temp dir"]
         D -->|"extracts all 4"| T
-        T --> GA["generate_preset_assets.py\n--openmcf-path tempdir"]
-        T --> GC["generate-catalog-data\nOPENMCF_ROOT=tempdir"]
+        T --> GA["generate_preset_assets.py\n--planton-path tempdir"]
+        T --> GC["generate-catalog-data\nPLANTON_ROOT=tempdir"]
     end
 
     P --> D
@@ -98,7 +98,7 @@ flowchart TB
 
 ## Benefits
 
-- **CI/CD ready**: The Planton upgrade workflow can run without a local OpenMCF checkout
+- **CI/CD ready**: The Planton upgrade workflow can run without a local Planton checkout
 - **Version-correct**: Content always matches the exact release version being upgraded to
 - **Zero skips**: Preset asset generation now processes 788 presets with 0 skips (was 770 generated / 18 skipped)
 - **Incremental downloads**: Each concern is independently downloadable -- a consumer that only needs presets doesn't download IaC source
@@ -106,14 +106,14 @@ flowchart TB
 
 ## Impact
 
-- **Release pipeline**: Every future OpenMCF release automatically includes four content zips
-- **Planton upgrade**: `upgrade_openmcf.py` downloads content from the release instead of reading from local checkout
+- **Release pipeline**: Every future Planton release automatically includes four content zips
+- **Planton upgrade**: `upgrade_planton.py` downloads content from the release instead of reading from local checkout
 - **Preset coverage**: All 788 presets across 14 providers now generate CloudObjectPreset assets
 
 ## Related Work
 
-- OpenMCF Presets project (T01-T09): Created the original 375 presets across 213 components
-- Planton `upgrade_openmcf.py`: Consumer that downloads and uses the content zips
+- Planton Presets project (T01-T09): Created the original 375 presets across 213 components
+- Planton `upgrade_planton.py`: Consumer that downloads and uses the content zips
 - Planton `generate_preset_assets.py`: Added `--version` flag for standalone remote download
 
 ---

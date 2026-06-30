@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetesgrafana.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/kubernetes.proto";
+import "dev/planton/provider/kubernetes/options.proto";
+import "dev/planton/provider/kubernetes/target_cluster.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// **KubernetesGrafanaSpec** defines the configuration for deploying Grafana on a Kubernetes cluster.
+// This message specifies the parameters needed to create and manage a Grafana deployment within a Kubernetes environment.
+// It includes container specifications and ingress settings to control resource allocation and external access.
+message KubernetesGrafanaSpec {
+  // Target Kubernetes Cluster
+  dev.planton.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  // Kubernetes Namespace
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // flag to indicate if the namespace should be created
+  bool create_namespace = 3;
+
+  // The container specifications for the Grafana deployment.
+  KubernetesGrafanaSpecContainer container = 4 [(buf.validate.field).required = true];
+
+  // The ingress configuration for the Grafana deployment.
+  KubernetesGrafanaIngress ingress = 5;
+}
+
+/**
+ * KubernetesGrafanaIngress defines ingress configuration for Grafana.
+ */
+message KubernetesGrafanaIngress {
+  // Flag to enable or disable ingress.
+  bool enabled = 1;
+
+  // The full hostname for external access (e.g., "grafana.example.com").
+  // Required when enabled is true.
+  string hostname = 2;
+
+  option (buf.validate.message).cel = {
+    id: "spec.ingress.hostname.required"
+    expression: "!this.enabled || size(this.hostname) > 0"
+    message: "hostname is required when ingress is enabled"
+  };
+}
+
+// **KubernetesGrafanaSpecContainer** specifies the container configuration for the Grafana application.
+// It includes resource allocations for CPU and memory to ensure the application runs efficiently.
+// Recommended defaults: CPU requests - 50m, Memory requests - 256Mi, CPU limits - 1, Memory limits - 1Gi.
+message KubernetesGrafanaSpecContainer {
+  // The CPU and memory resources allocated to the Grafana container.
+  dev.planton.provider.kubernetes.ContainerResources resources = 1 [(dev.planton.provider.kubernetes.default_container_resources) = {
+    limits: {
+      cpu: "1000m"
+      memory: "1Gi"
+    }
+    requests: {
+      cpu: "50m"
+      memory: "100Mi"
+    }
+  }];
+}

@@ -7,7 +7,7 @@ import (
 
 	"buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	"github.com/pkg/errors"
-	"github.com/plantonhq/openmcf/pkg/strings/caseconverter"
+	"github.com/plantonhq/planton/pkg/strings/caseconverter"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
@@ -22,7 +22,7 @@ const metadataVariableDescription = "Cloud resource metadata"
 // proto carries no field constraints, and the envelope deliberately exposes only
 // name/id/org/env/labels/annotations/tags to modules (slug/group/relationships
 // are orchestrator concerns dropped during object conversion).
-const cloudResourceMetadataFullName = "org.openmcf.shared.CloudResourceMetadata"
+const cloudResourceMetadataFullName = "dev.planton.shared.CloudResourceMetadata"
 
 // topLevelSkipFieldNames lists proto field names to skip at the top level of
 // the resource message. These are proto envelope fields that have no meaning
@@ -125,7 +125,7 @@ func fieldToTFType(fd protoreflect.FieldDescriptor, parentMD protoreflect.Messag
 }
 
 // mapFieldToTFType converts a proto map<K, V> field to TFMap. The key type is
-// always string in OpenMCF protos. The value type is determined by consulting
+// always string in Planton protos. The value type is determined by consulting
 // type rules (a map<string, StringValueOrRef> becomes map(string)).
 //
 // A map whose value is a free-form JSON well-known type (map<string,

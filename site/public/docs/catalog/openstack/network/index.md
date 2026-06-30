@@ -12,13 +12,13 @@ Deploys an OpenStack Neutron network, providing an isolated Layer 2 broadcast do
 
 ## What Gets Created
 
-When you deploy an OpenStackNetwork resource, OpenMCF provisions:
+When you deploy an OpenStackNetwork resource, Planton provisions:
 
 - **Neutron Network** — an `openstack_networking_network_v2` resource with the configured administrative state, MTU, port security settings, and optional DNS domain integration
 
 ## Prerequisites
 
-- **OpenStack credentials** configured via environment variables or OpenMCF provider config
+- **OpenStack credentials** configured via environment variables or Planton provider config
 - **Admin privileges** if creating shared networks (`shared: true`) or external/provider networks (`external: true`)
 - **DNS integration extension** enabled in Neutron if using `dnsDomain`
 
@@ -27,22 +27,22 @@ When you deploy an OpenStackNetwork resource, OpenMCF provisions:
 Create a file `network.yaml`:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackNetwork
 metadata:
   name: my-network
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OpenStackNetwork.my-network
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OpenStackNetwork.my-network
 spec: {}
 ```
 
 Deploy:
 
 ```shell
-openmcf apply -f network.yaml
+planton apply -f network.yaml
 ```
 
 This creates a Neutron network named `my-network` with default settings: admin state up, port security enabled, and standard MTU.
@@ -74,15 +74,15 @@ All spec fields are optional. The network name is derived from `metadata.name`.
 A simple network with default settings, suitable for development environments:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackNetwork
 metadata:
   name: dev-network
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OpenStackNetwork.dev-network
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OpenStackNetwork.dev-network
 spec:
   description: Development environment network
 ```
@@ -92,15 +92,15 @@ spec:
 A network configured for VXLAN overlay with DNS integration for automatic port name resolution:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackNetwork
 metadata:
   name: overlay-network
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.OpenStackNetwork.overlay-network
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.OpenStackNetwork.overlay-network
 spec:
   description: VXLAN overlay network with DNS integration
   mtu: 1450
@@ -115,15 +115,15 @@ spec:
 An admin-created external network for floating IP allocation and router gateways:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackNetwork
 metadata:
   name: external-net
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OpenStackNetwork.external-net
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OpenStackNetwork.external-net
 spec:
   description: External provider network for floating IPs
   external: true

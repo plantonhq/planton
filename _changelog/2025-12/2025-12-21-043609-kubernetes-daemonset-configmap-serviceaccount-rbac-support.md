@@ -74,7 +74,7 @@ The component now uses the shared `VolumeMount` type supporting:
 
 ### Proto Schema Changes
 
-**File**: `apis/org/openmcf/provider/kubernetes/kubernetesdaemonset/v1/spec.proto`
+**File**: `apis/dev/planton/provider/kubernetes/kubernetesdaemonset/v1/spec.proto`
 
 1. Added import for shared volume mount definitions
 2. Added 4 new fields to `KubernetesDaemonSetSpec` (fields 9-12)
@@ -142,12 +142,12 @@ kubectl create clusterrole vector-reader --verb=get,list,watch --resource=pods,n
 kubectl create clusterrolebinding vector-reader --clusterrole=vector-reader --serviceaccount=logging:vector
 
 # Finally deploy
-openmcf pulumi up --manifest daemonset.yaml
+planton pulumi up --manifest daemonset.yaml
 ```
 
 After (all-in-one):
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDaemonSet
 metadata:
   name: vector-logs
@@ -249,7 +249,7 @@ All validation steps passed:
 
 ```bash
 ✅ make protos        # Proto generation
-✅ go test ./apis/org/openmcf/provider/kubernetes/kubernetesdaemonset/v1/...
+✅ go test ./apis/dev/planton/provider/kubernetes/kubernetesdaemonset/v1/...
 ✅ make build         # Full build
 ✅ make test          # Complete test suite
 ```

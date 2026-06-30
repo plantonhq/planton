@@ -1,0 +1,12 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesNamespace
+metadata:
+  name: e2e-ns-net-eg
+spec:
+  name: e2e-ns-net-eg
+  network_config:
+    isolate_ingress: false
+    restrict_egress: true
+    allowed_egress_cidrs:
+      - "10.0.0.0/8"
+      - "172.16.0.0/12"

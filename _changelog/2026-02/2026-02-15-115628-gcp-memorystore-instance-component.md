@@ -14,7 +14,7 @@ The existing GcpRedisInstance component covers Google Cloud's legacy Memorystore
 
 ### Pain Points
 
-- No OpenMCF component for the new Memorystore API with native sharding
+- No Planton component for the new Memorystore API with native sharding
 - No support for Valkey engine (Redis-compatible, open-source fork)
 - No PSC-based networking option (the new standard replacing VPC peering for managed services)
 - No AOF persistence option (only RDB was available via GcpRedisInstance)
@@ -55,7 +55,7 @@ flowchart TB
 
 - `spec.proto`: 18 fields with 8 sub-messages covering PSC connections, persistence (RDB + AOF), zone distribution, maintenance windows, and automated backups
 - `stack_outputs.proto`: 4 outputs (discovery_address, discovery_port, instance_uid, node_size_gb)
-- `api.proto`: KRM envelope with `gcp.openmcf.org/v1` API version
+- `api.proto`: KRM envelope with `gcp.planton.dev/v1` API version
 - `stack_input.proto`: Stack input with GcpProviderConfig
 
 Notable CEL validations:
@@ -98,14 +98,14 @@ Uses `google` provider `~> 6.0` (required for `desired_auto_created_endpoints` a
 
 ## Benefits
 
-- **Full Memorystore coverage**: OpenMCF now supports both the legacy Redis API and the new-generation Memorystore API
+- **Full Memorystore coverage**: Planton now supports both the legacy Redis API and the new-generation Memorystore API
 - **Modern networking**: PSC support aligns with Google Cloud's direction for managed service connectivity
 - **Production-ready**: Automated backups, CMEK, zone distribution, and maintenance windows out of the box
 - **Infra-chart composable**: StringValueOrRef on project_id, network, and kms_key enables dependency wiring
 
 ## Impact
 
-- **GCP users**: Can now provision new-generation Memorystore instances (Valkey) through OpenMCF
+- **GCP users**: Can now provision new-generation Memorystore instances (Valkey) through Planton
 - **Existing GcpRedisInstance users**: No changes — legacy component remains fully supported
 - **Infra chart authors**: New building block for caching layers in composed environments
 

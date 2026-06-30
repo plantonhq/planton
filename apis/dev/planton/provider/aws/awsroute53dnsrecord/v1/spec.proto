@@ -1,0 +1,300 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsroute53dnsrecord.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// AwsRoute53DnsRecordSpec defines the configuration for creating a DNS record in an AWS Route53 hosted zone.
+// This component supports creating individual DNS records with common record types, alias records,
+// and advanced routing policies (weighted, latency, failover, geolocation).
+//
+// Route53 DNS records enable mapping domain names to IP addresses, other domains, or AWS resources.
+// Alias records are Route53's killer feature - they allow pointing zone apex domains to AWS resources
+// without CNAME restrictions and with no query charges.
+message AwsRoute53DnsRecordSpec {
+  // Supported DNS record types for AWS Route53.
+  enum RecordType {
+    // Unspecified record type (invalid).
+    record_type_unspecified = 0;
+    // IPv4 address record.
+    A = 1;
+    // IPv6 address record.
+    AAAA = 2;
+    // Canonical name (alias) record.
+    CNAME = 3;
+    // Mail exchange record.
+    MX = 4;
+    // Text record (SPF, DKIM, verification, etc.).
+    TXT = 5;
+    // Service locator record.
+    SRV = 6;
+    // Nameserver record.
+    NS = 7;
+    // Certificate Authority Authorization record.
+    CAA = 8;
+  }
+
+  // The Route53 hosted zone ID where this DNS record will be created.
+  // Can be provided as a literal value or referenced from an AwsRoute53Zone resource.
+  //
+  // When using value_from, the default kind is AwsRoute53Zone and the default field path
+  // is "status.outputs.zone_id", allowing you to wire this directly to a zone resource.
+  //
+  // Example literal: "Z1234567890ABC"
+  // Example value_from:
+  //   value_from:
+  //     name: my-zone
+  // The AWS region where the resource will be created.
+  // Example: "us-west-2", "eu-west-1"
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  dev.planton.shared.foreignkey.v1.StringValueOrRef zone_id = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsRoute53Zone,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.zone_id"
+  ];
+
+  // The name of the DNS record (fully qualified domain name or subdomain).
+  // Examples:
+  //   - "example.com" for zone apex
+  //   - "www.example.com" for subdomain
+  //   - "*.example.com" for wildcard
+  // Route53 automatically appends a trailing dot if not provided.
+  string name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {pattern: "^(?:\\*\\.[A-Za-z0-9\\-\\.]+|[A-Za-z0-9\\-\\.]+\\.[A-Za-z]{2,}|[A-Za-z0-9\\-\\.]+)$"}
+  ];
+
+  // The type of DNS record to create.
+  // Common types: A (IPv4), AAAA (IPv6), CNAME, MX, TXT, NS, SRV, CAA
+  RecordType type = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).enum.defined_only = true,
+    (buf.validate.field).cel = {
+      id: "type.not_unspecified"
+      message: "type must be specified (cannot be record_type_unspecified)"
+      expression: "this != 0"
+    }
+  ];
+
+  // Time to live (TTL) for the DNS record in seconds.
+  // TTL specifies how long DNS resolvers should cache the record.
+  // Common values:
+  //   - 60: For records you might change during incidents
+  //   - 300: Default for most records (5 minutes)
+  //   - 86400: For static records (1 day)
+  // Note: TTL is ignored for alias records (uses target resource's TTL).
+  // Default: 300 seconds.
+  int32 ttl = 5 [(buf.validate.field).cel = {
+    id: "ttl.valid_range"
+    message: "ttl must be 0 (for alias) or between 1 and 604800 seconds (1 week max)"
+    expression: "this >= 0 && this <= 604800"
+  }];
+
+  // The values for the DNS record.
+  // Format depends on record type:
+  //   - A record: IPv4 addresses (e.g., ["192.0.2.1", "192.0.2.2"])
+  //   - AAAA record: IPv6 addresses (e.g., ["2001:db8::1"])
+  //   - CNAME record: Target hostname (e.g., ["target.example.com"])
+  //   - MX record: Priority and mail server (e.g., ["10 mail1.example.com", "20 mail2.example.com"])
+  //   - TXT record: Text values (e.g., ["v=spf1 include:_spf.google.com ~all"])
+  // Note: Mutually exclusive with alias_target. Use one or the other.
+  repeated string values = 6;
+
+  // Alias target configuration for Route53 alias records.
+  // Alias records are Route53's killer feature - they allow:
+  //   1. Pointing zone apex (example.com) to AWS resources without CNAME restrictions
+  //   2. Free queries (no Route53 charges for alias queries to AWS resources)
+  //   3. Automatic IP updates when target resource changes
+  //
+  // Common targets: CloudFront, ALB/NLB, S3 website, API Gateway, another Route53 record.
+  // Note: Mutually exclusive with values. Use one or the other.
+  AwsRoute53AliasTarget alias_target = 7;
+
+  // Routing policy configuration for advanced traffic management.
+  // Route53 supports multiple routing strategies:
+  //   - Simple: Default single-value response (no config needed)
+  //   - Weighted: Split traffic across resources (blue/green, canary)
+  //   - Latency: Route to lowest-latency endpoint (global apps)
+  //   - Failover: Active-passive with automatic failover
+  //   - Geolocation: Route based on user location (GDPR, localization)
+  //
+  // If not specified, simple routing is used.
+  AwsRoute53RoutingPolicy routing_policy = 8;
+
+  // Health check ID to attach for failover routing.
+  // Health checks monitor endpoint availability and trigger automatic failover.
+  // Create health checks separately in Route53 and reference by ID.
+  // Only used with failover routing policy.
+  string health_check_id = 9;
+
+  // Set identifier for routing policies.
+  // Required for weighted, latency, failover, and geolocation routing.
+  // Must be unique among records with the same name and type.
+  // Example: "primary", "secondary", "us-east-1", "weight-70"
+  string set_identifier = 10;
+
+  // Cross-field validation: values and alias_target are mutually exclusive
+  option (buf.validate.message).cel = {
+    id: "spec.values_or_alias_exclusive"
+    message: "values and alias_target are mutually exclusive - specify one or the other"
+    expression: "size(this.values) == 0 || !has(this.alias_target) || (!has(this.alias_target.dns_name) && !has(this.alias_target.dns_name.value) && !has(this.alias_target.dns_name.value_from))"
+  };
+
+  // Cross-field validation: at least values or alias_target must be specified
+  option (buf.validate.message).cel = {
+    id: "spec.values_or_alias_required"
+    message: "either values or alias_target must be specified"
+    expression: "size(this.values) > 0 || (has(this.alias_target) && has(this.alias_target.dns_name) && (has(this.alias_target.dns_name.value) || has(this.alias_target.dns_name.value_from)))"
+  };
+
+  // Cross-field validation: set_identifier required for non-simple routing
+  option (buf.validate.message).cel = {
+    id: "spec.set_identifier_for_routing_policy"
+    message: "set_identifier is required when using weighted, latency, failover, or geolocation routing"
+    expression: "!has(this.routing_policy) || !has(this.routing_policy.weighted) && !has(this.routing_policy.latency) && !has(this.routing_policy.failover) && !has(this.routing_policy.geolocation) || this.set_identifier != ''"
+  };
+}
+
+// AwsRoute53AliasTarget defines an alias record target.
+// Alias records are a Route53-specific extension to DNS that allows routing traffic
+// to AWS resources without the limitations of CNAME records.
+//
+// Key benefits:
+//   - Works at zone apex (example.com) where CNAME is not allowed
+//   - No query charges for alias queries to AWS resources
+//   - Automatic updates when target resource's IP changes
+//
+// Both dns_name and zone_id can be provided as literals or referenced from AWS resources.
+// The default kind for both is AwsAlb, enabling seamless wiring to Application Load Balancers.
+message AwsRoute53AliasTarget {
+  // The DNS name of the target resource.
+  // Can be provided as a literal value or referenced from an AWS resource.
+  //
+  // When using value_from, the default kind is AwsAlb and the default field path
+  // is "status.outputs.load_balancer_dns_name".
+  //
+  // Example literals:
+  //   - CloudFront: "d1234abcd.cloudfront.net"
+  //   - ALB: "my-alb-1234567890.us-east-1.elb.amazonaws.com"
+  //   - S3 website: "my-bucket.s3-website-us-east-1.amazonaws.com"
+  //   - API Gateway: "abc123.execute-api.us-east-1.amazonaws.com"
+  //
+  // Example value_from (ALB):
+  //   value_from:
+  //     name: my-alb
+  dev.planton.shared.foreignkey.v1.StringValueOrRef dns_name = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsAlb,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.load_balancer_dns_name"
+  ];
+
+  // The hosted zone ID of the target resource (AWS service's zone ID, not your Route53 zone).
+  // Can be provided as a literal value or referenced from an AWS resource.
+  //
+  // When using value_from, the default kind is AwsAlb and the default field path
+  // is "status.outputs.load_balancer_hosted_zone_id".
+  //
+  // Common hosted zone IDs (for literal values):
+  //   - CloudFront: "Z2FDTNDATAQYW2" (global)
+  //   - ALB (us-east-1): "Z35SXDOTRQ7X7K"
+  //   - S3 website (us-east-1): "Z3AQBSTGFYJSTF"
+  //
+  // Example value_from (ALB):
+  //   value_from:
+  //     name: my-alb
+  //
+  // Note: This is NOT your Route53 zone ID - it's the AWS service's zone ID.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef zone_id = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsAlb,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.load_balancer_hosted_zone_id"
+  ];
+
+  // Evaluate target health.
+  // If true, Route53 checks the health of the target before responding.
+  // Useful for automatic failover when combined with health checks.
+  // Default: false
+  bool evaluate_target_health = 3;
+}
+
+// AwsRoute53RoutingPolicy defines traffic routing policies for DNS records.
+// Route53 supports multiple routing strategies beyond simple DNS resolution.
+message AwsRoute53RoutingPolicy {
+  oneof policy {
+    // Weighted routing: distribute traffic based on assigned weights.
+    // Use cases: blue/green deployments, canary releases, load distribution.
+    AwsRoute53WeightedPolicy weighted = 1;
+
+    // Latency-based routing: route to the lowest-latency endpoint.
+    // Use cases: global applications, multi-region deployments.
+    AwsRoute53LatencyPolicy latency = 2;
+
+    // Failover routing: automatic failover to secondary when primary fails.
+    // Use cases: active-passive disaster recovery, high availability.
+    AwsRoute53FailoverPolicy failover = 3;
+
+    // Geolocation routing: route based on user's geographic location.
+    // Use cases: GDPR compliance, localized content, geographic restrictions.
+    AwsRoute53GeolocationPolicy geolocation = 4;
+  }
+}
+
+// AwsRoute53WeightedPolicy enables traffic splitting across resources.
+// Weights are relative - Route53 calculates percentage based on sum of all weights.
+message AwsRoute53WeightedPolicy {
+  // Weight value (0-255).
+  // Higher weight means more traffic.
+  // Weight of 0 stops traffic to this record (useful for quick traffic draining).
+  // Example: Records with weights 70 and 30 get 70% and 30% of traffic.
+  int32 weight = 1 [
+    (buf.validate.field).int32.gte = 0,
+    (buf.validate.field).int32.lte = 255
+  ];
+}
+
+// AwsRoute53LatencyPolicy routes users to the resource with lowest latency.
+// Route53 measures latency from AWS regions and routes to best performer.
+message AwsRoute53LatencyPolicy {
+  // The AWS region where this resource is located.
+  // Route53 uses this to measure latency from user locations.
+  // Example: "us-east-1", "eu-west-1", "ap-southeast-1"
+  string region = 1 [(buf.validate.field).required = true];
+}
+
+// AwsRoute53FailoverPolicy enables active-passive failover.
+// Primary serves traffic when healthy; secondary takes over on failure.
+message AwsRoute53FailoverPolicy {
+  // Failover record type.
+  // Must have exactly one PRIMARY and one SECONDARY record per name/type combo.
+  FailoverType failover_type = 1 [(buf.validate.field).required = true];
+
+  // Failover type enum
+  enum FailoverType {
+    // Default (invalid - must specify PRIMARY or SECONDARY)
+    failover_type_unspecified = 0;
+    // Primary record - serves traffic when healthy
+    primary = 1;
+    // Secondary record - serves traffic when primary fails health check
+    secondary = 2;
+  }
+}
+
+// AwsRoute53GeolocationPolicy routes traffic based on user's location.
+// Supports routing at continent, country, or US state level.
+message AwsRoute53GeolocationPolicy {
+  // Continent code (two-letter).
+  // Examples: "NA" (North America), "EU" (Europe), "AS" (Asia)
+  // Note: Use continent OR country, not both. Country is more specific.
+  string continent = 1;
+
+  // Country code (two-letter ISO 3166-1 alpha-2).
+  // Examples: "US" (United States), "GB" (United Kingdom), "DE" (Germany)
+  string country = 2;
+
+  // Subdivision code (US state only).
+  // Only valid when country is "US".
+  // Examples: "CA" (California), "NY" (New York), "TX" (Texas)
+  string subdivision = 3;
+}

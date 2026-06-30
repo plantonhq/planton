@@ -1,6 +1,6 @@
 .PHONY: clean clean-terraform clean-pulumi
 
-IMAGE_REPO=ghcr.io/plantonhq/openmcf/base-images/iac-runner
+IMAGE_REPO=ghcr.io/plantonhq/planton/base-images/iac-runner
 
 # Note: Images are built by GitHub Actions workflows:
 #   - .github/workflows/iac-runner-terraform.yml

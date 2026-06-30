@@ -1,0 +1,19 @@
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesMongodb
+metadata:
+  name: e2e-mdb-minimal
+spec:
+  namespace:
+    value: e2e-mdb-minimal
+  create_namespace: true
+  container:
+    replicas: 1
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 50m
+        memory: 128Mi
+    persistence_enabled: true
+    disk_size: 1Gi

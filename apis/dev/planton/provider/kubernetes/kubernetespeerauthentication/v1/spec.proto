@@ -1,0 +1,106 @@
+syntax = "proto3";
+
+package dev.planton.provider.kubernetes.kubernetespeerauthentication.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/provider/kubernetes/istio_api.proto";
+import "dev/planton/provider/kubernetes/target_cluster.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+
+// KubernetesPeerAuthenticationSpec defines an Istio PeerAuthentication: a
+// namespaced policy that controls the mutual TLS (mTLS) requirements for
+// incoming connections to the workloads it selects.
+//
+// 100% fidelity with the upstream istio.io/api PeerAuthentication
+// (security/v1beta1/peer_authentication.proto, served as security.istio.io/v1),
+// pinned to the 1.26 line (tag 1.26.8). Upstream spec fields are flattened
+// directly after the Planton namespaced envelope (target_cluster, namespace);
+// there is no nested `peer_authentication` sub-message.
+//
+// Scope semantics (upstream): if `selector` is omitted the policy applies to all
+// workloads in its namespace; in the mesh root namespace an empty selector makes
+// it a mesh-wide default. `port_level_mtls` only takes effect when a selector is
+// present (enforced below).
+message KubernetesPeerAuthenticationSpec {
+  // Target Kubernetes cluster where this PeerAuthentication is created. The Istio
+  // CRDs (KubernetesIstioBaseCrds) must already be present on the cluster; the
+  // policy is only enforced where istiod (the Istio control plane) is running.
+  dev.planton.provider.kubernetes.KubernetesClusterSelector target_cluster = 1;
+
+  // Namespace in which the PeerAuthentication is created. The policy's scope is
+  // this namespace (or mesh-wide if this is the Istio root namespace and no
+  // selector is set).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // Selects the workloads (by pod/VM label) this policy applies to. When omitted,
+  // the policy applies to every workload in its namespace (or, in the root
+  // namespace, the whole mesh).
+  //
+  // INFRA-CHART COMPOSABILITY: selector is a PLAIN label match, not an
+  // Planton foreign key (StringValueOrRef). It is matched at runtime by istiod
+  // against pod labels and creates NO automatic DAG edge to any workload
+  // resource. To order this policy after the workload it protects in an infra
+  // chart, an author MUST express the dependency via metadata.relationships, e.g.:
+  //   metadata:
+  //     relationships:
+  //       - kind: KubernetesDeployment
+  //         name: "{{ values.app }}"
+  //         type: depends_on
+  // See the component's "Composing in Infra Charts" docs for the full pattern.
+  dev.planton.provider.kubernetes.KubernetesIstioApiWorkloadSelector selector = 3;
+
+  // Mesh-TLS mode applied to the selected workloads. When omitted, the mode is
+  // inherited from the parent (namespace-level, then mesh-level) policy. To make
+  // inheritance explicit, set mode to UNSET rather than omitting the block.
+  KubernetesPeerAuthenticationMutualTls mtls = 4;
+
+  // Per-port mTLS overrides, keyed by the workload's port number (NOT the
+  // Kubernetes Service port). These only take effect when `selector` is set, so a
+  // non-empty map requires a non-empty selector (enforced below).
+  map<uint32, KubernetesPeerAuthenticationMutualTls> port_level_mtls = 5 [(buf.validate.field).map = {
+    keys: {
+      uint32: {
+        gte: 1
+        lte: 65535
+      }
+    }
+  }];
+
+  // port_level_mtls is only honored by istiod when a workload selector is present.
+  // Mirrors the upstream CRD XValidation rule "portLevelMtls requires selector".
+  option (buf.validate.message).cel = {
+    id: "peer_authentication.port_level_mtls_requires_selector"
+    message: "port_level_mtls requires a selector with at least one match label"
+    expression: "size(this.port_level_mtls) > 0 ? (has(this.selector) && size(this.selector.match_labels) > 0) : true"
+  };
+}
+
+// KubernetesPeerAuthenticationMutualTls is the mTLS setting applied to a workload
+// or a specific workload port. Faithful to the upstream reusable
+// PeerAuthentication.MutualTLS message (whose only field is `mode`).
+message KubernetesPeerAuthenticationMutualTls {
+  // mTLS mode. One of:
+  //   UNSET      — inherit from the parent policy; if none, treated as PERMISSIVE.
+  //   DISABLE    — connection is not tunneled (plaintext only).
+  //   PERMISSIVE — connection may be either plaintext or an mTLS tunnel.
+  //   STRICT     — connection must be an mTLS tunnel (client cert required).
+  // UNSET/DISABLE/PERMISSIVE/STRICT // external standard exception -- Istio MutualTLS.Mode enum
+  //
+  // Modeled as a closed string set (not a proto enum). Unlike most
+  // Planton enum-like fields, the empty string is NOT a valid wire value here:
+  // MutualTLS's only field is `mode`, so an mtls block must carry a real mode.
+  // Omitting the whole `mtls` block (or a port_level_mtls entry) is how
+  // inheritance is expressed; UNSET is the explicit "inherit" value.
+  string mode = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "peer_authentication_mtls.mode_enum"
+      message: "mtls mode must be one of UNSET, DISABLE, PERMISSIVE, or STRICT"
+      expression: "this in ['UNSET', 'DISABLE', 'PERMISSIVE', 'STRICT']"
+    }
+  ];
+}

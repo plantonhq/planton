@@ -12,7 +12,7 @@ Deprecated 6 monolithic deployment components and consolidated GCP GKE Cluster v
 
 ### The Evolution from Monolithic to Composable
 
-When OpenMCF was initially designed, we created comprehensive "all-in-one" deployment components that bundled multiple cloud resources together. For example, `AwsStaticWebsite` bundled S3 bucket, CloudFront CDN, Route 53 DNS, and SSL certificates into a single component. This seemed convenient initially but created significant problems:
+When Planton was initially designed, we created comprehensive "all-in-one" deployment components that bundled multiple cloud resources together. For example, `AwsStaticWebsite` bundled S3 bucket, CloudFront CDN, Route 53 DNS, and SSL certificates into a single component. This seemed convenient initially but created significant problems:
 
 **Architecture Issues**:
 - **Tight coupling**: Changes to one aspect required modifying the entire monolithic component
@@ -38,7 +38,7 @@ Before this refactoring:
 
 1. **Static Website Deployment**: Deploying a static website required accepting the entire opinionated stack:
    ```yaml
-   apiVersion: aws.openmcf.org/v1
+   apiVersion: aws.planton.dev/v1
    kind: AwsStaticWebsite
    spec:
      # 50+ fields mixing S3, CloudFront, Route53, certificates
@@ -48,7 +48,7 @@ Before this refactoring:
 
 2. **GKE Addon Management**: Deploying add-ons as a bundle forced unnecessary dependencies:
    ```yaml
-   apiVersion: gcp.openmcf.org/v1
+   apiVersion: gcp.planton.dev/v1
    kind: GcpGkeAddonBundle
    spec:
      # All add-ons in one manifest
@@ -105,7 +105,7 @@ AwsCertManagerCert → certificates only
 **Composable Alternative**:
 ```yaml
 # Storage
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsS3Bucket
 metadata:
   name: my-website-storage
@@ -116,7 +116,7 @@ spec:
 
 ---
 # CDN
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCloudFront
 metadata:
   name: my-website-cdn
@@ -125,7 +125,7 @@ spec:
   
 ---
 # DNS
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsRoute53Zone
 metadata:
   name: my-website-dns
@@ -134,7 +134,7 @@ spec:
 
 ---
 # Certificate
-apiVersion: aws.openmcf.org/v1
+apiVersion: aws.planton.dev/v1
 kind: AwsCertManagerCert
 metadata:
   name: my-website-cert
@@ -149,28 +149,28 @@ spec:
 **Composable Alternative**:
 ```yaml
 # Storage
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpGcsBucket
 metadata:
   name: my-website-storage
 
 ---
 # CDN
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCloudCdn
 metadata:
   name: my-website-cdn
 
 ---
 # DNS
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpDnsZone
 metadata:
   name: my-website-dns
 
 ---
 # Certificate
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpCertManagerCert
 metadata:
   name: my-website-cert
@@ -221,7 +221,7 @@ Each component can now be:
 - Enabled gRPC-Web compatibility
 
 **Why It Doesn't Fit**:
-Current OpenMCF deployment components fall into two categories:
+Current Planton deployment components fall into two categories:
 1. **Workloads**: Applications that run on Kubernetes (Postgres, Redis, Kafka, microservices)
 2. **Add-ons**: Kubernetes operators and platform components (Cert Manager, Ingress Nginx, Istio)
 
@@ -277,7 +277,7 @@ This created confusion:
 All proto files updated:
 ```protobuf
 // OLD
-package org.openmcf.provider.gcp.gcpgkeclustercore.v1;
+package dev.planton.provider.gcp.gcpgkeclustercore.v1;
 message GcpGkeClusterCore { ... }
 message GcpGkeClusterCoreSpec { ... }
 message GcpGkeClusterCoreStatus { ... }
@@ -285,7 +285,7 @@ message GcpGkeClusterCoreStackInput { ... }
 message GcpGkeClusterCoreStackOutputs { ... }
 
 // NEW
-package org.openmcf.provider.gcp.gcpgkecluster.v1;
+package dev.planton.provider.gcp.gcpgkecluster.v1;
 message GcpGkeCluster { ... }
 message GcpGkeClusterSpec { ... }
 message GcpGkeClusterStatus { ... }
@@ -316,11 +316,11 @@ Created comprehensive deprecation documentation in `_a-gitignored-workspace/chan
 ### Phase 2: Component Deletion
 
 Removed 5 deprecated component folders and all their contents:
-- `apis/org/openmcf/provider/aws/awsstaticwebsite/` (API definitions, Pulumi modules, Terraform modules, tests, docs)
-- `apis/org/openmcf/provider/gcp/gcpstaticwebsite/` (complete implementation)
-- `apis/org/openmcf/provider/gcp/gcpgkeaddonbundle/` (complete implementation)
-- `apis/org/openmcf/provider/kubernetes/workload/kuberneteshttpendpoint/` (complete implementation)
-- `apis/org/openmcf/provider/kubernetes/workload/stackupdaterunnerkubernetes/` (complete implementation)
+- `apis/dev/planton/provider/aws/awsstaticwebsite/` (API definitions, Pulumi modules, Terraform modules, tests, docs)
+- `apis/dev/planton/provider/gcp/gcpstaticwebsite/` (complete implementation)
+- `apis/dev/planton/provider/gcp/gcpgkeaddonbundle/` (complete implementation)
+- `apis/dev/planton/provider/kubernetes/workload/kuberneteshttpendpoint/` (complete implementation)
+- `apis/dev/planton/provider/kubernetes/workload/stackupdaterunnerkubernetes/` (complete implementation)
 
 Each deletion automatically cleaned up:
 - Protocol Buffer API definitions
@@ -334,13 +334,13 @@ Each deletion automatically cleaned up:
 
 **Step 1**: Deleted old implementation
 ```bash
-rm -rf apis/org/openmcf/provider/gcp/gcpgkecluster
+rm -rf apis/dev/planton/provider/gcp/gcpgkecluster
 ```
 
 **Step 2**: Renamed Core implementation
 ```bash
-mv apis/org/openmcf/provider/gcp/gcpgkeclustercore \
-   apis/org/openmcf/provider/gcp/gcpgkecluster
+mv apis/dev/planton/provider/gcp/gcpgkeclustercore \
+   apis/dev/planton/provider/gcp/gcpgkecluster
 ```
 
 **Step 3**: Updated proto package declarations across all files:
@@ -364,7 +364,7 @@ Example change in locals.go:
 ```go
 // OLD
 import (
-    gcpgkeclustercorev1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpgkeclustercore/v1"
+    gcpgkeclustercorev1 "github.com/plantonhq/planton/apis/dev/planton/provider/gcp/gcpgkeclustercore/v1"
 )
 
 type Locals struct {
@@ -374,7 +374,7 @@ type Locals struct {
 
 // NEW
 import (
-    gcpgkeclusterv1 "github.com/plantonhq/openmcf/apis/org/openmcf/provider/gcp/gcpgkecluster/v1"
+    gcpgkeclusterv1 "github.com/plantonhq/planton/apis/dev/planton/provider/gcp/gcpgkecluster/v1"
 )
 
 type Locals struct {
@@ -385,7 +385,7 @@ type Locals struct {
 
 ### Phase 4: Cloud Resource Kind Enum Updates
 
-Removed 6 deprecated enum values from `apis/org/openmcf/shared/cloudresourcekind/cloud_resource_kind.proto`:
+Removed 6 deprecated enum values from `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto`:
 
 ```protobuf
 // REMOVED
@@ -471,20 +471,20 @@ HarborKubernetes = 837 → 835
 
 Fixed `GcpGkeNodePool` references to use the new enum value:
 
-File: `apis/org/openmcf/provider/gcp/gcpgkenodepool/v1/spec.proto`
+File: `apis/dev/planton/provider/gcp/gcpgkenodepool/v1/spec.proto`
 
 ```protobuf
 // OLD
-org.openmcf.shared.foreignkey.v1.StringValueOrRef cluster_project_id = 1 [
+dev.planton.shared.foreignkey.v1.StringValueOrRef cluster_project_id = 1 [
   (buf.validate.field).required = true,
-  (org.openmcf.shared.foreignkey.v1.default_kind) = GcpGkeClusterCore,
+  (dev.planton.shared.foreignkey.v1.default_kind) = GcpGkeClusterCore,
   // ...
 ];
 
 // NEW
-org.openmcf.shared.foreignkey.v1.StringValueOrRef cluster_project_id = 1 [
+dev.planton.shared.foreignkey.v1.StringValueOrRef cluster_project_id = 1 [
   (buf.validate.field).required = true,
-  (org.openmcf.shared.foreignkey.v1.default_kind) = GcpGkeCluster,
+  (dev.planton.shared.foreignkey.v1.default_kind) = GcpGkeCluster,
   // ...
 ];
 ```
@@ -546,13 +546,13 @@ go build ...          ✅ All binaries built successfully
    # Example: Use AWS S3 with CloudFlare CDN
    # (not forced into AWS CloudFront)
    
-   apiVersion: aws.openmcf.org/v1
+   apiVersion: aws.planton.dev/v1
    kind: AwsS3Bucket
    metadata:
      name: my-storage
    
    ---
-   apiVersion: cloudflare.openmcf.org/v1
+   apiVersion: cloudflare.planton.dev/v1
    kind: CloudflareWorker
    metadata:
      name: my-cdn
@@ -645,7 +645,7 @@ The commercial Planton platform will need updates:
 ### Timeline and Rollout
 
 **Immediate (this change)**:
-- ✅ APIs deprecated in openmcf open source
+- ✅ APIs deprecated in planton open source
 - ✅ Enum values removed and renumbered
 - ✅ Build system updated
 
@@ -874,7 +874,7 @@ These will be addressed in follow-up work as part of the platform rollout.
 
 2. **Migration Tooling**:
    - Build manifest converter (old format → new format)
-   - Create CLI command: `openmcf migrate-manifest`
+   - Create CLI command: `planton migrate-manifest`
    - Provide validation and preview of converted manifests
 
 3. **Documentation**:

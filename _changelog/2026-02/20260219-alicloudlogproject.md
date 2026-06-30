@@ -14,7 +14,7 @@ This component manages an Alibaba Cloud Simple Log Service (SLS) project with op
 ## What Was Created
 
 ### API Definition
-- `apis/org/openmcf/provider/alicloud/alicloudlogproject/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
+- `apis/dev/planton/provider/alicloud/alicloudlogproject/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
 - Registered `AliCloudLogProject = 3000` in `CloudResourceKind` enum
 
 ### IaC Modules

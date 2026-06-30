@@ -14,7 +14,7 @@ Production GCP projects containing critical infrastructure can be accidentally d
 
 ### Pain Points
 
-- No declarative way to enable GCP's native deletion protection through OpenMCF
+- No declarative way to enable GCP's native deletion protection through Planton
 - Production projects vulnerable to accidental deletion via IaC operations
 - Users had to manually enable deletion protection through GCP Console or gcloud CLI
 - Inconsistency between what's declared in manifests and actual GCP project protection state
@@ -31,7 +31,7 @@ Added a new optional boolean field `delete_protection` to the `GcpProjectSpec` m
 // This is a GCP-native feature (not a Pulumi/Terraform lifecycle option)
 // that provides an additional layer of protection against accidental deletion.
 // Defaults to false.
-optional bool delete_protection = 10 [(org.openmcf.shared.options.default) = "false"];
+optional bool delete_protection = 10 [(dev.planton.shared.options.default) = "false"];
 ```
 
 ### Mapping Logic
@@ -45,13 +45,13 @@ optional bool delete_protection = 10 [(org.openmcf.shared.options.default) = "fa
 
 ### Proto Schema Update
 
-**File**: `apis/org/openmcf/provider/gcp/gcpproject/v1/spec.proto`
+**File**: `apis/dev/planton/provider/gcp/gcpproject/v1/spec.proto`
 
 Added field number 10 to `GcpProjectSpec` with default value of `false` and appropriate documentation explaining that this is a GCP-native feature.
 
 ### Pulumi Module Update
 
-**File**: `apis/org/openmcf/provider/gcp/gcpproject/v1/iac/pulumi/module/project.go`
+**File**: `apis/dev/planton/provider/gcp/gcpproject/v1/iac/pulumi/module/project.go`
 
 ```go
 // Determine deletion policy based on delete_protection flag
@@ -69,7 +69,7 @@ projectArgs := &organizations.ProjectArgs{
 
 ### Terraform Module Updates
 
-**File**: `apis/org/openmcf/provider/gcp/gcpproject/v1/iac/tf/variables.tf`
+**File**: `apis/dev/planton/provider/gcp/gcpproject/v1/iac/tf/variables.tf`
 
 ```hcl
 variable "spec" {
@@ -80,7 +80,7 @@ variable "spec" {
 }
 ```
 
-**File**: `apis/org/openmcf/provider/gcp/gcpproject/v1/iac/tf/locals.tf`
+**File**: `apis/dev/planton/provider/gcp/gcpproject/v1/iac/tf/locals.tf`
 
 ```hcl
 # Deletion policy configuration
@@ -88,7 +88,7 @@ variable "spec" {
 deletion_policy = var.spec.delete_protection == true ? "PREVENT" : "DELETE"
 ```
 
-**File**: `apis/org/openmcf/provider/gcp/gcpproject/v1/iac/tf/main.tf`
+**File**: `apis/dev/planton/provider/gcp/gcpproject/v1/iac/tf/main.tf`
 
 ```hcl
 resource "google_project" "this" {
@@ -102,7 +102,7 @@ resource "google_project" "this" {
 ### YAML Manifest
 
 ```yaml
-apiVersion: gcp.openmcf.org/v1
+apiVersion: gcp.planton.dev/v1
 kind: GcpProject
 metadata:
   name: prod-payment-processing
@@ -173,7 +173,7 @@ module "prod_project" {
 ## Validation
 
 - ✅ Proto stubs regenerated with `make protos`
-- ✅ Component tests passed: `go test ./apis/org/openmcf/provider/gcp/gcpproject/v1/`
+- ✅ Component tests passed: `go test ./apis/dev/planton/provider/gcp/gcpproject/v1/`
 - ✅ Full build completed: `make build`
 - ✅ All tests passed: `make test`
 

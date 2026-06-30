@@ -14,7 +14,7 @@ Completed the KubernetesDeployment component by addressing all remaining gaps id
 
 ### 1. Created Terraform Examples Documentation
 
-**File:** `apis/org/openmcf/provider/kubernetes/kubernetesdeployment/v1/iac/tf/examples.md`  
+**File:** `apis/dev/planton/provider/kubernetes/kubernetesdeployment/v1/iac/tf/examples.md`  
 **Size:** 20,578 bytes (~20 KB)
 
 Created comprehensive Terraform examples documentation with:
@@ -45,7 +45,7 @@ This provides parity with the existing Pulumi examples documentation (7.6 KB) an
 
 ### 2. Enhanced Terraform main.tf
 
-**File:** `apis/org/openmcf/provider/kubernetes/kubernetesdeployment/v1/iac/tf/main.tf`  
+**File:** `apis/dev/planton/provider/kubernetes/kubernetesdeployment/v1/iac/tf/main.tf`  
 **Size:** 6,333 bytes (~6.3 KB, was 121 bytes)
 
 Transformed the minimal main.tf into a comprehensive documentation and orchestration file:
@@ -154,7 +154,7 @@ Test execution time: 0.440s
 ## Files Modified/Created
 
 ```
-apis/org/openmcf/provider/kubernetes/kubernetesdeployment/v1/iac/tf/
+apis/dev/planton/provider/kubernetes/kubernetesdeployment/v1/iac/tf/
 ├── examples.md (NEW - 20 KB)
 │   ├── 8 comprehensive examples
 │   ├── Best practices guide
@@ -211,10 +211,10 @@ _changelog/2025-11/
 
 ## References
 
-- Audit Report: `apis/org/openmcf/provider/kubernetes/kubernetesdeployment/v1/docs/audit/2025-11-15-114101.md`
-- Component README: `apis/org/openmcf/provider/kubernetes/kubernetesdeployment/v1/README.md`
-- Research Documentation: `apis/org/openmcf/provider/kubernetes/kubernetesdeployment/v1/docs/README.md` (29 KB - exceptional quality)
-- Pulumi Examples: `apis/org/openmcf/provider/kubernetes/kubernetesdeployment/v1/iac/pulumi/examples.md`
+- Audit Report: `apis/dev/planton/provider/kubernetes/kubernetesdeployment/v1/docs/audit/2025-11-15-114101.md`
+- Component README: `apis/dev/planton/provider/kubernetes/kubernetesdeployment/v1/README.md`
+- Research Documentation: `apis/dev/planton/provider/kubernetes/kubernetesdeployment/v1/docs/README.md` (29 KB - exceptional quality)
+- Pulumi Examples: `apis/dev/planton/provider/kubernetes/kubernetesdeployment/v1/iac/pulumi/examples.md`
 
 ## Component Highlights
 
@@ -270,7 +270,7 @@ This component should be used as the **gold standard** template for:
 - ✅ Tests passing
 - ✅ Ready for continued production use
 
-**No further action required.** The component is complete and serves as a reference implementation for OpenMCF deployment components.
+**No further action required.** The component is complete and serves as a reference implementation for Planton deployment components.
 
 ## Comparison: Before and After
 

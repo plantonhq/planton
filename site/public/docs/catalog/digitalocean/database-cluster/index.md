@@ -12,7 +12,7 @@ Deploys a managed database cluster on DigitalOcean supporting PostgreSQL, MySQL,
 
 ## What Gets Created
 
-When you deploy a DigitalOceanDatabaseCluster resource, OpenMCF provisions:
+When you deploy a DigitalOceanDatabaseCluster resource, Planton provisions:
 
 - **Database Cluster** — a `digitalocean_database_cluster` resource with the specified engine, version, region, node size, and node count
 - **VPC Attachment** — created only when `vpc` is specified, places the cluster in a private network for secure access
@@ -20,7 +20,7 @@ When you deploy a DigitalOceanDatabaseCluster resource, OpenMCF provisions:
 
 ## Prerequisites
 
-- **DigitalOcean credentials** configured via environment variables or OpenMCF provider config
+- **DigitalOcean credentials** configured via environment variables or Planton provider config
 - **A DigitalOcean VPC** in the target region if using private networking (can reference a DigitalOceanVpc resource via `valueFrom`)
 - **A supported engine version** for the chosen database engine (e.g., `16` for PostgreSQL 16, `8` for MySQL 8)
 
@@ -29,15 +29,15 @@ When you deploy a DigitalOceanDatabaseCluster resource, OpenMCF provisions:
 Create a file `database.yaml`:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanDatabaseCluster
 metadata:
   name: my-database
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.DigitalOceanDatabaseCluster.my-database
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.DigitalOceanDatabaseCluster.my-database
 spec:
   clusterName: my-database
   engine: pg
@@ -50,7 +50,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f database.yaml
+planton apply -f database.yaml
 ```
 
 This creates a single-node PostgreSQL 16 cluster in the NYC3 region with the `db-s-1vcpu-2gb` Droplet size.
@@ -83,15 +83,15 @@ This creates a single-node PostgreSQL 16 cluster in the NYC3 region with the `db
 A single-node MySQL 8 cluster placed in a private network:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanDatabaseCluster
 metadata:
   name: mysql-app-db
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.DigitalOceanDatabaseCluster.mysql-app-db
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.DigitalOceanDatabaseCluster.mysql-app-db
 spec:
   clusterName: mysql-app-db
   engine: mysql
@@ -108,15 +108,15 @@ spec:
 A three-node PostgreSQL cluster with increased storage for production workloads:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanDatabaseCluster
 metadata:
   name: prod-postgres
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.DigitalOceanDatabaseCluster.prod-postgres
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.DigitalOceanDatabaseCluster.prod-postgres
 spec:
   clusterName: prod-postgres
   engine: pg
@@ -131,18 +131,18 @@ spec:
 
 ### Redis Cache with VPC Reference
 
-A Redis cluster using a foreign key reference to an OpenMCF-managed VPC:
+A Redis cluster using a foreign key reference to an Planton-managed VPC:
 
 ```yaml
-apiVersion: digital-ocean.openmcf.org/v1
+apiVersion: digital-ocean.planton.dev/v1
 kind: DigitalOceanDatabaseCluster
 metadata:
   name: cache-redis
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.DigitalOceanDatabaseCluster.cache-redis
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.DigitalOceanDatabaseCluster.cache-redis
 spec:
   clusterName: cache-redis
   engine: redis

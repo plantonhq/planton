@@ -6,11 +6,11 @@
 
 ## Summary
 
-Rewrote the entire concepts section of the OpenMCF documentation site from scratch -- 9 pages totaling 1,604 lines of new content, all verified against source code. This is Phase 1 of the docs feature parity project, transforming the concepts section from 2 thin pages into 9 deep, interconnected pages that build a developer's complete mental model of OpenMCF.
+Rewrote the entire concepts section of the Planton documentation site from scratch -- 9 pages totaling 1,604 lines of new content, all verified against source code. This is Phase 1 of the docs feature parity project, transforming the concepts section from 2 thin pages into 9 deep, interconnected pages that build a developer's complete mental model of Planton.
 
 ## Problem Statement / Motivation
 
-The existing concepts section consisted of 2 pages -- a minimal index and an architecture overview -- that covered the framework's surface without depth. Developers evaluating OpenMCF had no documentation explaining how deployment components work, what the KRM manifest model is, how validation catches errors, why dual IaC engines exist, how modules are resolved, or where state is stored.
+The existing concepts section consisted of 2 pages -- a minimal index and an architecture overview -- that covered the framework's surface without depth. Developers evaluating Planton had no documentation explaining how deployment components work, what the KRM manifest model is, how validation catches errors, why dual IaC engines exist, how modules are resolved, or where state is stored.
 
 ### Pain Points
 
@@ -26,12 +26,12 @@ The existing concepts section consisted of 2 pages -- a minimal index and an arc
 
 | Page | Question | Lines |
 |------|----------|-------|
-| `index.md` | What is OpenMCF and why does it exist? | ~120 |
+| `index.md` | What is Planton and why does it exist? | ~120 |
 | `architecture.md` | How do the pieces fit together? | ~175 |
 | `deployment-components.md` | What is a deployment component? | ~210 |
 | `manifests.md` | How do I declare what I want? | ~230 |
 | `cloud-resource-kinds.md` | What can I deploy, and where? | ~115 |
-| `validation.md` | How does OpenMCF catch my mistakes? | ~150 |
+| `validation.md` | How does Planton catch my mistakes? | ~150 |
 | `dual-iac-engines.md` | How does deployment actually happen? | ~140 |
 | `module-system.md` | How are IaC modules resolved and managed? | ~120 |
 | `state-management.md` | Where does deployment state live? | ~140 |
@@ -49,12 +49,12 @@ The existing concepts section consisted of 2 pages -- a minimal index and an arc
 
 Each page was verified against specific source files:
 
-- **deployment-components.md**: `apis/org/openmcf/provider/kubernetes/kubernetespostgres/v1/` (all 4 proto files + both IaC directories), `apis/org/openmcf/provider/aws/awss3bucket/v1/` for cross-provider pattern verification
-- **manifests.md**: `apis/org/openmcf/shared/metadata.proto`, `internal/cli/iacflags/manifest_source_flags.go`, `internal/cli/iacflags/execution_flags.go`, `examples/*.yaml`
+- **deployment-components.md**: `apis/dev/planton/provider/kubernetes/kubernetespostgres/v1/` (all 4 proto files + both IaC directories), `apis/dev/planton/provider/aws/awss3bucket/v1/` for cross-provider pattern verification
+- **manifests.md**: `apis/dev/planton/shared/metadata.proto`, `internal/cli/iacflags/manifest_source_flags.go`, `internal/cli/iacflags/execution_flags.go`, `examples/*.yaml`
 - **cloud-resource-kinds.md**: `cloud_resource_kind.proto` (full 1,101-line enum counted per provider), `cloud_resource_provider.proto`
-- **validation.md**: `internal/manifest/manifest_validator.go`, `apis/org/openmcf/shared/foreignkey/v1/foreign_key.proto`, spec.proto validation annotations
+- **validation.md**: `internal/manifest/manifest_validator.go`, `apis/dev/planton/shared/foreignkey/v1/foreign_key.proto`, spec.proto validation annotations
 - **dual-iac-engines.md**: `iac/pulumi/main.go`, `iac/tf/variables.tf` + `provider.tf`, `stack_input.proto`
-- **module-system.md**: `pkg/iac/pulumi/pulumimodule/module_directory.go`, `pkg/iac/tofu/tofumodule/module_directory.go`, `internal/cli/staging/staging.go`, `cmd/openmcf/root/checkout.go` + `pull.go` + `modules_version.go`
+- **module-system.md**: `pkg/iac/pulumi/pulumimodule/module_directory.go`, `pkg/iac/tofu/tofumodule/module_directory.go`, `internal/cli/staging/staging.go`, `cmd/planton/root/checkout.go` + `pull.go` + `modules_version.go`
 - **state-management.md**: `pkg/iac/pulumi/backendconfig/backend_config.go`, `pkg/iac/tofu/backendconfig/backend_config.go` + `validate.go`, `pkg/iac/tofu/tfbackend/tf_backend.go`
 
 ### Architecture Page Refactored
@@ -73,7 +73,7 @@ During source verification, discovered the actual component count is **198** (no
 
 ## Benefits
 
-- Developers evaluating OpenMCF can now build a complete mental model from documentation alone
+- Developers evaluating Planton can now build a complete mental model from documentation alone
 - The concepts section scales from "what is this?" to "how does state management work?" in a deliberate learning sequence
 - Every page links to related pages, creating a navigable knowledge graph
 - Real YAML examples and protobuf excerpts reduce the gap between docs and source code
@@ -81,14 +81,14 @@ During source verification, discovered the actual component count is **198** (no
 
 ## Impact
 
-- **Evaluators**: Can understand OpenMCF's design philosophy, provider-specific approach, and scale without reading source code
+- **Evaluators**: Can understand Planton's design philosophy, provider-specific approach, and scale without reading source code
 - **New users**: Have conceptual foundation before their first deployment
 - **Power users**: Have reference material for module versioning, state backends, validation rules, and manifest labels
 - **Documentation site**: Concepts section grows from 2 pages to 9 pages with full cross-linking
 
 ## Related Work
 
-- Part of project `20260212.03.openmcf-docs-feature-parity`
+- Part of project `20260212.03.planton-docs-feature-parity`
 - Builds on T01 Phase 0 audit (2026-02-12) which fixed 10 existing pages
 - Phase 2 (CLI docs expansion) and Phase 3 (Guides expansion) are next
 

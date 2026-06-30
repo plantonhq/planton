@@ -2,7 +2,7 @@
 
 ## What is a Deployment Component?
 
-A **deployment component** in OpenMCF is a self-contained, production-ready package that enables declarative deployment of a specific infrastructure resource or application workload to a cloud provider or Kubernetes cluster.
+A **deployment component** in Planton is a self-contained, production-ready package that enables declarative deployment of a specific infrastructure resource or application workload to a cloud provider or Kubernetes cluster.
 
 ### Technical Definition
 
@@ -20,12 +20,12 @@ A deployment component consists of:
 
 3. **Documentation** - Multi-layered documentation serving different audiences:
    - Research documentation (comprehensive landscape analysis)
-   - User-facing documentation (OpenMCF perspective)
+   - User-facing documentation (Planton perspective)
    - Examples (copy-paste ready, validated against current API)
 
-### Role in OpenMCF
+### Role in Planton
 
-Deployment components are the **atomic units of deployment** in OpenMCF. They serve as:
+Deployment components are the **atomic units of deployment** in Planton. They serve as:
 
 - **The Menu Items** - In the restaurant analogy from the main README, deployment components are the individual dishes available for order
 - **Reusable Building Blocks** - Platform engineers compose multiple deployment components to build complete application stacks
@@ -34,11 +34,11 @@ Deployment components are the **atomic units of deployment** in OpenMCF. They se
 
 ### Relationship to Kubernetes Resource Model (KRM)
 
-OpenMCF adopts the Kubernetes Resource Model philosophy but extends it beyond Kubernetes:
+Planton adopts the Kubernetes Resource Model philosophy but extends it beyond Kubernetes:
 
 **Structural Consistency:**
 ```yaml
-apiVersion: <provider>.openmcf.org/<version>
+apiVersion: <provider>.planton.dev/<version>
 kind: <ComponentType>
 metadata:
   name: <resource-name>
@@ -51,7 +51,7 @@ status:
 ```
 
 **Key Differences from Kubernetes:**
-- **Protocol Buffers vs Go Structs** - OpenMCF uses protobuf for language neutrality and multi-language SDK generation
+- **Protocol Buffers vs Go Structs** - Planton uses protobuf for language neutrality and multi-language SDK generation
 - **Provider-Specific vs Abstracted** - Each cloud provider has its own components (no artificial abstraction layer)
 - **Dual IaC Support** - Both Pulumi and Terraform implementations (Kubernetes only uses Go-based controllers)
 - **Documentation-First** - Research-driven design with comprehensive landscape analysis
@@ -187,15 +187,15 @@ GcpCertManagerCert = 616 [(kind_meta) = {
 
 ### 2. Folder Structure
 
-**Base Path:** `apis/org/openmcf/provider/<provider>/<component>/v1/`
+**Base Path:** `apis/dev/planton/provider/<provider>/<component>/v1/`
 
 **Requirements:**
 
 - [ ] **Correct Provider Hierarchy** - Component folder is under the correct provider:
-  - `apis/org/openmcf/provider/aws/<component>/v1/`
-  - `apis/org/openmcf/provider/gcp/<component>/v1/`
-  - `apis/org/openmcf/provider/azure/<component>/v1/`
-  - `apis/org/openmcf/provider/kubernetes/<component>/v1/`
+  - `apis/dev/planton/provider/aws/<component>/v1/`
+  - `apis/dev/planton/provider/gcp/<component>/v1/`
+  - `apis/dev/planton/provider/azure/<component>/v1/`
+  - `apis/dev/planton/provider/kubernetes/<component>/v1/`
   - etc.
 
 - [ ] **Lowercase Folder Naming** - Component folder name matches the `CloudResourceKind` enum value but in all lowercase
@@ -206,7 +206,7 @@ GcpCertManagerCert = 616 [(kind_meta) = {
 
 **Example Structure:**
 ```
-apis/org/openmcf/provider/gcp/gcpcertmanagercert/v1/
+apis/dev/planton/provider/gcp/gcpcertmanagercert/v1/
 ├── api.proto
 ├── spec.proto
 ├── stack_input.proto
@@ -262,20 +262,20 @@ apis/org/openmcf/provider/gcp/gcpcertmanagercert/v1/
 
 - [ ] **File Exists** - `v1/api.proto` is present
 - [ ] **Correct Package** - Package declaration matches path:
-  - `package org.openmcf.provider.<provider>.<component>.v1;`
+  - `package dev.planton.provider.<provider>.<component>.v1;`
 - [ ] **Standard Imports** - Imports common proto dependencies:
   ```protobuf
   import "buf/validate/validate.proto";
-  import "org/openmcf/provider/<provider>/<component>/v1/spec.proto";
-  import "org/openmcf/provider/<provider>/<component>/v1/stack_outputs.proto";
-  import "org/openmcf/shared/metadata.proto";
+  import "dev/planton/provider/<provider>/<component>/v1/spec.proto";
+  import "dev/planton/provider/<provider>/<component>/v1/stack_outputs.proto";
+  import "dev/planton/shared/metadata.proto";
   ```
 - [ ] **Resource Message** - Defines `<Kind>` message with KRM structure:
   ```protobuf
   message <Kind> {
-    string api_version = 1 [(buf.validate.field).string.const = '<provider>.openmcf.org/v1'];
+    string api_version = 1 [(buf.validate.field).string.const = '<provider>.planton.dev/v1'];
     string kind = 2 [(buf.validate.field).string.const = '<Kind>'];
-    org.openmcf.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+    dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
     <Kind>Spec spec = 4 [(buf.validate.field).required = true];
     <Kind>Status status = 5;
   }
@@ -336,8 +336,8 @@ message GcpCertManagerCertSpec {
 - [ ] **Correct Package** - Package declaration matches path
 - [ ] **Standard Imports** - Imports common dependencies:
   ```protobuf
-  import "org/openmcf/provider/<provider>/<component>/v1/api.proto";
-  import "org/openmcf/provider/<provider>/provider.proto";
+  import "dev/planton/provider/<provider>/<component>/v1/api.proto";
+  import "dev/planton/provider/<provider>/provider.proto";
   ```
 - [ ] **StackInput Message** - Defines `<Kind>StackInput` message with the target resource and the provider config:
   ```protobuf
@@ -349,9 +349,9 @@ message GcpCertManagerCertSpec {
   }
   ```
 - [ ] **Credential Field** - References the correct provider credential type:
-  - AWS: `org.openmcf.provider.aws.credential.v1.AwsCredential`
-  - GCP: `org.openmcf.provider.gcp.credential.v1.GcpCredential`
-  - Kubernetes: `org.openmcf.provider.kubernetes.provider.v1.KubernetesProvider`
+  - AWS: `dev.planton.provider.aws.credential.v1.AwsCredential`
+  - GCP: `dev.planton.provider.gcp.credential.v1.GcpCredential`
+  - Kubernetes: `dev.planton.provider.kubernetes.provider.v1.KubernetesProvider`
 
 #### 3.4 stack_outputs.proto
 
@@ -413,7 +413,7 @@ message GcpCertManagerCertStackOutputs {
 - [ ] **Tests Execute** - All tests run successfully (no compilation errors)
 - [ ] **Tests Pass** - All tests pass when running component-specific test:
   ```bash
-  go test ./apis/org/openmcf/provider/<provider>/<component>/v1/
+  go test ./apis/dev/planton/provider/<provider>/<component>/v1/
   ```
 - [ ] **Meaningful Coverage** - Tests cover critical validation paths:
   - Happy path (valid configurations)
@@ -552,7 +552,7 @@ func TestGcpCertManagerCertSpec_Validation(t *testing.T) {
   - Variable descriptions match proto field comments
   - **MUST** be generated and match spec.proto exactly
 
-**Critical:** The OpenMCF CLI transforms the YAML manifest into Terraform variable format. If `variables.tf` doesn't match `spec.proto`, deployments will fail.
+**Critical:** The Planton CLI transforms the YAML manifest into Terraform variable format. If `variables.tf` doesn't match `spec.proto`, deployments will fail.
 
 - [ ] **provider.tf** - Provider configuration:
   - Configures the appropriate provider (AWS, GCP, Azure, etc.)
@@ -659,7 +659,7 @@ variable "alternate_domain_names" {
 - The Evolution (history of the technology)
 - Deployment Methods (manual → automated)
 - Comparative Analysis
-- OpenMCF's Approach
+- Planton's Approach
 - Implementation Landscape
 - Production Best Practices
 - Conclusion
@@ -672,15 +672,15 @@ variable "alternate_domain_names" {
 
 **Location:** `v1/README.md`
 
-**Purpose:** Concise, OpenMCF perspective overview
+**Purpose:** Concise, Planton perspective overview
 
 **Requirements:**
 
 - [ ] **File Exists** - `v1/README.md` is present
 - [ ] **Moderate Length** - Typically 50-200 lines (not a deep research document)
-- [ ] **Overview Section** - High-level explanation from OpenMCF perspective:
+- [ ] **Overview Section** - High-level explanation from Planton perspective:
   - What the component does
-  - Why OpenMCF created it
+  - Why Planton created it
   - How it fits into the framework
 - [ ] **Purpose Section** - Clear statement of goals:
   - What problems it solves
@@ -955,7 +955,7 @@ This document serves as the specification for an automated audit tool. The tool 
 
 ## Conclusion
 
-A "complete" deployment component in OpenMCF is not simply a collection of files. It's a well-researched, thoughtfully-scoped, fully-implemented package that serves real-world deployment needs with both Pulumi and Terraform, backed by comprehensive documentation that explains both "how" and "why," and equipped with ready-to-deploy presets that give users an immediate starting point.
+A "complete" deployment component in Planton is not simply a collection of files. It's a well-researched, thoughtfully-scoped, fully-implemented package that serves real-world deployment needs with both Pulumi and Terraform, backed by comprehensive documentation that explains both "how" and "why," and equipped with ready-to-deploy presets that give users an immediate starting point.
 
 This document provides the definitive reference for what completeness means, enabling both human developers and automated tools to assess and improve deployment components systematically.
 

@@ -12,13 +12,13 @@ Attaches an OpenStack Cinder volume to a compute instance, making the volume app
 
 ## What Gets Created
 
-When you deploy an OpenStackVolumeAttach resource, OpenMCF provisions:
+When you deploy an OpenStackVolumeAttach resource, Planton provisions:
 
 - **Volume Attachment** -- an `openstack_compute_volume_attach_v2` resource that connects a Cinder volume to a compute instance via the Nova API. The volume transitions from "available" to "in-use" state, and the hypervisor presents the block device to the instance at the specified (or auto-assigned) device path.
 
 ## Prerequisites
 
-- **OpenStack credentials** configured via environment variables or OpenMCF provider config
+- **OpenStack credentials** configured via environment variables or Planton provider config
 - **A compute instance** in running state (created via OpenStackInstance or referenced by UUID)
 - **A Cinder volume** in "available" state (created via OpenStackVolume or referenced by UUID)
 - **Same availability zone** for both the volume and instance (required by most OpenStack deployments)
@@ -28,14 +28,14 @@ When you deploy an OpenStackVolumeAttach resource, OpenMCF provisions:
 Create a file `volume-attach.yaml`:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackVolumeAttach
 metadata:
   name: my-attach
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: dev.OpenstackVolumeAttach.my-attach
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackvolumeattach/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: dev.OpenstackVolumeAttach.my-attach
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackvolumeattach/v1/iac/pulumi/module
 spec:
   instanceId: 3b4c5d6e-7f8a-9b0c-1d2e-3f4a5b6c7d8e
   volumeId: a1b2c3d4-e5f6-7890-abcd-ef1234567890
@@ -44,7 +44,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f volume-attach.yaml
+planton apply -f volume-attach.yaml
 ```
 
 This attaches the specified Cinder volume to the compute instance. Nova automatically assigns the next available device path (e.g., `/dev/vdb`).
@@ -74,14 +74,14 @@ All fields on this resource are ForceNew. Any change to the spec recreates the a
 Attach a volume to an instance using their UUIDs directly:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackVolumeAttach
 metadata:
   name: data-attach
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: dev.OpenstackVolumeAttach.data-attach
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackvolumeattach/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: dev.OpenstackVolumeAttach.data-attach
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackvolumeattach/v1/iac/pulumi/module
 spec:
   instanceId: 3b4c5d6e-7f8a-9b0c-1d2e-3f4a5b6c7d8e
   volumeId: a1b2c3d4-e5f6-7890-abcd-ef1234567890
@@ -92,14 +92,14 @@ spec:
 Specify an exact device path for the volume instead of letting Nova auto-assign one. Useful when the application expects the disk at a known path:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackVolumeAttach
 metadata:
   name: db-data-attach
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: prod.OpenstackVolumeAttach.db-data-attach
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackvolumeattach/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: prod.OpenstackVolumeAttach.db-data-attach
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackvolumeattach/v1/iac/pulumi/module
 spec:
   instanceId: 3b4c5d6e-7f8a-9b0c-1d2e-3f4a5b6c7d8e
   volumeId: a1b2c3d4-e5f6-7890-abcd-ef1234567890
@@ -108,17 +108,17 @@ spec:
 
 ### Using Foreign Key References
 
-Reference other OpenMCF-managed resources instead of hardcoding UUIDs. The FK resolver middleware resolves these references at deployment time:
+Reference other Planton-managed resources instead of hardcoding UUIDs. The FK resolver middleware resolves these references at deployment time:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackVolumeAttach
 metadata:
   name: app-data-attach
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: prod.OpenstackVolumeAttach.app-data-attach
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackvolumeattach/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: prod.OpenstackVolumeAttach.app-data-attach
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackvolumeattach/v1/iac/pulumi/module
 spec:
   instanceId:
     valueFrom:
@@ -138,14 +138,14 @@ spec:
 Attach several volumes to the same instance, each at a different device path. Deploy each attachment as a separate resource:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackVolumeAttach
 metadata:
   name: db-data-disk
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: prod.OpenstackVolumeAttach.db-data-disk
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackvolumeattach/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: prod.OpenstackVolumeAttach.db-data-disk
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackvolumeattach/v1/iac/pulumi/module
 spec:
   instanceId:
     valueFrom:
@@ -159,14 +159,14 @@ spec:
       field: status.outputs.volume_id
   device: /dev/vdb
 ---
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackVolumeAttach
 metadata:
   name: db-wal-disk
   labels:
-    openmcf.org/provisioner: pulumi
-    openmcf.org/stack.jobId: prod.OpenstackVolumeAttach.db-wal-disk
-    openmcf.org/stack.module.source: github.com/plantonhq/openmcf//apis/org/openmcf/provider/openstack/openstackvolumeattach/v1/iac/pulumi/module
+    planton.dev/provisioner: pulumi
+    planton.dev/stack.jobId: prod.OpenstackVolumeAttach.db-wal-disk
+    planton.dev/stack.module.source: github.com/plantonhq/planton//apis/dev/planton/provider/openstack/openstackvolumeattach/v1/iac/pulumi/module
 spec:
   instanceId:
     valueFrom:

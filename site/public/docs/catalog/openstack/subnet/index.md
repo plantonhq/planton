@@ -12,13 +12,13 @@ Deploys an OpenStack Neutron subnet within a network, providing IP address alloc
 
 ## What Gets Created
 
-When you deploy an OpenStackSubnet resource, OpenMCF provisions:
+When you deploy an OpenStackSubnet resource, Planton provisions:
 
 - **Neutron Subnet** — an `openstack.networking.Subnet` resource with the configured CIDR, IP version, gateway, DHCP settings, DNS nameservers, allocation pools, and tags
 
 ## Prerequisites
 
-- **OpenStack credentials** configured via environment variables or OpenMCF provider config
+- **OpenStack credentials** configured via environment variables or Planton provider config
 - **An existing Neutron network** — every subnet belongs to exactly one network, referenced by `networkId`
 
 ## Quick Start
@@ -26,15 +26,15 @@ When you deploy an OpenStackSubnet resource, OpenMCF provisions:
 Create a file `subnet.yaml`:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackSubnet
 metadata:
   name: my-subnet
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OpenStackSubnet.my-subnet
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OpenStackSubnet.my-subnet
 spec:
   networkId:
     value: "<network-uuid>"
@@ -44,7 +44,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f subnet.yaml
+planton apply -f subnet.yaml
 ```
 
 This creates a Neutron subnet named `my-subnet` on the specified network with a `/24` CIDR, IPv4, DHCP enabled, and an auto-assigned gateway.
@@ -86,15 +86,15 @@ This creates a Neutron subnet named `my-subnet` on the specified network with a 
 A subnet with default settings on an existing network, suitable for development environments:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackSubnet
 metadata:
   name: dev-subnet
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.OpenStackSubnet.dev-subnet
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.OpenStackSubnet.dev-subnet
 spec:
   networkId:
     value: "abc12345-def6-7890-abcd-ef1234567890"
@@ -107,15 +107,15 @@ spec:
 A subnet referencing a managed OpenStackNetwork resource, with custom DNS servers and an explicit gateway:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackSubnet
 metadata:
   name: app-subnet
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.OpenStackSubnet.app-subnet
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.OpenStackSubnet.app-subnet
 spec:
   networkId:
     valueFrom:
@@ -135,15 +135,15 @@ spec:
 A production subnet with allocation pools to reserve IP ranges, DNS servers, tags, and a specific region:
 
 ```yaml
-apiVersion: openstack.openmcf.org/v1
+apiVersion: openstack.planton.dev/v1
 kind: OpenStackSubnet
 metadata:
   name: prod-subnet
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.OpenStackSubnet.prod-subnet
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.OpenStackSubnet.prod-subnet
 spec:
   networkId:
     valueFrom:

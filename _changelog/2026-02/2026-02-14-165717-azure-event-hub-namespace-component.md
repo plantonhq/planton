@@ -6,15 +6,15 @@
 
 ## Summary
 
-Added the AzureEventHubNamespace deployment component (R22) to the Azure provider, bringing real-time event streaming capabilities to OpenMCF. The component bundles an Event Hubs namespace with event hubs and consumer groups, supporting Basic, Standard, and Premium SKU tiers with full Pulumi and Terraform IaC implementations.
+Added the AzureEventHubNamespace deployment component (R22) to the Azure provider, bringing real-time event streaming capabilities to Planton. The component bundles an Event Hubs namespace with event hubs and consumer groups, supporting Basic, Standard, and Premium SKU tiers with full Pulumi and Terraform IaC implementations.
 
 ## Problem Statement / Motivation
 
-The Azure provider expansion project requires 24 cloud resource kinds to cover enterprise Azure workloads. Event Hubs is Azure's managed event streaming platform -- critical for telemetry ingestion, log aggregation, IoT data pipelines, and real-time analytics. Without this component, teams needing event streaming on Azure would have to provision resources outside OpenMCF, breaking the declarative infrastructure model.
+The Azure provider expansion project requires 24 cloud resource kinds to cover enterprise Azure workloads. Event Hubs is Azure's managed event streaming platform -- critical for telemetry ingestion, log aggregation, IoT data pipelines, and real-time analytics. Without this component, teams needing event streaming on Azure would have to provision resources outside Planton, breaking the declarative infrastructure model.
 
 ### Pain Points
 
-- No OpenMCF support for Azure event streaming workloads
+- No Planton support for Azure event streaming workloads
 - Teams forced to manually provision Event Hubs namespaces, event hubs, and consumer groups
 - Cannot compose event streaming with other Azure resources in infra charts
 
@@ -79,7 +79,7 @@ consumer_groups = flatten([
 
 ## Benefits
 
-- **Event streaming on Azure** now fully supported in OpenMCF
+- **Event streaming on Azure** now fully supported in Planton
 - **Infra chart composable**: `primary_connection_string` output enables `valueFrom` wiring into container apps, function apps, and web apps
 - **Sibling parity** with AzureServiceBusNamespace (same namespace-level fields, similar structure)
 - **44 validation tests** ensure all proto constraints are enforced correctly

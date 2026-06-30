@@ -10,7 +10,7 @@ Implemented the OciQueue deployment component -- OCI's fully managed, serverless
 
 ## Problem Statement / Motivation
 
-The OpenMCF Oracle Cloud provider needs queue infrastructure support to enable event-driven architectures and async service communication patterns on OCI. OCI Queue is the platform's managed message queue offering, analogous to AWS SQS.
+The Planton Oracle Cloud provider needs queue infrastructure support to enable event-driven architectures and async service communication patterns on OCI. OCI Queue is the platform's managed message queue offering, analogous to AWS SQS.
 
 ### Pain Points
 

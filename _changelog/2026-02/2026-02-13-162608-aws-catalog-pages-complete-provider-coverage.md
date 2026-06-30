@@ -10,7 +10,7 @@ Wrote hand-written, source-verified catalog pages for all 21 remaining AWS deplo
 
 ## Problem Statement / Motivation
 
-The OpenMCF docs catalog had only 4 of 25 AWS components with hand-written catalog pages (ALB, EKS Cluster, RDS Instance, S3 Bucket). The remaining 21 components relied on auto-generated research documents that contained technology landscape essays, deployment maturity spectrums, and tool comparisons -- content that belongs in a blog post, not a deployment catalog. Developers evaluating OpenMCF's AWS coverage had no quick-reference documentation for VPC, IAM, Lambda, ECS, CloudFront, or any other AWS service.
+The Planton docs catalog had only 4 of 25 AWS components with hand-written catalog pages (ALB, EKS Cluster, RDS Instance, S3 Bucket). The remaining 21 components relied on auto-generated research documents that contained technology landscape essays, deployment maturity spectrums, and tool comparisons -- content that belongs in a blog post, not a deployment catalog. Developers evaluating Planton's AWS coverage had no quick-reference documentation for VPC, IAM, Lambda, ECS, CloudFront, or any other AWS service.
 
 ### Pain Points
 
@@ -21,7 +21,7 @@ The OpenMCF docs catalog had only 4 of 25 AWS components with hand-written catal
 
 ## Solution / What's New
 
-21 new `catalog-page.md` files written across 3 execution rounds using 4 parallel documentation agents per round. Each page follows the mandatory 9-section structure established by the `write-openmcf-component-catalog-page.mdc` rule and verified against the `audit-openmcf-component-catalog-page.mdc` checklist.
+21 new `catalog-page.md` files written across 3 execution rounds using 4 parallel documentation agents per round. Each page follows the mandatory 9-section structure established by the `write-planton-component-catalog-page.mdc` rule and verified against the `audit-planton-component-catalog-page.mdc` checklist.
 
 ### Components Covered
 
@@ -86,9 +86,9 @@ The spot audit identified incorrect foreign key paths in the AwsAlb exemplar and
 
 ## Impact
 
-- **Developers evaluating OpenMCF**: Can now see complete AWS coverage documentation for all 25 components
+- **Developers evaluating Planton**: Can now see complete AWS coverage documentation for all 25 components
 - **DevOps engineers**: Have copy-pasteable manifests and configuration reference tables for every AWS resource
-- **Documentation system**: The `write-openmcf-component-catalog-page.mdc` and `audit-openmcf-component-catalog-page.mdc` rules proved effective at scale (21 pages in one session)
+- **Documentation system**: The `write-planton-component-catalog-page.mdc` and `audit-planton-component-catalog-page.mdc` rules proved effective at scale (21 pages in one session)
 - **Quality bar**: Spot audit of 4 pages (VPC, Lambda, ECS Service, DynamoDB) showed 3/4 passing with zero issues; 1 critical fix applied
 
 ## Related Work

@@ -6,11 +6,11 @@
 
 ## Summary
 
-Added support for specifying the kubectl context when running Terraform/OpenTofu and Pulumi modules. The context can be specified via the `--kube-context` CLI flag (highest priority) or through the `kubernetes.openmcf.org/context` manifest label. This enables deploying to specific Kubernetes clusters without modifying the kubeconfig's current context.
+Added support for specifying the kubectl context when running Terraform/OpenTofu and Pulumi modules. The context can be specified via the `--kube-context` CLI flag (highest priority) or through the `kubernetes.planton.dev/context` manifest label. This enables deploying to specific Kubernetes clusters without modifying the kubeconfig's current context.
 
 ## Problem Statement / Motivation
 
-When deploying Kubernetes resources using openmcf, users often need to target specific clusters in multi-cluster environments. Previously, users had to manually switch their kubectl context before running deployments, which was error-prone and didn't allow for declarative context specification in manifests.
+When deploying Kubernetes resources using planton, users often need to target specific clusters in multi-cluster environments. Previously, users had to manually switch their kubectl context before running deployments, which was error-prone and didn't allow for declarative context specification in manifests.
 
 ### Pain Points
 
@@ -44,7 +44,7 @@ flowchart TB
 ### Priority Order
 
 1. `--kube-context` CLI flag (if provided)
-2. `kubernetes.openmcf.org/context` manifest label (if present)
+2. `kubernetes.planton.dev/context` manifest label (if present)
 3. Default context from kubeconfig (if neither specified)
 
 ## Implementation Details
@@ -68,13 +68,13 @@ func ExtractFromManifest(manifest proto.Message) string {
 
 Added `--kube-context` flag to all relevant commands:
 
-- `openmcf apply`
-- `openmcf plan`
-- `openmcf destroy`
-- `openmcf init`
-- `openmcf refresh`
-- `openmcf pulumi update/preview/destroy/refresh`
-- `openmcf tofu apply/plan/destroy/init/refresh`
+- `planton apply`
+- `planton plan`
+- `planton destroy`
+- `planton init`
+- `planton refresh`
+- `planton pulumi update/preview/destroy/refresh`
+- `planton tofu apply/plan/destroy/init/refresh`
 
 ### Terraform/OpenTofu Integration
 
@@ -123,9 +123,9 @@ if kubernetesProviderConfig == nil {
 | `pkg/kubernetes/kuberneteslabels/labels.go` | Added `KubeContextLabelKey` constant |
 | `internal/cli/flag/flag.go` | Added `KubeContext` flag constant |
 | `pkg/kubernetes/kubecontext/context.go` | New file - context extraction from labels |
-| `cmd/openmcf/root/*.go` | Added flag, context resolution, passing to handlers |
-| `cmd/openmcf/root/pulumi/*.go` | Added context resolution and passing |
-| `cmd/openmcf/root/tofu/*.go` | Added context resolution and passing |
+| `cmd/planton/root/*.go` | Added flag, context resolution, passing to handlers |
+| `cmd/planton/root/pulumi/*.go` | Added context resolution and passing |
+| `cmd/planton/root/tofu/*.go` | Added context resolution and passing |
 | `pkg/iac/tofu/tofumodule/providers.go` | Added `kubeContext` param, sets `KUBE_CTX` |
 | `pkg/iac/tofu/tofumodule/run_command.go` | Added `kubeContext` param |
 | `pkg/iac/pulumi/pulumistack/run.go` | Added `kubeContext` param, sets `KUBE_CTX` |
@@ -137,21 +137,21 @@ if kubernetesProviderConfig == nil {
 
 ```bash
 # Deploy to a specific context
-openmcf apply -f manifest.yaml --kube-context my-prod-cluster
+planton apply -f manifest.yaml --kube-context my-prod-cluster
 
 # Preview with specific context
-openmcf plan -f manifest.yaml --kube-context my-staging-cluster
+planton plan -f manifest.yaml --kube-context my-staging-cluster
 ```
 
 ### Via Manifest Label
 
 ```yaml
-apiVersion: kubernetes.org.openmcf.org/v1
+apiVersion: kubernetes.org.planton.dev/v1
 kind: PostgresKubernetes
 metadata:
   name: my-postgres
   labels:
-    kubernetes.openmcf.org/context: my-prod-cluster
+    kubernetes.planton.dev/context: my-prod-cluster
 spec:
   # ...
 ```
@@ -160,7 +160,7 @@ spec:
 
 ```bash
 # Flag overrides the label in manifest
-openmcf apply -f manifest.yaml --kube-context override-context
+planton apply -f manifest.yaml --kube-context override-context
 ```
 
 ## Benefits
@@ -181,7 +181,7 @@ openmcf apply -f manifest.yaml --kube-context override-context
 
 ### For Manifest Authors
 
-- New label `kubernetes.openmcf.org/context` for specifying target cluster
+- New label `kubernetes.planton.dev/context` for specifying target cluster
 - Manifests become self-contained with deployment target information
 
 ### For Developers

@@ -6,11 +6,11 @@
 
 ## Summary
 
-Migrated all non-CLI release artifacts (Pulumi binaries, Terraform module zips, content distribution zips) from GitHub Releases to a Cloudflare R2 bucket at `downloads.openmcf.org`. This removes the 1,000-file GitHub release limit that was blocking the addition of new providers. CLI binaries remain on GitHub Releases via GoReleaser.
+Migrated all non-CLI release artifacts (Pulumi binaries, Terraform module zips, content distribution zips) from GitHub Releases to a Cloudflare R2 bucket at `downloads.planton.dev`. This removes the 1,000-file GitHub release limit that was blocking the addition of new providers. CLI binaries remain on GitHub Releases via GoReleaser.
 
 ## Problem Statement / Motivation
 
-OpenMCF's release pipeline attaches pre-built Pulumi binaries, Terraform module zips, and content distribution zips to each GitHub Release. With 17 providers and growing, a single semver release produces:
+Planton's release pipeline attaches pre-built Pulumi binaries, Terraform module zips, and content distribution zips to each GitHub Release. With 17 providers and growing, a single semver release produces:
 
 - **362 Pulumi components x 4 platforms = 1,448 binaries**
 - **358 Terraform module zips**
@@ -27,12 +27,12 @@ GitHub Releases enforce a hard limit of **1,000 files per release**, meaning the
 
 ## Solution / What's New
 
-All non-CLI artifacts are now uploaded to Cloudflare R2 at `downloads.openmcf.org` using the AWS CLI's S3-compatible API. The R2 bucket (`openmcf-downloads-bucket`) is configured with a custom domain and public read access.
+All non-CLI artifacts are now uploaded to Cloudflare R2 at `downloads.planton.dev` using the AWS CLI's S3-compatible API. The R2 bucket (`planton-downloads-bucket`) is configured with a custom domain and public read access.
 
 ### URL Structure
 
 ```
-downloads.openmcf.org/
+downloads.planton.dev/
   releases/{tag}/
     modules/
       pulumi/{component}_{platform}.gz
@@ -60,7 +60,7 @@ flowchart TB
     Terraform --> R2Terraform[R2: modules/terraform/]
     Content --> R2Content[R2: content/]
 
-    R2Pulumi --> CDN[downloads.openmcf.org]
+    R2Pulumi --> CDN[downloads.planton.dev]
     R2Terraform --> CDN
     R2Content --> CDN
 ```
@@ -92,7 +92,7 @@ flowchart TB
 - GitHub releases still created for tracking, release notes link to R2 URLs
 
 **`.goreleaser.yaml`**:
-- Footer updated to reference `downloads.openmcf.org` for Pulumi and Terraform sections
+- Footer updated to reference `downloads.planton.dev` for Pulumi and Terraform sections
 - CLI download URLs unchanged (still GitHub Releases)
 
 ### Packaging Script
@@ -124,8 +124,8 @@ Paths follow a consistent hierarchical structure:
 
 ## Related Work
 
-- Planton monorepo `download.go`, `upgrade_openmcf.py`, and `generate_preset_assets.py` require matching URL updates
-- R2 bucket `openmcf-downloads-bucket` provisioned via `r2-bucket.openmcf-downloads-bucket.yaml`
+- Planton monorepo `download.go`, `upgrade_planton.py`, and `generate_preset_assets.py` require matching URL updates
+- R2 bucket `planton-downloads-bucket` provisioned via `r2-bucket.planton-downloads-bucket.yaml`
 - GitHub repo secrets (`CLOUDFLARE_R2_*`) must be configured before the first R2-based release
 
 ---

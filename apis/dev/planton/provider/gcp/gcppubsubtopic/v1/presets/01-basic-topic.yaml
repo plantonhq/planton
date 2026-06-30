@@ -1,0 +1,8 @@
+apiVersion: gcp.planton.dev/v1
+kind: GcpPubSubTopic
+metadata:
+  name: my-topic
+spec:
+  projectId:
+    value: "<project-id>"
+  topicName: <your-topic-name>

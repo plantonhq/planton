@@ -1,0 +1,221 @@
+syntax = "proto3";
+
+package dev.planton.provider.scaleway.scalewaydnszone.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// ScalewayDnsZoneSpec defines the specification for a Scaleway DNS zone
+// with optional inline DNS records.
+//
+// Scaleway DNS zones are managed through the Scaleway Domains and DNS
+// product. A zone represents a delegated portion of the DNS namespace
+// for a domain you own or have been delegated control of. Zones are
+// created by specifying a parent domain and an optional subdomain prefix.
+//
+// This is a **composite resource** wrapping:
+//   - `scaleway_domain_zone` (1x) -- the zone itself
+//   - `scaleway_domain_record` (0..Nx) -- one per inline record entry
+//
+// **Zone naming:**
+//   - Root zone: `domain = "example.com"`, `subdomain = ""` -> zone name is `example.com`
+//   - Subdomain zone: `domain = "example.com"`, `subdomain = "staging"` -> zone name is `staging.example.com`
+//
+// **Two ways to manage records:**
+//   - **Inline records** (this spec's `records` field): Convenience for
+//     static records known at zone creation time (MX, SPF/TXT, CAA).
+//     Records are managed as part of the zone's lifecycle.
+//   - **Standalone ScalewayDnsRecord** (R16): DAG-friendly for records
+//     that reference other resources' outputs (A records pointing to a
+//     Load Balancer IP, CNAMEs to a Kapsule cluster endpoint). These
+//     create explicit dependency edges in infra charts.
+//
+// Both patterns coexist. Use inline records for convenience, standalone
+// records for cross-resource wiring.
+//
+// **DNS delegation:** After creating a zone, configure the nameservers
+// (from `status.outputs.name_servers`) at your domain registrar to
+// delegate DNS resolution to Scaleway.
+//
+// **Scaleway DNS limitations:**
+//   - No DNSSEC support
+//   - No traffic routing policies (geo, weighted, latency, failover)
+//
+// **Composition pattern:** This is a foundation resource (DAG Layer 0)
+// with no upstream `StringValueOrRef` dependencies. The primary output
+// `zone_name` is referenced by downstream ScalewayDnsRecord resources.
+// Inline record values use `StringValueOrRef` so they can reference
+// other resources' outputs (e.g., a Load Balancer's IP address).
+//
+// **Deferred features (not in v1):**
+//   - DNSSEC configuration
+//   - Dynamic record types (geo_ip, http_service, view, weighted)
+//   These can be added in future versions.
+message ScalewayDnsZoneSpec {
+  // ── Zone Identity ─────────────────────────────────────────────────
+
+  // The registered parent domain name (e.g., "example.com").
+  //
+  // This must be a domain you own or have been delegated control of.
+  // Scaleway does not perform domain registration -- the domain must
+  // already exist at a registrar (Namecheap, Google Domains, etc.).
+  //
+  // Cannot be changed after creation (ForceNew in Terraform). Changing
+  // the domain requires recreating the zone resource.
+  string domain = 1 [(buf.validate.field).required = true];
+
+  // Subdomain prefix for this zone.
+  //
+  // Leave empty ("") for the root zone of the domain.
+  // Set to a value like "staging" to create a zone for
+  // "staging.example.com", which enables subdomain delegation
+  // (a separate set of nameservers for a portion of the namespace).
+  //
+  // Can be updated after creation without recreating the zone.
+  //
+  // Common subdomain zones:
+  //   - "staging" -> staging.example.com
+  //   - "dev" -> dev.example.com
+  //   - "internal" -> internal.example.com
+  string subdomain = 2;
+
+  // ── Inline DNS Records ────────────────────────────────────────────
+
+  // DNS records to create within this zone.
+  //
+  // Each entry creates one `scaleway_domain_record` resource.
+  // Suitable for static records known at zone creation time:
+  //   - MX records for email routing
+  //   - TXT records for SPF, DKIM, DMARC, domain verification
+  //   - CAA records for certificate authority authorization
+  //   - NS records for subdomain delegation
+  //
+  // For records whose values come from other infrastructure resources
+  // (A records pointing to a Load Balancer IP, CNAMEs to a Kapsule
+  // wildcard DNS), prefer the standalone ScalewayDnsRecord kind for
+  // explicit DAG dependency visibility.
+  //
+  // If no records are provided, the zone is created empty (common
+  // when all records are managed as standalone ScalewayDnsRecord
+  // resources or by external systems).
+  repeated ScalewayDnsZoneRecord records = 3;
+}
+
+// ScalewayDnsZoneRecord defines an inline DNS record within the zone.
+//
+// Each record entry maps to exactly one `scaleway_domain_record`
+// Terraform resource. For multi-value records (e.g., multiple MX
+// records for the same domain), add multiple entries with the same
+// name and type but different data values and priorities.
+//
+// Supported record types cover all Scaleway DNS record types:
+//   A, AAAA, ALIAS, CAA, CNAME, DNAME, MX, NS, PTR, SOA, SRV, TXT, TLSA
+message ScalewayDnsZoneRecord {
+  // Supported DNS record types for Scaleway inline zone records.
+  //
+  // This is a local enum (not the shared DnsRecordType) because each
+  // provider component owns its type surface. Scaleway supports DNAME
+  // and TLSA which are not present in the shared enum.
+  enum RecordType {
+    // Unspecified record type (invalid).
+    record_type_unspecified = 0;
+    // IPv4 address record.
+    A = 1;
+    // IPv6 address record.
+    AAAA = 2;
+    // Auto-resolved alias record (Scaleway-native, like CNAME at zone apex).
+    ALIAS = 3;
+    // Certificate Authority Authorization record.
+    CAA = 4;
+    // Canonical name (alias) record.
+    CNAME = 5;
+    // Delegation name record. Redirects a subtree of the DNS name space.
+    DNAME = 6;
+    // Mail exchange record.
+    MX = 7;
+    // Nameserver record.
+    NS = 8;
+    // Pointer record (reverse DNS).
+    PTR = 9;
+    // Start of authority record.
+    SOA = 10;
+    // Service locator record.
+    SRV = 11;
+    // Text record (SPF, DKIM, DMARC, domain verification, etc.).
+    TXT = 12;
+    // Transport Layer Security Association record (DANE).
+    TLSA = 13;
+  }
+
+  // Record name relative to the zone.
+  //
+  // Use empty string or omit for the zone apex (root record).
+  // Scaleway normalizes "@" and empty string to the zone root.
+  //
+  // Examples:
+  //   "" or "@" -> zone apex (e.g., example.com)
+  //   "www" -> www.example.com
+  //   "api" -> api.example.com
+  //   "_dmarc" -> _dmarc.example.com
+  //   "mail" -> mail.example.com
+  string name = 1;
+
+  // DNS record type.
+  //
+  // All Scaleway-supported record types and their data formats:
+  //   A: IPv4 address (e.g., "192.0.2.1")
+  //   AAAA: IPv6 address (e.g., "2001:db8::1")
+  //   ALIAS: target hostname (e.g., "www.example.com.")
+  //   CAA: flags tag value (e.g., '0 issue "letsencrypt.org"')
+  //   CNAME: target hostname with trailing dot (e.g., "target.example.com.")
+  //   DNAME: delegation target (e.g., "other.example.com.")
+  //   MX: mail server with trailing dot (e.g., "mail.example.com.")
+  //   NS: nameserver with trailing dot (e.g., "ns1.example.com.")
+  //   PTR: pointer target (e.g., "host.example.com.")
+  //   SOA: SOA parameters
+  //   SRV: "weight port target" (e.g., "10 5060 sipserver.example.com.")
+  //   TXT: text data (e.g., "v=spf1 include:_spf.google.com ~all")
+  //   TLSA: "usage selector matching-type cert-data" (DANE)
+  RecordType type = 2 [(buf.validate.field).required = true];
+
+  // Record data/value.
+  //
+  // Can be a literal string or a reference to another resource's
+  // output via StringValueOrRef. This enables inline records to
+  // reference dynamic values from other infrastructure:
+  //   - A Load Balancer's IP address
+  //   - A Kapsule cluster's wildcard DNS endpoint
+  //   - An Instance's public IP
+  //
+  // No default_kind is specified because record values can reference
+  // many different resource types.
+  //
+  // Examples:
+  //   Literal A record: { value: "192.0.2.1" }
+  //   Reference to LB IP: { value_from: { kind: ScalewayLoadBalancer, ... } }
+  dev.planton.shared.foreignkey.v1.StringValueOrRef data = 3 [(buf.validate.field).required = true];
+
+  // Time to live in seconds.
+  //
+  // Determines how long DNS resolvers cache this record before
+  // querying Scaleway's nameservers again.
+  //
+  // Common TTL values:
+  //   300 (5 min) -- during migrations or cutover events
+  //   3600 (1 hour) -- default for most records
+  //   86400 (24 hours) -- static records that rarely change
+  //
+  // Valid range: 60-2592000 seconds (1 minute to 30 days).
+  // Defaults to 3600 (1 hour) if not specified.
+  uint32 ttl = 4 [(dev.planton.shared.options.recommended_default) = "3600"];
+
+  // Priority for MX and SRV records.
+  //
+  // Lower values indicate higher priority. For MX records, this
+  // determines mail delivery preference (e.g., 1 = primary, 10 = backup).
+  //
+  // Ignored for record types other than MX and SRV.
+  // Defaults to 0 if not specified.
+  uint32 priority = 5;
+}

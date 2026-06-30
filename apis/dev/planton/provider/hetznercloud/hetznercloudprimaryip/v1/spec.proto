@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package dev.planton.provider.hetznercloud.hetznercloudprimaryip.v1;
+
+import "buf/validate/validate.proto";
+
+// HetznerCloudPrimaryIpSpec defines the specification for a Hetzner Cloud Primary IP.
+//
+// A Primary IP is a managed public IP address (IPv4 or IPv6) that persists
+// independently of any server. Primary IPs are created at a specific location
+// and can be assigned to servers at creation time or later. Unlike auto-assigned
+// public IPs, Primary IPs survive server deletion and can be reassigned, making
+// them suitable for stable endpoints that must outlive individual servers.
+//
+// The IP address is allocated by Hetzner Cloud when the resource is created and
+// cannot be chosen. For IPv4, a single address is allocated. For IPv6, a /64
+// network block is allocated.
+//
+// An optional reverse DNS (rDNS) record can be set for the allocated IP address.
+// rDNS maps an IP to a hostname and is commonly required for mail servers and
+// services that perform reverse lookups for identity verification.
+//
+// The Primary IP is referenced by HetznerCloudServer via its primary_ip_id
+// output through StringValueOrRef.
+//
+// Fields not exposed in this spec (hardcoded in IaC modules):
+//   - auto_delete:   Always false. In Planton's component model, resources are
+//                    managed independently. Auto-deletion on server removal would
+//                    silently destroy a separately-managed resource.
+//   - assignee_type: Always "server" (the only type Hetzner Cloud supports).
+//   - assignee_id:   Not set. Server assignment is handled by the
+//                    HetznerCloudServer component, not by the IP component.
+//   - datacenter:    Deprecated in the provider (removal after 2026-07-01).
+//                    Use location instead.
+message HetznerCloudPrimaryIpSpec {
+  // IP address type. Determines whether an IPv4 address or an IPv6 /64
+  // network block is allocated.
+  //
+  // Changing this value forces replacement of the Primary IP resource.
+  IpType type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).enum.defined_only = true
+  ];
+
+  // Hetzner Cloud location where the IP is allocated (e.g., "fsn1", "nbg1",
+  // "hel1", "ash", "hil", "sin"). The Primary IP can only be assigned to
+  // servers in the same location.
+  //
+  // Changing this value forces replacement of the Primary IP resource.
+  string location = 2 [(buf.validate.field).string.min_len = 1];
+
+  // Reverse DNS pointer record for the allocated IP address. If set, an
+  // hcloud_rdns resource is created that maps the IP back to this hostname.
+  //
+  // Commonly used for mail servers (SPF/DKIM verification relies on matching
+  // forward and reverse DNS) and any service where clients verify the server's
+  // identity via reverse lookup.
+  //
+  // Example: "mail.example.com"
+  string dns_ptr = 3;
+
+  // Prevent accidental deletion of the Primary IP via the Hetzner Cloud API.
+  // When enabled, the IP cannot be deleted until protection is removed.
+  bool delete_protection = 4;
+
+  // IpType enumerates the supported IP address types for a Hetzner Cloud
+  // Primary IP.
+  enum IpType {
+    ip_type_unspecified = 0;
+    ipv4 = 1;
+    ipv6 = 2;
+  }
+}

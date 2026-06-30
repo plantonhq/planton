@@ -8,18 +8,18 @@ componentName: "kuberneteshelmrelease"
 
 # Kubernetes Helm Release
 
-Deploys any Helm chart to a Kubernetes cluster through OpenMCF's lifecycle management, acting as a generic escape hatch for workloads that are already packaged as Helm charts but do not have a dedicated OpenMCF component. The module handles chart fetching, namespace creation, value overrides, and the full apply/update/destroy lifecycle automatically.
+Deploys any Helm chart to a Kubernetes cluster through Planton's lifecycle management, acting as a generic escape hatch for workloads that are already packaged as Helm charts but do not have a dedicated Planton component. The module handles chart fetching, namespace creation, value overrides, and the full apply/update/destroy lifecycle automatically.
 
 ## What Gets Created
 
-When you deploy a KubernetesHelmRelease resource, OpenMCF provisions:
+When you deploy a KubernetesHelmRelease resource, Planton provisions:
 
 - **Namespace** — created only when `createNamespace` is `true`
 - **Helm Chart Resources** — all Kubernetes resources defined by the Helm chart are rendered and applied via Pulumi's `helm/v3.Chart`, using the specified chart name, version, repository, and custom value overrides
 
 ## Prerequisites
 
-- **Kubernetes credentials** configured via environment variables or OpenMCF provider config
+- **Kubernetes credentials** configured via environment variables or Planton provider config
 - **A Kubernetes namespace** that already exists, or set `createNamespace` to `true`
 - **A reachable Helm chart repository** hosting the chart at the specified version
 - **CRD definitions available on the cluster** if the Helm chart deploys or references custom resource types
@@ -29,15 +29,15 @@ When you deploy a KubernetesHelmRelease resource, OpenMCF provisions:
 Create a file `helm-release.yaml`:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesHelmRelease
 metadata:
   name: my-nginx
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesHelmRelease.my-nginx
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesHelmRelease.my-nginx
 spec:
   namespace:
     value: ingress
@@ -50,7 +50,7 @@ spec:
 Deploy:
 
 ```shell
-openmcf apply -f helm-release.yaml
+planton apply -f helm-release.yaml
 ```
 
 This deploys the Bitnami nginx chart at version 18.1.11 into the `ingress` namespace, creating the namespace if it does not already exist.
@@ -82,15 +82,15 @@ This deploys the Bitnami nginx chart at version 18.1.11 into the `ingress` names
 Deploys the ingress-nginx controller with default settings:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesHelmRelease
 metadata:
   name: ingress-nginx
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: dev.KubernetesHelmRelease.ingress-nginx
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: dev.KubernetesHelmRelease.ingress-nginx
 spec:
   namespace:
     value: ingress-nginx
@@ -105,15 +105,15 @@ spec:
 Deploys kube-prometheus-stack with custom retention, resource limits, and Grafana disabled:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesHelmRelease
 metadata:
   name: prometheus
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: staging.KubernetesHelmRelease.prometheus
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: staging.KubernetesHelmRelease.prometheus
 spec:
   namespace:
     value: monitoring
@@ -133,18 +133,18 @@ spec:
 
 ### Cert-Manager with Target Cluster and Foreign Key Namespace
 
-Deploys cert-manager on a specific GKE cluster, referencing an OpenMCF-managed namespace:
+Deploys cert-manager on a specific GKE cluster, referencing an Planton-managed namespace:
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesHelmRelease
 metadata:
   name: cert-manager
   labels:
-    openmcf.org/provisioner: pulumi
-    pulumi.openmcf.org/organization: my-org
-    pulumi.openmcf.org/project: my-project
-    pulumi.openmcf.org/stack.name: prod.KubernetesHelmRelease.cert-manager
+    planton.dev/provisioner: pulumi
+    pulumi.planton.dev/organization: my-org
+    pulumi.planton.dev/project: my-project
+    pulumi.planton.dev/stack.name: prod.KubernetesHelmRelease.cert-manager
 spec:
   targetCluster:
     clusterKind: GcpGkeCluster

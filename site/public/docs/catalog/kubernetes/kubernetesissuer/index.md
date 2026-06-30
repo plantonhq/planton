@@ -23,7 +23,7 @@ Creates a namespace-scoped cert-manager Issuer for CA or self-signed certificate
 ## Quick Start
 
 ```yaml
-apiVersion: kubernetes.openmcf.org/v1
+apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesIssuer
 metadata:
   name: selfsigned-issuer
