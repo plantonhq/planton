@@ -11,7 +11,7 @@
 #   - Clear progress logging with component counts
 #   - No hardcoded component paths - auto-discovers from filesystem
 #
-# Upload path: s3://planton-downloads-bucket/releases/{tag}/modules/terraform/{component}.zip
+# Upload path: s3://downloads-dot-planton-dot-dev-bucket/releases/{tag}/modules/terraform/{component}.zip
 # Public URL:  https://downloads.planton.dev/releases/{tag}/modules/terraform/{component}.zip
 #
 # Path pattern: apis/dev/planton/provider/{provider}/{component}/v1/iac/tf
@@ -36,7 +36,7 @@ permissions:
 
 env:
   PROVIDER_BASE_PATH: apis/dev/planton/provider
-  R2_BUCKET: planton-downloads-bucket
+  R2_BUCKET: downloads-dot-planton-dot-dev-bucket
 
 jobs:
   # ============================================================================

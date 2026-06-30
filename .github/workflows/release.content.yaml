@@ -11,7 +11,7 @@
 #   catalog-pages.zip -- Per-component catalog-page.md
 #   proto-source.zip  -- Raw proto source (spec, api, stack_input, stack_outputs)
 #
-# Upload path: s3://planton-downloads-bucket/releases/{tag}/content/{name}.zip
+# Upload path: s3://downloads-dot-planton-dot-dev-bucket/releases/{tag}/content/{name}.zip
 # Public URL:  https://downloads.planton.dev/releases/{tag}/content/{name}.zip
 #
 # Called by: .github/workflows/release.yaml (after CLI release creates the release)
@@ -33,7 +33,7 @@ permissions:
   contents: read
 
 env:
-  R2_BUCKET: planton-downloads-bucket
+  R2_BUCKET: downloads-dot-planton-dot-dev-bucket
 
 jobs:
   package:

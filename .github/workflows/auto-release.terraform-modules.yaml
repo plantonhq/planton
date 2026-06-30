@@ -7,7 +7,7 @@
 # Tag Format: v{semver}-terraform.{component}.{YYYYMMDD}.{N}
 # Example: v0.3.5-terraform.awsecsservice.20260108.0
 #
-# Upload path: s3://planton-downloads-bucket/releases/{tag}/modules/terraform/{component}.zip
+# Upload path: s3://downloads-dot-planton-dot-dev-bucket/releases/{tag}/modules/terraform/{component}.zip
 # Public URL:  https://downloads.planton.dev/releases/{tag}/modules/terraform/{component}.zip
 #
 # Triggered by: auto-tag.yaml via workflow_dispatch (one call per component)
@@ -40,7 +40,7 @@ permissions:
   contents: write
 
 env:
-  R2_BUCKET: planton-downloads-bucket
+  R2_BUCKET: downloads-dot-planton-dot-dev-bucket
 
 jobs:
   release:

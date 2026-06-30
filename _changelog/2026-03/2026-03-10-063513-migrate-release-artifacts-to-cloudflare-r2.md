@@ -27,7 +27,7 @@ GitHub Releases enforce a hard limit of **1,000 files per release**, meaning the
 
 ## Solution / What's New
 
-All non-CLI artifacts are now uploaded to Cloudflare R2 at `downloads.planton.dev` using the AWS CLI's S3-compatible API. The R2 bucket (`planton-downloads-bucket`) is configured with a custom domain and public read access.
+All non-CLI artifacts are now uploaded to Cloudflare R2 at `downloads.planton.dev` using the AWS CLI's S3-compatible API. The R2 bucket (`downloads-dot-planton-dot-dev-bucket`) is configured with a custom domain and public read access.
 
 ### URL Structure
 
@@ -125,7 +125,7 @@ Paths follow a consistent hierarchical structure:
 ## Related Work
 
 - Planton monorepo `download.go`, `upgrade_planton.py`, and `generate_preset_assets.py` require matching URL updates
-- R2 bucket `planton-downloads-bucket` provisioned via `r2-bucket.planton-downloads-bucket.yaml`
+- R2 bucket `downloads-dot-planton-dot-dev-bucket` provisioned via `r2-bucket.downloads-dot-planton-dot-dev-bucket.yaml`
 - GitHub repo secrets (`CLOUDFLARE_R2_*`) must be configured before the first R2-based release
 
 ---

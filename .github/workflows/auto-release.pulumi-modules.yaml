@@ -14,7 +14,7 @@
 #   - darwin_amd64   - Intel Macs
 #   - windows_amd64  - Windows
 #
-# Upload path: s3://planton-downloads-bucket/releases/{tag}/modules/pulumi/{component}_{platform}.gz
+# Upload path: s3://downloads-dot-planton-dot-dev-bucket/releases/{tag}/modules/pulumi/{component}_{platform}.gz
 # Public URL:  https://downloads.planton.dev/releases/{tag}/modules/pulumi/{component}_{platform}.gz
 #
 # Triggered by: auto-tag.yaml via workflow_dispatch (one call per component)
@@ -47,7 +47,7 @@ permissions:
   contents: write
 
 env:
-  R2_BUCKET: planton-downloads-bucket
+  R2_BUCKET: downloads-dot-planton-dot-dev-bucket
 
 jobs:
   # ===========================================================================
