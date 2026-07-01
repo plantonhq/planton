@@ -83,7 +83,7 @@ SEQUENTIAL STEPS
    -- e.g. ReferenceGrant's to[].group). Those keep the hand-written path below.
 
 2) Generate variables and read it: `echo '{"files":[]}' | python3 _rules/deployment-component/_scripts/terraform_module_write.py --provider <provider> --kindfolder <kindfolder> --kind <Kind> --stdin --make-local --generate-variables | cat`. Then open the generated `variables.tf` in the module path.
-3) Draft: Consult the reference component `iac/tf/` directories. Prepare a files JSON manifest for non-generated files.
+3) Draft: Consult the reference component `iac/tf/` directories. Prepare a files JSON manifest for non-generated files. Comment the HCL to the module-comment bar (`architecture/deployment-component.md` §4.1 Code Quality): explain *why*, trade-offs, provider quirks, and non-obvious ordering -- not line-by-line narration. These modules render on the public catalog, so their comments are part of the deliverable.
 4) Write and validate:
    - `cat <<'JSON' | python3 _rules/deployment-component/_scripts/terraform_module_write.py --provider <provider> --kindfolder <kindfolder> --kind <Kind> --stdin --validate | cat`
      { "files": [ {"name": "provider.tf", "content": "..."}, {"name": "locals.tf", "content": "..."}, {"name": "outputs.tf", "content": "..."} ] }
@@ -107,6 +107,7 @@ SUCCESS CRITERIA
 - `variables.tf` is generated in step 2 at the module path and matches the expected schema
 - Drafted files reference inputs that exist in `variables.tf`
 - Core files (`provider.tf`, `locals.tf`, `outputs.tf`, resource files) exist and `terraform validate` passes
+- Module code is richly commented to the module-comment bar (why/trade-offs/provider quirks/ordering, not narration)
 - **Cross-engine parity holds:** every parity dimension matches the Pulumi module, or the
   divergence is minimal, output-neutral, and carries a `PARITY-EXCEPTION:` comment in BOTH
   modules; `planton validate-outputs` reports full proto population with zero unmapped outputs

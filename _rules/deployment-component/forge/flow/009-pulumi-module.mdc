@@ -24,7 +24,7 @@ SCOPE
 
 SEQUENTIAL STEPS
 1) Read: Use proto readers to derive package paths, `<Kind>`, `<Kind>Spec`, `<Kind>StackInput`, `<Kind>StackOutputs`, and credential type.
-2) Draft: Generate content for module files (controller, locals, outputs, resource_*.go) modeled on the reference component `module/` directories.
+2) Draft: Generate content for module files (controller, locals, outputs, resource_*.go) modeled on the reference component `module/` directories. Comment the code to the module-comment bar (`architecture/deployment-component.md` §4.1 Code Quality): explain *why*, trade-offs, provider quirks, and non-obvious ordering -- not line-by-line narration. These modules render on the public catalog, so their comments are part of the deliverable.
 3) Write: Provide a JSON manifest to the module writer tool:
    - `cat <<'JSON' | python3 _rules/deployment-component/_scripts/pulumi_module_write.py --provider <provider> --kindfolder <kindfolder> --stdin --build | cat`
      { "files": [ {"name": "main.go", "content": "..."}, {"name": "locals.go", "content": "..."} ] }
@@ -38,6 +38,7 @@ OUTPUT
 SUCCESS CRITERIA
 - `module/` contains controller, locals, outputs, and resource files reflecting multi-resource orchestration.
 - Outputs map to `<Kind>StackOutputs`.
+- Module code is richly commented to the module-comment bar (why/trade-offs/provider quirks/ordering, not narration).
 - If `--build` used, `go build` succeeds.
 
 NOTES

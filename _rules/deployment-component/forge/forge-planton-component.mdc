@@ -38,8 +38,11 @@ The bar for every component:
   propagates and compounds shallowness. When a sibling is visibly thin, design to the
   world-class bar instead, and note the gap.
 - **Docs are part of the experience, not polish.** Dense intent-explaining field comments,
-  empathetic CEL messages, and teaching presets are how a coding agent (the primary consumer)
-  and a human learn the component. A bare field set is not world-class even if it is complete.
+  empathetic CEL messages, richly-commented Terraform and Pulumi module code (explaining
+  *why*/trade-offs/provider quirks/non-obvious ordering, not narration -- the module-comment
+  bar defined in `architecture/deployment-component.md` §4.1), and teaching presets are how a
+  coding agent (the primary consumer) and a human learn the component. A bare field set -- or a
+  working but uncommented module -- is not world-class even if it is complete.
 
 This philosophy governs every flow rule below; the per-rule steps are how it is executed, not
 a substitute for it.
@@ -168,13 +171,13 @@ The following 20 rules execute in order. Each rule is atomic and can be run indi
 
 ### Phase 5: Pulumi Implementation (Rules 009-010, 012)
 
-12. **009-pulumi-module** - Generate module/ (main.go, locals.go, outputs.go, resources)
+12. **009-pulumi-module** - Generate module/ (main.go, locals.go, outputs.go, resources), richly commented to the module-comment bar
 13. **010-pulumi-entrypoint** - Generate entrypoint (main.go, Pulumi.yaml, Makefile)
 14. **012-pulumi-docs** - Generate iac/pulumi/README.md and debug.sh
 
 ### Phase 6: Terraform Implementation (Rules 013, 015)
 
-15. **013-terraform-module** - Generate tf/ (variables.tf, main.tf, locals.tf, outputs.tf, provider.tf)
+15. **013-terraform-module** - Generate tf/ (variables.tf, main.tf, locals.tf, outputs.tf, provider.tf), richly commented to the module-comment bar
     - Rule 013 ends with the mandatory **PARITY WITH PULUMI** reconciliation (see that rule).
       Terraform is authored AFTER Pulumi in the sequence, so it is reconciled field-by-field
       against the existing Pulumi module — fixing whichever engine is wrong, since neither is
@@ -360,6 +363,7 @@ After forge completes, the component should have:
 ✅ Pulumi module that compiles and works
 ✅ **Pulumi entrypoint at canonical root** (`iac/pulumi/main.go` is `package main`; no `main/` or `entrypoint/` subdir)
 ✅ Terraform module that validates and works
+✅ **Both IaC modules richly commented to the module-comment bar** (explain why/trade-offs/provider quirks/ordering, not narration -- see `architecture/deployment-component.md` §4.1)
 ✅ **Cross-engine parity gate passed** (Phase 6b) -- Pulumi and Terraform agree on namespace, naming basis, labels, selectors, feature coverage, dependency ordering, and stack outputs; any divergence carries a `PARITY-EXCEPTION:` comment in both modules
 ✅ Supporting files (manifests, debug scripts, module overviews)
 ✅ Initial presets generated (2-3 common configuration templates)

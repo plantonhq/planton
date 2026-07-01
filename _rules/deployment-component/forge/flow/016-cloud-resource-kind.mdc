@@ -27,6 +27,13 @@ The cloud_resource_kind.proto uses the following numeric ranges:
 - DigitalOcean: 1200-1499
 - Civo: 1500-1799
 - Cloudflare: 1800-2099
+- Auth0: 2100-2299
+- OpenFGA: 2300-2499
+- OpenStack: 2500-2799
+- Scaleway: 2800-2999
+- Alibaba Cloud: 3000-3299
+- OCI: 3300-3499
+- Hetzner Cloud: 3500-3699
 
 ID PREFIX PATTERNS
 - AWS: typically "aws" prefix + 2-6 char abbreviation (e.g., "awsvpc", "ecr", "s3bkt")

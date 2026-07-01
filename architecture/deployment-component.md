@@ -127,6 +127,7 @@ A deployment component reaches 90/10 by covering the provider's real surface **w
 - ✅ Research document explains landscape and rationale
 - ✅ Proto schema is validated with real-world constraints
 - ✅ Both IaC modules have feature parity
+- ✅ Both IaC modules are richly commented to the authoring bar (explain why/trade-offs, not narration)
 - ✅ Examples are tested and current
 - ✅ Documentation answers "why these choices?"
 - ✅ Presets provide ready-to-deploy starting points for common patterns
@@ -137,6 +138,7 @@ A deployment component reaches 90/10 by covering the provider's real surface **w
 - ❌ Examples fail validation against current schema
 - ❌ No research justifying scope decisions
 - ❌ Missing Terraform or Pulumi implementation
+- ❌ IaC modules work but are uncommented, or narrate line-by-line instead of explaining why
 - ❌ No presets, or presets reference stale fields from an older spec.proto
 
 ---
@@ -147,7 +149,7 @@ The following sections define the complete, ideal state of any deployment compon
 
 ### 1. Cloud Resource Registry
 
-**Location:** `apis/project/planton/shared/cloudresourcekind/cloud_resource_kind.proto`
+**Location:** `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto`
 
 **Requirements:**
 
@@ -162,6 +164,13 @@ The following sections define the complete, ideal state of any deployment compon
   - DigitalOcean: 1200-1499
   - Civo: 1500-1799
   - Cloudflare: 1800-2099
+  - Auth0: 2100-2299
+  - OpenFGA: 2300-2499
+  - OpenStack: 2500-2799
+  - Scaleway: 2800-2999
+  - Alibaba Cloud: 3000-3299
+  - OCI: 3300-3499
+  - Hetzner Cloud: 3500-3699
 - [ ] **Unique Enum Value** - No duplicate enum numbers
 - [ ] **Unique ID Prefix** - The `id_prefix` is globally unique across all providers
 - [ ] **Proper Metadata** - `kind_meta` includes:
@@ -348,10 +357,10 @@ message GcpCertManagerCertSpec {
     <Provider>ProviderConfig provider_config = 2;
   }
   ```
-- [ ] **Credential Field** - References the correct provider credential type:
-  - AWS: `dev.planton.provider.aws.credential.v1.AwsCredential`
-  - GCP: `dev.planton.provider.gcp.credential.v1.GcpCredential`
-  - Kubernetes: `dev.planton.provider.kubernetes.provider.v1.KubernetesProvider`
+- [ ] **Provider Config Field** - References the correct provider config type (the `<Provider>ProviderConfig` message from `provider/<provider>/provider.proto`, consistent with the `provider_config = 2` example above):
+  - AWS: `dev.planton.provider.aws.AwsProviderConfig`
+  - GCP: `dev.planton.provider.gcp.GcpProviderConfig`
+  - Kubernetes: `dev.planton.provider.kubernetes.KubernetesProviderConfig`
 
 #### 3.4 stack_outputs.proto
 
@@ -498,6 +507,7 @@ func TestGcpCertManagerCertSpec_Validation(t *testing.T) {
 - [ ] **Resource Dependencies** - Explicit dependencies where needed (e.g., Pulumi `DependsOn`)
 - [ ] **Compiles Successfully** - `go build` succeeds without errors
 - [ ] **No Empty Stubs** - Functions return actual resources, not nil
+- [ ] **Well-Commented Module Code** - Authoring comments explain *why*, trade-offs, provider quirks, and non-obvious ordering (not line-by-line narration), to the same density and intent as the `spec.proto` field-comment standard. This is the canonical **module-comment bar** the forge, update, fix, and audit rules reference; these modules render on the public catalog, so their comments are part of the deliverable.
 
 #### 4.2 Pulumi Entrypoint Files
 
@@ -592,6 +602,7 @@ func TestGcpCertManagerCertSpec_Validation(t *testing.T) {
 - [ ] **Proper Dependencies** - Uses `depends_on` where needed
 - [ ] **Not Empty** - main.tf has substantial content (>100 bytes minimum)
 - [ ] **Functional** - Can actually deploy resources, not just validate syntax
+- [ ] **Well-Commented Module Code** - Meets the same **module-comment bar** as the Pulumi module (§4.1 Code Quality): comments explain *why*/trade-offs/provider quirks/ordering, not line-by-line narration.
 
 **Example Structure:**
 
@@ -894,7 +905,7 @@ These add polish and maintainability:
 Beyond file existence, assess quality:
 
 - **Proto Schema Quality** - Do fields match research findings? Are validations present?
-- **IaC Implementation Quality** - Are both modules feature-complete? Do they work?
+- **IaC Implementation Quality** - Are both modules feature-complete? Do they work? Are they richly commented to the module-comment bar (why/trade-offs/quirks/ordering, not narration)?
 - **Documentation Quality** - Is the research comprehensive? Are examples current?
 - **Consistency Quality** - Do variables.tf match spec.proto? Do outputs match stack_outputs.proto?
 
@@ -935,6 +946,7 @@ This document serves as the specification for an automated audit tool. The tool 
    - Terraform module: Check provider.tf has provider configuration
    - Terraform module: Check locals.tf has local value definitions
    - Terraform module: Check outputs.tf has output blocks
+   - Both modules: Check authoring comments meet the module-comment bar (explain why/trade-offs/quirks/ordering, not merely present and not line-by-line narration)
 9. **Verify preset coverage and correctness**:
    - Check `v1/presets/` directory exists with at least one YAML + MD pair
    - Verify `apiVersion` and `kind` match `api.proto` constants

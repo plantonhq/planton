@@ -103,6 +103,7 @@ Use update when you need to:
 1. Regenerates v1/docs/README.md (rule 020)
 2. Updates v1/README.md if needed
 3. Updates IaC documentation (Pulumi/Terraform READMEs)
+4. Verifies the in-code module comments still meet the module-comment bar (`architecture/deployment-component.md` §4.1), not just the READMEs
 
 **Use when:**
 - New best practices discovered
@@ -119,8 +120,8 @@ Use update when you need to:
 ```
 
 **What it does:**
-1. Updates Pulumi module based on your explanation
-2. Updates Terraform module to maintain feature parity
+1. Updates Pulumi module based on your explanation, keeping comments at the module-comment bar (`architecture/deployment-component.md` §4.1)
+2. Updates Terraform module to maintain feature parity AND comment-quality parity (never strip module comments)
 3. Updates tests if needed
 4. Runs build validation: `go build ./apis/dev/planton/provider/<provider>/<component>/v1/...` (rule 018)
 5. Runs E2E tests (rules 011, 014)

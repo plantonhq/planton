@@ -120,6 +120,7 @@ Use fix when you need to:
    - Update Pulumi module (main.go, locals.go, resource files)
    - Update Terraform module to maintain feature parity
    - Ensure both implement the same behavior
+   - **Module comment quality**: keep the module code commented to the module-comment bar (explain *why*/trade-offs/provider quirks/non-obvious ordering, not narration -- `architecture/deployment-component.md` §4.1). A fix must never strip a module's comments.
    - **Must execute**: `go build ./apis/dev/planton/provider/<provider>/<component>/v1/...` from project root to validate complete build
 
 3. **Fix Tests** (if test logic change needed)
@@ -1076,6 +1077,7 @@ git restore .
 After fix completes:
 
 ✅ Fix applied to source code (proto, IaC, tests)
+✅ Any changed module code stays at the module-comment bar (why/trade-offs/quirks/ordering, not narration)
 ✅ All related artifacts updated (examples, docs)
 ✅ Consistency verified (proto ↔ TF, Pulumi ↔ TF, etc.)
 ✅ Component tests pass (`go test ./apis/.../v1/`)

@@ -86,6 +86,13 @@ For each category, check files and record results. Use the following structure t
   - DigitalOcean: 1200-1499
   - Civo: 1500-1799
   - Cloudflare: 1800-2099
+  - Auth0: 2100-2299
+  - OpenFGA: 2300-2499
+  - OpenStack: 2500-2799
+  - Scaleway: 2800-2999
+  - Alibaba Cloud: 3000-3299
+  - OCI: 3300-3499
+  - Hetzner Cloud: 3500-3699
 - [ ] `id_prefix` is unique (no other component uses it)
 - [ ] `kind_meta` includes provider, version, id_prefix
 - [ ] For Kubernetes: `kubernetes_meta` includes category and namespace_prefix (if workload)
@@ -150,6 +157,13 @@ For each category, check files and record results. Use the following structure t
 - [ ] `iac/pulumi/module/locals.go` exists
 - [ ] `iac/pulumi/module/outputs.go` exists
 
+**Module Comment Quality (scored as part of Module Files):**
+- [ ] Module code carries authoring comments that explain *why* / trade-offs / provider quirks / non-obvious ordering, not line-by-line narration
+- [ ] Comments reach the density and intent of the `spec.proto` field-comment standard (these modules render on the public catalog)
+- [ ] Not merely present: a working but uncommented or narration-only module does NOT earn full Module Files credit
+
+**Reference:** See `architecture/deployment-component.md` §4.1 Code Quality ("Well-Commented Module Code") for the module-comment bar.
+
 **Entrypoint Files (6.66%):**
 - [ ] `iac/pulumi/main.go` exists AT THE ROOT and declares `package main`
 - [ ] NO `iac/pulumi/main/` subdir and NO `iac/pulumi/entrypoint/` subdir exist
@@ -174,6 +188,12 @@ be released and must be reported as a critical gap regardless of other scores.
 - [ ] `iac/tf/locals.tf` exists
 - [ ] `iac/tf/main.tf` exists and is substantial (>1KB)
 - [ ] `iac/tf/outputs.tf` exists
+
+**Module Comment Quality (scored as part of this category):**
+- [ ] HCL carries authoring comments that explain *why* / trade-offs / provider quirks / non-obvious ordering, not line-by-line narration (the same module-comment bar as the Pulumi module)
+- [ ] Not merely present: a working but uncommented or narration-only module does NOT earn full credit
+
+**Reference:** See `architecture/deployment-component.md` §4.1 Code Quality ("Well-Commented Module Code") for the module-comment bar.
 
 **Scoring:** Pass all checks = 4.44%, partial = proportional
 
@@ -920,6 +940,11 @@ parity before closing the session.
 - [x/  ] Conditional rules explain both condition and requirement
 - [x/  ] No messages shorter than 5 words
 - [x/  ] Messages use semantic field names, not proto path names
+
+#### Module Comment Quality (part of Categories 4 & 5 module score)
+- [x/  ] Pulumi and Terraform module code explain *why* / trade-offs / quirks / ordering, not narration
+- [x/  ] Comment density and intent match the `spec.proto` field-comment standard
+- [x/  ] No working-but-uncommented or narration-only modules (does not earn full module credit)
 
 #### Cross-Engine IaC Parity (GATE on Categories 4 & 5)
 - [x/  ] Namespace / scope source matches across engines
