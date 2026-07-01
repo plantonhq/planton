@@ -1,15 +1,31 @@
 # `components/marketing`
 
-The planton.dev landing page as an origin story: "Kubernetes gave developers
-`kubectl apply` + Helm charts and locked both to Kubernetes; Planton frees both,
-for every cloud."
+The planton.app landing page, composed by `app/page.tsx` in **three movements**,
+each with its own visual language:
 
-Each numbered act is its own small file and composes `StoryStation`
-(`StationRail` + `StationBody`). Shared bits: `Speaker` (eyebrow), `InlineCode`
-(command chip), `Section` (spacing). Product visuals come from
-`components/showcase`. Copy is lifted from the approved messaging spec — change
-wording deliberately.
+1. **Skimmer top** — `Hero` (desktop-first, with a rendered product preview),
+   `CatalogStats` (breadth numbers), `TrustStrip` (the fast "what's the catch").
+2. **The conversation** — `Interlude` (prologue) → `Conversation` → `Interlude`
+   (bridge) → `Origin`. The trade-off dialogue is **agree-first**: Planton
+   affirms each tool, then names the one honest catch, and never says "we" inside
+   the dialogue (the praise is of the tool, so the focus stays on the reader).
+3. **Feature showcase** — `Features` (alternating `FeatureRow`s in the "your win"
+   voice; the desktop app leads, the CLI is its companion), `Payoff` (trust +
+   deploys), `WhereItFits` (positioning), `Horizon`, `Catch`, `FinalCta` (the
+   "make the easy thing the right thing" close).
 
-Arc: `Hero` → `LadderConsole`/`LadderCode`/`LadderKubernetes` (01–03) → `Origin`
-(04) → `CliAnswer` (05) → `DesktopAnswer` (06) → `TrustModules` (07) → `Payoff`
-(08) → `Horizon` (09) → `Catch` (10) → `InstallCli` → `FinalCta`.
+The marketing surface does NOT teach CLI install — the desktop launch experience
+owns CLI setup. The CLI is acknowledged only as a companion in the `Features` row.
+
+## Primitives
+- `StoryStation` (`StationRail` + `StationBody`) — **numbered stations belong to
+  the conversation ONLY**. Do not number the other movements.
+- `Interlude` — centered narration between movements (no speaker, no number).
+- `Line` — one speaker-labelled / toned paragraph (the atom of the dialogue).
+- `FeatureRow` — an alternating copy/media feature row (movement 3).
+- `Conversation` — the trade-off ladder as data (one `TRADE_OFFS` array, one
+  renderer) so the rungs can never style-drift apart.
+- Shared: `Section` (spacing), `Speaker` (eyebrow), `InlineCode` (command chip).
+
+Product visuals come from `components/showcase`. Copy is lifted from the approved
+messaging spec — change wording deliberately.

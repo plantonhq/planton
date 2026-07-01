@@ -10,8 +10,8 @@ export function FooterBrand() {
         <Wordmark />
       </div>
       <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-        A free Desktop App and CLI for your cloud infrastructure. The building
-        blocks, stacks, and CLI are open source under Apache-2.0. No lock-in.
+        A free desktop app for your cloud infrastructure. The building blocks,
+        stacks, and CLI are open source under Apache-2.0. No lock-in.
       </p>
     </div>
   );

@@ -9,7 +9,7 @@ order: 2
 
 Planton is a free desktop app and CLI for your cloud infrastructure. You download it, open it, and deploy to your own cloud — with clean, auditable infrastructure-as-code running underneath. No account, no sign-up, no ceremony.
 
-This page gets you from zero to a first deployment two ways: the **desktop app** (click to deploy) and the **CLI** (`planton apply -f`). Pick whichever fits how you work — they run the same proven modules underneath.
+This page gets you from zero to a first deployment with the **desktop app** — the primary way to use Planton — and then shows how the **CLI** drives the same engine when you'd rather stay in the terminal.
 
 ## Deploy with the desktop app
 
@@ -22,20 +22,16 @@ The fastest way to see Planton work.
 
 The desktop app deploys to **AWS, GCP, Azure, and Kubernetes**.
 
-## Deploy with the CLI
+## Or drive it from the CLI
 
-Planton mirrors the two gestures Kubernetes made great — and frees them for every cloud. There are two commands, and they are never interchangeable:
+The `planton` CLI is a companion to the desktop app — it drives the same engine and the same proven modules. The managed backend (state, ready-made charts, and history) comes from Planton itself, so most people run the app and reach for the CLI when they'd rather stay in the terminal.
+
+It mirrors the two gestures Kubernetes made great — and frees them for every cloud. There are two commands, and they are never interchangeable:
 
 - **`planton apply -f <manifest>`** applies a **single** component from one manifest — the `kubectl apply -f` parallel.
 - **`planton chart install <chart> …`** installs a **whole environment** from a chart — the `helm install` parallel.
 
 ### Install the CLI
-
-```bash
-brew install plantonhq/tap/planton
-```
-
-Or, with Go:
 
 ```bash
 go install github.com/plantonhq/planton@latest

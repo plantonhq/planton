@@ -13,21 +13,16 @@ export interface Brand {
 const logo = (slug: string) => `/images/providers/${slug}.svg`;
 
 /**
- * The clouds shown in the "Deploys to" row. Every entry maps to a real logo in
- * public/images/providers.
- *
- * Missing real assets (add here once available — never invent a mark):
- *   - Oracle Cloud (oci), Alibaba Cloud (alicloud), Hetzner Cloud (hetznercloud)
+ * The clouds shown in the "Deploys to" row. This is the DEPLOY-PARITY set only —
+ * clouds you can actually deploy to today — NOT the full catalog breadth (that's
+ * "17 providers"). Claiming deploy for a cloud not at parity is an overclaim, so
+ * keep this list honest and short. Every entry maps to a real logo.
  */
 export const DEPLOY_CLOUDS: Brand[] = [
   { name: "AWS", logo: logo("aws") },
   { name: "Google Cloud", logo: logo("gcp") },
   { name: "Azure", logo: logo("azure") },
   { name: "Kubernetes", logo: logo("kubernetes") },
-  { name: "Cloudflare", logo: logo("cloudflare") },
   { name: "DigitalOcean", logo: logo("digital-ocean") },
-  { name: "Civo", logo: logo("civo") },
-  { name: "Scaleway", logo: logo("scaleway") },
-  { name: "OpenStack", logo: logo("openstack") },
 ];
 

@@ -33,10 +33,14 @@ test("landing renders with no console errors", async ({ page }) => {
 
 test("showcase tabs switch between Desktop and Terminal", async ({ page }) => {
   await page.goto("/");
+  // Terminal tab shows the hero's single-manifest apply command.
   await page.getByRole("tab", { name: "Terminal" }).first().click();
-  await expect(page.getByText("planton chart install", { exact: false }).first()).toBeVisible();
+  await expect(
+    page.getByText("planton apply -f ecs-service.yaml", { exact: false }).first(),
+  ).toBeVisible();
+  // Desktop tab shows the rendered architecture graph (no fabricated screenshot).
   await page.getByRole("tab", { name: "Desktop" }).first().click();
-  await expect(page.getByText("Planton Desktop").first()).toBeVisible();
+  await expect(page.getByText("Account", { exact: false }).first()).toBeVisible();
 });
 
 test("every header and footer link has a real target", async ({ page }) => {

@@ -25,23 +25,22 @@ const WAYS: { label: string; body: string }[] = [
 ];
 
 /**
- * The orientation beat between the hero and the origin story: a calm decision
- * map of the three ways to run a product today, then Planton's slot. It answers
- * "where does this fit, and why choose it?" before the conversation earns it
- * emotionally. Deliberately NOT a StoryStation — a centered map reads distinctly
- * from the numbered dialogue that follows.
+ * The orientation map (movement 3): a calm comparison of the ways to run what
+ * you ship, then Planton's slot. It answers "where does this fit among my
+ * options?" for the evaluator who has already seen the product. Deliberately NOT
+ * a StoryStation — a centered map reads distinctly from the numbered dialogue.
+ * The full synthesis lives in `Origin`, so this stays a placement, not a re-pitch.
  */
 export function WhereItFits() {
   return (
-    <Reveal className="mx-auto max-w-3xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+    <Reveal className="mx-auto max-w-3xl px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
       <div className="text-center">
         <h2 className="text-balance font-display text-3xl font-bold tracking-tight sm:text-4xl">
-          You&rsquo;ve got something to ship. There&rsquo;s more than one good way
-          to run it.
+          Where Planton fits
         </h2>
         <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-          There are a few good options, and they&rsquo;re all great — it usually
-          comes down to preference. Here&rsquo;s the map, and where Planton fits.
+          A few good ways to run what you ship — all of them fine, mostly down to
+          preference. Here&rsquo;s the map.
         </p>
       </div>
 
@@ -57,24 +56,9 @@ export function WhereItFits() {
         ))}
       </div>
 
-      <div className="mt-14 space-y-6">
-        <Line tone="bright">
-          Planton is for the last two — especially solo developers and indie
-          hackers who want their own cloud and real control. It gives you the ease
-          of a console and the ownership of raw Terraform, with the ceremony of
-          neither.
-        </Line>
-        <Line tone="muted">
-          It&rsquo;s a free app that runs on your machine and uses the cloud
-          you&rsquo;re already signed into — no service in the middle. Prewritten,
-          vetted modules stand up secure, cost-efficient infrastructure — whole
-          environments on your own AWS, GCP, Azure, or DigitalOcean, with full
-          control and no abstractions.
-        </Line>
-      </div>
-
-      <Line tone="muted" className="mt-10">
-        It wasn&rsquo;t always this easy to have both.
+      <Line tone="muted" className="mt-12">
+        Planton is for the last two — your own cloud and real control, without the
+        ceremony. Especially for solo developers and indie hackers.
       </Line>
     </Reveal>
   );

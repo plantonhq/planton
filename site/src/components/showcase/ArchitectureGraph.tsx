@@ -1,6 +1,5 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
-import { WindowChrome } from "@/components/showcase";
 
 interface ArchNode {
   name: string;
@@ -33,23 +32,24 @@ function Node({ node }: { node: ArchNode }) {
   );
 }
 
-/** The read-only resource graph the desktop shows before deploy — rendered, not a screenshot. */
-export function ArchitecturePreview() {
+/**
+ * The read-only resource graph the desktop shows before deploy — the node body
+ * only, WITHOUT window chrome, so it can be dropped inside an `AppFrame` (which
+ * provides the window). Rendered from data, never a screenshot.
+ */
+export function ArchitectureGraph({ className }: { className?: string }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-card shadow-2xl shadow-black/40">
-      <WindowChrome title="Planton — Architecture" />
-      <div className="flex flex-col items-stretch gap-3 p-6 sm:flex-row sm:items-center">
-        {NODES.map((node, i) => (
-          <React.Fragment key={node.name}>
-            <Node node={node} />
-            {i < NODES.length - 1 && (
-              <span className="mx-auto h-4 w-px bg-border sm:h-px sm:w-6" aria-hidden />
-            )}
-          </React.Fragment>
-        ))}
-      </div>
+    <div className={cn("flex flex-col items-stretch gap-3 sm:flex-row sm:items-center", className)}>
+      {NODES.map((node, i) => (
+        <React.Fragment key={node.name}>
+          <Node node={node} />
+          {i < NODES.length - 1 && (
+            <span className="mx-auto h-4 w-px bg-border sm:h-px sm:w-6" aria-hidden />
+          )}
+        </React.Fragment>
+      ))}
     </div>
   );
 }
 
-export default ArchitecturePreview;
+export default ArchitectureGraph;

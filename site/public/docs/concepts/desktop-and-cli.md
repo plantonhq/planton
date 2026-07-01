@@ -7,7 +7,7 @@ order: 5
 
 # Desktop App and CLI
 
-Planton is both a **desktop app** and a **CLI**. They are two front doors to the same engine: click through the app, or drive it from your terminal — either way, Planton runs proven, pre-built infrastructure-as-code modules against your own cloud, with real state and history.
+Planton is a **desktop app** with a **CLI companion**. The app is the product: it brings a local engine online on your machine and gives you the managed backend — real state, ready-made charts, and history. The CLI drives that same engine from your terminal. Either way, Planton runs proven, pre-built infrastructure-as-code modules against your own cloud.
 
 ## A local instance on your machine
 
@@ -55,4 +55,4 @@ Planton deploys to **AWS, GCP, Azure, and Kubernetes**. The broader catalog span
 
 ## App or CLI — same engine
 
-Use the app when you'd rather click and see the architecture; use the CLI when you'd rather script it or keep it in your terminal. Both drive the same local instance and the same modules, so you can move between them freely.
+The desktop app brings the local instance online and is where the managed backend lives — state, ready-made charts, and history. Use the app when you'd rather click and see the architecture; reach for the CLI when you'd rather script it or keep it in your terminal. The CLI is a companion to that engine, driving the same modules, so you can move between them freely.

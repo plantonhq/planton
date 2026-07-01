@@ -5,21 +5,28 @@ import { WindowChrome } from "@/components/showcase/WindowChrome";
 
 export interface AppFrameProps {
   title?: string;
-  /** Real screenshot; when omitted, a labeled placeholder is shown. */
+  /** Real screenshot; takes precedence when provided. */
   screenshot?: { src: string; alt: string };
-  /** Placeholder label used until a real screenshot is captured. */
+  /**
+   * Rendered content to show inside the window (e.g. the architecture graph) —
+   * an honest, crisp stand-in until real screenshots exist. Used when no
+   * `screenshot` is given.
+   */
+  children?: React.ReactNode;
+  /** Placeholder label used when neither a screenshot nor children are given. */
   label?: string;
   className?: string;
 }
 
 /**
- * A desktop app window frame. Renders a real screenshot when provided; until the
- * keynote captures exist it shows a clean, honest placeholder (we never
- * fabricate a screenshot).
+ * A desktop app window frame. Priority: a real `screenshot` if provided, else
+ * rendered `children` (honest rendered content, e.g. the architecture graph),
+ * else a clean labeled placeholder. We never fabricate a screenshot.
  */
 export function AppFrame({
   title = "Planton",
   screenshot,
+  children,
   label = "Planton Desktop",
   className,
 }: AppFrameProps) {
@@ -31,8 +38,8 @@ export function AppFrame({
       )}
     >
       <WindowChrome title={title} />
-      <div className="relative aspect-[16/10] w-full bg-background">
-        {screenshot ? (
+      {screenshot ? (
+        <div className="relative aspect-[16/10] w-full bg-background">
           <Image
             src={screenshot.src}
             alt={screenshot.alt}
@@ -40,15 +47,17 @@ export function AppFrame({
             sizes="(max-width: 768px) 100vw, 900px"
             className="object-cover object-top"
           />
-        ) : (
-          <div className="flex h-full flex-col items-center justify-center gap-1.5">
-            <span className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
-              {label}
-            </span>
-            <span className="text-xs text-faint">screenshot placeholder</span>
-          </div>
-        )}
-      </div>
+        </div>
+      ) : children ? (
+        <div className="bg-background p-6">{children}</div>
+      ) : (
+        <div className="flex aspect-[16/10] w-full flex-col items-center justify-center gap-1.5 bg-background">
+          <span className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
+            {label}
+          </span>
+          <span className="text-xs text-faint">screenshot placeholder</span>
+        </div>
+      )}
     </div>
   );
 }

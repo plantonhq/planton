@@ -21,7 +21,14 @@ export default function DocsPageLayout({ children }: { children: React.ReactNode
     <div className="min-h-screen bg-background">
       <SiteHeader
         leading={
-          <IconButton onClick={toggle} size="small" className="md:hidden" sx={{ color: 'text.primary' }}>
+          <IconButton
+            onClick={toggle}
+            size="small"
+            aria-label="Open navigation"
+            // MUI's own responsive display — a Tailwind `md:hidden` class is
+            // overridden by MUI's `display:inline-flex`, so it would leak onto desktop.
+            sx={{ color: 'text.primary', display: { xs: 'inline-flex', md: 'none' } }}
+          >
             <MenuIcon />
           </IconButton>
         }

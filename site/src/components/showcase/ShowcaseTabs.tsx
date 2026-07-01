@@ -8,8 +8,16 @@ import { Terminal } from "@/components/showcase/Terminal";
 import type { TerminalLineData } from "@/components/showcase/TerminalLine";
 
 export interface ShowcaseTabsProps {
-  /** The desktop app view (screenshot when available, else a placeholder). */
-  desktop: { title?: string; screenshot?: { src: string; alt: string }; label?: string };
+  /**
+   * The desktop app view. A real `screenshot` wins; else `media` (rendered
+   * content such as the architecture graph); else a labeled placeholder.
+   */
+  desktop: {
+    title?: string;
+    screenshot?: { src: string; alt: string };
+    media?: React.ReactNode;
+    label?: string;
+  };
   /** The equivalent terminal view, rendered from structured lines. */
   terminal: { title?: string; lines: TerminalLineData[] };
   defaultTab?: "desktop" | "terminal";
@@ -46,7 +54,9 @@ export function ShowcaseTabs({
       </div>
 
       <TabsContent value="desktop">
-        <AppFrame title={desktop.title} screenshot={desktop.screenshot} label={desktop.label} />
+        <AppFrame title={desktop.title} screenshot={desktop.screenshot} label={desktop.label}>
+          {desktop.media}
+        </AppFrame>
       </TabsContent>
       <TabsContent value="terminal">
         <Terminal title={terminal.title} lines={terminal.lines} />

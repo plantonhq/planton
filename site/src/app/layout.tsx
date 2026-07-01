@@ -27,9 +27,9 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-const TITLE = "Planton — A free Desktop App and CLI for your cloud infrastructure";
+const TITLE = "Planton — A free desktop app for your cloud infrastructure";
 const DESCRIPTION =
-  "Deploy real infrastructure to your own cloud — without writing Terraform. Planton is a free Desktop App and CLI you download and open: pick a stack and fill a short form, or planton apply -f a manifest, and watch it deploy with clean, auditable infrastructure-as-code underneath.";
+  "Deploy real infrastructure to your own cloud — without writing Terraform. Planton is a free desktop app you download and open: pick a stack, fill a short form, and watch it deploy with clean, auditable infrastructure-as-code underneath. No account, no ceremony.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://planton.dev"),

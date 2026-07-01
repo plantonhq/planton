@@ -20,7 +20,13 @@ export function SiteHeader({ leading, slot }: SiteHeaderProps) {
       <div className="flex h-16 items-center justify-between gap-4 px-5 sm:px-6 lg:px-8">
         <div className="flex items-center gap-3">
           {leading}
-          <HeaderBrand />
+          {/* When a leading control exists (docs mobile menu), the logo yields to
+              it on mobile and returns at md — so each viewport shows exactly one
+              left control. Without a leading control (landing/download), the logo
+              always shows. */}
+          <div className={leading ? "hidden md:flex md:items-center" : "flex items-center"}>
+            <HeaderBrand />
+          </div>
         </div>
         <div className="flex items-center gap-6">
           {slot}
