@@ -1,0 +1,91 @@
+---
+apiVersion: openstack.planton.dev/v1
+kind: OpenStackNetwork
+metadata:
+  name: "{{ values.env }}-network"
+  labels:
+    planton.dev/provisioner: terraform
+spec:
+  description: "Private tenant network for {{ values.env }} developer environment"
+---
+apiVersion: openstack.planton.dev/v1
+kind: OpenStackSubnet
+metadata:
+  name: "{{ values.env }}-subnet"
+  labels:
+    planton.dev/provisioner: terraform
+spec:
+  networkId:
+    valueFrom:
+      kind: OpenStackNetwork
+      name: "{{ values.env }}-network"
+      fieldPath: status.outputs.networkId
+  cidr: "{{ values.network_cidr }}"
+  dnsNameservers:
+    {% for ns in values.dns_nameservers.split(',') %}
+    - "{{ ns | trim }}"
+    {% endfor %}
+---
+apiVersion: openstack.planton.dev/v1
+kind: OpenStackRouter
+metadata:
+  name: "{{ values.env }}-router"
+  labels:
+    planton.dev/provisioner: terraform
+spec:
+  externalNetworkId:
+    value: "{{ values.external_network_name }}"
+  description: "Gateway router for {{ values.env }} developer environment"
+---
+apiVersion: openstack.planton.dev/v1
+kind: OpenStackRouterInterface
+metadata:
+  name: "{{ values.env }}-router-interface"
+  labels:
+    planton.dev/provisioner: terraform
+spec:
+  routerId:
+    valueFrom:
+      kind: OpenStackRouter
+      name: "{{ values.env }}-router"
+      fieldPath: status.outputs.routerId
+  subnetId:
+    valueFrom:
+      kind: OpenStackSubnet
+      name: "{{ values.env }}-subnet"
+      fieldPath: status.outputs.subnetId
+---
+apiVersion: openstack.planton.dev/v1
+kind: OpenStackSecurityGroup
+metadata:
+  name: "{{ values.env }}-dev-sg"
+  labels:
+    planton.dev/provisioner: terraform
+spec:
+  description: "Security group for {{ values.env }} developer environment"
+  deleteDefaultRules: true
+  rules:
+    - key: allow-ssh
+      direction: ingress
+      ethertype: IPv4
+      protocol: tcp
+      portRangeMin: 22
+      portRangeMax: 22
+      remoteIpPrefix: 0.0.0.0/0
+      description: Allow SSH from anywhere
+    - key: allow-icmp
+      direction: ingress
+      ethertype: IPv4
+      protocol: icmp
+      remoteIpPrefix: 0.0.0.0/0
+      description: Allow ICMP (ping) from anywhere
+    - key: allow-all-egress
+      direction: egress
+      ethertype: IPv4
+      remoteIpPrefix: 0.0.0.0/0
+      description: Allow all outbound traffic
+    - key: allow-all-egress-v6
+      direction: egress
+      ethertype: IPv6
+      remoteIpPrefix: "::/0"
+      description: Allow all outbound IPv6 traffic

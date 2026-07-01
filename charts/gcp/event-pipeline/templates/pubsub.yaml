@@ -1,0 +1,65 @@
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpPubSubTopic
+metadata:
+  name: "{{ values.topic_name }}"
+  group: messaging
+spec:
+  projectId:
+    value: "{{ values.gcp_project_id }}"
+  topicName: "{{ values.topic_name }}"
+{% if values.deadLetterEnabled | bool %}
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpPubSubTopic
+metadata:
+  name: "{{ values.dead_letter_topic_name }}"
+  group: messaging
+spec:
+  projectId:
+    value: "{{ values.gcp_project_id }}"
+  topicName: "{{ values.dead_letter_topic_name }}"
+{% endif %}
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpPubSubSubscription
+metadata:
+  name: "{{ values.subscription_name }}"
+  group: messaging
+  relationships:
+    - kind: GcpPubSubTopic
+      name: "{{ values.topic_name }}"
+      type: runs_on
+    - kind: GcpBigQueryDataset
+      name: "{{ values.dataset_id }}"
+      type: uses
+    - kind: GcpServiceAccount
+      name: "{{ values.service_account_id }}"
+      type: uses
+{% if values.deadLetterEnabled | bool %}
+    - kind: GcpPubSubTopic
+      name: "{{ values.dead_letter_topic_name }}"
+      type: uses
+{% endif %}
+spec:
+  projectId:
+    value: "{{ values.gcp_project_id }}"
+  subscriptionName: "{{ values.subscription_name }}"
+  topic:
+    valueFrom:
+      kind: GcpPubSubTopic
+      name: "{{ values.topic_name }}"
+      fieldPath: status.outputs.topic_id
+  bigqueryConfig:
+    table: "{{ values.bigquery_table }}"
+    writeMetadata: {{ values.write_metadata | lower }}
+    dropUnknownFields: true
+{% if values.deadLetterEnabled | bool %}
+  deadLetterPolicy:
+    deadLetterTopic:
+      valueFrom:
+        kind: GcpPubSubTopic
+        name: "{{ values.dead_letter_topic_name }}"
+        fieldPath: status.outputs.topic_id
+    maxDeliveryAttempts: {{ values.max_delivery_attempts }}
+{% endif %}

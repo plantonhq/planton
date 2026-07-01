@@ -1,0 +1,178 @@
+params:
+  # ─── Foundation ───────────────────────────────────────────────────────────
+  - name: region
+    description: Azure region (e.g. eastus)
+    value: eastus
+
+  - name: resource_group_name
+    description: Resource group name suffix (prefixed with env)
+    value: aks-rg
+
+  # ─── Network ──────────────────────────────────────────────────────────────
+
+  - name: vnet_cidr
+    description: VNet CIDR block
+    value: 10.0.0.0/16
+
+  - name: nodes_subnet_cidr
+    description: Nodes subnet CIDR (subset of vnet_cidr)
+    value: 10.0.0.0/18
+
+  - name: is_nat_gateway_enabled
+    description: Attach NAT Gateway to nodes subnet
+    type: bool
+    value: true
+
+  # ─── DNS zone (optional) ──────────────────────────────────────────────────
+  - name: create_dns_zone
+    description: Create public Azure DNS zone
+    type: bool
+    value: false
+
+  - name: dns_zone_name
+    description: Apex domain (e.g. example.com)
+    value: example.com
+
+  - name: dns_resource_group
+    description: Resource group for DNS zone
+    value: dns-rg
+
+  # ─── Container Registry (optional) ────────────────────────────────────────
+  - name: create_container_registry
+    description: Create Azure Container Registry
+    type: bool
+    value: false
+
+  - name: registry_name
+    description: Globally unique ACR name (5‑50 lowercase chars)
+    value: myacr12345
+
+  - name: registry_sku
+    description: basic | standard | premium
+    value: standard
+
+  - name: registry_admin_enabled
+    description: Enable admin user on ACR
+    type: bool
+    value: false
+
+  # ─── Key Vault (optional) ─────────────────────────────────────────────────
+  - name: create_key_vault
+    description: Create Key Vault for secrets
+    type: bool
+    value: false
+
+  - name: key_vault_name
+    description: Key Vault name (unique in Azure)
+    value: mykv123
+
+  - name: key_vault_secret_names
+    description: Comma‑separated list of secret names to pre‑create
+    value: ""
+
+  # ─── AKS cluster core ─────────────────────────────────────────────────────
+  - name: cluster_name
+    description: AKS cluster name
+    value: aks-demo
+
+  - name: kubernetes_version
+    description: Kubernetes version (e.g. 1.30)
+    value: "1.30"
+
+  - name: private_cluster_enabled
+    description: Private API endpoint
+    type: bool
+    value: true
+
+  - name: authorized_ip_ranges
+    description: Comma‑separated CIDRs allowed to reach API server
+    value: 0.0.0.0/0
+
+  - name: disable_azure_ad_rbac
+    description: Disable Azure AD RBAC
+    type: bool
+    value: false
+
+  - name: log_analytics_workspace_id
+    description: Existing Log Analytics workspace ID (ignored when create_log_analytics is true)
+    value: ""
+
+  # ─── Monitoring (optional) ───────────────────────────────────────────────
+  - name: create_log_analytics
+    description: Create a Log Analytics Workspace for Container Insights
+    type: bool
+    value: false
+
+  - name: create_app_insights
+    description: Create Application Insights for APM (requires create_log_analytics)
+    type: bool
+    value: false
+
+  # ─── Managed Identity (optional) ─────────────────────────────────────────
+  - name: create_managed_identity
+    description: Create a User-Assigned Managed Identity for the cluster
+    type: bool
+    value: false
+
+  # ─── Node‑pool ────────────────────────────────────────────────────────────
+  - name: node_pool_name
+    description: Node‑pool name
+    value: defaultnp
+
+  - name: node_vm_size
+    description: VM SKU (e.g. Standard_D4s_v3)
+    value: Standard_D4s_v3
+
+  - name: node_initial_count
+    description: Initial nodes if autoscaling disabled
+    value: "3"
+
+  - name: node_min_nodes
+    description: Autoscaler minimum
+    value: "2"
+
+  - name: node_max_nodes
+    description: Autoscaler maximum
+    value: "6"
+
+  - name: node_availability_zones
+    description: Comma‑separated AZ numbers (e.g. 1,2,3)
+    value: 1,2
+
+  - name: node_os_type
+    description: linux | windows
+    value: linux
+
+  - name: node_spot_enabled
+    description: Use Spot VMs
+    type: bool
+    value: false
+
+  # ─── Kubernetes add‑ons ───────────────────────────────────────────────────
+  - name: certManagerEnabled
+    type: bool
+    value: true
+  - name: elasticOperatorEnabled
+    type: bool
+    value: true
+  - name: externalDnsEnabled
+    type: bool
+    value: true
+  - name: externalSecretsEnabled
+    type: bool
+    value: true
+  - name: ingressNginxEnabled
+    type: bool
+    value: true
+  - name: istioEnabled
+    type: bool
+    value: true
+  - name: kafkaOperatorEnabled
+    type: bool
+    value: true
+  - name: postgresOperatorEnabled
+    type: bool
+    value: true
+  - name: solrOperatorEnabled
+    type: bool
+    value: true

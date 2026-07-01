@@ -1,0 +1,13 @@
+{% if values.tasksEnabled | bool %}
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpCloudTasksQueue
+metadata:
+  name: "{{ values.tasks_queue_name }}"
+  group: async
+spec:
+  projectId:
+    value: "{{ values.gcp_project_id }}"
+  location: "{{ values.region }}"
+  queueName: "{{ values.tasks_queue_name }}"
+{% endif %}

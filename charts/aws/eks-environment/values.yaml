@@ -1,0 +1,138 @@
+params:
+# ─── Network ──────────────────────────────────────────────────────────
+- name: aws_region
+  description: AWS region for every resource (the availability zones below must belong to it)
+  value: us-east-1
+
+- name: availability_zone_1
+  description: Primary AZ (gets one public and one private subnet)
+  value: us-east-1a
+
+- name: availability_zone_2
+  description: Secondary AZ (gets one public and one private subnet)
+  value: us-east-1b
+
+- name: vpc_cidr
+  description: Primary IPv4 CIDR block for the VPC
+  value: 10.0.0.0/16
+
+- name: public_subnet_1_cidr
+  description: CIDR for the public subnet in AZ 1 (hosts the NAT gateway and any internet-facing load balancers)
+  value: 10.0.0.0/24
+
+- name: public_subnet_2_cidr
+  description: CIDR for the public subnet in AZ 2
+  value: 10.0.1.0/24
+
+- name: private_subnet_1_cidr
+  description: CIDR for the private subnet in AZ 1 (hosts the EKS control-plane ENIs and worker nodes)
+  value: 10.0.16.0/20
+
+- name: private_subnet_2_cidr
+  description: CIDR for the private subnet in AZ 2
+  value: 10.0.32.0/20
+
+- name: nat_mode
+  description: "Private-subnet egress strategy: single (one shared NAT gateway, cost-conscious), per_az (one NAT gateway per AZ, no cross-AZ dependency), or none (private subnets have no outbound internet; EKS nodes will not be able to pull images)"
+  value: single
+
+# ─── Cluster core ─────────────────────────────────────────────────────
+- name: cluster_name
+  description: EKS cluster name
+  value: eks-demo
+
+- name: cluster_version
+  description: Kubernetes version (e.g. 1.29)
+  value: "1.29"
+
+- name: disable_public_endpoint
+  description: Private endpoint
+  type: bool
+  value: true
+
+- name: public_access_cidr
+  description: Allowed CIDR if public endpoint enabled
+  value: 0.0.0.0/0
+
+- name: enable_control_plane_logs
+  description: Enable all control‑plane logs
+  type: bool
+  value: true
+
+# ─── Node‑group ───────────────────────────────────────────────────────
+- name: node_group_name
+  description: Managed node‑group name
+  value: default-ng
+
+- name: node_instance_type
+  description: EC2 instance type
+  value: t3.medium
+
+- name: node_capacity_type
+  description: on_demand | spot
+  value: on_demand
+
+- name: node_disk_size_gb
+  description: Root disk (GiB)
+  value: "100"
+
+- name: node_min_size
+  description: Autoscaler minimum
+  value: "2"
+
+- name: node_max_size
+  description: Autoscaler maximum
+  value: "5"
+
+- name: node_desired_size
+  description: Desired nodes
+  value: "3"
+
+- name: node_ssh_key_name
+  description: EC2 KeyPair name (blank to disable SSH)
+  value: ""
+
+# ─── Route 53 & ACM Cert (optional) ───────────────────────────────────
+- name: create_hosted_zone
+  description: Create Route 53 public zone
+  type: bool
+  value: false
+
+- name: domain_name
+  description: Apex domain managed in Route 53 (e.g. example.com)
+  value: example.com
+
+# ─── KMS secrets encryption ───────────────────────────────────────────
+- name: enable_kms_encryption
+  description: Create CMK for secrets
+  type: bool
+  value: true
+
+# ─── Kubernetes add‑ons ───────────────────────────────────────────────
+- name: certManagerEnabled
+  type: bool
+  value: true
+- name: elasticOperatorEnabled
+  type: bool
+  value: true
+- name: externalDnsEnabled
+  type: bool
+  value: true
+- name: externalSecretsEnabled
+  type: bool
+  value: true
+- name: ingressNginxEnabled
+  type: bool
+  value: true
+- name: istioEnabled
+  type: bool
+  value: true
+- name: kafkaOperatorEnabled
+  type: bool
+  value: true
+- name: postgresOperatorEnabled
+  type: bool
+  value: true
+- name: solrOperatorEnabled
+  type: bool
+  value: true

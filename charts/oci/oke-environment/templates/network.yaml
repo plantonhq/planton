@@ -1,0 +1,125 @@
+---
+apiVersion: oci.planton.dev/v1
+kind: OciVcn
+metadata:
+  name: "{{ values.env }}-vcn"
+spec:
+  compartmentId:
+    value: "{{ values.compartment_ocid }}"
+  cidrBlocks:
+    - "{{ values.vcn_cidr }}"
+  displayName: "{{ values.env }}-vcn"
+  dnsLabel: "{{ values.env | replace('-', '') | truncate(15, true, '') }}"
+  isInternetGatewayEnabled: true
+  isNatGatewayEnabled: true
+  isServiceGatewayEnabled: true
+---
+apiVersion: oci.planton.dev/v1
+kind: OciSubnet
+metadata:
+  name: "{{ values.env }}-public"
+spec:
+  compartmentId:
+    value: "{{ values.compartment_ocid }}"
+  vcnId:
+    valueFrom:
+      kind: OciVcn
+      name: "{{ values.env }}-vcn"
+      fieldPath: status.outputs.vcnId
+  cidrBlock: "{{ values.public_subnet_cidr }}"
+  displayName: "{{ values.env }}-public"
+  dnsLabel: pub
+  prohibitPublicIpOnVnic: false
+  routeRules:
+    - destination: "0.0.0.0/0"
+      destinationType: cidr_block
+      networkEntityId:
+        valueFrom:
+          kind: OciVcn
+          name: "{{ values.env }}-vcn"
+          fieldPath: status.outputs.internetGatewayId
+---
+apiVersion: oci.planton.dev/v1
+kind: OciSubnet
+metadata:
+  name: "{{ values.env }}-private"
+spec:
+  compartmentId:
+    value: "{{ values.compartment_ocid }}"
+  vcnId:
+    valueFrom:
+      kind: OciVcn
+      name: "{{ values.env }}-vcn"
+      fieldPath: status.outputs.vcnId
+  cidrBlock: "{{ values.private_subnet_cidr }}"
+  displayName: "{{ values.env }}-private"
+  dnsLabel: priv
+  prohibitPublicIpOnVnic: true
+  routeRules:
+    - destination: "0.0.0.0/0"
+      destinationType: cidr_block
+      networkEntityId:
+        valueFrom:
+          kind: OciVcn
+          name: "{{ values.env }}-vcn"
+          fieldPath: status.outputs.natGatewayId
+---
+apiVersion: oci.planton.dev/v1
+kind: OciSecurityGroup
+metadata:
+  name: "{{ values.env }}-api-endpoint"
+spec:
+  compartmentId:
+    value: "{{ values.compartment_ocid }}"
+  vcnId:
+    valueFrom:
+      kind: OciVcn
+      name: "{{ values.env }}-vcn"
+      fieldPath: status.outputs.vcnId
+  displayName: "{{ values.env }}-api-endpoint"
+  ingressRules:
+    - description: Kubernetes API from VCN
+      protocol: tcp
+      source: "{{ values.vcn_cidr }}"
+      sourceType: cidr_block
+      tcpOptions:
+        destinationPortRange:
+          min: 6443
+          max: 6443
+    - description: OKE control plane to worker communication
+      protocol: tcp
+      source: "{{ values.vcn_cidr }}"
+      sourceType: cidr_block
+      tcpOptions:
+        destinationPortRange:
+          min: 12250
+          max: 12250
+  egressRules:
+    - description: Allow all egress
+      protocol: all
+      destination: "0.0.0.0/0"
+      destinationType: cidr_block
+---
+apiVersion: oci.planton.dev/v1
+kind: OciSecurityGroup
+metadata:
+  name: "{{ values.env }}-worker"
+spec:
+  compartmentId:
+    value: "{{ values.compartment_ocid }}"
+  vcnId:
+    valueFrom:
+      kind: OciVcn
+      name: "{{ values.env }}-vcn"
+      fieldPath: status.outputs.vcnId
+  displayName: "{{ values.env }}-worker"
+  ingressRules:
+    - description: All traffic from VCN
+      protocol: all
+      source: "{{ values.vcn_cidr }}"
+      sourceType: cidr_block
+  egressRules:
+    - description: Allow all egress
+      protocol: all
+      destination: "0.0.0.0/0"
+      destinationType: cidr_block

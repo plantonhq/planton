@@ -1,0 +1,30 @@
+---
+apiVersion: oci.planton.dev/v1
+kind: OciFunctionsApplication
+metadata:
+  name: "{{ values.env }}-{{ values.app_name }}"
+spec:
+  compartmentId:
+    value: "{{ values.compartment_ocid }}"
+  displayName: "{{ values.env }}-{{ values.app_name }}"
+  shape: "{{ values.functions_shape }}"
+  subnetIds:
+    - valueFrom:
+        kind: OciSubnet
+        name: "{{ values.env }}-private"
+        fieldPath: status.outputs.subnetId
+---
+apiVersion: oci.planton.dev/v1
+kind: OciApiGateway
+metadata:
+  name: "{{ values.env }}-{{ values.gateway_name }}"
+spec:
+  compartmentId:
+    value: "{{ values.compartment_ocid }}"
+  displayName: "{{ values.env }}-{{ values.gateway_name }}"
+  endpointType: endpoint_type_public
+  subnetId:
+    valueFrom:
+      kind: OciSubnet
+      name: "{{ values.env }}-public"
+      fieldPath: status.outputs.subnetId

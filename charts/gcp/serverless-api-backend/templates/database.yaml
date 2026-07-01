@@ -1,0 +1,27 @@
+{% if values.databaseEnabled | bool %}
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpCloudSql
+metadata:
+  name: "{{ values.database_instance_name }}"
+  group: database
+  relationships:
+    - kind: GcpSubnetwork
+      name: "{{ values.vpc_name }}-subnet"
+      type: runs_on
+spec:
+  projectId:
+    value: "{{ values.gcp_project_id }}"
+  region: "{{ values.region }}"
+  databaseEngine: POSTGRESQL
+  databaseVersion: "{{ values.database_version }}"
+  tier: "{{ values.database_tier }}"
+  rootPassword: "{{ values.database_root_password }}"
+  network:
+    vpcId:
+      valueFrom:
+        kind: GcpVpc
+        name: "{{ values.vpc_name }}"
+        fieldPath: status.outputs.network_self_link
+    privateIpEnabled: true
+{% endif %}

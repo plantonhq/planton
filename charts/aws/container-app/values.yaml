@@ -1,0 +1,43 @@
+params:
+  # ─── Service ─────────────────────────────────────────────────────────────────
+  - name: service_name
+    description: App Runner service name
+    value: my-app
+
+  # ─── Container Image ────────────────────────────────────────────────────────
+  - name: ecr_repo_name
+    description: ECR repository name for container images
+    value: my-app
+
+  - name: image_uri
+    description: >
+      Full ECR image URI including tag.
+      Example: 123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest
+    value: ""
+
+  - name: container_port
+    description: Port the container listens on
+    value: "8080"
+
+  # ─── App Runner sizing ──────────────────────────────────────────────────────
+  - name: cpu
+    description: CPU units for each App Runner instance (256, 512, 1024, 2048, 4096)
+    value: "1024"
+
+  - name: memory
+    description: Memory in MB for each App Runner instance (512, 1024, 2048, 3072, 4096, ...)
+    value: "2048"
+
+  # ─── Database ────────────────────────────────────────────────────────────────
+  - name: databaseEnabled
+    description: Create a DynamoDB table for data persistence
+    type: bool
+    value: false
+
+  - name: dynamodb_table_name
+    description: DynamoDB table name
+    value: app-data
+
+  - name: dynamodb_hash_key
+    description: DynamoDB partition key attribute name
+    value: id

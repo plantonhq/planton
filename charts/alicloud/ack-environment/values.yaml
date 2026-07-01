@@ -1,0 +1,94 @@
+params:
+  # ─── Region & Availability Zones ──────────────────────────────────────────────
+  - name: region
+    description: Alibaba Cloud region
+    value: cn-hangzhou
+
+  - name: availability_zone_1
+    description: First AZ for VSwitch and node placement
+    value: cn-hangzhou-h
+
+  - name: availability_zone_2
+    description: Second AZ for VSwitch and node placement
+    value: cn-hangzhou-i
+
+  # ─── VPC ──────────────────────────────────────────────────────────────────────
+  - name: vpc_cidr
+    description: VPC CIDR block
+    value: "10.0.0.0/16"
+
+  - name: vswitch_cidr_1
+    description: VSwitch CIDR in AZ-1
+    value: "10.0.0.0/20"
+
+  - name: vswitch_cidr_2
+    description: VSwitch CIDR in AZ-2
+    value: "10.0.16.0/20"
+
+  # ─── EIP & NAT ────────────────────────────────────────────────────────────────
+  - name: eip_bandwidth
+    description: NAT Gateway EIP bandwidth (Mbps)
+    value: "10"
+
+  # ─── Cluster ──────────────────────────────────────────────────────────────────
+  - name: cluster_name
+    description: ACK cluster name suffix (prefixed with env)
+    value: ack
+
+  - name: kubernetes_version
+    description: Kubernetes version (leave empty for latest)
+    value: ""
+
+  - name: pod_cidr
+    description: Pod network CIDR
+    value: "172.20.0.0/16"
+
+  - name: service_cidr
+    description: Service network CIDR
+    value: "172.21.0.0/20"
+
+  - name: slb_internet_enabled
+    description: Expose API server via public SLB
+    type: bool
+    value: true
+
+  - name: enable_rrsa
+    description: Enable RRSA (pod-level IAM via OIDC)
+    type: bool
+    value: true
+
+  # ─── Node Pool ────────────────────────────────────────────────────────────────
+  - name: node_instance_types
+    description: Comma-separated ECS instance types for worker nodes
+    value: ecs.g7.xlarge
+
+  - name: node_desired_size
+    description: Desired number of worker nodes
+    value: "3"
+
+  - name: node_min_size
+    description: Minimum number of worker nodes (autoscaling)
+    value: "2"
+
+  - name: node_max_size
+    description: Maximum number of worker nodes (autoscaling)
+    value: "10"
+
+  - name: node_system_disk_size
+    description: System disk size for worker nodes (GB)
+    value: "120"
+
+  # ─── Logging ──────────────────────────────────────────────────────────────────
+  - name: log_retention_days
+    description: Log store retention in days
+    value: "30"
+
+  # ─── Container Registry (optional) ────────────────────────────────────────────
+  - name: acrEnabled
+    description: Create an ACR Enterprise instance
+    type: bool
+    value: false
+
+  - name: acr_instance_type
+    description: "ACR instance type: Basic, Standard, Advanced"
+    value: Basic

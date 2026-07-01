@@ -1,0 +1,89 @@
+params:
+  # ─── Network (optional) ──────────────────────────────────────────────────
+  - name: create_network
+    description: Create a VPC and Private Network for the container
+    type: bool
+    value: false
+
+  - name: region
+    description: Scaleway region (e.g. fr-par, nl-ams, pl-waw)
+    value: fr-par
+
+  # ─── Container Registry (optional) ───────────────────────────────────────
+  - name: create_container_registry
+    description: Create a Scaleway Container Registry
+    type: bool
+    value: false
+
+  - name: registry_name
+    description: Container registry namespace name
+    value: my-registry
+
+  # ─── Container image ─────────────────────────────────────────────────────
+  - name: registry_endpoint
+    description: Container registry endpoint (used when create_container_registry is false)
+    value: docker.io/library
+
+  - name: image_name
+    description: Container image name within the registry
+    value: nginx
+
+  - name: image_tag
+    description: Container image tag
+    value: latest
+
+  # ─── Container configuration ─────────────────────────────────────────────
+  - name: container_name
+    description: Serverless container name
+    value: my-container
+
+  - name: port
+    description: Container listening port
+    type: number
+    value: 8080
+
+  - name: privacy
+    description: Endpoint privacy (privacy_public or privacy_private)
+    value: privacy_public
+
+  - name: http_option
+    description: HTTP behavior (enabled or redirected)
+    value: redirected
+
+  - name: memory_limit_mb
+    description: Memory limit per instance in MB
+    type: number
+    value: 256
+
+  - name: cpu_limit
+    description: CPU limit per instance in milliCPU (0 for auto)
+    type: number
+    value: 0
+
+  - name: min_scale
+    description: Minimum number of instances (0 for scale-to-zero)
+    type: number
+    value: 0
+
+  - name: max_scale
+    description: Maximum number of instances
+    type: number
+    value: 5
+
+  # ─── DNS (optional) ──────────────────────────────────────────────────────
+  - name: create_dns_zone
+    description: Create a Scaleway DNS zone with a CNAME to the container
+    type: bool
+    value: false
+
+  - name: domain_name
+    description: Parent domain (e.g. example.com)
+    value: example.com
+
+  - name: subdomain
+    description: Subdomain prefix for DNS zone (e.g. api for api.example.com)
+    value: ""
+
+  - name: dns_record_name
+    description: DNS record name relative to the zone (e.g. app for app.example.com)
+    value: app

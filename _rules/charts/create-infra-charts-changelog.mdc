@@ -1,0 +1,458 @@
+---
+description: Action rule to create a well-structured changelog document capturing meaningful engineering work on InfraCharts, sized proportionally to the feature's impact and complexity.
+globs: []
+alwaysApply: false
+---
+
+# Rule: Create InfraCharts Changelog (action)
+
+Purpose: When invoked, create a comprehensive changelog document in the `_changelog/` directory that captures the essence, context, and impact of recent engineering work on InfraCharts. The changelog should be meaningful, well-structured, and appropriately sized based on the scope and impact of the change.
+
+Usage: Invoke explicitly as `@create-infra-charts-changelog` after completing meaningful work in a conversation.
+
+References: `@understand-cursor-rules`, existing changelogs in `_changelog/`
+
+## ⚠️ CRITICAL: Explicit Invocation Only
+
+**DO NOT** create a changelog automatically or proactively. Changelogs must ONLY be created when the user explicitly invokes this rule with `@create-infra-charts-changelog`.
+
+Never:
+- ❌ Suggest creating a changelog without being asked
+- ❌ Create a changelog at the end of a conversation automatically
+- ❌ Assume the user wants a changelog created
+- ❌ Create a changelog "to be helpful" without explicit request
+
+Always:
+- ✅ Wait for explicit `@create-infra-charts-changelog` invocation
+- ✅ Confirm the request before creating the file
+- ✅ Let the user decide when/if a changelog is needed
+
+**This is a user-controlled action, not an automatic process.**
+
+## When to Create a Changelog
+
+Create a changelog when:
+- ✅ You've created or significantly updated an InfraChart
+- ✅ New cloud resources were added to a chart
+- ✅ Template structure or patterns were changed
+- ✅ Resource relationships or dependencies were introduced/modified
+- ✅ Boolean flags or conditional resources were added
+- ✅ Chart values.yaml schema was enhanced
+- ✅ Multi-resource orchestration patterns were improved
+- ✅ README documentation was comprehensively updated
+- ✅ Provider-specific patterns were established or changed
+- ✅ The work took significant time/effort (typically 1+ hours)
+- ✅ The change has notable impact on users provisioning infrastructure
+
+**Skip changelogs for**:
+- ✋ Minor typo fixes in README
+- ✋ Trivial configuration tweaks
+- ✋ Work-in-progress or incomplete charts
+- ✋ Single-line value adjustments
+- ✋ Changes already well-documented in PR descriptions
+
+## Sizing Guidance: Use Your Judgment
+
+**Critical principle**: The changelog length should be **proportional to the feature's complexity and impact**, not artificially constrained or inflated.
+
+### Small Changes (150-300 lines)
+- Single resource additions to existing charts
+- Minor template improvements
+- Configuration value additions
+- Documentation enhancements
+- Simple relationship additions
+
+**Example**: Adding a storage bucket resource to an existing chart
+
+### Medium Changes (300-600 lines)
+- New chart creation with 3-5 resources
+- Chart restructuring with conditional resources
+- Multi-resource relationship patterns
+- Template refactoring across multiple files
+- Comprehensive values.yaml enhancements
+
+**Example**: GCP Cloud Run Environment chart with conditional resources and relationships
+
+### Large Changes (600-1000+ lines)
+- Complete environment charts (10+ resources)
+- Cross-provider chart patterns
+- Framework-wide template improvements
+- Comprehensive chart family updates
+- Major architectural pattern changes
+
+**Example**: Complete AWS/GCP/Azure environment chart suite with standardized patterns
+
+**Golden rule**: If you're unsure, start shorter and add detail only where it adds real value. Quality over quantity.
+
+## Changelog Structure
+
+### File Naming
+```
+YYYY-MM-DD-HHMMSS-brief-descriptive-slug.md
+```
+
+Examples:
+- `2025-11-13-162430-gcp-cloud-run-environment-chart-enhancement.md`
+- `2025-11-12-091545-aws-ecs-https-conditional-support.md`
+- `2025-11-10-143022-synthetic-relationships-pattern.md`
+
+**IMPORTANT**: Get the actual current timestamp by running the command `date +"%Y-%m-%d-%H%M%S"` and use that exact output as the prefix for the filename. Do NOT make up or guess the timestamp. Follow with a clear, kebab-case slug describing the change. The timestamp (HHMMSS) ensures automatic chronological sorting when multiple changelogs are created on the same day.
+
+### Required Metadata
+
+Every changelog should start with metadata in this format:
+
+```markdown
+# [Clear, Descriptive Title]
+
+**Date**: [Month Day, Year]
+**Type**: [Enhancement | New Chart | Feature | Refactoring | Breaking Change]
+**Provider**: [AWS | GCP | Azure | Kubernetes | Multi-Provider]
+**Chart(s)**: [chart-name-1, chart-name-2]
+
+## Summary
+
+[2-4 sentence overview of what was accomplished and why it matters]
+```
+
+**Common Types**:
+- New Chart: Brand new InfraChart created
+- Enhancement: Significant improvements to existing chart
+- Feature: New capabilities added (conditional resources, relationships)
+- Refactoring: Template restructuring or pattern improvements
+- Breaking Change: Changes that affect existing chart usage
+
+**Providers**:
+- AWS: Amazon Web Services resources
+- GCP: Google Cloud Platform resources
+- Azure: Microsoft Azure resources
+- Kubernetes: Kubernetes workload resources
+- Multi-Provider: Charts spanning multiple cloud providers
+
+### Required Sections
+
+Every changelog should include:
+
+```markdown
+# [Clear, Descriptive Title]
+
+**Date**: [Month Day, Year]
+**Type**: [Type]
+**Provider**: [Provider]
+**Chart(s)**: [Charts]
+
+## Summary
+
+[2-4 sentence overview of what was accomplished and why it matters]
+
+## Problem Statement / Motivation
+
+[Describe the problem or need that motivated this work]
+
+### Pain Points
+
+[Bullet list of specific issues being addressed]
+
+## Solution / What's New
+
+[High-level description of the approach taken]
+
+### Chart Structure
+
+[Overview of resources included, template organization]
+
+## Implementation Details
+
+[Technical specifics - template changes, Jinja patterns, resource definitions]
+
+### Resources Included
+
+[List of cloud resources in the chart with descriptions]
+
+### Conditional Resources
+
+[Boolean flags and conditional rendering logic, if applicable]
+
+### Resource Relationships
+
+[Dependency graph, relationships between resources, if applicable]
+
+## Benefits
+
+[Concrete improvements - time savings, automation, best practices]
+
+## Impact
+
+[Who/what is affected and how - users provisioning infrastructure]
+
+## Usage Example
+
+[Example values.yaml and deployment command]
+
+## Related Work
+
+[Connect to other changelogs, charts, or patterns]
+
+---
+
+**Status**: ✅ [Production Ready | In Progress | Experimental]
+**Timeline**: [Duration if relevant]
+```
+
+### Optional Sections (Include When Valuable)
+
+Add these sections only when they provide meaningful value:
+
+- **Breaking Changes**: When chart structure or values schema changes incompatibly
+- **Migration Guide**: When users need to update existing deployments
+- **Resource Dependencies**: When complex DAG orchestration is involved
+- **Deployment Flow**: Visual diagrams of resource creation order
+- **Configuration Options**: Detailed explanation of values.yaml parameters
+- **Known Limitations**: For incomplete implementations or known issues
+- **Future Enhancements**: For planned follow-up work
+- **Provider-Specific Notes**: Cloud provider considerations or constraints
+- **Code Metrics**: Statistics that tell a story (resources added, templates created)
+- **Design Decisions**: When trade-offs were significant (why Jinja vs other options)
+- **Testing Strategy**: How to verify the chart deploys successfully
+- **Security Considerations**: IAM roles, permissions, network configurations
+- **Cost Implications**: Resource sizing and cost considerations
+
+## Writing Guidelines
+
+### Do:
+- ✅ **Start with context**: Why did this chart need to exist or change?
+- ✅ **Focus on value**: What problem does this solve for infrastructure teams?
+- ✅ **Use concrete examples**: Show actual values.yaml, template snippets, resource definitions
+- ✅ **Include resource counts**: Number of resources, templates, conditional flags
+- ✅ **Explain decisions**: Why this resource structure vs alternatives?
+- ✅ **Write for future you**: Capture the thinking behind template patterns
+- ✅ **Link to related charts**: Connect the dots with other infrastructure charts
+- ✅ **Use formatting**: Code blocks, tables, bullet lists for readability
+- ✅ **Show deployment commands**: Actual commands to use the chart
+- ✅ **Document relationships**: Explain dependency ordering and grouping
+
+### Don't:
+- ❌ **Over-explain the obvious**: Assume the reader understands infrastructure concepts
+- ❌ **Include every detail**: Focus on what matters for chart users
+- ❌ **Write generic summaries**: Be specific to this chart and its resources
+- ❌ **Skip the "why"**: Context is critical for understanding design decisions
+- ❌ **Ignore trade-offs**: Document why certain resources are included/excluded
+- ❌ **Use jargon without context**: Define provider-specific terms if needed
+
+## Tone and Style
+
+- **Informative, not promotional**: Focus on facts and impact
+- **Technical but accessible**: Balance depth with clarity for infrastructure engineers
+- **Professional but human**: You can say "we discovered X during customer onboarding"
+- **Present tense for descriptions**: "The chart provisions X"
+- **Past tense for actions**: "We added Y resource"
+
+## Quality Checklist
+
+Before finalizing a changelog:
+
+- [ ] Title clearly describes the chart change
+- [ ] Metadata includes Date, Type, Provider, and Chart name(s)
+- [ ] Summary captures essence in 2-4 sentences
+- [ ] Problem statement explains why this chart was created/updated
+- [ ] Solution section describes the chart structure
+- [ ] Resources Included section lists all cloud resources
+- [ ] Implementation details show actual template code when relevant
+- [ ] Benefits are concrete and measurable (time saved, resources provisioned)
+- [ ] Usage example shows realistic values.yaml and commands
+- [ ] Related work connects this to other charts or patterns
+- [ ] Length is proportional to scope and impact
+- [ ] No sensitive information (actual project IDs, credentials, etc.)
+- [ ] Template examples use placeholder values
+- [ ] Resource relationships are clearly documented (if applicable)
+
+## Proportionality Examples
+
+### ✅ Good: Appropriately Sized
+
+**Small change** (200 lines): 
+- Problem: 1 paragraph
+- Solution: 1-2 paragraphs + resource list
+- Implementation: Key template snippet or flag addition
+- Benefits: 3-5 bullets
+- Usage: Brief values.yaml example
+
+**Medium change** (500 lines):
+- Problem: 2-3 paragraphs with customer pain points
+- Solution: Chart structure with resource descriptions
+- Implementation: Template patterns, conditional logic, relationships
+- Resources: Table of included resources with descriptions
+- Benefits: Categorized list with metrics (time saved, resources automated)
+- Usage: Complete values.yaml example with annotations
+
+**Large change** (900 lines):
+- Problem: Comprehensive context with real customer scenarios
+- Solution: Full chart architecture with dependency diagrams
+- Implementation: Detailed template sections per resource
+- Resources: Complete resource catalog with relationships
+- Relationships: DAG visualization and grouping strategy
+- Benefits: Quantitative and qualitative analysis
+- Testing: Deployment verification steps
+- Usage: Multiple values.yaml examples for different scenarios
+
+### ❌ Anti-patterns
+
+- **Over-detailed small change**: 800-line changelog for adding one resource
+- **Under-documented major change**: 150-line changelog for 10-resource chart
+- **Kitchen sink**: Showing every line of every template file
+- **Too abstract**: Generic descriptions without actual template examples
+
+## InfraCharts Specific Guidelines
+
+### File Path Examples
+
+When referencing templates, use actual chart paths under `charts/`:
+
+```markdown
+**Chart**: `charts/gcp/cloud-run-environment/`
+**Template**: `charts/gcp/cloud-run-environment/templates/backend-service.yaml`
+**Values**: `charts/gcp/cloud-run-environment/values.yaml`
+**README**: `charts/gcp/cloud-run-environment/README.md`
+**Template**: `charts/aws/ecs-environment/templates/network.yaml`
+```
+
+### Chart Command Examples
+
+Always show actual commands users can run:
+
+```bash
+# Build and preview chart
+planton chart build gcp/cloud-run-environment
+
+# Publish chart to platform
+planton chart publish gcp/cloud-run-environment
+
+# Create project from chart
+planton project create --from-chart gcp/cloud-run-environment \
+  --name my-project \
+  --values ./my-values.yaml
+```
+
+### Template Examples
+
+Show actual Jinja2 template patterns:
+
+```yaml
+{% if values.postgresEnabled | bool %}
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpCloudSql
+metadata:
+  name: "{{ values.postgres_instance_name }}"
+spec:
+  projectId: "{{ values.gcp_project_id }}"
+  region: "{{ values.gcp_region }}"
+{% endif %}
+```
+
+### Values.yaml Examples
+
+Show parameter structure with types:
+
+```yaml
+params:
+  - name: postgres_enabled
+    description: "true → create PostgreSQL database instance"
+    type: bool
+    value: true
+  
+  - name: postgres_instance_name
+    description: Name of the PostgreSQL instance
+    value: postgres
+```
+
+### Resource Relationship Examples
+
+Document synthetic relationships clearly:
+
+```yaml
+metadata:
+  name: backend-service
+  relationships:
+    - kind: GcpCloudSql
+      name: "{{ values.postgres_instance_name }}"
+      type: uses
+      group: services
+    - kind: GcpGcsBucket
+      name: "{{ values.storage_bucket_name }}"
+      type: uses
+      group: services
+```
+
+### Resource Categories
+
+Use these categories consistently:
+
+**Infrastructure Foundation**:
+- Network (VPC, subnets, NAT)
+- Security (security groups, firewalls, IAM)
+- DNS (hosted zones, records)
+
+**Data Layer**:
+- Databases (RDS, Cloud SQL, PostgreSQL)
+- Storage (S3, GCS, blob storage)
+- Caching (Redis, Memcached)
+
+**Compute**:
+- Container Services (ECS, Cloud Run, AKS)
+- Kubernetes Clusters (EKS, GKE, AKS)
+- Serverless (Lambda, Cloud Functions)
+
+**Supporting Services**:
+- Container Registries (ECR, Artifact Registry, ACR)
+- Load Balancers (ALB, Cloud Load Balancing)
+- Service Accounts / IAM Roles
+- Certificates (ACM, Certificate Manager)
+
+**Conditional Resources**:
+- Optional components controlled by boolean flags
+- Environment-specific resources
+
+## Automation Notes
+
+When creating the changelog:
+1. **Get current timestamp**: Run `date +"%Y-%m-%d-%H%M%S"` to get the actual current date and time for the filename
+2. **Analyze the conversation**: Extract chart changes, template updates, resource additions
+3. **Count resources**: List all resources included in the chart
+4. **Identify provider**: Determine primary cloud provider (AWS, GCP, Azure)
+5. **Document relationships**: Capture synthetic relationships and dependencies
+6. **Extract values schema**: List key parameters and conditional flags
+7. **Choose type**: New Chart, Enhancement, Feature, Refactoring, Breaking Change
+8. **Size appropriately**: Match detail level to chart complexity
+9. **Write the file**: Create in `_changelog/YYYY-MM/` (year-month directory) with proper naming using the timestamp from step 1
+10. **Confirm creation**: Provide file path and next steps
+
+## Example Invocations
+
+```
+"We just completed the GCP Cloud Run Environment chart with conditional resources. 
+@create-infra-charts-changelog"
+
+"I've finished adding synthetic relationships to the AWS ECS chart. 
+@create-infra-charts-changelog - this improves deployment ordering"
+
+"The multi-service chart pattern with optional backend is done. 
+@create-infra-charts-changelog - include the boolean flag pattern"
+```
+
+## Remember
+
+**Changelogs are living documentation** that helps future infrastructure engineers (including you) understand:
+- What resources the chart provisions
+- Why the chart is structured this way
+- How conditional resources work
+- What dependencies exist between resources
+- How to use the chart effectively
+
+Write for the person who will use this chart to provision production infrastructure. Give them the context they need - no more, no less.
+
+**When in doubt**: Start with the required sections, keep it focused, and add detail only where it truly helps understanding. A clear, concise 300-line changelog is better than a rambling 1000-line document.
+
+---
+
+*"Good documentation is the difference between infrastructure that scales and infrastructure that scares."*

@@ -1,0 +1,98 @@
+{% if values.orchestrationEnabled | bool %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsCloudwatchLogGroup
+metadata:
+  name: "{{ values.log_group_name }}"
+  group: monitoring
+spec:
+  retentionInDays: 30
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsIamRole
+metadata:
+  name: "{{ values.step_function_name }}-execution-role"
+  group: identity
+spec:
+  description: Execution role for the {{ values.step_function_name }} Step Functions state machine
+  path: /service-role/
+  trustPolicy:
+    Version: "2012-10-17"
+    Statement:
+      - Effect: Allow
+        Principal:
+          Service: states.amazonaws.com
+        Action: sts:AssumeRole
+  inlinePolicies:
+    loggingAccess:
+      Version: "2012-10-17"
+      Statement:
+        - Effect: Allow
+          Action:
+            - logs:CreateLogDelivery
+            - logs:GetLogDelivery
+            - logs:UpdateLogDelivery
+            - logs:DeleteLogDelivery
+            - logs:ListLogDeliveries
+            - logs:PutResourcePolicy
+            - logs:DescribeResourcePolicies
+            - logs:DescribeLogGroups
+          Resource: "*"
+    sqsAccess:
+      Version: "2012-10-17"
+      Statement:
+        - Effect: Allow
+          Action:
+            - sqs:SendMessage
+          Resource: "arn:aws:sqs:*:*:{{ values.processing_queue_name }}"
+{% if values.notificationsEnabled | bool %}
+    snsAccess:
+      Version: "2012-10-17"
+      Statement:
+        - Effect: Allow
+          Action:
+            - sns:Publish
+          Resource: "arn:aws:sns:*:*:{{ values.sns_topic_name }}"
+{% endif %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsStepFunction
+metadata:
+  name: "{{ values.step_function_name }}"
+  group: compute
+  relationships:
+    - kind: AwsIamRole
+      name: "{{ values.step_function_name }}-execution-role"
+      type: uses
+    - kind: AwsCloudwatchLogGroup
+      name: "{{ values.log_group_name }}"
+      type: uses
+    - kind: AwsSqsQueue
+      name: "{{ values.processing_queue_name }}"
+      type: uses
+spec:
+  type: STANDARD
+  roleArn:
+    valueFrom:
+      kind: AwsIamRole
+      name: "{{ values.step_function_name }}-execution-role"
+      fieldPath: status.outputs.role_arn
+  description: Event-driven workflow orchestration
+  definition:
+    Comment: "Replace this placeholder with your actual workflow definition"
+    StartAt: ProcessEvent
+    States:
+      ProcessEvent:
+        Type: Pass
+        Result:
+          status: processed
+        End: true
+  logging:
+    level: ERROR
+    includeExecutionData: false
+    logDestination:
+      valueFrom:
+        kind: AwsCloudwatchLogGroup
+        name: "{{ values.log_group_name }}"
+        fieldPath: status.outputs.log_group_arn
+{% endif %}

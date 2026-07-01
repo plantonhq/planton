@@ -1,0 +1,19 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: Civo Kubernetes Environment
+spec:
+  selector:
+    kind: platform
+  description: >
+    Configurable Civo Kubernetes Environment with custom VPC, firewall, optional DNS zone,
+    an autoscaled default node pool and toggleable Kubernetes add-ons (Cert-Manager, Istio, etc.).
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/civo/civokubernetescluster/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/civo/civo-kubernetes-environment
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/civo/civo-kubernetes-environment/README.md
+  templateYamlFiles: { }
+  valuesYaml: ""
+  params: [ ]
+

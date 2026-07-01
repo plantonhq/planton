@@ -1,0 +1,33 @@
+---
+apiVersion: digital-ocean.planton.dev/v1
+kind: DigitalOceanAppPlatformService
+metadata:
+  name: "{{ values.service_name }}"
+spec:
+  serviceName: "{{ values.service_name }}"
+  region: "{{ values.region }}"
+  serviceType: web_service
+  imageSource:
+    registry:
+      valueFrom:
+        kind: DigitalOceanContainerRegistry
+        name: "{{ values.env }}-registry"
+        fieldPath: status.outputs.registryName
+    repository: "{{ values.image_repository }}"
+    tag: "{{ values.image_tag }}"
+  instanceSizeSlug: "{{ values.instance_size_slug }}"
+  instanceCount: {{ values.instance_count }}
+  enableAutoscale: {{ values.enable_autoscale }}
+  {% if values.enable_autoscale | bool %}
+  minInstanceCount: {{ values.min_instance_count }}
+  maxInstanceCount: {{ values.max_instance_count }}
+  {% endif %}
+  env:
+    SERVICE_NAME: "{{ values.service_name }}"
+    ORG: "{{ values.org }}"
+    ENV: "{{ values.env }}"
+  customDomain:
+    valueFrom:
+      kind: DigitalOceanDnsZone
+      name: "{{ values.domain_name }}"
+      fieldPath: spec.domainName

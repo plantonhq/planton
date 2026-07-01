@@ -1,0 +1,103 @@
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudVpc
+metadata:
+  name: "{{ values.env }}-serverless-vpc"
+spec:
+  region: "{{ values.region }}"
+  vpcName: "{{ values.env }}-serverless-vpc"
+  cidrBlock: "{{ values.vpc_cidr }}"
+
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudVswitch
+metadata:
+  name: "{{ values.env }}-serverless-vswitch"
+spec:
+  region: "{{ values.region }}"
+  vpcId:
+    valueFrom:
+      kind: AliCloudVpc
+      name: "{{ values.env }}-serverless-vpc"
+      fieldPath: status.outputs.vpcId
+  zoneId: "{{ values.availability_zone_1 }}"
+  cidrBlock: "{{ values.vswitch_cidr }}"
+  vswitchName: "{{ values.env }}-serverless-vswitch"
+
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudSecurityGroup
+metadata:
+  name: "{{ values.env }}-serverless-sg"
+spec:
+  region: "{{ values.region }}"
+  vpcId:
+    valueFrom:
+      kind: AliCloudVpc
+      name: "{{ values.env }}-serverless-vpc"
+      fieldPath: status.outputs.vpcId
+  securityGroupName: "{{ values.env }}-serverless-sg"
+  description: "Security group for serverless workloads in {{ values.env }}"
+  rules:
+    - type: egress
+      ipProtocol: all
+      portRange: "-1/-1"
+      cidrIp: "0.0.0.0/0"
+      description: "All outbound traffic"
+
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudLogProject
+metadata:
+  name: "{{ values.env }}-serverless-logs"
+spec:
+  region: "{{ values.region }}"
+  projectName: "{{ values.env }}-serverless-logs"
+  description: "SLS log project for serverless workloads in {{ values.env }}"
+  logStores:
+    - name: function-log
+      retentionDays: {{ values.log_retention_days }}
+      shardCount: 2
+      autoSplit: true
+      maxSplitShardCount: 32
+      enableIndex: true
+
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudRamRole
+metadata:
+  name: "{{ values.env }}-fc-role"
+spec:
+  region: "{{ values.region }}"
+  roleName: "{{ values.env }}-fc-role"
+  description: "Execution role for FC functions in {{ values.env }}"
+  assumeRolePolicyDocument: |
+    {
+      "Statement": [
+        {
+          "Action": "sts:AssumeRole",
+          "Effect": "Allow",
+          "Principal": {
+            "Service": ["fc.aliyuncs.com"]
+          }
+        }
+      ],
+      "Version": "1"
+    }
+  policyAttachments:
+{% for policy in values.fc_role_policies.split(',') %}
+    - policyName: "{{ policy | trim }}"
+{% endfor %}
+
+{% if values.ossEnabled | bool %}
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudStorageBucket
+metadata:
+  name: "{{ values.env }}-serverless-code"
+spec:
+  region: "{{ values.region }}"
+  bucketName: "{{ values.env }}-serverless-code"
+  acl: private
+  storageClass: Standard
+{% endif %}

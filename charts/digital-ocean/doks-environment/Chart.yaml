@@ -1,0 +1,19 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: DOKS Environment
+spec:
+  selector:
+    kind: platform
+  description: >
+    Configurable DOKS Environment with custom VPC, optional DNS zone and
+    container registry, an autoscaled node‑pool and toggleable Kubernetes
+    add‑ons (Cert‑Manager, Istio, etc.).
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/digitalocean/digitaloceankubernetescluster/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/digital-ocean/doks-environment
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/digital-ocean/doks-environment/README.md
+  templateYamlFiles: { }   # auto‑filled by backend
+  valuesYaml: ""          # auto‑filled by backend
+  params: [ ]              # auto‑filled by backend

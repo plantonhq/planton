@@ -1,0 +1,20 @@
+---
+apiVersion: scaleway.planton.dev/v1
+kind: ScalewayVpc
+metadata:
+  name: "{{ values.env }}-{{ values.cluster_name }}-vpc"
+spec:
+  region: "{{ values.region }}"
+  enableRouting: false
+---
+apiVersion: scaleway.planton.dev/v1
+kind: ScalewayPrivateNetwork
+metadata:
+  name: "{{ values.env }}-{{ values.cluster_name }}-pn"
+spec:
+  vpcId:
+    valueFrom:
+      kind: ScalewayVpc
+      name: "{{ values.env }}-{{ values.cluster_name }}-vpc"
+      fieldPath: status.outputs.vpc_id
+  region: "{{ values.region }}"

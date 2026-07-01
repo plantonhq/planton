@@ -1,0 +1,13 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: AWS Event-Driven Pipeline
+spec:
+  selector:
+    kind: platform
+  description: Event-driven processing pipeline using EventBridge for event routing, SQS for reliable message processing with dead-letter queues, optional SNS fan-out notifications, and optional Step Functions workflow orchestration. The modern AWS event backbone.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/aws/awseventbridgebus/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/aws/event-driven-pipeline
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/aws/event-driven-pipeline/README.md

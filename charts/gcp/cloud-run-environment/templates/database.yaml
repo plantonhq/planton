@@ -1,0 +1,42 @@
+{% if values.databaseEnabled | bool %}
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpCloudSql
+metadata:
+  name: "{{ values.database_instance_name }}"
+{% if values.networkingEnabled | bool %}
+  relationships:
+    - kind: GcpSubnetwork
+      name: "{{ values.vpc_name }}-subnet"
+      type: runs_on
+{% endif %}
+spec:
+  projectId:
+    value: "{{ values.gcp_project_id }}"
+  region: "{{ values.gcp_region }}"
+  databaseEngine: {{ values.database_engine }}
+  databaseVersion: "{{ values.database_version }}"
+  tier: "{{ values.database_tier }}"
+  storageGb: {{ values.database_storage_gb }}
+  rootPassword: "{{ values.database_root_password }}"  # IMPORTANT: Rotate this password immediately after deployment
+  network:
+{% if values.networkingEnabled | bool %}
+    vpcId:
+      valueFrom:
+        kind: GcpVpc
+        name: "{{ values.vpc_name }}"
+        fieldPath: status.outputs.network_self_link
+    privateIpEnabled: true
+{% endif %}
+{% if values.database_authorized_networks | length > 0 %}
+    ipv4Enabled: true
+    authorizedNetworks:
+{% for cidr in values.database_authorized_networks %}
+      - "{{ cidr }}"
+{% endfor %}
+{% elif not values.networkingEnabled | bool %}
+    ipv4Enabled: true
+    authorizedNetworks:
+      - 0.0.0.0/0
+{% endif %}
+{% endif %}

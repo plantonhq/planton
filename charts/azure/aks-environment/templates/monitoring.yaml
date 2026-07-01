@@ -1,0 +1,35 @@
+{% if values.create_log_analytics | bool %}
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureLogAnalyticsWorkspace
+metadata:
+  name: "{{ values.env }}-law"
+spec:
+  region: "{{ values.region }}"
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  name: "{{ values.env }}-law"
+{% endif %}
+{% if values.create_app_insights | bool %}
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureApplicationInsights
+metadata:
+  name: "{{ values.env }}-appinsights"
+spec:
+  region: "{{ values.region }}"
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  name: "{{ values.env }}-appinsights"
+  workspaceId:
+    valueFrom:
+      kind: AzureLogAnalyticsWorkspace
+      name: "{{ values.env }}-law"
+      fieldPath: status.outputs.workspace_id
+{% endif %}

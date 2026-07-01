@@ -1,0 +1,13 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: GCP Event Pipeline
+spec:
+  selector:
+    kind: platform
+  description: Event-driven data ingestion pipeline using Pub/Sub for event collection with direct BigQuery streaming delivery. Includes a GCS bucket for dead-letter storage and a dedicated service account for Pub/Sub-to-BigQuery writes.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/gcp/gcppubsubtopic/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/gcp/event-pipeline
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/gcp/event-pipeline/README.md

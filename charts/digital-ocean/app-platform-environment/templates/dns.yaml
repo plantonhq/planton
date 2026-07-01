@@ -1,0 +1,7 @@
+---
+apiVersion: digital-ocean.planton.dev/v1
+kind: DigitalOceanDnsZone
+metadata:
+  name: "{{ values.domain_name }}"
+spec:
+  domainName: "{{ values.domain_name }}"

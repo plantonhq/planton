@@ -1,0 +1,70 @@
+params:
+  # ─── Location ──────────────────────────────────────────────────────────
+  - name: location
+    description: >
+      Hetzner Cloud location for all resources (e.g., fsn1, nbg1, hel1, ash,
+      hil, sin). All resources in this chart are created in the same location.
+    value: fsn1
+
+  # ─── Network ───────────────────────────────────────────────────────────
+  - name: network_ip_range
+    description: CIDR block for the private network (RFC 1918)
+    value: 10.0.0.0/16
+
+  - name: subnet_ip_range
+    description: CIDR block for the cloud subnet (must be within network_ip_range)
+    value: 10.0.1.0/24
+
+  - name: subnet_network_zone
+    description: >
+      Hetzner Cloud network zone for the subnet. Known zones: eu-central,
+      us-east, us-west, ap-southeast.
+    value: eu-central
+
+  # ─── SSH Key ───────────────────────────────────────────────────────────
+  - name: ssh_public_key
+    description: SSH public key to inject into all cluster nodes
+    value: ""
+
+  # ─── Servers ───────────────────────────────────────────────────────────
+  - name: server_type
+    description: >
+      Server type for all cluster nodes (e.g., cx22, cpx11, cax11).
+    value: cx22
+
+  - name: image
+    description: OS image name or ID (e.g., ubuntu-24.04, debian-12)
+    value: ubuntu-24.04
+
+  - name: user_data
+    description: >
+      Cloud-init user data applied to all cluster nodes. Use this to bootstrap
+      cluster membership, install database engines, or configure replication.
+    value: ""
+
+  - name: server_count
+    description: >
+      Number of cluster nodes. Use 3 for quorum-based systems (etcd, Consul,
+      PostgreSQL Patroni). Use 2 for active-passive failover.
+    value: "3"
+
+  # ─── Application ───────────────────────────────────────────────────────
+  - name: app_port
+    description: >
+      Port your service listens on. The load balancer forwards traffic to this
+      port on each node (e.g., 5432 for PostgreSQL, 6379 for Redis).
+    value: "5432"
+
+  # ─── Load Balancer ─────────────────────────────────────────────────────
+  - name: load_balancer_type
+    description: >
+      Load balancer size: lb11 (25 targets, 10k conn/s), lb21 (75 targets,
+      20k conn/s), lb31 (150 targets, 40k conn/s).
+    value: lb11
+
+  # ─── Floating IP ───────────────────────────────────────────────────────
+  - name: floating_ip_type
+    description: >
+      IP version for the floating IP (ipv4 or ipv6). The floating IP can be
+      reassigned between cluster nodes for failover without DNS changes.
+    value: ipv4

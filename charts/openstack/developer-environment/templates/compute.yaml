@@ -1,0 +1,117 @@
+---
+apiVersion: openstack.planton.dev/v1
+kind: OpenStackKeypair
+metadata:
+  name: "{{ values.env }}-keypair"
+  labels:
+    planton.dev/provisioner: terraform
+spec:
+  publicKey: "{{ values.ssh_public_key }}"
+---
+apiVersion: openstack.planton.dev/v1
+kind: OpenStackNetworkPort
+metadata:
+  name: "{{ values.env }}-port"
+  labels:
+    planton.dev/provisioner: terraform
+spec:
+  networkId:
+    valueFrom:
+      kind: OpenStackNetwork
+      name: "{{ values.env }}-network"
+      fieldPath: status.outputs.networkId
+  fixedIps:
+    - subnetId:
+        valueFrom:
+          kind: OpenStackSubnet
+          name: "{{ values.env }}-subnet"
+          fieldPath: status.outputs.subnetId
+  securityGroupIds:
+    - valueFrom:
+        kind: OpenStackSecurityGroup
+        name: "{{ values.env }}-dev-sg"
+        fieldPath: status.outputs.securityGroupId
+{% if values.floatingIpEnabled | bool %}
+---
+apiVersion: openstack.planton.dev/v1
+kind: OpenStackFloatingIp
+metadata:
+  name: "{{ values.env }}-fip"
+  labels:
+    planton.dev/provisioner: terraform
+spec:
+  floatingNetworkId:
+    value: "{{ values.external_network_name }}"
+  description: "Floating IP for {{ values.env }} developer VM"
+{% endif %}
+---
+apiVersion: openstack.planton.dev/v1
+kind: OpenStackInstance
+metadata:
+  name: "{{ values.env }}-instance"
+  labels:
+    planton.dev/provisioner: terraform
+spec:
+  flavorName: "{{ values.instance_flavor }}"
+  imageName: "{{ values.instance_image }}"
+  keyPair:
+    valueFrom:
+      kind: OpenStackKeypair
+      name: "{{ values.env }}-keypair"
+      fieldPath: status.outputs.name
+  networks:
+    - port:
+        valueFrom:
+          kind: OpenStackNetworkPort
+          name: "{{ values.env }}-port"
+          fieldPath: status.outputs.portId
+{% if values.floatingIpEnabled | bool %}
+---
+apiVersion: openstack.planton.dev/v1
+kind: OpenStackFloatingIpAssociate
+metadata:
+  name: "{{ values.env }}-fip-assoc"
+  labels:
+    planton.dev/provisioner: terraform
+spec:
+  floatingIp:
+    valueFrom:
+      kind: OpenStackFloatingIp
+      name: "{{ values.env }}-fip"
+      fieldPath: status.outputs.address
+  portId:
+    valueFrom:
+      kind: OpenStackNetworkPort
+      name: "{{ values.env }}-port"
+      fieldPath: status.outputs.portId
+{% endif %}
+{% if values.volumeEnabled | bool %}
+---
+apiVersion: openstack.planton.dev/v1
+kind: OpenStackVolume
+metadata:
+  name: "{{ values.env }}-volume"
+  labels:
+    planton.dev/provisioner: terraform
+spec:
+  size: {{ values.volume_size_gb }}
+  description: "Persistent storage for {{ values.env }} developer VM"
+---
+apiVersion: openstack.planton.dev/v1
+kind: OpenStackVolumeAttach
+metadata:
+  name: "{{ values.env }}-volume-attach"
+  labels:
+    planton.dev/provisioner: terraform
+spec:
+  instanceId:
+    valueFrom:
+      kind: OpenStackInstance
+      name: "{{ values.env }}-instance"
+      fieldPath: status.outputs.instanceId
+  volumeId:
+    valueFrom:
+      kind: OpenStackVolume
+      name: "{{ values.env }}-volume"
+      fieldPath: status.outputs.volumeId
+{% endif %}

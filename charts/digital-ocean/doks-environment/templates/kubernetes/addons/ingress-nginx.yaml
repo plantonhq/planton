@@ -1,0 +1,16 @@
+{% if values.ingressNginxEnabled | bool %}
+---
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesIngressNginx
+metadata:
+  name: {{ values.cluster_name }}-ingress-nginx
+  relationships:
+    - kind: DigitalOceanKubernetesCluster
+      name: "{{ values.env }}-{{ values.cluster_name }}"
+      type: runs_on
+spec:
+  targetCluster:
+    clusterKind: DigitalOceanKubernetesCluster
+    clusterName: "{{ values.env }}-{{ values.cluster_name }}"
+{% endif %}
+

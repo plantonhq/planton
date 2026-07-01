@@ -1,0 +1,69 @@
+params:
+  # ─── General ─────────────────────────────────────────────────────────────────
+  - name: aws_region
+    description: AWS region for all resources
+    value: us-east-1
+
+  # ─── SageMaker ───────────────────────────────────────────────────────────────
+  - name: sagemaker_domain_name
+    description: SageMaker Studio domain name
+    value: ml-workbench
+
+  - name: auth_mode
+    description: SageMaker authentication mode (IAM or SSO)
+    value: IAM
+
+  # ─── Storage ─────────────────────────────────────────────────────────────────
+  - name: s3_bucket_name
+    description: S3 bucket for model artifacts, datasets, and notebooks
+    value: ml-workbench-data
+
+  # ─── VPC toggle ──────────────────────────────────────────────────────────────
+  - name: vpcEnabled
+    description: >
+      Deploy SageMaker inside a VPC for network isolation.
+      When false, SageMaker uses PublicInternetOnly access mode.
+    type: bool
+    value: false
+
+  - name: vpc_availability_zone_1
+    description: First AZ (only used when vpcEnabled is true)
+    value: us-east-1a
+
+  - name: vpc_availability_zone_2
+    description: Second AZ (only used when vpcEnabled is true)
+    value: us-east-1b
+
+  - name: vpc_cidr
+    description: Primary IPv4 CIDR block for the VPC (only used when vpcEnabled is true)
+    value: 10.0.0.0/16
+
+  - name: public_subnet_1_cidr
+    description: CIDR for the public subnet in AZ 1, which hosts the NAT gateway (only used when vpcEnabled is true)
+    value: 10.0.0.0/24
+
+  - name: public_subnet_2_cidr
+    description: CIDR for the public subnet in AZ 2 (only used when vpcEnabled is true)
+    value: 10.0.1.0/24
+
+  - name: private_subnet_1_cidr
+    description: CIDR for the private subnet in AZ 1, which hosts the SageMaker domain (only used when vpcEnabled is true)
+    value: 10.0.16.0/20
+
+  - name: private_subnet_2_cidr
+    description: CIDR for the private subnet in AZ 2 (only used when vpcEnabled is true)
+    value: 10.0.32.0/20
+
+  - name: nat_mode
+    description: "Private-subnet egress when vpcEnabled: single (one shared NAT gateway), per_az (one NAT gateway per AZ), or none (no outbound internet)"
+    value: single
+
+  # ─── Custom images toggle ───────────────────────────────────────────────────
+  - name: customImagesEnabled
+    description: Create an ECR repository for custom SageMaker container images
+    type: bool
+    value: false
+
+  - name: ecr_repo_name
+    description: ECR repository name (only used when customImagesEnabled is true)
+    value: ml-custom-images

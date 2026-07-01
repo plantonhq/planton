@@ -1,0 +1,47 @@
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsEventBridgeBus
+metadata:
+  name: "{{ values.bus_name }}"
+  group: messaging
+spec:
+  description: "{{ values.bus_description }}"
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsSqsQueue
+metadata:
+  name: "{{ values.dlq_name }}"
+  group: messaging
+spec:
+  fifoQueue: false
+  messageRetentionSeconds: 1209600
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsSqsQueue
+metadata:
+  name: "{{ values.processing_queue_name }}"
+  group: messaging
+  relationships:
+    - kind: AwsSqsQueue
+      name: "{{ values.dlq_name }}"
+      type: uses
+spec:
+  fifoQueue: false
+  visibilityTimeoutSeconds: {{ values.processing_queue_visibility_timeout }}
+  messageRetentionSeconds: 345600
+  deadLetterConfig:
+    targetArn:
+      valueFrom:
+        kind: AwsSqsQueue
+        name: "{{ values.dlq_name }}"
+        fieldPath: status.outputs.queue_arn
+    maxReceiveCount: {{ values.dlq_max_receive_count }}
+{% if values.notificationsEnabled | bool %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsSnsTopic
+metadata:
+  name: "{{ values.sns_topic_name }}"
+  group: messaging
+spec: {}
+{% endif %}

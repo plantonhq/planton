@@ -1,0 +1,18 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: Hetzner Cloud HA Server Cluster
+spec:
+  selector:
+    kind: platform
+  description: >
+    High-availability server cluster on Hetzner Cloud with anti-affinity
+    placement, a load balancer for traffic distribution, and a floating IP for
+    failover. Servers are spread across different physical hosts via a placement
+    group. Designed for critical production workloads such as databases and
+    stateful services.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/hetznercloud/hetznercloudserver/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/hetznercloud/ha-server-cluster
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/hetznercloud/ha-server-cluster/README.md

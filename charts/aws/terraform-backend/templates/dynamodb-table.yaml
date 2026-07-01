@@ -1,0 +1,16 @@
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsDynamodb
+metadata:
+  name: "{{ values.table_name }}"
+spec:
+  billingMode: PROVISIONED
+  provisionedThroughput:
+    readCapacityUnits: 5
+    writeCapacityUnits: 5
+  attributeDefinitions:
+    - name: LockID
+      type: S
+  keySchema:
+    - attributeName: LockID
+      keyType: HASH

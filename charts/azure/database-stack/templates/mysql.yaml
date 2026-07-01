@@ -1,0 +1,77 @@
+{% if values.create_mysql | bool %}
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureSubnet
+metadata:
+  name: "{{ values.env }}-mysql-subnet"
+spec:
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  vnetId:
+    valueFrom:
+      kind: AzureVpc
+      name: "{{ values.env }}-vnet"
+      fieldPath: status.outputs.vnet_id
+  name: "{{ values.env }}-mysql-subnet"
+  addressPrefix: "{{ values.mysql_subnet_cidr }}"
+  serviceEndpoints:
+    - "Microsoft.Storage"
+  delegation:
+    name: mysql
+    serviceName: "Microsoft.DBforMySQL/flexibleServers"
+    actions:
+      - "Microsoft.Network/virtualNetworks/subnets/join/action"
+---
+apiVersion: azure.planton.dev/v1
+kind: AzurePrivateDnsZone
+metadata:
+  name: "{{ values.env }}-mysql-dns"
+spec:
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  name: "privatelink.mysql.database.azure.com"
+  vnetId:
+    valueFrom:
+      kind: AzureVpc
+      name: "{{ values.env }}-vnet"
+      fieldPath: status.outputs.vnet_id
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureMysqlFlexibleServer
+metadata:
+  name: "{{ values.env }}-{{ values.mysql_name }}"
+spec:
+  region: "{{ values.region }}"
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  name: "{{ values.env }}-{{ values.mysql_name }}"
+  administratorLogin: "{{ values.mysql_admin_login }}"
+  administratorPassword:
+    value: "{{ values.mysql_admin_password }}"
+  version: "{{ values.mysql_version }}"
+  skuName: "{{ values.mysql_sku_name }}"
+  storage:
+    sizeGb: {{ values.mysql_storage_size_gb }}
+    autoGrowEnabled: true
+  delegatedSubnetId:
+    valueFrom:
+      kind: AzureSubnet
+      name: "{{ values.env }}-mysql-subnet"
+      fieldPath: status.outputs.subnet_id
+  privateDnsZoneId:
+    valueFrom:
+      kind: AzurePrivateDnsZone
+      name: "{{ values.env }}-mysql-dns"
+      fieldPath: status.outputs.zone_id
+  databases:
+    - name: "{{ values.mysql_database_name }}"
+{% endif %}

@@ -1,0 +1,103 @@
+params:
+  # ─── Region & Availability Zones ──────────────────────────────────────────────
+  - name: region
+    description: Alibaba Cloud region for all resources
+    value: cn-hangzhou
+
+  - name: availability_zone_1
+    description: First availability zone
+    value: cn-hangzhou-h
+
+  - name: availability_zone_2
+    description: Second availability zone (HA standby)
+    value: cn-hangzhou-i
+
+  # ─── VPC ──────────────────────────────────────────────────────────────────────
+  - name: vpc_cidr
+    description: VPC CIDR block for the database network
+    value: "10.1.0.0/16"
+
+  - name: vswitch_cidr_1
+    description: CIDR for database VSwitch in AZ-1
+    value: "10.1.0.0/24"
+
+  - name: vswitch_cidr_2
+    description: CIDR for database VSwitch in AZ-2
+    value: "10.1.1.0/24"
+
+  # ─── Private DNS ──────────────────────────────────────────────────────────────
+  - name: private_zone_name
+    description: Private DNS zone name for internal database resolution
+    value: db.internal
+
+  # ─── RDS (optional) ───────────────────────────────────────────────────────────
+  - name: rdsEnabled
+    description: Deploy an AliCloud RDS instance
+    type: bool
+    value: true
+
+  - name: rds_engine
+    description: "RDS engine: MySQL, PostgreSQL, SQLServer, MariaDB"
+    value: PostgreSQL
+
+  - name: rds_engine_version
+    description: Engine version (e.g., 16.0 for PostgreSQL, 8.0 for MySQL)
+    value: "16.0"
+
+  - name: rds_instance_type
+    description: RDS instance class
+    value: rds.pg.s2.large
+
+  - name: rds_storage_gb
+    description: RDS storage size in GB
+    value: "50"
+
+  # ─── PolarDB (optional) ───────────────────────────────────────────────────────
+  - name: polardbEnabled
+    description: Deploy an AliCloud PolarDB cluster
+    type: bool
+    value: false
+
+  - name: polardb_db_type
+    description: "PolarDB engine: MySQL, PostgreSQL, Oracle"
+    value: PostgreSQL
+
+  - name: polardb_db_version
+    description: PolarDB engine version
+    value: "14"
+
+  - name: polardb_node_class
+    description: PolarDB node class
+    value: polar.pg.x4.large
+
+  # ─── Redis (optional) ─────────────────────────────────────────────────────────
+  - name: redisEnabled
+    description: Deploy an AliCloud Redis instance
+    type: bool
+    value: false
+
+  - name: redis_instance_class
+    description: Redis instance class
+    value: redis.master.small.default
+
+  - name: redis_engine_version
+    description: Redis engine version
+    value: "7.0"
+
+  # ─── MongoDB (optional) ───────────────────────────────────────────────────────
+  - name: mongodbEnabled
+    description: Deploy an AliCloud MongoDB instance
+    type: bool
+    value: false
+
+  - name: mongodb_engine_version
+    description: MongoDB engine version
+    value: "7.0"
+
+  - name: mongodb_instance_class
+    description: MongoDB instance class
+    value: dds.mongo.mid
+
+  - name: mongodb_storage_gb
+    description: MongoDB storage size in GB
+    value: "20"

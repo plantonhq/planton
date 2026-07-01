@@ -1,0 +1,72 @@
+params:
+  # ─── GCP Configuration ─────────────────────────────────────────────────
+  - name: gcp_project_id
+    description: GCP project ID for all resources
+    value: my-gcp-project
+
+  - name: region
+    description: GCP region for BigQuery and GCS
+    value: us-central1
+
+  # ─── Pub/Sub Topic ─────────────────────────────────────────────────────
+  - name: topic_name
+    description: Pub/Sub topic name for event ingestion
+    value: events-ingest
+
+  # ─── Pub/Sub Subscription ──────────────────────────────────────────────
+  - name: subscription_name
+    description: >
+      Subscription name for BigQuery delivery.
+      Streams events directly from the topic into BigQuery.
+    value: events-to-bigquery
+
+  - name: bigquery_table
+    description: >
+      Fully qualified BigQuery table for event delivery.
+      Format: project_id.dataset_id.table_id
+      The table must exist before the subscription is created.
+    value: my-gcp-project.events.raw_events
+
+  - name: write_metadata
+    description: >
+      Include Pub/Sub metadata (subscription name, messageId, publishTime,
+      attributes, orderingKey) as additional BigQuery columns
+    type: bool
+    value: true
+
+  # ─── BigQuery ──────────────────────────────────────────────────────────
+  - name: dataset_id
+    description: BigQuery dataset ID for event data (alphanumeric and underscores)
+    value: events
+
+  # ─── Dead-Letter Storage ───────────────────────────────────────────────
+  - name: bucket_name
+    description: >
+      GCS bucket for dead-letter messages and overflow storage.
+      Globally unique name required.
+    value: my-project-events-deadletter
+
+  # ─── Dead-Letter Topic (optional) ─────────────────────────────────────
+  - name: deadLetterEnabled
+    description: >
+      Create a dead-letter topic and configure the subscription to forward
+      unprocessable messages after max delivery attempts
+    type: bool
+    value: true
+
+  - name: dead_letter_topic_name
+    description: Dead-letter topic name (only used when deadLetterEnabled is true)
+    value: events-deadletter
+
+  - name: max_delivery_attempts
+    description: >
+      Maximum delivery attempts before dead-lettering a message (5-100).
+      Only used when deadLetterEnabled is true.
+    value: "10"
+
+  # ─── Service Account ───────────────────────────────────────────────────
+  - name: service_account_id
+    description: >
+      Service account for Pub/Sub BigQuery delivery.
+      Granted BigQuery data editor and Pub/Sub subscriber roles.
+    value: events-pipeline-sa

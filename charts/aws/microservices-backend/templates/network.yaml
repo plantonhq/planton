@@ -1,0 +1,315 @@
+# AWS network foundation for the microservices backend.
+#
+# One public and one private subnet per Availability Zone. Public subnets route
+# 0.0.0.0/0 to the Internet Gateway and host the ALB plus the NAT gateway(s);
+# private subnets host the database, cache, and Fargate tasks and reach the
+# internet outbound-only through a NAT gateway. A subnet is "public" or
+# "private" solely by where its default route points (IGW vs NAT).
+#
+# `nat_mode` controls private-subnet egress: single (one shared NAT), per_az
+# (one NAT per AZ), or none (no outbound internet from private subnets).
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsVpc
+metadata:
+  name: "{{ values.service_name }}-vpc"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+  cidrBlock: "{{ values.vpc_cidr }}"
+  enableDnsSupport: true
+  enableDnsHostnames: true
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsInternetGateway
+metadata:
+  name: "{{ values.service_name }}-igw"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: "{{ values.service_name }}-vpc"
+      fieldPath: status.outputs.vpc_id
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsSubnet
+metadata:
+  name: "{{ values.service_name }}-public-1"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: "{{ values.service_name }}-vpc"
+      fieldPath: status.outputs.vpc_id
+  availabilityZone: "{{ values.availability_zone_1 }}"
+  cidrBlock: "{{ values.public_subnet_1_cidr }}"
+  mapPublicIpOnLaunch: true
+  routes:
+    - destinationCidrBlock: 0.0.0.0/0
+      targetType: internet_gateway
+      targetId:
+        valueFrom:
+          kind: AwsInternetGateway
+          name: "{{ values.service_name }}-igw"
+          fieldPath: status.outputs.internet_gateway_id
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsSubnet
+metadata:
+  name: "{{ values.service_name }}-public-2"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: "{{ values.service_name }}-vpc"
+      fieldPath: status.outputs.vpc_id
+  availabilityZone: "{{ values.availability_zone_2 }}"
+  cidrBlock: "{{ values.public_subnet_2_cidr }}"
+  mapPublicIpOnLaunch: true
+  routes:
+    - destinationCidrBlock: 0.0.0.0/0
+      targetType: internet_gateway
+      targetId:
+        valueFrom:
+          kind: AwsInternetGateway
+          name: "{{ values.service_name }}-igw"
+          fieldPath: status.outputs.internet_gateway_id
+{% if values.nat_mode != "none" %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsElasticIp
+metadata:
+  name: "{{ values.service_name }}-nat-eip-1"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsNatGateway
+metadata:
+  name: "{{ values.service_name }}-nat-1"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+  connectivityType: public
+  subnetId:
+    valueFrom:
+      kind: AwsSubnet
+      name: "{{ values.service_name }}-public-1"
+      fieldPath: status.outputs.subnet_id
+  allocationId:
+    valueFrom:
+      kind: AwsElasticIp
+      name: "{{ values.service_name }}-nat-eip-1"
+      fieldPath: status.outputs.allocation_id
+{% if values.nat_mode == "per_az" %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsElasticIp
+metadata:
+  name: "{{ values.service_name }}-nat-eip-2"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsNatGateway
+metadata:
+  name: "{{ values.service_name }}-nat-2"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+  connectivityType: public
+  subnetId:
+    valueFrom:
+      kind: AwsSubnet
+      name: "{{ values.service_name }}-public-2"
+      fieldPath: status.outputs.subnet_id
+  allocationId:
+    valueFrom:
+      kind: AwsElasticIp
+      name: "{{ values.service_name }}-nat-eip-2"
+      fieldPath: status.outputs.allocation_id
+{% endif %}
+{% endif %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsSubnet
+metadata:
+  name: "{{ values.service_name }}-private-1"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: "{{ values.service_name }}-vpc"
+      fieldPath: status.outputs.vpc_id
+  availabilityZone: "{{ values.availability_zone_1 }}"
+  cidrBlock: "{{ values.private_subnet_1_cidr }}"
+{% if values.nat_mode != "none" %}
+  routes:
+    - destinationCidrBlock: 0.0.0.0/0
+      targetType: nat_gateway
+      targetId:
+        valueFrom:
+          kind: AwsNatGateway
+          name: "{{ values.service_name }}-nat-1"
+          fieldPath: status.outputs.nat_gateway_id
+{% endif %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsSubnet
+metadata:
+  name: "{{ values.service_name }}-private-2"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: "{{ values.service_name }}-vpc"
+      fieldPath: status.outputs.vpc_id
+  availabilityZone: "{{ values.availability_zone_2 }}"
+  cidrBlock: "{{ values.private_subnet_2_cidr }}"
+{% if values.nat_mode != "none" %}
+  routes:
+    - destinationCidrBlock: 0.0.0.0/0
+      targetType: nat_gateway
+      targetId:
+        valueFrom:
+          kind: AwsNatGateway
+{% if values.nat_mode == "per_az" %}
+          name: "{{ values.service_name }}-nat-2"
+{% else %}
+          name: "{{ values.service_name }}-nat-1"
+{% endif %}
+          fieldPath: status.outputs.nat_gateway_id
+{% endif %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsSecurityGroup
+metadata:
+  name: "{{ values.service_name }}-sg"
+  group: network
+  relationships:
+    - kind: AwsVpc
+      name: "{{ values.service_name }}-vpc"
+      type: uses
+spec:
+  region: "{{ values.aws_region }}"
+  description: Allow HTTP/HTTPS ingress and all egress
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: "{{ values.service_name }}-vpc"
+      fieldPath: status.outputs.vpc_id
+  ingress:
+    - description: HTTP from anywhere
+      fromPort: 80
+      toPort: 80
+      protocol: TCP
+      ipv4Cidrs:
+        - 0.0.0.0/0
+    - description: HTTPS from anywhere
+      fromPort: 443
+      toPort: 443
+      protocol: TCP
+      ipv4Cidrs:
+        - 0.0.0.0/0
+  egress:
+    - description: Allow all outbound
+      protocol: "-1"
+      ipv4Cidrs:
+        - 0.0.0.0/0
+{% if values.dnsEnabled | bool %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsRoute53Zone
+metadata:
+  name: "{{ values.domain_name }}"
+  slug: "{{ values.domain_name | replace('.', '-') }}"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+{% if values.httpsEnabled | bool %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsCertManagerCert
+metadata:
+  name: "{{ values.service_name }}-alb-cert"
+  group: security
+  relationships:
+    - kind: AwsRoute53Zone
+      name: "{{ values.domain_name }}"
+      type: uses
+spec:
+  region: "{{ values.aws_region }}"
+  primaryDomainName: "{{ values.load_balancer_domain_name }}"
+  alternateDomainNames:
+    - "*.{{ values.load_balancer_domain_name }}"
+  route53HostedZoneId:
+    valueFrom:
+      kind: AwsRoute53Zone
+      name: "{{ values.domain_name }}"
+      fieldPath: status.outputs.zone_id
+  validationMethod: DNS
+{% endif %}
+{% endif %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsAlb
+metadata:
+  name: "{{ values.service_name }}-alb"
+  group: network
+  relationships:
+    - kind: AwsVpc
+      name: "{{ values.service_name }}-vpc"
+      type: uses
+    - kind: AwsSecurityGroup
+      name: "{{ values.service_name }}-sg"
+      type: uses
+spec:
+  region: "{{ values.aws_region }}"
+  subnets:
+    - valueFrom:
+        kind: AwsSubnet
+        name: "{{ values.service_name }}-public-1"
+        fieldPath: status.outputs.subnet_id
+    - valueFrom:
+        kind: AwsSubnet
+        name: "{{ values.service_name }}-public-2"
+        fieldPath: status.outputs.subnet_id
+  securityGroups:
+    - valueFrom:
+        kind: AwsSecurityGroup
+        name: "{{ values.service_name }}-sg"
+        fieldPath: status.outputs.security_group_id
+  idleTimeoutSeconds: {{ values.alb_idle_timeout_seconds }}
+{% if values.dnsEnabled | bool %}
+  dns:
+    enabled: true
+    hostnames:
+      - "{{ values.load_balancer_domain_name }}"
+      - "*.{{ values.load_balancer_domain_name }}"
+    route53ZoneId:
+      valueFrom:
+        kind: AwsRoute53Zone
+        name: "{{ values.domain_name }}"
+        fieldPath: status.outputs.zone_id
+{% endif %}
+{% if values.httpsEnabled | bool and values.dnsEnabled | bool %}
+  ssl:
+    enabled: true
+    certificateArn:
+      valueFrom:
+        kind: AwsCertManagerCert
+        name: "{{ values.service_name }}-alb-cert"
+        fieldPath: status.outputs.cert_arn
+{% endif %}

@@ -1,0 +1,33 @@
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpGcsBucket
+metadata:
+  name: "{{ values.bucket_name }}"
+  group: storage
+  relationships:
+    - kind: GcpServiceAccount
+      name: "{{ values.service_account_id }}"
+      type: uses
+spec:
+  gcpProjectId:
+    value: "{{ values.gcp_project_id }}"
+  bucketName: "{{ values.bucket_name }}"
+  location: "{{ values.region }}"
+  uniformBucketLevelAccessEnabled: true
+  publicAccessPrevention: enforced
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpBigQueryDataset
+metadata:
+  name: "{{ values.dataset_id }}"
+  group: storage
+  relationships:
+    - kind: GcpServiceAccount
+      name: "{{ values.service_account_id }}"
+      type: uses
+spec:
+  projectId:
+    value: "{{ values.gcp_project_id }}"
+  datasetId: "{{ values.dataset_id }}"
+  location: "{{ values.region }}"
+  description: ML dataset managed by the ML Notebook Environment chart

@@ -1,0 +1,28 @@
+---
+apiVersion: hetznercloud.planton.dev/v1
+kind: HetznerCloudServer
+metadata:
+  name: "{{ values.env }}-server"
+spec:
+  serverType: "{{ values.server_type }}"
+  image: "{{ values.image }}"
+  location: "{{ values.location }}"
+  sshKeys:
+    - valueFrom:
+        kind: HetznerCloudSshKey
+        name: "{{ values.env }}-ssh-key"
+        fieldPath: status.outputs.ssh_key_id
+  firewallIds:
+    - valueFrom:
+        kind: HetznerCloudFirewall
+        name: "{{ values.env }}-firewall"
+        fieldPath: status.outputs.firewall_id
+  networks:
+    - networkId:
+        valueFrom:
+          kind: HetznerCloudNetwork
+          name: "{{ values.env }}-network"
+          fieldPath: status.outputs.network_id
+  {% if values.user_data != "" %}
+  userData: "{{ values.user_data }}"
+  {% endif %}

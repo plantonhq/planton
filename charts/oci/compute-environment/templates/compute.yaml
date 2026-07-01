@@ -1,0 +1,33 @@
+---
+apiVersion: oci.planton.dev/v1
+kind: OciComputeInstance
+metadata:
+  name: "{{ values.env }}-{{ values.instance_name }}"
+spec:
+  compartmentId:
+    value: "{{ values.compartment_ocid }}"
+  availabilityDomain: "{{ values.availability_domain }}"
+  shape: "{{ values.shape }}"
+  shapeConfig:
+    ocpus: {{ values.ocpus }}
+    memoryInGbs: {{ values.memory_gb }}
+  {% if values.image_id != "" %}
+  sourceDetails:
+    sourceType: image
+    imageId: "{{ values.image_id }}"
+  {% endif %}
+  createVnicDetails:
+    subnetId:
+      valueFrom:
+        kind: OciSubnet
+        name: "{{ values.env }}-private"
+        fieldPath: status.outputs.subnetId
+    nsgIds:
+      - valueFrom:
+          kind: OciSecurityGroup
+          name: "{{ values.env }}-compute"
+          fieldPath: status.outputs.networkSecurityGroupId
+  {% if values.ssh_public_key != "" %}
+  sshAuthorizedKeys:
+    - "{{ values.ssh_public_key }}"
+  {% endif %}

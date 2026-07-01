@@ -1,0 +1,60 @@
+params:
+  # ─── Foundation ───────────────────────────────────────────────────────────────
+  - name: region
+    description: Azure region (e.g. eastus, westus2, westeurope)
+    value: eastus
+
+  - name: resource_group_name
+    description: Resource group name suffix (prefixed with env)
+    value: func-rg
+
+  # ─── Service Plan ─────────────────────────────────────────────────────────────
+  - name: plan_name
+    description: App Service Plan name
+    value: func-plan
+
+  - name: sku_name
+    description: "Plan SKU: Y1 (consumption), EP1-EP3 (elastic premium), B1-P3v3 (dedicated)"
+    value: Y1
+
+  - name: os_type
+    description: "Operating system: Linux, Windows"
+    value: Linux
+
+  # ─── Storage Account ──────────────────────────────────────────────────────────
+  - name: storage_account_name
+    description: "Storage account name (globally unique, 3‑24 lowercase alphanumeric)"
+    value: myfuncsa12345
+
+  # ─── Function App ─────────────────────────────────────────────────────────────
+  - name: function_app_name
+    description: Function App name
+    value: my-func-app
+
+  - name: runtime_stack
+    description: "Runtime: python, node, java, dotnet, dotnet-isolated, custom"
+    value: node
+
+  - name: runtime_version
+    description: "Runtime version (e.g. 20 for node, 3.11 for python, 17 for java)"
+    value: "20"
+
+  - name: functions_extension_version
+    description: "Functions runtime version: ~4"
+    value: "~4"
+
+  # ─── Monitoring ───────────────────────────────────────────────────────────────
+  - name: create_app_insights
+    description: Create Application Insights for APM telemetry
+    type: bool
+    value: true
+
+  # ─── Key Vault (optional) ────────────────────────────────────────────────────
+  - name: create_key_vault
+    description: Create Key Vault for secrets management
+    type: bool
+    value: false
+
+  - name: key_vault_name
+    description: "Key Vault name (globally unique, 3‑24 alphanumeric and hyphens)"
+    value: my-func-kv

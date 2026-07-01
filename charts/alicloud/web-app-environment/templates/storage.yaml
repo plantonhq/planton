@@ -1,0 +1,29 @@
+{% if values.ossEnabled | bool %}
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudStorageBucket
+metadata:
+  name: "{{ values.env }}-assets"
+spec:
+  region: "{{ values.region }}"
+  bucketName: "{{ values.env }}-assets"
+  acl: private
+  storageClass: Standard
+{% endif %}
+
+{% if values.cdnEnabled | bool %}
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudCdnDomain
+metadata:
+  name: "{{ values.env }}-cdn"
+spec:
+  domainName: "{{ values.cdn_domain_name }}"
+  cdnType: web
+  scope: domestic
+  sources:
+    - type: domain
+      content: "{{ values.cdn_origin_domain }}"
+      port: 80
+      priority: 20
+{% endif %}

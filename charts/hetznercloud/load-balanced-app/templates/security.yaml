@@ -1,0 +1,48 @@
+---
+apiVersion: hetznercloud.planton.dev/v1
+kind: HetznerCloudSshKey
+metadata:
+  name: "{{ values.env }}-ssh-key"
+spec:
+  publicKey: "{{ values.ssh_public_key }}"
+---
+apiVersion: hetznercloud.planton.dev/v1
+kind: HetznerCloudFirewall
+metadata:
+  name: "{{ values.env }}-firewall"
+spec:
+  rules:
+    - direction: in
+      protocol: tcp
+      port: "22"
+      sourceIps:
+        - "0.0.0.0/0"
+        - "::/0"
+      description: Allow SSH from anywhere
+    - direction: in
+      protocol: tcp
+      port: "80"
+      sourceIps:
+        - "0.0.0.0/0"
+        - "::/0"
+      description: Allow HTTP from anywhere
+    - direction: in
+      protocol: tcp
+      port: "443"
+      sourceIps:
+        - "0.0.0.0/0"
+        - "::/0"
+      description: Allow HTTPS from anywhere
+    - direction: in
+      protocol: tcp
+      port: "{{ values.app_port }}"
+      sourceIps:
+        - "0.0.0.0/0"
+        - "::/0"
+      description: Allow application port from anywhere
+    - direction: in
+      protocol: icmp
+      sourceIps:
+        - "0.0.0.0/0"
+        - "::/0"
+      description: Allow ICMP (ping) from anywhere

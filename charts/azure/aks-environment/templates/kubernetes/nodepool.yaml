@@ -1,0 +1,22 @@
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureAksNodePool
+metadata:
+  name: "{{ values.node_pool_name }}"
+spec:
+  clusterName:
+    valueFrom:
+      kind: AzureAksCluster
+      name: "{{ values.env }}-{{ values.cluster_name }}"
+      fieldPath: metadata.name
+  vmSize: "{{ values.node_vm_size }}"
+  initialNodeCount: {{ values.node_initial_count }}
+  autoscaling:
+    minNodes: {{ values.node_min_nodes }}
+    maxNodes: {{ values.node_max_nodes }}
+  availabilityZones:
+  {%- for zone in values.node_availability_zones.split(',') %}
+  - "{{ zone.strip() }}"
+  {%- endfor %}
+  osType: "{{ values.node_os_type | upper }}"
+  spotEnabled: {{ values.node_spot_enabled }}

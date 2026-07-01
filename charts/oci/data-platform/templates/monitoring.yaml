@@ -1,0 +1,8 @@
+---
+apiVersion: oci.planton.dev/v1
+kind: OciLogGroup
+metadata:
+  name: "{{ values.env }}-data-platform-logs"
+spec:
+  compartmentId:
+    value: "{{ values.compartment_ocid }}"

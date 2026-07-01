@@ -1,0 +1,71 @@
+params:
+  # ─── Foundation ───────────────────────────────────────────────────────────────
+  - name: region
+    description: Azure region (e.g. eastus, westus2, westeurope)
+    value: eastus
+
+  - name: resource_group_name
+    description: Resource group name suffix (prefixed with env)
+    value: network-rg
+
+  # ─── VNet ─────────────────────────────────────────────────────────────────────
+  - name: vnet_cidr
+    description: VNet address space CIDR
+    value: 10.0.0.0/16
+
+  - name: default_subnet_cidr
+    description: Default subnet CIDR (created by AzureVpc)
+    value: 10.0.0.0/24
+
+  # ─── Tier Subnets ─────────────────────────────────────────────────────────────
+  - name: web_subnet_cidr
+    description: Web tier subnet CIDR (public-facing workloads)
+    value: 10.0.1.0/24
+
+  - name: app_subnet_cidr
+    description: App tier subnet CIDR (application logic)
+    value: 10.0.2.0/24
+
+  - name: data_subnet_cidr
+    description: Data tier subnet CIDR (databases and storage)
+    value: 10.0.3.0/24
+
+  - name: gateway_subnet_cidr
+    description: Gateway subnet CIDR (Application Gateway, minimum /27)
+    value: 10.0.4.0/27
+
+  # ─── NAT Gateway ──────────────────────────────────────────────────────────────
+  - name: create_nat_gateway
+    description: Create NAT Gateway for outbound internet from app/data tiers
+    type: bool
+    value: true
+
+  # ─── Application Gateway (optional L7) ────────────────────────────────────────
+  - name: create_app_gateway
+    description: Create Application Gateway (L7 load balancer with WAF)
+    type: bool
+    value: false
+
+  - name: app_gateway_sku
+    description: "Application Gateway SKU: Standard_v2 or WAF_v2"
+    value: Standard_v2
+
+  - name: app_gateway_capacity
+    description: Fixed instance count (ignored if autoscale is enabled)
+    value: "2"
+
+  # ─── Load Balancer (optional L4) ──────────────────────────────────────────────
+  - name: create_load_balancer
+    description: Create Standard Load Balancer (L4)
+    type: bool
+    value: false
+
+  # ─── Key Vault (optional) ────────────────────────────────────────────────────
+  - name: create_key_vault
+    description: Create Key Vault for secrets and certificates
+    type: bool
+    value: false
+
+  - name: key_vault_name
+    description: Key Vault name (globally unique)
+    value: my-ent-kv

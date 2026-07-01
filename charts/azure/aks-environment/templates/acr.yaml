@@ -1,0 +1,11 @@
+{% if values.create_container_registry | bool %}
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureContainerRegistry
+metadata:
+  name: "{{ values.registry_name }}"
+spec:
+  registryName: "{{ values.registry_name }}"
+  sku: "{{ values.registry_sku | upper }}"
+  adminUserEnabled: {{ values.registry_admin_enabled }}
+  {% endif %}

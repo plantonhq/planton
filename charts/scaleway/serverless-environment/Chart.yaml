@@ -1,0 +1,20 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: Scaleway Serverless Environment
+spec:
+  selector:
+    kind: platform
+  description: >
+    Configurable Scaleway Serverless Container Environment with optional
+    private networking, container registry, and custom DNS domain. Deploys
+    a serverless container with auto-scaling and optional VPC connectivity
+    for secure access to databases and internal services.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/scaleway/scalewayserverlesscontainer/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/scaleway/serverless-environment
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/scaleway/serverless-environment/README.md
+  templateYamlFiles: { }
+  valuesYaml: ""
+  params: [ ]

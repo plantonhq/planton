@@ -1,0 +1,18 @@
+params:
+  # ─── GCP Configuration ─────────────────────────────────────────────────
+  - name: gcp_project_id
+    description: GCP project ID where the state bucket will be created
+    value: my-gcp-project
+
+  - name: bucket_name
+    description: >
+      Globally unique name for the GCS bucket that stores Pulumi state files.
+      Recommended convention: <org>-<project>-pulumi-state
+    value: my-org-pulumi-state
+
+  - name: location
+    description: >
+      GCS bucket location. Can be a region (us-central1), dual-region (NAM4),
+      or multi-region (US, EU, ASIA). Choose a location close to your team
+      for low-latency state operations.
+    value: US

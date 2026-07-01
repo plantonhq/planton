@@ -1,0 +1,25 @@
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudRamRole
+metadata:
+  name: "{{ values.env }}-ack-worker-role"
+spec:
+  region: "{{ values.region }}"
+  roleName: "{{ values.env }}-ack-worker-role"
+  description: "RAM role for ACK worker nodes in {{ values.env }}"
+  assumeRolePolicyDocument: |
+    {
+      "Statement": [
+        {
+          "Action": "sts:AssumeRole",
+          "Effect": "Allow",
+          "Principal": {
+            "Service": ["ecs.aliyuncs.com"]
+          }
+        }
+      ],
+      "Version": "1"
+    }
+  policyAttachments:
+    - policyName: AliyunECSInstanceForACKRolePolicy
+    - policyName: AliyunContainerRegistryReadOnlyAccess

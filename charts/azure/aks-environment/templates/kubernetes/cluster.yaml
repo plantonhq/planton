@@ -1,0 +1,35 @@
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureAksCluster
+metadata:
+  name: "{{ values.env }}-{{ values.cluster_name }}"
+spec:
+  region: "{{ values.region }}"
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  vnetSubnetId:
+    valueFrom:
+      kind: AzureVpc
+      name: "{{ values.env }}-vnet"
+      fieldPath: status.outputs.nodes_subnet_id
+  kubernetesVersion: "{{ values.kubernetes_version }}"
+  privateClusterEnabled: {{ values.private_cluster_enabled }}
+  {% if not values.private_cluster_enabled | bool %}
+  authorizedIpRanges:
+  {%- for cidr in values.authorized_ip_ranges.split(',') %}
+  - "{{ cidr.strip() }}"
+  {%- endfor %}
+  {% endif %}
+  disableAzureAdRbac: {{ values.disable_azure_ad_rbac }}
+  {% if values.create_log_analytics | bool %}
+  logAnalyticsWorkspaceId:
+    valueFrom:
+      kind: AzureLogAnalyticsWorkspace
+      name: "{{ values.env }}-law"
+      fieldPath: status.outputs.workspace_id
+  {% elif values.log_analytics_workspace_id != "" %}
+  logAnalyticsWorkspaceId: "{{ values.log_analytics_workspace_id }}"
+  {% endif %}

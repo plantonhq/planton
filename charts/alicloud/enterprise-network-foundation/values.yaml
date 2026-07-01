@@ -1,0 +1,54 @@
+params:
+  # ─── Region & Availability Zones ──────────────────────────────────────────────
+  - name: region
+    description: Alibaba Cloud region for all resources
+    value: cn-hangzhou
+
+  - name: availability_zone_1
+    description: First availability zone for VSwitch placement
+    value: cn-hangzhou-h
+
+  - name: availability_zone_2
+    description: Second availability zone for VSwitch placement
+    value: cn-hangzhou-i
+
+  # ─── VPC ──────────────────────────────────────────────────────────────────────
+  - name: vpc_cidr
+    description: Primary IPv4 CIDR block for the VPC
+    value: "10.0.0.0/16"
+
+  # ─── VSwitches ────────────────────────────────────────────────────────────────
+  - name: vswitch_cidr_1
+    description: CIDR block for VSwitch in availability zone 1
+    value: "10.0.0.0/20"
+
+  - name: vswitch_cidr_2
+    description: CIDR block for VSwitch in availability zone 2
+    value: "10.0.16.0/20"
+
+  # ─── Security Group ───────────────────────────────────────────────────────────
+  - name: allowHttpIngress
+    description: Add ingress rules for HTTP (80) and HTTPS (443)
+    type: bool
+    value: true
+
+  # ─── EIP & NAT Gateway ────────────────────────────────────────────────────────
+  - name: eip_bandwidth
+    description: Maximum outbound bandwidth for the NAT Gateway EIP (Mbps)
+    value: "10"
+
+  # ─── VPN Gateway (optional) ───────────────────────────────────────────────────
+  - name: vpnEnabled
+    description: Create a VPN Gateway for site-to-site connectivity
+    type: bool
+    value: false
+
+  - name: vpn_bandwidth
+    description: VPN Gateway bandwidth in Mbps (5, 10, 20, 50, 100, 200, 500, 1000)
+    value: "10"
+
+  # ─── CEN (optional) ───────────────────────────────────────────────────────────
+  - name: cenEnabled
+    description: Create a Cloud Enterprise Network instance for multi-VPC connectivity
+    type: bool
+    value: false

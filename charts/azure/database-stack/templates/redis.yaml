@@ -1,0 +1,18 @@
+{% if values.create_redis | bool %}
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureRedisCache
+metadata:
+  name: "{{ values.env }}-{{ values.redis_name }}"
+spec:
+  region: "{{ values.region }}"
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  capacity: {{ values.redis_capacity }}
+  skuName: "{{ values.redis_sku_name }}"
+  redisVersion: "{{ values.redis_version }}"
+  minimumTlsVersion: "1.2"
+{% endif %}

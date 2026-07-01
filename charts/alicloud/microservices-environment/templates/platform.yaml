@@ -1,0 +1,147 @@
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudLogProject
+metadata:
+  name: "{{ values.env }}-ms-logs"
+spec:
+  region: "{{ values.region }}"
+  projectName: "{{ values.env }}-ms-logs"
+  description: "Logging for microservices in {{ values.env }}"
+  logStores:
+    - name: audit-log
+      retentionDays: {{ values.log_retention_days }}
+      shardCount: 2
+      autoSplit: true
+      maxSplitShardCount: 64
+      enableIndex: true
+    - name: app-log
+      retentionDays: {{ values.log_retention_days }}
+      shardCount: 2
+      autoSplit: true
+      maxSplitShardCount: 64
+      enableIndex: true
+
+{% if values.acrEnabled | bool %}
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudContainerRegistry
+metadata:
+  name: "{{ values.env }}-acr"
+spec:
+  region: "{{ values.region }}"
+  instanceName: "{{ values.env }}-acr"
+  instanceType: "{{ values.acr_instance_type }}"
+  namespaces:
+    - name: "{{ values.env }}"
+{% endif %}
+
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudKubernetesCluster
+metadata:
+  name: "{{ values.env }}-{{ values.cluster_name }}"
+spec:
+  region: "{{ values.region }}"
+  name: "{{ values.env }}-{{ values.cluster_name }}"
+  vswitchIds:
+    - valueFrom:
+        kind: AliCloudVswitch
+        name: "{{ values.env }}-vswitch-1"
+        fieldPath: status.outputs.vswitchId
+    - valueFrom:
+        kind: AliCloudVswitch
+        name: "{{ values.env }}-vswitch-2"
+        fieldPath: status.outputs.vswitchId
+  securityGroupId:
+    valueFrom:
+      kind: AliCloudSecurityGroup
+      name: "{{ values.env }}-ms-sg"
+      fieldPath: status.outputs.securityGroupId
+  podCidr: "{{ values.pod_cidr }}"
+  serviceCidr: "{{ values.service_cidr }}"
+  slbInternetEnabled: true
+  enableRrsa: true
+  proxyMode: ipvs
+  newNatGateway: false
+  logging:
+    controlPlaneLogProject:
+      valueFrom:
+        kind: AliCloudLogProject
+        name: "{{ values.env }}-ms-logs"
+        fieldPath: status.outputs.projectName
+
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudKubernetesNodePool
+metadata:
+  name: "{{ values.env }}-{{ values.cluster_name }}-default"
+spec:
+  region: "{{ values.region }}"
+  clusterId:
+    valueFrom:
+      kind: AliCloudKubernetesCluster
+      name: "{{ values.env }}-{{ values.cluster_name }}"
+      fieldPath: status.outputs.clusterId
+  name: "{{ values.env }}-default"
+  vswitchIds:
+    - valueFrom:
+        kind: AliCloudVswitch
+        name: "{{ values.env }}-vswitch-1"
+        fieldPath: status.outputs.vswitchId
+    - valueFrom:
+        kind: AliCloudVswitch
+        name: "{{ values.env }}-vswitch-2"
+        fieldPath: status.outputs.vswitchId
+  instanceTypes:
+{% for itype in values.node_instance_types.split(',') %}
+    - "{{ itype | trim }}"
+{% endfor %}
+  desiredSize: {{ values.node_desired_size }}
+  systemDisk:
+    category: cloud_essd
+    size: 120
+  scalingConfig:
+    enable: true
+    minSize: {{ values.node_min_size }}
+    maxSize: {{ values.node_max_size }}
+  imageType: AliyunLinux
+
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudApplicationLoadBalancer
+metadata:
+  name: "{{ values.env }}-ms-alb"
+spec:
+  region: "{{ values.region }}"
+  loadBalancerName: "{{ values.env }}-ms-alb"
+  vpcId:
+    valueFrom:
+      kind: AliCloudVpc
+      name: "{{ values.env }}-vpc"
+      fieldPath: status.outputs.vpcId
+  addressType: "{{ values.alb_address_type }}"
+  loadBalancerEdition: Standard
+  zoneMappings:
+    - vswitchId:
+        valueFrom:
+          kind: AliCloudVswitch
+          name: "{{ values.env }}-vswitch-1"
+          fieldPath: status.outputs.vswitchId
+      zoneId: "{{ values.availability_zone_1 }}"
+    - vswitchId:
+        valueFrom:
+          kind: AliCloudVswitch
+          name: "{{ values.env }}-vswitch-2"
+          fieldPath: status.outputs.vswitchId
+      zoneId: "{{ values.availability_zone_2 }}"
+  serverGroups:
+    - name: "{{ values.env }}-default-sg"
+      protocol: HTTP
+      healthCheckConfig:
+        healthCheckEnabled: true
+        healthCheckProtocol: HTTP
+        healthCheckPath: /
+  listeners:
+    - listenerPort: 80
+      listenerProtocol: HTTP
+      defaultActionServerGroupName: "{{ values.env }}-default-sg"

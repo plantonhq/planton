@@ -1,0 +1,13 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: OCI Data Platform
+spec:
+  selector:
+    kind: platform
+  description: Analytics and data lake platform on Oracle Cloud with Autonomous Data Warehouse, Object Storage for the data lake, Streaming (Kafka-compatible) for data ingestion, and centralized logging.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/oci/ociautonomousdatabase/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/oci/data-platform
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/oci/data-platform/README.md

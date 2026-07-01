@@ -1,0 +1,13 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: EKS Environment
+spec:
+  selector:
+    kind: platform
+  description: Configurable EKS Environment with custom VPC, Route 53, optional ACM CMK encryption, autoscaled managed node‑group and toggleable Kubernetes add‑ons.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/aws/awsekscluster/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/aws/eks-environment
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/aws/eks-environment/README.md

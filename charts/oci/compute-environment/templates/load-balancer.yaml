@@ -1,0 +1,40 @@
+{% if values.enable_load_balancer | bool %}
+---
+apiVersion: oci.planton.dev/v1
+kind: OciApplicationLoadBalancer
+metadata:
+  name: "{{ values.env }}-alb"
+spec:
+  compartmentId:
+    value: "{{ values.compartment_ocid }}"
+  displayName: "{{ values.env }}-alb"
+  shapeName: flexible
+  shapeDetails:
+    minimumBandwidthInMbps: 10
+    maximumBandwidthInMbps: 100
+  subnetIds:
+    - valueFrom:
+        kind: OciSubnet
+        name: "{{ values.env }}-public"
+        fieldPath: status.outputs.subnetId
+  backendSets:
+    - name: app-backend
+      policy: round_robin
+      healthChecker:
+        protocol: http
+        port: {{ values.lb_backend_port }}
+        urlPath: /
+        returnCode: 200
+      backends:
+        - ipAddress:
+            valueFrom:
+              kind: OciComputeInstance
+              name: "{{ values.env }}-{{ values.instance_name }}"
+              fieldPath: status.outputs.privateIp
+          port: {{ values.lb_backend_port }}
+  listeners:
+    - name: app-listener
+      protocol: http
+      port: {{ values.lb_listener_port }}
+      defaultBackendSetName: app-backend
+{% endif %}

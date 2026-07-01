@@ -1,0 +1,10 @@
+{% if values.dnsZoneEnabled | bool %}
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpDnsZone
+metadata:
+  name: "{{ values.domain_name }}"
+spec:
+  projectId:
+    value: "{{ values.gcp_project_id }}"
+{% endif %}

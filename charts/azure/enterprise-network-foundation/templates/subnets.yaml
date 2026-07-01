@@ -1,0 +1,84 @@
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureSubnet
+metadata:
+  name: "{{ values.env }}-web-subnet"
+spec:
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  vnetId:
+    valueFrom:
+      kind: AzureVpc
+      name: "{{ values.env }}-vnet"
+      fieldPath: status.outputs.vnet_id
+  name: "{{ values.env }}-web-subnet"
+  addressPrefix: "{{ values.web_subnet_cidr }}"
+  serviceEndpoints:
+    - "Microsoft.Web"
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureSubnet
+metadata:
+  name: "{{ values.env }}-app-subnet"
+spec:
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  vnetId:
+    valueFrom:
+      kind: AzureVpc
+      name: "{{ values.env }}-vnet"
+      fieldPath: status.outputs.vnet_id
+  name: "{{ values.env }}-app-subnet"
+  addressPrefix: "{{ values.app_subnet_cidr }}"
+  serviceEndpoints:
+    - "Microsoft.Sql"
+    - "Microsoft.Storage"
+    - "Microsoft.KeyVault"
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureSubnet
+metadata:
+  name: "{{ values.env }}-data-subnet"
+spec:
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  vnetId:
+    valueFrom:
+      kind: AzureVpc
+      name: "{{ values.env }}-vnet"
+      fieldPath: status.outputs.vnet_id
+  name: "{{ values.env }}-data-subnet"
+  addressPrefix: "{{ values.data_subnet_cidr }}"
+  serviceEndpoints:
+    - "Microsoft.Sql"
+    - "Microsoft.Storage"
+  privateEndpointNetworkPolicies: "Disabled"
+{% if values.create_app_gateway | bool %}
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureSubnet
+metadata:
+  name: "{{ values.env }}-gw-subnet"
+spec:
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  vnetId:
+    valueFrom:
+      kind: AzureVpc
+      name: "{{ values.env }}-vnet"
+      fieldPath: status.outputs.vnet_id
+  name: "{{ values.env }}-gw-subnet"
+  addressPrefix: "{{ values.gateway_subnet_cidr }}"
+{% endif %}

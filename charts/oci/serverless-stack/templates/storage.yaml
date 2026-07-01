@@ -1,0 +1,12 @@
+---
+apiVersion: oci.planton.dev/v1
+kind: OciObjectStorageBucket
+metadata:
+  name: "{{ values.env }}-{{ values.bucket_name }}"
+spec:
+  compartmentId:
+    value: "{{ values.compartment_ocid }}"
+  name: "{{ values.env }}-{{ values.bucket_name }}"
+  accessType: no_public_access
+  storageTier: standard
+  versioning: enabled

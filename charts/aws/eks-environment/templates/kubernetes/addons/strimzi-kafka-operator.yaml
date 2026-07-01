@@ -1,0 +1,16 @@
+{% if values.kafkaOperatorEnabled | bool %}
+---
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesStrimziKafkaOperator
+metadata:
+  name: {{ values.cluster_name }}-kafka-operator
+  relationships:
+    - kind: AwsEksNodeGroup
+      name: "{{ values.node_group_name }}"
+      type: runs_on
+spec:
+  targetCluster:
+    clusterKind: AwsEksCluster
+    clusterName: "{{ values.env }}-{{ values.cluster_name }}"
+{% endif %}
+

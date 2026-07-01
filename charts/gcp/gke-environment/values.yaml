@@ -1,0 +1,184 @@
+params:
+  # ─── GCP project & billing ─────────────────────────────────────────────────────
+  - name: create_project                # NEW
+    description: Create a brand‑new GCP project; false uses existing project_id
+    type: bool
+    value: false
+
+  - name: project_id
+    description: GCP project ID (created or reused)
+    value: my-gke-demo-123
+
+  - name: parent_type
+    description: Parent resource type – organization | folder
+    value: organization
+
+  - name: parent_id
+    description: Numeric org / folder ID
+    value: "123456789012"
+
+  - name: billing_account_id
+    description: Billing account in form 0123AB‑4567CD‑89EFGH
+    value: 0123AB-4567CD-89EFGH
+
+  # ─── Network ───────────────────────────────────────────────────────────────────
+  - name: vpc_name
+    description: VPC name
+    value: gke-vpc
+
+  - name: vpc_auto_create_subnetworks
+    description: true to use auto‑mode VPC (not recommended)
+    value: "false"
+
+  - name: region
+    description: GCP region for subnet / NAT
+    value: us-central1
+
+  - name: subnet_name
+    description: Subnetwork name
+    value: gke-subnet
+
+  - name: subnet_primary_cidr
+    description: Primary CIDR for subnet
+    value: 10.0.0.0/17
+
+  - name: pods_secondary_range_name
+    description: Secondary range name for Pods
+    value: pods
+
+  - name: pods_secondary_cidr
+    description: CIDR for Pods secondary range
+    value: 10.1.0.0/17
+
+  - name: services_secondary_range_name
+    description: Secondary range name for Services
+    value: services
+
+  - name: services_secondary_cidr
+    description: CIDR for Services secondary range
+    value: 10.3.0.0/22
+
+  - name: private_ip_google_access
+    description: Enable Private Google Access on subnet
+    value: "true"
+
+  - name: router_nat_name
+    description: Cloud NAT / Router name
+    value: gke-nat
+
+  # ─── GKE cluster core ──────────────────────────────────────────────────────────
+  - name: cluster_name
+    description: GKE cluster name
+    value: gke-demo
+
+  - name: cluster_location
+    description: Cluster location (region for regional, zone for zonal)
+    value: us-central1
+
+  - name: master_ipv4_cidr
+    description: /28 CIDR block for master endpoint
+    value: 172.16.0.16/28
+
+  - name: enable_public_nodes
+    description: true if nodes need external IPs
+    value: "false"
+
+  - name: release_channel
+    description: RAPID | REGULAR | STABLE | NONE
+    value: REGULAR
+
+  - name: disable_network_policy
+    description: Disable Calico network policy
+    value: "false"
+
+  - name: disable_workload_identity
+    description: Disable Workload‑Identity
+    value: "false"
+
+  # ─── Node‑pool ─────────────────────────────────────────────────────────────────
+  - name: node_pool_name
+    description: Node‑pool name
+    value: default-pool
+
+  - name: node_pool_machine_type
+    description: Compute engine machine type
+    value: e2-medium
+
+  - name: node_pool_disk_size_gb
+    description: Boot disk size (GB)
+    value: "100"
+
+  - name: node_pool_disk_type
+    description: pd-standard | pd-ssd | pd-balanced
+    value: pd-standard
+
+  - name: node_pool_image_type
+    description: COS_CONTAINERD | COS | UBUNTU | …
+    value: COS_CONTAINERD
+
+  - name: node_pool_spot
+    description: true for Spot (pre‑emptible) nodes
+    value: "false"
+
+  - name: node_pool_min_nodes
+    description: Autoscaler minimum
+    value: "1"
+
+  - name: node_pool_max_nodes
+    description: Autoscaler maximum
+    value: "3"
+
+  # ─── Cloud DNS ────────────────────────────────────────────────────────────────
+  - name: dns_zone_name
+    description: Cloud DNS managed‑zone name
+    value: demo-example-com
+
+  - name: dns_domain_name
+    description: FQDN the zone manages (must end with a dot)
+    value: demo.example.com.
+
+  # ─── Kubernetes Cluster Addons ────────────────────────────────────────────────────────────────
+  - name: certManagerEnabled
+    description: Install Cert‑Manager add‑on
+    type: bool
+    value: true
+
+  - name: elasticOperatorEnabled
+    description: Install Elastic Operator add‑on
+    type: bool
+    value: true
+
+  - name: externalDnsEnabled
+    description: Install External‑DNS add‑on
+    type: bool
+    value: true
+
+  - name: externalSecretsEnabled
+    description: Install External‑Secrets add‑on
+    type: bool
+    value: true
+
+  - name: ingressNginxEnabled
+    description: Install Ingress‑NGINX add‑on
+    type: bool
+    value: true
+
+  - name: istioEnabled
+    description: Install Istio (Ingress) add‑on
+    type: bool
+    value: true
+
+  - name: kafkaOperatorEnabled
+    description: Install Kafka Operator add‑on
+    type: bool
+    value: true
+
+  - name: postgresOperatorEnabled
+    description: Install PostgreSQL Operator add‑on
+    type: bool
+    value: true
+
+  - name: solrOperatorEnabled
+    description: Install Solr Operator add‑on
+    type: bool
+    value: true

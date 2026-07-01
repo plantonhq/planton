@@ -1,0 +1,91 @@
+params:
+  # ─── Region & Availability Zones ──────────────────────────────────────────────
+  - name: region
+    description: Alibaba Cloud region
+    value: cn-hangzhou
+
+  - name: availability_zone_1
+    description: First availability zone
+    value: cn-hangzhou-h
+
+  - name: availability_zone_2
+    description: Second availability zone
+    value: cn-hangzhou-i
+
+  # ─── VPC ──────────────────────────────────────────────────────────────────────
+  - name: vpc_cidr
+    description: VPC CIDR block
+    value: "10.0.0.0/16"
+
+  - name: vswitch_cidr_1
+    description: VSwitch CIDR in AZ-1
+    value: "10.0.0.0/20"
+
+  - name: vswitch_cidr_2
+    description: VSwitch CIDR in AZ-2
+    value: "10.0.16.0/20"
+
+  # ─── ALB ──────────────────────────────────────────────────────────────────────
+  - name: alb_address_type
+    description: "ALB address type: Internet or Intranet"
+    value: Internet
+
+  # ─── ECS ──────────────────────────────────────────────────────────────────────
+  - name: ecs_instance_type
+    description: ECS instance type
+    value: ecs.g7.large
+
+  - name: ecs_image_id
+    description: ECS image ID (Alibaba Linux 3)
+    value: aliyun_3_x64_20G_alibase_20240819.vhd
+
+  - name: ecs_system_disk_size
+    description: ECS system disk size (GB)
+    value: "40"
+
+  # ─── RDS ──────────────────────────────────────────────────────────────────────
+  - name: rds_engine
+    description: "RDS engine: MySQL, PostgreSQL, SQLServer, MariaDB"
+    value: PostgreSQL
+
+  - name: rds_engine_version
+    description: RDS engine version
+    value: "16.0"
+
+  - name: rds_instance_type
+    description: RDS instance class
+    value: rds.pg.s2.large
+
+  - name: rds_storage_gb
+    description: RDS storage (GB)
+    value: "50"
+
+  # ─── Redis (optional) ─────────────────────────────────────────────────────────
+  - name: redisEnabled
+    description: Deploy a Redis cache instance
+    type: bool
+    value: false
+
+  - name: redis_instance_class
+    description: Redis instance class
+    value: redis.master.small.default
+
+  # ─── OSS (optional) ───────────────────────────────────────────────────────────
+  - name: ossEnabled
+    description: Create an OSS bucket for static assets
+    type: bool
+    value: false
+
+  # ─── CDN (optional) ───────────────────────────────────────────────────────────
+  - name: cdnEnabled
+    description: Create a CDN domain for content acceleration
+    type: bool
+    value: false
+
+  - name: cdn_domain_name
+    description: CDN accelerated domain name
+    value: cdn.example.com
+
+  - name: cdn_origin_domain
+    description: CDN origin server domain or IP
+    value: origin.example.com

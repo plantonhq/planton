@@ -1,0 +1,71 @@
+params:
+# ─── Compartment ──────────────────────────────────────────────────────
+- name: compartment_ocid
+  description: OCID of the OCI compartment for all resources
+  value: ocid1.compartment.oc1..example
+
+# ─── Network ──────────────────────────────────────────────────────────
+- name: vcn_cidr
+  description: CIDR block for the VCN
+  value: 10.0.0.0/16
+
+- name: public_subnet_cidr
+  description: CIDR for the public subnet (load balancer)
+  value: 10.0.0.0/24
+
+- name: private_subnet_cidr
+  description: CIDR for the private subnet (compute instances)
+  value: 10.0.1.0/24
+
+# ─── Compute ──────────────────────────────────────────────────────────
+- name: instance_name
+  description: Compute instance display name
+  value: app-server
+
+- name: availability_domain
+  description: Availability domain (e.g. US-ASHBURN-AD-1)
+  value: US-ASHBURN-AD-1
+
+- name: shape
+  description: Compute shape (e.g. VM.Standard.E4.Flex, VM.Standard.A1.Flex)
+  value: VM.Standard.E4.Flex
+
+- name: ocpus
+  description: OCPUs for flex shapes
+  value: "1"
+
+- name: memory_gb
+  description: Memory in GB for flex shapes
+  value: "16"
+
+- name: image_id
+  description: OCID of the boot image (Oracle Linux, Ubuntu, etc.)
+  value: ""
+
+- name: ssh_public_key
+  description: SSH public key for instance access
+  value: ""
+
+# ─── Load balancer (optional) ─────────────────────────────────────────
+- name: enable_load_balancer
+  description: Create an application load balancer in front of the instance
+  type: bool
+  value: false
+
+- name: lb_listener_port
+  description: Load balancer listener port
+  value: "443"
+
+- name: lb_backend_port
+  description: Backend port on the compute instance
+  value: "8080"
+
+# ─── Block volume (optional) ──────────────────────────────────────────
+- name: enable_block_volume
+  description: Create and attach a block volume for persistent storage
+  type: bool
+  value: false
+
+- name: block_volume_size_gb
+  description: Block volume size in GB
+  value: "100"

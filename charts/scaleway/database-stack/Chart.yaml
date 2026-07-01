@@ -1,0 +1,20 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: Scaleway Database Stack
+spec:
+  selector:
+    kind: platform
+  description: >
+    Configurable Scaleway Managed Database Stack with optional PostgreSQL/MySQL
+    (RDB), Redis, and MongoDB instances on a shared Private Network. Supports
+    creating a dedicated VPC or reusing an existing Private Network from another
+    chart (e.g. Kapsule Environment).
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/scaleway/scalewayrdbinstance/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/scaleway/database-stack
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/scaleway/database-stack/README.md
+  templateYamlFiles: { }
+  valuesYaml: ""
+  params: [ ]

@@ -1,0 +1,13 @@
+{% if values.dockerRepoEnabled | bool %}
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpArtifactRegistryRepo
+metadata:
+  name: "{{ values.docker_repo_name }}"
+spec:
+  projectId:
+    value: "{{ values.gcp_project_id }}"
+  region: "{{ values.gcp_region }}"
+  repoFormat: DOCKER
+{% endif %}
+

@@ -1,0 +1,10 @@
+---
+apiVersion: digital-ocean.planton.dev/v1
+kind: DigitalOceanContainerRegistry
+metadata:
+  name: "{{ values.env }}-registry"
+spec:
+  name: "{{ values.container_registry_name }}"
+  subscriptionTier: basic
+  region: "{{ values.region }}"
+  garbageCollectionEnabled: true

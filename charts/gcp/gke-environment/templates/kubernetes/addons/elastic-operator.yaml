@@ -1,0 +1,16 @@
+{% if values.elasticOperatorEnabled | bool %}
+---
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesElasticOperator
+metadata:
+  name: {{ values.cluster_name }}-elastic-operator
+  relationships:
+    - kind: GcpGkeNodePool
+      name: "{{ values.node_pool_name }}"
+      type: runs_on
+spec:
+  targetCluster:
+    clusterKind: GcpGkeCluster
+    clusterName: "{{ values.env }}-{{ values.cluster_name }}"
+{% endif %}
+

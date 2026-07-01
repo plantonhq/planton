@@ -1,0 +1,37 @@
+{% if values.authEnabled | bool %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsCognitoUserPool
+metadata:
+  name: "{{ values.cognito_pool_name }}"
+  group: security
+spec:
+  poolName: "{{ values.cognito_pool_name }}"
+  usernameAttributes:
+    - email
+  autoVerifiedAttributes:
+    - email
+  passwordPolicy:
+    minimumLength: 8
+    requireLowercase: true
+    requireUppercase: true
+    requireNumbers: true
+    requireSymbols: false
+    temporaryPasswordValidityDays: 7
+  mfaConfiguration: "OFF"
+  clients:
+    - name: "{{ values.cognito_client_name }}"
+      generateSecret: false
+      allowedOauthFlowsUserPoolClient: true
+      allowedOauthFlows:
+        - code
+      allowedOauthScopes:
+        - openid
+        - email
+        - profile
+      explicitAuthFlows:
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+      enableTokenRevocation: true
+      preventUserExistenceErrors: ENABLED
+{% endif %}

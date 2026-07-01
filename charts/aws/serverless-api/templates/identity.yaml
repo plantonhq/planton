@@ -1,0 +1,55 @@
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsIamRole
+metadata:
+  name: "{{ values.lambda_function_name }}-execution-role"
+  group: identity
+spec:
+  description: Execution role for the {{ values.lambda_function_name }} Lambda function
+  path: /service-role/
+  trustPolicy:
+    Version: "2012-10-17"
+    Statement:
+      - Effect: Allow
+        Principal:
+          Service: lambda.amazonaws.com
+        Action: sts:AssumeRole
+  managedPolicyArns:
+    - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+  inlinePolicies:
+{% if values.databaseEnabled | bool %}
+    dynamodbAccess:
+      Version: "2012-10-17"
+      Statement:
+        - Effect: Allow
+          Action:
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+            - dynamodb:Query
+            - dynamodb:Scan
+          Resource: "arn:aws:dynamodb:*:*:table/{{ values.dynamodb_table_name }}"
+{% endif %}
+{% if values.messagingEnabled | bool %}
+    sqsAccess:
+      Version: "2012-10-17"
+      Statement:
+        - Effect: Allow
+          Action:
+            - sqs:SendMessage
+            - sqs:ReceiveMessage
+            - sqs:DeleteMessage
+            - sqs:GetQueueAttributes
+            - sqs:GetQueueUrl
+          Resource: "arn:aws:sqs:*:*:{{ values.sqs_queue_name }}"
+{% endif %}
+{% if values.notificationsEnabled | bool %}
+    snsAccess:
+      Version: "2012-10-17"
+      Statement:
+        - Effect: Allow
+          Action:
+            - sns:Publish
+          Resource: "arn:aws:sns:*:*:{{ values.sns_topic_name }}"
+{% endif %}

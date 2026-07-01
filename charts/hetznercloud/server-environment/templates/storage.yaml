@@ -1,0 +1,17 @@
+{% if values.enable_volume | bool %}
+---
+apiVersion: hetznercloud.planton.dev/v1
+kind: HetznerCloudVolume
+metadata:
+  name: "{{ values.env }}-data"
+spec:
+  size: {{ values.volume_size }}
+  location: "{{ values.location }}"
+  format: "{{ values.volume_format }}"
+  serverId:
+    valueFrom:
+      kind: HetznerCloudServer
+      name: "{{ values.env }}-server"
+      fieldPath: status.outputs.server_id
+  automount: true
+{% endif %}

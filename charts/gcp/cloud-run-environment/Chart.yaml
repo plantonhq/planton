@@ -1,0 +1,13 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: GCP CloudRun Environment
+spec:
+  selector:
+    kind: platform
+  description: Complete GCP Cloud Run environment with VPC networking, optional Cloud SQL database (PostgreSQL or MySQL with private IP support), storage bucket, Docker repository, Service Account, and DNS zone. Supports frontend and optional backend services.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/gcp/gcpcloudrun/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/gcp/cloud-run-environment
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/gcp/cloud-run-environment/README.md

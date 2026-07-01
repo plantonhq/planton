@@ -1,0 +1,13 @@
+{% if values.enable_block_volume | bool %}
+---
+apiVersion: oci.planton.dev/v1
+kind: OciBlockVolume
+metadata:
+  name: "{{ values.env }}-data"
+spec:
+  compartmentId:
+    value: "{{ values.compartment_ocid }}"
+  availabilityDomain: "{{ values.availability_domain }}"
+  displayName: "{{ values.env }}-data"
+  sizeInGbs: {{ values.block_volume_size_gb }}
+{% endif %}

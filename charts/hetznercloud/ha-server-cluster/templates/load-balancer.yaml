@@ -1,0 +1,28 @@
+---
+apiVersion: hetznercloud.planton.dev/v1
+kind: HetznerCloudLoadBalancer
+metadata:
+  name: "{{ values.env }}-lb"
+spec:
+  loadBalancerType: "{{ values.load_balancer_type }}"
+  location: "{{ values.location }}"
+  algorithm: least_connections
+  services:
+    - protocol: tcp
+      listenPort: {{ values.app_port }}
+      destinationPort: {{ values.app_port }}
+  serverTargets:
+  {% for i in range(values.server_count | int) %}
+    - serverId:
+        valueFrom:
+          kind: HetznerCloudServer
+          name: "{{ values.env }}-node-{{ loop.index }}"
+          fieldPath: status.outputs.server_id
+      usePrivateIp: true
+  {% endfor %}
+  network:
+    networkId:
+      valueFrom:
+        kind: HetznerCloudNetwork
+        name: "{{ values.env }}-network"
+        fieldPath: status.outputs.network_id

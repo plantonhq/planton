@@ -1,0 +1,13 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: AWS Terraform State Backend
+spec:
+  selector:
+    kind: platform
+  description: Setup Terraform State Backend using AWS S3 and DynamoDB
+  iconUrl: https://assets.planton.ai/apis/connect/terraformbackendproviderconnection/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/aws/terraform-backend
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/aws/terraform-backend/README.md

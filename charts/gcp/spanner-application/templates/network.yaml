@@ -1,0 +1,46 @@
+{% if values.networkingEnabled | bool %}
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpVpc
+metadata:
+  name: "{{ values.vpc_name }}"
+  group: network
+spec:
+  projectId:
+    value: "{{ values.gcp_project_id }}"
+  networkName: "{{ values.vpc_name }}"
+  autoCreateSubnetworks: false
+  routingMode: REGIONAL
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpFirewallRule
+metadata:
+  name: "{{ values.vpc_name }}-allow-internal"
+  group: network
+  relationships:
+    - kind: GcpVpc
+      name: "{{ values.vpc_name }}"
+      type: runs_on
+spec:
+  projectId:
+    value: "{{ values.gcp_project_id }}"
+  network:
+    valueFrom:
+      kind: GcpVpc
+      name: "{{ values.vpc_name }}"
+      fieldPath: status.outputs.network_self_link
+  ruleName: "{{ values.vpc_name }}-allow-internal"
+  direction: INGRESS
+  action: ALLOW
+  rules:
+    - protocol: tcp
+      ports:
+        - "0-65535"
+    - protocol: udp
+      ports:
+        - "0-65535"
+    - protocol: icmp
+  sourceRanges:
+    - "10.0.0.0/8"
+  description: Allow all internal traffic within the VPC
+{% endif %}

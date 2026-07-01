@@ -1,0 +1,13 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: AWS ML Workbench
+spec:
+  selector:
+    kind: platform
+  description: ML development environment with SageMaker Domain, S3 for model artifacts, optional ECR for custom images, and optional VPC isolation. A self-service data-science workbench on AWS.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/aws/awssagemakerdomain/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/aws/ml-workbench
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/aws/ml-workbench/README.md

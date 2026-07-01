@@ -1,0 +1,41 @@
+---
+apiVersion: oci.planton.dev/v1
+kind: OciAutonomousDatabase
+metadata:
+  name: "{{ values.env }}-{{ values.db_name }}"
+spec:
+  compartmentId:
+    value: "{{ values.compartment_ocid }}"
+  dbName: "{{ values.db_name }}"
+  displayName: "{{ values.env }}-{{ values.db_name }}"
+  dbWorkload: "{{ values.db_workload }}"
+  computeModel: ecpu
+  computeCount: {{ values.compute_count }}
+  dataStorageSizeInTbs: {{ values.storage_in_tbs }}
+  {% if values.admin_password != "" %}
+  adminPassword: "{{ values.admin_password }}"
+  {% endif %}
+  isFreeTier: {{ values.is_free_tier }}
+  isAutoScalingEnabled: {{ values.is_auto_scaling_enabled }}
+  subnetId:
+    valueFrom:
+      kind: OciSubnet
+      name: "{{ values.env }}-db-private"
+      fieldPath: status.outputs.subnetId
+  nsgIds:
+    - valueFrom:
+        kind: OciSecurityGroup
+        name: "{{ values.env }}-adb"
+        fieldPath: status.outputs.networkSecurityGroupId
+  {% if values.enable_encryption | bool %}
+  kmsKeyId:
+    valueFrom:
+      kind: OciKmsKey
+      name: "{{ values.env }}-adb-key"
+      fieldPath: status.outputs.keyId
+  vaultId:
+    valueFrom:
+      kind: OciKmsVault
+      name: "{{ values.env }}-adb-vault"
+      fieldPath: status.outputs.vaultId
+  {% endif %}

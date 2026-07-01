@@ -1,0 +1,111 @@
+{% if values.create_nat_gateway | bool or values.create_app_gateway | bool or values.create_load_balancer | bool %}
+---
+apiVersion: azure.planton.dev/v1
+kind: AzurePublicIp
+metadata:
+  name: "{{ values.env }}-pip"
+spec:
+  region: "{{ values.region }}"
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  name: "{{ values.env }}-pip"
+{% endif %}
+{% if values.create_nat_gateway | bool %}
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureNatGateway
+metadata:
+  name: "{{ values.env }}-natgw"
+spec:
+  region: "{{ values.region }}"
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  subnetId:
+    valueFrom:
+      kind: AzureSubnet
+      name: "{{ values.env }}-subnet"
+      fieldPath: status.outputs.subnet_id
+{% endif %}
+{% if values.create_app_gateway | bool %}
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureApplicationGateway
+metadata:
+  name: "{{ values.env }}-appgw"
+spec:
+  region: "{{ values.region }}"
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  name: "{{ values.env }}-appgw"
+  sku: "{{ values.app_gateway_sku }}"
+  capacity: {{ values.app_gateway_capacity }}
+  subnetId:
+    valueFrom:
+      kind: AzureSubnet
+      name: "{{ values.env }}-gw-subnet"
+      fieldPath: status.outputs.subnet_id
+  publicIpId:
+    valueFrom:
+      kind: AzurePublicIp
+      name: "{{ values.env }}-pip"
+      fieldPath: status.outputs.public_ip_id
+  httpListeners:
+    - name: default-http-listener
+      port: 80
+      protocol: "Http"
+  backendPools:
+    - name: default-backend-pool
+  backendHttpSettings:
+    - name: default-backend-settings
+      port: 80
+      protocol: "Http"
+  routingRules:
+    - name: default-routing-rule
+      priority: 100
+      httpListenerName: default-http-listener
+      backendPoolName: default-backend-pool
+      backendHttpSettingsName: default-backend-settings
+{% endif %}
+{% if values.create_load_balancer | bool %}
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureLoadBalancer
+metadata:
+  name: "{{ values.env }}-lb"
+spec:
+  region: "{{ values.region }}"
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  name: "{{ values.env }}-lb"
+  publicIpId:
+    valueFrom:
+      kind: AzurePublicIp
+      name: "{{ values.env }}-pip"
+      fieldPath: status.outputs.public_ip_id
+  backendPools:
+    - name: default-backend-pool
+  healthProbes:
+    - name: default-health-probe
+      protocol: "Tcp"
+      port: 80
+      intervalInSeconds: 15
+  rules:
+    - name: default-lb-rule
+      protocol: "Tcp"
+      frontendPort: 80
+      backendPort: 80
+      backendPoolName: default-backend-pool
+      probeName: default-health-probe
+{% endif %}

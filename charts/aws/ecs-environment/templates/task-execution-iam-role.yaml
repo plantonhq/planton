@@ -1,0 +1,38 @@
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsIamRole
+metadata:
+  name: "{{ values.env }}-ecs-task-execution-role"
+spec:
+  region: "{{ values.aws_region }}"
+  description: IAM role for ECS tasks to pull images and write logs
+  managedPolicyArns:
+    - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+  path: /service-role/
+  trustPolicy:
+    Statement:
+      - Action: sts:AssumeRole
+        Effect: Allow
+        Principal:
+          Service: ecs-tasks.amazonaws.com
+    Version: "2012-10-17"
+  inlinePolicies:
+    extraLoggingPermissions:
+      Statement:
+        - Action:
+            - logs:CreateLogGroup
+          Effect: Allow
+          Resource: '*'
+          Sid: CreateCloudWatchGroups
+      Version: "2012-10-17"
+    s3ReadPermissions:
+      Statement:
+        - Action:
+            - s3:ListBucket
+          Effect: Allow
+          Resource: arn:aws:s3:::*
+        - Action:
+            - s3:GetObject
+          Effect: Allow
+          Resource: arn:aws:s3:::*/*
+      Version: "2012-10-17"

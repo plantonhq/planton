@@ -1,0 +1,16 @@
+{% if values.certManagerEnabled | bool %}
+---
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesCertManager
+metadata:
+  name: {{ values.cluster_name }}-cert-manager
+  relationships:
+    - kind: CivoKubernetesCluster
+      name: "{{ values.env }}-{{ values.cluster_name }}"
+      type: runs_on
+spec:
+  targetCluster:
+    clusterKind: CivoKubernetesCluster
+    clusterName: "{{ values.env }}-{{ values.cluster_name }}"
+{% endif %}
+

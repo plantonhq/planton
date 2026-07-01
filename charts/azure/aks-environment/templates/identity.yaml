@@ -1,0 +1,15 @@
+{% if values.create_managed_identity | bool %}
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureUserAssignedIdentity
+metadata:
+  name: "{{ values.env }}-{{ values.cluster_name }}-identity"
+spec:
+  region: "{{ values.region }}"
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  name: "{{ values.env }}-{{ values.cluster_name }}-identity"
+{% endif %}

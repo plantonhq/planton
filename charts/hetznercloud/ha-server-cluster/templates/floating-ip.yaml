@@ -1,0 +1,9 @@
+---
+apiVersion: hetznercloud.planton.dev/v1
+kind: HetznerCloudFloatingIp
+metadata:
+  name: "{{ values.env }}-failover-ip"
+spec:
+  type: "{{ values.floating_ip_type }}"
+  homeLocation: "{{ values.location }}"
+  description: "Failover IP for {{ values.env }} HA cluster"

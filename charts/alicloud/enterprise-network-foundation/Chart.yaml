@@ -1,0 +1,13 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: AliCloud Enterprise Network Foundation
+spec:
+  selector:
+    kind: platform
+  description: Multi-AZ VPC networking with NAT gateway, security groups, and optional VPN/CEN hybrid connectivity for Alibaba Cloud.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/v1/assets/provider/alicloud/alicloudvpc/v1/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/alicloud/enterprise-network-foundation
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/alicloud/enterprise-network-foundation/README.md

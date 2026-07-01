@@ -1,0 +1,87 @@
+params:
+# ─── Compartment ──────────────────────────────────────────────────────
+- name: compartment_ocid
+  description: OCID of the OCI compartment for all resources
+  value: ocid1.compartment.oc1..example
+
+# ─── Network ──────────────────────────────────────────────────────────
+- name: vcn_cidr
+  description: CIDR block for the VCN
+  value: 10.0.0.0/16
+
+- name: public_subnet_cidr
+  description: CIDR for the public subnet (API endpoint, load balancers)
+  value: 10.0.0.0/24
+
+- name: private_subnet_cidr
+  description: CIDR for the private subnet (worker nodes)
+  value: 10.0.1.0/24
+
+# ─── Cluster ──────────────────────────────────────────────────────────
+- name: cluster_name
+  description: OKE cluster name
+  value: oke-demo
+
+- name: kubernetes_version
+  description: Kubernetes version (e.g. v1.30.1)
+  value: v1.30.1
+
+- name: cluster_type
+  description: Cluster type (basic_cluster or enhanced_cluster)
+  value: enhanced_cluster
+
+- name: cni_type
+  description: Pod networking CNI (oci_vcn_ip_native or flannel_overlay)
+  value: oci_vcn_ip_native
+
+- name: is_public_endpoint
+  description: Assign a public IP to the Kubernetes API endpoint
+  type: bool
+  value: false
+
+# ─── Node pool ────────────────────────────────────────────────────────
+- name: node_pool_name
+  description: Node pool name
+  value: default-pool
+
+- name: node_shape
+  description: Compute shape for worker nodes (e.g. VM.Standard.E4.Flex)
+  value: VM.Standard.E4.Flex
+
+- name: node_ocpus
+  description: OCPUs per node (flex shapes only)
+  value: "2"
+
+- name: node_memory_gb
+  description: Memory in GB per node (flex shapes only)
+  value: "32"
+
+- name: node_image_id
+  description: OCID of the node OS image (blank for OKE default Oracle Linux)
+  value: ""
+
+- name: node_pool_size
+  description: Number of worker nodes
+  value: "3"
+
+- name: availability_domain_1
+  description: Primary availability domain (e.g. US-ASHBURN-AD-1)
+  value: US-ASHBURN-AD-1
+
+- name: availability_domain_2
+  description: Secondary availability domain for HA (blank to skip)
+  value: US-ASHBURN-AD-2
+
+- name: ssh_public_key
+  description: SSH public key for node debug access (blank to disable)
+  value: ""
+
+# ─── DNS (optional) ───────────────────────────────────────────────────
+- name: enable_dns
+  description: Create a DNS zone and wildcard record
+  type: bool
+  value: false
+
+- name: domain_name
+  description: DNS zone domain name (e.g. example.com)
+  value: example.com

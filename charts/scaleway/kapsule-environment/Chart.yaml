@@ -1,0 +1,20 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: Scaleway Kapsule Environment
+spec:
+  selector:
+    kind: platform
+  description: >
+    Configurable Scaleway Kapsule Kubernetes Environment with custom VPC,
+    Private Network, optional DNS zone and container registry, an autoscaled
+    default node pool with optional additional pool, and toggleable Kubernetes
+    add-ons (Cert-Manager, Istio, etc.).
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/scaleway/scalewaykapsulecluster/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/scaleway/kapsule-environment
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/scaleway/kapsule-environment/README.md
+  templateYamlFiles: { }
+  valuesYaml: ""
+  params: [ ]

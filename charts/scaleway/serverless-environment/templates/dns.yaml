@@ -1,0 +1,30 @@
+{% if values.create_dns_zone | bool %}
+---
+apiVersion: scaleway.planton.dev/v1
+kind: ScalewayDnsZone
+metadata:
+  name: "{{ values.env }}-{{ values.container_name }}-dns"
+spec:
+  domain: "{{ values.domain_name }}"
+  subdomain: "{{ values.subdomain }}"
+---
+apiVersion: scaleway.planton.dev/v1
+kind: ScalewayDnsRecord
+metadata:
+  name: "{{ values.env }}-{{ values.container_name }}-cname"
+spec:
+  zoneName:
+    valueFrom:
+      kind: ScalewayDnsZone
+      name: "{{ values.env }}-{{ values.container_name }}-dns"
+      fieldPath: status.outputs.zone_name
+  name: "{{ values.dns_record_name }}"
+  type: CNAME
+  data:
+    valueFrom:
+      kind: ScalewayServerlessContainer
+      name: "{{ values.env }}-{{ values.container_name }}"
+      fieldPath: status.outputs.domain_name
+  ttl: 3600
+  keepEmptyZone: true
+{% endif %}

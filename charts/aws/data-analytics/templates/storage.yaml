@@ -1,0 +1,17 @@
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsS3Bucket
+metadata:
+  name: "{{ values.s3_bucket_name }}"
+  group: storage
+spec:
+  region: "{{ values.aws_region }}"
+  isPublic: false
+  versioningEnabled: true
+  lifecycleRules:
+    - id: transition-to-ia
+      enabled: true
+      prefix: "raw/"
+      transitionDays: 90
+      transitionStorageClass: STORAGE_CLASS_STANDARD_IA
+      abortIncompleteMultipartUploadDays: 7

@@ -1,0 +1,13 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: AWS Kafka Streaming
+spec:
+  selector:
+    kind: platform
+  description: Kafka event streaming platform with MSK, VPC network isolation, S3 for broker log offloading, and CloudWatch monitoring. Production-ready managed Kafka with encryption and multi-AZ deployment.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/aws/awsmskcluster/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/aws/kafka-streaming
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/aws/kafka-streaming/README.md

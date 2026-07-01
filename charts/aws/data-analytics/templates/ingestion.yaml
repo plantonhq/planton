@@ -1,0 +1,99 @@
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsKinesisStream
+metadata:
+  name: "{{ values.kinesis_stream_name }}"
+  group: messaging
+spec:
+  streamMode: "{{ values.kinesis_stream_mode }}"
+{% if values.kinesis_stream_mode == "PROVISIONED" %}
+  shardCount: {{ values.kinesis_shard_count }}
+{% endif %}
+  retentionPeriodHours: 24
+  enforceConsumerDeletion: true
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsIamRole
+metadata:
+  name: "{{ values.firehose_name }}-delivery-role"
+  group: identity
+spec:
+  description: IAM role for Firehose to read from Kinesis and write to S3
+  path: /service-role/
+  trustPolicy:
+    Version: "2012-10-17"
+    Statement:
+      - Effect: Allow
+        Principal:
+          Service: firehose.amazonaws.com
+        Action: sts:AssumeRole
+  inlinePolicies:
+    kinesisRead:
+      Version: "2012-10-17"
+      Statement:
+        - Effect: Allow
+          Action:
+            - kinesis:DescribeStream
+            - kinesis:GetShardIterator
+            - kinesis:GetRecords
+            - kinesis:ListShards
+          Resource: "arn:aws:kinesis:*:*:stream/{{ values.kinesis_stream_name }}"
+    s3Write:
+      Version: "2012-10-17"
+      Statement:
+        - Effect: Allow
+          Action:
+            - s3:AbortMultipartUpload
+            - s3:GetBucketLocation
+            - s3:GetObject
+            - s3:ListBucket
+            - s3:ListBucketMultipartUploads
+            - s3:PutObject
+          Resource:
+            - "arn:aws:s3:::{{ values.s3_bucket_name }}"
+            - "arn:aws:s3:::{{ values.s3_bucket_name }}/*"
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsKinesisFirehose
+metadata:
+  name: "{{ values.firehose_name }}"
+  group: messaging
+  relationships:
+    - kind: AwsKinesisStream
+      name: "{{ values.kinesis_stream_name }}"
+      type: runs_on
+    - kind: AwsS3Bucket
+      name: "{{ values.s3_bucket_name }}"
+      type: uses
+    - kind: AwsIamRole
+      name: "{{ values.firehose_name }}-delivery-role"
+      type: uses
+spec:
+  kinesisStreamSource:
+    streamArn:
+      valueFrom:
+        kind: AwsKinesisStream
+        name: "{{ values.kinesis_stream_name }}"
+        fieldPath: status.outputs.stream_arn
+    roleArn:
+      valueFrom:
+        kind: AwsIamRole
+        name: "{{ values.firehose_name }}-delivery-role"
+        fieldPath: status.outputs.role_arn
+  extendedS3:
+    bucketArn:
+      valueFrom:
+        kind: AwsS3Bucket
+        name: "{{ values.s3_bucket_name }}"
+        fieldPath: status.outputs.bucket_arn
+    roleArn:
+      valueFrom:
+        kind: AwsIamRole
+        name: "{{ values.firehose_name }}-delivery-role"
+        fieldPath: status.outputs.role_arn
+    prefix: "{{ values.firehose_s3_prefix }}"
+    errorOutputPrefix: "errors/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/!{firehose:error-output-type}/"
+    compressionFormat: "{{ values.firehose_compression }}"
+    buffering:
+      intervalInSeconds: {{ values.firehose_buffer_interval }}
+      sizeInMbs: {{ values.firehose_buffer_size }}

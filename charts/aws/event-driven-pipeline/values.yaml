@@ -1,0 +1,66 @@
+params:
+  # ─── EventBridge ───────────────────────────────────────────────────────
+  - name: bus_name
+    description: Custom EventBridge bus name for application events
+    value: app-events
+
+  - name: bus_description
+    description: Description of the event bus
+    value: Custom event bus for application events
+
+  # ─── EventBridge Rule ──────────────────────────────────────────────────
+  - name: rule_name
+    description: EventBridge rule name
+    value: route-to-processor
+
+  - name: rule_description
+    description: Description of the routing rule
+    value: Routes application events to the SQS processing queue
+
+  # ─── SQS Processing Queue ─────────────────────────────────────────────
+  - name: processing_queue_name
+    description: SQS queue name for event processing
+    value: event-processor
+
+  - name: processing_queue_visibility_timeout
+    description: Visibility timeout in seconds for the processing queue
+    value: "60"
+
+  # ─── SQS Dead Letter Queue ────────────────────────────────────────────
+  - name: dlq_name
+    description: Dead letter queue for failed event processing
+    value: event-processor-dlq
+
+  - name: dlq_max_receive_count
+    description: >
+      Number of times a message is received before being sent to the DLQ.
+      After this many failed processing attempts, the message moves to the DLQ.
+    value: "3"
+
+  # ─── SNS Notifications ────────────────────────────────────────────────
+  - name: notificationsEnabled
+    description: Create an SNS topic for fan-out event notifications
+    type: bool
+    value: false
+
+  - name: sns_topic_name
+    description: SNS topic name for event notifications
+    value: event-notifications
+
+  # ─── Step Functions Orchestration ──────────────────────────────────────
+  - name: orchestrationEnabled
+    description: >
+      Create a Step Functions state machine for workflow orchestration.
+      The state machine receives a placeholder Pass-state definition --
+      replace it with your actual workflow after deployment.
+    type: bool
+    value: false
+
+  - name: step_function_name
+    description: Step Functions state machine name
+    value: event-workflow
+
+  # ─── Monitoring ────────────────────────────────────────────────────────
+  - name: log_group_name
+    description: CloudWatch Log Group for Step Functions execution logs
+    value: event-pipeline-logs

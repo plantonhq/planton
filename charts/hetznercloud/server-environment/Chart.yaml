@@ -1,0 +1,16 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: Hetzner Cloud Server Environment
+spec:
+  selector:
+    kind: platform
+  description: >
+    Single-server environment on Hetzner Cloud with private networking, SSH key
+    authentication, firewall rules, and optional block volume storage. Ideal for
+    developer sandboxes, small applications, and hobby deployments.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/hetznercloud/hetznercloudserver/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/hetznercloud/server-environment
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/hetznercloud/server-environment/README.md

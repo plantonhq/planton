@@ -1,0 +1,34 @@
+---
+apiVersion: oci.planton.dev/v1
+kind: OciContainerEngineCluster
+metadata:
+  name: "{{ values.env }}-{{ values.cluster_name }}"
+spec:
+  compartmentId:
+    value: "{{ values.compartment_ocid }}"
+  vcnId:
+    valueFrom:
+      kind: OciVcn
+      name: "{{ values.env }}-vcn"
+      fieldPath: status.outputs.vcnId
+  kubernetesVersion: "{{ values.kubernetes_version }}"
+  type: "{{ values.cluster_type }}"
+  cniType: "{{ values.cni_type }}"
+  endpointConfig:
+    subnetId:
+      valueFrom:
+        kind: OciSubnet
+        name: "{{ values.env }}-public"
+        fieldPath: status.outputs.subnetId
+    isPublicIpEnabled: {{ values.is_public_endpoint }}
+    nsgIds:
+      - valueFrom:
+          kind: OciSecurityGroup
+          name: "{{ values.env }}-api-endpoint"
+          fieldPath: status.outputs.networkSecurityGroupId
+  options:
+    serviceLbSubnetIds:
+      - valueFrom:
+          kind: OciSubnet
+          name: "{{ values.env }}-public"
+          fieldPath: status.outputs.subnetId

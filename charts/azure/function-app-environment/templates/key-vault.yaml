@@ -1,0 +1,14 @@
+{% if values.create_key_vault | bool %}
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureKeyVault
+metadata:
+  name: "{{ values.env }}-{{ values.key_vault_name }}"
+spec:
+  region: "{{ values.region }}"
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+{% endif %}

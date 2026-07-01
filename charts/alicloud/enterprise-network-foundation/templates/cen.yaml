@@ -1,0 +1,17 @@
+{% if values.cenEnabled | bool %}
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudCenInstance
+metadata:
+  name: "{{ values.env }}-cen"
+spec:
+  cenInstanceName: "{{ values.env }}-cen"
+  attachments:
+    - childInstanceId:
+        valueFrom:
+          kind: AliCloudVpc
+          name: "{{ values.env }}-vpc"
+          fieldPath: status.outputs.vpcId
+      childInstanceType: VPC
+      childInstanceRegionId: "{{ values.region }}"
+{% endif %}

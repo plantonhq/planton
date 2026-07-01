@@ -1,0 +1,13 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: OCI Serverless Stack
+spec:
+  selector:
+    kind: platform
+  description: Event-driven serverless platform on Oracle Cloud with OCI Functions, API Gateway, Object Storage for artifacts, and a centralized log group. Functions run in a private VCN subnet for secure access to backend services.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/oci/ocifunctionsapplication/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/oci/serverless-stack
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/oci/serverless-stack/README.md

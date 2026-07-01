@@ -1,0 +1,28 @@
+---
+apiVersion: digital-ocean.planton.dev/v1
+kind: DigitalOceanKubernetesCluster
+metadata:
+  name: "{{ values.env }}-{{ values.cluster_name }}"
+spec:
+  clusterName: "{{ values.env }}-{{ values.cluster_name }}"
+  region: "{{ values.region }}"
+  kubernetesVersion: "{{ values.kubernetes_version }}"
+  vpc:
+    valueFrom:
+      kind: DigitalOceanVpc
+      name: "{{ values.env }}-{{ values.cluster_name }}-vpc"
+      fieldPath: status.outputs.vpcId
+  highlyAvailable: {{ values.highly_available }}
+  autoUpgrade: false
+  disableSurgeUpgrade: false
+  tags:
+    - "{{ values.env }}"
+    - "{{ values.cluster_name }}"
+  defaultNodePool:
+    size: "{{ values.node_size }}"
+    nodeCount: {{ values.node_count }}
+    autoScale: {{ values.node_auto_scale }}
+    {% if values.node_auto_scale | bool %}
+    minNodes: {{ values.min_nodes }}
+    maxNodes: {{ values.max_nodes }}
+    {% endif %}

@@ -1,0 +1,152 @@
+params:
+  # ─── Network ──────────────────────────────────────────────────────────────
+  - name: region
+    description: Scaleway region (e.g. fr-par, nl-ams, pl-waw)
+    value: fr-par
+
+  # ─── Kapsule cluster core ─────────────────────────────────────────────────
+  - name: cluster_name
+    description: Kubernetes cluster name
+    value: kapsule-demo
+
+  - name: kubernetes_version
+    description: Kubernetes version (e.g. 1.32)
+    value: "1.32"
+
+  - name: cni
+    description: Container Network Interface (cilium or calico)
+    value: cilium
+
+  - name: delete_additional_resources
+    description: Delete K8s-created LBs and volumes on cluster destroy
+    type: bool
+    value: true
+
+  # ─── Default node pool ────────────────────────────────────────────────────
+  - name: node_type
+    description: Node instance type (e.g. DEV1-M, GP1-XS, PRO2-S)
+    value: DEV1-M
+
+  - name: node_count
+    description: Number of nodes in the default pool
+    type: number
+    value: 2
+
+  - name: node_auto_scale
+    description: Enable autoscaling for the default pool
+    type: bool
+    value: false
+
+  - name: min_nodes
+    description: Autoscaler minimum nodes (default pool)
+    type: number
+    value: 1
+
+  - name: max_nodes
+    description: Autoscaler maximum nodes (default pool)
+    type: number
+    value: 6
+
+  # ─── Additional node pool (optional) ──────────────────────────────────────
+  - name: create_additional_pool
+    description: Create an additional node pool (e.g. workload pool)
+    type: bool
+    value: false
+
+  - name: additional_pool_name
+    description: Additional pool name
+    value: workload
+
+  - name: additional_pool_node_type
+    description: Additional pool node instance type
+    value: GP1-XS
+
+  - name: additional_pool_node_count
+    description: Number of nodes in the additional pool
+    type: number
+    value: 3
+
+  - name: additional_pool_auto_scale
+    description: Enable autoscaling for the additional pool
+    type: bool
+    value: false
+
+  - name: additional_pool_min_nodes
+    description: Autoscaler minimum nodes (additional pool)
+    type: number
+    value: 1
+
+  - name: additional_pool_max_nodes
+    description: Autoscaler maximum nodes (additional pool)
+    type: number
+    value: 10
+
+  # ─── DNS (optional) ──────────────────────────────────────────────────────
+  - name: create_dns_zone
+    description: Create a Scaleway DNS zone
+    type: bool
+    value: false
+
+  - name: domain_name
+    description: Parent domain (e.g. example.com)
+    value: example.com
+
+  - name: subdomain
+    description: Subdomain prefix (e.g. staging for staging.example.com)
+    value: ""
+
+  # ─── Container Registry (optional) ───────────────────────────────────────
+  - name: create_container_registry
+    description: Create a Scaleway Container Registry
+    type: bool
+    value: false
+
+  - name: registry_name
+    description: Container registry namespace name
+    value: my-registry
+
+  # ─── Kubernetes add-ons ──────────────────────────────────────────────────
+  - name: certManagerEnabled
+    description: Install Cert-Manager
+    type: bool
+    value: true
+
+  - name: elasticOperatorEnabled
+    description: Install Elastic Operator
+    type: bool
+    value: true
+
+  - name: externalDnsEnabled
+    description: Install External DNS
+    type: bool
+    value: true
+
+  - name: externalSecretsEnabled
+    description: Install External Secrets
+    type: bool
+    value: true
+
+  - name: ingressNginxEnabled
+    description: Install Ingress Nginx
+    type: bool
+    value: true
+
+  - name: istioEnabled
+    description: Install Istio
+    type: bool
+    value: true
+
+  - name: kafkaOperatorEnabled
+    description: Install Kafka Operator
+    type: bool
+    value: true
+
+  - name: postgresOperatorEnabled
+    description: Install Postgres Operator
+    type: bool
+    value: true
+
+  - name: solrOperatorEnabled
+    description: Install Solr Operator
+    type: bool
+    value: true

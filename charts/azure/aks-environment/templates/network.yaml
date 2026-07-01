@@ -1,0 +1,15 @@
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureVpc
+metadata:
+  name: "{{ values.env }}-vnet"
+spec:
+  region: "{{ values.region }}"
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  addressSpaceCidr: "{{ values.vnet_cidr }}"
+  nodesSubnetCidr: "{{ values.nodes_subnet_cidr }}"
+  isNatGatewayEnabled: {{ values.is_nat_gateway_enabled }}

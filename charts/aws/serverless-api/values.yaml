@@ -1,0 +1,109 @@
+params:
+  # ─── Lambda Function ───────────────────────────────────────────────────
+  - name: lambda_function_name
+    description: Lambda function name (unique per account/region)
+    value: api-handler
+
+  - name: lambda_code_source_type
+    description: >
+      How Lambda code is provided. Use CODE_SOURCE_TYPE_IMAGE for container
+      images from ECR, or CODE_SOURCE_TYPE_S3 for zip archives in S3.
+    value: CODE_SOURCE_TYPE_IMAGE
+
+  - name: lambda_image_uri
+    description: >
+      ECR container image URI (when code_source_type is CODE_SOURCE_TYPE_IMAGE).
+      Example: 123456789012.dkr.ecr.us-east-1.amazonaws.com/my-api:latest
+    value: ""
+
+  - name: lambda_s3_bucket
+    description: >
+      S3 bucket containing the Lambda deployment zip
+      (when code_source_type is CODE_SOURCE_TYPE_S3)
+    value: ""
+
+  - name: lambda_s3_key
+    description: >
+      S3 object key for the Lambda deployment zip
+      (when code_source_type is CODE_SOURCE_TYPE_S3)
+    value: ""
+
+  - name: lambda_runtime
+    description: >
+      Lambda runtime identifier (only for CODE_SOURCE_TYPE_S3).
+      Examples: nodejs20.x, python3.12, java21, go1.x, dotnet8
+    value: nodejs20.x
+
+  - name: lambda_handler
+    description: >
+      Lambda handler entry point (only for CODE_SOURCE_TYPE_S3).
+      Examples: index.handler (Node.js), app.lambda_handler (Python)
+    value: index.handler
+
+  - name: lambda_memory_mb
+    description: Lambda memory in MB (128-10240). CPU scales with memory.
+    value: "256"
+
+  - name: lambda_timeout_seconds
+    description: Lambda timeout in seconds (1-900)
+    value: "30"
+
+  # ─── HTTP API Gateway ──────────────────────────────────────────────────
+  - name: api_name
+    description: HTTP API Gateway name
+    value: api-gateway
+
+  - name: api_description
+    description: Human-readable description of the API
+    value: Serverless API backend
+
+  # ─── DynamoDB Database ─────────────────────────────────────────────────
+  - name: databaseEnabled
+    description: Create a DynamoDB table for data persistence
+    type: bool
+    value: true
+
+  - name: dynamodb_table_name
+    description: DynamoDB table name
+    value: api-data
+
+  - name: dynamodb_hash_key
+    description: DynamoDB partition key attribute name
+    value: id
+
+  # ─── SQS Async Processing ─────────────────────────────────────────────
+  - name: messagingEnabled
+    description: Create an SQS queue for asynchronous task processing
+    type: bool
+    value: false
+
+  - name: sqs_queue_name
+    description: SQS queue name
+    value: api-tasks
+
+  # ─── SNS Notifications ────────────────────────────────────────────────
+  - name: notificationsEnabled
+    description: Create an SNS topic for fan-out notifications
+    type: bool
+    value: false
+
+  - name: sns_topic_name
+    description: SNS topic name
+    value: api-notifications
+
+  # ─── Cognito Authentication ────────────────────────────────────────────
+  - name: authEnabled
+    description: >
+      Create a Cognito User Pool for API authentication.
+      After deployment, wire the user pool endpoint and client ID to the
+      API Gateway JWT authorizer (see README for instructions).
+    type: bool
+    value: false
+
+  - name: cognito_pool_name
+    description: Cognito User Pool name
+    value: api-users
+
+  - name: cognito_client_name
+    description: Cognito app client name
+    value: api-client

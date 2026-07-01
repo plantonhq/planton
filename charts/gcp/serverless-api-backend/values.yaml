@@ -1,0 +1,110 @@
+params:
+  # ─── GCP Configuration ─────────────────────────────────────────────────
+  - name: gcp_project_id
+    description: GCP project ID for all resources
+    value: my-gcp-project
+
+  - name: region
+    description: GCP region for all resources
+    value: us-central1
+
+  # ─── Networking ────────────────────────────────────────────────────────
+  - name: vpc_name
+    description: VPC network name
+    value: api-backend-vpc
+
+  - name: subnet_cidr
+    description: Primary CIDR range for the subnet
+    value: "10.0.0.0/24"
+
+  # ─── Service Account ───────────────────────────────────────────────────
+  - name: service_account_id
+    description: Service account for the Cloud Run service
+    value: api-backend-sa
+
+  # ─── Cloud Run Service ─────────────────────────────────────────────────
+  - name: service_name
+    description: Cloud Run service name
+    value: api-backend
+
+  - name: container_image_repo
+    description: >
+      Container image repository for the API service.
+      Use a placeholder during initial setup, then update with your actual image.
+    value: us-docker.pkg.dev/cloudrun/container/hello
+
+  - name: container_image_tag
+    description: Container image tag
+    value: latest
+
+  - name: container_port
+    description: Port the container listens on
+    value: "8080"
+
+  # ─── Cloud SQL Database ────────────────────────────────────────────────
+  - name: databaseEnabled
+    description: Create a Cloud SQL PostgreSQL database
+    type: bool
+    value: true
+
+  - name: database_instance_name
+    description: Cloud SQL instance name
+    value: api-database
+
+  - name: database_tier
+    description: Cloud SQL machine tier
+    value: db-f1-micro
+
+  - name: database_version
+    description: Database version (e.g., POSTGRES_15)
+    value: POSTGRES_15
+
+  - name: database_root_password
+    description: Root password (rotate immediately after deployment)
+    value: change-me-immediately
+
+  # ─── Redis Cache ───────────────────────────────────────────────────────
+  - name: cacheEnabled
+    description: Create a Memorystore Redis instance for caching
+    type: bool
+    value: false
+
+  - name: redis_instance_name
+    description: Redis instance name
+    value: api-cache
+
+  - name: redis_memory_size_gb
+    description: Redis memory in GiB
+    value: "1"
+
+  # ─── Pub/Sub Messaging ─────────────────────────────────────────────────
+  - name: messagingEnabled
+    description: Create a Pub/Sub topic for event-driven messaging
+    type: bool
+    value: false
+
+  - name: pubsub_topic_name
+    description: Pub/Sub topic name
+    value: api-events
+
+  # ─── Cloud Tasks ───────────────────────────────────────────────────────
+  - name: tasksEnabled
+    description: Create a Cloud Tasks queue for async processing
+    type: bool
+    value: false
+
+  - name: tasks_queue_name
+    description: Cloud Tasks queue name
+    value: api-tasks
+
+  # ─── Secret Manager ────────────────────────────────────────────────────
+  - name: secretsEnabled
+    description: Create Secret Manager secrets for the API service
+    type: bool
+    value: false
+
+  - name: secret_names
+    description: >
+      Comma-separated list of secret names to create
+      (e.g., "db-password,api-key,jwt-secret")
+    value: db-password,api-key

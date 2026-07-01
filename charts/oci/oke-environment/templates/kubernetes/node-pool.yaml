@@ -1,0 +1,49 @@
+---
+apiVersion: oci.planton.dev/v1
+kind: OciContainerEngineNodePool
+metadata:
+  name: "{{ values.node_pool_name }}"
+spec:
+  compartmentId:
+    value: "{{ values.compartment_ocid }}"
+  clusterId:
+    valueFrom:
+      kind: OciContainerEngineCluster
+      name: "{{ values.env }}-{{ values.cluster_name }}"
+      fieldPath: status.outputs.clusterId
+  nodeShape: "{{ values.node_shape }}"
+  nodeShapeConfig:
+    ocpus: {{ values.node_ocpus }}
+    memoryInGbs: {{ values.node_memory_gb }}
+  {% if values.node_image_id != "" %}
+  nodeSourceDetails:
+    imageId: "{{ values.node_image_id }}"
+  {% endif %}
+  nodeConfigDetails:
+    size: {{ values.node_pool_size }}
+    placementConfigs:
+      - availabilityDomain: "{{ values.availability_domain_1 }}"
+        subnetId:
+          valueFrom:
+            kind: OciSubnet
+            name: "{{ values.env }}-private"
+            fieldPath: status.outputs.subnetId
+      {% if values.availability_domain_2 != "" %}
+      - availabilityDomain: "{{ values.availability_domain_2 }}"
+        subnetId:
+          valueFrom:
+            kind: OciSubnet
+            name: "{{ values.env }}-private"
+            fieldPath: status.outputs.subnetId
+      {% endif %}
+    nsgIds:
+      - valueFrom:
+          kind: OciSecurityGroup
+          name: "{{ values.env }}-worker"
+          fieldPath: status.outputs.networkSecurityGroupId
+  {% if values.ssh_public_key != "" %}
+  sshPublicKey: "{{ values.ssh_public_key }}"
+  {% endif %}
+  initialNodeLabels:
+    - key: pool
+      value: "{{ values.node_pool_name }}"

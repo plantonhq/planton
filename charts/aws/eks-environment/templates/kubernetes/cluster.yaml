@@ -1,0 +1,35 @@
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsEksCluster
+metadata:
+  name: "{{ values.env }}-{{ values.cluster_name }}"
+spec:
+  region: "{{ values.aws_region }}"
+  subnetIds:
+    - valueFrom:
+        kind: AwsSubnet
+        name: "{{ values.env }}-private-1"
+        fieldPath: status.outputs.subnet_id
+    - valueFrom:
+        kind: AwsSubnet
+        name: "{{ values.env }}-private-2"
+        fieldPath: status.outputs.subnet_id
+  clusterRoleArn:
+    valueFrom:
+      kind: AwsIamRole
+      name: "{{ values.env }}-eks-cluster-role"
+      fieldPath: status.outputs.role_arn
+  version: "{{ values.cluster_version }}"
+  disablePublicEndpoint: {{ values.disable_public_endpoint }}
+  {% if not values.disable_public_endpoint | bool %}
+  publicAccessCidrs:
+    - "{{ values.public_access_cidr }}"
+  {% endif %}
+  enableControlPlaneLogs: {{ values.enable_control_plane_logs }}
+  {% if values.enable_kms_encryption | bool %}
+  kmsKeyArn:
+    valueFrom:
+      kind: AwsKmsKey
+      name: "{{ values.env }}-eks-secrets"
+      fieldPath: status.outputs.key_arn
+  {% endif %}

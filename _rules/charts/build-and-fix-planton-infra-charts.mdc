@@ -1,0 +1,289 @@
+---
+description: Action rule to build all InfraCharts, diagnose validation failures against protobuf specs, and fix templates so every chart passes `planton chart build`. Requires understanding of the Planton platform, Planton protobuf contracts, and the relationship between chart templates and proto definitions.
+globs: []
+alwaysApply: false
+---
+
+# Rule: Build and Fix InfraCharts (action)
+
+Purpose: When invoked, build every InfraChart in this repository, identify validation failures, diagnose them against the authoritative protobuf specs in the planton repo, and fix the templates so all charts pass. This is precision work on a production platform — every fix must be traceable to the proto source of truth.
+
+Usage: Invoke explicitly as `@build-and-fix-planton-infra-charts` when charts need to be validated and repaired.
+
+## Platform Context
+
+You are working on **Planton**, an infrastructure deployment platform. Understanding the architecture is essential to making correct fixes.
+
+**Planton** orchestrates infrastructure deployments across cloud providers. Users compose infrastructure from Cloud Resources — atomic units like VPCs, databases, and Kubernetes clusters — each defined by a protobuf schema.
+
+**Planton open source** is the open-source foundation. It provides:
+- **Protobuf APIs** that define the configuration schema for every Cloud Resource kind (field names, types, enums, validation rules).
+- **Pulumi and Terraform modules** that provision the actual infrastructure.
+- **A CLI** that validates manifests against the proto schemas and orchestrates deployment.
+
+**InfraCharts** are parameterized templates that bundle multiple Cloud Resources into reusable blueprints (analogous to Helm charts for Kubernetes). Each chart contains:
+- `Chart.yaml` — metadata (name, description)
+- `values.yaml` — parameters with defaults
+- `templates/` — Jinja2 templates that render Cloud Resource YAML manifests
+
+When `planton chart build` runs, templates are rendered with default values and the resulting YAML manifests are **validated against the protobuf schemas**. Any field name, enum value, or message structure that doesn't match the proto definition causes a validation error.
+
+**The protobuf `spec.proto` is the single source of truth.** Templates must conform to the proto contract exactly. This rule exists because templates can drift from the proto — fields get renamed, enums are tightened, message structures change — and the templates must be brought back into alignment.
+
+## Reference Paths
+
+These paths are always available on this machine:
+
+| Resource | Path |
+|----------|------|
+| Planton repo (this repo) | `~/scm/github.com/plantonhq/planton` |
+| InfraCharts | `~/scm/github.com/plantonhq/planton/charts` |
+| Provider proto specs | `~/scm/github.com/plantonhq/planton/apis/dev/planton/provider/<provider>/<kind>/v1/spec.proto` |
+| Shared relationship proto | `~/scm/github.com/plantonhq/planton/apis/dev/planton/shared/relationship/v1/relationship.proto` |
+| K8s cluster selector proto | `~/scm/github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/target_cluster.proto` |
+| CloudResourceKind enum | `~/scm/github.com/plantonhq/planton/apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto` |
+
+**Proto path convention**: For a resource kind like `AwsS3Bucket`, the spec lives at:
+```
+apis/dev/planton/provider/aws/awss3bucket/v1/spec.proto
+```
+The directory name is the kind in lowercase with no separators (e.g., `OciObjectStorageBucket` → `ociobjectstoragebucket`).
+
+## Phase 1: Build
+
+Run the build from the `charts/` directory:
+
+```bash
+cd charts && make build
+```
+
+This discovers all charts and runs `planton chart build <chart> --no-browser` on each one, printing a pass/fail summary. The `planton chart` command is provided by the Planton **Platform** CLI (the `InfraChart` kind is a platform API); the open-source `planton` binary built from this repo does not carry it.
+
+To build a single chart:
+
+```bash
+planton chart build <provider>/<chart-name> --no-browser
+```
+
+**Capture the output.** The summary reports which charts failed. For each failing chart, you'll need the detailed error messages, so re-run the individual chart build and capture the full stderr.
+
+## Phase 2: Diagnose
+
+### Reading Validation Errors
+
+`planton chart build` validation errors follow consistent patterns. Learn to recognize them:
+
+**1. Unknown field**
+```
+Cannot find field: <fieldName> in message <fully.qualified.MessageName>
+```
+The template uses a field that does not exist in the proto message. The fix is either a rename (the field exists under a different name) or removal (the field was never part of the spec).
+
+**2. Invalid enum value**
+```
+Invalid enum value: <value> for enum type: <fully.qualified.EnumName>
+```
+The template uses an enum value that doesn't match any value defined in the proto enum. Common causes: bare values instead of qualified names (e.g., `public` vs `endpoint_type_public`), uppercase vs lowercase (`BASIC` vs `basic`).
+
+**3. Type mismatch — scalar where message expected**
+```
+Expect message object but got: "<scalar_value>"
+```
+The template passes a plain string where the proto defines a nested message type. The fix is to restructure the YAML to match the message shape.
+
+**4. Type mismatch — message where scalar expected**
+```
+Invalid value: {...} for expected type: STRING
+```
+The template uses a structured object (typically a `valueFrom` reference) where the proto expects a plain string. This happens with `map<string, string>` fields that cannot accept `valueFrom` references.
+
+### Categorizing Errors
+
+Before fixing anything, categorize all errors across all failing charts. Often the same root cause affects multiple charts:
+
+- A renamed field in one proto affects every chart that uses that resource kind.
+- A structural issue in shared templates (like Kubernetes addons) affects every provider's environment chart.
+
+Fixing by category is faster and more consistent than fixing chart by chart.
+
+## Phase 3: Fix
+
+### The Cardinal Rule
+
+**Always read the proto before changing the template.**
+
+Do not guess field names. Do not assume enum values. Do not infer message structure from the error message alone. Open the `spec.proto` file in the planton repo, read the message definition, and understand the exact shape the YAML must take.
+
+### Methodology
+
+For each error:
+
+1. **Identify the resource kind** from the error message (e.g., `dev.planton.provider.aws.awss3bucket.v1.AwsS3BucketSpec`).
+2. **Read the spec.proto** at the corresponding path in planton.
+3. **Find the correct field/enum/structure** in the proto definition.
+4. **Apply the fix** in the template YAML.
+5. **Re-run the build** for that specific chart immediately. Errors can be layered — fixing one field may reveal another error that was masked.
+
+### Common Fix Patterns
+
+These patterns recur across providers. Understanding them prevents repeated proto lookups for the same class of problem.
+
+**Boolean field where proto uses an enum:**
+The template uses `isVersioningEnabled: true` but the proto defines `Versioning versioning` with enum values `enabled`, `disabled`, `suspended`.
+```yaml
+# Wrong                          # Right
+isVersioningEnabled: true    →   versioning: enabled
+isAutoTieringEnabled: true   →   autoTiering: infrequent_access
+```
+
+**Bare enum value where proto uses qualified names:**
+The template uses `public` but the proto defines `endpoint_type_public`.
+```yaml
+# Wrong                          # Right
+endpointType: public         →   endpointType: endpoint_type_public
+privacy: public              →   privacy: privacy_public
+subscriptionTier: BASIC      →   subscriptionTier: basic
+```
+
+**Non-existent field — name derived from metadata:**
+Some resources don't have a `displayName`, `name`, or `domainName` field on the spec because the name comes from `metadata.name`. Remove the field from the spec section entirely.
+```yaml
+# Wrong — displayName is not in OciLogGroupSpec
+spec:
+  compartmentId: ...
+  displayName: "my-log-group"    # Remove this line
+```
+
+**Field rename:**
+The template uses a field name from Terraform/Pulumi convention that differs from the proto field name.
+```yaml
+# Wrong                          # Right
+awsRegion: us-east-1         →   region: us-east-1
+deadLetterQueue:             →   deadLetterConfig:
+autoCreateTopicsEnabled:     →   autoCreateTopicsEnable:
+```
+
+**Scalar where proto expects a nested message:**
+The template passes a string where the proto defines a message type.
+```yaml
+# Wrong — image is GcpCloudRunContainerImage, not a string
+container:
+  image: us-docker.pkg.dev/cloudrun/container/hello
+
+# Right
+container:
+  image:
+    repo: us-docker.pkg.dev/cloudrun/container/hello
+    tag: latest
+```
+
+**Extra message wrapper that doesn't exist in the proto:**
+The template nests fields inside a wrapper message that the proto doesn't define. Flatten the children up one level.
+```yaml
+# Wrong — targetCluster IS a KubernetesClusterSelector directly
+spec:
+  targetCluster:
+    kubernetesClusterSelector:
+      clusterKind: AwsEksCluster
+      clusterName: my-cluster
+
+# Right
+spec:
+  targetCluster:
+    clusterKind: AwsEksCluster
+    clusterName: my-cluster
+```
+
+**Flat fields where template uses a nested block:**
+The proto defines scaling fields at the spec level, but the template groups them under a `scale:` block.
+```yaml
+# Wrong — no scale message on the spec
+spec:
+  scale:
+    minReplicas: 1
+    maxReplicas: 5
+
+# Right — flat on the spec
+spec:
+  minReplicas: 1
+  maxReplicas: 5
+```
+
+**DynamoDB-style structured key schema:**
+The template uses a shorthand `hashKey` field, but the proto requires `attributeDefinitions` and `keySchema` as separate repeated fields.
+```yaml
+# Wrong
+spec:
+  hashKey:
+    name: userId
+    type: S
+
+# Right
+spec:
+  attributeDefinitions:
+    - name: userId
+      type: S
+  keySchema:
+    - attributeName: userId
+      keyType: HASH
+```
+
+### Shared Proto Structures
+
+Two proto definitions are used across every Kubernetes environment chart. Know them well:
+
+**CloudResourceRelationship** (`relationship.proto`):
+Fields: `kind` (CloudResourceKind enum), `env` (string), `name` (string, required), `type` (RelationshipType: `depends_on`, `runs_on`, `managed_by`, `uses`).
+There is **no `group` field**.
+
+**KubernetesClusterSelector** (`target_cluster.proto`):
+Fields: `cluster_kind` (CloudResourceKind enum), `cluster_name` (string).
+This is the type of `targetCluster` on Kubernetes addon specs — there is no nested `kubernetesClusterSelector` wrapper inside it.
+
+## Phase 4: Decision Framework
+
+### Fix Autonomously
+
+These fixes are mechanical, safe, and don't change the template's intent:
+
+- Renaming a field to match the proto (e.g., `awsRegion` → `region`)
+- Correcting an enum value to match the proto (e.g., `BASIC` → `basic`)
+- Removing a field that doesn't exist in the proto when the value comes from metadata
+- Flattening a wrapper message that doesn't exist in the proto
+- Restructuring a scalar to a message type when the proto's message definition is unambiguous
+
+### Pause and Collaborate
+
+Stop and present the situation to the user when:
+
+- **A `valueFrom` reference must be replaced with a literal** because the proto field is a plain string (e.g., `map<string, string>`). This changes the chart's composability — the resource can no longer receive a dynamic value from another resource's output.
+- **The correct proto field is ambiguous** — multiple fields could be the intended replacement, or the template's intent doesn't map cleanly to any proto field.
+- **The fix would remove functionality** the chart clearly intends to provide (e.g., a health check configuration, auto-scaling rules, or log forwarding).
+- **A proto message has required fields** that the template doesn't provide, meaning the fix requires inventing new template values or defaults.
+- **The same kind of error affects many charts** and the fix strategy could go multiple ways — choose the pattern once, then apply consistently.
+
+When pausing, present:
+1. The exact error message
+2. The relevant proto definition (copy the message/enum from `spec.proto`)
+3. The current template YAML
+4. Your recommended fix and rationale
+5. Any alternatives you considered
+
+## Phase 5: Post-Fix
+
+After all charts pass `make build`:
+
+1. **Verify the full suite one final time** with `cd charts && make build` to confirm nothing regressed.
+2. **Commit** using `@commit-planton-changes` if the user asks.
+3. **Changelog** using `@create-infra-charts-changelog` if the user asks.
+
+Do not commit or create changelogs unless explicitly asked.
+
+## Quality Standards
+
+This repository is a critical component of a production platform serving real infrastructure deployments. Every template fix must meet these standards:
+
+- **Traceable to proto**: Every change must be justified by a specific field, enum, or message in the proto definition. No guessing.
+- **Minimal diff**: Change only what the proto requires. Don't reformat, reorganize, or "improve" templates beyond what's needed to pass validation.
+- **Verify immediately**: Re-run the build after every fix. Errors layer — don't accumulate fixes and verify once at the end.
+- **No silent data loss**: If removing a field means the chart loses functionality, flag it. The proto is the contract, but the template represents user intent.

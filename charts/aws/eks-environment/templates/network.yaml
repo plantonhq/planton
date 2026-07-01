@@ -1,0 +1,211 @@
+# AWS network foundation for the EKS environment.
+#
+# One public and one private subnet per Availability Zone. Public subnets route
+# 0.0.0.0/0 to the Internet Gateway and host the NAT gateway(s) plus any
+# internet-facing load balancers; private subnets host the EKS control-plane
+# ENIs and worker nodes and reach the internet outbound-only through a NAT
+# gateway. A subnet is "public" or "private" solely by where its default route
+# points (IGW vs NAT) -- there is no public/private flag on the subnet itself.
+#
+# `nat_mode` controls private-subnet egress:
+#   single -> one NAT gateway in AZ 1's public subnet, shared by all private subnets
+#   per_az -> one NAT gateway per AZ (no cross-AZ blast radius; higher cost)
+#   none   -> private subnets get no default route (no outbound internet)
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsVpc
+metadata:
+  name: "{{ values.env }}-vpc"
+spec:
+  region: "{{ values.aws_region }}"
+  cidrBlock: "{{ values.vpc_cidr }}"
+  enableDnsSupport: true
+  enableDnsHostnames: true
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsInternetGateway
+metadata:
+  name: "{{ values.env }}-igw"
+spec:
+  region: "{{ values.aws_region }}"
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: "{{ values.env }}-vpc"
+      fieldPath: status.outputs.vpc_id
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsSubnet
+metadata:
+  name: "{{ values.env }}-public-1"
+spec:
+  region: "{{ values.aws_region }}"
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: "{{ values.env }}-vpc"
+      fieldPath: status.outputs.vpc_id
+  availabilityZone: "{{ values.availability_zone_1 }}"
+  cidrBlock: "{{ values.public_subnet_1_cidr }}"
+  mapPublicIpOnLaunch: true
+  routes:
+    - destinationCidrBlock: 0.0.0.0/0
+      targetType: internet_gateway
+      targetId:
+        valueFrom:
+          kind: AwsInternetGateway
+          name: "{{ values.env }}-igw"
+          fieldPath: status.outputs.internet_gateway_id
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsSubnet
+metadata:
+  name: "{{ values.env }}-public-2"
+spec:
+  region: "{{ values.aws_region }}"
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: "{{ values.env }}-vpc"
+      fieldPath: status.outputs.vpc_id
+  availabilityZone: "{{ values.availability_zone_2 }}"
+  cidrBlock: "{{ values.public_subnet_2_cidr }}"
+  mapPublicIpOnLaunch: true
+  routes:
+    - destinationCidrBlock: 0.0.0.0/0
+      targetType: internet_gateway
+      targetId:
+        valueFrom:
+          kind: AwsInternetGateway
+          name: "{{ values.env }}-igw"
+          fieldPath: status.outputs.internet_gateway_id
+{% if values.nat_mode != "none" %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsElasticIp
+metadata:
+  name: "{{ values.env }}-nat-eip-1"
+spec:
+  region: "{{ values.aws_region }}"
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsNatGateway
+metadata:
+  name: "{{ values.env }}-nat-1"
+spec:
+  region: "{{ values.aws_region }}"
+  connectivityType: public
+  subnetId:
+    valueFrom:
+      kind: AwsSubnet
+      name: "{{ values.env }}-public-1"
+      fieldPath: status.outputs.subnet_id
+  allocationId:
+    valueFrom:
+      kind: AwsElasticIp
+      name: "{{ values.env }}-nat-eip-1"
+      fieldPath: status.outputs.allocation_id
+{% if values.nat_mode == "per_az" %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsElasticIp
+metadata:
+  name: "{{ values.env }}-nat-eip-2"
+spec:
+  region: "{{ values.aws_region }}"
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsNatGateway
+metadata:
+  name: "{{ values.env }}-nat-2"
+spec:
+  region: "{{ values.aws_region }}"
+  connectivityType: public
+  subnetId:
+    valueFrom:
+      kind: AwsSubnet
+      name: "{{ values.env }}-public-2"
+      fieldPath: status.outputs.subnet_id
+  allocationId:
+    valueFrom:
+      kind: AwsElasticIp
+      name: "{{ values.env }}-nat-eip-2"
+      fieldPath: status.outputs.allocation_id
+{% endif %}
+{% endif %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsSubnet
+metadata:
+  name: "{{ values.env }}-private-1"
+spec:
+  region: "{{ values.aws_region }}"
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: "{{ values.env }}-vpc"
+      fieldPath: status.outputs.vpc_id
+  availabilityZone: "{{ values.availability_zone_1 }}"
+  cidrBlock: "{{ values.private_subnet_1_cidr }}"
+{% if values.nat_mode != "none" %}
+  routes:
+    - destinationCidrBlock: 0.0.0.0/0
+      targetType: nat_gateway
+      targetId:
+        valueFrom:
+          kind: AwsNatGateway
+          name: "{{ values.env }}-nat-1"
+          fieldPath: status.outputs.nat_gateway_id
+{% endif %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsSubnet
+metadata:
+  name: "{{ values.env }}-private-2"
+spec:
+  region: "{{ values.aws_region }}"
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: "{{ values.env }}-vpc"
+      fieldPath: status.outputs.vpc_id
+  availabilityZone: "{{ values.availability_zone_2 }}"
+  cidrBlock: "{{ values.private_subnet_2_cidr }}"
+{% if values.nat_mode != "none" %}
+  routes:
+    - destinationCidrBlock: 0.0.0.0/0
+      targetType: nat_gateway
+      targetId:
+        valueFrom:
+          kind: AwsNatGateway
+{% if values.nat_mode == "per_az" %}
+          name: "{{ values.env }}-nat-2"
+{% else %}
+          name: "{{ values.env }}-nat-1"
+{% endif %}
+          fieldPath: status.outputs.nat_gateway_id
+{% endif %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsSecurityGroup
+metadata:
+  name: "{{ values.env }}-eks-node-sg"
+spec:
+  region: "{{ values.aws_region }}"
+  description: allow intra‑node traffic and all egress
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: "{{ values.env }}-vpc"
+      fieldPath: status.outputs.vpc_id
+  ingress:
+    - description: allow all within group
+      protocol: TCP
+      fromPort: 0
+      toPort: 65535
+      selfReference: true
+  egress:
+    - description: allow all outbound
+      protocol: "-1"
+      ipv4Cidrs:
+        - 0.0.0.0/0

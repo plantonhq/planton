@@ -1,0 +1,13 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: AWS Serverless API
+spec:
+  selector:
+    kind: platform
+  description: Production-ready serverless API backend on Lambda with HTTP API Gateway, optional DynamoDB database, SQS async processing, SNS notifications, and Cognito authentication. A composable serverless microservices pattern -- enable only the components your API needs.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/aws/awshttpapigateway/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/aws/serverless-api
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/aws/serverless-api/README.md

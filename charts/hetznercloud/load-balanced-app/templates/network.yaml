@@ -1,0 +1,11 @@
+---
+apiVersion: hetznercloud.planton.dev/v1
+kind: HetznerCloudNetwork
+metadata:
+  name: "{{ values.env }}-network"
+spec:
+  ipRange: "{{ values.network_ip_range }}"
+  subnets:
+    - type: cloud
+      networkZone: "{{ values.subnet_network_zone }}"
+      ipRange: "{{ values.subnet_ip_range }}"

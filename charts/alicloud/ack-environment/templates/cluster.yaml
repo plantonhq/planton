@@ -1,0 +1,37 @@
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudKubernetesCluster
+metadata:
+  name: "{{ values.env }}-{{ values.cluster_name }}"
+spec:
+  region: "{{ values.region }}"
+  name: "{{ values.env }}-{{ values.cluster_name }}"
+{% if values.kubernetes_version != "" %}
+  version: "{{ values.kubernetes_version }}"
+{% endif %}
+  vswitchIds:
+    - valueFrom:
+        kind: AliCloudVswitch
+        name: "{{ values.env }}-vswitch-1"
+        fieldPath: status.outputs.vswitchId
+    - valueFrom:
+        kind: AliCloudVswitch
+        name: "{{ values.env }}-vswitch-2"
+        fieldPath: status.outputs.vswitchId
+  securityGroupId:
+    valueFrom:
+      kind: AliCloudSecurityGroup
+      name: "{{ values.env }}-ack-sg"
+      fieldPath: status.outputs.securityGroupId
+  podCidr: "{{ values.pod_cidr }}"
+  serviceCidr: "{{ values.service_cidr }}"
+  slbInternetEnabled: {{ values.slb_internet_enabled | bool }}
+  enableRrsa: {{ values.enable_rrsa | bool }}
+  proxyMode: ipvs
+  newNatGateway: false
+  logging:
+    controlPlaneLogProject:
+      valueFrom:
+        kind: AliCloudLogProject
+        name: "{{ values.env }}-ack-logs"
+        fieldPath: status.outputs.projectName

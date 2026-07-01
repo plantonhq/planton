@@ -1,0 +1,76 @@
+params:
+  # ─── GCP Configuration ─────────────────────────────────────────────────
+  - name: gcp_project_id
+    description: GCP project ID for all resources
+    value: my-gcp-project
+
+  - name: region
+    description: GCP region for all resources
+    value: us-central1
+
+  # ─── Networking ────────────────────────────────────────────────────────
+  - name: vpc_name
+    description: VPC network name
+    value: data-analytics-vpc
+
+  - name: subnet_cidr
+    description: Primary CIDR range for the subnet
+    value: "10.0.0.0/20"
+
+  # ─── Service Account ───────────────────────────────────────────────────
+  - name: service_account_id
+    description: >
+      Service account for Dataproc cluster nodes and data access.
+      Granted BigQuery, GCS, Pub/Sub, and Dataproc worker roles.
+    value: data-analytics-sa
+
+  # ─── Storage ───────────────────────────────────────────────────────────
+  - name: bucket_name
+    description: >
+      Globally unique GCS bucket for Dataproc staging, data lake storage,
+      and intermediate processing artifacts.
+    value: my-project-data-lake
+
+  # ─── BigQuery ──────────────────────────────────────────────────────────
+  - name: dataset_id
+    description: BigQuery dataset ID for analytics warehouse (alphanumeric and underscores)
+    value: analytics_warehouse
+
+  # ─── Pub/Sub ───────────────────────────────────────────────────────────
+  - name: topic_name
+    description: Pub/Sub topic name for streaming data ingestion
+    value: analytics-ingest
+
+  # ─── Dataproc Cluster ──────────────────────────────────────────────────
+  - name: cluster_name
+    description: Dataproc cluster name (2-55 chars, lowercase, numbers, hyphens)
+    value: analytics-cluster
+
+  - name: master_machine_type
+    description: Machine type for the master node
+    value: n2-standard-4
+
+  - name: worker_count
+    description: Number of primary worker nodes
+    value: "2"
+
+  - name: worker_machine_type
+    description: Machine type for worker nodes
+    value: n2-standard-4
+
+  - name: image_version
+    description: >
+      Dataproc image version (e.g., 2.2-debian12).
+      Determines Spark, Hadoop, Hive versions.
+    value: "2.2-debian12"
+
+  - name: jupyterEnabled
+    description: Install Jupyter notebook component on the cluster
+    type: bool
+    value: true
+
+  - name: idle_delete_ttl
+    description: >
+      Auto-delete cluster after this idle duration (e.g., 3600s = 1 hour).
+      Set to empty string to disable. Critical for cost management.
+    value: "3600s"

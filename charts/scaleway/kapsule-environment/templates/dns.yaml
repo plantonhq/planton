@@ -1,0 +1,10 @@
+{% if values.create_dns_zone | bool %}
+---
+apiVersion: scaleway.planton.dev/v1
+kind: ScalewayDnsZone
+metadata:
+  name: "{{ values.env }}-{{ values.cluster_name }}-dns"
+spec:
+  domain: "{{ values.domain_name }}"
+  subdomain: "{{ values.subdomain }}"
+{% endif %}

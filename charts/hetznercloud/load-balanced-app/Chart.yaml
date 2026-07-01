@@ -1,0 +1,17 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: Hetzner Cloud Load-Balanced App
+spec:
+  selector:
+    kind: platform
+  description: >
+    Multi-server web application on Hetzner Cloud with a load balancer, private
+    networking, SSH key authentication, and firewall rules. Optional HTTPS
+    termination with managed Let's Encrypt certificates and DNS zone for custom
+    domain routing.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/hetznercloud/hetznercloudloadbalancer/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/hetznercloud/load-balanced-app
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/hetznercloud/load-balanced-app/README.md

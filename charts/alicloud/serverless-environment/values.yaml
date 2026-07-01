@@ -1,0 +1,95 @@
+params:
+  # ─── Region & Availability Zones ──────────────────────────────────────────────
+  - name: region
+    description: Alibaba Cloud region
+    value: cn-hangzhou
+
+  - name: availability_zone_1
+    description: Availability zone for VPC-connected resources
+    value: cn-hangzhou-h
+
+  # ─── VPC (for SAE and VPC-connected FC) ───────────────────────────────────────
+  - name: vpc_cidr
+    description: VPC CIDR block for serverless networking
+    value: "10.2.0.0/16"
+
+  - name: vswitch_cidr
+    description: VSwitch CIDR
+    value: "10.2.0.0/20"
+
+  # ─── Logging ──────────────────────────────────────────────────────────────────
+  - name: log_retention_days
+    description: Log store retention in days
+    value: "7"
+
+  # ─── IAM ──────────────────────────────────────────────────────────────────────
+  - name: fc_role_policies
+    description: Comma-separated system policy names for the FC execution role
+    value: AliyunLogFullAccess,AliyunOSSReadOnlyAccess
+
+  # ─── OSS (optional) ───────────────────────────────────────────────────────────
+  - name: ossEnabled
+    description: Create an OSS bucket for function code and artifacts
+    type: bool
+    value: true
+
+  # ─── FC Function (optional) ───────────────────────────────────────────────────
+  - name: fcEnabled
+    description: Deploy an FC function
+    type: bool
+    value: true
+
+  - name: fc_function_name
+    description: Function Compute function name
+    value: hello-function
+
+  - name: fc_runtime
+    description: FC runtime (e.g., python3.10, nodejs18, go1, java11)
+    value: python3.10
+
+  - name: fc_handler
+    description: FC handler entry point
+    value: index.handler
+
+  - name: fc_memory_size
+    description: FC function memory (MB)
+    value: "256"
+
+  - name: fc_timeout
+    description: FC function timeout (seconds)
+    value: "60"
+
+  - name: fcVpcEnabled
+    description: Connect FC function to VPC
+    type: bool
+    value: false
+
+  # ─── SAE Application (optional) ───────────────────────────────────────────────
+  - name: saeEnabled
+    description: Deploy a Serverless App Engine application
+    type: bool
+    value: false
+
+  - name: sae_app_name
+    description: SAE application name
+    value: hello-app
+
+  - name: sae_package_type
+    description: "SAE package type: Image, FatJar, War"
+    value: Image
+
+  - name: sae_image_url
+    description: Container image URL for SAE (when package_type is Image)
+    value: registry.cn-hangzhou.aliyuncs.com/library/nginx:latest
+
+  - name: sae_replicas
+    description: Number of SAE application instances
+    value: "1"
+
+  - name: sae_cpu
+    description: CPU allocation in millicores (500, 1000, 2000, 4000)
+    value: "1000"
+
+  - name: sae_memory
+    description: Memory allocation in MB (1024, 2048, 4096, 8192)
+    value: "2048"

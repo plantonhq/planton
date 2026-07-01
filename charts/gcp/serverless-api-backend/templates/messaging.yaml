@@ -1,0 +1,12 @@
+{% if values.messagingEnabled | bool %}
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpPubSubTopic
+metadata:
+  name: "{{ values.pubsub_topic_name }}"
+  group: messaging
+spec:
+  projectId:
+    value: "{{ values.gcp_project_id }}"
+  topicName: "{{ values.pubsub_topic_name }}"
+{% endif %}

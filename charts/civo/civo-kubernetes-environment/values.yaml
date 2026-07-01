@@ -1,0 +1,94 @@
+params:
+  # Network
+  - name: region
+    description: Civo Region (lon1, fra1, nyc1, phx1, mum1)
+    value: fra1
+  
+  # Cluster core
+  - name: cluster_name
+    description: Kubernetes Cluster Name
+    value: civo-demo
+  
+  - name: kubernetes_version
+    description: Kubernetes Version (e.g. 1.26.3)
+    value: "1.26.3"
+  
+  - name: highly_available
+    description: Enable Highly Available Control Plane
+    type: bool
+    value: false
+  
+  - name: auto_upgrade
+    description: Enable Automatic Version Upgrades
+    type: bool
+    value: false
+  
+  - name: disable_surge_upgrade
+    description: Disable Surge Upgrades
+    type: bool
+    value: false
+  
+  # Default node pool
+  - name: node_size
+    description: Node Size (e.g. g4s.kube.medium, g4s.kube.large)
+    value: g4s.kube.medium
+  
+  - name: node_count
+    description: Number of Nodes in Default Pool
+    type: number
+    value: 3
+  
+  # Firewall
+  - name: allow_all_egress
+    description: Allow All Outbound Traffic
+    type: bool
+    value: true
+  
+  # DNS (optional)
+  - name: create_dns_zone
+    description: Create DNS Zone
+    type: bool
+    value: true
+  
+  - name: domain_name
+    description: Domain Name (e.g. example.com)
+    value: planton.app
+  
+  # Kubernetes add-ons
+  - name: certManagerEnabled
+    description: Install Cert-Manager
+    type: bool
+    value: true
+  - name: elasticOperatorEnabled
+    description: Install Elastic Operator
+    type: bool
+    value: true
+  - name: externalDnsEnabled
+    description: Install External DNS
+    type: bool
+    value: true
+  - name: externalSecretsEnabled
+    description: Install External Secrets
+    type: bool
+    value: true
+  - name: ingressNginxEnabled
+    description: Install Ingress Nginx
+    type: bool
+    value: true
+  - name: istioEnabled
+    description: Install Istio
+    type: bool
+    value: true
+  - name: kafkaOperatorEnabled
+    description: Install Kafka Operator
+    type: bool
+    value: true
+  - name: postgresOperatorEnabled
+    description: Install Postgres Operator
+    type: bool
+    value: true
+  - name: solrOperatorEnabled
+    description: Install Solr Operator
+    type: bool
+    value: true
+

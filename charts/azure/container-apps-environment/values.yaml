@@ -1,0 +1,81 @@
+params:
+  # ─── Foundation ───────────────────────────────────────────────────────────────
+  - name: region
+    description: Azure region (e.g. eastus, westus2, westeurope)
+    value: eastus
+
+  - name: resource_group_name
+    description: Resource group name suffix (prefixed with env)
+    value: cae-rg
+
+  - name: vnet_cidr
+    description: VNet address space CIDR
+    value: 10.2.0.0/16
+
+  - name: default_subnet_cidr
+    description: Default subnet CIDR (created by AzureVpc)
+    value: 10.2.0.0/24
+
+  - name: container_apps_subnet_cidr
+    description: "Subnet CIDR for Container Apps (minimum /21 = 2048 IPs)"
+    value: 10.2.8.0/21
+
+  # ─── Container App Environment ────────────────────────────────────────────────
+  - name: environment_name
+    description: Container App Environment name (lowercase, hyphens, 2‑60 chars)
+    value: my-cae
+
+  - name: internal_load_balancer
+    description: Internal‑only access (no public internet)
+    type: bool
+    value: false
+
+  - name: zone_redundancy
+    description: Enable zone redundancy for HA
+    type: bool
+    value: false
+
+  # ─── Container App (optional sample) ──────────────────────────────────────────
+  - name: create_container_app
+    description: Deploy a sample Container App into the environment
+    type: bool
+    value: true
+
+  - name: container_app_name
+    description: Container App name
+    value: my-app
+
+  - name: container_image
+    description: Container image (registry/repo:tag)
+    value: mcr.microsoft.com/k8se/quickstart:latest
+
+  - name: container_cpu
+    description: CPU cores (e.g. 0.25, 0.5, 1, 2)
+    value: "0.25"
+
+  - name: container_memory
+    description: Memory (e.g. 0.5Gi, 1Gi, 2Gi)
+    value: 0.5Gi
+
+  - name: target_port
+    description: Container port for ingress
+    value: "80"
+
+  - name: ingress_external
+    description: Allow external (public) ingress
+    type: bool
+    value: true
+
+  - name: min_replicas
+    description: Minimum replica count
+    value: "0"
+
+  - name: max_replicas
+    description: Maximum replica count
+    value: "3"
+
+  # ─── Monitoring ───────────────────────────────────────────────────────────────
+  - name: create_app_insights
+    description: Create Application Insights for APM telemetry
+    type: bool
+    value: true

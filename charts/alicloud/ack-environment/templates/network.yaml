@@ -1,0 +1,110 @@
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudVpc
+metadata:
+  name: "{{ values.env }}-vpc"
+spec:
+  region: "{{ values.region }}"
+  vpcName: "{{ values.env }}-vpc"
+  cidrBlock: "{{ values.vpc_cidr }}"
+
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudVswitch
+metadata:
+  name: "{{ values.env }}-vswitch-1"
+spec:
+  region: "{{ values.region }}"
+  vpcId:
+    valueFrom:
+      kind: AliCloudVpc
+      name: "{{ values.env }}-vpc"
+      fieldPath: status.outputs.vpcId
+  zoneId: "{{ values.availability_zone_1 }}"
+  cidrBlock: "{{ values.vswitch_cidr_1 }}"
+  vswitchName: "{{ values.env }}-vswitch-1"
+
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudVswitch
+metadata:
+  name: "{{ values.env }}-vswitch-2"
+spec:
+  region: "{{ values.region }}"
+  vpcId:
+    valueFrom:
+      kind: AliCloudVpc
+      name: "{{ values.env }}-vpc"
+      fieldPath: status.outputs.vpcId
+  zoneId: "{{ values.availability_zone_2 }}"
+  cidrBlock: "{{ values.vswitch_cidr_2 }}"
+  vswitchName: "{{ values.env }}-vswitch-2"
+
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudSecurityGroup
+metadata:
+  name: "{{ values.env }}-ack-sg"
+spec:
+  region: "{{ values.region }}"
+  vpcId:
+    valueFrom:
+      kind: AliCloudVpc
+      name: "{{ values.env }}-vpc"
+      fieldPath: status.outputs.vpcId
+  securityGroupName: "{{ values.env }}-ack-sg"
+  description: "Security group for ACK cluster in {{ values.env }}"
+  rules:
+    - type: egress
+      ipProtocol: all
+      portRange: "-1/-1"
+      cidrIp: "0.0.0.0/0"
+      description: "All outbound traffic"
+
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudEipAddress
+metadata:
+  name: "{{ values.env }}-nat-eip"
+spec:
+  region: "{{ values.region }}"
+  addressName: "{{ values.env }}-nat-eip"
+  bandwidth: {{ values.eip_bandwidth }}
+  internetChargeType: PayByTraffic
+
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudNatGateway
+metadata:
+  name: "{{ values.env }}-nat"
+spec:
+  region: "{{ values.region }}"
+  vpcId:
+    valueFrom:
+      kind: AliCloudVpc
+      name: "{{ values.env }}-vpc"
+      fieldPath: status.outputs.vpcId
+  vswitchId:
+    valueFrom:
+      kind: AliCloudVswitch
+      name: "{{ values.env }}-vswitch-1"
+      fieldPath: status.outputs.vswitchId
+  natGatewayName: "{{ values.env }}-nat"
+  eipId:
+    valueFrom:
+      kind: AliCloudEipAddress
+      name: "{{ values.env }}-nat-eip"
+      fieldPath: status.outputs.eipId
+  snatEntries:
+    - sourceVswitchId:
+        valueFrom:
+          kind: AliCloudVswitch
+          name: "{{ values.env }}-vswitch-1"
+          fieldPath: status.outputs.vswitchId
+      snatEntryName: "{{ values.env }}-snat-1"
+    - sourceVswitchId:
+        valueFrom:
+          kind: AliCloudVswitch
+          name: "{{ values.env }}-vswitch-2"
+          fieldPath: status.outputs.vswitchId
+      snatEntryName: "{{ values.env }}-snat-2"

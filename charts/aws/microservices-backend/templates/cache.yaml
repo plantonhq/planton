@@ -1,0 +1,39 @@
+{% if values.cacheEnabled | bool %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsRedisElasticache
+metadata:
+  name: "{{ values.service_name }}-redis"
+  group: cache
+  relationships:
+    - kind: AwsVpc
+      name: "{{ values.service_name }}-vpc"
+      type: uses
+    - kind: AwsSecurityGroup
+      name: "{{ values.service_name }}-sg"
+      type: uses
+spec:
+  region: "{{ values.aws_region }}"
+  description: "Redis cache for {{ values.service_name }}"
+  engine: redis
+  engineVersion: "{{ values.redis_engine_version }}"
+  nodeType: "{{ values.redis_node_type }}"
+  numCacheClusters: 2
+  atRestEncryptionEnabled: true
+  transitEncryptionEnabled: true
+  automaticFailoverEnabled: true
+  subnetIds:
+    - valueFrom:
+        kind: AwsSubnet
+        name: "{{ values.service_name }}-private-1"
+        fieldPath: status.outputs.subnet_id
+    - valueFrom:
+        kind: AwsSubnet
+        name: "{{ values.service_name }}-private-2"
+        fieldPath: status.outputs.subnet_id
+  securityGroupIds:
+    - valueFrom:
+        kind: AwsSecurityGroup
+        name: "{{ values.service_name }}-sg"
+        fieldPath: status.outputs.security_group_id
+{% endif %}

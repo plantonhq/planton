@@ -1,0 +1,71 @@
+# =============================================================================
+# Infra Charts Release (Reusable Workflow)
+# =============================================================================
+# Packages the InfraChart catalog (the charts/ tree) as a single versioned zip
+# and attaches it - with its checksum and a version pointer - to the GitHub
+# Release that the CLI job already created for this tag. There is nothing to
+# "build": a chart is just files (Chart.yaml + values.yaml + templates/), so
+# this is a publish step, not a build pipeline.
+#
+# Why an explicit checksummed asset instead of GitHub's auto source archive:
+#   - GitHub does NOT guarantee byte-stable source archives, so a pinned
+#     SHA-256 can silently break. We emit the zip and its checksum together, so
+#     the hash is stable by construction. A consumer composes real cloud
+#     infrastructure from these charts, so integrity verification matters.
+#   - The auto `main.zip` is continuous; a tagged release gives a deliberate
+#     cadence.
+#
+# Consumers download the three assets from the stable `latest` URLs:
+#   https://github.com/plantonhq/planton/releases/latest/download/infra-charts.zip
+#   https://github.com/plantonhq/planton/releases/latest/download/infra-charts.sha256
+#   https://github.com/plantonhq/planton/releases/latest/download/version.txt
+#
+# Called by: .github/workflows/release.yaml (after the CLI job publishes the
+# release). Not triggered directly - it rides the strict-semver release so its
+# assets land on the release that /releases/latest/download resolves to.
+# =============================================================================
+
+name: release.charts
+
+on:
+  workflow_call:
+
+permissions:
+  contents: write
+
+jobs:
+  charts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Package and attach the chart catalog
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          VERSION="${GITHUB_REF_NAME}"
+
+          # `git archive` zips exactly the tracked charts/ tree: gitignored
+          # build/ outputs are excluded automatically and the result is
+          # deterministic. The natural charts/ root is fine - the daemon's
+          # seeder walks the whole tree and finds charts by Chart.yaml presence.
+          git archive --format=zip -o infra-charts.zip HEAD charts/
+
+          # Checksum emitted alongside the zip it describes -> stable by construction.
+          sha256sum infra-charts.zip | awk '{print $1}' > infra-charts.sha256
+
+          # The latest pointer consumers read to decide whether to re-download.
+          printf '%s\n' "${VERSION}" > version.txt
+
+          echo "Built infra-charts.zip ($(wc -c < infra-charts.zip) bytes), sha256=$(cat infra-charts.sha256)"
+
+          # Attach to the release the CLI job already created for this tag.
+          # --clobber makes a re-run of the tag idempotent.
+          gh release upload "${VERSION}" \
+            infra-charts.zip \
+            infra-charts.sha256 \
+            version.txt \
+            --clobber

@@ -1,0 +1,81 @@
+params:
+  # ─── Location ──────────────────────────────────────────────────────────
+  - name: location
+    description: >
+      Hetzner Cloud location for all resources (e.g., fsn1, nbg1, hel1, ash,
+      hil, sin). All resources in this chart are created in the same location.
+    value: fsn1
+
+  # ─── Network ───────────────────────────────────────────────────────────
+  - name: network_ip_range
+    description: CIDR block for the private network (RFC 1918)
+    value: 10.0.0.0/16
+
+  - name: subnet_ip_range
+    description: CIDR block for the cloud subnet (must be within network_ip_range)
+    value: 10.0.1.0/24
+
+  - name: subnet_network_zone
+    description: >
+      Hetzner Cloud network zone for the subnet. Known zones: eu-central,
+      us-east, us-west, ap-southeast.
+    value: eu-central
+
+  # ─── SSH Key ───────────────────────────────────────────────────────────
+  - name: ssh_public_key
+    description: SSH public key to inject into all app servers
+    value: ""
+
+  # ─── Servers ───────────────────────────────────────────────────────────
+  - name: server_type
+    description: >
+      Server type for all app servers (e.g., cx22, cpx11, cax11).
+    value: cx22
+
+  - name: image
+    description: OS image name or ID (e.g., ubuntu-24.04, debian-12)
+    value: ubuntu-24.04
+
+  - name: user_data
+    description: >
+      Cloud-init user data applied to all app servers. Use this to install
+      your application, configure services, or join a cluster on first boot.
+    value: ""
+
+  - name: server_count
+    description: Number of app servers behind the load balancer
+    value: "2"
+
+  # ─── Application ───────────────────────────────────────────────────────
+  - name: app_port
+    description: >
+      Port your application listens on. The load balancer forwards traffic
+      to this port on each server.
+    value: "8080"
+
+  # ─── Load Balancer ─────────────────────────────────────────────────────
+  - name: load_balancer_type
+    description: >
+      Load balancer size: lb11 (25 targets, 10k conn/s), lb21 (75 targets,
+      20k conn/s), lb31 (150 targets, 40k conn/s).
+    value: lb11
+
+  # ─── DNS (optional) ────────────────────────────────────────────────────
+  - name: enable_dns
+    description: Create a DNS zone for custom domain routing
+    type: bool
+    value: false
+
+  - name: domain_name
+    description: >
+      Domain name for the DNS zone (e.g., example.com). Only used when
+      enable_dns is true.
+    value: example.com
+
+  # ─── HTTPS (optional) ─────────────────────────────────────────────────
+  - name: enable_https
+    description: >
+      Create a managed Let's Encrypt certificate and configure HTTPS on the
+      load balancer. Requires enable_dns to be true for domain validation.
+    type: bool
+    value: false

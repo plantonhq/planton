@@ -1,0 +1,40 @@
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsIamRole
+metadata:
+  name: "{{ values.service_name }}-instance-role"
+  group: identity
+spec:
+  description: App Runner instance role for {{ values.service_name }}
+  path: /service-role/
+  trustPolicy:
+    Version: "2012-10-17"
+    Statement:
+      - Effect: Allow
+        Principal:
+          Service: tasks.apprunner.amazonaws.com
+        Action: sts:AssumeRole
+  inlinePolicies:
+{% if values.databaseEnabled | bool %}
+    dynamodbAccess:
+      Version: "2012-10-17"
+      Statement:
+        - Effect: Allow
+          Action:
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+            - dynamodb:Query
+            - dynamodb:Scan
+          Resource: "arn:aws:dynamodb:*:*:table/{{ values.dynamodb_table_name }}"
+{% endif %}
+    cloudwatchLogs:
+      Version: "2012-10-17"
+      Statement:
+        - Effect: Allow
+          Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+          Resource: '*'

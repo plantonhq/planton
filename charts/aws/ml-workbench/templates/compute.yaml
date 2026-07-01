@@ -1,0 +1,265 @@
+{% if values.vpcEnabled | bool %}
+# AWS network foundation for the ML workbench (only created when vpcEnabled).
+#
+# One public and one private subnet per Availability Zone. The SageMaker domain
+# runs in the private subnets and reaches the internet outbound-only through a
+# NAT gateway in a public subnet. A subnet is "public" or "private" solely by
+# where its default route points (IGW vs NAT).
+#
+# `nat_mode` controls private-subnet egress: single (one shared NAT), per_az
+# (one NAT per AZ), or none (no outbound internet from private subnets).
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsVpc
+metadata:
+  name: "{{ values.sagemaker_domain_name }}-vpc"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+  cidrBlock: "{{ values.vpc_cidr }}"
+  enableDnsSupport: true
+  enableDnsHostnames: true
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsInternetGateway
+metadata:
+  name: "{{ values.sagemaker_domain_name }}-igw"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: "{{ values.sagemaker_domain_name }}-vpc"
+      fieldPath: status.outputs.vpc_id
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsSubnet
+metadata:
+  name: "{{ values.sagemaker_domain_name }}-public-1"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: "{{ values.sagemaker_domain_name }}-vpc"
+      fieldPath: status.outputs.vpc_id
+  availabilityZone: "{{ values.vpc_availability_zone_1 }}"
+  cidrBlock: "{{ values.public_subnet_1_cidr }}"
+  mapPublicIpOnLaunch: true
+  routes:
+    - destinationCidrBlock: 0.0.0.0/0
+      targetType: internet_gateway
+      targetId:
+        valueFrom:
+          kind: AwsInternetGateway
+          name: "{{ values.sagemaker_domain_name }}-igw"
+          fieldPath: status.outputs.internet_gateway_id
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsSubnet
+metadata:
+  name: "{{ values.sagemaker_domain_name }}-public-2"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: "{{ values.sagemaker_domain_name }}-vpc"
+      fieldPath: status.outputs.vpc_id
+  availabilityZone: "{{ values.vpc_availability_zone_2 }}"
+  cidrBlock: "{{ values.public_subnet_2_cidr }}"
+  mapPublicIpOnLaunch: true
+  routes:
+    - destinationCidrBlock: 0.0.0.0/0
+      targetType: internet_gateway
+      targetId:
+        valueFrom:
+          kind: AwsInternetGateway
+          name: "{{ values.sagemaker_domain_name }}-igw"
+          fieldPath: status.outputs.internet_gateway_id
+{% if values.nat_mode != "none" %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsElasticIp
+metadata:
+  name: "{{ values.sagemaker_domain_name }}-nat-eip-1"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsNatGateway
+metadata:
+  name: "{{ values.sagemaker_domain_name }}-nat-1"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+  connectivityType: public
+  subnetId:
+    valueFrom:
+      kind: AwsSubnet
+      name: "{{ values.sagemaker_domain_name }}-public-1"
+      fieldPath: status.outputs.subnet_id
+  allocationId:
+    valueFrom:
+      kind: AwsElasticIp
+      name: "{{ values.sagemaker_domain_name }}-nat-eip-1"
+      fieldPath: status.outputs.allocation_id
+{% if values.nat_mode == "per_az" %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsElasticIp
+metadata:
+  name: "{{ values.sagemaker_domain_name }}-nat-eip-2"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsNatGateway
+metadata:
+  name: "{{ values.sagemaker_domain_name }}-nat-2"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+  connectivityType: public
+  subnetId:
+    valueFrom:
+      kind: AwsSubnet
+      name: "{{ values.sagemaker_domain_name }}-public-2"
+      fieldPath: status.outputs.subnet_id
+  allocationId:
+    valueFrom:
+      kind: AwsElasticIp
+      name: "{{ values.sagemaker_domain_name }}-nat-eip-2"
+      fieldPath: status.outputs.allocation_id
+{% endif %}
+{% endif %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsSubnet
+metadata:
+  name: "{{ values.sagemaker_domain_name }}-private-1"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: "{{ values.sagemaker_domain_name }}-vpc"
+      fieldPath: status.outputs.vpc_id
+  availabilityZone: "{{ values.vpc_availability_zone_1 }}"
+  cidrBlock: "{{ values.private_subnet_1_cidr }}"
+{% if values.nat_mode != "none" %}
+  routes:
+    - destinationCidrBlock: 0.0.0.0/0
+      targetType: nat_gateway
+      targetId:
+        valueFrom:
+          kind: AwsNatGateway
+          name: "{{ values.sagemaker_domain_name }}-nat-1"
+          fieldPath: status.outputs.nat_gateway_id
+{% endif %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsSubnet
+metadata:
+  name: "{{ values.sagemaker_domain_name }}-private-2"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: "{{ values.sagemaker_domain_name }}-vpc"
+      fieldPath: status.outputs.vpc_id
+  availabilityZone: "{{ values.vpc_availability_zone_2 }}"
+  cidrBlock: "{{ values.private_subnet_2_cidr }}"
+{% if values.nat_mode != "none" %}
+  routes:
+    - destinationCidrBlock: 0.0.0.0/0
+      targetType: nat_gateway
+      targetId:
+        valueFrom:
+          kind: AwsNatGateway
+{% if values.nat_mode == "per_az" %}
+          name: "{{ values.sagemaker_domain_name }}-nat-2"
+{% else %}
+          name: "{{ values.sagemaker_domain_name }}-nat-1"
+{% endif %}
+          fieldPath: status.outputs.nat_gateway_id
+{% endif %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsSecurityGroup
+metadata:
+  name: "{{ values.sagemaker_domain_name }}-sg"
+  group: network
+  relationships:
+    - kind: AwsVpc
+      name: "{{ values.sagemaker_domain_name }}-vpc"
+      type: uses
+spec:
+  region: "{{ values.aws_region }}"
+  description: SageMaker notebook security group
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: "{{ values.sagemaker_domain_name }}-vpc"
+      fieldPath: status.outputs.vpc_id
+  ingress:
+    - description: HTTPS from VPC
+      fromPort: 443
+      toPort: 443
+      protocol: TCP
+      ipv4Cidrs:
+        - 10.0.0.0/16
+  egress:
+    - description: Allow all outbound
+      protocol: "-1"
+      ipv4Cidrs:
+        - 0.0.0.0/0
+{% endif %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsSagemakerDomain
+metadata:
+  name: "{{ values.sagemaker_domain_name }}"
+  group: compute
+  relationships:
+    - kind: AwsIamRole
+      name: "{{ values.sagemaker_domain_name }}-execution-role"
+      type: uses
+{% if values.vpcEnabled | bool %}
+    - kind: AwsVpc
+      name: "{{ values.sagemaker_domain_name }}-vpc"
+      type: uses
+{% endif %}
+spec:
+  region: "{{ values.aws_region }}"
+  authMode: "{{ values.auth_mode }}"
+{% if values.vpcEnabled | bool %}
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: "{{ values.sagemaker_domain_name }}-vpc"
+      fieldPath: status.outputs.vpc_id
+  subnetIds:
+    - valueFrom:
+        kind: AwsSubnet
+        name: "{{ values.sagemaker_domain_name }}-private-1"
+        fieldPath: status.outputs.subnet_id
+    - valueFrom:
+        kind: AwsSubnet
+        name: "{{ values.sagemaker_domain_name }}-private-2"
+        fieldPath: status.outputs.subnet_id
+{% endif %}
+  defaultUserSettings:
+    executionRoleArn:
+      valueFrom:
+        kind: AwsIamRole
+        name: "{{ values.sagemaker_domain_name }}-execution-role"
+        fieldPath: status.outputs.role_arn

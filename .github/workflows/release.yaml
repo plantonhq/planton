@@ -3,20 +3,24 @@
 # =============================================================================
 # Single entry point for all release workflows. Triggers on semantic version
 # tags (v*) and orchestrates the release of CLI, website, all Pulumi module
-# binaries, all Terraform module zips, and content distribution zips
-# (presets, IaC source, catalog pages, proto source).
+# binaries, all Terraform module zips, content distribution zips
+# (presets, IaC source, catalog pages, proto source), and the InfraChart
+# catalog zip.
 #
 # Architecture:
 #   1. CLI job runs first (GoReleaser creates the GitHub Release)
 #   2. Website job runs in parallel
 #   3. Pulumi modules, Terraform modules, and Content jobs upload to
 #      Cloudflare R2 (downloads.planton.dev) after CLI completes
+#   4. Charts job attaches the InfraChart catalog zip to the GitHub Release
+#      after CLI completes
 #
 # Artifact hosting:
 #   - CLI binaries   -> GitHub Release (via GoReleaser)
 #   - Pulumi modules -> Cloudflare R2 (downloads.planton.dev/releases/{tag}/modules/pulumi/)
 #   - Terraform zips -> Cloudflare R2 (downloads.planton.dev/releases/{tag}/modules/terraform/)
 #   - Content zips   -> Cloudflare R2 (downloads.planton.dev/releases/{tag}/content/)
+#   - Chart catalog  -> GitHub Release (infra-charts.zip + .sha256 + version.txt)
 #
 # Trigger: git tag v0.1.0 && git push origin v0.1.0
 # Note: Only triggers on strict semver tags (v1.2.3), not auto-release tags (v1.2.3+cli.*)
@@ -82,4 +86,11 @@ jobs:
       CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
       CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
       CLOUDFLARE_R2_ENDPOINT: ${{ secrets.CLOUDFLARE_R2_ENDPOINT }}
+
+  # ============================================================================
+  # Infra Charts - attach the chart catalog zip to the GitHub Release
+  # ============================================================================
+  charts:
+    needs: cli
+    uses: ./.github/workflows/release.charts.yaml
 

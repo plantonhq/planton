@@ -1,0 +1,94 @@
+---
+description: Action rule to publish all InfraCharts to the Planton platform. Charts must pass `make build` before publishing. Publishing uploads the chart definition so it appears in the Planton catalog for project creation.
+globs: []
+alwaysApply: false
+---
+
+# Rule: Publish InfraCharts (action)
+
+Purpose: When invoked, publish all InfraCharts to the Planton platform so they appear in the InfraChart catalog and can be used to create Infra Projects.
+
+Usage: Invoke explicitly as `@publish-planton-infra-charts` when charts need to be published to the platform.
+
+## What Publishing Does
+
+Publishing uploads a chart definition (Chart.yaml, values.yaml, templates) to the Planton platform. Once published, the chart appears in the platform's InfraChart catalog and users can create Infra Projects from it — configured instances of the chart with their own parameter values that trigger Infra Pipelines.
+
+Publishing is **idempotent**. Running it again for the same chart updates the existing catalog entry. The command is:
+
+```bash
+planton chart publish --platform <provider>/<chart-name>
+```
+
+A successful publish prints a confirmation like:
+```
+✔ infra_chart/platform/planton_cloud/AWS ECS Environment (chart_01k6npp2mf...) applied
+```
+
+## Prerequisites
+
+**Charts must build successfully before publishing.** A chart that fails `planton chart build` validation will also fail to publish. Always run `make build` (from `charts/`) first and resolve any failures. The `planton chart` command is provided by the Planton **Platform** CLI, not the open-source `planton` binary built from this repo.
+
+```bash
+cd charts
+make build     # Validate all charts first
+make publish   # Then publish all charts
+```
+
+If `make build` shows failures, use `@build-and-fix-planton-infra-charts` to diagnose and fix them before publishing.
+
+## Execution Steps
+
+### Publish All Charts
+
+```bash
+cd charts && make publish
+```
+
+This discovers all charts and runs `planton chart publish --platform <chart>` on each one, printing progress and a pass/fail summary.
+
+### Publish a Single Chart
+
+```bash
+planton chart publish --platform <provider>/<chart-name>
+```
+
+Example:
+
+```bash
+planton chart publish --platform aws/ecs-environment
+```
+
+## When to Publish
+
+- After fixing chart templates that were previously failing validation
+- After creating new charts
+- After updating chart values.yaml schema or template structure
+- When the user explicitly asks to publish
+
+## When NOT to Publish
+
+- Do not publish automatically after fixing charts — wait for the user to request it
+- Do not publish if `make build` has failures — fix them first
+- Do not publish work-in-progress charts that aren't ready for the catalog
+
+## Error Handling
+
+If a chart fails to publish:
+
+1. Check if the chart passes `planton chart build` — validation failures are the most common cause
+2. Check if the Planton CLI is authenticated (`planton auth status` or equivalent)
+3. Check network connectivity to the Planton platform
+4. Run the publish command for the specific chart without piping to see the full error output:
+   ```bash
+   planton chart publish --platform <provider>/<chart-name>
+   ```
+
+## Workflow Integration
+
+Typical sequence after chart development:
+
+1. `@build-and-fix-planton-infra-charts` — validate and fix all charts
+2. `@commit-planton-changes` — commit the fixes
+3. `@publish-planton-infra-charts` — publish to the platform
+4. `@create-infra-charts-changelog` — document the work (if requested)

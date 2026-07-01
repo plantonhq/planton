@@ -1,0 +1,105 @@
+params:
+  # ─── Network ──────────────────────────────────────────────────────────────
+  - name: region
+    description: DigitalOcean Region (e.g. nyc3)
+    value: blr1
+
+  - name: vpc_cidr
+    description: VPC CIDR (must be /16, /20 or /24)
+    value: 10.10.0.0/16
+
+  # ─── DOKS cluster core ────────────────────────────────────────────────────
+  - name: cluster_name
+    description: Kubernetes Cluster Name
+    value: doks-demo
+
+  - name: kubernetes_version
+    description: Kubernetes Version
+    value: "1.33"
+
+  - name: highly_available
+    description: Highly Available Cluster
+    type: bool
+    value: false
+
+  - name: node_size
+    description: Node Size (e.g. s-2vcpu-4gb)
+    value: s-2vcpu-4gb
+
+  - name: node_auto_scale
+    description: Enable Node Autoscaling
+    type: bool
+    value: false
+
+  - name: node_count
+    description: Node Count (When Autoscaling is Off)
+    type: number
+    value: 1
+
+  - name: min_nodes
+    description: Autoscaler Minimum Nodes
+    type: number
+    value: 1
+
+  - name: max_nodes
+    description: Autoscaler Maximum Nodes
+    type: number
+    value: 6
+
+  # ─── DNS ──────────────────────────────────────────────────
+  - name: domain_name
+    description: Domain (e.g. example.com)
+    value: planton-cloud.app
+
+  - name: create_dns_zone
+    description: Create DNS zone
+    type: bool
+    value: true
+
+  # ─── Container Registry (optional) ────────────────────────────────────────
+  - name: create_container_registry
+    description: Create Container Registry
+    type: bool
+    value: true
+
+  - name: registry_name
+    description: Container Registry Name
+    value: my-registry
+
+  # ─── Kubernetes add‑ons ───────────────────────────────────────────────────
+  - name: certManagerEnabled
+    description: Install Cert-Manager
+    type: bool
+    value: true
+  - name: elasticOperatorEnabled
+    description: Install Elastic Operator
+    type: bool
+    value: true
+  - name: externalDnsEnabled
+    description: Install External DNS
+    type: bool
+    value: true
+  - name: externalSecretsEnabled
+    description: Install External Secrets
+    type: bool
+    value: true
+  - name: ingressNginxEnabled
+    description: Install Ingress Nginx
+    type: bool
+    value: true
+  - name: istioEnabled
+    description: Install Istio
+    type: bool
+    value: true
+  - name: kafkaOperatorEnabled
+    description: Install Kafka Operator
+    type: bool
+    value: true
+  - name: postgresOperatorEnabled
+    description: Install Postgres Operator
+    type: bool
+    value: true
+  - name: solrOperatorEnabled
+    description: Install Solr Operator
+    type: bool
+    value: true

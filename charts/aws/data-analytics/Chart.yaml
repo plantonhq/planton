@@ -1,0 +1,13 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: AWS Data Analytics
+spec:
+  selector:
+    kind: platform
+  description: Data lake analytics pipeline using Kinesis for real-time ingestion, Firehose for S3 delivery, Glue Data Catalog for schema management, and Athena for serverless SQL queries. The canonical AWS data lake pattern for streaming analytics.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/aws/awskinesisstream/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/aws/data-analytics
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/aws/data-analytics/README.md

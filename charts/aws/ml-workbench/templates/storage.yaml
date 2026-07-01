@@ -1,0 +1,24 @@
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsS3Bucket
+metadata:
+  name: "{{ values.s3_bucket_name }}"
+  group: storage
+spec:
+  region: "{{ values.aws_region }}"
+  isPublic: false
+  versioningEnabled: true
+{% if values.customImagesEnabled | bool %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsEcrRepo
+metadata:
+  name: "{{ values.sagemaker_domain_name }}-ecr"
+  group: storage
+spec:
+  region: "{{ values.aws_region }}"
+  repositoryName: "{{ values.ecr_repo_name }}"
+  encryptionType: AES256
+  imageImmutable: false
+  forceDelete: true
+{% endif %}

@@ -1,0 +1,24 @@
+{% if values.cacheEnabled | bool %}
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpRedisInstance
+metadata:
+  name: "{{ values.redis_instance_name }}"
+  group: cache
+  relationships:
+    - kind: GcpVpc
+      name: "{{ values.vpc_name }}"
+      type: runs_on
+spec:
+  projectId:
+    value: "{{ values.gcp_project_id }}"
+  instanceName: "{{ values.redis_instance_name }}"
+  region: "{{ values.region }}"
+  tier: BASIC
+  memorySizeGb: {{ values.redis_memory_size_gb }}
+  authorizedNetwork:
+    valueFrom:
+      kind: GcpVpc
+      name: "{{ values.vpc_name }}"
+      fieldPath: status.outputs.network_self_link
+{% endif %}

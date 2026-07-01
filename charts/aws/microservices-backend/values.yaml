@@ -1,0 +1,109 @@
+params:
+  # ─── Network ───────────────────────────────────────────────────────────────────
+  - name: aws_region
+    description: AWS region for every resource (the availability zones below must belong to it)
+    value: us-east-1
+
+  - name: availability_zone_1
+    description: First AZ for the public / private subnet pair
+    value: us-east-1a
+
+  - name: availability_zone_2
+    description: Second AZ for the public / private subnet pair
+    value: us-east-1b
+
+  - name: vpc_cidr
+    description: Primary IPv4 CIDR block for the VPC
+    value: 10.0.0.0/16
+
+  - name: public_subnet_1_cidr
+    description: CIDR for the public subnet in AZ 1 (hosts the ALB and NAT gateway)
+    value: 10.0.0.0/24
+
+  - name: public_subnet_2_cidr
+    description: CIDR for the public subnet in AZ 2
+    value: 10.0.1.0/24
+
+  - name: private_subnet_1_cidr
+    description: CIDR for the private subnet in AZ 1 (hosts the database, cache, and Fargate tasks)
+    value: 10.0.16.0/20
+
+  - name: private_subnet_2_cidr
+    description: CIDR for the private subnet in AZ 2
+    value: 10.0.32.0/20
+
+  - name: nat_mode
+    description: "Private-subnet egress strategy: single (one shared NAT gateway), per_az (one NAT gateway per AZ), or none (no outbound internet from private subnets)"
+    value: single
+
+  - name: domain_name
+    description: Route 53 Hosted-Zone domain
+    value: example.com
+
+  - name: load_balancer_domain_name
+    description: DNS name served by the ALB
+    value: app.example.com
+
+  # ─── DNS toggle ──────────────────────────────────────────────────────────────
+  - name: dnsEnabled
+    description: Create Route53 zone and configure ALB DNS records
+    type: bool
+    value: true
+
+  # ─── HTTPS toggle ────────────────────────────────────────────────────────────
+  - name: httpsEnabled
+    description: Create ACM cert and terminate TLS on the ALB (requires dnsEnabled)
+    type: bool
+    value: true
+
+  # ─── Compute ─────────────────────────────────────────────────────────────────
+  - name: service_name
+    description: Logical name used as prefix for ECS cluster, ALB, and related resources
+    value: my-service
+
+  - name: ecr_repo_name
+    description: ECR repository name for container images
+    value: my-service
+
+  # ─── ALB ─────────────────────────────────────────────────────────────────────
+  - name: alb_idle_timeout_seconds
+    description: ALB idle timeout in seconds
+    value: "60"
+
+  # ─── Database ────────────────────────────────────────────────────────────────
+  - name: databaseEnabled
+    description: Create an Aurora PostgreSQL cluster for relational data
+    type: bool
+    value: true
+
+  - name: db_engine_version
+    description: Aurora PostgreSQL engine version
+    value: "15.4"
+
+  - name: db_name
+    description: Initial database name created on the cluster
+    value: appdb
+
+  # ─── Cache ───────────────────────────────────────────────────────────────────
+  - name: cacheEnabled
+    description: Create an ElastiCache Redis cluster
+    type: bool
+    value: false
+
+  - name: redis_engine_version
+    description: Redis engine version
+    value: "7.1"
+
+  - name: redis_node_type
+    description: ElastiCache node instance type
+    value: cache.t3.micro
+
+  # ─── Messaging ───────────────────────────────────────────────────────────────
+  - name: messagingEnabled
+    description: Create an SQS queue for asynchronous task processing
+    type: bool
+    value: false
+
+  - name: sqs_queue_name
+    description: SQS queue name
+    value: task-queue

@@ -1,0 +1,41 @@
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureResourceGroup
+metadata:
+  name: "{{ values.env }}-rg"
+spec:
+  name: "{{ values.env }}-{{ values.resource_group_name }}"
+  region: "{{ values.region }}"
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureVpc
+metadata:
+  name: "{{ values.env }}-vnet"
+spec:
+  region: "{{ values.region }}"
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  addressSpaceCidr: "{{ values.vnet_cidr }}"
+  nodesSubnetCidr: "{{ values.default_subnet_cidr }}"
+  isNatGatewayEnabled: false
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureSubnet
+metadata:
+  name: "{{ values.env }}-cae-subnet"
+spec:
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  vnetId:
+    valueFrom:
+      kind: AzureVpc
+      name: "{{ values.env }}-vnet"
+      fieldPath: status.outputs.vnet_id
+  name: "{{ values.env }}-cae-subnet"
+  addressPrefix: "{{ values.container_apps_subnet_cidr }}"

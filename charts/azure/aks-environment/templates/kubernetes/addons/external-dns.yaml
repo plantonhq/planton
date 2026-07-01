@@ -1,0 +1,16 @@
+{% if values.externalDnsEnabled | bool %}
+---
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesExternalDns
+metadata:
+  name: {{ values.cluster_name }}-external-dns
+  relationships:
+    - kind: AzureAksNodePool
+      name: "{{ values.node_pool_name }}"
+      type: runs_on
+spec:
+  targetCluster:
+    clusterKind: AzureAksCluster
+    clusterName: "{{ values.env }}-{{ values.cluster_name }}"
+{% endif %}
+

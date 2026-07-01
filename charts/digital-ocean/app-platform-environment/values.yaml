@@ -1,0 +1,55 @@
+params:
+# digitalocean-app-platform-environment/values.yaml
+# ─── DigitalOcean location ─────────────────────────────────────────────────────
+- name: region
+  description: DigitalOcean region slug (e.g. nyc3, sfo3)
+  value: blr1
+
+# ─── DNS & domain ─────────────────────────────────────────────────────────────
+- name: domain_name
+  description: Root DNS zone managed in DigitalOcean
+  value: example.com
+
+- name: app_domain_name
+  description: Friendly hostname served by the App Platform service
+  value: app.example.com
+
+# ─── Container build & image ──────────────────────────────────────────────────
+- name: container_registry_name
+  description: DO Container Registry name to push images
+  value: my-registry
+
+- name: image_repository
+  description: Repository inside the registry
+  value: my-service
+
+- name: image_tag
+  description: Image tag to deploy
+  value: latest
+
+# ─── Service basics ───────────────────────────────────────────────────────────
+- name: service_name
+  description: App Platform service name
+  value: my-service
+
+# ─── Sizing & scaling ─────────────────────────────────────────────────────────
+- name: instance_size_slug
+  description: basic-xxs | basic-xs | basic-s | …
+  value: basic_xxs
+
+- name: instance_count
+  description: Fixed number of instances when autoscale disabled
+  value: "1"
+
+- name: enable_autoscale
+  description: Enable autoscaling
+  type: bool
+  value: false
+
+- name: min_instance_count
+  description: Minimum instances when autoscaling
+  value: "1"
+
+- name: max_instance_count
+  description: Maximum instances when autoscaling
+  value: "3"

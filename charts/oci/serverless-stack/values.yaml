@@ -1,0 +1,42 @@
+params:
+# ─── Compartment ──────────────────────────────────────────────────────
+- name: compartment_ocid
+  description: OCID of the OCI compartment for all resources
+  value: ocid1.compartment.oc1..example
+
+# ─── Network ──────────────────────────────────────────────────────────
+- name: vcn_cidr
+  description: CIDR block for the VCN
+  value: 10.0.0.0/16
+
+- name: public_subnet_cidr
+  description: CIDR for the public subnet (API Gateway)
+  value: 10.0.0.0/24
+
+- name: private_subnet_cidr
+  description: CIDR for the private subnet (Functions)
+  value: 10.0.1.0/24
+
+# ─── Functions ────────────────────────────────────────────────────────
+- name: app_name
+  description: OCI Functions application name
+  value: serverless-api
+
+- name: functions_shape
+  description: Functions application shape (generic_x86 or generic_arm)
+  value: generic_x86
+
+# ─── API Gateway ──────────────────────────────────────────────────────
+- name: gateway_name
+  description: API Gateway display name
+  value: api-gateway
+
+# ─── Object Storage ───────────────────────────────────────────────────
+- name: bucket_name
+  description: Object Storage bucket for function artifacts and data
+  value: serverless-artifacts
+
+# ─── Logging ──────────────────────────────────────────────────────────
+- name: log_retention_days
+  description: Log retention in days (must be 30-day increment, 30-180)
+  value: "30"

@@ -1,0 +1,13 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: DigitalOcean App Platform Environment
+spec:
+  selector:
+    kind: platform
+  description: DigitalOcean App Platform environment with optional HTTPS on a custom domain.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/digitalocean/digitaloceanappplatformservice/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/digital-ocean/app-platform-environment
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/digital-ocean/app-platform-environment/README.md

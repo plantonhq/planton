@@ -1,0 +1,27 @@
+{% if values.dnsEnabled | bool %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsRoute53Zone
+metadata:
+  name: "{{ values.domain_name }}"
+  group: network
+spec: {}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsCertManagerCert
+metadata:
+  name: "{{ values.s3_bucket_name }}-cert"
+  group: security
+  relationships:
+    - kind: AwsRoute53Zone
+      name: "{{ values.domain_name }}"
+      type: uses
+spec:
+  primaryDomainName: "{{ values.website_domain_name }}"
+  route53HostedZoneId:
+    valueFrom:
+      kind: AwsRoute53Zone
+      name: "{{ values.domain_name }}"
+      fieldPath: status.outputs.zone_id
+  validationMethod: DNS
+{% endif %}

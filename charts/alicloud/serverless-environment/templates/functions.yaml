@@ -1,0 +1,77 @@
+{% if values.fcEnabled | bool %}
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudFunction
+metadata:
+  name: "{{ values.env }}-{{ values.fc_function_name }}"
+spec:
+  region: "{{ values.region }}"
+  functionName: "{{ values.env }}-{{ values.fc_function_name }}"
+  runtime: "{{ values.fc_runtime }}"
+  handler: "{{ values.fc_handler }}"
+  memorySize: {{ values.fc_memory_size }}
+  timeout: {{ values.fc_timeout }}
+  role:
+    valueFrom:
+      kind: AliCloudRamRole
+      name: "{{ values.env }}-fc-role"
+      fieldPath: status.outputs.arn
+  logConfig:
+    project:
+      valueFrom:
+        kind: AliCloudLogProject
+        name: "{{ values.env }}-serverless-logs"
+        fieldPath: status.outputs.projectName
+    logstore: function-log
+{% if values.fcVpcEnabled | bool %}
+  vpcConfig:
+    vpcId:
+      valueFrom:
+        kind: AliCloudVpc
+        name: "{{ values.env }}-serverless-vpc"
+        fieldPath: status.outputs.vpcId
+    vswitchIds:
+      - valueFrom:
+          kind: AliCloudVswitch
+          name: "{{ values.env }}-serverless-vswitch"
+          fieldPath: status.outputs.vswitchId
+    securityGroupId:
+      valueFrom:
+        kind: AliCloudSecurityGroup
+        name: "{{ values.env }}-serverless-sg"
+        fieldPath: status.outputs.securityGroupId
+{% endif %}
+{% endif %}
+
+{% if values.saeEnabled | bool %}
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudSaeApplication
+metadata:
+  name: "{{ values.env }}-{{ values.sae_app_name }}"
+spec:
+  region: "{{ values.region }}"
+  appName: "{{ values.env }}-{{ values.sae_app_name }}"
+  packageType: "{{ values.sae_package_type }}"
+{% if values.sae_package_type == "Image" %}
+  imageUrl: "{{ values.sae_image_url }}"
+{% endif %}
+  replicas: {{ values.sae_replicas }}
+  cpu: {{ values.sae_cpu }}
+  memory: {{ values.sae_memory }}
+  vpcId:
+    valueFrom:
+      kind: AliCloudVpc
+      name: "{{ values.env }}-serverless-vpc"
+      fieldPath: status.outputs.vpcId
+  vswitchId:
+    valueFrom:
+      kind: AliCloudVswitch
+      name: "{{ values.env }}-serverless-vswitch"
+      fieldPath: status.outputs.vswitchId
+  securityGroupId:
+    valueFrom:
+      kind: AliCloudSecurityGroup
+      name: "{{ values.env }}-serverless-sg"
+      fieldPath: status.outputs.securityGroupId
+{% endif %}

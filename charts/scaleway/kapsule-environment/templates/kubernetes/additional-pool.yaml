@@ -1,0 +1,22 @@
+{% if values.create_additional_pool | bool %}
+---
+apiVersion: scaleway.planton.dev/v1
+kind: ScalewayKapsulePool
+metadata:
+  name: "{{ values.env }}-{{ values.cluster_name }}-{{ values.additional_pool_name }}"
+spec:
+  region: "{{ values.region }}"
+  clusterId:
+    valueFrom:
+      kind: ScalewayKapsuleCluster
+      name: "{{ values.env }}-{{ values.cluster_name }}"
+      fieldPath: status.outputs.cluster_id
+  nodeType: "{{ values.additional_pool_node_type }}"
+  size: {{ values.additional_pool_node_count }}
+  autoScale: {{ values.additional_pool_auto_scale }}
+  {% if values.additional_pool_auto_scale | bool %}
+  minSize: {{ values.additional_pool_min_nodes }}
+  maxSize: {{ values.additional_pool_max_nodes }}
+  {% endif %}
+  autohealing: true
+{% endif %}

@@ -1,0 +1,43 @@
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpSpannerInstance
+metadata:
+  name: "{{ values.instance_name }}"
+  group: database
+spec:
+  projectId:
+    value: "{{ values.gcp_project_id }}"
+  instanceName: "{{ values.instance_name }}"
+  displayName: "{{ values.display_name }}"
+  config: "{{ values.instance_config }}"
+{% if values.num_nodes | int > 0 %}
+  numNodes: {{ values.num_nodes }}
+{% endif %}
+{% if values.edition %}
+  edition: "{{ values.edition }}"
+{% endif %}
+  defaultBackupScheduleType: AUTOMATIC
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpSpannerDatabase
+metadata:
+  name: "{{ values.database_name }}"
+  group: database
+  relationships:
+    - kind: GcpSpannerInstance
+      name: "{{ values.instance_name }}"
+      type: runs_on
+    - kind: GcpServiceAccount
+      name: "{{ values.service_account_id }}"
+      type: uses
+spec:
+  projectId:
+    value: "{{ values.gcp_project_id }}"
+  instance:
+    valueFrom:
+      kind: GcpSpannerInstance
+      name: "{{ values.instance_name }}"
+      fieldPath: status.outputs.instance_name
+  databaseName: "{{ values.database_name }}"
+  databaseDialect: "{{ values.database_dialect }}"
+  enableDropProtection: {{ values.enable_drop_protection | lower }}

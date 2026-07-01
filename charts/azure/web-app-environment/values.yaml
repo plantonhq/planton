@@ -1,0 +1,45 @@
+params:
+  # ─── Foundation ───────────────────────────────────────────────────────────────
+  - name: region
+    description: Azure region (e.g. eastus, westus2, westeurope)
+    value: eastus
+
+  - name: resource_group_name
+    description: Resource group name suffix (prefixed with env)
+    value: webapp-rg
+
+  # ─── Service Plan ─────────────────────────────────────────────────────────────
+  - name: plan_name
+    description: App Service Plan name
+    value: webapp-plan
+
+  - name: sku_name
+    description: "Plan SKU: B1-B3 (basic), S1-S3 (standard), P1v3-P3v3 (premium)"
+    value: P1v3
+
+  # ─── Web App ──────────────────────────────────────────────────────────────────
+  - name: web_app_name
+    description: Web App name (globally unique in Azure)
+    value: my-web-app
+
+  - name: runtime_stack
+    description: "Runtime: node, python, java, dotnet, php, ruby, go, docker"
+    value: node
+
+  - name: runtime_version
+    description: "Runtime version (e.g. 20 for node, 3.11 for python, 17 for java)"
+    value: "20"
+
+  - name: docker_image
+    description: Docker image (only when runtime_stack=docker)
+    value: ""
+
+  - name: docker_image_tag
+    description: Docker image tag (only when runtime_stack=docker)
+    value: latest
+
+  # ─── Monitoring ───────────────────────────────────────────────────────────────
+  - name: create_app_insights
+    description: Create Application Insights for APM telemetry
+    type: bool
+    value: true

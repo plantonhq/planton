@@ -1,0 +1,62 @@
+{% if values.backendServiceEnabled | bool %}
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpCloudRun
+metadata:
+  name: "{{ values.backend_service_name }}"
+  relationships:
+    {% if values.databaseEnabled | bool %}
+    - kind: GcpCloudSql
+      name: "{{ values.database_instance_name }}"
+      type: uses
+    {% endif %}
+    {% if values.dockerRepoEnabled | bool %}
+    - kind: GcpArtifactRegistryRepo
+      name: "{{ values.docker_repo_name }}"
+      type: uses
+    {% endif %}
+    {% if values.storageBucketEnabled | bool %}
+    - kind: GcpGcsBucket
+      name: "{{ values.storage_bucket_name }}"
+      type: uses
+    {% endif %}
+    {% if values.serviceAccountEnabled | bool %}
+    - kind: GcpServiceAccount
+      name: "{{ values.service_account_id }}"
+      type: uses
+    {% endif %}
+    {% if values.dnsZoneEnabled | bool %}
+    - kind: GcpDnsZone
+      name: "{{ values.domain_name }}"
+      type: uses
+    {% endif %}
+spec:
+  projectId:
+    value: "{{ values.gcp_project_id }}"
+  region: "{{ values.gcp_region }}"
+
+  # ──── container runtime ────
+  container:
+    image:
+      repo: nginx
+      tag: latest
+    port: {{ values.backend_service_port }}
+    cpu: 1
+    memory: 512
+    replicas:
+      min: 0
+      max: 1
+    env:
+      variables:
+        SERVICE_NAME: "{{ values.backend_service_name }}"
+        ENV: "{{ env }}"
+
+  # ──── traffic / scaling ────
+  maxConcurrency: 80
+  allowUnauthenticated: true
+
+  # ──── optional custom domain ────
+  dns:
+    enabled: false
+{% endif %}
+

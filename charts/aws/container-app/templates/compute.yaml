@@ -1,0 +1,40 @@
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsEcrRepo
+metadata:
+  name: "{{ values.service_name }}-ecr"
+  group: compute
+spec:
+  repositoryName: "{{ values.ecr_repo_name }}"
+  encryptionType: AES256
+  imageImmutable: true
+  forceDelete: true
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsAppRunnerService
+metadata:
+  name: "{{ values.service_name }}"
+  group: compute
+  relationships:
+    - kind: AwsEcrRepo
+      name: "{{ values.service_name }}-ecr"
+      type: uses
+    - kind: AwsIamRole
+      name: "{{ values.service_name }}-instance-role"
+      type: uses
+{% if values.databaseEnabled | bool %}
+    - kind: AwsDynamodb
+      name: "{{ values.dynamodb_table_name }}"
+      type: uses
+{% endif %}
+spec:
+  imageSource:
+    imageRepositoryType: ECR
+    imageIdentifier: "{{ values.image_uri }}"
+  cpu: "{{ values.cpu }}"
+  memory: "{{ values.memory }}"
+  instanceRoleArn:
+    valueFrom:
+      kind: AwsIamRole
+      name: "{{ values.service_name }}-instance-role"
+      fieldPath: status.outputs.role_arn

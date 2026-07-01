@@ -1,0 +1,63 @@
+params:
+  # ─── Location ──────────────────────────────────────────────────────────
+  - name: location
+    description: >
+      Hetzner Cloud location for all resources (e.g., fsn1, nbg1, hel1, ash,
+      hil, sin). All resources in this chart are created in the same location.
+    value: fsn1
+
+  # ─── Network ───────────────────────────────────────────────────────────
+  - name: network_ip_range
+    description: CIDR block for the private network (RFC 1918)
+    value: 10.0.0.0/16
+
+  - name: subnet_ip_range
+    description: CIDR block for the cloud subnet (must be within network_ip_range)
+    value: 10.0.1.0/24
+
+  - name: subnet_network_zone
+    description: >
+      Hetzner Cloud network zone for the subnet. Known zones: eu-central,
+      us-east, us-west, ap-southeast.
+    value: eu-central
+
+  # ─── SSH Key ───────────────────────────────────────────────────────────
+  - name: ssh_public_key
+    description: >
+      SSH public key to inject into the server. The server is only accessible
+      via this key (password authentication is disabled by default on most
+      Hetzner Cloud images).
+    value: ""
+
+  # ─── Server ────────────────────────────────────────────────────────────
+  - name: server_type
+    description: >
+      Server type that determines vCPU, RAM, and disk. Examples: cx22 (2 vCPU /
+      4 GB), cpx11 (2 vCPU / 2 GB AMD), cax11 (2 vCPU / 4 GB ARM64).
+    value: cx22
+
+  - name: image
+    description: >
+      OS image name or ID (e.g., ubuntu-24.04, debian-12, rocky-9).
+    value: ubuntu-24.04
+
+  - name: user_data
+    description: >
+      Cloud-init user data script or configuration to execute on first boot.
+      Accepts raw shell scripts (#!/bin/bash) or cloud-config YAML
+      (#cloud-config). Leave empty for no cloud-init.
+    value: ""
+
+  # ─── Block Volume (optional) ───────────────────────────────────────────
+  - name: enable_volume
+    description: Create and attach a block volume for persistent storage
+    type: bool
+    value: false
+
+  - name: volume_size
+    description: Block volume size in GB (10 to 10240)
+    value: "10"
+
+  - name: volume_format
+    description: Filesystem format for the volume (ext4 or xfs)
+    value: ext4

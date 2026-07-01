@@ -1,0 +1,13 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: OCI Compute Environment
+spec:
+  selector:
+    kind: platform
+  description: VM-based workload environment on Oracle Cloud with custom VCN, public and private subnets, network security group, compute instance, optional application load balancer, and optional block volume storage.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/oci/ocicomputeinstance/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/oci/compute-environment
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/oci/compute-environment/README.md

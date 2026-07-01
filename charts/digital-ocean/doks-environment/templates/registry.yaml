@@ -1,0 +1,11 @@
+{% if values.create_container_registry | bool %}
+---
+apiVersion: digital-ocean.planton.dev/v1
+kind: DigitalOceanContainerRegistry
+metadata:
+  name: "{{ values.registry_name }}"
+spec:
+  name: "{{ values.registry_name }}"
+  subscriptionTier: starter
+  region: "{{ values.region }}"
+  {% endif %}

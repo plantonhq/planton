@@ -1,0 +1,25 @@
+---
+apiVersion: scaleway.planton.dev/v1
+kind: ScalewayKapsuleCluster
+metadata:
+  name: "{{ values.env }}-{{ values.cluster_name }}"
+spec:
+  region: "{{ values.region }}"
+  kubernetesVersion: "{{ values.kubernetes_version }}"
+  cni: "{{ values.cni }}"
+  privateNetworkId:
+    valueFrom:
+      kind: ScalewayPrivateNetwork
+      name: "{{ values.env }}-{{ values.cluster_name }}-pn"
+      fieldPath: status.outputs.private_network_id
+  deleteAdditionalResources: {{ values.delete_additional_resources }}
+  defaultNodePool:
+    name: "{{ values.cluster_name }}-default"
+    nodeType: "{{ values.node_type }}"
+    size: {{ values.node_count }}
+    autoScale: {{ values.node_auto_scale }}
+    {% if values.node_auto_scale | bool %}
+    minSize: {{ values.min_nodes }}
+    maxSize: {{ values.max_nodes }}
+    {% endif %}
+    autohealing: true

@@ -1,0 +1,55 @@
+params:
+# ─── Compartment ──────────────────────────────────────────────────────
+- name: compartment_ocid
+  description: OCID of the OCI compartment for all resources
+  value: ocid1.compartment.oc1..example
+
+# ─── Network ──────────────────────────────────────────────────────────
+- name: vcn_cidr
+  description: CIDR block for the VCN
+  value: 10.0.0.0/16
+
+- name: subnet_cidr
+  description: CIDR for the private database subnet
+  value: 10.0.1.0/24
+
+# ─── Autonomous Database ──────────────────────────────────────────────
+- name: db_name
+  description: >
+    Database name (alphanumeric, starts with letter, max 30 chars).
+    Used for connection strings and the OCI Console display.
+  value: mydb
+
+- name: db_workload
+  description: Workload type (oltp for ATP, dw for ADW)
+  value: oltp
+
+- name: compute_count
+  description: Number of ECPUs for the database
+  value: "2"
+
+- name: storage_in_tbs
+  description: Data storage size in terabytes
+  value: "1"
+
+- name: admin_password
+  description: >
+    Initial ADMIN user password. Must be 12-30 characters, include at least
+    one uppercase, one lowercase, and one number. Cannot contain the word "admin".
+  value: ""
+
+- name: is_free_tier
+  description: Use the Always Free tier (limited to 1 ECPU, 20 GB)
+  type: bool
+  value: false
+
+- name: is_auto_scaling_enabled
+  description: Enable compute auto-scaling (up to 3x base ECPUs)
+  type: bool
+  value: true
+
+# ─── Encryption (optional) ────────────────────────────────────────────
+- name: enable_encryption
+  description: Create a KMS vault and key for customer-managed encryption
+  type: bool
+  value: false

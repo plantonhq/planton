@@ -1,0 +1,10 @@
+{% if values.create_container_registry | bool %}
+---
+apiVersion: scaleway.planton.dev/v1
+kind: ScalewayContainerRegistry
+metadata:
+  name: "{{ values.registry_name }}"
+spec:
+  region: "{{ values.region }}"
+  isPublic: false
+{% endif %}

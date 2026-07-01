@@ -1,0 +1,8 @@
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureResourceGroup
+metadata:
+  name: "{{ values.env }}-rg"
+spec:
+  name: "{{ values.env }}-{{ values.resource_group_name }}"
+  region: "{{ values.region }}"

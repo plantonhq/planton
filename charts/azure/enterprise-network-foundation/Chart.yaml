@@ -1,0 +1,18 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: Azure Enterprise Network Foundation
+spec:
+  selector:
+    kind: platform
+  description: >
+    Multi-tier VNet foundation with security, load balancing, and monitoring for
+    enterprise Azure workloads. Deploys a VNet with web, app, data, and gateway
+    subnets, per-tier Network Security Groups, NAT Gateway for outbound traffic,
+    optional Application Gateway (L7) and Load Balancer (L4), Log Analytics
+    Workspace, and optional Key Vault.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/azure/azurevpc/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/azure/enterprise-network-foundation
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/azure/enterprise-network-foundation/README.md

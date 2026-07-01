@@ -1,0 +1,28 @@
+{% if values.rdb_enabled | bool %}
+---
+apiVersion: scaleway.planton.dev/v1
+kind: ScalewayRdbInstance
+metadata:
+  name: "{{ values.env }}-{{ values.stack_name }}-rdb"
+spec:
+  region: "{{ values.region }}"
+  engine: "{{ values.rdb_engine }}"
+  nodeType: "{{ values.rdb_node_type }}"
+  privateNetworkId:
+  {% if values.create_network | bool %}
+    valueFrom:
+      kind: ScalewayPrivateNetwork
+      name: "{{ values.env }}-{{ values.stack_name }}-pn"
+      fieldPath: status.outputs.private_network_id
+  {% else %}
+    value: "{{ values.private_network_id }}"
+  {% endif %}
+  isHaCluster: {{ values.rdb_is_ha }}
+  volumeType: "{{ values.rdb_volume_type }}"
+  {% if values.rdb_volume_size_in_gb | int > 0 %}
+  volumeSizeInGb: {{ values.rdb_volume_size_in_gb }}
+  {% endif %}
+  disableBackup: {{ values.rdb_disable_backup }}
+  adminUser: "{{ values.rdb_admin_user }}"
+  adminPassword: "{{ values.rdb_admin_password }}"
+{% endif %}

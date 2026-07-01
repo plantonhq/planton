@@ -1,0 +1,10 @@
+{% if values.create_dns_zone | bool %}
+---
+apiVersion: civo.planton.dev/v1
+kind: CivoDnsZone
+metadata:
+  name: "{{ values.cluster_name }}-dns"
+spec:
+  domain_name: "{{ values.domain_name }}"
+{% endif %}
+

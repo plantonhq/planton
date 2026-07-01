@@ -1,0 +1,12 @@
+{% if values.messagingEnabled | bool %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsSqsQueue
+metadata:
+  name: "{{ values.sqs_queue_name }}"
+  group: messaging
+spec:
+  region: "{{ values.aws_region }}"
+  visibilityTimeoutSeconds: 60
+  messageRetentionSeconds: 345600
+{% endif %}

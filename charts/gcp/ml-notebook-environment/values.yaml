@@ -1,0 +1,83 @@
+params:
+  # ─── GCP Configuration ─────────────────────────────────────────────────
+  - name: gcp_project_id
+    description: GCP project ID for all resources
+    value: my-gcp-project
+
+  - name: region
+    description: GCP region for networking, storage, and BigQuery
+    value: us-central1
+
+  - name: zone
+    description: GCP zone for the notebook instance (must be in the region above)
+    value: us-central1-a
+
+  # ─── Networking ────────────────────────────────────────────────────────
+  - name: networkingEnabled
+    description: Create VPC and subnet for the notebook. Disable to use an existing network.
+    type: bool
+    value: true
+
+  - name: vpc_name
+    description: VPC network name
+    value: ml-notebook-vpc
+
+  - name: subnet_cidr
+    description: Primary CIDR range for the subnet
+    value: "10.0.0.0/24"
+
+  # ─── Notebook Instance ─────────────────────────────────────────────────
+  - name: notebook_name
+    description: Name of the Vertex AI Workbench notebook instance
+    value: ml-notebook
+
+  - name: machine_type
+    description: >
+      Compute Engine machine type. Examples:
+      e2-standard-4 (CPU), n1-standard-8 (GPU-compatible),
+      a2-highgpu-1g (A100 GPU)
+    value: e2-standard-4
+
+  - name: gpuEnabled
+    description: Attach a GPU accelerator to the notebook instance
+    type: bool
+    value: false
+
+  - name: accelerator_type
+    description: >
+      GPU type (only used when gpuEnabled is true).
+      Examples: NVIDIA_TESLA_T4, NVIDIA_L4, NVIDIA_TESLA_A100
+    value: NVIDIA_TESLA_T4
+
+  - name: accelerator_core_count
+    description: Number of GPU cores (only used when gpuEnabled is true)
+    value: "1"
+
+  - name: boot_disk_size_gb
+    description: Boot disk size in GB (0 = GCP default 150 GB)
+    value: "0"
+
+  - name: data_disk_size_gb
+    description: Data disk size in GB (0 = GCP default 100 GB)
+    value: "0"
+
+  # ─── Service Account ───────────────────────────────────────────────────
+  - name: service_account_id
+    description: >
+      Service account ID for the notebook VM identity.
+      Granted BigQuery, GCS, and Vertex AI access.
+    value: ml-notebook-sa
+
+  # ─── Storage ───────────────────────────────────────────────────────────
+  - name: bucket_name
+    description: >
+      Globally unique GCS bucket name for datasets, models, and artifacts.
+      Recommended: <project>-ml-artifacts
+    value: my-project-ml-artifacts
+
+  # ─── BigQuery ──────────────────────────────────────────────────────────
+  - name: dataset_id
+    description: >
+      BigQuery dataset ID for analytics data (alphanumeric and underscores only).
+      Tables are managed by notebooks/pipelines, not by this chart.
+    value: ml_dataset

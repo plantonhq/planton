@@ -1,0 +1,88 @@
+{% if values.create_mssql | bool %}
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureSubnet
+metadata:
+  name: "{{ values.env }}-pe-subnet"
+spec:
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  vnetId:
+    valueFrom:
+      kind: AzureVpc
+      name: "{{ values.env }}-vnet"
+      fieldPath: status.outputs.vnet_id
+  name: "{{ values.env }}-pe-subnet"
+  addressPrefix: "{{ values.mssql_pe_subnet_cidr }}"
+  privateEndpointNetworkPolicies: "Disabled"
+---
+apiVersion: azure.planton.dev/v1
+kind: AzurePrivateDnsZone
+metadata:
+  name: "{{ values.env }}-mssql-dns"
+spec:
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  name: "privatelink.database.windows.net"
+  vnetId:
+    valueFrom:
+      kind: AzureVpc
+      name: "{{ values.env }}-vnet"
+      fieldPath: status.outputs.vnet_id
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureMssqlServer
+metadata:
+  name: "{{ values.env }}-{{ values.mssql_name }}"
+spec:
+  region: "{{ values.region }}"
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  name: "{{ values.env }}-{{ values.mssql_name }}"
+  version: "{{ values.mssql_version }}"
+  administratorLogin: "{{ values.mssql_admin_login }}"
+  administratorPassword:
+    value: "{{ values.mssql_admin_password }}"
+  publicNetworkAccessEnabled: false
+  databases:
+    - name: "{{ values.mssql_database_name }}"
+      skuName: "{{ values.mssql_database_sku }}"
+---
+apiVersion: azure.planton.dev/v1
+kind: AzurePrivateEndpoint
+metadata:
+  name: "{{ values.env }}-mssql-pe"
+spec:
+  region: "{{ values.region }}"
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  subnetId:
+    valueFrom:
+      kind: AzureSubnet
+      name: "{{ values.env }}-pe-subnet"
+      fieldPath: status.outputs.subnet_id
+  privateConnectionResourceId:
+    valueFrom:
+      kind: AzureMssqlServer
+      name: "{{ values.env }}-{{ values.mssql_name }}"
+      fieldPath: status.outputs.server_id
+  subresourceNames:
+    - "sqlServer"
+  privateDnsZoneId:
+    valueFrom:
+      kind: AzurePrivateDnsZone
+      name: "{{ values.env }}-mssql-dns"
+      fieldPath: status.outputs.zone_id
+{% endif %}

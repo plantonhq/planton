@@ -1,0 +1,17 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: Azure Function App Environment
+spec:
+  selector:
+    kind: platform
+  description: >
+    Serverless function hosting on Azure. Deploys a Service Plan, Storage Account,
+    and Linux Function App with Log Analytics and optional Application Insights
+    for APM. Supports Consumption (Y1), Premium (EP1-EP3), and Dedicated plans.
+    Optional Key Vault for secrets management.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/azure/azurefunctionapp/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/azure/function-app-environment
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/azure/function-app-environment/README.md

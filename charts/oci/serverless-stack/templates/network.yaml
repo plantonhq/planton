@@ -1,0 +1,62 @@
+---
+apiVersion: oci.planton.dev/v1
+kind: OciVcn
+metadata:
+  name: "{{ values.env }}-vcn"
+spec:
+  compartmentId:
+    value: "{{ values.compartment_ocid }}"
+  cidrBlocks:
+    - "{{ values.vcn_cidr }}"
+  displayName: "{{ values.env }}-serverless-vcn"
+  isInternetGatewayEnabled: true
+  isNatGatewayEnabled: true
+  isServiceGatewayEnabled: true
+---
+apiVersion: oci.planton.dev/v1
+kind: OciSubnet
+metadata:
+  name: "{{ values.env }}-public"
+spec:
+  compartmentId:
+    value: "{{ values.compartment_ocid }}"
+  vcnId:
+    valueFrom:
+      kind: OciVcn
+      name: "{{ values.env }}-vcn"
+      fieldPath: status.outputs.vcnId
+  cidrBlock: "{{ values.public_subnet_cidr }}"
+  displayName: "{{ values.env }}-public"
+  prohibitPublicIpOnVnic: false
+  routeRules:
+    - destination: "0.0.0.0/0"
+      destinationType: cidr_block
+      networkEntityId:
+        valueFrom:
+          kind: OciVcn
+          name: "{{ values.env }}-vcn"
+          fieldPath: status.outputs.internetGatewayId
+---
+apiVersion: oci.planton.dev/v1
+kind: OciSubnet
+metadata:
+  name: "{{ values.env }}-private"
+spec:
+  compartmentId:
+    value: "{{ values.compartment_ocid }}"
+  vcnId:
+    valueFrom:
+      kind: OciVcn
+      name: "{{ values.env }}-vcn"
+      fieldPath: status.outputs.vcnId
+  cidrBlock: "{{ values.private_subnet_cidr }}"
+  displayName: "{{ values.env }}-private"
+  prohibitPublicIpOnVnic: true
+  routeRules:
+    - destination: "0.0.0.0/0"
+      destinationType: cidr_block
+      networkEntityId:
+        valueFrom:
+          kind: OciVcn
+          name: "{{ values.env }}-vcn"
+          fieldPath: status.outputs.natGatewayId

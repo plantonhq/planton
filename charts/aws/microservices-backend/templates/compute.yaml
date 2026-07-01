@@ -1,0 +1,32 @@
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsEcsCluster
+metadata:
+  name: "{{ values.service_name }}-ecs-cluster"
+  group: compute
+spec:
+  region: "{{ values.aws_region }}"
+  capacityProviders:
+    - FARGATE
+    - FARGATE_SPOT
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsEcrRepo
+metadata:
+  name: "{{ values.service_name }}-ecr"
+  group: compute
+spec:
+  region: "{{ values.aws_region }}"
+  repositoryName: "{{ values.ecr_repo_name }}"
+  encryptionType: AES256
+  imageImmutable: true
+  forceDelete: true
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsCloudwatchLogGroup
+metadata:
+  name: "{{ values.service_name }}-logs"
+  group: monitoring
+spec:
+  region: "{{ values.aws_region }}"
+  retentionInDays: 30

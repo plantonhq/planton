@@ -1,0 +1,19 @@
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpGcsBucket
+metadata:
+  name: "{{ values.bucket_name }}"
+spec:
+  gcpProjectId:
+    value: "{{ values.gcp_project_id }}"
+  bucketName: "{{ values.bucket_name }}"
+  location: "{{ values.location }}"
+  uniformBucketLevelAccessEnabled: true
+  versioningEnabled: true
+  publicAccessPrevention: enforced
+  lifecycleRules:
+    - action:
+        type: Delete
+      condition:
+        numNewerVersions: 30
+        isLive: false

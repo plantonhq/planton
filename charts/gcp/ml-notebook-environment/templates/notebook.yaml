@@ -1,0 +1,62 @@
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpVertexAiNotebook
+metadata:
+  name: "{{ values.notebook_name }}"
+  group: compute
+  relationships:
+{% if values.networkingEnabled | bool %}
+    - kind: GcpSubnetwork
+      name: "{{ values.vpc_name }}-subnet"
+      type: runs_on
+{% endif %}
+    - kind: GcpServiceAccount
+      name: "{{ values.service_account_id }}"
+      type: uses
+    - kind: GcpGcsBucket
+      name: "{{ values.bucket_name }}"
+      type: uses
+    - kind: GcpBigQueryDataset
+      name: "{{ values.dataset_id }}"
+      type: uses
+spec:
+  projectId:
+    value: "{{ values.gcp_project_id }}"
+  location: "{{ values.zone }}"
+  machineType: "{{ values.machine_type }}"
+  instanceName: "{{ values.notebook_name }}"
+  serviceAccount:
+    valueFrom:
+      kind: GcpServiceAccount
+      name: "{{ values.service_account_id }}"
+      fieldPath: status.outputs.email
+{% if values.networkingEnabled | bool %}
+  networkInterface:
+    network:
+      valueFrom:
+        kind: GcpVpc
+        name: "{{ values.vpc_name }}"
+        fieldPath: status.outputs.network_self_link
+    subnet:
+      valueFrom:
+        kind: GcpSubnetwork
+        name: "{{ values.vpc_name }}-subnet"
+        fieldPath: status.outputs.subnetwork_self_link
+  disablePublicIp: true
+{% endif %}
+{% if values.boot_disk_size_gb | int > 0 %}
+  bootDisk:
+    diskSizeGb: {{ values.boot_disk_size_gb }}
+{% endif %}
+{% if values.data_disk_size_gb | int > 0 %}
+  dataDisk:
+    diskSizeGb: {{ values.data_disk_size_gb }}
+{% endif %}
+{% if values.gpuEnabled | bool %}
+  acceleratorConfig:
+    type: "{{ values.accelerator_type }}"
+    coreCount: {{ values.accelerator_core_count }}
+{% endif %}
+  vmImage:
+    project: deeplearning-platform-release
+    family: common-cpu-notebooks

@@ -1,0 +1,56 @@
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureContainerAppEnvironment
+metadata:
+  name: "{{ values.env }}-{{ values.environment_name }}"
+spec:
+  region: "{{ values.region }}"
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  name: "{{ values.env }}-{{ values.environment_name }}"
+  infrastructureSubnetId:
+    valueFrom:
+      kind: AzureSubnet
+      name: "{{ values.env }}-cae-subnet"
+      fieldPath: status.outputs.subnet_id
+  logAnalyticsWorkspaceId:
+    valueFrom:
+      kind: AzureLogAnalyticsWorkspace
+      name: "{{ values.env }}-law"
+      fieldPath: status.outputs.workspace_id
+  internalLoadBalancerEnabled: {{ values.internal_load_balancer }}
+  zoneRedundancyEnabled: {{ values.zone_redundancy }}
+{% if values.create_container_app | bool %}
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureContainerApp
+metadata:
+  name: "{{ values.env }}-{{ values.container_app_name }}"
+spec:
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  containerAppEnvironmentId:
+    valueFrom:
+      kind: AzureContainerAppEnvironment
+      name: "{{ values.env }}-{{ values.environment_name }}"
+      fieldPath: status.outputs.environment_id
+  name: "{{ values.env }}-{{ values.container_app_name }}"
+  revisionMode: "Single"
+  containers:
+    - name: "{{ values.container_app_name }}"
+      image: "{{ values.container_image }}"
+      cpu: {{ values.container_cpu }}
+      memory: "{{ values.container_memory }}"
+  ingress:
+    externalEnabled: {{ values.ingress_external }}
+    targetPort: {{ values.target_port }}
+    transport: "auto"
+  minReplicas: {{ values.min_replicas }}
+  maxReplicas: {{ values.max_replicas }}
+{% endif %}

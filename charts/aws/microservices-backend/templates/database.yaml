@@ -1,0 +1,42 @@
+{% if values.databaseEnabled | bool %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsRdsCluster
+metadata:
+  name: "{{ values.service_name }}-rds"
+  group: database
+  relationships:
+    - kind: AwsVpc
+      name: "{{ values.service_name }}-vpc"
+      type: uses
+    - kind: AwsSecurityGroup
+      name: "{{ values.service_name }}-sg"
+      type: uses
+spec:
+  region: "{{ values.aws_region }}"
+  engine: aurora-postgresql
+  engineVersion: "{{ values.db_engine_version }}"
+  databaseName: "{{ values.db_name }}"
+  manageMasterUserPassword: true
+  port: 5432
+  storageEncrypted: true
+  skipFinalSnapshot: true
+  backupRetentionPeriod: 7
+  # UTC windows; the backup window must not overlap the maintenance window.
+  preferredBackupWindow: "03:00-04:00"
+  preferredMaintenanceWindow: "sun:05:00-sun:06:00"
+  subnetIds:
+    - valueFrom:
+        kind: AwsSubnet
+        name: "{{ values.service_name }}-private-1"
+        fieldPath: status.outputs.subnet_id
+    - valueFrom:
+        kind: AwsSubnet
+        name: "{{ values.service_name }}-private-2"
+        fieldPath: status.outputs.subnet_id
+  securityGroupIds:
+    - valueFrom:
+        kind: AwsSecurityGroup
+        name: "{{ values.service_name }}-sg"
+        fieldPath: status.outputs.security_group_id
+{% endif %}

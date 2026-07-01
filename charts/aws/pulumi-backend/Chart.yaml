@@ -1,0 +1,13 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: AWS Pulumi State Backend
+spec:
+  selector:
+    kind: platform
+  description: Setup Pulumi State Backend using AWS S3
+  iconUrl: https://assets.planton.ai/apis/connect/pulumibackendproviderconnection/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/aws/pulumi-backend
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/aws/pulumi-backend/README.md

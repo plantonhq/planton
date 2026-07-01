@@ -1,0 +1,13 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: AliCloud Database Stack
+spec:
+  selector:
+    kind: platform
+  description: Self-contained database environment with VPC networking, private DNS, and toggleable RDS, PolarDB, Redis, and MongoDB engines for Alibaba Cloud.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/v1/assets/provider/alicloud/alicloudrdsinstance/v1/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/alicloud/database-stack
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/alicloud/database-stack/README.md

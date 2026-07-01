@@ -1,0 +1,13 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: OpenStack Project Landing Zone
+spec:
+  selector:
+    kind: platform
+  description: Multi-tenant project bootstrap on OpenStack with a Keystone project, role assignment, baseline networking, and a default SSH keypair.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/v1/assets/provider/openstack/openstackproject/v1/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/openstack/project-landing-zone
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/openstack/project-landing-zone/README.md

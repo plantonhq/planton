@@ -1,0 +1,24 @@
+---
+apiVersion: civo.planton.dev/v1
+kind: CivoKubernetesCluster
+metadata:
+  name: "{{ values.env }}-{{ values.cluster_name }}"
+spec:
+  cluster_name: "{{ values.env }}-{{ values.cluster_name }}"
+  region: {{ values.region }}
+  kubernetes_version: "{{ values.kubernetes_version }}"
+  network:
+    valueFrom:
+      kind: CivoVpc
+      name: "{{ values.cluster_name }}-vpc"
+      fieldPath: status.outputs.network_id
+  highly_available: {{ values.highly_available }}
+  auto_upgrade: {{ values.auto_upgrade }}
+  disable_surge_upgrade: {{ values.disable_surge_upgrade }}
+  tags:
+    - "{{ values.env }}"
+    - "{{ values.cluster_name }}"
+  default_node_pool:
+    size: "{{ values.node_size }}"
+    node_count: {{ values.node_count }}
+

@@ -1,0 +1,13 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: GCP Serverless API Backend
+spec:
+  selector:
+    kind: platform
+  description: Production-ready serverless API backend on Cloud Run with private VPC networking, Cloud SQL database, optional Redis cache, Pub/Sub messaging, Cloud Tasks async processing, and Secret Manager. A complete microservices infrastructure pattern.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/gcp/gcpcloudrun/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/gcp/serverless-api-backend
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/gcp/serverless-api-backend/README.md

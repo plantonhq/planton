@@ -1,0 +1,56 @@
+params:
+# ─── Compartment ──────────────────────────────────────────────────────
+- name: compartment_ocid
+  description: OCID of the OCI compartment for all resources
+  value: ocid1.compartment.oc1..example
+
+# ─── Network ──────────────────────────────────────────────────────────
+- name: vcn_cidr
+  description: CIDR block for the VCN
+  value: 10.0.0.0/16
+
+- name: subnet_cidr
+  description: CIDR for the private data subnet
+  value: 10.0.1.0/24
+
+# ─── Autonomous Data Warehouse ────────────────────────────────────────
+- name: db_name
+  description: >
+    Database name (alphanumeric, starts with letter, max 30 chars).
+    Deployed as an Autonomous Data Warehouse (ADW).
+  value: datawarehouse
+
+- name: compute_count
+  description: Number of ECPUs for the data warehouse
+  value: "4"
+
+- name: storage_in_tbs
+  description: Data storage size in terabytes
+  value: "1"
+
+- name: admin_password
+  description: Initial ADMIN password for the data warehouse
+  value: ""
+
+# ─── Data Lake (Object Storage) ───────────────────────────────────────
+- name: bucket_name
+  description: Object Storage bucket for the data lake
+  value: data-lake
+
+# ─── Streaming (Kafka-compatible) ─────────────────────────────────────
+- name: stream_pool_name
+  description: Stream pool name for data ingestion
+  value: data-ingestion
+
+- name: stream_partitions
+  description: Number of partitions per stream
+  value: "1"
+
+- name: stream_retention_hours
+  description: Stream message retention in hours (24-168)
+  value: "24"
+
+# ─── Logging ──────────────────────────────────────────────────────────
+- name: log_retention_days
+  description: Log retention in days (30-day increments, 30-180)
+  value: "30"

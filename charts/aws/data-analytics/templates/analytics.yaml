@@ -1,0 +1,30 @@
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsGlueCatalogDatabase
+metadata:
+  name: "{{ values.glue_database_name }}"
+  group: analytics
+spec:
+  description: "{{ values.glue_database_description }}"
+  locationUri: "s3://{{ values.s3_bucket_name }}/raw/"
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsAthenaWorkgroup
+metadata:
+  name: "{{ values.athena_workgroup_name }}"
+  group: analytics
+  relationships:
+    - kind: AwsS3Bucket
+      name: "{{ values.s3_bucket_name }}"
+      type: uses
+    - kind: AwsGlueCatalogDatabase
+      name: "{{ values.glue_database_name }}"
+      type: uses
+spec:
+  resultConfiguration:
+    outputLocation: "s3://{{ values.s3_bucket_name }}/athena-results/"
+    encryptionOption: SSE_S3
+  bytesScannedCutoffPerQuery: {{ values.athena_bytes_scanned_cutoff }}
+  publishCloudwatchMetricsEnabled: true
+  enforceWorkgroupConfiguration: true
+  forceDestroy: true

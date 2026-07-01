@@ -1,0 +1,21 @@
+{% if values.vpnEnabled | bool %}
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudVpnGateway
+metadata:
+  name: "{{ values.env }}-vpn"
+spec:
+  region: "{{ values.region }}"
+  vpcId:
+    valueFrom:
+      kind: AliCloudVpc
+      name: "{{ values.env }}-vpc"
+      fieldPath: status.outputs.vpcId
+  vswitchId:
+    valueFrom:
+      kind: AliCloudVswitch
+      name: "{{ values.env }}-vswitch-1"
+      fieldPath: status.outputs.vswitchId
+  vpnGatewayName: "{{ values.env }}-vpn"
+  bandwidth: {{ values.vpn_bandwidth }}
+{% endif %}

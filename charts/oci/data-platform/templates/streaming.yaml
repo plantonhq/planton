@@ -1,0 +1,15 @@
+---
+apiVersion: oci.planton.dev/v1
+kind: OciStreamPool
+metadata:
+  name: "{{ values.env }}-{{ values.stream_pool_name }}"
+spec:
+  compartmentId:
+    value: "{{ values.compartment_ocid }}"
+  kafkaSettings:
+    logRetentionHours: {{ values.stream_retention_hours }}
+    autoCreateTopicsEnable: true
+  streams:
+    - name: "{{ values.env }}-ingest"
+      partitions: {{ values.stream_partitions }}
+      retentionInHours: {{ values.stream_retention_hours }}

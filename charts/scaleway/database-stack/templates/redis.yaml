@@ -1,0 +1,24 @@
+{% if values.redis_enabled | bool %}
+---
+apiVersion: scaleway.planton.dev/v1
+kind: ScalewayRedisCluster
+metadata:
+  name: "{{ values.env }}-{{ values.stack_name }}-redis"
+spec:
+  zone: "{{ values.redis_zone }}"
+  version: "{{ values.redis_version }}"
+  nodeType: "{{ values.redis_node_type }}"
+  clusterSize: {{ values.redis_cluster_size }}
+  tlsEnabled: {{ values.redis_tls_enabled }}
+  userName: "{{ values.redis_user_name }}"
+  password: "{{ values.redis_password }}"
+  privateNetworkId:
+  {% if values.create_network | bool %}
+    valueFrom:
+      kind: ScalewayPrivateNetwork
+      name: "{{ values.env }}-{{ values.stack_name }}-pn"
+      fieldPath: status.outputs.private_network_id
+  {% else %}
+    value: "{{ values.private_network_id }}"
+  {% endif %}
+{% endif %}

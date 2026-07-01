@@ -1,0 +1,23 @@
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpGkeNodePool
+metadata:
+  name: "{{ values.node_pool_name }}"
+spec:
+  clusterProjectId:
+    value: "{{ values.project_id }}"
+  clusterName:
+    valueFrom:
+      kind: GcpGkeCluster
+      name: "{{ values.env }}-{{ values.cluster_name }}"
+      fieldPath: metadata.name
+  machineType: "{{ values.node_pool_machine_type }}"
+  diskSizeGb: {{ values.node_pool_disk_size_gb }}
+  diskType: "{{ values.node_pool_disk_type }}"
+  imageType: "{{ values.node_pool_image_type }}"
+  spot: {{ values.node_pool_spot }}
+  nodeLabels:
+    pool: "{{ values.node_pool_name }}"
+  autoscaling:
+    minNodes: {{ values.node_pool_min_nodes }}
+    maxNodes: {{ values.node_pool_max_nodes }}

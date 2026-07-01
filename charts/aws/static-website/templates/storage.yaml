@@ -1,0 +1,21 @@
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsS3Bucket
+metadata:
+  name: "{{ values.s3_bucket_name }}"
+  group: storage
+spec:
+  region: "{{ values.aws_region }}"
+  isPublic: true
+  versioningEnabled: false
+  forceDestroy: true
+  cors:
+    corsRules:
+      - allowedMethods:
+          - GET
+          - HEAD
+        allowedOrigins:
+          - "*"
+        allowedHeaders:
+          - "*"
+        maxAgeSeconds: 3600

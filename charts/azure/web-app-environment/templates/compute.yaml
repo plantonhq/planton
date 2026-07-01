@@ -1,0 +1,15 @@
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureServicePlan
+metadata:
+  name: "{{ values.env }}-{{ values.plan_name }}"
+spec:
+  region: "{{ values.region }}"
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  name: "{{ values.env }}-{{ values.plan_name }}"
+  osType: "Linux"
+  skuName: "{{ values.sku_name }}"

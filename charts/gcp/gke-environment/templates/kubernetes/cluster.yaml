@@ -1,0 +1,35 @@
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpGkeCluster
+metadata:
+  name: "{{ values.env }}-{{ values.cluster_name }}"
+spec:
+  projectId:
+  {% if values.create_project | bool %}
+    valueFrom:
+      kind: GcpProject
+      name: "{{ values.project_id }}"
+      fieldPath: status.outputs.project_id
+  {% else %}
+    value: "{{ values.project_id }}"
+  {% endif %}
+  location: "{{ values.cluster_location }}"
+  subnetworkSelfLink:
+    valueFrom:
+      kind: GcpSubnetwork
+      name: "{{ values.env }}-{{ values.subnet_name }}"
+      fieldPath: status.outputs.subnetwork_self_link
+  clusterSecondaryRangeName:
+    value: "{{ values.pods_secondary_range_name }}"
+  servicesSecondaryRangeName:
+    value: "{{ values.services_secondary_range_name }}"
+  masterIpv4CidrBlock: "{{ values.master_ipv4_cidr }}"
+  enablePublicNodes: {{ values.enable_public_nodes }}
+  releaseChannel: "{{ values.release_channel }}"
+  disableNetworkPolicy: {{ values.disable_network_policy }}
+  disableWorkloadIdentity: {{ values.disable_workload_identity }}
+  routerNatName:
+    valueFrom:
+      kind: GcpRouterNat
+      name: "{{ values.router_nat_name }}"
+      fieldPath: metadata.name

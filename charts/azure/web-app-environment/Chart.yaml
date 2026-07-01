@@ -1,0 +1,17 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: Azure Web App Environment
+spec:
+  selector:
+    kind: platform
+  description: >
+    Production web application hosting on Azure. Deploys a Service Plan with a
+    Linux Web App, Log Analytics monitoring, and optional Application Insights.
+    Supports Node.js, Python, Java, .NET, PHP, Ruby, Go, and Docker container
+    deployments. Ideal for APIs, web frontends, and microservices on App Service.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/azure/azurelinuxwebapp/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/azure/web-app-environment
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/azure/web-app-environment/README.md

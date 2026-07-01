@@ -1,0 +1,44 @@
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureLinuxWebApp
+metadata:
+  name: "{{ values.env }}-{{ values.web_app_name }}"
+spec:
+  region: "{{ values.region }}"
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  name: "{{ values.env }}-{{ values.web_app_name }}"
+  servicePlanId:
+    valueFrom:
+      kind: AzureServicePlan
+      name: "{{ values.env }}-{{ values.plan_name }}"
+      fieldPath: status.outputs.plan_id
+  siteConfig:
+    applicationStack:
+      {% if values.runtime_stack == "node" %}
+      nodeVersion: "{{ values.runtime_version }}"
+      {% elif values.runtime_stack == "python" %}
+      pythonVersion: "{{ values.runtime_version }}"
+      {% elif values.runtime_stack == "java" %}
+      javaVersion: "{{ values.runtime_version }}"
+      javaServer: "JAVA"
+      javaServerVersion: "{{ values.runtime_version }}"
+      {% elif values.runtime_stack == "dotnet" %}
+      dotnetVersion: "{{ values.runtime_version }}"
+      {% elif values.runtime_stack == "php" %}
+      phpVersion: "{{ values.runtime_version }}"
+      {% elif values.runtime_stack == "ruby" %}
+      rubyVersion: "{{ values.runtime_version }}"
+      {% elif values.runtime_stack == "go" %}
+      goVersion: "{{ values.runtime_version }}"
+      {% elif values.runtime_stack == "docker" %}
+      dockerImage: "{{ values.docker_image }}"
+      dockerImageTag: "{{ values.docker_image_tag }}"
+      {% endif %}
+  {% if values.create_app_insights | bool %}
+  appSettings:
+    APPLICATIONINSIGHTS_CONNECTION_STRING: "<appinsights-connection-string>"
+  {% endif %}

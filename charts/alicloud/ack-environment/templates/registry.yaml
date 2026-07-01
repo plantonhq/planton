@@ -1,0 +1,13 @@
+{% if values.acrEnabled | bool %}
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudContainerRegistry
+metadata:
+  name: "{{ values.env }}-acr"
+spec:
+  region: "{{ values.region }}"
+  instanceName: "{{ values.env }}-acr"
+  instanceType: "{{ values.acr_instance_type }}"
+  namespaces:
+    - name: "{{ values.env }}"
+{% endif %}

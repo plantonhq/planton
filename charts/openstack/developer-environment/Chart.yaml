@@ -1,0 +1,13 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: OpenStack Developer Environment
+spec:
+  selector:
+    kind: platform
+  description: Isolated developer sandbox on OpenStack with private networking, a VM instance, optional persistent storage, and optional floating IP for external access.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/v1/assets/provider/openstack/openstackinstance/v1/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/openstack/developer-environment
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/openstack/developer-environment/README.md

@@ -1,0 +1,64 @@
+{% if values.rocketmqEnabled | bool %}
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudRocketmqInstance
+metadata:
+  name: "{{ values.env }}-rocketmq"
+spec:
+  region: "{{ values.region }}"
+  instanceName: "{{ values.env }}-rocketmq"
+  vpcId:
+    valueFrom:
+      kind: AliCloudVpc
+      name: "{{ values.env }}-vpc"
+      fieldPath: status.outputs.vpcId
+  vswitchId:
+    valueFrom:
+      kind: AliCloudVswitch
+      name: "{{ values.env }}-vswitch-1"
+      fieldPath: status.outputs.vswitchId
+  msgProcessSpec: "{{ values.rocketmq_spec }}"
+{% endif %}
+
+{% if values.redisEnabled | bool %}
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudRedisInstance
+metadata:
+  name: "{{ values.env }}-redis"
+spec:
+  region: "{{ values.region }}"
+  vswitchId:
+    valueFrom:
+      kind: AliCloudVswitch
+      name: "{{ values.env }}-vswitch-1"
+      fieldPath: status.outputs.vswitchId
+  instanceClass: "{{ values.redis_instance_class }}"
+  engineVersion: "7.0"
+  zoneId: "{{ values.availability_zone_1 }}"
+  securityIps:
+    - "{{ values.vpc_cidr }}"
+{% endif %}
+
+{% if values.nasEnabled | bool %}
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudNasFileSystem
+metadata:
+  name: "{{ values.env }}-nas"
+spec:
+  region: "{{ values.region }}"
+  protocolType: NFS
+  storageType: "{{ values.nas_storage_type }}"
+  description: "Shared storage for microservices in {{ values.env }}"
+  vpcId:
+    valueFrom:
+      kind: AliCloudVpc
+      name: "{{ values.env }}-vpc"
+      fieldPath: status.outputs.vpcId
+  vswitchId:
+    valueFrom:
+      kind: AliCloudVswitch
+      name: "{{ values.env }}-vswitch-1"
+      fieldPath: status.outputs.vswitchId
+{% endif %}

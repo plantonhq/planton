@@ -1,0 +1,13 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: AWS Static Website
+spec:
+  selector:
+    kind: platform
+  description: Static website on S3 with CloudFront CDN for global edge delivery. Optional custom domain with Route53 DNS and ACM SSL certificate. Upload HTML/CSS/JS to the S3 bucket and serve it worldwide with low latency.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/aws/awscloudfront/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/aws/static-website
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/aws/static-website/README.md

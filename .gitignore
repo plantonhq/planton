@@ -1,5 +1,8 @@
 .idea
+.DS_Store
 generated/
+# Rendered InfraChart output from `planton chart build` (chart-root artifact)
+charts/*/*/template.yaml
 build/
 bin/
 site/node_modules/

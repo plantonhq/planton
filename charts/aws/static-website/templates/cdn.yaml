@@ -1,0 +1,67 @@
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsCloudFront
+metadata:
+  name: "{{ values.s3_bucket_name }}-cdn"
+  group: compute
+  relationships:
+    - kind: AwsS3Bucket
+      name: "{{ values.s3_bucket_name }}"
+      type: uses
+{% if values.dnsEnabled | bool %}
+    - kind: AwsCertManagerCert
+      name: "{{ values.s3_bucket_name }}-cert"
+      type: uses
+    - kind: AwsRoute53Zone
+      name: "{{ values.domain_name }}"
+      type: uses
+{% endif %}
+spec:
+  enabled: true
+  defaultRootObject: "{{ values.default_root_object }}"
+  origins:
+    - domainName: "{{ values.s3_bucket_name }}.s3.{{ values.aws_region }}.amazonaws.com"
+      isDefault: true
+{% if values.dnsEnabled | bool %}
+  aliases:
+    - "{{ values.website_domain_name }}"
+  certificateArn:
+    valueFrom:
+      kind: AwsCertManagerCert
+      name: "{{ values.s3_bucket_name }}-cert"
+      fieldPath: status.outputs.cert_arn
+{% endif %}
+{% if values.dnsEnabled | bool %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsRoute53DnsRecord
+metadata:
+  name: "{{ values.website_domain_name | replace('.', '-') }}-alias"
+  group: network
+  relationships:
+    - kind: AwsCloudFront
+      name: "{{ values.s3_bucket_name }}-cdn"
+      type: uses
+    - kind: AwsRoute53Zone
+      name: "{{ values.domain_name }}"
+      type: runs_on
+spec:
+  zoneId:
+    valueFrom:
+      kind: AwsRoute53Zone
+      name: "{{ values.domain_name }}"
+      fieldPath: status.outputs.zone_id
+  name: "{{ values.website_domain_name }}"
+  type: A
+  aliasTarget:
+    dnsName:
+      valueFrom:
+        kind: AwsCloudFront
+        name: "{{ values.s3_bucket_name }}-cdn"
+        fieldPath: status.outputs.domain_name
+    zoneId:
+      valueFrom:
+        kind: AwsCloudFront
+        name: "{{ values.s3_bucket_name }}-cdn"
+        fieldPath: status.outputs.hosted_zone_id
+{% endif %}

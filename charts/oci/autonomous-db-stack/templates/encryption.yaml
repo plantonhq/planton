@@ -1,0 +1,30 @@
+{% if values.enable_encryption | bool %}
+---
+apiVersion: oci.planton.dev/v1
+kind: OciKmsVault
+metadata:
+  name: "{{ values.env }}-adb-vault"
+spec:
+  compartmentId:
+    value: "{{ values.compartment_ocid }}"
+  displayName: "{{ values.env }}-adb-vault"
+  vaultType: default_vault
+---
+apiVersion: oci.planton.dev/v1
+kind: OciKmsKey
+metadata:
+  name: "{{ values.env }}-adb-key"
+spec:
+  compartmentId:
+    value: "{{ values.compartment_ocid }}"
+  managementEndpoint:
+    valueFrom:
+      kind: OciKmsVault
+      name: "{{ values.env }}-adb-vault"
+      fieldPath: status.outputs.managementEndpoint
+  displayName: "{{ values.env }}-adb-key"
+  keyShape:
+    algorithm: aes
+    length: 32
+  protectionMode: hsm
+{% endif %}

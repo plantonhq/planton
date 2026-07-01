@@ -1,0 +1,41 @@
+params:
+  # ─── Networking ────────────────────────────────────────────────────────────────
+  - name: external_network_name
+    description: Name of the pre-existing external (provider) network for router gateway and floating IP allocation
+    value: public
+
+  - name: network_cidr
+    description: CIDR block for the private tenant network subnet
+    value: 192.168.1.0/24
+
+  - name: dns_nameservers
+    description: Comma-separated list of DNS nameserver IPs for the subnet
+    value: 8.8.8.8,8.8.4.4
+
+  # ─── Compute ───────────────────────────────────────────────────────────────────
+  - name: instance_flavor
+    description: Nova flavor name for the developer VM instance
+    value: m1.medium
+
+  - name: instance_image
+    description: Glance image name for the developer VM instance
+    value: ubuntu-22.04
+
+  - name: ssh_public_key
+    description: SSH public key to inject into the VM for remote access
+
+  # ─── Storage ───────────────────────────────────────────────────────────────────
+  - name: volume_size_gb
+    description: Size of the persistent Cinder volume in GB
+    value: "50"
+
+  # ─── Feature toggles ──────────────────────────────────────────────────────────
+  - name: volumeEnabled
+    description: Create and attach a persistent Cinder volume to the VM instance
+    type: bool
+    value: true
+
+  - name: floatingIpEnabled
+    description: Allocate a floating IP from the external network and associate it with the VM
+    type: bool
+    value: true

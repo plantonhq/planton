@@ -1,0 +1,45 @@
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpCloudRun
+metadata:
+  name: "{{ values.frontend_service_name }}"
+  relationships:
+    {% if values.dockerRepoEnabled | bool %}
+    - kind: GcpArtifactRegistryRepo
+      name: "{{ values.docker_repo_name }}"
+      type: uses
+    {% endif %}
+    {% if values.dnsZoneEnabled | bool %}
+    - kind: GcpDnsZone
+      name: "{{ values.domain_name }}"
+      type: uses
+    {% endif %}
+spec:
+  projectId:
+    value: "{{ values.gcp_project_id }}"
+  region: "{{ values.gcp_region }}"
+
+  # ──── container runtime ────
+  container:
+    image:
+      repo: nginx
+      tag: latest
+    port: {{ values.frontend_service_port }}
+    cpu: 1
+    memory: 512
+    replicas:
+      min: 0
+      max: 1
+    env:
+      variables:
+        SERVICE_NAME: "{{ values.frontend_service_name }}"
+        ENV: "{{ env }}"
+
+  # ──── traffic / scaling ────
+  maxConcurrency: 80
+  allowUnauthenticated: true
+
+  # ──── optional custom domain ────
+  dns:
+    enabled: false
+

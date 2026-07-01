@@ -1,0 +1,4 @@
+params:
+- name: bucket_name
+  description: Name of the S3 bucket for Pulumi state backend (e.g., my-org-pulumi-state-backend)
+  value: my-org-pulumi-state-backend

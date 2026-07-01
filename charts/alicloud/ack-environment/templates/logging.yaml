@@ -1,0 +1,22 @@
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudLogProject
+metadata:
+  name: "{{ values.env }}-ack-logs"
+spec:
+  region: "{{ values.region }}"
+  projectName: "{{ values.env }}-ack-logs"
+  description: "SLS log project for ACK cluster in {{ values.env }}"
+  logStores:
+    - name: audit-log
+      retentionDays: {{ values.log_retention_days }}
+      shardCount: 2
+      autoSplit: true
+      maxSplitShardCount: 64
+      enableIndex: true
+    - name: event-log
+      retentionDays: {{ values.log_retention_days }}
+      shardCount: 2
+      autoSplit: true
+      maxSplitShardCount: 64
+      enableIndex: true

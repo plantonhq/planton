@@ -1,0 +1,17 @@
+{% if values.create_project | bool %}
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpProject
+metadata:
+  name: "{{ values.project_id }}"
+spec:
+  parentType: "{{ values.parent_type }}"
+  parentId: "{{ values.parent_id }}"
+  billingAccountId: "{{ values.billing_account_id }}"
+  disableDefaultNetwork: true
+  enabledApis:
+    - compute.googleapis.com
+    - container.googleapis.com
+    - dns.googleapis.com
+    - iam.googleapis.com
+{% endif %}

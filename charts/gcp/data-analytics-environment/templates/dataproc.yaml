@@ -1,0 +1,63 @@
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpDataprocCluster
+metadata:
+  name: "{{ values.cluster_name }}"
+  group: compute
+  relationships:
+    - kind: GcpSubnetwork
+      name: "{{ values.vpc_name }}-subnet"
+      type: runs_on
+    - kind: GcpServiceAccount
+      name: "{{ values.service_account_id }}"
+      type: uses
+    - kind: GcpGcsBucket
+      name: "{{ values.bucket_name }}"
+      type: uses
+    - kind: GcpBigQueryDataset
+      name: "{{ values.dataset_id }}"
+      type: uses
+    - kind: GcpPubSubTopic
+      name: "{{ values.topic_name }}"
+      type: uses
+spec:
+  projectId:
+    value: "{{ values.gcp_project_id }}"
+  region: "{{ values.region }}"
+  clusterName: "{{ values.cluster_name }}"
+  clusterConfig:
+    stagingBucket:
+      valueFrom:
+        kind: GcpGcsBucket
+        name: "{{ values.bucket_name }}"
+        fieldPath: status.outputs.bucket_id
+    gceConfig:
+      subnetwork:
+        valueFrom:
+          kind: GcpSubnetwork
+          name: "{{ values.vpc_name }}-subnet"
+          fieldPath: status.outputs.subnetwork_self_link
+      serviceAccount:
+        valueFrom:
+          kind: GcpServiceAccount
+          name: "{{ values.service_account_id }}"
+          fieldPath: status.outputs.email
+      internalIpOnly: true
+    masterConfig:
+      numInstances: 1
+      machineType: "{{ values.master_machine_type }}"
+    workerConfig:
+      numInstances: {{ values.worker_count }}
+      machineType: "{{ values.worker_machine_type }}"
+    softwareConfig:
+      imageVersion: "{{ values.image_version }}"
+{% if values.jupyterEnabled | bool %}
+      optionalComponents:
+        - JUPYTER
+{% endif %}
+    endpointConfig:
+      enableHttpPortAccess: true
+{% if values.idle_delete_ttl %}
+    lifecycleConfig:
+      idleDeleteTtl: "{{ values.idle_delete_ttl }}"
+{% endif %}

@@ -1,0 +1,74 @@
+---
+apiVersion: oci.planton.dev/v1
+kind: OciVcn
+metadata:
+  name: "{{ values.env }}-vcn"
+spec:
+  compartmentId:
+    value: "{{ values.compartment_ocid }}"
+  cidrBlocks:
+    - "{{ values.vcn_cidr }}"
+  displayName: "{{ values.env }}-adb-vcn"
+  isNatGatewayEnabled: true
+  isServiceGatewayEnabled: true
+---
+apiVersion: oci.planton.dev/v1
+kind: OciSubnet
+metadata:
+  name: "{{ values.env }}-db-private"
+spec:
+  compartmentId:
+    value: "{{ values.compartment_ocid }}"
+  vcnId:
+    valueFrom:
+      kind: OciVcn
+      name: "{{ values.env }}-vcn"
+      fieldPath: status.outputs.vcnId
+  cidrBlock: "{{ values.subnet_cidr }}"
+  displayName: "{{ values.env }}-db-private"
+  dnsLabel: db
+  prohibitPublicIpOnVnic: true
+  routeRules:
+    - destination: "0.0.0.0/0"
+      destinationType: cidr_block
+      networkEntityId:
+        valueFrom:
+          kind: OciVcn
+          name: "{{ values.env }}-vcn"
+          fieldPath: status.outputs.natGatewayId
+---
+apiVersion: oci.planton.dev/v1
+kind: OciSecurityGroup
+metadata:
+  name: "{{ values.env }}-adb"
+spec:
+  compartmentId:
+    value: "{{ values.compartment_ocid }}"
+  vcnId:
+    valueFrom:
+      kind: OciVcn
+      name: "{{ values.env }}-vcn"
+      fieldPath: status.outputs.vcnId
+  displayName: "{{ values.env }}-adb"
+  ingressRules:
+    - description: SQL*Net from VCN
+      protocol: tcp
+      source: "{{ values.vcn_cidr }}"
+      sourceType: cidr_block
+      tcpOptions:
+        destinationPortRange:
+          min: 1522
+          max: 1522
+    - description: HTTPS from VCN
+      protocol: tcp
+      source: "{{ values.vcn_cidr }}"
+      sourceType: cidr_block
+      tcpOptions:
+        destinationPortRange:
+          min: 443
+          max: 443
+  egressRules:
+    - description: Allow all egress
+      protocol: all
+      destination: "0.0.0.0/0"
+      destinationType: cidr_block

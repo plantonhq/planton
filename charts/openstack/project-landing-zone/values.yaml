@@ -1,0 +1,28 @@
+params:
+  # ─── Identity ──────────────────────────────────────────────────────────────────
+  - name: project_description
+    description: Description for the new OpenStack project
+    value: Managed by Planton
+
+  - name: admin_role_id
+    description: Keystone role ID to assign to the admin user on the new project (e.g. member or admin role UUID)
+
+  - name: admin_user_id
+    description: Keystone user ID to grant the role to on the new project
+
+  # ─── Networking ────────────────────────────────────────────────────────────────
+  - name: external_network_name
+    description: Name of the pre-existing external (provider) network for router gateway
+    value: public
+
+  - name: network_cidr
+    description: CIDR block for the project baseline network subnet
+    value: 10.0.0.0/24
+
+  - name: dns_nameservers
+    description: Comma-separated list of DNS nameserver IPs for the subnet
+    value: 8.8.8.8,8.8.4.4
+
+  # ─── SSH ───────────────────────────────────────────────────────────────────────
+  - name: ssh_public_key
+    description: Default SSH public key for the project (available for any compute resources created later)

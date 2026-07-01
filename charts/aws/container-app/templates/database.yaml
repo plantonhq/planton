@@ -1,0 +1,14 @@
+{% if values.databaseEnabled | bool %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsDynamodb
+metadata:
+  name: "{{ values.dynamodb_table_name }}"
+  group: database
+spec:
+  tableName: "{{ values.dynamodb_table_name }}"
+  billingMode: PAY_PER_REQUEST
+  hashKey:
+    name: "{{ values.dynamodb_hash_key }}"
+    type: S
+{% endif %}

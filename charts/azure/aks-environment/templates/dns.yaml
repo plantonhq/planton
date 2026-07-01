@@ -1,0 +1,10 @@
+{% if values.create_dns_zone | bool %}
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureDnsZone
+metadata:
+  name: "{{ values.dns_zone_name }}"
+spec:
+  zoneName: "{{ values.dns_zone_name }}"
+  resourceGroup: "{{ values.dns_resource_group }}"
+  {% endif %}

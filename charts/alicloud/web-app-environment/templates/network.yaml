@@ -1,0 +1,72 @@
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudVpc
+metadata:
+  name: "{{ values.env }}-vpc"
+spec:
+  region: "{{ values.region }}"
+  vpcName: "{{ values.env }}-vpc"
+  cidrBlock: "{{ values.vpc_cidr }}"
+
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudVswitch
+metadata:
+  name: "{{ values.env }}-vswitch-1"
+spec:
+  region: "{{ values.region }}"
+  vpcId:
+    valueFrom:
+      kind: AliCloudVpc
+      name: "{{ values.env }}-vpc"
+      fieldPath: status.outputs.vpcId
+  zoneId: "{{ values.availability_zone_1 }}"
+  cidrBlock: "{{ values.vswitch_cidr_1 }}"
+  vswitchName: "{{ values.env }}-vswitch-1"
+
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudVswitch
+metadata:
+  name: "{{ values.env }}-vswitch-2"
+spec:
+  region: "{{ values.region }}"
+  vpcId:
+    valueFrom:
+      kind: AliCloudVpc
+      name: "{{ values.env }}-vpc"
+      fieldPath: status.outputs.vpcId
+  zoneId: "{{ values.availability_zone_2 }}"
+  cidrBlock: "{{ values.vswitch_cidr_2 }}"
+  vswitchName: "{{ values.env }}-vswitch-2"
+
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudSecurityGroup
+metadata:
+  name: "{{ values.env }}-web-sg"
+spec:
+  region: "{{ values.region }}"
+  vpcId:
+    valueFrom:
+      kind: AliCloudVpc
+      name: "{{ values.env }}-vpc"
+      fieldPath: status.outputs.vpcId
+  securityGroupName: "{{ values.env }}-web-sg"
+  description: "Security group for web app in {{ values.env }}"
+  rules:
+    - type: ingress
+      ipProtocol: tcp
+      portRange: "80/80"
+      cidrIp: "0.0.0.0/0"
+      description: "HTTP from anywhere"
+    - type: ingress
+      ipProtocol: tcp
+      portRange: "443/443"
+      cidrIp: "0.0.0.0/0"
+      description: "HTTPS from anywhere"
+    - type: egress
+      ipProtocol: all
+      portRange: "-1/-1"
+      cidrIp: "0.0.0.0/0"
+      description: "All outbound traffic"

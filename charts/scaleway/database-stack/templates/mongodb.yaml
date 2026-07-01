@@ -1,0 +1,27 @@
+{% if values.mongodb_enabled | bool %}
+---
+apiVersion: scaleway.planton.dev/v1
+kind: ScalewayMongodbInstance
+metadata:
+  name: "{{ values.env }}-{{ values.stack_name }}-mongodb"
+spec:
+  region: "{{ values.region }}"
+  version: "{{ values.mongodb_version }}"
+  nodeType: "{{ values.mongodb_node_type }}"
+  nodeNumber: {{ values.mongodb_node_number }}
+  privateNetworkId:
+  {% if values.create_network | bool %}
+    valueFrom:
+      kind: ScalewayPrivateNetwork
+      name: "{{ values.env }}-{{ values.stack_name }}-pn"
+      fieldPath: status.outputs.private_network_id
+  {% else %}
+    value: "{{ values.private_network_id }}"
+  {% endif %}
+  {% if values.mongodb_volume_size_in_gb | int > 0 %}
+  volumeSizeInGb: {{ values.mongodb_volume_size_in_gb }}
+  {% endif %}
+  volumeType: "{{ values.mongodb_volume_type }}"
+  adminUser: "{{ values.mongodb_admin_user }}"
+  adminPassword: "{{ values.mongodb_admin_password }}"
+{% endif %}

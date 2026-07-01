@@ -1,0 +1,55 @@
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsEcsService
+metadata:
+  name: "{{ values.service_name }}"
+spec:
+  region: "{{ values.aws_region }}"
+  alb:
+    arn:
+      valueFrom:
+        kind: AwsAlb
+        name: "{{ values.env }}-alb"
+        fieldPath: status.outputs.load_balancer_arn
+    enabled: true
+    hostname: "{{ values.service_name }}.{{ values.load_balancer_domain_name }}"
+    routingType: hostname
+    listenerPort: {{ 443 if (values.httpsEnabled | bool and values.dnsEnabled | bool) else 80 }}
+    listenerPriority: 100
+  clusterArn:
+    valueFrom:
+      kind: AwsEcsCluster
+      name: "{{ values.env }}-ecs-cluster"
+      fieldPath: status.outputs.cluster_arn
+  container:
+    cpu: 256
+    env:
+      variables:
+        SERVICE_NAME: "{{ values.service_name }}"
+    image:
+      repo: nginx
+      tag: latest
+    memory: 512
+    port: 80
+    replicas: 1
+  iam:
+    taskExecutionRoleArn:
+      valueFrom:
+        kind: AwsIamRole
+        name: "{{ values.env }}-ecs-task-execution-role"
+        fieldPath: status.outputs.role_arn
+  network:
+    securityGroups:
+      - valueFrom:
+          kind: AwsSecurityGroup
+          name: "{{ values.env }}-http-ingress-and-all-egress"
+          fieldPath: status.outputs.security_group_id
+    subnets:
+      - valueFrom:
+          kind: AwsSubnet
+          name: "{{ values.env }}-private-1"
+          fieldPath: status.outputs.subnet_id
+      - valueFrom:
+          kind: AwsSubnet
+          name: "{{ values.env }}-private-2"
+          fieldPath: status.outputs.subnet_id

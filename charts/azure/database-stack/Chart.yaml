@@ -1,0 +1,18 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: Azure Database Stack
+spec:
+  selector:
+    kind: platform
+  description: >
+    Production-ready managed databases on private Azure networks. Deploys a VNet
+    with delegated subnets, Private DNS zones, and one or more managed databases
+    (PostgreSQL, MySQL, MSSQL, Redis). PostgreSQL is enabled by default; other
+    databases are optional. All relational databases use VNet-integrated private
+    access for zero public exposure.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/azure/azurepostgresqlflexibleserver/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/azure/database-stack
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/azure/database-stack/README.md

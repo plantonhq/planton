@@ -1,0 +1,50 @@
+---
+apiVersion: civo.planton.dev/v1
+kind: CivoFirewall
+metadata:
+  name: "{{ values.cluster_name }}-firewall"
+spec:
+  name: "{{ values.env }}-{{ values.cluster_name }}-firewall"
+  network_id:
+    valueFrom:
+      kind: CivoVpc
+      name: "{{ values.cluster_name }}-vpc"
+      fieldPath: status.outputs.network_id
+  inbound_rules:
+    - protocol: tcp
+      port_range: "443"
+      cidrs:
+        - "0.0.0.0/0"
+      action: allow
+      label: "Allow HTTPS"
+    - protocol: tcp
+      port_range: "80"
+      cidrs:
+        - "0.0.0.0/0"
+      action: allow
+      label: "Allow HTTP"
+    - protocol: tcp
+      port_range: "6443"
+      cidrs:
+        - "0.0.0.0/0"
+      action: allow
+      label: "Allow Kubernetes API"
+  {% if values.allow_all_egress | bool %}
+  outbound_rules:
+    - protocol: tcp
+      port_range: "1-65535"
+      cidrs:
+        - "0.0.0.0/0"
+      action: allow
+      label: "Allow all TCP egress"
+    - protocol: udp
+      port_range: "1-65535"
+      cidrs:
+        - "0.0.0.0/0"
+      action: allow
+      label: "Allow all UDP egress"
+  {% endif %}
+  tags:
+    - "{{ values.env }}"
+    - "{{ values.cluster_name }}"
+

@@ -1,0 +1,48 @@
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsMskCluster
+metadata:
+  name: "{{ values.cluster_name }}"
+  group: messaging
+  relationships:
+    - kind: AwsVpc
+      name: "{{ values.cluster_name }}-vpc"
+      type: uses
+    - kind: AwsSecurityGroup
+      name: "{{ values.cluster_name }}-sg"
+      type: uses
+    - kind: AwsS3Bucket
+      name: "{{ values.s3_bucket_name }}"
+      type: uses
+    - kind: AwsCloudwatchLogGroup
+      name: "{{ values.cluster_name }}-broker-logs"
+      type: uses
+spec:
+  region: "{{ values.aws_region }}"
+  kafkaVersion: "{{ values.kafka_version }}"
+  numberOfBrokerNodes: {{ values.broker_count }}
+  instanceType: "{{ values.broker_instance_type }}"
+  ebsVolumeSizeGib: {{ values.ebs_volume_size_gib }}
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: "{{ values.cluster_name }}-vpc"
+      fieldPath: status.outputs.vpc_id
+  subnetIds:
+    - valueFrom:
+        kind: AwsSubnet
+        name: "{{ values.cluster_name }}-private-1"
+        fieldPath: status.outputs.subnet_id
+    - valueFrom:
+        kind: AwsSubnet
+        name: "{{ values.cluster_name }}-private-2"
+        fieldPath: status.outputs.subnet_id
+    - valueFrom:
+        kind: AwsSubnet
+        name: "{{ values.cluster_name }}-private-3"
+        fieldPath: status.outputs.subnet_id
+  securityGroupIds:
+    - valueFrom:
+        kind: AwsSecurityGroup
+        name: "{{ values.cluster_name }}-sg"
+        fieldPath: status.outputs.security_group_id

@@ -1,0 +1,18 @@
+{% if values.storageBucketEnabled | bool %}
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpGcsBucket
+metadata:
+  name: "{{ values.storage_bucket_name }}"
+  {% if values.serviceAccountEnabled | bool %}
+  relationships:
+    - kind: GcpServiceAccount
+      name: "{{ values.service_account_id }}"
+      type: depends_on
+  {% endif %}
+spec:
+  gcpProjectId:
+    value: "{{ values.gcp_project_id }}"
+  location: "{{ values.gcp_region }}"
+{% endif %}
+

@@ -1,0 +1,58 @@
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudVpc
+metadata:
+  name: "{{ values.env }}-db-vpc"
+spec:
+  region: "{{ values.region }}"
+  vpcName: "{{ values.env }}-db-vpc"
+  cidrBlock: "{{ values.vpc_cidr }}"
+
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudVswitch
+metadata:
+  name: "{{ values.env }}-db-vswitch-1"
+spec:
+  region: "{{ values.region }}"
+  vpcId:
+    valueFrom:
+      kind: AliCloudVpc
+      name: "{{ values.env }}-db-vpc"
+      fieldPath: status.outputs.vpcId
+  zoneId: "{{ values.availability_zone_1 }}"
+  cidrBlock: "{{ values.vswitch_cidr_1 }}"
+  vswitchName: "{{ values.env }}-db-vswitch-1"
+
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudVswitch
+metadata:
+  name: "{{ values.env }}-db-vswitch-2"
+spec:
+  region: "{{ values.region }}"
+  vpcId:
+    valueFrom:
+      kind: AliCloudVpc
+      name: "{{ values.env }}-db-vpc"
+      fieldPath: status.outputs.vpcId
+  zoneId: "{{ values.availability_zone_2 }}"
+  cidrBlock: "{{ values.vswitch_cidr_2 }}"
+  vswitchName: "{{ values.env }}-db-vswitch-2"
+
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudPrivateDnsZone
+metadata:
+  name: "{{ values.env }}-db-private-zone"
+spec:
+  region: "{{ values.region }}"
+  zoneName: "{{ values.private_zone_name }}"
+  remark: "Private DNS zone for {{ values.env }} database stack"
+  vpcAttachments:
+    - vpcId:
+        valueFrom:
+          kind: AliCloudVpc
+          name: "{{ values.env }}-db-vpc"
+          fieldPath: status.outputs.vpcId
+      regionId: "{{ values.region }}"

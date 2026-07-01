@@ -1,0 +1,77 @@
+params:
+  # ─── S3 Data Lake ──────────────────────────────────────────────────────
+  - name: s3_bucket_name
+    description: >
+      S3 bucket for the data lake. Stores raw streaming data from Firehose
+      and Athena query results. Must be globally unique.
+    value: my-data-lake
+
+  - name: aws_region
+    description: AWS region for all resources
+    value: us-east-1
+
+  # ─── Kinesis Stream ────────────────────────────────────────────────────
+  - name: kinesis_stream_name
+    description: Kinesis Data Stream name for real-time data ingestion
+    value: data-ingest
+
+  - name: kinesis_stream_mode
+    description: >
+      Stream capacity mode. ON_DEMAND auto-scales (no capacity planning).
+      PROVISIONED requires setting shard_count.
+    value: ON_DEMAND
+
+  - name: kinesis_shard_count
+    description: >
+      Number of shards (only for PROVISIONED mode, ignored for ON_DEMAND).
+      Each shard: 1 MB/s write, 2 MB/s read.
+    value: "0"
+
+  # ─── Kinesis Firehose ──────────────────────────────────────────────────
+  - name: firehose_name
+    description: Firehose delivery stream name (Kinesis to S3)
+    value: data-delivery
+
+  - name: firehose_s3_prefix
+    description: >
+      S3 key prefix for delivered data. Supports timestamp partitioning.
+      Include trailing slash.
+    value: "raw/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/"
+
+  - name: firehose_buffer_interval
+    description: >
+      Buffer interval in seconds before flushing to S3 (60-900).
+      Lower values = faster delivery, more S3 objects.
+    value: "300"
+
+  - name: firehose_buffer_size
+    description: Buffer size in MiB before flushing to S3 (1-128)
+    value: "5"
+
+  - name: firehose_compression
+    description: >
+      Compression format for S3 objects.
+      Valid: UNCOMPRESSED, GZIP, ZIP, Snappy, HADOOP_SNAPPY
+    value: GZIP
+
+  # ─── Glue Data Catalog ────────────────────────────────────────────────
+  - name: glue_database_name
+    description: >
+      Glue Data Catalog database name for table metadata.
+      Used by Athena to discover table schemas.
+    value: analytics_db
+
+  - name: glue_database_description
+    description: Description of the Glue catalog database
+    value: Data lake analytics tables
+
+  # ─── Athena ────────────────────────────────────────────────────────────
+  - name: athena_workgroup_name
+    description: Athena workgroup name for SQL query execution
+    value: analytics-workgroup
+
+  - name: athena_bytes_scanned_cutoff
+    description: >
+      Maximum bytes a single Athena query can scan (cost control).
+      Set to 0 for no limit. Minimum: 10485760 (10 MB).
+    value: "10737418240"

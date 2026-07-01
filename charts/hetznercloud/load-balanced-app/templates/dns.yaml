@@ -1,0 +1,9 @@
+{% if values.enable_dns | bool %}
+---
+apiVersion: hetznercloud.planton.dev/v1
+kind: HetznerCloudDnsZone
+metadata:
+  name: "{{ values.env }}-dns"
+spec:
+  domainName: "{{ values.domain_name }}"
+{% endif %}

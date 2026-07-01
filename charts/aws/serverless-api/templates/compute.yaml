@@ -1,0 +1,106 @@
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsLambda
+metadata:
+  name: "{{ values.lambda_function_name }}"
+  group: compute
+  relationships:
+    - kind: AwsIamRole
+      name: "{{ values.lambda_function_name }}-execution-role"
+      type: uses
+{% if values.databaseEnabled | bool %}
+    - kind: AwsDynamodb
+      name: "{{ values.dynamodb_table_name }}"
+      type: uses
+{% endif %}
+{% if values.messagingEnabled | bool %}
+    - kind: AwsSqsQueue
+      name: "{{ values.sqs_queue_name }}"
+      type: uses
+{% endif %}
+{% if values.notificationsEnabled | bool %}
+    - kind: AwsSnsTopic
+      name: "{{ values.sns_topic_name }}"
+      type: uses
+{% endif %}
+spec:
+  functionName: "{{ values.lambda_function_name }}"
+  roleArn:
+    valueFrom:
+      kind: AwsIamRole
+      name: "{{ values.lambda_function_name }}-execution-role"
+      fieldPath: status.outputs.role_arn
+  memoryMb: {{ values.lambda_memory_mb }}
+  timeoutSeconds: {{ values.lambda_timeout_seconds }}
+  codeSourceType: "{{ values.lambda_code_source_type }}"
+{% if values.lambda_code_source_type == "CODE_SOURCE_TYPE_IMAGE" %}
+  imageUri: "{{ values.lambda_image_uri }}"
+{% else %}
+  runtime: "{{ values.lambda_runtime }}"
+  handler: "{{ values.lambda_handler }}"
+  s3:
+    bucket: "{{ values.lambda_s3_bucket }}"
+    key: "{{ values.lambda_s3_key }}"
+{% endif %}
+  environment:
+    API_NAME: "{{ values.api_name }}"
+{% if values.databaseEnabled | bool %}
+    TABLE_NAME: "{{ values.dynamodb_table_name }}"
+{% endif %}
+{% if values.messagingEnabled | bool %}
+    QUEUE_NAME: "{{ values.sqs_queue_name }}"
+{% endif %}
+{% if values.notificationsEnabled | bool %}
+    TOPIC_NAME: "{{ values.sns_topic_name }}"
+{% endif %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsHttpApiGateway
+metadata:
+  name: "{{ values.api_name }}"
+  group: compute
+  relationships:
+    - kind: AwsLambda
+      name: "{{ values.lambda_function_name }}"
+      type: uses
+    - kind: AwsCloudwatchLogGroup
+      name: "{{ values.api_name }}-access-logs"
+      type: uses
+spec:
+  description: "{{ values.api_description }}"
+  corsConfiguration:
+    allowOrigins:
+      - "*"
+    allowMethods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - OPTIONS
+    allowHeaders:
+      - Content-Type
+      - Authorization
+      - X-Amz-Date
+      - X-Api-Key
+    maxAgeSeconds: 3600
+  stage:
+    name: "$default"
+    autoDeploy: true
+    accessLog:
+      destinationArn:
+        valueFrom:
+          kind: AwsCloudwatchLogGroup
+          name: "{{ values.api_name }}-access-logs"
+          fieldPath: status.outputs.log_group_arn
+      format: '{"requestId":"$context.requestId","ip":"$context.identity.sourceIp","method":"$context.httpMethod","path":"$context.routeKey","status":"$context.status","latency":"$context.responseLatency"}'
+  routes:
+    - routeKey: "$default"
+      integration:
+        integrationType: AWS_PROXY
+        integrationUri:
+          valueFrom:
+            kind: AwsLambda
+            name: "{{ values.lambda_function_name }}"
+            fieldPath: status.outputs.function_arn
+        payloadFormatVersion: "2.0"
+      authorizationType: NONE

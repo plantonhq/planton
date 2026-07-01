@@ -1,0 +1,23 @@
+---
+apiVersion: oci.planton.dev/v1
+kind: OciAutonomousDatabase
+metadata:
+  name: "{{ values.env }}-{{ values.db_name }}"
+spec:
+  compartmentId:
+    value: "{{ values.compartment_ocid }}"
+  dbName: "{{ values.db_name }}"
+  displayName: "{{ values.env }}-{{ values.db_name }}"
+  dbWorkload: dw
+  computeModel: ecpu
+  computeCount: {{ values.compute_count }}
+  dataStorageSizeInTbs: {{ values.storage_in_tbs }}
+  {% if values.admin_password != "" %}
+  adminPassword: "{{ values.admin_password }}"
+  {% endif %}
+  isAutoScalingEnabled: true
+  subnetId:
+    valueFrom:
+      kind: OciSubnet
+      name: "{{ values.env }}-data-private"
+      fieldPath: status.outputs.subnetId

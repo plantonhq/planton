@@ -1,0 +1,13 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: GCP Terraform State Backend
+spec:
+  selector:
+    kind: platform
+  description: GCS bucket configured for Terraform remote state storage with versioning, uniform access control, and public access prevention. GCS provides native state locking — no additional lock table required.
+  iconUrl: https://assets.planton.ai/apis/connect/terraformbackendproviderconnection/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/gcp/terraform-backend
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/gcp/terraform-backend/README.md

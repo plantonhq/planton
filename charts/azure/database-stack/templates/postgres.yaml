@@ -1,0 +1,76 @@
+{% if values.create_postgres | bool %}
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureSubnet
+metadata:
+  name: "{{ values.env }}-pg-subnet"
+spec:
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  vnetId:
+    valueFrom:
+      kind: AzureVpc
+      name: "{{ values.env }}-vnet"
+      fieldPath: status.outputs.vnet_id
+  name: "{{ values.env }}-pg-subnet"
+  addressPrefix: "{{ values.postgres_subnet_cidr }}"
+  serviceEndpoints:
+    - "Microsoft.Storage"
+  delegation:
+    name: postgresql
+    serviceName: "Microsoft.DBforPostgreSQL/flexibleServers"
+    actions:
+      - "Microsoft.Network/virtualNetworks/subnets/join/action"
+---
+apiVersion: azure.planton.dev/v1
+kind: AzurePrivateDnsZone
+metadata:
+  name: "{{ values.env }}-pg-dns"
+spec:
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  name: "privatelink.postgres.database.azure.com"
+  vnetId:
+    valueFrom:
+      kind: AzureVpc
+      name: "{{ values.env }}-vnet"
+      fieldPath: status.outputs.vnet_id
+---
+apiVersion: azure.planton.dev/v1
+kind: AzurePostgresqlFlexibleServer
+metadata:
+  name: "{{ values.env }}-{{ values.postgres_name }}"
+spec:
+  region: "{{ values.region }}"
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  name: "{{ values.env }}-{{ values.postgres_name }}"
+  administratorLogin: "{{ values.postgres_admin_login }}"
+  administratorPassword:
+    value: "{{ values.postgres_admin_password }}"
+  version: "{{ values.postgres_version }}"
+  skuName: "{{ values.postgres_sku_name }}"
+  storageMb: {{ values.postgres_storage_mb }}
+  autoGrowEnabled: true
+  delegatedSubnetId:
+    valueFrom:
+      kind: AzureSubnet
+      name: "{{ values.env }}-pg-subnet"
+      fieldPath: status.outputs.subnet_id
+  privateDnsZoneId:
+    valueFrom:
+      kind: AzurePrivateDnsZone
+      name: "{{ values.env }}-pg-dns"
+      fieldPath: status.outputs.zone_id
+  databases:
+    - name: "{{ values.postgres_database_name }}"
+{% endif %}

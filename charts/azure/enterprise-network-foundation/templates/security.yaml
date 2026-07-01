@@ -1,0 +1,141 @@
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureNetworkSecurityGroup
+metadata:
+  name: "{{ values.env }}-web-nsg"
+spec:
+  region: "{{ values.region }}"
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  name: "{{ values.env }}-web-nsg"
+  securityRules:
+    - name: allow-https-inbound
+      priority: 100
+      direction: "Inbound"
+      access: "Allow"
+      protocol: "Tcp"
+      sourceAddressPrefix: "*"
+      sourcePortRange: "*"
+      destinationAddressPrefix: "*"
+      destinationPortRange: "443"
+    - name: allow-http-inbound
+      priority: 110
+      direction: "Inbound"
+      access: "Allow"
+      protocol: "Tcp"
+      sourceAddressPrefix: "*"
+      sourcePortRange: "*"
+      destinationAddressPrefix: "*"
+      destinationPortRange: "80"
+    - name: allow-all-outbound
+      priority: 100
+      direction: "Outbound"
+      access: "Allow"
+      protocol: "*"
+      sourceAddressPrefix: "*"
+      sourcePortRange: "*"
+      destinationAddressPrefix: "*"
+      destinationPortRange: "*"
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureNetworkSecurityGroup
+metadata:
+  name: "{{ values.env }}-app-nsg"
+spec:
+  region: "{{ values.region }}"
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  name: "{{ values.env }}-app-nsg"
+  securityRules:
+    - name: allow-from-web-tier
+      priority: 100
+      direction: "Inbound"
+      access: "Allow"
+      protocol: "Tcp"
+      sourceAddressPrefix: "{{ values.web_subnet_cidr }}"
+      sourcePortRange: "*"
+      destinationAddressPrefix: "*"
+      destinationPortRange: "8080"
+    - name: deny-internet-inbound
+      priority: 4000
+      direction: "Inbound"
+      access: "Deny"
+      protocol: "*"
+      sourceAddressPrefix: "Internet"
+      sourcePortRange: "*"
+      destinationAddressPrefix: "*"
+      destinationPortRange: "*"
+    - name: allow-all-outbound
+      priority: 100
+      direction: "Outbound"
+      access: "Allow"
+      protocol: "*"
+      sourceAddressPrefix: "*"
+      sourcePortRange: "*"
+      destinationAddressPrefix: "*"
+      destinationPortRange: "*"
+---
+apiVersion: azure.planton.dev/v1
+kind: AzureNetworkSecurityGroup
+metadata:
+  name: "{{ values.env }}-data-nsg"
+spec:
+  region: "{{ values.region }}"
+  resourceGroup:
+    valueFrom:
+      kind: AzureResourceGroup
+      name: "{{ values.env }}-rg"
+      fieldPath: status.outputs.resource_group_name
+  name: "{{ values.env }}-data-nsg"
+  securityRules:
+    - name: allow-from-app-tier
+      priority: 100
+      direction: "Inbound"
+      access: "Allow"
+      protocol: "Tcp"
+      sourceAddressPrefix: "{{ values.app_subnet_cidr }}"
+      sourcePortRange: "*"
+      destinationAddressPrefix: "*"
+      destinationPortRange: "1433"
+    - name: allow-postgres-from-app-tier
+      priority: 110
+      direction: "Inbound"
+      access: "Allow"
+      protocol: "Tcp"
+      sourceAddressPrefix: "{{ values.app_subnet_cidr }}"
+      sourcePortRange: "*"
+      destinationAddressPrefix: "*"
+      destinationPortRange: "5432"
+    - name: allow-redis-from-app-tier
+      priority: 120
+      direction: "Inbound"
+      access: "Allow"
+      protocol: "Tcp"
+      sourceAddressPrefix: "{{ values.app_subnet_cidr }}"
+      sourcePortRange: "*"
+      destinationAddressPrefix: "*"
+      destinationPortRange: "6380"
+    - name: deny-internet-inbound
+      priority: 4000
+      direction: "Inbound"
+      access: "Deny"
+      protocol: "*"
+      sourceAddressPrefix: "Internet"
+      sourcePortRange: "*"
+      destinationAddressPrefix: "*"
+      destinationPortRange: "*"
+    - name: deny-all-outbound-internet
+      priority: 4000
+      direction: "Outbound"
+      access: "Deny"
+      protocol: "*"
+      sourceAddressPrefix: "*"
+      sourcePortRange: "*"
+      destinationAddressPrefix: "Internet"
+      destinationPortRange: "*"

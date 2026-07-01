@@ -1,0 +1,11 @@
+{% if values.enable_dns | bool %}
+---
+apiVersion: oci.planton.dev/v1
+kind: OciDnsZone
+metadata:
+  name: "{{ values.domain_name }}"
+spec:
+  compartmentId:
+    value: "{{ values.compartment_ocid }}"
+  zoneType: primary
+{% endif %}

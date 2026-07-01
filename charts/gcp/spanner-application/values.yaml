@@ -1,0 +1,72 @@
+params:
+  # ─── GCP Configuration ─────────────────────────────────────────────────
+  - name: gcp_project_id
+    description: GCP project ID for all resources
+    value: my-gcp-project
+
+  # ─── Spanner Instance ──────────────────────────────────────────────────
+  - name: instance_name
+    description: >
+      Spanner instance name (6-30 chars, lowercase letters, numbers, hyphens).
+      Immutable after creation.
+    value: my-spanner-instance
+
+  - name: display_name
+    description: Human-readable display name for the Spanner instance (4-30 chars)
+    value: My Spanner Instance
+
+  - name: instance_config
+    description: >
+      Instance configuration defining geographic placement and replication.
+      Regional: regional-us-central1, regional-europe-west1
+      Multi-region: nam-eur-asia1, nam6
+    value: regional-us-central1
+
+  - name: num_nodes
+    description: >
+      Number of nodes allocated. Each node provides ~10,000 QPS reads
+      or ~2,000 QPS writes. Set to 0 if using processing_units instead.
+    value: "1"
+
+  - name: edition
+    description: >
+      Spanner edition: STANDARD, ENTERPRISE, or ENTERPRISE_PLUS.
+      Leave empty for default (STANDARD).
+    value: ""
+
+  # ─── Spanner Database ──────────────────────────────────────────────────
+  - name: database_name
+    description: >
+      Database name within the instance (2-30 chars, lowercase letters,
+      numbers, underscores, hyphens). Immutable after creation.
+    value: my-database
+
+  - name: database_dialect
+    description: >
+      SQL dialect: GOOGLE_STANDARD_SQL or POSTGRESQL.
+      Immutable after creation.
+    value: GOOGLE_STANDARD_SQL
+
+  - name: enable_drop_protection
+    description: Prevent accidental database deletion via GCP API-level protection
+    type: bool
+    value: false
+
+  # ─── Service Account ───────────────────────────────────────────────────
+  - name: service_account_id
+    description: >
+      Service account ID for the application (6-30 chars).
+      Granted roles/spanner.databaseUser on the project.
+    value: spanner-app-sa
+
+  # ─── Optional Networking ───────────────────────────────────────────────
+  - name: networkingEnabled
+    description: >
+      Create VPC and firewall rule for the application environment.
+      Disable if deploying into an existing VPC.
+    type: bool
+    value: true
+
+  - name: vpc_name
+    description: VPC network name
+    value: spanner-app-vpc

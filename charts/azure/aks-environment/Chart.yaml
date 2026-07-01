@@ -1,0 +1,16 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: AKS Environment            # keep short; details in description
+spec:
+  selector:
+    kind: platform
+  description: >
+    Configurable AKS Environment with custom VNet, optional NAT Gateway, Azure
+    DNS zone, Azure Container Registry, Key Vault secrets, autoscaled node‑pool
+    and toggleable Kubernetes add‑ons.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/azure/azureakscluster/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/azure/aks-environment
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/azure/aks-environment/README.md

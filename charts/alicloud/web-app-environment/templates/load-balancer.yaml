@@ -1,0 +1,39 @@
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudApplicationLoadBalancer
+metadata:
+  name: "{{ values.env }}-alb"
+spec:
+  region: "{{ values.region }}"
+  loadBalancerName: "{{ values.env }}-alb"
+  vpcId:
+    valueFrom:
+      kind: AliCloudVpc
+      name: "{{ values.env }}-vpc"
+      fieldPath: status.outputs.vpcId
+  addressType: "{{ values.alb_address_type }}"
+  loadBalancerEdition: Standard
+  zoneMappings:
+    - vswitchId:
+        valueFrom:
+          kind: AliCloudVswitch
+          name: "{{ values.env }}-vswitch-1"
+          fieldPath: status.outputs.vswitchId
+      zoneId: "{{ values.availability_zone_1 }}"
+    - vswitchId:
+        valueFrom:
+          kind: AliCloudVswitch
+          name: "{{ values.env }}-vswitch-2"
+          fieldPath: status.outputs.vswitchId
+      zoneId: "{{ values.availability_zone_2 }}"
+  serverGroups:
+    - name: "{{ values.env }}-web-sg"
+      protocol: HTTP
+      healthCheckConfig:
+        healthCheckEnabled: true
+        healthCheckProtocol: HTTP
+        healthCheckPath: /
+  listeners:
+    - listenerPort: 80
+      listenerProtocol: HTTP
+      defaultActionServerGroupName: "{{ values.env }}-web-sg"

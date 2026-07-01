@@ -1,0 +1,39 @@
+params:
+  # ─── AWS Configuration ─────────────────────────────────────────────────
+  - name: aws_region
+    description: AWS region for the S3 bucket (CloudFront is global)
+    value: us-east-1
+
+  # ─── Storage ───────────────────────────────────────────────────────────
+  - name: s3_bucket_name
+    description: >
+      S3 bucket name for website content. Must be globally unique across
+      all AWS accounts. Upload index.html and other assets after deployment.
+    value: my-website-content
+
+  # ─── CDN ───────────────────────────────────────────────────────────────
+  - name: default_root_object
+    description: Default file served when visitors request the root URL
+    value: index.html
+
+  # ─── DNS & SSL ─────────────────────────────────────────────────────────
+  - name: dnsEnabled
+    description: >
+      Create a Route53 hosted zone and ACM certificate for a custom domain.
+      When false, the site is accessible only via the CloudFront distribution
+      domain (e.g., d1234abcd.cloudfront.net).
+    type: bool
+    value: true
+
+  - name: domain_name
+    description: >
+      Root domain for the Route53 hosted zone (e.g., example.com).
+      Only used when dnsEnabled is true.
+    value: example.com
+
+  - name: website_domain_name
+    description: >
+      Full domain name for the website (e.g., www.example.com or example.com).
+      Used as the CloudFront alias and the target of the Route53 DNS record.
+      Only used when dnsEnabled is true.
+    value: www.example.com

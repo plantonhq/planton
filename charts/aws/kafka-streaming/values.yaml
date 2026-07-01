@@ -1,0 +1,75 @@
+params:
+  # ─── Network ───────────────────────────────────────────────────────────────────
+  - name: aws_region
+    description: AWS region for every resource (the availability zones below must belong to it)
+    value: us-east-1
+
+  - name: availability_zone_1
+    description: First AZ (MSK requires 3 AZs for multi-AZ deployment)
+    value: us-east-1a
+
+  - name: availability_zone_2
+    description: Second AZ
+    value: us-east-1b
+
+  - name: availability_zone_3
+    description: Third AZ
+    value: us-east-1c
+
+  - name: vpc_cidr
+    description: Primary IPv4 CIDR block for the VPC
+    value: 10.0.0.0/16
+
+  - name: public_subnet_1_cidr
+    description: CIDR for the public subnet in AZ 1 (hosts the NAT gateway)
+    value: 10.0.0.0/24
+
+  - name: public_subnet_2_cidr
+    description: CIDR for the public subnet in AZ 2
+    value: 10.0.1.0/24
+
+  - name: public_subnet_3_cidr
+    description: CIDR for the public subnet in AZ 3
+    value: 10.0.2.0/24
+
+  - name: private_subnet_1_cidr
+    description: CIDR for the private subnet in AZ 1 (hosts the MSK brokers)
+    value: 10.0.16.0/20
+
+  - name: private_subnet_2_cidr
+    description: CIDR for the private subnet in AZ 2
+    value: 10.0.32.0/20
+
+  - name: private_subnet_3_cidr
+    description: CIDR for the private subnet in AZ 3
+    value: 10.0.48.0/20
+
+  - name: nat_mode
+    description: "Private-subnet egress strategy: single (one shared NAT gateway), per_az (one NAT gateway per AZ), or none (no outbound internet from private subnets)"
+    value: single
+
+  # ─── MSK Cluster ─────────────────────────────────────────────────────────────
+  - name: cluster_name
+    description: MSK cluster name
+    value: kafka-streaming
+
+  - name: kafka_version
+    description: Apache Kafka version
+    value: "3.6.0"
+
+  - name: broker_count
+    description: Number of broker nodes (should be a multiple of AZ count)
+    value: "3"
+
+  - name: broker_instance_type
+    description: MSK broker instance type
+    value: kafka.m5.large
+
+  - name: ebs_volume_size_gib
+    description: EBS volume size per broker in GiB
+    value: "100"
+
+  # ─── Logging ─────────────────────────────────────────────────────────────────
+  - name: s3_bucket_name
+    description: S3 bucket for MSK broker log offloading
+    value: kafka-streaming-logs

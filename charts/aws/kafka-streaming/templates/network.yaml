@@ -1,0 +1,322 @@
+# AWS network foundation for the Kafka (MSK) streaming platform.
+#
+# MSK is deployed across three Availability Zones, so the VPC carries one public
+# and one private subnet per AZ. Public subnets route 0.0.0.0/0 to the Internet
+# Gateway and host the NAT gateway(s); private subnets host the MSK brokers and
+# reach the internet outbound-only through a NAT gateway. A subnet is "public"
+# or "private" solely by where its default route points (IGW vs NAT).
+#
+# `nat_mode` controls private-subnet egress: single (one shared NAT), per_az
+# (one NAT per AZ), or none (no outbound internet from private subnets).
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsVpc
+metadata:
+  name: "{{ values.cluster_name }}-vpc"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+  cidrBlock: "{{ values.vpc_cidr }}"
+  enableDnsSupport: true
+  enableDnsHostnames: true
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsInternetGateway
+metadata:
+  name: "{{ values.cluster_name }}-igw"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: "{{ values.cluster_name }}-vpc"
+      fieldPath: status.outputs.vpc_id
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsSubnet
+metadata:
+  name: "{{ values.cluster_name }}-public-1"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: "{{ values.cluster_name }}-vpc"
+      fieldPath: status.outputs.vpc_id
+  availabilityZone: "{{ values.availability_zone_1 }}"
+  cidrBlock: "{{ values.public_subnet_1_cidr }}"
+  mapPublicIpOnLaunch: true
+  routes:
+    - destinationCidrBlock: 0.0.0.0/0
+      targetType: internet_gateway
+      targetId:
+        valueFrom:
+          kind: AwsInternetGateway
+          name: "{{ values.cluster_name }}-igw"
+          fieldPath: status.outputs.internet_gateway_id
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsSubnet
+metadata:
+  name: "{{ values.cluster_name }}-public-2"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: "{{ values.cluster_name }}-vpc"
+      fieldPath: status.outputs.vpc_id
+  availabilityZone: "{{ values.availability_zone_2 }}"
+  cidrBlock: "{{ values.public_subnet_2_cidr }}"
+  mapPublicIpOnLaunch: true
+  routes:
+    - destinationCidrBlock: 0.0.0.0/0
+      targetType: internet_gateway
+      targetId:
+        valueFrom:
+          kind: AwsInternetGateway
+          name: "{{ values.cluster_name }}-igw"
+          fieldPath: status.outputs.internet_gateway_id
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsSubnet
+metadata:
+  name: "{{ values.cluster_name }}-public-3"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: "{{ values.cluster_name }}-vpc"
+      fieldPath: status.outputs.vpc_id
+  availabilityZone: "{{ values.availability_zone_3 }}"
+  cidrBlock: "{{ values.public_subnet_3_cidr }}"
+  mapPublicIpOnLaunch: true
+  routes:
+    - destinationCidrBlock: 0.0.0.0/0
+      targetType: internet_gateway
+      targetId:
+        valueFrom:
+          kind: AwsInternetGateway
+          name: "{{ values.cluster_name }}-igw"
+          fieldPath: status.outputs.internet_gateway_id
+{% if values.nat_mode != "none" %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsElasticIp
+metadata:
+  name: "{{ values.cluster_name }}-nat-eip-1"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsNatGateway
+metadata:
+  name: "{{ values.cluster_name }}-nat-1"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+  connectivityType: public
+  subnetId:
+    valueFrom:
+      kind: AwsSubnet
+      name: "{{ values.cluster_name }}-public-1"
+      fieldPath: status.outputs.subnet_id
+  allocationId:
+    valueFrom:
+      kind: AwsElasticIp
+      name: "{{ values.cluster_name }}-nat-eip-1"
+      fieldPath: status.outputs.allocation_id
+{% if values.nat_mode == "per_az" %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsElasticIp
+metadata:
+  name: "{{ values.cluster_name }}-nat-eip-2"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsNatGateway
+metadata:
+  name: "{{ values.cluster_name }}-nat-2"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+  connectivityType: public
+  subnetId:
+    valueFrom:
+      kind: AwsSubnet
+      name: "{{ values.cluster_name }}-public-2"
+      fieldPath: status.outputs.subnet_id
+  allocationId:
+    valueFrom:
+      kind: AwsElasticIp
+      name: "{{ values.cluster_name }}-nat-eip-2"
+      fieldPath: status.outputs.allocation_id
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsElasticIp
+metadata:
+  name: "{{ values.cluster_name }}-nat-eip-3"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsNatGateway
+metadata:
+  name: "{{ values.cluster_name }}-nat-3"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+  connectivityType: public
+  subnetId:
+    valueFrom:
+      kind: AwsSubnet
+      name: "{{ values.cluster_name }}-public-3"
+      fieldPath: status.outputs.subnet_id
+  allocationId:
+    valueFrom:
+      kind: AwsElasticIp
+      name: "{{ values.cluster_name }}-nat-eip-3"
+      fieldPath: status.outputs.allocation_id
+{% endif %}
+{% endif %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsSubnet
+metadata:
+  name: "{{ values.cluster_name }}-private-1"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: "{{ values.cluster_name }}-vpc"
+      fieldPath: status.outputs.vpc_id
+  availabilityZone: "{{ values.availability_zone_1 }}"
+  cidrBlock: "{{ values.private_subnet_1_cidr }}"
+{% if values.nat_mode != "none" %}
+  routes:
+    - destinationCidrBlock: 0.0.0.0/0
+      targetType: nat_gateway
+      targetId:
+        valueFrom:
+          kind: AwsNatGateway
+          name: "{{ values.cluster_name }}-nat-1"
+          fieldPath: status.outputs.nat_gateway_id
+{% endif %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsSubnet
+metadata:
+  name: "{{ values.cluster_name }}-private-2"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: "{{ values.cluster_name }}-vpc"
+      fieldPath: status.outputs.vpc_id
+  availabilityZone: "{{ values.availability_zone_2 }}"
+  cidrBlock: "{{ values.private_subnet_2_cidr }}"
+{% if values.nat_mode != "none" %}
+  routes:
+    - destinationCidrBlock: 0.0.0.0/0
+      targetType: nat_gateway
+      targetId:
+        valueFrom:
+          kind: AwsNatGateway
+{% if values.nat_mode == "per_az" %}
+          name: "{{ values.cluster_name }}-nat-2"
+{% else %}
+          name: "{{ values.cluster_name }}-nat-1"
+{% endif %}
+          fieldPath: status.outputs.nat_gateway_id
+{% endif %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsSubnet
+metadata:
+  name: "{{ values.cluster_name }}-private-3"
+  group: network
+spec:
+  region: "{{ values.aws_region }}"
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: "{{ values.cluster_name }}-vpc"
+      fieldPath: status.outputs.vpc_id
+  availabilityZone: "{{ values.availability_zone_3 }}"
+  cidrBlock: "{{ values.private_subnet_3_cidr }}"
+{% if values.nat_mode != "none" %}
+  routes:
+    - destinationCidrBlock: 0.0.0.0/0
+      targetType: nat_gateway
+      targetId:
+        valueFrom:
+          kind: AwsNatGateway
+{% if values.nat_mode == "per_az" %}
+          name: "{{ values.cluster_name }}-nat-3"
+{% else %}
+          name: "{{ values.cluster_name }}-nat-1"
+{% endif %}
+          fieldPath: status.outputs.nat_gateway_id
+{% endif %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsSecurityGroup
+metadata:
+  name: "{{ values.cluster_name }}-sg"
+  group: network
+  relationships:
+    - kind: AwsVpc
+      name: "{{ values.cluster_name }}-vpc"
+      type: uses
+spec:
+  region: "{{ values.aws_region }}"
+  description: Allow Kafka broker ports within VPC and all egress
+  vpcId:
+    valueFrom:
+      kind: AwsVpc
+      name: "{{ values.cluster_name }}-vpc"
+      fieldPath: status.outputs.vpc_id
+  ingress:
+    - description: Kafka plaintext
+      fromPort: 9092
+      toPort: 9092
+      protocol: TCP
+      ipv4Cidrs:
+        - 10.0.0.0/16
+    - description: Kafka TLS
+      fromPort: 9094
+      toPort: 9094
+      protocol: TCP
+      ipv4Cidrs:
+        - 10.0.0.0/16
+    - description: Kafka SASL/SCRAM
+      fromPort: 9096
+      toPort: 9096
+      protocol: TCP
+      ipv4Cidrs:
+        - 10.0.0.0/16
+    - description: Kafka IAM auth
+      fromPort: 9098
+      toPort: 9098
+      protocol: TCP
+      ipv4Cidrs:
+        - 10.0.0.0/16
+  egress:
+    - description: Allow all outbound
+      protocol: "-1"
+      ipv4Cidrs:
+        - 0.0.0.0/0

@@ -1,0 +1,149 @@
+params:
+  # ─── Foundation ───────────────────────────────────────────────────────────────
+  - name: region
+    description: Azure region (e.g. eastus, westus2, westeurope)
+    value: eastus
+
+  - name: resource_group_name
+    description: Resource group name suffix (prefixed with env)
+    value: db-stack-rg
+
+  - name: vnet_cidr
+    description: VNet address space CIDR
+    value: 10.1.0.0/16
+
+  - name: default_subnet_cidr
+    description: Default subnet CIDR (created by AzureVpc, reserved for general use)
+    value: 10.1.0.0/24
+
+  # ─── PostgreSQL (default‑on) ──────────────────────────────────────────────────
+  - name: create_postgres
+    description: Create Azure Database for PostgreSQL Flexible Server
+    type: bool
+    value: true
+
+  - name: postgres_name
+    description: PostgreSQL server name (globally unique in Azure)
+    value: my-postgres
+
+  - name: postgres_subnet_cidr
+    description: CIDR for PostgreSQL delegated subnet
+    value: 10.1.1.0/24
+
+  - name: postgres_sku_name
+    description: "Compute SKU (e.g. B_Standard_B1ms, GP_Standard_D2s_v3)"
+    value: B_Standard_B1ms
+
+  - name: postgres_version
+    description: "PostgreSQL version: 12, 13, 14, 15, 16, 17"
+    value: "16"
+
+  - name: postgres_storage_mb
+    description: Storage in MB (minimum 32768 = 32 GB)
+    value: "32768"
+
+  - name: postgres_admin_login
+    description: Administrator login name
+    value: pgadmin
+
+  - name: postgres_admin_password
+    description: Administrator password (8‑128 chars, 3‑of‑4 complexity)
+    value: ""
+
+  - name: postgres_database_name
+    description: Application database name
+    value: appdb
+
+  # ─── MySQL (optional) ─────────────────────────────────────────────────────────
+  - name: create_mysql
+    description: Create Azure Database for MySQL Flexible Server
+    type: bool
+    value: false
+
+  - name: mysql_name
+    description: MySQL server name (globally unique in Azure)
+    value: my-mysql
+
+  - name: mysql_subnet_cidr
+    description: CIDR for MySQL delegated subnet
+    value: 10.1.2.0/24
+
+  - name: mysql_sku_name
+    description: "Compute SKU (e.g. B_Standard_B1ms, GP_Standard_D2s_v3)"
+    value: B_Standard_B1ms
+
+  - name: mysql_version
+    description: "MySQL version: 5.7, 8.0.21, 8.4"
+    value: "8.0.21"
+
+  - name: mysql_storage_size_gb
+    description: Storage in GB (minimum 20)
+    value: "20"
+
+  - name: mysql_admin_login
+    description: Administrator login name
+    value: mysqladmin
+
+  - name: mysql_admin_password
+    description: Administrator password
+    value: ""
+
+  - name: mysql_database_name
+    description: Application database name
+    value: appdb
+
+  # ─── MSSQL (optional) ─────────────────────────────────────────────────────────
+  - name: create_mssql
+    description: Create Azure SQL Database (MSSQL) with Private Endpoint
+    type: bool
+    value: false
+
+  - name: mssql_name
+    description: SQL Server name (globally unique in Azure)
+    value: my-mssql
+
+  - name: mssql_pe_subnet_cidr
+    description: CIDR for Private Endpoint subnet (used by MSSQL PE)
+    value: 10.1.3.0/24
+
+  - name: mssql_version
+    description: "SQL Server version: 2.0, 12.0"
+    value: "12.0"
+
+  - name: mssql_admin_login
+    description: Administrator login name
+    value: sqladmin
+
+  - name: mssql_admin_password
+    description: Administrator password
+    value: ""
+
+  - name: mssql_database_name
+    description: Application database name
+    value: appdb
+
+  - name: mssql_database_sku
+    description: "Database SKU (e.g. S0, S1, P1, GP_S_Gen5_1, BC_Gen5_2)"
+    value: S0
+
+  # ─── Redis (optional) ─────────────────────────────────────────────────────────
+  - name: create_redis
+    description: Create Azure Cache for Redis
+    type: bool
+    value: false
+
+  - name: redis_name
+    description: Redis cache name
+    value: my-redis
+
+  - name: redis_sku_name
+    description: "SKU: Basic, Standard, Premium"
+    value: Standard
+
+  - name: redis_capacity
+    description: "Cache size (0‑6 for Basic/Standard, 1‑5 for Premium)"
+    value: "1"
+
+  - name: redis_version
+    description: "Redis version: 4, 6"
+    value: "6"

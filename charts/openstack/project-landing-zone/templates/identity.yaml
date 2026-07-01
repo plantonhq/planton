@@ -1,0 +1,24 @@
+---
+apiVersion: openstack.planton.dev/v1
+kind: OpenStackProject
+metadata:
+  name: "{{ values.env }}-project"
+  labels:
+    planton.dev/provisioner: terraform
+spec:
+  description: "{{ values.project_description }}"
+---
+apiVersion: openstack.planton.dev/v1
+kind: OpenStackRoleAssignment
+metadata:
+  name: "{{ values.env }}-admin-role"
+  labels:
+    planton.dev/provisioner: terraform
+spec:
+  roleId: "{{ values.admin_role_id }}"
+  projectId:
+    valueFrom:
+      kind: OpenStackProject
+      name: "{{ values.env }}-project"
+      fieldPath: status.outputs.projectId
+  userId: "{{ values.admin_user_id }}"

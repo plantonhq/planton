@@ -1,0 +1,36 @@
+---
+apiVersion: scaleway.planton.dev/v1
+kind: ScalewayServerlessContainer
+metadata:
+  name: "{{ values.env }}-{{ values.container_name }}"
+spec:
+  region: "{{ values.region }}"
+  image:
+    registryEndpoint:
+    {% if values.create_container_registry | bool %}
+      valueFrom:
+        kind: ScalewayContainerRegistry
+        name: "{{ values.registry_name }}"
+        fieldPath: status.outputs.endpoint
+    {% else %}
+      value: "{{ values.registry_endpoint }}"
+    {% endif %}
+    name: "{{ values.image_name }}"
+    tag: "{{ values.image_tag }}"
+  port: {{ values.port }}
+  privacy: {{ values.privacy }}
+  httpOption: {{ values.http_option }}
+  memoryLimitMb: {{ values.memory_limit_mb }}
+  {% if values.cpu_limit | int > 0 %}
+  cpuLimit: {{ values.cpu_limit }}
+  {% endif %}
+  minScale: {{ values.min_scale }}
+  maxScale: {{ values.max_scale }}
+  deploy: true
+  {% if values.create_network | bool %}
+  privateNetworkId:
+    valueFrom:
+      kind: ScalewayPrivateNetwork
+      name: "{{ values.env }}-{{ values.container_name }}-pn"
+      fieldPath: status.outputs.private_network_id
+  {% endif %}

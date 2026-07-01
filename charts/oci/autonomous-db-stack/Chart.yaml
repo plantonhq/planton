@@ -1,0 +1,13 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: OCI Autonomous Database Stack
+spec:
+  selector:
+    kind: platform
+  description: Managed Oracle Autonomous Database with private VCN networking, network security group, and optional customer-managed KMS encryption. Supports both ATP (OLTP) and ADW (Data Warehouse) workload types.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/oci/ociautonomousdatabase/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/oci/autonomous-db-stack
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/oci/autonomous-db-stack/README.md

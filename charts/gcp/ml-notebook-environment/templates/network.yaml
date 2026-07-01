@@ -1,0 +1,36 @@
+{% if values.networkingEnabled | bool %}
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpVpc
+metadata:
+  name: "{{ values.vpc_name }}"
+  group: network
+spec:
+  projectId:
+    value: "{{ values.gcp_project_id }}"
+  networkName: "{{ values.vpc_name }}"
+  autoCreateSubnetworks: false
+  routingMode: REGIONAL
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpSubnetwork
+metadata:
+  name: "{{ values.vpc_name }}-subnet"
+  group: network
+  relationships:
+    - kind: GcpVpc
+      name: "{{ values.vpc_name }}"
+      type: runs_on
+spec:
+  projectId:
+    value: "{{ values.gcp_project_id }}"
+  vpcSelfLink:
+    valueFrom:
+      kind: GcpVpc
+      name: "{{ values.vpc_name }}"
+      fieldPath: status.outputs.network_self_link
+  subnetworkName: "{{ values.vpc_name }}-subnet"
+  region: "{{ values.region }}"
+  ipCidrRange: "{{ values.subnet_cidr }}"
+  privateIpGoogleAccess: true
+{% endif %}

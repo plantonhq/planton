@@ -1,0 +1,13 @@
+{% if values.enable_kms_encryption | bool %}
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsKmsKey
+metadata:
+  name: "{{ values.env }}-eks-secrets"
+spec:
+  region: "{{ values.aws_region }}"
+  description: CMK for Kubernetes secrets encryption
+  aliasName: "alias/{{ values.env }}-eks-secrets"
+  disableKeyRotation: false
+  deletionWindowDays: 30
+  {% endif %}

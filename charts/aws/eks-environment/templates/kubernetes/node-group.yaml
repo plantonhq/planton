@@ -1,0 +1,38 @@
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsEksNodeGroup
+metadata:
+  name: "{{ values.node_group_name }}"
+spec:
+  region: "{{ values.aws_region }}"
+  clusterName:
+    valueFrom:
+      kind: AwsEksCluster
+      name: "{{ values.env }}-{{ values.cluster_name }}"
+      fieldPath: metadata.name
+  nodeRoleArn:
+    valueFrom:
+      kind: AwsIamRole
+      name: "{{ values.env }}-eks-node-role"
+      fieldPath: status.outputs.role_arn
+  subnetIds:
+    - valueFrom:
+        kind: AwsSubnet
+        name: "{{ values.env }}-private-1"
+        fieldPath: status.outputs.subnet_id
+    - valueFrom:
+        kind: AwsSubnet
+        name: "{{ values.env }}-private-2"
+        fieldPath: status.outputs.subnet_id
+  instanceType: "{{ values.node_instance_type }}"
+  scaling:
+    minSize: {{ values.node_min_size }}
+    maxSize: {{ values.node_max_size }}
+    desiredSize: {{ values.node_desired_size }}
+  capacityType: "{{ values.node_capacity_type }}"
+  diskSizeGb: {{ values.node_disk_size_gb }}
+  {% if values.node_ssh_key_name != "" %}
+  sshKeyName: "{{ values.node_ssh_key_name }}"
+  {% endif %}
+  labels:
+    pool: "{{ values.node_group_name }}"

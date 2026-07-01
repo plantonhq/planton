@@ -1,0 +1,35 @@
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudKubernetesNodePool
+metadata:
+  name: "{{ values.env }}-{{ values.cluster_name }}-default"
+spec:
+  region: "{{ values.region }}"
+  clusterId:
+    valueFrom:
+      kind: AliCloudKubernetesCluster
+      name: "{{ values.env }}-{{ values.cluster_name }}"
+      fieldPath: status.outputs.clusterId
+  name: "{{ values.env }}-default"
+  vswitchIds:
+    - valueFrom:
+        kind: AliCloudVswitch
+        name: "{{ values.env }}-vswitch-1"
+        fieldPath: status.outputs.vswitchId
+    - valueFrom:
+        kind: AliCloudVswitch
+        name: "{{ values.env }}-vswitch-2"
+        fieldPath: status.outputs.vswitchId
+  instanceTypes:
+{% for itype in values.node_instance_types.split(',') %}
+    - "{{ itype | trim }}"
+{% endfor %}
+  desiredSize: {{ values.node_desired_size }}
+  systemDisk:
+    category: cloud_essd
+    size: {{ values.node_system_disk_size }}
+  scalingConfig:
+    enable: true
+    minSize: {{ values.node_min_size }}
+    maxSize: {{ values.node_max_size }}
+  imageType: AliyunLinux

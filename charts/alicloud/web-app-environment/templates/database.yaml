@@ -1,0 +1,41 @@
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudRdsInstance
+metadata:
+  name: "{{ values.env }}-rds"
+spec:
+  region: "{{ values.region }}"
+  engine: "{{ values.rds_engine }}"
+  engineVersion: "{{ values.rds_engine_version }}"
+  instanceType: "{{ values.rds_instance_type }}"
+  instanceStorage: {{ values.rds_storage_gb }}
+  instanceName: "{{ values.env }}-rds"
+  vswitchId:
+    valueFrom:
+      kind: AliCloudVswitch
+      name: "{{ values.env }}-vswitch-1"
+      fieldPath: status.outputs.vswitchId
+  zoneId: "{{ values.availability_zone_1 }}"
+  dbInstanceStorageType: cloud_essd
+  securityIps:
+    - "{{ values.vpc_cidr }}"
+
+{% if values.redisEnabled | bool %}
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudRedisInstance
+metadata:
+  name: "{{ values.env }}-redis"
+spec:
+  region: "{{ values.region }}"
+  vswitchId:
+    valueFrom:
+      kind: AliCloudVswitch
+      name: "{{ values.env }}-vswitch-1"
+      fieldPath: status.outputs.vswitchId
+  instanceClass: "{{ values.redis_instance_class }}"
+  engineVersion: "7.0"
+  zoneId: "{{ values.availability_zone_1 }}"
+  securityIps:
+    - "{{ values.vpc_cidr }}"
+{% endif %}

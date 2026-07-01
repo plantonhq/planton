@@ -1,0 +1,97 @@
+---
+apiVersion: oci.planton.dev/v1
+kind: OciVcn
+metadata:
+  name: "{{ values.env }}-vcn"
+spec:
+  compartmentId:
+    value: "{{ values.compartment_ocid }}"
+  cidrBlocks:
+    - "{{ values.vcn_cidr }}"
+  displayName: "{{ values.env }}-compute-vcn"
+  isInternetGatewayEnabled: true
+  isNatGatewayEnabled: true
+---
+apiVersion: oci.planton.dev/v1
+kind: OciSubnet
+metadata:
+  name: "{{ values.env }}-public"
+spec:
+  compartmentId:
+    value: "{{ values.compartment_ocid }}"
+  vcnId:
+    valueFrom:
+      kind: OciVcn
+      name: "{{ values.env }}-vcn"
+      fieldPath: status.outputs.vcnId
+  cidrBlock: "{{ values.public_subnet_cidr }}"
+  displayName: "{{ values.env }}-public"
+  prohibitPublicIpOnVnic: false
+  routeRules:
+    - destination: "0.0.0.0/0"
+      destinationType: cidr_block
+      networkEntityId:
+        valueFrom:
+          kind: OciVcn
+          name: "{{ values.env }}-vcn"
+          fieldPath: status.outputs.internetGatewayId
+---
+apiVersion: oci.planton.dev/v1
+kind: OciSubnet
+metadata:
+  name: "{{ values.env }}-private"
+spec:
+  compartmentId:
+    value: "{{ values.compartment_ocid }}"
+  vcnId:
+    valueFrom:
+      kind: OciVcn
+      name: "{{ values.env }}-vcn"
+      fieldPath: status.outputs.vcnId
+  cidrBlock: "{{ values.private_subnet_cidr }}"
+  displayName: "{{ values.env }}-private"
+  prohibitPublicIpOnVnic: true
+  routeRules:
+    - destination: "0.0.0.0/0"
+      destinationType: cidr_block
+      networkEntityId:
+        valueFrom:
+          kind: OciVcn
+          name: "{{ values.env }}-vcn"
+          fieldPath: status.outputs.natGatewayId
+---
+apiVersion: oci.planton.dev/v1
+kind: OciSecurityGroup
+metadata:
+  name: "{{ values.env }}-compute"
+spec:
+  compartmentId:
+    value: "{{ values.compartment_ocid }}"
+  vcnId:
+    valueFrom:
+      kind: OciVcn
+      name: "{{ values.env }}-vcn"
+      fieldPath: status.outputs.vcnId
+  displayName: "{{ values.env }}-compute"
+  ingressRules:
+    - description: SSH from VCN
+      protocol: tcp
+      source: "{{ values.vcn_cidr }}"
+      sourceType: cidr_block
+      tcpOptions:
+        destinationPortRange:
+          min: 22
+          max: 22
+    - description: Application traffic from VCN
+      protocol: tcp
+      source: "{{ values.vcn_cidr }}"
+      sourceType: cidr_block
+      tcpOptions:
+        destinationPortRange:
+          min: {{ values.lb_backend_port }}
+          max: {{ values.lb_backend_port }}
+  egressRules:
+    - description: Allow all egress
+      protocol: all
+      destination: "0.0.0.0/0"
+      destinationType: cidr_block

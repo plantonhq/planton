@@ -1,0 +1,19 @@
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsS3Bucket
+metadata:
+  name: "{{ values.s3_bucket_name }}"
+  group: storage
+spec:
+  region: "{{ values.aws_region }}"
+  isPublic: false
+  versioningEnabled: false
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsCloudwatchLogGroup
+metadata:
+  name: "{{ values.cluster_name }}-broker-logs"
+  group: monitoring
+spec:
+  region: "{{ values.aws_region }}"
+  retentionInDays: 30

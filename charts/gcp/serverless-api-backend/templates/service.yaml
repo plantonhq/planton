@@ -1,0 +1,43 @@
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpCloudRun
+metadata:
+  name: "{{ values.service_name }}"
+  group: compute
+  relationships:
+    - kind: GcpSubnetwork
+      name: "{{ values.vpc_name }}-subnet"
+      type: runs_on
+    - kind: GcpServiceAccount
+      name: "{{ values.service_account_id }}"
+      type: uses
+{% if values.databaseEnabled | bool %}
+    - kind: GcpCloudSql
+      name: "{{ values.database_instance_name }}"
+      type: uses
+{% endif %}
+{% if values.cacheEnabled | bool %}
+    - kind: GcpRedisInstance
+      name: "{{ values.redis_instance_name }}"
+      type: uses
+{% endif %}
+{% if values.messagingEnabled | bool %}
+    - kind: GcpPubSubTopic
+      name: "{{ values.pubsub_topic_name }}"
+      type: uses
+{% endif %}
+{% if values.tasksEnabled | bool %}
+    - kind: GcpCloudTasksQueue
+      name: "{{ values.tasks_queue_name }}"
+      type: uses
+{% endif %}
+spec:
+  projectId:
+    value: "{{ values.gcp_project_id }}"
+  region: "{{ values.region }}"
+  serviceName: "{{ values.service_name }}"
+  container:
+    image:
+      repo: "{{ values.container_image_repo }}"
+      tag: "{{ values.container_image_tag }}"
+    port: {{ values.container_port }}

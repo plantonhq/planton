@@ -1,0 +1,50 @@
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpVpc
+metadata:
+  name: "{{ values.env }}-{{ values.vpc_name }}"
+spec:
+  projectId:
+  {% if values.create_project | bool %}
+    valueFrom:
+      kind: GcpProject
+      name: "{{ values.project_id }}"
+      fieldPath: status.outputs.project_id
+  {% else %}
+    value: "{{ values.project_id }}"
+  {% endif %}
+  autoCreateSubnetworks: {{ values.vpc_auto_create_subnetworks }}
+  routingMode: REGIONAL
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpSubnetwork
+metadata:
+  name: "{{ values.env }}-{{ values.subnet_name }}"
+spec:
+  projectId:
+    value: "{{ values.project_id }}"
+  vpcSelfLink:
+    valueFrom:
+      kind: GcpVpc
+      name: "{{ values.env }}-{{ values.vpc_name }}"
+      fieldPath: status.outputs.network_self_link
+  region: "{{ values.region }}"
+  ipCidrRange: "{{ values.subnet_primary_cidr }}"
+  secondaryIpRanges:
+    - rangeName: "{{ values.pods_secondary_range_name }}"
+      ipCidrRange: "{{ values.pods_secondary_cidr }}"
+    - rangeName: "{{ values.services_secondary_range_name }}"
+      ipCidrRange: "{{ values.services_secondary_cidr }}"
+  privateIpGoogleAccess: {{ values.private_ip_google_access }}
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpRouterNat
+metadata:
+  name: "{{ values.router_nat_name }}"
+spec:
+  vpcSelfLink:
+    valueFrom:
+      kind: GcpVpc
+      name: "{{ values.env }}-{{ values.vpc_name }}"
+      fieldPath: status.outputs.network_self_link
+  region: "{{ values.region }}"

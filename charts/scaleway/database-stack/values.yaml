@@ -1,0 +1,131 @@
+params:
+  # ─── Network ─────────────────────────────────────────────────────────────
+  - name: create_network
+    description: Create a new VPC and Private Network (false to reuse existing)
+    type: bool
+    value: true
+
+  - name: region
+    description: Scaleway region (e.g. fr-par, nl-ams, pl-waw)
+    value: fr-par
+
+  - name: stack_name
+    description: Name prefix for the database stack resources
+    value: db-stack
+
+  - name: private_network_id
+    description: Existing Private Network ID (used when create_network is false)
+    value: ""
+
+  # ─── RDB Instance (optional) ─────────────────────────────────────────────
+  - name: rdb_enabled
+    description: Create a managed RDB instance (PostgreSQL or MySQL)
+    type: bool
+    value: true
+
+  - name: rdb_engine
+    description: Database engine and version (e.g. PostgreSQL-16, MySQL-8)
+    value: PostgreSQL-16
+
+  - name: rdb_node_type
+    description: RDB node type (e.g. DB-DEV-S, db-gp-xs)
+    value: DB-DEV-S
+
+  - name: rdb_admin_user
+    description: RDB admin username
+    value: admin
+
+  - name: rdb_admin_password
+    description: RDB admin password (min 8 characters)
+    value: changeme123
+
+  - name: rdb_is_ha
+    description: Enable HA (multi-node with automatic failover)
+    type: bool
+    value: false
+
+  - name: rdb_volume_type
+    description: RDB volume type (lssd, bssd, sbs_15k)
+    value: lssd
+
+  - name: rdb_volume_size_in_gb
+    description: RDB volume size in GB (0 for node type default)
+    type: number
+    value: 0
+
+  - name: rdb_disable_backup
+    description: Disable automated backups
+    type: bool
+    value: false
+
+  # ─── Redis Cluster (optional) ────────────────────────────────────────────
+  - name: redis_enabled
+    description: Create a managed Redis cluster
+    type: bool
+    value: false
+
+  - name: redis_zone
+    description: Scaleway zone for Redis (e.g. fr-par-1, nl-ams-1)
+    value: fr-par-1
+
+  - name: redis_version
+    description: Redis version (e.g. 7.2.5)
+    value: "7.2.5"
+
+  - name: redis_node_type
+    description: Redis node type (e.g. RED1-MICRO, RED1-S)
+    value: RED1-MICRO
+
+  - name: redis_cluster_size
+    description: Number of nodes (1=standalone, 2=HA, 3+=cluster)
+    type: number
+    value: 1
+
+  - name: redis_user_name
+    description: Redis username
+    value: default
+
+  - name: redis_password
+    description: Redis password (min 8 characters)
+    value: changeme123
+
+  - name: redis_tls_enabled
+    description: Enable TLS encryption for client connections
+    type: bool
+    value: false
+
+  # ─── MongoDB Instance (optional) ─────────────────────────────────────────
+  - name: mongodb_enabled
+    description: Create a managed MongoDB instance
+    type: bool
+    value: false
+
+  - name: mongodb_version
+    description: MongoDB version (e.g. 7.0.12)
+    value: "7.0.12"
+
+  - name: mongodb_node_type
+    description: MongoDB node type (e.g. MGDB-PLAY2-NANO, MGDB-PRO2-XXS)
+    value: MGDB-PLAY2-NANO
+
+  - name: mongodb_node_number
+    description: Number of nodes (1=standalone, 3=replica set)
+    type: number
+    value: 1
+
+  - name: mongodb_admin_user
+    description: MongoDB admin username
+    value: admin
+
+  - name: mongodb_admin_password
+    description: MongoDB admin password (min 8 characters)
+    value: changeme123
+
+  - name: mongodb_volume_type
+    description: MongoDB volume type (sbs_5k or sbs_15k)
+    value: sbs_5k
+
+  - name: mongodb_volume_size_in_gb
+    description: MongoDB volume size in GB (0 for default 5 GB)
+    type: number
+    value: 0

@@ -1,0 +1,13 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: AWS Microservices Backend
+spec:
+  selector:
+    kind: platform
+  description: Full backend environment with VPC, ALB, ECS (Fargate), Aurora PostgreSQL, ElastiCache Redis, and SQS. A composable microservices platform -- enable only the data, cache, and messaging layers your service needs.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/aws/awsecscluster/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/aws/microservices-backend
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/aws/microservices-backend/README.md

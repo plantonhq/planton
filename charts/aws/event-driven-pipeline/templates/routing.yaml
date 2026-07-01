@@ -1,0 +1,37 @@
+---
+apiVersion: aws.planton.dev/v1
+kind: AwsEventBridgeRule
+metadata:
+  name: "{{ values.rule_name }}"
+  group: messaging
+  relationships:
+    - kind: AwsEventBridgeBus
+      name: "{{ values.bus_name }}"
+      type: runs_on
+    - kind: AwsSqsQueue
+      name: "{{ values.processing_queue_name }}"
+      type: uses
+spec:
+  eventBusName:
+    valueFrom:
+      kind: AwsEventBridgeBus
+      name: "{{ values.bus_name }}"
+      fieldPath: status.outputs.bus_name
+  description: "{{ values.rule_description }}"
+  eventPattern:
+    source:
+      - "{{ values.bus_name }}"
+  state: ENABLED
+  targets:
+    - name: sqs-processor
+      arn:
+        valueFrom:
+          kind: AwsSqsQueue
+          name: "{{ values.processing_queue_name }}"
+          fieldPath: status.outputs.queue_arn
+      deadLetterConfig:
+        arn:
+          valueFrom:
+            kind: AwsSqsQueue
+            name: "{{ values.dlq_name }}"
+            fieldPath: status.outputs.queue_arn

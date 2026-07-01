@@ -1,0 +1,13 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: GCP Spanner Application
+spec:
+  selector:
+    kind: platform
+  description: Production-ready Cloud Spanner deployment with instance, database, dedicated service account, and optional VPC networking. Supports both Google Standard SQL and PostgreSQL dialects with configurable node capacity.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/gcp/gcpspannerinstance/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/gcp/spanner-application
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/gcp/spanner-application/README.md

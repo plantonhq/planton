@@ -1,0 +1,17 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: Azure Container Apps Environment
+spec:
+  selector:
+    kind: platform
+  description: >
+    Serverless container platform on Azure. Deploys a VNet-injected Container App
+    Environment with Log Analytics monitoring, an optional sample Container App,
+    and optional Application Insights for APM. Ideal for microservices, APIs, and
+    event-driven workloads that benefit from scale-to-zero and consumption pricing.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/azure/azurecontainerappenvironment/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/azure/container-apps-environment
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/azure/container-apps-environment/README.md

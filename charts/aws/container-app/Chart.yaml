@@ -1,0 +1,13 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: AWS Container App
+spec:
+  selector:
+    kind: platform
+  description: Simplest container-to-URL deployment on AWS App Runner with ECR for images, optional DynamoDB for data persistence. Zero infrastructure management -- just push a container and get a URL.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/provider/aws/awsapprunnerservice/v1/assets/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/aws/container-app
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/aws/container-app/README.md

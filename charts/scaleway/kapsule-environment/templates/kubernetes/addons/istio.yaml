@@ -1,0 +1,23 @@
+{% if values.istioEnabled | bool %}
+---
+apiVersion: kubernetes.planton.dev/v1
+kind: KubernetesIstio
+metadata:
+  name: {{ values.cluster_name }}-istio-ingress
+  relationships:
+    - kind: ScalewayKapsuleCluster
+      name: "{{ values.env }}-{{ values.cluster_name }}"
+      type: runs_on
+spec:
+  targetCluster:
+    clusterKind: ScalewayKapsuleCluster
+    clusterName: "{{ values.env }}-{{ values.cluster_name }}"
+  container:
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+      requests:
+        cpu: 50m
+        memory: 100Mi
+{% endif %}

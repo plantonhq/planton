@@ -1,0 +1,111 @@
+params:
+  # ─── Region & Availability Zones ──────────────────────────────────────────────
+  - name: region
+    description: Alibaba Cloud region
+    value: cn-hangzhou
+
+  - name: availability_zone_1
+    description: First AZ
+    value: cn-hangzhou-h
+
+  - name: availability_zone_2
+    description: Second AZ
+    value: cn-hangzhou-i
+
+  # ─── VPC ──────────────────────────────────────────────────────────────────────
+  - name: vpc_cidr
+    description: VPC CIDR block
+    value: "10.0.0.0/16"
+
+  - name: vswitch_cidr_1
+    description: VSwitch CIDR in AZ-1
+    value: "10.0.0.0/20"
+
+  - name: vswitch_cidr_2
+    description: VSwitch CIDR in AZ-2
+    value: "10.0.16.0/20"
+
+  # ─── EIP & NAT ────────────────────────────────────────────────────────────────
+  - name: eip_bandwidth
+    description: NAT Gateway EIP bandwidth (Mbps)
+    value: "10"
+
+  # ─── Cluster ──────────────────────────────────────────────────────────────────
+  - name: cluster_name
+    description: ACK cluster name suffix
+    value: microservices
+
+  - name: pod_cidr
+    description: Pod network CIDR
+    value: "172.20.0.0/16"
+
+  - name: service_cidr
+    description: Service network CIDR
+    value: "172.21.0.0/20"
+
+  # ─── Node Pool ────────────────────────────────────────────────────────────────
+  - name: node_instance_types
+    description: Comma-separated worker node instance types
+    value: ecs.g7.xlarge
+
+  - name: node_desired_size
+    description: Desired worker count
+    value: "3"
+
+  - name: node_min_size
+    description: Min workers (autoscaling)
+    value: "2"
+
+  - name: node_max_size
+    description: Max workers (autoscaling)
+    value: "10"
+
+  # ─── ALB ──────────────────────────────────────────────────────────────────────
+  - name: alb_address_type
+    description: "ALB type: Internet or Intranet"
+    value: Internet
+
+  # ─── Logging ──────────────────────────────────────────────────────────────────
+  - name: log_retention_days
+    description: Log store retention in days
+    value: "30"
+
+  # ─── Container Registry (optional) ────────────────────────────────────────────
+  - name: acrEnabled
+    description: Create ACR Enterprise instance
+    type: bool
+    value: true
+
+  - name: acr_instance_type
+    description: "ACR tier: Basic, Standard, Advanced"
+    value: Basic
+
+  # ─── RocketMQ (optional) ──────────────────────────────────────────────────────
+  - name: rocketmqEnabled
+    description: Deploy RocketMQ messaging instance
+    type: bool
+    value: true
+
+  - name: rocketmq_spec
+    description: RocketMQ processing spec (e.g., rmq.s1.micro)
+    value: rmq.s1.micro
+
+  # ─── Redis (optional) ─────────────────────────────────────────────────────────
+  - name: redisEnabled
+    description: Deploy Redis cache
+    type: bool
+    value: true
+
+  - name: redis_instance_class
+    description: Redis instance class
+    value: redis.master.small.default
+
+  # ─── NAS (optional) ───────────────────────────────────────────────────────────
+  - name: nasEnabled
+    description: Deploy NAS shared file system
+    type: bool
+    value: false
+
+  - name: nas_storage_type
+    description: "NAS storage type: Performance or Capacity"
+    value: Performance

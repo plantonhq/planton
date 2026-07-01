@@ -1,0 +1,23 @@
+---
+apiVersion: alicloud.planton.dev/v1
+kind: AliCloudEcsInstance
+metadata:
+  name: "{{ values.env }}-web-ecs"
+spec:
+  region: "{{ values.region }}"
+  vswitchId:
+    valueFrom:
+      kind: AliCloudVswitch
+      name: "{{ values.env }}-vswitch-1"
+      fieldPath: status.outputs.vswitchId
+  securityGroupIds:
+    - valueFrom:
+        kind: AliCloudSecurityGroup
+        name: "{{ values.env }}-web-sg"
+        fieldPath: status.outputs.securityGroupId
+  instanceType: "{{ values.ecs_instance_type }}"
+  imageId: "{{ values.ecs_image_id }}"
+  instanceName: "{{ values.env }}-web-ecs"
+  systemDisk:
+    category: cloud_essd
+    size: {{ values.ecs_system_disk_size }}

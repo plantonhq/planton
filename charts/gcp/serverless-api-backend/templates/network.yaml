@@ -1,0 +1,57 @@
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpVpc
+metadata:
+  name: "{{ values.vpc_name }}"
+  group: network
+spec:
+  projectId:
+    value: "{{ values.gcp_project_id }}"
+  networkName: "{{ values.vpc_name }}"
+  autoCreateSubnetworks: false
+  routingMode: REGIONAL
+  privateServicesAccess:
+    enabled: true
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpSubnetwork
+metadata:
+  name: "{{ values.vpc_name }}-subnet"
+  group: network
+  relationships:
+    - kind: GcpVpc
+      name: "{{ values.vpc_name }}"
+      type: runs_on
+spec:
+  projectId:
+    value: "{{ values.gcp_project_id }}"
+  vpcSelfLink:
+    valueFrom:
+      kind: GcpVpc
+      name: "{{ values.vpc_name }}"
+      fieldPath: status.outputs.network_self_link
+  subnetworkName: "{{ values.vpc_name }}-subnet"
+  region: "{{ values.region }}"
+  ipCidrRange: "{{ values.subnet_cidr }}"
+  privateIpGoogleAccess: true
+---
+apiVersion: gcp.planton.dev/v1
+kind: GcpRouterNat
+metadata:
+  name: "{{ values.vpc_name }}-router-nat"
+  group: network
+  relationships:
+    - kind: GcpVpc
+      name: "{{ values.vpc_name }}"
+      type: runs_on
+spec:
+  projectId:
+    value: "{{ values.gcp_project_id }}"
+  routerName: "{{ values.vpc_name }}-router"
+  natName: "{{ values.vpc_name }}-nat"
+  vpcSelfLink:
+    valueFrom:
+      kind: GcpVpc
+      name: "{{ values.vpc_name }}"
+      fieldPath: status.outputs.network_self_link
+  region: "{{ values.region }}"

@@ -1,0 +1,13 @@
+apiVersion: infra-hub.planton.ai/v1
+kind: InfraChart
+metadata:
+  name: AliCloud Serverless Environment
+spec:
+  selector:
+    kind: platform
+  description: Serverless compute environment with FC functions, SAE applications, OSS code storage, centralized logging, and IAM roles for Alibaba Cloud.
+  iconUrl: https://assets.planton.ai/apis/infrahub/cloudresource/v1/assets/provider/alicloud/alicloudfunction/v1/logo.svg
+  isReady: true
+  webLinks:
+    chartWebUrl: https://github.com/plantonhq/planton/tree/main/charts/alicloud/serverless-environment
+    readmeRawUrl: https://raw.githubusercontent.com/plantonhq/planton/refs/heads/main/charts/alicloud/serverless-environment/README.md

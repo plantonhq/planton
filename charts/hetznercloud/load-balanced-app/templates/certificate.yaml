@@ -1,0 +1,12 @@
+{% if values.enable_https | bool %}
+---
+apiVersion: hetznercloud.planton.dev/v1
+kind: HetznerCloudCertificate
+metadata:
+  name: "{{ values.env }}-cert"
+spec:
+  managed:
+    domainNames:
+      - "{{ values.domain_name }}"
+      - "*.{{ values.domain_name }}"
+{% endif %}

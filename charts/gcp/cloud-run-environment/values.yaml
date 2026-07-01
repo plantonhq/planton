@@ -1,0 +1,123 @@
+params:
+  # ─── GCP Configuration ─────────────────────────────────────────────────
+  - name: gcp_project_id
+    description: GCP Project ID
+    value: planton-cloud-testing
+
+  - name: gcp_region
+    description: GCP region for all resources
+    value: us-central1
+
+  # ─── Optional Networking ─────────────────────────────────────────────────
+  - name: networkingEnabled
+    description: Create VPC, Subnetwork, and Router NAT
+    type: bool
+    value: true
+
+  - name: vpc_name
+    description: Name of the VPC network
+    value: cloud-run-vpc
+
+  - name: subnet_cidr
+    description: Primary CIDR range for the subnet
+    value: "10.0.0.0/24"
+
+  # ─── Service Configuration ─────────────────────────────────────────────
+  - name: frontend_service_name
+    description: Name of the frontend Cloud Run service
+    value: frontend
+
+  - name: frontend_service_port
+    description: Port for the frontend service
+    value: "8080"
+
+  - name: backend_service_name
+    description: Name of the backend Cloud Run service
+    value: backend
+
+  - name: backend_service_port
+    description: Port for the backend service
+    value: "8080"
+
+  - name: backendServiceEnabled
+    description: Create backend Cloud Run service
+    type: bool
+    value: true
+
+  # ─── Optional DNS Zone ─────────────────────────────────────────────────
+  - name: domain_name
+    description: Custom domain name for DNS zone
+    value: example.com
+
+  - name: dnsZoneEnabled
+    description: Create GCP DNS Zone
+    type: bool
+    value: true
+
+  # ─── Optional Docker Repository ────────────────────────────────────────
+  - name: dockerRepoEnabled
+    description: Create Docker repository
+    type: bool
+    value: true
+
+  - name: docker_repo_name
+    description: Name of the Docker repository
+    value: docker-repo
+
+  # ─── Optional Cloud SQL Database ───────────────────────────────────────
+  - name: databaseEnabled
+    description: Create Cloud SQL database instance
+    type: bool
+    value: true
+
+  - name: database_engine
+    description: Database engine type (POSTGRESQL or MYSQL)
+    type: string_enum
+    enum_values: ["POSTGRESQL", "MYSQL"]
+    value: POSTGRESQL
+
+  - name: database_instance_name
+    description: Name of the database instance
+    value: database
+
+  - name: database_tier
+    description: Cloud SQL machine tier
+    value: db-f1-micro
+
+  - name: database_storage_gb
+    description: Storage size in GB
+    value: "10"
+
+  - name: database_version
+    description: Database version (e.g., POSTGRES_15 or MYSQL_8_0)
+    value: POSTGRES_15
+
+  - name: database_root_password
+    description: Root password (rotate after deployment)
+    value: change-me-immediately
+
+  - name: database_authorized_networks
+    description: List of CIDR ranges allowed to connect publicly (e.g., ["1.2.3.4/32", "5.6.7.8/32"])
+    type: list
+    value:
+      - "0.0.0.0/0"
+
+  # ─── Optional Storage Bucket ───────────────────────────────────────────
+  - name: storageBucketEnabled
+    description: Create storage bucket
+    type: bool
+    value: true
+
+  - name: storage_bucket_name
+    description: Name of the storage bucket
+    value: storage-bucket
+
+  # ─── Optional Service Account ──────────────────────────────────────────
+  - name: serviceAccountEnabled
+    description: Create Service Account with JSON key
+    type: bool
+    value: true
+
+  - name: service_account_id
+    description: Service account ID
+    value: app-service-account

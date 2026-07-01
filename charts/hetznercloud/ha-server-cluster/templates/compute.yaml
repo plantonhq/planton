@@ -1,0 +1,35 @@
+{% for i in range(values.server_count | int) %}
+---
+apiVersion: hetznercloud.planton.dev/v1
+kind: HetznerCloudServer
+metadata:
+  name: "{{ values.env }}-node-{{ loop.index }}"
+spec:
+  serverType: "{{ values.server_type }}"
+  image: "{{ values.image }}"
+  location: "{{ values.location }}"
+  sshKeys:
+    - valueFrom:
+        kind: HetznerCloudSshKey
+        name: "{{ values.env }}-ssh-key"
+        fieldPath: status.outputs.ssh_key_id
+  firewallIds:
+    - valueFrom:
+        kind: HetznerCloudFirewall
+        name: "{{ values.env }}-firewall"
+        fieldPath: status.outputs.firewall_id
+  placementGroupId:
+    valueFrom:
+      kind: HetznerCloudPlacementGroup
+      name: "{{ values.env }}-placement-group"
+      fieldPath: status.outputs.placement_group_id
+  networks:
+    - networkId:
+        valueFrom:
+          kind: HetznerCloudNetwork
+          name: "{{ values.env }}-network"
+          fieldPath: status.outputs.network_id
+  {% if values.user_data != "" %}
+  userData: "{{ values.user_data }}"
+  {% endif %}
+{% endfor %}
