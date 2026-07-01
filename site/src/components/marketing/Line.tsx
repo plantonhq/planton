@@ -23,12 +23,13 @@ const TONE: Record<LineTone, string> = {
 };
 
 /**
- * A single spoken (or narrated) line in the origin story: an optional speaker
- * label plus one paragraph at a canonical tone.
+ * The story's tone atom: an optional speaker label plus one paragraph at a
+ * canonical tone. It is the single source of the "You = muted, Planton = bright"
+ * typography, so that decision lives in exactly one place.
  *
- * This is THE atom for the You/Planton conversation — every dialogue beat and
- * every standalone Planton statement composes it, so the "You = muted, Planton =
- * bright" typography lives in exactly one place.
+ * Used across the narrative beats — the You/Planton dialogue (with a speaker) AND
+ * speaker-less narration/statements (e.g. the ladder opener and the WhereItFits
+ * payoff/bridge). Give it a `speaker` for dialogue; omit it for narration.
  *
  * Deliberately NOT used by: the `Origin` crescendo (a bespoke two-tier
  * statement) and the `Hero`/`FinalCta` display headlines. Those are distinct

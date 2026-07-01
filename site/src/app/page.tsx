@@ -2,6 +2,7 @@ import { SiteHeader, SiteFooter } from "@/components/chrome";
 import {
   Hero,
   CatalogStats,
+  WhereItFits,
   LadderConsole,
   LadderCode,
   LadderKubernetes,
@@ -17,8 +18,10 @@ import {
 } from "@/components/marketing";
 
 /**
- * planton.dev — the origin-story front door. Composed from small, focused act
- * components; the header/footer are shared chrome.
+ * planton.dev — the front door. Composed from small, focused section components,
+ * in the order that forms the page's information architecture: hero → orientation
+ * map (WhereItFits) → origin-story arc (the numbered stations) → closing CTA. The
+ * header/footer are shared chrome.
  */
 export default function HomePage() {
   return (
@@ -27,6 +30,7 @@ export default function HomePage() {
       <main>
         <Hero />
         <CatalogStats />
+        <WhereItFits />
         <LadderConsole />
         <LadderCode />
         <LadderKubernetes />

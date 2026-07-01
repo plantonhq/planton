@@ -1,10 +1,12 @@
 /**
- * The origin-story landing arc. Each act is a small, self-contained component
- * composed by app/page.tsx. Shared primitives (Section, Speaker, StoryStation…)
- * keep the acts consistent and thin.
+ * The landing page sections. app/page.tsx composes them in order to form the
+ * page's information architecture: hero → orientation map → origin-story arc →
+ * closing CTA. Each section is a small, self-contained component; shared
+ * primitives (Section, Speaker, StoryStation, Line…) keep them consistent and thin.
  */
 export { Hero } from "./Hero";
 export { CatalogStats } from "./CatalogStats";
+export { WhereItFits } from "./WhereItFits";
 export { Line } from "./Line";
 export { LadderConsole } from "./LadderConsole";
 export { LadderCode } from "./LadderCode";
